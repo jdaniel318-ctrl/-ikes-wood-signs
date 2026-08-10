@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#f4d238" />
+  <title>Ike's Wood Signs</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="brand-header">
+      <img src="assets/ike_logo.jpg" alt="Ike's Wood Signs logo" class="brand-logo" />
+      <div class="brand-copy">
+        <div class="brand-title">IKE'S WOOD SIGNS</div>
+        <div class="brand-subtitle">Self-Serve Sign Ordering</div>
+        <div class="brand-kicker">Pick your wood • Design • Preview • Order</div>
+      </div>
+      <button id="adminBtn" class="icon-btn" aria-label="Open admin area">⚙︎</button>
+    </header>
+    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+
+    <main id="customerApp" class="main-panel">
+      <section class="screen active welcome-screen" data-screen="welcome">
+        <div class="welcome-brand">
+          <div class="welcome-copy">
+            <div class="welcome-wordmark">Ike's Wood Signs</div>
+            <div class="welcome-subtitle">Self-Serve Sign Ordering</div>
+            <p>Pick the piece of wood you love. We'll guide you through the rest, one easy step at a time.</p>
+          </div>
+          <img src="assets/ike_character.jpg" alt="Ike holding a wood sign blank" class="ike-character" />
+        </div>
+        <div class="brand-actions">
+          <div class="brand-action"><span class="action-icon blue">✎</span><div><strong>Design Your Sign</strong><small>Type it exactly how you want it.</small></div></div>
+          <div class="brand-action"><span class="action-icon red">◆</span><div><strong>Use Your Plank</strong><small>Photograph the exact wood you picked.</small></div></div>
+          <div class="brand-action"><span class="action-icon green">✓</span><div><strong>Preview & Approve</strong><small>See your sign before you order.</small></div></div>
+        </div>
+        <div class="start-band">Let's get started!</div>
+        <button class="primary-btn next hero-start" data-next="price">START YOUR SIGN →</button>
+        <p class="helper centered">Easy step-by-step • Your wording stays exactly as you type it</p>
+      </section>
+
+      <section class="screen" data-screen="price">
+        <h2>What did your wood cost?</h2>
+        <p class="helper">Choose the price shown above the rack where you found your blank.</p>
+        <div id="priceChoices" class="choice-grid two-col">
+          <button class="choice-btn" data-price="45">$45</button>
+          <button class="choice-btn" data-price="55">$55</button>
+          <button class="choice-btn selected" data-price="65">$65</button>
+          <button class="choice-btn" data-price="90">$90</button>
+          <button class="choice-btn wide" data-price="135">$135</button>
+        </div>
+        <button class="primary-btn next" data-next="photo">NEXT →</button>
+      </section>
+
+      <section class="screen" data-screen="photo">
+        <div class="screen-heading"><span class="step-badge">YOUR WOOD</span><h2>Take a Picture of Your Wood</h2></div>
+        <p>Place the entire blank in view. The picture stays with Ike's order and becomes the background for your preview.</p>
+        <div id="cameraPanel" class="camera-panel">
+          <video id="cameraVideo" class="camera-video" playsinline muted></video>
+          <canvas id="cameraCanvas" class="hidden"></canvas>
+          <div id="cameraIdle" class="camera-idle">
+            <div class="camera-icon">📷</div><strong>Ready to photograph your wood</strong><span>Tap START CAMERA below.</span>
+          </div>
+        </div>
+        <div id="cameraControls" class="camera-controls">
+          <button id="startCameraBtn" class="primary-btn">START CAMERA</button>
+          <button id="capturePhotoBtn" class="primary-btn hidden">TAKE PICTURE</button>
+          <button id="cancelCameraBtn" class="secondary-btn hidden">CANCEL CAMERA</button>
+        </div>
+        <div id="photoFrame" class="photo-frame placeholder hidden">
+          <img id="woodPhoto" alt="Selected wood blank" />
+          <div id="photoPlaceholder" class="photo-placeholder"><strong>Your wood photo will appear here</strong></div>
+        </div>
+        <div id="photoReviewControls" class="photo-review-controls hidden">
+          <button id="retakeBtn" class="secondary-btn">RETAKE</button>
+          <button class="primary-btn next" data-next="orientation">USE THIS PHOTO →</button>
+        </div>
+        <div class="library-fallback"><span>Camera not available?</span><label class="text-btn file-btn inline-file" for="photoInput">Choose a saved photo</label><input id="photoInput" type="file" accept="image/*" hidden /></div>
+        <p id="photoHelp" class="helper">The app will use the iPad camera without leaving the ordering process.</p>
+        <p id="photoError" class="error-text" aria-live="polite"></p>
+      </section>
+
+      <section class="screen" data-screen="orientation">
+        <h2>How should your sign face?</h2>
+        <p class="helper">Choose the orientation. We will add a clear “TOP” marker to Ike's order copy.</p>
+        <div class="choice-grid two-col" id="orientationChoices">
+          <button class="choice-btn selected" data-orientation="Horizontal">↔ Horizontal</button>
+          <button class="choice-btn" data-orientation="Vertical">↕ Vertical</button>
+        </div>
+        <div class="top-choice">
+          <label for="topSide">Which side is the top?</label>
+          <select id="topSide">
+            <option value="Top of photo">Top of photo</option>
+            <option value="Bottom of photo">Bottom of photo</option>
+            <option value="Left side of photo">Left side of photo</option>
+            <option value="Right side of photo">Right side of photo</option>
+          </select>
+        </div>
+        <button class="primary-btn next" data-next="wording">NEXT →</button>
+      </section>
+
+      <section class="screen" data-screen="wording">
+        <h2>What should your sign say?</h2>
+        <label for="wordingInput">Type it exactly the way you want it carved</label>
+        <input id="wordingInput" class="text-input big" value="Smoke Hole" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false" />
+        <div class="input-meta"><span>Uppercase, lowercase, spaces, numbers and punctuation are preserved.</span><strong id="charCount">10 characters</strong></div>
+        <div class="preview-card compact"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
+        <button class="primary-btn next" data-next="font">CHOOSE LETTER STYLE →</button>
+      </section>
+
+      <section class="screen" data-screen="font">
+        <h2>Choose Your Letter Style</h2>
+        <p class="helper">Styles A, B and C are placeholders until the exact Ike character references are added.</p>
+        <div id="fontChoices" class="font-list">
+          <button class="font-choice" data-font="A"><span class="font-label">STYLE A</span><span class="style-a alphabet">ABC abc • <span data-font-sample>Smoke Hole</span></span></button>
+          <button class="font-choice selected" data-font="B"><span class="font-label">STYLE B</span><span class="style-b alphabet">ABC abc • <span data-font-sample>Smoke Hole</span></span></button>
+          <button class="font-choice" data-font="C"><span class="font-label">STYLE C</span><span class="style-c alphabet">ABC abc • <span data-font-sample>Smoke Hole</span></span></button>
+        </div>
+        <button class="primary-btn next" data-next="fill">NEXT →</button>
+      </section>
+
+      <section class="screen" data-screen="fill">
+        <h2>Choose Your Letter Fill</h2>
+        <div id="fillChoices" class="choice-grid two-col">
+          <button class="choice-btn selected" data-fill="Black">BLACK</button>
+          <button class="choice-btn" data-fill="White">WHITE</button>
+          <button class="choice-btn" data-fill="Natural">NO FILL</button>
+          <button class="choice-btn" data-fill="Other">OTHER COLOR</button>
+        </div>
+        <button class="primary-btn next" data-next="preview">SEE MY SIGN →</button>
+      </section>
+
+      <section class="screen" data-screen="preview">
+        <div class="centered"><span class="eyebrow">YOUR SIGN PREVIEW</span><h2>How does it look?</h2></div>
+        <div class="preview-card hero-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
+        <div class="centered"><strong id="previewPrice">Your $65 Ike's Wood Sign</strong><p class="helper">This preview represents your selected blank, wording, capitalization, style and fill. Each sign is handmade.</p></div>
+        <button class="primary-btn next" data-next="customer">YES — CONTINUE →</button>
+        <button class="secondary-btn goto" data-goto="wording">MAKE CHANGES</button>
+      </section>
+
+      <section class="screen" data-screen="customer">
+        <h2>Your Contact Information</h2>
+        <p>Ike will use this information to let you know when your sign is ready for pickup.</p>
+        <label for="customerName">Name</label>
+        <input id="customerName" class="text-input" autocomplete="name" />
+        <label for="customerPhone">Cell Phone Number</label>
+        <input id="customerPhone" class="text-input" type="tel" autocomplete="tel" inputmode="tel" />
+        <label for="customerEmail">Email Address</label>
+        <input id="customerEmail" class="text-input" type="email" autocomplete="email" inputmode="email" />
+        <label>How would you like Ike to contact you?</label>
+        <div id="contactChoices" class="choice-grid two-col">
+          <button class="choice-btn selected" data-contact="Text">TEXT ME</button>
+          <button class="choice-btn" data-contact="Call">CALL ME</button>
+        </div>
+        <p id="customerError" class="error-text" aria-live="polite"></p>
+        <button id="reviewBtn" class="primary-btn">REVIEW MY ORDER →</button>
+      </section>
+
+      <section class="screen" data-screen="review">
+        <h2>Review Before You Order</h2>
+        <div class="preview-card review-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
+        <div class="summary-box" id="orderSummary"></div>
+        <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I approve the wording, spelling, uppercase/lowercase letters, orientation, letter style and fill exactly as shown.</span></label>
+        <button id="approveBtn" class="primary-btn">APPROVE MY SIGN →</button>
+        <p id="approvalError" class="error-text" aria-live="polite"></p>
+      </section>
+
+      <section class="screen" data-screen="done">
+        <div class="done-mark">✓</div>
+        <h2 class="centered">Your Order Is Saved</h2>
+        <div class="summary-box centered"><div class="helper">Order Number</div><div id="doneOrderId" class="order-id"></div></div>
+        <p class="centered">Ike now has the order stored on this iPad. Use the button below to prepare the order email for the configured admin recipients.</p>
+        <button id="emailOrderBtn" class="primary-btn">PREPARE ADMIN EMAIL</button>
+        <button id="newOrderBtn" class="secondary-btn">START ANOTHER ORDER</button>
+        <p class="helper centered">Version 1 stores orders locally on this device. Sending email requires a final tap in the iPad's mail app.</p>
+      </section>
+
+      <div class="mini-brand"><img src="assets/ike_character.jpg" alt="" /><div><strong>Ike's Wood Signs</strong><span>Self-Serve Sign Ordering</span></div></div>
+      <div class="nav-row"><button id="backBtn" class="text-btn">← Back</button><span id="stepLabel" class="helper"></span></div>
+    </main>
+
+    <section id="adminPanel" class="admin-panel hidden">
+      <div class="admin-head"><div><h2>Admin Orders</h2><p class="helper">Stored locally on this iPad</p></div><button id="closeAdminBtn" class="secondary-btn small">BACK TO ORDERING</button></div>
+      <div class="admin-actions">
+        <button id="exportBtn" class="secondary-btn small">EXPORT BACKUP</button>
+        <label class="secondary-btn small file-btn" for="restoreInput">RESTORE BACKUP</label>
+        <input id="restoreInput" type="file" accept="application/json" hidden />
+        <button id="settingsBtn" class="secondary-btn small">EMAIL SETTINGS</button>
+      </div>
+      <div id="adminSettings" class="settings-box hidden">
+        <label for="adminEmails">Admin email addresses</label>
+        <textarea id="adminEmails" rows="3" placeholder="ike@example.com, owner@example.com"></textarea>
+        <button id="saveSettingsBtn" class="primary-btn small">SAVE EMAIL SETTINGS</button>
+      </div>
+      <div id="orderList" class="order-list"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
