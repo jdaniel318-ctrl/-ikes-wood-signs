@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#f4d238" />
-  <title>Ike's Wood Signs — Black Flag</title>
+  <title>Workshop Engine — Black Flag Cove</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -280,9 +280,9 @@
     <div id="enginePinGate" class="engine-pin-gate hidden" role="dialog" aria-modal="true" aria-labelledby="enginePinTitle">
       <div class="pirate-card">
         <div class="pirate-flag">☠</div>
-        <div class="pirate-ike">
-          <img src="assets/ike_character.jpg" alt="Cartoon Ike guarding the engine room" />
-          <span class="pirate-hat">🏴‍☠️</span>
+        <div class="black-flag-guardian" aria-hidden="true">
+          <span class="guardian-flag">🏴‍☠️</span>
+          <span class="guardian-wheel">⚙</span>
         </div>
         <div class="pirate-eyebrow">CAPTAIN'S QUARTERS</div>
         <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
@@ -299,22 +299,52 @@
       <div class="engine-head">
         <div>
           <div class="engine-kicker">☠ BLACK FLAG</div>
-          <h2>Workshop Engine Administration</h2>
-          <p class="helper">Sensitive platform controls. Normal Ike operations stay in the 4353 Admin area.</p>
+          <h2>Black Flag Cove — Engine Administration</h2>
+          <p class="helper">Sensitive platform controls below deck. Company operations stay in the standard Admin area.</p>
         </div>
         <button id="closeEngineBtn" class="secondary-btn small">← BACK TO IKE ADMIN</button>
       </div>
 
-      <div class="engine-health-strip" id="engineHealthStrip">
-        <div><span>Orders</span><strong id="engineOrderCount">—</strong></div>
-        <div><span>Draft</span><strong id="engineDraftStatus">—</strong></div>
-        <div><span>Storage</span><strong id="engineStorageStatus">—</strong></div>
-        <div><span>Email</span><strong id="engineEmailStatus">—</strong></div>
+      <div class="engine-welcome">
+        <div class="welcome-mark">☠</div>
+        <div>
+          <strong>Welcome aboard Black Flag Cove.</strong>
+          <span>Daily business controls stay upstairs. This area is for engine-wide company setup, diagnostics, AI policy, and reusable workflow controls.</span>
+        </div>
       </div>
+
+      <div class="engine-health-strip" id="engineHealthStrip">
+        <div><span>Orders Aboard</span><strong id="engineOrderCount">—</strong></div>
+        <div><span>Stranded Draft</span><strong id="engineDraftStatus">—</strong></div>
+        <div><span>Cargo Hold</span><strong id="engineStorageStatus">—</strong></div>
+        <div><span>Signal Flag</span><strong id="engineEmailStatus">—</strong></div>
+      </div>
+
+      <div class="engine-section-head">
+        <div><div class="engine-kicker">THE FLEET MANIFEST</div><h3>Companies</h3><p class="helper">Company profiles live in the engine. Only published companies are exposed to customers.</p></div>
+      </div>
+      <div id="companyFleet" class="company-fleet"></div>
 
       <div class="engine-grid">
         <article class="engine-card">
-          <h3>Engine Identity</h3>
+          <h3>AI Product Recognition</h3>
+          <p class="helper">Engine-controlled by company for testing. AI may identify and suggest; company pricing rules remain authoritative.</p>
+          <label>Company<select id="aiCompanySetting"></select></label>
+          <label>Recognition mode
+            <select id="aiRecognitionMode">
+              <option value="off">Off</option>
+              <option value="assist">Assist — recommend + customer confirms</option>
+              <option value="automatic">Automatic — future testing only</option>
+            </select>
+          </label>
+          <label>Minimum confidence<input id="aiConfidenceSetting" class="text-input" type="number" min="0.5" max="0.99" step="0.01" value="0.90"></label>
+          <label class="admin-toggle-row compact-toggle"><span><strong>Require scale reference for measurements</strong><small>Recommended when price depends on physical dimensions.</small></span><input id="aiScaleReferenceSetting" type="checkbox" checked></label>
+          <button id="saveAISettingsBtn" class="primary-btn small">SAVE AI SETTINGS</button>
+          <p id="aiSettingsStatus" class="helper"></p>
+        </article>
+
+        <article class="engine-card">
+          <h3>Ship's Registry</h3>
           <p class="helper">Platform-level identifiers. Change these only when adapting Workshop to another business.</p>
           <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
           <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2" /></label>
@@ -323,7 +353,7 @@
         </article>
 
         <article class="engine-card">
-          <h3>Workflow Controls</h3>
+          <h3>Crew Workflow</h3>
           <p class="helper">Comma-separated production stages used by the reusable order engine.</p>
           <label>Order statuses<textarea id="engineStatusesSetting" rows="4"></textarea></label>
           <button id="saveEngineWorkflowBtn" class="primary-btn small">SAVE WORKFLOW</button>
@@ -331,21 +361,28 @@
         </article>
 
         <article class="engine-card">
-          <h3>Storage & Recovery</h3>
+          <h3>Cargo Hold & Recovery</h3>
           <p class="helper">Diagnostics for the two local order stores and interrupted-order recovery.</p>
-          <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">REFRESH DIAGNOSTICS</button>
-          <button id="engineClearDraftBtn" class="secondary-btn">CLEAR INTERRUPTED DRAFT</button>
-          <button id="engineExportBtn" class="secondary-btn">EXPORT FULL ENGINE BACKUP</button>
+          <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
+          <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
+          <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
           <p id="engineStorageDetail" class="helper"></p>
         </article>
 
         <article class="engine-card danger-card">
-          <h3>Danger Locker</h3>
+          <h3>Powder Keg Locker</h3>
           <p class="helper">These controls affect the engine, not just a single order. They require an extra confirmation.</p>
-          <button id="engineResetSettingsBtn" class="danger-btn">RESET ENGINE SETTINGS</button>
+          <button id="engineResetSettingsBtn" class="danger-btn">RESET ENGINE TO PORT DEFAULTS</button>
           <p class="helper">Orders are preserved. This resets configurable business/engine settings and PINs to defaults.</p>
         </article>
       </div>
+
+      <section class="fleet-analytics">
+        <div class="engine-section-head">
+          <div><div class="engine-kicker">CAPTAIN'S LOG</div><h3>Usage by Company</h3><p class="helper">Local operational statistics from orders stored on this device.</p></div>
+        </div>
+        <div id="fleetStats" class="fleet-stats"></div>
+      </section>
 
       <div class="pirate-footer">☠ If ye don't know what a button does, keep yer hook off it.</div>
     </section>

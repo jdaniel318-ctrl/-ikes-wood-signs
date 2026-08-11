@@ -6,6 +6,30 @@
   const LOCAL_ORDERS_KEY = 'ikesWoodSignsOrdersBackupV15';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
+  const DEFAULT_COMPANIES = [
+    {
+      id:'ikes-wood-signs',
+      name:"Ike's Wood Signs",
+      type:'custom_wood_signs',
+      visibility:'published',
+      status:'active',
+      ai:{mode:'off',minConfidence:0.90,requireScaleReference:true},
+      customization:{maxCharacters:null}
+    },
+    {
+      id:'mugshot-after-dark',
+      name:'Mugshot After Dark',
+      tagline:'Classy mugs. Questionable messages.',
+      type:'custom_mugs',
+      visibility:'engine_only',
+      status:'future',
+      ai:{mode:'assist',minConfidence:0.92,requireScaleReference:false},
+      customization:{maxCharacters:32,softWarningAt:26},
+      pricing:{status:'tbd'}
+    }
+  ];
+  let companies=structuredClone(DEFAULT_COMPANIES);
+
   const DEFAULT_ENGINE_CONFIG = {
     engineName:'Workshop Engine',
     schemaVersion:2
@@ -134,6 +158,63 @@
     }
   }
 
+  async function loadCompanies(){
+    try{
+      const saved=await getSetting('companies');
+      companies=Array.isArray(saved?.value)&&saved.value.length?saved.value:structuredClone(DEFAULT_COMPANIES);
+    }catch(_){companies=structuredClone(DEFAULT_COMPANIES);}
+  }
+  async function saveCompanies(){await setSetting('companies',companies);}
+  function companyById(id){return companies.find(c=>c.id===id);}
+  function renderCompanyFleet(){
+    const box=$('companyFleet'); if(!box)return;
+    box.innerHTML=companies.map(c=>`
+      <article class="company-card ${c.visibility==='engine_only'?'future-company':''}">
+        <div class="company-card-top">
+          <div><span class="company-status">${escapeHtml(c.status)}</span><h4>${escapeHtml(c.name)}</h4>${c.tagline?`<p>${escapeHtml(c.tagline)}</p>`:''}</div>
+          <span class="visibility-pill">${c.visibility==='engine_only'?'ENGINE ONLY':'PUBLISHED'}</span>
+        </div>
+        <div class="company-meta">
+          <span>${escapeHtml(c.type.replaceAll('_',' '))}</span>
+          <span>AI: ${escapeHtml(c.ai?.mode||'off')}</span>
+          ${c.customization?.maxCharacters?`<span>Character limit: ${c.customization.maxCharacters}</span>`:''}
+          ${c.pricing?.status==='tbd'?'<span>Pricing: TBD</span>':''}
+        </div>
+      </article>`).join('');
+    const ai=$('aiCompanySetting');
+    if(ai){
+      const current=ai.value;
+      ai.innerHTML=companies.map(c=>`<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
+      if(current&&companyById(current)) ai.value=current;
+      loadAIForm();
+    }
+  }
+  function loadAIForm(){
+    const id=$('aiCompanySetting')?.value||companies[0]?.id, c=companyById(id);if(!c)return;
+    $('aiRecognitionMode').value=c.ai?.mode||'off';
+    $('aiConfidenceSetting').value=Number(c.ai?.minConfidence||0.90).toFixed(2);
+    $('aiScaleReferenceSetting').checked=c.ai?.requireScaleReference!==false;
+  }
+  async function saveAIForm(){
+    const c=companyById($('aiCompanySetting').value);if(!c)return;
+    c.ai={mode:$('aiRecognitionMode').value,minConfidence:Math.max(.5,Math.min(.99,Number($('aiConfidenceSetting').value)||.9)),requireScaleReference:$('aiScaleReferenceSetting').checked};
+    await saveCompanies();renderCompanyFleet();$('aiSettingsStatus').textContent='AI recognition policy saved for '+c.name+'.';
+  }
+  async function renderFleetStats(){
+    const box=$('fleetStats');if(!box)return;
+    const orders=await getMergedOrders();
+    const stats=companies.map(c=>{
+      const matched=orders.filter(o=>{
+        const n=(o.business?.name||"Ike's Wood Signs").toLowerCase();
+        return n===c.name.toLowerCase() || (c.id==='ikes-wood-signs' && !o.business?.name);
+      });
+      const completed=matched.filter(o=>o.status==='Completed').length;
+      const revenue=matched.reduce((s,o)=>s+(Number(o.price)||0),0);
+      return {c,count:matched.length,completed,revenue};
+    });
+    box.innerHTML=stats.map(({c,count,completed,revenue})=>`<article class="stat-company"><h4>${escapeHtml(c.name)}</h4><div class="stat-row"><span>Orders</span><strong>${count}</strong></div><div class="stat-row"><span>Completed</span><strong>${completed}</strong></div><div class="stat-row"><span>Recorded value</span><strong>$${revenue.toFixed(0)}</strong></div><div class="stat-row"><span>AI mode</span><strong>${escapeHtml(c.ai?.mode||'off')}</strong></div></article>`).join('');
+  }
+
   async function loadEngineConfig(){
     try{
       const saved=await getSetting('engineConfig');
@@ -171,6 +252,7 @@
   }
 
   function populateEngineSettings(){
+    renderCompanyFleet();
     if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
     if($('schemaVersionSetting')) $('schemaVersionSetting').value=Number(engineConfig.schemaVersion||2);
     if($('engineStatusesSetting')) $('engineStatusesSetting').value=(businessConfig.orderStatuses||DEFAULT_BUSINESS_CONFIG.orderStatuses).join(', ');
@@ -181,6 +263,7 @@
     $('enginePanel').classList.remove('hidden');
     populateEngineSettings();
     await refreshEngineDiagnostics();
+    await renderFleetStats();
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
@@ -801,6 +884,9 @@
       window.scrollTo({top:0,left:0,behavior:'instant'});
     });
 
+    $('aiCompanySetting').addEventListener('change',loadAIForm);
+    $('saveAISettingsBtn').addEventListener('click',saveAIForm);
+
     $('saveEngineIdentityBtn').addEventListener('click',async()=>{
       const name=$('engineNameSetting').value.trim()||'Workshop Engine';
       const version=Math.max(2,Math.min(99,Number($('schemaVersionSetting').value)||2));
@@ -836,6 +922,8 @@
       try{ stores.clear(); }catch(_){}
       businessConfig={...DEFAULT_BUSINESS_CONFIG};
       engineConfig={...DEFAULT_ENGINE_CONFIG};
+      companies=structuredClone(DEFAULT_COMPANIES);
+      await saveCompanies();
       state.allowCustomColors=true;
       state.customerConfirmationEmail=false;
       clearDraft();
@@ -900,6 +988,7 @@
     db=await openDb();
     await loadFeatureSettings();
     await loadBusinessConfig();
+    await loadCompanies();
     await loadEngineConfig();
     bindEvents();
     const recovered=recoverDraft();

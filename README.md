@@ -106,3 +106,21 @@ Adds a second, more sensitive administration layer beneath the normal Ike Admin.
 - Light screen transition polish.
 - Modal scroll locking for both admin PIN gates.
 - Keeps camera and pricing logic unchanged for later focused work.
+
+
+## Version 2.2 — BLACK FLAG FLEET
+- Removes Ike's branding from inside the Black Flag Engine Room; the engine now has its own pirate/Black Flag identity.
+- Adds a company registry ("The Fleet"). Published companies may be customer-facing; engine-only companies are hidden from customers.
+- Adds future test company: Mugshot After Dark — "Classy mugs. Questionable messages." It is engine-only, not customer-accessible.
+- Mug test profile uses a 32-character hard limit with a soft warning at 26 characters; pricing remains intentionally TBD.
+- Adds per-company AI Product Recognition policy: Off / Assist / Automatic, minimum confidence, and scale-reference requirement.
+- AI settings remain Engine-admin controlled for now, but are stored per company so they can later be exposed safely to company admins.
+- Adds local usage statistics by company: order count, completed orders, recorded order value, and AI mode.
+- AI architecture intentionally separates recognition from pricing: recognition proposes structured product attributes; company pricing rules determine price.
+
+
+## Version 2.3 — BLACK FLAG COVE
+- Removes visual harshness from the Engine Room with a warmer parchment/teal palette, lighter card shadows, improved spacing, and softer form controls.
+- Pirate/Black Flag theme increased approximately 30% without turning serious engine controls into a novelty UI.
+- Adds Black Flag Cove welcome guidance, stronger nautical labels, anchor/flag details, Captain's Log/Fleet Manifest naming, Cargo Hold diagnostics, Crew Workflow, Ship's Registry, and Powder Keg Locker.
+- Engine remains visually separate from all company branding.
