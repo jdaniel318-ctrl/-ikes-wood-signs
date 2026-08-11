@@ -3,6 +3,9 @@
   const DB_VERSION = 1;
   const STORE_ORDERS = 'orders';
   const STORE_SETTINGS = 'settings';
+  // Paste the Web3Forms access key for "Ike's Wood Signs Orders" below before publishing v1.3.
+  const WEB3FORMS_ACCESS_KEY = 'c97f16ac-2070-46b8-923c-9d7524031bce';
+  const ORDER_EMAIL = 'ikeswoodsigns.orders@yahoo.com';
   const screenOrder = ['welcome','price','photo','orientation','wording','font','fill','preview','customer','review','done'];
 
   const state = {
@@ -18,7 +21,8 @@
     customerName: '',
     customerPhone: '',
     customerEmail: '',
-    currentOrderId: ''
+    currentOrderId: '',
+    currentOrder: null
   };
 
   let db;
@@ -138,17 +142,81 @@
   }
 
   function escapeHtml(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]));}
-  function newOrderId(){const d=new Date();const y=d.getFullYear().toString().slice(-2),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `IKE-${y}${m}${day}-${String(Date.now()).slice(-5)}`;}
+  function newOrderId(){
+    const d=new Date();
+    const y=d.getFullYear().toString().slice(-2);
+    const m=String(d.getMonth()+1).padStart(2,'0');
+    const day=String(d.getDate()).padStart(2,'0');
+    const suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase();
+    return `IKE-${y}${m}${day}-${suffix}`;
+  }
 
   async function saveOrder(){
     const id=newOrderId();
     const order={id,createdAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
-    await put(STORE_ORDERS,order); state.currentOrderId=id; $('doneOrderId').textContent=id; return order;
+    await put(STORE_ORDERS,order); state.currentOrderId=id; state.currentOrder=order; $('doneOrderId').textContent=id; return order;
   }
 
   function resetOrder(){
-    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:''});
+    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null});
     ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;setScreen('welcome');
+  }
+
+  async function submitOrder(order){
+    const status=$('submitStatus');
+    const retry=$('retrySubmitBtn');
+    retry.classList.add('hidden');
+    status.className='submit-status centered sending';
+    status.textContent='Sending your order to Ike…';
+
+    if(!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY.includes('PASTE_WEB3FORMS')){
+      status.className='submit-status centered error-text';
+      status.textContent='Order saved on this iPad, but automatic email is not configured yet.';
+      retry.classList.remove('hidden');
+      return false;
+    }
+
+    const payload={
+      access_key:WEB3FORMS_ACCESS_KEY,
+      subject:`NEW IKE'S WOOD SIGN ORDER — ${order.id}`,
+      from_name:"Ike's Wood Signs Online Orders",
+      order_number:order.id,
+      customer_name:order.customerName,
+      customer_cell:order.customerPhone,
+      customer_email:order.customerEmail,
+      contact_preference:order.contactPreference,
+      exact_wording:order.wording,
+      wood_price:`$${order.price}`,
+      orientation:order.orientation,
+      top_marker:order.topSide,
+      letter_style:order.font,
+      letter_fill:order.fill,
+      order_status:order.status,
+      submitted_at:new Date(order.createdAt).toLocaleString(),
+      message:`Order ${order.id}\n\nCustomer: ${order.customerName}\nCell: ${order.customerPhone}\nEmail: ${order.customerEmail}\nContact by: ${order.contactPreference}\n\nExact wording: ${order.wording}\nWood: $${order.price}\nOrientation: ${order.orientation}\nTop marker: ${order.topSide}\nLetter style: ${order.font}\nLetter fill: ${order.fill}\n\nThe wood photo remains stored with the local iPad order in Version 1.3.`
+    };
+
+    try{
+      const response=await fetch('https://api.web3forms.com/submit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok || result.success===false) throw new Error(result.message||'Submission failed');
+      order.emailSentAt=new Date().toISOString();
+      order.emailRecipient=ORDER_EMAIL;
+      await put(STORE_ORDERS,order);
+      status.className='submit-status centered success';
+      status.textContent=`Order received! A copy was sent automatically to Ike's order inbox.`;
+      return true;
+    }catch(err){
+      console.error('Automatic order email failed',err);
+      status.className='submit-status centered error-text';
+      status.textContent='Your order is safely saved on this iPad, but the automatic email did not send. Please ask Ike for help before leaving.';
+      retry.classList.remove('hidden');
+      return false;
+    }
   }
 
   function emailBody(order){
@@ -157,7 +225,7 @@
 
   async function prepareEmail(order){
     const setting=await getSetting('adminEmails');
-    const recipients=setting?.value?.trim()||'';
+    const recipients=setting?.value?.trim()||ORDER_EMAIL;
     const subject=encodeURIComponent(`Ike's Wood Signs ${order.id} - ${order.wording}`);
     const body=encodeURIComponent(emailBody(order));
     location.href=`mailto:${encodeURIComponent(recipients).replace(/%2C/g,',')}?subject=${subject}&body=${body}`;
@@ -307,9 +375,21 @@
     });
     $('retakeBtn').addEventListener('click',()=>{state.photoData='';updateUi();startCamera();});
     $('reviewBtn').addEventListener('click',()=>{if(validateCustomer())setScreen('review');});
-    $('approveBtn').addEventListener('click',async()=>{if(!$('approvalCheck').checked){$('approvalError').textContent='Please check the approval box first.';return;}$('approvalError').textContent='';await saveOrder();setScreen('done');});
+    $('approveBtn').addEventListener('click',async()=>{
+      if(!$('approvalCheck').checked){$('approvalError').textContent='Please check the approval box first.';return;}
+      $('approvalError').textContent='';
+      const btn=$('approveBtn');
+      btn.disabled=true;btn.textContent='PLACING YOUR ORDER…';
+      try{
+        const order=await saveOrder();
+        setScreen('done');
+        await submitOrder(order);
+      }finally{
+        btn.disabled=false;btn.textContent='PLACE MY ORDER →';
+      }
+    });
     $('newOrderBtn').addEventListener('click',resetOrder);
-    $('emailOrderBtn').addEventListener('click',async()=>{const orders=await getAll(STORE_ORDERS);const o=orders.find(x=>x.id===state.currentOrderId);if(o)prepareEmail(o);});
+    $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
     $('adminBtn').addEventListener('click',async()=>{$('customerApp').classList.add('hidden');$('adminPanel').classList.remove('hidden');const s=await getSetting('adminEmails');$('adminEmails').value=s?.value||'';await renderAdmin();});
     $('closeAdminBtn').addEventListener('click',()=>{$('adminPanel').classList.add('hidden');$('customerApp').classList.remove('hidden');});
     $('settingsBtn').addEventListener('click',()=>$('adminSettings').classList.toggle('hidden'));

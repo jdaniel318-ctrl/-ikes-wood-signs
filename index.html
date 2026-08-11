@@ -13,12 +13,12 @@
 <body>
   <div id="app" class="app-shell">
     <header class="brand-header">
-      <img src="assets/ike_logo.jpg" alt="Ike's Wood Signs logo" class="brand-logo" />
-      <div class="brand-copy">
+      <div class="brand-copy illustrated-brand">
         <div class="brand-title">IKE'S WOOD SIGNS</div>
         <div class="brand-subtitle">Self-Serve Sign Ordering</div>
         <div class="brand-kicker">Pick your wood • Design • Preview • Order</div>
       </div>
+      <img src="assets/ike_character.jpg" alt="Ike holding a wood sign blank" class="header-ike" />
       <button id="adminBtn" class="icon-btn" aria-label="Open admin area">⚙︎</button>
     </header>
     <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
@@ -29,9 +29,10 @@
           <div class="welcome-copy">
             <div class="welcome-wordmark">Ike's Wood Signs</div>
             <div class="welcome-subtitle">Self-Serve Sign Ordering</div>
-            <p>Pick the piece of wood you love. We'll guide you through the rest, one easy step at a time.</p>
+            <p>Pick the piece of wood you love. Ike will guide you through the rest.</p>
+            <div class="wood-ribbon">YOUR WOOD • YOUR WORDS • YOUR SIGN</div>
           </div>
-          <img src="assets/ike_character.jpg" alt="Ike holding a wood sign blank" class="ike-character" />
+          <img src="assets/ike_character.jpg" alt="Cartoon Ike holding a wood sign blank" class="ike-character" />
         </div>
         <div class="brand-actions">
           <div class="brand-action"><span class="action-icon blue">✎</span><div><strong>Design Your Sign</strong><small>Type it exactly how you want it.</small></div></div>
@@ -165,21 +166,30 @@
         <div class="preview-card review-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
         <div class="summary-box" id="orderSummary"></div>
         <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I approve the wording, spelling, uppercase/lowercase letters, orientation, letter style and fill exactly as shown.</span></label>
-        <button id="approveBtn" class="primary-btn">APPROVE MY SIGN →</button>
+        <button id="approveBtn" class="primary-btn">PLACE MY ORDER →</button>
         <p id="approvalError" class="error-text" aria-live="polite"></p>
       </section>
 
-      <section class="screen" data-screen="done">
-        <div class="done-mark">✓</div>
-        <h2 class="centered">Your Order Is Saved</h2>
-        <div class="summary-box centered"><div class="helper">Order Number</div><div id="doneOrderId" class="order-id"></div></div>
-        <p class="centered">Ike now has the order stored on this iPad. Use the button below to prepare the order email for the configured admin recipients.</p>
-        <button id="emailOrderBtn" class="primary-btn">PREPARE ADMIN EMAIL</button>
+      <section class="screen celebration-screen" data-screen="done">
+        <div class="celebration-burst">
+          <img src="assets/ike_character.jpg" alt="Cartoon Ike" class="celebration-ike" />
+          <div>
+            <div class="celebration-kicker">THANK YOU!</div>
+            <h2>Your Sign Is In Ike's Hands!</h2>
+            <p>Your order was received. Ike will contact you when your handmade sign is ready for pickup.</p>
+          </div>
+        </div>
+        <div class="order-ticket">
+          <span>YOUR ORDER NUMBER</span>
+          <div id="doneOrderId" class="order-id"></div>
+          <small>Keep this number for your records.</small>
+        </div>
+        <p id="submitStatus" class="submit-status centered" aria-live="polite"></p>
+        <button id="retrySubmitBtn" class="primary-btn hidden">TRY SENDING AGAIN</button>
         <button id="newOrderBtn" class="secondary-btn">START ANOTHER ORDER</button>
-        <p class="helper centered">Version 1 stores orders locally on this device. Sending email requires a final tap in the iPad's mail app.</p>
       </section>
 
-      <div class="mini-brand"><img src="assets/ike_character.jpg" alt="" /><div><strong>Ike's Wood Signs</strong><span>Self-Serve Sign Ordering</span></div></div>
+      <div class="mini-brand"><img src="assets/ike_character.jpg" alt="Cartoon Ike" /><div><strong>Ike's Wood Signs</strong><span>Self-Serve Sign Ordering</span></div></div>
       <div class="nav-row"><button id="backBtn" class="text-btn">← Back</button><span id="stepLabel" class="helper"></span></div>
     </main>
 
