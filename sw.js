@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-8-4-controlled-update';
+const CACHE='workshop-engine-v2-8-4-1-html-repair';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{

@@ -259,3 +259,10 @@ Built directly from verified v2.8.3.
 - Customer confirmation email control is removed from Project Admin.
 - Black Flag controls customer confirmation email separately for each project under Notifications.
 - No Captain's Log, Protected Controls restructuring, accounting, customer-database, or payment changes are included in this version.
+
+
+## v2.8.4.1 — HTML REPAIR
+- Fixes one malformed closing `div` introduced in v2.8.4's Project Admin header edit.
+- The extra closing tag could prematurely close the application container, leaving Black Flag blank after successful PIN entry.
+- No PIN/authentication behavior changed from the working v2.8.3 baseline.
+- No additional features were added.
