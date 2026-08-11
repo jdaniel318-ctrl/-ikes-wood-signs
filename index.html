@@ -25,7 +25,7 @@
 
       <div class="bf-entry-panel">
         <label for="blackFlagEntryPin">ENGINE PIN</label>
-        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" / autocomplete="new-password" autocapitalize="off" spellcheck="false" value="">
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
 <button id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">CLOSE / RETURN TO ORDER</button>
@@ -253,7 +253,7 @@
         <div class="pin-ike-wrap"><img src="assets/ike_character.jpg" alt="Cartoon Ike" /></div>
         <h2 id="pinGateTitle">Admin Access</h2>
         <p>Enter Ike's admin PIN to view saved orders and settings.</p>
-        <input id="adminPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <input id="adminPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" / autocomplete="new-password" autocapitalize="off" spellcheck="false" value="">
         <p id="pinGateError" class="error-text centered" aria-live="polite"></p><p id="adminLockTimer" class="pin-lock-timer hidden"></p>
         <button id="unlockAdminBtn" class="primary-btn">UNLOCK ADMIN</button>
         <button id="cancelAdminPinBtn" class="secondary-btn">CLOSE / RETURN TO ORDER</button>
@@ -261,14 +261,14 @@
     </div>
 
     <section id="adminPanel" class="project-admin-page hidden">
-      <div class="project-admin-topbar">
-        <div>
-          <div class="project-admin-kicker">PROTECTED PROJECT SETTINGS</div>
-          <h2>Project Settings</h2>
+      <div class="project-admin-brandbar">
+        <div class="project-admin-brand-copy">
+          <div id="adminBrandTitle" class="project-admin-brand-title">PROJECT</div>
+          <div id="adminBrandSubtitle" class="project-admin-brand-subtitle">PROJECT ADMIN</div>
         </div>
-        <button id="closeAdminBtn" class="admin-return-btn">← RETURN TO ORDERING</button>
+        <button id="closeAdminBtn" class="admin-return-btn">← BACK TO ORDERING</button>
       </div>
-      <div class="admin-timeout-note">For customer privacy, this page automatically closes after 15 minutes with no activity.</div>
+      <div class="admin-timeout-note">Automatically returns to ordering after 15 minutes of inactivity.</div>For customer privacy, this page automatically closes after 15 minutes with no activity.</div>
 <div id="adminSettings" class="settings-box project-settings-content">
         <h3>Project Options</h3>
         <div class="admin-toggle-list">
@@ -276,10 +276,7 @@
             <span><strong>Allow Custom Colors</strong><small>When off, customers see only Black, White, and CNC Carved / No Paint Fill.</small></span>
             <input id="allowCustomColorsToggle" type="checkbox" />
           </label>
-          <label class="admin-toggle-row">
-            <span><strong>Customer Confirmation Email</strong><small>When on, the customer's email is supplied to Web3Forms for its Autoresponder. Web3Forms Pro + Autoresponder must also be enabled in the Web3Forms dashboard.</small></span>
-            <input id="customerEmailToggle" type="checkbox" />
-          </label>
+          
         </div>
         <div class="admin-divider"></div>
         <h3>Business Configuration</h3>
@@ -301,6 +298,13 @@
         <button id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
         <p class="helper">Default PIN for Version 1.5 is 4353 until changed here.</p>
       </div>
+      <section class="admin-order-overview">
+        <div class="admin-order-overview-head">
+          <div><h3>Orders</h3><p class="helper">Current project orders</p></div>
+          <button id="openFullOrdersBtn" class="secondary-btn small">OPEN FULL ORDERS</button>
+        </div>
+        <div id="adminOrderOverviewList" class="order-list"></div>
+      </section>
       <div id="orderList" class="order-list hidden" aria-hidden="true"></div>
     </section>
 
@@ -335,7 +339,7 @@
         <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
         <p>Only captains, code-wranglers, and suspiciously competent pirates beyond this point.</p>
         <label for="enginePinInput">Enter Captain's Code</label>
-        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" / autocomplete="new-password" autocapitalize="off" spellcheck="false" value="">
         <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
         <button id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
         <button id="cancelEngineBtn" class="secondary-btn">CLOSE / RETURN TO ORDER</button>
@@ -405,15 +409,27 @@
           <button data-project-tab="payments">Payments</button>
 <button data-project-tab="permissions">Permissions</button>
 <button data-project-tab="customers">Customers</button>
+          <button data-project-tab="notifications">Notifications</button>
         </nav>
         <div id="projectTabContent" class="project-tab-content"></div>
       </section>
 
+      <section class="captains-log-dashboard">
+        <div class="captains-log-head">
+          <div><div class="engine-kicker">CAPTAIN'S LOG</div><h3>Project Analytics</h3></div>
+          <div class="captains-log-range">LOCAL DATA</div>
+        </div>
+        <div id="captainsLogKPIs" class="captains-log-kpis"></div>
+        <div class="captains-log-charts">
+          <article class="captains-chart-card"><div class="chart-title-row"><h4>Orders by Project</h4><span>Volume</span></div><canvas id="ordersByProjectChart" width="600" height="230"></canvas></article>
+          <article class="captains-chart-card"><div class="chart-title-row"><h4>Recorded Revenue</h4><span>By Project</span></div><canvas id="revenueByProjectChart" width="600" height="230"></canvas></article>
+        </div>
+      </section>
       <div class="engine-section-head">
-        <div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3><p class="helper">Shared engine controls only. Project-specific controls live inside each project.</p></div>
+        <div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3><p class="helper"></p></div>
       </div>
 <div class="engine-section-head">
-        <div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3><p class="helper">Company profiles live in the engine. Only published companies are exposed to customers.</p></div>
+        <div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3><p class="helper"></p></div>
       </div>
       <div id="companyFleet" class="company-fleet"></div>
 
@@ -435,14 +451,7 @@
           <p id="aiSettingsStatus" class="helper"></p>
         </article>
 
-        <article class="engine-card">
-          <h3>Platform Identity</h3>
-          <p class="helper">Platform-level identifiers. Change these only when adapting Workshop to another business.</p>
-          <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
-          <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2" /></label>
-          <button id="saveEngineIdentityBtn" class="primary-btn small">SAVE ENGINE IDENTITY</button>
-          <p id="engineIdentityStatus" class="helper"></p>
-        </article>
+        
 
         <article class="engine-card legacy-global-project-control">
           <h3>Default Workflow</h3>
@@ -452,24 +461,45 @@
           <p id="engineWorkflowStatus" class="helper"></p>
         </article>
 
-        <article class="engine-card">
-          <h3>Storage & Recovery</h3>
-          <p class="helper">Diagnostics for the two local order stores and interrupted-order recovery.</p>
-          <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
-          <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
-          <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
-          <p id="engineStorageDetail" class="helper"></p>
-        </article>
+        
 
-        <article class="engine-card danger-card">
-          <h3>Protected Controls</h3>
-          <p class="helper">These controls affect the engine, not just a single order. They require an extra confirmation.</p>
-          <button id="engineResetSettingsBtn" class="danger-btn">RESET ENGINE TO PORT DEFAULTS</button>
-          <p class="helper">Orders are preserved. This resets configurable business/engine settings and PINs to defaults.</p>
-        </article>
+        
       </div>
 
-      <section class="fleet-analytics">
+      <section class="protected-controls-vault">
+        <div class="protected-vault-head"><div><div class="engine-kicker">PROTECTED CONTROLS</div><h3>Engine Vault</h3></div><span class="vault-lock-mark">⚓</span></div>
+        <details class="vault-section">
+          <summary>Platform Identity</summary>
+          <div class="vault-body">
+            <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" autocomplete="off"></label>
+            <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2"></label>
+            <button id="saveEngineIdentityBtn" class="primary-btn small">SAVE ENGINE IDENTITY</button><p id="engineIdentityStatus" class="helper"></p>
+          </div>
+        </details>
+        <details class="vault-section">
+          <summary>Storage & Recovery</summary>
+          <div class="vault-body">
+            <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
+            <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
+            <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
+            <p id="engineStorageDetail" class="helper"></p>
+          </div>
+        </details>
+        <details class="vault-section danger-vault">
+          <summary>Reset Engine</summary>
+          <div class="vault-body"><button id="engineResetSettingsBtn" class="danger-btn">RESET ENGINE TO PORT DEFAULTS</button></div>
+        </details>
+      </section>
+      <div id="resetConfirmGate" class="reset-confirm-gate hidden" role="dialog" aria-modal="true">
+        <div class="reset-confirm-card">
+          <div class="engine-kicker">PROTECTED RESET</div><h2>Confirm Engine Reset</h2>
+          <p>Re-enter the Engine PIN, then confirm the reset.</p>
+          <input id="resetEnginePinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password" autocapitalize="off" spellcheck="false" value="">
+          <p id="resetEngineError" class="error-text"></p>
+          <button id="confirmEngineResetBtn" class="danger-btn">CONFIRM RESET</button>
+          <button id="cancelEngineResetBtn" class="secondary-btn">CANCEL</button>
+        </div>
+      </div><section class="fleet-analytics">
         <div class="engine-section-head">
           <div><div class="engine-kicker">CAPTAIN'S LOG</div><h3>Usage by Company</h3><p class="helper">Local operational statistics from orders stored on this device.</p></div>
         </div>
