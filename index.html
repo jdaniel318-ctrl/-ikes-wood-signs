@@ -260,19 +260,17 @@
       </div>
     </div>
 
-    <section id="adminPanel" class="admin-panel hidden">
-      <div class="admin-head"><div><h2>Project Admin</h2><p class="helper">Project settings</p></div><button id="closeAdminBtn" class="secondary-btn small">BACK TO ORDERING</button></div>
-      <div class="admin-actions">
-        <button id="exportBtn" class="secondary-btn small">EXPORT BACKUP</button>
-        <label class="secondary-btn small file-btn" for="restoreInput">RESTORE BACKUP</label>
-        <input id="restoreInput" type="file" accept="application/json" hidden />
-        <button id="settingsBtn" class="secondary-btn small">PROJECT SETTINGS</button>
-<button id="projectOrdersBtn" class="secondary-btn small">ORDERS</button>
-<button id="projectLedgerBtn" class="secondary-btn small">LEDGER</button>
-        <button id="engineRoomBtn" class="engine-room-btn small">☠ ENTER ENGINE ROOM</button>
+    <section id="adminPanel" class="project-admin-page hidden">
+      <div class="project-admin-topbar">
+        <div>
+          <div class="project-admin-kicker">PROTECTED PROJECT SETTINGS</div>
+          <h2>Project Settings</h2>
+        </div>
+        <button id="closeAdminBtn" class="admin-return-btn">← RETURN TO ORDERING</button>
       </div>
-      <div id="adminSettings" class="settings-box hidden">
-        <h3>Admin Settings</h3>
+      <div class="admin-timeout-note">For customer privacy, this page automatically closes after 15 minutes with no activity.</div>
+<div id="adminSettings" class="settings-box project-settings-content">
+        <h3>Project Options</h3>
         <div class="admin-toggle-list">
           <label class="admin-toggle-row">
             <span><strong>Allow Custom Colors</strong><small>When off, customers see only Black, White, and CNC Carved / No Paint Fill.</small></span>

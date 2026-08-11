@@ -238,3 +238,12 @@ Focused repair build for Engine entry.
 - No customer header, progress bar, order screen, customer content, or Engine-return control is visible while any protected page is open.
 - Closing Settings, Orders, or Ledger clears the protected state and returns directly to the unprotected customer ordering screen.
 - Orders and Ledger shortcuts only appear when Black Flag grants those permissions.
+
+
+## Version 2.8.3 — PROJECT ADMIN PRIVACY
+- Project Settings now opens directly as a standalone full-screen protected settings page.
+- Removed the backup/restore, Project Settings, Orders, Ledger, and Engine Room action strip from the Project Settings page.
+- The green Return to Ordering control is intentionally large and visually dominant.
+- Project Settings automatically locks and returns to ordering after 15 minutes of inactivity.
+- Activity such as tapping, typing, changing a setting, scrolling, or touching the screen resets the 15-minute timer.
+- No customer-ordering or Black Flag Engine UI is allowed to render while Project Settings is open.

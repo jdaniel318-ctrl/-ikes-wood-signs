@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-8-2-admin-isolation';
+const CACHE='workshop-engine-v2-8-3-admin-privacy';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{

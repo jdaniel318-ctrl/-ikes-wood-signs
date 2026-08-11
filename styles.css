@@ -1087,3 +1087,103 @@ body.project-ledger-mode .app-shell{max-width:none;min-height:100vh;border:0;bac
   .project-admin-topbar,.project-orders-topbar,.project-ledger-topbar{margin:0 -16px 18px;padding:15px 16px;align-items:flex-start;flex-direction:column}
   .admin-return-btn,.orders-return-btn,.ledger-return-btn{width:100%}
 }
+
+/* v2.8.3 — PROJECT ADMIN PRIVACY */
+.project-admin-page{
+  min-height:100vh!important;
+  padding:0 34px 50px!important;
+  background:#f3f5f2!important;
+}
+.project-admin-topbar{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  margin:0 -34px 22px!important;
+  padding:20px 34px!important;
+  background:#122f39!important;
+  border-bottom:5px solid #d6b85f;
+  box-shadow:0 8px 24px #0002!important;
+}
+.project-admin-kicker{
+  color:#d7bd72!important;
+  letter-spacing:1.8px!important;
+  font-size:10px!important;
+  font-weight:1000!important;
+}
+.project-admin-topbar h2{
+  margin:4px 0 0!important;
+  color:#fff!important;
+  font-size:30px!important;
+  font-family:Georgia,serif!important;
+}
+.admin-return-btn{
+  min-width:270px!important;
+  min-height:58px!important;
+  padding:12px 22px!important;
+  border:3px solid #fff!important;
+  border-radius:999px!important;
+  background:#2f8a48!important;
+  color:#fff!important;
+  font-size:15px!important;
+  font-weight:1000!important;
+  letter-spacing:.3px!important;
+  box-shadow:0 5px 0 #1d5e31,0 8px 20px #0002!important;
+}
+.admin-return-btn:active{transform:translateY(2px)}
+.admin-timeout-note{
+  max-width:920px;
+  margin:0 auto 16px;
+  padding:10px 14px;
+  border-radius:14px;
+  background:#e8ece8;
+  color:#59635e;
+  font-size:12px;
+  text-align:center;
+}
+.project-settings-content{
+  max-width:920px;
+  margin:0 auto;
+  padding:22px!important;
+  border-radius:22px!important;
+  background:#fff!important;
+  border:1px solid #dfe3dd!important;
+  box-shadow:0 9px 24px #18333a10!important;
+}
+.project-settings-content>h3:first-child{
+  margin-top:0;
+  font:900 22px Georgia,serif;
+  color:#173742;
+}
+
+/* Nothing customer-facing or Engine-facing can appear inside Project Settings. */
+body.project-admin-mode .brand-header,
+body.project-admin-mode .progress-track,
+body.project-admin-mode #customerApp,
+body.project-admin-mode #returnToEngineBtn,
+body.project-admin-mode #projectOrdersPanel,
+body.project-admin-mode #projectLedgerPanel,
+body.project-admin-mode #enginePanel,
+body.project-admin-mode #blackFlagEntryGate,
+body.project-admin-mode #enginePinGate,
+body.project-admin-mode .admin-actions,
+body.project-admin-mode #orderList{
+  display:none!important;
+}
+body.project-admin-mode #adminPanel{
+  display:block!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:150!important;
+  overflow:auto!important;
+}
+body.project-admin-mode .app-shell{
+  max-width:none!important;
+  min-height:100vh!important;
+  background:#f3f5f2!important;
+  border:0!important;
+}
+@media(max-width:720px){
+  .project-admin-page{padding:0 16px 32px!important}
+  .project-admin-topbar{margin:0 -16px 18px!important;padding:16px!important;flex-direction:column;align-items:stretch}
+  .admin-return-btn{width:100%!important;min-width:0!important}
+  .project-settings-content{padding:16px!important}
+}

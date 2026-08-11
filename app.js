@@ -1289,7 +1289,33 @@ customerHistory:{enabled:false},products:[]});
   }
 
 
+
+  const PROJECT_ADMIN_IDLE_MS=15*60*1000;
+  let projectAdminIdleTimer=null;
+  let projectAdminActivityBound=false;
+  function stopProjectAdminIdleTimer(){
+    if(projectAdminIdleTimer){clearTimeout(projectAdminIdleTimer);projectAdminIdleTimer=null;}
+  }
+  function resetProjectAdminIdleTimer(){
+    if(!document.body.classList.contains('project-admin-mode')) return;
+    stopProjectAdminIdleTimer();
+    projectAdminIdleTimer=setTimeout(()=>{
+      if(document.body.classList.contains('project-admin-mode')) returnToCustomerAndLockProtected();
+    },PROJECT_ADMIN_IDLE_MS);
+  }
+  function startProjectAdminIdleTimer(){
+    resetProjectAdminIdleTimer();
+    if(projectAdminActivityBound) return;
+    projectAdminActivityBound=true;
+    ['pointerdown','keydown','input','change','touchstart','scroll'].forEach(type=>{
+      document.addEventListener(type,()=>{
+        if(document.body.classList.contains('project-admin-mode')) resetProjectAdminIdleTimer();
+      },{passive:true});
+    });
+  }
+
   function returnToCustomerAndLockProtected(){
+    stopProjectAdminIdleTimer();
     $('adminPanel')?.classList.add('hidden');
     $('projectOrdersPanel')?.classList.add('hidden');
     $('projectLedgerPanel')?.classList.add('hidden');
@@ -1330,8 +1356,10 @@ customerHistory:{enabled:false},products:[]});
 
     if(kind==='settings'){
       $('adminPanel')?.classList.remove('hidden');
+      $('adminSettings')?.classList.remove('hidden');
       document.body.classList.add('project-admin-mode');
       populateBusinessSettings();
+      startProjectAdminIdleTimer();
     }else if(kind==='orders'){
       $('projectOrdersPanel')?.classList.remove('hidden');
       document.body.classList.add('project-orders-mode');
@@ -1412,7 +1440,7 @@ customerHistory:{enabled:false},products:[]});
     $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
     $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
 
-    $('engineRoomBtn').addEventListener('click',()=>{
+    if($('engineRoomBtn')) $('engineRoomBtn').addEventListener('click',()=>{
       document.body.classList.add('modal-open');
       $('enginePinInput').value='';
       $('enginePinError').textContent='';
@@ -1550,16 +1578,11 @@ customerHistory:{enabled:false},products:[]});
     $('projectLedgerLaunchBtn')?.addEventListener('click',()=>openProtectedProjectPage('ledger'));
     $('closeProjectOrdersBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
     $('closeProjectLedgerBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
-    $('settingsBtn').addEventListener('click',()=>{
-      $('adminSettings').classList.toggle('hidden');
-      if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').checked=state.allowCustomColors;
-      if($('customerEmailToggle')) $('customerEmailToggle').checked=state.customerConfirmationEmail;
-    });
     if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').addEventListener('change',saveFeatureSettings);
     if($('customerEmailToggle')) $('customerEmailToggle').addEventListener('change',saveFeatureSettings);
     if($('saveBusinessSettingsBtn')) $('saveBusinessSettingsBtn').addEventListener('click',saveBusinessConfigFromAdmin);
-    $('exportBtn').addEventListener('click',exportBackup);
-    $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
+    if($('exportBtn')) $('exportBtn').addEventListener('click',exportBackup);
+    if($('restoreInput')) $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
   }
 
   window.addEventListener('pagehide',stopCamera);
