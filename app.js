@@ -3,6 +3,7 @@
   const DB_VERSION = 1;
   const STORE_ORDERS = 'orders';
   const STORE_SETTINGS = 'settings';
+  const LOCAL_ORDERS_KEY = 'ikesWoodSignsOrdersBackupV14';
   // Paste the Web3Forms access key for "Ike's Wood Signs Orders" below before publishing v1.3.
   const WEB3FORMS_ACCESS_KEY = 'c97f16ac-2070-46b8-923c-9d7524031bce';
   const ORDER_EMAIL = 'ikeswoodsigns.orders@yahoo.com';
@@ -49,7 +50,49 @@
 
   function tx(store,mode='readonly'){ return db.transaction(store,mode).objectStore(store); }
   function reqToPromise(req){ return new Promise((resolve,reject)=>{req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);}); }
-  async function put(store,value){ return reqToPromise(tx(store,'readwrite').put(value)); }
+
+  function readLocalOrders(){
+    try{
+      const raw=localStorage.getItem(LOCAL_ORDERS_KEY);
+      const parsed=raw?JSON.parse(raw):[];
+      return Array.isArray(parsed)?parsed:[];
+    }catch(err){
+      console.warn('Local order backup could not be read',err);
+      return [];
+    }
+  }
+
+  function writeLocalOrders(orders){
+    try{
+      localStorage.setItem(LOCAL_ORDERS_KEY,JSON.stringify(orders));
+      return true;
+    }catch(err){
+      console.warn('Local order backup could not be written',err);
+      return false;
+    }
+  }
+
+  function backupOrderLocally(order){
+    const orders=readLocalOrders();
+    const i=orders.findIndex(o=>o.id===order.id);
+    if(i>=0) orders[i]=order;
+    else orders.push(order);
+    return writeLocalOrders(orders);
+  }
+
+  async function getMergedOrders(){
+    let indexed=[];
+    try{ indexed=await getAll(STORE_ORDERS); }catch(err){ console.warn('IndexedDB orders unavailable',err); }
+    const local=readLocalOrders();
+    const map=new Map();
+    [...local,...indexed].forEach(o=>{ if(o && o.id) map.set(o.id,o); });
+    return [...map.values()];
+  }
+  async function put(store,value){
+    const result=await reqToPromise(tx(store,'readwrite').put(value));
+    if(store===STORE_ORDERS) backupOrderLocally(value);
+    return result;
+  }
   async function getAll(store){ return reqToPromise(tx(store).getAll()); }
   async function getSetting(key){ return reqToPromise(tx(STORE_SETTINGS).get(key)); }
 
@@ -154,7 +197,16 @@
   async function saveOrder(){
     const id=newOrderId();
     const order={id,createdAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
-    await put(STORE_ORDERS,order); state.currentOrderId=id; state.currentOrder=order; $('doneOrderId').textContent=id; return order;
+    backupOrderLocally(order);
+    try{
+      await put(STORE_ORDERS,order);
+    }catch(err){
+      console.warn('IndexedDB save failed; local backup retained',err);
+    }
+    state.currentOrderId=id;
+    state.currentOrder=order;
+    $('doneOrderId').textContent=id;
+    return order;
   }
 
   function resetOrder(){
@@ -202,18 +254,24 @@
         headers:{'Content-Type':'application/json','Accept':'application/json'},
         body:JSON.stringify(payload)
       });
-      const result=await response.json().catch(()=>({}));
-      if(!response.ok || result.success===false) throw new Error(result.message||'Submission failed');
+      const result=await response.json().catch(()=>({success:false,message:'Invalid response from Web3Forms'}));
+      console.log('Web3Forms response',response.status,result);
+      if(!response.ok || result.success!==true) throw new Error(result.message||`Submission failed (${response.status})`);
       order.emailSentAt=new Date().toISOString();
       order.emailRecipient=ORDER_EMAIL;
-      await put(STORE_ORDERS,order);
+      backupOrderLocally(order);
+      try{ await put(STORE_ORDERS,order); }catch(err){ console.warn('Email status IndexedDB update failed',err); }
       status.className='submit-status centered success';
       status.textContent=`Order received! A copy was sent automatically to Ike's order inbox.`;
       return true;
     }catch(err){
       console.error('Automatic order email failed',err);
+      order.emailError=String(err?.message||err||'Unknown error');
+      order.emailFailedAt=new Date().toISOString();
+      backupOrderLocally(order);
+      try{ await put(STORE_ORDERS,order); }catch(dbErr){ console.warn('Failed email state IndexedDB update failed',dbErr); }
       status.className='submit-status centered error-text';
-      status.textContent='Your order is safely saved on this iPad, but the automatic email did not send. Please ask Ike for help before leaving.';
+      status.textContent='Your order is saved on this iPad, but the automatic email did not send. Please show this screen to Ike before leaving.';
       retry.classList.remove('hidden');
       return false;
     }
@@ -232,16 +290,16 @@
   }
 
   async function renderAdmin(){
-    const orders=(await getAll(STORE_ORDERS)).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    const orders=(await getMergedOrders()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
     const list=$('orderList');
     if(!orders.length){list.innerHTML='<div class="empty">No saved orders yet.</div>';return;}
     list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div>${o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-actions"><button class="secondary-btn small" data-email>PREPARE EMAIL</button></div></article>`).join('');
-    list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async e=>{const card=e.target.closest('[data-id]');const orders=await getAll(STORE_ORDERS);const o=orders.find(x=>x.id===card.dataset.id);if(o){o.status=e.target.value;await put(STORE_ORDERS,o);}}));
-    list.querySelectorAll('[data-email]').forEach(btn=>btn.addEventListener('click',async e=>{const id=e.target.closest('[data-id]').dataset.id;const orders=await getAll(STORE_ORDERS);const o=orders.find(x=>x.id===id);if(o)prepareEmail(o);}));
+    list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async e=>{const card=e.target.closest('[data-id]');const orders=await getMergedOrders();const o=orders.find(x=>x.id===card.dataset.id);if(o){o.status=e.target.value;await put(STORE_ORDERS,o);}}));
+    list.querySelectorAll('[data-email]').forEach(btn=>btn.addEventListener('click',async e=>{const id=e.target.closest('[data-id]').dataset.id;const orders=await getMergedOrders();const o=orders.find(x=>x.id===id);if(o)prepareEmail(o);}));
   }
 
   async function exportBackup(){
-    const data={version:1,exportedAt:new Date().toISOString(),orders:await getAll(STORE_ORDERS),settings:await getAll(STORE_SETTINGS)};
+    const data={version:1,exportedAt:new Date().toISOString(),orders:await getMergedOrders(),settings:await getAll(STORE_SETTINGS)};
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ikes-wood-signs-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
 

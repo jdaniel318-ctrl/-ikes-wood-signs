@@ -26,3 +26,12 @@ Orders continue to be stored in IndexedDB on the device. Admin export/restore an
 Open `app.js` and replace:
 `PASTE_WEB3FORMS_ACCESS_KEY_HERE`
 with the Access Key for the verified Web3Forms form whose recipient is `ikeswoodsigns.orders@yahoo.com`.
+
+
+## Version 1.4
+- Compact header to keep branding present without dominating the customer experience.
+- Reliability pass: every order is mirrored to `localStorage` as well as IndexedDB.
+- Admin Orders merges both storage locations so locally saved orders remain visible even if one storage mechanism fails.
+- Web3Forms failures are saved onto the order record for troubleshooting; customer sees a clear failure state instead of a false success.
+- Existing unique `IKE-...` order number remains on the customer confirmation and automatic order email.
+- Price selection now explains that price is based on the length group posted in the trailer. Exact length brackets are intentionally not invented yet; the existing $45 / $55 / $65 / $90 / $135 posted price tiers remain in use until Ike's exact length ranges are confirmed.

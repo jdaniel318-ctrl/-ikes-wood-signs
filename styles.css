@@ -72,3 +72,74 @@ body{background:#f7f1e5}
   .celebration-ike{width:110px;height:175px}
   .celebration-burst h2{font-size:27px}
 }
+
+
+/* Version 1.4 — compact header + reliability pass */
+.brand-header{
+  min-height:58px;
+  padding:6px 12px;
+  gap:8px;
+}
+.header-ike{
+  width:42px;
+  height:50px;
+  border-radius:16px;
+  object-position:35% top;
+}
+.brand-title{
+  font-size:19px;
+  line-height:1;
+  text-shadow:none;
+}
+.brand-subtitle{
+  font-size:12px;
+  line-height:1.1;
+}
+.brand-kicker{
+  margin-top:2px;
+  font-size:10px;
+  line-height:1.1;
+}
+.icon-btn{
+  width:38px;
+  height:38px;
+  font-size:19px;
+  border-radius:14px;
+}
+.progress-track{height:5px}
+.main-panel{padding-top:18px}
+@media(max-width:620px){
+  .brand-header{min-height:54px;padding:5px 10px}
+  .header-ike{width:38px;height:46px}
+  .brand-title{font-size:17px}
+  .brand-subtitle{font-size:11px}
+  .brand-kicker{font-size:9px}
+  .icon-btn{width:34px;height:34px;font-size:17px}
+}
+
+.trust-note{
+  margin:4px 0 16px;
+  text-align:center;
+  color:#315f39;
+  font-weight:800;
+  font-size:14px;
+}
+#priceChoices .choice-btn{
+  position:relative;
+  min-height:78px;
+  font-size:24px;
+  background:#fff7d9;
+  box-shadow:0 5px 14px #815f1c12;
+}
+#priceChoices .choice-btn:before{
+  content:"POSTED PRICE";
+  display:block;
+  margin-bottom:4px;
+  font-size:10px;
+  letter-spacing:1px;
+  color:#6c5b27;
+}
+#priceChoices .choice-btn.selected{
+  background:#fff1a8;
+  box-shadow:inset 0 0 0 3px var(--blue),0 5px 14px #815f1c12;
+}
