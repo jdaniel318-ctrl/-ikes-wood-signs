@@ -12,9 +12,15 @@
       name:"Ike's Wood Signs",
       type:'custom_wood_signs',
       visibility:'published',
+      projectTheme:'ikes',
       status:'active',
+      orderPrefix:'IKE',
       ai:{mode:'off',minConfidence:0.90,requireScaleReference:true},
-      customization:{maxCharacters:null}
+      customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},
+      workflow:['New','In Production','Ready for Pickup','Completed'],
+      customerExperience:{photoRequired:true,previewApproval:true},
+      publish:{status:'live'},
+      products:[{id:'custom-wood-sign',name:'Custom Wood Sign',published:true,characterLimit:null}]
     },
     {
       id:'mugshot-after-dark',
@@ -22,13 +28,64 @@
       tagline:'Classy mugs. Questionable messages.',
       type:'custom_mugs',
       visibility:'engine_only',
+      projectTheme:'mugshot-after-dark',
       status:'future',
+      orderPrefix:'MUG',
       ai:{mode:'assist',minConfidence:0.92,requireScaleReference:false},
-      customization:{maxCharacters:32,softWarningAt:26},
-      pricing:{status:'tbd'}
+      customization:{maxCharacters:32,softWarningAt:26,characterLimitStatus:'configured',allowCustomColors:true},
+      workflow:['New','In Production','Ready for Pickup','Completed'],
+      customerExperience:{photoRequired:true,previewApproval:true},
+      publish:{status:'development'},
+      pricing:{status:'tbd'},
+      products:[{id:'classic-custom-mug',name:'Classic Custom Mug',published:false,characterLimit:32}]
     }
   ];
   let companies=structuredClone(DEFAULT_COMPANIES);
+  let activeProjectId = null;
+  let engineActiveProjectId = null;
+  const PROJECT_ACTIVITY_KEY='blackFlagProjectActivityV1';
+  const PROJECT_LEDGER_KEY='blackFlagProjectLedgersV1';
+
+  function projects(){ return companies; }
+  function projectById(id){ return companies.find(p=>p.id===id); }
+  function slugifyProjectName(name){
+    return String(name||'project').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,48) || ('project-'+Date.now());
+  }
+  function readActivity(){
+    try{return JSON.parse(localStorage.getItem(PROJECT_ACTIVITY_KEY)||'[]')}catch(_){return[]}
+  }
+  function logActivity(projectId, action, detail=''){
+    const rows=readActivity();
+    rows.unshift({id:'ACT-'+Date.now(),projectId,action,detail,at:new Date().toISOString()});
+    localStorage.setItem(PROJECT_ACTIVITY_KEY,JSON.stringify(rows.slice(0,500)));
+  }
+  function readLedgers(){
+    try{return JSON.parse(localStorage.getItem(PROJECT_LEDGER_KEY)||'{}')}catch(_){return{}}
+  }
+  function writeLedgers(v){localStorage.setItem(PROJECT_LEDGER_KEY,JSON.stringify(v))}
+  function projectLedger(projectId){const l=readLedgers();return Array.isArray(l[projectId])?l[projectId]:[]}
+  function postOrderToLedger(order){
+    const projectId=order.projectId || (order.business?.name==="Ike's Wood Signs"?'ikes-wood-signs':activeProjectId||'ikes-wood-signs');
+    const ledgers=readLedgers(); const list=Array.isArray(ledgers[projectId])?ledgers[projectId]:[];
+    if(list.some(x=>x.orderId===order.id)) return;
+    list.push({
+      ledgerId:'LED-'+Date.now(),
+      orderId:order.id,
+      completedAt:new Date().toISOString(),
+      customer:order.customerName||'',
+      product:order.wording||'Custom Order',
+      revenue:Number(order.price)||0,
+      materialCost:Number(order.materialCost)||0,
+      otherDirectCost:Number(order.otherDirectCost)||0,
+      tax:Number(order.tax)||0,
+      inventoryImpact:order.inventoryImpact||'',
+      paymentStatus:order.paymentStatus||'Unknown',
+      immutable:true
+    });
+    ledgers[projectId]=list; writeLedgers(ledgers);
+    logActivity(projectId,'Ledger posted',order.id);
+  }
+
 
   const DEFAULT_ENGINE_CONFIG = {
     engineName:'Workshop Engine',
@@ -66,6 +123,16 @@
 
   let db;
   let cameraStream = null;
+
+  // Engine security is intentionally session-only. Leaving Black Flag locks it again.
+  let engineSessionUnlocked = false;
+  function lockEngineSession(){
+    engineSessionUnlocked = false;
+    document.body.classList.remove('engine-mode');
+    const engineScreen = $('engineScreen');
+    if(engineScreen) engineScreen.classList.add('hidden');
+  }
+
   const $ = (id) => document.getElementById(id);
   const $$ = (sel) => [...document.querySelectorAll(sel)];
 
@@ -166,6 +233,249 @@
   }
   async function saveCompanies(){await setSetting('companies',companies);}
   function companyById(id){return companies.find(c=>c.id===id);}
+  function companyStatusLabel(c){
+    return c.publish?.status==='live'?'LIVE':(c.publish?.status==='test'?'TEST':'DEVELOPMENT');
+  }
+
+  async function projectStats(p){
+    const orders=await getMergedOrders();
+    const rows=orders.filter(o=>{
+      const pid=o.projectId || ((o.business?.name||"Ike's Wood Signs")==="Ike's Wood Signs"?'ikes-wood-signs':'');
+      return pid===p.id;
+    });
+    const month=new Date().toISOString().slice(0,7);
+    const monthRows=rows.filter(o=>(o.createdAt||'').slice(0,7)===month);
+    const ledger=projectLedger(p.id);
+    return {
+      orders:rows.length,
+      ordersMonth:monthRows.length,
+      revenueMonth:monthRows.reduce((s,o)=>s+(Number(o.price)||0),0),
+      completed:ledger.length,
+      ledgerRevenue:ledger.reduce((s,x)=>s+(Number(x.revenue)||0),0)
+    };
+  }
+  async function renderProjectCommand(){
+    const box=$('projectCommandCards');if(!box)return;
+    const list=projects();
+    const live=list.filter(p=>p.publish?.status==='live').length;
+    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST`;
+    const cards=[];
+    for(const p of list){
+      const s=await projectStats(p);
+      cards.push(`<article class="project-card">
+        <div class="project-card-head">
+          <span class="project-mark">${escapeHtml((p.name||'?').slice(0,1).toUpperCase())}</span>
+          <label class="project-publish-toggle"><input type="checkbox" data-project-publish="${escapeHtml(p.id)}" ${p.publish?.status==='live'?'checked':''}><span>${p.publish?.status==='live'?'PUBLISHED':'PRIVATE'}</span></label>
+        </div>
+        <h4>${escapeHtml(p.name)}</h4>
+        <p>${escapeHtml(p.tagline||p.type.replaceAll('_',' '))}</p>
+        <div class="project-kpis"><span><strong>${s.orders}</strong> orders</span><span><strong>$${s.revenueMonth.toFixed(0)}</strong> month</span><span><strong>${s.completed}</strong> ledger</span></div>
+        <div class="project-card-actions">
+          <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
+          <button data-enter-project="${escapeHtml(p.id)}" class="primary-btn small" ${p.publish?.status==='live'||p.publish?.status==='test'?'':'disabled'}>OPEN PROJECT</button>
+        </div>
+      </article>`);
+    }
+    cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business/project on Black Flag.</p></button>`);
+    box.innerHTML=cards.join('');
+    box.querySelectorAll('[data-open-project-control]').forEach(b=>b.addEventListener('click',()=>openProjectEngineControl(b.dataset.openProjectControl)));
+    box.querySelectorAll('[data-enter-project]').forEach(b=>b.addEventListener('click',()=>enterProject(b.dataset.enterProject)));
+    box.querySelectorAll('[data-project-publish]').forEach(t=>t.addEventListener('change',async()=>{
+      const p=projectById(t.dataset.projectPublish);if(!p)return;
+      const next=t.checked?'live':'development';
+      if(t.checked && !confirm(`Publish ${p.name}? Customers may be able to access this project.`)){t.checked=false;return;}
+      p.publish={status:next};p.visibility=t.checked?'published':'engine_only';await saveCompanies();logActivity(p.id,t.checked?'Project published':'Project unpublished');await renderProjectCommand();
+    }));
+    const add=$('addProjectCard');if(add)add.addEventListener('click',openAddProject);
+  }
+
+  function projectTabsHtml(p,tab){
+    const products=p.products||[];
+    if(tab==='overview') return `<div class="pec-grid">
+      <article class="pec-card"><h4>Project Status</h4><p><strong>${escapeHtml(p.publish?.status||'development')}</strong></p><p>Theme: ${escapeHtml(p.projectTheme||'custom')}</p><p>Order prefix: ${escapeHtml(p.orderPrefix||'PRJ')}</p></article>
+      <article class="pec-card"><h4>Character Limit</h4><p>${p.customization?.maxCharacters?`${p.customization.maxCharacters} characters`:'Not set'}</p><p class="helper">${p.id==='ikes-wood-signs'?'Intentionally unset until Ike’s real rule is confirmed.':'Project rule.'}</p></article>
+      <article class="pec-card"><h4>Activity</h4><div>${readActivity().filter(x=>x.projectId===p.id).slice(0,6).map(x=>`<div class="activity-line"><span>${escapeHtml(x.action)}</span><small>${new Date(x.at).toLocaleString()}</small></div>`).join('')||'<p class="helper">No activity yet.</p>'}</div></article>
+    </div>`;
+    if(tab==='products') return `<div class="pec-card"><div class="pec-title-row"><h4>Products</h4><button id="addProductBtn" class="secondary-btn small">ADD PRODUCT</button></div>
+      <div class="product-list">${products.map(pr=>`<div class="product-row"><div><strong>${escapeHtml(pr.name)}</strong><small>${pr.characterLimit?`${pr.characterLimit} char max`:'Character limit unset'}</small></div><label><input data-product-publish="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}> Published</label></div>`).join('')}</div></div>`;
+    if(tab==='experience') return `<div class="pec-card"><h4>Customer Experience</h4>
+      <label class="admin-toggle-row compact-toggle"><span><strong>Photo step</strong><small>Require product photo.</small></span><input id="ptPhoto" type="checkbox" ${p.customerExperience?.photoRequired!==false?'checked':''}></label>
+      <label class="admin-toggle-row compact-toggle"><span><strong>Preview approval</strong><small>Require customer approval.</small></span><input id="ptPreview" type="checkbox" ${p.customerExperience?.previewApproval!==false?'checked':''}></label>
+      <label class="admin-toggle-row compact-toggle"><span><strong>Custom colors</strong><small>Allow custom color picker.</small></span><input id="ptColors" type="checkbox" ${p.customization?.allowCustomColors!==false?'checked':''}></label>
+      <button id="saveExperienceTab" class="primary-btn small">SAVE EXPERIENCE</button></div>`;
+    if(tab==='ai') return `<div class="pec-card"><h4>AI Product Recognition</h4><p class="helper">Recognition suggests structured attributes. Project pricing rules remain authoritative.</p>
+      <label>Mode<select id="ptAI"><option value="off">Off</option><option value="assist">Assist</option><option value="automatic">Automatic</option></select></label>
+      <label>Minimum confidence<input id="ptConfidence" class="text-input" type="number" min=".5" max=".99" step=".01" value="${Number(p.ai?.minConfidence||.9).toFixed(2)}"></label>
+      <label class="admin-toggle-row compact-toggle"><span><strong>Require scale reference</strong><small>Recommended for physical measurements.</small></span><input id="ptScale" type="checkbox" ${p.ai?.requireScaleReference!==false?'checked':''}></label>
+      <button id="saveAITab" class="primary-btn small">SAVE AI POLICY</button></div>`;
+    if(tab==='workflow') return `<div class="pec-card"><h4>Workflow</h4><p class="helper">One stage per line.</p><textarea id="ptWorkflow" rows="7">${escapeHtml((p.workflow||DEFAULT_BUSINESS_CONFIG.orderStatuses).join('\n'))}</textarea><button id="saveWorkflowTab" class="primary-btn small">SAVE WORKFLOW</button></div>`;
+    if(tab==='publishing') return `<div class="pec-card"><h4>Publishing</h4><label>Project status<select id="ptPublish"><option value="development">Development — engine only</option><option value="test">Test</option><option value="live">Published / Live</option><option value="paused">Paused</option></select></label><p class="helper">Product-level publish controls are in Products.</p><button id="savePublishingTab" class="primary-btn small">SAVE PUBLISHING</button></div>`;
+    if(tab==='orders') return `<div class="pec-card"><h4>Project Orders</h4><div id="ptOrders">Loading…</div></div>`;
+    if(tab==='ledger') {
+      const ledger=projectLedger(p.id);
+      const rev=ledger.reduce((s,x)=>s+(Number(x.revenue)||0),0), cost=ledger.reduce((s,x)=>s+(Number(x.materialCost)||0)+(Number(x.otherDirectCost)||0),0);
+      return `<div class="ledger-summary"><div><span>Completed</span><strong>${ledger.length}</strong></div><div><span>Revenue</span><strong>$${rev.toFixed(2)}</strong></div><div><span>Direct Costs</span><strong>$${cost.toFixed(2)}</strong></div><div><span>Est. Gross Profit</span><strong>$${(rev-cost).toFixed(2)}</strong></div></div>
+      <div class="pec-card"><h4>Completed Order Ledger</h4><p class="helper">Core financial history lives in Black Flag. Project views may be read-only in the future.</p>${ledger.length?ledger.slice().reverse().map(x=>`<div class="ledger-row"><strong>${escapeHtml(x.orderId)}</strong><span>${new Date(x.completedAt).toLocaleDateString()}</span><span>$${Number(x.revenue).toFixed(2)}</span><span>${escapeHtml(x.paymentStatus)}</span></div>`).join(''):'<p class="helper">No completed orders posted yet.</p>'}</div>`;
+    }
+    return '';
+  }
+
+  async function renderProjectTab(id,tab){
+    const p=projectById(id), box=$('projectTabContent');if(!p||!box)return;
+    box.innerHTML=projectTabsHtml(p,tab);
+    $$('#projectTabs [data-project-tab]').forEach(b=>b.classList.toggle('active',b.dataset.projectTab===tab));
+    if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
+    if(tab==='experience') $('saveExperienceTab').onclick=async()=>{p.customerExperience={photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;await saveCompanies();logActivity(p.id,'Customer experience updated');};
+    if(tab==='workflow') $('saveWorkflowTab').onclick=async()=>{const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));}};
+    if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await saveCompanies();logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
+    if(tab==='products'){
+      $$('[data-product-publish]').forEach(t=>t.onchange=async()=>{const pr=(p.products||[]).find(x=>x.id===t.dataset.productPublish);if(!pr)return;if(t.checked&&!confirm(`Publish product "${pr.name}"?`)){t.checked=false;return;}pr.published=t.checked;await saveCompanies();logActivity(p.id,t.checked?'Product published':'Product unpublished',pr.name);});
+      if($('addProductBtn')) $('addProductBtn').onclick=async()=>{const name=prompt('Product name');if(!name)return;p.products=p.products||[];p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-4),name,published:false,characterLimit:null});await saveCompanies();logActivity(p.id,'Product added',name);renderProjectTab(p.id,'products');};
+    }
+    if(tab==='orders'){
+      const orders=await getMergedOrders();const rows=orders.filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
+      $('ptOrders').innerHTML=rows.length?rows.slice().reverse().map(o=>`<div class="ledger-row"><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(o.status)}</span><span>$${Number(o.price||0).toFixed(2)}</span><span>${escapeHtml(o.customerName||'')}</span></div>`).join(''):'<p class="helper">No orders for this project yet.</p>';
+    }
+  }
+
+  async function openProjectEngineControl(id){
+    const p=projectById(id);if(!p)return;
+    engineActiveProjectId=id;
+    $('pecTitle').textContent=p.name;
+    $('pecSubtitle').textContent='Project-specific controls. Black Flag remains unlocked only while you stay in the Engine.';
+    $('projectEngineControl').classList.remove('hidden');
+    await renderProjectTab(id,'overview');
+    window.scrollTo({top:$('projectEngineControl').offsetTop-20,behavior:'smooth'});
+  }
+
+  function enterProject(id){
+    const p=projectById(id);if(!p)return;
+    if(!['live','test'].includes(p.publish?.status||'development')) return;
+    activeProjectId=id;
+    logActivity(id,'Project opened');
+    // HARD SECURITY RULE: entering a project always destroys Black Flag authorization.
+    engineSessionUnlocked=false;
+    document.body.classList.remove('engine-mode');
+    $('engineScreen')?.classList.add('hidden');
+    $('blackFlagEntryGate')?.classList.add('hidden');
+    document.body.classList.add('project-mode');
+    $('returnToEngineBtn')?.classList.remove('hidden');
+    $('customerApp')?.classList.remove('hidden');
+    $('adminPanel')?.classList.add('hidden');
+    applyProjectTheme(p);
+    if(typeof setScreen==='function')setScreen('welcome');
+  }
+
+  function applyProjectTheme(p){
+    document.body.dataset.projectTheme=p.projectTheme||'custom';
+    // No pirate language or visual assets are introduced here.
+    if(p.id==='ikes-wood-signs'){
+      document.title="Ike's Wood Signs";
+    }else{
+      document.title=p.name;
+      document.querySelectorAll('.brand-title').forEach(el=>el.textContent=p.name.toUpperCase());
+    }
+  }
+
+  function requestEngineFromProject(){
+    // Project can request the Engine, but must see PIN first every single time.
+    engineSessionUnlocked=false;
+    document.body.classList.remove('project-mode');
+    $('returnToEngineBtn')?.classList.add('hidden');
+    $('customerApp')?.classList.add('hidden');
+    if(typeof requireEngineEntry==='function') requireEngineEntry();
+    else $('blackFlagEntryGate')?.classList.remove('hidden');
+  }
+
+  function openAddProject(){
+    $('newProjectName').value='';$('newProjectPrefix').value='';$('addProjectError').textContent='';
+    $('addProjectGate').classList.remove('hidden');
+  }
+
+  async function createProject(){
+    const name=$('newProjectName').value.trim(), type=$('newProjectType').value;
+    const prefix=($('newProjectPrefix').value||name.slice(0,3)).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
+    if(!name){$('addProjectError').textContent='Enter a project name.';return;}
+    const id=slugifyProjectName(name);
+    if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
+    companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},products:[]});
+    await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
+  }
+
+  function renderCompanyCommand(){
+    const box=$('companyCommandCards'); if(!box)return;
+    const live=companies.filter(c=>c.publish?.status==='live').length;
+    const dev=companies.length-live;
+    if($('companySummaryBadge')) $('companySummaryBadge').textContent=`${companies.length} COMPANIES • ${live} LIVE • ${dev} DEVELOPMENT`;
+    box.innerHTML=companies.map(c=>`
+      <button class="company-command-card" data-company-open="${escapeHtml(c.id)}">
+        <div class="company-command-top">
+          <span class="company-monogram">${c.id==='ikes-wood-signs'?'I':'M'}</span>
+          <span class="company-live-state ${companyStatusLabel(c).toLowerCase()}">${companyStatusLabel(c)}</span>
+        </div>
+        <h4>${escapeHtml(c.name)}</h4>
+        <p>${escapeHtml(c.tagline || (c.id==='ikes-wood-signs'?'Current production company':'Future company profile'))}</p>
+        <div class="company-command-meta">
+          <span>AI: ${escapeHtml(c.ai?.mode||'off')}</span>
+          <span>${c.customization?.maxCharacters?`${c.customization.maxCharacters} char max`:'Character limit: not set'}</span>
+        </div>
+        <strong class="open-control">OPEN CONTROL CENTER →</strong>
+      </button>`).join('');
+    box.querySelectorAll('[data-company-open]').forEach(btn=>btn.addEventListener('click',()=>openCompanyControl(btn.dataset.companyOpen)));
+  }
+  function openCompanyControl(id){
+    const c=companyById(id), panel=$('companyControlCenter'); if(!c||!panel)return;
+    panel.classList.remove('hidden');
+    const charValue=c.customization?.maxCharacters ?? '';
+    panel.innerHTML=`
+      <div class="control-center-head">
+        <div><div class="engine-kicker">COMPANY CONTROL CENTER</div><h3>${escapeHtml(c.name)}</h3><p>Changes here apply to this company only.</p></div>
+        <button class="secondary-btn small" id="closeCompanyControl">CLOSE</button>
+      </div>
+      <div class="company-control-grid">
+        <article class="control-module">
+          <h4>Customer Experience</h4>
+          <label class="admin-toggle-row compact-toggle"><span><strong>Photo step</strong><small>Require a product photo in the order flow.</small></span><input id="ccPhoto" type="checkbox" ${c.customerExperience?.photoRequired!==false?'checked':''}></label>
+          <label class="admin-toggle-row compact-toggle"><span><strong>Preview approval</strong><small>Customer approves the visual before submitting.</small></span><input id="ccPreview" type="checkbox" ${c.customerExperience?.previewApproval!==false?'checked':''}></label>
+          <label class="admin-toggle-row compact-toggle"><span><strong>Custom colors</strong><small>Allow customer-selected custom lettering colors.</small></span><input id="ccColors" type="checkbox" ${c.customization?.allowCustomColors!==false?'checked':''}></label>
+        </article>
+        <article class="control-module">
+          <h4>AI Recognition</h4>
+          <label>Mode<select id="ccAI"><option value="off">Off</option><option value="assist">Assist</option><option value="automatic">Automatic</option></select></label>
+          <label>Minimum confidence<input id="ccConfidence" class="text-input" type="number" min=".5" max=".99" step=".01" value="${Number(c.ai?.minConfidence||.9).toFixed(2)}"></label>
+          <label class="admin-toggle-row compact-toggle"><span><strong>Scale reference</strong><small>Require a known reference before measurement-based decisions.</small></span><input id="ccScale" type="checkbox" ${c.ai?.requireScaleReference!==false?'checked':''}></label>
+        </article>
+        <article class="control-module">
+          <h4>Lettering Rules</h4>
+          <label>Maximum characters<input id="ccChars" class="text-input" type="number" min="1" max="250" value="${charValue}" placeholder="Not set"></label>
+          <p class="helper">${c.id==='ikes-wood-signs'?'Ike’s limit is intentionally NOT SET until the actual business rule is confirmed.':'Current test limit is 32 characters.'}</p>
+        </article>
+        <article class="control-module">
+          <h4>Publishing</h4>
+          <label>Status<select id="ccPublish"><option value="development">Development — engine only</option><option value="test">Test</option><option value="live">Live</option></select></label>
+          <p class="helper">Development companies remain hidden from customer-facing ordering.</p>
+        </article>
+      </div>
+      <button id="saveCompanyControl" class="primary-btn">SAVE ${escapeHtml(c.name.toUpperCase())} SETTINGS</button>
+      <p id="companyControlStatus" class="helper"></p>`;
+    $('ccAI').value=c.ai?.mode||'off';
+    $('ccPublish').value=c.publish?.status||'development';
+    $('closeCompanyControl').addEventListener('click',()=>panel.classList.add('hidden'));
+    $('saveCompanyControl').addEventListener('click',async()=>{
+      c.customerExperience={photoRequired:$('ccPhoto').checked,previewApproval:$('ccPreview').checked};
+      c.customization=c.customization||{};
+      c.customization.allowCustomColors=$('ccColors').checked;
+      const chars=$('ccChars').value.trim();
+      c.customization.maxCharacters=chars?Number(chars):null;
+      c.customization.characterLimitStatus=chars?'configured':'unset';
+      c.ai={mode:$('ccAI').value,minConfidence:Number($('ccConfidence').value)||.9,requireScaleReference:$('ccScale').checked};
+      c.publish={status:$('ccPublish').value};
+      await saveCompanies();
+      renderCompanyCommand();renderCompanyFleet();await renderFleetStats();
+      $('companyControlStatus').textContent='Company settings saved.';
+    });
+  }
+
   function renderCompanyFleet(){
     const box=$('companyFleet'); if(!box)return;
     box.innerHTML=companies.map(c=>`
@@ -252,6 +562,8 @@
   }
 
   function populateEngineSettings(){
+    renderProjectCommand();
+    renderCompanyCommand();
     renderCompanyFleet();
     if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
     if($('schemaVersionSetting')) $('schemaVersionSetting').value=Number(engineConfig.schemaVersion||2);
@@ -489,7 +801,7 @@
     const id=newOrderId();
     const approvedPreviewData=await createApprovedPreview();
     state.approvedPreviewData=approvedPreviewData;
-    const order={schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
+    const order={projectId:activeProjectId||'ikes-wood-signs',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
     try{
       await put(STORE_ORDERS,order);
@@ -668,7 +980,9 @@
 
   async function updateOrderStatus(id,status){
     const orders=await getMergedOrders(),o=orders.find(x=>x.id===id);if(!o)return;
-    o.status=status;o.updatedAt=new Date().toISOString();backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}await renderAdmin();
+    o.status=status;o.updatedAt=new Date().toISOString();backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}
+    if(status==='Completed') postOrderToLedger(o);
+    await renderAdmin();
   }
 
   async function renderAdmin(){
@@ -840,6 +1154,7 @@
       }
     });
     $('newOrderBtn').addEventListener('click',resetOrder);
+    if($('completeOrderBtn')) $('completeOrderBtn').addEventListener('click',resetOrder);
     $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
     $('adminBtn').addEventListener('click',()=>{
       document.body.classList.add('modal-open');
@@ -886,6 +1201,13 @@
 
     $('aiCompanySetting').addEventListener('change',loadAIForm);
     $('saveAISettingsBtn').addEventListener('click',saveAIForm);
+
+    if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',openAddProject);
+    if($('closeProjectEngineControl')) $('closeProjectEngineControl').addEventListener('click',()=>{$('projectEngineControl').classList.add('hidden');engineActiveProjectId=null;});
+    if($('projectTabs')) $('projectTabs').addEventListener('click',e=>{const b=e.target.closest('[data-project-tab]');if(b&&engineActiveProjectId)renderProjectTab(engineActiveProjectId,b.dataset.projectTab);});
+    if($('cancelAddProjectBtn')) $('cancelAddProjectBtn').addEventListener('click',()=>$('addProjectGate').classList.add('hidden'));
+    if($('createProjectBtn')) $('createProjectBtn').addEventListener('click',createProject);
+    if($('returnToEngineBtn')) $('returnToEngineBtn').addEventListener('click',requestEngineFromProject);
 
     $('saveEngineIdentityBtn').addEventListener('click',async()=>{
       const name=$('engineNameSetting').value.trim()||'Workshop Engine';
@@ -996,4 +1318,113 @@
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   init().catch(err=>{console.error(err);alert('The app could not start. Please reload the page.');});
+})();
+
+// v2.4.1 security boundary: leaving Engine always destroys Engine authorization.
+document.addEventListener('click', (event) => {
+  const target = event.target.closest && event.target.closest('#backToAdminBtn,[data-engine-logout],.engine-logout');
+  if(target) lockEngineSession();
+});
+
+
+// ===== v2.5 BLACK FLAG PORTAL =====
+(function(){
+  function byId(id){ return document.getElementById(id); }
+
+  async function requireEngineEntry(){
+    const gate=byId('blackFlagEntryGate');
+    if(gate){
+      gate.classList.remove('hidden');
+      document.body.classList.add('bf-entry-open');
+      const input=byId('blackFlagEntryPin');
+      if(input){ input.value=''; setTimeout(()=>input.focus(),60); }
+      const err=byId('blackFlagEntryError'); if(err) err.textContent='';
+    }
+  }
+
+  function leaveEntry(){
+    const gate=byId('blackFlagEntryGate');
+    if(gate) gate.classList.add('hidden');
+    document.body.classList.remove('bf-entry-open');
+  }
+
+  async function unlockFromEntry(){
+    const input=byId('blackFlagEntryPin');
+    const entered=(input?.value||'').trim();
+    let expected='5615';
+    try{ expected=await getEnginePin(); }catch(_){}
+    if(entered!==expected){
+      const lines=['Wrong engine PIN.','Black Flag remains locked.','Access denied — check the captain’s code.'];
+      const err=byId('blackFlagEntryError');
+      if(err) err.textContent=lines[Math.floor(Math.random()*lines.length)];
+      if(input) input.select();
+      return;
+    }
+    engineSessionUnlocked=true;
+    leaveEntry();
+
+    // Hide all company/customer surfaces and open Black Flag immediately.
+    const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
+    const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
+    const engine=byId('engineScreen'); if(engine) engine.classList.remove('hidden');
+    document.body.classList.add('engine-mode');
+    if(typeof populateEngineSettings==='function') populateEngineSettings();
+    if(typeof refreshEngineDiagnostics==='function') await refreshEngineDiagnostics();
+    if(typeof renderFleetStats==='function') await renderFleetStats();
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+
+  function openCompanyApp(){
+    lockEngineSession();
+    leaveEntry();
+    document.body.classList.remove('engine-mode');
+    const engine=byId('engineScreen'); if(engine) engine.classList.add('hidden');
+    const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
+    const customer=byId('customerApp'); if(customer) customer.classList.remove('hidden');
+    if(typeof setScreen==='function') setScreen('welcome');
+  }
+
+  function openCompanyAdminGate(){
+    lockEngineSession();
+    leaveEntry();
+    document.body.classList.remove('engine-mode');
+    const engine=byId('engineScreen'); if(engine) engine.classList.add('hidden');
+    const customer=byId('customerApp'); if(customer) customer.classList.remove('hidden');
+    // Re-use the existing 4353 admin PIN gate.
+    const adminBtn=byId('adminBtn');
+    if(adminBtn) adminBtn.click();
+  }
+
+  function lockAndReturnToEntry(){
+    lockEngineSession();
+    document.body.classList.remove('engine-mode');
+    const engine=byId('engineScreen'); if(engine) engine.classList.add('hidden');
+    requireEngineEntry();
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const unlock=byId('blackFlagEntryUnlock');
+    const pin=byId('blackFlagEntryPin');
+    const company=byId('openCompanyAppBtn');
+    const admin=byId('openAdminFromEntryBtn');
+    const engineCompany=byId('engineCompanyAppBtn');
+    const logout=byId('engineLogoutBtn');
+
+    if(unlock) unlock.addEventListener('click',unlockFromEntry);
+    if(pin) pin.addEventListener('keydown',e=>{if(e.key==='Enter') unlockFromEntry();});
+    if(company) company.addEventListener('click',openCompanyApp);
+    if(admin) admin.addEventListener('click',openCompanyAdminGate);
+    if(engineCompany) engineCompany.addEventListener('click',openCompanyApp);
+    if(logout) logout.addEventListener('click',lockAndReturnToEntry);
+
+    // Engine portal is always the first screen after a fresh page load.
+    requireEngineEntry();
+  });
+
+  // Any explicit back/exit from Engine locks the Engine.
+  document.addEventListener('click',e=>{
+    const t=e.target.closest && e.target.closest('#backToAdminBtn,[data-engine-logout],.engine-logout');
+    if(!t) return;
+    lockEngineSession();
+  });
 })();

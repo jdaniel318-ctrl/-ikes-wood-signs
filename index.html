@@ -11,6 +11,32 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <div id="blackFlagEntryGate" class="black-flag-entry-gate">
+    <div class="bf-entry-shell">
+      <div class="bf-entry-mark">☠</div>
+      <div class="bf-entry-kicker">BLACK FLAG HARBOR</div>
+      <h1>Workshop Engine</h1>
+      <p class="bf-entry-sub">Multi-company command, configuration and platform control.</p>
+
+      <div class="bf-entry-panel">
+        <label for="blackFlagEntryPin">ENGINE PIN</label>
+        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p>
+        <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
+      </div>
+
+      <div class="bf-entry-alt">
+        <button id="openCompanyAppBtn" class="bf-entry-secondary">OPEN COMPANY APP</button>
+        <button id="openAdminFromEntryBtn" class="bf-entry-secondary">COMPANY ADMIN</button>
+      </div>
+      <div class="bf-entry-foot">Authorized engine access only • Engine PIN required every time Black Flag is entered</div>
+    </div>
+  </div>
+
+  
+    <button id="returnToEngineBtn" class="project-engine-return hidden">ENGINE</button>
+
   <div id="app" class="app-shell">
     <header class="brand-header">
       <div class="brand-copy illustrated-brand">
@@ -214,7 +240,7 @@
         <p id="submitStatus" class="submit-status centered" aria-live="polite"></p>
         <div id="customerEmailStatus" class="customer-email-status hidden"></div>
         <button id="retrySubmitBtn" class="primary-btn hidden">TRY SENDING AGAIN</button>
-        <button id="newOrderBtn" class="secondary-btn">START ANOTHER ORDER</button>
+        <div class="final-action-row"><button id="newOrderBtn" class="final-green-btn">START ANOTHER ORDER</button><button id="completeOrderBtn" class="final-black-btn">COMPLETE</button></div>
       </section>
 
       <div class="mini-brand"><img src="assets/ike_character.jpg" alt="Cartoon Ike" /><div><strong>Ike's Wood Signs</strong><span>Self-Serve Sign Ordering</span></div></div>
@@ -296,15 +322,17 @@
     </div>
 
     <section id="enginePanel" class="engine-panel hidden">
-      <div class="engine-head">
-        <div>
-          <div class="engine-kicker">☠ BLACK FLAG</div>
-          <h2>Black Flag Cove — Engine Administration</h2>
-          <p class="helper">Sensitive platform controls below deck. Company operations stay in the standard Admin area.</p>
+      <div class="command-masthead">
+        <div class="command-brand">
+          <div class="command-mark">☠</div>
+          <div>
+            <div class="engine-kicker">BLACK FLAG HARBOR</div>
+            <h2>Workshop Engine</h2>
+            <p>Multi-company operations, configuration and platform control.</p>
+          </div>
         </div>
-        <button id="closeEngineBtn" class="secondary-btn small">← BACK TO IKE ADMIN</button>
+        <div class="command-access">ENGINE ACCESS <strong>5615</strong></div>
       </div>
-
       <div class="engine-welcome">
         <div class="welcome-mark">☠</div>
         <div>
@@ -320,8 +348,48 @@
         <div><span>Signal Flag</span><strong id="engineEmailStatus">—</strong></div>
       </div>
 
+      
+      <section class="project-command-section">
+        <div class="command-section-title">
+          <div>
+            <div class="engine-kicker">PROJECT COMMAND</div>
+            <h3>Projects</h3>
+            <p>Open a project to manage that business. Entering any project immediately locks Black Flag.</p>
+          </div>
+          <button id="addProjectBtn" class="project-add-btn">＋ ADD PROJECT</button>
+        </div>
+        <div id="projectSummaryBadge" class="project-summary-badge"></div>
+        <div id="projectCommandCards" class="project-command-cards"></div>
+      </section>
+
+      <section id="projectEngineControl" class="project-engine-control hidden">
+        <div class="project-engine-head">
+          <div>
+            <div class="engine-kicker">PROJECT CONTROL CENTER</div>
+            <h3 id="pecTitle">Project</h3>
+            <p id="pecSubtitle">Project-specific controls.</p>
+          </div>
+          <button id="closeProjectEngineControl" class="secondary-btn small">CLOSE PROJECT</button>
+        </div>
+
+        <nav class="project-tabs" id="projectTabs">
+          <button data-project-tab="overview" class="active">Overview</button>
+          <button data-project-tab="products">Products</button>
+          <button data-project-tab="experience">Customer Experience</button>
+          <button data-project-tab="ai">AI Recognition</button>
+          <button data-project-tab="workflow">Workflow</button>
+          <button data-project-tab="publishing">Publishing</button>
+          <button data-project-tab="orders">Orders</button>
+          <button data-project-tab="ledger">Ledger</button>
+        </nav>
+        <div id="projectTabContent" class="project-tab-content"></div>
+      </section>
+
       <div class="engine-section-head">
-        <div><div class="engine-kicker">THE FLEET MANIFEST</div><h3>Companies</h3><p class="helper">Company profiles live in the engine. Only published companies are exposed to customers.</p></div>
+        <div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3><p class="helper">Shared engine controls only. Project-specific controls live inside each project.</p></div>
+      </div>
+<div class="engine-section-head">
+        <div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3><p class="helper">Company profiles live in the engine. Only published companies are exposed to customers.</p></div>
       </div>
       <div id="companyFleet" class="company-fleet"></div>
 
@@ -344,7 +412,7 @@
         </article>
 
         <article class="engine-card">
-          <h3>Ship's Registry</h3>
+          <h3>Platform Identity</h3>
           <p class="helper">Platform-level identifiers. Change these only when adapting Workshop to another business.</p>
           <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
           <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2" /></label>
@@ -353,7 +421,7 @@
         </article>
 
         <article class="engine-card">
-          <h3>Crew Workflow</h3>
+          <h3>Default Workflow</h3>
           <p class="helper">Comma-separated production stages used by the reusable order engine.</p>
           <label>Order statuses<textarea id="engineStatusesSetting" rows="4"></textarea></label>
           <button id="saveEngineWorkflowBtn" class="primary-btn small">SAVE WORKFLOW</button>
@@ -361,7 +429,7 @@
         </article>
 
         <article class="engine-card">
-          <h3>Cargo Hold & Recovery</h3>
+          <h3>Storage & Recovery</h3>
           <p class="helper">Diagnostics for the two local order stores and interrupted-order recovery.</p>
           <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
           <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
@@ -370,7 +438,7 @@
         </article>
 
         <article class="engine-card danger-card">
-          <h3>Powder Keg Locker</h3>
+          <h3>Protected Controls</h3>
           <p class="helper">These controls affect the engine, not just a single order. They require an extra confirmation.</p>
           <button id="engineResetSettingsBtn" class="danger-btn">RESET ENGINE TO PORT DEFAULTS</button>
           <p class="helper">Orders are preserved. This resets configurable business/engine settings and PINs to defaults.</p>
@@ -389,5 +457,27 @@
   </div>
 
   <script src="app.js"></script>
+
+    <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
+      <div class="add-project-card">
+        <div class="engine-kicker">NEW PROJECT</div>
+        <h2>Add a Project</h2>
+        <p>Create a private project shell. It stays unpublished until you deliberately publish it.</p>
+        <label>Project name<input id="newProjectName" class="text-input" type="text" placeholder="Business or project name"></label>
+        <label>Project type
+          <select id="newProjectType">
+            <option value="custom_product">Custom Product</option>
+            <option value="custom_apparel">Custom Apparel</option>
+            <option value="custom_food">Custom Food / Bakery</option>
+            <option value="custom_service">Custom Service</option>
+          </select>
+        </label>
+        <label>Order prefix<input id="newProjectPrefix" class="text-input" type="text" maxlength="8" placeholder="ABC"></label>
+        <p id="addProjectError" class="error-text"></p>
+        <button id="createProjectBtn" class="primary-btn">CREATE PRIVATE PROJECT</button>
+        <button id="cancelAddProjectBtn" class="secondary-btn">CANCEL</button>
+      </div>
+    </div>
+
 </body>
 </html>

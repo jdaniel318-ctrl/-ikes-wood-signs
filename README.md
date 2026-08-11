@@ -124,3 +124,66 @@ Adds a second, more sensitive administration layer beneath the normal Ike Admin.
 - Pirate/Black Flag theme increased approximately 30% without turning serious engine controls into a novelty UI.
 - Adds Black Flag Cove welcome guidance, stronger nautical labels, anchor/flag details, Captain's Log/Fleet Manifest naming, Cargo Hold diagnostics, Crew Workflow, Ship's Registry, and Powder Keg Locker.
 - Engine remains visually separate from all company branding.
+
+
+## Version 2.4 — BLACK FLAG COMMAND
+- Reframes the Engine as a professional multi-company platform dashboard.
+- Removes Ike's customer branding while inside Engine mode.
+- Company Command is now the primary Engine function.
+- Adds visible company cards for Ike's Wood Signs (Live) and Mugshot After Dark (Development / engine-only).
+- Each company now opens a dedicated Company Control Center for customer experience, custom colors, AI recognition, character limits and publishing status.
+- Ike's character limit is intentionally left unset until the real business rule is confirmed.
+- Mugshot After Dark retains a 32-character test limit.
+- Keeps Black Flag personality restrained to the engine while making the dashboard cleaner and more world-class.
+
+
+## Version 2.4.1 — BLACK FLAG LOCK
+- Engine authorization is now a separate, session-only security state.
+- Leaving/logging out of Black Flag immediately destroys Engine authorization.
+- Returning to Engine requires the Engine PIN again (default 5615).
+- Ike Admin remains independently accessible with the Admin PIN (default 4353).
+- Admin authorization never grants Engine authorization.
+
+
+## Version 2.5 — BLACK FLAG PORTAL
+- Black Flag is now the first screen after a fresh page load.
+- Engine PIN is required before the Engine opens.
+- The landing portal also provides explicit Company App and Company Admin paths.
+- Company Admin remains protected by its independent Admin PIN.
+- Lock Engine immediately destroys Engine authorization and returns to the Black Flag PIN portal.
+- Returning to Black Flag always requires the Engine PIN again.
+- Engine mode hides all Ike/company branding and uses a dedicated Black Flag header.
+- Customer/company branding remains confined to the company-facing application.
+
+
+## Version 2.6 — BLACK FLAG HARBOR
+Architecture lock-in release.
+
+### Security / navigation
+- Fresh launch starts at Black Flag Engine PIN.
+- After Engine PIN, the user sees Project Command.
+- Entering any project immediately destroys Engine authorization.
+- Returning from a project to Black Flag always requires Engine PIN again.
+- Pirate/Black Flag branding exists only in Engine/PIN surfaces; project apps keep their own themes.
+
+### Project model
+- Black Flag is project-first.
+- Built-in projects: Ike's Wood Signs and Mugshot After Dark.
+- Add Project creates a private/unpublished project shell.
+- Project Control Center tabs: Overview, Products, Customer Experience, AI Recognition, Workflow, Publishing, Orders, Ledger.
+- AI and workflow are project-specific, not global.
+- Project and product publish controls are independent and confirmed before exposing a private item.
+- Ike's character limit remains intentionally unset.
+
+### Ledger / tracking
+- Each project has its own engine-owned completed-order ledger.
+- Marking an order Completed posts it once to that project's ledger.
+- Ledger foundation tracks revenue, direct costs, tax, payment status and inventory impact fields.
+- Project ledger is Engine-core; future project-side access can be read-only.
+- Project dashboard shows orders, monthly recorded value and ledger counts.
+- Engine activity log captures high-value project changes.
+
+### Customer completion
+- Start Another Order is green.
+- Complete is black.
+- Both reset the same project workflow so the next submitted order receives a new unique order number.
