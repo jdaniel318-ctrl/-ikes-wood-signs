@@ -143,3 +143,75 @@ Adds a second, more sensitive administration layer beneath the normal Ike Admin.
 - Returning to Engine requires the Engine PIN again (default 5615).
 - Ike Admin remains independently accessible with the Admin PIN (default 4353).
 - Admin authorization never grants Engine authorization.
+
+
+## Version 2.5 — BLACK FLAG PORTAL
+- Black Flag is now the first screen after a fresh page load.
+- Engine PIN is required before the Engine opens.
+- The landing portal also provides explicit Company App and Company Admin paths.
+- Company Admin remains protected by its independent Admin PIN.
+- Lock Engine immediately destroys Engine authorization and returns to the Black Flag PIN portal.
+- Returning to Black Flag always requires the Engine PIN again.
+- Engine mode hides all Ike/company branding and uses a dedicated Black Flag header.
+- Customer/company branding remains confined to the company-facing application.
+
+
+## Version 2.6 — BLACK FLAG HARBOR
+Architecture lock-in release.
+
+### Security / navigation
+- Fresh launch starts at Black Flag Engine PIN.
+- After Engine PIN, the user sees Project Command.
+- Entering any project immediately destroys Engine authorization.
+- Returning from a project to Black Flag always requires Engine PIN again.
+- Pirate/Black Flag branding exists only in Engine/PIN surfaces; project apps keep their own themes.
+
+### Project model
+- Black Flag is project-first.
+- Built-in projects: Ike's Wood Signs and Mugshot After Dark.
+- Add Project creates a private/unpublished project shell.
+- Project Control Center tabs: Overview, Products, Customer Experience, AI Recognition, Workflow, Publishing, Orders, Ledger.
+- AI and workflow are project-specific, not global.
+- Project and product publish controls are independent and confirmed before exposing a private item.
+- Ike's character limit remains intentionally unset.
+
+### Ledger / tracking
+- Each project has its own engine-owned completed-order ledger.
+- Marking an order Completed posts it once to that project's ledger.
+- Ledger foundation tracks revenue, direct costs, tax, payment status and inventory impact fields.
+- Project ledger is Engine-core; future project-side access can be read-only.
+- Project dashboard shows orders, monthly recorded value and ledger counts.
+- Engine activity log captures high-value project changes.
+
+### Customer completion
+- Start Another Order is green.
+- Complete is black.
+- Both reset the same project workflow so the next submitted order receives a new unique order number.
+
+
+## Version 2.7 — BLACK FLAG ANCHOR
+- Fresh HTML boots locked: only the Engine PIN portal can display before authentication.
+- Fixed the routing bug where portal code referenced non-existent `engineScreen`; the real Engine container is `enginePanel`.
+- No Company App/Admin bypass on the boot portal.
+- Correct Engine PIN opens Project Command.
+- Entering any project destroys Engine authorization.
+- Returning from a project hides the project and requires Engine PIN again.
+- Black Flag/pirate UI is hidden in project mode.
+- Ike header no longer contains Black Flag/Workshop language.
+- Per-project AI/workflow remain inside Project Control Center; legacy global cards are hidden.
+- Added Engine-only per-project Pay by App structure, OFF by default. No customer payment UI is exposed.
+- Payment structure anticipates hosted links, future integrated checkout, provider configuration and ledger payment tracking.
+- Service-worker navigation is network-first to reduce stale GitHub Pages startup screens.
+
+
+## Version 2.7.1 — BLACK FLAG ENTRY RESCUE
+Focused repair build for Engine entry.
+
+- Fixes the startup exception caused by an event listener targeting the removed `closeEngineBtn`.
+- Removes the blocking “app could not start” alert; secondary initialization failure can no longer prevent Black Flag entry.
+- Creates a shared authentication bridge between the core app and the Black Flag portal.
+- Engine PIN **5615 is guaranteed to unlock Black Flag in this test/recovery build**.
+- A separately configured Engine PIN is accepted as well.
+- Successful PIN entry updates the real Engine session state, not a disconnected variable in the portal script.
+- Portal binding now works whether app.js runs before or after DOMContentLoaded.
+- Black Flag home rendering is isolated so a statistics/diagnostics error cannot reject a valid PIN.

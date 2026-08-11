@@ -845,3 +845,181 @@ body.engine-mode .app-shell{max-width:none;background:#eef1ef}
  .command-masthead,.command-section-title{align-items:flex-start;flex-direction:column}
  .company-command-cards,.company-control-grid{grid-template-columns:1fr}
 }
+
+/* ===== v2.5 BLACK FLAG PORTAL ===== */
+.black-flag-entry-gate{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  display:grid;
+  place-items:center;
+  padding:26px;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(201,166,84,.16),transparent 31%),
+    linear-gradient(145deg,#0c2028,#132e37 50%,#0c1e25);
+}
+.black-flag-entry-gate.hidden{display:none!important}
+.bf-entry-shell{
+  width:min(660px,100%);
+  padding:34px 38px 28px;
+  border-radius:30px 22px 34px 24px;
+  background:linear-gradient(180deg,#f9f5e9,#efe6d1);
+  border:1px solid #c9b58c;
+  box-shadow:0 30px 80px #0008;
+  text-align:center;
+}
+.bf-entry-mark{
+  width:78px;height:78px;
+  margin:0 auto 12px;
+  display:grid;place-items:center;
+  border-radius:24px 18px 26px 20px;
+  background:#15333d;
+  color:#e4c46f;
+  font-size:40px;
+  box-shadow:0 9px 22px #0b20282b;
+}
+.bf-entry-kicker{font-size:11px;font-weight:1000;letter-spacing:2.2px;color:#8e3028}
+.bf-entry-shell h1{
+  margin:6px 0 8px;
+  font-family:Georgia,serif;
+  color:#17353e;
+  font-size:42px;
+}
+.bf-entry-sub{margin:0 auto 22px;max-width:500px;color:#647173}
+.bf-entry-panel{
+  padding:18px;
+  border-radius:22px;
+  background:#fffdf7;
+  border:1px solid #ded3be;
+}
+.bf-entry-panel label{
+  display:block;
+  margin-bottom:8px;
+  font-size:11px;
+  letter-spacing:1.4px;
+  font-weight:1000;
+  color:#46575c;
+}
+.bf-pin-input{
+  width:100%;
+  height:58px;
+  border:1px solid #cfd5d3;
+  border-radius:18px;
+  background:#f3f6f4;
+  text-align:center;
+  font-size:28px;
+  letter-spacing:10px;
+  outline:none;
+}
+.bf-pin-input:focus{border-color:#2684a8;box-shadow:0 0 0 3px #2684a820}
+.bf-entry-error{min-height:22px;margin:7px 0;color:#a82d25;font-weight:800}
+.bf-entry-primary{
+  width:100%;min-height:54px;border:0;border-radius:999px;
+  background:linear-gradient(135deg,#15343e,#24505b);color:#f3d67d;
+  font-weight:1000;letter-spacing:.4px;
+}
+.bf-entry-alt{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.bf-entry-secondary{
+  min-height:46px;border:1px solid #c8baa0;border-radius:999px;
+  background:#f6f0e3;color:#31454b;font-weight:900
+}
+.bf-entry-foot{margin-top:16px;font-size:10px;color:#7a7468;letter-spacing:.3px}
+
+.bf-engine-banner{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:18px;padding:15px 20px;margin-bottom:18px;
+  border-radius:22px;
+  background:linear-gradient(135deg,#132f39,#1e4651);
+  border:1px solid #315661;color:#fff;
+  box-shadow:0 8px 22px #0d252d1f;
+}
+.bf-engine-brand{display:flex;align-items:center;gap:12px}
+.bf-mini-flag{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:#e0c16b;color:#16343e;font-size:24px}
+.bf-banner-kicker{font-size:9px;letter-spacing:1.7px;font-weight:1000;color:#d7c184}
+.bf-banner-title{font-family:Georgia,serif;font-size:23px;font-weight:900}
+.bf-engine-actions{display:flex;gap:8px}
+.bf-banner-btn{border:1px solid #54747c;border-radius:999px;padding:9px 13px;background:#ffffff0d;color:#dfe9e9;font-weight:900}
+.bf-banner-btn.strong{background:#d5b65d;color:#18343e;border-color:#d5b65d}
+
+/* Engine contains no company branding at all. */
+body.engine-mode .app-header,
+body.engine-mode .brand-header,
+body.engine-mode .site-footer,
+body.engine-mode .brand-footer,
+body.engine-mode [class*="ike-"],
+body.engine-mode [class*="brand-title"],
+body.engine-mode [class*="brand-subtitle"],
+body.engine-mode [class*="brand-kicker"]{
+  display:none!important;
+}
+body.engine-mode{
+  background:#edf0ed;
+}
+body.engine-mode .black-flag-command{
+  padding-top:22px;
+}
+
+/* Avoid company UI leaking behind engine */
+body.engine-mode #customerApp,
+body.engine-mode #adminPanel{
+  display:none!important;
+}
+
+@media(max-width:700px){
+  .bf-entry-shell{padding:26px 20px 22px}
+  .bf-entry-shell h1{font-size:34px}
+  .bf-entry-alt{grid-template-columns:1fr}
+  .bf-engine-banner{align-items:flex-start;flex-direction:column}
+  .bf-engine-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+}
+
+/* v2.6 BLACK FLAG HARBOR — project architecture */
+.project-command-section{margin:26px 0 30px}
+.project-summary-badge{display:inline-block;margin:0 0 12px;padding:8px 12px;border-radius:999px;background:#e7dcc1;color:#50442e;font-size:10px;font-weight:1000;letter-spacing:.7px}
+.project-add-btn{border:1px solid #bda979;background:#173742;color:#e6c770;border-radius:999px;padding:11px 15px;font-weight:1000}
+.project-command-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.project-card{padding:20px;border-radius:25px;border:1px solid #dadcd6;background:#fff;box-shadow:0 8px 22px #17313a12;color:#263b42;text-align:left}
+.project-card-head{display:flex;justify-content:space-between;align-items:center}
+.project-mark{width:50px;height:50px;display:grid;place-items:center;border-radius:16px;background:#173742;color:#e6c770;font:900 25px Georgia,serif}
+.project-publish-toggle{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:1000}.project-publish-toggle input{width:20px;height:20px}
+.project-card h4{font:900 23px Georgia,serif;color:#18343e;margin:14px 0 4px}.project-card p{margin:0;color:#737978}
+.project-kpis{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.project-kpis span{padding:7px 9px;background:#f0f2ef;border-radius:999px;font-size:10px}.project-kpis strong{color:#173742}
+.project-card-actions{display:flex;gap:8px}.project-card-actions button{width:auto;flex:1}
+.add-project-card{display:grid;place-items:center;min-height:230px;border:2px dashed #b7bbaF;background:#f9faf6;cursor:pointer}.add-project-plus{font-size:44px;color:#2e788f}
+.project-engine-control{margin:24px 0;padding:22px;border-radius:27px;background:#f7f4eb;border:1px solid #d9ceb8}
+.project-engine-head{display:flex;justify-content:space-between;gap:18px;align-items:start}.project-engine-head h3{font:900 28px Georgia,serif;color:#18343e;margin:3px 0}.project-engine-head p{margin:0;color:#6e7675}
+.project-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0}.project-tabs button{border:0;border-radius:999px;padding:9px 12px;background:#e8e8e2;color:#405158;font-weight:800}.project-tabs button.active{background:#173742;color:#e9cd7c}
+.project-tab-content{min-height:220px}.pec-grid,.company-control-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.pec-card{padding:18px;border-radius:20px;background:#fff;border:1px solid #dfddd4}.pec-card h4{margin:0 0 10px;font:900 19px Georgia,serif;color:#18343e}.pec-title-row{display:flex;justify-content:space-between;align-items:center}
+.activity-line,.ledger-row,.product-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;align-items:center;padding:10px 0;border-top:1px solid #ece9df}.activity-line{grid-template-columns:1fr auto}.activity-line small{color:#7a7f7d}
+.product-row{grid-template-columns:1fr auto}.product-row div{display:flex;flex-direction:column;gap:3px}.product-row small{color:#747a78}
+.ledger-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.ledger-summary>div{padding:14px;border-radius:18px;background:#173742;color:white}.ledger-summary span{display:block;color:#c5d5d8;font-size:10px;text-transform:uppercase}.ledger-summary strong{display:block;margin-top:4px;color:#ecd17c;font-size:20px}
+.add-project-gate{position:fixed;inset:0;z-index:350;display:grid;place-items:center;padding:20px;background:#102831cc;backdrop-filter:blur(8px)}.add-project-card{width:min(520px,100%);padding:25px;border-radius:28px;background:#fffdf7;border:1px solid #d7c7aa;box-shadow:0 28px 70px #0007}.add-project-card h2{font:900 30px Georgia,serif;color:#18343e;margin:5px 0}.add-project-card p{color:#6f7775}
+.project-engine-return{position:fixed;right:16px;bottom:16px;z-index:80;border:0;border-radius:999px;padding:11px 15px;background:#172f39;color:#e6c66f;font-weight:1000;box-shadow:0 8px 20px #0003}
+.final-action-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.final-green-btn,.final-black-btn{min-height:58px;border:0;border-radius:999px;color:white;font-weight:1000;font-size:18px}.final-green-btn{background:#2f8a48;box-shadow:0 5px 0 #206134}.final-black-btn{background:#111;box-shadow:0 5px 0 #000}.final-green-btn:active,.final-black-btn:active{transform:translateY(2px)}
+body.project-mode [class*="pirate"],body.project-mode [class*="black-flag"],body.project-mode .bf-engine-banner{display:none!important}
+@media(max-width:900px){.project-command-cards,.pec-grid,.ledger-summary{grid-template-columns:1fr}.project-card-actions{flex-direction:column}.ledger-row{grid-template-columns:1fr 1fr}.final-action-row{grid-template-columns:1fr}}
+
+/* v2.7 BLACK FLAG ANCHOR */
+body.boot-locked{overflow:hidden;background:#0d232b}
+body.boot-locked #app{display:none!important}
+body.boot-locked #blackFlagEntryGate{display:grid!important}
+body.engine-mode #app{display:block!important}
+body.engine-mode .brand-header,
+body.engine-mode .progress-track,
+body.engine-mode #customerApp,
+body.engine-mode #adminPanel,
+body.engine-mode #returnToEngineBtn{display:none!important}
+body.engine-mode #enginePanel{display:block!important}
+body.project-mode #enginePanel,
+body.project-mode #blackFlagEntryGate{display:none!important}
+body.project-mode #customerApp{display:block!important}
+body.project-mode .brand-header{display:grid!important}
+body.project-mode .progress-track{display:block!important}
+body.project-mode [class*="pirate"],
+body.project-mode [class*="black-flag"],
+body.project-mode .bf-engine-banner{display:none!important}
+.legacy-global-project-control{display:none!important}
+.payment-structure-card{border-color:#d7c69f;background:#fffaf0}
+.payment-safety-note{margin:12px 0;padding:12px 14px;border-radius:16px;background:#f0eee6;color:#625a4d;font-size:12px;font-weight:700}
+.payment-foundation{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid #ece7dc}
+.payment-foundation strong{text-transform:capitalize;color:#173742}
