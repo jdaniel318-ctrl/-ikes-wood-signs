@@ -247,3 +247,12 @@ Focused repair build for Engine entry.
 - Project Settings automatically locks and returns to ordering after 15 minutes of inactivity.
 - Activity such as tapping, typing, changing a setting, scrolling, or touching the screen resets the 15-minute timer.
 - No customer-ordering or Black Flag Engine UI is allowed to render while Project Settings is open.
+
+## Version 2.9 — BLACK FLAG CAPTAIN'S LOG
+- Compact project-branded Project Admin header restored; customer ordering CTA/progress remains excluded.
+- Current project orders are visible in Project Admin, with a separate Full Orders view.
+- Customer confirmation email moved to Black Flag Project Control Center > Notifications.
+- Protected PIN fields reopen blank and discourage browser autofill.
+- Captain's Log adds project KPIs and charts.
+- Platform Identity, Storage & Recovery, backup, draft recovery, and Reset are consolidated into Protected Controls.
+- Engine reset requires a fresh Engine PIN plus a second confirmation.

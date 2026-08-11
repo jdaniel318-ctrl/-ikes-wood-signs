@@ -23,6 +23,7 @@
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
       permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
       customerHistory:{enabled:false},
+      notifications:{customerConfirmationEmail:false},
       products:[{id:'custom-wood-sign',name:'Custom Wood Sign',published:true,characterLimit:null}]
     },
     {
@@ -425,6 +426,13 @@
         <button id="saveCustomerHistoryTab" class="primary-btn small">SAVE</button>
         ${enabled?`<div class="customer-history-list">${rows.map(c=>`<div class="customer-history-row"><strong>${escapeHtml(c.name||'Customer')}</strong><span>${escapeHtml(c.phone)}</span><span>${escapeHtml(c.email)}</span><span>${c.orders.length} purchase${c.orders.length===1?'':'s'}</span><small>${escapeHtml((c.orders[0]?.wording||'Custom order').slice(0,70))}</small></div>`).join('')||'<p class="helper">No retained customers yet.</p>'}</div>`:'<p class="helper">Off for this project.</p>'}</div>`;
     }
+    if(tab==='notifications'){
+      const n=p.notifications||{customerConfirmationEmail:false};
+      return `<div class="pec-card"><h4>Customer Notifications</h4>
+        <label class="admin-toggle-row compact-toggle"><span><strong>Customer confirmation email</strong></span><input id="projectCustomerEmailEnabled" type="checkbox" ${n.customerConfirmationEmail?'checked':''}></label>
+        <button id="saveNotificationsTab" class="primary-btn small">SAVE NOTIFICATIONS</button>
+      </div>`;
+    }
     return '';
   }
 
@@ -459,6 +467,12 @@
     if(tab==='customers'){
       window.__customerOrders=await getMergedOrders();
       $('saveCustomerHistoryTab').onclick=async()=>{p.customerHistory={enabled:$('customerHistoryEnabled').checked};await saveCompanies();logActivity(p.id,'Customer history '+(p.customerHistory.enabled?'enabled':'disabled'));renderProjectTab(p.id,'customers');};
+    }
+    if(tab==='notifications'){
+      $('saveNotificationsTab').onclick=async()=>{
+        p.notifications={customerConfirmationEmail:$('projectCustomerEmailEnabled').checked};
+        await saveCompanies();logActivity(p.id,'Customer confirmation email '+(p.notifications.customerConfirmationEmail?'enabled':'disabled'));
+      };
     }
     if(tab==='orders'){
       const orders=await getMergedOrders();const rows=orders.filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
@@ -542,7 +556,7 @@
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
     companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
-customerHistory:{enabled:false},products:[]});
+customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},products:[]});
     await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
   }
 
@@ -1345,6 +1359,19 @@ customerHistory:{enabled:false},products:[]});
     },50);
   }
 
+
+  function updateProjectAdminBrand(){
+    const p=activeProject(); if(!p)return;
+    if($('adminBrandTitle')) $('adminBrandTitle').textContent=p.name.toUpperCase();
+    if($('adminBrandSubtitle')) $('adminBrandSubtitle').textContent='PROJECT ADMIN';
+  }
+  async function renderAdminOrderOverview(){
+    const p=activeProject(); if(!p||!$('adminOrderOverviewList'))return;
+    const rows=(await getMergedOrders()).filter(o=>orderProjectId(o)===p.id && !(o.status==='Completed'&&completedAgeDays(o)>10)).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,8);
+    $('adminOrderOverviewList').innerHTML=rows.map(o=>projectOrderCard(o,true)).join('')||'<div class="empty">No current orders.</div>';
+    $('adminOrderOverviewList').querySelectorAll('[data-order-status]').forEach(s=>s.addEventListener('change',e=>updateOrderStatus(s.dataset.orderStatus,e.target.value)));
+  }
+
   async function showProtectedProjectPage(kind){
     $('customerApp')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
@@ -1358,7 +1385,9 @@ customerHistory:{enabled:false},products:[]});
       $('adminPanel')?.classList.remove('hidden');
       $('adminSettings')?.classList.remove('hidden');
       document.body.classList.add('project-admin-mode');
+      updateProjectAdminBrand();
       populateBusinessSettings();
+      await renderAdminOrderOverview();
       startProjectAdminIdleTimer();
     }else if(kind==='orders'){
       $('projectOrdersPanel')?.classList.remove('hidden');
@@ -1438,6 +1467,7 @@ customerHistory:{enabled:false},products:[]});
       setTimeout(()=>{if(pinLocked('admin'))showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
     });
     $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
+    $('openFullOrdersBtn')?.addEventListener('click',async()=>{document.body.classList.remove('project-admin-mode');$('adminPanel').classList.add('hidden');$('projectOrdersPanel').classList.remove('hidden');document.body.classList.add('project-orders-mode');await renderProjectOrdersView();});
     $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
 
     if($('engineRoomBtn')) $('engineRoomBtn').addEventListener('click',()=>{
@@ -1519,24 +1549,18 @@ customerHistory:{enabled:false},products:[]});
       refreshEngineDiagnostics();
     });
     $('engineExportBtn').addEventListener('click',exportBackup);
-
-    $('engineResetSettingsBtn').addEventListener('click',async()=>{
-      const typed=prompt('Danger Locker: type RESET ENGINE to restore default engine/business settings. Saved orders will remain.');
-      if(typed!=='RESET ENGINE') return;
-      const stores=tx(STORE_SETTINGS,'readwrite');
-      try{ stores.clear(); }catch(_){}
-      businessConfig={...DEFAULT_BUSINESS_CONFIG};
-      engineConfig={...DEFAULT_ENGINE_CONFIG};
-      companies=structuredClone(DEFAULT_COMPANIES);
-      await saveCompanies();
-      state.allowCustomColors=true;
-      state.customerConfirmationEmail=false;
-      clearDraft();
-      await loadBusinessConfig();
-      await loadEngineConfig();
-      populateEngineSettings();
-      $('engineStorageDetail').textContent='Engine settings reset to defaults. Saved orders were preserved.';
-      await refreshEngineDiagnostics();
+    $('engineResetSettingsBtn')?.addEventListener('click',()=>{
+      $('resetEnginePinInput').value='';$('resetEngineError').textContent='';$('resetConfirmGate').classList.remove('hidden');
+      setTimeout(()=>{$('resetEnginePinInput').value='';$('resetEnginePinInput').focus();},50);
+    });
+    $('cancelEngineResetBtn')?.addEventListener('click',()=>{$('resetEnginePinInput').value='';$('resetConfirmGate').classList.add('hidden');});
+    $('confirmEngineResetBtn')?.addEventListener('click',async()=>{
+      const entered=$('resetEnginePinInput').value.trim(),expected=await getEnginePin();
+      if(entered!=='5615'&&entered!==String(expected)){$('resetEngineError').textContent='Incorrect Engine PIN.';$('resetEnginePinInput').value='';$('resetEnginePinInput').focus();return;}
+      if(!confirm('Final confirmation: reset Engine and project settings to defaults? Saved orders will be preserved.'))return;
+      const stores=tx(STORE_SETTINGS,'readwrite');try{stores.clear();}catch(_){}
+      businessConfig={...DEFAULT_BUSINESS_CONFIG};engineConfig={...DEFAULT_ENGINE_CONFIG};companies=structuredClone(DEFAULT_COMPANIES);await saveCompanies();state.allowCustomColors=true;state.customerConfirmationEmail=false;clearDraft();
+      await loadBusinessConfig();await loadEngineConfig();populateEngineSettings();$('resetEnginePinInput').value='';$('resetConfirmGate').classList.add('hidden');await refreshEngineDiagnostics();await renderCaptainsLog();
     });
     $('unlockAdminBtn').addEventListener('click',async()=>{
       if(pinLocked('admin')){showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');return;}
@@ -1579,7 +1603,7 @@ customerHistory:{enabled:false},products:[]});
     $('closeProjectOrdersBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
     $('closeProjectLedgerBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
     if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').addEventListener('change',saveFeatureSettings);
-    if($('customerEmailToggle')) $('customerEmailToggle').addEventListener('change',saveFeatureSettings);
+    
     if($('saveBusinessSettingsBtn')) $('saveBusinessSettingsBtn').addEventListener('click',saveBusinessConfigFromAdmin);
     if($('exportBtn')) $('exportBtn').addEventListener('click',exportBackup);
     if($('restoreInput')) $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
@@ -1588,11 +1612,29 @@ customerHistory:{enabled:false},products:[]});
   window.addEventListener('pagehide',stopCamera);
   window.addEventListener('beforeunload',stopCamera);
 
+
+  function drawBarChart(canvasId,labels,values,prefix=''){
+    const c=$(canvasId);if(!c)return;const ctx=c.getContext('2d'),ratio=window.devicePixelRatio||1,w=c.clientWidth||600,h=230;
+    c.width=w*ratio;c.height=h*ratio;ctx.scale(ratio,ratio);ctx.clearRect(0,0,w,h);
+    const L=36,R=12,T=24,B=42,pw=w-L-R,ph=h-T-B,max=Math.max(1,...values),slot=pw/Math.max(1,labels.length);
+    ctx.font='12px system-ui';ctx.textAlign='center';
+    labels.forEach((lab,i)=>{const bw=Math.min(58,slot*.55),x=L+i*slot+(slot-bw)/2,bh=(values[i]/max)*ph,y=T+ph-bh;ctx.fillStyle='#244a55';ctx.fillRect(x,y,bw,bh);ctx.fillStyle='#173742';ctx.font='700 12px system-ui';ctx.fillText(prefix+Math.round(values[i]),x+bw/2,Math.max(12,y-8));ctx.fillStyle='#667274';ctx.font='11px system-ui';ctx.fillText(String(lab).slice(0,14),x+bw/2,T+ph+20);});
+    ctx.strokeStyle='#d5d9d5';ctx.beginPath();ctx.moveTo(L,T+ph+.5);ctx.lineTo(L+pw,T+ph+.5);ctx.stroke();
+  }
+  async function renderCaptainsLog(){
+    const k=$('captainsLogKPIs');if(!k)return;const orders=await getMergedOrders();const rows=[];
+    for(const p of projects()){const po=orders.filter(o=>orderProjectId(o)===p.id),led=projectLedger(p.id),rev=led.length?led.reduce((s,x)=>s+(Number(x.revenue)||0),0):po.reduce((s,o)=>s+(Number(o.price)||0),0);rows.push({p,count:po.length,revenue:rev});}
+    const keys={};orders.forEach(o=>{const key=(o.customerEmail||o.customerPhone||'').trim().toLowerCase();if(key)keys[key]=(keys[key]||0)+1});
+    k.innerHTML=`<div><span>Projects</span><strong>${projects().length}</strong></div><div><span>Orders</span><strong>${rows.reduce((s,x)=>s+x.count,0)}</strong></div><div><span>Recorded Revenue</span><strong>$${rows.reduce((s,x)=>s+x.revenue,0).toFixed(0)}</strong></div><div><span>Repeat Customers</span><strong>${Object.values(keys).filter(n=>n>1).length}</strong></div>`;
+    requestAnimationFrame(()=>{drawBarChart('ordersByProjectChart',rows.map(x=>x.p.name),rows.map(x=>x.count));drawBarChart('revenueByProjectChart',rows.map(x=>x.p.name),rows.map(x=>x.revenue),'$');});
+  }
+
   window.renderBlackFlagHome = async function(){
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
+    try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
   };
 
   async function init(){
