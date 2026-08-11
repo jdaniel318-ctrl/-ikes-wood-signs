@@ -143,3 +143,107 @@ body{background:#f7f1e5}
   background:#fff1a8;
   box-shadow:inset 0 0 0 3px var(--blue),0 5px 14px #815f1c12;
 }
+
+
+/* Version 1.5 — live-edge personality + approval/security */
+.screen h2{
+  position:relative;
+  display:inline-block;
+}
+.screen h2:after{
+  content:"";
+  display:block;
+  width:72%;
+  height:7px;
+  margin-top:6px;
+  border-radius:68% 32% 62% 38% / 55% 45% 58% 42%;
+  background:linear-gradient(90deg,#b97643,#e4b67e,#9e5b36);
+  opacity:.55;
+}
+.proofread-callout{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  margin:18px 0 10px;
+  padding:13px 16px;
+  border-radius:24px 34px 22px 30px;
+  background:#fff4c9;
+  color:#61451e;
+}
+.proofread-callout strong{color:#9f332a}
+.approval-row{
+  padding:16px;
+  border-radius:28px 20px 30px 22px;
+  background:#f5f1e8;
+}
+.done-personal-note{font-weight:700;color:#315f39}
+.approved-preview-wrap{
+  margin:20px 0;
+  padding:12px;
+  border-radius:26px 34px 24px 31px;
+  background:#f5f1e8;
+}
+.done-approved-preview{
+  display:block;
+  width:100%;
+  max-height:360px;
+  margin-top:8px;
+  object-fit:contain;
+  border-radius:22px 29px 20px 27px;
+  background:#e9e3d8;
+}
+.pin-gate{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:rgba(25,56,74,.58);
+  backdrop-filter:blur(8px);
+}
+.pin-card{
+  width:min(430px,100%);
+  padding:24px;
+  border-radius:38px 28px 36px 30px;
+  background:#fffdf8;
+  box-shadow:0 20px 55px #0004;
+  text-align:center;
+}
+.pin-ike-wrap{
+  width:84px;
+  height:92px;
+  margin:-58px auto 10px;
+  border-radius:44% 44% 22px 22px;
+  overflow:hidden;
+  background:var(--yellow);
+  box-shadow:0 8px 18px #0002;
+}
+.pin-ike-wrap img{width:100%;height:100%;object-fit:cover;object-position:35% top}
+.pin-input{
+  text-align:center;
+  font-size:28px;
+  letter-spacing:8px;
+}
+.admin-preview-label{
+  display:inline-block;
+  margin:10px 0 5px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#e4f3e7;
+  color:#2f6c3d;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+.approved-thumb{
+  max-height:300px;
+  background:#f2eee7;
+  box-shadow:0 7px 18px #5f43221a;
+}
+.order-card{
+  border:0;
+  border-radius:30px 23px 32px 26px;
+  background:#fffdf8;
+  box-shadow:0 8px 24px #4f392014;
+}

@@ -3,7 +3,8 @@
   const DB_VERSION = 1;
   const STORE_ORDERS = 'orders';
   const STORE_SETTINGS = 'settings';
-  const LOCAL_ORDERS_KEY = 'ikesWoodSignsOrdersBackupV14';
+  const LOCAL_ORDERS_KEY = 'ikesWoodSignsOrdersBackupV15';
+  const DEFAULT_ADMIN_PIN = '4353';
   // Paste the Web3Forms access key for "Ike's Wood Signs Orders" below before publishing v1.3.
   const WEB3FORMS_ACCESS_KEY = 'c97f16ac-2070-46b8-923c-9d7524031bce';
   const ORDER_EMAIL = 'ikeswoodsigns.orders@yahoo.com';
@@ -23,7 +24,8 @@
     customerPhone: '',
     customerEmail: '',
     currentOrderId: '',
-    currentOrder: null
+    currentOrder: null,
+    approvedPreviewData: ''
   };
 
   let db;
@@ -95,6 +97,21 @@
   }
   async function getAll(store){ return reqToPromise(tx(store).getAll()); }
   async function getSetting(key){ return reqToPromise(tx(STORE_SETTINGS).get(key)); }
+  async function setSetting(key,value){
+    try{ return await put(STORE_SETTINGS,{key,value}); }
+    catch(err){ console.warn('Setting could not be saved',key,err); throw err; }
+  }
+
+  async function getAdminPin(){
+    try{
+      const saved=await getSetting('adminPin');
+      return saved?.value || DEFAULT_ADMIN_PIN;
+    }catch(err){
+      console.warn('Admin PIN setting unavailable; using default',err);
+      return DEFAULT_ADMIN_PIN;
+    }
+  }
+
 
   function setScreen(name){
     if(state.current==='photo' && name!=='photo') stopCamera();
@@ -194,9 +211,69 @@
     return `IKE-${y}${m}${day}-${suffix}`;
   }
 
+  async function createApprovedPreview(){
+    const source=state.photoData;
+    if(!source) return '';
+    return new Promise((resolve)=>{
+      const img=new Image();
+      img.onload=()=>{
+        try{
+          const maxSide=1600;
+          const scale=Math.min(1,maxSide/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
+          const w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));
+          const h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
+          const canvas=document.createElement('canvas');
+          canvas.width=w;canvas.height=h;
+          const ctx=canvas.getContext('2d',{alpha:false});
+          if(!ctx) return resolve('');
+          ctx.drawImage(img,0,0,w,h);
+
+          // Draw the customer's approved wording over the exact wood photo.
+          const fontSize=Math.max(30,Math.min(Math.round(w*0.09),Math.round(h*0.28)));
+          const family=state.font==='A'?'Georgia':state.font==='C'?"Times New Roman":'Georgia';
+          const style=state.font==='B'?'italic ':'';
+          const weight=state.font==='C'?'400':'700';
+          ctx.font=`${style}${weight} ${fontSize}px ${family}`;
+          ctx.textAlign='center';
+          ctx.textBaseline='middle';
+          ctx.lineJoin='round';
+
+          let color='#111111';
+          if(state.fill==='White') color='#ffffff';
+          else if(state.fill==='Natural') color='#704426';
+          else if(state.fill==='Other') color='#202020';
+
+          const text=state.wording||'';
+          const maxWidth=w*0.88;
+          let drawSize=fontSize;
+          while(drawSize>20){
+            ctx.font=`${style}${weight} ${drawSize}px ${family}`;
+            if(ctx.measureText(text).width<=maxWidth) break;
+            drawSize-=2;
+          }
+          // Outline improves legibility while preserving selected fill.
+          ctx.lineWidth=Math.max(2,drawSize*0.045);
+          ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';
+          ctx.strokeText(text,w/2,h/2,maxWidth);
+          ctx.fillStyle=color;
+          ctx.fillText(text,w/2,h/2,maxWidth);
+
+          resolve(canvas.toDataURL('image/jpeg',0.82));
+        }catch(err){
+          console.error('Approved preview flatten failed',err);
+          resolve('');
+        }
+      };
+      img.onerror=()=>resolve('');
+      img.src=source;
+    });
+  }
+
   async function saveOrder(){
     const id=newOrderId();
-    const order={id,createdAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
+    const approvedPreviewData=await createApprovedPreview();
+    state.approvedPreviewData=approvedPreviewData;
+    const order={id,createdAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
     try{
       await put(STORE_ORDERS,order);
@@ -206,11 +283,19 @@
     state.currentOrderId=id;
     state.currentOrder=order;
     $('doneOrderId').textContent=id;
+    if($('doneApprovedPreview')){
+      if(order.approvedPreviewData){
+        $('doneApprovedPreview').src=order.approvedPreviewData;
+        $('doneApprovedPreview').classList.remove('hidden');
+      }else{
+        $('doneApprovedPreview').classList.add('hidden');
+      }
+    }
     return order;
   }
 
   function resetOrder(){
-    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null});
+    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:''});
     ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;setScreen('welcome');
   }
 
@@ -245,7 +330,7 @@
       letter_fill:order.fill,
       order_status:order.status,
       submitted_at:new Date(order.createdAt).toLocaleString(),
-      message:`Order ${order.id}\n\nCustomer: ${order.customerName}\nCell: ${order.customerPhone}\nEmail: ${order.customerEmail}\nContact by: ${order.contactPreference}\n\nExact wording: ${order.wording}\nWood: $${order.price}\nOrientation: ${order.orientation}\nTop marker: ${order.topSide}\nLetter style: ${order.font}\nLetter fill: ${order.fill}\n\nThe wood photo remains stored with the local iPad order in Version 1.3.`
+      message:`Order ${order.id}\n\nCustomer: ${order.customerName}\nCell: ${order.customerPhone}\nEmail: ${order.customerEmail}\nContact by: ${order.contactPreference}\n\nExact wording: ${order.wording}\nWood: $${order.price}\nOrientation: ${order.orientation}\nTop marker: ${order.topSide}\nLetter style: ${order.font}\nLetter fill: ${order.fill}\n\nThe customer's approved wood + lettering preview is stored with the local iPad order in Version 1.5.`
     };
 
     try{
@@ -262,7 +347,7 @@
       backupOrderLocally(order);
       try{ await put(STORE_ORDERS,order); }catch(err){ console.warn('Email status IndexedDB update failed',err); }
       status.className='submit-status centered success';
-      status.textContent=`Order received! A copy was sent automatically to Ike's order inbox.`;
+      status.textContent=`Order received! Ike has your order details. Thank you again for choosing Ike's Wood Signs.`;
       return true;
     }catch(err){
       console.error('Automatic order email failed',err);
@@ -293,9 +378,8 @@
     const orders=(await getMergedOrders()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
     const list=$('orderList');
     if(!orders.length){list.innerHTML='<div class="empty">No saved orders yet.</div>';return;}
-    list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div>${o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-actions"><button class="secondary-btn small" data-email>PREPARE EMAIL</button></div></article>`).join('');
+    list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div>${o.approvedPreviewData?`<div class="admin-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${o.approvedPreviewData}" alt="Approved sign preview for ${escapeHtml(o.id)}" class="thumb approved-thumb">`:o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-actions"><span class="helper">${o.emailSentAt?'Automatic email sent':'Saved locally'}</span></div></article>`).join('');
     list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async e=>{const card=e.target.closest('[data-id]');const orders=await getMergedOrders();const o=orders.find(x=>x.id===card.dataset.id);if(o){o.status=e.target.value;await put(STORE_ORDERS,o);}}));
-    list.querySelectorAll('[data-email]').forEach(btn=>btn.addEventListener('click',async e=>{const id=e.target.closest('[data-id]').dataset.id;const orders=await getMergedOrders();const o=orders.find(x=>x.id===id);if(o)prepareEmail(o);}));
   }
 
   async function exportBackup(){
@@ -448,10 +532,46 @@
     });
     $('newOrderBtn').addEventListener('click',resetOrder);
     $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
-    $('adminBtn').addEventListener('click',async()=>{$('customerApp').classList.add('hidden');$('adminPanel').classList.remove('hidden');const s=await getSetting('adminEmails');$('adminEmails').value=s?.value||'';await renderAdmin();});
+    $('adminBtn').addEventListener('click',()=>{
+      $('adminPinInput').value='';
+      $('pinGateError').textContent='';
+      $('pinGate').classList.remove('hidden');
+      setTimeout(()=>$('adminPinInput').focus(),50);
+    });
     $('closeAdminBtn').addEventListener('click',()=>{$('adminPanel').classList.add('hidden');$('customerApp').classList.remove('hidden');});
+    $('unlockAdminBtn').addEventListener('click',async()=>{
+      const entered=$('adminPinInput').value.trim();
+      const expected=await getAdminPin();
+      if(entered!==expected){
+        $('pinGateError').textContent='Incorrect PIN.';
+        $('adminPinInput').select();
+        return;
+      }
+      $('pinGate').classList.add('hidden');
+      $('customerApp').classList.add('hidden');
+      $('adminPanel').classList.remove('hidden');
+      await renderAdmin();
+    });
+    $('adminPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockAdminBtn').click();});
+    $('cancelAdminPinBtn').addEventListener('click',()=>$('pinGate').classList.add('hidden'));
+    $('savePinBtn').addEventListener('click',async()=>{
+      const p=$('newAdminPin').value.trim();
+      const c=$('confirmAdminPin').value.trim();
+      if(!/^\d{4,8}$/.test(p)){
+        $('pinSettingsError').textContent='PIN must be 4 to 8 numbers.';
+        return;
+      }
+      if(p!==c){
+        $('pinSettingsError').textContent='The two PIN entries do not match.';
+        return;
+      }
+      await setSetting('adminPin',p);
+      $('pinSettingsError').textContent='PIN updated.';
+      $('newAdminPin').value='';
+      $('confirmAdminPin').value='';
+    });
+
     $('settingsBtn').addEventListener('click',()=>$('adminSettings').classList.toggle('hidden'));
-    $('saveSettingsBtn').addEventListener('click',async()=>{await put(STORE_SETTINGS,{key:'adminEmails',value:$('adminEmails').value.trim()});$('adminSettings').classList.add('hidden');});
     $('exportBtn').addEventListener('click',exportBackup);
     $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
   }
@@ -461,7 +581,7 @@
 
   async function init(){
     db=await openDb();bindEvents();setScreen('welcome');
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   init().catch(err=>{console.error(err);alert('The app could not start. Please reload the page.');});
 })();

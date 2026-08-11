@@ -166,7 +166,8 @@
         <h2>Review Before You Order</h2>
         <div class="preview-card review-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
         <div class="summary-box" id="orderSummary"></div>
-        <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I approve the wording, spelling, uppercase/lowercase letters, orientation, letter style and fill exactly as shown.</span></label>
+        <div class="proofread-callout"><strong>Please check your wording carefully.</strong><span>Your sign will be made from the approved preview.</span></div>
+        <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I have reviewed and approve the spelling, capitalization, punctuation, layout, orientation, letter style, and fill shown in my preview. I understand Ike's Wood Signs may refuse or cancel any order at its discretion.</span></label>
         <button id="approveBtn" class="primary-btn">PLACE MY ORDER →</button>
         <p id="approvalError" class="error-text" aria-live="polite"></p>
       </section>
@@ -175,9 +176,9 @@
         <div class="celebration-burst">
           <img src="assets/ike_character.jpg" alt="Cartoon Ike" class="celebration-ike" />
           <div>
-            <div class="celebration-kicker">THANK YOU!</div>
-            <h2>Your Sign Is In Ike's Hands!</h2>
-            <p>Your order was received. Ike will contact you when your handmade sign is ready for pickup.</p>
+            <div class="celebration-kicker">THANK YOU FOR CHOOSING IKE!</div>
+            <h2>Your Custom Sign Is In Ike's Hands!</h2>
+            <p>Thank you for trusting Ike's Wood Signs to make something personal for you. We truly appreciate you choosing a small local business.</p>
           </div>
         </div>
         <div class="order-ticket">
@@ -185,6 +186,11 @@
           <div id="doneOrderId" class="order-id"></div>
           <small>Keep this number for your records.</small>
         </div>
+        <div class="approved-preview-wrap">
+          <div class="helper centered">Your approved design</div>
+          <img id="doneApprovedPreview" class="done-approved-preview" alt="Approved custom sign preview" />
+        </div>
+        <p class="centered done-personal-note">Ike will use your approved design and order details to make your sign as requested.</p>
         <p id="submitStatus" class="submit-status centered" aria-live="polite"></p>
         <button id="retrySubmitBtn" class="primary-btn hidden">TRY SENDING AGAIN</button>
         <button id="newOrderBtn" class="secondary-btn">START ANOTHER ORDER</button>
@@ -194,18 +200,35 @@
       <div class="nav-row"><button id="backBtn" class="text-btn">← Back</button><span id="stepLabel" class="helper"></span></div>
     </main>
 
+    <div id="pinGate" class="pin-gate hidden" role="dialog" aria-modal="true" aria-labelledby="pinGateTitle">
+      <div class="pin-card">
+        <div class="pin-ike-wrap"><img src="assets/ike_character.jpg" alt="Cartoon Ike" /></div>
+        <h2 id="pinGateTitle">Admin Access</h2>
+        <p>Enter Ike's admin PIN to view saved orders and settings.</p>
+        <input id="adminPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <p id="pinGateError" class="error-text centered" aria-live="polite"></p>
+        <button id="unlockAdminBtn" class="primary-btn">UNLOCK ADMIN</button>
+        <button id="cancelAdminPinBtn" class="secondary-btn">CANCEL</button>
+      </div>
+    </div>
+
     <section id="adminPanel" class="admin-panel hidden">
       <div class="admin-head"><div><h2>Admin Orders</h2><p class="helper">Saved on this iPad for backup</p></div><button id="closeAdminBtn" class="secondary-btn small">BACK TO ORDERING</button></div>
       <div class="admin-actions">
         <button id="exportBtn" class="secondary-btn small">EXPORT BACKUP</button>
         <label class="secondary-btn small file-btn" for="restoreInput">RESTORE BACKUP</label>
         <input id="restoreInput" type="file" accept="application/json" hidden />
-        <button id="settingsBtn" class="secondary-btn small">EMAIL SETTINGS</button>
+        <button id="settingsBtn" class="secondary-btn small">ADMIN SETTINGS</button>
       </div>
       <div id="adminSettings" class="settings-box hidden">
-        <label for="adminEmails">Admin email addresses</label>
-        <textarea id="adminEmails" rows="3" placeholder="ike@example.com, owner@example.com"></textarea>
-        <button id="saveSettingsBtn" class="primary-btn small">SAVE EMAIL SETTINGS</button>
+        <h3>Admin Settings</h3>
+        <label for="newAdminPin">Change admin PIN</label>
+        <input id="newAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Enter a new PIN" />
+        <label for="confirmAdminPin">Confirm new PIN</label>
+        <input id="confirmAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Re-enter the new PIN" />
+        <p id="pinSettingsError" class="error-text" aria-live="polite"></p>
+        <button id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
+        <p class="helper">Default PIN for Version 1.5 is 4353 until changed here.</p>
       </div>
       <div id="orderList" class="order-list"></div>
     </section>

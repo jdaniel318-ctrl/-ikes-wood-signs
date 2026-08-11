@@ -35,3 +35,19 @@ with the Access Key for the verified Web3Forms form whose recipient is `ikeswood
 - Web3Forms failures are saved onto the order record for troubleshooting; customer sees a clear failure state instead of a false success.
 - Existing unique `IKE-...` order number remains on the customer confirmation and automatic order email.
 - Price selection now explains that price is based on the length group posted in the trailer. Exact length brackets are intentionally not invented yet; the existing $45 / $55 / $65 / $90 / $135 posted price tiers remain in use until Ike's exact length ranges are confirmed.
+
+
+## Version 1.5 — final build for the evening
+Customer trust, production-reference reliability, and admin security are the priorities.
+
+- Admin gear is protected by default PIN `4353`.
+- Admin PIN can be changed inside Admin Settings (4–8 digits).
+- Every approved order stores a flattened production-reference image combining the customer's exact photographed wood blank with the approved wording/style/fill.
+- Admin Orders displays that approved customer preview prominently.
+- Customer approval language explicitly requires review of spelling, capitalization, punctuation, layout, orientation, style and fill, and states that Ike's Wood Signs may refuse or cancel any order at its discretion.
+- Thank-you screen emphasizes appreciation for choosing Ike's Wood Signs and supporting a small local business.
+- Old customer-facing/manual "Prepare Admin Email" workflow remains removed; automatic Web3Forms submission is the intended flow.
+- Service worker is now network-first, forces updates, and deletes prior Ike's cache versions to reduce stale-version problems.
+- Compact header from Version 1.4 is retained.
+- Subtle live-edge wood shapes are added to the UI without replacing the established yellow/blue/red/green branding.
+- Local order redundancy from Version 1.4 is retained.
