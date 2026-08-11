@@ -25,7 +25,8 @@
     customerEmail: '',
     currentOrderId: '',
     currentOrder: null,
-    approvedPreviewData: ''
+    approvedPreviewData: '',
+    customColor: '#1f6feb'
   };
 
   let db;
@@ -131,8 +132,8 @@
 
   function fillColor(){
     if(state.fill==='White') return '#ffffff';
-    if(state.fill==='Natural') return '#704426';
-    if(state.fill==='Other') return '#202020';
+    if(state.fill==='Natural') return '#6b4429';
+    if(state.fill==='Other') return state.customColor || '#1f6feb';
     return '#111111';
   }
 
@@ -144,12 +145,23 @@
     });
     $$('[data-preview-text]').forEach(el=>{
       el.textContent=state.wording || 'Your Sign';
-      el.classList.remove('style-a','style-b','style-c');
+      el.classList.remove('style-a','style-b','style-c','cnc-carved');
       el.classList.add(`style-${state.font.toLowerCase()}`);
-      el.style.color=fillColor();
+      if(state.fill==='Natural'){
+        el.classList.add('cnc-carved');
+        el.style.removeProperty('color');
+      }else{
+        el.style.color=fillColor();
+      }
     });
     $$('[data-font-sample]').forEach(el=>el.textContent=state.wording||'Your Sign');
     $('previewPrice').textContent=`Your $${state.price} Ike's Wood Sign`;
+    if($('customColorPanel')) $('customColorPanel').classList.toggle('hidden',state.fill!=='Other');
+    if($('customColor')){
+      $('customColor').value=state.customColor||'#1f6feb';
+      $('customColorName').textContent=(state.customColor||'#1f6feb').toUpperCase();
+      $('customSwatch').style.background=state.customColor||'#1f6feb';
+    }
   }
 
   function updateUi(){
@@ -240,8 +252,8 @@
 
           let color='#111111';
           if(state.fill==='White') color='#ffffff';
-          else if(state.fill==='Natural') color='#704426';
-          else if(state.fill==='Other') color='#202020';
+          else if(state.fill==='Natural') color='#6b4429';
+          else if(state.fill==='Other') color=state.customColor||'#1f6feb';
 
           const text=state.wording||'';
           const maxWidth=w*0.88;
@@ -251,12 +263,25 @@
             if(ctx.measureText(text).width<=maxWidth) break;
             drawSize-=2;
           }
-          // Outline improves legibility while preserving selected fill.
-          ctx.lineWidth=Math.max(2,drawSize*0.045);
-          ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';
-          ctx.strokeText(text,w/2,h/2,maxWidth);
-          ctx.fillStyle=color;
-          ctx.fillText(text,w/2,h/2,maxWidth);
+          if(state.fill==='Natural'){
+            // CNC/no-fill simulation: recessed cut with highlight on the upper edge
+            // and a darker lower-edge shadow, rather than painted brown lettering.
+            ctx.save();
+            ctx.lineWidth=Math.max(2,drawSize*0.055);
+            ctx.strokeStyle='rgba(255,235,202,.48)';
+            ctx.strokeText(text,w/2-2,h/2-2,maxWidth);
+            ctx.strokeStyle='rgba(58,28,13,.72)';
+            ctx.strokeText(text,w/2+2,h/2+3,maxWidth);
+            ctx.fillStyle='rgba(92,54,30,.58)';
+            ctx.fillText(text,w/2,h/2,maxWidth);
+            ctx.restore();
+          }else{
+            ctx.lineWidth=Math.max(2,drawSize*0.045);
+            ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';
+            ctx.strokeText(text,w/2,h/2,maxWidth);
+            ctx.fillStyle=color;
+            ctx.fillText(text,w/2,h/2,maxWidth);
+          }
 
           resolve(canvas.toDataURL('image/jpeg',0.82));
         }catch(err){
@@ -273,7 +298,7 @@
     const id=newOrderId();
     const approvedPreviewData=await createApprovedPreview();
     state.approvedPreviewData=approvedPreviewData;
-    const order={id,createdAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
+    const order={id,createdAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
     try{
       await put(STORE_ORDERS,order);
@@ -295,8 +320,44 @@
   }
 
   function resetOrder(){
-    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:''});
+    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',customColor:'#1f6feb'});
     ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;setScreen('welcome');
+  }
+
+  async function dataUrlToBlob(dataUrl){
+    const response=await fetch(dataUrl);
+    return response.blob();
+  }
+
+  async function sendWeb3FormsWithOptionalPreview(order,payload){
+    // Web3Forms accepts a single attachment using multipart/form-data on plans
+    // that support file attachments. If the attachment is rejected, the caller
+    // falls back automatically to the proven text-only submission.
+    if(order.approvedPreviewData){
+      try{
+        const form=new FormData();
+        Object.entries(payload).forEach(([k,v])=>form.append(k,String(v??'')));
+        const blob=await dataUrlToBlob(order.approvedPreviewData);
+        if(blob.size<=5*1024*1024){
+          form.append('attachment',blob,`${order.id}-approved-preview.jpg`);
+          const response=await fetch('https://api.web3forms.com/submit',{method:'POST',body:form});
+          const result=await response.json().catch(()=>({success:false,message:'Invalid response from Web3Forms'}));
+          if(response.ok && result.success===true){
+            return {response,result,attachmentSent:true};
+          }
+          console.warn('Preview attachment submission unavailable; falling back to text-only.',result);
+        }
+      }catch(err){
+        console.warn('Preview attachment attempt failed; falling back to text-only.',err);
+      }
+    }
+    const response=await fetch('https://api.web3forms.com/submit',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const result=await response.json().catch(()=>({success:false,message:'Invalid response from Web3Forms'}));
+    return {response,result,attachmentSent:false};
   }
 
   async function submitOrder(order){
@@ -328,20 +389,17 @@
       top_marker:order.topSide,
       letter_style:order.font,
       letter_fill:order.fill,
+      custom_color:order.fill==='Other'?(order.customColor||''): '',
       order_status:order.status,
       submitted_at:new Date(order.createdAt).toLocaleString(),
-      message:`Order ${order.id}\n\nCustomer: ${order.customerName}\nCell: ${order.customerPhone}\nEmail: ${order.customerEmail}\nContact by: ${order.contactPreference}\n\nExact wording: ${order.wording}\nWood: $${order.price}\nOrientation: ${order.orientation}\nTop marker: ${order.topSide}\nLetter style: ${order.font}\nLetter fill: ${order.fill}\n\nThe customer's approved wood + lettering preview is stored with the local iPad order in Version 1.5.`
+      message:`Order ${order.id}\n\nCustomer: ${order.customerName}\nCell: ${order.customerPhone}\nEmail: ${order.customerEmail}\nContact by: ${order.contactPreference}\n\nExact wording: ${order.wording}\nWood: $${order.price}\nOrientation: ${order.orientation}\nTop marker: ${order.topSide}\nLetter style: ${order.font}\nLetter fill: ${order.fill}${order.fill==='Other' ? ` (${order.customColor})` : ''}\n\nApproved customer preview: attached when the configured Web3Forms plan supports file attachments.`
     };
 
     try{
-      const response=await fetch('https://api.web3forms.com/submit',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Accept':'application/json'},
-        body:JSON.stringify(payload)
-      });
-      const result=await response.json().catch(()=>({success:false,message:'Invalid response from Web3Forms'}));
-      console.log('Web3Forms response',response.status,result);
+      const {response,result,attachmentSent}=await sendWeb3FormsWithOptionalPreview(order,payload);
+      console.log('Web3Forms response',response.status,result,'attachmentSent=',attachmentSent);
       if(!response.ok || result.success!==true) throw new Error(result.message||`Submission failed (${response.status})`);
+      order.previewAttachmentSent=attachmentSent;
       order.emailSentAt=new Date().toISOString();
       order.emailRecipient=ORDER_EMAIL;
       backupOrderLocally(order);
@@ -378,7 +436,7 @@
     const orders=(await getMergedOrders()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
     const list=$('orderList');
     if(!orders.length){list.innerHTML='<div class="empty">No saved orders yet.</div>';return;}
-    list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div>${o.approvedPreviewData?`<div class="admin-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${o.approvedPreviewData}" alt="Approved sign preview for ${escapeHtml(o.id)}" class="thumb approved-thumb">`:o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-actions"><span class="helper">${o.emailSentAt?'Automatic email sent':'Saved locally'}</span></div></article>`).join('');
+    list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div><div class="summary-row"><span>Letter finish</span><strong>${escapeHtml(o.fill)}${o.fill==='Other'&&o.customColor?` • <span class="color-dot" style="background:${escapeHtml(o.customColor)}"></span> ${escapeHtml(o.customColor.toUpperCase())}`:''}</strong></div>${o.approvedPreviewData?`<div class="admin-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${o.approvedPreviewData}" alt="Approved sign preview for ${escapeHtml(o.id)}" class="thumb approved-thumb">`:o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-actions"><span class="helper">${o.emailSentAt?'Automatic email sent':'Saved locally'}</span></div></article>`).join('');
     list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async e=>{const card=e.target.closest('[data-id]');const orders=await getMergedOrders();const o=orders.find(x=>x.id===card.dataset.id);if(o){o.status=e.target.value;await put(STORE_ORDERS,o);}}));
   }
 
@@ -494,6 +552,13 @@
     $$('.goto').forEach(b=>b.addEventListener('click',()=>setScreen(b.dataset.goto)));
     $('backBtn').addEventListener('click',()=>{const i=screenOrder.indexOf(state.current);if(i>0)setScreen(screenOrder[i-1]);});
     bindChoice('priceChoices','data-price','price',Number);bindChoice('orientationChoices','data-orientation','orientation');bindChoice('fontChoices','data-font','font');bindChoice('fillChoices','data-fill','fill');bindChoice('contactChoices','data-contact','contactPreference');
+    if($('customColor')){
+      $('customColor').addEventListener('input',e=>{
+        state.customColor=e.target.value;
+        state.fill='Other';
+        updateUi();
+      });
+    }
     $('topSide').addEventListener('change',e=>state.topSide=e.target.value);
     $('wordingInput').addEventListener('input',e=>{state.wording=e.target.value;$('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;applyPreview();});
     $('startCameraBtn').addEventListener('click',startCamera);

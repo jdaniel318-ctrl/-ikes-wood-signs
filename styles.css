@@ -247,3 +247,176 @@ body{background:#f7f1e5}
   background:#fffdf8;
   box-shadow:0 8px 24px #4f392014;
 }
+
+
+/* Version 1.6 — LIVE EDGE: landscape-first kiosk layout */
+@media (min-width:900px) and (orientation:landscape){
+  body{background:#efe8db}
+  .app-shell{
+    max-width:1180px;
+    min-height:100vh;
+    border-left:1px solid #d9cfbd;
+    border-right:1px solid #d9cfbd;
+  }
+  .brand-header{
+    min-height:52px;
+    padding:5px 14px;
+  }
+  .header-ike{width:38px;height:43px}
+  .brand-title{font-size:18px}
+  .brand-subtitle{font-size:11px}
+  .brand-kicker{font-size:9px}
+  .main-panel{padding:20px 30px 28px}
+  .admin-panel{padding:24px 32px}
+  .screen.active{min-height:calc(100vh - 82px)}
+  .welcome-brand{
+    grid-template-columns:minmax(0,1fr) 230px;
+    min-height:260px;
+    margin:-20px -30px 18px;
+  }
+  .welcome-copy{padding:28px 24px 18px 36px}
+  .ike-character{height:260px}
+  .welcome-wordmark{font-size:52px}
+  .welcome-subtitle{font-size:28px}
+  .brand-actions{grid-template-columns:repeat(3,1fr)}
+  .landscape-two{
+    display:grid;
+    grid-template-columns:minmax(0,.92fr) minmax(420px,1.08fr);
+    gap:34px;
+    align-items:center;
+  }
+  .landscape-copy{min-width:0}
+  .landscape-visual{
+    min-width:0;
+    position:sticky;
+    top:82px;
+  }
+  [data-screen="wording"].active,
+  [data-screen="preview"].active,
+  [data-screen="review"].active,
+  [data-screen="customer"].active{
+    max-width:1040px;
+    margin:0 auto;
+  }
+  [data-screen="wording"] .preview-card.compact{
+    height:300px;
+  }
+  [data-screen="preview"] .hero-preview{
+    height:430px;
+  }
+  [data-screen="review"]{
+    display:grid;
+    grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);
+    gap:26px;
+    align-items:start;
+  }
+  [data-screen="review"] > h2{grid-column:1/-1}
+  [data-screen="review"] .review-preview{height:420px;grid-row:2/7}
+  [data-screen="customer"]{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 28px;
+  }
+  [data-screen="customer"] > h2,
+  [data-screen="customer"] > p,
+  [data-screen="customer"] > label:last-of-type,
+  [data-screen="customer"] #contactChoices,
+  [data-screen="customer"] #customerError,
+  [data-screen="customer"] #reviewBtn{
+    grid-column:1/-1;
+  }
+  .celebration-screen.active{
+    max-width:1040px;
+    margin:0 auto;
+  }
+  .celebration-burst{
+    grid-template-columns:180px 1fr;
+  }
+  .celebration-ike{width:180px;height:210px}
+}
+
+/* Live-edge finish controls */
+.finish-grid{margin-bottom:14px}
+.finish-choice{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
+  text-align:left;
+}
+.finish-swatch{
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  border-radius:50% 42% 48% 44%;
+  box-shadow:0 2px 8px #0002;
+  border:2px solid #fff;
+}
+.finish-swatch.black{background:#111}
+.finish-swatch.white{background:#fff;box-shadow:0 0 0 1px #bbb,0 2px 8px #0001}
+.finish-swatch.custom{background:#1f6feb}
+.carved-sample{
+  width:48px;
+  height:48px;
+  flex:0 0 48px;
+  display:grid;
+  place-items:center;
+  border-radius:48% 38% 45% 41%;
+  background:linear-gradient(135deg,#dba66c,#a55e32 55%,#e5bb86);
+  color:#6b4429;
+  font:italic 800 30px Georgia,serif;
+  text-shadow:-1px -1px 1px rgba(255,238,204,.7),2px 2px 2px rgba(54,27,12,.55);
+  box-shadow:inset 1px 1px 1px #f1cfa1,inset -2px -2px 3px #75401f;
+}
+.custom-color-panel{
+  margin:10px 0 18px;
+  padding:16px;
+  border-radius:32px 24px 34px 26px;
+  background:#f6f0e4;
+}
+.color-picker-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:10px;
+}
+#customColor{
+  width:78px;
+  height:58px;
+  padding:0;
+  border:0;
+  background:transparent;
+}
+.custom-color-value{
+  font-weight:900;
+  color:var(--ink);
+}
+.live-edge-preview{
+  height:430px;
+  border-radius:8% 3% 7% 4% / 6% 4% 8% 3%;
+  clip-path:polygon(2% 3%,8% 1%,17% 3%,27% 1%,38% 3%,49% 1%,59% 3%,69% 1%,80% 3%,90% 1%,98% 4%,99% 16%,97% 28%,99% 41%,97% 56%,99% 70%,97% 84%,98% 97%,88% 99%,76% 97%,65% 99%,53% 97%,42% 99%,31% 97%,20% 99%,9% 97%,2% 98%,1% 84%,3% 70%,1% 54%,3% 40%,1% 25%);
+}
+.live-edge-note{
+  text-align:center;
+  margin-top:-4px;
+  color:#6f5433;
+  font-size:13px;
+  font-weight:800;
+}
+.preview-text.cnc-carved{
+  color:rgba(92,54,30,.62)!important;
+  text-shadow:
+    -1px -1px 1px rgba(255,238,204,.7),
+    1px 1px 0 rgba(65,31,13,.46),
+    2px 3px 3px rgba(38,18,8,.5);
+  -webkit-text-stroke:.5px rgba(69,34,15,.36);
+  filter:saturate(.72);
+}
+.color-dot{
+  display:inline-block;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  vertical-align:-1px;
+  box-shadow:0 0 0 1px #0003;
+}

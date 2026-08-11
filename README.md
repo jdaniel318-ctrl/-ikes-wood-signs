@@ -51,3 +51,16 @@ Customer trust, production-reference reliability, and admin security are the pri
 - Compact header from Version 1.4 is retained.
 - Subtle live-edge wood shapes are added to the UI without replacing the established yellow/blue/red/green branding.
 - Local order redundancy from Version 1.4 is retained.
+
+
+## Version 1.6 — LIVE EDGE
+- Landscape-first iPad/kiosk layout at widths 900px+ while preserving portrait/mobile fallback.
+- Wider 1180px app shell with side-by-side design/preview layouts to reduce vertical scrolling.
+- Natural / No Fill now uses a CNC-style recessed-carving simulation in both the live preview and the saved approved preview image.
+- Custom Color now opens the native iPad/browser color picker and stores the exact hex color with the order.
+- Approved preview is attempted as a Web3Forms email attachment using multipart/form-data. If the current Web3Forms plan does not allow attachments, the app automatically falls back to the proven text-only email so order delivery is not broken.
+- Work-order email language no longer includes development/testing wording.
+- Existing Version 1.5 security, local redundancy, PIN workflow, approved-preview storage, unique order number, and warm thank-you experience remain intact.
+
+### Attachment note
+Web3Forms currently documents file attachments as a paid/Pro feature. LIVE EDGE is coded so an eligible plan will include the approved preview automatically, while a non-eligible plan still sends the order details successfully.

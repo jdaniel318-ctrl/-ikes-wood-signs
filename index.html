@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#f4d238" />
-  <title>Ike's Wood Signs</title>
+  <title>Ike's Wood Signs — Live Edge</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -16,7 +16,7 @@
       <div class="brand-copy illustrated-brand">
         <div class="brand-title">IKE'S WOOD SIGNS</div>
         <div class="brand-subtitle">Self-Serve Sign Ordering</div>
-        <div class="brand-kicker">Pick your wood • Design • Preview • Order</div>
+        <div class="brand-kicker">LIVE EDGE • Pick your wood • Design • Preview • Order</div>
       </div>
       <img src="assets/ike_character.jpg" alt="Ike holding a wood sign blank" class="header-ike" />
       <button id="adminBtn" class="icon-btn" aria-label="Open admin area">⚙︎</button>
@@ -126,14 +126,34 @@
       </section>
 
       <section class="screen" data-screen="fill">
-        <h2>Choose Your Letter Fill</h2>
-        <div id="fillChoices" class="choice-grid two-col">
-          <button class="choice-btn selected" data-fill="Black">BLACK</button>
-          <button class="choice-btn" data-fill="White">WHITE</button>
-          <button class="choice-btn" data-fill="Natural">NO FILL</button>
-          <button class="choice-btn" data-fill="Other">OTHER COLOR</button>
+        <div class="landscape-two">
+          <div class="landscape-copy">
+            <span class="step-badge">LETTER FINISH</span>
+            <h2>Choose Your Letter Finish</h2>
+            <p class="helper">Choose painted lettering, a realistic CNC-carved look, or create your own custom color.</p>
+            <div id="fillChoices" class="choice-grid two-col finish-grid">
+              <button class="choice-btn selected finish-choice" data-fill="Black"><span class="finish-swatch black"></span><span>BLACK</span></button>
+              <button class="choice-btn finish-choice" data-fill="White"><span class="finish-swatch white"></span><span>WHITE</span></button>
+              <button class="choice-btn finish-choice carved-choice" data-fill="Natural"><span class="carved-sample">A</span><span>CNC CARVED<br><small>NO PAINT FILL</small></span></button>
+              <button class="choice-btn finish-choice" data-fill="Other"><span id="customSwatch" class="finish-swatch custom"></span><span>CUSTOM COLOR</span></button>
+            </div>
+            <div id="customColorPanel" class="custom-color-panel hidden">
+              <label for="customColor"><strong>Choose your custom color</strong></label>
+              <div class="color-picker-row">
+                <input id="customColor" type="color" value="#1f6feb" aria-label="Choose custom letter color" />
+                <div>
+                  <div id="customColorName" class="custom-color-value">#1F6FEB</div>
+                  <div class="helper">Tap the color square to open the iPad color picker.</div>
+                </div>
+              </div>
+            </div>
+            <button class="primary-btn next" data-next="preview">SEE MY SIGN →</button>
+          </div>
+          <div class="landscape-visual">
+            <div class="preview-card live-edge-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
+            <div class="live-edge-note">Your actual wood blank stays at the center of the design.</div>
+          </div>
         </div>
-        <button class="primary-btn next" data-next="preview">SEE MY SIGN →</button>
       </section>
 
       <section class="screen" data-screen="preview">

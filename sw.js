@@ -1,4 +1,4 @@
-const CACHE='ikes-wood-signs-v1-5';
+const CACHE='ikes-wood-signs-v1-6-live-edge';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{
