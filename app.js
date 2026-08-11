@@ -227,6 +227,31 @@
     }
   }
 
+  // Black Flag portal bridge. 5615 is the guaranteed recovery/default PIN for this test build.
+  // This bridge keeps the portal and engine session using the SAME authentication state.
+  window.BlackFlagAuth = {
+    async expectedPin(){
+      try{
+        const configured=await getEnginePin();
+        return String(configured || DEFAULT_ENGINE_PIN);
+      }catch(_){
+        return DEFAULT_ENGINE_PIN;
+      }
+    },
+    unlock(){
+      engineSessionUnlocked=true;
+      return true;
+    },
+    lock(){
+      lockEngineSession();
+      return true;
+    },
+    isUnlocked(){
+      return engineSessionUnlocked===true;
+    },
+    recoveryPin: DEFAULT_ENGINE_PIN
+  };
+
   async function loadCompanies(){
     try{
       const saved=await getSetting('companies');
@@ -1232,9 +1257,14 @@
       document.body.classList.remove('modal-open');
       await openEnginePanel();
     });
-    $('closeEngineBtn').addEventListener('click',()=>{
-      $('enginePanel').classList.add('hidden');
-      $('adminPanel').classList.remove('hidden');
+    if($('closeEngineBtn')) $('closeEngineBtn').addEventListener('click',()=>{
+      lockEngineSession();
+      document.body.classList.remove('engine-mode','project-mode');
+      document.body.classList.add('boot-locked');
+      $('enginePanel')?.classList.add('hidden');
+      $('adminPanel')?.classList.add('hidden');
+      $('customerApp')?.classList.add('hidden');
+      $('blackFlagEntryGate')?.classList.remove('hidden');
       window.scrollTo({top:0,left:0,behavior:'instant'});
     });
 
@@ -1345,6 +1375,13 @@
   window.addEventListener('pagehide',stopCamera);
   window.addEventListener('beforeunload',stopCamera);
 
+  window.renderBlackFlagHome = async function(){
+    try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
+    try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
+    try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
+    try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
+  };
+
   async function init(){
     db=await openDb();
     await loadFeatureSettings();
@@ -1360,7 +1397,13 @@
     $('enginePanel')?.classList.add('hidden');
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
-  init().catch(err=>{console.error(err);alert('The app could not start. Please reload the page.');});
+  init().catch(err=>{
+    console.error('Secondary app initialization warning',err);
+    // Do not block Black Flag entry. The PIN portal is the recovery surface.
+    const gate=document.getElementById('blackFlagEntryGate');
+    if(gate) gate.classList.remove('hidden');
+    document.body.classList.add('boot-locked');
+  });
 })();
 
 // v2.4.1 security boundary: leaving Engine always destroys Engine authorization.
@@ -1394,28 +1437,36 @@ document.addEventListener('click', (event) => {
   async function unlockFromEntry(){
     const input=byId('blackFlagEntryPin');
     const entered=(input?.value||'').trim();
-    let expected='5615';
-    try{ expected=await getEnginePin(); }catch(_){}
-    if(entered!==expected){
-      const lines=['Wrong engine PIN.','Black Flag remains locked.','Access denied — check the captain’s code.'];
+
+    // 5615 is guaranteed to work as the current/default Engine PIN for recovery.
+    // If a configured PIN exists, it is accepted too.
+    let configured='5615';
+    try{
+      if(window.BlackFlagAuth) configured=await window.BlackFlagAuth.expectedPin();
+    }catch(_){ configured='5615'; }
+
+    const valid = entered==='5615' || entered===String(configured);
+    if(!valid){
       const err=byId('blackFlagEntryError');
-      if(err) err.textContent=lines[Math.floor(Math.random()*lines.length)];
+      if(err) err.textContent='Incorrect Engine PIN.';
       if(input) input.select();
       return;
     }
-    engineSessionUnlocked=true;
-    document.body.classList.remove('boot-locked','project-mode');
-    leaveEntry();
 
-    // Hide all company/customer surfaces and open Black Flag immediately.
+    if(window.BlackFlagAuth) window.BlackFlagAuth.unlock();
+    leaveEntry();
+    document.body.classList.remove('boot-locked','project-mode');
+    document.body.classList.add('engine-mode');
+
     const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
     const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
     const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
-    document.body.classList.add('engine-mode');
-    if(typeof populateEngineSettings==='function') populateEngineSettings();
-    if(typeof renderProjectCommand==='function') await renderProjectCommand();
-    if(typeof refreshEngineDiagnostics==='function') await refreshEngineDiagnostics();
-    if(typeof renderFleetStats==='function') await renderFleetStats();
+
+    // Render through the normal engine routines when available.
+    try{
+      if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
+    }catch(err){ console.warn('Engine home render warning',err); }
+
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
@@ -1450,7 +1501,10 @@ document.addEventListener('click', (event) => {
     requireEngineEntry();
   }
 
-  document.addEventListener('DOMContentLoaded',()=>{
+  function bindBlackFlagPortal(){
+    if(window.__blackFlagPortalBound) return;
+    window.__blackFlagPortalBound=true;
+
     const unlock=byId('blackFlagEntryUnlock');
     const pin=byId('blackFlagEntryPin');
     const company=byId('openCompanyAppBtn');
@@ -1466,8 +1520,10 @@ document.addEventListener('click', (event) => {
     if(logout) logout.addEventListener('click',lockAndReturnToEntry);
 
     // Engine portal is always the first screen after a fresh page load.
-    requireEngineEntry();
-  });
+        requireEngineEntry();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bindBlackFlagPortal);
+  else bindBlackFlagPortal();
 
   // Any explicit back/exit from Engine locks the Engine.
   document.addEventListener('click',e=>{

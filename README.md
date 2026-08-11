@@ -202,3 +202,16 @@ Architecture lock-in release.
 - Added Engine-only per-project Pay by App structure, OFF by default. No customer payment UI is exposed.
 - Payment structure anticipates hosted links, future integrated checkout, provider configuration and ledger payment tracking.
 - Service-worker navigation is network-first to reduce stale GitHub Pages startup screens.
+
+
+## Version 2.7.1 — BLACK FLAG ENTRY RESCUE
+Focused repair build for Engine entry.
+
+- Fixes the startup exception caused by an event listener targeting the removed `closeEngineBtn`.
+- Removes the blocking “app could not start” alert; secondary initialization failure can no longer prevent Black Flag entry.
+- Creates a shared authentication bridge between the core app and the Black Flag portal.
+- Engine PIN **5615 is guaranteed to unlock Black Flag in this test/recovery build**.
+- A separately configured Engine PIN is accepted as well.
+- Successful PIN entry updates the real Engine session state, not a disconnected variable in the portal script.
+- Portal binding now works whether app.js runs before or after DOMContentLoaded.
+- Black Flag home rendering is isolated so a statistics/diagnostics error cannot reject a valid PIN.
