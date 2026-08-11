@@ -64,3 +64,45 @@ Customer trust, production-reference reliability, and admin security are the pri
 
 ### Attachment note
 Web3Forms currently documents file attachments as a paid/Pro feature. LIVE EDGE is coded so an eligible plan will include the approved preview automatically, while a non-eligible plan still sends the order details successfully.
+
+
+## Version 1.7 — TRAILER BLAZE
+- Confirmation is now a hard screen transition: all non-current customer screens are force-hidden, and every step jumps to the top of the page.
+- Admin Settings now includes `Allow Custom Colors` ON/OFF. When disabled, Custom Color and the color picker disappear from the customer experience.
+- Admin Settings now includes `Customer Confirmation Email` ON/OFF.
+- Customer confirmation email uses Web3Forms' official Autoresponder convention by adding an `email` field only when the admin toggle is ON.
+- Important: Web3Forms documents Autoresponder as a Pro feature and it must also be enabled in the Web3Forms dashboard. The app toggle cannot activate a Web3Forms subscription feature by itself.
+- Existing admin email, approved preview, local order redundancy, PIN security, Live Edge landscape layout, CNC carving preview, custom-color picker, and unique order numbers remain.
+
+
+## Version 2.0 — WORKSHOP
+- Central business configuration for business name, order prefix, thank-you copy, prices and statuses.
+- Admin can change core business settings without editing code.
+- Schema v2 orders include a business snapshot for reuse in future projects.
+- Work queue statuses: New, In Production, Ready for Pickup, Completed.
+- Interrupted-order draft recovery after refresh/reload.
+- Existing camera, preview, approval, email, redundant storage, PIN security, custom colors and hard-step navigation remain.
+
+
+## Version 2.1 — BLACK FLAG
+Adds a second, more sensitive administration layer beneath the normal Ike Admin.
+
+### Administration layers
+- Customer: no admin access.
+- Ike Admin: PIN 4353 (or its locally changed value) for orders, normal settings and day-to-day operation.
+- Black Flag Engine Room: PIN 5615 for platform-level configuration and diagnostics. It is reachable only from inside Ike Admin.
+
+### Engine Room
+- Pirate-themed secondary PIN gate with randomized wrong-code jokes.
+- Engine identity and schema version controls.
+- Reusable production workflow editor.
+- Storage/order/draft/email diagnostics.
+- Interrupted-draft clearing and full backup export.
+- Guarded Engine Settings reset that preserves saved orders.
+- Engine PIN is stored separately from the normal admin PIN and defaults to 5615.
+
+### Smoothness
+- Prevents rapid duplicate next-step taps.
+- Light screen transition polish.
+- Modal scroll locking for both admin PIN gates.
+- Keeps camera and pricing logic unchanged for later focused work.

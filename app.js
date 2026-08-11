@@ -5,6 +5,15 @@
   const STORE_SETTINGS = 'settings';
   const LOCAL_ORDERS_KEY = 'ikesWoodSignsOrdersBackupV15';
   const DEFAULT_ADMIN_PIN = '4353';
+  const DEFAULT_ENGINE_PIN = '5615';
+  const DEFAULT_ENGINE_CONFIG = {
+    engineName:'Workshop Engine',
+    schemaVersion:2
+  };
+  let engineConfig={...DEFAULT_ENGINE_CONFIG};
+  const DRAFT_KEY='ikesOrderDraftV2';
+  const DEFAULT_BUSINESS_CONFIG={businessName:"Ike's Wood Signs",orderPrefix:'IKE',thankYouHeadline:"THANK YOU FOR CHOOSING IKE!",prices:[45,55,65,90,135],orderStatuses:['New','In Production','Ready for Pickup','Completed']};
+  let businessConfig={...DEFAULT_BUSINESS_CONFIG};
   // Paste the Web3Forms access key for "Ike's Wood Signs Orders" below before publishing v1.3.
   const WEB3FORMS_ACCESS_KEY = 'c97f16ac-2070-46b8-923c-9d7524031bce';
   const ORDER_EMAIL = 'ikeswoodsigns.orders@yahoo.com';
@@ -26,7 +35,9 @@
     currentOrderId: '',
     currentOrder: null,
     approvedPreviewData: '',
-    customColor: '#1f6feb'
+    customColor: '#1f6feb',
+    allowCustomColors: true,
+    customerConfirmationEmail: false
   };
 
   let db;
@@ -113,16 +124,110 @@
     }
   }
 
+  async function getEnginePin(){
+    try{
+      const saved=await getSetting('enginePin');
+      return saved?.value || DEFAULT_ENGINE_PIN;
+    }catch(err){
+      console.warn('Engine PIN setting unavailable; using default',err);
+      return DEFAULT_ENGINE_PIN;
+    }
+  }
+
+  async function loadEngineConfig(){
+    try{
+      const saved=await getSetting('engineConfig');
+      engineConfig={...DEFAULT_ENGINE_CONFIG,...(saved?.value||{})};
+    }catch(err){
+      console.warn('Engine config unavailable; using defaults',err);
+      engineConfig={...DEFAULT_ENGINE_CONFIG};
+    }
+  }
+
+  async function saveEngineConfig(){
+    await setSetting('engineConfig',engineConfig);
+  }
+
+  async function refreshEngineDiagnostics(){
+    const merged=await getMergedOrders();
+    let indexedCount=0;
+    try{ indexedCount=(await getAll(STORE_ORDERS)).length; }catch(_){}
+    const localCount=readLocalOrders().length;
+    const hasDraft=!!localStorage.getItem(DRAFT_KEY);
+    let storageText='Available';
+    try{
+      const estimate=await navigator.storage?.estimate?.();
+      if(estimate?.usage!=null && estimate?.quota){
+        const used=(estimate.usage/1024/1024).toFixed(1);
+        const quota=(estimate.quota/1024/1024).toFixed(0);
+        storageText=`${used} MB / ${quota} MB`;
+      }
+    }catch(_){}
+    if($('engineOrderCount')) $('engineOrderCount').textContent=String(merged.length);
+    if($('engineDraftStatus')) $('engineDraftStatus').textContent=hasDraft?'Recoverable':'Clear';
+    if($('engineStorageStatus')) $('engineStorageStatus').textContent=storageText;
+    if($('engineEmailStatus')) $('engineEmailStatus').textContent=WEB3FORMS_ACCESS_KEY && !WEB3FORMS_ACCESS_KEY.includes('PASTE_')?'Configured':'Needs Setup';
+    if($('engineStorageDetail')) $('engineStorageDetail').textContent=`IndexedDB: ${indexedCount} order(s) • Local backup: ${localCount} order(s) • Merged view: ${merged.length} order(s).`;
+  }
+
+  function populateEngineSettings(){
+    if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
+    if($('schemaVersionSetting')) $('schemaVersionSetting').value=Number(engineConfig.schemaVersion||2);
+    if($('engineStatusesSetting')) $('engineStatusesSetting').value=(businessConfig.orderStatuses||DEFAULT_BUSINESS_CONFIG.orderStatuses).join(', ');
+  }
+
+  async function openEnginePanel(){
+    $('adminPanel').classList.add('hidden');
+    $('enginePanel').classList.remove('hidden');
+    populateEngineSettings();
+    await refreshEngineDiagnostics();
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+
+  async function loadFeatureSettings(){
+    try{
+      const custom=await getSetting('allowCustomColors');
+      const confirm=await getSetting('customerConfirmationEmail');
+      state.allowCustomColors=custom?.value !== false;
+      state.customerConfirmationEmail=confirm?.value === true;
+    }catch(err){
+      console.warn('Feature settings unavailable; using defaults',err);
+      state.allowCustomColors=true;
+      state.customerConfirmationEmail=false;
+    }
+  }
+
+  async function saveFeatureSettings(){
+    state.allowCustomColors=!!$('allowCustomColorsToggle')?.checked;
+    state.customerConfirmationEmail=!!$('customerEmailToggle')?.checked;
+    await setSetting('allowCustomColors',state.allowCustomColors);
+    await setSetting('customerConfirmationEmail',state.customerConfirmationEmail);
+    if(!state.allowCustomColors && state.fill==='Other'){
+      state.fill='Black';
+    }
+    updateUi();
+  }
+
 
   function setScreen(name){
     if(state.current==='photo' && name!=='photo') stopCamera();
     state.current=name;
-    $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
+    $$('.screen').forEach(s=>{
+      const isCurrent=s.dataset.screen===name;
+      s.classList.toggle('active',isCurrent);
+      s.setAttribute('aria-hidden',isCurrent?'false':'true');
+    });
     const index=screenOrder.indexOf(name);
     $('progressBar').style.width=`${Math.max(1,(index+1)/screenOrder.length*100)}%`;
     $('stepLabel').textContent=name==='done'?'Complete':`Step ${index+1} of ${screenOrder.length-1}`;
     $('backBtn').style.visibility=['welcome','done'].includes(name)?'hidden':'visible';
     updateUi();
+    saveDraft();
+    requestAnimationFrame(()=>{
+      window.scrollTo({top:0,left:0,behavior:'instant'});
+      document.documentElement.scrollTop=0;
+      document.body.scrollTop=0;
+    });
   }
 
   function selectButtons(containerId, attr, value){
@@ -156,6 +261,9 @@
     });
     $$('[data-font-sample]').forEach(el=>el.textContent=state.wording||'Your Sign');
     $('previewPrice').textContent=`Your $${state.price} Ike's Wood Sign`;
+    const customChoice=document.querySelector('[data-fill="Other"]');
+    if(customChoice) customChoice.classList.toggle('hidden',!state.allowCustomColors);
+    if(!state.allowCustomColors && state.fill==='Other') state.fill='Black';
     if($('customColorPanel')) $('customColorPanel').classList.toggle('hidden',state.fill!=='Other');
     if($('customColor')){
       $('customColor').value=state.customColor||'#1f6feb';
@@ -220,7 +328,7 @@
     const m=String(d.getMonth()+1).padStart(2,'0');
     const day=String(d.getDate()).padStart(2,'0');
     const suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase();
-    return `IKE-${y}${m}${day}-${suffix}`;
+    return `${businessConfig.orderPrefix||'IKE'}-${y}${m}${day}-${suffix}`;
   }
 
   async function createApprovedPreview(){
@@ -298,7 +406,7 @@
     const id=newOrderId();
     const approvedPreviewData=await createApprovedPreview();
     state.approvedPreviewData=approvedPreviewData;
-    const order={id,createdAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
+    const order={schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
     try{
       await put(STORE_ORDERS,order);
@@ -307,6 +415,7 @@
     }
     state.currentOrderId=id;
     state.currentOrder=order;
+    clearDraft();
     $('doneOrderId').textContent=id;
     if($('doneApprovedPreview')){
       if(order.approvedPreviewData){
@@ -318,6 +427,34 @@
     }
     return order;
   }
+
+  async function loadBusinessConfig(){
+    try{const s=await getSetting('businessConfig');businessConfig={...DEFAULT_BUSINESS_CONFIG,...(s?.value||{})};}catch(_){businessConfig={...DEFAULT_BUSINESS_CONFIG};}
+    if(!Array.isArray(businessConfig.prices)||!businessConfig.prices.length) businessConfig.prices=[45,55,65,90,135];
+    renderConfiguredPrices(); applyBusinessCopy();
+  }
+  function renderConfiguredPrices(){
+    const box=$('priceChoices'); if(!box)return;
+    if(!businessConfig.prices.includes(Number(state.price))) state.price=Number(businessConfig.prices[0]);
+    box.innerHTML=businessConfig.prices.map(p=>`<button class="choice-btn ${Number(state.price)===Number(p)?'selected':''}" data-price="${Number(p)}">$${Number(p)}</button>`).join('');
+    box.querySelectorAll('[data-price]').forEach(b=>b.addEventListener('click',()=>{state.price=Number(b.dataset.price);renderConfiguredPrices();updateUi();}));
+  }
+  function applyBusinessCopy(){
+    document.querySelectorAll('.brand-title').forEach(e=>e.textContent=(businessConfig.businessName||"Ike's Wood Signs").toUpperCase());
+    const h=document.querySelector('[data-screen="done"] .celebration-kicker');if(h)h.textContent=businessConfig.thankYouHeadline;
+  }
+  function populateBusinessSettings(){
+    if(!$('businessNameSetting'))return;
+    $('businessNameSetting').value=businessConfig.businessName;$('orderPrefixSetting').value=businessConfig.orderPrefix;$('thankYouSetting').value=businessConfig.thankYouHeadline;$('priceChoicesSetting').value=businessConfig.prices.join(',');
+  }
+  async function saveBusinessConfigFromAdmin(){
+    const prices=$('priceChoicesSetting').value.split(',').map(v=>Number(v.trim())).filter(v=>Number.isFinite(v)&&v>0);
+    businessConfig={...businessConfig,businessName:$('businessNameSetting').value.trim()||"Ike's Wood Signs",orderPrefix:($('orderPrefixSetting').value||'IKE').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'IKE',thankYouHeadline:$('thankYouSetting').value.trim()||DEFAULT_BUSINESS_CONFIG.thankYouHeadline,prices:prices.length?prices:[45,55,65,90,135]};
+    await setSetting('businessConfig',businessConfig);renderConfiguredPrices();applyBusinessCopy();$('businessSettingsStatus').textContent='Business settings saved.';
+  }
+  function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(DRAFT_KEY,JSON.stringify({...state,currentOrder:null,approvedPreviewData:''}));}catch(_){}}
+  function clearDraft(){try{localStorage.removeItem(DRAFT_KEY)}catch(_){}}
+  function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');if(d&&screenOrder.includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
 
   function resetOrder(){
     Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',customColor:'#1f6feb'});
@@ -382,6 +519,7 @@
       customer_name:order.customerName,
       customer_cell:order.customerPhone,
       customer_email:order.customerEmail,
+      ...(state.customerConfirmationEmail ? {email:order.customerEmail} : {}),
       contact_preference:order.contactPreference,
       exact_wording:order.wording,
       wood_price:`$${order.price}`,
@@ -406,6 +544,15 @@
       try{ await put(STORE_ORDERS,order); }catch(err){ console.warn('Email status IndexedDB update failed',err); }
       status.className='submit-status centered success';
       status.textContent=`Order received! Ike has your order details. Thank you again for choosing Ike's Wood Signs.`;
+      if($('customerEmailStatus')){
+        if(state.customerConfirmationEmail){
+          $('customerEmailStatus').classList.remove('hidden');
+          $('customerEmailStatus').textContent='A confirmation email has been requested for '+order.customerEmail+'.';
+        }else{
+          $('customerEmailStatus').classList.add('hidden');
+          $('customerEmailStatus').textContent='';
+        }
+      }
       return true;
     }catch(err){
       console.error('Automatic order email failed',err);
@@ -415,6 +562,10 @@
       try{ await put(STORE_ORDERS,order); }catch(dbErr){ console.warn('Failed email state IndexedDB update failed',dbErr); }
       status.className='submit-status centered error-text';
       status.textContent='Your order is saved on this iPad, but the automatic email did not send. Please show this screen to Ike before leaving.';
+      if($('customerEmailStatus')){
+        $('customerEmailStatus').classList.add('hidden');
+        $('customerEmailStatus').textContent='';
+      }
       retry.classList.remove('hidden');
       return false;
     }
@@ -432,11 +583,16 @@
     location.href=`mailto:${encodeURIComponent(recipients).replace(/%2C/g,',')}?subject=${subject}&body=${body}`;
   }
 
+  async function updateOrderStatus(id,status){
+    const orders=await getMergedOrders(),o=orders.find(x=>x.id===id);if(!o)return;
+    o.status=status;o.updatedAt=new Date().toISOString();backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}await renderAdmin();
+  }
+
   async function renderAdmin(){
     const orders=(await getMergedOrders()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
     const list=$('orderList');
     if(!orders.length){list.innerHTML='<div class="empty">No saved orders yet.</div>';return;}
-    list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div><div class="summary-row"><span>Letter finish</span><strong>${escapeHtml(o.fill)}${o.fill==='Other'&&o.customColor?` • <span class="color-dot" style="background:${escapeHtml(o.customColor)}"></span> ${escapeHtml(o.customColor.toUpperCase())}`:''}</strong></div>${o.approvedPreviewData?`<div class="admin-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${o.approvedPreviewData}" alt="Approved sign preview for ${escapeHtml(o.id)}" class="thumb approved-thumb">`:o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-actions"><span class="helper">${o.emailSentAt?'Automatic email sent':'Saved locally'}</span></div></article>`).join('');
+    list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div><div class="summary-row"><span>Letter finish</span><strong>${escapeHtml(o.fill)}${o.fill==='Other'&&o.customColor?` • <span class="color-dot" style="background:${escapeHtml(o.customColor)}"></span> ${escapeHtml(o.customColor.toUpperCase())}`:''}</strong></div>${o.approvedPreviewData?`<div class="admin-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${o.approvedPreviewData}" alt="Approved sign preview for ${escapeHtml(o.id)}" class="thumb approved-thumb">`:o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-status-control"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${o.status===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div><div class="order-actions"><span class="helper">${o.emailSentAt?'Automatic email sent':'Saved locally'}</span></div></article>`).join('');
     list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async e=>{const card=e.target.closest('[data-id]');const orders=await getMergedOrders();const o=orders.find(x=>x.id===card.dataset.id);if(o){o.status=e.target.value;await put(STORE_ORDERS,o);}}));
   }
 
@@ -548,7 +704,12 @@
   }
 
   function bindEvents(){
-    $$('.next').forEach(b=>b.addEventListener('click',()=>setScreen(b.dataset.next)));
+    $$('.next').forEach(b=>b.addEventListener('click',()=>{
+      if(b.dataset.busy==='1') return;
+      b.dataset.busy='1';
+      setScreen(b.dataset.next);
+      setTimeout(()=>delete b.dataset.busy,220);
+    }));
     $$('.goto').forEach(b=>b.addEventListener('click',()=>setScreen(b.dataset.goto)));
     $('backBtn').addEventListener('click',()=>{const i=screenOrder.indexOf(state.current);if(i>0)setScreen(screenOrder[i-1]);});
     bindChoice('priceChoices','data-price','price',Number);bindChoice('orientationChoices','data-orientation','orientation');bindChoice('fontChoices','data-font','font');bindChoice('fillChoices','data-fill','fill');bindChoice('contactChoices','data-contact','contactPreference');
@@ -598,12 +759,92 @@
     $('newOrderBtn').addEventListener('click',resetOrder);
     $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
     $('adminBtn').addEventListener('click',()=>{
+      document.body.classList.add('modal-open');
       $('adminPinInput').value='';
       $('pinGateError').textContent='';
       $('pinGate').classList.remove('hidden');
       setTimeout(()=>$('adminPinInput').focus(),50);
     });
     $('closeAdminBtn').addEventListener('click',()=>{$('adminPanel').classList.add('hidden');$('customerApp').classList.remove('hidden');});
+    $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
+
+    $('engineRoomBtn').addEventListener('click',()=>{
+      document.body.classList.add('modal-open');
+      $('enginePinInput').value='';
+      $('enginePinError').textContent='';
+      $('enginePinGate').classList.remove('hidden');
+      setTimeout(()=>$('enginePinInput').focus(),50);
+    });
+    $('cancelEngineBtn').addEventListener('click',()=>{$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
+    $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
+    $('unlockEngineBtn').addEventListener('click',async()=>{
+      const entered=$('enginePinInput').value.trim();
+      const expected=await getEnginePin();
+      if(entered!==expected){
+        const pirateLines=[
+          'Arrr… wrong code, matey.',
+          'No treasure for ye. Try the captain’s code again.',
+          'That code be walking the plank.',
+          'Ye almost fooled the parrot. Almost.'
+        ];
+        $('enginePinError').textContent=pirateLines[Math.floor(Math.random()*pirateLines.length)];
+        $('enginePinInput').select();
+        return;
+      }
+      $('enginePinGate').classList.add('hidden');
+      document.body.classList.remove('modal-open');
+      await openEnginePanel();
+    });
+    $('closeEngineBtn').addEventListener('click',()=>{
+      $('enginePanel').classList.add('hidden');
+      $('adminPanel').classList.remove('hidden');
+      window.scrollTo({top:0,left:0,behavior:'instant'});
+    });
+
+    $('saveEngineIdentityBtn').addEventListener('click',async()=>{
+      const name=$('engineNameSetting').value.trim()||'Workshop Engine';
+      const version=Math.max(2,Math.min(99,Number($('schemaVersionSetting').value)||2));
+      engineConfig={...engineConfig,engineName:name,schemaVersion:version};
+      await saveEngineConfig();
+      $('engineIdentityStatus').textContent='Engine identity saved.';
+    });
+
+    $('saveEngineWorkflowBtn').addEventListener('click',async()=>{
+      const statuses=$('engineStatusesSetting').value.split(',').map(v=>v.trim()).filter(Boolean);
+      if(statuses.length<2){
+        $('engineWorkflowStatus').textContent='Use at least two workflow stages.';
+        return;
+      }
+      businessConfig.orderStatuses=statuses.slice(0,12);
+      await setSetting('businessConfig',businessConfig);
+      $('engineWorkflowStatus').textContent='Workflow saved.';
+      await renderAdmin();
+    });
+
+    $('engineRefreshDiagnosticsBtn').addEventListener('click',refreshEngineDiagnostics);
+    $('engineClearDraftBtn').addEventListener('click',()=>{
+      clearDraft();
+      $('engineStorageDetail').textContent='Interrupted-order draft cleared. Existing saved orders were not changed.';
+      refreshEngineDiagnostics();
+    });
+    $('engineExportBtn').addEventListener('click',exportBackup);
+
+    $('engineResetSettingsBtn').addEventListener('click',async()=>{
+      const typed=prompt('Danger Locker: type RESET ENGINE to restore default engine/business settings. Saved orders will remain.');
+      if(typed!=='RESET ENGINE') return;
+      const stores=tx(STORE_SETTINGS,'readwrite');
+      try{ stores.clear(); }catch(_){}
+      businessConfig={...DEFAULT_BUSINESS_CONFIG};
+      engineConfig={...DEFAULT_ENGINE_CONFIG};
+      state.allowCustomColors=true;
+      state.customerConfirmationEmail=false;
+      clearDraft();
+      await loadBusinessConfig();
+      await loadEngineConfig();
+      populateEngineSettings();
+      $('engineStorageDetail').textContent='Engine settings reset to defaults. Saved orders were preserved.';
+      await refreshEngineDiagnostics();
+    });
     $('unlockAdminBtn').addEventListener('click',async()=>{
       const entered=$('adminPinInput').value.trim();
       const expected=await getAdminPin();
@@ -613,12 +854,16 @@
         return;
       }
       $('pinGate').classList.add('hidden');
+      document.body.classList.remove('modal-open');
       $('customerApp').classList.add('hidden');
       $('adminPanel').classList.remove('hidden');
+      if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').checked=state.allowCustomColors;
+      if($('customerEmailToggle')) $('customerEmailToggle').checked=state.customerConfirmationEmail;
+      populateBusinessSettings();
       await renderAdmin();
     });
     $('adminPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockAdminBtn').click();});
-    $('cancelAdminPinBtn').addEventListener('click',()=>$('pinGate').classList.add('hidden'));
+    $('cancelAdminPinBtn').addEventListener('click',()=>{$('pinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
     $('savePinBtn').addEventListener('click',async()=>{
       const p=$('newAdminPin').value.trim();
       const c=$('confirmAdminPin').value.trim();
@@ -636,7 +881,14 @@
       $('confirmAdminPin').value='';
     });
 
-    $('settingsBtn').addEventListener('click',()=>$('adminSettings').classList.toggle('hidden'));
+    $('settingsBtn').addEventListener('click',()=>{
+      $('adminSettings').classList.toggle('hidden');
+      if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').checked=state.allowCustomColors;
+      if($('customerEmailToggle')) $('customerEmailToggle').checked=state.customerConfirmationEmail;
+    });
+    if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').addEventListener('change',saveFeatureSettings);
+    if($('customerEmailToggle')) $('customerEmailToggle').addEventListener('change',saveFeatureSettings);
+    if($('saveBusinessSettingsBtn')) $('saveBusinessSettingsBtn').addEventListener('click',saveBusinessConfigFromAdmin);
     $('exportBtn').addEventListener('click',exportBackup);
     $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
   }
@@ -645,7 +897,13 @@
   window.addEventListener('beforeunload',stopCamera);
 
   async function init(){
-    db=await openDb();bindEvents();setScreen('welcome');
+    db=await openDb();
+    await loadFeatureSettings();
+    await loadBusinessConfig();
+    await loadEngineConfig();
+    bindEvents();
+    const recovered=recoverDraft();
+    setScreen(recovered?state.current:'welcome');
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   init().catch(err=>{console.error(err);alert('The app could not start. Please reload the page.');});

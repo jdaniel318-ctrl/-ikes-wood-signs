@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#f4d238" />
-  <title>Ike's Wood Signs — Live Edge</title>
+  <title>Ike's Wood Signs — Black Flag</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -16,7 +16,7 @@
       <div class="brand-copy illustrated-brand">
         <div class="brand-title">IKE'S WOOD SIGNS</div>
         <div class="brand-subtitle">Self-Serve Sign Ordering</div>
-        <div class="brand-kicker">LIVE EDGE • Pick your wood • Design • Preview • Order</div>
+        <div class="brand-kicker">WORKSHOP • Black Flag Engine • Pick • Design • Preview • Order</div>
       </div>
       <img src="assets/ike_character.jpg" alt="Ike holding a wood sign blank" class="header-ike" />
       <button id="adminBtn" class="icon-btn" aria-label="Open admin area">⚙︎</button>
@@ -212,6 +212,7 @@
         </div>
         <p class="centered done-personal-note">Ike will use your approved design and order details to make your sign as requested.</p>
         <p id="submitStatus" class="submit-status centered" aria-live="polite"></p>
+        <div id="customerEmailStatus" class="customer-email-status hidden"></div>
         <button id="retrySubmitBtn" class="primary-btn hidden">TRY SENDING AGAIN</button>
         <button id="newOrderBtn" class="secondary-btn">START ANOTHER ORDER</button>
       </section>
@@ -239,9 +240,32 @@
         <label class="secondary-btn small file-btn" for="restoreInput">RESTORE BACKUP</label>
         <input id="restoreInput" type="file" accept="application/json" hidden />
         <button id="settingsBtn" class="secondary-btn small">ADMIN SETTINGS</button>
+        <button id="engineRoomBtn" class="engine-room-btn small">☠ ENTER ENGINE ROOM</button>
       </div>
       <div id="adminSettings" class="settings-box hidden">
         <h3>Admin Settings</h3>
+        <div class="admin-toggle-list">
+          <label class="admin-toggle-row">
+            <span><strong>Allow Custom Colors</strong><small>When off, customers see only Black, White, and CNC Carved / No Paint Fill.</small></span>
+            <input id="allowCustomColorsToggle" type="checkbox" />
+          </label>
+          <label class="admin-toggle-row">
+            <span><strong>Customer Confirmation Email</strong><small>When on, the customer's email is supplied to Web3Forms for its Autoresponder. Web3Forms Pro + Autoresponder must also be enabled in the Web3Forms dashboard.</small></span>
+            <input id="customerEmailToggle" type="checkbox" />
+          </label>
+        </div>
+        <div class="admin-divider"></div>
+        <h3>Business Configuration</h3>
+        <p class="helper">Change core business options without editing code.</p>
+        <div class="config-grid">
+          <label>Business name<input id="businessNameSetting" class="text-input" type="text"></label>
+          <label>Order prefix<input id="orderPrefixSetting" class="text-input" type="text" maxlength="8"></label>
+          <label>Thank-you headline<input id="thankYouSetting" class="text-input" type="text"></label>
+          <label>Price choices<input id="priceChoicesSetting" class="text-input" type="text" placeholder="45,55,65,90,135"></label>
+        </div>
+        <button id="saveBusinessSettingsBtn" class="primary-btn small">SAVE BUSINESS SETTINGS</button>
+        <p id="businessSettingsStatus" class="helper"></p>
+        <div class="admin-divider"></div>
         <label for="newAdminPin">Change admin PIN</label>
         <input id="newAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Enter a new PIN" />
         <label for="confirmAdminPin">Confirm new PIN</label>
@@ -251,6 +275,79 @@
         <p class="helper">Default PIN for Version 1.5 is 4353 until changed here.</p>
       </div>
       <div id="orderList" class="order-list"></div>
+    </section>
+
+    <div id="enginePinGate" class="engine-pin-gate hidden" role="dialog" aria-modal="true" aria-labelledby="enginePinTitle">
+      <div class="pirate-card">
+        <div class="pirate-flag">☠</div>
+        <div class="pirate-ike">
+          <img src="assets/ike_character.jpg" alt="Cartoon Ike guarding the engine room" />
+          <span class="pirate-hat">🏴‍☠️</span>
+        </div>
+        <div class="pirate-eyebrow">CAPTAIN'S QUARTERS</div>
+        <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
+        <p>Only captains, code-wranglers, and suspiciously competent pirates beyond this point.</p>
+        <label for="enginePinInput">Enter Captain's Code</label>
+        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <p id="enginePinError" class="pirate-error" aria-live="polite"></p>
+        <button id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
+        <button id="cancelEngineBtn" class="secondary-btn">RETREAT TO SAFE WATERS</button>
+      </div>
+    </div>
+
+    <section id="enginePanel" class="engine-panel hidden">
+      <div class="engine-head">
+        <div>
+          <div class="engine-kicker">☠ BLACK FLAG</div>
+          <h2>Workshop Engine Administration</h2>
+          <p class="helper">Sensitive platform controls. Normal Ike operations stay in the 4353 Admin area.</p>
+        </div>
+        <button id="closeEngineBtn" class="secondary-btn small">← BACK TO IKE ADMIN</button>
+      </div>
+
+      <div class="engine-health-strip" id="engineHealthStrip">
+        <div><span>Orders</span><strong id="engineOrderCount">—</strong></div>
+        <div><span>Draft</span><strong id="engineDraftStatus">—</strong></div>
+        <div><span>Storage</span><strong id="engineStorageStatus">—</strong></div>
+        <div><span>Email</span><strong id="engineEmailStatus">—</strong></div>
+      </div>
+
+      <div class="engine-grid">
+        <article class="engine-card">
+          <h3>Engine Identity</h3>
+          <p class="helper">Platform-level identifiers. Change these only when adapting Workshop to another business.</p>
+          <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
+          <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2" /></label>
+          <button id="saveEngineIdentityBtn" class="primary-btn small">SAVE ENGINE IDENTITY</button>
+          <p id="engineIdentityStatus" class="helper"></p>
+        </article>
+
+        <article class="engine-card">
+          <h3>Workflow Controls</h3>
+          <p class="helper">Comma-separated production stages used by the reusable order engine.</p>
+          <label>Order statuses<textarea id="engineStatusesSetting" rows="4"></textarea></label>
+          <button id="saveEngineWorkflowBtn" class="primary-btn small">SAVE WORKFLOW</button>
+          <p id="engineWorkflowStatus" class="helper"></p>
+        </article>
+
+        <article class="engine-card">
+          <h3>Storage & Recovery</h3>
+          <p class="helper">Diagnostics for the two local order stores and interrupted-order recovery.</p>
+          <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">REFRESH DIAGNOSTICS</button>
+          <button id="engineClearDraftBtn" class="secondary-btn">CLEAR INTERRUPTED DRAFT</button>
+          <button id="engineExportBtn" class="secondary-btn">EXPORT FULL ENGINE BACKUP</button>
+          <p id="engineStorageDetail" class="helper"></p>
+        </article>
+
+        <article class="engine-card danger-card">
+          <h3>Danger Locker</h3>
+          <p class="helper">These controls affect the engine, not just a single order. They require an extra confirmation.</p>
+          <button id="engineResetSettingsBtn" class="danger-btn">RESET ENGINE SETTINGS</button>
+          <p class="helper">Orders are preserved. This resets configurable business/engine settings and PINs to defaults.</p>
+        </article>
+      </div>
+
+      <div class="pirate-footer">☠ If ye don't know what a button does, keep yer hook off it.</div>
     </section>
   </div>
 
