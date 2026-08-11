@@ -20,6 +20,7 @@
       workflow:['New','In Production','Ready for Pickup','Completed'],
       customerExperience:{photoRequired:true,previewApproval:true},
       publish:{status:'live'},
+      payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
       products:[{id:'custom-wood-sign',name:'Custom Wood Sign',published:true,characterLimit:null}]
     },
     {
@@ -36,6 +37,7 @@
       workflow:['New','In Production','Ready for Pickup','Completed'],
       customerExperience:{photoRequired:true,previewApproval:true},
       publish:{status:'development'},
+      payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
       pricing:{status:'tbd'},
       products:[{id:'classic-custom-mug',name:'Classic Custom Mug',published:false,characterLimit:32}]
     }
@@ -129,7 +131,7 @@
   function lockEngineSession(){
     engineSessionUnlocked = false;
     document.body.classList.remove('engine-mode');
-    const engineScreen = $('engineScreen');
+    const engineScreen = $('enginePanel');
     if(engineScreen) engineScreen.classList.add('hidden');
   }
 
@@ -317,6 +319,26 @@
       return `<div class="ledger-summary"><div><span>Completed</span><strong>${ledger.length}</strong></div><div><span>Revenue</span><strong>$${rev.toFixed(2)}</strong></div><div><span>Direct Costs</span><strong>$${cost.toFixed(2)}</strong></div><div><span>Est. Gross Profit</span><strong>$${(rev-cost).toFixed(2)}</strong></div></div>
       <div class="pec-card"><h4>Completed Order Ledger</h4><p class="helper">Core financial history lives in Black Flag. Project views may be read-only in the future.</p>${ledger.length?ledger.slice().reverse().map(x=>`<div class="ledger-row"><strong>${escapeHtml(x.orderId)}</strong><span>${new Date(x.completedAt).toLocaleDateString()}</span><span>$${Number(x.revenue).toFixed(2)}</span><span>${escapeHtml(x.paymentStatus)}</span></div>`).join(''):'<p class="helper">No completed orders posted yet.</p>'}</div>`;
     }
+    if(tab==='payments'){
+      const pay=p.payments||{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false};
+      return `<div class="pec-grid">
+        <article class="pec-card payment-structure-card">
+          <h4>Pay by App</h4>
+          <p class="helper">Engine-only structure for now. Nothing is exposed to customers yet.</p>
+          <label class="admin-toggle-row compact-toggle"><span><strong>Enable payment capability</strong><small>Controlled only through Black Flag.</small></span><input id="ptPaymentsEnabled" type="checkbox" ${pay.enabled?'checked':''}></label>
+          <label>Payment mode<select id="ptPaymentMode"><option value="payment_link">Hosted payment link</option><option value="integrated_checkout">Integrated checkout — future</option><option value="manual">Manual / record only</option></select></label>
+          <label>Provider<select id="ptPaymentProvider"><option value="not_configured">Not configured</option><option value="square">Square — future setup</option><option value="stripe">Stripe — future setup</option><option value="paypal">PayPal — future setup</option></select></label>
+          <div class="payment-safety-note">Customer checkout stays OFF until a secure provider integration is deliberately completed later.</div>
+          <button id="savePaymentsTab" class="primary-btn small">SAVE PAYMENT STRUCTURE</button>
+        </article>
+        <article class="pec-card">
+          <h4>Payment Tracking Foundation</h4>
+          <div class="payment-foundation"><span>Customer checkout</span><strong>Not exposed</strong></div>
+          <div class="payment-foundation"><span>Ledger payment status</span><strong>Ready</strong></div>
+          <div class="payment-foundation"><span>Provider</span><strong>${escapeHtml(pay.provider||'not_configured').replaceAll('_',' ')}</strong></div>
+        </article>
+      </div>`;
+    }
     return '';
   }
 
@@ -331,6 +353,16 @@
     if(tab==='products'){
       $$('[data-product-publish]').forEach(t=>t.onchange=async()=>{const pr=(p.products||[]).find(x=>x.id===t.dataset.productPublish);if(!pr)return;if(t.checked&&!confirm(`Publish product "${pr.name}"?`)){t.checked=false;return;}pr.published=t.checked;await saveCompanies();logActivity(p.id,t.checked?'Product published':'Product unpublished',pr.name);});
       if($('addProductBtn')) $('addProductBtn').onclick=async()=>{const name=prompt('Product name');if(!name)return;p.products=p.products||[];p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-4),name,published:false,characterLimit:null});await saveCompanies();logActivity(p.id,'Product added',name);renderProjectTab(p.id,'products');};
+    }
+    if(tab==='payments'){
+      const pay=p.payments||{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false};
+      $('ptPaymentMode').value=pay.mode||'payment_link';
+      $('ptPaymentProvider').value=pay.provider||'not_configured';
+      $('savePaymentsTab').onclick=async()=>{
+        p.payments={enabled:$('ptPaymentsEnabled').checked,mode:$('ptPaymentMode').value,provider:$('ptPaymentProvider').value,customerVisible:false};
+        await saveCompanies();
+        logActivity(p.id,'Payment structure updated',`${p.payments.enabled?'enabled':'disabled'} • ${p.payments.provider}`);
+      };
     }
     if(tab==='orders'){
       const orders=await getMergedOrders();const rows=orders.filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
@@ -355,8 +387,8 @@
     logActivity(id,'Project opened');
     // HARD SECURITY RULE: entering a project always destroys Black Flag authorization.
     engineSessionUnlocked=false;
-    document.body.classList.remove('engine-mode');
-    $('engineScreen')?.classList.add('hidden');
+    document.body.classList.remove('boot-locked','engine-mode');
+    $('enginePanel')?.classList.add('hidden');
     $('blackFlagEntryGate')?.classList.add('hidden');
     document.body.classList.add('project-mode');
     $('returnToEngineBtn')?.classList.remove('hidden');
@@ -371,18 +403,25 @@
     // No pirate language or visual assets are introduced here.
     if(p.id==='ikes-wood-signs'){
       document.title="Ike's Wood Signs";
+      document.querySelectorAll('.brand-title').forEach(el=>el.textContent="IKE'S WOOD SIGNS");
+      document.querySelectorAll('.brand-subtitle').forEach(el=>el.textContent="Self-Serve Sign Ordering");
+      document.querySelectorAll('.brand-kicker').forEach(el=>el.textContent="Pick your wood • Design • Preview • Order");
     }else{
       document.title=p.name;
       document.querySelectorAll('.brand-title').forEach(el=>el.textContent=p.name.toUpperCase());
+      document.querySelectorAll('.brand-subtitle').forEach(el=>el.textContent=p.tagline||'Custom Ordering');
+      document.querySelectorAll('.brand-kicker').forEach(el=>el.textContent='Customize • Preview • Approve • Order');
     }
   }
 
   function requestEngineFromProject(){
-    // Project can request the Engine, but must see PIN first every single time.
     engineSessionUnlocked=false;
-    document.body.classList.remove('project-mode');
+    document.body.classList.remove('project-mode','engine-mode');
+    document.body.classList.add('boot-locked');
     $('returnToEngineBtn')?.classList.add('hidden');
     $('customerApp')?.classList.add('hidden');
+    $('adminPanel')?.classList.add('hidden');
+    $('enginePanel')?.classList.add('hidden');
     if(typeof requireEngineEntry==='function') requireEngineEntry();
     else $('blackFlagEntryGate')?.classList.remove('hidden');
   }
@@ -398,7 +437,7 @@
     if(!name){$('addProjectError').textContent='Enter a project name.';return;}
     const id=slugifyProjectName(name);
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
-    companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},products:[]});
+    companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},products:[]});
     await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
   }
 
@@ -1314,7 +1353,11 @@
     await loadEngineConfig();
     bindEvents();
     const recovered=recoverDraft();
-    setScreen(recovered?state.current:'welcome');
+    state.current=recovered?state.current:'welcome';
+    $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
+    $('customerApp')?.classList.add('hidden');
+    $('adminPanel')?.classList.add('hidden');
+    $('enginePanel')?.classList.add('hidden');
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   init().catch(err=>{console.error(err);alert('The app could not start. Please reload the page.');});
@@ -1361,14 +1404,16 @@ document.addEventListener('click', (event) => {
       return;
     }
     engineSessionUnlocked=true;
+    document.body.classList.remove('boot-locked','project-mode');
     leaveEntry();
 
     // Hide all company/customer surfaces and open Black Flag immediately.
     const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
     const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
-    const engine=byId('engineScreen'); if(engine) engine.classList.remove('hidden');
+    const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
     document.body.classList.add('engine-mode');
     if(typeof populateEngineSettings==='function') populateEngineSettings();
+    if(typeof renderProjectCommand==='function') await renderProjectCommand();
     if(typeof refreshEngineDiagnostics==='function') await refreshEngineDiagnostics();
     if(typeof renderFleetStats==='function') await renderFleetStats();
     window.scrollTo({top:0,left:0,behavior:'instant'});
@@ -1378,7 +1423,7 @@ document.addEventListener('click', (event) => {
     lockEngineSession();
     leaveEntry();
     document.body.classList.remove('engine-mode');
-    const engine=byId('engineScreen'); if(engine) engine.classList.add('hidden');
+    const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
     const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
     const customer=byId('customerApp'); if(customer) customer.classList.remove('hidden');
     if(typeof setScreen==='function') setScreen('welcome');
@@ -1388,7 +1433,7 @@ document.addEventListener('click', (event) => {
     lockEngineSession();
     leaveEntry();
     document.body.classList.remove('engine-mode');
-    const engine=byId('engineScreen'); if(engine) engine.classList.add('hidden');
+    const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
     const customer=byId('customerApp'); if(customer) customer.classList.remove('hidden');
     // Re-use the existing 4353 admin PIN gate.
     const adminBtn=byId('adminBtn');
@@ -1397,8 +1442,11 @@ document.addEventListener('click', (event) => {
 
   function lockAndReturnToEntry(){
     lockEngineSession();
-    document.body.classList.remove('engine-mode');
-    const engine=byId('engineScreen'); if(engine) engine.classList.add('hidden');
+    document.body.classList.remove('engine-mode','project-mode');
+    document.body.classList.add('boot-locked');
+    const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
+    const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
+    const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
     requireEngineEntry();
   }
 

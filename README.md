@@ -187,3 +187,18 @@ Architecture lock-in release.
 - Start Another Order is green.
 - Complete is black.
 - Both reset the same project workflow so the next submitted order receives a new unique order number.
+
+
+## Version 2.7 — BLACK FLAG ANCHOR
+- Fresh HTML boots locked: only the Engine PIN portal can display before authentication.
+- Fixed the routing bug where portal code referenced non-existent `engineScreen`; the real Engine container is `enginePanel`.
+- No Company App/Admin bypass on the boot portal.
+- Correct Engine PIN opens Project Command.
+- Entering any project destroys Engine authorization.
+- Returning from a project hides the project and requires Engine PIN again.
+- Black Flag/pirate UI is hidden in project mode.
+- Ike header no longer contains Black Flag/Workshop language.
+- Per-project AI/workflow remain inside Project Control Center; legacy global cards are hidden.
+- Added Engine-only per-project Pay by App structure, OFF by default. No customer payment UI is exposed.
+- Payment structure anticipates hosted links, future integrated checkout, provider configuration and ledger payment tracking.
+- Service-worker navigation is network-first to reduce stale GitHub Pages startup screens.

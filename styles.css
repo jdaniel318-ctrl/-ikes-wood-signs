@@ -998,3 +998,28 @@ body.engine-mode #adminPanel{
 .final-action-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.final-green-btn,.final-black-btn{min-height:58px;border:0;border-radius:999px;color:white;font-weight:1000;font-size:18px}.final-green-btn{background:#2f8a48;box-shadow:0 5px 0 #206134}.final-black-btn{background:#111;box-shadow:0 5px 0 #000}.final-green-btn:active,.final-black-btn:active{transform:translateY(2px)}
 body.project-mode [class*="pirate"],body.project-mode [class*="black-flag"],body.project-mode .bf-engine-banner{display:none!important}
 @media(max-width:900px){.project-command-cards,.pec-grid,.ledger-summary{grid-template-columns:1fr}.project-card-actions{flex-direction:column}.ledger-row{grid-template-columns:1fr 1fr}.final-action-row{grid-template-columns:1fr}}
+
+/* v2.7 BLACK FLAG ANCHOR */
+body.boot-locked{overflow:hidden;background:#0d232b}
+body.boot-locked #app{display:none!important}
+body.boot-locked #blackFlagEntryGate{display:grid!important}
+body.engine-mode #app{display:block!important}
+body.engine-mode .brand-header,
+body.engine-mode .progress-track,
+body.engine-mode #customerApp,
+body.engine-mode #adminPanel,
+body.engine-mode #returnToEngineBtn{display:none!important}
+body.engine-mode #enginePanel{display:block!important}
+body.project-mode #enginePanel,
+body.project-mode #blackFlagEntryGate{display:none!important}
+body.project-mode #customerApp{display:block!important}
+body.project-mode .brand-header{display:grid!important}
+body.project-mode .progress-track{display:block!important}
+body.project-mode [class*="pirate"],
+body.project-mode [class*="black-flag"],
+body.project-mode .bf-engine-banner{display:none!important}
+.legacy-global-project-control{display:none!important}
+.payment-structure-card{border-color:#d7c69f;background:#fffaf0}
+.payment-safety-note{margin:12px 0;padding:12px 14px;border-radius:16px;background:#f0eee6;color:#625a4d;font-size:12px;font-weight:700}
+.payment-foundation{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid #ece7dc}
+.payment-foundation strong{text-transform:capitalize;color:#173742}

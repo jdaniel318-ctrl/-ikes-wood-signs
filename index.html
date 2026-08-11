@@ -9,15 +9,19 @@
   <title>Workshop Engine — Black Flag Cove</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
+  <style id="bootLockStyles">
+    body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
+    body.boot-locked #blackFlagEntryGate {display:grid!important}
+  </style>
 </head>
-<body>
+<body class="boot-locked">
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
       <div class="bf-entry-mark">☠</div>
       <div class="bf-entry-kicker">BLACK FLAG HARBOR</div>
       <h1>Workshop Engine</h1>
-      <p class="bf-entry-sub">Multi-company command, configuration and platform control.</p>
+      <p class="bf-entry-sub">Secure project command, configuration and platform control.</p>
 
       <div class="bf-entry-panel">
         <label for="blackFlagEntryPin">ENGINE PIN</label>
@@ -26,10 +30,6 @@
         <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
       </div>
 
-      <div class="bf-entry-alt">
-        <button id="openCompanyAppBtn" class="bf-entry-secondary">OPEN COMPANY APP</button>
-        <button id="openAdminFromEntryBtn" class="bf-entry-secondary">COMPANY ADMIN</button>
-      </div>
       <div class="bf-entry-foot">Authorized engine access only • Engine PIN required every time Black Flag is entered</div>
     </div>
   </div>
@@ -42,7 +42,7 @@
       <div class="brand-copy illustrated-brand">
         <div class="brand-title">IKE'S WOOD SIGNS</div>
         <div class="brand-subtitle">Self-Serve Sign Ordering</div>
-        <div class="brand-kicker">WORKSHOP • Black Flag Engine • Pick • Design • Preview • Order</div>
+        <div class="brand-kicker">Pick your wood • Design • Preview • Order</div>
       </div>
       <img src="assets/ike_character.jpg" alt="Ike holding a wood sign blank" class="header-ike" />
       <button id="adminBtn" class="icon-btn" aria-label="Open admin area">⚙︎</button>
@@ -336,7 +336,7 @@
       <div class="engine-welcome">
         <div class="welcome-mark">☠</div>
         <div>
-          <strong>Welcome aboard Black Flag Cove.</strong>
+          <strong>Welcome aboard Black Flag Harbor.</strong>
           <span>Daily business controls stay upstairs. This area is for engine-wide company setup, diagnostics, AI policy, and reusable workflow controls.</span>
         </div>
       </div>
@@ -381,6 +381,7 @@
           <button data-project-tab="publishing">Publishing</button>
           <button data-project-tab="orders">Orders</button>
           <button data-project-tab="ledger">Ledger</button>
+          <button data-project-tab="payments">Payments</button>
         </nav>
         <div id="projectTabContent" class="project-tab-content"></div>
       </section>
@@ -394,7 +395,7 @@
       <div id="companyFleet" class="company-fleet"></div>
 
       <div class="engine-grid">
-        <article class="engine-card">
+        <article class="engine-card legacy-global-project-control">
           <h3>AI Product Recognition</h3>
           <p class="helper">Engine-controlled by company for testing. AI may identify and suggest; company pricing rules remain authoritative.</p>
           <label>Company<select id="aiCompanySetting"></select></label>
@@ -420,7 +421,7 @@
           <p id="engineIdentityStatus" class="helper"></p>
         </article>
 
-        <article class="engine-card">
+        <article class="engine-card legacy-global-project-control">
           <h3>Default Workflow</h3>
           <p class="helper">Comma-separated production stages used by the reusable order engine.</p>
           <label>Order statuses<textarea id="engineStatusesSetting" rows="4"></textarea></label>
