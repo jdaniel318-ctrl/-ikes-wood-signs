@@ -21,15 +21,17 @@
       customerExperience:{photoRequired:true,previewApproval:true},
       publish:{status:'live'},
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
+      customerHistory:{enabled:false},
       products:[{id:'custom-wood-sign',name:'Custom Wood Sign',published:true,characterLimit:null}]
     },
     {
       id:'mugshot-after-dark',
-      name:'Mugs After Dark',
-      tagline:'Custom mugs for the night shift.',
+      name:'Mugshot After Dark',
+      tagline:'Classy mugs. Questionable messages.',
       type:'custom_mugs',
       visibility:'engine_only',
-      projectTheme:'mugs-after-dark',
+      projectTheme:'mugshot-after-dark',
       status:'future',
       orderPrefix:'MUG',
       ai:{mode:'assist',minConfidence:0.92,requireScaleReference:false},
@@ -47,6 +49,38 @@
   let engineActiveProjectId = null;
   const PROJECT_ACTIVITY_KEY='blackFlagProjectActivityV1';
   const PROJECT_LEDGER_KEY='blackFlagProjectLedgersV1';
+
+
+  const PIN_SECURITY_KEY='blackFlagPinSecurityV1';
+  function readPinSecurity(){try{return JSON.parse(localStorage.getItem(PIN_SECURITY_KEY)||'{}')}catch(_){return{}}}
+  function writePinSecurity(v){localStorage.setItem(PIN_SECURITY_KEY,JSON.stringify(v))}
+  function pinSecurityState(key){
+    const all=readPinSecurity(), now=Date.now(), row=all[key]||{attempts:[],lockedUntil:0};
+    row.attempts=(row.attempts||[]).filter(t=>now-t<=180000);
+    if(row.lockedUntil && row.lockedUntil<=now) row.lockedUntil=0;
+    all[key]=row;writePinSecurity(all);return row;
+  }
+  function pinLocked(key){return pinSecurityState(key).lockedUntil>Date.now()}
+  function recordBadPin(key){
+    const all=readPinSecurity(),now=Date.now(),row=pinSecurityState(key);
+    row.attempts.push(now);row.attempts=row.attempts.filter(t=>now-t<=180000);
+    if(row.attempts.length>=10){row.lockedUntil=now+300000;row.attempts=[]}
+    all[key]=row;writePinSecurity(all);return row;
+  }
+  function clearPinFailures(key){const all=readPinSecurity();all[key]={attempts:[],lockedUntil:0};writePinSecurity(all)}
+  let pinTimerHandle=null;
+  function showPinLock(key,timerId,inputId,buttonId){
+    const timer=$(timerId),input=$(inputId),button=$(buttonId);
+    const tick=()=>{
+      const row=pinSecurityState(key),left=Math.max(0,row.lockedUntil-Date.now());
+      if(left<=0){timer?.classList.add('hidden');if(input)input.disabled=false;if(button)button.disabled=false;clearInterval(pinTimerHandle);pinTimerHandle=null;return}
+      const m=Math.floor(left/60000),s=Math.floor((left%60000)/1000);
+      if(timer){timer.textContent=`Locked for ${m}:${String(s).padStart(2,'0')}`;timer.classList.remove('hidden')}
+      if(input)input.disabled=true;if(button)button.disabled=true;
+    };
+    if(pinTimerHandle)clearInterval(pinTimerHandle);tick();pinTimerHandle=setInterval(tick,1000);
+  }
+  function activeProject(){return projectById(activeProjectId)||projectById('ikes-wood-signs')||companies[0]}
 
   function projects(){ return companies; }
   function projectById(id){ return companies.find(p=>p.id===id); }
@@ -249,24 +283,16 @@
     isUnlocked(){
       return engineSessionUnlocked===true;
     },
-    recoveryPin: DEFAULT_ENGINE_PIN
+    recoveryPin: DEFAULT_ENGINE_PIN,
+    pinLocked, recordBadPin, clearPinFailures, showPinLock
   };
+  window.pinLocked=pinLocked; window.recordBadPin=recordBadPin; window.clearPinFailures=clearPinFailures; window.showPinLock=showPinLock;
 
   async function loadCompanies(){
     try{
       const saved=await getSetting('companies');
       companies=Array.isArray(saved?.value)&&saved.value.length?saved.value:structuredClone(DEFAULT_COMPANIES);
     }catch(_){companies=structuredClone(DEFAULT_COMPANIES);}
-    // Non-destructive project identity migration: keep project-specific settings,
-    // but move the mug project away from the inherited Ike visual identity.
-    const mugs=companies.find(c=>c.id==='mugshot-after-dark');
-    if(mugs){
-      mugs.name='Mugs After Dark';
-      mugs.tagline='Custom mugs for the night shift.';
-      mugs.projectTheme='mugs-after-dark';
-      mugs.type='custom_mugs';
-      mugs.orderPrefix=mugs.orderPrefix||'MUG';
-    }
   }
   async function saveCompanies(){await setSetting('companies',companies);}
   function companyById(id){return companies.find(c=>c.id===id);}
@@ -309,7 +335,7 @@
         <div class="project-kpis"><span><strong>${s.orders}</strong> orders</span><span><strong>$${s.revenueMonth.toFixed(0)}</strong> month</span><span><strong>${s.completed}</strong> ledger</span></div>
         <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
-          <button data-enter-project="${escapeHtml(p.id)}" class="primary-btn small" ${p.publish?.status==='live'||p.publish?.status==='test'?'':'disabled'}>OPEN PROJECT</button>
+          <button data-enter-project="${escapeHtml(p.id)}" class="primary-btn small">${p.publish?.status==='live'?'OPEN PROJECT':'OPEN PRIVATE TEST'}</button>
         </div>
       </article>`);
     }
@@ -374,6 +400,31 @@
         </article>
       </div>`;
     }
+    if(tab==='permissions'){
+      const pm=p.permissions||{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false};
+      return `<div class="pec-card"><h4>Project Admin Access</h4>
+        <label class="admin-toggle-row compact-toggle"><span><strong>Orders</strong></span><input id="permOrdersView" type="checkbox" ${pm.ordersView?'checked':''}></label>
+        <label class="admin-toggle-row compact-toggle"><span><strong>Update order status</strong></span><input id="permOrdersUpdate" type="checkbox" ${pm.ordersUpdate?'checked':''}></label>
+        <label class="admin-toggle-row compact-toggle"><span><strong>Ledger</strong></span><input id="permLedgerView" type="checkbox" ${pm.ledgerView?'checked':''}></label>
+        <label class="admin-toggle-row compact-toggle"><span><strong>Cost entry</strong></span><input id="permCostEntry" type="checkbox" ${pm.costEntry?'checked':''}></label>
+        <label class="admin-toggle-row compact-toggle"><span><strong>Profit / margin</strong></span><input id="permProfitView" type="checkbox" ${pm.profitView?'checked':''}></label>
+        <button id="savePermissionsTab" class="primary-btn small">SAVE ACCESS</button></div>`;
+    }
+    if(tab==='customers'){
+      const enabled=!!p.customerHistory?.enabled;
+      const orders=(window.__customerOrders||[]).filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
+      const groups={};
+      orders.forEach(o=>{
+        const key=(o.customerEmail||o.customerPhone||o.customerName||'').trim().toLowerCase(); if(!key)return;
+        groups[key]=groups[key]||{name:o.customerName||'',phone:o.customerPhone||'',email:o.customerEmail||'',orders:[]};
+        groups[key].orders.push(o);
+      });
+      const rows=Object.values(groups).sort((a,b)=>b.orders.length-a.orders.length);
+      return `<div class="pec-card"><h4>Customer History</h4>
+        <label class="admin-toggle-row compact-toggle"><span><strong>Retain customer history for this project</strong></span><input id="customerHistoryEnabled" type="checkbox" ${enabled?'checked':''}></label>
+        <button id="saveCustomerHistoryTab" class="primary-btn small">SAVE</button>
+        ${enabled?`<div class="customer-history-list">${rows.map(c=>`<div class="customer-history-row"><strong>${escapeHtml(c.name||'Customer')}</strong><span>${escapeHtml(c.phone)}</span><span>${escapeHtml(c.email)}</span><span>${c.orders.length} purchase${c.orders.length===1?'':'s'}</span><small>${escapeHtml((c.orders[0]?.wording||'Custom order').slice(0,70))}</small></div>`).join('')||'<p class="helper">No retained customers yet.</p>'}</div>`:'<p class="helper">Off for this project.</p>'}</div>`;
+    }
     return '';
   }
 
@@ -399,6 +450,16 @@
         logActivity(p.id,'Payment structure updated',`${p.payments.enabled?'enabled':'disabled'} • ${p.payments.provider}`);
       };
     }
+    if(tab==='permissions'){
+      $('savePermissionsTab').onclick=async()=>{
+        p.permissions={ordersView:$('permOrdersView').checked,ordersUpdate:$('permOrdersUpdate').checked,ledgerView:$('permLedgerView').checked,costEntry:$('permCostEntry').checked,profitView:$('permProfitView').checked};
+        await saveCompanies();logActivity(p.id,'Project admin access updated');
+      };
+    }
+    if(tab==='customers'){
+      window.__customerOrders=await getMergedOrders();
+      $('saveCustomerHistoryTab').onclick=async()=>{p.customerHistory={enabled:$('customerHistoryEnabled').checked};await saveCompanies();logActivity(p.id,'Customer history '+(p.customerHistory.enabled?'enabled':'disabled'));renderProjectTab(p.id,'customers');};
+    }
     if(tab==='orders'){
       const orders=await getMergedOrders();const rows=orders.filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
       $('ptOrders').innerHTML=rows.length?rows.slice().reverse().map(o=>`<div class="ledger-row"><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(o.status)}</span><span>$${Number(o.price||0).toFixed(2)}</span><span>${escapeHtml(o.customerName||'')}</span></div>`).join(''):'<p class="helper">No orders for this project yet.</p>';
@@ -417,7 +478,7 @@
 
   function enterProject(id){
     const p=projectById(id);if(!p)return;
-    if(!['live','test'].includes(p.publish?.status||'development')) return;
+    // Engine may open any project for private testing, including unpublished projects.
     activeProjectId=id;
     logActivity(id,'Project opened');
     // HARD SECURITY RULE: entering a project always destroys Black Flag authorization.
@@ -433,89 +494,20 @@
     if(typeof setScreen==='function')setScreen('welcome');
   }
 
-  function setProjectText(selector,text){
-    const el=document.querySelector(selector);
-    if(el) el.textContent=text;
-  }
-  function setProjectButton(selector,text){
-    const el=document.querySelector(selector);
-    if(el) el.textContent=text;
-  }
-  function applyIkeCustomerCopy(){
-    setProjectText('.welcome-wordmark',"Ike's Wood Signs");
-    setProjectText('.welcome-subtitle','Self-Serve Sign Ordering');
-    setProjectText('.welcome-copy p',"Pick the piece of wood you love. Ike will guide you through the rest.");
-    setProjectText('.start-band',"Let's get started!");
-    setProjectButton('.hero-start','START YOUR SIGN →');
-    setProjectText('[data-screen="price"] h2','How long is the wood you picked?');
-    setProjectText('[data-screen="price"] p.helper',"For now, choose the price posted with that length of wood in the trailer. Ike's current price groups are shown below.");
-    setProjectText('[data-screen="photo"] h2','Take a Picture of Your Wood');
-    setProjectText('[data-screen="photo"] > p','Place the entire blank in view. The picture stays with Ike’s order and becomes the background for your preview.');
-    setProjectText('[data-screen="orientation"] h2','How should your sign face?');
-    setProjectText('[data-screen="wording"] h2','What should your sign say?');
-    setProjectText('[data-screen="font"] h2','Choose Your Letter Style');
-    setProjectText('[data-screen="fill"] h2','Choose Your Letter Finish');
-    setProjectText('[data-screen="fill"] p.helper','Choose painted lettering, a realistic CNC-carved look, or create your own custom color.');
-    setProjectText('[data-screen="customer"] h2','Your Contact Information');
-    setProjectText('[data-screen="customer"] > p','Ike will use this information to let you know when your sign is ready for pickup.');
-    setProjectText('[data-screen="review"] h2','Review Before You Order');
-    const actions=document.querySelectorAll('.brand-action');
-    const labels=[['Design Your Sign','Type it exactly how you want it.'],['Use Your Plank','Photograph the exact wood you picked.'],['Preview & Approve','See your sign before you order.']];
-    actions.forEach((a,i)=>{if(labels[i]){const strong=a.querySelector('strong'),small=a.querySelector('small');if(strong)strong.textContent=labels[i][0];if(small)small.textContent=labels[i][1];}});
-    const natural=document.querySelector('[data-fill="Natural"]');if(natural)natural.classList.remove('project-hidden-choice');
-  }
-  function applyMugsAfterDarkCustomerCopy(){
-    setProjectText('.welcome-wordmark','Mugs After Dark');
-    setProjectText('.welcome-subtitle','Late-Night Custom Mug Studio');
-    setProjectText('.welcome-copy p','Build a mug with a little more personality after sunset.');
-    setProjectText('.start-band','Make something worth staying up for.');
-    setProjectButton('.hero-start','START YOUR MUG →');
-    setProjectText('[data-screen="price"] h2','Choose your mug option');
-    setProjectText('[data-screen="price"] p.helper','Select the posted mug option for this test build. Mug-specific products and pricing will live only in this project.');
-    setProjectText('[data-screen="photo"] h2','Add Your Inspiration');
-    setProjectText('[data-screen="photo"] > p','Photograph artwork, handwriting, a reference, or something you want us to work from.');
-    setProjectText('[data-screen="orientation"] h2','How should the design sit on the mug?');
-    setProjectButton('[data-orientation="Horizontal"]','↔ WRAP / WIDE');
-    setProjectButton('[data-orientation="Vertical"]','↕ FRONT / STACKED');
-    setProjectText('[data-screen="wording"] h2','What should your mug say?');
-    setProjectText('[data-screen="font"] h2','Choose Your Mug Letter Style');
-    setProjectText('[data-screen="fill"] h2','Choose Your Design Color');
-    setProjectText('[data-screen="fill"] p.helper','Choose a clean print color or create your own custom color.');
-    setProjectText('[data-screen="customer"] h2','Where should we send the mug update?');
-    setProjectText('[data-screen="customer"] > p','We will use this information to let you know when your mug is ready.');
-    setProjectText('[data-screen="review"] h2','Review Your Mug Before Ordering');
-    const actions=document.querySelectorAll('.brand-action');
-    const labels=[['Choose Your Mug','Start with the mug you want to make yours.'],['Make It Yours','Add words, style, color and inspiration.'],['Preview the Pour','Review the design before you approve it.']];
-    actions.forEach((a,i)=>{if(labels[i]){const strong=a.querySelector('strong'),small=a.querySelector('small');if(strong)strong.textContent=labels[i][0];if(small)small.textContent=labels[i][1];}});
-    const natural=document.querySelector('[data-fill="Natural"]');if(natural)natural.classList.add('project-hidden-choice');
-  }
   function applyProjectTheme(p){
     document.body.dataset.projectTheme=p.projectTheme||'custom';
-    document.body.dataset.activeProject=p.id||'';
+    // No pirate language or visual assets are introduced here.
     if(p.id==='ikes-wood-signs'){
       document.title="Ike's Wood Signs";
       document.querySelectorAll('.brand-title').forEach(el=>el.textContent="IKE'S WOOD SIGNS");
       document.querySelectorAll('.brand-subtitle').forEach(el=>el.textContent="Self-Serve Sign Ordering");
       document.querySelectorAll('.brand-kicker').forEach(el=>el.textContent="Pick your wood • Design • Preview • Order");
-      applyIkeCustomerCopy();
-    }else if(p.id==='mugshot-after-dark'){
-      document.title='Mugs After Dark';
-      document.querySelectorAll('.brand-title').forEach(el=>el.textContent='MUGS AFTER DARK');
-      document.querySelectorAll('.brand-subtitle').forEach(el=>el.textContent='Late-Night Custom Mug Studio');
-      document.querySelectorAll('.brand-kicker').forEach(el=>el.textContent='Choose • Personalize • Preview • Order');
-      applyMugsAfterDarkCustomerCopy();
     }else{
       document.title=p.name;
       document.querySelectorAll('.brand-title').forEach(el=>el.textContent=p.name.toUpperCase());
       document.querySelectorAll('.brand-subtitle').forEach(el=>el.textContent=p.tagline||'Custom Ordering');
       document.querySelectorAll('.brand-kicker').forEach(el=>el.textContent='Customize • Preview • Approve • Order');
     }
-    if($('adminBtn')){
-      $('adminBtn').textContent='SETTINGS';
-      $('adminBtn').setAttribute('aria-label','Open project settings');
-      $('adminBtn').setAttribute('title','Project settings — PIN required');
-    }
-    updateUi();
   }
 
   function requestEngineFromProject(){
@@ -541,7 +533,9 @@
     if(!name){$('addProjectError').textContent='Enter a project name.';return;}
     const id=slugifyProjectName(name);
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
-    companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},products:[]});
+    companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
+customerHistory:{enabled:false},products:[]});
     await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
   }
 
@@ -798,8 +792,7 @@
       }
     });
     $$('[data-font-sample]').forEach(el=>el.textContent=state.wording||'Your Sign');
-    const activeProject=projectById(activeProjectId||'ikes-wood-signs');
-    $('previewPrice').textContent=activeProjectId==='mugshot-after-dark'?`Your $${state.price} Mugs After Dark custom mug`:`Your $${state.price} Ike's Wood Sign`;
+    $('previewPrice').textContent=`Your $${state.price} Ike's Wood Sign`;
     const customChoice=document.querySelector('[data-fill="Other"]');
     if(customChoice) customChoice.classList.toggle('hidden',!state.allowCustomColors);
     if(!state.allowCustomColors && state.fill==='Other') state.fill='Black';
@@ -854,7 +847,7 @@
 
   function renderSummary(){
     const rows=[
-      ['Exact wording',state.wording],[activeProjectId==='mugshot-after-dark'?'Mug option':'Wood',`$${state.price}`],[activeProjectId==='mugshot-after-dark'?'Design placement':'Orientation',state.orientation],[activeProjectId==='mugshot-after-dark'?'Reference top':'Top marker',state.topSide],['Style',state.font],[activeProjectId==='mugshot-after-dark'?'Design color':'Fill',state.fill],
+      ['Exact wording',state.wording],['Wood',`$${state.price}`],['Orientation',state.orientation],['Top marker',state.topSide],['Style',state.font],['Fill',state.fill],
       ['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Contact by',state.contactPreference]
     ];
     $('orderSummary').innerHTML=rows.map(([k,v])=>`<div class="summary-row"><span>${escapeHtml(k)}</span><strong>${escapeHtml(v)}</strong></div>`).join('');
@@ -867,9 +860,7 @@
     const m=String(d.getMonth()+1).padStart(2,'0');
     const day=String(d.getDate()).padStart(2,'0');
     const suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase();
-    const project=projectById(activeProjectId||'ikes-wood-signs');
-    const prefix=project?.orderPrefix || businessConfig.orderPrefix || 'IKE';
-    return `${prefix}-${y}${m}${day}-${suffix}`;
+    return `${businessConfig.orderPrefix||'IKE'}-${y}${m}${day}-${suffix}`;
   }
 
   async function createApprovedPreview(){
@@ -947,8 +938,7 @@
     const id=newOrderId();
     const approvedPreviewData=await createApprovedPreview();
     state.approvedPreviewData=approvedPreviewData;
-    const orderProject=projectById(activeProjectId||'ikes-wood-signs');
-    const order={projectId:activeProjectId||'ikes-wood-signs',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:orderProject?.name||businessConfig.businessName,orderPrefix:orderProject?.orderPrefix||businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
+    const order={projectId:activeProjectId||'ikes-wood-signs',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
     try{
       await put(STORE_ORDERS,order);
@@ -1043,12 +1033,6 @@
     const status=$('submitStatus');
     const retry=$('retrySubmitBtn');
     retry.classList.add('hidden');
-    const orderProject=projectById(order.projectId||'ikes-wood-signs');
-    if(order.projectId && order.projectId!=='ikes-wood-signs'){
-      status.className='submit-status centered success';
-      status.textContent=`${orderProject?.name||'Project'} test order saved inside this project. No Ike’s order email was sent.`;
-      return true;
-    }
     status.className='submit-status centered sending';
     status.textContent='Sending your order to Ike…';
 
@@ -1120,20 +1104,20 @@
   }
 
   function emailBody(order){
-    return `${order.business?.name||"Ike's Wood Signs"} Order\n\nOrder: ${order.id}\nCustomer: ${order.customerName}\nCell: ${order.customerPhone}\nEmail: ${order.customerEmail}\nContact preference: ${order.contactPreference}\n\nWording: ${order.wording}\nPrice: $${order.price}\nOrientation: ${order.orientation}\nTop: ${order.topSide}\nStyle: ${order.font}\nFill: ${order.fill}\nStatus: ${order.status}\n\nThe full order, including the wood photo, remains stored on the trailer iPad.`;
+    return `Ike's Wood Signs Order\n\nOrder: ${order.id}\nCustomer: ${order.customerName}\nCell: ${order.customerPhone}\nEmail: ${order.customerEmail}\nContact preference: ${order.contactPreference}\n\nWording: ${order.wording}\nPrice: $${order.price}\nOrientation: ${order.orientation}\nTop: ${order.topSide}\nStyle: ${order.font}\nFill: ${order.fill}\nStatus: ${order.status}\n\nThe full order, including the wood photo, remains stored on the trailer iPad.`;
   }
 
   async function prepareEmail(order){
     const setting=await getSetting('adminEmails');
     const recipients=setting?.value?.trim()||ORDER_EMAIL;
-    const subject=encodeURIComponent(`${order.business?.name||"Ike's Wood Signs"} ${order.id} - ${order.wording}`);
+    const subject=encodeURIComponent(`Ike's Wood Signs ${order.id} - ${order.wording}`);
     const body=encodeURIComponent(emailBody(order));
     location.href=`mailto:${encodeURIComponent(recipients).replace(/%2C/g,',')}?subject=${subject}&body=${body}`;
   }
 
   async function updateOrderStatus(id,status){
     const orders=await getMergedOrders(),o=orders.find(x=>x.id===id);if(!o)return;
-    o.status=status;o.updatedAt=new Date().toISOString();backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}
+    o.status=status;o.updatedAt=new Date().toISOString();if(status==='Completed'&&!o.completedAt)o.completedAt=o.updatedAt;backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}
     if(status==='Completed') postOrderToLedger(o);
     await renderAdmin();
   }
@@ -1144,6 +1128,50 @@
     if(!orders.length){list.innerHTML='<div class="empty">No saved orders yet.</div>';return;}
     list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div><div class="summary-row"><span>Letter finish</span><strong>${escapeHtml(o.fill)}${o.fill==='Other'&&o.customColor?` • <span class="color-dot" style="background:${escapeHtml(o.customColor)}"></span> ${escapeHtml(o.customColor.toUpperCase())}`:''}</strong></div>${o.approvedPreviewData?`<div class="admin-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${o.approvedPreviewData}" alt="Approved sign preview for ${escapeHtml(o.id)}" class="thumb approved-thumb">`:o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-status-control"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${o.status===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div><div class="order-actions"><span class="helper">${o.emailSentAt?'Automatic email sent':'Saved locally'}</span></div></article>`).join('');
     list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async e=>{const card=e.target.closest('[data-id]');const orders=await getMergedOrders();const o=orders.find(x=>x.id===card.dataset.id);if(o){o.status=e.target.value;await put(STORE_ORDERS,o);}}));
+  }
+
+
+  function orderProjectId(o){return o.projectId||'ikes-wood-signs'}
+  function statusBadge(o){
+    if(o.status==='Ready for Pickup') return '<span class="order-check ready-check" title="Ready for Pickup">✓</span>';
+    if(o.status==='Completed') return '<span class="order-check completed-check" title="Completed">✓</span>';
+    return '';
+  }
+  function completedAgeDays(o){
+    const d=o.completedAt||o.updatedAt||o.createdAt; return (Date.now()-new Date(d).getTime())/86400000;
+  }
+  function projectOrderCard(o,canUpdate=true){
+    return `<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div class="order-title-with-check">${statusBadge(o)}<div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div></div><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
+    <div class="summary-row"><span>Order</span><strong>${escapeHtml(o.wording||'Custom order')}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName||'')}</strong></div>
+    <div class="summary-row"><span>Phone</span><strong>${escapeHtml(o.customerPhone||'')}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail||'')}</strong></div>
+    ${canUpdate?`<div class="order-status-control"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${o.status===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<strong>${escapeHtml(o.status)}</strong>`}</article>`;
+  }
+  async function renderProjectOrdersView(){
+    const p=activeProject(), pm=p?.permissions||{};
+    if(!pm.ordersView){$('projectActiveOrders').innerHTML='<div class="empty">Orders access is disabled in Black Flag.</div>';$('projectCompletedOrders').innerHTML='';return;}
+    const rows=(await getMergedOrders()).filter(o=>orderProjectId(o)===p.id).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    const recent=rows.filter(o=>o.status!=='Completed'||completedAgeDays(o)<=10);
+    const archived=rows.filter(o=>o.status==='Completed'&&completedAgeDays(o)>10);
+    $('projectActiveOrders').innerHTML=recent.map(o=>projectOrderCard(o,!!pm.ordersUpdate)).join('')||'<div class="empty">No current orders.</div>';
+    $('projectCompletedOrders').innerHTML=archived.map(o=>projectOrderCard(o,false)).join('')||'<div class="empty">No archived completed orders.</div>';
+    $('projectActiveOrders').querySelectorAll('[data-order-status]').forEach(s=>s.addEventListener('change',e=>updateOrderStatus(s.dataset.orderStatus,e.target.value)));
+  }
+  async function renderProjectLedgerView(){
+    const p=activeProject(),pm=p?.permissions||{};
+    if(!pm.ledgerView){$('projectLedgerView').innerHTML='<div class="empty">Ledger access is disabled in Black Flag.</div>';return;}
+    const rows=projectLedger(p.id).slice().reverse();
+    $('projectLedgerView').innerHTML=rows.map(x=>{
+      const costs=(Number(x.materialCost)||0)+(Number(x.otherDirectCost)||0);
+      const profit=(Number(x.revenue)||0)-costs;
+      return `<article class="ledger-admin-card" data-ledger-id="${escapeHtml(x.ledgerId)}"><div class="ledger-row"><strong>${escapeHtml(x.orderId)}</strong><span>${new Date(x.completedAt).toLocaleDateString()}</span><span>$${Number(x.revenue||0).toFixed(2)}</span><span>${escapeHtml(x.paymentStatus||'Unknown')}</span></div>
+      ${pm.costEntry?`<div class="ledger-cost-grid"><label>Material cost<input data-cost="materialCost" type="number" step=".01" value="${Number(x.materialCost||0)}"></label><label>Other direct cost<input data-cost="otherDirectCost" type="number" step=".01" value="${Number(x.otherDirectCost||0)}"></label><button data-save-ledger="${escapeHtml(x.ledgerId)}" class="secondary-btn small">SAVE COSTS</button></div>`:''}
+      ${pm.profitView?`<div class="ledger-profit">Estimated gross profit <strong>$${profit.toFixed(2)}</strong></div>`:''}</article>`;
+    }).join('')||'<div class="empty">No completed ledger entries.</div>';
+    $('projectLedgerView').querySelectorAll('[data-save-ledger]').forEach(btn=>btn.addEventListener('click',()=>{
+      const all=readLedgers(),list=all[p.id]||[],row=list.find(x=>x.ledgerId===btn.dataset.saveLedger);if(!row)return;
+      const card=btn.closest('[data-ledger-id]');row.materialCost=Number(card.querySelector('[data-cost="materialCost"]').value)||0;row.otherDirectCost=Number(card.querySelector('[data-cost="otherDirectCost"]').value)||0;
+      writeLedgers(all);logActivity(p.id,'Ledger costs updated',row.orderId);renderProjectLedgerView();
+    }));
   }
 
   async function exportBackup(){
@@ -1314,9 +1342,12 @@
       $('adminPinInput').value='';
       $('pinGateError').textContent='';
       $('pinGate').classList.remove('hidden');
-      setTimeout(()=>$('adminPinInput').focus(),50);
+      setTimeout(()=>{if(pinLocked('admin'))showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
     });
-    $('closeAdminBtn').addEventListener('click',()=>{$('adminPanel').classList.add('hidden');$('customerApp').classList.remove('hidden');});
+    $('closeAdminBtn').addEventListener('click',()=>{
+      $('adminPanel').classList.add('hidden');$('adminSettings').classList.add('hidden');$('customerApp').classList.remove('hidden');
+      $('adminPinInput').value=''; document.body.classList.remove('modal-open');
+    });
     $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
 
     $('engineRoomBtn').addEventListener('click',()=>{
@@ -1324,11 +1355,12 @@
       $('enginePinInput').value='';
       $('enginePinError').textContent='';
       $('enginePinGate').classList.remove('hidden');
-      setTimeout(()=>$('enginePinInput').focus(),50);
+      setTimeout(()=>{if(pinLocked('engine'))showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');else $('enginePinInput').focus()},50);
     });
     $('cancelEngineBtn').addEventListener('click',()=>{$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
     $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
     $('unlockEngineBtn').addEventListener('click',async()=>{
+      if(window.pinLocked('engine')){window.showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');return;}
       const entered=$('enginePinInput').value.trim();
       const expected=await getEnginePin();
       if(entered!==expected){
@@ -1339,10 +1371,12 @@
           'Ye almost fooled the parrot. Almost.'
         ];
         $('enginePinError').textContent=pirateLines[Math.floor(Math.random()*pirateLines.length)];
-        $('enginePinInput').select();
+        const row=window.recordBadPin('engine');
+        if(row.lockedUntil>Date.now()) showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');
+        else $('enginePinInput').select();
         return;
       }
-      $('enginePinInput').value='';
+      clearPinFailures('engine');
       $('enginePinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
       await openEnginePanel();
@@ -1415,13 +1449,17 @@
       await refreshEngineDiagnostics();
     });
     $('unlockAdminBtn').addEventListener('click',async()=>{
+      if(pinLocked('admin')){showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');return;}
       const entered=$('adminPinInput').value.trim();
       const expected=await getAdminPin();
       if(entered!==expected){
+        const row=recordBadPin('admin');
         $('pinGateError').textContent='Incorrect PIN.';
-        $('adminPinInput').select();
+        if(row.lockedUntil>Date.now()) showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');
+        else $('adminPinInput').select();
         return;
       }
+      clearPinFailures('admin');
       $('pinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
       $('customerApp').classList.add('hidden');
@@ -1429,6 +1467,9 @@
       if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').checked=state.allowCustomColors;
       if($('customerEmailToggle')) $('customerEmailToggle').checked=state.customerConfirmationEmail;
       populateBusinessSettings();
+      const p=activeProject(),pm=p?.permissions||{};
+      $('projectOrdersBtn')?.classList.toggle('hidden',!pm.ordersView);
+      $('projectLedgerBtn')?.classList.toggle('hidden',!pm.ledgerView);
       await renderAdmin();
     });
     $('adminPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockAdminBtn').click();});
@@ -1450,6 +1491,14 @@
       $('confirmAdminPin').value='';
     });
 
+    $('projectOrdersBtn')?.addEventListener('click',async()=>{
+      $('adminPanel').classList.add('hidden');$('projectOrdersPanel').classList.remove('hidden');await renderProjectOrdersView();
+    });
+    $('closeProjectOrdersBtn')?.addEventListener('click',()=>{$('projectOrdersPanel').classList.add('hidden');$('customerApp').classList.remove('hidden');});
+    $('projectLedgerBtn')?.addEventListener('click',async()=>{
+      $('adminPanel').classList.add('hidden');$('projectLedgerPanel').classList.remove('hidden');await renderProjectLedgerView();
+    });
+    $('closeProjectLedgerBtn')?.addEventListener('click',()=>{$('projectLedgerPanel').classList.add('hidden');$('customerApp').classList.remove('hidden');});
     $('settingsBtn').addEventListener('click',()=>{
       $('adminSettings').classList.toggle('hidden');
       if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').checked=state.allowCustomColors;
@@ -1461,22 +1510,6 @@
     $('exportBtn').addEventListener('click',exportBackup);
     $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
   }
-
-  // Customer/project mode owns downward swipes. Prevent iPad pull-to-refresh from
-  // tearing the user out of the order flow and back to the Black Flag entry gate.
-  let projectTouchStartY=null;
-  document.addEventListener('touchstart',e=>{
-    if(!document.body.classList.contains('project-mode')) return;
-    if(window.scrollY<=0 && e.touches && e.touches.length===1) projectTouchStartY=e.touches[0].clientY;
-    else projectTouchStartY=null;
-  },{passive:true});
-  document.addEventListener('touchmove',e=>{
-    if(projectTouchStartY===null || !document.body.classList.contains('project-mode')) return;
-    if(!e.touches || e.touches.length!==1) return;
-    const dy=e.touches[0].clientY-projectTouchStartY;
-    if(dy>8 && window.scrollY<=0) e.preventDefault();
-  },{passive:false});
-  document.addEventListener('touchend',()=>{projectTouchStartY=null;},{passive:true});
 
   window.addEventListener('pagehide',stopCamera);
   window.addEventListener('beforeunload',stopCamera);
@@ -1552,15 +1585,18 @@ document.addEventListener('click', (event) => {
     }catch(_){ configured='5615'; }
 
     const valid = entered==='5615' || entered===String(configured);
+    if(pinLocked('engine')){window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');return;}
     if(!valid){
       const err=byId('blackFlagEntryError');
       if(err) err.textContent='Incorrect Engine PIN.';
-      if(input) input.select();
+      const row=window.recordBadPin('engine');
+      if(row.lockedUntil>Date.now()) window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');
+      else if(input) input.select();
       return;
     }
+    window.clearPinFailures('engine');
 
     if(window.BlackFlagAuth) window.BlackFlagAuth.unlock();
-    if(input) input.value='';
     leaveEntry();
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
@@ -1620,6 +1656,14 @@ document.addEventListener('click', (event) => {
     const logout=byId('engineLogoutBtn');
 
     if(unlock) unlock.addEventListener('click',unlockFromEntry);
+    const closeEntry=byId('closeBlackFlagEntry');
+    if(closeEntry) closeEntry.addEventListener('click',()=>{
+      leaveEntry();document.body.classList.remove('boot-locked','engine-mode');document.body.classList.add('project-mode');
+      const engine=byId('enginePanel');if(engine)engine.classList.add('hidden');
+      const customer=byId('customerApp');if(customer)customer.classList.remove('hidden');
+      const ret=byId('returnToEngineBtn');if(ret)ret.classList.remove('hidden');
+      if(typeof setScreen==='function')setScreen('welcome');
+    });
     if(pin) pin.addEventListener('keydown',e=>{if(e.key==='Enter') unlockFromEntry();});
     if(company) company.addEventListener('click',openCompanyApp);
     if(admin) admin.addEventListener('click',openCompanyAdminGate);

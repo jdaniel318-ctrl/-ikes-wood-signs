@@ -215,3 +215,17 @@ Focused repair build for Engine entry.
 - Successful PIN entry updates the real Engine session state, not a disconnected variable in the portal script.
 - Portal binding now works whether app.js runs before or after DOMContentLoaded.
 - Black Flag home rendering is isolated so a statistics/diagnostics error cannot reject a valid PIN.
+
+
+## Version 2.8 — BLACK FLAG WATCH
+- Engine PIN is no longer displayed inside Black Flag.
+- Engine and Project Admin PIN dialogs autofocus the PIN field and always provide a clear Close/Return path.
+- 10 wrong PIN attempts inside 3 minutes triggers a 5-minute countdown lockout for Engine and Project Admin; Close remains available.
+- Unpublished projects can be opened privately from Black Flag for testing.
+- Project Control Center adds Permissions and Customers.
+- Black Flag controls whether each project's Admin can access Orders, update statuses, access Ledger, enter costs, and view profit.
+- Orders and Ledger open separately from Project Admin.
+- Ready for Pickup shows a prominent yellow check; Completed shows a prominent green check.
+- Completed orders older than 10 days move to the project's Completed archive view.
+- Ledger supports project-admin cost entry when Black Flag permits it.
+- Optional per-project customer history foundation supports repeat-customer grouping.

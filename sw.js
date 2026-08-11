@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-8-night-final';
+const CACHE='workshop-engine-v2-8-black-flag-watch';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{
@@ -9,7 +9,7 @@ self.addEventListener('install',event=>{
 self.addEventListener('activate',event=>{
   event.waitUntil(
     caches.keys()
-      .then(keys=>Promise.all(keys.filter(k=>(k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')) && k!==CACHE).map(k=>caches.delete(k))))
+      .then(keys=>Promise.all(keys.filter(k=>k.startsWith('ikes-wood-signs-') && k!==CACHE).map(k=>caches.delete(k))))
       .then(()=>self.clients.claim())
   );
 });

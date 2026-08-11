@@ -1024,52 +1024,18 @@ body.project-mode .bf-engine-banner{display:none!important}
 .payment-foundation{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid #ece7dc}
 .payment-foundation strong{text-transform:capitalize;color:#173742}
 
-/* v2.8 — customer security boundary + Mugs After Dark project culture */
-body.project-mode{overscroll-behavior-y:none}
-body.project-mode .icon-btn#adminBtn{margin-left:auto;width:auto;min-width:92px;padding:0 14px;font-size:12px;font-weight:900;letter-spacing:.08em}
-.project-hidden-choice{display:none!important}
-
-body[data-project-theme="mugs-after-dark"]{--yellow:#1b1520;--blue:#c9915c;--red:#c76074;--green:#7f9c88;--ink:#f4eadf;--muted:#b9aeb8;--border:#4b3d4d;--panel:#171319;--bg:#0e0b10;--wood1:#2a2028;--wood2:#4a3034;--wood3:#1b171e;color:#f4eadf;background:#0e0b10}
-body[data-project-theme="mugs-after-dark"] .app-shell{background:#171319}
-body[data-project-theme="mugs-after-dark"] .brand-header{background:linear-gradient(135deg,#141017,#251923 55%,#39262b);color:#f8eee4;border-bottom:1px solid #5e4245}
-body[data-project-theme="mugs-after-dark"] .brand-subtitle{color:#d7a26f}
-body[data-project-theme="mugs-after-dark"] .brand-kicker{color:#9eb4a4}
-body[data-project-theme="mugs-after-dark"] .header-ike,
-body[data-project-theme="mugs-after-dark"] .ike-character,
-body[data-project-theme="mugs-after-dark"] .mini-brand img,
-body[data-project-theme="mugs-after-dark"] .celebration-ike,
-body[data-project-theme="mugs-after-dark"] .pin-ike-wrap{display:none!important}
-body[data-project-theme="mugs-after-dark"] .welcome-brand{grid-template-columns:1fr;min-height:300px;background:radial-gradient(circle at 82% 25%,#6f4d37 0 8%,transparent 9%),radial-gradient(circle at 84% 26%,#d7a26f33 0 17%,transparent 18%),linear-gradient(145deg,#161018,#2a1c27 55%,#4d3234);border-bottom:8px solid #0e0b10;position:relative}
-body[data-project-theme="mugs-after-dark"] .welcome-brand::after{content:'MUGS  •  AFTER  DARK';position:absolute;right:28px;bottom:28px;border:1px solid #d7a26f66;border-radius:999px;padding:9px 14px;color:#e6bd8d;font-size:12px;font-weight:900;letter-spacing:.2em}
-body[data-project-theme="mugs-after-dark"] .welcome-wordmark{color:#f3e3d3;text-shadow:2px 3px 0 #000;border-bottom-color:#c9915c;font-family:Georgia,serif;letter-spacing:-1px}
-body[data-project-theme="mugs-after-dark"] .welcome-subtitle{color:#d7a26f}
-body[data-project-theme="mugs-after-dark"] .welcome-copy p{color:#c6b9c4}
-body[data-project-theme="mugs-after-dark"] .wood-ribbon{background:#110d12;color:#d7a26f;border-color:#5d4146}
-body[data-project-theme="mugs-after-dark"] .brand-action,
-body[data-project-theme="mugs-after-dark"] .summary-box,
-body[data-project-theme="mugs-after-dark"] .order-ticket,
-body[data-project-theme="mugs-after-dark"] .settings-box{background:#211a22;border-color:#493b48;color:#f4eadf}
-body[data-project-theme="mugs-after-dark"] .brand-action strong,
-body[data-project-theme="mugs-after-dark"] .screen h1,
-body[data-project-theme="mugs-after-dark"] .screen h2{color:#f4eadf}
-body[data-project-theme="mugs-after-dark"] .brand-action small,
-body[data-project-theme="mugs-after-dark"] .helper{color:#b9aeb8}
-body[data-project-theme="mugs-after-dark"] .start-band{background:linear-gradient(90deg,#151116,#2b1d24,#151116);border-color:#4e393e;color:#e6bd8d}
-body[data-project-theme="mugs-after-dark"] .primary-btn{background:#b87950;color:#160f12}
-body[data-project-theme="mugs-after-dark"] .hero-start{background:#c9915c;box-shadow:0 4px 0 #775038;color:#160f12}
-body[data-project-theme="mugs-after-dark"] .secondary-btn,
-body[data-project-theme="mugs-after-dark"] .choice-btn,
-body[data-project-theme="mugs-after-dark"] .font-choice,
-body[data-project-theme="mugs-after-dark"] .text-input,
-body[data-project-theme="mugs-after-dark"] select,
-body[data-project-theme="mugs-after-dark"] textarea{background:#211a22;color:#f4eadf;border-color:#4b3d4d}
-body[data-project-theme="mugs-after-dark"] .choice-btn.selected,
-body[data-project-theme="mugs-after-dark"] .font-choice.selected{border-color:#c9915c;background:#34242a;box-shadow:0 0 0 2px #c9915c22 inset}
-body[data-project-theme="mugs-after-dark"] .preview-card,
-body[data-project-theme="mugs-after-dark"] .photo-frame{background:radial-gradient(ellipse at center,#f5efe8 0 32%,#d8d0ca 33% 42%,#2c2429 43% 49%,#171319 50%);border-radius:26px;border-color:#695047}
-body[data-project-theme="mugs-after-dark"] .preview-fallback{background:linear-gradient(135deg,#171319,#34242a)}
-body[data-project-theme="mugs-after-dark"] .preview-text{color:#f1ddc7!important;text-shadow:0 2px 3px #000}
-body[data-project-theme="mugs-after-dark"] .mini-brand{background:#120f13;border-color:#3b3039}
-body[data-project-theme="mugs-after-dark"] .mini-brand strong{color:#f4eadf}
-body[data-project-theme="mugs-after-dark"] .icon-btn#adminBtn{background:#f5eee822;color:#f0dcc8;border:1px solid #d7a26f55}
-body[data-project-theme="mugs-after-dark"] .progress-bar{background:#c9915c}
+/* v2.8 BLACK FLAG WATCH */
+.pin-lock-timer{margin:8px 0;padding:9px 12px;border-radius:999px;background:#f2df9c;color:#5b4514;font-weight:1000;text-align:center}
+.bf-close-entry{width:100%;margin-top:9px}
+.order-title-with-check{display:flex;align-items:center;gap:12px}
+.order-check{width:38px;height:38px;border-radius:50%;display:inline-grid;place-items:center;font-size:25px;font-weight:1000;flex:0 0 38px}
+.ready-check{background:#f3d447;color:#5b4a00;box-shadow:0 0 0 4px #f3d44733}
+.completed-check{background:#39a85a;color:white;box-shadow:0 0 0 4px #39a85a33}
+.ledger-admin-card{padding:14px;margin-bottom:12px;border:1px solid #deddd5;border-radius:18px;background:#fff}
+.ledger-cost-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:12px}
+.ledger-cost-grid input{width:100%;padding:10px;border:1px solid #ccd2cf;border-radius:10px}
+.ledger-profit{margin-top:10px;padding:10px 12px;border-radius:12px;background:#eef3ed}
+.customer-history-row{display:grid;grid-template-columns:1.2fr 1fr 1.4fr .8fr;gap:8px;padding:10px 0;border-top:1px solid #ece9df}
+.customer-history-row small{grid-column:1/-1;color:#727977}
+.admin-head.compact{margin-top:6px}
+@media(max-width:760px){.ledger-cost-grid,.customer-history-row{grid-template-columns:1fr}.customer-history-row small{grid-column:auto}}
