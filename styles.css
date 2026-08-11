@@ -1187,3 +1187,27 @@ body.project-admin-mode .app-shell{
   .admin-return-btn{width:100%!important;min-width:0!important}
   .project-settings-content{padding:16px!important}
 }
+
+/* v2.8.4 controlled update */
+.project-admin-brandbar{
+  position:sticky;top:0;z-index:60;
+  display:flex;justify-content:space-between;align-items:center;gap:18px;
+  margin:0 -34px 18px;padding:14px 34px;
+  background:#f4d238;border-bottom:5px solid #1373b8;
+  box-shadow:0 6px 18px #0001;
+}
+.project-admin-brand-title{font:900 23px Georgia,serif;color:#126ca5}
+.project-admin-brand-subtitle{font-size:10px;font-weight:1000;letter-spacing:1.4px;color:#a9332b}
+.project-admin-brandbar .admin-return-btn{
+  min-width:300px!important;background:#2f8a48!important;border-color:#fff!important;color:#fff!important;
+}
+.admin-order-overview{
+  max-width:920px;margin:18px auto 0;padding:20px;border-radius:22px;
+  background:#fff;border:1px solid #dfe3dd;box-shadow:0 9px 24px #18333a10;
+}
+.admin-order-overview-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:10px}
+.admin-order-overview-head h3{margin:0;font:900 21px Georgia,serif;color:#173742}
+@media(max-width:720px){
+  .project-admin-brandbar{margin:0 -16px 18px;padding:14px 16px;flex-direction:column;align-items:stretch}
+  .project-admin-brandbar .admin-return-btn{min-width:0!important;width:100%!important}
+}

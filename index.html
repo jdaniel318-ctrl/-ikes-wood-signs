@@ -261,14 +261,14 @@
     </div>
 
     <section id="adminPanel" class="project-admin-page hidden">
-      <div class="project-admin-topbar">
+      <div class="project-admin-brandbar">
         <div>
-          <div class="project-admin-kicker">PROTECTED PROJECT SETTINGS</div>
-          <h2>Project Settings</h2>
+          <div id="adminBrandTitle" class="project-admin-brand-title">PROJECT</div>
+          <div class="project-admin-brand-subtitle">PROJECT ADMIN</div>
         </div>
-        <button id="closeAdminBtn" class="admin-return-btn">← RETURN TO ORDERING</button>
+        <button id="closeAdminBtn" class="admin-return-btn">← BACK TO ORDERING</button>
       </div>
-      <div class="admin-timeout-note">For customer privacy, this page automatically closes after 15 minutes with no activity.</div>
+      <div class="admin-timeout-note">For customer privacy, this page automatically closes after 15 minutes with no activity.</div>For customer privacy, this page automatically closes after 15 minutes with no activity.</div>
 <div id="adminSettings" class="settings-box project-settings-content">
         <h3>Project Options</h3>
         <div class="admin-toggle-list">
@@ -276,10 +276,7 @@
             <span><strong>Allow Custom Colors</strong><small>When off, customers see only Black, White, and CNC Carved / No Paint Fill.</small></span>
             <input id="allowCustomColorsToggle" type="checkbox" />
           </label>
-          <label class="admin-toggle-row">
-            <span><strong>Customer Confirmation Email</strong><small>When on, the customer's email is supplied to Web3Forms for its Autoresponder. Web3Forms Pro + Autoresponder must also be enabled in the Web3Forms dashboard.</small></span>
-            <input id="customerEmailToggle" type="checkbox" />
-          </label>
+          
         </div>
         <div class="admin-divider"></div>
         <h3>Business Configuration</h3>
@@ -301,6 +298,13 @@
         <button id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
         <p class="helper">Default PIN for Version 1.5 is 4353 until changed here.</p>
       </div>
+      <section class="admin-order-overview">
+        <div class="admin-order-overview-head">
+          <div><h3>Current Orders</h3><p class="helper">This project only</p></div>
+          <button id="openFullOrdersBtn" class="secondary-btn small">OPEN ORDERS</button>
+        </div>
+        <div id="adminOrderOverviewList" class="order-list"></div>
+      </section>
       <div id="orderList" class="order-list hidden" aria-hidden="true"></div>
     </section>
 
@@ -405,6 +409,7 @@
           <button data-project-tab="payments">Payments</button>
 <button data-project-tab="permissions">Permissions</button>
 <button data-project-tab="customers">Customers</button>
+          <button data-project-tab="notifications">Notifications</button>
         </nav>
         <div id="projectTabContent" class="project-tab-content"></div>
       </section>

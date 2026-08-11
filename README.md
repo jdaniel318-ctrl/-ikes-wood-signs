@@ -247,3 +247,15 @@ Focused repair build for Engine entry.
 - Project Settings automatically locks and returns to ordering after 15 minutes of inactivity.
 - Activity such as tapping, typing, changing a setting, scrolling, or touching the screen resets the 15-minute timer.
 - No customer-ordering or Black Flag Engine UI is allowed to render while Project Settings is open.
+
+
+## v2.8.4 — CONTROLLED UPDATE
+Built directly from verified v2.8.3.
+
+- Preserves the v2.8.3 Black Flag PIN input/authentication behavior unchanged.
+- Project Admin has a compact project-branded header and prominent Back to Ordering.
+- Current project orders are visible in Project Admin; customer ordering CTA/progress remains excluded.
+- Existing 15-minute Project Admin inactivity return remains in place.
+- Customer confirmation email control is removed from Project Admin.
+- Black Flag controls customer confirmation email separately for each project under Notifications.
+- No Captain's Log, Protected Controls restructuring, accounting, customer-database, or payment changes are included in this version.

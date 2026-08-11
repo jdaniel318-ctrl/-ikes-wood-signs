@@ -23,6 +23,7 @@
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
       permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
       customerHistory:{enabled:false},
+      notifications:{customerConfirmationEmail:false},
       products:[{id:'custom-wood-sign',name:'Custom Wood Sign',published:true,characterLimit:null}]
     },
     {
@@ -425,6 +426,17 @@
         <button id="saveCustomerHistoryTab" class="primary-btn small">SAVE</button>
         ${enabled?`<div class="customer-history-list">${rows.map(c=>`<div class="customer-history-row"><strong>${escapeHtml(c.name||'Customer')}</strong><span>${escapeHtml(c.phone)}</span><span>${escapeHtml(c.email)}</span><span>${c.orders.length} purchase${c.orders.length===1?'':'s'}</span><small>${escapeHtml((c.orders[0]?.wording||'Custom order').slice(0,70))}</small></div>`).join('')||'<p class="helper">No retained customers yet.</p>'}</div>`:'<p class="helper">Off for this project.</p>'}</div>`;
     }
+    if(tab==='notifications'){
+      const n=p.notifications||{customerConfirmationEmail:false};
+      return `<div class="pec-card">
+        <h4>Customer Notifications</h4>
+        <label class="admin-toggle-row compact-toggle">
+          <span><strong>Customer confirmation email</strong><small>Black Flag controls this feature separately for each project.</small></span>
+          <input id="projectCustomerEmailEnabled" type="checkbox" ${n.customerConfirmationEmail?'checked':''}>
+        </label>
+        <button id="saveNotificationsTab" class="primary-btn small">SAVE NOTIFICATIONS</button>
+      </div>`;
+    }
     return '';
   }
 
@@ -459,6 +471,13 @@
     if(tab==='customers'){
       window.__customerOrders=await getMergedOrders();
       $('saveCustomerHistoryTab').onclick=async()=>{p.customerHistory={enabled:$('customerHistoryEnabled').checked};await saveCompanies();logActivity(p.id,'Customer history '+(p.customerHistory.enabled?'enabled':'disabled'));renderProjectTab(p.id,'customers');};
+    }
+    if(tab==='notifications'){
+      $('saveNotificationsTab').onclick=async()=>{
+        p.notifications={customerConfirmationEmail:$('projectCustomerEmailEnabled').checked};
+        await saveCompanies();
+        logActivity(p.id,'Customer confirmation email '+(p.notifications.customerConfirmationEmail?'enabled':'disabled'));
+      };
     }
     if(tab==='orders'){
       const orders=await getMergedOrders();const rows=orders.filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
@@ -542,7 +561,7 @@
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
     companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
-customerHistory:{enabled:false},products:[]});
+customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},products:[]});
     await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
   }
 
@@ -1036,6 +1055,11 @@ customerHistory:{enabled:false},products:[]});
     return {response,result,attachmentSent:false};
   }
 
+  function projectCustomerConfirmationEnabled(){
+    const p=activeProject();
+    return !!p?.notifications?.customerConfirmationEmail;
+  }
+
   async function submitOrder(order){
     const status=$('submitStatus');
     const retry=$('retrySubmitBtn');
@@ -1345,6 +1369,25 @@ customerHistory:{enabled:false},products:[]});
     },50);
   }
 
+
+  function updateProjectAdminBrand(){
+    const p=activeProject(); if(!p)return;
+    if($('adminBrandTitle')) $('adminBrandTitle').textContent=p.name.toUpperCase();
+  }
+
+  async function renderAdminOrderOverview(){
+    const p=activeProject(); if(!p||!$('adminOrderOverviewList'))return;
+    const rows=(await getMergedOrders())
+      .filter(o=>orderProjectId(o)===p.id && !(o.status==='Completed'&&completedAgeDays(o)>10))
+      .sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')))
+      .slice(0,8);
+    $('adminOrderOverviewList').innerHTML=
+      rows.map(o=>projectOrderCard(o,true)).join('') || '<div class="empty">No current orders.</div>';
+    $('adminOrderOverviewList').querySelectorAll('[data-order-status]').forEach(s=>{
+      s.addEventListener('change',e=>updateOrderStatus(s.dataset.orderStatus,e.target.value));
+    });
+  }
+
   async function showProtectedProjectPage(kind){
     $('customerApp')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
@@ -1358,7 +1401,9 @@ customerHistory:{enabled:false},products:[]});
       $('adminPanel')?.classList.remove('hidden');
       $('adminSettings')?.classList.remove('hidden');
       document.body.classList.add('project-admin-mode');
+      updateProjectAdminBrand();
       populateBusinessSettings();
+      await renderAdminOrderOverview();
       startProjectAdminIdleTimer();
     }else if(kind==='orders'){
       $('projectOrdersPanel')?.classList.remove('hidden');
@@ -1438,6 +1483,14 @@ customerHistory:{enabled:false},products:[]});
       setTimeout(()=>{if(pinLocked('admin'))showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
     });
     $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
+    $('openFullOrdersBtn')?.addEventListener('click',async()=>{
+      stopProjectAdminIdleTimer();
+      $('adminPanel')?.classList.add('hidden');
+      document.body.classList.remove('project-admin-mode');
+      $('projectOrdersPanel')?.classList.remove('hidden');
+      document.body.classList.add('project-orders-mode');
+      await renderProjectOrdersView();
+    });
     $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
 
     if($('engineRoomBtn')) $('engineRoomBtn').addEventListener('click',()=>{
@@ -1579,7 +1632,7 @@ customerHistory:{enabled:false},products:[]});
     $('closeProjectOrdersBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
     $('closeProjectLedgerBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
     if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').addEventListener('change',saveFeatureSettings);
-    if($('customerEmailToggle')) $('customerEmailToggle').addEventListener('change',saveFeatureSettings);
+    
     if($('saveBusinessSettingsBtn')) $('saveBusinessSettingsBtn').addEventListener('click',saveBusinessConfigFromAdmin);
     if($('exportBtn')) $('exportBtn').addEventListener('click',exportBackup);
     if($('restoreInput')) $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
