@@ -229,3 +229,12 @@ Focused repair build for Engine entry.
 - Completed orders older than 10 days move to the project's Completed archive view.
 - Ledger supports project-admin cost entry when Black Flag permits it.
 - Optional per-project customer history foundation supports repeat-customer grouping.
+
+
+## Version 2.8.2 — FULL ADMIN ISOLATION
+- Project Settings/Admin is a standalone protected full-screen page.
+- Orders is a separate protected full-screen page.
+- Ledger is a separate protected full-screen page.
+- No customer header, progress bar, order screen, customer content, or Engine-return control is visible while any protected page is open.
+- Closing Settings, Orders, or Ledger clears the protected state and returns directly to the unprotected customer ordering screen.
+- Orders and Ledger shortcuts only appear when Black Flag grants those permissions.

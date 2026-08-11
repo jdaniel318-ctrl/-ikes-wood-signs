@@ -303,20 +303,26 @@
         <button id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
         <p class="helper">Default PIN for Version 1.5 is 4353 until changed here.</p>
       </div>
-      <div id="orderList" class="order-list hidden"></div>
+      <div id="orderList" class="order-list hidden" aria-hidden="true"></div>
     </section>
 
 
-    <section id="projectOrdersPanel" class="admin-panel hidden">
-      <div class="admin-head"><div><h2>Orders</h2><p class="helper">Current project</p></div><button id="closeProjectOrdersBtn" class="secondary-btn small">CLOSE</button></div>
+    <section id="projectOrdersPanel" class="project-orders-page hidden">
+      <div class="project-orders-topbar">
+        <div><div class="project-orders-kicker">PROJECT ORDERS</div><h2>Orders</h2><p class="helper">Customer and order information for this project.</p></div>
+        <button id="closeProjectOrdersBtn" class="orders-return-btn">CLOSE & RETURN TO ORDERING</button>
+      </div>
       <div id="projectActiveOrders" class="order-list"></div>
       <div class="admin-divider"></div>
       <div class="admin-head compact"><div><h3>Completed</h3><p class="helper">Completed more than 10 days ago</p></div></div>
       <div id="projectCompletedOrders" class="order-list"></div>
     </section>
 
-    <section id="projectLedgerPanel" class="admin-panel hidden">
-      <div class="admin-head"><div><h2>Ledger</h2><p class="helper">Current project</p></div><button id="closeProjectLedgerBtn" class="secondary-btn small">CLOSE</button></div>
+    <section id="projectLedgerPanel" class="project-ledger-page hidden">
+      <div class="project-ledger-topbar">
+        <div><div class="project-ledger-kicker">PROJECT LEDGER</div><h2>Ledger</h2><p class="helper">Financial history for this project.</p></div>
+        <button id="closeProjectLedgerBtn" class="ledger-return-btn">CLOSE & RETURN TO ORDERING</button>
+      </div>
       <div id="projectLedgerView"></div>
     </section>
 

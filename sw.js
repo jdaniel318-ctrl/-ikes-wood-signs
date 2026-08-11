@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-8-black-flag-watch';
+const CACHE='workshop-engine-v2-8-2-admin-isolation';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{

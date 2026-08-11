@@ -494,8 +494,15 @@
     if(typeof setScreen==='function')setScreen('welcome');
   }
 
+  function applyProjectPermissions(p){
+    const pm=p?.permissions||{};
+    $('projectOrdersLaunchBtn')?.classList.toggle('hidden',!pm.ordersView);
+    $('projectLedgerLaunchBtn')?.classList.toggle('hidden',!pm.ledgerView);
+  }
+
   function applyProjectTheme(p){
     document.body.dataset.projectTheme=p.projectTheme||'custom';
+    applyProjectPermissions(p);
     // No pirate language or visual assets are introduced here.
     if(p.id==='ikes-wood-signs'){
       document.title="Ike's Wood Signs";
@@ -1281,6 +1288,63 @@ customerHistory:{enabled:false},products:[]});
     });
   }
 
+
+  function returnToCustomerAndLockProtected(){
+    $('adminPanel')?.classList.add('hidden');
+    $('projectOrdersPanel')?.classList.add('hidden');
+    $('projectLedgerPanel')?.classList.add('hidden');
+    $('pinGate')?.classList.add('hidden');
+    $('adminSettings')?.classList.add('hidden');
+    $('customerApp')?.classList.remove('hidden');
+    document.body.classList.remove('modal-open','project-admin-mode','project-orders-mode','project-ledger-mode');
+    document.body.classList.add('project-mode');
+    if($('adminPinInput')) $('adminPinInput').value='';
+    if($('pinGateError')) $('pinGateError').textContent='';
+    window.__pendingProtectedPage=null;
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+
+  async function openProtectedProjectPage(kind){
+    const p=activeProject(), pm=p?.permissions||{};
+    if(kind==='orders' && !pm.ordersView) return;
+    if(kind==='ledger' && !pm.ledgerView) return;
+    window.__pendingProtectedPage=kind;
+    $('adminPinInput').value='';
+    $('pinGateError').textContent='';
+    $('pinGate').classList.remove('hidden');
+    document.body.classList.add('modal-open');
+    setTimeout(()=>{
+      if(pinLocked('admin')) showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');
+      else $('adminPinInput').focus();
+    },50);
+  }
+
+  async function showProtectedProjectPage(kind){
+    $('customerApp')?.classList.add('hidden');
+    $('enginePanel')?.classList.add('hidden');
+    $('blackFlagEntryGate')?.classList.add('hidden');
+    $('adminPanel')?.classList.add('hidden');
+    $('projectOrdersPanel')?.classList.add('hidden');
+    $('projectLedgerPanel')?.classList.add('hidden');
+    document.body.classList.remove('project-admin-mode','project-orders-mode','project-ledger-mode');
+
+    if(kind==='settings'){
+      $('adminPanel')?.classList.remove('hidden');
+      document.body.classList.add('project-admin-mode');
+      populateBusinessSettings();
+    }else if(kind==='orders'){
+      $('projectOrdersPanel')?.classList.remove('hidden');
+      document.body.classList.add('project-orders-mode');
+      await renderProjectOrdersView();
+    }else if(kind==='ledger'){
+      $('projectLedgerPanel')?.classList.remove('hidden');
+      document.body.classList.add('project-ledger-mode');
+      await renderProjectLedgerView();
+    }
+    window.__pendingProtectedPage=null;
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+
   function bindEvents(){
     $$('.next').forEach(b=>b.addEventListener('click',()=>{
       if(b.dataset.busy==='1') return;
@@ -1338,16 +1402,14 @@ customerHistory:{enabled:false},products:[]});
     if($('completeOrderBtn')) $('completeOrderBtn').addEventListener('click',resetOrder);
     $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
     $('adminBtn').addEventListener('click',()=>{
+      window.__pendingProtectedPage='settings';
       document.body.classList.add('modal-open');
       $('adminPinInput').value='';
       $('pinGateError').textContent='';
       $('pinGate').classList.remove('hidden');
       setTimeout(()=>{if(pinLocked('admin'))showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
     });
-    $('closeAdminBtn').addEventListener('click',()=>{
-      $('adminPanel').classList.add('hidden');$('adminSettings').classList.add('hidden');$('customerApp').classList.remove('hidden');
-      $('adminPinInput').value=''; document.body.classList.remove('modal-open');
-    });
+    $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
     $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
 
     $('engineRoomBtn').addEventListener('click',()=>{
@@ -1462,18 +1524,11 @@ customerHistory:{enabled:false},products:[]});
       clearPinFailures('admin');
       $('pinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
-      $('customerApp').classList.add('hidden');
-      $('adminPanel').classList.remove('hidden');
-      if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').checked=state.allowCustomColors;
-      if($('customerEmailToggle')) $('customerEmailToggle').checked=state.customerConfirmationEmail;
-      populateBusinessSettings();
-      const p=activeProject(),pm=p?.permissions||{};
-      $('projectOrdersBtn')?.classList.toggle('hidden',!pm.ordersView);
-      $('projectLedgerBtn')?.classList.toggle('hidden',!pm.ledgerView);
-      await renderAdmin();
+      const target=window.__pendingProtectedPage||'settings';
+      await showProtectedProjectPage(target);
     });
     $('adminPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockAdminBtn').click();});
-    $('cancelAdminPinBtn').addEventListener('click',()=>{$('pinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
+    $('cancelAdminPinBtn').addEventListener('click',returnToCustomerAndLockProtected);
     $('savePinBtn').addEventListener('click',async()=>{
       const p=$('newAdminPin').value.trim();
       const c=$('confirmAdminPin').value.trim();
@@ -1491,14 +1546,10 @@ customerHistory:{enabled:false},products:[]});
       $('confirmAdminPin').value='';
     });
 
-    $('projectOrdersBtn')?.addEventListener('click',async()=>{
-      $('adminPanel').classList.add('hidden');$('projectOrdersPanel').classList.remove('hidden');await renderProjectOrdersView();
-    });
-    $('closeProjectOrdersBtn')?.addEventListener('click',()=>{$('projectOrdersPanel').classList.add('hidden');$('customerApp').classList.remove('hidden');});
-    $('projectLedgerBtn')?.addEventListener('click',async()=>{
-      $('adminPanel').classList.add('hidden');$('projectLedgerPanel').classList.remove('hidden');await renderProjectLedgerView();
-    });
-    $('closeProjectLedgerBtn')?.addEventListener('click',()=>{$('projectLedgerPanel').classList.add('hidden');$('customerApp').classList.remove('hidden');});
+    $('projectOrdersLaunchBtn')?.addEventListener('click',()=>openProtectedProjectPage('orders'));
+    $('projectLedgerLaunchBtn')?.addEventListener('click',()=>openProtectedProjectPage('ledger'));
+    $('closeProjectOrdersBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
+    $('closeProjectLedgerBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
     $('settingsBtn').addEventListener('click',()=>{
       $('adminSettings').classList.toggle('hidden');
       if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').checked=state.allowCustomColors;
