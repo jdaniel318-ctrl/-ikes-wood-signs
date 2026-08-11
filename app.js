@@ -1719,7 +1719,14 @@ document.addEventListener('click', (event) => {
 
     const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
     const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
-    const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
+    const engine=byId('enginePanel');
+    if(engine){
+      engine.classList.remove('hidden');
+      engine.removeAttribute('aria-hidden');
+      engine.style.removeProperty('display');
+      engine.style.removeProperty('visibility');
+      engine.style.removeProperty('opacity');
+    }
 
     // Render through the normal engine routines when available.
     try{

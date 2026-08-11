@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-9-black-flag-captains-log';
+const CACHE='workshop-engine-v2-9-1-black-flag-entry-fix';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{

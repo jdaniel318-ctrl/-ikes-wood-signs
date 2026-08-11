@@ -256,3 +256,9 @@ Focused repair build for Engine entry.
 - Captain's Log adds project KPIs and charts.
 - Platform Identity, Storage & Recovery, backup, draft recovery, and Reset are consolidated into Protected Controls.
 - Engine reset requires a fresh Engine PIN plus a second confirmation.
+
+## v2.9.1 — BLACK FLAG ENTRY HOTFIX
+- Fixes the blank screen after successful Engine PIN entry.
+- Explicitly restores Black Flag Engine panel visibility after authentication.
+- Keeps customer/admin surfaces hidden while Engine is active.
+- Bumps the service-worker cache so GitHub Pages clients receive the corrected runtime.

@@ -1201,3 +1201,14 @@ body.project-admin-mode .app-shell{
 .protected-controls-vault{margin:26px 0;padding:20px;border-radius:28px;background:#172f39;color:#fff}.protected-vault-head{display:flex;justify-content:space-between;align-items:center}.protected-vault-head h3{margin:3px 0;color:#fff;font:900 26px Georgia,serif}.vault-section{margin:9px 0;border:1px solid #48616a;border-radius:18px;background:#ffffff0a;overflow:hidden}.vault-section summary{cursor:pointer;padding:15px 17px;font-weight:900;color:#edf3f2;list-style:none}.vault-body{padding:0 17px 17px}.vault-body label{color:#e4eeee}.danger-vault{border-color:#8c4c43}
 .reset-confirm-gate{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:20px;background:#0d242ccc;backdrop-filter:blur(8px)}.reset-confirm-card{width:min(520px,100%);padding:26px;border-radius:28px;background:#fffaf1;box-shadow:0 28px 70px #0008}.reset-confirm-card input{width:100%;height:56px;border:1px solid #cfd4cf;border-radius:16px;text-align:center;font-size:24px;letter-spacing:8px}
 @media(max-width:800px){.captains-log-kpis,.captains-log-charts{grid-template-columns:1fr 1fr}}@media(max-width:600px){.captains-log-kpis,.captains-log-charts{grid-template-columns:1fr}.project-admin-brandbar{flex-direction:column;align-items:stretch}.project-admin-brandbar .admin-return-btn{min-width:0!important;width:100%!important}}
+
+/* v2.9.1 — Black Flag entry visibility hotfix */
+body.engine-mode #enginePanel:not(.hidden){
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  min-height:100vh;
+}
+body.engine-mode #blackFlagEntryGate.hidden{display:none!important;}
+body.engine-mode #customerApp,
+body.engine-mode #adminPanel{display:none!important;}
