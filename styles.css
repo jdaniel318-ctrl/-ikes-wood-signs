@@ -1187,28 +1187,3 @@ body.project-admin-mode .app-shell{
   .admin-return-btn{width:100%!important;min-width:0!important}
   .project-settings-content{padding:16px!important}
 }
-
-/* v2.9 CAPTAIN'S LOG */
-.project-admin-brandbar{position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;align-items:center;gap:18px;margin:0 -34px 18px;padding:14px 34px;background:#f4d238;border-bottom:5px solid #1373b8;box-shadow:0 6px 18px #0001}
-.project-admin-brand-title{font:900 23px Georgia,serif;color:#126ca5}.project-admin-brand-subtitle{font-size:11px;font-weight:900;color:#ba3329}
-.project-admin-brandbar .admin-return-btn{background:#2f8a48!important;border-color:#2f8a48!important;color:#fff!important;min-width:300px!important}
-.admin-order-overview{max-width:920px;margin:18px auto 0;padding:20px;border-radius:22px;background:#fff;border:1px solid #dfe3dd;box-shadow:0 9px 24px #18333a10}
-.admin-order-overview-head{display:flex;justify-content:space-between;align-items:center;gap:16px}.admin-order-overview-head h3{margin:0;font:900 21px Georgia,serif;color:#173742}
-.captains-log-dashboard{margin:22px 0 28px;padding:22px;border-radius:28px;background:#f8f4e9;border:1px solid #dccfb6}
-.captains-log-head{display:flex;justify-content:space-between;align-items:end}.captains-log-head h3{font:900 30px Georgia,serif;color:#173742;margin:3px 0}.captains-log-range{padding:8px 12px;border-radius:999px;background:#173742;color:#e8ca74;font-size:10px;font-weight:1000}
-.captains-log-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.captains-log-kpis>div{padding:14px 16px;border-radius:18px;background:#173742;color:#fff}.captains-log-kpis span{display:block;color:#c6d5d7;font-size:9px;font-weight:900;text-transform:uppercase}.captains-log-kpis strong{display:block;margin-top:5px;color:#ebcf78;font-size:24px}
-.captains-log-charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}.captains-chart-card{padding:16px;border-radius:20px;background:#fff;border:1px solid #e1ddd3}.chart-title-row{display:flex;justify-content:space-between}.chart-title-row h4{margin:0;font:900 18px Georgia,serif;color:#173742}.captains-chart-card canvas{width:100%;height:230px;display:block}
-.protected-controls-vault{margin:26px 0;padding:20px;border-radius:28px;background:#172f39;color:#fff}.protected-vault-head{display:flex;justify-content:space-between;align-items:center}.protected-vault-head h3{margin:3px 0;color:#fff;font:900 26px Georgia,serif}.vault-section{margin:9px 0;border:1px solid #48616a;border-radius:18px;background:#ffffff0a;overflow:hidden}.vault-section summary{cursor:pointer;padding:15px 17px;font-weight:900;color:#edf3f2;list-style:none}.vault-body{padding:0 17px 17px}.vault-body label{color:#e4eeee}.danger-vault{border-color:#8c4c43}
-.reset-confirm-gate{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:20px;background:#0d242ccc;backdrop-filter:blur(8px)}.reset-confirm-card{width:min(520px,100%);padding:26px;border-radius:28px;background:#fffaf1;box-shadow:0 28px 70px #0008}.reset-confirm-card input{width:100%;height:56px;border:1px solid #cfd4cf;border-radius:16px;text-align:center;font-size:24px;letter-spacing:8px}
-@media(max-width:800px){.captains-log-kpis,.captains-log-charts{grid-template-columns:1fr 1fr}}@media(max-width:600px){.captains-log-kpis,.captains-log-charts{grid-template-columns:1fr}.project-admin-brandbar{flex-direction:column;align-items:stretch}.project-admin-brandbar .admin-return-btn{min-width:0!important;width:100%!important}}
-
-/* v2.9.1 — Black Flag entry visibility hotfix */
-body.engine-mode #enginePanel:not(.hidden){
-  display:block!important;
-  visibility:visible!important;
-  opacity:1!important;
-  min-height:100vh;
-}
-body.engine-mode #blackFlagEntryGate.hidden{display:none!important;}
-body.engine-mode #customerApp,
-body.engine-mode #adminPanel{display:none!important;}
