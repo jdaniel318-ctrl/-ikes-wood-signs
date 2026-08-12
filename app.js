@@ -2982,19 +2982,19 @@ window.addEventListener('unhandledrejection',event=>{
 
 
 // v2.9.5 — CLEAN DECK cache/version integrity
-window.BLACK_FLAG_BUILD='2.9.5';
+window.BLACK_FLAG_BUILD='2.9.6';
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('./sw.js?v=2.9.5', {updateViaCache:'none'});
+      const reg = await navigator.serviceWorker.register('./sw.js?v=2.9.6', {updateViaCache:'none'});
       await reg.update();
       let reloadedForController=false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if(reloadedForController) return;
         reloadedForController=true;
         const key='bf-controller-build';
-        if(sessionStorage.getItem(key)!=='2.9.5') {
-          sessionStorage.setItem(key,'2.9.5');
+        if(sessionStorage.getItem(key)!=='2.9.6') {
+          sessionStorage.setItem(key,'2.9.6');
           location.reload();
         }
       });
@@ -3003,3 +3003,63 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
+
+
+// v2.9.6 — SOUNDING LINE
+(function(){
+ const $=id=>document.getElementById(id);
+ const step=(s,t,state)=>{const e=document.querySelector('#engineSoundingSteps [data-step="'+s+'"]');if(e){e.textContent=t;e.dataset.state=state||'';}};
+ const main=(id,t)=>{const e=$(id);if(e)e.textContent=t;};
+ const err=t=>{const e=$('engineSoundingError');if(e){e.hidden=!t;e.textContent=t||'';}};
+ async function sounding(){
+  err(''); step('press','Test button press received.','ok');
+  step('secure','Checking secure context…','working');
+  const secure=window.isSecureContext===true;
+  step('secure','Secure context: '+(secure?'YES':'NO')+' ('+location.protocol+'//'+location.host+').',secure?'ok':'fail');
+
+  step('api','Checking WebAuthn API…','working');
+  const pkc=typeof window.PublicKeyCredential!=='undefined';
+  const creds=!!(navigator.credentials&&typeof navigator.credentials.get==='function');
+  const api=pkc&&creds;
+  main('engineWebAuthnStatus',api?'AVAILABLE':'UNAVAILABLE');
+  step('api','WebAuthn API: '+(api?'AVAILABLE':'UNAVAILABLE')+' (PublicKeyCredential '+(pkc?'yes':'no')+', credentials.get '+(creds?'yes':'no')+').',api?'ok':'fail');
+  if(!secure||!api){
+   main('enginePlatformAuthStatus','NOT TESTED'); main('engineLocalPasskeyStatus','NOT TESTED');
+   step('platform','Platform query skipped because a prerequisite failed.','fail'); return;
+  }
+
+  step('platform','Querying platform authenticator…','working');
+  const fn=PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable;
+  if(typeof fn!=='function'){
+   main('enginePlatformAuthStatus','API MISSING'); main('engineLocalPasskeyStatus','NOT TESTED');
+   step('platform','Platform-authenticator capability method is not exposed.','fail'); return;
+  }
+  let timer;
+  try{
+   const r=await Promise.race([
+    fn.call(PublicKeyCredential).then(v=>({kind:'result',value:v})),
+    new Promise(resolve=>{timer=setTimeout(()=>resolve({kind:'timeout'}),4000);})
+   ]);
+   clearTimeout(timer);
+   if(r.kind==='timeout'){
+    main('enginePlatformAuthStatus','TIMEOUT'); main('engineLocalPasskeyStatus','NOT TESTED');
+    step('platform','No platform-authenticator result within 4 seconds.','fail');
+    err('Capability query timed out after 4 seconds.'); return;
+   }
+   main('enginePlatformAuthStatus',r.value?'AVAILABLE':'UNAVAILABLE');
+   step('platform','Platform authenticator available: '+(r.value?'YES':'NO')+'.',r.value?'ok':'warn');
+   main('engineLocalPasskeyStatus',r.value?'POSSIBLE':'UNAVAILABLE');
+   step('credential',r.value?'Platform authentication is possible. This test does not create or request a passkey.':'No local platform authenticator is available.','neutral');
+  }catch(e){
+   clearTimeout(timer);
+   const n=e&&e.name||'Error', msg=e&&e.message||String(e);
+   main('enginePlatformAuthStatus','ERROR'); main('engineLocalPasskeyStatus','NOT TESTED');
+   step('platform','Platform query threw '+n+'.','fail'); err(n+': '+msg);
+  }
+ }
+ function bind(){
+  const b=$('enginePasskeyTestBtn') || [...document.querySelectorAll('button')].find(x=>/TEST DEVICE AUTHENTICATION/i.test(x.textContent));
+  if(b)b.addEventListener('click',()=>sounding(),true);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+})();

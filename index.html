@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="black-flag-build" content="2.9.5">
+  <meta name="black-flag-build" content="2.9.6">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -9,14 +9,14 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Workshop Engine — Black Flag Cove</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.5 />
+  <link rel="stylesheet" href="styles.css?v=2.9.6 />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
   </style>
 </head>
 <body class="boot-locked">
-  <div id="globalBuildBadge" class="global-build-badge" aria-label="Application version">v2.9.5 — CLEAN DECK</div>
+  <div id="globalBuildBadge" class="global-build-badge" aria-label="Application version">v2.9.6 — SOUNDING LINE</div>
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
@@ -32,14 +32,25 @@
         <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
         <div id="enginePasskeyArea" class="engine-passkey-area">
           <div class="engine-passkey-divider"><span>DEVICE AUTHENTICATION TEST</span></div>
-          <div class="engine-passkey-build">v2.9.4 — DEAD RECKONING</div>
+          <div class="engine-passkey-build">v2.9.6 — SOUNDING LINE</div>
           <div id="enginePasskeyDiagnostics" class="engine-passkey-diagnostics">
-            <div><span>Loaded build</span><strong id="engineCacheIntegrity">v2.9.5</strong></div>
+            <div><span>Loaded build</span><strong id="engineCacheIntegrity">v2.9.6</strong></div>
             <div><span>WebAuthn</span><strong id="diagWebAuthn">CHECKING…</strong></div>
             <div><span>Platform authenticator</span><strong id="diagPlatformAuth">CHECKING…</strong></div>
             <div><span>Local passkey</span><strong id="diagPasskeyEnrollment">CHECKING…</strong></div>
           </div>
-          <button id="enginePasskeyTestBtn" class="bf-entry-passkey" type="button">TEST DEVICE AUTHENTICATION</button>
+          <div id="engineSoundingLog" class="engine-sounding-log" aria-live="polite">
+<div class="sounding-title">SOUNDING LOG</div>
+<ol id="engineSoundingSteps">
+<li data-step="press">Waiting for test button.</li>
+<li data-step="secure">Secure context not checked.</li>
+<li data-step="api">WebAuthn API not checked.</li>
+<li data-step="platform">Platform authenticator not queried.</li>
+<li data-step="credential">Credential/passkey operation not attempted.</li>
+</ol>
+<div id="engineSoundingError" class="sounding-error" hidden></div>
+</div>
+<button id="enginePasskeyTestBtn" class="bf-entry-passkey" type="button">TEST DEVICE AUTHENTICATION</button>
           <button id="enginePasskeyUseBtn" class="bf-entry-passkey hidden" type="button">USE FACE ID / PASSKEY</button>
           <button id="enginePasskeySetupBtn" class="bf-entry-passkey setup hidden" type="button">SET UP FACE ID / PASSKEY</button>
           <p id="enginePasskeyStatus" class="engine-passkey-status" aria-live="polite"></p>
@@ -614,7 +625,7 @@
     </section>
   </div>
 
-  <script src="app.js?v=2.9.5></script>
+  <script src="app.js?v=2.9.6></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">

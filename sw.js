@@ -1,9 +1,9 @@
-const CACHE_NAME = 'workshop-engine-v2-9-5-clean-deck';
+const CACHE_NAME = 'workshop-engine-v2-9-6-sounding-line';
 const APP_SHELL = [
   './',
   './index.html',
-  './styles.css?v=2.9.5',
-  './app.js?v=2.9.5',
+  './styles.css?v=2.9.6',
+  './app.js?v=2.9.6',
   './manifest.webmanifest'
 ];
 

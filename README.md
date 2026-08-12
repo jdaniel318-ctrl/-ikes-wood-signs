@@ -453,3 +453,7 @@ Cache/version integrity hardening before continuing passkey testing.
 - Deletes obsolete service-worker caches during activation.
 - Automatically reloads once when the new service-worker controller takes over.
 - Keeps the existing Black Flag PIN, passkey diagnostics, projects, orders, and project isolation logic unchanged.
+
+
+## v2.9.6 — SOUNDING LINE
+A narrow iPad authentication diagnostic build. It preserves Clean Deck cache integrity and the Engine PIN recovery path. It reports button receipt, secure-context state, WebAuthn API presence, the platform-authenticator capability query (with a four-second timeout), and clearly distinguishes authenticator capability from actual passkey enrollment. It does not create a passkey, enroll Face ID, bypass the PIN, or change project/order data.

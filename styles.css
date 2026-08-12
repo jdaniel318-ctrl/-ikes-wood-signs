@@ -1988,3 +1988,10 @@ body.mugs-project [data-screen="price"] .choice-btn[data-price="0"]::after{
   letter-spacing:.55px;box-shadow:0 2px 8px rgba(0,0,0,.18);
   pointer-events:none;
 }
+
+/* v2.9.6 — SOUNDING LINE */
+.engine-sounding-log{margin:12px 0 14px;padding:12px 14px;border:1px solid rgba(17,57,67,.14);border-radius:14px;background:rgba(255,255,255,.46);text-align:left}
+.sounding-title{font:800 10px/1.2 system-ui,-apple-system,sans-serif;letter-spacing:1.5px;color:#173d46;margin-bottom:7px}
+.engine-sounding-log ol{margin:0;padding-left:20px}.engine-sounding-log li{margin:4px 0;font:600 11px/1.35 system-ui,-apple-system,sans-serif;color:#66777b}
+.engine-sounding-log li[data-state="ok"]{color:#216b45}.engine-sounding-log li[data-state="fail"]{color:#9b2f2f}.engine-sounding-log li[data-state="warn"]{color:#8a6414}.engine-sounding-log li[data-state="working"]{font-weight:800;color:#173d46}
+.sounding-error{margin-top:8px;padding:8px 10px;border-radius:9px;background:#fff0ee;color:#8f2f2a;font:700 10px/1.35 system-ui,-apple-system,sans-serif;overflow-wrap:anywhere}
