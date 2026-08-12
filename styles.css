@@ -2519,3 +2519,86 @@ body.dark-flag-pirate-mode .graphics-lock-mark{background:#18140d!important;bord
   font-size:clamp(11px,1.5vw,16px)!important;letter-spacing:.25px!important;
   white-space:nowrap;overflow:hidden;text-align:center;
 }
+
+
+/* v2.9.18 — SEALED GALLERY
+   Marketing & Brand is project-owned inside the Engine. */
+.marketing-brand-shell{display:grid;gap:14px}
+.marketing-brand-hero{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:17px 18px;border-radius:15px;border:1px solid #cfd9d4;
+  background:linear-gradient(135deg,#f7faf7,#fff)
+}
+.marketing-brand-hero h3{margin:3px 0 3px;font-size:24px}
+.marketing-brand-hero p{margin:0;color:#65736d}
+.marketing-project-seal{
+  min-width:120px;padding:10px 13px;border-radius:13px;text-align:center;
+  background:#173742;color:#fff;border:2px solid #d7bd72
+}
+.marketing-project-seal strong,.marketing-project-seal span{display:block}
+.marketing-project-seal strong{font-size:22px;letter-spacing:1px}
+.marketing-project-seal span{margin-top:3px;font-size:7px;letter-spacing:1.1px;color:#ead8a7}
+.marketing-brand-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.marketing-identity-row,.future-tool-row{
+  display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid #e3e8e5
+}
+.namespace-text{font-size:10px;word-break:break-all}
+.future-tool-row strong{font-size:9px;color:#557064}
+.project-marketing-graphics{position:relative}
+.graphics-save-confirmation{
+  margin:10px 0 13px;padding:11px 13px;border-radius:12px;
+  background:#eaf7ed;border:1px solid #77aa82;color:#245f31;
+  display:flex;align-items:center;justify-content:space-between;gap:12px
+}
+.graphics-save-confirmation strong{font-size:12px;letter-spacing:.3px}
+.graphics-save-confirmation span{font-size:10px}
+.graphics-lock-mark.seal-failed{background:#fff0ef!important;border-color:#d7655e!important;color:#a92e29!important}
+.graphics-library-large .graphics-library-preview{width:80px;height:66px;position:relative}
+.graphics-library-large .graphics-library-item{grid-template-columns:80px 1fr auto;padding:11px}
+.graphics-library-expand,.asset-expand-btn{
+  position:absolute;right:5px;bottom:5px;width:28px;height:28px;border:0;border-radius:50%;
+  display:grid;place-items:center;background:#173742;color:#fff;font-size:19px;font-weight:900;
+  box-shadow:0 3px 9px #0003;cursor:pointer
+}
+.asset-preview-stage{
+  position:relative;margin:7px 0 9px;min-height:145px;border-radius:12px;overflow:hidden;
+  background:#edf2ef;border:1px solid #dce4df;display:grid;place-items:center
+}
+.asset-preview-stage img{display:block;max-width:100%;width:100%;height:145px;object-fit:contain}
+.asset-preview-stage img.hidden{display:none!important}
+.asset-preview-stage .asset-expand-btn{right:9px;bottom:9px}
+.marketing-asset-actions{align-items:center}
+.graphics-expand-modal{
+  position:fixed;inset:0;z-index:9999;background:#071113d9;display:grid;place-items:center;padding:28px
+}
+.graphics-expand-card{
+  width:min(980px,94vw);max-height:90vh;position:relative;padding:18px;border-radius:18px;
+  background:#fff;box-shadow:0 30px 100px #0009;display:grid;gap:10px
+}
+.graphics-expand-card img{max-width:100%;max-height:72vh;margin:auto;object-fit:contain;border-radius:10px}
+.graphics-expand-close{
+  position:absolute;right:-12px;top:-12px;width:42px;height:42px;border-radius:50%;
+  border:3px solid #fff;background:#173742;color:#fff;font-size:25px;line-height:1;cursor:pointer
+}
+.graphics-expand-title{font:800 17px Georgia,serif;color:#173742}
+.graphics-expand-namespace{font-size:9px;color:#697772;word-break:break-all}
+body.dark-flag-pirate-mode .marketing-brand-hero,
+body.dark-flag-pirate-mode .project-marketing-graphics,
+body.dark-flag-pirate-mode .marketing-identity-card,
+body.dark-flag-pirate-mode .marketing-future-card{
+  background:linear-gradient(180deg,#17150f,#0d1514)!important;border-color:#70572f!important;color:#e8d7b0!important
+}
+body.dark-flag-pirate-mode .marketing-brand-hero p,
+body.dark-flag-pirate-mode .marketing-identity-row,
+body.dark-flag-pirate-mode .future-tool-row,
+body.dark-flag-pirate-mode .graphics-expand-namespace{color:#aa9b7d!important}
+body.dark-flag-pirate-mode .marketing-project-seal{background:#090d0d;border-color:#a67e39}
+body.dark-flag-pirate-mode .graphics-save-confirmation{background:#182719;border-color:#597e57;color:#b9d7ae}
+body.dark-flag-pirate-mode .asset-preview-stage{background:#0b1110;border-color:#634e2d}
+body.dark-flag-pirate-mode .graphics-expand-card{background:#15140f;border:1px solid #8b6a32;color:#e8d7b0}
+body.dark-flag-pirate-mode .graphics-expand-title{color:#e8d7b0}
+@media(max-width:760px){
+  .marketing-brand-grid{grid-template-columns:1fr}
+  .marketing-brand-hero{align-items:flex-start}
+  .graphics-save-confirmation{align-items:flex-start;flex-direction:column}
+}

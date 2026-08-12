@@ -496,6 +496,7 @@
 
         <nav class="project-tabs" id="projectTabs">
           <button data-project-tab="overview" class="active">Overview</button>
+          <button data-project-tab="marketing">Marketing & Brand</button>
           <button data-project-tab="products">Products</button>
           <button data-project-tab="experience">Customer Experience</button>
           <button data-project-tab="ai">AI Recognition</button>
@@ -577,51 +578,7 @@
             <p id="engineIdentityStatus" class="helper"></p>
           </div>
         </details>
-
-        <details class="protected-control-group">
-          <summary>Branding & Graphics</summary>
-          <div class="protected-control-body">
-            <div class="graphics-manager-head">
-              <div><div class="engine-kicker">PROJECT GRAPHICS MANAGER</div><h4 id="graphicsProjectIdentity">PROJECT</h4></div>
-              <span class="graphics-lock-mark">SEALED</span>
-            </div>
-            <p id="graphicsIsolationNote" class="helper">Graphics are stored per project. A project never inherits another project's images.</p>
-            <div id="graphicsLibrary" class="graphics-library"></div>
-            <div class="graphics-manager-divider"><span>UPLOAD / REPLACE SLOTS</span></div>
-            <div class="asset-slot-grid">
-              <label class="asset-slot">
-                <span>Project Logo / Mark</span>
-                <input id="assetProjectLogoInput" type="file" accept="image/*">
-                <img id="assetProjectLogoPreview" alt="Project logo preview">
-                <button id="assetProjectLogoClear" type="button" class="secondary-btn small">CLEAR</button>
-              </label>
-              <label class="asset-slot">
-                <span>Hero Graphic</span>
-                <input id="assetHeroGraphicInput" type="file" accept="image/*">
-                <img id="assetHeroGraphicPreview" alt="Hero graphic preview">
-                <button id="assetHeroGraphicClear" type="button" class="secondary-btn small">CLEAR</button>
-              </label>
-              <label class="asset-slot">
-                <span>Footer Graphic</span>
-                <input id="assetFooterGraphicInput" type="file" accept="image/*">
-                <img id="assetFooterGraphicPreview" alt="Footer graphic preview">
-                <button id="assetFooterGraphicClear" type="button" class="secondary-btn small">CLEAR</button>
-              </label>
-              <label class="asset-slot">
-                <span>Background / Texture</span>
-                <input id="assetBackgroundInput" type="file" accept="image/*">
-                <img id="assetBackgroundPreview" alt="Background preview">
-                <button id="assetBackgroundClear" type="button" class="secondary-btn small">CLEAR</button>
-              </label>
-            </div>
-            <div class="asset-actions">
-              <button id="assetSaveBtn" class="primary-btn small" type="button">SAVE PROJECT GRAPHICS</button>
-              <span id="assetSaveMessage" class="helper"></span>
-            </div>
-          </div>
-        </details>
-
-        <details class="protected-control-group">
+<details class="protected-control-group">
           <summary>Storage & Recovery</summary>
           <div class="protected-control-body">
             <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>

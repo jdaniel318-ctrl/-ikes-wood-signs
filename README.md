@@ -569,3 +569,19 @@ Foundation for Dark Flag Graphics Studio.
 - Graphics remain namespaced by permanent project ID plus slot, preserving project isolation.
 - Existing v2.9.16 localStorage graphics are migrated into the graphics database when possible and the legacy payload is then removed.
 - Shared three-letter project badges were tightened so IKE, BBS, MUG, and future three-letter codes remain contained.
+
+
+## v2.9.18 — SEALED GALLERY
+Marketing/branding architecture and graphics-isolation correction.
+
+- Moves Branding & Graphics out of shared Protected Engine Controls.
+- Adds a first-class `Marketing & Brand` tab inside each project's own Engine Control Center.
+- All Graphics Manager reads/writes now resolve from `engineActiveProjectId`, the project actually opened in the Engine, rather than the customer-shell active project.
+- Switching projects clears file-picker values, unsaved selections, previews, save messages and expanded-image state before the next project loads.
+- IndexedDB graphic reads now verify the permanent project ID, slot and composite storage key; a mismatch is rejected.
+- `SEALED` now reflects a namespace verification check rather than being a purely decorative badge.
+- Adds a strong `PROJECT GRAPHICS SAVED` confirmation naming the project receiving the assets.
+- Enlarges saved previews and adds `+` expand controls.
+- Adds an expanded image viewer with an `X` close control and the owning project namespace displayed.
+- Keeps project graphic slots and the dedicated IndexedDB cargo hold introduced in v2.9.17.
+- Graphics AI remains intentionally deferred until this isolation layer passes testing.

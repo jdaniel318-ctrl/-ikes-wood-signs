@@ -562,6 +562,108 @@
       <article class="pec-card"><h4>Character Limit</h4><p>${p.customization?.maxCharacters?`${p.customization.maxCharacters} characters`:'Not set'}</p><p class="helper">${p.id==='ikes-wood-signs'?'Intentionally unset until Ike’s real rule is confirmed.':'Project rule.'}</p></article>
       <article class="pec-card"><h4>Activity</h4><div>${readActivity().filter(x=>x.projectId===p.id).slice(0,6).map(x=>`<div class="activity-line"><span>${escapeHtml(x.action)}</span><small>${new Date(x.at).toLocaleString()}</small></div>`).join('')||'<p class="helper">No activity yet.</p>'}</div></article>
     </div>`;
+
+    if(tab==='marketing') return `<div class="marketing-brand-shell">
+      <div class="marketing-brand-hero">
+        <div>
+          <div class="engine-kicker">PROJECT MARKETING</div>
+          <h3>${escapeHtml(p.name)}</h3>
+          <p>Brand identity and customer-facing graphics for this project only.</p>
+        </div>
+        <div class="marketing-project-seal">
+          <strong>${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')}</strong>
+          <span>SEALED PROJECT</span>
+        </div>
+      </div>
+
+      <div class="marketing-brand-grid">
+        <article class="pec-card marketing-identity-card">
+          <h4>Brand Identity</h4>
+          <div class="marketing-identity-row"><span>Project</span><strong>${escapeHtml(p.name)}</strong></div>
+          <div class="marketing-identity-row"><span>Project code</span><strong>${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')}</strong></div>
+          <div class="marketing-identity-row"><span>Permanent namespace</span><strong class="namespace-text">${escapeHtml(p.id)}</strong></div>
+          <p class="helper">Dark Flag uses the permanent namespace—not the display name—to separate project marketing assets.</p>
+        </article>
+
+        <article class="pec-card marketing-future-card">
+          <h4>Creative Tools</h4>
+          <p class="helper">The Graphics Library is ready for upload/assignment. Graphics AI will dock here after the isolation layer is certified.</p>
+          <div class="future-tool-row"><span>Upload / Replace</span><strong>ACTIVE</strong></div>
+          <div class="future-tool-row"><span>Graphics AI</span><strong>COMING NEXT</strong></div>
+          <div class="future-tool-row"><span>AI Edit</span><strong>PLANNED</strong></div>
+        </article>
+      </div>
+
+      <article class="pec-card project-marketing-graphics">
+        <div class="graphics-manager-head">
+          <div>
+            <div class="engine-kicker">PROJECT GRAPHICS LIBRARY</div>
+            <h4 id="graphicsProjectIdentity">PROJECT</h4>
+          </div>
+          <span id="graphicsSealStatus" class="graphics-lock-mark">VERIFYING</span>
+        </div>
+        <p id="graphicsIsolationNote" class="helper">Checking project graphics namespace…</p>
+
+        <div id="graphicsSaveConfirmation" class="graphics-save-confirmation hidden" role="status" aria-live="polite"></div>
+
+        <div id="graphicsLibrary" class="graphics-library graphics-library-large"></div>
+
+        <div class="graphics-manager-divider"><span>UPLOAD / REPLACE PROJECT SLOTS</span></div>
+        <div class="asset-slot-grid marketing-asset-slot-grid">
+          <label class="asset-slot" data-asset-slot-card="projectLogo">
+            <span>Project Logo / Mark</span>
+            <input id="assetProjectLogoInput" type="file" accept="image/*">
+            <div class="asset-preview-stage">
+              <img id="assetProjectLogoPreview" alt="Project logo preview">
+              <button type="button" class="asset-expand-btn hidden" data-expand-asset="projectLogo" aria-label="Expand Project Logo / Mark">+</button>
+            </div>
+            <button id="assetProjectLogoClear" type="button" class="secondary-btn small">CLEAR</button>
+          </label>
+          <label class="asset-slot" data-asset-slot-card="heroGraphic">
+            <span>Hero Graphic</span>
+            <input id="assetHeroGraphicInput" type="file" accept="image/*">
+            <div class="asset-preview-stage">
+              <img id="assetHeroGraphicPreview" alt="Hero graphic preview">
+              <button type="button" class="asset-expand-btn hidden" data-expand-asset="heroGraphic" aria-label="Expand Hero Graphic">+</button>
+            </div>
+            <button id="assetHeroGraphicClear" type="button" class="secondary-btn small">CLEAR</button>
+          </label>
+          <label class="asset-slot" data-asset-slot-card="footerGraphic">
+            <span>Footer Graphic</span>
+            <input id="assetFooterGraphicInput" type="file" accept="image/*">
+            <div class="asset-preview-stage">
+              <img id="assetFooterGraphicPreview" alt="Footer graphic preview">
+              <button type="button" class="asset-expand-btn hidden" data-expand-asset="footerGraphic" aria-label="Expand Footer Graphic">+</button>
+            </div>
+            <button id="assetFooterGraphicClear" type="button" class="secondary-btn small">CLEAR</button>
+          </label>
+          <label class="asset-slot" data-asset-slot-card="backgroundImage">
+            <span>Background / Texture</span>
+            <input id="assetBackgroundInput" type="file" accept="image/*">
+            <div class="asset-preview-stage">
+              <img id="assetBackgroundPreview" alt="Background preview">
+              <button type="button" class="asset-expand-btn hidden" data-expand-asset="backgroundImage" aria-label="Expand Background / Texture">+</button>
+            </div>
+            <button id="assetBackgroundClear" type="button" class="secondary-btn small">CLEAR</button>
+          </label>
+        </div>
+
+        <div class="asset-actions marketing-asset-actions">
+          <button id="assetSaveBtn" class="primary-btn small" type="button">SAVE PROJECT GRAPHICS</button>
+          <span id="assetSaveMessage" class="helper"></span>
+        </div>
+      </article>
+
+      <div id="graphicsExpandModal" class="graphics-expand-modal hidden" role="dialog" aria-modal="true" aria-label="Expanded project graphic">
+        <div class="graphics-expand-card">
+          <button id="graphicsExpandClose" class="graphics-expand-close" type="button" aria-label="Close expanded graphic">×</button>
+          <div id="graphicsExpandTitle" class="graphics-expand-title">Project Graphic</div>
+          <img id="graphicsExpandImage" alt="Expanded project graphic">
+          <div id="graphicsExpandNamespace" class="graphics-expand-namespace"></div>
+        </div>
+      </div>
+    </div>`;
+
     if(tab==='products') return `<div class="pec-card"><div class="pec-title-row"><h4>Products</h4><button id="addProductBtn" class="secondary-btn small">ADD PRODUCT</button></div>
       <div class="product-list">${products.map(pr=>`<div class="product-row"><div><strong>${escapeHtml(pr.name)}</strong><small>${pr.characterLimit?`${pr.characterLimit} char max`:'Character limit unset'}</small></div><label><input data-product-publish="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}> Published</label></div>`).join('')}</div></div>`;
     if(tab==='experience') return `<div class="pec-card"><h4>Customer Experience</h4>
@@ -685,6 +787,11 @@
     const p=projectById(id), box=$('projectTabContent');if(!p||!box)return;
     box.innerHTML=projectTabsHtml(p,tab);
     $$('#projectTabs [data-project-tab]').forEach(b=>b.classList.toggle('active',b.dataset.projectTab===tab));
+    if(tab==='marketing'){
+      if(engineActiveProjectId!==p.id)return;
+      bindProjectAssetEditor();
+      await loadProjectAssetsEditor();
+    }
     if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
     if(tab==='experience') $('saveExperienceTab').onclick=async()=>{p.customerExperience={photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;await saveCompanies();logActivity(p.id,'Customer experience updated');};
     if(tab==='workflow') $('saveWorkflowTab').onclick=async()=>{const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));}};
@@ -757,12 +864,12 @@
 
   async function openProjectEngineControl(id){
     const p=projectById(id);if(!p)return;
+    clearGraphicsTransientUi();
     engineActiveProjectId=id;
     $('pecTitle').textContent=p.name;
     $('pecSubtitle').textContent='Project-specific controls. Black Flag remains unlocked only while you stay in the Engine.';
     $('projectEngineControl').classList.remove('hidden');
     await renderProjectTab(id,'overview');
-    await loadProjectAssetsEditor();
     window.scrollTo({top:$('projectEngineControl').offsetTop-20,behavior:'smooth'});
   }
 
@@ -790,7 +897,15 @@
     const db=await openProjectAssetDb();
     return new Promise((resolve,reject)=>{
       const req=db.transaction(PROJECT_ASSET_STORE,'readonly').objectStore(PROJECT_ASSET_STORE).get(`${projectId}::${slot}`);
-      req.onsuccess=()=>resolve(req.result||null); req.onerror=()=>reject(req.error);
+      req.onsuccess=()=>{
+        const row=req.result||null;
+        if(row && (row.projectId!==projectId || row.slot!==slot || row.key!==`${projectId}::${slot}`)){
+          reject(new Error('Project graphics namespace mismatch.'));
+          return;
+        }
+        resolve(row);
+      };
+      req.onerror=()=>reject(req.error);
     });
   }
   async function idbGraphicPut(projectId,slot,blob){
@@ -913,29 +1028,81 @@
     delete meta[slot];
     writeProjectAssetMeta(projectId,meta);
   }
+
+  function graphicsProject(){
+    const p=projectById(engineActiveProjectId);
+    return p||null;
+  }
+  function clearGraphicsTransientUi(){
+    ['assetProjectLogoInput','assetHeroGraphicInput','assetFooterGraphicInput','assetBackgroundInput'].forEach(id=>{
+      const el=$(id); if(el) el.value='';
+    });
+    ['assetProjectLogoPreview','assetHeroGraphicPreview','assetFooterGraphicPreview','assetBackgroundPreview'].forEach(id=>{
+      const el=$(id); if(el){el.removeAttribute('src');el.classList.add('hidden');}
+    });
+    $$('[data-expand-asset]').forEach(b=>b.classList.add('hidden'));
+    if($('assetSaveMessage')) $('assetSaveMessage').textContent='';
+    if($('graphicsSaveConfirmation')){
+      $('graphicsSaveConfirmation').textContent='';
+      $('graphicsSaveConfirmation').classList.add('hidden');
+    }
+    closeGraphicsExpandedPreview();
+  }
+  function closeGraphicsExpandedPreview(){
+    $('graphicsExpandModal')?.classList.add('hidden');
+    if($('graphicsExpandImage')) $('graphicsExpandImage').removeAttribute('src');
+    if($('graphicsExpandTitle')) $('graphicsExpandTitle').textContent='Project Graphic';
+    if($('graphicsExpandNamespace')) $('graphicsExpandNamespace').textContent='';
+  }
+  async function verifyGraphicsNamespace(projectId){
+    if(!projectId)return false;
+    for(const slot of PROJECT_ASSET_SLOTS){
+      const row=await idbGraphicGet(projectId,slot);
+      if(row && (row.projectId!==projectId || row.slot!==slot || row.key!==`${projectId}::${slot}`)){
+        console.error('Graphics namespace verification failed',projectId,slot,row);
+        return false;
+      }
+    }
+    return true;
+  }
+
   async function renderProjectGraphicsLibrary(){
-    const p=projectById(activeProjectId); if(!p)return;
-    const assets=await readProjectAssets(p.id);
-    const meta=readProjectAssetMeta(p.id);
+    const p=graphicsProject(); if(!p)return;
+    const requestedProjectId=p.id;
+    const assets=await readProjectAssets(requestedProjectId);
+    if(engineActiveProjectId!==requestedProjectId)return;
+    const meta=readProjectAssetMeta(requestedProjectId);
     const slots=graphicSlotsForProject(p);
+    const verified=await verifyGraphicsNamespace(requestedProjectId);
+    if(engineActiveProjectId!==requestedProjectId)return;
+
     if($('graphicsProjectIdentity')) $('graphicsProjectIdentity').textContent=`${p.projectCode||p.orderPrefix||'PRJ'} • ${p.name}`;
-    if($('graphicsIsolationNote')) $('graphicsIsolationNote').textContent=`Library namespace: ${p.id}. Only this project can read or assign these graphics.`;
+    if($('graphicsIsolationNote')) $('graphicsIsolationNote').textContent=`SEALED NAMESPACE: ${requestedProjectId} • Reads and writes are restricted to this project.`;
+    if($('graphicsSealStatus')){
+      $('graphicsSealStatus').textContent=verified?'SEALED':'CHECK HULL';
+      $('graphicsSealStatus').classList.toggle('seal-failed',!verified);
+    }
     if($('graphicsLibrary')){
       $('graphicsLibrary').innerHTML=slots.map(slot=>{
         const has=!!assets[slot], m=meta[slot]||{};
         return `<article class="graphics-library-item ${has?'has-graphic':'empty-graphic'}">
-          <div class="graphics-library-preview">${has?`<img src="${assets[slot]}" alt="${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">`:`<span>${escapeHtml((p.projectCode||'PRJ').slice(0,3))}</span>`}</div>
+          <div class="graphics-library-preview">
+            ${has?`<img src="${assets[slot]}" alt="${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}"><button type="button" class="graphics-library-expand" data-expand-asset="${escapeHtml(slot)}" aria-label="Expand ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">+</button>`:`<span>${escapeHtml((p.projectCode||'PRJ').slice(0,3))}</span>`}
+          </div>
           <div class="graphics-library-copy"><strong>${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}</strong>
-          <small>${has?escapeHtml(m.fileName||'Assigned graphic'):'No graphic assigned'}</small></div>
-          <span class="graphics-slot-state">${has?'ASSIGNED':'OPEN SLOT'}</span>
+          <small>${has?escapeHtml(m.fileName||'Assigned project graphic'):'No graphic assigned to this project'}</small></div>
+          <span class="graphics-slot-state">${has?'SAVED':'OPEN SLOT'}</span>
         </article>`;
       }).join('');
     }
   }
 
   async function loadProjectAssetsEditor(){
-    const p=projectById(activeProjectId);if(!p)return;
-    const assets=await readProjectAssets(p.id);
+    const p=graphicsProject(); if(!p)return;
+    const requestedProjectId=p.id;
+    clearGraphicsTransientUi();
+    const assets=await readProjectAssets(requestedProjectId);
+    if(engineActiveProjectId!==requestedProjectId)return;
     const map={
       projectLogo:'assetProjectLogoPreview',
       heroGraphic:'assetHeroGraphicPreview',
@@ -945,15 +1112,19 @@
     Object.entries(map).forEach(([slot,id])=>{
       const el=$(id);if(!el)return;
       const data=assets[slot];
-      if(data){el.src=data;el.classList.remove('hidden');}
-      else{el.removeAttribute('src');el.classList.add('hidden');}
+      if(data){
+        el.src=data;el.classList.remove('hidden');
+        document.querySelector(`[data-asset-slot-card="${slot}"] [data-expand-asset="${slot}"]`)?.classList.remove('hidden');
+      }else{
+        el.removeAttribute('src');el.classList.add('hidden');
+      }
     });
-    if($('assetSaveMessage'))$('assetSaveMessage').textContent='';
     await renderProjectGraphicsLibrary();
   }
 
   async function collectAndSaveProjectAssets(){
-    const p=projectById(activeProjectId);if(!p)return;
+    const p=graphicsProject();if(!p)return;
+    const requestedProjectId=p.id;
     const fields={
       projectLogo:'assetProjectLogoInput',
       heroGraphic:'assetHeroGraphicInput',
@@ -962,24 +1133,37 @@
     };
     let savedCount=0;
     for(const [slot,id] of Object.entries(fields)){
+      if(engineActiveProjectId!==requestedProjectId) throw new Error('Project changed while graphics were being saved. Nothing else was written.');
       const input=$(id), file=input?.files?.[0];
       if(file){
-        await saveProjectAssetFile(p.id,slot,file);
-        recordProjectGraphic(p.id,slot,null,file);
+        await saveProjectAssetFile(requestedProjectId,slot,file);
+        recordProjectGraphic(requestedProjectId,slot,null,file);
         savedCount++;
-        if(input) input.value='';
       }
     }
+    if(engineActiveProjectId!==requestedProjectId) throw new Error('Project changed before graphics confirmation.');
     await applyProjectAssetSlots(p);
     await loadProjectAssetsEditor();
-    if($('assetSaveMessage')) $('assetSaveMessage').textContent=savedCount?'Saved in the project graphics hold. Isolated to this project.':'No new graphics selected.';
-    return readProjectAssets(p.id);
+
+    const code=p.projectCode||p.orderPrefix||'PRJ';
+    if(savedCount){
+      if($('graphicsSaveConfirmation')){
+        $('graphicsSaveConfirmation').innerHTML=`<strong>PROJECT GRAPHICS SAVED</strong><span>${savedCount} graphic${savedCount===1?'':'s'} secured to ${escapeHtml(code)} only.</span>`;
+        $('graphicsSaveConfirmation').classList.remove('hidden');
+      }
+      if($('assetSaveMessage')) $('assetSaveMessage').textContent=`Saved to ${p.name} only.`;
+      logActivity(requestedProjectId,'Project graphics saved',`${savedCount} slot${savedCount===1?'':'s'} updated`);
+    }else if($('assetSaveMessage')){
+      $('assetSaveMessage').textContent='No new graphics selected.';
+    }
+    return readProjectAssets(requestedProjectId);
   }
   function bindProjectAssetEditor(){
     const save=$('assetSaveBtn');
-    if(save)save.addEventListener('click',()=>collectAndSaveProjectAssets().catch(err=>{
-      if($('assetSaveMessage'))$('assetSaveMessage').textContent=err?.message||'Could not save graphics.';
-    }));
+    if(save) save.onclick=()=>collectAndSaveProjectAssets().catch(err=>{
+      if($('assetSaveMessage')) $('assetSaveMessage').textContent=err?.message||'Could not save graphics.';
+    });
+
     const clears={
       assetProjectLogoClear:'projectLogo',
       assetHeroGraphicClear:'heroGraphic',
@@ -987,14 +1171,40 @@
       assetBackgroundClear:'backgroundImage'
     };
     Object.entries(clears).forEach(([id,slot])=>{
-      $(id)?.addEventListener('click',async()=>{
-        const p=projectById(activeProjectId);if(!p)return;
-        await clearProjectAsset(p.id,slot);
-        removeProjectGraphicMeta(p.id,slot);
+      const el=$(id); if(!el)return;
+      el.onclick=async()=>{
+        const p=graphicsProject();if(!p)return;
+        const requestedProjectId=p.id;
+        await clearProjectAsset(requestedProjectId,slot);
+        removeProjectGraphicMeta(requestedProjectId,slot);
+        if(engineActiveProjectId!==requestedProjectId)return;
         await applyProjectAssetSlots(p);
         await loadProjectAssetsEditor();
-      });
+        if($('graphicsSaveConfirmation')){
+          $('graphicsSaveConfirmation').innerHTML=`<strong>GRAPHIC REMOVED</strong><span>${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)} cleared from ${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')} only.</span>`;
+          $('graphicsSaveConfirmation').classList.remove('hidden');
+        }
+      };
     });
+
+    const shell=$('projectTabContent');
+    if(shell){
+      shell.onclick=e=>{
+        const expand=e.target.closest('[data-expand-asset]');
+        if(!expand)return;
+        const p=graphicsProject();if(!p)return;
+        const slot=expand.dataset.expandAsset;
+        readProjectAssets(p.id).then(assets=>{
+          if(engineActiveProjectId!==p.id || !assets[slot])return;
+          if($('graphicsExpandImage')) $('graphicsExpandImage').src=assets[slot];
+          if($('graphicsExpandTitle')) $('graphicsExpandTitle').textContent=GRAPHIC_SLOT_LABELS[slot]||'Project Graphic';
+          if($('graphicsExpandNamespace')) $('graphicsExpandNamespace').textContent=`${p.projectCode||p.orderPrefix||'PRJ'} • ${p.id}`;
+          $('graphicsExpandModal')?.classList.remove('hidden');
+        });
+      };
+    }
+    if($('graphicsExpandClose')) $('graphicsExpandClose').onclick=closeGraphicsExpandedPreview;
+    if($('graphicsExpandModal')) $('graphicsExpandModal').onclick=e=>{if(e.target.id==='graphicsExpandModal')closeGraphicsExpandedPreview();};
   }
 
   const PROJECT_SHELL_TEMPLATES={
@@ -2949,7 +3159,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('saveAISettingsBtn').addEventListener('click',saveAIForm);
 
     if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',openAddProject);
-    if($('closeProjectEngineControl')) $('closeProjectEngineControl').addEventListener('click',()=>{$('projectEngineControl').classList.add('hidden');engineActiveProjectId=null;});
+    if($('closeProjectEngineControl')) $('closeProjectEngineControl').addEventListener('click',()=>{clearGraphicsTransientUi();$('projectEngineControl').classList.add('hidden');engineActiveProjectId=null;});
     if($('projectTabs')) $('projectTabs').addEventListener('click',e=>{const b=e.target.closest('[data-project-tab]');if(b&&engineActiveProjectId)renderProjectTab(engineActiveProjectId,b.dataset.projectTab);});
     if($('cancelAddProjectBtn')) $('cancelAddProjectBtn').addEventListener('click',()=>$('addProjectGate').classList.add('hidden'));
     if($('createProjectBtn')) $('createProjectBtn').addEventListener('click',createProject);
