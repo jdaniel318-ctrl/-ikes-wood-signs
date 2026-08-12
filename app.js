@@ -727,26 +727,33 @@
     window.scrollTo({top:$('projectEngineControl').offsetTop-20,behavior:'smooth'});
   }
 
+
+  const PROJECT_SHELL_TEMPLATES={
+    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
+    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
+    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false}}
+  };
+  const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs'};
+  function projectShellFor(p){return PROJECT_SHELLS[p?.id]||'generic';}
+  function hideAllCustomerShells(){$('customerApp')?.classList.add('hidden');$('mugsCustomerShell')?.classList.add('hidden');}
+  function showCustomerShellForProject(p){
+    hideAllCustomerShells();
+    const shell=projectShellFor(p);
+    if(shell==='ikes') $('customerApp')?.classList.remove('hidden');
+    else if(shell==='mugs') $('mugsCustomerShell')?.classList.remove('hidden');
+    else console.warn('No customer shell registered for project',p?.id);
+  }
+
   async function enterProject(id){
     const p=projectById(id);if(!p)return;
-    activeProjectId=id;
-    logActivity(id,'Project opened');
-    engineSessionUnlocked=false;
-    document.body.classList.remove('boot-locked','engine-mode');
-    $('enginePanel')?.classList.add('hidden');
-    $('blackFlagEntryGate')?.classList.add('hidden');
-    document.body.classList.add('project-mode');
-    $('returnToEngineBtn')?.classList.remove('hidden');
-    $('customerApp')?.classList.remove('hidden');
-    $('adminPanel')?.classList.add('hidden');
-
-    resetRuntimeStateForProject(p);
-    applyProjectTheme(p);
-    await loadBusinessConfig();
-    recoverDraft();
-    if($('wordingInput')) $('wordingInput').value=state.wording;
-    updateUi();
-    if(typeof setScreen==='function') setScreen('welcome');
+    activeProjectId=id;logActivity(id,'Project opened');engineSessionUnlocked=false;
+    document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');$('adminPanel')?.classList.add('hidden');
+    showCustomerShellForProject(p);
+    if(projectShellFor(p)==='ikes'){
+      $('returnToEngineBtn')?.classList.remove('hidden');resetRuntimeStateForProject(p);applyProjectTheme(p);await loadBusinessConfig();recoverDraft();if($('wordingInput'))$('wordingInput').value=state.wording;updateUi();if(typeof setScreen==='function')setScreen('welcome');
+    }else if(projectShellFor(p)==='mugs'){
+      $('returnToEngineBtn')?.classList.add('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
+    }
   }
 
   function applyProjectPermissions(p){
@@ -789,7 +796,7 @@
     document.body.classList.remove('engine-mode');
     document.body.classList.add('boot-locked');
     $('returnToEngineBtn')?.classList.add('hidden');
-    $('customerApp')?.classList.add('hidden');
+    hideAllCustomerShells();
     $('adminPanel')?.classList.add('hidden');
     $('projectOrdersPanel')?.classList.add('hidden');
     $('projectLedgerPanel')?.classList.add('hidden');
@@ -811,7 +818,7 @@
     if(!name){$('addProjectError').textContent='Enter a project name.';return;}
     const id=slugifyProjectName(name);
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
-    companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+    companies.push({id,name,type,shellType:'custom-product',tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
 customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
     await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
@@ -2064,7 +2071,19 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
+
+  const mugsState={screen:'welcome',photoData:'',message:'',style:'bold',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''};
+  const MUGS_SCREEN_ORDER=['welcome','photo','message','preview','customer','review','done'];
+  function resetMugsShell(){Object.assign(mugsState,{screen:'welcome',photoData:'',message:'',style:'bold',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''});if($('mugsPhotoInput'))$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap')?.classList.add('hidden');if($('mugsPhotoNext'))$('mugsPhotoNext').disabled=true;if($('mugsMessage'))$('mugsMessage').value='';if($('mugsCharCount'))$('mugsCharCount').textContent='0';['mugsCustomerName','mugsCustomerPhone','mugsCustomerEmail'].forEach(id=>{if($(id))$(id).value='';});if($('mugsApprovalCheck'))$('mugsApprovalCheck').checked=false;if($('mugsSubmitOrder'))$('mugsSubmitOrder').disabled=true;}
+  function showMugsScreen(name){mugsState.screen=name;$$('.mugs-screen').forEach(s=>s.classList.toggle('active',s.dataset.mugsScreen===name));const i=MUGS_SCREEN_ORDER.indexOf(name);if($('mugsProgressBar'))$('mugsProgressBar').style.width=`${Math.max(5,(i+1)/MUGS_SCREEN_ORDER.length*100)}%`;if(name==='preview')renderMugsPreview();if(name==='review')renderMugsReview();window.scrollTo({top:0,left:0,behavior:'instant'});}
+  function renderMugsPreview(){if($('mugsPreviewImage')&&mugsState.photoData)$('mugsPreviewImage').src=mugsState.photoData;if($('mugsPreviewText')){$('mugsPreviewText').textContent=mugsState.message||'Your Message';$('mugsPreviewText').className=`mugs-preview-text mugs-style-${mugsState.style}`;}}
+  function renderMugsReview(){const box=$('mugsReviewSummary');if(!box)return;box.innerHTML=`<div class="mugs-review-preview"><img src="${mugsState.photoData}" alt="Confirmed mug photo"><div class="mugs-review-overlay mugs-style-${escapeHtml(mugsState.style)}">${escapeHtml(mugsState.message||'Your Message')}</div></div><div class="mugs-review-row"><span>Message</span><strong>${escapeHtml(mugsState.message||'')}</strong></div><div class="mugs-review-row"><span>Name</span><strong>${escapeHtml(mugsState.customerName||'')}</strong></div><div class="mugs-review-row"><span>Phone</span><strong>${escapeHtml(mugsState.customerPhone||'')}</strong></div><div class="mugs-review-row"><span>Email</span><strong>${escapeHtml(mugsState.customerEmail||'')}</strong></div><div class="mugs-review-row"><span>Pricing</span><strong>TEST MODE</strong></div>`;}
+  async function createMugsApprovedPreview(){if(!mugsState.photoData)return '';return new Promise(resolve=>{const img=new Image();img.onload=()=>{try{const scale=Math.min(1,1600/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height)),w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale)),h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale)),canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return resolve('');ctx.drawImage(img,0,0,w,h);const text=mugsState.message||'';let size=Math.max(30,Math.min(Math.round(w*.09),Math.round(h*.22)));const family=mugsState.style==='classic'?'Georgia':mugsState.style==='script'?'cursive':'Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#111';while(size>20){ctx.font=`700 ${size}px ${family}`;if(ctx.measureText(text).width<=w*.82)break;size-=2;}ctx.lineWidth=Math.max(3,size*.08);ctx.strokeStyle='rgba(255,255,255,.82)';ctx.strokeText(text,w/2,h/2,w*.82);ctx.fillText(text,w/2,h/2,w*.82);resolve(canvas.toDataURL('image/jpeg',.84));}catch(err){console.warn('Mugs preview failed',err);resolve('');}};img.onerror=()=>resolve('');img.src=mugsState.photoData;});}
+  async function submitMugsOrder(){if(activeProjectId!=='mugshot-after-dark')return;if(!mugsState.photoData){alert('A confirmed mug photo is required.');showMugsScreen('photo');return;}if(!mugsState.message.trim()){alert('Enter the mug message.');showMugsScreen('message');return;}if(!mugsState.customerName.trim()||!mugsState.customerPhone.trim()){alert('Name and phone are required.');showMugsScreen('customer');return;}if(!$('mugsApprovalCheck')?.checked)return;const approvedPreviewData=await createMugsApprovedPreview();if(!approvedPreviewData){alert('The approved mug preview could not be confirmed.');showMugsScreen('photo');return;}const d=new Date(),y=String(d.getFullYear()).slice(-2),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`MUG-${y}${mo}${day}-${suffix}`;const order={projectId:'mugshot-after-dark',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:'Mugs After Dark',orderPrefix:'MUG'},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:0,photoData:mugsState.photoData,approvedPreviewData,wording:mugsState.message,font:mugsState.style,fill:'Black',contactPreference:'Text',customerName:mugsState.customerName,customerPhone:mugsState.customerPhone,customerEmail:mugsState.customerEmail,approved:true,testMode:true};backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Mugs order save failed',err);}mugsState.approvedPreviewData=approvedPreviewData;$('mugsDoneOrderId').textContent=id;$('mugsDonePreview').src=approvedPreviewData;showMugsScreen('done');}
+  function bindMugsShell(){if(window.__mugsShellBound)return;window.__mugsShellBound=true;$('mugsCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-mugs-next]');if(n&&!n.disabled){showMugsScreen(n.dataset.mugsNext);return;}const b=e.target.closest('[data-mugs-back]');if(b){showMugsScreen(b.dataset.mugsBack);}});$('mugsPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{mugsState.photoData=String(r.result||'');$('mugsPhotoPreview').src=mugsState.photoData;$('mugsPhotoPreviewWrap').classList.remove('hidden');$('mugsPhotoNext').disabled=!mugsState.photoData;};r.readAsDataURL(file);});$('mugsRetakePhoto')?.addEventListener('click',()=>{mugsState.photoData='';$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap').classList.add('hidden');$('mugsPhotoNext').disabled=true;$('mugsPhotoInput').click();});$('mugsMessage')?.addEventListener('input',e=>{mugsState.message=e.target.value;$('mugsCharCount').textContent=String(mugsState.message.length);});$('mugsStyle')?.addEventListener('change',e=>mugsState.style=e.target.value);$('mugsCustomerNext')?.addEventListener('click',()=>{mugsState.customerName=$('mugsCustomerName').value.trim();mugsState.customerPhone=$('mugsCustomerPhone').value.trim();mugsState.customerEmail=$('mugsCustomerEmail').value.trim();if(!mugsState.customerName||!mugsState.customerPhone){alert('Name and phone are required.');return;}showMugsScreen('review');});$('mugsApprovalCheck')?.addEventListener('change',e=>$('mugsSubmitOrder').disabled=!e.target.checked);$('mugsSubmitOrder')?.addEventListener('click',submitMugsOrder);$('mugsNewOrder')?.addEventListener('click',()=>{resetMugsShell();showMugsScreen('welcome');});$('mugsAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
+
   function bindEvents(){
+    bindMugsShell();
     $$('.next').forEach(b=>b.addEventListener('click',()=>{
       if(b.dataset.busy==='1') return;
       b.dataset.busy='1';
@@ -2549,6 +2568,7 @@ document.addEventListener('click', (event) => {
     document.body.classList.add('engine-mode');
 
     const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
+    const mugs=byId('mugsCustomerShell'); if(mugs) mugs.classList.add('hidden');
     const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
     const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
 

@@ -386,3 +386,14 @@ Towline repair voyage.
 - Required-photo orders do not receive an order/confirmation number until the approved preview image has been successfully generated.
 - Legacy/test orders without proof of the required approved image remain stored but stay out of normal Project Admin order views.
 - Projects without a photo requirement are unaffected by the photo gate.
+
+
+## v2.9.0 — TWO SHIPS, ONE SEA
+- Ike's remains the mature Ike-owned customer shell.
+- Mugs After Dark is rebuilt as a separate customer shell with its own DOM, branding, photo input, wording, preview, contact, review, and confirmation flow.
+- Mugs does not render or reuse the Ike customer page.
+- Shared Black Flag services remain common underneath: routing, order storage, customer history, admin permissions, ledgers, workflow status, and Engine security.
+- Mugs orders use `projectId: mugshot-after-dark`, MUG confirmation numbers, Mugs-specific business metadata, and a required approved photo preview.
+- The Mugs customer shell contains no Ike character asset, Ike branding, wood/plank/sign copy, or Ike footer.
+- A shell-template registry is introduced as groundwork for the future `+ Project → Create From Shell` builder.
+- Future projects cannot silently borrow Ike's or Mugs' customer shell.
