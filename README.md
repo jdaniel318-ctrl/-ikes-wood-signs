@@ -484,3 +484,17 @@ Black Flag project-template/admin separation upgrade.
 - Status/filter text contrast is strengthened without changing the notification background colors.
 - Each order keeps the original selectable status dropdown. The word `Status` changes color to match the selected workflow state.
 - Fixes project-card grammar from `1 orders` to `1 order`.
+
+
+## v2.9.12 — FLEET LIVERY
+Black Flag Admin Theme Engine correction.
+
+- Fixes the remaining Ike-yellow inheritance in BBS Admin by styling the **actual shared admin brand bar** (`.project-admin-brandbar`) instead of an obsolete selector.
+- Introduces Black Flag-owned admin livery presets keyed by project code (`IKE`, `MUG`, `BBS`).
+- All projects continue using one shared Black Flag Admin layout; only project livery variables change.
+- BBS now receives green/pink/cream admin livery closer to the approved rendering.
+- IKE keeps its own Ike livery and MUG keeps its own night/mug livery.
+- New/future projects fall back to their own branding rather than Ike defaults.
+- Universal status semantics remain Black Flag-wide: New red, In Production orange, Ready gold, Completed green.
+- The bottom status control remains the original native selectable dropdown.
+- The word `Status` is assigned its workflow color directly from the current status, preventing project branding CSS from overriding it.

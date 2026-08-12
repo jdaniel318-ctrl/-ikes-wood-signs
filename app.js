@@ -949,33 +949,64 @@
   }
 
 
+
+  const BLACK_FLAG_ADMIN_THEMES={
+    IKE:{
+      header:'#f4d238',headerText:'#176a9f',subText:'#a53631',accent:'#1681c4',
+      nav:'#173742',button:'#2d9448',buttonText:'#ffffff',surface:'#f6f7f2',
+      all:'#294d5d',decoration:'none'
+    },
+    MUG:{
+      header:'#211e25',headerText:'#f5e5c9',subText:'#d7b46a',accent:'#9b2451',
+      nav:'#211e25',button:'#9b2451',buttonText:'#ffffff',surface:'#f5f1f5',
+      all:'#3b3440',decoration:'radial-gradient(circle at 82% 30%,rgba(155,36,81,.18),transparent 24%)'
+    },
+    BBS:{
+      header:'#315f3b',headerText:'#fff8e9',subText:'#ef9aad',accent:'#d66f89',
+      nav:'#174d2a',button:'#cd6b82',buttonText:'#ffffff',surface:'#fbf8f0',
+      all:'#315f3b',
+      decoration:'radial-gradient(circle at 76% 28%,rgba(239,154,173,.13) 0 3px,transparent 4px),radial-gradient(circle at 81% 48%,rgba(255,248,233,.09) 0 4px,transparent 5px),linear-gradient(120deg,transparent 64%,rgba(255,248,233,.06) 64% 65%,transparent 65%)'
+    }
+  };
+  function blackFlagAdminThemeFor(p){
+    const code=String(p?.projectCode||p?.orderPrefix||'').toUpperCase();
+    return BLACK_FLAG_ADMIN_THEMES[code]||{
+      header:p?.branding?.primary||'#173742',
+      headerText:'#ffffff',
+      subText:p?.branding?.accent||'#d7bd72',
+      accent:p?.branding?.accent||'#d7bd72',
+      nav:p?.branding?.primary||'#173742',
+      button:p?.branding?.accent||'#315f3b',
+      buttonText:'#ffffff',
+      surface:'#f6f7f3',
+      all:'#294d5d',
+      decoration:'none'
+    };
+  }
+
   function applyProjectBranding(p){
     const b=p?.branding||{};
     const name=b.businessName||p?.name||'Project';
     const primary=b.primary||'#173742';
     const accent=b.accent||'#d7bd72';
-    const theme=String(p?.projectTheme||p?.type||'').toLowerCase();
-
-    // Project-owned admin palette. Status colors remain universal Black Flag workflow colors.
-    let adminHeader=primary, adminNav=primary, adminButton=accent, adminButtonText='#ffffff', adminSurface='#f7f5ef';
-    if(theme.includes('ikes')){
-      adminHeader='#f4d238'; adminNav='#173742'; adminButton='#2d9448'; adminButtonText='#ffffff'; adminSurface='#f7f5ef';
-    }else if(theme.includes('mug')){
-      adminHeader='#211e25'; adminNav='#211e25'; adminButton='#9b2451'; adminButtonText='#ffffff'; adminSurface='#f5f1f5';
-    }else if(theme.includes('flower')){
-      adminHeader='#315f3b'; adminNav='#315f3b'; adminButton='#c86782'; adminButtonText='#ffffff'; adminSurface='#fbf7f0';
-    }
+    const admin=blackFlagAdminThemeFor(p);
 
     document.documentElement.style.setProperty('--project-primary',primary);
     document.documentElement.style.setProperty('--project-accent',accent);
-    document.documentElement.style.setProperty('--project-admin-header',adminHeader);
-    document.documentElement.style.setProperty('--project-admin-nav',adminNav);
-    document.documentElement.style.setProperty('--project-admin-button',adminButton);
-    document.documentElement.style.setProperty('--project-admin-button-text',adminButtonText);
-    document.documentElement.style.setProperty('--project-admin-surface',adminSurface);
+    document.documentElement.style.setProperty('--project-admin-header',admin.header);
+    document.documentElement.style.setProperty('--project-admin-header-text',admin.headerText);
+    document.documentElement.style.setProperty('--project-admin-subtext',admin.subText);
+    document.documentElement.style.setProperty('--project-admin-accent',admin.accent);
+    document.documentElement.style.setProperty('--project-admin-nav',admin.nav);
+    document.documentElement.style.setProperty('--project-admin-button',admin.button);
+    document.documentElement.style.setProperty('--project-admin-button-text',admin.buttonText);
+    document.documentElement.style.setProperty('--project-admin-surface',admin.surface);
+    document.documentElement.style.setProperty('--project-admin-all',admin.all);
+    document.documentElement.style.setProperty('--project-admin-decoration',admin.decoration||'none');
     document.documentElement.style.setProperty('--project-code',`"${p?.projectCode||p?.orderPrefix||''}"`);
 
     if($('adminBrandTitle')) $('adminBrandTitle').textContent=(b.adminLabel||name).toUpperCase();
+    if($('adminBrandSubtitle')) $('adminBrandSubtitle').textContent='PROJECT ADMIN';
     $$('[data-project-business-name]').forEach(el=>el.textContent=name);
     $$('[data-project-subtitle]').forEach(el=>el.textContent=b.subtitle||p?.tagline||'');
   }
@@ -996,6 +1027,11 @@
     document.documentElement.style.removeProperty('--project-admin-button');
     document.documentElement.style.removeProperty('--project-admin-button-text');
     document.documentElement.style.removeProperty('--project-admin-surface');
+    document.documentElement.style.removeProperty('--project-admin-header-text');
+    document.documentElement.style.removeProperty('--project-admin-subtext');
+    document.documentElement.style.removeProperty('--project-admin-accent');
+    document.documentElement.style.removeProperty('--project-admin-all');
+    document.documentElement.style.removeProperty('--project-admin-decoration');
     document.documentElement.style.removeProperty('--project-code');
     document.title='Workshop Engine';
   }
@@ -1786,7 +1822,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
           <div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName||'')}</strong></div>
           <div class="summary-row"><span>Phone</span><strong>${escapeHtml(o.customerPhone||'')}</strong></div>
           <div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail||'')}</strong></div>
-          ${canUpdate?`<div class="order-status-control ${statusClass}"><label class="order-status-label">Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
+          ${canUpdate?`<div class="order-status-control ${statusClass}" data-workflow-status="${escapeHtml(statusClass)}"><label class="order-status-label" style="color:${adminStatusColor(status)}">Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
         </div>
       </div>
     </article>`;
@@ -2026,6 +2062,15 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if(s==='Ready for Pickup') return 'Ready';
     if(s==='New') return 'New Order';
     return s;
+  }
+
+  function adminStatusColor(status){
+    const s=canonicalOrderStatus(status);
+    if(s==='New') return '#d52220';
+    if(s==='In Production') return '#ef6b00';
+    if(s==='Ready for Pickup') return '#9a7400';
+    if(s==='Completed') return '#159447';
+    return '#315f3b';
   }
 
   function adminStatusClass(status){

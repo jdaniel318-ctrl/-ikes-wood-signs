@@ -2069,3 +2069,99 @@ body[data-admin-project-code="IKE"] .project-admin-topbar .project-admin-kicker{
   font-size:18px!important;
   letter-spacing:.8px;
 }
+
+
+/* v2.9.12 — FLEET LIVERY
+   One Black Flag admin template; each project supplies only its livery variables. */
+body.project-admin-mode #adminPanel.project-admin-page{
+  background:var(--project-admin-surface,#f6f7f3)!important;
+}
+
+/* This is the ACTUAL shared Project Admin brand bar. */
+body.project-admin-mode .project-admin-brandbar{
+  position:relative!important;
+  overflow:hidden!important;
+  background-color:var(--project-admin-header,#173742)!important;
+  background-image:var(--project-admin-decoration,none)!important;
+  border-bottom:5px solid var(--project-admin-accent,#d7bd72)!important;
+  box-shadow:0 7px 22px #00000018!important;
+}
+body.project-admin-mode .project-admin-brandbar::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent 55%,rgba(255,255,255,.035));
+}
+body.project-admin-mode .project-admin-mini-brand,
+body.project-admin-mode .project-admin-brandbar .admin-return-btn{
+  position:relative;
+  z-index:1;
+}
+body.project-admin-mode .project-admin-brand-title{
+  color:var(--project-admin-header-text,#fff)!important;
+}
+body.project-admin-mode .project-admin-brand-subtitle{
+  color:var(--project-admin-subtext,#d7bd72)!important;
+}
+body.project-admin-mode .project-admin-brandbar .admin-return-btn{
+  background:var(--project-admin-button,#315f3b)!important;
+  color:var(--project-admin-button-text,#fff)!important;
+  border:3px solid #fff!important;
+}
+
+/* Black Flag command/navigation geometry remains identical; only project livery changes. */
+body.project-admin-mode .project-admin-dashboard-head,
+body.project-admin-mode .project-admin-nav-strip,
+body.project-admin-mode .project-admin-module-bar{
+  background:var(--project-admin-nav,#173742)!important;
+}
+body.project-admin-mode .project-admin-dashboard-kicker{
+  color:var(--project-admin-subtext,#d7bd72)!important;
+}
+body.project-admin-mode .project-admin-nav-home{
+  background:#fff!important;
+  color:var(--project-admin-nav,#173742)!important;
+}
+body.project-admin-mode .project-admin-nav-item{
+  color:#fff!important;
+}
+body.project-admin-mode .project-admin-nav-item.active{
+  background:rgba(255,255,255,.08)!important;
+  color:#fff!important;
+}
+body.project-admin-mode .project-admin-nav-item.module-disabled{
+  color:rgba(255,255,255,.54)!important;
+}
+body.project-admin-mode .admin-stat-block.stat-all{
+  background:var(--project-admin-all,#294d5d)!important;
+  color:#fff!important;
+}
+
+/* Universal workflow semantics stay identical for IKE, MUG, BBS and future projects. */
+body.project-admin-mode .admin-stat-block.stat-new{background:#d52220!important;color:#fff!important}
+body.project-admin-mode .admin-stat-block.stat-production{background:#ef6b00!important;color:#fff!important}
+body.project-admin-mode .admin-stat-block.stat-ready{background:#f4c20d!important;color:#2f2600!important}
+body.project-admin-mode .admin-stat-block.stat-completed{background:#159447!important;color:#fff!important}
+
+/* Bottom control stays a native selectable dropdown. Only the Status word follows workflow state. */
+body.project-admin-mode .order-status-control .order-status-label{
+  font-weight:1000!important;
+}
+body.project-admin-mode .order-status-control select{
+  background:#fff!important;
+  color:#172f39!important;
+  font-weight:700!important;
+}
+
+/* BBS is only one livery example; these project-code selectors never define shared workflow logic. */
+body[data-admin-project-code="BBS"].project-admin-mode .project-admin-brand-title{
+  font-family:Georgia,serif!important;
+  letter-spacing:.2px!important;
+}
+body[data-admin-project-code="BBS"].project-admin-mode .project-admin-brandbar{
+  min-height:86px;
+}
+body[data-admin-project-code="BBS"].project-admin-mode .admin-timeout-note{
+  color:#315f3b!important;
+}
