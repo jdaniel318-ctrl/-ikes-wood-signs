@@ -10,6 +10,13 @@
     {
       id:'ikes-wood-signs',
       name:"Ike's Wood Signs",
+      branding:{
+        businessName:"Ike's Wood Signs",
+        adminLabel:"IKE'S WOOD SIGNS",
+        primary:'#f4d238',
+        accent:'#1373b8',
+        subtitle:'Self-Serve Sign Ordering'
+      },
       type:'custom_wood_signs',
       visibility:'published',
       projectTheme:'ikes',
@@ -31,6 +38,13 @@
       name:'Mugshot After Dark',
       tagline:'Classy mugs. Questionable messages.',
       type:'custom_mugs',
+      branding:{
+        businessName:'Mugshot After Dark',
+        adminLabel:'MUGSHOT AFTER DARK',
+        primary:'#1c1c1f',
+        accent:'#9b2451',
+        subtitle:'Custom Mug Ordering'
+      },
       visibility:'engine_only',
       projectTheme:'mugshot-after-dark',
       status:'future',
@@ -678,7 +692,19 @@
     $('projectLedgerLaunchBtn')?.classList.toggle('hidden',!pm.ledgerView);
   }
 
+
+  function applyProjectBranding(p){
+    const b=p?.branding||{};
+    const name=b.businessName||p?.name||'Project';
+    document.documentElement.style.setProperty('--project-primary',b.primary||'#f4d238');
+    document.documentElement.style.setProperty('--project-accent',b.accent||'#1373b8');
+    if($('adminBrandTitle')) $('adminBrandTitle').textContent=(b.adminLabel||name).toUpperCase();
+    $$('[data-project-business-name]').forEach(el=>el.textContent=name);
+    $$('[data-project-subtitle]').forEach(el=>el.textContent=b.subtitle||p?.tagline||'');
+  }
+
   function applyProjectTheme(p){
+    applyProjectBranding(p);
     document.body.dataset.projectTheme=p.projectTheme||'custom';
     applyProjectPermissions(p);
     // No pirate language or visual assets are introduced here.
@@ -1119,7 +1145,26 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     });
   }
 
+
+  function projectRequiresPhoto(){
+    const p=activeProject();
+    return !!p?.customerExperience?.photoRequired;
+  }
+
+  function hasConfirmedProjectPhoto(){
+    return !!(state.photoData && String(state.photoData).startsWith('data:image/'));
+  }
+
+  function canCreateOrderNumber(){
+    if(!projectRequiresPhoto()) return true;
+    return hasConfirmedProjectPhoto();
+  }
+
   async function saveOrder(){
+    if(!canCreateOrderNumber()){
+      alert('A confirmed product photo is required before this order can be submitted.');
+      return null;
+    }
     const id=newOrderId();
     const approvedPreviewData=await createApprovedPreview();
     state.approvedPreviewData=approvedPreviewData;
@@ -1353,7 +1398,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   async function renderProjectOrdersView(){
     const p=activeProject(), pm=p?.permissions||{};
     if(!pm.ordersView){$('projectActiveOrders').innerHTML='<div class="empty">Orders access is disabled in Black Flag.</div>';$('projectCompletedOrders').innerHTML='';return;}
-    const rows=(await getMergedOrders()).filter(o=>orderProjectId(o)===p.id && o.approved===true).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    const rows=approvedProjectOrders(await getMergedOrders(),p).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
     const recent=rows.filter(o=>o.status!=='Completed'||completedAgeDays(o)<=10);
     const archived=rows.filter(o=>o.status==='Completed'&&completedAgeDays(o)>10);
     $('projectActiveOrders').innerHTML=recent.map(o=>projectOrderCard(o,!!pm.ordersUpdate)).join('')||'<div class="empty">No current orders.</div>';
@@ -1597,7 +1642,13 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   function approvedProjectOrders(rows,p){
-    return (rows||[]).filter(o=>(o.projectId||'ikes-wood-signs')===p.id && o.approved===true);
+    const requiresPhoto=!!p?.customerExperience?.photoRequired;
+    return (rows||[]).filter(o=>{
+      const sameProject=(o.projectId||'ikes-wood-signs')===p.id;
+      const approved=o.approved===true;
+      const photoOkay=!requiresPhoto || !!o.approvedPreviewData || !!o.photoData;
+      return sameProject && approved && photoOkay;
+    });
   }
 
   function orderMatchesAdminFilter(o){
@@ -1678,6 +1729,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const pm=p.permissions||{};
 
     const allowed={
+      admin:true,
       orders:pm.ordersView!==false,
       customers:!!p.customerHistory?.adminVisible,
       ledger:!!pm.ledgerView,
@@ -1691,7 +1743,10 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $$('.admin-module-panel').forEach(el=>el.classList.add('hidden'));
     $$('#projectAdminMenu [data-admin-module]').forEach(btn=>btn.classList.toggle('active',btn.dataset.adminModule===moduleName));
 
-    if(moduleName==='orders'){
+    if(moduleName==='admin'){
+      $('adminCoreSettingsModule')?.classList.remove('hidden');
+      populateAdminCoreSettings();
+    }else if(moduleName==='orders'){
       $('adminOrdersModule')?.classList.remove('hidden');
       await renderAdminOrderOverview();
     }else if(moduleName==='options'){
@@ -1714,9 +1769,63 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
+
+  function adminProjectSettingsKey(projectId){
+    return 'projectAdminSettings:'+projectId;
+  }
+
+  async function loadProjectAdminSettings(projectId){
+    try{
+      const row=await getSetting(adminProjectSettingsKey(projectId));
+      return row?.value||{};
+    }catch(_){ return {}; }
+  }
+
+  async function populateAdminCoreSettings(){
+    const p=activeProject(); if(!p)return;
+    const cfg=await loadProjectAdminSettings(p.id);
+    if($('adminContactName')) $('adminContactName').value=cfg.contactName||'';
+    if($('adminBusinessPhone')) $('adminBusinessPhone').value=cfg.phone||'';
+    if($('adminBusinessEmail')) $('adminBusinessEmail').value=cfg.email||'';
+    if($('adminBusinessAddress')) $('adminBusinessAddress').value=cfg.address||'';
+    ['adminCurrentPinChange','adminNewPinChange','adminConfirmPinChange'].forEach(id=>{if($(id))$(id).value='';});
+    if($('adminCoreSettingsStatus')) $('adminCoreSettingsStatus').textContent='';
+  }
+
+  async function saveAdminCoreSettings(){
+    const p=activeProject(); if(!p)return;
+    const current=$('adminCurrentPinChange')?.value.trim()||'';
+    const next=$('adminNewPinChange')?.value.trim()||'';
+    const confirmNext=$('adminConfirmPinChange')?.value.trim()||'';
+
+    if(next||confirmNext){
+      const expected=String(await getAdminPin());
+      if(current!==expected){
+        $('adminCoreSettingsStatus').textContent='Current PIN is incorrect.';
+        return;
+      }
+      if(next.length<4 || next!==confirmNext){
+        $('adminCoreSettingsStatus').textContent='New PINs must match and be at least 4 digits.';
+        return;
+      }
+      await putSetting('adminPin',next);
+    }
+
+    await putSetting(adminProjectSettingsKey(p.id),{
+      contactName:$('adminContactName')?.value.trim()||'',
+      phone:$('adminBusinessPhone')?.value.trim()||'',
+      email:$('adminBusinessEmail')?.value.trim()||'',
+      address:$('adminBusinessAddress')?.value.trim()||''
+    });
+
+    ['adminCurrentPinChange','adminNewPinChange','adminConfirmPinChange'].forEach(id=>{if($(id))$(id).value='';});
+    $('adminCoreSettingsStatus').textContent='Admin settings saved.';
+  }
+
   function updateProjectAdminBrand(){
     const p=activeProject(); if(!p)return;
-    if($('adminBrandTitle')) $('adminBrandTitle').textContent=p.name.toUpperCase();
+    const label=p.branding?.adminLabel||p.name;
+    if($('adminBrandTitle')) $('adminBrandTitle').textContent=label.toUpperCase();
   }
 
 
@@ -1887,7 +1996,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       $('adminPreviewLightbox').classList.remove('hidden');
     });
 
-    $('adminHomeMenuBtn')?.addEventListener('click',()=>setAdminOrderFilter('all'));
+    $('adminHomeMenuBtn')?.addEventListener('click',()=>showProjectAdminModule('admin'));
+    $('saveAdminCoreSettingsBtn')?.addEventListener('click',saveAdminCoreSettings);
     $('projectAdminMenu')?.addEventListener('click',e=>{
       const card=e.target.closest('[data-admin-module]');
       if(card) showProjectAdminModule(card.dataset.adminModule);

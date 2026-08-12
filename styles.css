@@ -1858,3 +1858,47 @@ body.project-admin-mode .admin-placeholder-panel.hidden{
   .project-admin-quick-stats{grid-template-columns:1fr 1fr}
   .project-admin-nav-strip{grid-template-columns:1fr 1fr}
 }
+
+/* v2.8.9.3 — readability + admin settings */
+.admin-stat-block.stat-new,
+.admin-stat-block.stat-production,
+.admin-stat-block.stat-completed{
+  color:#fff!important;
+}
+.admin-stat-block.stat-ready{
+  color:#2f2600!important;
+}
+.admin-stat-block span{
+  text-shadow:0 1px 1px #0003;
+}
+.admin-stat-block.stat-ready span,
+.admin-stat-block.stat-ready strong{
+  text-shadow:none;
+}
+.admin-stat-block strong{
+  font-weight:1000;
+}
+.admin-core-settings{
+  max-width:920px;
+  margin:18px auto 0;
+  padding:22px;
+  border-radius:22px;
+  background:#fff;
+  border:1px solid #dfe3dd;
+  box-shadow:0 9px 24px #18333a10;
+}
+.admin-core-settings-head h3{
+  margin:0;
+  font:900 23px Georgia,serif;
+  color:#173742;
+}
+.admin-core-settings-grid,
+.admin-pin-change-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+@media(max-width:720px){
+  .admin-core-settings-grid,
+  .admin-pin-change-grid{grid-template-columns:1fr}
+}

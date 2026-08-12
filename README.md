@@ -350,3 +350,14 @@ Built directly from the verified v2.8.8.1 structure-repair branch.
 - Approved preview thumbnails enlarge in a modal when clicked; the X returns to the normal view.
 - No status-key legend is added.
 - Project/customer header and authentication remain unchanged.
+
+
+## v2.8.9.3 — PROJECT ISOLATION / PHOTO GATE
+- The second dark-blue Project Admin row is the Admin Navigation Bar.
+- Improves colored status-block text contrast without changing button backgrounds.
+- Admin Menu opens project-admin settings for contact information and Project Admin PIN changes.
+- Photo-required projects cannot create an order number or submit an order until a confirmed product photo exists.
+- Projects that do not require photos are not subject to the photo gate.
+- Project Admin/Orders only show approved orders; photo-required projects also require a saved/approved image.
+- Mugshot After Dark gets its own project branding/config shell instead of inheriting Ike's.
+- Reusable engine logic may be shared, but project branding/data/order context remains isolated.

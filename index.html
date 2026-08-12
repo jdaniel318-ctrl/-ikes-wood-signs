@@ -327,6 +327,27 @@
         <div id="adminOrderOverviewList" class="order-list"></div>
       </section>
       
+      <section id="adminCoreSettingsModule" class="admin-module-panel admin-core-settings hidden" data-admin-panel="admin">
+        <div class="admin-core-settings-head">
+          <div><h3>Admin Settings</h3><p class="helper">Project administrator settings for this business.</p></div>
+        </div>
+        <div class="admin-core-settings-grid">
+          <label>Admin contact name<input id="adminContactName" class="text-input" type="text"></label>
+          <label>Business phone<input id="adminBusinessPhone" class="text-input" type="tel"></label>
+          <label>Business email<input id="adminBusinessEmail" class="text-input" type="email"></label>
+          <label>Business address<input id="adminBusinessAddress" class="text-input" type="text"></label>
+        </div>
+        <div class="admin-divider"></div>
+        <h4>Change Project Admin PIN</h4>
+        <div class="admin-pin-change-grid">
+          <label>Current PIN<input id="adminCurrentPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+          <label>New PIN<input id="adminNewPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+          <label>Confirm new PIN<input id="adminConfirmPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+        </div>
+        <button id="saveAdminCoreSettingsBtn" class="primary-btn small">SAVE ADMIN SETTINGS</button>
+        <p id="adminCoreSettingsStatus" class="helper"></p>
+      </section>
+
       <section id="adminPaymentsModule" class="admin-module-panel admin-placeholder-panel hidden" data-admin-panel="payments">
         <h3>Payments</h3>
         <p class="helper">Payment access is controlled by Black Flag.</p>
