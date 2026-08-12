@@ -511,3 +511,25 @@ Final Dark Flag appearance update.
 - Engine PIN behavior is unchanged.
 - Adds rare, harmless Dark Flag-only treasure messages when Pirate Mode is enabled.
 - Retains the v2.9.12 Fleet Livery Black Flag admin-theme separation architecture.
+
+
+## v2.9.14 — SEALED BULKHEADS
+Project-isolation repair plus Pirate Mode refinement.
+
+### Shared Project Admin Gate
+- Removes hard-coded Ike artwork and Ike wording from the shared Admin PIN modal.
+- The Admin PIN gate now resolves from the active project's permanent project identity.
+- IKE uses IKE identity; MUG uses MUG identity; BBS uses BBS identity.
+- Uploaded project logos are used automatically when available.
+- If no logo exists, the project's three-letter code is used as the neutral project mark.
+- The gate's title, prompt, accent, button and presentation are all derived from the active project.
+- This is one reusable Black Flag/Engine template, not three project-specific modals.
+- PIN/security behavior is unchanged.
+
+### Pirate Mode
+- Strengthens Pirate Mode toward the approved cinematic Black Flag direction while keeping it confined to the Dark Flag Engine entrance.
+- Adds darker timber-like surfaces, brass/gold accents, Cove Engine identity, subtle skull/anchor atmosphere and fleet/separation language.
+- Pirate Mode remains presentation-only and cannot style project customer/admin screens.
+- Treasure easter eggs remain harmless and Engine-only.
+
+Core rule: different brands, different data, same Engine.

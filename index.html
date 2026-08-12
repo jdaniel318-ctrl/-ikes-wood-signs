@@ -38,6 +38,9 @@
 </div>
       </div>
 
+      <div class="bf-pirate-atmosphere" aria-hidden="true">
+        <span>☠ DARK FLAG COVE</span><span>⚓ ONE ENGINE • MANY CREWS</span><span>✦ TOTAL SEPARATION</span>
+      </div>
       <div class="bf-entry-foot">Authorized engine access only • Engine PIN required every time Black Flag is entered</div>
     </div>
   </div>
@@ -255,14 +258,18 @@
       <div class="nav-row"><button id="backBtn" class="text-btn">← Back</button><span id="stepLabel" class="helper"></span></div>
     </main>
 
-    <div id="pinGate" class="pin-gate hidden" role="dialog" aria-modal="true" aria-labelledby="pinGateTitle">
-      <div class="pin-card">
-        <div class="pin-ike-wrap"><img src="assets/ike_character.jpg" alt="Cartoon Ike" /></div>
+    <div id="pinGate" class="pin-gate project-admin-gate hidden" role="dialog" aria-modal="true" aria-labelledby="pinGateTitle">
+      <div class="pin-card project-admin-gate-card">
+        <div id="projectAdminGateMark" class="project-admin-gate-mark">
+          <img id="projectAdminGateLogo" class="project-admin-gate-logo hidden" alt="" />
+          <span id="projectAdminGateCode">PRJ</span>
+        </div>
+        <div id="projectAdminGateKicker" class="project-admin-gate-kicker">PROJECT ADMIN</div>
         <h2 id="pinGateTitle">Admin Access</h2>
-        <p>Enter Ike's admin PIN to view saved orders and settings.</p>
+        <p id="projectAdminGatePrompt">Enter this project's admin PIN to view saved orders and settings.</p>
         <input id="adminPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="pinGateError" class="error-text centered" aria-live="polite"></p><p id="adminLockTimer" class="pin-lock-timer hidden"></p>
-        <button id="unlockAdminBtn" class="primary-btn">UNLOCK ADMIN</button>
+        <button id="unlockAdminBtn" class="primary-btn project-admin-gate-primary">UNLOCK ADMIN</button>
         <button id="cancelAdminPinBtn" class="secondary-btn">CLOSE / RETURN TO ORDER</button>
       </div>
     </div>

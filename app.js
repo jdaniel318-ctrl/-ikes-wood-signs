@@ -2326,6 +2326,53 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('adminCoreSettingsStatus').textContent='Admin settings saved.';
   }
 
+
+  function configureProjectAdminGate(){
+    const p=activeProject();
+    if(!p)return;
+    normalizeProjectCode(p);
+    const code=String(p.projectCode||p.orderPrefix||'PRJ').toUpperCase();
+    const name=p?.branding?.businessName||p.name||'Project';
+    const theme=blackFlagAdminThemeFor(p);
+    const assets=readProjectAssets(p.id);
+
+    document.documentElement.style.setProperty('--gate-header',theme.header||'#173742');
+    document.documentElement.style.setProperty('--gate-accent',theme.accent||'#d7bd72');
+    document.documentElement.style.setProperty('--gate-button',theme.button||theme.nav||'#173742');
+    document.documentElement.style.setProperty('--gate-button-text',theme.buttonText||'#fff');
+    document.body.dataset.pinProjectCode=code;
+
+    if($('projectAdminGateCode')) $('projectAdminGateCode').textContent=code;
+    if($('projectAdminGateKicker')) $('projectAdminGateKicker').textContent=`${code} • PROJECT ADMIN`;
+    if($('pinGateTitle')) $('pinGateTitle').textContent=`${name} Admin Access`;
+    if($('projectAdminGatePrompt')) $('projectAdminGatePrompt').textContent=`Enter ${name}'s admin PIN to view this project's orders and settings.`;
+
+    const logo=$('projectAdminGateLogo');
+    const mark=$('projectAdminGateMark');
+    if(logo){
+      let src=assets.projectLogo||'';
+      if(!src && code==='IKE') src='assets/ike_character.jpg';
+      if(src){
+        logo.src=src;
+        logo.alt=`${name} admin mark`;
+        logo.classList.remove('hidden');
+        mark?.classList.add('has-logo');
+      }else{
+        logo.removeAttribute('src');
+        logo.classList.add('hidden');
+        mark?.classList.remove('has-logo');
+      }
+    }
+  }
+
+  function clearProjectAdminGateTheme(){
+    document.documentElement.style.removeProperty('--gate-header');
+    document.documentElement.style.removeProperty('--gate-accent');
+    document.documentElement.style.removeProperty('--gate-button');
+    document.documentElement.style.removeProperty('--gate-button-text');
+    delete document.body.dataset.pinProjectCode;
+  }
+
   function updateProjectAdminBrand(){
     const p=activeProject(); if(!p)return;
     normalizeProjectCode(p);
@@ -2699,6 +2746,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if($('completeOrderBtn')) $('completeOrderBtn').addEventListener('click',resetOrder);
     $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
     $('adminBtn').addEventListener('click',()=>{
+      configureProjectAdminGate();
       window.__pendingProtectedPage='settings';
       document.body.classList.add('modal-open');
       $('adminPinInput').value='';
