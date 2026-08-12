@@ -585,3 +585,19 @@ Marketing/branding architecture and graphics-isolation correction.
 - Adds an expanded image viewer with an `X` close control and the owning project namespace displayed.
 - Keeps project graphic slots and the dedicated IndexedDB cargo hold introduced in v2.9.17.
 - Graphics AI remains intentionally deferred until this isolation layer passes testing.
+
+
+## v2.9.19 — Focused Quarters
+Marketing & Brand UX refit: compact project graphics library cards now open one focused asset editor at a time. The sealed permanent project namespace architecture is preserved. Pirate Mode styling is preserved and extended to the focused editor.
+
+
+## v2.9.20 — CLEAR DECK
+Focused Quarters visibility correction.
+
+- Fixes the v2.9.19 UX miss where all four upload editors remained visible at once.
+- Keeps the compact Project Graphics Library as the default Marketing & Brand view.
+- Selecting a library card now reveals exactly one focused editor for that asset.
+- Back to Library hides the focused editor again.
+- Save/Clear continue to operate on the selected asset while project isolation remains unchanged.
+- No changes were made to the tested IndexedDB project namespace architecture.
+- Pirate Mode remains fully preserved and uses the same focused-editor component with Dark Flag styling.
