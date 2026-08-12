@@ -876,6 +876,7 @@
   const PROJECT_SHELL_TEMPLATES={
     'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
     'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
+    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
     'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false}}
   };
   const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers'};
@@ -1016,7 +1017,7 @@
     if(!name){$('addProjectError').textContent='Enter a project name.';return;}
     const id=slugifyProjectName(name);
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
-    companies.push({id,name,type,shellType:type==='custom_flowers'?'flowers':'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+    companies.push({id,name,type,shellType:PROJECT_SHELL_TEMPLATES[type]?.customerShell||'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
 customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
     if(type==='custom_flowers') PROJECT_SHELLS[id]='flowers'; await saveCompanies();
@@ -2477,6 +2478,287 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
     try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
   };
+
+  function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone){alert('Name and phone are required.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});$('flowersAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
+
+  function bindProjectTemplateShells(){
+    // Template-level customer behaviors. These are bound once and are not tied
+    // to a particular company/project ID.
+    bindMugsShell();
+    bindFlowersShell();
+  }
+
+
+  function bindEvents(){
+    bindProjectAssetEditor();
+    bindProjectTemplateShells();
+    $$('.next').forEach(b=>b.addEventListener('click',()=>{
+      if(b.dataset.busy==='1') return;
+      b.dataset.busy='1';
+      setScreen(b.dataset.next);
+      setTimeout(()=>delete b.dataset.busy,220);
+    }));
+    $$('.goto').forEach(b=>b.addEventListener('click',()=>setScreen(b.dataset.goto)));
+    $('backBtn').addEventListener('click',()=>{const i=screenOrder.indexOf(state.current);if(i>0)setScreen(screenOrder[i-1]);});
+    bindChoice('priceChoices','data-price','price',Number);bindChoice('orientationChoices','data-orientation','orientation');bindChoice('fontChoices','data-font','font');bindChoice('fillChoices','data-fill','fill');bindChoice('contactChoices','data-contact','contactPreference');
+    if($('customColor')){
+      $('customColor').addEventListener('input',e=>{
+        state.customColor=e.target.value;
+        state.fill='Other';
+        updateUi();
+      });
+    }
+    $('topSide').addEventListener('change',e=>state.topSide=e.target.value);
+    $('wordingInput').addEventListener('input',e=>{state.wording=e.target.value;$('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;applyPreview();});
+    $('startCameraBtn').addEventListener('click',startCamera);
+    $('capturePhotoBtn').addEventListener('click',captureCameraPhoto);
+    $('cancelCameraBtn').addEventListener('click',()=>{stopCamera();$('photoHelp').textContent='Camera canceled. Tap START CAMERA when you are ready.';});
+    $('photoInput').addEventListener('change',async e=>{
+      const input=e.target;
+      const f=input.files?.[0];
+      if(!f) return;
+      $('photoError').textContent='';
+      $('photoHelp').textContent='Preparing your picture…';
+      try{
+        state.photoData=await resizePhoto(f);
+        stopCamera();
+        updateUi();
+        $('photoHelp').textContent='Picture added. Review it before continuing.';
+      }catch(err){
+        console.error('Photo processing failed',err);
+        $('photoError').textContent='That picture could not be added. Please try again.';
+      }finally{input.value='';}
+    });
+    $('retakeBtn').addEventListener('click',()=>{state.photoData='';updateUi();startCamera();});
+    $('reviewBtn').addEventListener('click',()=>{if(validateCustomer())setScreen('review');});
+    $('approveBtn').addEventListener('click',async()=>{
+      if(!$('approvalCheck').checked){$('approvalError').textContent='Please check the approval box first.';return;}
+      $('approvalError').textContent='';
+      const btn=$('approveBtn');
+      btn.disabled=true;btn.textContent='PLACING YOUR ORDER…';
+      try{
+        const order=await saveOrder();
+        setScreen('done');
+        await submitOrder(order);
+      }finally{
+        btn.disabled=false;btn.textContent='PLACE MY ORDER →';
+      }
+    });
+    $('newOrderBtn').addEventListener('click',resetOrder);
+    if($('completeOrderBtn')) $('completeOrderBtn').addEventListener('click',resetOrder);
+    $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
+    $('adminBtn').addEventListener('click',()=>{
+      window.__pendingProtectedPage='settings';
+      document.body.classList.add('modal-open');
+      $('adminPinInput').value='';
+      $('pinGateError').textContent='';
+      $('pinGate').classList.remove('hidden');
+      setTimeout(()=>{if(pinLocked('admin'))showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
+    });
+    $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
+    const closeAdminPreviewLightbox=()=>{
+      const gate=$('adminPreviewLightbox');
+      if(gate) gate.classList.add('hidden');
+      if($('adminPreviewLightboxImage')) $('adminPreviewLightboxImage').src='';
+    };
+    $('closeAdminPreviewLightbox')?.addEventListener('click',closeAdminPreviewLightbox);
+    $('adminPreviewLightbox')?.addEventListener('click',e=>{
+      if(e.target.id==='adminPreviewLightbox') closeAdminPreviewLightbox();
+    });
+    $('adminPanel')?.addEventListener('click',e=>{
+      const preview=e.target.closest('.admin-preview-open');
+      if(!preview)return;
+      const src=preview.dataset.previewSrc||preview.querySelector('img')?.src||'';
+      if(!src)return;
+      $('adminPreviewLightboxImage').src=src;
+      $('adminPreviewLightbox').classList.remove('hidden');
+    });
+
+    $('adminHomeMenuBtn')?.addEventListener('click',()=>showProjectAdminModule('admin'));
+    $('saveAdminCoreSettingsBtn')?.addEventListener('click',saveAdminCoreSettings);
+    $('projectAdminMenu')?.addEventListener('click',e=>{
+      const card=e.target.closest('[data-admin-module]');
+      if(card) showProjectAdminModule(card.dataset.adminModule);
+    });
+
+    $('openFullOrdersBtn')?.addEventListener('click',async()=>{
+      stopProjectAdminIdleTimer();
+      $('adminPanel')?.classList.add('hidden');
+      document.body.classList.remove('project-admin-mode');
+      $('projectOrdersPanel')?.classList.remove('hidden');
+      document.body.classList.add('project-orders-mode');
+      await renderProjectOrdersView();
+    });
+    $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
+
+    if($('engineRoomBtn')) $('engineRoomBtn').addEventListener('click',()=>{
+      document.body.classList.add('modal-open');
+      $('enginePinInput').value='';
+      $('enginePinError').textContent='';
+      $('enginePinGate').classList.remove('hidden');
+      setTimeout(()=>{if(pinLocked('engine'))showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');else $('enginePinInput').focus()},50);
+    });
+    $('cancelEngineBtn').addEventListener('click',()=>{$('enginePinInput').value='';$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
+    $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
+    $('unlockEngineBtn').addEventListener('click',async()=>{
+      if(window.pinLocked('engine')){window.showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');return;}
+      const entered=$('enginePinInput').value.trim();
+      const expected=await getEnginePin();
+      if(entered!==expected){
+        const pirateLines=[
+          'Arrr… wrong code, matey.',
+          'No treasure for ye. Try the captain’s code again.',
+          'That code be walking the plank.',
+          'Ye almost fooled the parrot. Almost.'
+        ];
+        $('enginePinError').textContent=pirateLines[Math.floor(Math.random()*pirateLines.length)];
+        const row=window.recordBadPin('engine');
+        if(row.lockedUntil>Date.now()) showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');
+        else $('enginePinInput').select();
+        return;
+      }
+      clearPinFailures('engine');
+      $('enginePinInput').value='';
+      $('enginePinGate').classList.add('hidden');
+      document.body.classList.remove('modal-open');
+      await openEnginePanel();
+    });
+    if($('closeEngineBtn')) $('closeEngineBtn').addEventListener('click',()=>{
+      lockEngineSession();
+      document.body.classList.remove('engine-mode','project-mode');
+      document.body.classList.add('boot-locked');
+      $('enginePanel')?.classList.add('hidden');
+      $('adminPanel')?.classList.add('hidden');
+      $('customerApp')?.classList.add('hidden');
+      $('blackFlagEntryGate')?.classList.remove('hidden');
+      window.scrollTo({top:0,left:0,behavior:'instant'});
+    });
+
+    $('aiCompanySetting').addEventListener('change',loadAIForm);
+    $('saveAISettingsBtn').addEventListener('click',saveAIForm);
+
+    if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',openAddProject);
+    if($('closeProjectEngineControl')) $('closeProjectEngineControl').addEventListener('click',()=>{$('projectEngineControl').classList.add('hidden');engineActiveProjectId=null;});
+    if($('projectTabs')) $('projectTabs').addEventListener('click',e=>{const b=e.target.closest('[data-project-tab]');if(b&&engineActiveProjectId)renderProjectTab(engineActiveProjectId,b.dataset.projectTab);});
+    if($('cancelAddProjectBtn')) $('cancelAddProjectBtn').addEventListener('click',()=>$('addProjectGate').classList.add('hidden'));
+    if($('createProjectBtn')) $('createProjectBtn').addEventListener('click',createProject);
+    if($('returnToEngineBtn')) $('returnToEngineBtn').addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      requestEngineFromProject();
+    },true);
+
+    $('saveEngineIdentityBtn').addEventListener('click',async()=>{
+      const name=$('engineNameSetting').value.trim()||'Workshop Engine';
+      const version=Math.max(2,Math.min(99,Number($('schemaVersionSetting').value)||2));
+      engineConfig={...engineConfig,engineName:name,schemaVersion:version};
+      await saveEngineConfig();
+      $('engineIdentityStatus').textContent='Engine identity saved.';
+    });
+
+    $('saveEngineWorkflowBtn').addEventListener('click',async()=>{
+      const statuses=$('engineStatusesSetting').value.split(',').map(v=>v.trim()).filter(Boolean);
+      if(statuses.length<2){
+        $('engineWorkflowStatus').textContent='Use at least two workflow stages.';
+        return;
+      }
+      businessConfig.orderStatuses=statuses.slice(0,12);
+      await setSetting('businessConfig',businessConfig);
+      $('engineWorkflowStatus').textContent='Workflow saved.';
+      await renderAdmin();
+    });
+
+    $('engineRefreshDiagnosticsBtn').addEventListener('click',refreshEngineDiagnostics);
+    $('engineClearDraftBtn').addEventListener('click',()=>{
+      clearDraft();
+      $('engineStorageDetail').textContent='Interrupted-order draft cleared. Existing saved orders were not changed.';
+      refreshEngineDiagnostics();
+    });
+    $('engineExportBtn').addEventListener('click',exportBackup);
+    $('engineResetSettingsBtn').addEventListener('click',()=>{
+      $('engineResetPinInput').value='';
+      $('engineResetError').textContent='';
+      $('engineResetGate').classList.remove('hidden');
+      setTimeout(()=>$('engineResetPinInput').focus(),50);
+    });
+    $('cancelEngineResetBtn').addEventListener('click',()=>{
+      $('engineResetPinInput').value='';
+      $('engineResetError').textContent='';
+      $('engineResetGate').classList.add('hidden');
+    });
+    $('confirmEngineResetBtn').addEventListener('click',async()=>{
+      const entered=$('engineResetPinInput').value.trim();
+      const expected=String(await getEnginePin());
+      if(entered!==expected && entered!==String(DEFAULT_ENGINE_PIN)){
+        $('engineResetError').textContent='Incorrect Engine PIN.';
+        $('engineResetPinInput').value='';
+        $('engineResetPinInput').focus();
+        return;
+      }
+      if(!confirm('Final confirmation: reset Engine and project settings to defaults? Saved orders will remain.')) return;
+      const stores=tx(STORE_SETTINGS,'readwrite');
+      try{ stores.clear(); }catch(_){}
+      businessConfig={...DEFAULT_BUSINESS_CONFIG};
+      engineConfig={...DEFAULT_ENGINE_CONFIG};
+      companies=structuredClone(DEFAULT_COMPANIES);
+      await saveCompanies();
+      state.allowCustomColors=true;
+      state.customerConfirmationEmail=false;
+      clearDraft();
+      await loadBusinessConfig();
+      await loadEngineConfig();
+      populateEngineSettings();
+      $('engineResetPinInput').value='';
+      $('engineResetGate').classList.add('hidden');
+      $('engineStorageDetail').textContent='Engine settings reset to defaults. Saved orders were preserved.';
+      await refreshEngineDiagnostics();
+    });
+    $('unlockAdminBtn').addEventListener('click',async()=>{
+      if(pinLocked('admin')){showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');return;}
+      const entered=$('adminPinInput').value.trim();
+      const expected=await getAdminPin();
+      if(entered!==expected){
+        const row=recordBadPin('admin');
+        $('pinGateError').textContent='Incorrect PIN.';
+        if(row.lockedUntil>Date.now()) showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');
+        else $('adminPinInput').select();
+        return;
+      }
+      clearPinFailures('admin');
+      $('pinGate').classList.add('hidden');
+      document.body.classList.remove('modal-open');
+      const target=window.__pendingProtectedPage||'settings';
+      await showProtectedProjectPage(target);
+    });
+    $('adminPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockAdminBtn').click();});
+    $('cancelAdminPinBtn').addEventListener('click',returnToCustomerAndLockProtected);
+    $('savePinBtn').addEventListener('click',async()=>{
+      const p=$('newAdminPin').value.trim();
+      const c=$('confirmAdminPin').value.trim();
+      if(!/^\d{4,8}$/.test(p)){
+        $('pinSettingsError').textContent='PIN must be 4 to 8 numbers.';
+        return;
+      }
+      if(p!==c){
+        $('pinSettingsError').textContent='The two PIN entries do not match.';
+        return;
+      }
+      await setSetting('adminPin',p);
+      $('pinSettingsError').textContent='PIN updated.';
+      $('newAdminPin').value='';
+      $('confirmAdminPin').value='';
+    });
+
+    $('projectOrdersLaunchBtn')?.addEventListener('click',()=>openProtectedProjectPage('orders'));
+    $('projectLedgerLaunchBtn')?.addEventListener('click',()=>openProtectedProjectPage('ledger'));
+    $('closeProjectOrdersBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
+    $('closeProjectLedgerBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
+    if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').addEventListener('change',saveFeatureSettings);
+    
+    if($('saveBusinessSettingsBtn')) $('saveBusinessSettingsBtn').addEventListener('click',saveBusinessConfigFromAdmin);
+    if($('exportBtn')) $('exportBtn').addEventListener('click',exportBackup);
+    if($('restoreInput')) $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
+  }
 
   async function init(){
     db=await openDb();

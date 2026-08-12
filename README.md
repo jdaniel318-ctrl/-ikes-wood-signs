@@ -450,3 +450,15 @@ Flower-order submission routing fix.
 - If saving to IndexedDB fails, the customer now sees an error instead of silently moving forward.
 - The order confirmation remains tied to the active flower project.
 - No changes to Ike's or Mugs order submission logic.
+
+
+## v2.9.10 — TEMPLATE WATCH
+Black Flag template event architecture repair.
+
+- Fixes the `START YOUR FLOWER ORDER` regression by restoring the customer-flow event binder that was accidentally removed in v2.9.9.
+- The repair is made at the Black Flag template layer, not as a Becca's Bloom Shop-only workaround.
+- Adds `Flower Shop` as a first-class `PROJECT_SHELL_TEMPLATES` entry with the shared `flowers` customer shell.
+- New Flower Shop projects created through `+ Add Project` inherit the flower template's navigation, photo, personalization, approval, and submission behavior automatically.
+- Introduces `bindProjectTemplateShells()` so reusable project-template behaviors are initialized centrally.
+- Keeps v2.9.9's active-project submission logic: orders use the active project's ID, name, and prefix instead of a BBS-specific ID.
+- Existing Ike's and Mugs event behavior is preserved.
