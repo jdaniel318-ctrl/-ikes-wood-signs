@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-9-0-two-ships-one-sea';
+const CACHE='workshop-engine-v2-9-2-captains-key';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{

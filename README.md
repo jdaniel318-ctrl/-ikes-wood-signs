@@ -397,3 +397,23 @@ Towline repair voyage.
 - The Mugs customer shell contains no Ike character asset, Ike branding, wood/plank/sign copy, or Ike footer.
 - A shell-template registry is introduced as groundwork for the future `+ Project → Create From Shell` builder.
 - Future projects cannot silently borrow Ike's or Mugs' customer shell.
+
+
+## v2.9.1 — SAFE HARBOR
+- Restores the shared bottom-right ENGINE button to Mugs After Dark, matching Ike's access pattern and appearance.
+- ENGINE from either customer shell opens the protected Black Flag login.
+- Closing the Engine login gate returns to the exact project and customer shell that launched it.
+- The temporary project return target is cleared after successful Black Flag authentication.
+- No changes to the independent Ike/Mugs customer-shell architecture.
+
+
+## v2.9.2 — CAPTAIN'S KEY
+Experimental iPad/device-passkey voyage.
+
+- Adds optional `USE FACE ID / PASSKEY` access to Black Flag when a user-verifying platform authenticator is available.
+- First-time setup requires the correct Engine PIN before enrollment.
+- Engine PIN 5615 remains the recovery/fallback method.
+- Enrollment uses WebAuthn with a platform authenticator and required user verification.
+- The credential identifier is stored in this browser's local storage; the private credential remains with the authenticator.
+- Protected Engine Controls can set up, replace, or remove the local device passkey.
+- This is a static-site convenience layer for the current device/browser, not a server-verified multi-user authentication system.

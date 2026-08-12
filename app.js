@@ -752,7 +752,7 @@
     if(projectShellFor(p)==='ikes'){
       $('returnToEngineBtn')?.classList.remove('hidden');resetRuntimeStateForProject(p);applyProjectTheme(p);await loadBusinessConfig();recoverDraft();if($('wordingInput'))$('wordingInput').value=state.wording;updateUi();if(typeof setScreen==='function')setScreen('welcome');
     }else if(projectShellFor(p)==='mugs'){
-      $('returnToEngineBtn')?.classList.add('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
+      $('returnToEngineBtn')?.classList.remove('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
     }
   }
 
@@ -788,9 +788,10 @@
   }
 
   function requestEngineFromProject(){
-    // Crossing back to Black Flag is always a locked boundary.
+    // Crossing toward Black Flag always locks authorization, but retain the project id
+    // only while the login gate is open so CLOSE can safely return to the same project.
     lockEngineSession();
-    activeProjectId=null;
+    window.pendingEngineReturnProjectId=activeProjectId||null;
     restoreBlackFlagTheme();
 
     document.body.classList.remove('engine-mode');
@@ -802,10 +803,37 @@
     $('projectLedgerPanel')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
 
-    // Use the Black Flag portal itself so a fresh PIN is required every time.
     if(typeof window.requireEngineEntry==='function') window.requireEngineEntry();
     else $('blackFlagEntryGate')?.classList.remove('hidden');
   }
+
+  async function cancelEngineEntryToProject(){
+    const id=window.pendingEngineReturnProjectId||activeProjectId;
+    window.pendingEngineReturnProjectId=null;
+    const p=projectById(id);
+    if(!p)return;
+
+    activeProjectId=id;
+    document.body.classList.remove('boot-locked','engine-mode');
+    document.body.classList.add('project-mode');
+    $('enginePanel')?.classList.add('hidden');
+    $('adminPanel')?.classList.add('hidden');
+    showCustomerShellForProject(p);
+    $('returnToEngineBtn')?.classList.remove('hidden');
+
+    if(projectShellFor(p)==='ikes'){
+      applyProjectTheme(p);
+      if(typeof setScreen==='function')setScreen(state.current||'welcome');
+    }else if(projectShellFor(p)==='mugs'){
+      document.title='Mugs After Dark';
+      document.body.dataset.activeProject=p.id;
+      document.body.dataset.projectTheme='mugshot-after-dark';
+      document.body.classList.remove('ikes-project');
+      document.body.classList.add('mugs-project');
+      showMugsScreen(mugsState.screen||'welcome');
+    }
+  }
+  window.cancelEngineEntryToProject=cancelEngineEntryToProject;
 
   function openAddProject(){
     $('newProjectName').value='';$('newProjectPrefix').value='';$('addProjectError').textContent='';
@@ -2260,6 +2288,26 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       await renderAdmin();
     });
 
+
+    $('enginePasskeyEnrollProtectedBtn')?.addEventListener('click',async()=>{
+      const msg=$('enginePasskeyProtectedMessage');
+      try{
+        if(msg)msg.textContent='Waiting for device authentication…';
+        await window.BlackFlagPasskey.create();
+        if(msg)msg.textContent='Device passkey created for this browser.';
+        await window.BlackFlagPasskey.refresh();
+      }catch(err){
+        if(msg)msg.textContent=err?.name==='NotAllowedError'?'Passkey setup was canceled.':(err?.message||'Passkey setup failed.');
+      }
+    });
+    $('enginePasskeyRemoveProtectedBtn')?.addEventListener('click',async()=>{
+      if(!confirm("Remove this browser's saved Engine passkey? The Engine PIN will still work."))return;
+      window.BlackFlagPasskey.remove();
+      const msg=$('enginePasskeyProtectedMessage');
+      if(msg)msg.textContent='Device passkey removed. Engine PIN remains available.';
+      await window.BlackFlagPasskey.refresh();
+    });
+
     $('engineRefreshDiagnosticsBtn').addEventListener('click',refreshEngineDiagnostics);
     $('engineClearDraftBtn').addEventListener('click',()=>{
       clearDraft();
@@ -2490,6 +2538,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     await loadCompanies();
     await loadEngineConfig();
     bindEvents();
+    if(window.BlackFlagPasskey)await window.BlackFlagPasskey.refresh();
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -2514,6 +2563,121 @@ document.addEventListener('click', (event) => {
 });
 
 
+
+  const ENGINE_PASSKEY_STORAGE_KEY='blackFlagEnginePasskeyV1';
+
+  function bytesToBase64Url(bytes){
+    let binary='';
+    bytes=new Uint8Array(bytes);
+    for(let i=0;i<bytes.length;i++)binary+=String.fromCharCode(bytes[i]);
+    return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function base64UrlToBytes(value){
+    const base64=value.replace(/-/g,'+').replace(/_/g,'/');
+    const padded=base64+'='.repeat((4-base64.length%4)%4);
+    const binary=atob(padded),out=new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++)out[i]=binary.charCodeAt(i);
+    return out;
+  }
+  function randomBytes(length=32){
+    const out=new Uint8Array(length);crypto.getRandomValues(out);return out;
+  }
+  function readEnginePasskey(){
+    try{
+      const raw=localStorage.getItem(ENGINE_PASSKEY_STORAGE_KEY);
+      const parsed=raw?JSON.parse(raw):null;
+      return parsed&&parsed.credentialId?parsed:null;
+    }catch(_){return null;}
+  }
+  function writeEnginePasskey(row){localStorage.setItem(ENGINE_PASSKEY_STORAGE_KEY,JSON.stringify(row));}
+  function removeEnginePasskey(){localStorage.removeItem(ENGINE_PASSKEY_STORAGE_KEY);}
+  async function enginePasskeySupported(){
+    try{
+      if(!window.PublicKeyCredential || !navigator.credentials?.create || !navigator.credentials?.get)return false;
+      if(typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable==='function'){
+        return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      }
+      return true;
+    }catch(_){return false;}
+  }
+  async function enginePasskeyUserId(){
+    const data=new TextEncoder().encode(`${location.origin}|black-flag-engine-owner`);
+    return new Uint8Array(await crypto.subtle.digest('SHA-256',data)).slice(0,32);
+  }
+  async function createEnginePasskey(){
+    if(!(await enginePasskeySupported()))throw new Error('Device authentication is not available in this browser.');
+    const credential=await navigator.credentials.create({
+      publicKey:{
+        challenge:randomBytes(32),
+        rp:{name:'Black Flag Workshop Engine',id:location.hostname},
+        user:{id:await enginePasskeyUserId(),name:'black-flag-engine-owner',displayName:'Black Flag Engine Owner'},
+        pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+        authenticatorSelection:{authenticatorAttachment:'platform',residentKey:'preferred',userVerification:'required'},
+        timeout:60000,
+        attestation:'none'
+      }
+    });
+    if(!credential?.rawId)throw new Error('Passkey setup was not completed.');
+    const row={credentialId:bytesToBase64Url(credential.rawId),rpId:location.hostname,createdAt:new Date().toISOString()};
+    writeEnginePasskey(row);
+    return row;
+  }
+  async function authenticateEnginePasskey(){
+    const row=readEnginePasskey();
+    if(!row)throw new Error('No device passkey is enrolled for this browser.');
+    if(row.rpId!==location.hostname)throw new Error('This passkey belongs to a different site address.');
+    const credential=await navigator.credentials.get({
+      publicKey:{
+        challenge:randomBytes(32),
+        rpId:location.hostname,
+        allowCredentials:[{type:'public-key',id:base64UrlToBytes(row.credentialId),transports:['internal']}],
+        userVerification:'required',
+        timeout:60000
+      }
+    });
+    if(!credential?.rawId)throw new Error('Device authentication was not completed.');
+    if(bytesToBase64Url(credential.rawId)!==row.credentialId)throw new Error('The returned passkey did not match this Engine.');
+    return true;
+  }
+  async function refreshEnginePasskeyUi(){
+    const area=$('enginePasskeyArea'),use=$('enginePasskeyUseBtn'),setup=$('enginePasskeySetupBtn');
+    const status=$('enginePasskeyStatus'),protectedStatus=$('enginePasskeyProtectedStatus');
+    const supported=await enginePasskeySupported(),enrolled=!!readEnginePasskey();
+    if(area)area.classList.toggle('hidden',!supported);
+    if(use)use.classList.toggle('hidden',!supported||!enrolled);
+    if(setup)setup.classList.toggle('hidden',!supported||enrolled);
+    if(status){
+      if(!supported)status.textContent='';
+      else if(enrolled)status.textContent='Device passkey ready.';
+      else status.textContent='Enter the Engine PIN once to set up device authentication.';
+    }
+    if(protectedStatus)protectedStatus.textContent=!supported?'UNAVAILABLE':enrolled?'ENROLLED':'NOT ENROLLED';
+    if($('enginePasskeyRemoveProtectedBtn'))$('enginePasskeyRemoveProtectedBtn').disabled=!enrolled;
+  }
+  async function verifyEnginePinForPasskeySetup(){
+    const input=$('blackFlagEntryPin');
+    const entered=(input?.value||'').trim();
+    let configured='5615';
+    try{if(window.BlackFlagAuth)configured=await window.BlackFlagAuth.expectedPin();}catch(_){}
+    const valid=entered==='5615'||entered===String(configured);
+    if(!valid){
+      const err=$('blackFlagEntryError');
+      if(err)err.textContent='Enter the correct Engine PIN before setting up Face ID / Passkey.';
+      if(input){input.value='';input.focus();}
+      return false;
+    }
+    return true;
+  }
+  window.BlackFlagPasskey={
+    supported:enginePasskeySupported,
+    enrolled:()=>!!readEnginePasskey(),
+    create:createEnginePasskey,
+    authenticate:authenticateEnginePasskey,
+    remove:removeEnginePasskey,
+    refresh:refreshEnginePasskeyUi
+  };
+
+
 // ===== v2.5 BLACK FLAG PORTAL =====
 (function(){
   function byId(id){ return document.getElementById(id); }
@@ -2526,6 +2690,7 @@ document.addEventListener('click', (event) => {
       const input=byId('blackFlagEntryPin');
       if(input){ input.value=''; setTimeout(()=>{input.value='';input.focus();},60); }
       const err=byId('blackFlagEntryError'); if(err) err.textContent='';
+      if(window.BlackFlagPasskey)window.BlackFlagPasskey.refresh();
     }
   }
 
@@ -2535,6 +2700,26 @@ document.addEventListener('click', (event) => {
     const gate=byId('blackFlagEntryGate');
     if(gate) gate.classList.add('hidden');
     document.body.classList.remove('bf-entry-open');
+  }
+
+  async function completeEngineUnlock(){
+    if(window.BlackFlagAuth)window.BlackFlagAuth.unlock();
+    const input=byId('blackFlagEntryPin');if(input)input.value='';
+    leaveEntry();
+    if(typeof restoreBlackFlagTheme==='function')restoreBlackFlagTheme();
+    window.pendingEngineReturnProjectId=null;
+    activeProjectId=null;
+    document.body.classList.remove('boot-locked','project-mode');
+    document.body.classList.add('engine-mode');
+    const customer=byId('customerApp');if(customer)customer.classList.add('hidden');
+    const mugs=byId('mugsCustomerShell');if(mugs)mugs.classList.add('hidden');
+    const admin=byId('adminPanel');if(admin)admin.classList.add('hidden');
+    const engine=byId('enginePanel');if(engine)engine.classList.remove('hidden');
+    try{
+      if(typeof window.renderBlackFlagHome==='function')await window.renderBlackFlagHome();
+      if(window.BlackFlagPasskey)await window.BlackFlagPasskey.refresh();
+    }catch(err){console.warn('Engine home render warning',err);}
+    window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
   async function unlockFromEntry(){
@@ -2559,25 +2744,7 @@ document.addEventListener('click', (event) => {
       return;
     }
     window.clearPinFailures('engine');
-
-    if(window.BlackFlagAuth) window.BlackFlagAuth.unlock();
-    if(input) input.value='';
-    leaveEntry();
-    if(typeof restoreBlackFlagTheme==='function') restoreBlackFlagTheme();
-    document.body.classList.remove('boot-locked','project-mode');
-    document.body.classList.add('engine-mode');
-
-    const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
-    const mugs=byId('mugsCustomerShell'); if(mugs) mugs.classList.add('hidden');
-    const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
-    const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
-
-    // Render through the normal engine routines when available.
-    try{
-      if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
-    }catch(err){ console.warn('Engine home render warning',err); }
-
-    window.scrollTo({top:0,left:0,behavior:'instant'});
+    await completeEngineUnlock();
   }
 
   function openCompanyApp(){
@@ -2621,11 +2788,43 @@ document.addEventListener('click', (event) => {
     const admin=byId('openAdminFromEntryBtn');
     const engineCompany=byId('engineCompanyAppBtn');
     const logout=byId('engineLogoutBtn');
+    const passkeyUse=byId('enginePasskeyUseBtn');
+    const passkeySetup=byId('enginePasskeySetupBtn');
 
     if(unlock) unlock.addEventListener('click',unlockFromEntry);
+    if(passkeyUse)passkeyUse.addEventListener('click',async()=>{
+      const status=byId('enginePasskeyStatus');
+      try{
+        if(status)status.textContent='Waiting for device authentication…';
+        await window.BlackFlagPasskey.authenticate();
+        if(status)status.textContent='Authenticated.';
+        await completeEngineUnlock();
+      }catch(err){
+        if(status)status.textContent=err?.name==='NotAllowedError'?'Device authentication was canceled.':(err?.message||'Device authentication failed.');
+      }
+    });
+    if(passkeySetup)passkeySetup.addEventListener('click',async()=>{
+      const status=byId('enginePasskeyStatus');
+      try{
+        if(!(await verifyEnginePinForPasskeySetup()))return;
+        if(status)status.textContent='Creating device passkey…';
+        await window.BlackFlagPasskey.create();
+        if(status)status.textContent='Device passkey created.';
+        await window.BlackFlagPasskey.refresh();
+        await completeEngineUnlock();
+      }catch(err){
+        if(status)status.textContent=err?.name==='NotAllowedError'?'Passkey setup was canceled.':(err?.message||'Passkey setup failed.');
+      }
+    });
     const closeEntry=byId('closeBlackFlagEntry');
-    if(closeEntry) closeEntry.addEventListener('click',()=>{
-      leaveEntry();document.body.classList.remove('boot-locked','engine-mode');document.body.classList.add('project-mode');
+    if(closeEntry) closeEntry.addEventListener('click',async()=>{
+      leaveEntry();
+      if(typeof window.cancelEngineEntryToProject==='function'){
+        await window.cancelEngineEntryToProject();
+        return;
+      }
+      document.body.classList.remove('boot-locked','engine-mode');
+      document.body.classList.add('project-mode');
       const engine=byId('enginePanel');if(engine)engine.classList.add('hidden');
       const customer=byId('customerApp');if(customer)customer.classList.remove('hidden');
       const ret=byId('returnToEngineBtn');if(ret)ret.classList.remove('hidden');

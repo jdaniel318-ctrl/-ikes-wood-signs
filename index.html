@@ -28,6 +28,12 @@
         <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
+        <div id="enginePasskeyArea" class="engine-passkey-area hidden">
+          <div class="engine-passkey-divider"><span>OR</span></div>
+          <button id="enginePasskeyUseBtn" class="bf-entry-passkey hidden" type="button">USE FACE ID / PASSKEY</button>
+          <button id="enginePasskeySetupBtn" class="bf-entry-passkey setup hidden" type="button">SET UP FACE ID / PASSKEY</button>
+          <p id="enginePasskeyStatus" class="engine-passkey-status" aria-live="polite"></p>
+        </div>
 <button id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">CLOSE / RETURN TO ORDER</button>
       </div>
 
@@ -523,6 +529,17 @@
             <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2" /></label>
             <button id="saveEngineIdentityBtn" class="primary-btn small">SAVE ENGINE IDENTITY</button>
             <p id="engineIdentityStatus" class="helper"></p>
+          </div>
+        </details>
+
+        <details class="protected-control-group">
+          <summary>Face ID / Device Passkey</summary>
+          <div class="protected-control-body">
+            <p class="helper">Optional convenience access for this browser/device. Engine PIN remains the recovery method.</p>
+            <div class="passkey-control-row"><span>Status</span><strong id="enginePasskeyProtectedStatus">Checking…</strong></div>
+            <button id="enginePasskeyEnrollProtectedBtn" class="secondary-btn">SET UP / REPLACE DEVICE PASSKEY</button>
+            <button id="enginePasskeyRemoveProtectedBtn" class="secondary-btn">REMOVE DEVICE PASSKEY</button>
+            <p id="enginePasskeyProtectedMessage" class="helper"></p>
           </div>
         </details>
 
