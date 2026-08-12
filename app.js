@@ -21,7 +21,7 @@
       customerExperience:{photoRequired:true,previewApproval:true},
       publish:{status:'live'},
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
-      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
+      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
       customerHistory:{adminVisible:false},
       notifications:{customerConfirmationEmail:false},
       products:[{id:'custom-wood-sign',name:'Custom Wood Sign',published:true,characterLimit:null}]
@@ -500,6 +500,7 @@
         <label class="admin-toggle-row compact-toggle"><span><strong>Ledger</strong></span><input id="permLedgerView" type="checkbox" ${pm.ledgerView?'checked':''}></label>
         <label class="admin-toggle-row compact-toggle"><span><strong>Cost entry</strong></span><input id="permCostEntry" type="checkbox" ${pm.costEntry?'checked':''}></label>
         <label class="admin-toggle-row compact-toggle"><span><strong>Profit / margin</strong></span><input id="permProfitView" type="checkbox" ${pm.profitView?'checked':''}></label>
+        <label class="admin-toggle-row compact-toggle"><span><strong>Project Options</strong></span><input id="permProjectOptionsView" type="checkbox" ${pm.projectOptionsView?'checked':''}></label>
         <button id="savePermissionsTab" class="primary-btn small">SAVE ACCESS</button></div>`;
     }
     if(tab==='customers'){
@@ -609,7 +610,8 @@
           ordersUpdate:$('permOrdersView').checked&&$('permOrdersUpdate').checked,
           ledgerView:$('permLedgerView').checked,
           costEntry:$('permLedgerView').checked&&$('permCostEntry').checked,
-          profitView:$('permLedgerView').checked&&$('permProfitView').checked
+          profitView:$('permLedgerView').checked&&$('permProfitView').checked,
+          projectOptionsView:$('permProjectOptionsView').checked
         };
         await saveCompanies();logActivity(p.id,'Project admin access updated');
       };
@@ -717,7 +719,7 @@
     const id=slugifyProjectName(name);
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
     companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
-permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
+permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
 customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
     await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
   }
@@ -1331,18 +1333,19 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const d=o.completedAt||o.updatedAt||o.createdAt; return (Date.now()-new Date(d).getTime())/86400000;
   }
   function projectOrderCard(o,canUpdate=true){
-    const preview=o.approvedPreviewData||o.photoData||'';
-    const previewLabel=o.approvedPreviewData?'APPROVED CUSTOMER PREVIEW':(o.photoData?'CUSTOMER PHOTO':'');
-    return `<article class="order-card order-card-with-preview" data-id="${escapeHtml(o.id)}">
+    const preview=o.approvedPreviewData||'';
+    const status=canonicalOrderStatus(o.status);
+    const statusClass=adminStatusClass(status);
+    return `<article class="order-card order-card-with-preview ${statusClass}" data-id="${escapeHtml(o.id)}">
       <div class="order-card-layout">
-        ${preview?`<div class="project-order-preview"><div class="project-order-preview-label">${previewLabel}</div><img src="${preview}" alt="Order preview for ${escapeHtml(o.id)}"></div>`:''}
+        ${preview?`<button class="project-order-preview admin-preview-open" type="button" data-preview-src="${preview}" aria-label="Open larger approved preview for ${escapeHtml(o.id)}"><div class="project-order-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${preview}" alt="Approved customer preview for ${escapeHtml(o.id)}"><span class="preview-zoom-mark">＋</span></button>`:''}
         <div class="project-order-details">
           <div class="order-card-head"><div class="order-title-with-check">${statusBadge(o)}<div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div></div><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
           <div class="summary-row"><span>Order</span><strong>${escapeHtml(o.wording||'Custom order')}</strong></div>
           <div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName||'')}</strong></div>
           <div class="summary-row"><span>Phone</span><strong>${escapeHtml(o.customerPhone||'')}</strong></div>
           <div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail||'')}</strong></div>
-          ${canUpdate?`<div class="order-status-control"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${o.status===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<strong>${escapeHtml(o.status)}</strong>`}
+          ${canUpdate?`<div class="order-status-control ${statusClass}"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
         </div>
       </div>
     </article>`;
@@ -1350,7 +1353,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   async function renderProjectOrdersView(){
     const p=activeProject(), pm=p?.permissions||{};
     if(!pm.ordersView){$('projectActiveOrders').innerHTML='<div class="empty">Orders access is disabled in Black Flag.</div>';$('projectCompletedOrders').innerHTML='';return;}
-    const rows=(await getMergedOrders()).filter(o=>orderProjectId(o)===p.id).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    const rows=(await getMergedOrders()).filter(o=>orderProjectId(o)===p.id && o.approved===true).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
     const recent=rows.filter(o=>o.status!=='Completed'||completedAgeDays(o)<=10);
     const archived=rows.filter(o=>o.status==='Completed'&&completedAgeDays(o)>10);
     $('projectActiveOrders').innerHTML=recent.map(o=>projectOrderCard(o,!!pm.ordersUpdate)).join('')||'<div class="empty">No current orders.</div>';
@@ -1547,54 +1550,146 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const box=$('projectAdminQuickStats');
     if(!p||!box)return;
 
-    const orders=(await getMergedOrders()).filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
-    const current=orders.filter(o=>o.status!=='Completed'||completedAgeDays(o)<=10);
-    const ready=orders.filter(o=>o.status==='Ready for Pickup').length;
-    const completed=orders.filter(o=>o.status==='Completed').length;
+    const orders=(await getMergedOrders()).filter(o=>(o.projectId||'ikes-wood-signs')===p.id && o.approved===true);
+    const counts={
+      all:orders.length,
+      New:orders.filter(o=>o.status==='New').length,
+      'In Production':orders.filter(o=>o.status==='In Production').length,
+      'Ready for Pickup':orders.filter(o=>o.status==='Ready for Pickup'||o.status==='Ready').length,
+      Completed:orders.filter(o=>o.status==='Completed').length
+    };
 
     box.innerHTML=`
-      <div><span>Current</span><strong>${current.length}</strong></div>
-      <div><span>Ready</span><strong>${ready}</strong></div>
-      <div><span>Completed</span><strong>${completed}</strong></div>
+      <button class="admin-stat-block stat-all" data-order-filter="all"><span>All Orders</span><strong>${counts.all}</strong></button>
+      <button class="admin-stat-block stat-new" data-order-filter="New"><span>New Orders</span><strong>${counts.New}</strong></button>
+      <button class="admin-stat-block stat-production" data-order-filter="In Production"><span>In Production</span><strong>${counts['In Production']}</strong></button>
+      <button class="admin-stat-block stat-ready" data-order-filter="Ready for Pickup"><span>Ready</span><strong>${counts['Ready for Pickup']}</strong></button>
+      <button class="admin-stat-block stat-completed" data-order-filter="Completed"><span>Completed</span><strong>${counts.Completed}</strong></button>
     `;
-    if($('adminOrdersCardStatus')) $('adminOrdersCardStatus').textContent=current.length?`${current.length} ACTIVE`:'CLEAR';
+    $$('#projectAdminQuickStats [data-order-filter]').forEach(btn=>{
+      btn.addEventListener('click',()=>setAdminOrderFilter(btn.dataset.orderFilter));
+    });
+    syncAdminFilterActiveState();
+  }
+
+
+  let adminOrderFilter='all';
+
+  function canonicalOrderStatus(status){
+    if(status==='Ready') return 'Ready for Pickup';
+    return status||'New';
+  }
+
+  function adminStatusLabel(status){
+    const s=canonicalOrderStatus(status);
+    if(s==='Ready for Pickup') return 'Ready';
+    if(s==='New') return 'New Order';
+    return s;
+  }
+
+  function adminStatusClass(status){
+    const s=canonicalOrderStatus(status);
+    if(s==='New') return 'status-new';
+    if(s==='In Production') return 'status-production';
+    if(s==='Ready for Pickup') return 'status-ready';
+    if(s==='Completed') return 'status-completed';
+    return 'status-other';
+  }
+
+  function approvedProjectOrders(rows,p){
+    return (rows||[]).filter(o=>(o.projectId||'ikes-wood-signs')===p.id && o.approved===true);
+  }
+
+  function orderMatchesAdminFilter(o){
+    if(adminOrderFilter==='all') return true;
+    return canonicalOrderStatus(o.status)===canonicalOrderStatus(adminOrderFilter);
+  }
+
+  function adminFilterTitle(){
+    if(adminOrderFilter==='all') return 'All Orders';
+    if(adminOrderFilter==='New') return 'New Orders';
+    if(adminOrderFilter==='In Production') return 'In Production';
+    if(adminOrderFilter==='Ready for Pickup') return 'Ready';
+    if(adminOrderFilter==='Completed') return 'Completed';
+    return 'Orders';
+  }
+
+  function syncAdminFilterActiveState(){
+    $$('#projectAdminQuickStats [data-order-filter], #adminOrderFilterChips [data-order-filter]').forEach(btn=>{
+      btn.classList.toggle('active',canonicalOrderStatus(btn.dataset.orderFilter)===canonicalOrderStatus(adminOrderFilter) || (btn.dataset.orderFilter==='all'&&adminOrderFilter==='all'));
+    });
+  }
+
+  async function setAdminOrderFilter(filter){
+    adminOrderFilter=filter||'all';
+    if($('adminOrdersHeading')) $('adminOrdersHeading').textContent=adminFilterTitle();
+    await renderAdminOrderOverview();
+    syncAdminFilterActiveState();
+    // Clicking a top status block always brings the admin back to Orders.
+    await showProjectAdminModule('orders');
+  }
+
+  function renderAdminOrderFilterChips(counts){
+    const box=$('adminOrderFilterChips');
+    if(!box)return;
+    box.innerHTML=`
+      <button class="filter-chip chip-all" data-order-filter="all">All Orders (${counts.all})</button>
+      <button class="filter-chip chip-new" data-order-filter="New">New Orders (${counts.New})</button>
+      <button class="filter-chip chip-production" data-order-filter="In Production">In Production (${counts['In Production']})</button>
+      <button class="filter-chip chip-ready" data-order-filter="Ready for Pickup">Ready (${counts['Ready for Pickup']})</button>
+      <button class="filter-chip chip-completed" data-order-filter="Completed">Completed (${counts.Completed})</button>
+    `;
+    [...box.querySelectorAll('[data-order-filter]')].forEach(btn=>btn.addEventListener('click',()=>setAdminOrderFilter(btn.dataset.orderFilter)));
+    syncAdminFilterActiveState();
   }
 
   function applyProjectAdminMenuPermissions(){
     const p=activeProject(); if(!p)return;
     const pm=p.permissions||{};
-    $('adminCustomersMenuBtn')?.classList.toggle('hidden',!p.customerHistory?.adminVisible);
-    $('adminLedgerMenuBtn')?.classList.toggle('hidden',!pm.ledgerView);
-    $('adminPaymentsMenuBtn')?.classList.toggle('hidden',!p.payments?.enabled);
+    const access={
+      orders:pm.ordersView!==false,
+      customers:!!p.customerHistory?.adminVisible,
+      ledger:!!pm.ledgerView,
+      payments:!!p.payments?.enabled,
+      options:!!pm.projectOptionsView
+    };
+    const map={
+      orders:'adminOrdersMenuBtn',
+      customers:'adminCustomersMenuBtn',
+      ledger:'adminLedgerMenuBtn',
+      payments:'adminPaymentsMenuBtn',
+      options:'adminOptionsMenuBtn'
+    };
+    Object.entries(map).forEach(([key,id])=>{
+      const btn=$(id);if(!btn)return;
+      btn.classList.remove('hidden');
+      btn.disabled=!access[key];
+      btn.classList.toggle('module-disabled',!access[key]);
+      btn.setAttribute('aria-disabled',String(!access[key]));
+    });
   }
 
-  function showProjectAdminMenu(){
-    $('projectAdminMenu')?.classList.remove('hidden');
-    $('projectAdminModuleBar')?.classList.add('hidden');
-    $$('.admin-module-panel').forEach(el=>el.classList.add('hidden'));
-    window.scrollTo({top:0,left:0,behavior:'instant'});
+  async function showProjectAdminMenu(){
+    await showProjectAdminModule('orders');
   }
 
   async function showProjectAdminModule(moduleName){
     const p=activeProject(); if(!p)return;
     const pm=p.permissions||{};
 
-    if(moduleName==='customers' && !p.customerHistory?.adminVisible) return;
-    if(moduleName==='ledger' && !pm.ledgerView) return;
-    if(moduleName==='payments' && !p.payments?.enabled) return;
-
-    $('projectAdminMenu')?.classList.add('hidden');
-    $('projectAdminModuleBar')?.classList.remove('hidden');
-    $$('.admin-module-panel').forEach(el=>el.classList.add('hidden'));
-
-    const titles={
-      orders:'Orders',
-      options:'Project Options',
-      customers:'Customers',
-      ledger:'Ledger',
-      payments:'Payments'
+    const allowed={
+      orders:pm.ordersView!==false,
+      customers:!!p.customerHistory?.adminVisible,
+      ledger:!!pm.ledgerView,
+      payments:!!p.payments?.enabled,
+      options:!!pm.projectOptionsView
     };
-    if($('projectAdminModuleTitle')) $('projectAdminModuleTitle').textContent=titles[moduleName]||'Project Admin';
+    if(!allowed[moduleName]) return;
+
+    $('projectAdminMenu')?.classList.remove('hidden');
+    $('projectAdminModuleBar')?.classList.add('hidden');
+    $$('.admin-module-panel').forEach(el=>el.classList.add('hidden'));
+    $$('#projectAdminMenu [data-admin-module]').forEach(btn=>btn.classList.toggle('active',btn.dataset.adminModule===moduleName));
 
     if(moduleName==='orders'){
       $('adminOrdersModule')?.classList.remove('hidden');
@@ -1606,7 +1701,6 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       $('adminCustomerHistory')?.classList.remove('hidden');
       renderProjectAdminCustomerHistory();
     }else if(moduleName==='ledger'){
-      // Keep the existing protected Ledger view separate, but launch it from the Admin menu.
       stopProjectAdminIdleTimer();
       $('adminPanel')?.classList.add('hidden');
       document.body.classList.remove('project-admin-mode');
@@ -1655,14 +1749,26 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
   async function renderAdminOrderOverview(){
     const p=activeProject(); if(!p||!$('adminOrderOverviewList'))return;
-    const rows=(await getMergedOrders())
-      .filter(o=>orderProjectId(o)===p.id && !(o.status==='Completed'&&completedAgeDays(o)>10))
-      .sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')))
-      .slice(0,8);
+    const all=approvedProjectOrders(await getMergedOrders(),p)
+      .sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    const counts={
+      all:all.length,
+      New:all.filter(o=>canonicalOrderStatus(o.status)==='New').length,
+      'In Production':all.filter(o=>canonicalOrderStatus(o.status)==='In Production').length,
+      'Ready for Pickup':all.filter(o=>canonicalOrderStatus(o.status)==='Ready for Pickup').length,
+      Completed:all.filter(o=>canonicalOrderStatus(o.status)==='Completed').length
+    };
+    const rows=all.filter(orderMatchesAdminFilter);
+    if($('adminOrdersHeading')) $('adminOrdersHeading').textContent=adminFilterTitle();
+    renderAdminOrderFilterChips(counts);
     $('adminOrderOverviewList').innerHTML=
-      rows.map(o=>projectOrderCard(o,true)).join('') || '<div class="empty">No current orders.</div>';
+      rows.map(o=>projectOrderCard(o,true)).join('') || `<div class="empty">No ${adminFilterTitle().toLowerCase()}.</div>`;
     $('adminOrderOverviewList').querySelectorAll('[data-order-status]').forEach(s=>{
-      s.addEventListener('change',e=>updateOrderStatus(s.dataset.orderStatus,e.target.value));
+      s.addEventListener('change',async e=>{
+        await updateOrderStatus(s.dataset.orderStatus,e.target.value);
+        await renderProjectAdminQuickStats();
+        await renderAdminOrderOverview();
+      });
     });
   }
 
@@ -1681,8 +1787,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       document.body.classList.add('project-admin-mode');
       updateProjectAdminBrand();
       applyProjectAdminMenuPermissions();
+      adminOrderFilter='all';
       await renderProjectAdminQuickStats();
-      showProjectAdminMenu();
+      await showProjectAdminModule('orders');
       startProjectAdminIdleTimer();
     }else if(kind==='orders'){
       $('projectOrdersPanel')?.classList.remove('hidden');
@@ -1762,7 +1869,25 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       setTimeout(()=>{if(pinLocked('admin'))showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
     });
     $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
-    $('backToAdminMenuBtn')?.addEventListener('click',showProjectAdminMenu);
+    const closeAdminPreviewLightbox=()=>{
+      const gate=$('adminPreviewLightbox');
+      if(gate) gate.classList.add('hidden');
+      if($('adminPreviewLightboxImage')) $('adminPreviewLightboxImage').src='';
+    };
+    $('closeAdminPreviewLightbox')?.addEventListener('click',closeAdminPreviewLightbox);
+    $('adminPreviewLightbox')?.addEventListener('click',e=>{
+      if(e.target.id==='adminPreviewLightbox') closeAdminPreviewLightbox();
+    });
+    $('adminPanel')?.addEventListener('click',e=>{
+      const preview=e.target.closest('.admin-preview-open');
+      if(!preview)return;
+      const src=preview.dataset.previewSrc||preview.querySelector('img')?.src||'';
+      if(!src)return;
+      $('adminPreviewLightboxImage').src=src;
+      $('adminPreviewLightbox').classList.remove('hidden');
+    });
+
+    $('adminHomeMenuBtn')?.addEventListener('click',()=>setAdminOrderFilter('all'));
     $('projectAdminMenu')?.addEventListener('click',e=>{
       const card=e.target.closest('[data-admin-module]');
       if(card) showProjectAdminModule(card.dataset.adminModule);

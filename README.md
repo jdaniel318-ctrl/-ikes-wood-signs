@@ -338,3 +338,15 @@ Built directly from the verified v2.8.8.1 structure-repair branch.
 - Admin module cards now use clearer command-style visual hierarchy and status chips.
 - No changes to project/customer header.
 - No changes to Black Flag or Admin authentication/routing.
+
+
+## v2.8.9.2 — ADMIN ORDER FILTERS
+- Project Admin opens directly to Orders.
+- Only approved customer orders appear in Project Admin and Project Orders.
+- Top status blocks are clickable filters: All Orders, New Orders, In Production, Ready, Completed.
+- Status colors: New red, In Production orange, Ready yellow, Completed green.
+- The second navy bar keeps Admin Menu + Orders visible; Customers, Ledger, Payments, and Project Options remain visible but gray/disabled until Black Flag grants access.
+- Black Flag Permissions now includes Project Options access.
+- Approved preview thumbnails enlarge in a modal when clicked; the X returns to the normal view.
+- No status-key legend is added.
+- Project/customer header and authentication remain unchanged.

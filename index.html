@@ -275,36 +275,16 @@
         </div>
         <div id="projectAdminQuickStats" class="project-admin-quick-stats"></div>
       </section>
-      <section id="projectAdminMenu" class="project-admin-menu">
-        <button class="project-admin-menu-card" data-admin-module="orders">
-          <span class="admin-menu-icon">▤</span>
-          <span class="admin-menu-copy"><strong>Orders</strong><small>Current orders and order status</small></span>
-          <span id="adminOrdersCardStatus" class="admin-menu-status">OPEN</span>
-        </button>
-        <button id="adminOptionsMenuBtn" class="project-admin-menu-card" data-admin-module="options">
-          <span class="admin-menu-icon">⚙</span>
-          <span class="admin-menu-copy"><strong>Project Options</strong><small>Project configuration</small></span>
-          <span class="admin-menu-status">SETTINGS</span>
-        </button>
-        <button id="adminCustomersMenuBtn" class="project-admin-menu-card hidden" data-admin-module="customers">
-          <span class="admin-menu-icon">◎</span>
-          <span class="admin-menu-copy"><strong>Customers</strong><small>Customer history for this project</small></span>
-          <span class="admin-menu-status">HISTORY</span>
-        </button>
-        <button id="adminLedgerMenuBtn" class="project-admin-menu-card hidden" data-admin-module="ledger">
-          <span class="admin-menu-icon">▦</span>
-          <span class="admin-menu-copy"><strong>Ledger</strong><small>Project financial history</small></span>
-          <span class="admin-menu-status">FINANCE</span>
-        </button>
-        <button id="adminPaymentsMenuBtn" class="project-admin-menu-card hidden" data-admin-module="payments">
-          <span class="admin-menu-icon">$</span>
-          <span class="admin-menu-copy"><strong>Payments</strong><small>Project payment controls</small></span>
-          <span class="admin-menu-status">PAYMENTS</span>
-        </button>
+      <section id="projectAdminMenu" class="project-admin-menu project-admin-nav-strip">
+        <button id="adminHomeMenuBtn" class="project-admin-nav-home" type="button">⚙ ADMIN MENU</button>
+        <button id="adminOrdersMenuBtn" class="project-admin-nav-item active" data-admin-module="orders" type="button">▤ <span>Orders</span></button>
+        <button id="adminCustomersMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="customers" type="button" disabled>◎ <span>Customers</span></button>
+        <button id="adminLedgerMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="ledger" type="button" disabled>▦ <span>Ledger</span></button>
+        <button id="adminPaymentsMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="payments" type="button" disabled>$ <span>Payments</span></button>
+        <button id="adminOptionsMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="options" type="button" disabled>☷ <span>Project Options</span></button>
       </section>
 
-      <div id="projectAdminModuleBar" class="project-admin-module-bar hidden">
-        <button id="backToAdminMenuBtn" class="secondary-btn small">← ADMIN MENU</button>
+      <div id="projectAdminModuleBar" class="project-admin-module-bar hidden" aria-hidden="true">
         <strong id="projectAdminModuleTitle"></strong>
       </div>
 
@@ -340,9 +320,10 @@
       <section id="adminCustomerHistory" class="admin-customer-history admin-module-panel hidden" data-admin-panel="customers"></section>
       <section id="adminOrdersModule" class="admin-order-overview admin-module-panel hidden" data-admin-panel="orders">
         <div class="admin-order-overview-head">
-          <div><h3>Current Orders</h3><p class="helper">This project only</p></div>
+          <div><h3 id="adminOrdersHeading">All Orders</h3><p class="helper">This project only • Approved customer orders</p></div>
           <button id="openFullOrdersBtn" class="secondary-btn small">OPEN ORDERS</button>
         </div>
+        <div id="adminOrderFilterChips" class="admin-order-filter-chips"></div>
         <div id="adminOrderOverviewList" class="order-list"></div>
       </section>
       
@@ -389,6 +370,13 @@
         <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
         <button id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
         <button id="cancelEngineBtn" class="secondary-btn">CLOSE / RETURN TO ORDER</button>
+      </div>
+    </div>
+
+    <div id="adminPreviewLightbox" class="admin-preview-lightbox hidden" role="dialog" aria-modal="true" aria-label="Approved customer preview">
+      <button id="closeAdminPreviewLightbox" class="admin-preview-lightbox-close" type="button" aria-label="Close preview">×</button>
+      <div class="admin-preview-lightbox-frame">
+        <img id="adminPreviewLightboxImage" src="" alt="Larger approved customer preview">
       </div>
     </div>
 

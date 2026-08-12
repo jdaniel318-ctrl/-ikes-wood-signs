@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-8-9-1-admin-command-deck';
+const CACHE='workshop-engine-v2-8-9-2-admin-order-filters';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{
