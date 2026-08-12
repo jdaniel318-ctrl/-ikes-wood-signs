@@ -1977,3 +1977,95 @@ body.flowers-project > #app > .brand-header,body.flowers-project > #app > .progr
 .hero-slot-image{max-width:220px;max-height:220px}
 .mugs-shell-mark-wrap{display:flex;align-items:center;gap:10px}
 @media(max-width:760px){.asset-slot-grid{grid-template-columns:1fr}}
+
+
+/* v2.9.11 — FLEET COLORS
+   Black Flag owns the admin template. Each project supplies its own admin palette.
+   Workflow status colors remain universal across every project. */
+
+.project-admin-page{
+  background:var(--project-admin-surface,#f3f5f2)!important;
+}
+.project-admin-topbar{
+  background:var(--project-admin-header,#173742)!important;
+  border-bottom-color:var(--project-accent,#d7bd72)!important;
+}
+.project-admin-topbar h2,
+.project-admin-topbar .project-admin-kicker{
+  color:#fff!important;
+}
+body[data-admin-project-code="IKE"] .project-admin-topbar h2,
+body[data-admin-project-code="IKE"] .project-admin-topbar .project-admin-kicker{
+  color:#173742!important;
+}
+.admin-return-btn{
+  background:var(--project-admin-button,#fff)!important;
+  color:var(--project-admin-button-text,#173742)!important;
+  border-color:#fff!important;
+}
+.project-admin-dashboard-head,
+.project-admin-nav-strip,
+.project-admin-module-bar{
+  background:var(--project-admin-nav,#173742)!important;
+}
+.project-admin-nav-item.active{
+  background:color-mix(in srgb,var(--project-admin-nav,#173742) 82%,white 18%)!important;
+}
+.project-admin-nav-home{
+  color:var(--project-admin-nav,#173742)!important;
+}
+
+/* Universal Black Flag workflow notification colors — never project-themed. */
+.admin-stat-block.stat-new{background:#d52220!important;color:#fff!important}
+.admin-stat-block.stat-production{background:#ef6b00!important;color:#fff!important}
+.admin-stat-block.stat-ready{background:#f4c20d!important;color:#2f2600!important}
+.admin-stat-block.stat-completed{background:#159447!important;color:#fff!important}
+.filter-chip.chip-new{color:#c61d1d!important;background:#fff4f4!important}
+.filter-chip.chip-production{color:#c95600!important;background:#fff7ef!important}
+.filter-chip.chip-ready{color:#806000!important;background:#fff9df!important}
+.filter-chip.chip-completed{color:#13783e!important;background:#eef9f1!important}
+
+/* Keep the original selectable status dropdown.
+   Only the Status label follows the current workflow color. */
+.order-status-control{
+  color:inherit!important;
+}
+.order-status-control .order-status-label{
+  font-weight:1000!important;
+}
+.order-status-control.status-new .order-status-label{color:#d52220!important}
+.order-status-control.status-production .order-status-label{color:#ef6b00!important}
+.order-status-control.status-ready .order-status-label{color:#9a7400!important}
+.order-status-control.status-completed .order-status-label{color:#159447!important}
+.order-status-control select{
+  color:#172f39!important;
+  font-weight:700!important;
+  background:#fff!important;
+}
+
+/* Improve filter/status-button readability without changing their status backgrounds. */
+.admin-stat-block span,
+.admin-stat-block strong{
+  opacity:1!important;
+}
+.admin-stat-block span{
+  font-size:10px!important;
+  font-weight:1000!important;
+  letter-spacing:.85px!important;
+}
+.admin-stat-block strong{
+  font-weight:1000!important;
+}
+.filter-chip{
+  font-size:12px!important;
+  font-weight:1000!important;
+  letter-spacing:.1px;
+}
+
+/* Three-letter fleet namespace shown compactly in Black Flag project cards. */
+.project-mark{
+  min-width:54px!important;
+  padding:0 9px!important;
+  font-size:18px!important;
+  letter-spacing:.8px;
+}

@@ -462,3 +462,25 @@ Black Flag template event architecture repair.
 - Introduces `bindProjectTemplateShells()` so reusable project-template behaviors are initialized centrally.
 - Keeps v2.9.9's active-project submission logic: orders use the active project's ID, name, and prefix instead of a BBS-specific ID.
 - Existing Ike's and Mugs event behavior is preserved.
+
+
+## v2.9.11 — FLEET COLORS
+Black Flag project-template/admin separation upgrade.
+
+- Adds first-class three-letter project codes: `IKE`, `MUG`, and `BBS`.
+- Existing saved projects are normalized safely on load; permanent project IDs remain the actual data/security boundary.
+- New projects receive their own three-letter code from the project prefix/name.
+- Black Flag project cards display the project code instead of only the first letter.
+- Project Admin chrome is now themed from the active project at the Black Flag template layer:
+  - IKE keeps Ike-specific yellow/blue/green identity.
+  - MUG gets its own dark/night identity.
+  - BBS gets its own green/pink/cream identity.
+- Project branding colors do not spill into other projects.
+- Workflow notification colors remain universal Black Flag semantics:
+  - New = red
+  - In Production = orange
+  - Ready = yellow/gold
+  - Completed = green
+- Status/filter text contrast is strengthened without changing the notification background colors.
+- Each order keeps the original selectable status dropdown. The word `Status` changes color to match the selected workflow state.
+- Fixes project-card grammar from `1 orders` to `1 order`.

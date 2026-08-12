@@ -9,6 +9,7 @@
   const DEFAULT_COMPANIES = [
     {
       id:'ikes-wood-signs',
+      projectCode:'IKE',
       name:"Ike's Wood Signs",
       branding:{
         businessName:"Ike's Wood Signs",
@@ -35,6 +36,7 @@
     },
     {
       id:'mugshot-after-dark',
+      projectCode:'MUG',
       name:'Mugshot After Dark',
       tagline:'Classy mugs. Questionable messages.',
       type:'custom_mugs',
@@ -60,6 +62,7 @@
     },
     {
       id:'beccas-bloom-shop',
+      projectCode:'BBS',
       name:"Becca's Bloom Shop",
       tagline:'Fresh flowers, thoughtfully arranged.',
       type:'custom_flowers',
@@ -479,11 +482,20 @@
   };
   window.pinLocked=pinLocked; window.recordBadPin=recordBadPin; window.clearPinFailures=clearPinFailures; window.showPinLock=showPinLock;
 
+  function normalizeProjectCode(p){
+    if(!p)return p;
+    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS' };
+    const fallback=String(p.orderPrefix||p.name||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ';
+    p.projectCode=String(p.projectCode||seeded[p.id]||fallback).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
+    if(!p.orderPrefix)p.orderPrefix=p.projectCode;
+    return p;
+  }
   async function loadCompanies(){
     try{
       const saved=await getSetting('companies');
       companies=Array.isArray(saved?.value)&&saved.value.length?saved.value:structuredClone(DEFAULT_COMPANIES);
     }catch(_){companies=structuredClone(DEFAULT_COMPANIES);}
+    companies=companies.map(normalizeProjectCode);
   }
   async function saveCompanies(){await setSetting('companies',companies);}
   function companyById(id){return companies.find(c=>c.id===id);}
@@ -518,12 +530,12 @@
       const s=await projectStats(p);
       cards.push(`<article class="project-card">
         <div class="project-card-head">
-          <span class="project-mark">${escapeHtml((p.name||'?').slice(0,1).toUpperCase())}</span>
+          <span class="project-mark" title="${escapeHtml(p.projectCode||'')}">${escapeHtml((p.projectCode||p.name||'?').slice(0,3).toUpperCase())}</span>
           <label class="project-publish-toggle"><input type="checkbox" data-project-publish="${escapeHtml(p.id)}" ${p.publish?.status==='live'?'checked':''}><span>${p.publish?.status==='live'?'PUBLISHED':'PRIVATE'}</span></label>
         </div>
         <h4>${escapeHtml(p.name)}</h4>
         <p>${escapeHtml(p.tagline||p.type.replaceAll('_',' '))}</p>
-        <div class="project-kpis"><span><strong>${s.orders}</strong> orders</span><span><strong>$${s.revenueMonth.toFixed(0)}</strong> month</span><span><strong>${s.completed}</strong> ledger</span></div>
+        <div class="project-kpis"><span><strong>${s.orders}</strong> ${s.orders===1?'order':'orders'}</span><span><strong>$${s.revenueMonth.toFixed(0)}</strong> month</span><span><strong>${s.completed}</strong> ledger</span></div>
         <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
           <button data-enter-project="${escapeHtml(p.id)}" data-project-shell="${escapeHtml(projectShellFor(p))}" class="primary-btn small">${p.publish?.status==='live'?'OPEN PROJECT':'OPEN PRIVATE TEST'}</button>
@@ -940,8 +952,29 @@
   function applyProjectBranding(p){
     const b=p?.branding||{};
     const name=b.businessName||p?.name||'Project';
-    document.documentElement.style.setProperty('--project-primary',b.primary||'#f4d238');
-    document.documentElement.style.setProperty('--project-accent',b.accent||'#1373b8');
+    const primary=b.primary||'#173742';
+    const accent=b.accent||'#d7bd72';
+    const theme=String(p?.projectTheme||p?.type||'').toLowerCase();
+
+    // Project-owned admin palette. Status colors remain universal Black Flag workflow colors.
+    let adminHeader=primary, adminNav=primary, adminButton=accent, adminButtonText='#ffffff', adminSurface='#f7f5ef';
+    if(theme.includes('ikes')){
+      adminHeader='#f4d238'; adminNav='#173742'; adminButton='#2d9448'; adminButtonText='#ffffff'; adminSurface='#f7f5ef';
+    }else if(theme.includes('mug')){
+      adminHeader='#211e25'; adminNav='#211e25'; adminButton='#9b2451'; adminButtonText='#ffffff'; adminSurface='#f5f1f5';
+    }else if(theme.includes('flower')){
+      adminHeader='#315f3b'; adminNav='#315f3b'; adminButton='#c86782'; adminButtonText='#ffffff'; adminSurface='#fbf7f0';
+    }
+
+    document.documentElement.style.setProperty('--project-primary',primary);
+    document.documentElement.style.setProperty('--project-accent',accent);
+    document.documentElement.style.setProperty('--project-admin-header',adminHeader);
+    document.documentElement.style.setProperty('--project-admin-nav',adminNav);
+    document.documentElement.style.setProperty('--project-admin-button',adminButton);
+    document.documentElement.style.setProperty('--project-admin-button-text',adminButtonText);
+    document.documentElement.style.setProperty('--project-admin-surface',adminSurface);
+    document.documentElement.style.setProperty('--project-code',`"${p?.projectCode||p?.orderPrefix||''}"`);
+
     if($('adminBrandTitle')) $('adminBrandTitle').textContent=(b.adminLabel||name).toUpperCase();
     $$('[data-project-business-name]').forEach(el=>el.textContent=name);
     $$('[data-project-subtitle]').forEach(el=>el.textContent=b.subtitle||p?.tagline||'');
@@ -958,6 +991,12 @@
     document.body.removeAttribute('data-project-theme');
     document.documentElement.style.removeProperty('--project-primary');
     document.documentElement.style.removeProperty('--project-accent');
+    document.documentElement.style.removeProperty('--project-admin-header');
+    document.documentElement.style.removeProperty('--project-admin-nav');
+    document.documentElement.style.removeProperty('--project-admin-button');
+    document.documentElement.style.removeProperty('--project-admin-button-text');
+    document.documentElement.style.removeProperty('--project-admin-surface');
+    document.documentElement.style.removeProperty('--project-code');
     document.title='Workshop Engine';
   }
 
@@ -1017,7 +1056,7 @@
     if(!name){$('addProjectError').textContent='Enter a project name.';return;}
     const id=slugifyProjectName(name);
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
-    companies.push({id,name,type,shellType:PROJECT_SHELL_TEMPLATES[type]?.customerShell||'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+    companies.push({id,projectCode:(prefix||name.slice(0,3)).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ',name,type,shellType:PROJECT_SHELL_TEMPLATES[type]?.customerShell||'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
 customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
     if(type==='custom_flowers') PROJECT_SHELLS[id]='flowers'; await saveCompanies();
@@ -1747,7 +1786,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
           <div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName||'')}</strong></div>
           <div class="summary-row"><span>Phone</span><strong>${escapeHtml(o.customerPhone||'')}</strong></div>
           <div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail||'')}</strong></div>
-          ${canUpdate?`<div class="order-status-control ${statusClass}"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
+          ${canUpdate?`<div class="order-status-control ${statusClass}"><label class="order-status-label">Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
         </div>
       </div>
     </article>`;
@@ -2183,8 +2222,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
   function updateProjectAdminBrand(){
     const p=activeProject(); if(!p)return;
+    normalizeProjectCode(p);
+    applyProjectBranding(p);
     const label=p.branding?.adminLabel||p.name;
     if($('adminBrandTitle')) $('adminBrandTitle').textContent=label.toUpperCase();
+    document.body.dataset.adminProjectCode=p.projectCode||'';
   }
 
 
