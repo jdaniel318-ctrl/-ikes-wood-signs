@@ -1963,3 +1963,17 @@ body.flowers-project .mugs-moon{border-color:#f4e4a7;color:#f7e9c3}
 body.flowers-project .mugs-feature-grid strong,body.flowers-project .mugs-step-kicker{color:#496b4f}
 body.flowers-project .mugs-shell-footer{background:#2d4935;border-top-color:#d7a7b6}
 body.flowers-project > #app > .brand-header,body.flowers-project > #app > .progress-track,body.flowers-project #customerApp{display:none!important}
+
+/* v2.9.7 — PROJECT ASSETS */
+.asset-slot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}
+.asset-slot{display:grid;gap:8px;padding:12px;border:1px solid #d9dfdc;border-radius:14px;background:#fff}
+.asset-slot>span{font-weight:800;color:#183f48}
+.asset-slot input[type="file"]{width:100%}
+.asset-slot img{display:block;width:100%;max-height:180px;object-fit:contain;border-radius:10px;background:#eef2ef}
+.asset-slot img.hidden{display:none}
+.asset-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.project-slot-image{display:block;object-fit:contain}
+.project-logo-image{width:58px;height:58px;border-radius:14px}
+.hero-slot-image{max-width:220px;max-height:220px}
+.mugs-shell-mark-wrap{display:flex;align-items:center;gap:10px}
+@media(max-width:760px){.asset-slot-grid{grid-template-columns:1fr}}

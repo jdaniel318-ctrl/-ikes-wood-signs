@@ -261,10 +261,10 @@
     </div>
 
     <section id="mugsCustomerShell" class="mugs-shell hidden" aria-label="Mugs After Dark customer ordering">
-<header class="mugs-shell-header"><div class="mugs-shell-brand"><div class="mugs-shell-mark">M</div><div><div class="mugs-shell-title">MUGS AFTER DARK</div><div class="mugs-shell-subtitle">Custom mugs for the night shift.</div></div></div><button id="mugsAdminBtn" class="mugs-admin-btn" aria-label="Open project admin">⚙︎</button></header>
+<header class="mugs-shell-header"><div class="mugs-shell-brand"><div class="mugs-shell-mark-wrap"><img id="mugsProjectLogoImg" class="project-slot-image project-logo-image hidden" alt="Mugs project logo"><div class="mugs-shell-mark">M</div></div><div><div class="mugs-shell-title">MUGS AFTER DARK</div><div class="mugs-shell-subtitle">Custom mugs for the night shift.</div></div></div><button id="mugsAdminBtn" class="mugs-admin-btn" aria-label="Open project admin">⚙︎</button></header>
 <div class="mugs-progress"><div id="mugsProgressBar"></div></div>
 <main class="mugs-main">
-<section class="mugs-screen active" data-mugs-screen="welcome"><div class="mugs-hero"><div class="mugs-hero-copy"><div class="mugs-eyebrow">MUGS AFTER DARK</div><h1>Make the mug yours.</h1><p>Photograph the mug you are customizing, add your message, preview it, and approve the order.</p><div class="mugs-ribbon">YOUR MUG • YOUR WORDS • YOUR STYLE</div><button class="mugs-primary" data-mugs-next="photo">START YOUR MUG →</button></div><div class="mugs-hero-art" aria-hidden="true"><div class="mugs-moon">M</div></div></div><div class="mugs-feature-grid"><article><strong>1. Photograph</strong><span>Use the exact mug for this order.</span></article><article><strong>2. Personalize</strong><span>Type the message exactly as you want it.</span></article><article><strong>3. Approve</strong><span>Review the finished concept before submitting.</span></article></div></section>
+<section class="mugs-screen active" data-mugs-screen="welcome"><div class="mugs-hero"><div class="mugs-hero-copy"><div class="mugs-eyebrow">MUGS AFTER DARK</div><h1>Make the mug yours.</h1><p>Photograph the mug you are customizing, add your message, preview it, and approve the order.</p><div class="mugs-ribbon">YOUR MUG • YOUR WORDS • YOUR STYLE</div><button class="mugs-primary" data-mugs-next="photo">START YOUR MUG →</button></div><div class="mugs-hero-art" aria-hidden="true"><img id="mugsHeroGraphicImg" class="project-slot-image hero-slot-image hidden" alt=""><div class="mugs-moon">M</div></div></div><div class="mugs-feature-grid"><article><strong>1. Photograph</strong><span>Use the exact mug for this order.</span></article><article><strong>2. Personalize</strong><span>Type the message exactly as you want it.</span></article><article><strong>3. Approve</strong><span>Review the finished concept before submitting.</span></article></div></section>
 <section class="mugs-screen" data-mugs-screen="photo"><div class="mugs-step-kicker">YOUR MUG</div><h2>Photograph Your Mug</h2><p class="mugs-helper">The order cannot be submitted until a mug photo has been confirmed.</p><label class="mugs-photo-picker"><input id="mugsPhotoInput" type="file" accept="image/*" capture="environment"><span>TAKE OR CHOOSE PHOTO</span></label><div id="mugsPhotoPreviewWrap" class="mugs-photo-preview hidden"><img id="mugsPhotoPreview" alt="Confirmed mug photo"><button id="mugsRetakePhoto" class="mugs-secondary" type="button">CHANGE PHOTO</button></div><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="welcome">← BACK</button><button id="mugsPhotoNext" class="mugs-primary" data-mugs-next="message" disabled>CONFIRM PHOTO →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should your mug say?</h2><label for="mugsMessage">Type it exactly as you want it shown</label><textarea id="mugsMessage" class="mugs-input" maxlength="32" rows="3" placeholder="Your Message"></textarea><div class="mugs-character-count"><span id="mugsCharCount">0</span>/32</div><label for="mugsStyle">Letter style</label><select id="mugsStyle" class="mugs-input"><option value="bold">Bold</option><option value="classic">Classic</option><option value="script">Script</option></select><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="photo">← BACK</button><button class="mugs-primary" data-mugs-next="preview">PREVIEW →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="preview"><div class="mugs-step-kicker">PREVIEW</div><h2>Review Your Mug</h2><div class="mugs-preview-card"><img id="mugsPreviewImage" alt="Mug preview"><div id="mugsPreviewText" class="mugs-preview-text">Your Message</div></div><p class="mugs-helper">Test project pricing is not yet configured in Black Flag.</p><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="message">← EDIT</button><button class="mugs-primary" data-mugs-next="customer">YES — CONTINUE →</button></div></section>
@@ -274,10 +274,10 @@
 </main><footer class="mugs-shell-footer"><strong>MUGS AFTER DARK</strong><span>Independent project shell • Powered by Black Flag</span></footer></section>
 
     <section id="flowersCustomerShell" class="mugs-shell hidden" aria-label="Becca's Bloom Shop customer ordering">
-<header class="mugs-shell-header"><div class="mugs-shell-brand"><div id="flowersHeaderMark" class="mugs-shell-mark">B</div><div><div class="mugs-shell-title">BECCA'S BLOOM SHOP</div><div class="mugs-shell-subtitle">Fresh flowers, thoughtfully arranged.</div></div></div><button id="flowersAdminBtn" class="mugs-admin-btn" aria-label="Open project admin">⚙︎</button></header>
+<header class="mugs-shell-header"><div class="mugs-shell-brand"><div class="mugs-shell-mark-wrap"><img id="flowersProjectLogoImg" class="project-slot-image project-logo-image hidden" alt="Flower project logo"><div id="flowersHeaderMark" class="mugs-shell-mark">B</div></div><div><div class="mugs-shell-title">BECCA'S BLOOM SHOP</div><div class="mugs-shell-subtitle">Fresh flowers, thoughtfully arranged.</div></div></div><button id="flowersAdminBtn" class="mugs-admin-btn" aria-label="Open project admin">⚙︎</button></header>
 <div class="mugs-progress"><div id="flowersProgressBar"></div></div>
 <main class="mugs-main">
-<section class="mugs-screen active" data-flowers-screen="welcome"><div class="mugs-hero"><div class="mugs-hero-copy"><div class="mugs-eyebrow">BECCA'S BLOOM SHOP</div><h1>Make the moment bloom.</h1><p>Photograph the flower arrangement, add the card message, preview it, and approve the order.</p><div class="mugs-ribbon">YOUR FLOWERS • YOUR MESSAGE • YOUR MOMENT</div><button class="mugs-primary" data-flowers-next="photo">START YOUR FLOWER ORDER →</button></div><div class="mugs-hero-art" aria-hidden="true"><div id="flowersHeroMark" class="mugs-moon">B</div></div></div><div class="mugs-feature-grid"><article><strong>1. Photograph</strong><span>Use the exact flower arrangement for this order.</span></article><article><strong>2. Personalize</strong><span>Type the message exactly as you want it.</span></article><article><strong>3. Approve</strong><span>Review the finished concept before submitting.</span></article></div></section>
+<section class="mugs-screen active" data-flowers-screen="welcome"><div class="mugs-hero"><div class="mugs-hero-copy"><div class="mugs-eyebrow">BECCA'S BLOOM SHOP</div><h1>Make the moment bloom.</h1><p>Photograph the flower arrangement, add the card message, preview it, and approve the order.</p><div class="mugs-ribbon">YOUR FLOWERS • YOUR MESSAGE • YOUR MOMENT</div><button class="mugs-primary" data-flowers-next="photo">START YOUR FLOWER ORDER →</button></div><div class="mugs-hero-art" aria-hidden="true"><img id="flowersHeroGraphicImg" class="project-slot-image hero-slot-image hidden" alt=""><div id="flowersHeroMark" class="mugs-moon">B</div></div></div><div class="mugs-feature-grid"><article><strong>1. Photograph</strong><span>Use the exact flower arrangement for this order.</span></article><article><strong>2. Personalize</strong><span>Type the message exactly as you want it.</span></article><article><strong>3. Approve</strong><span>Review the finished concept before submitting.</span></article></div></section>
 <section class="mugs-screen" data-flowers-screen="photo"><div class="mugs-step-kicker">YOUR FLOWERS</div><h2>Photograph Your Flowers</h2><p class="mugs-helper">The order cannot be submitted until a flower arrangement photo has been confirmed.</p><label class="mugs-photo-picker"><input id="flowersPhotoInput" type="file" accept="image/*" capture="environment"><span>TAKE OR CHOOSE PHOTO</span></label><div id="flowersPhotoPreviewWrap" class="mugs-photo-preview hidden"><img id="flowersPhotoPreview" alt="Confirmed flower arrangement photo"><button id="flowersRetakePhoto" class="mugs-secondary" type="button">CHANGE PHOTO</button></div><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="welcome">← BACK</button><button id="flowersPhotoNext" class="mugs-primary" data-flowers-next="message" disabled>CONFIRM PHOTO →</button></div></section>
 <section class="mugs-screen" data-flowers-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should the card say?</h2><label for="flowersMessage">Type it exactly as you want it shown</label><textarea id="flowersMessage" class="mugs-input" maxlength="32" rows="3" placeholder="Your Message"></textarea><div class="mugs-character-count"><span id="flowersCharCount">0</span>/32</div><label for="flowersStyle">Letter style</label><select id="flowersStyle" class="mugs-input"><option value="bold">Bold</option><option value="classic">Classic</option><option value="script">Script</option></select><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="photo">← BACK</button><button class="mugs-primary" data-flowers-next="preview">PREVIEW →</button></div></section>
 <section class="mugs-screen" data-flowers-screen="preview"><div class="mugs-step-kicker">PREVIEW</div><h2>Review Your Flowers</h2><div class="mugs-preview-card"><img id="flowersPreviewImage" alt="Flower preview"><div id="flowersPreviewText" class="mugs-preview-text">Your Message</div></div><p class="mugs-helper">Test project pricing is not yet configured in Black Flag.</p><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="message">← EDIT</button><button class="mugs-primary" data-flowers-next="customer">YES — CONTINUE →</button></div></section>
@@ -536,6 +536,43 @@
             <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2" /></label>
             <button id="saveEngineIdentityBtn" class="primary-btn small">SAVE ENGINE IDENTITY</button>
             <p id="engineIdentityStatus" class="helper"></p>
+          </div>
+        </details>
+
+        <details class="protected-control-group">
+          <summary>Branding & Graphics</summary>
+          <div class="protected-control-body">
+            <p class="helper">Graphics are stored per project. A project never inherits another project's images.</p>
+            <div class="asset-slot-grid">
+              <label class="asset-slot">
+                <span>Project Logo / Mark</span>
+                <input id="assetProjectLogoInput" type="file" accept="image/*">
+                <img id="assetProjectLogoPreview" alt="Project logo preview">
+                <button id="assetProjectLogoClear" type="button" class="secondary-btn small">CLEAR</button>
+              </label>
+              <label class="asset-slot">
+                <span>Hero Graphic</span>
+                <input id="assetHeroGraphicInput" type="file" accept="image/*">
+                <img id="assetHeroGraphicPreview" alt="Hero graphic preview">
+                <button id="assetHeroGraphicClear" type="button" class="secondary-btn small">CLEAR</button>
+              </label>
+              <label class="asset-slot">
+                <span>Footer Graphic</span>
+                <input id="assetFooterGraphicInput" type="file" accept="image/*">
+                <img id="assetFooterGraphicPreview" alt="Footer graphic preview">
+                <button id="assetFooterGraphicClear" type="button" class="secondary-btn small">CLEAR</button>
+              </label>
+              <label class="asset-slot">
+                <span>Background / Texture</span>
+                <input id="assetBackgroundInput" type="file" accept="image/*">
+                <img id="assetBackgroundPreview" alt="Background preview">
+                <button id="assetBackgroundClear" type="button" class="secondary-btn small">CLEAR</button>
+              </label>
+            </div>
+            <div class="asset-actions">
+              <button id="assetSaveBtn" class="primary-btn small" type="button">SAVE PROJECT GRAPHICS</button>
+              <span id="assetSaveMessage" class="helper"></span>
+            </div>
           </div>
         </details>
 

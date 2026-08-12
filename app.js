@@ -750,9 +750,128 @@
     $('pecSubtitle').textContent='Project-specific controls. Black Flag remains unlocked only while you stay in the Engine.';
     $('projectEngineControl').classList.remove('hidden');
     await renderProjectTab(id,'overview');
+    await loadProjectAssetsEditor();
     window.scrollTo({top:$('projectEngineControl').offsetTop-20,behavior:'smooth'});
   }
 
+
+
+  const PROJECT_ASSET_STORAGE_KEY='blackFlagProjectAssetsV1';
+  const PROJECT_ASSET_SLOTS=['projectLogo','heroGraphic','footerGraphic','backgroundImage'];
+
+  function readAllProjectAssets(){
+    try{return JSON.parse(localStorage.getItem(PROJECT_ASSET_STORAGE_KEY)||'{}')||{};}catch(_){return {};}
+  }
+  function writeAllProjectAssets(all){
+    localStorage.setItem(PROJECT_ASSET_STORAGE_KEY,JSON.stringify(all||{}));
+  }
+  function readProjectAssets(projectId){
+    const all=readAllProjectAssets();
+    return all[projectId]||{};
+  }
+  function saveProjectAssets(projectId,assets){
+    const all=readAllProjectAssets();
+    all[projectId]={...(all[projectId]||{}),...(assets||{})};
+    writeAllProjectAssets(all);
+    return all[projectId];
+  }
+  function clearProjectAsset(projectId,slot){
+    const all=readAllProjectAssets();
+    all[projectId]={...(all[projectId]||{})};
+    delete all[projectId][slot];
+    writeAllProjectAssets(all);
+  }
+  function fileToDataUrl(file){
+    return new Promise((resolve,reject)=>{
+      const r=new FileReader();
+      r.onload=()=>resolve(String(r.result||''));
+      r.onerror=()=>reject(r.error||new Error('Could not read image.'));
+      r.readAsDataURL(file);
+    });
+  }
+  function setSlotImage(id,data){
+    const el=$(id);if(!el)return;
+    if(data){el.src=data;el.classList.remove('hidden');}
+    else{el.removeAttribute('src');el.classList.add('hidden');}
+  }
+  function applyProjectAssetSlots(p){
+    if(!p)return;
+    const assets=readProjectAssets(p.id);
+
+    if(p.id==='mugshot-after-dark'){
+      setSlotImage('mugsProjectLogoImg',assets.projectLogo);
+      setSlotImage('mugsHeroGraphicImg',assets.heroGraphic);
+      const shell=$('mugsCustomerShell');
+      if(shell) shell.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
+    }else if(p.id==='beccas-bloom-shop' || p.projectTheme==='flowers'){
+      setSlotImage('flowersProjectLogoImg',assets.projectLogo);
+      setSlotImage('flowersHeroGraphicImg',assets.heroGraphic);
+      const shell=$('flowersCustomerShell');
+      if(shell) shell.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
+    }else if(p.id==='ikes-wood-signs'){
+      // Ike's current built-in graphics remain the default. Custom slots can override later without removing existing assets.
+      const root=$('customerApp');
+      if(root) root.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
+    }
+  }
+
+  async function loadProjectAssetsEditor(){
+    const p=projectById(activeProjectId);if(!p)return;
+    const assets=readProjectAssets(p.id);
+    const map={
+      projectLogo:'assetProjectLogoPreview',
+      heroGraphic:'assetHeroGraphicPreview',
+      footerGraphic:'assetFooterGraphicPreview',
+      backgroundImage:'assetBackgroundPreview'
+    };
+    Object.entries(map).forEach(([slot,id])=>{
+      const el=$(id);if(!el)return;
+      const data=assets[slot];
+      if(data){el.src=data;el.classList.remove('hidden');}
+      else{el.removeAttribute('src');el.classList.add('hidden');}
+    });
+    if($('assetSaveMessage'))$('assetSaveMessage').textContent='';
+  }
+
+  async function collectAndSaveProjectAssets(){
+    const p=projectById(activeProjectId);if(!p)return;
+    const fields={
+      projectLogo:'assetProjectLogoInput',
+      heroGraphic:'assetHeroGraphicInput',
+      footerGraphic:'assetFooterGraphicInput',
+      backgroundImage:'assetBackgroundInput'
+    };
+    const next={};
+    for(const [slot,id] of Object.entries(fields)){
+      const file=$(id)?.files?.[0];
+      if(file)next[slot]=await fileToDataUrl(file);
+    }
+    const saved=saveProjectAssets(p.id,next);
+    applyProjectAssetSlots(p);
+    await loadProjectAssetsEditor();
+    if($('assetSaveMessage'))$('assetSaveMessage').textContent='Saved for this project only.';
+    return saved;
+  }
+  function bindProjectAssetEditor(){
+    const save=$('assetSaveBtn');
+    if(save)save.addEventListener('click',()=>collectAndSaveProjectAssets().catch(err=>{
+      if($('assetSaveMessage'))$('assetSaveMessage').textContent=err?.message||'Could not save graphics.';
+    }));
+    const clears={
+      assetProjectLogoClear:'projectLogo',
+      assetHeroGraphicClear:'heroGraphic',
+      assetFooterGraphicClear:'footerGraphic',
+      assetBackgroundClear:'backgroundImage'
+    };
+    Object.entries(clears).forEach(([id,slot])=>{
+      $(id)?.addEventListener('click',()=>{
+        const p=projectById(activeProjectId);if(!p)return;
+        clearProjectAsset(p.id,slot);
+        applyProjectAssetSlots(p);
+        loadProjectAssetsEditor();
+      });
+    });
+  }
 
   const PROJECT_SHELL_TEMPLATES={
     'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
@@ -785,6 +904,7 @@
     activeProjectId=id;logActivity(id,'Project opened');engineSessionUnlocked=false;
     document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');$('adminPanel')?.classList.add('hidden');
     showCustomerShellForProject(p);
+    applyProjectAssetSlots(p);
     if(projectShellFor(p)==='ikes'){
       $('returnToEngineBtn')?.classList.remove('hidden');resetRuntimeStateForProject(p);applyProjectTheme(p);await loadBusinessConfig();recoverDraft();if($('wordingInput'))$('wordingInput').value=state.wording;updateUi();if(typeof setScreen==='function')setScreen('welcome');
     }else if(projectShellFor(p)==='mugs'){
@@ -884,7 +1004,9 @@
     companies.push({id,name,type,shellType:type==='custom_flowers'?'flowers':'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
 customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
-    if(type==='custom_flowers') PROJECT_SHELLS[id]='flowers'; await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
+    if(type==='custom_flowers') PROJECT_SHELLS[id]='flowers'; await saveCompanies();
+    const __allAssets=readAllProjectAssets();delete __allAssets[id];writeAllProjectAssets(__allAssets);
+    logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
   }
 
   function renderCompanyCommand(){
@@ -2156,6 +2278,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone){alert('Name and phone are required.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});$('flowersAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
 
   function bindEvents(){
+    bindProjectAssetEditor();
     bindMugsShell();
     bindFlowersShell();
     $$('.next').forEach(b=>b.addEventListener('click',()=>{

@@ -416,3 +416,14 @@ Adds a third private/test project, **Becca's Bloom Shop**, on the Safe Harbor ba
 - Becca's Bloom Shop now displays `B` in both flower-shell monogram positions.
 - The flower monogram is derived from the project/business name at runtime, so a later rename can update the initial without reusing the Mugs identity.
 - No changes to Ike's, Mugs After Dark, project data, order logic, or Engine security.
+
+
+## v2.9.7 — PROJECT ASSETS
+Introduces project-scoped Branding & Graphics slots.
+
+- Adds per-project graphic slots for project logo/mark, hero graphic, footer graphic, and background/texture.
+- Images are stored under the project's own namespace and are never inherited by newly created projects.
+- Black Flag project controls can upload, preview, save, and clear graphics without editing HTML/CSS/JS.
+- Mugs After Dark and Becca's Bloom Shop can immediately display custom logo and hero graphics from their own slots.
+- Ike's built-in graphics remain the default; project assets can override selected slots later without removing the current working design.
+- New projects begin with empty graphic slots rather than borrowing another project's branding.
