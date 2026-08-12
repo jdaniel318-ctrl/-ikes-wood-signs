@@ -300,3 +300,12 @@ Built directly from v2.8.6.
 - Enabling the feature can rebuild the directory from orders currently stored on the device.
 - Disabling it removes that project's retained customer directory.
 - No changes to Black Flag login/PIN routing.
+
+
+## v2.8.8 — ADMIN / CUSTOMER REPAIR
+- Black Flag now retains customer history automatically for every project.
+- Black Flag controls only whether that project's Admin can see Customer History.
+- Project Admin restores the compact project-branded header, prominent Back to Ordering, current orders, and optional customer list.
+- Project Admin still auto-locks and returns to ordering after 15 minutes of inactivity.
+- Engine PIN fields are cleared on open, failed attempt, successful entry, close, and Engine lock.
+- PIN field autocomplete behavior remains based on the verified working v2.8.x branch; no strong-password markup was introduced.

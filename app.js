@@ -22,7 +22,7 @@
       publish:{status:'live'},
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
       permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
-      customerHistory:{enabled:false},
+      customerHistory:{adminVisible:false},
       notifications:{customerConfirmationEmail:false},
       products:[{id:'custom-wood-sign',name:'Custom Wood Sign',published:true,characterLimit:null}]
     },
@@ -83,7 +83,6 @@
   function captureCustomerFromOrder(order){
     const projectId=order.projectId||'ikes-wood-signs';
     const p=projectById(projectId);
-    if(!p?.customerHistory?.enabled) return;
 
     const key=normalizeCustomerKey(order);
     if(!key) return;
@@ -123,7 +122,6 @@
 
   function rebuildCustomerDirectoryForProject(projectId, orders){
     const p=projectById(projectId);
-    if(!p?.customerHistory?.enabled) return;
     const directory=readCustomerDirectory();
     directory[projectId]={};
     writeCustomerDirectory(directory);
@@ -256,6 +254,8 @@
   let engineSessionUnlocked = false;
   function lockEngineSession(){
     engineSessionUnlocked = false;
+    if($('enginePinInput')) $('enginePinInput').value='';
+    if($('blackFlagEntryPin')) $('blackFlagEntryPin').value='';
     document.body.classList.remove('engine-mode');
     const engineScreen = $('enginePanel');
     if(engineScreen) engineScreen.classList.add('hidden');
@@ -503,7 +503,7 @@
         <button id="savePermissionsTab" class="primary-btn small">SAVE ACCESS</button></div>`;
     }
     if(tab==='customers'){
-      const enabled=!!p.customerHistory?.enabled;
+      const adminVisible=!!p.customerHistory?.adminVisible;
       const directory=readCustomerDirectory();
       const rows=Object.values(directory[p.id]||{}).sort((a,b)=>
         String(b.lastOrderDate||'').localeCompare(String(a.lastOrderDate||''))
@@ -540,12 +540,19 @@
 
       return `<div class="pec-card customer-history-engine">
         <div class="pec-title-row">
-          <div><h4>Customer History</h4><p class="helper">Project customer directory and repeat-customer tracking.</p></div>
-          <label class="compact-switch"><input id="customerHistoryEnabled" type="checkbox" ${enabled?'checked':''}><span>${enabled?'ON':'OFF'}</span></label>
+          <div>
+            <h4>Customer History</h4>
+            <p class="helper">Black Flag retains project customer history automatically.</p>
+          </div>
+          <span class="engine-always-on">ENGINE ON</span>
         </div>
-        <button id="saveCustomerHistoryTab" class="primary-btn small">SAVE CUSTOMER HISTORY SETTING</button>
-        <button id="rebuildCustomerHistoryBtn" class="secondary-btn small ${enabled?'':'hidden'}">REBUILD FROM SAVED ORDERS</button>
-        ${enabled?`<div class="customer-directory-list">${directoryHtml||'<div class="empty">No retained customers yet.</div>'}</div>`:'<div class="empty">Customer History is off for this project.</div>'}
+        <label class="admin-toggle-row compact-toggle">
+          <span><strong>Show Customer History in Project Admin</strong><small>Controls project-admin visibility only. Black Flag retention remains on.</small></span>
+          <input id="customerHistoryAdminVisible" type="checkbox" ${adminVisible?'checked':''}>
+        </label>
+        <button id="saveCustomerHistoryTab" class="primary-btn small">SAVE PROJECT ACCESS</button>
+        <button id="rebuildCustomerHistoryBtn" class="secondary-btn small">REBUILD FROM SAVED ORDERS</button>
+        <div class="customer-directory-list">${directoryHtml||'<div class="empty">No retained customers yet.</div>'}</div>
       </div>`;
     }
     if(tab==='notifications'){
@@ -609,26 +616,18 @@
     }
     if(tab==='customers'){
       const savedOrders=await getMergedOrders();
+      rebuildCustomerDirectoryForProject(p.id,savedOrders);
       $('saveCustomerHistoryTab').onclick=async()=>{
-        const next=$('customerHistoryEnabled').checked;
-        p.customerHistory={enabled:next};
+        p.customerHistory={adminVisible:$('customerHistoryAdminVisible').checked};
         await saveCompanies();
-        if(next) rebuildCustomerDirectoryForProject(p.id,savedOrders);
-        else{
-          const directory=readCustomerDirectory();
-          delete directory[p.id];
-          writeCustomerDirectory(directory);
-        }
-        logActivity(p.id,'Customer history '+(next?'enabled':'disabled'));
+        logActivity(p.id,'Project Admin customer history '+(p.customerHistory.adminVisible?'enabled':'disabled'));
         await renderProjectTab(p.id,'customers');
       };
-      if($('rebuildCustomerHistoryBtn')){
-        $('rebuildCustomerHistoryBtn').onclick=async()=>{
-          rebuildCustomerDirectoryForProject(p.id,await getMergedOrders());
-          logActivity(p.id,'Customer history rebuilt');
-          await renderProjectTab(p.id,'customers');
-        };
-      }
+      $('rebuildCustomerHistoryBtn').onclick=async()=>{
+        rebuildCustomerDirectoryForProject(p.id,await getMergedOrders());
+        logActivity(p.id,'Customer history rebuilt');
+        await renderProjectTab(p.id,'customers');
+      };
     }
     if(tab==='notifications'){
       $('saveNotificationsTab').onclick=async()=>{
@@ -719,7 +718,7 @@
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
     companies.push({id,name,type,tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false},
-customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},products:[]});
+customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
     await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
   }
 
@@ -1545,6 +1544,34 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
     if($('adminBrandTitle')) $('adminBrandTitle').textContent=p.name.toUpperCase();
   }
 
+
+  function renderProjectAdminCustomerHistory(){
+    const p=activeProject();
+    const box=$('adminCustomerHistory');
+    if(!p||!box) return;
+
+    const visible=!!p.customerHistory?.adminVisible;
+    box.classList.toggle('hidden',!visible);
+    if(!visible){box.innerHTML='';return;}
+
+    const directory=readCustomerDirectory();
+    const rows=Object.values(directory[p.id]||{}).sort((a,b)=>
+      String(b.lastOrderDate||'').localeCompare(String(a.lastOrderDate||''))
+    ).slice(0,10);
+
+    box.innerHTML=`<div class="admin-customer-history-head">
+      <div><h3>Customers</h3><p class="helper">Recent project customers</p></div>
+    </div>
+    <div class="admin-customer-history-list">${
+      rows.map(c=>`<div class="admin-customer-row">
+        <strong>${escapeHtml(c.name||'Customer')}</strong>
+        <span>${escapeHtml(c.phone||'')}</span>
+        <span>${escapeHtml(c.email||'')}</span>
+        <span>${c.orderCount||0} order${c.orderCount===1?'':'s'}</span>
+      </div>`).join('') || '<div class="empty">No retained customers yet.</div>'
+    }</div>`;
+  }
+
   async function renderAdminOrderOverview(){
     const p=activeProject(); if(!p||!$('adminOrderOverviewList'))return;
     const rows=(await getMergedOrders())
@@ -1574,6 +1601,7 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
       updateProjectAdminBrand();
       populateBusinessSettings();
       await renderAdminOrderOverview();
+      renderProjectAdminCustomerHistory();
       startProjectAdminIdleTimer();
     }else if(kind==='orders'){
       $('projectOrdersPanel')?.classList.remove('hidden');
@@ -1670,7 +1698,7 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
       $('enginePinGate').classList.remove('hidden');
       setTimeout(()=>{if(pinLocked('engine'))showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');else $('enginePinInput').focus()},50);
     });
-    $('cancelEngineBtn').addEventListener('click',()=>{$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
+    $('cancelEngineBtn').addEventListener('click',()=>{$('enginePinInput').value='';$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
     $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
     $('unlockEngineBtn').addEventListener('click',async()=>{
       if(window.pinLocked('engine')){window.showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');return;}
@@ -1690,6 +1718,7 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
         return;
       }
       clearPinFailures('engine');
+      $('enginePinInput').value='';
       $('enginePinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
       await openEnginePanel();
@@ -1999,7 +2028,7 @@ document.addEventListener('click', (event) => {
       gate.classList.remove('hidden');
       document.body.classList.add('bf-entry-open');
       const input=byId('blackFlagEntryPin');
-      if(input){ input.value=''; setTimeout(()=>input.focus(),60); }
+      if(input){ input.value=''; setTimeout(()=>{input.value='';input.focus();},60); }
       const err=byId('blackFlagEntryError'); if(err) err.textContent='';
     }
   }
@@ -2028,12 +2057,13 @@ document.addEventListener('click', (event) => {
       if(err) err.textContent='Incorrect Engine PIN.';
       const row=window.recordBadPin('engine');
       if(row.lockedUntil>Date.now()) window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');
-      else if(input) input.select();
+      else if(input){ input.value=''; input.focus(); }
       return;
     }
     window.clearPinFailures('engine');
 
     if(window.BlackFlagAuth) window.BlackFlagAuth.unlock();
+    if(input) input.value='';
     leaveEntry();
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
