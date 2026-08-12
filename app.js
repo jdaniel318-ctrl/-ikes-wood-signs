@@ -2641,23 +2641,16 @@ document.addEventListener('click', (event) => {
   }
   async function refreshEnginePasskeyUi(){
     const area=$('enginePasskeyArea'),use=$('enginePasskeyUseBtn'),setup=$('enginePasskeySetupBtn');
-    const status=$('enginePasskeyStatus'),protectedStatus=$('enginePasskeyProtectedStatus');
-    const supported=await enginePasskeySupported(),enrolled=!!readEnginePasskey();
-
-    // Diagnostics remain visible even when the capability check is negative.
+    const protectedStatus=$('enginePasskeyProtectedStatus');
     if(area)area.classList.remove('hidden');
-    if(use)use.classList.toggle('hidden',!supported||!enrolled);
-    if(setup)setup.classList.toggle('hidden',!supported||enrolled);
 
-    if(status && !status.textContent){
-      if(enrolled)status.textContent='Device passkey ready.';
-      else status.textContent='Enter the Engine PIN once before setting up a device passkey.';
-    }
-    if(protectedStatus)protectedStatus.textContent=!supported?'UNAVAILABLE':enrolled?'ENROLLED':'NOT ENROLLED';
-    if($('enginePasskeyRemoveProtectedBtn'))$('enginePasskeyRemoveProtectedBtn').disabled=!enrolled;
-
-    await refreshEnginePasskeyDiagnostics();
+    const d=await refreshEnginePasskeyDiagnostics();
+    if(use)use.classList.toggle('hidden',!d.webauthn||!d.enrolled);
+    if(setup)setup.classList.toggle('hidden',!d.webauthn||d.enrolled);
+    if(protectedStatus)protectedStatus.textContent=d.enrolled?'ENROLLED':(d.webauthn?'NOT ENROLLED':'UNAVAILABLE');
+    if($('enginePasskeyRemoveProtectedBtn'))$('enginePasskeyRemoveProtectedBtn').disabled=!d.enrolled;
   }
+
   async function verifyEnginePinForPasskeySetup(){
     const input=$('blackFlagEntryPin');
     const entered=(input?.value||'').trim();
@@ -2673,75 +2666,107 @@ document.addEventListener('click', (event) => {
     return true;
   }
 
-  async function getEnginePasskeyDiagnostics(){
-    const webauthn=!!(window.PublicKeyCredential && navigator.credentials?.create && navigator.credentials?.get);
-    let platform=false;
-    let platformError='';
-    if(webauthn && typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable==='function'){
-      try{
-        platform=await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-      }catch(err){
-        platform=false;
-        platformError=err?.name||err?.message||'check failed';
-      }
+
+  function setDiagText(id,text){
+    const el=$(id);if(el)el.textContent=text;
+  }
+  function setPasskeyStatus(text){
+    const el=$('enginePasskeyStatus');if(el)el.textContent=text||'';
+  }
+
+  async function runWebAuthnCheck(){
+    try{
+      const available=!!(window.PublicKeyCredential && navigator.credentials && navigator.credentials.create && navigator.credentials.get);
+      setDiagText('diagWebAuthn',available?'AVAILABLE':'UNAVAILABLE');
+      return {ok:true,available};
+    }catch(err){
+      setDiagText('diagWebAuthn','ERROR');
+      setPasskeyStatus(`WebAuthn check error: ${err?.name||'Error'} — ${err?.message||'unknown error'}`);
+      return {ok:false,available:false,error:err};
     }
-    return {
-      webauthn,
-      platform,
-      platformCheckAvailable:typeof PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable==='function',
-      platformError,
-      enrolled:!!readEnginePasskey(),
-      secureContext:window.isSecureContext===true,
-      host:location.hostname,
-      protocol:location.protocol
-    };
+  }
+
+  async function runPlatformAuthenticatorCheck(){
+    try{
+      if(!window.PublicKeyCredential){
+        setDiagText('diagPlatformAuth','NO WEBAUTHN');
+        return {ok:true,available:false};
+      }
+      if(typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable!=='function'){
+        setDiagText('diagPlatformAuth','CHECK UNSUPPORTED');
+        return {ok:true,available:null};
+      }
+      const available=await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      setDiagText('diagPlatformAuth',available?'AVAILABLE':'NOT REPORTED');
+      return {ok:true,available};
+    }catch(err){
+      setDiagText('diagPlatformAuth','ERROR');
+      setPasskeyStatus(`Platform authenticator error: ${err?.name||'Error'} — ${err?.message||'unknown error'}`);
+      return {ok:false,available:false,error:err};
+    }
+  }
+
+  function runLocalPasskeyCheck(){
+    try{
+      const enrolled=!!readEnginePasskey();
+      setDiagText('diagPasskeyEnrollment',enrolled?'ENROLLED':'NOT ENROLLED');
+      return {ok:true,enrolled};
+    }catch(err){
+      setDiagText('diagPasskeyEnrollment','ERROR');
+      setPasskeyStatus(`Local passkey check error: ${err?.name||'Error'} — ${err?.message||'unknown error'}`);
+      return {ok:false,enrolled:false,error:err};
+    }
   }
 
   async function refreshEnginePasskeyDiagnostics(){
-    const d=await getEnginePasskeyDiagnostics();
-    if($('diagWebAuthn')) $('diagWebAuthn').textContent=d.webauthn?'AVAILABLE':'UNAVAILABLE';
-    if($('diagPlatformAuth')){
-      $('diagPlatformAuth').textContent=d.platform
-        ?'AVAILABLE'
-        :(d.platformCheckAvailable?'NOT REPORTED':'CHECK UNSUPPORTED');
-    }
-    if($('diagPasskeyEnrollment')) $('diagPasskeyEnrollment').textContent=d.enrolled?'ENROLLED':'NOT ENROLLED';
+    setPasskeyStatus('');
+    setDiagText('diagWebAuthn','CHECKING…');
+    setDiagText('diagPlatformAuth','CHECKING…');
+    setDiagText('diagPasskeyEnrollment','CHECKING…');
 
-    const status=$('enginePasskeyStatus');
-    if(status){
-      const extra=[];
-      if(!d.secureContext) extra.push('Page is not a secure context.');
-      if(d.platformError) extra.push(`Platform check: ${d.platformError}.`);
-      status.textContent=extra.join(' ');
-    }
-    return d;
+    const web=await runWebAuthnCheck();
+    const local=runLocalPasskeyCheck();
+    let platform={ok:true,available:false};
+    if(web.available) platform=await runPlatformAuthenticatorCheck();
+    else setDiagText('diagPlatformAuth','NO WEBAUTHN');
+
+    return {
+      webauthn:web.available===true,
+      platform:platform.available===true,
+      enrolled:local.enrolled===true
+    };
   }
 
   async function testEngineDeviceAuthentication(){
-    const status=$('enginePasskeyStatus');
-    const d=await refreshEnginePasskeyDiagnostics();
-
-    if(!d.webauthn){
-      if(status) status.textContent='WebAuthn is not available in this Safari context.';
-      return false;
-    }
-
+    const btn=$('enginePasskeyTestBtn');
+    if(btn)btn.disabled=true;
     try{
-      if(d.enrolled){
-        if(status) status.textContent='Testing the saved device passkey…';
-        await authenticateEnginePasskey();
-        if(status) status.textContent='SUCCESS: device authentication completed with the saved passkey.';
-        return true;
+      const d=await refreshEnginePasskeyDiagnostics();
+
+      if(!d.webauthn){
+        setPasskeyStatus('TEST RESULT: WebAuthn is unavailable in this Safari context.');
+        return false;
       }
 
-      if(status) status.textContent='No local passkey exists yet. Enter the Engine PIN, then use SET UP FACE ID / PASSKEY.';
+      if(d.enrolled){
+        setPasskeyStatus('Testing saved device passkey…');
+        try{
+          await authenticateEnginePasskey();
+          setPasskeyStatus('TEST RESULT: SUCCESS — device authentication completed.');
+          return true;
+        }catch(err){
+          setPasskeyStatus(`TEST RESULT: ${err?.name||'Error'} — ${err?.message||'device authentication did not complete.'}`);
+          return false;
+        }
+      }
+
+      setPasskeyStatus('TEST RESULT: No local passkey is enrolled yet. Enter the Engine PIN, then tap SET UP FACE ID / PASSKEY.');
       return false;
     }catch(err){
-      if(status){
-        const label=err?.name||'Error';
-        status.textContent=`TEST RESULT: ${label} — ${err?.message||'device authentication did not complete.'}`;
-      }
+      setPasskeyStatus(`TEST RESULT: ${err?.name||'Error'} — ${err?.message||'unexpected diagnostic failure.'}`);
       return false;
+    }finally{
+      if(btn)btn.disabled=false;
     }
   }
 
@@ -2757,6 +2782,21 @@ document.addEventListener('click', (event) => {
     test:testEngineDeviceAuthentication
   };
 
+
+
+window.addEventListener('error',event=>{
+  const el=document.getElementById('enginePasskeyStatus');
+  if(el && document.body.classList.contains('boot-locked')){
+    el.textContent=`PAGE ERROR: ${event.error?.name||'Error'} — ${event.error?.message||event.message||'unknown error'}`;
+  }
+});
+window.addEventListener('unhandledrejection',event=>{
+  const el=document.getElementById('enginePasskeyStatus');
+  const reason=event.reason;
+  if(el && document.body.classList.contains('boot-locked')){
+    el.textContent=`PROMISE ERROR: ${reason?.name||'Error'} — ${reason?.message||String(reason||'unknown error')}`;
+  }
+});
 
 // ===== v2.5 BLACK FLAG PORTAL =====
 (function(){
@@ -2874,7 +2914,13 @@ document.addEventListener('click', (event) => {
 
     if(unlock) unlock.addEventListener('click',unlockFromEntry);
     if(passkeyTest) passkeyTest.addEventListener('click',async()=>{
-      if(window.BlackFlagPasskey) await window.BlackFlagPasskey.test();
+      const status=byId('enginePasskeyStatus');
+      if(status)status.textContent='Test button received. Running checks…';
+      try{
+        if(window.BlackFlagPasskey) await window.BlackFlagPasskey.test();
+      }catch(err){
+        if(status)status.textContent=`TEST HANDLER ERROR: ${err?.name||'Error'} — ${err?.message||'unknown error'}`;
+      }
     });
     if(passkeyUse)passkeyUse.addEventListener('click',async()=>{
       const status=byId('enginePasskeyStatus');

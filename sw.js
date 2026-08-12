@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-9-3-spyglass';
+const CACHE='workshop-engine-v2-9-4-dead-reckoning';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{

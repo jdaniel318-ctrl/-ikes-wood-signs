@@ -428,3 +428,15 @@ Face ID / passkey diagnostic voyage.
 - Keeps Engine PIN login and recovery unchanged.
 - Does not alter Ike's, Mugs After Dark, order logic, project isolation, admin, or customer shells.
 - Updates the Black Flag footer so it no longer incorrectly states that PIN entry is the only possible access method.
+
+
+## v2.9.4 — DEAD RECKONING
+Passkey diagnostics hardened for iPad testing.
+
+- Adds a visible build identifier to the Black Flag diagnostic panel.
+- WebAuthn, platform-authenticator, and local-passkey checks now run independently.
+- One failed capability check can no longer leave every diagnostic stuck at CHECKING.
+- TEST DEVICE AUTHENTICATION can be pressed repeatedly without refreshing the page.
+- The diagnostic panel reports direct JavaScript errors, promise rejections, and WebAuthn errors on screen.
+- Keeps Engine PIN access unchanged.
+- No changes to Ike's, Mugs After Dark, admin, orders, project isolation, or customer shells.
