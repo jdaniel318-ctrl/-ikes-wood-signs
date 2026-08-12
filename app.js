@@ -57,6 +57,22 @@
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
       pricing:{status:'tbd'},
       products:[{id:'classic-custom-mug',name:'Classic Custom Mug',published:false,characterLimit:32}]
+    },
+    {
+      id:'beccas-bloom-shop',
+      name:"Becca's Bloom Shop",
+      tagline:'Fresh flowers, thoughtfully arranged.',
+      type:'custom_flowers',
+      branding:{businessName:"Becca's Bloom Shop",adminLabel:"BECCA'S BLOOM SHOP",primary:'#496b4f',accent:'#b85f79',subtitle:'Custom Flower Ordering'},
+      visibility:'engine_only',projectTheme:'flowers',status:'future',orderPrefix:'BBS',
+      ai:{mode:'off',minConfidence:0.90,requireScaleReference:false},
+      customization:{maxCharacters:60,characterLimitStatus:'configured',allowCustomColors:true},
+      workflow:['New','In Production','Ready for Pickup','Completed'],
+      customerExperience:{photoRequired:true,previewApproval:true},publish:{status:'development'},
+      payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
+      customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},
+      products:[{id:'custom-flower-arrangement',name:'Custom Flower Arrangement',published:false,characterLimit:60}]
     }
   ];
 
@@ -98,6 +114,16 @@
       doneHeadline:'Your Custom Mug Is In The Queue!',
       doneCopy:'Thank you for choosing Mugs After Dark. Your approved mug design and order details have been saved.',
       hideIke:true
+    },
+    'beccas-bloom-shop':{
+      businessName:"Becca's Bloom Shop",subtitle:'Fresh flowers, thoughtfully arranged.',
+      kicker:'Choose • Photograph • Personalize • Approve',orderPrefix:'BBS',defaultPrice:0,prices:[0],wordingDefault:'Thinking of You',
+      intro:'Create a flower order with your arrangement, personal message, preview, and approval.',
+      ribbon:'YOUR FLOWERS • YOUR MESSAGE • YOUR MOMENT',start:'START YOUR FLOWER ORDER →',
+      priceTitle:'Flower pricing is being configured',priceCopy:'This project is in test mode. Final flower pricing will be configured in Black Flag.',priceTrust:'TEST MODE • Final pricing has not been configured yet.',
+      photoBadge:'YOUR FLOWERS',photoTitle:'Take a Picture of Your Flowers',photoCopy:'Keep the full arrangement in view. This photo stays with this flower order only.',
+      orientationTitle:'How should the arrangement be presented?',wordingTitle:'What should the card say?',fontTitle:'Choose Your Letter Style',fillTitle:'Choose Your Letter Color',
+      customerCopy:"Becca's Bloom Shop will use this information to contact you about this flower order.",doneHeadline:'Your Flower Order Is In The Queue!',doneCopy:'Your approved flower order and details have been saved.',hideIke:true
     }
   };
 
@@ -733,14 +759,15 @@
     'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
     'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false}}
   };
-  const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs'};
+  const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers'};
   function projectShellFor(p){return PROJECT_SHELLS[p?.id]||'generic';}
-  function hideAllCustomerShells(){$('customerApp')?.classList.add('hidden');$('mugsCustomerShell')?.classList.add('hidden');}
+  function hideAllCustomerShells(){$('customerApp')?.classList.add('hidden');$('mugsCustomerShell')?.classList.add('hidden');$('flowersCustomerShell')?.classList.add('hidden');}
   function showCustomerShellForProject(p){
     hideAllCustomerShells();
     const shell=projectShellFor(p);
     if(shell==='ikes') $('customerApp')?.classList.remove('hidden');
     else if(shell==='mugs') $('mugsCustomerShell')?.classList.remove('hidden');
+    else if(shell==='flowers') $('flowersCustomerShell')?.classList.remove('hidden');
     else console.warn('No customer shell registered for project',p?.id);
   }
 
@@ -752,7 +779,9 @@
     if(projectShellFor(p)==='ikes'){
       $('returnToEngineBtn')?.classList.remove('hidden');resetRuntimeStateForProject(p);applyProjectTheme(p);await loadBusinessConfig();recoverDraft();if($('wordingInput'))$('wordingInput').value=state.wording;updateUi();if(typeof setScreen==='function')setScreen('welcome');
     }else if(projectShellFor(p)==='mugs'){
-      $('returnToEngineBtn')?.classList.remove('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
+      $('returnToEngineBtn')?.classList.remove('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
+    }else if(projectShellFor(p)==='flowers'){
+      $('returnToEngineBtn')?.classList.remove('hidden');document.title="Becca's Bloom Shop";document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');resetFlowersShell();showFlowersScreen('welcome');
     }
   }
 
@@ -779,7 +808,7 @@
   }
 
   function restoreBlackFlagTheme(){
-    document.body.classList.remove('project-mode','mugs-project','ikes-project');
+    document.body.classList.remove('project-mode','mugs-project','ikes-project','flowers-project');
     document.body.removeAttribute('data-active-project');
     document.body.removeAttribute('data-project-theme');
     document.documentElement.style.removeProperty('--project-primary');
@@ -825,12 +854,9 @@
       applyProjectTheme(p);
       if(typeof setScreen==='function')setScreen(state.current||'welcome');
     }else if(projectShellFor(p)==='mugs'){
-      document.title='Mugs After Dark';
-      document.body.dataset.activeProject=p.id;
-      document.body.dataset.projectTheme='mugshot-after-dark';
-      document.body.classList.remove('ikes-project');
-      document.body.classList.add('mugs-project');
-      showMugsScreen(mugsState.screen||'welcome');
+      document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');showMugsScreen(mugsState.screen||'welcome');
+    }else if(projectShellFor(p)==='flowers'){
+      document.title="Becca's Bloom Shop";document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');showFlowersScreen(flowersState.screen||'welcome');
     }
   }
   window.cancelEngineEntryToProject=cancelEngineEntryToProject;
@@ -846,10 +872,10 @@
     if(!name){$('addProjectError').textContent='Enter a project name.';return;}
     const id=slugifyProjectName(name);
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
-    companies.push({id,name,type,shellType:'custom-product',tagline:'',visibility:'engine_only',status:'future',projectTheme:id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+    companies.push({id,name,type,shellType:type==='custom_flowers'?'flowers':'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
 customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
-    await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
+    if(type==='custom_flowers') PROJECT_SHELLS[id]='flowers'; await saveCompanies();logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
   }
 
   function renderCompanyCommand(){
@@ -2110,8 +2136,19 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   async function submitMugsOrder(){if(activeProjectId!=='mugshot-after-dark')return;if(!mugsState.photoData){alert('A confirmed mug photo is required.');showMugsScreen('photo');return;}if(!mugsState.message.trim()){alert('Enter the mug message.');showMugsScreen('message');return;}if(!mugsState.customerName.trim()||!mugsState.customerPhone.trim()){alert('Name and phone are required.');showMugsScreen('customer');return;}if(!$('mugsApprovalCheck')?.checked)return;const approvedPreviewData=await createMugsApprovedPreview();if(!approvedPreviewData){alert('The approved mug preview could not be confirmed.');showMugsScreen('photo');return;}const d=new Date(),y=String(d.getFullYear()).slice(-2),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`MUG-${y}${mo}${day}-${suffix}`;const order={projectId:'mugshot-after-dark',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:'Mugs After Dark',orderPrefix:'MUG'},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:0,photoData:mugsState.photoData,approvedPreviewData,wording:mugsState.message,font:mugsState.style,fill:'Black',contactPreference:'Text',customerName:mugsState.customerName,customerPhone:mugsState.customerPhone,customerEmail:mugsState.customerEmail,approved:true,testMode:true};backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Mugs order save failed',err);}mugsState.approvedPreviewData=approvedPreviewData;$('mugsDoneOrderId').textContent=id;$('mugsDonePreview').src=approvedPreviewData;showMugsScreen('done');}
   function bindMugsShell(){if(window.__mugsShellBound)return;window.__mugsShellBound=true;$('mugsCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-mugs-next]');if(n&&!n.disabled){showMugsScreen(n.dataset.mugsNext);return;}const b=e.target.closest('[data-mugs-back]');if(b){showMugsScreen(b.dataset.mugsBack);}});$('mugsPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{mugsState.photoData=String(r.result||'');$('mugsPhotoPreview').src=mugsState.photoData;$('mugsPhotoPreviewWrap').classList.remove('hidden');$('mugsPhotoNext').disabled=!mugsState.photoData;};r.readAsDataURL(file);});$('mugsRetakePhoto')?.addEventListener('click',()=>{mugsState.photoData='';$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap').classList.add('hidden');$('mugsPhotoNext').disabled=true;$('mugsPhotoInput').click();});$('mugsMessage')?.addEventListener('input',e=>{mugsState.message=e.target.value;$('mugsCharCount').textContent=String(mugsState.message.length);});$('mugsStyle')?.addEventListener('change',e=>mugsState.style=e.target.value);$('mugsCustomerNext')?.addEventListener('click',()=>{mugsState.customerName=$('mugsCustomerName').value.trim();mugsState.customerPhone=$('mugsCustomerPhone').value.trim();mugsState.customerEmail=$('mugsCustomerEmail').value.trim();if(!mugsState.customerName||!mugsState.customerPhone){alert('Name and phone are required.');return;}showMugsScreen('review');});$('mugsApprovalCheck')?.addEventListener('change',e=>$('mugsSubmitOrder').disabled=!e.target.checked);$('mugsSubmitOrder')?.addEventListener('click',submitMugsOrder);$('mugsNewOrder')?.addEventListener('click',()=>{resetMugsShell();showMugsScreen('welcome');});$('mugsAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
 
+  const flowersState={screen:'welcome',photoData:'',message:'',style:'bold',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''};
+  const FLOWERS_SCREEN_ORDER=['welcome','photo','message','preview','customer','review','done'];
+  function resetFlowersShell(){Object.assign(flowersState,{screen:'welcome',photoData:'',message:'',style:'bold',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''});if($('flowersPhotoInput'))$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap')?.classList.add('hidden');if($('flowersPhotoNext'))$('flowersPhotoNext').disabled=true;if($('flowersMessage'))$('flowersMessage').value='';if($('flowersCharCount'))$('flowersCharCount').textContent='0';['flowersCustomerName','flowersCustomerPhone','flowersCustomerEmail'].forEach(id=>{if($(id))$(id).value='';});if($('flowersApprovalCheck'))$('flowersApprovalCheck').checked=false;if($('flowersSubmitOrder'))$('flowersSubmitOrder').disabled=true;}
+  function showFlowersScreen(name){flowersState.screen=name;$('flowersCustomerShell')?.querySelectorAll('.mugs-screen').forEach(s=>s.classList.toggle('active',s.dataset.flowersScreen===name));const i=FLOWERS_SCREEN_ORDER.indexOf(name);if($('flowersProgressBar'))$('flowersProgressBar').style.width=`${Math.max(5,(i+1)/FLOWERS_SCREEN_ORDER.length*100)}%`;if(name==='preview')renderFlowersPreview();if(name==='review')renderFlowersReview();window.scrollTo({top:0,left:0,behavior:'instant'});}
+  function renderFlowersPreview(){if($('flowersPreviewImage')&&flowersState.photoData)$('flowersPreviewImage').src=flowersState.photoData;if($('flowersPreviewText')){$('flowersPreviewText').textContent=flowersState.message||'Your Message';$('flowersPreviewText').className=`mugs-preview-text mugs-style-${flowersState.style}`;}}
+  function renderFlowersReview(){const box=$('flowersReviewSummary');if(!box)return;box.innerHTML=`<div class="mugs-review-preview"><img src="${flowersState.photoData}" alt="Confirmed flower arrangement photo"><div class="mugs-review-overlay mugs-style-${escapeHtml(flowersState.style)}">${escapeHtml(flowersState.message||'Your Message')}</div></div><div class="mugs-review-row"><span>Message</span><strong>${escapeHtml(flowersState.message||'')}</strong></div><div class="mugs-review-row"><span>Name</span><strong>${escapeHtml(flowersState.customerName||'')}</strong></div><div class="mugs-review-row"><span>Phone</span><strong>${escapeHtml(flowersState.customerPhone||'')}</strong></div><div class="mugs-review-row"><span>Email</span><strong>${escapeHtml(flowersState.customerEmail||'')}</strong></div><div class="mugs-review-row"><span>Pricing</span><strong>TEST MODE</strong></div>`;}
+  async function createFlowersApprovedPreview(){if(!flowersState.photoData)return '';return new Promise(resolve=>{const img=new Image();img.onload=()=>{try{const scale=Math.min(1,1600/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height)),w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale)),h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale)),canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return resolve('');ctx.drawImage(img,0,0,w,h);const text=flowersState.message||'';let size=Math.max(30,Math.min(Math.round(w*.09),Math.round(h*.22)));const family=flowersState.style==='classic'?'Georgia':flowersState.style==='script'?'cursive':'Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#111';while(size>20){ctx.font=`700 ${size}px ${family}`;if(ctx.measureText(text).width<=w*.82)break;size-=2;}ctx.lineWidth=Math.max(3,size*.08);ctx.strokeStyle='rgba(255,255,255,.82)';ctx.strokeText(text,w/2,h/2,w*.82);ctx.fillText(text,w/2,h/2,w*.82);resolve(canvas.toDataURL('image/jpeg',.84));}catch(err){console.warn('Flowers preview failed',err);resolve('');}};img.onerror=()=>resolve('');img.src=flowersState.photoData;});}
+  async function submitFlowersOrder(){if(activeProjectId!=='beccas-bloom-shop')return;if(!flowersState.photoData){alert('A confirmed flower arrangement photo is required.');showFlowersScreen('photo');return;}if(!flowersState.message.trim()){alert('Enter the card message.');showFlowersScreen('message');return;}if(!flowersState.customerName.trim()||!flowersState.customerPhone.trim()){alert('Name and phone are required.');showFlowersScreen('customer');return;}if(!$('flowersApprovalCheck')?.checked)return;const approvedPreviewData=await createFlowersApprovedPreview();if(!approvedPreviewData){alert('The approved flower preview could not be confirmed.');showFlowersScreen('photo');return;}const d=new Date(),y=String(d.getFullYear()).slice(-2),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`BBS-${y}${mo}${day}-${suffix}`;const order={projectId:'beccas-bloom-shop',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:"Becca's Bloom Shop",orderPrefix:'BBS'},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:0,photoData:flowersState.photoData,approvedPreviewData,wording:flowersState.message,font:flowersState.style,fill:'Black',contactPreference:'Text',customerName:flowersState.customerName,customerPhone:flowersState.customerPhone,customerEmail:flowersState.customerEmail,approved:true,testMode:true};backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Flowers order save failed',err);}flowersState.approvedPreviewData=approvedPreviewData;$('flowersDoneOrderId').textContent=id;$('flowersDonePreview').src=approvedPreviewData;showFlowersScreen('done');}
+  function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone){alert('Name and phone are required.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});$('flowersAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
+
   function bindEvents(){
     bindMugsShell();
+    bindFlowersShell();
     $$('.next').forEach(b=>b.addEventListener('click',()=>{
       if(b.dataset.busy==='1') return;
       b.dataset.busy='1';
@@ -2598,7 +2635,7 @@ document.addEventListener('click', (event) => {
     document.body.classList.add('engine-mode');
 
     const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
-    const mugs=byId('mugsCustomerShell'); if(mugs) mugs.classList.add('hidden');
+    const mugs=byId('mugsCustomerShell'); if(mugs) mugs.classList.add('hidden'); const flowers=byId('flowersCustomerShell'); if(flowers) flowers.classList.add('hidden');
     const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
     const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
 

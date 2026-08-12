@@ -405,3 +405,7 @@ Towline repair voyage.
 - Closing the Engine login gate returns to the exact project and customer shell that launched it.
 - The temporary project return target is cleared after successful Black Flag authentication.
 - No changes to the independent Ike/Mugs customer-shell architecture.
+
+
+## Flower isolation test build
+Adds a third private/test project, **Becca's Bloom Shop**, on the Safe Harbor baseline. It has a dedicated project ID (`beccas-bloom-shop`), order prefix (`BBS`), customer runtime state, photo state, order records, project admin filtering, branding, and customer shell. The Add Project dialog now includes a Flower Shop type; flower projects are assigned to the flower shell rather than Ike's or Mugs. No Face ID/passkey work is included.
