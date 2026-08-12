@@ -2165,3 +2165,56 @@ body[data-admin-project-code="BBS"].project-admin-mode .project-admin-brandbar{
 body[data-admin-project-code="BBS"].project-admin-mode .admin-timeout-note{
   color:#315f3b!important;
 }
+
+
+/* v2.9.13 — HIDDEN TREASURE
+   Pirate Mode belongs to Dark Flag only. It never styles project customer/admin shells. */
+.bf-pirate-toggle-row{
+  margin-top:14px;padding:11px 12px;border:1px solid #ffffff24;border-radius:12px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:#ffffff08;text-align:left
+}
+.bf-pirate-toggle-row strong{display:block;font-size:13px;letter-spacing:.3px}
+.bf-pirate-toggle-row small{display:block;margin-top:2px;opacity:.68;font-size:10px}
+.bf-switch{position:relative;width:46px;height:26px;flex:0 0 auto}
+.bf-switch input{opacity:0;width:0;height:0}
+.bf-switch-slider{position:absolute;inset:0;border-radius:99px;background:#68757b;transition:.18s;cursor:pointer}
+.bf-switch-slider:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.18s}
+.bf-switch input:checked + .bf-switch-slider{background:#b48a3c}
+.bf-switch input:checked + .bf-switch-slider:before{transform:translateX(20px)}
+
+body.dark-flag-pirate-mode #blackFlagEntryGate{
+  background:
+    radial-gradient(circle at 50% 20%,rgba(187,139,62,.14),transparent 32%),
+    linear-gradient(180deg,#08161a 0%,#102a2d 55%,#071113 100%)!important;
+}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell{
+  position:relative;
+}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell:before{
+  content:"";
+  position:absolute;inset:-22px;border-radius:28px;pointer-events:none;
+  border:1px solid rgba(196,151,72,.22);
+  box-shadow:0 0 70px rgba(0,0,0,.28);
+}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-mark{
+  filter:drop-shadow(0 4px 10px #000);
+}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-kicker{
+  color:#d6ad5b!important;
+  letter-spacing:1.8px;
+}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-panel{
+  border-color:#b48a3c!important;
+  box-shadow:0 16px 45px #00000055,inset 0 0 35px #b48a3c0b;
+}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-primary{
+  background:#b48a3c!important;
+  color:#111!important;
+}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-foot{
+  color:#c8b078!important;
+}
+.engine-appearance-card .engine-card-kicker{
+  font-size:10px;font-weight:900;letter-spacing:1.2px;color:#9b7b37;margin-bottom:3px
+}

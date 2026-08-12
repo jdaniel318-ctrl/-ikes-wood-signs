@@ -29,6 +29,13 @@
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
 <button id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">CLOSE / RETURN TO ORDER</button>
+<div class="bf-pirate-toggle-row">
+  <span><strong>Pirate Mode</strong><small>Dark Flag entrance personality only</small></span>
+  <label class="bf-switch" aria-label="Toggle Pirate Mode">
+    <input id="blackFlagPirateModeToggle" type="checkbox" />
+    <span class="bf-switch-slider"></span>
+  </label>
+</div>
       </div>
 
       <div class="bf-entry-foot">Authorized engine access only • Engine PIN required every time Black Flag is entered</div>
@@ -491,6 +498,17 @@
       <div id="companyFleet" class="company-fleet"></div>
 
       <div class="engine-grid">
+        <article class="engine-card engine-appearance-card">
+          <div class="engine-card-kicker">DARK FLAG</div>
+          <h3>Appearance</h3>
+          <p class="helper">Controls Dark Flag presentation only. Project branding, data, permissions and security are never changed by this setting.</p>
+          <label class="admin-toggle-row compact-toggle">
+            <span><strong>Pirate Mode</strong><small>Add nautical personality to the Dark Flag Engine entrance.</small></span>
+            <input id="enginePirateModeToggle" type="checkbox" />
+          </label>
+          <p id="pirateModeStatus" class="helper"></p>
+        </article>
+
         <article class="engine-card legacy-global-project-control">
           <h3>AI Product Recognition</h3>
           <p class="helper">Engine-controlled by company for testing. AI may identify and suggest; company pricing rules remain authoritative.</p>

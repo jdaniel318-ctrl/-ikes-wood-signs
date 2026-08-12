@@ -1259,7 +1259,68 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if($('engineStorageDetail')) $('engineStorageDetail').textContent=`IndexedDB: ${indexedCount} order(s) • Local backup: ${localCount} order(s) • Merged view: ${merged.length} order(s).`;
   }
 
+
+  let pirateModeEnabled=false;
+
+  function applyPirateMode(enabled,{announce=false}={}){
+    pirateModeEnabled=!!enabled;
+    document.body.classList.toggle('dark-flag-pirate-mode',pirateModeEnabled);
+    if($('blackFlagPirateModeToggle')) $('blackFlagPirateModeToggle').checked=pirateModeEnabled;
+    if($('enginePirateModeToggle')) $('enginePirateModeToggle').checked=pirateModeEnabled;
+    if($('pirateModeStatus')) $('pirateModeStatus').textContent=pirateModeEnabled
+      ? 'Pirate Mode is ON for Dark Flag. Projects remain unchanged.'
+      : 'Pirate Mode is OFF. Dark Flag uses its standard professional entrance.';
+    const kicker=document.querySelector('#blackFlagEntryGate .bf-entry-kicker');
+    const sub=document.querySelector('#blackFlagEntryGate .bf-entry-sub');
+    const enter=$('blackFlagEntryUnlock');
+    if(kicker) kicker.textContent=pirateModeEnabled?'DARK FLAG • CAPTAIN’S ENTRY':'BLACK FLAG HARBOR';
+    if(sub) sub.textContent=pirateModeEnabled
+      ? 'Secure Engine command. Same locks, a little more salt in the air.'
+      : 'Secure project command, configuration and platform control.';
+    if(enter) enter.textContent=pirateModeEnabled?'BOARD DARK FLAG →':'ENTER BLACK FLAG →';
+    if(announce && $('pirateModeStatus')){
+      $('pirateModeStatus').textContent=pirateModeEnabled
+        ? 'Pirate Mode engaged. The Engine is unchanged beneath the deck.'
+        : 'Pirate Mode secured. Standard Dark Flag presentation restored.';
+    }
+  }
+
+  async function loadPirateMode(){
+    try{
+      const saved=await getSetting('darkFlagPirateMode');
+      pirateModeEnabled=saved?.value===true;
+    }catch(_){
+      pirateModeEnabled=false;
+    }
+    applyPirateMode(pirateModeEnabled);
+  }
+
+  async function setPirateMode(enabled){
+    applyPirateMode(enabled,{announce:true});
+    try{ await setSetting('darkFlagPirateMode',pirateModeEnabled); }
+    catch(err){ console.warn('Pirate Mode setting could not be saved',err); }
+  }
+
+  function maybeShowDarkFlagTreasure(){
+    if(!pirateModeEnabled)return;
+    // Rare, harmless Engine-only easter egg. Never affects routing, data or security.
+    if(Math.random()<0.12){
+      const foot=document.querySelector('#blackFlagEntryGate .bf-entry-foot');
+      if(!foot)return;
+      const normal=foot.textContent;
+      const finds=[
+        'Treasure found: a clean wake and a steady compass.',
+        'A small chest rattles below deck. Nothing mission-critical inside.',
+        'Good seamanship detected. The charts remain yours.',
+        'Hidden treasure: one less loose line in the Engine.'
+      ];
+      foot.textContent=finds[Math.floor(Math.random()*finds.length)];
+      setTimeout(()=>{ if(foot) foot.textContent=normal; },6500);
+    }
+  }
+
   function populateEngineSettings(){
+    applyPirateMode(pirateModeEnabled);
     renderProjectCommand();
     renderCompanyCommand();
     renderCompanyFleet();
@@ -2577,6 +2638,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
 
   function bindEvents(){
+    $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
+    $('enginePirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
+
     bindProjectAssetEditor();
     bindProjectTemplateShells();
     $$('.next').forEach(b=>b.addEventListener('click',()=>{
@@ -2848,6 +2912,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   async function init(){
+    await loadPirateMode();
     db=await openDb();
     await loadFeatureSettings();
     await loadBusinessConfig();

@@ -498,3 +498,16 @@ Black Flag Admin Theme Engine correction.
 - Universal status semantics remain Black Flag-wide: New red, In Production orange, Ready gold, Completed green.
 - The bottom status control remains the original native selectable dropdown.
 - The word `Status` is assigned its workflow color directly from the current status, preventing project branding CSS from overriding it.
+
+
+## v2.9.13 — HIDDEN TREASURE
+Final Dark Flag appearance update.
+
+- Adds an Engine-owned `Pirate Mode` setting.
+- Pirate Mode is available both on the Dark Flag Engine PIN screen and in `Engine Settings → Appearance`; both switches control the same persistent setting.
+- Standard professional mode remains the default.
+- Pirate Mode changes only Dark Flag Engine entrance presentation/copy.
+- Project customer screens, project admin screens, IKE/MUG/BBS branding, project data, routing, permissions and security are untouched.
+- Engine PIN behavior is unchanged.
+- Adds rare, harmless Dark Flag-only treasure messages when Pirate Mode is enabled.
+- Retains the v2.9.12 Fleet Livery Black Flag admin-theme separation architecture.
