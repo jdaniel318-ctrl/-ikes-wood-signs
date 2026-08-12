@@ -2326,3 +2326,155 @@ body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-foot{
 }
 
 /* Hard boundary: Pirate Mode has no selectors for project customer/admin shells. */
+
+
+/* v2.9.15 — COVE COMMAND
+   Pirate Mode now transforms Dark Flag Engine command surfaces as well as the PIN gate.
+   No selectors target project customer shells, project admin pages, or project PIN gates. */
+
+.dark-flag-cove-banner{display:none}
+
+.engine-pirate-toggle-row{
+  margin-top:12px;padding:12px 13px;border:1px solid #d7ddd9;border-radius:13px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff
+}
+.engine-pirate-toggle-row strong{display:block}
+.engine-pirate-toggle-row small{display:block;margin-top:3px;color:#667477;font-size:11px}
+
+/* Dark timber command deck */
+body.dark-flag-pirate-mode .engine-shell,
+body.dark-flag-pirate-mode #enginePanel,
+body.dark-flag-pirate-mode .engine-page{
+  background:
+    linear-gradient(180deg,rgba(5,12,13,.25),rgba(5,12,13,.5)),
+    repeating-linear-gradient(90deg,#18201d 0 58px,#1e2823 59px 116px)!important;
+  color:#eadbb8!important;
+}
+
+/* Black Flag masthead inspired by the approved concept art. */
+body.dark-flag-pirate-mode .dark-flag-cove-banner{
+  display:flex;align-items:center;gap:17px;
+  margin:0 0 17px;padding:16px 19px;
+  border:1px solid #9b7536;border-radius:14px;
+  background:
+    radial-gradient(circle at 86% 18%,rgba(217,156,62,.20),transparent 18%),
+    linear-gradient(180deg,#17150f,#0c1717);
+  box-shadow:0 13px 30px #0007,inset 0 0 0 1px #e5bd6814;
+  color:#ead7a8;
+}
+body.dark-flag-pirate-mode .cove-crest{
+  width:58px;height:58px;display:grid;place-items:center;flex:0 0 auto;
+  border-radius:50%;border:2px solid #bd9148;background:#080c0c;
+  color:#d7ad62;font-size:29px;box-shadow:0 5px 15px #0008
+}
+body.dark-flag-pirate-mode .cove-banner-copy{flex:1}
+body.dark-flag-pirate-mode .cove-kicker{
+  color:#b68b45;font:900 9px/1.2 Georgia,serif;letter-spacing:2.8px
+}
+body.dark-flag-pirate-mode .cove-title{
+  margin-top:2px;color:#f0dfb7;font:900 27px/1 Georgia,serif;letter-spacing:1.4px;
+  text-shadow:0 2px 0 #000
+}
+body.dark-flag-pirate-mode .cove-motto{
+  margin-top:6px;color:#bca878;font-size:9px;font-weight:900;letter-spacing:1.15px
+}
+body.dark-flag-pirate-mode .cove-compass{
+  color:#c59b51;font-size:34px;text-shadow:0 0 18px #d9a74c55
+}
+
+/* Engine cards become brass-edged command instruments. */
+body.dark-flag-pirate-mode .engine-card,
+body.dark-flag-pirate-mode .project-command-card,
+body.dark-flag-pirate-mode .engine-stat-card{
+  background:
+    linear-gradient(180deg,rgba(24,23,18,.98),rgba(13,20,19,.98))!important;
+  border-color:#745b32!important;
+  color:#e8d8b4!important;
+  box-shadow:0 8px 20px #0005,inset 0 0 0 1px #d7ad5b0c!important;
+}
+body.dark-flag-pirate-mode .engine-card h2,
+body.dark-flag-pirate-mode .engine-card h3,
+body.dark-flag-pirate-mode .project-command-card h2,
+body.dark-flag-pirate-mode .project-command-card h3{
+  color:#ecd9aa!important;
+  font-family:Georgia,serif!important;
+}
+body.dark-flag-pirate-mode .engine-card .helper,
+body.dark-flag-pirate-mode .engine-card small,
+body.dark-flag-pirate-mode .project-command-card .helper{
+  color:#aa9e82!important
+}
+
+/* Controls retain exact behavior; presentation becomes brass/naval. */
+body.dark-flag-pirate-mode .engine-card button,
+body.dark-flag-pirate-mode .project-command-card button{
+  border-color:#72572d!important;
+}
+body.dark-flag-pirate-mode .engine-card input,
+body.dark-flag-pirate-mode .engine-card select,
+body.dark-flag-pirate-mode .project-command-card input,
+body.dark-flag-pirate-mode .project-command-card select{
+  background:#0a1010!important;color:#e9d6aa!important;border-color:#665232!important
+}
+body.dark-flag-pirate-mode .engine-pirate-toggle-row{
+  background:#0c1211!important;border-color:#8d6a31!important;color:#ead8ae!important
+}
+body.dark-flag-pirate-mode .engine-pirate-toggle-row small{color:#aa9b7c!important}
+body.dark-flag-pirate-mode .engine-pirate-toggle-row .bf-switch input:checked + .bf-switch-slider{
+  background:#b78b3e!important
+}
+
+/* Dark Flag navigation gets the command-deck treatment. */
+body.dark-flag-pirate-mode .engine-nav,
+body.dark-flag-pirate-mode .engine-sidebar,
+body.dark-flag-pirate-mode .black-flag-sidebar{
+  background:linear-gradient(180deg,#090d0d,#15140f)!important;
+  border-color:#765b31!important
+}
+body.dark-flag-pirate-mode .engine-nav button,
+body.dark-flag-pirate-mode .engine-sidebar button,
+body.dark-flag-pirate-mode .black-flag-sidebar button{
+  color:#d9c69a!important
+}
+body.dark-flag-pirate-mode .engine-nav button.active,
+body.dark-flag-pirate-mode .engine-sidebar button.active,
+body.dark-flag-pirate-mode .black-flag-sidebar button.active{
+  background:#342918!important;color:#f1d99d!important;border-color:#a47c37!important
+}
+
+/* Project cards remain identifiable by their own brand; only the surrounding Dark Flag frame changes. */
+body.dark-flag-pirate-mode .engine-project-card,
+body.dark-flag-pirate-mode .project-command-project{
+  background:linear-gradient(180deg,#171a17,#0d1413)!important;
+  border-color:#6d5836!important;
+  box-shadow:0 8px 18px #0005!important
+}
+body.dark-flag-pirate-mode .engine-project-card::before,
+body.dark-flag-pirate-mode .project-command-project::before{
+  content:"CREW BERTH";display:block;margin-bottom:5px;
+  color:#967642;font:900 7px Georgia,serif;letter-spacing:1.5px
+}
+
+/* Small atmospheric details, no functional overlays. */
+body.dark-flag-pirate-mode .engine-shell::before,
+body.dark-flag-pirate-mode #enginePanel::before{
+  content:"⚓";
+  position:fixed;right:2.5vw;bottom:2vh;z-index:0;
+  font-size:min(10vw,110px);color:#c89a4710;pointer-events:none;transform:rotate(8deg)
+}
+body.dark-flag-pirate-mode .engine-shell::after,
+body.dark-flag-pirate-mode #enginePanel::after{
+  content:"DARK FLAG • ONE ENGINE • MANY CREWS • TOTAL SEPARATION";
+  position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:0;
+  color:#b18a482b;font:900 8px Georgia,serif;letter-spacing:2px;
+  white-space:nowrap;pointer-events:none
+}
+
+/* Explicit bulkhead: project surfaces do not inherit the Engine pirate livery. */
+body.dark-flag-pirate-mode .project-admin-page,
+body.dark-flag-pirate-mode .mugs-shell,
+body.dark-flag-pirate-mode .flowers-shell,
+body.dark-flag-pirate-mode #customerApp,
+body.dark-flag-pirate-mode .project-admin-gate{
+  /* Project-owned styling remains controlled by its existing template/theme rules. */
+}

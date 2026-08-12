@@ -1268,8 +1268,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if($('blackFlagPirateModeToggle')) $('blackFlagPirateModeToggle').checked=pirateModeEnabled;
     if($('enginePirateModeToggle')) $('enginePirateModeToggle').checked=pirateModeEnabled;
     if($('pirateModeStatus')) $('pirateModeStatus').textContent=pirateModeEnabled
-      ? 'Pirate Mode is ON for Dark Flag. Projects remain unchanged.'
-      : 'Pirate Mode is OFF. Dark Flag uses its standard professional entrance.';
+      ? 'Pirate Mode is ON across Dark Flag command surfaces. Projects remain unchanged.'
+      : 'Pirate Mode is OFF. Dark Flag uses its standard professional command appearance.';
     const kicker=document.querySelector('#blackFlagEntryGate .bf-entry-kicker');
     const sub=document.querySelector('#blackFlagEntryGate .bf-entry-sub');
     const enter=$('blackFlagEntryUnlock');
@@ -1280,7 +1280,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if(enter) enter.textContent=pirateModeEnabled?'BOARD DARK FLAG →':'ENTER BLACK FLAG →';
     if(announce && $('pirateModeStatus')){
       $('pirateModeStatus').textContent=pirateModeEnabled
-        ? 'Pirate Mode engaged. The Engine is unchanged beneath the deck.'
+        ? 'Pirate Mode engaged across Dark Flag. The Engine logic is unchanged beneath the deck.'
         : 'Pirate Mode secured. Standard Dark Flag presentation restored.';
     }
   }

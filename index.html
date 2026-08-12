@@ -460,6 +460,17 @@
       </div>
 
       
+      
+      <section class="dark-flag-cove-banner" aria-hidden="true">
+        <div class="cove-crest">☠</div>
+        <div class="cove-banner-copy">
+          <div class="cove-kicker">DARK FLAG</div>
+          <div class="cove-title">COVE ENGINE</div>
+          <div class="cove-motto">ONE ENGINE • MANY CREWS • TOTAL SEPARATION</div>
+        </div>
+        <div class="cove-compass">✦</div>
+      </section>
+
       <section class="project-command-section">
         <div class="command-section-title">
           <div>
@@ -509,10 +520,13 @@
           <div class="engine-card-kicker">DARK FLAG</div>
           <h3>Appearance</h3>
           <p class="helper">Controls Dark Flag presentation only. Project branding, data, permissions and security are never changed by this setting.</p>
-          <label class="admin-toggle-row compact-toggle">
-            <span><strong>Pirate Mode</strong><small>Add nautical personality to the Dark Flag Engine entrance.</small></span>
-            <input id="enginePirateModeToggle" type="checkbox" />
-          </label>
+          <div class="engine-pirate-toggle-row">
+            <span><strong>Pirate Mode</strong><small>Transform Dark Flag command surfaces. Project shells remain untouched.</small></span>
+            <label class="bf-switch" aria-label="Toggle Pirate Mode in Dark Flag Engine">
+              <input id="enginePirateModeToggle" type="checkbox" />
+              <span class="bf-switch-slider"></span>
+            </label>
+          </div>
           <p id="pirateModeStatus" class="helper"></p>
         </article>
 

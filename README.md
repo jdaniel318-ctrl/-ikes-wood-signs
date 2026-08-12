@@ -533,3 +533,17 @@ Project-isolation repair plus Pirate Mode refinement.
 - Treasure easter eggs remain harmless and Engine-only.
 
 Core rule: different brands, different data, same Engine.
+
+
+## v2.9.15 — COVE COMMAND
+Pirate Mode becomes a full Dark Flag appearance layer.
+
+- Uses the previously approved pirate dashboard concept art as direct visual inspiration for the working UI.
+- Pirate Mode now transforms both the Dark Flag PIN entrance and the Dark Flag Engine command surfaces.
+- Adds a Black Flag / Cove Engine masthead, dark timber command-deck surfaces, brass/gold edging, restrained skull/anchor/compass atmosphere, and stronger Dark Flag language.
+- Engine cards, navigation, controls and project-command framing receive the Pirate Mode treatment without changing their behavior.
+- The Engine Appearance Pirate Mode control now uses the same smooth switch design as the PIN-screen toggle.
+- Pirate Mode remains one persistent Engine-owned setting.
+- Project customer shells, Project Admin pages, Project Admin PIN gates, project branding, project data and security remain outside the Pirate Mode styling boundary.
+- Keeps v2.9.14 Sealed Bulkheads project-aware Admin PIN gate intact.
+- Core rule remains: different brands, different data, same Engine.
