@@ -2695,3 +2695,58 @@ body.dark-flag-pirate-mode .graphics-library-item:focus{
 body.dark-flag-pirate-mode .graphics-library-item .graphics-slot-state b{
   color:#b89554!important;
 }
+
+
+/* v2.9.21 — FLYING COLORS
+   Direct state-controlled Marketing UX + logo-first project identity. */
+#graphicsFocusedEditor.hidden{display:none!important}
+#graphicsFocusedEditor{display:none}
+#graphicsFocusedEditor [data-asset-slot-card]{display:none}
+#graphicsFocusedEditor [data-asset-slot-card].focused-active-slot{display:flex!important;flex-direction:column!important}
+
+/* Project identity favors the project's saved logo. Three-letter code is only the fallback. */
+.project-brand-badge{
+  width:76px;height:64px;display:grid;place-items:center;overflow:hidden;
+  border-radius:14px;border:1px solid #d4ddd8;background:#eef2ef;
+  box-shadow:0 4px 12px #00000010;
+}
+.project-brand-badge img{width:100%;height:100%;object-fit:contain;background:#fff}
+.project-brand-badge span{font:900 17px Georgia,serif;letter-spacing:.8px;color:#173742}
+.project-card .project-card-head{align-items:flex-start}
+.project-card h4{margin-top:12px}
+
+.project-engine-identity{display:flex;align-items:center;gap:14px}
+.pec-brand-mark{
+  width:76px;height:76px;border-radius:17px;display:grid;place-items:center;overflow:hidden;
+  border:1px solid #cdd8d2;background:#eef2ef;color:#173742;
+  font:900 18px Georgia,serif;flex:0 0 auto;
+}
+.pec-brand-mark img{width:100%;height:100%;object-fit:contain;background:#fff}
+.pec-brand-mark.has-project-logo #pecBrandCode{display:none}
+
+.marketing-project-seal{
+  min-width:145px!important;padding:9px 11px!important;
+}
+.marketing-project-brand-visual{
+  width:112px;height:78px;margin:0 auto 6px;display:grid;place-items:center;overflow:hidden;
+  border-radius:11px;background:#ffffff18;border:1px solid #ffffff35;
+}
+.marketing-project-brand-visual img{width:100%;height:100%;object-fit:contain;background:#fff}
+.marketing-project-brand-visual span{font:900 19px Georgia,serif;letter-spacing:1px}
+
+/* Pirate Mode keeps project logos recognizable while the Engine frame stays Dark Flag. */
+body.dark-flag-pirate-mode .project-brand-badge,
+body.dark-flag-pirate-mode .pec-brand-mark{
+  background:#0e1513;border-color:#745a31;color:#d6ac5d;
+}
+body.dark-flag-pirate-mode .project-brand-badge img,
+body.dark-flag-pirate-mode .pec-brand-mark img,
+body.dark-flag-pirate-mode .marketing-project-brand-visual img{
+  background:#fff;
+}
+body.dark-flag-pirate-mode .project-brand-badge span,
+body.dark-flag-pirate-mode .pec-brand-mark span{color:#d6ac5d!important}
+@media(max-width:760px){
+  .project-brand-badge{width:66px;height:56px}
+  .pec-brand-mark{width:64px;height:64px}
+}

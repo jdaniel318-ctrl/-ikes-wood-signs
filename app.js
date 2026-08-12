@@ -521,6 +521,33 @@
       ledgerRevenue:ledger.reduce((s,x)=>s+(Number(x.revenue)||0),0)
     };
   }
+
+  async function projectBrandVisual(p){
+    const code=String(p?.projectCode||p?.orderPrefix||'PRJ').toUpperCase().slice(0,3);
+    let logo='';
+    try{logo=(await readProjectAssets(p.id))?.projectLogo||'';}catch(_){}
+    return {code,logo};
+  }
+
+  async function applyProjectControlBrand(p){
+    const visual=await projectBrandVisual(p);
+    if(engineActiveProjectId!==p.id)return;
+    const mark=$('pecBrandMark'), img=$('pecBrandLogo'), code=$('pecBrandCode');
+    if(code) code.textContent=visual.code;
+    if(img){
+      if(visual.logo){
+        img.src=visual.logo;
+        img.alt=`${p.name} logo`;
+        img.classList.remove('hidden');
+        mark?.classList.add('has-project-logo');
+      }else{
+        img.removeAttribute('src');
+        img.classList.add('hidden');
+        mark?.classList.remove('has-project-logo');
+      }
+    }
+  }
+
   async function renderProjectCommand(){
     const box=$('projectCommandCards');if(!box)return;
     const list=projects();
@@ -529,9 +556,12 @@
     const cards=[];
     for(const p of list){
       const s=await projectStats(p);
+      const brandVisual=await projectBrandVisual(p);
       cards.push(`<article class="project-card">
         <div class="project-card-head">
-          <span class="project-mark" title="${escapeHtml(p.projectCode||'')}">${escapeHtml((p.projectCode||p.name||'?').slice(0,3).toUpperCase())}</span>
+          <div class="project-brand-badge ${brandVisual.logo?'has-logo':'code-only'}" title="${escapeHtml(p.name)}">
+            ${brandVisual.logo?`<img src="${brandVisual.logo}" alt="${escapeHtml(p.name)} logo">`:`<span>${escapeHtml(brandVisual.code)}</span>`}
+          </div>
           <label class="project-publish-toggle"><input type="checkbox" data-project-publish="${escapeHtml(p.id)}" ${p.publish?.status==='live'?'checked':''}><span>${p.publish?.status==='live'?'PUBLISHED':'PRIVATE'}</span></label>
         </div>
         <h4>${escapeHtml(p.name)}</h4>
@@ -571,8 +601,8 @@
           <h3>${escapeHtml(p.name)}</h3>
           <p>Brand identity and customer-facing graphics for this project only.</p>
         </div>
-        <div class="marketing-project-seal">
-          <strong>${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')}</strong>
+        <div id="marketingProjectBrandSeal" class="marketing-project-seal">
+          <div id="marketingProjectBrandVisual" class="marketing-project-brand-visual"><span>${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</span></div>
           <span>SEALED PROJECT</span>
         </div>
       </div>
@@ -798,6 +828,15 @@
       if(engineActiveProjectId!==p.id)return;
       bindProjectAssetEditor();
       await loadProjectAssetsEditor();
+      const visual=await projectBrandVisual(p);
+      const brandBox=$('marketingProjectBrandVisual');
+      if(brandBox){
+        brandBox.innerHTML=visual.logo
+          ? `<img src="${visual.logo}" alt="${escapeHtml(p.name)} logo">`
+          : `<span>${escapeHtml(visual.code)}</span>`;
+        brandBox.classList.toggle('has-logo',!!visual.logo);
+      }
+      closeMarketingGraphicSlot();
     }
     if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
     if(tab==='experience') $('saveExperienceTab').onclick=async()=>{p.customerExperience={photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;await saveCompanies();logActivity(p.id,'Customer experience updated');};
@@ -875,6 +914,7 @@
     engineActiveProjectId=id;
     $('pecTitle').textContent=p.name;
     $('pecSubtitle').textContent='Project-specific controls. Black Flag remains unlocked only while you stay in the Engine.';
+    await applyProjectControlBrand(p);
     $('projectEngineControl').classList.remove('hidden');
     await renderProjectTab(id,'overview');
     window.scrollTo({top:$('projectEngineControl').offsetTop-20,behavior:'smooth'});
@@ -1108,15 +1148,24 @@
     const p=graphicsProject(); if(!p)return;
     const allowed=graphicSlotsForProject(p); if(!allowed.includes(slot))return;
     marketingActiveGraphicSlot=slot;
-    const editor=$('graphicsFocusedEditor'); if(editor)editor.classList.remove('hidden');
+    const editor=$('graphicsFocusedEditor');
+    if(editor){editor.classList.remove('hidden');editor.style.display='block';}
     if($('graphicsFocusedTitle')) $('graphicsFocusedTitle').textContent=GRAPHIC_SLOT_LABELS[slot]||'Project Graphic';
-    $$('[data-asset-slot-card]').forEach(card=>card.classList.toggle('focused-active-slot',card.dataset.assetSlotCard===slot));
+    $$('[data-asset-slot-card]').forEach(card=>{
+      const active=card.dataset.assetSlotCard===slot;
+      card.classList.toggle('focused-active-slot',active);
+      card.style.display=active?'flex':'none';
+    });
     editor?.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
   function closeMarketingGraphicSlot(){
     marketingActiveGraphicSlot=null;
-    $('graphicsFocusedEditor')?.classList.add('hidden');
-    $$('[data-asset-slot-card]').forEach(card=>card.classList.remove('focused-active-slot'));
+    const editor=$('graphicsFocusedEditor');
+    if(editor){editor.classList.add('hidden');editor.style.display='none';}
+    $$('[data-asset-slot-card]').forEach(card=>{
+      card.classList.remove('focused-active-slot');
+      card.style.display='none';
+    });
     $('graphicsLibrary')?.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 
@@ -1181,6 +1230,8 @@
       }
       if($('assetSaveMessage')) $('assetSaveMessage').textContent=`Saved to ${p.name} only.`;
       logActivity(requestedProjectId,'Project graphics saved',`${savedCount} slot${savedCount===1?'':'s'} updated`);
+      await applyProjectControlBrand(p);
+      await renderProjectCommand();
     }else if($('assetSaveMessage')){
       $('assetSaveMessage').textContent='No new graphics selected.';
     }

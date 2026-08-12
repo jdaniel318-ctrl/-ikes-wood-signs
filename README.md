@@ -601,3 +601,21 @@ Focused Quarters visibility correction.
 - Save/Clear continue to operate on the selected asset while project isolation remains unchanged.
 - No changes were made to the tested IndexedDB project namespace architecture.
 - Pirate Mode remains fully preserved and uses the same focused-editor component with Dark Flag styling.
+
+
+## v2.9.21 — FLYING COLORS
+Dark Flag UX and project-identity refinement.
+
+- Fixes the Marketing & Brand editor state directly in JavaScript instead of relying only on CSS visibility.
+- Marketing & Brand now opens with the compact four-card Graphics Library only.
+- Selecting a card explicitly shows one editor and explicitly hides all other asset editors.
+- Back to Library directly closes the editor and hides every upload panel.
+- Preserves the tested project graphics namespace/IndexedDB isolation architecture.
+- Promotes each project's saved Project Logo throughout the Engine:
+  - Project Command cards
+  - Project Control Center header
+  - Marketing & Brand project seal
+- Three-letter project codes remain as a clean fallback only when a project has no saved logo.
+- Future projects automatically receive the same logo-first behavior without project-specific code.
+- Saving a new project logo refreshes Engine project branding immediately.
+- Pirate Mode remains fully preserved; project logos stay recognizable inside the Dark Flag presentation.
