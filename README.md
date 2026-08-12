@@ -309,3 +309,10 @@ Built directly from v2.8.6.
 - Project Admin still auto-locks and returns to ordering after 15 minutes of inactivity.
 - Engine PIN fields are cleared on open, failed attempt, successful entry, close, and Engine lock.
 - PIN field autocomplete behavior remains based on the verified working v2.8.x branch; no strong-password markup was introduced.
+
+
+## v2.8.8.1 — STRUCTURE REPAIR
+- Repairs malformed Project Admin HTML introduced in v2.8.8.
+- Removes a duplicated timeout sentence and extra closing `div`.
+- Restores `enginePanel`, Project Orders, Ledger, and protected screens inside the main application container.
+- No PIN/authentication logic or feature behavior was changed.

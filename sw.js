@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-8-8-admin-customer-repair';
+const CACHE='workshop-engine-v2-8-8-1-structure-repair';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{
