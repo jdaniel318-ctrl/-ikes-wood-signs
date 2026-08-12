@@ -1016,15 +1016,33 @@
   }
   async function applyProjectAssetSlots(p){
     if(!p)return;
-    const assets=await readProjectAssets(p.id);
+    const requestedProjectId=p.id;
+    const assets=await readProjectAssets(requestedProjectId);
+    // Never apply an asset after project context changes. Project branding is namespace-owned.
+    if(activeProjectId && activeProjectId!==requestedProjectId)return;
+
+    const customerLogo=$('customerProjectLogo');
+    const customerLogoWrap=$('customerProjectLogoWrap');
+    if(customerLogo && customerLogoWrap){
+      if(assets.projectLogo){
+        customerLogo.src=assets.projectLogo;
+        customerLogo.alt=`${p.name} logo`;
+        customerLogoWrap.classList.remove('hidden');
+      }else{
+        customerLogo.removeAttribute('src');
+        customerLogoWrap.classList.add('hidden');
+      }
+    }
 
     if(p.id==='mugshot-after-dark'){
       setSlotImage('mugsProjectLogoImg',assets.projectLogo);
+      $('mugsProjectLogoImg')?.closest('.mugs-shell-mark-wrap')?.classList.toggle('has-project-logo',!!assets.projectLogo);
       setSlotImage('mugsHeroGraphicImg',assets.heroGraphic);
       const shell=$('mugsCustomerShell');
       if(shell) shell.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
     }else if(p.id==='beccas-bloom-shop' || p.projectTheme==='flowers'){
       setSlotImage('flowersProjectLogoImg',assets.projectLogo);
+      $('flowersProjectLogoImg')?.closest('.mugs-shell-mark-wrap')?.classList.toggle('has-project-logo',!!assets.projectLogo);
       setSlotImage('flowersHeroGraphicImg',assets.heroGraphic);
       const shell=$('flowersCustomerShell');
       if(shell) shell.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';

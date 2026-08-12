@@ -619,3 +619,10 @@ Dark Flag UX and project-identity refinement.
 - Future projects automatically receive the same logo-first behavior without project-specific code.
 - Saving a new project logo refreshes Engine project branding immediately.
 - Pirate Mode remains fully preserved; project logos stay recognizable inside the Dark Flag presentation.
+
+## v2.9.22 — Raise the Colors
+- Saved project logos now flow into the customer-facing project shell from that project's sealed graphics namespace.
+- MUG/BBS customer headers suppress letter fallbacks whenever a saved logo is available.
+- Dark Flag project cards and Project Control Center use larger, logo-first identity treatment.
+- Project-code initials remain fallbacks when no saved logo exists.
+- Pirate Mode behavior and the v2.9.21 Graphics Library interaction are preserved.

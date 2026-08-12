@@ -2750,3 +2750,40 @@ body.dark-flag-pirate-mode .pec-brand-mark span{color:#d6ac5d!important}
   .project-brand-badge{width:66px;height:56px}
   .pec-brand-mark{width:64px;height:64px}
 }
+
+/* v2.9.22 — RAISE THE COLORS
+   Saved project branding now carries into the customer shell and leads Engine identity. */
+.customer-project-logo-wrap{
+  width:92px;height:76px;flex:0 0 92px;display:grid;place-items:center;overflow:hidden;
+  border-radius:16px;background:#fff;border:1px solid #ffffffa8;box-shadow:0 5px 16px #0002;
+}
+.customer-project-logo-wrap.hidden{display:none!important}
+.customer-project-logo-wrap img{width:100%;height:100%;object-fit:contain;background:#fff}
+
+/* Customer project shells: the saved project mark replaces the letter fallback. */
+.mugs-shell-mark-wrap{position:relative;width:72px;height:66px;display:grid;place-items:center;flex:0 0 72px}
+.mugs-shell-mark-wrap .project-logo-image{
+  width:72px;height:66px;border-radius:14px;object-fit:contain;background:#fff;border:1px solid #ffffff35;
+  position:relative;z-index:2;
+}
+.mugs-shell-mark-wrap.has-project-logo .mugs-shell-mark{display:none!important}
+.mugs-shell-mark-wrap:not(.has-project-logo) .project-logo-image{display:none!important}
+
+/* Logo-first Engine cards: brand is a project flag, not a tiny initial badge. */
+.project-brand-badge{width:108px;height:82px;border-radius:17px}
+.project-brand-badge img{padding:3px}
+.project-card-head{min-height:84px}
+.project-card h4{font-size:25px;margin-top:13px}
+.pec-brand-mark{width:96px;height:88px;border-radius:19px}
+.pec-brand-mark img{padding:3px}
+.project-engine-identity{gap:17px}
+
+body.dark-flag-pirate-mode .customer-project-logo-wrap,
+body.dark-flag-pirate-mode .mugs-shell-mark-wrap .project-logo-image{
+  border-color:#8b6a34;box-shadow:0 0 0 1px #d1a55233,0 6px 18px #0006;
+}
+@media(max-width:760px){
+  .customer-project-logo-wrap{width:72px;height:62px;flex-basis:72px}
+  .project-brand-badge{width:92px;height:72px}
+  .pec-brand-mark{width:82px;height:76px}
+}
