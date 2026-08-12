@@ -287,3 +287,16 @@ Built directly from verified v2.8.5 branch.
 - Restores approved customer preview images to Project Admin / Orders cards; falls back to the customer photo only when no approved preview exists.
 - Tightens Black Flag project permissions so order-status access depends on Orders access, and cost/profit access depends on Ledger access.
 - Does not alter Black Flag login routing or the working PIN field behavior.
+
+
+## v2.8.7 — CUSTOMER HISTORY
+Built directly from v2.8.6.
+
+- Keeps the existing project header unchanged.
+- Expands Black Flag's optional per-project Customer History into a retained customer directory.
+- Tracks customer name, phone, email, order date, brief purchase description, purchase count, and amount.
+- Identifies repeat customers across multiple projects when the same email/phone/name key is recognized.
+- Customer History remains OFF unless Black Flag enables it for that project.
+- Enabling the feature can rebuild the directory from orders currently stored on the device.
+- Disabling it removes that project's retained customer directory.
+- No changes to Black Flag login/PIN routing.

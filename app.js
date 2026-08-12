@@ -50,6 +50,97 @@
   let engineActiveProjectId = null;
   const PROJECT_ACTIVITY_KEY='blackFlagProjectActivityV1';
   const PROJECT_LEDGER_KEY='blackFlagProjectLedgersV1';
+  const PROJECT_CUSTOMERS_KEY='blackFlagProjectCustomersV1';
+
+  function readCustomerDirectory(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(PROJECT_CUSTOMERS_KEY)||'{}');
+      return raw && typeof raw==='object' ? raw : {};
+    }catch(_){ return {}; }
+  }
+
+  function writeCustomerDirectory(v){
+    localStorage.setItem(PROJECT_CUSTOMERS_KEY,JSON.stringify(v||{}));
+  }
+
+  function normalizeCustomerKey(o){
+    const email=String(o.customerEmail||'').trim().toLowerCase();
+    const phone=String(o.customerPhone||'').replace(/\D/g,'');
+    const name=String(o.customerName||'').trim().toLowerCase();
+    if(email) return 'email:'+email;
+    if(phone) return 'phone:'+phone;
+    if(name) return 'name:'+name;
+    return '';
+  }
+
+  function briefPurchaseDescription(o){
+    const parts=[];
+    if(o.wording) parts.push(o.wording);
+    if(o.business?.name) parts.push(o.business.name);
+    return (parts.join(' • ')||'Custom order').slice(0,120);
+  }
+
+  function captureCustomerFromOrder(order){
+    const projectId=order.projectId||'ikes-wood-signs';
+    const p=projectById(projectId);
+    if(!p?.customerHistory?.enabled) return;
+
+    const key=normalizeCustomerKey(order);
+    if(!key) return;
+
+    const directory=readCustomerDirectory();
+    directory[projectId]=directory[projectId]||{};
+    const existing=directory[projectId][key]||{
+      customerKey:key,
+      name:order.customerName||'',
+      phone:order.customerPhone||'',
+      email:order.customerEmail||'',
+      firstOrderDate:order.createdAt||new Date().toISOString(),
+      lastOrderDate:order.createdAt||new Date().toISOString(),
+      orderCount:0,
+      purchases:[]
+    };
+
+    existing.name=order.customerName||existing.name||'';
+    existing.phone=order.customerPhone||existing.phone||'';
+    existing.email=order.customerEmail||existing.email||'';
+    existing.lastOrderDate=order.createdAt||new Date().toISOString();
+
+    if(!existing.purchases.some(x=>x.orderId===order.id)){
+      existing.orderCount=(existing.orderCount||0)+1;
+      existing.purchases.unshift({
+        orderId:order.id,
+        date:order.createdAt||new Date().toISOString(),
+        description:briefPurchaseDescription(order),
+        amount:Number(order.price)||0
+      });
+      existing.purchases=existing.purchases.slice(0,50);
+    }
+
+    directory[projectId][key]=existing;
+    writeCustomerDirectory(directory);
+  }
+
+  function rebuildCustomerDirectoryForProject(projectId, orders){
+    const p=projectById(projectId);
+    if(!p?.customerHistory?.enabled) return;
+    const directory=readCustomerDirectory();
+    directory[projectId]={};
+    writeCustomerDirectory(directory);
+    (orders||[]).filter(o=>(o.projectId||'ikes-wood-signs')===projectId).forEach(captureCustomerFromOrder);
+  }
+
+  function engineWideCustomerMatches(customerKey){
+    if(!customerKey) return [];
+    const directory=readCustomerDirectory();
+    const matches=[];
+    Object.entries(directory).forEach(([projectId,rows])=>{
+      const row=rows?.[customerKey];
+      if(row) matches.push({projectId,row});
+    });
+    return matches;
+  }
+
 
 
   const PIN_SECURITY_KEY='blackFlagPinSecurityV1';
@@ -413,18 +504,49 @@
     }
     if(tab==='customers'){
       const enabled=!!p.customerHistory?.enabled;
-      const orders=(window.__customerOrders||[]).filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
-      const groups={};
-      orders.forEach(o=>{
-        const key=(o.customerEmail||o.customerPhone||o.customerName||'').trim().toLowerCase(); if(!key)return;
-        groups[key]=groups[key]||{name:o.customerName||'',phone:o.customerPhone||'',email:o.customerEmail||'',orders:[]};
-        groups[key].orders.push(o);
-      });
-      const rows=Object.values(groups).sort((a,b)=>b.orders.length-a.orders.length);
-      return `<div class="pec-card"><h4>Customer History</h4>
-        <label class="admin-toggle-row compact-toggle"><span><strong>Retain customer history for this project</strong></span><input id="customerHistoryEnabled" type="checkbox" ${enabled?'checked':''}></label>
-        <button id="saveCustomerHistoryTab" class="primary-btn small">SAVE</button>
-        ${enabled?`<div class="customer-history-list">${rows.map(c=>`<div class="customer-history-row"><strong>${escapeHtml(c.name||'Customer')}</strong><span>${escapeHtml(c.phone)}</span><span>${escapeHtml(c.email)}</span><span>${c.orders.length} purchase${c.orders.length===1?'':'s'}</span><small>${escapeHtml((c.orders[0]?.wording||'Custom order').slice(0,70))}</small></div>`).join('')||'<p class="helper">No retained customers yet.</p>'}</div>`:'<p class="helper">Off for this project.</p>'}</div>`;
+      const directory=readCustomerDirectory();
+      const rows=Object.values(directory[p.id]||{}).sort((a,b)=>
+        String(b.lastOrderDate||'').localeCompare(String(a.lastOrderDate||''))
+      );
+
+      const directoryHtml=rows.map(c=>{
+        const matches=engineWideCustomerMatches(c.customerKey);
+        const repeatAcross=matches.reduce((s,m)=>s+(m.row.orderCount||0),0);
+        const projectCount=matches.length;
+        const latest=(c.purchases||[])[0];
+        return `<article class="customer-directory-card">
+          <div class="customer-directory-head">
+            <div>
+              <h4>${escapeHtml(c.name||'Customer')}</h4>
+              <span>${escapeHtml(c.phone||'')}</span>
+              <span>${escapeHtml(c.email||'')}</span>
+            </div>
+            <div class="repeat-customer-badge ${repeatAcross>1?'repeat':''}">
+              ${repeatAcross>1?'REPEAT CUSTOMER':'CUSTOMER'}
+            </div>
+          </div>
+          <div class="customer-directory-stats">
+            <span><strong>${c.orderCount||0}</strong> this project</span>
+            <span><strong>${repeatAcross}</strong> engine-wide orders</span>
+            <span><strong>${projectCount}</strong> project${projectCount===1?'':'s'}</span>
+          </div>
+          <div class="customer-last-purchase">
+            <span>Last purchase</span>
+            <strong>${latest?escapeHtml(latest.description):'—'}</strong>
+            <small>${latest?new Date(latest.date).toLocaleDateString():''}</small>
+          </div>
+        </article>`;
+      }).join('');
+
+      return `<div class="pec-card customer-history-engine">
+        <div class="pec-title-row">
+          <div><h4>Customer History</h4><p class="helper">Project customer directory and repeat-customer tracking.</p></div>
+          <label class="compact-switch"><input id="customerHistoryEnabled" type="checkbox" ${enabled?'checked':''}><span>${enabled?'ON':'OFF'}</span></label>
+        </div>
+        <button id="saveCustomerHistoryTab" class="primary-btn small">SAVE CUSTOMER HISTORY SETTING</button>
+        <button id="rebuildCustomerHistoryBtn" class="secondary-btn small ${enabled?'':'hidden'}">REBUILD FROM SAVED ORDERS</button>
+        ${enabled?`<div class="customer-directory-list">${directoryHtml||'<div class="empty">No retained customers yet.</div>'}</div>`:'<div class="empty">Customer History is off for this project.</div>'}
+      </div>`;
     }
     if(tab==='notifications'){
       const n=p.notifications||{customerConfirmationEmail:false};
@@ -486,8 +608,27 @@
       };
     }
     if(tab==='customers'){
-      window.__customerOrders=await getMergedOrders();
-      $('saveCustomerHistoryTab').onclick=async()=>{p.customerHistory={enabled:$('customerHistoryEnabled').checked};await saveCompanies();logActivity(p.id,'Customer history '+(p.customerHistory.enabled?'enabled':'disabled'));renderProjectTab(p.id,'customers');};
+      const savedOrders=await getMergedOrders();
+      $('saveCustomerHistoryTab').onclick=async()=>{
+        const next=$('customerHistoryEnabled').checked;
+        p.customerHistory={enabled:next};
+        await saveCompanies();
+        if(next) rebuildCustomerDirectoryForProject(p.id,savedOrders);
+        else{
+          const directory=readCustomerDirectory();
+          delete directory[p.id];
+          writeCustomerDirectory(directory);
+        }
+        logActivity(p.id,'Customer history '+(next?'enabled':'disabled'));
+        await renderProjectTab(p.id,'customers');
+      };
+      if($('rebuildCustomerHistoryBtn')){
+        $('rebuildCustomerHistoryBtn').onclick=async()=>{
+          rebuildCustomerDirectoryForProject(p.id,await getMergedOrders());
+          logActivity(p.id,'Customer history rebuilt');
+          await renderProjectTab(p.id,'customers');
+        };
+      }
     }
     if(tab==='notifications'){
       $('saveNotificationsTab').onclick=async()=>{
@@ -983,6 +1124,7 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
     state.approvedPreviewData=approvedPreviewData;
     const order={projectId:activeProjectId||'ikes-wood-signs',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
+    captureCustomerFromOrder(order);
     try{
       await put(STORE_ORDERS,order);
     }catch(err){
@@ -1763,6 +1905,14 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
     }
 
     const totalOrders=rows.reduce((s,r)=>s+r.orders,0);
+    const customerDirectory=readCustomerDirectory();
+    const globalCustomerKeys={};
+    Object.values(customerDirectory).forEach(projectRows=>{
+      Object.entries(projectRows||{}).forEach(([key,row])=>{
+        globalCustomerKeys[key]=(globalCustomerKeys[key]||0)+(row.orderCount||0);
+      });
+    });
+    const retainedRepeatCustomers=Object.values(globalCustomerKeys).filter(v=>v>1).length;
     const totalRevenue=rows.reduce((s,r)=>s+r.revenue,0);
     const totalCompleted=rows.reduce((s,r)=>s+r.completed,0);
 
@@ -1778,7 +1928,7 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
       <div><span>Orders</span><strong>${totalOrders}</strong></div>
       <div><span>Completed</span><strong>${totalCompleted}</strong></div>
       <div><span>Recorded Revenue</span><strong>$${totalRevenue.toFixed(0)}</strong></div>
-      <div><span>Repeat Customers</span><strong>${repeatAcrossEngine}</strong></div>
+      <div><span>Repeat Customers</span><strong>${retainedRepeatCustomers||repeatAcrossEngine}</strong></div>
     `;
 
     const table=$('captainsProjectTable');

@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-8-6-protected-controls';
+const CACHE='workshop-engine-v2-8-7-customer-history';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{
