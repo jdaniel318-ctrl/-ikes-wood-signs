@@ -1211,3 +1211,124 @@ body.project-admin-mode .app-shell{
   .project-admin-brandbar{margin:0 -16px 18px;padding:14px 16px;flex-direction:column;align-items:stretch}
   .project-admin-brandbar .admin-return-btn{min-width:0!important;width:100%!important}
 }
+
+/* v2.8.5 — Captain's Log analytics */
+.captains-log{
+  margin-top:28px;
+  padding:22px;
+  border-radius:28px;
+  background:linear-gradient(180deg,#f8f3e6,#fffdf8);
+  border:1px solid #ddcfb4;
+  box-shadow:0 8px 24px #17313a0d;
+}
+.captains-log-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:16px;
+  margin-bottom:14px;
+}
+.captains-log-head h3{
+  margin:3px 0 0;
+  font:900 29px Georgia,serif;
+  color:#173742;
+}
+.captains-log-badge{
+  padding:8px 12px;
+  border-radius:999px;
+  background:#173742;
+  color:#e7c96f;
+  font-size:9px;
+  font-weight:1000;
+  letter-spacing:1px;
+}
+.captains-log-kpis{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+.captains-log-kpis>div{
+  padding:14px;
+  border-radius:18px;
+  background:#173742;
+  color:#fff;
+}
+.captains-log-kpis span{
+  display:block;
+  color:#bed0d3;
+  font-size:9px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+.captains-log-kpis strong{
+  display:block;
+  margin-top:5px;
+  color:#e9cb74;
+  font-size:23px;
+}
+.captains-log-charts{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.captains-chart-card{
+  padding:16px;
+  border-radius:20px;
+  background:#fff;
+  border:1px solid #e2ddd2;
+}
+.chart-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.chart-heading h4{
+  margin:0;
+  font:900 18px Georgia,serif;
+  color:#173742;
+}
+.chart-heading span{
+  color:#7a817f;
+  font-size:9px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.captains-chart-card canvas{
+  width:100%;
+  height:230px;
+  display:block;
+  margin-top:6px;
+}
+.captains-project-table{
+  margin-top:14px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid #e2ddd2;
+  background:#fff;
+}
+.captains-project-row{
+  display:grid;
+  grid-template-columns:2fr repeat(4,1fr);
+  gap:10px;
+  padding:12px 14px;
+  border-top:1px solid #ece8df;
+  align-items:center;
+  font-size:12px;
+}
+.captains-project-row:first-child{border-top:0}
+.captains-project-row strong{color:#173742}
+.captains-project-row span{color:#667174}
+
+@media(max-width:900px){
+  .captains-log-kpis{grid-template-columns:repeat(2,1fr)}
+  .captains-log-charts{grid-template-columns:1fr}
+  .captains-project-row{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .captains-log-kpis{grid-template-columns:1fr}
+  .captains-log-head{align-items:flex-start;flex-direction:column}
+  .captains-project-row{grid-template-columns:1fr}
+}

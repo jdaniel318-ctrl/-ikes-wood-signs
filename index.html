@@ -358,15 +358,7 @@
         </div>
         <div class="command-access">ENGINE SECURE</div>
       </div>
-      <div class="engine-welcome">
-        <div class="welcome-mark">☠</div>
-        <div>
-          <strong>Welcome aboard Black Flag Harbor.</strong>
-          <span>Daily business controls stay upstairs. This area is for engine-wide company setup, diagnostics, AI policy, and reusable workflow controls.</span>
-        </div>
-      </div>
-
-      <div class="engine-health-strip" id="engineHealthStrip">
+<div class="engine-health-strip" id="engineHealthStrip">
         <div><span>Orders Aboard</span><strong id="engineOrderCount">—</strong></div>
         <div><span>Stranded Draft</span><strong id="engineDraftStatus">—</strong></div>
         <div><span>Cargo Hold</span><strong id="engineStorageStatus">—</strong></div>
@@ -414,12 +406,8 @@
         <div id="projectTabContent" class="project-tab-content"></div>
       </section>
 
-      <div class="engine-section-head">
-        <div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3><p class="helper">Shared engine controls only. Project-specific controls live inside each project.</p></div>
-      </div>
-<div class="engine-section-head">
-        <div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3><p class="helper">Company profiles live in the engine. Only published companies are exposed to customers.</p></div>
-      </div>
+      <div class="engine-section-head"><div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3></div></div>
+<div class="engine-section-head"><div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3></div></div>
       <div id="companyFleet" class="company-fleet"></div>
 
       <div class="engine-grid">
@@ -474,11 +462,29 @@
         </article>
       </div>
 
-      <section class="fleet-analytics">
-        <div class="engine-section-head">
-          <div><div class="engine-kicker">CAPTAIN'S LOG</div><h3>Usage by Company</h3><p class="helper">Local operational statistics from orders stored on this device.</p></div>
+      <section class="fleet-analytics captains-log">
+        <div class="captains-log-head">
+          <div>
+            <div class="engine-kicker">CAPTAIN'S LOG</div>
+            <h3>Project Analytics</h3>
+          </div>
+          <span class="captains-log-badge">LOCAL DATA</span>
         </div>
-        <div id="fleetStats" class="fleet-stats"></div>
+
+        <div id="captainsLogKpis" class="captains-log-kpis"></div>
+
+        <div class="captains-log-charts">
+          <article class="captains-chart-card">
+            <div class="chart-heading"><h4>Orders by Project</h4><span>All recorded</span></div>
+            <canvas id="captainsOrdersChart" width="640" height="230"></canvas>
+          </article>
+          <article class="captains-chart-card">
+            <div class="chart-heading"><h4>Recorded Revenue</h4><span>All recorded</span></div>
+            <canvas id="captainsRevenueChart" width="640" height="230"></canvas>
+          </article>
+        </div>
+
+        <div id="captainsProjectTable" class="captains-project-table"></div>
       </section>
 
       <div class="pirate-footer">☠ If ye don't know what a button does, keep yer hook off it.</div>

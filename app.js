@@ -1641,11 +1641,124 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
   window.addEventListener('pagehide',stopCamera);
   window.addEventListener('beforeunload',stopCamera);
 
+
+  function drawCaptainBarChart(canvasId, labels, values, prefix=''){
+    const canvas=$(canvasId);
+    if(!canvas) return;
+    const ctx=canvas.getContext('2d');
+    const cssWidth=Math.max(320, canvas.clientWidth || 640);
+    const cssHeight=230;
+    const ratio=window.devicePixelRatio || 1;
+    canvas.width=Math.floor(cssWidth*ratio);
+    canvas.height=Math.floor(cssHeight*ratio);
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    ctx.clearRect(0,0,cssWidth,cssHeight);
+
+    const left=44,right=16,top=26,bottom=50;
+    const chartW=cssWidth-left-right;
+    const chartH=cssHeight-top-bottom;
+    const max=Math.max(1,...values);
+    const slot=chartW/Math.max(1,labels.length);
+
+    ctx.strokeStyle='#d8d9d3';
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(left,top+chartH+.5);
+    ctx.lineTo(left+chartW,top+chartH+.5);
+    ctx.stroke();
+
+    labels.forEach((label,i)=>{
+      const barW=Math.min(64,slot*.54);
+      const x=left+i*slot+(slot-barW)/2;
+      const barH=(Number(values[i])||0)/max*chartH;
+      const y=top+chartH-barH;
+
+      ctx.fillStyle='#244b57';
+      ctx.fillRect(x,y,barW,barH);
+
+      ctx.textAlign='center';
+      ctx.font='700 12px system-ui';
+      ctx.fillStyle='#173742';
+      const val=Number(values[i])||0;
+      ctx.fillText(prefix+(prefix?Math.round(val):Math.round(val)),x+barW/2,Math.max(12,y-8));
+
+      ctx.font='11px system-ui';
+      ctx.fillStyle='#687476';
+      ctx.fillText(String(label).slice(0,16),x+barW/2,top+chartH+20);
+    });
+  }
+
+  async function renderCaptainsLog(){
+    const kpis=$('captainsLogKpis');
+    if(!kpis) return;
+
+    const allOrders=await getMergedOrders();
+    const rows=[];
+
+    for(const p of projects()){
+      const projectOrders=allOrders.filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
+      const completed=projectOrders.filter(o=>o.status==='Completed').length;
+      const revenue=projectOrders.reduce((sum,o)=>sum+(Number(o.price)||0),0);
+
+      const customerKeys={};
+      projectOrders.forEach(o=>{
+        const key=(o.customerEmail||o.customerPhone||o.customerName||'').trim().toLowerCase();
+        if(key) customerKeys[key]=(customerKeys[key]||0)+1;
+      });
+
+      rows.push({
+        project:p,
+        orders:projectOrders.length,
+        completed,
+        revenue,
+        repeatCustomers:Object.values(customerKeys).filter(v=>v>1).length
+      });
+    }
+
+    const totalOrders=rows.reduce((s,r)=>s+r.orders,0);
+    const totalRevenue=rows.reduce((s,r)=>s+r.revenue,0);
+    const totalCompleted=rows.reduce((s,r)=>s+r.completed,0);
+
+    const engineCustomerKeys={};
+    allOrders.forEach(o=>{
+      const key=(o.customerEmail||o.customerPhone||o.customerName||'').trim().toLowerCase();
+      if(key) engineCustomerKeys[key]=(engineCustomerKeys[key]||0)+1;
+    });
+    const repeatAcrossEngine=Object.values(engineCustomerKeys).filter(v=>v>1).length;
+
+    kpis.innerHTML=`
+      <div><span>Projects</span><strong>${rows.length}</strong></div>
+      <div><span>Orders</span><strong>${totalOrders}</strong></div>
+      <div><span>Completed</span><strong>${totalCompleted}</strong></div>
+      <div><span>Recorded Revenue</span><strong>$${totalRevenue.toFixed(0)}</strong></div>
+      <div><span>Repeat Customers</span><strong>${repeatAcrossEngine}</strong></div>
+    `;
+
+    const table=$('captainsProjectTable');
+    if(table){
+      table.innerHTML=rows.map(r=>`
+        <div class="captains-project-row">
+          <strong>${escapeHtml(r.project.name)}</strong>
+          <span>${r.orders} orders</span>
+          <span>${r.completed} completed</span>
+          <span>$${r.revenue.toFixed(0)} recorded</span>
+          <span>${r.repeatCustomers} repeat</span>
+        </div>
+      `).join('');
+    }
+
+    requestAnimationFrame(()=>{
+      drawCaptainBarChart('captainsOrdersChart',rows.map(r=>r.project.name),rows.map(r=>r.orders));
+      drawCaptainBarChart('captainsRevenueChart',rows.map(r=>r.project.name),rows.map(r=>r.revenue),'$');
+    });
+  }
+
   window.renderBlackFlagHome = async function(){
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
+    try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
   };
 
   async function init(){

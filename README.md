@@ -266,3 +266,13 @@ Built directly from verified v2.8.3.
 - The extra closing tag could prematurely close the application container, leaving Black Flag blank after successful PIN entry.
 - No PIN/authentication behavior changed from the working v2.8.3 baseline.
 - No additional features were added.
+
+
+## v2.8.5 — CAPTAIN'S LOG
+Built directly from verified v2.8.4.1.
+
+- No changes to Engine PIN, Project Admin PIN, routing, or authentication.
+- Removes the Black Flag welcome/tutorial panel.
+- Removes explanatory tutorial copy from Platform Control and Fleet Overview headings.
+- Expands Captain's Log with project-level KPIs, Orders by Project chart, Recorded Revenue chart, and a compact project comparison table.
+- Existing Project Command, Project Control Center, Admin, and Engine controls remain structurally unchanged.
