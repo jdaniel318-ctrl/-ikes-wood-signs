@@ -771,6 +771,15 @@
     else console.warn('No customer shell registered for project',p?.id);
   }
 
+
+  function applyFlowersIdentity(p){
+    const name=p?.branding?.businessName||p?.name||"Becca's Bloom Shop";
+    const initial=(name.trim().match(/[A-Za-z0-9]/)?.[0]||'B').toUpperCase();
+    if($('flowersHeaderMark')) $('flowersHeaderMark').textContent=initial;
+    if($('flowersHeroMark')) $('flowersHeroMark').textContent=initial;
+    document.title=name;
+  }
+
   async function enterProject(id){
     const p=projectById(id);if(!p)return;
     activeProjectId=id;logActivity(id,'Project opened');engineSessionUnlocked=false;
@@ -781,7 +790,7 @@
     }else if(projectShellFor(p)==='mugs'){
       $('returnToEngineBtn')?.classList.remove('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
     }else if(projectShellFor(p)==='flowers'){
-      $('returnToEngineBtn')?.classList.remove('hidden');document.title="Becca's Bloom Shop";document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');resetFlowersShell();showFlowersScreen('welcome');
+      $('returnToEngineBtn')?.classList.remove('hidden');applyFlowersIdentity(p);document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');resetFlowersShell();showFlowersScreen('welcome');
     }
   }
 
@@ -856,7 +865,7 @@
     }else if(projectShellFor(p)==='mugs'){
       document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');showMugsScreen(mugsState.screen||'welcome');
     }else if(projectShellFor(p)==='flowers'){
-      document.title="Becca's Bloom Shop";document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');showFlowersScreen(flowersState.screen||'welcome');
+      applyFlowersIdentity(p);document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');showFlowersScreen(flowersState.screen||'welcome');
     }
   }
   window.cancelEngineEntryToProject=cancelEngineEntryToProject;

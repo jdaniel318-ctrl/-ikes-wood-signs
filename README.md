@@ -409,3 +409,10 @@ Towline repair voyage.
 
 ## Flower isolation test build
 Adds a third private/test project, **Becca's Bloom Shop**, on the Safe Harbor baseline. It has a dedicated project ID (`beccas-bloom-shop`), order prefix (`BBS`), customer runtime state, photo state, order records, project admin filtering, branding, and customer shell. The Add Project dialog now includes a Flower Shop type; flower projects are assigned to the flower shell rather than Ike's or Mugs. No Face ID/passkey work is included.
+
+
+## Flower monogram bug fix
+- Removes the inherited `M` monogram from the flower customer shell.
+- Becca's Bloom Shop now displays `B` in both flower-shell monogram positions.
+- The flower monogram is derived from the project/business name at runtime, so a later rename can update the initial without reusing the Mugs identity.
+- No changes to Ike's, Mugs After Dark, project data, order logic, or Engine security.
