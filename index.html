@@ -428,14 +428,7 @@
           <p id="aiSettingsStatus" class="helper"></p>
         </article>
 
-        <article class="engine-card">
-          <h3>Platform Identity</h3>
-          <p class="helper">Platform-level identifiers. Change these only when adapting Workshop to another business.</p>
-          <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
-          <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2" /></label>
-          <button id="saveEngineIdentityBtn" class="primary-btn small">SAVE ENGINE IDENTITY</button>
-          <p id="engineIdentityStatus" class="helper"></p>
-        </article>
+        
 
         <article class="engine-card legacy-global-project-control">
           <h3>Default Workflow</h3>
@@ -445,21 +438,57 @@
           <p id="engineWorkflowStatus" class="helper"></p>
         </article>
 
-        <article class="engine-card">
-          <h3>Storage & Recovery</h3>
-          <p class="helper">Diagnostics for the two local order stores and interrupted-order recovery.</p>
-          <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
-          <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
-          <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
-          <p id="engineStorageDetail" class="helper"></p>
-        </article>
+        
 
-        <article class="engine-card danger-card">
-          <h3>Protected Controls</h3>
-          <p class="helper">These controls affect the engine, not just a single order. They require an extra confirmation.</p>
-          <button id="engineResetSettingsBtn" class="danger-btn">RESET ENGINE TO PORT DEFAULTS</button>
-          <p class="helper">Orders are preserved. This resets configurable business/engine settings and PINs to defaults.</p>
-        </article>
+        
+      </div>
+
+      <section class="protected-control-center">
+        <div class="protected-control-head">
+          <div><div class="engine-kicker">PROTECTED CONTROLS</div><h3>Engine Controls</h3></div>
+          <span class="protected-control-mark">⚓</span>
+        </div>
+
+        <details class="protected-control-group">
+          <summary>Platform Identity</summary>
+          <div class="protected-control-body">
+            <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
+            <label>Schema version<input id="schemaVersionSetting" class="text-input" type="number" min="2" max="99" value="2" /></label>
+            <button id="saveEngineIdentityBtn" class="primary-btn small">SAVE ENGINE IDENTITY</button>
+            <p id="engineIdentityStatus" class="helper"></p>
+          </div>
+        </details>
+
+        <details class="protected-control-group">
+          <summary>Storage & Recovery</summary>
+          <div class="protected-control-body">
+            <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
+            <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
+            <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
+            <p id="engineStorageDetail" class="helper"></p>
+          </div>
+        </details>
+
+        <details class="protected-control-group protected-danger-group">
+          <summary>Reset Engine</summary>
+          <div class="protected-control-body">
+            <p class="helper">Saved orders are preserved. Resetting Engine settings requires a fresh Engine PIN and a final confirmation.</p>
+            <button id="engineResetSettingsBtn" class="danger-btn">RESET ENGINE TO PORT DEFAULTS</button>
+          </div>
+        </details>
+      </section>
+
+      <div id="engineResetGate" class="engine-reset-gate hidden" role="dialog" aria-modal="true" aria-labelledby="engineResetTitle">
+        <div class="engine-reset-card">
+          <div class="engine-kicker">PROTECTED RESET</div>
+          <h2 id="engineResetTitle">Confirm Engine Reset</h2>
+          <p>Enter the Engine PIN again. You will receive one final confirmation before anything is reset.</p>
+          <label for="engineResetPinInput">Engine PIN</label>
+          <input id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+          <p id="engineResetError" class="pirate-error" aria-live="polite"></p>
+          <button id="confirmEngineResetBtn" class="danger-btn">CONTINUE RESET</button>
+          <button id="cancelEngineResetBtn" class="secondary-btn">CANCEL</button>
+        </div>
       </div>
 
       <section class="fleet-analytics captains-log">

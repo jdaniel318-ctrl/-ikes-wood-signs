@@ -1332,3 +1332,61 @@ body.project-admin-mode .app-shell{
   .captains-log-head{align-items:flex-start;flex-direction:column}
   .captains-project-row{grid-template-columns:1fr}
 }
+
+/* v2.8.6 — protected controls + order preview */
+.protected-control-center{
+  margin:26px 0;
+  padding:20px;
+  border-radius:28px;
+  background:#17323b;
+  border:1px solid #36535c;
+  box-shadow:0 12px 30px #10252c24;
+}
+.protected-control-head{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:12px;
+}
+.protected-control-head h3{margin:3px 0;color:#fff;font:900 26px Georgia,serif}
+.protected-control-head .engine-kicker{color:#e8cb73}
+.protected-control-mark{font-size:28px;color:#e8cb73}
+.protected-control-group{
+  margin-top:9px;border:1px solid #49636b;border-radius:18px;background:#ffffff09;overflow:hidden;
+}
+.protected-control-group summary{
+  cursor:pointer;list-style:none;padding:15px 17px;color:#eef4f3;font-weight:900;
+}
+.protected-control-group summary::-webkit-details-marker{display:none}
+.protected-control-group summary::after{content:'＋';float:right;color:#e8cb73}
+.protected-control-group[open] summary::after{content:'−'}
+.protected-control-body{padding:0 17px 17px}
+.protected-control-body label{color:#e9f0ef}
+.protected-control-body .text-input{background:#fff}
+.protected-danger-group{border-color:#8b4c43}
+.protected-danger-group summary{color:#ffd7d0}
+
+.engine-reset-gate{
+  position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;
+  background:#0b222acc;backdrop-filter:blur(8px);
+}
+.engine-reset-card{
+  width:min(520px,100%);padding:26px;border-radius:28px;background:#fffaf1;
+  border:1px solid #d9c69e;box-shadow:0 28px 70px #0008;
+}
+.engine-reset-card h2{margin:5px 0 8px;font:900 28px Georgia,serif;color:#173742}
+.engine-reset-card .pin-input{width:100%;font-size:24px;text-align:center;letter-spacing:8px}
+
+.order-card-layout{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:18px;align-items:start}
+.project-order-preview{min-width:0}
+.project-order-preview-label{
+  margin-bottom:6px;font-size:9px;font-weight:1000;letter-spacing:.7px;color:#657174;
+}
+.project-order-preview img{
+  display:block;width:100%;max-height:180px;object-fit:contain;border-radius:14px;
+  border:1px solid #d8ddd8;background:#f3f3ef;
+}
+.project-order-details{min-width:0}
+#adminOrderOverviewList .project-order-preview img{max-height:150px}
+
+@media(max-width:680px){
+  .order-card-layout{grid-template-columns:1fr}
+  .project-order-preview img{max-height:220px}
+}

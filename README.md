@@ -276,3 +276,14 @@ Built directly from verified v2.8.4.1.
 - Removes explanatory tutorial copy from Platform Control and Fleet Overview headings.
 - Expands Captain's Log with project-level KPIs, Orders by Project chart, Recorded Revenue chart, and a compact project comparison table.
 - Existing Project Command, Project Control Center, Admin, and Engine controls remain structurally unchanged.
+
+
+## v2.8.6 — PROTECTED CONTROLS
+Built directly from verified v2.8.5 branch.
+
+- Consolidates Platform Identity, Storage & Recovery, backup, stranded-draft recovery, and Engine Reset into Protected Controls.
+- Engine Reset requires a fresh Engine PIN followed by a second final confirmation.
+- Saved orders remain preserved by the settings reset.
+- Restores approved customer preview images to Project Admin / Orders cards; falls back to the customer photo only when no approved preview exists.
+- Tightens Black Flag project permissions so order-status access depends on Orders access, and cost/profit access depends on Ledger access.
+- Does not alter Black Flag login routing or the working PIN field behavior.

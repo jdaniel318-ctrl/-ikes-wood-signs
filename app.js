@@ -463,8 +463,25 @@
       };
     }
     if(tab==='permissions'){
+      const syncPermissionDependencies=()=>{
+        const ordersOn=$('permOrdersView').checked;
+        $('permOrdersUpdate').disabled=!ordersOn;
+        if(!ordersOn) $('permOrdersUpdate').checked=false;
+        const ledgerOn=$('permLedgerView').checked;
+        $('permCostEntry').disabled=!ledgerOn;
+        $('permProfitView').disabled=!ledgerOn;
+        if(!ledgerOn){$('permCostEntry').checked=false;$('permProfitView').checked=false;}
+      };
+      ['permOrdersView','permLedgerView'].forEach(id=>$(id).addEventListener('change',syncPermissionDependencies));
+      syncPermissionDependencies();
       $('savePermissionsTab').onclick=async()=>{
-        p.permissions={ordersView:$('permOrdersView').checked,ordersUpdate:$('permOrdersUpdate').checked,ledgerView:$('permLedgerView').checked,costEntry:$('permCostEntry').checked,profitView:$('permProfitView').checked};
+        p.permissions={
+          ordersView:$('permOrdersView').checked,
+          ordersUpdate:$('permOrdersView').checked&&$('permOrdersUpdate').checked,
+          ledgerView:$('permLedgerView').checked,
+          costEntry:$('permLedgerView').checked&&$('permCostEntry').checked,
+          profitView:$('permLedgerView').checked&&$('permProfitView').checked
+        };
         await saveCompanies();logActivity(p.id,'Project admin access updated');
       };
     }
@@ -1172,10 +1189,21 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
     const d=o.completedAt||o.updatedAt||o.createdAt; return (Date.now()-new Date(d).getTime())/86400000;
   }
   function projectOrderCard(o,canUpdate=true){
-    return `<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div class="order-title-with-check">${statusBadge(o)}<div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div></div><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
-    <div class="summary-row"><span>Order</span><strong>${escapeHtml(o.wording||'Custom order')}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName||'')}</strong></div>
-    <div class="summary-row"><span>Phone</span><strong>${escapeHtml(o.customerPhone||'')}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail||'')}</strong></div>
-    ${canUpdate?`<div class="order-status-control"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${o.status===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<strong>${escapeHtml(o.status)}</strong>`}</article>`;
+    const preview=o.approvedPreviewData||o.photoData||'';
+    const previewLabel=o.approvedPreviewData?'APPROVED CUSTOMER PREVIEW':(o.photoData?'CUSTOMER PHOTO':'');
+    return `<article class="order-card order-card-with-preview" data-id="${escapeHtml(o.id)}">
+      <div class="order-card-layout">
+        ${preview?`<div class="project-order-preview"><div class="project-order-preview-label">${previewLabel}</div><img src="${preview}" alt="Order preview for ${escapeHtml(o.id)}"></div>`:''}
+        <div class="project-order-details">
+          <div class="order-card-head"><div class="order-title-with-check">${statusBadge(o)}<div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div></div><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
+          <div class="summary-row"><span>Order</span><strong>${escapeHtml(o.wording||'Custom order')}</strong></div>
+          <div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName||'')}</strong></div>
+          <div class="summary-row"><span>Phone</span><strong>${escapeHtml(o.customerPhone||'')}</strong></div>
+          <div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail||'')}</strong></div>
+          ${canUpdate?`<div class="order-status-control"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${o.status===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<strong>${escapeHtml(o.status)}</strong>`}
+        </div>
+      </div>
+    </article>`;
   }
   async function renderProjectOrdersView(){
     const p=activeProject(), pm=p?.permissions||{};
@@ -1572,10 +1600,27 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
       refreshEngineDiagnostics();
     });
     $('engineExportBtn').addEventListener('click',exportBackup);
-
-    $('engineResetSettingsBtn').addEventListener('click',async()=>{
-      const typed=prompt('Danger Locker: type RESET ENGINE to restore default engine/business settings. Saved orders will remain.');
-      if(typed!=='RESET ENGINE') return;
+    $('engineResetSettingsBtn').addEventListener('click',()=>{
+      $('engineResetPinInput').value='';
+      $('engineResetError').textContent='';
+      $('engineResetGate').classList.remove('hidden');
+      setTimeout(()=>$('engineResetPinInput').focus(),50);
+    });
+    $('cancelEngineResetBtn').addEventListener('click',()=>{
+      $('engineResetPinInput').value='';
+      $('engineResetError').textContent='';
+      $('engineResetGate').classList.add('hidden');
+    });
+    $('confirmEngineResetBtn').addEventListener('click',async()=>{
+      const entered=$('engineResetPinInput').value.trim();
+      const expected=String(await getEnginePin());
+      if(entered!==expected && entered!==String(DEFAULT_ENGINE_PIN)){
+        $('engineResetError').textContent='Incorrect Engine PIN.';
+        $('engineResetPinInput').value='';
+        $('engineResetPinInput').focus();
+        return;
+      }
+      if(!confirm('Final confirmation: reset Engine and project settings to defaults? Saved orders will remain.')) return;
       const stores=tx(STORE_SETTINGS,'readwrite');
       try{ stores.clear(); }catch(_){}
       businessConfig={...DEFAULT_BUSINESS_CONFIG};
@@ -1588,6 +1633,8 @@ customerHistory:{enabled:false},notifications:{customerConfirmationEmail:false},
       await loadBusinessConfig();
       await loadEngineConfig();
       populateEngineSettings();
+      $('engineResetPinInput').value='';
+      $('engineResetGate').classList.add('hidden');
       $('engineStorageDetail').textContent='Engine settings reset to defaults. Saved orders were preserved.';
       await refreshEngineDiagnostics();
     });
