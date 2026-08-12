@@ -316,3 +316,25 @@ Built directly from v2.8.6.
 - Removes a duplicated timeout sentence and extra closing `div`.
 - Restores `enginePanel`, Project Orders, Ledger, and protected screens inside the main application container.
 - No PIN/authentication logic or feature behavior was changed.
+
+
+## v2.8.9 — PROJECT ADMIN MENU
+Built directly from the verified v2.8.8.1 structure-repair branch.
+
+- Project Admin now opens to a clean module menu instead of exposing Project Options at the top.
+- Project Options is one menu item.
+- Orders is one menu item.
+- Customers appears only when Black Flag grants customer-history visibility to that project's Admin.
+- Ledger appears only when Black Flag grants Ledger access.
+- Payments appears only when Black Flag enables payment capability for that project.
+- The menu is designed for additional Black Flag-granted modules later.
+- The project/customer header is unchanged.
+- Black Flag login/PIN routing is unchanged.
+
+
+## v2.8.9.1 — ADMIN COMMAND DECK
+- Restyles Project Admin to feel closer to the Black Flag command-dashboard experience while preserving each project's own branding.
+- Adds compact project-admin operational stats for Current, Ready, and Completed orders.
+- Admin module cards now use clearer command-style visual hierarchy and status chips.
+- No changes to project/customer header.
+- No changes to Black Flag or Admin authentication/routing.

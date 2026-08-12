@@ -1448,3 +1448,198 @@ body.project-admin-mode .app-shell{
   .project-admin-brandbar .admin-return-btn{min-width:0!important;width:100%!important}
   .admin-customer-row{grid-template-columns:1fr}
 }
+
+/* v2.8.9 — Project Admin modular menu */
+.project-admin-menu{
+  max-width:920px;
+  margin:22px auto;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+.project-admin-menu-card{
+  min-height:96px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:18px;
+  border:1px solid #dce1dc;
+  border-radius:22px;
+  background:#fff;
+  color:#23383f;
+  text-align:left;
+  box-shadow:0 8px 22px #18333a0c;
+}
+.project-admin-menu-card:active{transform:translateY(1px)}
+.admin-menu-icon{
+  width:48px;height:48px;flex:0 0 48px;
+  display:grid;place-items:center;
+  border-radius:15px;
+  background:#173742;
+  color:#e8cb73;
+  font-size:21px;
+  font-weight:1000;
+}
+.project-admin-menu-card strong{
+  display:block;
+  margin-bottom:4px;
+  font:900 18px Georgia,serif;
+  color:#173742;
+}
+.project-admin-menu-card small{
+  display:block;
+  color:#6e7877;
+  font-size:11px;
+}
+.project-admin-module-bar{
+  max-width:920px;
+  margin:18px auto 0;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-radius:16px;
+  background:#e8ece8;
+}
+.project-admin-module-bar strong{
+  color:#173742;
+  font-size:14px;
+}
+.admin-module-panel{
+  max-width:920px;
+  margin:18px auto 0;
+}
+.admin-placeholder-panel{
+  padding:22px;
+  border-radius:22px;
+  background:#fff;
+  border:1px solid #dfe3dd;
+}
+body.project-admin-mode .project-settings-content.hidden,
+body.project-admin-mode .admin-order-overview.hidden,
+body.project-admin-mode .admin-customer-history.hidden,
+body.project-admin-mode .admin-placeholder-panel.hidden{
+  display:none!important;
+}
+@media(max-width:720px){
+  .project-admin-menu{grid-template-columns:1fr;margin:18px auto}
+  .project-admin-menu-card{min-height:86px}
+}
+
+/* v2.8.9.1 — Admin Command Deck */
+.project-admin-page{
+  background:
+    radial-gradient(circle at 88% 0%,rgba(18,108,165,.08),transparent 24%),
+    linear-gradient(180deg,#f8f7f0,#eef2ef);
+}
+.project-admin-dashboard-head{
+  max-width:920px;
+  margin:18px auto 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:18px;
+  padding:18px 20px;
+  border-radius:24px;
+  background:#173742;
+  color:#fff;
+  box-shadow:0 10px 26px #17313a20;
+}
+.project-admin-dashboard-kicker{
+  font-size:9px;
+  font-weight:1000;
+  letter-spacing:1.6px;
+  color:#e8cb73;
+}
+.project-admin-dashboard-head h3{
+  margin:3px 0 0;
+  font:900 27px Georgia,serif;
+  color:#fff;
+}
+.project-admin-quick-stats{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.project-admin-quick-stats>div{
+  min-width:82px;
+  padding:9px 12px;
+  border-radius:15px;
+  background:#ffffff10;
+  border:1px solid #ffffff18;
+}
+.project-admin-quick-stats span{
+  display:block;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.7px;
+  color:#c7d7d9;
+  text-transform:uppercase;
+}
+.project-admin-quick-stats strong{
+  display:block;
+  margin-top:3px;
+  color:#e8cb73;
+  font-size:18px;
+}
+.project-admin-menu{
+  max-width:920px;
+  margin:12px auto 24px;
+}
+.project-admin-menu-card{
+  position:relative;
+  overflow:hidden;
+  min-height:112px;
+  border:1px solid #d6ddd8;
+  border-radius:24px;
+  background:linear-gradient(180deg,#ffffff,#f8faf7);
+  box-shadow:0 10px 24px #17313a10;
+}
+.project-admin-menu-card::after{
+  content:'';
+  position:absolute;
+  inset:auto 0 0 0;
+  height:5px;
+  background:#173742;
+  opacity:.9;
+}
+.project-admin-menu-card:hover{box-shadow:0 14px 30px #17313a17}
+.project-admin-menu-copy{flex:1}
+.admin-menu-status{
+  align-self:flex-start;
+  padding:6px 8px;
+  border-radius:999px;
+  background:#edf1ed;
+  color:#67736f;
+  font-size:8px;
+  font-weight:1000;
+  letter-spacing:.7px;
+  white-space:nowrap;
+}
+.project-admin-menu-card:not(.hidden)[data-admin-module="orders"] .admin-menu-status{
+  background:#e3f0e6;
+  color:#326c44;
+}
+.project-admin-menu-card:not(.hidden)[data-admin-module="ledger"] .admin-menu-icon,
+.project-admin-menu-card:not(.hidden)[data-admin-module="payments"] .admin-menu-icon{
+  background:#31553c;
+}
+.project-admin-menu-card:not(.hidden)[data-admin-module="customers"] .admin-menu-icon{
+  background:#2a6574;
+}
+.project-admin-module-bar{
+  background:#173742;
+  color:#fff;
+  box-shadow:0 7px 20px #17313a18;
+}
+.project-admin-module-bar strong{color:#fff}
+.project-admin-module-bar .secondary-btn{
+  background:#fff;
+  color:#173742;
+  border-color:#fff;
+}
+@media(max-width:720px){
+  .project-admin-dashboard-head{align-items:stretch;flex-direction:column}
+  .project-admin-quick-stats{justify-content:flex-start}
+}

@@ -268,8 +268,47 @@
         </div>
         <button id="closeAdminBtn" class="admin-return-btn">← BACK TO ORDERING</button>
       </div>
-      <div class="admin-timeout-note">Automatically returns to ordering after 15 minutes of inactivity.</div>
-<div id="adminSettings" class="settings-box project-settings-content">
+      <div class="admin-timeout-note">Automatically returns to ordering after 15 minutes of inactivity.</div><section class="project-admin-dashboard-head">
+        <div>
+          <div class="project-admin-dashboard-kicker">PROJECT COMMAND</div>
+          <h3>Admin</h3>
+        </div>
+        <div id="projectAdminQuickStats" class="project-admin-quick-stats"></div>
+      </section>
+      <section id="projectAdminMenu" class="project-admin-menu">
+        <button class="project-admin-menu-card" data-admin-module="orders">
+          <span class="admin-menu-icon">▤</span>
+          <span class="admin-menu-copy"><strong>Orders</strong><small>Current orders and order status</small></span>
+          <span id="adminOrdersCardStatus" class="admin-menu-status">OPEN</span>
+        </button>
+        <button id="adminOptionsMenuBtn" class="project-admin-menu-card" data-admin-module="options">
+          <span class="admin-menu-icon">⚙</span>
+          <span class="admin-menu-copy"><strong>Project Options</strong><small>Project configuration</small></span>
+          <span class="admin-menu-status">SETTINGS</span>
+        </button>
+        <button id="adminCustomersMenuBtn" class="project-admin-menu-card hidden" data-admin-module="customers">
+          <span class="admin-menu-icon">◎</span>
+          <span class="admin-menu-copy"><strong>Customers</strong><small>Customer history for this project</small></span>
+          <span class="admin-menu-status">HISTORY</span>
+        </button>
+        <button id="adminLedgerMenuBtn" class="project-admin-menu-card hidden" data-admin-module="ledger">
+          <span class="admin-menu-icon">▦</span>
+          <span class="admin-menu-copy"><strong>Ledger</strong><small>Project financial history</small></span>
+          <span class="admin-menu-status">FINANCE</span>
+        </button>
+        <button id="adminPaymentsMenuBtn" class="project-admin-menu-card hidden" data-admin-module="payments">
+          <span class="admin-menu-icon">$</span>
+          <span class="admin-menu-copy"><strong>Payments</strong><small>Project payment controls</small></span>
+          <span class="admin-menu-status">PAYMENTS</span>
+        </button>
+      </section>
+
+      <div id="projectAdminModuleBar" class="project-admin-module-bar hidden">
+        <button id="backToAdminMenuBtn" class="secondary-btn small">← ADMIN MENU</button>
+        <strong id="projectAdminModuleTitle"></strong>
+      </div>
+
+<div id="adminSettings" class="settings-box project-settings-content admin-module-panel hidden" data-admin-panel="options">
         <h3>Project Options</h3>
         <div class="admin-toggle-list">
           <label class="admin-toggle-row">
@@ -298,14 +337,20 @@
         <button id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
         <p class="helper">Default PIN for Version 1.5 is 4353 until changed here.</p>
       </div>
-      <section id="adminCustomerHistory" class="admin-customer-history hidden"></section>
-      <section class="admin-order-overview">
+      <section id="adminCustomerHistory" class="admin-customer-history admin-module-panel hidden" data-admin-panel="customers"></section>
+      <section id="adminOrdersModule" class="admin-order-overview admin-module-panel hidden" data-admin-panel="orders">
         <div class="admin-order-overview-head">
           <div><h3>Current Orders</h3><p class="helper">This project only</p></div>
           <button id="openFullOrdersBtn" class="secondary-btn small">OPEN ORDERS</button>
         </div>
         <div id="adminOrderOverviewList" class="order-list"></div>
       </section>
+      
+      <section id="adminPaymentsModule" class="admin-module-panel admin-placeholder-panel hidden" data-admin-panel="payments">
+        <h3>Payments</h3>
+        <p class="helper">Payment access is controlled by Black Flag.</p>
+      </section>
+
       <div id="orderList" class="order-list hidden" aria-hidden="true"></div>
     </section>
 

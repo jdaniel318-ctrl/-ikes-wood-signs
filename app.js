@@ -1309,6 +1309,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     o.status=status;o.updatedAt=new Date().toISOString();if(status==='Completed'&&!o.completedAt)o.completedAt=o.updatedAt;backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}
     if(status==='Completed') postOrderToLedger(o);
     await renderAdmin();
+    if(document.body.classList.contains('project-admin-mode')) await renderProjectAdminQuickStats();
   }
 
   async function renderAdmin(){
@@ -1539,6 +1540,86 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
 
+
+
+  async function renderProjectAdminQuickStats(){
+    const p=activeProject();
+    const box=$('projectAdminQuickStats');
+    if(!p||!box)return;
+
+    const orders=(await getMergedOrders()).filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
+    const current=orders.filter(o=>o.status!=='Completed'||completedAgeDays(o)<=10);
+    const ready=orders.filter(o=>o.status==='Ready for Pickup').length;
+    const completed=orders.filter(o=>o.status==='Completed').length;
+
+    box.innerHTML=`
+      <div><span>Current</span><strong>${current.length}</strong></div>
+      <div><span>Ready</span><strong>${ready}</strong></div>
+      <div><span>Completed</span><strong>${completed}</strong></div>
+    `;
+    if($('adminOrdersCardStatus')) $('adminOrdersCardStatus').textContent=current.length?`${current.length} ACTIVE`:'CLEAR';
+  }
+
+  function applyProjectAdminMenuPermissions(){
+    const p=activeProject(); if(!p)return;
+    const pm=p.permissions||{};
+    $('adminCustomersMenuBtn')?.classList.toggle('hidden',!p.customerHistory?.adminVisible);
+    $('adminLedgerMenuBtn')?.classList.toggle('hidden',!pm.ledgerView);
+    $('adminPaymentsMenuBtn')?.classList.toggle('hidden',!p.payments?.enabled);
+  }
+
+  function showProjectAdminMenu(){
+    $('projectAdminMenu')?.classList.remove('hidden');
+    $('projectAdminModuleBar')?.classList.add('hidden');
+    $$('.admin-module-panel').forEach(el=>el.classList.add('hidden'));
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+
+  async function showProjectAdminModule(moduleName){
+    const p=activeProject(); if(!p)return;
+    const pm=p.permissions||{};
+
+    if(moduleName==='customers' && !p.customerHistory?.adminVisible) return;
+    if(moduleName==='ledger' && !pm.ledgerView) return;
+    if(moduleName==='payments' && !p.payments?.enabled) return;
+
+    $('projectAdminMenu')?.classList.add('hidden');
+    $('projectAdminModuleBar')?.classList.remove('hidden');
+    $$('.admin-module-panel').forEach(el=>el.classList.add('hidden'));
+
+    const titles={
+      orders:'Orders',
+      options:'Project Options',
+      customers:'Customers',
+      ledger:'Ledger',
+      payments:'Payments'
+    };
+    if($('projectAdminModuleTitle')) $('projectAdminModuleTitle').textContent=titles[moduleName]||'Project Admin';
+
+    if(moduleName==='orders'){
+      $('adminOrdersModule')?.classList.remove('hidden');
+      await renderAdminOrderOverview();
+    }else if(moduleName==='options'){
+      $('adminSettings')?.classList.remove('hidden');
+      populateBusinessSettings();
+    }else if(moduleName==='customers'){
+      $('adminCustomerHistory')?.classList.remove('hidden');
+      renderProjectAdminCustomerHistory();
+    }else if(moduleName==='ledger'){
+      // Keep the existing protected Ledger view separate, but launch it from the Admin menu.
+      stopProjectAdminIdleTimer();
+      $('adminPanel')?.classList.add('hidden');
+      document.body.classList.remove('project-admin-mode');
+      $('projectLedgerPanel')?.classList.remove('hidden');
+      document.body.classList.add('project-ledger-mode');
+      await renderProjectLedgerView();
+      return;
+    }else if(moduleName==='payments'){
+      $('adminPaymentsModule')?.classList.remove('hidden');
+    }
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+
   function updateProjectAdminBrand(){
     const p=activeProject(); if(!p)return;
     if($('adminBrandTitle')) $('adminBrandTitle').textContent=p.name.toUpperCase();
@@ -1599,9 +1680,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       $('adminSettings')?.classList.remove('hidden');
       document.body.classList.add('project-admin-mode');
       updateProjectAdminBrand();
-      populateBusinessSettings();
-      await renderAdminOrderOverview();
-      renderProjectAdminCustomerHistory();
+      applyProjectAdminMenuPermissions();
+      await renderProjectAdminQuickStats();
+      showProjectAdminMenu();
       startProjectAdminIdleTimer();
     }else if(kind==='orders'){
       $('projectOrdersPanel')?.classList.remove('hidden');
@@ -1681,6 +1762,12 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       setTimeout(()=>{if(pinLocked('admin'))showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
     });
     $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
+    $('backToAdminMenuBtn')?.addEventListener('click',showProjectAdminMenu);
+    $('projectAdminMenu')?.addEventListener('click',e=>{
+      const card=e.target.closest('[data-admin-module]');
+      if(card) showProjectAdminModule(card.dataset.adminModule);
+    });
+
     $('openFullOrdersBtn')?.addEventListener('click',async()=>{
       stopProjectAdminIdleTimer();
       $('adminPanel')?.classList.add('hidden');
