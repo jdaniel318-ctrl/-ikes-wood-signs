@@ -28,8 +28,14 @@
         <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
-        <div id="enginePasskeyArea" class="engine-passkey-area hidden">
-          <div class="engine-passkey-divider"><span>OR</span></div>
+        <div id="enginePasskeyArea" class="engine-passkey-area">
+          <div class="engine-passkey-divider"><span>DEVICE AUTHENTICATION TEST</span></div>
+          <div id="enginePasskeyDiagnostics" class="engine-passkey-diagnostics">
+            <div><span>WebAuthn</span><strong id="diagWebAuthn">CHECKING…</strong></div>
+            <div><span>Platform authenticator</span><strong id="diagPlatformAuth">CHECKING…</strong></div>
+            <div><span>Local passkey</span><strong id="diagPasskeyEnrollment">CHECKING…</strong></div>
+          </div>
+          <button id="enginePasskeyTestBtn" class="bf-entry-passkey" type="button">TEST DEVICE AUTHENTICATION</button>
           <button id="enginePasskeyUseBtn" class="bf-entry-passkey hidden" type="button">USE FACE ID / PASSKEY</button>
           <button id="enginePasskeySetupBtn" class="bf-entry-passkey setup hidden" type="button">SET UP FACE ID / PASSKEY</button>
           <p id="enginePasskeyStatus" class="engine-passkey-status" aria-live="polite"></p>
@@ -37,7 +43,7 @@
 <button id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">CLOSE / RETURN TO ORDER</button>
       </div>
 
-      <div class="bf-entry-foot">Authorized engine access only • Engine PIN required every time Black Flag is entered</div>
+      <div class="bf-entry-foot">Authorized engine access only • Engine PIN remains available as the recovery method</div>
     </div>
   </div>
 

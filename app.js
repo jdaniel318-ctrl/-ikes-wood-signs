@@ -2643,16 +2643,20 @@ document.addEventListener('click', (event) => {
     const area=$('enginePasskeyArea'),use=$('enginePasskeyUseBtn'),setup=$('enginePasskeySetupBtn');
     const status=$('enginePasskeyStatus'),protectedStatus=$('enginePasskeyProtectedStatus');
     const supported=await enginePasskeySupported(),enrolled=!!readEnginePasskey();
-    if(area)area.classList.toggle('hidden',!supported);
+
+    // Diagnostics remain visible even when the capability check is negative.
+    if(area)area.classList.remove('hidden');
     if(use)use.classList.toggle('hidden',!supported||!enrolled);
     if(setup)setup.classList.toggle('hidden',!supported||enrolled);
-    if(status){
-      if(!supported)status.textContent='';
-      else if(enrolled)status.textContent='Device passkey ready.';
-      else status.textContent='Enter the Engine PIN once to set up device authentication.';
+
+    if(status && !status.textContent){
+      if(enrolled)status.textContent='Device passkey ready.';
+      else status.textContent='Enter the Engine PIN once before setting up a device passkey.';
     }
     if(protectedStatus)protectedStatus.textContent=!supported?'UNAVAILABLE':enrolled?'ENROLLED':'NOT ENROLLED';
     if($('enginePasskeyRemoveProtectedBtn'))$('enginePasskeyRemoveProtectedBtn').disabled=!enrolled;
+
+    await refreshEnginePasskeyDiagnostics();
   }
   async function verifyEnginePinForPasskeySetup(){
     const input=$('blackFlagEntryPin');
@@ -2668,13 +2672,89 @@ document.addEventListener('click', (event) => {
     }
     return true;
   }
+
+  async function getEnginePasskeyDiagnostics(){
+    const webauthn=!!(window.PublicKeyCredential && navigator.credentials?.create && navigator.credentials?.get);
+    let platform=false;
+    let platformError='';
+    if(webauthn && typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable==='function'){
+      try{
+        platform=await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      }catch(err){
+        platform=false;
+        platformError=err?.name||err?.message||'check failed';
+      }
+    }
+    return {
+      webauthn,
+      platform,
+      platformCheckAvailable:typeof PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable==='function',
+      platformError,
+      enrolled:!!readEnginePasskey(),
+      secureContext:window.isSecureContext===true,
+      host:location.hostname,
+      protocol:location.protocol
+    };
+  }
+
+  async function refreshEnginePasskeyDiagnostics(){
+    const d=await getEnginePasskeyDiagnostics();
+    if($('diagWebAuthn')) $('diagWebAuthn').textContent=d.webauthn?'AVAILABLE':'UNAVAILABLE';
+    if($('diagPlatformAuth')){
+      $('diagPlatformAuth').textContent=d.platform
+        ?'AVAILABLE'
+        :(d.platformCheckAvailable?'NOT REPORTED':'CHECK UNSUPPORTED');
+    }
+    if($('diagPasskeyEnrollment')) $('diagPasskeyEnrollment').textContent=d.enrolled?'ENROLLED':'NOT ENROLLED';
+
+    const status=$('enginePasskeyStatus');
+    if(status){
+      const extra=[];
+      if(!d.secureContext) extra.push('Page is not a secure context.');
+      if(d.platformError) extra.push(`Platform check: ${d.platformError}.`);
+      status.textContent=extra.join(' ');
+    }
+    return d;
+  }
+
+  async function testEngineDeviceAuthentication(){
+    const status=$('enginePasskeyStatus');
+    const d=await refreshEnginePasskeyDiagnostics();
+
+    if(!d.webauthn){
+      if(status) status.textContent='WebAuthn is not available in this Safari context.';
+      return false;
+    }
+
+    try{
+      if(d.enrolled){
+        if(status) status.textContent='Testing the saved device passkey…';
+        await authenticateEnginePasskey();
+        if(status) status.textContent='SUCCESS: device authentication completed with the saved passkey.';
+        return true;
+      }
+
+      if(status) status.textContent='No local passkey exists yet. Enter the Engine PIN, then use SET UP FACE ID / PASSKEY.';
+      return false;
+    }catch(err){
+      if(status){
+        const label=err?.name||'Error';
+        status.textContent=`TEST RESULT: ${label} — ${err?.message||'device authentication did not complete.'}`;
+      }
+      return false;
+    }
+  }
+
   window.BlackFlagPasskey={
     supported:enginePasskeySupported,
     enrolled:()=>!!readEnginePasskey(),
     create:createEnginePasskey,
     authenticate:authenticateEnginePasskey,
     remove:removeEnginePasskey,
-    refresh:refreshEnginePasskeyUi
+    refresh:refreshEnginePasskeyUi,
+    diagnostics:getEnginePasskeyDiagnostics,
+    refreshDiagnostics:refreshEnginePasskeyDiagnostics,
+    test:testEngineDeviceAuthentication
   };
 
 
@@ -2790,8 +2870,12 @@ document.addEventListener('click', (event) => {
     const logout=byId('engineLogoutBtn');
     const passkeyUse=byId('enginePasskeyUseBtn');
     const passkeySetup=byId('enginePasskeySetupBtn');
+    const passkeyTest=byId('enginePasskeyTestBtn');
 
     if(unlock) unlock.addEventListener('click',unlockFromEntry);
+    if(passkeyTest) passkeyTest.addEventListener('click',async()=>{
+      if(window.BlackFlagPasskey) await window.BlackFlagPasskey.test();
+    });
     if(passkeyUse)passkeyUse.addEventListener('click',async()=>{
       const status=byId('enginePasskeyStatus');
       try{

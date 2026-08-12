@@ -417,3 +417,14 @@ Experimental iPad/device-passkey voyage.
 - The credential identifier is stored in this browser's local storage; the private credential remains with the authenticator.
 - Protected Engine Controls can set up, replace, or remove the local device passkey.
 - This is a static-site convenience layer for the current device/browser, not a server-verified multi-user authentication system.
+
+
+## v2.9.3 — SPYGLASS
+Face ID / passkey diagnostic voyage.
+
+- The device-authentication section is always visible on Black Flag login.
+- Displays live diagnostics for WebAuthn availability, platform-authenticator reporting, and local passkey enrollment.
+- Adds TEST DEVICE AUTHENTICATION so the iPad can report actual browser/device behavior instead of silently hiding the feature.
+- Keeps Engine PIN login and recovery unchanged.
+- Does not alter Ike's, Mugs After Dark, order logic, project isolation, admin, or customer shells.
+- Updates the Black Flag footer so it no longer incorrectly states that PIN entry is the only possible access method.
