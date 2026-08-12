@@ -827,6 +827,67 @@
     }
   }
 
+
+  const PROJECT_ASSET_META_KEY='blackFlagProjectAssetMetaV1';
+  const GRAPHIC_SLOT_LABELS={
+    projectLogo:'Project Logo / Mark',
+    heroGraphic:'Welcome Hero Graphic',
+    footerGraphic:'Footer Graphic',
+    backgroundImage:'Background / Texture'
+  };
+  function readAllProjectAssetMeta(){
+    try{return JSON.parse(localStorage.getItem(PROJECT_ASSET_META_KEY)||'{}')||{};}catch(_){return {};}
+  }
+  function readProjectAssetMeta(projectId){
+    return readAllProjectAssetMeta()[projectId]||{};
+  }
+  function writeProjectAssetMeta(projectId,meta){
+    const all=readAllProjectAssetMeta();
+    all[projectId]=meta||{};
+    localStorage.setItem(PROJECT_ASSET_META_KEY,JSON.stringify(all));
+  }
+  function graphicSlotsForProject(p){
+    const template=PROJECT_SHELL_TEMPLATES[p?.type]||PROJECT_SHELL_TEMPLATES['custom-product'];
+    return template?.graphicSlots||PROJECT_ASSET_SLOTS;
+  }
+  function recordProjectGraphic(projectId,slot,data,file){
+    const meta=readProjectAssetMeta(projectId);
+    meta[slot]={
+      slot,
+      label:GRAPHIC_SLOT_LABELS[slot]||slot,
+      fileName:file?.name||meta[slot]?.fileName||'Project graphic',
+      mime:file?.type||meta[slot]?.mime||'image/*',
+      updatedAt:new Date().toISOString(),
+      bytes:file?.size||meta[slot]?.bytes||0,
+      projectId
+    };
+    writeProjectAssetMeta(projectId,meta);
+  }
+  function removeProjectGraphicMeta(projectId,slot){
+    const meta=readProjectAssetMeta(projectId);
+    delete meta[slot];
+    writeProjectAssetMeta(projectId,meta);
+  }
+  function renderProjectGraphicsLibrary(){
+    const p=projectById(activeProjectId); if(!p)return;
+    const assets=readProjectAssets(p.id);
+    const meta=readProjectAssetMeta(p.id);
+    const slots=graphicSlotsForProject(p);
+    if($('graphicsProjectIdentity')) $('graphicsProjectIdentity').textContent=`${p.projectCode||p.orderPrefix||'PRJ'} • ${p.name}`;
+    if($('graphicsIsolationNote')) $('graphicsIsolationNote').textContent=`Library namespace: ${p.id}. Only this project can read or assign these graphics.`;
+    if($('graphicsLibrary')){
+      $('graphicsLibrary').innerHTML=slots.map(slot=>{
+        const has=!!assets[slot], m=meta[slot]||{};
+        return `<article class="graphics-library-item ${has?'has-graphic':'empty-graphic'}">
+          <div class="graphics-library-preview">${has?`<img src="${assets[slot]}" alt="${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">`:`<span>${escapeHtml((p.projectCode||'PRJ').slice(0,3))}</span>`}</div>
+          <div class="graphics-library-copy"><strong>${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}</strong>
+          <small>${has?escapeHtml(m.fileName||'Assigned graphic'):'No graphic assigned'}</small></div>
+          <span class="graphics-slot-state">${has?'ASSIGNED':'OPEN SLOT'}</span>
+        </article>`;
+      }).join('');
+    }
+  }
+
   async function loadProjectAssetsEditor(){
     const p=projectById(activeProjectId);if(!p)return;
     const assets=readProjectAssets(p.id);
@@ -843,6 +904,7 @@
       else{el.removeAttribute('src');el.classList.add('hidden');}
     });
     if($('assetSaveMessage'))$('assetSaveMessage').textContent='';
+    renderProjectGraphicsLibrary();
   }
 
   async function collectAndSaveProjectAssets(){
@@ -856,7 +918,7 @@
     const next={};
     for(const [slot,id] of Object.entries(fields)){
       const file=$(id)?.files?.[0];
-      if(file)next[slot]=await fileToDataUrl(file);
+      if(file){next[slot]=await fileToDataUrl(file);recordProjectGraphic(p.id,slot,next[slot],file);}
     }
     const saved=saveProjectAssets(p.id,next);
     applyProjectAssetSlots(p);
@@ -879,6 +941,7 @@
       $(id)?.addEventListener('click',()=>{
         const p=projectById(activeProjectId);if(!p)return;
         clearProjectAsset(p.id,slot);
+        removeProjectGraphicMeta(p.id,slot);
         applyProjectAssetSlots(p);
         loadProjectAssetsEditor();
       });
@@ -886,10 +949,10 @@
   }
 
   const PROJECT_SHELL_TEMPLATES={
-    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
-    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
-    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
-    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false}}
+    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
+    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
+    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true}},
+    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false}}
   };
   const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers'};
   function projectShellFor(p){

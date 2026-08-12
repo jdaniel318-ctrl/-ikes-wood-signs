@@ -547,3 +547,18 @@ Pirate Mode becomes a full Dark Flag appearance layer.
 - Project customer shells, Project Admin pages, Project Admin PIN gates, project branding, project data and security remain outside the Pirate Mode styling boundary.
 - Keeps v2.9.14 Sealed Bulkheads project-aware Admin PIN gate intact.
 - Core rule remains: different brands, different data, same Engine.
+
+
+## v2.9.16 — GRAPHICS QUARTERS
+Foundation for Dark Flag Graphics Studio.
+
+- Upgrades Branding & Graphics into a project-aware Graphics Manager.
+- Adds explicit reusable template graphic slots: Project Logo/Mark, Welcome Hero, Footer Graphic, Background/Texture.
+- Every asset and its metadata remain namespaced by the permanent project ID.
+- Adds a project-specific Graphics Library showing which template slots are assigned or open.
+- Records filename, MIME type, size, update time, slot and permanent project ID for uploaded graphics.
+- Clearing a graphic also clears its project-owned metadata.
+- Template definitions now advertise their graphic slots, preparing future templates and + Add Project to expose graphics without code edits.
+- Existing Upload / Replace / Clear behavior remains intact.
+- Pirate Mode receives matching Graphics Manager presentation without changing project assets.
+- This release intentionally does NOT add AI generation yet. It builds the isolated asset/slot foundation that Graphics AI will use next.

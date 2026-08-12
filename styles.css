@@ -2478,3 +2478,24 @@ body.dark-flag-pirate-mode #customerApp,
 body.dark-flag-pirate-mode .project-admin-gate{
   /* Project-owned styling remains controlled by its existing template/theme rules. */
 }
+
+
+/* v2.9.16 — GRAPHICS QUARTERS */
+.graphics-manager-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:5px}
+.graphics-manager-head h4{margin:2px 0 0;font-size:17px}
+.graphics-lock-mark{padding:5px 8px;border:1px solid #aac1b0;border-radius:999px;color:#315f3b;background:#f1f8f2;font-size:8px;font-weight:1000;letter-spacing:1px}
+.graphics-library{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:13px 0}
+.graphics-library-item{display:grid;grid-template-columns:58px 1fr auto;align-items:center;gap:10px;padding:9px;border:1px solid #d8dfdc;border-radius:12px;background:#fff}
+.graphics-library-preview{width:58px;height:48px;border-radius:8px;overflow:hidden;display:grid;place-items:center;background:#eef2ef;color:#63716b;font-weight:1000}
+.graphics-library-preview img{width:100%;height:100%;object-fit:cover}
+.graphics-library-copy strong,.graphics-library-copy small{display:block}
+.graphics-library-copy small{margin-top:2px;color:#718079;font-size:9px}
+.graphics-slot-state{font-size:7px;font-weight:1000;letter-spacing:.8px;color:#66736d}
+.has-graphic .graphics-slot-state{color:#287344}
+.graphics-manager-divider{display:flex;align-items:center;gap:8px;margin:15px 0 10px;color:#718079;font-size:8px;font-weight:1000;letter-spacing:1px}
+.graphics-manager-divider:before,.graphics-manager-divider:after{content:"";height:1px;background:#d8dfdc;flex:1}
+body.dark-flag-pirate-mode .graphics-library-item{background:#0d1413!important;border-color:#69542f!important;color:#e8d7b1!important}
+body.dark-flag-pirate-mode .graphics-library-preview{background:#17150f!important;color:#bd9651!important}
+body.dark-flag-pirate-mode .graphics-library-copy small{color:#9d9279!important}
+body.dark-flag-pirate-mode .graphics-lock-mark{background:#18140d!important;border-color:#9c7838!important;color:#d1aa60!important}
+@media(max-width:720px){.graphics-library{grid-template-columns:1fr}}
