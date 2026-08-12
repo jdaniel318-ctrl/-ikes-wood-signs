@@ -526,7 +526,7 @@
         <div class="project-kpis"><span><strong>${s.orders}</strong> orders</span><span><strong>$${s.revenueMonth.toFixed(0)}</strong> month</span><span><strong>${s.completed}</strong> ledger</span></div>
         <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
-          <button data-enter-project="${escapeHtml(p.id)}" class="primary-btn small">${p.publish?.status==='live'?'OPEN PROJECT':'OPEN PRIVATE TEST'}</button>
+          <button data-enter-project="${escapeHtml(p.id)}" data-project-shell="${escapeHtml(projectShellFor(p))}" class="primary-btn small">${p.publish?.status==='live'?'OPEN PROJECT':'OPEN PRIVATE TEST'}</button>
         </div>
       </article>`);
     }
@@ -879,10 +879,20 @@
     'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false}}
   };
   const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers'};
-  function projectShellFor(p){return PROJECT_SHELLS[p?.id]||'generic';}
+  function projectShellFor(p){
+    if(!p)return 'generic';
+    const explicit=PROJECT_SHELLS[p.id];
+    if(explicit)return explicit;
+    const shell=(p.shellType||p.projectTheme||p.type||'').toLowerCase();
+    if(shell==='ikes'||shell==='wood-sign'||shell==='custom_wood_sign'||shell==='wood_sign')return 'ikes';
+    if(shell==='mugs'||shell==='custom-mug'||shell==='custom_mug'||shell==='mugshot-after-dark')return 'mugs';
+    if(shell==='flowers'||shell==='flower-shop'||shell==='custom_flowers'||shell==='flowers-project')return 'flowers';
+    return 'generic';
+  }
   function hideAllCustomerShells(){$('customerApp')?.classList.add('hidden');$('mugsCustomerShell')?.classList.add('hidden');$('flowersCustomerShell')?.classList.add('hidden');}
   function showCustomerShellForProject(p){
     hideAllCustomerShells();
+    document.body.classList.remove('ikes-project','mugs-project','flowers-project');
     const shell=projectShellFor(p);
     if(shell==='ikes') $('customerApp')?.classList.remove('hidden');
     else if(shell==='mugs') $('mugsCustomerShell')?.classList.remove('hidden');
@@ -901,15 +911,20 @@
 
   async function enterProject(id){
     const p=projectById(id);if(!p)return;
+    const resolvedShell=projectShellFor(p);
+    if(resolvedShell==='generic'){
+      alert('This project does not have a customer shell assigned yet. Open its Control Center and assign a project type/template before testing.');
+      return;
+    }
     activeProjectId=id;logActivity(id,'Project opened');engineSessionUnlocked=false;
     document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');$('adminPanel')?.classList.add('hidden');
     showCustomerShellForProject(p);
     applyProjectAssetSlots(p);
-    if(projectShellFor(p)==='ikes'){
+    if(resolvedShell==='ikes'){
       $('returnToEngineBtn')?.classList.remove('hidden');resetRuntimeStateForProject(p);applyProjectTheme(p);await loadBusinessConfig();recoverDraft();if($('wordingInput'))$('wordingInput').value=state.wording;updateUi();if(typeof setScreen==='function')setScreen('welcome');
-    }else if(projectShellFor(p)==='mugs'){
+    }else if(resolvedShell==='mugs'){
       $('returnToEngineBtn')?.classList.remove('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
-    }else if(projectShellFor(p)==='flowers'){
+    }else if(resolvedShell==='flowers'){
       $('returnToEngineBtn')?.classList.remove('hidden');applyFlowersIdentity(p);document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');resetFlowersShell();showFlowersScreen('welcome');
     }
   }

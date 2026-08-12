@@ -427,3 +427,14 @@ Introduces project-scoped Branding & Graphics slots.
 - Mugs After Dark and Becca's Bloom Shop can immediately display custom logo and hero graphics from their own slots.
 - Ike's built-in graphics remain the default; project assets can override selected slots later without removing the current working design.
 - New projects begin with empty graphic slots rather than borrowing another project's branding.
+
+
+## v2.9.8 — TRUE COURSE
+Project launch routing correction.
+
+- `OPEN PRIVATE TEST` now resolves the customer destination from the project's own shell metadata (`shellType`, `projectTheme`, or project type) instead of depending only on a small hard-coded project-id map.
+- Flower projects created through `+ Add Project` resolve to the flower customer shell automatically.
+- Unknown project types are blocked from silently falling back to Ike's customer experience.
+- Entering any project first hides all other customer shells and clears project-specific body classes before displaying the selected shell.
+- Existing Ike's and Mugs routing remains unchanged.
+- This change specifically fixes Becca's Bloom Shop opening Ike's customer page.
