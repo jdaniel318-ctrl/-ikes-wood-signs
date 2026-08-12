@@ -2979,3 +2979,27 @@ window.addEventListener('unhandledrejection',event=>{
     lockEngineSession();
   });
 })();
+
+
+// v2.9.5 — CLEAN DECK cache/version integrity
+window.BLACK_FLAG_BUILD='2.9.5';
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./sw.js?v=2.9.5', {updateViaCache:'none'});
+      await reg.update();
+      let reloadedForController=false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if(reloadedForController) return;
+        reloadedForController=true;
+        const key='bf-controller-build';
+        if(sessionStorage.getItem(key)!=='2.9.5') {
+          sessionStorage.setItem(key,'2.9.5');
+          location.reload();
+        }
+      });
+    } catch(err) {
+      console.warn('Service worker update check failed',err);
+    }
+  });
+}

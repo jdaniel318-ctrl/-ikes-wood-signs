@@ -1978,3 +1978,13 @@ body.mugs-project [data-screen="price"] .choice-btn[data-price="0"]::after{
   white-space:normal;line-height:1.35;
   overflow-wrap:anywhere;
 }
+
+/* v2.9.5 — CLEAN DECK */
+.global-build-badge{
+  position:fixed;right:8px;bottom:8px;z-index:999999;
+  padding:5px 8px;border-radius:999px;
+  background:rgba(14,54,64,.88);color:#f2d783;
+  font:800 9px/1.1 system-ui,-apple-system,sans-serif;
+  letter-spacing:.55px;box-shadow:0 2px 8px rgba(0,0,0,.18);
+  pointer-events:none;
+}

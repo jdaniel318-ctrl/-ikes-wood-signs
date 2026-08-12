@@ -440,3 +440,16 @@ Passkey diagnostics hardened for iPad testing.
 - The diagnostic panel reports direct JavaScript errors, promise rejections, and WebAuthn errors on screen.
 - Keeps Engine PIN access unchanged.
 - No changes to Ike's, Mugs After Dark, admin, orders, project isolation, or customer shells.
+
+
+## v2.9.5 — CLEAN DECK
+Cache/version integrity hardening before continuing passkey testing.
+
+- Adds an always-visible `v2.9.5 — CLEAN DECK` build badge.
+- Version-stamps `app.js` and `styles.css` in `index.html`.
+- Registers the service worker with `updateViaCache: none`.
+- Uses network-first navigation so a fresh deployment's `index.html` wins when online.
+- Uses network-first retrieval for the versioned application shell with same-version cache fallback.
+- Deletes obsolete service-worker caches during activation.
+- Automatically reloads once when the new service-worker controller takes over.
+- Keeps the existing Black Flag PIN, passkey diagnostics, projects, orders, and project isolation logic unchanged.

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <meta name="black-flag-build" content="2.9.5">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -8,13 +9,14 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Workshop Engine — Black Flag Cove</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2.9.5 />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
   </style>
 </head>
 <body class="boot-locked">
+  <div id="globalBuildBadge" class="global-build-badge" aria-label="Application version">v2.9.5 — CLEAN DECK</div>
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
@@ -32,6 +34,7 @@
           <div class="engine-passkey-divider"><span>DEVICE AUTHENTICATION TEST</span></div>
           <div class="engine-passkey-build">v2.9.4 — DEAD RECKONING</div>
           <div id="enginePasskeyDiagnostics" class="engine-passkey-diagnostics">
+            <div><span>Loaded build</span><strong id="engineCacheIntegrity">v2.9.5</strong></div>
             <div><span>WebAuthn</span><strong id="diagWebAuthn">CHECKING…</strong></div>
             <div><span>Platform authenticator</span><strong id="diagPlatformAuth">CHECKING…</strong></div>
             <div><span>Local passkey</span><strong id="diagPasskeyEnrollment">CHECKING…</strong></div>
@@ -611,7 +614,7 @@
     </section>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2.9.5></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
