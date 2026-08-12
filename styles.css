@@ -1902,3 +1902,41 @@ body.project-admin-mode .admin-placeholder-panel.hidden{
   .admin-core-settings-grid,
   .admin-pin-change-grid{grid-template-columns:1fr}
 }
+
+/* v2.8.9.4 — CUT THE TOWLINE */
+.project-character-hidden{display:none!important}
+body.mugs-project .brand-header{
+  background:linear-gradient(135deg,#19181d,#302833)!important;
+  border-bottom-color:#9b2451!important;
+}
+body.mugs-project .brand-title{color:#f7ead6!important}
+body.mugs-project .brand-subtitle{color:#d7b46a!important}
+body.mugs-project .brand-kicker{color:#cdbfcd!important}
+body.mugs-project .progress-bar{background:#9b2451!important}
+body.mugs-project .welcome-brand{
+  position:relative;
+  min-height:310px;
+  padding:38px;
+  background:linear-gradient(135deg,#211e25,#382f3b)!important;
+}
+body.mugs-project .welcome-brand::after{
+  content:'M';
+  position:absolute;right:10%;top:50%;transform:translateY(-50%);
+  width:170px;height:170px;display:grid;place-items:center;
+  border-radius:50%;border:5px solid #d7b46a;color:#f3ddb0;
+  font:900 96px Georgia,serif;
+}
+body.mugs-project .welcome-copy{max-width:62%;position:relative;z-index:1}
+body.mugs-project .welcome-wordmark{color:#f7ead6!important}
+body.mugs-project .welcome-subtitle{color:#d7b46a!important}
+body.mugs-project .welcome-copy p{color:#eee4ec!important}
+body.mugs-project .wood-ribbon{background:#9b2451!important;color:#fff!important}
+body.mugs-project .primary-btn{background:#9b2451!important;border-color:#9b2451!important}
+body.mugs-project .start-band{color:#7e2049!important}
+body.mugs-project .trust-note{background:#fff8e8;border-color:#d7b46a;color:#4a3c21}
+body.mugs-project [data-screen="price"] .choice-btn[data-price="0"]{
+  pointer-events:none;
+}
+body.mugs-project [data-screen="price"] .choice-btn[data-price="0"]::after{
+  content:' TEST MODE';font-size:10px;opacity:.7;
+}

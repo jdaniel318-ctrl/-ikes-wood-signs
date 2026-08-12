@@ -361,3 +361,15 @@ Built directly from the verified v2.8.8.1 structure-repair branch.
 - Project Admin/Orders only show approved orders; photo-required projects also require a saved/approved image.
 - Mugshot After Dark gets its own project branding/config shell instead of inheriting Ike's.
 - Reusable engine logic may be shared, but project branding/data/order context remains isolated.
+
+
+## v2.8.9.4 — CUT THE TOWLINE
+- Opening a project now loads a complete customer-experience profile, not just a project label.
+- Ike's and Mugs After Dark now have separate customer-facing branding, copy, order prefixes, runtime state, drafts, and business configuration.
+- Entering a project resets customer runtime state before applying that project's configuration.
+- Interrupted drafts are stored per project.
+- Business configuration is stored per project.
+- Mugs After Dark no longer shows Ike's character or Ike/wood-sign language in its primary customer flow.
+- Mugs remains in test-pricing mode until pricing is deliberately configured in Black Flag.
+- Non-Ike project emails are not sent through Ike's email configuration.
+- Shared Engine logic remains reusable, while customer identity and state are isolated by project.

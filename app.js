@@ -59,6 +59,65 @@
       products:[{id:'classic-custom-mug',name:'Classic Custom Mug',published:false,characterLimit:32}]
     }
   ];
+
+  const PROJECT_CUSTOMER_EXPERIENCES={
+    'ikes-wood-signs':{
+      businessName:"Ike's Wood Signs",subtitle:'Self-Serve Sign Ordering',
+      kicker:'Pick your wood • Design • Preview • Order',orderPrefix:'IKE',
+      defaultPrice:65,prices:[45,55,65,90,135],wordingDefault:'Smoke Hole',
+      intro:'Pick the piece of wood you love. Ike will guide you through the rest.',
+      ribbon:'YOUR WOOD • YOUR WORDS • YOUR SIGN',
+      start:'START YOUR SIGN →',
+      priceTitle:'How long is the wood you picked?',
+      priceCopy:"For now, choose the price posted with that length of wood in the trailer. Ike's current price groups are shown below.",
+      priceTrust:'Pick the posted price for the length you chose — Ike will take it from there.',
+      photoBadge:'YOUR WOOD',photoTitle:'Take a Picture of Your Wood',
+      photoCopy:"Place the entire blank in view. The picture stays with Ike's order and becomes the background for your preview.",
+      orientationTitle:'How should your sign face?',
+      wordingTitle:'What should your sign say?',fontTitle:'Choose Your Letter Style',fillTitle:'Choose Your Letter Finish',
+      customerCopy:'Ike will use this information to let you know when your sign is ready for pickup.',
+      doneHeadline:"Your Custom Sign Is In Ike's Hands!",
+      doneCopy:"Thank you for trusting Ike's Wood Signs to make something personal for you. We truly appreciate you choosing a small local business.",
+      hideIke:false
+    },
+    'mugshot-after-dark':{
+      businessName:'Mugs After Dark',subtitle:'Custom mugs for the night shift.',
+      kicker:'Customize • Photograph • Preview • Order',orderPrefix:'MUG',
+      defaultPrice:0,prices:[0],wordingDefault:'Your Message',
+      intro:'Create a custom mug with your own message and preview it before you order.',
+      ribbon:'YOUR MUG • YOUR WORDS • YOUR STYLE',
+      start:'START YOUR MUG →',
+      priceTitle:'Mug pricing is being configured',
+      priceCopy:'This project is in test mode. Final mug pricing will be set in Black Flag before customer launch.',
+      priceTrust:'TEST MODE • Final pricing has not been configured yet.',
+      photoBadge:'YOUR MUG',photoTitle:'Take a Picture of Your Mug',
+      photoCopy:'Place the entire mug in view. The picture stays with this order and becomes the background for your preview.',
+      orientationTitle:'How should the mug design face?',
+      wordingTitle:'What should your mug say?',fontTitle:'Choose Your Letter Style',fillTitle:'Choose Your Letter Color',
+      customerCopy:'Mugs After Dark will use this information to contact you about your order.',
+      doneHeadline:'Your Custom Mug Is In The Queue!',
+      doneCopy:'Thank you for choosing Mugs After Dark. Your approved mug design and order details have been saved.',
+      hideIke:true
+    }
+  };
+
+  function customerExperienceForProject(p){
+    return PROJECT_CUSTOMER_EXPERIENCES[p?.id]||{
+      businessName:p?.name||'Custom Project',subtitle:p?.tagline||'Custom Ordering',
+      kicker:'Customize • Preview • Approve • Order',orderPrefix:p?.orderPrefix||'ORD',
+      defaultPrice:0,prices:[0],wordingDefault:'Your Message',
+      intro:p?.tagline||'Build your custom order.',ribbon:'YOUR PRODUCT • YOUR WORDS • YOUR ORDER',
+      start:'START YOUR ORDER →',priceTitle:'Choose your product option',
+      priceCopy:'Select the configured option for this project.',priceTrust:'',
+      photoBadge:'YOUR PRODUCT',photoTitle:'Take a Picture of Your Product',
+      photoCopy:'Keep the entire product in view.',orientationTitle:'Choose the orientation',
+      wordingTitle:'What should it say?',fontTitle:'Choose Your Letter Style',fillTitle:'Choose Your Color',
+      customerCopy:'We will use this information to contact you about your order.',
+      doneHeadline:'Your Custom Order Has Been Received!',doneCopy:'Your approved design and order details have been saved.',
+      hideIke:true
+    };
+  }
+
   let companies=structuredClone(DEFAULT_COMPANIES);
   let activeProjectId = null;
   let engineActiveProjectId = null;
@@ -668,12 +727,10 @@
     window.scrollTo({top:$('projectEngineControl').offsetTop-20,behavior:'smooth'});
   }
 
-  function enterProject(id){
+  async function enterProject(id){
     const p=projectById(id);if(!p)return;
-    // Engine may open any project for private testing, including unpublished projects.
     activeProjectId=id;
     logActivity(id,'Project opened');
-    // HARD SECURITY RULE: entering a project always destroys Black Flag authorization.
     engineSessionUnlocked=false;
     document.body.classList.remove('boot-locked','engine-mode');
     $('enginePanel')?.classList.add('hidden');
@@ -682,8 +739,14 @@
     $('returnToEngineBtn')?.classList.remove('hidden');
     $('customerApp')?.classList.remove('hidden');
     $('adminPanel')?.classList.add('hidden');
+
+    resetRuntimeStateForProject(p);
     applyProjectTheme(p);
-    if(typeof setScreen==='function')setScreen('welcome');
+    await loadBusinessConfig();
+    recoverDraft();
+    if($('wordingInput')) $('wordingInput').value=state.wording;
+    updateUi();
+    if(typeof setScreen==='function') setScreen('welcome');
   }
 
   function applyProjectPermissions(p){
@@ -705,20 +768,7 @@
 
   function applyProjectTheme(p){
     applyProjectBranding(p);
-    document.body.dataset.projectTheme=p.projectTheme||'custom';
-    applyProjectPermissions(p);
-    // No pirate language or visual assets are introduced here.
-    if(p.id==='ikes-wood-signs'){
-      document.title="Ike's Wood Signs";
-      document.querySelectorAll('.brand-title').forEach(el=>el.textContent="IKE'S WOOD SIGNS");
-      document.querySelectorAll('.brand-subtitle').forEach(el=>el.textContent="Self-Serve Sign Ordering");
-      document.querySelectorAll('.brand-kicker').forEach(el=>el.textContent="Pick your wood • Design • Preview • Order");
-    }else{
-      document.title=p.name;
-      document.querySelectorAll('.brand-title').forEach(el=>el.textContent=p.name.toUpperCase());
-      document.querySelectorAll('.brand-subtitle').forEach(el=>el.textContent=p.tagline||'Custom Ordering');
-      document.querySelectorAll('.brand-kicker').forEach(el=>el.textContent='Customize • Preview • Approve • Order');
-    }
+    applyProjectCustomerExperience(p);
   }
 
   function requestEngineFromProject(){
@@ -1003,7 +1053,10 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       }
     });
     $$('[data-font-sample]').forEach(el=>el.textContent=state.wording||'Your Sign');
-    $('previewPrice').textContent=`Your $${state.price} Ike's Wood Sign`;
+    const px=customerExperienceForProject(activeProject());
+    $('previewPrice').textContent=activeProjectId==='mugshot-after-dark'
+      ? (Number(state.price)>0?`Your $${state.price} ${px.businessName} Mug`:`${px.businessName} • Test Pricing`)
+      : `Your $${state.price} ${px.businessName} Sign`;
     const customChoice=document.querySelector('[data-fill="Other"]');
     if(customChoice) customChoice.classList.toggle('hidden',!state.allowCustomColors);
     if(!state.allowCustomColors && state.fill==='Other') state.fill='Black';
@@ -1168,7 +1221,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const id=newOrderId();
     const approvedPreviewData=await createApprovedPreview();
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId||'ikes-wood-signs',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
+    const order={projectId:activeProjectId,schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
     captureCustomerFromOrder(order);
     try{
@@ -1191,10 +1244,80 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     return order;
   }
 
+
+  function projectScopedKey(baseKey,projectId=activeProjectId){
+    return `${baseKey}:${projectId||'no-project'}`;
+  }
+  function projectDraftKey(){return projectScopedKey(DRAFT_KEY);}
+  function projectBusinessConfigKey(){return `businessConfig:${activeProjectId||'no-project'}`;}
+
+  function resetRuntimeStateForProject(p){
+    const x=customerExperienceForProject(p);
+    Object.assign(state,{
+      current:'welcome',price:Number(x.defaultPrice||0),photoData:'',orientation:'Horizontal',
+      topSide:'Top of photo',wording:x.wordingDefault||'Your Message',font:'B',fill:'Black',
+      contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',
+      currentOrderId:'',currentOrder:null,approvedPreviewData:'',customColor:'#1f6feb'
+    });
+    if($('wordingInput')) $('wordingInput').value=state.wording;
+    ['customerName','customerPhone','customerEmail'].forEach(id=>{if($(id))$(id).value='';});
+    if($('approvalCheck')) $('approvalCheck').checked=false;
+  }
+
+  function setProjectText(id,text){const el=$(id);if(el&&text!==undefined)el.textContent=text;}
+
+  function applyProjectCustomerExperience(p){
+    const x=customerExperienceForProject(p);
+    document.title=p.name;
+    document.body.dataset.activeProject=p.id;
+    document.body.dataset.projectTheme=p.projectTheme||p.id||'custom';
+    document.body.classList.toggle('mugs-project',p.id==='mugshot-after-dark');
+    document.body.classList.toggle('ikes-project',p.id==='ikes-wood-signs');
+
+    document.querySelectorAll('.brand-title').forEach(el=>el.textContent=String(x.businessName).toUpperCase());
+    document.querySelectorAll('.brand-subtitle').forEach(el=>el.textContent=x.subtitle);
+    document.querySelectorAll('.brand-kicker').forEach(el=>el.textContent=x.kicker);
+
+    setProjectText('welcomeWordmark',x.businessName);
+    setProjectText('welcomeSubtitle',x.subtitle);
+    setProjectText('welcomeIntro',x.intro);
+    setProjectText('welcomeRibbon',x.ribbon);
+    setProjectText('projectStartButton',x.start);
+    setProjectText('priceStepTitle',x.priceTitle);
+    setProjectText('priceStepCopy',x.priceCopy);
+    setProjectText('priceTrustNote',x.priceTrust);
+    setProjectText('photoStepBadge',x.photoBadge);
+    setProjectText('photoStepTitle',x.photoTitle);
+    setProjectText('photoStepCopy',x.photoCopy);
+    setProjectText('orientationStepTitle',x.orientationTitle);
+    setProjectText('wordingStepTitle',x.wordingTitle);
+    setProjectText('fontStepTitle',x.fontTitle);
+    setProjectText('fillStepTitle',x.fillTitle);
+    setProjectText('customerStepCopy',x.customerCopy);
+    setProjectText('doneHeadline',x.doneHeadline);
+    setProjectText('doneCopy',x.doneCopy);
+
+    ['projectHeaderCharacter','welcomeCharacter'].forEach(id=>{
+      const el=$(id);if(el)el.classList.toggle('project-character-hidden',!!x.hideIke);
+    });
+    applyProjectPermissions(p);
+  }
+
   async function loadBusinessConfig(){
-    try{const s=await getSetting('businessConfig');businessConfig={...DEFAULT_BUSINESS_CONFIG,...(s?.value||{})};}catch(_){businessConfig={...DEFAULT_BUSINESS_CONFIG};}
-    if(!Array.isArray(businessConfig.prices)||!businessConfig.prices.length) businessConfig.prices=[45,55,65,90,135];
-    renderConfiguredPrices(); applyBusinessCopy();
+    const p=activeProject(),x=customerExperienceForProject(p);
+    const defaults={
+      businessName:x.businessName,orderPrefix:x.orderPrefix,
+      thankYouHeadline:p?.id==='ikes-wood-signs'?'THANK YOU FOR CHOOSING IKE!':`THANK YOU FOR CHOOSING ${String(x.businessName).toUpperCase()}!`,
+      prices:Array.isArray(x.prices)?x.prices:[0],
+      orderStatuses:Array.isArray(p?.workflow)?p.workflow:DEFAULT_BUSINESS_CONFIG.orderStatuses
+    };
+    try{
+      const s=await getSetting(projectBusinessConfigKey());
+      businessConfig={...defaults,...(s?.value||{})};
+    }catch(_){businessConfig={...defaults};}
+    if(!Array.isArray(businessConfig.prices)||!businessConfig.prices.length) businessConfig.prices=[0];
+    renderConfiguredPrices();
+    applyBusinessCopy();
   }
   function renderConfiguredPrices(){
     const box=$('priceChoices'); if(!box)return;
@@ -1203,8 +1326,10 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     box.querySelectorAll('[data-price]').forEach(b=>b.addEventListener('click',()=>{state.price=Number(b.dataset.price);renderConfiguredPrices();updateUi();}));
   }
   function applyBusinessCopy(){
-    document.querySelectorAll('.brand-title').forEach(e=>e.textContent=(businessConfig.businessName||"Ike's Wood Signs").toUpperCase());
+    const p=activeProject(),x=customerExperienceForProject(p);
+    document.querySelectorAll('.brand-title').forEach(e=>e.textContent=String(businessConfig.businessName||x.businessName).toUpperCase());
     const h=document.querySelector('[data-screen="done"] .celebration-kicker');if(h)h.textContent=businessConfig.thankYouHeadline;
+    if(p) applyProjectCustomerExperience(p);
   }
   function populateBusinessSettings(){
     if(!$('businessNameSetting'))return;
@@ -1213,11 +1338,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   async function saveBusinessConfigFromAdmin(){
     const prices=$('priceChoicesSetting').value.split(',').map(v=>Number(v.trim())).filter(v=>Number.isFinite(v)&&v>0);
     businessConfig={...businessConfig,businessName:$('businessNameSetting').value.trim()||"Ike's Wood Signs",orderPrefix:($('orderPrefixSetting').value||'IKE').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'IKE',thankYouHeadline:$('thankYouSetting').value.trim()||DEFAULT_BUSINESS_CONFIG.thankYouHeadline,prices:prices.length?prices:[45,55,65,90,135]};
-    await setSetting('businessConfig',businessConfig);renderConfiguredPrices();applyBusinessCopy();$('businessSettingsStatus').textContent='Business settings saved.';
+    await setSetting(projectBusinessConfigKey(),businessConfig);renderConfiguredPrices();applyBusinessCopy();$('businessSettingsStatus').textContent='Business settings saved.';
   }
-  function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(DRAFT_KEY,JSON.stringify({...state,currentOrder:null,approvedPreviewData:''}));}catch(_){}}
-  function clearDraft(){try{localStorage.removeItem(DRAFT_KEY)}catch(_){}}
-  function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');if(d&&screenOrder.includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
+  function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(projectDraftKey(),JSON.stringify({...state,currentOrder:null,approvedPreviewData:''}));}catch(_){}}
+  function clearDraft(){try{localStorage.removeItem(projectDraftKey())}catch(_){}}
+  function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&screenOrder.includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
 
   function resetOrder(){
     Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',customColor:'#1f6feb'});

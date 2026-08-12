@@ -1,4 +1,4 @@
-const CACHE='workshop-engine-v2-8-9-3-project-isolation-photo-gate';
+const CACHE='workshop-engine-v2-8-9-4-cut-the-towline';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/ike_logo.jpg','./assets/ike_character.jpg'];
 
 self.addEventListener('install',event=>{
