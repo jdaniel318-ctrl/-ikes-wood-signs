@@ -438,3 +438,15 @@ Project launch routing correction.
 - Entering any project first hides all other customer shells and clears project-specific body classes before displaying the selected shell.
 - Existing Ike's and Mugs routing remains unchanged.
 - This change specifically fixes Becca's Bloom Shop opening Ike's customer page.
+
+
+## v2.9.9 — MIDNIGHT BLOOM
+Flower-order submission routing fix.
+
+- Fixes `PLACE TEST ORDER` doing nothing for flower projects created through `+ Add Project`.
+- Removes the hard-coded `beccas-bloom-shop` submission check.
+- Flower orders now use the currently active flower project's real project ID, business name, and order prefix.
+- A project named with punctuation (for example `Becca’s Bloom Shop`) no longer fails because its generated slug differs from the original seeded test ID.
+- If saving to IndexedDB fails, the customer now sees an error instead of silently moving forward.
+- The order confirmation remains tied to the active flower project.
+- No changes to Ike's or Mugs order submission logic.
