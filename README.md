@@ -373,3 +373,16 @@ Built directly from the verified v2.8.8.1 structure-repair branch.
 - Mugs remains in test-pricing mode until pricing is deliberately configured in Black Flag.
 - Non-Ike project emails are not sent through Ike's email configuration.
 - Shared Engine logic remains reusable, while customer identity and state are isolated by project.
+
+
+## v2.8.9.5 — SEAL THE HATCHES
+Towline repair voyage.
+
+- Returning from any project now destroys Engine authorization and always routes through the Black Flag PIN gate.
+- Black Flag's own theme is restored before Engine entry; Ike and Mugs theme classes, project CSS variables, and active-project state are removed.
+- Successful Engine authentication also defensively reapplies the Black Flag theme.
+- For photo-required projects, normal Admin/Orders only accept orders with an approved generated preview image.
+- Raw photo data alone is no longer sufficient to make a photo-required order valid in Admin.
+- Required-photo orders do not receive an order/confirmation number until the approved preview image has been successfully generated.
+- Legacy/test orders without proof of the required approved image remain stored but stay out of normal Project Admin order views.
+- Projects without a photo requirement are unaffected by the photo gate.

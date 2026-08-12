@@ -771,15 +771,32 @@
     applyProjectCustomerExperience(p);
   }
 
+  function restoreBlackFlagTheme(){
+    document.body.classList.remove('project-mode','mugs-project','ikes-project');
+    document.body.removeAttribute('data-active-project');
+    document.body.removeAttribute('data-project-theme');
+    document.documentElement.style.removeProperty('--project-primary');
+    document.documentElement.style.removeProperty('--project-accent');
+    document.title='Workshop Engine';
+  }
+
   function requestEngineFromProject(){
-    engineSessionUnlocked=false;
-    document.body.classList.remove('project-mode','engine-mode');
+    // Crossing back to Black Flag is always a locked boundary.
+    lockEngineSession();
+    activeProjectId=null;
+    restoreBlackFlagTheme();
+
+    document.body.classList.remove('engine-mode');
     document.body.classList.add('boot-locked');
     $('returnToEngineBtn')?.classList.add('hidden');
     $('customerApp')?.classList.add('hidden');
     $('adminPanel')?.classList.add('hidden');
+    $('projectOrdersPanel')?.classList.add('hidden');
+    $('projectLedgerPanel')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
-    if(typeof requireEngineEntry==='function') requireEngineEntry();
+
+    // Use the Black Flag portal itself so a fresh PIN is required every time.
+    if(typeof window.requireEngineEntry==='function') window.requireEngineEntry();
     else $('blackFlagEntryGate')?.classList.remove('hidden');
   }
 
@@ -1218,8 +1235,15 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       alert('A confirmed product photo is required before this order can be submitted.');
       return null;
     }
-    const id=newOrderId();
+
+    // Build and verify the approved preview before creating a confirmation/order number.
     const approvedPreviewData=await createApprovedPreview();
+    if(projectRequiresPhoto() && !approvedPreviewData){
+      alert('The approved photo preview could not be confirmed. Please return to the photo/preview step and try again.');
+      return null;
+    }
+
+    const id=newOrderId();
     state.approvedPreviewData=approvedPreviewData;
     const order={projectId:activeProjectId,schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
@@ -1720,7 +1744,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const box=$('projectAdminQuickStats');
     if(!p||!box)return;
 
-    const orders=(await getMergedOrders()).filter(o=>(o.projectId||'ikes-wood-signs')===p.id && o.approved===true);
+    const orders=approvedProjectOrders(await getMergedOrders(),p);
     const counts={
       all:orders.length,
       New:orders.filter(o=>o.status==='New').length,
@@ -1771,7 +1795,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     return (rows||[]).filter(o=>{
       const sameProject=(o.projectId||'ikes-wood-signs')===p.id;
       const approved=o.approved===true;
-      const photoOkay=!requiresPhoto || !!o.approvedPreviewData || !!o.photoData;
+      // For photo-required projects the generated approved preview is the proof
+      // that the required customer photo made it through approval.
+      const photoOkay=!requiresPhoto || !!o.approvedPreviewData;
       return sameProject && approved && photoOkay;
     });
   }
@@ -2189,7 +2215,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if($('projectTabs')) $('projectTabs').addEventListener('click',e=>{const b=e.target.closest('[data-project-tab]');if(b&&engineActiveProjectId)renderProjectTab(engineActiveProjectId,b.dataset.projectTab);});
     if($('cancelAddProjectBtn')) $('cancelAddProjectBtn').addEventListener('click',()=>$('addProjectGate').classList.add('hidden'));
     if($('createProjectBtn')) $('createProjectBtn').addEventListener('click',createProject);
-    if($('returnToEngineBtn')) $('returnToEngineBtn').addEventListener('click',requestEngineFromProject);
+    if($('returnToEngineBtn')) $('returnToEngineBtn').addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      requestEngineFromProject();
+    },true);
 
     $('saveEngineIdentityBtn').addEventListener('click',async()=>{
       const name=$('engineNameSetting').value.trim()||'Workshop Engine';
@@ -2480,6 +2510,8 @@ document.addEventListener('click', (event) => {
     }
   }
 
+  window.requireEngineEntry=requireEngineEntry;
+
   function leaveEntry(){
     const gate=byId('blackFlagEntryGate');
     if(gate) gate.classList.add('hidden');
@@ -2512,6 +2544,7 @@ document.addEventListener('click', (event) => {
     if(window.BlackFlagAuth) window.BlackFlagAuth.unlock();
     if(input) input.value='';
     leaveEntry();
+    if(typeof restoreBlackFlagTheme==='function') restoreBlackFlagTheme();
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
 
