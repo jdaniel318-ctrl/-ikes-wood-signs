@@ -2499,3 +2499,23 @@ body.dark-flag-pirate-mode .graphics-library-preview{background:#17150f!importan
 body.dark-flag-pirate-mode .graphics-library-copy small{color:#9d9279!important}
 body.dark-flag-pirate-mode .graphics-lock-mark{background:#18140d!important;border-color:#9c7838!important;color:#d1aa60!important}
 @media(max-width:720px){.graphics-library{grid-template-columns:1fr}}
+
+/* v2.9.17 — BIGGER CARGO HOLD
+   Shared three-letter project namespace badges. Project codes stay inside their marks. */
+.project-mark{
+  box-sizing:border-box!important;
+  width:58px!important;min-width:58px!important;height:50px!important;
+  padding:0 6px!important;overflow:hidden!important;
+  font-size:16px!important;line-height:1!important;letter-spacing:.35px!important;
+  white-space:nowrap!important;text-align:center!important;
+}
+.project-admin-gate-code{
+  max-width:100%;padding:0 7px;box-sizing:border-box;
+  font-size:20px!important;line-height:1!important;letter-spacing:.25px!important;
+  white-space:nowrap;overflow:hidden;text-align:center;
+}
+.graphics-library-preview span{
+  max-width:100%;box-sizing:border-box;padding:0 5px;
+  font-size:clamp(11px,1.5vw,16px)!important;letter-spacing:.25px!important;
+  white-space:nowrap;overflow:hidden;text-align:center;
+}

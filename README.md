@@ -549,7 +549,7 @@ Pirate Mode becomes a full Dark Flag appearance layer.
 - Core rule remains: different brands, different data, same Engine.
 
 
-## v2.9.16 — GRAPHICS QUARTERS
+## v2.9.17 — BIGGER CARGO HOLD
 Foundation for Dark Flag Graphics Studio.
 
 - Upgrades Branding & Graphics into a project-aware Graphics Manager.
@@ -562,3 +562,10 @@ Foundation for Dark Flag Graphics Studio.
 - Existing Upload / Replace / Clear behavior remains intact.
 - Pirate Mode receives matching Graphics Manager presentation without changing project assets.
 - This release intentionally does NOT add AI generation yet. It builds the isolated asset/slot foundation that Graphics AI will use next.
+
+
+### v2.9.17 storage correction
+- Project graphics are stored as binary image blobs in IndexedDB instead of base64 strings in localStorage.
+- Graphics remain namespaced by permanent project ID plus slot, preserving project isolation.
+- Existing v2.9.16 localStorage graphics are migrated into the graphics database when possible and the legacy payload is then removed.
+- Shared three-letter project badges were tightened so IKE, BBS, MUG, and future three-letter codes remain contained.

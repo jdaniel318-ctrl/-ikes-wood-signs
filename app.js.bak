@@ -768,93 +768,47 @@
 
 
 
-  const PROJECT_ASSET_STORAGE_KEY='blackFlagProjectAssetsV1'; // legacy localStorage key; migrated once
-  const PROJECT_ASSET_DB='blackFlagGraphicsDB';
-  const PROJECT_ASSET_DB_VERSION=1;
-  const PROJECT_ASSET_STORE='projectGraphics';
+  const PROJECT_ASSET_STORAGE_KEY='blackFlagProjectAssetsV1';
   const PROJECT_ASSET_SLOTS=['projectLogo','heroGraphic','footerGraphic','backgroundImage'];
-  const projectAssetMemory=new Map();
 
-  function openProjectAssetDb(){
+  function readAllProjectAssets(){
+    try{return JSON.parse(localStorage.getItem(PROJECT_ASSET_STORAGE_KEY)||'{}')||{};}catch(_){return {};}
+  }
+  function writeAllProjectAssets(all){
+    localStorage.setItem(PROJECT_ASSET_STORAGE_KEY,JSON.stringify(all||{}));
+  }
+  function readProjectAssets(projectId){
+    const all=readAllProjectAssets();
+    return all[projectId]||{};
+  }
+  function saveProjectAssets(projectId,assets){
+    const all=readAllProjectAssets();
+    all[projectId]={...(all[projectId]||{}),...(assets||{})};
+    writeAllProjectAssets(all);
+    return all[projectId];
+  }
+  function clearProjectAsset(projectId,slot){
+    const all=readAllProjectAssets();
+    all[projectId]={...(all[projectId]||{})};
+    delete all[projectId][slot];
+    writeAllProjectAssets(all);
+  }
+  function fileToDataUrl(file){
     return new Promise((resolve,reject)=>{
-      const req=indexedDB.open(PROJECT_ASSET_DB,PROJECT_ASSET_DB_VERSION);
-      req.onupgradeneeded=()=>{
-        const db=req.result;
-        if(!db.objectStoreNames.contains(PROJECT_ASSET_STORE)) db.createObjectStore(PROJECT_ASSET_STORE,{keyPath:'key'});
-      };
-      req.onsuccess=()=>resolve(req.result);
-      req.onerror=()=>reject(req.error||new Error('Graphics storage could not be opened.'));
+      const r=new FileReader();
+      r.onload=()=>resolve(String(r.result||''));
+      r.onerror=()=>reject(r.error||new Error('Could not read image.'));
+      r.readAsDataURL(file);
     });
-  }
-  async function idbGraphicGet(projectId,slot){
-    const db=await openProjectAssetDb();
-    return new Promise((resolve,reject)=>{
-      const req=db.transaction(PROJECT_ASSET_STORE,'readonly').objectStore(PROJECT_ASSET_STORE).get(`${projectId}::${slot}`);
-      req.onsuccess=()=>resolve(req.result||null); req.onerror=()=>reject(req.error);
-    });
-  }
-  async function idbGraphicPut(projectId,slot,blob){
-    const db=await openProjectAssetDb();
-    return new Promise((resolve,reject)=>{
-      const tx=db.transaction(PROJECT_ASSET_STORE,'readwrite');
-      tx.objectStore(PROJECT_ASSET_STORE).put({key:`${projectId}::${slot}`,projectId,slot,blob,updatedAt:new Date().toISOString()});
-      tx.oncomplete=()=>resolve(); tx.onerror=()=>reject(tx.error||new Error('Graphic could not be stored.'));
-    });
-  }
-  async function idbGraphicDelete(projectId,slot){
-    const db=await openProjectAssetDb();
-    return new Promise((resolve,reject)=>{
-      const tx=db.transaction(PROJECT_ASSET_STORE,'readwrite');
-      tx.objectStore(PROJECT_ASSET_STORE).delete(`${projectId}::${slot}`);
-      tx.oncomplete=()=>resolve(); tx.onerror=()=>reject(tx.error);
-    });
-  }
-  function blobToDataUrl(blob){
-    return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(r.error);r.readAsDataURL(blob);});
-  }
-  async function readProjectAssets(projectId){
-    if(projectAssetMemory.has(projectId)) return projectAssetMemory.get(projectId);
-    const assets={};
-    for(const slot of PROJECT_ASSET_SLOTS){
-      const row=await idbGraphicGet(projectId,slot);
-      if(row?.blob) assets[slot]=await blobToDataUrl(row.blob);
-    }
-    projectAssetMemory.set(projectId,assets);
-    return assets;
-  }
-  async function saveProjectAssetFile(projectId,slot,file){
-    await idbGraphicPut(projectId,slot,file);
-    const assets={...(projectAssetMemory.get(projectId)||{})};
-    assets[slot]=await blobToDataUrl(file);
-    projectAssetMemory.set(projectId,assets);
-    return assets[slot];
-  }
-  async function clearProjectAsset(projectId,slot){
-    await idbGraphicDelete(projectId,slot);
-    const assets={...(projectAssetMemory.get(projectId)||{})}; delete assets[slot]; projectAssetMemory.set(projectId,assets);
-  }
-  async function migrateLegacyProjectAssets(){
-    let legacy={}; try{legacy=JSON.parse(localStorage.getItem(PROJECT_ASSET_STORAGE_KEY)||'{}')||{};}catch(_){legacy={};}
-    const ids=Object.keys(legacy); if(!ids.length)return;
-    try{
-      for(const projectId of ids){
-        for(const slot of PROJECT_ASSET_SLOTS){
-          const data=legacy[projectId]?.[slot]; if(!data)continue;
-          const existing=await idbGraphicGet(projectId,slot); if(existing)continue;
-          const blob=await (await fetch(data)).blob(); await idbGraphicPut(projectId,slot,blob);
-        }
-      }
-      localStorage.removeItem(PROJECT_ASSET_STORAGE_KEY);
-    }catch(err){console.warn('Legacy project graphics migration deferred',err);}
   }
   function setSlotImage(id,data){
     const el=$(id);if(!el)return;
     if(data){el.src=data;el.classList.remove('hidden');}
     else{el.removeAttribute('src');el.classList.add('hidden');}
   }
-  async function applyProjectAssetSlots(p){
+  function applyProjectAssetSlots(p){
     if(!p)return;
-    const assets=await readProjectAssets(p.id);
+    const assets=readProjectAssets(p.id);
 
     if(p.id==='mugshot-after-dark'){
       setSlotImage('mugsProjectLogoImg',assets.projectLogo);
@@ -867,6 +821,7 @@
       const shell=$('flowersCustomerShell');
       if(shell) shell.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
     }else if(p.id==='ikes-wood-signs'){
+      // Ike's current built-in graphics remain the default. Custom slots can override later without removing existing assets.
       const root=$('customerApp');
       if(root) root.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
     }
@@ -913,9 +868,9 @@
     delete meta[slot];
     writeProjectAssetMeta(projectId,meta);
   }
-  async function renderProjectGraphicsLibrary(){
+  function renderProjectGraphicsLibrary(){
     const p=projectById(activeProjectId); if(!p)return;
-    const assets=await readProjectAssets(p.id);
+    const assets=readProjectAssets(p.id);
     const meta=readProjectAssetMeta(p.id);
     const slots=graphicSlotsForProject(p);
     if($('graphicsProjectIdentity')) $('graphicsProjectIdentity').textContent=`${p.projectCode||p.orderPrefix||'PRJ'} • ${p.name}`;
@@ -935,7 +890,7 @@
 
   async function loadProjectAssetsEditor(){
     const p=projectById(activeProjectId);if(!p)return;
-    const assets=await readProjectAssets(p.id);
+    const assets=readProjectAssets(p.id);
     const map={
       projectLogo:'assetProjectLogoPreview',
       heroGraphic:'assetHeroGraphicPreview',
@@ -949,7 +904,7 @@
       else{el.removeAttribute('src');el.classList.add('hidden');}
     });
     if($('assetSaveMessage'))$('assetSaveMessage').textContent='';
-    await renderProjectGraphicsLibrary();
+    renderProjectGraphicsLibrary();
   }
 
   async function collectAndSaveProjectAssets(){
@@ -960,20 +915,16 @@
       footerGraphic:'assetFooterGraphicInput',
       backgroundImage:'assetBackgroundInput'
     };
-    let savedCount=0;
+    const next={};
     for(const [slot,id] of Object.entries(fields)){
-      const input=$(id), file=input?.files?.[0];
-      if(file){
-        await saveProjectAssetFile(p.id,slot,file);
-        recordProjectGraphic(p.id,slot,null,file);
-        savedCount++;
-        if(input) input.value='';
-      }
+      const file=$(id)?.files?.[0];
+      if(file){next[slot]=await fileToDataUrl(file);recordProjectGraphic(p.id,slot,next[slot],file);}
     }
-    await applyProjectAssetSlots(p);
+    const saved=saveProjectAssets(p.id,next);
+    applyProjectAssetSlots(p);
     await loadProjectAssetsEditor();
-    if($('assetSaveMessage')) $('assetSaveMessage').textContent=savedCount?'Saved in the project graphics hold. Isolated to this project.':'No new graphics selected.';
-    return readProjectAssets(p.id);
+    if($('assetSaveMessage'))$('assetSaveMessage').textContent='Saved for this project only.';
+    return saved;
   }
   function bindProjectAssetEditor(){
     const save=$('assetSaveBtn');
@@ -987,12 +938,12 @@
       assetBackgroundClear:'backgroundImage'
     };
     Object.entries(clears).forEach(([id,slot])=>{
-      $(id)?.addEventListener('click',async()=>{
+      $(id)?.addEventListener('click',()=>{
         const p=projectById(activeProjectId);if(!p)return;
-        await clearProjectAsset(p.id,slot);
+        clearProjectAsset(p.id,slot);
         removeProjectGraphicMeta(p.id,slot);
-        await applyProjectAssetSlots(p);
-        await loadProjectAssetsEditor();
+        applyProjectAssetSlots(p);
+        loadProjectAssetsEditor();
       });
     });
   }
@@ -1044,7 +995,7 @@
     activeProjectId=id;logActivity(id,'Project opened');engineSessionUnlocked=false;
     document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');$('adminPanel')?.classList.add('hidden');
     showCustomerShellForProject(p);
-    await applyProjectAssetSlots(p);
+    applyProjectAssetSlots(p);
     if(resolvedShell==='ikes'){
       $('returnToEngineBtn')?.classList.remove('hidden');resetRuntimeStateForProject(p);applyProjectTheme(p);await loadBusinessConfig();recoverDraft();if($('wordingInput'))$('wordingInput').value=state.wording;updateUi();if(typeof setScreen==='function')setScreen('welcome');
     }else if(resolvedShell==='mugs'){
@@ -2439,14 +2390,14 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
 
-  async function configureProjectAdminGate(){
+  function configureProjectAdminGate(){
     const p=activeProject();
     if(!p)return;
     normalizeProjectCode(p);
     const code=String(p.projectCode||p.orderPrefix||'PRJ').toUpperCase();
     const name=p?.branding?.businessName||p.name||'Project';
     const theme=blackFlagAdminThemeFor(p);
-    const assets=await readProjectAssets(p.id);
+    const assets=readProjectAssets(p.id);
 
     document.documentElement.style.setProperty('--gate-header',theme.header||'#173742');
     document.documentElement.style.setProperty('--gate-accent',theme.accent||'#d7bd72');
@@ -2857,8 +2808,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('newOrderBtn').addEventListener('click',resetOrder);
     if($('completeOrderBtn')) $('completeOrderBtn').addEventListener('click',resetOrder);
     $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
-    $('adminBtn').addEventListener('click',async()=>{
-      await configureProjectAdminGate();
+    $('adminBtn').addEventListener('click',()=>{
+      configureProjectAdminGate();
       window.__pendingProtectedPage='settings';
       document.body.classList.add('modal-open');
       $('adminPinInput').value='';
@@ -3246,6 +3197,4 @@ document.addEventListener('click', (event) => {
     if(!t) return;
     lockEngineSession();
   });
-  migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
-
 })();
