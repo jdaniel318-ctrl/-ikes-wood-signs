@@ -109,6 +109,10 @@
       event.preventDefault();
       show('captainBlueprint');
     });
+    byId('captainBlueprintDeskBtn')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      show('captainBlueprint');
+    });
     byId('captainBlueprintClose')?.addEventListener('click', (event) => {
       event.preventDefault();
       hide('captainBlueprint');

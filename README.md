@@ -833,3 +833,14 @@ The Blueprint is the Captain's living map of the complete Dark Sky system. It de
 Beginning with this build, material architecture changes should include a corresponding update to the Ship's Blueprint and its revision label.
 
 This release adds the map/documentation surface and does not intentionally collapse project namespaces or grant new destructive authority.
+
+
+## v2.9.44 — Cinematic Captain's Quarters
+- Rebuilt the Captain's Quarters as a whole-room command environment rather than a shelf/dashboard.
+- Promoted Ship's Blueprint to the center of the Captain's physical command desk.
+- Dark Sky is now a back-wall navigation chart instead of covering other controls.
+- First Mate's Table is a distinct counsel station.
+- Captain's Log, Cargo Hold, Compass and Powder Keg remain functional physical objects.
+- Added original age-of-sail cabin atmosphere: storm water, timber, shelves, candles, globe, telescope, scrolls, quill and command desk.
+- Kept project-isolation and Captain authentication logic unchanged.
+- Visual direction is an original cinematic pirate/age-of-sail cabin; no copied film characters, logos, or production artwork.

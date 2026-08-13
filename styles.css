@@ -3667,3 +3667,118 @@ html.captain-controller-ready #captainQuartersGate.hidden{
  .cq-compartments,.cq-vessels{grid-template-columns:1fr}
  .cq-blueprint-roll{width:135px;min-height:78px}
 }
+
+
+/* ==============================================================
+   v2.9.44 — CINEMATIC CAPTAIN'S QUARTERS
+   Original age-of-sail command cabin; realism and whole-room UX.
+   ============================================================== */
+#captainQuarters{background:#020303!important}
+#captainQuarters .cq-chamber-world{
+ background:
+ radial-gradient(ellipse at 53% 68%,rgba(181,93,28,.18),transparent 36%),
+ linear-gradient(180deg,#070605 0,#100906 54%,#020304 100%)!important;
+}
+#captainQuarters .cq-cabin-sky{background:linear-gradient(#03070a 0 48%,#020304 49%)!important}
+#captainQuarters .cq-room-beam{width:6%!important;background:linear-gradient(90deg,#080402,#3b1b0b 35%,#6a3516 51%,#2b1208 72%,#070302)!important;box-shadow:0 0 0 3px #050201,0 0 35px #000!important}
+#captainQuarters .cq-room-window{top:12%!important;height:42%!important;border-color:#1a0b05!important;box-shadow:0 0 0 5px #68401e,0 0 0 12px #050302,inset 0 0 55px #000,0 22px 60px #000!important}
+#captainQuarters .cq-room-sea{
+ height:48%!important;
+ background:
+ radial-gradient(ellipse at 30% 90%,#48677755 0 4%,transparent 20%),
+ repeating-radial-gradient(ellipse at 50% 115%,#294b5b 0 8px,#0a202c 10px 24px,#183846 26px 34px)!important;
+ background-size:100% 100%,210px 64px!important;
+ animation:cqCineSea 3.6s ease-in-out infinite alternate!important
+}
+#captainQuarters .cq-room-moon{width:58px!important;height:58px!important;opacity:.8;filter:blur(.3px)}
+#captainQuarters .cq-room-banner{top:2.5%!important;background:linear-gradient(#120906,#050303)!important;border-color:#78501f!important}
+#captainQuarters .cq-room-banner strong{font-size:28px!important;color:#d6b66e!important}
+#captainQuarters .cq-room-map-frame{display:none!important}
+#captainQuarters .cq-room-desk{height:29%!important;background:linear-gradient(#75411c,#351709 12%,#160905 50%,#080403)!important;border-top-color:#875125!important}
+
+/* Atmospheric original cabin dressing. */
+.cq-cinematic-layer{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.cq-cine-ceiling{position:absolute;inset:0 0 auto;height:15%;background:repeating-linear-gradient(90deg,#080403 0 78px,#241107 80px 92px,#0a0402 94px 165px);box-shadow:0 14px 45px #000}
+.cq-cine-shelf{position:absolute;top:20%;width:21%;height:22%;border-bottom:13px solid #341608;box-shadow:0 12px 20px #000}
+.shelf-left{left:35.5%}.shelf-right{right:3%}
+.cq-cine-shelf i{display:inline-block;width:18px;height:64px;margin:25px 5px 0;background:linear-gradient(90deg,#321207,#7a3b15,#1a0904);border-radius:2px;transform:rotate(2deg);box-shadow:2px 3px 5px #000}
+.cq-cine-shelf i:nth-child(2){height:50px;transform:rotate(-4deg)}.cq-cine-shelf i:nth-child(3){height:72px}
+.cq-cine-candle{position:absolute;width:12px;height:52px;background:#c4a46b;box-shadow:0 0 22px #e89c37aa}.candle-a{right:7%;top:39%}.candle-b{left:39%;top:31%}
+.cq-cine-candle i{position:absolute;left:1px;top:-18px;width:10px;height:20px;border-radius:60% 40% 60% 40%;background:#ffd86e;box-shadow:0 0 18px 8px #e8952c88;animation:cqCandle .9s infinite alternate}
+.cq-cine-globe{position:absolute;right:2.5%;bottom:24%;width:130px;height:130px;border-radius:50%;border:6px solid #43210c;background:radial-gradient(circle at 35% 30%,#9a6a2b,#4b2a10 65%,#160a04);box-shadow:0 13px 25px #000}
+.cq-cine-globe:before,.cq-cine-globe:after{content:"";position:absolute;border:2px solid #1d0d05;border-radius:50%;inset:18% 6%}.cq-cine-globe:after{inset:5% 35%}
+.cq-cine-telescope{position:absolute;right:10%;bottom:17%;width:210px;height:28px;border-radius:20px;background:linear-gradient(#9b7031,#2a1709 40%,#080403 60%,#805925);transform:rotate(-7deg);box-shadow:0 8px 14px #000}
+.cq-cine-mug{position:absolute;left:5%;bottom:19%;width:58px;height:65px;padding-top:17px;text-align:center;border:5px solid #2b1509;border-radius:4px 4px 18px 18px;background:#090604;color:#8b642b;font-size:21px;box-shadow:0 10px 16px #000}
+.cq-cine-scroll{position:absolute;bottom:17%;width:150px;height:24px;border-radius:50%;background:linear-gradient(#d0ae72,#76502a,#d0ae72);box-shadow:0 7px 10px #000}.scroll-a{left:19%;transform:rotate(12deg)}.scroll-b{right:24%;transform:rotate(-9deg)}
+.cq-cine-title{position:absolute;left:50%;top:7%;transform:translateX(-50%);text-align:center;color:#d9b86c;text-shadow:0 3px 8px #000;white-space:nowrap}.cq-cine-title small{display:block;font:700 9px Georgia,serif;letter-spacing:.35em}.cq-cine-title strong{display:block;margin-top:3px;font:700 clamp(25px,3vw,45px) Georgia,serif;letter-spacing:.08em}
+.cq-cine-motto{position:absolute;left:50%;bottom:1.2%;transform:translateX(-50%);font:700 9px Georgia,serif;letter-spacing:.28em;color:#9e783d;white-space:nowrap}
+
+/* Remove the floating title: the room now owns the title. */
+#captainQuarters .cq-cabin-title{display:none!important}
+
+/* The actual command surface occupies the lower half of the room. */
+#captainQuarters .cq-rustic-desk{
+ position:fixed!important;z-index:10!important;left:5%!important;right:5%!important;bottom:6%!important;
+ width:auto!important;height:36vh!important;min-height:270px!important;margin:0!important;
+ border:9px ridge #67401e!important;border-radius:12px!important;
+ background:
+ radial-gradient(ellipse at 50% 15%,#a060281f,transparent 48%),
+ repeating-linear-gradient(93deg,#5b2b10 0 115px,#341507 117px 122px,#6c3514 124px 220px)!important;
+ box-shadow:0 -22px 55px #000,0 32px 65px #000,inset 0 4px #9d642c,inset 0 -35px 55px #0b0402!important;
+ overflow:visible!important
+}
+#captainQuarters .cq-rustic-desk:before{content:"CAPTAIN'S COMMAND DESK";position:absolute;left:18px;bottom:8px;color:#a57c3d;font:700 8px Georgia,serif;letter-spacing:.25em}
+
+/* Primary architecture map: center-stage physical parchment. */
+.cq-master-blueprint{
+ position:absolute!important;z-index:14!important;left:27%!important;top:12%!important;width:48%!important;height:67%!important;
+ border:0!important;border-radius:2px!important;color:#38210c!important;text-shadow:none!important;
+ background:
+ linear-gradient(27deg,transparent 49%,#57381422 50% 50.5%,transparent 51%),
+ repeating-linear-gradient(0deg,transparent 0 27px,#56361112 28px),
+ radial-gradient(circle at 77% 28%,#6b431a22 0 3px,transparent 4px),
+ linear-gradient(104deg,#9e733e,#d9b873 7%,#c59d5b 50%,#dfc17d 93%,#906436)!important;
+ box-shadow:0 16px 22px #000c,inset 0 0 45px #4a250d77!important;
+ transform:rotate(-1.2deg)!important;padding:25px!important;text-align:center!important
+}
+.cq-master-blueprint:before,.cq-master-blueprint:after{content:"";position:absolute;top:-8px;bottom:-8px;width:22px;border-radius:50%;background:linear-gradient(90deg,#593414,#d0a967,#5a3517);box-shadow:3px 5px 9px #0009}.cq-master-blueprint:before{left:-11px}.cq-master-blueprint:after{right:-11px}
+.cq-master-blueprint small{display:block;font:700 8px Georgia,serif;letter-spacing:.2em}.cq-master-blueprint strong{display:block;margin:8px 0 3px;font:700 clamp(22px,2.5vw,37px) Georgia,serif;letter-spacing:.04em}.cq-master-blueprint span{display:block;font:700 10px Georgia,serif;letter-spacing:.1em}.cq-master-blueprint b{display:block;margin-top:15px;font:700 9px Georgia,serif;letter-spacing:.16em}
+.cq-master-blueprint:hover,.cq-master-blueprint:focus-visible{outline:3px solid #e4c06c!important;filter:brightness(1.08);transform:rotate(0) translateY(-5px)!important}
+
+/* Existing tools become physical stations around the central chart. */
+#captainQuarters .cq-leather-log{left:2.5%!important;top:14%!important;width:18%!important;height:48%!important}
+#captainQuarters .cq-cargo-chest{left:3.5%!important;top:67%!important;width:18%!important;height:27%!important;border-radius:35px 35px 7px 7px!important}
+#captainQuarters .cq-brass-compass{left:auto!important;right:4%!important;top:8%!important;width:145px!important;height:145px!important}
+#captainQuarters .cq-powder-key{right:3%!important;top:58%!important;width:18%!important;height:32%!important}
+#captainQuarters .cq-quill{right:21%!important;bottom:15%!important}.cq-inkwell{right:24%!important;bottom:9%!important}.cq-coins{left:77%!important;bottom:7%!important}
+#captainQuarters .cq-desk-lantern{display:none!important}
+
+/* Dark Sky becomes navigation on the back wall, no longer covers the command desk. */
+#captainQuarters .cq-interactive-map{
+ top:19%!important;left:62%!important;width:18vw!important;max-width:260px!important;height:21vh!important;min-height:145px!important;
+ transform:translateX(-50%) rotate(1deg)!important;z-index:9!important;opacity:.96
+}
+#captainQuarters .cq-blueprint-roll{display:none!important}
+
+/* First Mate gets a real station, not an overlapping modal-looking slab. */
+#captainQuarters .cq-first-mate-table{
+ position:fixed!important;z-index:11!important;left:36%!important;top:39%!important;width:29%!important;margin:0!important;
+ padding:12px 16px!important;background:linear-gradient(#1c1009ed,#080504ed)!important;border:5px ridge #5d3718!important;
+ box-shadow:0 12px 25px #000!important;transform:rotate(-.5deg)
+}
+
+/* Return remains unmistakable but less app-like. */
+#captainExitBtn{background:linear-gradient(#2c170b,#090504)!important;border-radius:5px!important;border-color:#8c642e!important;font-family:Georgia,serif!important}
+
+/* Hide legacy prop strip if present; desk objects are the interface. */
+#captainQuarters .cq-cabin-props{display:none!important}
+
+@keyframes cqCineSea{to{transform:translateX(4%) translateY(3px) rotate(.3deg)}}
+@keyframes cqCandle{to{transform:scale(.9,1.12) rotate(2deg);filter:brightness(1.25)}}
+@media(max-width:900px){
+ .cq-cine-title{top:8.5%}.cq-cine-globe{transform:scale(.72);transform-origin:bottom right}.cq-cine-telescope{transform:scale(.75) rotate(-7deg);transform-origin:bottom right}
+ #captainQuarters .cq-rustic-desk{left:2%!important;right:2%!important;height:38vh!important}
+ .cq-master-blueprint{left:24%!important;width:52%!important}
+ #captainQuarters .cq-first-mate-table{left:32%!important;width:36%!important}
+}
+@media(prefers-reduced-motion:reduce){#captainQuarters .cq-room-sea,.cq-cine-candle i{animation:none!important}}
