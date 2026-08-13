@@ -1,46 +1,41 @@
-# Workshop Engine v2.9.66 — Powder Keg Governance Console
+# Workshop Engine v2.9.67 — Owner Access Test Flight
 
-## Captain business relationship authority
-The Powder Keg now distinguishes a business relationship decision from data destruction.
+## What works now
+Inside Project Control Center → Owner Access:
+- Save owner name and email.
+- Choose project-scoped owner capabilities.
+- Generate a one-time 7-day Owner Invitation.
+- Copy the claim link manually.
+- Revoke an unclaimed invitation.
+- Preview the isolated Owner Portal.
+- Open the test claim link and claim Owner Access.
+- Claiming changes Owner status to Active and creates a project-scoped owner session.
 
-Captain may:
-- Approve / Restore
-- Suspend
-- End Relationship / Refuse Service
+## Invitation security
+- Invitation tokens are generated with Web Crypto.
+- Only a SHA-256 hash is stored with the project.
+- The raw claim link is displayed when generated but is not stored in project data.
+- Claimed, expired, or revoked invitations cannot be used again.
+- Suspended/ended business relationships cannot claim or use Owner Access.
 
-Suspend or End Relationship:
-- requires a Captain reason;
-- requires explicit confirmation;
-- removes public operation;
-- returns active/Sea Trial deployments to harbor;
-- preserves project, orders, ledger, customers, marketing and audit records.
+## Owner Portal boundary
+The Owner Portal exposes only the selected project's granted modules and summary data.
+It does not expose Black Flag, Engine Room, Captain authority, other projects, or cross-project business data.
 
-Permanent Project Purge remains a completely separate destructive authority and is still review-only.
+## Ike test case
+For an in-person test:
+1. Engine Room → Ike's Wood Signs → Control Center → Owner Access.
+2. Enter Ike's name/email and save.
+3. Generate Test Invitation.
+4. Open Test Claim.
+5. Claim access.
+6. Review Ike's isolated Business Portal together.
 
-## Powder Keg organization
-Powder Keg is now divided into:
-1. Platform Authority
-2. Recovery Authority
-3. Destructive Authority
+## Important limitation
+This is a real local invitation/claim flow, not yet remote production authentication.
+Because the current app stores project state locally, a link opened on another device does not share the invitation hash/state. Secure remote owner access requires the next infrastructure step: a server-side identity and device-authorization service.
 
-Only Business Relationship Authority is operational in this release.
-Recovery/destructive actions remain review-only until tested recovery paths exist.
-
-## Business Relationship Console
-- Scales to all projects/businesses in the Captain snapshot.
-- Shows business, project state, owner state, publication, deployment count and platform relationship status.
-- Shows counts for Approved / Suspended / Ended relationships.
-- Captain decision history is stored per project and displayed during review.
-- Legacy `refused` status is migrated to `relationship_ended` for clearer semantics.
-
-## Owner Access repair
-During this build, a structural issue from v2.9.65 was found: parts of the Owner Access UI referenced governance helper functions that had not been persisted into app.js. v2.9.66 restores the missing project-governance foundation and Owner Access renderer before extending Powder Keg.
-
-## Safety
-- Business relationship authority never writes another project's ledger or marketing.
-- No project/customer record is deleted by Suspend or End Relationship.
-- Permanent purge remains disconnected.
-- Project isolation remains unchanged.
+The UI says this explicitly so the local test cannot be mistaken for production security.
 
 ## Assets
-No assets added, removed, renamed or replaced.
+No assets added, removed, renamed, or replaced.

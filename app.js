@@ -304,6 +304,9 @@
       ? p.ownerAccess.capabilities.filter(x=>OWNER_CAPABILITIES.includes(x))
       : [...OWNER_CAPABILITIES];
     p.ownerAccess.staff=Array.isArray(p.ownerAccess.staff)?p.ownerAccess.staff:[];
+    p.ownerAccess.invitation=p.ownerAccess.invitation&&typeof p.ownerAccess.invitation==='object'
+      ? p.ownerAccess.invitation
+      : null;
     return p;
   }
 
@@ -320,6 +323,111 @@
     if(s==='invited') return 'OWNER INVITED';
     return 'OWNER NOT CLAIMED';
   }
+  const OWNER_SESSION_KEY='blackFlagOwnerSessionV1';
+
+  function ownerInviteStatus(p){
+    ensureProjectGovernance(p);
+    const inv=p.ownerAccess.invitation;
+    if(!inv) return 'none';
+    if(inv.revokedAt) return 'revoked';
+    if(inv.claimedAt) return 'claimed';
+    if(Number(inv.expiresAt||0)<=Date.now()) return 'expired';
+    return 'active';
+  }
+
+  function randomOwnerToken(){
+    const bytes=new Uint8Array(24);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  async function sha256Hex(value){
+    if(!globalThis.crypto?.subtle) throw new Error('Secure invitation hashing requires HTTPS or localhost.');
+    const data=new TextEncoder().encode(String(value||''));
+    const digest=await crypto.subtle.digest('SHA-256',data);
+    return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function ownerClaimLink(projectId,token){
+    const base=location.href.split('#')[0];
+    return `${base}#owner-claim=${encodeURIComponent(projectId+'.'+token)}`;
+  }
+
+  function ownerSession(){
+    try{return JSON.parse(sessionStorage.getItem(OWNER_SESSION_KEY)||'null')}catch(_){return null}
+  }
+  function saveOwnerSession(projectId){
+    const session={
+      projectId,
+      sessionId:'OWN-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9),
+      startedAt:new Date().toISOString()
+    };
+    sessionStorage.setItem(OWNER_SESSION_KEY,JSON.stringify(session));
+    return session;
+  }
+  function clearOwnerSession(){ sessionStorage.removeItem(OWNER_SESSION_KEY); }
+
+  async function generateOwnerInvitation(p){
+    ensureProjectGovernance(p);
+    if(platformStatus(p)!=='approved') return {ok:false,error:'This business is not currently approved for platform operation.'};
+    if(!String(p.ownerAccess.ownerName||'').trim()) return {ok:false,error:'Enter and save the owner name first.'};
+    if(!String(p.ownerAccess.ownerEmail||'').trim()) return {ok:false,error:'Enter and save the owner email first.'};
+
+    try{
+      const token=randomOwnerToken();
+      const tokenHash=await sha256Hex(token);
+      const now=Date.now();
+      p.ownerAccess.invitation={
+        inviteId:'INV-'+now.toString(36)+'-'+Math.random().toString(36).slice(2,7),
+        tokenHash:tokenHash,
+        createdAt:new Date(now).toISOString(),
+        expiresAt:now+(7*24*60*60*1000),
+        claimedAt:null,
+        revokedAt:null,
+        createdBy:'engine'
+      };
+      p.ownerAccess.status='invited';
+      p.ownerAccess.updatedAt=new Date(now).toISOString();
+      await saveCompanies();
+      logActivity(p.id,'Owner invitation generated',p.ownerAccess.ownerEmail);
+      return {ok:true,link:ownerClaimLink(p.id,token),expiresAt:p.ownerAccess.invitation.expiresAt};
+    }catch(err){
+      return {ok:false,error:err?.message||'Secure owner invitation could not be generated.'};
+    }
+  }
+
+  async function validateOwnerClaim(projectId,token){
+    const p=projectById(projectId);
+    if(!p) return {ok:false,error:'Business invitation was not found.'};
+    ensureProjectGovernance(p);
+    if(platformStatus(p)!=='approved') return {ok:false,error:'Owner access is unavailable while this business relationship is inactive.'};
+    const inv=p.ownerAccess.invitation;
+    if(!inv) return {ok:false,error:'No owner invitation is active for this business.'};
+    if(inv.revokedAt) return {ok:false,error:'This owner invitation has been revoked.'};
+    if(inv.claimedAt) return {ok:false,error:'This owner invitation has already been claimed.'};
+    if(Number(inv.expiresAt||0)<=Date.now()) return {ok:false,error:'This owner invitation has expired.'};
+    try{
+      const hash=await sha256Hex(token);
+      if(hash!==inv.tokenHash) return {ok:false,error:'Owner invitation is invalid.'};
+    }catch(err){
+      return {ok:false,error:err?.message||'Secure owner invitation could not be validated.'};
+    }
+    return {ok:true,project:p};
+  }
+
+  async function claimOwnerAccess(projectId,token){
+    const validation=await validateOwnerClaim(projectId,token);
+    if(!validation.ok) return validation;
+    const p=validation.project;
+    p.ownerAccess.status='active';
+    p.ownerAccess.invitation.claimedAt=new Date().toISOString();
+    p.ownerAccess.updatedAt=p.ownerAccess.invitation.claimedAt;
+    await saveCompanies();
+    logActivity(p.id,'Owner access claimed',p.ownerAccess.ownerEmail);
+    saveOwnerSession(p.id);
+    return {ok:true,project:p};
+  }
+
   function slugifyProjectName(name){
     return String(name||'project').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,48) || ('project-'+Date.now());
   }
@@ -828,12 +936,28 @@
             <h4>Owner Identity</h4>
             <label>Owner name<input id="ownerAccessName" value="${escapeHtml(oa.ownerName||'')}" placeholder="Business owner"></label>
             <label>Owner email<input id="ownerAccessEmail" type="email" value="${escapeHtml(oa.ownerEmail||'')}" placeholder="owner@example.com"></label>
-            <label>Access state<select id="ownerAccessState">
-              <option value="not_claimed"${oa.status==='not_claimed'?' selected':''}>Not claimed</option>
-              <option value="invited"${oa.status==='invited'?' selected':''}>Invited</option>
-              <option value="active"${oa.status==='active'?' selected':''}>Active</option>
-            </select></label>
-            <button id="saveOwnerAccess" class="primary-btn" type="button">SAVE OWNER ACCESS</button>
+            <div class="owner-claim-state"><span>ACCESS STATE</span><strong>${escapeHtml(ownerAccessLabel(p))}</strong></div>
+            <button id="saveOwnerAccess" class="primary-btn" type="button">SAVE OWNER IDENTITY</button>
+            <p class="helper">Owner access becomes active only after a valid invitation is claimed.</p>
+          </article>
+          <article class="pec-card owner-invitation-card">
+            <h4>Owner Invitation</h4>
+            <p class="helper">Generate a one-time project-scoped claim link. It expires after 7 days.</p>
+            <div class="owner-invite-status"><span>INVITATION</span><strong>${escapeHtml(ownerInviteStatus(p).toUpperCase())}</strong></div>
+            <div class="owner-invite-actions">
+              <button id="generateOwnerInvite" class="primary-btn small" type="button">GENERATE TEST INVITATION</button>
+              <button id="revokeOwnerInvite" class="secondary-btn small" type="button" ${!oa.invitation||ownerInviteStatus(p)==='revoked'?'disabled':''}>REVOKE INVITATION</button>
+              <button id="previewOwnerPortal" class="secondary-btn small" type="button">PREVIEW OWNER PORTAL</button>
+            </div>
+            <div id="ownerInviteOutput" class="owner-invite-output hidden">
+              <label>Claim link<textarea id="ownerInviteLink" readonly></textarea></label>
+              <div class="owner-invite-output-actions">
+                <button id="copyOwnerInviteLink" class="secondary-btn small" type="button">COPY CLAIM LINK</button>
+                <button id="openOwnerInviteLink" class="secondary-btn small" type="button">OPEN TEST CLAIM</button>
+              </div>
+              <p id="ownerInviteExpiry" class="helper"></p>
+            </div>
+            <p class="owner-test-flight-note"><strong>TEST FLIGHT:</strong> This proves the invitation and project-isolation flow locally. Secure owner access from another device still requires the server-side identity service.</p>
           </article>
           <article class="pec-card">
             <h4>Owner Capabilities</h4>
@@ -1267,17 +1391,68 @@
     }
     if(tab==='owner'){
       ensureProjectGovernance(p);
-      const saveOwner=$('saveOwnerAccess');
-      if(saveOwner) saveOwner.onclick=async()=>{
+      let latestInviteLink='';
+
+      $('saveOwnerAccess')?.addEventListener('click',async()=>{
         p.ownerAccess.ownerName=String($('ownerAccessName')?.value||'').trim();
         p.ownerAccess.ownerEmail=String($('ownerAccessEmail')?.value||'').trim();
-        p.ownerAccess.status=String($('ownerAccessState')?.value||'not_claimed');
         p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
         p.ownerAccess.updatedAt=new Date().toISOString();
         await saveCompanies();
-        logActivity(p.id,'Project owner access updated',p.ownerAccess.status);
+        logActivity(p.id,'Project owner identity updated',p.ownerAccess.ownerEmail);
         await renderProjectTab(p.id,'owner');
-      };
+      });
+
+      $$('[data-owner-capability]').forEach(box=>box.addEventListener('change',async()=>{
+        p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
+        p.ownerAccess.updatedAt=new Date().toISOString();
+        await saveCompanies();
+        logActivity(p.id,'Owner capabilities updated',p.ownerAccess.capabilities.join(', '));
+      }));
+
+      $('generateOwnerInvite')?.addEventListener('click',async()=>{
+        p.ownerAccess.ownerName=String($('ownerAccessName')?.value||'').trim();
+        p.ownerAccess.ownerEmail=String($('ownerAccessEmail')?.value||'').trim();
+        p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
+        const result=await generateOwnerInvitation(p);
+        if(!result.ok){alert(result.error);return;}
+        latestInviteLink=result.link;
+        if($('ownerInviteLink')) $('ownerInviteLink').value=result.link;
+        if($('ownerInviteExpiry')) $('ownerInviteExpiry').textContent=`Expires ${new Date(result.expiresAt).toLocaleString()}. The raw claim link is displayed only for this generation.`;
+        $('ownerInviteOutput')?.classList.remove('hidden');
+      });
+
+      $('copyOwnerInviteLink')?.addEventListener('click',async()=>{
+        const value=latestInviteLink||$('ownerInviteLink')?.value||'';
+        if(!value)return;
+        try{
+          await navigator.clipboard.writeText(value);
+          if($('ownerInviteExpiry')) $('ownerInviteExpiry').textContent='Claim link copied. Share it directly with the intended owner.';
+        }catch(_){
+          $('ownerInviteLink')?.focus();
+          $('ownerInviteLink')?.select();
+        }
+      });
+
+      $('openOwnerInviteLink')?.addEventListener('click',()=>{
+        const value=latestInviteLink||$('ownerInviteLink')?.value||'';
+        if(!value)return;
+        location.href=value;
+        routeOwnerAccessFromHash();
+      });
+
+      $('revokeOwnerInvite')?.addEventListener('click',async()=>{
+        if(!p.ownerAccess.invitation)return;
+        if(!confirm(`Revoke the current owner invitation for ${p.name}?`))return;
+        p.ownerAccess.invitation.revokedAt=new Date().toISOString();
+        if(p.ownerAccess.status==='invited')p.ownerAccess.status='not_claimed';
+        p.ownerAccess.updatedAt=new Date().toISOString();
+        await saveCompanies();
+        logActivity(p.id,'Owner invitation revoked',p.ownerAccess.ownerEmail);
+        await renderProjectTab(p.id,'owner');
+      });
+
+      $('previewOwnerPortal')?.addEventListener('click',()=>openOwnerPortal(p.id,{preview:true}));
     }
     if(tab==='customers'){
       const savedOrders=await getMergedOrders();
@@ -3949,6 +4124,152 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     apply();
   }
 
+  function hideCoreSurfacesForOwner(){
+    $('blackFlagEntryGate')?.classList.add('hidden');
+    $('customerApp')?.classList.add('hidden');
+    $('adminPanel')?.classList.add('hidden');
+    $('enginePanel')?.classList.add('hidden');
+    document.body.classList.add('owner-portal-open');
+  }
+
+  function closeOwnerPortal(){
+    $('ownerPortal')?.classList.add('hidden');
+    $('ownerClaimGate')?.classList.add('hidden');
+    document.body.classList.remove('owner-portal-open');
+    clearOwnerSession();
+    if(String(location.hash||'').startsWith('#owner-')) history.replaceState(null,'',location.pathname+location.search);
+    $('blackFlagEntryGate')?.classList.remove('hidden');
+  }
+
+  async function ownerPortalMetrics(p){
+    const orders=(await getMergedOrders()).filter(o=>{
+      const pid=o.projectId || ((o.business?.name||"Ike's Wood Signs")==="Ike's Wood Signs"?'ikes-wood-signs':'');
+      return pid===p.id;
+    });
+    const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
+    const customers=Object.values(readCustomerDirectory()[p.id]||{});
+    return {orders,deployments,customers};
+  }
+
+  async function openOwnerPortal(projectId,{preview=false}={}){
+    const p=projectById(projectId);
+    if(!p)return;
+    ensureProjectGovernance(p);
+    hideCoreSurfacesForOwner();
+    $('ownerClaimGate')?.classList.add('hidden');
+    $('ownerPortal')?.classList.remove('hidden');
+
+    if($('ownerPortalBusiness')) $('ownerPortalBusiness').textContent=p.name;
+    if($('ownerPortalSubtitle')) $('ownerPortalSubtitle').textContent=preview?'ENGINE PREVIEW • PROJECT OWNER VIEW':`${p.ownerAccess.ownerName||'Project Owner'} • PROJECT OWNER`;
+    $('ownerPortalPreviewBadge')?.classList.toggle('hidden',!preview);
+    $('ownerPortalClosePreview')?.classList.toggle('hidden',!preview);
+    $('ownerPortalSignOut')?.classList.toggle('hidden',preview);
+
+    const body=$('ownerPortalBody');
+    if(!body)return;
+
+    if(platformStatus(p)!=='approved'){
+      body.innerHTML=`<div class="owner-portal-blocked"><small>PLATFORM RELATIONSHIP</small><h2>${escapeHtml(platformStatusLabel(p))}</h2><p>Owner operations are unavailable while this business relationship is inactive. Business records remain preserved.</p></div>`;
+      return;
+    }
+
+    const metrics=await ownerPortalMetrics(p);
+    const caps=new Set(p.ownerAccess.capabilities||[]);
+    const kioskCount=metrics.deployments.filter(d=>d.profile==='kiosk_self_service').length;
+    const modules=[
+      ['orders','Orders',`${metrics.orders.length} recorded order${metrics.orders.length===1?'':'s'}`],
+      ['customers','Customers',`${metrics.customers.length} retained customer${metrics.customers.length===1?'':'s'}`],
+      ['products','Products',`${(p.products||[]).length} product${(p.products||[]).length===1?'':'s'}`],
+      ['pricing','Pricing','Project pricing controls'],
+      ['branding','Branding','Customer-facing business identity'],
+      ['kiosks','Kiosks',`${kioskCount} kiosk deployment${kioskCount===1?'':'s'}`],
+      ['deployments','Deployments',`${metrics.deployments.length} registered deployment${metrics.deployments.length===1?'':'s'}`],
+      ['staff','Staff','Owner-managed team access'],
+      ['reporting','Reporting','Business performance'],
+      ['notifications','Notifications','Business communications']
+    ].filter(([key])=>caps.has(key));
+
+    body.innerHTML=`<section class="owner-portal-overview">
+        <div><small>BUSINESS PORTAL</small><h2>Welcome, ${escapeHtml(p.ownerAccess.ownerName||'Owner')}</h2><p>This portal is isolated to <strong>${escapeHtml(p.name)}</strong>. Other businesses and Black Flag controls are not exposed.</p></div>
+        <div class="owner-portal-status"><span>PLATFORM</span><strong>${escapeHtml(platformStatusLabel(p))}</strong></div>
+      </section>
+      <div class="owner-portal-metrics">
+        <article><span>ORDERS</span><strong>${metrics.orders.length}</strong></article>
+        <article><span>CUSTOMERS</span><strong>${metrics.customers.length}</strong></article>
+        <article><span>DEPLOYMENTS</span><strong>${metrics.deployments.length}</strong></article>
+        <article><span>OWNER ACCESS</span><strong>${escapeHtml(String(p.ownerAccess.status||'not_claimed').toUpperCase())}</strong></article>
+      </div>
+      <section class="owner-portal-modules">${modules.map(([key,title,desc])=>`<article data-owner-module="${key}"><div><small>${key.toUpperCase()}</small><h3>${title}</h3><p>${desc}</p></div><span>AVAILABLE</span></article>`).join('')}</section>
+      <section class="owner-portal-test-note"><strong>TEST FLIGHT</strong><p>This screen proves the project-scoped owner boundary. Cross-device owner authentication requires the future server-side identity service.</p></section>`;
+  }
+
+  async function routeOwnerAccessFromHash(){
+    const hash=String(location.hash||'');
+    if(hash.startsWith('#owner-claim=')){
+      const payload=decodeURIComponent(hash.slice('#owner-claim='.length));
+      const dot=payload.indexOf('.');
+      if(dot<=0)return;
+      const projectId=payload.slice(0,dot);
+      const token=payload.slice(dot+1);
+
+      hideCoreSurfacesForOwner();
+      $('ownerPortal')?.classList.add('hidden');
+      $('ownerClaimGate')?.classList.remove('hidden');
+
+      const validation=await validateOwnerClaim(projectId,token);
+      const box=$('ownerClaimContent');
+      if(!box)return;
+
+      if(!validation.ok){
+        box.innerHTML=`<div class="owner-claim-error"><small>OWNER INVITATION</small><h2>Access unavailable</h2><p>${escapeHtml(validation.error)}</p><button id="ownerClaimExit" class="secondary-btn" type="button">CLOSE</button></div>`;
+        $('ownerClaimExit')?.addEventListener('click',closeOwnerPortal);
+        return;
+      }
+
+      const p=validation.project;
+      box.innerHTML=`<div class="owner-claim-card">
+        <small>PROJECT OWNER INVITATION</small>
+        <h2>${escapeHtml(p.name)}</h2>
+        <p>This invitation is for <strong>${escapeHtml(p.ownerAccess.ownerName||'the project owner')}</strong> and grants access only to this business.</p>
+        <div class="owner-claim-facts">
+          <span><b>OWNER</b>${escapeHtml(p.ownerAccess.ownerName||'—')}</span>
+          <span><b>EMAIL</b>${escapeHtml(p.ownerAccess.ownerEmail||'—')}</span>
+          <span><b>EXPIRES</b>${new Date(p.ownerAccess.invitation.expiresAt).toLocaleString()}</span>
+        </div>
+        <p class="owner-claim-boundary">Claiming this invitation does not grant Black Flag, Engine Room, Captain, or other-project access.</p>
+        <button id="ownerClaimAccept" class="primary-btn" type="button">CLAIM OWNER ACCESS</button>
+        <button id="ownerClaimCancel" class="secondary-btn" type="button">CANCEL</button>
+      </div>`;
+
+      $('ownerClaimAccept')?.addEventListener('click',async()=>{
+        const result=await claimOwnerAccess(projectId,token);
+        if(!result.ok){alert(result.error);return;}
+        history.replaceState(null,'',location.pathname+location.search+'#owner-portal');
+        await openOwnerPortal(projectId);
+      });
+      $('ownerClaimCancel')?.addEventListener('click',closeOwnerPortal);
+      return;
+    }
+
+    if(hash==='#owner-portal'){
+      const session=ownerSession();
+      const p=session?.projectId?projectById(session.projectId):null;
+      if(p&&p.ownerAccess?.status==='active'){
+        await openOwnerPortal(p.id);
+      }
+    }
+  }
+
+  function bindOwnerPortal(){
+    $('ownerPortalSignOut')?.addEventListener('click',closeOwnerPortal);
+    $('ownerPortalClosePreview')?.addEventListener('click',()=>{
+      $('ownerPortal')?.classList.add('hidden');
+      document.body.classList.remove('owner-portal-open');
+      $('enginePanel')?.classList.remove('hidden');
+    });
+    window.addEventListener('hashchange',()=>routeOwnerAccessFromHash());
+  }
+
   function bindEvents(){
     bindEngineFleetCommand();
     $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
@@ -4266,6 +4587,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('customerApp')?.classList.add('hidden');
     $('adminPanel')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
+    bindOwnerPortal();
+    await routeOwnerAccessFromHash();
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   init().catch(err=>{

@@ -5213,6 +5213,65 @@ body.business-engine-mode .flowers-shell{
   .business-history article{grid-template-columns:1fr}
 }
 
+
+/* ---------- Project Owner Access test flight ---------- */
+.owner-claim-state,.owner-invite-status{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:8px 0;padding:8px;border:1px solid #43545b;border-radius:6px;background:#0c1519}
+.owner-claim-state span,.owner-invite-status span{color:#85938f;font-size:7px;font-weight:900;letter-spacing:.09em}
+.owner-claim-state strong,.owner-invite-status strong{color:#e1c171!important;font-size:8px}
+.owner-invite-actions,.owner-invite-output-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.owner-invite-output{margin-top:10px;padding:10px;border:1px solid #405057;border-radius:7px;background:#091215}
+.owner-invite-output textarea{min-height:72px;font-family:ui-monospace,monospace;font-size:8px}
+.owner-test-flight-note{margin-top:10px!important;padding:9px;border-left:3px solid #477084;background:#0d181d;color:#9dafb4!important;font-size:8px!important}
+.owner-test-flight-note strong{color:#9dc4d4!important}
+body.owner-portal-open{overflow:hidden!important}
+.owner-claim-gate,.owner-portal{position:fixed;inset:0;z-index:130000;background:#071014;color:#eaf0ed}
+.owner-claim-gate{display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 20%,#17303a,#071014 68%)}
+.owner-claim-gate.hidden,.owner-portal.hidden{display:none!important}
+.owner-claim-content{width:min(620px,94vw)}
+.owner-claim-card,.owner-claim-error{padding:28px;border:1px solid #52646b;border-radius:14px;background:#0e1a1f;box-shadow:0 28px 80px #0009}
+.owner-claim-card>small,.owner-claim-error>small{color:#8fb2be;font-size:8px;font-weight:900;letter-spacing:.14em}
+.owner-claim-card h2,.owner-claim-error h2{margin:5px 0;color:#f2f5f3;font:900 28px Arial,sans-serif}
+.owner-claim-card p,.owner-claim-error p{color:#aebbb7;line-height:1.5}
+.owner-claim-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:15px 0}
+.owner-claim-facts span{display:grid;gap:3px;padding:9px;border:1px solid #405158;border-radius:7px;background:#091316;color:#dce5e1;font-size:8px}
+.owner-claim-facts b{color:#83938f;font-size:6px;letter-spacing:.09em}
+.owner-claim-boundary{padding:9px;border-left:3px solid #5d8390;background:#0b171b}
+.owner-claim-card button,.owner-claim-error button{margin-right:6px}
+.owner-portal{overflow:auto;background:#081014}
+.owner-portal-header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:17px 22px;border-bottom:1px solid #415159;background:#0c171c}
+.owner-portal-header small{color:#85aab7;font-size:7px;font-weight:900;letter-spacing:.13em}
+.owner-portal-header h1{margin:3px 0;color:#f0f4f2;font:800 27px Arial,sans-serif}
+.owner-portal-header p{margin:0;color:#84938f;font-size:8px}
+.owner-portal-header-actions{display:flex;gap:6px;align-items:center}
+.owner-preview-badge{padding:6px 8px;border:1px solid #9b7d44;border-radius:5px;background:#241d12;color:#e2c174;font-size:7px;font-weight:900}
+.owner-portal-body{width:min(1180px,95vw);margin:0 auto;padding:22px}
+.owner-portal-overview{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:18px;border:1px solid #42545b;border-radius:9px;background:linear-gradient(110deg,#101d22,#12272e)}
+.owner-portal-overview small{color:#85aab7;font-size:7px;font-weight:900;letter-spacing:.12em}
+.owner-portal-overview h2{margin:4px 0;color:#f0f4f2;font:800 25px Arial,sans-serif}
+.owner-portal-overview p{margin:0;color:#abb7b3}
+.owner-portal-status{display:grid;gap:3px;min-width:125px;padding:10px;border:1px solid #436654;border-radius:7px;background:#0b1811;text-align:center}
+.owner-portal-status span{color:#789284;font-size:7px;font-weight:900}
+.owner-portal-status strong{color:#9ed0ad!important}
+.owner-portal-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.owner-portal-metrics article{padding:14px;border:1px solid #405057;border-radius:8px;background:#10191d;text-align:center}
+.owner-portal-metrics span{display:block;color:#84938f;font-size:7px;font-weight:900;letter-spacing:.09em}
+.owner-portal-metrics strong{display:block;margin-top:4px;color:#e4edf0!important;font:800 25px Arial,sans-serif}
+.owner-portal-modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:9px}
+.owner-portal-modules article{display:flex;justify-content:space-between;gap:12px;min-height:115px;padding:14px;border:1px solid #405158;border-radius:8px;background:#111b20}
+.owner-portal-modules small{color:#769eab;font-size:6px;font-weight:900;letter-spacing:.11em}
+.owner-portal-modules h3{margin:3px 0;color:#edf2ef;font:800 15px Arial,sans-serif}
+.owner-portal-modules p{margin:0;color:#94a29e;font-size:8px}
+.owner-portal-modules>article>span{align-self:flex-start;padding:4px 6px;border:1px solid #3f6c52;border-radius:4px;background:#0c1811;color:#8dc09c;font-size:6px;font-weight:900}
+.owner-portal-test-note{margin-top:13px;padding:11px;border:1px solid #48616b;border-radius:7px;background:#0c181d}
+.owner-portal-test-note strong{color:#88b3c3}
+.owner-portal-test-note p{margin:4px 0 0;color:#9aa9a5;font-size:8px}
+.owner-portal-blocked{max-width:700px;margin:80px auto;padding:24px;border:1px solid #8b584f;border-radius:10px;background:#211315;text-align:center}
+.owner-portal-blocked small{color:#c88279;font-size:7px;font-weight:900}
+.owner-portal-blocked h2{color:#efaaa1;font:800 28px Arial,sans-serif}
+.owner-portal-blocked p{color:#baa29e}
+@media(max-width:720px){.owner-claim-facts,.owner-portal-metrics{grid-template-columns:1fr 1fr}.owner-portal-header,.owner-portal-overview{align-items:flex-start;flex-direction:column}.owner-portal-header-actions{flex-wrap:wrap}}
+@media(max-width:480px){.owner-claim-facts,.owner-portal-metrics{grid-template-columns:1fr}}
+
 /* ==========================================================
    CAPTAIN COMMAND — authoritative command workspace layer
    ========================================================== */

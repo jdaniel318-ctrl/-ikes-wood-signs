@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.66" />
+  <link rel="stylesheet" href="styles.css?v=2.9.67" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -127,7 +127,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.66 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.67 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -924,7 +924,24 @@
     </section>
   </div>
 
-  <script src="app.js?v=2.9.66"></script>
+
+  <div id="ownerClaimGate" class="owner-claim-gate hidden" role="dialog" aria-modal="true" aria-label="Project owner invitation">
+    <div id="ownerClaimContent" class="owner-claim-content"></div>
+  </div>
+
+  <section id="ownerPortal" class="owner-portal hidden" aria-label="Project Owner Portal">
+    <header class="owner-portal-header">
+      <div><small>PROJECT OWNER PORTAL</small><h1 id="ownerPortalBusiness">Business</h1><p id="ownerPortalSubtitle">PROJECT OWNER</p></div>
+      <div class="owner-portal-header-actions">
+        <span id="ownerPortalPreviewBadge" class="owner-preview-badge hidden">ENGINE PREVIEW</span>
+        <button id="ownerPortalClosePreview" class="secondary-btn hidden" type="button">RETURN TO ENGINE</button>
+        <button id="ownerPortalSignOut" class="secondary-btn" type="button">SIGN OUT</button>
+      </div>
+    </header>
+    <main id="ownerPortalBody" class="owner-portal-body"></main>
+  </section>
+
+  <script src="app.js?v=2.9.67"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -950,7 +967,7 @@
 
 
 
-  <script src="captain.js?v=2.9.66"></script>
+  <script src="captain.js?v=2.9.67"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">
