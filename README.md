@@ -676,7 +676,7 @@ Universal Graphics Manager UX upgrade.
 - Project isolation, Project Showcase, Dark Flag Engine behavior, and Pirate Mode remain intact.
 
 
-## v2.9.31 — BARNACLE SWEEP
+## v2.9.32 — BARNACLE SWEEP
 Small regression-safe cleanup after the extensibility pass.
 
 - Engine Identity now has clear Saved and Editing states.
@@ -688,4 +688,13 @@ Small regression-safe cleanup after the extensibility pass.
 - Project Admin Gate PIN focus rings now derive from the active project's accent theme.
 - The fix is shared/template-level so BBS, MUG, IKE, and future projects inherit it automatically.
 - No project data, workflow, Graphics Library, Showcase, namespace, admin permissions, or customer-shell behavior is changed.
+- Pirate Mode remains preserved and Engine-only.
+
+
+## v2.9.32 — CLEAR ESCAPE HATCH
+- Adds clear spacing between Unlock Admin and the customer return action.
+- Renames the safe exit to “← RETURN TO MY ORDER”.
+- Gives the return action a bold project-themed outline.
+- Shared across current and future project Admin Gates.
+- No workflow, data, namespace, Showcase, graphics, permissions, or security changes.
 - Pirate Mode remains preserved and Engine-only.

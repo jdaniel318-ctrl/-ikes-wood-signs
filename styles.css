@@ -3028,7 +3028,7 @@ body.dark-flag-pirate-mode .graphics-edit-state.unsaved{background:#2b2212!impor
 }
 
 
-/* v2.9.31 — BARNACLE SWEEP
+/* v2.9.32 — BARNACLE SWEEP
    Captain-facing Engine Identity states + fully project-themed Admin Gate accents. */
 
 .engine-identity-saved-view,
@@ -3111,4 +3111,27 @@ body.dark-flag-pirate-mode .engine-identity-status.is-saved{
   background:#172619!important;
   border-color:#557551!important;
   color:#bcd0ae!important;
+}
+
+
+/* v2.9.32 — CLEAR ESCAPE HATCH */
+.project-admin-gate-card .project-admin-gate-primary{
+  margin-bottom:18px!important;
+}
+.project-admin-gate-card .project-admin-gate-secondary{
+  margin-top:0!important;
+  background:#fff!important;
+  color:var(--gate-header,#173742)!important;
+  border:3px solid var(--gate-accent,var(--gate-button,#173742))!important;
+  box-shadow:none!important;
+  font-weight:900!important;
+  letter-spacing:.01em;
+}
+.project-admin-gate-card .project-admin-gate-secondary:focus-visible{
+  background:color-mix(in srgb,var(--gate-accent,var(--gate-button,#173742)) 8%,white)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--gate-accent,var(--gate-button,#173742)) 20%,transparent)!important;
+}
+.project-admin-gate-card .project-admin-gate-secondary:active{
+  transform:translateY(1px);
+  box-shadow:none!important;
 }
