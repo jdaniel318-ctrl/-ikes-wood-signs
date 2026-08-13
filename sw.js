@@ -2,9 +2,9 @@ const CACHE='workshop-engine-v2-9-55-engine-room-asset';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.55',
-  './app.js?v=2.9.55',
-  './captain.js?v=2.9.55',
+  './styles.css?v=2.9.56',
+  './app.js?v=2.9.56',
+  './captain.js?v=2.9.56',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',

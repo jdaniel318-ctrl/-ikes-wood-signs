@@ -4845,3 +4845,162 @@ body.engine-mode #enginePanel .pirate-footer{
   body.engine-mode #enginePanel .ervn-secure{display:none!important}
   body.engine-mode #enginePanel .engine-room-visual-nav>a{flex:0 0 auto!important}
 }
+
+
+/* ==========================================================
+   v2.9.56 — ENGINE ROOM CLARITY PASS
+   Corrects v2.9.55 visual regressions without changing function.
+   Benchmark remains an asset/reference, not a ghosted UI background.
+   ========================================================== */
+
+/* 1. Remove benchmark bleed-through from the live working surface. */
+body.engine-mode #enginePanel.engine-panel{
+  padding-left:124px!important;
+  background:
+    radial-gradient(circle at 82% 5%,rgba(91,69,35,.12),transparent 24%),
+    linear-gradient(180deg,#0a0f11 0%,#0b1114 48%,#090e10 100%)!important;
+}
+
+/* Keep the benchmark asset only as a restrained atmospheric header reference. */
+body.engine-mode #enginePanel .command-masthead{
+  background:
+    linear-gradient(90deg,rgba(8,12,14,.97),rgba(16,23,26,.94),rgba(8,12,14,.98)),
+    url("assets/engine_room_benchmark_v2955.jpg") center 10%/cover no-repeat!important;
+}
+
+/* 2. Make the operations rail useful without stealing dashboard width. */
+body.engine-mode #enginePanel .engine-room-visual-nav{
+  width:108px!important;
+  padding:10px 7px!important;
+  background:linear-gradient(180deg,#0b1012,#090d0f)!important;
+}
+body.engine-mode #enginePanel .ervn-brand{min-height:82px!important}
+body.engine-mode #enginePanel .engine-room-visual-nav>a{
+  min-height:38px!important;
+  padding:0 7px!important;
+  font-size:8px!important;
+}
+body.engine-mode #enginePanel .engine-room-visual-nav>a:before{
+  width:5px!important;height:5px!important;margin-right:6px!important;
+}
+body.engine-mode #enginePanel .ervn-secure{
+  min-height:44px!important;
+  font-size:6px!important;
+}
+
+/* 3. Operational cards are opaque. No duplicate/ghost UI beneath them. */
+body.engine-mode #enginePanel .project-command-card,
+body.engine-mode #enginePanel .engine-card,
+body.engine-mode #enginePanel .captains-chart-card{
+  background:#111a1e!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+body.engine-mode #enginePanel .project-command-section,
+body.engine-mode #enginePanel .project-engine-control,
+body.engine-mode #enginePanel .fleet-analytics.captains-log,
+body.engine-mode #enginePanel .engine-card,
+body.engine-mode #enginePanel .captain-access-dock{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+/* 4. Captain access is a compact command row, not a dominant module. */
+body.engine-mode #enginePanel .captain-access-dock{
+  padding:7px 10px!important;
+  border-color:#3d382b!important;
+  background:#101412!important;
+}
+body.engine-mode #enginePanel .captain-access-btn{
+  min-height:44px!important;
+}
+body.engine-mode #enginePanel .captain-access-btn span:first-child{
+  font-size:17px!important;
+}
+body.engine-mode #enginePanel .captain-access-btn strong{
+  font-size:11px!important;
+}
+body.engine-mode #enginePanel .captain-access-btn small{
+  font-size:8px!important;
+  color:#8e9690!important;
+}
+
+/* 5. Analytics gets the cleanest visual hierarchy in the room. */
+body.engine-mode #enginePanel .fleet-analytics.captains-log{
+  padding:16px!important;
+  border-color:#465257!important;
+  background:#0f171a!important;
+}
+body.engine-mode #enginePanel .captains-log-kpis{
+  gap:9px!important;
+  margin:12px 0!important;
+}
+body.engine-mode #enginePanel .captains-log-kpis>div{
+  border:1px solid #485156!important;
+  background:#162126!important;
+  box-shadow:none!important;
+}
+body.engine-mode #enginePanel .captains-log-kpis span{color:#aebbb8!important}
+body.engine-mode #enginePanel .captains-log-kpis strong{color:#e5c366!important}
+
+/* Existing canvas code draws for a light chart surface, so restore that
+   high-contrast instrument-panel surface rather than altering JS. */
+body.engine-mode #enginePanel .captains-chart-card{
+  border:1px solid #82745b!important;
+  background:#f3efe5!important;
+  box-shadow:inset 0 0 0 1px #fff8!important;
+}
+body.engine-mode #enginePanel .chart-heading h4{color:#173742!important}
+body.engine-mode #enginePanel .chart-heading span{color:#687476!important}
+body.engine-mode #enginePanel .captains-chart-card canvas{
+  opacity:1!important;
+  filter:none!important;
+}
+
+/* 6. Restore table readability explicitly. */
+body.engine-mode #enginePanel .captains-project-table{
+  border:1px solid #48565b!important;
+  background:#111a1e!important;
+}
+body.engine-mode #enginePanel .captains-project-row{
+  border-top-color:#344247!important;
+}
+body.engine-mode #enginePanel .captains-project-row strong{
+  color:#e5ece8!important;
+}
+body.engine-mode #enginePanel .captains-project-row span{
+  color:#aab5b2!important;
+}
+
+/* 7. Reduce box-inside-box noise while preserving grouping. */
+body.engine-mode #enginePanel .captains-log-kpis>div,
+body.engine-mode #enginePanel .captains-chart-card,
+body.engine-mode #enginePanel .captains-project-table{
+  border-radius:8px!important;
+}
+body.engine-mode #enginePanel .fleet-analytics.captains-log{
+  border-radius:10px!important;
+}
+
+/* 8. Stronger live-data emphasis than decorative material. */
+body.engine-mode #enginePanel .captains-log-head h3,
+body.engine-mode #enginePanel .chart-heading h4,
+body.engine-mode #enginePanel .captains-project-row strong{
+  text-shadow:none!important;
+}
+
+/* iPad/narrow behavior remains compact and functional. */
+@media(max-width:1100px){
+  body.engine-mode #enginePanel.engine-panel{padding-left:0!important}
+  body.engine-mode #enginePanel .engine-room-visual-nav{
+    position:relative!important;
+    width:auto!important;
+    flex-direction:row!important;
+    overflow-x:auto!important;
+    border-right:0!important;
+    border-bottom:1px solid #5a4527!important;
+  }
+  body.engine-mode #enginePanel .ervn-brand,
+  body.engine-mode #enginePanel .ervn-secure{display:none!important}
+  body.engine-mode #enginePanel .engine-room-visual-nav>a{flex:0 0 auto!important}
+}
