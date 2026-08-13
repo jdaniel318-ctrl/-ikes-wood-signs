@@ -47,7 +47,7 @@
     entry?.classList.remove('captain-entry-play');
     if (entry) void entry.offsetWidth;
     entry?.classList.add('captain-entry-play');
-    window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 2400);
+    window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 4300);
   }
 
   function unlock() {
