@@ -1,18 +1,31 @@
-# Workshop Engine v2.9.62 — Captain Workspace Layer Fix
+# Workshop Engine v2.9.63 — Mop the Deck
 
-## Root cause found
-The five Captain command buttons were working as hit targets, but their command workspace was opening behind the Captain's Quarters.
+This is a structural visual cleanup, not a band-aid pass.
 
-- Captain's Quarters z-index: 99999
-- Captain Command workspace z-index in v2.9.61: 19000
+## What was cleaned
+- Removed the entire accumulated Engine/Captain visual patch stack from v2.9.54 through v2.9.62 (54,549 CSS characters).
+- Replaced it with one authoritative Engine Room / Captain Command presentation layer.
+- Removed 23 earlier Pirate-mode rules that could style project/customer-specific surfaces.
+- Removed the Engine benchmark screenshot as a live CSS background. It remains in assets as a benchmark/reference only.
+- Made the Engine masthead and all operational panels opaque to eliminate ghost UI/background bleed.
+- Standardized project-title, body-copy, form, filter, button and status contrast.
+- Established one simple z-index ladder.
+- Consolidated Business Mode and Pirate Mode presentation while keeping the same Engine machinery underneath.
+- Consolidated Captain Command styling while preserving the working five-button architecture.
+- Kept Company Registry and old Engine telemetry DOM only as compatibility support for existing render functions; they remain intentionally hidden from the daily Engine surface.
 
-That made the workspace functionally open while remaining invisible behind the cinematic cabin.
+## Functional safety
+- app.js is byte-for-byte unchanged from v2.9.62.
+- captain.js is byte-for-byte unchanged from v2.9.62.
+- Project workflows, data, permissions, deployment, storage, Captain authority and isolation logic were not changed.
 
-## Fix
-- Captain Command workspace raised above the cabin to z-index 120500.
-- Captain's Quarters stops receiving pointer events while a Captain command workspace is open.
-- Workspace remains interactive.
-- Stale hint text changed from "Objects on the desk are live controls" to "Captain command controls are live."
+## Appearance boundaries
+- Business/Pirate appearance is Engine-only.
+- Customer/project shells are not repainted by Engine appearance.
+- Pirate Mode no longer uses a screenshot containing fake UI beneath live controls.
 
 ## Assets
-No assets added, removed, renamed, or replaced.
+No assets added, removed, renamed or replaced.
+
+## Maintenance rule
+Future visual band-aid/override fixes should not be added without Captain approval. Visual defects should first be traced to their root selector/layer and reported before code is changed.

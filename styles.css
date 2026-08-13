@@ -2470,15 +2470,6 @@ body.dark-flag-pirate-mode #enginePanel::after{
   white-space:nowrap;pointer-events:none
 }
 
-/* Explicit bulkhead: project surfaces do not inherit the Engine pirate livery. */
-body.dark-flag-pirate-mode .project-admin-page,
-body.dark-flag-pirate-mode .mugs-shell,
-body.dark-flag-pirate-mode .flowers-shell,
-body.dark-flag-pirate-mode #customerApp,
-body.dark-flag-pirate-mode .project-admin-gate{
-  /* Project-owned styling remains controlled by its existing template/theme rules. */
-}
-
 
 /* v2.9.16 — GRAPHICS QUARTERS */
 .graphics-manager-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:5px}
@@ -2494,9 +2485,6 @@ body.dark-flag-pirate-mode .project-admin-gate{
 .has-graphic .graphics-slot-state{color:#287344}
 .graphics-manager-divider{display:flex;align-items:center;gap:8px;margin:15px 0 10px;color:#718079;font-size:8px;font-weight:1000;letter-spacing:1px}
 .graphics-manager-divider:before,.graphics-manager-divider:after{content:"";height:1px;background:#d8dfdc;flex:1}
-body.dark-flag-pirate-mode .graphics-library-item{background:#0d1413!important;border-color:#69542f!important;color:#e8d7b1!important}
-body.dark-flag-pirate-mode .graphics-library-preview{background:#17150f!important;color:#bd9651!important}
-body.dark-flag-pirate-mode .graphics-library-copy small{color:#9d9279!important}
 body.dark-flag-pirate-mode .graphics-lock-mark{background:#18140d!important;border-color:#9c7838!important;color:#d1aa60!important}
 @media(max-width:720px){.graphics-library{grid-template-columns:1fr}}
 
@@ -2582,19 +2570,7 @@ body.dark-flag-pirate-mode .graphics-lock-mark{background:#18140d!important;bord
 }
 .graphics-expand-title{font:800 17px Georgia,serif;color:#173742}
 .graphics-expand-namespace{font-size:9px;color:#697772;word-break:break-all}
-body.dark-flag-pirate-mode .marketing-brand-hero,
-body.dark-flag-pirate-mode .project-marketing-graphics,
-body.dark-flag-pirate-mode .marketing-identity-card,
-body.dark-flag-pirate-mode .marketing-future-card{
-  background:linear-gradient(180deg,#17150f,#0d1514)!important;border-color:#70572f!important;color:#e8d7b0!important
-}
-body.dark-flag-pirate-mode .marketing-brand-hero p,
-body.dark-flag-pirate-mode .marketing-identity-row,
-body.dark-flag-pirate-mode .future-tool-row,
-body.dark-flag-pirate-mode .graphics-expand-namespace{color:#aa9b7d!important}
-body.dark-flag-pirate-mode .marketing-project-seal{background:#090d0d;border-color:#a67e39}
 body.dark-flag-pirate-mode .graphics-save-confirmation{background:#182719;border-color:#597e57;color:#b9d7ae}
-body.dark-flag-pirate-mode .asset-preview-stage{background:#0b1110;border-color:#634e2d}
 body.dark-flag-pirate-mode .graphics-expand-card{background:#15140f;border:1px solid #8b6a32;color:#e8d7b0}
 body.dark-flag-pirate-mode .graphics-expand-title{color:#e8d7b0}
 @media(max-width:760px){
@@ -2617,9 +2593,6 @@ body.dark-flag-pirate-mode .graphics-expand-title{color:#e8d7b0}
 .focused-slot-grid .asset-slot.focused-active-slot{display:grid;max-width:860px;margin:0 auto}
 .focused-slot-grid .asset-preview-stage{min-height:220px}
 .focused-slot-grid .asset-preview-stage img{height:220px}
-body.dark-flag-pirate-mode .graphics-focused-editor{background:linear-gradient(180deg,#17150f,#0c1211)!important;border-color:#70572f!important;color:#e8d7b0!important;box-shadow:inset 0 0 0 1px #1e180d}
-body.dark-flag-pirate-mode .graphics-library-item:hover,body.dark-flag-pirate-mode .graphics-library-item:focus-visible{border-color:#b58a43!important;box-shadow:0 8px 24px #0007}
-body.dark-flag-pirate-mode .graphics-slot-state b{color:#d1aa60!important}
 @media(max-width:760px){.graphics-focused-head{align-items:flex-start;flex-direction:column}.graphics-focused-head .secondary-btn{width:100%}}
 
 
@@ -2681,21 +2654,6 @@ body.dark-flag-pirate-mode .graphics-slot-state b{color:#d1aa60!important}
 }
 .graphics-focused-head h4{margin:2px 0 2px}
 
-/* Keep Pirate Mode fully supported by the same component. */
-body.dark-flag-pirate-mode .graphics-focused-head{
-  background:#0e1513!important;
-  border-color:#745a31!important;
-  color:#ead8b2!important;
-}
-body.dark-flag-pirate-mode .graphics-library-item:hover,
-body.dark-flag-pirate-mode .graphics-library-item:focus{
-  border-color:#a67d37!important;
-  box-shadow:0 8px 22px #0007!important;
-}
-body.dark-flag-pirate-mode .graphics-library-item .graphics-slot-state b{
-  color:#b89554!important;
-}
-
 
 /* v2.9.21 — FLYING COLORS
    Direct state-controlled Marketing UX + logo-first project identity. */
@@ -2733,19 +2691,6 @@ body.dark-flag-pirate-mode .graphics-library-item .graphics-slot-state b{
 }
 .marketing-project-brand-visual img{width:100%;height:100%;object-fit:contain;background:#fff}
 .marketing-project-brand-visual span{font:900 19px Georgia,serif;letter-spacing:1px}
-
-/* Pirate Mode keeps project logos recognizable while the Engine frame stays Dark Flag. */
-body.dark-flag-pirate-mode .project-brand-badge,
-body.dark-flag-pirate-mode .pec-brand-mark{
-  background:#0e1513;border-color:#745a31;color:#d6ac5d;
-}
-body.dark-flag-pirate-mode .project-brand-badge img,
-body.dark-flag-pirate-mode .pec-brand-mark img,
-body.dark-flag-pirate-mode .marketing-project-brand-visual img{
-  background:#fff;
-}
-body.dark-flag-pirate-mode .project-brand-badge span,
-body.dark-flag-pirate-mode .pec-brand-mark span{color:#d6ac5d!important}
 @media(max-width:760px){
   .project-brand-badge{width:66px;height:56px}
   .pec-brand-mark{width:64px;height:64px}
@@ -2777,11 +2722,6 @@ body.dark-flag-pirate-mode .pec-brand-mark span{color:#d6ac5d!important}
 .pec-brand-mark{width:96px;height:88px;border-radius:19px}
 .pec-brand-mark img{padding:3px}
 .project-engine-identity{gap:17px}
-
-body.dark-flag-pirate-mode .customer-project-logo-wrap,
-body.dark-flag-pirate-mode .mugs-shell-mark-wrap .project-logo-image{
-  border-color:#8b6a34;box-shadow:0 0 0 1px #d1a55233,0 6px 18px #0006;
-}
 @media(max-width:760px){
   .customer-project-logo-wrap{width:72px;height:62px;flex-basis:72px}
   .project-brand-badge{width:92px;height:72px}
@@ -2997,18 +2937,6 @@ body.flowers-project .project-hero-fallback span:nth-child(3){background:#b85f79
 .graphics-focused-editor #assetSaveBtn:disabled{opacity:.42!important;cursor:not-allowed!important}
 .graphics-focused-editor #assetSaveMessage{align-self:center;max-width:320px;font-size:11px}
 .graphics-save-confirmation{position:sticky;top:10px;z-index:8;box-shadow:0 6px 20px #00000012}
-
-body.dark-flag-pirate-mode .graphics-focused-editor input[type="file"]{
-  background:#0d1412!important;border-color:#745a31!important;color:#cdbb99!important
-}
-body.dark-flag-pirate-mode .graphics-focused-editor input[type="file"]::file-selector-button{
-  background:#a77a2f!important;color:#111!important
-}
-body.dark-flag-pirate-mode .graphics-focused-editor .asset-preview-stage{
-  background:#09100f!important;border-color:#634e2d!important
-}
-body.dark-flag-pirate-mode .asset-preview-empty{border-color:#745a31!important;color:#a99878!important}
-body.dark-flag-pirate-mode .asset-preview-empty strong{color:#e8d7b0!important}
 body.dark-flag-pirate-mode .graphics-edit-state{background:#142318!important;border-color:#557551!important;color:#bcd0ae!important}
 body.dark-flag-pirate-mode .graphics-edit-state.unsaved{background:#2b2212!important;border-color:#a77a2f!important;color:#e2bd6c!important}
 @media(max-width:760px){
@@ -4453,1053 +4381,975 @@ html.captain-controller-ready #captainQuartersGate.hidden{
 
 
 /* ==========================================================
-   v2.9.54 — ENGINE ROOM VISUAL BENCHMARK
-   PRESENTATION ONLY. Functional IDs, controls, storage, project
-   isolation, authorization, analytics and workflows are unchanged.
-   No new asset files are used by this release.
+   v2.9.63 — MOP THE DECK
+   Authoritative Engine Room + Captain Command presentation.
+   Replaces the accumulated v2.9.54–v2.9.62 visual patch stack.
+
+   Rules:
+   • Business/Pirate appearance is Engine-only.
+   • Project/customer branding is never restyled by Engine appearance.
+   • Operational surfaces are opaque.
+   • One z-index ladder.
+   • One contrast system.
    ========================================================== */
 
-body.engine-mode{background:#0b1114!important}
+:root{
+  --er-bg:#070c0f;
+  --er-panel:#0d1519;
+  --er-panel-2:#121d22;
+  --er-panel-3:#17242a;
+  --er-line:#3f5057;
+  --er-line-strong:#68757a;
+  --er-text:#eef3f0;
+  --er-copy:#b0bbb7;
+  --er-muted:#7f8c88;
+  --er-brass:#b78d49;
+  --er-brass-hi:#e0bf75;
+  --er-green:#76bb8c;
+  --er-blue:#6fa6c7;
+  --er-red:#c06e66;
+  --er-warning:#d2ad5f;
+}
 
+/* ---------- Engine shell / layering ---------- */
 body.engine-mode #enginePanel.engine-panel{
-  --er-panel:#151e22;--er-line:#354247;--er-brass:#b58a43;--er-ink:#edf1ee;--er-muted:#9aa7a5;
-  width:min(1460px,calc(100% - 32px))!important;margin:18px auto 40px!important;padding:0 0 24px!important;
-  border:1px solid #28363b!important;border-radius:16px!important;
-  background:linear-gradient(180deg,rgba(181,138,67,.025),transparent 180px),#0d1418!important;
-  box-shadow:0 22px 70px #0008!important;color:var(--er-ink)!important;overflow:hidden!important
+  position:relative;
+  isolation:isolate;
+  overflow:visible;
+  padding:0 18px 18px 128px;
+  color:var(--er-copy);
+  background:var(--er-bg);
+  border:1px solid #493b27;
+  box-shadow:0 24px 70px rgba(0,0,0,.58);
+}
+body.engine-mode #enginePanel.engine-panel::before,
+body.engine-mode #enginePanel.engine-panel::after{
+  content:none;
+  display:none;
 }
 
-body.engine-mode #enginePanel .command-masthead{
-  position:relative!important;min-height:112px!important;padding:22px 28px!important;border:0!important;
-  border-bottom:1px solid #3a4549!important;border-radius:0!important;
-  background:linear-gradient(90deg,#10181c 0,#182429 47%,#11191d 100%)!important;
-  box-shadow:inset 0 -1px #000,0 10px 28px #0004!important
-}
-body.engine-mode #enginePanel .command-masthead:after{
-  content:"";position:absolute;left:28px;right:28px;bottom:0;height:2px;
-  background:linear-gradient(90deg,transparent,#b58a43 18%,#b58a43 82%,transparent);opacity:.65
-}
-body.engine-mode #enginePanel .command-brand{display:flex!important;align-items:center!important;gap:16px!important}
-body.engine-mode #enginePanel .command-mark{
-  width:54px!important;height:54px!important;display:grid!important;place-items:center!important;
-  border:2px solid #806638!important;border-radius:50%!important;background:#0a1013!important;color:#c09a54!important;
-  font-size:23px!important;box-shadow:inset 0 0 14px #000,0 5px 14px #0007!important
-}
-body.engine-mode #enginePanel .command-brand h2{
-  margin:2px 0 4px!important;color:#f2f0e8!important;font:800 clamp(29px,3.2vw,44px)/1 Georgia,serif!important
-}
-body.engine-mode #enginePanel .command-brand p{max-width:720px!important;margin:0!important;color:#9eaba9!important;font-size:12px!important}
-body.engine-mode #enginePanel .engine-kicker{color:#b99451!important;font-size:8px!important;font-weight:900!important;letter-spacing:.19em!important}
-body.engine-mode #enginePanel .command-access{
-  padding:9px 13px!important;border:1px solid #4d685b!important;border-radius:999px!important;
-  background:#13231c!important;color:#83bd98!important;font-size:9px!important;font-weight:900!important;letter-spacing:.12em!important;box-shadow:none!important
-}
-
-/* Compact engine instrumentation */
-body.engine-mode #enginePanel .engine-health-strip{
-  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:0!important;
-  border:0!important;border-bottom:1px solid #2f3a3e!important;border-radius:0!important;background:#0b1114!important;box-shadow:none!important
-}
-body.engine-mode #enginePanel .engine-health-strip>div{
-  position:relative!important;min-height:82px!important;padding:16px 20px 14px 58px!important;border:0!important;
-  border-right:1px solid #263136!important;background:linear-gradient(180deg,#121a1e,#0d1417)!important
-}
-body.engine-mode #enginePanel .engine-health-strip>div:last-child{border-right:0!important}
-body.engine-mode #enginePanel .engine-health-strip>div:before{
-  content:"";position:absolute;left:20px;top:50%;width:23px;height:23px;transform:translateY(-50%);
-  border:3px solid #756039;border-radius:50%;
-  background:radial-gradient(circle,#77ae8a 0 24%,#284536 26% 46%,#0a1110 48%);
-  box-shadow:0 0 9px #65a47b33,inset 0 0 5px #000
-}
-body.engine-mode #enginePanel .engine-health-strip span{color:#7f8c8a!important;font-size:8px!important;font-weight:900!important;letter-spacing:.12em!important;text-transform:uppercase!important}
-body.engine-mode #enginePanel .engine-health-strip strong{display:block!important;margin-top:4px!important;color:#e7ece8!important;font:800 18px/1.1 Georgia,serif!important}
-
-/* Minimal nautical identity */
-body.engine-mode #enginePanel .dark-flag-cove-banner{
-  min-height:0!important;margin:14px 24px 0!important;padding:9px 14px!important;border:1px solid #4a4030!important;
-  border-radius:9px!important;background:linear-gradient(90deg,#151a1b,#191d1d,#151a1b)!important;box-shadow:none!important
-}
-body.engine-mode #enginePanel .dark-flag-cove-banner .cove-crest,
-body.engine-mode #enginePanel .dark-flag-cove-banner .cove-compass{display:none!important}
-body.engine-mode #enginePanel .cove-banner-copy{display:flex!important;align-items:baseline!important;gap:12px!important}
-body.engine-mode #enginePanel .cove-kicker{color:#9a8353!important;font-size:7px!important;letter-spacing:.15em!important}
-body.engine-mode #enginePanel .cove-title{color:#d4d9d5!important;font:800 11px Georgia,serif!important;letter-spacing:.08em!important}
-body.engine-mode #enginePanel .cove-motto{margin-left:auto!important;color:#74807e!important;font-size:7px!important;letter-spacing:.09em!important}
-
-/* Working sections */
+/* Fixed, simple layer ladder:
+   1 room, 10 header/nav, 20 live controls, 99999 Captain cabin,
+   120500 Captain command workspace. */
+body.engine-mode #enginePanel .command-masthead,
+body.engine-mode #enginePanel .engine-room-visual-nav{z-index:10}
+body.engine-mode #enginePanel .engine-health-strip,
 body.engine-mode #enginePanel .project-command-section,
 body.engine-mode #enginePanel .project-engine-control,
-body.engine-mode #enginePanel .fleet-analytics,
-body.engine-mode #enginePanel .captain-access-dock{margin-left:24px!important;margin-right:24px!important}
-body.engine-mode #enginePanel .project-command-section{margin-top:16px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
-body.engine-mode #enginePanel .command-section-title,
-body.engine-mode #enginePanel .engine-section-head{
-  display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:18px!important;
-  margin:18px 24px 10px!important;padding:0 0 9px!important;border-bottom:1px solid #344045!important
-}
-body.engine-mode #enginePanel .project-command-section>.command-section-title{margin-left:0!important;margin-right:0!important}
-body.engine-mode #enginePanel .command-section-title h3,
-body.engine-mode #enginePanel .engine-section-head h3{margin:2px 0!important;color:#e7ebe8!important;font:800 20px Georgia,serif!important}
-body.engine-mode #enginePanel .command-section-title p{margin:3px 0 0!important;color:#7e8b89!important;font-size:10px!important}
+body.engine-mode #enginePanel #engineSettingsSection,
+body.engine-mode #enginePanel .protected-control-center,
+body.engine-mode #enginePanel .captain-access-dock{position:relative;z-index:20}
 
-/* Project tiles */
-body.engine-mode #enginePanel .project-summary-badge{margin:0 0 10px!important;color:#8d9a97!important}
-body.engine-mode #enginePanel .project-command-cards{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
-body.engine-mode #enginePanel .project-command-card{
-  position:relative!important;min-width:0!important;border:1px solid #344247!important;border-radius:12px!important;
-  background:linear-gradient(155deg,#172126,#11191d)!important;box-shadow:0 8px 20px #0003!important;overflow:hidden!important
+/* ---------- Opaque masthead: no ghost UI ---------- */
+body.engine-mode #enginePanel .command-masthead{
+  position:relative;
+  min-height:108px;
+  margin:0 -18px 12px 0;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:18px 22px;
+  background:#0b1216;
+  border:1px solid #4b402f;
+  border-top:0;
+  box-shadow:0 10px 26px rgba(0,0,0,.28);
 }
-body.engine-mode #enginePanel .project-command-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#8e7443}
-body.engine-mode #enginePanel .project-command-card h3,
-body.engine-mode #enginePanel .project-command-card h4{color:#edf0ed!important}
-body.engine-mode #enginePanel .project-command-card p,
-body.engine-mode #enginePanel .project-command-card small{color:#8e9a98!important}
-body.engine-mode #enginePanel .project-deployment-badge{border:1px solid #415048!important;background:#16231d!important;color:#75ac89!important}
-
-/* Buttons: IDs/semantics unchanged */
-body.engine-mode #enginePanel button:not(.danger-btn):not(.danger-outline-btn),
-body.engine-mode #enginePanel .primary-btn,
-body.engine-mode #enginePanel .secondary-btn{border-radius:8px!important}
-body.engine-mode #enginePanel .project-add-btn,
-body.engine-mode #enginePanel .primary-btn{
-  border:1px solid #9f7b3e!important;background:linear-gradient(#bf9650,#8e692f)!important;
-  color:#17120a!important;box-shadow:none!important;font-weight:900!important
+body.engine-mode #enginePanel .command-masthead::before,
+body.engine-mode #enginePanel .command-masthead::after{
+  content:none;
+  display:none;
 }
-body.engine-mode #enginePanel .secondary-btn{border:1px solid #48565b!important;background:#172126!important;color:#d8dfdc!important;box-shadow:none!important}
-
-/* Project Control Center console */
-body.engine-mode #enginePanel .project-engine-control{
-  padding:0!important;border:1px solid #425056!important;border-radius:14px!important;background:#10181c!important;
-  box-shadow:0 14px 34px #0004!important;overflow:hidden!important
+body.engine-mode #enginePanel .command-brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
 }
-body.engine-mode #enginePanel .project-engine-head{padding:18px 20px!important;border-bottom:1px solid #344146!important;background:linear-gradient(90deg,#172126,#11191d)!important}
-body.engine-mode #enginePanel .project-tabs{
-  padding:8px 10px!important;gap:5px!important;border-bottom:1px solid #303c41!important;background:#0b1215!important;
-  overflow-x:auto!important;flex-wrap:nowrap!important
+body.engine-mode #enginePanel .command-mark{
+  display:grid;
+  place-items:center;
+  width:48px;
+  height:48px;
+  flex:0 0 48px;
+  border:1px solid #665333;
+  border-radius:50%;
+  background:#0a1013;
+  color:var(--er-brass-hi);
 }
-body.engine-mode #enginePanel .project-tabs button{
-  flex:0 0 auto!important;min-height:36px!important;padding:8px 11px!important;border:1px solid transparent!important;
-  background:transparent!important;color:#85928f!important;font-size:9px!important;font-weight:800!important
+body.engine-mode #enginePanel .command-masthead h2{
+  margin:0;
+  color:var(--er-text);
+  font:900 36px/1 Georgia,serif;
 }
-body.engine-mode #enginePanel .project-tabs button.active{border-color:#725f39!important;background:#292418!important;color:#e2c47f!important}
-body.engine-mode #enginePanel .project-tab-content{padding:16px!important;background:#10181c!important}
-
-/* Registry and settings */
-body.engine-mode #enginePanel .company-fleet{margin:0 24px!important;gap:10px!important}
-body.engine-mode #enginePanel .engine-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;margin:0 24px!important}
-body.engine-mode #enginePanel .engine-card{
-  padding:16px!important;border:1px solid #344146!important;border-radius:12px!important;
-  background:linear-gradient(155deg,#151f23,#10171a)!important;box-shadow:none!important
+body.engine-mode #enginePanel .command-masthead p{
+  margin:5px 0 0;
+  color:var(--er-copy);
+  font-size:11px;
 }
-body.engine-mode #enginePanel .engine-card h3{color:#e5eae6!important;font:800 17px Georgia,serif!important}
-body.engine-mode #enginePanel .engine-card .helper{color:#84918f!important;font-size:9px!important;line-height:1.4!important}
-body.engine-mode #enginePanel input,
-body.engine-mode #enginePanel select,
-body.engine-mode #enginePanel textarea{border:1px solid #435156!important;background:#0b1215!important;color:#e7ece8!important;box-shadow:none!important}
-body.engine-mode #enginePanel label{color:#a6b0ae!important}
-
-/* Captain access remains visible but subordinate */
-body.engine-mode #enginePanel .captain-access-dock{
-  padding:12px!important;border:1px solid #4c4331!important;border-radius:11px!important;background:#141715!important;box-shadow:none!important
-}
-body.engine-mode #enginePanel .captain-access-btn{min-height:54px!important;border:0!important;background:transparent!important;color:#d8d1be!important}
-body.engine-mode #enginePanel .captain-access-kicker{color:#9e8651!important;font-size:7px!important;letter-spacing:.16em!important}
-
-/* Analytics */
-body.engine-mode #enginePanel .fleet-analytics.captains-log{
-  padding:18px!important;border:1px solid #39474c!important;border-radius:14px!important;background:#10181c!important;box-shadow:none!important
-}
-body.engine-mode #enginePanel .captains-log-head{padding-bottom:10px!important;border-bottom:1px solid #354146!important}
-body.engine-mode #enginePanel .captains-log-head h3{color:#e8ece9!important;font:800 20px Georgia,serif!important}
-body.engine-mode #enginePanel .captains-log-badge{border:1px solid #4e605a!important;background:#12221c!important;color:#78a98a!important}
-body.engine-mode #enginePanel .captains-log-charts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
-body.engine-mode #enginePanel .captains-chart-card{border:1px solid #334146!important;border-radius:11px!important;background:#0c1316!important;box-shadow:none!important}
-body.engine-mode #enginePanel .chart-heading h4{color:#dfe5e1!important}
-
-body.engine-mode #enginePanel .pirate-footer{
-  margin:20px 24px 0!important;padding:10px 12px!important;border-top:1px solid #303b3f!important;
-  background:transparent!important;color:#65716f!important;font-size:8px!important;font-weight:900!important;
-  letter-spacing:.14em!important;text-align:center!important
+body.engine-mode #enginePanel .command-access{
+  padding:10px 13px;
+  border:1px solid #45565c;
+  border-radius:10px;
+  background:#10191d;
+  color:#93aaa3;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.11em;
 }
 
-@media(max-width:980px){
-  body.engine-mode #enginePanel .project-command-cards,
-  body.engine-mode #enginePanel .engine-grid,
-  body.engine-mode #enginePanel .captains-log-charts{grid-template-columns:1fr!important}
-}
-@media(max-width:760px){
-  body.engine-mode #enginePanel.engine-panel{width:calc(100% - 16px)!important;margin:8px auto 24px!important}
-  body.engine-mode #enginePanel .command-masthead{padding:18px!important}
-  body.engine-mode #enginePanel .engine-health-strip{grid-template-columns:repeat(2,1fr)!important}
-  body.engine-mode #enginePanel .cove-banner-copy{display:grid!important;gap:2px!important}
-  body.engine-mode #enginePanel .cove-motto{margin-left:0!important}
-}
-
-
-/* ==========================================================
-   v2.9.55 — ENGINE ROOM ASSET INTEGRATION
-   Uses the approved visual benchmark as a real /assets dependency.
-   Existing Engine controls remain real HTML. app.js/captain.js unchanged.
-   ========================================================== */
-
-body.engine-mode #enginePanel.engine-panel{
-  position:relative!important;
-  padding-left:170px!important;
-  background:
-    linear-gradient(180deg,rgba(6,10,12,.90),rgba(7,11,13,.95)),
-    url("assets/engine_room_benchmark_v2955.jpg") center top/cover fixed no-repeat!important;
-  border-color:#5a472b!important;
-  box-shadow:0 28px 80px #000b,inset 0 0 0 1px #a47a3a25!important;
-}
-
-/* A subtle brass chassis borrowed directly from the benchmark's material language. */
-body.engine-mode #enginePanel.engine-panel:before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  border:7px solid transparent;
-  border-image:linear-gradient(135deg,#2c2114,#8d6732,#2b2115,#6f5129) 1;
-  opacity:.85;
-}
-body.engine-mode #enginePanel.engine-panel>*{position:relative;z-index:2}
-
-/* Left operations rail, now a real navigation layer. */
+/* ---------- Left operations rail ---------- */
 body.engine-mode #enginePanel .engine-room-visual-nav{
-  position:absolute!important;
-  z-index:40!important;
-  left:0!important;
-  top:0!important;
-  bottom:0!important;
-  width:146px!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:stretch!important;
-  gap:3px!important;
-  padding:14px 9px!important;
-  border-right:1px solid #5a4527!important;
-  background:
-    linear-gradient(180deg,#0b1012f5,#0a0e10f7),
-    url("assets/engine_room_benchmark_v2955.jpg") left top/1100px auto no-repeat!important;
-  box-shadow:8px 0 22px #0008,inset -1px 0 #a37b3c22!important;
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  width:108px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  padding:12px 8px;
+  background:#080d10;
+  border-right:1px solid #493b27;
+  box-shadow:8px 0 20px rgba(0,0,0,.24);
 }
 body.engine-mode #enginePanel .ervn-brand{
-  display:grid!important;
-  place-items:center!important;
-  min-height:108px!important;
-  margin-bottom:8px!important;
-  padding:10px 4px!important;
-  border-bottom:1px solid #5b472b!important;
-  color:#d5b268!important;
-  text-align:center!important;
+  display:grid;
+  place-items:center;
+  min-height:86px;
+  margin-bottom:8px;
+  padding-bottom:8px;
+  border-bottom:1px solid #403627;
+  text-align:center;
 }
 body.engine-mode #enginePanel .ervn-brand>span{
-  width:42px;height:42px;display:grid;place-items:center;
-  margin-bottom:5px;border:2px solid #7d6035;border-radius:50%;
-  background:#0a0e10;color:#d0a75d;font-size:22px;
-  box-shadow:inset 0 0 10px #000,0 5px 12px #0009
+  display:grid;
+  place-items:center;
+  width:39px;
+  height:39px;
+  margin-bottom:5px;
+  border:1px solid #665333;
+  border-radius:50%;
+  background:#10171a;
+  color:var(--er-brass-hi);
 }
-body.engine-mode #enginePanel .ervn-brand strong{font:800 12px Georgia,serif!important;letter-spacing:.04em!important}
-body.engine-mode #enginePanel .ervn-brand small{color:#766e5e!important;font-size:7px!important;letter-spacing:.16em!important}
+body.engine-mode #enginePanel .ervn-brand strong{
+  color:#d8c28e;
+  font:800 10px Georgia,serif;
+}
+body.engine-mode #enginePanel .ervn-brand small{
+  color:#697672;
+  font-size:6px;
+  letter-spacing:.15em;
+}
 body.engine-mode #enginePanel .engine-room-visual-nav>a{
-  display:flex!important;
-  align-items:center!important;
-  min-height:42px!important;
-  padding:0 10px!important;
-  border:1px solid transparent!important;
-  border-radius:6px!important;
-  color:#b8c0bc!important;
-  font:800 9px Arial,sans-serif!important;
-  letter-spacing:.04em!important;
-  text-decoration:none!important;
-  background:transparent!important;
+  display:flex;
+  align-items:center;
+  min-height:38px;
+  padding:0 8px;
+  border:1px solid transparent;
+  border-radius:7px;
+  color:#a8b3af;
+  font:800 8px Arial,sans-serif;
+  text-decoration:none;
 }
-body.engine-mode #enginePanel .engine-room-visual-nav>a:before{
+body.engine-mode #enginePanel .engine-room-visual-nav>a::before{
   content:"";
-  width:7px;height:7px;margin-right:9px;border:1px solid #977440;border-radius:50%;background:#17110a;
+  width:5px;
+  height:5px;
+  margin-right:7px;
+  border:1px solid #8b6c3d;
+  border-radius:50%;
 }
 body.engine-mode #enginePanel .engine-room-visual-nav>a:hover,
 body.engine-mode #enginePanel .engine-room-visual-nav>a:focus-visible{
-  border-color:#72582f!important;
-  background:#2b2114!important;
-  color:#ead09a!important;
-  outline:none!important;
+  outline:none;
+  border-color:#655033;
+  background:#161c1d;
+  color:#f0d491;
 }
 body.engine-mode #enginePanel .ervn-secure{
-  margin-top:auto!important;
-  display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
-  min-height:52px!important;padding:8px!important;
-  border:1px solid #3d5847!important;border-radius:8px!important;
-  background:#0f1c16!important;color:#75ad89!important;
-  font-size:7px!important;font-weight:900!important;letter-spacing:.08em!important;
+  margin-top:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:43px;
+  border:1px solid #355847;
+  border-radius:8px;
+  background:#0c1712;
+  color:#78ae88;
+  font-size:6px;
+  font-weight:900;
 }
 body.engine-mode #enginePanel .ervn-secure i{
-  width:10px;height:10px;border-radius:50%;background:#6db77f;box-shadow:0 0 10px #6db77f;
+  width:8px;height:8px;border-radius:50%;
+  background:#70b985;
+  box-shadow:0 0 9px #70b985;
 }
 
-/* Header now visually belongs to the benchmark's heavy black/brass machinery. */
-body.engine-mode #enginePanel .command-masthead{
-  min-height:128px!important;
-  background:
-    linear-gradient(90deg,rgba(10,14,16,.96),rgba(20,27,30,.93),rgba(9,13,15,.97)),
-    url("assets/engine_room_benchmark_v2955.jpg") center top/cover no-repeat!important;
-  border-bottom:2px solid #73572f!important;
-}
-body.engine-mode #enginePanel .command-masthead:before{
-  content:"";
-  position:absolute;
-  right:24px;top:19px;
-  width:292px;height:72px;
-  border:1px solid #5d482d;border-radius:8px;
-  background:
-    radial-gradient(circle at 17% 50%,#18231e 0 11%,#77704a 12% 14%,#0a0e0f 15% 21%,transparent 22%),
-    radial-gradient(circle at 50% 50%,#18231e 0 11%,#77704a 12% 14%,#0a0e0f 15% 21%,transparent 22%),
-    radial-gradient(circle at 83% 50%,#18231e 0 11%,#77704a 12% 14%,#0a0e0f 15% 21%,transparent 22%);
-  opacity:.68;pointer-events:none;
-}
-
-/* Live health tiles float over the benchmark materials. */
+/* ---------- Live Engine instruments ---------- */
 body.engine-mode #enginePanel .engine-health-strip{
-  gap:10px!important;
-  padding:12px 16px!important;
-  border-bottom:1px solid #493a26!important;
-  background:linear-gradient(180deg,#090d0fee,#0b1114f4)!important;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+  margin:0 0 13px;
+  padding:10px;
+  border:1px solid #4a4a3e;
+  border-radius:10px;
+  background:#0b1317;
 }
 body.engine-mode #enginePanel .engine-health-strip>div{
-  border:1px solid #3f4a4e!important;
-  border-radius:9px!important;
-  background:linear-gradient(160deg,#152024f5,#0e1518f8)!important;
-  box-shadow:inset 0 0 0 1px #ffffff05,0 7px 15px #0004!important;
+  min-height:64px;
+  padding:11px 13px;
+  border:1px solid #3d4c52;
+  border-radius:8px;
+  background:#121c21;
 }
-body.engine-mode #enginePanel .engine-health-strip>div:before{
-  border-color:#9a7440!important;
-  background:radial-gradient(circle,#7fc08e 0 23%,#2c4b39 25% 44%,#0b1010 47%)!important;
-}
-
-/* Project bay and settings retain live DOM, but gain the visual depth of the approved reference. */
-body.engine-mode #enginePanel .project-command-section,
-body.engine-mode #enginePanel .project-engine-control,
-body.engine-mode #enginePanel .fleet-analytics.captains-log,
-body.engine-mode #enginePanel .engine-card,
-body.engine-mode #enginePanel .captain-access-dock{
-  backdrop-filter:blur(2px);
-  -webkit-backdrop-filter:blur(2px);
-}
-body.engine-mode #enginePanel .project-command-card,
-body.engine-mode #enginePanel .engine-card,
-body.engine-mode #enginePanel .captains-chart-card{
-  border-color:#4a3c2b!important;
-  background:
-    linear-gradient(155deg,rgba(20,30,35,.97),rgba(11,17,20,.98)),
-    url("assets/engine_room_benchmark_v2955.jpg") center/cover no-repeat!important;
-}
-body.engine-mode #enginePanel .project-command-card{
-  box-shadow:0 12px 24px #0005,inset 0 0 0 1px #b78a3a12!important;
-}
-body.engine-mode #enginePanel .project-command-card:before{background:#b58a43!important}
-
-/* Registry cards resemble machinery channels, not white admin cards. */
-body.engine-mode #enginePanel .company-fleet>*{
-  border:1px solid #4d402d!important;
-  background:linear-gradient(90deg,#121b1ff4,#152126f4)!important;
-  box-shadow:0 7px 17px #0003!important;
-}
-
-/* Charts and operational data keep their real live values. */
-body.engine-mode #enginePanel .captains-log-kpis>*{
-  border:1px solid #473b2b!important;
-  background:#121b1ff2!important;
-}
-body.engine-mode #enginePanel .captains-project-table{
-  border:1px solid #473b2b!important;
-  background:#0b1215f2!important;
-}
-
-/* Main content gains a little vertical rhythm to mirror the benchmark's distinct decks. */
-body.engine-mode #enginePanel .engine-section-head{
-  margin-top:24px!important;
-  border-bottom-color:#5a452b!important;
-}
-body.engine-mode #enginePanel .engine-section-head:before{
-  content:"";
-  width:3px;height:26px;margin-right:9px;border-radius:2px;background:#a77e3f;
-}
-
-/* Professional base, minimal pirate decoration. */
-body.engine-mode #enginePanel .command-mark{font-size:0!important}
-body.engine-mode #enginePanel .command-mark:before{content:"⚙";font-size:24px!important}
-body.engine-mode #enginePanel .pirate-footer{
-  border:1px solid #4b3c29!important;border-radius:8px!important;
-  background:#0d1213e8!important;color:#8f8470!important;
-}
-
-/* Compact on iPad portrait and narrower screens. */
-@media(max-width:980px){
-  body.engine-mode #enginePanel.engine-panel{padding-left:0!important}
-  body.engine-mode #enginePanel .engine-room-visual-nav{
-    position:relative!important;left:auto!important;top:auto!important;bottom:auto!important;width:auto!important;
-    flex-direction:row!important;overflow-x:auto!important;padding:8px 10px!important;border-right:0!important;border-bottom:1px solid #5a4527!important
-  }
-  body.engine-mode #enginePanel .ervn-brand,
-  body.engine-mode #enginePanel .ervn-secure{display:none!important}
-  body.engine-mode #enginePanel .engine-room-visual-nav>a{flex:0 0 auto!important}
-}
-
-
-/* ==========================================================
-   v2.9.56 — ENGINE ROOM CLARITY PASS
-   Corrects v2.9.55 visual regressions without changing function.
-   Benchmark remains an asset/reference, not a ghosted UI background.
-   ========================================================== */
-
-/* 1. Remove benchmark bleed-through from the live working surface. */
-body.engine-mode #enginePanel.engine-panel{
-  padding-left:124px!important;
-  background:
-    radial-gradient(circle at 82% 5%,rgba(91,69,35,.12),transparent 24%),
-    linear-gradient(180deg,#0a0f11 0%,#0b1114 48%,#090e10 100%)!important;
-}
-
-/* Keep the benchmark asset only as a restrained atmospheric header reference. */
-body.engine-mode #enginePanel .command-masthead{
-  background:
-    linear-gradient(90deg,rgba(8,12,14,.97),rgba(16,23,26,.94),rgba(8,12,14,.98)),
-    url("assets/engine_room_benchmark_v2955.jpg") center 10%/cover no-repeat!important;
-}
-
-/* 2. Make the operations rail useful without stealing dashboard width. */
-body.engine-mode #enginePanel .engine-room-visual-nav{
-  width:108px!important;
-  padding:10px 7px!important;
-  background:linear-gradient(180deg,#0b1012,#090d0f)!important;
-}
-body.engine-mode #enginePanel .ervn-brand{min-height:82px!important}
-body.engine-mode #enginePanel .engine-room-visual-nav>a{
-  min-height:38px!important;
-  padding:0 7px!important;
-  font-size:8px!important;
-}
-body.engine-mode #enginePanel .engine-room-visual-nav>a:before{
-  width:5px!important;height:5px!important;margin-right:6px!important;
-}
-body.engine-mode #enginePanel .ervn-secure{
-  min-height:44px!important;
-  font-size:6px!important;
-}
-
-/* 3. Operational cards are opaque. No duplicate/ghost UI beneath them. */
-body.engine-mode #enginePanel .project-command-card,
-body.engine-mode #enginePanel .engine-card,
-body.engine-mode #enginePanel .captains-chart-card{
-  background:#111a1e!important;
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-}
-body.engine-mode #enginePanel .project-command-section,
-body.engine-mode #enginePanel .project-engine-control,
-body.engine-mode #enginePanel .fleet-analytics.captains-log,
-body.engine-mode #enginePanel .engine-card,
-body.engine-mode #enginePanel .captain-access-dock{
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-}
-
-/* 4. Captain access is a compact command row, not a dominant module. */
-body.engine-mode #enginePanel .captain-access-dock{
-  padding:7px 10px!important;
-  border-color:#3d382b!important;
-  background:#101412!important;
-}
-body.engine-mode #enginePanel .captain-access-btn{
-  min-height:44px!important;
-}
-body.engine-mode #enginePanel .captain-access-btn span:first-child{
-  font-size:17px!important;
-}
-body.engine-mode #enginePanel .captain-access-btn strong{
-  font-size:11px!important;
-}
-body.engine-mode #enginePanel .captain-access-btn small{
-  font-size:8px!important;
-  color:#8e9690!important;
-}
-
-/* 5. Analytics gets the cleanest visual hierarchy in the room. */
-body.engine-mode #enginePanel .fleet-analytics.captains-log{
-  padding:16px!important;
-  border-color:#465257!important;
-  background:#0f171a!important;
-}
-body.engine-mode #enginePanel .captains-log-kpis{
-  gap:9px!important;
-  margin:12px 0!important;
-}
-body.engine-mode #enginePanel .captains-log-kpis>div{
-  border:1px solid #485156!important;
-  background:#162126!important;
-  box-shadow:none!important;
-}
-body.engine-mode #enginePanel .captains-log-kpis span{color:#aebbb8!important}
-body.engine-mode #enginePanel .captains-log-kpis strong{color:#e5c366!important}
-
-/* Existing canvas code draws for a light chart surface, so restore that
-   high-contrast instrument-panel surface rather than altering JS. */
-body.engine-mode #enginePanel .captains-chart-card{
-  border:1px solid #82745b!important;
-  background:#f3efe5!important;
-  box-shadow:inset 0 0 0 1px #fff8!important;
-}
-body.engine-mode #enginePanel .chart-heading h4{color:#173742!important}
-body.engine-mode #enginePanel .chart-heading span{color:#687476!important}
-body.engine-mode #enginePanel .captains-chart-card canvas{
-  opacity:1!important;
-  filter:none!important;
-}
-
-/* 6. Restore table readability explicitly. */
-body.engine-mode #enginePanel .captains-project-table{
-  border:1px solid #48565b!important;
-  background:#111a1e!important;
-}
-body.engine-mode #enginePanel .captains-project-row{
-  border-top-color:#344247!important;
-}
-body.engine-mode #enginePanel .captains-project-row strong{
-  color:#e5ece8!important;
-}
-body.engine-mode #enginePanel .captains-project-row span{
-  color:#aab5b2!important;
-}
-
-/* 7. Reduce box-inside-box noise while preserving grouping. */
-body.engine-mode #enginePanel .captains-log-kpis>div,
-body.engine-mode #enginePanel .captains-chart-card,
-body.engine-mode #enginePanel .captains-project-table{
-  border-radius:8px!important;
-}
-body.engine-mode #enginePanel .fleet-analytics.captains-log{
-  border-radius:10px!important;
-}
-
-/* 8. Stronger live-data emphasis than decorative material. */
-body.engine-mode #enginePanel .captains-log-head h3,
-body.engine-mode #enginePanel .chart-heading h4,
-body.engine-mode #enginePanel .captains-project-row strong{
-  text-shadow:none!important;
-}
-
-/* iPad/narrow behavior remains compact and functional. */
-@media(max-width:1100px){
-  body.engine-mode #enginePanel.engine-panel{padding-left:0!important}
-  body.engine-mode #enginePanel .engine-room-visual-nav{
-    position:relative!important;
-    width:auto!important;
-    flex-direction:row!important;
-    overflow-x:auto!important;
-    border-right:0!important;
-    border-bottom:1px solid #5a4527!important;
-  }
-  body.engine-mode #enginePanel .ervn-brand,
-  body.engine-mode #enginePanel .ervn-secure{display:none!important}
-  body.engine-mode #enginePanel .engine-room-visual-nav>a{flex:0 0 auto!important}
-}
-
-
-/* ==========================================================
-   v2.9.57 — FIRST MATE'S WORKBENCH
-   Engine Room becomes an operating workspace.
-   Existing project controls remain intact.
-   ========================================================== */
-
-/* More benchmark-like machinery framing, while keeping live UI opaque. */
-body.engine-mode #enginePanel.engine-panel{
-  background:
-    linear-gradient(90deg,rgba(105,70,28,.12) 0 2px,transparent 2px calc(100% - 2px),rgba(105,70,28,.12) calc(100% - 2px)),
-    radial-gradient(circle at 80% 8%,rgba(139,98,41,.10),transparent 25%),
-    linear-gradient(180deg,#080d0f,#0b1114 45%,#080c0e)!important;
-}
-
-/* Engine status instruments: operational, not business KPI decoration. */
-body.engine-mode #enginePanel .engine-health-strip{
-  border:1px solid #604a2c!important;
-  background:linear-gradient(180deg,#11191d,#0c1316)!important;
-  box-shadow:inset 0 0 0 1px #000,0 5px 18px #0005!important;
-}
-body.engine-mode #enginePanel .engine-health-strip>div{
-  border-right:1px solid #3b3428!important;
-}
-
-/* Fleet is the entry point; visually compact enough to scale. */
-body.engine-mode #enginePanel .first-mate-fleet,
-body.engine-mode #enginePanel .project-command-section{
-  border:1px solid #5b472c!important;
-  background:#0e1619!important;
-  box-shadow:inset 0 0 22px #0004!important;
-}
-body.engine-mode #enginePanel .project-grid{
-  gap:10px!important;
-}
-body.engine-mode #enginePanel .project-command-card{
-  min-height:0!important;
-  border-color:#465158!important;
-  background:linear-gradient(180deg,#151f24,#11191d)!important;
-}
-
-/* Existing project controls become the central First Mate workbench. */
-body.engine-mode #enginePanel .first-mate-workbench,
-body.engine-mode #enginePanel .project-engine-control{
-  border:1px solid #675032!important;
-  background:#0e1619!important;
-  box-shadow:inset 0 0 0 1px #000,0 7px 20px #0004!important;
-}
-body.engine-mode #enginePanel .project-engine-control::before{
-  content:"FIRST MATE'S WORKBENCH";
+body.engine-mode #enginePanel .engine-health-strip span{
   display:block;
-  margin:0 0 10px;
-  color:#d9b85f;
-  font:700 9px/1.2 Georgia,serif;
-  letter-spacing:.18em;
+  color:#91a09c;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+body.engine-mode #enginePanel .engine-health-strip strong{
+  display:block;
+  margin-top:5px;
+  color:var(--er-text);
+  font:900 18px Georgia,serif;
 }
 
-/* Existing project tabs remain the control authority; make them read like machinery bays. */
-body.engine-mode #enginePanel .project-tabs{
-  gap:5px!important;
-  padding:7px!important;
-  border:1px solid #3f4c51!important;
-  border-radius:8px!important;
-  background:#0b1215!important;
+/* Old decorative banner is a controlled separator, never a translucent layer. */
+body.engine-mode #enginePanel .dark-flag-cove-banner{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 12px;
+  padding:10px 14px;
+  border:1px solid #404d51;
+  border-radius:9px;
+  background:#10191d;
+  opacity:1;
 }
-body.engine-mode #enginePanel .project-tabs button{
-  border:1px solid #39484e!important;
-  background:#172329!important;
-  color:#c8d1cf!important;
+body.engine-mode #enginePanel .cove-crest,
+body.engine-mode #enginePanel .cove-compass{color:#95763f}
+body.engine-mode #enginePanel .cove-kicker{color:#8f9d99;font-size:7px;font-weight:900;letter-spacing:.12em}
+body.engine-mode #enginePanel .cove-title{color:#e8edea;font:900 14px Georgia,serif}
+body.engine-mode #enginePanel .cove-motto{color:#75827f;font-size:7px}
+
+/* ---------- Main working surfaces ---------- */
+body.engine-mode #enginePanel .project-command-section,
+body.engine-mode #enginePanel .project-engine-control,
+body.engine-mode #enginePanel .protected-control-center,
+body.engine-mode #enginePanel .captain-access-dock,
+body.engine-mode #enginePanel .engine-card{
+  opacity:1;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
 }
-body.engine-mode #enginePanel .project-tabs button.active{
-  border-color:#9d7a3f!important;
-  background:#24343a!important;
-  color:#f0ce70!important;
+body.engine-mode #enginePanel .project-command-section,
+body.engine-mode #enginePanel .project-engine-control,
+body.engine-mode #enginePanel .protected-control-center{
+  margin-bottom:14px;
+  padding:14px;
+  border:1px solid #4b5354;
+  border-radius:11px;
+  background:var(--er-panel);
+}
+body.engine-mode #enginePanel .command-section-title{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+body.engine-mode #enginePanel .command-section-title h3,
+body.engine-mode #enginePanel .project-engine-head h3,
+body.engine-mode #enginePanel .protected-control-head h3{
+  color:var(--er-text);
+}
+body.engine-mode #enginePanel .engine-kicker,
+body.engine-mode #enginePanel .engine-card-kicker{
+  color:#c4a45d;
 }
 
-/* Captain access stays available but is a doorway, not Engine Room content. */
-body.engine-mode #enginePanel .captain-access-dock{
-  margin-top:12px!important;
-  padding:5px 8px!important;
-  background:#0c1110!important;
-}
-body.engine-mode #enginePanel .captain-access-btn{
-  min-height:38px!important;
-}
-
-/* Operations Monitor is secondary telemetry now; compact it heavily.
-   No data/function removal. */
-body.engine-mode #enginePanel .fleet-analytics.captains-log{
-  margin-top:12px!important;
-  padding:10px!important;
-  border-color:#3f4b50!important;
-  background:#0c1417!important;
-}
-body.engine-mode #enginePanel .captains-log-head h3{
-  font-size:18px!important;
-}
-body.engine-mode #enginePanel .captains-log-kpis{
-  margin:8px 0!important;
-}
-body.engine-mode #enginePanel .captains-log-charts{
-  max-height:250px!important;
-  overflow:hidden!important;
-}
-body.engine-mode #enginePanel .captains-chart-card{
-  min-height:220px!important;
-}
-
-/* Project registry must wrap/reflow rather than assume three projects. */
-body.engine-mode #enginePanel .project-grid{
-  display:grid!important;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr))!important;
-}
-body.engine-mode #enginePanel .project-command-card{
-  width:auto!important;
-  max-width:none!important;
-}
-
-/* Operational status language. */
-body.engine-mode #enginePanel .status-good,
-body.engine-mode #enginePanel [data-status="healthy"]{--engine-status:#70b887}
-body.engine-mode #enginePanel .status-warn,
-body.engine-mode #enginePanel [data-status="attention"]{--engine-status:#d6b65f}
-body.engine-mode #enginePanel .status-test,
-body.engine-mode #enginePanel [data-status="test"]{--engine-status:#6da3c8}
-body.engine-mode #enginePanel .status-danger,
-body.engine-mode #enginePanel [data-status="danger"]{--engine-status:#b86d62}
-
-/* iPad: keep workbench wide and let project registry reflow naturally. */
-@media(max-width:1100px){
-  body.engine-mode #enginePanel .project-grid{
-    grid-template-columns:repeat(auto-fit,minmax(230px,1fr))!important;
-  }
-  body.engine-mode #enginePanel .captains-log-charts{
-    max-height:none!important;
-  }
-}
-
-
-/* ==========================================================
-   v2.9.58 — BUSINESS ENGINE ROOM
-   The Engine Room is the First Mate's execution layer.
-   Professional engine-room design; no visible Pirate Mode.
-   ========================================================== */
-
-/* Retire Pirate Mode from the visible Engine Room. */
-body.engine-mode #enginePanel .engine-legacy-appearance .engine-pirate-toggle-row,
-body.engine-mode #enginePanel .engine-legacy-appearance #pirateModeStatus{display:none!important}
-body.engine-mode #enginePanel .engine-legacy-appearance{min-height:auto!important}
-body.engine-mode #enginePanel .business-mode-status{
-  display:flex!important;align-items:center!important;gap:8px!important;
-  margin-top:10px!important;padding:9px 10px!important;
-  border:1px solid #3d5b4b!important;border-radius:8px!important;
-  background:#101c17!important;
-}
-body.engine-mode #enginePanel .business-mode-status>span{
-  width:9px;height:9px;border-radius:50%;background:#6fb585;box-shadow:0 0 10px #6fb585;
-}
-body.engine-mode #enginePanel .business-mode-status strong{
-  color:#dce8e1!important;font-size:9px!important;letter-spacing:.08em!important;
-}
-body.engine-mode #enginePanel .business-mode-status small{
-  margin-left:auto;color:#789084!important;font-size:8px!important;
-}
-
-/* Fleet Command is built to scale with however many projects exist. */
+/* ---------- Scalable project command ---------- */
 body.engine-mode #enginePanel .engine-fleet-toolbar{
-  display:grid!important;grid-template-columns:minmax(230px,1fr) auto!important;
-  gap:10px!important;align-items:end!important;margin:0 0 12px!important;padding:10px!important;
-  border:1px solid #3a474d!important;border-radius:10px!important;background:#0b1215!important;
+  display:grid;
+  grid-template-columns:minmax(240px,1fr) auto;
+  gap:10px;
+  align-items:end;
+  margin:0 0 12px;
+  padding:10px;
+  border:1px solid #3e4c51;
+  border-radius:9px;
+  background:#0a1114;
 }
 body.engine-mode #enginePanel .engine-fleet-search{
-  display:grid!important;gap:4px!important;color:#9eaaa7!important;
-  font-size:7px!important;font-weight:900!important;letter-spacing:.12em!important;text-transform:uppercase!important;
+  display:grid;
+  gap:4px;
+  color:#8f9d99;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
 }
 body.engine-mode #enginePanel .engine-fleet-search input{
-  min-height:38px!important;padding:8px 11px!important;border:1px solid #46565d!important;
-  border-radius:7px!important;background:#111a1f!important;color:#edf1ef!important;
+  min-height:38px;
+  padding:8px 10px;
 }
-body.engine-mode #enginePanel .engine-fleet-filters{display:flex!important;flex-wrap:wrap!important;gap:5px!important}
+body.engine-mode #enginePanel .engine-fleet-filters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+}
 body.engine-mode #enginePanel .engine-fleet-filters button{
-  min-height:34px!important;padding:7px 9px!important;border:1px solid #3f4d53!important;
-  border-radius:7px!important;background:#141e23!important;color:#9ba7a4!important;font-size:8px!important;font-weight:800!important;
+  min-height:34px;
+  padding:7px 10px;
+  border:1px solid #425158;
+  border-radius:7px;
+  background:#141e23;
+  color:#aeb9b6;
+  font-size:8px;
+  font-weight:800;
 }
 body.engine-mode #enginePanel .engine-fleet-filters button.active{
-  border-color:#8d713f!important;background:#2a2418!important;color:#e3c782!important;
+  border-color:#94733e;
+  background:#2c2417;
+  color:#f1d38a;
 }
-
-/* Correct selectors for the actual project-card implementation. */
 body.engine-mode #enginePanel .project-command-cards{
-  display:grid!important;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr))!important;
-  gap:10px!important;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+  gap:10px;
 }
 body.engine-mode #enginePanel .project-card{
-  width:auto!important;max-width:none!important;min-height:0!important;
-  padding:14px!important;border:1px solid #465158!important;border-radius:10px!important;
-  background:linear-gradient(180deg,#151f24,#11191d)!important;
-  box-shadow:0 8px 18px #0003!important;
+  width:auto;
+  max-width:none;
+  min-height:0;
+  padding:14px;
+  border:1px solid #45555b;
+  border-radius:10px;
+  background:var(--er-panel-2);
+  box-shadow:0 8px 18px rgba(0,0,0,.22);
 }
-body.engine-mode #enginePanel .project-card h4{font-size:20px!important}
-body.engine-mode #enginePanel .project-card p{font-size:10px!important}
-body.engine-mode #enginePanel .project-card-actions{gap:6px!important}
-body.engine-mode #enginePanel .project-card-actions button{min-height:38px!important}
-body.engine-mode #enginePanel .project-card[hidden]{display:none!important}
+body.engine-mode #enginePanel .project-card[hidden]{display:none}
+body.engine-mode #enginePanel .project-card h4,
+body.engine-mode #enginePanel .project-card strong,
+body.engine-mode #enginePanel .project-card .project-name,
+body.engine-mode #enginePanel .project-card .project-card-title{
+  color:#f2f5f3;
+  text-shadow:none;
+}
+body.engine-mode #enginePanel .project-card p,
+body.engine-mode #enginePanel .project-card small{
+  color:#aeb8b5;
+}
+body.engine-mode #enginePanel .project-card-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+body.engine-mode #enginePanel .project-card-actions button{
+  min-height:39px;
+}
 body.engine-mode #enginePanel .add-project-card{
-  min-height:170px!important;
-  border-style:dashed!important;
-  background:#10171a!important;
+  min-height:170px;
+  border-style:dashed;
+  background:#0f171a;
 }
 
-/* Company Registry duplicates Fleet Command and is removed from the daily surface.
-   Existing DOM/data remain alive for compatibility. */
-body.engine-mode #enginePanel .engine-registry-support-head,
-body.engine-mode #enginePanel .engine-registry-support{display:none!important}
-
-/* Analytics are no longer primary Engine Room content.
-   They remain in DOM for Captain-side relocation next. */
-body.engine-mode #enginePanel .engine-telemetry-legacy{display:none!important}
-body.engine-mode #enginePanel .engine-room-visual-nav a[href="#engineAnalyticsSection"]{display:none!important}
-
-/* Engine Controls now occupy the recovered space as actual machinery. */
-body.engine-mode #enginePanel #engineSettingsSection{
-  margin-top:14px!important;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr))!important;
+/* ---------- Forms / controls ---------- */
+body.engine-mode #enginePanel input,
+body.engine-mode #enginePanel textarea,
+body.engine-mode #enginePanel select{
+  color:#eef3f0;
+  background:#0b1317;
+  border-color:#4a5a61;
+  opacity:1;
 }
-body.engine-mode #enginePanel .engine-card{
-  background:#111a1f!important;border-color:#46545a!important;
+body.engine-mode #enginePanel input::placeholder,
+body.engine-mode #enginePanel textarea::placeholder{
+  color:#778581;
+  opacity:1;
 }
-
-/* First Mate's workbench gets strongest control hierarchy. */
-body.engine-mode #enginePanel .project-engine-control{
-  border-color:#7b6037!important;
-  background:#0d1518!important;
-  box-shadow:0 14px 32px #0005!important;
-}
-body.engine-mode #enginePanel .project-tabs button{
-  background:#152126!important;border-color:#3e4c52!important;color:#b7c1be!important;
-}
-body.engine-mode #enginePanel .project-tabs button.active{
-  background:#24343a!important;border-color:#9b7a42!important;color:#f0cf76!important;
-}
-
-/* Action language: normal / configure / test / dangerous. */
+body.engine-mode #enginePanel button{opacity:1}
 body.engine-mode #enginePanel .primary-btn{
-  background:#1c4960!important;border-color:#47778f!important;color:#edf7fa!important;
+  color:#f5f8f6;
+  background:#1f526a;
+  border-color:#4d8198;
 }
 body.engine-mode #enginePanel .project-add-btn{
-  background:#896a35!important;border-color:#b38a47!important;color:#fff0c7!important;
+  color:#fff0c7;
+  background:#896934;
+  border-color:#b48a45;
 }
 body.engine-mode #enginePanel .danger-btn,
 body.engine-mode #enginePanel .danger-outline-btn{
-  border-color:#9c5b52!important;color:#e8aaa3!important;
+  color:#f0b0aa;
+  border-color:#a55c54;
 }
 
-/* Captain doorway remains available, visually subordinate to First Mate work. */
-body.engine-mode #enginePanel .captain-access-dock{
-  margin-top:14px!important;border-color:#3c3930!important;background:#0d1211!important;
+/* ---------- Engine Settings / protected controls ---------- */
+body.engine-mode #enginePanel #engineSettingsSection{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(310px,1fr));
+  gap:10px;
+  margin-top:14px;
+}
+body.engine-mode #enginePanel .engine-card{
+  padding:14px;
+  border:1px solid #45555b;
+  border-radius:10px;
+  background:var(--er-panel-2);
+}
+body.engine-mode #enginePanel .engine-card h3{color:#edf2ef}
+body.engine-mode #enginePanel .engine-card p,
+body.engine-mode #enginePanel .engine-card small{color:#aab5b2}
+
+/* Compatibility support layers remain in DOM for existing render functions,
+   but are intentionally not part of the daily Engine surface. */
+body.engine-mode #enginePanel .engine-registry-support-head,
+body.engine-mode #enginePanel .engine-registry-support,
+body.engine-mode #enginePanel .engine-telemetry-legacy{
+  display:none;
 }
 
-/* No fixed project-count assumptions. */
-@media(max-width:900px){
-  body.engine-mode #enginePanel .engine-fleet-toolbar{grid-template-columns:1fr!important}
-  body.engine-mode #enginePanel .project-command-cards{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))!important}
+/* ---------- Appearance selector: one state, two presentations ---------- */
+.engine-legacy-mode-toggle{display:none}
+.engine-entry-mode,
+.engine-appearance-control{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
 }
-@media(max-width:620px){
-  body.engine-mode #enginePanel .project-command-cards{grid-template-columns:1fr!important}
+.engine-entry-mode{
+  margin-top:12px;
+  padding:11px;
+  border:1px solid #45545a;
+  border-radius:9px;
+  background:#0e171b;
+}
+.engine-entry-mode>span,
+.engine-appearance-control>div:first-child{
+  display:grid;
+  gap:2px;
+}
+.engine-entry-mode strong,
+.engine-appearance-control strong{
+  color:#e8eeeb;
+  font-size:9px;
+  letter-spacing:.09em;
+}
+.engine-entry-mode small,
+.engine-appearance-control small{
+  color:#82908c;
+  font-size:8px;
+}
+.engine-mode-segment{
+  display:flex;
+  gap:4px;
+  padding:3px;
+  border:1px solid #3e4c52;
+  border-radius:8px;
+  background:#080f12;
+}
+.engine-mode-segment button{
+  min-width:86px;
+  min-height:34px;
+  padding:7px 10px;
+  border:1px solid transparent;
+  border-radius:6px;
+  background:transparent;
+  color:#8f9c98;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.07em;
+}
+.engine-mode-segment button.active{
+  border-color:#98763f;
+  background:#292217;
+  color:#f0d18a;
+}
+.business-mode-status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+  padding:9px 10px;
+  border:1px solid #3a5b49;
+  border-radius:8px;
+  background:#0e1914;
+}
+.business-mode-status>span{
+  width:9px;height:9px;border-radius:50%;
+  background:#70b985;
+  box-shadow:0 0 9px #70b985;
+}
+.business-mode-status strong{color:#dce9e0;font-size:9px;letter-spacing:.08em}
+.business-mode-status small{margin-left:auto;color:#789085;font-size:8px}
+#engineAppearanceStatus.pirate{
+  border-color:#705833;
+  background:#1f170f;
+}
+#engineAppearanceStatus.pirate>span{
+  background:#d0a44e;
+  box-shadow:0 0 9px #d0a44e;
 }
 
+/* ---------- Business Mode ---------- */
+body.business-engine-mode #blackFlagEntryGate{
+  background:radial-gradient(circle at 50% 18%,#1a272d,#060b0e 72%);
+}
+body.business-engine-mode #blackFlagEntryGate .bf-pirate-atmosphere{display:none}
+body.business-engine-mode #blackFlagEntryGate .bf-entry-shell{
+  background:#0d1519;
+  border-color:#526168;
+}
+body.business-engine-mode #enginePanel .command-mark{
+  font-size:0;
+}
+body.business-engine-mode #enginePanel .command-mark::before{
+  content:"⚙";
+  font-size:23px;
+}
+body.business-engine-mode #enginePanel .ervn-brand>span{
+  font-size:0;
+}
+body.business-engine-mode #enginePanel .ervn-brand>span::before{
+  content:"⚙";
+  font-size:20px;
+}
+body.business-engine-mode #enginePanel .dark-flag-cove-banner{
+  background:#10191d;
+}
+
+/* ---------- Pirate Mode ----------
+   Same machinery. No screenshot/benchmark image is used as a live background.
+   Pirate character comes from materials, trim, language, and typography only. */
+body.dark-flag-pirate-mode #blackFlagEntryGate{
+  background:radial-gradient(circle at 70% 8%,rgba(159,108,43,.16),transparent 28%),#0c0806;
+}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-pirate-atmosphere{display:flex}
+body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell{
+  background:#17100b;
+  border-color:#75542c;
+}
+body.dark-flag-pirate-mode #enginePanel.engine-panel{
+  background:#0b0806;
+  border-color:#73522d;
+}
+body.dark-flag-pirate-mode #enginePanel .command-masthead{
+  background:#17100b;
+  border-color:#77572f;
+}
+body.dark-flag-pirate-mode #enginePanel .command-mark{
+  font-size:23px;
+  color:#e2c27a;
+}
+body.dark-flag-pirate-mode #enginePanel .command-mark::before{content:none}
+body.dark-flag-pirate-mode #enginePanel .engine-room-visual-nav{
+  background:#100b08;
+  border-right-color:#654826;
+}
+body.dark-flag-pirate-mode #enginePanel .ervn-brand>span{
+  font-size:20px;
+}
+body.dark-flag-pirate-mode #enginePanel .ervn-brand>span::before{content:none}
+body.dark-flag-pirate-mode #enginePanel .engine-health-strip,
+body.dark-flag-pirate-mode #enginePanel .project-command-section,
+body.dark-flag-pirate-mode #enginePanel .project-engine-control,
+body.dark-flag-pirate-mode #enginePanel .protected-control-center{
+  border-color:#5d482d;
+  background:#100d0a;
+}
+body.dark-flag-pirate-mode #enginePanel .project-card,
+body.dark-flag-pirate-mode #enginePanel .engine-card{
+  border-color:#5c4931;
+  background:#17130e;
+}
+body.dark-flag-pirate-mode #enginePanel .dark-flag-cove-banner{
+  border-color:#6b4f2b;
+  background:#1d130b;
+}
+body.dark-flag-pirate-mode #enginePanel .project-card h4,
+body.dark-flag-pirate-mode #enginePanel .project-card strong{
+  color:#f2e6cc;
+}
+body.dark-flag-pirate-mode #enginePanel .primary-btn{
+  color:#fff0c5;
+  background:#79552a;
+  border-color:#a77b3e;
+}
+
+/* Explicit project bulkhead: Engine appearance never repaints project/customer shells. */
+body.dark-flag-pirate-mode.project-mode #app,
+body.business-engine-mode.project-mode #app{
+  filter:none;
+}
+body.dark-flag-pirate-mode .project-admin-page,
+body.dark-flag-pirate-mode .mugs-shell,
+body.dark-flag-pirate-mode .flowers-shell,
+body.business-engine-mode .project-admin-page,
+body.business-engine-mode .mugs-shell,
+body.business-engine-mode .flowers-shell{
+  color:initial;
+}
 
 /* ==========================================================
-   v2.9.59 — CONSISTENT ENGINE MODES + CAPTAIN COMMAND SUITE
+   CAPTAIN COMMAND — authoritative command workspace layer
    ========================================================== */
-.engine-legacy-mode-toggle{display:none!important}
-.engine-entry-mode,.engine-appearance-control{
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
+#captainCommandWorkspace.captain-command-workspace{
+  position:fixed;
+  inset:0;
+  z-index:120500;
+  display:grid;
+  place-items:center;
+  padding:22px;
+  background:rgba(3,7,9,.92);
 }
-.engine-entry-mode{margin-top:12px;padding:11px;border:1px solid #454f53;border-radius:10px;background:#0f171b}
-.engine-entry-mode>span,.engine-appearance-control>div:first-child{display:grid;gap:2px}
-.engine-entry-mode strong,.engine-appearance-control strong{font-size:9px;letter-spacing:.1em}
-.engine-entry-mode small,.engine-appearance-control small{font-size:8px;color:#85918e}
-.engine-mode-segment{display:flex;gap:4px;padding:3px;border:1px solid #3e4b50;border-radius:9px;background:#091013}
-.engine-mode-segment button{
-  min-width:86px;min-height:34px;padding:7px 10px;border:1px solid transparent;border-radius:6px;background:transparent;color:#899592;font-size:8px;font-weight:900;letter-spacing:.08em
-}
-.engine-mode-segment button.active{border-color:#98763d;background:#2a2418;color:#f0d18a;box-shadow:inset 0 0 0 1px #000}
-body.dark-flag-pirate-mode .engine-mode-segment button.active[data-engine-appearance="pirate"]{border-color:#8b7041;background:#2b1d13;color:#edc77d}
-#engineAppearanceStatus.pirate{border-color:#755b36!important;background:#21180f!important}
-#engineAppearanceStatus.pirate>span{background:#d0a44e!important;box-shadow:0 0 10px #d0a44e!important}
+#captainCommandWorkspace.hidden{display:none}
+body.captain-command-open #captainQuarters{pointer-events:none}
+body.captain-command-open #captainCommandWorkspace{pointer-events:auto}
 
-/* Business Mode is the default professional Engine Room. */
-body.business-engine-mode.engine-mode #enginePanel{filter:none!important}
-body.business-engine-mode.engine-mode #enginePanel .pirate-footer,
-body.business-engine-mode.engine-mode #enginePanel .dark-flag-cove-banner{letter-spacing:.08em}
-
-/* Captain command overlay */
-.captain-command-workspace{
-  position:fixed;inset:0;z-index:19000;display:grid;place-items:center;padding:22px;
-  background:radial-gradient(circle at 50% 20%,rgba(34,48,53,.88),rgba(3,7,9,.97));
-}
-.captain-command-workspace.hidden{display:none!important}
 .captain-command-shell{
-  width:min(1180px,96vw);max-height:92vh;display:grid;grid-template-rows:auto auto 1fr;overflow:hidden;
-  border:4px ridge #6c4e29;border-radius:18px;background:#10191d;color:#e8ece8;box-shadow:0 35px 100px #000
+  width:min(1180px,96vw);
+  max-height:92vh;
+  display:grid;
+  grid-template-rows:auto auto 1fr;
+  overflow:hidden;
+  border:3px solid #6f542f;
+  border-radius:15px;
+  background:#10191d;
+  color:#e9eeeb;
+  box-shadow:0 34px 95px rgba(0,0,0,.72);
 }
 .captain-command-header{
-  display:flex;justify-content:space-between;align-items:center;gap:18px;padding:20px 22px;border-bottom:1px solid #58452e;
-  background:linear-gradient(90deg,#141d20,#1b2527,#11191c)
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  padding:18px 20px;
+  border-bottom:1px solid #57452f;
+  background:#151f22;
 }
-.captain-command-header small{color:#b39458;font-size:8px;font-weight:900;letter-spacing:.16em}
-.captain-command-header h2{margin:3px 0;font:900 30px Georgia,serif;color:#f0e8d5}
-.captain-command-header p{margin:0;color:#97a3a0;font-size:10px}
-.captain-command-header button,.captain-command-body button{
-  min-height:36px;padding:8px 12px;border:1px solid #876b3c;border-radius:8px;background:#241d13;color:#e8d3a2;font-size:8px;font-weight:900;letter-spacing:.06em
+.captain-command-header small{
+  color:#b6985d;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.15em;
 }
-.captain-command-tabs{display:flex;gap:5px;padding:8px 10px;border-bottom:1px solid #39464a;background:#0b1215;overflow-x:auto}
-.captain-command-tabs button{flex:0 0 auto;min-height:35px;padding:7px 10px;border:1px solid #39464a;border-radius:7px;background:#131d21;color:#95a09d;font-size:8px;font-weight:900}
-.captain-command-tabs button.active{border-color:#9e7c43;background:#2b2418;color:#edcf87}
-.captain-command-body{overflow:auto;padding:18px}
-.captain-command-intro{margin-bottom:14px;padding:14px 16px;border-left:3px solid #aa8647;background:#121c20}
-.captain-command-intro small{color:#b6965d;font-size:8px;letter-spacing:.14em;font-weight:900}
-.captain-command-intro h3{margin:3px 0;font:900 22px Georgia,serif}.captain-command-intro p{margin:0;color:#8e9a97}
-.captain-command-card{margin-bottom:12px;padding:16px;border:1px solid #3e4c51;border-radius:10px;background:#111a1e}
-.captain-command-card h3{margin:0 0 5px;font:900 17px Georgia,serif;color:#e9e4d6}.captain-command-card p{color:#99a4a1;font-size:10px;line-height:1.45}
-.captain-command-card textarea,.captain-command-card input{width:100%;box-sizing:border-box;margin:6px 0 9px;padding:9px;border:1px solid #46555a;border-radius:7px;background:#0b1215;color:#eef2ef}
+.captain-command-header h2{
+  margin:3px 0;
+  color:#f1ede3;
+  font:900 30px Georgia,serif;
+}
+.captain-command-header p{
+  margin:0;
+  color:#9aa6a2;
+  font-size:10px;
+}
+.captain-command-header button,
+.captain-command-body button{
+  min-height:36px;
+  padding:8px 12px;
+  border:1px solid #84683b;
+  border-radius:7px;
+  background:#241c12;
+  color:#ead4a3;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.05em;
+}
+.captain-command-tabs{
+  display:flex;
+  gap:5px;
+  padding:8px 10px;
+  overflow-x:auto;
+  border-bottom:1px solid #3b484d;
+  background:#091114;
+}
+.captain-command-tabs button{
+  flex:0 0 auto;
+  min-height:35px;
+  padding:7px 10px;
+  border:1px solid #404e53;
+  border-radius:7px;
+  background:#121c20;
+  color:#a7b2ae;
+  font-size:8px;
+  font-weight:900;
+}
+.captain-command-tabs button.active{
+  border-color:#9c7941;
+  background:#2c2417;
+  color:#f0d28a;
+}
+.captain-command-body{
+  overflow:auto;
+  padding:18px;
+  background:#0d1518;
+}
+.captain-command-intro{
+  margin-bottom:14px;
+  padding:14px 16px;
+  border-left:3px solid #aa8648;
+  background:#121c20;
+}
+.captain-command-intro small{
+  color:#b6985d;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.13em;
+}
+.captain-command-intro h3{
+  margin:3px 0;
+  color:#f1eee5;
+  font:900 22px Georgia,serif;
+}
+.captain-command-intro p{margin:0;color:#9aa5a1}
+.captain-command-card{
+  margin-bottom:12px;
+  padding:15px;
+  border:1px solid #405057;
+  border-radius:9px;
+  background:#111a1e;
+}
+.captain-command-card h3{
+  margin:0 0 5px;
+  color:#f0ede4;
+  font:900 17px Georgia,serif;
+}
+.captain-command-card p,
+.captain-command-card label{color:#a9b3af}
+.captain-command-card textarea,
+.captain-command-card input,
+.captain-command-card select{
+  width:100%;
+  box-sizing:border-box;
+  margin:6px 0 9px;
+  padding:9px;
+  color:#eef2ef;
+  background:#091114;
+  border:1px solid #536268;
+  border-radius:7px;
+}
 .captain-command-card textarea{min-height:88px;resize:vertical}
-.captain-stage-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
-.captain-stage-grid article{padding:13px;border:1px solid #4d4434;border-radius:9px;background:#141c1e}.captain-stage-grid span{color:#85724c;font-size:7px;letter-spacing:.12em}.captain-stage-grid strong{display:block;margin:4px 0;color:#e3c06c;font:800 11px Georgia,serif}.captain-stage-grid p{margin:0;color:#8f9a97;font-size:8px}
-.captain-danger-banner{padding:14px 16px;margin-bottom:12px;border:2px solid #8f4e45;border-radius:10px;background:#241313}.captain-danger-banner strong{color:#e29a91;letter-spacing:.1em}.captain-danger-banner p{margin:4px 0 0;color:#b99d99;font-size:9px}
-.captain-danger-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}.captain-danger-grid article{padding:14px;border:1px solid #5f403d;border-radius:9px;background:#181516}.captain-danger-grid h3{margin:0;font:800 14px Georgia,serif}.captain-danger-grid p{min-height:42px;color:#9f8f8c;font-size:8px}
-.captain-metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.captain-metric-row article{padding:15px;border:1px solid #405056;border-radius:9px;background:#121c20;text-align:center}.captain-metric-row span{display:block;color:#84918e;font-size:7px;font-weight:900;letter-spacing:.12em}.captain-metric-row strong{display:block;margin-top:4px;color:#e5c56e;font:900 28px Georgia,serif}
-.captain-fleet-list{display:grid;gap:6px}.captain-fleet-list article{display:flex;justify-content:space-between;gap:12px;padding:10px;border:1px solid #334146;border-radius:7px;background:#0d1518}.captain-fleet-list article>div{display:grid;gap:2px}.captain-fleet-list span{color:#9b8351;font-size:7px;font-weight:900}.captain-fleet-list strong{font:800 12px Georgia,serif}.captain-fleet-list b{color:#91bd9d;font-size:9px}.captain-fleet-list small{color:#87938f;font-size:8px}
+.captain-command-card textarea::placeholder,
+.captain-command-card input::placeholder{color:#7e8b87;opacity:1}
+
+.captain-stage-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+  margin-bottom:14px;
+}
+.captain-stage-grid article{
+  padding:13px;
+  border:1px solid #4c4434;
+  border-radius:8px;
+  background:#141c1e;
+}
+.captain-stage-grid span{color:#8b784f;font-size:7px;letter-spacing:.11em}
+.captain-stage-grid strong{display:block;margin:4px 0;color:#e4c16f;font:800 11px Georgia,serif}
+.captain-stage-grid p{margin:0;color:#96a19d;font-size:8px}
+
+.captain-danger-banner{
+  padding:14px 16px;
+  margin-bottom:12px;
+  border:2px solid #9d5b54;
+  border-radius:9px;
+  background:#251416;
+}
+.captain-danger-banner strong{color:#efa39a;letter-spacing:.09em}
+.captain-danger-banner p{margin:4px 0 0;color:#c1a09c;font-size:9px}
+.captain-danger-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-bottom:12px;
+}
+.captain-danger-grid article{
+  padding:14px;
+  border:1px solid #684743;
+  border-radius:8px;
+  background:#1a1516;
+}
+.captain-danger-grid h3{margin:0;color:#f0e9e7;font:800 14px Georgia,serif}
+.captain-danger-grid p{min-height:42px;color:#b2a09d;font-size:8px}
+
+.captain-metric-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-bottom:12px;
+}
+.captain-metric-row article{
+  padding:14px;
+  border:1px solid #425158;
+  border-radius:8px;
+  background:#121c20;
+  text-align:center;
+}
+.captain-metric-row span{
+  display:block;
+  color:#899793;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.11em;
+}
+.captain-metric-row strong{
+  display:block;
+  margin-top:4px;
+  color:#e5c56e;
+  font:900 28px Georgia,serif;
+}
+.captain-fleet-list{display:grid;gap:6px}
+.captain-fleet-list article{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px;
+  border:1px solid #344349;
+  border-radius:7px;
+  background:#0d1518;
+}
+.captain-fleet-list article>div{display:grid;gap:2px}
+.captain-fleet-list span{color:#9c8452;font-size:7px;font-weight:900}
+.captain-fleet-list strong{color:#edf1ee;font:800 12px Georgia,serif}
+.captain-fleet-list b{color:#8ec09c;font-size:9px}
+.captain-fleet-list small{color:#899692;font-size:8px}
 .captain-two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:10px}
-.captain-note-list{display:grid;gap:5px}.captain-note-list>div{display:grid;grid-template-columns:minmax(110px,.35fr) 1fr;gap:8px;padding:8px;border-bottom:1px solid #2f3b3f}.captain-note-list strong{color:#bba16b;font-size:8px}.captain-note-list span{color:#aeb8b5;font-size:9px}
-.standing-orders{display:grid;gap:5px}.standing-order-row{display:grid;grid-template-columns:24px 1fr 30px;align-items:center;gap:8px;padding:7px;border:1px solid #344146;border-radius:7px}.standing-order-row>span{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#272218;color:#d6b46c;font-size:8px}.standing-order-row p{margin:0}.standing-order-row button{min-width:28px!important;min-height:28px!important;padding:0!important}
+.captain-note-list{display:grid;gap:5px}
+.captain-note-list>div{
+  display:grid;
+  grid-template-columns:minmax(110px,.35fr) 1fr;
+  gap:8px;
+  padding:8px;
+  border-bottom:1px solid #303d42;
+}
+.captain-note-list strong{color:#bea46c;font-size:8px}
+.captain-note-list span{color:#b0b9b6;font-size:9px}
+.standing-orders{display:grid;gap:5px}
+.standing-order-row{
+  display:grid;
+  grid-template-columns:24px 1fr 30px;
+  align-items:center;
+  gap:8px;
+  padding:7px;
+  border:1px solid #364348;
+  border-radius:7px;
+}
+.standing-order-row>span{
+  display:grid;
+  place-items:center;
+  width:22px;height:22px;
+  border-radius:50%;
+  background:#272218;
+  color:#d8b66d;
+  font-size:8px;
+}
+.standing-order-row p{margin:0}
+.standing-order-row button{min-width:28px;min-height:28px;padding:0}
 .standing-order-add{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:8px}
-.captain-blueprint-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:stretch;gap:8px;margin-bottom:14px}.captain-blueprint-flow article{padding:14px;border:1px solid #51452f;border-radius:9px;background:#151d1e}.captain-blueprint-flow article>span{color:#836f49;font-size:8px}.captain-blueprint-flow strong{display:block;margin:4px 0;color:#dec17a}.captain-blueprint-flow p{margin:0;color:#899592;font-size:8px}.captain-blueprint-flow>b{align-self:center;color:#987a42}
-.captain-empty{color:#7f8c89!important;font-style:italic}.captain-ok{color:#7cba91!important}
-@media(max-width:850px){
+.captain-blueprint-flow{
+  display:grid;
+  grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;
+  align-items:stretch;
+  gap:8px;
+  margin-bottom:14px;
+}
+.captain-blueprint-flow article{
+  padding:14px;
+  border:1px solid #51462f;
+  border-radius:8px;
+  background:#151d1e;
+}
+.captain-blueprint-flow article>span{color:#86724c;font-size:8px}
+.captain-blueprint-flow strong{display:block;margin:4px 0;color:#dfc27b}
+.captain-blueprint-flow p{margin:0;color:#909c98;font-size:8px}
+.captain-blueprint-flow>b{align-self:center;color:#987a42}
+.captain-empty{color:#85918e;font-style:italic}
+.captain-ok{color:#7fc193}
+
+/* Each Captain area gets character without changing the common contrast system. */
+#captainCommandWorkspace[data-section="cargo"] .captain-command-header{background:#17231f}
+#captainCommandWorkspace[data-section="powder"] .captain-command-header{background:#2a1618}
+#captainCommandWorkspace[data-section="blackflag"] .captain-command-header{background:#11232b}
+#captainCommandWorkspace[data-section="log"] .captain-command-header{background:#261f15}
+#captainCommandWorkspace[data-section="blueprint"] .captain-command-header{background:#182327}
+
+/* Five visible cinematic bottom buttons are the live targets. */
+.captain-command-door-rail{
+  position:absolute;
+  inset:0;
+  z-index:150;
+  pointer-events:none;
+}
+.captain-command-door{
+  position:absolute;
+  bottom:5.2%;
+  height:8.4%;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:transparent;
+  pointer-events:auto;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.captain-command-door.cargo{left:2.1%;width:16.2%}
+.captain-command-door.powder{left:20.6%;width:16.2%}
+.captain-command-door.blackflag{left:39%;width:16%}
+.captain-command-door.log{left:57.3%;width:16%}
+.captain-command-door.blueprint{left:75.6%;width:15.8%}
+.captain-command-door:hover,
+.captain-command-door:focus-visible{
+  outline:2px solid #e2bd70;
+  outline-offset:3px;
+  box-shadow:0 0 22px rgba(216,169,78,.38);
+}
+#captainQuarters:not(.captain-entry-complete) .captain-command-door{
+  pointer-events:none;
+  opacity:0;
+}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1100px){
+  body.engine-mode #enginePanel.engine-panel{padding-left:18px}
+  body.engine-mode #enginePanel .engine-room-visual-nav{
+    position:relative;
+    width:auto;
+    margin:0 -18px 10px;
+    flex-direction:row;
+    overflow-x:auto;
+    border-right:0;
+    border-bottom:1px solid #493b27;
+  }
+  body.engine-mode #enginePanel .ervn-brand,
+  body.engine-mode #enginePanel .ervn-secure{display:none}
+  body.engine-mode #enginePanel .engine-room-visual-nav>a{flex:0 0 auto}
+  body.engine-mode #enginePanel .command-masthead{margin-right:0}
+}
+@media(max-width:900px){
+  body.engine-mode #enginePanel .engine-health-strip{grid-template-columns:1fr 1fr}
+  body.engine-mode #enginePanel .engine-fleet-toolbar{grid-template-columns:1fr}
+  body.engine-mode #enginePanel .project-command-cards{grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}
   .captain-stage-grid{grid-template-columns:repeat(2,1fr)}
   .captain-danger-grid{grid-template-columns:1fr 1fr}
   .captain-two-col{grid-template-columns:1fr}
-  .captain-blueprint-flow{grid-template-columns:1fr}.captain-blueprint-flow>b{display:none}
+  .captain-blueprint-flow{grid-template-columns:1fr}
+  .captain-blueprint-flow>b{display:none}
 }
-@media(max-width:600px){
+@media(max-width:620px){
+  body.engine-mode #enginePanel .engine-health-strip{grid-template-columns:1fr}
+  body.engine-mode #enginePanel .project-command-cards{grid-template-columns:1fr}
+  body.engine-mode #enginePanel .command-section-title{flex-direction:column}
   .captain-metric-row{grid-template-columns:1fr 1fr}
   .captain-danger-grid{grid-template-columns:1fr}
   .captain-command-header{align-items:flex-start;flex-direction:column}
-}
-
-
-/* ==========================================================
-   v2.9.60 — ARCHITECTURE CONSOLIDATION
-   What you see is what you touch. Business/Pirate are complete
-   Engine presentations of the same machinery.
-   ========================================================== */
-
-/* ---- Five exact Captain command doors over the five painted lower buttons ---- */
-.captain-command-door-rail{
-  position:absolute!important;inset:0!important;z-index:150!important;pointer-events:none!important;
-}
-.captain-command-door{
-  position:absolute!important;bottom:5.2%!important;height:8.4%!important;
-  border:0!important;border-radius:7px!important;background:transparent!important;
-  box-shadow:none!important;color:transparent!important;pointer-events:auto!important;
-  appearance:none!important;-webkit-appearance:none!important;
-}
-.captain-command-door.cargo{left:2.1%!important;width:16.2%!important}
-.captain-command-door.powder{left:20.6%!important;width:16.2%!important}
-.captain-command-door.blackflag{left:39.0%!important;width:16.0%!important}
-.captain-command-door.log{left:57.3%!important;width:16.0%!important}
-.captain-command-door.blueprint{left:75.6%!important;width:15.8%!important}
-.captain-command-door:hover,.captain-command-door:focus-visible{
-  outline:2px solid #e1bd70!important;outline-offset:3px!important;
-  box-shadow:0 0 24px #d8a94e66!important;
-}
-/* Keep command doors hidden until the cabin is fully presented. */
-#captainQuarters:not(.captain-entry-complete) .captain-command-door{pointer-events:none!important;opacity:0!important}
-
-/* ---- Each Captain door now feels like its own management room ---- */
-#captainCommandWorkspace[data-section="cargo"] .captain-command-shell{
-  background:linear-gradient(160deg,#16231f,#0d1716)!important;border-color:#6f5b34!important;
-}
-#captainCommandWorkspace[data-section="cargo"] .captain-command-header{
-  background:linear-gradient(90deg,#17241f,#253125,#111c19)!important;
-}
-#captainCommandWorkspace[data-section="powder"] .captain-command-shell{
-  background:linear-gradient(160deg,#251516,#120d0e)!important;border-color:#78443e!important;
-}
-#captainCommandWorkspace[data-section="powder"] .captain-command-header{
-  background:linear-gradient(90deg,#32191b,#201315,#140d0e)!important;
-}
-#captainCommandWorkspace[data-section="blackflag"] .captain-command-shell{
-  background:linear-gradient(160deg,#101b21,#071014)!important;border-color:#495f64!important;
-}
-#captainCommandWorkspace[data-section="blackflag"] .captain-command-header{
-  background:linear-gradient(90deg,#101b20,#17303a,#0a1216)!important;
-}
-#captainCommandWorkspace[data-section="log"] .captain-command-shell{
-  background:linear-gradient(160deg,#211b13,#11100d)!important;border-color:#725a35!important;
-}
-#captainCommandWorkspace[data-section="log"] .captain-command-header{
-  background:linear-gradient(90deg,#2b2115,#211d15,#130f0b)!important;
-}
-#captainCommandWorkspace[data-section="blueprint"] .captain-command-shell{
-  background:linear-gradient(160deg,#172124,#0d1517)!important;border-color:#806b44!important;
-}
-#captainCommandWorkspace[data-section="blueprint"] .captain-command-body{
-  background-image:linear-gradient(#8e7d5b13 1px,transparent 1px),linear-gradient(90deg,#8e7d5b13 1px,transparent 1px);
-  background-size:26px 26px;
-}
-
-/* ---- BUSINESS MODE: professional Engine Room, minimal pirate language ---- */
-body.business-engine-mode .bf-pirate-atmosphere{display:none!important}
-body.business-engine-mode #blackFlagEntryGate{
-  background:radial-gradient(circle at 50% 20%,#1a252a,#070c0f 74%)!important;
-}
-body.business-engine-mode #blackFlagEntryGate .bf-entry-mark{
-  filter:grayscale(1)!important;opacity:.45!important;
-}
-body.business-engine-mode #enginePanel .dark-flag-cove-banner{
-  background:linear-gradient(90deg,#11191d,#172126,#11191d)!important;
-  border-color:#465258!important;
-}
-body.business-engine-mode #enginePanel .command-mark{font-size:0!important}
-body.business-engine-mode #enginePanel .command-mark:before{content:"⚙";font-size:24px!important}
-body.business-engine-mode #enginePanel .engine-room-visual-nav{
-  background:linear-gradient(180deg,#0c1316,#080d10)!important;
-}
-body.business-engine-mode #enginePanel .ervn-brand>span{font-size:0!important}
-body.business-engine-mode #enginePanel .ervn-brand>span:before{content:"⚙";font-size:22px!important}
-body.business-engine-mode #enginePanel .project-card,
-body.business-engine-mode #enginePanel .engine-card,
-body.business-engine-mode #enginePanel .project-engine-control{
-  border-color:#415158!important;
-}
-
-/* ---- PIRATE MODE: same controls/data, deliberately different presentation ---- */
-body.dark-flag-pirate-mode #blackFlagEntryGate{
-  background:
-    radial-gradient(circle at 70% 10%,rgba(163,112,47,.18),transparent 28%),
-    linear-gradient(180deg,#17100b,#090706 75%)!important;
-}
-body.dark-flag-pirate-mode .bf-pirate-atmosphere{display:flex!important}
-body.dark-flag-pirate-mode #enginePanel.engine-panel{
-  background:
-    linear-gradient(180deg,rgba(11,7,5,.88),rgba(8,8,8,.94)),
-    url("assets/engine_room_benchmark_v2955.jpg") center top/cover fixed no-repeat!important;
-  border-color:#76542b!important;
-  box-shadow:0 28px 75px #000c,inset 0 0 0 2px #7b582633!important;
-}
-body.dark-flag-pirate-mode #enginePanel .command-masthead{
-  background:
-    linear-gradient(90deg,rgba(24,13,7,.95),rgba(31,24,14,.91),rgba(15,9,5,.97)),
-    url("assets/engine_room_benchmark_v2955.jpg") center 14%/cover no-repeat!important;
-  border-bottom-color:#866031!important;
-}
-body.dark-flag-pirate-mode #enginePanel .command-mark{font-size:23px!important}
-body.dark-flag-pirate-mode #enginePanel .command-mark:before{content:none!important}
-body.dark-flag-pirate-mode #enginePanel .engine-room-visual-nav{
-  background:linear-gradient(180deg,#17100b,#0b0806)!important;border-right-color:#73542e!important;
-}
-body.dark-flag-pirate-mode #enginePanel .ervn-brand>span{font-size:22px!important}
-body.dark-flag-pirate-mode #enginePanel .ervn-brand>span:before{content:none!important}
-body.dark-flag-pirate-mode #enginePanel .dark-flag-cove-banner{
-  background:linear-gradient(90deg,#20140c,#2b1d0f,#1a1009)!important;border-color:#74532e!important;
-}
-body.dark-flag-pirate-mode #enginePanel .project-card,
-body.dark-flag-pirate-mode #enginePanel .engine-card,
-body.dark-flag-pirate-mode #enginePanel .project-engine-control{
-  border-color:#675033!important;background:linear-gradient(155deg,#1b1813,#11100e)!important;
-}
-body.dark-flag-pirate-mode #enginePanel .project-tabs button.active{
-  border-color:#aa7f3f!important;background:#302117!important;color:#f0cf82!important;
-}
-body.dark-flag-pirate-mode #enginePanel .primary-btn{
-  border-color:#8f6c35!important;background:linear-gradient(#a97d3d,#6f4b24)!important;color:#fff0c4!important;
-}
-
-/* Settings selector remains legible in both modes. */
-body.dark-flag-pirate-mode .engine-mode-segment,
-body.business-engine-mode .engine-mode-segment{isolation:isolate}
-
-
-/* ==========================================================
-   v2.9.62 — CAPTAIN COMMAND WORKSPACE LAYER FIX
-   Root cause: the Captain Command workspace was opening beneath
-   #captainQuarters (99999). Put command workspaces above the cabin.
-   ========================================================== */
-#captainCommandWorkspace.captain-command-workspace{
-  z-index:120500!important;
-}
-body.captain-command-open #captainQuarters{
-  pointer-events:none!important;
-}
-body.captain-command-open #captainCommandWorkspace{
-  pointer-events:auto!important;
 }

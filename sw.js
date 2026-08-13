@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-62-captain-workspace-layer-fix';
+const CACHE='workshop-engine-v2-9-63-mop-the-deck';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.62',
-  './app.js?v=2.9.62',
-  './captain.js?v=2.9.62',
+  './styles.css?v=2.9.63',
+  './app.js?v=2.9.63',
+  './captain.js?v=2.9.63',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',
