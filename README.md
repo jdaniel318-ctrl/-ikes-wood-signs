@@ -1,21 +1,25 @@
-# Workshop Engine v2.9.56 — Engine Room Clarity Pass
+# Workshop Engine v2.9.57 — First Mate's Workbench
 
-Visual-only correction pass based on live iPad testing.
+Purpose:
+Turn the Engine Room from a dashboard into the First Mate's operating workspace while preserving existing project-control authority and functionality.
 
-Changes:
-- Removed benchmark-image bleed-through from the working dashboard.
-- Kept the approved Engine Room benchmark asset, now used only as restrained header atmosphere/reference.
-- Restored analytics chart readability without changing chart JavaScript.
-- Increased live-data/table contrast.
-- Reduced nested-box visual noise.
-- Reduced Captain's Quarters access footprint.
-- Reduced/collapsed the left operations rail on iPad-sized layouts.
-- Preserved Engine Room functionality.
+Architecture:
+- Fleet / Projects = scalable project selection and status.
+- First Mate's Workbench = existing project control surfaces, tabs and actions.
+- Engine Telemetry / Operations Monitor = secondary operational information.
+- Captain's Quarters remains a doorway to Captain-only command surfaces.
+- Existing controls for current, test/private and future projects are preserved.
+- Project grid uses responsive auto-fit behavior; no fixed project-count assumption is introduced.
 
-Functional freeze:
-- app.js unchanged byte-for-byte from v2.9.55.
-- captain.js unchanged byte-for-byte from v2.9.55.
+Function freeze:
+- app.js unchanged byte-for-byte from v2.9.56.
+- captain.js unchanged byte-for-byte from v2.9.56.
+- No controls removed.
+- No project namespaces merged.
 
 Assets:
-- No new assets added in v2.9.56.
-- Existing assets/engine_room_benchmark_v2955.jpg retained.
+- No new asset files added in v2.9.57.
+- Existing Engine Room benchmark asset retained.
+
+Note:
+This release deliberately changes hierarchy/presentation first. It does not invent new destructive actions or alter existing project behavior.
