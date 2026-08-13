@@ -3188,3 +3188,9 @@ body.dark-flag-pirate-mode .engine-identity-status.is-saved{
 .captain-console small{color:#aebcba;line-height:1.35}
 .captain-rule{text-align:center;margin:18px 0;color:#d8c88f;font:italic 15px Georgia,serif}
 @media(max-width:650px){.captain-console{grid-template-columns:1fr}.captain-window{height:170px}.captain-chamber{padding:20px}}
+
+/* v2.9.34 — Captain's Quarters access fix: keep the entry visibly docked between Engine Controls and Project Analytics. */
+.captain-access-dock{margin:20px 0 24px;padding:16px 18px 18px;border:1px solid #d7bd7266;border-radius:22px;background:linear-gradient(180deg,#fffdf8,#f6efe0);box-shadow:0 10px 28px #152d3512}
+.captain-access-kicker{margin:0 4px 8px;color:#8d3f35;font-size:11px;font-weight:900;letter-spacing:.18em}
+.captain-access-dock .captain-access-btn{margin:0;min-height:78px;cursor:pointer}
+.captain-access-dock .captain-access-btn:focus-visible{outline:4px solid #e7cb72;outline-offset:3px}

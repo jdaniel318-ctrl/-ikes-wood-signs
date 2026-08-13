@@ -712,3 +712,10 @@ A deliberately small, isolated framework for Captain-only creativity.
 - No project/customer workflow, project namespace, graphics, orders, payments, Showcase, or project admin behavior is changed.
 - Pirate Mode remains preserved.
 - Captain's Mode is privilege separation; Pirate Mode remains presentation/personality.
+
+
+## v2.9.34 — CAPTAIN'S QUARTERS ACCESS FIX
+- Fixes the v2.9.33 placement bug that left the Captain's Quarters button outside the visible Dark Sky Engine layout.
+- Docks Captain's Quarters directly below Engine Controls and above Project Analytics.
+- Keeps Captain authentication separate from Pirate Mode and project-admin authentication.
+- No project/customer workflow, branding, namespace, or data behavior changed.
