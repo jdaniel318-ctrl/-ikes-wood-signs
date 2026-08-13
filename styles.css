@@ -2872,3 +2872,74 @@ body.flowers-project .project-hero-fallback span:nth-child(3){background:#b85f79
   .footer-slot-image{height:42px!important;max-width:140px!important}
   .project-footer-brand{align-items:flex-start;flex-direction:column}
 }
+
+
+/* v2.9.24 — PROJECT SHOWCASE
+   Hero priority: Hero Graphic → exact Project Logo → generic fallback. */
+.project-hero-art.has-showcase-asset .project-hero-fallback{display:none!important}
+
+/* Dedicated hero art can use the full showcase canvas. */
+.project-hero-art.has-hero-graphic .hero-slot-image{
+  width:min(390px,100%)!important;
+  max-width:390px!important;
+  max-height:320px!important;
+  object-fit:contain!important;
+  border-radius:22px;
+}
+
+/* When no Hero Graphic exists, show the exact saved logo prominently.
+   No filters, cropping, recoloring, masks, or creative alteration. */
+.project-hero-art.has-showcase-logo{
+  min-height:270px;
+}
+.project-hero-art.has-showcase-logo .hero-slot-image{
+  width:min(430px,96%)!important;
+  max-width:430px!important;
+  height:280px!important;
+  max-height:280px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  border-radius:0!important;
+  background:transparent!important;
+  filter:none!important;
+  padding:0!important;
+  box-shadow:none!important;
+}
+
+/* Give the exact logo breathing room without modifying the asset itself. */
+.project-hero-art.has-showcase-logo:before{
+  content:"";
+  position:absolute;
+  width:min(420px,96%);
+  height:250px;
+  border-radius:30px;
+  background:radial-gradient(circle at center,#ffffff10,transparent 70%);
+  pointer-events:none;
+}
+.project-hero-art.has-showcase-logo .hero-slot-image{
+  position:relative;
+  z-index:1;
+}
+
+/* Header logo remains the smaller navigation identity. */
+.mugs-shell-mark-wrap.has-project-logo .project-logo-image{
+  flex:0 0 auto;
+}
+
+/* Keep responsive proportions on iPad/mobile. */
+@media(max-width:760px){
+  .project-hero-art.has-showcase-logo{min-height:205px}
+  .project-hero-art.has-showcase-logo .hero-slot-image{
+    width:min(300px,94%)!important;
+    max-width:300px!important;
+    height:195px!important;
+    max-height:195px!important;
+  }
+  .project-hero-art.has-showcase-logo:before{
+    width:min(300px,94%);
+    height:185px;
+  }
+}
+
+/* Pirate Mode protection marker:
+   This release intentionally does not alter Dark Flag Engine/Pirate Mode selectors. */

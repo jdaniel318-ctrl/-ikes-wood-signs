@@ -1044,9 +1044,20 @@
       shell.style.backgroundAttachment=assets.backgroundImage?'fixed':'';
     };
     const applyHero=(imageId,artId)=>{
-      setSlotImage(imageId,assets.heroGraphic);
-      const art=$(artId);
-      if(art) art.classList.toggle('has-hero-graphic',!!assets.heroGraphic);
+      const art=$(artId), image=$(imageId);
+      const heroSource=assets.heroGraphic||assets.projectLogo||'';
+      const usesHeroGraphic=!!assets.heroGraphic;
+      const usesProjectLogo=!usesHeroGraphic && !!assets.projectLogo;
+
+      setSlotImage(imageId,heroSource);
+      if(image){
+        image.alt=usesHeroGraphic?`${p.name} hero graphic`:usesProjectLogo?`${p.name} logo`:'';
+      }
+      if(art){
+        art.classList.toggle('has-hero-graphic',usesHeroGraphic);
+        art.classList.toggle('has-showcase-logo',usesProjectLogo);
+        art.classList.toggle('has-showcase-asset',!!heroSource);
+      }
     };
 
     if(p.id==='mugshot-after-dark'){

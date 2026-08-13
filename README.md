@@ -641,3 +641,20 @@ Customer-facing project branding inheritance.
 - Empty slots remain clean; projects do not inherit another project's artwork.
 - Dark Flag Graphics Library, project isolation, Admin separation and Pirate Mode are preserved.
 - No change is made to the customer-facing Engine access control in this release; that remains a separate security/UX task.
+
+
+## v2.9.24 — PROJECT SHOWCASE
+Customer hero branding priority.
+
+- Implements the permanent showcase hierarchy:
+  1. Saved Welcome Hero Graphic
+  2. Exact saved Project Logo / Mark
+  3. Tasteful generic fallback
+- When BBS, MUG, or a future shared-shell project has no Hero Graphic but does have a logo, the exact stored logo is displayed prominently in the large hero area.
+- The original logo file is never redrawn, recolored, cropped, filtered, or creatively altered. Dark Flag only scales and positions it.
+- If a Hero Graphic is later assigned, it automatically takes priority over the logo in the hero area.
+- The smaller header logo remains in place as the navigation/brand identity.
+- Empty projects still receive the clean generic fallback from v2.9.23.
+- Project namespace isolation and late-render guards remain unchanged.
+- Graphics Library behavior and expanded previews remain unchanged.
+- Pirate Mode remains onboard and untouched by this focused customer-branding release.
