@@ -109,6 +109,73 @@
       </div>
     </div>
 
+    <button id="captainBlueprintBtn" class="cq-blueprint-roll" type="button" aria-label="Open Ship's Blueprint and System Architecture Map">
+      <span class="cq-blueprint-brass">⚓</span>
+      <strong>SHIP'S BLUEPRINT</strong>
+      <small>SYSTEM ARCHITECTURE MAP</small>
+      <b>UNROLL PLAN →</b>
+    </button>
+
+    <div id="captainBlueprint" class="cq-blueprint-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainBlueprintTitle">
+      <div class="cq-blueprint-sheet">
+        <button id="captainBlueprintClose" class="captain-round-close cq-blueprint-close" type="button" aria-label="Close Ship's Blueprint">×</button>
+        <header>
+          <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
+          <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
+          <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
+          <small>Blueprint revision: v2.9.43 • update this chart whenever the ship's architecture changes</small>
+        </header>
+
+        <div class="cq-ship-plan">
+          <section class="cq-deck cq-deck-captain">
+            <div class="cq-deck-label"><b>CAPTAIN'S QUARTERS</b><span>Command & R&amp;D Layer</span></div>
+            <div class="cq-compartments">
+              <article><strong>First Mate's Table</strong><small>Counsel • warnings • new headings</small></article>
+              <article><strong>Cargo Hold / AI Workshop</strong><small>AI collaboration • prototypes • experimental cargo</small></article>
+              <article><strong>Powder Keg Locker</strong><small>Protected high-authority / destructive controls</small></article>
+              <article><strong>Captain's Log</strong><small>Decisions • experiments • ship history</small></article>
+              <article><strong>Ship's Blueprint</strong><small>This living System Architecture Map</small></article>
+            </div>
+          </section>
+
+          <div class="cq-bulkhead"><span>CAPTAIN AUTHORITY BULKHEAD</span><small>Command may cross boundaries deliberately; project data remains isolated underneath.</small></div>
+
+          <section class="cq-deck cq-deck-engine">
+            <div class="cq-deck-label"><b>DARK SKY ENGINE</b><span>Core Platform / Crew Operations</span></div>
+            <div class="cq-compartments">
+              <article><strong>Project Registry</strong><small>Creates &amp; identifies independent vessels</small></article>
+              <article><strong>Project Showcase</strong><small>Project presentation / launch surface</small></article>
+              <article><strong>Graphics Library</strong><small>Project-aware visual assets</small></article>
+              <article><strong>Engine Controls</strong><small>Normal operational configuration</small></article>
+              <article><strong>Payment Plumbing</strong><small>Future premium-service collection framework</small></article>
+              <article><strong>Captain Ledger</strong><small>Collected fees • Dark Sky only</small></article>
+              <article><strong>Waived Booty Ledger</strong><small>Separate waived-fee record • Captain only</small></article>
+              <article><strong>Export Layer</strong><small>Future accounting export e.g. Excel-compatible records</small></article>
+            </div>
+          </section>
+
+          <div class="cq-bulkhead project-bulkhead"><span>PROJECT ISOLATION BULKHEADS</span><small>No branding, orders, media, admin data, settings or configuration bleed between vessels.</small></div>
+
+          <section class="cq-deck cq-deck-fleet">
+            <div class="cq-deck-label"><b>THE FLEET</b><span>Independent Project Vessels</span></div>
+            <div class="cq-vessels">
+              <article class="cq-vessel"><span>⛵</span><strong>IKE</strong><b>Ike's Wood Signs</b><small>Customer ordering • project admin • sign workflow • project-only data/media</small></article>
+              <article class="cq-vessel"><span>⛵</span><strong>MUG</strong><b>Mugs After Dark</b><small>Independent customer/admin experience • mug-specific identity • isolated orders/media</small></article>
+              <article class="cq-vessel"><span>⛵</span><strong>BBS</strong><b>Becca's Blossom Shop</b><small>Independent project vessel • its own branding and future workflow</small></article>
+              <article class="cq-vessel future"><span>⚓</span><strong>FUTURE VESSELS</strong><b>Custom Projects</b><small>Not constrained to the original IKE workflow; Dark Sky remains extensible.</small></article>
+            </div>
+          </section>
+
+          <footer class="cq-plan-legend">
+            <span><i class="legend-command"></i> Captain command / experimental layer</span>
+            <span><i class="legend-engine"></i> Shared Engine capability</span>
+            <span><i class="legend-project"></i> Isolated project namespace</span>
+            <span><i class="legend-future"></i> Framework / future capability</span>
+          </footer>
+        </div>
+      </div>
+    </div>
+
     <div class="captain-chamber">
       <div class="captain-chamber-top">
         <div>

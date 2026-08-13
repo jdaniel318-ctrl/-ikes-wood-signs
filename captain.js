@@ -76,6 +76,7 @@
 
   function secure() {
     authorized = false;
+    hide('captainBlueprint');
     hide('captainFleetChart');
     hide('captainQuarters');
     hide('captainQuartersGate');
@@ -104,6 +105,14 @@
     });
     byId('captainQuartersCloseBtn')?.addEventListener('click', secure);
     byId('captainExitBtn')?.addEventListener('click', secure);
+    byId('captainBlueprintBtn')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      show('captainBlueprint');
+    });
+    byId('captainBlueprintClose')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      hide('captainBlueprint');
+    });
     byId('captainDarkSkyChartBtn')?.addEventListener('click', (event) => {
       event.preventDefault();
       show('captainFleetChart');
@@ -142,7 +151,7 @@
   window.addEventListener('pagehide', () => { authorized = false; });
 })();
 
-// v2.9.42 — cabin objects are presentation-safe Captain tools.
+// v2.9.43 — cabin objects are presentation-safe Captain tools.
 document.addEventListener('DOMContentLoaded', () => {
   const panel = document.getElementById('captainObjectPanel');
   const title = document.getElementById('captainObjectTitle');

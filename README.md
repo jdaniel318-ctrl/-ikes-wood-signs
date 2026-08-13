@@ -796,5 +796,40 @@ Captain's Quarters interaction and usability pass.
 - Project/customer namespaces, orders, payments, project branding, Graphics Library, Pirate Mode and normal Engine behavior are not modified by this pass.
 
 
-## v2.9.42 — Sail to the Stars / Captain's Quarters 2.0
+## v2.9.43 — Sail to the Stars / Captain's Quarters 2.0
 Weathered desk-as-interface, First Mate's Table, fixed Dark Sky layering, Reset Engine moved into Powder Keg with existing Engine PIN/final-confirmation safeguards, and richer moving water. PIN gate and Captain-on-Deck entrance retained.
+
+
+## v2.9.43 — CHART THE SHIP
+Adds a permanent Captain-level Ship's Blueprint / System Architecture Map.
+
+### Purpose
+The Blueprint is the Captain's living map of the complete Dark Sky system. It deliberately uses both pirate terminology and normal technical terminology so the structure remains understandable while preserving the Captain's Quarters identity.
+
+### Current mapped architecture
+- Captain's Quarters — Command & R&D Layer
+  - First Mate's Table
+  - Cargo Hold / AI Workshop foundation
+  - Powder Keg Locker
+  - Captain's Log
+  - Ship's Blueprint
+- Dark Sky Engine — Core Platform / Crew Operations
+  - Project Registry
+  - Project Showcase
+  - Graphics Library
+  - Engine Controls
+  - payment plumbing framework
+  - Captain fee ledger concept
+  - separate waived-fee ledger concept
+  - future accounting/export layer
+- Project Isolation Bulkheads
+- Fleet / independent project vessels
+  - Ike's Wood Signs
+  - Mugs After Dark
+  - Becca's Blossom Shop
+  - future custom projects not constrained to IKE's workflow
+
+### Release discipline
+Beginning with this build, material architecture changes should include a corresponding update to the Ship's Blueprint and its revision label.
+
+This release adds the map/documentation surface and does not intentionally collapse project namespaces or grant new destructive authority.
