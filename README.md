@@ -1,27 +1,18 @@
-# Workshop Engine v2.9.61 — Captain Door Function Fix
+# Workshop Engine v2.9.62 — Captain Workspace Layer Fix
+
+## Root cause found
+The five Captain command buttons were working as hit targets, but their command workspace was opening behind the Captain's Quarters.
+
+- Captain's Quarters z-index: 99999
+- Captain Command workspace z-index in v2.9.61: 19000
+
+That made the workspace functionally open while remaining invisible behind the cinematic cabin.
 
 ## Fix
-The five painted Captain command buttons were visually selectable in v2.9.60 but could fail to open their management workspaces.
-
-Root cause addressed:
-- Captain Command initialization previously depended on one DOMContentLoaded path.
-- Dedicated button handlers were bound directly to the initial elements.
-
-v2.9.61:
-- Boots Captain Command whether DOMContentLoaded has already fired or not.
-- Adds a capture-phase delegated handler for the five command doors.
-- Prevents overlapping cinematic cabin layers from swallowing the action.
-- Keeps the exact five-button hitbox alignment from v2.9.60.
-
-## Captain doors
-- Cargo Hold → AI Workshop & Innovation
-- Powder Keg → Dangerous Authority
-- Black Flag → Fleet Command
-- Captain's Log → history, governance, fleet performance
-- Ship's Blueprint → living architecture
-
-## Engine appearance
-Business / Pirate architecture from v2.9.60 is unchanged.
+- Captain Command workspace raised above the cabin to z-index 120500.
+- Captain's Quarters stops receiving pointer events while a Captain command workspace is open.
+- Workspace remains interactive.
+- Stale hint text changed from "Objects on the desk are live controls" to "Captain command controls are live."
 
 ## Assets
-No assets added, removed, renamed or replaced.
+No assets added, removed, renamed, or replaced.

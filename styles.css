@@ -5487,3 +5487,19 @@ body.dark-flag-pirate-mode #enginePanel .primary-btn{
 /* Settings selector remains legible in both modes. */
 body.dark-flag-pirate-mode .engine-mode-segment,
 body.business-engine-mode .engine-mode-segment{isolation:isolate}
+
+
+/* ==========================================================
+   v2.9.62 — CAPTAIN COMMAND WORKSPACE LAYER FIX
+   Root cause: the Captain Command workspace was opening beneath
+   #captainQuarters (99999). Put command workspaces above the cabin.
+   ========================================================== */
+#captainCommandWorkspace.captain-command-workspace{
+  z-index:120500!important;
+}
+body.captain-command-open #captainQuarters{
+  pointer-events:none!important;
+}
+body.captain-command-open #captainCommandWorkspace{
+  pointer-events:auto!important;
+}

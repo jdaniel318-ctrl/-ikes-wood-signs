@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-61-captain-door-fix';
+const CACHE='workshop-engine-v2-9-62-captain-workspace-layer-fix';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.61',
-  './app.js?v=2.9.61',
-  './captain.js?v=2.9.61',
+  './styles.css?v=2.9.62',
+  './app.js?v=2.9.62',
+  './captain.js?v=2.9.62',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',
