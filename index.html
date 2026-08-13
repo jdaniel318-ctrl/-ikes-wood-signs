@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#f4d238" />
+  <title>Workshop Engine — Black Flag Cove</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css?v=2.9.53" />
+  <style id="bootLockStyles">
+    body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
+    body.boot-locked #blackFlagEntryGate {display:grid!important}
+  </style>
+</head>
+<body class="boot-locked">
+
+  <div id="blackFlagEntryGate" class="black-flag-entry-gate">
+    <div class="bf-entry-shell">
+      <div class="bf-entry-mark">☠</div>
+      <div class="bf-entry-kicker">BLACK FLAG HARBOR</div>
+      <h1>Workshop Engine</h1>
+      <p class="bf-entry-sub">Secure project command, configuration and platform control.</p>
+
+      <div class="bf-entry-panel">
+        <label for="blackFlagEntryPin">ENGINE PIN</label>
+        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
+        <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
+<button id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">CLOSE / RETURN TO ORDER</button>
+<div class="bf-pirate-toggle-row">
+  <span><strong>Pirate Mode</strong><small>Dark Flag entrance personality only</small></span>
+  <label class="bf-switch" aria-label="Toggle Pirate Mode">
+    <input id="blackFlagPirateModeToggle" type="checkbox" />
+    <span class="bf-switch-slider"></span>
+  </label>
+</div>
+      </div>
+
+      <div class="bf-pirate-atmosphere" aria-hidden="true">
+        <span>☠ DARK FLAG COVE</span><span>⚓ ONE ENGINE • MANY CREWS</span><span>✦ TOTAL SEPARATION</span>
+      </div>
+      <div class="bf-entry-foot">Authorized engine access only • Engine PIN required every time Black Flag is entered</div>
+    </div>
+  </div>
+
+  
+    <button id="returnToEngineBtn" class="project-engine-return hidden">ENGINE</button>
+
+  
+  <!-- v2.9.40 Captain's Quarters: isolated Captain-only creative chamber -->
+  <div id="captainQuartersGate" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainQuartersTitle">
+
+
+    <div class="captain-quarters-card">
+      <div class="captain-crest" aria-hidden="true">⚓</div>
+      <div class="captain-kicker">CAPTAIN'S EYES ONLY</div>
+      <h2 id="captainQuartersTitle">Captain's Quarters</h2>
+      <p>A separate experimental chamber above Pirate Mode. Project shells remain untouched.</p>
+      <label for="captainPinInput">CAPTAIN PIN</label>
+      <input id="captainPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+      <p id="captainPinError" class="captain-error" aria-live="polite"></p>
+      <button id="captainUnlockBtn" class="captain-primary" type="button">ENTER CAPTAIN'S QUARTERS →</button>
+      <a id="captainGateCloseBtn" class="captain-secondary captain-link-button" href="#">← RETURN TO ENGINE</a>
+    </div>
+  </div>
+
+  <div id="captainQuarters" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainChamberTitle">
+    <div id="captainEntrySequence" class="captain-entry-sequence flagship-arrival" aria-hidden="true">
+      <div class="cq-storm"><div class="cq-moon"></div><div class="cq-sea"></div><div class="cq-ship">⛵</div></div>
+      <div class="cq-door cq-left"><span></span><i></i><b></b></div>
+      <div class="cq-door cq-right"><span></span><i></i><b></b></div>
+      <div class="cq-wheel"><span>⚓</span></div>
+      <div class="cq-copy"><small>BLACK FLAG • CAPTAIN AUTHORIZED</small><strong>CAPTAIN ON DECK</strong><em>Flagship command chamber unlocking</em></div>
+      <div class="cq-lantern cq-lantern-left"></div><div class="cq-lantern cq-lantern-right"></div>
+      <div class="captain-entry-flash"></div>
+    </div>
+    <div class="cq-chamber-world" aria-hidden="true">
+      <div class="cq-cabin-sky"><span class="cq-room-lightning rl1"></span><span class="cq-room-lightning rl2"></span></div>
+      <div class="cq-room-window rw-left"><div class="cq-room-moon"></div><div class="cq-room-sea"></div><div class="cq-room-ship">⛵</div></div>
+      <div class="cq-room-window rw-right"><div class="cq-room-sea"></div><div class="cq-room-ship second">⛵</div></div>
+      <div class="cq-room-beam rb-left"></div><div class="cq-room-beam rb-right"></div>
+      <div class="cq-room-lantern rlan-left"><i></i></div><div class="cq-room-lantern rlan-right"><i></i></div>
+      <div class="cq-room-banner"><span>☠</span><strong>BLACK FLAG</strong><small>CAPTAIN'S PRIVATE COMMAND</small></div>
+      <div class="cq-room-map-frame"></div>
+      <div class="cq-room-desk"></div>
+    </div>
+
+    <div id="captainCinematicHint" class="cq-cinematic-hint" aria-hidden="true">Objects on the desk are live controls.</div>
+    <button id="captainDarkSkyChartBtn" class="cq-interactive-map" type="button" aria-label="Open the Dark Sky fleet chart">
+      <span class="cq-map-title">THE DARK SKY</span>
+      <span class="cq-map-route route-one"></span><span class="cq-map-route route-two"></span>
+      <i class="cq-map-point mp-one"></i><i class="cq-map-point mp-two"></i><i class="cq-map-point mp-three"></i>
+      <b>OPEN FLEET CHART →</b>
+    </button>
+
+    <div id="captainFleetChart" class="cq-fleet-chart hidden" role="dialog" aria-modal="true" aria-labelledby="captainFleetChartTitle">
+      <div class="cq-fleet-chart-card">
+        <button id="captainFleetChartClose" class="captain-round-close cq-chart-close" type="button" aria-label="Close fleet chart">×</button>
+        <div class="captain-kicker">CAPTAIN'S NAVIGATION</div>
+        <h2 id="captainFleetChartTitle">The Dark Sky</h2>
+        <p class="cq-chart-intro">Live Captain-side navigation. Vessels and outposts are read from deployment manifests; touching a vessel reveals its signal report.</p>
+        <div class="cq-tactical-sea" aria-label="Live fleet tactical chart">
+          <div class="cq-chart-compass">N<span>✦</span></div>
+          <div class="cq-chart-moon"></div>
+          <div class="cq-chart-current current-a"></div><div class="cq-chart-current current-b"></div>
+          <div id="captainFleetVessels" class="cq-fleet-vessels"></div>
+        </div>
+        <div id="captainFleetSignalReport" class="cq-signal-report hidden" aria-live="polite"></div>
+        <div id="captainFleetSignalSummary" class="cq-chart-note">Signal Watch reads project deployment manifests from Dark Sky.</div>
+      </div>
+    </div>
+
+    <button id="captainBlueprintBtn" class="cq-blueprint-roll" type="button" aria-label="Open Ship's Blueprint and System Architecture Map">
+      <span class="cq-blueprint-brass">⚓</span>
+      <strong>SHIP'S BLUEPRINT</strong>
+      <small>SYSTEM ARCHITECTURE MAP</small>
+      <b>UNROLL PLAN →</b>
+    </button>
+
+    <div id="captainBlueprint" class="cq-blueprint-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainBlueprintTitle">
+      <div class="cq-blueprint-sheet">
+        <button id="captainBlueprintClose" class="captain-round-close cq-blueprint-close" type="button" aria-label="Close Ship's Blueprint">×</button>
+        <header>
+          <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
+          <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
+          <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
+          <small>Blueprint revision: v2.9.53 • update this chart whenever the ship's architecture changes</small>
+        </header>
+
+        <div class="cq-ship-plan">
+          <section class="cq-deck cq-deck-captain">
+            <div class="cq-deck-label"><b>CAPTAIN'S QUARTERS</b><span>Command & R&amp;D Layer</span></div>
+            <div class="cq-compartments">
+              <article><strong>First Mate's Table</strong><small>Counsel • warnings • new headings</small></article>
+              <article><strong>Cargo Hold / AI Workshop</strong><small>AI collaboration • prototypes • experimental cargo</small></article>
+              <article><strong>Powder Keg Locker</strong><small>Protected high-authority / destructive controls</small></article>
+              <article><strong>Captain's Log</strong><small>Decisions • experiments • ship history</small></article>
+              <article><strong>Ship's Blueprint</strong><small>This living System Architecture Map</small></article>
+            </div>
+          </section>
+
+          <div class="cq-bulkhead"><span>CAPTAIN AUTHORITY BULKHEAD</span><small>Command may cross boundaries deliberately; project data remains isolated underneath.</small></div>
+
+          <section class="cq-deck cq-deck-engine">
+            <div class="cq-deck-label"><b>DARK SKY ENGINE</b><span>Core Platform / Crew Operations</span></div>
+            <div class="cq-compartments">
+              <article><strong>Project Registry</strong><small>Creates &amp; identifies independent vessels</small></article>
+              <article><strong>Project Showcase</strong><small>Project presentation / launch surface</small></article>
+              <article><strong>Graphics Library</strong><small>Project-aware visual assets</small></article>
+              <article><strong>Engine Controls</strong><small>Normal operational configuration</small></article>
+              <article><strong>Payment Plumbing</strong><small>Future premium-service collection framework</small></article>
+              <article><strong>Captain Ledger</strong><small>Collected fees • Dark Sky only</small></article>
+              <article><strong>Waived Booty Ledger</strong><small>Separate waived-fee record • Captain only</small></article>
+              <article><strong>Export Layer</strong><small>Future accounting export e.g. Excel-compatible records</small></article>
+            </div>
+          </section>
+
+          <div class="cq-bulkhead project-bulkhead"><span>PROJECT ISOLATION BULKHEADS</span><small>No branding, orders, media, admin data, settings or configuration bleed between vessels.</small></div>
+
+          <section class="cq-deck cq-deck-fleet">
+            <div class="cq-deck-label"><b>THE FLEET</b><span>Independent Project Vessels</span></div>
+            <div class="cq-deployment-waterline">
+              <strong>DEPLOYMENT / OUTPOST LAYER</strong>
+              <span>Project Vessel → Deployment Manifest → Outpost → Customer Session</span>
+              <small>Shipwright • Manifest • Sea Trial • Outpost • Signal Watch • Deployment Log</small>
+            </div>
+            <div class="cq-vessels">
+              <article class="cq-vessel"><span>⛵</span><strong>IKE</strong><b>Ike's Wood Signs</b><small>Customer ordering • project admin • sign workflow • project-only data/media</small></article>
+              <article class="cq-vessel"><span>⛵</span><strong>MUG</strong><b>Mugs After Dark</b><small>Independent customer/admin experience • mug-specific identity • isolated orders/media</small></article>
+              <article class="cq-vessel"><span>⛵</span><strong>BBS</strong><b>Becca's Blossom Shop</b><small>Independent project vessel • its own branding and future workflow</small></article>
+              <article class="cq-vessel future"><span>⚓</span><strong>FUTURE VESSELS</strong><b>Custom Projects</b><small>Not constrained to the original IKE workflow; Dark Sky remains extensible.</small></article>
+            </div>
+          </section>
+
+          <footer class="cq-plan-legend">
+            <span><i class="legend-command"></i> Captain command / experimental layer</span>
+            <span><i class="legend-engine"></i> Shared Engine capability</span>
+            <span><i class="legend-project"></i> Isolated project namespace</span>
+            <span><i class="legend-future"></i> Framework / future capability</span>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="cq-cinematic-layer" aria-hidden="true">
+      <div class="cq-cine-ceiling"></div>
+      <div class="cq-cine-shelf shelf-left"><i></i><i></i><i></i><i></i></div>
+      <div class="cq-cine-shelf shelf-right"><i></i><i></i><i></i></div>
+      <div class="cq-cine-candle candle-a"><i></i></div>
+      <div class="cq-cine-candle candle-b"><i></i></div>
+      <div class="cq-cine-globe"></div>
+      <div class="cq-cine-telescope"></div>
+      <div class="cq-cine-mug">☠</div>
+      <div class="cq-cine-scroll scroll-a"></div>
+      <div class="cq-cine-scroll scroll-b"></div>
+      <div class="cq-cine-title"><small>BLACK FLAG • CAPTAIN AUTHORIZED</small><strong>THE CAPTAIN'S QUARTERS</strong></div>
+      <div class="cq-cine-motto">A CAPTAIN WITHOUT A MAP IS MERELY A PASSENGER.</div>
+    </div>
+
+    <div class="captain-chamber">
+      <div class="captain-chamber-top">
+        <div>
+          <div class="captain-kicker">DARK SKY • CAPTAIN AUTHORIZED</div>
+          <h2 id="captainChamberTitle">The Captain's Quarters</h2>
+          <p>Chart the strange waters here. Nothing in this chamber changes a project unless a future Captain tool explicitly says it will.</p>
+        </div>
+        <button id="captainQuartersCloseBtn" class="captain-round-close" type="button" aria-label="Close Captain's Quarters">×</button>
+      </div>
+      <div class="captain-window captain-stern-gallery" aria-hidden="true">
+        <div class="captain-sky"><span class="captain-moon">☾</span><span class="captain-stars">✦ · ✧ · ✦</span><span class="captain-lightning">ϟ</span></div>
+        <div class="captain-sea"><span class="captain-ship">⛵</span><i class="wave w1"></i><i class="wave w2"></i><i class="wave w3"></i></div>
+        <div class="captain-window-frame"><i></i><i></i><i></i></div>
+        <div class="captain-desk">
+          <span class="captain-map">✧ CHARTS OF DARK SKY ✧</span>
+          <span class="captain-compass">✥</span>
+          <span class="captain-lantern">♜</span>
+        </div>
+      </div>
+      <div class="captain-console cq-command-desk-controls">
+        <section><span>CREATIVE HOLD</span><strong>Ready for experiments</strong><small>Future visual ideas, prototypes and Captain-only toys dock here.</small></section>
+        <section><span>PROJECT BULKHEADS</span><strong>Sealed</strong><small>Customer and project namespaces stay outside the chamber.</small></section>
+        <section><span>PIRATE MODE</span><strong>Still aboard</strong><small>Personality remains separate from Captain privileges.</small></section>
+      </div>
+      <div class="captain-rule">CAPTAIN'S RULE: creativity may roam; production boundaries do not.</div>
+      <div class="cq-cabin-title"><small>BLACK FLAG • CAPTAIN AUTHORIZED</small><strong>THE CAPTAIN'S QUARTERS</strong></div>
+      <button id="captainWatchStrip" class="cq-watch-instrument" type="button" aria-label="Open First Mate's Watch intelligence report">
+        <span class="cq-watch-lamp" aria-hidden="true"></span>
+        <span class="cq-watch-copy">
+          <small>FIRST MATE'S WATCH</small>
+          <strong id="captainWatchHeadline">Reading the horizon…</strong>
+          <b id="captainWatchDetail">Dark Sky signal intelligence</b>
+        </span>
+      </button>
+      <div class="cq-rustic-desk" aria-label="Captain's command desk"><div class="cq-desk-grain"></div>
+        <div class="cq-desk-history" aria-hidden="true">
+          <span class="cq-knife"></span>
+          <span class="cq-wax-seal">BF</span>
+          <span class="cq-tally">//// //// ///</span>
+          <span class="cq-route-note">NNE • 7 bells • heavy sea</span>
+          <span class="cq-ring-stain"></span>
+          <span class="cq-brass-corner bc-a"></span><span class="cq-brass-corner bc-b"></span>
+        </div>
+
+        <button id="captainBlueprintDeskBtn" class="cq-master-blueprint" type="button" aria-label="Unroll Ship's Blueprint System Architecture Map">
+          <small>MASTER PLAN OF THE FLAGSHIP</small>
+          <strong>SHIP'S BLUEPRINT</strong>
+          <span>SYSTEM ARCHITECTURE MAP</span>
+          <span class="cq-chart-route" aria-hidden="true"></span>
+          <span class="cq-chart-x x1" aria-hidden="true">×</span>
+          <span class="cq-chart-x x2" aria-hidden="true">×</span>
+          <span class="cq-chart-note n1" aria-hidden="true">ENGINE</span>
+          <span class="cq-chart-note n2" aria-hidden="true">FLEET</span>
+          <b>UNROLL &amp; VIEW MAP →</b>
+        </button>
+        <button class="cq-desk-object cq-leather-log" data-cq-object="log" type="button"><span>CAPTAIN'S<br>LOG</span></button>
+        <button class="cq-desk-object cq-cargo-chest" data-cq-object="cargo" type="button"><span>CARGO<br>HOLD</span></button>
+        <button class="cq-desk-object cq-brass-compass" data-cq-object="compass" type="button"><i>✥</i><span>COMPASS</span></button>
+        <button id="captainSpyglassBtn" class="cq-desk-object cq-spyglass" type="button" aria-label="Open Captain's Spyglass intelligence report">
+          <i class="cq-spyglass-glass" aria-hidden="true"></i>
+          <i class="cq-spyglass-body" aria-hidden="true"></i>
+          <i class="cq-spyglass-grip" aria-hidden="true"></i>
+        </button>
+        <button class="cq-desk-object cq-powder-key" data-cq-object="locker" type="button"><i>⚿</i><span>POWDER KEG</span></button>
+        <div class="cq-inkwell"></div><div class="cq-quill"></div><div class="cq-coins">● ● ●</div><div class="cq-desk-lantern"><i></i></div>
+      </div>
+      <aside class="cq-first-mate-table"><div class="cq-fm-kicker">FIRST MATE'S TABLE</div><strong>COURSE COUNSEL</strong><div><span>STEADY COURSE</span><span>WATERS AHEAD</span><span>NEW HEADING</span></div><small>Advice aboard. Captain retains the helm.</small></aside>
+      <div id="captainSpyglassPanel" class="cq-spyglass-panel hidden" role="dialog" aria-modal="true" aria-labelledby="captainSpyglassTitle">
+        <div class="cq-spyglass-card">
+          <button id="captainSpyglassClose" class="captain-round-close" type="button" aria-label="Close Spyglass">×</button>
+          <div class="captain-kicker">CAPTAIN'S INTELLIGENCE</div>
+          <h2 id="captainSpyglassTitle">The Spyglass</h2>
+          <p>See what matters across the fleet without operating the machinery from the Captain's cabin.</p>
+          <div id="captainSpyglassReport" class="cq-spyglass-report"></div>
+        </div>
+      </div>
+
+      <div id="captainObjectPanel" class="cq-object-panel hidden" role="dialog" aria-modal="true"><div class="cq-object-card"><div class="captain-kicker">CAPTAIN'S CABIN</div><h3 id="captainObjectTitle">Object</h3><p id="captainObjectCopy"></p><div id="captainPowderControls" class="cq-powder-controls hidden"><div class="cq-danger-plaque">⚠ CAPTAIN AUTHORITY REQUIRED</div><p>Reset Engine returns Engine and project settings to port defaults. Saved orders remain. A fresh Engine PIN and final confirmation are still required.</p><button id="engineResetSettingsBtn" class="danger-btn" type="button">RESET ENGINE TO PORT DEFAULTS</button></div><button id="captainObjectClose" type="button">RETURN TO THE CABIN</button></div></div>
+      <button id="captainExitBtn" class="captain-primary" type="button">RETURN TO ENGINE</button>
+    </div>
+  </div>
+
+<div id="app" class="app-shell">
+    <header class="brand-header">
+      <div id="customerProjectLogoWrap" class="customer-project-logo-wrap hidden"><img id="customerProjectLogo" alt="Project logo"></div>
+      <div class="brand-copy illustrated-brand">
+        <div class="brand-title">IKE'S WOOD SIGNS</div>
+        <div class="brand-subtitle">Self-Serve Sign Ordering</div>
+        <div class="brand-kicker">Pick your wood • Design • Preview • Order</div>
+      </div>
+      <img id="projectHeaderCharacter" src="assets/ike_character.jpg" alt="Ike holding a wood sign blank" class="header-ike" />
+      <button id="adminBtn" class="icon-btn" aria-label="Open admin area">⚙︎</button>
+    </header>
+    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+
+    <main id="customerApp" class="main-panel">
+      <section class="screen active welcome-screen" data-screen="welcome">
+        <div class="welcome-brand">
+          <div class="welcome-copy">
+            <div class="welcome-wordmark" id="welcomeWordmark">Ike's Wood Signs</div>
+            <div class="welcome-subtitle" id="welcomeSubtitle">Self-Serve Sign Ordering</div>
+            <p id="welcomeIntro">Pick the piece of wood you love. Ike will guide you through the rest.</p>
+            <div class="wood-ribbon" id="welcomeRibbon">YOUR WOOD • YOUR WORDS • YOUR SIGN</div>
+          </div>
+          <img id="welcomeCharacter" src="assets/ike_character.jpg" alt="Cartoon Ike holding a wood sign blank" class="ike-character" />
+        </div>
+        <div class="brand-actions">
+          <div class="brand-action"><span class="action-icon blue">✎</span><div><strong>Design Your Sign</strong><small>Type it exactly how you want it.</small></div></div>
+          <div class="brand-action"><span class="action-icon red">◆</span><div><strong>Use Your Plank</strong><small>Photograph the exact wood you picked.</small></div></div>
+          <div class="brand-action"><span class="action-icon green">✓</span><div><strong>Preview & Approve</strong><small>See your sign before you order.</small></div></div>
+        </div>
+        <div class="start-band">Let's get started!</div>
+        <button id="projectStartButton" class="primary-btn next hero-start" data-next="price">START YOUR SIGN →</button>
+        <p class="helper centered">Easy step-by-step • Your wording stays exactly as you type it</p>
+      </section>
+
+      <section class="screen" data-screen="price">
+        <h2 id="priceStepTitle">How long is the wood you picked?</h2>
+        <p id="priceStepCopy" class="helper">For now, choose the price posted with that length of wood in the trailer. Ike's current price groups are shown below.</p>
+        <div id="priceChoices" class="choice-grid two-col">
+          <button class="choice-btn" data-price="45">$45</button>
+          <button class="choice-btn" data-price="55">$55</button>
+          <button class="choice-btn selected" data-price="65">$65</button>
+          <button class="choice-btn" data-price="90">$90</button>
+          <button class="choice-btn wide" data-price="135">$135</button>
+        </div>
+        <div id="priceTrustNote" class="trust-note">Pick the posted price for the length you chose — Ike will take it from there.</div>
+        <button class="primary-btn next" data-next="photo">NEXT →</button>
+      </section>
+
+      <section class="screen" data-screen="photo">
+        <div class="screen-heading"><span class="step-badge" id="photoStepBadge">YOUR WOOD</span><h2 id="photoStepTitle">Take a Picture of Your Wood</h2></div>
+        <p id="photoStepCopy">Place the entire blank in view. The picture stays with Ike's order and becomes the background for your preview.</p>
+        <div id="cameraPanel" class="camera-panel">
+          <video id="cameraVideo" class="camera-video" playsinline muted></video>
+          <canvas id="cameraCanvas" class="hidden"></canvas>
+          <div id="cameraIdle" class="camera-idle">
+            <div class="camera-icon">📷</div><strong>Ready to photograph your wood</strong><span>Tap START CAMERA below.</span>
+          </div>
+        </div>
+        <div id="cameraControls" class="camera-controls">
+          <button id="startCameraBtn" class="primary-btn">START CAMERA</button>
+          <button id="capturePhotoBtn" class="primary-btn hidden">TAKE PICTURE</button>
+          <button id="cancelCameraBtn" class="secondary-btn hidden">CANCEL CAMERA</button>
+        </div>
+        <div id="photoFrame" class="photo-frame placeholder hidden">
+          <img id="woodPhoto" alt="Selected wood blank" />
+          <div id="photoPlaceholder" class="photo-placeholder"><strong>Your wood photo will appear here</strong></div>
+        </div>
+        <div id="photoReviewControls" class="photo-review-controls hidden">
+          <button id="retakeBtn" class="secondary-btn">RETAKE</button>
+          <button class="primary-btn next" data-next="orientation">USE THIS PHOTO →</button>
+        </div>
+        <div class="library-fallback"><span>Camera not available?</span><label class="text-btn file-btn inline-file" for="photoInput">Choose a saved photo</label><input id="photoInput" type="file" accept="image/*" hidden /></div>
+        <p id="photoHelp" class="helper">The app will use the iPad camera without leaving the ordering process.</p>
+        <p id="photoError" class="error-text" aria-live="polite"></p>
+      </section>
+
+      <section class="screen" data-screen="orientation">
+        <h2 id="orientationStepTitle">How should your sign face?</h2>
+        <p class="helper">Choose the orientation. We will add a clear “TOP” marker to Ike's order copy.</p>
+        <div class="choice-grid two-col" id="orientationChoices">
+          <button class="choice-btn selected" data-orientation="Horizontal">↔ Horizontal</button>
+          <button class="choice-btn" data-orientation="Vertical">↕ Vertical</button>
+        </div>
+        <div class="top-choice">
+          <label for="topSide">Which side is the top?</label>
+          <select id="topSide">
+            <option value="Top of photo">Top of photo</option>
+            <option value="Bottom of photo">Bottom of photo</option>
+            <option value="Left side of photo">Left side of photo</option>
+            <option value="Right side of photo">Right side of photo</option>
+          </select>
+        </div>
+        <button class="primary-btn next" data-next="wording">NEXT →</button>
+      </section>
+
+      <section class="screen" data-screen="wording">
+        <h2 id="wordingStepTitle">What should your sign say?</h2>
+        <label for="wordingInput">Type it exactly the way you want it carved</label>
+        <input id="wordingInput" class="text-input big" value="Smoke Hole" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false" />
+        <div class="input-meta"><span>Uppercase, lowercase, spaces, numbers and punctuation are preserved.</span><strong id="charCount">10 characters</strong></div>
+        <div class="preview-card compact"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
+        <button class="primary-btn next" data-next="font">CHOOSE LETTER STYLE →</button>
+      </section>
+
+      <section class="screen" data-screen="font">
+        <h2 id="fontStepTitle">Choose Your Letter Style</h2>
+        <p class="helper">Styles A, B and C are placeholders until the exact Ike character references are added.</p>
+        <div id="fontChoices" class="font-list">
+          <button class="font-choice" data-font="A"><span class="font-label">STYLE A</span><span class="style-a alphabet">ABC abc • <span data-font-sample>Smoke Hole</span></span></button>
+          <button class="font-choice selected" data-font="B"><span class="font-label">STYLE B</span><span class="style-b alphabet">ABC abc • <span data-font-sample>Smoke Hole</span></span></button>
+          <button class="font-choice" data-font="C"><span class="font-label">STYLE C</span><span class="style-c alphabet">ABC abc • <span data-font-sample>Smoke Hole</span></span></button>
+        </div>
+        <button class="primary-btn next" data-next="fill">NEXT →</button>
+      </section>
+
+      <section class="screen" data-screen="fill">
+        <div class="landscape-two">
+          <div class="landscape-copy">
+            <span class="step-badge">LETTER FINISH</span>
+            <h2 id="fillStepTitle">Choose Your Letter Finish</h2>
+            <p class="helper">Choose painted lettering, a realistic CNC-carved look, or create your own custom color.</p>
+            <div id="fillChoices" class="choice-grid two-col finish-grid">
+              <button class="choice-btn selected finish-choice" data-fill="Black"><span class="finish-swatch black"></span><span>BLACK</span></button>
+              <button class="choice-btn finish-choice" data-fill="White"><span class="finish-swatch white"></span><span>WHITE</span></button>
+              <button class="choice-btn finish-choice carved-choice" data-fill="Natural"><span class="carved-sample">A</span><span>CNC CARVED<br><small>NO PAINT FILL</small></span></button>
+              <button class="choice-btn finish-choice" data-fill="Other"><span id="customSwatch" class="finish-swatch custom"></span><span>CUSTOM COLOR</span></button>
+            </div>
+            <div id="customColorPanel" class="custom-color-panel hidden">
+              <label for="customColor"><strong>Choose your custom color</strong></label>
+              <div class="color-picker-row">
+                <input id="customColor" type="color" value="#1f6feb" aria-label="Choose custom letter color" />
+                <div>
+                  <div id="customColorName" class="custom-color-value">#1F6FEB</div>
+                  <div class="helper">Tap the color square to open the iPad color picker.</div>
+                </div>
+              </div>
+            </div>
+            <button class="primary-btn next" data-next="preview">SEE MY SIGN →</button>
+          </div>
+          <div class="landscape-visual">
+            <div class="preview-card live-edge-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
+            <div class="live-edge-note">Your actual wood blank stays at the center of the design.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="preview">
+        <div class="centered"><span class="eyebrow">YOUR SIGN PREVIEW</span><h2>How does it look?</h2></div>
+        <div class="preview-card hero-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
+        <div class="centered"><strong id="previewPrice">Your $65 Ike's Wood Sign</strong><p class="helper">This preview represents your selected blank, wording, capitalization, style and fill. Each sign is handmade.</p></div>
+        <button class="primary-btn next" data-next="customer">YES — CONTINUE →</button>
+        <button class="secondary-btn goto" data-goto="wording">MAKE CHANGES</button>
+      </section>
+
+      <section class="screen" data-screen="customer">
+        <h2>Your Contact Information</h2>
+        <p id="customerStepCopy">Ike will use this information to let you know when your sign is ready for pickup.</p>
+        <label for="customerName">Name</label>
+        <input id="customerName" class="text-input" autocomplete="name" />
+        <label for="customerPhone">Cell Phone Number</label>
+        <input id="customerPhone" class="text-input" type="tel" autocomplete="tel" inputmode="tel" />
+        <label for="customerEmail">Email Address</label>
+        <input id="customerEmail" class="text-input" type="email" autocomplete="email" inputmode="email" />
+        <label>How would you like Ike to contact you?</label>
+        <div id="contactChoices" class="choice-grid two-col">
+          <button class="choice-btn selected" data-contact="Text">TEXT ME</button>
+          <button class="choice-btn" data-contact="Call">CALL ME</button>
+        </div>
+        <p id="customerError" class="error-text" aria-live="polite"></p>
+        <button id="reviewBtn" class="primary-btn">REVIEW MY ORDER →</button>
+      </section>
+
+      <section class="screen" data-screen="review">
+        <h2>Review Before You Order</h2>
+        <div class="preview-card review-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
+        <div class="summary-box" id="orderSummary"></div>
+        <div class="proofread-callout"><strong>Please check your wording carefully.</strong><span>Your sign will be made from the approved preview.</span></div>
+        <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I have reviewed and approve the spelling, capitalization, punctuation, layout, orientation, letter style, and fill shown in my preview. I understand Ike's Wood Signs may refuse or cancel any order at its discretion.</span></label>
+        <button id="approveBtn" class="primary-btn">PLACE MY ORDER →</button>
+        <p id="approvalError" class="error-text" aria-live="polite"></p>
+      </section>
+
+      <section class="screen celebration-screen" data-screen="done">
+        <div class="celebration-burst">
+          <img src="assets/ike_character.jpg" alt="Cartoon Ike" class="celebration-ike" />
+          <div>
+            <div class="celebration-kicker">THANK YOU FOR CHOOSING IKE!</div>
+            <h2 id="doneHeadline">Your Custom Sign Is In Ike's Hands!</h2>
+            <p id="doneCopy">Thank you for trusting Ike's Wood Signs to make something personal for you. We truly appreciate you choosing a small local business.</p>
+          </div>
+        </div>
+        <div class="order-ticket">
+          <span>YOUR ORDER NUMBER</span>
+          <div id="doneOrderId" class="order-id"></div>
+          <small>Keep this number for your records.</small>
+        </div>
+        <div class="approved-preview-wrap">
+          <div class="helper centered">Your approved design</div>
+          <img id="doneApprovedPreview" class="done-approved-preview" alt="Approved custom sign preview" />
+        </div>
+        <p class="centered done-personal-note">Ike will use your approved design and order details to make your sign as requested.</p>
+        <p id="submitStatus" class="submit-status centered" aria-live="polite"></p>
+        <div id="customerEmailStatus" class="customer-email-status hidden"></div>
+        <button id="retrySubmitBtn" class="primary-btn hidden">TRY SENDING AGAIN</button>
+        <div class="final-action-row"><button id="newOrderBtn" class="final-green-btn">START ANOTHER ORDER</button><button id="completeOrderBtn" class="final-black-btn">COMPLETE</button></div>
+      </section>
+
+      <div class="mini-brand"><img src="assets/ike_character.jpg" alt="Cartoon Ike" /><div><strong>Ike's Wood Signs</strong><span>Self-Serve Sign Ordering</span></div></div>
+      <div class="nav-row"><button id="backBtn" class="text-btn">← Back</button><span id="stepLabel" class="helper"></span></div>
+    </main>
+
+    <div id="pinGate" class="pin-gate project-admin-gate hidden" role="dialog" aria-modal="true" aria-labelledby="pinGateTitle">
+      <div class="pin-card project-admin-gate-card">
+        <div id="projectAdminGateMark" class="project-admin-gate-mark">
+          <img id="projectAdminGateLogo" class="project-admin-gate-logo hidden" alt="" />
+          <span id="projectAdminGateCode">PRJ</span>
+        </div>
+        <div id="projectAdminGateKicker" class="project-admin-gate-kicker">PROJECT ADMIN</div>
+        <h2 id="pinGateTitle">Admin Access</h2>
+        <p id="projectAdminGatePrompt">Enter this project's admin PIN to view saved orders and settings.</p>
+        <input id="adminPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <p id="pinGateError" class="error-text centered" aria-live="polite"></p><p id="adminLockTimer" class="pin-lock-timer hidden"></p>
+        <button id="unlockAdminBtn" class="primary-btn project-admin-gate-primary">UNLOCK ADMIN</button>
+        <button id="cancelAdminPinBtn" class="secondary-btn project-admin-gate-secondary">← RETURN TO MY ORDER</button>
+      </div>
+    </div>
+
+    <section id="mugsCustomerShell" class="mugs-shell hidden" aria-label="Mugs After Dark customer ordering">
+<header class="mugs-shell-header"><div class="mugs-shell-brand"><div class="mugs-shell-mark-wrap"><img id="mugsProjectLogoImg" class="project-slot-image project-logo-image hidden" alt="Mugs project logo"><div class="mugs-shell-mark">M</div></div><div><div class="mugs-shell-title">MUGS AFTER DARK</div><div class="mugs-shell-subtitle">Custom mugs for the night shift.</div></div></div><button id="mugsAdminBtn" class="mugs-admin-btn" aria-label="Open project admin">⚙︎</button></header>
+<div class="mugs-progress"><div id="mugsProgressBar"></div></div>
+<main class="mugs-main">
+<section class="mugs-screen active" data-mugs-screen="welcome"><div class="mugs-hero"><div class="mugs-hero-copy"><div class="mugs-eyebrow">MUGS AFTER DARK</div><h1>Make the mug yours.</h1><p>Photograph the mug you are customizing, add your message, preview it, and approve the order.</p><div class="mugs-ribbon">YOUR MUG • YOUR WORDS • YOUR STYLE</div><button class="mugs-primary" data-mugs-next="photo">START YOUR MUG →</button></div><div id="mugsHeroArt" class="mugs-hero-art project-hero-art" aria-hidden="true"><img id="mugsHeroGraphicImg" class="project-slot-image hero-slot-image hidden" alt="Mugs After Dark showcase artwork"><div class="project-hero-fallback"><span></span><span></span><span></span></div></div></div><div class="mugs-feature-grid"><article><strong>1. Photograph</strong><span>Use the exact mug for this order.</span></article><article><strong>2. Personalize</strong><span>Type the message exactly as you want it.</span></article><article><strong>3. Approve</strong><span>Review the finished concept before submitting.</span></article></div></section>
+<section class="mugs-screen" data-mugs-screen="photo"><div class="mugs-step-kicker">YOUR MUG</div><h2>Photograph Your Mug</h2><p class="mugs-helper">The order cannot be submitted until a mug photo has been confirmed.</p><label class="mugs-photo-picker"><input id="mugsPhotoInput" type="file" accept="image/*" capture="environment"><span>TAKE OR CHOOSE PHOTO</span></label><div id="mugsPhotoPreviewWrap" class="mugs-photo-preview hidden"><img id="mugsPhotoPreview" alt="Confirmed mug photo"><button id="mugsRetakePhoto" class="mugs-secondary" type="button">CHANGE PHOTO</button></div><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="welcome">← BACK</button><button id="mugsPhotoNext" class="mugs-primary" data-mugs-next="message" disabled>CONFIRM PHOTO →</button></div></section>
+<section class="mugs-screen" data-mugs-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should your mug say?</h2><label for="mugsMessage">Type it exactly as you want it shown</label><textarea id="mugsMessage" class="mugs-input" maxlength="32" rows="3" placeholder="Your Message"></textarea><div class="mugs-character-count"><span id="mugsCharCount">0</span>/32</div><label for="mugsStyle">Letter style</label><select id="mugsStyle" class="mugs-input"><option value="bold">Bold</option><option value="classic">Classic</option><option value="script">Script</option></select><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="photo">← BACK</button><button class="mugs-primary" data-mugs-next="preview">PREVIEW →</button></div></section>
+<section class="mugs-screen" data-mugs-screen="preview"><div class="mugs-step-kicker">PREVIEW</div><h2>Review Your Mug</h2><div class="mugs-preview-card"><img id="mugsPreviewImage" alt="Mug preview"><div id="mugsPreviewText" class="mugs-preview-text">Your Message</div></div><p class="mugs-helper">Test project pricing is not yet configured in Black Flag.</p><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="message">← EDIT</button><button class="mugs-primary" data-mugs-next="customer">YES — CONTINUE →</button></div></section>
+<section class="mugs-screen" data-mugs-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="mugsCustomerName">Name</label><input id="mugsCustomerName" class="mugs-input" autocomplete="name"><label for="mugsCustomerPhone">Phone</label><input id="mugsCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="mugsCustomerEmail">Email</label><input id="mugsCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="preview">← BACK</button><button id="mugsCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
+<section class="mugs-screen" data-mugs-screen="review"><div class="mugs-step-kicker">FINAL REVIEW</div><h2>Approve Your Mug Order</h2><div id="mugsReviewSummary" class="mugs-review-summary"></div><label class="mugs-approval"><input id="mugsApprovalCheck" type="checkbox"><span>I approve the mug photo, wording, and preview shown above.</span></label><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="customer">← BACK</button><button id="mugsSubmitOrder" class="mugs-primary" type="button" disabled>PLACE TEST ORDER →</button></div></section>
+<section class="mugs-screen" data-mugs-screen="done"><div class="mugs-done"><div class="mugs-done-mark">✓</div><div class="mugs-step-kicker">ORDER RECEIVED</div><h2>Your Mugs After Dark order is in the queue.</h2><p>Test order <strong id="mugsDoneOrderId"></strong> has been saved to the Mugs After Dark project only.</p><img id="mugsDonePreview" class="mugs-done-preview" alt="Approved mug preview"><button id="mugsNewOrder" class="mugs-primary" type="button">START ANOTHER MUG</button></div></section>
+</main><footer class="mugs-shell-footer"><div class="project-footer-brand"><img id="mugsFooterGraphicImg" class="project-slot-image footer-slot-image hidden" alt="Mugs After Dark footer graphic"><strong>MUGS AFTER DARK</strong></div><span>Independent project shell • Powered by Black Flag</span></footer></section>
+
+    <section id="flowersCustomerShell" class="mugs-shell hidden" aria-label="Becca's Bloom Shop customer ordering">
+<header class="mugs-shell-header"><div class="mugs-shell-brand"><div class="mugs-shell-mark-wrap"><img id="flowersProjectLogoImg" class="project-slot-image project-logo-image hidden" alt="Flower project logo"><div id="flowersHeaderMark" class="mugs-shell-mark">B</div></div><div><div class="mugs-shell-title">BECCA'S BLOOM SHOP</div><div class="mugs-shell-subtitle">Fresh flowers, thoughtfully arranged.</div></div></div><button id="flowersAdminBtn" class="mugs-admin-btn" aria-label="Open project admin">⚙︎</button></header>
+<div class="mugs-progress"><div id="flowersProgressBar"></div></div>
+<main class="mugs-main">
+<section class="mugs-screen active" data-flowers-screen="welcome"><div class="mugs-hero"><div class="mugs-hero-copy"><div class="mugs-eyebrow">BECCA'S BLOOM SHOP</div><h1>Make the moment bloom.</h1><p>Photograph the flower arrangement, add the card message, preview it, and approve the order.</p><div class="mugs-ribbon">YOUR FLOWERS • YOUR MESSAGE • YOUR MOMENT</div><button class="mugs-primary" data-flowers-next="photo">START YOUR FLOWER ORDER →</button></div><div id="flowersHeroArt" class="mugs-hero-art project-hero-art" aria-hidden="true"><img id="flowersHeroGraphicImg" class="project-slot-image hero-slot-image hidden" alt="Becca's Bloom Shop showcase artwork"><div class="project-hero-fallback"><span></span><span></span><span></span></div></div></div><div class="mugs-feature-grid"><article><strong>1. Photograph</strong><span>Use the exact flower arrangement for this order.</span></article><article><strong>2. Personalize</strong><span>Type the message exactly as you want it.</span></article><article><strong>3. Approve</strong><span>Review the finished concept before submitting.</span></article></div></section>
+<section class="mugs-screen" data-flowers-screen="photo"><div class="mugs-step-kicker">YOUR FLOWERS</div><h2>Photograph Your Flowers</h2><p class="mugs-helper">The order cannot be submitted until a flower arrangement photo has been confirmed.</p><label class="mugs-photo-picker"><input id="flowersPhotoInput" type="file" accept="image/*" capture="environment"><span>TAKE OR CHOOSE PHOTO</span></label><div id="flowersPhotoPreviewWrap" class="mugs-photo-preview hidden"><img id="flowersPhotoPreview" alt="Confirmed flower arrangement photo"><button id="flowersRetakePhoto" class="mugs-secondary" type="button">CHANGE PHOTO</button></div><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="welcome">← BACK</button><button id="flowersPhotoNext" class="mugs-primary" data-flowers-next="message" disabled>CONFIRM PHOTO →</button></div></section>
+<section class="mugs-screen" data-flowers-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should the card say?</h2><label for="flowersMessage">Type it exactly as you want it shown</label><textarea id="flowersMessage" class="mugs-input" maxlength="32" rows="3" placeholder="Your Message"></textarea><div class="mugs-character-count"><span id="flowersCharCount">0</span>/32</div><label for="flowersStyle">Letter style</label><select id="flowersStyle" class="mugs-input"><option value="bold">Bold</option><option value="classic">Classic</option><option value="script">Script</option></select><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="photo">← BACK</button><button class="mugs-primary" data-flowers-next="preview">PREVIEW →</button></div></section>
+<section class="mugs-screen" data-flowers-screen="preview"><div class="mugs-step-kicker">PREVIEW</div><h2>Review Your Flowers</h2><div class="mugs-preview-card"><img id="flowersPreviewImage" alt="Flower preview"><div id="flowersPreviewText" class="mugs-preview-text">Your Message</div></div><p class="mugs-helper">Test project pricing is not yet configured in Black Flag.</p><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="message">← EDIT</button><button class="mugs-primary" data-flowers-next="customer">YES — CONTINUE →</button></div></section>
+<section class="mugs-screen" data-flowers-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="flowersCustomerName">Name</label><input id="flowersCustomerName" class="mugs-input" autocomplete="name"><label for="flowersCustomerPhone">Phone</label><input id="flowersCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="flowersCustomerEmail">Email</label><input id="flowersCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="preview">← BACK</button><button id="flowersCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
+<section class="mugs-screen" data-flowers-screen="review"><div class="mugs-step-kicker">FINAL REVIEW</div><h2>Approve Your Flower Order</h2><div id="flowersReviewSummary" class="mugs-review-summary"></div><label class="mugs-approval"><input id="flowersApprovalCheck" type="checkbox"><span>I approve the flower arrangement photo, wording, and preview shown above.</span></label><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="customer">← BACK</button><button id="flowersSubmitOrder" class="mugs-primary" type="button" disabled>PLACE TEST ORDER →</button></div></section>
+<section class="mugs-screen" data-flowers-screen="done"><div class="mugs-done"><div class="mugs-done-mark">✓</div><div class="mugs-step-kicker">ORDER RECEIVED</div><h2>Your Becca's Bloom Shop order is in the queue.</h2><p>Test order <strong id="flowersDoneOrderId"></strong> has been saved to the Becca's Bloom Shop project only.</p><img id="flowersDonePreview" class="mugs-done-preview" alt="Approved mug preview"><button id="flowersNewOrder" class="mugs-primary" type="button">START ANOTHER FLOWER ORDER</button></div></section>
+</main><footer class="mugs-shell-footer"><div class="project-footer-brand"><img id="flowersFooterGraphicImg" class="project-slot-image footer-slot-image hidden" alt="Becca's Bloom Shop footer graphic"><strong>BECCA'S BLOOM SHOP</strong></div><span>Independent flower project shell • Powered by Black Flag</span></footer></section>
+<section id="adminPanel" class="project-admin-page hidden">
+      <div class="project-admin-brandbar">
+        <div class="project-admin-mini-brand">
+          <div id="adminBrandTitle" class="project-admin-brand-title">PROJECT</div>
+          <div id="adminBrandSubtitle" class="project-admin-brand-subtitle">PROJECT ADMIN</div>
+        </div>
+        <button id="closeAdminBtn" class="admin-return-btn">← BACK TO ORDERING</button>
+      </div>
+      <div class="admin-timeout-note">Automatically returns to ordering after 15 minutes of inactivity.</div><section class="project-admin-dashboard-head">
+        <div>
+          <div class="project-admin-dashboard-kicker">PROJECT COMMAND</div>
+          <h3>Admin</h3>
+        </div>
+        <div id="projectAdminQuickStats" class="project-admin-quick-stats"></div>
+      </section>
+      <section id="projectAdminMenu" class="project-admin-menu project-admin-nav-strip">
+        <button id="adminHomeMenuBtn" class="project-admin-nav-home" type="button">⚙ ADMIN MENU</button>
+        <button id="adminOrdersMenuBtn" class="project-admin-nav-item active" data-admin-module="orders" type="button">▤ <span>Orders</span></button>
+        <button id="adminCustomersMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="customers" type="button" disabled>◎ <span>Customers</span></button>
+        <button id="adminLedgerMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="ledger" type="button" disabled>▦ <span>Ledger</span></button>
+        <button id="adminPaymentsMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="payments" type="button" disabled>$ <span>Payments</span></button>
+        <button id="adminOptionsMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="options" type="button" disabled>☷ <span>Project Options</span></button>
+      </section>
+
+      <div id="projectAdminModuleBar" class="project-admin-module-bar hidden" aria-hidden="true">
+        <strong id="projectAdminModuleTitle"></strong>
+      </div>
+
+<div id="adminSettings" class="settings-box project-settings-content admin-module-panel hidden" data-admin-panel="options">
+        <h3>Project Options</h3>
+        <div class="admin-toggle-list">
+          <label class="admin-toggle-row">
+            <span><strong>Allow Custom Colors</strong><small>When off, customers see only Black, White, and CNC Carved / No Paint Fill.</small></span>
+            <input id="allowCustomColorsToggle" type="checkbox" />
+          </label>
+          
+        </div>
+        <div class="admin-divider"></div>
+        <h3>Business Configuration</h3>
+        <p class="helper">Change core business options without editing code.</p>
+        <div class="config-grid">
+          <label>Business name<input id="businessNameSetting" class="text-input" type="text"></label>
+          <label>Order prefix<input id="orderPrefixSetting" class="text-input" type="text" maxlength="8"></label>
+          <label>Thank-you headline<input id="thankYouSetting" class="text-input" type="text"></label>
+          <label>Price choices<input id="priceChoicesSetting" class="text-input" type="text" placeholder="45,55,65,90,135"></label>
+        </div>
+        <button id="saveBusinessSettingsBtn" class="primary-btn small">SAVE BUSINESS SETTINGS</button>
+        <p id="businessSettingsStatus" class="helper"></p>
+        <div class="admin-divider"></div>
+        <label for="newAdminPin">Change admin PIN</label>
+        <input id="newAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Enter a new PIN" />
+        <label for="confirmAdminPin">Confirm new PIN</label>
+        <input id="confirmAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Re-enter the new PIN" />
+        <p id="pinSettingsError" class="error-text" aria-live="polite"></p>
+        <button id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
+        <p class="helper">Default PIN for Version 1.5 is 4353 until changed here.</p>
+      </div>
+      <section id="adminCustomerHistory" class="admin-customer-history admin-module-panel hidden" data-admin-panel="customers"></section>
+      <section id="adminOrdersModule" class="admin-order-overview admin-module-panel hidden" data-admin-panel="orders">
+        <div class="admin-order-overview-head">
+          <div><h3 id="adminOrdersHeading">All Orders</h3><p class="helper">This project only • Approved customer orders</p></div>
+          <button id="openFullOrdersBtn" class="secondary-btn small">OPEN ORDERS</button>
+        </div>
+        <div id="adminOrderFilterChips" class="admin-order-filter-chips"></div>
+        <div id="adminOrderOverviewList" class="order-list"></div>
+      </section>
+      
+      <section id="adminCoreSettingsModule" class="admin-module-panel admin-core-settings hidden" data-admin-panel="admin">
+        <div class="admin-core-settings-head">
+          <div><h3>Admin Settings</h3><p class="helper">Project administrator settings for this business.</p></div>
+        </div>
+        <div class="admin-core-settings-grid">
+          <label>Admin contact name<input id="adminContactName" class="text-input" type="text"></label>
+          <label>Business phone<input id="adminBusinessPhone" class="text-input" type="tel"></label>
+          <label>Business email<input id="adminBusinessEmail" class="text-input" type="email"></label>
+          <label>Business address<input id="adminBusinessAddress" class="text-input" type="text"></label>
+        </div>
+        <div class="admin-divider"></div>
+        <h4>Change Project Admin PIN</h4>
+        <div class="admin-pin-change-grid">
+          <label>Current PIN<input id="adminCurrentPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+          <label>New PIN<input id="adminNewPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+          <label>Confirm new PIN<input id="adminConfirmPinChange" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off"></label>
+        </div>
+        <button id="saveAdminCoreSettingsBtn" class="primary-btn small">SAVE ADMIN SETTINGS</button>
+        <p id="adminCoreSettingsStatus" class="helper"></p>
+      </section>
+
+      <section id="adminPaymentsModule" class="admin-module-panel admin-placeholder-panel hidden" data-admin-panel="payments">
+        <h3>Payments</h3>
+        <p class="helper">Payment access is controlled by Black Flag.</p>
+      </section>
+
+      <div id="orderList" class="order-list hidden" aria-hidden="true"></div>
+    </section>
+
+
+    <section id="projectOrdersPanel" class="project-orders-page hidden">
+      <div class="project-orders-topbar">
+        <div><div class="project-orders-kicker">PROJECT ORDERS</div><h2>Orders</h2><p class="helper">Customer and order information for this project.</p></div>
+        <button id="closeProjectOrdersBtn" class="orders-return-btn">CLOSE & RETURN TO ORDERING</button>
+      </div>
+      <div id="projectActiveOrders" class="order-list"></div>
+      <div class="admin-divider"></div>
+      <div class="admin-head compact"><div><h3>Completed</h3><p class="helper">Completed more than 10 days ago</p></div></div>
+      <div id="projectCompletedOrders" class="order-list"></div>
+    </section>
+
+    <section id="projectLedgerPanel" class="project-ledger-page hidden">
+      <div class="project-ledger-topbar">
+        <div><div class="project-ledger-kicker">PROJECT LEDGER</div><h2>Ledger</h2><p class="helper">Financial history for this project.</p></div>
+        <button id="closeProjectLedgerBtn" class="ledger-return-btn">CLOSE & RETURN TO ORDERING</button>
+      </div>
+      <div id="projectLedgerView"></div>
+    </section>
+
+    <div id="enginePinGate" class="engine-pin-gate hidden" role="dialog" aria-modal="true" aria-labelledby="enginePinTitle">
+      <div class="pirate-card">
+        <div class="pirate-flag">☠</div>
+        <div class="black-flag-guardian" aria-hidden="true">
+          <span class="guardian-flag">🏴‍☠️</span>
+          <span class="guardian-wheel">⚙</span>
+        </div>
+        <div class="pirate-eyebrow">CAPTAIN'S QUARTERS</div>
+        <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
+        <p>Only captains, code-wranglers, and suspiciously competent pirates beyond this point.</p>
+        <label for="enginePinInput">Enter Captain's Code</label>
+        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
+        <button id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
+        <button id="cancelEngineBtn" class="secondary-btn">CLOSE / RETURN TO ORDER</button>
+      </div>
+    </div>
+
+    <div id="adminPreviewLightbox" class="admin-preview-lightbox hidden" role="dialog" aria-modal="true" aria-label="Approved customer preview">
+      <button id="closeAdminPreviewLightbox" class="admin-preview-lightbox-close" type="button" aria-label="Close preview">×</button>
+      <div class="admin-preview-lightbox-frame">
+        <img id="adminPreviewLightboxImage" src="" alt="Larger approved customer preview">
+      </div>
+    </div>
+
+    <section id="enginePanel" class="engine-panel hidden">
+      <div class="command-masthead">
+        <div class="command-brand">
+          <div class="command-mark">☠</div>
+          <div>
+            <div class="engine-kicker">BLACK FLAG HARBOR</div>
+            <h2>Workshop Engine</h2>
+            <p>Multi-company operations, configuration and platform control.</p>
+          </div>
+        </div>
+        <div class="command-access">ENGINE SECURE</div>
+      </div>
+<div class="engine-health-strip" id="engineHealthStrip">
+        <div><span>Orders Aboard</span><strong id="engineOrderCount">—</strong></div>
+        <div><span>Stranded Draft</span><strong id="engineDraftStatus">—</strong></div>
+        <div><span>Cargo Hold</span><strong id="engineStorageStatus">—</strong></div>
+        <div><span>Signal Flag</span><strong id="engineEmailStatus">—</strong></div>
+      </div>
+
+      
+      
+      <section class="dark-flag-cove-banner" aria-hidden="true">
+        <div class="cove-crest">☠</div>
+        <div class="cove-banner-copy">
+          <div class="cove-kicker">DARK FLAG</div>
+          <div class="cove-title">COVE ENGINE</div>
+          <div class="cove-motto">ONE ENGINE • MANY CREWS • TOTAL SEPARATION</div>
+        </div>
+        <div class="cove-compass">✦</div>
+      </section>
+
+      <section class="project-command-section">
+        <div class="command-section-title">
+          <div>
+            <div class="engine-kicker">PROJECT COMMAND</div>
+            <h3>Projects</h3>
+            <p>Open a project to manage that business. Entering any project immediately locks Black Flag.</p>
+          </div>
+          <button id="addProjectBtn" class="project-add-btn">＋ ADD PROJECT</button>
+        </div>
+        <div id="projectSummaryBadge" class="project-summary-badge"></div>
+        <div id="projectCommandCards" class="project-command-cards"></div>
+      </section>
+
+      <section id="projectEngineControl" class="project-engine-control hidden">
+        <div class="project-engine-head">
+          <div class="project-engine-identity">
+            <div id="pecBrandMark" class="pec-brand-mark"><span id="pecBrandCode">PRJ</span><img id="pecBrandLogo" class="hidden" alt=""></div>
+            <div>
+              <div class="engine-kicker">PROJECT CONTROL CENTER</div>
+              <h3 id="pecTitle">Project</h3>
+              <p id="pecSubtitle">Project-specific controls.</p>
+            </div>
+          </div>
+          <button id="closeProjectEngineControl" class="secondary-btn small">CLOSE PROJECT</button>
+        </div>
+
+        <nav class="project-tabs" id="projectTabs">
+          <button data-project-tab="overview" class="active">Overview</button>
+          <button data-project-tab="marketing">Marketing & Brand</button>
+          <button data-project-tab="products">Products</button>
+          <button data-project-tab="experience">Customer Experience</button>
+          <button data-project-tab="deployment">Deployment</button>
+          <button data-project-tab="ai">AI Recognition</button>
+          <button data-project-tab="workflow">Workflow</button>
+          <button data-project-tab="publishing">Publishing</button>
+          <button data-project-tab="orders">Orders</button>
+          <button data-project-tab="ledger">Ledger</button>
+          <button data-project-tab="payments">Payments</button>
+<button data-project-tab="permissions">Permissions</button>
+<button data-project-tab="customers">Customers</button>
+          <button data-project-tab="notifications">Notifications</button>
+        </nav>
+        <div id="projectTabContent" class="project-tab-content"></div>
+      </section>
+
+      <div class="engine-section-head"><div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3></div></div>
+<div class="engine-section-head"><div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3></div></div>
+      <div id="companyFleet" class="company-fleet"></div>
+
+      <div class="engine-grid">
+        <article class="engine-card engine-appearance-card">
+          <div class="engine-card-kicker">DARK FLAG</div>
+          <h3>Appearance</h3>
+          <p class="helper">Controls Dark Flag presentation only. Project branding, data, permissions and security are never changed by this setting.</p>
+          <div class="engine-pirate-toggle-row">
+            <span><strong>Pirate Mode</strong><small>Transform Dark Flag command surfaces. Project shells remain untouched.</small></span>
+            <label class="bf-switch" aria-label="Toggle Pirate Mode in Dark Flag Engine">
+              <input id="enginePirateModeToggle" type="checkbox" />
+              <span class="bf-switch-slider"></span>
+            </label>
+          </div>
+          <p id="pirateModeStatus" class="helper"></p>
+        </article>
+
+        <article class="engine-card legacy-global-project-control">
+          <h3>AI Product Recognition</h3>
+          <p class="helper">Engine-controlled by company for testing. AI may identify and suggest; company pricing rules remain authoritative.</p>
+          <label>Company<select id="aiCompanySetting"></select></label>
+          <label>Recognition mode
+            <select id="aiRecognitionMode">
+              <option value="off">Off</option>
+              <option value="assist">Assist — recommend + customer confirms</option>
+              <option value="automatic">Automatic — future testing only</option>
+            </select>
+          </label>
+          <label>Minimum confidence<input id="aiConfidenceSetting" class="text-input" type="number" min="0.5" max="0.99" step="0.01" value="0.90"></label>
+          <label class="admin-toggle-row compact-toggle"><span><strong>Require scale reference for measurements</strong><small>Recommended when price depends on physical dimensions.</small></span><input id="aiScaleReferenceSetting" type="checkbox" checked></label>
+          <button id="saveAISettingsBtn" class="primary-btn small">SAVE AI SETTINGS</button>
+          <p id="aiSettingsStatus" class="helper"></p>
+        </article>
+
+        
+
+        <article class="engine-card legacy-global-project-control">
+          <h3>Default Workflow</h3>
+          <p class="helper">Comma-separated production stages used by the reusable order engine.</p>
+          <label>Order statuses<textarea id="engineStatusesSetting" rows="4"></textarea></label>
+          <button id="saveEngineWorkflowBtn" class="primary-btn small">SAVE WORKFLOW</button>
+          <p id="engineWorkflowStatus" class="helper"></p>
+        </article>
+
+        
+
+        
+      </div>
+
+      <section class="protected-control-center">
+        <div class="protected-control-head">
+          <div><div class="engine-kicker">PROTECTED CONTROLS</div><h3>Engine Controls</h3></div>
+          <span class="protected-control-mark">⚓</span>
+        </div>
+
+        <details class="protected-control-group">
+          <summary>Engine Identity</summary>
+          <div class="protected-control-body">
+            <div id="engineIdentitySavedView" class="engine-identity-saved-view">
+              <div class="engine-identity-name-row">
+                <div>
+                  <div class="engine-kicker">ENGINE NAME</div>
+                  <strong id="engineNameDisplay" class="engine-name-display">Workshop Engine</strong>
+                </div>
+                <button id="editEngineNameBtn" class="secondary-btn small" type="button">EDIT</button>
+              </div>
+              <p class="helper engine-identity-helper">Captain-level name for this Dark Sky Engine. It does not rename projects, change project branding, or alter project namespaces.</p>
+            </div>
+
+            <div id="engineIdentityEditView" class="engine-identity-edit-view hidden">
+              <label>Engine name<input id="engineNameSetting" class="text-input" type="text" value="Workshop Engine" /></label>
+              <p class="helper engine-identity-helper">Captain-level name for this Dark Sky Engine. It does not rename projects, change project branding, or alter project namespaces.</p>
+              <div class="engine-identity-edit-actions">
+                <button id="saveEngineIdentityBtn" class="primary-btn small" type="button">SAVE ENGINE NAME</button>
+                <button id="cancelEngineNameEditBtn" class="secondary-btn small" type="button">CANCEL</button>
+              </div>
+            </div>
+
+            <p id="engineIdentityStatus" class="engine-identity-status helper" aria-live="polite"></p>
+          </div>
+        </details>
+<details class="protected-control-group">
+          <summary>Storage & Recovery</summary>
+          <div class="protected-control-body">
+            <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
+            <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
+            <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
+            <p id="engineStorageDetail" class="helper"></p>
+          </div>
+        </details>
+
+        
+      </section>
+
+      <div id="engineResetGate" class="engine-reset-gate hidden" role="dialog" aria-modal="true" aria-labelledby="engineResetTitle">
+        <div class="engine-reset-card">
+          <div class="engine-kicker">PROTECTED RESET</div>
+          <h2 id="engineResetTitle">Confirm Engine Reset</h2>
+          <p>Enter the Engine PIN again. You will receive one final confirmation before anything is reset.</p>
+          <label for="engineResetPinInput">Engine PIN</label>
+          <input id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+          <p id="engineResetError" class="pirate-error" aria-live="polite"></p>
+          <button id="confirmEngineResetBtn" class="danger-btn">CONTINUE RESET</button>
+          <button id="cancelEngineResetBtn" class="secondary-btn">CANCEL</button>
+        </div>
+      </div>
+
+      <section class="captain-access-dock captain-access-ready" aria-label="Captain's Quarters access">
+        <div class="captain-access-kicker">CAPTAIN ONLY</div>
+        <a id="captainModeAccessBtn" class="captain-access-btn" href="#captainQuartersGate" role="button">
+          <span>⚓</span><span><strong>CAPTAIN'S QUARTERS</strong><small>Private command and creative chamber · separate authentication required</small></span><b>ENTER →</b>
+        </a>
+      </section>
+
+      <section class="fleet-analytics captains-log">
+        <div class="captains-log-head">
+          <div>
+            <div class="engine-kicker">CAPTAIN'S LOG</div>
+            <h3>Project Analytics</h3>
+          </div>
+          <span class="captains-log-badge">LOCAL DATA</span>
+        </div>
+
+        <div id="captainsLogKpis" class="captains-log-kpis"></div>
+
+        <div class="captains-log-charts">
+          <article class="captains-chart-card">
+            <div class="chart-heading"><h4>Orders by Project</h4><span>All recorded</span></div>
+            <canvas id="captainsOrdersChart" width="640" height="230"></canvas>
+          </article>
+          <article class="captains-chart-card">
+            <div class="chart-heading"><h4>Recorded Revenue</h4><span>All recorded</span></div>
+            <canvas id="captainsRevenueChart" width="640" height="230"></canvas>
+          </article>
+        </div>
+
+        <div id="captainsProjectTable" class="captains-project-table"></div>
+      </section>
+
+      <div class="pirate-footer">☠ If ye don't know what a button does, keep yer hook off it.</div>
+    </section>
+  </div>
+
+  <script src="app.js?v=2.9.53"></script>
+
+    <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
+      <div class="add-project-card">
+        <div class="engine-kicker">NEW PROJECT</div>
+        <h2>Add a Project</h2>
+        <p>Create a private project shell. It stays unpublished until you deliberately publish it.</p>
+        <label>Project name<input id="newProjectName" class="text-input" type="text" placeholder="Business or project name"></label>
+        <label>Project type
+          <select id="newProjectType">
+            <option value="custom_product">Custom Product</option>
+            <option value="custom_flowers">Flower Shop</option>
+            <option value="custom_apparel">Custom Apparel</option>
+            <option value="custom_food">Custom Food / Bakery</option>
+            <option value="custom_service">Custom Service</option>
+          </select>
+        </label>
+        <label>Order prefix<input id="newProjectPrefix" class="text-input" type="text" maxlength="8" placeholder="ABC"></label>
+        <p id="addProjectError" class="error-text"></p>
+        <button id="createProjectBtn" class="primary-btn">CREATE PRIVATE PROJECT</button>
+        <button id="cancelAddProjectBtn" class="secondary-btn">CANCEL</button>
+      </div>
+    </div>
+
+
+
+  <script src="captain.js?v=2.9.53"></script>
+</body>
+</html>
