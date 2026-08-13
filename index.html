@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.54" />
+  <link rel="stylesheet" href="styles.css?v=2.9.55" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -126,7 +126,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.54 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.55 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -687,6 +687,16 @@
         </div>
         <div class="command-access">ENGINE SECURE</div>
       </div>
+      <nav class="engine-room-visual-nav" aria-label="Engine Room sections">
+        <div class="ervn-brand"><span>⚙</span><strong>ENGINE ROOM</strong><small>OPERATIONS</small></div>
+        <a href="#engineHealthStrip">Engine Room</a>
+        <a href="#engineProjectsSection">Projects</a>
+        <a href="#engineFleetSection">Fleet Overview</a>
+        <a href="#engineAnalyticsSection">Captain's Log</a>
+        <a href="#engineSettingsSection">Settings</a>
+        <a href="#engineSecuritySection">Security</a>
+        <div class="ervn-secure"><i></i><span>ENGINE SECURE</span></div>
+      </nav>
 <div class="engine-health-strip" id="engineHealthStrip">
         <div><span>Orders Aboard</span><strong id="engineOrderCount">—</strong></div>
         <div><span>Stranded Draft</span><strong id="engineDraftStatus">—</strong></div>
@@ -706,7 +716,7 @@
         <div class="cove-compass">✦</div>
       </section>
 
-      <section class="project-command-section">
+      <section id="engineProjectsSection" class="project-command-section">
         <div class="command-section-title">
           <div>
             <div class="engine-kicker">PROJECT COMMAND</div>
@@ -752,10 +762,10 @@
       </section>
 
       <div class="engine-section-head"><div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3></div></div>
-<div class="engine-section-head"><div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3></div></div>
+<div id="engineFleetSection" class="engine-section-head"><div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3></div></div>
       <div id="companyFleet" class="company-fleet"></div>
 
-      <div class="engine-grid">
+      <div id="engineSettingsSection" class="engine-grid">
         <article class="engine-card engine-appearance-card">
           <div class="engine-card-kicker">DARK FLAG</div>
           <h3>Appearance</h3>
@@ -860,14 +870,14 @@
         </div>
       </div>
 
-      <section class="captain-access-dock captain-access-ready" aria-label="Captain's Quarters access">
+      <section id="engineSecuritySection" class="captain-access-dock captain-access-ready" aria-label="Captain's Quarters access">
         <div class="captain-access-kicker">CAPTAIN ONLY</div>
         <a id="captainModeAccessBtn" class="captain-access-btn" href="#captainQuartersGate" role="button">
           <span>⚓</span><span><strong>CAPTAIN'S QUARTERS</strong><small>Private command and creative chamber · separate authentication required</small></span><b>ENTER →</b>
         </a>
       </section>
 
-      <section class="fleet-analytics captains-log">
+      <section id="engineAnalyticsSection" class="fleet-analytics captains-log">
         <div class="captains-log-head">
           <div>
             <div class="engine-kicker">CAPTAIN'S LOG</div>
@@ -896,7 +906,7 @@
     </section>
   </div>
 
-  <script src="app.js?v=2.9.54"></script>
+  <script src="app.js?v=2.9.55"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -922,6 +932,6 @@
 
 
 
-  <script src="captain.js?v=2.9.54"></script>
+  <script src="captain.js?v=2.9.55"></script>
 </body>
 </html>

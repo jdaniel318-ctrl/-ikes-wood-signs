@@ -1,13 +1,14 @@
-const CACHE='workshop-engine-v2-9-54-engine-room-visual';
+const CACHE='workshop-engine-v2-9-55-engine-room-asset';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.54',
-  './app.js?v=2.9.54',
-  './captain.js?v=2.9.54',
+  './styles.css?v=2.9.55',
+  './app.js?v=2.9.55',
+  './captain.js?v=2.9.55',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
-  './assets/captains_quarters_cinematic_v2953.jpg'
+  './assets/captains_quarters_cinematic_v2953.jpg',
+  './assets/engine_room_benchmark_v2955.jpg'
 ];
 
 self.addEventListener('install',event=>{

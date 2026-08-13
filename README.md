@@ -1034,3 +1034,27 @@ No files were added to, removed from, renamed in, or replaced inside `/assets` i
 
 ### Cache
 Only CSS/JS query versions and the service-worker cache name were advanced to v2.9.54 to prevent stale presentation files.
+
+
+## v2.9.55 — Engine Room Asset Integration
+A more ambitious visual integration pass using the approved Engine Room benchmark image as a real asset while keeping the working Engine machinery intact.
+
+### Assets
+Added exactly one file:
+- `/assets/engine_room_benchmark_v2955.jpg` — approved Engine Room visual benchmark supplied during testing.
+
+Assets replaced: 0  
+Assets removed: 0  
+Assets renamed: 0
+
+### Functionality freeze
+- `app.js` is byte-for-byte unchanged from v2.9.54.
+- `captain.js` is byte-for-byte unchanged from v2.9.54.
+- No project workflow, storage, security, deployment, analytics, permissions, project isolation, or customer behavior was changed.
+
+### Visual integration
+- Approved benchmark image is now used as Engine Room material/chassis texture.
+- Added a real HTML anchor-based left operations rail that links to existing Engine sections; it does not replace or intercept existing controls.
+- Existing health metrics, project cards, settings, registry, analytics, and Captain access remain live DOM.
+- Added brass/black machinery depth, instrument framing, and compact operational hierarchy based on the approved reference.
+- Base Engine Room remains professional with restrained nautical/pirate influence.
