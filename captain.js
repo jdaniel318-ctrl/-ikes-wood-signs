@@ -141,3 +141,21 @@
   // Captain authority is never persisted.
   window.addEventListener('pagehide', () => { authorized = false; });
 })();
+
+// v2.9.41 — cabin objects are presentation-safe Captain tools.
+document.addEventListener('DOMContentLoaded', () => {
+  const panel = document.getElementById('captainObjectPanel');
+  const title = document.getElementById('captainObjectTitle');
+  const copy = document.getElementById('captainObjectCopy');
+  const content = {
+    log: ["Captain's Log", "A private book for future Captain notes, experiments and mission history. In this build it is intentionally read-only: no project or customer data is changed."],
+    cargo: ["Cargo Hold", "A future home for Captain-only prototypes, visual assets and experimental tools. The project bulkheads remain sealed."],
+    compass: ["Black Flag Compass", "The compass points toward the next experiment: make the room itself the command surface. It is decorative in this build and carries no production authority."],
+    locker: ["Powder Keg Locker", "Reserved for powerful or destructive Captain tools. First Mate rule: anything placed here will require an unmistakable confirmation before it can affect the Engine."],
+  };
+  document.querySelectorAll('[data-cq-object]').forEach(btn => btn.addEventListener('click', () => {
+    const item = content[btn.dataset.cqObject]; if (!item || !panel) return;
+    title.textContent = item[0]; copy.textContent = item[1]; panel.classList.remove('hidden');
+  }));
+  document.getElementById('captainObjectClose')?.addEventListener('click', () => panel?.classList.add('hidden'));
+});

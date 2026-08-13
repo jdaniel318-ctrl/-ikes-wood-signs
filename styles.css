@@ -3552,3 +3552,40 @@ html.captain-controller-ready #captainQuartersGate.hidden{
 @media(prefers-reduced-motion:reduce){
   .cq-room-sea,.cq-room-ship,.cq-room-lantern i,.cq-room-lightning{animation:none!important}
 }
+
+/* ==========================================================
+   v2.9.41 — CAPTAIN'S CABIN: THE ROOM IS THE INTERFACE
+   ========================================================== */
+#captainQuarters{padding:0!important;overflow:auto!important;background:#02080b!important;align-items:flex-start!important}
+#captainQuarters .cq-chamber-world{position:fixed!important;inset:0!important;z-index:1!important;display:block!important;pointer-events:none;background:radial-gradient(circle at 50% 20%,#17313b 0,#07141a 45%,#020609 100%)}
+#captainQuarters .cq-cabin-sky{position:absolute;inset:0;background:linear-gradient(#07141b 0 48%,#02090d 49%)}
+#captainQuarters .cq-room-window{position:absolute;top:8%;width:30%;height:39%;border:18px solid #29170d;border-radius:48% 48% 8% 8%;background:linear-gradient(#0d2936 0 60%,#09202b 61%);box-shadow:0 0 0 4px #9b7337,0 0 0 12px #080504,inset 0 0 45px #000,0 20px 45px #000b;overflow:hidden}
+#captainQuarters .rw-left{left:4%} #captainQuarters .rw-right{right:4%}
+#captainQuarters .cq-room-window:before,#captainQuarters .cq-room-window:after{content:"";position:absolute;background:#1a0f09;z-index:4}#captainQuarters .cq-room-window:before{left:49%;top:0;bottom:0;width:10px}#captainQuarters .cq-room-window:after{top:50%;left:0;right:0;height:10px}
+#captainQuarters .cq-room-moon{position:absolute;right:14%;top:12%;width:72px;height:72px;border-radius:50%;background:#f1d37c;box-shadow:0 0 40px #e8c86a88}
+#captainQuarters .cq-room-sea{position:absolute;left:-10%;right:-10%;bottom:0;height:38%;background:repeating-linear-gradient(174deg,#163b49 0 13px,#071a23 14px 27px,#244d59 28px 32px);animation:cqOcean 2.4s ease-in-out infinite alternate}
+#captainQuarters .cq-room-ship{position:absolute;bottom:23%;left:42%;font-size:64px;filter:brightness(0);opacity:.85}.cq-room-ship.second{left:60%;transform:scale(.7)}
+#captainQuarters .cq-room-beam{position:absolute;top:-5%;bottom:0;width:8%;background:linear-gradient(90deg,#0b0604,#492817 50%,#120a06);box-shadow:0 0 0 3px #090503,0 0 30px #000}.rb-left{left:35%}.rb-right{right:35%}
+#captainQuarters .cq-room-banner{position:absolute;left:50%;top:4%;transform:translateX(-50%);width:27%;min-width:300px;padding:16px 22px;text-align:center;background:#080706;border:2px solid #9c7435;box-shadow:0 10px 30px #000;clip-path:polygon(4% 0,96% 0,100% 50%,96% 100%,4% 100%,0 50%)}
+#captainQuarters .cq-room-banner span{display:block;color:#d1ad5d;font-size:28px}#captainQuarters .cq-room-banner strong{display:block;color:#d9b868;font:700 36px Georgia,serif;letter-spacing:.12em}#captainQuarters .cq-room-banner small{color:#bfae83;letter-spacing:.18em;font-size:9px}
+#captainQuarters .cq-room-map-frame{position:absolute;left:50%;top:23%;transform:translateX(-50%);width:25%;height:20%;background:#b78f52;border:10px solid #2d190e;box-shadow:0 0 0 3px #9a7437,0 18px 40px #000a}
+#captainQuarters .cq-room-desk{position:absolute;left:-3%;right:-3%;bottom:-2%;height:23%;background:linear-gradient(#6c3c1e,#2b170d 18%,#120a07);border-top:10px ridge #a77c39;box-shadow:0 -20px 55px #000}
+#captainQuarters .cq-room-lantern{position:absolute;top:7%;width:54px;height:90px;border:5px solid #8b682e;border-radius:35%;background:#38210f;box-shadow:0 0 45px #f0a63366}.rlan-left{left:37%}.rlan-right{right:37%}#captainQuarters .cq-room-lantern i{position:absolute;inset:18px 10px;border-radius:50%;background:#ffd36b;box-shadow:0 0 35px 15px #efa52b99;animation:cqFlame 1.2s infinite alternate}
+
+/* The old dashboard is deliberately retired. */
+#captainQuarters .captain-chamber{position:relative!important;z-index:6!important;width:100%!important;min-height:100vh!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#captainQuarters .captain-chamber:before,#captainQuarters .captain-chamber-top,#captainQuarters .captain-window,#captainQuarters .captain-console,#captainQuarters .captain-rule{display:none!important}
+#captainQuartersCloseBtn{display:none!important}
+
+/* Physical controls on the captain's desk */
+#captainQuarters .cq-interactive-map{position:fixed!important;z-index:8!important;left:50%!important;top:24%!important;transform:translateX(-50%) rotate(-1deg)!important;width:min(25vw,360px)!important;height:19vh!important;min-height:155px!important;background:linear-gradient(135deg,#d1ad68,#a47a3d)!important;border:7px solid #3b2111!important;border-radius:2px!important;box-shadow:0 0 0 3px #b98c44,0 16px 35px #000b,inset 0 0 35px #5b3418aa!important;color:#40250f!important}
+#captainQuarters .cq-map-title{font:700 17px Georgia,serif!important;letter-spacing:.16em!important}#captainQuarters .cq-interactive-map b{position:absolute;left:0;right:0;bottom:13px;font-size:10px;letter-spacing:.14em}
+.cq-cabin-props{position:fixed;z-index:9;left:5%;right:5%;bottom:3.5%;height:20%;pointer-events:none}
+.cq-prop{pointer-events:auto;position:absolute;border:0;background:transparent;color:#e2bd68;text-shadow:0 2px 6px #000;cursor:pointer;font-family:Georgia,serif;transition:.2s transform,.2s filter}
+.cq-prop:hover,.cq-prop:focus{transform:translateY(-5px) scale(1.04);filter:brightness(1.25);outline:none}.cq-prop span{display:block;font-size:clamp(34px,5vw,72px)}.cq-prop b{display:block;font-size:10px;letter-spacing:.15em;margin-top:4px}
+.cq-logbook{left:7%;bottom:8%}.cq-cargo{left:28%;bottom:3%}.cq-compass-prop{right:27%;bottom:5%}.cq-locker{right:7%;bottom:7%}
+#captainExitBtn{position:fixed!important;z-index:10!important;right:3%!important;top:3%!important;width:auto!important;padding:12px 18px!important;border:2px solid #b58a42!important;background:#08181eeb!important;color:#e2c474!important;border-radius:999px!important;font-size:10px!important;letter-spacing:.12em!important;box-shadow:0 5px 20px #000a!important}#captainExitBtn:before{content:"↩ ";font-size:16px}
+.cq-cabin-title{position:fixed;z-index:7;left:50%;top:49%;transform:translateX(-50%);text-align:center;color:#e5ca86;text-shadow:0 3px 14px #000;pointer-events:none}.cq-cabin-title small{display:block;letter-spacing:.3em;font-size:9px}.cq-cabin-title strong{display:block;font:700 clamp(24px,3vw,44px) Georgia,serif;letter-spacing:.08em;margin-top:4px}
+
+.cq-object-panel{position:fixed;z-index:100005;inset:0;display:grid;place-items:center;background:#02080bd9;backdrop-filter:blur(8px)}.cq-object-panel.hidden{display:none!important}.cq-object-card{width:min(650px,88vw);padding:30px;background:linear-gradient(145deg,#0a2028,#061218);border:3px double #aa813c;border-radius:16px;box-shadow:0 30px 90px #000;color:#d7d0bd}.cq-object-card h3{margin:4px 0 10px;color:#e2c477;font:700 34px Georgia,serif}.cq-object-card p{line-height:1.55}.cq-object-card button{margin-top:18px;padding:12px 18px;border:2px solid #aa813c;border-radius:999px;background:#07171d;color:#e4c675;font-weight:800}
+@media(max-width:800px){#captainQuarters .cq-interactive-map{width:34vw!important;top:25%!important}.cq-prop b{display:none}.cq-cabin-title{top:51%}#captainQuarters .cq-room-window{width:31%;height:34%;border-width:10px}}

@@ -134,7 +134,15 @@
         <section><span>PIRATE MODE</span><strong>Still aboard</strong><small>Personality remains separate from Captain privileges.</small></section>
       </div>
       <div class="captain-rule">CAPTAIN'S RULE: creativity may roam; production boundaries do not.</div>
-      <button id="captainExitBtn" class="captain-primary" type="button">SECURE THE QUARTERS & RETURN TO ENGINE</button>
+      <div class="cq-cabin-title"><small>BLACK FLAG • CAPTAIN AUTHORIZED</small><strong>THE CAPTAIN'S QUARTERS</strong></div>
+      <div class="cq-cabin-props" aria-label="Captain's cabin controls">
+        <button class="cq-prop cq-logbook" data-cq-object="log" type="button"><span>📖</span><b>CAPTAIN'S LOG</b></button>
+        <button class="cq-prop cq-cargo" data-cq-object="cargo" type="button"><span>🧰</span><b>CARGO HOLD</b></button>
+        <button class="cq-prop cq-compass-prop" data-cq-object="compass" type="button"><span>✥</span><b>COMPASS</b></button>
+        <button class="cq-prop cq-locker" data-cq-object="locker" type="button"><span>☠</span><b>LOCKED CABINET</b></button>
+      </div>
+      <div id="captainObjectPanel" class="cq-object-panel hidden" role="dialog" aria-modal="true"><div class="cq-object-card"><div class="captain-kicker">CAPTAIN'S CABIN</div><h3 id="captainObjectTitle">Object</h3><p id="captainObjectCopy"></p><button id="captainObjectClose" type="button">RETURN TO THE CABIN</button></div></div>
+      <button id="captainExitBtn" class="captain-primary" type="button">RETURN TO ENGINE</button>
     </div>
   </div>
 
