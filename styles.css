@@ -5354,3 +5354,136 @@ body.business-engine-mode.engine-mode #enginePanel .dark-flag-cove-banner{letter
   .captain-danger-grid{grid-template-columns:1fr}
   .captain-command-header{align-items:flex-start;flex-direction:column}
 }
+
+
+/* ==========================================================
+   v2.9.60 — ARCHITECTURE CONSOLIDATION
+   What you see is what you touch. Business/Pirate are complete
+   Engine presentations of the same machinery.
+   ========================================================== */
+
+/* ---- Five exact Captain command doors over the five painted lower buttons ---- */
+.captain-command-door-rail{
+  position:absolute!important;inset:0!important;z-index:150!important;pointer-events:none!important;
+}
+.captain-command-door{
+  position:absolute!important;bottom:5.2%!important;height:8.4%!important;
+  border:0!important;border-radius:7px!important;background:transparent!important;
+  box-shadow:none!important;color:transparent!important;pointer-events:auto!important;
+  appearance:none!important;-webkit-appearance:none!important;
+}
+.captain-command-door.cargo{left:2.1%!important;width:16.2%!important}
+.captain-command-door.powder{left:20.6%!important;width:16.2%!important}
+.captain-command-door.blackflag{left:39.0%!important;width:16.0%!important}
+.captain-command-door.log{left:57.3%!important;width:16.0%!important}
+.captain-command-door.blueprint{left:75.6%!important;width:15.8%!important}
+.captain-command-door:hover,.captain-command-door:focus-visible{
+  outline:2px solid #e1bd70!important;outline-offset:3px!important;
+  box-shadow:0 0 24px #d8a94e66!important;
+}
+/* Keep command doors hidden until the cabin is fully presented. */
+#captainQuarters:not(.captain-entry-complete) .captain-command-door{pointer-events:none!important;opacity:0!important}
+
+/* ---- Each Captain door now feels like its own management room ---- */
+#captainCommandWorkspace[data-section="cargo"] .captain-command-shell{
+  background:linear-gradient(160deg,#16231f,#0d1716)!important;border-color:#6f5b34!important;
+}
+#captainCommandWorkspace[data-section="cargo"] .captain-command-header{
+  background:linear-gradient(90deg,#17241f,#253125,#111c19)!important;
+}
+#captainCommandWorkspace[data-section="powder"] .captain-command-shell{
+  background:linear-gradient(160deg,#251516,#120d0e)!important;border-color:#78443e!important;
+}
+#captainCommandWorkspace[data-section="powder"] .captain-command-header{
+  background:linear-gradient(90deg,#32191b,#201315,#140d0e)!important;
+}
+#captainCommandWorkspace[data-section="blackflag"] .captain-command-shell{
+  background:linear-gradient(160deg,#101b21,#071014)!important;border-color:#495f64!important;
+}
+#captainCommandWorkspace[data-section="blackflag"] .captain-command-header{
+  background:linear-gradient(90deg,#101b20,#17303a,#0a1216)!important;
+}
+#captainCommandWorkspace[data-section="log"] .captain-command-shell{
+  background:linear-gradient(160deg,#211b13,#11100d)!important;border-color:#725a35!important;
+}
+#captainCommandWorkspace[data-section="log"] .captain-command-header{
+  background:linear-gradient(90deg,#2b2115,#211d15,#130f0b)!important;
+}
+#captainCommandWorkspace[data-section="blueprint"] .captain-command-shell{
+  background:linear-gradient(160deg,#172124,#0d1517)!important;border-color:#806b44!important;
+}
+#captainCommandWorkspace[data-section="blueprint"] .captain-command-body{
+  background-image:linear-gradient(#8e7d5b13 1px,transparent 1px),linear-gradient(90deg,#8e7d5b13 1px,transparent 1px);
+  background-size:26px 26px;
+}
+
+/* ---- BUSINESS MODE: professional Engine Room, minimal pirate language ---- */
+body.business-engine-mode .bf-pirate-atmosphere{display:none!important}
+body.business-engine-mode #blackFlagEntryGate{
+  background:radial-gradient(circle at 50% 20%,#1a252a,#070c0f 74%)!important;
+}
+body.business-engine-mode #blackFlagEntryGate .bf-entry-mark{
+  filter:grayscale(1)!important;opacity:.45!important;
+}
+body.business-engine-mode #enginePanel .dark-flag-cove-banner{
+  background:linear-gradient(90deg,#11191d,#172126,#11191d)!important;
+  border-color:#465258!important;
+}
+body.business-engine-mode #enginePanel .command-mark{font-size:0!important}
+body.business-engine-mode #enginePanel .command-mark:before{content:"⚙";font-size:24px!important}
+body.business-engine-mode #enginePanel .engine-room-visual-nav{
+  background:linear-gradient(180deg,#0c1316,#080d10)!important;
+}
+body.business-engine-mode #enginePanel .ervn-brand>span{font-size:0!important}
+body.business-engine-mode #enginePanel .ervn-brand>span:before{content:"⚙";font-size:22px!important}
+body.business-engine-mode #enginePanel .project-card,
+body.business-engine-mode #enginePanel .engine-card,
+body.business-engine-mode #enginePanel .project-engine-control{
+  border-color:#415158!important;
+}
+
+/* ---- PIRATE MODE: same controls/data, deliberately different presentation ---- */
+body.dark-flag-pirate-mode #blackFlagEntryGate{
+  background:
+    radial-gradient(circle at 70% 10%,rgba(163,112,47,.18),transparent 28%),
+    linear-gradient(180deg,#17100b,#090706 75%)!important;
+}
+body.dark-flag-pirate-mode .bf-pirate-atmosphere{display:flex!important}
+body.dark-flag-pirate-mode #enginePanel.engine-panel{
+  background:
+    linear-gradient(180deg,rgba(11,7,5,.88),rgba(8,8,8,.94)),
+    url("assets/engine_room_benchmark_v2955.jpg") center top/cover fixed no-repeat!important;
+  border-color:#76542b!important;
+  box-shadow:0 28px 75px #000c,inset 0 0 0 2px #7b582633!important;
+}
+body.dark-flag-pirate-mode #enginePanel .command-masthead{
+  background:
+    linear-gradient(90deg,rgba(24,13,7,.95),rgba(31,24,14,.91),rgba(15,9,5,.97)),
+    url("assets/engine_room_benchmark_v2955.jpg") center 14%/cover no-repeat!important;
+  border-bottom-color:#866031!important;
+}
+body.dark-flag-pirate-mode #enginePanel .command-mark{font-size:23px!important}
+body.dark-flag-pirate-mode #enginePanel .command-mark:before{content:none!important}
+body.dark-flag-pirate-mode #enginePanel .engine-room-visual-nav{
+  background:linear-gradient(180deg,#17100b,#0b0806)!important;border-right-color:#73542e!important;
+}
+body.dark-flag-pirate-mode #enginePanel .ervn-brand>span{font-size:22px!important}
+body.dark-flag-pirate-mode #enginePanel .ervn-brand>span:before{content:none!important}
+body.dark-flag-pirate-mode #enginePanel .dark-flag-cove-banner{
+  background:linear-gradient(90deg,#20140c,#2b1d0f,#1a1009)!important;border-color:#74532e!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-card,
+body.dark-flag-pirate-mode #enginePanel .engine-card,
+body.dark-flag-pirate-mode #enginePanel .project-engine-control{
+  border-color:#675033!important;background:linear-gradient(155deg,#1b1813,#11100e)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-tabs button.active{
+  border-color:#aa7f3f!important;background:#302117!important;color:#f0cf82!important;
+}
+body.dark-flag-pirate-mode #enginePanel .primary-btn{
+  border-color:#8f6c35!important;background:linear-gradient(#a97d3d,#6f4b24)!important;color:#fff0c4!important;
+}
+
+/* Settings selector remains legible in both modes. */
+body.dark-flag-pirate-mode .engine-mode-segment,
+body.business-engine-mode .engine-mode-segment{isolation:isolate}

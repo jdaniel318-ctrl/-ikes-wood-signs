@@ -2235,6 +2235,27 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       : 'Secure project operations and platform control.';
     if(enter) enter.textContent=pirateModeEnabled?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →';
 
+    const engineKicker=document.querySelector('#enginePanel .command-masthead .engine-kicker');
+    const engineTitle=document.querySelector('#enginePanel .command-masthead h2');
+    const engineSub=document.querySelector('#enginePanel .command-masthead p');
+    const coveKicker=document.querySelector('#enginePanel .dark-flag-cove-banner .cove-kicker');
+    const coveTitle=document.querySelector('#enginePanel .dark-flag-cove-banner .cove-title');
+    const coveMotto=document.querySelector('#enginePanel .dark-flag-cove-banner .cove-motto');
+    const footer=document.querySelector('#enginePanel .pirate-footer');
+    if(engineKicker) engineKicker.textContent=pirateModeEnabled?'DARK FLAG HARBOR':'BLACK FLAG HARBOR';
+    if(engineTitle) engineTitle.textContent='Engine Room';
+    if(engineSub) engineSub.textContent=pirateModeEnabled
+      ? 'Fleet operations and project machinery beneath the Dark Flag.'
+      : 'Fleet operations, project control, and platform systems.';
+    if(coveKicker) coveKicker.textContent=pirateModeEnabled?'DARK FLAG':'ENGINE SYSTEMS';
+    if(coveTitle) coveTitle.textContent=pirateModeEnabled?'COVE ENGINE':'OPERATIONS BAY';
+    if(coveMotto) coveMotto.textContent=pirateModeEnabled
+      ? 'ONE ENGINE • MANY CREWS • TOTAL SEPARATION'
+      : 'ONE ENGINE • MANY PROJECTS • SEALED DATA BOUNDARIES';
+    if(footer) footer.textContent=pirateModeEnabled
+      ? "☠ If ye don't know what a button does, keep yer hook off it."
+      : 'ENGINE ROOM • AUTHORIZED OPERATIONS ONLY';
+
     if(announce && $('pirateModeStatus')){
       $('pirateModeStatus').textContent=pirateModeEnabled
         ? 'Pirate Mode engaged. Presentation changed; Engine authority and data did not.'
@@ -2246,7 +2267,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     applyEngineAppearance(enabled?'pirate':'business',{announce});
   }
 
-  async function loadPirateMode(){
+  async function loadEngineAppearance(){
     try{
       const explicit=await getSetting('engineAppearance');
       if(explicit?.value==='business'||explicit?.value==='pirate'){
@@ -2268,6 +2289,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       await setSetting('darkFlagPirateMode',engineAppearance==='pirate'); // backwards compatibility
     }catch(err){ console.warn('Engine appearance could not be saved',err); }
   }
+
+  async function loadPirateMode(){ return loadEngineAppearance(); } // legacy compatibility only
 
   async function setPirateMode(enabled){
     await setEngineAppearance(enabled?'pirate':'business');
@@ -4034,7 +4057,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   async function init(){
-    await loadPirateMode();
+    await loadEngineAppearance();
     db=await openDb();
     await loadFeatureSettings();
     await loadBusinessConfig();

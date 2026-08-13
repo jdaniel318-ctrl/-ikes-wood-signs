@@ -375,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
       blueprint:["Ship's Blueprint","Living System Architecture"]
     };
     const [t,s]=names[section]||["Captain Command","Governance"];
+    workspace.dataset.section=section;
     title.textContent=t; subtitle.textContent=s;
     if(section==='cargo') return renderCargo();
     if(section==='powder') return renderPowder();
@@ -498,7 +499,12 @@ document.addEventListener('DOMContentLoaded', () => {
   close?.addEventListener('click',closeWorkspace);
   document.querySelectorAll('[data-captain-command]').forEach(btn=>btn.addEventListener('click',()=>open(btn.dataset.captainCommand)));
 
-  // Physical cabin hotspots / bottom benchmark buttons.
+  // Dedicated visible bottom command doors: what the Captain sees is what the Captain touches.
+  document.querySelectorAll('[data-captain-command-door]').forEach(btn=>btn.addEventListener('click',e=>{
+    e.preventDefault();e.stopPropagation();open(btn.dataset.captainCommandDoor);
+  }));
+
+  // Physical desk objects remain useful secondary shortcuts to the same command areas.
   document.querySelector('[data-cq-object="cargo"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('cargo')},true);
   document.querySelector('[data-cq-object="locker"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('powder')},true);
   document.querySelector('[data-cq-object="blackflag"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('blackflag')},true);

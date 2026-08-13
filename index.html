@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.59" />
+  <link rel="stylesheet" href="styles.css?v=2.9.60" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -127,7 +127,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.59 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.60 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -279,6 +279,14 @@
       </div>
 
       <div id="captainObjectPanel" class="cq-object-panel hidden" role="dialog" aria-modal="true"><div class="cq-object-card"><div class="captain-kicker">CAPTAIN'S CABIN</div><h3 id="captainObjectTitle">Object</h3><p id="captainObjectCopy"></p><div id="captainPowderControls" class="cq-powder-controls hidden"><div class="cq-danger-plaque">⚠ CAPTAIN AUTHORITY REQUIRED</div><p>Reset Engine returns Engine and project settings to port defaults. Saved orders remain. A fresh Engine PIN and final confirmation are still required.</p><button id="engineResetSettingsBtn" class="danger-btn" type="button">RESET ENGINE TO PORT DEFAULTS</button></div><button id="captainObjectClose" type="button">RETURN TO THE CABIN</button></div></div>
+
+      <div class="captain-command-door-rail" aria-label="Captain command doors">
+        <button id="captainCargoDoor" class="captain-command-door cargo" type="button" data-captain-command-door="cargo" aria-label="Open Cargo Hold"></button>
+        <button id="captainPowderDoor" class="captain-command-door powder" type="button" data-captain-command-door="powder" aria-label="Open Powder Keg"></button>
+        <button id="captainBlackFlagDoor" class="captain-command-door blackflag" type="button" data-captain-command-door="blackflag" aria-label="Open Black Flag Fleet Command"></button>
+        <button id="captainLogDoor" class="captain-command-door log" type="button" data-captain-command-door="log" aria-label="Open Captain's Log"></button>
+        <button id="captainBlueprintDoor" class="captain-command-door blueprint" type="button" data-captain-command-door="blueprint" aria-label="Open Ship's Blueprint"></button>
+      </div>
       <button id="captainExitBtn" class="captain-primary" type="button">RETURN TO ENGINE</button>
     </div>
   </div>
@@ -693,7 +701,6 @@
         <a href="#engineHealthStrip">Engine Room</a>
         <a href="#engineProjectsSection">Projects</a>
         <a href="#engineFleetSection">Fleet Overview</a>
-        <a href="#engineAnalyticsSection">Operations Monitor</a>
         <a href="#engineSettingsSection">Settings</a>
         <a href="#engineSecuritySection">Security</a>
         <div class="ervn-secure"><i></i><span>ENGINE SECURE</span></div>
@@ -921,7 +928,7 @@
     </section>
   </div>
 
-  <script src="app.js?v=2.9.59"></script>
+  <script src="app.js?v=2.9.60"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -947,7 +954,7 @@
 
 
 
-  <script src="captain.js?v=2.9.59"></script>
+  <script src="captain.js?v=2.9.60"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

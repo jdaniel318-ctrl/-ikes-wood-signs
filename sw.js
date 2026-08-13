@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-59-business-modes-captain-command';
+const CACHE='workshop-engine-v2-9-60-architecture-consolidation';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.59',
-  './app.js?v=2.9.59',
-  './captain.js?v=2.9.59',
+  './styles.css?v=2.9.60',
+  './app.js?v=2.9.60',
+  './captain.js?v=2.9.60',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',
