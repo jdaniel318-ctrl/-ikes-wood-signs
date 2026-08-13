@@ -920,11 +920,11 @@
       const oa=p.ownerAccess;
       const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
       return `<div class="owner-access-shell">
-        <section class="pec-card owner-access-hero">
-          <div>
-            <div class="engine-kicker">PROJECT OWNER ACCESS</div>
+        <section class="owner-access-hero">
+          <div class="owner-access-hero-copy">
+            <div class="owner-access-eyebrow">PROJECT OWNER ACCESS</div>
             <h3>${escapeHtml(p.name)}</h3>
-            <p>The project owner can operate this business without receiving Black Flag, Engine Room, or Captain authority.</p>
+            <p>Give the owner a secure, project-scoped business portal without exposing Black Flag, the Engine Room, Captain authority, or another project's data.</p>
           </div>
           <div class="owner-access-state">
             <span>${escapeHtml(ownerAccessLabel(p))}</span>
@@ -932,16 +932,16 @@
           </div>
         </section>
         <div class="pec-grid">
-          <article class="pec-card">
-            <h4>Owner Identity</h4>
+          <article class="pec-card owner-access-card owner-identity-card">
+            <div class="owner-card-heading"><div><span>01</span><h4>Owner Identity</h4></div><small>WHO OWNS THIS BUSINESS</small></div>
             <label>Owner name<input id="ownerAccessName" value="${escapeHtml(oa.ownerName||'')}" placeholder="Business owner"></label>
             <label>Owner email<input id="ownerAccessEmail" type="email" value="${escapeHtml(oa.ownerEmail||'')}" placeholder="owner@example.com"></label>
             <div class="owner-claim-state"><span>ACCESS STATE</span><strong>${escapeHtml(ownerAccessLabel(p))}</strong></div>
             <button id="saveOwnerAccess" class="primary-btn" type="button">SAVE OWNER IDENTITY</button>
             <p class="helper">Owner access becomes active only after a valid invitation is claimed.</p>
           </article>
-          <article class="pec-card owner-invitation-card">
-            <h4>Owner Invitation</h4>
+          <article class="pec-card owner-access-card owner-invitation-card">
+            <div class="owner-card-heading"><div><span>02</span><h4>Owner Invitation</h4></div><small>CLAIM ACCESS</small></div>
             <p class="helper">Generate a one-time project-scoped claim link. It expires after 7 days.</p>
             <div class="owner-invite-status"><span>INVITATION</span><strong>${escapeHtml(ownerInviteStatus(p).toUpperCase())}</strong></div>
             <div class="owner-invite-actions">
@@ -959,19 +959,19 @@
             </div>
             <p class="owner-test-flight-note"><strong>TEST FLIGHT:</strong> This proves the invitation and project-isolation flow locally. Secure owner access from another device still requires the server-side identity service.</p>
           </article>
-          <article class="pec-card">
-            <h4>Owner Capabilities</h4>
+          <article class="pec-card owner-access-card owner-capabilities-card">
+            <div class="owner-card-heading"><div><span>03</span><h4>Owner Capabilities</h4></div><small>PROJECT-SCOPED PERMISSIONS</small></div>
             <p class="helper">Capabilities are restricted to this project's namespace.</p>
             <div class="owner-capability-grid">${OWNER_CAPABILITIES.map(c=>`<label><input type="checkbox" data-owner-capability="${c}" ${oa.capabilities.includes(c)?'checked':''}> ${c.replace(/_/g,' ').toUpperCase()}</label>`).join('')}</div>
           </article>
-          <article class="pec-card">
-            <h4>Deployment Access</h4>
+          <article class="pec-card owner-access-card owner-deployment-card">
+            <div class="owner-card-heading"><div><span>04</span><h4>Deployment Access</h4></div><small>AUTHORIZED DEVICES</small></div>
             <p><strong>${deployments.length}</strong> registered deployment${deployments.length===1?'':'s'}</p>
             <p class="helper">A kiosk/device receives project-scoped device authorization, never owner or Engine credentials.</p>
             <div class="owner-device-list">${deployments.length?deployments.map(d=>`<div><strong>${escapeHtml(d.name)}</strong><span>${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)} • ${escapeHtml(DEPLOYMENT_PROFILES[d.profile]?.label||d.profile)}</span></div>`).join(''):'<p class="helper">No deployment devices registered yet.</p>'}</div>
           </article>
-          <article class="pec-card">
-            <h4>Security Boundary</h4>
+          <article class="pec-card owner-access-card owner-security-card">
+            <div class="owner-card-heading"><div><span>05</span><h4>Security Boundary</h4></div><small>BLACK FLAG BULKHEAD</small></div>
             <p>Owner access cannot cross project namespaces, alter another project's ledger or marketing, enter Black Flag, or invoke Captain authority.</p>
             <p class="helper">Captain retains platform-wide visibility and final business-relationship authority.</p>
           </article>
