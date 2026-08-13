@@ -1882,7 +1882,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     renderCompanyCommand();
     renderCompanyFleet();
     if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
-    if($('schemaVersionSetting')) $('schemaVersionSetting').value=Number(engineConfig.schemaVersion||2);
+    if($('engineNameDisplay')) $('engineNameDisplay').textContent=engineConfig.engineName||'Workshop Engine';
+    $('engineIdentityEditView')?.classList.add('hidden');
+    $('engineIdentitySavedView')?.classList.remove('hidden');
     if($('engineStatusesSetting')) $('engineStatusesSetting').value=(businessConfig.orderStatuses||DEFAULT_BUSINESS_CONFIG.orderStatuses).join(', ');
   }
 
@@ -2897,6 +2899,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     document.documentElement.style.setProperty('--gate-accent',theme.accent||'#d7bd72');
     document.documentElement.style.setProperty('--gate-button',theme.button||theme.nav||'#173742');
     document.documentElement.style.setProperty('--gate-button-text',theme.buttonText||'#fff');
+    document.documentElement.style.setProperty('--gate-focus',theme.accent||theme.button||'#d7bd72');
     document.body.dataset.pinProjectCode=code;
 
     if($('projectAdminGateCode')) $('projectAdminGateCode').textContent=code;
@@ -2927,6 +2930,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     document.documentElement.style.removeProperty('--gate-accent');
     document.documentElement.style.removeProperty('--gate-button');
     document.documentElement.style.removeProperty('--gate-button-text');
+    document.documentElement.style.removeProperty('--gate-focus');
     delete document.body.dataset.pinProjectCode;
   }
 
@@ -3403,13 +3407,34 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       e.stopPropagation();
       requestEngineFromProject();
     },true);
+    $('editEngineNameBtn')?.addEventListener('click',()=>{
+      if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
+      $('engineIdentityStatus').textContent='';
+      $('engineIdentitySavedView')?.classList.add('hidden');
+      $('engineIdentityEditView')?.classList.remove('hidden');
+      setTimeout(()=>$('engineNameSetting')?.focus(),40);
+    });
 
-    $('saveEngineIdentityBtn').addEventListener('click',async()=>{
-      const name=$('engineNameSetting').value.trim()||'Workshop Engine';
-      const version=Math.max(2,Math.min(99,Number($('schemaVersionSetting').value)||2));
-      engineConfig={...engineConfig,engineName:name,schemaVersion:version};
+    $('cancelEngineNameEditBtn')?.addEventListener('click',()=>{
+      if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
+      $('engineIdentityStatus').textContent='';
+      $('engineIdentityEditView')?.classList.add('hidden');
+      $('engineIdentitySavedView')?.classList.remove('hidden');
+    });
+
+    $('saveEngineIdentityBtn')?.addEventListener('click',async()=>{
+      const name=$('engineNameSetting')?.value.trim()||'Workshop Engine';
+      engineConfig={...engineConfig,engineName:name};
       await saveEngineConfig();
-      $('engineIdentityStatus').textContent='Engine identity saved.';
+      if($('engineNameDisplay')) $('engineNameDisplay').textContent=name;
+      $('engineIdentityEditView')?.classList.add('hidden');
+      $('engineIdentitySavedView')?.classList.remove('hidden');
+      const status=$('engineIdentityStatus');
+      if(status){
+        status.textContent='Engine name saved.';
+        status.classList.add('is-saved');
+        window.setTimeout(()=>status.classList.remove('is-saved'),2200);
+      }
     });
 
     $('saveEngineWorkflowBtn').addEventListener('click',async()=>{

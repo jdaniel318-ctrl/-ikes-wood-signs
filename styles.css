@@ -3026,3 +3026,89 @@ body.dark-flag-pirate-mode .graphics-edit-state.unsaved{background:#2b2212!impor
   opacity:.82;
   line-height:1.45;
 }
+
+
+/* v2.9.31 — BARNACLE SWEEP
+   Captain-facing Engine Identity states + fully project-themed Admin Gate accents. */
+
+.engine-identity-saved-view,
+.engine-identity-edit-view{
+  max-width:760px;
+}
+.engine-identity-name-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:13px 14px;
+  border:1px solid #d6dfda;
+  border-radius:13px;
+  background:#f8faf9;
+}
+.engine-name-display{
+  display:block;
+  margin-top:3px;
+  color:#173742;
+  font:900 22px Georgia,serif;
+}
+.engine-identity-edit-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.engine-identity-edit-actions .primary-btn,
+.engine-identity-edit-actions .secondary-btn{
+  width:auto;
+}
+.engine-identity-status{
+  min-height:22px;
+  margin-top:9px;
+  font-weight:800;
+}
+.engine-identity-status.is-saved{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#e9f6ec;
+  border:1px solid #8fc49a;
+  color:#286437;
+}
+
+/* The shared primary-button blue depth must never leak into a project Admin Gate. */
+.project-admin-gate-card .project-admin-gate-primary{
+  background:var(--gate-button,#173742)!important;
+  color:var(--gate-button-text,#fff)!important;
+  box-shadow:
+    0 5px 0 color-mix(in srgb,var(--gate-button,#173742) 68%,black 32%),
+    0 8px 18px color-mix(in srgb,var(--gate-button,#173742) 20%,transparent)!important;
+  border-color:var(--gate-button,#173742)!important;
+}
+.project-admin-gate-card .project-admin-gate-primary:active{
+  transform:translateY(3px);
+  box-shadow:
+    0 2px 0 color-mix(in srgb,var(--gate-button,#173742) 68%,black 32%)!important;
+}
+.project-admin-gate-card .pin-input,
+.project-admin-gate-card .text-input{
+  outline:none!important;
+}
+.project-admin-gate-card .pin-input:focus,
+.project-admin-gate-card .text-input:focus{
+  border-color:var(--gate-focus,var(--gate-accent,#d7bd72))!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--gate-focus,var(--gate-accent,#d7bd72)) 24%,transparent)!important;
+}
+
+/* Pirate Mode remains Engine-only. This cleanup does not target project shells with pirate selectors. */
+body.dark-flag-pirate-mode .engine-identity-name-row{
+  background:#0e1513!important;
+  border-color:#745a31!important;
+}
+body.dark-flag-pirate-mode .engine-name-display{
+  color:#ead8b2!important;
+}
+body.dark-flag-pirate-mode .engine-identity-status.is-saved{
+  background:#172619!important;
+  border-color:#557551!important;
+  color:#bcd0ae!important;
+}
