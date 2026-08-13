@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-65-owner-deployment-foundation';
+const CACHE='workshop-engine-v2-9-66-powder-keg-governance-console';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.65',
-  './app.js?v=2.9.65',
-  './captain.js?v=2.9.65',
+  './styles.css?v=2.9.66',
+  './app.js?v=2.9.66',
+  './captain.js?v=2.9.66',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',

@@ -277,6 +277,49 @@
 
   function projects(){ return companies; }
   function projectById(id){ return companies.find(p=>p.id===id); }
+
+  const OWNER_CAPABILITIES=[
+    'orders','customers','products','pricing','branding','kiosks','deployments','staff','reporting','notifications'
+  ];
+
+  function ensureProjectGovernance(p){
+    if(!p || typeof p!=='object') return p;
+    p.governance=p.governance&&typeof p.governance==='object'?p.governance:{};
+
+    // v2.9.66 migration: "refused" meant business relationship refusal,
+    // never data deletion. Preserve the decision while clarifying its meaning.
+    if(p.governance.platformStatus==='refused') p.governance.platformStatus='relationship_ended';
+    if(!['approved','suspended','relationship_ended'].includes(p.governance.platformStatus)){
+      p.governance.platformStatus='approved';
+    }
+
+    p.governance.updatedAt=p.governance.updatedAt||new Date().toISOString();
+    p.governance.history=Array.isArray(p.governance.history)?p.governance.history:[];
+
+    p.ownerAccess=p.ownerAccess&&typeof p.ownerAccess==='object'?p.ownerAccess:{};
+    p.ownerAccess.status=['not_claimed','invited','active'].includes(p.ownerAccess.status)?p.ownerAccess.status:'not_claimed';
+    p.ownerAccess.ownerName=p.ownerAccess.ownerName||'';
+    p.ownerAccess.ownerEmail=p.ownerAccess.ownerEmail||'';
+    p.ownerAccess.capabilities=Array.isArray(p.ownerAccess.capabilities)&&p.ownerAccess.capabilities.length
+      ? p.ownerAccess.capabilities.filter(x=>OWNER_CAPABILITIES.includes(x))
+      : [...OWNER_CAPABILITIES];
+    p.ownerAccess.staff=Array.isArray(p.ownerAccess.staff)?p.ownerAccess.staff:[];
+    return p;
+  }
+
+  function platformStatus(p){ return ensureProjectGovernance(p).governance.platformStatus; }
+  function platformStatusLabel(p){
+    const s=platformStatus(p);
+    if(s==='suspended') return 'SUSPENDED';
+    if(s==='relationship_ended') return 'RELATIONSHIP ENDED';
+    return 'APPROVED';
+  }
+  function ownerAccessLabel(p){
+    const s=ensureProjectGovernance(p).ownerAccess.status;
+    if(s==='active') return 'OWNER ACTIVE';
+    if(s==='invited') return 'OWNER INVITED';
+    return 'OWNER NOT CLAIMED';
+  }
   function slugifyProjectName(name){
     return String(name||'project').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,48) || ('project-'+Date.now());
   }
@@ -497,7 +540,7 @@
       const saved=await getSetting('companies');
       companies=Array.isArray(saved?.value)&&saved.value.length?saved.value:structuredClone(DEFAULT_COMPANIES);
     }catch(_){companies=structuredClone(DEFAULT_COMPANIES);}
-    companies=companies.map(normalizeProjectCode);
+    companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
   }
   async function saveCompanies(){await setSetting('companies',companies);}
   function companyById(id){return companies.find(c=>c.id===id);}
@@ -558,7 +601,10 @@
     for(const p of list){
       const s=await projectStats(p);
       const brandVisual=await projectBrandVisual(p);
-      cards.push(`<article class="project-card">
+      ensureProjectGovernance(p);
+      const platformState=platformStatus(p);
+      const ownerState=ownerAccessLabel(p);
+      cards.push(`<article class="project-card ${platformState!=='approved'?'platform-blocked':''}">
         <div class="project-card-head">
           <div class="project-brand-badge ${brandVisual.logo?'has-logo':'code-only'}" title="${escapeHtml(p.name)}">
             ${brandVisual.logo?`<img src="${brandVisual.logo}" alt="${escapeHtml(p.name)} logo">`:`<span>${escapeHtml(brandVisual.code)}</span>`}
@@ -568,6 +614,10 @@
         <h4>${escapeHtml(p.name)}</h4>
         <p>${escapeHtml(p.tagline||p.type.replaceAll('_',' '))}</p>
         ${(()=>{const ds=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');const active=ds.filter(d=>d.state==='deployed').length;return `<div class="project-deployment-badge ${active?'active':''}">${active?`${active} OUTPOST${active===1?'':'S'} SAILING`:ds.length?`${ds.length} OUTPOST${ds.length===1?'':'S'} IN HARBOR`:'STANDARD DEPLOYMENT'}</div>`;})()}
+        <div class="project-governance-strip">
+          <span class="platform-status ${platformState}">${platformStatusLabel(p)}</span>
+          <span>${ownerState}</span>
+        </div>
         <div class="project-kpis"><span><strong>${s.orders}</strong> ${s.orders===1?'order':'orders'}</span><span><strong>$${s.revenueMonth.toFixed(0)}</strong> month</span><span><strong>${s.completed}</strong> ledger</span></div>
         <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
@@ -756,6 +806,54 @@
       <article class="pec-card"><h4>Character Limit</h4><p>${p.customization?.maxCharacters?`${p.customization.maxCharacters} characters`:'Not set'}</p><p class="helper">${p.id==='ikes-wood-signs'?'Intentionally unset until Ike’s real rule is confirmed.':'Project rule.'}</p></article>
       <article class="pec-card"><h4>Activity</h4><div>${readActivity().filter(x=>x.projectId===p.id).slice(0,6).map(x=>`<div class="activity-line"><span>${escapeHtml(x.action)}</span><small>${new Date(x.at).toLocaleString()}</small></div>`).join('')||'<p class="helper">No activity yet.</p>'}</div></article>
     </div>`;
+
+    if(tab==='owner'){
+      ensureProjectGovernance(p);
+      const oa=p.ownerAccess;
+      const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
+      return `<div class="owner-access-shell">
+        <section class="pec-card owner-access-hero">
+          <div>
+            <div class="engine-kicker">PROJECT OWNER ACCESS</div>
+            <h3>${escapeHtml(p.name)}</h3>
+            <p>The project owner can operate this business without receiving Black Flag, Engine Room, or Captain authority.</p>
+          </div>
+          <div class="owner-access-state">
+            <span>${escapeHtml(ownerAccessLabel(p))}</span>
+            <strong>${escapeHtml(platformStatusLabel(p))}</strong>
+          </div>
+        </section>
+        <div class="pec-grid">
+          <article class="pec-card">
+            <h4>Owner Identity</h4>
+            <label>Owner name<input id="ownerAccessName" value="${escapeHtml(oa.ownerName||'')}" placeholder="Business owner"></label>
+            <label>Owner email<input id="ownerAccessEmail" type="email" value="${escapeHtml(oa.ownerEmail||'')}" placeholder="owner@example.com"></label>
+            <label>Access state<select id="ownerAccessState">
+              <option value="not_claimed"${oa.status==='not_claimed'?' selected':''}>Not claimed</option>
+              <option value="invited"${oa.status==='invited'?' selected':''}>Invited</option>
+              <option value="active"${oa.status==='active'?' selected':''}>Active</option>
+            </select></label>
+            <button id="saveOwnerAccess" class="primary-btn" type="button">SAVE OWNER ACCESS</button>
+          </article>
+          <article class="pec-card">
+            <h4>Owner Capabilities</h4>
+            <p class="helper">Capabilities are restricted to this project's namespace.</p>
+            <div class="owner-capability-grid">${OWNER_CAPABILITIES.map(c=>`<label><input type="checkbox" data-owner-capability="${c}" ${oa.capabilities.includes(c)?'checked':''}> ${c.replace(/_/g,' ').toUpperCase()}</label>`).join('')}</div>
+          </article>
+          <article class="pec-card">
+            <h4>Deployment Access</h4>
+            <p><strong>${deployments.length}</strong> registered deployment${deployments.length===1?'':'s'}</p>
+            <p class="helper">A kiosk/device receives project-scoped device authorization, never owner or Engine credentials.</p>
+            <div class="owner-device-list">${deployments.length?deployments.map(d=>`<div><strong>${escapeHtml(d.name)}</strong><span>${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)} • ${escapeHtml(DEPLOYMENT_PROFILES[d.profile]?.label||d.profile)}</span></div>`).join(''):'<p class="helper">No deployment devices registered yet.</p>'}</div>
+          </article>
+          <article class="pec-card">
+            <h4>Security Boundary</h4>
+            <p>Owner access cannot cross project namespaces, alter another project's ledger or marketing, enter Black Flag, or invoke Captain authority.</p>
+            <p class="helper">Captain retains platform-wide visibility and final business-relationship authority.</p>
+          </article>
+        </div>
+      </div>`;
+    }
 
     if(tab==='marketing') return `<div class="marketing-brand-shell">
       <div class="marketing-brand-hero">
@@ -3735,26 +3833,59 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   window.blackFlagCaptainSetPlatformStatus = async function(projectId,nextStatus,reason=''){
     const p=projectById(projectId);
     if(!p) return {ok:false,error:'Project not found'};
-    if(!['approved','suspended','refused'].includes(nextStatus)) return {ok:false,error:'Invalid platform status'};
+    if(!['approved','suspended','relationship_ended'].includes(nextStatus)){
+      return {ok:false,error:'Invalid platform relationship status'};
+    }
     ensureProjectGovernance(p);
     const previous=p.governance.platformStatus;
+    const cleanReason=String(reason||'').trim();
+    if(nextStatus!=='approved'&&!cleanReason){
+      return {ok:false,error:'Captain reason is required'};
+    }
+
+    const event={
+      at:new Date().toISOString(),
+      previous,
+      nextStatus,
+      reason:cleanReason,
+      by:'captain',
+      preservesBusinessRecords:true
+    };
+
     p.governance.platformStatus=nextStatus;
-    p.governance.reason=String(reason||'').trim();
-    p.governance.updatedAt=new Date().toISOString();
+    p.governance.reason=cleanReason;
+    p.governance.updatedAt=event.at;
     p.governance.updatedBy='captain';
+    p.governance.history.unshift(event);
+    p.governance.history=p.governance.history.slice(0,200);
+
     if(nextStatus!=='approved'){
+      // Relationship/platform access decision only:
+      // publication and active deployments stop; business-owned records stay.
       p.publish=p.publish||{};
       p.publish.status='development';
       p.visibility='engine_only';
       migrateLegacyDeployment(p).forEach(d=>{
         if(d.state==='deployed'||d.state==='sea_trial') d.state='paused';
-        d.updatedAt=new Date().toISOString();
+        d.updatedAt=event.at;
       });
     }
+
     await saveCompanies();
-    logActivity(p.id,'Captain platform status changed',`${previous} → ${nextStatus}${reason?' • '+reason:''}`);
+    logActivity(
+      p.id,
+      'Captain business relationship decision',
+      `${previous} → ${nextStatus}${cleanReason?' • '+cleanReason:''}`
+    );
     await renderProjectCommand();
-    return {ok:true,projectId:p.id,previous,nextStatus};
+    return {ok:true,projectId:p.id,previous,nextStatus,event};
+  };
+
+  window.blackFlagCaptainRelationshipHistory = function(projectId){
+    const p=projectById(projectId);
+    if(!p) return [];
+    ensureProjectGovernance(p);
+    return [...p.governance.history];
   };
 
   window.renderBlackFlagHome = async function(){

@@ -424,58 +424,168 @@ function bootCaptainCommand(){
   }
 
   function renderPowder(){
-    const actions=[
-      ["Business Admission Authority","Approve, suspend, refuse, or restore a business on the platform. Captain decision only.","business_admission"],
-      ["Emergency Project Disable","Prepare a controlled stop without deleting project records.","review_only"],
-      ["Protected Credential Reset","Reset protected access after recovery checks.","review_only"],
-      ["Restore / Overwrite Data","Replace stored state from a known recovery point.","review_only"],
-      ["Permanent Project Purge","Irreversibly remove a project and its owned records.","review_only"],
-      ["Isolation Override","Change a protected namespace boundary for deliberate recovery work.","review_only"],
-      ["Financial Correction","Create a Captain-authorized correction trail without rewriting ordinary ledger history.","review_only"]
+    const groups=[
+      {
+        key:'platform',
+        label:'PLATFORM AUTHORITY',
+        description:'High-level business relationship and platform access decisions.',
+        actions:[
+          {title:'Business Relationship Authority',description:'Approve, suspend, end, or restore a business relationship while preserving business-owned records.',type:'business_relationship'}
+        ]
+      },
+      {
+        key:'recovery',
+        label:'RECOVERY AUTHORITY',
+        description:'Controlled recovery actions. These do not imply deletion.',
+        actions:[
+          {title:'Emergency Project Disable',description:'Prepare a controlled operational stop without deleting project records.',type:'review_only'},
+          {title:'Protected Credential Reset',description:'Reset protected access after recovery checks.',type:'review_only'},
+          {title:'Restore / Overwrite Data',description:'Replace stored state from a known recovery point.',type:'review_only'},
+          {title:'Financial Correction',description:'Create a Captain-authorized correction trail without rewriting ordinary ledger history.',type:'review_only'}
+        ]
+      },
+      {
+        key:'destructive',
+        label:'DESTRUCTIVE AUTHORITY',
+        description:'Irreversible or boundary-changing operations. Deliberately separated from normal governance.',
+        actions:[
+          {title:'Isolation Override',description:'Change a protected namespace boundary for deliberate recovery work.',type:'review_only'},
+          {title:'Permanent Project Purge',description:'Irreversibly remove a project and its owned records. Ending a business relationship never performs this action.',type:'review_only',danger:true}
+        ]
+      }
     ];
-    body.innerHTML=`<div class="captain-danger-banner"><strong>CAPTAIN AUTHORITY ONLY</strong><p>High-consequence actions require explicit review. This release does not wire destructive execution until each action has a tested recovery path.</p></div>
-      <div class="captain-danger-grid">${actions.map((x,i)=>`<article><h3>${x[0]}</h3><p>${x[1]}</p><button type="button" data-powder-review="${i}">REVIEW AUTHORITY</button></article>`).join('')}</div>
-      <section id="captainPowderReview" class="captain-command-card"><h3>Authority Review</h3><p>Select an authority above. No destructive action executes from this screen without a dedicated implementation and confirmation path.</p></section>`;
-    document.querySelectorAll('[data-powder-review]').forEach(btn=>btn.onclick=async()=>{
-      const row=actions[Number(btn.dataset.powderReview)];
+
+    body.innerHTML=`<div class="captain-danger-banner">
+        <strong>CAPTAIN AUTHORITY ONLY</strong>
+        <p>Business relationship decisions are separated from data destruction. Ending service preserves project, order, ledger, customer, marketing, and audit records.</p>
+      </div>
+      <div class="powder-authority-groups">
+        ${groups.map((g,gi)=>`<section class="powder-authority-group ${g.key}">
+          <header><div><small>${g.label}</small><h3>${g.label.replace(' AUTHORITY','')}</h3></div><p>${g.description}</p></header>
+          <div class="powder-authority-cards">
+            ${g.actions.map((a,ai)=>`<article class="${a.danger?'powder-destructive-card':''}">
+              <h3>${a.title}</h3><p>${a.description}</p>
+              <button type="button" data-powder-group="${gi}" data-powder-action="${ai}">${a.type==='business_relationship'?'OPEN CONSOLE':'REVIEW AUTHORITY'}</button>
+            </article>`).join('')}
+          </div>
+        </section>`).join('')}
+      </div>
+      <section id="captainPowderReview" class="captain-command-card powder-workspace">
+        <div class="powder-empty-state"><small>POWDER KEG WORKSPACE</small><h3>Select an authority above.</h3><p>Only Business Relationship Authority is operational in this release. Other high-consequence controls remain review-only until a tested recovery path exists.</p></div>
+      </section>`;
+
+    async function renderBusinessConsole(selectedId=''){
       const panel=document.getElementById('captainPowderReview');
-      if(row[2]==='business_admission'){
-        const snap=await snapshot();
-        const projects=snap.projects||[];
-        panel.innerHTML=`<h3>${safe(row[0])}</h3><p>${safe(row[1])}</p>
-          <div class="captain-governance-list">${projects.map(p=>`<article>
-            <div><strong>${safe(p.name)}</strong><small>${safe(p.code)} • OWNER ${safe((p.ownerStatus||'not_claimed').replace(/_/g,' ').toUpperCase())}</small></div>
-            <span class="captain-platform-state ${safe(p.platformStatus||'approved')}">${safe((p.platformStatus||'approved').toUpperCase())}</span>
-            <button type="button" data-govern-business="${safe(p.id)}">REVIEW BUSINESS</button>
-          </article>`).join('')}</div>`;
-        panel.querySelectorAll('[data-govern-business]').forEach(b=>b.onclick=()=>{
-          const p=projects.find(x=>x.id===b.dataset.governBusiness);if(!p)return;
-          panel.innerHTML=`<h3>${safe(p.name)}</h3><p>Captain platform admission authority. This does not rewrite the business ledger, marketing, or customer records.</p>
-            <div class="captain-governance-current"><span>CURRENT PLATFORM STATUS</span><strong>${safe((p.platformStatus||'approved').toUpperCase())}</strong></div>
-            <label>Captain reason<textarea id="captainGovernanceReason" placeholder="Reason for this platform decision…"></textarea></label>
-            <div class="captain-governance-actions">
-              <button type="button" data-platform-decision="approved">APPROVE / RESTORE</button>
-              <button type="button" data-platform-decision="suspended">SUSPEND</button>
-              <button type="button" data-platform-decision="refused">REFUSE BUSINESS</button>
-            </div>
-            <p class="captain-governance-warning">Suspend or Refuse immediately returns active deployments to harbor and removes public publication. Business-owned records are preserved.</p>`;
-          panel.querySelectorAll('[data-platform-decision]').forEach(decision=>decision.onclick=async()=>{
-            const next=decision.dataset.platformDecision;
-            const reason=String(document.getElementById('captainGovernanceReason')?.value||'').trim();
-            if((next==='suspended'||next==='refused')&&!reason){alert('Captain reason is required for suspension or refusal.');return;}
-            const verb=next==='approved'?'APPROVE / RESTORE':next==='suspended'?'SUSPEND':'REFUSE';
-            if(!confirm(`${verb} ${p.name}?${next!=='approved'?' Active deployments will be returned to harbor and public publication removed.':''}`))return;
-            const result=await window.blackFlagCaptainSetPlatformStatus?.(p.id,next,reason);
-            if(!result?.ok){alert(result?.error||'Platform decision could not be completed.');return;}
-            audit('Captain business platform decision',`${p.name}: ${result.previous} → ${next}${reason?' • '+reason:''}`);
-            panel.innerHTML=`<h3>${safe(p.name)}</h3><p class="captain-ok">Captain decision recorded: ${safe(next.toUpperCase())}.</p><p>Business records remain preserved. Active deployments were safely returned to harbor when required.</p>`;
-          });
+      const snap=await snapshot();
+      const projects=snap.projects||[];
+      const approved=projects.filter(p=>(p.platformStatus||'approved')==='approved').length;
+      const suspended=projects.filter(p=>p.platformStatus==='suspended').length;
+      const ended=projects.filter(p=>p.platformStatus==='relationship_ended'||p.platformStatus==='refused').length;
+
+      panel.innerHTML=`<div class="business-admission-console">
+        <header class="business-console-head">
+          <div><small>PLATFORM AUTHORITY</small><h3>Business Relationship Console</h3><p>Captain decides who Black Flag does business with. Relationship decisions preserve business-owned information.</p></div>
+          <div class="business-console-metrics">
+            <span><strong>${projects.length}</strong> Businesses</span>
+            <span><strong>${approved}</strong> Approved</span>
+            <span><strong>${suspended}</strong> Suspended</span>
+            <span><strong>${ended}</strong> Ended</span>
+          </div>
+        </header>
+        <div class="business-console-layout">
+          <div class="business-registry">
+            <div class="business-registry-head"><strong>Business Registry</strong><span>${projects.length} total</span></div>
+            ${projects.map(p=>{
+              const status=p.platformStatus==='refused'?'relationship_ended':(p.platformStatus||'approved');
+              const deployments=p.deployments||[];
+              const active=deployments.filter(d=>d.state==='deployed').length;
+              return `<button type="button" class="business-registry-row ${selectedId===p.id?'selected':''}" data-business-select="${safe(p.id)}">
+                <div><small>${safe(p.code)}</small><strong>${safe(p.name)}</strong><span>${safe(p.ownerName||'Owner not claimed')}</span></div>
+                <div><span class="captain-platform-state ${safe(status)}">${safe(status==='relationship_ended'?'RELATIONSHIP ENDED':status.toUpperCase())}</span><small>${active} active deployment${active===1?'':'s'}</small></div>
+              </button>`;
+            }).join('')}
+          </div>
+          <div id="businessDecisionPanel" class="business-decision-panel">
+            <div class="powder-empty-state"><small>BUSINESS REVIEW</small><h3>Select a business.</h3><p>Review owner, project, deployment, platform status, and relationship history before making a Captain decision.</p></div>
+          </div>
+        </div>
+      </div>`;
+
+      panel.querySelectorAll('[data-business-select]').forEach(btn=>btn.onclick=()=>renderBusinessConsole(btn.dataset.businessSelect));
+
+      if(selectedId){
+        const p=projects.find(x=>x.id===selectedId);
+        const decision=document.getElementById('businessDecisionPanel');
+        if(!p||!decision)return;
+        const status=p.platformStatus==='refused'?'relationship_ended':(p.platformStatus||'approved');
+        const deployments=p.deployments||[];
+        const history=Array.isArray(p.governanceHistory)?p.governanceHistory:[];
+        decision.innerHTML=`<div class="business-review-head">
+            <div><small>${safe(p.code)}</small><h3>${safe(p.name)}</h3><p>${safe(p.ownerName||'Owner not claimed')}${p.ownerEmail?` • ${safe(p.ownerEmail)}`:''}</p></div>
+            <span class="captain-platform-state ${safe(status)}">${safe(status==='relationship_ended'?'RELATIONSHIP ENDED':status.toUpperCase())}</span>
+          </div>
+          <div class="business-review-facts">
+            <div><span>PROJECT STATUS</span><strong>${safe(String(p.status||'active').toUpperCase())}</strong></div>
+            <div><span>PUBLICATION</span><strong>${safe(String(p.publishStatus||'development').toUpperCase())}</strong></div>
+            <div><span>OWNER ACCESS</span><strong>${safe(String(p.ownerStatus||'not_claimed').replace(/_/g,' ').toUpperCase())}</strong></div>
+            <div><span>DEPLOYMENTS</span><strong>${deployments.length}</strong></div>
+          </div>
+          <label class="business-reason-label">Captain reason
+            <textarea id="captainGovernanceReason" placeholder="Required for Suspend or End Relationship…"></textarea>
+          </label>
+          <div class="captain-governance-actions">
+            <button type="button" data-platform-decision="approved">APPROVE / RESTORE</button>
+            <button type="button" data-platform-decision="suspended">SUSPEND</button>
+            <button type="button" data-platform-decision="relationship_ended">END RELATIONSHIP / REFUSE SERVICE</button>
+          </div>
+          <p class="captain-governance-warning"><strong>Record preservation:</strong> Suspend or End Relationship removes public operation and returns active deployments to harbor. It does not delete or rewrite the business's project, orders, ledger, customers, marketing, or audit history.</p>
+          <section class="business-history">
+            <div class="business-history-head"><strong>Captain Decision History</strong><span>${history.length} event${history.length===1?'':'s'}</span></div>
+            ${history.length?history.map(h=>`<article><div><strong>${safe((h.nextStatus==='relationship_ended'?'RELATIONSHIP ENDED':String(h.nextStatus||'').toUpperCase()))}</strong><small>${safe(new Date(h.at).toLocaleString())}</small></div><p>${safe(h.reason||'No reason recorded')}</p></article>`).join(''):'<p class="captain-empty">No Captain relationship decisions recorded yet.</p>'}
+          </section>`;
+
+        decision.querySelectorAll('[data-platform-decision]').forEach(button=>button.onclick=async()=>{
+          const next=button.dataset.platformDecision;
+          const reason=String(document.getElementById('captainGovernanceReason')?.value||'').trim();
+          if(next!=='approved'&&!reason){
+            alert('Captain reason is required for Suspend or End Relationship.');
+            return;
+          }
+          const verb=next==='approved'?'APPROVE / RESTORE':next==='suspended'?'SUSPEND':'END RELATIONSHIP / REFUSE SERVICE';
+          const consequence=next==='approved'
+            ? 'This restores platform relationship status. Deployment activation remains an Engine responsibility.'
+            : 'Public operation will stop and active deployments will return to harbor. Business-owned records will be preserved.';
+          if(!confirm(`${verb} — ${p.name}?\\n\\n${consequence}`))return;
+
+          const result=await window.blackFlagCaptainSetPlatformStatus?.(p.id,next,reason);
+          if(!result?.ok){
+            alert(result?.error||'Captain decision could not be completed.');
+            return;
+          }
+          audit('Captain business relationship decision',`${p.name}: ${result.previous} → ${next}${reason?' • '+reason:''}`);
+          await renderBusinessConsole(p.id);
         });
+      }
+    }
+
+    document.querySelectorAll('[data-powder-group][data-powder-action]').forEach(btn=>btn.onclick=async()=>{
+      const group=groups[Number(btn.dataset.powderGroup)];
+      const action=group?.actions?.[Number(btn.dataset.powderAction)];
+      const panel=document.getElementById('captainPowderReview');
+      if(!action||!panel)return;
+
+      if(action.type==='business_relationship'){
+        await renderBusinessConsole();
         return;
       }
-      panel.innerHTML=`<h3>${safe(row[0])}</h3><p>${safe(row[1])}</p><p><strong>Status:</strong> Review only — execution disconnected for safety.</p><button id="captainPowderAcknowledge" type="button">ACKNOWLEDGE REVIEW</button>`;
+
+      panel.innerHTML=`<div class="powder-review-only ${action.danger?'destructive':''}">
+        <small>${safe(group.label)}</small><h3>${safe(action.title)}</h3><p>${safe(action.description)}</p>
+        <div class="powder-safety-state"><strong>REVIEW ONLY</strong><span>No execution path is wired in this release.</span></div>
+        <button id="captainPowderAcknowledge" type="button">ACKNOWLEDGE REVIEW</button>
+      </div>`;
       document.getElementById('captainPowderAcknowledge').onclick=()=>{
-        audit('Powder Keg authority reviewed',row[0]);
+        audit('Powder Keg authority reviewed',action.title);
         panel.insertAdjacentHTML('beforeend','<p class="captain-ok">Review recorded in Captain audit history.</p>');
       };
     });
@@ -497,7 +607,7 @@ function bootCaptainCommand(){
     <section class="captain-command-card"><h3>Fleet Command</h3><p>Captain-level state of the fleet. Project configuration remains in the Engine Room.</p>
       <div class="captain-fleet-list">${projects.length?projects.map(p=>{
         const deployments=p.deployments||[];const sailing=deployments.filter(d=>d.state==='deployed').length;const harbor=deployments.filter(d=>d.state==='paused').length;const trials=deployments.filter(d=>d.state==='sea_trial').length;
-        return `<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong><small>${safe(p.publishStatus)} • ${safe(p.status)} • PLATFORM ${safe((p.platformStatus||'approved').toUpperCase())} • OWNER ${safe((p.ownerStatus||'not_claimed').replace(/_/g,' ').toUpperCase())}</small></div><div><b>${sailing} sailing</b>${harbor?`<small>${harbor} in harbor</small>`:''}${trials?`<small>${trials} sea trial</small>`:''}</div></article>`;
+        return `<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong><small>${safe(p.publishStatus)} • ${safe(p.status)} • PLATFORM ${safe((p.platformStatus==='relationship_ended'||p.platformStatus==='refused')?'RELATIONSHIP ENDED':(p.platformStatus||'approved').toUpperCase())} • OWNER ${safe((p.ownerStatus||'not_claimed').replace(/_/g,' ').toUpperCase())}</small></div><div><b>${sailing} sailing</b>${harbor?`<small>${harbor} in harbor</small>`:''}${trials?`<small>${trials} sea trial</small>`:''}</div></article>`;
       }).join(''):'<p class="captain-empty">No project snapshot available.</p>'}</div>
     </section>
     <section class="captain-command-card"><h3>Command Boundary</h3><p>Black Flag tells the Captain what is happening. The Engine Room remains where the First Mate changes project machinery.</p></section>`;

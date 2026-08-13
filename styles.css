@@ -5133,6 +5133,86 @@ body.business-engine-mode .flowers-shell{
   .captain-governance-actions{grid-template-columns:1fr}
 }
 
+
+/* ---------- Powder Keg governance architecture ---------- */
+.powder-authority-groups{display:grid;gap:12px;margin-bottom:14px}
+.powder-authority-group{border:1px solid #4b4540;border-radius:9px;background:#111719;overflow:hidden}
+.powder-authority-group>header{display:flex;justify-content:space-between;gap:18px;align-items:end;padding:11px 13px;border-bottom:1px solid #433b35;background:#171817}
+.powder-authority-group>header small{color:#b79658;font-size:7px;font-weight:900;letter-spacing:.12em}
+.powder-authority-group>header h3{margin:2px 0 0;color:#ede8dc;font:900 16px Georgia,serif}
+.powder-authority-group>header p{max-width:520px;margin:0;color:#9eaaa6;font-size:8px;text-align:right}
+.powder-authority-group.platform{border-color:#635337}
+.powder-authority-group.recovery{border-color:#47565b}
+.powder-authority-group.destructive{border-color:#744944}
+.powder-authority-group.destructive>header{background:#211415}
+.powder-authority-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px;padding:10px}
+.powder-authority-cards article{min-height:126px;display:flex;flex-direction:column;padding:12px;border:1px solid #455158;border-radius:7px;background:#121a1d}
+.powder-authority-cards h3{margin:0;color:#eee9df;font:800 14px Georgia,serif}
+.powder-authority-cards p{color:#a6b0ad;font-size:8px;line-height:1.45}
+.powder-authority-cards button{margin-top:auto;align-self:flex-start}
+.powder-authority-cards .powder-destructive-card{border-color:#7d4c47;background:#1c1415}
+.powder-workspace{padding:0!important;overflow:hidden}
+.powder-empty-state{padding:22px;text-align:center}
+.powder-empty-state small{color:#a98b55;font-size:7px;font-weight:900;letter-spacing:.12em}
+.powder-empty-state h3{margin:4px 0;color:#eee9df}
+.powder-empty-state p{max-width:700px;margin:0 auto;color:#9ba6a2}
+.business-admission-console{display:grid;min-height:520px}
+.business-console-head{display:flex;justify-content:space-between;gap:18px;padding:15px;border-bottom:1px solid #47545a;background:#121d21}
+.business-console-head small{color:#b8995e;font-size:7px;font-weight:900;letter-spacing:.12em}
+.business-console-head h3{margin:3px 0;color:#f0ece2;font:900 20px Georgia,serif}
+.business-console-head p{margin:0;color:#9da8a4;font-size:9px}
+.business-console-metrics{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;justify-content:flex-end}
+.business-console-metrics span{display:grid;place-items:center;min-width:82px;padding:8px;border:1px solid #435259;border-radius:7px;background:#0b1418;color:#92a19d;font-size:7px}
+.business-console-metrics strong{color:#e2bf70!important;font:900 17px Georgia,serif}
+.business-console-layout{display:grid;grid-template-columns:minmax(260px,.72fr) minmax(420px,1.28fr);min-height:450px}
+.business-registry{padding:10px;border-right:1px solid #3d4a4f;background:#0b1316;overflow:auto}
+.business-registry-head,.business-history-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 3px 9px;color:#93a09d;font-size:8px}
+.business-registry-row{width:100%;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:6px;padding:10px;border:1px solid #39484e;border-radius:7px;background:#111a1e;text-align:left}
+.business-registry-row.selected{border-color:#a17d43;background:#1c1c17}
+.business-registry-row>div{display:grid;gap:2px}
+.business-registry-row>div:last-child{text-align:right;justify-items:end}
+.business-registry-row small{color:#87938f;font-size:7px}
+.business-registry-row strong{color:#eef1ed!important;font:800 11px Georgia,serif}
+.business-registry-row span:not(.captain-platform-state){color:#9aa5a1;font-size:8px}
+.business-decision-panel{padding:14px;background:#10181c;overflow:auto}
+.business-review-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:10px;border-bottom:1px solid #3b494e}
+.business-review-head small{color:#aa8b55;font-size:7px;font-weight:900}
+.business-review-head h3{margin:2px 0;color:#f0ece2;font:900 20px Georgia,serif}
+.business-review-head p{margin:0;color:#9ca7a3;font-size:8px}
+.business-review-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:11px 0}
+.business-review-facts>div{padding:9px;border:1px solid #3d4b50;border-radius:6px;background:#0b1417}
+.business-review-facts span{display:block;color:#82908c;font-size:6px;font-weight:900;letter-spacing:.09em}
+.business-review-facts strong{display:block;margin-top:3px;color:#e6ece8!important;font-size:9px}
+.business-reason-label{display:grid;gap:5px;margin-top:10px;color:#aeb7b4;font-size:8px;font-weight:900}
+.business-reason-label textarea{min-height:72px}
+.captain-platform-state.relationship_ended{border-color:#8b4b47!important;color:#e9a29b!important;background:#251315!important}
+.business-history{margin-top:13px;border-top:1px solid #3c494e;padding-top:7px}
+.business-history article{display:grid;grid-template-columns:minmax(180px,.5fr) 1fr;gap:10px;padding:8px 3px;border-bottom:1px solid #303c40}
+.business-history article>div{display:grid;gap:2px}
+.business-history article strong{color:#d9bd7c!important;font-size:8px}
+.business-history article small{color:#7f8c88;font-size:7px}
+.business-history article p{margin:0;color:#aab3b0;font-size:8px}
+.powder-review-only{padding:18px}
+.powder-review-only small{color:#b0935b;font-size:7px;font-weight:900;letter-spacing:.1em}
+.powder-review-only h3{margin:4px 0;color:#f0ece2}
+.powder-review-only.destructive{border-left:4px solid #99564f;background:#211516}
+.powder-safety-state{display:flex;gap:9px;align-items:center;margin:12px 0;padding:10px;border:1px solid #4b5658;border-radius:7px;background:#0b1316}
+.powder-safety-state strong{color:#e1bb6d!important;font-size:8px}
+.powder-safety-state span{color:#99a4a0;font-size:8px}
+@media(max-width:900px){
+  .business-console-head{align-items:flex-start;flex-direction:column}
+  .business-console-metrics{justify-content:flex-start}
+  .business-console-layout{grid-template-columns:1fr}
+  .business-registry{border-right:0;border-bottom:1px solid #3d4a4f;max-height:260px}
+  .business-review-facts{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+  .powder-authority-group>header{align-items:flex-start;flex-direction:column}
+  .powder-authority-group>header p{text-align:left}
+  .business-review-facts{grid-template-columns:1fr}
+  .business-history article{grid-template-columns:1fr}
+}
+
 /* ==========================================================
    CAPTAIN COMMAND — authoritative command workspace layer
    ========================================================== */
