@@ -1,9 +1,0 @@
-{
-  "name": "Ike's Wood Signs v1.2",
-  "short_name": "Ike's Signs",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#f4d238",
-  "theme_color": "#f4d238",
-  "icons": []
-}
