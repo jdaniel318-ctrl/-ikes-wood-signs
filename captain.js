@@ -425,19 +425,54 @@ function bootCaptainCommand(){
 
   function renderPowder(){
     const actions=[
-      ["Emergency Project Disable","Prepare a controlled stop without deleting project records."],
-      ["Protected Credential Reset","Reset protected access after recovery checks."],
-      ["Restore / Overwrite Data","Replace stored state from a known recovery point."],
-      ["Permanent Project Purge","Irreversibly remove a project and its owned records."],
-      ["Isolation Override","Change a protected namespace boundary for deliberate recovery work."],
-      ["Financial Correction","Create a Captain-authorized correction trail without rewriting ordinary ledger history."]
+      ["Business Admission Authority","Approve, suspend, refuse, or restore a business on the platform. Captain decision only.","business_admission"],
+      ["Emergency Project Disable","Prepare a controlled stop without deleting project records.","review_only"],
+      ["Protected Credential Reset","Reset protected access after recovery checks.","review_only"],
+      ["Restore / Overwrite Data","Replace stored state from a known recovery point.","review_only"],
+      ["Permanent Project Purge","Irreversibly remove a project and its owned records.","review_only"],
+      ["Isolation Override","Change a protected namespace boundary for deliberate recovery work.","review_only"],
+      ["Financial Correction","Create a Captain-authorized correction trail without rewriting ordinary ledger history.","review_only"]
     ];
     body.innerHTML=`<div class="captain-danger-banner"><strong>CAPTAIN AUTHORITY ONLY</strong><p>High-consequence actions require explicit review. This release does not wire destructive execution until each action has a tested recovery path.</p></div>
       <div class="captain-danger-grid">${actions.map((x,i)=>`<article><h3>${x[0]}</h3><p>${x[1]}</p><button type="button" data-powder-review="${i}">REVIEW AUTHORITY</button></article>`).join('')}</div>
       <section id="captainPowderReview" class="captain-command-card"><h3>Authority Review</h3><p>Select an authority above. No destructive action executes from this screen without a dedicated implementation and confirmation path.</p></section>`;
-    document.querySelectorAll('[data-powder-review]').forEach(btn=>btn.onclick=()=>{
+    document.querySelectorAll('[data-powder-review]').forEach(btn=>btn.onclick=async()=>{
       const row=actions[Number(btn.dataset.powderReview)];
       const panel=document.getElementById('captainPowderReview');
+      if(row[2]==='business_admission'){
+        const snap=await snapshot();
+        const projects=snap.projects||[];
+        panel.innerHTML=`<h3>${safe(row[0])}</h3><p>${safe(row[1])}</p>
+          <div class="captain-governance-list">${projects.map(p=>`<article>
+            <div><strong>${safe(p.name)}</strong><small>${safe(p.code)} • OWNER ${safe((p.ownerStatus||'not_claimed').replace(/_/g,' ').toUpperCase())}</small></div>
+            <span class="captain-platform-state ${safe(p.platformStatus||'approved')}">${safe((p.platformStatus||'approved').toUpperCase())}</span>
+            <button type="button" data-govern-business="${safe(p.id)}">REVIEW BUSINESS</button>
+          </article>`).join('')}</div>`;
+        panel.querySelectorAll('[data-govern-business]').forEach(b=>b.onclick=()=>{
+          const p=projects.find(x=>x.id===b.dataset.governBusiness);if(!p)return;
+          panel.innerHTML=`<h3>${safe(p.name)}</h3><p>Captain platform admission authority. This does not rewrite the business ledger, marketing, or customer records.</p>
+            <div class="captain-governance-current"><span>CURRENT PLATFORM STATUS</span><strong>${safe((p.platformStatus||'approved').toUpperCase())}</strong></div>
+            <label>Captain reason<textarea id="captainGovernanceReason" placeholder="Reason for this platform decision…"></textarea></label>
+            <div class="captain-governance-actions">
+              <button type="button" data-platform-decision="approved">APPROVE / RESTORE</button>
+              <button type="button" data-platform-decision="suspended">SUSPEND</button>
+              <button type="button" data-platform-decision="refused">REFUSE BUSINESS</button>
+            </div>
+            <p class="captain-governance-warning">Suspend or Refuse immediately returns active deployments to harbor and removes public publication. Business-owned records are preserved.</p>`;
+          panel.querySelectorAll('[data-platform-decision]').forEach(decision=>decision.onclick=async()=>{
+            const next=decision.dataset.platformDecision;
+            const reason=String(document.getElementById('captainGovernanceReason')?.value||'').trim();
+            if((next==='suspended'||next==='refused')&&!reason){alert('Captain reason is required for suspension or refusal.');return;}
+            const verb=next==='approved'?'APPROVE / RESTORE':next==='suspended'?'SUSPEND':'REFUSE';
+            if(!confirm(`${verb} ${p.name}?${next!=='approved'?' Active deployments will be returned to harbor and public publication removed.':''}`))return;
+            const result=await window.blackFlagCaptainSetPlatformStatus?.(p.id,next,reason);
+            if(!result?.ok){alert(result?.error||'Platform decision could not be completed.');return;}
+            audit('Captain business platform decision',`${p.name}: ${result.previous} → ${next}${reason?' • '+reason:''}`);
+            panel.innerHTML=`<h3>${safe(p.name)}</h3><p class="captain-ok">Captain decision recorded: ${safe(next.toUpperCase())}.</p><p>Business records remain preserved. Active deployments were safely returned to harbor when required.</p>`;
+          });
+        });
+        return;
+      }
       panel.innerHTML=`<h3>${safe(row[0])}</h3><p>${safe(row[1])}</p><p><strong>Status:</strong> Review only — execution disconnected for safety.</p><button id="captainPowderAcknowledge" type="button">ACKNOWLEDGE REVIEW</button>`;
       document.getElementById('captainPowderAcknowledge').onclick=()=>{
         audit('Powder Keg authority reviewed',row[0]);
@@ -462,7 +497,7 @@ function bootCaptainCommand(){
     <section class="captain-command-card"><h3>Fleet Command</h3><p>Captain-level state of the fleet. Project configuration remains in the Engine Room.</p>
       <div class="captain-fleet-list">${projects.length?projects.map(p=>{
         const deployments=p.deployments||[];const sailing=deployments.filter(d=>d.state==='deployed').length;const harbor=deployments.filter(d=>d.state==='paused').length;const trials=deployments.filter(d=>d.state==='sea_trial').length;
-        return `<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong><small>${safe(p.publishStatus)} • ${safe(p.status)}</small></div><div><b>${sailing} sailing</b>${harbor?`<small>${harbor} in harbor</small>`:''}${trials?`<small>${trials} sea trial</small>`:''}</div></article>`;
+        return `<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong><small>${safe(p.publishStatus)} • ${safe(p.status)} • PLATFORM ${safe((p.platformStatus||'approved').toUpperCase())} • OWNER ${safe((p.ownerStatus||'not_claimed').replace(/_/g,' ').toUpperCase())}</small></div><div><b>${sailing} sailing</b>${harbor?`<small>${harbor} in harbor</small>`:''}${trials?`<small>${trials} sea trial</small>`:''}</div></article>`;
       }).join(''):'<p class="captain-empty">No project snapshot available.</p>'}</div>
     </section>
     <section class="captain-command-card"><h3>Command Boundary</h3><p>Black Flag tells the Captain what is happening. The Engine Room remains where the First Mate changes project machinery.</p></section>`;

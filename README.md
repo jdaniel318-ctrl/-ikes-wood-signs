@@ -1,38 +1,28 @@
-# Workshop Engine v2.9.64 — Review Cleanup
+# Workshop Engine v2.9.65 — Owner & Deployment Foundation
 
-This release applies the first three items from the Captain's review without adding cover-up layers.
+## What this release establishes
+- Project Owner Access is now a first-class project Control Center area.
+- Owner identity, claim state and project-scoped capability grants are stored per project.
+- Owners are structurally below Black Flag/Engine/Captain authority and cannot cross project namespaces.
+- Existing deployment/outpost records are surfaced to the owner-access layer without granting Engine credentials.
+- Engine project cards now show both platform admission status and owner-access status.
 
-## Review Item 1 — Engine PIN contrast
-- Raised contrast on Engine Room title, subtitle, PIN labels, footer/help copy, mode selector and PIN field.
-- Business/Pirate selection is clearer at normal iPad viewing distance.
-- Business entry no longer presents a pirate graphic.
+## Captain authority
+- Captain management snapshots now include platform admission and owner state for every project.
+- Powder Keg now contains a live **Business Admission Authority**.
+- Captain may Approve/Restore, Suspend, or Refuse a business.
+- Suspension/refusal requires a Captain reason and explicit confirmation.
+- Suspension/refusal removes public publication and returns active/Sea Trial deployments to harbor.
+- Business records are preserved: no ledger, marketing, customer or project record is rewritten by this authority.
+- Other dangerous Powder Keg actions remain review-only.
 
-## Review Item 2 — Business Mode identity
-Business Mode is now a professional operations environment, not Pirate Mode with decorations removed.
-- Removed pirate graphics from Business Engine surfaces.
-- Professionalized typography, geometry, project cards, instrumentation and control styling.
-- Business terminology:
-  - Orders
-  - Recovery Status
-  - Storage
-  - System Status
-  - Platform Operations / System Operations
-- Pirate terminology remains available only when Pirate Mode is deliberately selected.
-- Captain's Quarters remains the one nautical/Captain access point visible from Business Mode.
-- Removed the dead Fleet Overview navigation link that pointed to a hidden compatibility registry.
+## Owner boundary
+The Project Owner layer is intended to run the owner's own business:
+orders, customers, products, pricing, branding, kiosks/deployments, staff, reporting and notifications.
+It does not grant Black Flag, Engine Room, Captain, other-project, cross-ledger or cross-marketing authority.
 
-## Review Item 3 — Captain's Quarters structural artifacts
-Root causes were removed rather than covered:
-- The light rectangle over the Dark Sky map came from the old `.cq-interactive-map::after` border surviving after the map became a transparent cinematic hotspot. That pseudo-element is now explicitly disabled in cinematic mode.
-- The small box over Captain's Log came from obsolete transparent desk-object buttons still layered over the cinematic artwork. The four duplicated legacy desk controls (Log, Cargo, Black Flag, Powder Keg) were removed from the DOM and their command listeners removed.
-- The five painted lower command buttons remain the sole command-door system.
-- Touch hotspots no longer leave persistent iPad focus/tap rectangles; keyboard focus indication remains available on pointer/keyboard devices.
-- The unique Dark Sky map, desk Blueprint, First Mate's Watch and Spyglass controls remain functional.
-
-## Safety
-- No project data, namespace, deployment, order, permission, storage or Captain authorization model was changed.
-- Hidden Engine Reset binding target is preserved because `app.js` still depends on it.
-- No new destructive actions were enabled.
+## Current scope / next phase
+This is the local architecture and management foundation. It does **not** pretend that a real remote owner account or remote kiosk activation service exists yet. Those require a server-side identity/device-token service before deployment to arbitrary outside owners/devices.
 
 ## Assets
 No assets added, removed, renamed or replaced.

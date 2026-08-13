@@ -5088,6 +5088,51 @@ body.business-engine-mode .flowers-shell{
   color:initial;
 }
 
+
+/* ---------- Owner access / platform governance ---------- */
+.project-governance-strip{
+  display:flex;flex-wrap:wrap;gap:6px;margin:9px 0;
+}
+.project-governance-strip>span{
+  padding:4px 7px;border:1px solid #43545b;border-radius:5px;background:#0c1519;color:#9eadaa;font-size:7px;font-weight:900;letter-spacing:.07em;
+}
+.project-governance-strip .platform-status.approved{border-color:#3f6c52;color:#8cc29c;background:#0d1913}
+.project-governance-strip .platform-status.suspended{border-color:#9b743e;color:#e1b866;background:#241b0e}
+.project-governance-strip .platform-status.refused{border-color:#8e4d49;color:#e59a93;background:#251315}
+.project-card.platform-blocked{border-color:#7b4f48!important}
+.owner-access-shell{display:grid;gap:10px}
+.owner-access-hero{display:flex;justify-content:space-between;gap:18px;align-items:center}
+.owner-access-state{display:grid;gap:5px;text-align:right}
+.owner-access-state span,.owner-access-state strong{padding:5px 8px;border:1px solid #4b5c62;border-radius:5px;background:#0b1418;font-size:8px}
+.owner-capability-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.owner-capability-grid label{display:flex;align-items:center;gap:7px;padding:7px;border:1px solid #3f5057;border-radius:6px;background:#0d161a;font-size:8px}
+.owner-capability-grid input{width:auto!important;margin:0!important}
+.owner-device-list{display:grid;gap:5px;margin-top:9px}
+.owner-device-list>div{display:flex;justify-content:space-between;gap:10px;padding:7px;border-bottom:1px solid #35444a}
+.owner-device-list span{color:#879591;font-size:8px}
+.captain-governance-list{display:grid;gap:7px;margin-top:10px}
+.captain-governance-list article{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:9px;padding:10px;border:1px solid #3f4e53;border-radius:7px;background:#0d1518}
+.captain-governance-list article>div{display:grid;gap:2px}
+.captain-governance-list small{color:#87938f;font-size:7px}
+.captain-platform-state{padding:5px 7px;border-radius:5px;border:1px solid #476057;color:#a8c5b1;font-size:7px;font-weight:900}
+.captain-platform-state.suspended{border-color:#876632;color:#dfb45d}
+.captain-platform-state.refused{border-color:#8b4b47;color:#e4948d}
+.captain-governance-current{display:flex;justify-content:space-between;align-items:center;margin:10px 0;padding:10px;border:1px solid #4a5659;border-radius:7px;background:#0b1316}
+.captain-governance-current span{font-size:7px;letter-spacing:.1em;color:#899692}
+.captain-governance-current strong{color:#e4c473}
+.captain-governance-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:9px 0}
+.captain-governance-actions [data-platform-decision="approved"]{border-color:#47745a;color:#a5d1b2;background:#102018}
+.captain-governance-actions [data-platform-decision="suspended"]{border-color:#8b6a37;color:#e3bd6e;background:#241b0f}
+.captain-governance-actions [data-platform-decision="refused"]{border-color:#934f4a;color:#eca29b;background:#291416}
+.captain-governance-warning{padding:9px;border-left:3px solid #a16a48;background:#1b1511;color:#c4afa0!important;font-size:8px}
+@media(max-width:700px){
+  .owner-access-hero{align-items:flex-start;flex-direction:column}
+  .owner-access-state{text-align:left}
+  .owner-capability-grid{grid-template-columns:1fr}
+  .captain-governance-list article{grid-template-columns:1fr}
+  .captain-governance-actions{grid-template-columns:1fr}
+}
+
 /* ==========================================================
    CAPTAIN COMMAND — authoritative command workspace layer
    ========================================================== */

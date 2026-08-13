@@ -1167,6 +1167,20 @@
         await saveCompanies();logActivity(p.id,'Project admin access updated');
       };
     }
+    if(tab==='owner'){
+      ensureProjectGovernance(p);
+      const saveOwner=$('saveOwnerAccess');
+      if(saveOwner) saveOwner.onclick=async()=>{
+        p.ownerAccess.ownerName=String($('ownerAccessName')?.value||'').trim();
+        p.ownerAccess.ownerEmail=String($('ownerAccessEmail')?.value||'').trim();
+        p.ownerAccess.status=String($('ownerAccessState')?.value||'not_claimed');
+        p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
+        p.ownerAccess.updatedAt=new Date().toISOString();
+        await saveCompanies();
+        logActivity(p.id,'Project owner access updated',p.ownerAccess.status);
+        await renderProjectTab(p.id,'owner');
+      };
+    }
     if(tab==='customers'){
       const savedOrders=await getMergedOrders();
       rebuildCustomerDirectoryForProject(p.id,savedOrders);
@@ -3701,6 +3715,10 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
         status:p.status||'active',
         publishStatus:p.publish?.status||'development',
         visibility:p.visibility||'engine_only',
+        platformStatus:platformStatus(p),
+        ownerStatus:ensureProjectGovernance(p).ownerAccess.status,
+        ownerName:ensureProjectGovernance(p).ownerAccess.ownerName||'',
+        ownerEmail:ensureProjectGovernance(p).ownerAccess.ownerEmail||'',
         orders:stats.orders,
         revenueMonth:stats.revenueMonth,
         ledgerRevenue:stats.ledgerRevenue,
@@ -3712,6 +3730,31 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       totalOrders:orders.length,
       generatedAt:new Date().toISOString()
     };
+  };
+
+  window.blackFlagCaptainSetPlatformStatus = async function(projectId,nextStatus,reason=''){
+    const p=projectById(projectId);
+    if(!p) return {ok:false,error:'Project not found'};
+    if(!['approved','suspended','refused'].includes(nextStatus)) return {ok:false,error:'Invalid platform status'};
+    ensureProjectGovernance(p);
+    const previous=p.governance.platformStatus;
+    p.governance.platformStatus=nextStatus;
+    p.governance.reason=String(reason||'').trim();
+    p.governance.updatedAt=new Date().toISOString();
+    p.governance.updatedBy='captain';
+    if(nextStatus!=='approved'){
+      p.publish=p.publish||{};
+      p.publish.status='development';
+      p.visibility='engine_only';
+      migrateLegacyDeployment(p).forEach(d=>{
+        if(d.state==='deployed'||d.state==='sea_trial') d.state='paused';
+        d.updatedAt=new Date().toISOString();
+      });
+    }
+    await saveCompanies();
+    logActivity(p.id,'Captain platform status changed',`${previous} → ${nextStatus}${reason?' • '+reason:''}`);
+    await renderProjectCommand();
+    return {ok:true,projectId:p.id,previous,nextStatus};
   };
 
   window.renderBlackFlagHome = async function(){
