@@ -641,8 +641,13 @@
 
         <section id="graphicsFocusedEditor" class="graphics-focused-editor hidden">
           <div class="graphics-focused-head">
-            <div><div class="engine-kicker">SELECTED ASSET</div><h4 id="graphicsFocusedTitle">Project Graphic</h4><p id="graphicsFocusedHelp" class="helper">Upload, replace, preview or clear this project-owned graphic.</p></div>
-            <button id="graphicsFocusedClose" type="button" class="secondary-btn small">BACK TO LIBRARY</button>
+            <button id="graphicsFocusedClose" type="button" class="secondary-btn small graphics-back-btn">← BACK TO GRAPHICS LIBRARY</button>
+            <div class="graphics-focused-copy">
+              <div class="engine-kicker">PROJECT GRAPHIC</div>
+              <h4 id="graphicsFocusedTitle">Project Graphic</h4>
+              <p id="graphicsFocusedHelp" class="helper">Manage this project-owned graphic.</p>
+            </div>
+            <div id="graphicsEditState" class="graphics-edit-state">SAVED</div>
           </div>
           <div class="graphics-manager-divider"><span>MANAGE SELECTED PROJECT ASSET</span></div>
         <div class="asset-slot-grid marketing-asset-slot-grid focused-slot-grid">
@@ -650,7 +655,7 @@
             <span>Project Logo / Mark</span>
             <input id="assetProjectLogoInput" type="file" accept="image/*">
             <div class="asset-preview-stage">
-              <img id="assetProjectLogoPreview" alt="Project logo preview">
+              <img id="assetProjectLogoPreview" alt="Project logo preview"><div class="asset-preview-empty" data-preview-empty-for="assetProjectLogoPreview"><strong>No Project Logo / Mark Yet</strong><span>Choose an image to preview it here before saving.</span></div>
               <button type="button" class="asset-expand-btn hidden" data-expand-asset="projectLogo" aria-label="Expand Project Logo / Mark">+</button>
             </div>
             <button id="assetProjectLogoClear" type="button" class="secondary-btn small">CLEAR</button>
@@ -659,7 +664,7 @@
             <span>Hero Graphic</span>
             <input id="assetHeroGraphicInput" type="file" accept="image/*">
             <div class="asset-preview-stage">
-              <img id="assetHeroGraphicPreview" alt="Hero graphic preview">
+              <img id="assetHeroGraphicPreview" alt="Hero graphic preview"><div class="asset-preview-empty" data-preview-empty-for="assetHeroGraphicPreview"><strong>No Welcome Hero Graphic Yet</strong><span>Choose an image to preview it here before saving.</span></div>
               <button type="button" class="asset-expand-btn hidden" data-expand-asset="heroGraphic" aria-label="Expand Hero Graphic">+</button>
             </div>
             <button id="assetHeroGraphicClear" type="button" class="secondary-btn small">CLEAR</button>
@@ -668,7 +673,7 @@
             <span>Footer Graphic</span>
             <input id="assetFooterGraphicInput" type="file" accept="image/*">
             <div class="asset-preview-stage">
-              <img id="assetFooterGraphicPreview" alt="Footer graphic preview">
+              <img id="assetFooterGraphicPreview" alt="Footer graphic preview"><div class="asset-preview-empty" data-preview-empty-for="assetFooterGraphicPreview"><strong>No Footer Graphic Yet</strong><span>Choose an image to preview it here before saving.</span></div>
               <button type="button" class="asset-expand-btn hidden" data-expand-asset="footerGraphic" aria-label="Expand Footer Graphic">+</button>
             </div>
             <button id="assetFooterGraphicClear" type="button" class="secondary-btn small">CLEAR</button>
@@ -677,7 +682,7 @@
             <span>Background / Texture</span>
             <input id="assetBackgroundInput" type="file" accept="image/*">
             <div class="asset-preview-stage">
-              <img id="assetBackgroundPreview" alt="Background preview">
+              <img id="assetBackgroundPreview" alt="Background preview"><div class="asset-preview-empty" data-preview-empty-for="assetBackgroundPreview"><strong>No Background / Texture Yet</strong><span>Choose an image to preview it here before saving.</span></div>
               <button type="button" class="asset-expand-btn hidden" data-expand-asset="backgroundImage" aria-label="Expand Background / Texture">+</button>
             </div>
             <button id="assetBackgroundClear" type="button" class="secondary-btn small">CLEAR</button>
@@ -1193,6 +1198,62 @@
     }
   }
 
+
+  const GRAPHIC_SLOT_HELP={
+    projectLogo:'Primary identity mark used throughout this project. The original artwork is preserved exactly.',
+    heroGraphic:'Shown prominently on the customer welcome screen. It takes priority over the project logo in Project Showcase.',
+    footerGraphic:'Displayed near the bottom of this project’s customer experience when assigned.',
+    backgroundImage:'Used as a softened customer-experience background so content remains readable.'
+  };
+  const GRAPHIC_SLOT_SAVE_LABEL={
+    projectLogo:'SAVE PROJECT LOGO',
+    heroGraphic:'SAVE HERO GRAPHIC',
+    footerGraphic:'SAVE FOOTER GRAPHIC',
+    backgroundImage:'SAVE BACKGROUND / TEXTURE'
+  };
+  const GRAPHIC_SLOT_INPUT={
+    projectLogo:'assetProjectLogoInput',
+    heroGraphic:'assetHeroGraphicInput',
+    footerGraphic:'assetFooterGraphicInput',
+    backgroundImage:'assetBackgroundInput'
+  };
+  const GRAPHIC_SLOT_PREVIEW={
+    projectLogo:'assetProjectLogoPreview',
+    heroGraphic:'assetHeroGraphicPreview',
+    footerGraphic:'assetFooterGraphicPreview',
+    backgroundImage:'assetBackgroundPreview'
+  };
+
+  function setGraphicEditState(state,text){
+    const el=$('graphicsEditState'); if(!el)return;
+    el.className=`graphics-edit-state ${state||''}`.trim();
+    el.textContent=text||'';
+  }
+  function updatePreviewEmptyState(previewId,hasImage){
+    const empty=document.querySelector(`[data-preview-empty-for="${previewId}"]`);
+    if(empty) empty.classList.toggle('hidden',!!hasImage);
+  }
+  function selectedFileForGraphicSlot(slot){
+    const input=$(GRAPHIC_SLOT_INPUT[slot]);
+    return input?.files?.[0]||null;
+  }
+  function previewSelectedGraphic(slot,file){
+    const preview=$(GRAPHIC_SLOT_PREVIEW[slot]);
+    if(!preview||!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      preview.src=String(reader.result||'');
+      preview.classList.remove('hidden');
+      updatePreviewEmptyState(preview.id,true);
+      document.querySelector(`[data-asset-slot-card="${slot}"] [data-expand-asset="${slot}"]`)?.classList.remove('hidden');
+      setGraphicEditState('unsaved','NEW IMAGE • NOT SAVED');
+      const save=$('assetSaveBtn');
+      if(save){save.disabled=false;save.textContent=GRAPHIC_SLOT_SAVE_LABEL[slot]||'SAVE GRAPHIC';}
+      if($('assetSaveMessage')) $('assetSaveMessage').textContent='Previewing a new image. Save to make it live.';
+    };
+    reader.readAsDataURL(file);
+  }
+
   function focusMarketingGraphicSlot(slot){
     const p=graphicsProject(); if(!p)return;
     const allowed=graphicSlotsForProject(p); if(!allowed.includes(slot))return;
@@ -1200,12 +1261,24 @@
     const editor=$('graphicsFocusedEditor');
     if(editor){editor.classList.remove('hidden');editor.style.display='block';}
     if($('graphicsFocusedTitle')) $('graphicsFocusedTitle').textContent=GRAPHIC_SLOT_LABELS[slot]||'Project Graphic';
+    if($('graphicsFocusedHelp')) $('graphicsFocusedHelp').textContent=GRAPHIC_SLOT_HELP[slot]||'Manage this project-owned graphic.';
     $$('[data-asset-slot-card]').forEach(card=>{
       const active=card.dataset.assetSlotCard===slot;
       card.classList.toggle('focused-active-slot',active);
       card.style.display=active?'flex':'none';
     });
-    editor?.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+    const preview=$(GRAPHIC_SLOT_PREVIEW[slot]);
+    const hasSaved=!!(preview?.src && !preview.classList.contains('hidden'));
+    updatePreviewEmptyState(GRAPHIC_SLOT_PREVIEW[slot],hasSaved);
+    const save=$('assetSaveBtn');
+    if(save){
+      save.textContent=GRAPHIC_SLOT_SAVE_LABEL[slot]||'SAVE GRAPHIC';
+      save.disabled=true;
+    }
+    setGraphicEditState(hasSaved?'saved':'open',hasSaved?'SAVED':'OPEN SLOT');
+    if($('assetSaveMessage')) $('assetSaveMessage').textContent=hasSaved?'Choose a new image to replace the saved graphic.':'Choose an image to begin.';
+    editor?.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function closeMarketingGraphicSlot(){
     marketingActiveGraphicSlot=null;
@@ -1237,9 +1310,11 @@
       const data=assets[slot];
       if(data){
         el.src=data;el.classList.remove('hidden');
+        updatePreviewEmptyState(id,true);
         document.querySelector(`[data-asset-slot-card="${slot}"] [data-expand-asset="${slot}"]`)?.classList.remove('hidden');
       }else{
         el.removeAttribute('src');el.classList.add('hidden');
+        updatePreviewEmptyState(id,false);
       }
     });
     await renderProjectGraphicsLibrary();
@@ -1248,45 +1323,47 @@
   async function collectAndSaveProjectAssets(){
     const p=graphicsProject();if(!p)return;
     const requestedProjectId=p.id;
-    const fields={
-      projectLogo:'assetProjectLogoInput',
-      heroGraphic:'assetHeroGraphicInput',
-      footerGraphic:'assetFooterGraphicInput',
-      backgroundImage:'assetBackgroundInput'
-    };
-    let savedCount=0;
-    const selectedEntries=marketingActiveGraphicSlot && fields[marketingActiveGraphicSlot] ? [[marketingActiveGraphicSlot,fields[marketingActiveGraphicSlot]]] : Object.entries(fields);
-    for(const [slot,id] of selectedEntries){
-      if(engineActiveProjectId!==requestedProjectId) throw new Error('Project changed while graphics were being saved. Nothing else was written.');
-      const input=$(id), file=input?.files?.[0];
-      if(file){
-        await saveProjectAssetFile(requestedProjectId,slot,file);
-        recordProjectGraphic(requestedProjectId,slot,null,file);
-        savedCount++;
-      }
+    const slot=marketingActiveGraphicSlot;
+    if(!slot || !GRAPHIC_SLOT_INPUT[slot])return;
+
+    const input=$(GRAPHIC_SLOT_INPUT[slot]);
+    const file=input?.files?.[0];
+    if(!file){
+      if($('assetSaveMessage')) $('assetSaveMessage').textContent='Choose an image before saving.';
+      return;
     }
+
+    if(engineActiveProjectId!==requestedProjectId) throw new Error('Project changed while graphics were being saved. Nothing was written.');
+    setGraphicEditState('saving','SAVING…');
+    const save=$('assetSaveBtn'); if(save) save.disabled=true;
+
+    await saveProjectAssetFile(requestedProjectId,slot,file);
+    recordProjectGraphic(requestedProjectId,slot,null,file);
+
     if(engineActiveProjectId!==requestedProjectId) throw new Error('Project changed before graphics confirmation.');
     await applyProjectAssetSlots(p);
-    const restoreSlot=marketingActiveGraphicSlot;
     await loadProjectAssetsEditor();
-    if(restoreSlot) focusMarketingGraphicSlot(restoreSlot);
+    closeMarketingGraphicSlot();
 
-    const code=p.projectCode||p.orderPrefix||'PRJ';
-    if(savedCount){
-      if($('graphicsSaveConfirmation')){
-        $('graphicsSaveConfirmation').innerHTML=`<strong>PROJECT GRAPHICS SAVED</strong><span>${savedCount} graphic${savedCount===1?'':'s'} secured to ${escapeHtml(code)} only.</span>`;
-        $('graphicsSaveConfirmation').classList.remove('hidden');
-      }
-      if($('assetSaveMessage')) $('assetSaveMessage').textContent=`Saved to ${p.name} only.`;
-      logActivity(requestedProjectId,'Project graphics saved',`${savedCount} slot${savedCount===1?'':'s'} updated`);
-      await applyProjectControlBrand(p);
-      await renderProjectCommand();
-    }else if($('assetSaveMessage')){
-      $('assetSaveMessage').textContent='No new graphics selected.';
+    const label=GRAPHIC_SLOT_LABELS[slot]||'Project Graphic';
+    if($('graphicsSaveConfirmation')){
+      $('graphicsSaveConfirmation').innerHTML=`<strong>${escapeHtml(label.toUpperCase())} SAVED</strong><span>${escapeHtml(label)} saved to ${escapeHtml(p.name)} only.</span>`;
+      $('graphicsSaveConfirmation').classList.remove('hidden');
     }
+    logActivity(requestedProjectId,'Project graphic saved',label);
+    await applyProjectControlBrand(p);
+    await renderProjectCommand();
     return readProjectAssets(requestedProjectId);
   }
   function bindProjectAssetEditor(){
+    Object.entries(GRAPHIC_SLOT_INPUT).forEach(([slot,id])=>{
+      const input=$(id); if(!input)return;
+      input.onchange=()=>{
+        const file=input.files?.[0];
+        if(file) previewSelectedGraphic(slot,file);
+      };
+    });
+
     const save=$('assetSaveBtn');
     if(save) save.onclick=()=>collectAndSaveProjectAssets().catch(err=>{
       if($('assetSaveMessage')) $('assetSaveMessage').textContent=err?.message||'Could not save graphics.';
@@ -1307,11 +1384,10 @@
         removeProjectGraphicMeta(requestedProjectId,slot);
         if(engineActiveProjectId!==requestedProjectId)return;
         await applyProjectAssetSlots(p);
-        const restoreSlot=slot;
         await loadProjectAssetsEditor();
-        focusMarketingGraphicSlot(restoreSlot);
+        closeMarketingGraphicSlot();
         if($('graphicsSaveConfirmation')){
-          $('graphicsSaveConfirmation').innerHTML=`<strong>GRAPHIC REMOVED</strong><span>${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)} cleared from ${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')} only.</span>`;
+          $('graphicsSaveConfirmation').innerHTML=`<strong>GRAPHIC REMOVED</strong><span>${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)} removed from ${escapeHtml(p.name)} only.</span>`;
           $('graphicsSaveConfirmation').classList.remove('hidden');
         }
       };
@@ -1326,6 +1402,15 @@
         if(!expand)return;
         const p=graphicsProject();if(!p)return;
         const slot=expand.dataset.expandAsset;
+        const preview=$(GRAPHIC_SLOT_PREVIEW[slot]);
+        const currentSrc=preview?.src||'';
+        if(currentSrc && !preview.classList.contains('hidden')){
+          if($('graphicsExpandImage')) $('graphicsExpandImage').src=currentSrc;
+          if($('graphicsExpandTitle')) $('graphicsExpandTitle').textContent=GRAPHIC_SLOT_LABELS[slot]||'Project Graphic';
+          if($('graphicsExpandNamespace')) $('graphicsExpandNamespace').textContent=`${p.projectCode||p.orderPrefix||'PRJ'} • ${p.id}${selectedFileForGraphicSlot(slot)?' • PREVIEW NOT YET SAVED':''}`;
+          $('graphicsExpandModal')?.classList.remove('hidden');
+          return;
+        }
         readProjectAssets(p.id).then(assets=>{
           if(engineActiveProjectId!==p.id || !assets[slot])return;
           if($('graphicsExpandImage')) $('graphicsExpandImage').src=assets[slot];

@@ -658,3 +658,19 @@ Customer hero branding priority.
 - Project namespace isolation and late-render guards remain unchanged.
 - Graphics Library behavior and expanded previews remain unchanged.
 - Pirate Mode remains onboard and untouched by this focused customer-branding release.
+
+
+## v2.9.25 — GRAPHICS DECK
+Universal Graphics Manager UX upgrade.
+
+- One consistent workflow for Project Logo / Mark, Welcome Hero Graphic, Footer Graphic, Background / Texture, and future shared graphic slots.
+- Selected images immediately appear in a large in-app preview before saving.
+- Unsaved selections show `NEW IMAGE • NOT SAVED`.
+- Save is enabled only after a new image is selected and uses a slot-specific label.
+- Expanded preview works for saved artwork and newly selected unsaved artwork.
+- Successful Save automatically closes the editor and returns to the Project Graphics Library.
+- The library immediately shows the saved graphic with a clear project-specific confirmation banner.
+- Remove also returns to the Graphics Library with confirmation.
+- Each slot explains where the graphic is used.
+- Original image aspect ratio is preserved; no creative alteration is performed.
+- Project isolation, Project Showcase, Dark Flag Engine behavior, and Pirate Mode remain intact.

@@ -2943,3 +2943,78 @@ body.flowers-project .project-hero-fallback span:nth-child(3){background:#b85f79
 
 /* Pirate Mode protection marker:
    This release intentionally does not alter Dark Flag Engine/Pirate Mode selectors. */
+
+
+/* v2.9.25 — GRAPHICS DECK */
+.graphics-focused-head{
+  display:grid!important;
+  grid-template-columns:auto 1fr auto!important;
+  align-items:start!important;
+  gap:16px!important;
+}
+.graphics-back-btn{align-self:start;white-space:nowrap}
+.graphics-focused-copy h4{margin:2px 0 4px!important;font-size:25px!important}
+.graphics-focused-copy .helper{margin:0!important;max-width:660px;font-size:13px;line-height:1.5}
+.graphics-edit-state{
+  padding:7px 10px;border-radius:999px;background:#edf4ef;border:1px solid #a8c2ae;
+  color:#32623c;font-size:8px;font-weight:1000;letter-spacing:1px;white-space:nowrap
+}
+.graphics-edit-state.unsaved{background:#fff5db;border-color:#d5a733;color:#8b6500}
+.graphics-edit-state.saving{background:#eaf3f7;border-color:#75a5b8;color:#285b70}
+.graphics-edit-state.open{background:#f3f5f4;border-color:#cfd7d3;color:#68746e}
+
+.graphics-focused-editor .asset-slot.focused-active-slot{
+  max-width:980px!important;width:100%!important;padding:18px!important;gap:12px!important
+}
+.graphics-focused-editor .asset-slot>span{font-size:18px!important}
+.graphics-focused-editor input[type="file"]{
+  width:100%;padding:10px;border:1px dashed #b8c8c0;border-radius:12px;background:#f8faf9;font-size:12px
+}
+.graphics-focused-editor input[type="file"]::file-selector-button{
+  border:0;border-radius:10px;padding:10px 16px;margin-right:12px;background:#173742;color:#fff;font-weight:900;cursor:pointer
+}
+.graphics-focused-editor .asset-preview-stage{
+  min-height:430px!important;max-height:none!important;padding:16px!important;background:#eef3f0!important
+}
+.graphics-focused-editor .asset-preview-stage img{
+  width:100%!important;height:400px!important;max-height:400px!important;object-fit:contain!important;background:transparent!important
+}
+.asset-preview-empty{
+  position:absolute;inset:18px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  gap:7px;border:2px dashed #cad6d0;border-radius:14px;color:#68766f;pointer-events:none
+}
+.asset-preview-empty strong{color:#173742;font:900 21px Georgia,serif}
+.asset-preview-empty span{max-width:380px;font-size:12px}
+.asset-preview-empty.hidden{display:none!important}
+.graphics-focused-editor .asset-expand-btn{width:38px!important;height:38px!important;font-size:25px!important}
+.graphics-focused-editor .secondary-btn[id$="Clear"]{
+  width:auto!important;align-self:flex-start!important;min-width:170px;background:#fff!important;border:1px solid #c9d2cd!important;color:#6b3a37!important
+}
+.graphics-focused-editor .marketing-asset-actions{
+  display:grid!important;grid-template-columns:minmax(260px,1fr) auto!important;gap:14px!important;max-width:980px!important
+}
+.graphics-focused-editor #assetSaveBtn{min-height:58px!important;font-size:14px!important}
+.graphics-focused-editor #assetSaveBtn:disabled{opacity:.42!important;cursor:not-allowed!important}
+.graphics-focused-editor #assetSaveMessage{align-self:center;max-width:320px;font-size:11px}
+.graphics-save-confirmation{position:sticky;top:10px;z-index:8;box-shadow:0 6px 20px #00000012}
+
+body.dark-flag-pirate-mode .graphics-focused-editor input[type="file"]{
+  background:#0d1412!important;border-color:#745a31!important;color:#cdbb99!important
+}
+body.dark-flag-pirate-mode .graphics-focused-editor input[type="file"]::file-selector-button{
+  background:#a77a2f!important;color:#111!important
+}
+body.dark-flag-pirate-mode .graphics-focused-editor .asset-preview-stage{
+  background:#09100f!important;border-color:#634e2d!important
+}
+body.dark-flag-pirate-mode .asset-preview-empty{border-color:#745a31!important;color:#a99878!important}
+body.dark-flag-pirate-mode .asset-preview-empty strong{color:#e8d7b0!important}
+body.dark-flag-pirate-mode .graphics-edit-state{background:#142318!important;border-color:#557551!important;color:#bcd0ae!important}
+body.dark-flag-pirate-mode .graphics-edit-state.unsaved{background:#2b2212!important;border-color:#a77a2f!important;color:#e2bd6c!important}
+@media(max-width:760px){
+  .graphics-focused-head{grid-template-columns:1fr!important}
+  .graphics-back-btn{order:1}.graphics-focused-copy{order:2}.graphics-edit-state{order:3;justify-self:start}
+  .graphics-focused-editor .asset-preview-stage{min-height:300px!important}
+  .graphics-focused-editor .asset-preview-stage img{height:280px!important;max-height:280px!important}
+  .graphics-focused-editor .marketing-asset-actions{grid-template-columns:1fr!important}
+}
