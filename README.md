@@ -794,3 +794,7 @@ Captain's Quarters interaction and usability pass.
 - The fleet chart is read-only in this release and changes no project configuration.
 - Existing Captain controls are framed as the command desk rather than a conventional floating dashboard.
 - Project/customer namespaces, orders, payments, project branding, Graphics Library, Pirate Mode and normal Engine behavior are not modified by this pass.
+
+
+## v2.9.42 — Sail to the Stars / Captain's Quarters 2.0
+Weathered desk-as-interface, First Mate's Table, fixed Dark Sky layering, Reset Engine moved into Powder Keg with existing Engine PIN/final-confirmation safeguards, and richer moving water. PIN gate and Captain-on-Deck entrance retained.
