@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-53-cinematic-safe-rebuild';
+const CACHE='workshop-engine-v2-9-54-engine-room-visual';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.53',
-  './app.js?v=2.9.53',
-  './captain.js?v=2.9.53',
+  './styles.css?v=2.9.54',
+  './app.js?v=2.9.54',
+  './captain.js?v=2.9.54',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg'

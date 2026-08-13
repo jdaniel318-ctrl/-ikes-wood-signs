@@ -1011,3 +1011,26 @@ The cinematic conversion was implemented too aggressively: it disabled/hid major
 - Added cache-busting query versions to CSS, app.js and captain.js for iPad/Safari/GitHub Pages.
 - Preserved Dark Sky Signal Reports, Spyglass, First Mate's Watch, Take Me There, Return to Harbor, Set Sail, Send Her to Sea and Captain/Engine security separation.
 - Blueprint revision advanced to v2.9.53.
+
+
+## v2.9.54 — Engine Room Visual Benchmark
+Presentation-only redesign of the proven Engine Room.
+
+### Functionality freeze
+`app.js` and `captain.js` are byte-for-byte unchanged from v2.9.53. Existing project controls, project isolation, authentication, storage/recovery, deployment logic, analytics, Pirate Mode behavior, permissions, and workflows are untouched.
+
+### Visual benchmark
+- Workshop Engine presentation renamed to Engine Room.
+- Professional dark-slate control-room surface with restrained brass instrumentation.
+- Pirate theming reduced in the base Engine Room.
+- Medium engine references through instrument-style system indicators and machinery-panel hierarchy.
+- Project controls, settings, Project Control Center, and analytics visually tightened for faster scanning.
+- Instruction copy shortened only where meaning was unchanged.
+- Decorative Cove banner reduced to a compact Operations Bay placard.
+- Footer changed to a professional authorized-operations label.
+
+### Assets
+No files were added to, removed from, renamed in, or replaced inside `/assets` in v2.9.54.
+
+### Cache
+Only CSS/JS query versions and the service-worker cache name were advanced to v2.9.54 to prevent stale presentation files.
