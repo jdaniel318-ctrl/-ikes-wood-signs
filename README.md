@@ -676,7 +676,7 @@ Universal Graphics Manager UX upgrade.
 - Project isolation, Project Showcase, Dark Flag Engine behavior, and Pirate Mode remain intact.
 
 
-## v2.9.36 — BARNACLE SWEEP
+## v2.9.37 — BARNACLE SWEEP
 Small regression-safe cleanup after the extensibility pass.
 
 - Engine Identity now has clear Saved and Editing states.
@@ -691,7 +691,7 @@ Small regression-safe cleanup after the extensibility pass.
 - Pirate Mode remains preserved and Engine-only.
 
 
-## v2.9.36 — CLEAR ESCAPE HATCH
+## v2.9.37 — CLEAR ESCAPE HATCH
 - Adds clear spacing between Unlock Admin and the customer return action.
 - Renames the safe exit to “← RETURN TO MY ORDER”.
 - Gives the return action a bold project-themed outline.
@@ -700,7 +700,7 @@ Small regression-safe cleanup after the extensibility pass.
 - Pirate Mode remains preserved and Engine-only.
 
 
-## v2.9.36 — CAPTAIN'S QUARTERS FRAMEWORK
+## v2.9.37 — CAPTAIN'S QUARTERS FRAMEWORK
 A deliberately small, isolated framework for Captain-only creativity.
 
 - Adds a separate Captain's Quarters entry inside Dark Sky/Engine territory.
@@ -714,14 +714,14 @@ A deliberately small, isolated framework for Captain-only creativity.
 - Captain's Mode is privilege separation; Pirate Mode remains presentation/personality.
 
 
-## v2.9.36 — CAPTAIN'S QUARTERS ACCESS FIX
-- Fixes the v2.9.36 placement bug that left the Captain's Quarters button outside the visible Dark Sky Engine layout.
+## v2.9.37 — CAPTAIN'S QUARTERS ACCESS FIX
+- Fixes the v2.9.37 placement bug that left the Captain's Quarters button outside the visible Dark Sky Engine layout.
 - Docks Captain's Quarters directly below Engine Controls and above Project Analytics.
 - Keeps Captain authentication separate from Pirate Mode and project-admin authentication.
 - No project/customer workflow, branding, namespace, or data behavior changed.
 
 
-## v2.9.36 — CAPTAIN'S DOOR LIVE
+## v2.9.37 — CAPTAIN'S DOOR LIVE
 Access reliability patch for Captain's Quarters.
 
 - Replaces the fragile direct button listener with delegated event handling.
@@ -733,13 +733,26 @@ Access reliability patch for Captain's Quarters.
 - Pirate Mode, project shells, namespaces, workflows, graphics, orders, payments and security boundaries are unchanged.
 
 
-## v2.9.36 — Captain's Chamber Entrance
+## v2.9.37 — Captain's Chamber Entrance
 Captain's Quarters now includes its first cinematic identity pass.
 
-- Keeps the v2.9.36 reliable Captain access fix.
+- Keeps the v2.9.37 reliable Captain access fix.
 - After successful Captain authentication, a dramatic wooden/brass bulkhead entrance opens into the chamber.
 - Adds a moonlit stern-gallery scene with ocean, distant ship, storm/lightning, charts, compass and lantern atmosphere.
 - The entrance sequence is intentionally brief; the chamber becomes a functional workspace immediately afterward.
 - Includes reduced-motion support.
 - All effects are presentation-only. No project workflow, namespace, project branding, order, graphics, payment, Pirate Mode or security plumbing is changed.
 - Captain PIN remains memory-only and is never persisted.
+
+
+## v2.9.37 — INDEPENDENT CAPTAIN ACCESS
+This release deliberately separates Captain's Quarters access from the main application runtime.
+
+- `captain.js` is loaded independently at the end of the page and has no dependency on app.js, project rendering, Pirate Mode, Engine state helpers, or project namespaces.
+- The visible Captain's Quarters ENTER control is now a real link to `#captainQuartersGate`.
+- CSS `:target` provides a native fallback: even if the main application JavaScript throws a runtime error, tapping ENTER still opens the Captain PIN gate.
+- The standalone controller then owns PIN authentication, cinematic entry, close/exit behavior, and memory-only Captain authorization.
+- Captain PIN remains 19613.
+- Captain authorization is never stored in localStorage/sessionStorage/cookies.
+- Existing project, graphics, order, payment, namespace and Pirate Mode code is unchanged.
+- The v2.9.37 cinematic chamber entrance is retained.

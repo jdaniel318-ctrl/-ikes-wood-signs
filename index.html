@@ -49,7 +49,7 @@
     <button id="returnToEngineBtn" class="project-engine-return hidden">ENGINE</button>
 
   
-  <!-- v2.9.36 Captain's Quarters: isolated Captain-only creative chamber -->
+  <!-- v2.9.37 Captain's Quarters: isolated Captain-only creative chamber -->
   <div id="captainQuartersGate" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainQuartersTitle">
     <div class="captain-quarters-card">
       <div class="captain-crest" aria-hidden="true">⚓</div>
@@ -60,7 +60,7 @@
       <input id="captainPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
       <p id="captainPinError" class="captain-error" aria-live="polite"></p>
       <button id="captainUnlockBtn" class="captain-primary" type="button">ENTER CAPTAIN'S QUARTERS →</button>
-      <button id="captainGateCloseBtn" class="captain-secondary" type="button">← RETURN TO ENGINE</button>
+      <a id="captainGateCloseBtn" class="captain-secondary captain-link-button" href="#">← RETURN TO ENGINE</a>
     </div>
   </div>
 
@@ -686,9 +686,9 @@
 
       <section class="captain-access-dock captain-access-ready" aria-label="Captain's Quarters access">
         <div class="captain-access-kicker">CAPTAIN ONLY</div>
-        <button id="captainModeAccessBtn" class="captain-access-btn" type="button">
+        <a id="captainModeAccessBtn" class="captain-access-btn" href="#captainQuartersGate" role="button">
           <span>⚓</span><span><strong>CAPTAIN'S QUARTERS</strong><small>Private command and creative chamber · separate authentication required</small></span><b>ENTER →</b>
-        </button>
+        </a>
       </section>
 
       <section class="fleet-analytics captains-log">
@@ -746,5 +746,6 @@
 
 
 
+  <script src="captain.js"></script>
 </body>
 </html>
