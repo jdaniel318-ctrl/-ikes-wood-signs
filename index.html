@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.58" />
+  <link rel="stylesheet" href="styles.css?v=2.9.59" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -29,13 +29,14 @@
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
 <button id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">CLOSE / RETURN TO ORDER</button>
-<div class="bf-pirate-toggle-row">
-  <span><strong>Pirate Mode</strong><small>Dark Flag entrance personality only</small></span>
-  <label class="bf-switch" aria-label="Toggle Pirate Mode">
-    <input id="blackFlagPirateModeToggle" type="checkbox" />
-    <span class="bf-switch-slider"></span>
-  </label>
+<div class="engine-entry-mode" role="group" aria-label="Engine appearance">
+  <span><strong>ENGINE APPEARANCE</strong><small>Choose how the Engine Room presents itself.</small></span>
+  <div class="engine-mode-segment">
+    <button id="blackFlagBusinessModeBtn" type="button" data-engine-appearance="business">BUSINESS</button>
+    <button id="blackFlagPirateModeBtn" type="button" data-engine-appearance="pirate">PIRATE</button>
+  </div>
 </div>
+<input id="blackFlagPirateModeToggle" type="checkbox" class="engine-legacy-mode-toggle" aria-hidden="true" tabindex="-1" />
       </div>
 
       <div class="bf-pirate-atmosphere" aria-hidden="true">
@@ -57,7 +58,7 @@
       <div class="captain-crest" aria-hidden="true">⚓</div>
       <div class="captain-kicker">CAPTAIN'S EYES ONLY</div>
       <h2 id="captainQuartersTitle">Captain's Quarters</h2>
-      <p>A separate experimental chamber above Pirate Mode. Project shells remain untouched.</p>
+      <p>A separate Captain-authority chamber above the Engine Room. Project shells remain untouched.</p>
       <label for="captainPinInput">CAPTAIN PIN</label>
       <input id="captainPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
       <p id="captainPinError" class="captain-error" aria-live="polite"></p>
@@ -126,7 +127,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.55 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.59 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -257,7 +258,7 @@
         </button>
         <button class="cq-desk-object cq-leather-log" data-cq-object="log" type="button"><span>CAPTAIN'S<br>LOG</span></button>
         <button class="cq-desk-object cq-cargo-chest" data-cq-object="cargo" type="button"><span>CARGO<br>HOLD</span></button>
-        <button class="cq-desk-object cq-brass-compass" data-cq-object="compass" type="button"><i>✥</i><span>COMPASS</span></button>
+        <button class="cq-desk-object cq-brass-compass" data-cq-object="blackflag" type="button"><i>✥</i><span>BLACK FLAG</span></button>
         <button id="captainSpyglassBtn" class="cq-desk-object cq-spyglass" type="button" aria-label="Open Captain's Spyglass intelligence report">
           <i class="cq-spyglass-glass" aria-hidden="true"></i>
           <i class="cq-spyglass-body" aria-hidden="true"></i>
@@ -782,14 +783,15 @@
           <div class="engine-card-kicker">ENGINE DISPLAY</div>
           <h3>Business Mode</h3>
           <p class="helper">Professional Engine Room presentation. Project branding, data, permissions and security remain unchanged.</p>
-          <div class="engine-pirate-toggle-row">
-            <span><strong>Pirate Mode</strong><small>Transform Dark Flag command surfaces. Project shells remain untouched.</small></span>
-            <label class="bf-switch" aria-label="Toggle Pirate Mode in Dark Flag Engine">
-              <input id="enginePirateModeToggle" type="checkbox" />
-              <span class="bf-switch-slider"></span>
-            </label>
+          <div class="engine-appearance-control" role="group" aria-label="Engine appearance control">
+            <div><strong>Engine Appearance</strong><small>Presentation only. Projects, permissions and data do not change.</small></div>
+            <div class="engine-mode-segment">
+              <button id="engineBusinessModeBtn" type="button" data-engine-appearance="business">BUSINESS</button>
+              <button id="enginePirateModeBtn" type="button" data-engine-appearance="pirate">PIRATE</button>
+            </div>
           </div>
-          <div class="business-mode-status"><span></span><strong>BUSINESS MODE</strong><small>Professional Engine Room</small></div>
+          <input id="enginePirateModeToggle" type="checkbox" class="engine-legacy-mode-toggle" aria-hidden="true" tabindex="-1" />
+          <div id="engineAppearanceStatus" class="business-mode-status"><span></span><strong>BUSINESS MODE</strong><small>Professional Engine Room</small></div>
           <p id="pirateModeStatus" class="helper"></p>
         </article>
 
@@ -919,7 +921,7 @@
     </section>
   </div>
 
-  <script src="app.js?v=2.9.58"></script>
+  <script src="app.js?v=2.9.59"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -945,6 +947,24 @@
 
 
 
-  <script src="captain.js?v=2.9.55"></script>
+  <script src="captain.js?v=2.9.59"></script>
+
+<div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
+  <div class="captain-command-shell">
+    <header class="captain-command-header">
+      <div><small>BLACK FLAG • CAPTAIN AUTHORIZED</small><h2 id="captainCommandTitle">Captain Command</h2><p id="captainCommandSubtitle">Governance and fleet-level authority.</p></div>
+      <button id="captainCommandClose" type="button">RETURN TO QUARTERS</button>
+    </header>
+    <nav class="captain-command-tabs" aria-label="Captain command areas">
+      <button type="button" data-captain-command="cargo">CARGO HOLD</button>
+      <button type="button" data-captain-command="powder">POWDER KEG</button>
+      <button type="button" data-captain-command="blackflag">BLACK FLAG</button>
+      <button type="button" data-captain-command="log">CAPTAIN'S LOG</button>
+      <button type="button" data-captain-command="blueprint">SHIP'S BLUEPRINT</button>
+    </nav>
+    <main id="captainCommandBody" class="captain-command-body"></main>
+  </div>
+</div>
+
 </body>
 </html>

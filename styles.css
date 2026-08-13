@@ -5273,3 +5273,84 @@ body.engine-mode #enginePanel .captain-access-dock{
 @media(max-width:620px){
   body.engine-mode #enginePanel .project-command-cards{grid-template-columns:1fr!important}
 }
+
+
+/* ==========================================================
+   v2.9.59 — CONSISTENT ENGINE MODES + CAPTAIN COMMAND SUITE
+   ========================================================== */
+.engine-legacy-mode-toggle{display:none!important}
+.engine-entry-mode,.engine-appearance-control{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+.engine-entry-mode{margin-top:12px;padding:11px;border:1px solid #454f53;border-radius:10px;background:#0f171b}
+.engine-entry-mode>span,.engine-appearance-control>div:first-child{display:grid;gap:2px}
+.engine-entry-mode strong,.engine-appearance-control strong{font-size:9px;letter-spacing:.1em}
+.engine-entry-mode small,.engine-appearance-control small{font-size:8px;color:#85918e}
+.engine-mode-segment{display:flex;gap:4px;padding:3px;border:1px solid #3e4b50;border-radius:9px;background:#091013}
+.engine-mode-segment button{
+  min-width:86px;min-height:34px;padding:7px 10px;border:1px solid transparent;border-radius:6px;background:transparent;color:#899592;font-size:8px;font-weight:900;letter-spacing:.08em
+}
+.engine-mode-segment button.active{border-color:#98763d;background:#2a2418;color:#f0d18a;box-shadow:inset 0 0 0 1px #000}
+body.dark-flag-pirate-mode .engine-mode-segment button.active[data-engine-appearance="pirate"]{border-color:#8b7041;background:#2b1d13;color:#edc77d}
+#engineAppearanceStatus.pirate{border-color:#755b36!important;background:#21180f!important}
+#engineAppearanceStatus.pirate>span{background:#d0a44e!important;box-shadow:0 0 10px #d0a44e!important}
+
+/* Business Mode is the default professional Engine Room. */
+body.business-engine-mode.engine-mode #enginePanel{filter:none!important}
+body.business-engine-mode.engine-mode #enginePanel .pirate-footer,
+body.business-engine-mode.engine-mode #enginePanel .dark-flag-cove-banner{letter-spacing:.08em}
+
+/* Captain command overlay */
+.captain-command-workspace{
+  position:fixed;inset:0;z-index:19000;display:grid;place-items:center;padding:22px;
+  background:radial-gradient(circle at 50% 20%,rgba(34,48,53,.88),rgba(3,7,9,.97));
+}
+.captain-command-workspace.hidden{display:none!important}
+.captain-command-shell{
+  width:min(1180px,96vw);max-height:92vh;display:grid;grid-template-rows:auto auto 1fr;overflow:hidden;
+  border:4px ridge #6c4e29;border-radius:18px;background:#10191d;color:#e8ece8;box-shadow:0 35px 100px #000
+}
+.captain-command-header{
+  display:flex;justify-content:space-between;align-items:center;gap:18px;padding:20px 22px;border-bottom:1px solid #58452e;
+  background:linear-gradient(90deg,#141d20,#1b2527,#11191c)
+}
+.captain-command-header small{color:#b39458;font-size:8px;font-weight:900;letter-spacing:.16em}
+.captain-command-header h2{margin:3px 0;font:900 30px Georgia,serif;color:#f0e8d5}
+.captain-command-header p{margin:0;color:#97a3a0;font-size:10px}
+.captain-command-header button,.captain-command-body button{
+  min-height:36px;padding:8px 12px;border:1px solid #876b3c;border-radius:8px;background:#241d13;color:#e8d3a2;font-size:8px;font-weight:900;letter-spacing:.06em
+}
+.captain-command-tabs{display:flex;gap:5px;padding:8px 10px;border-bottom:1px solid #39464a;background:#0b1215;overflow-x:auto}
+.captain-command-tabs button{flex:0 0 auto;min-height:35px;padding:7px 10px;border:1px solid #39464a;border-radius:7px;background:#131d21;color:#95a09d;font-size:8px;font-weight:900}
+.captain-command-tabs button.active{border-color:#9e7c43;background:#2b2418;color:#edcf87}
+.captain-command-body{overflow:auto;padding:18px}
+.captain-command-intro{margin-bottom:14px;padding:14px 16px;border-left:3px solid #aa8647;background:#121c20}
+.captain-command-intro small{color:#b6965d;font-size:8px;letter-spacing:.14em;font-weight:900}
+.captain-command-intro h3{margin:3px 0;font:900 22px Georgia,serif}.captain-command-intro p{margin:0;color:#8e9a97}
+.captain-command-card{margin-bottom:12px;padding:16px;border:1px solid #3e4c51;border-radius:10px;background:#111a1e}
+.captain-command-card h3{margin:0 0 5px;font:900 17px Georgia,serif;color:#e9e4d6}.captain-command-card p{color:#99a4a1;font-size:10px;line-height:1.45}
+.captain-command-card textarea,.captain-command-card input{width:100%;box-sizing:border-box;margin:6px 0 9px;padding:9px;border:1px solid #46555a;border-radius:7px;background:#0b1215;color:#eef2ef}
+.captain-command-card textarea{min-height:88px;resize:vertical}
+.captain-stage-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.captain-stage-grid article{padding:13px;border:1px solid #4d4434;border-radius:9px;background:#141c1e}.captain-stage-grid span{color:#85724c;font-size:7px;letter-spacing:.12em}.captain-stage-grid strong{display:block;margin:4px 0;color:#e3c06c;font:800 11px Georgia,serif}.captain-stage-grid p{margin:0;color:#8f9a97;font-size:8px}
+.captain-danger-banner{padding:14px 16px;margin-bottom:12px;border:2px solid #8f4e45;border-radius:10px;background:#241313}.captain-danger-banner strong{color:#e29a91;letter-spacing:.1em}.captain-danger-banner p{margin:4px 0 0;color:#b99d99;font-size:9px}
+.captain-danger-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}.captain-danger-grid article{padding:14px;border:1px solid #5f403d;border-radius:9px;background:#181516}.captain-danger-grid h3{margin:0;font:800 14px Georgia,serif}.captain-danger-grid p{min-height:42px;color:#9f8f8c;font-size:8px}
+.captain-metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.captain-metric-row article{padding:15px;border:1px solid #405056;border-radius:9px;background:#121c20;text-align:center}.captain-metric-row span{display:block;color:#84918e;font-size:7px;font-weight:900;letter-spacing:.12em}.captain-metric-row strong{display:block;margin-top:4px;color:#e5c56e;font:900 28px Georgia,serif}
+.captain-fleet-list{display:grid;gap:6px}.captain-fleet-list article{display:flex;justify-content:space-between;gap:12px;padding:10px;border:1px solid #334146;border-radius:7px;background:#0d1518}.captain-fleet-list article>div{display:grid;gap:2px}.captain-fleet-list span{color:#9b8351;font-size:7px;font-weight:900}.captain-fleet-list strong{font:800 12px Georgia,serif}.captain-fleet-list b{color:#91bd9d;font-size:9px}.captain-fleet-list small{color:#87938f;font-size:8px}
+.captain-two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:10px}
+.captain-note-list{display:grid;gap:5px}.captain-note-list>div{display:grid;grid-template-columns:minmax(110px,.35fr) 1fr;gap:8px;padding:8px;border-bottom:1px solid #2f3b3f}.captain-note-list strong{color:#bba16b;font-size:8px}.captain-note-list span{color:#aeb8b5;font-size:9px}
+.standing-orders{display:grid;gap:5px}.standing-order-row{display:grid;grid-template-columns:24px 1fr 30px;align-items:center;gap:8px;padding:7px;border:1px solid #344146;border-radius:7px}.standing-order-row>span{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#272218;color:#d6b46c;font-size:8px}.standing-order-row p{margin:0}.standing-order-row button{min-width:28px!important;min-height:28px!important;padding:0!important}
+.standing-order-add{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:8px}
+.captain-blueprint-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:stretch;gap:8px;margin-bottom:14px}.captain-blueprint-flow article{padding:14px;border:1px solid #51452f;border-radius:9px;background:#151d1e}.captain-blueprint-flow article>span{color:#836f49;font-size:8px}.captain-blueprint-flow strong{display:block;margin:4px 0;color:#dec17a}.captain-blueprint-flow p{margin:0;color:#899592;font-size:8px}.captain-blueprint-flow>b{align-self:center;color:#987a42}
+.captain-empty{color:#7f8c89!important;font-style:italic}.captain-ok{color:#7cba91!important}
+@media(max-width:850px){
+  .captain-stage-grid{grid-template-columns:repeat(2,1fr)}
+  .captain-danger-grid{grid-template-columns:1fr 1fr}
+  .captain-two-col{grid-template-columns:1fr}
+  .captain-blueprint-flow{grid-template-columns:1fr}.captain-blueprint-flow>b{display:none}
+}
+@media(max-width:600px){
+  .captain-metric-row{grid-template-columns:1fr 1fr}
+  .captain-danger-grid{grid-template-columns:1fr}
+  .captain-command-header{align-items:flex-start;flex-direction:column}
+}

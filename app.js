@@ -2195,46 +2195,84 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
 
-  let pirateModeEnabled=false;
+  let engineAppearance='business';
+  let pirateModeEnabled=false; // compatibility alias for older Engine code.
 
-  function applyPirateMode(enabled,{announce=false}={}){
-    pirateModeEnabled=!!enabled;
+  function applyEngineAppearance(mode,{announce=false}={}){
+    engineAppearance=mode==='pirate'?'pirate':'business';
+    pirateModeEnabled=engineAppearance==='pirate';
+
     document.body.classList.toggle('dark-flag-pirate-mode',pirateModeEnabled);
+    document.body.classList.toggle('business-engine-mode',!pirateModeEnabled);
+    document.body.dataset.engineAppearance=engineAppearance;
+
     if($('blackFlagPirateModeToggle')) $('blackFlagPirateModeToggle').checked=pirateModeEnabled;
     if($('enginePirateModeToggle')) $('enginePirateModeToggle').checked=pirateModeEnabled;
+
+    $$('[data-engine-appearance]').forEach(btn=>{
+      btn.classList.toggle('active',btn.dataset.engineAppearance===engineAppearance);
+      btn.setAttribute('aria-pressed',btn.dataset.engineAppearance===engineAppearance?'true':'false');
+    });
+
+    const status=$('engineAppearanceStatus');
+    if(status){
+      status.classList.toggle('pirate',pirateModeEnabled);
+      status.innerHTML=pirateModeEnabled
+        ? '<span></span><strong>PIRATE MODE</strong><small>Themed Engine Room • same machinery</small>'
+        : '<span></span><strong>BUSINESS MODE</strong><small>Professional Engine Room</small>';
+    }
+
     if($('pirateModeStatus')) $('pirateModeStatus').textContent=pirateModeEnabled
-      ? 'Pirate Mode is ON across Dark Flag command surfaces. Projects remain unchanged.'
-      : 'Pirate Mode is OFF. Dark Flag uses its standard professional command appearance.';
+      ? 'Pirate presentation active. Engine logic, permissions and projects are unchanged.'
+      : 'Business presentation active. Professional Engine Room controls are unchanged beneath the surface.';
+
     const kicker=document.querySelector('#blackFlagEntryGate .bf-entry-kicker');
     const sub=document.querySelector('#blackFlagEntryGate .bf-entry-sub');
     const enter=$('blackFlagEntryUnlock');
-    if(kicker) kicker.textContent=pirateModeEnabled?'DARK FLAG • CAPTAIN’S ENTRY':'BLACK FLAG HARBOR';
+    if(kicker) kicker.textContent=pirateModeEnabled?'DARK FLAG • ENGINE ACCESS':'BLACK FLAG HARBOR';
     if(sub) sub.textContent=pirateModeEnabled
-      ? 'Secure Engine command. Same locks, a little more salt in the air.'
-      : 'Secure project command, configuration and platform control.';
-    if(enter) enter.textContent=pirateModeEnabled?'BOARD DARK FLAG →':'ENTER BLACK FLAG →';
+      ? 'Secure Engine access with the themed presentation.'
+      : 'Secure project operations and platform control.';
+    if(enter) enter.textContent=pirateModeEnabled?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →';
+
     if(announce && $('pirateModeStatus')){
       $('pirateModeStatus').textContent=pirateModeEnabled
-        ? 'Pirate Mode engaged across Dark Flag. The Engine logic is unchanged beneath the deck.'
-        : 'Pirate Mode secured. Standard Dark Flag presentation restored.';
+        ? 'Pirate Mode engaged. Presentation changed; Engine authority and data did not.'
+        : 'Business Mode engaged. Professional presentation active.';
     }
+  }
+
+  function applyPirateMode(enabled,{announce=false}={}){
+    applyEngineAppearance(enabled?'pirate':'business',{announce});
   }
 
   async function loadPirateMode(){
     try{
-      const saved=await getSetting('darkFlagPirateMode');
-      pirateModeEnabled=saved?.value===true;
+      const explicit=await getSetting('engineAppearance');
+      if(explicit?.value==='business'||explicit?.value==='pirate'){
+        engineAppearance=explicit.value;
+      }else{
+        const legacy=await getSetting('darkFlagPirateMode');
+        engineAppearance=legacy?.value===true?'pirate':'business';
+      }
     }catch(_){
-      pirateModeEnabled=false;
+      engineAppearance='business';
     }
-    applyPirateMode(pirateModeEnabled);
+    applyEngineAppearance(engineAppearance);
+  }
+
+  async function setEngineAppearance(mode){
+    applyEngineAppearance(mode,{announce:true});
+    try{
+      await setSetting('engineAppearance',engineAppearance);
+      await setSetting('darkFlagPirateMode',engineAppearance==='pirate'); // backwards compatibility
+    }catch(err){ console.warn('Engine appearance could not be saved',err); }
   }
 
   async function setPirateMode(enabled){
-    applyPirateMode(enabled,{announce:true});
-    try{ await setSetting('darkFlagPirateMode',pirateModeEnabled); }
-    catch(err){ console.warn('Pirate Mode setting could not be saved',err); }
+    await setEngineAppearance(enabled?'pirate':'business');
   }
+
 
   function maybeShowDarkFlagTreasure(){
     if(!pirateModeEnabled)return;
@@ -3605,6 +3643,32 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     });
   }
 
+  window.blackFlagCaptainManagementSnapshot = async function(){
+    const rows=[];
+    const orders=await getMergedOrders();
+    for(const p of projects()){
+      const stats=await projectStats(p);
+      const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
+      rows.push({
+        id:p.id,
+        code:p.projectCode||p.orderPrefix||'PRJ',
+        name:p.name,
+        status:p.status||'active',
+        publishStatus:p.publish?.status||'development',
+        visibility:p.visibility||'engine_only',
+        orders:stats.orders,
+        revenueMonth:stats.revenueMonth,
+        ledgerRevenue:stats.ledgerRevenue,
+        deployments:deployments.map(d=>({id:d.id,name:d.name,state:d.state,profile:d.profile,manifestVersion:d.manifestVersion||1}))
+      });
+    }
+    return {
+      projects:rows,
+      totalOrders:orders.length,
+      generatedAt:new Date().toISOString()
+    };
+  };
+
   window.renderBlackFlagHome = async function(){
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
@@ -3670,6 +3734,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     bindEngineFleetCommand();
     $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
     $('enginePirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
+    $$('[data-engine-appearance]').forEach(btn=>btn.addEventListener('click',()=>setEngineAppearance(btn.dataset.engineAppearance)));
 
     bindProjectAssetEditor();
     bindProjectTemplateShells();

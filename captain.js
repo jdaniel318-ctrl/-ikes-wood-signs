@@ -313,20 +313,199 @@
   window.addEventListener('pagehide', () => { authorized = false; });
 })();
 
-// v2.9.43 — cabin objects are presentation-safe Captain tools.
+// v2.9.59 — Captain's five command doors.
 document.addEventListener('DOMContentLoaded', () => {
-  const panel = document.getElementById('captainObjectPanel');
-  const title = document.getElementById('captainObjectTitle');
-  const copy = document.getElementById('captainObjectCopy');
-  const content = {
-    log: ["Captain's Log", "A private book for future Captain notes, experiments and mission history. In this build it is intentionally read-only: no project or customer data is changed."],
-    cargo: ["Cargo Hold", "Captain-only experimental workshop for prototypes, visual assets, unfinished ideas and reusable discoveries before anything is promoted to the working ship."],
-    compass: ["Black Flag Compass", "The compass points toward the next experiment: make the room itself the command surface. It is decorative in this build and carries no production authority."],
-    locker: ["Powder Keg Locker", "Powerful ship-level controls berth here. Dangerous actions remain explicit, explained and separately confirmed."],
-  };
-  document.querySelectorAll('[data-cq-object]').forEach(btn => btn.addEventListener('click', () => {
-    const item = content[btn.dataset.cqObject]; if (!item || !panel) return;
-    title.textContent = item[0]; copy.textContent = item[1]; document.getElementById('captainPowderControls')?.classList.toggle('hidden', btn.dataset.cqObject !== 'locker'); document.getElementById('captainDarkSkyChartBtn')?.classList.add('cq-map-receded'); panel.classList.remove('hidden');
-  }));
-  document.getElementById('captainObjectClose')?.addEventListener('click', () => { panel?.classList.add('hidden'); document.getElementById('captainPowderControls')?.classList.add('hidden'); document.getElementById('captainDarkSkyChartBtn')?.classList.remove('cq-map-receded'); });
+  const workspace=document.getElementById('captainCommandWorkspace');
+  const title=document.getElementById('captainCommandTitle');
+  const subtitle=document.getElementById('captainCommandSubtitle');
+  const body=document.getElementById('captainCommandBody');
+  const close=document.getElementById('captainCommandClose');
+
+  const safe=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch(_){return fallback}};
+  const write=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
+
+  function audit(action,detail=''){
+    const rows=read('blackFlagCaptainAudit',[]);
+    rows.unshift({at:new Date().toISOString(),action,detail});
+    write('blackFlagCaptainAudit',rows.slice(0,500));
+  }
+
+  async function snapshot(){
+    try{
+      if(typeof window.blackFlagCaptainManagementSnapshot==='function'){
+        return await window.blackFlagCaptainManagementSnapshot();
+      }
+    }catch(err){console.warn('Captain snapshot unavailable',err)}
+    return {projects:[],totalOrders:0,generatedAt:new Date().toISOString()};
+  }
+
+  function standingOrders(){
+    return read('blackFlagStandingOrders',[
+      'Projects remain isolated by namespace and customer data.',
+      'Experimental capabilities require Captain approval before promotion.',
+      'Waived fees remain in a separate Captain-only ledger.',
+      'Destructive authority requires explicit Captain confirmation.'
+    ]);
+  }
+
+  function open(section){
+    if(!workspace||!body)return;
+    document.getElementById('captainObjectPanel')?.classList.add('hidden');
+    document.getElementById('captainFleetChart')?.classList.add('hidden');
+    workspace.classList.remove('hidden');
+    workspace.setAttribute('aria-hidden','false');
+    document.body.classList.add('captain-command-open');
+    document.querySelectorAll('[data-captain-command]').forEach(b=>b.classList.toggle('active',b.dataset.captainCommand===section));
+    render(section);
+  }
+
+  function closeWorkspace(){
+    workspace?.classList.add('hidden');
+    workspace?.setAttribute('aria-hidden','true');
+    document.body.classList.remove('captain-command-open');
+  }
+
+  async function render(section){
+    const names={
+      cargo:["Cargo Hold","AI Workshop & Innovation"],
+      powder:["Powder Keg","Dangerous Authority"],
+      blackflag:["Black Flag","Fleet Command Center"],
+      log:["Captain's Log","Orders, Notes & History"],
+      blueprint:["Ship's Blueprint","Living System Architecture"]
+    };
+    const [t,s]=names[section]||["Captain Command","Governance"];
+    title.textContent=t; subtitle.textContent=s;
+    if(section==='cargo') return renderCargo();
+    if(section==='powder') return renderPowder();
+    if(section==='blackflag') return renderBlackFlag();
+    if(section==='log') return renderLog();
+    if(section==='blueprint') return renderBlueprint();
+  }
+
+  function renderCargo(){
+    const stages=[
+      ["IDEA","Capture a capability worth exploring."],
+      ["PROTOTYPE","Build without exposing it to customers."],
+      ["SEA TRIAL","Validate behavior and project isolation."],
+      ["APPROVED","Captain accepts it for operational use."],
+      ["ENGINE CAPABILITY","First Mate may deploy it through the Engine."]
+    ];
+    body.innerHTML=`<section class="captain-command-intro"><small>INNOVATION PIPELINE</small><h3>From experiment to Engine capability</h3><p>Nothing experimental silently becomes operational.</p></section>
+      <div class="captain-stage-grid">${stages.map((x,i)=>`<article><span>STAGE ${i+1}</span><strong>${x[0]}</strong><p>${x[1]}</p></article>`).join('')}</div>
+      <section class="captain-command-card"><h3>Workshop Log</h3><p>AI recognition, design intelligence, layout tools, reusable workflow components, and future experiments berth here before promotion.</p>
+      <label>New workshop note<textarea id="captainCargoNote" placeholder="Describe an idea, experiment or reusable capability…"></textarea></label>
+      <button id="captainCargoSave" type="button">ADD TO WORKSHOP LOG</button>
+      <div id="captainCargoNotes" class="captain-note-list"></div></section>`;
+    const draw=()=>{
+      const notes=read('blackFlagCargoNotes',[]);
+      document.getElementById('captainCargoNotes').innerHTML=notes.length?notes.map(n=>`<div><strong>${safe(new Date(n.at).toLocaleDateString())}</strong><span>${safe(n.text)}</span></div>`).join(''):'<p class="captain-empty">No workshop notes yet.</p>';
+    };
+    document.getElementById('captainCargoSave').onclick=()=>{
+      const input=document.getElementById('captainCargoNote');
+      const text=input.value.trim(); if(!text)return;
+      const notes=read('blackFlagCargoNotes',[]);notes.unshift({at:new Date().toISOString(),text});write('blackFlagCargoNotes',notes.slice(0,100));
+      audit('Cargo Hold note added',text);input.value='';draw();
+    };
+    draw();
+  }
+
+  function renderPowder(){
+    const actions=[
+      ["Emergency Project Disable","Prepare a controlled stop without deleting project records."],
+      ["Protected Credential Reset","Reset protected access after recovery checks."],
+      ["Restore / Overwrite Data","Replace stored state from a known recovery point."],
+      ["Permanent Project Purge","Irreversibly remove a project and its owned records."],
+      ["Isolation Override","Change a protected namespace boundary for deliberate recovery work."],
+      ["Financial Correction","Create a Captain-authorized correction trail without rewriting ordinary ledger history."]
+    ];
+    body.innerHTML=`<div class="captain-danger-banner"><strong>CAPTAIN AUTHORITY ONLY</strong><p>High-consequence actions require explicit review. This release does not wire destructive execution until each action has a tested recovery path.</p></div>
+      <div class="captain-danger-grid">${actions.map((x,i)=>`<article><h3>${x[0]}</h3><p>${x[1]}</p><button type="button" data-powder-review="${i}">REVIEW AUTHORITY</button></article>`).join('')}</div>
+      <section id="captainPowderReview" class="captain-command-card"><h3>Authority Review</h3><p>Select an authority above. No destructive action executes from this screen without a dedicated implementation and confirmation path.</p></section>`;
+    document.querySelectorAll('[data-powder-review]').forEach(btn=>btn.onclick=()=>{
+      const row=actions[Number(btn.dataset.powderReview)];
+      const panel=document.getElementById('captainPowderReview');
+      panel.innerHTML=`<h3>${safe(row[0])}</h3><p>${safe(row[1])}</p><p><strong>Status:</strong> Review only — execution disconnected for safety.</p><button id="captainPowderAcknowledge" type="button">ACKNOWLEDGE REVIEW</button>`;
+      document.getElementById('captainPowderAcknowledge').onclick=()=>{
+        audit('Powder Keg authority reviewed',row[0]);
+        panel.insertAdjacentHTML('beforeend','<p class="captain-ok">Review recorded in Captain audit history.</p>');
+      };
+    });
+  }
+
+  async function renderBlackFlag(){
+    const snap=await snapshot();
+    const projects=snap.projects||[];
+    const operating=projects.filter(p=>p.publishStatus==='live'||p.status==='active').length;
+    const future=projects.filter(p=>p.status==='future').length;
+    const priv=projects.filter(p=>p.publishStatus!=='live').length;
+    const attention=projects.filter(p=>(p.deployments||[]).some(d=>d.state==='paused'||d.state==='sea_trial')).length;
+    body.innerHTML=`<div class="captain-metric-row">
+      <article><span>VESSELS</span><strong>${projects.length}</strong></article>
+      <article><span>OPERATING</span><strong>${operating}</strong></article>
+      <article><span>TEST / PRIVATE</span><strong>${priv}</strong></article>
+      <article><span>ATTENTION</span><strong>${attention}</strong></article>
+    </div>
+    <section class="captain-command-card"><h3>Fleet Command</h3><p>Captain-level state of the fleet. Project configuration remains in the Engine Room.</p>
+      <div class="captain-fleet-list">${projects.length?projects.map(p=>{
+        const deployments=p.deployments||[];const sailing=deployments.filter(d=>d.state==='deployed').length;const harbor=deployments.filter(d=>d.state==='paused').length;const trials=deployments.filter(d=>d.state==='sea_trial').length;
+        return `<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong><small>${safe(p.publishStatus)} • ${safe(p.status)}</small></div><div><b>${sailing} sailing</b>${harbor?`<small>${harbor} in harbor</small>`:''}${trials?`<small>${trials} sea trial</small>`:''}</div></article>`;
+      }).join(''):'<p class="captain-empty">No project snapshot available.</p>'}</div>
+    </section>
+    <section class="captain-command-card"><h3>Command Boundary</h3><p>Black Flag tells the Captain what is happening. The Engine Room remains where the First Mate changes project machinery.</p></section>`;
+  }
+
+  async function renderLog(){
+    const snap=await snapshot();
+    const auditRows=read('blackFlagCaptainAudit',[]);
+    const waived=read('blackFlagWaivedFees',[]);
+    const standing=standingOrders();
+    const revenue=(snap.projects||[]).reduce((s,p)=>s+Number(p.ledgerRevenue||0),0);
+    body.innerHTML=`<div class="captain-metric-row">
+      <article><span>ORDER RECORDS</span><strong>${snap.totalOrders||0}</strong></article>
+      <article><span>RECORDED REVENUE</span><strong>$${revenue.toFixed(0)}</strong></article>
+      <article><span>CAPTAIN EVENTS</span><strong>${auditRows.length}</strong></article>
+      <article><span>STANDING ORDERS</span><strong>${standing.length}</strong></article>
+    </div>
+    <div class="captain-two-col">
+      <section class="captain-command-card"><h3>Standing Orders</h3><p>Persistent governance rules for how Black Flag is allowed to evolve.</p><div id="captainStandingOrders" class="standing-orders"></div><div class="standing-order-add"><input id="captainStandingOrderInput" placeholder="Add a standing order…" /><button id="captainStandingOrderAdd" type="button">ADD ORDER</button></div></section>
+      <section class="captain-command-card"><h3>Waived Fees Ledger</h3><p>Captain-only and separate from project billing.</p><div class="captain-note-list">${waived.length?waived.slice(0,20).map(w=>`<div><strong>${safe(w.project||w.projectName||'Project')}</strong><span>${safe(w.amountWaived??w.amount??'')} ${safe(w.service||w.feature||'')}</span></div>`).join(''):'<p class="captain-empty">No waived-fee records yet.</p>'}</div></section>
+    </div>
+    <section class="captain-command-card"><h3>Fleet Performance</h3><div class="captain-fleet-list">${(snap.projects||[]).map(p=>`<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong></div><div><b>${Number(p.orders||0)} orders</b><small>$${Number(p.ledgerRevenue||0).toFixed(0)} recorded</small></div></article>`).join('')||'<p class="captain-empty">No project performance data yet.</p>'}</div></section>
+    <section class="captain-command-card"><h3>Captain Audit History</h3><div class="captain-note-list">${auditRows.length?auditRows.slice(0,40).map(a=>`<div><strong>${safe(new Date(a.at).toLocaleString())}</strong><span>${safe(a.action)}${a.detail?` — ${safe(a.detail)}`:''}</span></div>`).join(''):'<p class="captain-empty">No Captain events recorded yet.</p>'}</div></section>`;
+    const drawStanding=()=>{
+      const rows=standingOrders();
+      const host=document.getElementById('captainStandingOrders');
+      host.innerHTML=rows.map((x,i)=>`<div class="standing-order-row"><span>${i+1}</span><p>${safe(x)}</p><button type="button" data-standing-remove="${i}" aria-label="Remove standing order">×</button></div>`).join('');
+      host.querySelectorAll('[data-standing-remove]').forEach(b=>b.onclick=()=>{const rs=standingOrders();const removed=rs.splice(Number(b.dataset.standingRemove),1)[0];write('blackFlagStandingOrders',rs);audit('Standing order removed',removed);drawStanding()});
+    };
+    document.getElementById('captainStandingOrderAdd').onclick=()=>{const input=document.getElementById('captainStandingOrderInput');const text=input.value.trim();if(!text)return;const rows=standingOrders();rows.push(text);write('blackFlagStandingOrders',rows);audit('Standing order added',text);input.value='';drawStanding()};
+    drawStanding();
+  }
+
+  function renderBlueprint(){
+    body.innerHTML=`<section class="captain-command-intro"><small>LIVING ARCHITECTURE</small><h3>How the flagship is built</h3><p>Architecture is separate from live fleet status.</p></section>
+      <div class="captain-blueprint-flow">
+        <article><span>01</span><strong>CAPTAIN</strong><p>Command • governance • intelligence • history</p></article>
+        <b>→</b><article><span>02</span><strong>ENGINE ROOM</strong><p>Execution • configuration • testing • deployment</p></article>
+        <b>→</b><article><span>03</span><strong>PROJECT VESSELS</strong><p>Isolated branding • data • controls</p></article>
+        <b>→</b><article><span>04</span><strong>OUTPOSTS</strong><p>Deployment manifests • sessions • customers</p></article>
+      </div>
+      <section class="captain-command-card"><h3>Full Ship's Blueprint</h3><p>The existing detailed blueprint remains the authoritative visual map and is updated with architecture releases.</p><button id="captainOpenFullBlueprint" type="button">UNROLL FULL BLUEPRINT</button></section>`;
+    document.getElementById('captainOpenFullBlueprint').onclick=()=>{closeWorkspace();document.getElementById('captainBlueprintDeskBtn')?.click()};
+  }
+
+  close?.addEventListener('click',closeWorkspace);
+  document.querySelectorAll('[data-captain-command]').forEach(btn=>btn.addEventListener('click',()=>open(btn.dataset.captainCommand)));
+
+  // Physical cabin hotspots / bottom benchmark buttons.
+  document.querySelector('[data-cq-object="cargo"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('cargo')},true);
+  document.querySelector('[data-cq-object="locker"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('powder')},true);
+  document.querySelector('[data-cq-object="blackflag"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('blackflag')},true);
+  document.querySelector('[data-cq-object="log"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('log')},true);
+
+  // Existing blueprint hotspot remains functional; command tab offers same destination.
+  document.getElementById('captainBlueprintDeskBtn')?.addEventListener('contextmenu',e=>e.preventDefault());
+
+  window.BlackFlagCaptainCommand={open,close:closeWorkspace};
 });
