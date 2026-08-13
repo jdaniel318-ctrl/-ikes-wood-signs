@@ -676,7 +676,7 @@ Universal Graphics Manager UX upgrade.
 - Project isolation, Project Showcase, Dark Flag Engine behavior, and Pirate Mode remain intact.
 
 
-## v2.9.32 — BARNACLE SWEEP
+## v2.9.33 — BARNACLE SWEEP
 Small regression-safe cleanup after the extensibility pass.
 
 - Engine Identity now has clear Saved and Editing states.
@@ -691,10 +691,24 @@ Small regression-safe cleanup after the extensibility pass.
 - Pirate Mode remains preserved and Engine-only.
 
 
-## v2.9.32 — CLEAR ESCAPE HATCH
+## v2.9.33 — CLEAR ESCAPE HATCH
 - Adds clear spacing between Unlock Admin and the customer return action.
 - Renames the safe exit to “← RETURN TO MY ORDER”.
 - Gives the return action a bold project-themed outline.
 - Shared across current and future project Admin Gates.
 - No workflow, data, namespace, Showcase, graphics, permissions, or security changes.
 - Pirate Mode remains preserved and Engine-only.
+
+
+## v2.9.33 — CAPTAIN'S QUARTERS FRAMEWORK
+A deliberately small, isolated framework for Captain-only creativity.
+
+- Adds a separate Captain's Quarters entry inside Dark Sky/Engine territory.
+- Initial Captain PIN: 19613.
+- Captain authorization is held only in memory and is cleared on exit/page lifecycle.
+- Captain authentication is separate from Pirate Mode and does not reuse the Engine/Pirate credential.
+- Adds an intentionally atmospheric but function-light Captain's Quarters chamber.
+- The chamber contains placeholders for future creative experiments and Captain-only tools.
+- No project/customer workflow, project namespace, graphics, orders, payments, Showcase, or project admin behavior is changed.
+- Pirate Mode remains preserved.
+- Captain's Mode is privilege separation; Pirate Mode remains presentation/personality.

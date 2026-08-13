@@ -3028,7 +3028,7 @@ body.dark-flag-pirate-mode .graphics-edit-state.unsaved{background:#2b2212!impor
 }
 
 
-/* v2.9.32 — BARNACLE SWEEP
+/* v2.9.33 — BARNACLE SWEEP
    Captain-facing Engine Identity states + fully project-themed Admin Gate accents. */
 
 .engine-identity-saved-view,
@@ -3114,7 +3114,7 @@ body.dark-flag-pirate-mode .engine-identity-status.is-saved{
 }
 
 
-/* v2.9.32 — CLEAR ESCAPE HATCH */
+/* v2.9.33 — CLEAR ESCAPE HATCH */
 .project-admin-gate-card .project-admin-gate-primary{
   margin-bottom:18px!important;
 }
@@ -3135,3 +3135,56 @@ body.dark-flag-pirate-mode .engine-identity-status.is-saved{
   transform:translateY(1px);
   box-shadow:none!important;
 }
+
+
+/* v2.9.33 — CAPTAIN'S QUARTERS FRAMEWORK
+   Privileged creative chamber. It intentionally does not style project/customer shells. */
+.captain-access-btn{
+  width:100%;display:flex;align-items:center;gap:14px;margin:16px 0;padding:15px 18px;
+  border:1px solid #d7bd7280;border-radius:18px;background:linear-gradient(135deg,#112f38,#1d4650);
+  color:#fff;text-align:left;box-shadow:0 10px 26px #0002
+}
+.captain-access-btn>span:first-child{font-size:28px;color:#e7cb72}
+.captain-access-btn strong{display:block;letter-spacing:.08em}
+.captain-access-btn small{display:block;opacity:.72;margin-top:3px}
+.captain-access-btn b{margin-left:auto;color:#f1d67b;font-size:12px;letter-spacing:.08em}
+.captain-quarters-overlay{
+  position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:24px;
+  background:radial-gradient(circle at 50% 15%,#173f4de8,#07181ff5 62%,#030b0ef9);
+  backdrop-filter:blur(13px)
+}
+.captain-quarters-overlay.hidden{display:none!important}
+.captain-quarters-card,.captain-chamber{
+  width:min(760px,94vw);border:1px solid #d9bd6b99;border-radius:28px;
+  background:linear-gradient(145deg,#102c35 0%,#0b2028 58%,#08171d 100%);
+  color:#f7f0dc;box-shadow:0 34px 90px #0009,inset 0 0 0 1px #fff1
+}
+.captain-quarters-card{width:min(520px,92vw);padding:42px;text-align:center}
+.captain-crest{width:76px;height:76px;margin:-76px auto 18px;display:grid;place-items:center;
+  border:2px solid #e2c76f;border-radius:50%;background:#102c35;font-size:36px;box-shadow:0 10px 30px #0007}
+.captain-kicker{font-size:10px;font-weight:900;letter-spacing:.25em;color:#e6ca72;margin-bottom:8px}
+.captain-quarters-card h2,.captain-chamber h2{font:700 38px Georgia,serif;margin:5px 0 10px;color:#fff8e7}
+.captain-quarters-card p,.captain-chamber p{color:#c9d2d0;line-height:1.45}
+.captain-quarters-card label{display:block;text-align:left;margin:24px 0 7px;font-size:11px;font-weight:900;letter-spacing:.12em;color:#e6ca72}
+.captain-quarters-card input{width:100%;box-sizing:border-box;padding:16px;border:2px solid #d9bd6b88;border-radius:15px;
+  background:#f8f5eb;color:#102c35;font-size:22px;text-align:center;outline:none}
+.captain-error{min-height:20px;color:#f0a0a0!important;font-weight:700;font-size:13px}
+.captain-primary,.captain-secondary{width:100%;padding:15px 18px;border-radius:15px;font-weight:900;letter-spacing:.03em}
+.captain-primary{border:1px solid #f0d479;background:linear-gradient(180deg,#e8cd73,#b9953c);color:#10252c;box-shadow:0 7px 0 #745b24}
+.captain-secondary{margin-top:16px;border:2px solid #d9bd6b;background:transparent;color:#f2dd9c}
+.captain-chamber{padding:30px;overflow:hidden;position:relative}
+.captain-chamber-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.captain-round-close{width:44px;height:44px;border-radius:50%;border:1px solid #d9bd6b;background:#173640;color:#fff;font-size:27px}
+.captain-window{height:220px;margin:22px 0;border:8px solid #7c6331;border-radius:110px 110px 24px 24px;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 70% 20%,#c7b465 0 2%,transparent 3%),linear-gradient(#07151f,#153949 68%,#091a22 69%);
+  box-shadow:inset 0 0 45px #000c,0 10px 30px #0005}
+.captain-moon{position:absolute;right:15%;top:18%;font-size:54px;color:#f1da8b;text-shadow:0 0 25px #e8cd73}
+.captain-ship{position:absolute;left:26%;bottom:19%;font-size:48px;filter:grayscale(1) brightness(.55)}
+.captain-horizon{position:absolute;left:-10%;right:-10%;bottom:0;height:32%;background:repeating-radial-gradient(ellipse at 50% 0,#12313d 0 10px,#0a2029 11px 22px)}
+.captain-console{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.captain-console section{padding:16px;border:1px solid #d9bd6b44;border-radius:15px;background:#ffffff08}
+.captain-console span{display:block;color:#e5c86f;font-size:9px;font-weight:900;letter-spacing:.16em}
+.captain-console strong{display:block;margin:8px 0 6px;color:#fff}
+.captain-console small{color:#aebcba;line-height:1.35}
+.captain-rule{text-align:center;margin:18px 0;color:#d8c88f;font:italic 15px Georgia,serif}
+@media(max-width:650px){.captain-console{grid-template-columns:1fr}.captain-window{height:170px}.captain-chamber{padding:20px}}

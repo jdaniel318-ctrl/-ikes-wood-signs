@@ -3719,3 +3719,53 @@ document.addEventListener('click', (event) => {
   migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
 
 })();
+
+
+// v2.9.33 Captain's Quarters framework.
+// Captain authentication is separate from Pirate Mode and is never persisted.
+(() => {
+  const CAPTAIN_PIN = '19613';
+  let captainAuthorized = false;
+  const q=(id)=>document.getElementById(id);
+  const hide=(id)=>q(id)?.classList.add('hidden');
+  const show=(id)=>q(id)?.classList.remove('hidden');
+
+  function openCaptainGate(){
+    captainAuthorized=false;
+    const input=q('captainPinInput');
+    if(input){ input.value=''; setTimeout(()=>input.focus(),50); }
+    if(q('captainPinError')) q('captainPinError').textContent='';
+    show('captainQuartersGate');
+  }
+  function closeCaptainGate(){
+    if(q('captainPinInput')) q('captainPinInput').value='';
+    hide('captainQuartersGate');
+  }
+  function unlockCaptain(){
+    const entered=q('captainPinInput')?.value || '';
+    if(entered !== CAPTAIN_PIN){
+      captainAuthorized=false;
+      if(q('captainPinError')) q('captainPinError').textContent='Captain authentication failed.';
+      if(q('captainPinInput')) q('captainPinInput').value='';
+      return;
+    }
+    captainAuthorized=true;
+    closeCaptainGate();
+    show('captainQuarters');
+  }
+  function secureCaptainQuarters(){
+    captainAuthorized=false;
+    hide('captainQuarters');
+    if(q('captainPinInput')) q('captainPinInput').value='';
+  }
+
+  q('captainModeAccessBtn')?.addEventListener('click',openCaptainGate);
+  q('captainGateCloseBtn')?.addEventListener('click',closeCaptainGate);
+  q('captainUnlockBtn')?.addEventListener('click',unlockCaptain);
+  q('captainPinInput')?.addEventListener('keydown',(e)=>{if(e.key==='Enter') unlockCaptain();});
+  q('captainQuartersCloseBtn')?.addEventListener('click',secureCaptainQuarters);
+  q('captainExitBtn')?.addEventListener('click',secureCaptainQuarters);
+
+  // Never retain Captain authorization across page lifecycle transitions.
+  window.addEventListener('pagehide',()=>{captainAuthorized=false;});
+})();

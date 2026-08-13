@@ -48,7 +48,47 @@
   
     <button id="returnToEngineBtn" class="project-engine-return hidden">ENGINE</button>
 
-  <div id="app" class="app-shell">
+  
+  <!-- v2.9.33 Captain's Quarters: isolated Captain-only creative chamber -->
+  <div id="captainQuartersGate" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainQuartersTitle">
+    <div class="captain-quarters-card">
+      <div class="captain-crest" aria-hidden="true">⚓</div>
+      <div class="captain-kicker">CAPTAIN'S EYES ONLY</div>
+      <h2 id="captainQuartersTitle">Captain's Quarters</h2>
+      <p>A separate experimental chamber above Pirate Mode. Project shells remain untouched.</p>
+      <label for="captainPinInput">CAPTAIN PIN</label>
+      <input id="captainPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+      <p id="captainPinError" class="captain-error" aria-live="polite"></p>
+      <button id="captainUnlockBtn" class="captain-primary" type="button">ENTER CAPTAIN'S QUARTERS →</button>
+      <button id="captainGateCloseBtn" class="captain-secondary" type="button">← RETURN TO ENGINE</button>
+    </div>
+  </div>
+
+  <div id="captainQuarters" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainChamberTitle">
+    <div class="captain-chamber">
+      <div class="captain-chamber-top">
+        <div>
+          <div class="captain-kicker">DARK SKY • CAPTAIN AUTHORIZED</div>
+          <h2 id="captainChamberTitle">The Captain's Quarters</h2>
+          <p>Chart the strange waters here. Nothing in this chamber changes a project unless a future Captain tool explicitly says it will.</p>
+        </div>
+        <button id="captainQuartersCloseBtn" class="captain-round-close" type="button" aria-label="Close Captain's Quarters">×</button>
+      </div>
+      <div class="captain-window" aria-hidden="true">
+        <span class="captain-moon">☾</span><span class="captain-ship">⛵</span>
+        <div class="captain-horizon"></div>
+      </div>
+      <div class="captain-console">
+        <section><span>CREATIVE HOLD</span><strong>Ready for experiments</strong><small>Future visual ideas, prototypes and Captain-only toys dock here.</small></section>
+        <section><span>PROJECT BULKHEADS</span><strong>Sealed</strong><small>Customer and project namespaces stay outside the chamber.</small></section>
+        <section><span>PIRATE MODE</span><strong>Still aboard</strong><small>Personality remains separate from Captain privileges.</small></section>
+      </div>
+      <div class="captain-rule">CAPTAIN'S RULE: creativity may roam; production boundaries do not.</div>
+      <button id="captainExitBtn" class="captain-primary" type="button">SECURE THE QUARTERS & RETURN TO ENGINE</button>
+    </div>
+  </div>
+
+<div id="app" class="app-shell">
     <header class="brand-header">
       <div id="customerProjectLogoWrap" class="customer-project-logo-wrap hidden"><img id="customerProjectLogo" alt="Project logo"></div>
       <div class="brand-copy illustrated-brand">
@@ -684,5 +724,9 @@
       </div>
     </div>
 
+
+        <button id="captainModeAccessBtn" class="captain-access-btn" type="button">
+          <span>⚓</span><span><strong>CAPTAIN'S QUARTERS</strong><small>Separate Captain-only creative chamber</small></span><b>ENTER →</b>
+        </button>
 </body>
 </html>
