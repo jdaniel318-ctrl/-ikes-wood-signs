@@ -99,11 +99,12 @@
         <button id="captainFleetChartClose" class="captain-round-close cq-chart-close" type="button" aria-label="Close fleet chart">×</button>
         <div class="captain-kicker">CAPTAIN'S NAVIGATION</div>
         <h2 id="captainFleetChartTitle">The Dark Sky</h2>
-        <p>Current vessels known to this build. This chart is Captain-side only and does not change project configuration.</p>
-        <div id="captainFleetVessels" class="cq-fleet-vessels">
-          <article><span>IKE</span><strong>Ike's Wood Signs</strong><small>Original vessel • active customer workflow</small></article>
-          <article><span>MUG</span><strong>Mugs After Dark</strong><small>Independent project vessel</small></article>
-          <article><span>BBS</span><strong>Becca's Bloom Shop</strong><small>Independent project vessel</small></article>
+        <p class="cq-chart-intro">Live Captain-side navigation. Vessels and outposts are read from deployment manifests; touching a vessel reveals its signal report.</p>
+        <div class="cq-tactical-sea" aria-label="Live fleet tactical chart">
+          <div class="cq-chart-compass">N<span>✦</span></div>
+          <div class="cq-chart-moon"></div>
+          <div class="cq-chart-current current-a"></div><div class="cq-chart-current current-b"></div>
+          <div id="captainFleetVessels" class="cq-fleet-vessels"></div>
         </div>
         <div id="captainFleetSignalSummary" class="cq-chart-note">Signal Watch reads project deployment manifests from Dark Sky.</div>
       </div>
@@ -123,7 +124,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.47 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.48 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">

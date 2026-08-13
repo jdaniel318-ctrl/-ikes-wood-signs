@@ -1019,9 +1019,12 @@
             <div class="deployment-command-grid">
               <article class="pec-card deployment-readiness">
                 <small>SEA TRIAL</small><h4>Readiness Inspection</h4>
-                <div class="deployment-readiness-score"><strong>${readiness.score}%</strong><span>application readiness</span></div>
+                <div class="deployment-readiness-split">
+                  <div class="deployment-readiness-score"><strong>${readiness.score}%</strong><span>ENGINE READINESS</span></div>
+                  <div class="deployment-device-readiness ${d.deviceLockVerified?'verified':'action'}"><strong>${d.deviceLockVerified?'VERIFIED':'ACTION REQUIRED'}</strong><span>DEVICE READINESS</span></div>
+                </div>
                 ${readiness.checks.map(c=>`<div class="readiness-row ${c.pass?'pass':c.warning?'warn':'fail'}"><span>${escapeHtml(c.label)}</span><strong>${escapeHtml(c.detail)}</strong></div>`).join('')}
-                <p class="helper">Device-level lock is intentionally a warning, not a fake application capability.</p>
+                <p class="helper">Engine readiness measures Dark Sky. Device readiness separately reflects iPad Guided Access / managed Single App Mode.</p>
               </article>
 
               <article class="pec-card deployment-signal-watch">

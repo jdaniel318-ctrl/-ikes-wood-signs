@@ -928,3 +928,13 @@ Shipwright • Manifest • Sea Trial • Outpost • Signal Watch • Deploymen
 - No fake connection telemetry is generated.
 - No offline payment behavior is invented.
 - Existing Captain authentication and project isolation architecture are preserved.
+
+
+## Version 2.9.48 — LIVE WATERS
+- Replaces the Captain's Dark Sky fleet-card view with a live tactical-water chart.
+- Project vessels are positioned on the chart and reflect sailing, harbor, and attention states from deployment manifests.
+- Active outposts appear as signal beacons attached to their owning vessel; project isolation is unchanged.
+- Signal Watch summarizes live vessel/outpost state at Captain level.
+- Separates Engine Readiness from Device Readiness in Deployment Shipwright so a 100% app score no longer visually implies iPad kiosk lock is verified.
+- Adds subtle interaction lighting to The Dark Sky wall chart so the navigation surface reads as usable without becoming a conventional app button.
+- Ship's Blueprint revision advanced to v2.9.48.

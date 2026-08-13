@@ -4006,3 +4006,28 @@ html.captain-controller-ready #captainQuartersGate.hidden{
  .deployment-lifecycle-actions{justify-content:flex-start}
  .manifest-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+
+/* ==========================================================
+   v2.9.48 — LIVE WATERS
+   Captain tactical fleet chart + clearer deployment readiness
+   ========================================================== */
+.cq-fleet-chart-card{width:min(980px,92vw)!important;background:linear-gradient(160deg,#07171d,#0b2832 62%,#071318)!important;overflow:hidden}
+.cq-chart-intro{max-width:720px;color:#b9c8c6!important}
+.cq-tactical-sea{position:relative;height:min(55vh,470px);min-height:340px;margin:18px 0 14px;border:2px solid #8d7139;border-radius:18px;overflow:hidden;background:radial-gradient(circle at 72% 18%,#d8c57a20 0 5%,transparent 18%),repeating-radial-gradient(ellipse at 50% 120%,transparent 0 25px,#5c879322 27px 29px,transparent 31px 52px),linear-gradient(180deg,#092633,#061a25 55%,#04131b);box-shadow:inset 0 0 60px #000b,0 15px 35px #0008}
+.cq-tactical-sea:after{content:"THE DARK SKY • LIVE WATERS";position:absolute;left:18px;bottom:12px;color:#c9aa6355;font:700 9px Georgia,serif;letter-spacing:.24em}
+.cq-chart-moon{position:absolute;right:11%;top:10%;width:48px;height:48px;border-radius:50%;background:#e7cf80;box-shadow:0 0 35px #e7cf8066}
+.cq-chart-compass{position:absolute;left:20px;top:18px;color:#d2b46d99;font:700 10px Georgia,serif;text-align:center;z-index:2}.cq-chart-compass span{display:block;font-size:32px;line-height:24px}
+.cq-chart-current{position:absolute;width:55%;height:80px;border:2px solid #4e819244;border-color:#4e819244 transparent transparent transparent;border-radius:50%;transform:rotate(-8deg)}.cq-chart-current.current-a{left:4%;top:22%}.cq-chart-current.current-b{right:-6%;bottom:10%;transform:rotate(12deg)}
+.cq-fleet-vessels{position:absolute!important;inset:0!important;display:block!important}
+.captain-fleet-vessel{position:absolute!important;left:var(--ship-x)!important;top:var(--ship-y)!important;width:180px!important;min-height:96px!important;transform:translate(-50%,-50%);display:grid!important;grid-template-columns:48px 1fr!important;grid-template-rows:auto auto auto!important;gap:0 8px!important;padding:10px 12px!important;border:1px solid #947a45aa!important;border-radius:13px!important;background:#06161cd9!important;color:#eadcae!important;text-align:left!important;box-shadow:0 12px 28px #0009!important;cursor:pointer;transition:.2s ease}
+.captain-fleet-vessel:hover,.captain-fleet-vessel:focus{transform:translate(-50%,-50%) scale(1.06);z-index:8;outline:none;box-shadow:0 15px 38px #000,0 0 0 2px #d0ae5d55!important}
+.cq-vessel-icon{grid-row:1/4;font-size:36px;filter:drop-shadow(0 5px 4px #000)}.cq-vessel-code{font-size:8px;letter-spacing:.18em;color:#d3ae55}.captain-fleet-vessel strong{font:700 15px Georgia,serif}.captain-fleet-vessel small{font-size:9px;color:#a9b9b7}
+.captain-fleet-vessel.sailing .cq-vessel-icon{animation:cqSail 3.2s ease-in-out infinite}.captain-fleet-vessel.sailing{border-color:#65a67b!important;box-shadow:0 12px 28px #0009,0 0 25px #5ba97922!important}.captain-fleet-vessel.attention{border-color:#c58a4d!important}.captain-fleet-vessel.harbor{opacity:.78}
+.cq-outpost-beacon{position:absolute;left:var(--port-x);top:var(--port-y);width:8px;height:8px;border-radius:50%;background:#87908d;box-shadow:0 0 0 4px #ffffff0b}.cq-outpost-beacon.deployed{background:#74c58f;box-shadow:0 0 14px #74c58f}.cq-outpost-beacon.sea_trial{background:#d8b453;box-shadow:0 0 12px #d8b453}.cq-outpost-beacon.paused{background:#c27e45}
+.cq-chart-note{display:flex!important;gap:8px;align-items:center;flex-wrap:wrap!important;padding:10px 0 0!important;border-top:1px solid #a7833f55!important;color:#aebdb9!important;font-size:9px!important}.cq-chart-note strong{color:#d9bd72;letter-spacing:.14em}.cq-chart-note span{padding:5px 8px;border:1px solid #ffffff14;border-radius:999px}.cq-chart-note .attention{color:#e2a66c}
+@keyframes cqSail{0%,100%{translate:0 0;rotate:-1deg}50%{translate:0 -4px;rotate:1deg}}
+.deployment-readiness-split{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0 12px}.deployment-readiness-split .deployment-readiness-score{margin:0;padding:12px;border:1px solid #d7ded9;border-radius:14px;background:#f7faf8;display:flex;flex-direction:column;align-items:flex-start}.deployment-readiness-split .deployment-readiness-score span,.deployment-device-readiness span{font-size:8px;font-weight:900;letter-spacing:.12em;color:#7d8783}.deployment-device-readiness{padding:12px;border-radius:14px;border:1px solid #d9d4c7;background:#faf7ef;display:flex;flex-direction:column;justify-content:center}.deployment-device-readiness strong{font-size:12px;color:#9a652d}.deployment-device-readiness.verified{background:#edf7f0;border-color:#c8ddce}.deployment-device-readiness.verified strong{color:#3f7851}
+#captainQuarters .cq-interactive-map{animation:cqMapBreathe 4s ease-in-out infinite}#captainQuarters .cq-interactive-map:hover,#captainQuarters .cq-interactive-map:focus{filter:brightness(1.12);box-shadow:0 0 32px #d3ad5b44!important}
+@keyframes cqMapBreathe{0%,100%{filter:brightness(1)}50%{filter:brightness(1.08)}}
+@media(max-width:760px){.cq-tactical-sea{min-height:430px}.captain-fleet-vessel{width:150px!important}.deployment-readiness-split{grid-template-columns:1fr}}

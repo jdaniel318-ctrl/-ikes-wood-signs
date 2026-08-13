@@ -95,7 +95,8 @@
       ? window.blackFlagDeploymentFleetSnapshot()
       : [];
     if(!fleet.length)return;
-    box.innerHTML=fleet.map(v=>{
+    const positions=[[17,58],[50,35],[79,61],[67,74],[32,76]];
+    box.innerHTML=fleet.map((v,index)=>{
       const signal=v.attentionOutposts>0?'attention':v.activeOutposts>0?'sailing':'harbor';
       const status=v.attentionOutposts>0
         ? `${v.attentionOutposts} needs attention`
@@ -104,15 +105,20 @@
           : v.totalOutposts>0
             ? `${v.totalOutposts} outpost${v.totalOutposts===1?'':'s'} in harbor`
             : 'No outposts';
-      return `<article class="captain-fleet-vessel ${signal}">
-        <span>${String(v.code||'PRJ').slice(0,3)}</span>
+      const pos=positions[index%positions.length];
+      const outposts=(v.outposts||[]).filter(o=>o.state!=='retired');
+      const ports=outposts.map((o,i)=>`<i class="cq-outpost-beacon ${o.state}" style="--port-x:${18+(i*19)%65}%;--port-y:${18+(i*23)%58}%" title="${o.name}"></i>`).join('');
+      return `<button class="captain-fleet-vessel ${signal}" style="--ship-x:${pos[0]}%;--ship-y:${pos[1]}%" type="button" aria-label="${v.name}: ${status}">
+        <span class="cq-vessel-code">${String(v.code||'PRJ').slice(0,3)}</span>
+        <b class="cq-vessel-icon">⛵</b>
         <strong>${v.name}</strong>
         <small>${status}</small>
-      </article>`;
+        ${ports}
+      </button>`;
     }).join('');
     const active=fleet.reduce((n,v)=>n+v.activeOutposts,0);
     const attention=fleet.reduce((n,v)=>n+v.attentionOutposts,0);
-    if(summary) summary.textContent=`Signal Watch • ${fleet.length} vessels • ${active} outposts sailing${attention?` • ${attention} needing attention`:''}`;
+    if(summary) summary.innerHTML=`<strong>SIGNAL WATCH</strong><span>${fleet.length} vessels</span><span>${active} outpost${active===1?'':'s'} sailing</span>${attention?`<span class="attention">${attention} needing attention</span>`:'<span>waters steady</span>'}`;
   }
 
   function bind() {
