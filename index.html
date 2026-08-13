@@ -125,7 +125,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.50 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.51 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -225,8 +225,13 @@
       </div>
       <div class="captain-rule">CAPTAIN'S RULE: creativity may roam; production boundaries do not.</div>
       <div class="cq-cabin-title"><small>BLACK FLAG • CAPTAIN AUTHORIZED</small><strong>THE CAPTAIN'S QUARTERS</strong></div>
-      <button id="captainWatchStrip" class="cq-watch-strip" type="button" aria-label="Open Captain's Spyglass intelligence report">
-        <span>FIRST MATE'S WATCH</span><strong id="captainWatchHeadline">Reading the horizon…</strong><small id="captainWatchDetail">Dark Sky signal intelligence</small>
+      <button id="captainWatchStrip" class="cq-watch-instrument" type="button" aria-label="Open First Mate's Watch intelligence report">
+        <span class="cq-watch-lamp" aria-hidden="true"></span>
+        <span class="cq-watch-copy">
+          <small>FIRST MATE'S WATCH</small>
+          <strong id="captainWatchHeadline">Reading the horizon…</strong>
+          <b id="captainWatchDetail">Dark Sky signal intelligence</b>
+        </span>
       </button>
       <div class="cq-rustic-desk" aria-label="Captain's command desk"><div class="cq-desk-grain"></div>
         <div class="cq-desk-history" aria-hidden="true">
@@ -252,7 +257,11 @@
         <button class="cq-desk-object cq-leather-log" data-cq-object="log" type="button"><span>CAPTAIN'S<br>LOG</span></button>
         <button class="cq-desk-object cq-cargo-chest" data-cq-object="cargo" type="button"><span>CARGO<br>HOLD</span></button>
         <button class="cq-desk-object cq-brass-compass" data-cq-object="compass" type="button"><i>✥</i><span>COMPASS</span></button>
-        <button id="captainSpyglassBtn" class="cq-desk-object cq-spyglass" type="button" aria-label="Open Captain's Spyglass intelligence report"><i></i><span>SPYGLASS</span></button>
+        <button id="captainSpyglassBtn" class="cq-desk-object cq-spyglass" type="button" aria-label="Open Captain's Spyglass intelligence report">
+          <i class="cq-spyglass-glass" aria-hidden="true"></i>
+          <i class="cq-spyglass-body" aria-hidden="true"></i>
+          <i class="cq-spyglass-grip" aria-hidden="true"></i>
+        </button>
         <button class="cq-desk-object cq-powder-key" data-cq-object="locker" type="button"><i>⚿</i><span>POWDER KEG</span></button>
         <div class="cq-inkwell"></div><div class="cq-quill"></div><div class="cq-coins">● ● ●</div><div class="cq-desk-lantern"><i></i></div>
       </div>

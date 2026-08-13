@@ -979,3 +979,16 @@ This continuation release makes intelligence visible before the Captain goes loo
 - Deployment state wording pairs pirate language with ordinary terms: **Deployed / Sailing** and **In Harbor / Paused**.
 - Blueprint revision advanced to v2.9.50 with First Mate's Watch represented in the Captain layer.
 - No Engine authority is duplicated or bypassed.
+
+
+## v2.9.51 — Captain's Watch Hotfix
+Field-test fix for the first-load rendering regression seen in v2.9.50.
+
+- First Mate's Watch no longer renders as browser-like text in the upper-left corner.
+- Watch is now a physical brass intelligence instrument integrated into the cabin near Course Counsel.
+- Watch remains hidden until the Captain's Quarters entrance sequence is complete.
+- Spyglass no longer exposes a stray `SPYGLASS` HTML label.
+- Spyglass is rendered as a physical brass/leather optical instrument on the desk.
+- Existing Signal Reports, Spyglass intelligence, Return to Harbor, Set Sail and Send Her to Sea logic are unchanged.
+- Captain / Engine authorization separation remains unchanged.
+- Blueprint revision advanced to v2.9.51.

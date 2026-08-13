@@ -4066,3 +4066,200 @@ html.captain-controller-ready #captainQuartersGate.hidden{
 .cq-watch-strip>span{grid-row:1/3;align-self:center;padding-right:11px;border-right:1px solid #846c42;font-size:7px;font-weight:900;letter-spacing:.14em;color:#bca46e}.cq-watch-strip strong{font:800 11px Georgia,serif}.cq-watch-strip small{font-size:7px;color:#a69b81}.cq-watch-strip.attention{border-color:#b0693e;box-shadow:0 0 18px #b35b2938,0 8px 22px #0008}.cq-watch-strip.attention:before{content:"";position:absolute;left:-5px;top:50%;width:8px;height:8px;transform:translateY(-50%);border-radius:50%;background:#d1844f;box-shadow:0 0 12px #e5935c}
 .captain-fleet-vessel.attention:after{content:"SIGNAL";position:absolute;right:-12px;top:-10px;padding:3px 5px;border:1px solid #c77d49;border-radius:999px;background:#32170e;color:#efc09a;font-size:6px;font-weight:900;letter-spacing:.1em;box-shadow:0 0 10px #c86d3b66}
 @media(max-width:700px){.cq-watch-strip{top:14%;width:74vw}.cq-watch-strip>span{font-size:6px}}
+
+
+/* ==========================================================
+   v2.9.51 — CAPTAIN'S WATCH HOTFIX / CABIN INTEGRATION
+   Fixes first-load browser-like Watch/Spyglass rendering.
+   ========================================================== */
+
+/* Disable the old floating watch presentation completely. */
+.cq-watch-strip{display:none!important}
+
+/* First Mate's Watch becomes a physical brass cabin instrument. */
+.cq-watch-instrument{
+ position:absolute!important;
+ z-index:24!important;
+ left:50%!important;
+ top:49%!important;
+ transform:translateX(-50%)!important;
+ width:min(355px,38vw)!important;
+ min-height:56px!important;
+ display:flex!important;
+ align-items:center!important;
+ gap:11px!important;
+ padding:8px 12px!important;
+ border:4px ridge #785322!important;
+ border-radius:9px!important;
+ background:
+   radial-gradient(circle at 18% 45%,rgba(214,169,77,.12),transparent 26%),
+   linear-gradient(180deg,#24170d,#0c0906 58%,#1a1009)!important;
+ color:#ead8a6!important;
+ box-shadow:
+   0 12px 22px #000b,
+   inset 0 0 0 1px #c1994a44,
+   inset 0 0 20px #000!important;
+ text-align:left!important;
+ font-family:Georgia,serif!important;
+ appearance:none!important;
+ -webkit-appearance:none!important;
+}
+.cq-watch-instrument:before{
+ content:"";
+ position:absolute;
+ inset:3px;
+ border:1px solid #a47c3d55;
+ border-radius:5px;
+ pointer-events:none;
+}
+.cq-watch-instrument:hover,
+.cq-watch-instrument:focus-visible{
+ outline:2px solid #d2b76b!important;
+ outline-offset:3px!important;
+ filter:brightness(1.08);
+}
+.cq-watch-lamp{
+ position:relative;
+ z-index:2;
+ flex:0 0 22px;
+ width:22px;
+ height:22px;
+ border-radius:50%;
+ background:radial-gradient(circle,#7fd19a 0 24%,#326441 38%,#16291b 64%,#050805 68%);
+ box-shadow:0 0 12px #6fb88677, inset 0 0 4px #fff8;
+}
+.cq-watch-instrument.attention .cq-watch-lamp{
+ background:radial-gradient(circle,#f2a55e 0 24%,#8b4324 38%,#32140d 64%,#080403 68%);
+ box-shadow:0 0 14px #db724caa,inset 0 0 4px #fff5;
+ animation:cqWatchPulse 1.8s ease-in-out infinite;
+}
+.cq-watch-copy{
+ position:relative;
+ z-index:2;
+ min-width:0;
+ display:grid;
+ grid-template-rows:auto auto auto;
+ line-height:1.05;
+}
+.cq-watch-copy small{
+ color:#bca46d!important;
+ font-size:7px!important;
+ font-weight:900!important;
+ letter-spacing:.18em!important;
+}
+.cq-watch-copy strong{
+ margin-top:3px!important;
+ color:#f2e6c5!important;
+ font:700 12px Georgia,serif!important;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
+}
+.cq-watch-copy b{
+ margin-top:3px!important;
+ color:#958c79!important;
+ font:700 7px Arial,sans-serif!important;
+ letter-spacing:.04em!important;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
+}
+@keyframes cqWatchPulse{
+ 50%{filter:brightness(1.35);box-shadow:0 0 22px #df7a52}
+}
+
+/* Spyglass is now a prop only: no visible HTML label. */
+#captainSpyglassBtn.cq-spyglass{
+ position:absolute!important;
+ z-index:14!important;
+ right:27%!important;
+ top:50%!important;
+ width:150px!important;
+ height:42px!important;
+ padding:0!important;
+ margin:0!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ transform:rotate(-13deg)!important;
+ overflow:visible!important;
+ appearance:none!important;
+ -webkit-appearance:none!important;
+ color:transparent!important;
+ font-size:0!important;
+}
+#captainSpyglassBtn.cq-spyglass span{display:none!important}
+#captainSpyglassBtn.cq-spyglass .cq-spyglass-body{
+ position:absolute;
+ left:26px;
+ top:11px;
+ width:102px;
+ height:18px;
+ border-radius:9px;
+ background:
+   linear-gradient(180deg,#b78a3f,#65451e 42%,#28170b 58%,#8d672d)!important;
+ border:2px solid #35200e;
+ box-shadow:0 7px 10px #0009,inset 0 2px #d4ac5b88;
+}
+#captainSpyglassBtn.cq-spyglass .cq-spyglass-glass{
+ position:absolute;
+ right:0;
+ top:4px;
+ width:40px;
+ height:32px;
+ border-radius:50%;
+ border:5px solid #8f6b33;
+ background:radial-gradient(circle at 40% 35%,#355968,#102229 60%,#050a0c 70%);
+ box-shadow:0 6px 9px #000b,inset 0 0 9px #5f8a9566;
+}
+#captainSpyglassBtn.cq-spyglass .cq-spyglass-grip{
+ position:absolute;
+ left:8px;
+ top:10px;
+ width:34px;
+ height:20px;
+ border-radius:9px 2px 2px 9px;
+ background:linear-gradient(180deg,#4a2811,#1b0d06);
+ border:2px solid #281208;
+ box-shadow:0 5px 8px #0008;
+}
+#captainSpyglassBtn.cq-spyglass:hover,
+#captainSpyglassBtn.cq-spyglass:focus-visible{
+ outline:none!important;
+ filter:brightness(1.18) drop-shadow(0 0 8px #d3ad5a66);
+}
+#captainSpyglassBtn.cq-spyglass:focus-visible:after{
+ content:"";
+ position:absolute;
+ inset:-7px;
+ border:2px solid #d5b866;
+ border-radius:14px;
+}
+
+/* Ensure no accidental native button text leaks through on first paint. */
+#captainWatchStrip,
+#captainSpyglassBtn{
+ text-decoration:none!important;
+ text-transform:none!important;
+}
+
+/* Slightly lift Course Counsel so the watch sits naturally below it. */
+#captainQuarters .cq-first-mate-table{
+ top:38.5%!important;
+}
+
+/* Keep the Watch hidden until Captain's Quarters is fully presented. */
+#captainQuarters:not(.captain-entry-complete) .cq-watch-instrument{
+ opacity:0!important;
+ pointer-events:none!important;
+}
+#captainQuarters.captain-entry-complete .cq-watch-instrument{
+ opacity:1!important;
+ transition:opacity .35s ease .2s,filter .2s ease!important;
+}
+
+@media(max-width:900px){
+ .cq-watch-instrument{top:50%!important;width:46vw!important}
+ #captainSpyglassBtn.cq-spyglass{right:23%!important;transform:scale(.9) rotate(-13deg)!important}
+}
