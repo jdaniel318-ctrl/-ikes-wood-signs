@@ -626,3 +626,18 @@ Dark Flag UX and project-identity refinement.
 - Dark Flag project cards and Project Control Center use larger, logo-first identity treatment.
 - Project-code initials remain fallbacks when no saved logo exists.
 - Pirate Mode behavior and the v2.9.21 Graphics Library interaction are preserved.
+
+
+## v2.9.23 — TRUE COLORS
+Customer-facing project branding inheritance.
+
+- Removes the oversized first-letter hero treatment from the shared MUG/BBS customer shell.
+- Empty Hero Graphic slots now use a brand-neutral decorative fallback driven by the shell's project colors rather than a project initial.
+- A saved Welcome Hero Graphic automatically replaces that fallback for its project only.
+- Project Logo / Mark has increased presence in customer headers and fully replaces the letter fallback when assigned.
+- Footer Graphic is now a functional customer-facing slot for MUG and BBS templates.
+- Background / Texture is now applied as a softened project-owned customer-shell background so order content remains readable.
+- All customer asset reads remain tied to the permanent project namespace and include the existing late-render project guard.
+- Empty slots remain clean; projects do not inherit another project's artwork.
+- Dark Flag Graphics Library, project isolation, Admin separation and Pirate Mode are preserved.
+- No change is made to the customer-facing Engine access control in this release; that remains a separate security/UX task.

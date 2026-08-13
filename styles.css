@@ -2787,3 +2787,88 @@ body.dark-flag-pirate-mode .mugs-shell-mark-wrap .project-logo-image{
   .project-brand-badge{width:92px;height:72px}
   .pec-brand-mark{width:82px;height:76px}
 }
+
+
+/* v2.9.23 — TRUE COLORS
+   Project assets now drive the customer shell rather than generic project initials. */
+
+/* Header identity: real project logo leads when available. */
+.mugs-shell-mark-wrap.has-project-logo .project-logo-image{
+  width:72px!important;height:72px!important;border-radius:16px!important;
+  object-fit:contain!important;background:#fff!important;
+  box-shadow:0 5px 15px #00000020;
+}
+.mugs-shell-mark-wrap.has-project-logo .mugs-shell-mark{display:none!important}
+
+/* Hero: no more giant first-letter centerpiece. */
+.project-hero-art{
+  min-height:230px;
+  position:relative;
+}
+.project-hero-art .hero-slot-image{
+  width:min(360px,100%)!important;
+  max-width:360px!important;
+  max-height:300px!important;
+  border-radius:22px;
+  object-fit:contain;
+  background:#ffffff10;
+  filter:drop-shadow(0 10px 18px #00000024);
+}
+.project-hero-art.has-hero-graphic .project-hero-fallback{display:none!important}
+.project-hero-fallback{
+  width:210px;height:210px;position:relative;display:grid;place-items:center;
+  border-radius:50%;
+  border:2px solid #d7b46a80;
+  background:radial-gradient(circle,#ffffff0d 0 34%,transparent 35% 100%);
+  box-shadow:0 0 0 14px #ffffff06;
+}
+.project-hero-fallback:before,
+.project-hero-fallback:after,
+.project-hero-fallback span{
+  content:"";position:absolute;border-radius:999px;
+}
+.project-hero-fallback:before{
+  width:128px;height:128px;border:2px solid #d7b46a55;
+}
+.project-hero-fallback:after{
+  width:62px;height:62px;background:#d7b46a22;border:1px solid #d7b46a60;
+}
+.project-hero-fallback span:nth-child(1){
+  width:14px;height:14px;background:#d7b46a;transform:translate(0,-83px)
+}
+.project-hero-fallback span:nth-child(2){
+  width:10px;height:10px;background:#ffffff99;transform:translate(72px,42px)
+}
+.project-hero-fallback span:nth-child(3){
+  width:8px;height:8px;background:#9b2451;transform:translate(-67px,52px)
+}
+body.flowers-project .project-hero-fallback{border-color:#f4e4a790}
+body.flowers-project .project-hero-fallback:before{border-color:#f4e4a760}
+body.flowers-project .project-hero-fallback:after{background:#f4e4a720;border-color:#f4e4a760}
+body.flowers-project .project-hero-fallback span:nth-child(1){background:#f4e4a7}
+body.flowers-project .project-hero-fallback span:nth-child(3){background:#b85f79}
+
+/* Footer Graphic slot becomes functional while preserving textual business identity. */
+.project-footer-brand{display:flex;align-items:center;gap:12px;min-width:0}
+.footer-slot-image{
+  width:auto!important;height:48px!important;max-width:180px!important;
+  object-fit:contain!important;border-radius:9px;
+  background:#fff;padding:3px;
+}
+.project-footer-brand strong{white-space:nowrap}
+
+/* Project backgrounds are deliberately softened so content remains readable. */
+.mugs-shell.has-project-background{background-repeat:no-repeat!important}
+#customerApp.has-project-background{background-repeat:no-repeat!important}
+
+/* Maintain sensible proportions on iPad/mobile. */
+@media(max-width:760px){
+  .mugs-shell-mark-wrap.has-project-logo .project-logo-image{width:62px!important;height:62px!important}
+  .project-hero-fallback{width:150px;height:150px}
+  .project-hero-fallback:before{width:92px;height:92px}
+  .project-hero-fallback span:nth-child(1){transform:translate(0,-58px)}
+  .project-hero-fallback span:nth-child(2){transform:translate(50px,30px)}
+  .project-hero-fallback span:nth-child(3){transform:translate(-47px,36px)}
+  .footer-slot-image{height:42px!important;max-width:140px!important}
+  .project-footer-brand{align-items:flex-start;flex-direction:column}
+}

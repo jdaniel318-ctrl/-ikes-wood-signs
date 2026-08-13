@@ -1018,7 +1018,8 @@
     if(!p)return;
     const requestedProjectId=p.id;
     const assets=await readProjectAssets(requestedProjectId);
-    // Never apply an asset after project context changes. Project branding is namespace-owned.
+
+    // Project assets may only finish rendering into the project that requested them.
     if(activeProjectId && activeProjectId!==requestedProjectId)return;
 
     const customerLogo=$('customerProjectLogo');
@@ -1034,21 +1035,40 @@
       }
     }
 
+    const applyShellBackground=(shell)=>{
+      if(!shell)return;
+      shell.classList.toggle('has-project-background',!!assets.backgroundImage);
+      shell.style.backgroundImage=assets.backgroundImage?`linear-gradient(rgba(255,255,255,.88),rgba(255,255,255,.88)),url("${assets.backgroundImage}")`:'';
+      shell.style.backgroundSize=assets.backgroundImage?'cover':'';
+      shell.style.backgroundPosition=assets.backgroundImage?'center':'';
+      shell.style.backgroundAttachment=assets.backgroundImage?'fixed':'';
+    };
+    const applyHero=(imageId,artId)=>{
+      setSlotImage(imageId,assets.heroGraphic);
+      const art=$(artId);
+      if(art) art.classList.toggle('has-hero-graphic',!!assets.heroGraphic);
+    };
+
     if(p.id==='mugshot-after-dark'){
       setSlotImage('mugsProjectLogoImg',assets.projectLogo);
       $('mugsProjectLogoImg')?.closest('.mugs-shell-mark-wrap')?.classList.toggle('has-project-logo',!!assets.projectLogo);
-      setSlotImage('mugsHeroGraphicImg',assets.heroGraphic);
-      const shell=$('mugsCustomerShell');
-      if(shell) shell.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
+      applyHero('mugsHeroGraphicImg','mugsHeroArt');
+      setSlotImage('mugsFooterGraphicImg',assets.footerGraphic);
+      applyShellBackground($('mugsCustomerShell'));
     }else if(p.id==='beccas-bloom-shop' || p.projectTheme==='flowers'){
       setSlotImage('flowersProjectLogoImg',assets.projectLogo);
       $('flowersProjectLogoImg')?.closest('.mugs-shell-mark-wrap')?.classList.toggle('has-project-logo',!!assets.projectLogo);
-      setSlotImage('flowersHeroGraphicImg',assets.heroGraphic);
-      const shell=$('flowersCustomerShell');
-      if(shell) shell.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
+      applyHero('flowersHeroGraphicImg','flowersHeroArt');
+      setSlotImage('flowersFooterGraphicImg',assets.footerGraphic);
+      applyShellBackground($('flowersCustomerShell'));
     }else if(p.id==='ikes-wood-signs'){
       const root=$('customerApp');
-      if(root) root.style.backgroundImage=assets.backgroundImage?`url("${assets.backgroundImage}")`:'';
+      if(root){
+        root.classList.toggle('has-project-background',!!assets.backgroundImage);
+        root.style.backgroundImage=assets.backgroundImage?`linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)),url("${assets.backgroundImage}")`:'';
+        root.style.backgroundSize=assets.backgroundImage?'cover':'';
+        root.style.backgroundPosition=assets.backgroundImage?'center':'';
+      }
     }
   }
 
