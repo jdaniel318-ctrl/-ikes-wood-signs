@@ -3018,3 +3018,11 @@ body.dark-flag-pirate-mode .graphics-edit-state.unsaved{background:#2b2212!impor
   .graphics-focused-editor .asset-preview-stage img{height:280px!important;max-height:280px!important}
   .graphics-focused-editor .marketing-asset-actions{grid-template-columns:1fr!important}
 }
+
+/* v2.9.30 — Captain-facing clarity + extensible project plumbing */
+.engine-identity-helper{
+  margin:.65rem 0 1rem;
+  max-width:78ch;
+  opacity:.82;
+  line-height:1.45;
+}

@@ -1482,7 +1482,21 @@
     }
   }
 
+  function normalizeProjectArchitecture(p){
+    if(!p)return p;
+    p.architecture=p.architecture||{};
+    p.architecture.template=p.architecture.template||'custom';
+    p.architecture.layout=p.architecture.layout||'showcase';
+    p.architecture.modules=p.architecture.modules||{};
+    p.architecture.workflow=p.architecture.workflow||{};
+    p.architecture.workflow.steps=Array.isArray(p.architecture.workflow.steps)?p.architecture.workflow.steps:[];
+    p.architecture.workflow.fields=Array.isArray(p.architecture.workflow.fields)?p.architecture.workflow.fields:[];
+    p.architecture.workflow.rules=p.architecture.workflow.rules||{};
+    return p;
+  }
+
   function applyProjectPermissions(p){
+    normalizeProjectArchitecture(p);
     const pm=p?.permissions||{};
     $('projectOrdersLaunchBtn')?.classList.toggle('hidden',!pm.ordersView);
     $('projectLedgerLaunchBtn')?.classList.toggle('hidden',!pm.ledgerView);
@@ -1510,7 +1524,7 @@
   };
   function blackFlagAdminThemeFor(p){
     const code=String(p?.projectCode||p?.orderPrefix||'').toUpperCase();
-    return BLACK_FLAG_ADMIN_THEMES[code]||{
+    const fallback=BLACK_FLAG_ADMIN_THEMES[code]||{
       header:p?.branding?.primary||'#173742',
       headerText:'#ffffff',
       subText:p?.branding?.accent||'#d7bd72',
@@ -1522,6 +1536,9 @@
       all:'#294d5d',
       decoration:'none'
     };
+    // Project-owned configuration wins. Named themes above are only starter defaults,
+    // so future projects are not forced into an Ike/Mugs/Flowers workflow or appearance.
+    return {...fallback,...(p?.adminTheme||{})};
   }
 
   function applyProjectBranding(p){
