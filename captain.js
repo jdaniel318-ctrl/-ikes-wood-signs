@@ -313,13 +313,26 @@
   window.addEventListener('pagehide', () => { authorized = false; });
 })();
 
-// v2.9.59 — Captain's five command doors.
-document.addEventListener('DOMContentLoaded', () => {
+// v2.9.61 — Captain's five command doors, robust boot.
+(function(){
+function bootCaptainCommand(){
+  if(window.__blackFlagCaptainCommandBound) return;
+  window.__blackFlagCaptainCommandBound=true;
   const workspace=document.getElementById('captainCommandWorkspace');
   const title=document.getElementById('captainCommandTitle');
   const subtitle=document.getElementById('captainCommandSubtitle');
   const body=document.getElementById('captainCommandBody');
   const close=document.getElementById('captainCommandClose');
+
+  // Capture-phase fallback: the painted Captain buttons must work even if
+  // another cabin layer later overlaps or recreates a visual element.
+  document.addEventListener('click',event=>{
+    const door=event.target.closest?.('[data-captain-command-door]');
+    if(!door)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    open(door.dataset.captainCommandDoor);
+  },true);
 
   const safe=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch(_){return fallback}};
@@ -499,12 +512,8 @@ document.addEventListener('DOMContentLoaded', () => {
   close?.addEventListener('click',closeWorkspace);
   document.querySelectorAll('[data-captain-command]').forEach(btn=>btn.addEventListener('click',()=>open(btn.dataset.captainCommand)));
 
-  // Dedicated visible bottom command doors: what the Captain sees is what the Captain touches.
-  document.querySelectorAll('[data-captain-command-door]').forEach(btn=>btn.addEventListener('click',e=>{
-    e.preventDefault();e.stopPropagation();open(btn.dataset.captainCommandDoor);
-  }));
-
-  // Physical desk objects remain useful secondary shortcuts to the same command areas.
+  // Dedicated visible bottom command doors are handled by the capture-phase
+  // delegated listener above. Physical desk objects remain secondary shortcuts.
   document.querySelector('[data-cq-object="cargo"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('cargo')},true);
   document.querySelector('[data-cq-object="locker"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('powder')},true);
   document.querySelector('[data-cq-object="blackflag"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('blackflag')},true);
@@ -514,4 +523,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('captainBlueprintDeskBtn')?.addEventListener('contextmenu',e=>e.preventDefault());
 
   window.BlackFlagCaptainCommand={open,close:closeWorkspace};
-});
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',bootCaptainCommand,{once:true});
+}else{
+  bootCaptainCommand();
+}
+})();

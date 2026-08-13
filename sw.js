@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-60-architecture-consolidation';
+const CACHE='workshop-engine-v2-9-61-captain-door-fix';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.60',
-  './app.js?v=2.9.60',
-  './captain.js?v=2.9.60',
+  './styles.css?v=2.9.61',
+  './app.js?v=2.9.61',
+  './captain.js?v=2.9.61',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',

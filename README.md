@@ -1,41 +1,27 @@
-# Workshop Engine v2.9.60 — Architecture Consolidation
+# Workshop Engine v2.9.61 — Captain Door Function Fix
 
-This release fixes the architectural shortcuts identified in the v2.9.59 review.
+## Fix
+The five painted Captain command buttons were visually selectable in v2.9.60 but could fail to open their management workspaces.
 
-## Engine Appearance
-- `engineAppearance` is now the primary setting.
-- Business Mode and Pirate Mode are two complete presentations of the same Engine Room.
-- Business Mode is the default.
-- Login selector and in-Engine selector read/write the same setting.
-- Legacy Pirate Mode functions remain only as compatibility wrappers.
-- Engine text, entrance styling, Operations Bay/Cove treatment, navigation rail, buttons and panel materials now visibly change with the selected presentation.
-- Neither mode changes permissions, project data, isolation, workflows or authority.
+Root cause addressed:
+- Captain Command initialization previously depended on one DOMContentLoaded path.
+- Dedicated button handlers were bound directly to the initial elements.
 
-## Captain's five visible doors
-Added five dedicated hitboxes aligned to the five painted cinematic controls:
-- Cargo Hold
-- Powder Keg
-- Black Flag
-- Captain's Log
-- Ship's Blueprint
+v2.9.61:
+- Boots Captain Command whether DOMContentLoaded has already fired or not.
+- Adds a capture-phase delegated handler for the five command doors.
+- Prevents overlapping cinematic cabin layers from swallowing the action.
+- Keeps the exact five-button hitbox alignment from v2.9.60.
 
-The visible painted button is now the actual interaction target. Existing desk objects remain secondary shortcuts, not substitutes.
+## Captain doors
+- Cargo Hold → AI Workshop & Innovation
+- Powder Keg → Dangerous Authority
+- Black Flag → Fleet Command
+- Captain's Log → history, governance, fleet performance
+- Ship's Blueprint → living architecture
 
-## Captain responsibilities
-- Cargo Hold = innovation pipeline and workshop notes.
-- Powder Keg = Captain-only high-consequence authority review.
-- Black Flag = fleet command / state awareness.
-- Captain's Log = fleet performance, audit history, Standing Orders and waived-fee records.
-- Ship's Blueprint = architecture only, with access to the full living blueprint.
-
-Each command area now receives a distinct visual treatment inside the Captain Command workspace.
-
-## Engine responsibilities
-- Analytics remain removed from the primary Engine Room.
-- Company Registry remains removed from the daily surface because Fleet Command duplicates it.
-- Project operations and controls remain in the Engine Room / First Mate's Workbench.
-- No project control has been moved into Captain Command.
+## Engine appearance
+Business / Pirate architecture from v2.9.60 is unchanged.
 
 ## Assets
-No new assets added, removed, renamed or replaced in v2.9.60.
-Existing Captain's Quarters and Engine Room benchmark assets remain unchanged.
+No assets added, removed, renamed or replaced.
