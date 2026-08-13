@@ -992,3 +992,29 @@ Field-test fix for the first-load rendering regression seen in v2.9.50.
 - Existing Signal Reports, Spyglass intelligence, Return to Harbor, Set Sail and Send Her to Sea logic are unchanged.
 - Captain / Engine authorization separation remains unchanged.
 - Blueprint revision advanced to v2.9.51.
+
+
+## v2.9.52 — Cinematic Command Cabin
+Major visual reorganization based directly on the Captain-approved cabin concept.
+
+### Visual system
+- The approved cinematic cabin artwork is now the Captain's Quarters visual shell.
+- The old layered desk/window illustration is suppressed to eliminate clutter and competing geometry.
+- Existing Dark Sky, Blueprint, Captain's Log, Cargo Hold, Compass, Powder Keg, Spyglass and Return-to-Engine controls remain functional as precise invisible/low-visual-noise hotspots over their corresponding physical objects.
+- The Captain's desk is deliberately clean: Log left, Blueprint centered, Spyglass right, with utility controls organized along the lower command rail.
+
+### Spyglass
+- The broken/ambiguous CSS-drawn telescope is removed from the main cabin.
+- The approved realistic brass-and-leather spyglass in the visual shell is now the actual interactive target.
+- The Spyglass intelligence panel and its logic remain unchanged.
+
+### First Mate's Watch
+- Live deployment intelligence remains dynamic rather than being baked into the image.
+- A live dark/brass Watch panel masks the static reference text so counts and attention signals remain truthful.
+- Watch stays compact and physically integrated in the upper-left command area.
+
+### Architecture / safety
+- Captain/Engine authorization separation is unchanged.
+- Project isolation is unchanged.
+- Existing interactive Dark Sky Signal Reports, Take Me There routing, Return to Harbor, Set Sail and Send Her to Sea remain intact.
+- Blueprint revision advanced to v2.9.52.
