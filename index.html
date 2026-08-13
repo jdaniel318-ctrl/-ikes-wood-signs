@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.63" />
+  <link rel="stylesheet" href="styles.css?v=2.9.64" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -127,7 +127,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.63 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.64 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -256,15 +256,11 @@
           <span class="cq-chart-note n2" aria-hidden="true">FLEET</span>
           <b>UNROLL &amp; VIEW MAP →</b>
         </button>
-        <button class="cq-desk-object cq-leather-log" data-cq-object="log" type="button"><span>CAPTAIN'S<br>LOG</span></button>
-        <button class="cq-desk-object cq-cargo-chest" data-cq-object="cargo" type="button"><span>CARGO<br>HOLD</span></button>
-        <button class="cq-desk-object cq-brass-compass" data-cq-object="blackflag" type="button"><i>✥</i><span>BLACK FLAG</span></button>
         <button id="captainSpyglassBtn" class="cq-desk-object cq-spyglass" type="button" aria-label="Open Captain's Spyglass intelligence report">
           <i class="cq-spyglass-glass" aria-hidden="true"></i>
           <i class="cq-spyglass-body" aria-hidden="true"></i>
           <i class="cq-spyglass-grip" aria-hidden="true"></i>
         </button>
-        <button class="cq-desk-object cq-powder-key" data-cq-object="locker" type="button"><i>⚿</i><span>POWDER KEG</span></button>
         <div class="cq-inkwell"></div><div class="cq-quill"></div><div class="cq-coins">● ● ●</div><div class="cq-desk-lantern"><i></i></div>
       </div>
       <aside class="cq-first-mate-table"><div class="cq-fm-kicker">FIRST MATE'S TABLE</div><strong>COURSE COUNSEL</strong><div><span>STEADY COURSE</span><span>WATERS AHEAD</span><span>NEW HEADING</span></div><small>Advice aboard. Captain retains the helm.</small></aside>
@@ -700,28 +696,27 @@
         <div class="ervn-brand"><span>⚙</span><strong>ENGINE ROOM</strong><small>OPERATIONS</small></div>
         <a href="#engineHealthStrip">Engine Room</a>
         <a href="#engineProjectsSection">Projects</a>
-        <a href="#engineFleetSection">Fleet Overview</a>
         <a href="#engineSettingsSection">Settings</a>
         <a href="#engineSecuritySection">Security</a>
         <div class="ervn-secure"><i></i><span>ENGINE SECURE</span></div>
       </nav>
 <div class="engine-health-strip" id="engineHealthStrip">
-        <div><span>Orders Aboard</span><strong id="engineOrderCount">—</strong></div>
-        <div><span>Stranded Draft</span><strong id="engineDraftStatus">—</strong></div>
-        <div><span>Cargo Hold</span><strong id="engineStorageStatus">—</strong></div>
-        <div><span>Signal Flag</span><strong id="engineEmailStatus">—</strong></div>
+        <div><span id="engineOrdersLabel">Orders</span><strong id="engineOrderCount">—</strong></div>
+        <div><span id="engineRecoveryLabel">Recovery Status</span><strong id="engineDraftStatus">—</strong></div>
+        <div><span id="engineStorageLabel">Storage</span><strong id="engineStorageStatus">—</strong></div>
+        <div><span id="engineSystemLabel">System Status</span><strong id="engineEmailStatus">—</strong></div>
       </div>
 
       
       
       <section class="dark-flag-cove-banner" aria-hidden="true">
-        <div class="cove-crest">☠</div>
+        <div id="engineModeGraphic" class="cove-crest" aria-hidden="true">☠</div>
         <div class="cove-banner-copy">
           <div class="cove-kicker">ENGINE SYSTEMS</div>
           <div class="cove-title">OPERATIONS BAY</div>
           <div class="cove-motto">ONE ENGINE • MANY PROJECTS • SEALED DATA BOUNDARIES</div>
         </div>
-        <div class="cove-compass">✦</div>
+        <div id="engineModeAccent" class="cove-compass" aria-hidden="true">✦</div>
       </section>
 
       <section id="engineProjectsSection" class="project-command-section first-mate-fleet">
@@ -729,7 +724,7 @@
           <div>
             <div class="engine-kicker">PROJECT COMMAND</div>
             <h3>Projects</h3>
-            <p>Open a project to manage it. Entering a project locks Black Flag.</p>
+            <p id="engineProjectsHelp">Open a project to manage its controls. Project data remains isolated.</p>
           </div>
           <button id="addProjectBtn" class="project-add-btn">＋ ADD PROJECT</button>
         </div>
@@ -928,7 +923,7 @@
     </section>
   </div>
 
-  <script src="app.js?v=2.9.63"></script>
+  <script src="app.js?v=2.9.64"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -954,7 +949,7 @@
 
 
 
-  <script src="captain.js?v=2.9.63"></script>
+  <script src="captain.js?v=2.9.64"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

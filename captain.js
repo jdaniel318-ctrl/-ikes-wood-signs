@@ -364,7 +364,6 @@ function bootCaptainCommand(){
 
   function open(section){
     if(!workspace||!body)return;
-    document.getElementById('captainObjectPanel')?.classList.add('hidden');
     document.getElementById('captainFleetChart')?.classList.add('hidden');
     workspace.classList.remove('hidden');
     workspace.setAttribute('aria-hidden','false');
@@ -512,12 +511,8 @@ function bootCaptainCommand(){
   close?.addEventListener('click',closeWorkspace);
   document.querySelectorAll('[data-captain-command]').forEach(btn=>btn.addEventListener('click',()=>open(btn.dataset.captainCommand)));
 
-  // Dedicated visible bottom command doors are handled by the capture-phase
-  // delegated listener above. Physical desk objects remain secondary shortcuts.
-  document.querySelector('[data-cq-object="cargo"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('cargo')},true);
-  document.querySelector('[data-cq-object="locker"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('powder')},true);
-  document.querySelector('[data-cq-object="blackflag"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('blackflag')},true);
-  document.querySelector('[data-cq-object="log"]')?.addEventListener('click',e=>{e.stopImmediatePropagation();open('log')},true);
+  // The five painted lower controls are now the sole command doors.
+  // Legacy desk-object duplicates were removed from the cabin DOM.
 
   // Existing blueprint hotspot remains functional; command tab offers same destination.
   document.getElementById('captainBlueprintDeskBtn')?.addEventListener('contextmenu',e=>e.preventDefault());

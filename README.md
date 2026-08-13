@@ -1,31 +1,38 @@
-# Workshop Engine v2.9.63 — Mop the Deck
+# Workshop Engine v2.9.64 — Review Cleanup
 
-This is a structural visual cleanup, not a band-aid pass.
+This release applies the first three items from the Captain's review without adding cover-up layers.
 
-## What was cleaned
-- Removed the entire accumulated Engine/Captain visual patch stack from v2.9.54 through v2.9.62 (54,549 CSS characters).
-- Replaced it with one authoritative Engine Room / Captain Command presentation layer.
-- Removed 23 earlier Pirate-mode rules that could style project/customer-specific surfaces.
-- Removed the Engine benchmark screenshot as a live CSS background. It remains in assets as a benchmark/reference only.
-- Made the Engine masthead and all operational panels opaque to eliminate ghost UI/background bleed.
-- Standardized project-title, body-copy, form, filter, button and status contrast.
-- Established one simple z-index ladder.
-- Consolidated Business Mode and Pirate Mode presentation while keeping the same Engine machinery underneath.
-- Consolidated Captain Command styling while preserving the working five-button architecture.
-- Kept Company Registry and old Engine telemetry DOM only as compatibility support for existing render functions; they remain intentionally hidden from the daily Engine surface.
+## Review Item 1 — Engine PIN contrast
+- Raised contrast on Engine Room title, subtitle, PIN labels, footer/help copy, mode selector and PIN field.
+- Business/Pirate selection is clearer at normal iPad viewing distance.
+- Business entry no longer presents a pirate graphic.
 
-## Functional safety
-- app.js is byte-for-byte unchanged from v2.9.62.
-- captain.js is byte-for-byte unchanged from v2.9.62.
-- Project workflows, data, permissions, deployment, storage, Captain authority and isolation logic were not changed.
+## Review Item 2 — Business Mode identity
+Business Mode is now a professional operations environment, not Pirate Mode with decorations removed.
+- Removed pirate graphics from Business Engine surfaces.
+- Professionalized typography, geometry, project cards, instrumentation and control styling.
+- Business terminology:
+  - Orders
+  - Recovery Status
+  - Storage
+  - System Status
+  - Platform Operations / System Operations
+- Pirate terminology remains available only when Pirate Mode is deliberately selected.
+- Captain's Quarters remains the one nautical/Captain access point visible from Business Mode.
+- Removed the dead Fleet Overview navigation link that pointed to a hidden compatibility registry.
 
-## Appearance boundaries
-- Business/Pirate appearance is Engine-only.
-- Customer/project shells are not repainted by Engine appearance.
-- Pirate Mode no longer uses a screenshot containing fake UI beneath live controls.
+## Review Item 3 — Captain's Quarters structural artifacts
+Root causes were removed rather than covered:
+- The light rectangle over the Dark Sky map came from the old `.cq-interactive-map::after` border surviving after the map became a transparent cinematic hotspot. That pseudo-element is now explicitly disabled in cinematic mode.
+- The small box over Captain's Log came from obsolete transparent desk-object buttons still layered over the cinematic artwork. The four duplicated legacy desk controls (Log, Cargo, Black Flag, Powder Keg) were removed from the DOM and their command listeners removed.
+- The five painted lower command buttons remain the sole command-door system.
+- Touch hotspots no longer leave persistent iPad focus/tap rectangles; keyboard focus indication remains available on pointer/keyboard devices.
+- The unique Dark Sky map, desk Blueprint, First Mate's Watch and Spyglass controls remain functional.
+
+## Safety
+- No project data, namespace, deployment, order, permission, storage or Captain authorization model was changed.
+- Hidden Engine Reset binding target is preserved because `app.js` still depends on it.
+- No new destructive actions were enabled.
 
 ## Assets
 No assets added, removed, renamed or replaced.
-
-## Maintenance rule
-Future visual band-aid/override fixes should not be added without Captain approval. Visual defects should first be traced to their root selector/layer and reported before code is changed.

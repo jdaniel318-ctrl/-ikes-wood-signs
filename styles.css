@@ -3521,12 +3521,11 @@ html.captain-controller-ready #captainQuartersGate.hidden{
 /* v2.9.43 Captain's Quarters 2.0 */
 .cq-object-panel{z-index:100350!important;backdrop-filter:blur(7px)} .cq-interactive-map.cq-map-receded{opacity:0!important;pointer-events:none!important;transform:translateX(-50%) scale(.88)!important}
 .cq-rustic-desk{position:relative;z-index:8;width:min(96%,1240px);height:285px;margin:24px auto;border:9px ridge #8b5a2c;border-radius:18px;background:linear-gradient(176deg,#75441f,#4c2a15 20%,#24130c 70%,#140a07);box-shadow:0 -18px 45px #0009,0 28px 55px #000,inset 0 0 55px #130905;overflow:hidden}.cq-desk-grain{position:absolute;inset:0;background:repeating-linear-gradient(91deg,transparent 0 115px,#13090544 117px 121px,transparent 123px 180px)}
-.cq-desk-object{position:absolute!important;color:#ead6a2!important;cursor:pointer!important;text-shadow:0 2px 4px #000!important;transition:.2s ease!important}.cq-desk-object:hover,.cq-desk-object:focus-visible{filter:brightness(1.2);outline:3px solid #d8b25a!important;transform:translateY(-6px)!important}
-.cq-leather-log{left:7%;top:48px;width:190px;height:145px;transform:rotate(-5deg);border:7px double #8c5c31!important;border-radius:7px!important;background:linear-gradient(135deg,#4d1f13,#210c09)!important;font:700 19px Georgia,serif!important}.cq-cargo-chest{left:29%;top:72px;width:180px;height:116px;border:7px ridge #8d6730!important;border-radius:48px 48px 9px 9px!important;background:linear-gradient(#56321b 0 42%,#2c180f 43%)!important;font:700 16px Georgia,serif!important}.cq-brass-compass{left:51%;top:47px;width:150px;height:150px;border-radius:50%!important;background:radial-gradient(circle,#152c31 0 41%,#c49b45 43% 48%,#3b2a14 50% 58%,#a97c31 60% 64%,#24170d 66%)!important}.cq-brass-compass i{display:block;font-size:63px;color:#d7b65d;animation:cqNeedle 7s ease-in-out infinite}.cq-powder-key{right:12%;top:65px;width:180px;height:130px;background:transparent!important;border:0!important}.cq-powder-key i{display:block;font-size:86px;color:#b88c3d}.cq-powder-key span{background:#1b0c08dd;border:2px solid #7e5727;padding:6px;display:block}.cq-inkwell{position:absolute;right:31%;bottom:30px;width:45px;height:45px;background:#080809;border:4px solid #5c4323;border-radius:8px}.cq-quill{position:absolute;right:27%;bottom:54px;width:9px;height:155px;background:#cdbb91;transform:rotate(28deg)}.cq-coins{position:absolute;left:44%;bottom:25px;color:#c19a43;font-size:25px}.cq-desk-lantern{position:absolute;right:2%;top:22px;width:47px;height:100px;border:4px solid #765523;border-radius:45%;background:#38220f}.cq-desk-lantern i{position:absolute;inset:22px 10px;background:#ffc65b;border-radius:45%;box-shadow:0 0 34px 15px #e99d2e88;animation:cqFlame2 1.2s infinite alternate}
+.cq-desk-object{position:absolute!important;color:#ead6a2!important;cursor:pointer!important;text-shadow:0 2px 4px #000!important;transition:.2s ease!important}.cq-desk-object:hover,.cq-desk-object:focus-visible{filter:brightness(1.2);outline:3px solid #d8b25a!important;transform:translateY(-6px)!important}.cq-inkwell{position:absolute;right:31%;bottom:30px;width:45px;height:45px;background:#080809;border:4px solid #5c4323;border-radius:8px}.cq-quill{position:absolute;right:27%;bottom:54px;width:9px;height:155px;background:#cdbb91;transform:rotate(28deg)}.cq-coins{position:absolute;left:44%;bottom:25px;color:#c19a43;font-size:25px}.cq-desk-lantern{position:absolute;right:2%;top:22px;width:47px;height:100px;border:4px solid #765523;border-radius:45%;background:#38220f}.cq-desk-lantern i{position:absolute;inset:22px 10px;background:#ffc65b;border-radius:45%;box-shadow:0 0 34px 15px #e99d2e88;animation:cqFlame2 1.2s infinite alternate}
 .cq-first-mate-table{position:relative;z-index:8;width:min(92%,860px);margin:12px auto 28px;padding:16px;text-align:center;border:3px double #74562e;background:#17100cee;color:#d7c38e}.cq-fm-kicker{font-size:9px;letter-spacing:.28em;color:#a98a4c}.cq-first-mate-table>strong{display:block;font:700 20px Georgia,serif;margin:5px}.cq-first-mate-table>div{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.cq-first-mate-table>div span{padding:7px 11px;border:1px solid #76592e;background:#08191d;color:#d8b35c;font-size:9px;font-weight:900}.cq-first-mate-table small{display:block;margin-top:8px}
 .cq-powder-controls{margin:20px 0;padding:18px;border:2px solid #8e3b2d;background:linear-gradient(#35140f,#170b09)}.cq-powder-controls.hidden{display:none!important}.cq-danger-plaque{color:#f0c169;font-weight:1000;letter-spacing:.12em}
 .cq-room-sea{background:radial-gradient(ellipse at 62% 4%,#d9d3a322 0 7%,transparent 24%),repeating-radial-gradient(ellipse at 12% 90%,#285764 0 7px,#0a2631 9px 19px,#173d49 21px 27px)!important;background-size:135% 100%,165px 55px!important;animation:cqSea42 3.4s ease-in-out infinite alternate!important}.cq-room-sea:after{content:"";position:absolute;inset:15% -20% -5%;background:repeating-radial-gradient(ellipse at 50% 100%,transparent 0 15px,#a9c3c71b 17px 20px,transparent 22px 42px);background-size:210px 65px;animation:cqCross42 2.6s infinite alternate-reverse}@keyframes cqNeedle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(12deg)}}@keyframes cqFlame2{to{filter:brightness(1.35);transform:scale(.94,1.05)}}@keyframes cqSea42{to{transform:translateX(3%) translateY(3px)}}@keyframes cqCross42{to{transform:translateX(-5%) translateY(-3px)}}
-@media(max-width:800px){.cq-rustic-desk{height:330px}.cq-leather-log{left:3%;width:150px}.cq-cargo-chest{left:29%;width:145px}.cq-brass-compass{left:54%;width:125px;height:125px}.cq-powder-key{right:2%;width:125px}.cq-quill,.cq-inkwell,.cq-desk-lantern{display:none}}
+@media(max-width:800px){.cq-rustic-desk{height:330px}.cq-quill,.cq-inkwell,.cq-desk-lantern{display:none}}
 
 
 /* ==========================================================
@@ -3672,12 +3671,6 @@ html.captain-controller-ready #captainQuartersGate.hidden{
 .cq-master-blueprint:before,.cq-master-blueprint:after{content:"";position:absolute;top:-8px;bottom:-8px;width:22px;border-radius:50%;background:linear-gradient(90deg,#593414,#d0a967,#5a3517);box-shadow:3px 5px 9px #0009}.cq-master-blueprint:before{left:-11px}.cq-master-blueprint:after{right:-11px}
 .cq-master-blueprint small{display:block;font:700 8px Georgia,serif;letter-spacing:.2em}.cq-master-blueprint strong{display:block;margin:8px 0 3px;font:700 clamp(22px,2.5vw,37px) Georgia,serif;letter-spacing:.04em}.cq-master-blueprint span{display:block;font:700 10px Georgia,serif;letter-spacing:.1em}.cq-master-blueprint b{display:block;margin-top:15px;font:700 9px Georgia,serif;letter-spacing:.16em}
 .cq-master-blueprint:hover,.cq-master-blueprint:focus-visible{outline:3px solid #e4c06c!important;filter:brightness(1.08);transform:rotate(0) translateY(-5px)!important}
-
-/* Existing tools become physical stations around the central chart. */
-#captainQuarters .cq-leather-log{left:2.5%!important;top:14%!important;width:18%!important;height:48%!important}
-#captainQuarters .cq-cargo-chest{left:3.5%!important;top:67%!important;width:18%!important;height:27%!important;border-radius:35px 35px 7px 7px!important}
-#captainQuarters .cq-brass-compass{left:auto!important;right:4%!important;top:8%!important;width:145px!important;height:145px!important}
-#captainQuarters .cq-powder-key{right:3%!important;top:58%!important;width:18%!important;height:32%!important}
 #captainQuarters .cq-quill{right:21%!important;bottom:15%!important}.cq-inkwell{right:24%!important;bottom:9%!important}.cq-coins{left:77%!important;bottom:7%!important}
 #captainQuarters .cq-desk-lantern{display:none!important}
 
@@ -3768,26 +3761,6 @@ html.captain-controller-ready #captainQuartersGate.hidden{
 .cq-route-note{position:absolute;right:5%;bottom:4%;font:italic 700 8px Georgia,serif;color:#b88c50aa;letter-spacing:.08em;transform:rotate(1deg)}
 .cq-ring-stain{position:absolute;left:22%;top:15%;width:62px;height:48px;border:4px solid #24100655;border-radius:50%;transform:rotate(9deg);box-shadow:inset 0 0 4px #0005}
 .cq-brass-corner{position:absolute;width:35px;height:35px;border-color:#9a7132;border-style:solid;opacity:.75}.bc-a{left:4px;top:4px;border-width:4px 0 0 4px}.bc-b{right:4px;bottom:4px;border-width:0 4px 4px 0}
-
-/* Make functional props feel like objects with weight */
-#captainQuarters .cq-leather-log{
- background:linear-gradient(115deg,#3b150c,#7b321b 48%,#321008)!important;
- border:5px ridge #8b6031!important;box-shadow:10px 15px 17px #000b,inset 9px 0 15px #180604!important;
- transform:rotate(-5deg)!important
-}
-#captainQuarters .cq-leather-log:after{content:"";position:absolute;right:8%;top:8%;bottom:8%;width:4px;background:#a6793b55}
-#captainQuarters .cq-cargo-chest{
- background:repeating-linear-gradient(90deg,#351507 0 32px,#5a2910 33px 62px)!important;
- border:7px ridge #75481f!important;box-shadow:9px 14px 17px #000b,inset 0 11px #8a512455!important
-}
-#captainQuarters .cq-cargo-chest:after{content:"";position:absolute;left:43%;top:45%;width:22px;height:28px;border:4px solid #9b7132;border-radius:5px;background:#1d0d06}
-#captainQuarters .cq-brass-compass{
- background:radial-gradient(circle,#0b2930 0 35%,#a67a35 37% 42%,#231205 44% 48%,#b68b45 50% 55%,#261307 57%)!important;
- box-shadow:7px 11px 18px #000b,inset 0 0 13px #e2b75a66!important
-}
-#captainQuarters .cq-powder-key{
- background:linear-gradient(145deg,#201008,#080403)!important;border:5px ridge #6b421e!important;box-shadow:8px 12px 16px #000b!important
-}
 
 /* First Mate station: chart table instead of software panel */
 #captainQuarters .cq-first-mate-table{
@@ -4267,9 +4240,19 @@ html.captain-controller-ready #captainQuartersGate.hidden{
   box-shadow:none!important;opacity:1!important;
 }
 #captainQuarters.cinematic-cabin-ready #captainDarkSkyChartBtn>*{opacity:0!important}
-#captainQuarters.cinematic-cabin-ready #captainDarkSkyChartBtn:hover,
-#captainQuarters.cinematic-cabin-ready #captainDarkSkyChartBtn:focus-visible{
-  outline:3px solid #d2ad5e!important;outline-offset:4px!important;
+#captainQuarters.cinematic-cabin-ready #captainDarkSkyChartBtn::after{
+  content:none!important;
+  display:none!important;
+}
+#captainQuarters.cinematic-cabin-ready #captainDarkSkyChartBtn{
+  -webkit-tap-highlight-color:transparent!important;
+  outline:none!important;
+}
+@media (hover:hover) and (pointer:fine){
+  #captainQuarters.cinematic-cabin-ready #captainDarkSkyChartBtn:focus-visible{
+    outline:2px solid #b89550!important;
+    outline-offset:2px!important;
+  }
 }
 
 /* Blueprint hotspot. */
@@ -4283,35 +4266,6 @@ html.captain-controller-ready #captainQuartersGate.hidden{
 #captainQuarters.cinematic-cabin-ready #captainBlueprintDeskBtn>*{opacity:0!important}
 #captainQuarters.cinematic-cabin-ready #captainBlueprintDeskBtn:before,
 #captainQuarters.cinematic-cabin-ready #captainBlueprintDeskBtn:after{display:none!important}
-
-/* Organized physical object hotspots. */
-#captainQuarters.cinematic-cabin-ready .cq-leather-log{
-  position:absolute!important;z-index:119!important;
-  left:4.0%!important;top:58.5%!important;width:18.8%!important;height:19.5%!important;
-  transform:none!important;background:transparent!important;border:0!important;box-shadow:none!important;color:transparent!important;
-}
-#captainQuarters.cinematic-cabin-ready .cq-leather-log>*{opacity:0!important}
-
-#captainQuarters.cinematic-cabin-ready .cq-cargo-chest{
-  position:absolute!important;z-index:119!important;
-  left:2.0%!important;bottom:8.0%!important;width:18.2%!important;height:8.0%!important;
-  transform:none!important;background:transparent!important;border:0!important;box-shadow:none!important;color:transparent!important;
-}
-#captainQuarters.cinematic-cabin-ready .cq-cargo-chest>*{opacity:0!important}
-
-#captainQuarters.cinematic-cabin-ready .cq-powder-key{
-  position:absolute!important;z-index:119!important;
-  left:21.3%!important;bottom:8.0%!important;width:17.2%!important;height:8.0%!important;
-  transform:none!important;background:transparent!important;border:0!important;box-shadow:none!important;color:transparent!important;
-}
-#captainQuarters.cinematic-cabin-ready .cq-powder-key>*{opacity:0!important}
-
-#captainQuarters.cinematic-cabin-ready .cq-brass-compass{
-  position:absolute!important;z-index:119!important;
-  right:19.5%!important;top:40.7%!important;width:10.0%!important;height:12.0%!important;
-  transform:none!important;background:transparent!important;border:0!important;box-shadow:none!important;color:transparent!important;
-}
-#captainQuarters.cinematic-cabin-ready .cq-brass-compass>*{opacity:0!important}
 
 /* Realistic painted spyglass becomes the target; no CSS-drawn telescope is required. */
 #captainQuarters.cinematic-cabin-ready #captainSpyglassBtn.cq-spyglass{
@@ -4381,7 +4335,7 @@ html.captain-controller-ready #captainQuartersGate.hidden{
 
 
 /* ==========================================================
-   v2.9.63 — MOP THE DECK
+   v2.9.64 — REVIEW CLEANUP
    Authoritative Engine Room + Captain Command presentation.
    Replaces the accumulated v2.9.54–v2.9.62 visual patch stack.
 
@@ -4901,31 +4855,165 @@ body.engine-mode #enginePanel .engine-telemetry-legacy{
   box-shadow:0 0 9px #d0a44e;
 }
 
-/* ---------- Business Mode ---------- */
-body.business-engine-mode #blackFlagEntryGate{
-  background:radial-gradient(circle at 50% 18%,#1a272d,#060b0e 72%);
+
+/* ---------- Engine entry / PIN readability ---------- */
+#blackFlagEntryGate .bf-entry-shell{
+  color:#edf3f0;
 }
-body.business-engine-mode #blackFlagEntryGate .bf-pirate-atmosphere{display:none}
+#blackFlagEntryGate .bf-entry-kicker{
+  color:#d3b166!important;
+}
+#blackFlagEntryGate h1{
+  color:#f1f5f3!important;
+  text-shadow:none!important;
+}
+#blackFlagEntryGate .bf-entry-sub{
+  color:#b7c1be!important;
+}
+#blackFlagEntryGate .bf-entry-panel{
+  background:#f4f1e8!important;
+}
+#blackFlagEntryGate .bf-entry-panel label,
+#blackFlagEntryGate .bf-entry-panel strong{
+  color:#26373d!important;
+}
+#blackFlagEntryGate .bf-pin-input{
+  color:#13272f!important;
+  background:#fbfcfb!important;
+  border-color:#4188a5!important;
+}
+#blackFlagEntryGate .bf-entry-foot{
+  color:#9aa7a3!important;
+}
+#blackFlagEntryGate .engine-entry-mode{
+  background:#0d171b!important;
+  border-color:#53646a!important;
+}
+#blackFlagEntryGate .engine-entry-mode strong{
+  color:#eef2ef!important;
+}
+#blackFlagEntryGate .engine-entry-mode small{
+  color:#9aa7a3!important;
+}
+#blackFlagEntryGate .engine-mode-segment button{
+  color:#aeb9b5!important;
+}
+#blackFlagEntryGate .engine-mode-segment button.active{
+  color:#ffe09b!important;
+  border-color:#a78343!important;
+  background:#302619!important;
+}
+
+/* ---------- Business Mode ----------
+   Professional operations environment. No pirate graphics or decorative
+   pirate language appear here; Captain's Quarters is the sole exception. */
+body.business-engine-mode #blackFlagEntryGate{
+  background:radial-gradient(circle at 50% 18%,#1b2930,#060b0e 72%);
+}
+body.business-engine-mode #blackFlagEntryGate .bf-pirate-atmosphere,
+body.business-engine-mode #blackFlagEntryGate .bf-entry-mark{
+  display:none!important;
+}
 body.business-engine-mode #blackFlagEntryGate .bf-entry-shell{
-  background:#0d1519;
-  border-color:#526168;
+  background:#0c1418;
+  border-color:#596a70;
+}
+body.business-engine-mode #enginePanel.engine-panel{
+  background:#080e11;
+  border-color:#46565d;
+}
+body.business-engine-mode #enginePanel .command-masthead{
+  background:linear-gradient(100deg,#0d171c,#122128 58%,#0b1317);
+  border-color:#46575e;
 }
 body.business-engine-mode #enginePanel .command-mark{
   font-size:0;
+  border-color:#52646b;
+  color:#a9bbc0;
 }
 body.business-engine-mode #enginePanel .command-mark::before{
   content:"⚙";
   font-size:23px;
 }
+body.business-engine-mode #enginePanel .engine-room-visual-nav{
+  background:#091014;
+  border-right-color:#3f5057;
+}
 body.business-engine-mode #enginePanel .ervn-brand>span{
   font-size:0;
+  border-color:#52646b;
 }
 body.business-engine-mode #enginePanel .ervn-brand>span::before{
   content:"⚙";
   font-size:20px;
+  color:#a9bbc0;
+}
+body.business-engine-mode #enginePanel .ervn-brand strong{
+  color:#d7e0dd;
+  font-family:Arial,sans-serif;
+  letter-spacing:.04em;
 }
 body.business-engine-mode #enginePanel .dark-flag-cove-banner{
-  background:#10191d;
+  background:linear-gradient(90deg,#101b20,#132229);
+  border-color:#43545b;
+}
+body.business-engine-mode #enginePanel .cove-crest,
+body.business-engine-mode #enginePanel .cove-compass{
+  display:none!important;
+}
+body.business-engine-mode #enginePanel .cove-title,
+body.business-engine-mode #enginePanel .command-masthead h2,
+body.business-engine-mode #enginePanel .project-card h4{
+  font-family:Arial,sans-serif!important;
+  font-weight:750!important;
+  letter-spacing:-.01em;
+}
+body.business-engine-mode #enginePanel .command-masthead h2{
+  font-size:34px;
+}
+body.business-engine-mode #enginePanel .project-card{
+  border-radius:7px;
+  border-color:#45575e;
+  background:#121c21;
+  box-shadow:0 5px 14px rgba(0,0,0,.22);
+}
+body.business-engine-mode #enginePanel .project-card-actions button{
+  border-radius:7px!important;
+  font-family:Arial,sans-serif!important;
+}
+body.business-engine-mode #enginePanel .project-card img,
+body.business-engine-mode #enginePanel .project-brand-badge{
+  border-radius:7px!important;
+}
+body.business-engine-mode #enginePanel .engine-health-strip>div,
+body.business-engine-mode #enginePanel .engine-card,
+body.business-engine-mode #enginePanel .project-command-section,
+body.business-engine-mode #enginePanel .project-engine-control{
+  border-radius:7px;
+}
+body.business-engine-mode #enginePanel .project-add-btn{
+  border-radius:7px!important;
+  background:#2b6177;
+  border-color:#4e8197;
+  color:#f5f8f7;
+}
+body.business-engine-mode #enginePanel .engine-kicker{
+  color:#8fb0bc!important;
+}
+body.business-engine-mode #enginePanel .project-summary-badge{
+  background:#16242a!important;
+  border-color:#43565d!important;
+  color:#c3d0cc!important;
+}
+body.business-engine-mode #enginePanel .captain-access-dock{
+  border-color:#6a5836;
+  background:#15140f;
+}
+body.business-engine-mode #enginePanel .captain-access-kicker{
+  color:#bea25f;
+}
+body.business-engine-mode #enginePanel .captain-access-btn>span:first-child{
+  color:#c6a966;
 }
 
 /* ---------- Pirate Mode ----------
@@ -5307,11 +5395,16 @@ body.captain-command-open #captainCommandWorkspace{pointer-events:auto}
 .captain-command-door.blackflag{left:39%;width:16%}
 .captain-command-door.log{left:57.3%;width:16%}
 .captain-command-door.blueprint{left:75.6%;width:15.8%}
-.captain-command-door:hover,
-.captain-command-door:focus-visible{
-  outline:2px solid #e2bd70;
-  outline-offset:3px;
-  box-shadow:0 0 22px rgba(216,169,78,.38);
+.captain-command-door{
+  -webkit-tap-highlight-color:transparent;
+  outline:none;
+}
+@media (hover:hover) and (pointer:fine){
+  .captain-command-door:focus-visible{
+    outline:2px solid #e2bd70;
+    outline-offset:3px;
+    box-shadow:0 0 22px rgba(216,169,78,.38);
+  }
 }
 #captainQuarters:not(.captain-entry-complete) .captain-command-door{
   pointer-events:none;
