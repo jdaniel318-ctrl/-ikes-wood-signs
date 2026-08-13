@@ -66,6 +66,7 @@
     }
 
     authorized = true;
+    byId('captainPinInput')?.blur();
     hide('captainQuartersGate');
     show('captainQuarters');
     clearHash();
@@ -75,6 +76,7 @@
 
   function secure() {
     authorized = false;
+    hide('captainFleetChart');
     hide('captainQuarters');
     hide('captainQuartersGate');
     byId('captainQuarters')?.classList.remove('captain-entry-complete');
@@ -102,6 +104,14 @@
     });
     byId('captainQuartersCloseBtn')?.addEventListener('click', secure);
     byId('captainExitBtn')?.addEventListener('click', secure);
+    byId('captainDarkSkyChartBtn')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      show('captainFleetChart');
+    });
+    byId('captainFleetChartClose')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      hide('captainFleetChart');
+    });
     byId('captainPinInput')?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();

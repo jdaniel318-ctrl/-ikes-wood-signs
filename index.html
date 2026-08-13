@@ -49,20 +49,9 @@
     <button id="returnToEngineBtn" class="project-engine-return hidden">ENGINE</button>
 
   
-  <!-- v2.9.39 Captain's Quarters: isolated Captain-only creative chamber -->
+  <!-- v2.9.40 Captain's Quarters: isolated Captain-only creative chamber -->
   <div id="captainQuartersGate" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainQuartersTitle">
-<div class="cq-world" aria-hidden="true">
-  <div class="cq-sky"><span class="cq-lightning l1"></span><span class="cq-lightning l2"></span></div>
-  <div class="cq-window cq-window-left"><div class="cq-horizon"></div><div class="cq-fleet">⛵</div></div>
-  <div class="cq-window cq-window-right"><div class="cq-horizon"></div><div class="cq-fleet">⛵</div></div>
-  <div class="cq-beam beam-left"></div><div class="cq-beam beam-right"></div>
-  <div class="cq-hanging-lantern lantern-a"><i></i></div>
-  <div class="cq-hanging-lantern lantern-b"><i></i></div>
-  <div class="cq-banner"><span>☠</span><strong>BLACK FLAG</strong><small>CAPTAIN'S PRIVATE COMMAND</small></div>
-  <div class="cq-map-wall"><span>THE DARK SKY</span><i></i><b></b></div>
-  <div class="cq-sword sword-a">†</div><div class="cq-sword sword-b">†</div>
-  <div class="cq-desk-edge"></div>
-</div>
+
 
     <div class="captain-quarters-card">
       <div class="captain-crest" aria-hidden="true">⚓</div>
@@ -87,6 +76,39 @@
       <div class="cq-lantern cq-lantern-left"></div><div class="cq-lantern cq-lantern-right"></div>
       <div class="captain-entry-flash"></div>
     </div>
+    <div class="cq-chamber-world" aria-hidden="true">
+      <div class="cq-cabin-sky"><span class="cq-room-lightning rl1"></span><span class="cq-room-lightning rl2"></span></div>
+      <div class="cq-room-window rw-left"><div class="cq-room-moon"></div><div class="cq-room-sea"></div><div class="cq-room-ship">⛵</div></div>
+      <div class="cq-room-window rw-right"><div class="cq-room-sea"></div><div class="cq-room-ship second">⛵</div></div>
+      <div class="cq-room-beam rb-left"></div><div class="cq-room-beam rb-right"></div>
+      <div class="cq-room-lantern rlan-left"><i></i></div><div class="cq-room-lantern rlan-right"><i></i></div>
+      <div class="cq-room-banner"><span>☠</span><strong>BLACK FLAG</strong><small>CAPTAIN'S PRIVATE COMMAND</small></div>
+      <div class="cq-room-map-frame"></div>
+      <div class="cq-room-desk"></div>
+    </div>
+
+    <button id="captainDarkSkyChartBtn" class="cq-interactive-map" type="button" aria-label="Open the Dark Sky fleet chart">
+      <span class="cq-map-title">THE DARK SKY</span>
+      <span class="cq-map-route route-one"></span><span class="cq-map-route route-two"></span>
+      <i class="cq-map-point mp-one"></i><i class="cq-map-point mp-two"></i><i class="cq-map-point mp-three"></i>
+      <b>OPEN FLEET CHART →</b>
+    </button>
+
+    <div id="captainFleetChart" class="cq-fleet-chart hidden" role="dialog" aria-modal="true" aria-labelledby="captainFleetChartTitle">
+      <div class="cq-fleet-chart-card">
+        <button id="captainFleetChartClose" class="captain-round-close cq-chart-close" type="button" aria-label="Close fleet chart">×</button>
+        <div class="captain-kicker">CAPTAIN'S NAVIGATION</div>
+        <h2 id="captainFleetChartTitle">The Dark Sky</h2>
+        <p>Current vessels known to this build. This chart is Captain-side only and does not change project configuration.</p>
+        <div class="cq-fleet-vessels">
+          <article><span>IKE</span><strong>Ike's Wood Signs</strong><small>Original vessel • active customer workflow</small></article>
+          <article><span>MUG</span><strong>Mugs After Dark</strong><small>Independent project vessel</small></article>
+          <article><span>BBS</span><strong>Becca's Bloom Shop</strong><small>Independent project vessel</small></article>
+        </div>
+        <div class="cq-chart-note">Future mission: chart new projects dynamically as they join the fleet.</div>
+      </div>
+    </div>
+
     <div class="captain-chamber">
       <div class="captain-chamber-top">
         <div>
@@ -106,7 +128,7 @@
           <span class="captain-lantern">♜</span>
         </div>
       </div>
-      <div class="captain-console">
+      <div class="captain-console cq-command-desk-controls">
         <section><span>CREATIVE HOLD</span><strong>Ready for experiments</strong><small>Future visual ideas, prototypes and Captain-only toys dock here.</small></section>
         <section><span>PROJECT BULKHEADS</span><strong>Sealed</strong><small>Customer and project namespaces stay outside the chamber.</small></section>
         <section><span>PIRATE MODE</span><strong>Still aboard</strong><small>Personality remains separate from Captain privileges.</small></section>
