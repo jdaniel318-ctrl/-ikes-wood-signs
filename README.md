@@ -844,3 +844,14 @@ This release adds the map/documentation surface and does not intentionally colla
 - Added original age-of-sail cabin atmosphere: storm water, timber, shelves, candles, globe, telescope, scrolls, quill and command desk.
 - Kept project-isolation and Captain authentication logic unchanged.
 - Visual direction is an original cinematic pirate/age-of-sail cabin; no copied film characters, logos, or production artwork.
+
+
+## v2.9.45 — Weathered Flagship Pass
+The successful v2.9.44 composition is retained. This pass focuses on physical realism and history:
+- weathered timber, scratches, stains, brass corners and deeper shadows;
+- Ship's Blueprint gains route marks, working annotations, stains and irregular parchment;
+- Captain's Log, Cargo Hold, Compass and Powder Keg read more like physical objects;
+- First Mate's counsel reads as a chart table rather than a software panel;
+- improved irregular water movement and moon-path lighting;
+- warm candlelight/cold moonlight separation;
+- lived-in artifacts: knife, wax seal, tally marks, route note and cup-ring stain.
