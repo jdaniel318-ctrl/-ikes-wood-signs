@@ -355,6 +355,7 @@
 
   // Engine security is intentionally session-only. Leaving Black Flag locks it again.
   let engineSessionUnlocked = false;
+  let pendingCaptainDeploymentRoute = null;
   function lockEngineSession(){
     engineSessionUnlocked = false;
     if($('enginePinInput')) $('enginePinInput').value='';
@@ -598,8 +599,8 @@
   const DEPLOYMENT_STATES={
     draft:'Draft',
     sea_trial:'Sea Trial',
-    deployed:'Deployed',
-    paused:'Paused',
+    deployed:'Deployed / Sailing',
+    paused:'In Harbor / Paused',
     retired:'Retired'
   };
   const deploymentSelectionByProject=new Map();
@@ -643,6 +644,39 @@
     if(!d) d=deployments.find(x=>x.state!=='retired')||deployments[0]||null;
     if(d) deploymentSelectionByProject.set(p.id,d.id);
     return d;
+  }
+
+  function deploymentCommissionOrder(p,d){
+    return new Promise(resolve=>{
+      let modal=document.getElementById('deploymentCommissionOrder');
+      if(!modal){
+        modal=document.createElement('div');
+        modal.id='deploymentCommissionOrder';
+        modal.className='deployment-commission-overlay';
+        modal.innerHTML=`<div class="deployment-commission-card">
+          <div class="commission-seal">⚓</div>
+          <small>BLACK FLAG • COMMISSIONING ORDER</small>
+          <h3>SEND HER TO SEA</h3>
+          <div id="commissionOrderBody"></div>
+          <div class="commission-actions">
+            <button id="commissionCancel" class="secondary-btn" type="button">HOLD IN SEA TRIAL</button>
+            <button id="commissionApprove" class="primary-btn" type="button">SEND HER TO SEA</button>
+          </div>
+        </div>`;
+        document.body.appendChild(modal);
+      }
+      const readiness=deploymentReadiness(d);
+      document.getElementById('commissionOrderBody').innerHTML=`
+        <div class="commission-order-line"><span>VESSEL</span><strong>${escapeHtml(p.name)}</strong></div>
+        <div class="commission-order-line"><span>OUTPOST</span><strong>${escapeHtml(d.name)}</strong></div>
+        <div class="commission-order-line"><span>ENGINE READINESS</span><strong>${readiness.score}%</strong></div>
+        <div class="commission-order-line ${d.deviceLockVerified?'pass':'warn'}"><span>DEVICE LOCK</span><strong>${d.deviceLockVerified?'VERIFIED':'NOT VERIFIED'}</strong></div>
+        <p>Commissioning changes this outpost from Sea Trial to active service. Device-level iPad lock remains a separate responsibility.</p>`;
+      modal.classList.add('open');
+      const finish=(answer)=>{modal.classList.remove('open');resolve(answer);};
+      document.getElementById('commissionCancel').onclick=()=>finish(false);
+      document.getElementById('commissionApprove').onclick=()=>finish(true);
+    });
   }
 
   function deploymentStateClass(state){
@@ -694,12 +728,22 @@
         totalOutposts:deployments.filter(d=>d.state!=='retired').length,
         activeOutposts:active.length,
         attentionOutposts:attention.length,
-        outposts:deployments.map(d=>({
-          id:d.id,name:d.name,profile:d.profile,state:d.state,
-          manifestVersion:Number(d.manifestVersion||1),
-          readiness:deploymentReadiness(d).score,
-          lastCheckIn:d.lastCheckIn||null
-        }))
+        outposts:deployments.map(d=>{
+          const ready=deploymentReadiness(d);
+          const reasons=[];
+          if(d.state==='paused') reasons.push('Returned to harbor / paused');
+          if(d.state==='sea_trial') reasons.push('Sea Trial in progress');
+          if(d.state==='deployed'&&ready.score<100) reasons.push('Engine readiness needs attention');
+          if(!d.deviceLockVerified && d.profile==='kiosk_self_service') reasons.push('Device-level kiosk lock not verified');
+          return {
+            id:d.id,name:d.name,profile:d.profile,state:d.state,
+            manifestVersion:Number(d.manifestVersion||1),
+            readiness:ready.score,
+            deviceLockVerified:!!d.deviceLockVerified,
+            attentionReasons:reasons,
+            lastCheckIn:d.lastCheckIn||null
+          };
+        })
       };
     });
   }
@@ -1010,8 +1054,8 @@
               <div class="deployment-lifecycle-actions">
                 ${d.state==='draft'?`<button data-deployment-action="sea_trial" class="secondary-btn">BEGIN SEA TRIAL</button>`:''}
                 ${d.state==='sea_trial'?`<button data-deployment-action="deployed" class="primary-btn">DEPLOY OUTPOST</button><button data-deployment-action="draft" class="secondary-btn">RETURN TO DRAFT</button>`:''}
-                ${d.state==='deployed'?`<button data-deployment-action="paused" class="secondary-btn">PAUSE OUTPOST</button>`:''}
-                ${d.state==='paused'?`<button data-deployment-action="deployed" class="primary-btn">RESUME OUTPOST</button>`:''}
+                ${d.state==='deployed'?`<button data-deployment-action="paused" class="return-harbor-btn"><strong>RETURN TO HARBOR</strong><small>Pause this deployment</small></button>`:''}
+                ${d.state==='paused'?`<button data-deployment-action="deployed" class="primary-btn">SET SAIL <small>Resume deployment</small></button>`:''}
                 ${d.state!=='retired'?`<button data-deployment-action="retired" class="danger-outline-btn">RETIRE OUTPOST</button>`:''}
               </div>
             </section>
@@ -1029,7 +1073,7 @@
 
               <article class="pec-card deployment-signal-watch">
                 <small>SIGNAL WATCH</small><h4>Outpost Health</h4>
-                <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'SAILING':d.state==='sea_trial'?'SEA TRIAL':d.state==='paused'?'PAUSED':'IN HARBOR'}</strong></div>
+                <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'SAILING':d.state==='sea_trial'?'SEA TRIAL':d.state==='paused'?'IN HARBOR':'IN HARBOR'}</strong></div>
                 <p><b>Last check-in:</b> ${d.lastCheckIn?escapeHtml(new Date(d.lastCheckIn).toLocaleString()):'Telemetry not installed yet'}</p>
                 <p><b>Manifest:</b> v${Number(d.manifestVersion||1)}</p>
                 <p><b>Source attribution:</b> Outpost ID reserved for future order provenance</p>
@@ -1203,7 +1247,7 @@
         }
         if(next==='deployed'){
           if(d.state!=='sea_trial'&&d.state!=='paused')return;
-          if(!confirm(`Deploy ${d.name}? This marks the outpost as operating. Device-level lock remains your responsibility.`))return;
+          if(!(await deploymentCommissionOrder(p,d)))return;
         }
         if(next==='retired'){
           if(!confirm(`Retire ${d.name}? Historical deployment records will be preserved.`))return;
@@ -1242,6 +1286,22 @@
     await renderProjectTab(id,'overview');
     window.scrollTo({top:$('projectEngineControl').offsetTop-20,behavior:'smooth'});
   }
+
+  async function openCaptainDeploymentRoute(route){
+    const p=projectById(route?.projectId); if(!p)return;
+    deploymentSelectionByProject.set(p.id,route.outpostId||'');
+    if(!engineSessionUnlocked){
+      pendingCaptainDeploymentRoute=route;
+      document.getElementById('captainFleetChart')?.classList.add('hidden');
+      document.getElementById('captainQuarters')?.classList.add('hidden');
+      $('engineRoomBtn')?.click();
+      return;
+    }
+    await openProjectEngineControl(p.id);
+    await renderProjectTab(p.id,'deployment');
+  }
+  window.addEventListener('blackflag:open-deployment',e=>openCaptainDeploymentRoute(e.detail||{}));
+
 
 
 
@@ -3700,6 +3760,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       $('enginePinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
       await openEnginePanel();
+      if(pendingCaptainDeploymentRoute){
+        const route=pendingCaptainDeploymentRoute;
+        pendingCaptainDeploymentRoute=null;
+        await openCaptainDeploymentRoute(route);
+      }
     });
     if($('closeEngineBtn')) $('closeEngineBtn').addEventListener('click',()=>{
       lockEngineSession();

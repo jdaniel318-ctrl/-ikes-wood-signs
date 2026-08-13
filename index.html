@@ -106,6 +106,7 @@
           <div class="cq-chart-current current-a"></div><div class="cq-chart-current current-b"></div>
           <div id="captainFleetVessels" class="cq-fleet-vessels"></div>
         </div>
+        <div id="captainFleetSignalReport" class="cq-signal-report hidden" aria-live="polite"></div>
         <div id="captainFleetSignalSummary" class="cq-chart-note">Signal Watch reads project deployment manifests from Dark Sky.</div>
       </div>
     </div>
@@ -124,7 +125,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.48 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.50 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -224,6 +225,9 @@
       </div>
       <div class="captain-rule">CAPTAIN'S RULE: creativity may roam; production boundaries do not.</div>
       <div class="cq-cabin-title"><small>BLACK FLAG • CAPTAIN AUTHORIZED</small><strong>THE CAPTAIN'S QUARTERS</strong></div>
+      <button id="captainWatchStrip" class="cq-watch-strip" type="button" aria-label="Open Captain's Spyglass intelligence report">
+        <span>FIRST MATE'S WATCH</span><strong id="captainWatchHeadline">Reading the horizon…</strong><small id="captainWatchDetail">Dark Sky signal intelligence</small>
+      </button>
       <div class="cq-rustic-desk" aria-label="Captain's command desk"><div class="cq-desk-grain"></div>
         <div class="cq-desk-history" aria-hidden="true">
           <span class="cq-knife"></span>
@@ -248,10 +252,21 @@
         <button class="cq-desk-object cq-leather-log" data-cq-object="log" type="button"><span>CAPTAIN'S<br>LOG</span></button>
         <button class="cq-desk-object cq-cargo-chest" data-cq-object="cargo" type="button"><span>CARGO<br>HOLD</span></button>
         <button class="cq-desk-object cq-brass-compass" data-cq-object="compass" type="button"><i>✥</i><span>COMPASS</span></button>
+        <button id="captainSpyglassBtn" class="cq-desk-object cq-spyglass" type="button" aria-label="Open Captain's Spyglass intelligence report"><i></i><span>SPYGLASS</span></button>
         <button class="cq-desk-object cq-powder-key" data-cq-object="locker" type="button"><i>⚿</i><span>POWDER KEG</span></button>
         <div class="cq-inkwell"></div><div class="cq-quill"></div><div class="cq-coins">● ● ●</div><div class="cq-desk-lantern"><i></i></div>
       </div>
       <aside class="cq-first-mate-table"><div class="cq-fm-kicker">FIRST MATE'S TABLE</div><strong>COURSE COUNSEL</strong><div><span>STEADY COURSE</span><span>WATERS AHEAD</span><span>NEW HEADING</span></div><small>Advice aboard. Captain retains the helm.</small></aside>
+      <div id="captainSpyglassPanel" class="cq-spyglass-panel hidden" role="dialog" aria-modal="true" aria-labelledby="captainSpyglassTitle">
+        <div class="cq-spyglass-card">
+          <button id="captainSpyglassClose" class="captain-round-close" type="button" aria-label="Close Spyglass">×</button>
+          <div class="captain-kicker">CAPTAIN'S INTELLIGENCE</div>
+          <h2 id="captainSpyglassTitle">The Spyglass</h2>
+          <p>See what matters across the fleet without operating the machinery from the Captain's cabin.</p>
+          <div id="captainSpyglassReport" class="cq-spyglass-report"></div>
+        </div>
+      </div>
+
       <div id="captainObjectPanel" class="cq-object-panel hidden" role="dialog" aria-modal="true"><div class="cq-object-card"><div class="captain-kicker">CAPTAIN'S CABIN</div><h3 id="captainObjectTitle">Object</h3><p id="captainObjectCopy"></p><div id="captainPowderControls" class="cq-powder-controls hidden"><div class="cq-danger-plaque">⚠ CAPTAIN AUTHORITY REQUIRED</div><p>Reset Engine returns Engine and project settings to port defaults. Saved orders remain. A fresh Engine PIN and final confirmation are still required.</p><button id="engineResetSettingsBtn" class="danger-btn" type="button">RESET ENGINE TO PORT DEFAULTS</button></div><button id="captainObjectClose" type="button">RETURN TO THE CABIN</button></div></div>
       <button id="captainExitBtn" class="captain-primary" type="button">RETURN TO ENGINE</button>
     </div>

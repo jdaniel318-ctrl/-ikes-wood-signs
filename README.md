@@ -938,3 +938,44 @@ Shipwright • Manifest • Sea Trial • Outpost • Signal Watch • Deploymen
 - Separates Engine Readiness from Device Readiness in Deployment Shipwright so a 100% app score no longer visually implies iPad kiosk lock is verified.
 - Adds subtle interaction lighting to The Dark Sky wall chart so the navigation surface reads as usable without becoming a conventional app button.
 - Ship's Blueprint revision advanced to v2.9.48.
+
+
+## v2.9.49 — SIGNAL INTELLIGENCE
+A refinement and command-intelligence release built from the successful v2.9.48 field test.
+
+### Dark Sky Signal Reports
+- Project vessels are now actually interactive.
+- Touch a vessel to open its Captain-side Signal Report.
+- Report lists each outpost, lifecycle state, manifest revision and attention reason.
+- Paused deployments read as **IN HARBOR**.
+- Captain can choose **TAKE ME THERE / Open in Engine** for an exact outpost.
+- This route does not bypass Engine security: if the Engine session is locked, its own PIN gate is still required.
+
+### Captain's Spyglass
+- New physical spyglass on the Captain's desk.
+- Provides fleet intelligence: vessels, outposts sailing, Sea Trials and outposts in harbor.
+- First Mate's Opening Report surfaces deployment exceptions without changing project machinery.
+- Spyglass is observation/intelligence, not a duplicate Engine.
+
+### Deployment language and ceremony
+- **PAUSE OUTPOST** becomes **RETURN TO HARBOR** with plain-language explanation.
+- **RESUME OUTPOST** becomes **SET SAIL** with plain-language explanation.
+- Generic browser deployment confirmation is replaced by a Dark Sky Commissioning Order.
+- Sea Trial → active service now uses **SEND HER TO SEA** and explicitly shows vessel, outpost, Engine readiness and device-lock state.
+
+### Architecture
+- Blueprint revision updated to v2.9.49.
+- Captain's Spyglass added to the Captain layer.
+- Project isolation and separate Captain/Engine authorization remain preserved.
+
+
+## v2.9.50 — CAPTAIN'S WATCH
+This continuation release makes intelligence visible before the Captain goes looking for it.
+
+- Adds a live **First Mate's Watch** strip inside Captain's Quarters.
+- The watch summarizes vessels, sailing outposts, Sea Trials, harbor state and attention signals from the same deployment snapshot used by Dark Sky.
+- Touching the watch opens the Spyglass for the fuller intelligence report.
+- Dark Sky vessels needing attention now carry a visible **SIGNAL** marker.
+- Deployment state wording pairs pirate language with ordinary terms: **Deployed / Sailing** and **In Harbor / Paused**.
+- Blueprint revision advanced to v2.9.50 with First Mate's Watch represented in the Captain layer.
+- No Engine authority is duplicated or bypassed.
