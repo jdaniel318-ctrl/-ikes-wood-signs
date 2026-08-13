@@ -49,7 +49,7 @@
     <button id="returnToEngineBtn" class="project-engine-return hidden">ENGINE</button>
 
   
-  <!-- v2.9.33 Captain's Quarters: isolated Captain-only creative chamber -->
+  <!-- v2.9.36 Captain's Quarters: isolated Captain-only creative chamber -->
   <div id="captainQuartersGate" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainQuartersTitle">
     <div class="captain-quarters-card">
       <div class="captain-crest" aria-hidden="true">⚓</div>
@@ -65,6 +65,13 @@
   </div>
 
   <div id="captainQuarters" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainChamberTitle">
+    <div id="captainEntrySequence" class="captain-entry-sequence" aria-hidden="true">
+      <div class="captain-entry-storm"></div>
+      <div class="captain-entry-crest"><span>⚓</span><strong>CAPTAIN AUTHORIZED</strong><small>DARK SKY • PRIVATE COMMAND</small></div>
+      <div class="captain-door captain-door-left"><i></i></div>
+      <div class="captain-door captain-door-right"><i></i></div>
+      <div class="captain-entry-flash"></div>
+    </div>
     <div class="captain-chamber">
       <div class="captain-chamber-top">
         <div>
@@ -74,9 +81,15 @@
         </div>
         <button id="captainQuartersCloseBtn" class="captain-round-close" type="button" aria-label="Close Captain's Quarters">×</button>
       </div>
-      <div class="captain-window" aria-hidden="true">
-        <span class="captain-moon">☾</span><span class="captain-ship">⛵</span>
-        <div class="captain-horizon"></div>
+      <div class="captain-window captain-stern-gallery" aria-hidden="true">
+        <div class="captain-sky"><span class="captain-moon">☾</span><span class="captain-stars">✦ · ✧ · ✦</span><span class="captain-lightning">ϟ</span></div>
+        <div class="captain-sea"><span class="captain-ship">⛵</span><i class="wave w1"></i><i class="wave w2"></i><i class="wave w3"></i></div>
+        <div class="captain-window-frame"><i></i><i></i><i></i></div>
+        <div class="captain-desk">
+          <span class="captain-map">✧ CHARTS OF DARK SKY ✧</span>
+          <span class="captain-compass">✥</span>
+          <span class="captain-lantern">♜</span>
+        </div>
       </div>
       <div class="captain-console">
         <section><span>CREATIVE HOLD</span><strong>Ready for experiments</strong><small>Future visual ideas, prototypes and Captain-only toys dock here.</small></section>
@@ -671,7 +684,7 @@
         </div>
       </div>
 
-      <section class="captain-access-dock" aria-label="Captain's Quarters access">
+      <section class="captain-access-dock captain-access-ready" aria-label="Captain's Quarters access">
         <div class="captain-access-kicker">CAPTAIN ONLY</div>
         <button id="captainModeAccessBtn" class="captain-access-btn" type="button">
           <span>⚓</span><span><strong>CAPTAIN'S QUARTERS</strong><small>Private command and creative chamber · separate authentication required</small></span><b>ENTER →</b>

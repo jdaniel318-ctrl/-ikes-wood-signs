@@ -3721,7 +3721,7 @@ document.addEventListener('click', (event) => {
 })();
 
 
-// v2.9.33 Captain's Quarters framework.
+// v2.9.36 Captain's Quarters framework — robust delegated access.
 // Captain authentication is separate from Pirate Mode and is never persisted.
 (() => {
   const CAPTAIN_PIN = '19613';
@@ -3732,40 +3732,81 @@ document.addEventListener('click', (event) => {
 
   function openCaptainGate(){
     captainAuthorized=false;
-    const input=q('captainPinInput');
-    if(input){ input.value=''; setTimeout(()=>input.focus(),50); }
+    hide('captainQuarters');
     if(q('captainPinError')) q('captainPinError').textContent='';
+    if(q('captainPinInput')) q('captainPinInput').value='';
     show('captainQuartersGate');
+    document.body.classList.add('captain-modal-open');
+    requestAnimationFrame(()=>q('captainPinInput')?.focus());
   }
+
   function closeCaptainGate(){
     if(q('captainPinInput')) q('captainPinInput').value='';
+    if(q('captainPinError')) q('captainPinError').textContent='';
     hide('captainQuartersGate');
+    document.body.classList.remove('captain-modal-open');
   }
+
   function unlockCaptain(){
-    const entered=q('captainPinInput')?.value || '';
+    const entered=String(q('captainPinInput')?.value||'').trim();
     if(entered !== CAPTAIN_PIN){
       captainAuthorized=false;
       if(q('captainPinError')) q('captainPinError').textContent='Captain authentication failed.';
-      if(q('captainPinInput')) q('captainPinInput').value='';
+      if(q('captainPinInput')){
+        q('captainPinInput').value='';
+        q('captainPinInput').focus();
+      }
       return;
     }
     captainAuthorized=true;
-    closeCaptainGate();
+    hide('captainQuartersGate');
     show('captainQuarters');
+    const quarters=q('captainQuarters');
+    const entry=q('captainEntrySequence');
+    quarters?.classList.remove('captain-entry-complete');
+    entry?.classList.remove('captain-entry-play');
+    void entry?.offsetWidth;
+    entry?.classList.add('captain-entry-play');
+    window.setTimeout(()=>quarters?.classList.add('captain-entry-complete'),2400);
+    document.body.classList.add('captain-modal-open','captain-authorized');
   }
+
   function secureCaptainQuarters(){
     captainAuthorized=false;
     hide('captainQuarters');
+    q('captainQuarters')?.classList.remove('captain-entry-complete');
+    q('captainEntrySequence')?.classList.remove('captain-entry-play');
+    hide('captainQuartersGate');
     if(q('captainPinInput')) q('captainPinInput').value='';
+    document.body.classList.remove('captain-modal-open','captain-authorized');
   }
 
-  q('captainModeAccessBtn')?.addEventListener('click',openCaptainGate);
-  q('captainGateCloseBtn')?.addEventListener('click',closeCaptainGate);
-  q('captainUnlockBtn')?.addEventListener('click',unlockCaptain);
-  q('captainPinInput')?.addEventListener('keydown',(e)=>{if(e.key==='Enter') unlockCaptain();});
-  q('captainQuartersCloseBtn')?.addEventListener('click',secureCaptainQuarters);
-  q('captainExitBtn')?.addEventListener('click',secureCaptainQuarters);
+  // Delegated click handling means the Captain door still works if the Engine
+  // rerenders or the access dock is moved later.
+  document.addEventListener('click',(event)=>{
+    const trigger=event.target.closest?.(
+      '#captainModeAccessBtn,#captainUnlockBtn,#captainGateCloseBtn,#captainQuartersCloseBtn,#captainExitBtn'
+    );
+    if(!trigger)return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    if(trigger.id==='captainModeAccessBtn') return openCaptainGate();
+    if(trigger.id==='captainUnlockBtn') return unlockCaptain();
+    if(trigger.id==='captainGateCloseBtn') return closeCaptainGate();
+    if(trigger.id==='captainQuartersCloseBtn' || trigger.id==='captainExitBtn') return secureCaptainQuarters();
+  },true);
+
+  document.addEventListener('keydown',(event)=>{
+    if(event.key==='Enter' && document.activeElement===q('captainPinInput')){
+      event.preventDefault();
+      unlockCaptain();
+    }
+    if(event.key==='Escape' && !q('captainQuartersGate')?.classList.contains('hidden')){
+      closeCaptainGate();
+    }
+  });
 
   // Never retain Captain authorization across page lifecycle transitions.
-  window.addEventListener('pagehide',()=>{captainAuthorized=false;});
+  window.addEventListener('pagehide',secureCaptainQuarters);
 })();

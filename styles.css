@@ -3028,7 +3028,7 @@ body.dark-flag-pirate-mode .graphics-edit-state.unsaved{background:#2b2212!impor
 }
 
 
-/* v2.9.33 — BARNACLE SWEEP
+/* v2.9.36 — BARNACLE SWEEP
    Captain-facing Engine Identity states + fully project-themed Admin Gate accents. */
 
 .engine-identity-saved-view,
@@ -3114,7 +3114,7 @@ body.dark-flag-pirate-mode .engine-identity-status.is-saved{
 }
 
 
-/* v2.9.33 — CLEAR ESCAPE HATCH */
+/* v2.9.36 — CLEAR ESCAPE HATCH */
 .project-admin-gate-card .project-admin-gate-primary{
   margin-bottom:18px!important;
 }
@@ -3137,7 +3137,7 @@ body.dark-flag-pirate-mode .engine-identity-status.is-saved{
 }
 
 
-/* v2.9.33 — CAPTAIN'S QUARTERS FRAMEWORK
+/* v2.9.36 — CAPTAIN'S QUARTERS FRAMEWORK
    Privileged creative chamber. It intentionally does not style project/customer shells. */
 .captain-access-btn{
   width:100%;display:flex;align-items:center;gap:14px;margin:16px 0;padding:15px 18px;
@@ -3189,8 +3189,102 @@ body.dark-flag-pirate-mode .engine-identity-status.is-saved{
 .captain-rule{text-align:center;margin:18px 0;color:#d8c88f;font:italic 15px Georgia,serif}
 @media(max-width:650px){.captain-console{grid-template-columns:1fr}.captain-window{height:170px}.captain-chamber{padding:20px}}
 
-/* v2.9.34 — Captain's Quarters access fix: keep the entry visibly docked between Engine Controls and Project Analytics. */
+/* v2.9.36 — Captain's Quarters access fix: keep the entry visibly docked between Engine Controls and Project Analytics. */
 .captain-access-dock{margin:20px 0 24px;padding:16px 18px 18px;border:1px solid #d7bd7266;border-radius:22px;background:linear-gradient(180deg,#fffdf8,#f6efe0);box-shadow:0 10px 28px #152d3512}
 .captain-access-kicker{margin:0 4px 8px;color:#8d3f35;font-size:11px;font-weight:900;letter-spacing:.18em}
 .captain-access-dock .captain-access-btn{margin:0;min-height:78px;cursor:pointer}
 .captain-access-dock .captain-access-btn:focus-visible{outline:4px solid #e7cb72;outline-offset:3px}
+
+
+/* v2.9.36 — CAPTAIN'S DOOR LIVE
+   The whole Captain access card is a deliberate, reliable hit target. */
+.captain-access-dock{position:relative}
+.captain-access-btn{
+  position:relative;
+  z-index:2;
+  cursor:pointer!important;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(230,202,114,.18);
+}
+.captain-access-btn:after{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border-radius:20px;
+}
+.captain-access-ready .captain-access-btn{
+  outline:1px solid #e4ca7133;
+}
+body.captain-modal-open{overflow:hidden!important}
+.captain-quarters-overlay{
+  pointer-events:auto!important;
+}
+.captain-quarters-overlay.hidden{
+  display:none!important;
+}
+
+
+/* v2.9.36 — CAPTAIN'S CHAMBER CINEMATIC
+   Decorative only: no production/project state is touched. */
+.captain-quarters-overlay{background:radial-gradient(circle at 50% 20%,rgba(30,63,77,.82),rgba(3,13,20,.97) 68%)!important}
+.captain-entry-sequence{position:fixed;inset:0;z-index:99999;overflow:hidden;background:#06141b;pointer-events:none;opacity:0}
+.captain-entry-sequence.captain-entry-play{opacity:1;animation:captainSequence 2.4s ease forwards}
+.captain-entry-storm{position:absolute;inset:0;background:
+ radial-gradient(circle at 72% 18%,rgba(236,219,158,.18),transparent 11%),
+ linear-gradient(180deg,#071923 0%,#0d2b37 50%,#07131b 51%,#02090d 100%)}
+.captain-entry-storm:after{content:"";position:absolute;left:-10%;right:-10%;top:53%;height:35%;opacity:.5;background:repeating-radial-gradient(ellipse at 50% 100%,transparent 0 25px,rgba(173,213,220,.18) 27px 29px,transparent 31px 52px);animation:captainSea 1.8s linear infinite}
+.captain-entry-crest{position:absolute;z-index:5;left:50%;top:43%;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:8px;color:#ead27e;text-shadow:0 3px 18px #000;letter-spacing:.22em}
+.captain-entry-crest span{font-size:70px;filter:drop-shadow(0 0 20px rgba(234,210,126,.28))}
+.captain-entry-crest strong{font-family:Georgia,serif;font-size:clamp(20px,3vw,42px);letter-spacing:.12em}
+.captain-entry-crest small{font-size:11px}
+.captain-door{position:absolute;z-index:7;top:0;bottom:0;width:51%;background:
+ linear-gradient(90deg,rgba(0,0,0,.55),transparent 15% 85%,rgba(0,0,0,.6)),
+ repeating-linear-gradient(90deg,#3b2416 0 7%,#56351f 7% 14%,#2b1b12 14% 15%);
+ box-shadow:inset 0 0 70px #000;border-color:#b48a45}
+.captain-door:before{content:"";position:absolute;inset:6%;border:4px solid #7b5b31;border-radius:22px;box-shadow:inset 0 0 0 2px #24160e,0 0 0 2px #24160e}
+.captain-door i{position:absolute;top:48%;width:48px;height:48px;border:6px solid #b9924e;border-radius:50%;box-shadow:0 0 20px #000}
+.captain-door-left{left:0;border-right:7px solid #9a7440}.captain-door-left i{right:7%}
+.captain-door-right{right:0;border-left:7px solid #9a7440}.captain-door-right i{left:7%}
+.captain-entry-play .captain-door-left{animation:captainDoorLeft 1.25s 1s cubic-bezier(.65,.05,.36,1) forwards}
+.captain-entry-play .captain-door-right{animation:captainDoorRight 1.25s 1s cubic-bezier(.65,.05,.36,1) forwards}
+.captain-entry-flash{position:absolute;inset:0;z-index:6;background:#dff7ff;opacity:0}
+.captain-entry-play .captain-entry-flash{animation:captainFlash 2.2s ease}
+.captain-entry-complete .captain-entry-sequence{display:none}
+
+.captain-chamber{position:relative;overflow:hidden!important;background:
+ radial-gradient(circle at 50% 0%,rgba(164,124,59,.12),transparent 30%),
+ linear-gradient(180deg,#122c35,#09191f 65%,#061014)!important;
+ border:1px solid rgba(229,198,117,.45)!important;box-shadow:0 35px 90px #000!important}
+.captain-chamber:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(181,135,67,.07) 1px,transparent 1px);background-size:110px 100%}
+.captain-stern-gallery{position:relative!important;min-height:330px!important;overflow:hidden!important;border:12px solid #4a2d1b!important;border-radius:24px 24px 8px 8px!important;box-shadow:inset 0 0 45px #000,0 12px 30px rgba(0,0,0,.5)!important;background:#071a25!important}
+.captain-sky{position:absolute;inset:0 0 42%;background:radial-gradient(circle at 72% 30%,rgba(236,222,172,.25),transparent 10%),linear-gradient(#071521,#12313d)}
+.captain-moon{position:absolute!important;right:18%!important;top:10%!important;font-size:80px!important;color:#f0dc9a!important;text-shadow:0 0 28px rgba(240,220,154,.55)}
+.captain-stars{position:absolute;left:15%;top:17%;color:#dbe7dc;letter-spacing:18px;opacity:.7}
+.captain-lightning{position:absolute;right:7%;top:25%;font-size:55px;color:#d7eef4;opacity:.1;animation:quarterLightning 8s infinite}
+.captain-sea{position:absolute;inset:58% 0 0;background:linear-gradient(#173b47,#06131a);overflow:hidden}
+.captain-ship{position:absolute!important;left:24%!important;top:14%!important;font-size:46px!important;filter:brightness(.4);animation:shipRock 4s ease-in-out infinite}
+.wave{position:absolute;left:-10%;width:120%;height:30px;border-top:2px solid rgba(184,220,224,.25);border-radius:50%}
+.w1{top:30%;animation:waveMove 5s linear infinite}.w2{top:55%;animation:waveMove 7s linear reverse infinite}.w3{top:78%;animation:waveMove 6s linear infinite}
+.captain-window-frame{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);pointer-events:none}
+.captain-window-frame i{border-left:9px solid #563721;border-right:4px solid #25160f;box-shadow:0 0 8px #000}
+.captain-desk{position:absolute;left:0;right:0;bottom:0;height:86px;background:linear-gradient(#6b4224,#2d1b12);border-top:6px solid #a7773d;box-shadow:0 -10px 25px rgba(0,0,0,.6)}
+.captain-map{position:absolute;left:50%;top:15px;transform:translateX(-50%) rotate(-1deg);width:46%;padding:18px 10px;text-align:center;background:#c9b47a;color:#4a351c;font:700 12px Georgia,serif;letter-spacing:.12em;box-shadow:0 4px 12px #0008}
+.captain-compass{position:absolute;right:18%;top:10px;font-size:54px;color:#d2ad5c;text-shadow:0 3px 8px #000}
+.captain-lantern{position:absolute;left:16%;top:7px;font-size:48px;color:#f3c966;text-shadow:0 0 18px #e0a334,0 4px 8px #000}
+.captain-console section{background:linear-gradient(180deg,rgba(25,58,67,.95),rgba(9,28,34,.98))!important;border:1px solid rgba(226,194,112,.3)!important;box-shadow:inset 0 1px rgba(255,255,255,.04),0 8px 20px rgba(0,0,0,.25)}
+.captain-rule{border:1px solid rgba(226,194,112,.32)!important;background:rgba(95,65,27,.18)!important;color:#ead17d!important}
+
+@keyframes captainSequence{0%,88%{opacity:1}100%{opacity:0}}
+@keyframes captainDoorLeft{to{transform:translateX(-102%)}}
+@keyframes captainDoorRight{to{transform:translateX(102%)}}
+@keyframes captainFlash{0%,28%,35%,100%{opacity:0}31%{opacity:.45}33%{opacity:.08}}
+@keyframes captainSea{to{transform:translateX(5%)}}
+@keyframes quarterLightning{0%,88%,91%,94%,100%{opacity:.08}89%,93%{opacity:.8}}
+@keyframes shipRock{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(4px)}}
+@keyframes waveMove{to{transform:translateX(7%)}}
+@media (prefers-reduced-motion:reduce){
+ .captain-entry-sequence.captain-entry-play{animation-duration:.35s}
+ .captain-entry-play .captain-door-left{animation:captainDoorLeft .25s forwards}
+ .captain-entry-play .captain-door-right{animation:captainDoorRight .25s forwards}
+ .captain-lightning,.captain-ship,.wave{animation:none!important}
+}
