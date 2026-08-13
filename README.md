@@ -855,3 +855,76 @@ The successful v2.9.44 composition is retained. This pass focuses on physical re
 - improved irregular water movement and moon-path lighting;
 - warm candlelight/cold moonlight separation;
 - lived-in artifacts: knife, wax seal, tally marks, route note and cup-ring stain.
+
+
+## v2.9.46 — Deployment Shipwright / Kiosk Outpost Framework
+Dark Sky now treats Kiosk as a PROJECT-LEVEL DEPLOYMENT PROFILE rather than a global Engine mode or a copied project template.
+
+### First working framework
+- New Deployment tab in every project Control Center.
+- Kiosk / Self-Service Outpost can be enabled independently per project.
+- Named outposts (Front Counter, Trailer, Event, etc.).
+- Configurable idle reset.
+- Reset-after-completion policy.
+- Customer-session cargo purge policy.
+- Customer-visible Start Over policy.
+- Resume-deployment-after-reload policy.
+- Project card shows current deployment state.
+- Kiosk readiness panel distinguishes Dark Sky application lock from device-level iPad lock.
+- Outpost health card establishes the future telemetry surface.
+- Future profile berths: Staff-Assisted, Event/Pop-Up, Showroom, Mobile Sales, Demo/Exhibition.
+- Ship's Blueprint now includes Deployment / Outpost Layer:
+  Project Vessel → Deployment Profile → Customer Session.
+
+### Safety / architecture
+This release does NOT pretend a web app can replace iPad Guided Access / managed Single App Mode.
+It does NOT merge project namespaces.
+It does NOT create cloned projects.
+It does NOT yet add payment-offline behavior or fake connection telemetry.
+The framework stores deployment configuration inside the owning project only.
+
+
+## v2.9.47 — DARK SKY DEPLOYMENT FLEET
+This release expands the v2.9.46 Kiosk foundation into the broader deployment architecture discovered during Captain/First-Mate analysis.
+
+### Core model
+Dark Sky now models:
+`Project Vessel → Deployment Manifest → Outpost → Customer Session`
+
+A project is no longer limited to one Kiosk toggle. One project can own multiple independent outpost manifests without cloning project branding, orders, workflow or namespace.
+
+### Deployment Shipwright
+- Multiple outposts per project.
+- Outpost registry and selected-outpost editor.
+- Profiles: Kiosk / Self-Service, Staff-Assisted, Event / Pop-Up, Showroom, Mobile Sales, Demo / Exhibition.
+- Named outposts.
+- Versioned Deployment Manifest.
+- Session reset, session cargo purge, Start Over, reload-resume and device-lock verification policies.
+- Capability-scope berth for future approved deployment subsets.
+- Attract-screen message per outpost.
+
+### Lifecycle
+`Draft → Sea Trial → Deployed → Paused → Retired`
+
+Retired outposts are preserved historically rather than deleted.
+
+### Sea Trial
+Readiness inspection reports project isolation, session purge, admin separation, idle reset and device-level lock state. Dark Sky explicitly does not claim that application-level kiosk controls replace Apple Guided Access or managed Single App Mode.
+
+### Signal Watch
+The health surface exists without fabricating network telemetry. Real check-in/connection status remains a future integration.
+
+### Captain's Quarters
+The Dark Sky Fleet Chart now reads deployment snapshots from the Engine and reports project vessels, active outposts and outposts needing attention. This is command-level observation, not duplicated Engine configuration.
+
+### Ship's Blueprint
+Blueprint revision v2.9.47 now includes the full Deployment Fleet vocabulary:
+Shipwright • Manifest • Sea Trial • Outpost • Signal Watch • Deployment Log.
+
+### Important boundaries
+- Deployment manifests remain inside the owning project namespace.
+- Deployments do not silently rewrite core project business rules.
+- This build reserves outpost IDs for future order-source attribution, but does not falsely claim orders are already stamped with them.
+- No fake connection telemetry is generated.
+- No offline payment behavior is invented.
+- Existing Captain authentication and project isolation architecture are preserved.

@@ -566,6 +566,7 @@
         </div>
         <h4>${escapeHtml(p.name)}</h4>
         <p>${escapeHtml(p.tagline||p.type.replaceAll('_',' '))}</p>
+        ${(()=>{const ds=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');const active=ds.filter(d=>d.state==='deployed').length;return `<div class="project-deployment-badge ${active?'active':''}">${active?`${active} OUTPOST${active===1?'':'S'} SAILING`:ds.length?`${ds.length} OUTPOST${ds.length===1?'':'S'} IN HARBOR`:'STANDARD DEPLOYMENT'}</div>`;})()}
         <div class="project-kpis"><span><strong>${s.orders}</strong> ${s.orders===1?'order':'orders'}</span><span><strong>$${s.revenueMonth.toFixed(0)}</strong> month</span><span><strong>${s.completed}</strong> ledger</span></div>
         <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
@@ -585,6 +586,124 @@
     }));
     const add=$('addProjectCard');if(add)add.addEventListener('click',openAddProject);
   }
+
+  const DEPLOYMENT_PROFILES={
+    kiosk_self_service:{label:'Kiosk / Self-Service',short:'KIOSK'},
+    staff_assisted:{label:'Staff-Assisted',short:'STAFF'},
+    event_popup:{label:'Event / Pop-Up',short:'EVENT'},
+    showroom:{label:'Showroom',short:'SHOWROOM'},
+    mobile_sales:{label:'Mobile Sales',short:'MOBILE'},
+    demo_exhibition:{label:'Demo / Exhibition',short:'DEMO'}
+  };
+  const DEPLOYMENT_STATES={
+    draft:'Draft',
+    sea_trial:'Sea Trial',
+    deployed:'Deployed',
+    paused:'Paused',
+    retired:'Retired'
+  };
+  const deploymentSelectionByProject=new Map();
+
+  function deploymentIdFor(p){
+    const code=String(p.projectCode||p.orderPrefix||'PRJ').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    return `${code}-outpost-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
+  }
+
+  function migrateLegacyDeployment(p){
+    p.deployments=Array.isArray(p.deployments)?p.deployments:[];
+    const legacy=p.deployment?.kiosk;
+    if(legacy && !p.deployments.length){
+      p.deployments.push({
+        id:deploymentIdFor(p),
+        name:legacy.name||'Primary Kiosk',
+        profile:'kiosk_self_service',
+        state:legacy.enabled?'deployed':'draft',
+        manifestVersion:1,
+        idleMinutes:Number(legacy.idleMinutes||3),
+        resetAfterComplete:legacy.resetAfterComplete!==false,
+        purgeSession:legacy.purgeSession!==false,
+        showStartOver:legacy.showStartOver!==false,
+        resumeAfterReload:!!legacy.resumeAfterReload,
+        deviceLockVerified:false,
+        capabilityScope:'project_default',
+        attractTitle:legacy.attractTitle||'Ready when you are.',
+        createdAt:legacy.updatedAt||new Date().toISOString(),
+        updatedAt:legacy.updatedAt||new Date().toISOString(),
+        lastCheckIn:null,
+        source:'migrated_v2_9_46'
+      });
+    }
+    return p.deployments;
+  }
+
+  function deploymentForEditor(p){
+    const deployments=migrateLegacyDeployment(p);
+    const selected=deploymentSelectionByProject.get(p.id);
+    let d=deployments.find(x=>x.id===selected);
+    if(!d) d=deployments.find(x=>x.state!=='retired')||deployments[0]||null;
+    if(d) deploymentSelectionByProject.set(p.id,d.id);
+    return d;
+  }
+
+  function deploymentStateClass(state){
+    return ['deployed','sea_trial','paused','retired'].includes(state)?state:'draft';
+  }
+
+  function deploymentReadiness(d){
+    if(!d)return {score:0,checks:[]};
+    const checks=[
+      {label:'Project isolation',pass:true,detail:'Project-owned manifest'},
+      {label:'Customer-session purge',pass:d.purgeSession!==false,detail:d.purgeSession!==false?'Ready':'Turn purge on'},
+      {label:'Admin separation',pass:true,detail:'Project admin remains protected'},
+      {label:'Idle reset',pass:Number(d.idleMinutes)>0,detail:`${Number(d.idleMinutes||0)} min`},
+      {label:'Device-level lock',pass:!!d.deviceLockVerified,warning:!d.deviceLockVerified,detail:d.deviceLockVerified?'Verified':'Not verified'}
+    ];
+    const required=checks.filter(x=>!x.warning);
+    const score=Math.round(required.filter(x=>x.pass).length/required.length*100);
+    return {score,checks};
+  }
+
+  function deploymentManifestHtml(p,d){
+    if(!d)return '';
+    const readiness=deploymentReadiness(d);
+    const profile=DEPLOYMENT_PROFILES[d.profile]||DEPLOYMENT_PROFILES.kiosk_self_service;
+    return `<div class="deployment-manifest">
+      <div class="manifest-head"><span>DEPLOYMENT MANIFEST</span><strong>v${Number(d.manifestVersion||1)}</strong></div>
+      <div class="manifest-grid">
+        <div><small>VESSEL</small><b>${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')} • ${escapeHtml(p.name)}</b></div>
+        <div><small>OUTPOST</small><b>${escapeHtml(d.name)}</b></div>
+        <div><small>PROFILE</small><b>${escapeHtml(profile.label)}</b></div>
+        <div><small>LIFECYCLE</small><b>${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)}</b></div>
+        <div><small>SESSION BOUNDARY</small><b>${d.purgeSession!==false?'PURGE BETWEEN CUSTOMERS':'NEEDS ATTENTION'}</b></div>
+        <div><small>CAPABILITY SCOPE</small><b>${d.capabilityScope==='project_default'?'PROJECT DEFAULT':'APPROVED SUBSET'}</b></div>
+        <div><small>MANIFEST REVISION</small><b>${Number(d.manifestVersion||1)}</b></div>
+        <div><small>SEA-TRIAL READINESS</small><b>${readiness.score}%</b></div>
+      </div>
+    </div>`;
+  }
+
+  function deploymentSnapshot(){
+    return companies.map(p=>{
+      const deployments=migrateLegacyDeployment(p);
+      const active=deployments.filter(d=>d.state==='deployed');
+      const attention=deployments.filter(d=>d.state==='sea_trial'||d.state==='paused'||(d.state==='deployed'&&deploymentReadiness(d).score<100));
+      return {
+        projectId:p.id,
+        code:p.projectCode||p.orderPrefix||'PRJ',
+        name:p.name,
+        totalOutposts:deployments.filter(d=>d.state!=='retired').length,
+        activeOutposts:active.length,
+        attentionOutposts:attention.length,
+        outposts:deployments.map(d=>({
+          id:d.id,name:d.name,profile:d.profile,state:d.state,
+          manifestVersion:Number(d.manifestVersion||1),
+          readiness:deploymentReadiness(d).score,
+          lastCheckIn:d.lastCheckIn||null
+        }))
+      };
+    });
+  }
+  window.blackFlagDeploymentFleetSnapshot=deploymentSnapshot;
 
   function projectTabsHtml(p,tab){
     const products=p.products||[];
@@ -811,6 +930,122 @@
         <div class="customer-directory-list">${directoryHtml||'<div class="empty">No retained customers yet.</div>'}</div>
       </div>`;
     }
+    if(tab==='deployment'){
+      const deployments=migrateLegacyDeployment(p);
+      const d=deploymentForEditor(p);
+      const list=deployments.filter(x=>x.state!=='retired');
+      const readiness=d?deploymentReadiness(d):null;
+      const profile=d?(DEPLOYMENT_PROFILES[d.profile]||DEPLOYMENT_PROFILES.kiosk_self_service):null;
+      return `<div class="deployment-fleet">
+        <section class="deployment-fleet-hero">
+          <div>
+            <div class="engine-kicker">DARK SKY DEPLOYMENT FLEET</div>
+            <h3>Deployment Shipwright</h3>
+            <p><strong>${escapeHtml(p.name)}</strong> is the vessel. Deployments are the outposts where that vessel serves customers. One project can operate through many outposts without cloning its namespace.</p>
+          </div>
+          <button id="createDeploymentBtn" class="deployment-launch-btn" type="button"><span>＋</span><strong>LAY NEW KEEL</strong><small>Create Outpost</small></button>
+        </section>
+
+        <div class="deployment-fleet-layout">
+          <aside class="deployment-outpost-list">
+            <div class="deployment-section-title"><span>OUTPOST REGISTRY</span><b>${list.length}</b></div>
+            ${list.length?list.map(x=>{
+              const pr=DEPLOYMENT_PROFILES[x.profile]||DEPLOYMENT_PROFILES.kiosk_self_service;
+              return `<button class="deployment-outpost-row ${d?.id===x.id?'active':''}" data-deployment-select="${escapeHtml(x.id)}">
+                <span class="outpost-signal ${deploymentStateClass(x.state)}"></span>
+                <span><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(pr.label)}</small></span>
+                <b>${escapeHtml(DEPLOYMENT_STATES[x.state]||x.state)}</b>
+              </button>`;
+            }).join(''):`<div class="deployment-empty-berth"><strong>No outposts yet.</strong><span>Lay the first keel to create a deployment manifest for this project.</span></div>`}
+            ${deployments.some(x=>x.state==='retired')?`<div class="deployment-retired-note">${deployments.filter(x=>x.state==='retired').length} retired outpost${deployments.filter(x=>x.state==='retired').length===1?'':'s'} preserved in deployment history.</div>`:''}
+          </aside>
+
+          <main class="deployment-command">
+            ${d?`
+            <div class="deployment-command-head">
+              <div><small>SELECTED OUTPOST</small><h4>${escapeHtml(d.name)}</h4><span class="deployment-state-pill ${deploymentStateClass(d.state)}">${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)}</span></div>
+              <div class="deployment-manifest-stamp"><span>MANIFEST</span><strong>v${Number(d.manifestVersion||1)}</strong></div>
+            </div>
+
+            <div class="deployment-editor-grid">
+              <article class="pec-card deployment-editor">
+                <label>Outpost name<input id="deployName" class="text-input" value="${escapeHtml(d.name)}"></label>
+                <label>Deployment profile
+                  <select id="deployProfile">${Object.entries(DEPLOYMENT_PROFILES).map(([value,x])=>`<option value="${value}" ${d.profile===value?'selected':''}>${escapeHtml(x.label)}</option>`).join('')}</select>
+                </label>
+                <label>Idle-session reset
+                  <select id="deployIdle">${[1,2,3,5,10,15].map(n=>`<option value="${n}" ${Number(d.idleMinutes||3)===n?'selected':''}>${n} minute${n===1?'':'s'}</option>`).join('')}</select>
+                </label>
+                <label>Capability scope
+                  <select id="deployCapabilityScope">
+                    <option value="project_default" ${d.capabilityScope!=='approved_subset'?'selected':''}>Project default capabilities</option>
+                    <option value="approved_subset" ${d.capabilityScope==='approved_subset'?'selected':''}>Approved deployment subset (framework)</option>
+                  </select>
+                </label>
+                <div class="deployment-toggle-stack">
+                  <label class="admin-toggle-row compact-toggle"><span><strong>Reset after completed order</strong><small>Return to this outpost's attract screen.</small></span><input id="deployReset" type="checkbox" ${d.resetAfterComplete!==false?'checked':''}></label>
+                  <label class="admin-toggle-row compact-toggle"><span><strong>Purge customer session cargo</strong><small>Clear photos, uploads, previews, drafts and temporary customer data between sessions.</small></span><input id="deployPurge" type="checkbox" ${d.purgeSession!==false?'checked':''}></label>
+                  <label class="admin-toggle-row compact-toggle"><span><strong>Show Start Over</strong><small>Customer-safe reset; project admin remains hidden.</small></span><input id="deployStartOver" type="checkbox" ${d.showStartOver!==false?'checked':''}></label>
+                  <label class="admin-toggle-row compact-toggle"><span><strong>Resume deployment after reload</strong><small>Restore the outpost, never the previous customer's session.</small></span><input id="deployResume" type="checkbox" ${d.resumeAfterReload?'checked':''}></label>
+                  <label class="admin-toggle-row compact-toggle"><span><strong>Device-level kiosk lock verified</strong><small>Mark only after iPad Guided Access / managed Single App Mode is configured.</small></span><input id="deployDeviceLock" type="checkbox" ${d.deviceLockVerified?'checked':''}></label>
+                </div>
+                <button id="saveDeploymentManifestBtn" class="primary-btn">SAVE MANIFEST REVISION</button>
+                <span id="deploymentSaveStatus" class="helper"></span>
+              </article>
+
+              <article class="pec-card deployment-attract-card">
+                <small>OUTPOST ATTRACT SCREEN</small><h4>${escapeHtml(p.name)}</h4>
+                <div class="deployment-attract-preview">
+                  <div class="deployment-attract-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
+                  <strong>${escapeHtml(d.attractTitle||'Ready when you are.')}</strong>
+                  <span>TOUCH TO START</span>
+                </div>
+                <label>Attract message<input id="deployAttractTitle" class="text-input" value="${escapeHtml(d.attractTitle||'Ready when you are.')}"></label>
+                <p class="helper">Future outpost-specific graphics remain owned by this project namespace.</p>
+              </article>
+            </div>
+
+            <section class="deployment-lifecycle">
+              <div><small>OUTPOST LIFECYCLE</small><h4>Draft → Sea Trial → Deployed → Paused → Retired</h4><p>Dark Sky never needs to clone ${escapeHtml(p.name)} to operate it somewhere new.</p></div>
+              <div class="deployment-lifecycle-actions">
+                ${d.state==='draft'?`<button data-deployment-action="sea_trial" class="secondary-btn">BEGIN SEA TRIAL</button>`:''}
+                ${d.state==='sea_trial'?`<button data-deployment-action="deployed" class="primary-btn">DEPLOY OUTPOST</button><button data-deployment-action="draft" class="secondary-btn">RETURN TO DRAFT</button>`:''}
+                ${d.state==='deployed'?`<button data-deployment-action="paused" class="secondary-btn">PAUSE OUTPOST</button>`:''}
+                ${d.state==='paused'?`<button data-deployment-action="deployed" class="primary-btn">RESUME OUTPOST</button>`:''}
+                ${d.state!=='retired'?`<button data-deployment-action="retired" class="danger-outline-btn">RETIRE OUTPOST</button>`:''}
+              </div>
+            </section>
+
+            <div class="deployment-command-grid">
+              <article class="pec-card deployment-readiness">
+                <small>SEA TRIAL</small><h4>Readiness Inspection</h4>
+                <div class="deployment-readiness-score"><strong>${readiness.score}%</strong><span>application readiness</span></div>
+                ${readiness.checks.map(c=>`<div class="readiness-row ${c.pass?'pass':c.warning?'warn':'fail'}"><span>${escapeHtml(c.label)}</span><strong>${escapeHtml(c.detail)}</strong></div>`).join('')}
+                <p class="helper">Device-level lock is intentionally a warning, not a fake application capability.</p>
+              </article>
+
+              <article class="pec-card deployment-signal-watch">
+                <small>SIGNAL WATCH</small><h4>Outpost Health</h4>
+                <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'SAILING':d.state==='sea_trial'?'SEA TRIAL':d.state==='paused'?'PAUSED':'IN HARBOR'}</strong></div>
+                <p><b>Last check-in:</b> ${d.lastCheckIn?escapeHtml(new Date(d.lastCheckIn).toLocaleString()):'Telemetry not installed yet'}</p>
+                <p><b>Manifest:</b> v${Number(d.manifestVersion||1)}</p>
+                <p><b>Source attribution:</b> Outpost ID reserved for future order provenance</p>
+                <p class="helper">Connection telemetry is not fabricated in this build. This is the berth where real outpost health will report later.</p>
+              </article>
+            </div>
+
+            ${deploymentManifestHtml(p,d)}
+            `:`<div class="deployment-no-selection"><span>⚓</span><strong>No Deployment Manifest</strong><p>Create an outpost to begin.</p></div>`}
+          </main>
+        </div>
+
+        <section class="deployment-future">
+          <div><small>DEPLOYMENT PROFILE BERTHS</small><h4>One vessel. Many missions.</h4><p>Kiosk is only the first profile. Every deployment remains subordinate to the owning project's business rules and namespace.</p></div>
+          <div class="future-deployment-chips">${Object.values(DEPLOYMENT_PROFILES).map(x=>`<span>${escapeHtml(x.label)}</span>`).join('')}</div>
+        </section>
+      </div>`;
+    }
+
     if(tab==='notifications'){
       const n=p.notifications||{customerConfirmationEmail:false};
       return `<div class="pec-card">
@@ -899,6 +1134,86 @@
         logActivity(p.id,'Customer history rebuilt');
         await renderProjectTab(p.id,'customers');
       };
+    }
+    if(tab==='deployment'){
+      const deployments=migrateLegacyDeployment(p);
+      let d=deploymentForEditor(p);
+
+      $$('[data-deployment-select]').forEach(btn=>btn.onclick=()=>{
+        deploymentSelectionByProject.set(p.id,btn.dataset.deploymentSelect);
+        renderProjectTab(p.id,'deployment');
+      });
+
+      if($('createDeploymentBtn')) $('createDeploymentBtn').onclick=async()=>{
+        const name=prompt('Outpost name','New Outpost');
+        if(!name)return;
+        const fresh={
+          id:deploymentIdFor(p),
+          name:name.trim()||'New Outpost',
+          profile:'kiosk_self_service',
+          state:'draft',
+          manifestVersion:1,
+          idleMinutes:3,
+          resetAfterComplete:true,
+          purgeSession:true,
+          showStartOver:true,
+          resumeAfterReload:false,
+          deviceLockVerified:false,
+          capabilityScope:'project_default',
+          attractTitle:'Ready when you are.',
+          createdAt:new Date().toISOString(),
+          updatedAt:new Date().toISOString(),
+          lastCheckIn:null
+        };
+        deployments.push(fresh);
+        deploymentSelectionByProject.set(p.id,fresh.id);
+        await saveCompanies();
+        logActivity(p.id,'Deployment outpost created',fresh.name);
+        await renderProjectTab(p.id,'deployment');
+      };
+
+      if(d && $('saveDeploymentManifestBtn')) $('saveDeploymentManifestBtn').onclick=async()=>{
+        d.name=$('deployName').value.trim()||d.name;
+        d.profile=$('deployProfile').value;
+        d.idleMinutes=Number($('deployIdle').value)||3;
+        d.capabilityScope=$('deployCapabilityScope').value;
+        d.resetAfterComplete=$('deployReset').checked;
+        d.purgeSession=$('deployPurge').checked;
+        d.showStartOver=$('deployStartOver').checked;
+        d.resumeAfterReload=$('deployResume').checked;
+        d.deviceLockVerified=$('deployDeviceLock').checked;
+        d.attractTitle=$('deployAttractTitle').value.trim()||'Ready when you are.';
+        d.manifestVersion=Number(d.manifestVersion||1)+1;
+        d.updatedAt=new Date().toISOString();
+        await saveCompanies();
+        logActivity(p.id,'Deployment manifest revised',`${d.name} • v${d.manifestVersion}`);
+        $('deploymentSaveStatus').textContent=`Manifest v${d.manifestVersion} saved. Project bulkhead remains sealed.`;
+        setTimeout(()=>renderProjectTab(p.id,'deployment'),500);
+      };
+
+      $$('[data-deployment-action]').forEach(btn=>btn.onclick=async()=>{
+        if(!d)return;
+        const next=btn.dataset.deploymentAction;
+        const readiness=deploymentReadiness(d);
+        if(next==='sea_trial' && readiness.score<100){
+          if(!confirm(`Sea Trial readiness is ${readiness.score}%. Continue to Sea Trial with warnings?`))return;
+        }
+        if(next==='deployed'){
+          if(d.state!=='sea_trial'&&d.state!=='paused')return;
+          if(!confirm(`Deploy ${d.name}? This marks the outpost as operating. Device-level lock remains your responsibility.`))return;
+        }
+        if(next==='retired'){
+          if(!confirm(`Retire ${d.name}? Historical deployment records will be preserved.`))return;
+        }
+        const prior=d.state;
+        d.state=next;
+        d.updatedAt=new Date().toISOString();
+        d.manifestVersion=Number(d.manifestVersion||1)+1;
+        await saveCompanies();
+        logActivity(p.id,'Deployment lifecycle changed',`${d.name}: ${prior} → ${next}`);
+        await renderProjectCommand();
+        await renderProjectTab(p.id,'deployment');
+      });
     }
     if(tab==='notifications'){
       $('saveNotificationsTab').onclick=async()=>{

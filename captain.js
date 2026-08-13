@@ -87,6 +87,34 @@
     clearHash();
   }
 
+  function refreshCaptainFleetChart(){
+    const box=byId('captainFleetVessels');
+    const summary=byId('captainFleetSignalSummary');
+    if(!box)return;
+    const fleet=typeof window.blackFlagDeploymentFleetSnapshot==='function'
+      ? window.blackFlagDeploymentFleetSnapshot()
+      : [];
+    if(!fleet.length)return;
+    box.innerHTML=fleet.map(v=>{
+      const signal=v.attentionOutposts>0?'attention':v.activeOutposts>0?'sailing':'harbor';
+      const status=v.attentionOutposts>0
+        ? `${v.attentionOutposts} needs attention`
+        : v.activeOutposts>0
+          ? `${v.activeOutposts} outpost${v.activeOutposts===1?'':'s'} sailing`
+          : v.totalOutposts>0
+            ? `${v.totalOutposts} outpost${v.totalOutposts===1?'':'s'} in harbor`
+            : 'No outposts';
+      return `<article class="captain-fleet-vessel ${signal}">
+        <span>${String(v.code||'PRJ').slice(0,3)}</span>
+        <strong>${v.name}</strong>
+        <small>${status}</small>
+      </article>`;
+    }).join('');
+    const active=fleet.reduce((n,v)=>n+v.activeOutposts,0);
+    const attention=fleet.reduce((n,v)=>n+v.attentionOutposts,0);
+    if(summary) summary.textContent=`Signal Watch • ${fleet.length} vessels • ${active} outposts sailing${attention?` • ${attention} needing attention`:''}`;
+  }
+
   function bind() {
     document.documentElement.classList.add('captain-controller-ready');
 
@@ -119,6 +147,7 @@
     });
     byId('captainDarkSkyChartBtn')?.addEventListener('click', (event) => {
       event.preventDefault();
+      refreshCaptainFleetChart();
       show('captainFleetChart');
     });
     byId('captainFleetChartClose')?.addEventListener('click', (event) => {

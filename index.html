@@ -100,12 +100,12 @@
         <div class="captain-kicker">CAPTAIN'S NAVIGATION</div>
         <h2 id="captainFleetChartTitle">The Dark Sky</h2>
         <p>Current vessels known to this build. This chart is Captain-side only and does not change project configuration.</p>
-        <div class="cq-fleet-vessels">
+        <div id="captainFleetVessels" class="cq-fleet-vessels">
           <article><span>IKE</span><strong>Ike's Wood Signs</strong><small>Original vessel • active customer workflow</small></article>
           <article><span>MUG</span><strong>Mugs After Dark</strong><small>Independent project vessel</small></article>
           <article><span>BBS</span><strong>Becca's Bloom Shop</strong><small>Independent project vessel</small></article>
         </div>
-        <div class="cq-chart-note">Future mission: chart new projects dynamically as they join the fleet.</div>
+        <div id="captainFleetSignalSummary" class="cq-chart-note">Signal Watch reads project deployment manifests from Dark Sky.</div>
       </div>
     </div>
 
@@ -123,7 +123,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.45 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.47 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -158,6 +158,11 @@
 
           <section class="cq-deck cq-deck-fleet">
             <div class="cq-deck-label"><b>THE FLEET</b><span>Independent Project Vessels</span></div>
+            <div class="cq-deployment-waterline">
+              <strong>DEPLOYMENT / OUTPOST LAYER</strong>
+              <span>Project Vessel → Deployment Manifest → Outpost → Customer Session</span>
+              <small>Shipwright • Manifest • Sea Trial • Outpost • Signal Watch • Deployment Log</small>
+            </div>
             <div class="cq-vessels">
               <article class="cq-vessel"><span>⛵</span><strong>IKE</strong><b>Ike's Wood Signs</b><small>Customer ordering • project admin • sign workflow • project-only data/media</small></article>
               <article class="cq-vessel"><span>⛵</span><strong>MUG</strong><b>Mugs After Dark</b><small>Independent customer/admin experience • mug-specific identity • isolated orders/media</small></article>
@@ -706,6 +711,7 @@
           <button data-project-tab="marketing">Marketing & Brand</button>
           <button data-project-tab="products">Products</button>
           <button data-project-tab="experience">Customer Experience</button>
+          <button data-project-tab="deployment">Deployment</button>
           <button data-project-tab="ai">AI Recognition</button>
           <button data-project-tab="workflow">Workflow</button>
           <button data-project-tab="publishing">Publishing</button>
