@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.57" />
+  <link rel="stylesheet" href="styles.css?v=2.9.58" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -726,6 +726,18 @@
           <button id="addProjectBtn" class="project-add-btn">＋ ADD PROJECT</button>
         </div>
         <div id="projectSummaryBadge" class="project-summary-badge"></div>
+        <div class="engine-fleet-toolbar" aria-label="Fleet project controls">
+          <label class="engine-fleet-search">
+            <span>Find project</span>
+            <input id="engineFleetSearch" type="search" placeholder="Search projects…" autocomplete="off" />
+          </label>
+          <div class="engine-fleet-filters" role="group" aria-label="Project status filter">
+            <button type="button" data-engine-fleet-filter="all" class="active">All</button>
+            <button type="button" data-engine-fleet-filter="active">Current</button>
+            <button type="button" data-engine-fleet-filter="private">Test / Private</button>
+            <button type="button" data-engine-fleet-filter="future">Future</button>
+          </div>
+        </div>
         <div id="projectCommandCards" class="project-command-cards"></div>
       </section>
 
@@ -762,14 +774,14 @@
       </section>
 
       <div class="engine-section-head"><div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3></div></div>
-<div id="engineFleetSection" class="engine-section-head"><div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3></div></div>
-      <div id="companyFleet" class="company-fleet"></div>
+<div id="engineFleetSection" class="engine-section-head engine-registry-support-head"><div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3></div></div>
+      <div id="companyFleet" class="company-fleet engine-registry-support"></div>
 
       <div id="engineSettingsSection" class="engine-grid">
-        <article class="engine-card engine-appearance-card">
-          <div class="engine-card-kicker">DARK FLAG</div>
-          <h3>Appearance</h3>
-          <p class="helper">Controls Dark Flag presentation only. Project branding, data, permissions and security are never changed by this setting.</p>
+        <article class="engine-card engine-appearance-card engine-legacy-appearance">
+          <div class="engine-card-kicker">ENGINE DISPLAY</div>
+          <h3>Business Mode</h3>
+          <p class="helper">Professional Engine Room presentation. Project branding, data, permissions and security remain unchanged.</p>
           <div class="engine-pirate-toggle-row">
             <span><strong>Pirate Mode</strong><small>Transform Dark Flag command surfaces. Project shells remain untouched.</small></span>
             <label class="bf-switch" aria-label="Toggle Pirate Mode in Dark Flag Engine">
@@ -777,6 +789,7 @@
               <span class="bf-switch-slider"></span>
             </label>
           </div>
+          <div class="business-mode-status"><span></span><strong>BUSINESS MODE</strong><small>Professional Engine Room</small></div>
           <p id="pirateModeStatus" class="helper"></p>
         </article>
 
@@ -877,11 +890,11 @@
         </a>
       </section>
 
-      <section id="engineAnalyticsSection" class="fleet-analytics captains-log">
+      <section id="engineAnalyticsSection" class="fleet-analytics captains-log engine-telemetry-legacy">
         <div class="captains-log-head">
           <div>
-            <div class="engine-kicker">CAPTAIN'S LOG</div>
-            <h3>Project Analytics</h3>
+            <div class="engine-kicker">ENGINE TELEMETRY</div>
+            <h3>Operations Monitor</h3>
           </div>
           <span class="captains-log-badge">LOCAL DATA</span>
         </div>
@@ -906,7 +919,7 @@
     </section>
   </div>
 
-  <script src="app.js?v=2.9.57"></script>
+  <script src="app.js?v=2.9.58"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">

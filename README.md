@@ -1,25 +1,25 @@
-# Workshop Engine v2.9.57 — First Mate's Workbench
+# Workshop Engine v2.9.58 — Business Engine Room
 
-Purpose:
-Turn the Engine Room from a dashboard into the First Mate's operating workspace while preserving existing project-control authority and functionality.
+The Engine Room is now explicitly the First Mate's execution workspace.
 
-Architecture:
-- Fleet / Projects = scalable project selection and status.
-- First Mate's Workbench = existing project control surfaces, tabs and actions.
-- Engine Telemetry / Operations Monitor = secondary operational information.
-- Captain's Quarters remains a doorway to Captain-only command surfaces.
-- Existing controls for current, test/private and future projects are preserved.
-- Project grid uses responsive auto-fit behavior; no fixed project-count assumption is introduced.
+## What changed
+- Pirate Mode is retired from the visible Engine Room surface.
+- Business Mode / Professional Engine Room is the default presentation.
+- Added Fleet Command search and project status filters.
+- Project cards use responsive auto-fit layout with no fixed project-count limit.
+- Current, private/test and future filters read real project metadata.
+- Company Registry is hidden from the daily surface because it duplicated Fleet Command.
+- Fleet analytics are hidden from the Engine Room and retained in DOM for Captain-side relocation.
+- Existing Project Control Center remains the operational workbench.
+- Existing Engine Controls remain available and gain the freed space.
 
-Function freeze:
-- app.js unchanged byte-for-byte from v2.9.56.
-- captain.js unchanged byte-for-byte from v2.9.56.
-- No controls removed.
-- No project namespaces merged.
+## What did not change
+- No project namespaces were merged.
+- No project actions were removed.
+- Search/filter does not mutate project data.
+- Current/test/future projects keep their existing control access.
+- Captain-only access remains separately authenticated.
 
-Assets:
-- No new asset files added in v2.9.57.
-- Existing Engine Room benchmark asset retained.
-
-Note:
-This release deliberately changes hierarchy/presentation first. It does not invent new destructive actions or alter existing project behavior.
+## Assets
+No new asset files were added in v2.9.58.
+The existing Engine Room benchmark asset remains unchanged.

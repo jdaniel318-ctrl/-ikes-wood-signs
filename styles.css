@@ -5142,3 +5142,134 @@ body.engine-mode #enginePanel [data-status="danger"]{--engine-status:#b86d62}
     max-height:none!important;
   }
 }
+
+
+/* ==========================================================
+   v2.9.58 — BUSINESS ENGINE ROOM
+   The Engine Room is the First Mate's execution layer.
+   Professional engine-room design; no visible Pirate Mode.
+   ========================================================== */
+
+/* Retire Pirate Mode from the visible Engine Room. */
+body.engine-mode #enginePanel .engine-legacy-appearance .engine-pirate-toggle-row,
+body.engine-mode #enginePanel .engine-legacy-appearance #pirateModeStatus{display:none!important}
+body.engine-mode #enginePanel .engine-legacy-appearance{min-height:auto!important}
+body.engine-mode #enginePanel .business-mode-status{
+  display:flex!important;align-items:center!important;gap:8px!important;
+  margin-top:10px!important;padding:9px 10px!important;
+  border:1px solid #3d5b4b!important;border-radius:8px!important;
+  background:#101c17!important;
+}
+body.engine-mode #enginePanel .business-mode-status>span{
+  width:9px;height:9px;border-radius:50%;background:#6fb585;box-shadow:0 0 10px #6fb585;
+}
+body.engine-mode #enginePanel .business-mode-status strong{
+  color:#dce8e1!important;font-size:9px!important;letter-spacing:.08em!important;
+}
+body.engine-mode #enginePanel .business-mode-status small{
+  margin-left:auto;color:#789084!important;font-size:8px!important;
+}
+
+/* Fleet Command is built to scale with however many projects exist. */
+body.engine-mode #enginePanel .engine-fleet-toolbar{
+  display:grid!important;grid-template-columns:minmax(230px,1fr) auto!important;
+  gap:10px!important;align-items:end!important;margin:0 0 12px!important;padding:10px!important;
+  border:1px solid #3a474d!important;border-radius:10px!important;background:#0b1215!important;
+}
+body.engine-mode #enginePanel .engine-fleet-search{
+  display:grid!important;gap:4px!important;color:#9eaaa7!important;
+  font-size:7px!important;font-weight:900!important;letter-spacing:.12em!important;text-transform:uppercase!important;
+}
+body.engine-mode #enginePanel .engine-fleet-search input{
+  min-height:38px!important;padding:8px 11px!important;border:1px solid #46565d!important;
+  border-radius:7px!important;background:#111a1f!important;color:#edf1ef!important;
+}
+body.engine-mode #enginePanel .engine-fleet-filters{display:flex!important;flex-wrap:wrap!important;gap:5px!important}
+body.engine-mode #enginePanel .engine-fleet-filters button{
+  min-height:34px!important;padding:7px 9px!important;border:1px solid #3f4d53!important;
+  border-radius:7px!important;background:#141e23!important;color:#9ba7a4!important;font-size:8px!important;font-weight:800!important;
+}
+body.engine-mode #enginePanel .engine-fleet-filters button.active{
+  border-color:#8d713f!important;background:#2a2418!important;color:#e3c782!important;
+}
+
+/* Correct selectors for the actual project-card implementation. */
+body.engine-mode #enginePanel .project-command-cards{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr))!important;
+  gap:10px!important;
+}
+body.engine-mode #enginePanel .project-card{
+  width:auto!important;max-width:none!important;min-height:0!important;
+  padding:14px!important;border:1px solid #465158!important;border-radius:10px!important;
+  background:linear-gradient(180deg,#151f24,#11191d)!important;
+  box-shadow:0 8px 18px #0003!important;
+}
+body.engine-mode #enginePanel .project-card h4{font-size:20px!important}
+body.engine-mode #enginePanel .project-card p{font-size:10px!important}
+body.engine-mode #enginePanel .project-card-actions{gap:6px!important}
+body.engine-mode #enginePanel .project-card-actions button{min-height:38px!important}
+body.engine-mode #enginePanel .project-card[hidden]{display:none!important}
+body.engine-mode #enginePanel .add-project-card{
+  min-height:170px!important;
+  border-style:dashed!important;
+  background:#10171a!important;
+}
+
+/* Company Registry duplicates Fleet Command and is removed from the daily surface.
+   Existing DOM/data remain alive for compatibility. */
+body.engine-mode #enginePanel .engine-registry-support-head,
+body.engine-mode #enginePanel .engine-registry-support{display:none!important}
+
+/* Analytics are no longer primary Engine Room content.
+   They remain in DOM for Captain-side relocation next. */
+body.engine-mode #enginePanel .engine-telemetry-legacy{display:none!important}
+body.engine-mode #enginePanel .engine-room-visual-nav a[href="#engineAnalyticsSection"]{display:none!important}
+
+/* Engine Controls now occupy the recovered space as actual machinery. */
+body.engine-mode #enginePanel #engineSettingsSection{
+  margin-top:14px!important;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr))!important;
+}
+body.engine-mode #enginePanel .engine-card{
+  background:#111a1f!important;border-color:#46545a!important;
+}
+
+/* First Mate's workbench gets strongest control hierarchy. */
+body.engine-mode #enginePanel .project-engine-control{
+  border-color:#7b6037!important;
+  background:#0d1518!important;
+  box-shadow:0 14px 32px #0005!important;
+}
+body.engine-mode #enginePanel .project-tabs button{
+  background:#152126!important;border-color:#3e4c52!important;color:#b7c1be!important;
+}
+body.engine-mode #enginePanel .project-tabs button.active{
+  background:#24343a!important;border-color:#9b7a42!important;color:#f0cf76!important;
+}
+
+/* Action language: normal / configure / test / dangerous. */
+body.engine-mode #enginePanel .primary-btn{
+  background:#1c4960!important;border-color:#47778f!important;color:#edf7fa!important;
+}
+body.engine-mode #enginePanel .project-add-btn{
+  background:#896a35!important;border-color:#b38a47!important;color:#fff0c7!important;
+}
+body.engine-mode #enginePanel .danger-btn,
+body.engine-mode #enginePanel .danger-outline-btn{
+  border-color:#9c5b52!important;color:#e8aaa3!important;
+}
+
+/* Captain doorway remains available, visually subordinate to First Mate work. */
+body.engine-mode #enginePanel .captain-access-dock{
+  margin-top:14px!important;border-color:#3c3930!important;background:#0d1211!important;
+}
+
+/* No fixed project-count assumptions. */
+@media(max-width:900px){
+  body.engine-mode #enginePanel .engine-fleet-toolbar{grid-template-columns:1fr!important}
+  body.engine-mode #enginePanel .project-command-cards{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))!important}
+}
+@media(max-width:620px){
+  body.engine-mode #enginePanel .project-command-cards{grid-template-columns:1fr!important}
+}

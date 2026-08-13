@@ -3623,7 +3623,51 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
 
+
+  function bindEngineFleetCommand(){
+    const search=$('engineFleetSearch');
+    const host=$('projectCommandCards');
+    const filterButtons=Array.from(document.querySelectorAll('[data-engine-fleet-filter]'));
+    if(!search||!host||!filterButtons.length)return;
+
+    const apply=()=>{
+      const q=String(search.value||'').trim().toLowerCase();
+      const mode=filterButtons.find(b=>b.classList.contains('active'))?.dataset.engineFleetFilter||'all';
+
+      Array.from(host.children).forEach(card=>{
+        const addCard=card.id==='addProjectCard' || card.classList.contains('add-project-card');
+        if(addCard){
+          card.hidden=mode!=='all'||!!q;
+          return;
+        }
+
+        const control=card.querySelector('[data-open-project-control]');
+        const projectId=control?.dataset.openProjectControl||'';
+        const p=projectId?projectById(projectId):null;
+        const text=(card.textContent||'').toLowerCase();
+        const matchesText=!q || text.includes(q);
+
+        let matchesMode=true;
+        if(mode==='active') matchesMode=!!p && (p.publish?.status==='live' || p.status==='active');
+        if(mode==='private') matchesMode=!!p && p.publish?.status!=='live';
+        if(mode==='future') matchesMode=!!p && p.status==='future';
+
+        card.hidden=!(matchesText&&matchesMode);
+      });
+    };
+
+    search.addEventListener('input',apply);
+    filterButtons.forEach(btn=>btn.addEventListener('click',()=>{
+      filterButtons.forEach(b=>b.classList.toggle('active',b===btn));
+      apply();
+    }));
+
+    new MutationObserver(apply).observe(host,{childList:true});
+    apply();
+  }
+
   function bindEvents(){
+    bindEngineFleetCommand();
     $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
     $('enginePirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
 
