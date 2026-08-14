@@ -186,6 +186,12 @@
   function captureCustomerFromOrder(order){
     const projectId=order.projectId||'ikes-wood-signs';
     const p=projectById(projectId);
+    if(!p){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId,category:'integrity',action:'customer.capture.blocked',detail:order?.id||'unknown'});
+      return;
+    }
+    const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...order,projectId},projectId,{legacyIke:true});
+    if(scoped&&!scoped.ok)return;
 
     const key=normalizeCustomerKey(order);
     if(!key) return;
@@ -193,6 +199,10 @@
     const directory=readCustomerDirectory();
     directory[projectId]=directory[projectId]||{};
     const existing=directory[projectId][key]||{
+      projectId,
+      namespace:window.BlackFlagV3Core?.namespaceFor?.(projectId)||`bf.project.${projectId}`,
+      schemaVersion:3,
+      isolation:{projectId,crossProjectAccess:'deny'},
       customerKey:key,
       name:order.customerName||'',
       phone:order.customerPhone||'',
@@ -203,6 +213,10 @@
       purchases:[]
     };
 
+    existing.projectId=projectId;
+    existing.namespace=window.BlackFlagV3Core?.namespaceFor?.(projectId)||`bf.project.${projectId}`;
+    existing.schemaVersion=3;
+    existing.isolation={projectId,crossProjectAccess:'deny'};
     existing.name=order.customerName||existing.name||'';
     existing.phone=order.customerPhone||existing.phone||'';
     existing.email=order.customerEmail||existing.email||'';
@@ -228,7 +242,7 @@
     const directory=readCustomerDirectory();
     directory[projectId]={};
     writeCustomerDirectory(directory);
-    (orders||[]).filter(o=>(o.projectId||'ikes-wood-signs')===projectId).forEach(captureCustomerFromOrder);
+    projectScopedOrders(orders||[],projectId).forEach(captureCustomerFromOrder);
   }
 
   function engineWideCustomerMatches(customerKey){
@@ -571,6 +585,7 @@
     const rows=readActivity();
     rows.unshift({id:'ACT-'+Date.now(),projectId,action,detail,at:new Date().toISOString()});
     localStorage.setItem(PROJECT_ACTIVITY_KEY,JSON.stringify(rows.slice(0,500)));
+    window.BlackFlagV3Core?.audit?.({actorRole:engineSessionUnlocked?'engine_admin':'local_session',projectId:projectId||null,action,detail,category:'project_operation'});
   }
   function readLedgers(){
     try{return JSON.parse(localStorage.getItem(PROJECT_LEDGER_KEY)||'{}')}catch(_){return{}}
@@ -579,10 +594,16 @@
   function projectLedger(projectId){const l=readLedgers();return Array.isArray(l[projectId])?l[projectId]:[]}
   function postOrderToLedger(order){
     const projectId=order.projectId || (order.business?.name==="Ike's Wood Signs"?'ikes-wood-signs':activeProjectId||'ikes-wood-signs');
+    const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...order,projectId},projectId,{legacyIke:true});
+    if(scoped&&!scoped.ok)return;
     const ledgers=readLedgers(); const list=Array.isArray(ledgers[projectId])?ledgers[projectId]:[];
     if(list.some(x=>x.orderId===order.id)) return;
     list.push({
       ledgerId:'LED-'+Date.now(),
+      projectId,
+      namespace:window.BlackFlagV3Core?.namespaceFor?.(projectId)||`bf.project.${projectId}`,
+      schemaVersion:3,
+      isolation:{projectId,crossProjectAccess:'deny'},
       orderId:order.id,
       completedAt:new Date().toISOString(),
       customer:order.customerName||'',
@@ -602,7 +623,7 @@
 
   const DEFAULT_ENGINE_CONFIG = {
     engineName:'Workshop Engine',
-    schemaVersion:2
+    schemaVersion:3
   };
   let engineConfig={...DEFAULT_ENGINE_CONFIG};
   const DRAFT_KEY='ikesOrderDraftV2';
@@ -782,19 +803,38 @@
       companies=Array.isArray(saved?.value)&&saved.value.length?saved.value:structuredClone(DEFAULT_COMPANIES);
     }catch(_){companies=structuredClone(DEFAULT_COMPANIES);}
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
+    const core=window.BlackFlagV3Core;
+    if(core){
+      const before=structuredClone(companies);
+      const migration=core.migrate(companies);
+      companies=migration.projects;
+      if(migration.changed){
+        core.snapshot(before,'pre-v3-stage1-migration');
+        await setSetting('companies',companies);
+        core.markMigration({from:'2.9.x',to:'3.0',stage:1,status:'complete',projectCount:companies.length});
+        core.audit({category:'migration',action:'v3.stage1.migration.complete',detail:`${companies.length} projects`});
+      }
+    }
   }
-  async function saveCompanies(){await setSetting('companies',companies);}
+  async function saveCompanies(){
+    companies=companies.map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(p))||ensureProjectGovernance(p));
+    await setSetting('companies',companies);
+  }
   function companyById(id){return companies.find(c=>c.id===id);}
   function companyStatusLabel(c){
     return c.publish?.status==='live'?'LIVE':(c.publish?.status==='test'?'TEST':'DEVELOPMENT');
   }
 
+  function projectScopedOrders(orders,projectId){
+    return (orders||[]).filter(o=>{
+      const result=window.BlackFlagV3Core?.assertProjectScope?.(o,projectId,{legacyIke:true});
+      return result ? result.ok : (o.projectId||'ikes-wood-signs')===projectId;
+    });
+  }
+
   async function projectStats(p){
     const orders=await getMergedOrders();
-    const rows=orders.filter(o=>{
-      const pid=o.projectId || ((o.business?.name||"Ike's Wood Signs")==="Ike's Wood Signs"?'ikes-wood-signs':'');
-      return pid===p.id;
-    });
+    const rows=projectScopedOrders(orders,p.id);
     const month=new Date().toISOString().slice(0,7);
     const monthRows=rows.filter(o=>(o.createdAt||'').slice(0,7)===month);
     const ledger=projectLedger(p.id);
@@ -931,6 +971,13 @@
         source:'migrated_v2_9_46'
       });
     }
+    const namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
+    p.deployments=p.deployments.map(d=>{
+      d.projectId=p.id;
+      d.namespace=namespace;
+      d.authorization={...(d.authorization||{}),role:'device',projectId:p.id,namespace,scope:'customer_session',crossProjectAccess:'deny',policyVersion:'3.0',engineAccess:false,ownerAccess:false};
+      return d;
+    });
     return p.deployments;
   }
 
@@ -2810,6 +2857,13 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     drawEngineTrend($('engineUsageTrend'),usage,pirateTrend||'#b46cf4',{emptyLabel:usageMB?'BUILDING USAGE HISTORY':'NO USAGE DATA'});
     drawEngineTrend($('engineCostTrend'),costs,pirateTrend||'#f3aa22',{money:true,emptyLabel:configured?'NO COST DATA':'CONFIGURE COST MODEL'});
     renderPirateCommandLog();
+    window.BlackFlagV3Core?.telemetry?.('engine.performance',{
+      revenue30:Number(totalRevenue.toFixed(2)),
+      cost30:Number(totalCost.toFixed(2)),
+      profit30:Number(totalProfit.toFixed(2)),
+      usageMB:Number(usageMB.toFixed(3)),
+      orders30:orderCounts.reduce((a,b)=>a+b,0)
+    });
   }
 
   function renderPirateCommandLog(){
@@ -3278,7 +3332,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
     const id=newOrderId();
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true};
     backupOrderLocally(order);
     captureCustomerFromOrder(order);
     try{
@@ -4166,7 +4220,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   function renderMugsPreview(){if($('mugsPreviewImage')&&mugsState.photoData)$('mugsPreviewImage').src=mugsState.photoData;if($('mugsPreviewText')){$('mugsPreviewText').textContent=mugsState.message||'Your Message';$('mugsPreviewText').className=`mugs-preview-text mugs-style-${mugsState.style}`;}}
   function renderMugsReview(){const box=$('mugsReviewSummary');if(!box)return;box.innerHTML=`<div class="mugs-review-preview"><img src="${mugsState.photoData}" alt="Confirmed mug photo"><div class="mugs-review-overlay mugs-style-${escapeHtml(mugsState.style)}">${escapeHtml(mugsState.message||'Your Message')}</div></div><div class="mugs-review-row"><span>Message</span><strong>${escapeHtml(mugsState.message||'')}</strong></div><div class="mugs-review-row"><span>Name</span><strong>${escapeHtml(mugsState.customerName||'')}</strong></div><div class="mugs-review-row"><span>Phone</span><strong>${escapeHtml(mugsState.customerPhone||'')}</strong></div><div class="mugs-review-row"><span>Email</span><strong>${escapeHtml(mugsState.customerEmail||'')}</strong></div><div class="mugs-review-row"><span>Pricing</span><strong>TEST MODE</strong></div>`;}
   async function createMugsApprovedPreview(){if(!mugsState.photoData)return '';return new Promise(resolve=>{const img=new Image();img.onload=()=>{try{const scale=Math.min(1,1600/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height)),w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale)),h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale)),canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return resolve('');ctx.drawImage(img,0,0,w,h);const text=mugsState.message||'';let size=Math.max(30,Math.min(Math.round(w*.09),Math.round(h*.22)));const family=mugsState.style==='classic'?'Georgia':mugsState.style==='script'?'cursive':'Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#111';while(size>20){ctx.font=`700 ${size}px ${family}`;if(ctx.measureText(text).width<=w*.82)break;size-=2;}ctx.lineWidth=Math.max(3,size*.08);ctx.strokeStyle='rgba(255,255,255,.82)';ctx.strokeText(text,w/2,h/2,w*.82);ctx.fillText(text,w/2,h/2,w*.82);resolve(canvas.toDataURL('image/jpeg',.84));}catch(err){console.warn('Mugs preview failed',err);resolve('');}};img.onerror=()=>resolve('');img.src=mugsState.photoData;});}
-  async function submitMugsOrder(){if(activeProjectId!=='mugshot-after-dark')return;if(!mugsState.photoData){alert('A confirmed mug photo is required.');showMugsScreen('photo');return;}if(!mugsState.message.trim()){alert('Enter the mug message.');showMugsScreen('message');return;}if(!mugsState.customerName.trim()||!mugsState.customerPhone.trim()){alert('Name and phone are required.');showMugsScreen('customer');return;}if(!$('mugsApprovalCheck')?.checked)return;const approvedPreviewData=await createMugsApprovedPreview();if(!approvedPreviewData){alert('The approved mug preview could not be confirmed.');showMugsScreen('photo');return;}const d=new Date(),y=String(d.getFullYear()).slice(-2),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`MUG-${y}${mo}${day}-${suffix}`;const order={projectId:'mugshot-after-dark',schemaVersion:Number(engineConfig.schemaVersion||2),business:{name:'Mugs After Dark',orderPrefix:'MUG'},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:0,photoData:mugsState.photoData,approvedPreviewData,wording:mugsState.message,font:mugsState.style,fill:'Black',contactPreference:'Text',customerName:mugsState.customerName,customerPhone:mugsState.customerPhone,customerEmail:mugsState.customerEmail,approved:true,testMode:true};backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Mugs order save failed',err);}mugsState.approvedPreviewData=approvedPreviewData;$('mugsDoneOrderId').textContent=id;$('mugsDonePreview').src=approvedPreviewData;showMugsScreen('done');}
+  async function submitMugsOrder(){if(activeProjectId!=='mugshot-after-dark')return;if(!mugsState.photoData){alert('A confirmed mug photo is required.');showMugsScreen('photo');return;}if(!mugsState.message.trim()){alert('Enter the mug message.');showMugsScreen('message');return;}if(!mugsState.customerName.trim()||!mugsState.customerPhone.trim()){alert('Name and phone are required.');showMugsScreen('customer');return;}if(!$('mugsApprovalCheck')?.checked)return;const approvedPreviewData=await createMugsApprovedPreview();if(!approvedPreviewData){alert('The approved mug preview could not be confirmed.');showMugsScreen('photo');return;}const d=new Date(),y=String(d.getFullYear()).slice(-2),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`MUG-${y}${mo}${day}-${suffix}`;const order={projectId:'mugshot-after-dark',namespace:window.BlackFlagV3Core?.namespaceFor?.('mugshot-after-dark')||'bf.project.mugshot-after-dark',isolation:{projectId:'mugshot-after-dark',crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:'Mugs After Dark',orderPrefix:'MUG'},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:0,photoData:mugsState.photoData,approvedPreviewData,wording:mugsState.message,font:mugsState.style,fill:'Black',contactPreference:'Text',customerName:mugsState.customerName,customerPhone:mugsState.customerPhone,customerEmail:mugsState.customerEmail,approved:true,testMode:true};backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Mugs order save failed',err);}mugsState.approvedPreviewData=approvedPreviewData;$('mugsDoneOrderId').textContent=id;$('mugsDonePreview').src=approvedPreviewData;showMugsScreen('done');}
   function bindMugsShell(){if(window.__mugsShellBound)return;window.__mugsShellBound=true;$('mugsCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-mugs-next]');if(n&&!n.disabled){showMugsScreen(n.dataset.mugsNext);return;}const b=e.target.closest('[data-mugs-back]');if(b){showMugsScreen(b.dataset.mugsBack);}});$('mugsPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{mugsState.photoData=String(r.result||'');$('mugsPhotoPreview').src=mugsState.photoData;$('mugsPhotoPreviewWrap').classList.remove('hidden');$('mugsPhotoNext').disabled=!mugsState.photoData;};r.readAsDataURL(file);});$('mugsRetakePhoto')?.addEventListener('click',()=>{mugsState.photoData='';$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap').classList.add('hidden');$('mugsPhotoNext').disabled=true;$('mugsPhotoInput').click();});$('mugsMessage')?.addEventListener('input',e=>{mugsState.message=e.target.value;$('mugsCharCount').textContent=String(mugsState.message.length);});$('mugsStyle')?.addEventListener('change',e=>mugsState.style=e.target.value);$('mugsCustomerNext')?.addEventListener('click',()=>{mugsState.customerName=$('mugsCustomerName').value.trim();mugsState.customerPhone=$('mugsCustomerPhone').value.trim();mugsState.customerEmail=$('mugsCustomerEmail').value.trim();if(!mugsState.customerName||!mugsState.customerPhone){alert('Name and phone are required.');return;}showMugsScreen('review');});$('mugsApprovalCheck')?.addEventListener('change',e=>$('mugsSubmitOrder').disabled=!e.target.checked);$('mugsSubmitOrder')?.addEventListener('click',submitMugsOrder);$('mugsNewOrder')?.addEventListener('click',()=>{resetMugsShell();showMugsScreen('welcome');});$('mugsAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
 
   const flowersState={screen:'welcome',photoData:'',message:'',style:'bold',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''};
@@ -4198,7 +4252,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
     const order={
       projectId:p.id,
-      schemaVersion:Number(engineConfig.schemaVersion||2),
+      namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`,
+      isolation:{projectId:p.id,crossProjectAccess:'deny'},
+      schemaVersion:Number(engineConfig.schemaVersion||3),
       business:{name:businessName,orderPrefix:prefix},
       id,
       createdAt:new Date().toISOString(),
@@ -4434,6 +4490,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       'Captain business relationship decision',
       `${previous} → ${nextStatus}${cleanReason?' • '+cleanReason:''}`
     );
+    window.BlackFlagV3Core?.audit?.({
+      actorRole:'captain',projectId:p.id,category:'governance',
+      action:'business.relationship.changed',
+      detail:`${previous} → ${nextStatus}${cleanReason?' • '+cleanReason:''}`
+    });
     await renderProjectCommand();
     return {ok:true,projectId:p.id,previous,nextStatus,event};
   };
@@ -4535,7 +4596,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   function ownerProjectOrders(orders,p){
-    return orders.filter(o=>orderProjectId(o)===p.id);
+    return projectScopedOrders(orders,p.id);
   }
 
   async function ownerBusinessConfig(p){
@@ -4557,7 +4618,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
   async function ownerUpdateOrderStatus(p,orderId,status){
     const orders=await getMergedOrders();
-    const o=orders.find(x=>x.id===orderId && orderProjectId(x)===p.id);
+    const o=orders.find(x=>x.id===orderId && projectScopedOrders([x],p.id).length===1);
     if(!o)return false;
     o.status=status;
     o.updatedAt=new Date().toISOString();
@@ -4583,6 +4644,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   async function renderOwnerModule(p,moduleKey){
     ensureProjectGovernance(p);
     if(platformStatus(p)!=='approved'){await openOwnerPortal(p.id);return;}
+    const session=ownerSession();
+    const v3Allowed=window.BlackFlagV3Identity?.ownerCan
+      ? window.BlackFlagV3Identity.ownerCan(p,moduleKey,session?.projectId||'')
+      : true;
+    if(!v3Allowed){alert('This business tool is not currently enabled.');return;}
     const caps=new Set(p.ownerAccess.capabilities||[]);
     if(moduleKey!=='settings' && !caps.has(moduleKey)){alert('This business tool is not currently enabled.');return;}
     const body=$('ownerPortalBody'); if(!body)return;

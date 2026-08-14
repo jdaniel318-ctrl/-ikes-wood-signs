@@ -1,14 +1,18 @@
-const CACHE='workshop-engine-v2-9-79-pirate-mode-asset-match';
+const CACHE='black-flag-v3-stage2-machinery-operations';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.79',
-  './app.js?v=2.9.79',
+  './styles.css?v=3.0-stage2',
+  './platform_core.js?v=3.0-stage2',
+  './platform_identity.js?v=3.0-stage2',
+  './app.js?v=3.0-stage2',
   './captain.js?v=2.9.79',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',
-  './assets/engine_room_benchmark_v2955.jpg'
+  './assets/engine_room_benchmark_v2955.jpg',
+  './assets/engine_room_modern_benchmark_v2976.png',
+  './assets/engine_room_pirate_benchmark_v2978.png'
 ];
 
 self.addEventListener('install',event=>{

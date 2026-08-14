@@ -1,0 +1,41 @@
+{
+  "baseline": "v2.9.79",
+  "target": "v3.0 Stage 1 \u2014 Hull & Bulkheads",
+  "static_duplicate_ids": [],
+  "required_controls": {
+    "enginePanel": 1,
+    "projectEngineControl": 1,
+    "ownerPortal": 1,
+    "captainModeAccessBtn": 1,
+    "engineConfigurationDock": 1
+  },
+  "scripts": {
+    "platform_core.js?v=3.0-stage1": true,
+    "platform_identity.js?v=3.0-stage1": true,
+    "app.js?v=3.0-stage1": true,
+    "captain.js?v=2.9.79": true
+  },
+  "javascript_syntax": {
+    "platform_core.js": true,
+    "platform_identity.js": true,
+    "app.js": true,
+    "captain.js": true,
+    "sw.js": true
+  },
+  "css_braces": [
+    3086,
+    3086
+  ],
+  "stage1_services": [
+    "schema v3",
+    "project namespaces",
+    "default-deny isolation metadata",
+    "role/permission policy",
+    "project lifecycle model",
+    "audit foundation",
+    "pre-migration recovery snapshot",
+    "2.9.x\u21923 migration",
+    "integrity service"
+  ],
+  "production_auth_status": "NOT production-ready; server-backed authentication remains a Stage 2/production boundary."
+}
