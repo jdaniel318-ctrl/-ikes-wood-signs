@@ -1622,13 +1622,20 @@
         await renderProjectTab(p.id,'owner');
       });
 
-      $('previewOwnerPortal')?.addEventListener('click',async()=>{
+      const previewOwnerBtn=$('previewOwnerPortal');
+      if(previewOwnerBtn) previewOwnerBtn.onclick=async()=>{
         if(ownerPreviewOpening)return;
         ownerPreviewOpening=true;
         ownerPreviewReturnState={projectId:p.id,tab:'owner'};
-        try{await openOwnerPortal(p.id,{preview:true});}
-        finally{setTimeout(()=>{ownerPreviewOpening=false},0);}
-      });
+        try{
+          await openOwnerPortal(p.id,{preview:true});
+        }catch(err){
+          console.error('Owner Portal preview failed',err);
+          alert('Owner Portal preview could not be opened. Please try again.');
+        }finally{
+          ownerPreviewOpening=false;
+        }
+      };
     }
     if(tab==='customers'){
       const savedOrders=await getMergedOrders();
@@ -4665,33 +4672,15 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       $('enginePanel')?.classList.remove('hidden');
 
       if(returnState?.projectId){
-        activeProjectId=returnState.projectId;
-        await openProjectControl(returnState.projectId);
+        engineActiveProjectId=returnState.projectId;
+        await openProjectEngineControl(returnState.projectId);
         await renderProjectTab(returnState.projectId,returnState.tab||'owner');
       }
     });
     window.addEventListener('hashchange',()=>routeOwnerAccessFromHash());
   }
 
-  function bindOwnerPreviewDelegation(){
-    document.addEventListener('click',async e=>{
-      const btn=e.target.closest?.('#previewOwnerPortal');
-      if(!btn)return;
-      e.preventDefault();
-      e.stopPropagation();
-      const projectId=activeProjectId || btn.closest?.('[data-project-id]')?.dataset.projectId;
-      const p=projectId?projectById(projectId):null;
-      if(!p)return;
-      if(ownerPreviewOpening)return;
-      ownerPreviewOpening=true;
-      ownerPreviewReturnState={projectId:p.id,tab:'owner'};
-      try{await openOwnerPortal(p.id,{preview:true});}
-      finally{setTimeout(()=>{ownerPreviewOpening=false},0);}
-    },true);
-  }
-
   function bindEvents(){
-    bindOwnerPreviewDelegation();
     bindEngineFleetCommand();
     $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
     $('enginePirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));

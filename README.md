@@ -1,18 +1,20 @@
-# Workshop Engine v2.9.74 — Consolidated Owner Experience
+# Workshop Engine v2.9.75 — Preview Owner Portal Functional Fix
 
-Built directly from the Captain-provided v2.9.71 archive after verifying that archive byte-for-byte against the confirmed v2.9.71 lineage.
+## Actual root cause
+v2.9.74 had two click paths for Preview Owner Portal.
 
-Consolidated owner work:
-- welcoming business-partner invitation
-- larger responsive invitation layout for iPad and iPhone
-- no owner-facing explanation of internal program areas or unavailable authority
-- test owner login: joe / 4353
-- owner logout returns to the Business Portal login
-- password change under owner Settings
-- functional project-scoped Owner Portal modules
-- Preview Owner Portal works after dynamic rerenders
-- Exit Preview returns to that project's Owner Access tab without changing the real owner session
+A document-level capture handler ran first, called `stopPropagation()`, and tried to infer the project from `activeProjectId`. In the Engine Control Center that value can be null or refer to customer-project runtime state. When it could not resolve the project, it returned — but because propagation was already stopped, the correctly scoped Owner Access handler never received the tap.
 
-Test credentials remain local/test-only. Production authentication still requires secure server-side identity/password handling.
+The preview return route also called a non-existent `openProjectControl()` function.
 
-Assets: unchanged from the Captain-provided archive.
+## Structural fix
+- Removed the competing document-level preview interceptor.
+- Preview now has exactly one handler, bound when Owner Access renders and closed over the correct project.
+- Preview opens with `openOwnerPortal(p.id,{preview:true})`.
+- Errors are surfaced instead of silently failing.
+- EXIT PREVIEW uses `engineActiveProjectId` and the real `openProjectEngineControl()`.
+- EXIT PREVIEW returns directly to the same project's Owner Access tab.
+- Added touch-safe behavior for iPad/iPhone.
+
+## Assets
+No assets added, removed, renamed, or replaced.
