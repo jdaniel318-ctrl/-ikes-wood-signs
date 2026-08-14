@@ -7628,3 +7628,186 @@ body.dark-flag-pirate-mode #enginePanel .project-tab-content::before{
     margin-top:5px;
   }
 }
+
+
+/* ==========================================================
+   v2.9.79 — PIRATE MODE ASSET-MATCH PASS
+   Dedicated Pirate composition: header/action deck, red telemetry,
+   authority system keys, armada cards and command log.
+   ========================================================== */
+
+#pirateCommandHero,#pirateSystemsDeck,#pirateCommandLog{display:none}
+
+body.dark-flag-pirate-mode #enginePanel .modern-engine-hero{display:none!important}
+body.dark-flag-pirate-mode #pirateCommandHero{
+  display:grid!important;
+  grid-template-columns:110px minmax(300px,1fr) minmax(500px,1.25fr);
+  align-items:center;
+  gap:16px;
+  min-height:145px;
+  margin-bottom:12px;
+  padding:14px 16px;
+  border:1px solid #4d3826;
+  border-radius:10px;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(7,6,5,.98),rgba(10,7,6,.88) 48%,rgba(14,5,5,.72)),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center 2% / cover no-repeat;
+  box-shadow:0 18px 44px rgba(0,0,0,.42),inset 0 1px 0 rgba(211,160,83,.05);
+}
+.pirate-command-crest{
+  display:grid;place-items:center;width:92px;height:92px;border-radius:50%;
+  border:2px solid #6e502e;background:#13100d;
+  box-shadow:inset 0 0 0 7px #0a0908,0 0 0 1px #2e241a,0 10px 28px rgba(0,0,0,.35)
+}
+.pirate-command-crest span{font-size:50px;filter:sepia(.35)}
+.pirate-command-title small{color:#d23a31;font:900 11px Arial,sans-serif;letter-spacing:.14em}
+.pirate-command-title h2{margin:3px 0;color:#f1e5cf;font:900 clamp(31px,3.6vw,50px)/.98 Georgia,serif;letter-spacing:.01em}
+.pirate-command-title p{margin:0;color:#b7a890;font-size:12px}
+.pirate-command-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pirate-command-actions button{
+  display:flex;align-items:center;gap:10px;min-height:72px;padding:11px;
+  border:1px solid #523828;border-radius:7px;background:linear-gradient(180deg,#1a100e,#110b09);
+  color:#e7dbc6;text-align:left
+}
+.pirate-command-actions button span{display:grid;place-items:center;width:32px;height:32px;color:#d64b40;font-size:19px}
+.pirate-command-actions button strong{display:block;color:#e8dac5;font:900 10px Arial,sans-serif;letter-spacing:.03em}
+.pirate-command-actions button small{display:block;margin-top:4px;color:#8d806d;font-size:7px}
+#pirateOverrideBtn span{color:#d8a34c}
+#pirateExitBtn{border-color:#6c201c;background:linear-gradient(180deg,#27100e,#160908)}
+#pirateExitBtn span{color:#ed4a40}
+
+/* Telemetry closer to approved asset: red graphs, gold icon frames, tighter cards. */
+body.dark-flag-pirate-mode #enginePanel .engine-performance-deck{gap:8px!important}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card{
+  border-radius:7px!important;
+  border-color:#3e3023!important;
+  background:#0e0d0b!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card-head strong{color:#e04437!important}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card-head i{
+  border-color:#745326!important;background:#171109!important;color:#d0a04a!important
+}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card canvas{height:135px!important}
+
+/* Replace Business system strip with the dedicated pirate authority deck. */
+body.dark-flag-pirate-mode #enginePanel .modern-system-operations{display:none!important}
+body.dark-flag-pirate-mode #pirateSystemsDeck{
+  display:grid!important;
+  grid-template-columns:minmax(260px,.8fr) 1.6fr minmax(200px,.55fr);
+  gap:8px;
+  align-items:stretch;
+  margin:0 0 12px;
+  padding:10px;
+  border:1px solid #473526;
+  border-radius:8px;
+  background:linear-gradient(90deg,#100d0a,#0b0908 70%,#150b09);
+}
+.pirate-systems-state{display:flex;align-items:center;gap:12px;padding:8px 10px}
+.pirate-systems-skull{display:grid;place-items:center;width:56px;height:56px;border:1px solid #6f4d2d;border-radius:50%;background:#17100c;font-size:29px}
+.pirate-systems-state small{color:#9f8a68;font:900 8px Arial,sans-serif;letter-spacing:.1em}
+.pirate-systems-state h3{margin:3px 0;color:#ce352c;font:900 20px Georgia,serif}
+.pirate-systems-state p{margin:0;color:#9a8c76;font-size:8px}
+.pirate-systems-state p span{display:inline-block;width:6px;height:6px;margin-right:5px;border-radius:50%;background:#65c66e}
+.pirate-system-keys{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.pirate-system-keys button{
+  display:grid;place-items:center;min-height:76px;padding:7px 5px;border:1px solid #3f3024;border-radius:6px;background:#120f0c;color:#b9aa90;text-align:center
+}
+.pirate-system-keys button span{font-size:22px;color:#c99748}
+.pirate-system-keys button strong{font-size:8px;color:#d7c9b2}
+.pirate-system-keys button small{font-size:6px;color:#756a5b}
+.pirate-mode-banner{display:flex;align-items:center;justify-content:center;gap:10px;border-left:1px solid #4a3828;background:linear-gradient(90deg,transparent,#190b09)}
+.pirate-mode-banner>span{font-size:31px}
+.pirate-mode-banner small{display:block;color:#9f8d73;font:900 8px Arial,sans-serif;letter-spacing:.1em}
+.pirate-mode-banner strong{display:block;color:#d43b32;font:900 17px Georgia,serif}
+.pirate-mode-banner em{display:block;color:#7d705e;font-size:7px;font-style:normal}
+
+/* Armada heading and project cards closer to asset. */
+body.dark-flag-pirate-mode #enginePanel .modern-project-command{
+  padding:13px!important;border-radius:7px!important
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command h3{
+  font-size:27px!important
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command h3::before{
+  content:"ALL PROJECTS UNDER YOUR FLAG";
+  display:block;margin-bottom:3px;color:#efe4d0;font:900 18px Georgia,serif
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command h3::after{display:none!important}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card{
+  min-height:325px!important;border-radius:5px!important
+}
+.pirate-card-ribbon,.pirate-card-watermark,.pirate-add-copy{display:none}
+body.dark-flag-pirate-mode #enginePanel .pirate-card-ribbon{
+  display:block;position:absolute;left:-2px;top:7px;z-index:4;padding:5px 19px 5px 8px;
+  clip-path:polygon(0 0,100% 0,85% 100%,0 100%);background:#671b16;color:#dfafa5;font:900 6px Arial,sans-serif;letter-spacing:.07em
+}
+body.dark-flag-pirate-mode #enginePanel .pirate-card-watermark{
+  display:block;position:absolute;right:16px;bottom:69px;z-index:0;color:#d6b06f;font-size:57px;opacity:.055
+}
+body.dark-flag-pirate-mode #enginePanel .project-card>*:not(.pirate-card-ribbon):not(.pirate-card-watermark){position:relative;z-index:1}
+body.dark-flag-pirate-mode #enginePanel .add-project-card .pirate-add-copy{
+  display:block;color:#c0a67b;font:900 9px Georgia,serif;letter-spacing:.08em
+}
+body.dark-flag-pirate-mode #enginePanel .add-project-card::before{
+  content:"☠";display:block;color:#b69a6c;font-size:62px;opacity:.7
+}
+
+/* Bottom command log modeled after asset. */
+body.dark-flag-pirate-mode #pirateCommandLog{
+  display:grid!important;
+  grid-template-columns:170px minmax(350px,1.6fr) 170px 190px 220px;
+  gap:7px;
+  align-items:stretch;
+  margin-top:12px;
+  padding:8px;
+  border:1px solid #4a3828;
+  border-radius:7px;
+  background:#0e0c0a;
+}
+.pirate-log-title,.pirate-session-box,.pirate-integrity-box,.pirate-version-box{
+  display:grid;align-content:center;padding:8px 10px;border:1px solid #3b2e22;border-radius:5px;background:#13100d
+}
+.pirate-log-title small,.pirate-session-box small,.pirate-integrity-box small,.pirate-version-box small{color:#9c8767;font:900 7px Arial,sans-serif;letter-spacing:.09em}
+.pirate-log-title strong{color:#d1b480;font:900 13px Georgia,serif}
+.pirate-log-feed{display:grid;gap:3px;padding:6px 9px;border:1px solid #392c21;border-radius:5px;background:#0b0908}
+.pirate-log-feed span{display:grid;grid-template-columns:50px 1fr 90px;gap:7px;color:#a4967e;font-size:7px}
+.pirate-log-feed b{color:#786c5b}.pirate-log-feed i{color:#775746;font-style:normal;text-align:right}
+.pirate-session-box strong,.pirate-integrity-box strong,.pirate-version-box strong{color:#e3d6c1;font:900 22px Georgia,serif}
+.pirate-session-box strong{color:#d6342b}.pirate-integrity-box strong{color:#e8dfcf}
+.pirate-session-box span,.pirate-integrity-box span,.pirate-version-box span{color:#786d5d;font-size:7px}
+
+/* Hide generic footer in Pirate Mode; command log replaces it. */
+body.dark-flag-pirate-mode #enginePanel .modern-engine-footer{display:none!important}
+
+/* Project control pages: deepen art usage. */
+body.dark-flag-pirate-mode #enginePanel .project-engine-control{
+  background:
+    linear-gradient(180deg,rgba(9,7,6,.94),rgba(8,7,6,.985)),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center 18% / 1400px auto no-repeat!important;
+}
+body.dark-flag-pirate-mode #enginePanel .marketing-brand-hero,
+body.dark-flag-pirate-mode #enginePanel .owner-access-hero,
+body.dark-flag-pirate-mode #enginePanel .deployment-hero,
+body.dark-flag-pirate-mode #enginePanel .deployment-fleet-hero{
+  background:
+    linear-gradient(100deg,rgba(17,12,9,.92),rgba(8,7,6,.9)),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center 24% / cover no-repeat!important;
+}
+
+/* Tablet fit */
+@media(max-width:1100px){
+  body.dark-flag-pirate-mode #pirateCommandHero{grid-template-columns:85px 1fr}
+  body.dark-flag-pirate-mode #pirateCommandHero .pirate-command-actions{grid-column:1/-1}
+  body.dark-flag-pirate-mode #pirateSystemsDeck{grid-template-columns:1fr}
+  body.dark-flag-pirate-mode .pirate-system-keys{grid-template-columns:repeat(3,1fr)}
+  body.dark-flag-pirate-mode #pirateCommandLog{grid-template-columns:1fr 2fr 1fr 1fr}
+  body.dark-flag-pirate-mode .pirate-version-box{grid-column:1/-1}
+}
+@media(max-width:700px){
+  body.dark-flag-pirate-mode #pirateCommandHero{grid-template-columns:1fr;text-align:center}
+  body.dark-flag-pirate-mode .pirate-command-crest{margin:auto}
+  body.dark-flag-pirate-mode .pirate-command-actions{grid-template-columns:1fr}
+  body.dark-flag-pirate-mode .pirate-system-keys{grid-template-columns:repeat(2,1fr)}
+  body.dark-flag-pirate-mode #pirateCommandLog{grid-template-columns:1fr}
+}

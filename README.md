@@ -1,33 +1,28 @@
-# Workshop Engine v2.9.78 — Pirate Mode Rebuilt
+# Workshop Engine v2.9.79 — Pirate Mode Asset-Match Pass
 
-Built from v2.9.77.
+This release corrects the v2.9.78 problem: Pirate Mode is no longer merely a red/brass recolor of Business Mode.
 
-## What changed
-Pirate Mode is no longer the old Dark Flag presentation layered over the modern Engine. It is now a complete Engine-wide Black Flag Command visual system built on the same modern structure and functions as Business Mode.
+## Dedicated Pirate composition
+Pirate Mode now has its own structural presentation modeled much more directly on the approved benchmark:
+- skull crest + PIRATE MODE / BLACK FLAG COMMAND header;
+- dedicated Pirate Settings, System Override, and Exit Pirate Mode controls;
+- red/gold telemetry presentation using the same live Engine data;
+- a separate Engine Systems / Command Authority deck with six functional jump controls;
+- Project Armada treatment with active ribbons, skull watermarks, brass/red controls, and a Raise Another Flag treatment;
+- bottom Pirate Log / Active Session / System Integrity / Black Flag Engine command bar;
+- project Control Center and project tabs use the benchmark art more prominently.
 
-When Pirate Mode is active:
-- the main Engine hero becomes Black Flag Command;
-- live Revenue, Profit, Usage and Cost telemetry remain functional but use pirate command instrumentation;
-- System Operations becomes a dark Black Flag engine systems deck;
-- Projects become an armada-style command area;
-- Configure Engine uses the same functionality with a pirate command presentation;
-- every project Control Center tab transforms consistently;
-- Marketing & Brand, Graphics Library, Products, Customer Experience, Deployment, Owner Access, AI, Workflow, Publishing, Orders, Ledger, Payments, Permissions, Customers and Notifications all receive the same pirate command visual system;
-- project logos/artwork remain true-color so business assets are not visually altered.
+## Function safety
+The visual structure changed, not the underlying project/business data architecture.
+System Override opens protected Engine controls rather than inventing destructive powers.
+Exit Pirate Mode returns to Business Mode.
+Project Control, Engine configuration, recovery, telemetry and Captain access buttons jump to the real existing functions.
 
-## Legacy bleed cleanup
-Old pirate presentation selectors were neutralized where they could conflict with the rebuilt Pirate Mode.
-The retired sidebar, old masthead, old health strip, cove graphics and decorative protected-control mark remain suppressed.
-Pirate Mode now relies on one authoritative presentation block at the end of the stylesheet.
+## Legacy containment
+The new Pirate shell sits above the old presentation and is the authoritative visible Pirate structure.
+Business Mode continues to use the modern ship Engine Room from v2.9.76/v2.9.77.
 
-## Functionality
-No Engine, project, owner, deployment, ledger, order, security, publishing, or Captain's Quarters logic was replaced by this redesign.
-Pirate Mode and Business Mode continue to use the same machinery and project boundaries.
-
-## New asset
-`assets/engine_room_pirate_benchmark_v2978.png`
-
-This is the approved Pirate Mode visual benchmark.
-
-## Existing assets
-All previous assets were preserved byte-for-byte.
+## Assets
+No new assets were added in this pass.
+`engine_room_pirate_benchmark_v2978.png` is used much more heavily throughout Pirate Mode.
+All assets were preserved byte-for-byte.

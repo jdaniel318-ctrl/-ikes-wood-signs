@@ -846,6 +846,8 @@
       const platformState=platformStatus(p);
       const ownerState=ownerAccessLabel(p);
       cards.push(`<article class="project-card ${platformState!=='approved'?'platform-blocked':''}">
+        <span class="pirate-card-ribbon">ACTIVE</span>
+        <span class="pirate-card-watermark" aria-hidden="true">☠</span>
         <div class="project-card-head">
           <div class="project-brand-badge ${brandVisual.logo?'has-logo':'code-only'}" title="${escapeHtml(p.name)}">
             ${brandVisual.logo?`<img src="${brandVisual.logo}" alt="${escapeHtml(p.name)} logo">`:`<span>${escapeHtml(brandVisual.code)}</span>`}
@@ -870,7 +872,7 @@
         </div>
       </article>`);
     }
-    cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business or project in the Engine.</p></button>`);
+    cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business or project in the Engine.</p><span class="pirate-add-copy">RAISE ANOTHER FLAG</span></button>`);
     box.innerHTML=cards.join('');
     box.querySelectorAll('[data-open-project-control]').forEach(b=>b.addEventListener('click',()=>openProjectEngineControl(b.dataset.openProjectControl)));
     box.querySelectorAll('[data-enter-project]').forEach(b=>b.addEventListener('click',()=>enterProject(b.dataset.enterProject)));
@@ -2802,10 +2804,30 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const usageByDay=new Map(compact.map(x=>[x.day,Number(x.usageMB)||0]));
     const usage=days.map(d=>usageByDay.has(d)?usageByDay.get(d):0);
 
-    drawEngineTrend($('engineRevenueTrend'),revenue,'#2aa7f7',{money:true,emptyLabel:'NO RECORDED REVENUE'});
-    drawEngineTrend($('engineProfitTrend'),profit,'#61d15f',{money:true,emptyLabel:configured?'NO PROFIT DATA':'CONFIGURE COST MODEL'});
-    drawEngineTrend($('engineUsageTrend'),usage,'#b46cf4',{emptyLabel:usageMB?'BUILDING USAGE HISTORY':'NO USAGE DATA'});
-    drawEngineTrend($('engineCostTrend'),costs,'#f3aa22',{money:true,emptyLabel:configured?'NO COST DATA':'CONFIGURE COST MODEL'});
+    const pirateTrend=pirateModeEnabled?'#c92d26':null;
+    drawEngineTrend($('engineRevenueTrend'),revenue,pirateTrend||'#2aa7f7',{money:true,emptyLabel:'NO RECORDED REVENUE'});
+    drawEngineTrend($('engineProfitTrend'),profit,pirateTrend||'#61d15f',{money:true,emptyLabel:configured?'NO PROFIT DATA':'CONFIGURE COST MODEL'});
+    drawEngineTrend($('engineUsageTrend'),usage,pirateTrend||'#b46cf4',{emptyLabel:usageMB?'BUILDING USAGE HISTORY':'NO USAGE DATA'});
+    drawEngineTrend($('engineCostTrend'),costs,pirateTrend||'#f3aa22',{money:true,emptyLabel:configured?'NO COST DATA':'CONFIGURE COST MODEL'});
+    renderPirateCommandLog();
+  }
+
+  function renderPirateCommandLog(){
+    const box=$('pirateLogFeed'); if(!box)return;
+    const rows=[];
+    try{
+      const all=projects().flatMap(p=>(readActivity(p.id)||[]).map(x=>({...x,projectName:p.name})));
+      all.sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));
+      all.slice(0,3).forEach(x=>{
+        const d=new Date(x.at||Date.now());
+        rows.push(`<span><b>${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</b>${escapeHtml(x.action||'Engine activity')}<i>${escapeHtml(x.projectName||'')}</i></span>`);
+      });
+    }catch(_){}
+    if(!rows.length){
+      rows.push('<span><b>NOW</b>Engine systems standing by<i>Black Flag</i></span>');
+      rows.push('<span><b>NOW</b>Project boundaries sealed<i>Engine</i></span>');
+    }
+    box.innerHTML=rows.join('');
   }
 
   async function refreshEngineDiagnostics(){
@@ -4859,6 +4881,33 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
   function bindEvents(){
     bindEngineFleetCommand();
+
+    $('pirateSettingsBtn')?.addEventListener('click',()=>{
+      $('engineConfigurationDock')?.classList.remove('hidden');
+      $('engineConfigurationDock')?.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    $('pirateOverrideBtn')?.addEventListener('click',()=>{
+      $('engineConfigurationDock')?.classList.remove('hidden');
+      $('engineConfigurationDock .protected-control-center')?.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    $('pirateExitBtn')?.addEventListener('click',()=>setEngineAppearance('business'));
+    $$('[data-pirate-jump]').forEach(btn=>btn.addEventListener('click',()=>{
+      const target=btn.dataset.pirateJump;
+      if(target==='projects') $('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+      if(target==='config'||target==='settings'){
+        $('engineConfigurationDock')?.classList.remove('hidden');
+        $('engineConfigurationDock')?.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+      if(target==='recovery'){
+        $('engineConfigurationDock')?.classList.remove('hidden');
+        $('engineConfigurationDock .protected-control-center')?.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+      if(target==='telemetry'){
+        $('engineConfigurationDock')?.classList.remove('hidden');
+        $('engineAnalyticsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+      if(target==='captain') $('captainModeAccessBtn')?.click();
+    }));
 
     $('engineConfigureBtn')?.addEventListener('click',()=>{
       const dock=$('engineConfigurationDock'); if(!dock)return;

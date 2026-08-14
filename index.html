@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.78" />
+  <link rel="stylesheet" href="styles.css?v=2.9.79" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -127,7 +127,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.78 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.79 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -681,7 +681,28 @@
     </div>
 
     <section id="enginePanel" class="engine-panel hidden modern-engine-room">
-      <header class="modern-engine-hero">
+      
+      <header id="pirateCommandHero" class="pirate-command-hero" aria-label="Pirate Mode command header">
+        <div class="pirate-command-crest" aria-hidden="true"><span>☠</span></div>
+        <div class="pirate-command-title">
+          <small>PIRATE MODE</small>
+          <h2>BLACK FLAG COMMAND</h2>
+          <p>Full Engine authority with project boundaries and core protections preserved.</p>
+        </div>
+        <div class="pirate-command-actions">
+          <button id="pirateSettingsBtn" type="button">
+            <span>☠</span><div><strong>PIRATE SETTINGS</strong><small>Engine behavior & presentation</small></div>
+          </button>
+          <button id="pirateOverrideBtn" type="button">
+            <span>⚡</span><div><strong>SYSTEM OVERRIDE</strong><small>Protected controls & recovery</small></div>
+          </button>
+          <button id="pirateExitBtn" type="button">
+            <span>✕</span><div><strong>EXIT PIRATE MODE</strong><small>Return to Business Mode</small></div>
+          </button>
+        </div>
+      </header>
+
+<header class="modern-engine-hero">
         <div class="modern-engine-brand">
           <div class="modern-engine-mark" aria-hidden="true">⚙</div>
           <div>
@@ -735,6 +756,30 @@
           <canvas id="engineCostTrend" width="430" height="150" aria-label="Operating cost trend"></canvas>
         </article>
       </section>
+
+      <section id="pirateSystemsDeck" class="pirate-systems-deck" aria-label="Pirate Mode Engine systems">
+        <div class="pirate-systems-state">
+          <div class="pirate-systems-skull">☠</div>
+          <div>
+            <small>ENGINE SYSTEMS</small>
+            <h3>COMMAND AUTHORITY</h3>
+            <p><span></span> Authorized Engine controls are available.</p>
+          </div>
+        </div>
+        <div class="pirate-system-keys">
+          <button type="button" data-pirate-jump="projects"><span>☸</span><strong>Project Control</strong><small>Armada</small></button>
+          <button type="button" data-pirate-jump="config"><span>⚙</span><strong>Core Config</strong><small>Engine</small></button>
+          <button type="button" data-pirate-jump="recovery"><span>⌁</span><strong>Recovery</strong><small>Protected</small></button>
+          <button type="button" data-pirate-jump="telemetry"><span>▥</span><strong>Engine Log</strong><small>Telemetry</small></button>
+          <button type="button" data-pirate-jump="captain"><span>⚓</span><strong>Captain</strong><small>Private</small></button>
+          <button type="button" data-pirate-jump="settings"><span>☠</span><strong>Pirate Settings</strong><small>Display</small></button>
+        </div>
+        <div class="pirate-mode-banner">
+          <span>☠</span>
+          <div><small>YOU ARE IN</small><strong>PIRATE MODE</strong><em>Same Engine. Different command deck.</em></div>
+        </div>
+      </section>
+
 
       <section class="modern-system-operations">
         <div class="modern-system-operations-copy">
@@ -970,6 +1015,15 @@
       </section>
 
             </section>
+
+      <section id="pirateCommandLog" class="pirate-command-log" aria-label="Pirate Mode system log">
+        <div class="pirate-log-title"><small>PIRATE LOG</small><strong>REAL-TIME SYSTEM FEED</strong></div>
+        <div id="pirateLogFeed" class="pirate-log-feed"></div>
+        <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
+        <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v2.9.79</strong><span>No quarter given. No data mixed.</span></div>
+      </section>
+
 <div class="pirate-footer modern-engine-footer">
         <span>ENGINE SECURE</span><span>RECOVERY READY</span><span>LOCAL BACKUP</span><span>VERSION 2.9.76</span><span>BUILT FOR BUILDERS</span>
       </div>
@@ -993,7 +1047,7 @@
     <main id="ownerPortalBody" class="owner-portal-body"></main>
   </section>
 
-  <script src="app.js?v=2.9.78"></script>
+  <script src="app.js?v=2.9.79"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -1019,7 +1073,7 @@
 
 
 
-  <script src="captain.js?v=2.9.78"></script>
+  <script src="captain.js?v=2.9.79"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">
