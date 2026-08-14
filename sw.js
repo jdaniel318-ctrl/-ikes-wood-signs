@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-71-owner-portal-login-live-tools';
+const CACHE='workshop-engine-v2-9-74-owner-experience-consolidated';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.71',
-  './app.js?v=2.9.71',
-  './captain.js?v=2.9.71',
+  './styles.css?v=2.9.74',
+  './app.js?v=2.9.74',
+  './captain.js?v=2.9.74',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',

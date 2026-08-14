@@ -327,6 +327,8 @@
     return 'OWNER NOT CLAIMED';
   }
   const OWNER_SESSION_KEY='blackFlagOwnerSessionV1';
+  let ownerPreviewReturnState=null;
+  let ownerPreviewOpening=false;
 
   function ownerInviteStatus(p){
     ensureProjectGovernance(p);
@@ -1620,7 +1622,13 @@
         await renderProjectTab(p.id,'owner');
       });
 
-      $('previewOwnerPortal')?.addEventListener('click',()=>openOwnerPortal(p.id,{preview:true}));
+      $('previewOwnerPortal')?.addEventListener('click',async()=>{
+        if(ownerPreviewOpening)return;
+        ownerPreviewOpening=true;
+        ownerPreviewReturnState={projectId:p.id,tab:'owner'};
+        try{await openOwnerPortal(p.id,{preview:true});}
+        finally{setTimeout(()=>{ownerPreviewOpening=false},0);}
+      });
     }
     if(tab==='customers'){
       const savedOrders=await getMergedOrders();
@@ -4508,6 +4516,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const p=projectById(projectId);
     if(!p)return;
     ensureProjectGovernance(p);
+    if(preview && !ownerPreviewReturnState){
+      ownerPreviewReturnState={projectId:p.id,tab:'owner'};
+    }
     hideCoreSurfacesForOwner();
     $('ownerClaimGate')?.classList.add('hidden');
     $('ownerPortal')?.classList.remove('hidden');
@@ -4581,25 +4592,29 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       }
 
       const p=validation.project;
-      box.innerHTML=`<div class="owner-claim-card">
+      box.innerHTML=`<div class="owner-claim-card owner-partner-welcome">
         <small>WELCOME TO YOUR BUSINESS PORTAL</small>
         <h2>${escapeHtml(p.name)}</h2>
         <p class="owner-claim-welcome">Welcome, <strong>${escapeHtml(p.ownerAccess.ownerName||'Business Owner')}</strong>. We are excited to have the opportunity to work with you and support your business.</p>
-        <p class="owner-claim-intro">Please review the invitation details below and accept when you are ready to open your business portal.</p>
+        <p class="owner-claim-intro">Please review your invitation details, create your login, and continue when you are ready.</p>
+
         <div class="owner-claim-facts">
           <span><b>BUSINESS OWNER</b>${escapeHtml(p.ownerAccess.ownerName||'—')}</span>
           <span><b>EMAIL</b>${escapeHtml(p.ownerAccess.ownerEmail||'—')}</span>
           <span><b>INVITATION VALID UNTIL</b>${new Date(p.ownerAccess.invitation.expiresAt).toLocaleString()}</span>
         </div>
-        <p class="owner-claim-partner-note">Your portal is designed to give you a clear, simple place to manage the parts of your business that have been prepared for you.</p>
+
         <div class="owner-password-setup">
           <h3>Create Your Login</h3>
-          <p>For this test build, use the temporary login below. Before production, this becomes the owner's valid email address with a stronger password.</p>
+          <p>For this test build, use the temporary login below. Before production, this becomes the owner's valid email address and chosen password.</p>
           <label>Email or login<input id="ownerClaimLogin" type="text" value="joe" autocomplete="username"></label>
           <label>Password<input id="ownerClaimPassword" type="password" value="4353" autocomplete="new-password"></label>
           <p class="owner-test-login-note">Test credentials: <strong>joe</strong> / <strong>4353</strong></p>
           <p id="ownerClaimPasswordError" class="owner-login-error"></p>
         </div>
+
+        <p class="owner-claim-partner-note">Your business portal is designed to give you a clear, simple place to manage the tools and activity prepared for your business.</p>
+
         <button id="ownerClaimAccept" class="primary-btn" type="button">ACCEPT & OPEN MY BUSINESS PORTAL</button>
         <button id="ownerClaimCancel" class="secondary-btn" type="button">NOT NOW</button>
       </div>`;
@@ -4636,15 +4651,47 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
   function bindOwnerPortal(){
     $('ownerPortalSignOut')?.addEventListener('click',closeOwnerPortal);
-    $('ownerPortalClosePreview')?.addEventListener('click',()=>{
+    $('ownerPortalClosePreview')?.addEventListener('click',async()=>{
       $('ownerPortal')?.classList.add('hidden');
+      $('ownerClaimGate')?.classList.add('hidden');
       document.body.classList.remove('owner-portal-open');
+
+      const returnState=ownerPreviewReturnState;
+      ownerPreviewReturnState=null;
+
+      $('blackFlagEntryGate')?.classList.add('hidden');
+      $('customerApp')?.classList.add('hidden');
+      $('adminPanel')?.classList.add('hidden');
       $('enginePanel')?.classList.remove('hidden');
+
+      if(returnState?.projectId){
+        activeProjectId=returnState.projectId;
+        await openProjectControl(returnState.projectId);
+        await renderProjectTab(returnState.projectId,returnState.tab||'owner');
+      }
     });
     window.addEventListener('hashchange',()=>routeOwnerAccessFromHash());
   }
 
+  function bindOwnerPreviewDelegation(){
+    document.addEventListener('click',async e=>{
+      const btn=e.target.closest?.('#previewOwnerPortal');
+      if(!btn)return;
+      e.preventDefault();
+      e.stopPropagation();
+      const projectId=activeProjectId || btn.closest?.('[data-project-id]')?.dataset.projectId;
+      const p=projectId?projectById(projectId):null;
+      if(!p)return;
+      if(ownerPreviewOpening)return;
+      ownerPreviewOpening=true;
+      ownerPreviewReturnState={projectId:p.id,tab:'owner'};
+      try{await openOwnerPortal(p.id,{preview:true});}
+      finally{setTimeout(()=>{ownerPreviewOpening=false},0);}
+    },true);
+  }
+
   function bindEvents(){
+    bindOwnerPreviewDelegation();
     bindEngineFleetCommand();
     $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
     $('enginePirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
