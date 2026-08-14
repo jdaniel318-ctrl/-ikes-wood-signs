@@ -1143,7 +1143,7 @@
           <div class="marketing-identity-row"><span>Project</span><strong>${escapeHtml(p.name)}</strong></div>
           <div class="marketing-identity-row"><span>Project code</span><strong>${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')}</strong></div>
           <div class="marketing-identity-row"><span>Permanent namespace</span><strong class="namespace-text">${escapeHtml(p.id)}</strong></div>
-          <p class="helper">Dark Flag uses the permanent namespace—not the display name—to separate project marketing assets.</p>
+          <p class="helper">The Engine uses the permanent namespace—not the display name—to keep project marketing assets isolated.</p>
         </article>
 
         <article class="pec-card marketing-future-card">
@@ -1262,8 +1262,8 @@
       return `<div class="pec-grid">
         <article class="pec-card payment-structure-card">
           <h4>Pay by App</h4>
-          <p class="helper">Engine-only structure for now. Nothing is exposed to customers yet.</p>
-          <label class="admin-toggle-row compact-toggle"><span><strong>Enable payment capability</strong><small>Controlled only through Black Flag.</small></span><input id="ptPaymentsEnabled" type="checkbox" ${pay.enabled?'checked':''}></label>
+          <p class="helper">Engine configuration only for now. Nothing is exposed to customers yet.</p>
+          <label class="admin-toggle-row compact-toggle"><span><strong>Enable payment capability</strong><small>Controlled through the Engine.</small></span><input id="ptPaymentsEnabled" type="checkbox" ${pay.enabled?'checked':''}></label>
           <label>Payment mode<select id="ptPaymentMode"><option value="payment_link">Hosted payment link</option><option value="integrated_checkout">Integrated checkout — future</option><option value="manual">Manual / record only</option></select></label>
           <label>Provider<select id="ptPaymentProvider"><option value="not_configured">Not configured</option><option value="square">Square — future setup</option><option value="stripe">Stripe — future setup</option><option value="paypal">PayPal — future setup</option></select></label>
           <div class="payment-safety-note">Customer checkout stays OFF until a secure provider integration is deliberately completed later.</div>

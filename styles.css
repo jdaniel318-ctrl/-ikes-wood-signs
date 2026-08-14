@@ -6578,3 +6578,472 @@ body.business-engine-mode #enginePanel .pirate-footer{
   .modern-engine-footer{grid-template-columns:1fr 1fr!important;gap:8px!important}
   .modern-engine-footer span+span{border-left:0}
 }
+
+
+/* ==========================================================
+   v2.9.77 — ENGINE-WIDE VISUAL SYSTEM
+   Business Mode project/control pages now inherit the modern
+   ship Engine Room visual language instead of the old white-card UI.
+
+   Inspiration:
+   - engine_room_modern_benchmark_v2976.png: modern vessel bridge,
+     deep navy/steel panels, blue operational light, clean instrumentation.
+   - engine_room_benchmark_v2955.jpg: dense control hierarchy and framed
+     machinery panels only — no pirate graphics carried into Business Mode.
+   ========================================================== */
+
+body.business-engine-mode #enginePanel{
+  --ews-bg:#061015;
+  --ews-panel:#0b171d;
+  --ews-panel-2:#0e1d24;
+  --ews-panel-3:#10232b;
+  --ews-line:#294550;
+  --ews-line-hi:#447080;
+  --ews-text:#edf4f2;
+  --ews-copy:#b0bec0;
+  --ews-muted:#7f9398;
+  --ews-blue:#2aa7f7;
+  --ews-green:#61d15f;
+  --ews-gold:#f3aa22;
+  --ews-danger:#ef7670;
+}
+
+/* Project Control Center becomes a true Engine console, not a white admin page. */
+body.business-engine-mode #enginePanel .project-engine-control{
+  position:relative!important;
+  overflow:hidden!important;
+  margin:14px 0!important;
+  padding:18px!important;
+  border:1px solid var(--ews-line)!important;
+  border-radius:14px!important;
+  background:
+    linear-gradient(180deg,rgba(7,18,24,.96),rgba(6,15,20,.98)),
+    url('assets/engine_room_modern_benchmark_v2976.png') center 28% / cover no-repeat!important;
+  box-shadow:0 22px 55px rgba(0,0,0,.28),inset 0 1px 0 rgba(124,193,219,.07)!important;
+}
+body.business-engine-mode #enginePanel .project-engine-control::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(42,167,247,.03),transparent 24%,transparent 76%,rgba(42,167,247,.03)),
+    repeating-linear-gradient(90deg,transparent 0 79px,rgba(85,128,142,.025) 80px);
+}
+body.business-engine-mode #enginePanel .project-engine-control>*{position:relative;z-index:1}
+
+body.business-engine-mode #enginePanel .project-engine-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  margin:0 0 14px!important;
+  padding:16px 18px!important;
+  border:1px solid #31525e!important;
+  border-radius:11px!important;
+  background:linear-gradient(110deg,#0e2028e8,#0a171de8)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+body.business-engine-mode #enginePanel .project-engine-identity{gap:14px!important}
+body.business-engine-mode #enginePanel .pec-brand-mark{
+  width:72px!important;height:72px!important;
+  border:1px solid #42636f!important;
+  border-radius:10px!important;
+  background:#0b171d!important;
+  color:#bcd5dc!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.2)!important;
+}
+body.business-engine-mode #enginePanel .pec-brand-mark img{
+  background:#edf2ef!important;
+  border-radius:8px!important;
+}
+body.business-engine-mode #enginePanel .project-engine-head .engine-kicker{
+  color:#8db8c6!important;
+  font:900 9px Arial,sans-serif!important;
+  letter-spacing:.16em!important;
+}
+body.business-engine-mode #enginePanel .project-engine-head h3{
+  margin:4px 0!important;
+  color:#f3f6f4!important;
+  font:850 clamp(25px,2.7vw,36px)/1 Arial,sans-serif!important;
+  letter-spacing:-.02em!important;
+}
+body.business-engine-mode #enginePanel .project-engine-head p{
+  margin:0!important;color:#91a4a8!important;font-size:11px!important;
+}
+body.business-engine-mode #enginePanel #closeProjectEngineControl{
+  min-height:42px!important;
+  padding:9px 15px!important;
+  border:1px solid #526a73!important;
+  border-radius:8px!important;
+  background:#dfe7e4!important;
+  color:#243940!important;
+  font-weight:900!important;
+}
+
+/* Navigation reads like an instrument selector. */
+body.business-engine-mode #enginePanel .project-tabs{
+  display:flex!important;
+  gap:6px!important;
+  flex-wrap:wrap!important;
+  margin:0 0 14px!important;
+  padding:8px!important;
+  border:1px solid #28444f!important;
+  border-radius:10px!important;
+  background:#071218e8!important;
+}
+body.business-engine-mode #enginePanel .project-tabs button{
+  min-height:38px!important;
+  padding:8px 12px!important;
+  border:1px solid #304a54!important;
+  border-radius:7px!important;
+  background:#0d1b21!important;
+  color:#b9c5c5!important;
+  font:800 9px Arial,sans-serif!important;
+  box-shadow:none!important;
+}
+body.business-engine-mode #enginePanel .project-tabs button:hover{
+  border-color:#527483!important;
+  background:#12252d!important;
+  color:#edf3f1!important;
+}
+body.business-engine-mode #enginePanel .project-tabs button.active{
+  border-color:#2c7ba1!important;
+  background:linear-gradient(180deg,#14445a,#0f3243)!important;
+  color:#fff!important;
+  box-shadow:inset 0 -2px 0 #2aa7f7!important;
+}
+
+/* Every project tab receives a dark control-deck canvas. */
+body.business-engine-mode #enginePanel .project-tab-content{
+  min-height:340px!important;
+  padding:0!important;
+  color:var(--ews-copy)!important;
+}
+body.business-engine-mode #enginePanel .project-tab-content,
+body.business-engine-mode #enginePanel .marketing-brand-shell,
+body.business-engine-mode #enginePanel .deployment-shipwright,
+body.business-engine-mode #enginePanel .deployment-fleet,
+body.business-engine-mode #enginePanel .owner-access-shell{
+  color:var(--ews-copy)!important;
+}
+
+/* Core card family: remove the blanket white surfaces. */
+body.business-engine-mode #enginePanel .pec-card,
+body.business-engine-mode #enginePanel .ledger-admin-card,
+body.business-engine-mode #enginePanel .graphics-library-item,
+body.business-engine-mode #enginePanel .graphics-focused-editor,
+body.business-engine-mode #enginePanel .graphics-focused-head,
+body.business-engine-mode #enginePanel .asset-slot,
+body.business-engine-mode #enginePanel .deployment-future,
+body.business-engine-mode #enginePanel .owner-access-card,
+body.business-engine-mode #enginePanel .owner-form-card,
+body.business-engine-mode #enginePanel .payment-structure-card{
+  border:1px solid #304a54!important;
+  border-radius:10px!important;
+  background:linear-gradient(160deg,#0e1c22,#09151a)!important;
+  color:var(--ews-copy)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.022)!important;
+}
+body.business-engine-mode #enginePanel .pec-card:hover,
+body.business-engine-mode #enginePanel .graphics-library-item:hover{
+  border-color:#426675!important;
+}
+
+/* White hero sections become modern dashboard banners. */
+body.business-engine-mode #enginePanel .marketing-brand-hero,
+body.business-engine-mode #enginePanel .owner-access-hero{
+  border:1px solid #315563!important;
+  border-radius:11px!important;
+  background:
+    linear-gradient(100deg,rgba(14,35,44,.96),rgba(8,23,30,.93)),
+    url('assets/engine_room_modern_benchmark_v2976.png') center 22% / cover no-repeat!important;
+  color:var(--ews-text)!important;
+  box-shadow:inset 0 1px 0 rgba(150,211,232,.06)!important;
+}
+body.business-engine-mode #enginePanel .marketing-brand-hero h3,
+body.business-engine-mode #enginePanel .owner-access-hero h3{
+  color:#f0f5f2!important;
+  font-family:Arial,sans-serif!important;
+}
+body.business-engine-mode #enginePanel .marketing-brand-hero p,
+body.business-engine-mode #enginePanel .owner-access-hero p{
+  color:#aababc!important;
+}
+
+/* All common headings use the modern bridge typography. */
+body.business-engine-mode #enginePanel .pec-card h4,
+body.business-engine-mode #enginePanel .graphics-manager-head h4,
+body.business-engine-mode #enginePanel .graphics-focused-head h4,
+body.business-engine-mode #enginePanel .deployment-card-head h4,
+body.business-engine-mode #enginePanel .deployment-future h4,
+body.business-engine-mode #enginePanel .marketing-brand-grid h4,
+body.business-engine-mode #enginePanel .owner-card-heading h4,
+body.business-engine-mode #enginePanel .ledger-admin-card h4{
+  color:#edf4f2!important;
+  font-family:Arial,sans-serif!important;
+  font-weight:800!important;
+  letter-spacing:-.01em!important;
+}
+body.business-engine-mode #enginePanel .pec-card p,
+body.business-engine-mode #enginePanel .pec-card .helper,
+body.business-engine-mode #enginePanel .graphics-library-copy small,
+body.business-engine-mode #enginePanel .marketing-brand-grid p,
+body.business-engine-mode #enginePanel .deployment-future p,
+body.business-engine-mode #enginePanel .ledger-admin-card p{
+  color:#91a3a6!important;
+}
+
+/* Identity / creative tool rows now look like instrumentation rows. */
+body.business-engine-mode #enginePanel .marketing-identity-row,
+body.business-engine-mode #enginePanel .future-tool-row,
+body.business-engine-mode #enginePanel .activity-line,
+body.business-engine-mode #enginePanel .ledger-row,
+body.business-engine-mode #enginePanel .product-row,
+body.business-engine-mode #enginePanel .customer-history-row{
+  border-color:#263e47!important;
+  color:#b3c0c0!important;
+}
+body.business-engine-mode #enginePanel .future-tool-row strong,
+body.business-engine-mode #enginePanel .namespace-text{
+  color:#8fb3bf!important;
+}
+
+/* Graphic library is part of the Engine deck. Project graphics themselves remain true-color. */
+body.business-engine-mode #enginePanel .graphics-manager-head,
+body.business-engine-mode #enginePanel .graphics-manager-divider,
+body.business-engine-mode #enginePanel .graphics-focused-head{
+  color:#a9b9ba!important;
+}
+body.business-engine-mode #enginePanel .graphics-manager-divider:before,
+body.business-engine-mode #enginePanel .graphics-manager-divider:after{
+  background:#2b434c!important;
+}
+body.business-engine-mode #enginePanel .graphics-lock-mark{
+  border-color:#397253!important;
+  background:#0c1b13!important;
+  color:#8ed1a0!important;
+}
+body.business-engine-mode #enginePanel .graphics-library-preview{
+  border:1px solid #334b55!important;
+  background:#101f25!important;
+  color:#9fb4b8!important;
+}
+body.business-engine-mode #enginePanel .graphics-library-preview img,
+body.business-engine-mode #enginePanel .asset-preview-stage img{
+  background:#eef2ef!important; /* preserve artwork fidelity */
+}
+body.business-engine-mode #enginePanel .graphics-slot-state,
+body.business-engine-mode #enginePanel .graphics-slot-state b{
+  color:#8ca3a7!important;
+}
+body.business-engine-mode #enginePanel .has-graphic .graphics-slot-state,
+body.business-engine-mode #enginePanel .has-graphic .graphics-slot-state b{
+  color:#79c78b!important;
+}
+body.business-engine-mode #enginePanel .asset-preview-stage{
+  border:1px solid #304953!important;
+  background:#081318!important;
+}
+body.business-engine-mode #enginePanel .graphics-expand-title{
+  color:#eaf1ee!important;
+}
+
+/* Project seal keeps project identity without turning the whole page white. */
+body.business-engine-mode #enginePanel .marketing-project-seal{
+  border:1px solid #466b78!important;
+  background:#0c1b21!important;
+  color:#edf4f2!important;
+  box-shadow:inset 0 -2px 0 rgba(42,167,247,.14)!important;
+}
+body.business-engine-mode #enginePanel .marketing-project-seal span{color:#8fb4c0!important}
+
+/* Controls and forms: dark marine-grade console styling. */
+body.business-engine-mode #enginePanel .project-tab-content label,
+body.business-engine-mode #enginePanel .project-tab-content legend{
+  color:#9fb0b1!important;
+}
+body.business-engine-mode #enginePanel .project-tab-content input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body.business-engine-mode #enginePanel .project-tab-content textarea,
+body.business-engine-mode #enginePanel .project-tab-content select{
+  box-sizing:border-box!important;
+  border:1px solid #35515c!important;
+  border-radius:7px!important;
+  background:#071218!important;
+  color:#edf3f0!important;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.3)!important;
+}
+body.business-engine-mode #enginePanel .project-tab-content input::placeholder,
+body.business-engine-mode #enginePanel .project-tab-content textarea::placeholder{
+  color:#62777d!important;
+}
+body.business-engine-mode #enginePanel .project-tab-content input:focus,
+body.business-engine-mode #enginePanel .project-tab-content textarea:focus,
+body.business-engine-mode #enginePanel .project-tab-content select:focus{
+  border-color:#3b8bb0!important;
+  outline:2px solid rgba(42,167,247,.12)!important;
+  outline-offset:1px!important;
+}
+
+/* Standard buttons inherit Engine instrumentation hierarchy. */
+body.business-engine-mode #enginePanel .project-tab-content .primary-btn{
+  border-color:#2c7ea6!important;
+  background:linear-gradient(180deg,#17628a,#124a6a)!important;
+  color:#fff!important;
+  box-shadow:inset 0 -2px 0 rgba(42,167,247,.28)!important;
+}
+body.business-engine-mode #enginePanel .project-tab-content .secondary-btn{
+  border-color:#435b64!important;
+  background:#dfe6e4!important;
+  color:#263b42!important;
+}
+body.business-engine-mode #enginePanel .project-tab-content .danger-btn{
+  border-color:#8d4e4b!important;
+  background:#572b2b!important;
+  color:#ffd7d4!important;
+}
+
+/* Ledger / KPI instrumentation. */
+body.business-engine-mode #enginePanel .ledger-summary>div{
+  border:1px solid #31525d!important;
+  border-radius:9px!important;
+  background:linear-gradient(160deg,#10232b,#09161b)!important;
+  color:#edf4f2!important;
+}
+body.business-engine-mode #enginePanel .ledger-summary span{color:#82999e!important}
+body.business-engine-mode #enginePanel .ledger-profit{
+  border:1px solid #335444!important;
+  background:#0c1b14!important;
+  color:#a9d7b4!important;
+}
+
+/* Deployment already had a dark hero; align the rest to the modern vessel bridge. */
+body.business-engine-mode #enginePanel .deployment-hero,
+body.business-engine-mode #enginePanel .deployment-fleet-hero{
+  border:1px solid #356071!important;
+  border-radius:11px!important;
+  background:
+    linear-gradient(110deg,rgba(10,34,44,.97),rgba(8,21,27,.95)),
+    url('assets/engine_room_modern_benchmark_v2976.png') center 32% / cover no-repeat!important;
+  box-shadow:inset 0 -2px 0 rgba(42,167,247,.12)!important;
+}
+body.business-engine-mode #enginePanel .deployment-hero h3,
+body.business-engine-mode #enginePanel .deployment-fleet-hero h3{
+  font-family:Arial,sans-serif!important;
+  color:#f1f5f3!important;
+}
+body.business-engine-mode #enginePanel .deployment-status-seal{
+  border:1px solid #426c7b!important;
+  border-radius:10px!important;
+  background:#0a171d!important;
+  box-shadow:inset 0 -2px 0 rgba(42,167,247,.14)!important;
+}
+body.business-engine-mode #enginePanel .deployment-status-seal strong{color:#83c9e3!important}
+body.business-engine-mode #enginePanel .deployment-gauge{
+  border:1px solid #304c57!important;
+  border-radius:9px!important;
+  background:#0a1820!important;
+}
+body.business-engine-mode #enginePanel .future-deployment-chips span{
+  border:1px solid #334a54!important;
+  background:#0d1b21!important;
+  color:#a9b8b8!important;
+}
+
+/* Owner Access remains the same functional surface, now visually coherent with Engine. */
+body.business-engine-mode #enginePanel .owner-access-card::before{background:#397b95!important}
+body.business-engine-mode #enginePanel .owner-card-heading{border-color:#29434d!important}
+body.business-engine-mode #enginePanel .owner-card-heading>div>span{
+  border-color:#42636e!important;
+  background:#0a161c!important;
+  color:#a5c9d5!important;
+}
+body.business-engine-mode #enginePanel .owner-claim-state,
+body.business-engine-mode #enginePanel .owner-invite-status,
+body.business-engine-mode #enginePanel .owner-invite-output{
+  border-color:#334b54!important;
+  background:#081318!important;
+}
+body.business-engine-mode #enginePanel .owner-saved-banner{
+  border-color:#356148!important;
+  background:#0a1911!important;
+}
+
+/* Permission/capability blocks. */
+body.business-engine-mode #enginePanel .owner-capability-grid label,
+body.business-engine-mode #enginePanel .admin-toggle-row,
+body.business-engine-mode #enginePanel .compact-toggle{
+  border-color:#304953!important;
+  background:#0a161b!important;
+  color:#aebcbd!important;
+}
+body.business-engine-mode #enginePanel .owner-capability-grid label:has(input:checked){
+  border-color:#46798a!important;
+  background:#10252d!important;
+}
+
+/* Generic project tab cards that used white or cream fills. */
+body.business-engine-mode #enginePanel .payment-structure-card,
+body.business-engine-mode #enginePanel .deployment-future,
+body.business-engine-mode #enginePanel .ledger-admin-card{
+  border-color:#304a54!important;
+  background:#0d1b21!important;
+}
+
+/* Status/confirmation messaging uses restrained operational colors. */
+body.business-engine-mode #enginePanel .graphics-save-confirmation{
+  border:1px solid #3c6e4a!important;
+  border-radius:8px!important;
+  background:#0b1d12!important;
+  color:#9ed1aa!important;
+}
+body.business-engine-mode #enginePanel .business-mode-status,
+body.business-engine-mode #enginePanel .engine-identity-saved-view{
+  border-color:#304b55!important;
+  background:#0a171d!important;
+  color:#b8c5c5!important;
+}
+
+/* Preserve logos/artwork as light if their actual assets require it,
+   but constrain the bright area to the artwork itself rather than the whole card. */
+body.business-engine-mode #enginePanel .project-brand-badge img,
+body.business-engine-mode #enginePanel .marketing-project-brand-visual img,
+body.business-engine-mode #enginePanel .pec-brand-mark img{
+  background:#f1f4f2!important;
+}
+
+/* Make pages feel like one continuous modern vessel environment. */
+body.business-engine-mode #enginePanel .project-tab-content::before{
+  content:"";
+  display:block;
+  height:1px;
+  margin-bottom:12px;
+  background:linear-gradient(90deg,transparent,#3b6d80 15%,#3b6d80 85%,transparent);
+  opacity:.55;
+}
+
+/* Remove pale legacy visual fills that can leak through nested components. */
+body.business-engine-mode #enginePanel .project-tab-content [style*="background: white"],
+body.business-engine-mode #enginePanel .project-tab-content [style*="background:#fff"],
+body.business-engine-mode #enginePanel .project-tab-content [style*="background: #fff"]{
+  background:#0d1b21!important;
+}
+
+/* iPad / phone readability */
+@media(max-width:900px){
+  body.business-engine-mode #enginePanel .project-engine-control{padding:11px!important}
+  body.business-engine-mode #enginePanel .project-engine-head{align-items:flex-start!important}
+  body.business-engine-mode #enginePanel .pec-grid,
+  body.business-engine-mode #enginePanel .marketing-brand-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:640px){
+  body.business-engine-mode #enginePanel .project-engine-head{flex-direction:column!important}
+  body.business-engine-mode #enginePanel #closeProjectEngineControl{width:100%!important}
+  body.business-engine-mode #enginePanel .project-tabs{
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    padding-bottom:9px!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  body.business-engine-mode #enginePanel .project-tabs button{flex:0 0 auto!important;font-size:10px!important}
+}
