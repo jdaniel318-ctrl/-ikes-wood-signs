@@ -1,10 +1,10 @@
 {
-  "name": "Black Flag Engine v3.0 Stage 2",
+  "name": "Black Flag Engine v3.0",
   "short_name": "Black Flag",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f4d238",
   "theme_color": "#f4d238",
   "icons": [],
-  "description": "Stage 2 machinery and operations checkpoint for the Black Flag multi-project platform."
+  "description": "Multi-project business platform engine with isolated project operations, owner access, deployment control, telemetry and Captain command."
 }

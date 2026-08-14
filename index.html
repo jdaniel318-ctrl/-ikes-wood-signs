@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.79" />
+  <link rel="stylesheet" href="styles.css?v=3.0.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -127,7 +127,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.79 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.0 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -795,7 +795,25 @@
         <div class="modern-vessel-wireframe" aria-hidden="true">ENGINE TELEMETRY</div>
       </section>
 
-      <section id="engineProjectsSection" class="project-command-section modern-project-command">
+      
+      <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Black Flag v3 structural status">
+        <header class="v3-architecture-head">
+          <div><small>BLACK FLAG PLATFORM</small><h3>V3 STRUCTURAL STATUS</h3><p>One platform architecture beneath every project and command surface.</p></div>
+          <span id="v3SchemaBadge">SCHEMA 3</span>
+        </header>
+        <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
+      </section>
+
+      <section id="firstMateWatch" class="first-mate-watch" aria-label="First Mate Watch">
+        <header>
+          <div class="first-mate-mark" aria-hidden="true">FM</div>
+          <div><small>FIRST MATE'S WATCH</small><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
+          <button id="firstMateRefreshBtn" class="secondary-btn" type="button">REFRESH WATCH</button>
+        </header>
+        <div id="firstMateWatchItems" class="first-mate-watch-items"></div>
+      </section>
+
+<section id="engineProjectsSection" class="project-command-section modern-project-command">
         <div class="modern-project-command-head">
           <div>
             <div class="engine-kicker">PROJECT COMMAND</div>
@@ -878,6 +896,22 @@
           </div>
           <p id="engineEconomicsStatus" class="helper"></p>
         </section>
+
+        <section id="v3IntegrityStation" class="v3-integrity-station">
+          <div class="v3-integrity-copy">
+            <div class="engine-kicker">SHIP INTEGRITY</div>
+            <h4>Structural Certification</h4>
+            <p>Check project boundaries, command controls, stored project references, migration state, and v3 architecture.</p>
+          </div>
+          <div class="v3-integrity-actions">
+            <button id="runShipIntegrityBtn" class="primary-btn" type="button">RUN SHIP INTEGRITY CHECK</button>
+            <button id="createRecoverySnapshotBtn" class="secondary-btn" type="button">CREATE RECOVERY SNAPSHOT</button>
+            <button id="showAuditTrailBtn" class="secondary-btn" type="button">VIEW AUDIT TRAIL</button>
+          </div>
+          <div id="shipIntegritySummary" class="v3-integrity-summary"></div>
+          <div id="v3AuditViewer" class="v3-audit-viewer hidden"></div>
+        </section>
+
 <div class="engine-section-head"><div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3></div></div>
 <div id="engineFleetSection" class="engine-section-head engine-registry-support-head"><div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3></div></div>
       <div id="companyFleet" class="company-fleet engine-registry-support"></div>
@@ -1021,11 +1055,11 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v2.9.79</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.0.0</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
-        <span>ENGINE SECURE</span><span>RECOVERY READY</span><span>LOCAL BACKUP</span><span>VERSION 2.9.76</span><span>BUILT FOR BUILDERS</span>
+        <span>ENGINE SECURE</span><span>RECOVERY READY</span><span>LOCAL BACKUP</span><span>VERSION 3.0</span><span>BUILT FOR BUILDERS</span>
       </div>
     </section>
   </div>
@@ -1047,9 +1081,9 @@
     <main id="ownerPortalBody" class="owner-portal-body"></main>
   </section>
 
-  <script src="platform_core.js?v=3.0-stage2"></script>
-  <script src="platform_identity.js?v=3.0-stage2"></script>
-  <script src="app.js?v=3.0-stage2"></script>
+  <script src="platform_core.js?v=3.0.0"></script>
+  <script src="platform_identity.js?v=3.0.0"></script>
+  <script src="app.js?v=3.0.0"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -1075,7 +1109,7 @@
 
 
 
-  <script src="captain.js?v=2.9.79"></script>
+  <script src="captain.js?v=3.0.0"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

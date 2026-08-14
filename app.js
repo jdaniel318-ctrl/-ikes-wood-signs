@@ -900,6 +900,7 @@
         <div class="project-governance-strip">
           <span class="platform-status ${platformState}">${platformStatusLabel(p)}</span>
           <span>${ownerState}</span>
+          <span class="v3-lifecycle-badge">${escapeHtml(window.BlackFlagV3Core?.lifecycle?.(p)||'project')}</span>
         </div>
         <div class="project-kpis">
           <span><small>ORDERS</small><strong>${s.orders}</strong></span>
@@ -3078,6 +3079,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     populateEngineSettings();
     await refreshEngineDiagnostics();
     await renderFleetStats();
+    await refreshV3CommandSystems();
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'session',action:'engine.opened',detail:'v3 command deck'});
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
@@ -4512,6 +4515,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
     try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
+    try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command systems warning',err); }
   };
 
   function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone){alert('Name and phone are required.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});$('flowersAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
@@ -4945,8 +4949,176 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     window.addEventListener('hashchange',()=>routeOwnerAccessFromHash());
   }
 
+
+  function v3LifecycleLabel(state){
+    return ({
+      draft:'DRAFT',configured:'CONFIGURED',owner_invited:'OWNER INVITED',owner_active:'OWNER ACTIVE',
+      deployment_ready:'DEPLOYMENT READY',testing:'TESTING',live:'LIVE',suspended:'SUSPENDED',
+      relationship_ended:'RELATIONSHIP ENDED',archived:'ARCHIVED'
+    })[state]||String(state||'PROJECT').toUpperCase();
+  }
+
+  async function runShipIntegrityV3({record=false}={}){
+    const base=window.BlackFlagV3Core?.integrity?.(companies,document)||{issues:[]};
+    const issues=[...(base.issues||[])], valid=new Set(companies.map(p=>p.id));
+
+    try{
+      for(const o of await getMergedOrders()){
+        const pid=o.projectId||((o.business?.name||"Ike's Wood Signs")==="Ike's Wood Signs"?'ikes-wood-signs':'');
+        if(!pid)issues.push({level:'critical',code:'UNSCOPED_ORDER',detail:o.id||''});
+        else if(!valid.has(pid))issues.push({level:'critical',code:'ORDER_PROJECT_UNKNOWN',projectId:pid,detail:o.id||''});
+        else{
+          const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...o,projectId:pid},pid,{legacyIke:true});
+          if(scoped&&!scoped.ok)issues.push({level:'critical',code:'ORDER_SCOPE_MISMATCH',projectId:pid,detail:o.id||''});
+        }
+      }
+    }catch(e){issues.push({level:'warning',code:'ORDER_STORE_CHECK_FAILED',detail:String(e?.message||e)})}
+
+    try{
+      Object.keys(readLedgers()||{}).forEach(pid=>{
+        if(!valid.has(pid))issues.push({level:'critical',code:'LEDGER_PROJECT_UNKNOWN',projectId:pid});
+      });
+    }catch(_){}
+
+    try{
+      Object.keys(readCustomerDirectory()||{}).forEach(pid=>{
+        if(!valid.has(pid))issues.push({level:'critical',code:'CUSTOMER_PROJECT_UNKNOWN',projectId:pid});
+      });
+    }catch(_){}
+
+    const criticalIds=['engineConfigureBtn','captainModeAccessBtn','projectEngineControl','engineConfigurationDock','projectCommandCards','ownerPortal','firstMateWatch','v3ArchitectureDeck'];
+    criticalIds.forEach(id=>{if(!$(id))issues.push({level:'critical',code:'CRITICAL_CONTROL_MISSING',detail:id})});
+
+    const report={
+      at:new Date().toISOString(),
+      ok:!issues.some(x=>x.level==='critical'),
+      critical:issues.filter(x=>x.level==='critical').length,
+      warnings:issues.filter(x=>x.level==='warning').length,
+      issues
+    };
+    if(record)window.BlackFlagV3Core?.audit?.({
+      actorRole:'engine_admin',category:'integrity',action:'ship.integrity.check',
+      detail:`${report.critical} critical • ${report.warnings} warning`
+    });
+    return report;
+  }
+
+  async function renderV3ArchitectureStatus(){
+    const box=$('v3ArchitectureStatus');if(!box)return;
+    const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
+    const report=await runShipIntegrityV3();
+    const migration=window.BlackFlagV3Core?.migrationState?.();
+    const sealed=companies.filter(p=>p?.schemaVersion===3&&p?.isolation?.crossProjectAccess==='deny').length;
+    const live=states.filter(x=>x==='live').length;
+    const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
+    box.innerHTML=`
+      <article><span>PROJECT ENVELOPES</span><strong>${sealed}/${companies.length}</strong><small>Schema 3 + default deny</small></article>
+      <article><span>LIVE</span><strong>${live}</strong><small>Published projects</small></article>
+      <article><span>TESTING</span><strong>${testing}</strong><small>Deployment / sea trial</small></article>
+      <article><span>INTEGRITY</span><strong class="${report.ok?'ok':'warn'}">${report.ok?'CLEAR':'ATTENTION'}</strong><small>${report.critical} critical • ${report.warnings} warning</small></article>
+      <article><span>IDENTITY</span><strong>POLICY LIVE</strong><small>Production server auth still required</small></article>
+      <article><span>MIGRATION</span><strong>${migration?.status==='complete'?'V3 COMPLETE':'V3 ACTIVE'}</strong><small>${migration?.at?new Date(migration.at).toLocaleString():'Structural core active'}</small></article>`;
+  }
+
+  async function firstMateWatchItems(){
+    const report=await runShipIntegrityV3();
+    const economics=await readEngineEconomics();
+    const items=[];
+    if(report.critical)items.push({level:'captain',title:'Captain Decision Needed',detail:`${report.critical} structural issue${report.critical===1?'':'s'} detected.`,action:'integrity'});
+    else if(report.warnings)items.push({level:'attention',title:'First Mate Attention',detail:`${report.warnings} non-blocking warning${report.warnings===1?'':'s'} remain on watch.`,action:'integrity'});
+    else items.push({level:'clear',title:'All Clear',detail:'Project boundaries and critical command controls passed the current watch.',action:'integrity'});
+
+    if(window.BlackFlagV3Identity?.productionAuth?.ready===false){
+      items.push({level:'attention',title:'Production Owner Identity',detail:'Server-backed authentication remains required before real outside-owner deployment.',action:'owner'});
+    }
+    if(!(economics.fixed30||economics.perOrder||economics.variablePct)){
+      items.push({level:'recommendation',title:'First Mate Recommends',detail:'Enter real operating costs when known so Profit and Cost telemetry become decision-grade.',action:'economics'});
+    }
+    const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
+    const invited=states.filter(x=>x==='owner_invited').length;
+    const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
+    if(invited)items.push({level:'attention',title:'Owner Invitation Pending',detail:`${invited} owner invitation${invited===1?' is':'s are'} awaiting claim.`,action:'projects'});
+    if(testing)items.push({level:'recommendation',title:'Sea Trial Watch',detail:`${testing} project${testing===1?' is':'s are'} in deployment/testing state.`,action:'projects'});
+    return items.slice(0,6);
+  }
+
+  async function renderFirstMateWatch(){
+    const box=$('firstMateWatchItems');if(!box)return;
+    const items=await firstMateWatchItems();
+    box.innerHTML=items.map((x,i)=>`
+      <button type="button" class="first-mate-item ${escapeHtml(x.level)}" data-first-mate-index="${i}">
+        <span>${x.level==='clear'?'ALL CLEAR':x.level==='captain'?'CAPTAIN':x.level==='attention'?'ATTENTION':'RECOMMEND'}</span>
+        <strong>${escapeHtml(x.title)}</strong>
+        <small>${escapeHtml(x.detail)}</small>
+        <b>REVIEW →</b>
+      </button>`).join('');
+    $$('[data-first-mate-index]').forEach(btn=>btn.onclick=async()=>{
+      const x=items[Number(btn.dataset.firstMateIndex)];
+      if(x.action==='integrity'){
+        $('engineConfigurationDock')?.classList.remove('hidden');
+        await renderShipIntegrity(await runShipIntegrityV3({record:true}));
+        $('shipIntegritySummary')?.scrollIntoView({behavior:'smooth',block:'center'});
+      }else if(x.action==='economics'){
+        $('engineConfigurationDock')?.classList.remove('hidden');
+        $('engineFixedCost30')?.scrollIntoView({behavior:'smooth',block:'center'});
+      }else if(x.action==='owner'||x.action==='projects'){
+        $('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+    });
+  }
+
+  function renderShipIntegrity(report){
+    const box=$('shipIntegritySummary');if(!box)return;
+    box.innerHTML=`<div class="v3-integrity-result ${report.ok?'pass':'fail'}">
+      <div><small>LAST CHECK</small><strong>${report.ok?'SHIP INTEGRITY CLEAR':'ATTENTION REQUIRED'}</strong><span>${report.critical} critical • ${report.warnings} warning</span></div>
+      <time>${new Date(report.at).toLocaleString()}</time>
+    </div>
+    <div class="v3-integrity-issues">${report.issues.length?report.issues.slice(0,16).map(x=>`<span class="${escapeHtml(x.level)}"><b>${escapeHtml(x.code)}</b>${escapeHtml(x.projectId||x.detail||'')}</span>`).join(''):'<span class="clear"><b>ALL CLEAR</b>No structural issues detected by the current certification checks.</span>'}</div>`;
+  }
+
+  function renderV3AuditTrail(){
+    const box=$('v3AuditViewer');if(!box)return;
+    const rows=window.BlackFlagV3Core?.readAudit?.().slice(0,100)||[];
+    box.classList.remove('hidden');
+    box.innerHTML=`<header><strong>V3 AUDIT TRAIL</strong><button id="closeV3AuditViewer" class="secondary-btn small" type="button">CLOSE</button></header>
+      <div>${rows.length?rows.map(x=>`<article><time>${new Date(x.at).toLocaleString()}</time><span>${escapeHtml(x.actorRole||'')}</span><strong>${escapeHtml(x.action||'')}</strong><small>${escapeHtml(x.projectId||'PLATFORM')}${x.detail?' • '+escapeHtml(x.detail):''}</small></article>`).join(''):'<p class="helper">No v3 audit events yet.</p>'}</div>`;
+    $('closeV3AuditViewer')?.addEventListener('click',()=>box.classList.add('hidden'));
+  }
+
+  async function createV3RecoverySnapshot(){
+    const snapshot=window.BlackFlagV3Core?.snapshot?.(companies,'captain-v3-final');
+    if(snapshot){
+      renderShipIntegrity(await runShipIntegrityV3());
+      const box=$('shipIntegritySummary');
+      if(box)box.insertAdjacentHTML('afterbegin',`<div class="v3-recovery-confirm"><strong>RECOVERY SNAPSHOT CREATED</strong><span>${escapeHtml(snapshot.id)} • ${snapshot.projectCount} project(s)</span></div>`);
+    }
+  }
+
+  async function refreshV3CommandSystems(){
+    await renderV3ArchitectureStatus();
+    await renderFirstMateWatch();
+  }
+
+  window.blackFlagV3={
+    version:'3.0.0',
+    runIntegrity:()=>runShipIntegrityV3({record:true}),
+    refresh:refreshV3CommandSystems,
+    createSnapshot:createV3RecoverySnapshot,
+    audit:()=>window.BlackFlagV3Core?.readAudit?.()||[]
+  };
+
   function bindEvents(){
     bindEngineFleetCommand();
+
+    $('firstMateRefreshBtn')?.addEventListener('click',refreshV3CommandSystems);
+    $('runShipIntegrityBtn')?.addEventListener('click',async()=>{
+      const report=await runShipIntegrityV3({record:true});
+      renderShipIntegrity(report);
+      await renderFirstMateWatch();
+      await renderV3ArchitectureStatus();
+    });
+    $('createRecoverySnapshotBtn')?.addEventListener('click',createV3RecoverySnapshot);
+    $('showAuditTrailBtn')?.addEventListener('click',renderV3AuditTrail);
 
     $('pirateSettingsBtn')?.addEventListener('click',()=>{
       $('engineConfigurationDock')?.classList.remove('hidden');
@@ -5295,6 +5467,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.ready',detail:`${companies.length} projects • schema 3`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

@@ -7811,3 +7811,85 @@ body.dark-flag-pirate-mode #enginePanel .deployment-fleet-hero{
   body.dark-flag-pirate-mode .pirate-system-keys{grid-template-columns:repeat(2,1fr)}
   body.dark-flag-pirate-mode #pirateCommandLog{grid-template-columns:1fr}
 }
+
+
+/* ==========================================================
+   BLACK FLAG ENGINE v3.0 — COMMAND EXPERIENCE & CERTIFICATION
+   ========================================================== */
+.v3-architecture-deck,.first-mate-watch,.v3-integrity-station{
+  box-sizing:border-box;border:1px solid #2e4a55;border-radius:12px;
+  background:linear-gradient(160deg,#0c1a20,#081318);color:#eaf1ef;
+}
+.v3-architecture-deck{margin:0 0 12px;padding:14px}
+.v3-architecture-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:10px}
+.v3-architecture-head small,.first-mate-watch header small{color:#83afbd;font:900 8px Arial,sans-serif;letter-spacing:.13em}
+.v3-architecture-head h3,.first-mate-watch header h3{margin:3px 0;color:#edf4f1;font:900 21px Arial,sans-serif}
+.v3-architecture-head p,.first-mate-watch header p{margin:0;color:#8ea2a6;font-size:9px}
+#v3SchemaBadge{padding:7px 10px;border:1px solid #376171;border-radius:18px;background:#0c222b;color:#9fd1df;font:900 8px Arial,sans-serif}
+.v3-architecture-status{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+.v3-architecture-status article{display:grid;gap:3px;min-height:72px;padding:9px;border:1px solid #29434d;border-radius:8px;background:#09151a}
+.v3-architecture-status span{color:#7d9297;font:900 7px Arial,sans-serif;letter-spacing:.06em}
+.v3-architecture-status strong{color:#edf3f0;font:800 16px Arial,sans-serif}
+.v3-architecture-status strong.ok{color:#7ed08e}.v3-architecture-status strong.warn{color:#e8b85d}
+.v3-architecture-status small{color:#6d8287;font-size:7px}
+
+.first-mate-watch{
+  margin:0 0 12px;padding:14px;
+  background:linear-gradient(110deg,rgba(12,28,34,.96),rgba(7,18,23,.98)),url('assets/engine_room_modern_benchmark_v2976.png') center 44%/cover no-repeat
+}
+.first-mate-watch header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.first-mate-watch header>div:nth-child(2){flex:1}
+.first-mate-mark{display:grid;place-items:center;flex:0 0 46px;height:46px;border:1px solid #477481;border-radius:50%;background:#102833;color:#aed6e1;font:900 12px Arial,sans-serif}
+.first-mate-watch-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.first-mate-item{display:grid;gap:5px;min-height:110px;padding:10px;border:1px solid #304953;border-radius:8px;background:#09151a;color:#dce5e2;text-align:left;cursor:pointer}
+.first-mate-item:hover{border-color:#507784;background:#102129}
+.first-mate-item>span{font:900 6px Arial,sans-serif;letter-spacing:.08em;color:#87a2a9}
+.first-mate-item strong{color:#ecf2ef;font:800 13px Arial,sans-serif}
+.first-mate-item small{color:#8da0a3;font-size:8px;line-height:1.4}
+.first-mate-item b{align-self:end;color:#7fb0be;font:900 7px Arial,sans-serif}
+.first-mate-item.clear{border-color:#315f43}.first-mate-item.clear>span,.first-mate-item.clear b{color:#7eca91}
+.first-mate-item.attention{border-color:#6e5930}.first-mate-item.attention>span,.first-mate-item.attention b{color:#d8b45d}
+.first-mate-item.captain{border-color:#7b403b;background:#1a1010}.first-mate-item.captain>span,.first-mate-item.captain b{color:#ed8a80}
+.first-mate-item.recommendation{border-color:#385e70}
+
+.v3-lifecycle-badge{border-color:#3c5e68!important;background:#0d232b!important;color:#98c4cf!important;text-transform:uppercase}
+
+.v3-integrity-station{display:grid;grid-template-columns:.8fr 1.2fr;gap:13px;margin:14px 0;padding:14px}
+.v3-integrity-copy h4{margin:3px 0;color:#edf3f0;font-size:19px}.v3-integrity-copy p{margin:0;color:#8fa1a4;font-size:9px}
+.v3-integrity-actions{display:flex;justify-content:flex-end;align-items:center;gap:7px;flex-wrap:wrap}
+.v3-integrity-summary,.v3-audit-viewer{grid-column:1/-1}
+.v3-integrity-result{display:flex;justify-content:space-between;gap:10px;padding:10px;border:1px solid #3d5d68;border-radius:8px;background:#09161b}
+.v3-integrity-result.pass{border-color:#3b6a4a;background:#0a1a11}.v3-integrity-result.fail{border-color:#81413b;background:#1b0e0e}
+.v3-integrity-result div{display:grid;gap:3px}.v3-integrity-result small{color:#779097;font:900 7px Arial,sans-serif}.v3-integrity-result strong{font-size:11px}.v3-integrity-result span,.v3-integrity-result time{color:#82969a;font-size:8px}
+.v3-integrity-issues{display:grid;gap:4px;margin-top:7px}.v3-integrity-issues>span{display:flex;justify-content:space-between;gap:10px;padding:7px 9px;border:1px solid #2f4953;border-radius:6px;background:#081318;color:#8fa2a5;font-size:8px}
+.v3-integrity-issues>span.critical{border-color:#74413b}.v3-integrity-issues>span.clear{border-color:#345f43}.v3-integrity-issues b{color:#dce5e2}
+.v3-recovery-confirm{display:flex;justify-content:space-between;gap:8px;margin-bottom:7px;padding:8px;border:1px solid #3b6749;border-radius:7px;background:#0a1911;color:#a7d4b1;font-size:8px}
+.v3-audit-viewer{max-height:360px;overflow:auto;border:1px solid #304b55;border-radius:8px;background:#071216}
+.v3-audit-viewer>header{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:8px;background:#0a171d;border-bottom:1px solid #29434c}
+.v3-audit-viewer article{display:grid;grid-template-columns:130px 100px 1fr;gap:5px 10px;padding:8px;border-top:1px solid #203740}
+.v3-audit-viewer time,.v3-audit-viewer span{color:#71868b;font-size:7px}.v3-audit-viewer strong{color:#d9e3e0;font-size:8px}.v3-audit-viewer small{grid-column:3;color:#819397;font-size:7px}
+
+/* Business Mode legacy-bleed containment: old pirate-era decoration cannot surface here. */
+body.business-engine-mode #enginePanel .pirate-command-hero,
+body.business-engine-mode #enginePanel .pirate-systems-deck,
+body.business-engine-mode #enginePanel .pirate-command-log,
+body.business-engine-mode #enginePanel .pirate-card-ribbon,
+body.business-engine-mode #enginePanel .pirate-card-watermark,
+body.business-engine-mode #enginePanel .pirate-add-copy,
+body.business-engine-mode #enginePanel .cove-crest,
+body.business-engine-mode #enginePanel .cove-compass,
+body.business-engine-mode #enginePanel .protected-control-mark{display:none!important}
+
+/* Pirate Mode renders the same v3 command services in Black Flag language. */
+body.dark-flag-pirate-mode .v3-architecture-deck,
+body.dark-flag-pirate-mode .first-mate-watch,
+body.dark-flag-pirate-mode .v3-integrity-station{border-color:#4b3928;background:linear-gradient(160deg,#15110e,#0d0b09);color:#eadfcb}
+body.dark-flag-pirate-mode .first-mate-watch{background:linear-gradient(110deg,rgba(18,13,10,.95),rgba(9,7,6,.97)),url('assets/engine_room_pirate_benchmark_v2978.png') center 45%/cover no-repeat}
+body.dark-flag-pirate-mode .first-mate-mark{border-color:#74512f;background:#17100c;color:#d0a04f}
+body.dark-flag-pirate-mode .v3-architecture-head small,body.dark-flag-pirate-mode .first-mate-watch header small{color:#bd3830}
+body.dark-flag-pirate-mode .v3-architecture-head h3,body.dark-flag-pirate-mode .first-mate-watch header h3{font-family:Georgia,'Times New Roman',serif;color:#efe3ce}
+body.dark-flag-pirate-mode .v3-architecture-status article,body.dark-flag-pirate-mode .first-mate-item,body.dark-flag-pirate-mode .v3-integrity-result,body.dark-flag-pirate-mode .v3-audit-viewer{border-color:#453426;background:#100d0b}
+body.dark-flag-pirate-mode .v3-lifecycle-badge{border-color:#69482e!important;background:#18110d!important;color:#d1a45c!important}
+
+@media(max-width:1100px){.v3-architecture-status{grid-template-columns:repeat(3,1fr)}.first-mate-watch-items{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.v3-architecture-status,.first-mate-watch-items{grid-template-columns:1fr}.first-mate-watch header,.v3-architecture-head{align-items:flex-start;flex-direction:column}.v3-integrity-station{grid-template-columns:1fr}.v3-integrity-actions{justify-content:flex-start}.v3-audit-viewer article{grid-template-columns:1fr}.v3-audit-viewer small{grid-column:auto}}
