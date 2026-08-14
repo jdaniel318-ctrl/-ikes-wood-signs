@@ -7981,3 +7981,14 @@ body.dark-flag-pirate-mode .v3-lifecycle-badge{border-color:#69482e!important;ba
   #engineConfigurationDock .v3-integrity-actions{grid-template-columns:1fr}
   #engineConfigurationDock #runShipIntegrityBtn{grid-column:auto}
 }
+
+/* v3.0.2 — Captain's Log is a real desk control, not decoration.
+   Expand the transparent painted-door hit area to cover the full book. */
+.captain-command-door.log.captain-log-hit-target{
+  cursor:pointer!important;
+  pointer-events:auto!important;
+  z-index:12!important;
+}
+.captain-command-door.log.captain-log-hit-target:hover{
+  filter:brightness(1.10);
+}

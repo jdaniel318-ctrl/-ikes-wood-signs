@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=3.0.1" />
+  <link rel="stylesheet" href="styles.css?v=3.0.2" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -280,7 +280,7 @@
         <button id="captainCargoDoor" class="captain-command-door cargo" type="button" data-captain-command-door="cargo" aria-label="Open Cargo Hold"></button>
         <button id="captainPowderDoor" class="captain-command-door powder" type="button" data-captain-command-door="powder" aria-label="Open Powder Keg"></button>
         <button id="captainBlackFlagDoor" class="captain-command-door blackflag" type="button" data-captain-command-door="blackflag" aria-label="Open Black Flag Fleet Command"></button>
-        <button id="captainLogDoor" class="captain-command-door log" type="button" data-captain-command-door="log" aria-label="Open Captain's Log"></button>
+        <button id="captainLogDoor" class="captain-command-door log captain-log-hit-target" type="button" data-captain-command-door="log" aria-label="Open Captain's Log" title="Open Captain's Log"></button>
         <button id="captainBlueprintDoor" class="captain-command-door blueprint" type="button" data-captain-command-door="blueprint" aria-label="Open Ship's Blueprint"></button>
       </div>
       <button id="captainExitBtn" class="captain-primary" type="button">EXIT PREVIEW</button>
@@ -1109,7 +1109,7 @@
 
 
 
-  <script src="captain.js?v=3.0.0"></script>
+  <script src="captain.js?v=3.0.2"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">
