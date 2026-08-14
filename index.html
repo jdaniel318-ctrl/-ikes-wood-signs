@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=3.0.2" />
+  <link rel="stylesheet" href="styles.css?v=3.1.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -808,7 +808,7 @@
         <header>
           <div class="first-mate-mark" aria-hidden="true">FM</div>
           <div><small>FIRST MATE'S WATCH</small><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
-          <button id="firstMateRefreshBtn" class="secondary-btn" type="button">REFRESH WATCH</button>
+          <button id="firstMateRefreshBtn" class="secondary-btn first-mate-refresh-btn" type="button">RUN WATCH</button>
         </header>
         <div id="firstMateWatchItems" class="first-mate-watch-items"></div>
       </section>
@@ -848,7 +848,7 @@
               <p id="pecSubtitle">Project-specific controls.</p>
             </div>
           </div>
-          <button id="closeProjectEngineControl" class="secondary-btn small">CLOSE PROJECT</button>
+          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn">← BACK TO ENGINE</button>
         </div>
 
         <nav class="project-tabs" id="projectTabs">
@@ -874,7 +874,7 @@
       <section id="engineConfigurationDock" class="engine-configuration-dock hidden" aria-label="Engine configuration">
         <header class="engine-configuration-head">
           <div><div class="engine-kicker">ENGINE CONFIGURATION</div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div>
-          <button id="engineConfigurationCloseBtn" class="secondary-btn" type="button">CLOSE CONFIGURATION</button>
+          <button id="engineConfigurationCloseBtn" class="secondary-btn workspace-back-btn" type="button">← BACK TO ENGINE</button>
         </header>
         <section class="engine-economics-config">
           <div>
@@ -1083,7 +1083,7 @@
 
   <script src="platform_core.js?v=3.0.0"></script>
   <script src="platform_identity.js?v=3.0.0"></script>
-  <script src="app.js?v=3.0.0"></script>
+  <script src="app.js?v=3.1.0"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -1109,7 +1109,7 @@
 
 
 
-  <script src="captain.js?v=3.0.2"></script>
+  <script src="captain.js?v=3.1.0"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

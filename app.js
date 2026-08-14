@@ -1806,9 +1806,8 @@
     $('pecTitle').textContent=p.name;
     $('pecSubtitle').textContent='Project-specific controls. Black Flag remains unlocked only while you stay in the Engine.';
     await applyProjectControlBrand(p);
-    $('projectEngineControl').classList.remove('hidden');
+    openEngineWorkspace($('projectEngineControl'));
     await renderProjectTab(id,'overview');
-    window.scrollTo({top:$('projectEngineControl').offsetTop-20,behavior:'smooth'});
   }
 
   async function openCaptainDeploymentRoute(route){
@@ -4950,6 +4949,28 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
 
+
+  function openEngineWorkspace(el){
+    if(!el)return;
+    el.classList.remove('hidden');
+    document.body.classList.add('engine-workspace-open');
+    requestAnimationFrame(()=>el.scrollTop=0);
+  }
+  function closeEngineWorkspace(el){
+    if(!el)return;
+    el.classList.add('hidden');
+    if(!document.querySelector('#projectEngineControl:not(.hidden),#engineConfigurationDock:not(.hidden)')){
+      document.body.classList.remove('engine-workspace-open');
+    }
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+  function openEngineConfiguration(target='top'){
+    const dock=$('engineConfigurationDock');if(!dock)return;
+    openEngineWorkspace(dock);
+    if(target==='economics') requestAnimationFrame(()=>$('engineFixedCost30')?.focus({preventScroll:false}));
+    if(target==='integrity') requestAnimationFrame(()=>$('shipIntegritySummary')?.scrollIntoView({behavior:'smooth',block:'center'}));
+  }
+
   function v3LifecycleLabel(state){
     return ({
       draft:'DRAFT',configured:'CONFIGURED',owner_invited:'OWNER INVITED',owner_active:'OWNER ACTIVE',
@@ -5024,44 +5045,86 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const report=await runShipIntegrityV3();
     const economics=await readEngineEconomics();
     const items=[];
-    if(report.critical)items.push({level:'captain',title:'Captain Decision Needed',detail:`${report.critical} structural issue${report.critical===1?'':'s'} detected.`,action:'integrity'});
-    else if(report.warnings)items.push({level:'attention',title:'First Mate Attention',detail:`${report.warnings} non-blocking warning${report.warnings===1?'':'s'} remain on watch.`,action:'integrity'});
-    else items.push({level:'clear',title:'All Clear',detail:'Project boundaries and critical command controls passed the current watch.',action:'integrity'});
+    if(report.critical)items.push({
+      level:'captain',title:'Captain Decision Needed',
+      detail:`${report.critical} structural issue${report.critical===1?'':'s'} detected.`,
+      recommendation:'Run Ship Integrity and review the exact failed checks before continuing.',
+      action:'integrity',cta:'RUN INTEGRITY CHECK'
+    });
+    else if(report.warnings)items.push({
+      level:'attention',title:'First Mate Attention',
+      detail:`${report.warnings} non-blocking warning${report.warnings===1?'':'s'} remain on watch.`,
+      recommendation:'Review the integrity report and clear warnings that affect deployment.',
+      action:'integrity',cta:'REVIEW WARNINGS'
+    });
+    else items.push({
+      level:'clear',title:'All Clear',
+      detail:'Project boundaries and critical command controls passed the current watch.',
+      recommendation:'No corrective action required.',
+      action:'results',cta:'VIEW CHECK RESULTS'
+    });
 
     if(window.BlackFlagV3Identity?.productionAuth?.ready===false){
-      items.push({level:'attention',title:'Production Owner Identity',detail:'Server-backed authentication remains required before real outside-owner deployment.',action:'owner'});
+      items.push({
+        level:'attention',title:'Production Owner Identity',
+        detail:'Server-backed authentication remains required before real outside-owner deployment.',
+        recommendation:'Keep outside owner rollout in test/private mode until production identity is installed.',
+        action:'projects',cta:'REVIEW OWNER ACCESS'
+      });
     }
     if(!(economics.fixed30||economics.perOrder||economics.variablePct)){
-      items.push({level:'recommendation',title:'First Mate Recommends',detail:'Enter real operating costs when known so Profit and Cost telemetry become decision-grade.',action:'economics'});
+      items.push({
+        level:'recommendation',title:'Operating Cost Model',
+        detail:'Profit telemetry does not yet have real operating-cost information.',
+        recommendation:'Enter known fixed, per-order, and variable costs to make Profit decision-grade.',
+        action:'economics',cta:'CONFIGURE COST MODEL'
+      });
     }
-    const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
-    const invited=states.filter(x=>x==='owner_invited').length;
-    const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
-    if(invited)items.push({level:'attention',title:'Owner Invitation Pending',detail:`${invited} owner invitation${invited===1?' is':'s are'} awaiting claim.`,action:'projects'});
-    if(testing)items.push({level:'recommendation',title:'Sea Trial Watch',detail:`${testing} project${testing===1?' is':'s are'} in deployment/testing state.`,action:'projects'});
-    return items.slice(0,6);
+
+    const invited=companies.filter(p=>window.BlackFlagV3Core?.lifecycle?.(p)==='owner_invited');
+    invited.forEach(p=>items.push({
+      level:'attention',title:`${p.name} — Owner Invitation Pending`,
+      detail:'The project owner invitation is awaiting claim.',
+      recommendation:'Review the invitation status and decide whether to leave it active, revoke it, or regenerate it.',
+      action:'project-owner',projectId:p.id,cta:'OPEN OWNER ACCESS'
+    }));
+
+    const testing=companies.filter(p=>['testing','deployment_ready'].includes(window.BlackFlagV3Core?.lifecycle?.(p)));
+    testing.forEach(p=>items.push({
+      level:'recommendation',title:`${p.name} — Sea Trial Watch`,
+      detail:'This project is in deployment/testing state.',
+      recommendation:'Open Deployment and verify the project is ready for its next lifecycle step.',
+      action:'project-deployment',projectId:p.id,cta:'OPEN DEPLOYMENT'
+    }));
+    return items.slice(0,8);
   }
 
   async function renderFirstMateWatch(){
     const box=$('firstMateWatchItems');if(!box)return;
     const items=await firstMateWatchItems();
     box.innerHTML=items.map((x,i)=>`
-      <button type="button" class="first-mate-item ${escapeHtml(x.level)}" data-first-mate-index="${i}">
+      <article class="first-mate-item ${escapeHtml(x.level)}">
         <span>${x.level==='clear'?'ALL CLEAR':x.level==='captain'?'CAPTAIN':x.level==='attention'?'ATTENTION':'RECOMMEND'}</span>
         <strong>${escapeHtml(x.title)}</strong>
         <small>${escapeHtml(x.detail)}</small>
-        <b>REVIEW →</b>
-      </button>`).join('');
+        <p><b>FIRST MATE:</b> ${escapeHtml(x.recommendation||'Review this item.')}</p>
+        <button type="button" class="first-mate-action-btn" data-first-mate-index="${i}">${escapeHtml(x.cta||'OPEN')}</button>
+      </article>`).join('');
+
     $$('[data-first-mate-index]').forEach(btn=>btn.onclick=async()=>{
       const x=items[Number(btn.dataset.firstMateIndex)];
-      if(x.action==='integrity'){
-        $('engineConfigurationDock')?.classList.remove('hidden');
-        await renderShipIntegrity(await runShipIntegrityV3({record:true}));
-        $('shipIntegritySummary')?.scrollIntoView({behavior:'smooth',block:'center'});
+      if(x.action==='integrity'||x.action==='results'){
+        openEngineConfiguration('integrity');
+        await renderShipIntegrity(await runShipIntegrityV3({record:x.action==='integrity'}));
       }else if(x.action==='economics'){
-        $('engineConfigurationDock')?.classList.remove('hidden');
-        $('engineFixedCost30')?.scrollIntoView({behavior:'smooth',block:'center'});
-      }else if(x.action==='owner'||x.action==='projects'){
+        openEngineConfiguration('economics');
+      }else if(x.action==='project-owner'&&x.projectId){
+        await openProjectEngineControl(x.projectId);
+        await renderProjectTab(x.projectId,'owner');
+      }else if(x.action==='project-deployment'&&x.projectId){
+        await openProjectEngineControl(x.projectId);
+        await renderProjectTab(x.projectId,'deployment');
+      }else if(x.action==='projects'){
         $('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
       }
     });
@@ -5147,15 +5210,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       if(target==='captain') $('captainModeAccessBtn')?.click();
     }));
 
-    $('engineConfigureBtn')?.addEventListener('click',()=>{
-      const dock=$('engineConfigurationDock'); if(!dock)return;
-      dock.classList.remove('hidden');
-      dock.scrollIntoView({behavior:'smooth',block:'start'});
-    });
-    $('engineConfigurationCloseBtn')?.addEventListener('click',()=>{
-      $('engineConfigurationDock')?.classList.add('hidden');
-      $('enginePanel')?.scrollIntoView({behavior:'smooth',block:'start'});
-    });
+    $('engineConfigureBtn')?.addEventListener('click',()=>openEngineConfiguration('top'));
+    $('engineConfigurationCloseBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('saveEngineEconomicsBtn')?.addEventListener('click',saveEngineEconomics);
     $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
     $('enginePirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
@@ -5315,7 +5371,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('saveAISettingsBtn').addEventListener('click',saveAIForm);
 
     if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',openAddProject);
-    if($('closeProjectEngineControl')) $('closeProjectEngineControl').addEventListener('click',()=>{clearGraphicsTransientUi();$('projectEngineControl').classList.add('hidden');engineActiveProjectId=null;});
+    if($('closeProjectEngineControl')) $('closeProjectEngineControl').addEventListener('click',()=>{clearGraphicsTransientUi();closeEngineWorkspace($('projectEngineControl'));engineActiveProjectId=null;});
     if($('projectTabs')) $('projectTabs').addEventListener('click',e=>{const b=e.target.closest('[data-project-tab]');if(b&&engineActiveProjectId)renderProjectTab(engineActiveProjectId,b.dataset.projectTab);});
     if($('cancelAddProjectBtn')) $('cancelAddProjectBtn').addEventListener('click',()=>$('addProjectGate').classList.add('hidden'));
     if($('createProjectBtn')) $('createProjectBtn').addEventListener('click',createProject);

@@ -7992,3 +7992,162 @@ body.dark-flag-pirate-mode .v3-lifecycle-badge{border-color:#69482e!important;ba
 .captain-command-door.log.captain-log-hit-target:hover{
   filter:brightness(1.10);
 }
+
+/* ==========================================================
+   BLACK FLAG v3.1 — COMMAND & NAVIGATION REFINEMENT
+   ========================================================== */
+
+/* Main Engine is the command deck. Workspaces sit above it as true screens. */
+body.engine-workspace-open{overflow:hidden}
+#projectEngineControl:not(.hidden),
+#engineConfigurationDock:not(.hidden){
+  position:fixed!important;
+  inset:0!important;
+  z-index:850!important;
+  width:100vw!important;
+  height:100dvh!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:22px clamp(18px,3vw,46px) 44px!important;
+  overflow:auto!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(180deg,rgba(8,18,23,.97),rgba(7,16,20,.985)),
+    url('assets/engine_room_modern_benchmark_v2976.png') center/cover fixed no-repeat!important;
+  box-shadow:none!important;
+}
+body.dark-flag-pirate-mode #projectEngineControl:not(.hidden),
+body.dark-flag-pirate-mode #engineConfigurationDock:not(.hidden){
+  background:
+    linear-gradient(180deg,rgba(16,12,9,.965),rgba(9,7,6,.985)),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center/cover fixed no-repeat!important;
+}
+#projectEngineControl .project-engine-head,
+#engineConfigurationDock .engine-configuration-head{
+  position:sticky;
+  top:-22px;
+  z-index:20;
+  margin:-22px 0 18px!important;
+  padding:20px 0 13px!important;
+  background:linear-gradient(180deg,#09161b 78%,rgba(9,22,27,0));
+}
+body.dark-flag-pirate-mode #projectEngineControl .project-engine-head,
+body.dark-flag-pirate-mode #engineConfigurationDock .engine-configuration-head{
+  background:linear-gradient(180deg,#110d0a 78%,rgba(17,13,10,0));
+}
+.workspace-back-btn{
+  width:auto!important;
+  min-width:0!important;
+  min-height:36px!important;
+  padding:8px 13px!important;
+  border-radius:7px!important;
+  font-size:9px!important;
+  white-space:nowrap;
+}
+
+/* Fleet scales horizontally without turning the Engine into an endless page. */
+#engineProjectsSection .modern-project-command-head{align-items:end}
+#projectCommandCards{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  gap:10px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scroll-snap-type:x proximity;
+  overscroll-behavior-inline:contain;
+  padding:3px 3px 13px!important;
+  scrollbar-width:thin;
+}
+#projectCommandCards>.project-command-card{
+  flex:0 0 clamp(265px,30vw,360px)!important;
+  min-width:265px!important;
+  scroll-snap-align:start;
+}
+#engineProjectsSection .modern-project-tools{
+  position:sticky;
+  right:0;
+  z-index:5;
+}
+#addProjectBtn{
+  width:auto!important;
+  min-height:36px!important;
+  padding:8px 13px!important;
+  border-radius:7px!important;
+  white-space:nowrap;
+}
+
+/* First Mate: compact command, actionable cards, no giant white bars. */
+.first-mate-refresh-btn{
+  width:auto!important;
+  min-width:0!important;
+  min-height:34px!important;
+  padding:7px 12px!important;
+  border-radius:7px!important;
+  font-size:8px!important;
+  white-space:nowrap;
+}
+.first-mate-item{
+  cursor:default!important;
+  grid-template-rows:auto auto auto 1fr auto;
+}
+.first-mate-item p{
+  margin:3px 0 0;
+  color:#9aadb0;
+  font-size:8px;
+  line-height:1.45;
+}
+.first-mate-item p b{color:#c9d8d8;font-size:7px;letter-spacing:.04em}
+.first-mate-action-btn{
+  justify-self:start;
+  width:auto!important;
+  min-width:0!important;
+  min-height:30px!important;
+  margin-top:4px;
+  padding:6px 10px!important;
+  border:1px solid #3d6470!important;
+  border-radius:6px!important;
+  background:#10242c!important;
+  color:#b8d9e1!important;
+  font:900 7px Arial,sans-serif!important;
+  letter-spacing:.04em;
+  cursor:pointer;
+}
+.first-mate-action-btn:hover{background:#17323c!important;border-color:#568493!important}
+.first-mate-item.clear .first-mate-action-btn{border-color:#376346!important;background:#102118!important;color:#9bd0a8!important}
+.first-mate-item.attention .first-mate-action-btn{border-color:#6b5832!important;background:#211b0e!important;color:#ddbd69!important}
+.first-mate-item.captain .first-mate-action-btn{border-color:#77423d!important;background:#271210!important;color:#ef948b!important}
+
+/* Shared Engine button discipline: compact unless a component explicitly opts into a hero CTA. */
+#projectEngineControl button.primary-btn,
+#projectEngineControl button.secondary-btn,
+#engineConfigurationDock button.primary-btn,
+#engineConfigurationDock button.secondary-btn{
+  width:auto;
+}
+#projectEngineControl .project-tabs button{
+  min-height:34px!important;
+  padding:7px 11px!important;
+  border-radius:7px!important;
+  font-size:8px!important;
+}
+
+/* Dedicated configuration screen gets breathing room without full-width action bars. */
+#engineConfigurationDock .engine-economics-config,
+#engineConfigurationDock .v3-integrity-station{
+  max-width:1180px;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+#engineConfigurationDock .engine-economics-fields button,
+#engineConfigurationDock .v3-integrity-actions button{
+  width:auto!important;
+}
+
+@media(max-width:760px){
+  #projectEngineControl:not(.hidden),#engineConfigurationDock:not(.hidden){padding:16px 14px 34px!important}
+  #projectEngineControl .project-engine-head,#engineConfigurationDock .engine-configuration-head{top:-16px;margin:-16px 0 14px!important;padding:15px 0 10px!important}
+  #projectCommandCards>.project-command-card{flex-basis:82vw!important}
+  #engineProjectsSection .modern-project-tools{position:static}
+}
