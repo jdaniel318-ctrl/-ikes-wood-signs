@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-77-engine-wide-visual-system';
+const CACHE='workshop-engine-v2-9-78-pirate-mode-rebuilt';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.77',
-  './app.js?v=2.9.77',
-  './captain.js?v=2.9.77',
+  './styles.css?v=2.9.78',
+  './app.js?v=2.9.78',
+  './captain.js?v=2.9.78',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',

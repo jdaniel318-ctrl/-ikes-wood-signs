@@ -2183,36 +2183,36 @@ body[data-admin-project-code="BBS"].project-admin-mode .admin-timeout-note{
 .bf-switch input:checked + .bf-switch-slider{background:#b48a3c}
 .bf-switch input:checked + .bf-switch-slider:before{transform:translateX(20px)}
 
-body.dark-flag-pirate-mode #blackFlagEntryGate{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate{
   background:
     radial-gradient(circle at 50% 20%,rgba(187,139,62,.14),transparent 32%),
     linear-gradient(180deg,#08161a 0%,#102a2d 55%,#071113 100%)!important;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell{
   position:relative;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell:before{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell:before{
   content:"";
   position:absolute;inset:-22px;border-radius:28px;pointer-events:none;
   border:1px solid rgba(196,151,72,.22);
   box-shadow:0 0 70px rgba(0,0,0,.28);
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-mark{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-mark{
   filter:drop-shadow(0 4px 10px #000);
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-kicker{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-kicker{
   color:#d6ad5b!important;
   letter-spacing:1.8px;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-panel{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-panel{
   border-color:#b48a3c!important;
   box-shadow:0 16px 45px #00000055,inset 0 0 35px #b48a3c0b;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-primary{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-primary{
   background:#b48a3c!important;
   color:#111!important;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-foot{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-foot{
   color:#c8b078!important;
 }
 .engine-appearance-card .engine-card-kicker{
@@ -2261,7 +2261,7 @@ body[data-pin-project-code="IKE"] .project-admin-gate-card{
 
 /* Pirate Mode: ~80% of the cinematic inspiration, confined to Dark Flag Engine territory. */
 .bf-pirate-atmosphere{display:none}
-body.dark-flag-pirate-mode #blackFlagEntryGate{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate{
   overflow:hidden;
   background:
     radial-gradient(circle at 82% 17%,rgba(224,157,57,.28),transparent 10%),
@@ -2269,59 +2269,59 @@ body.dark-flag-pirate-mode #blackFlagEntryGate{
     linear-gradient(180deg,rgba(1,7,9,.18),rgba(1,7,9,.48)),
     repeating-linear-gradient(90deg,#0b1718 0 42px,#0e1d1d 43px 86px)!important;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate::before{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate::before{
   content:"☠";
   position:absolute;left:7%;top:8%;
   font-size:min(18vw,190px);line-height:1;
   color:#d1a55312;transform:rotate(-8deg);
   text-shadow:0 8px 30px #000;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate::after{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate::after{
   content:"⚓";
   position:absolute;right:8%;bottom:7%;
   font-size:min(12vw,130px);line-height:1;
   color:#d1a55312;transform:rotate(9deg);
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell{
   z-index:2;
   background:
     linear-gradient(180deg,rgba(24,19,12,.93),rgba(8,17,18,.96))!important;
   border:1px solid #a47b35!important;
   box-shadow:0 24px 90px #000b, inset 0 0 0 1px #e1b55a18!important;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell:after{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell:after{
   content:"DARK FLAG • COVE ENGINE";
   display:block;margin:10px auto 0;text-align:center;
   color:#d5aa58;font:800 10px Georgia,serif;letter-spacing:2px
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-mark{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-mark{
   background:#12120f!important;border-color:#bd8c36!important;
   color:#e1bd74!important;box-shadow:0 0 0 5px #0004,0 7px 20px #0008!important
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate h1{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate h1{
   color:#e9d7ad!important;
   text-shadow:0 2px 0 #000,0 4px 20px #000!important;
   font-family:Georgia,serif!important;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-sub{color:#c9bea4!important}
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-panel{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-sub{color:#c9bea4!important}
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-panel{
   background:linear-gradient(180deg,#17150f,#10191a)!important;
   border:1px solid #8e6a2e!important;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-pin-input{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-pin-input{
   background:#090d0d!important;color:#f0d69c!important;border-color:#775a2d!important
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-secondary{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-secondary{
   background:#151b1b!important;color:#d7c7a2!important;border-color:#4f4634!important
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-pirate-toggle-row{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-pirate-toggle-row{
   border-color:#74582b!important;background:#120f0a!important;color:#d8c69d!important
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-pirate-atmosphere{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-pirate-atmosphere{
   display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
   margin:12px 0 2px;color:#b99651;font-size:8px;font-weight:900;letter-spacing:.7px
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-foot{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-foot{
   border-top:1px solid #75582b44;padding-top:10px!important
 }
 
@@ -2425,32 +2425,32 @@ body.dark-flag-pirate-mode .engine-pirate-toggle-row .bf-switch input:checked + 
 }
 
 /* Dark Flag navigation gets the command-deck treatment. */
-body.dark-flag-pirate-mode .engine-nav,
-body.dark-flag-pirate-mode .engine-sidebar,
-body.dark-flag-pirate-mode .black-flag-sidebar{
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-nav,
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-sidebar,
+body.legacy-pirate-disabled.dark-flag-pirate-mode .black-flag-sidebar{
   background:linear-gradient(180deg,#090d0d,#15140f)!important;
   border-color:#765b31!important
 }
-body.dark-flag-pirate-mode .engine-nav button,
-body.dark-flag-pirate-mode .engine-sidebar button,
-body.dark-flag-pirate-mode .black-flag-sidebar button{
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-nav button,
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-sidebar button,
+body.legacy-pirate-disabled.dark-flag-pirate-mode .black-flag-sidebar button{
   color:#d9c69a!important
 }
-body.dark-flag-pirate-mode .engine-nav button.active,
-body.dark-flag-pirate-mode .engine-sidebar button.active,
-body.dark-flag-pirate-mode .black-flag-sidebar button.active{
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-nav button.active,
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-sidebar button.active,
+body.legacy-pirate-disabled.dark-flag-pirate-mode .black-flag-sidebar button.active{
   background:#342918!important;color:#f1d99d!important;border-color:#a47c37!important
 }
 
 /* Project cards remain identifiable by their own brand; only the surrounding Dark Flag frame changes. */
-body.dark-flag-pirate-mode .engine-project-card,
-body.dark-flag-pirate-mode .project-command-project{
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-project-card,
+body.legacy-pirate-disabled.dark-flag-pirate-mode .project-command-project{
   background:linear-gradient(180deg,#171a17,#0d1413)!important;
   border-color:#6d5836!important;
   box-shadow:0 8px 18px #0005!important
 }
-body.dark-flag-pirate-mode .engine-project-card::before,
-body.dark-flag-pirate-mode .project-command-project::before{
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-project-card::before,
+body.legacy-pirate-disabled.dark-flag-pirate-mode .project-command-project::before{
   content:"CREW BERTH";display:block;margin-bottom:5px;
   color:#967642;font:900 7px Georgia,serif;letter-spacing:1.5px
 }
@@ -3028,14 +3028,14 @@ body.dark-flag-pirate-mode .graphics-edit-state.unsaved{background:#2b2212!impor
 }
 
 /* Pirate Mode remains Engine-only. This cleanup does not target project shells with pirate selectors. */
-body.dark-flag-pirate-mode .engine-identity-name-row{
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-identity-name-row{
   background:#0e1513!important;
   border-color:#745a31!important;
 }
-body.dark-flag-pirate-mode .engine-name-display{
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-name-display{
   color:#ead8b2!important;
 }
-body.dark-flag-pirate-mode .engine-identity-status.is-saved{
+body.legacy-pirate-disabled.dark-flag-pirate-mode .engine-identity-status.is-saved{
   background:#172619!important;
   border-color:#557551!important;
   color:#bcd0ae!important;
@@ -5019,56 +5019,56 @@ body.business-engine-mode #enginePanel .captain-access-btn>span:first-child{
 /* ---------- Pirate Mode ----------
    Same machinery. No screenshot/benchmark image is used as a live background.
    Pirate character comes from materials, trim, language, and typography only. */
-body.dark-flag-pirate-mode #blackFlagEntryGate{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate{
   background:radial-gradient(circle at 70% 8%,rgba(159,108,43,.16),transparent 28%),#0c0806;
 }
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-pirate-atmosphere{display:flex}
-body.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-pirate-atmosphere{display:flex}
+body.legacy-pirate-disabled.dark-flag-pirate-mode #blackFlagEntryGate .bf-entry-shell{
   background:#17100b;
   border-color:#75542c;
 }
-body.dark-flag-pirate-mode #enginePanel.engine-panel{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel.engine-panel{
   background:#0b0806;
   border-color:#73522d;
 }
-body.dark-flag-pirate-mode #enginePanel .command-masthead{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .command-masthead{
   background:#17100b;
   border-color:#77572f;
 }
-body.dark-flag-pirate-mode #enginePanel .command-mark{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .command-mark{
   font-size:23px;
   color:#e2c27a;
 }
-body.dark-flag-pirate-mode #enginePanel .command-mark::before{content:none}
-body.dark-flag-pirate-mode #enginePanel .engine-room-visual-nav{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .command-mark::before{content:none}
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .engine-room-visual-nav{
   background:#100b08;
   border-right-color:#654826;
 }
-body.dark-flag-pirate-mode #enginePanel .ervn-brand>span{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .ervn-brand>span{
   font-size:20px;
 }
-body.dark-flag-pirate-mode #enginePanel .ervn-brand>span::before{content:none}
-body.dark-flag-pirate-mode #enginePanel .engine-health-strip,
-body.dark-flag-pirate-mode #enginePanel .project-command-section,
-body.dark-flag-pirate-mode #enginePanel .project-engine-control,
-body.dark-flag-pirate-mode #enginePanel .protected-control-center{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .ervn-brand>span::before{content:none}
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .engine-health-strip,
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .project-command-section,
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .project-engine-control,
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .protected-control-center{
   border-color:#5d482d;
   background:#100d0a;
 }
-body.dark-flag-pirate-mode #enginePanel .project-card,
-body.dark-flag-pirate-mode #enginePanel .engine-card{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .project-card,
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .engine-card{
   border-color:#5c4931;
   background:#17130e;
 }
-body.dark-flag-pirate-mode #enginePanel .dark-flag-cove-banner{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .dark-flag-cove-banner{
   border-color:#6b4f2b;
   background:#1d130b;
 }
-body.dark-flag-pirate-mode #enginePanel .project-card h4,
-body.dark-flag-pirate-mode #enginePanel .project-card strong{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .project-card h4,
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .project-card strong{
   color:#f2e6cc;
 }
-body.dark-flag-pirate-mode #enginePanel .primary-btn{
+body.legacy-pirate-disabled.dark-flag-pirate-mode #enginePanel .primary-btn{
   color:#fff0c5;
   background:#79552a;
   border-color:#a77b3e;
@@ -7046,4 +7046,585 @@ body.business-engine-mode #enginePanel .project-tab-content [style*="background:
     -webkit-overflow-scrolling:touch;
   }
   body.business-engine-mode #enginePanel .project-tabs button{flex:0 0 auto!important;font-size:10px!important}
+}
+
+
+/* ==========================================================
+   v2.9.78 — AUTHORITATIVE PIRATE MODE
+   Entire Engine transforms into Black Flag Command when Pirate Mode is active.
+   This block intentionally sits last in the cascade and replaces legacy pirate visuals.
+
+   Approved inspiration:
+   assets/engine_room_pirate_benchmark_v2978.png
+
+   Business Mode remains governed by the v2.9.76/v2.9.77 modern ship Engine system.
+   ========================================================== */
+
+body.dark-flag-pirate-mode #enginePanel{
+  --pm-bg:#080807;
+  --pm-panel:#11100e;
+  --pm-panel-2:#17130f;
+  --pm-panel-3:#1d1711;
+  --pm-line:#4a3b29;
+  --pm-line-hi:#7a5b33;
+  --pm-text:#f1eadb;
+  --pm-copy:#b8aa93;
+  --pm-muted:#7f735f;
+  --pm-red:#b6241f;
+  --pm-red-hi:#e03a32;
+  --pm-gold:#c79b4b;
+  --pm-green:#6cbf72;
+  position:relative!important;
+  color:var(--pm-text)!important;
+  background:
+    radial-gradient(circle at 50% -12%,rgba(95,18,13,.18),transparent 35%),
+    linear-gradient(180deg,#0a0908 0%,#070706 72%)!important;
+}
+
+/* The old left rail and old header system stay retired in the rebuilt Pirate Mode. */
+body.dark-flag-pirate-mode #enginePanel .engine-room-visual-nav,
+body.dark-flag-pirate-mode #enginePanel>.command-masthead,
+body.dark-flag-pirate-mode #enginePanel>.engine-health-strip,
+body.dark-flag-pirate-mode #enginePanel>.dark-flag-cove-banner{
+  display:none!important;
+}
+
+/* Main hero becomes Black Flag Command. */
+body.dark-flag-pirate-mode #enginePanel .modern-engine-hero{
+  min-height:160px!important;
+  border:1px solid #5a432c!important;
+  background:
+    linear-gradient(90deg,rgba(7,7,6,.98) 0%,rgba(13,10,8,.92) 36%,rgba(17,8,7,.74) 65%,rgba(8,6,5,.97) 100%),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center 4% / cover no-repeat!important;
+  box-shadow:0 22px 55px rgba(0,0,0,.48),inset 0 1px 0 rgba(211,166,91,.07)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-hero::after{
+  background:linear-gradient(90deg,transparent,#7d552e,#b7221c,#7d552e,transparent)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-mark{
+  border-color:#6d4d2c!important;
+  background:#120f0ccc!important;
+  color:#d2a455!important;
+  box-shadow:inset 0 0 0 7px rgba(104,70,30,.14),0 0 35px rgba(148,35,26,.18)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-mark::before{
+  content:"☠";
+  font-size:34px;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-mark{
+  font-size:0!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-brand .engine-kicker{
+  color:#c33b31!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-brand h2{
+  color:#f3ead9!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+  letter-spacing:.02em!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-brand h2::after{
+  content:" • BLACK FLAG COMMAND";
+  color:#b72b25;
+  font:900 .38em Arial,sans-serif;
+  letter-spacing:.12em;
+  vertical-align:middle;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-brand p{
+  color:#b4a58c!important;
+}
+
+/* Top commands. Captain access remains visible but visually integrated. */
+body.dark-flag-pirate-mode #enginePanel .engine-configure-btn,
+body.dark-flag-pirate-mode #enginePanel .modern-engine-secure,
+body.dark-flag-pirate-mode #enginePanel .modern-captain-access{
+  border-color:#5b432b!important;
+  background:linear-gradient(180deg,#17110e,#0f0c0a)!important;
+  color:#eadfca!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-configure-btn:hover{
+  border-color:#8b5e32!important;
+  background:#21140f!important;
+}
+body.dark-flag-pirate-mode #enginePanel .configure-sliders{
+  background:#2a1713!important;
+  color:#d54a3f!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-secure strong{
+  color:#73c278!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-captain-access{
+  border-color:#7f5a2d!important;
+  box-shadow:inset 0 -2px 0 rgba(199,155,75,.15)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-captain-access strong{
+  color:#d7a84f!important;
+}
+
+/* Performance deck uses red/gold pirate instrumentation but the SAME live data. */
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card{
+  border-color:#4a3928!important;
+  background:linear-gradient(160deg,#14110e,#0d0b09)!important;
+  box-shadow:inset 0 -2px 0 rgba(142,42,31,.13)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card-head span{
+  color:#a9987e!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card-head strong{
+  color:#e1d4bd!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card-head small{
+  color:#7f725f!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card-head i{
+  border-color:#72502c!important;
+  background:#1b130e!important;
+  color:#c9933b!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card.revenue,
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card.profit,
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card.usage,
+body.dark-flag-pirate-mode #enginePanel .engine-performance-card.cost{
+  box-shadow:inset 0 -2px 0 rgba(181,36,31,.17)!important;
+}
+
+/* System Operations becomes Engine Systems / command authority. */
+body.dark-flag-pirate-mode #enginePanel .modern-system-operations{
+  border-color:#4a3927!important;
+  background:
+    linear-gradient(90deg,rgba(19,16,13,.98),rgba(12,10,8,.96) 68%,rgba(17,8,7,.94))!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-system-operations::before{
+  content:"BLACK FLAG ENGINE SYSTEMS";
+  position:absolute;
+  right:18px;
+  top:11px;
+  color:#8d2b24;
+  font:900 8px Arial,sans-serif;
+  letter-spacing:.13em;
+}
+body.dark-flag-pirate-mode #enginePanel .system-shield{
+  border-color:#704a2a!important;
+  background:#21120f!important;
+  color:#d2a04b!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-system-operations-copy span{
+  color:#b39163!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-system-operations-copy h3{
+  color:#e6d9c1!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-system-capabilities span{
+  border-left-color:#403222!important;
+  color:#9f9076!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-vessel-wireframe{
+  color:#8d2a24!important;
+}
+
+/* Projects become a pirate armada, but functions remain unchanged. */
+body.dark-flag-pirate-mode #enginePanel .modern-project-command{
+  border-color:#4b3b29!important;
+  background:#0d0b09!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .engine-kicker{
+  color:#bb342d!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command h3{
+  color:#eee4d2!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command h3::after{
+  content:" • ARMADA";
+  color:#a72c25;
+  font:900 .36em Arial,sans-serif;
+  letter-spacing:.11em;
+  vertical-align:middle;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-tools .engine-fleet-search input{
+  border-color:#493a2a!important;
+  background:#0b0908!important;
+  color:#e1d6c2!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-tools .engine-fleet-filters{
+  border-color:#4b3928!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-tools .engine-fleet-filters button{
+  border-color:#392b20!important;
+  background:#100d0b!important;
+  color:#aa9a80!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-tools .engine-fleet-filters button.active{
+  background:#581914!important;
+  color:#f3e4d0!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-tools .project-add-btn{
+  border-color:#7f2820!important;
+  background:linear-gradient(180deg,#7f1f19,#551410)!important;
+  color:#fff1dd!important;
+}
+
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card{
+  position:relative!important;
+  border-color:#493927!important;
+  background:
+    linear-gradient(160deg,rgba(19,16,13,.98),rgba(10,9,8,.99)),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center 72% / 900px auto no-repeat!important;
+  color:#eadfcb!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card::after{
+  content:"";
+  position:absolute;
+  right:10px;
+  bottom:52px;
+  width:55px;
+  height:55px;
+  opacity:.055;
+  background:
+    radial-gradient(circle,#d2a04b 0 4px,transparent 5px),
+    linear-gradient(45deg,transparent 47%,#d2a04b 48% 52%,transparent 53%),
+    linear-gradient(-45deg,transparent 47%,#d2a04b 48% 52%,transparent 53%);
+  pointer-events:none;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card:hover{
+  border-color:#765332!important;
+  box-shadow:0 8px 24px rgba(85,22,17,.18)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card h4{
+  color:#eee4d2!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card>p{
+  color:#a99b84!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-publish-toggle span{
+  border-color:#4d3b2a!important;
+  background:#0b0908!important;
+  color:#b5a58c!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-deployment-badge{
+  background:#2d241b!important;
+  color:#d2c5ad!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-kpis span{
+  border-color:#413225!important;
+  background:#0c0a09!important;
+  color:#978a75!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-kpis small{
+  color:#7d705d!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-kpis strong{
+  color:#e6dac4!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card-actions .secondary-btn{
+  border-color:#493828!important;
+  background:#0d0b09!important;
+  color:#e8ddc8!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card-actions .primary-btn{
+  border-color:#81261f!important;
+  background:linear-gradient(180deg,#7a201b,#50130f)!important;
+  color:#fff0da!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .add-project-card{
+  border-color:#513d29!important;
+  background:#0b0908!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-project-command .add-project-plus{
+  border-color:#9b2c25!important;
+  color:#cf3b32!important;
+}
+
+/* Configure Engine drawer is fully pirate-themed. */
+body.dark-flag-pirate-mode #enginePanel .engine-configuration-dock{
+  border-color:#503e2b!important;
+  background:
+    linear-gradient(180deg,rgba(16,13,10,.99),rgba(10,8,7,.99)),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center 40% / cover no-repeat!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-configuration-head{
+  border-bottom-color:#413326!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-configuration-head h3,
+body.dark-flag-pirate-mode #enginePanel .engine-economics-config h4{
+  color:#eaddc7!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-configuration-head p,
+body.dark-flag-pirate-mode #enginePanel .engine-economics-config p{
+  color:#9d907a!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-economics-config{
+  border-color:#47382a!important;
+  background:#120f0c!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-economics-fields label{
+  color:#aa9b82!important;
+}
+body.dark-flag-pirate-mode #enginePanel .engine-economics-fields input{
+  border-color:#4a3929!important;
+  background:#0a0908!important;
+  color:#ece0cb!important;
+}
+
+/* Project Control Center and every tab transform as part of Pirate Mode. */
+body.dark-flag-pirate-mode #enginePanel .project-engine-control{
+  border-color:#503e2b!important;
+  background:
+    linear-gradient(180deg,rgba(11,9,8,.97),rgba(8,7,6,.985)),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center 32% / cover no-repeat!important;
+  box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(210,165,84,.05)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-engine-control::before{
+  background:
+    linear-gradient(90deg,rgba(129,29,22,.025),transparent 25%,transparent 75%,rgba(129,29,22,.025)),
+    repeating-linear-gradient(90deg,transparent 0 86px,rgba(152,111,57,.018) 87px)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-engine-head{
+  border-color:#4e3a29!important;
+  background:linear-gradient(110deg,#17120eed,#0e0b09ed)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .pec-brand-mark{
+  border-color:#5b432d!important;
+  background:#0d0b09!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-engine-head .engine-kicker{
+  color:#b7332c!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-engine-head h3{
+  color:#f0e5d2!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-engine-head p{
+  color:#9f927d!important;
+}
+body.dark-flag-pirate-mode #enginePanel #closeProjectEngineControl{
+  border-color:#5e4932!important;
+  background:#1c1712!important;
+  color:#e9ddc8!important;
+}
+
+/* Pirate tabs become brass/red command keys. */
+body.dark-flag-pirate-mode #enginePanel .project-tabs{
+  border-color:#483727!important;
+  background:#0b0908e8!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-tabs button{
+  border-color:#3f3024!important;
+  background:#120f0c!important;
+  color:#b3a48a!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-tabs button:hover{
+  border-color:#755334!important;
+  background:#1c140f!important;
+  color:#f0e4d0!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-tabs button.active{
+  border-color:#8c2b23!important;
+  background:linear-gradient(180deg,#5f1915,#3d100d)!important;
+  color:#fff0d9!important;
+  box-shadow:inset 0 -2px 0 #bb342b!important;
+}
+
+/* All cards/panels/forms inside project tabs. */
+body.dark-flag-pirate-mode #enginePanel .pec-card,
+body.dark-flag-pirate-mode #enginePanel .ledger-admin-card,
+body.dark-flag-pirate-mode #enginePanel .graphics-library-item,
+body.dark-flag-pirate-mode #enginePanel .graphics-focused-editor,
+body.dark-flag-pirate-mode #enginePanel .graphics-focused-head,
+body.dark-flag-pirate-mode #enginePanel .asset-slot,
+body.dark-flag-pirate-mode #enginePanel .deployment-future,
+body.dark-flag-pirate-mode #enginePanel .owner-access-card,
+body.dark-flag-pirate-mode #enginePanel .owner-form-card,
+body.dark-flag-pirate-mode #enginePanel .payment-structure-card{
+  border-color:#463628!important;
+  background:linear-gradient(160deg,#15110e,#0d0b09)!important;
+  color:#b8aa93!important;
+}
+body.dark-flag-pirate-mode #enginePanel .pec-card h4,
+body.dark-flag-pirate-mode #enginePanel .graphics-manager-head h4,
+body.dark-flag-pirate-mode #enginePanel .graphics-focused-head h4,
+body.dark-flag-pirate-mode #enginePanel .deployment-card-head h4,
+body.dark-flag-pirate-mode #enginePanel .marketing-brand-grid h4,
+body.dark-flag-pirate-mode #enginePanel .owner-card-heading h4,
+body.dark-flag-pirate-mode #enginePanel .ledger-admin-card h4{
+  color:#ede2cf!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+}
+body.dark-flag-pirate-mode #enginePanel .pec-card p,
+body.dark-flag-pirate-mode #enginePanel .pec-card .helper,
+body.dark-flag-pirate-mode #enginePanel .graphics-library-copy small,
+body.dark-flag-pirate-mode #enginePanel .marketing-brand-grid p,
+body.dark-flag-pirate-mode #enginePanel .deployment-future p,
+body.dark-flag-pirate-mode #enginePanel .ledger-admin-card p{
+  color:#9b8d78!important;
+}
+
+/* Hero cards inside project pages. */
+body.dark-flag-pirate-mode #enginePanel .marketing-brand-hero,
+body.dark-flag-pirate-mode #enginePanel .owner-access-hero,
+body.dark-flag-pirate-mode #enginePanel .deployment-hero,
+body.dark-flag-pirate-mode #enginePanel .deployment-fleet-hero{
+  border-color:#5a412c!important;
+  background:
+    linear-gradient(100deg,rgba(22,16,12,.96),rgba(10,8,7,.93)),
+    url('assets/engine_room_pirate_benchmark_v2978.png') center 28% / cover no-repeat!important;
+}
+body.dark-flag-pirate-mode #enginePanel .marketing-brand-hero h3,
+body.dark-flag-pirate-mode #enginePanel .owner-access-hero h3,
+body.dark-flag-pirate-mode #enginePanel .deployment-hero h3,
+body.dark-flag-pirate-mode #enginePanel .deployment-fleet-hero h3{
+  color:#eee2cc!important;
+  font-family:Georgia,'Times New Roman',serif!important;
+}
+
+/* Inputs/selects/textareas. */
+body.dark-flag-pirate-mode #enginePanel .project-tab-content input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+body.dark-flag-pirate-mode #enginePanel .project-tab-content textarea,
+body.dark-flag-pirate-mode #enginePanel .project-tab-content select{
+  border-color:#493829!important;
+  background:#0b0908!important;
+  color:#ede1cc!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-tab-content input::placeholder,
+body.dark-flag-pirate-mode #enginePanel .project-tab-content textarea::placeholder{
+  color:#6f6353!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-tab-content input:focus,
+body.dark-flag-pirate-mode #enginePanel .project-tab-content textarea:focus,
+body.dark-flag-pirate-mode #enginePanel .project-tab-content select:focus{
+  border-color:#8e5e32!important;
+  outline:2px solid rgba(176,40,31,.13)!important;
+}
+
+/* Buttons inside tabs. */
+body.dark-flag-pirate-mode #enginePanel .project-tab-content .primary-btn{
+  border-color:#87261f!important;
+  background:linear-gradient(180deg,#7a201b,#4d120f)!important;
+  color:#fff0d8!important;
+  box-shadow:inset 0 -2px 0 rgba(226,57,48,.2)!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-tab-content .secondary-btn{
+  border-color:#55412f!important;
+  background:#1b1611!important;
+  color:#e4d7c0!important;
+}
+body.dark-flag-pirate-mode #enginePanel .project-tab-content .danger-btn{
+  border-color:#a1372e!important;
+  background:#5b1814!important;
+  color:#ffe2d8!important;
+}
+
+/* Marketing / graphics library. */
+body.dark-flag-pirate-mode #enginePanel .marketing-project-seal{
+  border-color:#6b4c2f!important;
+  background:#15110d!important;
+  color:#e8dcc7!important;
+}
+body.dark-flag-pirate-mode #enginePanel .graphics-lock-mark{
+  border-color:#5a432f!important;
+  background:#120e0b!important;
+  color:#c79b4b!important;
+}
+body.dark-flag-pirate-mode #enginePanel .graphics-library-preview,
+body.dark-flag-pirate-mode #enginePanel .asset-preview-stage{
+  border-color:#453629!important;
+  background:#0f0c0a!important;
+}
+/* Preserve actual business artwork fidelity. */
+body.dark-flag-pirate-mode #enginePanel .graphics-library-preview img,
+body.dark-flag-pirate-mode #enginePanel .asset-preview-stage img,
+body.dark-flag-pirate-mode #enginePanel .project-brand-badge img,
+body.dark-flag-pirate-mode #enginePanel .marketing-project-brand-visual img,
+body.dark-flag-pirate-mode #enginePanel .pec-brand-mark img{
+  background:#f1f4f2!important;
+}
+
+/* Owner / permission / status surfaces. */
+body.dark-flag-pirate-mode #enginePanel .owner-access-card::before{
+  background:#8f2a23!important;
+}
+body.dark-flag-pirate-mode #enginePanel .owner-card-heading{
+  border-color:#433326!important;
+}
+body.dark-flag-pirate-mode #enginePanel .owner-card-heading>div>span{
+  border-color:#60452e!important;
+  background:#120e0b!important;
+  color:#d0a052!important;
+}
+body.dark-flag-pirate-mode #enginePanel .owner-capability-grid label,
+body.dark-flag-pirate-mode #enginePanel .admin-toggle-row,
+body.dark-flag-pirate-mode #enginePanel .compact-toggle{
+  border-color:#463529!important;
+  background:#100d0b!important;
+  color:#ad9e84!important;
+}
+body.dark-flag-pirate-mode #enginePanel .owner-capability-grid label:has(input:checked){
+  border-color:#7e5b34!important;
+  background:#1c140f!important;
+  color:#e8dcc6!important;
+}
+
+/* Ledger and deployment instrumentation. */
+body.dark-flag-pirate-mode #enginePanel .ledger-summary>div{
+  border-color:#4a3828!important;
+  background:linear-gradient(160deg,#19130f,#0d0b09)!important;
+  color:#e8dbc5!important;
+}
+body.dark-flag-pirate-mode #enginePanel .ledger-summary span{
+  color:#847760!important;
+}
+body.dark-flag-pirate-mode #enginePanel .ledger-profit{
+  border-color:#5b4c2c!important;
+  background:#16120d!important;
+  color:#d0ad65!important;
+}
+body.dark-flag-pirate-mode #enginePanel .deployment-status-seal{
+  border-color:#60472f!important;
+  background:#120f0c!important;
+}
+body.dark-flag-pirate-mode #enginePanel .deployment-status-seal strong{
+  color:#d3a44f!important;
+}
+body.dark-flag-pirate-mode #enginePanel .deployment-gauge{
+  border-color:#453528!important;
+  background:#100d0b!important;
+}
+
+/* Footer rebuilt to feel like the command desk, not the old joke footer. */
+body.dark-flag-pirate-mode #enginePanel .modern-engine-footer{
+  border-color:#4d3a28!important;
+  background:linear-gradient(180deg,#14100d,#0b0908)!important;
+  color:#9c8b72!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-footer span{
+  color:#a59378!important;
+}
+body.dark-flag-pirate-mode #enginePanel .modern-engine-footer span+span{
+  border-left-color:#3c2e22!important;
+}
+
+/* Explicitly suppress old pirate-only ornamental leftovers so they never bleed over this system. */
+body.dark-flag-pirate-mode #enginePanel .cove-crest,
+body.dark-flag-pirate-mode #enginePanel .cove-compass,
+body.dark-flag-pirate-mode #enginePanel .protected-control-mark{
+  display:none!important;
+}
+
+/* Pirate Mode page divider. */
+body.dark-flag-pirate-mode #enginePanel .project-tab-content::before{
+  background:linear-gradient(90deg,transparent,#6d4a2d 15%,#9b2b24 50%,#6d4a2d 85%,transparent)!important;
+}
+
+/* Touch/tablet behavior stays identical to Business Mode. */
+@media(max-width:760px){
+  body.dark-flag-pirate-mode #enginePanel .modern-engine-brand h2::after{
+    display:block;
+    margin-top:7px;
+  }
+  body.dark-flag-pirate-mode #enginePanel .modern-project-command h3::after{
+    display:block;
+    margin-top:5px;
+  }
 }

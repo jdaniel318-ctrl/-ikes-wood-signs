@@ -2855,12 +2855,12 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if(status){
       status.classList.toggle('pirate',pirateModeEnabled);
       status.innerHTML=pirateModeEnabled
-        ? '<span></span><strong>PIRATE MODE</strong><small>Themed Engine Room • same machinery</small>'
+        ? '<span></span><strong>PIRATE MODE</strong><small>Black Flag command presentation • same Engine machinery</small>'
         : '<span></span><strong>BUSINESS MODE</strong><small>Professional Engine Room</small>';
     }
 
     if($('pirateModeStatus')) $('pirateModeStatus').textContent=pirateModeEnabled
-      ? 'Pirate presentation active. Engine logic, permissions and projects are unchanged.'
+      ? 'Pirate Mode active. Engine logic, permissions, project boundaries and data remain unchanged.'
       : 'Business presentation active. Professional Engine Room controls are unchanged beneath the surface.';
 
     const kicker=document.querySelector('#blackFlagEntryGate .bf-entry-kicker');
@@ -2886,15 +2886,15 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const storageLabel=$('engineStorageLabel');
     const systemLabel=$('engineSystemLabel');
     const footer=document.querySelector('#enginePanel .pirate-footer');
-    if(engineKicker) engineKicker.textContent=pirateModeEnabled?'DARK FLAG HARBOR':'ENGINE CONTROL';
+    if(engineKicker) engineKicker.textContent=pirateModeEnabled?'BLACK FLAG COMMAND':'ENGINE CONTROL';
     if(engineTitle) engineTitle.textContent='Engine Room';
     if(engineSub) engineSub.textContent=pirateModeEnabled
       ? 'Fleet operations and project machinery beneath the Dark Flag.'
       : 'Multi-project operations, configuration, testing, and platform control.';
-    if(coveKicker) coveKicker.textContent=pirateModeEnabled?'DARK FLAG':'PLATFORM OPERATIONS';
-    if(coveTitle) coveTitle.textContent=pirateModeEnabled?'COVE ENGINE':'SYSTEM OPERATIONS';
+    if(coveKicker) coveKicker.textContent=pirateModeEnabled?'BLACK FLAG':'PLATFORM OPERATIONS';
+    if(coveTitle) coveTitle.textContent=pirateModeEnabled?'COMMAND DECK':'SYSTEM OPERATIONS';
     if(coveMotto) coveMotto.textContent=pirateModeEnabled
-      ? 'ONE ENGINE • MANY CREWS • TOTAL SEPARATION'
+      ? 'ONE ENGINE • MANY PROJECTS • SEALED HOLDS'
       : 'MULTI-PROJECT CONTROL • SEALED DATA BOUNDARIES';
     if(modeGraphic){
       modeGraphic.textContent=pirateModeEnabled?'☠':'';
@@ -2905,13 +2905,17 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       modeAccent.hidden=!pirateModeEnabled;
     }
     if(projectsHelp) projectsHelp.textContent=pirateModeEnabled
-      ? 'Open a vessel to manage it. Entering a project secures the Engine.'
+      ? 'Open a vessel to command its project systems. Project holds remain sealed from one another.'
       : 'Open a project to manage its controls. Project data remains isolated.';
     if(ordersLabel) ordersLabel.textContent=pirateModeEnabled?'Orders Aboard':'Orders';
     if(recoveryLabel) recoveryLabel.textContent=pirateModeEnabled?'Stranded Draft':'Recovery Status';
     if(storageLabel) storageLabel.textContent=pirateModeEnabled?'Cargo Hold':'Storage';
     if(systemLabel) systemLabel.textContent=pirateModeEnabled?'Signal Flag':'System Status';
     if(footer) footer.textContent=pirateModeEnabled
+      ? "BLACK FLAG ENGINE • CAPTAIN AUTHORIZED" // authoritative pirate footer
+      : "ENGINE ROOM • AUTHORIZED OPERATIONS ONLY";
+    /* legacy pirate footer retired */
+    if(false) footer.textContent=pirateModeEnabled
       ? "☠ If ye don't know what a button does, keep yer hook off it."
       : 'ENGINE ROOM • AUTHORIZED OPERATIONS ONLY';
 
