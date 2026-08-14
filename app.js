@@ -307,6 +307,9 @@
     p.ownerAccess.invitation=p.ownerAccess.invitation&&typeof p.ownerAccess.invitation==='object'
       ? p.ownerAccess.invitation
       : null;
+    p.ownerAccess.credential=p.ownerAccess.credential&&typeof p.ownerAccess.credential==='object'
+      ? p.ownerAccess.credential
+      : null;
     return p;
   }
 
@@ -333,6 +336,30 @@
     if(inv.claimedAt) return 'claimed';
     if(Number(inv.expiresAt||0)<=Date.now()) return 'expired';
     return 'active';
+  }
+
+  function purgeExpiredOwnerInvitation(p){
+    ensureProjectGovernance(p);
+    const inv=p.ownerAccess.invitation;
+    if(!inv)return false;
+    if(inv.claimedAt||inv.revokedAt)return false;
+    if(Number(inv.expiresAt||0)>Date.now())return false;
+
+    // Expired claim credentials are not retained.
+    // Owner identity/capabilities remain because those are project ownership data,
+    // not invitation credentials.
+    p.ownerAccess.invitation=null;
+    if(p.ownerAccess.status==='invited')p.ownerAccess.status='not_claimed';
+    p.ownerAccess.updatedAt=new Date().toISOString();
+    logActivity(p.id,'Expired owner invitation purged',p.ownerAccess.ownerEmail||'');
+    return true;
+  }
+
+  async function purgeAllExpiredOwnerInvitations(){
+    let changed=false;
+    companies.forEach(p=>{if(purgeExpiredOwnerInvitation(p))changed=true;});
+    if(changed)await saveCompanies();
+    return changed;
   }
 
   function randomOwnerToken(){
@@ -367,9 +394,107 @@
   }
   function clearOwnerSession(){ sessionStorage.removeItem(OWNER_SESSION_KEY); }
 
+  const OWNER_TEST_LOGIN={login:'joe',password:'4353'};
+
+  function normalizeOwnerLogin(value){
+    return String(value||'').trim().toLowerCase();
+  }
+
+  function ownerLoginLink(projectId){
+    const base=location.href.split('#')[0];
+    return `${base}#owner-login=${encodeURIComponent(projectId)}`;
+  }
+
+  async function createOwnerCredential(p,login,password,{testMode=false}={}){
+    ensureProjectGovernance(p);
+    const cleanLogin=normalizeOwnerLogin(login);
+    const cleanPassword=String(password||'');
+    if(!cleanLogin)return {ok:false,error:'A login is required.'};
+    if(!testMode && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanLogin)){
+      return {ok:false,error:'A valid email address is required.'};
+    }
+    if(!testMode && (cleanPassword.length<8 || !/[A-Za-z]/.test(cleanPassword) || !/\d/.test(cleanPassword))){
+      return {ok:false,error:'Use at least 8 characters with at least one letter and one number.'};
+    }
+    if(testMode && !cleanPassword)return {ok:false,error:'A password is required.'};
+
+    p.ownerAccess.credential={
+      login:cleanLogin,
+      password:cleanPassword,
+      testMode:!!testMode,
+      createdAt:p.ownerAccess.credential?.createdAt||new Date().toISOString(),
+      changedAt:new Date().toISOString()
+    };
+    return {ok:true};
+  }
+
+  function verifyOwnerCredential(p,login,password){
+    ensureProjectGovernance(p);
+    const c=p.ownerAccess.credential;
+    if(!c)return false;
+    return normalizeOwnerLogin(login)===normalizeOwnerLogin(c.login) && String(password||'')===String(c.password||'');
+  }
+
+  async function ensureTestOwnerCredential(p){
+    ensureProjectGovernance(p);
+    if(!p.ownerAccess.credential){
+      await createOwnerCredential(p,OWNER_TEST_LOGIN.login,OWNER_TEST_LOGIN.password,{testMode:true});
+      p.ownerAccess.status='active';
+      await saveCompanies();
+      logActivity(p.id,'Test owner login enabled','joe');
+    }
+  }
+
+  async function showOwnerLogin(projectId,message=''){
+    const p=projectById(projectId);
+    if(!p)return;
+    ensureProjectGovernance(p);
+    if(!p.ownerAccess.credential && p.id==='ikes-wood-signs'){
+      await ensureTestOwnerCredential(p);
+    }
+
+    hideCoreSurfacesForOwner();
+    $('ownerPortal')?.classList.add('hidden');
+    $('ownerClaimGate')?.classList.remove('hidden');
+    const box=$('ownerClaimContent');
+    if(!box)return;
+
+    box.innerHTML=`<div class="owner-login-card">
+      <small>BUSINESS PORTAL</small>
+      <h2>${escapeHtml(p.name)}</h2>
+      <p>Welcome back. Sign in to manage your business.</p>
+      ${message?`<div class="owner-login-message">${escapeHtml(message)}</div>`:''}
+      <label>Email or login<input id="ownerLoginEmail" type="text" autocomplete="username" value="${escapeHtml(p.ownerAccess.credential?.testMode?'joe':(p.ownerAccess.ownerEmail||''))}"></label>
+      <label>Password<input id="ownerLoginPassword" type="password" autocomplete="current-password"></label>
+      <button id="ownerLoginSubmit" class="primary-btn" type="button">SIGN IN</button>
+      <p id="ownerLoginError" class="owner-login-error"></p>
+      ${p.ownerAccess.credential?.testMode?'<p class="owner-test-login-note">Test login for this build: <strong>joe</strong> / <strong>4353</strong></p>':''}
+    </div>`;
+
+    $('ownerLoginSubmit')?.addEventListener('click',async()=>{
+      if(platformStatus(p)!=='approved'){
+        $('ownerLoginError').textContent='Your business portal is not currently available.';
+        return;
+      }
+      const login=$('ownerLoginEmail')?.value||'';
+      const password=$('ownerLoginPassword')?.value||'';
+      if(!verifyOwnerCredential(p,login,password)){
+        $('ownerLoginError').textContent='The login or password did not match.';
+        return;
+      }
+      saveOwnerSession(p.id);
+      history.replaceState(null,'',location.pathname+location.search+'#owner-portal');
+      await openOwnerPortal(p.id);
+    });
+
+    $('ownerLoginPassword')?.addEventListener('keydown',e=>{
+      if(e.key==='Enter')$('ownerLoginSubmit')?.click();
+    });
+  }
+
   async function generateOwnerInvitation(p){
     ensureProjectGovernance(p);
-    if(platformStatus(p)!=='approved') return {ok:false,error:'This business is not currently approved for platform operation.'};
+    if(platformStatus(p)!=='approved') return {ok:false,error:'This business is not currently available for owner access.'};
     if(!String(p.ownerAccess.ownerName||'').trim()) return {ok:false,error:'Enter and save the owner name first.'};
     if(!String(p.ownerAccess.ownerEmail||'').trim()) return {ok:false,error:'Enter and save the owner email first.'};
 
@@ -400,25 +525,31 @@
     const p=projectById(projectId);
     if(!p) return {ok:false,error:'Business invitation was not found.'};
     ensureProjectGovernance(p);
-    if(platformStatus(p)!=='approved') return {ok:false,error:'Owner access is unavailable while this business relationship is inactive.'};
+    if(purgeExpiredOwnerInvitation(p)){
+      await saveCompanies();
+      return {ok:false,error:'This invitation has expired. Please request a new invitation.'};
+    }
+    if(platformStatus(p)!=='approved') return {ok:false,error:'This business portal is not currently available.'};
     const inv=p.ownerAccess.invitation;
-    if(!inv) return {ok:false,error:'No owner invitation is active for this business.'};
-    if(inv.revokedAt) return {ok:false,error:'This owner invitation has been revoked.'};
-    if(inv.claimedAt) return {ok:false,error:'This owner invitation has already been claimed.'};
-    if(Number(inv.expiresAt||0)<=Date.now()) return {ok:false,error:'This owner invitation has expired.'};
+    if(!inv) return {ok:false,error:'No active invitation was found for this business.'};
+    if(inv.revokedAt) return {ok:false,error:'This invitation is no longer active.'};
+    if(inv.claimedAt) return {ok:false,error:'This invitation has already been accepted.'};
+    if(Number(inv.expiresAt||0)<=Date.now()) return {ok:false,error:'This invitation has expired.'};
     try{
       const hash=await sha256Hex(token);
-      if(hash!==inv.tokenHash) return {ok:false,error:'Owner invitation is invalid.'};
+      if(hash!==inv.tokenHash) return {ok:false,error:'This invitation is invalid.'};
     }catch(err){
-      return {ok:false,error:err?.message||'Secure owner invitation could not be validated.'};
+      return {ok:false,error:err?.message||'This invitation could not be validated.'};
     }
     return {ok:true,project:p};
   }
 
-  async function claimOwnerAccess(projectId,token){
+  async function claimOwnerAccess(projectId,token,login,password,{testMode=false}={}){
     const validation=await validateOwnerClaim(projectId,token);
     if(!validation.ok) return validation;
     const p=validation.project;
+    const credential=await createOwnerCredential(p,login,password,{testMode});
+    if(!credential.ok)return credential;
     p.ownerAccess.status='active';
     p.ownerAccess.invitation.claimedAt=new Date().toISOString();
     p.ownerAccess.updatedAt=p.ownerAccess.invitation.claimedAt;
@@ -917,6 +1048,7 @@
 
     if(tab==='owner'){
       ensureProjectGovernance(p);
+      purgeExpiredOwnerInvitation(p);
       const oa=p.ownerAccess;
       const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
       return `<div class="owner-access-shell">
@@ -932,13 +1064,20 @@
           </div>
         </section>
         <div class="pec-grid">
-          <article class="pec-card owner-access-card owner-identity-card">
+          <article class="pec-card owner-access-card owner-identity-card ${oa.ownerName||oa.ownerEmail?'owner-identity-saved':''}">
             <div class="owner-card-heading"><div><span>01</span><h4>Owner Identity</h4></div><small>WHO OWNS THIS BUSINESS</small></div>
-            <label>Owner name<input id="ownerAccessName" value="${escapeHtml(oa.ownerName||'')}" placeholder="Business owner"></label>
-            <label>Owner email<input id="ownerAccessEmail" type="email" value="${escapeHtml(oa.ownerEmail||'')}" placeholder="owner@example.com"></label>
+            ${(oa.ownerName||oa.ownerEmail)?`
+              <div class="owner-saved-banner"><span>✓</span><div><strong>OWNER IDENTITY SAVED</strong><small>Locked to prevent accidental changes.</small></div></div>
+            `:''}
+            <label>Owner name<input id="ownerAccessName" value="${escapeHtml(oa.ownerName||'')}" placeholder="Business owner" ${(oa.ownerName||oa.ownerEmail)?'readonly':''}></label>
+            <label>Owner email<input id="ownerAccessEmail" type="email" value="${escapeHtml(oa.ownerEmail||'')}" placeholder="owner@example.com" ${(oa.ownerName||oa.ownerEmail)?'readonly':''}></label>
             <div class="owner-claim-state"><span>ACCESS STATE</span><strong>${escapeHtml(ownerAccessLabel(p))}</strong></div>
-            <button id="saveOwnerAccess" class="primary-btn" type="button">SAVE OWNER IDENTITY</button>
-            <p class="helper">Owner access becomes active only after a valid invitation is claimed.</p>
+            <div class="owner-identity-actions">
+              <button id="saveOwnerAccess" class="primary-btn ${(oa.ownerName||oa.ownerEmail)?'hidden':''}" type="button">SAVE OWNER IDENTITY</button>
+              <button id="editOwnerAccess" class="secondary-btn ${!(oa.ownerName||oa.ownerEmail)?'hidden':''}" type="button">EDIT OWNER IDENTITY</button>
+              <button id="cancelOwnerEdit" class="secondary-btn hidden" type="button">CANCEL EDIT</button>
+            </div>
+            <p class="helper">Owner access becomes active only after a valid invitation is claimed. Editing owner identity does not grant access by itself.</p>
           </article>
           <article class="pec-card owner-access-card owner-invitation-card">
             <div class="owner-card-heading"><div><span>02</span><h4>Owner Invitation</h4></div><small>CLAIM ACCESS</small></div>
@@ -1393,13 +1532,41 @@
       ensureProjectGovernance(p);
       let latestInviteLink='';
 
+      const setOwnerIdentityEditMode=(editing)=>{
+        const name=$('ownerAccessName'),email=$('ownerAccessEmail');
+        if(name)name.readOnly=!editing;
+        if(email)email.readOnly=!editing;
+        $('saveOwnerAccess')?.classList.toggle('hidden',!editing);
+        $('editOwnerAccess')?.classList.toggle('hidden',editing);
+        $('cancelOwnerEdit')?.classList.toggle('hidden',!editing);
+        document.querySelector('.owner-identity-card')?.classList.toggle('editing',editing);
+        if(editing)name?.focus();
+      };
+
+      $('editOwnerAccess')?.addEventListener('click',()=>setOwnerIdentityEditMode(true));
+      $('cancelOwnerEdit')?.addEventListener('click',()=>renderProjectTab(p.id,'owner'));
+
       $('saveOwnerAccess')?.addEventListener('click',async()=>{
-        p.ownerAccess.ownerName=String($('ownerAccessName')?.value||'').trim();
-        p.ownerAccess.ownerEmail=String($('ownerAccessEmail')?.value||'').trim();
+        const ownerName=String($('ownerAccessName')?.value||'').trim();
+        const ownerEmail=String($('ownerAccessEmail')?.value||'').trim();
+        if(!ownerName){alert('Owner name is required.');return;}
+        if(!ownerEmail){alert('Owner email is required.');return;}
+        p.ownerAccess.ownerName=ownerName;
+        p.ownerAccess.ownerEmail=ownerEmail;
         p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
         p.ownerAccess.updatedAt=new Date().toISOString();
+
+        // If owner identity changes after an unclaimed invite was issued,
+        // revoke/purge that invitation so it cannot be used by the prior identity.
+        const inv=p.ownerAccess.invitation;
+        if(inv && !inv.claimedAt){
+          p.ownerAccess.invitation=null;
+          if(p.ownerAccess.status==='invited')p.ownerAccess.status='not_claimed';
+          logActivity(p.id,'Owner invitation cleared after identity update',ownerEmail);
+        }
+
         await saveCompanies();
-        logActivity(p.id,'Project owner identity updated',p.ownerAccess.ownerEmail);
+        logActivity(p.id,'Project owner identity saved',ownerEmail);
         await renderProjectTab(p.id,'owner');
       });
 
@@ -1411,6 +1578,7 @@
       }));
 
       $('generateOwnerInvite')?.addEventListener('click',async()=>{
+        purgeExpiredOwnerInvitation(p);
         p.ownerAccess.ownerName=String($('ownerAccessName')?.value||'').trim();
         p.ownerAccess.ownerEmail=String($('ownerAccessEmail')?.value||'').trim();
         p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
@@ -4132,13 +4300,14 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     document.body.classList.add('owner-portal-open');
   }
 
-  function closeOwnerPortal(){
+  async function closeOwnerPortal(){
+    const session=ownerSession();
+    const lastProjectId=session?.projectId||'ikes-wood-signs';
     $('ownerPortal')?.classList.add('hidden');
-    $('ownerClaimGate')?.classList.add('hidden');
-    document.body.classList.remove('owner-portal-open');
     clearOwnerSession();
-    if(String(location.hash||'').startsWith('#owner-')) history.replaceState(null,'',location.pathname+location.search);
-    $('blackFlagEntryGate')?.classList.remove('hidden');
+    document.body.classList.add('owner-portal-open');
+    history.replaceState(null,'',location.pathname+location.search+`#owner-login=${encodeURIComponent(lastProjectId)}`);
+    await showOwnerLogin(lastProjectId,'You have been signed out.');
   }
 
   async function ownerPortalMetrics(p){
@@ -4151,6 +4320,190 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     return {orders,deployments,customers};
   }
 
+  function ownerProjectOrders(orders,p){
+    return orders.filter(o=>orderProjectId(o)===p.id);
+  }
+
+  async function ownerBusinessConfig(p){
+    const defaults=customerExperienceForProject(p);
+    try{
+      const saved=await getSetting(`businessConfig:${p.id}`);
+      const value=saved?.value||{};
+      return {
+        businessName:value.businessName||defaults.businessName||p.name,
+        orderPrefix:value.orderPrefix||p.orderPrefix||p.projectCode||'PRJ',
+        thankYouHeadline:value.thankYouHeadline||`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,
+        prices:Array.isArray(value.prices)&&value.prices.length?value.prices:(Array.isArray(defaults.prices)?defaults.prices:[0]),
+        orderStatuses:Array.isArray(value.orderStatuses)&&value.orderStatuses.length?value.orderStatuses:(Array.isArray(p.workflow)?p.workflow:['New','In Production','Ready for Pickup','Completed'])
+      };
+    }catch(_){
+      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:['New','In Production','Ready for Pickup','Completed']};
+    }
+  }
+
+  async function ownerUpdateOrderStatus(p,orderId,status){
+    const orders=await getMergedOrders();
+    const o=orders.find(x=>x.id===orderId && orderProjectId(x)===p.id);
+    if(!o)return false;
+    o.status=status;
+    o.updatedAt=new Date().toISOString();
+    if(status==='Completed'&&!o.completedAt)o.completedAt=o.updatedAt;
+    backupOrderLocally(o);
+    try{await put(STORE_ORDERS,o)}catch(_){}
+    if(status==='Completed')postOrderToLedger(o);
+    captureCustomerFromOrder(o);
+    logActivity(p.id,'Owner updated order status',`${o.id} → ${status}`);
+    return true;
+  }
+
+  function ownerModuleShell(title,subtitle,content){
+    return `<section class="owner-module-workspace">
+      <header class="owner-module-head">
+        <div><small>BUSINESS PORTAL</small><h2>${escapeHtml(title)}</h2><p>${escapeHtml(subtitle)}</p></div>
+        <button id="ownerModuleBack" class="secondary-btn" type="button">← BACK TO OVERVIEW</button>
+      </header>
+      <div class="owner-module-body">${content}</div>
+    </section>`;
+  }
+
+  async function renderOwnerModule(p,moduleKey){
+    ensureProjectGovernance(p);
+    if(platformStatus(p)!=='approved'){await openOwnerPortal(p.id);return;}
+    const caps=new Set(p.ownerAccess.capabilities||[]);
+    if(moduleKey!=='settings' && !caps.has(moduleKey)){alert('This business tool is not currently enabled.');return;}
+    const body=$('ownerPortalBody'); if(!body)return;
+
+    const orders=ownerProjectOrders(await getMergedOrders(),p);
+    const customers=Object.values(readCustomerDirectory()[p.id]||{});
+    const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
+    const config=await ownerBusinessConfig(p);
+
+    if(moduleKey==='orders'){
+      const statuses=Array.isArray(p.workflow)&&p.workflow.length?p.workflow:config.orderStatuses;
+      body.innerHTML=ownerModuleShell('Orders','Review customer orders and update their progress.',
+        `<div class="owner-order-list">${orders.length?orders.slice().sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))).map(o=>`
+          <article class="owner-order-card">
+            <div class="owner-order-head"><div><small>${escapeHtml(o.id)}</small><h3>${escapeHtml(o.wording||'Custom Order')}</h3></div><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
+            <div class="owner-order-grid">
+              <span><b>CUSTOMER</b>${escapeHtml(o.customerName||'—')}</span>
+              <span><b>PHONE</b>${escapeHtml(o.customerPhone||'—')}</span>
+              <span><b>EMAIL</b>${escapeHtml(o.customerEmail||'—')}</span>
+              <span><b>ORDERED</b>${escapeHtml(new Date(o.createdAt).toLocaleString())}</span>
+            </div>
+            <label>Order status<select data-owner-order-status="${escapeHtml(o.id)}">${statuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></label>
+          </article>`).join(''):'<div class="owner-module-empty"><h3>No orders yet</h3><p>New customer orders will appear here.</p></div>'}</div>`);
+    } else if(moduleKey==='customers'){
+      body.innerHTML=ownerModuleShell('Customers','Review customer contact information and purchase history.',
+        `<div class="owner-customer-list">${customers.length?customers.map(c=>`
+          <article class="owner-customer-card"><div><small>CUSTOMER</small><h3>${escapeHtml(c.name||'Customer')}</h3><p>${escapeHtml(c.phone||'')}${c.phone&&c.email?' • ':''}${escapeHtml(c.email||'')}</p></div><div class="owner-customer-stats"><span><b>${Number(c.orderCount||0)}</b> Orders</span><span><b>${escapeHtml(c.lastOrderDate?new Date(c.lastOrderDate).toLocaleDateString():'—')}</b> Last Order</span></div></article>`).join(''):'<div class="owner-module-empty"><h3>No customers yet</h3><p>Customer history will build as orders are placed.</p></div>'}</div>`);
+    } else if(moduleKey==='products'){
+      body.innerHTML=ownerModuleShell('Products','Add products and choose which products are currently available.',
+        `<div class="owner-module-toolbar"><button id="ownerAddProduct" class="primary-btn" type="button">+ ADD PRODUCT</button></div><div class="owner-product-list">${(p.products||[]).map(pr=>`
+          <article class="owner-product-row"><div><small>PRODUCT</small><input data-owner-product-name="${escapeHtml(pr.id)}" value="${escapeHtml(pr.name)}"></div><label class="owner-switch"><input data-owner-product-published="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}><span>${pr.published?'AVAILABLE':'HIDDEN'}</span></label><button data-owner-product-save="${escapeHtml(pr.id)}" class="secondary-btn" type="button">SAVE</button></article>`).join('')||'<div class="owner-module-empty"><h3>No products yet</h3><p>Add your first product to begin.</p></div>'}`);
+    } else if(moduleKey==='pricing'){
+      body.innerHTML=ownerModuleShell('Pricing','Manage the customer price choices used by this business.',
+        `<article class="owner-form-card"><label>Price choices <small>Enter amounts separated by commas.</small><input id="ownerPriceChoices" value="${escapeHtml(config.prices.join(', '))}"></label><button id="ownerSavePricing" class="primary-btn" type="button">SAVE PRICING</button><p id="ownerPricingStatus" class="owner-save-status"></p></article>`);
+    } else if(moduleKey==='branding'){
+      const branding=p.branding||{};
+      body.innerHTML=ownerModuleShell('Branding','Manage your business name and customer-facing subtitle.',
+        `<article class="owner-form-card"><label>Business name<input id="ownerBrandName" value="${escapeHtml(branding.businessName||p.name)}"></label><label>Customer-facing subtitle<input id="ownerBrandSubtitle" value="${escapeHtml(branding.subtitle||'')}"></label><button id="ownerSaveBranding" class="primary-btn" type="button">SAVE BRANDING</button><p id="ownerBrandingStatus" class="owner-save-status"></p></article>`);
+    } else if(moduleKey==='kiosks'||moduleKey==='deployments'){
+      const kiosks=moduleKey==='kiosks';
+      const list=kiosks?deployments.filter(d=>d.profile==='kiosk_self_service'):deployments;
+      body.innerHTML=ownerModuleShell(kiosks?'Kiosks':'Locations & Devices',kiosks?'Create and manage self-service kiosk locations.':'Manage the locations and devices serving your customers.',
+        `<div class="owner-module-toolbar"><button id="ownerCreateDeployment" class="primary-btn" type="button">+ ADD ${kiosks?'KIOSK':'LOCATION / DEVICE'}</button></div><div class="owner-deployment-list">${list.length?list.map(d=>`
+          <article class="owner-deployment-row"><div><small>${escapeHtml((DEPLOYMENT_PROFILES[d.profile]?.label||d.profile).toUpperCase())}</small><h3>${escapeHtml(d.name)}</h3><p>${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)}</p></div><button data-owner-deploy-toggle="${escapeHtml(d.id)}" class="secondary-btn" type="button">${d.state==='paused'?'RESUME':'PAUSE'}</button></article>`).join(''):'<div class="owner-module-empty"><h3>None yet</h3><p>Add one when you are ready.</p></div>'}</div>`);
+    } else if(moduleKey==='staff'){
+      const staff=Array.isArray(p.ownerAccess.staff)?p.ownerAccess.staff:[];
+      body.innerHTML=ownerModuleShell('Staff','Manage the people who help operate your business.',
+        `<div class="owner-module-toolbar"><button id="ownerAddStaff" class="primary-btn" type="button">+ ADD STAFF MEMBER</button></div><div class="owner-staff-list">${staff.length?staff.map(s=>`
+          <article class="owner-staff-row"><div><small>${escapeHtml((s.role||'STAFF').toUpperCase())}</small><h3>${escapeHtml(s.name||'Staff Member')}</h3><p>${escapeHtml(s.email||'')}</p></div><button data-owner-staff-remove="${escapeHtml(s.id)}" class="secondary-btn" type="button">REMOVE</button></article>`).join(''):'<div class="owner-module-empty"><h3>No staff added yet</h3><p>Add staff as your business grows.</p></div>'}</div>`);
+    } else if(moduleKey==='reporting'){
+      const revenue=orders.reduce((s,o)=>s+Number(o.price||0),0);
+      const completed=orders.filter(o=>canonicalOrderStatus(o.status)==='Completed').length;
+      const recent=orders.filter(o=>Date.now()-new Date(o.createdAt).getTime()<=30*86400000);
+      body.innerHTML=ownerModuleShell('Reporting','A simple view of current business activity.',
+        `<div class="owner-report-grid"><article><span>TOTAL ORDERS</span><strong>${orders.length}</strong></article><article><span>RECORDED SALES</span><strong>$${revenue.toFixed(2)}</strong></article><article><span>COMPLETED</span><strong>${completed}</strong></article><article><span>LAST 30 DAYS</span><strong>${recent.length}</strong></article><article><span>CUSTOMERS</span><strong>${customers.length}</strong></article><article><span>LOCATIONS / DEVICES</span><strong>${deployments.length}</strong></article></div>`);
+    } else if(moduleKey==='notifications'){
+      const n=p.notifications||{customerConfirmationEmail:false};
+      body.innerHTML=ownerModuleShell('Notifications','Choose the customer notifications currently available for your business.',
+        `<article class="owner-form-card"><label class="owner-toggle-row"><span><strong>Customer confirmation email</strong><small>Use the configured confirmation message after an order is placed.</small></span><input id="ownerConfirmationEmail" type="checkbox" ${n.customerConfirmationEmail?'checked':''}></label><button id="ownerSaveNotifications" class="primary-btn" type="button">SAVE NOTIFICATIONS</button><p id="ownerNotificationStatus" class="owner-save-status"></p></article>`);
+    } else if(moduleKey==='settings'){
+      body.innerHTML=ownerModuleShell('Settings','Manage your Business Portal login.',
+        `<article class="owner-form-card owner-settings-card">
+          <h3>Change Password</h3>
+          <label>Current password<input id="ownerCurrentPassword" type="password" autocomplete="current-password"></label>
+          <label>New password<input id="ownerNewPassword" type="password" autocomplete="new-password"></label>
+          <label>Confirm new password<input id="ownerConfirmPassword" type="password" autocomplete="new-password"></label>
+          <button id="ownerChangePassword" class="primary-btn" type="button">CHANGE PASSWORD</button>
+          <p id="ownerSettingsStatus" class="owner-save-status"></p>
+          <p class="owner-test-login-note">This build allows the temporary test password 4353. Production accounts will require a valid email and a stronger password.</p>
+        </article>`);
+    }
+
+    $('ownerModuleBack')?.addEventListener('click',()=>openOwnerPortal(p.id));
+
+    $$('[data-owner-order-status]').forEach(sel=>sel.addEventListener('change',()=>ownerUpdateOrderStatus(p,sel.dataset.ownerOrderStatus,sel.value)));
+
+    $('ownerAddProduct')?.addEventListener('click',async()=>{
+      const name=prompt('Product name'); if(!name?.trim())return;
+      p.products=p.products||[]; p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-5),name:name.trim(),published:false,characterLimit:null});
+      await saveCompanies(); logActivity(p.id,'Owner added product',name.trim()); await renderOwnerModule(p,'products');
+    });
+    $$('[data-owner-product-save]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const pr=(p.products||[]).find(x=>x.id===btn.dataset.ownerProductSave); if(!pr)return;
+      const name=document.querySelector(`[data-owner-product-name="${CSS.escape(pr.id)}"]`)?.value?.trim();
+      const published=document.querySelector(`[data-owner-product-published="${CSS.escape(pr.id)}"]`)?.checked;
+      if(name)pr.name=name; pr.published=!!published; await saveCompanies(); logActivity(p.id,'Owner updated product',pr.name); await renderOwnerModule(p,'products');
+    }));
+    $('ownerSavePricing')?.addEventListener('click',async()=>{
+      const prices=String($('ownerPriceChoices')?.value||'').split(',').map(x=>Number(x.trim())).filter(x=>Number.isFinite(x)&&x>=0);
+      if(!prices.length){alert('Enter at least one valid price.');return;}
+      const next={...config,prices}; await setSetting(`businessConfig:${p.id}`,next); logActivity(p.id,'Owner updated pricing',prices.join(', '));
+      if($('ownerPricingStatus'))$('ownerPricingStatus').textContent='Pricing saved.';
+    });
+    $('ownerSaveBranding')?.addEventListener('click',async()=>{
+      const name=String($('ownerBrandName')?.value||'').trim(),subtitle=String($('ownerBrandSubtitle')?.value||'').trim();
+      if(!name){alert('Business name is required.');return;}
+      p.branding=p.branding||{}; p.branding.businessName=name; p.branding.subtitle=subtitle; await saveCompanies(); logActivity(p.id,'Owner updated branding',name);
+      if($('ownerBrandingStatus'))$('ownerBrandingStatus').textContent='Branding saved.';
+    });
+    $('ownerCreateDeployment')?.addEventListener('click',async()=>{
+      const name=prompt(moduleKey==='kiosks'?'Kiosk name':'Location / device name'); if(!name?.trim())return;
+      const fresh={id:deploymentIdFor(p),name:name.trim(),profile:'kiosk_self_service',state:'draft',manifestVersion:1,idleMinutes:3,resetAfterComplete:true,purgeSession:true,showStartOver:true,resumeAfterReload:false,deviceLockVerified:false,capabilityScope:'project_default',attractTitle:'Ready when you are.',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),lastCheckIn:null};
+      migrateLegacyDeployment(p).push(fresh); await saveCompanies(); logActivity(p.id,'Owner added location/device',fresh.name); await renderOwnerModule(p,moduleKey);
+    });
+    $$('[data-owner-deploy-toggle]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const d=migrateLegacyDeployment(p).find(x=>x.id===btn.dataset.ownerDeployToggle); if(!d)return;
+      d.state=d.state==='paused'?'draft':'paused'; d.updatedAt=new Date().toISOString(); await saveCompanies(); logActivity(p.id,'Owner changed deployment state',d.name); await renderOwnerModule(p,moduleKey);
+    }));
+    $('ownerAddStaff')?.addEventListener('click',async()=>{
+      const name=prompt('Staff member name'); if(!name?.trim())return;
+      const email=prompt('Staff member email (optional)','')||'',role=prompt('Role','Staff')||'Staff';
+      p.ownerAccess.staff=p.ownerAccess.staff||[]; p.ownerAccess.staff.push({id:'STF-'+Date.now().toString(36),name:name.trim(),email:email.trim(),role:role.trim()||'Staff'});
+      await saveCompanies(); logActivity(p.id,'Owner added staff member',name.trim()); await renderOwnerModule(p,'staff');
+    });
+    $$('[data-owner-staff-remove]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const member=(p.ownerAccess.staff||[]).find(x=>x.id===btn.dataset.ownerStaffRemove); if(!member)return;
+      if(!confirm(`Remove ${member.name} from the staff list?`))return;
+      p.ownerAccess.staff=(p.ownerAccess.staff||[]).filter(x=>x.id!==member.id); await saveCompanies(); logActivity(p.id,'Owner removed staff member',member.name); await renderOwnerModule(p,'staff');
+    }));
+    $('ownerSaveNotifications')?.addEventListener('click',async()=>{
+      p.notifications=p.notifications||{}; p.notifications.customerConfirmationEmail=!!$('ownerConfirmationEmail')?.checked;
+      await saveCompanies(); logActivity(p.id,'Owner updated notifications',p.notifications.customerConfirmationEmail?'enabled':'disabled');
+      if($('ownerNotificationStatus'))$('ownerNotificationStatus').textContent='Notification settings saved.';
+    });
+    $('ownerChangePassword')?.addEventListener('click',async()=>{
+      const current=$('ownerCurrentPassword')?.value||'',next=$('ownerNewPassword')?.value||'',confirmNext=$('ownerConfirmPassword')?.value||'';
+      if(!verifyOwnerCredential(p,p.ownerAccess.credential?.login||'',current)){ $('ownerSettingsStatus').textContent='Current password did not match.'; return; }
+      if(next!==confirmNext){ $('ownerSettingsStatus').textContent='New passwords do not match.'; return; }
+      const testMode=!!p.ownerAccess.credential?.testMode;
+      const result=await createOwnerCredential(p,p.ownerAccess.credential.login,next,{testMode});
+      if(!result.ok){$('ownerSettingsStatus').textContent=result.error;return;}
+      await saveCompanies(); logActivity(p.id,'Owner changed portal password',p.ownerAccess.credential.login); $('ownerSettingsStatus').textContent='Password changed.';
+    });
+  }
+
   async function openOwnerPortal(projectId,{preview=false}={}){
     const p=projectById(projectId);
     if(!p)return;
@@ -4160,7 +4513,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('ownerPortal')?.classList.remove('hidden');
 
     if($('ownerPortalBusiness')) $('ownerPortalBusiness').textContent=p.name;
-    if($('ownerPortalSubtitle')) $('ownerPortalSubtitle').textContent=preview?'ENGINE PREVIEW • PROJECT OWNER VIEW':`${p.ownerAccess.ownerName||'Project Owner'} • PROJECT OWNER`;
+    if($('ownerPortalSubtitle')) $('ownerPortalSubtitle').textContent=preview?'PREVIEW MODE':`${p.ownerAccess.ownerName||'Business Owner'} • OWNER`;
     $('ownerPortalPreviewBadge')?.classList.toggle('hidden',!preview);
     $('ownerPortalClosePreview')?.classList.toggle('hidden',!preview);
     $('ownerPortalSignOut')?.classList.toggle('hidden',preview);
@@ -4169,7 +4522,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if(!body)return;
 
     if(platformStatus(p)!=='approved'){
-      body.innerHTML=`<div class="owner-portal-blocked"><small>PLATFORM RELATIONSHIP</small><h2>${escapeHtml(platformStatusLabel(p))}</h2><p>Owner operations are unavailable while this business relationship is inactive. Business records remain preserved.</p></div>`;
+      body.innerHTML=`<div class="owner-portal-blocked"><small>BUSINESS PORTAL STATUS</small><h2>${escapeHtml(platformStatusLabel(p))}</h2><p>Your business portal is not currently available. Your saved business information remains preserved.</p></div>`;
       return;
     }
 
@@ -4178,29 +4531,30 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const kioskCount=metrics.deployments.filter(d=>d.profile==='kiosk_self_service').length;
     const modules=[
       ['orders','Orders',`${metrics.orders.length} recorded order${metrics.orders.length===1?'':'s'}`],
-      ['customers','Customers',`${metrics.customers.length} retained customer${metrics.customers.length===1?'':'s'}`],
+      ['customers','Customers',`${metrics.customers.length} customer${metrics.customers.length===1?'':'s'}`],
       ['products','Products',`${(p.products||[]).length} product${(p.products||[]).length===1?'':'s'}`],
-      ['pricing','Pricing','Project pricing controls'],
-      ['branding','Branding','Customer-facing business identity'],
-      ['kiosks','Kiosks',`${kioskCount} kiosk deployment${kioskCount===1?'':'s'}`],
-      ['deployments','Deployments',`${metrics.deployments.length} registered deployment${metrics.deployments.length===1?'':'s'}`],
-      ['staff','Staff','Owner-managed team access'],
-      ['reporting','Reporting','Business performance'],
-      ['notifications','Notifications','Business communications']
+      ['pricing','Pricing','Manage customer price choices'],
+      ['branding','Branding','Manage your business identity'],
+      ['kiosks','Kiosks',`${kioskCount} kiosk${kioskCount===1?'':'s'}`],
+      ['deployments','Locations & Devices',`${metrics.deployments.length} configured`],
+      ['staff','Staff','Manage your team'],
+      ['reporting','Reporting','Review business activity'],
+      ['notifications','Notifications','Manage customer notifications']
     ].filter(([key])=>caps.has(key));
+    modules.push(['settings','Settings','Manage your login and password']);
 
     body.innerHTML=`<section class="owner-portal-overview">
-        <div><small>BUSINESS PORTAL</small><h2>Welcome, ${escapeHtml(p.ownerAccess.ownerName||'Owner')}</h2><p>This portal is isolated to <strong>${escapeHtml(p.name)}</strong>. Other businesses and Black Flag controls are not exposed.</p></div>
-        <div class="owner-portal-status"><span>PLATFORM</span><strong>${escapeHtml(platformStatusLabel(p))}</strong></div>
+        <div><small>${escapeHtml(p.name.toUpperCase())}</small><h2>Welcome, ${escapeHtml(p.ownerAccess.ownerName||'Business Owner')}</h2><p>Your business portal brings your approved tools, activity, and customer-facing operations together in one place.</p></div>
+        <div class="owner-portal-status"><span>BUSINESS STATUS</span><strong>${escapeHtml(platformStatusLabel(p))}</strong></div>
       </section>
       <div class="owner-portal-metrics">
         <article><span>ORDERS</span><strong>${metrics.orders.length}</strong></article>
         <article><span>CUSTOMERS</span><strong>${metrics.customers.length}</strong></article>
-        <article><span>DEPLOYMENTS</span><strong>${metrics.deployments.length}</strong></article>
-        <article><span>OWNER ACCESS</span><strong>${escapeHtml(String(p.ownerAccess.status||'not_claimed').toUpperCase())}</strong></article>
+        <article><span>LOCATIONS / DEVICES</span><strong>${metrics.deployments.length}</strong></article>
+        <article><span>PORTAL STATUS</span><strong>${escapeHtml(String(p.ownerAccess.status||'not_claimed').toUpperCase())}</strong></article>
       </div>
-      <section class="owner-portal-modules">${modules.map(([key,title,desc])=>`<article data-owner-module="${key}"><div><small>${key.toUpperCase()}</small><h3>${title}</h3><p>${desc}</p></div><span>AVAILABLE</span></article>`).join('')}</section>
-      <section class="owner-portal-test-note"><strong>TEST FLIGHT</strong><p>This screen proves the project-scoped owner boundary. Cross-device owner authentication requires the future server-side identity service.</p></section>`;
+      <section class="owner-portal-modules">${modules.map(([key,title,desc])=>`<button type="button" data-owner-module="${key}"><div><small>${key.toUpperCase()}</small><h3>${title}</h3><p>${desc}</p></div><span>OPEN →</span></button>`).join('')}</section>`;
+    $$('[data-owner-module]').forEach(btn=>btn.addEventListener('click',()=>renderOwnerModule(p,btn.dataset.ownerModule)));
   }
 
   async function routeOwnerAccessFromHash(){
@@ -4221,33 +4575,53 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       if(!box)return;
 
       if(!validation.ok){
-        box.innerHTML=`<div class="owner-claim-error"><small>OWNER INVITATION</small><h2>Access unavailable</h2><p>${escapeHtml(validation.error)}</p><button id="ownerClaimExit" class="secondary-btn" type="button">CLOSE</button></div>`;
+        box.innerHTML=`<div class="owner-claim-error"><small>BUSINESS PORTAL INVITATION</small><h2>This invitation is unavailable</h2><p>${escapeHtml(validation.error)}</p><button id="ownerClaimExit" class="secondary-btn" type="button">CLOSE</button></div>`;
         $('ownerClaimExit')?.addEventListener('click',closeOwnerPortal);
         return;
       }
 
       const p=validation.project;
       box.innerHTML=`<div class="owner-claim-card">
-        <small>PROJECT OWNER INVITATION</small>
+        <small>WELCOME TO YOUR BUSINESS PORTAL</small>
         <h2>${escapeHtml(p.name)}</h2>
-        <p>This invitation is for <strong>${escapeHtml(p.ownerAccess.ownerName||'the project owner')}</strong> and grants access only to this business.</p>
+        <p class="owner-claim-welcome">Welcome, <strong>${escapeHtml(p.ownerAccess.ownerName||'Business Owner')}</strong>. We are excited to have the opportunity to work with you and support your business.</p>
+        <p class="owner-claim-intro">Please review the invitation details below and accept when you are ready to open your business portal.</p>
         <div class="owner-claim-facts">
-          <span><b>OWNER</b>${escapeHtml(p.ownerAccess.ownerName||'—')}</span>
+          <span><b>BUSINESS OWNER</b>${escapeHtml(p.ownerAccess.ownerName||'—')}</span>
           <span><b>EMAIL</b>${escapeHtml(p.ownerAccess.ownerEmail||'—')}</span>
-          <span><b>EXPIRES</b>${new Date(p.ownerAccess.invitation.expiresAt).toLocaleString()}</span>
+          <span><b>INVITATION VALID UNTIL</b>${new Date(p.ownerAccess.invitation.expiresAt).toLocaleString()}</span>
         </div>
-        <p class="owner-claim-boundary">Claiming this invitation does not grant Black Flag, Engine Room, Captain, or other-project access.</p>
-        <button id="ownerClaimAccept" class="primary-btn" type="button">CLAIM OWNER ACCESS</button>
-        <button id="ownerClaimCancel" class="secondary-btn" type="button">CANCEL</button>
+        <p class="owner-claim-partner-note">Your portal is designed to give you a clear, simple place to manage the parts of your business that have been prepared for you.</p>
+        <div class="owner-password-setup">
+          <h3>Create Your Login</h3>
+          <p>For this test build, use the temporary login below. Before production, this becomes the owner's valid email address with a stronger password.</p>
+          <label>Email or login<input id="ownerClaimLogin" type="text" value="joe" autocomplete="username"></label>
+          <label>Password<input id="ownerClaimPassword" type="password" value="4353" autocomplete="new-password"></label>
+          <p class="owner-test-login-note">Test credentials: <strong>joe</strong> / <strong>4353</strong></p>
+          <p id="ownerClaimPasswordError" class="owner-login-error"></p>
+        </div>
+        <button id="ownerClaimAccept" class="primary-btn" type="button">ACCEPT & OPEN MY BUSINESS PORTAL</button>
+        <button id="ownerClaimCancel" class="secondary-btn" type="button">NOT NOW</button>
       </div>`;
 
       $('ownerClaimAccept')?.addEventListener('click',async()=>{
-        const result=await claimOwnerAccess(projectId,token);
-        if(!result.ok){alert(result.error);return;}
+        const login=$('ownerClaimLogin')?.value||'';
+        const password=$('ownerClaimPassword')?.value||'';
+        const result=await claimOwnerAccess(projectId,token,login,password,{testMode:true});
+        if(!result.ok){
+          if($('ownerClaimPasswordError'))$('ownerClaimPasswordError').textContent=result.error;
+          return;
+        }
         history.replaceState(null,'',location.pathname+location.search+'#owner-portal');
         await openOwnerPortal(projectId);
       });
       $('ownerClaimCancel')?.addEventListener('click',closeOwnerPortal);
+      return;
+    }
+
+    if(hash.startsWith('#owner-login=')){
+      const projectId=decodeURIComponent(hash.slice('#owner-login='.length));
+      await showOwnerLogin(projectId);
       return;
     }
 
@@ -4579,6 +4953,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     await loadFeatureSettings();
     await loadBusinessConfig();
     await loadCompanies();
+    await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
     const recovered=recoverDraft();

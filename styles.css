@@ -5215,6 +5215,71 @@ body.business-engine-mode .flowers-shell{
 
 
 /* ---------- Project Owner Access — professional control surface ---------- */
+
+.owner-saved-banner{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 13px;
+  padding:10px 11px;
+  border:1px solid #3f6b51;
+  border-radius:7px;
+  background:#0c1a12;
+}
+.owner-saved-banner>span{
+  display:grid;
+  place-items:center;
+  width:24px;height:24px;
+  border-radius:50%;
+  background:#315f42;
+  color:#d9f0e0;
+  font:900 13px Arial,sans-serif;
+}
+.owner-saved-banner>div{display:grid;gap:2px}
+.owner-saved-banner strong{
+  color:#a8d2b4!important;
+  font:900 8px Arial,sans-serif!important;
+  letter-spacing:.06em;
+}
+.owner-saved-banner small{
+  color:#7f9b87!important;
+  font:500 8px Arial,sans-serif!important;
+}
+.owner-identity-card.owner-identity-saved input[readonly]{
+  cursor:default!important;
+  color:#bdc9c5!important;
+  background:#0a1114!important;
+  border-color:#31434a!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);
+}
+.owner-identity-card.owner-identity-saved label{
+  color:#879793!important;
+}
+.owner-identity-card.editing{
+  border-color:#547b89!important;
+  box-shadow:0 0 0 1px rgba(100,151,170,.18),0 8px 22px rgba(0,0,0,.18)!important;
+}
+.owner-identity-card.editing input{
+  color:#f0f5f2!important;
+  background:#081216!important;
+  border-color:#5d8190!important;
+}
+.owner-identity-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:10px;
+}
+.owner-identity-actions .secondary-btn{
+  min-height:40px!important;
+  padding:9px 14px!important;
+  border-radius:7px!important;
+  background:#e7ece9!important;
+  border-color:#e7ece9!important;
+  color:#283a41!important;
+  font:900 8px Arial,sans-serif!important;
+}
+
 .owner-access-shell{
   --oa-bg:#0b1317;
   --oa-panel:#111c21;
@@ -5539,32 +5604,178 @@ body.business-engine-mode .flowers-shell{
 }
 
 body.owner-portal-open{overflow:hidden!important}
-.owner-claim-gate,.owner-portal{position:fixed;inset:0;z-index:130000;background:#071014;color:#eaf0ed}
-.owner-claim-gate{display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 20%,#17303a,#071014 68%)}
-.owner-claim-gate.hidden,.owner-portal.hidden{display:none!important}
-.owner-claim-content{width:min(620px,94vw)}
-.owner-claim-card,.owner-claim-error{padding:28px;border:1px solid #52646b;border-radius:14px;background:#0e1a1f;box-shadow:0 28px 80px #0009}
-.owner-claim-card>small,.owner-claim-error>small{color:#8fb2be;font-size:8px;font-weight:900;letter-spacing:.14em}
-.owner-claim-card h2,.owner-claim-error h2{margin:5px 0;color:#f2f5f3;font:900 28px Arial,sans-serif}
-.owner-claim-card p,.owner-claim-error p{color:#aebbb7;line-height:1.5}
-.owner-claim-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:15px 0}
-.owner-claim-facts span{display:grid;gap:3px;padding:9px;border:1px solid #405158;border-radius:7px;background:#091316;color:#dce5e1;font-size:8px}
-.owner-claim-facts b{color:#83938f;font-size:6px;letter-spacing:.09em}
-.owner-claim-boundary{padding:9px;border-left:3px solid #5d8390;background:#0b171b}
-.owner-claim-card button,.owner-claim-error button{margin-right:6px}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Owner invitation — welcoming, readable business-partner experience */
+.owner-claim-gate{
+  position:fixed;
+  inset:0;
+  z-index:130000;
+  display:grid;
+  place-items:center;
+  box-sizing:border-box;
+  padding:clamp(18px,4vw,52px);
+  overflow:auto;
+  color:#eef4f1;
+  background:
+    radial-gradient(circle at 50% 15%,#173641 0%,#0b1b21 34%,#061014 72%);
+}
+.owner-claim-gate.hidden{display:none!important}
+.owner-claim-content{
+  width:min(760px,100%);
+  margin:auto;
+}
+.owner-claim-card,
+.owner-claim-error{
+  box-sizing:border-box;
+  width:100%;
+  padding:clamp(28px,5vw,48px);
+  border:1px solid #59717a;
+  border-radius:18px;
+  background:linear-gradient(160deg,#102027 0%,#0d191e 100%);
+  box-shadow:0 30px 90px rgba(0,0,0,.48);
+}
+.owner-claim-card>small,
+.owner-claim-error>small{
+  display:block;
+  margin-bottom:12px;
+  color:#9fc5d1;
+  font:900 clamp(11px,1.4vw,14px)/1.2 Arial,sans-serif;
+  letter-spacing:.13em;
+}
+.owner-claim-card h2,
+.owner-claim-error h2{
+  margin:0 0 20px;
+  color:#f5f8f6;
+  font:800 clamp(32px,5vw,48px)/1.02 Arial,sans-serif;
+  letter-spacing:-.035em;
+}
+.owner-claim-card p,
+.owner-claim-error p{
+  margin:0;
+  color:#becbc7;
+  font:500 clamp(16px,2vw,20px)/1.55 Arial,sans-serif;
+}
+.owner-claim-card .owner-claim-welcome{
+  margin-bottom:10px;
+  color:#d9e3df;
+}
+.owner-claim-card .owner-claim-intro{
+  margin-bottom:24px;
+  color:#aab9b5;
+}
+.owner-claim-facts{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:0 0 22px;
+}
+.owner-claim-facts span{
+  display:grid;
+  gap:6px;
+  min-width:0;
+  padding:14px 15px;
+  border:1px solid #405b64;
+  border-radius:10px;
+  background:#09151a;
+  color:#e5eeea;
+  font:600 clamp(14px,1.7vw,17px)/1.35 Arial,sans-serif;
+  overflow-wrap:anywhere;
+}
+.owner-claim-facts span:last-child{
+  grid-column:1 / -1;
+}
+.owner-claim-facts b{
+  color:#8ea6a0;
+  font:900 clamp(9px,1.1vw,11px)/1.2 Arial,sans-serif;
+  letter-spacing:.09em;
+}
+.owner-claim-partner-note{
+  margin:0 0 24px!important;
+  padding:16px 18px;
+  border-left:4px solid #6ca1b3;
+  border-radius:0 8px 8px 0;
+  background:#0b171c;
+  color:#b9c8c4!important;
+}
+.owner-claim-card button,
+.owner-claim-error button{
+  width:100%;
+  min-height:58px;
+  margin:0 0 10px!important;
+  padding:14px 18px!important;
+  border-radius:11px!important;
+  font:900 clamp(15px,2vw,18px)/1.15 Arial,sans-serif!important;
+  letter-spacing:.01em;
+}
+.owner-claim-card .primary-btn{
+  background:#247fa8!important;
+  border-color:#4c9fc0!important;
+  color:#fff!important;
+}
+.owner-claim-card .secondary-btn,
+.owner-claim-error .secondary-btn{
+  background:#e7ecea!important;
+  border-color:#e7ecea!important;
+  color:#23353c!important;
+}
+@media(max-width:640px){
+  .owner-claim-gate{
+    place-items:start center;
+    padding:16px;
+  }
+  .owner-claim-content{
+    margin:auto 0;
+  }
+  .owner-claim-card,
+  .owner-claim-error{
+    padding:24px 20px;
+    border-radius:14px;
+  }
+  .owner-claim-facts{
+    grid-template-columns:1fr;
+  }
+  .owner-claim-facts span:last-child{
+    grid-column:auto;
+  }
+}
+@media(max-width:420px){
+  .owner-claim-gate{padding:12px}
+  .owner-claim-card,
+  .owner-claim-error{padding:22px 17px}
+  .owner-claim-card h2,
+  .owner-claim-error h2{font-size:30px}
+  .owner-claim-card p,
+  .owner-claim-error p{font-size:16px}
+  .owner-claim-card button,
+  .owner-claim-error button{min-height:56px;font-size:16px!important}
+}
 
 .owner-portal{overflow:auto;background:#081014}
 .owner-portal-header{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:17px 22px;border-bottom:1px solid #415159;background:#0c171c}
-.owner-portal-header small{color:#85aab7;font-size:7px;font-weight:900;letter-spacing:.13em}
-.owner-portal-header h1{margin:3px 0;color:#f0f4f2;font:800 27px Arial,sans-serif}
-.owner-portal-header p{margin:0;color:#84938f;font-size:8px}
+.owner-portal-header small{color:#85aab7;font-size:11px;font-weight:900;letter-spacing:.13em}
+.owner-portal-header h1{margin:4px 0;color:#f0f4f2;font:800 clamp(26px,3vw,38px) Arial,sans-serif}
+.owner-portal-header p{margin:0;color:#9caaa6;font-size:12px}
 .owner-portal-header-actions{display:flex;gap:6px;align-items:center}
 .owner-preview-badge{padding:6px 8px;border:1px solid #9b7d44;border-radius:5px;background:#241d12;color:#e2c174;font-size:7px;font-weight:900}
 .owner-portal-body{width:min(1180px,95vw);margin:0 auto;padding:22px}
 .owner-portal-overview{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:18px;border:1px solid #42545b;border-radius:9px;background:linear-gradient(110deg,#101d22,#12272e)}
 .owner-portal-overview small{color:#85aab7;font-size:7px;font-weight:900;letter-spacing:.12em}
 .owner-portal-overview h2{margin:4px 0;color:#f0f4f2;font:800 25px Arial,sans-serif}
-.owner-portal-overview p{margin:0;color:#abb7b3}
+.owner-portal-overview p{margin:0;color:#b8c4c0;font-size:15px;line-height:1.5}
 .owner-portal-status{display:grid;gap:3px;min-width:125px;padding:10px;border:1px solid #436654;border-radius:7px;background:#0b1811;text-align:center}
 .owner-portal-status span{color:#789284;font-size:7px;font-weight:900}
 .owner-portal-status strong{color:#9ed0ad!important}
@@ -5576,7 +5787,7 @@ body.owner-portal-open{overflow:hidden!important}
 .owner-portal-modules article{display:flex;justify-content:space-between;gap:12px;min-height:115px;padding:14px;border:1px solid #405158;border-radius:8px;background:#111b20}
 .owner-portal-modules small{color:#769eab;font-size:6px;font-weight:900;letter-spacing:.11em}
 .owner-portal-modules h3{margin:3px 0;color:#edf2ef;font:800 15px Arial,sans-serif}
-.owner-portal-modules p{margin:0;color:#94a29e;font-size:8px}
+.owner-portal-modules p{margin:0;color:#9eaca8;font-size:12px;line-height:1.4}
 .owner-portal-modules>article>span{align-self:flex-start;padding:4px 6px;border:1px solid #3f6c52;border-radius:4px;background:#0c1811;color:#8dc09c;font-size:6px;font-weight:900}
 .owner-portal-test-note{margin-top:13px;padding:11px;border:1px solid #48616b;border-radius:7px;background:#0c181d}
 .owner-portal-test-note strong{color:#88b3c3}
@@ -5594,14 +5805,85 @@ body.owner-portal-open{overflow:hidden!important}
   .owner-access-hero{align-items:flex-start;flex-direction:column}
   .owner-access-state{width:100%;grid-template-columns:1fr 1fr;flex-basis:auto}
   .owner-capability-grid{grid-template-columns:1fr}
-  .owner-claim-facts,.owner-portal-metrics{grid-template-columns:1fr 1fr}
+   .owner-portal-metrics{grid-template-columns:1fr 1fr}
   .owner-portal-header,.owner-portal-overview{align-items:flex-start;flex-direction:column}
   .owner-portal-header-actions{flex-wrap:wrap}
 }
 @media(max-width:480px){
-  .owner-claim-facts,.owner-portal-metrics{grid-template-columns:1fr}
+   .owner-portal-metrics{grid-template-columns:1fr}
 }
 
+
+
+/* ---------- Owner login + live business tools ---------- */
+.owner-login-card{
+  width:min(620px,100%);box-sizing:border-box;padding:clamp(28px,5vw,46px);
+  border:1px solid #59717a;border-radius:18px;background:linear-gradient(160deg,#102027,#0d191e);
+  box-shadow:0 30px 90px rgba(0,0,0,.48)
+}
+.owner-login-card>small{color:#9fc5d1;font:900 12px Arial,sans-serif;letter-spacing:.13em}
+.owner-login-card h2{margin:8px 0 12px;color:#f5f8f6;font:800 clamp(32px,5vw,46px) Arial,sans-serif}
+.owner-login-card p{color:#b9c6c2;font-size:16px;line-height:1.5}
+.owner-login-card label,.owner-password-setup label,.owner-form-card label{display:grid;gap:7px;margin:14px 0;color:#aebbb7;font-weight:800;font-size:13px}
+.owner-login-card input,.owner-password-setup input,.owner-form-card input,.owner-module-workspace select{
+  min-height:50px;box-sizing:border-box;width:100%;padding:11px 13px;border:1px solid #4b626b;border-radius:9px;background:#081216;color:#edf3f0;font-size:16px
+}
+.owner-login-card .primary-btn{width:100%;min-height:58px;margin-top:10px;font-size:17px}
+.owner-login-error{min-height:22px;color:#e5a09a!important;font-size:13px!important}
+.owner-login-message,.owner-test-login-note{
+  padding:10px 12px;border:1px solid #48636d;border-radius:8px;background:#0a171c;color:#a8c0c8!important;font-size:13px!important
+}
+.owner-password-setup{margin:20px 0;padding:18px;border:1px solid #405761;border-radius:10px;background:#0a161b}
+.owner-password-setup h3{margin:0 0 5px;color:#eef4f1;font-size:20px}
+.owner-password-setup p{font-size:14px!important}
+
+.owner-portal-modules button{
+  appearance:none;text-align:left;display:flex;justify-content:space-between;gap:12px;min-height:135px;padding:18px;
+  border:1px solid #405158;border-radius:10px;background:#111b20;color:inherit;cursor:pointer
+}
+.owner-portal-modules button:active{transform:translateY(1px)}
+.owner-portal-modules button small{color:#79a0ad;font-size:10px;font-weight:900;letter-spacing:.11em}
+.owner-portal-modules button h3{margin:6px 0;color:#edf2ef;font:800 20px Arial,sans-serif}
+.owner-portal-modules button p{margin:0;color:#9eaca8;font-size:14px;line-height:1.4}
+.owner-portal-modules button>span{align-self:flex-start;padding:6px 8px;border:1px solid #3f6c52;border-radius:5px;background:#0c1811;color:#8dc09c;font-size:9px;font-weight:900}
+
+.owner-module-workspace{display:grid;gap:14px}
+.owner-module-head{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px;border:1px solid #42545b;border-radius:10px;background:#101d22}
+.owner-module-head small{color:#85aab7;font-size:10px;font-weight:900;letter-spacing:.12em}
+.owner-module-head h2{margin:4px 0;color:#f0f4f2;font:800 clamp(26px,3vw,38px) Arial,sans-serif}
+.owner-module-head p{margin:0;color:#aab8b4;font-size:14px}
+.owner-module-body{display:grid;gap:12px}
+.owner-module-toolbar{display:flex;justify-content:flex-end}
+.owner-module-empty{padding:28px;border:1px dashed #405159;border-radius:10px;background:#0d171b;text-align:center}
+.owner-order-list,.owner-customer-list,.owner-product-list,.owner-deployment-list,.owner-staff-list{display:grid;gap:10px}
+.owner-order-card,.owner-customer-card,.owner-product-row,.owner-deployment-row,.owner-staff-row,.owner-form-card{
+  padding:16px;border:1px solid #3f5158;border-radius:10px;background:#101a1e
+}
+.owner-order-head,.owner-customer-card,.owner-deployment-row,.owner-staff-row,.owner-product-row{display:flex;justify-content:space-between;gap:14px;align-items:center}
+.owner-order-head small,.owner-customer-card small,.owner-product-row small,.owner-deployment-row small,.owner-staff-row small{color:#7ea4b0;font-size:9px;font-weight:900;letter-spacing:.09em}
+.owner-order-head h3,.owner-customer-card h3,.owner-product-row h3,.owner-deployment-row h3,.owner-staff-row h3{margin:4px 0;color:#eef3f0;font-size:19px}
+.owner-order-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:13px 0}
+.owner-order-grid span{display:grid;gap:4px;padding:9px;border:1px solid #34474e;border-radius:7px;background:#0b1418;color:#d4dfdb;font-size:12px}
+.owner-order-grid b{color:#7f918c;font-size:8px}
+.owner-customer-stats{display:flex;gap:8px}
+.owner-customer-stats span{display:grid;gap:3px;min-width:90px;padding:9px;border:1px solid #35474e;border-radius:7px;text-align:center}
+.owner-report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.owner-report-grid article{padding:20px;border:1px solid #405159;border-radius:10px;background:#101a1e;text-align:center}
+.owner-report-grid span{display:block;color:#81938e;font-size:10px;font-weight:900;letter-spacing:.08em}
+.owner-report-grid strong{display:block;margin-top:6px;color:#e9f0ed;font-size:28px}
+.owner-toggle-row{display:flex!important;justify-content:space-between;align-items:center;gap:20px}
+.owner-toggle-row input{width:24px!important;min-height:24px!important}
+.owner-save-status{min-height:20px;color:#99c6a7!important}
+@media(max-width:760px){
+  .owner-module-head{align-items:flex-start;flex-direction:column}
+  .owner-order-head,.owner-customer-card,.owner-product-row,.owner-deployment-row,.owner-staff-row{align-items:flex-start;flex-direction:column}
+  .owner-order-grid{grid-template-columns:1fr 1fr}
+  .owner-report-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .owner-order-grid,.owner-report-grid{grid-template-columns:1fr}
+  .owner-portal-modules button{min-height:120px}
+}
 
 /* ==========================================================
    CAPTAIN COMMAND — authoritative command workspace layer
