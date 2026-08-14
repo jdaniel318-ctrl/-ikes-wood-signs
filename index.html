@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=3.4.0" />
+  <link rel="stylesheet" href="styles.css?v=3.5.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -47,7 +47,7 @@
   </div>
 
   
-    <button id="returnToEngineBtn" class="project-engine-return hidden">ENGINE</button>
+    <button id="returnToEngineBtn" class="project-engine-return hidden black-flag-project-engine-return" aria-label="Open Black Flag Engine" title="Black Flag Engine"><img src="assets/black_flag_mark_clean.png" alt=""><span class="sr-only">Black Flag Engine</span></button>
 
   
   <!-- v2.9.40 Captain's Quarters: isolated Captain-only creative chamber -->
@@ -798,7 +798,7 @@
       
       <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Black Flag v3 structural status">
         <header class="v3-architecture-head">
-          <div><small>BLACK FLAG PLATFORM</small><h3>V3 STRUCTURAL STATUS</h3><p>One platform architecture beneath every project and command surface.</p></div>
+          <div><div class="black-flag-section-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><h3>V3 STRUCTURAL STATUS</h3><p>One platform architecture beneath every project and command surface.</p></div>
           <span id="v3SchemaBadge">SCHEMA 3</span>
         </header>
         <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
@@ -807,7 +807,7 @@
       <section id="firstMateWatch" class="first-mate-watch" aria-label="First Mate Watch">
         <header>
           <div class="first-mate-mark" aria-hidden="true">FM</div>
-          <div><small>FIRST MATE'S WATCH</small><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
+          <div><div class="black-flag-section-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG WATCH</span></div><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
           <button id="firstMateRefreshBtn" class="secondary-btn first-mate-refresh-btn" type="button">RUN WATCH</button>
         </header>
         <div id="firstMateWatchItems" class="first-mate-watch-items"></div>
@@ -816,7 +816,7 @@
 <section id="engineProjectsSection" class="project-command-section modern-project-command">
         <div class="modern-project-command-head">
           <div>
-            <div class="engine-kicker">PROJECT COMMAND</div>
+            <div class="black-flag-section-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="engine-kicker">PROJECT COMMAND</div>
             <h3>PROJECTS</h3>
             <p id="engineProjectsHelp">Open a project to manage its controls. Project data remains isolated.</p>
             <div id="projectSummaryBadge" class="project-summary-badge"></div>
@@ -1083,7 +1083,7 @@
 
   <script src="platform_core.js?v=3.0.0"></script>
   <script src="platform_identity.js?v=3.0.0"></script>
-  <script src="app.js?v=3.4.0"></script>
+  <script src="app.js?v=3.5.0"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -1109,7 +1109,7 @@
 
 
 
-  <script src="captain.js?v=3.4.0"></script>
+  <script src="captain.js?v=3.5.0"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">
@@ -1133,7 +1133,7 @@
   <div class="commissioning-shell">
     <header class="commissioning-head">
       <div>
-        <div class="eyebrow">PROJECT COMMISSIONING</div>
+        <div class="black-flag-section-cue commissioning-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="eyebrow">PROJECT COMMISSIONING</div>
         <h1>Commission New Project</h1>
         <p>Create a sealed business namespace and prepare it for private Sea Trial.</p>
       </div>

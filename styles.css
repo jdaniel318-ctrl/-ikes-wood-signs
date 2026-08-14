@@ -8297,3 +8297,82 @@ body.dark-flag-pirate-mode .engine-config-brandline>img{filter:drop-shadow(0 0 1
  .black-flag-engine-brand>img{width:38px;height:38px}
  #closeProjectEngineControl.black-flag-back-mark{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important}
 }
+
+/* ==========================================================
+   v3.5 — BLACK FLAG BRAND SYSTEM
+   Platform-wide brand layer; project functionality unchanged.
+   ========================================================== */
+
+/* Shared platform cue */
+.black-flag-section-cue{
+  display:flex;align-items:center;gap:7px;margin-bottom:5px;
+  color:#7fa0aa;font:900 7px Arial,sans-serif;letter-spacing:.10em;
+}
+.black-flag-section-cue img{
+  width:20px;height:20px;object-fit:contain;border-radius:50%;
+  padding:2px;background:#edf1ef;flex:0 0 auto;
+}
+.commissioning-cue{margin-bottom:8px}
+
+/* Project customer/admin shell: Black Flag mark replaces floating ENGINE word pill.
+   Existing button IDs, event listeners, and access gates are preserved. */
+.black-flag-project-engine-return{
+  width:44px!important;height:44px!important;
+  min-width:44px!important;min-height:44px!important;
+  max-width:44px!important;max-height:44px!important;
+  padding:4px!important;border-radius:50%!important;
+  border:1px solid rgba(89,122,132,.72)!important;
+  background:#eef2f1!important;
+  display:grid!important;place-items:center!important;
+  box-shadow:0 5px 16px rgba(0,0,0,.22)!important;
+  overflow:hidden!important;cursor:pointer!important;
+  transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease!important;
+}
+.black-flag-project-engine-return img{
+  display:block!important;width:100%!important;height:100%!important;
+  object-fit:contain!important;border-radius:50%!important;
+}
+.black-flag-project-engine-return:hover{
+  transform:translateY(-1px);
+  border-color:#6aa4b4!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.28)!important;
+}
+.black-flag-project-engine-return:focus-visible{
+  outline:2px solid #5eb5d2!important;outline-offset:3px!important;
+}
+
+/* Engine-owned panels receive a restrained platform signature.
+   Project cards and business customer shells remain project branded. */
+#enginePanel .engine-performance-card,
+#enginePanel .v3-architecture-deck,
+#enginePanel .first-mate-watch,
+#enginePanel .modern-project-command,
+#engineConfigurationDock,
+#projectCommissioningWorkspace .commission-panel{
+  position:relative;
+}
+#enginePanel .v3-architecture-deck::after,
+#enginePanel .first-mate-watch::after,
+#enginePanel .modern-project-command::after{
+  content:"BLACK FLAG";
+  position:absolute;right:14px;bottom:9px;
+  color:rgba(111,154,166,.18);
+  font:900 7px Arial,sans-serif;letter-spacing:.16em;
+  pointer-events:none;
+}
+
+/* Keep project logos dominant in their own Control Centers.
+   Black Flag remains a small platform cue only. */
+#projectEngineControl .project-platform-cue img{
+  width:20px;height:20px;
+}
+
+/* Small-screen behavior */
+@media(max-width:720px){
+  .black-flag-project-engine-return{
+    width:40px!important;height:40px!important;
+    min-width:40px!important;min-height:40px!important;
+    max-width:40px!important;max-height:40px!important;
+  }
+  .black-flag-section-cue img{width:18px;height:18px}
+}
