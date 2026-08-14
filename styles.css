@@ -8151,3 +8151,36 @@ body.dark-flag-pirate-mode #engineConfigurationDock .engine-configuration-head{
   #projectCommandCards>.project-command-card{flex-basis:82vw!important}
   #engineProjectsSection .modern-project-tools{position:static}
 }
+
+/* ==========================================================
+   BLACK FLAG v3.2 — OWNER ACCESS + CUSTOMER DEVICE HARDENING
+   ========================================================== */
+.owner-device-guidance{
+  display:flex;gap:12px;align-items:center;margin:10px 0;padding:10px 12px;
+  border:1px solid #31515b;border-radius:8px;background:#0b1b21;color:#9eb0b4;font-size:9px
+}
+.owner-device-guidance strong{color:#e4ece9;white-space:nowrap}
+.owner-device-card{align-items:center}
+.owner-device-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.owner-device-meta span{
+  padding:4px 6px;border:1px solid #324d56;border-radius:5px;background:#091419;
+  color:#7f999f;font:800 7px Arial,sans-serif
+}
+.owner-device-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.owner-device-actions button{width:auto!important;min-height:32px!important;padding:7px 10px!important;font-size:8px!important}
+.danger-soft{border-color:#70413d!important;color:#d9958e!important;background:#211110!important}
+@media(max-width:720px){
+ .owner-device-guidance{align-items:flex-start;flex-direction:column}
+ .owner-device-actions{justify-content:flex-start}
+}
+
+/* v3.2.1 — customer-device trust presentation */
+.manifest-trust-strip{
+  display:flex;gap:6px;flex-wrap:wrap;margin:0 0 9px;padding:7px 8px;
+  border:1px solid #304b54;border-radius:7px;background:#081418
+}
+.manifest-trust-strip span{
+  padding:4px 6px;border:1px solid #38525b;border-radius:5px;background:#0d1b20;
+  color:#88a5ab;font:800 7px Arial,sans-serif;letter-spacing:.03em
+}
+.owner-device-meta span:last-child{border-color:#3d5f48;color:#8dc49b}

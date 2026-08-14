@@ -1,0 +1,17 @@
+BLACK FLAG ENGINE v3.2 — OWNER ACCESS + CUSTOMER DEVICE HARDENING
+
+Built on v3.1.
+
+Implemented:
+- Owner sessions now generate v3 audit events on start/end.
+- Deployment records now normalize to explicit project-bound device identities.
+- Device authorization is customer-session only, default-deny across projects, with no Engine or Owner authority.
+- Captain-created and Owner-created customer devices use the same shared deployment factory.
+- Owner Kiosk / Locations & Devices now shows readiness, device ID, last-seen state, and authorization state.
+- Owners can pause/resume or revoke their own project customer devices.
+- Revocation preserves deployment history while invalidating the device identity state.
+- Captain retirement of a deployment also revokes its device identity.
+- Existing project deployment fleet, commissioning, Sea Trial and device-lock readiness remain intact.
+
+SECURITY BOUNDARY:
+This hardens the browser-side architecture and test workflow. Real external owner login and enforceable device authorization still require a server-backed identity/session/authorization service before production rollout.

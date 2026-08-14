@@ -406,9 +406,14 @@
       startedAt:new Date().toISOString()
     };
     sessionStorage.setItem(OWNER_SESSION_KEY,JSON.stringify(session));
+    window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId,category:'session',action:'owner.session.started',detail:session.sessionId});
     return session;
   }
-  function clearOwnerSession(){ sessionStorage.removeItem(OWNER_SESSION_KEY); }
+  function clearOwnerSession(){
+    const s=ownerSession();
+    if(s)window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:s.projectId,category:'session',action:'owner.session.ended',detail:s.sessionId||''});
+    sessionStorage.removeItem(OWNER_SESSION_KEY);
+  }
 
   const OWNER_TEST_LOGIN={login:'joe',password:'4353'};
 
@@ -972,14 +977,18 @@
         source:'migrated_v2_9_46'
       });
     }
-    const namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
-    p.deployments=p.deployments.map(d=>{
-      d.projectId=p.id;
-      d.namespace=namespace;
-      d.authorization={...(d.authorization||{}),role:'device',projectId:p.id,namespace,scope:'customer_session',crossProjectAccess:'deny',policyVersion:'3.0',engineAccess:false,ownerAccess:false};
-      return d;
-    });
+    p.deployments=p.deployments.map(d=>normalizeDeploymentIdentity(p,d));
     return p.deployments;
+  }
+
+  function newProjectDeployment(p,name,profile='kiosk_self_service'){
+    const id=deploymentIdFor(p), namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
+    return normalizeDeploymentIdentity(p,{
+      id,name:name||'New Customer Device',profile,state:'draft',manifestVersion:1,idleMinutes:3,
+      resetAfterComplete:true,purgeSession:true,showStartOver:true,resumeAfterReload:false,
+      deviceLockVerified:false,capabilityScope:'project_default',attractTitle:'Ready when you are.',
+      projectId:p.id,namespace,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),lastCheckIn:null
+    });
   }
 
   function deploymentForEditor(p){
@@ -1024,6 +1033,35 @@
     });
   }
 
+  function deviceAuthorizationState(d){
+    if(d?.state==='retired'||d?.deviceIdentity?.status==='revoked')return 'revoked';
+    if(d?.state==='paused')return 'paused';
+    if(d?.state==='deployed')return 'active';
+    if(d?.state==='sea_trial')return 'testing';
+    return 'authorized';
+  }
+
+  function deviceStatusLabel(d){
+    const s=deviceAuthorizationState(d);
+    return ({revoked:'REVOKED',paused:'PAUSED',active:'ACTIVE',testing:'SEA TRIAL',authorized:'AUTHORIZED'})[s]||'AUTHORIZED';
+  }
+
+  function normalizeDeploymentIdentity(p,d){
+    const namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
+    d.projectId=p.id;
+    d.namespace=namespace;
+    d.authorization={...(d.authorization||{}),role:'device',projectId:p.id,namespace,scope:'customer_session',crossProjectAccess:'deny',policyVersion:'3.2.1',engineAccess:false,ownerAccess:false};
+    d.deviceIdentity=d.deviceIdentity&&typeof d.deviceIdentity==='object'?d.deviceIdentity:{
+      deviceId:'DEV-'+String(d.id||deploymentIdFor(p)).replace(/[^a-z0-9-]/gi,'').slice(-28),
+      projectId:p.id,namespace,issuedAt:d.createdAt||new Date().toISOString()
+    };
+    d.deviceIdentity.projectId=p.id;
+    d.deviceIdentity.namespace=namespace;
+    d.deviceIdentity.status=deviceAuthorizationState(d);
+    d.deviceIdentity.lastSeen=d.lastCheckIn||d.deviceIdentity.lastSeen||null;
+    return d;
+  }
+
   function deploymentStateClass(state){
     return ['deployed','sea_trial','paused','retired'].includes(state)?state:'draft';
   }
@@ -1048,6 +1086,7 @@
     const profile=DEPLOYMENT_PROFILES[d.profile]||DEPLOYMENT_PROFILES.kiosk_self_service;
     return `<div class="deployment-manifest">
       <div class="manifest-head"><span>DEPLOYMENT MANIFEST</span><strong>v${Number(d.manifestVersion||1)}</strong></div>
+      <div class="manifest-trust-strip"><span>DEVICE ${escapeHtml(d.deviceIdentity?.deviceId||'PENDING')}</span><span>${escapeHtml(deviceStatusLabel(d))}</span><span>PROJECT ONLY</span><span>NO ENGINE ACCESS</span></div>
       <div class="manifest-grid">
         <div><small>VESSEL</small><b>${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')} • ${escapeHtml(p.name)}</b></div>
         <div><small>OUTPOST</small><b>${escapeHtml(d.name)}</b></div>
@@ -1085,6 +1124,8 @@
             manifestVersion:Number(d.manifestVersion||1),
             readiness:ready.score,
             deviceLockVerified:!!d.deviceLockVerified,
+            authorizationState:deviceAuthorizationState(d),
+            deviceId:d.deviceIdentity?.deviceId||null,
             attentionReasons:reasons,
             lastCheckIn:d.lastCheckIn||null
           };
@@ -1718,24 +1759,7 @@
       if($('createDeploymentBtn')) $('createDeploymentBtn').onclick=async()=>{
         const name=prompt('Outpost name','New Outpost');
         if(!name)return;
-        const fresh={
-          id:deploymentIdFor(p),
-          name:name.trim()||'New Outpost',
-          profile:'kiosk_self_service',
-          state:'draft',
-          manifestVersion:1,
-          idleMinutes:3,
-          resetAfterComplete:true,
-          purgeSession:true,
-          showStartOver:true,
-          resumeAfterReload:false,
-          deviceLockVerified:false,
-          capabilityScope:'project_default',
-          attractTitle:'Ready when you are.',
-          createdAt:new Date().toISOString(),
-          updatedAt:new Date().toISOString(),
-          lastCheckIn:null
-        };
+        const fresh=newProjectDeployment(p,name.trim()||'New Outpost','kiosk_self_service');
         deployments.push(fresh);
         deploymentSelectionByProject.set(p.id,fresh.id);
         await saveCompanies();
@@ -1779,6 +1803,9 @@
         const prior=d.state;
         d.state=next;
         d.updatedAt=new Date().toISOString();
+        normalizeDeploymentIdentity(p,d);
+        if(next==='retired')d.deviceIdentity.revokedAt=d.updatedAt;
+        else if(d.deviceIdentity)delete d.deviceIdentity.revokedAt;
         d.manifestVersion=Number(d.manifestVersion||1)+1;
         await saveCompanies();
         logActivity(p.id,'Deployment lifecycle changed',`${d.name}: ${prior} → ${next}`);
@@ -4694,8 +4721,17 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       const kiosks=moduleKey==='kiosks';
       const list=kiosks?deployments.filter(d=>d.profile==='kiosk_self_service'):deployments;
       body.innerHTML=ownerModuleShell(kiosks?'Kiosks':'Locations & Devices',kiosks?'Create and manage self-service kiosk locations.':'Manage the locations and devices serving your customers.',
-        `<div class="owner-module-toolbar"><button id="ownerCreateDeployment" class="primary-btn" type="button">+ ADD ${kiosks?'KIOSK':'LOCATION / DEVICE'}</button></div><div class="owner-deployment-list">${list.length?list.map(d=>`
-          <article class="owner-deployment-row"><div><small>${escapeHtml((DEPLOYMENT_PROFILES[d.profile]?.label||d.profile).toUpperCase())}</small><h3>${escapeHtml(d.name)}</h3><p>${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)}</p></div><button data-owner-deploy-toggle="${escapeHtml(d.id)}" class="secondary-btn" type="button">${d.state==='paused'?'RESUME':'PAUSE'}</button></article>`).join(''):'<div class="owner-module-empty"><h3>None yet</h3><p>Add one when you are ready.</p></div>'}</div>`);
+        `<div class="owner-module-toolbar"><button id="ownerCreateDeployment" class="primary-btn" type="button">+ ADD ${kiosks?'KIOSK':'LOCATION / DEVICE'}</button></div>
+        <div class="owner-device-guidance"><strong>Customer Device Access</strong><span>Devices are authorized only for ${escapeHtml(p.name)} customer service. Engine, Captain, and other-project access are not included.</span></div>
+        <div class="owner-deployment-list">${list.length?list.map(d=>{
+          const ready=deploymentReadiness(d),device=d.deviceIdentity||{};
+          return `<article class="owner-deployment-row owner-device-card">
+            <div><small>${escapeHtml((DEPLOYMENT_PROFILES[d.profile]?.label||d.profile).toUpperCase())}</small><h3>${escapeHtml(d.name)}</h3>
+            <p>${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)} • Readiness ${ready.score}%</p>
+            <div class="owner-device-meta"><span>DEVICE ${escapeHtml(device.deviceId||'PENDING')}</span><span>${device.lastSeen?'LAST SEEN '+escapeHtml(new Date(device.lastSeen).toLocaleString()):'NOT CHECKED IN'}</span><span>${escapeHtml(deviceStatusLabel(d))}</span><span>PROJECT ONLY</span></div></div>
+            <div class="owner-device-actions"><button data-owner-deploy-toggle="${escapeHtml(d.id)}" class="secondary-btn" type="button">${d.state==='paused'?'RESUME':'PAUSE'}</button><button data-owner-device-revoke="${escapeHtml(d.id)}" class="secondary-btn danger-soft" type="button">REVOKE DEVICE</button></div>
+          </article>`;
+        }).join(''):'<div class="owner-module-empty"><h3>None yet</h3><p>Add a customer device when you are ready to serve customers from another location.</p></div>'}</div>`);
     } else if(moduleKey==='staff'){
       const staff=Array.isArray(p.ownerAccess.staff)?p.ownerAccess.staff:[];
       body.innerHTML=ownerModuleShell('Staff','Manage the people who help operate your business.',
@@ -4753,12 +4789,30 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     });
     $('ownerCreateDeployment')?.addEventListener('click',async()=>{
       const name=prompt(moduleKey==='kiosks'?'Kiosk name':'Location / device name'); if(!name?.trim())return;
-      const fresh={id:deploymentIdFor(p),name:name.trim(),profile:'kiosk_self_service',state:'draft',manifestVersion:1,idleMinutes:3,resetAfterComplete:true,purgeSession:true,showStartOver:true,resumeAfterReload:false,deviceLockVerified:false,capabilityScope:'project_default',attractTitle:'Ready when you are.',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),lastCheckIn:null};
+      const fresh=newProjectDeployment(p,name.trim(),'kiosk_self_service');
       migrateLegacyDeployment(p).push(fresh); await saveCompanies(); logActivity(p.id,'Owner added location/device',fresh.name); await renderOwnerModule(p,moduleKey);
     });
     $$('[data-owner-deploy-toggle]').forEach(btn=>btn.addEventListener('click',async()=>{
       const d=migrateLegacyDeployment(p).find(x=>x.id===btn.dataset.ownerDeployToggle); if(!d)return;
-      d.state=d.state==='paused'?'draft':'paused'; d.updatedAt=new Date().toISOString(); await saveCompanies(); logActivity(p.id,'Owner changed deployment state',d.name); await renderOwnerModule(p,moduleKey);
+      const prior=d.state;
+      d.state=d.state==='paused'?'draft':'paused';
+      d.updatedAt=new Date().toISOString();
+      normalizeDeploymentIdentity(p,d);
+      await saveCompanies();
+      logActivity(p.id,'Owner changed deployment state',`${d.name}: ${prior} → ${d.state}`);
+      window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p.id,category:'deployment',action:'device.state.changed',detail:`${d.id}: ${prior} → ${d.state}`});
+      await renderOwnerModule(p,moduleKey);
+    }));
+    $$('[data-owner-device-revoke]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const d=migrateLegacyDeployment(p).find(x=>x.id===btn.dataset.ownerDeviceRevoke); if(!d)return;
+      if(!confirm(`Revoke customer-device access for ${d.name}? Historical deployment information will remain.`))return;
+      d.state='retired'; d.updatedAt=new Date().toISOString();
+      normalizeDeploymentIdentity(p,d);
+      d.deviceIdentity.revokedAt=d.updatedAt;
+      await saveCompanies();
+      logActivity(p.id,'Owner revoked customer device',d.name);
+      window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p.id,category:'deployment',action:'device.revoked',detail:d.id});
+      await renderOwnerModule(p,moduleKey);
     }));
     $('ownerAddStaff')?.addEventListener('click',async()=>{
       const name=prompt('Staff member name'); if(!name?.trim())return;
