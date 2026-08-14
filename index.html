@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=3.3.0" />
+  <link rel="stylesheet" href="styles.css?v=3.4.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -20,7 +20,7 @@
     <div class="bf-entry-shell">
       <div class="bf-entry-mark">☠</div>
       <div class="bf-entry-kicker">BLACK FLAG HARBOR</div>
-      <h1>Engine Room</h1>
+      <div class="black-flag-engine-brand"><img src="assets/black_flag_mark_dimensional.png" alt="" aria-hidden="true"><h1>Engine Room</h1></div>
       <p class="bf-entry-sub">Secure project operations and platform control.</p>
 
       <div class="bf-entry-panel">
@@ -843,12 +843,12 @@
           <div class="project-engine-identity">
             <div id="pecBrandMark" class="pec-brand-mark"><span id="pecBrandCode">PRJ</span><img id="pecBrandLogo" class="hidden" alt=""></div>
             <div>
-              <div class="engine-kicker">PROJECT CONTROL CENTER</div>
+              <div class="project-platform-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="engine-kicker">PROJECT CONTROL CENTER</div>
               <h3 id="pecTitle">Project</h3>
               <p id="pecSubtitle">Project-specific controls.</p>
             </div>
           </div>
-          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn">← BACK TO ENGINE</button>
+          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine"><img src="assets/black_flag_mark_clean.png" alt=""><span class="sr-only">Back to Engine</span></button>
         </div>
 
         <nav class="project-tabs" id="projectTabs">
@@ -873,7 +873,7 @@
 
       <section id="engineConfigurationDock" class="engine-configuration-dock hidden" aria-label="Engine configuration">
         <header class="engine-configuration-head">
-          <div><div class="engine-kicker">ENGINE CONFIGURATION</div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div>
+          <div class="engine-config-brandline"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><div><div class="engine-kicker">ENGINE CONFIGURATION</div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div></div>
           <button id="engineConfigurationCloseBtn" class="secondary-btn workspace-back-btn" type="button">← BACK TO ENGINE</button>
         </header>
         <section class="engine-economics-config">
@@ -1083,7 +1083,7 @@
 
   <script src="platform_core.js?v=3.0.0"></script>
   <script src="platform_identity.js?v=3.0.0"></script>
-  <script src="app.js?v=3.3.0"></script>
+  <script src="app.js?v=3.4.0"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -1109,7 +1109,7 @@
 
 
 
-  <script src="captain.js?v=3.3.0"></script>
+  <script src="captain.js?v=3.4.0"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

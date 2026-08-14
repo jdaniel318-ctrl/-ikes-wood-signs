@@ -8271,3 +8271,29 @@ body.dark-flag-pirate-mode .commissioning-workspace{
   .commissioning-head{align-items:center}
   .commissioning-footer{align-items:flex-end;flex-direction:column}
 }
+
+/* v3.4 Black Flag brand identity integration */
+.black-flag-engine-brand{display:flex;align-items:center;gap:12px}
+.black-flag-engine-brand>img{width:46px;height:46px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 4px 12px rgba(0,0,0,.35))}
+.black-flag-engine-brand h1,.black-flag-engine-brand h2,.black-flag-engine-brand h3{margin:0}
+.project-platform-cue{display:flex;align-items:center;gap:6px;margin-bottom:4px;color:#71919a;font:800 7px Arial,sans-serif;letter-spacing:.09em}
+.project-platform-cue img,.engine-config-brandline>img{object-fit:contain;border-radius:50%;background:#eef2f1;padding:2px}
+.project-platform-cue img{width:18px;height:18px}
+.engine-config-brandline{display:flex;align-items:flex-start;gap:10px}
+.engine-config-brandline>img{width:34px;height:34px;padding:3px;flex:0 0 auto}
+#closeProjectEngineControl.black-flag-back-mark{
+ width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
+ padding:4px!important;border:1px solid #46616a!important;border-radius:50%!important;
+ background:#eef2f1!important;display:grid!important;place-items:center!important;cursor:pointer!important;
+ box-shadow:0 4px 14px rgba(0,0,0,.18)!important;transition:transform .14s ease,border-color .14s ease!important
+}
+#closeProjectEngineControl.black-flag-back-mark img{width:100%;height:100%;object-fit:contain;border-radius:50%}
+#closeProjectEngineControl.black-flag-back-mark:hover{transform:translateY(-1px);border-color:#6b98a6!important}
+#closeProjectEngineControl.black-flag-back-mark:focus-visible{outline:2px solid #67b9d8!important;outline-offset:3px!important}
+body.dark-flag-pirate-mode .black-flag-engine-brand>img,
+body.dark-flag-pirate-mode .project-platform-cue img,
+body.dark-flag-pirate-mode .engine-config-brandline>img{filter:drop-shadow(0 0 10px rgba(160,110,55,.22))}
+@media(max-width:720px){
+ .black-flag-engine-brand>img{width:38px;height:38px}
+ #closeProjectEngineControl.black-flag-back-mark{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important}
+}

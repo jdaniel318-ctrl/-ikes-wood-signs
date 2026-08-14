@@ -1,0 +1,13 @@
+BLACK FLAG ENGINE v3.4 — BRAND IDENTITY INTEGRATION
+
+- Approved A+/C+ Black Flag board added as an Engine asset.
+- UI-ready dimensional, clean, and wordmark assets derived from that approved board.
+- Black Flag brand rule preserved: the flag itself remains BLACK; backgrounds provide contrast.
+- Engine Room now carries the Black Flag platform mark.
+- Project Control Centers retain project branding and add a small Black Flag platform cue.
+- Project Control Center Back to Engine control now uses the Black Flag mark instead of text.
+- Same button ID and JavaScript handler retained; navigation functionality is unchanged.
+- Configure Engine receives a restrained platform mark.
+- No Owner, Kiosk, Project, Order, Commissioning, or Captain logic changed.
+
+Validation: JavaScript syntax, duplicate IDs, CSS structure, asset presence, and return-handler preservation all passed.
