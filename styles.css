@@ -6321,3 +6321,260 @@ body.captain-command-open #captainCommandWorkspace{pointer-events:auto}
   .captain-danger-grid{grid-template-columns:1fr}
   .captain-command-header{align-items:flex-start;flex-direction:column}
 }
+
+
+/* ==========================================================
+   v2.9.76 MODERN SHIP ENGINE ROOM
+   Approved benchmark: assets/engine_room_modern_benchmark_v2976.png
+   Business Mode = modern vessel control room, no pirate decoration.
+   ========================================================== */
+#enginePanel.modern-engine-room{
+  --er-bg:#061015;
+  --er-panel:#0b171d;
+  --er-panel2:#0e1d24;
+  --er-line:#28414c;
+  --er-line-hi:#3e6472;
+  --er-text:#edf4f2;
+  --er-copy:#a7b6b7;
+  --er-muted:#71858a;
+  --er-blue:#2aa7f7;
+  --er-green:#61d15f;
+  --er-purple:#b46cf4;
+  --er-gold:#f3aa22;
+  position:relative!important;
+  display:block;
+  width:100%;
+  max-width:none!important;
+  box-sizing:border-box;
+  padding:14px 18px 26px!important;
+  margin:0!important;
+  color:var(--er-text);
+  background:
+    radial-gradient(circle at 50% -10%,rgba(25,81,104,.22),transparent 34%),
+    linear-gradient(180deg,#071219,#050d11 70%);
+}
+#enginePanel.modern-engine-room.hidden{display:none!important}
+#enginePanel .engine-room-visual-nav,
+#enginePanel>.command-masthead,
+#enginePanel>.engine-health-strip,
+#enginePanel>.dark-flag-cove-banner{
+  display:none!important;
+}
+
+.modern-engine-hero{
+  position:relative;
+  min-height:150px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:24px;
+  padding:22px 26px;
+  overflow:hidden;
+  border:1px solid #284956;
+  border-radius:18px;
+  background:
+    linear-gradient(90deg,rgba(5,15,21,.98) 0%,rgba(6,20,27,.91) 35%,rgba(6,19,26,.68) 64%,rgba(4,13,18,.96) 100%),
+    url('assets/engine_room_modern_benchmark_v2976.png') center 5% / cover no-repeat;
+  box-shadow:0 18px 45px rgba(0,0,0,.25),inset 0 1px 0 rgba(143,202,224,.08);
+}
+.modern-engine-hero::after{
+  content:"";
+  position:absolute;inset:auto 0 0;height:1px;
+  background:linear-gradient(90deg,transparent,#32718a,transparent);
+}
+.modern-engine-brand,.modern-engine-top-actions{position:relative;z-index:1}
+.modern-engine-brand{display:flex;align-items:center;gap:18px;min-width:360px}
+.modern-engine-mark{
+  display:grid;place-items:center;flex:0 0 72px;height:72px;border-radius:50%;
+  border:1px solid #4a7787;background:#0b1c24cc;color:#dcecf1;font-size:34px;
+  box-shadow:inset 0 0 0 7px rgba(35,83,101,.18),0 0 30px rgba(27,112,150,.12)
+}
+.modern-engine-brand .engine-kicker{color:#8bb7c7!important;font:900 9px Arial,sans-serif!important;letter-spacing:.17em}
+.modern-engine-brand h2{margin:5px 0 4px!important;color:#fff!important;font:900 clamp(30px,3vw,46px)/1 Arial,sans-serif!important;letter-spacing:.035em}
+.modern-engine-brand p{margin:0!important;max-width:520px;color:#b7c4c5!important;font-size:13px!important}
+.modern-engine-top-actions{display:flex;align-items:stretch;gap:10px}
+.engine-configure-btn,.modern-engine-secure,.modern-captain-access{
+  box-sizing:border-box;min-height:72px;border-radius:11px;border:1px solid #385762;background:#0b171dcc;color:#eaf1ef
+}
+.engine-configure-btn{
+  display:flex;align-items:center;gap:11px;min-width:220px;padding:12px 15px;text-align:left;cursor:pointer
+}
+.engine-configure-btn:hover{border-color:#578497;background:#10232c}
+.configure-sliders{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;background:#142b35;color:#b5d6e1;font-size:20px}
+.engine-configure-btn strong,.modern-engine-secure strong,.modern-captain-access strong{display:block;color:#edf4f2;font:900 10px Arial,sans-serif;letter-spacing:.04em}
+.engine-configure-btn small,.modern-engine-secure small,.modern-captain-access small{display:block;margin-top:5px;color:#82959a;font:500 8px Arial,sans-serif}
+.modern-engine-secure{display:flex;align-items:center;gap:9px;padding:12px 14px;min-width:156px}
+.modern-engine-secure>span{color:#6bd66e;font-size:18px}
+.modern-engine-secure strong{color:#8ae48b!important}
+.modern-captain-access{
+  display:flex;align-items:center;justify-content:center;min-width:150px;padding:12px 14px;text-decoration:none!important;
+  border-color:#987022;background:#17150fcf
+}
+.modern-captain-access strong{color:#f1bb50!important}
+.modern-captain-access small{color:#a79574!important}
+
+.engine-performance-deck{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:11px;
+  margin:13px 0;
+}
+.engine-performance-card{
+  min-width:0;padding:15px 15px 10px;border:1px solid var(--er-line);border-radius:12px;background:linear-gradient(160deg,#0c1a21,#081319);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)
+}
+.engine-performance-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.engine-performance-card-head>div{display:grid;gap:3px}
+.engine-performance-card-head span{color:#99aaad;font:800 8px Arial,sans-serif;letter-spacing:.07em}
+.engine-performance-card-head strong{color:#f0f5f3!important;font:800 24px Arial,sans-serif}
+.engine-performance-card-head small{color:#7f9397;font-size:8px}
+.engine-performance-card-head i{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;font:800 19px Arial,sans-serif;font-style:normal;background:#10252e;border:1px solid #2e6377}
+.engine-performance-card.revenue i{color:var(--er-blue);border-color:#236a91}
+.engine-performance-card.profit i{color:var(--er-green);border-color:#377541}
+.engine-performance-card.usage i{color:var(--er-purple);border-color:#6a4686}
+.engine-performance-card.cost i{color:var(--er-gold);border-color:#805f25}
+.engine-performance-card canvas{display:block;width:100%;height:112px;margin-top:9px}
+.engine-performance-card.revenue{box-shadow:inset 0 -2px 0 rgba(42,167,247,.15)}
+.engine-performance-card.profit{box-shadow:inset 0 -2px 0 rgba(97,209,95,.15)}
+.engine-performance-card.usage{box-shadow:inset 0 -2px 0 rgba(180,108,244,.15)}
+.engine-performance-card.cost{box-shadow:inset 0 -2px 0 rgba(243,170,34,.15)}
+
+.modern-system-operations{
+  position:relative;display:grid;grid-template-columns:minmax(280px,.9fr) 1.4fr minmax(180px,.55fr);align-items:center;gap:16px;
+  min-height:96px;margin:0 0 13px;padding:14px 18px;overflow:hidden;border:1px solid #294753;border-radius:12px;
+  background:linear-gradient(90deg,#0c1b22,#0a171d 68%,#07141a)
+}
+.modern-system-operations::after{
+  content:"";position:absolute;right:-5%;bottom:-40%;width:38%;height:180%;
+  background:repeating-linear-gradient(0deg,transparent 0 22px,rgba(43,139,177,.07) 23px),repeating-linear-gradient(90deg,transparent 0 28px,rgba(43,139,177,.07) 29px);
+  transform:perspective(220px) rotateX(64deg);opacity:.6
+}
+.modern-system-operations-copy{display:flex;align-items:center;gap:13px;z-index:1}
+.system-shield{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:#0d2a36;border:1px solid #2f6b82;color:#91d3e8;font-size:19px}
+.modern-system-operations-copy span{color:#8db4c1;font:900 8px Arial,sans-serif;letter-spacing:.11em}
+.modern-system-operations-copy h3{margin:3px 0;color:#f0f4f2;font:900 18px Arial,sans-serif}
+.modern-system-operations-copy p{margin:0;color:#75d47e;font-size:9px}
+.modern-system-operations-copy p b{display:inline-block;width:6px;height:6px;margin-right:5px;border-radius:50%;background:#65d66d}
+.modern-system-capabilities{z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.modern-system-capabilities span{padding:9px 5px;border-left:1px solid #263c45;color:#9aabad;font-size:8px;text-align:center}
+.modern-vessel-wireframe{z-index:1;color:#397a94;font:900 9px Arial,sans-serif;letter-spacing:.12em;text-align:right}
+
+.modern-project-command{
+  margin:0!important;padding:17px!important;border:1px solid #29434e!important;border-radius:13px!important;background:#081319!important
+}
+.modern-project-command-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:13px}
+.modern-project-command .engine-kicker{color:#8db7c5!important}
+.modern-project-command h3{margin:4px 0!important;color:#f2f5f3!important;font:900 26px Arial,sans-serif!important;letter-spacing:.04em}
+.modern-project-command p{margin:0!important;color:#91a2a5!important;font-size:10px!important}
+.modern-project-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.modern-project-tools .engine-fleet-search{margin:0!important}
+.modern-project-tools .engine-fleet-search input{
+  width:250px;min-height:38px;padding:8px 11px;border:1px solid #314c57;border-radius:8px;background:#071116;color:#dfe7e5
+}
+.modern-project-tools .engine-fleet-filters{display:flex!important;gap:0!important;border:1px solid #304955;border-radius:8px;overflow:hidden}
+.modern-project-tools .engine-fleet-filters button{
+  min-height:36px!important;border:0!important;border-right:1px solid #293f48!important;border-radius:0!important;background:#09141a!important;color:#a9b5b5!important;padding:7px 12px!important
+}
+.modern-project-tools .engine-fleet-filters button.active{background:#12344a!important;color:#fff!important}
+.modern-project-tools .project-add-btn{min-height:38px!important;margin:0!important;padding:8px 14px!important;border-radius:8px!important;background:#15527a!important;border-color:#2b7ca5!important;color:#fff!important}
+.modern-project-command .project-summary-badge{
+  display:inline-flex!important;margin-top:9px!important;padding:5px 9px!important;border-radius:20px!important;background:#10232a!important;color:#b8c6c5!important;font-size:7px!important
+}
+.modern-project-command .engine-fleet-toolbar{display:none!important}
+
+.modern-project-command .project-command-cards{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:11px!important
+}
+.modern-project-command .project-card{
+  min-width:0!important;min-height:310px!important;padding:14px!important;border:1px solid #2f4853!important;border-radius:11px!important;background:linear-gradient(160deg,#0d1b22,#09151a)!important;color:#e9f0ed!important;box-shadow:none!important
+}
+.modern-project-command .project-card:hover{border-color:#477080!important;transform:translateY(-1px)}
+.modern-project-command .project-brand-badge{width:76px!important;height:66px!important;border-radius:8px!important;background:#edf1ef!important}
+.modern-project-command .project-brand-badge img{width:100%!important;height:100%!important;object-fit:contain!important}
+.modern-project-command .project-card h4{margin:10px 0 4px!important;color:#f2f5f3!important;font:800 18px Arial,sans-serif!important}
+.modern-project-command .project-card>p{min-height:30px;color:#9ca9a8!important;font-size:10px!important}
+.modern-project-command .project-publish-toggle span{color:#98a7a6!important;background:#0a151a!important;border:1px solid #334952!important}
+.modern-project-command .project-deployment-badge{display:inline-flex!important;margin:7px 0!important;padding:5px 8px!important;border-radius:14px!important;background:#293238!important;color:#d4dddd!important;font-size:7px!important}
+.modern-project-command .project-governance-strip{margin:2px 0 8px!important;gap:5px!important}
+.modern-project-command .project-governance-strip span{font-size:6.5px!important}
+.modern-project-command .project-kpis{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:5px!important;margin:8px 0!important}
+.modern-project-command .project-kpis span{
+  display:grid!important;gap:3px!important;min-width:0!important;padding:7px!important;border:1px solid #29414b!important;border-radius:7px!important;background:#091419!important;color:#8fa0a1!important;text-align:left!important
+}
+.modern-project-command .project-kpis small{color:#71858a!important;font:800 6px Arial,sans-serif!important;letter-spacing:.04em}
+.modern-project-command .project-kpis strong{color:#ecf2ef!important;font:800 12px Arial,sans-serif!important}
+.modern-project-command .project-card-actions{display:grid!important;grid-template-columns:.85fr 1.15fr!important;gap:6px!important;margin-top:auto!important}
+.modern-project-command .project-card-actions button{min-height:40px!important;border-radius:7px!important;font-size:8px!important}
+.modern-project-command .project-card-actions .secondary-btn{background:#091419!important;color:#edf2ef!important;border-color:#344b55!important}
+.modern-project-command .project-card-actions .primary-btn{background:#12527c!important;color:#fff!important;border-color:#286f96!important}
+.modern-project-command .add-project-card{display:grid!important;place-items:center!important;text-align:center!important;border-style:dashed!important;background:#07141a!important}
+.modern-project-command .add-project-card .add-project-plus{display:grid;place-items:center;width:54px;height:54px;border:1px solid #267bb0;border-radius:50%;color:#2aa7f7;font-size:28px}
+.modern-project-command .add-project-card h4{margin:0!important}
+.modern-project-command .add-project-card p{max-width:180px;min-height:0!important}
+
+.engine-configuration-dock{
+  margin:14px 0;padding:17px;border:1px solid #31515d;border-radius:13px;background:#08151b;box-shadow:0 22px 60px rgba(0,0,0,.22)
+}
+.engine-configuration-dock.hidden{display:none!important}
+.engine-configuration-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding-bottom:13px;border-bottom:1px solid #29414b}
+.engine-configuration-head h3{margin:4px 0;color:#f1f5f3;font:900 25px Arial,sans-serif}
+.engine-configuration-head p{margin:0;color:#91a2a4;font-size:10px}
+.engine-economics-config{
+  display:grid;grid-template-columns:.65fr 1.35fr;gap:18px;margin:14px 0;padding:14px;border:1px solid #2c4752;border-radius:10px;background:#0a171d
+}
+.engine-economics-config h4{margin:3px 0;color:#eaf1ee;font-size:18px}
+.engine-economics-config p{color:#90a0a2;font-size:9px}
+.engine-economics-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:end}
+.engine-economics-fields label{display:grid;gap:5px;color:#9da9aa;font-size:8px}
+.engine-economics-fields input{min-height:38px;padding:8px;border:1px solid #35515c;border-radius:7px;background:#071116;color:#edf2ef}
+.engine-economics-fields button{grid-column:1/-1;justify-self:end}
+
+#engineConfigurationDock>.engine-section-head:first-of-type{display:none!important}
+#engineConfigurationDock .engine-registry-support-head{margin-top:12px!important}
+#engineConfigurationDock .engine-grid,
+#engineConfigurationDock .protected-control-center,
+#engineConfigurationDock .fleet-analytics{
+  margin-top:12px!important
+}
+
+/* Business Mode must not carry pirate decoration. */
+body.business-engine-mode #enginePanel .protected-control-mark,
+body.business-engine-mode #enginePanel .pirate-error,
+body.business-engine-mode #enginePanel .cove-crest,
+body.business-engine-mode #enginePanel .cove-compass{
+  display:none!important
+}
+body.business-engine-mode #enginePanel .pirate-footer{
+  border:1px solid #28434d!important;background:#071218!important;color:#7f979d!important
+}
+.modern-engine-footer{
+  display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:0!important;margin-top:13px!important;padding:12px!important;border-radius:10px!important;text-align:center!important;font:800 7px Arial,sans-serif!important;letter-spacing:.08em!important
+}
+.modern-engine-footer span+span{border-left:1px solid #263e47}
+
+@media(max-width:1180px){
+  .modern-engine-hero{align-items:flex-start;flex-direction:column}
+  .modern-engine-top-actions{width:100%;justify-content:flex-end}
+  .engine-performance-deck{grid-template-columns:repeat(2,1fr)}
+  .modern-project-command .project-command-cards{grid-template-columns:repeat(2,1fr)!important}
+}
+@media(max-width:760px){
+  #enginePanel.modern-engine-room{padding:9px!important}
+  .modern-engine-hero{padding:18px;min-height:0}
+  .modern-engine-brand{min-width:0}
+  .modern-engine-mark{flex-basis:54px;height:54px;font-size:25px}
+  .modern-engine-top-actions{display:grid;grid-template-columns:1fr 1fr}
+  .engine-configure-btn{grid-column:1/-1;min-width:0}
+  .engine-performance-deck{grid-template-columns:1fr}
+  .modern-system-operations{grid-template-columns:1fr}
+  .modern-system-capabilities{grid-template-columns:1fr 1fr}
+  .modern-vessel-wireframe{display:none}
+  .modern-project-command-head{flex-direction:column}
+  .modern-project-tools{width:100%;justify-content:flex-start}
+  .modern-project-tools .engine-fleet-search,.modern-project-tools .engine-fleet-search input{width:100%}
+  .modern-project-command .project-command-cards{grid-template-columns:1fr!important}
+  .engine-economics-config{grid-template-columns:1fr}
+  .engine-economics-fields{grid-template-columns:1fr}
+  .modern-engine-footer{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .modern-engine-footer span+span{border-left:0}
+}

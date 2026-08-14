@@ -1,10 +1,10 @@
-const CACHE='workshop-engine-v2-9-75-owner-preview-functional-fix';
+const CACHE='workshop-engine-v2-9-76-modern-ship-engine-room';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=2.9.75',
-  './app.js?v=2.9.75',
-  './captain.js?v=2.9.75',
+  './styles.css?v=2.9.76',
+  './app.js?v=2.9.76',
+  './captain.js?v=2.9.76',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',

@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=2.9.75" />
+  <link rel="stylesheet" href="styles.css?v=2.9.76" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -127,7 +127,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v2.9.75 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v2.9.76 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -680,71 +680,102 @@
       </div>
     </div>
 
-    <section id="enginePanel" class="engine-panel hidden">
-      <div class="command-masthead">
-        <div class="command-brand">
-          <div class="command-mark">☠</div>
+    <section id="enginePanel" class="engine-panel hidden modern-engine-room">
+      <header class="modern-engine-hero">
+        <div class="modern-engine-brand">
+          <div class="modern-engine-mark" aria-hidden="true">⚙</div>
           <div>
-            <div class="engine-kicker">BLACK FLAG HARBOR</div>
-            <h2>Engine Room</h2>
-            <p>Fleet operations, project control, and platform systems.</p>
+            <div class="engine-kicker">ENGINE CONTROL</div>
+            <h2>ENGINE ROOM</h2>
+            <p>Multi-project operations, configuration, testing, and platform control.</p>
           </div>
         </div>
-        <div class="command-access">ENGINE SECURE</div>
-      </div>
-      <nav class="engine-room-visual-nav" aria-label="Engine Room sections">
-        <div class="ervn-brand"><span>⚙</span><strong>ENGINE ROOM</strong><small>OPERATIONS</small></div>
-        <a href="#engineHealthStrip">Engine Room</a>
-        <a href="#engineProjectsSection">Projects</a>
-        <a href="#engineSettingsSection">Settings</a>
-        <a href="#engineSecuritySection">Security</a>
-        <div class="ervn-secure"><i></i><span>ENGINE SECURE</span></div>
-      </nav>
-<div class="engine-health-strip" id="engineHealthStrip">
-        <div><span id="engineOrdersLabel">Orders</span><strong id="engineOrderCount">—</strong></div>
-        <div><span id="engineRecoveryLabel">Recovery Status</span><strong id="engineDraftStatus">—</strong></div>
-        <div><span id="engineStorageLabel">Storage</span><strong id="engineStorageStatus">—</strong></div>
-        <div><span id="engineSystemLabel">System Status</span><strong id="engineEmailStatus">—</strong></div>
-      </div>
 
-      
-      
-      <section class="dark-flag-cove-banner" aria-hidden="true">
-        <div id="engineModeGraphic" class="cove-crest" aria-hidden="true">☠</div>
-        <div class="cove-banner-copy">
-          <div class="cove-kicker">ENGINE SYSTEMS</div>
-          <div class="cove-title">OPERATIONS BAY</div>
-          <div class="cove-motto">ONE ENGINE • MANY PROJECTS • SEALED DATA BOUNDARIES</div>
+        <div class="modern-engine-top-actions">
+          <button id="engineConfigureBtn" class="engine-configure-btn" type="button">
+            <span class="configure-sliders" aria-hidden="true">☷</span>
+            <span><strong>CONFIGURE ENGINE</strong><small>Settings & system configuration</small></span>
+          </button>
+          <div class="modern-engine-secure">
+            <span aria-hidden="true">✓</span><div><strong>ENGINE SECURE</strong><small>All systems operational</small></div>
+          </div>
+          <a id="captainModeAccessBtn" class="modern-captain-access" href="#captainQuartersGate" role="button">
+            <span><strong>CAPTAIN'S QUARTERS</strong><small>Private access</small></span>
+          </a>
         </div>
-        <div id="engineModeAccent" class="cove-compass" aria-hidden="true">✦</div>
+      </header>
+
+      <section id="enginePerformanceDeck" class="engine-performance-deck" aria-label="Engine performance">
+        <article class="engine-performance-card revenue">
+          <div class="engine-performance-card-head">
+            <div><span>REVENUE · 30 DAYS</span><strong id="engineRevenue30">$0</strong><small id="engineRevenueDelta">Recorded order value</small></div>
+            <i aria-hidden="true">$</i>
+          </div>
+          <canvas id="engineRevenueTrend" width="430" height="150" aria-label="Revenue trend"></canvas>
+        </article>
+        <article class="engine-performance-card profit">
+          <div class="engine-performance-card-head">
+            <div><span>PROFIT · 30 DAYS</span><strong id="engineProfit30">—</strong><small id="engineProfitDelta">Configure operating costs</small></div>
+            <i aria-hidden="true">↗</i>
+          </div>
+          <canvas id="engineProfitTrend" width="430" height="150" aria-label="Profit trend"></canvas>
+        </article>
+        <article class="engine-performance-card usage">
+          <div class="engine-performance-card-head">
+            <div><span>ENGINE USAGE</span><strong id="engineUsageNow">—</strong><small id="engineUsageDelta">Storage used</small></div>
+            <i aria-hidden="true">▱</i>
+          </div>
+          <canvas id="engineUsageTrend" width="430" height="150" aria-label="Storage usage trend"></canvas>
+        </article>
+        <article class="engine-performance-card cost">
+          <div class="engine-performance-card-head">
+            <div><span>COST · 30 DAYS</span><strong id="engineCost30">—</strong><small id="engineCostDelta">Configure cost model</small></div>
+            <i aria-hidden="true">◇</i>
+          </div>
+          <canvas id="engineCostTrend" width="430" height="150" aria-label="Operating cost trend"></canvas>
+        </article>
       </section>
 
-      <section id="engineProjectsSection" class="project-command-section first-mate-fleet">
-        <div class="command-section-title">
+      <section class="modern-system-operations">
+        <div class="modern-system-operations-copy">
+          <div class="system-shield" aria-hidden="true">✓</div>
+          <div><span>PLATFORM OPERATIONS</span><h3>SYSTEM OPERATIONS</h3><p><b></b> All systems operational</p></div>
+        </div>
+        <div class="modern-system-capabilities" aria-label="Engine architecture">
+          <span>Multi-project control</span>
+          <span>Sealed data boundaries</span>
+          <span>Independent project isolation</span>
+          <span>Performance monitoring</span>
+        </div>
+        <div class="modern-vessel-wireframe" aria-hidden="true">ENGINE TELEMETRY</div>
+      </section>
+
+      <section id="engineProjectsSection" class="project-command-section modern-project-command">
+        <div class="modern-project-command-head">
           <div>
             <div class="engine-kicker">PROJECT COMMAND</div>
-            <h3>Projects</h3>
+            <h3>PROJECTS</h3>
             <p id="engineProjectsHelp">Open a project to manage its controls. Project data remains isolated.</p>
+            <div id="projectSummaryBadge" class="project-summary-badge"></div>
           </div>
-          <button id="addProjectBtn" class="project-add-btn">＋ ADD PROJECT</button>
-        </div>
-        <div id="projectSummaryBadge" class="project-summary-badge"></div>
-        <div class="engine-fleet-toolbar" aria-label="Fleet project controls">
-          <label class="engine-fleet-search">
-            <span>Find project</span>
-            <input id="engineFleetSearch" type="search" placeholder="Search projects…" autocomplete="off" />
-          </label>
-          <div class="engine-fleet-filters" role="group" aria-label="Project status filter">
-            <button type="button" data-engine-fleet-filter="all" class="active">All</button>
-            <button type="button" data-engine-fleet-filter="active">Current</button>
-            <button type="button" data-engine-fleet-filter="private">Test / Private</button>
-            <button type="button" data-engine-fleet-filter="future">Future</button>
+          <div class="modern-project-tools">
+            <label class="engine-fleet-search">
+              <span class="sr-only">Find project</span>
+              <input id="engineFleetSearch" type="search" placeholder="Search projects…" autocomplete="off" />
+            </label>
+            <div class="engine-fleet-filters" role="group" aria-label="Project status filter">
+              <button type="button" data-engine-fleet-filter="all" class="active">All</button>
+              <button type="button" data-engine-fleet-filter="active">Current</button>
+              <button type="button" data-engine-fleet-filter="private">Test / Private</button>
+              <button type="button" data-engine-fleet-filter="future">Future</button>
+            </div>
+            <button id="addProjectBtn" class="project-add-btn">＋ ADD PROJECT</button>
           </div>
         </div>
         <div id="projectCommandCards" class="project-command-cards"></div>
       </section>
 
-      <section id="projectEngineControl" class="project-engine-control hidden">
+<section id="projectEngineControl" class="project-engine-control hidden">
         <div class="project-engine-head">
           <div class="project-engine-identity">
             <div id="pecBrandMark" class="pec-brand-mark"><span id="pecBrandCode">PRJ</span><img id="pecBrandLogo" class="hidden" alt=""></div>
@@ -777,7 +808,32 @@
         <div id="projectTabContent" class="project-tab-content"></div>
       </section>
 
-      <div class="engine-section-head"><div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3></div></div>
+      <section id="engineConfigurationDock" class="engine-configuration-dock hidden" aria-label="Engine configuration">
+        <header class="engine-configuration-head">
+          <div><div class="engine-kicker">ENGINE CONFIGURATION</div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div>
+          <button id="engineConfigurationCloseBtn" class="secondary-btn" type="button">CLOSE CONFIGURATION</button>
+        </header>
+        <section class="engine-economics-config">
+          <div>
+            <div class="engine-kicker">PERFORMANCE MODEL</div>
+            <h4>Engine Economics</h4>
+            <p>Revenue is read directly from recorded orders. Enter operating costs only if you want Cost and Profit telemetry calculated.</p>
+          </div>
+          <div class="engine-economics-fields">
+            <label>Fixed operating cost · 30 days
+              <input id="engineFixedCost30" type="number" min="0" step="0.01" value="0">
+            </label>
+            <label>Cost per order
+              <input id="engineCostPerOrder" type="number" min="0" step="0.01" value="0">
+            </label>
+            <label>Variable cost · % of revenue
+              <input id="engineVariableCostPct" type="number" min="0" max="100" step="0.1" value="0">
+            </label>
+            <button id="saveEngineEconomicsBtn" class="primary-btn" type="button">SAVE PERFORMANCE MODEL</button>
+          </div>
+          <p id="engineEconomicsStatus" class="helper"></p>
+        </section>
+<div class="engine-section-head"><div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3></div></div>
 <div id="engineFleetSection" class="engine-section-head engine-registry-support-head"><div><div class="engine-kicker">FLEET OVERVIEW</div><h3>Company Registry</h3></div></div>
       <div id="companyFleet" class="company-fleet engine-registry-support"></div>
 
@@ -888,13 +944,6 @@
         </div>
       </div>
 
-      <section id="engineSecuritySection" class="captain-access-dock captain-access-ready" aria-label="Captain's Quarters access">
-        <div class="captain-access-kicker">CAPTAIN ONLY</div>
-        <a id="captainModeAccessBtn" class="captain-access-btn" href="#captainQuartersGate" role="button">
-          <span>⚓</span><span><strong>CAPTAIN'S QUARTERS</strong><small>Private command and creative chamber · separate authentication required</small></span><b>ENTER →</b>
-        </a>
-      </section>
-
       <section id="engineAnalyticsSection" class="fleet-analytics captains-log engine-telemetry-legacy">
         <div class="captains-log-head">
           <div>
@@ -920,7 +969,10 @@
         <div id="captainsProjectTable" class="captains-project-table"></div>
       </section>
 
-      <div class="pirate-footer">ENGINE ROOM • AUTHORIZED OPERATIONS ONLY</div>
+            </section>
+<div class="pirate-footer modern-engine-footer">
+        <span>ENGINE SECURE</span><span>RECOVERY READY</span><span>LOCAL BACKUP</span><span>VERSION 2.9.76</span><span>BUILT FOR BUILDERS</span>
+      </div>
     </section>
   </div>
 
@@ -941,7 +993,7 @@
     <main id="ownerPortalBody" class="owner-portal-body"></main>
   </section>
 
-  <script src="app.js?v=2.9.75"></script>
+  <script src="app.js?v=2.9.76"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -967,7 +1019,7 @@
 
 
 
-  <script src="captain.js?v=2.9.75"></script>
+  <script src="captain.js?v=2.9.76"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

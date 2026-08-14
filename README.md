@@ -1,20 +1,39 @@
-# Workshop Engine v2.9.75 — Preview Owner Portal Functional Fix
+# Workshop Engine v2.9.76 — Modern Ship Engine Room
 
-## Actual root cause
-v2.9.74 had two click paths for Preview Owner Portal.
+Built from v2.9.75 after approval of the modern ship Engine Room benchmark.
 
-A document-level capture handler ran first, called `stopPropagation()`, and tried to infer the project from `activeProjectId`. In the Engine Control Center that value can be null or refer to customer-project runtime state. When it could not resolve the project, it returned — but because propagation was already stopped, the correctly scoped Owner Access handler never received the tap.
+## Engine Room redesign
+Business Mode now uses a modern vessel operations/control-room visual system:
+- no left navigation sidebar;
+- no pirate graphics in Business Mode;
+- Configure Engine is a primary control in the top command header;
+- Captain's Quarters is the only themed/private-command access in the Business Mode header;
+- System Operations and Project Command remain visible on the main deck;
+- existing project Control Center functions remain intact.
 
-The preview return route also called a non-existent `openProjectControl()` function.
+## Live top performance graphs
+Four top telemetry cards are now tied to Engine data:
+- Revenue · 30 days — actual recorded order values by day.
+- Profit · 30 days — calculated from recorded revenue and the optional Engine cost model.
+- Engine Usage — browser storage estimate plus locally sampled usage history.
+- Cost · 30 days — calculated from the optional cost model.
 
-## Structural fix
-- Removed the competing document-level preview interceptor.
-- Preview now has exactly one handler, bound when Owner Access renders and closed over the correct project.
-- Preview opens with `openOwnerPortal(p.id,{preview:true})`.
-- Errors are surfaced instead of silently failing.
-- EXIT PREVIEW uses `engineActiveProjectId` and the real `openProjectEngineControl()`.
-- EXIT PREVIEW returns directly to the same project's Owner Access tab.
-- Added touch-safe behavior for iPad/iPhone.
+No fake performance numbers are inserted.
 
-## Assets
-No assets added, removed, renamed, or replaced.
+### Engine cost model
+Configure Engine → Engine Economics can record:
+- fixed 30-day operating cost;
+- cost per order;
+- variable cost as a percentage of revenue.
+
+Until a cost model is configured, Cost and Profit explicitly remain unconfigured rather than inventing numbers.
+
+## Configure Engine
+Existing Engine Settings, Company Registry, Protected Controls and Operations Monitor are preserved inside a configuration dock opened from the top of the Engine Room.
+
+## Asset added
+`assets/engine_room_modern_benchmark_v2976.png`
+
+This is the Captain-approved visual benchmark and is also used as a dark cropped hero reference in the modern Engine header.
+
+Existing assets were not removed or renamed.

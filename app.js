@@ -859,14 +859,18 @@
           <span class="platform-status ${platformState}">${platformStatusLabel(p)}</span>
           <span>${ownerState}</span>
         </div>
-        <div class="project-kpis"><span><strong>${s.orders}</strong> ${s.orders===1?'order':'orders'}</span><span><strong>$${s.revenueMonth.toFixed(0)}</strong> month</span><span><strong>${s.completed}</strong> ledger</span></div>
+        <div class="project-kpis">
+          <span><small>ORDERS</small><strong>${s.orders}</strong></span>
+          <span><small>REVENUE · 30D</small><strong>$${s.revenueMonth.toFixed(0)}</strong></span>
+          <span><small>LEDGER</small><strong>${s.completed}</strong></span>
+        </div>
         <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
           <button data-enter-project="${escapeHtml(p.id)}" data-project-shell="${escapeHtml(projectShellFor(p))}" class="primary-btn small">${p.publish?.status==='live'?'OPEN PROJECT':'OPEN PRIVATE TEST'}</button>
         </div>
       </article>`);
     }
-    cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business/project on Black Flag.</p></button>`);
+    cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business or project in the Engine.</p></button>`);
     box.innerHTML=cards.join('');
     box.querySelectorAll('[data-open-project-control]').forEach(b=>b.addEventListener('click',()=>openProjectEngineControl(b.dataset.openProjectControl)));
     box.querySelectorAll('[data-enter-project]').forEach(b=>b.addEventListener('click',()=>enterProject(b.dataset.enterProject)));
@@ -2642,6 +2646,168 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     await setSetting('engineConfig',engineConfig);
   }
 
+  const ENGINE_TELEMETRY_HISTORY_KEY='blackFlagEngineTelemetryHistoryV1';
+  const ENGINE_ECONOMICS_KEY='engineEconomicsV1';
+
+  function readEngineTelemetryHistory(){
+    try{
+      const rows=JSON.parse(localStorage.getItem(ENGINE_TELEMETRY_HISTORY_KEY)||'[]');
+      return Array.isArray(rows)?rows:[];
+    }catch(_){return []}
+  }
+  function writeEngineTelemetryHistory(rows){
+    localStorage.setItem(ENGINE_TELEMETRY_HISTORY_KEY,JSON.stringify((rows||[]).slice(-120)));
+  }
+  async function readEngineEconomics(){
+    try{
+      const row=await getSetting(ENGINE_ECONOMICS_KEY);
+      const v=row?.value||{};
+      return {
+        fixed30:Math.max(0,Number(v.fixed30)||0),
+        perOrder:Math.max(0,Number(v.perOrder)||0),
+        variablePct:Math.max(0,Math.min(100,Number(v.variablePct)||0))
+      };
+    }catch(_){return {fixed30:0,perOrder:0,variablePct:0}}
+  }
+  async function saveEngineEconomics(){
+    const economics={
+      fixed30:Math.max(0,Number($('engineFixedCost30')?.value)||0),
+      perOrder:Math.max(0,Number($('engineCostPerOrder')?.value)||0),
+      variablePct:Math.max(0,Math.min(100,Number($('engineVariableCostPct')?.value)||0))
+    };
+    await setSetting(ENGINE_ECONOMICS_KEY,economics);
+    if($('engineEconomicsStatus')) $('engineEconomicsStatus').textContent='Performance model saved.';
+    await renderEnginePerformance();
+  }
+
+  function engineDayKey(date){
+    const d=new Date(date);
+    return Number.isNaN(d.getTime())?'':d.toISOString().slice(0,10);
+  }
+  function lastNDays(n){
+    const rows=[];
+    const now=new Date();
+    for(let i=n-1;i>=0;i--){
+      const d=new Date(now);
+      d.setHours(12,0,0,0);
+      d.setDate(d.getDate()-i);
+      rows.push(d.toISOString().slice(0,10));
+    }
+    return rows;
+  }
+  function drawEngineTrend(canvas,values,color,{money=false,emptyLabel='NO DATA'}={}){
+    if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const cssW=Math.max(260,canvas.clientWidth||430);
+    const cssH=Math.max(110,canvas.clientHeight||150);
+    const dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+    canvas.width=Math.round(cssW*dpr);
+    canvas.height=Math.round(cssH*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,cssW,cssH);
+
+    const vals=(values||[]).map(v=>Number(v)||0);
+    const left=10,right=8,top=10,bottom=22;
+    const w=cssW-left-right,h=cssH-top-bottom;
+    const max=Math.max(...vals,0);
+    const min=Math.min(...vals,0);
+    const span=Math.max(1,max-min);
+
+    ctx.strokeStyle='rgba(126,153,164,.14)';
+    ctx.lineWidth=1;
+    for(let i=0;i<4;i++){
+      const y=top+(h*i/3);
+      ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(left+w,y);ctx.stroke();
+    }
+
+    if(!vals.length || vals.every(v=>v===0)){
+      ctx.fillStyle='rgba(166,184,190,.55)';
+      ctx.font='700 11px system-ui';
+      ctx.textAlign='center';
+      ctx.fillText(emptyLabel,cssW/2,cssH/2);
+    }else{
+      const pts=vals.map((v,i)=>({
+        x:left+(vals.length===1?w/2:(i/(vals.length-1))*w),
+        y:top+h-((v-min)/span)*h
+      }));
+      const grad=ctx.createLinearGradient(0,top,0,top+h);
+      grad.addColorStop(0,color+'55'); grad.addColorStop(1,color+'00');
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x,top+h);
+      pts.forEach(p=>ctx.lineTo(p.x,p.y));
+      ctx.lineTo(pts[pts.length-1].x,top+h);
+      ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+
+      ctx.beginPath();
+      pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+      ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+
+      const p=pts[pts.length-1];
+      ctx.beginPath();ctx.arc(p.x,p.y,3.5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+    }
+
+    ctx.fillStyle='rgba(165,184,190,.7)';
+    ctx.font='10px system-ui';
+    ctx.textAlign='left';ctx.fillText('30 DAYS',left,cssH-5);
+    ctx.textAlign='right';ctx.fillText('TODAY',left+w,cssH-5);
+  }
+
+  async function renderEnginePerformance(){
+    const orders=await getMergedOrders();
+    const days=lastNDays(30);
+    const byDay=new Map(days.map(d=>[d,[]]));
+    orders.forEach(o=>{
+      const k=engineDayKey(o.createdAt);
+      if(byDay.has(k))byDay.get(k).push(o);
+    });
+
+    const revenue=days.map(d=>byDay.get(d).reduce((s,o)=>s+(Number(o.price)||0),0));
+    const orderCounts=days.map(d=>byDay.get(d).length);
+    const economics=await readEngineEconomics();
+    const configured=economics.fixed30>0||economics.perOrder>0||economics.variablePct>0;
+    const fixedDaily=economics.fixed30/30;
+    const costs=revenue.map((r,i)=>configured ? fixedDaily+(orderCounts[i]*economics.perOrder)+(r*economics.variablePct/100) : 0);
+    const profit=revenue.map((r,i)=>configured ? r-costs[i] : 0);
+
+    const totalRevenue=revenue.reduce((a,b)=>a+b,0);
+    const totalCost=costs.reduce((a,b)=>a+b,0);
+    const totalProfit=profit.reduce((a,b)=>a+b,0);
+
+    if($('engineRevenue30')) $('engineRevenue30').textContent=`$${totalRevenue.toLocaleString(undefined,{maximumFractionDigits:0})}`;
+    if($('engineProfit30')) $('engineProfit30').textContent=configured?`$${totalProfit.toLocaleString(undefined,{maximumFractionDigits:0})}`:'—';
+    if($('engineCost30')) $('engineCost30').textContent=configured?`$${totalCost.toLocaleString(undefined,{maximumFractionDigits:0})}`:'—';
+    if($('engineProfitDelta')) $('engineProfitDelta').textContent=configured?'Revenue less configured costs':'Configure operating costs';
+    if($('engineCostDelta')) $('engineCostDelta').textContent=configured?'Configured operating model':'Configure cost model';
+
+    let usageMB=0,quotaMB=0;
+    try{
+      const est=await navigator.storage?.estimate?.();
+      usageMB=Number(est?.usage||0)/1024/1024;
+      quotaMB=Number(est?.quota||0)/1024/1024;
+    }catch(_){}
+    if($('engineUsageNow')) $('engineUsageNow').textContent=usageMB?`${usageMB.toFixed(1)} MB`:'—';
+    if($('engineUsageDelta')) $('engineUsageDelta').textContent=quotaMB?`${((usageMB/quotaMB)*100).toFixed(2)}% of ${quotaMB.toFixed(0)} MB available`:'Storage used';
+
+    const history=readEngineTelemetryHistory();
+    const now=Date.now();
+    history.push({at:now,usageMB:Number(usageMB.toFixed(3)),revenue30:Number(totalRevenue.toFixed(2)),cost30:Number(totalCost.toFixed(2)),profit30:Number(totalProfit.toFixed(2))});
+    const compact=[];
+    history.filter(x=>now-Number(x.at||0)<=45*86400000).forEach(row=>{
+      const day=new Date(row.at).toISOString().slice(0,10);
+      const existing=compact.find(x=>x.day===day);
+      if(existing)Object.assign(existing,row,{day}); else compact.push({...row,day});
+    });
+    writeEngineTelemetryHistory(compact);
+
+    const usageByDay=new Map(compact.map(x=>[x.day,Number(x.usageMB)||0]));
+    const usage=days.map(d=>usageByDay.has(d)?usageByDay.get(d):0);
+
+    drawEngineTrend($('engineRevenueTrend'),revenue,'#2aa7f7',{money:true,emptyLabel:'NO RECORDED REVENUE'});
+    drawEngineTrend($('engineProfitTrend'),profit,'#61d15f',{money:true,emptyLabel:configured?'NO PROFIT DATA':'CONFIGURE COST MODEL'});
+    drawEngineTrend($('engineUsageTrend'),usage,'#b46cf4',{emptyLabel:usageMB?'BUILDING USAGE HISTORY':'NO USAGE DATA'});
+    drawEngineTrend($('engineCostTrend'),costs,'#f3aa22',{money:true,emptyLabel:configured?'NO COST DATA':'CONFIGURE COST MODEL'});
+  }
+
   async function refreshEngineDiagnostics(){
     const merged=await getMergedOrders();
     let indexedCount=0;
@@ -2662,6 +2828,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if($('engineStorageStatus')) $('engineStorageStatus').textContent=storageText;
     if($('engineEmailStatus')) $('engineEmailStatus').textContent=WEB3FORMS_ACCESS_KEY && !WEB3FORMS_ACCESS_KEY.includes('PASTE_')?'Configured':'Needs Setup';
     if($('engineStorageDetail')) $('engineStorageDetail').textContent=`IndexedDB: ${indexedCount} order(s) • Local backup: ${localCount} order(s) • Merged view: ${merged.length} order(s).`;
+    await renderEnginePerformance();
   }
 
 
@@ -2817,6 +2984,12 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('engineIdentityEditView')?.classList.add('hidden');
     $('engineIdentitySavedView')?.classList.remove('hidden');
     if($('engineStatusesSetting')) $('engineStatusesSetting').value=(businessConfig.orderStatuses||DEFAULT_BUSINESS_CONFIG.orderStatuses).join(', ');
+    readEngineEconomics().then(e=>{
+      if($('engineFixedCost30')) $('engineFixedCost30').value=String(e.fixed30||0);
+      if($('engineCostPerOrder')) $('engineCostPerOrder').value=String(e.perOrder||0);
+      if($('engineVariableCostPct')) $('engineVariableCostPct').value=String(e.variablePct||0);
+    });
+    renderEnginePerformance();
   }
 
   async function openEnginePanel(){
@@ -4682,6 +4855,17 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
   function bindEvents(){
     bindEngineFleetCommand();
+
+    $('engineConfigureBtn')?.addEventListener('click',()=>{
+      const dock=$('engineConfigurationDock'); if(!dock)return;
+      dock.classList.remove('hidden');
+      dock.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    $('engineConfigurationCloseBtn')?.addEventListener('click',()=>{
+      $('engineConfigurationDock')?.classList.add('hidden');
+      $('enginePanel')?.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    $('saveEngineEconomicsBtn')?.addEventListener('click',saveEngineEconomics);
     $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
     $('enginePirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
     $$('[data-engine-appearance]').forEach(btn=>btn.addEventListener('click',()=>setEngineAppearance(btn.dataset.engineAppearance)));
