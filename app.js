@@ -1826,6 +1826,219 @@
     }
   }
 
+
+  // =========================================================
+  // v3.3 PROJECT COMMISSIONING — Engine-native project factory
+  // =========================================================
+  let commissionStep=1;
+  let commissionDraft=null;
+
+  function commissionSlug(v){
+    return String(v||'').trim().toLowerCase()
+      .replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,54);
+  }
+
+  function commissionCode(v){
+    const words=String(v||'').trim().split(/\s+/).filter(Boolean);
+    return (words.map(x=>x[0]).join('').slice(0,4)||'PRJ').toUpperCase();
+  }
+
+  function freshCommissionDraft(){
+    return {
+      draftId:'commission-'+Date.now(),
+      createdAt:new Date().toISOString(),
+      name:'',ownerName:'',ownerEmail:'',
+      businessType:'other',description:'',
+      primaryOffer:'',characterLimit:32,pricingMode:'manual',
+      customerMode:'guided',photoRequired:false,contactCapture:true,
+      ownerPortal:true,customerRetention:false,notifications:false,
+      namespace:'',projectCode:'',orderPrefix:'',
+      status:'development',visibility:'private',deploymentState:'sea_trial'
+    };
+  }
+
+  function openProjectCommissioning(){
+    commissionDraft=freshCommissionDraft();
+    commissionStep=1;
+    const w=$('projectCommissioningWorkspace');
+    w.classList.remove('hidden'); w.setAttribute('aria-hidden','false');
+    document.body.classList.add('engine-workspace-open');
+    renderCommissioning();
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:'commissioning.opened',detail:commissionDraft.draftId});
+  }
+
+  function closeProjectCommissioning(){
+    const w=$('projectCommissioningWorkspace');
+    w.classList.add('hidden'); w.setAttribute('aria-hidden','true');
+    document.body.classList.remove('engine-workspace-open');
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+  }
+
+  function captureCommissionFields(){
+    document.querySelectorAll('#commissioningBody [data-cfield]').forEach(el=>{
+      const k=el.dataset.cfield;
+      commissionDraft[k]=el.type==='checkbox'?!!el.checked:(el.type==='number'?Number(el.value||0):el.value);
+    });
+    if(commissionDraft.name){
+      commissionDraft.namespace=commissionSlug(commissionDraft.name);
+      commissionDraft.projectCode=commissionDraft.projectCode||commissionCode(commissionDraft.name);
+      commissionDraft.orderPrefix=commissionDraft.orderPrefix||commissionDraft.projectCode;
+    }
+  }
+
+  function commissioningStepMarkup(){
+    const d=commissionDraft;
+    if(commissionStep===1)return `
+      <div class="commission-panel">
+        <div class="eyebrow">01 • BUSINESS IDENTITY</div><h2>Name the vessel</h2>
+        <p>This creates the permanent identity used to isolate the project. The display name can change later; the namespace should not.</p>
+        <div class="commission-grid two">
+          <label>Business / project name<input data-cfield="name" value="${escapeHtml(d.name)}" placeholder="Example Company"></label>
+          <label>Project code<input data-cfield="projectCode" value="${escapeHtml(d.projectCode)}" placeholder="AUTO"></label>
+          <label>Owner name<input data-cfield="ownerName" value="${escapeHtml(d.ownerName)}" placeholder="Business owner"></label>
+          <label>Owner email<input data-cfield="ownerEmail" value="${escapeHtml(d.ownerEmail)}" placeholder="owner@example.com"></label>
+        </div>
+        <div class="commission-callout"><b>SEALED FROM BIRTH</b><span>The Engine will create a unique project ID and namespace. No other project inherits this project's data, branding, orders, customers or settings.</span></div>
+      </div>`;
+    if(commissionStep===2)return `
+      <div class="commission-panel">
+        <div class="eyebrow">02 • BUSINESS MODEL</div><h2>Define what this business is</h2>
+        <div class="commission-grid two">
+          <label>Business type<select data-cfield="businessType">
+            ${['wood_signs','mugs','flowers','retail','service','food','other'].map(x=>`<option value="${x}" ${d.businessType===x?'selected':''}>${x.replace(/_/g,' ').toUpperCase()}</option>`).join('')}
+          </select></label>
+          <label>Short description<input data-cfield="description" value="${escapeHtml(d.description)}" placeholder="What does this business do?"></label>
+        </div>
+        <div class="commission-callout"><b>CONFIGURABLE PROJECT</b><span>Business type is descriptive configuration—not a hard-coded Ike's template. Future modules can respond to this profile without crossing project boundaries.</span></div>
+      </div>`;
+    if(commissionStep===3)return `
+      <div class="commission-panel">
+        <div class="eyebrow">03 • PRODUCTS & PRICING</div><h2>Establish the first offer</h2>
+        <div class="commission-grid three">
+          <label>Primary product / service<input data-cfield="primaryOffer" value="${escapeHtml(d.primaryOffer)}" placeholder="Primary offer"></label>
+          <label>Character / input limit<input type="number" min="1" max="500" data-cfield="characterLimit" value="${Number(d.characterLimit||32)}"></label>
+          <label>Pricing mode<select data-cfield="pricingMode">
+            <option value="manual" ${d.pricingMode==='manual'?'selected':''}>MANUAL</option>
+            <option value="fixed" ${d.pricingMode==='fixed'?'selected':''}>FIXED</option>
+            <option value="rules" ${d.pricingMode==='rules'?'selected':''}>RULE BASED</option>
+          </select></label>
+        </div>
+        <div class="commission-callout"><b>START SMALL</b><span>This commissions the project's first offer. Additional products remain managed inside its Control Center.</span></div>
+      </div>`;
+    if(commissionStep===4)return `
+      <div class="commission-panel">
+        <div class="eyebrow">04 • CUSTOMER EXPERIENCE</div><h2>Set the operating pattern</h2>
+        <div class="commission-grid two">
+          <label>Customer flow<select data-cfield="customerMode">
+            <option value="guided" ${d.customerMode==='guided'?'selected':''}>GUIDED STEP-BY-STEP</option>
+            <option value="catalog" ${d.customerMode==='catalog'?'selected':''}>CATALOG</option>
+            <option value="request" ${d.customerMode==='request'?'selected':''}>REQUEST / QUOTE</option>
+          </select></label>
+          <label class="checkline"><input type="checkbox" data-cfield="photoRequired" ${d.photoRequired?'checked':''}> Require customer photo</label>
+          <label class="checkline"><input type="checkbox" data-cfield="contactCapture" ${d.contactCapture?'checked':''}> Capture customer contact information</label>
+        </div>
+        <div class="commission-callout"><b>BRANDING COMES NEXT</b><span>The new project receives safe placeholders now. Logo, hero graphics and other assets can be assigned later without changing the structural identity.</span></div>
+      </div>`;
+    if(commissionStep===5)return `
+      <div class="commission-panel">
+        <div class="eyebrow">05 • ACCESS & SERVICES</div><h2>Choose the initial capabilities</h2>
+        <div class="commission-grid two">
+          <label class="checkline"><input type="checkbox" data-cfield="ownerPortal" ${d.ownerPortal?'checked':''}> Prepare Owner Portal</label>
+          <label class="checkline"><input type="checkbox" data-cfield="customerRetention" ${d.customerRetention?'checked':''}> Customer retention capability</label>
+          <label class="checkline"><input type="checkbox" data-cfield="notifications" ${d.notifications?'checked':''}> Notifications capability</label>
+        </div>
+        <div class="commission-callout warning"><b>DEFAULT DENY</b><span>Capabilities not selected remain unavailable. Commissioning does not grant Engine or Captain authority to an outside owner.</span></div>
+      </div>`;
+    return `
+      <div class="commission-panel sea-trial-review">
+        <div class="eyebrow">06 • PRIVATE SEA TRIAL</div><h2>Ready to lay the keel</h2>
+        <p>Review the project before Black Flag creates it. Commissioned projects begin private and unpublished.</p>
+        <div class="commission-review-grid">
+          <div><small>PROJECT</small><b>${escapeHtml(d.name||'Not named')}</b></div>
+          <div><small>OWNER</small><b>${escapeHtml(d.ownerName||'Not assigned')}</b></div>
+          <div><small>NAMESPACE</small><b>${escapeHtml(d.namespace||commissionSlug(d.name)||'pending')}</b></div>
+          <div><small>CODE</small><b>${escapeHtml(d.projectCode||commissionCode(d.name))}</b></div>
+          <div><small>OFFER</small><b>${escapeHtml(d.primaryOffer||'Configure later')}</b></div>
+          <div><small>LAUNCH STATE</small><b>PRIVATE • SEA TRIAL</b></div>
+        </div>
+        <div class="commission-callout success"><b>CAPTAIN APPROVAL REQUIRED FOR PUBLISHING</b><span>Commissioning creates the project structure only. It does not publish the business.</span></div>
+      </div>`;
+  }
+
+  function renderCommissioning(){
+    if(!commissionDraft)return;
+    $('commissioningBody').innerHTML=commissioningStepMarkup();
+    document.querySelectorAll('[data-commission-step]').forEach(b=>b.classList.toggle('active',Number(b.dataset.commissionStep)===commissionStep));
+    $('commissionPrev').disabled=commissionStep===1;
+    $('commissionNext').textContent=commissionStep===6?'COMMISSION PROJECT':'CONTINUE';
+    $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/6 • NOT PUBLISHED`;
+  }
+
+  async function saveCommissionDraft(){
+    captureCommissionFields();
+    localStorage.setItem('blackFlagCommissionDraft',JSON.stringify(commissionDraft));
+    $('commissionDraftStatus').textContent=`DRAFT SAVED • ${new Date().toLocaleTimeString()} • NOT PUBLISHED`;
+  }
+
+  function validateCommissionStep(){
+    captureCommissionFields();
+    if(commissionStep===1 && !commissionDraft.name.trim()){alert('Enter a business/project name before continuing.');return false;}
+    return true;
+  }
+
+  async function commissionProject(){
+    captureCommissionFields();
+    if(!commissionDraft.name.trim())return;
+    const slug=commissionSlug(commissionDraft.name);
+    const code=(commissionDraft.projectCode||commissionCode(commissionDraft.name)).toUpperCase();
+    const id='project-'+slug+'-'+Date.now().toString(36);
+    const p={
+      id,
+      name:commissionDraft.name.trim(),
+      description:commissionDraft.description||commissionDraft.primaryOffer||'New commissioned project',
+      projectCode:code,
+      orderPrefix:commissionDraft.orderPrefix||code,
+      namespace:slug,
+      permanentNamespace:slug,
+      status:'development',
+      visibility:'private',
+      approved:true,
+      published:false,
+      characterLimit:Number(commissionDraft.characterLimit||32),
+      theme:'commissioned',
+      businessType:commissionDraft.businessType,
+      customerExperience:{
+        mode:commissionDraft.customerMode,
+        photoRequired:!!commissionDraft.photoRequired,
+        contactCapture:!!commissionDraft.contactCapture
+      },
+      products:commissionDraft.primaryOffer?[{id:'product-'+Date.now().toString(36),name:commissionDraft.primaryOffer,active:true,pricingMode:commissionDraft.pricingMode}]:[],
+      ownerAccess:{
+        enabled:!!commissionDraft.ownerPortal,
+        ownerName:commissionDraft.ownerName||'',
+        ownerEmail:commissionDraft.ownerEmail||'',
+        state:commissionDraft.ownerPortal?'configured':'disabled'
+      },
+      capabilities:{
+        customerRetention:!!commissionDraft.customerRetention,
+        notifications:!!commissionDraft.notifications
+      },
+      orders:[],customers:[],deployments:[],ledger:[],
+      createdAt:new Date().toISOString(),
+      commissionedAt:new Date().toISOString(),
+      commissioningVersion:'3.3'
+    };
+
+    // Use the same project collection the Engine already persists.
+    companies.push(p);
+    await saveCompanies();
+    localStorage.removeItem('blackFlagCommissionDraft');
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • private sea trial`});
+    closeProjectCommissioning();
+    await renderEngineRoom();
+    setTimeout(()=>openProjectEngineControl(id),50);
+  }
+
   async function openProjectEngineControl(id){
     const p=projectById(id);if(!p)return;
     clearGraphicsTransientUi();
@@ -5748,5 +5961,23 @@ document.addEventListener('click', (event) => {
     lockEngineSession();
   });
   migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
+
+
+  // v3.3 commissioning controls
+  if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',(e)=>{e.preventDefault();openProjectCommissioning();});
+  if($('closeProjectCommissioning')) $('closeProjectCommissioning').addEventListener('click',closeProjectCommissioning);
+  if($('commissionPrev')) $('commissionPrev').addEventListener('click',()=>{captureCommissionFields();commissionStep=Math.max(1,commissionStep-1);renderCommissioning();});
+  if($('commissionNext')) $('commissionNext').addEventListener('click',async()=>{
+    if(!validateCommissionStep())return;
+    if(commissionStep<6){commissionStep++;renderCommissioning();}
+    else await commissionProject();
+  });
+  if($('commissionSaveDraft')) $('commissionSaveDraft').addEventListener('click',saveCommissionDraft);
+  document.querySelectorAll('[data-commission-step]').forEach(b=>b.addEventListener('click',()=>{
+    captureCommissionFields(); commissionStep=Number(b.dataset.commissionStep); renderCommissioning();
+  }));
+
+
+  if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',(e)=>{e.stopImmediatePropagation();e.preventDefault();openProjectCommissioning();},true);
 
 })();

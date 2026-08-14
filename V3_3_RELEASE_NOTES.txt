@@ -1,0 +1,38 @@
+BLACK FLAG ENGINE v3.3 — PROJECT COMMISSIONING
+
+Structural milestone:
+Black Flag can now commission a new business/project from inside the Engine instead of requiring a project to be hand-coded first.
+
+New Commissioning workspace:
+1. Business Identity
+2. Business Model
+3. Products & Pricing
+4. Customer Experience
+5. Access & Services
+6. Private Sea Trial review
+
+Commissioning creates:
+- Unique project ID
+- Permanent project namespace
+- Project code/order prefix
+- Private/unpublished development state
+- Business profile
+- Initial product/service configuration
+- Customer-experience configuration
+- Owner Portal preparation
+- Optional customer-retention and notification capabilities
+- Empty isolated orders/customers/deployments/ledger collections
+- Commissioning timestamp/version
+- Audit event
+
+Safety/governance:
+- New projects default PRIVATE and UNPUBLISHED.
+- Publishing is not part of commissioning.
+- Project data is born inside its own namespace.
+- Owner configuration does not grant Engine/Captain authority.
+- Branding assets remain assignable later.
+- Existing projects and controls are preserved.
+
+Validation:
+JavaScript syntax, static IDs, CSS structure, commissioning workspace, project factory,
+private defaults, namespace creation, Sea Trial state and owner configuration all passed.

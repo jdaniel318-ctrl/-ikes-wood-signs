@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=3.2.1" />
+  <link rel="stylesheet" href="styles.css?v=3.3.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1083,7 +1083,7 @@
 
   <script src="platform_core.js?v=3.0.0"></script>
   <script src="platform_identity.js?v=3.0.0"></script>
-  <script src="app.js?v=3.2.1"></script>
+  <script src="app.js?v=3.3.0"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -1109,7 +1109,7 @@
 
 
 
-  <script src="captain.js?v=3.2.1"></script>
+  <script src="captain.js?v=3.3.0"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">
@@ -1127,6 +1127,40 @@
     <main id="captainCommandBody" class="captain-command-body"></main>
   </div>
 </div>
+
+
+<section id="projectCommissioningWorkspace" class="hidden commissioning-workspace" aria-hidden="true">
+  <div class="commissioning-shell">
+    <header class="commissioning-head">
+      <div>
+        <div class="eyebrow">PROJECT COMMISSIONING</div>
+        <h1>Commission New Project</h1>
+        <p>Create a sealed business namespace and prepare it for private Sea Trial.</p>
+      </div>
+      <button id="closeProjectCommissioning" class="compact-light-btn">← BACK TO ENGINE</button>
+    </header>
+
+    <div class="commission-progress" id="commissionProgress">
+      <button data-commission-step="1" class="active"><b>01</b><span>Identity</span></button>
+      <button data-commission-step="2"><b>02</b><span>Business</span></button>
+      <button data-commission-step="3"><b>03</b><span>Offer</span></button>
+      <button data-commission-step="4"><b>04</b><span>Experience</span></button>
+      <button data-commission-step="5"><b>05</b><span>Controls</span></button>
+      <button data-commission-step="6"><b>06</b><span>Sea Trial</span></button>
+    </div>
+
+    <div id="commissioningBody" class="commission-body"></div>
+
+    <footer class="commissioning-footer">
+      <div id="commissionDraftStatus" class="commission-draft-status">DRAFT • NOT PUBLISHED</div>
+      <div class="commission-actions">
+        <button id="commissionPrev" class="compact-light-btn">BACK</button>
+        <button id="commissionSaveDraft" class="compact-dark-btn">SAVE DRAFT</button>
+        <button id="commissionNext" class="compact-blue-btn">CONTINUE</button>
+      </div>
+    </footer>
+  </div>
+</section>
 
 </body>
 </html>
