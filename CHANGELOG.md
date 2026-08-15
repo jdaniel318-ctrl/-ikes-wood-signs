@@ -78,3 +78,14 @@ Corrected the Engine Room identity lockup after tracing a persistent Safari/GitH
 - Removed the oversized legacy embedded login artwork and duplicate brand treatment.
 - Kept the mission-critical project return logo self-contained in CSS to prevent missing-asset placeholders.
 - Added the primary lockup to the service-worker cache and bumped the cache baseline to v3.6.6.
+## v3.6.7 — Open Seas
+
+- Established the Captain-approved Black Flag identity system from the clean C+ brand direction.
+- Rebuilt the Engine/PIN lockup around the official full Black Flag mark and wordmark.
+- Rebuilt every project Return to Dark Sky control as one compact Black Flag round-mark button.
+- Removed the visible fallback text that was appearing inside the project return control.
+- Removed the obsolete third Black Flag mark asset; the platform now uses one primary lockup and one compact mark.
+- Added Black Flag favicon and Apple touch icon wiring.
+- Updated service-worker cache and asset inventory to the v3.6.7 baseline.
+- No intentional order, customer, project-isolation, PIN, or Captain-authority behavior changes.
+
