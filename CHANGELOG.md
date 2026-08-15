@@ -1,3 +1,12 @@
+# v3.8.17 — Wave 1: Fleet Visual System
+
+- Introduced shared Dark Sky surface tokens for hull, panels, inset wells, fields, borders, and readable text.
+- Replaced harsh light filler/empty states in Project Control with intentional dark inset wells.
+- Standardized dark administrative inputs and focus states across Project Control and Engine-owned project tools.
+- Added iPad readability floors for helper text, metadata, KPIs, activity rows, project cards, commissioning labels, inputs, progress steps, and actions.
+- Preserved deliberate light surfaces only where they communicate a real artboard/proof/customer-content purpose.
+- No routing, identity, commissioning state, authorization, order ownership, or fleet scrolling behavior changed in this wave.
+
 # v3.8.14 — Visual Capability Architecture
 
 - Replaced the three-preview-mode assumption with a composable Visual Presentation Capability contract.

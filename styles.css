@@ -9870,3 +9870,193 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .commission-status-line{justify-content:space-between}
 }
 \n\n/* ==========================================================\n   v3.8.16 — Fleet Project Rail & Visibility Repair\n   The fleet is a horizontal command rail: scalable, touch-first,\n   and no commissioned vessel can be hidden simply because the\n   original four-column grid filled the iPad width.\n   ========================================================== */\n.modern-project-command .project-fleet-rail-tools{\n  display:flex;align-items:center;justify-content:space-between;gap:12px;margin:11px 0 9px;padding:0 2px;color:#8fa2a6;font:800 10px Arial,sans-serif;letter-spacing:.04em\n}\n.modern-project-command .project-fleet-rail-buttons{display:flex;gap:7px}\n.modern-project-command .project-fleet-rail-buttons button{\n  width:44px;height:40px;display:grid;place-items:center;border:1px solid #31515e;border-radius:9px;background:#0a171d;color:#dce8e7;font-size:20px;font-weight:900;cursor:pointer\n}\n.modern-project-command .project-fleet-rail-buttons button:disabled{opacity:.28;cursor:default}\n.modern-project-command .project-command-cards{\n  display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(248px,280px)!important;grid-template-columns:none!important;gap:11px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:2px 4px 12px!important;scroll-snap-type:x proximity;scroll-padding-inline:4px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y\n}\n.modern-project-command .project-command-cards::-webkit-scrollbar{height:9px}\n.modern-project-command .project-command-cards::-webkit-scrollbar-track{background:#071116;border-radius:20px}\n.modern-project-command .project-command-cards::-webkit-scrollbar-thumb{background:#31515e;border-radius:20px}\n.modern-project-command .project-card{width:auto!important;scroll-snap-align:start}\n.modern-project-command .add-project-card{min-width:248px!important}\n@media(max-width:1180px){\n  .modern-project-command .project-command-cards{grid-template-columns:none!important;grid-auto-columns:minmax(255px,300px)!important}\n}\n@media(max-width:760px){\n  .modern-project-command .project-fleet-rail-tools{font-size:12px}\n  .modern-project-command .project-fleet-rail-buttons button{width:48px;height:44px}\n  .modern-project-command .project-command-cards{grid-template-columns:none!important;grid-auto-columns:min(84vw,310px)!important}\n}\n
+/* ==========================================================
+   v3.8.17 — Wave 1: Fleet Visual System
+   Shared dark command surfaces, iPad readability floors, and
+   intentional empty states across Engine / Project Control /
+   Commissioning. White remains allowed only when it is a
+   deliberate light content surface, not an accidental filler.
+   ========================================================== */
+:root{
+  --bf-hull:#061015;
+  --bf-hull-2:#08151b;
+  --bf-panel:#0b1a20;
+  --bf-panel-2:#102229;
+  --bf-well:#08171d;
+  --bf-well-2:#0c1f26;
+  --bf-line:#294854;
+  --bf-line-strong:#3a6675;
+  --bf-text:#edf4f3;
+  --bf-copy:#b8c8ca;
+  --bf-muted:#8ca2a8;
+  --bf-blue:#58afd0;
+  --bf-green:#79ce9d;
+  --bf-gold:#d9b866;
+  --bf-danger:#d58484;
+  --bf-light:#f4f3ee;
+  --bf-light-text:#23343b;
+  --bf-radius:16px;
+  --bf-shadow:0 12px 28px rgba(0,0,0,.16);
+}
+
+/* Shared command-deck shell treatment. */
+#enginePanel.modern-engine-room,
+#projectEngineControl,
+.commissioning-workspace,
+#engineConfigurationDock{
+  color:var(--bf-text);
+}
+
+/* Project Control: every content well should read as intentional. */
+#projectEngineControl .pc-empty-inline,
+#projectEngineControl .pc-clear-state,
+#projectEngineControl .pc-loading-state{
+  background:linear-gradient(145deg,var(--bf-well-2),var(--bf-well))!important;
+  color:var(--bf-copy)!important;
+  border:1px solid var(--bf-line)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+#projectEngineControl .pc-empty-inline{
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  padding:16px 18px!important;
+}
+#projectEngineControl .pc-clear-state strong{color:var(--bf-green)!important}
+#projectEngineControl .pc-order-pulse,
+#projectEngineControl .pc-attention-row{
+  min-height:58px;
+}
+
+/* Dark form wells inside Project Control and Engine-owned project tools. */
+#projectEngineControl input:not([type="checkbox"]):not([type="radio"]),
+#projectEngineControl select,
+#projectEngineControl textarea,
+#enginePanel .project-engine-control input:not([type="checkbox"]):not([type="radio"]),
+#enginePanel .project-engine-control select,
+#enginePanel .project-engine-control textarea{
+  background:var(--bf-well)!important;
+  color:var(--bf-text)!important;
+  border-color:var(--bf-line)!important;
+  min-height:50px;
+}
+#projectEngineControl input::placeholder,
+#projectEngineControl textarea::placeholder,
+#enginePanel .project-engine-control input::placeholder,
+#enginePanel .project-engine-control textarea::placeholder{color:#70888f!important;opacity:1}
+#projectEngineControl input:focus,
+#projectEngineControl select:focus,
+#projectEngineControl textarea:focus,
+#enginePanel .project-engine-control input:focus,
+#enginePanel .project-engine-control select:focus,
+#enginePanel .project-engine-control textarea:focus{
+  outline:none!important;
+  border-color:var(--bf-blue)!important;
+  box-shadow:0 0 0 3px rgba(88,175,208,.16)!important;
+}
+
+/* Engine fleet surfaces: prevent bright filler from sneaking into dark cards. */
+#enginePanel .modern-project-command .project-card,
+#enginePanel .modern-project-command .add-project-card,
+#enginePanel .fleet-health-panel,
+#enginePanel .engine-fleet-health,
+#enginePanel .engine-status-card{
+  color:var(--bf-text);
+}
+#enginePanel .modern-project-command .project-card .empty,
+#enginePanel .modern-project-command .pc-empty-inline,
+#enginePanel .engine-empty-state{
+  background:linear-gradient(145deg,var(--bf-well-2),var(--bf-well))!important;
+  color:var(--bf-copy)!important;
+  border:1px solid var(--bf-line)!important;
+  border-radius:12px!important;
+}
+
+/* Commissioning is a Dark Sky command surface, not a light form dropped on top. */
+.commissioning-workspace{
+  --commission-field-bg:var(--bf-well);
+  --commission-field-border:var(--bf-line);
+}
+.commissioning-workspace .commission-panel,
+.commissioning-workspace .commission-callout{
+  border-color:var(--bf-line)!important;
+}
+.commissioning-workspace .commission-grid input,
+.commissioning-workspace .commission-grid select,
+.commissioning-workspace .commission-grid textarea{
+  background:var(--commission-field-bg)!important;
+  color:var(--bf-text)!important;
+  border-color:var(--commission-field-border)!important;
+}
+.commissioning-workspace .commission-grid input:focus,
+.commissioning-workspace .commission-grid select:focus,
+.commissioning-workspace .commission-grid textarea:focus{
+  border-color:var(--bf-blue)!important;
+  box-shadow:0 0 0 3px rgba(88,175,208,.16)!important;
+}
+.commissioning-workspace .commission-validation{
+  color:#f1cece!important;
+  background:#251518!important;
+  border-color:#925b60!important;
+}
+
+/* Wave-1 typography floor: iPad command text should be readable at arm's length. */
+@media (min-width:768px) and (max-width:1366px){
+  #projectEngineControl,
+  #enginePanel.modern-engine-room,
+  .commissioning-workspace{
+    -webkit-text-size-adjust:100%;
+  }
+  #projectEngineControl p,
+  #projectEngineControl .helper,
+  #projectEngineControl .pc-empty-inline,
+  #projectEngineControl .pc-clear-state span,
+  #projectEngineControl .pc-activity-row small,
+  #projectEngineControl .pc-activity-row time,
+  #projectEngineControl .pc-order-pulse small,
+  #projectEngineControl .pc-attention-row small{
+    font-size:max(14px, .9rem)!important;
+    line-height:1.48!important;
+  }
+  #projectEngineControl label,
+  #projectEngineControl .pc-panel-hint,
+  #projectEngineControl .pc-project-profile dt,
+  #projectEngineControl .pc-kpi-card>span,
+  #projectEngineControl .pc-overview-eyebrow,
+  #projectEngineControl .pc-module-hero span{
+    font-size:12px!important;
+    line-height:1.35!important;
+  }
+  #projectEngineControl .pc-kpi-card small{font-size:14px!important}
+  #projectEngineControl .pc-kpi-card strong{font-size:24px!important}
+  #projectEngineControl .pc-attention-row strong,
+  #projectEngineControl .pc-order-pulse strong,
+  #projectEngineControl .pc-activity-row strong{font-size:15px!important}
+  #projectEngineControl .pc-project-profile dd{font-size:14px!important}
+
+  #enginePanel.modern-engine-room p,
+  #enginePanel.modern-engine-room small,
+  #enginePanel.modern-engine-room .helper{font-size:13px!important;line-height:1.45!important}
+  #enginePanel.modern-engine-room .modern-project-command .project-card>p{font-size:12px!important;line-height:1.4!important}
+  #enginePanel.modern-engine-room .modern-project-command .project-kpis small{font-size:9px!important}
+  #enginePanel.modern-engine-room .modern-project-command .project-kpis strong{font-size:14px!important}
+  #enginePanel.modern-engine-room .modern-project-command .project-card-actions button{font-size:10px!important;min-height:44px!important}
+
+  .commissioning-workspace .commission-grid label{font-size:12px!important;line-height:1.35!important}
+  .commissioning-workspace .commission-grid input,
+  .commissioning-workspace .commission-grid select,
+  .commissioning-workspace .commission-grid textarea{font-size:16px!important;min-height:54px!important}
+  .commissioning-workspace .commission-panel>p,
+  .commissioning-workspace .commission-callout span{font-size:15px!important;line-height:1.5!important}
+  .commissioning-workspace .commission-progress button span{font-size:14px!important}
+  .commissioning-workspace .commission-progress button b{font-size:11px!important}
+  .commissioning-workspace .commission-action{font-size:13px!important;min-height:54px!important}
+}
+
+/* Light surfaces remain legal, but only as deliberate content/artboard surfaces. */
+.bf-intentional-light-surface{
+  background:var(--bf-light)!important;
+  color:var(--bf-light-text)!important;
+  border:1px solid #d8d8d0!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.10)!important;
+}

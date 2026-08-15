@@ -2800,7 +2800,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.16'
+      commissioningVersion:'3.8.17'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6439,7 +6439,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.16',
+    version:'3.8.17',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -6865,7 +6865,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.16.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • fleet project rail + commissioned project visibility repair`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.17.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • fleet project rail + commissioned project visibility repair`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -7038,7 +7038,7 @@ document.addEventListener('click', (event) => {
   migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
 
 
-  // v3.8.16 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().
+  // v3.8.17 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().
   // This avoids stale or missing handlers when the workspace DOM changes.
 
 

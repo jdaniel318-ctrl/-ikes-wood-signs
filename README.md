@@ -23,3 +23,6 @@ Passing Sea Trials does **not** certify GitHub Pages/browser-local Dark Sky for 
 
 ## v3.8.14 focus
 Customer-facing previews now declare business-specific geometry instead of assuming every product is a flat sign. The Add Project fleet tile also uses the same commissioning path as the Engine toolbar. See `PROJECT_SPECIFIC_PREVIEW_AUDIT.md`.
+
+## v3.8.17 Wave 1 — Fleet Visual System
+Dark Sky now carries a shared command-surface hierarchy and iPad readability floor across Engine, Project Control, and Commissioning. New administrative empty states and fields should inherit the shared system rather than introducing one-off white filler surfaces.
