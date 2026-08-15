@@ -1123,6 +1123,30 @@
     }
   }
 
+  async function renderFleetHealth(){
+    const box=$('engineFleetHealth'); if(!box)return;
+    const list=projects();
+    let activeDeployments=0, attentionProjects=0, pendingOwners=0, openOrders=0;
+    const flags=[];
+    for(const p of list){
+      const snap=await projectControlSnapshot(p);
+      activeDeployments+=snap.activeDeployments.length;
+      openOrders+=snap.open.length;
+      if(snap.attention.length){attentionProjects++; flags.push({p,issue:snap.attention[0]});}
+      const owner=ensureProjectGovernance(p).ownerAccess;
+      if(owner?.status==='invited')pendingOwners++;
+    }
+    box.innerHTML=`<section class="fleet-health-head"><div><span>FLEET HEALTH</span><h3>Operational picture</h3><p>One glance across every project before you enter a specific control center.</p></div><strong class="fleet-health-state ${attentionProjects?'watch':'clear'}">${attentionProjects?'WATCH':'CLEAR'}</strong></section>
+      <div class="fleet-health-kpis">
+        <article><span>Projects</span><strong>${list.length}</strong><small>${attentionProjects} need attention</small></article>
+        <article><span>Open workload</span><strong>${openOrders}</strong><small>Across the fleet</small></article>
+        <article><span>Active deployments</span><strong>${activeDeployments}</strong><small>Outposts sailing</small></article>
+        <article><span>Owner invites</span><strong>${pendingOwners}</strong><small>Awaiting claim</small></article>
+      </div>
+      <div class="fleet-health-flags">${flags.length?flags.slice(0,4).map(({p,issue})=>`<button type="button" data-fleet-health-project="${escapeHtml(p.id)}"><span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(issue.title)}</small></span><b>OPEN →</b></button>`).join(''):`<div class="fleet-health-clear"><strong>ALL PROJECTS CLEAR</strong><span>No rule-based project warnings are active.</span></div>`}</div>`;
+    box.querySelectorAll('[data-fleet-health-project]').forEach(btn=>btn.addEventListener('click',()=>openProjectEngineControl(btn.dataset.fleetHealthProject)));
+  }
+
   async function renderProjectCommand(){
     const box=$('projectCommandCards');if(!box)return;
     const list=projects();
@@ -1175,6 +1199,7 @@
       p.publish={status:next};p.visibility=t.checked?'published':'engine_only';await saveCompanies();logActivity(p.id,t.checked?'Project published':'Project unpublished');await renderProjectCommand();
     }));
     const add=$('addProjectCard');if(add)add.addEventListener('click',openAddProject);
+    await renderFleetHealth();
   }
 
   const DEPLOYMENT_PROFILES={
@@ -1443,6 +1468,11 @@
     const ownerState=ensureProjectGovernance(p).ownerAccess.status;
     if(p.ownerAccess?.enabled && ownerState!=='active') attention.push({level:'info',title:'Owner access not active',detail:p.ownerAccess?.ownerEmail||'Invitation not completed',tab:'owner'});
     if(!(p.products||[]).length) attention.push({level:'setup',title:'No products or services configured',detail:'Add the first offer before launch.',tab:'products'});
+    if((p.products||[]).length && !(p.products||[]).some(x=>x.published)) attention.push({level:'info',title:'No customer-ready offers',detail:'Products exist, but none are published.',tab:'products'});
+    if(['test','live'].includes(p.publish?.status) && !deployments.length) attention.push({level:'watch',title:'No deployment commissioned',detail:'This project is exposed beyond development without an outpost record.',tab:'deployment'});
+    if(p.publish?.status==='live' && !activeDeployments.length) attention.push({level:'watch',title:'Live project has no active deployment',detail:'Review publishing and deployment state.',tab:'deployment'});
+    if(p.payments?.enabled && (!p.payments?.provider || p.payments.provider==='not_configured')) attention.push({level:'watch',title:'Payments enabled without provider',detail:'Select a payment provider or disable payment capability.',tab:'payments'});
+    if(!(p.workflow||[]).length) attention.push({level:'setup',title:'Workflow not configured',detail:'Define how orders move through the business.',tab:'workflow'});
 
     const status=attention.some(x=>x.level==='watch')?'WATCH':(p.publish?.status==='live'?'OPERATING':'SETUP');
     return {
@@ -1582,6 +1612,16 @@
     $('projectTabContent')?.querySelectorAll('[data-project-jump]').forEach(btn=>{
       btn.addEventListener('click',()=>renderProjectTab(p.id,btn.dataset.projectJump));
     });
+  }
+
+  function projectModuleHero(p,eyebrow,title,copy,meta=''){
+    return `<section class="pc-module-hero"><div><span>${escapeHtml(eyebrow)}</span><h4>${escapeHtml(title)}</h4><p>${escapeHtml(copy)}</p></div>${meta?`<div class="pc-module-meta">${meta}</div>`:''}</section>`;
+  }
+
+  function projectLifecycleDisplay(p){
+    const state=window.BlackFlagV3Core?.lifecycle?.(p)||p.lifecycle?.state||'draft';
+    const labels={draft:'Draft',configured:'Configured',owner_invited:'Owner Invited',owner_active:'Owner Active',deployment_ready:'Deployment Ready',testing:'Testing',live:'Live',suspended:'Suspended',relationship_ended:'Relationship Ended',archived:'Archived'};
+    return labels[state]||String(state).replaceAll('_',' ');
   }
 
   function projectTabsHtml(p,tab){
@@ -1774,30 +1814,30 @@
       </div>
     </div>`;
 
-    if(tab==='products') return `<div class="pec-card"><div class="pec-title-row"><h4>Products</h4><button id="addProductBtn" class="secondary-btn small">ADD PRODUCT</button></div>
+    if(tab==='products') return `${projectModuleHero(p,'OPERATE','Products & Services','Manage the offers this business can sell and whether each offer is ready for customers.',`<span>${products.length} OFFERS</span>`)}<div class="pec-card"><div class="pec-title-row"><h4>Offer Registry</h4><button id="addProductBtn" class="secondary-btn small">ADD PRODUCT</button></div>
       <div class="product-list">${products.map(pr=>`<div class="product-row"><div><strong>${escapeHtml(pr.name)}</strong><small>${pr.characterLimit?`${pr.characterLimit} char max`:'Character limit unset'}</small></div><label><input data-product-publish="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}> Published</label></div>`).join('')}</div></div>`;
-    if(tab==='experience') return `<div class="pec-card"><h4>Customer Experience</h4>
+    if(tab==='experience') return `${projectModuleHero(p,'EXPERIENCE','Customer Experience','Control the customer-facing steps this project requires before an order is accepted.')}<div class="pec-card"><h4>Experience Rules</h4>
       <label class="admin-toggle-row compact-toggle"><span><strong>Photo step</strong><small>Require product photo.</small></span><input id="ptPhoto" type="checkbox" ${p.customerExperience?.photoRequired!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Preview approval</strong><small>Require customer approval.</small></span><input id="ptPreview" type="checkbox" ${p.customerExperience?.previewApproval!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Custom colors</strong><small>Allow custom color picker.</small></span><input id="ptColors" type="checkbox" ${p.customization?.allowCustomColors!==false?'checked':''}></label>
       <button id="saveExperienceTab" class="primary-btn small">SAVE EXPERIENCE</button></div>`;
-    if(tab==='ai') return `<div class="pec-card"><h4>AI Product Recognition</h4><p class="helper">Recognition suggests structured attributes. Project pricing rules remain authoritative.</p>
+    if(tab==='ai') return `${projectModuleHero(p,'SYSTEM','AI Recognition','Configure assistive recognition without giving AI authority over pricing or project policy.')}<div class="pec-card"><h4>Recognition Policy</h4><p class="helper">Recognition suggests structured attributes. Project pricing rules remain authoritative.</p>
       <label>Mode<select id="ptAI"><option value="off">Off</option><option value="assist">Assist</option><option value="automatic">Automatic</option></select></label>
       <label>Minimum confidence<input id="ptConfidence" class="text-input" type="number" min=".5" max=".99" step=".01" value="${Number(p.ai?.minConfidence||.9).toFixed(2)}"></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Require scale reference</strong><small>Recommended for physical measurements.</small></span><input id="ptScale" type="checkbox" ${p.ai?.requireScaleReference!==false?'checked':''}></label>
       <button id="saveAITab" class="primary-btn small">SAVE AI POLICY</button></div>`;
-    if(tab==='workflow') return `<div class="pec-card"><h4>Workflow</h4><p class="helper">One stage per line.</p><textarea id="ptWorkflow" rows="7">${escapeHtml((p.workflow||DEFAULT_BUSINESS_CONFIG.orderStatuses).join('\n'))}</textarea><button id="saveWorkflowTab" class="primary-btn small">SAVE WORKFLOW</button></div>`;
-    if(tab==='publishing') return `<div class="pec-card"><h4>Publishing</h4><label>Project status<select id="ptPublish"><option value="development">Development — engine only</option><option value="test">Test</option><option value="live">Published / Live</option><option value="paused">Paused</option></select></label><p class="helper">Product-level publish controls are in Products.</p><button id="savePublishingTab" class="primary-btn small">SAVE PUBLISHING</button></div>`;
+    if(tab==='workflow') return `${projectModuleHero(p,'OPERATE','Workflow','Define the operating stages that move work from new request to completion.')}<div class="pec-card"><h4>Order Stages</h4><p class="helper">One stage per line.</p><textarea id="ptWorkflow" rows="7">${escapeHtml((p.workflow||DEFAULT_BUSINESS_CONFIG.orderStatuses).join('\n'))}</textarea><button id="saveWorkflowTab" class="primary-btn small">SAVE WORKFLOW</button></div>`;
+    if(tab==='publishing') return `${projectModuleHero(p,'SYSTEM','Publishing','Control whether this business remains private, enters test waters, or is available to customers.',`<span>${escapeHtml(projectLifecycleDisplay(p))}</span>`)}<div class="pec-card"><h4>Project Availability</h4><label>Project status<select id="ptPublish"><option value="development">Development — engine only</option><option value="test">Test</option><option value="live">Published / Live</option><option value="paused">Paused</option></select></label><p class="helper">Product-level publish controls are in Products.</p><button id="savePublishingTab" class="primary-btn small">SAVE PUBLISHING</button></div>`;
     if(tab==='orders') return `<div class="pec-orders-shell"><div class="pec-orders-heading"><div><small>ORDER COMMAND</small><h4>Project Orders</h4><p>Current work, customer contact, request details, and recorded value for this project.</p></div></div><div id="ptOrders">Loading…</div></div>`;
     if(tab==='ledger') {
       const ledger=projectLedger(p.id);
       const rev=ledger.reduce((s,x)=>s+(Number(x.revenue)||0),0), cost=ledger.reduce((s,x)=>s+(Number(x.materialCost)||0)+(Number(x.otherDirectCost)||0),0);
-      return `<div class="ledger-summary"><div><span>Completed</span><strong>${ledger.length}</strong></div><div><span>Revenue</span><strong>$${rev.toFixed(2)}</strong></div><div><span>Direct Costs</span><strong>$${cost.toFixed(2)}</strong></div><div><span>Est. Gross Profit</span><strong>$${(rev-cost).toFixed(2)}</strong></div></div>
+      return `${projectModuleHero(p,'INSIGHT','Financial Overview','Read the completed-order ledger and direct-cost picture Dark Sky can verify today.')}<div class="ledger-summary"><div><span>Completed</span><strong>${ledger.length}</strong></div><div><span>Revenue</span><strong>$${rev.toFixed(2)}</strong></div><div><span>Direct Costs</span><strong>$${cost.toFixed(2)}</strong></div><div><span>Est. Gross Profit</span><strong>$${(rev-cost).toFixed(2)}</strong></div></div>
       <div class="pec-card"><h4>Completed Order Ledger</h4><p class="helper">Core financial history lives in Black Flag. Project views may be read-only in the future.</p>${ledger.length?ledger.slice().reverse().map(x=>`<div class="ledger-row"><strong>${escapeHtml(x.orderId)}</strong><span>${new Date(x.completedAt).toLocaleDateString()}</span><span>$${Number(x.revenue).toFixed(2)}</span><span>${escapeHtml(x.paymentStatus)}</span></div>`).join(''):'<p class="helper">No completed orders posted yet.</p>'}</div>`;
     }
     if(tab==='payments'){
       const pay=p.payments||{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false};
-      return `<div class="pec-grid">
+      return `${projectModuleHero(p,'SYSTEM','Payments','Configure how this project will connect to a payment provider without making Dark Sky the bank.')}<div class="pec-grid">
         <article class="pec-card payment-structure-card">
           <h4>Pay by App</h4>
           <p class="helper">Engine configuration only for now. Nothing is exposed to customers yet.</p>
@@ -1817,7 +1857,7 @@
     }
     if(tab==='permissions'){
       const pm=p.permissions||{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false};
-      return `<div class="pec-card"><h4>Project Admin Access</h4>
+      return `${projectModuleHero(p,'ACCESS','Permissions','Define what project administrators may see and change inside this business.')}<div class="pec-card"><h4>Project Admin Access</h4>
         <label class="admin-toggle-row compact-toggle"><span><strong>Orders</strong></span><input id="permOrdersView" type="checkbox" ${pm.ordersView?'checked':''}></label>
         <label class="admin-toggle-row compact-toggle"><span><strong>Update order status</strong></span><input id="permOrdersUpdate" type="checkbox" ${pm.ordersUpdate?'checked':''}></label>
         <label class="admin-toggle-row compact-toggle"><span><strong>Ledger</strong></span><input id="permLedgerView" type="checkbox" ${pm.ledgerView?'checked':''}></label>
@@ -1862,7 +1902,7 @@
         </article>`;
       }).join('');
 
-      return `<div class="pec-card customer-history-engine">
+      return `${projectModuleHero(p,'COMMAND','Customers','Review retained project customer history, repeat business, and the latest known purchase context.',`<span>${rows.length} CUSTOMERS</span>`)}<div class="pec-card customer-history-engine">
         <div class="pec-title-row">
           <div>
             <h4>Customer History</h4>
@@ -2000,7 +2040,7 @@
 
     if(tab==='notifications'){
       const n=p.notifications||{customerConfirmationEmail:false};
-      return `<div class="pec-card">
+      return `${projectModuleHero(p,'SYSTEM','Notifications','Choose which customer messages Dark Sky may send for this project.')}<div class="pec-card">
         <h4>Customer Notifications</h4>
         <label class="admin-toggle-row compact-toggle">
           <span><strong>Customer confirmation email</strong><small>Black Flag controls this feature separately for each project.</small></span>
@@ -2647,7 +2687,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.6'
+      commissioningVersion:'3.8.7'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6565,7 +6605,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.6.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • immutable project identity`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.7.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • operational coherence`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
