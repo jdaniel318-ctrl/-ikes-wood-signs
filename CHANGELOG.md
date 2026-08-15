@@ -47,3 +47,7 @@ Stage 1 established the hull and bulkheads: namespaces, policy, lifecycle, audit
 ## 2.9.x lineage
 
 The 2.9 series was the experimental shipyard where the original Ike's Wood Signs application evolved into a multi-project Engine, Pirate Mode, Captain's Quarters, deployment fleet, Owner Portal concepts, and the modern Engine Room visual system. Those historical implementation comments remain in source where they help explain compatibility layers, but v3 is the active Black Flag platform line.
+## v3.6.3 — Engine Mark Repair
+
+Corrected the Engine Room identity lockup after tracing a persistent Safari/GitHub Pages placeholder to a legacy two-image structure. Removed the duplicate/shrunken reference-artwork mark from the entry lockup, removed the separately loaded platform-icon dependency from that position, and replaced both with one self-contained Black Flag mark that occupies the full identity space beside “Engine Room.” Application behavior is unchanged.
+

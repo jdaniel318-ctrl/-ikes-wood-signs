@@ -8569,3 +8569,31 @@ body.project-mode #returnToEngineBtn.black-flag-project-engine-return:focus-visi
 
 /* v3.6.2 — SPRING CLEANING
    Documentation/cache/package maintenance release. No new visual layer required. */
+
+
+/* v3.6.3 — ENGINE MARK REPAIR
+   One self-contained Black Flag mark owns the full Engine Room identity slot.
+   This intentionally overrides the older two-image lockup. */
+#blackFlagEntryGate .black-flag-engine-brand{
+  justify-content:center;
+}
+#blackFlagEntryGate .bf-engine-title-lockup{
+  gap:18px;
+}
+#blackFlagEntryGate .bf-engine-title-lockup>img.bf-engine-primary-mark{
+  width:104px!important;
+  height:104px!important;
+  min-width:104px!important;
+  flex:0 0 104px!important;
+  object-fit:contain!important;
+  border-radius:0!important;
+  background:transparent!important;
+  padding:0!important;
+  border:0!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.30)!important;
+}
+@media(max-width:680px){
+  #blackFlagEntryGate .bf-engine-title-lockup>img.bf-engine-primary-mark{
+    width:88px!important;height:88px!important;min-width:88px!important;flex-basis:88px!important;
+  }
+}

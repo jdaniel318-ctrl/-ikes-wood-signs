@@ -1,6 +1,6 @@
 # Black Flag Engine — Dark Sky
 
-**Current release:** v3.6.2 — Spring Cleaning
+**Current release:** v3.6.3 — Engine Mark Repair
 
 Dark Sky is the Black Flag multi-project business platform. The Engine provides shared command, project commissioning, owner/device boundaries, project-scoped operations, telemetry, recovery, and Captain-level governance while preserving each business project's independent identity.
 
