@@ -1,3 +1,14 @@
+## v3.8.4 — Command Navigation Refit
+
+- Replaced the dense sixteen-button Project Control rack with a two-level command navigation system.
+- Kept Overview, Orders, and Customers permanently one-tap accessible.
+- Added primary command zones for Operate, Insight, Experience, Access, and System.
+- Added contextual secondary command bays that reveal only the controls relevant to the selected zone.
+- Added compact functional icon cues and stronger active/expanded states for faster visual scanning.
+- Preserved the mission-critical capture-phase navigation layer and every existing Project Control route.
+- Added responsive iPad/phone behavior without changing routing semantics.
+- Cache/version references advanced to v3.8.4.
+
 ## v3.8.3 — Identity Sync & Order Command Refit
 
 - Engine Project Command now refreshes immediately when Project Control closes, so business-name changes appear without requiring a page reload or unrelated Engine refresh.

@@ -2012,10 +2012,38 @@
     return '';
   }
 
+  const PROJECT_COMMAND_GROUPS={
+    products:'operate',workflow:'operate',deployment:'operate',
+    analytics:'insight',ledger:'insight',
+    marketing:'experience',experience:'experience',
+    owner:'access',permissions:'access',
+    payments:'system',notifications:'system',publishing:'system',ai:'system'
+  };
+
+  function syncProjectCommandNavigation(tab,{expandedGroup=null}={}){
+    const nav=$('projectTabs');
+    if(!nav)return;
+    const activeGroup=PROJECT_COMMAND_GROUPS[tab]||null;
+    const visibleGroup=expandedGroup===undefined?activeGroup:expandedGroup;
+    $$('#projectTabs [data-project-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.projectTab===tab));
+    $$('#projectTabs [data-project-group]').forEach(btn=>{
+      const group=btn.dataset.projectGroup;
+      btn.classList.toggle('active',group===activeGroup);
+      btn.classList.toggle('expanded',group===visibleGroup);
+      btn.setAttribute('aria-expanded',group===visibleGroup?'true':'false');
+    });
+    $$('#projectTabs [data-project-subnav]').forEach(row=>{
+      const show=row.dataset.projectSubnav===visibleGroup;
+      row.classList.toggle('hidden',!show);
+      row.setAttribute('aria-hidden',show?'false':'true');
+    });
+    nav.dataset.openGroup=visibleGroup||'';
+  }
+
   async function renderProjectTab(id,tab){
     const p=projectById(id), box=$('projectTabContent');if(!p||!box)return;
     box.innerHTML=projectTabsHtml(p,tab);
-    $$('#projectTabs [data-project-tab]').forEach(b=>b.classList.toggle('active',b.dataset.projectTab===tab));
+    syncProjectCommandNavigation(tab,{expandedGroup:PROJECT_COMMAND_GROUPS[tab]||null});
     bindProjectControlJumpLinks(p);
     if(tab==='overview'){await renderProjectControlOverview(p);return;}
     if(tab==='analytics'){await renderProjectAnalytics(p);return;}
@@ -2619,7 +2647,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.3'
+      commissioningVersion:'3.8.4'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6133,8 +6161,20 @@ The full order and approved media remain stored with this project.`;
     // Navigation that must survive every project/template/control-center refit.
     // Capture phase intentionally owns these routes before feature-level handlers.
     document.addEventListener('click',event=>{
-      const target=event.target?.closest?.('#projectTabs [data-project-tab],#closeProjectEngineControl,#returnToEngineBtn');
+      const target=event.target?.closest?.('#projectTabs [data-project-tab],#projectTabs [data-project-group],#closeProjectEngineControl,#returnToEngineBtn');
       if(!target)return;
+
+      if(target.matches('#projectTabs [data-project-group]')){
+        event.preventDefault();
+        event.stopPropagation();
+        const nav=$('projectTabs');
+        const group=target.dataset.projectGroup;
+        if(!nav||!group)return;
+        const next=nav.dataset.openGroup===group?null:group;
+        const current=$('#projectTabs [data-project-tab].active')?.dataset.projectTab||'overview';
+        syncProjectCommandNavigation(current,{expandedGroup:next});
+        return;
+      }
 
       if(target.matches('#projectTabs [data-project-tab]')){
         event.preventDefault();
@@ -6525,7 +6565,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.3.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • immutable project identity`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.4.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • immutable project identity`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
