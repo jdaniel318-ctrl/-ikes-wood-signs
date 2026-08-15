@@ -68,3 +68,13 @@ Corrected the Engine Room identity lockup after tracing a persistent Safari/GitH
 - Removed the return control from the legacy `black-flag` wildcard class path that previously made the control vulnerable to project-isolation CSS.
 - Applied the same embedded mark treatment to other platform-icon UI surfaces.
 - No order, project, PIN, customer, or Captain behavior changed.
+
+
+## v3.6.6 — Worthy Vessel
+- Rebuilt Black Flag identity usage around the Captain-approved brand board.
+- Added a dedicated primary Black Flag platform lockup for Engine and PIN surfaces.
+- Standardized one compact Black Flag mark for all project return-to-Dark-Sky controls.
+- Replaced the malformed legacy `black_flag_mark_clean.png` with the canonical compact mark.
+- Removed the oversized legacy embedded login artwork and duplicate brand treatment.
+- Kept the mission-critical project return logo self-contained in CSS to prevent missing-asset placeholders.
+- Added the primary lockup to the service-worker cache and bumped the cache baseline to v3.6.6.
