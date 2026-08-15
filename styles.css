@@ -8478,20 +8478,6 @@ body.dark-flag-pirate-mode .engine-config-brandline>img{filter:drop-shadow(0 0 1
 #enginePanel .engine-room-icon *,
 #enginePanel .engine-control-icon *{visibility:hidden!important}
 
-/* Persistent restrained Black Flag signature in Engine only. */
-.bf-engine-signature{
-  position:fixed;left:18px;bottom:16px;z-index:90;
-  display:flex;align-items:center;gap:6px;
-  padding:5px 8px;border:1px solid rgba(64,94,103,.65);
-  border-radius:18px;background:rgba(7,19,24,.86);
-  backdrop-filter:blur(6px);
-  color:#718d95;font:900 7px Arial,sans-serif;letter-spacing:.12em;
-  pointer-events:none;
-}
-.bf-engine-signature img{
-  width:20px;height:20px;border-radius:50%;background:var(--bf-field);object-fit:contain;
-}
-
 /* The return-to-Engine mark MUST remain visible inside every project shell. */
 .dark-sky-return-control{
   position:fixed!important;
@@ -8548,7 +8534,6 @@ body:not(.engine-workspace-open) .customer-shell .bf-section-brand{
 
 @media(max-width:720px){
   .bf-engine-title-lockup>img{width:48px;height:48px}
-  .bf-engine-signature{left:10px;bottom:10px}
   .dark-sky-return-control{
     width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
     max-width:42px!important;max-height:42px!important;
@@ -8946,3 +8931,8 @@ body.dark-flag-pirate-mode.engine-workspace-open #projectEngineControl .project-
 body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engine-configuration-head{
   background:linear-gradient(180deg,#110d0a 82%,rgba(17,13,10,.94))!important;
 }
+
+
+/* v3.7.4 — Engine signature cleanup
+   Redundant fixed BLACK FLAG badge removed from inside the Engine.
+   Project and Control Center return marks remain unchanged. */

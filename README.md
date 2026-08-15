@@ -1,10 +1,10 @@
 # Dark Sky — Black Flag Business Command Platform
 
-**Current release:** v3.7.2 — Cut the Mooring Lines
+**Current release:** v3.7.4 — Cut the Mooring Lines
 
 Dark Sky is the Black Flag multi-project business platform. Black Flag owns shared command, project commissioning, platform identity, project boundaries, telemetry, recovery, owner/device policy, and Captain governance. Each business remains an independent project with its own brand, workflow, data, media, settings, and authority.
 
-## What changed in v3.7.2
+## What changed in v3.7.4
 
 This release moves the underlying application away from its original Ike-specific storage assumptions. The active platform database and local backup keys are now Black Flag/Dark Sky named, project records are expected to carry an explicit `projectId`, project-admin PINs and lockout state are project scoped, project feature settings are sourced from the owning project, and fleet/order reads no longer silently treat unscoped records as Ike's.
 

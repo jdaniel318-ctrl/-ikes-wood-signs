@@ -32,7 +32,7 @@ self.addEventListener('activate',event=>{
         keys.filter(k=>(
           k.startsWith('ikes-wood-signs-') ||
           k.startsWith('workshop-engine-') ||
-          k.startsWith('black-flag-engine-') ||
+          k.startsWith('black-flag-v3-7-4') ||
           k.startsWith('dark-sky-')
         ) && k!==CACHE).map(k=>caches.delete(k))
       ))
