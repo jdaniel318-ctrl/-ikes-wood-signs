@@ -1,15 +1,92 @@
-/* Dark Sky / Black Flag v3.8.12 — Project-Specific Preview Foundations */
+/* Dark Sky / Black Flag v3.8.13 — Visual Capability Architecture */
 (function(g){
 'use strict';
-const SCHEMA=6, POLICY='3.4', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
+const SCHEMA=7, POLICY='3.5', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
 const STATES=['draft','configured','owner_invited','owner_active','deployment_ready','testing','live','suspended','relationship_ended','archived'];
 const FLEET_FOUNDATION=Object.freeze({
  version:'1.0',
  doctrine:'Engine is the first ship, not the fleet.',
- reusable:Object.freeze(['immutable_identity','authorization','tenant_isolation','lifecycle_contracts','audit_log','telemetry','recovery_snapshots','deployment_boundaries','integration_contracts']),
+ reusable:Object.freeze(['immutable_identity','authorization','tenant_isolation','lifecycle_contracts','audit_log','telemetry','recovery_snapshots','deployment_boundaries','integration_contracts','visual_capability_contracts']),
  engineSpecific:Object.freeze(['business_projects','orders','customers','products_services','project_control','business_deployments']),
  futureShipRule:'Reuse Dark Sky primitives without inheriting Engine-specific workflows or UI.'
 });
+
+const VISUAL_CAPABILITY_CATALOG=Object.freeze({
+ input:Object.freeze({
+  photo_upload:{label:'Photo Upload',description:'Customer or staff supplies a product photo.',status:'available'},
+  camera_capture:{label:'Camera Capture',description:'Capture a new image from the device camera.',status:'available'},
+  multi_photo:{label:'Multiple Photos',description:'Use front, side, back, or detail images.',status:'foundation'},
+  reference_image:{label:'Reference Image',description:'Keep an inspiration/reference image separate from the product photo.',status:'foundation'}
+ }),
+ placement:Object.freeze({
+  flat_surface:{label:'Flat Surface',description:'Signs, plaques, prints, boards, and other planar products.',status:'available'},
+  cylindrical_wrap:{label:'Cylindrical Wrap',description:'Mugs, tumblers, bottles, and other round products.',status:'available'},
+  curved_surface:{label:'Curved Surface',description:'Bowls, helmets, curved panels, and irregular rounded products.',status:'foundation'},
+  front_back:{label:'Front / Back Placement',description:'Garments, bags, cards, and two-sided products.',status:'foundation'},
+  multi_zone:{label:'Multi-Zone Placement',description:'Several independent artwork zones on one product.',status:'foundation'},
+  bounded_area:{label:'Bounded Print Area',description:'Artwork stays inside a defined printable region.',status:'foundation'},
+  perspective_surface:{label:'Perspective Surface',description:'Place artwork on an angled photographed surface.',status:'foundation'},
+  freeform_overlay:{label:'Freeform Overlay',description:'Move and size artwork freely over a customer photo.',status:'foundation'},
+  template_overlay:{label:'Template Overlay',description:'Use business-defined placement guides or print zones.',status:'foundation'},
+  card_overlay:{label:'Card / Message Overlay',description:'Place a message card or label over a product/arrangement image.',status:'available'},
+  environment_placement:{label:'Room / Environment Placement',description:'Preview décor, signs, or products inside a room or scene.',status:'foundation'},
+  vehicle_equipment:{label:'Vehicle / Equipment Placement',description:'Preview decals, labels, or graphics on vehicles/equipment.',status:'foundation'},
+  arrangement:{label:'Arrangement Preview',description:'Compose or annotate flowers, gift baskets, bundles, or grouped products.',status:'foundation'},
+  none:{label:'No Visual Placement',description:'Project does not need a visual placement step.',status:'available'}
+ }),
+ transform:Object.freeze({
+  scale:{label:'Scale',status:'available'}, rotate:{label:'Rotate',status:'foundation'}, curve:{label:'Curve / Warp',status:'available'},
+  crop:{label:'Crop',status:'foundation'}, repeat:{label:'Repeat / Pattern',status:'foundation'}, mirror:{label:'Mirror',status:'foundation'}, perspective:{label:'Perspective',status:'foundation'}
+ }),
+ preview:Object.freeze({
+  product_mockup:{label:'Product Mockup',status:'available'}, multi_view:{label:'Multi-View',status:'foundation'},
+  environment_mockup:{label:'Environment Mockup',status:'foundation'}, before_after:{label:'Before / After',status:'foundation'},
+  arrangement_preview:{label:'Arrangement Preview',status:'foundation'}, none:{label:'No Visual Preview',status:'available'}
+ }),
+ approval:Object.freeze({
+  customer_proof:{label:'Customer Proof',status:'available'}, owner_approval:{label:'Owner Approval',status:'foundation'},
+  revision_loop:{label:'Revision Loop',status:'foundation'}, none:{label:'No Visual Approval',status:'available'}
+ }),
+ output:Object.freeze({
+  production_reference:{label:'Production Reference',status:'available'}, print_ready_image:{label:'Print-Ready Image',status:'foundation'},
+  machine_ready_export:{label:'Machine-Ready Export',status:'foundation'}, none:{label:'No Visual Output',status:'available'}
+ })
+});
+const VISUAL_PROFILE_PRESETS=Object.freeze({
+ none:Object.freeze({label:'No Visual Preview',input:[],placement:['none'],transform:[],preview:['none'],approval:['none'],output:['none']}),
+ 'flat-surface':Object.freeze({label:'Flat Surface',input:['photo_upload','camera_capture'],placement:['flat_surface'],transform:['scale'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ 'cylindrical-wrap':Object.freeze({label:'Cylindrical Wrap',input:['photo_upload','camera_capture'],placement:['cylindrical_wrap'],transform:['scale','curve'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ 'card-overlay':Object.freeze({label:'Card / Message Overlay',input:['photo_upload','camera_capture'],placement:['card_overlay'],transform:['scale'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ 'curved-surface':Object.freeze({label:'Curved Surface',input:['photo_upload','camera_capture'],placement:['curved_surface'],transform:['scale','curve'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ 'front-back':Object.freeze({label:'Front / Back',input:['multi_photo','photo_upload'],placement:['front_back'],transform:['scale'],preview:['multi_view'],approval:['customer_proof'],output:['production_reference']}),
+ 'multi-zone':Object.freeze({label:'Multi-Zone',input:['photo_upload'],placement:['multi_zone','bounded_area'],transform:['scale'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ 'bounded-area':Object.freeze({label:'Bounded Print Area',input:['photo_upload'],placement:['bounded_area'],transform:['scale'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ perspective:Object.freeze({label:'Perspective Surface',input:['photo_upload','camera_capture'],placement:['perspective_surface'],transform:['scale','perspective'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ freeform:Object.freeze({label:'Freeform Photo Overlay',input:['photo_upload','camera_capture'],placement:['freeform_overlay'],transform:['scale','rotate'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ template:Object.freeze({label:'Template Overlay',input:['photo_upload','reference_image'],placement:['template_overlay','bounded_area'],transform:['scale'],preview:['product_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ environment:Object.freeze({label:'Room / Environment',input:['photo_upload','reference_image'],placement:['environment_placement'],transform:['scale','perspective'],preview:['environment_mockup'],approval:['customer_proof'],output:['production_reference']}),
+ vehicle:Object.freeze({label:'Vehicle / Equipment',input:['photo_upload','multi_photo'],placement:['vehicle_equipment','multi_zone'],transform:['scale','perspective'],preview:['multi_view'],approval:['customer_proof'],output:['production_reference']}),
+ arrangement:Object.freeze({label:'Arrangement',input:['photo_upload','reference_image'],placement:['arrangement'],transform:['scale'],preview:['arrangement_preview'],approval:['customer_proof'],output:['production_reference']}),
+ 'before-after':Object.freeze({label:'Before / After',input:['multi_photo'],placement:['none'],transform:[],preview:['before_after'],approval:['customer_proof'],output:['production_reference']})
+});
+function legacyVisualProfile(p={}){
+ const type=String(p.type||p.businessType||p.projectTheme||'').toLowerCase();
+ if(type.includes('wood')||p.id==='ikes-wood-signs')return'flat-surface';
+ if(type.includes('mug')||p.id==='mugshot-after-dark')return'cylindrical-wrap';
+ if(type.includes('flower')||p.id==='beccas-bloom-shop')return'card-overlay';
+ return p?.customerExperience?.photoRequired?'freeform':'none';
+}
+function normalizeVisualPresentation(p={}){
+ const existing=p.visualPresentation&&typeof p.visualPresentation==='object'?p.visualPresentation:{};
+ const profile=VISUAL_PROFILE_PRESETS[existing.profile]?existing.profile:legacyVisualProfile(p);
+ const preset=VISUAL_PROFILE_PRESETS[profile]||VISUAL_PROFILE_PRESETS.none;
+ const families=['input','placement','transform','preview','approval','output'];
+ const out={version:1,enabled:profile!=='none',profile,renderer:existing.renderer||(['flat-surface','cylindrical-wrap','card-overlay'].includes(profile)?profile:'generic-foundation'),customCapabilities:Array.isArray(existing.customCapabilities)?existing.customCapabilities:[]};
+ families.forEach(f=>{const vals=Array.isArray(existing[f])?existing[f]:preset[f]||[];out[f]=[...new Set(vals.filter(v=>VISUAL_CAPABILITY_CATALOG[f]?.[v]))];});
+ out.updatedAt=existing.updatedAt||new Date().toISOString();
+ return out;
+}
+
 const DEPLOYMENT_TRANSITIONS={
  draft:new Set(['sea_trial','retired']),
  sea_trial:new Set(['draft','deployed','retired']),
@@ -60,13 +137,14 @@ function ensure(p){
  p.permissions={...(p.permissions||{}),policyVersion:POLICY,projectScoped:true,defaultDeny:true};
  p.lifecycle={...(p.lifecycle||{}),state:lifecycle(p),version:2,updatedAt:p.lifecycle?.updatedAt||new Date().toISOString()};
  p.audit={...(p.audit||{}),enabled:true,policyVersion:POLICY};
+ p.visualPresentation=normalizeVisualPresentation(p);
  deployments(p).forEach(d=>sealDeployment(p,d));
  return p;
 }
 function migrate(rows){
  let changed=false;
  const projects=(Array.isArray(rows)?rows:[]).map(p=>{const before=JSON.stringify([p?.schemaVersion,p?.namespace,p?.isolation,p?.permissions,p?.lifecycle,p?.identity,deployments(p).map(d=>[d?.projectId,d?.namespace,d?.authorization?.projectId])]);ensure(p);if(before!==JSON.stringify([p?.schemaVersion,p?.namespace,p?.isolation,p?.permissions,p?.lifecycle,p?.identity,deployments(p).map(d=>[d?.projectId,d?.namespace,d?.authorization?.projectId])]))changed=true;return p});
- return{projects,changed,from:'3.3',to:'3.4'};
+ return{projects,changed,from:'3.4',to:'3.5'};
 }
 function scope(resource,projectId){
  if(!resource||typeof resource!=='object')return{ok:false,error:'resource_missing'};
@@ -147,5 +225,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.8.12-project-specific-preview-foundations',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.8.13-visual-capability-architecture',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);

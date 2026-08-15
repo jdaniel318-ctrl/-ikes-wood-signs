@@ -98,3 +98,10 @@
 - Structural Status reports Project Envelopes against active schema 6.
 - Fleet foundation doctrine is documented, but no Admiral layer or new ship runtime has been created yet.
 - The Engine remains browser-local and production server security is still explicitly pending.
+
+
+## v3.8.13 Visual Capability Inventory
+- Working renderers: flat surface, cylindrical wrap, card/message overlay.
+- Capability contract: composable input, placement, transform, preview, approval, output families.
+- Foundation profiles recorded for future renderers: curved surface, front/back, multi-zone, bounded area, perspective, freeform, template overlay, environment placement, vehicle/equipment, arrangement, before/after.
+- Project Control can tailor the capability declaration per project.

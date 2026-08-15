@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-11-sea-trials-fleet-foundations';
+const CACHE='dark-sky-v3-8-13-visual-capability-architecture';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.12',
-  './platform_core.js?v=3.8.12',
-  './platform_identity.js?v=3.8.12',
-  './app.js?v=3.8.12',
-  './captain.js?v=3.8.12',
+  './styles.css?v=3.8.13',
+  './platform_core.js?v=3.8.13',
+  './platform_identity.js?v=3.8.13',
+  './app.js?v=3.8.13',
+  './captain.js?v=3.8.13',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

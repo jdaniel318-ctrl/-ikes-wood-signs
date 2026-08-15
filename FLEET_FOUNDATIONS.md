@@ -46,3 +46,7 @@ Do not invent an Admiral control layer for decoration. It becomes justified when
 - need cross-ship health, governance, release, or policy oversight.
 
 At that point, Captain's Quarters can evolve into true fleet command and the Captain can meaningfully become an Admiral.
+
+
+## Visual Capability Primitive
+`visual_capability_contracts` is a reusable Fleet Foundation primitive. A future ship may define entirely different product/customer experiences while reusing the same capability vocabulary and renderer contracts. It must not inherit Business Command Engine shells merely because it uses the same visual capabilities.

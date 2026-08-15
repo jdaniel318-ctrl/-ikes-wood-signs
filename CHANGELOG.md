@@ -1,4 +1,15 @@
-## v3.8.12 — Project-Specific Preview & Customer Review Refit
+# v3.8.13 — Visual Capability Architecture
+
+- Replaced the three-preview-mode assumption with a composable Visual Presentation Capability contract.
+- Added six capability families: visual input, placement, transforms, preview style, approval, and output.
+- Added reusable presets for flat surfaces, cylindrical wraps, card/message overlays, curved surfaces, front/back products, multi-zone products, bounded print areas, perspective surfaces, freeform overlays, template overlays, environment placement, vehicle/equipment graphics, arrangements, before/after workflows, and projects with no visual preview.
+- Existing working renderers remain explicitly marked AVAILABLE; future renderer contracts are marked FOUNDATION rather than pretending unsupported behavior is production ready.
+- Project Control → Customer Experience now allows each project to select a starting visual profile and then customize individual visual capabilities.
+- Commissioning now captures a starting visual presentation profile for future projects.
+- Migrated existing projects into the visual-capability contract without changing project identity or customer data.
+- Added `visual_capability_contracts` to the reusable Dark Sky Fleet Foundation so future ships can reuse the capability language without inheriting Engine-specific UI.
+
+## v3.8.13 — Project-Specific Preview & Customer Review Refit
 
 - Repaired the Project Command Add Project tile to open the canonical commissioning workflow.
 - Removed decorative vertical-line fallback texture from real uploaded customer photos.

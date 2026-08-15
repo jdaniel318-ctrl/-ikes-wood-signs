@@ -65,5 +65,9 @@ Sea Trials add a non-destructive runtime certification layer above the existing 
 Dark Sky now explicitly distinguishes reusable fleet primitives from Engine-specific systems. The Engine remains the first operating ship; Captain's Quarters is the future shipyard/governance surface. Future ships may reuse identity, authorization, isolation, lifecycle, audit, telemetry, recovery, deployment-boundary, and integration-contract patterns without inheriting Engine-specific order flows or Project Control UI. See `FLEET_FOUNDATIONS.md`.
 
 
-## v3.8.12 — Presentation capability boundary
+## v3.8.13 — Presentation capability boundary
 Project shells may declare a `previewGeometry` capability. This keeps the common order/identity/isolation platform shared while allowing product-specific visualization behavior. Current geometries are `flat-surface` for wood signs, `cylindrical-wrap` for mugs, and `card-overlay` for flowers. Product geometry is presentation capability data, not project identity.
+
+
+## Visual Presentation Capability Contract — v3.8.13
+Projects no longer depend on a single hard-coded preview geometry. Each project owns a `visualPresentation` contract with an immutable versioned shape: profile, input capabilities, placement capabilities, transforms, preview modes, approval stages, outputs, renderer, and optional custom capability IDs. Presets accelerate commissioning but do not constrain later configuration. `AVAILABLE` capabilities have working behavior in the current Engine; `FOUNDATION` capabilities declare supported requirements for future renderers and future ships.

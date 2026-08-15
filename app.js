@@ -1823,11 +1823,16 @@
 
     if(tab==='products') return `${projectModuleHero(p,'OPERATE','Products & Services','Manage the offers this business can sell and whether each offer is ready for customers.',`<span>${products.length} OFFERS</span>`)}<div class="pec-card"><div class="pec-title-row"><h4>Offer Registry</h4><button id="addProductBtn" class="secondary-btn small">ADD PRODUCT</button></div>
       <div class="product-list">${products.map(pr=>`<div class="product-row"><div><strong>${escapeHtml(pr.name)}</strong><small>${pr.characterLimit?`${pr.characterLimit} char max`:'Character limit unset'}</small></div><label><input data-product-publish="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}> Published</label></div>`).join('')}</div></div>`;
-    if(tab==='experience') return `${projectModuleHero(p,'EXPERIENCE','Customer Experience','Control the customer-facing steps this project requires before an order is accepted.')}<div class="pec-card"><h4>Experience Rules</h4>
+    if(tab==='experience'){ const visual=visualPresentationFor(p); return `${projectModuleHero(p,'EXPERIENCE','Customer Experience','Control the customer-facing steps and visual presentation capabilities this project requires before an order is accepted.',`<span>${escapeHtml(visualPresets()[visual.profile]?.label||visual.profile||'No Visual Preview')}</span>`)}<div class="pec-card"><h4>Experience Rules</h4>
       <label class="admin-toggle-row compact-toggle"><span><strong>Photo step</strong><small>Require product photo.</small></span><input id="ptPhoto" type="checkbox" ${p.customerExperience?.photoRequired!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Preview approval</strong><small>Require customer approval.</small></span><input id="ptPreview" type="checkbox" ${p.customerExperience?.previewApproval!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Custom colors</strong><small>Allow custom color picker.</small></span><input id="ptColors" type="checkbox" ${p.customization?.allowCustomColors!==false?'checked':''}></label>
-      <button id="saveExperienceTab" class="primary-btn small">SAVE EXPERIENCE</button></div>`;
+      </div>
+      <div class="pec-card visual-capability-card"><div class="pec-title-row"><div><h4>Visual Presentation Capability</h4><p class="helper">Start with a profile, then tailor the capability families to the business. AVAILABLE means the current Engine has working behavior; FOUNDATION records a supported requirement for future renderers without pretending it is already production-ready.</p></div></div>
+      <label class="visual-profile-select">Starting profile<select id="ptVisualProfile">${visualProfileOptions(visual.profile||'none')}</select></label>
+      <div id="visualCapabilityDeck" class="visual-cap-deck">${visualCapabilityDeck(visual)}</div>
+      <div class="visual-cap-note"><strong>Composable by design.</strong><span>A project can combine multiple inputs, placement zones, transforms, preview styles, approval stages, and outputs. New ships can extend this catalog without inheriting an Engine-specific customer shell.</span></div>
+      <button id="saveExperienceTab" class="primary-btn small">SAVE EXPERIENCE & VISUAL CAPABILITIES</button></div>`;}
     if(tab==='ai') return `${projectModuleHero(p,'SYSTEM','AI Recognition','Configure assistive recognition without giving AI authority over pricing or project policy.')}<div class="pec-card"><h4>Recognition Policy</h4><p class="helper">Recognition suggests structured attributes. Project pricing rules remain authoritative.</p>
       <label>Mode<select id="ptAI"><option value="off">Off</option><option value="assist">Assist</option><option value="automatic">Automatic</option></select></label>
       <label>Minimum confidence<input id="ptConfidence" class="text-input" type="number" min=".5" max=".99" step=".01" value="${Number(p.ai?.minConfidence||.9).toFixed(2)}"></label>
@@ -2123,7 +2128,7 @@
       });
     }
     if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{if(!requireEngineProjectMutation(p,'ai.policy.update'))return;p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
-    if(tab==='experience') $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;p.customerExperience={photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;await saveCompanies();logActivity(p.id,'Customer experience updated');};
+    if(tab==='experience'){ const profile=$('ptVisualProfile'); if(profile) profile.onchange=()=>{ const preset=visualPresets()[profile.value]; if(!preset)return; VISUAL_FAMILIES.forEach(f=>{ $$(`[data-visual-family=\"${f}\"]`).forEach(cb=>{cb.checked=(preset[f]||[]).includes(cb.value);cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked);}); }); }; $$('#visualCapabilityDeck input[type=\"checkbox\"]').forEach(cb=>cb.onchange=()=>cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked)); $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;p.customerExperience={...(p.customerExperience||{}),photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;p.visualPresentation=collectVisualPresentationFromControls(p);await saveCompanies();logActivity(p.id,'Customer experience updated',`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
     if(tab==='workflow') $('saveWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.update'))return;const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));}};
     if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'project.publishing.update'))return;const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await saveCompanies();logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
     if(tab==='products'){
@@ -2449,7 +2454,7 @@
       name:'',ownerName:'',ownerEmail:'',
       businessType:'other',description:'',
       primaryOffer:'',characterLimit:32,pricingMode:'manual',
-      customerMode:'guided',photoRequired:false,contactCapture:true,
+      customerMode:'guided',photoRequired:false,contactCapture:true,visualProfile:'none',
       ownerPortal:true,customerRetention:false,notifications:false,
       namespace:'',projectCode:'',orderPrefix:'',
       status:'development',visibility:'private',deploymentState:'sea_trial'
@@ -2550,7 +2555,9 @@
           </select></label>
           <label class="checkline"><input type="checkbox" data-cfield="photoRequired" ${d.photoRequired?'checked':''}> Require customer photo</label>
           <label class="checkline"><input type="checkbox" data-cfield="contactCapture" ${d.contactCapture?'checked':''}> Capture customer contact information</label>
+          <label>Visual presentation<select data-cfield="visualProfile">${visualProfileOptions(d.visualProfile||'none')}</select></label>
         </div>
+        <div class="commission-callout"><b>VISUAL PROFILE IS A STARTING PRESET</b><span>Choose the closest preview behavior now. Project Control can later add or remove visual inputs, placement modes, transforms, proof steps, and production outputs without changing the project identity.</span></div>
         <div class="commission-callout"><b>BRANDING COMES NEXT</b><span>The new project receives safe placeholders now. Logo, hero graphics and other assets can be assigned later without changing the structural identity.</span></div>
       </div>`;
     if(commissionStep===5)return `
@@ -2573,6 +2580,7 @@
           <div><small>PERMANENT ID</small><b>ASSIGNED AT COMMISSION</b></div>
           <div><small>CODE</small><b>${escapeHtml(d.projectCode||commissionCode(d.name))}</b></div>
           <div><small>STARTING MODEL</small><b>${escapeHtml(String(d.businessType||'other').replace(/_/g,' ').toUpperCase())}</b></div>
+          <div><small>VISUAL PROFILE</small><b>${escapeHtml((visualPresets()[d.visualProfile||'none']?.label||d.visualProfile||'None').toUpperCase())}</b></div>
           <div><small>OFFER</small><b>${escapeHtml(d.primaryOffer||'Configure later')}</b></div>
           <div><small>OWNER HANDOFF</small><b>${d.ownerPortal&&d.ownerName&&d.ownerEmail?'READY TO INVITE':'CONFIGURE LATER'}</b></div>
           <div><small>LAUNCH STATE</small><b>PRIVATE • SEA TRIAL</b></div>
@@ -2674,6 +2682,7 @@
         photoRequired:!!commissionDraft.photoRequired,
         contactCapture:!!commissionDraft.contactCapture
       },
+      visualPresentation:window.BlackFlagV3Core?.normalizeVisualPresentation?.({businessType:commissionDraft.businessType,customerExperience:{photoRequired:!!commissionDraft.photoRequired},visualPresentation:{profile:commissionDraft.visualProfile||'none'}}),
       products:commissionDraft.primaryOffer?[{id:'product-'+Date.now().toString(36),name:commissionDraft.primaryOffer,active:true,pricingMode:commissionDraft.pricingMode}]:[],
       ownerAccess:{
         enabled:!!commissionDraft.ownerPortal,
@@ -2694,7 +2703,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.12'
+      commissioningVersion:'3.8.13'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -3236,11 +3245,31 @@
   }
 
   const PROJECT_SHELL_TEMPLATES={
-    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,previewGeometry:'flat-surface'}},
-    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,previewGeometry:'cylindrical-wrap'}},
-    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,previewGeometry:'card-overlay'}},
-    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false}}
+    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'flat-surface',previewGeometry:'flat-surface'}},
+    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'cylindrical-wrap',previewGeometry:'cylindrical-wrap'}},
+    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'card-overlay',previewGeometry:'card-overlay'}},
+    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false,visualProfile:'none'}}
   };
+  const VISUAL_FAMILIES=['input','placement','transform','preview','approval','output'];
+  function visualCatalog(){return window.BlackFlagV3Core?.visualCapabilityCatalog||{};}
+  function visualPresets(){return window.BlackFlagV3Core?.visualProfilePresets||{};}
+  function visualPresentationFor(p){return window.BlackFlagV3Core?.normalizeVisualPresentation?.(p)||p?.visualPresentation||{profile:'none',input:[],placement:['none'],transform:[],preview:['none'],approval:['none'],output:['none']};}
+  function visualProfileOptions(selected='none'){return Object.entries(visualPresets()).map(([id,p])=>`<option value="${escapeHtml(id)}" ${id===selected?'selected':''}>${escapeHtml(p.label||id)}</option>`).join('');}
+  function visualCapabilityDeck(v){
+    const cat=visualCatalog();
+    return VISUAL_FAMILIES.map(f=>{
+      const items=cat[f]||{};
+      return `<section class="visual-cap-family"><div class="visual-cap-family-head"><strong>${escapeHtml(f.toUpperCase())}</strong><span>${Object.keys(items).length} capabilities</span></div><div class="visual-cap-grid">${Object.entries(items).map(([id,meta])=>{const checked=(v[f]||[]).includes(id);const status=meta.status==='available'?'AVAILABLE':'FOUNDATION';return `<label class="visual-cap-option ${checked?'selected':''}"><input type="checkbox" data-visual-family="${escapeHtml(f)}" value="${escapeHtml(id)}" ${checked?'checked':''}><span><b>${escapeHtml(meta.label||id)}</b><small>${escapeHtml(meta.description||'')}</small></span><em class="${meta.status==='available'?'available':'foundation'}">${status}</em></label>`}).join('')}</div></section>`;
+    }).join('');
+  }
+  function collectVisualPresentationFromControls(p){
+    const current=visualPresentationFor(p);
+    const profile=$('ptVisualProfile')?.value||current.profile||'none';
+    const next={...current,profile,enabled:profile!=='none',updatedAt:new Date().toISOString()};
+    VISUAL_FAMILIES.forEach(f=>{next[f]=$$(`[data-visual-family="${f}"]:checked`).map(x=>x.value)});
+    const built=window.BlackFlagV3Core?.normalizeVisualPresentation?.({...(p||{}),visualPresentation:next});
+    return built||next;
+  }
   const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers'};
   function projectShellFor(p){
     if(!p)return 'generic';
@@ -6293,7 +6322,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.12',
+    version:'3.8.13',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -6719,7 +6748,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.12.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • project-specific previews + customer review refit`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.13.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • project-specific previews + customer review refit`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
