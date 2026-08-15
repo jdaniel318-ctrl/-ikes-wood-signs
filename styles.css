@@ -9296,3 +9296,149 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   #projectEngineControl .project-command-primary>button>span:not(.project-nav-icon){font-size:12px!important}
   #projectEngineControl .project-subnav-group button{min-height:40px!important;font-size:11px!important}
 }
+
+/* =========================================================
+   v3.8.6 — Secondary Command Bay Refit
+   Secondary commands inherit the same readable, finger-sized
+   command language as the primary navigation and always dock
+   on a dedicated full-width row.
+   ========================================================= */
+#projectEngineControl .project-command-primary,
+#projectEngineControl .project-command-subnav{
+  grid-column:1 / -1!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#projectEngineControl .project-command-subnav{
+  display:block!important;
+}
+#projectEngineControl .project-subnav-group{
+  width:100%!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:132px repeat(4,minmax(0,1fr));
+  align-items:stretch!important;
+  gap:9px!important;
+  min-height:66px!important;
+  padding:9px!important;
+  border:1px solid #294752!important;
+  border-radius:15px!important;
+  background:linear-gradient(145deg,#0e222a,#09191f)!important;
+}
+#projectEngineControl .project-subnav-group.hidden{display:none!important}
+#projectEngineControl .project-subnav-label{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-radius:11px!important;
+  background:#09181e!important;
+  color:#8da8ae!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.15em!important;
+  text-align:center!important;
+}
+#projectEngineControl .project-subnav-group button{
+  min-width:0!important;
+  min-height:48px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  padding:10px 13px!important;
+  border:1px solid #294752!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#10252d,#0b1b21)!important;
+  color:#c7d5d7!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  text-align:left!important;
+  white-space:normal!important;
+  transition:transform .14s ease,border-color .14s ease,background .14s ease,box-shadow .14s ease!important;
+}
+#projectEngineControl .project-subnav-group button:hover{
+  border-color:#4f8293!important;
+  background:linear-gradient(145deg,#15323c,#10252d)!important;
+  color:#f0f8f9!important;
+}
+#projectEngineControl .project-subnav-group button.active{
+  border-color:#55b6dc!important;
+  background:linear-gradient(145deg,#174455,#11313d)!important;
+  color:#f2fbfc!important;
+  box-shadow:inset 4px 0 0 #63c4e6,inset 0 0 0 1px rgba(91,190,227,.15),0 7px 18px rgba(0,0,0,.14)!important;
+}
+#projectEngineControl .project-subnav-group button:active{transform:translateY(1px)}
+#projectEngineControl .project-subnav-icon{
+  flex:0 0 28px;
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border:1px solid #355661;
+  border-radius:9px;
+  background:#0a1920;
+  color:#87b3c0;
+  font-size:14px;
+  font-weight:900;
+}
+#projectEngineControl .project-subnav-group button.active .project-subnav-icon{
+  border-color:#4a91a8;
+  color:#bdeeff;
+  background:#102b35;
+}
+
+/* iPad / touch devices: dedicated, generous secondary command row. */
+@media (pointer:coarse) and (min-width:700px), (min-width:821px) and (max-width:1440px){
+  #projectEngineControl .project-command-primary{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  #projectEngineControl .project-subnav-group{
+    grid-template-columns:118px repeat(3,minmax(0,1fr))!important;
+    min-height:72px!important;
+    gap:10px!important;
+    padding:10px!important;
+  }
+  #projectEngineControl .project-subnav-group button{
+    min-height:54px!important;
+    padding:11px 14px!important;
+    font-size:13px!important;
+  }
+  #projectEngineControl .project-subnav-icon{
+    width:31px!important;
+    height:31px!important;
+    flex-basis:31px!important;
+    font-size:15px!important;
+  }
+}
+
+/* Groups with only two choices should use the room instead of looking stranded. */
+#projectEngineControl [data-project-subnav="insight"],
+#projectEngineControl [data-project-subnav="experience"],
+#projectEngineControl [data-project-subnav="access"]{
+  grid-template-columns:132px repeat(2,minmax(180px,1fr))!important;
+}
+@media (pointer:coarse) and (min-width:700px), (min-width:821px) and (max-width:1440px){
+  #projectEngineControl [data-project-subnav="insight"],
+  #projectEngineControl [data-project-subnav="experience"],
+  #projectEngineControl [data-project-subnav="access"]{
+    grid-template-columns:118px repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+@media (max-width:699px){
+  #projectEngineControl .project-subnav-group,
+  #projectEngineControl [data-project-subnav="insight"],
+  #projectEngineControl [data-project-subnav="experience"],
+  #projectEngineControl [data-project-subnav="access"]{
+    grid-template-columns:1fr 1fr!important;
+  }
+  #projectEngineControl .project-subnav-label{
+    grid-column:1 / -1!important;
+    min-height:34px!important;
+  }
+  #projectEngineControl .project-subnav-group button{
+    min-height:52px!important;
+  }
+}

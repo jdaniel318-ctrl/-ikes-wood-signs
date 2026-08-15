@@ -52,5 +52,5 @@ Project identity is now explicitly separated from project display names. New pro
 `project.id` is the immutable tenant identity. `project.name` / `identity.displayName` are mutable. `project.namespace` is derived from the immutable ID. The short `projectCode` is a human-facing reference and is not sufficient for authorization. Existing name-derived IDs are preserved as immutable legacy IDs; only new projects receive opaque `bf-p-*` IDs.
 
 
-## v3.8.5 Project Control navigation
+## v3.8.6 Project Control navigation
 Project Control uses a two-level command model. Overview, Orders, and Customers remain direct. Operate, Insight, Experience, Access, and System reveal contextual second-level controls. Routing continues through the mission-critical `data-project-tab` navigation layer.

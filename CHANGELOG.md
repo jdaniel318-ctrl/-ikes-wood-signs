@@ -1,3 +1,13 @@
+## v3.8.6 — Secondary Command Bay Refit
+
+- Carried the v3.8.5 iPad-first command language into every secondary Project Control menu.
+- Secondary commands now always dock on a dedicated full-width row beneath the primary commands.
+- Added larger touch targets, icon blocks, stronger active states, and clearer spacing to Products & Services, Workflow, Deployments, Analytics, Financials, Marketing & Brand, Customer Experience, Owner Access, Permissions, Payments, Notifications, Publishing, and AI Recognition.
+- Two-choice groups expand to use the available width instead of looking stranded.
+- iPad/touch layouts use grid-based command bays rather than squeezing secondary controls into leftover horizontal space.
+- Preserved all existing Project Control route mappings, identity logic, permission boundaries, and Black Flag return navigation.
+- Cache/version references advanced to v3.8.6.
+
 ## v3.8.5 — iPad Command Usability Refit
 
 - Preserved the v3.8.4 two-level Project Control navigation model.
@@ -7,7 +17,7 @@
 - iPad portrait uses two generous columns rather than a narrow scrolling strip.
 - Contextual sub-navigation controls are larger and easier to scan and tap.
 - Active/expanded commands receive a stronger instrument-state treatment.
-- Cache/version references advanced to v3.8.5.
+- Cache/version references advanced to v3.8.6.
 
 ## v3.8.4 — Command Navigation Refit
 

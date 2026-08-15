@@ -1,6 +1,6 @@
 # Dark Sky / Black Flag Engine
 
-**Current release:** v3.8.5 — iPad Command Usability Refit
+**Current release:** v3.8.6 — Secondary Command Bay Refit
 
 This release turns Project Control from a settings-heavy workspace into a business command cockpit. The opening screen now explains what is happening in one project, what needs attention, what changed, and where the operator should go next.
 
@@ -15,7 +15,7 @@ This release turns Project Control from a settings-heavy workspace into a busine
 - Added six-month order-volume history, workflow/status mix, repeat-customer signal, and average recorded order value.
 - Explicitly labels visitor, conversion, time-on-page, and campaign attribution as not instrumented rather than fabricating telemetry.
 - Preserves all existing deep Project Control modules and Hull Integrity authorization boundaries.
-- Cache/version references advanced to v3.8.5 for iPad/Safari deployment.
+- Cache/version references advanced to v3.8.6 for iPad/Safari deployment.
 
 ## Operating principle
 Project Control should answer three questions before the operator clicks deeper:
@@ -27,7 +27,7 @@ Project Control should answer three questions before the operator clicks deeper:
 Dark Sky remains a browser-local prototype. v3.8.3 adds immutable project identity and safe display-name changes but does not change the browser-local production-security boundary: public multi-tenant use still requires server-side identity, authorization, sessions, rate limits, secret storage, and server-enforced tenant isolation.
 
 ## Deployment
-Upload the contents of this folder together, preserving `assets/`. GitHub Pages may need one refresh while the v3.8.5 service worker replaces the previous cache.
+Upload the contents of this folder together, preserving `assets/`. GitHub Pages may need one refresh while the v3.8.6 service worker replaces the previous cache.
 
 ## Next heading
 **v3.9 — Operating Models.** Extract reusable capabilities from the current vessels, then rebuild templates as tested combinations of those capabilities instead of one-off business code.
