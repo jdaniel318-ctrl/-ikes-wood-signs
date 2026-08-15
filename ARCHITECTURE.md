@@ -40,3 +40,8 @@ The active browser database is Black Flag/Dark Sky owned (`blackFlagPlatformV1`)
 Legacy Ike storage names remain only as read-only compatibility sources for the one-time v3.7 migration. Normal reads, analytics, customer capture, ledgers, owner metrics, integrity checks, and authorization must not infer Ike's from a missing project identity.
 
 Project-admin PIN values and brute-force lockout state are scoped by project. Engine authorization remains a separate platform-wide gate.
+
+
+## 8. v3.7.5 canonical project registry
+
+Project identity is now explicitly separated from project display names. New projects receive immutable unique IDs from the structural core. Display names are operator-facing labels and may repeat. Authorization and isolation must use `projectId`/namespace, never a name or slug derived from a name. The full forward architecture is defined in `PLATFORM_BLUEPRINT.md`.

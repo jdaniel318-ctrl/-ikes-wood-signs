@@ -10,9 +10,9 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.7.2" />
+  <link rel="stylesheet" href="styles.css?v=3.7.7" />
   <style id="bootLockStyles">
-    body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
+    body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
   </style>
 </head>
@@ -131,7 +131,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v3.7.4 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.7.7 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -1058,7 +1058,7 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.7.4</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.7.7</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
@@ -1084,35 +1084,11 @@
     <main id="ownerPortalBody" class="owner-portal-body"></main>
   </section>
 
-  <script src="platform_core.js?v=3.7.2"></script>
-  <script src="platform_identity.js?v=3.7.2"></script>
-  <script src="app.js?v=3.7.2"></script>
+  <script src="platform_core.js?v=3.7.7"></script>
+  <script src="platform_identity.js?v=3.7.7"></script>
+  <script src="app.js?v=3.7.7"></script>
 
-    <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
-      <div class="add-project-card">
-        <div class="engine-kicker">NEW PROJECT</div>
-        <h2>Add a Project</h2>
-        <p>Create a private project shell. It stays unpublished until you deliberately publish it.</p>
-        <label>Project name<input id="newProjectName" class="text-input" type="text" placeholder="Business or project name"></label>
-        <label>Project type
-          <select id="newProjectType">
-            <option value="custom_product">Custom Product</option>
-            <option value="custom_flowers">Flower Shop</option>
-            <option value="custom_apparel">Custom Apparel</option>
-            <option value="custom_food">Custom Food / Bakery</option>
-            <option value="custom_service">Custom Service</option>
-          </select>
-        </label>
-        <label>Order prefix<input id="newProjectPrefix" class="text-input" type="text" maxlength="8" placeholder="ABC"></label>
-        <p id="addProjectError" class="error-text"></p>
-        <button id="createProjectBtn" class="primary-btn">CREATE PRIVATE PROJECT</button>
-        <button id="cancelAddProjectBtn" class="secondary-btn">CANCEL</button>
-      </div>
-    </div>
-
-
-
-  <script src="captain.js?v=3.7.2"></script>
+  <script src="captain.js?v=3.7.7"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">
@@ -1145,21 +1121,25 @@
 
     <div class="commission-progress" id="commissionProgress">
       <button data-commission-step="1" class="active"><b>01</b><span>Identity</span></button>
-      <button data-commission-step="2"><b>02</b><span>Business</span></button>
+      <button data-commission-step="2"><b>02</b><span>Model</span></button>
       <button data-commission-step="3"><b>03</b><span>Offer</span></button>
       <button data-commission-step="4"><b>04</b><span>Experience</span></button>
-      <button data-commission-step="5"><b>05</b><span>Controls</span></button>
-      <button data-commission-step="6"><b>06</b><span>Sea Trial</span></button>
+      <button data-commission-step="5"><b>05</b><span>Access</span></button>
+      <button data-commission-step="6"><b>06</b><span>Review</span></button>
     </div>
 
     <div id="commissioningBody" class="commission-body"></div>
 
     <footer class="commissioning-footer">
-      <div id="commissionDraftStatus" class="commission-draft-status">DRAFT • NOT PUBLISHED</div>
+      <div class="commission-footer-status">
+        <div id="commissionDraftStatus" class="commission-draft-status">DRAFT • NOT PUBLISHED</div>
+        <div id="commissionValidation" class="commission-validation" role="status" aria-live="polite"></div>
+      </div>
       <div class="commission-actions">
-        <button id="commissionPrev" class="compact-light-btn">BACK</button>
-        <button id="commissionSaveDraft" class="compact-dark-btn">SAVE DRAFT</button>
-        <button id="commissionNext" class="compact-blue-btn">CONTINUE</button>
+        <button id="commissionReset" class="compact-light-btn" type="button">START OVER</button>
+        <button id="commissionPrev" class="compact-light-btn" type="button">BACK</button>
+        <button id="commissionSaveDraft" class="compact-dark-btn" type="button">SAVE DRAFT</button>
+        <button id="commissionNext" class="compact-blue-btn" type="button">CONTINUE</button>
       </div>
     </footer>
   </div>

@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-7-1-compact-command-header';
+const CACHE='dark-sky-v3-7-7-hull-integrity';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.7.2',
-  './platform_core.js?v=3.7.2',
-  './platform_identity.js?v=3.7.2',
-  './app.js?v=3.7.2',
-  './captain.js?v=3.7.2',
+  './styles.css?v=3.7.7',
+  './platform_core.js?v=3.7.7',
+  './platform_identity.js?v=3.7.7',
+  './app.js?v=3.7.7',
+  './captain.js?v=3.7.7',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

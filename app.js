@@ -449,9 +449,13 @@
     }
     if(testMode && !cleanPassword)return {ok:false,error:'A password is required.'};
 
+    const salt=randomOwnerToken().slice(0,24);
+    const passwordHash=await sha256Hex(`${salt}:${cleanPassword}`);
     p.ownerAccess.credential={
       login:cleanLogin,
-      password:cleanPassword,
+      passwordHash,
+      salt,
+      hashAlgorithm:'SHA-256-SALTED-LOCAL-PROTOTYPE',
       testMode:!!testMode,
       createdAt:p.ownerAccess.credential?.createdAt||new Date().toISOString(),
       changedAt:new Date().toISOString()
@@ -459,11 +463,21 @@
     return {ok:true};
   }
 
-  function verifyOwnerCredential(p,login,password){
+  async function verifyOwnerCredential(p,login,password){
     ensureProjectGovernance(p);
     const c=p.ownerAccess.credential;
     if(!c)return false;
-    return normalizeOwnerLogin(login)===normalizeOwnerLogin(c.login) && String(password||'')===String(c.password||'');
+    if(normalizeOwnerLogin(login)!==normalizeOwnerLogin(c.login))return false;
+    if(c.passwordHash&&c.salt){
+      try{return await sha256Hex(`${c.salt}:${String(password||'')}`)===c.passwordHash;}catch(_){return false;}
+    }
+    // One-way migration bridge for older local test credentials. A successful login re-hashes them.
+    if(c.password!=null && String(password||'')===String(c.password||'')){
+      const migrated=await createOwnerCredential(p,c.login,String(password||''),{testMode:!!c.testMode});
+      if(migrated.ok)await saveCompanies();
+      return migrated.ok;
+    }
+    return false;
   }
 
   async function ensureTestOwnerCredential(p){
@@ -509,7 +523,7 @@
       }
       const login=$('ownerLoginEmail')?.value||'';
       const password=$('ownerLoginPassword')?.value||'';
-      if(!verifyOwnerCredential(p,login,password)){
+      if(!await verifyOwnerCredential(p,login,password)){
         $('ownerLoginError').textContent='The login or password did not match.';
         return;
       }
@@ -526,6 +540,7 @@
   async function generateOwnerInvitation(p){
     ensureProjectGovernance(p);
     if(platformStatus(p)!=='approved') return {ok:false,error:'This business is not currently available for owner access.'};
+    if(!p.ownerAccess.enabled) return {ok:false,error:'Owner Portal is disabled for this project. Enable it before creating an invitation.'};
     if(!String(p.ownerAccess.ownerName||'').trim()) return {ok:false,error:'Enter and save the owner name first.'};
     if(!String(p.ownerAccess.ownerEmail||'').trim()) return {ok:false,error:'Enter and save the owner email first.'};
 
@@ -535,6 +550,9 @@
       const now=Date.now();
       p.ownerAccess.invitation={
         inviteId:'INV-'+now.toString(36)+'-'+Math.random().toString(36).slice(2,7),
+        projectId:p.id,
+        namespace:p.namespace||window.BlackFlagV3Core?.namespaceFor?.(p.id)||'',
+        intendedEmail:normalizeOwnerLogin(p.ownerAccess.ownerEmail),
         tokenHash:tokenHash,
         createdAt:new Date(now).toISOString(),
         expiresAt:now+(7*24*60*60*1000),
@@ -561,8 +579,12 @@
       return {ok:false,error:'This invitation has expired. Please request a new invitation.'};
     }
     if(platformStatus(p)!=='approved') return {ok:false,error:'This business portal is not currently available.'};
+    if(!p.ownerAccess.enabled) return {ok:false,error:'Owner access is disabled for this project.'};
     const inv=p.ownerAccess.invitation;
     if(!inv) return {ok:false,error:'No active invitation was found for this business.'};
+    if(inv.projectId && inv.projectId!==p.id) return {ok:false,error:'This invitation does not match the requested project.'};
+    if(inv.namespace && inv.namespace!==(p.namespace||window.BlackFlagV3Core?.namespaceFor?.(p.id)||'')) return {ok:false,error:'This invitation is outside the project security boundary.'};
+    if(inv.intendedEmail && inv.intendedEmail!==normalizeOwnerLogin(p.ownerAccess.ownerEmail)) return {ok:false,error:'The intended owner changed after this invitation was created. Request a new invitation.'};
     if(inv.revokedAt) return {ok:false,error:'This invitation is no longer active.'};
     if(inv.claimedAt) return {ok:false,error:'This invitation has already been accepted.'};
     if(Number(inv.expiresAt||0)<=Date.now()) return {ok:false,error:'This invitation has expired.'};
@@ -579,6 +601,7 @@
     const validation=await validateOwnerClaim(projectId,token);
     if(!validation.ok) return validation;
     const p=validation.project;
+    if(normalizeOwnerLogin(login)!==normalizeOwnerLogin(p.ownerAccess.ownerEmail)) return {ok:false,error:'Use the email address this invitation was issued to.'};
     const credential=await createOwnerCredential(p,login,password,{testMode});
     if(!credential.ok)return credential;
     p.ownerAccess.status='active';
@@ -959,16 +982,66 @@
       const migration=core.migrate(companies);
       companies=migration.projects;
       if(migration.changed){
-        core.snapshot(before,'pre-v3-stage1-migration');
+        core.snapshot(before,'pre-v3.7.5-registry-migration');
         await setSetting('companies',companies);
-        core.markMigration({from:'2.9.x',to:'3.0',stage:1,status:'complete',projectCount:companies.length});
-        core.audit({category:'migration',action:'v3.stage1.migration.complete',detail:`${companies.length} projects`});
+        core.markMigration({from:'3.0',to:'3.1',stage:'project-registry',status:'complete',projectCount:companies.length});
+        core.audit({category:'migration',action:'v3.7.5.project.registry.migration.complete',detail:`${companies.length} projects`});
       }
     }
   }
   async function saveCompanies(){
     companies=companies.map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(p))||ensureProjectGovernance(p));
+    const integrity=window.BlackFlagV3Core?.integrity?.(companies,document);
+    if(integrity && !integrity.ok){
+      const summary=integrity.issues.filter(x=>x.level==='critical').slice(0,4).map(x=>`${x.code}${x.projectId?`:${x.projectId}`:''}`).join(' • ');
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'project.collection.save.blocked',detail:summary||'Critical integrity failure'});
+      throw new Error(`Dark Sky blocked a project write because hull integrity failed. ${summary}`);
+    }
     await setSetting('companies',companies);
+  }
+
+  function projectMutationDenied(p,action,result){
+    const reason=result?.error||'project_mutation_denied';
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p?.id||null,category:'authorization',action:'project.mutation.blocked',detail:`${action} • ${reason}`});
+    console.warn('Dark Sky blocked project mutation',action,p?.id,reason);
+    return false;
+  }
+
+  function requireEngineProjectMutation(p,action){
+    const result=window.BlackFlagV3Core?.authorizeProjectMutation?.({project:p,actorRole:'engine_admin',contextProjectId:engineActiveProjectId});
+    if(!engineSessionUnlocked || engineActiveProjectId!==p?.id || (result && !result.ok)){
+      return projectMutationDenied(p,action,result||{error:!engineSessionUnlocked?'engine_session_locked':'project_context_mismatch'});
+    }
+    return true;
+  }
+
+  function requireEngineFleetMutation(p,action){
+    const result=window.BlackFlagV3Core?.authorizeProjectMutation?.({project:p,actorRole:'engine_admin',contextProjectId:p?.id||''});
+    if(!engineSessionUnlocked || !p?.id || (result && !result.ok)){
+      return projectMutationDenied(p,action,result||{error:!engineSessionUnlocked?'engine_session_locked':'project_missing'});
+    }
+    return true;
+  }
+
+  function requireOwnerProjectMutation(p,capability,action){
+    const session=ownerSession();
+    const result=window.BlackFlagV3Core?.authorizeProjectMutation?.({project:p,actorRole:'project_owner',contextProjectId:session?.projectId||'',capability});
+    if(!session || session.projectId!==p?.id || (result && !result.ok)){
+      window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p?.id||null,category:'authorization',action:'owner.mutation.blocked',detail:`${action} • ${result?.error||'owner_session_mismatch'}`});
+      return false;
+    }
+    return true;
+  }
+
+  function requireDeploymentBoundary(p,d,action){
+    if(!requireEngineProjectMutation(p,action))return false;
+    const result=window.BlackFlagV3Core?.validateDeployment?.(p,d);
+    if(result && !result.ok){
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'authorization',action:'deployment.mutation.blocked',detail:`${action} • ${result.error} • ${(result.failures||[]).join(', ')}`});
+      alert('Dark Sky blocked this deployment change because the outpost identity does not match the active project.');
+      return false;
+    }
+    return true;
   }
   function companyById(id){return companies.find(c=>c.id===id);}
   function companyStatusLabel(c){
@@ -1069,6 +1142,7 @@
     box.querySelectorAll('[data-enter-project]').forEach(b=>b.addEventListener('click',()=>enterProject(b.dataset.enterProject)));
     box.querySelectorAll('[data-project-publish]').forEach(t=>t.addEventListener('change',async()=>{
       const p=projectById(t.dataset.projectPublish);if(!p)return;
+      if(!requireEngineFleetMutation(p,'project.publishing.quick_update')){t.checked=!t.checked;return;}
       const next=t.checked?'live':'development';
       if(t.checked && !confirm(`Publish ${p.name}? Customers may be able to access this project.`)){t.checked=false;return;}
       p.publish={status:next};p.visibility=t.checked?'published':'engine_only';await saveCompanies();logActivity(p.id,t.checked?'Project published':'Project unpublished');await renderProjectCommand();
@@ -1195,7 +1269,7 @@
     const namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
     d.projectId=p.id;
     d.namespace=namespace;
-    d.authorization={...(d.authorization||{}),role:'device',projectId:p.id,namespace,scope:'customer_session',crossProjectAccess:'deny',policyVersion:'3.2.1',engineAccess:false,ownerAccess:false};
+    d.authorization={...(d.authorization||{}),role:'device',projectId:p.id,namespace,scope:'customer_session',crossProjectAccess:'deny',policyVersion:'3.3',engineAccess:false,ownerAccess:false};
     d.deviceIdentity=d.deviceIdentity&&typeof d.deviceIdentity==='object'?d.deviceIdentity:{
       deviceId:'DEV-'+String(d.id||deploymentIdFor(p)).replace(/[^a-z0-9-]/gi,'').slice(-28),
       projectId:p.id,namespace,issuedAt:d.createdAt||new Date().toISOString()
@@ -1728,19 +1802,20 @@
       }
       closeMarketingGraphicSlot();
     }
-    if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
-    if(tab==='experience') $('saveExperienceTab').onclick=async()=>{p.customerExperience={photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;await saveCompanies();logActivity(p.id,'Customer experience updated');};
-    if(tab==='workflow') $('saveWorkflowTab').onclick=async()=>{const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));}};
-    if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await saveCompanies();logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
+    if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{if(!requireEngineProjectMutation(p,'ai.policy.update'))return;p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
+    if(tab==='experience') $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;p.customerExperience={photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;await saveCompanies();logActivity(p.id,'Customer experience updated');};
+    if(tab==='workflow') $('saveWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.update'))return;const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));}};
+    if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'project.publishing.update'))return;const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await saveCompanies();logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
     if(tab==='products'){
-      $$('[data-product-publish]').forEach(t=>t.onchange=async()=>{const pr=(p.products||[]).find(x=>x.id===t.dataset.productPublish);if(!pr)return;if(t.checked&&!confirm(`Publish product "${pr.name}"?`)){t.checked=false;return;}pr.published=t.checked;await saveCompanies();logActivity(p.id,t.checked?'Product published':'Product unpublished',pr.name);});
-      if($('addProductBtn')) $('addProductBtn').onclick=async()=>{const name=prompt('Product name');if(!name)return;p.products=p.products||[];p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-4),name,published:false,characterLimit:null});await saveCompanies();logActivity(p.id,'Product added',name);renderProjectTab(p.id,'products');};
+      $$('[data-product-publish]').forEach(t=>t.onchange=async()=>{if(!requireEngineProjectMutation(p,'product.publish.update')){t.checked=!t.checked;return;}const pr=(p.products||[]).find(x=>x.id===t.dataset.productPublish);if(!pr)return;if(t.checked&&!confirm(`Publish product "${pr.name}"?`)){t.checked=false;return;}pr.published=t.checked;await saveCompanies();logActivity(p.id,t.checked?'Product published':'Product unpublished',pr.name);});
+      if($('addProductBtn')) $('addProductBtn').onclick=async()=>{if(!requireEngineProjectMutation(p,'product.create'))return;const name=prompt('Product name');if(!name)return;p.products=p.products||[];p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-4),name,published:false,characterLimit:null});await saveCompanies();logActivity(p.id,'Product added',name);renderProjectTab(p.id,'products');};
     }
     if(tab==='payments'){
       const pay=p.payments||{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false};
       $('ptPaymentMode').value=pay.mode||'payment_link';
       $('ptPaymentProvider').value=pay.provider||'not_configured';
       $('savePaymentsTab').onclick=async()=>{
+        if(!requireEngineProjectMutation(p,'payments.structure.update'))return;
         p.payments={enabled:$('ptPaymentsEnabled').checked,mode:$('ptPaymentMode').value,provider:$('ptPaymentProvider').value,customerVisible:false};
         await saveCompanies();
         logActivity(p.id,'Payment structure updated',`${p.payments.enabled?'enabled':'disabled'} • ${p.payments.provider}`);
@@ -1759,6 +1834,7 @@
       ['permOrdersView','permLedgerView'].forEach(id=>$(id).addEventListener('change',syncPermissionDependencies));
       syncPermissionDependencies();
       $('savePermissionsTab').onclick=async()=>{
+        if(!requireEngineProjectMutation(p,'project.permissions.update'))return;
         p.permissions={
           ordersView:$('permOrdersView').checked,
           ordersUpdate:$('permOrdersView').checked&&$('permOrdersUpdate').checked,
@@ -1789,10 +1865,21 @@
       $('cancelOwnerEdit')?.addEventListener('click',()=>renderProjectTab(p.id,'owner'));
 
       $('saveOwnerAccess')?.addEventListener('click',async()=>{
+        if(!requireEngineProjectMutation(p,'owner.identity.update'))return;
         const ownerName=String($('ownerAccessName')?.value||'').trim();
         const ownerEmail=String($('ownerAccessEmail')?.value||'').trim();
         if(!ownerName){alert('Owner name is required.');return;}
         if(!ownerEmail){alert('Owner email is required.');return;}
+        const priorOwnerEmail=String(p.ownerAccess.ownerEmail||'').trim();
+        const ownerEmailChanged=normalizeOwnerLogin(priorOwnerEmail)!==normalizeOwnerLogin(ownerEmail);
+        if(ownerEmailChanged && p.ownerAccess.status==='active' && p.ownerAccess.credential){
+          if(!confirm('Changing the email for an active owner will revoke the current owner login. Continue?'))return;
+          p.ownerAccess.credential=null;
+          p.ownerAccess.status='not_claimed';
+          p.ownerAccess.invitation=null;
+          clearOwnerSession();
+          logActivity(p.id,'Owner login revoked after identity change',`${priorOwnerEmail} → ${ownerEmail}`);
+        }
         p.ownerAccess.ownerName=ownerName;
         p.ownerAccess.ownerEmail=ownerEmail;
         p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
@@ -1813,6 +1900,7 @@
       });
 
       $$('[data-owner-capability]').forEach(box=>box.addEventListener('change',async()=>{
+        if(!requireEngineProjectMutation(p,'owner.capabilities.update')){await renderProjectTab(p.id,'owner');return;}
         p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
         p.ownerAccess.updatedAt=new Date().toISOString();
         await saveCompanies();
@@ -1820,6 +1908,7 @@
       }));
 
       $('generateOwnerInvite')?.addEventListener('click',async()=>{
+        if(!requireEngineProjectMutation(p,'owner.invitation.generate'))return;
         purgeExpiredOwnerInvitation(p);
         p.ownerAccess.ownerName=String($('ownerAccessName')?.value||'').trim();
         p.ownerAccess.ownerEmail=String($('ownerAccessEmail')?.value||'').trim();
@@ -1852,6 +1941,7 @@
       });
 
       $('revokeOwnerInvite')?.addEventListener('click',async()=>{
+        if(!requireEngineProjectMutation(p,'owner.invitation.revoke'))return;
         if(!p.ownerAccess.invitation)return;
         if(!confirm(`Revoke the current owner invitation for ${p.name}?`))return;
         p.ownerAccess.invitation.revokedAt=new Date().toISOString();
@@ -1881,12 +1971,14 @@
       const savedOrders=await getMergedOrders();
       rebuildCustomerDirectoryForProject(p.id,savedOrders);
       $('saveCustomerHistoryTab').onclick=async()=>{
+        if(!requireEngineProjectMutation(p,'customer.history.settings.update'))return;
         p.customerHistory={adminVisible:$('customerHistoryAdminVisible').checked};
         await saveCompanies();
         logActivity(p.id,'Project Admin customer history '+(p.customerHistory.adminVisible?'enabled':'disabled'));
         await renderProjectTab(p.id,'customers');
       };
       $('rebuildCustomerHistoryBtn').onclick=async()=>{
+        if(!requireEngineProjectMutation(p,'customer.history.rebuild'))return;
         rebuildCustomerDirectoryForProject(p.id,await getMergedOrders());
         logActivity(p.id,'Customer history rebuilt');
         await renderProjectTab(p.id,'customers');
@@ -1902,6 +1994,7 @@
       });
 
       if($('createDeploymentBtn')) $('createDeploymentBtn').onclick=async()=>{
+        if(!requireEngineProjectMutation(p,'deployment.create'))return;
         const name=prompt('Outpost name','New Outpost');
         if(!name)return;
         const fresh=newProjectDeployment(p,name.trim()||'New Outpost','kiosk_self_service');
@@ -1913,6 +2006,7 @@
       };
 
       if(d && $('saveDeploymentManifestBtn')) $('saveDeploymentManifestBtn').onclick=async()=>{
+        if(!requireDeploymentBoundary(p,d,'deployment.manifest.update'))return;
         d.name=$('deployName').value.trim()||d.name;
         d.profile=$('deployProfile').value;
         d.idleMinutes=Number($('deployIdle').value)||3;
@@ -1933,7 +2027,13 @@
 
       $$('[data-deployment-action]').forEach(btn=>btn.onclick=async()=>{
         if(!d)return;
+        if(!requireDeploymentBoundary(p,d,'deployment.lifecycle.update'))return;
         const next=btn.dataset.deploymentAction;
+        if(!window.BlackFlagV3Core?.canTransitionDeployment?.(d.state,next)){
+          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'authorization',action:'deployment.transition.blocked',detail:`${d.id} • ${d.state} → ${next}`});
+          alert(`Dark Sky blocked an invalid outpost transition: ${d.state} → ${next}.`);
+          return;
+        }
         const readiness=deploymentReadiness(d);
         if(next==='sea_trial' && readiness.score<100){
           if(!confirm(`Sea Trial readiness is ${readiness.score}%. Continue to Sea Trial with warnings?`))return;
@@ -1960,6 +2060,7 @@
     }
     if(tab==='notifications'){
       $('saveNotificationsTab').onclick=async()=>{
+        if(!requireEngineProjectMutation(p,'notifications.update'))return;
         p.notifications={customerConfirmationEmail:$('projectCustomerEmailEnabled').checked};
         await saveCompanies();
         logActivity(p.id,'Customer confirmation email '+(p.notifications.customerConfirmationEmail?'enabled':'disabled'));
@@ -2010,10 +2111,13 @@
     return (words.map(x=>x[0]).join('').slice(0,4)||'PRJ').toUpperCase();
   }
 
+  const COMMISSION_DRAFT_KEY='blackFlagCommissionDraftV2';
   function freshCommissionDraft(){
     return {
       draftId:'commission-'+Date.now(),
       createdAt:new Date().toISOString(),
+      updatedAt:new Date().toISOString(),
+      _step:1,_maxStepReached:1,_recovered:false,
       name:'',ownerName:'',ownerEmail:'',
       businessType:'other',description:'',
       primaryOffer:'',characterLimit:32,pricingMode:'manual',
@@ -2023,15 +2127,28 @@
       status:'development',visibility:'private',deploymentState:'sea_trial'
     };
   }
+  function readCommissionDraft(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(COMMISSION_DRAFT_KEY)||localStorage.getItem('blackFlagCommissionDraft')||'null');
+      if(!saved||typeof saved!=='object')return null;
+      return {...freshCommissionDraft(),...saved,_recovered:true};
+    }catch(_){return null;}
+  }
+  function clearCommissionDraft(){
+    localStorage.removeItem(COMMISSION_DRAFT_KEY);
+    localStorage.removeItem('blackFlagCommissionDraft');
+  }
 
   function openProjectCommissioning(){
-    commissionDraft=freshCommissionDraft();
-    commissionStep=1;
+    const recovered=readCommissionDraft();
+    commissionDraft=recovered||freshCommissionDraft();
+    commissionStep=Math.max(1,Math.min(6,Number(commissionDraft._step||1)));
+    commissionDraft._maxStepReached=Math.max(1,Math.min(6,Number(commissionDraft._maxStepReached||commissionStep||1)));
     const w=$('projectCommissioningWorkspace');
     w.classList.remove('hidden'); w.setAttribute('aria-hidden','false');
     document.body.classList.add('engine-workspace-open');
     renderCommissioning();
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:'commissioning.opened',detail:commissionDraft.draftId});
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:recovered?'commissioning.resumed':'commissioning.opened',detail:commissionDraft.draftId});
   }
 
   function closeProjectCommissioning(){
@@ -2047,10 +2164,12 @@
       commissionDraft[k]=el.type==='checkbox'?!!el.checked:(el.type==='number'?Number(el.value||0):el.value);
     });
     if(commissionDraft.name){
-      commissionDraft.namespace=commissionSlug(commissionDraft.name);
       commissionDraft.projectCode=commissionDraft.projectCode||commissionCode(commissionDraft.name);
       commissionDraft.orderPrefix=commissionDraft.orderPrefix||commissionDraft.projectCode;
     }
+    commissionDraft._step=commissionStep;
+    commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);
+    commissionDraft.updatedAt=new Date().toISOString();
   }
 
   function commissioningStepMarkup(){
@@ -2058,25 +2177,25 @@
     if(commissionStep===1)return `
       <div class="commission-panel">
         <div class="eyebrow">01 • BUSINESS IDENTITY</div><h2>Name the vessel</h2>
-        <p>This creates the permanent identity used to isolate the project. The display name can change later; the namespace should not.</p>
+        <p>Give the business a clear display name and identify the intended owner. Dark Sky assigns a separate immutable project ID when the vessel is commissioned.</p>
         <div class="commission-grid two">
           <label>Business / project name<input data-cfield="name" value="${escapeHtml(d.name)}" placeholder="Example Company"></label>
           <label>Project code<input data-cfield="projectCode" value="${escapeHtml(d.projectCode)}" placeholder="AUTO"></label>
           <label>Owner name<input data-cfield="ownerName" value="${escapeHtml(d.ownerName)}" placeholder="Business owner"></label>
           <label>Owner email<input data-cfield="ownerEmail" value="${escapeHtml(d.ownerEmail)}" placeholder="owner@example.com"></label>
         </div>
-        <div class="commission-callout"><b>SEALED FROM BIRTH</b><span>The Engine will create a unique project ID and namespace. No other project inherits this project's data, branding, orders, customers or settings.</span></div>
+        <div class="commission-callout"><b>SEALED FROM BIRTH</b><span>The visible business name is a label, not a security boundary. Dark Sky creates a unique project ID and namespace at commissioning so another project can never inherit this vessel's data.</span></div>
       </div>`;
     if(commissionStep===2)return `
       <div class="commission-panel">
-        <div class="eyebrow">02 • BUSINESS MODEL</div><h2>Define what this business is</h2>
+        <div class="eyebrow">02 • STARTING MODEL</div><h2>Choose the closest operating pattern</h2>
         <div class="commission-grid two">
-          <label>Business type<select data-cfield="businessType">
+          <label>Starting model<select data-cfield="businessType">
             ${['wood_signs','mugs','flowers','retail','service','food','other'].map(x=>`<option value="${x}" ${d.businessType===x?'selected':''}>${x.replace(/_/g,' ').toUpperCase()}</option>`).join('')}
           </select></label>
           <label>Short description<input data-cfield="description" value="${escapeHtml(d.description)}" placeholder="What does this business do?"></label>
         </div>
-        <div class="commission-callout"><b>CONFIGURABLE PROJECT</b><span>Business type is descriptive configuration—not a hard-coded Ike's template. Future modules can respond to this profile without crossing project boundaries.</span></div>
+        <div class="commission-callout"><b>STARTING POINT, NOT A CAGE</b><span>This choice seeds the initial operating pattern. Project identity stays independent, and capabilities can be changed later without turning an existing business into somebody else's template.</span></div>
       </div>`;
     if(commissionStep===3)return `
       <div class="commission-panel">
@@ -2108,13 +2227,13 @@
       </div>`;
     if(commissionStep===5)return `
       <div class="commission-panel">
-        <div class="eyebrow">05 • ACCESS & SERVICES</div><h2>Choose the initial capabilities</h2>
+        <div class="eyebrow">05 • ACCESS & SERVICES</div><h2>Prepare the owner handoff</h2>
         <div class="commission-grid two">
           <label class="checkline"><input type="checkbox" data-cfield="ownerPortal" ${d.ownerPortal?'checked':''}> Prepare Owner Portal</label>
           <label class="checkline"><input type="checkbox" data-cfield="customerRetention" ${d.customerRetention?'checked':''}> Customer retention capability</label>
           <label class="checkline"><input type="checkbox" data-cfield="notifications" ${d.notifications?'checked':''}> Notifications capability</label>
         </div>
-        <div class="commission-callout warning"><b>DEFAULT DENY</b><span>Capabilities not selected remain unavailable. Commissioning does not grant Engine or Captain authority to an outside owner.</span></div>
+        <div class="commission-callout warning"><b>DEFAULT DENY</b><span>Capabilities not selected remain unavailable. Owner access is project-scoped only; commissioning never grants Engine or Captain authority to an outside owner.</span></div>
       </div>`;
     return `
       <div class="commission-panel sea-trial-review">
@@ -2123,10 +2242,18 @@
         <div class="commission-review-grid">
           <div><small>PROJECT</small><b>${escapeHtml(d.name||'Not named')}</b></div>
           <div><small>OWNER</small><b>${escapeHtml(d.ownerName||'Not assigned')}</b></div>
-          <div><small>NAMESPACE</small><b>${escapeHtml(d.namespace||commissionSlug(d.name)||'pending')}</b></div>
+          <div><small>PERMANENT ID</small><b>ASSIGNED AT COMMISSION</b></div>
           <div><small>CODE</small><b>${escapeHtml(d.projectCode||commissionCode(d.name))}</b></div>
+          <div><small>STARTING MODEL</small><b>${escapeHtml(String(d.businessType||'other').replace(/_/g,' ').toUpperCase())}</b></div>
           <div><small>OFFER</small><b>${escapeHtml(d.primaryOffer||'Configure later')}</b></div>
+          <div><small>OWNER HANDOFF</small><b>${d.ownerPortal&&d.ownerName&&d.ownerEmail?'READY TO INVITE':'CONFIGURE LATER'}</b></div>
           <div><small>LAUNCH STATE</small><b>PRIVATE • SEA TRIAL</b></div>
+        </div>
+        <div class="commission-readiness" aria-label="Commissioning readiness">
+          <div class="ready"><span>✓</span><b>IDENTITY SEALED</b><small>Unique project ID and namespace are generated at commission.</small></div>
+          <div class="ready"><span>✓</span><b>PRIVATE BY DEFAULT</b><small>No customer deployment is published by commissioning alone.</small></div>
+          <div class="${d.ownerPortal&&d.ownerName&&d.ownerEmail?'ready':'deferred'}"><span>${d.ownerPortal&&d.ownerName&&d.ownerEmail?'✓':'•'}</span><b>OWNER HANDOFF</b><small>${d.ownerPortal&&d.ownerName&&d.ownerEmail?'Ready for a project-bound invitation after commission.':'Deferred until an owner is assigned in Project Control.'}</small></div>
+          <div class="deferred"><span>•</span><b>DEPLOYMENT</b><small>Outposts are commissioned separately after the project is reviewed.</small></div>
         </div>
         <div class="commission-callout success"><b>CAPTAIN APPROVAL REQUIRED FOR PUBLISHING</b><span>Commissioning creates the project structure only. It does not publish the business.</span></div>
       </div>`;
@@ -2135,38 +2262,79 @@
   function renderCommissioning(){
     if(!commissionDraft)return;
     $('commissioningBody').innerHTML=commissioningStepMarkup();
-    document.querySelectorAll('[data-commission-step]').forEach(b=>b.classList.toggle('active',Number(b.dataset.commissionStep)===commissionStep));
+    document.querySelectorAll('[data-commission-step]').forEach(b=>{
+      const step=Number(b.dataset.commissionStep);
+      b.classList.toggle('active',step===commissionStep);
+      b.classList.toggle('complete',step<commissionStep||step<Number(commissionDraft._maxStepReached||1));
+      b.disabled=step>Number(commissionDraft._maxStepReached||1);
+      b.setAttribute('aria-current',step===commissionStep?'step':'false');
+    });
     $('commissionPrev').disabled=commissionStep===1;
     $('commissionNext').textContent=commissionStep===6?'COMMISSION PROJECT':'CONTINUE';
-    $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/6 • NOT PUBLISHED`;
+    const recovered=commissionDraft._recovered?' • RECOVERED DRAFT':'';
+    $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/6${recovered} • NOT PUBLISHED`;
+    if($('commissionValidation'))$('commissionValidation').textContent='';
   }
 
   async function saveCommissionDraft(){
     captureCommissionFields();
-    localStorage.setItem('blackFlagCommissionDraft',JSON.stringify(commissionDraft));
+    commissionDraft._step=commissionStep;
+    commissionDraft._recovered=false;
+    localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+    localStorage.removeItem('blackFlagCommissionDraft');
     $('commissionDraftStatus').textContent=`DRAFT SAVED • ${new Date().toLocaleTimeString()} • NOT PUBLISHED`;
   }
 
+  function commissionError(message){
+    const el=$('commissionValidation');
+    if(el){el.textContent=message;el.scrollIntoView({block:'nearest'});}else alert(message);
+    return false;
+  }
+  function validEmail(value){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value||'').trim());}
   function validateCommissionStep(){
     captureCommissionFields();
-    if(commissionStep===1 && !commissionDraft.name.trim()){alert('Enter a business/project name before continuing.');return false;}
+    if(commissionStep===1){
+      if(!commissionDraft.name.trim())return commissionError('Enter a business or project name before continuing.');
+      if(commissionDraft.name.trim().length<2)return commissionError('Use at least two characters for the business name.');
+      if(commissionDraft.ownerEmail && !validEmail(commissionDraft.ownerEmail))return commissionError('Enter a valid owner email address or leave it blank for later.');
+    }
+    if(commissionStep===5 && commissionDraft.ownerPortal){
+      if(!String(commissionDraft.ownerName||'').trim())return commissionError('Owner Portal is selected. Add the owner name in Step 1 or turn Owner Portal off for now.');
+      if(!validEmail(commissionDraft.ownerEmail))return commissionError('Owner Portal is selected. Add a valid owner email in Step 1.');
+    }
+    return true;
+  }
+
+  function validateCommissionDraftFinal(){
+    captureCommissionFields();
+    if(!String(commissionDraft.name||'').trim())return commissionError('Business identity is incomplete. Add the project name in Step 1.');
+    if(commissionDraft.ownerEmail && !validEmail(commissionDraft.ownerEmail))return commissionError('The owner email is not valid. Correct it in Step 1.');
+    if(commissionDraft.ownerPortal){
+      if(!String(commissionDraft.ownerName||'').trim())return commissionError('Owner handoff is enabled, but the owner name is missing.');
+      if(!validEmail(commissionDraft.ownerEmail))return commissionError('Owner handoff is enabled, but a valid owner email is missing.');
+    }
     return true;
   }
 
   async function commissionProject(){
     captureCommissionFields();
-    if(!commissionDraft.name.trim())return;
+    if(!validateCommissionDraftFinal())return;
     const slug=commissionSlug(commissionDraft.name);
     const code=(commissionDraft.projectCode||commissionCode(commissionDraft.name)).toUpperCase();
-    const id='project-'+slug+'-'+Date.now().toString(36);
+    const core=window.BlackFlagV3Core;
+    const id=core?.createProjectId?.(commissionDraft.name,companies)||('prj-'+slug+'-'+Date.now().toString(36));
+    const sameNames=core?.findProjectsByName?.(companies,commissionDraft.name,{includeArchived:false})||[];
+    if(sameNames.length){
+      core?.audit?.({actorRole:'engine_admin',category:'project',action:'project.display_name.reused',detail:`${commissionDraft.name} • existing ${sameNames.map(x=>x.projectId).join(', ')}`});
+    }
     const p={
       id,
       name:commissionDraft.name.trim(),
       description:commissionDraft.description||commissionDraft.primaryOffer||'New commissioned project',
       projectCode:code,
       orderPrefix:commissionDraft.orderPrefix||code,
-      namespace:slug,
-      permanentNamespace:slug,
+      namespace:core?.namespaceFor?.(id)||('bf.project.'+id),
+      permanentNamespace:core?.namespaceFor?.(id)||('bf.project.'+id),
       status:'development',
       visibility:'private',
       approved:true,
@@ -2184,7 +2352,10 @@
         enabled:!!commissionDraft.ownerPortal,
         ownerName:commissionDraft.ownerName||'',
         ownerEmail:commissionDraft.ownerEmail||'',
-        state:commissionDraft.ownerPortal?'configured':'disabled'
+        status:'not_claimed',
+        invitation:null,
+        credential:null,
+        updatedAt:new Date().toISOString()
       },
       capabilities:{
         customerRetention:!!commissionDraft.customerRetention,
@@ -2192,14 +2363,18 @@
       },
       orders:[],customers:[],deployments:[],ledger:[],
       createdAt:new Date().toISOString(),
+      updatedAt:new Date().toISOString(),
       commissionedAt:new Date().toISOString(),
-      commissioningVersion:'3.3'
+      lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
+      registry:{version:1,source:'commissioning',displayNameUnique:false},
+      commissioningVersion:'3.7.7'
     };
 
-    // Use the same project collection the Engine already persists.
+    // Use the same project collection the Engine already persists and seal it through the canonical project core.
+    core?.ensure?.(p);
     companies.push(p);
     await saveCompanies();
-    localStorage.removeItem('blackFlagCommissionDraft');
+    clearCommissionDraft();
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • private sea trial`});
     closeProjectCommissioning();
     await renderEngineRoom();
@@ -2946,25 +3121,6 @@
   }
   window.cancelEngineEntryToProject=cancelEngineEntryToProject;
 
-  function openAddProject(){
-    $('newProjectName').value='';$('newProjectPrefix').value='';$('addProjectError').textContent='';
-    $('addProjectGate').classList.remove('hidden');
-  }
-
-  async function createProject(){
-    const name=$('newProjectName').value.trim(), type=$('newProjectType').value;
-    const prefix=($('newProjectPrefix').value||name.slice(0,3)).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
-    if(!name){$('addProjectError').textContent='Enter a project name.';return;}
-    const id=slugifyProjectName(name);
-    if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
-    companies.push({id,projectCode:(prefix||name.slice(0,3)).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ',name,type,shellType:PROJECT_SHELL_TEMPLATES[type]?.customerShell||'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:[...platformDefaultWorkflow],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
-permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
-customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
-    if(type==='custom_flowers') PROJECT_SHELLS[id]='flowers'; await saveCompanies();
-    const __allAssets=readAllProjectAssets();delete __allAssets[id];writeAllProjectAssets(__allAssets);
-    logActivity(id,'Project created');$('addProjectGate').classList.add('hidden');await renderProjectCommand();
-  }
-
   function renderCompanyCommand(){
     const box=$('companyCommandCards'); if(!box)return;
     const live=companies.filter(c=>c.publish?.status==='live').length;
@@ -3025,6 +3181,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('ccPublish').value=c.publish?.status||'development';
     $('closeCompanyControl').addEventListener('click',()=>panel.classList.add('hidden'));
     $('saveCompanyControl').addEventListener('click',async()=>{
+      if(!requireEngineFleetMutation(c,'project.legacy_control.update'))return;
       c.customerExperience={photoRequired:$('ccPhoto').checked,previewApproval:$('ccPreview').checked};
       c.customization=c.customization||{};
       c.customization.allowCustomColors=$('ccColors').checked;
@@ -3070,6 +3227,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
   async function saveAIForm(){
     const c=companyById($('aiCompanySetting').value);if(!c)return;
+    if(!requireEngineFleetMutation(c,'ai.policy.fleet_update'))return;
     c.ai={mode:$('aiRecognitionMode').value,minConfidence:Math.max(.5,Math.min(.99,Number($('aiConfidenceSetting').value)||.9)),requireScaleReference:$('aiScaleReferenceSetting').checked};
     await saveCompanies();renderCompanyFleet();$('aiSettingsStatus').textContent='AI recognition policy saved for '+c.name+'.';
   }
@@ -5103,6 +5261,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function ownerUpdateOrderStatus(p,orderId,status){
+    if(!requireOwnerProjectMutation(p,'orders','order.status.update'))return false;
     const orders=await getMergedOrders();
     const o=orders.find(x=>x.id===orderId && projectScopedOrders([x],p.id).length===1);
     if(!o)return false;
@@ -5185,7 +5344,7 @@ The full order and approved media remain stored with this project.`;
             <div><small>${escapeHtml((DEPLOYMENT_PROFILES[d.profile]?.label||d.profile).toUpperCase())}</small><h3>${escapeHtml(d.name)}</h3>
             <p>${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)} • Readiness ${ready.score}%</p>
             <div class="owner-device-meta"><span>DEVICE ${escapeHtml(device.deviceId||'PENDING')}</span><span>${device.lastSeen?'LAST SEEN '+escapeHtml(new Date(device.lastSeen).toLocaleString()):'NOT CHECKED IN'}</span><span>${escapeHtml(deviceStatusLabel(d))}</span><span>PROJECT ONLY</span></div></div>
-            <div class="owner-device-actions"><button data-owner-deploy-toggle="${escapeHtml(d.id)}" class="secondary-btn" type="button">${d.state==='paused'?'RESUME':'PAUSE'}</button><button data-owner-device-revoke="${escapeHtml(d.id)}" class="secondary-btn danger-soft" type="button">REVOKE DEVICE</button></div>
+            <div class="owner-device-actions">${['deployed','paused'].includes(d.state)?`<button data-owner-deploy-toggle="${escapeHtml(d.id)}" class="secondary-btn" type="button">${d.state==='paused'?'RESUME':'PAUSE'}</button>`:''}<button data-owner-device-revoke="${escapeHtml(d.id)}" class="secondary-btn danger-soft" type="button">REVOKE DEVICE</button></div>
           </article>`;
         }).join(''):'<div class="owner-module-empty"><h3>None yet</h3><p>Add a customer device when you are ready to serve customers from another location.</p></div>'}</div>`);
     } else if(moduleKey==='staff'){
@@ -5221,37 +5380,51 @@ The full order and approved media remain stored with this project.`;
     $$('[data-owner-order-status]').forEach(sel=>sel.addEventListener('change',()=>ownerUpdateOrderStatus(p,sel.dataset.ownerOrderStatus,sel.value)));
 
     $('ownerAddProduct')?.addEventListener('click',async()=>{
+      if(!requireOwnerProjectMutation(p,'products','product.create'))return;
       const name=prompt('Product name'); if(!name?.trim())return;
       p.products=p.products||[]; p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-5),name:name.trim(),published:false,characterLimit:null});
       await saveCompanies(); logActivity(p.id,'Owner added product',name.trim()); await renderOwnerModule(p,'products');
     });
     $$('[data-owner-product-save]').forEach(btn=>btn.addEventListener('click',async()=>{
+      if(!requireOwnerProjectMutation(p,'products','product.update'))return;
       const pr=(p.products||[]).find(x=>x.id===btn.dataset.ownerProductSave); if(!pr)return;
       const name=document.querySelector(`[data-owner-product-name="${CSS.escape(pr.id)}"]`)?.value?.trim();
       const published=document.querySelector(`[data-owner-product-published="${CSS.escape(pr.id)}"]`)?.checked;
       if(name)pr.name=name; pr.published=!!published; await saveCompanies(); logActivity(p.id,'Owner updated product',pr.name); await renderOwnerModule(p,'products');
     }));
     $('ownerSavePricing')?.addEventListener('click',async()=>{
+      if(!requireOwnerProjectMutation(p,'pricing','pricing.update'))return;
       const prices=String($('ownerPriceChoices')?.value||'').split(',').map(x=>Number(x.trim())).filter(x=>Number.isFinite(x)&&x>=0);
       if(!prices.length){alert('Enter at least one valid price.');return;}
       const next={...config,prices}; await setSetting(`businessConfig:${p.id}`,next); logActivity(p.id,'Owner updated pricing',prices.join(', '));
       if($('ownerPricingStatus'))$('ownerPricingStatus').textContent='Pricing saved.';
     });
     $('ownerSaveBranding')?.addEventListener('click',async()=>{
+      if(!requireOwnerProjectMutation(p,'branding','branding.update'))return;
       const name=String($('ownerBrandName')?.value||'').trim(),subtitle=String($('ownerBrandSubtitle')?.value||'').trim();
       if(!name){alert('Business name is required.');return;}
       p.branding=p.branding||{}; p.branding.businessName=name; p.branding.subtitle=subtitle; await saveCompanies(); logActivity(p.id,'Owner updated branding',name);
       if($('ownerBrandingStatus'))$('ownerBrandingStatus').textContent='Branding saved.';
     });
     $('ownerCreateDeployment')?.addEventListener('click',async()=>{
+      const ownerDeploymentCapability=moduleKey==='kiosks'?'kiosks':'deployments';
+      if(!requireOwnerProjectMutation(p,ownerDeploymentCapability,'deployment.create'))return;
       const name=prompt(moduleKey==='kiosks'?'Kiosk name':'Location / device name'); if(!name?.trim())return;
       const fresh=newProjectDeployment(p,name.trim(),'kiosk_self_service');
       migrateLegacyDeployment(p).push(fresh); await saveCompanies(); logActivity(p.id,'Owner added location/device',fresh.name); await renderOwnerModule(p,moduleKey);
     });
     $$('[data-owner-deploy-toggle]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const ownerDeploymentCapability=moduleKey==='kiosks'?'kiosks':'deployments';
+      if(!requireOwnerProjectMutation(p,ownerDeploymentCapability,'deployment.lifecycle.update'))return;
       const d=migrateLegacyDeployment(p).find(x=>x.id===btn.dataset.ownerDeployToggle); if(!d)return;
       const prior=d.state;
-      d.state=d.state==='paused'?'draft':'paused';
+      const next=d.state==='paused'?'deployed':'paused';
+      if(!window.BlackFlagV3Core?.canTransitionDeployment?.(prior,next)){
+        window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p.id,category:'authorization',action:'deployment.transition.blocked',detail:`${d.id} • ${prior} → ${next}`});
+        alert(`Dark Sky blocked an invalid outpost transition: ${prior} → ${next}.`);
+        return;
+      }
+      d.state=next;
       d.updatedAt=new Date().toISOString();
       normalizeDeploymentIdentity(p,d);
       await saveCompanies();
@@ -5260,8 +5433,11 @@ The full order and approved media remain stored with this project.`;
       await renderOwnerModule(p,moduleKey);
     }));
     $$('[data-owner-device-revoke]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const ownerDeploymentCapability=moduleKey==='kiosks'?'kiosks':'deployments';
+      if(!requireOwnerProjectMutation(p,ownerDeploymentCapability,'deployment.revoke'))return;
       const d=migrateLegacyDeployment(p).find(x=>x.id===btn.dataset.ownerDeviceRevoke); if(!d)return;
       if(!confirm(`Revoke customer-device access for ${d.name}? Historical deployment information will remain.`))return;
+      if(!window.BlackFlagV3Core?.canTransitionDeployment?.(d.state,'retired')){alert('Dark Sky blocked an invalid deployment retirement transition.');return;}
       d.state='retired'; d.updatedAt=new Date().toISOString();
       normalizeDeploymentIdentity(p,d);
       d.deviceIdentity.revokedAt=d.updatedAt;
@@ -5271,22 +5447,26 @@ The full order and approved media remain stored with this project.`;
       await renderOwnerModule(p,moduleKey);
     }));
     $('ownerAddStaff')?.addEventListener('click',async()=>{
+      if(!requireOwnerProjectMutation(p,'staff','staff.create'))return;
       const name=prompt('Staff member name'); if(!name?.trim())return;
       const email=prompt('Staff member email (optional)','')||'',role=prompt('Role','Staff')||'Staff';
       p.ownerAccess.staff=p.ownerAccess.staff||[]; p.ownerAccess.staff.push({id:'STF-'+Date.now().toString(36),name:name.trim(),email:email.trim(),role:role.trim()||'Staff'});
       await saveCompanies(); logActivity(p.id,'Owner added staff member',name.trim()); await renderOwnerModule(p,'staff');
     });
     $$('[data-owner-staff-remove]').forEach(btn=>btn.addEventListener('click',async()=>{
+      if(!requireOwnerProjectMutation(p,'staff','staff.remove'))return;
       const member=(p.ownerAccess.staff||[]).find(x=>x.id===btn.dataset.ownerStaffRemove); if(!member)return;
       if(!confirm(`Remove ${member.name} from the staff list?`))return;
       p.ownerAccess.staff=(p.ownerAccess.staff||[]).filter(x=>x.id!==member.id); await saveCompanies(); logActivity(p.id,'Owner removed staff member',member.name); await renderOwnerModule(p,'staff');
     }));
     $('ownerSaveNotifications')?.addEventListener('click',async()=>{
+      if(!requireOwnerProjectMutation(p,'notifications','notifications.update'))return;
       p.notifications=p.notifications||{}; p.notifications.customerConfirmationEmail=!!$('ownerConfirmationEmail')?.checked;
       await saveCompanies(); logActivity(p.id,'Owner updated notifications',p.notifications.customerConfirmationEmail?'enabled':'disabled');
       if($('ownerNotificationStatus'))$('ownerNotificationStatus').textContent='Notification settings saved.';
     });
     $('ownerChangePassword')?.addEventListener('click',async()=>{
+      if(!requireOwnerProjectMutation(p,'','owner.credential.update'))return;
       const current=$('ownerCurrentPassword')?.value||'',next=$('ownerNewPassword')?.value||'',confirmNext=$('ownerConfirmPassword')?.value||'';
       if(!verifyOwnerCredential(p,p.ownerAccess.credential?.login||'',current)){ $('ownerSettingsStatus').textContent='Current password did not match.'; return; }
       if(next!==confirmNext){ $('ownerSettingsStatus').textContent='New passwords do not match.'; return; }
@@ -5391,10 +5571,10 @@ The full order and approved media remain stored with this project.`;
 
         <div class="owner-password-setup">
           <h3>Create Your Login</h3>
-          <p>For this test build, use the temporary login below. Before production, this becomes the owner's valid email address and chosen password.</p>
-          <label>Email or login<input id="ownerClaimLogin" type="text" value="joe" autocomplete="username"></label>
-          <label>Password<input id="ownerClaimPassword" type="password" value="4353" autocomplete="new-password"></label>
-          <p class="owner-test-login-note">Test credentials: <strong>joe</strong> / <strong>4353</strong></p>
+          <p>Confirm the invited email and create a password for this project portal. This local build proves the project-scoped handoff; production identity will move to the server-side identity service.</p>
+          <label>Email<input id="ownerClaimLogin" type="email" value="${escapeHtml(p.ownerAccess.ownerEmail||'')}" autocomplete="username"></label>
+          <label>Password<input id="ownerClaimPassword" type="password" value="" autocomplete="new-password" placeholder="8+ characters, letter + number"></label>
+          <p class="owner-test-login-note">Invitation is bound to <strong>${escapeHtml(p.ownerAccess.ownerEmail||'the intended owner')}</strong> and this project only.</p>
           <p id="ownerClaimPasswordError" class="owner-login-error"></p>
         </div>
 
@@ -5407,7 +5587,7 @@ The full order and approved media remain stored with this project.`;
       $('ownerClaimAccept')?.addEventListener('click',async()=>{
         const login=$('ownerClaimLogin')?.value||'';
         const password=$('ownerClaimPassword')?.value||'';
-        const result=await claimOwnerAccess(projectId,token,login,password,{testMode:true});
+        const result=await claimOwnerAccess(projectId,token,login,password,{testMode:false});
         if(!result.ok){
           if($('ownerClaimPasswordError'))$('ownerClaimPasswordError').textContent=result.error;
           return;
@@ -5893,8 +6073,6 @@ The full order and approved media remain stored with this project.`;
     if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',openAddProject);
     if($('closeProjectEngineControl')) $('closeProjectEngineControl').addEventListener('click',()=>{clearGraphicsTransientUi();closeEngineWorkspace($('projectEngineControl'));engineActiveProjectId=null;});
     if($('projectTabs')) $('projectTabs').addEventListener('click',e=>{const b=e.target.closest('[data-project-tab]');if(b&&engineActiveProjectId)renderProjectTab(engineActiveProjectId,b.dataset.projectTab);});
-    if($('cancelAddProjectBtn')) $('cancelAddProjectBtn').addEventListener('click',()=>$('addProjectGate').classList.add('hidden'));
-    if($('createProjectBtn')) $('createProjectBtn').addEventListener('click',createProject);
     if($('returnToEngineBtn')) $('returnToEngineBtn').addEventListener('click',e=>{
       e.preventDefault();
       e.stopPropagation();
@@ -6044,7 +6222,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.7.ready',detail:`${companies.length} projects • schema 3 • explicit project boundaries`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.7.7.ready',detail:`${companies.length} projects • schema 5 • policy 3.3 • hull integrity`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -6220,15 +6398,22 @@ document.addEventListener('click', (event) => {
   // v3.3 commissioning controls
   if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',(e)=>{e.preventDefault();openProjectCommissioning();});
   if($('closeProjectCommissioning')) $('closeProjectCommissioning').addEventListener('click',closeProjectCommissioning);
-  if($('commissionPrev')) $('commissionPrev').addEventListener('click',()=>{captureCommissionFields();commissionStep=Math.max(1,commissionStep-1);renderCommissioning();});
+  if($('commissionPrev')) $('commissionPrev').addEventListener('click',()=>{captureCommissionFields();commissionStep=Math.max(1,commissionStep-1);commissionDraft._step=commissionStep;localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));renderCommissioning();});
   if($('commissionNext')) $('commissionNext').addEventListener('click',async()=>{
     if(!validateCommissionStep())return;
-    if(commissionStep<6){commissionStep++;renderCommissioning();}
+    if(commissionStep<6){commissionStep++;commissionDraft._step=commissionStep;commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));renderCommissioning();}
     else await commissionProject();
   });
   if($('commissionSaveDraft')) $('commissionSaveDraft').addEventListener('click',saveCommissionDraft);
+  if($('commissionReset')) $('commissionReset').addEventListener('click',()=>{
+    if(!confirm('Discard this commissioning draft and start a new project setup?'))return;
+    clearCommissionDraft();commissionDraft=freshCommissionDraft();commissionStep=1;renderCommissioning();
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:'commissioning.draft.discarded',detail:commissionDraft.draftId});
+  });
   document.querySelectorAll('[data-commission-step]').forEach(b=>b.addEventListener('click',()=>{
-    captureCommissionFields(); commissionStep=Number(b.dataset.commissionStep); renderCommissioning();
+    const requested=Number(b.dataset.commissionStep);
+    if(!commissionDraft || requested>Number(commissionDraft._maxStepReached||1))return;
+    captureCommissionFields(); commissionStep=requested; commissionDraft._step=commissionStep; localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft)); renderCommissioning();
   }));
 
 

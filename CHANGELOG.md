@@ -1,3 +1,41 @@
+## v3.7.7 — Hull Integrity
+- Added fail-closed authorization gates around Project Control mutations and Engine fleet-level project writes.
+- Added active owner-session + capability checks around owner order, product, pricing, branding, deployment, staff, notification, and credential mutations.
+- Sealed deployment identity to project ID/namespace and validate deployment boundaries during integrity checks.
+- Added explicit deployment transition rules and blocked invalid state changes.
+- Collection persistence now blocks on critical hull-integrity failures.
+- Advanced schema to 5, policy to 3.3, and cache/version references to v3.7.7.
+- Added `HULL_INTEGRITY_AUDIT.md` and advanced the next release heading to v3.8 Command & Visibility.
+
+# Changelog
+
+## v3.7.6 — Commissioning & Invitation Refit
+
+- Made Project Commissioning the single supported new-project path and retired the dormant legacy Add Project modal.
+- Added commissioning draft recovery, explicit Start Over, step persistence, and inline validation.
+- Clarified display-name vs immutable-project-identity language throughout commissioning.
+- Reframed business type as a Starting Model rather than a rigid business copy.
+- Fixed newly commissioned owner-access state so it matches the canonical invitation lifecycle.
+- Bound owner invitations to project ID, namespace, and intended email; claim validation now rejects boundary or owner mismatches.
+- Owner claims now use the invited email and standard password rules rather than hard-coded local test credentials.
+- Replaced plaintext local owner credential storage with salted one-way hashes, including a migration bridge for old local test credentials.
+- Recovery snapshots now omit owner credential secret material and invitation token hashes.
+- Bumped Black Flag policy metadata to 3.2 and the service-worker cache to v3.7.6.
+- Added commissioning progress guardrails so unreached steps cannot be skipped and final commission runs a complete readiness validation.
+- Added a review-stage readiness panel distinguishing project creation, owner handoff, and later deployment commissioning.
+- Changing the email identity of an active owner now revokes the old local credential before a new handoff can be issued.
+- Added `ISOLATION_AUDIT_STAGE2.md` documenting confirmed boundaries, prototype limits, and the next authorization audit.
+
+## v3.7.5 — Project Registry Foundation
+
+- Preserved v3.7.4 as the pre-refit baseline.
+- Added the Dark Sky Platform Blueprint and Current Ship Inventory.
+- Added canonical project-registry helpers and schema 4 / policy 3.1 metadata.
+- New project IDs are immutable unique IDs independent of display names.
+- Reusing a display name no longer blocks project creation; repeated labels are audited and surfaced as integrity warnings instead.
+- Add Project and Commissioning now seed lifecycle/registry metadata and unique project namespaces.
+- Bumped the service-worker cache to force the corrected build onto iPad/Safari.
+
 # Dark Sky / Black Flag Engine Changelog
 
 ## v3.7.4 — Compact Command Header
