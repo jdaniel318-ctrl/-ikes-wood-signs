@@ -3781,7 +3781,6 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
     try{
       const {response,result,attachmentSent}=await sendWeb3FormsWithOptionalPreview(order,payload);
-      console.log('Web3Forms response',response.status,result,'attachmentSent=',attachmentSent);
       if(!response.ok || result.success!==true) throw new Error(result.message||`Submission failed (${response.status})`);
       order.previewAttachmentSent=attachmentSent;
       order.emailSentAt=new Date().toISOString();

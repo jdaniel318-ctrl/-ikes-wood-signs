@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="theme-color" content="#f4d238" />
+  <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=3.6.3" />
+  <link rel="stylesheet" href="styles.css?v=3.6.4" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -50,7 +50,7 @@
   </div>
 
   
-    <button id="returnToEngineBtn" class="project-engine-return hidden black-flag-project-engine-return" aria-label="Open Black Flag Engine" title="Black Flag Engine"><img src="assets/black_flag_platform_icon.png" alt=""><span class="sr-only">Black Flag Engine</span></button>
+    <button id="returnToEngineBtn" class="project-engine-return hidden dark-sky-return-control" aria-label="Return to Dark Sky" title="Return to Dark Sky"><span class="dark-sky-return-logo" aria-hidden="true"></span><span class="sr-only">Return to Dark Sky</span></button>
 
   
   <!-- v2.9.40 Captain's Quarters: isolated Captain-only creative chamber -->
@@ -130,7 +130,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v3.6.3 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.6.4 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -684,7 +684,7 @@
     </div>
 
     <section id="enginePanel" class="engine-panel hidden modern-engine-room black-flag-engine-shell"><div class="bf-engine-signature" aria-hidden="true">
-          <img src="assets/black_flag_platform_icon.png" alt=""><span>BLACK FLAG</span>
+          <span class="bf-platform-icon" aria-hidden="true"></span><span>BLACK FLAG</span>
         </div>
       
       <header id="pirateCommandHero" class="pirate-command-hero" aria-label="Pirate Mode command header">
@@ -803,7 +803,7 @@
       
       <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Black Flag v3 structural status">
         <header class="v3-architecture-head">
-          <div><div class="black-flag-section-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>SYSTEM STATUS</span></div><h3>V3 STRUCTURAL STATUS</h3><p>One platform architecture beneath every project and command surface.</p></div>
+          <div><div class="black-flag-section-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>SYSTEM STATUS</span></div><h3>V3 STRUCTURAL STATUS</h3><p>One platform architecture beneath every project and command surface.</p></div>
           <span id="v3SchemaBadge">SCHEMA 3</span>
         </header>
         <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
@@ -812,7 +812,7 @@
       <section id="firstMateWatch" class="first-mate-watch" aria-label="First Mate Watch">
         <header>
           <div class="first-mate-mark" aria-hidden="true">FM</div>
-          <div><div class="black-flag-section-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG WATCH</span></div><div class="bf-section-brand"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>FIRST MATE'S WATCH</span></div><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
+          <div><div class="black-flag-section-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG WATCH</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>FIRST MATE'S WATCH</span></div><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
           <button id="firstMateRefreshBtn" class="secondary-btn first-mate-refresh-btn" type="button">RUN WATCH</button>
         </header>
         <div id="firstMateWatchItems" class="first-mate-watch-items"></div>
@@ -822,7 +822,7 @@
         <div class="modern-project-command-head">
           <div>
             <div class="black-flag-section-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="engine-kicker">PROJECT COMMAND</div>
-            <div class="bf-section-brand"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>PROJECT COMMAND</span></div><h3>PROJECTS</h3>
+            <div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>PROJECT COMMAND</span></div><h3>PROJECTS</h3>
             <p id="engineProjectsHelp">Open a project to manage its controls. Project data remains isolated.</p>
             <div id="projectSummaryBadge" class="project-summary-badge"></div>
           </div>
@@ -853,7 +853,7 @@
               <p id="pecSubtitle">Project-specific controls.</p>
             </div>
           </div>
-          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine"><img src="assets/black_flag_mark_clean.png" alt=""><span class="sr-only">Back to Engine</span></button>
+          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine"><span class="bf-platform-icon" aria-hidden="true"></span><span class="sr-only">Back to Engine</span></button>
         </div>
 
         <nav class="project-tabs" id="projectTabs">
@@ -878,7 +878,7 @@
 
       <section id="engineConfigurationDock" class="engine-configuration-dock hidden" aria-label="Engine configuration">
         <header class="engine-configuration-head">
-          <div class="engine-config-brandline"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><div><div class="engine-kicker">ENGINE CONFIGURATION</div><div class="bf-section-brand"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>ENGINE CONFIGURATION</span></div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div></div>
+          <div class="engine-config-brandline"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><div><div class="engine-kicker">ENGINE CONFIGURATION</div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>ENGINE CONFIGURATION</span></div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div></div>
           <button id="engineConfigurationCloseBtn" class="secondary-btn workspace-back-btn" type="button">← BACK TO ENGINE</button>
         </header>
         <section class="engine-economics-config">
@@ -1060,7 +1060,7 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.6.3</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.6.5</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
@@ -1088,7 +1088,7 @@
 
   <script src="platform_core.js?v=3.0.0"></script>
   <script src="platform_identity.js?v=3.0.0"></script>
-  <script src="app.js?v=3.6.3"></script>
+  <script src="app.js?v=3.6.4"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -1114,7 +1114,7 @@
 
 
 
-  <script src="captain.js?v=3.6.3"></script>
+  <script src="captain.js?v=3.6.4"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">
@@ -1139,7 +1139,7 @@
     <header class="commissioning-head">
       <div>
         <div class="black-flag-section-cue commissioning-cue"><img src="assets/black_flag_mark_clean.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="eyebrow">PROJECT COMMISSIONING</div>
-        <div class="bf-section-brand"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>PROJECT COMMISSIONING</span></div><h1>Commission New Project</h1>
+        <div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>PROJECT COMMISSIONING</span></div><h1>Commission New Project</h1>
         <p>Create a sealed business namespace and prepare it for private Sea Trial.</p>
       </div>
       <button id="closeProjectCommissioning" class="compact-light-btn">← BACK TO ENGINE</button>

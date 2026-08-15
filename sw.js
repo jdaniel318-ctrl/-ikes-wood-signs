@@ -1,15 +1,13 @@
-const CACHE='black-flag-engine-v3-6-3-engine-mark-repair';
+const CACHE='black-flag-engine-v3-6-4-ready-to-sail';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.6.3',
+  './styles.css?v=3.6.4',
   './platform_core.js?v=3.0.0',
   './platform_identity.js?v=3.0.0',
-  './app.js?v=3.6.3',
-  './captain.js?v=3.6.3',
+  './app.js?v=3.6.4',
+  './captain.js?v=3.6.4',
   './manifest.webmanifest',
-  './assets/black_flag_platform_icon.png',
-  './assets/black_flag_mark_dimensional.png',
   './assets/black_flag_mark_clean.png',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',

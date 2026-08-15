@@ -3,8 +3,8 @@
   "short_name": "Black Flag",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4d238",
-  "theme_color": "#f4d238",
+  "background_color": "#071419",
+  "theme_color": "#071419",
   "icons": [
     {
       "src": "assets/black_flag_platform_icon.png",

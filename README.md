@@ -1,6 +1,6 @@
 # Black Flag Engine — Dark Sky
 
-**Current release:** v3.6.3 — Engine Mark Repair
+**Current release:** v3.6.5 — Ready to Sail
 
 Dark Sky is the Black Flag multi-project business platform. The Engine provides shared command, project commissioning, owner/device boundaries, project-scoped operations, telemetry, recovery, and Captain-level governance while preserving each business project's independent identity.
 
@@ -20,3 +20,7 @@ For GitHub Pages, publish the folder contents at the site root used by the proje
 - Browser-side controls are not a substitute for server-backed authentication when external production access is introduced.
 
 See `ARCHITECTURE.md` for standing structural rules and `CHANGELOG.md` for the release narrative.
+
+
+## v3.6.5 — Show the Flag
+The universal project-to-Dark-Sky return control now embeds the approved Black Flag platform logo directly in the platform CSS. It no longer depends on a separately deployed image asset and its class is isolated from legacy project-brand hiding rules.

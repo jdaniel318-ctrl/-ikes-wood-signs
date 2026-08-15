@@ -1,5 +1,14 @@
 # Black Flag Engine — Release Narrative
 
+## v3.6.4 — Ready to Sail
+- Final pre-development cleanup after the Engine Mark Repair.
+- Removed the unused `black_flag_mark_dimensional.png` asset and its service-worker cache entry.
+- Removed a stray Web3Forms debug log.
+- Replaced legacy Ike-yellow browser/PWA theme colors with Dark Sky platform colors.
+- Bumped application/cache references so deployed devices receive the clean build.
+- No order, project, security, Captain, admin, or customer workflow behavior intentionally changed.
+
+
 ## v3.6.2 — Spring Cleaning
 
 Dark Sky received a shipwide maintenance pass before new feature development. Historical release notes and validation debris were consolidated, the loose `app.js.bak` copy was removed, unused visual assets were removed from the deployable package, stale release labels were aligned, the project footer “Powered by Black Flag” text was retired in favor of the shared lower-right platform return mark, and the service worker was tightened so superseded Black Flag caches are removed during activation. No order, project, customer, owner, pricing, ledger, commissioning, or Captain workflow was intentionally redesigned.
@@ -51,3 +60,11 @@ The 2.9 series was the experimental shipyard where the original Ike's Wood Signs
 
 Corrected the Engine Room identity lockup after tracing a persistent Safari/GitHub Pages placeholder to a legacy two-image structure. Removed the duplicate/shrunken reference-artwork mark from the entry lockup, removed the separately loaded platform-icon dependency from that position, and replaced both with one self-contained Black Flag mark that occupies the full identity space beside “Engine Room.” Application behavior is unchanged.
 
+
+
+## v3.6.5 — Show the Flag
+- Rebuilt the universal bottom-right Dark Sky return control around the approved Black Flag platform mark.
+- Embedded the mark directly in platform CSS so a missing/renamed/cached asset cannot produce Safari’s broken-image glyph.
+- Removed the return control from the legacy `black-flag` wildcard class path that previously made the control vulnerable to project-isolation CSS.
+- Applied the same embedded mark treatment to other platform-icon UI surfaces.
+- No order, project, PIN, customer, or Captain behavior changed.
