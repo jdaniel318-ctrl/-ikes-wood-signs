@@ -30,5 +30,5 @@ function ownerCan(project,moduleKey,sessionProjectId){
  return (project?.ownerAccess?.capabilities||[]).includes(moduleKey);
 }
 
-g.BlackFlagV3Identity={version:'3.8.4-immutable-project-identity',ROLE,ACTION,authorize,ownerCan,productionAuth:{ready:false,require:['server_side_identity','password_hashing','secure_sessions','server_side_authorization','recovery','revocation']}};
+g.BlackFlagV3Identity={version:'3.8.5-immutable-project-identity',ROLE,ACTION,authorize,ownerCan,productionAuth:{ready:false,require:['server_side_identity','password_hashing','secure_sessions','server_side_authorization','recovery','revocation']}};
 })(window);

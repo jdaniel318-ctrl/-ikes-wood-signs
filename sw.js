@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-4-command-navigation-refit';
+const CACHE='dark-sky-v3-8-5-ipad-command-usability';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.4',
-  './platform_core.js?v=3.8.4',
-  './platform_identity.js?v=3.8.4',
-  './app.js?v=3.8.4',
-  './captain.js?v=3.8.4',
+  './styles.css?v=3.8.5',
+  './platform_core.js?v=3.8.5',
+  './platform_identity.js?v=3.8.5',
+  './app.js?v=3.8.5',
+  './captain.js?v=3.8.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

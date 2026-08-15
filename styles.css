@@ -9184,3 +9184,115 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .pec-order-command-state{width:100%;justify-content:space-between}
 }
 \n\n/* =========================================================\n   v3.8.4 — Command Navigation Refit\n   Two-level Project Control navigation: frequent commands stay\n   one tap away; deeper systems open in contextual command bays.\n   ========================================================= */\n#projectEngineControl .project-command-nav{display:grid!important;gap:10px!important;overflow:visible!important;padding:10px!important;border:1px solid #294752!important;border-radius:18px!important;background:linear-gradient(145deg,rgba(12,28,34,.96),rgba(7,20,25,.98))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 10px 28px rgba(0,0,0,.12)!important}\n#projectEngineControl .project-command-primary{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;min-width:0}\n#projectEngineControl .project-command-primary>button{min-width:0;min-height:58px;display:grid!important;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:9px;row-gap:1px;padding:10px 11px!important;border:1px solid #294752!important;border-radius:13px!important;background:linear-gradient(145deg,#10252d,#0b1b21)!important;color:#c7d5d7!important;text-align:left;transition:transform .14s ease,border-color .14s ease,background .14s ease,box-shadow .14s ease!important}\n#projectEngineControl .project-command-primary>button:hover,#projectEngineControl .project-command-primary>button.expanded{border-color:#4f8293!important;background:linear-gradient(145deg,#15323c,#10252d)!important}\n#projectEngineControl .project-command-primary>button.active{border-color:#55b6dc!important;background:linear-gradient(145deg,#174455,#11313d)!important;color:#f2fbfc!important;box-shadow:inset 0 0 0 1px rgba(91,190,227,.16),0 0 0 1px rgba(32,113,143,.12)!important}\n#projectEngineControl .project-command-primary>button:active{transform:translateY(1px)}\n#projectEngineControl .project-command-primary .project-nav-icon{grid-row:1 / span 2;width:26px;height:26px;display:grid;place-items:center;border:1px solid #355661;border-radius:9px;background:#0a1920;color:#87b3c0;font-size:15px;font-weight:900}\n#projectEngineControl .project-command-primary>button.active .project-nav-icon,#projectEngineControl .project-command-primary>button.expanded .project-nav-icon{border-color:#4a91a8;color:#bdeeff;background:#102b35}\n#projectEngineControl .project-command-primary>button>span:not(.project-nav-icon){font-size:11px;font-weight:900;line-height:1.1;white-space:normal}\n#projectEngineControl .project-command-primary>button>small{grid-column:2;color:#718c93;font-size:8px;line-height:1.1;letter-spacing:.04em;white-space:normal}\n#projectEngineControl .project-command-primary>button.active>small{color:#a9cad2}\n#projectEngineControl .project-command-subnav{min-height:0}\n#projectEngineControl .project-subnav-group{display:flex;align-items:center;gap:7px;min-height:45px;padding:7px 9px;border:1px solid #233f49;border-radius:13px;background:rgba(7,19,24,.72);animation:projectSubnavIn .14s ease-out}\n#projectEngineControl .project-subnav-group.hidden{display:none!important}\n#projectEngineControl .project-subnav-label{flex:0 0 auto;padding:0 9px 0 3px;border-right:1px solid #294751;color:#73929a;font-size:8px;font-weight:900;letter-spacing:.18em}\n#projectEngineControl .project-subnav-group button{min-height:32px;padding:7px 12px!important;border:1px solid transparent!important;border-radius:9px!important;background:transparent!important;color:#aebfc2!important;font-size:10px!important;font-weight:800!important}\n#projectEngineControl .project-subnav-group button:hover{background:#102a33!important;border-color:#294b58!important;color:#e5f0f1!important}\n#projectEngineControl .project-subnav-group button.active{background:#143846!important;border-color:#4aa7ca!important;color:#f2fbfc!important;box-shadow:inset 3px 0 0 #63c4e6!important}\n@keyframes projectSubnavIn{from{opacity:.35;transform:translateY(-3px)}to{opacity:1;transform:none}}\n@media(max-width:1180px){#projectEngineControl .project-command-primary{grid-template-columns:repeat(4,minmax(0,1fr))}}\n@media(max-width:820px){#projectEngineControl .project-command-nav{padding:8px!important}#projectEngineControl .project-command-primary{display:flex;overflow-x:auto;gap:7px;padding-bottom:2px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}#projectEngineControl .project-command-primary>button{flex:0 0 128px;min-height:54px}#projectEngineControl .project-command-primary>button.project-nav-direct{flex-basis:112px}#projectEngineControl .project-subnav-group{overflow-x:auto;-webkit-overflow-scrolling:touch}#projectEngineControl .project-subnav-label{position:sticky;left:0;background:#091a20;z-index:2}#projectEngineControl .project-subnav-group button{flex:0 0 auto;white-space:nowrap}}\n@media(max-width:520px){#projectEngineControl .project-command-primary>button{flex-basis:116px;padding:9px!important}#projectEngineControl .project-command-primary>button.project-nav-direct{flex-basis:104px}#projectEngineControl .project-command-primary .project-nav-icon{width:24px;height:24px}}\n
+
+/* =========================================================
+   v3.8.5 — iPad Command Usability Refit
+   Larger tap targets, clearer hierarchy, and simplified labels.
+   Keeps the v3.8.4 two-level navigation architecture intact.
+   ========================================================= */
+#projectEngineControl .project-command-primary>button{
+  grid-template-columns:auto 1fr;
+  grid-template-rows:1fr;
+  column-gap:11px;
+}
+#projectEngineControl .project-command-primary .project-nav-icon{
+  grid-row:1;
+}
+#projectEngineControl .project-command-primary>button>span:not(.project-nav-icon){
+  font-size:12px;
+  line-height:1.15;
+}
+#projectEngineControl .project-command-primary>button.active,
+#projectEngineControl .project-command-primary>button.expanded{
+  box-shadow:inset 4px 0 0 #63c4e6,inset 0 0 0 1px rgba(91,190,227,.15),0 7px 18px rgba(0,0,0,.14)!important;
+}
+
+/* iPad landscape and compact desktop: prioritize touch over density. */
+@media (min-width:821px) and (max-width:1440px){
+  #projectEngineControl .project-command-nav{
+    gap:12px!important;
+    padding:14px!important;
+  }
+  #projectEngineControl .project-command-primary{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  #projectEngineControl .project-command-primary>button{
+    min-height:68px!important;
+    padding:13px 15px!important;
+    border-radius:15px!important;
+  }
+  #projectEngineControl .project-command-primary .project-nav-icon{
+    width:32px!important;
+    height:32px!important;
+    border-radius:10px!important;
+    font-size:17px!important;
+  }
+  #projectEngineControl .project-command-primary>button>span:not(.project-nav-icon){
+    font-size:14px!important;
+    letter-spacing:.01em;
+  }
+  #projectEngineControl .project-subnav-group{
+    min-height:58px!important;
+    gap:9px!important;
+    padding:8px 11px!important;
+    border-radius:14px!important;
+  }
+  #projectEngineControl .project-subnav-label{
+    padding:0 13px 0 5px!important;
+    font-size:10px!important;
+    letter-spacing:.16em!important;
+  }
+  #projectEngineControl .project-subnav-group button{
+    min-height:42px!important;
+    padding:10px 16px!important;
+    border-radius:10px!important;
+    font-size:12px!important;
+  }
+}
+
+/* iPad portrait / small tablet: two generous columns instead of a tiny horizontal strip. */
+@media (min-width:601px) and (max-width:820px){
+  #projectEngineControl .project-command-nav{padding:12px!important;gap:10px!important}
+  #projectEngineControl .project-command-primary{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    overflow:visible!important;
+    gap:9px!important;
+  }
+  #projectEngineControl .project-command-primary>button,
+  #projectEngineControl .project-command-primary>button.project-nav-direct{
+    min-height:64px!important;
+    width:auto!important;
+    flex:none!important;
+    padding:12px 14px!important;
+  }
+  #projectEngineControl .project-command-primary .project-nav-icon{
+    width:30px!important;height:30px!important;font-size:16px!important;
+  }
+  #projectEngineControl .project-command-primary>button>span:not(.project-nav-icon){font-size:13px!important}
+  #projectEngineControl .project-subnav-group{
+    min-height:56px!important;
+    overflow-x:auto;
+    padding:8px 10px!important;
+  }
+  #projectEngineControl .project-subnav-label{font-size:9px!important}
+  #projectEngineControl .project-subnav-group button{
+    flex:0 0 auto;
+    min-height:42px!important;
+    padding:10px 15px!important;
+    font-size:12px!important;
+  }
+}
+
+/* Phones retain horizontal navigation, but with readable minimum targets. */
+@media (max-width:600px){
+  #projectEngineControl .project-command-primary{display:flex!important;overflow-x:auto!important}
+  #projectEngineControl .project-command-primary>button,
+  #projectEngineControl .project-command-primary>button.project-nav-direct{
+    flex:0 0 132px!important;
+    min-height:58px!important;
+  }
+  #projectEngineControl .project-command-primary>button>span:not(.project-nav-icon){font-size:12px!important}
+  #projectEngineControl .project-subnav-group button{min-height:40px!important;font-size:11px!important}
+}

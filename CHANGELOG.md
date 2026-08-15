@@ -1,3 +1,14 @@
+## v3.8.5 — iPad Command Usability Refit
+
+- Preserved the v3.8.4 two-level Project Control navigation model.
+- Simplified primary command labels by removing tiny secondary descriptions.
+- Added iPad-first responsive command sizing with larger type, icons, spacing, and finger-sized tap targets.
+- iPad landscape now uses a clear four-column / two-row primary command layout instead of compressing eight controls across one row.
+- iPad portrait uses two generous columns rather than a narrow scrolling strip.
+- Contextual sub-navigation controls are larger and easier to scan and tap.
+- Active/expanded commands receive a stronger instrument-state treatment.
+- Cache/version references advanced to v3.8.5.
+
 ## v3.8.4 — Command Navigation Refit
 
 - Replaced the dense sixteen-button Project Control rack with a two-level command navigation system.
