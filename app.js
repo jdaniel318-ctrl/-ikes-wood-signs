@@ -1966,8 +1966,30 @@
       };
     }
     if(tab==='orders'){
-      const orders=await getMergedOrders();const rows=orders.filter(o=>String(o.projectId||'')===String(p.id));
-      $('ptOrders').innerHTML=rows.length?rows.slice().reverse().map(o=>`<div class="ledger-row"><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(o.status)}</span><span>$${Number(o.price||0).toFixed(2)}</span><span>${escapeHtml(o.customerName||'')}</span></div>`).join(''):'<p class="helper">No orders for this project yet.</p>';
+      const orders=approvedProjectOrders(await getMergedOrders(),p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+      const stats={
+        total:orders.length,
+        newOrders:orders.filter(o=>canonicalOrderStatus(o.status)==='New').length,
+        active:orders.filter(o=>canonicalOrderStatus(o.status)!=='Completed').length,
+        completed:orders.filter(o=>canonicalOrderStatus(o.status)==='Completed').length
+      };
+      const summary=`<div class="pec-order-summary">
+        <article><span>Total Orders</span><strong>${stats.total}</strong></article>
+        <article><span>New</span><strong>${stats.newOrders}</strong></article>
+        <article><span>Active</span><strong>${stats.active}</strong></article>
+        <article><span>Completed</span><strong>${stats.completed}</strong></article>
+      </div>`;
+      const table=orders.length?`<div class="pec-order-table-wrap"><table class="pec-order-table"><thead><tr><th>Order</th><th>Created</th><th>Status</th><th>Customer</th><th>Phone</th><th>Email</th><th>Details</th><th>Total</th></tr></thead><tbody>${orders.map(o=>`<tr>
+        <td><div class="pec-order-primary"><strong>${escapeHtml(o.id)}</strong><small>${escapeHtml(orderOfferSummary(o,p)||p.name)}</small></div></td>
+        <td>${escapeHtml(compactOrderDate(o.createdAt))}</td>
+        <td>${escapeHtml(canonicalOrderStatus(o.status))}</td>
+        <td>${escapeHtml(o.customerName||'—')}</td>
+        <td><div class="pec-order-contact-stack">${o.customerPhone?`<a href="tel:${escapeHtml(o.customerPhone)}">${escapeHtml(o.customerPhone)}</a>`:'—'}</div></td>
+        <td><div class="pec-order-contact-stack">${o.customerEmail?`<a href="mailto:${escapeHtml(o.customerEmail)}">${escapeHtml(o.customerEmail)}</a>`:'—'}</div></td>
+        <td><div class="pec-order-detail-stack"><strong>${escapeHtml(orderRequestedText(o))}</strong><small>${escapeHtml(orderStyleSummary(o))}</small></div></td>
+        <td>$${Number(o.price||0).toFixed(2)}</td>
+      </tr>`).join('')}</tbody></table></div>`:`<p class="helper">No orders for this project yet.</p>`;
+      $('ptOrders').innerHTML=summary+table;
     }
   }
 
@@ -4022,6 +4044,48 @@ The full order and approved media remain stored with this project.`;
 
 
   function orderProjectId(o){return String(o?.projectId||'')}
+  function formatOrderDateTime(value){
+    if(!value) return '—';
+    const d=new Date(value);
+    return Number.isNaN(d.getTime())?'—':d.toLocaleString();
+  }
+  function compactOrderDate(value){
+    if(!value) return '—';
+    const d=new Date(value);
+    return Number.isNaN(d.getTime())?'—':d.toLocaleDateString();
+  }
+  function orderRequestedText(o){
+    return String(o?.wording||o?.message||o?.cardMessage||o?.description||'Custom order').trim()||'Custom order';
+  }
+  function orderStyleSummary(o){
+    const bits=[];
+    if(o?.font) bits.push(String(o.font));
+    if(o?.fill) bits.push(o.fill==='Other'&&o?.customColor?`${o.fill} (${o.customColor})`:String(o.fill));
+    if(o?.orientation) bits.push(String(o.orientation));
+    if(o?.topSide) bits.push(`Top: ${o.topSide}`);
+    return bits.join(' • ')||'—';
+  }
+  function orderOfferSummary(o,p){
+    const bits=[];
+    if(o?.business?.name) bits.push(String(o.business.name));
+    else if(p?.name) bits.push(String(p.name));
+    if(o?.productName) bits.push(String(o.productName));
+    if(o?.business?.orderPrefix || p?.orderPrefix) bits.push(`Prefix ${o?.business?.orderPrefix||p?.orderPrefix}`);
+    return bits.join(' • ');
+  }
+  function orderContactSummary(o){
+    return [o?.customerName,o?.customerPhone,o?.customerEmail].filter(Boolean).join(' • ')||'—';
+  }
+  function orderInfoColumns(o,p){
+    return [
+      ['Created',formatOrderDateTime(o?.createdAt)],
+      ['Updated',formatOrderDateTime(o?.updatedAt||o?.createdAt)],
+      ['Contact Preference',o?.contactPreference||'—'],
+      ['Offer',orderOfferSummary(o,p)||'—'],
+      ['Style / Finish',orderStyleSummary(o)],
+      ['Status',canonicalOrderStatus(o?.status||'New')]
+    ];
+  }
   function statusBadge(o){
     if(o.status==='Ready for Pickup') return '<span class="order-check ready-check" title="Ready for Pickup">✓</span>';
     if(o.status==='Completed') return '<span class="order-check completed-check" title="Completed">✓</span>';
@@ -4031,18 +4095,25 @@ The full order and approved media remain stored with this project.`;
     const d=o.completedAt||o.updatedAt||o.createdAt; return (Date.now()-new Date(d).getTime())/86400000;
   }
   function projectOrderCard(o,canUpdate=true){
+    const p=projectById(o?.projectId)||activeProject();
     const preview=o.approvedPreviewData||'';
     const status=canonicalOrderStatus(o.status);
     const statusClass=adminStatusClass(status);
+    const infoRows=orderInfoColumns(o,p).map(([label,value])=>`<article><span>${escapeHtml(label)}</span><strong>${escapeHtml(String(value||'—'))}</strong></article>`).join('');
+    const notes=[
+      ['Requested wording',orderRequestedText(o)],
+      ['Customer contact',orderContactSummary(o)],
+      ['Email / Delivery',o?.emailSentAt?`Automatic delivery sent ${formatOrderDateTime(o.emailSentAt)}`:(o?.customerEmail||'No customer email captured')],
+      ['Isolation',`${p?.name||'Project'} • ${o?.projectId||'unscoped'}`]
+    ].map(([label,value])=>`<div class="project-order-note-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(String(value||'—'))}</strong></div>`).join('');
     return `<article class="order-card order-card-with-preview ${statusClass}" data-id="${escapeHtml(o.id)}">
       <div class="order-card-layout">
         ${preview?`<button class="project-order-preview admin-preview-open" type="button" data-preview-src="${preview}" aria-label="Open larger approved preview for ${escapeHtml(o.id)}"><div class="project-order-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${preview}" alt="Approved customer preview for ${escapeHtml(o.id)}"><span class="preview-zoom-mark">＋</span></button>`:''}
         <div class="project-order-details">
-          <div class="order-card-head"><div class="order-title-with-check">${statusBadge(o)}<div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div></div><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
-          <div class="summary-row"><span>Order</span><strong>${escapeHtml(o.wording||'Custom order')}</strong></div>
-          <div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName||'')}</strong></div>
-          <div class="summary-row"><span>Phone</span><strong>${escapeHtml(o.customerPhone||'')}</strong></div>
-          <div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail||'')}</strong></div>
+          <div class="order-card-head"><div class="order-title-with-check">${statusBadge(o)}<div><h3>${escapeHtml(o.id)}</h3><div class="helper">${formatOrderDateTime(o.createdAt)}</div></div></div><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
+          <div class="summary-row"><span>Order</span><strong>${escapeHtml(orderRequestedText(o))}</strong></div>
+          <div class="project-order-meta-grid">${infoRows}</div>
+          <div class="project-order-notes">${notes}</div>
           ${canUpdate?`<div class="order-status-control ${statusClass}" data-workflow-status="${escapeHtml(statusClass)}"><label class="order-status-label" style="color:${adminStatusColor(status)}">Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
         </div>
       </div>
@@ -4051,12 +4122,12 @@ The full order and approved media remain stored with this project.`;
   async function renderProjectOrdersView(){
     const p=activeProject(), pm=p?.permissions||{};
     if(!pm.ordersView){$('projectActiveOrders').innerHTML='<div class="empty">Orders access is disabled in Black Flag.</div>';$('projectCompletedOrders').innerHTML='';return;}
-    const rows=approvedProjectOrders(await getMergedOrders(),p).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    const rows=approvedProjectOrders(await getMergedOrders(),p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
     const recent=rows.filter(o=>o.status!=='Completed'||completedAgeDays(o)<=10);
     const archived=rows.filter(o=>o.status==='Completed'&&completedAgeDays(o)>10);
     $('projectActiveOrders').innerHTML=recent.map(o=>projectOrderCard(o,!!pm.ordersUpdate)).join('')||'<div class="empty">No current orders.</div>';
     $('projectCompletedOrders').innerHTML=archived.map(o=>projectOrderCard(o,false)).join('')||'<div class="empty">No archived completed orders.</div>';
-    $('projectActiveOrders').querySelectorAll('[data-order-status]').forEach(s=>s.addEventListener('change',e=>updateOrderStatus(s.dataset.orderStatus,e.target.value)));
+    document.querySelectorAll('#projectActiveOrders [data-order-status], #projectCompletedOrders [data-order-status]').forEach(s=>s.addEventListener('change',e=>updateOrderStatus(s.dataset.orderStatus,e.target.value)));
   }
   async function renderProjectLedgerView(){
     const p=activeProject(),pm=p?.permissions||{};
