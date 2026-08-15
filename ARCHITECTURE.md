@@ -73,7 +73,12 @@ Project shells may declare a `previewGeometry` capability. This keeps the common
 Projects no longer depend on a single hard-coded preview geometry. Each project owns a `visualPresentation` contract with an immutable versioned shape: profile, input capabilities, placement capabilities, transforms, preview modes, approval stages, outputs, renderer, and optional custom capability IDs. Presets accelerate commissioning but do not constrain later configuration. `AVAILABLE` capabilities have working behavior in the current Engine; `FOUNDATION` capabilities declare supported requirements for future renderers and future ships.
 
 
-## Launch readiness doctrine (v3.8.24)
+## Launch readiness doctrine (v3.8.25)
 A deployment may only become Active after the owning project has a customer-operating shell with at least one customer-ready offer and the selected outpost has completed a real Sea Trial customer order. UI-only interface tests do not satisfy activation readiness. Universal-shell projects can create their first launch offer directly in Deployment Shipwright; specialized shells remain supported.
 
 Release packaging is intentionally consolidated: runtime code remains separated by responsibility, while historical audit notes are retained outside the Captain upload package and distilled into README, CHANGELOG, and ARCHITECTURE.
+
+
+## Customer shell isolation law (v3.8.25)
+
+Customer-facing chrome is project-specific. The original Ike header, character art, sign workflow copy, and sign progress rail are permitted only when the active shell resolves to Ike. Universal and other specialized shells must explicitly suppress all legacy Ike customer chrome. Data isolation and presentation isolation are both required for a vessel to pass Sea Trial.

@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-24-launch-readiness';
+const CACHE='dark-sky-v3-8-25-shell-isolation';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.24',
-  './platform_core.js?v=3.8.24',
-  './platform_identity.js?v=3.8.24',
-  './app.js?v=3.8.24',
-  './captain.js?v=3.8.24',
+  './styles.css?v=3.8.25',
+  './platform_core.js?v=3.8.25',
+  './platform_identity.js?v=3.8.25',
+  './app.js?v=3.8.25',
+  './captain.js?v=3.8.25',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

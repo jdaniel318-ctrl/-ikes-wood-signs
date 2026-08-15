@@ -3015,7 +3015,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.24'
+      commissioningVersion:'3.8.25'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -3710,10 +3710,19 @@
     return false;
   }
   function hideAllCustomerShells(){$('customerApp')?.classList.add('hidden');$('mugsCustomerShell')?.classList.add('hidden');$('flowersCustomerShell')?.classList.add('hidden');$('universalCustomerShell')?.classList.add('hidden');}
+  function enforceCustomerShellIsolation(shell){
+    const legacyHeader=document.querySelector('#app > .brand-header');
+    const legacyProgress=document.querySelector('#app > .progress-track');
+    const ikeOnly=shell==='ikes';
+    legacyHeader?.classList.toggle('hidden',!ikeOnly);
+    legacyProgress?.classList.toggle('hidden',!ikeOnly);
+    if(!ikeOnly)$('customerApp')?.classList.add('hidden');
+  }
   function showCustomerShellForProject(p){
     hideAllCustomerShells();
     document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project');
     const shell=projectShellFor(p);
+    enforceCustomerShellIsolation(shell);
     if(shell==='ikes') $('customerApp')?.classList.remove('hidden');
     else if(shell==='mugs') $('mugsCustomerShell')?.classList.remove('hidden');
     else if(shell==='flowers') $('flowersCustomerShell')?.classList.remove('hidden');
@@ -6773,7 +6782,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.24',
+    version:'3.8.25',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7199,7 +7208,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.24.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • launch readiness + real Sea Trial order + activation lane`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.25.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • launch readiness + real Sea Trial order + activation lane`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

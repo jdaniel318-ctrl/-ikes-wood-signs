@@ -10229,10 +10229,19 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 .universal-done-card{text-align:center;padding:3rem 1.5rem}.universal-done-mark{width:76px;height:76px;margin:0 auto 1rem;border-radius:50%;display:grid;place-items:center;background:#0d503e;border:1px solid #42b58a;font-size:2rem}.universal-done-card .primary-btn{margin-top:1rem}
 @media(max-width:800px){.universal-contact-grid{grid-template-columns:1fr}.universal-shell-main{width:min(100% - 1rem,980px);margin:1rem auto}.universal-shell-header{padding:1rem}.universal-review-card{align-items:stretch;flex-direction:column}.universal-review-card .primary-btn{width:100%}.universal-brand-copy p{font-size:.98rem}}
 
-/* v3.8.24 — Launch readiness: no dead activation controls. */
+/* v3.8.25 — Launch readiness: no dead activation controls. */
 .deployment-launch-offer{display:grid;gap:12px;margin-top:8px;padding:14px;border:1px solid rgba(92,198,238,.28);border-radius:16px;background:rgba(4,21,27,.66)}
 .deployment-launch-offer label{display:grid;gap:6px;font-weight:800;color:#e9f4f6}
 .deployment-launch-offer label span,.deployment-launch-offer small{font-weight:600;color:#9eb2b8}
 .deployment-launch-offer .text-input{min-height:48px;background:#06151b!important;color:#f5fbfc!important;border-color:rgba(137,190,208,.32)!important}
 .universal-return-shipwright{margin-left:auto;align-self:center;white-space:nowrap}
 @media (max-width:900px){.universal-shell-header{flex-wrap:wrap}.universal-return-shipwright{width:100%;margin-left:0}}
+
+
+/* v3.8.25 — Customer Shell Isolation Law
+   Non-Ike vessels must never inherit the original Ike customer chrome. */
+body.universal-project > #app > .brand-header,
+body.universal-project > #app > .progress-track,
+body.universal-project #customerApp{display:none!important}
+body.universal-project > #app{max-width:none;background:#07171c!important;box-shadow:none!important}
+body.universal-project .universal-customer-shell{display:block}

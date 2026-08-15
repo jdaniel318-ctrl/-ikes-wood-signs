@@ -1,6 +1,13 @@
+# v3.8.25 — Customer Shell Isolation Repair
+
+- Fixed a cross-project presentation leak where universal customer projects could display the original Ike customer header/character chrome above their own ordering shell.
+- Universal, mugs, and flowers customer shells are now explicitly isolated from the legacy Ike header/progress/customer workflow.
+- Added an explicit shell-isolation guard in the customer-shell controller in addition to CSS isolation, so renderer changes cannot silently re-expose another vessel's chrome.
+- Kept the consolidated Captain upload package; no historical audit-file sprawl was reintroduced.
+
 # Dark Sky Changelog
 
-## v3.8.24 — Launch Readiness & Activation Lane
+## v3.8.25 — Launch Readiness & Activation Lane
 - Shipwright no longer shows Activate as the next action when a universal project has no customer-ready offer.
 - Added an inline launch-offer creator so a newly commissioned vessel can become customer-test ready without leaving the deployment workflow.
 - Sea Trial completion now requires a real test order through the universal customer shell; opening the shell alone does not count as a completed test.
