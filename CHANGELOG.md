@@ -1,13 +1,3 @@
-# v3.8.15 — Commissioning Reliability & Clarity
-
-- Rebound commissioning controls every time the shipyard opens/renders, removing dependence on fragile late page bindings.
-- Added a single commissioning command controller for Continue, Back, Save Draft, and Reset Draft.
-- Continue now either advances or surfaces a visible field-level validation/error state; silent failure is no longer acceptable.
-- Commissioning workspace is now fully opaque so Engine controls/telemetry cannot ghost through behind the shipyard.
-- Moved destructive Reset Draft out of the primary action cluster and into the draft-status area.
-- Strengthened progress-step readability and iPad touch hierarchy while preserving Back / Save Draft / Continue as the main voyage controls.
-- Corrected release telemetry to schema 7 / policy 3.5.
-
 # v3.8.14 — Visual Capability Architecture
 
 - Replaced the three-preview-mode assumption with a composable Visual Presentation Capability contract.

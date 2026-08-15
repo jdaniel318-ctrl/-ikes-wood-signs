@@ -1180,7 +1180,7 @@
           <label class="project-publish-toggle"><input type="checkbox" data-project-publish="${escapeHtml(p.id)}" ${p.publish?.status==='live'?'checked':''}><span>${p.publish?.status==='live'?'PUBLISHED':'PRIVATE'}</span></label>
         </div>
         <h4>${escapeHtml(p.name)}</h4>
-        <p>${escapeHtml(p.tagline||p.type.replaceAll('_',' '))}</p>
+        <p>${escapeHtml(p.tagline||String(p.type||p.businessType||'project').replaceAll('_',' '))}</p>
         ${(()=>{const ds=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');const active=ds.filter(d=>d.state==='deployed').length;return `<div class="project-deployment-badge ${active?'active':''}">${active?`${active} OUTPOST${active===1?'':'S'} SAILING`:ds.length?`${ds.length} OUTPOST${ds.length===1?'':'S'} IN HARBOR`:'STANDARD DEPLOYMENT'}</div>`;})()}
         <div class="project-governance-strip">
           <span class="platform-status ${platformState}">${platformStatusLabel(p)}</span>
@@ -2773,6 +2773,7 @@
       characterLimit:Number(commissionDraft.characterLimit||32),
       theme:'commissioned',
       businessType:commissionDraft.businessType,
+      type:commissionDraft.businessType||'custom_service',
       customerExperience:{
         mode:commissionDraft.customerMode,
         photoRequired:!!commissionDraft.photoRequired,
@@ -2799,7 +2800,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.15'
+      commissioningVersion:'3.8.16'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -5658,6 +5659,24 @@ The full order and approved media remain stored with this project.`;
     const filterButtons=Array.from(document.querySelectorAll('[data-engine-fleet-filter]'));
     if(!search||!host||!filterButtons.length)return;
 
+    const prev=$('projectFleetPrev');
+    const next=$('projectFleetNext');
+    const scrollOne=(direction)=>{
+      const visible=Array.from(host.children).filter(card=>!card.hidden);
+      const first=visible[0];
+      const amount=(first?.getBoundingClientRect?.().width||280)+14;
+      host.scrollBy({left:direction*amount,behavior:'smooth'});
+    };
+    if(prev)prev.onclick=()=>scrollOne(-1);
+    if(next)next.onclick=()=>scrollOne(1);
+    const updateRailState=()=>{
+      if(!prev||!next)return;
+      const max=Math.max(0,host.scrollWidth-host.clientWidth);
+      prev.disabled=host.scrollLeft<=3;
+      next.disabled=host.scrollLeft>=max-3;
+    };
+    host.addEventListener('scroll',updateRailState,{passive:true});
+
     const apply=()=>{
       const q=String(search.value||'').trim().toLowerCase();
       const mode=filterButtons.find(b=>b.classList.contains('active'))?.dataset.engineFleetFilter||'all';
@@ -5682,6 +5701,8 @@ The full order and approved media remain stored with this project.`;
 
         card.hidden=!(matchesText&&matchesMode);
       });
+      host.scrollLeft=0;
+      requestAnimationFrame(updateRailState);
     };
 
     search.addEventListener('input',apply);
@@ -6418,7 +6439,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.15',
+    version:'3.8.16',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -6844,7 +6865,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.15.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • commissioning reliability + clarity repair`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.16.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • fleet project rail + commissioned project visibility repair`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -7017,7 +7038,7 @@ document.addEventListener('click', (event) => {
   migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
 
 
-  // v3.8.15 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().
+  // v3.8.16 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().
   // This avoids stale or missing handlers when the workspace DOM changes.
 
 

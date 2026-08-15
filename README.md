@@ -1,20 +1,25 @@
 # Dark Sky / Black Flag Engine
 
-**Current release:** v3.8.15 — Commissioning Reliability & Clarity
+**Current release:** v3.8.14 — Project-Specific Preview & Customer Review Refit
 
-This release repairs the project shipyard so new vessels can be commissioned reliably on iPad while preserving the v3.8.13 visual-capability architecture, v3.8.11 Sea Trials, immutable project identity, Project Control navigation, and fleet foundations.
+This release stops adding surface features long enough to test the Engine as a system and begins formally separating reusable Dark Sky foundations from Engine-specific business behavior.
 
 ## What changed
-- Commissioning actions are rebound every time the workspace opens or rerenders.
-- Continue, Back, Save Draft, and Reset Draft now run through one commissioning command controller.
-- Continue either advances or displays a visible field-level validation/error state; silent failure is treated as a defect.
-- The commissioning workspace is fully opaque; Engine telemetry and controls no longer ghost through behind it.
-- Reset Draft is separated from the normal voyage actions.
-- Progress states, form labels, action hierarchy, and validation feedback are easier to read/use on iPad.
-- Release telemetry reflects the active schema 7 / policy 3.5 foundation.
+- Added a non-destructive Sea Trials station to Engine Configuration.
+- Sea Trials check structural integrity, immutable project identity, cross-project authorization, order ownership, deployment boundaries, lifecycle transitions, mission navigation, local persistence, and the Ship's Log.
+- Production server identity remains an explicit caution; the browser-local prototype is not presented as production multi-tenant security.
+- Corrected Structural Status so Project Envelopes report against the active schema (6), not the obsolete schema-3 comparison.
+- Added `FLEET_FOUNDATIONS.md`: Engine is the first ship; Captain's Quarters is the shipyard; future ships reuse Dark Sky primitives without inheriting Engine baggage.
+- Added `SEA_TRIALS_AUDIT.md` with permanent regression voyages.
+- Added a machine-readable Fleet Foundation catalog to `platform_core.js` for later extraction.
+- Advanced cache/version references to v3.8.14.
 
 ## Current course
-Test a new vessel through all six commissioning steps. If the shipyard is reliable, continue Sea Trials and then move into **v3.9 — Operating Models**.
+Finish Sea Trials and repair anything they expose. Only then proceed to **v3.9 — Operating Models**, where reusable business capabilities are extracted from the current vessels.
 
 ## Security boundary
-The current GitHub Pages/browser-local build remains a private/test platform. Real unrelated production tenants still require server-backed identity, authorization, secrets, tenant controls, revocation, and durable server-side audit.
+Passing Sea Trials does **not** certify GitHub Pages/browser-local Dark Sky for unrelated production tenants. Real production identity, authorization, sessions, secrets, tenant data controls, revocation, and durable server audit remain future infrastructure.
+
+
+## v3.8.14 focus
+Customer-facing previews now declare business-specific geometry instead of assuming every product is a flat sign. The Add Project fleet tile also uses the same commissioning path as the Engine toolbar. See `PROJECT_SPECIFIC_PREVIEW_AUDIT.md`.
