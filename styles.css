@@ -8551,3 +8551,18 @@ body:not(.engine-workspace-open) .customer-shell .bf-section-brand{
     max-width:42px!important;max-height:42px!important;
   }
 }
+
+/* ==========================================================
+   v3.6.1 — HARBOR REPAIR
+   Shared Dark Sky return mark must survive project-isolation CSS.
+   Project branding remains untouched; this is platform chrome only.
+   ========================================================== */
+body.project-mode #returnToEngineBtn.black-flag-project-engine-return{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:.78!important;
+}
+body.project-mode #returnToEngineBtn.black-flag-project-engine-return:hover,
+body.project-mode #returnToEngineBtn.black-flag-project-engine-return:focus-visible{
+  opacity:1!important;
+}
