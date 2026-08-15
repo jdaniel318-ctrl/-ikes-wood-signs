@@ -10062,7 +10062,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 }
 
 /* ==========================================================
-   v3.8.19 — Deployment Persistence & Shipwright Reliability
+   v3.8.20 — Deployment Persistence & Shipwright Reliability
    In-app outpost commissioning replaces browser prompt dialogs.
    ========================================================== */
 .deployment-create-form{
@@ -10102,7 +10102,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 
 
 /* ==========================================================
-   v3.8.19 — Deployment Shipwright surface coherence
+   v3.8.20 — Deployment Shipwright surface coherence
    Registry/manifest wells obey the Fleet Visual System.
    ========================================================== */
 #projectEngineControl .deployment-outpost-list,

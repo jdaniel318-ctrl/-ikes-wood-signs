@@ -2365,32 +2365,56 @@
           return;
         }
         const profile=DEPLOYMENT_PROFILES[profileInput?.value]?profileInput.value:'kiosk_self_service';
-        const fresh=newProjectDeployment(p,name,profile);
-        const boundary=window.BlackFlagV3Core?.validateDeployment?.(p,fresh);
+        // Always resolve the canonical fleet record at commit time. Project Control may have
+        // rerendered since this tab was opened, so a captured project/array reference is not
+        // authoritative for persistence confirmation.
+        const canonicalProject=projectById(p.id);
+        if(!canonicalProject){
+          setDeploymentCreateStatus('Dark Sky could not resolve the owning project. Return to the Engine and reopen this project.','error');
+          return;
+        }
+        const canonicalDeployments=migrateLegacyDeployment(canonicalProject);
+        const fresh=newProjectDeployment(canonicalProject,name,profile);
+        const boundary=window.BlackFlagV3Core?.validateDeployment?.(canonicalProject,fresh);
         if(boundary && !boundary.ok){
           setDeploymentCreateStatus('Dark Sky blocked this outpost because its project identity could not be sealed correctly.','error');
-          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'deployment',action:'deployment.create.blocked',detail:(boundary.failures||[]).join(', ')});
+          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:canonicalProject.id,category:'deployment',action:'deployment.create.blocked',detail:(boundary.failures||[]).join(', ')});
           return;
         }
         const createBtn=$('confirmCreateDeploymentBtn');
         if(createBtn){createBtn.disabled=true;createBtn.textContent='CREATING…';}
-        deployments.push(fresh);
-        deploymentSelectionByProject.set(p.id,fresh.id);
+        canonicalDeployments.push(fresh);
+        deploymentSelectionByProject.set(canonicalProject.id,fresh.id);
         try{
+          // Confirm attachment before persistence, then confirm the actual IndexedDB registry
+          // after persistence. This avoids treating a stale UI reference as proof of storage.
+          if(!migrateLegacyDeployment(canonicalProject).some(x=>x.id===fresh.id)){
+            throw new Error('deployment_not_attached_to_project');
+          }
           await saveCompanies();
-          const saved=projectById(p.id)?.deployments?.some(x=>x.id===fresh.id);
-          if(!saved) throw new Error('deployment_write_not_confirmed');
-          logActivity(p.id,'Deployment outpost created',`${fresh.name} • ${DEPLOYMENT_PROFILES[profile]?.label||profile}`);
-          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'deployment',action:'deployment.created',detail:`${fresh.id} • ${fresh.name}`});
-          await renderProjectTab(p.id,'deployment');
+          const persisted=await getSetting('companies');
+          const persistedProject=Array.isArray(persisted?.value)
+            ? persisted.value.find(x=>String(x?.id||'')===String(canonicalProject.id))
+            : null;
+          const persistedDeployment=Array.isArray(persistedProject?.deployments)
+            ? persistedProject.deployments.find(x=>String(x?.id||'')===String(fresh.id))
+            : null;
+          if(!persistedDeployment) throw new Error('deployment_persistence_not_confirmed');
+          const persistedBoundary=window.BlackFlagV3Core?.validateDeployment?.(persistedProject,persistedDeployment);
+          if(persistedBoundary && !persistedBoundary.ok) throw new Error(`deployment_persisted_boundary_invalid:${(persistedBoundary.failures||[]).join(',')}`);
+          logActivity(canonicalProject.id,'Deployment outpost created',`${fresh.name} • ${DEPLOYMENT_PROFILES[profile]?.label||profile}`);
+          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:canonicalProject.id,category:'deployment',action:'deployment.created',detail:`${fresh.id} • ${fresh.name}`});
+          await renderProjectTab(canonicalProject.id,'deployment');
         }catch(err){
-          const idx=deployments.findIndex(x=>x.id===fresh.id);
-          if(idx>=0) deployments.splice(idx,1);
-          deploymentSelectionByProject.delete(p.id);
+          const liveProject=projectById(canonicalProject.id);
+          const liveDeployments=liveProject?migrateLegacyDeployment(liveProject):canonicalDeployments;
+          const idx=liveDeployments.findIndex(x=>x.id===fresh.id);
+          if(idx>=0) liveDeployments.splice(idx,1);
+          deploymentSelectionByProject.delete(canonicalProject.id);
           console.error('Deployment creation failed',err);
           const reason=String(err?.message||'deployment_write_failed').replace(/^Error:\s*/,'');
           setDeploymentCreateStatus(`Outpost was not created. Dark Sky preserved the project unchanged. ${reason}`,'error');
-          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'deployment',action:'deployment.create.failed',detail:reason});
+          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:canonicalProject.id,category:'deployment',action:'deployment.create.failed',detail:reason});
           if(createBtn){createBtn.disabled=false;createBtn.textContent='CREATE OUTPOST';}
         }
       };
@@ -2865,7 +2889,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.19'
+      commissioningVersion:'3.8.20'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6504,7 +6528,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.19',
+    version:'3.8.20',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -6930,7 +6954,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.19.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • deployment persistence decoupled from UI integrity + diagnostic save failures`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.20.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • deployment persistence decoupled from UI integrity + diagnostic save failures`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

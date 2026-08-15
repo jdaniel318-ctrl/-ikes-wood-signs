@@ -1,10 +1,10 @@
-# v3.8.19 — Deployment Persistence & Shipwright Reliability
+# v3.8.20 — Deployment Persistence Confirmation Repair
 
-- Decoupled project/fleet data integrity from transient DOM/UI integrity during persistence writes.
-- Sea Trials still inspect DOM integrity separately; UI defects can no longer block a valid project or deployment save.
-- Deployment creation failures now surface the actual blocking reason and write a Ship's Log audit event.
-- Refit Outpost Registry empty-state surfaces to the shared dark Fleet Visual System for iPad readability.
-- Bumped cache/release references to v3.8.19.
+- Deployment creation now resolves the canonical project record at commit time instead of trusting a captured UI reference.
+- Outpost persistence is confirmed by reading the actual IndexedDB `companies` registry after the save.
+- A deployment must be attached in memory before save and must exist in persisted storage after save.
+- Persisted deployment identity is revalidated against the owning project before the UI reports success.
+- Failure rollback now removes the attempted outpost from the current canonical project record.
 
 # v3.8.18 — Wave 1: Fleet Visual System
 
