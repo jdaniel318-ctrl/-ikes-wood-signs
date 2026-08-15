@@ -8791,3 +8791,102 @@ body.engine-mode #enginePanel .modern-engine-wordmark{
 }
 
 /* v3.7.0 — CUT THE MOORING LINES: platform-neutral data/storage refit; no visual redesign. */
+
+/* ========================================================================== 
+   v3.7.1 — COMPACT COMMAND HEADER
+   Captain-directed compression of the Engine Room hero only.
+   Keeps Black Flag identity and command controls while exposing more live
+   telemetry above the fold on iPad/landscape displays.
+   ========================================================================== */
+body.engine-mode #enginePanel .modern-engine-hero{
+  min-height:108px!important;
+  padding:13px 18px!important;
+  gap:16px!important;
+  border-radius:15px!important;
+}
+body.engine-mode #enginePanel .black-flag-modern-brand{
+  min-width:min(430px,50vw)!important;
+}
+body.engine-mode #enginePanel .modern-engine-wordmark{
+  width:min(278px,31vw)!important;
+  max-height:132px!important;
+  margin:0 0 1px!important;
+  filter:drop-shadow(0 5px 12px rgba(0,0,0,.20))!important;
+}
+body.engine-mode #enginePanel .modern-engine-brand-copy .engine-kicker{
+  margin-top:0!important;
+  font-size:8px!important;
+  letter-spacing:.15em!important;
+}
+body.engine-mode #enginePanel .modern-engine-brand-copy h2{
+  margin:1px 0 2px!important;
+  font-size:clamp(23px,2vw,31px)!important;
+  line-height:.96!important;
+}
+body.engine-mode #enginePanel .modern-engine-brand-copy p{
+  max-width:470px!important;
+  font-size:10.5px!important;
+  line-height:1.25!important;
+}
+body.engine-mode #enginePanel .modern-engine-top-actions{
+  gap:8px!important;
+}
+body.engine-mode #enginePanel .engine-configure-btn,
+body.engine-mode #enginePanel .modern-engine-secure,
+body.engine-mode #enginePanel .modern-captain-access{
+  min-height:56px!important;
+  border-radius:10px!important;
+}
+body.engine-mode #enginePanel .engine-configure-btn{
+  min-width:190px!important;
+  padding:8px 11px!important;
+  gap:9px!important;
+}
+body.engine-mode #enginePanel .configure-sliders{
+  width:30px!important;
+  height:30px!important;
+  font-size:17px!important;
+}
+body.engine-mode #enginePanel .modern-engine-secure{
+  min-width:142px!important;
+  padding:8px 11px!important;
+}
+body.engine-mode #enginePanel .modern-captain-access{
+  min-width:140px!important;
+  padding:8px 11px!important;
+}
+body.engine-mode #enginePanel .engine-configure-btn strong,
+body.engine-mode #enginePanel .modern-engine-secure strong,
+body.engine-mode #enginePanel .modern-captain-access strong{
+  font-size:9px!important;
+}
+body.engine-mode #enginePanel .engine-configure-btn small,
+body.engine-mode #enginePanel .modern-engine-secure small,
+body.engine-mode #enginePanel .modern-captain-access small{
+  margin-top:3px!important;
+  font-size:7.5px!important;
+}
+@media(max-width:980px){
+  body.engine-mode #enginePanel .modern-engine-hero{
+    padding:12px 14px!important;
+    gap:12px!important;
+  }
+  body.engine-mode #enginePanel .black-flag-modern-brand{
+    min-width:min(385px,48vw)!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-wordmark{
+    width:min(245px,30vw)!important;
+  }
+  body.engine-mode #enginePanel .engine-configure-btn{min-width:168px!important;}
+  body.engine-mode #enginePanel .modern-engine-secure{min-width:128px!important;}
+  body.engine-mode #enginePanel .modern-captain-access{min-width:126px!important;}
+}
+@media(max-width:720px){
+  body.engine-mode #enginePanel .modern-engine-hero{
+    min-height:0!important;
+    padding:12px!important;
+  }
+  body.engine-mode #enginePanel .black-flag-modern-brand{min-width:0!important;}
+  body.engine-mode #enginePanel .modern-engine-wordmark{width:min(260px,70vw)!important;}
+  body.engine-mode #enginePanel .modern-engine-top-actions{gap:7px!important;}
+}

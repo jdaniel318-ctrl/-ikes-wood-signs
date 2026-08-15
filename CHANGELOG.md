@@ -1,3 +1,8 @@
+# Dark Sky / Black Flag Engine Changelog
+
+## v3.7.1 — Compact Command Header
+Compressed the Engine Room command header by roughly one quarter on landscape displays while preserving the approved Black Flag identity, Configure Engine, Engine Secure, and Captain’s Quarters controls. The live performance graph deck is unchanged and remains immediately below the header. This is a visual-density refinement only; no data, security, project, order, or telemetry behavior was intentionally changed.
+
 # Dark Sky / Black Flag — Release Narrative
 
 ## v3.7.0 — Cut the Mooring Lines
