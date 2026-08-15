@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.8.14" />
+  <link rel="stylesheet" href="styles.css?v=3.8.15" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -131,7 +131,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v3.8.14 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.8.15 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -1103,7 +1103,7 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.14</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.15</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
@@ -1175,11 +1175,13 @@
 
     <footer class="commissioning-footer">
       <div class="commission-footer-status">
-        <div id="commissionDraftStatus" class="commission-draft-status">DRAFT • NOT PUBLISHED</div>
-        <div id="commissionValidation" class="commission-validation" role="status" aria-live="polite"></div>
+        <div class="commission-status-line">
+          <div id="commissionDraftStatus" class="commission-draft-status">DRAFT • NOT PUBLISHED</div>
+          <button id="commissionReset" class="commission-reset-link" type="button">RESET DRAFT</button>
+        </div>
+        <div id="commissionValidation" class="commission-validation" role="alert" aria-live="assertive"></div>
       </div>
       <div class="commission-actions">
-        <button id="commissionReset" class="commission-action danger" type="button">START OVER</button>
         <div class="commission-action-main">
           <button id="commissionPrev" class="commission-action quiet" type="button">BACK</button>
           <button id="commissionSaveDraft" class="commission-action secondary" type="button">SAVE DRAFT</button>
@@ -1191,10 +1193,10 @@
 </section>
 
 
-  <script src="platform_core.js?v=3.8.14"></script>
-  <script src="platform_identity.js?v=3.8.14"></script>
-  <script src="app.js?v=3.8.14"></script>
-  <script src="captain.js?v=3.8.14"></script>
+  <script src="platform_core.js?v=3.8.15"></script>
+  <script src="platform_identity.js?v=3.8.15"></script>
+  <script src="app.js?v=3.8.15"></script>
+  <script src="captain.js?v=3.8.15"></script>
 
 </body>
 </html>

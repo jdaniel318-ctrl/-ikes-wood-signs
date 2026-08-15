@@ -71,7 +71,3 @@ Project shells may declare a `previewGeometry` capability. This keeps the common
 
 ## Visual Presentation Capability Contract — v3.8.14
 Projects no longer depend on a single hard-coded preview geometry. Each project owns a `visualPresentation` contract with an immutable versioned shape: profile, input capabilities, placement capabilities, transforms, preview modes, approval stages, outputs, renderer, and optional custom capability IDs. Presets accelerate commissioning but do not constrain later configuration. `AVAILABLE` capabilities have working behavior in the current Engine; `FOUNDATION` capabilities declare supported requirements for future renderers and future ships.
-
-
-## v3.8.14 commissioning DOM binding rule
-All static workspaces that own controls must be present in the DOM before `app.js` and `captain.js` execute. Script tags are therefore kept at the end of `<body>`. Commissioning is a canonical Engine workspace; its controls must never depend on elements inserted after listener binding.

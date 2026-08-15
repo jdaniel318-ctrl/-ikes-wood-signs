@@ -2481,6 +2481,7 @@
     w.classList.remove('hidden'); w.setAttribute('aria-hidden','false');
     document.body.classList.add('engine-workspace-open');
     renderCommissioning();
+    bindCommissioningControls();
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:recovered?'commissioning.resumed':'commissioning.opened',detail:commissionDraft.draftId});
   }
 
@@ -2513,7 +2514,7 @@
         <p>Give the business a clear display name and identify the intended owner. Dark Sky assigns a separate immutable project ID when the vessel is commissioned.</p>
         <div class="commission-grid two">
           <label>Business / project name<input data-cfield="name" value="${escapeHtml(d.name)}" placeholder="Example Company"></label>
-          <label>Project code<input data-cfield="projectCode" value="${escapeHtml(d.projectCode)}" placeholder="AUTO"></label>
+          <label>Project code<input data-cfield="projectCode" value="${escapeHtml(d.projectCode)}" placeholder="Assigned automatically"></label>
           <label>Owner name<input data-cfield="ownerName" value="${escapeHtml(d.ownerName)}" placeholder="Business owner"></label>
           <label>Owner email<input data-cfield="ownerEmail" value="${escapeHtml(d.ownerEmail)}" placeholder="owner@example.com"></label>
         </div>
@@ -2609,7 +2610,8 @@
     $('commissionNext').textContent=commissionStep===6?'COMMISSION PROJECT':'CONTINUE';
     const recovered=commissionDraft._recovered?' • RECOVERED DRAFT':'';
     $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/6${recovered} • NOT PUBLISHED`;
-    if($('commissionValidation'))$('commissionValidation').textContent='';
+    clearCommissionValidation();
+    bindCommissioningControls();
   }
 
   async function saveCommissionDraft(){
@@ -2621,22 +2623,43 @@
     $('commissionDraftStatus').textContent=`DRAFT SAVED • ${new Date().toLocaleTimeString()} • NOT PUBLISHED`;
   }
 
-  function commissionError(message){
+  function commissionError(message,fieldName){
     const el=$('commissionValidation');
-    if(el){el.textContent=message;el.scrollIntoView({block:'nearest'});}else alert(message);
+    if(el){
+      el.textContent=message;
+      el.classList.add('visible');
+      el.scrollIntoView({block:'nearest',behavior:'smooth'});
+    }else alert(message);
+    if(fieldName){
+      const field=document.querySelector(`#commissioningBody [data-cfield="${fieldName}"]`);
+      if(field){
+        field.classList.add('commission-field-error');
+        field.setAttribute('aria-invalid','true');
+        setTimeout(()=>field.focus({preventScroll:true}),60);
+      }
+    }
     return false;
+  }
+  function clearCommissionValidation(){
+    const el=$('commissionValidation');
+    if(el){el.textContent='';el.classList.remove('visible');}
+    document.querySelectorAll('#commissioningBody .commission-field-error').forEach(field=>{
+      field.classList.remove('commission-field-error');
+      field.removeAttribute('aria-invalid');
+    });
   }
   function validEmail(value){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value||'').trim());}
   function validateCommissionStep(){
+    clearCommissionValidation();
     captureCommissionFields();
     if(commissionStep===1){
-      if(!commissionDraft.name.trim())return commissionError('Enter a business or project name before continuing.');
-      if(commissionDraft.name.trim().length<2)return commissionError('Use at least two characters for the business name.');
-      if(commissionDraft.ownerEmail && !validEmail(commissionDraft.ownerEmail))return commissionError('Enter a valid owner email address or leave it blank for later.');
+      if(!String(commissionDraft.name||'').trim())return commissionError('Enter a business or project name before continuing.','name');
+      if(String(commissionDraft.name||'').trim().length<2)return commissionError('Use at least two characters for the business name.','name');
+      if(commissionDraft.ownerEmail && !validEmail(commissionDraft.ownerEmail))return commissionError('Enter a valid owner email address or leave it blank for later.','ownerEmail');
     }
     if(commissionStep===5 && commissionDraft.ownerPortal){
-      if(!String(commissionDraft.ownerName||'').trim())return commissionError('Owner Portal is selected. Add the owner name in Step 1 or turn Owner Portal off for now.');
-      if(!validEmail(commissionDraft.ownerEmail))return commissionError('Owner Portal is selected. Add a valid owner email in Step 1.');
+      if(!String(commissionDraft.ownerName||'').trim())return commissionError('Owner Portal is selected. Add the owner name in Step 1 or turn Owner Portal off for now.','ownerName');
+      if(!validEmail(commissionDraft.ownerEmail))return commissionError('Owner Portal is selected. Add a valid owner email in Step 1.','ownerEmail');
     }
     return true;
   }
@@ -2650,6 +2673,79 @@
       if(!validEmail(commissionDraft.ownerEmail))return commissionError('Owner handoff is enabled, but a valid owner email is missing.');
     }
     return true;
+  }
+
+  async function handleCommissionAction(action){
+    try{
+      if(!commissionDraft)commissionDraft=readCommissionDraft()||freshCommissionDraft();
+      if(action==='back'){
+        captureCommissionFields();
+        commissionStep=Math.max(1,commissionStep-1);
+        commissionDraft._step=commissionStep;
+        localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+        renderCommissioning();
+        return;
+      }
+      if(action==='save'){
+        await saveCommissionDraft();
+        return;
+      }
+      if(action==='reset'){
+        if(!confirm('Discard this commissioning draft and start a new project setup?'))return;
+        const discardedId=commissionDraft?.draftId||'';
+        clearCommissionDraft();
+        commissionDraft=freshCommissionDraft();
+        commissionStep=1;
+        renderCommissioning();
+        window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:'commissioning.draft.discarded',detail:discardedId});
+        return;
+      }
+      if(action==='continue'){
+        if(!validateCommissionStep())return;
+        if(commissionStep<6){
+          commissionStep++;
+          commissionDraft._step=commissionStep;
+          commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);
+          localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+          renderCommissioning();
+          document.querySelector('.commissioning-shell')?.scrollIntoView({block:'start'});
+          return;
+        }
+        await commissionProject();
+      }
+    }catch(err){
+      console.error('Commissioning command failed',err);
+      commissionError(`Commissioning command interrupted. Nothing was advanced. ${err?.message||'Please try again.'}`);
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:'commissioning.command.failed',detail:String(err?.message||err)});
+    }
+  }
+
+  function bindCommissioningControls(){
+    const workspace=$('projectCommissioningWorkspace');
+    if(!workspace)return;
+    const bind=(id,action)=>{
+      const btn=$(id);
+      if(!btn)return;
+      btn.onclick=(event)=>{event.preventDefault();event.stopPropagation();handleCommissionAction(action);};
+    };
+    bind('commissionPrev','back');
+    bind('commissionSaveDraft','save');
+    bind('commissionReset','reset');
+    bind('commissionNext','continue');
+    const close=$('closeProjectCommissioning');
+    if(close)close.onclick=(event)=>{event.preventDefault();closeProjectCommissioning();};
+    workspace.querySelectorAll('[data-commission-step]').forEach(btn=>{
+      btn.onclick=(event)=>{
+        event.preventDefault();
+        const requested=Number(btn.dataset.commissionStep);
+        if(!commissionDraft || requested>Number(commissionDraft._maxStepReached||1))return;
+        captureCommissionFields();
+        commissionStep=requested;
+        commissionDraft._step=commissionStep;
+        localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+        renderCommissioning();
+      };
+    });
   }
 
   async function commissionProject(){
@@ -2703,7 +2799,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.14'
+      commissioningVersion:'3.8.15'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6322,7 +6418,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.14',
+    version:'3.8.15',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -6748,7 +6844,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.14.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • project-specific previews + customer review refit`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.15.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • commissioning reliability + clarity repair`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -6921,26 +7017,8 @@ document.addEventListener('click', (event) => {
   migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
 
 
-  // v3.3 commissioning controls
-  if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',(e)=>{e.preventDefault();openProjectCommissioning();});
-  if($('closeProjectCommissioning')) $('closeProjectCommissioning').addEventListener('click',closeProjectCommissioning);
-  if($('commissionPrev')) $('commissionPrev').addEventListener('click',()=>{captureCommissionFields();commissionStep=Math.max(1,commissionStep-1);commissionDraft._step=commissionStep;localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));renderCommissioning();});
-  if($('commissionNext')) $('commissionNext').addEventListener('click',async()=>{
-    if(!validateCommissionStep())return;
-    if(commissionStep<6){commissionStep++;commissionDraft._step=commissionStep;commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));renderCommissioning();}
-    else await commissionProject();
-  });
-  if($('commissionSaveDraft')) $('commissionSaveDraft').addEventListener('click',saveCommissionDraft);
-  if($('commissionReset')) $('commissionReset').addEventListener('click',()=>{
-    if(!confirm('Discard this commissioning draft and start a new project setup?'))return;
-    clearCommissionDraft();commissionDraft=freshCommissionDraft();commissionStep=1;renderCommissioning();
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:'commissioning.draft.discarded',detail:commissionDraft.draftId});
-  });
-  document.querySelectorAll('[data-commission-step]').forEach(b=>b.addEventListener('click',()=>{
-    const requested=Number(b.dataset.commissionStep);
-    if(!commissionDraft || requested>Number(commissionDraft._maxStepReached||1))return;
-    captureCommissionFields(); commissionStep=requested; commissionDraft._step=commissionStep; localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft)); renderCommissioning();
-  }));
+  // v3.8.15 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().
+  // This avoids stale or missing handlers when the workspace DOM changes.
 
 
   if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',(e)=>{e.stopImmediatePropagation();e.preventDefault();openProjectCommissioning();},true);

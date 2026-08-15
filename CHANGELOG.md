@@ -1,10 +1,12 @@
-# Dark Sky v3.8.14 — Commissioning Controls & UX Repair
+# v3.8.15 — Commissioning Reliability & Clarity
 
-- Fixed a DOM/script-order regression that left all Project Commissioning footer controls unwired.
-- Application scripts now load after all static workspaces exist, including Captain and Project Commissioning surfaces.
-- Simplified commissioning branding to one canonical Black Flag identity mark.
-- Refit commissioning progress, form readability, iPad touch targets, and bottom action hierarchy.
-- Preserved immutable project identity, tenant isolation, visual capability contracts, and deployment rules.
+- Rebound commissioning controls every time the shipyard opens/renders, removing dependence on fragile late page bindings.
+- Added a single commissioning command controller for Continue, Back, Save Draft, and Reset Draft.
+- Continue now either advances or surfaces a visible field-level validation/error state; silent failure is no longer acceptable.
+- Commissioning workspace is now fully opaque so Engine controls/telemetry cannot ghost through behind the shipyard.
+- Moved destructive Reset Draft out of the primary action cluster and into the draft-status area.
+- Strengthened progress-step readability and iPad touch hierarchy while preserving Back / Save Draft / Continue as the main voyage controls.
+- Corrected release telemetry to schema 7 / policy 3.5.
 
 # v3.8.14 — Visual Capability Architecture
 

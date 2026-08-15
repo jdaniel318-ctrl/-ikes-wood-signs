@@ -8193,10 +8193,8 @@ body.dark-flag-pirate-mode #engineConfigurationDock .engine-configuration-head{
    v3.3 — PROJECT COMMISSIONING WORKSPACE
    ========================================================== */
 .commissioning-workspace{
-  position:fixed;inset:0;z-index:1350;overflow:auto;
-  background:
-    linear-gradient(180deg,rgba(7,18,23,.975),rgba(5,14,18,.995)),
-    url('assets/engine_room_modern_benchmark_v2976.png') center/cover fixed no-repeat;
+  position:fixed;inset:0;z-index:1350;overflow:auto;isolation:isolate;
+  background:linear-gradient(180deg,#071217 0%,#061015 52%,#050d11 100%);
   padding:24px clamp(18px,4vw,58px) 42px;
 }
 .commissioning-workspace.hidden{display:none!important}
@@ -8266,8 +8264,7 @@ body.dark-flag-pirate-mode #engineConfigurationDock .engine-configuration-head{
 .compact-blue-btn{background:#1f6684!important;color:white!important;border:1px solid #327f9e!important}
 .commission-draft-status{color:#769097;font:800 8px Arial;letter-spacing:.08em}
 body.dark-flag-pirate-mode .commissioning-workspace{
-  background:linear-gradient(180deg,rgba(15,10,8,.97),rgba(7,6,5,.995)),
-  url('assets/engine_room_pirate_benchmark_v2978.png') center/cover fixed no-repeat;
+  background:linear-gradient(180deg,#120d0a 0%,#0a0807 58%,#070605 100%);
 }
 @media(max-width:800px){
   .commission-progress{grid-template-columns:repeat(3,1fr)}
@@ -9814,4 +9811,61 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .commission-action-main .primary{grid-column:1/-1}
   .commission-action.danger{justify-self:start}
   .commission-action{width:100%;min-height:50px}
+}
+
+
+/* ==========================================================
+   v3.8.15 — Commissioning Reliability & Clarity
+   Dedicated opaque shipyard, resilient command controller,
+   visible validation, and calmer iPad footer hierarchy.
+   ========================================================== */
+.commissioning-workspace::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 14% 5%,rgba(38,112,137,.11),transparent 34%),
+    linear-gradient(180deg,#071217 0%,#061015 55%,#050d11 100%);
+}
+.commissioning-shell{position:relative;z-index:1}
+.commissioning-head{padding-top:10px}
+.commissioning-brand-block .eyebrow{font-size:12px;letter-spacing:.075em;color:#6fba86}
+.commission-progress button{opacity:.78}
+.commission-progress button:not(:disabled){opacity:1}
+.commission-progress button:disabled{opacity:.58;filter:none}
+.commission-progress button:disabled b{color:#617880}
+.commission-progress button:disabled span{color:#82979d}
+.commission-grid input::placeholder{color:#657b82;opacity:1}
+.commission-field-error{
+  border-color:#ce6d6d!important;
+  box-shadow:0 0 0 3px rgba(206,109,109,.16)!important;
+}
+.commission-validation{
+  display:none;margin-top:10px;max-width:720px;padding:11px 13px;border:1px solid #8d5353;
+  border-radius:8px;background:#251214;color:#f0c9c9;font:700 12px/1.45 Arial,sans-serif;
+}
+.commission-validation.visible{display:block}
+.commission-status-line{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.commission-reset-link{
+  border:0;background:none;color:#b78181;padding:4px 0;font:800 10px Arial,sans-serif;
+  letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;
+}
+.commission-reset-link:hover,.commission-reset-link:focus-visible{color:#e1aaaa}
+.commissioning-footer{align-items:flex-end;gap:24px}
+.commission-footer-status{min-width:0;flex:1}
+.commissioning-footer .commission-actions{width:auto!important;flex:0 0 auto!important;justify-content:flex-end!important}
+.commission-action-main{margin-left:0}
+.commission-action.primary{font-size:12px;min-width:184px}
+.commission-action.secondary,.commission-action.quiet{min-width:122px}
+.commission-callout{border-radius:0 8px 8px 0}
+.commission-callout b{min-width:170px}
+@media (min-width:768px) and (max-width:1366px){
+  .commissioning-footer{position:sticky;bottom:0;padding:18px 0 20px;background:linear-gradient(180deg,rgba(5,13,17,0),#050d11 22%)}
+  .commissioning-footer .commission-actions{width:auto!important}
+  .commission-action-main{gap:12px}
+  .commission-reset-link{font-size:11px}
+  .commission-validation{font-size:13px}
+}
+@media (max-width:760px){
+  .commissioning-footer{align-items:stretch}
+  .commissioning-footer .commission-actions{width:100%!important}
+  .commission-status-line{justify-content:space-between}
 }
