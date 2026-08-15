@@ -1398,10 +1398,23 @@
       <h2>${escapeHtml(p.name)}</h2>
       <p class="deployment-test-message">${escapeHtml(d.attractTitle||'Ready when you are.')}</p>
       <div class="deployment-test-start">TOUCH TO START</div>
-      <div class="deployment-test-boundary"><strong>Customer workflow not configured yet.</strong><span>The outpost connection is working, but this vessel still needs an operating model/customer shell before a full customer Sea Trial can continue.</span></div>
-      <button type="button" id="closeDeploymentTestDock" class="primary-btn">RETURN TO SHIPWRIGHT</button>
+      <div class="deployment-test-boundary"><strong>Outpost interface test is available.</strong><span>This deployment is in Sea Trial and is not active. The outpost shell can be tested now, but this vessel still needs a customer operating model before activation.</span></div>
+      <div class="deployment-test-actions">
+        <button type="button" id="recordDeploymentInterfaceTest" class="primary-btn">RECORD INTERFACE TEST</button>
+        <button type="button" id="closeDeploymentTestDock" class="secondary-btn">RETURN TO SHIPWRIGHT</button>
+      </div>
     </section>`;
     dock.classList.add('open');
+    document.getElementById('recordDeploymentInterfaceTest')?.addEventListener('click',async()=>{
+      d.lastTestedAt=new Date().toISOString();
+      d.updatedAt=d.lastTestedAt;
+      d.testMode='interface_only';
+      await saveCompanies();
+      logActivity(p.id,'Deployment interface test recorded',d.name);
+      dock.classList.remove('open');
+      await renderProjectCommand();
+      await renderProjectTab(p.id,'deployment');
+    },{once:true});
     document.getElementById('closeDeploymentTestDock')?.addEventListener('click',()=>dock.classList.remove('open'),{once:true});
   }
 
@@ -2066,7 +2079,9 @@
                   <div class="deployment-attract-preview">
                     <div class="deployment-attract-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
                     <strong>${escapeHtml(d.attractTitle||'Ready when you are.')}</strong>
-                    <span>${d.state==='deployed'?'TOUCH TO START':d.state==='sea_trial'?'TEST AS CUSTOMER':'PREVIEW'}</span>
+                    ${d.state==='deployed'||d.state==='sea_trial'
+                      ?`<button type="button" id="deploymentPreviewActionBtn" class="deployment-preview-action">${d.state==='deployed'?'OPEN CUSTOMER EXPERIENCE':'TEST AS CUSTOMER'}</button>`
+                      :`<span class="deployment-preview-static">PREVIEW</span>`}
                   </div>
                   <p class="helper">This preview reflects the saved outpost setup. Customer testing is unlocked during Sea Trial.</p>
                 </article>
@@ -2092,7 +2107,7 @@
               </article>
               <article class="pec-card deployment-signal-watch">
                 <div class="deployment-card-heading"><small>OUTPOST HEALTH</small><h4>${escapeHtml(voyage.label)}</h4></div>
-                <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'ACTIVE':d.state==='sea_trial'?'SEA TRIAL':d.state==='paused'?'PAUSED':'IN HARBOR'}</strong></div>
+                <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'ACTIVE • SERVING CUSTOMERS':d.state==='sea_trial'?(d.lastTestedAt?'SEA TRIAL • TEST RECORDED':'SEA TRIAL • NOT ACTIVE'):d.state==='paused'?'PAUSED':'IN HARBOR'}</strong></div>
                 <p><b>Last check-in:</b> ${d.lastCheckIn?escapeHtml(new Date(d.lastCheckIn).toLocaleString()):'Telemetry not installed yet'}</p>
                 <p><b>Manifest:</b> v${Number(d.manifestVersion||1)}</p>
                 <p><b>Last customer test:</b> ${d.lastTestedAt?escapeHtml(new Date(d.lastTestedAt).toLocaleString()):'Not tested yet'}</p>
@@ -2402,12 +2417,13 @@
       };
       if(createDeploymentBtn) createDeploymentBtn.onclick=()=>{
         if(!requireEngineProjectMutation(p,'deployment.create.open'))return;
+        const input=$('newDeploymentName');
+        const profileInput=$('newDeploymentProfile');
+        if(input)input.value='';
+        if(profileInput)profileInput.value='kiosk_self_service';
         deploymentCreateForm?.classList.remove('hidden');
         setDeploymentCreateStatus('');
-        requestAnimationFrame(()=>{
-          const input=$('newDeploymentName');
-          if(input){input.focus();input.select?.();}
-        });
+        requestAnimationFrame(()=>input?.focus());
       };
       if($('cancelCreateDeploymentBtn')) $('cancelCreateDeploymentBtn').onclick=()=>{
         deploymentCreateForm?.classList.add('hidden');
@@ -2525,13 +2541,23 @@
           })();
         }
       });
-      if($('testDeploymentExperienceBtn')) $('testDeploymentExperienceBtn').onclick=async()=>{
+      const openDeploymentCustomerTest=async()=>{
         if(!d || !requireDeploymentBoundary(p,d,'deployment.customer_test'))return;
+        if(d.state!=='sea_trial' && d.state!=='deployed'){
+          alert('Save the outpost and begin Sea Trial before opening the customer test.');
+          return;
+        }
         if(d.state==='sea_trial' && projectShellFor(p)!=='generic'){
-          d.lastTestedAt=new Date().toISOString(); d.updatedAt=d.lastTestedAt; await saveCompanies(); logActivity(p.id,'Deployment customer test opened',d.name);
+          d.lastTestedAt=new Date().toISOString();
+          d.updatedAt=d.lastTestedAt;
+          d.testMode='customer_shell';
+          await saveCompanies();
+          logActivity(p.id,'Deployment customer test opened',d.name);
         }
         openDeploymentTestDock(p,d);
       };
+      if($('testDeploymentExperienceBtn')) $('testDeploymentExperienceBtn').onclick=openDeploymentCustomerTest;
+      if($('deploymentPreviewActionBtn')) $('deploymentPreviewActionBtn').onclick=openDeploymentCustomerTest;
 
       $$('[data-deployment-action]').forEach(btn=>btn.onclick=async()=>{
         if(!d)return;
@@ -2983,7 +3009,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.21'
+      commissioningVersion:'3.8.22'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6622,7 +6648,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.21',
+    version:'3.8.22',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7048,7 +7074,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.21.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • deployment voyage refit + guided Sea Trial workflow`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.22.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • Sea Trial customer test repair + explicit deployment state`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

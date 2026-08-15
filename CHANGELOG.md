@@ -1,3 +1,12 @@
+# v3.8.22 — Sea Trial Clarity & Customer Test Repair
+
+- Made the Sea Trial customer preview CTA a real button instead of a decorative label.
+- Wired both the preview CTA and the Next Step button to one customer-test action.
+- Generic projects can now run and explicitly record an interface-only Sea Trial test without pretending they have a complete customer workflow.
+- Sea Trial health now clearly distinguishes NOT ACTIVE from TEST RECORDED.
+- Starting a new outpost always clears the previous outpost name/profile instead of carrying stale values forward.
+- Activation remains blocked until the project has a real customer operating model.
+
 # v3.8.21 — Deployment Voyage Refit
 
 - Rebuilt Deployment Shipwright around **Configure → Save → Sea Trial → Test → Active**.

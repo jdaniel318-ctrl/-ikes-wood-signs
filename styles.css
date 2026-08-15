@@ -10198,3 +10198,12 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .deployment-section-title,.deployment-retired-note{grid-column:1/-1}.deployment-shipwright-grid,.deployment-operational-grid{grid-template-columns:1fr}.deployment-preview-column{position:static}.deployment-voyage-progress{grid-template-columns:repeat(5,minmax(0,1fr))}.deployment-voyage-progress span{min-width:0;font-size:11px;padding:8px 5px}.deployment-setup-fields{grid-template-columns:1fr}.deployment-attract-input{grid-column:auto}.deployment-secondary-actions{align-items:flex-start;flex-direction:column}.deployment-secondary-actions>div:last-child{justify-content:flex-start}
 }
 @media(max-width:620px){.deployment-outpost-list{grid-template-columns:1fr!important}.deployment-voyage-progress{grid-template-columns:1fr 1fr}.deployment-voyage-progress span:last-child{grid-column:1/-1}.deployment-readiness-summary{grid-template-columns:auto 1fr}.deployment-readiness-summary b{grid-column:1/-1;width:max-content}.deployment-advanced-manifest summary{grid-template-columns:1fr}.deployment-advanced-manifest summary small{display:none}}
+
+
+/* v3.8.22 — Sea Trial clarity + interactive customer test */
+.deployment-preview-action{appearance:none;border:2px solid #e7d49f;background:rgba(3,18,24,.7);color:#fff;border-radius:999px;padding:12px 20px;font-weight:900;letter-spacing:.10em;min-height:48px;cursor:pointer;box-shadow:0 0 0 1px rgba(231,212,159,.08)}
+.deployment-preview-action:active{transform:translateY(1px)}
+.deployment-preview-static{padding:11px 18px;border:1px solid rgba(231,212,159,.55);border-radius:999px;font-weight:800;letter-spacing:.12em;color:#e7d49f}
+.deployment-test-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.deployment-gauge strong{line-height:1.25}
+@media (max-width:1180px){.deployment-preview-action{font-size:15px;min-height:52px;padding:14px 22px}}

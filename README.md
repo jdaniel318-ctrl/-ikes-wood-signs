@@ -1,6 +1,6 @@
 # Dark Sky / Black Flag Engine
 
-**Current release:** v3.8.21 — Deployment Voyage Refit
+**Current release:** v3.8.22 — Sea Trial Clarity & Customer Test Repair
 
 This release simplifies the Deployment Shipwright around one guided voyage: **Configure → Save → Sea Trial → Test → Active**. The outpost registry stays visible, the setup area becomes the primary work surface, customer preview and the next required action share one column, and technical manifest details are collapsed under Advanced.
 
