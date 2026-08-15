@@ -9443,7 +9443,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   }
 }
 
-/* v3.8.7 — Operational Coherence */
+/* v3.8.8 — Fleet Health Repair (retains v3.8.7 Operational Coherence styles) */
 #projectEngineControl .pc-module-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 16px;padding:18px 20px;border:1px solid var(--pc-line,#2b4b57);border-radius:18px;background:linear-gradient(145deg,#10252d,#0b1a20);color:#e8f0ef}
 #projectEngineControl .pc-module-hero>div:first-child{display:grid;gap:4px;min-width:0}
 #projectEngineControl .pc-module-hero span{font-size:10px;font-weight:900;letter-spacing:.14em;color:#8fb1ba;text-transform:uppercase}

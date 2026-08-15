@@ -1125,26 +1125,37 @@
 
   async function renderFleetHealth(){
     const box=$('engineFleetHealth'); if(!box)return;
-    const list=projects();
-    let activeDeployments=0, attentionProjects=0, pendingOwners=0, openOrders=0;
-    const flags=[];
-    for(const p of list){
-      const snap=await projectControlSnapshot(p);
-      activeDeployments+=snap.activeDeployments.length;
-      openOrders+=snap.open.length;
-      if(snap.attention.length){attentionProjects++; flags.push({p,issue:snap.attention[0]});}
-      const owner=ensureProjectGovernance(p).ownerAccess;
-      if(owner?.status==='invited')pendingOwners++;
+    try{
+      const list=projects();
+      let activeDeployments=0, attentionProjects=0, pendingOwners=0, openOrders=0;
+      const flags=[];
+      for(const p of list){
+        try{
+          const snap=await projectControlSnapshot(p);
+          activeDeployments+=snap.activeDeployments.length;
+          openOrders+=snap.open.length;
+          if(snap.attention.length){attentionProjects++; flags.push({p,issue:snap.attention[0]});}
+          const owner=ensureProjectGovernance(p).ownerAccess;
+          if(owner?.status==='invited')pendingOwners++;
+        }catch(err){
+          attentionProjects++;
+          flags.push({p,issue:{title:'Fleet health check interrupted'}});
+          console.warn('Fleet health project warning',p?.id,err);
+        }
+      }
+      box.innerHTML=`<section class="fleet-health-head"><div><span>FLEET HEALTH</span><h3>Operational picture</h3><p>One glance across every project before you enter a specific control center.</p></div><strong class="fleet-health-state ${attentionProjects?'watch':'clear'}">${attentionProjects?'WATCH':'CLEAR'}</strong></section>
+        <div class="fleet-health-kpis">
+          <article><span>Projects</span><strong>${list.length}</strong><small>${attentionProjects} need attention</small></article>
+          <article><span>Open workload</span><strong>${openOrders}</strong><small>Across the fleet</small></article>
+          <article><span>Active deployments</span><strong>${activeDeployments}</strong><small>Outposts sailing</small></article>
+          <article><span>Owner invites</span><strong>${pendingOwners}</strong><small>Awaiting claim</small></article>
+        </div>
+        <div class="fleet-health-flags">${flags.length?flags.slice(0,4).map(({p,issue})=>`<button type="button" data-fleet-health-project="${escapeHtml(p.id)}"><span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(issue.title)}</small></span><b>OPEN →</b></button>`).join(''):`<div class="fleet-health-clear"><strong>ALL PROJECTS CLEAR</strong><span>No rule-based project warnings are active.</span></div>`}</div>`;
+      box.querySelectorAll('[data-fleet-health-project]').forEach(btn=>btn.addEventListener('click',()=>openProjectEngineControl(btn.dataset.fleetHealthProject)));
+    }catch(err){
+      console.warn('Fleet health render warning',err);
+      box.innerHTML=`<section class="fleet-health-head"><div><span>FLEET HEALTH</span><h3>Health check interrupted</h3><p>The fleet panel stayed visible, but its live summary could not be completed. Project Command remains available below.</p></div><strong class="fleet-health-state watch">CHECK</strong></section>`;
     }
-    box.innerHTML=`<section class="fleet-health-head"><div><span>FLEET HEALTH</span><h3>Operational picture</h3><p>One glance across every project before you enter a specific control center.</p></div><strong class="fleet-health-state ${attentionProjects?'watch':'clear'}">${attentionProjects?'WATCH':'CLEAR'}</strong></section>
-      <div class="fleet-health-kpis">
-        <article><span>Projects</span><strong>${list.length}</strong><small>${attentionProjects} need attention</small></article>
-        <article><span>Open workload</span><strong>${openOrders}</strong><small>Across the fleet</small></article>
-        <article><span>Active deployments</span><strong>${activeDeployments}</strong><small>Outposts sailing</small></article>
-        <article><span>Owner invites</span><strong>${pendingOwners}</strong><small>Awaiting claim</small></article>
-      </div>
-      <div class="fleet-health-flags">${flags.length?flags.slice(0,4).map(({p,issue})=>`<button type="button" data-fleet-health-project="${escapeHtml(p.id)}"><span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(issue.title)}</small></span><b>OPEN →</b></button>`).join(''):`<div class="fleet-health-clear"><strong>ALL PROJECTS CLEAR</strong><span>No rule-based project warnings are active.</span></div>`}</div>`;
-    box.querySelectorAll('[data-fleet-health-project]').forEach(btn=>btn.addEventListener('click',()=>openProjectEngineControl(btn.dataset.fleetHealthProject)));
   }
 
   async function renderProjectCommand(){
@@ -2687,7 +2698,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.7'
+      commissioningVersion:'3.8.8'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6605,7 +6616,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.7.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • operational coherence`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.8.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • fleet health repair`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

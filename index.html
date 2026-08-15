@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.8.7" />
+  <link rel="stylesheet" href="styles.css?v=3.8.6" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -131,7 +131,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v3.8.7 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.8.6 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -807,6 +807,13 @@
         <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
       </section>
 
+      <section id="engineFleetHealth" class="engine-fleet-health" aria-label="Fleet Health">
+        <section class="fleet-health-head">
+          <div><span>FLEET HEALTH</span><h3>Loading operational picture…</h3><p>Checking project workload, deployments, owner invitations, and active warnings.</p></div>
+          <strong class="fleet-health-state watch">CHECKING</strong>
+        </section>
+      </section>
+
       <section id="firstMateWatch" class="first-mate-watch" aria-label="First Mate Watch">
         <header>
           <div class="first-mate-mark" aria-hidden="true">FM</div>
@@ -815,8 +822,6 @@
         </header>
         <div id="firstMateWatchItems" class="first-mate-watch-items"></div>
       </section>
-
-<section id="engineFleetHealth" class="engine-fleet-health" aria-label="Fleet operational health"></section>
 
 <section id="engineProjectsSection" class="project-command-section modern-project-command">
         <div class="modern-project-command-head">
@@ -1085,7 +1090,7 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.7</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.6</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
@@ -1111,11 +1116,11 @@
     <main id="ownerPortalBody" class="owner-portal-body"></main>
   </section>
 
-  <script src="platform_core.js?v=3.8.7"></script>
-  <script src="platform_identity.js?v=3.8.7"></script>
-  <script src="app.js?v=3.8.7"></script>
+  <script src="platform_core.js?v=3.8.6"></script>
+  <script src="platform_identity.js?v=3.8.6"></script>
+  <script src="app.js?v=3.8.6"></script>
 
-  <script src="captain.js?v=3.8.7"></script>
+  <script src="captain.js?v=3.8.6"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

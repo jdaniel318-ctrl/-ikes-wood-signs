@@ -1,13 +1,4 @@
-# Dark Sky Changelog
-
-## v3.8.7 — Operational Coherence
-- Added Engine Fleet Health for a compact cross-project operating picture.
-- Expanded Needs Attention with deployment, workflow, offer, payment, and owner-readiness checks.
-- Standardized major Project Control modules with consistent purpose-first command headers.
-- Preserved immutable Project ID identity, project isolation, and iPad command navigation.
-- Added `OPERATIONAL_COHERENCE_AUDIT.md`.
-
-## v3.8.7 — iPad Command Usability Refit
+## v3.8.6 — iPad Command Usability Refit
 
 - Preserved the v3.8.4 two-level Project Control navigation model.
 - Simplified primary command labels by removing tiny secondary descriptions.
@@ -16,7 +7,7 @@
 - iPad portrait uses two generous columns rather than a narrow scrolling strip.
 - Contextual sub-navigation controls are larger and easier to scan and tap.
 - Active/expanded commands receive a stronger instrument-state treatment.
-- Cache/version references advanced to v3.8.7.
+- Cache/version references advanced to v3.8.6.
 
 ## v3.8.4 — Command Navigation Refit
 
@@ -154,3 +145,9 @@ Replaced the fixed full-screen Engine workspace overlay with a dedicated in-flow
 - Raised tap targets above project decoration and hardened iPad touch behavior.
 - Rebalanced the Project Control cockpit from white cards to low-glare Dark Sky instrument surfaces.
 - Added an explicit in-panel navigation failure state instead of silent dead controls.
+
+## v3.8.8 — Fleet Health Repair
+- Restored the missing Fleet Health mount in the Engine.
+- Positioned Fleet Health between Structural Status and Waters Ahead.
+- Added non-empty loading and render-failure states.
+- Isolated per-project fleet-health calculation failures so one project cannot blank the fleet panel.

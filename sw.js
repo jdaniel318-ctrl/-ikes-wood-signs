@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-7-operational-coherence';
+const CACHE='dark-sky-v3-8-8-fleet-health-repair';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.7',
-  './platform_core.js?v=3.8.7',
-  './platform_identity.js?v=3.8.7',
-  './app.js?v=3.8.7',
-  './captain.js?v=3.8.7',
+  './styles.css?v=3.8.8',
+  './platform_core.js?v=3.8.8',
+  './platform_identity.js?v=3.8.8',
+  './app.js?v=3.8.8',
+  './captain.js?v=3.8.8',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
