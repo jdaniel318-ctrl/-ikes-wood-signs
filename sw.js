@@ -1,16 +1,18 @@
-const CACHE='black-flag-engine-v3-5-brand-system';
+const CACHE='black-flag-engine-v3-6-platform-brand-rebuild';
 const ASSETS=[
+  './assets/black_flag_platform_icon.png',
+  './assets/black_flag_platform_mark.png',
   './assets/black_flag_brand_board_v1.png',
   './assets/black_flag_mark_dimensional.png',
   './assets/black_flag_mark_clean.png',
   './assets/black_flag_wordmark_lockup.png',
   './',
   './index.html',
-  './styles.css?v=3.5.0',
+  './styles.css?v=3.6.0',
   './platform_core.js?v=3.0.0',
   './platform_identity.js?v=3.0.0',
-  './app.js?v=3.5.0',
-  './captain.js?v=3.5.0',
+  './app.js?v=3.6.0',
+  './captain.js?v=3.6.0',
   './manifest.webmanifest',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',
