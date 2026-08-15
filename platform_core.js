@@ -1,7 +1,7 @@
-/* Dark Sky / Black Flag v3.8.0 — Command & Visibility */
+/* Dark Sky / Black Flag v3.8.2 — Immutable Project Identity */
 (function(g){
 'use strict';
-const SCHEMA=5, POLICY='3.3', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
+const SCHEMA=6, POLICY='3.4', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
 const STATES=['draft','configured','owner_invited','owner_active','deployment_ready','testing','live','suspended','relationship_ended','archived'];
 const DEPLOYMENT_TRANSITIONS={
  draft:new Set(['sea_trial','retired']),
@@ -14,9 +14,9 @@ const clean=v=>String(v||'').trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-').re
 const ns=id=>'bf.project.'+clean(id);
 const normalizeName=v=>String(v||'').trim().replace(/\s+/g,' ').toLocaleLowerCase();
 const randomId=()=>{try{if(globalThis.crypto?.randomUUID)return globalThis.crypto.randomUUID().replace(/-/g,'').slice(0,12)}catch(_){}return Date.now().toString(36)+Math.random().toString(36).slice(2,8)};
-function createProjectId(name,projects=[]){
- const stem=clean(name)||'project'; const used=new Set((projects||[]).map(p=>String(p?.id||'')));
- let id=`prj-${stem}-${randomId()}`; while(used.has(id)) id=`prj-${stem}-${randomId()}`; return id;
+function createProjectId(_name,projects=[]){
+ const used=new Set((projects||[]).map(p=>String(p?.id||'')));
+ let id=`bf-p-${randomId()}`; while(used.has(id)) id=`bf-p-${randomId()}`; return id;
 }
 function registry(projects=[]){return (projects||[]).map(p=>({projectId:String(p?.id||''),displayName:String(p?.name||p?.identity?.displayName||''),normalizedName:normalizeName(p?.name||p?.identity?.displayName||''),state:lifecycle(p),namespace:String(p?.namespace||ns(p?.id||'')),createdAt:p?.createdAt||null,updatedAt:p?.updatedAt||p?.governance?.updatedAt||null}));}
 function sameName(projects=[],name,{includeArchived=false}={}){const n=normalizeName(name);return registry(projects).filter(r=>r.normalizedName===n&&(includeArchived||!['archived','relationship_ended'].includes(r.state)));}
@@ -47,7 +47,8 @@ function ensure(p){
  p.id=clean(p.id||createProjectId(p.name||'project')); p.schemaVersion=SCHEMA; p.namespace=ns(p.id);
  const displayName=p.name||p.identity?.displayName||p.id;
  p.name=displayName; p.createdAt=p.createdAt||new Date().toISOString(); p.updatedAt=p.updatedAt||p.governance?.updatedAt||p.createdAt;
- p.identity={...(p.identity||{}),projectId:p.id,displayName,normalizedName:normalizeName(displayName),projectCode:p.projectCode||p.orderPrefix||p.identity?.projectCode||'PRJ',identityVersion:2};
+ p.identity={...(p.identity||{}),projectId:p.id,displayName,normalizedName:normalizeName(displayName),projectCode:p.projectCode||p.orderPrefix||p.identity?.projectCode||'PRJ',identityVersion:3,immutableProjectId:true};
+ if(!Array.isArray(p.identity.previousNames))p.identity.previousNames=[];
  p.isolation={...(p.isolation||{}),projectId:p.id,namespace:p.namespace,policyVersion:POLICY,crossProjectAccess:'deny'};
  p.permissions={...(p.permissions||{}),policyVersion:POLICY,projectScoped:true,defaultDeny:true};
  p.lifecycle={...(p.lifecycle||{}),state:lifecycle(p),version:2,updatedAt:p.lifecycle?.updatedAt||new Date().toISOString()};
@@ -58,7 +59,7 @@ function ensure(p){
 function migrate(rows){
  let changed=false;
  const projects=(Array.isArray(rows)?rows:[]).map(p=>{const before=JSON.stringify([p?.schemaVersion,p?.namespace,p?.isolation,p?.permissions,p?.lifecycle,p?.identity,deployments(p).map(d=>[d?.projectId,d?.namespace,d?.authorization?.projectId])]);ensure(p);if(before!==JSON.stringify([p?.schemaVersion,p?.namespace,p?.isolation,p?.permissions,p?.lifecycle,p?.identity,deployments(p).map(d=>[d?.projectId,d?.namespace,d?.authorization?.projectId])]))changed=true;return p});
- return{projects,changed,from:'3.2',to:'3.3'};
+ return{projects,changed,from:'3.3',to:'3.4'};
 }
 function scope(resource,projectId){
  if(!resource||typeof resource!=='object')return{ok:false,error:'resource_missing'};
@@ -139,5 +140,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.8.0-command-visibility',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.8.2-immutable-project-identity',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);

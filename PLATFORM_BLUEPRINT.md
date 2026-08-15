@@ -1,6 +1,6 @@
 # Dark Sky Platform Blueprint
 
-**Revision:** v3.8.0  
+**Revision:** v3.8.2  
 **Purpose:** Canonical architecture for the Black Flag / Dark Sky platform.
 
 ## 1. Command hierarchy
@@ -151,3 +151,8 @@ They are test cases for reusable platform behavior and must never leak branding 
 Project Control is the operating cockpit for one business. Its Overview must prefer verified business signals over configuration density. The first screen should show current state, attention items, recent activity, performance, and direct routes to deeper operating modules.
 
 Analytics may only present telemetry that Dark Sky actually records. Missing visitor, conversion, campaign, or engagement telemetry must be labeled as uninstrumented until a real deployment signal pipeline exists.
+
+
+## Immutable project identity doctrine — v3.8.2
+
+A project is identified by its immutable Dark Sky Project ID, never by its business name. Display names and branding are mutable business data. Internal namespaces are derived from the immutable Project ID. Existing legacy IDs remain valid and permanent; new projects receive opaque `bf-p-*` IDs. Renaming a business must not migrate or re-key orders, customers, deployments, assets, permissions, analytics, or audit history. Public URL slugs, when introduced, are a separate deployment concern and must not become tenant identity.

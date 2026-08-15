@@ -45,3 +45,8 @@ Project-admin PIN values and brute-force lockout state are scoped by project. En
 ## 8. v3.7.5 canonical project registry
 
 Project identity is now explicitly separated from project display names. New projects receive immutable unique IDs from the structural core. Display names are operator-facing labels and may repeat. Authorization and isolation must use `projectId`/namespace, never a name or slug derived from a name. The full forward architecture is defined in `PLATFORM_BLUEPRINT.md`.
+
+
+## Project identity rule (v3.8.2)
+
+`project.id` is the immutable tenant identity. `project.name` / `identity.displayName` are mutable. `project.namespace` is derived from the immutable ID. The short `projectCode` is a human-facing reference and is not sufficient for authorization. Existing name-derived IDs are preserved as immutable legacy IDs; only new projects receive opaque `bf-p-*` IDs.

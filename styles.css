@@ -9133,3 +9133,4 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 }
 #projectEngineControl .pc-navigation-error strong{letter-spacing:.12em;font-size:12px}
 #projectEngineControl .pc-navigation-error button{justify-self:center;padding:10px 14px;border:1px solid #5a7f8b;border-radius:999px;background:#10262e;color:#e7f0ef;font-weight:900;cursor:pointer}
+\n\n/* v3.8.2 — Immutable Project Identity */\n.marketing-identity-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px}\n.marketing-identity-heading h4{margin:0}\n.secondary-btn.compact{min-height:32px;padding:6px 10px;font-size:9px;letter-spacing:.6px}\n.technical-identity-row{opacity:.72}\nbody.business-engine-mode #enginePanel .marketing-identity-heading .secondary-btn.compact{background:#10242c!important;border-color:#39535d!important;color:#c5d2d3!important}\n

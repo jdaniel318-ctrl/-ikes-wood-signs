@@ -1,7 +1,7 @@
 # Dark Sky Current Ship Inventory
 
 **Baseline preserved:** v3.7.4  
-**Working release:** v3.8.0 Command & Visibility
+**Working release:** v3.8.2 Immutable Project Identity
 
 ## Already aboard
 - Captain's Quarters privileged layer
@@ -75,3 +75,13 @@
 - Project Analytics now shows only verified order/customer/ledger data and explicitly refuses to fabricate visitor/conversion telemetry.
 - Existing Project Control modules remain available one command away; no existing workflow or authorization path was removed.
 - This release does not yet implement the v3.9 capability/template abstraction.
+
+
+## v3.8.2 identity refit
+
+- Project IDs are immutable across renames.
+- Existing IDs are preserved; new IDs are opaque and name-independent.
+- Project Control can rename the business without creating a new project.
+- Owner branding uses the same rename path.
+- Identity history records prior names.
+- Technical namespace follows Project ID, not display name.

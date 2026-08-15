@@ -1,3 +1,15 @@
+## v3.8.2 — Immutable Project Identity
+
+- Made the Dark Sky Project ID the permanent identity/security anchor for every project.
+- Preserved existing project IDs during migration so no historical references are broken.
+- Changed newly commissioned project IDs to opaque `bf-p-*` identities instead of name-derived IDs.
+- Added controlled business-name editing inside Project Control → Marketing & Brand.
+- Business renames now keep Project ID, namespace, orders, customers, deployments, graphics, and history unchanged.
+- Added project-name audit history (`identity.previousNames`) and platform audit events.
+- Owner Portal branding changes now use the same safe rename path, so project and customer-facing names stay synchronized.
+- Reframed Project Control identity surfaces around Business Name, Project Code, Dark Sky Project ID, and technical namespace.
+- Advanced schema to 6, identity version to 3, and policy to 3.4.
+
 ## v3.8.0 — Command & Visibility
 - Rebuilt Project Control Overview into a project-scoped business cockpit.
 - Added grouped command navigation and direct module shortcuts.

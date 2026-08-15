@@ -982,10 +982,10 @@
       const migration=core.migrate(companies);
       companies=migration.projects;
       if(migration.changed){
-        core.snapshot(before,'pre-v3.7.5-registry-migration');
+        core.snapshot(before,'pre-v3.8.2-identity-migration');
         await setSetting('companies',companies);
-        core.markMigration({from:'3.0',to:'3.1',stage:'project-registry',status:'complete',projectCount:companies.length});
-        core.audit({category:'migration',action:'v3.7.5.project.registry.migration.complete',detail:`${companies.length} projects`});
+        core.markMigration({from:'3.3',to:'3.4',stage:'immutable-project-identity',status:'complete',projectCount:companies.length});
+        core.audit({category:'migration',action:'v3.8.2.project.identity.migration.complete',detail:`${companies.length} projects`});
       }
     }
   }
@@ -998,6 +998,33 @@
       throw new Error(`Dark Sky blocked a project write because hull integrity failed. ${summary}`);
     }
     await setSetting('companies',companies);
+  }
+
+
+  async function renameProjectDisplayName(p,newName,{actorRole='engine_admin',syncBranding=true}={}){
+    if(!p?.id)return{ok:false,error:'project_missing'};
+    const next=String(newName||'').trim().replace(/\s+/g,' ');
+    if(next.length<2)return{ok:false,error:'name_too_short'};
+    const old=String(p.name||p.identity?.displayName||'').trim();
+    if(next===old)return{ok:true,unchanged:true};
+    const core=window.BlackFlagV3Core;
+    const projectId=p.id,namespace=p.namespace||core?.namespaceFor?.(projectId)||`bf.project.${projectId}`;
+    p.identity=p.identity||{};
+    p.identity.previousNames=Array.isArray(p.identity.previousNames)?p.identity.previousNames:[];
+    p.identity.previousNames.unshift({name:old,changedTo:next,changedAt:new Date().toISOString(),changedBy:actorRole});
+    p.identity.previousNames=p.identity.previousNames.slice(0,25);
+    p.name=next;
+    p.identity.displayName=next;
+    p.identity.normalizedName=core?.normalizeProjectName?.(next)||next.toLocaleLowerCase();
+    p.identity.projectId=projectId;
+    p.identity.immutableProjectId=true;
+    p.namespace=namespace;
+    if(syncBranding){p.branding=p.branding||{};p.branding.businessName=next;}
+    p.updatedAt=new Date().toISOString();
+    await saveCompanies();
+    core?.audit?.({actorRole,projectId,category:'project',action:'project.display_name.changed',detail:`${old||'(unnamed)'} → ${next} • Project ID unchanged`});
+    logActivity(projectId,'Business name changed',`${old||'(unnamed)'} → ${next}`);
+    return{ok:true,oldName:old,newName:next,projectId,namespace};
   }
 
   function projectMutationDenied(p,action,result){
@@ -1480,9 +1507,9 @@
           <div class="pc-activity-list">${recentActivity}</div>
         </article>
         <article class="pc-command-panel pc-project-profile">
-          <header><div><span>PROJECT PROFILE</span><h4>Operating identity</h4></div></header>
+          <header><div><span>PROJECT PROFILE</span><h4>Operating identity</h4></div><button data-project-jump="marketing" type="button">EDIT IDENTITY</button></header>
           <dl>
-            <div><dt>Project ID</dt><dd>${escapeHtml(p.id)}</dd></div>
+            <div><dt>Business name</dt><dd>${escapeHtml(p.name)}</dd></div><div><dt>Project ID</dt><dd>${escapeHtml(p.id)}</dd></div>
             <div><dt>Lifecycle</dt><dd>${escapeHtml(p.lifecycle?.state||p.status||'draft')}</dd></div>
             <div><dt>Publishing</dt><dd>${escapeHtml(p.publish?.status||'development')}</dd></div>
             <div><dt>Business type</dt><dd>${escapeHtml(p.businessType||p.projectTheme||p.theme||'custom')}</dd></div>
@@ -1649,11 +1676,12 @@
 
       <div class="marketing-brand-grid">
         <article class="pec-card marketing-identity-card">
-          <h4>Brand Identity</h4>
-          <div class="marketing-identity-row"><span>Project</span><strong>${escapeHtml(p.name)}</strong></div>
+          <div class="marketing-identity-heading"><h4>Business Identity</h4><button id="renameProjectBtn" class="secondary-btn compact" type="button">EDIT NAME</button></div>
+          <div class="marketing-identity-row"><span>Business name</span><strong>${escapeHtml(p.name)}</strong></div>
           <div class="marketing-identity-row"><span>Project code</span><strong>${escapeHtml(p.projectCode||p.orderPrefix||'PRJ')}</strong></div>
-          <div class="marketing-identity-row"><span>Permanent namespace</span><strong class="namespace-text">${escapeHtml(p.id)}</strong></div>
-          <p class="helper">The Engine uses the permanent namespace—not the display name—to keep project marketing assets isolated.</p>
+          <div class="marketing-identity-row"><span>Dark Sky Project ID</span><strong class="namespace-text">${escapeHtml(p.id)}</strong></div>
+          <div class="marketing-identity-row technical-identity-row"><span>Technical namespace</span><strong class="namespace-text">${escapeHtml(p.namespace||window.BlackFlagV3Core?.namespaceFor?.(p.id)||'')}</strong></div>
+          <p class="helper">Dark Sky isolates this business by its permanent Project ID. Changing the business name or branding does not change ownership, historical records, deployments, or project security.</p>
         </article>
 
         <article class="pec-card marketing-future-card">
@@ -1673,7 +1701,7 @@
           </div>
           <span id="graphicsSealStatus" class="graphics-lock-mark">VERIFYING</span>
         </div>
-        <p id="graphicsIsolationNote" class="helper">Checking project graphics namespace…</p>
+        <p id="graphicsIsolationNote" class="helper">Checking project graphics identity…</p>
 
         <div id="graphicsSaveConfirmation" class="graphics-save-confirmation hidden" role="status" aria-live="polite"></div>
 
@@ -1862,7 +1890,7 @@
           <div>
             <div class="engine-kicker">DARK SKY DEPLOYMENT FLEET</div>
             <h3>Deployment Shipwright</h3>
-            <p><strong>${escapeHtml(p.name)}</strong> is the vessel. Deployments are the outposts where that vessel serves customers. One project can operate through many outposts without cloning its namespace.</p>
+            <p><strong>${escapeHtml(p.name)}</strong> is the vessel. Deployments are the outposts where that vessel serves customers. One project can operate through many outposts without cloning its identity.</p>
           </div>
           <button id="createDeploymentBtn" class="deployment-launch-btn" type="button"><span>＋</span><strong>LAY NEW KEEL</strong><small>Create Outpost</small></button>
         </section>
@@ -1922,7 +1950,7 @@
                   <span>TOUCH TO START</span>
                 </div>
                 <label>Attract message<input id="deployAttractTitle" class="text-input" value="${escapeHtml(d.attractTitle||'Ready when you are.')}"></label>
-                <p class="helper">Future outpost-specific graphics remain owned by this project namespace.</p>
+                <p class="helper">Future outpost-specific graphics remain owned by this Project ID.</p>
               </article>
             </div>
 
@@ -1964,7 +1992,7 @@
         </div>
 
         <section class="deployment-future">
-          <div><small>DEPLOYMENT PROFILE BERTHS</small><h4>One vessel. Many missions.</h4><p>Kiosk is only the first profile. Every deployment remains subordinate to the owning project's business rules and namespace.</p></div>
+          <div><small>DEPLOYMENT PROFILE BERTHS</small><h4>One vessel. Many missions.</h4><p>Kiosk is only the first profile. Every deployment remains subordinate to the owning project's business rules and Project ID.</p></div>
           <div class="future-deployment-chips">${Object.values(DEPLOYMENT_PROFILES).map(x=>`<span>${escapeHtml(x.label)}</span>`).join('')}</div>
         </section>
       </div>`;
@@ -2004,6 +2032,20 @@
         brandBox.classList.toggle('has-logo',!!visual.logo);
       }
       closeMarketingGraphicSlot();
+      $('renameProjectBtn')?.addEventListener('click',async()=>{
+        if(!requireEngineProjectMutation(p,'project.identity.rename'))return;
+        const proposed=prompt('Business name',p.name||'');
+        if(proposed===null)return;
+        const next=String(proposed||'').trim().replace(/\s+/g,' ');
+        if(next.length<2){alert('Enter a business name with at least two characters.');return;}
+        const same=window.BlackFlagV3Core?.findProjectsByName?.(companies,next,{includeArchived:false})?.filter(x=>x.projectId!==p.id)||[];
+        if(same.length&&!confirm(`Another project currently uses the display name “${next}”. Project IDs keep them isolated. Rename this business anyway?`))return;
+        const result=await renameProjectDisplayName(p,next,{actorRole:'engine_admin',syncBranding:true});
+        if(!result.ok){alert('Dark Sky could not rename this business.');return;}
+        $('pecTitle').textContent=p.name;
+        await applyProjectControlBrand(p);
+        await renderProjectTab(p.id,'marketing');
+      });
     }
     if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{if(!requireEngineProjectMutation(p,'ai.policy.update'))return;p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
     if(tab==='experience') $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;p.customerExperience={photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;await saveCompanies();logActivity(p.id,'Customer experience updated');};
@@ -2387,7 +2429,7 @@
           <label>Owner name<input data-cfield="ownerName" value="${escapeHtml(d.ownerName)}" placeholder="Business owner"></label>
           <label>Owner email<input data-cfield="ownerEmail" value="${escapeHtml(d.ownerEmail)}" placeholder="owner@example.com"></label>
         </div>
-        <div class="commission-callout"><b>SEALED FROM BIRTH</b><span>The visible business name is a label, not a security boundary. Dark Sky creates a unique project ID and namespace at commissioning so another project can never inherit this vessel's data.</span></div>
+        <div class="commission-callout"><b>SEALED FROM BIRTH</b><span>The visible business name is a label, not a security boundary. Dark Sky creates a unique immutable Project ID at commissioning. The business name can change later without changing ownership, history, or project isolation.</span></div>
       </div>`;
     if(commissionStep===2)return `
       <div class="commission-panel">
@@ -2453,7 +2495,7 @@
           <div><small>LAUNCH STATE</small><b>PRIVATE • SEA TRIAL</b></div>
         </div>
         <div class="commission-readiness" aria-label="Commissioning readiness">
-          <div class="ready"><span>✓</span><b>IDENTITY SEALED</b><small>Unique project ID and namespace are generated at commission.</small></div>
+          <div class="ready"><span>✓</span><b>IDENTITY SEALED</b><small>A unique immutable Project ID is generated at commission; names and branding can change later.</small></div>
           <div class="ready"><span>✓</span><b>PRIVATE BY DEFAULT</b><small>No customer deployment is published by commissioning alone.</small></div>
           <div class="${d.ownerPortal&&d.ownerName&&d.ownerEmail?'ready':'deferred'}"><span>${d.ownerPortal&&d.ownerName&&d.ownerEmail?'✓':'•'}</span><b>OWNER HANDOFF</b><small>${d.ownerPortal&&d.ownerName&&d.ownerEmail?'Ready for a project-bound invitation after commission.':'Deferred until an owner is assigned in Project Control.'}</small></div>
           <div class="deferred"><span>•</span><b>DEPLOYMENT</b><small>Outposts are commissioned separately after the project is reviewed.</small></div>
@@ -2522,10 +2564,9 @@
   async function commissionProject(){
     captureCommissionFields();
     if(!validateCommissionDraftFinal())return;
-    const slug=commissionSlug(commissionDraft.name);
     const code=(commissionDraft.projectCode||commissionCode(commissionDraft.name)).toUpperCase();
     const core=window.BlackFlagV3Core;
-    const id=core?.createProjectId?.(commissionDraft.name,companies)||('prj-'+slug+'-'+Date.now().toString(36));
+    const id=core?.createProjectId?.(commissionDraft.name,companies)||('bf-p-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8));
     const sameNames=core?.findProjectsByName?.(companies,commissionDraft.name,{includeArchived:false})||[];
     if(sameNames.length){
       core?.audit?.({actorRole:'engine_admin',category:'project',action:'project.display_name.reused',detail:`${commissionDraft.name} • existing ${sameNames.map(x=>x.projectId).join(', ')}`});
@@ -2570,7 +2611,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.1'
+      commissioningVersion:'3.8.2'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -2864,7 +2905,7 @@
     if(engineActiveProjectId!==requestedProjectId)return;
 
     if($('graphicsProjectIdentity')) $('graphicsProjectIdentity').textContent=`${p.projectCode||p.orderPrefix||'PRJ'} • ${p.name}`;
-    if($('graphicsIsolationNote')) $('graphicsIsolationNote').textContent=`SEALED NAMESPACE: ${requestedProjectId} • Reads and writes are restricted to this project.`;
+    if($('graphicsIsolationNote')) $('graphicsIsolationNote').textContent=`SEALED PROJECT ID: ${requestedProjectId} • Reads and writes are restricted to this project.`;
     if($('graphicsSealStatus')){
       $('graphicsSealStatus').textContent=verified?'SEALED':'CHECK HULL';
       $('graphicsSealStatus').classList.toggle('seal-failed',!verified);
@@ -5606,8 +5647,12 @@ The full order and approved media remain stored with this project.`;
       if(!requireOwnerProjectMutation(p,'branding','branding.update'))return;
       const name=String($('ownerBrandName')?.value||'').trim(),subtitle=String($('ownerBrandSubtitle')?.value||'').trim();
       if(!name){alert('Business name is required.');return;}
-      p.branding=p.branding||{}; p.branding.businessName=name; p.branding.subtitle=subtitle; await saveCompanies(); logActivity(p.id,'Owner updated branding',name);
-      if($('ownerBrandingStatus'))$('ownerBrandingStatus').textContent='Branding saved.';
+      const priorName=p.name;
+      const renamed=await renameProjectDisplayName(p,name,{actorRole:'project_owner',syncBranding:true});
+      if(!renamed.ok){alert('Dark Sky could not update the business name.');return;}
+      p.branding=p.branding||{}; p.branding.subtitle=subtitle; await saveCompanies();
+      if(priorName===name)logActivity(p.id,'Owner updated branding',name);
+      if($('ownerBrandingStatus'))$('ownerBrandingStatus').textContent=`Branding saved. Project ID ${p.id} remains unchanged.`;
     });
     $('ownerCreateDeployment')?.addEventListener('click',async()=>{
       const ownerDeploymentCapability=moduleKey==='kiosks'?'kiosks':'deployments';
@@ -6469,7 +6514,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.1.ready',detail:`${companies.length} projects • schema 5 • policy 3.3 • command deck repair`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.2.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • immutable project identity`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
