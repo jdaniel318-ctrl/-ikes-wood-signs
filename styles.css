@@ -6373,8 +6373,10 @@ body.captain-command-open #captainCommandWorkspace{pointer-events:auto}
   border:1px solid #284956;
   border-radius:18px;
   background:
-    linear-gradient(90deg,rgba(5,15,21,.98) 0%,rgba(6,20,27,.91) 35%,rgba(6,19,26,.68) 64%,rgba(4,13,18,.96) 100%),
-    url('assets/engine_room_modern_benchmark_v2976.png') center 5% / cover no-repeat;
+    radial-gradient(circle at 18% 18%,rgba(49,115,143,.14),transparent 22%),
+    radial-gradient(circle at 82% 22%,rgba(30,90,118,.10),transparent 24%),
+    radial-gradient(circle at 50% 100%,rgba(17,73,97,.12),transparent 34%),
+    linear-gradient(90deg,rgba(5,15,21,.99) 0%,rgba(6,19,26,.96) 36%,rgba(5,16,22,.94) 68%,rgba(4,13,18,.98) 100%);
   box-shadow:0 18px 45px rgba(0,0,0,.25),inset 0 1px 0 rgba(143,202,224,.08);
 }
 .modern-engine-hero::after{
@@ -7094,8 +7096,10 @@ body.dark-flag-pirate-mode #enginePanel .modern-engine-hero{
   min-height:160px!important;
   border:1px solid #5a432c!important;
   background:
-    linear-gradient(90deg,rgba(7,7,6,.98) 0%,rgba(13,10,8,.92) 36%,rgba(17,8,7,.74) 65%,rgba(8,6,5,.97) 100%),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center 4% / cover no-repeat!important;
+    radial-gradient(circle at 18% 20%,rgba(150,73,42,.12),transparent 23%),
+    radial-gradient(circle at 82% 20%,rgba(116,43,34,.10),transparent 22%),
+    radial-gradient(circle at 50% 100%,rgba(114,63,33,.14),transparent 34%),
+    linear-gradient(90deg,rgba(7,7,6,.99) 0%,rgba(13,10,8,.96) 36%,rgba(15,9,7,.94) 65%,rgba(8,6,5,.98) 100%)!important;
   box-shadow:0 22px 55px rgba(0,0,0,.48),inset 0 1px 0 rgba(211,166,91,.07)!important;
 }
 body.dark-flag-pirate-mode #enginePanel .modern-engine-hero::after{
@@ -8716,7 +8720,7 @@ body.flowers-project #returnToEngineBtn.dark-sky-return-control{
 }
 
 /* ==========================================================================
-   v3.6.7 — OPEN SEAS
+   v3.6.8 — CLEAR HORIZON
    Captain-approved Black Flag identity system.
    - Clean C+ full lockup owns Engine/PIN identity surfaces.
    - One compact C+ round mark owns all project return controls and app icon use.
