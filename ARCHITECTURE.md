@@ -57,3 +57,9 @@ Project Control uses a two-level command model. Overview, Orders, and Customers 
 
 ## v3.8.10 Overview Coherence
 Project Control Overview uses the primary/secondary command navigation as the sole full navigation system. The overview may expose a limited Quick Actions set, but must not duplicate the full command tree. Routine project-open events are not considered meaningful overview activity.
+
+
+## v3.8.11 — Sea Trials & Fleet Foundations
+Sea Trials add a non-destructive runtime certification layer above the existing Hull Integrity checks. They exercise identity invariants, authorization failure paths, resource ownership, deployment boundaries, transition rules, mission navigation mounts, persistence, and audit availability. The production server-auth boundary is surfaced as a caution instead of being hidden.
+
+Dark Sky now explicitly distinguishes reusable fleet primitives from Engine-specific systems. The Engine remains the first operating ship; Captain's Quarters is the future shipyard/governance surface. Future ships may reuse identity, authorization, isolation, lifecycle, audit, telemetry, recovery, deployment-boundary, and integration-contract patterns without inheriting Engine-specific order flows or Project Control UI. See `FLEET_FOUNDATIONS.md`.

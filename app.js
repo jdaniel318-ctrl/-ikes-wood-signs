@@ -2694,7 +2694,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.10'
+      commissioningVersion:'3.8.11'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6038,7 +6038,7 @@ The full order and approved media remain stored with this project.`;
       });
     }catch(_){}
 
-    const criticalIds=['engineConfigureBtn','captainModeAccessBtn','projectEngineControl','engineConfigurationDock','projectCommandCards','ownerPortal','firstMateWatch','v3ArchitectureDeck'];
+    const criticalIds=['engineConfigureBtn','captainModeAccessBtn','projectEngineControl','engineConfigurationDock','projectCommandCards','ownerPortal','firstMateWatch','v3ArchitectureDeck','seaTrialsStation'];
     criticalIds.forEach(id=>{if(!$(id))issues.push({level:'critical',code:'CRITICAL_CONTROL_MISSING',detail:id})});
 
     const report={
@@ -6055,16 +6055,87 @@ The full order and approved media remain stored with this project.`;
     return report;
   }
 
+  function seaTrialCheck(id,title,level,detail){ return {id,title,level,detail}; }
+
+  async function runSeaTrialsV3811({record=false}={}){
+    const checks=[];
+    const core=window.BlackFlagV3Core;
+    const integrity=await runShipIntegrityV3();
+    checks.push(seaTrialCheck('structural','Structural integrity',integrity.ok?'pass':'fail',`${integrity.critical} critical • ${integrity.warnings} warning`));
+
+    const ids=new Set(); let identityFail=0, isolationFail=0;
+    for(const p of companies){
+      if(!p?.id||ids.has(p.id)) identityFail++; else ids.add(p.id);
+      try{
+        const clone=JSON.parse(JSON.stringify(p)); const id=clone.id, ns=clone.namespace;
+        clone.name=`${clone.name||'Project'} — Sea Trial`; core?.ensure?.(clone);
+        if(clone.id!==id||clone.namespace!==ns) identityFail++;
+      }catch(_){ identityFail++; }
+      const good=core?.authorizeProjectMutation?.({project:p,actorRole:'engine_admin',contextProjectId:p.id});
+      if(!good?.ok && !['project_read_only'].includes(good?.error)) isolationFail++;
+      const other=companies.find(x=>x.id!==p.id);
+      if(other){
+        const wrong=core?.authorizeProjectMutation?.({project:p,actorRole:'engine_admin',contextProjectId:other.id});
+        if(wrong?.ok) isolationFail++;
+        const scope=core?.assertProjectScope?.({projectId:other.id},p.id);
+        if(scope?.ok) isolationFail++;
+      }
+    }
+    checks.push(seaTrialCheck('identity','Immutable project identity',identityFail?'fail':'pass',identityFail?`${identityFail} identity invariant failure(s)`:`${companies.length} project identities remain stable through an in-memory rename`));
+    checks.push(seaTrialCheck('isolation','Cross-project isolation',isolationFail?'fail':'pass',isolationFail?`${isolationFail} authorization/scope failure(s)`:'Wrong-project mutation and scope probes fail closed'));
+
+    let orderFail=0;
+    try{ const valid=new Set(companies.map(p=>p.id)); for(const o of await getMergedOrders()){ if(!o?.projectId||!valid.has(String(o.projectId))) orderFail++; } }catch(_){ orderFail++; }
+    checks.push(seaTrialCheck('orders','Order ownership',orderFail?'fail':'pass',orderFail?`${orderFail} order ownership issue(s)`:'Stored orders resolve to a known project'));
+
+    let depFail=0; for(const p of companies){ for(const d of (Array.isArray(p.deployments)?p.deployments:[])){ if(!core?.validateDeployment?.(p,d)?.ok) depFail++; } }
+    checks.push(seaTrialCheck('deployments','Deployment boundaries',depFail?'fail':'pass',depFail?`${depFail} deployment boundary issue(s)`:'Deployment records remain sealed to their project'));
+
+    const transitionOk=!!(core?.canTransitionDeployment?.('draft','sea_trial')&&core?.canTransitionDeployment?.('sea_trial','deployed')&&!core?.canTransitionDeployment?.('deployed','draft')&&!core?.canTransitionDeployment?.('retired','deployed'));
+    checks.push(seaTrialCheck('lifecycle','Deployment lifecycle',transitionOk?'pass':'fail',transitionOk?'Forward, pause/retire rules reject invalid backdoors':'Deployment transition contract failed'));
+
+    const criticalRoutes=['engineConfigureBtn','captainModeAccessBtn','projectCommandCards','projectEngineControl','closeProjectEngineControl','returnToEngineBtn','projectTabs'];
+    const missing=criticalRoutes.filter(id=>!$(id));
+    checks.push(seaTrialCheck('navigation','Mission navigation',missing.length?'fail':'pass',missing.length?`Missing: ${missing.join(', ')}`:'Engine, Project Control, and Black Flag escape controls are mounted'));
+
+    let persistence='pass', persistenceDetail='Browser persistence round-trip passed';
+    try{ const k='blackFlagSeaTrialProbeV1', v=`probe-${Date.now()}`; localStorage.setItem(k,v); if(localStorage.getItem(k)!==v) throw new Error('round-trip mismatch'); localStorage.removeItem(k); }catch(e){ persistence='fail'; persistenceDetail=String(e?.message||e); }
+    checks.push(seaTrialCheck('persistence','Local persistence',persistence,persistenceDetail));
+
+    const audits=core?.readAudit?.()||[];
+    checks.push(seaTrialCheck('audit',"Ship's Log",Array.isArray(audits)?'pass':'fail',Array.isArray(audits)?`${audits.length} recent audit event(s) available`:'Audit log unavailable'));
+
+    const authReady=window.BlackFlagV3Identity?.productionAuth?.ready===true;
+    checks.push(seaTrialCheck('production','Production security boundary',authReady?'pass':'warn',authReady?'Server-backed production identity reports ready':'Prototype remains private/test only until server-side identity, authorization, sessions, and secret storage are installed'));
+
+    const failures=checks.filter(x=>x.level==='fail').length, warnings=checks.filter(x=>x.level==='warn').length;
+    const report={at:new Date().toISOString(),ok:failures===0,failures,warnings,checks};
+    window.__lastDarkSkySeaTrial=report;
+    if(record){
+      core?.audit?.({actorRole:'engine_admin',category:'sea_trial',action:'platform.sea_trials.run',detail:`${failures} failure • ${warnings} caution • ${checks.length} checks`});
+      core?.telemetry?.('sea_trials',{failures,warnings,checks:checks.map(x=>({id:x.id,level:x.level}))},null);
+    }
+    return report;
+  }
+
+  function renderSeaTrials(report){
+    const box=$('seaTrialsSummary'); if(!box||!report)return;
+    const state=report.failures?'NOT READY':report.warnings?'PRIVATE / TEST READY':'CLEAR';
+    box.innerHTML=`<div class="sea-trials-result ${report.failures?'fail':report.warnings?'watch':'pass'}"><div><small>SEA TRIAL RESULT</small><strong>${state}</strong><span>${report.failures} failure • ${report.warnings} caution • ${report.checks.length} checks</span></div><time>${new Date(report.at).toLocaleString()}</time></div><div class="sea-trials-checks">${report.checks.map(x=>`<article class="${escapeHtml(x.level)}"><span>${x.level==='pass'?'PASS':x.level==='warn'?'CAUTION':'FAIL'}</span><strong>${escapeHtml(x.title)}</strong><small>${escapeHtml(x.detail)}</small></article>`).join('')}</div>`;
+  }
+
   async function renderV3ArchitectureStatus(){
     const box=$('v3ArchitectureStatus');if(!box)return;
     const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
     const report=await runShipIntegrityV3();
     const migration=window.BlackFlagV3Core?.migrationState?.();
-    const sealed=companies.filter(p=>p?.schemaVersion===3&&p?.isolation?.crossProjectAccess==='deny').length;
+    const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||6);
+    const sealed=companies.filter(p=>Number(p?.schemaVersion)===activeSchema&&p?.isolation?.crossProjectAccess==='deny').length;
+    if($('v3SchemaBadge')) $('v3SchemaBadge').textContent=`SCHEMA ${activeSchema}`;
     const live=states.filter(x=>x==='live').length;
     const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
     box.innerHTML=`
-      <article><span>PROJECT ENVELOPES</span><strong>${sealed}/${companies.length}</strong><small>Schema 3 + default deny</small></article>
+      <article><span>PROJECT ENVELOPES</span><strong>${sealed}/${companies.length}</strong><small>Schema ${activeSchema} + default deny</small></article>
       <article><span>LIVE</span><strong>${live}</strong><small>Published projects</small></article>
       <article><span>TESTING</span><strong>${testing}</strong><small>Deployment / sea trial</small></article>
       <article><span>INTEGRITY</span><strong class="${report.ok?'ok':'warn'}">${report.ok?'CLEAR':'ATTENTION'}</strong><small>${report.critical} critical • ${report.warnings} warning</small></article>
@@ -6194,11 +6265,12 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.0.0',
+    version:'3.8.11',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
-    audit:()=>window.BlackFlagV3Core?.readAudit?.()||[]
+    audit:()=>window.BlackFlagV3Core?.readAudit?.()||[],
+    runSeaTrials:()=>runSeaTrialsV3811({record:true})
   };
 
   function bindMissionCriticalNavigation(){
@@ -6277,6 +6349,13 @@ The full order and approved media remain stored with this project.`;
     });
     $('createRecoverySnapshotBtn')?.addEventListener('click',createV3RecoverySnapshot);
     $('showAuditTrailBtn')?.addEventListener('click',renderV3AuditTrail);
+    $('openShipsLogBtn')?.addEventListener('click',renderV3AuditTrail);
+    $('runSeaTrialsBtn')?.addEventListener('click',async()=>{
+      const report=await runSeaTrialsV3811({record:true});
+      renderSeaTrials(report);
+      await renderFirstMateWatch();
+      await renderV3ArchitectureStatus();
+    });
 
     $('pirateSettingsBtn')?.addEventListener('click',()=>{
       $('engineConfigurationDock')?.classList.remove('hidden');
@@ -6612,7 +6691,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.10.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • iPad readability refit`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.11.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • sea trials + fleet foundations`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

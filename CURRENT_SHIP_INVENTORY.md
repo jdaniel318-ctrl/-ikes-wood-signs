@@ -90,3 +90,11 @@
 - Project Control bottom duplicate command menu removed.
 - Compact Quick Actions present for six common operations.
 - Activity overview filters routine project-open noise.
+
+
+## v3.8.11 Sea Trials & Fleet Foundations
+- Engine Configuration has a non-destructive Sea Trials station.
+- Existing audit trail is now surfaced as the Ship's Log from Sea Trials.
+- Structural Status reports Project Envelopes against active schema 6.
+- Fleet foundation doctrine is documented, but no Admiral layer or new ship runtime has been created yet.
+- The Engine remains browser-local and production server security is still explicitly pending.

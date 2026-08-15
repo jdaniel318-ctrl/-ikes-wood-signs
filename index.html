@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.8.10" />
+  <link rel="stylesheet" href="styles.css?v=3.8.11" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -131,7 +131,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v3.8.10 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.8.11 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -941,10 +941,23 @@
           <div class="v3-integrity-actions">
             <button id="runShipIntegrityBtn" class="primary-btn" type="button">RUN SHIP INTEGRITY CHECK</button>
             <button id="createRecoverySnapshotBtn" class="secondary-btn" type="button">CREATE RECOVERY SNAPSHOT</button>
-            <button id="showAuditTrailBtn" class="secondary-btn" type="button">VIEW AUDIT TRAIL</button>
+            <button id="showAuditTrailBtn" class="secondary-btn" type="button">VIEW SHIP'S LOG</button>
           </div>
           <div id="shipIntegritySummary" class="v3-integrity-summary"></div>
           <div id="v3AuditViewer" class="v3-audit-viewer hidden"></div>
+        </section>
+
+        <section id="seaTrialsStation" class="sea-trials-station">
+          <div class="sea-trials-copy">
+            <div class="engine-kicker">SEA TRIALS</div>
+            <h4>End-to-End Readiness</h4>
+            <p>Run non-destructive checks across identity, project isolation, navigation, persistence, lifecycle, recovery, and the production-security boundary.</p>
+          </div>
+          <div class="sea-trials-actions">
+            <button id="runSeaTrialsBtn" class="primary-btn" type="button">RUN SEA TRIALS</button>
+            <button id="openShipsLogBtn" class="secondary-btn" type="button">VIEW SHIP'S LOG</button>
+          </div>
+          <div id="seaTrialsSummary" class="sea-trials-summary"><div class="sea-trials-idle"><strong>READY FOR TRIAL</strong><span>No destructive changes are made by this check.</span></div></div>
         </section>
 
 <div class="engine-section-head"><div><div class="engine-kicker">PLATFORM CONTROL</div><h3>Engine Settings</h3></div></div>
@@ -1090,7 +1103,7 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.10</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.11</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
@@ -1116,11 +1129,11 @@
     <main id="ownerPortalBody" class="owner-portal-body"></main>
   </section>
 
-  <script src="platform_core.js?v=3.8.10"></script>
-  <script src="platform_identity.js?v=3.8.10"></script>
-  <script src="app.js?v=3.8.10"></script>
+  <script src="platform_core.js?v=3.8.11"></script>
+  <script src="platform_identity.js?v=3.8.11"></script>
+  <script src="app.js?v=3.8.11"></script>
 
-  <script src="captain.js?v=3.8.10"></script>
+  <script src="captain.js?v=3.8.11"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

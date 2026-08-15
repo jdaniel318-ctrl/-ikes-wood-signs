@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.8.11 — Sea Trials & Fleet Foundations
+- Added non-destructive end-to-end Sea Trials inside Engine Configuration.
+- Added runtime checks for identity invariants, wrong-project authorization, order ownership, deployment sealing, lifecycle transitions, mission navigation, persistence, audit availability, and the production-security boundary.
+- Added Ship's Log naming to the existing audit viewer.
+- Corrected Structural Status Project Envelopes to use the active schema instead of the stale schema-3 comparison.
+- Added `FLEET_FOUNDATIONS.md` and a platform-core Fleet Foundation catalog to distinguish reusable Dark Sky primitives from Engine-specific behavior.
+- Added `SEA_TRIALS_AUDIT.md` and permanent regression-voyage doctrine.
+- No project data model, Project Control route, Black Flag return, or owner permission was intentionally loosened.
+
 ## v3.8.10 — iPad Readability Refit
 - Raised small/supporting text throughout Project Control for arm's-length iPad use.
 - Increased primary and secondary command labels while preserving the established navigation hierarchy.

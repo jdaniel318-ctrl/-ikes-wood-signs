@@ -1,8 +1,15 @@
-/* Dark Sky / Black Flag v3.8.10 — iPad Readability Refit */
+/* Dark Sky / Black Flag v3.8.11 — Sea Trials & Fleet Foundations */
 (function(g){
 'use strict';
 const SCHEMA=6, POLICY='3.4', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
 const STATES=['draft','configured','owner_invited','owner_active','deployment_ready','testing','live','suspended','relationship_ended','archived'];
+const FLEET_FOUNDATION=Object.freeze({
+ version:'1.0',
+ doctrine:'Engine is the first ship, not the fleet.',
+ reusable:Object.freeze(['immutable_identity','authorization','tenant_isolation','lifecycle_contracts','audit_log','telemetry','recovery_snapshots','deployment_boundaries','integration_contracts']),
+ engineSpecific:Object.freeze(['business_projects','orders','customers','products_services','project_control','business_deployments']),
+ futureShipRule:'Reuse Dark Sky primitives without inheriting Engine-specific workflows or UI.'
+});
 const DEPLOYMENT_TRANSITIONS={
  draft:new Set(['sea_trial','retired']),
  sea_trial:new Set(['draft','deployed','retired']),
@@ -140,5 +147,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.8.10-ipad-readability-refit',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.8.11-sea-trials-fleet-foundations',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);

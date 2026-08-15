@@ -9572,7 +9572,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 
 
 /* =========================================================
-   v3.8.10 — iPad Readability Refit
+   v3.8.11 — iPad Readability Refit
    Preserve the established command layout while raising the
    minimum readable type size for arm's-length iPad operation.
    ========================================================= */
@@ -9710,3 +9710,12 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
     padding-bottom:14px!important;
   }
 }
+
+
+/* v3.8.11 — Sea Trials & Fleet Foundations */
+.sea-trials-station{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px;margin:16px 0;padding:18px;border:1px solid #2b515d;border-radius:16px;background:linear-gradient(145deg,#0b1a20,#081217);box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.sea-trials-copy h4{margin:4px 0 7px;color:#edf4f1;font-size:20px}.sea-trials-copy p{margin:0;color:#9bb0b5;font-size:12px;line-height:1.5}
+.sea-trials-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap}.sea-trials-summary{grid-column:1/-1}.sea-trials-idle{display:flex;justify-content:space-between;gap:12px;padding:13px 15px;border:1px dashed #36545e;border-radius:10px;color:#a9b9bc}.sea-trials-idle strong{color:#e9f1ee}
+.sea-trials-result{display:flex;justify-content:space-between;gap:12px;padding:13px 15px;border:1px solid #3b5d67;border-radius:11px;background:#09171c}.sea-trials-result.pass{border-color:#35694a}.sea-trials-result.watch{border-color:#7c6638}.sea-trials-result.fail{border-color:#7b453f}.sea-trials-result div{display:grid;gap:3px}.sea-trials-result small{font:900 9px Arial,sans-serif;letter-spacing:.14em;color:#789197}.sea-trials-result strong{font-size:18px;color:#f0f5f2}.sea-trials-result span,.sea-trials-result time{font-size:11px;color:#91a5aa}
+.sea-trials-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.sea-trials-checks article{display:grid;grid-template-columns:auto 1fr;column-gap:10px;row-gap:3px;padding:11px 12px;border:1px solid #2c4851;border-radius:9px;background:#081419}.sea-trials-checks article>span{grid-row:1/3;align-self:center;font:900 9px Arial,sans-serif;letter-spacing:.09em;padding:5px 7px;border-radius:999px;background:#13262d;color:#a8bbc0}.sea-trials-checks article.pass>span{background:#112c1c;color:#9dd8ad}.sea-trials-checks article.warn>span{background:#312812;color:#e0c77f}.sea-trials-checks article.fail>span{background:#311917;color:#e4a29c}.sea-trials-checks strong{font-size:12px;color:#e5ecea}.sea-trials-checks small{font-size:11px;line-height:1.35;color:#94a7ab}
+@media(max-width:1024px){.sea-trials-station{grid-template-columns:1fr}.sea-trials-actions{justify-content:flex-start}.sea-trials-checks{grid-template-columns:1fr}.sea-trials-actions button{min-height:48px;font-size:14px}}

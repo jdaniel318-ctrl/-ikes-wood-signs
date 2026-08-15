@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-9-ipad-readability-refit';
+const CACHE='dark-sky-v3-8-11-sea-trials-fleet-foundations';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.10',
-  './platform_core.js?v=3.8.10',
-  './platform_identity.js?v=3.8.10',
-  './app.js?v=3.8.10',
-  './captain.js?v=3.8.10',
+  './styles.css?v=3.8.11',
+  './platform_core.js?v=3.8.11',
+  './platform_identity.js?v=3.8.11',
+  './app.js?v=3.8.11',
+  './captain.js?v=3.8.11',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
