@@ -9763,3 +9763,55 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 .visual-cap-note{display:flex;gap:8px;flex-wrap:wrap;border-left:3px solid #258ab8;padding:10px 12px;background:rgba(19,71,91,.2);border-radius:8px;color:#aebfc5}
 .visual-cap-note strong{color:#e7f1f4}
 @media (max-width:900px){.visual-cap-grid{grid-template-columns:1fr}.visual-cap-option{min-height:68px}.visual-cap-option small{font-size:.9rem}.visual-cap-family-head strong,.visual-cap-family-head span{font-size:.86rem}}
+
+/* ==========================================================
+   v3.8.14 — Commissioning Controls & UX Repair
+   Static commissioning workspace now exists before app scripts bind.
+   iPad-first action hierarchy and single platform identity treatment.
+   ========================================================== */
+.commissioning-head{align-items:center}
+.commissioning-brand-block{display:flex;align-items:center;gap:16px;min-width:0}
+.commissioning-platform-mark{width:58px;height:58px;object-fit:contain;flex:0 0 58px;filter:drop-shadow(0 5px 16px rgba(0,0,0,.32))}
+.commission-engine-return{width:54px;height:54px;display:grid;place-items:center;flex:0 0 auto;border:1px solid #45616a;border-radius:12px;background:#e8edef;box-shadow:0 10px 28px rgba(0,0,0,.18);cursor:pointer}
+.commission-engine-return img{width:32px;height:32px;object-fit:contain}
+.commission-progress button{min-height:66px;padding:11px 12px}
+.commission-progress button b{font-size:10px}
+.commission-progress button span{font-size:12px}
+.commission-grid label{font-size:11px}
+.commission-grid input,.commission-grid select{min-height:52px;font-size:15px;padding:12px 14px}
+.commission-panel>p{font-size:15px;max-width:880px}
+.commission-callout{align-items:center}
+.commission-callout b{font-size:10px}
+.commission-callout span{font-size:13px}
+.commission-draft-status{font-size:10px}
+.commissioning-footer{padding:16px 0 18px;background:linear-gradient(180deg,rgba(6,16,20,0),#061014 20%)}
+.commissioning-footer .commission-actions{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:nowrap}
+.commission-action-main{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-left:auto}
+.commission-action{min-height:50px;padding:12px 20px;border-radius:10px;font:800 11px Arial,sans-serif;letter-spacing:.035em;cursor:pointer;touch-action:manipulation}
+.commission-action:disabled{opacity:.38;cursor:not-allowed}
+.commission-action.danger{background:transparent;color:#c68d8d;border:1px solid #65454a}
+.commission-action.quiet{background:#e8edef;color:#20343c;border:0}
+.commission-action.secondary{background:#0d1c21;color:#c0d0d4;border:1px solid #47626b}
+.commission-action.primary{min-width:155px;background:#23769a;color:#fff;border:1px solid #47a1c4;box-shadow:0 8px 22px rgba(23,110,148,.22)}
+.commission-action.primary:active,.commission-action.secondary:active,.commission-action.quiet:active,.commission-engine-return:active{transform:translateY(1px)}
+@media (min-width:768px) and (max-width:1366px){
+  .commissioning-workspace{padding-left:4vw;padding-right:4vw}
+  .commissioning-head h1{font-size:42px}
+  .commissioning-head p{font-size:15px}
+  .commission-progress{gap:10px}
+  .commission-progress button{min-height:72px}
+  .commission-progress button span{font-size:13px}
+  .commissioning-footer .commission-actions{gap:18px}
+  .commission-action{min-height:54px;font-size:12px;padding:13px 22px}
+  .commission-action.primary{min-width:178px}
+}
+@media (max-width:760px){
+  .commissioning-brand-block{align-items:flex-start;gap:12px}
+  .commissioning-platform-mark{width:46px;height:46px;flex-basis:46px}
+  .commission-engine-return{width:48px;height:48px}
+  .commissioning-footer .commission-actions{display:grid;grid-template-columns:1fr;gap:10px}
+  .commission-action-main{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .commission-action-main .primary{grid-column:1/-1}
+  .commission-action.danger{justify-self:start}
+  .commission-action{width:100%;min-height:50px}
+}

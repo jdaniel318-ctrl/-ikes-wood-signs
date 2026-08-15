@@ -100,7 +100,7 @@
 - The Engine remains browser-local and production server security is still explicitly pending.
 
 
-## v3.8.13 Visual Capability Inventory
+## v3.8.14 Visual Capability Inventory
 - Working renderers: flat surface, cylindrical wrap, card/message overlay.
 - Capability contract: composable input, placement, transform, preview, approval, output families.
 - Foundation profiles recorded for future renderers: curved surface, front/back, multi-zone, bounded area, perspective, freeform, template overlay, environment placement, vehicle/equipment, arrangement, before/after.

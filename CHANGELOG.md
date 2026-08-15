@@ -1,4 +1,12 @@
-# v3.8.13 — Visual Capability Architecture
+# Dark Sky v3.8.14 — Commissioning Controls & UX Repair
+
+- Fixed a DOM/script-order regression that left all Project Commissioning footer controls unwired.
+- Application scripts now load after all static workspaces exist, including Captain and Project Commissioning surfaces.
+- Simplified commissioning branding to one canonical Black Flag identity mark.
+- Refit commissioning progress, form readability, iPad touch targets, and bottom action hierarchy.
+- Preserved immutable project identity, tenant isolation, visual capability contracts, and deployment rules.
+
+# v3.8.14 — Visual Capability Architecture
 
 - Replaced the three-preview-mode assumption with a composable Visual Presentation Capability contract.
 - Added six capability families: visual input, placement, transforms, preview style, approval, and output.
@@ -9,7 +17,7 @@
 - Migrated existing projects into the visual-capability contract without changing project identity or customer data.
 - Added `visual_capability_contracts` to the reusable Dark Sky Fleet Foundation so future ships can reuse the capability language without inheriting Engine-specific UI.
 
-## v3.8.13 — Project-Specific Preview & Customer Review Refit
+## v3.8.14 — Project-Specific Preview & Customer Review Refit
 
 - Repaired the Project Command Add Project tile to open the canonical commissioning workflow.
 - Removed decorative vertical-line fallback texture from real uploaded customer photos.

@@ -165,5 +165,5 @@ Project Control Overview should orient and prioritize, not reproduce the entire 
 A template may select a preview geometry appropriate to the operating model. Dark Sky must not assume one visualization fits every business. Preview geometry is reusable capability configuration and can evolve independently of project identity.
 
 
-## Visual Capability Doctrine — v3.8.13
+## Visual Capability Doctrine — v3.8.14
 Visual behavior is a reusable Dark Sky primitive, not a property of one template. Projects compose Visual Input → Placement → Transform → Preview → Approval → Output capabilities. Current operating examples are Flat Surface (Ike’s), Cylindrical Wrap (Mugs After Dark), and Card / Message Overlay (Becca’s), but the contract also supports curved, front/back, multi-zone, bounded-area, perspective, freeform, environment, vehicle/equipment, arrangement, before/after, and no-preview models. New ships may reuse this contract without inheriting the Business Command Engine customer shells.

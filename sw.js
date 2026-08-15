@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-13-visual-capability-architecture';
+const CACHE='dark-sky-v3-8-14-commissioning-controls-ux-repair';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.13',
-  './platform_core.js?v=3.8.13',
-  './platform_identity.js?v=3.8.13',
-  './app.js?v=3.8.13',
-  './captain.js?v=3.8.13',
+  './styles.css?v=3.8.14',
+  './platform_core.js?v=3.8.14',
+  './platform_identity.js?v=3.8.14',
+  './app.js?v=3.8.14',
+  './captain.js?v=3.8.14',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
