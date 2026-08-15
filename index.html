@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.8.11" />
+  <link rel="stylesheet" href="styles.css?v=3.8.12" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -131,7 +131,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v3.8.11 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.8.12 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -525,7 +525,7 @@
 <section class="mugs-screen active" data-mugs-screen="welcome"><div class="mugs-hero"><div class="mugs-hero-copy"><div class="mugs-eyebrow">MUGS AFTER DARK</div><h1>Make the mug yours.</h1><p>Photograph the mug you are customizing, add your message, preview it, and approve the order.</p><div class="mugs-ribbon">YOUR MUG • YOUR WORDS • YOUR STYLE</div><button class="mugs-primary" data-mugs-next="photo">START YOUR MUG →</button></div><div id="mugsHeroArt" class="mugs-hero-art project-hero-art" aria-hidden="true"><img id="mugsHeroGraphicImg" class="project-slot-image hero-slot-image hidden" alt="Mugs After Dark showcase artwork"><div class="project-hero-fallback"><span></span><span></span><span></span></div></div></div><div class="mugs-feature-grid"><article><strong>1. Photograph</strong><span>Use the exact mug for this order.</span></article><article><strong>2. Personalize</strong><span>Type the message exactly as you want it.</span></article><article><strong>3. Approve</strong><span>Review the finished concept before submitting.</span></article></div></section>
 <section class="mugs-screen" data-mugs-screen="photo"><div class="mugs-step-kicker">YOUR MUG</div><h2>Photograph Your Mug</h2><p class="mugs-helper">The order cannot be submitted until a mug photo has been confirmed.</p><label class="mugs-photo-picker"><input id="mugsPhotoInput" type="file" accept="image/*" capture="environment"><span>TAKE OR CHOOSE PHOTO</span></label><div id="mugsPhotoPreviewWrap" class="mugs-photo-preview hidden"><img id="mugsPhotoPreview" alt="Confirmed mug photo"><button id="mugsRetakePhoto" class="mugs-secondary" type="button">CHANGE PHOTO</button></div><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="welcome">← BACK</button><button id="mugsPhotoNext" class="mugs-primary" data-mugs-next="message" disabled>CONFIRM PHOTO →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="message"><div class="mugs-step-kicker">YOUR WORDS</div><h2>What should your mug say?</h2><label for="mugsMessage">Type it exactly as you want it shown</label><textarea id="mugsMessage" class="mugs-input" maxlength="32" rows="3" placeholder="Your Message"></textarea><div class="mugs-character-count"><span id="mugsCharCount">0</span>/32</div><label for="mugsStyle">Letter style</label><select id="mugsStyle" class="mugs-input"><option value="bold">Bold</option><option value="classic">Classic</option><option value="script">Script</option></select><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="photo">← BACK</button><button class="mugs-primary" data-mugs-next="preview">PREVIEW →</button></div></section>
-<section class="mugs-screen" data-mugs-screen="preview"><div class="mugs-step-kicker">PREVIEW</div><h2>Review Your Mug</h2><div class="mugs-preview-card"><img id="mugsPreviewImage" alt="Mug preview"><div id="mugsPreviewText" class="mugs-preview-text">Your Message</div></div><p class="mugs-helper">Test project pricing is not yet configured in Black Flag.</p><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="message">← EDIT</button><button class="mugs-primary" data-mugs-next="customer">YES — CONTINUE →</button></div></section>
+<section class="mugs-screen" data-mugs-screen="preview"><div class="mugs-step-kicker">PREVIEW</div><h2>Review Your Mug</h2><div class="mugs-preview-card mug-cylinder-preview"><img id="mugsPreviewImage" alt="Mug preview"><div id="mugsPreviewText" class="mugs-preview-text mug-wrap-overlay">Your Message</div><span class="mug-wrap-cue">CYLINDRICAL WRAP PREVIEW</span></div><p class="mugs-helper">The lettering preview now simulates a cylindrical wrap. Exact print placement can be confirmed before production.</p><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="message">← EDIT</button><button class="mugs-primary" data-mugs-next="customer">YES — CONTINUE →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="mugsCustomerName">Name</label><input id="mugsCustomerName" class="mugs-input" autocomplete="name"><label for="mugsCustomerPhone">Phone</label><input id="mugsCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="mugsCustomerEmail">Email</label><input id="mugsCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="preview">← BACK</button><button id="mugsCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="review"><div class="mugs-step-kicker">FINAL REVIEW</div><h2>Approve Your Mug Order</h2><div id="mugsReviewSummary" class="mugs-review-summary"></div><label class="mugs-approval"><input id="mugsApprovalCheck" type="checkbox"><span>I approve the mug photo, wording, and preview shown above.</span></label><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="customer">← BACK</button><button id="mugsSubmitOrder" class="mugs-primary" type="button" disabled>PLACE TEST ORDER →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="done"><div class="mugs-done"><div class="mugs-done-mark">✓</div><div class="mugs-step-kicker">ORDER RECEIVED</div><h2>Your Mugs After Dark order is in the queue.</h2><p>Test order <strong id="mugsDoneOrderId"></strong> has been saved to the Mugs After Dark project only.</p><img id="mugsDonePreview" class="mugs-done-preview" alt="Approved mug preview"><button id="mugsNewOrder" class="mugs-primary" type="button">START ANOTHER MUG</button></div></section>
@@ -1103,7 +1103,7 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.11</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.12</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
@@ -1129,11 +1129,11 @@
     <main id="ownerPortalBody" class="owner-portal-body"></main>
   </section>
 
-  <script src="platform_core.js?v=3.8.11"></script>
-  <script src="platform_identity.js?v=3.8.11"></script>
-  <script src="app.js?v=3.8.11"></script>
+  <script src="platform_core.js?v=3.8.12"></script>
+  <script src="platform_identity.js?v=3.8.12"></script>
+  <script src="app.js?v=3.8.12"></script>
 
-  <script src="captain.js?v=3.8.11"></script>
+  <script src="captain.js?v=3.8.12"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

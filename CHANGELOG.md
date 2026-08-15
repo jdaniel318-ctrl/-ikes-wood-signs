@@ -1,3 +1,12 @@
+## v3.8.12 — Project-Specific Preview & Customer Review Refit
+
+- Repaired the Project Command Add Project tile to open the canonical commissioning workflow.
+- Removed decorative vertical-line fallback texture from real uploaded customer photos.
+- Refit Ike's customer review summary for clearer product details, contact information, and price visibility.
+- Added project-shell preview geometry metadata so distinct businesses can own distinct presentation behavior.
+- Mugs After Dark now uses a cylindrical-wrap lettering simulation in live and approved previews instead of the flat-sign overlay.
+- Preserved the v3.8.11 Sea Trials and fleet-foundation boundaries.
+
 # Changelog
 
 ## v3.8.11 — Sea Trials & Fleet Foundations

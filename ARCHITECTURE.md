@@ -63,3 +63,7 @@ Project Control Overview uses the primary/secondary command navigation as the so
 Sea Trials add a non-destructive runtime certification layer above the existing Hull Integrity checks. They exercise identity invariants, authorization failure paths, resource ownership, deployment boundaries, transition rules, mission navigation mounts, persistence, and audit availability. The production server-auth boundary is surfaced as a caution instead of being hidden.
 
 Dark Sky now explicitly distinguishes reusable fleet primitives from Engine-specific systems. The Engine remains the first operating ship; Captain's Quarters is the future shipyard/governance surface. Future ships may reuse identity, authorization, isolation, lifecycle, audit, telemetry, recovery, deployment-boundary, and integration-contract patterns without inheriting Engine-specific order flows or Project Control UI. See `FLEET_FOUNDATIONS.md`.
+
+
+## v3.8.12 — Presentation capability boundary
+Project shells may declare a `previewGeometry` capability. This keeps the common order/identity/isolation platform shared while allowing product-specific visualization behavior. Current geometries are `flat-surface` for wood signs, `cylindrical-wrap` for mugs, and `card-overlay` for flowers. Product geometry is presentation capability data, not project identity.

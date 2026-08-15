@@ -159,3 +159,7 @@ A project is identified by its immutable Dark Sky Project ID, never by its busin
 
 ## Overview command doctrine
 Project Control Overview should orient and prioritize, not reproduce the entire navigation tree. Full navigation lives in the command bays; Overview may expose only a small set of high-value Quick Actions.
+
+
+### Product presentation capabilities
+A template may select a preview geometry appropriate to the operating model. Dark Sky must not assume one visualization fits every business. Preview geometry is reusable capability configuration and can evolve independently of project identity.
