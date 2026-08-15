@@ -42,7 +42,7 @@ Upload the contents of this folder together, preserving `assets/`. GitHub Pages 
 - Name changes are audited and previous names are retained in project identity history.
 - The short Project Code remains a human-facing reference, not the tenant security boundary.
 
-### v3.8.9 Overview Coherence Refit
+### v3.8.10 iPad Readability Refit
 - Removed the duplicate Project Control command-menu slab.
 - Added compact, high-value Quick Actions.
 - Filtered routine project-open events from Recent Changes.

@@ -2694,7 +2694,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.9'
+      commissioningVersion:'3.8.10'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6612,7 +6612,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.9.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • overview coherence refit`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.10.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • iPad readability refit`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

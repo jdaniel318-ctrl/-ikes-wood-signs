@@ -9569,3 +9569,144 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   #projectEngineControl .pc-quick-actions-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   #projectEngineControl .pc-quick-actions-grid button{min-height:68px}
 }
+
+
+/* =========================================================
+   v3.8.10 — iPad Readability Refit
+   Preserve the established command layout while raising the
+   minimum readable type size for arm's-length iPad operation.
+   ========================================================= */
+
+/* Project identity header: keep hierarchy, improve the supporting copy. */
+#projectEngineControl .project-engine-head .engine-kicker,
+#projectEngineControl .project-engine-head .project-platform-mark span,
+#projectEngineControl .project-engine-head small{
+  font-size:11px!important;
+  line-height:1.35!important;
+  letter-spacing:.12em!important;
+}
+#projectEngineControl .project-engine-head p{
+  font-size:14px!important;
+  line-height:1.45!important;
+  color:#aebdc0!important;
+}
+
+/* Primary and secondary command labels should be readable without leaning in. */
+#projectEngineControl .project-command-primary>button>span:not(.project-nav-icon){
+  font-size:14px!important;
+  line-height:1.2!important;
+}
+#projectEngineControl .project-subnav-label{
+  font-size:10px!important;
+  line-height:1.2!important;
+}
+#projectEngineControl .project-subnav-group button{
+  font-size:14px!important;
+  line-height:1.25!important;
+}
+
+/* Overview typography floor. */
+#projectEngineControl .pc-overview-eyebrow,
+#projectEngineControl .pc-analytics-head span,
+#projectEngineControl .pc-command-panel header span,
+#projectEngineControl .pc-kpi-card>span,
+#projectEngineControl .pc-operational-state span,
+#projectEngineControl .pc-project-profile dt,
+#projectEngineControl .pc-module-hero span,
+#projectEngineControl .pc-panel-hint{
+  font-size:11px!important;
+  line-height:1.3!important;
+}
+#projectEngineControl .pc-overview-hero p,
+#projectEngineControl .pc-analytics-head p,
+#projectEngineControl .pc-module-hero p{
+  font-size:14px!important;
+  line-height:1.5!important;
+}
+#projectEngineControl .pc-kpi-card small{
+  font-size:13px!important;
+  line-height:1.4!important;
+}
+#projectEngineControl .pc-attention-row strong,
+#projectEngineControl .pc-order-pulse strong{
+  font-size:14px!important;
+  line-height:1.3!important;
+}
+#projectEngineControl .pc-attention-row small,
+#projectEngineControl .pc-order-pulse small{
+  font-size:12.5px!important;
+  line-height:1.4!important;
+}
+#projectEngineControl .pc-attention-row b,
+#projectEngineControl .pc-order-pulse>span:last-child b{
+  font-size:11px!important;
+}
+#projectEngineControl .pc-activity-row strong{
+  font-size:13.5px!important;
+  line-height:1.35!important;
+}
+#projectEngineControl .pc-activity-row small,
+#projectEngineControl .pc-activity-row time{
+  font-size:12px!important;
+  line-height:1.4!important;
+}
+#projectEngineControl .pc-project-profile dd{
+  font-size:13.5px!important;
+  line-height:1.4!important;
+}
+
+/* Quick Actions remain compact, but not tiny. */
+#projectEngineControl .pc-quick-actions-head span{
+  font-size:10px!important;
+}
+#projectEngineControl .pc-quick-actions-head strong{
+  font-size:16px!important;
+}
+#projectEngineControl .pc-quick-actions-grid b{
+  font-size:12px!important;
+  line-height:1.25!important;
+}
+#projectEngineControl .pc-quick-actions-grid small{
+  font-size:11px!important;
+  line-height:1.35!important;
+}
+
+/* Orders: protect the same readable floor. */
+#projectEngineControl .pec-orders-heading small,
+#projectEngineControl .pec-order-command-card small,
+#projectEngineControl .pec-order-summary span,
+#projectEngineControl .pec-order-status{
+  font-size:11px!important;
+  line-height:1.3!important;
+}
+#projectEngineControl .pec-orders-heading p,
+#projectEngineControl .pec-order-command-body span,
+#projectEngineControl .pec-order-command-body a,
+#projectEngineControl .pec-order-command-id span{
+  font-size:13px!important;
+  line-height:1.45!important;
+}
+
+/* iPad / touch: add a little vertical room instead of squeezing the larger type. */
+@media (pointer:coarse) and (min-width:700px), (min-width:821px) and (max-width:1440px){
+  #projectEngineControl .project-command-primary>button{
+    min-height:62px!important;
+    padding:12px 14px!important;
+  }
+  #projectEngineControl .project-subnav-group{
+    min-height:78px!important;
+  }
+  #projectEngineControl .project-subnav-group button{
+    min-height:58px!important;
+    padding:12px 15px!important;
+  }
+  #projectEngineControl .pc-kpi-card{
+    min-height:124px!important;
+    padding:17px!important;
+  }
+  #projectEngineControl .pc-attention-row,
+  #projectEngineControl .pc-order-pulse{
+    padding-top:14px!important;
+    padding-bottom:14px!important;
+  }
+}

@@ -86,7 +86,7 @@
 - Identity history records prior names.
 - Technical namespace follows Project ID, not display name.
 
-## v3.8.9 Overview coherence
+## v3.8.10 Overview coherence
 - Project Control bottom duplicate command menu removed.
 - Compact Quick Actions present for six common operations.
 - Activity overview filters routine project-open noise.

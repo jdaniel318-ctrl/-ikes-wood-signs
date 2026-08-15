@@ -1,6 +1,15 @@
+# Changelog
+
+## v3.8.10 — iPad Readability Refit
+- Raised small/supporting text throughout Project Control for arm's-length iPad use.
+- Increased primary and secondary command labels while preserving the established navigation hierarchy.
+- Increased KPI captions, warnings, activity metadata, identity details, Quick Actions, and order supporting text.
+- Added a little more vertical room on touch/iPad layouts so larger type does not feel cramped.
+- No project identity, authorization, routing, deployment, or Black Flag return logic changed.
+
 ## v3.8.6 — iPad Command Usability Refit
 
-## v3.8.9 — Overview Coherence Refit
+## v3.8.10 — iPad Readability Refit
 - Removed the duplicate bottom Command Menu from Project Control Overview.
 - Added six high-value Quick Actions: Orders, Customers, Deployments, Edit Business, Owner Access, Payments.
 - Filtered routine `Project opened` noise from the overview activity feed.
