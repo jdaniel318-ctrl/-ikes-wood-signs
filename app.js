@@ -1463,7 +1463,9 @@
     const repeatCustomers=customers.filter(c=>Number(c.orderCount||0)>1);
     const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
     const activeDeployments=deployments.filter(d=>d.state==='deployed');
-    const activity=readActivity().filter(x=>x.projectId===p.id).slice(0,10);
+    const activity=readActivity()
+      .filter(x=>x.projectId===p.id && String(x.action||'').toLowerCase()!=='project opened')
+      .slice(0,5);
     const ledger=projectLedger(p.id);
     const attention=[];
 
@@ -1507,7 +1509,7 @@
     const attention=s.attention.length?s.attention.slice(0,6).map(x=>`<button class="pc-attention-row ${escapeHtml(x.level)}" data-project-jump="${escapeHtml(x.tab)}" type="button"><span><strong>${escapeHtml(x.title)}</strong><small>${escapeHtml(x.detail)}</small></span><b>VIEW →</b></button>`).join(''):
       `<div class="pc-clear-state"><strong>NO IMMEDIATE FLAGS</strong><span>Dark Sky has no rule-based attention items for this project right now.</span></div>`;
     const recentActivity=s.activity.length?s.activity.map(x=>`<div class="pc-activity-row"><span><strong>${escapeHtml(x.action||'Activity')}</strong><small>${escapeHtml(x.detail||'')}</small></span><time>${escapeHtml(projectControlTime(x.at))}</time></div>`).join(''):
-      `<div class="pc-empty-inline">No project activity has been recorded yet.</div>`;
+      `<div class="pc-empty-inline">No meaningful project changes have been recorded yet.</div>`;
     const newestOrders=s.orders.slice(0,5).map(o=>`<button class="pc-order-pulse" data-project-jump="orders" type="button"><span><strong>${escapeHtml(o.id)}</strong><small>${escapeHtml(o.customerName||'Customer not named')}</small></span><span><b>${escapeHtml(canonicalOrderStatus(o.status))}</b><small>${escapeHtml(compactOrderDate(o.createdAt))}</small></span></button>`).join('')||`<div class="pc-empty-inline">No approved orders yet.</div>`;
     const customerSignal=s.customers.length?`${s.repeatCustomers.length} repeat customer${s.repeatCustomers.length===1?'':'s'}`:'Customer history begins with the first order';
     const deploymentSignal=s.deployments.length?`${s.activeDeployments.length} deployed • ${s.deployments.length} total active records`:'No deployments commissioned yet';
@@ -1542,37 +1544,31 @@
         </article>
       </section>
 
-      <section class="pc-command-grid pc-command-grid-lower">
-        <article class="pc-command-panel">
-          <header><div><span>RECENT CHANGES</span><h4>Project activity</h4></div></header>
+      <section class="pc-command-grid pc-command-grid-lower pc-overview-compact-row">
+        <article class="pc-command-panel pc-activity-panel">
+          <header><div><span>RECENT CHANGES</span><h4>Meaningful activity</h4></div><small class="pc-panel-hint">Latest 5 changes</small></header>
           <div class="pc-activity-list">${recentActivity}</div>
         </article>
-        <article class="pc-command-panel pc-project-profile">
+        <article class="pc-command-panel pc-project-profile pc-project-profile-compact">
           <header><div><span>PROJECT PROFILE</span><h4>Operating identity</h4></div><button data-project-jump="marketing" type="button">EDIT IDENTITY</button></header>
           <dl>
-            <div><dt>Business name</dt><dd>${escapeHtml(p.name)}</dd></div><div><dt>Project ID</dt><dd>${escapeHtml(p.id)}</dd></div>
-            <div><dt>Lifecycle</dt><dd>${escapeHtml(p.lifecycle?.state||p.status||'draft')}</dd></div>
-            <div><dt>Publishing</dt><dd>${escapeHtml(p.publish?.status||'development')}</dd></div>
-            <div><dt>Business type</dt><dd>${escapeHtml(p.businessType||p.projectTheme||p.theme||'custom')}</dd></div>
-            <div><dt>Order prefix</dt><dd>${escapeHtml(p.orderPrefix||'PRJ')}</dd></div>
-            <div><dt>Owner access</dt><dd>${escapeHtml(ownerAccessLabel(p))}</dd></div>
+            <div><dt>Business</dt><dd>${escapeHtml(p.name)}</dd></div>
+            <div><dt>Project ID</dt><dd>${escapeHtml(p.id)}</dd></div>
+            <div><dt>State</dt><dd>${escapeHtml(p.lifecycle?.state||p.status||'draft')} · ${escapeHtml(p.publish?.status||'development')}</dd></div>
+            <div><dt>Owner</dt><dd>${escapeHtml(ownerAccessLabel(p))}</dd></div>
           </dl>
         </article>
       </section>
 
-      <section class="pc-command-menu" aria-label="Project command menu">
-        <div class="pc-command-menu-heading"><span>COMMAND MENU</span><h4>Go directly to the work.</h4><p>Project Control keeps the overview shallow and the operating detail one command away.</p></div>
-        <div class="pc-command-menu-grid">
-          <button data-project-jump="orders" type="button"><span>Orders</span><small>Workload, status and customer requests</small></button>
-          <button data-project-jump="customers" type="button"><span>Customers</span><small>History, repeat business and contact context</small></button>
-          <button data-project-jump="products" type="button"><span>Products & Services</span><small>Offers and project catalog</small></button>
-          <button data-project-jump="workflow" type="button"><span>Workflow</span><small>How work moves through the business</small></button>
-          <button data-project-jump="deployment" type="button"><span>Deployments</span><small>Outposts, Sea Trials and operational state</small></button>
-          <button data-project-jump="analytics" type="button"><span>Analytics</span><small>30-day signals and operating trends</small></button>
-          <button data-project-jump="ledger" type="button"><span>Financials</span><small>Completed ledger and direct-cost view</small></button>
-          <button data-project-jump="marketing" type="button"><span>Marketing & Brand</span><small>Project identity and customer-facing assets</small></button>
-          <button data-project-jump="owner" type="button"><span>Owner Access</span><small>Project-scoped handoff and access state</small></button>
-          <button data-project-jump="payments" type="button"><span>Payments</span><small>Payment structure and provider readiness</small></button>
+      <section class="pc-quick-actions" aria-label="Project quick actions">
+        <div class="pc-quick-actions-head"><span>QUICK ACTIONS</span><strong>Common commands</strong></div>
+        <div class="pc-quick-actions-grid">
+          <button data-project-jump="orders" type="button"><b>ORDERS</b><small>Open workload</small></button>
+          <button data-project-jump="customers" type="button"><b>CUSTOMERS</b><small>History & contact</small></button>
+          <button data-project-jump="deployment" type="button"><b>DEPLOYMENTS</b><small>Outposts & state</small></button>
+          <button data-project-jump="marketing" type="button"><b>EDIT BUSINESS</b><small>Name & brand</small></button>
+          <button data-project-jump="owner" type="button"><b>OWNER ACCESS</b><small>Handoff & access</small></button>
+          <button data-project-jump="payments" type="button"><b>PAYMENTS</b><small>Provider readiness</small></button>
         </div>
       </section>`;
     bindProjectControlJumpLinks(p);
@@ -2698,7 +2694,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.8'
+      commissioningVersion:'3.8.9'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6616,7 +6612,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.8.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • fleet health repair`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.9.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • overview coherence refit`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

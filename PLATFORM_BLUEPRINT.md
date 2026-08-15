@@ -156,3 +156,6 @@ Analytics may only present telemetry that Dark Sky actually records. Missing vis
 ## Immutable project identity doctrine — v3.8.2
 
 A project is identified by its immutable Dark Sky Project ID, never by its business name. Display names and branding are mutable business data. Internal namespaces are derived from the immutable Project ID. Existing legacy IDs remain valid and permanent; new projects receive opaque `bf-p-*` IDs. Renaming a business must not migrate or re-key orders, customers, deployments, assets, permissions, analytics, or audit history. Public URL slugs, when introduced, are a separate deployment concern and must not become tenant identity.
+
+## Overview command doctrine
+Project Control Overview should orient and prioritize, not reproduce the entire navigation tree. Full navigation lives in the command bays; Overview may expose only a small set of high-value Quick Actions.

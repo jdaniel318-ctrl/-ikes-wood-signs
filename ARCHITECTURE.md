@@ -54,3 +54,6 @@ Project identity is now explicitly separated from project display names. New pro
 
 ## v3.8.6 Project Control navigation
 Project Control uses a two-level command model. Overview, Orders, and Customers remain direct. Operate, Insight, Experience, Access, and System reveal contextual second-level controls. Routing continues through the mission-critical `data-project-tab` navigation layer.
+
+## v3.8.9 Overview Coherence
+Project Control Overview uses the primary/secondary command navigation as the sole full navigation system. The overview may expose a limited Quick Actions set, but must not duplicate the full command tree. Routine project-open events are not considered meaningful overview activity.

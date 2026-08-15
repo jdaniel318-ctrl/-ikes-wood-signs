@@ -1,5 +1,12 @@
 ## v3.8.6 — iPad Command Usability Refit
 
+## v3.8.9 — Overview Coherence Refit
+- Removed the duplicate bottom Command Menu from Project Control Overview.
+- Added six high-value Quick Actions: Orders, Customers, Deployments, Edit Business, Owner Access, Payments.
+- Filtered routine `Project opened` noise from the overview activity feed.
+- Reduced Overview vertical bulk by compacting activity and identity panels.
+- Preserved 3.8.8 Fleet Health, project identity, isolation, and mission navigation behavior.
+
 - Preserved the v3.8.4 two-level Project Control navigation model.
 - Simplified primary command labels by removing tiny secondary descriptions.
 - Added iPad-first responsive command sizing with larger type, icons, spacing, and finger-sized tap targets.

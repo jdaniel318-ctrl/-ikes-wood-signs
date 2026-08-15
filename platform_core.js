@@ -1,4 +1,4 @@
-/* Dark Sky / Black Flag v3.8.8 — Fleet Health Repair */
+/* Dark Sky / Black Flag v3.8.9 — Overview Coherence Refit */
 (function(g){
 'use strict';
 const SCHEMA=6, POLICY='3.4', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
@@ -140,5 +140,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.8.8-fleet-health-repair',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.8.9-overview-coherence-refit',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);
