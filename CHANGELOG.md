@@ -1,4 +1,15 @@
-# v3.8.20 — Deployment Persistence Confirmation Repair
+# v3.8.21 — Deployment Voyage Refit
+
+- Rebuilt Deployment Shipwright around **Configure → Save → Sea Trial → Test → Active**.
+- Added an iPad-first outpost progress rail and one state-aware Next Step action.
+- Marked Draft attract screens as preview-only; removed the implication that an inactive mockup is a live customer button.
+- Added **Open Test Outpost** for Sea Trial.
+- Real project customer shells open for testing; generic projects open an honest Sea Trial dock and cannot activate until a customer operating model is assigned.
+- Converted readiness, health, outpost registry, and manifest details to the shared dark Fleet Visual System.
+- Collapsed technical manifest data under Advanced.
+- Preserved project/deployment identity, persistence verification, and lifecycle authorization.
+
+# v3.8.21 — Deployment Persistence Confirmation Repair
 
 - Deployment creation now resolves the canonical project record at commit time instead of trusting a captured UI reference.
 - Outpost persistence is confirmed by reading the actual IndexedDB `companies` registry after the save.

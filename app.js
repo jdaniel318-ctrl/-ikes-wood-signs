@@ -1362,6 +1362,49 @@
     return {score,checks};
   }
 
+
+  function deploymentVoyageState(p,d){
+    if(!d)return {step:1,label:'Configure',nextLabel:'Create Outpost',nextAction:'create',detail:'Create an outpost to begin.'};
+    const saved=Number(d.manifestVersion||1)>1;
+    const shellReady=projectShellFor(p)!=='generic';
+    if(d.state==='draft'&&!saved) return {step:1,label:'Configure',nextLabel:'Save Outpost Setup',nextAction:'save',detail:'Finish the outpost setup and save it before Sea Trial.',shellReady};
+    if(d.state==='draft') return {step:2,label:'Saved',nextLabel:'Begin Sea Trial',nextAction:'sea_trial',detail:'Configuration is saved. Start a controlled Sea Trial.',shellReady};
+    if(d.state==='sea_trial'&&!d.lastTestedAt) return {step:3,label:'Sea Trial',nextLabel:'Open Test Outpost',nextAction:'test',detail:shellReady?'Open the customer experience and test this outpost.':'The outpost can be tested, but this vessel still needs a customer operating model.',shellReady};
+    if(d.state==='sea_trial') return {step:4,label:'Tested',nextLabel:'Activate Outpost',nextAction:'deployed',detail:'Customer test recorded. Activate when you are satisfied.',shellReady};
+    if(d.state==='deployed') return {step:5,label:'Active',nextLabel:'Open Customer Experience',nextAction:'test',detail:'This outpost is active.',shellReady};
+    if(d.state==='paused') return {step:5,label:'Paused',nextLabel:'Resume Outpost',nextAction:'deployed',detail:'The outpost is paused and can be resumed.',shellReady};
+    return {step:5,label:'Retired',nextLabel:'Retired',nextAction:'none',detail:'This outpost is preserved as history.',shellReady};
+  }
+
+  function openDeploymentTestDock(p,d){
+    const shellReady=projectShellFor(p)!=='generic';
+    if(shellReady){
+      d.lastTestedAt=new Date().toISOString();
+      saveCompanies().catch(()=>{});
+      closeEngineWorkspace($('projectEngineControl'));
+      enterProject(p.id);
+      return;
+    }
+    let dock=document.getElementById('deploymentTestDock');
+    if(!dock){
+      dock=document.createElement('div');
+      dock.id='deploymentTestDock';
+      dock.className='deployment-test-dock';
+      document.body.appendChild(dock);
+    }
+    dock.innerHTML=`<section class="deployment-test-card" role="dialog" aria-modal="true" aria-label="Test outpost">
+      <div class="deployment-test-kicker">SEA TRIAL • CUSTOMER VIEW</div>
+      <div class="deployment-test-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
+      <h2>${escapeHtml(p.name)}</h2>
+      <p class="deployment-test-message">${escapeHtml(d.attractTitle||'Ready when you are.')}</p>
+      <div class="deployment-test-start">TOUCH TO START</div>
+      <div class="deployment-test-boundary"><strong>Customer workflow not configured yet.</strong><span>The outpost connection is working, but this vessel still needs an operating model/customer shell before a full customer Sea Trial can continue.</span></div>
+      <button type="button" id="closeDeploymentTestDock" class="primary-btn">RETURN TO SHIPWRIGHT</button>
+    </section>`;
+    dock.classList.add('open');
+    document.getElementById('closeDeploymentTestDock')?.addEventListener('click',()=>dock.classList.remove('open'),{once:true});
+  }
+
   function deploymentManifestHtml(p,d){
     if(!d)return '';
     const readiness=deploymentReadiness(d);
@@ -1978,82 +2021,98 @@
 
           <main class="deployment-command">
             ${d?`
-            <div class="deployment-command-head">
+            ${(()=>{const voyage=deploymentVoyageState(p,d);return `
+            <div class="deployment-command-head deployment-command-head-refit">
               <div><small>SELECTED OUTPOST</small><h4>${escapeHtml(d.name)}</h4><span class="deployment-state-pill ${deploymentStateClass(d.state)}">${escapeHtml(DEPLOYMENT_STATES[d.state]||d.state)}</span></div>
-              <div class="deployment-manifest-stamp"><span>MANIFEST</span><strong>v${Number(d.manifestVersion||1)}</strong></div>
+              <div class="deployment-voyage-progress" aria-label="Outpost progress">
+                ${['Configure','Save','Sea Trial','Test','Active'].map((label,i)=>`<span class="${voyage.step>=i+1?'done':''} ${voyage.step===i+1?'current':''}"><b>${i+1}</b>${label}</span>`).join('')}
+              </div>
             </div>
 
-            <div class="deployment-editor-grid">
-              <article class="pec-card deployment-editor">
-                <label>Outpost name<input id="deployName" class="text-input" value="${escapeHtml(d.name)}"></label>
-                <label>Deployment profile
-                  <select id="deployProfile">${Object.entries(DEPLOYMENT_PROFILES).map(([value,x])=>`<option value="${value}" ${d.profile===value?'selected':''}>${escapeHtml(x.label)}</option>`).join('')}</select>
-                </label>
-                <label>Idle-session reset
-                  <select id="deployIdle">${[1,2,3,5,10,15].map(n=>`<option value="${n}" ${Number(d.idleMinutes||3)===n?'selected':''}>${n} minute${n===1?'':'s'}</option>`).join('')}</select>
-                </label>
-                <label>Capability scope
-                  <select id="deployCapabilityScope">
-                    <option value="project_default" ${d.capabilityScope!=='approved_subset'?'selected':''}>Project default capabilities</option>
-                    <option value="approved_subset" ${d.capabilityScope==='approved_subset'?'selected':''}>Approved deployment subset (framework)</option>
-                  </select>
-                </label>
-                <div class="deployment-toggle-stack">
+            <div class="deployment-shipwright-grid">
+              <article class="pec-card deployment-editor deployment-setup-card">
+                <div class="deployment-card-heading"><small>OUTPOST SETUP</small><h4>Configure this outpost</h4><p>Customer-facing settings stay sealed to ${escapeHtml(p.name)}.</p></div>
+                <div class="deployment-setup-fields">
+                  <label>Outpost name<input id="deployName" class="text-input" value="${escapeHtml(d.name)}"></label>
+                  <label>Deployment profile
+                    <select id="deployProfile">${Object.entries(DEPLOYMENT_PROFILES).map(([value,x])=>`<option value="${value}" ${d.profile===value?'selected':''}>${escapeHtml(x.label)}</option>`).join('')}</select>
+                  </label>
+                  <label>Idle-session reset
+                    <select id="deployIdle">${[1,2,3,5,10,15].map(n=>`<option value="${n}" ${Number(d.idleMinutes||3)===n?'selected':''}>${n} minute${n===1?'':'s'}</option>`).join('')}</select>
+                  </label>
+                  <label>Capability scope
+                    <select id="deployCapabilityScope">
+                      <option value="project_default" ${d.capabilityScope!=='approved_subset'?'selected':''}>Project default capabilities</option>
+                      <option value="approved_subset" ${d.capabilityScope==='approved_subset'?'selected':''}>Approved deployment subset (framework)</option>
+                    </select>
+                  </label>
+                  <label class="deployment-attract-input">Attract message<input id="deployAttractTitle" class="text-input" value="${escapeHtml(d.attractTitle||'Ready when you are.')}" /></label>
+                </div>
+                <div class="deployment-toggle-stack deployment-session-card">
+                  <div class="deployment-subheading"><small>CUSTOMER SESSION</small><strong>Safe reset behavior</strong></div>
                   <label class="admin-toggle-row compact-toggle"><span><strong>Reset after completed order</strong><small>Return to this outpost's attract screen.</small></span><input id="deployReset" type="checkbox" ${d.resetAfterComplete!==false?'checked':''}></label>
                   <label class="admin-toggle-row compact-toggle"><span><strong>Purge customer session cargo</strong><small>Clear photos, uploads, previews, drafts and temporary customer data between sessions.</small></span><input id="deployPurge" type="checkbox" ${d.purgeSession!==false?'checked':''}></label>
                   <label class="admin-toggle-row compact-toggle"><span><strong>Show Start Over</strong><small>Customer-safe reset; project admin remains hidden.</small></span><input id="deployStartOver" type="checkbox" ${d.showStartOver!==false?'checked':''}></label>
                   <label class="admin-toggle-row compact-toggle"><span><strong>Resume deployment after reload</strong><small>Restore the outpost, never the previous customer's session.</small></span><input id="deployResume" type="checkbox" ${d.resumeAfterReload?'checked':''}></label>
                   <label class="admin-toggle-row compact-toggle"><span><strong>Device-level kiosk lock verified</strong><small>Mark only after iPad Guided Access / managed Single App Mode is configured.</small></span><input id="deployDeviceLock" type="checkbox" ${d.deviceLockVerified?'checked':''}></label>
                 </div>
-                <button id="saveDeploymentManifestBtn" class="primary-btn">SAVE MANIFEST REVISION</button>
-                <span id="deploymentSaveStatus" class="helper"></span>
+                <div class="deployment-save-row"><button id="saveDeploymentManifestBtn" class="primary-btn">SAVE OUTPOST SETUP</button><span id="deploymentSaveStatus" class="helper"></span></div>
               </article>
 
-              <article class="pec-card deployment-attract-card">
-                <small>OUTPOST ATTRACT SCREEN</small><h4>${escapeHtml(p.name)}</h4>
-                <div class="deployment-attract-preview">
-                  <div class="deployment-attract-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
-                  <strong>${escapeHtml(d.attractTitle||'Ready when you are.')}</strong>
-                  <span>TOUCH TO START</span>
-                </div>
-                <label>Attract message<input id="deployAttractTitle" class="text-input" value="${escapeHtml(d.attractTitle||'Ready when you are.')}"></label>
-                <p class="helper">Future outpost-specific graphics remain owned by this Project ID.</p>
+              <aside class="deployment-preview-column">
+                <article class="pec-card deployment-attract-card deployment-preview-card">
+                  <div class="deployment-card-heading"><small>CUSTOMER PREVIEW</small><h4>Attract screen</h4></div>
+                  <div class="deployment-preview-badge">${d.state==='deployed'?'LIVE CUSTOMER VIEW':d.state==='sea_trial'?'SEA TRIAL PREVIEW':'PREVIEW ONLY • NOT LIVE'}</div>
+                  <div class="deployment-attract-preview">
+                    <div class="deployment-attract-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
+                    <strong>${escapeHtml(d.attractTitle||'Ready when you are.')}</strong>
+                    <span>${d.state==='deployed'?'TOUCH TO START':d.state==='sea_trial'?'TEST AS CUSTOMER':'PREVIEW'}</span>
+                  </div>
+                  <p class="helper">This preview reflects the saved outpost setup. Customer testing is unlocked during Sea Trial.</p>
+                </article>
+
+                <article class="deployment-next-step-card">
+                  <small>NEXT STEP</small>
+                  <h4>${escapeHtml(voyage.nextLabel)}</h4>
+                  <p>${escapeHtml(voyage.detail)}</p>
+                  ${voyage.nextAction==='save'?`<button type="button" data-deployment-next="save" class="primary-btn">SAVE OUTPOST SETUP</button>`:''}
+                  ${voyage.nextAction==='sea_trial'?`<button type="button" data-deployment-next="sea_trial" class="primary-btn">BEGIN SEA TRIAL</button>`:''}
+                  ${voyage.nextAction==='test'?`<button type="button" id="testDeploymentExperienceBtn" class="primary-btn">${d.state==='deployed'?'OPEN CUSTOMER EXPERIENCE':'OPEN TEST OUTPOST'}</button>`:''}
+                  ${voyage.nextAction==='deployed'?`<button type="button" data-deployment-next="deployed" class="primary-btn" ${voyage.shellReady?'':'disabled'}>ACTIVATE OUTPOST</button>${voyage.shellReady?'':'<span class="deployment-next-warning">Customer operating model required before activation.</span>'}`:''}
+                  ${d.state==='paused'?`<button type="button" data-deployment-next="deployed" class="primary-btn">RESUME OUTPOST</button>`:''}
+                </article>
+              </aside>
+            </div>
+
+            <div class="deployment-operational-grid">
+              <article class="pec-card deployment-readiness">
+                <div class="deployment-card-heading"><small>READINESS</small><h4>Sea Trial inspection</h4></div>
+                <div class="deployment-readiness-summary"><strong>${readiness.score}%</strong><span>ENGINE READY</span><b class="${d.deviceLockVerified?'ready':'warn'}">${d.deviceLockVerified?'DEVICE VERIFIED':'DEVICE CHECK'}</b></div>
+                ${readiness.checks.map(c=>`<div class="readiness-row ${c.pass?'pass':c.warning?'warn':'fail'}"><span>${escapeHtml(c.label)}</span><strong>${escapeHtml(c.detail)}</strong></div>`).join('')}
+              </article>
+              <article class="pec-card deployment-signal-watch">
+                <div class="deployment-card-heading"><small>OUTPOST HEALTH</small><h4>${escapeHtml(voyage.label)}</h4></div>
+                <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'ACTIVE':d.state==='sea_trial'?'SEA TRIAL':d.state==='paused'?'PAUSED':'IN HARBOR'}</strong></div>
+                <p><b>Last check-in:</b> ${d.lastCheckIn?escapeHtml(new Date(d.lastCheckIn).toLocaleString()):'Telemetry not installed yet'}</p>
+                <p><b>Manifest:</b> v${Number(d.manifestVersion||1)}</p>
+                <p><b>Last customer test:</b> ${d.lastTestedAt?escapeHtml(new Date(d.lastTestedAt).toLocaleString()):'Not tested yet'}</p>
               </article>
             </div>
 
-            <section class="deployment-lifecycle">
-              <div><small>OUTPOST LIFECYCLE</small><h4>Draft → Sea Trial → Deployed → Paused → Retired</h4><p>Dark Sky never needs to clone ${escapeHtml(p.name)} to operate it somewhere new.</p></div>
-              <div class="deployment-lifecycle-actions">
-                ${d.state==='draft'?`<button data-deployment-action="sea_trial" class="secondary-btn">BEGIN SEA TRIAL</button>`:''}
-                ${d.state==='sea_trial'?`<button data-deployment-action="deployed" class="primary-btn">DEPLOY OUTPOST</button><button data-deployment-action="draft" class="secondary-btn">RETURN TO DRAFT</button>`:''}
-                ${d.state==='deployed'?`<button data-deployment-action="paused" class="return-harbor-btn"><strong>RETURN TO HARBOR</strong><small>Pause this deployment</small></button>`:''}
-                ${d.state==='paused'?`<button data-deployment-action="deployed" class="primary-btn">SET SAIL <small>Resume deployment</small></button>`:''}
+            <section class="deployment-secondary-actions">
+              <div><small>OUTPOST CONTROL</small><p>Lifecycle controls stay available without competing with the next required action.</p></div>
+              <div>
+                ${d.state==='sea_trial'?`<button data-deployment-action="draft" class="secondary-btn">RETURN TO DRAFT</button>`:''}
+                ${d.state==='deployed'?`<button data-deployment-action="paused" class="secondary-btn">PAUSE OUTPOST</button>`:''}
                 ${d.state!=='retired'?`<button data-deployment-action="retired" class="danger-outline-btn">RETIRE OUTPOST</button>`:''}
               </div>
             </section>
 
-            <div class="deployment-command-grid">
-              <article class="pec-card deployment-readiness">
-                <small>SEA TRIAL</small><h4>Readiness Inspection</h4>
-                <div class="deployment-readiness-split">
-                  <div class="deployment-readiness-score"><strong>${readiness.score}%</strong><span>ENGINE READINESS</span></div>
-                  <div class="deployment-device-readiness ${d.deviceLockVerified?'verified':'action'}"><strong>${d.deviceLockVerified?'VERIFIED':'ACTION REQUIRED'}</strong><span>DEVICE READINESS</span></div>
-                </div>
-                ${readiness.checks.map(c=>`<div class="readiness-row ${c.pass?'pass':c.warning?'warn':'fail'}"><span>${escapeHtml(c.label)}</span><strong>${escapeHtml(c.detail)}</strong></div>`).join('')}
-                <p class="helper">Engine readiness measures Dark Sky. Device readiness separately reflects iPad Guided Access / managed Single App Mode.</p>
-              </article>
-
-              <article class="pec-card deployment-signal-watch">
-                <small>SIGNAL WATCH</small><h4>Outpost Health</h4>
-                <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'SAILING':d.state==='sea_trial'?'SEA TRIAL':d.state==='paused'?'IN HARBOR':'IN HARBOR'}</strong></div>
-                <p><b>Last check-in:</b> ${d.lastCheckIn?escapeHtml(new Date(d.lastCheckIn).toLocaleString()):'Telemetry not installed yet'}</p>
-                <p><b>Manifest:</b> v${Number(d.manifestVersion||1)}</p>
-                <p><b>Source attribution:</b> Outpost ID reserved for future order provenance</p>
-                <p class="helper">Connection telemetry is not fabricated in this build. This is the berth where real outpost health will report later.</p>
-              </article>
-            </div>
-
-            ${deploymentManifestHtml(p,d)}
+            <details class="deployment-advanced-manifest">
+              <summary><span>ADVANCED</span><strong>Manifest Details</strong><small>IDs, isolation and technical deployment record</small></summary>
+              ${deploymentManifestHtml(p,d)}
+            </details>
+            `})()}
             `:`<div class="deployment-no-selection"><span>⚓</span><strong>No Deployment Manifest</strong><p>Create an outpost to begin.</p></div>`}
           </main>
         </div>
@@ -2437,6 +2496,41 @@
         logActivity(p.id,'Deployment manifest revised',`${d.name} • v${d.manifestVersion}`);
         $('deploymentSaveStatus').textContent=`Manifest v${d.manifestVersion} saved. Project bulkhead remains sealed.`;
         setTimeout(()=>renderProjectTab(p.id,'deployment'),500);
+      };
+
+      const triggerDeploymentSave=()=>document.getElementById('saveDeploymentManifestBtn')?.click();
+      $$('[data-deployment-next]').forEach(btn=>btn.onclick=()=>{
+        const action=btn.dataset.deploymentNext;
+        if(action==='save'){triggerDeploymentSave();return;}
+        const lifecycle=document.querySelector(`[data-deployment-action="${action}"]`);
+        if(lifecycle){lifecycle.click();return;}
+        if(action==='sea_trial' || action==='deployed'){
+          const proxy=document.createElement('button');
+          proxy.dataset.deploymentAction=action;
+          proxy.className='hidden';
+          document.body.appendChild(proxy);
+          const current=d;
+          if(!current){proxy.remove();return;}
+          (async()=>{
+            if(!requireDeploymentBoundary(p,current,'deployment.lifecycle.update')){proxy.remove();return;}
+            if(!window.BlackFlagV3Core?.canTransitionDeployment?.(current.state,action)){proxy.remove();return;}
+            const readiness=deploymentReadiness(current);
+            if(action==='sea_trial' && readiness.score<100 && !confirm(`Sea Trial readiness is ${readiness.score}%. Continue to Sea Trial with warnings?`)){proxy.remove();return;}
+            if(action==='deployed'){
+              if(projectShellFor(p)==='generic'){alert('Assign a customer operating model before activating this outpost.');proxy.remove();return;}
+              if(!(await deploymentCommissionOrder(p,current))){proxy.remove();return;}
+            }
+            const prior=current.state; current.state=action; current.updatedAt=new Date().toISOString(); normalizeDeploymentIdentity(p,current); current.manifestVersion=Number(current.manifestVersion||1)+1;
+            await saveCompanies(); logActivity(p.id,'Deployment lifecycle changed',`${current.name}: ${prior} → ${action}`); await renderProjectCommand(); await renderProjectTab(p.id,'deployment'); proxy.remove();
+          })();
+        }
+      });
+      if($('testDeploymentExperienceBtn')) $('testDeploymentExperienceBtn').onclick=async()=>{
+        if(!d || !requireDeploymentBoundary(p,d,'deployment.customer_test'))return;
+        if(d.state==='sea_trial' && projectShellFor(p)!=='generic'){
+          d.lastTestedAt=new Date().toISOString(); d.updatedAt=d.lastTestedAt; await saveCompanies(); logActivity(p.id,'Deployment customer test opened',d.name);
+        }
+        openDeploymentTestDock(p,d);
       };
 
       $$('[data-deployment-action]').forEach(btn=>btn.onclick=async()=>{
@@ -2889,7 +2983,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.20'
+      commissioningVersion:'3.8.21'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6528,7 +6622,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.20',
+    version:'3.8.21',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -6954,7 +7048,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.20.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • deployment persistence decoupled from UI integrity + diagnostic save failures`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.21.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • deployment voyage refit + guided Sea Trial workflow`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
