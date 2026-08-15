@@ -1,12 +1,12 @@
-const CACHE='black-flag-engine-v3-6-7-open-seas';
+const CACHE='dark-sky-v3-7-0-cut-the-mooring-lines';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.6.7',
-  './platform_core.js?v=3.0.0',
-  './platform_identity.js?v=3.0.0',
-  './app.js?v=3.6.7',
-  './captain.js?v=3.6.7',
+  './styles.css?v=3.7.0',
+  './platform_core.js?v=3.7.0',
+  './platform_identity.js?v=3.7.0',
+  './app.js?v=3.7.0',
+  './captain.js?v=3.7.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -32,7 +32,8 @@ self.addEventListener('activate',event=>{
         keys.filter(k=>(
           k.startsWith('ikes-wood-signs-') ||
           k.startsWith('workshop-engine-') ||
-          k.startsWith('black-flag-engine-')
+          k.startsWith('black-flag-engine-') ||
+          k.startsWith('dark-sky-')
         ) && k!==CACHE).map(k=>caches.delete(k))
       ))
       .then(()=>self.clients.claim())

@@ -1,4 +1,4 @@
-/* Black Flag v3 Stage 1 — Structural Core */
+/* Dark Sky / Black Flag v3.7 — Project-Neutral Structural Core */
 (function(g){
 'use strict';
 const SCHEMA=3, POLICY='3.0', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
@@ -32,9 +32,10 @@ function migrate(rows){
  const projects=(Array.isArray(rows)?rows:[]).map(p=>{const before=JSON.stringify([p?.schemaVersion,p?.namespace,p?.isolation,p?.permissions,p?.lifecycle,p?.identity]);ensure(p);if(before!==JSON.stringify([p?.schemaVersion,p?.namespace,p?.isolation,p?.permissions,p?.lifecycle,p?.identity]))changed=true;return p});
  return{projects,changed,from:'2.9.x',to:'3.0'};
 }
-function scope(resource,projectId,{legacyIke=false}={}){
+function scope(resource,projectId){
  if(!resource||typeof resource!=='object')return{ok:false,error:'resource_missing'};
- let actual=resource.projectId||resource?.isolation?.projectId||''; if(!actual&&legacyIke)actual='ikes-wood-signs';
+ const actual=resource.projectId||resource?.isolation?.projectId||'';
+ if(!actual)return{ok:false,error:'project_scope_missing',expected:clean(projectId),actual:''};
  return clean(actual)===clean(projectId)?{ok:true}:{ok:false,error:'project_boundary',expected:clean(projectId),actual:clean(actual)};
 }
 function audit(event={}){
@@ -67,5 +68,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.0-stage1',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.7-project-neutral',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);

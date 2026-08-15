@@ -30,4 +30,13 @@ The current static/browser implementation provides client-side structure, policy
 
 ## 6. Development discipline
 
-Prefer shared platform capabilities over hand-coded project exceptions. Avoid implicit project fallbacks when new platform services are introduced. Preserve working IDs and routing contracts during visual-only changes. Validate JavaScript syntax, DOM ID uniqueness, local asset references, service-worker assets, and project boundary controls before release.
+Prefer shared platform capabilities over hand-coded project exceptions. Runtime project fallbacks are forbidden for project-owned records. Legacy unscoped data may be assigned to a project only inside an explicit, auditable migration/import path. Preserve working IDs and routing contracts during visual-only changes. Validate JavaScript syntax, DOM ID uniqueness, local asset references, service-worker assets, and project boundary controls before release.
+
+
+## 7. v3.7 storage boundary
+
+The active browser database is Black Flag/Dark Sky owned (`blackFlagPlatformV1`), not project branded. Project-owned records inside that database must carry an explicit `projectId` and isolation envelope. Local order backups and drafts use Black Flag project-scoped keys.
+
+Legacy Ike storage names remain only as read-only compatibility sources for the one-time v3.7 migration. Normal reads, analytics, customer capture, ledgers, owner metrics, integrity checks, and authorization must not infer Ike's from a missing project identity.
+
+Project-admin PIN values and brute-force lockout state are scoped by project. Engine authorization remains a separate platform-wide gate.

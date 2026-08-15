@@ -1,9 +1,12 @@
 (() => {
-  const DB_NAME = 'ikesWoodSignsV1';
+  const DB_NAME = 'blackFlagPlatformV1';
   const DB_VERSION = 1;
   const STORE_ORDERS = 'orders';
   const STORE_SETTINGS = 'settings';
-  const LOCAL_ORDERS_KEY = 'ikesWoodSignsOrdersBackupV15';
+  const LOCAL_ORDERS_KEY = 'blackFlagOrdersBackupV1';
+  const LEGACY_DB_NAMES = ['ikesWoodSignsV1'];
+  const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
+  const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
   const DEFAULT_COMPANIES = [
@@ -184,13 +187,17 @@
   }
 
   function captureCustomerFromOrder(order){
-    const projectId=order.projectId||'ikes-wood-signs';
+    const projectId=String(order?.projectId||'');
+    if(!projectId){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'customer.capture.blocked',detail:`Unscoped order ${order?.id||'unknown'}`});
+      return;
+    }
     const p=projectById(projectId);
     if(!p){
       window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId,category:'integrity',action:'customer.capture.blocked',detail:order?.id||'unknown'});
       return;
     }
-    const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...order,projectId},projectId,{legacyIke:true});
+    const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...order,projectId},projectId);
     if(scoped&&!scoped.ok)return;
 
     const key=normalizeCustomerKey(order);
@@ -275,6 +282,9 @@
     all[key]=row;writePinSecurity(all);return row;
   }
   function clearPinFailures(key){const all=readPinSecurity();all[key]={attempts:[],lockedUntil:0};writePinSecurity(all)}
+  function adminSecurityKey(projectId=activeProjectId){
+    return `admin:${projectId||'no-project'}`;
+  }
   let pinTimerHandle=null;
   function showPinLock(key,timerId,inputId,buttonId){
     const timer=$(timerId),input=$(inputId),button=$(buttonId);
@@ -287,7 +297,7 @@
     };
     if(pinTimerHandle)clearInterval(pinTimerHandle);tick();pinTimerHandle=setInterval(tick,1000);
   }
-  function activeProject(){return projectById(activeProjectId)||projectById('ikes-wood-signs')||companies[0]}
+  function activeProject(){return activeProjectId ? projectById(activeProjectId) : null}
 
   function projects(){ return companies; }
   function projectById(id){ return companies.find(p=>p.id===id); }
@@ -598,8 +608,12 @@
   function writeLedgers(v){localStorage.setItem(PROJECT_LEDGER_KEY,JSON.stringify(v))}
   function projectLedger(projectId){const l=readLedgers();return Array.isArray(l[projectId])?l[projectId]:[]}
   function postOrderToLedger(order){
-    const projectId=order.projectId || (order.business?.name==="Ike's Wood Signs"?'ikes-wood-signs':activeProjectId||'ikes-wood-signs');
-    const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...order,projectId},projectId,{legacyIke:true});
+    const projectId=String(order?.projectId||'');
+    if(!projectId){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'ledger.post.blocked',detail:`Unscoped order ${order?.id||'unknown'}`});
+      return;
+    }
+    const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...order,projectId},projectId);
     if(scoped&&!scoped.ok)return;
     const ledgers=readLedgers(); const list=Array.isArray(ledgers[projectId])?ledgers[projectId]:[];
     if(list.some(x=>x.orderId===order.id)) return;
@@ -627,16 +641,19 @@
 
 
   const DEFAULT_ENGINE_CONFIG = {
-    engineName:'Workshop Engine',
+    engineName:'Dark Sky',
     schemaVersion:3
   };
   let engineConfig={...DEFAULT_ENGINE_CONFIG};
-  const DRAFT_KEY='ikesOrderDraftV2';
-  const DEFAULT_BUSINESS_CONFIG={businessName:"Ike's Wood Signs",orderPrefix:'IKE',thankYouHeadline:"THANK YOU FOR CHOOSING IKE!",prices:[45,55,65,90,135],orderStatuses:['New','In Production','Ready for Pickup','Completed']};
+  const DRAFT_KEY='blackFlagProjectDraftV1';
+  const LEGACY_DRAFT_KEYS=['ikesOrderDraftV2'];
+  const DEFAULT_BUSINESS_CONFIG={businessName:'Project',orderPrefix:'PRJ',thankYouHeadline:'THANK YOU FOR YOUR ORDER!',prices:[0],orderStatuses:['New','In Production','Ready for Pickup','Completed']};
   let businessConfig={...DEFAULT_BUSINESS_CONFIG};
-  // Paste the Web3Forms access key for "Ike's Wood Signs Orders" below before publishing v1.3.
-  const WEB3FORMS_ACCESS_KEY = 'c97f16ac-2070-46b8-923c-9d7524031bce';
-  const ORDER_EMAIL = 'ikeswoodsigns.orders@yahoo.com';
+  const PLATFORM_DEFAULT_WORKFLOW_KEY='blackFlagDefaultWorkflowV1';
+  let platformDefaultWorkflow=[...DEFAULT_BUSINESS_CONFIG.orderStatuses];
+  // Legacy Ike integration is intentionally project-specific. New projects must never inherit it.
+  const LEGACY_IKE_WEB3FORMS_ACCESS_KEY = 'c97f16ac-2070-46b8-923c-9d7524031bce';
+  const LEGACY_IKE_ORDER_EMAIL = 'ikeswoodsigns.orders@yahoo.com';
   const screenOrder = ['welcome','price','photo','orientation','wording','font','fill','preview','customer','review','done'];
 
   const state = {
@@ -678,6 +695,115 @@
   const $ = (id) => document.getElementById(id);
   const $$ = (sel) => [...document.querySelectorAll(sel)];
 
+  function normalizeOrderIsolation(order,{legacyImport=false}={}){
+    if(!order || typeof order!=='object') return order;
+    if(!order.projectId && legacyImport) order.projectId=LEGACY_IKE_PROJECT_ID;
+    if(order.projectId){
+      order.namespace=order.namespace||window.BlackFlagV3Core?.namespaceFor?.(order.projectId)||`bf.project.${order.projectId}`;
+      order.isolation={...(order.isolation||{}),projectId:order.projectId,namespace:order.namespace,crossProjectAccess:'deny'};
+      order.schemaVersion=Number(order.schemaVersion||3);
+    }
+    return order;
+  }
+
+  function openNamedDb(name){
+    return new Promise((resolve,reject)=>{
+      const req=indexedDB.open(name);
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  function dbStoreRows(database,storeName){
+    return new Promise((resolve)=>{
+      try{
+        if(!database.objectStoreNames.contains(storeName)) return resolve([]);
+        const req=database.transaction(storeName,'readonly').objectStore(storeName).getAll();
+        req.onsuccess=()=>resolve(Array.isArray(req.result)?req.result:[]);
+        req.onerror=()=>resolve([]);
+      }catch(_){ resolve([]); }
+    });
+  }
+
+  async function migrateLegacyPlatformStorage(){
+    const markerKey='platformMigration:v3.7';
+    try{ if((await getSetting(markerKey))?.value?.complete) return; }catch(_){}
+    let ordersCopied=0, settingsCopied=0, localCopied=0, draftCopied=0;
+
+    for(const legacyName of LEGACY_DB_NAMES){
+      if(legacyName===DB_NAME) continue;
+      let legacyDb=null;
+      try{
+        legacyDb=await openNamedDb(legacyName);
+        const legacyOrders=await dbStoreRows(legacyDb,STORE_ORDERS);
+        const legacySettings=await dbStoreRows(legacyDb,STORE_SETTINGS);
+        for(const raw of legacyOrders){
+          const row=normalizeOrderIsolation(structuredClone(raw),{legacyImport:true});
+          if(row?.id){ await put(STORE_ORDERS,row); ordersCopied++; }
+        }
+        for(const row of legacySettings){
+          if(!row?.key || row.key===markerKey) continue;
+          const exists=await getSetting(row.key);
+          if(!exists){ await put(STORE_SETTINGS,row); settingsCopied++; }
+        }
+      }catch(err){ console.warn('Legacy database migration skipped',legacyName,err); }
+      finally{ try{legacyDb?.close()}catch(_){} }
+    }
+
+    const mergedLocal=readLocalOrders();
+    for(const key of LEGACY_LOCAL_ORDERS_KEYS){
+      try{
+        const rows=JSON.parse(localStorage.getItem(key)||'[]');
+        if(Array.isArray(rows)) rows.forEach(raw=>{
+          const row=normalizeOrderIsolation(structuredClone(raw),{legacyImport:true});
+          if(row?.id && !mergedLocal.some(x=>x.id===row.id)){ mergedLocal.push(row); localCopied++; }
+        });
+      }catch(_){}
+    }
+    writeLocalOrders(mergedLocal);
+
+    for(const legacyBase of LEGACY_DRAFT_KEYS){
+      const candidates=[legacyBase,`${legacyBase}:${LEGACY_IKE_PROJECT_ID}`];
+      for(const key of candidates){
+        try{
+          const raw=localStorage.getItem(key);
+          const target=`${DRAFT_KEY}:${LEGACY_IKE_PROJECT_ID}`;
+          if(raw && !localStorage.getItem(target)){ localStorage.setItem(target,raw); draftCopied++; }
+        }catch(_){}
+      }
+    }
+
+    await setSetting(markerKey,{complete:true,at:new Date().toISOString(),ordersCopied,settingsCopied,localCopied,draftCopied});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v3.7.platform.storage.migrated',projectId:null,detail:`orders ${ordersCopied} • settings ${settingsCopied} • local ${localCopied} • drafts ${draftCopied}`});
+  }
+
+  async function migrateLegacyProjectSettings(){
+    const p=projectById(LEGACY_IKE_PROJECT_ID);
+    if(!p) return;
+    let changed=false;
+    try{
+      const legacyBusiness=await getSetting('businessConfig');
+      const scopedBusiness=await getSetting(`businessConfig:${LEGACY_IKE_PROJECT_ID}`);
+      if(legacyBusiness?.value && !scopedBusiness){
+        await setSetting(`businessConfig:${LEGACY_IKE_PROJECT_ID}`,legacyBusiness.value);
+      }
+      const legacyAdminPin=await getSetting('adminPin');
+      const scopedAdminPin=await getSetting(`projectAdminPin:${LEGACY_IKE_PROJECT_ID}`);
+      if(legacyAdminPin?.value && !scopedAdminPin){
+        await setSetting(`projectAdminPin:${LEGACY_IKE_PROJECT_ID}`,legacyAdminPin.value);
+      }
+      const legacyColors=await getSetting('allowCustomColors');
+      if(legacyColors && p.customization?.allowCustomColors!==legacyColors.value){
+        p.customization=p.customization||{};p.customization.allowCustomColors=legacyColors.value!==false;changed=true;
+      }
+      const legacyConfirm=await getSetting('customerConfirmationEmail');
+      if(legacyConfirm && !!p.notifications?.customerConfirmationEmail!==!!legacyConfirm.value){
+        p.notifications=p.notifications||{};p.notifications.customerConfirmationEmail=!!legacyConfirm.value;changed=true;
+      }
+      if(changed) await saveCompanies();
+    }catch(err){ console.warn('Legacy project settings translation skipped',err); }
+  }
+
   function openDb(){
     return new Promise((resolve,reject)=>{
       const req=indexedDB.open(DB_NAME,DB_VERSION);
@@ -702,7 +828,7 @@
     try{
       const raw=localStorage.getItem(LOCAL_ORDERS_KEY);
       const parsed=raw?JSON.parse(raw):[];
-      return Array.isArray(parsed)?parsed:[];
+      return Array.isArray(parsed)?parsed.map(o=>normalizeOrderIsolation(o)):[];
     }catch(err){
       console.warn('Local order backup could not be read',err);
       return [];
@@ -732,7 +858,7 @@
     try{ indexed=await getAll(STORE_ORDERS); }catch(err){ console.warn('IndexedDB orders unavailable',err); }
     const local=readLocalOrders();
     const map=new Map();
-    [...local,...indexed].forEach(o=>{ if(o && o.id) map.set(o.id,o); });
+    [...local,...indexed].forEach(o=>{ const row=normalizeOrderIsolation(o); if(row && row.id) map.set(row.id,row); });
     return [...map.values()];
   }
   async function put(store,value){
@@ -747,14 +873,33 @@
     catch(err){ console.warn('Setting could not be saved',key,err); throw err; }
   }
 
-  async function getAdminPin(){
+  function projectAdminPinKey(projectId=activeProjectId){
+    return projectId ? `projectAdminPin:${projectId}` : '';
+  }
+
+  async function getAdminPin(projectId=activeProjectId){
     try{
-      const saved=await getSetting('adminPin');
-      return saved?.value || DEFAULT_ADMIN_PIN;
+      const scopedKey=projectAdminPinKey(projectId);
+      if(scopedKey){
+        const scoped=await getSetting(scopedKey);
+        if(scoped?.value) return scoped.value;
+      }
+      // Compatibility bridge only for the original Ike project. Other projects never inherit Ike's legacy PIN.
+      if(String(projectId||'')===LEGACY_IKE_PROJECT_ID){
+        const legacy=await getSetting('adminPin');
+        if(legacy?.value) return legacy.value;
+      }
+      return DEFAULT_ADMIN_PIN;
     }catch(err){
-      console.warn('Admin PIN setting unavailable; using default',err);
+      console.warn('Project admin PIN setting unavailable; using default',err);
       return DEFAULT_ADMIN_PIN;
     }
+  }
+
+  async function setAdminPin(value,projectId=activeProjectId){
+    const scopedKey=projectAdminPinKey(projectId);
+    if(!scopedKey) throw new Error('Project context required for admin PIN changes.');
+    return setSetting(scopedKey,value);
   }
 
   async function getEnginePin(){
@@ -832,8 +977,8 @@
 
   function projectScopedOrders(orders,projectId){
     return (orders||[]).filter(o=>{
-      const result=window.BlackFlagV3Core?.assertProjectScope?.(o,projectId,{legacyIke:true});
-      return result ? result.ok : (o.projectId||'ikes-wood-signs')===projectId;
+      const result=window.BlackFlagV3Core?.assertProjectScope?.(o,projectId);
+      return result ? result.ok : String(o?.projectId||'')===String(projectId||'');
     });
   }
 
@@ -1821,7 +1966,7 @@
       };
     }
     if(tab==='orders'){
-      const orders=await getMergedOrders();const rows=orders.filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
+      const orders=await getMergedOrders();const rows=orders.filter(o=>String(o.projectId||'')===String(p.id));
       $('ptOrders').innerHTML=rows.length?rows.slice().reverse().map(o=>`<div class="ledger-row"><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(o.status)}</span><span>$${Number(o.price||0).toFixed(2)}</span><span>${escapeHtml(o.customerName||'')}</span></div>`).join(''):'<p class="helper">No orders for this project yet.</p>';
     }
   }
@@ -2615,7 +2760,7 @@
     showCustomerShellForProject(p);
     await applyProjectAssetSlots(p);
     if(resolvedShell==='ikes'){
-      $('returnToEngineBtn')?.classList.remove('hidden');resetRuntimeStateForProject(p);applyProjectTheme(p);await loadBusinessConfig();recoverDraft();if($('wordingInput'))$('wordingInput').value=state.wording;updateUi();if(typeof setScreen==='function')setScreen('welcome');
+      $('returnToEngineBtn')?.classList.remove('hidden');resetRuntimeStateForProject(p);applyProjectTheme(p);await loadFeatureSettings();await loadBusinessConfig();recoverDraft();if($('wordingInput'))$('wordingInput').value=state.wording;updateUi();if(typeof setScreen==='function')setScreen('welcome');
     }else if(resolvedShell==='mugs'){
       $('returnToEngineBtn')?.classList.remove('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
     }else if(resolvedShell==='flowers'){
@@ -2731,7 +2876,7 @@
     document.documentElement.style.removeProperty('--project-admin-all');
     document.documentElement.style.removeProperty('--project-admin-decoration');
     document.documentElement.style.removeProperty('--project-code');
-    document.title='Workshop Engine';
+    document.title='Dark Sky — Black Flag Engine';
   }
 
   function requestEngineFromProject(){
@@ -2790,7 +2935,7 @@
     if(!name){$('addProjectError').textContent='Enter a project name.';return;}
     const id=slugifyProjectName(name);
     if(projectById(id)){$('addProjectError').textContent='A project with that name already exists.';return;}
-    companies.push({id,projectCode:(prefix||name.slice(0,3)).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ',name,type,shellType:PROJECT_SHELL_TEMPLATES[type]?.customerShell||'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:['New','In Production','Ready for Pickup','Completed'],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+    companies.push({id,projectCode:(prefix||name.slice(0,3)).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ',name,type,shellType:PROJECT_SHELL_TEMPLATES[type]?.customerShell||'custom-product',tagline:type==='custom_flowers'?'Fresh flowers, thoughtfully arranged.':'',visibility:'engine_only',status:'future',projectTheme:type==='custom_flowers'?'flowers':id,orderPrefix:prefix||'PRJ',ai:{mode:'off',minConfidence:.9,requireScaleReference:true},customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},customerExperience:{photoRequired:true,previewApproval:true},workflow:[...platformDefaultWorkflow],publish:{status:'development'},payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
 permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
 customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},products:[]});
     if(type==='custom_flowers') PROJECT_SHELLS[id]='flowers'; await saveCompanies();
@@ -2910,10 +3055,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const box=$('fleetStats');if(!box)return;
     const orders=await getMergedOrders();
     const stats=companies.map(c=>{
-      const matched=orders.filter(o=>{
-        const n=(o.business?.name||"Ike's Wood Signs").toLowerCase();
-        return n===c.name.toLowerCase() || (c.id==='ikes-wood-signs' && !o.business?.name);
-      });
+      const matched=orders.filter(o=>String(o?.projectId||'')===String(c.id));
       const completed=matched.filter(o=>o.status==='Completed').length;
       const revenue=matched.reduce((s,o)=>s+(Number(o.price)||0),0);
       return {c,count:matched.length,completed,revenue};
@@ -2925,9 +3067,12 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     try{
       const saved=await getSetting('engineConfig');
       engineConfig={...DEFAULT_ENGINE_CONFIG,...(saved?.value||{})};
+      const workflow=await getSetting(PLATFORM_DEFAULT_WORKFLOW_KEY);
+      platformDefaultWorkflow=Array.isArray(workflow?.value)&&workflow.value.length>=2?workflow.value:[...DEFAULT_BUSINESS_CONFIG.orderStatuses];
     }catch(err){
       console.warn('Engine config unavailable; using defaults',err);
       engineConfig={...DEFAULT_ENGINE_CONFIG};
+      platformDefaultWorkflow=[...DEFAULT_BUSINESS_CONFIG.orderStatuses];
     }
   }
 
@@ -3110,7 +3255,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const box=$('pirateLogFeed'); if(!box)return;
     const rows=[];
     try{
-      const all=projects().flatMap(p=>(readActivity(p.id)||[]).map(x=>({...x,projectName:p.name})));
+      const activity=readActivity();
+      const all=projects().flatMap(p=>activity.filter(x=>x.projectId===p.id).map(x=>({...x,projectName:p.name})));
       all.sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));
       all.slice(0,3).forEach(x=>{
         const d=new Date(x.at||Date.now());
@@ -3129,7 +3275,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     let indexedCount=0;
     try{ indexedCount=(await getAll(STORE_ORDERS)).length; }catch(_){}
     const localCount=readLocalOrders().length;
-    const hasDraft=!!localStorage.getItem(DRAFT_KEY);
+    const hasDraft=Object.keys(localStorage).some(k=>k.startsWith(DRAFT_KEY+':'));
     let storageText='Available';
     try{
       const estimate=await navigator.storage?.estimate?.();
@@ -3142,7 +3288,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if($('engineOrderCount')) $('engineOrderCount').textContent=String(merged.length);
     if($('engineDraftStatus')) $('engineDraftStatus').textContent=hasDraft?'Recoverable':'Clear';
     if($('engineStorageStatus')) $('engineStorageStatus').textContent=storageText;
-    if($('engineEmailStatus')) $('engineEmailStatus').textContent=WEB3FORMS_ACCESS_KEY && !WEB3FORMS_ACCESS_KEY.includes('PASTE_')?'Configured':'Needs Setup';
+    if($('engineEmailStatus')) $('engineEmailStatus').textContent=LEGACY_IKE_WEB3FORMS_ACCESS_KEY && !LEGACY_IKE_WEB3FORMS_ACCESS_KEY.includes('PASTE_')?'Configured':'Needs Setup';
     if($('engineStorageDetail')) $('engineStorageDetail').textContent=`IndexedDB: ${indexedCount} order(s) • Local backup: ${localCount} order(s) • Merged view: ${merged.length} order(s).`;
     await renderEnginePerformance();
   }
@@ -3299,11 +3445,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     renderProjectCommand();
     renderCompanyCommand();
     renderCompanyFleet();
-    if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
-    if($('engineNameDisplay')) $('engineNameDisplay').textContent=engineConfig.engineName||'Workshop Engine';
+    if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Dark Sky';
+    if($('engineNameDisplay')) $('engineNameDisplay').textContent=engineConfig.engineName||'Dark Sky';
     $('engineIdentityEditView')?.classList.add('hidden');
     $('engineIdentitySavedView')?.classList.remove('hidden');
-    if($('engineStatusesSetting')) $('engineStatusesSetting').value=(businessConfig.orderStatuses||DEFAULT_BUSINESS_CONFIG.orderStatuses).join(', ');
+    if($('engineStatusesSetting')) $('engineStatusesSetting').value=(platformDefaultWorkflow||DEFAULT_BUSINESS_CONFIG.orderStatuses).join(', ');
     readEngineEconomics().then(e=>{
       if($('engineFixedCost30')) $('engineFixedCost30').value=String(e.fixed30||0);
       if($('engineCostPerOrder')) $('engineCostPerOrder').value=String(e.perOrder||0);
@@ -3324,26 +3470,22 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   async function loadFeatureSettings(){
-    try{
-      const custom=await getSetting('allowCustomColors');
-      const confirm=await getSetting('customerConfirmationEmail');
-      state.allowCustomColors=custom?.value !== false;
-      state.customerConfirmationEmail=confirm?.value === true;
-    }catch(err){
-      console.warn('Feature settings unavailable; using defaults',err);
-      state.allowCustomColors=true;
-      state.customerConfirmationEmail=false;
-    }
+    const p=activeProject();
+    state.allowCustomColors=p ? p?.customization?.allowCustomColors!==false : true;
+    state.customerConfirmationEmail=p ? !!p?.notifications?.customerConfirmationEmail : false;
   }
 
   async function saveFeatureSettings(){
+    const p=activeProject();
+    if(!p) return;
     state.allowCustomColors=!!$('allowCustomColorsToggle')?.checked;
     state.customerConfirmationEmail=!!$('customerEmailToggle')?.checked;
-    await setSetting('allowCustomColors',state.allowCustomColors);
-    await setSetting('customerConfirmationEmail',state.customerConfirmationEmail);
-    if(!state.allowCustomColors && state.fill==='Other'){
-      state.fill='Black';
-    }
+    p.customization=p.customization||{};
+    p.notifications=p.notifications||{};
+    p.customization.allowCustomColors=state.allowCustomColors;
+    p.notifications.customerConfirmationEmail=state.customerConfirmationEmail;
+    await saveCompanies();
+    if(!state.allowCustomColors && state.fill==='Other') state.fill='Black';
     updateUi();
   }
 
@@ -3615,6 +3757,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     if($('wordingInput')) $('wordingInput').value=state.wording;
     ['customerName','customerPhone','customerEmail'].forEach(id=>{if($(id))$(id).value='';});
     if($('approvalCheck')) $('approvalCheck').checked=false;
+    state.allowCustomColors=p?.customization?.allowCustomColors!==false;
+    state.customerConfirmationEmail=!!p?.notifications?.customerConfirmationEmail;
   }
 
   function setProjectText(id,text){const el=$(id);if(el&&text!==undefined)el.textContent=text;}
@@ -3690,7 +3834,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
   async function saveBusinessConfigFromAdmin(){
     const prices=$('priceChoicesSetting').value.split(',').map(v=>Number(v.trim())).filter(v=>Number.isFinite(v)&&v>0);
-    businessConfig={...businessConfig,businessName:$('businessNameSetting').value.trim()||"Ike's Wood Signs",orderPrefix:($('orderPrefixSetting').value||'IKE').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'IKE',thankYouHeadline:$('thankYouSetting').value.trim()||DEFAULT_BUSINESS_CONFIG.thankYouHeadline,prices:prices.length?prices:[45,55,65,90,135]};
+    const p=activeProject(),x=customerExperienceForProject(p);
+    const fallbackPrefix=String(p?.orderPrefix||x.orderPrefix||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'PRJ';
+    businessConfig={...businessConfig,businessName:$('businessNameSetting').value.trim()||x.businessName||p?.name||'Project',orderPrefix:($('orderPrefixSetting').value||fallbackPrefix).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||fallbackPrefix,thankYouHeadline:$('thankYouSetting').value.trim()||`THANK YOU FOR CHOOSING ${String(x.businessName||p?.name||'US').toUpperCase()}!`,prices:prices.length?prices:(Array.isArray(x.prices)&&x.prices.length?x.prices:[0])};
     await setSetting(projectBusinessConfigKey(),businessConfig);renderConfiguredPrices();applyBusinessCopy();$('businessSettingsStatus').textContent='Business settings saved.';
   }
   function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(projectDraftKey(),JSON.stringify({...state,currentOrder:null,approvedPreviewData:''}));}catch(_){}}
@@ -3748,9 +3894,17 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const retry=$('retrySubmitBtn');
     retry.classList.add('hidden');
     status.className='submit-status centered sending';
-    status.textContent='Sending your order to Ike…';
+    const p=activeProject();
+    const projectName=p?.branding?.businessName||p?.name||businessConfig.businessName||'this project';
+    status.textContent=`Sending your order to ${projectName}…`;
 
-    if(!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY.includes('PASTE_WEB3FORMS')){
+    if(String(order?.projectId||'')!==LEGACY_IKE_PROJECT_ID){
+      status.className='submit-status centered success';
+      status.textContent=`Order saved for ${projectName}. Automatic delivery is not configured for this project.`;
+      return true;
+    }
+
+    if(!LEGACY_IKE_WEB3FORMS_ACCESS_KEY || LEGACY_IKE_WEB3FORMS_ACCESS_KEY.includes('PASTE_WEB3FORMS')){
       status.className='submit-status centered error-text';
       status.textContent='Order saved on this iPad, but automatic email is not configured yet.';
       retry.classList.remove('hidden');
@@ -3758,7 +3912,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     }
 
     const payload={
-      access_key:WEB3FORMS_ACCESS_KEY,
+      access_key:LEGACY_IKE_WEB3FORMS_ACCESS_KEY,
       subject:`NEW IKE'S WOOD SIGN ORDER — ${order.id}`,
       from_name:"Ike's Wood Signs Online Orders",
       order_number:order.id,
@@ -3784,11 +3938,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       if(!response.ok || result.success!==true) throw new Error(result.message||`Submission failed (${response.status})`);
       order.previewAttachmentSent=attachmentSent;
       order.emailSentAt=new Date().toISOString();
-      order.emailRecipient=ORDER_EMAIL;
+      order.emailRecipient=LEGACY_IKE_ORDER_EMAIL;
       backupOrderLocally(order);
       try{ await put(STORE_ORDERS,order); }catch(err){ console.warn('Email status IndexedDB update failed',err); }
       status.className='submit-status centered success';
-      status.textContent=`Order received! Ike has your order details. Thank you again for choosing Ike's Wood Signs.`;
+      status.textContent=`Order received! ${projectName} has your order details. Thank you for your order.`;
       if($('customerEmailStatus')){
         if(state.customerConfirmationEmail){
           $('customerEmailStatus').classList.remove('hidden');
@@ -3806,7 +3960,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       backupOrderLocally(order);
       try{ await put(STORE_ORDERS,order); }catch(dbErr){ console.warn('Failed email state IndexedDB update failed',dbErr); }
       status.className='submit-status centered error-text';
-      status.textContent='Your order is saved on this iPad, but the automatic email did not send. Please show this screen to Ike before leaving.';
+      status.textContent=`Your order is saved on this iPad, but automatic delivery did not send. Please show this screen to ${projectName} before leaving.`;
       if($('customerEmailStatus')){
         $('customerEmailStatus').classList.add('hidden');
         $('customerEmailStatus').textContent='';
@@ -3817,19 +3971,40 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   function emailBody(order){
-    return `Ike's Wood Signs Order\n\nOrder: ${order.id}\nCustomer: ${order.customerName}\nCell: ${order.customerPhone}\nEmail: ${order.customerEmail}\nContact preference: ${order.contactPreference}\n\nWording: ${order.wording}\nPrice: $${order.price}\nOrientation: ${order.orientation}\nTop: ${order.topSide}\nStyle: ${order.font}\nFill: ${order.fill}\nStatus: ${order.status}\n\nThe full order, including the wood photo, remains stored on the trailer iPad.`;
+    const p=projectById(order?.projectId)||activeProject();
+    const name=p?.branding?.businessName||p?.name||order?.business?.name||'Project';
+    return `${name} Order
+
+Order: ${order.id}
+Customer: ${order.customerName}
+Cell: ${order.customerPhone}
+Email: ${order.customerEmail}
+Contact preference: ${order.contactPreference}
+
+Wording: ${order.wording}
+Price: $${order.price}
+Orientation: ${order.orientation||''}
+Top: ${order.topSide||''}
+Style: ${order.font||''}
+Fill: ${order.fill||''}
+Status: ${order.status}
+
+The full order and approved media remain stored with this project.`;
   }
 
   async function prepareEmail(order){
-    const setting=await getSetting('adminEmails');
-    const recipients=setting?.value?.trim()||ORDER_EMAIL;
-    const subject=encodeURIComponent(`Ike's Wood Signs ${order.id} - ${order.wording}`);
+    const p=projectById(order?.projectId)||activeProject();
+    const cfg=p ? await loadProjectAdminSettings(p.id) : {};
+    const recipients=String(cfg?.email||'').trim() || (p?.id===LEGACY_IKE_PROJECT_ID?LEGACY_IKE_ORDER_EMAIL:'');
+    if(!recipients){ alert('No project admin email is configured.'); return; }
+    const name=p?.branding?.businessName||p?.name||order?.business?.name||'Project';
+    const subject=encodeURIComponent(`${name} ${order.id} - ${order.wording||'Order'}`);
     const body=encodeURIComponent(emailBody(order));
     location.href=`mailto:${encodeURIComponent(recipients).replace(/%2C/g,',')}?subject=${subject}&body=${body}`;
   }
 
   async function updateOrderStatus(id,status){
-    const orders=await getMergedOrders(),o=orders.find(x=>x.id===id);if(!o)return;
+    const orders=await getMergedOrders(),o=orders.find(x=>x.id===id&&(!activeProjectId||String(x.projectId||'')===String(activeProjectId)));if(!o)return;
     o.status=status;o.updatedAt=new Date().toISOString();if(status==='Completed'&&!o.completedAt)o.completedAt=o.updatedAt;backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}
     if(status==='Completed') postOrderToLedger(o);
     await renderAdmin();
@@ -3837,7 +4012,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   async function renderAdmin(){
-    const orders=(await getMergedOrders()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    const allOrders=await getMergedOrders();
+    const orders=(activeProjectId?projectScopedOrders(allOrders,activeProjectId):allOrders).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
     const list=$('orderList');
     if(!orders.length){list.innerHTML='<div class="empty">No saved orders yet.</div>';return;}
     list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div><div class="summary-row"><span>Letter finish</span><strong>${escapeHtml(o.fill)}${o.fill==='Other'&&o.customColor?` • <span class="color-dot" style="background:${escapeHtml(o.customColor)}"></span> ${escapeHtml(o.customColor.toUpperCase())}`:''}</strong></div>${o.approvedPreviewData?`<div class="admin-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${o.approvedPreviewData}" alt="Approved sign preview for ${escapeHtml(o.id)}" class="thumb approved-thumb">`:o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-status-control"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${o.status===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div><div class="order-actions"><span class="helper">${o.emailSentAt?'Automatic email sent':'Saved locally'}</span></div></article>`).join('');
@@ -3845,7 +4021,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
 
-  function orderProjectId(o){return o.projectId||'ikes-wood-signs'}
+  function orderProjectId(o){return String(o?.projectId||'')}
   function statusBadge(o){
     if(o.status==='Ready for Pickup') return '<span class="order-check ready-check" title="Ready for Pickup">✓</span>';
     if(o.status==='Completed') return '<span class="order-check completed-check" title="Completed">✓</span>';
@@ -3901,13 +4077,13 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   async function exportBackup(){
-    const data={version:1,exportedAt:new Date().toISOString(),orders:await getMergedOrders(),settings:await getAll(STORE_SETTINGS)};
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ikes-wood-signs-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    const data={version:2,platform:'Dark Sky / Black Flag',schemaVersion:3,exportedAt:new Date().toISOString(),orders:await getMergedOrders(),settings:await getAll(STORE_SETTINGS)};
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`dark-sky-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
 
   async function restoreBackup(file){
     const text=await file.text();const data=JSON.parse(text);if(!Array.isArray(data.orders)) throw new Error('Invalid backup');
-    for(const o of data.orders) await put(STORE_ORDERS,o);for(const s of (data.settings||[])) await put(STORE_SETTINGS,s);await renderAdmin();
+    for(const raw of data.orders){const o=normalizeOrderIsolation(raw,{legacyImport:!raw?.projectId});await put(STORE_ORDERS,o);}for(const s of (data.settings||[])) await put(STORE_SETTINGS,s);await renderAdmin();
   }
 
   function cameraSupported(){
@@ -4059,7 +4235,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     $('pinGate').classList.remove('hidden');
     document.body.classList.add('modal-open');
     setTimeout(()=>{
-      if(pinLocked('admin')) showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');
+      if(pinLocked(adminSecurityKey())) showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');
       else $('adminPinInput').focus();
     },50);
   }
@@ -4130,7 +4306,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   function approvedProjectOrders(rows,p){
     const requiresPhoto=!!p?.customerExperience?.photoRequired;
     return (rows||[]).filter(o=>{
-      const sameProject=(o.projectId||'ikes-wood-signs')===p.id;
+      const sameProject=String(o.projectId||'')===String(p.id);
       const approved=o.approved===true;
       // For photo-required projects the generated approved preview is the proof
       // that the required customer photo made it through approval.
@@ -4296,7 +4472,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
         $('adminCoreSettingsStatus').textContent='New PINs must match and be at least 4 digits.';
         return;
       }
-      await putSetting('adminPin',next);
+      await setAdminPin(next,p.id);
     }
 
     await putSetting(adminProjectSettingsKey(p.id),{
@@ -4589,7 +4765,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     const rows=[];
 
     for(const p of projects()){
-      const projectOrders=allOrders.filter(o=>(o.projectId||'ikes-wood-signs')===p.id);
+      const projectOrders=allOrders.filter(o=>String(o.projectId||'')===String(p.id));
       const completed=projectOrders.filter(o=>o.status==='Completed').length;
       const revenue=projectOrders.reduce((sum,o)=>sum+(Number(o.price)||0),0);
 
@@ -4819,7 +4995,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
   async function closeOwnerPortal(){
     const session=ownerSession();
-    const lastProjectId=session?.projectId||'ikes-wood-signs';
+    const lastProjectId=session?.projectId||activeProjectId||'';
     $('ownerPortal')?.classList.add('hidden');
     clearOwnerSession();
     document.body.classList.add('owner-portal-open');
@@ -4828,10 +5004,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   }
 
   async function ownerPortalMetrics(p){
-    const orders=(await getMergedOrders()).filter(o=>{
-      const pid=o.projectId || ((o.business?.name||"Ike's Wood Signs")==="Ike's Wood Signs"?'ikes-wood-signs':'');
-      return pid===p.id;
-    });
+    const orders=(await getMergedOrders()).filter(o=>String(o?.projectId||'')===String(p.id));
     const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
     const customers=Object.values(readCustomerDirectory()[p.id]||{});
     return {orders,deployments,customers};
@@ -4851,10 +5024,10 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
         orderPrefix:value.orderPrefix||p.orderPrefix||p.projectCode||'PRJ',
         thankYouHeadline:value.thankYouHeadline||`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,
         prices:Array.isArray(value.prices)&&value.prices.length?value.prices:(Array.isArray(defaults.prices)?defaults.prices:[0]),
-        orderStatuses:Array.isArray(value.orderStatuses)&&value.orderStatuses.length?value.orderStatuses:(Array.isArray(p.workflow)?p.workflow:['New','In Production','Ready for Pickup','Completed'])
+        orderStatuses:Array.isArray(value.orderStatuses)&&value.orderStatuses.length?value.orderStatuses:(Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow])
       };
     }catch(_){
-      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:['New','In Production','Ready for Pickup','Completed']};
+      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow]};
     }
   }
 
@@ -5251,11 +5424,11 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
 
     try{
       for(const o of await getMergedOrders()){
-        const pid=o.projectId||((o.business?.name||"Ike's Wood Signs")==="Ike's Wood Signs"?'ikes-wood-signs':'');
+        const pid=String(o?.projectId||'');
         if(!pid)issues.push({level:'critical',code:'UNSCOPED_ORDER',detail:o.id||''});
         else if(!valid.has(pid))issues.push({level:'critical',code:'ORDER_PROJECT_UNKNOWN',projectId:pid,detail:o.id||''});
         else{
-          const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...o,projectId:pid},pid,{legacyIke:true});
+          const scoped=window.BlackFlagV3Core?.assertProjectScope?.({...o,projectId:pid},pid);
           if(scoped&&!scoped.ok)issues.push({level:'critical',code:'ORDER_SCOPE_MISMATCH',projectId:pid,detail:o.id||''});
         }
       }
@@ -5547,7 +5720,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       $('adminPinInput').value='';
       $('pinGateError').textContent='';
       $('pinGate').classList.remove('hidden');
-      setTimeout(()=>{if(pinLocked('admin'))showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
+      setTimeout(()=>{if(pinLocked(adminSecurityKey()))showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
     });
     $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
     const closeAdminPreviewLightbox=()=>{
@@ -5647,7 +5820,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       requestEngineFromProject();
     },true);
     $('editEngineNameBtn')?.addEventListener('click',()=>{
-      if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
+      if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Dark Sky';
       $('engineIdentityStatus').textContent='';
       $('engineIdentitySavedView')?.classList.add('hidden');
       $('engineIdentityEditView')?.classList.remove('hidden');
@@ -5655,14 +5828,14 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
     });
 
     $('cancelEngineNameEditBtn')?.addEventListener('click',()=>{
-      if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Workshop Engine';
+      if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Dark Sky';
       $('engineIdentityStatus').textContent='';
       $('engineIdentityEditView')?.classList.add('hidden');
       $('engineIdentitySavedView')?.classList.remove('hidden');
     });
 
     $('saveEngineIdentityBtn')?.addEventListener('click',async()=>{
-      const name=$('engineNameSetting')?.value.trim()||'Workshop Engine';
+      const name=$('engineNameSetting')?.value.trim()||'Dark Sky';
       engineConfig={...engineConfig,engineName:name};
       await saveEngineConfig();
       if($('engineNameDisplay')) $('engineNameDisplay').textContent=name;
@@ -5682,10 +5855,9 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
         $('engineWorkflowStatus').textContent='Use at least two workflow stages.';
         return;
       }
-      businessConfig.orderStatuses=statuses.slice(0,12);
-      await setSetting('businessConfig',businessConfig);
-      $('engineWorkflowStatus').textContent='Workflow saved.';
-      await renderAdmin();
+      platformDefaultWorkflow=statuses.slice(0,12);
+      await setSetting(PLATFORM_DEFAULT_WORKFLOW_KEY,platformDefaultWorkflow);
+      $('engineWorkflowStatus').textContent='Default workflow saved for newly commissioned projects.';
     });
 
     $('engineRefreshDiagnosticsBtn').addEventListener('click',refreshEngineDiagnostics);
@@ -5716,8 +5888,8 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
         return;
       }
       if(!confirm('Final confirmation: reset Engine and project settings to defaults? Saved orders will remain.')) return;
-      const stores=tx(STORE_SETTINGS,'readwrite');
-      try{ stores.clear(); }catch(_){}
+      try{ await reqToPromise(tx(STORE_SETTINGS,'readwrite').clear()); }catch(_){}
+      await setSetting('platformMigration:v3.7',{complete:true,at:new Date().toISOString(),resetBaseline:true});
       businessConfig={...DEFAULT_BUSINESS_CONFIG};
       engineConfig={...DEFAULT_ENGINE_CONFIG};
       companies=structuredClone(DEFAULT_COMPANIES);
@@ -5734,17 +5906,17 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
       await refreshEngineDiagnostics();
     });
     $('unlockAdminBtn').addEventListener('click',async()=>{
-      if(pinLocked('admin')){showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');return;}
+      if(pinLocked(adminSecurityKey())){showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');return;}
       const entered=$('adminPinInput').value.trim();
       const expected=await getAdminPin();
       if(entered!==expected){
-        const row=recordBadPin('admin');
+        const row=recordBadPin(adminSecurityKey());
         $('pinGateError').textContent='Incorrect PIN.';
-        if(row.lockedUntil>Date.now()) showPinLock('admin','adminLockTimer','adminPinInput','unlockAdminBtn');
+        if(row.lockedUntil>Date.now()) showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');
         else $('adminPinInput').select();
         return;
       }
-      clearPinFailures('admin');
+      clearPinFailures(adminSecurityKey());
       $('pinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
       const target=window.__pendingProtectedPage||'settings';
@@ -5763,7 +5935,7 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
         $('pinSettingsError').textContent='The two PIN entries do not match.';
         return;
       }
-      await setSetting('adminPin',p);
+      await setAdminPin(p,activeProjectId);
       $('pinSettingsError').textContent='PIN updated.';
       $('newAdminPin').value='';
       $('confirmAdminPin').value='';
@@ -5783,13 +5955,15 @@ customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:fa
   async function init(){
     await loadEngineAppearance();
     db=await openDb();
+    await migrateLegacyPlatformStorage();
     await loadFeatureSettings();
     await loadBusinessConfig();
     await loadCompanies();
+    await migrateLegacyProjectSettings();
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.ready',detail:`${companies.length} projects • schema 3`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.7.ready',detail:`${companies.length} projects • schema 3 • explicit project boundaries`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
