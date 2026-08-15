@@ -1,28 +1,22 @@
-# Workshop Engine v2.9.79 — Pirate Mode Asset-Match Pass
+# Black Flag Engine — Dark Sky
 
-This release corrects the v2.9.78 problem: Pirate Mode is no longer merely a red/brass recolor of Business Mode.
+**Current release:** v3.6.2 — Spring Cleaning
 
-## Dedicated Pirate composition
-Pirate Mode now has its own structural presentation modeled much more directly on the approved benchmark:
-- skull crest + PIRATE MODE / BLACK FLAG COMMAND header;
-- dedicated Pirate Settings, System Override, and Exit Pirate Mode controls;
-- red/gold telemetry presentation using the same live Engine data;
-- a separate Engine Systems / Command Authority deck with six functional jump controls;
-- Project Armada treatment with active ribbons, skull watermarks, brass/red controls, and a Raise Another Flag treatment;
-- bottom Pirate Log / Active Session / System Integrity / Black Flag Engine command bar;
-- project Control Center and project tabs use the benchmark art more prominently.
+Dark Sky is the Black Flag multi-project business platform. The Engine provides shared command, project commissioning, owner/device boundaries, project-scoped operations, telemetry, recovery, and Captain-level governance while preserving each business project's independent identity.
 
-## Function safety
-The visual structure changed, not the underlying project/business data architecture.
-System Override opens protected Engine controls rather than inventing destructive powers.
-Exit Pirate Mode returns to Business Mode.
-Project Control, Engine configuration, recovery, telemetry and Captain access buttons jump to the real existing functions.
+## Deployment
 
-## Legacy containment
-The new Pirate shell sits above the old presentation and is the authoritative visible Pirate structure.
-Business Mode continues to use the modern ship Engine Room from v2.9.76/v2.9.77.
+This package is intentionally deployable as a small static web application. Upload the contents of this folder together; do not separate `index.html`, the JavaScript files, `styles.css`, `manifest.webmanifest`, `sw.js`, or the referenced `assets/` directory.
 
-## Assets
-No new assets were added in this pass.
-`engine_room_pirate_benchmark_v2978.png` is used much more heavily throughout Pirate Mode.
-All assets were preserved byte-for-byte.
+For GitHub Pages, publish the folder contents at the site root used by the project. After replacing an older build, allow the service worker to activate and refresh once if the browser was already open.
+
+## Permanent boundaries
+
+- Black Flag owns platform chrome and Engine command surfaces.
+- Project customer experiences remain project branded.
+- The small Black Flag mark in the lower-right of project shells is the shared return path to the Dark Sky Engine gate.
+- Project data and authority are project scoped by default.
+- Captain authority remains separate from ordinary project and Engine administration.
+- Browser-side controls are not a substitute for server-backed authentication when external production access is introduced.
+
+See `ARCHITECTURE.md` for standing structural rules and `CHANGELOG.md` for the release narrative.

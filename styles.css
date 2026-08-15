@@ -8566,3 +8566,6 @@ body.project-mode #returnToEngineBtn.black-flag-project-engine-return:hover,
 body.project-mode #returnToEngineBtn.black-flag-project-engine-return:focus-visible{
   opacity:1!important;
 }
+
+/* v3.6.2 — SPRING CLEANING
+   Documentation/cache/package maintenance release. No new visual layer required. */

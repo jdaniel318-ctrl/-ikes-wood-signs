@@ -1,10 +1,17 @@
 {
-  "name": "Black Flag Engine v3.0",
+  "name": "Black Flag Engine — Dark Sky",
   "short_name": "Black Flag",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f4d238",
   "theme_color": "#f4d238",
-  "icons": [],
-  "description": "Multi-project business platform engine with isolated project operations, owner access, deployment control, telemetry and Captain command."
+  "icons": [
+    {
+      "src": "assets/black_flag_platform_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command."
 }

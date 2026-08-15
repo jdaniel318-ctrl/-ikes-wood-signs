@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f4d238" />
   <title>Engine Room — Black Flag Harbor</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css?v=3.6.1" />
+  <link rel="stylesheet" href="styles.css?v=3.6.2" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn, body.boot-locked #addProjectGate {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -130,7 +130,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v3.0 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.6.2 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -528,7 +528,7 @@
 <section class="mugs-screen" data-mugs-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="mugsCustomerName">Name</label><input id="mugsCustomerName" class="mugs-input" autocomplete="name"><label for="mugsCustomerPhone">Phone</label><input id="mugsCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="mugsCustomerEmail">Email</label><input id="mugsCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="preview">← BACK</button><button id="mugsCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="review"><div class="mugs-step-kicker">FINAL REVIEW</div><h2>Approve Your Mug Order</h2><div id="mugsReviewSummary" class="mugs-review-summary"></div><label class="mugs-approval"><input id="mugsApprovalCheck" type="checkbox"><span>I approve the mug photo, wording, and preview shown above.</span></label><div class="mugs-actions"><button class="mugs-secondary" data-mugs-back="customer">← BACK</button><button id="mugsSubmitOrder" class="mugs-primary" type="button" disabled>PLACE TEST ORDER →</button></div></section>
 <section class="mugs-screen" data-mugs-screen="done"><div class="mugs-done"><div class="mugs-done-mark">✓</div><div class="mugs-step-kicker">ORDER RECEIVED</div><h2>Your Mugs After Dark order is in the queue.</h2><p>Test order <strong id="mugsDoneOrderId"></strong> has been saved to the Mugs After Dark project only.</p><img id="mugsDonePreview" class="mugs-done-preview" alt="Approved mug preview"><button id="mugsNewOrder" class="mugs-primary" type="button">START ANOTHER MUG</button></div></section>
-</main><footer class="mugs-shell-footer"><div class="project-footer-brand"><img id="mugsFooterGraphicImg" class="project-slot-image footer-slot-image hidden" alt="Mugs After Dark footer graphic"><strong>MUGS AFTER DARK</strong></div><span>Independent project shell • Powered by Black Flag</span></footer></section>
+</main><footer class="mugs-shell-footer"><div class="project-footer-brand"><img id="mugsFooterGraphicImg" class="project-slot-image footer-slot-image hidden" alt="Mugs After Dark footer graphic"><strong>MUGS AFTER DARK</strong></div></footer></section>
 
     <section id="flowersCustomerShell" class="mugs-shell hidden" aria-label="Becca's Bloom Shop customer ordering">
 <header class="mugs-shell-header"><div class="mugs-shell-brand"><div class="mugs-shell-mark-wrap"><img id="flowersProjectLogoImg" class="project-slot-image project-logo-image hidden" alt="Flower project logo"><div id="flowersHeaderMark" class="mugs-shell-mark">B</div></div><div><div class="mugs-shell-title">BECCA'S BLOOM SHOP</div><div class="mugs-shell-subtitle">Fresh flowers, thoughtfully arranged.</div></div></div><button id="flowersAdminBtn" class="mugs-admin-btn" aria-label="Open project admin">⚙︎</button></header>
@@ -541,7 +541,7 @@
 <section class="mugs-screen" data-flowers-screen="customer"><div class="mugs-step-kicker">CONTACT</div><h2>Your Contact Information</h2><label for="flowersCustomerName">Name</label><input id="flowersCustomerName" class="mugs-input" autocomplete="name"><label for="flowersCustomerPhone">Phone</label><input id="flowersCustomerPhone" class="mugs-input" type="tel" autocomplete="tel"><label for="flowersCustomerEmail">Email</label><input id="flowersCustomerEmail" class="mugs-input" type="email" autocomplete="email"><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="preview">← BACK</button><button id="flowersCustomerNext" class="mugs-primary" type="button">REVIEW ORDER →</button></div></section>
 <section class="mugs-screen" data-flowers-screen="review"><div class="mugs-step-kicker">FINAL REVIEW</div><h2>Approve Your Flower Order</h2><div id="flowersReviewSummary" class="mugs-review-summary"></div><label class="mugs-approval"><input id="flowersApprovalCheck" type="checkbox"><span>I approve the flower arrangement photo, wording, and preview shown above.</span></label><div class="mugs-actions"><button class="mugs-secondary" data-flowers-back="customer">← BACK</button><button id="flowersSubmitOrder" class="mugs-primary" type="button" disabled>PLACE TEST ORDER →</button></div></section>
 <section class="mugs-screen" data-flowers-screen="done"><div class="mugs-done"><div class="mugs-done-mark">✓</div><div class="mugs-step-kicker">ORDER RECEIVED</div><h2>Your Becca's Bloom Shop order is in the queue.</h2><p>Test order <strong id="flowersDoneOrderId"></strong> has been saved to the Becca's Bloom Shop project only.</p><img id="flowersDonePreview" class="mugs-done-preview" alt="Approved mug preview"><button id="flowersNewOrder" class="mugs-primary" type="button">START ANOTHER FLOWER ORDER</button></div></section>
-</main><footer class="mugs-shell-footer"><div class="project-footer-brand"><img id="flowersFooterGraphicImg" class="project-slot-image footer-slot-image hidden" alt="Becca's Bloom Shop footer graphic"><strong>BECCA'S BLOOM SHOP</strong></div><span>Independent flower project shell • Powered by Black Flag</span></footer></section>
+</main><footer class="mugs-shell-footer"><div class="project-footer-brand"><img id="flowersFooterGraphicImg" class="project-slot-image footer-slot-image hidden" alt="Becca's Bloom Shop footer graphic"><strong>BECCA'S BLOOM SHOP</strong></div></footer></section>
 <section id="adminPanel" class="project-admin-page hidden">
       <div class="project-admin-brandbar">
         <div class="project-admin-mini-brand">
@@ -1060,7 +1060,7 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.0.0</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.6.2</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
@@ -1088,7 +1088,7 @@
 
   <script src="platform_core.js?v=3.0.0"></script>
   <script src="platform_identity.js?v=3.0.0"></script>
-  <script src="app.js?v=3.6.1"></script>
+  <script src="app.js?v=3.6.2"></script>
 
     <div id="addProjectGate" class="add-project-gate hidden" role="dialog" aria-modal="true">
       <div class="add-project-card">
@@ -1114,7 +1114,7 @@
 
 
 
-  <script src="captain.js?v=3.6.1"></script>
+  <script src="captain.js?v=3.6.2"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

@@ -1,22 +1,18 @@
-const CACHE='black-flag-engine-v3-6-platform-brand-rebuild';
+const CACHE='black-flag-engine-v3-6-2-spring-cleaning';
 const ASSETS=[
-  './assets/black_flag_platform_icon.png',
-  './assets/black_flag_platform_mark.png',
-  './assets/black_flag_brand_board_v1.png',
-  './assets/black_flag_mark_dimensional.png',
-  './assets/black_flag_mark_clean.png',
-  './assets/black_flag_wordmark_lockup.png',
   './',
   './index.html',
-  './styles.css?v=3.6.1',
+  './styles.css?v=3.6.2',
   './platform_core.js?v=3.0.0',
   './platform_identity.js?v=3.0.0',
-  './app.js?v=3.6.1',
-  './captain.js?v=3.6.1',
+  './app.js?v=3.6.2',
+  './captain.js?v=3.6.2',
   './manifest.webmanifest',
+  './assets/black_flag_platform_icon.png',
+  './assets/black_flag_mark_dimensional.png',
+  './assets/black_flag_mark_clean.png',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',
-  './assets/engine_room_benchmark_v2955.jpg',
   './assets/engine_room_modern_benchmark_v2976.png',
   './assets/engine_room_pirate_benchmark_v2978.png'
 ];
@@ -34,8 +30,11 @@ self.addEventListener('activate',event=>{
   event.waitUntil(
     caches.keys()
       .then(keys=>Promise.all(
-        keys.filter(k=>(k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')) && k!==CACHE)
-            .map(k=>caches.delete(k))
+        keys.filter(k=>(
+          k.startsWith('ikes-wood-signs-') ||
+          k.startsWith('workshop-engine-') ||
+          k.startsWith('black-flag-engine-')
+        ) && k!==CACHE).map(k=>caches.delete(k))
       ))
       .then(()=>self.clients.claim())
   );
