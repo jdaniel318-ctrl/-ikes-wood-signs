@@ -1,27 +1,41 @@
-# Dark Sky / Black Flag Engine
+# Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.8.21 — Deployment Voyage Refit
+**Current release:** v3.8.26 — Guided Deployment Launch
 
-This release simplifies the Deployment Shipwright around one guided voyage: **Configure → Save → Sea Trial → Test → Active**. The outpost registry stays visible, the setup area becomes the primary work surface, customer preview and the next required action share one column, and technical manifest details are collapsed under Advanced.
+Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
-## What changed
-- Rebuilt the Deployment Shipwright for iPad-first scanning and larger touch targets.
-- Added a five-step outpost progress rail.
-- Added one clear **Next Step** card that changes with deployment state.
-- Draft attract screens are explicitly **Preview Only** instead of pretending to be live controls.
-- Sea Trial unlocks **Open Test Outpost**.
-- Projects with a real customer shell can test the actual customer experience; generic projects get an honest test dock explaining that an operating model/customer shell is still required.
-- Activation is blocked for a generic project until a customer operating model exists.
-- Readiness and health now use the Fleet Visual System instead of light filler cards.
-- Technical manifest details are collapsed under **Advanced → Manifest Details**.
-- The Outpost Registry remains project-sealed and scrollable as more outposts are added.
+## Current release focus
+The Deployment Shipwright now guides operators through one plain-language voyage:
 
-## Current course
-Continue Sea Trials on Andie’s Lemonade Stand and the existing vessels. Once deployment journeys are intuitive and reliable, proceed into **v3.9 — Operating Models** so generic projects can inherit real customer experiences from reusable capabilities rather than hard-coded shells.
+**Configure → Save → Sea Trial → Test → Active**
 
-## Security boundary
-This remains a browser-local prototype. Project IDs, deployment sealing, authorization checks, persistence verification, and audit records are meaningful prototype controls, but unrelated production tenants still require server-side identity, authorization, durable storage controls, secret management, and revocation.
+- The current step and required next action are shown prominently.
+- Basic outpost settings stay visible; session/device/capability controls are collapsed under **Advanced Outpost Settings**.
+- Readiness, health, backward lifecycle controls, and diagnostics are collapsed under **Operational Details**.
+- Manifest IDs and technical isolation records remain under **Advanced → Manifest Details**.
+- The universal customer shell remains isolated from legacy Ike customer chrome.
+- A universal project needs a customer-ready offer and a completed Sea Trial test order before activation.
 
+## Canonical repository files
+The Captain upload package intentionally stays lean. Runtime capability is in the code, not in a pile of release-audit documents.
 
-### Launch readiness
-Newly commissioned projects use the universal customer shell. If a project reaches Sea Trial without a customer-ready offer, the Deployment Shipwright now asks for the first launch offer directly instead of presenting a dead activation path. A real Sea Trial order must be completed before activation.
+- `index.html`
+- `styles.css`
+- `app.js`
+- `platform_core.js`
+- `platform_identity.js`
+- `captain.js`
+- `sw.js`
+- `manifest.webmanifest`
+- `README.md`
+- `CHANGELOG.md`
+- `ARCHITECTURE.md`
+- `assets/` referenced by the runtime
+
+Historical build audits are development records and do not need to remain in the live GitHub root once their durable decisions are consolidated into the canonical docs above.
+
+## Platform doctrine
+- **Names can change. Identity cannot.** Immutable Project IDs own project data and deployment boundaries.
+- **Data isolation and presentation isolation are both required.**
+- The Engine is the first ship, not the fleet. Captain's Quarters remains the future shipyard for separate products that reuse proven Dark Sky primitives without inheriting Engine-specific baggage.
+- The current GitHub Pages/browser build remains a prototype boundary; unrelated production tenants ultimately require server-side identity, authorization, secret management, and durable storage controls.
