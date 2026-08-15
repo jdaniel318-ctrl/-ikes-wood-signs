@@ -1,6 +1,6 @@
 # Dark Sky Platform Blueprint
 
-**Revision:** v3.7.7  
+**Revision:** v3.8.0  
 **Purpose:** Canonical architecture for the Black Flag / Dark Sky platform.
 
 ## 1. Command hierarchy
@@ -145,3 +145,9 @@ They are test cases for reusable platform behavior and must never leak branding 
 5. Deployment state changes follow an explicit transition graph instead of arbitrary string assignment.
 6. Critical integrity defects block project collection persistence and create audit evidence.
 7. Browser-local enforcement is a development boundary, not a substitute for server-enforced tenant authorization.
+
+
+## Command & Visibility doctrine
+Project Control is the operating cockpit for one business. Its Overview must prefer verified business signals over configuration density. The first screen should show current state, attention items, recent activity, performance, and direct routes to deeper operating modules.
+
+Analytics may only present telemetry that Dark Sky actually records. Missing visitor, conversion, campaign, or engagement telemetry must be labeled as uninstrumented until a real deployment signal pipeline exists.

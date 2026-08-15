@@ -1,3 +1,13 @@
+## v3.8.0 — Command & Visibility
+- Rebuilt Project Control Overview into a project-scoped business cockpit.
+- Added grouped command navigation and direct module shortcuts.
+- Added verified 30-day revenue/order signals, workload, customer, deployment, and ledger indicators.
+- Added rule-based attention queue, latest-order pulse, recent changes, and operating identity.
+- Added project Analytics with six-month order volume, status mix, repeat-customer signal, and average recorded order value.
+- Explicitly marks visitor/conversion/campaign telemetry as unavailable until real deployment telemetry exists.
+- Preserved v3.7.7 authorization, isolation, and deployment-integrity gates.
+- Advanced cache and release identity to v3.8.0.
+
 ## v3.7.7 — Hull Integrity
 - Added fail-closed authorization gates around Project Control mutations and Engine fleet-level project writes.
 - Added active owner-session + capability checks around owner order, product, pricing, branding, deployment, staff, notification, and credential mutations.

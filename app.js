@@ -1354,13 +1354,213 @@
   }
   window.blackFlagDeploymentFleetSnapshot=deploymentSnapshot;
 
+  function projectCustomerRows(projectId){
+    const directory=readCustomerDirectory();
+    const rows=directory?.[projectId]||{};
+    return Object.values(rows).filter(x=>String(x?.projectId||'')===String(projectId||''));
+  }
+
+  function projectControlMoney(value){
+    return '$'+Number(value||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+
+  function projectControlTrend(current,previous,{money=false}={}){
+    const c=Number(current||0), p=Number(previous||0);
+    if(!p && !c) return {label:'No activity yet',tone:'flat'};
+    if(!p && c) return {label:'New activity',tone:'up'};
+    const pct=((c-p)/Math.abs(p))*100;
+    const prefix=pct>0?'+':'';
+    return {label:`${prefix}${pct.toFixed(0)}% vs prior 30 days`,tone:pct>0?'up':pct<0?'down':'flat'};
+  }
+
+  function projectControlTime(value){
+    if(!value)return '—';
+    const d=new Date(value);
+    if(Number.isNaN(d.getTime()))return '—';
+    return d.toLocaleString();
+  }
+
+  function projectControlAgeHours(value){
+    const t=new Date(value||0).getTime();
+    return Number.isFinite(t)&&t>0 ? (Date.now()-t)/3600000 : 0;
+  }
+
+  async function projectControlSnapshot(p){
+    const all=await getMergedOrders();
+    const orders=approvedProjectOrders(all,p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    const now=Date.now(), d30=30*86400000, d60=60*86400000;
+    const recent=orders.filter(o=>{const t=new Date(o.createdAt||0).getTime();return t>=now-d30;});
+    const prior=orders.filter(o=>{const t=new Date(o.createdAt||0).getTime();return t>=now-d60&&t<now-d30;});
+    const revenue30=recent.reduce((s,o)=>s+(Number(o.price)||0),0);
+    const revenuePrior=prior.reduce((s,o)=>s+(Number(o.price)||0),0);
+    const open=orders.filter(o=>canonicalOrderStatus(o.status)!=='Completed');
+    const newOrders=orders.filter(o=>canonicalOrderStatus(o.status)==='New');
+    const completed=orders.filter(o=>canonicalOrderStatus(o.status)==='Completed');
+    const customers=projectCustomerRows(p.id).sort((a,b)=>String(b.lastOrderDate||'').localeCompare(String(a.lastOrderDate||'')));
+    const repeatCustomers=customers.filter(c=>Number(c.orderCount||0)>1);
+    const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
+    const activeDeployments=deployments.filter(d=>d.state==='deployed');
+    const activity=readActivity().filter(x=>x.projectId===p.id).slice(0,10);
+    const ledger=projectLedger(p.id);
+    const attention=[];
+
+    newOrders.filter(o=>projectControlAgeHours(o.createdAt)>=48).slice(0,3).forEach(o=>attention.push({
+      level:'watch',title:`New order waiting ${Math.floor(projectControlAgeHours(o.createdAt)/24)}d`,detail:o.id,tab:'orders'
+    }));
+    deployments.forEach(d=>{
+      const readiness=deploymentReadiness(d);
+      if(d.state==='sea_trial') attention.push({level:'info',title:'Deployment in Sea Trial',detail:d.name||d.id,tab:'deployment'});
+      if(d.state==='deployed'&&readiness.score<100) attention.push({level:'watch',title:'Deployment readiness needs attention',detail:`${d.name||d.id} • ${readiness.score}%`,tab:'deployment'});
+      if(d.state==='paused') attention.push({level:'info',title:'Deployment paused',detail:d.name||d.id,tab:'deployment'});
+    });
+    const ownerState=ensureProjectGovernance(p).ownerAccess.status;
+    if(p.ownerAccess?.enabled && ownerState!=='active') attention.push({level:'info',title:'Owner access not active',detail:p.ownerAccess?.ownerEmail||'Invitation not completed',tab:'owner'});
+    if(!(p.products||[]).length) attention.push({level:'setup',title:'No products or services configured',detail:'Add the first offer before launch.',tab:'products'});
+
+    const status=attention.some(x=>x.level==='watch')?'WATCH':(p.publish?.status==='live'?'OPERATING':'SETUP');
+    return {
+      orders,recent,prior,revenue30,revenuePrior,open,newOrders,completed,
+      customers,repeatCustomers,deployments,activeDeployments,activity,ledger,attention,status,
+      orderTrend:projectControlTrend(recent.length,prior.length),
+      revenueTrend:projectControlTrend(revenue30,revenuePrior,{money:true})
+    };
+  }
+
+  function projectControlKpi(label,value,meta,id){
+    return `<article class="pc-kpi-card"><span>${escapeHtml(label)}</span><strong${id?` id="${id}"`:''}>${escapeHtml(String(value))}</strong><small>${escapeHtml(meta||'')}</small></article>`;
+  }
+
+  async function renderProjectControlOverview(p){
+    const box=$('projectOverviewLive');
+    if(!box || engineActiveProjectId!==p.id)return;
+    const s=await projectControlSnapshot(p);
+    if(engineActiveProjectId!==p.id)return;
+    const revenueTrend=s.revenueTrend, orderTrend=s.orderTrend;
+    const attention=s.attention.length?s.attention.slice(0,6).map(x=>`<button class="pc-attention-row ${escapeHtml(x.level)}" data-project-jump="${escapeHtml(x.tab)}" type="button"><span><strong>${escapeHtml(x.title)}</strong><small>${escapeHtml(x.detail)}</small></span><b>VIEW →</b></button>`).join(''):
+      `<div class="pc-clear-state"><strong>NO IMMEDIATE FLAGS</strong><span>Dark Sky has no rule-based attention items for this project right now.</span></div>`;
+    const recentActivity=s.activity.length?s.activity.map(x=>`<div class="pc-activity-row"><span><strong>${escapeHtml(x.action||'Activity')}</strong><small>${escapeHtml(x.detail||'')}</small></span><time>${escapeHtml(projectControlTime(x.at))}</time></div>`).join(''):
+      `<div class="pc-empty-inline">No project activity has been recorded yet.</div>`;
+    const newestOrders=s.orders.slice(0,5).map(o=>`<button class="pc-order-pulse" data-project-jump="orders" type="button"><span><strong>${escapeHtml(o.id)}</strong><small>${escapeHtml(o.customerName||'Customer not named')}</small></span><span><b>${escapeHtml(canonicalOrderStatus(o.status))}</b><small>${escapeHtml(compactOrderDate(o.createdAt))}</small></span></button>`).join('')||`<div class="pc-empty-inline">No approved orders yet.</div>`;
+    const customerSignal=s.customers.length?`${s.repeatCustomers.length} repeat customer${s.repeatCustomers.length===1?'':'s'}`:'Customer history begins with the first order';
+    const deploymentSignal=s.deployments.length?`${s.activeDeployments.length} deployed • ${s.deployments.length} total active records`:'No deployments commissioned yet';
+
+    box.innerHTML=`
+      <section class="pc-overview-hero">
+        <div>
+          <div class="pc-overview-eyebrow">COMMAND VIEW</div>
+          <h4>${escapeHtml(p.name)}</h4>
+          <p>${escapeHtml(p.description||'Project operating overview.')}</p>
+        </div>
+        <div class="pc-operational-state ${s.status.toLowerCase()}"><span>OPERATIONAL STATE</span><strong>${s.status}</strong><small>${escapeHtml(platformStatusLabel(p))}</small></div>
+      </section>
+
+      <section class="pc-kpi-grid" aria-label="Project operating indicators">
+        ${projectControlKpi('Revenue · 30 days',projectControlMoney(s.revenue30),revenueTrend.label)}
+        ${projectControlKpi('Orders · 30 days',s.recent.length,orderTrend.label)}
+        ${projectControlKpi('Open workload',s.open.length,`${s.newOrders.length} new • ${s.completed.length} completed all-time`)}
+        ${projectControlKpi('Customers',s.customers.length,customerSignal)}
+        ${projectControlKpi('Deployments',s.activeDeployments.length,deploymentSignal)}
+        ${projectControlKpi('Completed ledger',s.ledger.length,`${projectControlMoney(s.ledger.reduce((sum,x)=>sum+(Number(x.revenue)||0),0))} recorded revenue`)}
+      </section>
+
+      <section class="pc-command-grid">
+        <article class="pc-command-panel pc-attention-panel">
+          <header><div><span>NEEDS ATTENTION</span><h4>What should I look at?</h4></div><b>${s.attention.length}</b></header>
+          <div>${attention}</div>
+        </article>
+        <article class="pc-command-panel">
+          <header><div><span>ORDER PULSE</span><h4>Latest business activity</h4></div><button data-project-jump="orders" type="button">ALL ORDERS</button></header>
+          <div>${newestOrders}</div>
+        </article>
+      </section>
+
+      <section class="pc-command-grid pc-command-grid-lower">
+        <article class="pc-command-panel">
+          <header><div><span>RECENT CHANGES</span><h4>Project activity</h4></div></header>
+          <div class="pc-activity-list">${recentActivity}</div>
+        </article>
+        <article class="pc-command-panel pc-project-profile">
+          <header><div><span>PROJECT PROFILE</span><h4>Operating identity</h4></div></header>
+          <dl>
+            <div><dt>Project ID</dt><dd>${escapeHtml(p.id)}</dd></div>
+            <div><dt>Lifecycle</dt><dd>${escapeHtml(p.lifecycle?.state||p.status||'draft')}</dd></div>
+            <div><dt>Publishing</dt><dd>${escapeHtml(p.publish?.status||'development')}</dd></div>
+            <div><dt>Business type</dt><dd>${escapeHtml(p.businessType||p.projectTheme||p.theme||'custom')}</dd></div>
+            <div><dt>Order prefix</dt><dd>${escapeHtml(p.orderPrefix||'PRJ')}</dd></div>
+            <div><dt>Owner access</dt><dd>${escapeHtml(ownerAccessLabel(p))}</dd></div>
+          </dl>
+        </article>
+      </section>
+
+      <section class="pc-command-menu" aria-label="Project command menu">
+        <div class="pc-command-menu-heading"><span>COMMAND MENU</span><h4>Go directly to the work.</h4><p>Project Control keeps the overview shallow and the operating detail one command away.</p></div>
+        <div class="pc-command-menu-grid">
+          <button data-project-jump="orders" type="button"><span>Orders</span><small>Workload, status and customer requests</small></button>
+          <button data-project-jump="customers" type="button"><span>Customers</span><small>History, repeat business and contact context</small></button>
+          <button data-project-jump="products" type="button"><span>Products & Services</span><small>Offers and project catalog</small></button>
+          <button data-project-jump="workflow" type="button"><span>Workflow</span><small>How work moves through the business</small></button>
+          <button data-project-jump="deployment" type="button"><span>Deployments</span><small>Outposts, Sea Trials and operational state</small></button>
+          <button data-project-jump="analytics" type="button"><span>Analytics</span><small>30-day signals and operating trends</small></button>
+          <button data-project-jump="ledger" type="button"><span>Financials</span><small>Completed ledger and direct-cost view</small></button>
+          <button data-project-jump="marketing" type="button"><span>Marketing & Brand</span><small>Project identity and customer-facing assets</small></button>
+          <button data-project-jump="owner" type="button"><span>Owner Access</span><small>Project-scoped handoff and access state</small></button>
+          <button data-project-jump="payments" type="button"><span>Payments</span><small>Payment structure and provider readiness</small></button>
+        </div>
+      </section>`;
+    bindProjectControlJumpLinks(p);
+  }
+
+  function monthlyProjectBuckets(orders,count=6){
+    const rows=[];
+    const now=new Date();
+    for(let i=count-1;i>=0;i--){
+      const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+      const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      const label=d.toLocaleDateString(undefined,{month:'short',year:'2-digit'});
+      const monthOrders=orders.filter(o=>String(o.createdAt||'').slice(0,7)===key);
+      rows.push({key,label,orders:monthOrders.length,revenue:monthOrders.reduce((sum,o)=>sum+(Number(o.price)||0),0)});
+    }
+    return rows;
+  }
+
+  async function renderProjectAnalytics(p){
+    const box=$('projectAnalyticsLive');
+    if(!box || engineActiveProjectId!==p.id)return;
+    const s=await projectControlSnapshot(p);
+    if(engineActiveProjectId!==p.id)return;
+    const buckets=monthlyProjectBuckets(s.orders,6);
+    const maxOrders=Math.max(1,...buckets.map(x=>x.orders));
+    const statusCounts={};
+    s.orders.forEach(o=>{const st=canonicalOrderStatus(o.status);statusCounts[st]=(statusCounts[st]||0)+1;});
+    box.innerHTML=`
+      <section class="pc-analytics-head"><div><span>PROJECT ANALYTICS</span><h4>Operational signals we can prove.</h4><p>These numbers come from project-scoped orders, customers, ledgers and deployments already stored by Dark Sky. Visitor and conversion telemetry are intentionally not invented.</p></div><button data-project-jump="overview" type="button">← OVERVIEW</button></section>
+      <section class="pc-kpi-grid">
+        ${projectControlKpi('Orders · all time',s.orders.length,`${s.completed.length} completed`)}
+        ${projectControlKpi('Revenue · 30 days',projectControlMoney(s.revenue30),s.revenueTrend.label)}
+        ${projectControlKpi('Customers',s.customers.length,`${s.repeatCustomers.length} repeat`)}
+        ${projectControlKpi('Avg order · 30 days',s.recent.length?projectControlMoney(s.revenue30/s.recent.length):projectControlMoney(0),'Recorded order value')}
+      </section>
+      <section class="pc-command-grid">
+        <article class="pc-command-panel pc-monthly-panel"><header><div><span>6-MONTH ORDER VOLUME</span><h4>Operating rhythm</h4></div></header><div class="pc-monthly-bars">${buckets.map(x=>`<div class="pc-month-row"><span>${escapeHtml(x.label)}</span><div><i style="width:${x.orders?Math.max(3,(x.orders/maxOrders)*100):0}%"></i></div><strong>${x.orders}</strong><small>${escapeHtml(projectControlMoney(x.revenue))}</small></div>`).join('')}</div></article>
+        <article class="pc-command-panel"><header><div><span>WORKFLOW MIX</span><h4>Order status</h4></div></header><div class="pc-status-stack">${Object.entries(statusCounts).length?Object.entries(statusCounts).map(([k,v])=>`<div><span>${escapeHtml(k)}</span><strong>${v}</strong></div>`).join(''):'<div class="pc-empty-inline">No orders yet.</div>'}</div></article>
+      </section>
+      <section class="pc-command-grid pc-command-grid-lower">
+        <article class="pc-command-panel"><header><div><span>CUSTOMER SIGNAL</span><h4>Relationship depth</h4></div></header><div class="pc-customer-signal"><strong>${s.customers.length}</strong><span>known project customers</span><strong>${s.repeatCustomers.length}</strong><span>repeat customers</span><strong>${s.customers.reduce((sum,c)=>sum+Number(c.orderCount||0),0)}</strong><span>customer-linked orders</span></div></article>
+        <article class="pc-command-panel"><header><div><span>TELEMETRY BOUNDARY</span><h4>What Dark Sky does not claim yet</h4></div></header><div class="pc-telemetry-boundary"><p><b>Visitors:</b> not instrumented</p><p><b>Conversion rate:</b> not instrumented</p><p><b>Time on page:</b> not instrumented</p><p><b>Campaign attribution:</b> not instrumented</p><small>These become available only after real deployment telemetry is installed.</small></div></article>
+      </section>`;
+    bindProjectControlJumpLinks(p);
+  }
+
+  function bindProjectControlJumpLinks(p){
+    $('projectTabContent')?.querySelectorAll('[data-project-jump]').forEach(btn=>{
+      btn.addEventListener('click',()=>renderProjectTab(p.id,btn.dataset.projectJump));
+    });
+  }
+
   function projectTabsHtml(p,tab){
     const products=p.products||[];
-    if(tab==='overview') return `<div class="pec-grid">
-      <article class="pec-card"><h4>Project Status</h4><p><strong>${escapeHtml(p.publish?.status||'development')}</strong></p><p>Theme: ${escapeHtml(p.projectTheme||'custom')}</p><p>Order prefix: ${escapeHtml(p.orderPrefix||'PRJ')}</p></article>
-      <article class="pec-card"><h4>Character Limit</h4><p>${p.customization?.maxCharacters?`${p.customization.maxCharacters} characters`:'Not set'}</p><p class="helper">${p.id==='ikes-wood-signs'?'Intentionally unset until Ike’s real rule is confirmed.':'Project rule.'}</p></article>
-      <article class="pec-card"><h4>Activity</h4><div>${readActivity().filter(x=>x.projectId===p.id).slice(0,6).map(x=>`<div class="activity-line"><span>${escapeHtml(x.action)}</span><small>${new Date(x.at).toLocaleString()}</small></div>`).join('')||'<p class="helper">No activity yet.</p>'}</div></article>
-    </div>`;
+    if(tab==='overview') return `<div id="projectOverviewLive" class="pc-command-shell"><div class="pc-loading-state"><strong>Reading project signals…</strong><span>Orders, customers, deployments, ledger and activity stay scoped to ${escapeHtml(p.name)}.</span></div></div>`;
+    if(tab==='analytics') return `<div id="projectAnalyticsLive" class="pc-command-shell"><div class="pc-loading-state"><strong>Building project analytics…</strong><span>Only project-scoped data that Dark Sky can verify will be shown.</span></div></div>`;
 
     if(tab==='owner'){
       ensureProjectGovernance(p);
@@ -1788,6 +1988,9 @@
     const p=projectById(id), box=$('projectTabContent');if(!p||!box)return;
     box.innerHTML=projectTabsHtml(p,tab);
     $$('#projectTabs [data-project-tab]').forEach(b=>b.classList.toggle('active',b.dataset.projectTab===tab));
+    bindProjectControlJumpLinks(p);
+    if(tab==='overview'){await renderProjectControlOverview(p);return;}
+    if(tab==='analytics'){await renderProjectAnalytics(p);return;}
     if(tab==='marketing'){
       if(engineActiveProjectId!==p.id)return;
       bindProjectAssetEditor();
@@ -2367,7 +2570,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.7.7'
+      commissioningVersion:'3.8.0'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -2386,7 +2589,7 @@
     clearGraphicsTransientUi();
     engineActiveProjectId=id;
     $('pecTitle').textContent=p.name;
-    $('pecSubtitle').textContent='Project-specific controls. Black Flag remains unlocked only while you stay in the Engine.';
+    $('pecSubtitle').textContent='Business command, operating visibility, and project-scoped controls. Black Flag remains unlocked only while you stay in the Engine.';
     await applyProjectControlBrand(p);
     openEngineWorkspace($('projectEngineControl'));
     await renderProjectTab(id,'overview');
@@ -6222,7 +6425,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.7.7.ready',detail:`${companies.length} projects • schema 5 • policy 3.3 • hull integrity`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.0.ready',detail:`${companies.length} projects • schema 5 • policy 3.3 • command & visibility`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

@@ -1,7 +1,7 @@
 # Dark Sky Current Ship Inventory
 
 **Baseline preserved:** v3.7.4  
-**Working release:** v3.7.7 Hull Integrity
+**Working release:** v3.8.0 Command & Visibility
 
 ## Already aboard
 - Captain's Quarters privileged layer
@@ -67,3 +67,11 @@
 - Remote owner invitation delivery/recovery.
 - Production payment/accounting integrations.
 - v3.8 business-cockpit information architecture.
+
+
+## v3.8.0 command-and-visibility pass
+- Project Control Overview now reads project-scoped orders, customers, deployments, ledger entries, and activity into one business cockpit.
+- Project navigation is grouped by operator intent instead of a flat tab list.
+- Project Analytics now shows only verified order/customer/ledger data and explicitly refuses to fabricate visitor/conversion telemetry.
+- Existing Project Control modules remain available one command away; no existing workflow or authorization path was removed.
+- This release does not yet implement the v3.9 capability/template abstraction.

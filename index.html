@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.7.7" />
+  <link rel="stylesheet" href="styles.css?v=3.8.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -131,7 +131,7 @@
           <div class="captain-kicker">BLACK FLAG • MASTER SHIP PLAN</div>
           <h2 id="captainBlueprintTitle">Ship's Blueprint</h2>
           <p>System Architecture Map • Captain's living chart of the entire Dark Sky structure</p>
-          <small>Blueprint revision: v3.7.7 • update this chart whenever the ship's architecture changes</small>
+          <small>Blueprint revision: v3.8.0 • update this chart whenever the ship's architecture changes</small>
         </header>
 
         <div class="cq-ship-plan">
@@ -854,22 +854,34 @@
           <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine" type="button"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"></button>
         </div>
 
-        <nav class="project-tabs" id="projectTabs">
+        <nav class="project-tabs project-command-nav" id="projectTabs" aria-label="Project Control navigation">
+          <span class="project-tab-group-label">COMMAND</span>
           <button data-project-tab="overview" class="active">Overview</button>
-          <button data-project-tab="marketing">Marketing & Brand</button>
-          <button data-project-tab="products">Products</button>
-          <button data-project-tab="experience">Customer Experience</button>
-          <button data-project-tab="deployment">Deployment</button>
-          <button data-project-tab="owner">Owner Access</button>
-          <button data-project-tab="ai">AI Recognition</button>
-          <button data-project-tab="workflow">Workflow</button>
-          <button data-project-tab="publishing">Publishing</button>
           <button data-project-tab="orders">Orders</button>
-          <button data-project-tab="ledger">Ledger</button>
+          <button data-project-tab="customers">Customers</button>
+
+          <span class="project-tab-group-label">OPERATE</span>
+          <button data-project-tab="products">Products & Services</button>
+          <button data-project-tab="workflow">Workflow</button>
+          <button data-project-tab="deployment">Deployments</button>
+
+          <span class="project-tab-group-label">INSIGHT</span>
+          <button data-project-tab="analytics">Analytics</button>
+          <button data-project-tab="ledger">Financials</button>
+
+          <span class="project-tab-group-label">EXPERIENCE</span>
+          <button data-project-tab="marketing">Marketing & Brand</button>
+          <button data-project-tab="experience">Customer Experience</button>
+
+          <span class="project-tab-group-label">ACCESS</span>
+          <button data-project-tab="owner">Owner Access</button>
+          <button data-project-tab="permissions">Permissions</button>
+
+          <span class="project-tab-group-label">SYSTEM</span>
           <button data-project-tab="payments">Payments</button>
-<button data-project-tab="permissions">Permissions</button>
-<button data-project-tab="customers">Customers</button>
           <button data-project-tab="notifications">Notifications</button>
+          <button data-project-tab="publishing">Publishing</button>
+          <button data-project-tab="ai">AI Recognition</button>
         </nav>
         <div id="projectTabContent" class="project-tab-content"></div>
       </section>
@@ -1058,7 +1070,7 @@
         <div id="pirateLogFeed" class="pirate-log-feed"></div>
         <div class="pirate-session-box"><small>ACTIVE SESSION</small><strong>1</strong><span>Captain / Engine</span></div>
         <div class="pirate-integrity-box"><small>SYSTEM INTEGRITY</small><strong>100%</strong><span>Engine online</span></div>
-        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.7.7</strong><span>No quarter given. No data mixed.</span></div>
+        <div class="pirate-version-box"><small>BLACK FLAG ENGINE</small><strong>v3.8.0</strong><span>No quarter given. No data mixed.</span></div>
       </section>
 
 <div class="pirate-footer modern-engine-footer">
@@ -1084,11 +1096,11 @@
     <main id="ownerPortalBody" class="owner-portal-body"></main>
   </section>
 
-  <script src="platform_core.js?v=3.7.7"></script>
-  <script src="platform_identity.js?v=3.7.7"></script>
-  <script src="app.js?v=3.7.7"></script>
+  <script src="platform_core.js?v=3.8.0"></script>
+  <script src="platform_identity.js?v=3.8.0"></script>
+  <script src="app.js?v=3.8.0"></script>
 
-  <script src="captain.js?v=3.7.7"></script>
+  <script src="captain.js?v=3.8.0"></script>
 
 <div id="captainCommandWorkspace" class="captain-command-workspace hidden" role="dialog" aria-modal="true" aria-labelledby="captainCommandTitle">
   <div class="captain-command-shell">

@@ -1,28 +1,33 @@
 # Dark Sky / Black Flag Engine
 
-**Current release:** v3.7.7 — Hull Integrity
+**Current release:** v3.8.0 — Command & Visibility
 
-This release closes the current 3.7 foundation cycle by tightening project mutation authorization, deployment ownership, lifecycle transitions, and integrity checks before the Project Control cockpit rebuild.
+This release turns Project Control from a settings-heavy workspace into a business command cockpit. The opening screen now explains what is happening in one project, what needs attention, what changed, and where the operator should go next.
 
 ## What changed
-- Every Project Control mutation now requires an unlocked Engine session and the exact active project context.
-- Engine fleet-level project writes use an explicit project-scoped authorization gate instead of writing directly.
-- Project-owner writes now require an active owner session for the same project plus the appropriate owner capability.
-- Owner Portal preview mode can no longer silently mutate live project data because preview does not satisfy owner-session authorization.
-- Deployment manifests are sealed to one project ID and namespace, with `crossProjectAccess: deny`, no Engine access, and no owner access.
-- Deployment integrity is checked before persistence and boundary mismatches block writes.
-- Deployment lifecycle transitions are constrained: draft → Sea Trial → deployed; deployed ↔ paused; active/test states may retire; retired is terminal.
-- Owner pause/resume controls only appear for deployed or paused outposts.
-- Collection saves now fail closed when the integrity scanner finds critical project/deployment boundary defects.
-- Schema advances to 5 and policy metadata to 3.3.
-- Service-worker cache bumped for iPad/Safari deployment.
-- `HULL_INTEGRITY_AUDIT.md` records the completed pass and remaining production boundary.
+- Reorganized Project Control navigation into Command, Operate, Insight, Experience, Access, and System groups.
+- Rebuilt Overview around project-scoped operating signals instead of configuration cards.
+- Added 30-day revenue and order indicators with prior-30-day comparison.
+- Added open workload, customer depth, deployment state, and completed-ledger indicators.
+- Added rule-based Needs Attention signals without inventing data.
+- Added latest-order pulse, recent project activity, project operating identity, and direct command shortcuts.
+- Added a dedicated Analytics view using verified order, customer, ledger, and deployment data.
+- Added six-month order-volume history, workflow/status mix, repeat-customer signal, and average recorded order value.
+- Explicitly labels visitor, conversion, time-on-page, and campaign attribution as not instrumented rather than fabricating telemetry.
+- Preserves all existing deep Project Control modules and Hull Integrity authorization boundaries.
+- Cache/version references advanced to v3.8.0 for iPad/Safari deployment.
+
+## Operating principle
+Project Control should answer three questions before the operator clicks deeper:
+1. What is happening?
+2. What needs attention?
+3. Where do I go next?
 
 ## Important boundary
-Dark Sky remains a browser-local prototype. v3.7.7 materially improves tenant discipline inside the current architecture, but production public multi-tenant use still requires server-side identity, authorization, session handling, rate limits, secret storage, and server-enforced tenant boundaries.
+Dark Sky remains a browser-local prototype. v3.8.0 improves command visibility but does not change the v3.7.7 production-security boundary: public multi-tenant use still requires server-side identity, authorization, sessions, rate limits, secret storage, and server-enforced tenant isolation.
 
 ## Deployment
-Upload the contents of this folder together, preserving `assets/`. GitHub Pages may need one refresh while the v3.7.7 service worker replaces the previous cache.
+Upload the contents of this folder together, preserving `assets/`. GitHub Pages may need one refresh while the v3.8.0 service worker replaces the previous cache.
 
 ## Next heading
-**v3.8 — Command & Visibility.** Rebuild Project Control so the opening screen explains the business immediately: what is happening, what needs attention, how it is performing, what changed, and where the operator should go next.
+**v3.9 — Operating Models.** Extract reusable capabilities from the current vessels, then rebuild templates as tested combinations of those capabilities instead of one-off business code.

@@ -1,4 +1,4 @@
-/* Dark Sky / Black Flag v3.7.7 — Hull Integrity */
+/* Dark Sky / Black Flag v3.8.0 — Command & Visibility */
 (function(g){
 'use strict';
 const SCHEMA=5, POLICY='3.3', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
@@ -139,5 +139,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.7.7-hull-integrity',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.8.0-command-visibility',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);
