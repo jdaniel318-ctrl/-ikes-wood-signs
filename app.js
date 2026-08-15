@@ -991,7 +991,7 @@
   }
   async function saveCompanies(){
     companies=companies.map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(p))||ensureProjectGovernance(p));
-    const integrity=window.BlackFlagV3Core?.integrity?.(companies,document);
+    const integrity=window.BlackFlagV3Core?.integrity?.(companies,null);
     if(integrity && !integrity.ok){
       const summary=integrity.issues.filter(x=>x.level==='critical').slice(0,4).map(x=>`${x.code}${x.projectId?`:${x.projectId}`:''}`).join(' • ');
       window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'project.collection.save.blocked',detail:summary||'Critical integrity failure'});
@@ -2388,7 +2388,9 @@
           if(idx>=0) deployments.splice(idx,1);
           deploymentSelectionByProject.delete(p.id);
           console.error('Deployment creation failed',err);
-          setDeploymentCreateStatus('Outpost was not created. Dark Sky preserved the project unchanged. Try again or review the Ship’s Log.','error');
+          const reason=String(err?.message||'deployment_write_failed').replace(/^Error:\s*/,'');
+          setDeploymentCreateStatus(`Outpost was not created. Dark Sky preserved the project unchanged. ${reason}`,'error');
+          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'deployment',action:'deployment.create.failed',detail:reason});
           if(createBtn){createBtn.disabled=false;createBtn.textContent='CREATE OUTPOST';}
         }
       };
@@ -2863,7 +2865,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.18'
+      commissioningVersion:'3.8.19'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6502,7 +6504,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.18',
+    version:'3.8.19',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -6928,7 +6930,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.18.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • fleet project rail + commissioned project visibility repair`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.19.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • deployment persistence decoupled from UI integrity + diagnostic save failures`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

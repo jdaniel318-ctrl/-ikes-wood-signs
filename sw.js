@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-18-deployment-creation-reliability';
+const CACHE='dark-sky-v3-8-19-deployment-persistence-decoupling';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.18',
-  './platform_core.js?v=3.8.18',
-  './platform_identity.js?v=3.8.18',
-  './app.js?v=3.8.18',
-  './captain.js?v=3.8.18',
+  './styles.css?v=3.8.19',
+  './platform_core.js?v=3.8.19',
+  './platform_identity.js?v=3.8.19',
+  './app.js?v=3.8.19',
+  './captain.js?v=3.8.19',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

@@ -1,3 +1,7 @@
+## v3.8.19 — Deployment Persistence & Shipwright Reliability
+
+Deployment/project saves now validate fleet data without allowing transient UI/DOM integrity issues to block legitimate writes. Sea Trials retain full UI integrity checks. Deployment creation exposes exact failure reasons and the Shipwright registry now follows the Fleet Visual System.
+
 # Dark Sky / Black Flag Engine
 
 **Current release:** v3.8.14 — Project-Specific Preview & Customer Review Refit

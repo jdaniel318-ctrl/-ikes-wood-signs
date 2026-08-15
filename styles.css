@@ -10062,7 +10062,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 }
 
 /* ==========================================================
-   v3.8.18 — Deployment Creation Reliability
+   v3.8.19 — Deployment Persistence & Shipwright Reliability
    In-app outpost commissioning replaces browser prompt dialogs.
    ========================================================== */
 .deployment-create-form{
@@ -10099,3 +10099,31 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .deployment-create-copy,.deployment-create-status{grid-column:auto}
   .deployment-create-actions{display:grid;grid-template-columns:1fr 1fr}
 }
+
+
+/* ==========================================================
+   v3.8.19 — Deployment Shipwright surface coherence
+   Registry/manifest wells obey the Fleet Visual System.
+   ========================================================== */
+#projectEngineControl .deployment-outpost-list,
+#projectEngineControl .deployment-command,
+#projectEngineControl .deployment-empty-berth,
+#projectEngineControl .deployment-retired-note{
+  background:linear-gradient(145deg,var(--bf-panel-2),var(--bf-well))!important;
+  color:var(--bf-copy)!important;
+  border-color:var(--bf-line)!important;
+}
+#projectEngineControl .deployment-empty-berth{
+  min-height:210px;
+  display:grid;
+  place-content:center;
+  gap:8px;
+  border:1px dashed var(--bf-line)!important;
+  border-radius:14px!important;
+  padding:24px!important;
+}
+#projectEngineControl .deployment-empty-berth strong{color:var(--bf-text)!important;font-size:18px!important}
+#projectEngineControl .deployment-empty-berth span{color:var(--bf-muted)!important;font-size:14px!important;line-height:1.45!important;max-width:280px;margin-inline:auto}
+#projectEngineControl .deployment-section-title{color:var(--bf-copy)!important}
+#projectEngineControl .deployment-section-title span{color:var(--bf-muted)!important}
+#projectEngineControl .deployment-section-title b{color:var(--bf-text)!important}

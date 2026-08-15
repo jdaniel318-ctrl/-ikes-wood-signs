@@ -1,3 +1,11 @@
+# v3.8.19 — Deployment Persistence & Shipwright Reliability
+
+- Decoupled project/fleet data integrity from transient DOM/UI integrity during persistence writes.
+- Sea Trials still inspect DOM integrity separately; UI defects can no longer block a valid project or deployment save.
+- Deployment creation failures now surface the actual blocking reason and write a Ship's Log audit event.
+- Refit Outpost Registry empty-state surfaces to the shared dark Fleet Visual System for iPad readability.
+- Bumped cache/release references to v3.8.19.
+
 # v3.8.18 — Wave 1: Fleet Visual System
 
 - Introduced shared Dark Sky surface tokens for hull, panels, inset wells, fields, borders, and readable text.

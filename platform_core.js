@@ -207,8 +207,10 @@ function snapshot(projects,reason='manual'){
 }
 function integrity(projects=[],doc=document){
  const issues=[], ids=new Set(), spaces=new Set(), names=new Map(), dom=new Map(), deploymentIds=new Set();
- doc.querySelectorAll('[id]').forEach(el=>dom.set(el.id,(dom.get(el.id)||0)+1));
- [...dom].filter(([,n])=>n>1).forEach(([id,n])=>issues.push({level:'critical',code:'DUPLICATE_DOM_ID',detail:`${id} x ${n}`}));
+ if(doc && typeof doc.querySelectorAll==='function'){
+  doc.querySelectorAll('[id]').forEach(el=>dom.set(el.id,(dom.get(el.id)||0)+1));
+  [...dom].filter(([,n])=>n>1).forEach(([id,n])=>issues.push({level:'critical',code:'DUPLICATE_DOM_ID',detail:`${id} x ${n}`}));
+ }
  projects.forEach(p=>{
   if(!p?.id){issues.push({level:'critical',code:'PROJECT_ID_MISSING'});return}
   if(ids.has(p.id))issues.push({level:'critical',code:'DUPLICATE_PROJECT_ID',projectId:p.id});ids.add(p.id);
@@ -225,5 +227,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.8.18-deployment-creation-reliability',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.8.19-deployment-persistence-decoupling',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);
