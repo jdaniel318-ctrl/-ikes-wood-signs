@@ -8793,7 +8793,7 @@ body.engine-mode #enginePanel .modern-engine-wordmark{
 /* v3.7.0 — CUT THE MOORING LINES: platform-neutral data/storage refit; no visual redesign. */
 
 /* ========================================================================== 
-   v3.7.1 — COMPACT COMMAND HEADER
+   v3.7.2 — COMPACT COMMAND HEADER
    Captain-directed compression of the Engine Room hero only.
    Keeps Black Flag identity and command controls while exposing more live
    telemetry above the fold on iPad/landscape displays.
@@ -8889,4 +8889,60 @@ body.engine-mode #enginePanel .modern-captain-access small{
   body.engine-mode #enginePanel .black-flag-modern-brand{min-width:0!important;}
   body.engine-mode #enginePanel .modern-engine-wordmark{width:min(260px,70vw)!important;}
   body.engine-mode #enginePanel .modern-engine-top-actions{gap:7px!important;}
+}
+
+/* ==========================================================================\n   v3.7.2 — CONTROL CENTER NAVIGATION REPAIR\n   Dedicated Engine workspaces are normal document screens, not fixed overlays.\n   This avoids iPad Safari's fixed-position/scroll-lock rendering failure.\n   ========================================================================== */
+body.engine-workspace-open{
+  overflow:auto!important;
+  height:auto!important;
+  min-height:100%!important;
+}
+body.engine-workspace-open #enginePanel{
+  min-height:100vh!important;
+  overflow:visible!important;
+}
+/* While a dedicated workspace is open, the command deck is parked rather than
+   painted underneath it. This removes the frozen partial-overlay failure mode. */
+body.engine-workspace-open #enginePanel > *:not(#projectEngineControl):not(#engineConfigurationDock){
+  display:none!important;
+}
+body.engine-workspace-open #projectEngineControl:not(.hidden),
+body.engine-workspace-open #engineConfigurationDock:not(.hidden){
+  position:relative!important;
+  inset:auto!important;
+  z-index:1!important;
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:100vh!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:18px clamp(16px,3vw,42px) 48px!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:
+    radial-gradient(circle at 18% 0%,rgba(37,101,127,.10),transparent 26%),
+    linear-gradient(180deg,#081217,#071014 72%,#061014)!important;
+}
+body.dark-flag-pirate-mode.engine-workspace-open #projectEngineControl:not(.hidden),
+body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock:not(.hidden){
+  background:
+    radial-gradient(circle at 18% 0%,rgba(135,72,38,.10),transparent 26%),
+    linear-gradient(180deg,#100c09,#090706 72%,#080605)!important;
+}
+body.engine-workspace-open #projectEngineControl .project-engine-head,
+body.engine-workspace-open #engineConfigurationDock .engine-configuration-head{
+  position:sticky!important;
+  top:0!important;
+  z-index:20!important;
+  margin:0 0 16px!important;
+  padding:12px 0!important;
+  background:linear-gradient(180deg,#08161c 82%,rgba(8,22,28,.94))!important;
+}
+body.dark-flag-pirate-mode.engine-workspace-open #projectEngineControl .project-engine-head,
+body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engine-configuration-head{
+  background:linear-gradient(180deg,#110d0a 82%,rgba(17,13,10,.94))!important;
 }

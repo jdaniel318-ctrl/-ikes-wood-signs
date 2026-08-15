@@ -5389,19 +5389,29 @@ The full order and approved media remain stored with this project.`;
 
 
 
+  let engineWorkspaceReturnScrollY=0;
   function openEngineWorkspace(el){
     if(!el)return;
+    // Dedicated workspace navigation: park the command deck instead of placing a
+    // fixed overlay above it. This is intentionally iPad/Safari-safe.
+    engineWorkspaceReturnScrollY=window.scrollY||0;
+    ['projectEngineControl','engineConfigurationDock'].forEach(id=>{
+      const workspace=$(id);
+      if(workspace && workspace!==el) workspace.classList.add('hidden');
+    });
     el.classList.remove('hidden');
     document.body.classList.add('engine-workspace-open');
-    requestAnimationFrame(()=>el.scrollTop=0);
+    requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
   }
   function closeEngineWorkspace(el){
     if(!el)return;
     el.classList.add('hidden');
-    if(!document.querySelector('#projectEngineControl:not(.hidden),#engineConfigurationDock:not(.hidden)')){
+    const stillOpen=document.querySelector('#projectEngineControl:not(.hidden),#engineConfigurationDock:not(.hidden)');
+    if(!stillOpen){
       document.body.classList.remove('engine-workspace-open');
+      const restoreY=engineWorkspaceReturnScrollY||0;
+      requestAnimationFrame(()=>window.scrollTo({top:restoreY,left:0,behavior:'instant'}));
     }
-    window.scrollTo({top:0,left:0,behavior:'instant'});
   }
   function openEngineConfiguration(target='top'){
     const dock=$('engineConfigurationDock');if(!dock)return;

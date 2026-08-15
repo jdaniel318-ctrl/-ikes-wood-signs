@@ -1,6 +1,6 @@
 # Dark Sky / Black Flag Engine Changelog
 
-## v3.7.1 — Compact Command Header
+## v3.7.2 — Compact Command Header
 Compressed the Engine Room command header by roughly one quarter on landscape displays while preserving the approved Black Flag identity, Configure Engine, Engine Secure, and Captain’s Quarters controls. The live performance graph deck is unchanged and remains immediately below the header. This is a visual-density refinement only; no data, security, project, order, or telemetry behavior was intentionally changed.
 
 # Dark Sky / Black Flag — Release Narrative
@@ -44,3 +44,7 @@ The early v3 line introduced Black Flag project commissioning, owner/customer-de
 
 ## 2.9.x lineage
 The 2.9 series was the shipyard where the original Ike's Wood Signs application evolved into the multi-project Black Flag Engine, Pirate Mode, Captain's Quarters, deployment fleet, Owner Portal concepts, and the modern Engine Room. Historical compatibility code may remain where required to preserve existing data, but v3.7 is the active Dark Sky platform line.
+
+
+## v3.7.2 — Control Center Navigation Repair
+Replaced the fixed full-screen Engine workspace overlay with a dedicated in-flow workspace screen. This prevents the iPad Safari failure where only the bottom edge of a Control Center rendered while page scrolling was locked. Control Center and Configure Engine now park the command deck, own normal document scrolling, and restore the prior Engine scroll position on return.
