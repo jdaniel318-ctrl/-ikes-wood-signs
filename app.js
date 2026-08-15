@@ -1947,6 +1947,21 @@
           <button id="createDeploymentBtn" class="deployment-launch-btn" type="button"><span>＋</span><strong>LAY NEW KEEL</strong><small>Create Outpost</small></button>
         </section>
 
+        <section id="deploymentCreateForm" class="deployment-create-form hidden" aria-label="Create deployment outpost">
+          <div class="deployment-create-copy">
+            <small>NEW OUTPOST</small>
+            <strong>Commission a customer deployment</strong>
+            <span>Give this outpost a clear name and starting mission profile. It remains sealed to ${escapeHtml(p.name)}.</span>
+          </div>
+          <label>Outpost name<input id="newDeploymentName" class="text-input" autocomplete="off" placeholder="Example: Lemonade Stand — Front Counter"></label>
+          <label>Deployment profile<select id="newDeploymentProfile">${Object.entries(DEPLOYMENT_PROFILES).map(([value,x])=>`<option value="${value}">${escapeHtml(x.label)}</option>`).join('')}</select></label>
+          <div class="deployment-create-actions">
+            <button id="cancelCreateDeploymentBtn" class="secondary-btn" type="button">CANCEL</button>
+            <button id="confirmCreateDeploymentBtn" class="primary-btn" type="button">CREATE OUTPOST</button>
+          </div>
+          <div id="deploymentCreateStatus" class="deployment-create-status" role="status" aria-live="polite"></div>
+        </section>
+
         <div class="deployment-fleet-layout">
           <aside class="deployment-outpost-list">
             <div class="deployment-section-title"><span>OUTPOST REGISTRY</span><b>${list.length}</b></div>
@@ -2318,16 +2333,64 @@
         renderProjectTab(p.id,'deployment');
       });
 
-      if($('createDeploymentBtn')) $('createDeploymentBtn').onclick=async()=>{
+      const createDeploymentBtn=$('createDeploymentBtn');
+      const deploymentCreateForm=$('deploymentCreateForm');
+      const deploymentCreateStatus=$('deploymentCreateStatus');
+      const setDeploymentCreateStatus=(message,tone='')=>{
+        if(!deploymentCreateStatus)return;
+        deploymentCreateStatus.textContent=message||'';
+        deploymentCreateStatus.dataset.tone=tone||'';
+      };
+      if(createDeploymentBtn) createDeploymentBtn.onclick=()=>{
+        if(!requireEngineProjectMutation(p,'deployment.create.open'))return;
+        deploymentCreateForm?.classList.remove('hidden');
+        setDeploymentCreateStatus('');
+        requestAnimationFrame(()=>{
+          const input=$('newDeploymentName');
+          if(input){input.focus();input.select?.();}
+        });
+      };
+      if($('cancelCreateDeploymentBtn')) $('cancelCreateDeploymentBtn').onclick=()=>{
+        deploymentCreateForm?.classList.add('hidden');
+        setDeploymentCreateStatus('');
+      };
+      if($('confirmCreateDeploymentBtn')) $('confirmCreateDeploymentBtn').onclick=async()=>{
         if(!requireEngineProjectMutation(p,'deployment.create'))return;
-        const name=prompt('Outpost name','New Outpost');
-        if(!name)return;
-        const fresh=newProjectDeployment(p,name.trim()||'New Outpost','kiosk_self_service');
+        const input=$('newDeploymentName');
+        const profileInput=$('newDeploymentProfile');
+        const name=String(input?.value||'').trim().replace(/\s+/g,' ');
+        if(name.length<2){
+          setDeploymentCreateStatus('Enter an outpost name before creating this deployment.','error');
+          input?.focus();
+          return;
+        }
+        const profile=DEPLOYMENT_PROFILES[profileInput?.value]?profileInput.value:'kiosk_self_service';
+        const fresh=newProjectDeployment(p,name,profile);
+        const boundary=window.BlackFlagV3Core?.validateDeployment?.(p,fresh);
+        if(boundary && !boundary.ok){
+          setDeploymentCreateStatus('Dark Sky blocked this outpost because its project identity could not be sealed correctly.','error');
+          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'deployment',action:'deployment.create.blocked',detail:(boundary.failures||[]).join(', ')});
+          return;
+        }
+        const createBtn=$('confirmCreateDeploymentBtn');
+        if(createBtn){createBtn.disabled=true;createBtn.textContent='CREATING…';}
         deployments.push(fresh);
         deploymentSelectionByProject.set(p.id,fresh.id);
-        await saveCompanies();
-        logActivity(p.id,'Deployment outpost created',fresh.name);
-        await renderProjectTab(p.id,'deployment');
+        try{
+          await saveCompanies();
+          const saved=projectById(p.id)?.deployments?.some(x=>x.id===fresh.id);
+          if(!saved) throw new Error('deployment_write_not_confirmed');
+          logActivity(p.id,'Deployment outpost created',`${fresh.name} • ${DEPLOYMENT_PROFILES[profile]?.label||profile}`);
+          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'deployment',action:'deployment.created',detail:`${fresh.id} • ${fresh.name}`});
+          await renderProjectTab(p.id,'deployment');
+        }catch(err){
+          const idx=deployments.findIndex(x=>x.id===fresh.id);
+          if(idx>=0) deployments.splice(idx,1);
+          deploymentSelectionByProject.delete(p.id);
+          console.error('Deployment creation failed',err);
+          setDeploymentCreateStatus('Outpost was not created. Dark Sky preserved the project unchanged. Try again or review the Ship’s Log.','error');
+          if(createBtn){createBtn.disabled=false;createBtn.textContent='CREATE OUTPOST';}
+        }
       };
 
       if(d && $('saveDeploymentManifestBtn')) $('saveDeploymentManifestBtn').onclick=async()=>{
@@ -2800,7 +2863,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.17'
+      commissioningVersion:'3.8.18'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6439,7 +6502,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.17',
+    version:'3.8.18',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -6865,7 +6928,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.17.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • fleet project rail + commissioned project visibility repair`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.18.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • fleet project rail + commissioned project visibility repair`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -7038,7 +7101,7 @@ document.addEventListener('click', (event) => {
   migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
 
 
-  // v3.8.17 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().
+  // v3.8.18 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().
   // This avoids stale or missing handlers when the workspace DOM changes.
 
 

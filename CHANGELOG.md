@@ -1,4 +1,4 @@
-# v3.8.17 — Wave 1: Fleet Visual System
+# v3.8.18 — Wave 1: Fleet Visual System
 
 - Introduced shared Dark Sky surface tokens for hull, panels, inset wells, fields, borders, and readable text.
 - Replaced harsh light filler/empty states in Project Control with intentional dark inset wells.

@@ -10060,3 +10060,42 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   border:1px solid #d8d8d0!important;
   box-shadow:0 8px 24px rgba(0,0,0,.10)!important;
 }
+
+/* ==========================================================
+   v3.8.18 — Deployment Creation Reliability
+   In-app outpost commissioning replaces browser prompt dialogs.
+   ========================================================== */
+.deployment-create-form{
+  display:grid;
+  grid-template-columns:minmax(260px,1.2fr) minmax(260px,1fr) minmax(220px,.8fr) auto;
+  gap:16px;
+  align-items:end;
+  padding:18px 20px;
+  margin:14px 0 18px;
+  border:1px solid rgba(87,188,224,.34);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(14,38,48,.98),rgba(8,25,32,.98));
+  box-shadow:0 16px 34px rgba(0,0,0,.2);
+}
+.deployment-create-form.hidden{display:none!important}
+.deployment-create-copy{align-self:center;display:grid;gap:4px}
+.deployment-create-copy small{font-size:14px;letter-spacing:.16em;font-weight:800;color:#7bc8df}
+.deployment-create-copy strong{font-size:19px;color:#f2f7f7}
+.deployment-create-copy span{font-size:15px;line-height:1.45;color:#aebfc3}
+.deployment-create-form label{display:grid;gap:7px;font-size:14px;font-weight:800;letter-spacing:.04em;color:#c7d6d9}
+.deployment-create-form input,.deployment-create-form select{min-height:52px;font-size:17px;background:#091c23;color:#f3f7f8;border:1px solid rgba(127,190,207,.34);border-radius:12px;padding:0 14px}
+.deployment-create-actions{display:flex;gap:10px;align-items:center}
+.deployment-create-actions button{min-height:52px;white-space:nowrap}
+.deployment-create-status{grid-column:1/-1;min-height:0;font-size:15px;font-weight:700;color:#a9c7cf}
+.deployment-create-status:empty{display:none}
+.deployment-create-status[data-tone="error"]{display:block;padding:11px 13px;border:1px solid rgba(225,127,112,.42);border-radius:12px;background:rgba(104,35,28,.28);color:#ffd4cc}
+@media(max-width:1180px){
+  .deployment-create-form{grid-template-columns:1fr 1fr}
+  .deployment-create-copy,.deployment-create-status{grid-column:1/-1}
+  .deployment-create-actions{justify-content:flex-end}
+}
+@media(max-width:760px){
+  .deployment-create-form{grid-template-columns:1fr;padding:16px}
+  .deployment-create-copy,.deployment-create-status{grid-column:auto}
+  .deployment-create-actions{display:grid;grid-template-columns:1fr 1fr}
+}
