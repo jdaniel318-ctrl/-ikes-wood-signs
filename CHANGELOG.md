@@ -1,13 +1,12 @@
-# v3.8.22 — Sea Trial Clarity & Customer Test Repair
+# Dark Sky Changelog
 
-- Made the Sea Trial customer preview CTA a real button instead of a decorative label.
-- Wired both the preview CTA and the Next Step button to one customer-test action.
-- Generic projects can now run and explicitly record an interface-only Sea Trial test without pretending they have a complete customer workflow.
-- Sea Trial health now clearly distinguishes NOT ACTIVE from TEST RECORDED.
-- Starting a new outpost always clears the previous outpost name/profile instead of carrying stale values forward.
-- Activation remains blocked until the project has a real customer operating model.
-
-# v3.8.21 — Deployment Voyage Refit
+## v3.8.24 — Launch Readiness & Activation Lane
+- Shipwright no longer shows Activate as the next action when a universal project has no customer-ready offer.
+- Added an inline launch-offer creator so a newly commissioned vessel can become customer-test ready without leaving the deployment workflow.
+- Sea Trial completion now requires a real test order through the universal customer shell; opening the shell alone does not count as a completed test.
+- Universal Sea Trial customer view includes Return to Shipwright controls and records the tested deployment/order.
+- Activation becomes available only after a real customer-ready offer and a recorded Sea Trial customer order.
+- Captain upload package remains consolidated to the canonical runtime files, three source-of-truth documents, and referenced assets.
 
 - Rebuilt Deployment Shipwright around **Configure → Save → Sea Trial → Test → Active**.
 - Added an iPad-first outpost progress rail and one state-aware Next Step action.

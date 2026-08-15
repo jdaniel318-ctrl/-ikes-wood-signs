@@ -1366,56 +1366,30 @@
   function deploymentVoyageState(p,d){
     if(!d)return {step:1,label:'Configure',nextLabel:'Create Outpost',nextAction:'create',detail:'Create an outpost to begin.'};
     const saved=Number(d.manifestVersion||1)>1;
-    const shellReady=projectShellFor(p)!=='generic';
+    const shellReady=projectCustomerOperatingModelReady(p);
     if(d.state==='draft'&&!saved) return {step:1,label:'Configure',nextLabel:'Save Outpost Setup',nextAction:'save',detail:'Finish the outpost setup and save it before Sea Trial.',shellReady};
     if(d.state==='draft') return {step:2,label:'Saved',nextLabel:'Begin Sea Trial',nextAction:'sea_trial',detail:'Configuration is saved. Start a controlled Sea Trial.',shellReady};
-    if(d.state==='sea_trial'&&!d.lastTestedAt) return {step:3,label:'Sea Trial',nextLabel:'Open Test Outpost',nextAction:'test',detail:shellReady?'Open the customer experience and test this outpost.':'The outpost can be tested, but this vessel still needs a customer operating model.',shellReady};
-    if(d.state==='sea_trial') return {step:4,label:'Tested',nextLabel:'Activate Outpost',nextAction:'deployed',detail:'Customer test recorded. Activate when you are satisfied.',shellReady};
+    if(d.state==='sea_trial'&&!shellReady) return {step:3,label:'Sea Trial',nextLabel:'Add Customer Offer',nextAction:'offer',detail:'This vessel needs one customer-ready offer before Dark Sky can open a real customer test.',shellReady};
+    if(d.state==='sea_trial'&&!d.lastTestedAt) return {step:3,label:'Sea Trial',nextLabel:'Open Test Outpost',nextAction:'test',detail:'Open the real customer experience and complete one test order.',shellReady};
+    if(d.state==='sea_trial') return {step:4,label:'Tested',nextLabel:'Activate Outpost',nextAction:'deployed',detail:'Customer test order recorded. Activate when you are satisfied.',shellReady};
     if(d.state==='deployed') return {step:5,label:'Active',nextLabel:'Open Customer Experience',nextAction:'test',detail:'This outpost is active.',shellReady};
     if(d.state==='paused') return {step:5,label:'Paused',nextLabel:'Resume Outpost',nextAction:'deployed',detail:'The outpost is paused and can be resumed.',shellReady};
     return {step:5,label:'Retired',nextLabel:'Retired',nextAction:'none',detail:'This outpost is preserved as history.',shellReady};
   }
 
   function openDeploymentTestDock(p,d){
-    const shellReady=projectShellFor(p)!=='generic';
+    const shellReady=projectCustomerOperatingModelReady(p);
     if(shellReady){
-      d.lastTestedAt=new Date().toISOString();
+      window.__deploymentCustomerContext={projectId:p.id,deploymentId:d.id,state:d.state,attractTitle:d.attractTitle||'Ready when you are.'};
+      d.testOpenedAt=new Date().toISOString();
+      d.updatedAt=d.testOpenedAt;
       saveCompanies().catch(()=>{});
       closeEngineWorkspace($('projectEngineControl'));
       enterProject(p.id);
       return;
     }
-    let dock=document.getElementById('deploymentTestDock');
-    if(!dock){
-      dock=document.createElement('div');
-      dock.id='deploymentTestDock';
-      dock.className='deployment-test-dock';
-      document.body.appendChild(dock);
-    }
-    dock.innerHTML=`<section class="deployment-test-card" role="dialog" aria-modal="true" aria-label="Test outpost">
-      <div class="deployment-test-kicker">SEA TRIAL • CUSTOMER VIEW</div>
-      <div class="deployment-test-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
-      <h2>${escapeHtml(p.name)}</h2>
-      <p class="deployment-test-message">${escapeHtml(d.attractTitle||'Ready when you are.')}</p>
-      <div class="deployment-test-start">TOUCH TO START</div>
-      <div class="deployment-test-boundary"><strong>Outpost interface test is available.</strong><span>This deployment is in Sea Trial and is not active. The outpost shell can be tested now, but this vessel still needs a customer operating model before activation.</span></div>
-      <div class="deployment-test-actions">
-        <button type="button" id="recordDeploymentInterfaceTest" class="primary-btn">RECORD INTERFACE TEST</button>
-        <button type="button" id="closeDeploymentTestDock" class="secondary-btn">RETURN TO SHIPWRIGHT</button>
-      </div>
-    </section>`;
-    dock.classList.add('open');
-    document.getElementById('recordDeploymentInterfaceTest')?.addEventListener('click',async()=>{
-      d.lastTestedAt=new Date().toISOString();
-      d.updatedAt=d.lastTestedAt;
-      d.testMode='interface_only';
-      await saveCompanies();
-      logActivity(p.id,'Deployment interface test recorded',d.name);
-      dock.classList.remove('open');
-      await renderProjectCommand();
-      await renderProjectTab(p.id,'deployment');
-    },{once:true});
-    document.getElementById('closeDeploymentTestDock')?.addEventListener('click',()=>dock.classList.remove('open'),{once:true});
+    alert('Add one customer-ready offer first. Dark Sky will then open a real Sea Trial customer experience.');
+    renderProjectTab(p.id,'deployment');
   }
 
   function deploymentManifestHtml(p,d){
@@ -2092,8 +2066,9 @@
                   <p>${escapeHtml(voyage.detail)}</p>
                   ${voyage.nextAction==='save'?`<button type="button" data-deployment-next="save" class="primary-btn">SAVE OUTPOST SETUP</button>`:''}
                   ${voyage.nextAction==='sea_trial'?`<button type="button" data-deployment-next="sea_trial" class="primary-btn">BEGIN SEA TRIAL</button>`:''}
+                  ${voyage.nextAction==='offer'?`<div class="deployment-launch-offer"><label>Customer offer<input id="deploymentLaunchOfferName" class="text-input" placeholder="e.g., Fresh Lemonade"></label><label>Starting price <span>(optional)</span><input id="deploymentLaunchOfferPrice" class="text-input" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></label><button type="button" id="createDeploymentLaunchOfferBtn" class="primary-btn">CREATE CUSTOMER OFFER</button><small>Dark Sky will make this offer customer-ready inside this project only. You can refine it later in Products & Services.</small></div>`:''}
                   ${voyage.nextAction==='test'?`<button type="button" id="testDeploymentExperienceBtn" class="primary-btn">${d.state==='deployed'?'OPEN CUSTOMER EXPERIENCE':'OPEN TEST OUTPOST'}</button>`:''}
-                  ${voyage.nextAction==='deployed'?`<button type="button" data-deployment-next="deployed" class="primary-btn" ${voyage.shellReady?'':'disabled'}>ACTIVATE OUTPOST</button>${voyage.shellReady?'':'<span class="deployment-next-warning">Customer operating model required before activation.</span>'}`:''}
+                  ${voyage.nextAction==='deployed'?`<button type="button" data-deployment-next="deployed" class="primary-btn">ACTIVATE OUTPOST</button>`:''}
                   ${d.state==='paused'?`<button type="button" data-deployment-next="deployed" class="primary-btn">RESUME OUTPOST</button>`:''}
                 </article>
               </aside>
@@ -2514,6 +2489,38 @@
         setTimeout(()=>renderProjectTab(p.id,'deployment'),500);
       };
 
+      if($('createDeploymentLaunchOfferBtn')) $('createDeploymentLaunchOfferBtn').onclick=async()=>{
+        if(!requireEngineProjectMutation(p,'product.launch_offer.create'))return;
+        const name=$('deploymentLaunchOfferName')?.value.trim();
+        const priceRaw=$('deploymentLaunchOfferPrice')?.value.trim();
+        if(!name){
+          $('deploymentLaunchOfferName')?.focus();
+          return;
+        }
+        const canonicalProject=projectById(p.id); if(!canonicalProject)return;
+        canonicalProject.products=Array.isArray(canonicalProject.products)?canonicalProject.products:[];
+        const offer={
+          id:`offer-${Date.now().toString(36)}`,
+          name,
+          active:true,
+          published:true,
+          customerReady:true,
+          pricingMode:priceRaw?'fixed':'quote',
+          price:priceRaw?Math.max(0,Number(priceRaw)||0):0,
+          createdAt:new Date().toISOString()
+        };
+        canonicalProject.products.push(offer);
+        try{
+          await saveCompanies();
+          logActivity(canonicalProject.id,'Customer launch offer created',offer.name);
+          window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:canonicalProject.id,category:'product',action:'product.launch_offer.created',detail:offer.name});
+          await renderProjectTab(canonicalProject.id,'deployment');
+        }catch(err){
+          canonicalProject.products=canonicalProject.products.filter(x=>x.id!==offer.id);
+          alert(`Dark Sky could not save the customer offer: ${String(err?.message||err)}`);
+        }
+      };
+
       const triggerDeploymentSave=()=>document.getElementById('saveDeploymentManifestBtn')?.click();
       $$('[data-deployment-next]').forEach(btn=>btn.onclick=()=>{
         const action=btn.dataset.deploymentNext;
@@ -2533,7 +2540,7 @@
             const readiness=deploymentReadiness(current);
             if(action==='sea_trial' && readiness.score<100 && !confirm(`Sea Trial readiness is ${readiness.score}%. Continue to Sea Trial with warnings?`)){proxy.remove();return;}
             if(action==='deployed'){
-              if(projectShellFor(p)==='generic'){alert('Assign a customer operating model before activating this outpost.');proxy.remove();return;}
+              if(!projectCustomerOperatingModelReady(p)){alert('Add at least one customer-ready offer before activating this outpost.');proxy.remove();return;}
               if(!(await deploymentCommissionOrder(p,current))){proxy.remove();return;}
             }
             const prior=current.state; current.state=action; current.updatedAt=new Date().toISOString(); normalizeDeploymentIdentity(p,current); current.manifestVersion=Number(current.manifestVersion||1)+1;
@@ -2547,13 +2554,11 @@
           alert('Save the outpost and begin Sea Trial before opening the customer test.');
           return;
         }
-        if(d.state==='sea_trial' && projectShellFor(p)!=='generic'){
-          d.lastTestedAt=new Date().toISOString();
-          d.updatedAt=d.lastTestedAt;
-          d.testMode='customer_shell';
-          await saveCompanies();
-          logActivity(p.id,'Deployment customer test opened',d.name);
-        }
+        d.testOpenedAt=new Date().toISOString();
+        d.updatedAt=d.testOpenedAt;
+        d.testMode='customer_shell';
+        await saveCompanies();
+        logActivity(p.id,'Deployment customer test opened',d.name);
         openDeploymentTestDock(p,d);
       };
       if($('testDeploymentExperienceBtn')) $('testDeploymentExperienceBtn').onclick=openDeploymentCustomerTest;
@@ -2574,6 +2579,7 @@
         }
         if(next==='deployed'){
           if(d.state!=='sea_trial'&&d.state!=='paused')return;
+          if(!projectCustomerOperatingModelReady(p)){alert('Add at least one customer-ready offer before activating this outpost.');return;}
           if(!(await deploymentCommissionOrder(p,d)))return;
         }
         if(next==='retired'){
@@ -2989,7 +2995,7 @@
         contactCapture:!!commissionDraft.contactCapture
       },
       visualPresentation:window.BlackFlagV3Core?.normalizeVisualPresentation?.({businessType:commissionDraft.businessType,customerExperience:{photoRequired:!!commissionDraft.photoRequired},visualPresentation:{profile:commissionDraft.visualProfile||'none'}}),
-      products:commissionDraft.primaryOffer?[{id:'product-'+Date.now().toString(36),name:commissionDraft.primaryOffer,active:true,pricingMode:commissionDraft.pricingMode}]:[],
+      products:commissionDraft.primaryOffer?[{id:'product-'+Date.now().toString(36),name:commissionDraft.primaryOffer,active:true,published:true,customerReady:true,pricingMode:commissionDraft.pricingMode}]:[],
       ownerAccess:{
         enabled:!!commissionDraft.ownerPortal,
         ownerName:commissionDraft.ownerName||'',
@@ -3009,7 +3015,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.22'
+      commissioningVersion:'3.8.24'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -3576,6 +3582,110 @@
     const built=window.BlackFlagV3Core?.normalizeVisualPresentation?.({...(p||{}),visualPresentation:next});
     return built||next;
   }
+  const universalCustomerState={projectId:null,offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',submittedOrderId:''};
+  function resetUniversalCustomerState(p){
+    const offers=universalOffersFor(p);
+    Object.assign(universalCustomerState,{projectId:p?.id||null,offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',submittedOrderId:''});
+  }
+  function universalCustomerContextFor(p){
+    const ctx=window.__deploymentCustomerContext;
+    if(ctx && ctx.projectId===p?.id)return ctx;
+    return {projectId:p?.id||null,deploymentId:null,state:'private_test',attractTitle:p?.description||'Ready when you are.'};
+  }
+  function universalCustomerStageLabel(p){
+    const ctx=universalCustomerContextFor(p);
+    if(ctx.state==='deployed')return 'ACTIVE OUTPOST';
+    if(ctx.state==='sea_trial')return 'SEA TRIAL • CUSTOMER TEST';
+    return 'PRIVATE PROJECT TEST';
+  }
+  function universalSelectedOffer(p){
+    const offers=universalOffersFor(p);
+    return offers.find(x=>x.id===universalCustomerState.offerId)||offers[0]||null;
+  }
+  function universalPriceLabel(offer){
+    const price=Number(offer?.price||offer?.basePrice||0);
+    return price>0?`$${price.toFixed(2)}`:'PRICE CONFIRMED BY BUSINESS';
+  }
+  function renderUniversalCustomerShell(p){
+    const shell=$('universalCustomerShell'); if(!shell||!p)return;
+    if(universalCustomerState.projectId!==p.id)resetUniversalCustomerState(p);
+    const offers=universalOffersFor(p);
+    const offer=universalSelectedOffer(p);
+    const photoRequired=!!p.customerExperience?.photoRequired;
+    const contactCapture=p.customerExperience?.contactCapture!==false;
+    const ctx=universalCustomerContextFor(p);
+    const initials=(p.projectCode||p.orderPrefix||p.name||'PRJ').replace(/[^A-Za-z0-9]/g,'').slice(0,3).toUpperCase()||'PRJ';
+    if(universalCustomerState.submittedOrderId){
+      shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div>${ctx.deploymentId?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
+      <main class="universal-shell-main"><section class="universal-done-card"><div class="universal-done-mark">✓</div><small>${ctx.state==='sea_trial'?'SEA TRIAL ORDER RECORDED':'ORDER RECEIVED'}</small><h2>${ctx.state==='sea_trial'?'Customer test complete.':"You're in the queue."}</h2><p>Order <strong>${escapeHtml(universalCustomerState.submittedOrderId)}</strong> is sealed to ${escapeHtml(p.name)} only.</p>${ctx.deploymentId?'<button type="button" id="universalDoneReturnShipwright" class="primary-btn">RETURN TO SHIPWRIGHT</button>':'<button type="button" id="universalAnotherOrder" class="primary-btn">START ANOTHER ORDER</button>'}</section></main>`;
+      $('universalAnotherOrder')?.addEventListener('click',()=>{resetUniversalCustomerState(p);renderUniversalCustomerShell(p)});
+      $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
+      $('universalDoneReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
+      return;
+    }
+    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Choose an offer and send your request.')}</p></div>${ctx.deploymentId?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
+      <main class="universal-shell-main">
+        ${ctx.state==='sea_trial'?'<div class="universal-trial-banner">SEA TRIAL — Orders created here are test orders until this outpost is activated.</div>':''}
+        <section class="universal-order-card">
+          <div class="universal-section-head"><small>1 • OFFER</small><h2>What can we help with?</h2></div>
+          <div class="universal-offer-grid">${offers.length?offers.map(x=>`<button type="button" class="universal-offer ${offer?.id===x.id?'selected':''}" data-universal-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(universalPriceLabel(x))}</span></button>`).join(''):'<div class="universal-empty"><strong>No customer-ready offers yet.</strong><span>Return to Project Control and make an offer available before testing this vessel.</span></div>'}</div>
+        </section>
+        ${photoRequired?`<section class="universal-order-card"><div class="universal-section-head"><small>2 • REFERENCE</small><h2>Add the required photo</h2></div><label class="universal-photo-picker"><input id="universalPhotoInput" type="file" accept="image/*" capture="environment"><span>${universalCustomerState.photoData?'CHANGE PHOTO':'TAKE OR CHOOSE PHOTO'}</span></label>${universalCustomerState.photoData?`<img class="universal-photo-preview" src="${universalCustomerState.photoData}" alt="Customer reference photo">`:''}</section>`:''}
+        <section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'3':'2'} • DETAILS</small><h2>Tell us what you need</h2></div><textarea id="universalNotes" class="universal-input" rows="4" maxlength="${Number(p.characterLimit||500)}" placeholder="Details, wording, preferences, or special instructions">${escapeHtml(universalCustomerState.notes)}</textarea></section>
+        ${contactCapture?`<section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'4':'3'} • CONTACT</small><h2>How should we reach you?</h2></div><div class="universal-contact-grid"><label>Name<input id="universalCustomerName" class="universal-input" autocomplete="name" value="${escapeHtml(universalCustomerState.customerName)}"></label><label>Phone<input id="universalCustomerPhone" class="universal-input" type="tel" autocomplete="tel" value="${escapeHtml(universalCustomerState.customerPhone)}"></label><label>Email<input id="universalCustomerEmail" class="universal-input" type="email" autocomplete="email" value="${escapeHtml(universalCustomerState.customerEmail)}"></label></div></section>`:''}
+        <section class="universal-review-card"><div><small>READY TO SEND</small><h2>${escapeHtml(offer?.name||'Select an offer')}</h2><p>${escapeHtml(universalPriceLabel(offer))}</p></div><button type="button" id="universalSubmitOrder" class="primary-btn" ${offers.length?'':'disabled'}>${ctx.state==='sea_trial'?'PLACE TEST ORDER':'PLACE ORDER'}</button></section>
+      </main>`;
+    $$('[data-universal-offer]').forEach(btn=>btn.addEventListener('click',()=>{universalCustomerState.offerId=btn.dataset.universalOffer;renderUniversalCustomerShell(p)}));
+    $('universalNotes')?.addEventListener('input',e=>universalCustomerState.notes=e.target.value);
+    $('universalCustomerName')?.addEventListener('input',e=>universalCustomerState.customerName=e.target.value);
+    $('universalCustomerPhone')?.addEventListener('input',e=>universalCustomerState.customerPhone=e.target.value);
+    $('universalCustomerEmail')?.addEventListener('input',e=>universalCustomerState.customerEmail=e.target.value);
+    $('universalPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{universalCustomerState.photoData=String(r.result||'');renderUniversalCustomerShell(p)};r.readAsDataURL(file)});
+    $('universalSubmitOrder')?.addEventListener('click',()=>submitUniversalCustomerOrder(p));
+    $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
+  }
+  async function returnUniversalTestToShipwright(p){
+    const ctx=universalCustomerContextFor(p);
+    if(!ctx.deploymentId)return;
+    window.__deploymentCustomerContext=null;
+    hideAllCustomerShells();
+    $('returnToEngineBtn')?.classList.add('hidden');
+    document.body.classList.remove('project-mode','universal-project');
+    document.body.classList.add('engine-mode');
+    $('enginePanel')?.classList.remove('hidden');
+    activeProjectId=null;
+    engineSessionUnlocked=true;
+    await openProjectEngineControl(p.id);
+    deploymentSelectionByProject.set(p.id,ctx.deploymentId);
+    await renderProjectTab(p.id,'deployment');
+  }
+  async function submitUniversalCustomerOrder(p){
+    const offer=universalSelectedOffer(p); if(!offer){alert('Choose an offer first.');return;}
+    if(p.customerExperience?.photoRequired && !universalCustomerState.photoData){alert('Add the required photo before sending this order.');return;}
+    if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerName.trim()){alert('Enter your name before sending this order.');return;}
+    if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerPhone.trim() && !universalCustomerState.customerEmail.trim()){alert('Add a phone number or email so the business can reach you.');return;}
+    const prefix=(p.orderPrefix||p.projectCode||'ORD').replace(/[^A-Za-z0-9]/g,'').slice(0,8).toUpperCase()||'ORD';
+    const now=new Date(), y=String(now.getFullYear()).slice(-2), mo=String(now.getMonth()+1).padStart(2,'0'), day=String(now.getDate()).padStart(2,'0'), suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase();
+    const id=`${prefix}-${y}${mo}${day}-${suffix}`;
+    const ctx=universalCustomerContextFor(p);
+    const price=Number(offer.price||offer.basePrice||0);
+    const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||p.namespace,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:prefix},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New',price,productId:offer.id,productName:offer.name,offerName:offer.name,wording:universalCustomerState.notes.trim(),notes:universalCustomerState.notes.trim(),photoData:universalCustomerState.photoData||'',contactPreference:universalCustomerState.customerPhone?'Text':'Email',customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'universal_customer_shell'};
+    backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Universal order save failed',err);alert('The order could not be saved. Please try again.');return;}
+    if(ctx.state==='sea_trial' && ctx.deploymentId){
+      const canonicalProject=projectById(p.id);
+      const deployment=migrateLegacyDeployment(canonicalProject).find(x=>x.id===ctx.deploymentId);
+      if(deployment){
+        deployment.lastTestedAt=new Date().toISOString();
+        deployment.lastTestOrderId=id;
+        deployment.testMode='customer_order';
+        deployment.updatedAt=deployment.lastTestedAt;
+        await saveCompanies();
+        logActivity(p.id,'Sea Trial customer order completed',`${deployment.name} • ${id}`);
+      }
+    }
+    universalCustomerState.submittedOrderId=id;renderUniversalCustomerShell(p);
+  }
+
   const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers'};
   function projectShellFor(p){
     if(!p)return 'generic';
@@ -3585,16 +3695,29 @@
     if(shell==='ikes'||shell==='wood-sign'||shell==='custom_wood_sign'||shell==='wood_sign')return 'ikes';
     if(shell==='mugs'||shell==='custom-mug'||shell==='custom_mug'||shell==='mugshot-after-dark')return 'mugs';
     if(shell==='flowers'||shell==='flower-shop'||shell==='custom_flowers'||shell==='flowers-project')return 'flowers';
+    // Every commissioned vessel receives the reusable Dark Sky customer shell.
+    // Bespoke shells remain enhancements, never a prerequisite for leaving harbor.
+    if(p.commissionedAt || p.registry?.source==='commissioning' || p.businessType || (p.products||[]).length)return 'universal';
     return 'generic';
   }
-  function hideAllCustomerShells(){$('customerApp')?.classList.add('hidden');$('mugsCustomerShell')?.classList.add('hidden');$('flowersCustomerShell')?.classList.add('hidden');}
+  function universalOffersFor(p){
+    return (p?.products||[]).filter(pr=>pr && pr.active!==false && (pr.published===true || pr.active===true));
+  }
+  function projectCustomerOperatingModelReady(p){
+    const shell=projectShellFor(p);
+    if(['ikes','mugs','flowers'].includes(shell))return true;
+    if(shell==='universal')return universalOffersFor(p).length>0;
+    return false;
+  }
+  function hideAllCustomerShells(){$('customerApp')?.classList.add('hidden');$('mugsCustomerShell')?.classList.add('hidden');$('flowersCustomerShell')?.classList.add('hidden');$('universalCustomerShell')?.classList.add('hidden');}
   function showCustomerShellForProject(p){
     hideAllCustomerShells();
-    document.body.classList.remove('ikes-project','mugs-project','flowers-project');
+    document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project');
     const shell=projectShellFor(p);
     if(shell==='ikes') $('customerApp')?.classList.remove('hidden');
     else if(shell==='mugs') $('mugsCustomerShell')?.classList.remove('hidden');
     else if(shell==='flowers') $('flowersCustomerShell')?.classList.remove('hidden');
+    else if(shell==='universal'){ $('universalCustomerShell')?.classList.remove('hidden'); document.body.classList.add('universal-project'); renderUniversalCustomerShell(p); }
     else console.warn('No customer shell registered for project',p?.id);
   }
 
@@ -3611,7 +3734,7 @@
     const p=projectById(id);if(!p)return;
     const resolvedShell=projectShellFor(p);
     if(resolvedShell==='generic'){
-      alert('This project does not have a customer shell assigned yet. Open its Control Center and assign a project type/template before testing.');
+      alert('This project does not yet have a customer operating model. Add a customer-ready offer in Project Control before testing.');
       return;
     }
     activeProjectId=id;logActivity(id,'Project opened');engineSessionUnlocked=false;
@@ -3623,7 +3746,9 @@
     }else if(resolvedShell==='mugs'){
       $('returnToEngineBtn')?.classList.remove('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
     }else if(resolvedShell==='flowers'){
-      $('returnToEngineBtn')?.classList.remove('hidden');applyFlowersIdentity(p);document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');resetFlowersShell();showFlowersScreen('welcome');
+      $('returnToEngineBtn')?.classList.remove('hidden');applyFlowersIdentity(p);document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project','universal-project');document.body.classList.add('flowers-project');resetFlowersShell();showFlowersScreen('welcome');
+    }else if(resolvedShell==='universal'){
+      $('returnToEngineBtn')?.classList.remove('hidden');document.title=p.name||'Project';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='universal';document.body.classList.remove('ikes-project','mugs-project','flowers-project');document.body.classList.add('universal-project');resetUniversalCustomerState(p);renderUniversalCustomerShell(p);
     }
   }
 
@@ -6648,7 +6773,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.22',
+    version:'3.8.24',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7074,7 +7199,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.22.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • Sea Trial customer test repair + explicit deployment state`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.24.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • launch readiness + real Sea Trial order + activation lane`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

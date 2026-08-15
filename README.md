@@ -1,6 +1,6 @@
 # Dark Sky / Black Flag Engine
 
-**Current release:** v3.8.22 — Sea Trial Clarity & Customer Test Repair
+**Current release:** v3.8.21 — Deployment Voyage Refit
 
 This release simplifies the Deployment Shipwright around one guided voyage: **Configure → Save → Sea Trial → Test → Active**. The outpost registry stays visible, the setup area becomes the primary work surface, customer preview and the next required action share one column, and technical manifest details are collapsed under Advanced.
 
@@ -21,3 +21,7 @@ Continue Sea Trials on Andie’s Lemonade Stand and the existing vessels. Once d
 
 ## Security boundary
 This remains a browser-local prototype. Project IDs, deployment sealing, authorization checks, persistence verification, and audit records are meaningful prototype controls, but unrelated production tenants still require server-side identity, authorization, durable storage controls, secret management, and revocation.
+
+
+### Launch readiness
+Newly commissioned projects use the universal customer shell. If a project reaches Sea Trial without a customer-ready offer, the Deployment Shipwright now asks for the first launch offer directly instead of presenting a dead activation path. A real Sea Trial order must be completed before activation.

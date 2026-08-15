@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-22-sea-trial-clarity';
+const CACHE='dark-sky-v3-8-24-launch-readiness';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.22',
-  './platform_core.js?v=3.8.22',
-  './platform_identity.js?v=3.8.22',
-  './app.js?v=3.8.22',
-  './captain.js?v=3.8.22',
+  './styles.css?v=3.8.24',
+  './platform_core.js?v=3.8.24',
+  './platform_identity.js?v=3.8.24',
+  './app.js?v=3.8.24',
+  './captain.js?v=3.8.24',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
