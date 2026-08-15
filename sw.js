@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-2-immutable-project-identity';
+const CACHE='dark-sky-v3-8-3-identity-sync-order-command';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.2',
-  './platform_core.js?v=3.8.2',
-  './platform_identity.js?v=3.8.2',
-  './app.js?v=3.8.2',
-  './captain.js?v=3.8.2',
+  './styles.css?v=3.8.3',
+  './platform_core.js?v=3.8.3',
+  './platform_identity.js?v=3.8.3',
+  './app.js?v=3.8.3',
+  './captain.js?v=3.8.3',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

@@ -9134,3 +9134,52 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 #projectEngineControl .pc-navigation-error strong{letter-spacing:.12em;font-size:12px}
 #projectEngineControl .pc-navigation-error button{justify-self:center;padding:10px 14px;border:1px solid #5a7f8b;border-radius:999px;background:#10262e;color:#e7f0ef;font-weight:900;cursor:pointer}
 \n\n/* v3.8.2 — Immutable Project Identity */\n.marketing-identity-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px}\n.marketing-identity-heading h4{margin:0}\n.secondary-btn.compact{min-height:32px;padding:6px 10px;font-size:9px;letter-spacing:.6px}\n.technical-identity-row{opacity:.72}\nbody.business-engine-mode #enginePanel .marketing-identity-heading .secondary-btn.compact{background:#10242c!important;border-color:#39535d!important;color:#c5d2d3!important}\n
+/* =========================================================
+   v3.8.3 — Project Identity Sync + Order Command Refit
+   ========================================================= */
+.pec-orders-shell{
+  border:1px solid rgba(111,180,203,.30);
+  border-radius:18px;
+  padding:20px;
+  background:linear-gradient(145deg,rgba(8,28,36,.96),rgba(7,20,27,.98));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.pec-orders-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:16px}
+.pec-orders-heading small,.pec-order-command-card small{display:block;color:#8fa8b1;font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.pec-orders-heading h4{margin:4px 0 4px;font-size:1.35rem;color:#f2f5f3}
+.pec-orders-heading p{margin:0;color:#9fb0b6;max-width:720px}
+.pec-order-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.pec-order-summary article{padding:13px 15px;border:1px solid rgba(111,180,203,.23);border-radius:13px;background:rgba(13,39,49,.72)}
+.pec-order-summary span{display:block;color:#8fa8b1;font-size:.67rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.pec-order-summary strong{display:block;margin-top:5px;color:#f5f7f5;font-size:1.35rem}
+.pec-order-command-list{display:grid;gap:11px}
+.pec-order-command-card{overflow:hidden;border:1px solid rgba(111,180,203,.23);border-radius:15px;background:rgba(5,23,30,.82)}
+.pec-order-command-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 16px;border-bottom:1px solid rgba(111,180,203,.16);background:rgba(20,54,65,.38)}
+.pec-order-command-id strong{display:block;color:#f4f7f5;font-size:1.02rem;letter-spacing:.02em;margin:2px 0}
+.pec-order-command-id span{color:#8fa8b1;font-size:.82rem}
+.pec-order-command-state{display:flex;align-items:center;gap:14px;white-space:nowrap}
+.pec-order-command-state>strong{font-size:1.12rem;color:#f4f7f5}
+.pec-order-status{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border-radius:999px;border:1px solid rgba(121,186,203,.28);background:rgba(30,73,84,.52);color:#dce9ea;font-size:.69rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.pec-order-status.completed{border-color:rgba(97,175,121,.44);background:rgba(45,100,63,.32);color:#bfe0c5}
+.pec-order-status.in-production,.pec-order-status.active{border-color:rgba(197,161,77,.43);background:rgba(104,79,25,.28);color:#ead69b}
+.pec-order-command-body{display:grid;grid-template-columns:1.05fr 1.35fr 1fr;gap:0}
+.pec-order-command-body section{min-width:0;padding:14px 16px;border-right:1px solid rgba(111,180,203,.12)}
+.pec-order-command-body section:last-child{border-right:0}
+.pec-order-command-body strong{display:block;margin:4px 0 6px;color:#edf3f2;line-height:1.28;overflow-wrap:anywhere}
+.pec-order-command-body span,.pec-order-command-body a{display:block;color:#9fb0b6;font-size:.84rem;line-height:1.42;overflow-wrap:anywhere}
+.pec-order-command-body a{color:#76c9e8;text-decoration:none}
+.pec-order-command-body a:hover{text-decoration:underline}
+.pec-order-contact-stack{display:grid;gap:2px}
+.pec-order-empty{padding:24px;border:1px dashed rgba(111,180,203,.28);border-radius:14px;text-align:center;color:#9fb0b6}
+.pec-order-empty strong{display:block;color:#f0f4f3;margin-bottom:5px}
+@media (max-width:900px){
+  .pec-order-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pec-order-command-body{grid-template-columns:1fr}
+  .pec-order-command-body section{border-right:0;border-bottom:1px solid rgba(111,180,203,.12)}
+  .pec-order-command-body section:last-child{border-bottom:0}
+}
+@media (max-width:600px){
+  .pec-orders-shell{padding:14px}
+  .pec-order-command-head{align-items:flex-start;flex-direction:column}
+  .pec-order-command-state{width:100%;justify-content:space-between}
+}

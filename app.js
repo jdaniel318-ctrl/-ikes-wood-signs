@@ -1788,7 +1788,7 @@
       <button id="saveAITab" class="primary-btn small">SAVE AI POLICY</button></div>`;
     if(tab==='workflow') return `<div class="pec-card"><h4>Workflow</h4><p class="helper">One stage per line.</p><textarea id="ptWorkflow" rows="7">${escapeHtml((p.workflow||DEFAULT_BUSINESS_CONFIG.orderStatuses).join('\n'))}</textarea><button id="saveWorkflowTab" class="primary-btn small">SAVE WORKFLOW</button></div>`;
     if(tab==='publishing') return `<div class="pec-card"><h4>Publishing</h4><label>Project status<select id="ptPublish"><option value="development">Development — engine only</option><option value="test">Test</option><option value="live">Published / Live</option><option value="paused">Paused</option></select></label><p class="helper">Product-level publish controls are in Products.</p><button id="savePublishingTab" class="primary-btn small">SAVE PUBLISHING</button></div>`;
-    if(tab==='orders') return `<div class="pec-card"><h4>Project Orders</h4><div id="ptOrders">Loading…</div></div>`;
+    if(tab==='orders') return `<div class="pec-orders-shell"><div class="pec-orders-heading"><div><small>ORDER COMMAND</small><h4>Project Orders</h4><p>Current work, customer contact, request details, and recorded value for this project.</p></div></div><div id="ptOrders">Loading…</div></div>`;
     if(tab==='ledger') {
       const ledger=projectLedger(p.id);
       const rev=ledger.reduce((s,x)=>s+(Number(x.revenue)||0),0), cost=ledger.reduce((s,x)=>s+(Number(x.materialCost)||0)+(Number(x.otherDirectCost)||0),0);
@@ -2325,17 +2325,25 @@
         <article><span>Active</span><strong>${stats.active}</strong></article>
         <article><span>Completed</span><strong>${stats.completed}</strong></article>
       </div>`;
-      const table=orders.length?`<div class="pec-order-table-wrap"><table class="pec-order-table"><thead><tr><th>Order</th><th>Created</th><th>Status</th><th>Customer</th><th>Phone</th><th>Email</th><th>Details</th><th>Total</th></tr></thead><tbody>${orders.map(o=>`<tr>
-        <td><div class="pec-order-primary"><strong>${escapeHtml(o.id)}</strong><small>${escapeHtml(orderOfferSummary(o,p)||p.name)}</small></div></td>
-        <td>${escapeHtml(compactOrderDate(o.createdAt))}</td>
-        <td>${escapeHtml(canonicalOrderStatus(o.status))}</td>
-        <td>${escapeHtml(o.customerName||'—')}</td>
-        <td><div class="pec-order-contact-stack">${o.customerPhone?`<a href="tel:${escapeHtml(o.customerPhone)}">${escapeHtml(o.customerPhone)}</a>`:'—'}</div></td>
-        <td><div class="pec-order-contact-stack">${o.customerEmail?`<a href="mailto:${escapeHtml(o.customerEmail)}">${escapeHtml(o.customerEmail)}</a>`:'—'}</div></td>
-        <td><div class="pec-order-detail-stack"><strong>${escapeHtml(orderRequestedText(o))}</strong><small>${escapeHtml(orderStyleSummary(o))}</small></div></td>
-        <td>$${Number(o.price||0).toFixed(2)}</td>
-      </tr>`).join('')}</tbody></table></div>`:`<p class="helper">No orders for this project yet.</p>`;
-      $('ptOrders').innerHTML=summary+table;
+      const commandList=orders.length?`<div class="pec-order-command-list">${orders.map(o=>{
+        const status=canonicalOrderStatus(o.status);
+        const statusClass=adminStatusClass(status);
+        const request=orderRequestedText(o);
+        const style=orderStyleSummary(o);
+        const offer=orderOfferSummary(o,p)||p.name;
+        return `<article class="pec-order-command-card ${escapeHtml(statusClass)}">
+          <div class="pec-order-command-head">
+            <div class="pec-order-command-id"><small>ORDER</small><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(compactOrderDate(o.createdAt))}</span></div>
+            <div class="pec-order-command-state"><span class="pec-order-status ${escapeHtml(statusClass)}">${escapeHtml(status)}</span><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
+          </div>
+          <div class="pec-order-command-body">
+            <section><small>CUSTOMER</small><strong>${escapeHtml(o.customerName||'Not captured')}</strong><div class="pec-order-contact-stack">${o.customerPhone?`<a href="tel:${escapeHtml(o.customerPhone)}">${escapeHtml(o.customerPhone)}</a>`:'<span>No phone</span>'}${o.customerEmail?`<a href="mailto:${escapeHtml(o.customerEmail)}">${escapeHtml(o.customerEmail)}</a>`:'<span>No email</span>'}</div></section>
+            <section><small>REQUEST</small><strong>${escapeHtml(request||'No request detail')}</strong><span>${escapeHtml(style||offer)}</span></section>
+            <section><small>OFFER / SOURCE</small><strong>${escapeHtml(offer)}</strong><span>${escapeHtml(p.name)} · ${escapeHtml(p.projectCode||p.orderPrefix||'PROJECT')}</span></section>
+          </div>
+        </article>`;
+      }).join('')}</div>`:`<div class="pec-order-empty"><strong>No orders yet</strong><span>The first approved project order will appear here.</span></div>`;
+      $('ptOrders').innerHTML=summary+commandList;
     }
   }
 
@@ -2611,7 +2619,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.2'
+      commissioningVersion:'3.8.3'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6153,6 +6161,9 @@ The full order and approved media remain stored with this project.`;
         clearGraphicsTransientUi();
         closeEngineWorkspace($('projectEngineControl'));
         engineActiveProjectId=null;
+        // Project Control may change the human-facing business identity. Refresh the
+        // fleet command immediately so Engine cards never retain stale display data.
+        Promise.resolve(renderProjectCommand()).catch(err=>console.warn('Engine project command refresh warning',err));
         return;
       }
 
@@ -6514,7 +6525,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.2.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • immutable project identity`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.3.ready',detail:`${companies.length} projects • schema 6 • policy 3.4 • immutable project identity`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

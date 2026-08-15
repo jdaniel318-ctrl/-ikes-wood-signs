@@ -1,3 +1,11 @@
+## v3.8.3 — Identity Sync & Order Command Refit
+
+- Engine Project Command now refreshes immediately when Project Control closes, so business-name changes appear without requiring a page reload or unrelated Engine refresh.
+- Preserves immutable Project ID / namespace behavior; this is a display synchronization repair, not an identity migration.
+- Project Control Orders refitted from an unstyled wide table into responsive command cards with summary counts, status, customer contact, request detail, offer/source, and recorded value.
+- Added iPad/mobile responsive order layout while retaining all order detail.
+- Cache/version references advanced to v3.8.3.
+
 ## v3.8.2 — Immutable Project Identity
 
 - Made the Dark Sky Project ID the permanent identity/security anchor for every project.
