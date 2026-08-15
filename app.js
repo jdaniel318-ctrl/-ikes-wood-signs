@@ -2570,7 +2570,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.0'
+      commissioningVersion:'3.8.1'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6073,7 +6073,56 @@ The full order and approved media remain stored with this project.`;
     audit:()=>window.BlackFlagV3Core?.readAudit?.()||[]
   };
 
+  function bindMissionCriticalNavigation(){
+    if(window.__blackFlagMissionNavigationBound)return;
+    window.__blackFlagMissionNavigationBound=true;
+
+    // Navigation that must survive every project/template/control-center refit.
+    // Capture phase intentionally owns these routes before feature-level handlers.
+    document.addEventListener('click',event=>{
+      const target=event.target?.closest?.('#projectTabs [data-project-tab],#closeProjectEngineControl,#returnToEngineBtn');
+      if(!target)return;
+
+      if(target.matches('#projectTabs [data-project-tab]')){
+        event.preventDefault();
+        event.stopPropagation();
+        const projectId=engineActiveProjectId;
+        const tab=target.dataset.projectTab;
+        if(!projectId||!tab)return;
+        if(target.dataset.navBusy==='1')return;
+        target.dataset.navBusy='1';
+        Promise.resolve(renderProjectTab(projectId,tab))
+          .catch(err=>{
+            console.error('Project Control navigation failed',err);
+            window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId,category:'navigation',action:'project.control.tab.failed',detail:`${tab} • ${String(err?.message||err)}`});
+            const box=$('projectTabContent');
+            if(box)box.innerHTML=`<div class="pc-navigation-error"><strong>COMMAND ROUTE INTERRUPTED</strong><span>${escapeHtml(String(err?.message||'This Project Control section could not be opened.'))}</span><button type="button" data-project-jump="overview">RETURN TO OVERVIEW</button></div>`;
+          })
+          .finally(()=>{delete target.dataset.navBusy;});
+        return;
+      }
+
+      if(target.id==='closeProjectEngineControl'){
+        event.preventDefault();
+        event.stopPropagation();
+        clearGraphicsTransientUi();
+        closeEngineWorkspace($('projectEngineControl'));
+        engineActiveProjectId=null;
+        return;
+      }
+
+      if(target.id==='returnToEngineBtn'){
+        event.preventDefault();
+        event.stopPropagation();
+        requestEngineFromProject();
+      }
+    },true);
+  }
+
   function bindEvents(){
+    // Bind the ship's primary escape routes first. If a later optional control
+    // ever throws during setup, the Captain can still navigate safely.
+    bindMissionCriticalNavigation();
     bindEngineFleetCommand();
 
     $('firstMateRefreshBtn')?.addEventListener('click',refreshV3CommandSystems);
@@ -6274,13 +6323,8 @@ The full order and approved media remain stored with this project.`;
     $('saveAISettingsBtn').addEventListener('click',saveAIForm);
 
     if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',openAddProject);
-    if($('closeProjectEngineControl')) $('closeProjectEngineControl').addEventListener('click',()=>{clearGraphicsTransientUi();closeEngineWorkspace($('projectEngineControl'));engineActiveProjectId=null;});
-    if($('projectTabs')) $('projectTabs').addEventListener('click',e=>{const b=e.target.closest('[data-project-tab]');if(b&&engineActiveProjectId)renderProjectTab(engineActiveProjectId,b.dataset.projectTab);});
-    if($('returnToEngineBtn')) $('returnToEngineBtn').addEventListener('click',e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      requestEngineFromProject();
-    },true);
+    // Project Control tabs and Black Flag return routes are owned by
+    // bindMissionCriticalNavigation() so they cannot be lost in a module refit.
     $('editEngineNameBtn')?.addEventListener('click',()=>{
       if($('engineNameSetting')) $('engineNameSetting').value=engineConfig.engineName||'Dark Sky';
       $('engineIdentityStatus').textContent='';
@@ -6425,7 +6469,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.0.ready',detail:`${companies.length} projects • schema 5 • policy 3.3 • command & visibility`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.1.ready',detail:`${companies.length} projects • schema 5 • policy 3.3 • command deck repair`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

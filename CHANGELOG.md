@@ -96,3 +96,10 @@ The 2.9 series was the shipyard where the original Ike's Wood Signs application 
 
 ## v3.7.4 — Control Center Navigation Repair
 Replaced the fixed full-screen Engine workspace overlay with a dedicated in-flow workspace screen. This prevents the iPad Safari failure where only the bottom edge of a Control Center rendered while page scrolling was locked. Control Center and Configure Engine now park the command deck, own normal document scrolling, and restore the prior Engine scroll position on return.
+
+## v3.8.1 — Command Deck Repair
+- Added a capture-phase mission-critical navigation layer for Project Control tabs, Project Control → Engine, and project → Black Flag return.
+- Bound those escape routes before optional feature controls so later setup errors cannot strand the user.
+- Raised tap targets above project decoration and hardened iPad touch behavior.
+- Rebalanced the Project Control cockpit from white cards to low-glare Dark Sky instrument surfaces.
+- Added an explicit in-panel navigation failure state instead of silent dead controls.
