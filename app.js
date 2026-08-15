@@ -935,8 +935,31 @@
     }
   }
 
-  // Black Flag portal bridge. 5615 is the guaranteed recovery/default PIN for this test build.
-  // This bridge keeps the portal and engine session using the SAME authentication state.
+  // Unified Black Flag Engine authentication. Every Engine gate must use this controller.
+  // 5615 remains the guaranteed recovery/default PIN for this test build.
+  async function verifyEnginePin(rawValue,{recordFailure=true}={}){
+    const entered=String(rawValue||'').trim();
+    const security=pinSecurityState('engine');
+    if(security.lockedUntil>Date.now()){
+      return {ok:false,code:'locked',lockedUntil:security.lockedUntil};
+    }
+    let configured=DEFAULT_ENGINE_PIN;
+    try{ configured=String(await getEnginePin() || DEFAULT_ENGINE_PIN); }catch(_){ configured=DEFAULT_ENGINE_PIN; }
+    const ok=entered===String(DEFAULT_ENGINE_PIN) || entered===configured;
+    if(ok){
+      clearPinFailures('engine');
+      return {ok:true,code:'ok',configured,recovery:entered===String(DEFAULT_ENGINE_PIN)};
+    }
+    const row=recordFailure ? recordBadPin('engine') : pinSecurityState('engine');
+    return {ok:false,code:row.lockedUntil>Date.now()?'locked':'incorrect',lockedUntil:row.lockedUntil||0};
+  }
+
+  function engineAuthMessage(result){
+    if(result?.code==='locked') return 'Engine access is temporarily locked. Wait for the lock timer, then try again.';
+    return 'Incorrect Engine PIN.';
+  }
+
+  // Black Flag portal bridge. This bridge keeps every Engine PIN surface on one authentication state.
   window.BlackFlagAuth = {
     async expectedPin(){
       try{
@@ -946,6 +969,8 @@
         return DEFAULT_ENGINE_PIN;
       }
     },
+    verify: verifyEnginePin,
+    message: engineAuthMessage,
     unlock(){
       engineSessionUnlocked=true;
       return true;
@@ -3034,7 +3059,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.26'
+      commissioningVersion:'3.8.27'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6801,7 +6826,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.26',
+    version:'3.8.27',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7039,23 +7064,24 @@ The full order and approved media remain stored with this project.`;
     $('cancelEngineBtn').addEventListener('click',()=>{$('enginePinInput').value='';$('enginePinGate').classList.add('hidden');document.body.classList.remove('modal-open');});
     $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
     $('unlockEngineBtn').addEventListener('click',async()=>{
-      if(window.pinLocked('engine')){window.showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');return;}
       const entered=$('enginePinInput').value.trim();
-      const expected=await getEnginePin();
-      if(entered!==expected){
-        const pirateLines=[
-          'Arrr… wrong code, matey.',
-          'No treasure for ye. Try the captain’s code again.',
-          'That code be walking the plank.',
-          'Ye almost fooled the parrot. Almost.'
-        ];
-        $('enginePinError').textContent=pirateLines[Math.floor(Math.random()*pirateLines.length)];
-        const row=window.recordBadPin('engine');
-        if(row.lockedUntil>Date.now()) showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');
-        else $('enginePinInput').select();
+      const result=await window.BlackFlagAuth.verify(entered);
+      if(!result.ok){
+        if(result.code==='locked'){
+          $('enginePinError').textContent='';
+          window.showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');
+        }else{
+          const pirateLines=[
+            'Arrr… wrong code, matey.',
+            'No treasure for ye. Try the captain’s code again.',
+            'That code be walking the plank.',
+            'Ye almost fooled the parrot. Almost.'
+          ];
+          $('enginePinError').textContent=pirateLines[Math.floor(Math.random()*pirateLines.length)];
+          $('enginePinInput').select();
+        }
         return;
       }
-      clearPinFailures('engine');
       $('enginePinInput').value='';
       $('enginePinGate').classList.add('hidden');
       document.body.classList.remove('modal-open');
@@ -7144,11 +7170,11 @@ The full order and approved media remain stored with this project.`;
     });
     $('confirmEngineResetBtn').addEventListener('click',async()=>{
       const entered=$('engineResetPinInput').value.trim();
-      const expected=String(await getEnginePin());
-      if(entered!==expected && entered!==String(DEFAULT_ENGINE_PIN)){
-        $('engineResetError').textContent='Incorrect Engine PIN.';
-        $('engineResetPinInput').value='';
-        $('engineResetPinInput').focus();
+      const result=await window.BlackFlagAuth.verify(entered);
+      if(!result.ok){
+        $('engineResetError').textContent=window.BlackFlagAuth.message(result);
+        if(result.code==='locked') window.showPinLock('engine','engineResetLockTimer','engineResetPinInput','confirmEngineResetBtn');
+        else{ $('engineResetPinInput').value=''; $('engineResetPinInput').focus(); }
         return;
       }
       if(!confirm('Final confirmation: reset Engine and project settings to defaults? Saved orders will remain.')) return;
@@ -7227,7 +7253,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.26.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • guided deployment launch + simplified operational details + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.27.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -7281,24 +7307,18 @@ document.addEventListener('click', (event) => {
     const input=byId('blackFlagEntryPin');
     const entered=(input?.value||'').trim();
 
-    // 5615 is guaranteed to work as the current/default Engine PIN for recovery.
-    // If a configured PIN exists, it is accepted too.
-    let configured='5615';
-    try{
-      if(window.BlackFlagAuth) configured=await window.BlackFlagAuth.expectedPin();
-    }catch(_){ configured='5615'; }
-
-    const valid = entered==='5615' || entered===String(configured);
-    if(pinLocked('engine')){window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');return;}
-    if(!valid){
+    const result=await window.BlackFlagAuth.verify(entered);
+    if(!result.ok){
       const err=byId('blackFlagEntryError');
-      if(err) err.textContent='Incorrect Engine PIN.';
-      const row=window.recordBadPin('engine');
-      if(row.lockedUntil>Date.now()) window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');
-      else if(input){ input.value=''; input.focus(); }
+      if(result.code==='locked'){
+        if(err) err.textContent='';
+        window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');
+      }else{
+        if(err) err.textContent=window.BlackFlagAuth.message(result);
+        if(input){ input.value=''; input.focus(); }
+      }
       return;
     }
-    window.clearPinFailures('engine');
 
     if(window.BlackFlagAuth) window.BlackFlagAuth.unlock();
     if(input) input.value='';

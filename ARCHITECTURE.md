@@ -90,3 +90,8 @@ The default operator surface must answer four questions without requiring manife
 The launch voyage is **Configure → Save → Sea Trial → Test → Active**. Basic customer-facing configuration remains visible. Session safety, capability scope, device lock, readiness diagnostics, backward lifecycle controls, and manifest internals remain available but are progressively disclosed under Advanced/Operational sections.
 
 This is presentation-only simplification. Project/deployment identity, authorization, persistence verification, test-order gating, and activation rules remain authoritative and may not be bypassed by the guided UI.
+
+
+## v3.8.27 Engine authentication law
+
+All Engine PIN gates must use the single `BlackFlagAuth.verify()` controller. `5615` remains the test-build recovery/default PIN and the configured Engine PIN remains valid. Authentication failures and lockout state are shared across Engine entry surfaces; no individual screen may implement its own PIN comparison. A lockout must be surfaced as a lockout, never as an incorrect-PIN message.

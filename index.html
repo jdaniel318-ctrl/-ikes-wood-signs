@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.8.26" />
+  <link rel="stylesheet" href="styles.css?v=3.8.27" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1074,7 +1074,7 @@
           <p>Enter the Engine PIN again. You will receive one final confirmation before anything is reset.</p>
           <label for="engineResetPinInput">Engine PIN</label>
           <input id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
-          <p id="engineResetError" class="pirate-error" aria-live="polite"></p>
+          <p id="engineResetError" class="pirate-error" aria-live="polite"></p><p id="engineResetLockTimer" class="pin-lock-timer hidden"></p>
           <button id="confirmEngineResetBtn" class="danger-btn">CONTINUE RESET</button>
           <button id="cancelEngineResetBtn" class="secondary-btn">CANCEL</button>
         </div>
@@ -1202,10 +1202,10 @@
 </section>
 
 
-  <script src="platform_core.js?v=3.8.26"></script>
-  <script src="platform_identity.js?v=3.8.26"></script>
-  <script src="app.js?v=3.8.26"></script>
-  <script src="captain.js?v=3.8.26"></script>
+  <script src="platform_core.js?v=3.8.27"></script>
+  <script src="platform_identity.js?v=3.8.27"></script>
+  <script src="app.js?v=3.8.27"></script>
+  <script src="captain.js?v=3.8.27"></script>
 
 </body>
 </html>

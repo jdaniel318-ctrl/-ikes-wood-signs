@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-26-guided-launch';
+const CACHE='dark-sky-v3-8-27-engine-auth-unified';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.26',
-  './platform_core.js?v=3.8.26',
-  './platform_identity.js?v=3.8.26',
-  './app.js?v=3.8.26',
-  './captain.js?v=3.8.26',
+  './styles.css?v=3.8.27',
+  './platform_core.js?v=3.8.27',
+  './platform_identity.js?v=3.8.27',
+  './app.js?v=3.8.27',
+  './captain.js?v=3.8.27',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

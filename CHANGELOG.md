@@ -1,5 +1,13 @@
 # Dark Sky Changelog
 
+## v3.8.27 — Unified Engine Authentication
+
+- Consolidates every Engine PIN surface onto one authentication controller.
+- Recovery PIN `5615` and the configured Engine PIN are accepted consistently at the main Engine gate, legacy Engine modal, and protected Engine reset.
+- Uses one shared failure/lockout state across all Engine gates.
+- Locked access now shows an explicit countdown/state instead of being misreported as an incorrect PIN.
+- Preserves the existing ten-attempt / five-minute lockout policy.
+
 ## v3.8.26 — Guided Deployment Launch
 - Refit Deployment Shipwright around one obvious next action at a time.
 - Added a prominent Step X of 5 / What to do now / Current state guidance band.
