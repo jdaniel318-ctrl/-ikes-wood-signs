@@ -1,14 +1,14 @@
 /* Dark Sky 4.2.0 — Spyglass platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.2.4';
-const NAME='Helm Link';
+const VERSION='4.3.0';
+const NAME='High Watch';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({
  state:'darkSkyV4StateV1', flags:'darkSkyV4FeatureFlagsV1', decisions:'darkSkyV4DecisionLedgerV1',
  diagnostics:'darkSkyV4BlackBoxV1', labs:'darkSkyV4CaptainLabV1', release:'darkSkyV4ReleaseRingsV1',
- recovery:'darkSkyV4RecoveryVaultV1', migration:'darkSkyV4MigrationGateV1'
+ recovery:'darkSkyV4RecoveryVaultV1', migration:'darkSkyV4MigrationGateV1', implementation:'darkSkyV4ImplementationQueueV1'
 });
 const CONTRACT=Object.freeze([
  'Nothing disappears during an ordinary upgrade.',
@@ -106,15 +106,29 @@ function blackBoxHealth(){
  const sessionErrors=errors.filter(x=>{const t=Date.parse(x.lastSeen||x.at||'');return Number.isFinite(t)&&t>=SESSION_STARTED_AT;});
  return {uniqueEvents:rows.length,occurrences,errorSignatures:errors.length,recentFaults:recentErrors.length,currentSessionFaults:sessionErrors.length,historicalFaults:Math.max(0,errors.length-sessionErrors.length),status:sessionErrors.length?'attention':'clear'};
 }
-function labCreate(project,brief=''){
+function labCreate(project,brief='',options={}){
  if(!project?.id)throw new Error('A project is required for a Captain Lab experiment.');
- const rows=read(KEYS.labs,[]);const row={id:uid('LAB'),at:new Date().toISOString(),updatedAt:new Date().toISOString(),projectId:project.id,projectName:project.name||project.id,state:'sandbox',brief:String(brief||'').trim(),productionWriteAllowed:false,clone:cleanProject(project)};
- rows.unshift(row);write(KEYS.labs,rows.slice(0,40));core()?.audit?.({actorRole:'captain',projectId:project.id,category:'experiment',action:'v4.captain_lab.created',detail:`${row.id} • production writes denied`});return row;
+ const rows=read(KEYS.labs,[]);const clean=cleanProject(project);const row={id:uid('LAB'),at:new Date().toISOString(),updatedAt:new Date().toISOString(),projectId:project.id,projectName:project.name||project.id,state:'sandbox',brief:String(brief||'').trim(),objective:String(options.objective||'').trim(),successCriteria:String(options.successCriteria||'').trim(),risk:String(options.risk||'low'),category:String(options.category||'general'),productionWriteAllowed:false,productionFingerprint:JSON.stringify(clean).length,clone:clean};
+ rows.unshift(row);write(KEYS.labs,rows.slice(0,40));core()?.audit?.({actorRole:'captain',projectId:project.id,category:'experiment',action:'v4.captain_lab.created',detail:`${row.id} • ${row.category} • production writes denied`});return row;
 }
 function labs(){return read(KEYS.labs,[])}
+function labUpdate(id,patch={}){
+ const rows=labs(),row=rows.find(x=>x.id===id);if(!row)throw new Error('Lab experiment not found.');
+ const allowed=['brief','objective','successCriteria','risk','category','notes'];for(const key of allowed){if(Object.prototype.hasOwnProperty.call(patch,key))row[key]=String(patch[key]??'').trim();}
+ row.updatedAt=new Date().toISOString();write(KEYS.labs,rows);core()?.audit?.({actorRole:'captain',projectId:row.projectId,category:'experiment',action:'v4.captain_lab.updated',detail:`${id} • experiment brief updated`});return row;
+}
+function implementationQueue(){return read(KEYS.implementation,[])}
+function queueImplementation(labId){
+ const lab=labs().find(x=>x.id===labId);if(!lab)throw new Error('Lab experiment not found.');
+ if(lab.state!=='promoted')throw new Error('Only an approved Captain Lab plan can be queued for Engine implementation.');
+ const rows=implementationQueue();const existing=rows.find(x=>x.labId===labId&&x.status!=='closed');if(existing)return existing;
+ const row={id:uid('IMP'),at:new Date().toISOString(),labId,projectId:lab.projectId,projectName:lab.projectName,brief:lab.brief,objective:lab.objective||'',successCriteria:lab.successCriteria||'',risk:lab.risk||'low',category:lab.category||'general',status:'requested',productionWriteAllowed:false};
+ rows.unshift(row);write(KEYS.implementation,rows.slice(0,100));core()?.audit?.({actorRole:'captain',projectId:lab.projectId,category:'experiment',action:'v4.engine_implementation.requested',detail:`${row.id} from ${labId} • no production write`});return row;
+}
 function labMark(id,state,notes=''){
  const rows=labs(),row=rows.find(x=>x.id===id);if(!row)throw new Error('Lab experiment not found.');
  if(!['sandbox','candidate','rejected','promoted'].includes(state))throw new Error('Invalid lab state.');
+ if(state==='candidate'&&!String(row.successCriteria||'').trim())throw new Error('Add success criteria before marking a lab experiment as Candidate.');
  row.state=state;row.notes=String(notes||'');row.updatedAt=new Date().toISOString();row.productionWriteAllowed=false;write(KEYS.labs,rows);core()?.audit?.({actorRole:'captain',projectId:row.projectId,category:'experiment',action:`v4.captain_lab.${state}`,detail:`${id} • promotion records approval only; Engine applies changes separately`});return row;
 }
 function releaseState(){return read(KEYS.release,{currentRing:'captain',rings:['captain','private','selected_live','fleet'],lastPromotion:null})}
@@ -168,7 +182,7 @@ function markCommissioningFailed(projects=[],reason='Commissioning invariant fai
 
 async function storageStewardPreview(onProgress){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-2-4-deck-sweep');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-3-0-high-watch');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
  let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.(onProgress)}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
  const cacheSizeMap=new Map((breakdown?.cacheStorage?.caches||[]).map(row=>[row.name,Number(row.bytes||0)]));
@@ -206,5 +220,5 @@ function commandBrief(projects=[]){
 function status(projects=[]){const pf=preflight(projects,null),rel=releaseState();return {version:VERSION,name:NAME,schema:SCHEMA,contract:CONTRACT,preflight:pf,release:rel,flags:featureFlags(),decisions:decisions().length,labs:labs().length,diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,migration:migrationState()}}
 window.addEventListener('error',e=>{if(featureFlags().black_box?.enabled)diagnostic('javascript.error',e.message||'Unknown error',{source:e.filename||'',line:e.lineno||0,column:e.colno||0})});
 window.addEventListener('unhandledrejection',e=>{if(featureFlags().black_box?.enabled)diagnostic('promise.rejection',String(e.reason?.message||e.reason||'Unhandled rejection'))});
-g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,blackBoxHealth,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,markCommissioningFailed,exportProject,storageStewardPreview,storageStewardClean,commandBrief,status};
+g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,blackBoxHealth,labCreate,labUpdate,labs,labMark,implementationQueue,queueImplementation,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,markCommissioningFailed,exportProject,storageStewardPreview,storageStewardClean,commandBrief,status};
 })(window);

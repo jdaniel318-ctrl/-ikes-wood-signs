@@ -1,3 +1,7 @@
+# Dark Sky 4.3.0 — High Watch
+
+High Watch promotes fleet intelligence, Command Search, and Captain Lab into first-class Captain capabilities. Fleet Intelligence ranks admitted vessels using live project workload and launch readiness. Command Search filters project-scoped projects, orders, and retained customers. Captain Lab now captures objective, success criteria, risk, experiment category, templates, and a non-production Engine implementation queue. No Captain Lab action writes production project machinery.
+
 # Dark Sky 4.2.4 — Deck Sweep
 
 Storage Steward cleanup now uses a direct two-step confirmation path with visible progress and immediate re-sounding. The active service-worker cache generation is unique to 4.2.4.

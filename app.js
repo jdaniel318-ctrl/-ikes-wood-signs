@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.2.4';
+  const BUILD_VERSION = '4.3.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1006,7 +1006,7 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.2.4'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.0'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -1037,7 +1037,7 @@
       const reclaimed=Number(r.before?.oldCacheBytes||0);
       box.dataset.inspectOk='0';
       try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
-      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.2.4',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.0',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
       if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
       // Re-sound immediately so the user gets visible proof of what changed.
       const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
@@ -1054,7 +1054,7 @@
     }catch(err){
       const message=String(err?.message||err||'Unknown cleanup failure');
       box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.2.4'});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.0'});
       if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
       return false;
     }
@@ -1068,6 +1068,41 @@
     return [...projectRows,...orders,...customers];
   }
   window.blackFlagCommandSearchData=blackFlagCommandSearchData;
+
+
+  async function blackFlagFleetIntelligenceData(){
+    const rows=[];
+    for(const p of projects()){
+      try{
+        const snap=await projectControlSnapshot(p);
+        const launch=projectFleetLaunchState(p);
+        const customers=projectCustomerRows(p.id)||[];
+        const open=Array.isArray(snap.open)?snap.open.length:0;
+        const ready=Array.isArray(snap.ready)?snap.ready.length:0;
+        const completed=Array.isArray(snap.completed)?snap.completed.length:0;
+        const activeDeployments=Array.isArray(snap.activeDeployments)?snap.activeDeployments.length:0;
+        const offers=Array.isArray(launch.offers)?launch.offers.length:0;
+        const reasons=[];
+        let score=0;
+        if(open){score+=Math.min(45,open*7);reasons.push(`${open} open order${open===1?'':'s'}`)}
+        if(ready){score+=Math.min(20,ready*5);reasons.push(`${ready} ready for pickup`)}
+        if(launch.key==='draft'){score+=22;reasons.push('launch setup incomplete')}
+        else if(launch.key==='preparing'){score+=16;reasons.push('preparing for Sea Trial')}
+        else if(launch.key==='sea_trial'){score+=12;reasons.push('Sea Trial underway')}
+        if(!offers){score+=10;reasons.push('no customer-ready offers')}
+        if(p.ownerStatus==='not_claimed'||p.ownerStatus==='pending'){score+=5;reasons.push('owner access not claimed')}
+        if(activeDeployments===0&&p.publish?.status==='live'){score+=15;reasons.push('published without active deployment')}
+        const level=score>=45?'critical':score>=25?'attention':score>=10?'watch':'clear';
+        const next=launch.key==='draft'?'Finish business brief / customer-ready offer':launch.key==='preparing'?'Finish outpost setup':launch.key==='sea_trial'?'Complete Sea Trial proof':launch.key==='fleet_ready'?'Review for fleet join':open?'Work oldest open orders':'Maintain current course';
+        rows.push({projectId:p.id,projectName:p.name,code:p.code||'',score,level,reasons,next,launchKey:launch.key,launchLabel:launch.label,open,ready,completed,customers:customers.length,offers,activeDeployments,publishStatus:p.publish?.status||p.publishStatus||'development'});
+      }catch(err){
+        rows.push({projectId:p.id,projectName:p.name,code:p.code||'',score:99,level:'critical',reasons:[`Intelligence read interrupted: ${String(err?.message||err)}`],next:'Open project and inspect',launchKey:'unknown',launchLabel:'CHECK',open:0,ready:0,completed:0,customers:0,offers:0,activeDeployments:0,publishStatus:p.publish?.status||p.publishStatus||'development'});
+      }
+    }
+    rows.sort((a,b)=>b.score-a.score||String(a.projectName).localeCompare(String(b.projectName)));
+    return rows;
+  }
+  window.blackFlagFleetIntelligenceData=blackFlagFleetIntelligenceData;
 
   async function put(store,value){
     const result=await reqToPromise(tx(store,'readwrite').put(value));
