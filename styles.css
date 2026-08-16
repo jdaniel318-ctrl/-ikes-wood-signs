@@ -10502,7 +10502,7 @@ body.universal-project .universal-customer-shell{display:block}
 
 
 /* ==========================================================
-   v3.9.3 — ENGINE PROJECT COMMAND TOUCH / HIT-TEST HARDENING
+   v3.9.4 — ENGINE PROJECT COMMAND TOUCH / HIT-TEST HARDENING
    ========================================================== */
 #engineProjectsSection,
 #engineProjectsSection .engine-section-inner,
@@ -10538,3 +10538,36 @@ body.universal-project .universal-customer-shell{display:block}
 #addProjectCard {
   min-height: 44px;
 }
+
+/* ==========================================================
+   v3.9.4 — Direct-touch Fleet Rail & Registry Visibility
+   The fleet is browsed by finger/trackpad horizontal scrolling.
+   Arrow controls are intentionally removed from the product.
+   ========================================================== */
+.modern-project-command .project-fleet-rail-tools{
+  justify-content:flex-start!important;
+  margin:12px 0 8px!important;
+  font-size:13px!important;
+  color:#a9b9bb!important;
+}
+.modern-project-command .project-command-cards{
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-x:contain!important;
+  touch-action:pan-x!important;
+  scroll-snap-type:x proximity!important;
+  cursor:grab;
+}
+.modern-project-command .project-command-cards:active{cursor:grabbing}
+.modern-project-command .project-fleet-rail-buttons{display:none!important}
+.modern-project-command .commission-draft-card{
+  border-style:dashed!important;
+  border-color:#8b6f37!important;
+  background:linear-gradient(145deg,#101b1d,#16190f)!important;
+}
+.modern-project-command .commission-draft-badge{
+  align-self:flex-start;padding:5px 8px;border:1px solid #8b6f37;border-radius:999px;
+  color:#e3c46f;font:900 9px Arial,sans-serif;letter-spacing:.08em;
+}
+.modern-project-command .commission-draft-card .project-card-actions{grid-template-columns:1fr!important}

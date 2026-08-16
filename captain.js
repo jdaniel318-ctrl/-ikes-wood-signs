@@ -309,7 +309,7 @@
     bind();
   }
 
-  // v3.9.3 static command-surface review: legacy Captain object panel close
+  // v3.9.4 static command-surface review: legacy Captain object panel close
   // must remain actionable even though the five-door workspace superseded it.
   document.addEventListener('click',event=>{
     const target=event.target?.closest?.('#captainObjectClose');

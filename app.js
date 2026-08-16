@@ -6,6 +6,7 @@
   const LOCAL_ORDERS_KEY = 'blackFlagOrdersBackupV1';
   const LEGACY_DB_NAMES = ['ikesWoodSignsV1'];
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
+  const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -987,6 +988,39 @@
   };
   window.pinLocked=pinLocked; window.recordBadPin=recordBadPin; window.clearPinFailures=clearPinFailures; window.showPinLock=showPinLock;
 
+  function readProjectRegistryBackup(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(PROJECT_REGISTRY_BACKUP_KEY)||'null');
+      if(!raw||!Array.isArray(raw.projects))return null;
+      return raw;
+    }catch(_){return null;}
+  }
+
+  function writeProjectRegistryBackup(rows,reason='verified-save'){
+    try{
+      const projects=structuredClone(Array.isArray(rows)?rows:[]);
+      localStorage.setItem(PROJECT_REGISTRY_BACKUP_KEY,JSON.stringify({
+        version:1,
+        savedAt:new Date().toISOString(),
+        reason,
+        projectCount:projects.length,
+        projects
+      }));
+      return true;
+    }catch(err){
+      console.warn('Project registry backup could not be written',err);
+      return false;
+    }
+  }
+
+  function projectRegistryIds(rows){
+    return new Set((Array.isArray(rows)?rows:[]).map(p=>String(p?.id||'')).filter(Boolean));
+  }
+
+  function registryContainsProject(rows,projectId){
+    return (Array.isArray(rows)?rows:[]).some(p=>String(p?.id||'')===String(projectId||''));
+  }
+
   function normalizeProjectCode(p){
     if(!p)return p;
     const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS' };
@@ -996,10 +1030,24 @@
     return p;
   }
   async function loadCompanies(){
+    let savedRows=null;
     try{
       const saved=await getSetting('companies');
-      companies=Array.isArray(saved?.value)&&saved.value.length?saved.value:structuredClone(DEFAULT_COMPANIES);
-    }catch(_){companies=structuredClone(DEFAULT_COMPANIES);}
+      savedRows=Array.isArray(saved?.value)&&saved.value.length?saved.value:null;
+    }catch(err){
+      console.warn('Project registry could not be read from IndexedDB',err);
+    }
+
+    const backup=readProjectRegistryBackup();
+    if(savedRows){
+      companies=savedRows;
+    }else if(Array.isArray(backup?.projects)&&backup.projects.length){
+      companies=structuredClone(backup.projects);
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.loaded_from_backup',detail:`${companies.length} projects • ${backup.savedAt||'unknown time'}`});
+    }else{
+      companies=structuredClone(DEFAULT_COMPANIES);
+    }
+
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
     const core=window.BlackFlagV3Core;
     if(core){
@@ -1013,6 +1061,12 @@
         core.audit({category:'migration',action:'v3.8.2.project.identity.migration.complete',detail:`${companies.length} projects`});
       }
     }
+
+    // A local verified registry copy protects the fleet from a transient IndexedDB
+    // read failure or an accidental settings reset. It is never used to silently
+    // merge projects into a healthy registry; it is only a fallback when the main
+    // registry is unavailable.
+    writeProjectRegistryBackup(companies,savedRows?'load-verified':'load-fallback');
   }
   async function saveCompanies(){
     companies=companies.map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(p))||ensureProjectGovernance(p));
@@ -1022,7 +1076,17 @@
       window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'project.collection.save.blocked',detail:summary||'Critical integrity failure'});
       throw new Error(`Dark Sky blocked a project write because hull integrity failed. ${summary}`);
     }
+
     await setSetting('companies',companies);
+    const verified=await getSetting('companies');
+    const persisted=Array.isArray(verified?.value)?verified.value:[];
+    const missing=companies.filter(p=>!registryContainsProject(persisted,p.id));
+    if(missing.length){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.verify_failed',detail:missing.map(p=>`${p.name}:${p.id}`).join(' • ')});
+      throw new Error(`Project registry verification failed for ${missing.map(p=>p.name).join(', ')}.`);
+    }
+    writeProjectRegistryBackup(persisted,'verified-save');
+    return persisted;
   }
 
 
@@ -1313,6 +1377,16 @@
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
           <button data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
         </div>
+      </article>`);
+    }
+    const pendingDraft=readCommissionDraft();
+    if(pendingDraft?.name && !list.some(p=>String(p.name||'').trim().toLowerCase()===String(pendingDraft.name||'').trim().toLowerCase())){
+      cards.push(`<article class="project-card commission-draft-card">
+        <div class="project-card-head"><div class="project-brand-badge code-only"><span>${escapeHtml(commissionCode(pendingDraft.name))}</span></div><span class="commission-draft-badge">SHIPYARD DRAFT</span></div>
+        <h4>${escapeHtml(pendingDraft.name)}</h4>
+        <p>This project has a saved commissioning draft but is not yet in the fleet registry.</p>
+        <div class="project-launch-line draft"><span>COMMISSIONING</span><small>Resume the saved draft to finish adding this vessel.</small></div>
+        <div class="project-card-actions"><button type="button" data-resume-commissioning="1" class="primary-btn small">CONTINUE COMMISSIONING</button></div>
       </article>`);
     }
     cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business or project in the Engine.</p><span class="pirate-add-copy">RAISE ANOTHER FLAG</span></button>`);
@@ -3195,7 +3269,10 @@
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
     core?.ensure?.(p);
     companies.push(p);
-    await saveCompanies();
+    const persistedRegistry=await saveCompanies();
+    if(!registryContainsProject(persistedRegistry,id)){
+      throw new Error(`${p.name} was not verified in the fleet registry. The commissioning draft has been preserved.`);
+    }
     clearCommissionDraft();
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • private sea trial`});
     closeProjectCommissioning();
@@ -6222,24 +6299,13 @@ The full order and approved media remain stored with this project.`;
     const search=$('engineFleetSearch');
     const host=$('projectCommandCards');
     const filterButtons=Array.from(document.querySelectorAll('[data-engine-fleet-filter]'));
-    return {search,host,filterButtons,prev:$('projectFleetPrev'),next:$('projectFleetNext')};
+    return {search,host,filterButtons};
   }
 
   function updateEngineFleetRailState(){
-    const {host,prev,next}=engineFleetCommandContext();
-    if(!host||!prev||!next)return;
-    const max=Math.max(0,host.scrollWidth-host.clientWidth);
-    prev.disabled=host.scrollLeft<=3;
-    next.disabled=host.scrollLeft>=max-3;
-  }
-
-  function scrollEngineFleetOne(direction){
-    const {host}=engineFleetCommandContext();if(!host)return;
-    const visible=Array.from(host.children).filter(card=>!card.hidden);
-    const first=visible[0];
-    const amount=(first?.getBoundingClientRect?.().width||280)+14;
-    host.scrollBy({left:Number(direction||0)*amount,behavior:'smooth'});
-    setTimeout(updateEngineFleetRailState,220);
+    const {host}=engineFleetCommandContext();
+    if(!host)return;
+    host.classList.toggle('can-scroll-fleet',host.scrollWidth>host.clientWidth+3);
   }
 
   function applyEngineFleetFilter(){
@@ -6251,6 +6317,13 @@ The full order and approved media remain stored with this project.`;
     Array.from(host.children).forEach(card=>{
       const addCard=card.id==='addProjectCard' || card.classList.contains('add-project-card');
       if(addCard){card.hidden=mode!=='all'||!!q;return;}
+      const draftCard=card.classList.contains('commission-draft-card');
+      if(draftCard){
+        const text=(card.textContent||'').toLowerCase();
+        const matchesText=!q||text.includes(q);
+        card.hidden=!(matchesText&&(mode==='all'||mode==='private'));
+        return;
+      }
       const control=card.querySelector('[data-open-project-control]');
       const projectId=control?.dataset.openProjectControl||'';
       const p=projectId?projectById(projectId):null;
@@ -6289,11 +6362,11 @@ The full order and approved media remain stored with this project.`;
     if(window.__blackFlagEngineProjectCommandBusBound)return;
     window.__blackFlagEngineProjectCommandBusBound=true;
 
-    // v3.9.3 — Project Command is an independent command surface. Filters, rail,
+    // v3.9.4 — Project Command is an independent command surface. Filters, rail,
     // project cards and launch controls must remain actionable even if a later
     // migration or optional initializer fails.
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('[data-engine-fleet-filter],#projectFleetPrev,#projectFleetNext,[data-open-project-control],[data-project-launch],[data-fleet-health-project],#addProjectCard');
+      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-launch],[data-fleet-health-project],#addProjectBtn,#addProjectCard,[data-resume-commissioning]');
       if(!target)return;
       event.preventDefault();
       event.stopPropagation();
@@ -6302,9 +6375,7 @@ The full order and approved media remain stored with this project.`;
         document.querySelectorAll('[data-engine-fleet-filter]').forEach(b=>b.classList.toggle('active',b===target));
         applyEngineFleetFilter();return;
       }
-      if(target.id==='projectFleetPrev'){scrollEngineFleetOne(-1);return;}
-      if(target.id==='projectFleetNext'){scrollEngineFleetOne(1);return;}
-      if(target.id==='addProjectCard'){openProjectCommissioning();return;}
+      if(target.id==='addProjectBtn'||target.id==='addProjectCard'||target.matches('[data-resume-commissioning]')){openProjectCommissioning();return;}
       if(target.matches('[data-fleet-health-project]')){await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
       if(target.matches('[data-open-project-control]')){await openProjectEngineControl(target.dataset.openProjectControl);return;}
       if(target.matches('[data-project-launch]')){
@@ -7127,7 +7198,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.3',
+    version:'3.9.4',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7628,7 +7699,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.3.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.4.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

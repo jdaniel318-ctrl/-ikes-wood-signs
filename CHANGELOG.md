@@ -1,3 +1,15 @@
+## 3.9.4 — Direct-Touch Fleet Rail & Project Registry Safeguard
+
+- Removed the fleet-arrow controls. Project Command now uses native horizontal finger/trackpad scrolling as the primary fleet navigation model.
+- Simplified the rail instruction to “Swipe left or right to browse the fleet.”
+- Preserved card alignment, scroll snapping, iPad momentum scrolling, search, and status filters.
+- Added verified project-registry persistence: every fleet save is read back from IndexedDB before Dark Sky reports success.
+- Added a local verified registry backup used only when the primary IndexedDB registry is unavailable.
+- Commissioning drafts are no longer invisible: a named saved draft that is not yet in the fleet registry appears as a **SHIPYARD DRAFT** card with **CONTINUE COMMISSIONING**.
+- Commissioning no longer clears its draft until the newly commissioned Project ID is verified in the persisted fleet registry.
+- Added the top **ADD PROJECT** control to the early Project Command bus so both Add Project entry points share the same reliable route.
+- Preserved immutable Project ID, project isolation, launch state, customer records, and existing fleet filters.
+
 ## 3.9.3 — Command Surface Reliability Review
 
 - Moved Engine Project Command filters, search, rail arrows, project Control Center, Continue Launch / Join Fleet, Add Project, Fleet Health OPEN actions, and publish toggles onto an independent early-bound delegated command bus.

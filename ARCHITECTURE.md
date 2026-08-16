@@ -138,3 +138,7 @@ Mission-critical command surfaces must not depend on completion of optional data
 ### Engine Project Command Reliability Law — v3.9.3
 
 Engine Project Command is a mission-critical surface. Fleet filters, search, horizontal rail navigation, project opening, launch/join-fleet, publish controls, Fleet Health project links, and Add Project must be routed by an early-bound delegated command bus. Dynamic rendering may replace cards, but must never replace the command route. Optional migrations or feature initializers may fail without disabling these controls. Decorative layers must never intercept pointer/touch input.
+
+### Direct-Touch Fleet Rail & Registry Durability Law — v3.9.4
+
+The Engine fleet rail is a native horizontal-scroll surface. Finger/trackpad scrolling is the primary navigation mechanism; auxiliary arrow controls are not part of the product contract. Project visibility is governed by the persisted fleet registry plus explicit search/status filters. Commissioning must not report success or clear its draft until the new immutable Project ID is verified by reading the persisted registry back from IndexedDB. A local verified registry backup may be used only when the primary registry cannot be read; it must never silently merge or resurrect projects into a healthy registry. Named commissioning drafts that are not yet registered must remain visible as Shipyard Drafts so unfinished project creation cannot disappear from the operator’s view.

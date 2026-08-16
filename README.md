@@ -1,10 +1,10 @@
-# Dark Sky / Black Flag — v3.9.1 Command Watch Reliability
+# Dark Sky / Black Flag — v3.9.4 Direct-Touch Fleet Rail & Registry Safeguard
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
 
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.9.1 — Command Watch Reliability & Visual Refit
+**Current release:** v3.9.4 — Direct-Touch Fleet Rail & Project Registry Safeguard
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
@@ -60,9 +60,13 @@ Dark Sky now treats customer activity as a project-specific engagement rather th
 ## Fleet Commissioning Lane (v3.8.30)
 New projects now follow one Captain-facing launch journey: Create → Prepare → Sea Trial → Fleet Ready → Live. Engine project cards and Project Control expose one Continue Launch / Join Fleet action, while the existing deployment, customer-test, immutable identity and isolation rules remain underneath.
 
+### v3.9.4 direct-touch fleet rail and registry safeguard
+
+Project Command is now browsed directly by horizontal finger/trackpad scrolling; arrow navigation has been removed. Project commissioning verifies the new Project ID by reading the fleet registry back from IndexedDB before clearing the commissioning draft. A verified local registry backup protects against a transient settings-store failure, and any named commissioning draft that is not yet in the fleet registry is surfaced as a **SHIPYARD DRAFT** card so unfinished work cannot disappear silently.
+
 ### v3.9.3 command-surface reliability
 
-Engine Project Command now uses an early-bound delegated command bus for filters, project search, rail arrows, project opening, launch/join-fleet, publishing, Fleet Health links, and Add Project. These controls remain actionable even when a later optional initializer fails. Mission-critical navigation is armed before asynchronous boot work.
+Engine Project Command uses an early-bound delegated command bus for filters, project search, project opening, launch/join-fleet, publishing, Fleet Health links, and Add Project. These controls remain actionable even when a later optional initializer fails. Mission-critical navigation is armed before asynchronous boot work.
 
 ### v3.9.2 command reliability
 Waters Ahead and structural command controls are now attached to an independent early-bound command bus. This prevents a partial boot or migration warning from producing visually healthy but non-interactive command cards, particularly on iPad/Safari.
