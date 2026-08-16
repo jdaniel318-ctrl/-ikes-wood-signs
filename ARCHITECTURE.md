@@ -65,3 +65,14 @@ Three concerns are deliberately independent:
 
 Engine lessons may inform these systems, but no Engine primitive is inherited automatically.
 
+
+## Fleet Commissioning (4.6)
+Dark Sky now treats commissioning as a distinct fleet-governance layer. It does not replace project-specific testing or business rules.
+
+Lifecycle intent: Concept → Build → Test → Ready → Live → Maintenance.
+
+The common fleet gate checks seven categories: explicit project identity, admitted/sealed isolation boundary, current customer-experience approval, current Sea Trial submission evidence, V4 durability/recovery posture, a live deployment, and a final Captain commissioning order.
+
+Ike's Wood Signs is the first reference vessel. Lessons proven there may be promoted into the fleet standard, but no Ike-specific business workflow becomes a fleet requirement merely because Ike proves it.
+
+Captain commissioning metadata is stored separately from the canonical project registry. Revoking a commissioning order never changes Project ID, project data, or project governance status.

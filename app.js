@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.5.0';
+  const BUILD_VERSION = '4.6.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2657,6 +2657,7 @@
     }
   }
   window.blackFlagOpenExperienceTestDeck=(projectId)=>openExperienceTestDeck(projectId);
+  document.addEventListener('click',(e)=>{const btn=e.target?.closest?.('[data-open-fleet-commissioning]');if(btn)openFleetCommissioning(btn.dataset.openFleetCommissioning);});
 
   function closeExperienceTestDeck(){document.getElementById('experienceTestDeck')?.classList.add('hidden');document.body.classList.remove('experience-test-deck-open');}
 
@@ -2704,6 +2705,7 @@
     // V4.4.7 — reseal the admitted fleet before any Engine repaint. A failed
     // project-local mutation may never collapse Project Command to the active vessel.
     await sealOperationalFleetForCommand();
+    await renderFleetCommissioning();
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
     // paths called a non-existent helper after a successful registry commit, which
     // left the Engine DOM stale and made a durable project look as if it vanished.
@@ -2810,6 +2812,38 @@
     return ({purchase:'ORDERS',service_request:'REQUESTS',quote:'QUOTES',booking:'BOOKINGS',inquiry:'INQUIRIES',partnership:'ENGAGEMENTS',application:'APPLICATIONS',reservation:'RESERVATIONS',custom_project:'PROJECTS'})[type]||'ACTIVITY';
   }
 
+
+  const FLEET_COMMISSIONING_KEY='darkSkyFleetCommissioningV1';
+  function commissioningLedger(){try{return JSON.parse(localStorage.getItem(FLEET_COMMISSIONING_KEY)||'{}')||{};}catch(_){return {};}}
+  function saveCommissioningLedger(rows){localStorage.setItem(FLEET_COMMISSIONING_KEY,JSON.stringify(rows||{}));}
+  function commissioningApproval(p){const row=commissioningLedger()[canonicalProjectId(p?.id)];return row&&row.approved===true?row:null;}
+  function setCommissioningApproval(p,approved){if(!p?.id)return;const rows=commissioningLedger(),id=canonicalProjectId(p.id);if(approved){rows[id]={approved:true,approvedAt:new Date().toISOString(),build:BUILD_VERSION,projectName:p.name||id};}else delete rows[id];saveCommissioningLedger(rows);}
+  function commissioningGateRows(p){
+    ensureProjectGovernance(p);
+    const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
+    const d=experienceDeploymentFor(p);
+    const boundary=!!p?.id&&platformStatus(p)==='approved'&&!p?.v4AdmissionReviewRequired;
+    const identity=!!p?.id&&!!(p.projectCode||p.orderPrefix)&&!!p?.branding?.businessName;
+    const experience=experienceApproved(p);
+    const sea=!!d&&experienceSeaTrialCurrent(p,d);
+    const recovery=!!window.DarkSkyV4 && Number(db?.version||DB_VERSION)>=DB_VERSION;
+    const live=String(p?.publish?.status||'')==='live'&&deployments.some(x=>x.state==='deployed');
+    const captain=!!commissioningApproval(p);
+    return [
+      {id:'identity',label:'Identity & ownership',pass:identity,detail:identity?'Project identity is explicit':'Project identity needs attention'},
+      {id:'boundary',label:'Isolation boundary',pass:boundary,detail:boundary?'Project envelope is admitted and sealed':'Admission or governance review required'},
+      {id:'experience',label:'Customer experience approval',pass:experience,detail:experience?'Current configuration approved':'Experience approval is missing or stale'},
+      {id:'sea',label:'Sea Trial evidence',pass:sea,detail:sea?'Current customer submission recorded':'Run a current Sea Trial submission'},
+      {id:'recovery',label:'Durability & recovery posture',pass:recovery,detail:recovery?'V4 storage/recovery layer present':'Recovery posture could not be verified'},
+      {id:'live',label:'Live deployment',pass:live,detail:live?'At least one live outpost is sailing':'No live deployment yet'},
+      {id:'captain',label:'Captain commissioning',pass:captain,detail:captain?`Approved ${new Date(commissioningApproval(p).approvedAt).toLocaleString()}`:'Captain approval not yet granted'}
+    ];
+  }
+  function commissioningSnapshot(p){const rows=commissioningGateRows(p);const technical=rows.filter(x=>x.id!=='captain');const ready=technical.every(x=>x.pass);const commissioned=ready&&rows.find(x=>x.id==='captain')?.pass;return {rows,ready,commissioned,passed:rows.filter(x=>x.pass).length,total:rows.length};}
+  function ensureFleetCommissioningModal(){let modal=document.getElementById('fleetCommissioningModal');if(modal)return modal;modal=document.createElement('section');modal.id='fleetCommissioningModal';modal.className='fleet-commissioning-modal hidden';modal.innerHTML='<div class="fleet-commissioning-shell"><header><div><span>BLACK FLAG • FLEET COMMISSIONING</span><h2 id="fleetCommissioningTitle">Commissioning Dock</h2><p id="fleetCommissioningSubtitle">Prove the vessel before declaring it seaworthy.</p></div><button id="closeFleetCommissioning" class="secondary-btn" type="button">RETURN TO ENGINE</button></header><main id="fleetCommissioningBody"></main></div>';document.body.appendChild(modal);modal.querySelector('#closeFleetCommissioning').onclick=()=>modal.classList.add('hidden');return modal;}
+  async function openFleetCommissioning(projectId){const p=projectById(projectId);if(!p)return;const modal=ensureFleetCommissioningModal(),snap=commissioningSnapshot(p),body=modal.querySelector('#fleetCommissioningBody');modal.querySelector('#fleetCommissioningTitle').textContent=p.name;modal.querySelector('#fleetCommissioningSubtitle').textContent=canonicalProjectId(p.id)===LEGACY_IKE_PROJECT_ID?'Reference vessel • first fleet commissioning standard':'Fleet commissioning standard • project-specific requirements still apply';body.innerHTML=`<section class="commissioning-vessel-status ${snap.commissioned?'commissioned':snap.ready?'ready':'work'}"><div><span>${snap.commissioned?'COMMISSIONED':snap.ready?'READY FOR CAPTAIN':'WORK REMAINS'}</span><strong>${snap.passed}/${snap.total} gates clear</strong></div><b>${snap.commissioned?'SEAWORTHY':snap.ready?'AWAITING CAPTAIN':'IN DOCK'}</b></section><div class="commissioning-gate-grid">${snap.rows.map(r=>`<article class="commissioning-gate ${r.pass?'pass':'pending'}"><span>${r.pass?'✓':'○'}</span><div><strong>${escapeHtml(r.label)}</strong><p>${escapeHtml(r.detail)}</p></div></article>`).join('')}</div><section class="commissioning-captain-order"><div><small>CAPTAIN'S FINAL ORDER</small><h3>${snap.commissioned?'Vessel commissioned':'Commission only after the technical gates are clear'}</h3><p>${snap.ready?'Dark Sky has cleared the technical fleet gate. Captain approval is a deliberate final act.':'Captain approval is locked until identity, isolation, current experience approval, Sea Trial evidence, recovery posture, and a live deployment are verified.'}</p></div><button id="captainCommissionBtn" type="button" class="${snap.commissioned?'secondary-btn':'primary-btn'}" ${!snap.ready&&!snap.commissioned?'disabled':''}>${snap.commissioned?'REVOKE COMMISSION':'COMMISSION VESSEL'}</button></section>`;body.querySelector('#captainCommissionBtn').onclick=async()=>{setCommissioningApproval(p,!snap.commissioned);await renderFleetCommissioning();await renderProjectCommand();await openFleetCommissioning(p.id);};modal.classList.remove('hidden');}
+  async function renderFleetCommissioning(){const summary=$('fleetCommissioningSummary'),reference=$('fleetCommissioningReference'),state=$('fleetCommissioningState');if(!summary||!reference)return;const list=projects();const snaps=list.map(p=>({p,s:commissioningSnapshot(p)}));const commissioned=snaps.filter(x=>x.s.commissioned).length,ready=snaps.filter(x=>x.s.ready&&!x.s.commissioned).length,work=snaps.length-commissioned-ready;if(state){state.textContent=commissioned===list.length&&list.length?'FLEET COMMISSIONED':work?'WORK IN DOCK':ready?'CAPTAIN ACTION':'NO VESSELS';state.className=`fleet-commissioning-state ${work?'watch':ready?'ready':'clear'}`;}summary.innerHTML=`<article><small>COMMISSIONED</small><strong>${commissioned}</strong><span>Captain-approved vessels</span></article><article><small>READY</small><strong>${ready}</strong><span>Awaiting final Captain order</span></article><article><small>IN DOCK</small><strong>${work}</strong><span>Readiness work remains</span></article><article><small>STANDARD</small><strong>7</strong><span>Fleet commissioning gates</span></article>`;const ike=projectById(LEGACY_IKE_PROJECT_ID)||list[0];if(!ike){reference.innerHTML='';return;}const snap=commissioningSnapshot(ike);reference.innerHTML=`<div class="fleet-reference-copy"><span>REFERENCE VESSEL</span><strong>${escapeHtml(ike.name)}</strong><p>${snap.commissioned?'Commissioned against the current Dark Sky fleet standard.':snap.ready?'Technical gates clear. Captain commissioning remains.':'First vessel through the new standard. Use this dock to turn real Ike’s testing into the reusable fleet protocol.'}</p></div><div class="fleet-reference-progress"><b>${snap.passed}/${snap.total}</b><span>GATES CLEAR</span></div><button type="button" data-open-fleet-commissioning="${escapeHtml(ike.id)}" class="primary-btn small">OPEN COMMISSIONING DOCK</button>`;reference.querySelector('[data-open-fleet-commissioning]')?.addEventListener('click',()=>openFleetCommissioning(ike.id));$('openReferenceCommissioningBtn')?.addEventListener('click',()=>openFleetCommissioning(ike.id),{once:true});}
+
   async function renderProjectCommand(){
     const box=$('projectCommandCards');if(!box)return;
     await sealOperationalFleetForCommand();
@@ -2857,6 +2891,7 @@
         <div class="project-card-actions">
           <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
           <button type="button" data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">TEST EXPERIENCE</button>
+          <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn small">COMMISSIONING</button>
           <button type="button" data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
         </div>
       </article>`);
@@ -3288,6 +3323,7 @@
       </section>`;
     bindProjectControlJumpLinks(p);
     box.querySelectorAll('[data-project-test-experience-action]').forEach(btn=>btn.addEventListener('click',async()=>{const target=projectById(btn.dataset.projectTestExperienceAction);if(target)await openExperienceTestDeck(target.id);}));
+    box.querySelectorAll('[data-open-fleet-commissioning]').forEach(btn=>btn.addEventListener('click',()=>openFleetCommissioning(btn.dataset.openFleetCommissioning)));
     box.querySelectorAll('[data-project-launch-action]').forEach(btn=>btn.addEventListener('click',async()=>{const target=projectById(btn.dataset.projectLaunchAction);if(target)await continueProjectLaunch(target);}));
   }
 

@@ -90,3 +90,12 @@
 - Kept the existing dirt-to-keys sequence as field evidence rather than promoting it to a locked software template.
 - Held Prototype Deck at dock: prototype ideas can be recorded but do not become approved architecture by implication.
 - Preserved the Captain's Quarters / Engine boundary and deliberate-reuse rule. No Engine registry, project identity, order, deployment, or storage behavior changed.
+
+## 4.6.0 — Fleet Commissioning
+- Added a fleet-level Seaworthiness Dock in the Engine Room.
+- Established a seven-gate commissioning standard: identity/ownership, isolation boundary, customer experience approval, Sea Trial evidence, durability/recovery posture, live deployment, and explicit Captain commissioning.
+- Made Ike's Wood Signs the first reference vessel for proving and refining the reusable fleet commissioning protocol.
+- Added a per-project Commissioning action to Project Command cards.
+- Captain commissioning is deliberately locked until the technical fleet gates are clear, and can be revoked without changing project identity or data.
+- Commissioning approval is stored separately from project identity, governance, and project data so readiness discipline does not become accidental project architecture.
+- Existing project-specific requirements remain project-specific; the fleet gate is a common safety/operational standard, not a forced shared workflow.

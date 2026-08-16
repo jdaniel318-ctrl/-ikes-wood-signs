@@ -48,3 +48,6 @@ ScheduleJoe is now explicitly in architecture-first development inside Captain's
 ## ScheduleJoe status — 4.5.7
 The Shipyard now contains the first three ScheduleJoe foundation systems: Organization, Authority, and Template Lineage. Scheduling logic remains intentionally held at dock until the keel is accepted.
 
+
+### 4.6 Fleet Commissioning
+The Engine Room now includes a Fleet Commissioning / Seaworthiness Dock. Ike's Wood Signs is the first reference vessel. Open a vessel's Commissioning action to see the seven common fleet gates and the Captain's final commissioning order. Project-specific requirements remain inside each project's own Control Center and Test Experience.
