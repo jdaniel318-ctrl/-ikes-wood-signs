@@ -417,7 +417,11 @@ function bootCaptainCommand(){
       states:'WORKING HYPOTHESIS — A home moves through meaningful construction states, not merely calendar dates. Define the states from dirt to keys and the evidence required before each transition is considered real.',
       movement:'Define what is allowed to move the build: completed work, inspections, material readiness, trade readiness, weather, builder judgment, exceptions, and approved overrides. Dates should reflect these facts rather than replace them.',
       permanentRecord:'Preserve the original baseline, every meaningful revision, actual start/finish dates, delay causes, inspections, overrides, and the Captain’s decisions. Schedule changes must not erase history.',
-      roles:'Start with the Captain / builder as final authority. Identify which future roles may view, recommend, update, approve, or override schedule information before permissions become software.',
+      roles:'CURRENT DIRECTION — Region is read-only. Division and the Project Manager responsible for the build carry the strongest day-to-day operational authority. Access may span divisions or regions only through an explicit approval process. Visibility scope and authority scope remain separate.',
+      organization:'Company → Region → Division → Community → Build / Lot → optional Unit. Company may contain multiple Regions; each Region may contain multiple Divisions; each Division may contain multiple Communities and builds.',
+      buildCode:'VISIBLE BUSINESS CODE — RRR-DDD-CC-LLLL[-U]: 3-digit Region + 3-digit Division + 2-digit Community + 4-digit Lot, with an optional 1-digit Unit identifier for multifamily. Example: 101-205-07-0142-3. Every build also receives a separate immutable internal system ID that never changes if business codes or organizational placement change.',
+      authorityModel:'REGION — read-only for now. DIVISION — broad operational and administrative authority within its scope. PROJECT MANAGER — strongest day-to-day authority for assigned builds. Cross-Division or cross-Region access is possible only through an explicit approval process. Visibility does not automatically grant change authority.',
+      templateModel:'DIVISION may create its own construction schedule templates. COMMUNITY may create or customize templates further because building practices differ by local conditions. Template inheritance must preserve lineage: source, inherited version, local overrides, and effective template for each build. Organizational ownership does not automatically imply permission to alter a template.',
       sequence:[
         'Pre-construction / permits','Site work','Foundation','Framing','Dry-in','Rough trades','Inspections','Insulation','Drywall','Interior trim','Cabinets','Paint','Flooring','Fixtures & finishes','Final inspections','Punch','Closing'
       ],
@@ -432,13 +436,16 @@ function bootCaptainCommand(){
         <div class="shipyard-vessel-state"><b>ARCHITECTURE PHASE</b><small>CAPTAIN + FIRST MATE</small></div>
       </div>
       <section class="schedulejoe-hull-status" aria-label="ScheduleJoe hull design status">
-        <div><small>HULL DESIGN</small><strong>5 CORE DECISIONS</strong><span>Define the vessel before building the controls.</span></div>
-        <ol>
-          <li><b>01</b><span>Build Model</span></li><li><b>02</b><span>States</span></li><li><b>03</b><span>Movement</span></li><li><b>04</b><span>Permanent Record</span></li><li><b>05</b><span>Roles</span></li>
+        <div><small>KEEL NOW LOCKING</small><strong>3 FOUNDATION SYSTEMS</strong><span>Organization, authority, and template lineage are being defined before scheduling logic.</span></div>
+        <ol class="schedulejoe-keel-three">
+          <li><b>01</b><span>Organization</span></li><li><b>02</b><span>Authority</span></li><li><b>03</b><span>Templates</span></li>
         </ol>
       </section>
       <nav class="shipyard-area-tabs schedulejoe-architecture-tabs" aria-label="ScheduleJoe architecture areas">
         <button type="button" data-shipyard-area="mission" class="active">MISSION</button>
+        <button type="button" data-shipyard-area="organization">ORGANIZATION</button>
+        <button type="button" data-shipyard-area="authority">AUTHORITY</button>
+        <button type="button" data-shipyard-area="templates">TEMPLATES</button>
         <button type="button" data-shipyard-area="model">BUILD MODEL</button>
         <button type="button" data-shipyard-area="states">STATES</button>
         <button type="button" data-shipyard-area="movement">MOVEMENT</button>
@@ -457,8 +464,14 @@ function bootCaptainCommand(){
       tabs.forEach(b=>b.classList.toggle('active',b.dataset.shipyardArea===area));
       if(area==='mission'){
         areaHost.innerHTML=`${field('MISSION • WHAT THIS VESSEL MUST SOLVE',state.mission,'sjMission','Keep this builder-first. We are defining the problem, not selling ourselves features.')} ${mateTable('MISSION CHECK','If ScheduleJoe disappeared tomorrow, what specific scheduling pain would the Captain immediately miss it solving?','Do not let “construction software” become the mission.')}<section class="shipyard-guardrail"><strong>SHIPYARD GUARDRAIL</strong><span>Captain's Quarters incubates. The Engine operates commissioned vessels. Engine lessons may be reused here only when ScheduleJoe proves they fit.</span></section>`;
+      }else if(area==='organization'){
+        areaHost.innerHTML=`<section class="schedulejoe-foundation-grid"><article><small>ORGANIZATION TREE</small><strong>COMPANY → REGION → DIVISION → COMMUNITY → BUILD</strong><p>${safe(state.organization)}</p></article><article><small>VISIBLE BUILD CODE</small><strong>RRR-DDD-CC-LLLL[-U]</strong><p>${safe(state.buildCode)}</p></article></section>${mateTable('FIRST MATE CHECK','Keep the visible business code useful to humans, but never let it become the database identity of the build.','Lot numbers repeat. Communities can be renumbered. Organizations can change. The immutable internal Build ID survives all of that.')} ${field('ORGANIZATION NOTES • REFINEMENTS',state.organization,'sjOrganization','This is the business hierarchy. It should not silently determine permissions or template rights.','SAVE ORGANIZATION MODEL')}`;
+      }else if(area==='authority'){
+        areaHost.innerHTML=`<section class="schedulejoe-authority-matrix"><header><small>AUTHORITY MATRIX • CURRENT FOUNDATION</small><strong>VISIBILITY ≠ AUTHORITY</strong></header><div class="sj-matrix-row sj-matrix-head"><span>LEVEL / ROLE</span><span>VIEW</span><span>OPERATE</span><span>ADMINISTER</span></div><div class="sj-matrix-row"><b>Company</b><span>Company-wide</span><span>Policy-level later</span><span>Full company scope</span></div><div class="sj-matrix-row"><b>Region</b><span>Region-wide</span><span>READ ONLY</span><span>READ ONLY</span></div><div class="sj-matrix-row"><b>Division</b><span>Division scope</span><span>Broad</span><span>Division scope</span></div><div class="sj-matrix-row"><b>Project Manager</b><span>Assigned builds</span><span>Primary day-to-day</span><span>Build operations</span></div><div class="sj-matrix-row"><b>Cross-scope access</b><span>Approved scope</span><span>As approved</span><span>Approval required</span></div></section>${mateTable('PERMISSION LAW','A person may be granted visibility across Divisions or Regions without inheriting the authority of those organizational levels.','Cross-scope access must leave an approval record: who requested it, who approved it, what scope was granted, and when it expires or is revoked.')} ${field('AUTHORITY NOTES • REFINEMENTS',state.authorityModel,'sjAuthority','Region stays read-only in this architecture phase. Division and the assigned Project Manager remain the operational center.','SAVE AUTHORITY MODEL')}`;
+      }else if(area==='templates'){
+        areaHost.innerHTML=`<section class="schedulejoe-template-lineage"><small>TEMPLATE LINEAGE</small><strong>LOCAL FLEXIBILITY WITHOUT LOSING ORIGIN</strong><div class="sj-lineage-flow"><span>DIVISION TEMPLATE</span><i>→</i><span>COMMUNITY INHERITS</span><i>→</i><span>COMMUNITY OVERRIDES</span><i>→</i><span>BUILD USES EFFECTIVE VERSION</span></div><p>Every effective schedule should know where its template came from, which version it inherited, what the Community changed, and what version the build actually used.</p></section>${mateTable('TEMPLATE GUARDRAIL','Do not make template inheritance the same thing as organizational authority. A Community may need a local schedule without gaining broader Division administration rights.','Never overwrite the parent template when a Community customizes it. Preserve lineage and explicit overrides so we can compare local practice later.')} ${field('TEMPLATE NOTES • INHERITANCE & OVERRIDES',state.templateModel,'sjTemplates','Division and Community templates are both first-class. Later we can decide whether Company provides optional starter standards without forcing one corporate schedule.','SAVE TEMPLATE MODEL')}`;
       }else if(area==='model'){
-        areaHost.innerHTML=`${field('01 • BUILD MODEL • WHAT IS THE CORE OBJECT?',state.coreObject,'sjCoreObject','Decide what ScheduleJoe is actually tracking before we create tables, calendars, or screens.')} ${mateTable('FIRST ARCHITECTURE QUESTION','When you say “this house,” what information makes it one distinct build in your real operation—lot, address, job number, plan, customer, community, or something else?','A bad core object will infect every later feature.')}<section class="schedulejoe-evidence-card"><small>FIELD EVIDENCE • STARTING SPINE, NOT ARCHITECTURE</small><strong>DIRT → KEYS</strong><p>${safe((state.sequence||[]).join(' → '))}</p><em>The sequence is evidence we will use to test the Build Model. It is not yet a locked template.</em></section>`;
+        areaHost.innerHTML=`${field('BUILD MODEL • WHAT IS THE CORE BUILD RECORD?',state.coreObject,'sjCoreObject','Now test the build record against the organizational keel rather than inventing it in isolation.')} ${mateTable('MODEL TEST','A Build belongs within the organizational tree, but should its identity survive if a Community is renamed, moved, merged, or its visible lot code changes?','Yes. That is why the immutable Build ID and visible business code must remain separate.')}<section class="schedulejoe-evidence-card"><small>FIELD EVIDENCE • STARTING SPINE, NOT ARCHITECTURE</small><strong>DIRT → KEYS</strong><p>${safe((state.sequence||[]).join(' → '))}</p><em>The sequence is evidence we will use to test the Build Model. It is not yet a locked template.</em></section>`;
       }else if(area==='states'){
         areaHost.innerHTML=`${field('02 • STATES • HOW DOES THE BUILD BECOME DIFFERENT?',state.states,'sjStates','Define meaningful states and what proves a transition occurred. Avoid making every trade task a top-level state.')} ${mateTable('STATE TEST','What must be true in the field before you would confidently tell someone the house has moved into its next phase?','A date alone is not proof that construction advanced.')}`;
       }else if(area==='movement'){
@@ -477,6 +490,9 @@ function bootCaptainCommand(){
         const el=document.getElementById(id);
         if(!el)return;
         if(id==='sjMission')state.mission=el.value.trim();
+        if(id==='sjOrganization')state.organization=el.value.trim();
+        if(id==='sjAuthority')state.authorityModel=el.value.trim();
+        if(id==='sjTemplates')state.templateModel=el.value.trim();
         if(id==='sjCoreObject')state.coreObject=el.value.trim();
         if(id==='sjStates')state.states=el.value.trim();
         if(id==='sjMovement')state.movement=el.value.trim();

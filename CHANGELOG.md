@@ -1,3 +1,13 @@
+# Dark Sky 4.5.7 — ScheduleJoe Keel Architecture
+
+- Locked the current organizational backbone as Company → Region → Division → Community → Build / Lot → optional Unit.
+- Added the human-readable Build Code pattern `RRR-DDD-CC-LLLL[-U]` and explicitly separated it from an immutable internal Build ID.
+- Established Region as read-only for now, with Division and assigned Project Manager holding primary operational authority.
+- Separated visibility scope from authority scope and established approval/audit requirements for cross-Division or cross-Region access.
+- Established Division and Community as first-class template levels, with explicit template lineage and non-destructive local overrides.
+- Kept organization hierarchy, permission scope, and template inheritance as separate architectural systems.
+- ScheduleJoe remains a Captain's Quarters Shipyard concept; no Engine commissioning or scheduling automation was added.
+
 # Dark Sky 4.5.4 — ScheduleJoe Shipyard Berth
 
 - Added a Captain's Quarters **Shipyard** command workspace for new-vessel development.

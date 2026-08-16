@@ -44,3 +44,7 @@ ScheduleJoe remains a pre-commissioning Captain's Quarters concept. Its launch i
 
 ### 4.5.6 ScheduleJoe — Hull Design
 ScheduleJoe is now explicitly in architecture-first development inside Captain's Shipyard. The working sequence is Mission → Build Model → States → Movement Rules → Permanent Record → Roles / Permissions → Vessel Decisions. Prototype ideas remain visible but held at dock until the core model is accepted. A First Mate's Table challenges each area so builder knowledge and system-design concerns are both recorded before software assumptions harden into architecture.
+
+## ScheduleJoe status — 4.5.7
+The Shipyard now contains the first three ScheduleJoe foundation systems: Organization, Authority, and Template Lineage. Scheduling logic remains intentionally held at dock until the keel is accepted.
+

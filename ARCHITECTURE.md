@@ -54,3 +54,14 @@ ScheduleJoe does not begin as a calendar. Its first architecture phase must esta
 5. Roles / Permissions — define real authority to view, recommend, change, approve, and override before implementing user roles.
 
 The dirt-to-keys construction sequence is field evidence used to challenge the model; it is not automatically a universal template. Prototype notes may be retained without gaining architectural authority. First Mate review exists to challenge assumptions, surface risk, and distinguish builder reality from software convenience.
+## ScheduleJoe — Keel Architecture (4.5.7)
+
+ScheduleJoe remains pre-commissioning work in Captain's Quarters. Its current organizational keel is Company → Region → Division → Community → Build/Lot → optional Unit. The visible Build Code uses `RRR-DDD-CC-LLLL[-U]`, but the code is never the database identity; every Build has a separate immutable internal ID.
+
+Three concerns are deliberately independent:
+1. **Organization** — where a Build sits in the business hierarchy.
+2. **Authority** — what a user may see or change. Region is read-only for now; Division and assigned Project Manager hold primary operational authority; cross-scope access requires explicit approval.
+3. **Template lineage** — Division and Community can create/localize schedules without overwriting parent templates. Every effective template preserves source, inherited version, explicit overrides, and the version used by a Build.
+
+Engine lessons may inform these systems, but no Engine primitive is inherited automatically.
+
