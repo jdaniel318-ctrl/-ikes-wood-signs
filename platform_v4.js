@@ -1,9 +1,10 @@
-/* Dark Sky 4.1.1 — Clear Horizon platform generation layer */
+/* Dark Sky 4.1.2 — Quiet Deck platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.1.1';
-const NAME='Clear Horizon';
+const VERSION='4.1.2';
+const NAME='Quiet Deck';
 const SCHEMA=2;
+const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({
  state:'darkSkyV4StateV1', flags:'darkSkyV4FeatureFlagsV1', decisions:'darkSkyV4DecisionLedgerV1',
  diagnostics:'darkSkyV4BlackBoxV1', labs:'darkSkyV4CaptainLabV1', release:'darkSkyV4ReleaseRingsV1',
@@ -102,7 +103,8 @@ function blackBoxHealth(){
  const occurrences=rows.reduce((n,x)=>n+Math.max(1,Number(x.occurrences||1)),0);
  const errors=rows.filter(x=>/javascript\.error|promise\.rejection|commissioning\.failed/i.test(String(x.type||'')));
  const recentErrors=errors.filter(x=>{const t=Date.parse(x.lastSeen||x.at||'');return Number.isFinite(t)&&now-t<=recentWindow;});
- return {uniqueEvents:rows.length,occurrences,errorSignatures:errors.length,recentFaults:recentErrors.length,status:recentErrors.length?'attention':'clear'};
+ const sessionErrors=errors.filter(x=>{const t=Date.parse(x.lastSeen||x.at||'');return Number.isFinite(t)&&t>=SESSION_STARTED_AT;});
+ return {uniqueEvents:rows.length,occurrences,errorSignatures:errors.length,recentFaults:recentErrors.length,currentSessionFaults:sessionErrors.length,historicalFaults:Math.max(0,errors.length-sessionErrors.length),status:sessionErrors.length?'attention':'clear'};
 }
 function labCreate(project,brief=''){
  if(!project?.id)throw new Error('A project is required for a Captain Lab experiment.');
@@ -166,7 +168,7 @@ function markCommissioningFailed(projects=[],reason='Commissioning invariant fai
 
 async function storageStewardPreview(){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-1-1-clear-horizon');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-1-2-quiet-deck');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
  return {
    at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,
@@ -192,7 +194,7 @@ function commandBrief(projects=[]){
  const draft=projects.filter(p=>String(p?.publish?.status||p?.publishStatus||'development')!=='live');
  if(draft.length)priorities.push({level:'attention',title:`${draft.length} vessel${draft.length===1?'':'s'} not live`,detail:'Continue launch, Sea Trial, or keep intentionally private.'});
  if(activeLabs.length)priorities.push({level:'recommendation',title:`${activeLabs.length} Captain Lab experiment${activeLabs.length===1?'':'s'} active`,detail:'Review candidates before any Engine implementation.'});
- if(bb.recentFaults)priorities.push({level:'attention',title:`${bb.recentFaults} recent Black Box fault signature${bb.recentFaults===1?'':'s'}`,detail:'Review the latest fault before promoting the release ring.'});
+ if(bb.currentSessionFaults)priorities.push({level:'attention',title:`${bb.currentSessionFaults} current-session Black Box fault signature${bb.currentSessionFaults===1?'':'s'}`,detail:'Review the latest fault before promoting the release ring.'});
  else if(recentDiagnostics.length)priorities.push({level:'info',title:'Black Box quiet',detail:`${bb.uniqueEvents} unique historical event${bb.uniqueEvents===1?'':'s'} retained; no fault signature repeated in the last 30 minutes.`});
  if(!priorities.length)priorities.push({level:'clear',title:'Full Sail posture',detail:'No platform-level blockers detected.'});
  return {at:new Date().toISOString(),projectCount:projects.length,preflight:pf,releaseRing:rel.currentRing,recoveryPoints:recoveryVault().length,diagnostics:diagnostics().length,blackBoxHealth:bb,labs:labs().length,decisions:decisions().length,priorities:priorities.slice(0,4)};

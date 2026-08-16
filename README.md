@@ -1,3 +1,7 @@
+# Dark Sky 4.1.2 — Quiet Deck
+
+Quiet Deck fixes an early-startup DOM-helper ordering fault that could raise `ReferenceError: Can't find variable: $` on Safari/iPad. DOM helpers now initialize before any security/startup path can use them. Black Box health now distinguishes faults from the current runtime session from preserved historical evidence, so resolved history does not keep the Captain in an attention state. No project, order, customer, graphics, admission, quarantine, or V4 envelope architecture is changed.
+
 # Dark Sky 4.1.1 — Clear Horizon
 
 Clear Horizon is a quiet-deck maintenance release on top of Full Sail. It removes obsolete migration-call noise, deduplicates Black Box faults without erasing evidence, and surfaces diagnostic health to Captain and Engine while preserving the commissioned V4 hull.
