@@ -1,8 +1,8 @@
-# Dark Sky / Black Flag — v4.0.8 Orphan Watch
+# Dark Sky / Black Flag — v4.1.0 Full Sail
 
-**Current release:** v4.0.8 — Orphan Watch
+**Current release:** v4.1.0 — Full Sail
 
-Broadside is the first Dark Sky platform-generation release after the 3.10.x fleet-registry hardening line. It intentionally preserves the proven project registry and security boundaries while adding a higher-level platform contract, recovery discipline, diagnostics, release rings, Captain Lab, and a decision ledger.
+Full Sail is the first post-commissioning capability release. Broadside was the first Dark Sky platform-generation release after the 3.10.x fleet-registry hardening line. It intentionally preserves the proven project registry and security boundaries while adding a higher-level platform contract, recovery discipline, diagnostics, release rings, Captain Lab, and a decision ledger.
 
 ## V4 platform contract
 
@@ -126,6 +126,6 @@ Engine Project Command uses an early-bound delegated command bus for filters, pr
 ### v3.9.2 command reliability
 Waters Ahead and structural command controls are now attached to an independent early-bound command bus. This prevents a partial boot or migration warning from producing visually healthy but non-interactive command cards, particularly on iPad/Safari.
 
-## v4.0.8 — Orphan Watch
+## v4.1.0 — Orphan Watch
 
 The V4 fleet is commissioned at 4/4. Orphan Watch closes the final structural critical by separating an unknown legacy order from active operations without guessing which project owned it. The complete record is retained in the Recovery Vault, while a durable tombstone prevents stale browser storage from resurrecting it into workload or integrity calculations. This preserves evidence and project isolation at the same time.

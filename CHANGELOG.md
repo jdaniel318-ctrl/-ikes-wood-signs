@@ -1,4 +1,12 @@
-# Dark Sky 4.0.8 — Orphan Watch
+# Dark Sky 4.1.0 — Full Sail
+
+- Adds the Engine Room **Full Sail Command Deck** with live workload, fleet readiness, customer-ready offer count, storage posture, Captain priorities, and quick command routes.
+- Adds **Storage Steward**, a guarded maintenance tool that trims only stale V4 diagnostics/recovery manifests and old application caches; it never deletes project, order, customer, graphics, admission, or quarantine records.
+- Upgrades Captain’s Quarters **Platform Command** into a Captain Command Brief with priorities, release/recovery controls, Captain Lab board, controlled feature flags, recent Recovery Vault entries, and Black Box visibility.
+- Captain Lab approvals remain production-write denied: approval records intent; Engine execution remains separately authorized and audited.
+- Advances runtime and service-worker cache to 4.1.0 Full Sail while preserving the commissioned 4/4 fleet envelope contract.
+
+# Dark Sky 4.1.0 — Orphan Watch
 
 - Adds a durable Orphan Order Quarantine for orders whose Project ID is not admitted to the canonical fleet.
 - Preserves the full orphan order payload for recovery instead of guessing ownership or deleting evidence.

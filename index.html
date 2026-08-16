@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=4.0.8" />
+  <link rel="stylesheet" href="styles.css?v=4.1.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -809,6 +809,14 @@
         <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
       </section>
 
+      <section id="fullSailCommandDeck" class="full-sail-command-deck" aria-label="Full Sail Command Deck">
+        <header class="full-sail-head">
+          <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>FULL SAIL</span></div><h3>Command Deck</h3><p>Daily operating posture, release readiness, and the next useful moves across the fleet.</p></div>
+          <strong id="fullSailState" class="full-sail-state">READING</strong>
+        </header>
+        <div id="fullSailCommandBody" class="full-sail-command-body"><p class="helper">Reading fleet command signals…</p></div>
+      </section>
+
       <section id="engineFleetHealth" class="engine-fleet-health" aria-label="Fleet Health">
         <section class="fleet-health-head">
           <div><span>FLEET HEALTH</span><h3>Loading operational picture…</h3><p>Checking project workload, deployments, owner invitations, and active warnings.</p></div>
@@ -1058,6 +1066,11 @@
             <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
             <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
             <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
+            <div class="storage-steward">
+              <div><strong>Storage Steward</strong><small>Safe housekeeping only. Never deletes projects, orders, customers, graphics, admissions, or quarantine evidence.</small></div>
+              <div class="storage-steward-actions"><button id="engineStorageStewardPreviewBtn" class="secondary-btn small" type="button">INSPECT STORAGE</button><button id="engineStorageStewardCleanBtn" class="secondary-btn small" type="button">CLEAN TEMPORARY DEBRIS</button></div>
+              <p id="engineStorageStewardStatus" class="helper"></p>
+            </div>
             <p id="engineStorageDetail" class="helper"></p>
           </div>
         </details>
@@ -1200,11 +1213,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=4.0.8"></script>
-  <script src="platform_v4.js?v=4.0.8"></script>
-  <script src="platform_identity.js?v=4.0.8"></script>
-  <script src="app.js?v=4.0.8"></script>
-  <script src="captain.js?v=4.0.8"></script>
+  <script src="platform_core.js?v=4.1.0"></script>
+  <script src="platform_v4.js?v=4.1.0"></script>
+  <script src="platform_identity.js?v=4.1.0"></script>
+  <script src="app.js?v=4.1.0"></script>
+  <script src="captain.js?v=4.1.0"></script>
 
 </body>
 </html>

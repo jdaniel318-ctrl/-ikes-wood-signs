@@ -1,9 +1,9 @@
-/* Dark Sky 4.0.8 — Orphan Watch platform generation layer */
+/* Dark Sky 4.1.0 — Full Sail platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.0.8';
-const NAME='Broadside';
-const SCHEMA=1;
+const VERSION='4.1.0';
+const NAME='Full Sail';
+const SCHEMA=2;
 const KEYS=Object.freeze({
  state:'darkSkyV4StateV1', flags:'darkSkyV4FeatureFlagsV1', decisions:'darkSkyV4DecisionLedgerV1',
  diagnostics:'darkSkyV4BlackBoxV1', labs:'darkSkyV4CaptainLabV1', release:'darkSkyV4ReleaseRingsV1',
@@ -32,7 +32,10 @@ const DEFAULT_FLAGS=Object.freeze({
  release_rings:{enabled:true,scope:'fleet',ring:'stable'},
  command_search:{enabled:false,scope:'fleet',ring:'captain'},
  attention_center:{enabled:true,scope:'fleet',ring:'stable'},
- workflow_engine:{enabled:false,scope:'project',ring:'captain'}
+ workflow_engine:{enabled:false,scope:'project',ring:'captain'},
+ captain_brief:{enabled:true,scope:'captain',ring:'stable'},
+ storage_steward:{enabled:true,scope:'engine_admin',ring:'stable'},
+ lab_board:{enabled:true,scope:'captain',ring:'stable'}
 });
 function read(key,fallback){try{const v=JSON.parse(localStorage.getItem(key));return v==null?fallback:v}catch(_){return fallback}}
 function write(key,value){localStorage.setItem(key,JSON.stringify(value));return value}
@@ -114,16 +117,50 @@ function completeCommissioning(projects=[],meta={}){
  const prior=migrationState()||{};
  const row={...prior,from:prior.from||'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,failed:false,stage:'v4-project-envelopes',projectIds:projects.map(p=>p.id),commissionedProjectCount:sealed};
  write(KEYS.migration,row);write(KEYS.state,{version:VERSION,name:NAME,schema:SCHEMA,installedAt:read(KEYS.state,{})?.installedAt||row.at,commissionedAt:row.at,contract:CONTRACT});
- core()?.audit?.({actorRole:'system',category:'migration',action:'v4.0.8.commissioning.harbor_master_sealed',detail:`${sealed}/${expected} project envelopes read-back verified`});
+ core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.0.commissioning.harbor_master_sealed',detail:`${sealed}/${expected} project envelopes read-back verified`});
  return row;
 }
 function markCommissioningFailed(projects=[],reason='Commissioning invariant failed'){
  const prior=migrationState()||{}, expected=Array.isArray(projects)?projects.length:0;
  const row={...prior,to:VERSION,at:new Date().toISOString(),completed:false,failed:true,stage:'v4-project-envelopes',projectIds:(projects||[]).map(p=>p.id),commissionedProjectCount:0,failure:String(reason||'Commissioning failed')};
- write(KEYS.migration,row);core()?.audit?.({actorRole:'system',category:'migration',action:'v4.0.8.commissioning.failed',detail:row.failure});diagnostic('commissioning.failed',row.failure,{projectCount:expected});return row;
+ write(KEYS.migration,row);core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.0.commissioning.failed',detail:row.failure});diagnostic('commissioning.failed',row.failure,{projectCount:expected});return row;
 }
+
+async function storageStewardPreview(){
+ const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-1-0-full-sail');
+ let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
+ return {
+   at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,
+   diagnostics:diagnostics().length,recoveryPoints:recoveryVault().length,labs:labs().length,
+   cacheCount:cacheNames.length,oldCaches
+ };
+}
+async function storageStewardClean(){
+ const before=await storageStewardPreview();
+ const diag=diagnostics();write(KEYS.diagnostics,diag.slice(0,120));
+ const vault=recoveryVault();write(KEYS.recovery,vault.slice(0,10));
+ const removedCaches=[];
+ if(typeof caches!=='undefined'){for(const key of before.oldCaches){try{if(await caches.delete(key))removedCaches.push(key)}catch(_){}}}
+ const row={at:new Date().toISOString(),diagnosticsTrimmed:Math.max(0,diag.length-120),recoveryPointsTrimmed:Math.max(0,vault.length-10),removedCaches};
+ core()?.audit?.({actorRole:'engine_admin',category:'maintenance',action:'v4.1.0.storage_steward.safe_cleanup',detail:`${row.diagnosticsTrimmed} diagnostics • ${row.recoveryPointsTrimmed} recovery manifests • ${removedCaches.length} stale caches`});
+ diagnostic('storage.steward.cleaned','Safe housekeeping completed',row);
+ return {before,after:await storageStewardPreview(),...row};
+}
+function commandBrief(projects=[]){
+ const pf=preflight(projects,null), rel=releaseState(), recentDiagnostics=diagnostics().slice(0,5), activeLabs=labs().filter(x=>!['rejected','promoted'].includes(x.state));
+ const priorities=[];
+ if(!pf.ok)priorities.push({level:'critical',title:'Platform contract needs attention',detail:`${pf.critical} critical • ${pf.warnings} warning`});
+ const draft=projects.filter(p=>String(p?.publish?.status||p?.publishStatus||'development')!=='live');
+ if(draft.length)priorities.push({level:'attention',title:`${draft.length} vessel${draft.length===1?'':'s'} not live`,detail:'Continue launch, Sea Trial, or keep intentionally private.'});
+ if(activeLabs.length)priorities.push({level:'recommendation',title:`${activeLabs.length} Captain Lab experiment${activeLabs.length===1?'':'s'} active`,detail:'Review candidates before any Engine implementation.'});
+ if(recentDiagnostics.length)priorities.push({level:'info',title:`${recentDiagnostics.length} recent Black Box event${recentDiagnostics.length===1?'':'s'}`,detail:'Review only if behavior looks abnormal.'});
+ if(!priorities.length)priorities.push({level:'clear',title:'Full Sail posture',detail:'No platform-level blockers detected.'});
+ return {at:new Date().toISOString(),projectCount:projects.length,preflight:pf,releaseRing:rel.currentRing,recoveryPoints:recoveryVault().length,diagnostics:diagnostics().length,labs:labs().length,decisions:decisions().length,priorities:priorities.slice(0,4)};
+}
+
 function status(projects=[]){const pf=preflight(projects,null),rel=releaseState();return {version:VERSION,name:NAME,schema:SCHEMA,contract:CONTRACT,preflight:pf,release:rel,flags:featureFlags(),decisions:decisions().length,labs:labs().length,diagnostics:diagnostics().length,recoveryPoints:recoveryVault().length,migration:migrationState()}}
 window.addEventListener('error',e=>{if(featureFlags().black_box?.enabled)diagnostic('javascript.error',e.message||'Unknown error',{source:e.filename||'',line:e.lineno||0,column:e.colno||0})});
 window.addEventListener('unhandledrejection',e=>{if(featureFlags().black_box?.enabled)diagnostic('promise.rejection',String(e.reason?.message||e.reason||'Unhandled rejection'))});
-g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,markCommissioningFailed,exportProject,status};
+g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,markCommissioningFailed,exportProject,storageStewardPreview,storageStewardClean,commandBrief,status};
 })(window);

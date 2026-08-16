@@ -201,6 +201,11 @@ On the first successful fleet load after 4.0.0, Dark Sky creates one sanitized p
 V4 commissioning is an invariant, not a marker: every canonical fleet project must satisfy Schema 8 namespace/isolation/default-deny requirements after canonical read-back. Legacy references are deterministically migrated when safe; ambiguous orphan records are preserved in a quarantine vault rather than cross-assigned.
 
 
-## V4.0.8 Orphan Order Boundary
+## V4.1.0 Orphan Order Boundary
 
 Active order telemetry is derived only from non-quarantined orders whose Project ID resolves to an admitted canonical vessel. Unknown legacy orders are copied intact into the V4 Recovery/Quarantine vault and tombstoned by immutable order ID. The tombstone is enforced during merged-order reads in addition to best-effort physical deletion from IndexedDB and the local backup. This intentionally favors isolation and evidence preservation over speculative reassignment.
+
+
+## V4.1 Full Sail Command Law
+
+Post-commissioning platform capability is split by authority. The Engine Room provides operational command, maintenance, testing, configuration and project execution. Captain's Quarters provides fleet posture, governance, recovery, release discipline, controlled experimentation and decision memory. Captain Lab approval never mutates production. Storage Steward is explicitly non-destructive to business records and project identity; its cleanup scope is limited to stale app caches and bounded V4 diagnostic/recovery-manifest history.

@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.0.8';
+  const BUILD_VERSION = '4.1.0';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1396,7 +1396,7 @@
   // this ledger owns the security envelope contract. Keeping the contract in a
   // dedicated, project-ID-keyed ledger prevents older project serializers from
   // accidentally dropping security fields while preserving canonical identity.
-  // V4.0.8 — Harbor Master. Project existence and project security now share one
+  // V4.1.0 — Harbor Master. Project existence and project security now share one
   // explicit fleet manifest. The canonical projects object store remains the durable
   // record store, but only immutable IDs on this manifest are active vessels. Recovery
   // artifacts and legacy/ghost rows are preserved in quarantine instead of being
@@ -1460,12 +1460,12 @@
     const record={projectId:id,admitted:true,source:String(source||'commissioning'),transactionId:`admit:${id}:${Date.now().toString(36)}:${Math.random().toString(36).slice(2,7)}`,admittedAt:new Date().toISOString(),detail:String(detail||''),build:BUILD_VERSION};
     ledger[id]=record;
     await persistV4AdmissionLedger(ledger);
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'v4.0.8.project.admitted',detail:`${record.source} • ${record.transactionId}`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'v4.1.0.project.admitted',detail:`${record.source} • ${record.transactionId}`});
     window.DarkSkyV4?.diagnostic?.('fleet_admission.complete',`${id} admitted to active fleet`,{transactionId:record.transactionId,source:record.source});
     return record;
   }
   async function addProjectToV4FleetManifest(projectId){
-    // Compatibility entry point used by the project factory. In V4.0.8 this is an
+    // Compatibility entry point used by the project factory. In V4.1.0 this is an
     // admission transaction, not a list append.
     await admitProjectToV4Fleet(projectId,{source:'commissioning',detail:'Canonical registry read-back verified.'});
     const state=await ensureCanonicalFleetManifest({repairRegistry:false});
@@ -1486,7 +1486,7 @@
     const orphans=canonical.filter(p=>p?.id&&!allowed.has(String(p.id)));
     if(orphans.length){
       for(const ghost of orphans)appendV4Quarantine('unadmitted_registry_orphan',String(ghost.id),structuredClone(ghost));
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.0.8.harbor_master.quarantined',detail:`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.1.0.harbor_master.quarantined',detail:`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
       window.DarkSkyV4?.diagnostic?.('fleet_admission.orphans.quarantined',`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined`,{projectIds:orphans.map(p=>p.id)});
       if(repairRegistry){
         const keep=canonical.filter(p=>allowed.has(String(p?.id||'')));
@@ -1570,7 +1570,7 @@
       return v4EnvelopeConvergenceState;
     }
     try{
-      // v4.0.8 — Harbor Master. Explicit admissions define the fleet. The
+      // v4.1.0 — Harbor Master. Explicit admissions define the fleet. The
       // registry cannot expand the denominator merely because it contains recovery
       // cargo, and memory cannot resurrect a quarantined project.
       const manifest=await ensureCanonicalFleetManifest({repairRegistry:true});
@@ -1698,7 +1698,7 @@
       try{const tr=db.transaction(STORE_ORDERS,'readwrite'),st=tr.objectStore(STORE_ORDERS);st.clear();keep.forEach(o=>st.put(o));await transactionToPromise(tr)}catch(err){console.warn('V4 order reference repair could not rewrite IndexedDB',err)}
       writeLocalOrders(keep);
     }
-    // V4.0.8 — Orphan Watch: quarantine is authoritative even if a browser keeps a stale IDB row alive.
+    // V4.1.0 — Orphan Watch: quarantine is authoritative even if a browser keeps a stale IDB row alive.
     // Physically delete tombstoned order IDs when possible; getMergedOrders also excludes them as a fail-safe.
     try{
       const tombstones=readOrphanOrderTombstones();
@@ -1723,7 +1723,7 @@
     }
     writeCustomerDirectory(next);
     if(migrated||quarantined){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.8.orphan_watch.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.1.0.orphan_watch.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
       window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
     }
     return {migrated,quarantined};
@@ -2031,6 +2031,30 @@
     }
   }
 
+  async function renderFullSailCommandDeck(){
+    const host=$('fullSailCommandBody'),state=$('fullSailState');if(!host)return;
+    try{
+      const list=projects();let open=0,activeDeployments=0,fleetReady=0,draft=0,customerReady=0;
+      for(const p of list){
+        const snap=await projectControlSnapshot(p);open+=snap.open.length;activeDeployments+=snap.activeDeployments.length;
+        const launch=projectFleetLaunchState(p);if(launch.key==='fleet_ready')fleetReady++;if(launch.key==='draft')draft++;customerReady+=launch.offers?.length||0;
+      }
+      const brief=window.DarkSkyV4?.commandBrief?.(list)||null;
+      let usage='—';try{const e=await navigator.storage?.estimate?.();if(e?.usage!=null)usage=`${(e.usage/1024/1024).toFixed(1)} MB`}catch(_){}
+      const posture=brief?.preflight?.ok?'FULL SAIL':'WATCH';if(state){state.textContent=posture;state.className=`full-sail-state ${brief?.preflight?.ok?'clear':'watch'}`;}
+      const priorities=(brief?.priorities||[]).map(x=>`<article class="full-sail-priority ${escapeHtml(x.level)}"><span>${escapeHtml(x.level.toUpperCase())}</span><strong>${escapeHtml(x.title)}</strong><small>${escapeHtml(x.detail)}</small></article>`).join('');
+      host.innerHTML=`<div class="full-sail-kpis">
+        <article><span>OPEN WORKLOAD</span><strong>${open}</strong><small>${list.length} admitted vessels</small></article>
+        <article><span>FLEET READY</span><strong>${fleetReady}</strong><small>${activeDeployments} active deployment${activeDeployments===1?'':'s'}</small></article>
+        <article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article>
+        <article><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${brief?.recoveryPoints||0} recovery points • ${brief?.diagnostics||0} black-box events</small></article>
+      </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>Next best moves</h4>${priorities}</div><div class="full-sail-actions"><h4>Quick command</h4><button type="button" data-full-sail="watch">RUN WATCH</button><button type="button" data-full-sail="projects">PROJECT COMMAND</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
+      host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
+        const a=btn.dataset.fullSail;if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
+      });
+    }catch(err){console.warn('Full Sail command deck warning',err);if(state){state.textContent='CHECK';state.className='full-sail-state watch';}host.innerHTML='<p class="helper">Command Deck could not finish its live read. Fleet controls below remain available.</p>';}
+  }
+
   function projectFleetLaunchState(p){
     const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
     const active=deployments.filter(d=>d.state==='deployed');
@@ -2060,6 +2084,7 @@
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats refresh warning',err); }
     try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v4 command refresh warning',err); }
     try{ window.renderDarkSkyV4EngineStatus?.(); }catch(err){ console.warn('v4 status render warning',err); }
+    try{ await renderFullSailCommandDeck(); }catch(err){ console.warn('full sail render warning',err); }
     return true;
   }
 
@@ -7762,7 +7787,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function runShipIntegrityV3({record=false}={}){
-    // V4.0.8 uses one admission-authoritative convergence routine for storage, status, and certification.
+    // V4.1.0 uses one admission-authoritative convergence routine for storage, status, and certification.
     // Integrity therefore cannot disagree with the Broadside envelope counter.
     const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
     try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
@@ -8115,10 +8140,11 @@ The full order and approved media remain stored with this project.`;
   async function refreshV3CommandSystems(){
     await renderV3ArchitectureStatus();
     await renderFirstMateWatch();
+    await renderFullSailCommandDeck();
   }
 
   window.blackFlagV3={
-    version:'4.0.8-orphan-watch-compat',
+    version:'4.1.0-full-sail-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -8519,6 +8545,8 @@ The full order and approved media remain stored with this project.`;
       refreshEngineDiagnostics();
     });
     $('engineExportBtn').addEventListener('click',exportBackup);
+    $('engineStorageStewardPreviewBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');try{const r=await window.DarkSkyV4?.storageStewardPreview?.();if(!r)throw new Error('Storage Steward unavailable');const used=r.usage!=null?(r.usage/1024/1024).toFixed(1)+' MB':'unknown';if(box)box.textContent=`${used} used • ${r.diagnostics} diagnostics • ${r.recoveryPoints} recovery points • ${r.oldCaches.length} stale cache${r.oldCaches.length===1?'':'s'} safe to remove.`;}catch(err){if(box)box.textContent='Inspection interrupted: '+String(err.message||err);}});
+    $('engineStorageStewardCleanBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');if(!confirm('Clean only stale caches and older V4 diagnostic/recovery manifests? Projects, orders, customers, graphics and quarantine evidence will not be touched.'))return;try{if(box)box.textContent='Cleaning temporary debris…';const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');if(box)box.textContent=`Safe cleanup complete • ${r.removedCaches.length} stale caches • ${r.diagnosticsTrimmed} old diagnostics • ${r.recoveryPointsTrimmed} old recovery manifests.`;await refreshEngineDiagnostics();await renderFullSailCommandDeck();}catch(err){if(box)box.textContent='Cleanup interrupted: '+String(err.message||err);}});
     $('engineResetSettingsBtn').addEventListener('click',()=>{
       $('engineResetPinInput').value='';
       $('engineResetError').textContent='';
