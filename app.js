@@ -5,7 +5,7 @@
   window.$$ = $$;
   window.__darkSkyBootStage = 'app-module-entered';
   const DB_NAME = 'blackFlagPlatformV1';
-  const DB_VERSION = 2;
+  const DB_VERSION = 5;
   const STORE_ORDERS = 'orders';
   const STORE_SETTINGS = 'settings';
   const STORE_PROJECTS = 'projects';
@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.4.6';
+  const BUILD_VERSION = '4.4.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -954,9 +954,16 @@
     }catch(err){ console.warn('Legacy project settings translation skipped',err); }
   }
 
-  function openDb(){
+  function validatePrimaryDbStores(opened){
+    const required=[STORE_ORDERS,STORE_SETTINGS,STORE_PROJECTS];
+    const missing=required.filter(name=>!opened?.objectStoreNames?.contains?.(name));
+    if(missing.length) throw new Error(`Primary Dark Sky database is missing required store(s): ${missing.join(', ')}.`);
+    return opened;
+  }
+
+  function openPrimaryDbRequest(version=DB_VERSION){
     return new Promise((resolve,reject)=>{
-      const req=indexedDB.open(DB_NAME,DB_VERSION);
+      const req=version==null ? indexedDB.open(DB_NAME) : indexedDB.open(DB_NAME,version);
       req.onupgradeneeded=()=>{
         const d=req.result;
         if(!d.objectStoreNames.contains(STORE_ORDERS)){
@@ -968,13 +975,35 @@
         if(!d.objectStoreNames.contains(STORE_PROJECTS)) d.createObjectStore(STORE_PROJECTS,{keyPath:'id'});
       };
       req.onsuccess=()=>{
-        const opened=req.result;
-        opened.onversionchange=()=>{ try{ opened.close(); }catch(_){} };
-        resolve(opened);
+        try{
+          const opened=validatePrimaryDbStores(req.result);
+          opened.onversionchange=()=>{ try{ opened.close(); }catch(_){} };
+          resolve(opened);
+        }catch(err){
+          try{req.result?.close?.();}catch(_){}
+          reject(err);
+        }
       };
       req.onblocked=()=>console.warn('Dark Sky storage upgrade is waiting for another open tab to release the database.');
       req.onerror=()=>reject(req.error);
     });
+  }
+
+  async function openDb(){
+    try{
+      return await openPrimaryDbRequest(DB_VERSION);
+    }catch(err){
+      // Forward-only storage law: Safari throws VersionError if an older build
+      // requests a schema lower than the database already on the device. Never
+      // downgrade. Reopen the existing newer schema and validate the stores we use.
+      if(String(err?.name||'')==='VersionError' || /lower version than the existing version/i.test(String(err?.message||err||''))){
+        console.warn(`Primary database is newer than requested schema ${DB_VERSION}; reopening existing schema without downgrade.`,err);
+        const opened=await openPrimaryDbRequest(null);
+        window.DarkSkyV4?.diagnostic?.('storage.primary_db.forward_compatible',`existing schema ${opened.version} retained`,{requestedVersion:DB_VERSION,actualVersion:opened.version,build:BUILD_VERSION});
+        return opened;
+      }
+      throw err;
+    }
   }
 
   function tx(store,mode='readonly'){ if(!db||typeof db.transaction!=='function') throw new Error('Primary Dark Sky database is not ready.'); return db.transaction(store,mode).objectStore(store); }
@@ -1330,7 +1359,7 @@
     candidate.id=id;
     if(candidate.identity&&typeof candidate.identity==='object')candidate.identity.projectId=id;
 
-    // V4.4.6 — Project-local writes never clear or replace the fleet registry.
+    // V4.4.7 — Project-local writes never clear or replace the fleet registry.
     // The canonical projects store is keyed by immutable Project ID, so update the
     // owning row in place and read that exact row back before reporting success.
     await withPrimaryDbRetry(async()=>{
@@ -2608,7 +2637,7 @@
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
-      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.6 primary DB readiness gate • ${resolution.source}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.7 forward-only DB migration gate • ${resolution.source}`});
       return true;
     }catch(err){
       console.error('Experience Test Deck render failed',err);
@@ -2660,7 +2689,7 @@
   }
 
   async function renderEngineRoom(){
-    // V4.4.6 — reseal the admitted fleet before any Engine repaint. A failed
+    // V4.4.7 — reseal the admitted fleet before any Engine repaint. A failed
     // project-local mutation may never collapse Project Command to the active vessel.
     await sealOperationalFleetForCommand();
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
@@ -4749,7 +4778,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'4.4.6'
+      commissioningVersion:'4.4.7'
     };
 
     // Commissioning is a durable registry transaction, not a visual completion.
@@ -9436,7 +9465,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.6.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • project-local canonical mutation writes • resilient IndexedDB reconnect • fleet command reseal • canonical Test Deck resolver`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.7.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • project-local canonical mutation writes • resilient IndexedDB reconnect • fleet command reseal • canonical Test Deck resolver`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

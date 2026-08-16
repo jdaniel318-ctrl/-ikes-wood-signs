@@ -1,4 +1,10 @@
-## 4.4.6 — Primary DB Readiness Gate
+## 4.4.7 — Forward-Only IndexedDB Migration
+- Bumped the primary Dark Sky database schema to 5 so devices previously upgraded through the 3.9 continuity line are never asked to open a lower schema.
+- Added a forward-compatible VersionError fallback: if a future/newer schema already exists, Dark Sky reopens that existing schema without attempting a downgrade and validates the required stores.
+- Kept project-local persistence and fleet-safe mutation boundaries from 4.4.5/4.4.6.
+- Added required-store validation before any project mutation proceeds.
+
+## 4.4.7 — Primary DB Readiness Gate
 - Guarantees a live IndexedDB handle before project-local mutations.
 - Reopens and retries once for closed, inactive, or undefined DB transaction failures.
 - Adds a descriptive storage readiness guard instead of raw `db.transaction` failures.
