@@ -1,4 +1,15 @@
-# Dark Sky 4.2.1 — Sounding Line
+# Dark Sky 4.2.2 — Ballast Trim
+
+- Makes the Storage Steward report actionable after Sounding Line proved the app itself is only a small portion of Safari origin usage.
+- Separates **Measured Dark Sky data** from Safari's broader **browser origin estimate** on the Command Deck.
+- Shows browser-managed/unattributed storage explicitly instead of implying it belongs to Dark Sky projects.
+- Calculates stale-cache bytes and labels cleanup with the exact number of stale caches found.
+- Requires a successful storage inspection before cleanup can run.
+- Keeps cleanup limited to stale application caches plus bounded diagnostic/recovery-manifest compaction; projects, orders, customers, graphics, admissions, active settings and quarantine evidence are excluded.
+- Corrects the service-worker cache generation to `dark-sky-v4-2-2-ballast-trim` so future builds stop sharing an obsolete cache identity.
+- Clears the cached sounding after cleanup so a new measurement is required before another trim.
+
+# Dark Sky 4.2.2 — Ballast Trim
 
 - Repairs Storage Steward INSPECT STORAGE with a direct, independent click path.
 - Shows immediate sounding progress and a visible storage report on iPad.

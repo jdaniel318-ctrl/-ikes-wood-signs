@@ -14,8 +14,8 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.2.1';
-  // Sounding Line: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
+  const BUILD_VERSION = '4.2.2';
+  // Ballast Trim: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -969,6 +969,8 @@
   function formatStorageMb(n){return n==null?'?':(Number(n)/1024/1024).toFixed(1)}
   function renderStorageStewardReport(r){
     const b=r?.breakdown||{};const stores=b.indexedDb?.stores||{};
+    const originBytes=Number(r?.usage||0),knownBytes=Number(b.knownBytes||0),unattributed=Math.max(0,originBytes-knownBytes);
+    const staleBytes=Number(r?.oldCacheBytes||0);
     const cachesTop=(b.cacheStorage?.caches||[]).slice(0,8);
     const localTop=(b.localStorage?.topKeys||[]).slice(0,6);
     const cacheRows=cachesTop.length?cachesTop.map(x=>`<tr><td>${escapeHtml(x.name||'cache')}</td><td>${Number(x.entries||0)}</td><td>${formatStorageMb(x.bytes)} MB</td></tr>`).join(''):'<tr><td colspan="3">No cache entries measured.</td></tr>';
@@ -981,7 +983,8 @@
         <div><b>${formatStorageMb(b.localStorage?.bytes)} MB</b><small>LocalStorage</small></div>
       </div>
       <p class="helper">Orders: ${stores.orders?.rows??'?'} rows / ${formatStorageMb(stores.orders?.bytes)} MB • Projects: ${stores.projects?.rows??'?'} rows / ${formatStorageMb(stores.projects?.bytes)} MB • Settings: ${stores.settings?.rows??'?'} rows / ${formatStorageMb(stores.settings?.bytes)} MB.</p>
-      <p class="helper">${r.oldCaches?.length||0} stale application cache${(r.oldCaches?.length||0)===1?'':'s'} eligible for safe cleanup. Clean remains guarded and does not touch projects, orders, customers, graphics, admissions, or quarantine evidence.</p>
+      <p class="helper"><strong>Browser-managed / unattributed:</strong> ${formatStorageMb(unattributed)} MB. This is the gap between Safari's origin estimate and storage Dark Sky can enumerate; it is not treated as project data.</p>
+      <p class="helper"><strong>Safe cache trim:</strong> ${r.oldCaches?.length||0} stale application cache${(r.oldCaches?.length||0)===1?'':'s'} / about ${formatStorageMb(staleBytes)} MB eligible. Cleanup does not touch projects, orders, customers, graphics, admissions, quarantine evidence, or active V4 data.</p>
       <details class="storage-report-details"><summary>Largest caches</summary><table><thead><tr><th>Cache</th><th>Entries</th><th>Size</th></tr></thead><tbody>${cacheRows}</tbody></table></details>
       <details class="storage-report-details"><summary>Largest LocalStorage keys</summary><table><tbody>${localRows}</tbody></table></details>`;
   }
@@ -996,12 +999,14 @@
       const r=await window.DarkSkyV4?.storageStewardPreview?.((stage,detail)=>{if(box)box.innerHTML=`<strong>Storage sounding…</strong><br><span>${escapeHtml(detail||stage||'Working')}</span>`});
       if(!r)throw new Error('Storage Steward unavailable');
       box.innerHTML=renderStorageStewardReport(r);
-      box.dataset.inspectOk='1';if(clean)clean.disabled=false;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.complete','Storage sounding completed',{usage:r.usage,knownBytes:r.breakdown?.knownBytes,cacheBytes:r.breakdown?.cacheStorage?.bytes,indexedDbBytes:r.breakdown?.indexedDb?.bytes,localStorageBytes:r.breakdown?.localStorage?.bytes,staleCaches:r.oldCaches?.length||0});
+      box.dataset.inspectOk='1';
+      try{localStorage.setItem('bf.v4.storage.lastSounding',JSON.stringify({at:r.at,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0,unattributedBytes:Math.max(0,Number(r.usage||0)-Number(r.breakdown?.knownBytes||0)),oldCaches:r.oldCaches||[],oldCacheBytes:r.oldCacheBytes||0}))}catch(_){}
+      if(clean){clean.disabled=false;clean.textContent=(r.oldCaches?.length||0)?`CLEAN ${r.oldCaches.length} STALE CACHE${r.oldCaches.length===1?'':'S'}`:'COMPACT DIAGNOSTICS'}
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.complete','Storage sounding completed',{usage:r.usage,knownBytes:r.breakdown?.knownBytes,cacheBytes:r.breakdown?.cacheStorage?.bytes,indexedDbBytes:r.breakdown?.indexedDb?.bytes,localStorageBytes:r.breakdown?.localStorage?.bytes,staleCaches:r.oldCaches?.length||0,staleCacheBytes:r.oldCacheBytes||0});
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.2.1'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.2.2'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -2125,14 +2130,19 @@
         const launch=projectFleetLaunchState(p);if(launch.key==='fleet_ready')fleetReady++;if(launch.key==='draft')draft++;customerReady+=launch.offers?.length||0;
       }
       const brief=window.DarkSkyV4?.commandBrief?.(list)||null;
-      let usage='—';try{const e=await navigator.storage?.estimate?.();if(e?.usage!=null)usage=`${(e.usage/1024/1024).toFixed(1)} MB`}catch(_){}
+      let usage='—',storageNote=`${brief?.recoveryPoints||0} recovery points • ${brief?.diagnostics||0} black-box events`;
+      try{
+        const last=JSON.parse(localStorage.getItem('bf.v4.storage.lastSounding')||'null');
+        if(last?.knownBytes!=null){usage=`${(Number(last.knownBytes)/1024/1024).toFixed(1)} MB`;const origin=Number(last.usage||0);storageNote=origin?`Measured Dark Sky • ${(origin/1024/1024).toFixed(1)} MB browser origin`:'Measured Dark Sky data';}
+        else{const e=await navigator.storage?.estimate?.();if(e?.usage!=null){usage=`${(e.usage/1024/1024).toFixed(1)} MB`;storageNote='Browser origin estimate • inspect for Dark Sky breakdown';}}
+      }catch(_){}
       const posture=brief?.preflight?.ok?'CLEAR HORIZON':'WATCH';if(state){state.textContent=posture;state.className=`full-sail-state ${brief?.preflight?.ok?'clear':'watch'}`;}
       const priorities=(brief?.priorities||[]).map(x=>`<article class="full-sail-priority ${escapeHtml(x.level)}"><span>${escapeHtml(x.level.toUpperCase())}</span><strong>${escapeHtml(x.title)}</strong><small>${escapeHtml(x.detail)}</small></article>`).join('');
       host.innerHTML=`<div class="full-sail-kpis">
         <article><span>OPEN WORKLOAD</span><strong>${open}</strong><small>${list.length} admitted vessels</small></article>
         <article><span>FLEET READY</span><strong>${fleetReady}</strong><small>${activeDeployments} active deployment${activeDeployments===1?'':'s'}</small></article>
         <article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article>
-        <article><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${brief?.recoveryPoints||0} recovery points • ${brief?.diagnostics||0} black-box events</small></article>
+        <article><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
       </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>Next best moves</h4>${priorities}</div><div class="full-sail-actions"><h4>Quick command</h4><button type="button" data-full-sail="watch">RUN WATCH</button><button type="button" data-full-sail="projects">PROJECT COMMAND</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
       host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
         const a=btn.dataset.fullSail;if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
@@ -8633,7 +8643,7 @@ The full order and approved media remain stored with this project.`;
       refreshEngineDiagnostics();
     });
     $('engineExportBtn').addEventListener('click',exportBackup);
-    $('engineStorageStewardCleanBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');if(!confirm('Clean only stale caches and older V4 diagnostic/recovery manifests? Projects, orders, customers, graphics and quarantine evidence will not be touched.'))return;try{if(box)box.textContent='Cleaning temporary debris…';const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');if(box)box.textContent=`Safe cleanup complete • ${r.removedCaches.length} stale caches • ${r.diagnosticsTrimmed} old diagnostics • ${r.recoveryPointsTrimmed} old recovery manifests.`;await refreshEngineDiagnostics();await renderFullSailCommandDeck();}catch(err){if(box)box.textContent='Cleanup interrupted: '+String(err.message||err);}});
+    $('engineStorageStewardCleanBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus'),btn=$('engineStorageStewardCleanBtn');if(box?.dataset.inspectOk!=='1'){if(box)box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Run Inspect Storage before any cleanup.</span>';return;}if(!confirm('Safe housekeeping will remove only stale Dark Sky application caches and compact bounded diagnostic/recovery-manifest history. It will NOT delete projects, orders, customers, graphics, admissions, active settings, or quarantine evidence. Continue?'))return;try{if(btn){btn.disabled=true;btn.textContent='TRIMMING…'}if(box)box.innerHTML='<strong>BALLAST TRIM IN PROGRESS</strong><br><span>Removing stale application cache ballast only.</span>';const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');const reclaimed=Number(r.before?.oldCacheBytes||0);if(box)box.innerHTML=`<strong>BALLAST TRIM COMPLETE</strong><br><span>${r.removedCaches.length} stale cache${r.removedCaches.length===1?'':'s'} removed • about ${formatStorageMb(reclaimed)} MB cache ballast targeted • ${r.diagnosticsTrimmed} old diagnostics • ${r.recoveryPointsTrimmed} old recovery manifests compacted.</span>`;try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}await refreshEngineDiagnostics();await renderFullSailCommandDeck();}catch(err){if(box)box.innerHTML='<strong>CLEANUP INTERRUPTED</strong><br><span>'+escapeHtml(String(err.message||err))+'</span>';}finally{if(btn){btn.disabled=false;btn.textContent='INSPECT AGAIN BEFORE CLEANING'}}});
     $('engineResetSettingsBtn').addEventListener('click',()=>{
       $('engineResetPinInput').value='';
       $('engineResetError').textContent='';

@@ -1,8 +1,8 @@
 /* Dark Sky 4.2.0 — Spyglass platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.2.1';
-const NAME='Sounding Line';
+const VERSION='4.2.2';
+const NAME='Ballast Trim';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({
@@ -168,13 +168,15 @@ function markCommissioningFailed(projects=[],reason='Commissioning invariant fai
 
 async function storageStewardPreview(onProgress){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-2-1-sounding-line');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-2-2-ballast-trim');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
  let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.(onProgress)}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
+ const cacheSizeMap=new Map((breakdown?.cacheStorage?.caches||[]).map(row=>[row.name,Number(row.bytes||0)]));
+ const oldCacheBytes=oldCaches.reduce((sum,name)=>sum+(cacheSizeMap.get(name)||0),0);
  return {
    at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,breakdown,
    diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,labs:labs().length,
-   cacheCount:cacheNames.length,oldCaches
+   cacheCount:cacheNames.length,oldCaches,oldCacheBytes
  };
 }
 async function storageStewardClean(){
