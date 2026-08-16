@@ -1,16 +1,16 @@
-# Dark Sky / Black Flag — v3.9.9 Canonical Registry Reconciliation
+# Dark Sky / Black Flag — v3.10.0 Canonical Registry Reconciliation
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
 
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.9.9 — Canonical Registry Reconciliation
+**Current release:** v3.10.0 — Canonical Registry Reconciliation
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
 
 
-## v3.9.9 canonical registry reconciliation
+## v3.10.0 canonical registry reconciliation
 Project Command now reconciles commissioning state against the canonical IndexedDB `projects` store before it counts or renders the fleet. The immutable Project ID is authoritative: if it exists canonically, Dark Sky clears matching recovery/draft artifacts and renders one normal project card; if it is missing, Dark Sky performs one controlled recovery from the preserved commissioned candidate and verifies the Project ID by reading the canonical store back. A vessel can no longer appear simultaneously as Registry Recovery and Shipyard Draft, and historical journal text can no longer claim a project is verified when the current canonical registry says otherwise.
 
 ## v3.9.1 command-watch reliability

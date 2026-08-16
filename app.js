@@ -9,7 +9,9 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.9.9';
+  const BUILD_VERSION = '3.10.0';
+  const FLEET_REGISTRY_SCHEMA_VERSION = 4;
+  const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -83,6 +85,24 @@
       permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
       customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},
       products:[{id:'custom-flower-arrangement',name:'Custom Flower Arrangement',published:false,characterLimit:60}]
+    }
+,
+    {
+      id:'grizzle-bear',
+      projectCode:'GRZ',
+      name:'Grizzly Bear',
+      tagline:'Outdoor and camping equipment built for the wild.',
+      type:'outdoor_camping_equipment',
+      branding:{businessName:'Grizzly Bear',adminLabel:'GRIZZLY BEAR',primary:'#4f3b2b',accent:'#b86b32',subtitle:'Outdoor & Camping Equipment'},
+      visibility:'engine_only',projectTheme:'universal',status:'future',orderPrefix:'GRZ',
+      ai:{mode:'off',minConfidence:0.90,requireScaleReference:false},
+      customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},
+      workflow:['New','In Production','Ready for Pickup','Completed'],
+      customerExperience:{photoRequired:false,previewApproval:false},publish:{status:'development'},
+      payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
+      customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},
+      products:[]
     }
   ];
 
@@ -929,17 +949,47 @@
     }
   }
 
-  async function persistProjectRegistry(rows){
-    const projects=structuredClone(Array.isArray(rows)?rows:[]);
+  function uniqueRegistryRows(rows){
+    const map=new Map();
+    for(const p of (Array.isArray(rows)?rows:[])){
+      const id=String(p?.id||'').trim();
+      if(!id) throw new Error('Fleet registry contains a project without an immutable Project ID.');
+      if(map.has(id)) throw new Error(`Duplicate Project ID blocked: ${id}`);
+      map.set(id,p);
+    }
+    return [...map.values()];
+  }
+
+  async function persistProjectRegistry(rows,{allowRemovalIds=[]}={}){
+    let projects=uniqueRegistryRows(structuredClone(Array.isArray(rows)?rows:[]));
+    // v3.10.0: registry writes are non-destructive by default. A normal save may
+    // update a vessel, but it may not silently make an already-registered Project ID
+    // disappear. Explicit removal must name the exact immutable Project ID.
+    let existing=[];
+    try{ existing=await readCanonicalProjectRegistry(); }catch(_){ existing=[]; }
+    const allowed=new Set((allowRemovalIds||[]).map(String));
+    const nextIds=projectRegistryIds(projects);
+    const preserved=[];
+    for(const prior of existing){
+      const id=String(prior?.id||'');
+      if(id && !nextIds.has(id) && !allowed.has(id)){
+        projects.push(structuredClone(prior));
+        nextIds.add(id);
+        preserved.push(id);
+      }
+    }
+    projects=uniqueRegistryRows(projects);
+    if(preserved.length){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.shrink_blocked',detail:preserved.join(' • ')});
+    }
+
     const transaction=db.transaction([STORE_PROJECTS,STORE_SETTINGS],'readwrite');
     const projectStore=transaction.objectStore(STORE_PROJECTS);
     const settingsStore=transaction.objectStore(STORE_SETTINGS);
     projectStore.clear();
     projects.forEach(project=>projectStore.put(project));
-    // Keep the legacy collection mirror during the transition so older code and
-    // recovery tooling can still inspect the same fleet snapshot. Both writes are
-    // committed by ONE IndexedDB transaction.
     settingsStore.put({key:'companies',value:projects});
+    settingsStore.put({key:FLEET_REGISTRY_SCHEMA_KEY,value:FLEET_REGISTRY_SCHEMA_VERSION});
     await transactionToPromise(transaction);
 
     const canonical=await readCanonicalProjectRegistry();
@@ -1059,7 +1109,8 @@
     try{
       const projects=structuredClone(Array.isArray(rows)?rows:[]);
       localStorage.setItem(PROJECT_REGISTRY_BACKUP_KEY,JSON.stringify({
-        version:1,
+        version:2,
+        fleetSchemaVersion:FLEET_REGISTRY_SCHEMA_VERSION,
         savedAt:new Date().toISOString(),
         reason,
         projectCount:projects.length,
@@ -1185,12 +1236,48 @@
 
   function normalizeProjectCode(p){
     if(!p)return p;
-    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS' };
+    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzle-bear':'GRZ' };
     const fallback=String(p.orderPrefix||p.name||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ';
     p.projectCode=String(p.projectCode||seeded[p.id]||fallback).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
     if(!p.orderPrefix)p.orderPrefix=p.projectCode;
     return p;
   }
+  function projectNameKey(p){
+    return String(p?.name||p?.identity?.displayName||'').trim().toLowerCase().replace(/\s+/g,' ');
+  }
+
+  function reconcileFleetSources(canonicalRows=[],savedRows=[],backupRows=[]){
+    const merged=[];
+    const byId=new Map();
+    const add=(row,source)=>{
+      if(!row?.id)return;
+      const id=String(row.id);
+      if(byId.has(id))return;
+      const clone=structuredClone(row);
+      clone.registryRecovery={...(clone.registryRecovery||{}),lastSeenSource:source,lastSeenAt:new Date().toISOString()};
+      byId.set(id,clone); merged.push(clone);
+    };
+    (canonicalRows||[]).forEach(p=>add(p,'canonical'));
+    (savedRows||[]).forEach(p=>add(p,'settings-mirror'));
+    (backupRows||[]).forEach(p=>add(p,'verified-backup'));
+
+    // Current fleet baseline. Existing matching identities win; a seed is used only
+    // when every persisted source has lost the vessel. This is the one-time rescue
+    // path for the Grizzle/Grizzly Bear regression seen in 3.9.9.
+    const existingNames=new Set(merged.map(projectNameKey));
+    for(const seed of DEFAULT_COMPANIES){
+      const aliases=seed.id==='grizzle-bear'?new Set(['grizzle bear','grizzly bear']):new Set([projectNameKey(seed)]);
+      const hasAlias=[...existingNames].some(n=>aliases.has(n));
+      if(!byId.has(seed.id) && !hasAlias){
+        const clone=structuredClone(seed);
+        clone.registryRecovery={restoredBy:'3.10.0-fleet-registry',restoredAt:new Date().toISOString(),reason:'baseline-project-missing'};
+        add(clone,'3.10.0-baseline-rescue');
+        existingNames.add(projectNameKey(clone));
+      }
+    }
+    return uniqueRegistryRows(merged);
+  }
+
   async function loadCompanies(){
     let canonicalRows=[];
     let savedRows=null;
@@ -1203,21 +1290,10 @@
     }
 
     const backup=readProjectRegistryBackup();
-    let registrySource='defaults';
-    if(canonicalRows.length){
-      companies=canonicalRows;
-      registrySource='canonical-project-store';
-    }else if(savedRows){
-      companies=savedRows;
-      registrySource='legacy-settings-mirror';
-    }else if(Array.isArray(backup?.projects)&&backup.projects.length){
-      companies=structuredClone(backup.projects);
-      registrySource='verified-local-backup';
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.loaded_from_backup',detail:`${companies.length} projects • ${backup.savedAt||'unknown time'}`});
-    }else{
-      companies=structuredClone(DEFAULT_COMPANIES);
-    }
-
+    const backupRows=Array.isArray(backup?.projects)?backup.projects:[];
+    let registrySource=canonicalRows.length?'canonical-project-store':savedRows?'legacy-settings-mirror':backupRows.length?'verified-local-backup':'defaults';
+    companies=reconcileFleetSources(canonicalRows,savedRows||[],backupRows);
+    if(!companies.length)companies=structuredClone(DEFAULT_COMPANIES);
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
     const core=window.BlackFlagV3Core;
     let migrationChanged=false;
@@ -1237,9 +1313,15 @@
     // On the first launch after upgrade, seed it from the existing settings mirror
     // (or verified backup/defaults). Thereafter every fleet mutation is committed
     // atomically to the canonical store and the compatibility mirror.
-    if(!canonicalRows.length || migrationChanged){
+    let registrySchema=0;
+    try{registrySchema=Number((await getSetting(FLEET_REGISTRY_SCHEMA_KEY))?.value||0);}catch(_){}
+    const canonicalIdsBefore=projectRegistryIds(canonicalRows);
+    const reconciledIds=projectRegistryIds(companies);
+    const registryReconciled=canonicalIdsBefore.size!==reconciledIds.size || [...reconciledIds].some(id=>!canonicalIdsBefore.has(id));
+    if(!canonicalRows.length || migrationChanged || registryReconciled || registrySchema<FLEET_REGISTRY_SCHEMA_VERSION){
       companies=await persistProjectRegistry(companies);
       companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v3.10.0.fleet.registry.reconciled',detail:`${companies.length} projects • schema ${FLEET_REGISTRY_SCHEMA_VERSION}`});
     }
 
     // v3.9.9 — reconcile commissioning artifacts against the canonical Project ID.
@@ -7225,6 +7307,19 @@ The full order and approved media remain stored with this project.`;
         if(!valid.has(pid))issues.push({level:'critical',code:'CUSTOMER_PROJECT_UNKNOWN',projectId:pid});
       });
     }catch(_){}
+
+    try{
+      const canonical=await readCanonicalProjectRegistry();
+      const mirror=(await getSetting('companies'))?.value||[];
+      const expected=projectRegistryIds(companies), canonicalIds=projectRegistryIds(canonical), mirrorIds=projectRegistryIds(mirror);
+      for(const id of expected){
+        if(!canonicalIds.has(id))issues.push({level:'critical',code:'REGISTRY_PROJECT_MISSING',projectId:id,detail:'Missing from canonical projects store'});
+        if(!mirrorIds.has(id))issues.push({level:'critical',code:'REGISTRY_MIRROR_MISSING',projectId:id,detail:'Missing from settings mirror'});
+      }
+      if(canonicalIds.size!==expected.size)issues.push({level:'critical',code:'REGISTRY_COUNT_MISMATCH',detail:`memory ${expected.size} • canonical ${canonicalIds.size}`});
+      const schema=Number((await getSetting(FLEET_REGISTRY_SCHEMA_KEY))?.value||0);
+      if(schema!==FLEET_REGISTRY_SCHEMA_VERSION)issues.push({level:'warning',code:'REGISTRY_SCHEMA_MISMATCH',detail:`expected ${FLEET_REGISTRY_SCHEMA_VERSION} • found ${schema||'unset'}`});
+    }catch(e){issues.push({level:'critical',code:'REGISTRY_VERIFY_FAILED',detail:String(e?.message||e)})}
 
     const criticalIds=['engineConfigureBtn','captainModeAccessBtn','projectEngineControl','engineConfigurationDock','projectCommandCards','ownerPortal','firstMateWatch','v3ArchitectureDeck','seaTrialsStation'];
     criticalIds.forEach(id=>{if(!$(id))issues.push({level:'critical',code:'CRITICAL_CONTROL_MISSING',detail:id})});

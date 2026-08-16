@@ -1,4 +1,4 @@
-const CACHE='dark-sky-v3-9-9-canonical-registry-reconciliation';
+const CACHE='dark-sky-v3-10-0';
 const ASSETS=[
   './',
   './index.html',

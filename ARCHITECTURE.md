@@ -167,3 +167,8 @@ Before Project Command counts or renders the fleet, Dark Sky reconciles commissi
 A matching Shipyard Draft is suppressed while a commissioning journal owns recovery for the same vessel. Historical journal stages are diagnostic history only and must never be presented as current registry truth. Manual recovery, boot recovery, and Project Command recovery use the same reconciliation controller.
 
 This law strengthens the doctrine: **one immutable identity, one canonical fleet record, one visible project card.**
+
+
+## Fleet Registry v4 (3.10.0)
+
+The canonical `projects` IndexedDB store remains the fleet authority, but normal registry writes are non-destructive: a previously registered immutable Project ID cannot be omitted by an unrelated save. Startup reconciliation compares the canonical store, compatibility mirror, and verified local backup by immutable Project ID before rendering Project Command. The current fleet baseline is a final rescue source only when every persisted source has lost a known vessel. Duplicate Project IDs are rejected before commit. Registry schema version 4 is committed with the project collection and Ship Integrity verifies the in-memory registry, canonical store, mirror, project count, and schema marker. Publication/private/test state never determines project existence.

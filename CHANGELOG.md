@@ -1,3 +1,13 @@
+# 3.10.0 — Fleet Registry
+
+- Restored the missing Grizzly Bear vessel into the current four-project fleet.
+- Fleet registry writes are now non-destructive by default: an existing immutable Project ID cannot silently disappear during a normal save or upgrade.
+- Added registry schema v4 with canonical-store + compatibility-mirror read-back verification.
+- Added boot-time reconciliation across canonical registry, settings mirror, verified local backup, and the current fleet baseline. Existing matching Project IDs win; fallback seeds are only used when all persisted sources lost a known vessel.
+- Added duplicate Project ID blocking before registry writes.
+- Ship Integrity now checks in-memory, canonical, mirror, count, and registry-schema consistency.
+- Deployment/publication state remains separate from whether a vessel exists in the registry.
+
 ## 3.9.9 — Canonical Registry Reconciliation
 
 - Made immutable Project ID in the canonical IndexedDB `projects` store the sole authority after commissioning.
