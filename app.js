@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.6.2';
+  const BUILD_VERSION = '4.6.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2657,7 +2657,18 @@
     }
   }
   window.blackFlagOpenExperienceTestDeck=(projectId)=>openExperienceTestDeck(projectId);
-  document.addEventListener('click',(e)=>{const btn=e.target?.closest?.('[data-open-fleet-commissioning]');if(btn)openFleetCommissioning(btn.dataset.openFleetCommissioning);});
+  document.addEventListener('click',(e)=>{
+    const btn=e.target?.closest?.('[data-open-fleet-commissioning]');
+    if(!btn)return;
+    e.preventDefault();
+    const projectId=btn.dataset.openFleetCommissioning;
+    try{
+      openFleetCommissioning(projectId);
+    }catch(err){
+      console.error('Fleet Commissioning dock failed to open',err);
+      alert(`Fleet Commissioning could not open ${projectId||'the selected vessel'}. ${String(err?.message||err)}`);
+    }
+  });
 
   function closeExperienceTestDeck(){document.getElementById('experienceTestDeck')?.classList.add('hidden');document.body.classList.remove('experience-test-deck-open');}
 
@@ -2929,10 +2940,9 @@
       <button type="button" data-open-fleet-commissioning="${escapeHtml(ike.id)}" class="primary-btn small">OPEN IKE'S COMMISSIONING DOCK</button>`;
     reference.querySelector('[data-open-fleet-commissioning]')?.addEventListener('click',()=>openFleetCommissioning(ike.id));
 
-    const referenceBtn=$('openReferenceCommissioningBtn');
-    if(referenceBtn){
-      referenceBtn.onclick=()=>openFleetCommissioning(ike.id);
-    }
+    // The permanent reference-vessel button is declarative in index.html and
+    // handled by the document-level commissioning action. It intentionally
+    // does not depend on this async renderer completing.
   }
 
   async function renderProjectCommand(){

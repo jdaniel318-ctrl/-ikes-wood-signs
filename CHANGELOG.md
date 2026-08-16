@@ -1,3 +1,20 @@
+# v4.6.3 — Commissioning Dock Command Repair
+
+## Root cause
+- The permanent **OPEN IKE'S DOCK** control depended on `renderFleetCommissioning()` completing before its click handler was attached.
+- If Engine startup or commissioning rendering was interrupted, the control could look fully active while having no action.
+
+## Structural repair
+- The permanent dock control now uses the same declarative `data-open-fleet-commissioning` command used by dynamically generated vessel cards.
+- A document-level delegated commissioning handler owns the command, so opening a vessel dock no longer depends on the async Fleet Commissioning renderer finishing.
+- The renderer-specific `onclick` assignment was removed to eliminate duplicate/competing bindings.
+- A visible failure message is now shown if the dock command itself throws.
+
+## Preserved
+- v4.6.1 customer-navigation recovery.
+- v4.6.2 Operation Prove the Fleet scorecard.
+- Engine boot gate, project isolation, Captain's Quarters, Shipyard, and Fleet Commissioning standards.
+
 # v4.6.2 — Operation Prove the Fleet
 
 ## Fleet Commissioning becomes the operating scorecard
