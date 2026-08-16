@@ -1,9 +1,10 @@
 (() => {
   const DB_NAME = 'blackFlagPlatformV1';
-  const DB_VERSION = 2;
+  const DB_VERSION = 3;
   const STORE_ORDERS = 'orders';
   const STORE_SETTINGS = 'settings';
   const STORE_PROJECTS = 'projects';
+  const STORE_REGISTRY_VAULT = 'project_registry_vault';
   const LOCAL_ORDERS_KEY = 'blackFlagOrdersBackupV1';
   const LEGACY_DB_NAMES = ['ikesWoodSignsV1'];
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
@@ -11,7 +12,7 @@
   const PROJECT_REGISTRY_VAULT_KEY = 'blackFlagProjectRegistryVaultV1';
   const PROJECT_RETIREMENT_LEDGER_KEY = 'blackFlagProjectRetirementLedgerV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.9.12';
+  const BUILD_VERSION = '3.9.13';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -852,6 +853,7 @@
         }
         if(!d.objectStoreNames.contains(STORE_SETTINGS)) d.createObjectStore(STORE_SETTINGS,{keyPath:'key'});
         if(!d.objectStoreNames.contains(STORE_PROJECTS)) d.createObjectStore(STORE_PROJECTS,{keyPath:'id'});
+        if(!d.objectStoreNames.contains(STORE_REGISTRY_VAULT)) d.createObjectStore(STORE_REGISTRY_VAULT,{keyPath:'id'});
       };
       req.onsuccess=()=>{
         const opened=req.result;
@@ -1089,12 +1091,47 @@
     return registryIdArray(rows).join('|');
   }
 
+  let projectRegistryVaultRuntime={version:2,snapshots:[],storage:'uninitialized'};
+
+  async function hydrateProjectRegistryVaultFromIndexedDB(){
+    try{
+      const row=await reqToPromise(tx(STORE_REGISTRY_VAULT).get('primary'));
+      if(row && Array.isArray(row.snapshots)){
+        projectRegistryVaultRuntime={version:2,updatedAt:row.updatedAt||null,snapshots:structuredClone(row.snapshots),storage:'indexeddb'};
+        try{localStorage.setItem(PROJECT_REGISTRY_VAULT_KEY,JSON.stringify({version:2,updatedAt:row.updatedAt||null,snapshots:row.snapshots}));}catch(_){ }
+        return projectRegistryVaultRuntime;
+      }
+    }catch(err){ console.warn('Recovery Vault IndexedDB read unavailable',err); }
+    try{
+      const raw=JSON.parse(localStorage.getItem(PROJECT_REGISTRY_VAULT_KEY)||'null');
+      if(raw && Array.isArray(raw.snapshots)){
+        projectRegistryVaultRuntime={version:2,updatedAt:raw.updatedAt||null,snapshots:structuredClone(raw.snapshots),storage:'local'};
+        try{await put(STORE_REGISTRY_VAULT,{id:'primary',version:2,updatedAt:raw.updatedAt||null,snapshots:structuredClone(raw.snapshots)});projectRegistryVaultRuntime.storage='indexeddb+local';}catch(_){ }
+      }
+    }catch(_){ }
+    return projectRegistryVaultRuntime;
+  }
+
+  async function persistProjectRegistryVaultMirror(vault){
+    try{
+      await put(STORE_REGISTRY_VAULT,{id:'primary',version:2,updatedAt:vault.updatedAt||new Date().toISOString(),snapshots:structuredClone(vault.snapshots||[])});
+      projectRegistryVaultRuntime={...structuredClone(vault),storage:'indexeddb'};
+      return true;
+    }catch(err){
+      console.warn('Recovery Vault IndexedDB write unavailable',err);
+      return false;
+    }
+  }
+
   function readProjectRegistryVault(){
     try{
       const raw=JSON.parse(localStorage.getItem(PROJECT_REGISTRY_VAULT_KEY)||'null');
-      if(!raw||!Array.isArray(raw.snapshots))return {version:1,snapshots:[]};
-      return raw;
-    }catch(_){return {version:1,snapshots:[]};}
+      if(raw && Array.isArray(raw.snapshots)){
+        projectRegistryVaultRuntime={version:2,updatedAt:raw.updatedAt||null,snapshots:structuredClone(raw.snapshots),storage:projectRegistryVaultRuntime.storage==='indexeddb'?'indexeddb+local':'local'};
+        return projectRegistryVaultRuntime;
+      }
+    }catch(_){ }
+    return projectRegistryVaultRuntime && Array.isArray(projectRegistryVaultRuntime.snapshots) ? projectRegistryVaultRuntime : {version:2,snapshots:[],storage:'offline'};
   }
 
   function vaultSnapshotSources(){
@@ -1142,8 +1179,14 @@
       snapshots.unshift(row);
       // Keep multiple verified generations. A later smaller registry cannot erase
       // richer historical identity evidence simply by becoming the newest snapshot.
-      localStorage.setItem(PROJECT_REGISTRY_VAULT_KEY,JSON.stringify({version:1,updatedAt:row.savedAt,snapshots:snapshots.slice(0,12)}));
-      return true;
+      const nextVault={version:2,updatedAt:row.savedAt,snapshots:snapshots.slice(0,12)};
+      projectRegistryVaultRuntime={...structuredClone(nextVault),storage:'memory'};
+      let localOk=true;
+      try{localStorage.setItem(PROJECT_REGISTRY_VAULT_KEY,JSON.stringify(nextVault));projectRegistryVaultRuntime.storage='local';}catch(err){localOk=false;console.warn('Recovery Vault local mirror could not be written',err);}
+      // Durable mirror: do not make current fleet operations wait on this secondary
+      // write, but keep the runtime copy immediately and persist to IndexedDB.
+      persistProjectRegistryVaultMirror(nextVault).catch(()=>{});
+      return localOk || true;
     }catch(err){
       console.warn('Project registry recovery vault could not be written',err);
       return false;
@@ -1354,7 +1397,8 @@
     const historical=new Set();
     for(const snap of vaultSnapshotSources())for(const p of (snap.projects||[]))if(p?.id)historical.add(String(p.id));
     const missing=[...historical].filter(id=>!ids.has(id)&&!tombstones.has(id));
-    return {vaultSnapshots:readProjectRegistryVault().snapshots.length,historicalIds:historical.size,missingIds:missing};
+    const vault=readProjectRegistryVault();
+    return {vaultSnapshots:(vault.snapshots||[]).length,historicalIds:historical.size,missingIds:missing,storage:vault.storage||projectRegistryVaultRuntime.storage||'unknown'};
   }
 
   async function loadCompanies(){
@@ -1368,6 +1412,9 @@
       console.warn('Legacy project registry mirror could not be read from IndexedDB',err);
     }
 
+    // v3.9.13: the Recovery Vault has its own IndexedDB mirror. Hydrate it before
+    // continuity analysis so Safari/localStorage churn cannot silently erase history.
+    await hydrateProjectRegistryVaultFromIndexedDB();
     const backup=readProjectRegistryBackup();
     // v3.9.11: if a prior verified Project ID exists in browser recovery cargo but
     // disappeared from the canonical store during a version/deployment transition,
@@ -1895,8 +1942,9 @@
     const journal=readCommissionJournal();
     const journalState=journal?.project?.id && !list.some(p=>String(p.id)===String(journal.project.id)) ? ` • 1 RECOVERY PENDING` : '';
     const continuity=registryContinuityStatus(list);
-    const vaultState=continuity.vaultSnapshots?` • VAULT ${continuity.vaultSnapshots}`:'';
-    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${vaultState}${journalState}`;
+    const vaultState=` • VAULT ${continuity.vaultSnapshots}${String(continuity.storage||'').includes('indexeddb')?' ✓':' !'}`;
+    const continuityAlert=continuity.missingIds.length?` • CONTINUITY ALERT ${continuity.missingIds.length}`:' • CONTINUITY OK';
+    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${vaultState}${continuityAlert}${journalState}`;
     const cards=[];
     for(const p of list){
       const s=await projectStats(p);
@@ -8345,7 +8393,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.12.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.13.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

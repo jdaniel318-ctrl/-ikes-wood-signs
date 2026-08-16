@@ -1,8 +1,12 @@
-## v3.9.12 — Project Registry Recovery Vault
+## v3.9.13 — Durable Recovery Vault
+
+The fleet continuity vault is now itself durable, mirrored in IndexedDB, visible in Project Command, and able to flag unexplained Project-ID loss.
+
+## v3.9.13 — Project Registry Recovery Vault
 
 Fleet continuity now retains multiple verified registry generations. A project cannot silently disappear merely because a later browser/version load contains a smaller project set; missing immutable Project IDs require explicit retirement evidence or are surfaced/recovered through the vault.
 
-# Dark Sky / Black Flag — v3.9.12 Experience Test Deck
+# Dark Sky / Black Flag — v3.9.13 Experience Test Deck
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
 
@@ -114,5 +118,5 @@ Engine Project Command uses an early-bound delegated command bus for filters, pr
 Waters Ahead and structural command controls are now attached to an independent early-bound command bus. This prevents a partial boot or migration warning from producing visually healthy but non-interactive command cards, particularly on iPad/Safari.
 
 
-## v3.9.12 Fleet Rail & Continuity
+## v3.9.13 Fleet Rail & Continuity
 Project Command keeps the status filters and uses a direct-touch horizontal fleet rail. Cards never shrink to hide overflow; technicians filter first, then swipe the resulting project set. Control Center and Test Experience use outlined button affordances. Fleet boot also heals a previously verified immutable Project ID from browser recovery cargo when a version transition dropped it from the canonical store, without recovering by business name.

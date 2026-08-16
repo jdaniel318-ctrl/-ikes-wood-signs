@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-9-12-fleet-rail-continuity';
+const CACHE='dark-sky-v3-9-13-durable-recovery-vault';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.9.12',
-  './platform_core.js?v=3.9.12',
-  './platform_identity.js?v=3.9.12',
-  './app.js?v=3.9.12',
-  './captain.js?v=3.9.12',
+  './styles.css?v=3.9.13',
+  './platform_core.js?v=3.9.13',
+  './platform_identity.js?v=3.9.13',
+  './app.js?v=3.9.13',
+  './captain.js?v=3.9.13',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

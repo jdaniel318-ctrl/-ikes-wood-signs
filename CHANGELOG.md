@@ -1,4 +1,12 @@
-# Dark Sky v3.9.12 — Project Registry Recovery Vault
+# Dark Sky v3.9.13 — Durable Recovery Vault
+
+- Recovery Vault now has its own IndexedDB object store and local mirror.
+- Vault hydrates before continuity analysis on boot.
+- Project Command always displays vault status, even when empty/offline.
+- Unexplained immutable Project-ID loss raises CONTINUITY ALERT instead of silently accepting a smaller fleet.
+- Every verified fleet state seeds/rotates the vault; explicit retirement tombstones remain the only normal way for a Project ID to disappear.
+
+# Dark Sky v3.9.13 — Project Registry Recovery Vault
 
 - Replaces the single-slot fleet continuity assumption with a rotating verified Project Registry Recovery Vault.
 - Keeps up to 12 verified registry generations keyed by immutable Project ID.
@@ -9,7 +17,7 @@
 - Project Command now exposes the count of retained vault generations beside the build number.
 - Preserves filter-first, finger-scroll fleet navigation and outlined Control Center / Test Experience actions.
 
-# Dark Sky v3.9.12 — Fleet Rail & Continuity
+# Dark Sky v3.9.13 — Fleet Rail & Continuity
 
 - Locked Project Command to native finger-driven horizontal scrolling; no arrow navigation.
 - Preserved All / Current / Test-Private / Future filters; the rail now reports how many projects are visible after filtering.
