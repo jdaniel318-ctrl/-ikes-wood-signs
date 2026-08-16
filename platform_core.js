@@ -215,7 +215,10 @@ function createProjectId(_name,projects=[]){
 function registry(projects=[]){return (projects||[]).map(p=>({projectId:String(p?.id||''),displayName:String(p?.name||p?.identity?.displayName||''),normalizedName:normalizeName(p?.name||p?.identity?.displayName||''),state:lifecycle(p),namespace:String(p?.namespace||ns(p?.id||'')),createdAt:p?.createdAt||null,updatedAt:p?.updatedAt||p?.governance?.updatedAt||null}));}
 function sameName(projects=[],name,{includeArchived=false}={}){const n=normalizeName(name);return registry(projects).filter(r=>r.normalizedName===n&&(includeArchived||!['archived','relationship_ended'].includes(r.state)));}
 const read=(k,f)=>{try{const x=JSON.parse(localStorage.getItem(k)||'null');return x==null?f:x}catch(_){return f}};
-const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const write=(k,v)=>{
+ try{localStorage.setItem(k,JSON.stringify(v));return true}
+ catch(err){console.warn('Black Flag secondary localStorage write skipped',k,err);return false}
+};
 function deployments(p){if(Array.isArray(p?.deployments))return p.deployments;if(Array.isArray(p?.deployment))return p.deployment;if(Array.isArray(p?.deployment?.instances))return p.deployment.instances;return []}
 function lifecycle(p){
  const status=p?.governance?.platformStatus||'approved';
@@ -303,10 +306,13 @@ function canTransitionDeployment(from,to){
 }
 function audit(event={}){
  const rows=read(AUDIT,[]); const row={id:'AUD-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),at:new Date().toISOString(),schemaVersion:SCHEMA,actorRole:event.actorRole||'engine',projectId:event.projectId||null,category:event.category||'operation',action:String(event.action||'activity'),detail:String(event.detail||'')};
- rows.unshift(row);write(AUDIT,rows.slice(0,2500));return row;
+ rows.unshift(row);
+ if(!write(AUDIT,rows.slice(0,500)))write(AUDIT,rows.slice(0,100));
+ return row;
 }
 function telemetry(type,data={},projectId=null){
- const rows=read(TELEM,[]);rows.push({at:Date.now(),schemaVersion:SCHEMA,type,projectId,data});write(TELEM,rows.slice(-5000));
+ const rows=read(TELEM,[]);rows.push({at:Date.now(),schemaVersion:SCHEMA,type,projectId,data});
+ if(!write(TELEM,rows.slice(-1000)))write(TELEM,rows.slice(-250));
 }
 function readTelemetry({type=null,projectId=null,since=0}={}){
  return read(TELEM,[]).filter(x=>(!type||x.type===type)&&(!projectId||x.projectId===projectId)&&Number(x.at||0)>=since);

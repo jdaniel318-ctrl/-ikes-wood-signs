@@ -1,3 +1,23 @@
+# v4.6.8 — Storage Pressure / Quota Repair
+
+## What the Sea Trial exposed
+- Safari reported **“The quota has been exceeded.”** when reopening the Experience Test Deck.
+- The customer flow stores full photo and approved-preview media in IndexedDB, but the legacy localStorage recovery mirror was also duplicating those base64 images.
+- Audit/activity telemetry were allowed to throw quota errors back into otherwise successful command routes.
+
+## Structural repair
+- localStorage order recovery is now metadata-only; full media remains in the canonical IndexedDB order record.
+- Existing image-heavy local order backups are compacted automatically during startup.
+- Local activity/audit/telemetry logs are bounded and quota-safe.
+- Noncritical audit logging can no longer make Experience Test Deck opening fail.
+- A successful canonical Sea Trial metadata write remains successful even if a secondary audit/activity log cannot be written.
+- No project/order isolation boundary was weakened and no canonical IndexedDB order/photo record is intentionally deleted.
+
+## Preserved
+- v4.6.1–4.6.7 customer navigation/media/choice/action recovery.
+- v4.6.4 Seaworthiness Command Spine.
+- Fleet Commissioning, project isolation, refresh security, Captain's Quarters, and Shipyard.
+
 # v4.6.7 — Customer Journey Action Repair
 
 ## Root cause

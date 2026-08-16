@@ -1,4 +1,4 @@
-# Dark Sky v4.6.7 — Forward-Only IndexedDB Migration
+# Dark Sky v4.6.8 — Forward-Only IndexedDB Migration
 
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
@@ -71,3 +71,7 @@ All customer selection/input controls—including font style—are now early-bou
 
 ## v4.6.7 Customer Journey Actions
 The remaining bespoke customer CTAs—including REVIEW MY ORDER and PLACE MY ORDER—are now early-bound, completing the storage-independent customer interaction spine.
+
+
+## v4.6.8 Storage Pressure Repair
+Image-heavy order media stays in IndexedDB; the localStorage recovery mirror is metadata-only. Audit and telemetry are bounded and cannot break command routes when Safari storage is under pressure.

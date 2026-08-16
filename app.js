@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.6.7';
+  const BUILD_VERSION = '4.6.8';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -757,8 +757,20 @@
   function logActivity(projectId, action, detail=''){
     const rows=readActivity();
     rows.unshift({id:'ACT-'+Date.now(),projectId,action,detail,at:new Date().toISOString()});
-    localStorage.setItem(PROJECT_ACTIVITY_KEY,JSON.stringify(rows.slice(0,500)));
-    window.BlackFlagV3Core?.audit?.({actorRole:engineSessionUnlocked?'engine_admin':'local_session',projectId:projectId||null,action,detail,category:'project_operation'});
+    try{
+      localStorage.setItem(PROJECT_ACTIVITY_KEY,JSON.stringify(rows.slice(0,200)));
+    }catch(err){
+      console.warn('Activity log storage pressure; trimming secondary log',err);
+      try{
+        localStorage.removeItem(PROJECT_ACTIVITY_KEY);
+        localStorage.setItem(PROJECT_ACTIVITY_KEY,JSON.stringify(rows.slice(0,50)));
+      }catch(_){}
+    }
+    try{
+      window.BlackFlagV3Core?.audit?.({actorRole:engineSessionUnlocked?'engine_admin':'local_session',projectId:projectId||null,action,detail,category:'project_operation'});
+    }catch(err){
+      console.warn('Audit side effect skipped under storage pressure',err);
+    }
   }
   function readLedgers(){
     try{return JSON.parse(localStorage.getItem(PROJECT_LEDGER_KEY)||'{}')}catch(_){return{}}
@@ -1033,21 +1045,63 @@
     }
   }
 
+  function compactOrderBackupRow(order){
+    if(!order||typeof order!=='object')return order;
+    const row={...order};
+    // Primary IndexedDB owns the full media record. localStorage is only a
+    // lightweight recovery/index mirror and must never duplicate base64 images.
+    row.hasPhoto=!!row.photoData;
+    row.hasApprovedPreview=!!row.approvedPreviewData;
+    delete row.photoData;
+    delete row.approvedPreviewData;
+    return row;
+  }
+
   function writeLocalOrders(orders){
+    const compact=(Array.isArray(orders)?orders:[]).map(compactOrderBackupRow);
     try{
-      localStorage.setItem(LOCAL_ORDERS_KEY,JSON.stringify(orders));
+      localStorage.setItem(LOCAL_ORDERS_KEY,JSON.stringify(compact));
       return true;
     }catch(err){
       console.warn('Local order backup could not be written',err);
+      // If Safari is already at quota, discard only this secondary mirror and
+      // recreate it compactly. Canonical orders remain in IndexedDB.
+      try{
+        localStorage.removeItem(LOCAL_ORDERS_KEY);
+        localStorage.setItem(LOCAL_ORDERS_KEY,JSON.stringify(compact.slice(-150)));
+        return true;
+      }catch(retryErr){
+        console.warn('Compact local order backup retry failed',retryErr);
+        return false;
+      }
+    }
+  }
+
+  function repairLocalOrderBackupFootprint(){
+    try{
+      const raw=localStorage.getItem(LOCAL_ORDERS_KEY);
+      if(!raw)return true;
+      const rows=JSON.parse(raw);
+      if(!Array.isArray(rows))return false;
+      const needsCompaction=rows.some(o=>o?.photoData||o?.approvedPreviewData) || raw.length>900000;
+      if(!needsCompaction)return true;
+      const compact=rows.map(compactOrderBackupRow).slice(-150);
+      localStorage.removeItem(LOCAL_ORDERS_KEY);
+      localStorage.setItem(LOCAL_ORDERS_KEY,JSON.stringify(compact));
+      console.info(`Compacted ${rows.length} local order backup rows to metadata-only recovery records.`);
+      return true;
+    }catch(err){
+      console.warn('Local order backup compaction deferred',err);
       return false;
     }
   }
 
   function backupOrderLocally(order){
     const orders=readLocalOrders();
-    const i=orders.findIndex(o=>o.id===order.id);
-    if(i>=0) orders[i]=order;
-    else orders.push(order);
+    const compact=compactOrderBackupRow(order);
+    const i=orders.findIndex(o=>o.id===compact.id);
+    if(i>=0) orders[i]=compact;
+    else orders.push(compact);
     return writeLocalOrders(orders);
   }
 
@@ -2571,8 +2625,17 @@
     const at=new Date().toISOString();
     deployment.lastTestedAt=at;deployment.lastTestOrderId=orderId;deployment.testMode='customer_engagement';deployment.updatedAt=at;
     const state=ensureExperienceTestState(canonicalProject);state.lastSeaTrialAt=at;state.lastSeaTrialDeploymentId=deployment.id;state.seaTrialSignature=experienceConfigurationSignature(canonicalProject);
-    try{await persistProjectMutation(canonicalProject,{reason:'experience.sea_trial.completed'});logActivity(p.id,'Experience Sea Trial completed',`${deployment.name} • ${orderId}`);window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'sea_trial',action:'experience.sea_trial.customer_submission',detail:`${deployment.id} • ${orderId}`});return true;}
-    catch(err){console.warn('Experience Sea Trial metadata sync failed',err);return false;}
+    try{
+      await persistProjectMutation(canonicalProject,{reason:'experience.sea_trial.completed'});
+    }catch(err){
+      console.warn('Experience Sea Trial canonical metadata sync failed',err);
+      return false;
+    }
+    // Canonical metadata is the pass/fail authority. Secondary logs must never
+    // reverse a successful Sea Trial because localStorage is full.
+    try{logActivity(p.id,'Experience Sea Trial completed',`${deployment.name} • ${orderId}`);}catch(err){console.warn('Sea Trial activity log skipped',err);}
+    try{window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'sea_trial',action:'experience.sea_trial.customer_submission',detail:`${deployment.id} • ${orderId}`});}catch(err){console.warn('Sea Trial audit skipped',err);}
+    return true;
   }
 
 
@@ -2648,7 +2711,11 @@
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
-      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.5 Trust Release identity/persistence gate • ${resolution.source}`});
+      try{
+        window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.5 Trust Release identity/persistence gate • ${resolution.source}`});
+      }catch(err){
+        console.warn('Experience deck audit skipped under storage pressure',err);
+      }
       return true;
     }catch(err){
       console.error('Experience Test Deck render failed',err);
@@ -9895,6 +9962,7 @@ The full order and approved media remain stored with this project.`;
     bindCustomerActionCore();
     bindCustomerChoiceCore();
     bindCustomerMediaCore();
+    repairLocalOrderBackupFootprint();
     await loadEngineAppearance();
     db=await openDb();
     await migrateLegacyPlatformStorage();
