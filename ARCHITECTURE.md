@@ -27,3 +27,13 @@ No project-level mutation may assume an IndexedDB connection already exists. The
 
 ## V4.4.7 Forward-Only IndexedDB Law
 Primary browser storage schema versions only move forward. A build must never request a lower schema than a previously shipped build. If Safari already holds a newer schema, Dark Sky reopens that schema without downgrade and validates the required object stores before project-scoped writes continue.
+
+
+## v4.5 Trust Doctrine
+
+1. Canonical project data survives missing governance metadata. Quarantine operational access, not business data.
+2. Project-owned mutations update one immutable Project ID. Full registry writes are reserved for commissioning, explicit migration/recovery, retirement, and fleet governance.
+3. Fleet filters and status derive from current launch state rather than legacy labels.
+4. Published/Private is observable state; publishing is an explicit launch workflow.
+5. Legacy Fleet Marks defaults are migration seeds only. New projects are first-class citizens without hard-coded baseline membership.
+6. Storage Schema, Project Envelope, and Platform Contract are distinct version concepts.

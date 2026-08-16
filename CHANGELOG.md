@@ -1,3 +1,14 @@
+# v4.5.0 — Trust Release
+
+- Project Command filters now derive from actual launch state: Current = live; Test / Private = Draft, Preparing, Sea Trial, Fleet Ready; Future = intentionally parked/other future state.
+- Search indexes project name, code, immutable Project ID, business type, operating-model summary, and customer relationship.
+- Fleet rail reports `Showing X of Y projects` after filtering/search.
+- Published/Private is a status indicator; workflow no longer hides behind a checkbox.
+- Missing admission metadata preserves canonical project data and marks the vessel for admission review instead of deleting its registry row.
+- Four Fleet Marks defaults are migration seeds only, not permanent recovery authority.
+- Join Fleet and major project-owned settings use project-local persistence rather than whole-fleet rewrites.
+- Structural terminology distinguishes Project Envelope from Storage schema; Engine summary exposes build/storage/contract diagnostics.
+
 ## 4.4.7 — Forward-Only IndexedDB Migration
 - Bumped the primary Dark Sky database schema to 5 so devices previously upgraded through the 3.9 continuity line are never asked to open a lower schema.
 - Added a forward-compatible VersionError fallback: if a future/newer schema already exists, Dark Sky reopens that existing schema without attempting a downgrade and validates the required stores.

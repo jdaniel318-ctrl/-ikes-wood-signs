@@ -10813,3 +10813,12 @@ body.universal-project .universal-customer-shell{display:block}
 @media(max-width:760px){.experience-stage-note{align-items:flex-start;flex-direction:column}.experience-stage-note strong{white-space:normal}.experience-stage-note span{font-size:12px}}
 
 
+
+/* v4.5.0 — Trust Release */
+.project-publish-state{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:4px 9px;border:1px solid rgba(144,181,190,.35);border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.08em;color:#b9c7ca;background:rgba(7,25,31,.68)}
+.project-publish-state.published{color:#c8f1d4;border-color:rgba(83,184,110,.55);background:rgba(22,67,38,.42)}
+.project-publish-state.private{color:#d4dde0}
+.admission-review-badge{color:#ffd67a!important;border-color:rgba(221,171,63,.55)!important;background:rgba(83,57,8,.32)!important}
+.project-card.admission-review-required{box-shadow:inset 0 0 0 1px rgba(221,171,63,.45)}
+.engine-fleet-search input:focus{outline:2px solid rgba(69,166,223,.7);outline-offset:1px}
+.project-fleet-rail-tools span{font-size:15px;line-height:1.35}

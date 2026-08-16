@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.4.7';
+  const BUILD_VERSION = '4.5.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -505,8 +505,9 @@
 
   async function purgeAllExpiredOwnerInvitations(){
     let changed=false;
-    companies.forEach(p=>{if(purgeExpiredOwnerInvitation(p))changed=true;});
-    if(changed)await saveCompanies();
+    for(const p of companies){
+      if(purgeExpiredOwnerInvitation(p)){changed=true;await persistProjectMutation(p,{reason:'owner.invitation.expired_cleanup'});}
+    }
     return changed;
   }
 
@@ -596,7 +597,7 @@
     // One-way migration bridge for older local test credentials. A successful login re-hashes them.
     if(c.password!=null && String(password||'')===String(c.password||'')){
       const migrated=await createOwnerCredential(p,c.login,String(password||''),{testMode:!!c.testMode});
-      if(migrated.ok)await saveCompanies();
+      if(migrated.ok)await persistProjectMutation(p,{reason:'owner.credential.migration'});
       return migrated.ok;
     }
     return false;
@@ -607,7 +608,7 @@
     if(!p.ownerAccess.credential){
       await createOwnerCredential(p,OWNER_TEST_LOGIN.login,OWNER_TEST_LOGIN.password,{testMode:true});
       p.ownerAccess.status='active';
-      await saveCompanies();
+      await persistProjectMutation(p,{reason:'owner.test_credential.enable'});
       logActivity(p.id,'Test owner login enabled','joe');
     }
   }
@@ -684,7 +685,7 @@
       };
       p.ownerAccess.status='invited';
       p.ownerAccess.updatedAt=new Date(now).toISOString();
-      await saveCompanies();
+      await persistProjectMutation(p,{reason:'owner.invitation.generate'});
       logActivity(p.id,'Owner invitation generated',p.ownerAccess.ownerEmail);
       return {ok:true,link:ownerClaimLink(p.id,token),expiresAt:p.ownerAccess.invitation.expiresAt};
     }catch(err){
@@ -697,7 +698,7 @@
     if(!p) return {ok:false,error:'Business invitation was not found.'};
     ensureProjectGovernance(p);
     if(purgeExpiredOwnerInvitation(p)){
-      await saveCompanies();
+      await persistProjectMutation(p,{reason:'owner.invitation.expired'});
       return {ok:false,error:'This invitation has expired. Please request a new invitation.'};
     }
     if(platformStatus(p)!=='approved') return {ok:false,error:'This business portal is not currently available.'};
@@ -729,10 +730,22 @@
     p.ownerAccess.status='active';
     p.ownerAccess.invitation.claimedAt=new Date().toISOString();
     p.ownerAccess.updatedAt=p.ownerAccess.invitation.claimedAt;
-    await saveCompanies();
+    await persistProjectMutation(p,{reason:'owner.access.claim'});
     logActivity(p.id,'Owner access claimed',p.ownerAccess.ownerEmail);
     saveOwnerSession(p.id);
     return {ok:true,project:p};
+  }
+
+  const PROJECT_RETIREMENT_TOMBSTONE_KEY='darkSkyProjectRetirementTombstonesV1';
+  function readProjectRetirementTombstones(){
+    try{const rows=JSON.parse(localStorage.getItem(PROJECT_RETIREMENT_TOMBSTONE_KEY)||'{}');return rows&&typeof rows==='object'&&!Array.isArray(rows)?rows:{}}catch(_){return{}}
+  }
+  function recordProjectRetirementTombstone(project,{reason='retired by Captain',actorRole='captain'}={}){
+    if(!project?.id)throw new Error('Project retirement requires an immutable Project ID.');
+    const rows=readProjectRetirementTombstones();
+    rows[canonicalProjectId(project.id)]={projectId:canonicalProjectId(project.id),name:project.name||'',reason:String(reason||''),actorRole,retiredAt:new Date().toISOString(),build:BUILD_VERSION};
+    localStorage.setItem(PROJECT_RETIREMENT_TOMBSTONE_KEY,JSON.stringify(rows));
+    return rows[canonicalProjectId(project.id)];
   }
 
   function slugifyProjectName(name){
@@ -950,7 +963,7 @@
       if(legacyConfirm && !!p.notifications?.customerConfirmationEmail!==!!legacyConfirm.value){
         p.notifications=p.notifications||{};p.notifications.customerConfirmationEmail=!!legacyConfirm.value;changed=true;
       }
-      if(changed) await saveCompanies();
+      if(changed) await persistProjectMutation(p,{reason:'legacy.project.settings.migration'});
     }catch(err){ console.warn('Legacy project settings translation skipped',err); }
   }
 
@@ -1395,14 +1408,9 @@
   }
 
   function restoreV4BaselineMemory(){
-    const byId=new Map((companies||[]).map(p=>[canonicalProjectId(String(p?.id||'')),p]).filter(([id])=>id));
-    for(const id of V4_BASELINE_FLEET_IDS||[]){
-      if(byId.has(id))continue;
-      const snapshot=projectCommandProjectSnapshots.get(id);
-      const seed=snapshot || DEFAULT_COMPANIES.find(p=>canonicalProjectId(String(p?.id||''))===id);
-      if(seed)byId.set(id,ensureProjectGovernance(normalizeProjectCode(structuredClone(seed))));
-    }
-    companies=[...byId.values()];
+    // Legacy Fleet Marks defaults are only a cold-start migration seed in 4.5+.
+    if(Array.isArray(companies)&&companies.length)return companies;
+    companies=structuredClone(DEFAULT_COMPANIES).map(normalizeProjectCode).map(ensureProjectGovernance);
     return companies;
   }
 
@@ -1808,7 +1816,8 @@
   const V4_FLEET_MANIFEST_SETTING='darkSkyV4FleetManifestV1';
   const V4_ADMISSION_LEDGER_KEY='darkSkyV4ProjectAdmissionsV1';
   const V4_ADMISSION_LEDGER_SETTING='darkSkyV4ProjectAdmissionsV1';
-  const V4_BASELINE_FLEET_IDS=Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear']);
+  const V4_LEGACY_MIGRATION_SEED_IDS=Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear']);
+  const V4_BASELINE_FLEET_IDS=V4_LEGACY_MIGRATION_SEED_IDS; // compatibility alias; migration seed only in 4.5+
 
   function readV4FleetManifest(){
     try{const v=JSON.parse(localStorage.getItem(V4_FLEET_MANIFEST_KEY)||'null');return Array.isArray(v)?[...new Set(v.map(String).filter(Boolean))]:[]}catch(_){return[]}
@@ -1888,13 +1897,11 @@
     const allowed=new Set(ids);
     const orphans=canonical.filter(p=>p?.id&&!allowed.has(String(p.id)));
     if(orphans.length){
-      for(const ghost of orphans)appendV4Quarantine('unadmitted_registry_orphan',String(ghost.id),structuredClone(ghost));
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.1.1.harbor_master.quarantined',detail:`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
-      window.DarkSkyV4?.diagnostic?.('fleet_admission.orphans.quarantined',`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined`,{projectIds:orphans.map(p=>p.id)});
-      if(repairRegistry){
-        const keep=canonical.filter(p=>allowed.has(String(p?.id||'')));
-        canonical=await persistProjectRegistry(keep,{allowRemovalIds:orphans.map(p=>String(p.id))});
-      }
+      // 4.5 Trust Release: missing admission/governance metadata may quarantine
+      // operational access, but it may NEVER delete canonical project data.
+      for(const ghost of orphans)appendV4Quarantine('admission_review_required',String(ghost.id),structuredClone(ghost));
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.5.harbor_master.admission_review',detail:`${orphans.length} canonical project${orphans.length===1?'':'s'} preserved pending admission review: ${orphans.map(p=>p.id).join(' • ')}`});
+      window.DarkSkyV4?.diagnostic?.('fleet_admission.review_required',`${orphans.length} canonical project${orphans.length===1?'':'s'} preserved pending admission review`,{projectIds:orphans.map(p=>p.id)});
     }
 
     // Security stores are strict projections of the admitted fleet. A ghost can be
@@ -1909,9 +1916,14 @@
       if(Object.keys(mirror||{}).some(id=>!allowed.has(id)))await setSetting(V4_ENVELOPE_MIRROR_SETTING,cleanMirror);
     }catch(_){ }
 
-    const latest=repairRegistry?canonical:canonical.filter(p=>allowed.has(String(p?.id||'')));
     const memoryById=new Map((companies||[]).map(p=>[String(p?.id||''),p]));
-    companies=ids.map(id=>{const row=latest.find(p=>String(p?.id||'')===id);const mem=memoryById.get(id);return row?(mem?{...mem,...row,id:row.id}:row):null;}).filter(Boolean).map(normalizeProjectCode).map(ensureProjectGovernance);
+    companies=canonical.map(row=>{
+      const id=String(row?.id||'');
+      const mem=memoryById.get(id);
+      const merged=mem?{...mem,...row,id:row.id}:row;
+      merged.v4AdmissionReviewRequired=!allowed.has(id);
+      return merged;
+    }).filter(Boolean).map(normalizeProjectCode).map(ensureProjectGovernance);
     return {ids,rows:companies,orphans,admissions};
   }
 
@@ -2134,21 +2146,17 @@
 
 
   async function ensureV4BaselineRegistrySeal(){
-    // V4.4.4 — Fleet Marks baseline seal. The V4 hull ships with four explicit
-    // baseline immutable IDs. A stale browser registry must not prune one of those
-    // vessels between Engine paint and command execution. Restore only by exact ID.
+    // 4.5 Trust Release — the four Fleet Marks vessels are migration seeds, not
+    // permanent special citizens. Seed them only when the canonical registry is empty.
     let canonical=[];
     try{canonical=await readCanonicalProjectRegistry();}catch(_){canonical=[];}
-    const byId=new Map((canonical||[]).map(p=>[canonicalProjectId(String(p?.id||'')),p]).filter(([id])=>id));
     let changed=false;
-    for(const id of V4_BASELINE_FLEET_IDS){
-      if(byId.has(id))continue;
-      const live=(companies||[]).find(p=>canonicalProjectId(String(p?.id||''))===id);
-      const snapshot=projectCommandProjectSnapshots.get(id);
-      const seed=live || snapshot || DEFAULT_COMPANIES.find(p=>canonicalProjectId(String(p?.id||''))===id);
-      if(seed){canonical.push(ensureProjectGovernance(normalizeProjectCode(structuredClone(seed))));byId.set(id,seed);changed=true;}
+    if(!canonical.length){
+      canonical=structuredClone(DEFAULT_COMPANIES).map(normalizeProjectCode).map(ensureProjectGovernance);
+      canonical=await persistProjectRegistry(canonical);
+      changed=true;
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.5.legacy_fleet_seed.applied',detail:`${canonical.length} migration seed projects restored into an empty canonical registry`});
     }
-    if(changed)canonical=await persistProjectRegistry(canonical);
     await ensureV4AdmissionLedger(canonical);
     const state=await ensureCanonicalFleetManifest({repairRegistry:false});
     if(state?.rows?.length)companies=state.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
@@ -2310,7 +2318,7 @@
     p.namespace=namespace;
     if(syncBranding){p.branding=p.branding||{};p.branding.businessName=next;}
     p.updatedAt=new Date().toISOString();
-    await saveCompanies();
+    await persistProjectMutation(p,{reason:'project.display_name.changed'});
     core?.audit?.({actorRole,projectId,category:'project',action:'project.display_name.changed',detail:`${old||'(unnamed)'} → ${next} • Project ID unchanged`});
     logActivity(projectId,'Business name changed',`${old||'(unnamed)'} → ${next}`);
     return{ok:true,oldName:old,newName:next,projectId,namespace};
@@ -2324,6 +2332,7 @@
   }
 
   function requireEngineProjectMutation(p,action){
+    if(p?.v4AdmissionReviewRequired)return projectMutationDenied(p,action,{error:'admission_review_required'});
     const result=window.BlackFlagV3Core?.authorizeProjectMutation?.({project:p,actorRole:'engine_admin',contextProjectId:engineActiveProjectId});
     if(!engineSessionUnlocked || engineActiveProjectId!==p?.id || (result && !result.ok)){
       return projectMutationDenied(p,action,result||{error:!engineSessionUnlocked?'engine_session_locked':'project_context_mismatch'});
@@ -2332,6 +2341,7 @@
   }
 
   function requireEngineFleetMutation(p,action){
+    if(p?.v4AdmissionReviewRequired)return projectMutationDenied(p,action,{error:'admission_review_required'});
     const result=window.BlackFlagV3Core?.authorizeProjectMutation?.({project:p,actorRole:'engine_admin',contextProjectId:p?.id||''});
     if(!engineSessionUnlocked || !p?.id || (result && !result.ok)){
       return projectMutationDenied(p,action,result||{error:!engineSessionUnlocked?'engine_session_locked':'project_missing'});
@@ -2340,6 +2350,7 @@
   }
 
   function requireOwnerProjectMutation(p,capability,action){
+    if(p?.v4AdmissionReviewRequired){window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p?.id||null,category:'authorization',action:'owner.mutation.blocked',detail:`${action} • admission_review_required`});return false;}
     const session=ownerSession();
     const result=window.BlackFlagV3Core?.authorizeProjectMutation?.({project:p,actorRole:'project_owner',contextProjectId:session?.projectId||'',capability});
     if(!session || session.projectId!==p?.id || (result && !result.ok)){
@@ -2637,7 +2648,7 @@
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
-      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.7 forward-only DB migration gate • ${resolution.source}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.5 Trust Release identity/persistence gate • ${resolution.source}`});
       return true;
     }catch(err){
       console.error('Experience Test Deck render failed',err);
@@ -2677,8 +2688,9 @@
     const trials=deployments.filter(d=>d.state==='sea_trial');
     const offers=(p.products||[]).filter(x=>x&&x.active!==false&&(x.customerReady===true||x.published===true));
     const brief=String(p.businessBrief?.text||p.description||'').trim();
-    const live=p.publish?.status==='live'&&active.length>0;
-    if(live)return {key:'live',label:'LIVE',step:5,detail:`${active.length} active outpost${active.length===1?'':'s'} serving customers.`,action:'open',actionLabel:'OPEN PROJECT',deployments,active,tested,trials,offers,brief};
+    const legacyPublishedShowroom=p.publish?.status==='live'&&projectShowroomPreviewReady(p);
+    const live=p.publish?.status==='live'&&(active.length>0||legacyPublishedShowroom);
+    if(live)return {key:'live',label:'LIVE',step:5,detail:active.length?`${active.length} active outpost${active.length===1?'':'s'} serving customers.`:'Published legacy customer experience available.',action:'open',actionLabel:'OPEN PROJECT',deployments,active,tested,trials,offers,brief};
     const approvedExperience=experienceApproved(p);
     if(tested.length&&approvedExperience)return {key:'fleet_ready',label:'FLEET READY',step:4,detail:'Experience approval and Sea Trial evidence are current. Captain approval can join this vessel to the live fleet.',action:'join',actionLabel:'JOIN FLEET',deployments,active,tested,trials,offers,brief};
     if(tested.length&&!approvedExperience)return {key:'sea_trial',label:'EXPERIENCE REVIEW',step:3,detail:'Sea Trial evidence is current. Preview and approve the customer experience before joining the fleet.',action:'experience',actionLabel:'TEST EXPERIENCE',deployments,active,tested,trials,offers,brief};
@@ -2737,7 +2749,7 @@
     p.lifecycle={...(p.lifecycle||{}),state:'live',version:Math.max(2,Number(p.lifecycle?.version||2)),updatedAt:new Date().toISOString()};
     p.updatedAt=new Date().toISOString();
     try{
-      await saveCompanies();
+      await persistProjectMutation(p,{reason:'project.join_fleet'});
     }catch(err){
       console.error('Join Fleet persistence failed',err);
       alert('Dark Sky could not finish joining this vessel to the fleet. Nothing was reported as complete. Please try again.');
@@ -2808,7 +2820,7 @@
     const live=list.filter(p=>p.publish?.status==='live').length;
     const journal=readCommissionJournal();
     const journalState=journal?.project?.id && !list.some(p=>String(p.id)===String(journal.project.id)) ? ` • 1 RECOVERY PENDING` : '';
-    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${journalState}`;
+    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} LIVE • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION} • STORAGE ${Number(db?.version||DB_VERSION)} • CACHE ${BUILD_VERSION} • CONTRACT ${window.BlackFlagV3Core?.policyVersion||'4.x'}${journalState}`;
     const cards=[];
     projectCommandProjectSnapshots.clear();
     for(const p of list){
@@ -2819,14 +2831,14 @@
       const platformState=platformStatus(p);
       const ownerState=ownerAccessLabel(p);
       const launch=projectFleetLaunchState(p);
-      cards.push(`<article class="project-card ${platformState!=='approved'?'platform-blocked':''} fleet-launch-${launch.key}">
+      cards.push(`<article class="project-card ${platformState!=='approved'?'platform-blocked':''} ${p.v4AdmissionReviewRequired?'admission-review-required':''} fleet-launch-${launch.key}" data-project-id="${escapeHtml(p.id)}" data-project-search="${escapeHtml(projectSearchIndex(p))}">
         <span class="pirate-card-ribbon fleet-launch-ribbon ${launch.key}">${escapeHtml(launch.label)}</span>
         <span class="pirate-card-watermark" aria-hidden="true">☠</span>
         <div class="project-card-head">
           <div class="project-brand-badge ${brandVisual.logo?'has-logo':'code-only'}" title="${escapeHtml(p.name)}">
             ${brandVisual.logo?`<img src="${brandVisual.logo}" alt="${escapeHtml(p.name)} logo">`:`<span>${escapeHtml(brandVisual.code)}</span>`}
           </div>
-          <label class="project-publish-toggle"><input type="checkbox" data-project-publish="${escapeHtml(p.id)}" ${p.publish?.status==='live'?'checked':''}><span>${p.publish?.status==='live'?'PUBLISHED':'PRIVATE'}</span></label>
+          <span class="project-publish-state ${launch.key==='live'?'published':'private'}">${launch.key==='live'?'PUBLISHED':'PRIVATE'}</span>
         </div>
         <h4>${escapeHtml(p.name)}</h4>
         <p>${escapeHtml(p.tagline||String(p.type||p.businessType||'project').replaceAll('_',' '))}</p>
@@ -2834,7 +2846,7 @@
         <div class="project-governance-strip">
           <span class="platform-status ${platformState}">${platformStatusLabel(p)}</span>
           <span>${ownerState}</span>
-          <span class="v3-lifecycle-badge">${escapeHtml(window.BlackFlagV3Core?.lifecycle?.(p)||'project')}</span>
+          <span class="v3-lifecycle-badge">${escapeHtml(window.BlackFlagV3Core?.lifecycle?.(p)||'project')}</span>${p.v4AdmissionReviewRequired?'<span class="admission-review-badge">ADMISSION REVIEW</span>':''}
         </div>
         <div class="project-kpis">
           <span><small>${escapeHtml(projectActivityMetricLabel(p))}</small><strong>${s.orders}</strong></span>
@@ -2843,9 +2855,9 @@
         </div>
         <div class="project-launch-line ${launch.key}"><span>${escapeHtml(launch.label)}</span><small>${escapeHtml(launch.detail)}</small></div>
         <div class="project-card-actions">
-          <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
+          <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
           <button type="button" data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">TEST EXPERIENCE</button>
-          <button data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
+          <button type="button" data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
         </div>
       </article>`);
     }
@@ -2875,6 +2887,7 @@
     }
     cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business or project in the Engine.</p><span class="pirate-add-copy">RAISE ANOTHER FLAG</span></button>`);
     box.innerHTML=cards.join('');
+    applyEngineFleetFilter();
     // Project card actions are owned by the early Engine Project Command bus.
     await renderFleetHealth();
   }
@@ -3902,17 +3915,17 @@
         await renderProjectTab(p.id,'marketing');
       });
     }
-    if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{if(!requireEngineProjectMutation(p,'ai.policy.update'))return;p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
+    if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{if(!requireEngineProjectMutation(p,'ai.policy.update'))return;p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await persistProjectMutation(p,{reason:'ai.policy.update'});logActivity(p.id,'AI policy changed',p.ai.mode);};}
     if(tab==='experience'){ const profile=$('ptVisualProfile'); if(profile) profile.onchange=()=>{ const preset=visualPresets()[profile.value]; if(!preset)return; VISUAL_FAMILIES.forEach(f=>{ $$(`[data-visual-family=\"${f}\"]`).forEach(cb=>{cb.checked=(preset[f]||[]).includes(cb.value);cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked);}); }); }; $$('#visualCapabilityDeck input[type=\"checkbox\"]').forEach(cb=>cb.onchange=()=>cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked)); $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;
         p.customerExperience={...(p.customerExperience||{}),mode:$('ptOperatingFlow')?.value||p.customerExperience?.mode||'guided',photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};
         p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;p.visualPresentation=collectVisualPresentationFromControls(p);
         window.BlackFlagV3Core?.updateBusinessUnderstanding?.(p,{briefText:$('ptBusinessBrief')?.value||'',overrides:{mode:$('ptOperatingMode')?.value||'other',customerFlow:$('ptOperatingFlow')?.value||'guided',relationshipType:($('ptRelationshipType')?.value&&$('ptRelationshipType').value!=='auto')?$('ptRelationshipType').value:undefined,fulfillment:String($('ptOperatingFulfillment')?.value||'').split(',').map(x=>x.trim()).filter(Boolean),schedulingNeeded:!!$('ptOperatingScheduling')?.checked}});
-        await saveCompanies();logActivity(p.id,'Business understanding updated',window.BlackFlagV3Core?.resolveOperatingModel?.(p)?.summary||`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
-    if(tab==='workflow'){ $('saveWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.update'))return;const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));await renderProjectTab(p.id,'workflow');}};if($('resetWorkflowTab'))$('resetWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.reset'))return;delete p.workflow;await saveCompanies();logActivity(p.id,'Workflow reset to operating model',customerRelationshipForProject(p).label);await renderProjectTab(p.id,'workflow');};}
-    if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'project.publishing.update'))return;const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await saveCompanies();logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
+        await persistProjectMutation(p,{reason:'business.understanding.update'});logActivity(p.id,'Business understanding updated',window.BlackFlagV3Core?.resolveOperatingModel?.(p)?.summary||`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
+    if(tab==='workflow'){ $('saveWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.update'))return;const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await persistProjectMutation(p,{reason:'workflow.update'});logActivity(p.id,'Workflow updated',rows.join(' → '));await renderProjectTab(p.id,'workflow');}};if($('resetWorkflowTab'))$('resetWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.reset'))return;delete p.workflow;await persistProjectMutation(p,{reason:'workflow.reset'});logActivity(p.id,'Workflow reset to operating model',customerRelationshipForProject(p).label);await renderProjectTab(p.id,'workflow');};}
+    if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'project.publishing.update'))return;const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await persistProjectMutation(p,{reason:'project.publishing.update'});logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
     if(tab==='products'){
-      $$('[data-product-publish]').forEach(t=>t.onchange=async()=>{if(!requireEngineProjectMutation(p,'product.publish.update')){t.checked=!t.checked;return;}const pr=(p.products||[]).find(x=>x.id===t.dataset.productPublish);if(!pr)return;if(t.checked&&!confirm(`Publish product "${pr.name}"?`)){t.checked=false;return;}pr.published=t.checked;await saveCompanies();logActivity(p.id,t.checked?'Product published':'Product unpublished',pr.name);});
-      if($('addProductBtn')) $('addProductBtn').onclick=async()=>{if(!requireEngineProjectMutation(p,'product.create'))return;const name=prompt('Product name');if(!name)return;p.products=p.products||[];p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-4),name,published:false,characterLimit:null});await saveCompanies();logActivity(p.id,'Product added',name);renderProjectTab(p.id,'products');};
+      $$('[data-product-publish]').forEach(t=>t.onchange=async()=>{if(!requireEngineProjectMutation(p,'product.publish.update')){t.checked=!t.checked;return;}const pr=(p.products||[]).find(x=>x.id===t.dataset.productPublish);if(!pr)return;if(t.checked&&!confirm(`Publish product "${pr.name}"?`)){t.checked=false;return;}pr.published=t.checked;await persistProjectMutation(p,{reason:'product.publish.update'});logActivity(p.id,t.checked?'Product published':'Product unpublished',pr.name);});
+      if($('addProductBtn')) $('addProductBtn').onclick=async()=>{if(!requireEngineProjectMutation(p,'product.create'))return;const name=prompt('Product name');if(!name)return;p.products=p.products||[];p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-4),name,published:false,characterLimit:null});await persistProjectMutation(p,{reason:'product.create'});logActivity(p.id,'Product added',name);renderProjectTab(p.id,'products');};
     }
     if(tab==='payments'){
       const pay=p.payments||{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false};
@@ -3921,7 +3934,7 @@
       $('savePaymentsTab').onclick=async()=>{
         if(!requireEngineProjectMutation(p,'payments.structure.update'))return;
         p.payments={enabled:$('ptPaymentsEnabled').checked,mode:$('ptPaymentMode').value,provider:$('ptPaymentProvider').value,customerVisible:false};
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'payments.structure.update'});
         logActivity(p.id,'Payment structure updated',`${p.payments.enabled?'enabled':'disabled'} • ${p.payments.provider}`);
       };
     }
@@ -3947,7 +3960,7 @@
           profitView:$('permLedgerView').checked&&$('permProfitView').checked,
           projectOptionsView:$('permProjectOptionsView').checked
         };
-        await saveCompanies();logActivity(p.id,'Project admin access updated');
+        await persistProjectMutation(p,{reason:'project.permissions.update'});logActivity(p.id,'Project admin access updated');
       };
     }
     if(tab==='owner'){
@@ -3998,7 +4011,7 @@
           logActivity(p.id,'Owner invitation cleared after identity update',ownerEmail);
         }
 
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'owner.identity.update'});
         logActivity(p.id,'Project owner identity saved',ownerEmail);
         await renderProjectTab(p.id,'owner');
       });
@@ -4007,7 +4020,7 @@
         if(!requireEngineProjectMutation(p,'owner.capabilities.update')){await renderProjectTab(p.id,'owner');return;}
         p.ownerAccess.capabilities=$$('[data-owner-capability]').filter(x=>x.checked).map(x=>x.dataset.ownerCapability);
         p.ownerAccess.updatedAt=new Date().toISOString();
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'owner.capabilities.update'});
         logActivity(p.id,'Owner capabilities updated',p.ownerAccess.capabilities.join(', '));
       }));
 
@@ -4051,7 +4064,7 @@
         p.ownerAccess.invitation.revokedAt=new Date().toISOString();
         if(p.ownerAccess.status==='invited')p.ownerAccess.status='not_claimed';
         p.ownerAccess.updatedAt=new Date().toISOString();
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'owner.invitation.revoke'});
         logActivity(p.id,'Owner invitation revoked',p.ownerAccess.ownerEmail);
         await renderProjectTab(p.id,'owner');
       });
@@ -4077,7 +4090,7 @@
       $('saveCustomerHistoryTab').onclick=async()=>{
         if(!requireEngineProjectMutation(p,'customer.history.settings.update'))return;
         p.customerHistory={adminVisible:$('customerHistoryAdminVisible').checked};
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'customer.history.settings.update'});
         logActivity(p.id,'Project Admin customer history '+(p.customerHistory.adminVisible?'enabled':'disabled'));
         await renderProjectTab(p.id,'customers');
       };
@@ -4320,7 +4333,7 @@
       $('saveNotificationsTab').onclick=async()=>{
         if(!requireEngineProjectMutation(p,'notifications.update'))return;
         p.notifications={customerConfirmationEmail:$('projectCustomerEmailEnabled').checked};
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'notifications.update'});
         logActivity(p.id,'Customer confirmation email '+(p.notifications.customerConfirmationEmail?'enabled':'disabled'));
       };
     }
@@ -4778,7 +4791,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'4.4.7'
+      commissioningVersion:'4.5.0'
     };
 
     // Commissioning is a durable registry transaction, not a visual completion.
@@ -5885,7 +5898,7 @@
       c.customization.characterLimitStatus=chars?'configured':'unset';
       c.ai={mode:$('ccAI').value,minConfidence:Number($('ccConfidence').value)||.9,requireScaleReference:$('ccScale').checked};
       c.publish={status:$('ccPublish').value};
-      await saveCompanies();
+      await persistProjectMutation(c,{reason:'legacy.company.control.update'});
       renderCompanyCommand();renderCompanyFleet();await renderFleetStats();
       $('companyControlStatus').textContent='Company settings saved.';
     });
@@ -5924,7 +5937,7 @@
     const c=companyById($('aiCompanySetting').value);if(!c)return;
     if(!requireEngineFleetMutation(c,'ai.policy.fleet_update'))return;
     c.ai={mode:$('aiRecognitionMode').value,minConfidence:Math.max(.5,Math.min(.99,Number($('aiConfidenceSetting').value)||.9)),requireScaleReference:$('aiScaleReferenceSetting').checked};
-    await saveCompanies();renderCompanyFleet();$('aiSettingsStatus').textContent='AI recognition policy saved for '+c.name+'.';
+    await persistProjectMutation(c,{reason:'ai.policy.fleet_update'});renderCompanyFleet();$('aiSettingsStatus').textContent='AI recognition policy saved for '+c.name+'.';
   }
   async function renderFleetStats(){
     const box=$('fleetStats');if(!box)return;
@@ -6181,7 +6194,7 @@
       <article class="v4-broadside-card"><small>RELEASE RING</small><strong>${escapeHtml(String(st.release.currentRing||'captain').replaceAll('_',' ').toUpperCase())}</strong><span>controlled rollout</span></article>
     </div>
     <div class="v4-contract-strip">${st.contract.map((x,i)=>`<span><b>0${i+1}</b>${escapeHtml(x)}</span>`).join('')}</div>`;
-    const badge=$('v3SchemaBadge');if(badge)badge.textContent=`V4 SCHEMA ${st.schema}`;
+    const badge=$('v3SchemaBadge');if(badge)badge.textContent=`PROJECT ENVELOPE ${st.schema}`;
   }
   window.renderDarkSkyV4EngineStatus=renderDarkSkyV4EngineStatus;
 
@@ -6375,7 +6388,7 @@
     p.notifications=p.notifications||{};
     p.customization.allowCustomColors=state.allowCustomColors;
     p.notifications.customerConfirmationEmail=state.customerConfirmationEmail;
-    await saveCompanies();
+    await persistProjectMutation(p,{reason:'customer.experience.preferences'});
     if(!state.allowCustomColors && state.fill==='Other') state.fill='Black';
     updateUi();
   }
@@ -7903,7 +7916,7 @@ The full order and approved media remain stored with this project.`;
       });
     }
 
-    await saveCompanies();
+    await persistProjectMutation(p,{reason:'captain.business.relationship'});
     logActivity(
       p.id,
       'Captain business relationship decision',
@@ -7958,11 +7971,29 @@ The full order and approved media remain stored with this project.`;
     host.classList.toggle('can-scroll-fleet',host.scrollWidth>host.clientWidth+3);
   }
 
+  function projectFilterBucket(p){
+    if(!p)return 'unknown';
+    if(p.v4AdmissionReviewRequired)return 'private';
+    const launch=projectFleetLaunchState(p);
+    if(launch.key==='live')return 'active';
+    if(launch.key==='draft'&&String(p.status||'').toLowerCase()==='future')return 'future';
+    if(['draft','preparing','sea_trial','fleet_ready'].includes(launch.key))return 'private';
+    return 'future';
+  }
+
+  function projectSearchIndex(p){
+    if(!p)return '';
+    const model=window.BlackFlagV3Core?.resolveOperatingModel?.(p)||{};
+    return [p.name,p.projectCode,p.id,p.type,p.businessType,p.tagline,p.description,model.summary,model.mode,customerRelationshipForProject(p)?.label]
+      .filter(Boolean).join(' ').toLowerCase();
+  }
+
   function applyEngineFleetFilter(){
     const {search,host,filterButtons}=engineFleetCommandContext();
     if(!search||!host||!filterButtons.length)return;
     const q=String(search.value||'').trim().toLowerCase();
     const mode=filterButtons.find(b=>b.classList.contains('active'))?.dataset.engineFleetFilter||'all';
+    let visibleProjects=0,totalProjects=0;
 
     Array.from(host.children).forEach(card=>{
       const addCard=card.id==='addProjectCard' || card.classList.contains('add-project-card');
@@ -7974,18 +8005,19 @@ The full order and approved media remain stored with this project.`;
         card.hidden=!(matchesText&&(mode==='all'||mode==='private'));
         return;
       }
-      const control=card.querySelector('[data-open-project-control]');
-      const projectId=control?.dataset.openProjectControl||'';
+      const projectId=card.dataset.projectId||card.querySelector('[data-open-project-control]')?.dataset.openProjectControl||'';
       const p=projectId?projectById(projectId):null;
-      const text=(card.textContent||'').toLowerCase();
-      const matchesText=!q || text.includes(q);
-      let matchesMode=true;
-      if(mode==='active') matchesMode=!!p && (p.publish?.status==='live' || p.status==='active');
-      if(mode==='private') matchesMode=!!p && p.publish?.status!=='live';
-      if(mode==='future') matchesMode=!!p && p.status==='future';
+      totalProjects++;
+      const searchText=(card.dataset.projectSearch||projectSearchIndex(p)||card.textContent||'').toLowerCase();
+      const matchesText=!q || searchText.includes(q);
+      const bucket=projectFilterBucket(p);
+      const matchesMode=mode==='all'||mode===bucket;
       card.hidden=!(matchesText&&matchesMode);
+      if(!card.hidden)visibleProjects++;
     });
     host.scrollLeft=0;
+    const hint=document.querySelector('.project-fleet-rail-tools span');
+    if(hint)hint.textContent=`Showing ${visibleProjects} of ${totalProjects} projects • swipe left or right to browse`;
     requestAnimationFrame(updateEngineFleetRailState);
   }
 
@@ -8005,7 +8037,7 @@ The full order and approved media remain stored with this project.`;
     }
     p.publish={status:next};p.visibility=t.checked?'published':'engine_only';p.published=!!t.checked;
     if(!t.checked&&p.lifecycle?.state==='live')p.lifecycle={...p.lifecycle,state:'paused',updatedAt:new Date().toISOString()};
-    await saveCompanies();logActivity(p.id,t.checked?'Project published':'Project returned to private service');await renderProjectCommand();
+    await persistProjectMutation(p,{reason:'project.publishing.quick_update'});logActivity(p.id,t.checked?'Project published':'Project returned to private service');await renderProjectCommand();
   }
 
   function bindEngineProjectCommandBus(){
@@ -8070,14 +8102,6 @@ The full order and approved media remain stored with this project.`;
 
     document.addEventListener('input',event=>{
       if(event.target?.id==='engineFleetSearch')applyEngineFleetFilter();
-    },true);
-
-    document.addEventListener('change',event=>{
-      const target=event.target;
-      if(target?.matches?.('[data-project-publish]')){
-        event.stopPropagation();
-        Promise.resolve(handleProjectPublishToggle(target)).catch(err=>{console.error('Project publish command failed',err);alert(`Publish command interrupted: ${String(err?.message||err)}`);});
-      }
     },true);
 
     document.addEventListener('scroll',event=>{if(event.target?.id==='projectCommandCards')updateEngineFleetRailState();},true);
@@ -8258,14 +8282,14 @@ The full order and approved media remain stored with this project.`;
       if(!requireOwnerProjectMutation(p,'products','product.create'))return;
       const name=prompt('Product name'); if(!name?.trim())return;
       p.products=p.products||[]; p.products.push({id:slugifyProjectName(name)+'-'+Date.now().toString().slice(-5),name:name.trim(),published:false,characterLimit:null});
-      await saveCompanies(); logActivity(p.id,'Owner added product',name.trim()); await renderOwnerModule(p,'products');
+      await persistProjectMutation(p,{reason:'owner.product.create'}); logActivity(p.id,'Owner added product',name.trim()); await renderOwnerModule(p,'products');
     });
     $$('[data-owner-product-save]').forEach(btn=>btn.addEventListener('click',async()=>{
       if(!requireOwnerProjectMutation(p,'products','product.update'))return;
       const pr=(p.products||[]).find(x=>x.id===btn.dataset.ownerProductSave); if(!pr)return;
       const name=document.querySelector(`[data-owner-product-name="${CSS.escape(pr.id)}"]`)?.value?.trim();
       const published=document.querySelector(`[data-owner-product-published="${CSS.escape(pr.id)}"]`)?.checked;
-      if(name)pr.name=name; pr.published=!!published; await saveCompanies(); logActivity(p.id,'Owner updated product',pr.name); await renderOwnerModule(p,'products');
+      if(name)pr.name=name; pr.published=!!published; await persistProjectMutation(p,{reason:'owner.product.update'}); logActivity(p.id,'Owner updated product',pr.name); await renderOwnerModule(p,'products');
     }));
     $('ownerSavePricing')?.addEventListener('click',async()=>{
       if(!requireOwnerProjectMutation(p,'pricing','pricing.update'))return;
@@ -8281,7 +8305,7 @@ The full order and approved media remain stored with this project.`;
       const priorName=p.name;
       const renamed=await renameProjectDisplayName(p,name,{actorRole:'project_owner',syncBranding:true});
       if(!renamed.ok){alert('Dark Sky could not update the business name.');return;}
-      p.branding=p.branding||{}; p.branding.subtitle=subtitle; await saveCompanies();
+      p.branding=p.branding||{}; p.branding.subtitle=subtitle; await persistProjectMutation(p,{reason:'owner.branding.update'});
       if(priorName===name)logActivity(p.id,'Owner updated branding',name);
       if($('ownerBrandingStatus'))$('ownerBrandingStatus').textContent=`Branding saved. Project ID ${p.id} remains unchanged.`;
     });
@@ -8290,7 +8314,7 @@ The full order and approved media remain stored with this project.`;
       if(!requireOwnerProjectMutation(p,ownerDeploymentCapability,'deployment.create'))return;
       const name=prompt(moduleKey==='kiosks'?'Kiosk name':'Location / device name'); if(!name?.trim())return;
       const fresh=newProjectDeployment(p,name.trim(),'kiosk_self_service');
-      migrateLegacyDeployment(p).push(fresh); await saveCompanies(); logActivity(p.id,'Owner added location/device',fresh.name); await renderOwnerModule(p,moduleKey);
+      migrateLegacyDeployment(p).push(fresh); await persistProjectMutation(p,{reason:'owner.deployment.create'}); logActivity(p.id,'Owner added location/device',fresh.name); await renderOwnerModule(p,moduleKey);
     });
     $$('[data-owner-deploy-toggle]').forEach(btn=>btn.addEventListener('click',async()=>{
       const ownerDeploymentCapability=moduleKey==='kiosks'?'kiosks':'deployments';
@@ -8306,7 +8330,7 @@ The full order and approved media remain stored with this project.`;
       d.state=next;
       d.updatedAt=new Date().toISOString();
       normalizeDeploymentIdentity(p,d);
-      await saveCompanies();
+      await persistProjectMutation(p,{reason:'owner.deployment.lifecycle'});
       logActivity(p.id,'Owner changed deployment state',`${d.name}: ${prior} → ${d.state}`);
       window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p.id,category:'deployment',action:'device.state.changed',detail:`${d.id}: ${prior} → ${d.state}`});
       await renderOwnerModule(p,moduleKey);
@@ -8320,7 +8344,7 @@ The full order and approved media remain stored with this project.`;
       d.state='retired'; d.updatedAt=new Date().toISOString();
       normalizeDeploymentIdentity(p,d);
       d.deviceIdentity.revokedAt=d.updatedAt;
-      await saveCompanies();
+      await persistProjectMutation(p,{reason:'owner.deployment.retire'});
       logActivity(p.id,'Owner revoked customer device',d.name);
       window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p.id,category:'deployment',action:'device.revoked',detail:d.id});
       await renderOwnerModule(p,moduleKey);
@@ -8330,18 +8354,18 @@ The full order and approved media remain stored with this project.`;
       const name=prompt('Staff member name'); if(!name?.trim())return;
       const email=prompt('Staff member email (optional)','')||'',role=prompt('Role','Staff')||'Staff';
       p.ownerAccess.staff=p.ownerAccess.staff||[]; p.ownerAccess.staff.push({id:'STF-'+Date.now().toString(36),name:name.trim(),email:email.trim(),role:role.trim()||'Staff'});
-      await saveCompanies(); logActivity(p.id,'Owner added staff member',name.trim()); await renderOwnerModule(p,'staff');
+      await persistProjectMutation(p,{reason:'owner.staff.create'}); logActivity(p.id,'Owner added staff member',name.trim()); await renderOwnerModule(p,'staff');
     });
     $$('[data-owner-staff-remove]').forEach(btn=>btn.addEventListener('click',async()=>{
       if(!requireOwnerProjectMutation(p,'staff','staff.remove'))return;
       const member=(p.ownerAccess.staff||[]).find(x=>x.id===btn.dataset.ownerStaffRemove); if(!member)return;
       if(!confirm(`Remove ${member.name} from the staff list?`))return;
-      p.ownerAccess.staff=(p.ownerAccess.staff||[]).filter(x=>x.id!==member.id); await saveCompanies(); logActivity(p.id,'Owner removed staff member',member.name); await renderOwnerModule(p,'staff');
+      p.ownerAccess.staff=(p.ownerAccess.staff||[]).filter(x=>x.id!==member.id); await persistProjectMutation(p,{reason:'owner.staff.remove'}); logActivity(p.id,'Owner removed staff member',member.name); await renderOwnerModule(p,'staff');
     }));
     $('ownerSaveNotifications')?.addEventListener('click',async()=>{
       if(!requireOwnerProjectMutation(p,'notifications','notifications.update'))return;
       p.notifications=p.notifications||{}; p.notifications.customerConfirmationEmail=!!$('ownerConfirmationEmail')?.checked;
-      await saveCompanies(); logActivity(p.id,'Owner updated notifications',p.notifications.customerConfirmationEmail?'enabled':'disabled');
+      await persistProjectMutation(p,{reason:'owner.notifications.update'}); logActivity(p.id,'Owner updated notifications',p.notifications.customerConfirmationEmail?'enabled':'disabled');
       if($('ownerNotificationStatus'))$('ownerNotificationStatus').textContent='Notification settings saved.';
     });
     $('ownerChangePassword')?.addEventListener('click',async()=>{
@@ -8352,7 +8376,7 @@ The full order and approved media remain stored with this project.`;
       const testMode=!!p.ownerAccess.credential?.testMode;
       const result=await createOwnerCredential(p,p.ownerAccess.credential.login,next,{testMode});
       if(!result.ok){$('ownerSettingsStatus').textContent=result.error;return;}
-      await saveCompanies(); logActivity(p.id,'Owner changed portal password',p.ownerAccess.credential.login); $('ownerSettingsStatus').textContent='Password changed.';
+      await persistProjectMutation(p,{reason:'owner.credential.update'}); logActivity(p.id,'Owner changed portal password',p.ownerAccess.credential.login); $('ownerSettingsStatus').textContent='Password changed.';
     });
   }
 
@@ -8714,7 +8738,7 @@ The full order and approved media remain stored with this project.`;
     const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||8);
     const sealed=Number(convergence?.sealed||0);
     renderV4EnvelopeTrace(convergence);
-    if($('v3SchemaBadge')) $('v3SchemaBadge').textContent=`SCHEMA ${activeSchema}`;
+    if($('v3SchemaBadge')) $('v3SchemaBadge').textContent=`PROJECT ENVELOPE ${activeSchema}`;
     const live=states.filter(x=>x==='live').length;
     const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
     box.innerHTML=`
@@ -9018,7 +9042,7 @@ The full order and approved media remain stored with this project.`;
         if(state.approvedAt){delete state.approvedAt;delete state.approvedBy;delete state.approvedSignature;}
         else{state.approvedAt=new Date().toISOString();state.approvedBy='engine_admin';state.approvedSignature=experienceConfigurationSignature(p);}
         p.updatedAt=new Date().toISOString();
-        try{await saveCompanies();logActivity(p.id,state.approvedAt?'Customer experience approved':'Customer experience approval revoked');await renderExperienceTestDeck(p);await renderProjectCommand();}
+        try{await persistProjectMutation(p,{reason:'experience.approval.update'});logActivity(p.id,state.approvedAt?'Customer experience approved':'Customer experience approval revoked');await renderExperienceTestDeck(p);await renderProjectCommand();}
         catch(err){alert(`Experience approval could not be saved: ${String(err?.message||err)}`);}
         return;
       }
@@ -9465,7 +9489,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.7.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • project-local canonical mutation writes • resilient IndexedDB reconnect • fleet command reseal • canonical Test Deck resolver`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.5.0.ready',detail:`${companies.length} projects • Trust Release • preserved canonical project identity • project-local mutations • launch-state filters • non-destructive admission review • canonical Test Deck resolver`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

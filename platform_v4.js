@@ -1,7 +1,7 @@
 /* Dark Sky 4.3.6 — Brightwork platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.4.7';
+const VERSION='4.5.0';
 const NAME='Brightwork';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();

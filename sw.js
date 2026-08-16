@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-4-7-forward-only-db-migration';
+const CACHE='dark-sky-v4-5-0-trust-release';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.4.7',
-  './platform_core.js?v=4.4.7',
-  './platform_v4.js?v=4.4.7',
-  './platform_identity.js?v=4.4.7',
-  './app.js?v=4.4.7',
-  './captain.js?v=4.4.7',
+  './styles.css?v=4.5.0',
+  './platform_core.js?v=4.5.0',
+  './platform_v4.js?v=4.5.0',
+  './platform_identity.js?v=4.5.0',
+  './app.js?v=4.5.0',
+  './captain.js?v=4.5.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

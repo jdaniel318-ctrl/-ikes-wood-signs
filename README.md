@@ -1,4 +1,4 @@
-# Dark Sky v4.4.7 — Forward-Only IndexedDB Migration
+# Dark Sky v4.5.0 — Forward-Only IndexedDB Migration
 
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
@@ -24,9 +24,13 @@ Experience identity contract:
 Outpost and Experience Test mutations now update only the owning canonical project row. They never clear/rewrite the full fleet registry. Primary IndexedDB operations retry once after a closed/interrupted connection, and Project Command reseals the admitted V4 baseline before rendering so a failed project mutation cannot collapse the fleet to one visible vessel.
 
 
-## V4.4.7 — Primary DB readiness
+## V4.5.0 — Primary DB readiness
 Project-scoped mutations now guarantee that the primary IndexedDB connection exists before any transaction starts. Safari connection loss or an uninitialized DB handle triggers one controlled reopen/retry. A project mutation still updates only its owning canonical Project ID and never rewrites the fleet.
 
 
-## V4.4.7 — Forward-only database law
+## V4.5.0 — Forward-only database law
 Dark Sky never requests a database schema lower than one already installed on the device. The primary schema is now 5, and VersionError recovery reopens a newer existing schema without downgrade after validating the required stores.
+
+
+## v4.5 Trust Release
+Project identity is preserved before governance metadata is repaired. Project-level actions write one immutable Project ID; missing V4 admission evidence can restrict operation but cannot delete the canonical project row. Project Command filters derive from the actual launch state, and Published/Private is now a status indicator rather than a hidden workflow toggle.
