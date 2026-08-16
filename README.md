@@ -1,3 +1,34 @@
+# Dark Sky / Black Flag — v4.0.0 Broadside
+
+**Current release:** v4.0.0 — Broadside
+
+Broadside is the first Dark Sky platform-generation release after the 3.10.x fleet-registry hardening line. It intentionally preserves the proven project registry and security boundaries while adding a higher-level platform contract, recovery discipline, diagnostics, release rings, Captain Lab, and a decision ledger.
+
+## V4 platform contract
+
+1. Nothing disappears during an ordinary upgrade.
+2. Nothing crosses project boundaries.
+3. Every important change is traceable.
+4. Experiments cannot silently alter production.
+5. Every vessel can be recovered and carried forward.
+
+## Broadside systems
+
+- Pre-V4 migration gate creates a fleet recovery point once per installation.
+- Recovery Vault records fleet-level recovery manifests backed by the existing sanitized snapshot system.
+- Black Box records JavaScript failures and unhandled promise rejections locally for Captain/Engine diagnostics.
+- Release Rings establish Captain → Private → Selected Live → Fleet promotion stages.
+- Captain Lab creates production-write-denied project clones for experiments.
+- Captain Decision Ledger records major architectural decisions and rationale.
+- Feature flags establish explicit project/fleet/Captain rollout boundaries.
+- V4 preflight layers the new platform contract over existing Ship Integrity checks.
+- Engine Room exposes Broadside status without replacing project operations.
+- Captain's Quarters gains platform-command, recovery, release, experiment, and decision controls while preserving the Engine/Captain authority boundary.
+
+## Compatibility
+
+The existing `BlackFlagV3Core` global remains as a compatibility surface for the mature Engine code, but reports the 4.0 Broadside core/schema. V4-specific capabilities live under `window.DarkSkyV4`.
+
 # Dark Sky / Black Flag — v3.10.2 Registry Rivets
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.

@@ -10571,3 +10571,22 @@ body.universal-project .universal-customer-shell{display:block}
   color:#e3c46f;font:900 9px Arial,sans-serif;letter-spacing:.08em;
 }
 .modern-project-command .commission-draft-card .project-card-actions{grid-template-columns:1fr!important}
+
+
+/* ==========================================================
+   Dark Sky 4.0 — Broadside
+   Platform contract, recovery vault, controlled release rings,
+   black-box diagnostics, and Captain Lab surfaces.
+   ========================================================== */
+.v4-broadside-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.v4-broadside-card{border:1px solid rgba(92,166,185,.28);border-radius:14px;padding:14px;background:rgba(5,20,24,.5);min-height:96px;display:flex;flex-direction:column;gap:7px}
+.v4-broadside-card small,.v4-captain-broadside small{font:800 10px/1.2 Arial,sans-serif;letter-spacing:.15em;color:#86a7af}
+.v4-broadside-card strong{font:900 22px/1.1 Arial,sans-serif;color:#e5eff0}
+.v4-broadside-card span{font:500 12px/1.35 Arial,sans-serif;color:#8fa6aa}.v4-broadside-card.clear{border-color:rgba(66,171,112,.42)}.v4-broadside-card.attention{border-color:rgba(221,154,67,.55)}
+.v4-contract-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:10px}
+.v4-contract-strip span{display:flex;gap:8px;align-items:flex-start;border-top:1px solid rgba(92,166,185,.2);padding:9px 4px;color:#9db0b4;font:600 11px/1.35 Arial,sans-serif}.v4-contract-strip b{color:#55b9d7;font-size:10px}
+.v4-captain-broadside{border-color:rgba(81,177,207,.36)!important;background:linear-gradient(145deg,rgba(7,28,34,.92),rgba(11,20,23,.92))!important}.v4-captain-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.v4-captain-head h3{margin:.25rem 0}.v4-captain-head>strong{border:1px solid rgba(71,168,107,.45);border-radius:999px;padding:7px 10px;font:900 10px Arial,sans-serif;letter-spacing:.1em}.v4-captain-head>strong.attention{border-color:rgba(205,139,55,.5)}
+.v4-captain-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}.v4-captain-metrics span{border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px;color:#9cadb0;font:700 11px Arial,sans-serif}.v4-captain-metrics b{display:block;color:#e7f0f1;font-size:20px;margin-bottom:4px}
+.v4-release-rings,.v4-captain-lab,.v4-decision-add{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:12px}.v4-release-rings{grid-template-columns:1fr auto}.v4-release-rings label,.v4-captain-lab label{display:grid;gap:6px;color:#96aeb2;font:700 11px Arial,sans-serif}.v4-release-rings select,.v4-captain-lab select,.v4-captain-lab input,.v4-decision-add input{min-height:42px;border:1px solid rgba(92,166,185,.35);background:#09161a;color:#e7eff0;border-radius:9px;padding:0 10px}.v4-release-rings button,.v4-captain-lab button,.v4-decision-add button{min-height:42px;border-radius:9px;border:1px solid rgba(61,158,192,.55);background:#0d3140;color:#e9f7fb;font:900 10px Arial,sans-serif;letter-spacing:.07em;padding:0 13px}.v4-boundary-note{margin-top:12px;padding:10px 12px;border-left:3px solid #4d9fb9;background:rgba(20,67,79,.18);color:#9fb4b8!important;font-size:11px!important}
+.v4-decision-ledger>.captain-note-list{margin-top:14px}
+@media(max-width:900px){.v4-broadside-grid,.v4-captain-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.v4-contract-strip{grid-template-columns:1fr 1fr}.v4-captain-lab,.v4-decision-add{grid-template-columns:1fr}.v4-release-rings{grid-template-columns:1fr}.v4-release-rings button,.v4-captain-lab button,.v4-decision-add button{width:100%}}

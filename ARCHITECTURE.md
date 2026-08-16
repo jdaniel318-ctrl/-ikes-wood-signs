@@ -177,3 +177,21 @@ The canonical `projects` IndexedDB store remains the fleet authority, but normal
 ## Registry Rivets (3.10.2)
 
 This is intentionally not a registry schema change. The v5 canonical registry and `grizzle-bear` → `grizzly-bear` alias remain unchanged. Project Command overrides the Grizzly Bear first KPI label to `ORDERS` because the displayed statistic is the project order count. Ship Integrity verifies that presentation contract. User-selected branding is not rewritten by this patch.
+
+
+# Dark Sky V4 — Broadside Architecture
+
+## Platform contract
+Broadside adds a generation-level contract above the stable project registry. Ordinary releases must be non-destructive, tenant boundaries remain default-deny, important changes are auditable, experiments are isolated from production writes, and every registered vessel must be recoverable.
+
+## New V4 layer
+`platform_v4.js` is intentionally additive. It does not replace the mature Engine data machinery. It supplies release governance, feature flags, Captain Lab, Decision Ledger, Recovery Vault manifests, Black Box diagnostics, permission-capability declarations, project export packaging, and V4 preflight.
+
+## Authority boundary
+Captain's Quarters may review, approve, experiment, record decisions, seal recovery points, and choose rollout rings. Production project mutation remains an Engine action unless a future tool explicitly implements a separately authorized production path. Captain Lab clones always set `productionWriteAllowed: false`.
+
+## Release rings
+`captain` → `private` → `selected_live` → `fleet`. Promotion is metadata and governance in 4.0.0; it does not silently deploy code or mutate projects.
+
+## Migration gate
+On the first successful fleet load after 4.0.0, Dark Sky creates one sanitized pre-V4 recovery point and records the known project IDs before marking migration complete. Existing registry IDs/namespaces remain authoritative.

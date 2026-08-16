@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.10.2';
+  const BUILD_VERSION = '4.0.0';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -329,6 +329,8 @@
 
   function projects(){ return companies; }
   function projectById(id){ const canonical=canonicalProjectId(id); return companies.find(p=>p.id===canonical); }
+  window.blackFlagV4ProjectById=(id)=>projectById(id);
+  window.blackFlagV4Projects=()=>companies.map(p=>structuredClone(p));
 
   const OWNER_CAPABILITIES=[
     'orders','customers','products','pricing','branding','kiosks','deployments','staff','reporting','notifications'
@@ -1432,6 +1434,7 @@
     // commissioned candidate and verifies it by reading the canonical store back.
     await reconcileCommissioningArtifacts({attemptRepair:true,source:'engine-boot'});
 
+    try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
 
@@ -1701,7 +1704,8 @@
     await renderProjectCommand();
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics refresh warning',err); }
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats refresh warning',err); }
-    try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command refresh warning',err); }
+    try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v4 command refresh warning',err); }
+    try{ window.renderDarkSkyV4EngineStatus?.(); }catch(err){ console.warn('v4 status render warning',err); }
     return true;
   }
 
@@ -5062,6 +5066,22 @@
   }
 
 
+
+  function renderDarkSkyV4EngineStatus(){
+    const host=$('v3ArchitectureStatus'); if(!host||!window.DarkSkyV4)return;
+    const st=window.DarkSkyV4.status(companies);
+    const flags=st.flags||{};
+    host.innerHTML=`<div class="v4-broadside-grid">
+      <article class="v4-broadside-card ${st.preflight.ok?'clear':'attention'}"><small>PLATFORM CONTRACT</small><strong>${st.preflight.ok?'SEALED':'REVIEW REQUIRED'}</strong><span>${st.preflight.critical} critical • ${st.preflight.warnings} warning</span></article>
+      <article class="v4-broadside-card"><small>RECOVERY VAULT</small><strong>${st.recoveryPoints}</strong><span>fleet recovery point${st.recoveryPoints===1?'':'s'}</span></article>
+      <article class="v4-broadside-card"><small>BLACK BOX</small><strong>${flags.black_box?.enabled?'ARMED':'OFF'}</strong><span>${st.diagnostics} diagnostic event${st.diagnostics===1?'':'s'}</span></article>
+      <article class="v4-broadside-card"><small>RELEASE RING</small><strong>${escapeHtml(String(st.release.currentRing||'captain').replaceAll('_',' ').toUpperCase())}</strong><span>controlled rollout</span></article>
+    </div>
+    <div class="v4-contract-strip">${st.contract.map((x,i)=>`<span><b>0${i+1}</b>${escapeHtml(x)}</span>`).join('')}</div>`;
+    const badge=$('v3SchemaBadge');if(badge)badge.textContent=`V4 SCHEMA ${st.schema}`;
+  }
+  window.renderDarkSkyV4EngineStatus=renderDarkSkyV4EngineStatus;
+
   let engineAppearance='business';
   let pirateModeEnabled=false; // compatibility alias for older Engine code.
 
@@ -7729,7 +7749,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.9',
+    version:'4.0.0-broadside-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,

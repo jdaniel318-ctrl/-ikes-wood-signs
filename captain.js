@@ -620,7 +620,31 @@ function bootCaptainCommand(){
         return `<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong><small>${safe(p.publishStatus)} • ${safe(p.status)} • PLATFORM ${safe((p.platformStatus==='relationship_ended'||p.platformStatus==='refused')?'RELATIONSHIP ENDED':(p.platformStatus||'approved').toUpperCase())} • OWNER ${safe((p.ownerStatus||'not_claimed').replace(/_/g,' ').toUpperCase())}</small></div><div><b>${sailing} sailing</b>${harbor?`<small>${harbor} in harbor</small>`:''}${trials?`<small>${trials} sea trial</small>`:''}</div></article>`;
       }).join(''):'<p class="captain-empty">No project snapshot available.</p>'}</div>
     </section>
-    <section class="captain-command-card"><h3>Command Boundary</h3><p>Black Flag tells the Captain what is happening. The Engine Room remains where the First Mate changes project machinery.</p></section>`;
+    <section class="captain-command-card"><h3>Command Boundary</h3><p>Black Flag tells the Captain what is happening. The Engine Room remains where the First Mate changes project machinery.</p></section>
+    ${renderBroadsideCommand(projects)}`;
+    bindBroadsideCommand(projects);
+  }
+
+  function renderBroadsideCommand(projects=[]){
+    if(!window.DarkSkyV4)return '';
+    const st=window.DarkSkyV4.status((window.blackFlagV4Projects?.()||[]));
+    const ring=st.release?.currentRing||'captain';
+    return `<section class="captain-command-card v4-captain-broadside">
+      <div class="v4-captain-head"><div><small>DARK SKY 4.0 • BROADSIDE</small><h3>Platform Command</h3><p>Recovery, release discipline, experimentation and traceable Captain authority.</p></div><strong class="${st.preflight.ok?'clear':'attention'}">${st.preflight.ok?'CONTRACT SEALED':'REVIEW'}</strong></div>
+      <div class="v4-captain-metrics"><span><b>${st.recoveryPoints}</b> recovery points</span><span><b>${st.diagnostics}</b> black-box events</span><span><b>${st.labs}</b> lab experiments</span><span><b>${st.decisions}</b> decisions</span></div>
+      <div class="v4-release-rings"><label>Release ring<select id="captainV4ReleaseRing">${['captain','private','selected_live','fleet'].map(x=>`<option value="${x}" ${x===ring?'selected':''}>${x.replaceAll('_',' ').toUpperCase()}</option>`).join('')}</select></label><button id="captainV4RecoveryPoint" type="button">SEAL RECOVERY POINT</button></div>
+      <div class="v4-captain-lab"><label>Captain Lab vessel<select id="captainV4LabProject"><option value="">Select vessel…</option>${projects.map(p=>`<option value="${safe(p.projectId||p.id||'')}">${safe(p.name)}</option>`).join('')}</select></label><label>Experiment brief<input id="captainV4LabBrief" placeholder="Prototype an idea without touching production…"></label><button id="captainV4CreateLab" type="button">CREATE SANDBOX</button></div>
+      <p class="v4-boundary-note"><b>LAB BOUNDARY:</b> Captain Lab clones are production-write denied. Promotion records approval; Engine machinery still performs any production change.</p>
+    </section>`;
+  }
+
+  function bindBroadsideCommand(projects=[]){
+    const ring=document.getElementById('captainV4ReleaseRing');
+    if(ring)ring.onchange=()=>{try{window.DarkSkyV4.setReleaseRing(ring.value,'Captain changed rollout ring');audit('V4 release ring changed',ring.value)}catch(err){alert(err.message)}};
+    const rec=document.getElementById('captainV4RecoveryPoint');
+    if(rec)rec.onclick=()=>{try{const rows=window.blackFlagV4Projects?.()||[];const r=window.DarkSkyV4.recoveryPoint(rows,'captain-manual-v4');audit('V4 recovery point sealed',r.id);rec.textContent='SEALED '+r.id}catch(err){alert(err.message)}};
+    const create=document.getElementById('captainV4CreateLab');
+    if(create)create.onclick=()=>{try{const id=document.getElementById('captainV4LabProject')?.value||'';const p=window.blackFlagV4ProjectById?.(id);if(!p){alert('Select a vessel for the experiment.');return;}const brief=document.getElementById('captainV4LabBrief')?.value||'';const lab=window.DarkSkyV4.labCreate(p,brief);audit('Captain Lab sandbox created',`${p.name} • ${lab.id}`);create.textContent='SANDBOX '+lab.id}catch(err){alert(err.message)}};
   }
 
   async function renderLog(){
@@ -640,6 +664,7 @@ function bootCaptainCommand(){
       <section class="captain-command-card"><h3>Waived Fees Ledger</h3><p>Captain-only and separate from project billing.</p><div class="captain-note-list">${waived.length?waived.slice(0,20).map(w=>`<div><strong>${safe(w.project||w.projectName||'Project')}</strong><span>${safe(w.amountWaived??w.amount??'')} ${safe(w.service||w.feature||'')}</span></div>`).join(''):'<p class="captain-empty">No waived-fee records yet.</p>'}</div></section>
     </div>
     <section class="captain-command-card"><h3>Fleet Performance</h3><div class="captain-fleet-list">${(snap.projects||[]).map(p=>`<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong></div><div><b>${Number(p.orders||0)} orders</b><small>$${Number(p.ledgerRevenue||0).toFixed(0)} recorded</small></div></article>`).join('')||'<p class="captain-empty">No project performance data yet.</p>'}</div></section>
+    ${renderV4DecisionLedger()}
     <section class="captain-command-card"><h3>Captain Audit History</h3><div class="captain-note-list">${auditRows.length?auditRows.slice(0,40).map(a=>`<div><strong>${safe(new Date(a.at).toLocaleString())}</strong><span>${safe(a.action)}${a.detail?` — ${safe(a.detail)}`:''}</span></div>`).join(''):'<p class="captain-empty">No Captain events recorded yet.</p>'}</div></section>`;
     const drawStanding=()=>{
       const rows=standingOrders();
@@ -649,6 +674,17 @@ function bootCaptainCommand(){
     };
     document.getElementById('captainStandingOrderAdd').onclick=()=>{const input=document.getElementById('captainStandingOrderInput');const text=input.value.trim();if(!text)return;const rows=standingOrders();rows.push(text);write('blackFlagStandingOrders',rows);audit('Standing order added',text);input.value='';drawStanding()};
     drawStanding();
+    bindV4DecisionLedger();
+  }
+
+  function renderV4DecisionLedger(){
+    if(!window.DarkSkyV4)return '';
+    const rows=window.DarkSkyV4.decisions().slice(0,12);
+    return `<section class="captain-command-card v4-decision-ledger"><small>DARK SKY 4.0</small><h3>Decision Ledger</h3><p>Major platform decisions, architectural warnings, experiments and Captain overrides live here so future releases preserve why the ship was built this way.</p><div class="v4-decision-add"><input id="captainV4Decision" placeholder="Record a platform decision…"><input id="captainV4Rationale" placeholder="Rationale / warning…"><button id="captainV4DecisionAdd" type="button">RECORD DECISION</button></div><div class="captain-note-list">${rows.length?rows.map(x=>`<div><strong>${safe(new Date(x.at).toLocaleString())}</strong><span>${safe(x.decision)}${x.rationale?` — ${safe(x.rationale)}`:''}</span></div>`).join(''):'<p class="captain-empty">No V4 platform decisions recorded yet.</p>'}</div></section>`;
+  }
+  function bindV4DecisionLedger(){
+    const btn=document.getElementById('captainV4DecisionAdd');if(!btn||!window.DarkSkyV4)return;
+    btn.onclick=()=>{const d=document.getElementById('captainV4Decision')?.value.trim()||'';const r=document.getElementById('captainV4Rationale')?.value.trim()||'';if(!d)return;window.DarkSkyV4.decision({decision:d,rationale:r,scope:'platform'});audit('V4 decision recorded',d);renderLog();};
   }
 
   function renderBlueprint(){

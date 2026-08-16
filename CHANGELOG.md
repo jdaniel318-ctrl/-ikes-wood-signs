@@ -1,3 +1,18 @@
+# Dark Sky 4.0.0 — Broadside
+
+- Preserved the 3.10.2 Fleet Registry / Registry Seal foundation as the V4 keel.
+- Added a five-promise V4 platform contract and V4 preflight layer.
+- Added one-time pre-V4 migration recovery point and Recovery Vault manifests.
+- Added local Black Box diagnostics for JavaScript errors and unhandled rejections.
+- Added explicit V4 role/capability declarations and feature flags.
+- Added controlled Release Rings: Captain, Private, Selected Live, Fleet.
+- Added Captain Lab project clones that are explicitly denied production writes.
+- Added Captain Decision Ledger for architectural decisions, warnings, and rationale.
+- Added Broadside Engine status surface and upgraded visible platform version to 4.0.0.
+- Added Captain's Quarters Broadside command controls without moving Engine machinery into Captain authority.
+- Advanced core schema to 8 / policy 4.0 while preserving `BlackFlagV3Core` compatibility for existing Engine modules.
+- Advanced service-worker cache to `dark-sky-v4-0-0-broadside`.
+
 # Dark Sky 3.10.2 — Registry Rivets
 
 - Cleaned up the Grizzly Bear Project Command card without changing the stable Fleet Registry architecture.
