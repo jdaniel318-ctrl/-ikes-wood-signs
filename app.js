@@ -1,4 +1,9 @@
 (() => {
+  const $ = window.$ || ((id) => document.getElementById(id));
+  const $$ = window.$$ || ((sel) => Array.from(document.querySelectorAll(sel)));
+  window.$ = $;
+  window.$$ = $$;
+  window.__darkSkyBootStage = 'app-module-entered';
   const DB_NAME = 'blackFlagPlatformV1';
   const DB_VERSION = 2;
   const STORE_ORDERS = 'orders';
@@ -9,8 +14,8 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.1.2';
-  // Quiet Deck: DOM helpers are initialized before any startup/security path can call them.
+  const BUILD_VERSION = '4.1.3';
+  // First Light: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -737,6 +742,7 @@
   // Engine security is intentionally session-only. Leaving Black Flag locks it again.
   let engineSessionUnlocked = false;
   let pendingCaptainDeploymentRoute = null;
+  window.__darkSkyBootStage = 'app-declarations';
   function lockEngineSession(){
     engineSessionUnlocked = false;
     if($('enginePinInput')) $('enginePinInput').value='';
@@ -746,8 +752,6 @@
     if(engineScreen) engineScreen.classList.add('hidden');
   }
 
-  const $ = (id) => document.getElementById(id);
-  const $$ = (sel) => [...document.querySelectorAll(sel)];
 
   function normalizeOrderIsolation(order,{legacyImport=false}={}){
     if(!order || typeof order!=='object') return order;

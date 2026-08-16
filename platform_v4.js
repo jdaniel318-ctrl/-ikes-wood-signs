@@ -1,8 +1,8 @@
-/* Dark Sky 4.1.2 — Quiet Deck platform generation layer */
+/* Dark Sky 4.1.3 — First Light platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.1.2';
-const NAME='Quiet Deck';
+const VERSION='4.1.3';
+const NAME='First Light';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({
