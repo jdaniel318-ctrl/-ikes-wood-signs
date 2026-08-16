@@ -10,7 +10,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.9.0" />
+  <link rel="stylesheet" href="styles.css?v=3.9.1" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -822,7 +822,9 @@
           <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG WATCH</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>FIRST MATE'S WATCH</span></div><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
           <button id="firstMateRefreshBtn" class="secondary-btn first-mate-refresh-btn" type="button">RUN WATCH</button>
         </header>
+        <div id="firstMateWatchSummary" class="first-mate-watch-summary" aria-live="polite"></div>
         <div id="firstMateWatchItems" class="first-mate-watch-items"></div>
+        <div id="firstMateActionStatus" class="first-mate-action-status" aria-live="polite"></div>
       </section>
 
 <section id="engineProjectsSection" class="project-command-section modern-project-command">
@@ -920,7 +922,7 @@
           <div class="engine-config-brandline"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><div><div class="engine-kicker">ENGINE CONFIGURATION</div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>ENGINE CONFIGURATION</span></div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div></div>
           <button id="engineConfigurationCloseBtn" class="secondary-btn workspace-back-btn" type="button">← BACK TO ENGINE</button>
         </header>
-        <section class="engine-economics-config">
+        <section id="engineEconomicsConfig" class="engine-economics-config">
           <div>
             <div class="engine-kicker">PERFORMANCE MODEL</div>
             <h4>Engine Economics</h4>
@@ -1202,10 +1204,10 @@
 </section>
 
 
-  <script src="platform_core.js?v=3.9.0"></script>
-  <script src="platform_identity.js?v=3.9.0"></script>
-  <script src="app.js?v=3.9.0"></script>
-  <script src="captain.js?v=3.9.0"></script>
+  <script src="platform_core.js?v=3.9.1"></script>
+  <script src="platform_identity.js?v=3.9.1"></script>
+  <script src="app.js?v=3.9.1"></script>
+  <script src="captain.js?v=3.9.1"></script>
 
 </body>
 </html>

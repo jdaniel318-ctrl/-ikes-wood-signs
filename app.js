@@ -6971,39 +6971,94 @@ The full order and approved media remain stored with this project.`;
     return items.slice(0,8);
   }
 
+  function setFirstMateActionStatus(message='',tone='info'){
+    const box=$('firstMateActionStatus');if(!box)return;
+    box.textContent=message||'';
+    box.className=`first-mate-action-status ${tone||'info'}${message?'':' empty'}`;
+  }
+
+  function pulseCommandTarget(el){
+    if(!el)return;
+    el.classList.remove('command-target-pulse');
+    void el.offsetWidth;
+    el.classList.add('command-target-pulse');
+    setTimeout(()=>el.classList.remove('command-target-pulse'),1800);
+  }
+
+  async function routeFirstMateAction(action,projectId='',button=null){
+    const original=button?.textContent||'';
+    if(button){button.disabled=true;button.dataset.commandBusy='1';button.textContent='OPENING…';}
+    setFirstMateActionStatus('Opening the recommended command…','working');
+    try{
+      if(action==='integrity'||action==='results'){
+        openEngineConfiguration('integrity');
+        const report=await runShipIntegrityV3({record:action==='integrity'});
+        renderShipIntegrity(report);
+        requestAnimationFrame(()=>pulseCommandTarget($('v3IntegrityStation')));
+        setFirstMateActionStatus(action==='integrity'?'Integrity check complete. Review the structural results below.':'Showing the latest structural results.','success');
+      }else if(action==='economics'){
+        openEngineConfiguration('economics');
+        requestAnimationFrame(()=>{
+          const target=$('engineEconomicsConfig');
+          target?.scrollIntoView({behavior:'smooth',block:'start'});
+          pulseCommandTarget(target);
+          $('engineFixedCost30')?.focus({preventScroll:true});
+        });
+        setFirstMateActionStatus('Engine Economics is open. Enter only costs you want included in performance telemetry.','success');
+      }else if(action==='project-owner'&&projectId){
+        await openProjectEngineControl(projectId);
+        await renderProjectTab(projectId,'owner');
+        requestAnimationFrame(()=>pulseCommandTarget($('projectTabContent')));
+        setFirstMateActionStatus('Owner Access is open for the selected project.','success');
+      }else if(action==='project-deployment'&&projectId){
+        await openProjectEngineControl(projectId);
+        await renderProjectTab(projectId,'deployment');
+        requestAnimationFrame(()=>pulseCommandTarget($('projectTabContent')));
+        setFirstMateActionStatus('Deployment command is open for the selected project.','success');
+      }else if(action==='project-launch'&&projectId){
+        const target=projectById(projectId);
+        if(!target)throw new Error('The project could not be resolved from the fleet registry.');
+        await continueProjectLaunch(target);
+      }else if(action==='projects'){
+        const section=$('engineProjectsSection');
+        section?.scrollIntoView({behavior:'smooth',block:'start'});
+        pulseCommandTarget(section);
+        setFirstMateActionStatus('Project Command is highlighted. Open a vessel’s Control Center → Access → Owner Access for project-specific owner controls.','success');
+      }else{
+        throw new Error('This recommendation does not have a valid command route.');
+      }
+    }catch(err){
+      console.error('First Mate command route failed',action,projectId,err);
+      setFirstMateActionStatus(`Command route interrupted: ${String(err?.message||err)}`,'error');
+      if(button){button.disabled=false;button.textContent=original||'TRY AGAIN';delete button.dataset.commandBusy;}
+      return false;
+    }
+    if(button){button.disabled=false;button.textContent=original||'OPEN';delete button.dataset.commandBusy;}
+    return true;
+  }
+
   async function renderFirstMateWatch(){
     const box=$('firstMateWatchItems');if(!box)return;
     const items=await firstMateWatchItems();
-    box.innerHTML=items.map((x,i)=>`
+    const summary=$('firstMateWatchSummary');
+    if(summary){
+      const critical=items.filter(x=>x.level==='captain').length;
+      const attention=items.filter(x=>x.level==='attention').length;
+      const recommendations=items.filter(x=>x.level==='recommendation').length;
+      const clear=items.filter(x=>x.level==='clear').length;
+      const state=critical?'CAPTAIN ACTION':attention?'WATCH':'STEADY';
+      summary.innerHTML=`<div><span>WATCH STATUS</span><strong>${state}</strong></div><div class="first-mate-watch-counts">${critical?`<span class="captain">${critical} critical</span>`:''}${attention?`<span class="attention">${attention} attention</span>`:''}${recommendations?`<span>${recommendations} recommendation${recommendations===1?'':'s'}</span>`:''}${clear?`<span class="clear">${clear} clear</span>`:''}</div><time>${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</time>`;
+    }
+    box.innerHTML=items.map((x)=>`
       <article class="first-mate-item ${escapeHtml(x.level)}">
-        <span>${x.level==='clear'?'ALL CLEAR':x.level==='captain'?'CAPTAIN':x.level==='attention'?'ATTENTION':'RECOMMEND'}</span>
+        <div class="first-mate-item-head"><span class="first-mate-signal" aria-hidden="true"></span><span>${x.level==='clear'?'ALL CLEAR':x.level==='captain'?'CAPTAIN':x.level==='attention'?'ATTENTION':'RECOMMEND'}</span></div>
         <strong>${escapeHtml(x.title)}</strong>
         <small>${escapeHtml(x.detail)}</small>
-        <p><b>FIRST MATE:</b> ${escapeHtml(x.recommendation||'Review this item.')}</p>
-        <button type="button" class="first-mate-action-btn" data-first-mate-index="${i}">${escapeHtml(x.cta||'OPEN')}</button>
+        <p><b>FIRST MATE</b><span>${escapeHtml(x.recommendation||'Review this item.')}</span></p>
+        <button type="button" class="first-mate-action-btn" data-first-mate-action="${escapeHtml(x.action||'')}" ${x.projectId?`data-first-mate-project="${escapeHtml(x.projectId)}"`:''}>${escapeHtml(x.cta||'OPEN')}</button>
       </article>`).join('');
-
-    $$('[data-first-mate-index]').forEach(btn=>btn.onclick=async()=>{
-      const x=items[Number(btn.dataset.firstMateIndex)];
-      if(x.action==='integrity'||x.action==='results'){
-        openEngineConfiguration('integrity');
-        await renderShipIntegrity(await runShipIntegrityV3({record:x.action==='integrity'}));
-      }else if(x.action==='economics'){
-        openEngineConfiguration('economics');
-      }else if(x.action==='project-owner'&&x.projectId){
-        await openProjectEngineControl(x.projectId);
-        await renderProjectTab(x.projectId,'owner');
-      }else if(x.action==='project-deployment'&&x.projectId){
-        await openProjectEngineControl(x.projectId);
-        await renderProjectTab(x.projectId,'deployment');
-      }else if(x.action==='project-launch'&&x.projectId){
-        const target=projectById(x.projectId);
-        if(target)await continueProjectLaunch(target);
-      }else if(x.action==='projects'){
-        $('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
-      }
-    });
   }
+
 
   function renderShipIntegrity(report){
     const box=$('shipIntegritySummary');if(!box)return;
@@ -7038,7 +7093,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.32',
+    version:'3.9.1',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7113,12 +7168,32 @@ The full order and approved media remain stored with this project.`;
     bindMissionCriticalNavigation();
     bindEngineFleetCommand();
 
-    $('firstMateRefreshBtn')?.addEventListener('click',refreshV3CommandSystems);
-    $('runShipIntegrityBtn')?.addEventListener('click',async()=>{
-      const report=await runShipIntegrityV3({record:true});
-      renderShipIntegrity(report);
-      await renderFirstMateWatch();
-      await renderV3ArchitectureStatus();
+    $('firstMateRefreshBtn')?.addEventListener('click',async e=>{
+      const btn=e.currentTarget;if(btn.disabled)return;
+      const prior=btn.textContent;btn.disabled=true;btn.textContent='SCANNING…';
+      setFirstMateActionStatus('Running First Mate watch across the fleet…','working');
+      try{await refreshV3CommandSystems();setFirstMateActionStatus('Watch refreshed. Recommendations are current.','success');}
+      catch(err){console.error('First Mate watch refresh failed',err);setFirstMateActionStatus(`Watch interrupted: ${String(err?.message||err)}`,'error');}
+      finally{btn.disabled=false;btn.textContent=prior||'RUN WATCH';}
+    });
+    $('firstMateWatchItems')?.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-first-mate-action]');if(!btn||btn.dataset.commandBusy==='1')return;
+      e.preventDefault();
+      routeFirstMateAction(btn.dataset.firstMateAction,btn.dataset.firstMateProject||'',btn);
+    });
+    $('runShipIntegrityBtn')?.addEventListener('click',async e=>{
+      const btn=e.currentTarget;if(btn.disabled)return;
+      const prior=btn.textContent;btn.disabled=true;btn.textContent='RUNNING CHECK…';
+      try{
+        const report=await runShipIntegrityV3({record:true});
+        renderShipIntegrity(report);
+        await renderFirstMateWatch();
+        await renderV3ArchitectureStatus();
+        pulseCommandTarget($('shipIntegritySummary'));
+      }catch(err){
+        console.error('Ship Integrity check failed',err);
+        const box=$('shipIntegritySummary');if(box)box.innerHTML=`<div class="v3-integrity-result fail"><div><small>CHECK INTERRUPTED</small><strong>SHIP INTEGRITY COULD NOT COMPLETE</strong><span>${escapeHtml(String(err?.message||err))}</span></div></div>`;
+      }finally{btn.disabled=false;btn.textContent=prior||'RUN SHIP INTEGRITY CHECK';}
     });
     $('createRecoverySnapshotBtn')?.addEventListener('click',createV3RecoverySnapshot);
     $('showAuditTrailBtn')?.addEventListener('click',renderV3AuditTrail);
@@ -7465,7 +7540,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.0.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.1.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

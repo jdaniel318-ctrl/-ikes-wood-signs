@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-32-customer-engagement-contracts';
+const CACHE='dark-sky-v3-9-1-command-watch-reliability';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.9.0',
-  './platform_core.js?v=3.9.0',
-  './platform_identity.js?v=3.9.0',
-  './app.js?v=3.9.0',
-  './captain.js?v=3.9.0',
+  './styles.css?v=3.9.1',
+  './platform_core.js?v=3.9.1',
+  './platform_identity.js?v=3.9.1',
+  './app.js?v=3.9.1',
+  './captain.js?v=3.9.1',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

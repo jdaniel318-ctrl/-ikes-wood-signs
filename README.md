@@ -1,12 +1,16 @@
-# Dark Sky / Black Flag — v3.9.0 Operating Models
+# Dark Sky / Black Flag — v3.9.1 Command Watch Reliability
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
 
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.8.32 — Fleet Rail Alignment & Join Fleet Repair
+**Current release:** v3.9.1 — Command Watch Reliability & Visual Refit
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
+
+
+## v3.9.1 command-watch reliability
+First Mate Watch is now a real command router rather than a set of visually active cards with individually rebound click closures. Watch actions route through one controller with busy state, visible success/error feedback, and highlighted destinations. Run Watch and Ship Integrity also expose working state so a command can no longer appear to do nothing. The Watch cards and integrity results use iPad-readable type and clearer signal hierarchy.
 
 ## Current release focus
 The Deployment Shipwright now guides operators through one plain-language voyage:

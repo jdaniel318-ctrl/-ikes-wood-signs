@@ -1,3 +1,12 @@
+## 3.9.1 — Command Watch Reliability & Visual Refit
+- Replaced per-render First Mate button closures with one delegated command router.
+- Added explicit routes for Integrity, Engine Economics, project Owner Access, Deployment, Fleet Launch, and Project Command.
+- Added visible busy, success, and failure states so command buttons cannot silently appear dead.
+- Added a Watch Status summary with timestamp and signal counts.
+- Increased First Mate and Hull Integrity typography/tap targets for iPad readability.
+- Added destination highlighting after Watch commands open the relevant control surface.
+- Kept project isolation, Engine workspace navigation, and Operating Model behavior unchanged.
+
 ## 3.9.0 — Operating Models
 - Added reusable relationship-specific workflow profiles.
 - Project Control terminology adapts to Orders, Requests, Quotes, Bookings, Engagements, Applications, Reservations, or Project Requests.

@@ -62,7 +62,7 @@ Project Control Overview uses the primary/secondary command navigation as the so
 ## v3.8.11 — Sea Trials & Fleet Foundations
 Sea Trials add a non-destructive runtime certification layer above the existing Hull Integrity checks. They exercise identity invariants, authorization failure paths, resource ownership, deployment boundaries, transition rules, mission navigation mounts, persistence, and audit availability. The production server-auth boundary is surfaced as a caution instead of being hidden.
 
-Dark Sky now explicitly distinguishes reusable fleet primitives from Engine-specific systems. The Engine remains the first operating ship; Captain's Quarters is the future shipyard/governance surface. Future ships may reuse identity, authorization, isolation, lifecycle, audit, telemetry, recovery, deployment-boundary, and integration-contract patterns without inheriting Engine-specific order flows or Project Control UI. See `FLEET_FOUNDATIONS.md`.
+Dark Sky now explicitly distinguishes reusable fleet primitives from Engine-specific systems. The Engine remains the first operating ship; Captain's Quarters is the future shipyard/governance surface. Future ships may reuse identity, authorization, isolation, lifecycle, audit, telemetry, recovery, deployment-boundary, and integration-contract patterns without inheriting Engine-specific order flows or Project Control UI.
 
 
 ## v3.8.14 — Presentation capability boundary
@@ -126,3 +126,7 @@ The Engine project rail is horizontally scrollable and touch-first. Cards share 
 
 ## Operating Model Law — v3.9.0
 A project must not be forced into purchase/order language or workflow. The Customer Relationship contract supplies project-scoped terminology and a reusable suggested workflow. Explicit project workflow overrides take precedence and never mutate another vessel. Customer submissions begin in the first resolved workflow stage.
+
+
+## Command Watch routing law — v3.9.1
+Operational notifications are actionable command surfaces, not decorative cards. First Mate Watch actions must route through one centralized controller, report busy/success/failure state, preserve project-scoped authorization, and visibly identify the destination command surface. Dynamic Watch cards use delegated routing so re-rendering cannot detach or stale their button behavior. Critical command controls must never fail silently.
