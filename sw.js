@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-6-1-customer-nav-recovery';
+const CACHE='dark-sky-v4-6-9-readonly-test-deck';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.6.0',
-  './platform_core.js?v=4.6.0',
-  './platform_v4.js?v=4.6.0',
-  './platform_identity.js?v=4.6.0',
-  './app.js?v=4.6.1',
-  './captain.js?v=4.5.7',
+  './styles.css?v=4.6.9',
+  './platform_core.js?v=4.6.9',
+  './platform_v4.js?v=4.6.9',
+  './platform_identity.js?v=4.6.9',
+  './app.js?v=4.6.9',
+  './captain.js?v=4.6.9',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -33,7 +33,7 @@ self.addEventListener('activate',event=>{
         keys.filter(k=>(
           k.startsWith('ikes-wood-signs-') ||
           k.startsWith('workshop-engine-') ||
-          k.startsWith('black-flag-v3-7-4') ||
+          k.startsWith('black-flag-') ||
           k.startsWith('dark-sky-')
         ) && k!==CACHE).map(k=>caches.delete(k))
       ))
@@ -43,27 +43,38 @@ self.addEventListener('activate',event=>{
 
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET') return;
-  if(event.request.mode==='navigate'){
+  const req=event.request;
+
+  // Navigation and executable assets are network-first so a repaired hull
+  // cannot remain pinned to an older cached build.
+  const url=new URL(req.url);
+  const freshFirst=
+    req.mode==='navigate' ||
+    /\.(?:html|js|css)$/.test(url.pathname) ||
+    url.searchParams.has('v');
+
+  if(freshFirst){
     event.respondWith(
-      fetch(event.request)
+      fetch(req)
         .then(response=>{
-          const copy=response.clone();
-          caches.open(CACHE).then(cache=>cache.put('./index.html',copy)).catch(()=>{});
+          if(response && response.ok){
+            const copy=response.clone();
+            caches.open(CACHE).then(cache=>cache.put(req.mode==='navigate'?'./index.html':req,copy)).catch(()=>{});
+          }
           return response;
         })
-        .catch(()=>caches.match('./index.html'))
+        .catch(()=>caches.match(req).then(r=>r||caches.match('./index.html')))
     );
     return;
   }
+
   event.respondWith(
-    fetch(event.request)
-      .then(response=>{
-        if(response && response.ok){
-          const copy=response.clone();
-          caches.open(CACHE).then(cache=>cache.put(event.request,copy)).catch(()=>{});
-        }
-        return response;
-      })
-      .catch(()=>caches.match(event.request))
+    caches.match(req).then(cached=>cached||fetch(req).then(response=>{
+      if(response && response.ok){
+        const copy=response.clone();
+        caches.open(CACHE).then(cache=>cache.put(req,copy)).catch(()=>{});
+      }
+      return response;
+    }))
   );
 });

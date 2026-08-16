@@ -1,4 +1,4 @@
-# Dark Sky v4.6.8 — Forward-Only IndexedDB Migration
+# Dark Sky v4.6.9 — Forward-Only IndexedDB Migration
 
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
@@ -75,3 +75,7 @@ The remaining bespoke customer CTAs—including REVIEW MY ORDER and PLACE MY ORD
 
 ## v4.6.8 Storage Pressure Repair
 Image-heavy order media stays in IndexedDB; the localStorage recovery mirror is metadata-only. Audit and telemetry are bounded and cannot break command routes when Safari storage is under pressure.
+
+
+## v4.6.9 Read-Only Test Deck
+Opening Test Experience is a read-only diagnostic route. It no longer writes audit data or rehydrates project state, and the service worker now advances to a genuinely new cache namespace.

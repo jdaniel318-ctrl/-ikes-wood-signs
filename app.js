@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.6.8';
+  const BUILD_VERSION = '4.6.9';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1075,6 +1075,29 @@
         return false;
       }
     }
+  }
+
+  function relieveSecondaryStoragePressure(){
+    // These keys are disposable/derived mirrors. Canonical projects/orders remain
+    // in IndexedDB. Never touch PIN/security state, project-scoped canonical rows,
+    // customer records, or order media here.
+    const safeSecondaryKeys=[
+      'blackFlagV3AuditV1',
+      'blackFlagV3TelemetryV1',
+      'blackFlagProjectActivityV1',
+      'bf.v4.storage.lastSounding'
+    ];
+    const result={removed:[],failed:[]};
+    for(const key of safeSecondaryKeys){
+      try{
+        const raw=localStorage.getItem(key);
+        if(raw!=null && raw.length>120000){
+          localStorage.removeItem(key);
+          result.removed.push(key);
+        }
+      }catch(err){ result.failed.push({key,error:String(err?.message||err)}); }
+    }
+    return result;
   }
 
   function repairLocalOrderBackupFootprint(){
@@ -2639,9 +2662,37 @@
   }
 
 
+  async function readExperienceOrdersReadOnly(projectId){
+    const id=String(projectId||'');
+    let indexed=[];
+    try{ indexed=await getAll(STORE_ORDERS); }
+    catch(err){ console.warn('Experience Test Deck IndexedDB order read warning',err); }
+
+    // localStorage mirror is optional and metadata-only. Ignore it completely
+    // if Safari reports any storage anomaly; Test Deck opening is a read command.
+    let local=[];
+    try{
+      const raw=localStorage.getItem(LOCAL_ORDERS_KEY);
+      const parsed=raw?JSON.parse(raw):[];
+      if(Array.isArray(parsed))local=parsed;
+    }catch(err){
+      console.warn('Experience Test Deck local recovery mirror skipped',err);
+    }
+
+    const map=new Map();
+    for(const row of [...local,...indexed]){
+      if(!row?.id || String(row.projectId||'')!==id)continue;
+      // IndexedDB row naturally wins because it is appended after local mirror.
+      map.set(String(row.id),row);
+    }
+    return [...map.values()];
+  }
+
   async function experienceTestSnapshot(p){
     const d=experienceDeploymentFor(p), offers=universalOffersFor(p);
-    let orders=[];try{orders=(await getMergedOrders()).filter(o=>String(o.projectId||'')===String(p.id));}catch(_){}
+    let orders=[];
+    try{orders=await readExperienceOrdersReadOnly(p.id);}
+    catch(err){console.warn('Experience Test Deck order evidence read skipped',err);}
     const deploymentOrders=d?orders.filter(o=>String(o.deploymentId||'')===String(d.id)):[];
     const testOrder=d?.lastTestOrderId?orders.find(o=>String(o.id)===String(d.lastTestOrderId)):null;
     const isolationClean=!d||String(d.projectId||p.id)===String(p.id);
@@ -2675,7 +2726,14 @@
   async function renderExperienceTestDeck(p){
     const deck=ensureExperienceTestDeck(),body=document.getElementById('experienceTestDeckBody');if(!p||!body)return;
     experienceTestDeckProjectId=p.id;document.getElementById('experienceTestTitle').textContent=p.name;
-    const snap=await experienceTestSnapshot(p),shellReady=projectCustomerOperatingModelReady(p),d=snap.deployment;
+    let snap;
+    try{
+      snap=await experienceTestSnapshot(p);
+    }catch(err){
+      console.warn('Experience Test Deck evidence snapshot degraded to safe read-only mode',err);
+      snap={deployment:experienceDeploymentFor(p),checklist:[],critical:[],seaTrialPassed:false,approved:experienceApproved(p),evidenceReadError:String(err?.message||err)};
+    }
+    const shellReady=projectCustomerOperatingModelReady(p),d=snap.deployment;
     const liveDeployment=migrateLegacyDeployment(p).find(x=>x.state==='deployed');
     const live=!!liveDeployment&&p.publish?.status==='live';
     body.innerHTML=`<section class="experience-mode-grid">
@@ -2687,21 +2745,21 @@
       <article class="experience-approval-card ${snap.approved?'approved':'pending'}"><span>VISUAL / EXPERIENCE APPROVAL</span><strong>${snap.approved?'APPROVED':'PENDING'}</strong><p>${snap.approved?'Approval matches the current customer-facing configuration.':'Preview the customer journey and approve it when branding, language, offers, inputs and presentation are ready.'}</p><button type="button" id="approveExperienceBtn" class="${snap.approved?'secondary-btn':'primary-btn'}">${snap.approved?'REVOKE APPROVAL':'APPROVE EXPERIENCE'}</button></article>
       <article class="experience-approval-card ${snap.seaTrialPassed?'approved':'pending'}"><span>SEA TRIAL CERTIFICATION</span><strong>${snap.seaTrialPassed?'PASSED':'NOT PASSED'}</strong><p>${snap.seaTrialPassed?'The current configuration has real project-scoped test evidence.':'Run the current configuration through a saved outpost and complete a customer submission.'}</p></article>
     </section>
-    <section class="experience-results-card"><div class="experience-results-head"><div><span>TEST RESULTS</span><h3>${snap.checklist.filter(x=>x.pass).length} passed • ${snap.checklist.filter(x=>!x.pass).length} open</h3></div><b class="${snap.seaTrialPassed&&snap.approved?'ready':'watch'}">${snap.seaTrialPassed&&snap.approved?'FLEET READY EVIDENCE':'KEEP TESTING'}</b></div><div class="experience-checklist">${snap.checklist.map(x=>`<div class="${x.pass?'pass':'open'}"><i>${x.pass?'✓':'!'}</i><span><strong>${escapeHtml(x.label)}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div></section>
+    <section class="experience-results-card"><div class="experience-results-head"><div><span>TEST RESULTS</span><h3>${snap.evidenceReadError?'Evidence read limited':`${snap.checklist.filter(x=>x.pass).length} passed • ${snap.checklist.filter(x=>!x.pass).length} open`}</h3></div><b class="${snap.seaTrialPassed&&snap.approved?'ready':'watch'}">${snap.seaTrialPassed&&snap.approved?'FLEET READY EVIDENCE':'KEEP TESTING'}</b></div>${snap.evidenceReadError?`<p>Test Deck opened in read-only recovery mode. Evidence read warning: ${escapeHtml(snap.evidenceReadError)}</p>`:`<div class="experience-checklist">${snap.checklist.map(x=>`<div class="${x.pass?'pass':'open'}"><i>${x.pass?'✓':'!'}</i><span><strong>${escapeHtml(x.label)}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div>`}</section>
     ${!d?'<div class="experience-deck-guidance"><strong>Sea Trial needs an outpost.</strong><span>Preview is available first. Create and save an outpost when you are ready to test persistence, deployment identity, session behavior, workflow and customer submission.</span><button type="button" id="experienceOpenShipwright" class="secondary-btn">OPEN SHIPWRIGHT</button></div>':''}`;
   }
 
 
   async function openExperienceTestDeck(projectId){
     const requested=String(projectId||'').trim();
-    const resolution=await resolveProjectReference(requested,{rehydrate:true});
+    const resolution=await resolveProjectReference(requested,{rehydrate:false});
     const p=resolution.project;
     const deck=ensureExperienceTestDeck();
     deck.classList.remove('hidden');
     deck.setAttribute('aria-hidden','false');
     document.body.classList.add('experience-test-deck-open');
     const body=document.getElementById('experienceTestDeckBody');
-    if(body) body.innerHTML='<section class="experience-results-card"><div class="experience-results-head"><div><span>EXPERIENCE TEST DECK</span><h3>Opening project experience…</h3></div><b class="watch">VERIFYING</b></div><p>Resolving project identity and current customer configuration.</p></section>';
+    if(body) body.innerHTML='<section class="experience-results-card"><div class="experience-results-head"><div><span>EXPERIENCE TEST DECK</span><h3>Opening project experience…</h3></div><b class="watch">VERIFYING • ${BUILD_VERSION}</b></div><p>Resolving project identity and current customer configuration.</p></section>';
     if(!p){
       const detail=`Requested: ${requested||'missing'} • Canonical: ${resolution.canonical||'missing'} • Sources searched: memory, Project Command snapshot, canonical project store, settings mirror, verified backup, V4 baseline definition`;
       if(body) body.innerHTML=`<section class="experience-results-card"><div class="experience-results-head"><div><span>COMMAND FAILURE</span><h3>Project could not be resolved</h3></div><b class="watch">STOPPED</b></div><p>${escapeHtml(detail)}</p></section>`;
@@ -2711,11 +2769,8 @@
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
-      try{
-        window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.5 Trust Release identity/persistence gate • ${resolution.source}`});
-      }catch(err){
-        console.warn('Experience deck audit skipped under storage pressure',err);
-      }
+      // Opening Test Experience is intentionally read-only. Do not emit an
+      // audit/storage write here; a diagnostic screen must always be openable.
       return true;
     }catch(err){
       console.error('Experience Test Deck render failed',err);
@@ -9962,6 +10017,7 @@ The full order and approved media remain stored with this project.`;
     bindCustomerActionCore();
     bindCustomerChoiceCore();
     bindCustomerMediaCore();
+    relieveSecondaryStoragePressure();
     repairLocalOrderBackupFootprint();
     await loadEngineAppearance();
     db=await openDb();

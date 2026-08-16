@@ -1,3 +1,21 @@
+# v4.6.9 — Read-Only Test Deck / Cache Reset
+
+## What 4.6.8 proved
+- The screenshot after deployment still showed the same quota failure.
+- Review found two separate issues:
+  1. Test Experience still had quota-sensitive evidence/audit side effects in its opening path.
+  2. The service worker cache identifier and asset manifest had remained on the old 4.6.1 values, so prior releases were not truly advancing the cache namespace.
+
+## Structural repair
+- Test Experience opening is now deliberately **read-only**.
+- Project resolution uses `rehydrate:false`.
+- Opening the deck emits no audit/localStorage write.
+- Sea Trial evidence reads use a dedicated read-only order reader; local recovery mirror failures are ignored.
+- Evidence-read trouble degrades to a visible read-only warning instead of preventing the deck from opening.
+- Oversized disposable audit/telemetry/activity mirrors are relieved at startup; canonical IndexedDB project/order data is untouched.
+- Service worker rebuilt with a genuine `dark-sky-v4-6-9-readonly-test-deck` cache and 4.6.9 asset URLs.
+- Test Deck VERIFYING badge now shows the running build so deployment/caching can be visually confirmed.
+
 # v4.6.8 — Storage Pressure / Quota Repair
 
 ## What the Sea Trial exposed
