@@ -1077,7 +1077,7 @@
             <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
             <div class="storage-steward">
               <div><strong>Storage Steward</strong><small>Safe housekeeping only. Never deletes projects, orders, customers, graphics, admissions, or quarantine evidence.</small></div>
-              <div class="storage-steward-actions"><button id="engineStorageStewardPreviewBtn" class="secondary-btn small" type="button" onclick="return window.BlackFlagStorageStewardInspect?.()">INSPECT STORAGE</button><button id="engineStorageStewardCleanBtn" class="secondary-btn small" type="button" disabled>CLEAN TEMPORARY DEBRIS</button></div>
+              <div class="storage-steward-actions"><button id="engineStorageStewardPreviewBtn" class="secondary-btn small" type="button" onclick="return window.BlackFlagStorageStewardInspect?.()">INSPECT STORAGE</button><button id="engineStorageStewardCleanBtn" class="secondary-btn small" type="button" disabled onclick="return window.BlackFlagStorageStewardClean?.()">CLEAN TEMPORARY DEBRIS</button></div>
               <div id="engineStorageStewardStatus" class="storage-steward-status" role="status" aria-live="polite"></div>
             </div>
             <p id="engineStorageDetail" class="helper"></p>
@@ -1223,9 +1223,9 @@
 
 
   <script src="platform_core.js?v=4.2.0"></script>
-  <script src="platform_v4.js?v=4.2.3"></script>
+  <script src="platform_v4.js?v=4.2.4"></script>
   <script src="platform_identity.js?v=4.2.0"></script>
-  <script src="app.js?v=4.2.3"></script>
+  <script src="app.js?v=4.2.4"></script>
   <script src="captain.js?v=4.2.0"></script>
 
 </body>

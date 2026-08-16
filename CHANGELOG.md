@@ -1,3 +1,7 @@
+# Dark Sky 4.2.4 — Deck Sweep
+
+Storage Steward cleanup now uses a direct two-step confirmation path with visible progress and immediate re-sounding. The active service-worker cache generation is unique to 4.2.4.
+
 # Dark Sky 4.2.3 — Helm Link
 
 - Makes the Storage Steward report actionable after Sounding Line proved the app itself is only a small portion of Safari origin usage.

@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-2-2-helm-link';
+const CACHE='dark-sky-v4-2-4-deck-sweep';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.2.3',
-  './platform_core.js?v=4.2.3',
-  './platform_v4.js?v=4.2.3',
-  './platform_identity.js?v=4.2.3',
-  './app.js?v=4.2.3',
-  './captain.js?v=4.2.3',
+  './styles.css?v=4.2.4',
+  './platform_core.js?v=4.2.4',
+  './platform_v4.js?v=4.2.4',
+  './platform_identity.js?v=4.2.4',
+  './app.js?v=4.2.4',
+  './captain.js?v=4.2.4',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.2.3';
+  const BUILD_VERSION = '4.2.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1006,8 +1006,58 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.2.3'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.2.4'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
+  };
+
+  window.BlackFlagStorageStewardClean=async function(){
+    const btn=$('engineStorageStewardCleanBtn'), box=$('engineStorageStewardStatus');
+    if(!box)return false;
+    if(box.dataset.inspectOk!=='1'){
+      box.classList.add('is-active');
+      box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Run Inspect Storage before any cleanup.</span>';
+      return false;
+    }
+    if(btn?.dataset.confirmClean!=='1'){
+      if(btn){
+        btn.dataset.confirmClean='1';
+        btn.textContent='CONFIRM '+btn.textContent;
+      }
+      box.classList.add('is-active');
+      box.innerHTML='<strong>CLEANUP ARMED</strong><br><span>Press the confirmation button once more to remove only the stale Dark Sky application cache(s) identified by the last sounding. Projects, orders, customers, graphics, admissions, active settings, and quarantine evidence are protected.</span>';
+      return false;
+    }
+    try{
+      if(btn){btn.disabled=true;btn.textContent='TRIMMING…'}
+      box.classList.add('is-active');
+      box.innerHTML='<strong>SAFE CACHE TRIM IN PROGRESS</strong><br><span>Removing only stale Dark Sky application cache ballast.</span>';
+      try{box.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){}
+      const r=await window.DarkSkyV4?.storageStewardClean?.();
+      if(!r)throw new Error('Storage Steward unavailable');
+      const reclaimed=Number(r.before?.oldCacheBytes||0);
+      box.dataset.inspectOk='0';
+      try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.2.4',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
+      // Re-sound immediately so the user gets visible proof of what changed.
+      const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
+      if(fresh){
+        box.innerHTML=`<strong>CLEANUP COMPLETE</strong><br><span>${(r.removedCaches||[]).length} stale cache${(r.removedCaches||[]).length===1?'':'s'} removed • about ${formatStorageMb(reclaimed)} MB targeted.</span>`+renderStorageStewardReport(fresh);
+        box.dataset.inspectOk='1';
+        if(btn){btn.disabled=false;btn.textContent=(fresh.oldCaches?.length||0)?`CLEAN ${fresh.oldCaches.length} STALE CACHE${fresh.oldCaches.length===1?'':'S'}`:'NO STALE CACHES';btn.disabled=!(fresh.oldCaches?.length||0)}
+      }else{
+        if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}
+      }
+      try{await refreshEngineDiagnostics()}catch(_){}
+      try{await renderFullSailCommandDeck()}catch(_){}
+      return true;
+    }catch(err){
+      const message=String(err?.message||err||'Unknown cleanup failure');
+      box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.2.4'});
+      if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
+      return false;
+    }
   };
 
   async function blackFlagCommandSearchData(){
@@ -8657,7 +8707,6 @@ The full order and approved media remain stored with this project.`;
       refreshEngineDiagnostics();
     });
     $('engineExportBtn').addEventListener('click',exportBackup);
-    $('engineStorageStewardCleanBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus'),btn=$('engineStorageStewardCleanBtn');if(box?.dataset.inspectOk!=='1'){if(box)box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Run Inspect Storage before any cleanup.</span>';return;}if(!confirm('Safe housekeeping will remove only stale Dark Sky application caches and compact bounded diagnostic/recovery-manifest history. It will NOT delete projects, orders, customers, graphics, admissions, active settings, or quarantine evidence. Continue?'))return;try{if(btn){btn.disabled=true;btn.textContent='TRIMMING…'}if(box)box.innerHTML='<strong>HELM LINK IN PROGRESS</strong><br><span>Removing stale application cache ballast only.</span>';const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');const reclaimed=Number(r.before?.oldCacheBytes||0);if(box)box.innerHTML=`<strong>HELM LINK COMPLETE</strong><br><span>${r.removedCaches.length} stale cache${r.removedCaches.length===1?'':'s'} removed • about ${formatStorageMb(reclaimed)} MB cache ballast targeted • ${r.diagnosticsTrimmed} old diagnostics • ${r.recoveryPointsTrimmed} old recovery manifests compacted.</span>`;try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}await refreshEngineDiagnostics();await renderFullSailCommandDeck();}catch(err){if(box)box.innerHTML='<strong>CLEANUP INTERRUPTED</strong><br><span>'+escapeHtml(String(err.message||err))+'</span>';}finally{if(btn){btn.disabled=false;btn.textContent='INSPECT AGAIN BEFORE CLEANING'}}});
     $('engineResetSettingsBtn').addEventListener('click',()=>{
       $('engineResetPinInput').value='';
       $('engineResetError').textContent='';
