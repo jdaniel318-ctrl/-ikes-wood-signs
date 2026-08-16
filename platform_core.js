@@ -1,4 +1,4 @@
-/* Dark Sky / Black Flag v3.8.32 — Fleet Rail Alignment & Join Fleet Repair */
+/* Dark Sky / Black Flag v3.9.0 — Operating Models */
 (function(g){
 'use strict';
 const SCHEMA=7, POLICY='3.5', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
@@ -26,6 +26,9 @@ const CUSTOMER_RELATIONSHIP_TYPES=Object.freeze({
  reservation:Object.freeze({label:'Reservation',noun:'reservation request',actionLabel:'REQUEST RESERVATION',testActionLabel:'SUBMIT TEST RESERVATION',receiptLabel:'RESERVATION REQUEST RECEIVED',confirmationHeading:'Reservation request received.',nextStep:'The business can confirm availability and the reservation details.',detailHeading:'Tell us what you want to reserve',detailPlaceholder:'Include date, time, quantity, location, and any special requirements.'}),
  custom_project:Object.freeze({label:'Custom Project',noun:'project request',actionLabel:'START PROJECT',testActionLabel:'SUBMIT TEST PROJECT',receiptLabel:'PROJECT REQUEST RECEIVED',confirmationHeading:'Project request received.',nextStep:'The business can review the project and determine the next step with you.',detailHeading:'Tell us about the project',detailPlaceholder:'Describe what you want to accomplish, timing, requirements, and anything else the business should know.'})
 });
+const CUSTOMER_WORKFLOW_PROFILES=Object.freeze({purchase:Object.freeze(['New','In Production','Ready for Pickup','Completed']),service_request:Object.freeze(['New Request','Reviewing','Scheduled','In Progress','Completed']),quote:Object.freeze(['New Request','Reviewing','Estimate Prepared','Awaiting Decision','Completed']),booking:Object.freeze(['New Booking','Confirming','Scheduled','Completed']),inquiry:Object.freeze(['New Inquiry','Reviewing','Responded','Completed']),partnership:Object.freeze(['New Partnership','Reviewing','Contacted','Active Partnership','Completed']),application:Object.freeze(['New Application','Reviewing','Decision Pending','Completed']),reservation:Object.freeze(['New Reservation','Confirming','Reserved','Completed']),custom_project:Object.freeze(['New Project','Discovery','Planning','In Progress','Completed'])});
+const CUSTOMER_ACTIVITY_TERMS=Object.freeze({purchase:{singular:'Order',plural:'Orders',lowerSingular:'order',lowerPlural:'orders'},service_request:{singular:'Request',plural:'Requests',lowerSingular:'request',lowerPlural:'requests'},quote:{singular:'Quote',plural:'Quotes',lowerSingular:'quote',lowerPlural:'quotes'},booking:{singular:'Booking',plural:'Bookings',lowerSingular:'booking',lowerPlural:'bookings'},inquiry:{singular:'Inquiry',plural:'Inquiries',lowerSingular:'inquiry',lowerPlural:'inquiries'},partnership:{singular:'Engagement',plural:'Engagements',lowerSingular:'engagement',lowerPlural:'engagements'},application:{singular:'Application',plural:'Applications',lowerSingular:'application',lowerPlural:'applications'},reservation:{singular:'Reservation',plural:'Reservations',lowerSingular:'reservation',lowerPlural:'reservations'},custom_project:{singular:'Project Request',plural:'Project Requests',lowerSingular:'project request',lowerPlural:'project requests'}});
+function defaultWorkflowForRelationship(type='custom_project'){return [...(CUSTOMER_WORKFLOW_PROFILES[type]||CUSTOMER_WORKFLOW_PROFILES.custom_project)];}
 function deriveCustomerRelationship(p={},model=null){
  const explicit=String(p?.customerExperience?.relationshipType||p?.operatingModel?.overrides?.relationshipType||p?.operatingModel?.relationshipType||'').trim();
  if(CUSTOMER_RELATIONSHIP_TYPES[explicit])return explicit;
@@ -46,6 +49,8 @@ function resolveCustomerRelationship(p={}){
  const type=deriveCustomerRelationship(p,model);
  return {type,...CUSTOMER_RELATIONSHIP_TYPES[type]};
 }
+function activityTermsForProject(p={}){const type=resolveCustomerRelationship(p).type;return {type,...(CUSTOMER_ACTIVITY_TERMS[type]||CUSTOMER_ACTIVITY_TERMS.custom_project)};}
+function resolveProjectWorkflow(p={}){if(Array.isArray(p.workflow)&&p.workflow.length>=2)return p.workflow.map(x=>String(x).trim()).filter(Boolean);return defaultWorkflowForRelationship(resolveCustomerRelationship(p).type);}
 
 function normalizeBusinessBrief(p={}){
  const raw=p.businessBrief;
@@ -92,7 +97,7 @@ function deriveOperatingProfile(p={},briefOverride){
  if(fulfillment.length)summaryParts.push(fulfillment.join(', ')+' fulfillment');
  if(schedulingNeeded)summaryParts.push('scheduling needed');
  const relationshipType=deriveCustomerRelationship(p,{mode,customerFlow,fulfillment,schedulingNeeded,requiredInputs});
- return {version:1,derivedAt:new Date().toISOString(),mode,customerFlow,relationshipType,fulfillment,schedulingNeeded,requiredInputs,visualProfile:visual.profile||'none',offers,workflow:Array.isArray(p.workflow)?p.workflow.slice():[],summary:summaryParts.join(' • ')};
+ return {version:1,derivedAt:new Date().toISOString(),mode,customerFlow,relationshipType,fulfillment,schedulingNeeded,requiredInputs,visualProfile:visual.profile||'none',offers,workflow:Array.isArray(p.workflow)&&p.workflow.length>=2?p.workflow.slice():defaultWorkflowForRelationship(relationshipType),summary:summaryParts.join(' • ')};
 }
 function resolveOperatingModel(p={}){
  const derived=deriveOperatingProfile(p);
@@ -334,5 +339,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.8.32-fleet-rail-join-repair',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,customerRelationshipTypes:CUSTOMER_RELATIONSHIP_TYPES,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,deriveCustomerRelationship,resolveCustomerRelationship,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.9.0-operating-models',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,customerRelationshipTypes:CUSTOMER_RELATIONSHIP_TYPES,customerWorkflowProfiles:CUSTOMER_WORKFLOW_PROFILES,customerActivityTerms:CUSTOMER_ACTIVITY_TERMS,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,deriveCustomerRelationship,resolveCustomerRelationship,activityTermsForProject,defaultWorkflowForRelationship,resolveProjectWorkflow,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);

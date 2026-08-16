@@ -1630,7 +1630,7 @@
     const attention=[];
 
     newOrders.filter(o=>projectControlAgeHours(o.createdAt)>=48).slice(0,3).forEach(o=>attention.push({
-      level:'watch',title:`New order waiting ${Math.floor(projectControlAgeHours(o.createdAt)/24)}d`,detail:o.id,tab:'orders'
+      level:'watch',title:`New ${activityTermsForProject(p).lowerSingular} waiting ${Math.floor(projectControlAgeHours(o.createdAt)/24)}d`,detail:o.id,tab:'orders'
     }));
     deployments.forEach(d=>{
       const readiness=deploymentReadiness(d);
@@ -1645,7 +1645,7 @@
     if(['test','live'].includes(p.publish?.status) && !deployments.length) attention.push({level:'watch',title:'No deployment commissioned',detail:'This project is exposed beyond development without an outpost record.',tab:'deployment'});
     if(p.publish?.status==='live' && !activeDeployments.length) attention.push({level:'watch',title:'Live project has no active deployment',detail:'Review publishing and deployment state.',tab:'deployment'});
     if(p.payments?.enabled && (!p.payments?.provider || p.payments.provider==='not_configured')) attention.push({level:'watch',title:'Payments enabled without provider',detail:'Select a payment provider or disable payment capability.',tab:'payments'});
-    if(!(p.workflow||[]).length) attention.push({level:'setup',title:'Workflow not configured',detail:'Define how orders move through the business.',tab:'workflow'});
+    if(!Array.isArray(p.workflow)||p.workflow.length<2) attention.push({level:'info',title:'Using suggested workflow',detail:`Dark Sky is using the ${customerRelationshipForProject(p).label} operating model. Customize it only if this business works differently.`,tab:'workflow'});
 
     const status=attention.some(x=>x.level==='watch')?'WATCH':(p.publish?.status==='live'?'OPERATING':'SETUP');
     return {
@@ -1670,7 +1670,7 @@
       `<div class="pc-clear-state"><strong>NO IMMEDIATE FLAGS</strong><span>Dark Sky has no rule-based attention items for this project right now.</span></div>`;
     const recentActivity=s.activity.length?s.activity.map(x=>`<div class="pc-activity-row"><span><strong>${escapeHtml(x.action||'Activity')}</strong><small>${escapeHtml(x.detail||'')}</small></span><time>${escapeHtml(projectControlTime(x.at))}</time></div>`).join(''):
       `<div class="pc-empty-inline">No meaningful project changes have been recorded yet.</div>`;
-    const newestOrders=s.orders.slice(0,5).map(o=>`<button class="pc-order-pulse" data-project-jump="orders" type="button"><span><strong>${escapeHtml(o.id)}</strong><small>${escapeHtml(o.customerName||'Customer not named')}</small></span><span><b>${escapeHtml(canonicalOrderStatus(o.status))}</b><small>${escapeHtml(compactOrderDate(o.createdAt))}</small></span></button>`).join('')||`<div class="pc-empty-inline">No approved orders yet.</div>`;
+    const newestOrders=s.orders.slice(0,5).map(o=>`<button class="pc-order-pulse" data-project-jump="orders" type="button"><span><strong>${escapeHtml(o.id)}</strong><small>${escapeHtml(o.customerName||'Customer not named')}</small></span><span><b>${escapeHtml(canonicalOrderStatus(o.status))}</b><small>${escapeHtml(compactOrderDate(o.createdAt))}</small></span></button>`).join('')||`<div class="pc-empty-inline">No approved ${escapeHtml(activityTermsForProject(p).lowerPlural)} yet.</div>`;
     const customerSignal=s.customers.length?`${s.repeatCustomers.length} repeat customer${s.repeatCustomers.length===1?'':'s'}`:'Customer history begins with the first order';
     const deploymentSignal=s.deployments.length?`${s.activeDeployments.length} deployed • ${s.deployments.length} total active records`:'No deployments commissioned yet';
 
@@ -1705,7 +1705,7 @@
           <div>${attention}</div>
         </article>
         <article class="pc-command-panel">
-          <header><div><span>ORDER PULSE</span><h4>Latest business activity</h4></div><button data-project-jump="orders" type="button">ALL ORDERS</button></header>
+          <header><div><span>${escapeHtml(activityTermsForProject(p).plural.toUpperCase())} PULSE</span><h4>Latest business activity</h4></div><button data-project-jump="orders" type="button">ALL ${escapeHtml(activityTermsForProject(p).plural.toUpperCase())}</button></header>
           <div>${newestOrders}</div>
         </article>
       </section>
@@ -1729,7 +1729,7 @@
       <section class="pc-quick-actions" aria-label="Project quick actions">
         <div class="pc-quick-actions-head"><span>QUICK ACTIONS</span><strong>Common commands</strong></div>
         <div class="pc-quick-actions-grid">
-          <button data-project-jump="orders" type="button"><b>ORDERS</b><small>Open workload</small></button>
+          <button data-project-jump="orders" type="button"><b>${escapeHtml(activityTermsForProject(p).plural.toUpperCase())}</b><small>Open workload</small></button>
           <button data-project-jump="customers" type="button"><b>CUSTOMERS</b><small>History & contact</small></button>
           <button data-project-jump="deployment" type="button"><b>DEPLOYMENTS</b><small>Outposts & state</small></button>
           <button data-project-jump="marketing" type="button"><b>EDIT BUSINESS</b><small>Name & brand</small></button>
@@ -2012,9 +2012,9 @@
       <label>Minimum confidence<input id="ptConfidence" class="text-input" type="number" min=".5" max=".99" step=".01" value="${Number(p.ai?.minConfidence||.9).toFixed(2)}"></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Require scale reference</strong><small>Recommended for physical measurements.</small></span><input id="ptScale" type="checkbox" ${p.ai?.requireScaleReference!==false?'checked':''}></label>
       <button id="saveAITab" class="primary-btn small">SAVE AI POLICY</button></div>`;
-    if(tab==='workflow') return `${projectModuleHero(p,'OPERATE','Workflow','Define the operating stages that move work from new request to completion.')}<div class="pec-card"><h4>Order Stages</h4><p class="helper">One stage per line.</p><textarea id="ptWorkflow" rows="7">${escapeHtml((p.workflow||DEFAULT_BUSINESS_CONFIG.orderStatuses).join('\n'))}</textarea><button id="saveWorkflowTab" class="primary-btn small">SAVE WORKFLOW</button></div>`;
+    if(tab==='workflow'){const terms=activityTermsForProject(p),workflow=projectWorkflowFor(p),suggested=!Array.isArray(p.workflow)||p.workflow.length<2;return `${projectModuleHero(p,'OPERATE','Workflow',`Define how ${terms.lowerPlural} move through this business from first contact to completion.`, `<span>${escapeHtml(customerRelationshipForProject(p).label.toUpperCase())}</span>`)}<div class="pec-card operating-workflow-card"><div class="pec-title-row"><div><h4>${escapeHtml(terms.singular)} Stages</h4><p class="helper">One stage per line. Dark Sky supplies a reusable starting workflow from the Customer Relationship contract; this project can override it without changing another vessel.</p></div><span class="operating-source-badge ${suggested?'suggested':'custom'}">${suggested?'DARK SKY SUGGESTED':'PROJECT CUSTOM'}</span></div><textarea id="ptWorkflow" rows="8">${escapeHtml(workflow.join('\n'))}</textarea><div class="workflow-action-row"><button id="saveWorkflowTab" class="primary-btn small">SAVE PROJECT WORKFLOW</button>${!suggested?'<button id="resetWorkflowTab" class="secondary-btn small">USE SUGGESTED WORKFLOW</button>':''}</div></div>`;}
     if(tab==='publishing') return `${projectModuleHero(p,'SYSTEM','Publishing','Control whether this business remains private, enters test waters, or is available to customers.',`<span>${escapeHtml(projectLifecycleDisplay(p))}</span>`)}<div class="pec-card"><h4>Project Availability</h4><label>Project status<select id="ptPublish"><option value="development">Development — engine only</option><option value="test">Test</option><option value="live">Published / Live</option><option value="paused">Paused</option></select></label><p class="helper">Product-level publish controls are in Products.</p><button id="savePublishingTab" class="primary-btn small">SAVE PUBLISHING</button></div>`;
-    if(tab==='orders') return `<div class="pec-orders-shell"><div class="pec-orders-heading"><div><small>ORDER COMMAND</small><h4>Project Orders</h4><p>Current work, customer contact, request details, and recorded value for this project.</p></div></div><div id="ptOrders">Loading…</div></div>`;
+    if(tab==='orders'){const terms=activityTermsForProject(p);return `<div class="pec-orders-shell"><div class="pec-orders-heading"><div><small>${escapeHtml(terms.plural.toUpperCase())} COMMAND</small><h4>Project ${escapeHtml(terms.plural)}</h4><p>Current ${escapeHtml(terms.lowerPlural)}, customer contact, request details, and recorded value for this project.</p></div></div><div id="ptOrders">Loading…</div></div>`;}
     if(tab==='ledger') {
       const ledger=projectLedger(p.id);
       const rev=ledger.reduce((s,x)=>s+(Number(x.revenue)||0),0), cost=ledger.reduce((s,x)=>s+(Number(x.materialCost)||0)+(Number(x.otherDirectCost)||0),0);
@@ -2360,7 +2360,7 @@
         p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;p.visualPresentation=collectVisualPresentationFromControls(p);
         window.BlackFlagV3Core?.updateBusinessUnderstanding?.(p,{briefText:$('ptBusinessBrief')?.value||'',overrides:{mode:$('ptOperatingMode')?.value||'other',customerFlow:$('ptOperatingFlow')?.value||'guided',relationshipType:($('ptRelationshipType')?.value&&$('ptRelationshipType').value!=='auto')?$('ptRelationshipType').value:undefined,fulfillment:String($('ptOperatingFulfillment')?.value||'').split(',').map(x=>x.trim()).filter(Boolean),schedulingNeeded:!!$('ptOperatingScheduling')?.checked}});
         await saveCompanies();logActivity(p.id,'Business understanding updated',window.BlackFlagV3Core?.resolveOperatingModel?.(p)?.summary||`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
-    if(tab==='workflow') $('saveWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.update'))return;const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));}};
+    if(tab==='workflow'){ $('saveWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.update'))return;const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));await renderProjectTab(p.id,'workflow');}};if($('resetWorkflowTab'))$('resetWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.reset'))return;delete p.workflow;await saveCompanies();logActivity(p.id,'Workflow reset to operating model',customerRelationshipForProject(p).label);await renderProjectTab(p.id,'workflow');};}
     if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'project.publishing.update'))return;const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await saveCompanies();logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
     if(tab==='products'){
       $$('[data-product-publish]').forEach(t=>t.onchange=async()=>{if(!requireEngineProjectMutation(p,'product.publish.update')){t.checked=!t.checked;return;}const pr=(p.products||[]).find(x=>x.id===t.dataset.productPublish);if(!pr)return;if(t.checked&&!confirm(`Publish product "${pr.name}"?`)){t.checked=false;return;}pr.published=t.checked;await saveCompanies();logActivity(p.id,t.checked?'Product published':'Product unpublished',pr.name);});
@@ -3232,6 +3232,7 @@
     $('pecTitle').textContent=p.name;
     $('pecSubtitle').textContent='Business command, operating visibility, and project-scoped controls. Black Flag remains unlocked only while you stay in the Engine.';
     await applyProjectControlBrand(p);
+    syncProjectOperatingLanguage(p);
     openEngineWorkspace($('projectEngineControl'));
     await renderProjectTab(id,'overview');
   }
@@ -3758,6 +3759,9 @@
   function customerRelationshipForProject(p){
     return window.BlackFlagV3Core?.resolveCustomerRelationship?.(p)||{type:'custom_project',label:'Custom Project',noun:'project request',actionLabel:'START PROJECT',testActionLabel:'SUBMIT TEST PROJECT',receiptLabel:'PROJECT REQUEST RECEIVED',confirmationHeading:'Project request received.',nextStep:'The business can review the project and follow up.',detailHeading:'Tell us about the project',detailPlaceholder:'Describe what you want to accomplish and anything the business should know.'};
   }
+  function activityTermsForProject(p){return window.BlackFlagV3Core?.activityTermsForProject?.(p)||{type:'purchase',singular:'Order',plural:'Orders',lowerSingular:'order',lowerPlural:'orders'};}
+  function projectWorkflowFor(p){return window.BlackFlagV3Core?.resolveProjectWorkflow?.(p)||((Array.isArray(p?.workflow)&&p.workflow.length>=2)?p.workflow:DEFAULT_BUSINESS_CONFIG.orderStatuses);}
+  function syncProjectOperatingLanguage(p){if(!p)return;const terms=activityTermsForProject(p);const nav=document.querySelector('#projectTabs [data-project-tab="orders"] span:last-child');if(nav)nav.textContent=terms.plural;const adminNav=document.querySelector('#adminOrdersMenuBtn span');if(adminNav)adminNav.textContent=terms.plural;const adminHeading=$('adminOrdersHeading');if(adminHeading)adminHeading.textContent=`All ${terms.plural}`;const openFull=$('openFullOrdersBtn');if(openFull)openFull.textContent=`OPEN ${terms.plural.toUpperCase()}`;}
   function customerRelationshipOptions(selected='auto'){
     const rels=window.BlackFlagV3Core?.customerRelationshipTypes||{};
     return `<option value="auto" ${selected==='auto'?'selected':''}>AUTO — DERIVE FROM BUSINESS BRIEF</option>`+Object.entries(rels).map(([id,meta])=>`<option value="${escapeHtml(id)}" ${id===selected?'selected':''}>${escapeHtml(meta.label||id)}</option>`).join('');
@@ -3900,7 +3904,7 @@
   }
   async function submitUniversalCustomerOrder(p){
     const offer=universalSelectedOffer(p); if(!offer){alert('Choose an offer first.');return;}
-    if(p.customerExperience?.photoRequired && !universalCustomerState.photoData){alert('Add the required photo before sending this order.');return;}
+    if(p.customerExperience?.photoRequired && !universalCustomerState.photoData){alert(`Add the required photo before sending this ${activityTermsForProject(p).lowerSingular}.`);return;}
     if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerName.trim()){alert('Enter your name before sending this order.');return;}
     if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerPhone.trim() && !universalCustomerState.customerEmail.trim()){alert('Add a phone number or email so the business can reach you.');return;}
     const prefix=(p.orderPrefix||p.projectCode||'ORD').replace(/[^A-Za-z0-9]/g,'').slice(0,8).toUpperCase()||'ORD';
@@ -3909,8 +3913,8 @@
     const ctx=universalCustomerContextFor(p);
     const price=Number(offer.price||offer.basePrice||0);
     const relationship=customerRelationshipForProject(p);
-    const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||p.namespace,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:prefix},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New',price,productId:offer.id,productName:offer.name,offerName:offer.name,wording:universalCustomerState.notes.trim(),notes:universalCustomerState.notes.trim(),preferredTiming:universalCustomerState.preferredTiming.trim(),fulfillment:universalCustomerState.fulfillment||'',operatingModel:operatingModelForProject(p).mode,photoData:universalCustomerState.photoData||'',contactPreference:universalCustomerState.customerPhone?'Text':'Email',customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'universal_customer_shell',recordType:relationship.type==='purchase'?'order':'engagement',relationshipType:relationship.type,engagementLabel:relationship.label,customerAction:relationship.actionLabel};
-    backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Universal order save failed',err);alert('The order could not be saved. Please try again.');return;}
+    const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||p.namespace,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:prefix},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:projectWorkflowFor(p)[0]||'New',price,productId:offer.id,productName:offer.name,offerName:offer.name,wording:universalCustomerState.notes.trim(),notes:universalCustomerState.notes.trim(),preferredTiming:universalCustomerState.preferredTiming.trim(),fulfillment:universalCustomerState.fulfillment||'',operatingModel:operatingModelForProject(p).mode,photoData:universalCustomerState.photoData||'',contactPreference:universalCustomerState.customerPhone?'Text':'Email',customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'universal_customer_shell',recordType:relationship.type==='purchase'?'order':'engagement',relationshipType:relationship.type,engagementLabel:relationship.label,customerAction:relationship.actionLabel};
+    backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Universal order save failed',err);alert(`The ${activityTermsForProject(p).lowerSingular} could not be saved. Please try again.`);return;}
     if(ctx.state==='sea_trial' && ctx.deploymentId){
       const canonicalProject=projectById(p.id);
       const deployment=migrateLegacyDeployment(canonicalProject).find(x=>x.id===ctx.deploymentId);
@@ -5026,7 +5030,7 @@
       businessName:x.businessName,orderPrefix:x.orderPrefix,
       thankYouHeadline:p?.id==='ikes-wood-signs'?'THANK YOU FOR CHOOSING IKE!':`THANK YOU FOR CHOOSING ${String(x.businessName).toUpperCase()}!`,
       prices:Array.isArray(x.prices)?x.prices:[0],
-      orderStatuses:Array.isArray(p?.workflow)?p.workflow:DEFAULT_BUSINESS_CONFIG.orderStatuses
+      orderStatuses:projectWorkflowFor(p)
     };
     try{
       const s=await getSetting(projectBusinessConfigKey());
@@ -5309,7 +5313,7 @@ The full order and approved media remain stored with this project.`;
         ${preview?`<button class="project-order-preview admin-preview-open" type="button" data-preview-src="${preview}" aria-label="Open larger approved preview for ${escapeHtml(o.id)}"><div class="project-order-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${preview}" alt="Approved customer preview for ${escapeHtml(o.id)}"><span class="preview-zoom-mark">＋</span></button>`:''}
         <div class="project-order-details">
           <div class="order-card-head"><div class="order-title-with-check">${statusBadge(o)}<div><h3>${escapeHtml(o.id)}</h3><div class="helper">${formatOrderDateTime(o.createdAt)}</div></div></div><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
-          <div class="summary-row"><span>Order</span><strong>${escapeHtml(orderRequestedText(o))}</strong></div>
+          <div class="summary-row"><span>${escapeHtml(activityTermsForProject(p).singular)}</span><strong>${escapeHtml(orderRequestedText(o))}</strong></div>
           <div class="project-order-meta-grid">${infoRows}</div>
           <div class="project-order-notes">${notes}</div>
           ${canUpdate?`<div class="order-status-control ${statusClass}" data-workflow-status="${escapeHtml(statusClass)}"><label class="order-status-label" style="color:${adminStatusColor(status)}">Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
@@ -5319,12 +5323,12 @@ The full order and approved media remain stored with this project.`;
   }
   async function renderProjectOrdersView(){
     const p=activeProject(), pm=p?.permissions||{};
-    if(!pm.ordersView){$('projectActiveOrders').innerHTML='<div class="empty">Orders access is disabled in Black Flag.</div>';$('projectCompletedOrders').innerHTML='';return;}
+    const terms=activityTermsForProject(p);if(!pm.ordersView){$('projectActiveOrders').innerHTML=`<div class="empty">${escapeHtml(terms.plural)} access is disabled in Black Flag.</div>`;$('projectCompletedOrders').innerHTML='';return;}
     const rows=approvedProjectOrders(await getMergedOrders(),p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
     const recent=rows.filter(o=>o.status!=='Completed'||completedAgeDays(o)<=10);
     const archived=rows.filter(o=>o.status==='Completed'&&completedAgeDays(o)>10);
-    $('projectActiveOrders').innerHTML=recent.map(o=>projectOrderCard(o,!!pm.ordersUpdate)).join('')||'<div class="empty">No current orders.</div>';
-    $('projectCompletedOrders').innerHTML=archived.map(o=>projectOrderCard(o,false)).join('')||'<div class="empty">No archived completed orders.</div>';
+    $('projectActiveOrders').innerHTML=recent.map(o=>projectOrderCard(o,!!pm.ordersUpdate)).join('')||`<div class="empty">No current ${escapeHtml(terms.lowerPlural)}.</div>`;
+    $('projectCompletedOrders').innerHTML=archived.map(o=>projectOrderCard(o,false)).join('')||`<div class="empty">No archived completed ${escapeHtml(terms.lowerPlural)}.</div>`;
     document.querySelectorAll('#projectActiveOrders [data-order-status], #projectCompletedOrders [data-order-status]').forEach(s=>s.addEventListener('change',e=>updateOrderStatus(s.dataset.orderStatus,e.target.value)));
   }
   async function renderProjectLedgerView(){
@@ -5990,7 +5994,7 @@ The full order and approved media remain stored with this project.`;
       await put(STORE_ORDERS,order);
     }catch(err){
       console.warn('Flowers order save failed',err);
-      alert('The order could not be saved. Please try again.');
+      alert(`The ${activityTermsForProject(p).lowerSingular} could not be saved. Please try again.`);
       return;
     }
 
@@ -7461,7 +7465,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.32.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.0.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

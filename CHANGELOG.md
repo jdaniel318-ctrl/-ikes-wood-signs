@@ -1,3 +1,10 @@
+## 3.9.0 — Operating Models
+- Added reusable relationship-specific workflow profiles.
+- Project Control terminology adapts to Orders, Requests, Quotes, Bookings, Engagements, Applications, Reservations, or Project Requests.
+- Universal submissions enter the first resolved project workflow stage.
+- Suggested workflows remain project-correctable and can be restored after customization.
+- Preserved immutable identity and project isolation.
+
 ## v3.8.32 — Fleet Rail Alignment & Join Fleet Repair
 
 - Fixed Join Fleet from Engine project cards by validating the selected outpost with fleet-scoped authorization instead of requiring an already-open Project Control context.

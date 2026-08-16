@@ -122,3 +122,7 @@ A Join Fleet action originates at the Engine fleet layer, where no Project Contr
 
 ## Fleet rail alignment law (v3.8.32)
 The Engine project rail is horizontally scrollable and touch-first. Cards share a stable internal vertical rhythm so identity, deployment state, governance, KPIs, launch status, and actions remain visually aligned even when project names and launch messages vary in length. Horizontal swipe remains the primary iPad browsing behavior; arrow controls are an explicit secondary navigation aid.
+
+
+## Operating Model Law — v3.9.0
+A project must not be forced into purchase/order language or workflow. The Customer Relationship contract supplies project-scoped terminology and a reusable suggested workflow. Explicit project workflow overrides take precedence and never mutate another vessel. Customer submissions begin in the first resolved workflow stage.

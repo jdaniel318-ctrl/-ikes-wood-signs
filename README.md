@@ -1,3 +1,7 @@
+# Dark Sky / Black Flag — v3.9.0 Operating Models
+
+Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
+
 # Dark Sky / Black Flag Business Command Platform
 
 **Current release:** v3.8.32 — Fleet Rail Alignment & Join Fleet Repair
