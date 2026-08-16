@@ -1,4 +1,4 @@
-# Dark Sky v4.6.4 — Forward-Only IndexedDB Migration
+# Dark Sky v4.6.5 — Forward-Only IndexedDB Migration
 
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
@@ -59,3 +59,7 @@ Operation Prove the Fleet uses the existing Fleet Commissioning Dock as the flee
 
 ## v4.6.4 Seaworthiness Refit
 Critical navigation is now owned by an early command spine rather than by async render completion. Fleet Commissioning also presents the next provable gate as an operating action, while preserving the existing seven-gate standard.
+
+
+## v4.6.5 Customer Media Recovery
+Camera and photo controls are now armed before storage/migrations, matching the early-bound customer navigation architecture. A customer can no longer reach the photo step with an unbound START CAMERA control because of a later initialization failure.

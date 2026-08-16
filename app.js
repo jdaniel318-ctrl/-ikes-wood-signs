@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.6.4';
+  const BUILD_VERSION = '4.6.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -7289,7 +7289,7 @@ The full order and approved media remain stored with this project.`;
     $('photoError').textContent='';
     $('photoHelp').textContent='Starting camera…';
     if(!cameraSupported()){
-      $('photoError').textContent='This viewing app does not provide direct camera access. Try opening Version 1.2 in Safari or use the saved-photo option for testing.';
+      $('photoError').textContent='Direct camera access is not available in this browser context. Open the site in Safari or use the saved-photo option for testing.';
       $('photoHelp').textContent='Direct camera access requires a browser environment that supports the iPad camera.';
       return;
     }
@@ -7315,7 +7315,7 @@ The full order and approved media remain stored with this project.`;
       $('photoError').textContent=insecure
         ? 'Camera access is blocked because this page is not running in a secure browser context.'
         : 'The iPad camera could not be opened here. Camera permission may be blocked by the app displaying this page.';
-      $('photoHelp').textContent='Version 1.2 keeps the camera inside the ordering step when the browser allows camera access.';
+      $('photoHelp').textContent='The camera stays inside the ordering step when the browser allows camera access.';
     }
   }
 
@@ -9435,6 +9435,59 @@ The full order and approved media remain stored with this project.`;
     },true);
   }
 
+  function bindCustomerMediaCore(){
+    if(window.__darkSkyCustomerMediaBound)return;
+    window.__darkSkyCustomerMediaBound=true;
+
+    // v4.6.5 recovery seam: camera/photo controls are part of the customer
+    // journey and must not depend on IndexedDB, migrations, or late feature binding.
+    $('startCameraBtn')?.addEventListener('click',async()=>{
+      try{
+        await startCamera();
+      }catch(err){
+        console.error('Customer camera command failed',err);
+        if($('photoError')) $('photoError').textContent=`Camera command failed: ${String(err?.message||err)}`;
+      }
+    });
+    $('capturePhotoBtn')?.addEventListener('click',()=>{
+      try{captureCameraPhoto();}
+      catch(err){
+        console.error('Photo capture command failed',err);
+        if($('photoError')) $('photoError').textContent=`Photo capture failed: ${String(err?.message||err)}`;
+      }
+    });
+    $('cancelCameraBtn')?.addEventListener('click',()=>{
+      stopCamera();
+      if($('photoHelp')) $('photoHelp').textContent='Camera canceled. Tap START CAMERA when you are ready.';
+    });
+    $('photoInput')?.addEventListener('change',async e=>{
+      const input=e.target;
+      const f=input.files?.[0];
+      if(!f)return;
+      if($('photoError')) $('photoError').textContent='';
+      if($('photoHelp')) $('photoHelp').textContent='Preparing your picture…';
+      try{
+        state.photoData=await resizePhoto(f);
+        stopCamera();
+        updateUi();
+        if($('photoHelp')) $('photoHelp').textContent='Picture added. Review it before continuing.';
+      }catch(err){
+        console.error('Photo processing failed',err);
+        if($('photoError')) $('photoError').textContent='That picture could not be added. Please try again.';
+      }finally{
+        input.value='';
+      }
+    });
+    $('retakeBtn')?.addEventListener('click',()=>{
+      state.photoData='';
+      updateUi();
+      startCamera().catch(err=>{
+        console.error('Camera retake command failed',err);
+        if($('photoError')) $('photoError').textContent=`Camera could not restart: ${String(err?.message||err)}`;
+      });
+    });
+  }
+
   function bindCustomerNavigationCore(){
     if(window.__darkSkyCustomerNavigationBound)return;
     window.__darkSkyCustomerNavigationBound=true;
@@ -9510,26 +9563,7 @@ The full order and approved media remain stored with this project.`;
     }
     $('topSide').addEventListener('change',e=>state.topSide=e.target.value);
     $('wordingInput').addEventListener('input',e=>{state.wording=e.target.value;$('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;applyPreview();});
-    $('startCameraBtn').addEventListener('click',startCamera);
-    $('capturePhotoBtn').addEventListener('click',captureCameraPhoto);
-    $('cancelCameraBtn').addEventListener('click',()=>{stopCamera();$('photoHelp').textContent='Camera canceled. Tap START CAMERA when you are ready.';});
-    $('photoInput').addEventListener('change',async e=>{
-      const input=e.target;
-      const f=input.files?.[0];
-      if(!f) return;
-      $('photoError').textContent='';
-      $('photoHelp').textContent='Preparing your picture…';
-      try{
-        state.photoData=await resizePhoto(f);
-        stopCamera();
-        updateUi();
-        $('photoHelp').textContent='Picture added. Review it before continuing.';
-      }catch(err){
-        console.error('Photo processing failed',err);
-        $('photoError').textContent='That picture could not be added. Please try again.';
-      }finally{input.value='';}
-    });
-    $('retakeBtn').addEventListener('click',()=>{state.photoData='';updateUi();startCamera();});
+    // Customer media controls are owned by bindCustomerMediaCore() and are armed before storage.
     $('reviewBtn').addEventListener('click',()=>{if(validateCustomer())setScreen('review');});
     $('approveBtn').addEventListener('click',async()=>{
       if(!$('approvalCheck').checked){$('approvalError').textContent='Please check the approval box first.';return;}
@@ -9794,6 +9828,7 @@ The full order and approved media remain stored with this project.`;
     // Customer step navigation is also mission-critical. Bind it before storage so
     // a stalled/failed IndexedDB open cannot leave a fully-rendered dead experience.
     bindCustomerNavigationCore();
+    bindCustomerMediaCore();
     await loadEngineAppearance();
     db=await openDb();
     await migrateLegacyPlatformStorage();
@@ -9818,6 +9853,7 @@ The full order and approved media remain stored with this project.`;
   // Arm independent command buses immediately. init() calls these again safely.
   // The Seaworthiness spine goes first so core routes exist before storage/migrations/renderers.
   bindSeaworthinessCommandSpine();
+  bindCustomerMediaCore();
   bindWatchCommandBus();
   bindEngineProjectCommandBus();
   bindExperienceTestDeckBus();

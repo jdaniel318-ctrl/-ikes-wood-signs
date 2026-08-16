@@ -1,3 +1,22 @@
+# v4.6.5 — Customer Media Command Repair
+
+## Root cause
+- Customer step navigation had already been promoted to an early mission-critical binding path.
+- Camera and photo controls were still attached later inside the full `bindEvents()` sequence.
+- If storage initialization, migrations, or another late binding step was interrupted, the customer could advance to the photo screen while **START CAMERA** had no handler.
+
+## Structural repair
+- Adds `bindCustomerMediaCore()` as a dedicated early-bound customer command module.
+- START CAMERA, TAKE PICTURE, CANCEL CAMERA, saved-photo fallback, and RETAKE are armed before IndexedDB and migrations.
+- Removes the old duplicate late camera/photo bindings so there is one owner for these controls.
+- Camera command failures now surface in the photo-step error area instead of appearing as a dead button.
+- Updates stale Version 1.2 camera help text.
+
+## Preserved
+- v4.6.1 customer navigation recovery.
+- v4.6.4 Seaworthiness Command Spine.
+- Engine refresh security posture, project isolation, Fleet Commissioning, Captain's Quarters, and Shipyard.
+
 # v4.6.4 — Seaworthiness Refit
 
 ## Command spine
