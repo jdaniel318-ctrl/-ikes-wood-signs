@@ -7,10 +7,19 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
+  <script id="darkSkyFirstLightBootstrap">
+    // Dark Sky 4.3.7 Showroom Restore: DOM helpers exist before any application script executes.
+    window.$ = window.$ || function(id){ return document.getElementById(id); };
+    window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
+    window.__darkSkyBootStage = 'dom-helpers-ready';
+    window.addEventListener('error', function(event){
+      try { window.__darkSkyLastEarlyError = {stage:window.__darkSkyBootStage||'preflight',message:String(event.message||''),source:String(event.filename||''),line:Number(event.lineno||0),column:Number(event.colno||0),at:new Date().toISOString()}; } catch(_) {}
+    }, true);
+  </script>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=3.9.13" />
+  <link rel="stylesheet" href="styles.css?v=4.4.1" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -801,12 +810,20 @@
       </section>
 
       
-      <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Black Flag v3 structural status">
+      <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Dark Sky v4 Broadside structural status">
         <header class="v3-architecture-head">
-          <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>SYSTEM STATUS</span></div><h3>V3 STRUCTURAL STATUS</h3><p>One platform architecture beneath every project and command surface.</p></div>
+          <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>SYSTEM STATUS</span></div><h3>V4 BROADSIDE STATUS</h3><p>Platform contract, recovery, diagnostics, release discipline, and sealed project boundaries.</p></div>
           <span id="v3SchemaBadge">SCHEMA 3</span>
         </header>
         <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
+      </section>
+
+      <section id="fullSailCommandDeck" class="full-sail-command-deck" aria-label="Full Sail Command Deck">
+        <header class="full-sail-head">
+          <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>CLEAR HORIZON</span></div><h3>Command Deck</h3><p>Daily operating posture, release readiness, and the next useful moves across the fleet.</p></div>
+          <strong id="fullSailState" class="full-sail-state">READING</strong>
+        </header>
+        <div id="fullSailCommandBody" class="full-sail-command-body"><p class="helper">Reading fleet command signals…</p></div>
       </section>
 
       <section id="engineFleetHealth" class="engine-fleet-health" aria-label="Fleet Health">
@@ -1058,6 +1075,11 @@
             <button id="engineRefreshDiagnosticsBtn" class="secondary-btn">CHECK THE HULL</button>
             <button id="engineClearDraftBtn" class="secondary-btn">CLEAR STRANDED DRAFT</button>
             <button id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
+            <div class="storage-steward">
+              <div><strong>Storage Steward</strong><small>Safe housekeeping only. Never deletes projects, orders, customers, graphics, admissions, or quarantine evidence.</small></div>
+              <div class="storage-steward-actions"><button id="engineStorageStewardPreviewBtn" class="secondary-btn small" type="button" onclick="return window.BlackFlagStorageStewardInspect?.()">INSPECT STORAGE</button><button id="engineStorageStewardCleanBtn" class="secondary-btn small" type="button" disabled onclick="return window.BlackFlagStorageStewardClean?.()">CLEAN TEMPORARY DEBRIS</button></div>
+              <div id="engineStorageStewardStatus" class="storage-steward-status" role="status" aria-live="polite"></div>
+            </div>
             <p id="engineStorageDetail" class="helper"></p>
           </div>
         </details>
@@ -1114,7 +1136,7 @@
       </section>
 
 <div class="pirate-footer modern-engine-footer">
-        <span>ENGINE SECURE</span><span>RECOVERY READY</span><span>LOCAL BACKUP</span><span>VERSION 3.0</span><span>BUILT FOR BUILDERS</span>
+        <span>ENGINE SECURE</span><span>RECOVERY VAULT</span><span>BLACK BOX READY</span><span>VERSION 4.0</span><span>BUILT FOR BUILDERS</span>
       </div>
     </section>
   </div>
@@ -1200,10 +1222,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=3.9.13"></script>
-  <script src="platform_identity.js?v=3.9.13"></script>
-  <script src="app.js?v=3.9.13"></script>
-  <script src="captain.js?v=3.9.13"></script>
+  <script src="platform_core.js?v=4.4.1"></script>
+  <script src="platform_v4.js?v=4.4.1"></script>
+  <script src="platform_identity.js?v=4.4.1"></script>
+  <script src="app.js?v=4.4.1"></script>
+  <script src="captain.js?v=4.4.1"></script>
 
 </body>
 </html>

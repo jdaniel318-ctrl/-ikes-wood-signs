@@ -1,19 +1,28 @@
 (() => {
+  const $ = window.$ || ((id) => document.getElementById(id));
+  const $$ = window.$$ || ((sel) => Array.from(document.querySelectorAll(sel)));
+  window.$ = $;
+  window.$$ = $$;
+  window.__darkSkyBootStage = 'app-module-entered';
   const DB_NAME = 'blackFlagPlatformV1';
-  const DB_VERSION = 3;
+  const DB_VERSION = 2;
   const STORE_ORDERS = 'orders';
   const STORE_SETTINGS = 'settings';
   const STORE_PROJECTS = 'projects';
-  const STORE_REGISTRY_VAULT = 'project_registry_vault';
   const LOCAL_ORDERS_KEY = 'blackFlagOrdersBackupV1';
   const LEGACY_DB_NAMES = ['ikesWoodSignsV1'];
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
-  const PROJECT_REGISTRY_VAULT_KEY = 'blackFlagProjectRegistryVaultV1';
-  const PROJECT_RETIREMENT_LEDGER_KEY = 'blackFlagProjectRetirementLedgerV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.9.13';
+  const BUILD_VERSION = '4.4.1';
+  // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
+  const FLEET_REGISTRY_SCHEMA_VERSION = 5;
+  const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
+  const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
+  const CANONICAL_GRIZZLY_PROJECT_ID = 'grizzly-bear';
+  const PROJECT_ID_ALIASES = Object.freeze({[LEGACY_GRIZZLE_PROJECT_ID]:CANONICAL_GRIZZLY_PROJECT_ID});
+  function canonicalProjectId(id){ return PROJECT_ID_ALIASES[String(id||'')]||String(id||''); }
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
   const DEFAULT_COMPANIES = [
@@ -86,6 +95,24 @@
       permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
       customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},
       products:[{id:'custom-flower-arrangement',name:'Custom Flower Arrangement',published:false,characterLimit:60}]
+    }
+,
+    {
+      id:'grizzly-bear',
+      projectCode:'GRZ',
+      name:'Grizzly Bear',
+      tagline:'Outdoor and camping equipment built for the wild.',
+      type:'outdoor_camping_equipment',
+      branding:{businessName:'Grizzly Bear',adminLabel:'GRIZZLY BEAR',primary:'#4f3b2b',accent:'#b86b32',subtitle:'Outdoor & Camping Equipment'},
+      visibility:'engine_only',projectTheme:'universal',status:'future',orderPrefix:'GRZ',
+      ai:{mode:'off',minConfidence:0.90,requireScaleReference:false},
+      customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:true},
+      workflow:['New','In Production','Ready for Pickup','Completed'],
+      customerExperience:{photoRequired:false,previewApproval:false},publish:{status:'development'},
+      payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
+      customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},
+      products:[]
     }
   ];
 
@@ -256,7 +283,7 @@
     const directory=readCustomerDirectory();
     directory[projectId]={};
     writeCustomerDirectory(directory);
-    projectScopedOrders(orders||[],projectId).filter(o=>o.testMode!==true).forEach(captureCustomerFromOrder);
+    projectScopedOrders(orders||[],projectId).forEach(captureCustomerFromOrder);
   }
 
   function engineWideCustomerMatches(customerKey){
@@ -307,7 +334,9 @@
   function activeProject(){return activeProjectId ? projectById(activeProjectId) : null}
 
   function projects(){ return companies; }
-  function projectById(id){ return companies.find(p=>p.id===id); }
+  function projectById(id){ const canonical=canonicalProjectId(id); return companies.find(p=>p.id===canonical); }
+  window.blackFlagV4ProjectById=(id)=>projectById(id);
+  window.blackFlagV4Projects=()=>companies.map(p=>structuredClone(p));
 
   const OWNER_CAPABILITIES=[
     'orders','customers','products','pricing','branding','kiosks','deployments','staff','reporting','notifications'
@@ -715,6 +744,8 @@
   // Engine security is intentionally session-only. Leaving Black Flag locks it again.
   let engineSessionUnlocked = false;
   let pendingCaptainDeploymentRoute = null;
+  let pendingCaptainCommandRoute = null;
+  window.__darkSkyBootStage = 'app-declarations';
   function lockEngineSession(){
     engineSessionUnlocked = false;
     if($('enginePinInput')) $('enginePinInput').value='';
@@ -724,8 +755,6 @@
     if(engineScreen) engineScreen.classList.add('hidden');
   }
 
-  const $ = (id) => document.getElementById(id);
-  const $$ = (sel) => [...document.querySelectorAll(sel)];
 
   function normalizeOrderIsolation(order,{legacyImport=false}={}){
     if(!order || typeof order!=='object') return order;
@@ -853,7 +882,6 @@
         }
         if(!d.objectStoreNames.contains(STORE_SETTINGS)) d.createObjectStore(STORE_SETTINGS,{keyPath:'key'});
         if(!d.objectStoreNames.contains(STORE_PROJECTS)) d.createObjectStore(STORE_PROJECTS,{keyPath:'id'});
-        if(!d.objectStoreNames.contains(STORE_REGISTRY_VAULT)) d.createObjectStore(STORE_REGISTRY_VAULT,{keyPath:'id'});
       };
       req.onsuccess=()=>{
         const opened=req.result;
@@ -901,10 +929,198 @@
     let indexed=[];
     try{ indexed=await getAll(STORE_ORDERS); }catch(err){ console.warn('IndexedDB orders unavailable',err); }
     const local=readLocalOrders();
+    const quarantined=quarantinedOrderIds();
     const map=new Map();
-    [...local,...indexed].forEach(o=>{ const row=normalizeOrderIsolation(o); if(row && row.id) map.set(row.id,row); });
+    [...local,...indexed].forEach(o=>{
+      const row=normalizeOrderIsolation(o);
+      if(row && row.id && !quarantined.has(String(row.id))) map.set(row.id,row);
+    });
     return [...map.values()];
   }
+
+  function roughBytes(value){
+    try{return new Blob([typeof value==='string'?value:JSON.stringify(value)]).size}catch(_){try{return JSON.stringify(value).length*2}catch(__){return 0}}
+  }
+  async function blackFlagStorageBreakdown(onProgress){
+    const progress=(stage,detail='')=>{try{if(typeof onProgress==='function')onProgress(stage,detail)}catch(_){}};
+    progress('local','Reading LocalStorage');
+    const local=[];let localBytes=0;
+    try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);const val=localStorage.getItem(key)||'';const bytes=roughBytes(key)+roughBytes(val);local.push({key,bytes});localBytes+=bytes}}catch(_){}
+    local.sort((a,b)=>b.bytes-a.bytes);
+    progress('indexeddb','Reading IndexedDB stores');
+    const stores={};let indexedDbBytes=0;
+    for(const store of [STORE_ORDERS,STORE_SETTINGS,STORE_PROJECTS]){
+      try{const rows=await getAll(store);const bytes=roughBytes(rows);stores[store]={rows:rows.length,bytes};indexedDbBytes+=bytes}catch(err){stores[store]={rows:null,bytes:null,error:String(err?.message||err)}}
+    }
+    progress('caches','Reading Cache Storage');
+    const cacheRows=[];let cacheBytes=0;
+    if(typeof caches!=='undefined'){
+      const cacheNames=await caches.keys().catch(()=>[]);let cacheIndex=0;
+      for(const name of cacheNames){
+        cacheIndex++;progress('cache',`${cacheIndex}/${cacheNames.length} • ${name}`);
+        let bytes=0,entries=0;
+        try{const c=await caches.open(name);const reqs=await c.keys();entries=reqs.length;for(const req of reqs){try{const res=await c.match(req);const len=Number(res?.headers?.get('content-length')||0);if(len)bytes+=len;else if(res){const blob=await res.clone().blob();bytes+=blob.size}}catch(_){}}}catch(_){}
+        cacheRows.push({name,entries,bytes});cacheBytes+=bytes;
+      }
+    }
+    cacheRows.sort((a,b)=>b.bytes-a.bytes);
+    progress('done','Storage sounding complete');
+    return {at:new Date().toISOString(),localStorage:{bytes:localBytes,topKeys:local.slice(0,12)},indexedDb:{bytes:indexedDbBytes,stores},cacheStorage:{bytes:cacheBytes,caches:cacheRows},knownBytes:localBytes+indexedDbBytes+cacheBytes};
+  }
+  window.blackFlagStorageBreakdown=blackFlagStorageBreakdown;
+
+  function formatStorageMb(n){return n==null?'?':(Number(n)/1024/1024).toFixed(1)}
+  function renderStorageStewardReport(r){
+    const b=r?.breakdown||{};const stores=b.indexedDb?.stores||{};
+    const originBytes=Number(r?.usage||0),knownBytes=Number(b.knownBytes||0),unattributed=Math.max(0,originBytes-knownBytes);
+    const staleBytes=Number(r?.oldCacheBytes||0);
+    const cachesTop=(b.cacheStorage?.caches||[]).slice(0,8);
+    const localTop=(b.localStorage?.topKeys||[]).slice(0,6);
+    const cacheRows=cachesTop.length?cachesTop.map(x=>`<tr><td>${escapeHtml(x.name||'cache')}</td><td>${Number(x.entries||0)}</td><td>${formatStorageMb(x.bytes)} MB</td></tr>`).join(''):'<tr><td colspan="3">No cache entries measured.</td></tr>';
+    const localRows=localTop.length?localTop.map(x=>`<tr><td>${escapeHtml(x.key||'key')}</td><td colspan="2">${formatStorageMb(x.bytes)} MB</td></tr>`).join(''):'<tr><td colspan="3">No LocalStorage entries measured.</td></tr>';
+    return `<div class="storage-report-head"><strong>STORAGE SOUNDING COMPLETE</strong><span>${r.usage!=null?formatStorageMb(r.usage)+' MB origin usage':'Origin usage unavailable'}</span></div>
+      <div class="storage-report-grid">
+        <div><b>${formatStorageMb(b.knownBytes)} MB</b><small>Measured Dark Sky data</small></div>
+        <div><b>${formatStorageMb(b.cacheStorage?.bytes)} MB</b><small>Cache Storage</small></div>
+        <div><b>${formatStorageMb(b.indexedDb?.bytes)} MB</b><small>IndexedDB</small></div>
+        <div><b>${formatStorageMb(b.localStorage?.bytes)} MB</b><small>LocalStorage</small></div>
+      </div>
+      <p class="helper">Orders: ${stores.orders?.rows??'?'} rows / ${formatStorageMb(stores.orders?.bytes)} MB • Projects: ${stores.projects?.rows??'?'} rows / ${formatStorageMb(stores.projects?.bytes)} MB • Settings: ${stores.settings?.rows??'?'} rows / ${formatStorageMb(stores.settings?.bytes)} MB.</p>
+      <p class="helper"><strong>Browser-managed / unattributed:</strong> ${formatStorageMb(unattributed)} MB. This is the gap between Safari's origin estimate and storage Dark Sky can enumerate; it is not treated as project data.</p>
+      <p class="helper"><strong>Safe cache trim:</strong> ${r.oldCaches?.length||0} stale application cache${(r.oldCaches?.length||0)===1?'':'s'} / about ${formatStorageMb(staleBytes)} MB eligible. Cleanup does not touch projects, orders, customers, graphics, admissions, quarantine evidence, or active V4 data.</p>
+      <details class="storage-report-details"><summary>Largest caches</summary><table><thead><tr><th>Cache</th><th>Entries</th><th>Size</th></tr></thead><tbody>${cacheRows}</tbody></table></details>
+      <details class="storage-report-details"><summary>Largest LocalStorage keys</summary><table><tbody>${localRows}</tbody></table></details>`;
+  }
+  window.BlackFlagStorageStewardInspect=async function(){
+    const btn=$('engineStorageStewardPreviewBtn'), clean=$('engineStorageStewardCleanBtn'), box=$('engineStorageStewardStatus');
+    if(!box)return false;
+    if(btn){btn.disabled=true;btn.textContent='SOUNDING…'}
+    if(clean)clean.disabled=true;
+    box.classList.add('is-active');box.innerHTML='<strong>Storage sounding started…</strong><br><span>Reading browser storage. Large caches can take several seconds on iPad.</span>';
+    try{box.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){}
+    try{
+      const r=await window.DarkSkyV4?.storageStewardPreview?.((stage,detail)=>{if(box)box.innerHTML=`<strong>Storage sounding…</strong><br><span>${escapeHtml(detail||stage||'Working')}</span>`});
+      if(!r)throw new Error('Storage Steward unavailable');
+      box.innerHTML=renderStorageStewardReport(r);
+      box.dataset.inspectOk='1';
+      try{localStorage.setItem('bf.v4.storage.lastSounding',JSON.stringify({at:r.at,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0,unattributedBytes:Math.max(0,Number(r.usage||0)-Number(r.breakdown?.knownBytes||0)),oldCaches:r.oldCaches||[],oldCacheBytes:r.oldCacheBytes||0}))}catch(_){}
+      if(clean){clean.disabled=false;clean.textContent=(r.oldCaches?.length||0)?`CLEAN ${r.oldCaches.length} STALE CACHE${r.oldCaches.length===1?'':'S'}`:'COMPACT DIAGNOSTICS'}
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.complete','Storage sounding completed',{usage:r.usage,knownBytes:r.breakdown?.knownBytes,cacheBytes:r.breakdown?.cacheStorage?.bytes,indexedDbBytes:r.breakdown?.indexedDb?.bytes,localStorageBytes:r.breakdown?.localStorage?.bytes,staleCaches:r.oldCaches?.length||0,staleCacheBytes:r.oldCacheBytes||0});
+      return true;
+    }catch(err){
+      const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.6'});return false;
+    }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
+  };
+
+  window.BlackFlagStorageStewardClean=async function(){
+    const btn=$('engineStorageStewardCleanBtn'), box=$('engineStorageStewardStatus');
+    if(!box)return false;
+    if(box.dataset.inspectOk!=='1'){
+      box.classList.add('is-active');
+      box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Run Inspect Storage before any cleanup.</span>';
+      return false;
+    }
+    if(btn?.dataset.confirmClean!=='1'){
+      if(btn){
+        btn.dataset.confirmClean='1';
+        btn.textContent='CONFIRM '+btn.textContent;
+      }
+      box.classList.add('is-active');
+      box.innerHTML='<strong>CLEANUP ARMED</strong><br><span>Press the confirmation button once more to remove only the stale Dark Sky application cache(s) identified by the last sounding. Projects, orders, customers, graphics, admissions, active settings, and quarantine evidence are protected.</span>';
+      return false;
+    }
+    try{
+      if(btn){btn.disabled=true;btn.textContent='TRIMMING…'}
+      box.classList.add('is-active');
+      box.innerHTML='<strong>SAFE CACHE TRIM IN PROGRESS</strong><br><span>Removing only stale Dark Sky application cache ballast.</span>';
+      try{box.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){}
+      const r=await window.DarkSkyV4?.storageStewardClean?.();
+      if(!r)throw new Error('Storage Steward unavailable');
+      const reclaimed=Number(r.before?.oldCacheBytes||0);
+      box.dataset.inspectOk='0';
+      try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.6',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
+      // Re-sound immediately so the user gets visible proof of what changed.
+      const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
+      if(fresh){
+        box.innerHTML=`<strong>CLEANUP COMPLETE</strong><br><span>${(r.removedCaches||[]).length} stale cache${(r.removedCaches||[]).length===1?'':'s'} removed • about ${formatStorageMb(reclaimed)} MB targeted.</span>`+renderStorageStewardReport(fresh);
+        box.dataset.inspectOk='1';
+        if(btn){btn.disabled=false;btn.textContent=(fresh.oldCaches?.length||0)?`CLEAN ${fresh.oldCaches.length} STALE CACHE${fresh.oldCaches.length===1?'':'S'}`:'NO STALE CACHES';btn.disabled=!(fresh.oldCaches?.length||0)}
+      }else{
+        if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}
+      }
+      try{await refreshEngineDiagnostics()}catch(_){}
+      try{await renderFullSailCommandDeck()}catch(_){}
+      return true;
+    }catch(err){
+      const message=String(err?.message||err||'Unknown cleanup failure');
+      box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.6'});
+      if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
+      return false;
+    }
+  };
+
+  function commandOrderLifecycle(order){
+    const p=projectById(canonicalProjectId(order?.projectId||''));
+    if(!p)return {key:'historical',label:'HISTORICAL',displayable:false,reason:'Project record is not active'};
+    const displayable=approvedProjectOrders([order],p).length===1;
+    if(!displayable)return {key:'historical',label:'HISTORICAL',displayable:false,reason:'Legacy/unapproved record retained outside the active order roll'};
+    const status=canonicalOrderStatus(order?.status||'New');
+    if(status==='Completed'&&completedAgeDays(order)>10)return {key:'archived',label:'ARCHIVED',displayable:true,reason:'Completed more than 10 days ago'};
+    if(status==='Completed')return {key:'completed',label:'COMPLETED',displayable:true,reason:'Recently completed'};
+    return {key:'active',label:'ACTIVE',displayable:true,reason:'Current project order'};
+  }
+
+  async function blackFlagCommandSearchData(){
+    const projectRows=companies.map(p=>({type:'project',id:p.id,projectId:p.id,title:p.name||p.id,detail:`${p.publish?.status||p.publishStatus||'development'} • ${p.description||''}`}));
+    const orders=(await getMergedOrders()).map(o=>{
+      const life=commandOrderLifecycle(o);
+      return {type:'order',id:o.id,projectId:o.projectId||'',title:o.id||'Order',lifecycle:life.key,lifecycleLabel:life.label,detail:`${life.label} • ${o.customerName||'Customer not named'} • ${canonicalOrderStatus(o.status||'New')} • $${Number(o.price||0).toFixed(0)}`};
+    });
+    const customers=[];
+    for(const p of companies){for(const c of projectCustomerRows(p.id)){customers.push({type:'customer',id:c.customerKey||`${p.id}:${c.email||c.phone||c.name||''}`,projectId:p.id,title:c.name||c.email||c.phone||'Customer',detail:`${p.name} • ${Number(c.orderCount||0)} order${Number(c.orderCount||0)===1?'':'s'}`})}}
+    return [...projectRows,...orders,...customers];
+  }
+  window.blackFlagCommandSearchData=blackFlagCommandSearchData;
+
+
+  async function blackFlagFleetIntelligenceData(){
+    const rows=[];
+    for(const p of projects()){
+      try{
+        const snap=await projectControlSnapshot(p);
+        const launch=projectFleetLaunchState(p);
+        const customers=projectCustomerRows(p.id)||[];
+        const open=Array.isArray(snap.open)?snap.open.length:0;
+        const ready=Array.isArray(snap.ready)?snap.ready.length:0;
+        const completed=Array.isArray(snap.completed)?snap.completed.length:0;
+        const activeDeployments=Array.isArray(snap.activeDeployments)?snap.activeDeployments.length:0;
+        const offers=Array.isArray(launch.offers)?launch.offers.length:0;
+        const reasons=[];
+        let score=0;
+        if(open){score+=Math.min(45,open*7);reasons.push(`${open} open order${open===1?'':'s'}`)}
+        if(ready){score+=Math.min(20,ready*5);reasons.push(`${ready} ready for pickup`)}
+        if(launch.key==='draft'){score+=22;reasons.push('launch setup incomplete')}
+        else if(launch.key==='preparing'){score+=16;reasons.push('preparing for Sea Trial')}
+        else if(launch.key==='sea_trial'){score+=12;reasons.push('Sea Trial underway')}
+        if(!offers){score+=10;reasons.push('no customer-ready offers')}
+        if(p.ownerStatus==='not_claimed'||p.ownerStatus==='pending'){score+=5;reasons.push('owner access not claimed')}
+        if(activeDeployments===0&&p.publish?.status==='live'){score+=15;reasons.push('published without active deployment')}
+        const level=score>=45?'high':score>=25?'action':score>=10?'watch':'clear';
+        const next=launch.key==='draft'?'Finish business brief / customer-ready offer':launch.key==='preparing'?'Finish outpost setup':launch.key==='sea_trial'?'Complete Sea Trial proof':launch.key==='fleet_ready'?'Review for fleet join':open?'Work oldest open orders':'Maintain current course';
+        rows.push({projectId:p.id,projectName:p.name,code:p.code||'',score,level,reasons,next,launchKey:launch.key,launchLabel:launch.label,open,ready,completed,customers:customers.length,offers,activeDeployments,publishStatus:p.publish?.status||p.publishStatus||'development'});
+      }catch(err){
+        rows.push({projectId:p.id,projectName:p.name,code:p.code||'',score:99,level:'critical',reasons:[`Intelligence read interrupted: ${String(err?.message||err)}`],next:'Open project and inspect',launchKey:'unknown',launchLabel:'CHECK',open:0,ready:0,completed:0,customers:0,offers:0,activeDeployments:0,publishStatus:p.publish?.status||p.publishStatus||'development'});
+      }
+    }
+    rows.sort((a,b)=>b.score-a.score||String(a.projectName).localeCompare(String(b.projectName)));
+    return rows;
+  }
+  window.blackFlagFleetIntelligenceData=blackFlagFleetIntelligenceData;
+
   async function put(store,value){
     const result=await reqToPromise(tx(store,'readwrite').put(value));
     if(store===STORE_ORDERS) backupOrderLocally(value);
@@ -935,17 +1151,47 @@
     }
   }
 
-  async function persistProjectRegistry(rows){
-    const projects=structuredClone(Array.isArray(rows)?rows:[]);
+  function uniqueRegistryRows(rows){
+    const map=new Map();
+    for(const p of (Array.isArray(rows)?rows:[])){
+      const id=String(p?.id||'').trim();
+      if(!id) throw new Error('Fleet registry contains a project without an immutable Project ID.');
+      if(map.has(id)) throw new Error(`Duplicate Project ID blocked: ${id}`);
+      map.set(id,p);
+    }
+    return [...map.values()];
+  }
+
+  async function persistProjectRegistry(rows,{allowRemovalIds=[]}={}){
+    let projects=uniqueRegistryRows(structuredClone(Array.isArray(rows)?rows:[]));
+    // v3.10.0: registry writes are non-destructive by default. A normal save may
+    // update a vessel, but it may not silently make an already-registered Project ID
+    // disappear. Explicit removal must name the exact immutable Project ID.
+    let existing=[];
+    try{ existing=await readCanonicalProjectRegistry(); }catch(_){ existing=[]; }
+    const allowed=new Set((allowRemovalIds||[]).map(String));
+    const nextIds=projectRegistryIds(projects);
+    const preserved=[];
+    for(const prior of existing){
+      const id=String(prior?.id||'');
+      if(id && !nextIds.has(id) && !allowed.has(id)){
+        projects.push(structuredClone(prior));
+        nextIds.add(id);
+        preserved.push(id);
+      }
+    }
+    projects=uniqueRegistryRows(projects);
+    if(preserved.length){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.shrink_blocked',detail:preserved.join(' • ')});
+    }
+
     const transaction=db.transaction([STORE_PROJECTS,STORE_SETTINGS],'readwrite');
     const projectStore=transaction.objectStore(STORE_PROJECTS);
     const settingsStore=transaction.objectStore(STORE_SETTINGS);
     projectStore.clear();
     projects.forEach(project=>projectStore.put(project));
-    // Keep the legacy collection mirror during the transition so older code and
-    // recovery tooling can still inspect the same fleet snapshot. Both writes are
-    // committed by ONE IndexedDB transaction.
     settingsStore.put({key:'companies',value:projects});
+    settingsStore.put({key:FLEET_REGISTRY_SCHEMA_KEY,value:FLEET_REGISTRY_SCHEMA_VERSION});
     await transactionToPromise(transaction);
 
     const canonical=await readCanonicalProjectRegistry();
@@ -1061,158 +1307,17 @@
     }catch(_){return null;}
   }
 
-  function readProjectRetirementLedger(){
-    try{
-      const rows=JSON.parse(localStorage.getItem(PROJECT_RETIREMENT_LEDGER_KEY)||'[]');
-      return Array.isArray(rows)?rows:[];
-    }catch(_){return [];}
-  }
-
-  function retirementTombstoneIds(){
-    return new Set(readProjectRetirementLedger().filter(x=>x?.projectId && x?.state==='retired').map(x=>String(x.projectId)));
-  }
-
-  function recordProjectRetirement(projectId,{reason='explicit-retirement',actorRole='engine_admin'}={}){
-    const id=String(projectId||'');
-    if(!id)return false;
-    const rows=readProjectRetirementLedger().filter(x=>String(x?.projectId||'')!==id);
-    rows.unshift({version:1,projectId:id,state:'retired',reason:String(reason||'explicit-retirement'),actorRole:String(actorRole||'engine_admin'),at:new Date().toISOString(),build:BUILD_VERSION});
-    localStorage.setItem(PROJECT_RETIREMENT_LEDGER_KEY,JSON.stringify(rows.slice(0,250)));
-    window.BlackFlagV3Core?.audit?.({actorRole,projectId:id,category:'governance',action:'project.retirement.tombstone.recorded',detail:reason});
-    return true;
-  }
-  window.BlackFlagProjectRetirement={record:recordProjectRetirement,read:readProjectRetirementLedger};
-
-  function registryIdArray(rows){
-    return [...projectRegistryIds(rows)].sort();
-  }
-
-  function registrySnapshotKey(rows){
-    return registryIdArray(rows).join('|');
-  }
-
-  let projectRegistryVaultRuntime={version:2,snapshots:[],storage:'uninitialized'};
-
-  async function hydrateProjectRegistryVaultFromIndexedDB(){
-    try{
-      const row=await reqToPromise(tx(STORE_REGISTRY_VAULT).get('primary'));
-      if(row && Array.isArray(row.snapshots)){
-        projectRegistryVaultRuntime={version:2,updatedAt:row.updatedAt||null,snapshots:structuredClone(row.snapshots),storage:'indexeddb'};
-        try{localStorage.setItem(PROJECT_REGISTRY_VAULT_KEY,JSON.stringify({version:2,updatedAt:row.updatedAt||null,snapshots:row.snapshots}));}catch(_){ }
-        return projectRegistryVaultRuntime;
-      }
-    }catch(err){ console.warn('Recovery Vault IndexedDB read unavailable',err); }
-    try{
-      const raw=JSON.parse(localStorage.getItem(PROJECT_REGISTRY_VAULT_KEY)||'null');
-      if(raw && Array.isArray(raw.snapshots)){
-        projectRegistryVaultRuntime={version:2,updatedAt:raw.updatedAt||null,snapshots:structuredClone(raw.snapshots),storage:'local'};
-        try{await put(STORE_REGISTRY_VAULT,{id:'primary',version:2,updatedAt:raw.updatedAt||null,snapshots:structuredClone(raw.snapshots)});projectRegistryVaultRuntime.storage='indexeddb+local';}catch(_){ }
-      }
-    }catch(_){ }
-    return projectRegistryVaultRuntime;
-  }
-
-  async function persistProjectRegistryVaultMirror(vault){
-    try{
-      await put(STORE_REGISTRY_VAULT,{id:'primary',version:2,updatedAt:vault.updatedAt||new Date().toISOString(),snapshots:structuredClone(vault.snapshots||[])});
-      projectRegistryVaultRuntime={...structuredClone(vault),storage:'indexeddb'};
-      return true;
-    }catch(err){
-      console.warn('Recovery Vault IndexedDB write unavailable',err);
-      return false;
-    }
-  }
-
-  function readProjectRegistryVault(){
-    try{
-      const raw=JSON.parse(localStorage.getItem(PROJECT_REGISTRY_VAULT_KEY)||'null');
-      if(raw && Array.isArray(raw.snapshots)){
-        projectRegistryVaultRuntime={version:2,updatedAt:raw.updatedAt||null,snapshots:structuredClone(raw.snapshots),storage:projectRegistryVaultRuntime.storage==='indexeddb'?'indexeddb+local':'local'};
-        return projectRegistryVaultRuntime;
-      }
-    }catch(_){ }
-    return projectRegistryVaultRuntime && Array.isArray(projectRegistryVaultRuntime.snapshots) ? projectRegistryVaultRuntime : {version:2,snapshots:[],storage:'offline'};
-  }
-
-  function vaultSnapshotSources(){
-    const vault=readProjectRegistryVault();
-    const rows=[...(vault.snapshots||[])];
-    const backup=readProjectRegistryBackup();
-    if(Array.isArray(backup?.projects)&&backup.projects.length){
-      rows.push({id:'legacy-single-backup',savedAt:backup.savedAt||null,reason:backup.reason||'legacy-backup',projectCount:backup.projects.length,projects:structuredClone(backup.projects),source:'legacy-backup'});
-    }
-    try{
-      const coreRows=window.BlackFlagV3Core?.readSnapshots?.()||[];
-      for(const snap of coreRows){
-        if(Array.isArray(snap?.projects)&&snap.projects.length){
-          rows.push({id:snap.id||`core-${snap.at||''}`,savedAt:snap.at||null,reason:snap.reason||'core-recovery-snapshot',projectCount:snap.projects.length,projects:structuredClone(snap.projects),source:'core-recovery'});
-        }
-      }
-    }catch(_){ }
-    return rows;
-  }
-
-  function missingIdsAllowedByTombstones(previousRows,nextRows){
-    const prev=projectRegistryIds(previousRows), next=projectRegistryIds(nextRows), tombstones=retirementTombstoneIds();
-    return [...prev].filter(id=>!next.has(id)).every(id=>tombstones.has(id));
-  }
-
-  function writeProjectRegistryVault(rows,reason='verified-save'){
-    try{
-      const projects=structuredClone(Array.isArray(rows)?rows:[]);
-      if(!projects.length)return false;
-      const vault=readProjectRegistryVault();
-      const snapshots=Array.isArray(vault.snapshots)?vault.snapshots:[];
-      const key=registrySnapshotKey(projects);
-      const existingIndex=snapshots.findIndex(x=>registrySnapshotKey(x?.projects||[])===key);
-      const row={
-        id:`RV-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`,
-        version:1,
-        build:BUILD_VERSION,
-        savedAt:new Date().toISOString(),
-        reason,
-        projectCount:projects.length,
-        projectIds:registryIdArray(projects),
-        projects
-      };
-      if(existingIndex>=0)snapshots.splice(existingIndex,1);
-      snapshots.unshift(row);
-      // Keep multiple verified generations. A later smaller registry cannot erase
-      // richer historical identity evidence simply by becoming the newest snapshot.
-      const nextVault={version:2,updatedAt:row.savedAt,snapshots:snapshots.slice(0,12)};
-      projectRegistryVaultRuntime={...structuredClone(nextVault),storage:'memory'};
-      let localOk=true;
-      try{localStorage.setItem(PROJECT_REGISTRY_VAULT_KEY,JSON.stringify(nextVault));projectRegistryVaultRuntime.storage='local';}catch(err){localOk=false;console.warn('Recovery Vault local mirror could not be written',err);}
-      // Durable mirror: do not make current fleet operations wait on this secondary
-      // write, but keep the runtime copy immediately and persist to IndexedDB.
-      persistProjectRegistryVaultMirror(nextVault).catch(()=>{});
-      return localOk || true;
-    }catch(err){
-      console.warn('Project registry recovery vault could not be written',err);
-      return false;
-    }
-  }
-
   function writeProjectRegistryBackup(rows,reason='verified-save'){
     try{
       const projects=structuredClone(Array.isArray(rows)?rows:[]);
-      const prior=readProjectRegistryBackup();
-      // Legacy single-slot backup remains for compatibility, but it may not discard
-      // richer identity evidence unless every missing Project ID has an explicit
-      // retirement tombstone. The rotating vault is the durable continuity source.
-      if(Array.isArray(prior?.projects)&&prior.projects.length>projects.length && !missingIdsAllowedByTombstones(prior.projects,projects)){
-        writeProjectRegistryVault(projects,`${reason}-smaller-observed`);
-        window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.backup.shrink_refused',detail:`Kept ${prior.projects.length}-project backup; observed ${projects.length}-project registry without retirement evidence`});
-        return false;
-      }
       localStorage.setItem(PROJECT_REGISTRY_BACKUP_KEY,JSON.stringify({
         version:2,
+        fleetSchemaVersion:FLEET_REGISTRY_SCHEMA_VERSION,
         savedAt:new Date().toISOString(),
         reason,
         projectCount:projects.length,
         projects
       }));
-      writeProjectRegistryVault(projects,reason);
       return true;
     }catch(err){
       console.warn('Project registry backup could not be written',err);
@@ -1291,7 +1396,7 @@
     }
 
     if(registryContainsProject(canonical,candidate.id)){
-      companies=canonical.map(normalizeProjectCode).map(ensureProjectGovernance);
+      companies=canonical.map(p=>window.BlackFlagV3Core?.ensure?.(p)||p).map(normalizeProjectCode).map(ensureProjectGovernance);
       const draft=readCommissionDraft();
       clearCommissionJournal(candidate.id);
       if(draftMatchesProject(draft,candidate))clearCommissionDraft();
@@ -1318,7 +1423,7 @@
       if(!registryContainsProject(repaired,candidate.id)||!registryContainsProject(verify,candidate.id)){
         throw new Error('Project ID was not present after canonical registry recovery read-back.');
       }
-      companies=verify.map(normalizeProjectCode).map(ensureProjectGovernance);
+      companies=verify.map(p=>window.BlackFlagV3Core?.ensure?.(p)||p).map(normalizeProjectCode).map(ensureProjectGovernance);
       const draft=readCommissionDraft();
       clearCommissionJournal(candidate.id);
       if(draftMatchesProject(draft,candidate))clearCommissionDraft();
@@ -1333,73 +1438,489 @@
 
   function normalizeProjectCode(p){
     if(!p)return p;
-    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS' };
+    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzly-bear':'GRZ' };
     const fallback=String(p.orderPrefix||p.name||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ';
     p.projectCode=String(p.projectCode||seeded[p.id]||fallback).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
     if(!p.orderPrefix)p.orderPrefix=p.projectCode;
     return p;
   }
-  function verifiedBackupRecoveryRows(canonicalRows,savedRows,backup){
-    // v3.9.12 — Recovery Vault. Canonical storage is authoritative for current
-    // operation, but it may not silently erase a previously verified immutable ID.
-    // Search multiple verified generations and core recovery snapshots; never names.
-    const canonical=Array.isArray(canonicalRows)?canonicalRows:[];
-    const mirror=Array.isArray(savedRows)?savedRows:[];
-    const have=projectRegistryIds(canonical), tombstones=retirementTombstoneIds();
-    const candidates=new Map();
-    const sources=[
-      {source:'settings-mirror',projects:mirror,savedAt:null},
-      ...vaultSnapshotSources().map(x=>({source:x.source||'recovery-vault',projects:x.projects||[],savedAt:x.savedAt||null}))
-    ];
-    for(const src of sources){
-      for(const row of (Array.isArray(src.projects)?src.projects:[])){
-        const id=String(row?.id||'');
-        if(!id||have.has(id)||tombstones.has(id))continue;
-        const current=candidates.get(id);
-        const at=Date.parse(src.savedAt||'')||0;
-        if(!current || at>=current.at)candidates.set(id,{row:structuredClone(row),at,source:src.source});
+  function projectNameKey(p){
+    return String(p?.name||p?.identity?.displayName||'').trim().toLowerCase().replace(/\s+/g,' ');
+  }
+
+  function reconcileFleetSources(canonicalRows=[],savedRows=[],backupRows=[]){
+    const merged=[];
+    const byId=new Map();
+    const add=(row,source)=>{
+      if(!row?.id)return;
+      const id=String(row.id);
+      if(byId.has(id))return;
+      const clone=structuredClone(row);
+      clone.registryRecovery={...(clone.registryRecovery||{}),lastSeenSource:source,lastSeenAt:new Date().toISOString()};
+      byId.set(id,clone); merged.push(clone);
+    };
+    (canonicalRows||[]).forEach(p=>add(p,'canonical'));
+    (savedRows||[]).forEach(p=>add(p,'settings-mirror'));
+    (backupRows||[]).forEach(p=>add(p,'verified-backup'));
+
+    // Current fleet baseline. Existing matching identities win; a seed is used only
+    // when every persisted source has lost the vessel. This is the one-time rescue
+    // path for the Grizzle/Grizzly Bear regression seen in 3.9.9.
+    const existingNames=new Set(merged.map(projectNameKey));
+    for(const seed of DEFAULT_COMPANIES){
+      const aliases=seed.id==='grizzly-bear'?new Set(['grizzle bear','grizzly bear']):new Set([projectNameKey(seed)]);
+      const hasAlias=[...existingNames].some(n=>aliases.has(n));
+      if(!byId.has(seed.id) && !hasAlias){
+        const clone=structuredClone(seed);
+        clone.registryRecovery={restoredBy:'4.4.1-v4-hull-rebase',restoredAt:new Date().toISOString(),reason:'baseline-project-missing'};
+        add(clone,'4.4.1-v4-baseline-rescue');
+        existingNames.add(projectNameKey(clone));
       }
     }
-    const recovered=[];
-    for(const [id,entry] of candidates){
-      const row=entry.row;
-      if(!row?.id || row?.archived===true || row?.status==='retired')continue;
-      if(String(row.id)!==id)continue;
-      // Immutable identity + default deny are minimum recovery qualifications.
-      window.BlackFlagV3Core?.ensure?.(row);
-      if(row?.isolation?.crossProjectAccess!=='deny')continue;
-      const proposed=[...canonical,...recovered,row];
-      const introduced=newlyIntroducedCriticalIssues(canonical,proposed);
-      if(introduced.length)continue;
-      recovered.push(structuredClone(row));
-    }
-    return recovered;
+    return uniqueRegistryRows(merged);
   }
 
-  async function healCanonicalRegistryContinuity(canonicalRows,savedRows,backup){
-    const canonical=Array.isArray(canonicalRows)?canonicalRows:[];
-    const recovered=verifiedBackupRecoveryRows(canonical,savedRows,backup);
-    if(!recovered.length)return canonicalRows;
-    const merged=[...canonical,...recovered];
-    const persisted=await persistProjectRegistry(merged);
-    const verify=await readCanonicalProjectRegistry();
-    const missing=recovered.filter(p=>!registryContainsProject(verify,p.id));
-    if(missing.length)throw new Error(`Fleet continuity recovery failed read-back for ${missing.map(p=>p.id).join(', ')}`);
-    for(const p of recovered){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:p.id,category:'recovery',action:'project.registry.vault_restored',detail:`${p.name||p.id} restored by immutable Project ID from verified registry history`});
+  function replaceProjectIdDeep(value,fromId,toId){
+    if(value===fromId)return toId;
+    if(Array.isArray(value))return value.map(v=>replaceProjectIdDeep(v,fromId,toId));
+    if(!value || typeof value!=='object')return value;
+    const out={};
+    for(const [key,val] of Object.entries(value)){
+      const nextKey=key===fromId?toId:key.replaceAll(`:${fromId}`,`:${toId}`);
+      out[nextKey]=replaceProjectIdDeep(val,fromId,toId);
     }
-    writeProjectRegistryBackup(verify,'continuity-vault-healed');
-    return verify;
+    return out;
   }
 
-  function registryContinuityStatus(rows){
-    const ids=projectRegistryIds(rows), tombstones=retirementTombstoneIds();
-    const historical=new Set();
-    for(const snap of vaultSnapshotSources())for(const p of (snap.projects||[]))if(p?.id)historical.add(String(p.id));
-    const missing=[...historical].filter(id=>!ids.has(id)&&!tombstones.has(id));
-    const vault=readProjectRegistryVault();
-    return {vaultSnapshots:(vault.snapshots||[]).length,historicalIds:historical.size,missingIds:missing,storage:vault.storage||projectRegistryVaultRuntime.storage||'unknown'};
+  function canonicalizeRegistryAliasRows(rows){
+    const out=[];
+    let changed=false;
+    for(const raw of (Array.isArray(rows)?rows:[])){
+      const row=structuredClone(raw);
+      if(String(row?.id||'')===LEGACY_GRIZZLE_PROJECT_ID){
+        row.id=CANONICAL_GRIZZLY_PROJECT_ID;
+        if(row.namespace===`bf.project.${LEGACY_GRIZZLE_PROJECT_ID}`)row.namespace=`bf.project.${CANONICAL_GRIZZLY_PROJECT_ID}`;
+        row.identity=row.identity&&typeof row.identity==='object'?row.identity:{};
+        if(row.identity.projectId===LEGACY_GRIZZLE_PROJECT_ID)row.identity.projectId=CANONICAL_GRIZZLY_PROJECT_ID;
+        row.registryMigration={...(row.registryMigration||{}),legacyProjectId:LEGACY_GRIZZLE_PROJECT_ID,canonicalProjectId:CANONICAL_GRIZZLY_PROJECT_ID,sealedBy:'4.4.1',sealedAt:new Date().toISOString()};
+        changed=true;
+      }
+      out.push(replaceProjectIdDeep(row,LEGACY_GRIZZLE_PROJECT_ID,CANONICAL_GRIZZLY_PROJECT_ID));
+    }
+    // If both legacy and canonical somehow survived, canonical identity wins and the
+    // alias row is folded into one vessel rather than becoming a duplicate.
+    const map=new Map();
+    for(const row of out){
+      const id=String(row?.id||'');
+      if(!id)continue;
+      if(!map.has(id))map.set(id,row);
+      else changed=true;
+    }
+    return {rows:[...map.values()],changed};
   }
+
+  async function migrateGrizzlyProjectAliasData(){
+    const fromId=LEGACY_GRIZZLE_PROJECT_ID,toId=CANONICAL_GRIZZLY_PROJECT_ID;
+    let changed=false;
+
+    // Orders in IndexedDB retain their order IDs; only project scope is canonicalized.
+    try{
+      const rows=await getAll(STORE_ORDERS);
+      const affected=rows.filter(o=>String(o?.projectId||'')===fromId);
+      if(affected.length){
+        const transaction=db.transaction(STORE_ORDERS,'readwrite');
+        const store=transaction.objectStore(STORE_ORDERS);
+        affected.forEach(order=>store.put(replaceProjectIdDeep(order,fromId,toId)));
+        await transactionToPromise(transaction); changed=true;
+      }
+    }catch(err){console.warn('Grizzly order alias migration could not complete',err);}
+
+    // Project-scoped settings (admin PIN, owner access, business brief, etc.).
+    try{
+      const rows=await getAll(STORE_SETTINGS);
+      const existingKeys=new Set(rows.map(r=>String(r?.key||'')));
+      const transaction=db.transaction(STORE_SETTINGS,'readwrite');
+      const store=transaction.objectStore(STORE_SETTINGS);
+      for(const row of rows){
+        const oldKey=String(row?.key||'');
+        if(oldKey==='companies')continue;
+        const newKey=oldKey.replaceAll(`:${fromId}`,`:${toId}`);
+        const next=replaceProjectIdDeep(row,fromId,toId);
+        if(newKey!==oldKey){
+          next.key=newKey;
+          if(!existingKeys.has(newKey))store.put(next);
+          store.delete(oldKey); changed=true;
+        }else if(JSON.stringify(next)!==JSON.stringify(row)){
+          store.put(next); changed=true;
+        }
+      }
+      await transactionToPromise(transaction);
+    }catch(err){console.warn('Grizzly settings alias migration could not complete',err);}
+
+    // Local recovery/state stores are project scoped too. Rewrite exact ID values and
+    // map keys without changing the human-facing business name.
+    try{
+      const keys=Object.keys(localStorage).filter(k=>k.startsWith('blackFlag') || k.startsWith(DRAFT_KEY+':'));
+      for(const key of keys){
+        const raw=localStorage.getItem(key); if(raw==null)continue;
+        let parsed; try{parsed=JSON.parse(raw);}catch(_){continue;}
+        const next=replaceProjectIdDeep(parsed,fromId,toId);
+        const newKey=key.replaceAll(`:${fromId}`,`:${toId}`);
+        if(newKey!==key){ if(localStorage.getItem(newKey)==null)localStorage.setItem(newKey,JSON.stringify(next)); localStorage.removeItem(key); changed=true; }
+        else if(JSON.stringify(next)!==raw){ localStorage.setItem(key,JSON.stringify(next)); changed=true; }
+      }
+    }catch(err){console.warn('Grizzly local state alias migration could not complete',err);}
+
+    if(changed)window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:toId,category:'migration',action:'v4.4.1.grizzly.project_id.sealed',detail:`${fromId} → ${toId} • legacy alias retained for resolution`});
+    return changed;
+  }
+
+
+  async function commissionV4ProjectEnvelopes({force=false}={}){
+    const result=await ensureV4EnvelopeConvergence({persistRegistry:true,record:true});
+    if(result.sealed!==result.total)throw new Error(result.error||`V4 convergence incomplete: ${result.sealed}/${result.total}.`);
+    return {changed:true,sealed:result.sealed,total:result.total,rows:result.rows};
+  }
+
+
+
+  // V4.0.4 — Project Envelope Ledger. The registry owns business/project data;
+  // this ledger owns the security envelope contract. Keeping the contract in a
+  // dedicated, project-ID-keyed ledger prevents older project serializers from
+  // accidentally dropping security fields while preserving canonical identity.
+  // V4.1.1 — Harbor Master. Project existence and project security now share one
+  // explicit fleet manifest. The canonical projects object store remains the durable
+  // record store, but only immutable IDs on this manifest are active vessels. Recovery
+  // artifacts and legacy/ghost rows are preserved in quarantine instead of being
+  // silently promoted into the fleet or counted by telemetry/commissioning.
+  const V4_FLEET_MANIFEST_KEY='darkSkyV4FleetManifestV1';
+  const V4_FLEET_MANIFEST_SETTING='darkSkyV4FleetManifestV1';
+  const V4_ADMISSION_LEDGER_KEY='darkSkyV4ProjectAdmissionsV1';
+  const V4_ADMISSION_LEDGER_SETTING='darkSkyV4ProjectAdmissionsV1';
+  const V4_BASELINE_FLEET_IDS=Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear']);
+
+  function readV4FleetManifest(){
+    try{const v=JSON.parse(localStorage.getItem(V4_FLEET_MANIFEST_KEY)||'null');return Array.isArray(v)?[...new Set(v.map(String).filter(Boolean))]:[]}catch(_){return[]}
+  }
+  function writeV4FleetManifest(ids){
+    const clean=[...new Set((ids||[]).map(String).filter(Boolean))];
+    localStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));
+    return clean;
+  }
+  function readV4AdmissionLedger(){
+    try{const v=JSON.parse(localStorage.getItem(V4_ADMISSION_LEDGER_KEY)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}catch(_){return{}}
+  }
+  function writeV4AdmissionLedger(value){
+    const clean=value&&typeof value==='object'&&!Array.isArray(value)?value:{};
+    localStorage.setItem(V4_ADMISSION_LEDGER_KEY,JSON.stringify(clean));
+    return clean;
+  }
+  async function persistV4AdmissionLedger(value){
+    const clean=writeV4AdmissionLedger(value);
+    try{await setSetting(V4_ADMISSION_LEDGER_SETTING,clean);}catch(_){ }
+    return clean;
+  }
+  function validV4Admission(row,id){
+    return !!(row&&row.admitted===true&&String(row.projectId||'')===String(id||'')&&String(row.transactionId||'').trim());
+  }
+  async function ensureV4AdmissionLedger(canonicalRows=[]){
+    const canonicalById=new Map((canonicalRows||[]).map(p=>[String(p?.id||''),p]).filter(([id])=>id));
+    let local=readV4AdmissionLedger(), stored={};
+    try{const v=(await getSetting(V4_ADMISSION_LEDGER_SETTING))?.value; if(v&&typeof v==='object'&&!Array.isArray(v))stored=v;}catch(_){ }
+    // Admission records, not the old manifest, are authority. Merge only records
+    // that prove their own Project ID and transaction. A stale manifest cannot grant
+    // citizenship to a recovery artifact.
+    const ledger={...stored,...local};
+    const now=new Date().toISOString();
+    for(const id of V4_BASELINE_FLEET_IDS){
+      if(!canonicalById.has(id))continue;
+      if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'v4-baseline',transactionId:`baseline:${id}`,admittedAt:now,build:BUILD_VERSION};
+    }
+    // Drop malformed admission rows. Valid rows for projects no longer present are
+    // retained as historical evidence, but they cannot enter the active manifest.
+    for(const [id,row] of Object.entries({...ledger}))if(!validV4Admission(row,id))delete ledger[id];
+    await persistV4AdmissionLedger(ledger);
+    return ledger;
+  }
+  async function admitProjectToV4Fleet(projectId,{source='commissioning',detail=''}={}){
+    const id=String(projectId||'').trim(); if(!id)throw new Error('Project admission requires an immutable Project ID.');
+    const canonical=await readCanonicalProjectRegistry();
+    if(!canonical.some(p=>String(p?.id||'')===id))throw new Error(`Project ${id} cannot be admitted before canonical registry verification.`);
+    const ledger=await ensureV4AdmissionLedger(canonical);
+    const existing=ledger[id];
+    if(validV4Admission(existing,id))return existing;
+    const record={projectId:id,admitted:true,source:String(source||'commissioning'),transactionId:`admit:${id}:${Date.now().toString(36)}:${Math.random().toString(36).slice(2,7)}`,admittedAt:new Date().toISOString(),detail:String(detail||''),build:BUILD_VERSION};
+    ledger[id]=record;
+    await persistV4AdmissionLedger(ledger);
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'v4.1.1.project.admitted',detail:`${record.source} • ${record.transactionId}`});
+    window.DarkSkyV4?.diagnostic?.('fleet_admission.complete',`${id} admitted to active fleet`,{transactionId:record.transactionId,source:record.source});
+    return record;
+  }
+  async function addProjectToV4FleetManifest(projectId){
+    // Compatibility entry point used by the project factory. In V4.1.1 this is an
+    // admission transaction, not a list append.
+    await admitProjectToV4Fleet(projectId,{source:'commissioning',detail:'Canonical registry read-back verified.'});
+    const state=await ensureCanonicalFleetManifest({repairRegistry:false});
+    return state.ids;
+  }
+  async function ensureCanonicalFleetManifest({repairRegistry=true}={}){
+    let canonical=await readCanonicalProjectRegistry();
+    const canonicalById=new Map(canonical.map(p=>[String(p?.id||''),p]).filter(([id])=>id));
+    const admissions=await ensureV4AdmissionLedger(canonical);
+    // Harbor Master rule: the active fleet is the intersection of canonical rows and
+    // explicit valid admissions. The persisted manifest is now a projection/cache only.
+    // It can never add an ID to the fleet by itself.
+    const ids=Object.keys(admissions).filter(id=>canonicalById.has(id)&&validV4Admission(admissions[id],id));
+    writeV4FleetManifest(ids);
+    try{await setSetting(V4_FLEET_MANIFEST_SETTING,ids);}catch(_){ }
+
+    const allowed=new Set(ids);
+    const orphans=canonical.filter(p=>p?.id&&!allowed.has(String(p.id)));
+    if(orphans.length){
+      for(const ghost of orphans)appendV4Quarantine('unadmitted_registry_orphan',String(ghost.id),structuredClone(ghost));
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.1.1.harbor_master.quarantined',detail:`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
+      window.DarkSkyV4?.diagnostic?.('fleet_admission.orphans.quarantined',`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined`,{projectIds:orphans.map(p=>p.id)});
+      if(repairRegistry){
+        const keep=canonical.filter(p=>allowed.has(String(p?.id||'')));
+        canonical=await persistProjectRegistry(keep,{allowRemovalIds:orphans.map(p=>String(p.id))});
+      }
+    }
+
+    // Security stores are strict projections of the admitted fleet. A ghost can be
+    // preserved in Recovery Vault, but it cannot keep an envelope or affect counts.
+    const localLedger=readV4EnvelopeLedger();
+    const cleanLedger={};
+    for(const id of ids)if(localLedger[id])cleanLedger[id]=localLedger[id];
+    if(Object.keys(localLedger).some(id=>!allowed.has(id)))writeV4EnvelopeLedger(cleanLedger);
+    try{
+      const mirror=(await getSetting(V4_ENVELOPE_MIRROR_SETTING))?.value||{};
+      const cleanMirror={};for(const id of ids)if(mirror?.[id])cleanMirror[id]=mirror[id];
+      if(Object.keys(mirror||{}).some(id=>!allowed.has(id)))await setSetting(V4_ENVELOPE_MIRROR_SETTING,cleanMirror);
+    }catch(_){ }
+
+    const latest=repairRegistry?canonical:canonical.filter(p=>allowed.has(String(p?.id||'')));
+    const memoryById=new Map((companies||[]).map(p=>[String(p?.id||''),p]));
+    companies=ids.map(id=>{const row=latest.find(p=>String(p?.id||'')===id);const mem=memoryById.get(id);return row?(mem?{...mem,...row,id:row.id}:row):null;}).filter(Boolean).map(normalizeProjectCode).map(ensureProjectGovernance);
+    return {ids,rows:companies,orphans,admissions};
+  }
+
+  const V4_ENVELOPE_LEDGER_KEY='darkSkyV4ProjectEnvelopesV1';
+  function readV4EnvelopeLedger(){
+    try{const v=JSON.parse(localStorage.getItem(V4_ENVELOPE_LEDGER_KEY)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}catch(_){return{}}
+  }
+  function writeV4EnvelopeLedger(value){localStorage.setItem(V4_ENVELOPE_LEDGER_KEY,JSON.stringify(value||{}));return value||{}}
+  function buildV4ProjectEnvelope(project){
+    const core=window.BlackFlagV3Core, id=String(project?.id||'').trim(); if(!id)return null;
+    const namespace=core?.namespaceFor?.(id)||`bf.project.${id}`;
+    return {projectId:id,namespace,schemaVersion:Number(core?.schemaVersion||8),policyVersion:String(core?.policyVersion||'4.0'),isolation:{projectId:id,namespace,crossProjectAccess:'deny'},permissions:{projectScoped:true,defaultDeny:true},sealedAt:new Date().toISOString(),build:BUILD_VERSION};
+  }
+  function sealProjectFromEnvelope(project,envelope){
+    if(!project?.id||!envelope||String(envelope.projectId)!==String(project.id))return project;
+    project.schemaVersion=Number(envelope.schemaVersion||window.BlackFlagV3Core?.schemaVersion||8);
+    project.namespace=String(envelope.namespace||window.BlackFlagV3Core?.namespaceFor?.(project.id)||`bf.project.${project.id}`);
+    project.isolation={...(project.isolation||{}),...(envelope.isolation||{}),projectId:project.id,namespace:project.namespace,crossProjectAccess:'deny'};
+    project.permissions={...(project.permissions||{}),...(envelope.permissions||{}),policyVersion:String(envelope.policyVersion||window.BlackFlagV3Core?.policyVersion||'4.0'),projectScoped:true,defaultDeny:true};
+    if(project.identity&&typeof project.identity==='object')project.identity.projectId=project.id;
+    return project;
+  }
+  function hydrateFleetFromEnvelopeLedger(){
+    const ledger=readV4EnvelopeLedger();
+    if(!Array.isArray(companies))return {sealed:0,total:0};
+    companies=companies.map(project=>{
+      const envelope=ledger[String(project?.id||'')];
+      return envelope?sealProjectFromEnvelope(project,envelope):project;
+    });
+    const schema=Number(window.BlackFlagV3Core?.schemaVersion||8);
+    const sealed=companies.filter(p=>Number(p?.schemaVersion)===schema&&p?.namespace===(window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`)&&p?.isolation?.projectId===p?.id&&p?.isolation?.crossProjectAccess==='deny'&&p?.permissions?.defaultDeny===true).length;
+    return {sealed,total:companies.length};
+  }
+  function sealFleetEnvelopeLedger(){
+    const prior=readV4EnvelopeLedger(), next={};
+    for(const project of (companies||[])){
+      const id=String(project?.id||''); if(!id)continue;
+      const fresh=buildV4ProjectEnvelope(project); next[id]={...(prior[id]||{}),...fresh};
+      sealProjectFromEnvelope(project,next[id]);
+    }
+    writeV4EnvelopeLedger(next);
+    return hydrateFleetFromEnvelopeLedger();
+  }
+
+  const V4_ENVELOPE_MIRROR_SETTING='darkSkyV4ProjectEnvelopesV1';
+  let v4EnvelopeConvergenceState={at:null,total:0,sealed:0,rows:[],error:''};
+
+  function envelopeValidForProject(envelope,project){
+    const core=window.BlackFlagV3Core, id=String(project?.id||'').trim(), schema=Number(core?.schemaVersion||8);
+    const namespace=core?.namespaceFor?.(id)||`bf.project.${id}`;
+    return !!(id&&envelope&&String(envelope.projectId||'')===id&&Number(envelope.schemaVersion)===schema&&String(envelope.namespace||'')===namespace&&String(envelope?.isolation?.projectId||'')===id&&String(envelope?.isolation?.namespace||'')===namespace&&envelope?.isolation?.crossProjectAccess==='deny'&&envelope?.permissions?.defaultDeny===true&&envelope?.permissions?.projectScoped===true);
+  }
+
+  async function ensureV4EnvelopeConvergence({persistRegistry=true,record=false}={}){
+    const core=window.BlackFlagV3Core;
+    const rows=[];
+    if(!core||!Array.isArray(companies)){
+      v4EnvelopeConvergenceState={at:new Date().toISOString(),total:0,sealed:0,rows:[],error:'Core or fleet unavailable'};
+      return v4EnvelopeConvergenceState;
+    }
+    try{
+      // v4.1.1 — Harbor Master. Explicit admissions define the fleet. The
+      // registry cannot expand the denominator merely because it contains recovery
+      // cargo, and memory cannot resurrect a quarantined project.
+      const manifest=await ensureCanonicalFleetManifest({repairRegistry:true});
+      const canonicalSeed=manifest.rows||[];
+      if(canonicalSeed.length)companies=canonicalSeed.map(normalizeProjectCode).map(ensureProjectGovernance);
+
+      const expected={};
+      for(const project of companies){
+        const e=buildV4ProjectEnvelope(project); if(e) expected[String(project.id)]=e;
+      }
+      writeV4EnvelopeLedger(expected);
+      await setSetting(V4_ENVELOPE_MIRROR_SETTING,expected);
+      const localRead=readV4EnvelopeLedger();
+      const dbRead=(await getSetting(V4_ENVELOPE_MIRROR_SETTING))?.value||{};
+
+      companies=companies.map(project=>sealProjectFromEnvelope(project,localRead[String(project?.id||'')])).map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
+      if(persistRegistry){
+        await persistProjectRegistry(companies);
+        const canonical=await readCanonicalProjectRegistry();
+        companies=canonical.map(project=>sealProjectFromEnvelope(project,localRead[String(project?.id||'')])).map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
+      }
+
+      const canonicalRows=await readCanonicalProjectRegistry();
+      const canonicalById=new Map(canonicalRows.map(p=>[String(p?.id||''),p]));
+      const schema=Number(core.schemaVersion||8);
+      for(const project of companies){
+        const id=String(project?.id||''), localEnvelope=localRead[id], dbEnvelope=dbRead?.[id], canonical=canonicalById.get(id);
+        const namespace=core.namespaceFor?.(id)||`bf.project.${id}`;
+        const localOk=envelopeValidForProject(localEnvelope,project);
+        const dbOk=envelopeValidForProject(dbEnvelope,project);
+        const memoryOk=Number(project?.schemaVersion)===schema&&String(project?.namespace||'')===namespace&&String(project?.isolation?.projectId||'')===id&&project?.isolation?.crossProjectAccess==='deny'&&project?.permissions?.defaultDeny===true;
+        const registryOk=!!canonical&&Number(canonical?.schemaVersion)===schema&&String(canonical?.namespace||'')===namespace&&String(canonical?.isolation?.projectId||'')===id&&canonical?.isolation?.crossProjectAccess==='deny'&&canonical?.permissions?.defaultDeny===true;
+        const ok=localOk&&dbOk&&memoryOk&&registryOk;
+        rows.push({projectId:id,name:project?.name||id,registryFound:!!canonical,localEnvelope:localOk,dbEnvelope:dbOk,memorySealed:memoryOk,registrySealed:registryOk,ok});
+      }
+      const sealed=rows.filter(r=>r.ok).length;
+      v4EnvelopeConvergenceState={at:new Date().toISOString(),total:rows.length,sealed,rows,error:''};
+      window.__darkSkyV4EnvelopeConvergence=v4EnvelopeConvergenceState;
+      if(record||sealed!==rows.length)window.DarkSkyV4?.diagnostic?.('commissioning.convergence',`${sealed}/${rows.length} envelope contracts converged`,{rows});
+      if(sealed===rows.length&&rows.length)window.DarkSkyV4?.completeCommissioning?.(companies,{sealedCount:sealed});
+      else window.DarkSkyV4?.markCommissioningFailed?.(companies,`Convergence invariant failed: ${sealed}/${rows.length}.`);
+      return v4EnvelopeConvergenceState;
+    }catch(err){
+      v4EnvelopeConvergenceState={at:new Date().toISOString(),total:Array.isArray(companies)?companies.length:0,sealed:0,rows,error:String(err?.message||err)};
+      window.__darkSkyV4EnvelopeConvergence=v4EnvelopeConvergenceState;
+      window.DarkSkyV4?.markCommissioningFailed?.(companies,v4EnvelopeConvergenceState.error);
+      window.DarkSkyV4?.diagnostic?.('commissioning.convergence.failed',v4EnvelopeConvergenceState.error);
+      return v4EnvelopeConvergenceState;
+    }
+  }
+
+  function renderV4EnvelopeTrace(state=v4EnvelopeConvergenceState){
+    const box=$('v4EnvelopeTrace'); if(!box)return;
+    if(!state||!state.total){box.innerHTML='';return;}
+    const cell=(ok)=>`<span class="${ok?'pass':'fail'}">${ok?'PASS':'FAIL'}</span>`;
+    box.innerHTML=`<div class="trace-head"><span>V4 ENVELOPE CONVERGENCE</span><strong>${state.sealed}/${state.total} SEALED</strong></div>
+      <div class="trace-grid">
+        <span>PROJECT</span><span>REGISTRY</span><span>LOCAL LEDGER</span><span>IDB MIRROR</span><span>MEMORY</span><span>RESULT</span>
+        ${state.rows.map(r=>`<span class="trace-label">${escapeHtml(r.name)}<br><small>${escapeHtml(r.projectId)}</small></span>${cell(r.registrySealed)}${cell(r.localEnvelope)}${cell(r.dbEnvelope)}${cell(r.memorySealed)}${cell(r.ok)}`).join('')}
+      </div>${state.error?`<div class="trace-note">${escapeHtml(state.error)}</div>`:'<div class="trace-note">The Broadside counter, commissioning gate, and Integrity preflight use this same convergence result.</div>'}`;
+  }
+
+  const V4_PROJECT_REFERENCE_ALIASES=Object.freeze({
+    'grizzle-bear':'grizzly-bear',
+    'becca-s-bloom-shop':'beccas-bloom-shop'
+  });
+  const V4_QUARANTINE_KEY='darkSkyV4LegacyQuarantineV1';
+  const V4_ORPHAN_ORDER_TOMBSTONES_KEY='darkSkyV4OrphanOrderTombstonesV1';
+  function readOrphanOrderTombstones(){
+    try{const v=JSON.parse(localStorage.getItem(V4_ORPHAN_ORDER_TOMBSTONES_KEY)||'[]');return new Set(Array.isArray(v)?v.map(String):[])}catch(_){return new Set()}
+  }
+  function writeOrphanOrderTombstones(ids){
+    try{localStorage.setItem(V4_ORPHAN_ORDER_TOMBSTONES_KEY,JSON.stringify([...new Set([...ids].map(String))].slice(-500)));return true}catch(_){return false}
+  }
+  function quarantinedOrderIds(){
+    const ids=readOrphanOrderTombstones();
+    for(const row of readV4Quarantine()){
+      if((row?.kind==='order'||row?.kind==='orphan_order')&&row?.payload?.id)ids.add(String(row.payload.id));
+    }
+    return ids;
+  }
+  function isQuarantinedOrder(order){return !!order?.id&&quarantinedOrderIds().has(String(order.id));}
+  function readV4Quarantine(){try{const v=JSON.parse(localStorage.getItem(V4_QUARANTINE_KEY)||'[]');return Array.isArray(v)?v:[]}catch(_){return[]}}
+  function appendV4Quarantine(kind,projectId,payload){
+    const rows=readV4Quarantine(), pid=String(projectId||''), payloadId=String(payload?.id||payload?.key||'');
+    const duplicate=rows.some(r=>r?.kind===kind&&String(r?.projectId||'')===pid&&String(r?.payload?.id||r?.payload?.key||'')===payloadId&&payloadId);
+    if(!duplicate)rows.unshift({id:`Q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,at:new Date().toISOString(),kind,projectId:pid,payload});
+    localStorage.setItem(V4_QUARANTINE_KEY,JSON.stringify(rows.slice(0,250)));
+  }
+  function inferCanonicalProjectId(row,valid){
+    const raw=String(row?.projectId||'');
+    if(valid.has(raw))return raw;
+    const alias=V4_PROJECT_REFERENCE_ALIASES[raw]; if(alias&&valid.has(alias))return alias;
+    const prefix=String(row?.id||'').split('-')[0].toUpperCase();
+    const byPrefix={IKE:'ikes-wood-signs',MUG:'mugshot-after-dark',BBS:'beccas-bloom-shop',GRZ:'grizzly-bear'}[prefix];
+    if(byPrefix&&valid.has(byPrefix))return byPrefix;
+    const business=String(row?.business?.name||row?.projectName||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');
+    if(business){
+      const hits=companies.filter(p=>String(p?.name||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'')===business);
+      if(hits.length===1)return hits[0].id;
+      if(business==='mugsafterdark'&&valid.has('mugshot-after-dark'))return'mugshot-after-dark';
+    }
+    return '';
+  }
+  async function repairLegacyProjectReferences(){
+    const valid=new Set(companies.map(p=>p.id)); let migrated=0,quarantined=0;
+    // Orders: deterministic aliases/prefixes are re-scoped; ambiguous legacy rows are preserved in quarantine, never assigned by guess.
+    let indexed=[]; try{indexed=await getAll(STORE_ORDERS)}catch(_){}
+    const local=readLocalOrders(); const merged=new Map(); [...local,...indexed].forEach(o=>{if(o?.id)merged.set(o.id,structuredClone(o))});
+    const keep=[];
+    for(const order of merged.values()){
+      const original=String(order?.projectId||''); const canonical=inferCanonicalProjectId(order,valid);
+      if(canonical){
+        if(canonical!==original)migrated++;
+        order.projectId=canonical; order.namespace=window.BlackFlagV3Core?.namespaceFor?.(canonical)||`bf.project.${canonical}`;
+        order.isolation={...(order.isolation||{}),projectId:canonical,namespace:order.namespace,crossProjectAccess:'deny'};
+        keep.push(order);
+      }else if(original && !valid.has(original)){
+        appendV4Quarantine('orphan_order',original,order);
+        const tombstones=readOrphanOrderTombstones(); tombstones.add(String(order.id||'')); writeOrphanOrderTombstones(tombstones);
+        quarantined++;
+      }else keep.push(order);
+    }
+    if(indexed.length||keep.length){
+      try{const tr=db.transaction(STORE_ORDERS,'readwrite'),st=tr.objectStore(STORE_ORDERS);st.clear();keep.forEach(o=>st.put(o));await transactionToPromise(tr)}catch(err){console.warn('V4 order reference repair could not rewrite IndexedDB',err)}
+      writeLocalOrders(keep);
+    }
+    // V4.1.1 — Orphan Watch: quarantine is authoritative even if a browser keeps a stale IDB row alive.
+    // Physically delete tombstoned order IDs when possible; getMergedOrders also excludes them as a fail-safe.
+    try{
+      const tombstones=readOrphanOrderTombstones();
+      if(tombstones.size){
+        const tr=db.transaction(STORE_ORDERS,'readwrite'),st=tr.objectStore(STORE_ORDERS);
+        tombstones.forEach(id=>{if(id)st.delete(id)});
+        await transactionToPromise(tr);
+        writeLocalOrders(readLocalOrders().filter(o=>!tombstones.has(String(o?.id||''))));
+      }
+    }catch(err){console.warn('V4 orphan order purge could not fully rewrite IndexedDB',err)}
+    // Customer directory buckets are project-scoped. Known aliases move atomically; unknown buckets are quarantined intact.
+    const dir=readCustomerDirectory(),next={};
+    for(const [pid,bucket] of Object.entries(dir||{})){
+      const canonical=valid.has(pid)?pid:(V4_PROJECT_REFERENCE_ALIASES[pid]&&valid.has(V4_PROJECT_REFERENCE_ALIASES[pid])?V4_PROJECT_REFERENCE_ALIASES[pid]:'');
+      if(canonical){
+        if(canonical!==pid)migrated++;
+        const existing=next[canonical]&&typeof next[canonical]==='object'?next[canonical]:{};
+        next[canonical]={...existing,...(bucket&&typeof bucket==='object'?bucket:{})};
+      }else{
+        appendV4Quarantine('customer_directory',pid,bucket); quarantined++;
+      }
+    }
+    writeCustomerDirectory(next);
+    if(migrated||quarantined){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.orphan_watch.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
+    }
+    return {migrated,quarantined};
+  }
+
 
   async function loadCompanies(){
     let canonicalRows=[];
@@ -1412,31 +1933,11 @@
       console.warn('Legacy project registry mirror could not be read from IndexedDB',err);
     }
 
-    // v3.9.13: the Recovery Vault has its own IndexedDB mirror. Hydrate it before
-    // continuity analysis so Safari/localStorage churn cannot silently erase history.
-    await hydrateProjectRegistryVaultFromIndexedDB();
     const backup=readProjectRegistryBackup();
-    // v3.9.11: if a prior verified Project ID exists in browser recovery cargo but
-    // disappeared from the canonical store during a version/deployment transition,
-    // heal the canonical registry by immutable ID before rendering the fleet.
-    if(canonicalRows.length || savedRows?.length || vaultSnapshotSources().length){
-      try{canonicalRows=await healCanonicalRegistryContinuity(canonicalRows,savedRows,backup);}catch(err){console.warn('Fleet continuity recovery warning',err);}
-    }
-    let registrySource='defaults';
-    if(canonicalRows.length){
-      companies=canonicalRows;
-      registrySource='canonical-project-store';
-    }else if(savedRows){
-      companies=savedRows;
-      registrySource='legacy-settings-mirror';
-    }else if(Array.isArray(backup?.projects)&&backup.projects.length){
-      companies=structuredClone(backup.projects);
-      registrySource='verified-local-backup';
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.loaded_from_backup',detail:`${companies.length} projects • ${backup.savedAt||'unknown time'}`});
-    }else{
-      companies=structuredClone(DEFAULT_COMPANIES);
-    }
-
+    const backupRows=Array.isArray(backup?.projects)?backup.projects:[];
+    let registrySource=canonicalRows.length?'canonical-project-store':savedRows?'legacy-settings-mirror':backupRows.length?'verified-local-backup':'defaults';
+    companies=reconcileFleetSources(canonicalRows,savedRows||[],backupRows);
+    if(!companies.length)companies=structuredClone(DEFAULT_COMPANIES);
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
     const core=window.BlackFlagV3Core;
     let migrationChanged=false;
@@ -1456,9 +1957,18 @@
     // On the first launch after upgrade, seed it from the existing settings mirror
     // (or verified backup/defaults). Thereafter every fleet mutation is committed
     // atomically to the canonical store and the compatibility mirror.
-    if(!canonicalRows.length || migrationChanged){
-      companies=await persistProjectRegistry(companies);
+    let registrySchema=0;
+    try{registrySchema=Number((await getSetting(FLEET_REGISTRY_SCHEMA_KEY))?.value||0);}catch(_){}
+    const aliasCanonicalized=canonicalizeRegistryAliasRows(companies);
+    companies=aliasCanonicalized.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
+    if(registrySchema<FLEET_REGISTRY_SCHEMA_VERSION) await migrateGrizzlyProjectAliasData();
+    const canonicalIdsBefore=projectRegistryIds(canonicalRows);
+    const reconciledIds=projectRegistryIds(companies);
+    const registryReconciled=canonicalIdsBefore.size!==reconciledIds.size || [...reconciledIds].some(id=>!canonicalIdsBefore.has(id));
+    if(!canonicalRows.length || migrationChanged || aliasCanonicalized.changed || registryReconciled || registrySchema<FLEET_REGISTRY_SCHEMA_VERSION){
+      companies=await persistProjectRegistry(companies,{allowRemovalIds:aliasCanonicalized.changed?[LEGACY_GRIZZLE_PROJECT_ID]:[]});
       companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.4.1.fleet.registry.reconciled',detail:`${companies.length} projects • schema ${FLEET_REGISTRY_SCHEMA_VERSION}`});
     }
 
     // v3.9.9 — reconcile commissioning artifacts against the canonical Project ID.
@@ -1467,6 +1977,10 @@
     // commissioned candidate and verifies it by reading the canonical store back.
     await reconcileCommissioningArtifacts({attemptRepair:true,source:'engine-boot'});
 
+    try{ await ensureCanonicalFleetManifest({repairRegistry:true}); }catch(err){ console.warn('V4 fleet manifest repair warning',err); window.DarkSkyV4?.diagnostic?.('fleet_manifest.repair.failed',String(err?.message||err)); }
+    try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
+    try{ await repairLegacyProjectReferences(); }catch(err){ console.warn('V4 legacy project-reference repair warning',err); window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references.failed',String(err?.message||err)); }
+    try{ await ensureV4EnvelopeConvergence({persistRegistry:true,record:true}); }catch(err){ console.warn('V4 envelope convergence warning',err); }
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
 
@@ -1635,7 +2149,7 @@
 
   async function projectStats(p){
     const orders=await getMergedOrders();
-    const rows=projectScopedOrders(orders,p.id).filter(o=>o.testMode!==true);
+    const rows=projectScopedOrders(orders,p.id);
     const month=new Date().toISOString().slice(0,7);
     const monthRows=rows.filter(o=>(o.createdAt||'').slice(0,7)===month);
     const ledger=projectLedger(p.id);
@@ -1650,9 +2164,23 @@
 
   async function projectBrandVisual(p){
     const code=String(p?.projectCode||p?.orderPrefix||'PRJ').toUpperCase().slice(0,3);
-    let logo='';
-    try{logo=(await readProjectAssets(p.id))?.projectLogo||'';}catch(_){}
-    return {code,logo};
+    let logo='',source='initials';
+    try{
+      const assets=await readProjectAssets(p.id);
+      // Fleet identity should reuse the best project-owned mark already aboard.
+      // Prefer the dedicated logo slot, then a customer-facing hero/footer graphic.
+      // Never borrow another project's artwork.
+      logo=assets?.projectLogo||assets?.heroGraphic||assets?.footerGraphic||'';
+      if(logo) source=assets?.projectLogo?'projectLogo':(assets?.heroGraphic?'heroGraphic':'footerGraphic');
+    }catch(_){}
+    // Ike's original customer experience predates the V4 Graphics Library. Preserve
+    // that established identity as a project-specific compatibility fallback until
+    // a dedicated Project Logo / Mark is assigned in the Engine.
+    if(!logo && canonicalProjectId(p?.id)==='ikes-wood-signs'){
+      logo='assets/ike_character.jpg';
+      source='ikeCompatibilityMark';
+    }
+    return {code,logo,source};
   }
 
   async function applyProjectControlBrand(p){
@@ -1709,11 +2237,41 @@
     }
   }
 
+  async function renderFullSailCommandDeck(){
+    const host=$('fullSailCommandBody'),state=$('fullSailState');if(!host)return;
+    try{
+      const list=projects();let open=0,activeDeployments=0,fleetReady=0,draft=0,customerReady=0;
+      for(const p of list){
+        const snap=await projectControlSnapshot(p);open+=snap.open.length;activeDeployments+=snap.activeDeployments.length;
+        const launch=projectFleetLaunchState(p);if(launch.key==='fleet_ready')fleetReady++;if(launch.key==='draft')draft++;customerReady+=launch.offers?.length||0;
+      }
+      const brief=window.DarkSkyV4?.commandBrief?.(list)||null;
+      let usage='—',storageNote=`${brief?.recoveryPoints||0} recovery points • ${brief?.diagnostics||0} black-box events`;
+      try{
+        const last=JSON.parse(localStorage.getItem('bf.v4.storage.lastSounding')||'null');
+        if(last?.knownBytes!=null){usage=`${(Number(last.knownBytes)/1024/1024).toFixed(1)} MB`;const origin=Number(last.usage||0);storageNote=origin?`Measured Dark Sky • ${(origin/1024/1024).toFixed(1)} MB browser origin`:'Measured Dark Sky data';}
+        else{const e=await navigator.storage?.estimate?.();if(e?.usage!=null){usage=`${(e.usage/1024/1024).toFixed(1)} MB`;storageNote='Browser origin estimate • inspect for Dark Sky breakdown';}}
+      }catch(_){}
+      const posture=brief?.preflight?.ok?'CLEAR HORIZON':'WATCH';if(state){state.textContent=posture;state.className=`full-sail-state ${brief?.preflight?.ok?'clear':'watch'}`;}
+      const priorities=(brief?.priorities||[]).map(x=>`<article class="full-sail-priority ${escapeHtml(x.level)}"><span>${escapeHtml(x.level.toUpperCase())}</span><strong>${escapeHtml(x.title)}</strong><small>${escapeHtml(x.detail)}</small></article>`).join('');
+      host.innerHTML=`<div class="full-sail-kpis">
+        <article><span>OPEN WORKLOAD</span><strong>${open}</strong><small>${list.length} admitted vessels</small></article>
+        <article><span>FLEET READY</span><strong>${fleetReady}</strong><small>${activeDeployments} active deployment${activeDeployments===1?'':'s'}</small></article>
+        <article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article>
+        <article><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
+      </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>Next best moves</h4>${priorities}</div><div class="full-sail-actions"><h4>Quick command</h4><button type="button" data-full-sail="watch">RUN WATCH</button><button type="button" data-full-sail="projects">PROJECT COMMAND</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
+      host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
+        const a=btn.dataset.fullSail;if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
+      });
+    }catch(err){console.warn('Full Sail command deck warning',err);if(state){state.textContent='CHECK';state.className='full-sail-state watch';}host.innerHTML='<p class="helper">Command Deck could not finish its live read. Fleet controls below remain available.</p>';}
+  }
+
   function ensureExperienceTestState(p){
     if(!p)return {};
     p.experienceTest=p.experienceTest||{};
     return p.experienceTest;
   }
+
 
   function experienceConfigurationSignature(p){
     const payload={
@@ -1727,30 +2285,36 @@
     return `exp-${(hash>>>0).toString(16)}`;
   }
 
+
   function experienceApproved(p){
     const state=ensureExperienceTestState(p);
     return !!state.approvedAt && state.approvedSignature===experienceConfigurationSignature(p);
   }
+
 
   function experienceSeaTrialCurrent(p,d){
     const state=ensureExperienceTestState(p);
     return !!d?.lastTestedAt && state.seaTrialSignature===experienceConfigurationSignature(p) && state.lastSeaTrialDeploymentId===d?.id;
   }
 
+
   function experienceDeploymentFor(p){
     const rows=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
     return rows.find(d=>d.state==='sea_trial')||rows.find(d=>d.state==='deployed')||rows[0]||null;
   }
+
 
   function experienceModeContext(p,mode,deployment=null){
     const d=deployment||experienceDeploymentFor(p);
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
+
   function currentExperienceContext(p=activeProject()){
     const ctx=window.__deploymentCustomerContext;
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
+
 
   async function recordExperienceSeaTrialSubmission(p,orderId){
     const ctx=currentExperienceContext(p);
@@ -1764,6 +2328,7 @@
     try{await saveCompanies();logActivity(p.id,'Experience Sea Trial completed',`${deployment.name} • ${orderId}`);window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'sea_trial',action:'experience.sea_trial.customer_submission',detail:`${deployment.id} • ${orderId}`});return true;}
     catch(err){console.warn('Experience Sea Trial metadata sync failed',err);return false;}
   }
+
 
   async function experienceTestSnapshot(p){
     const d=experienceDeploymentFor(p), offers=universalOffersFor(p);
@@ -1789,12 +2354,14 @@
     return {deployment:d,checklist,critical,seaTrialPassed:critical.length===0&&experienceSeaTrialCurrent(p,d),approved:experienceApproved(p)};
   }
 
+
   function ensureExperienceTestDeck(){
     let deck=document.getElementById('experienceTestDeck');if(deck)return deck;
     deck=document.createElement('section');deck.id='experienceTestDeck';deck.className='experience-test-deck hidden';
     deck.innerHTML='<div class="experience-test-shell"><header><div><span>EXPERIENCE TEST DECK</span><h2 id="experienceTestTitle">Project Experience</h2><p>One customer experience. Preview it, Sea Trial the real infrastructure, then open Live when published.</p></div><button type="button" id="closeExperienceTestDeck" class="secondary-btn">RETURN TO ENGINE</button></header><div id="experienceTestDeckBody"></div></div>';
     document.body.appendChild(deck);return deck;
   }
+
 
   async function renderExperienceTestDeck(p){
     const deck=ensureExperienceTestDeck(),body=document.getElementById('experienceTestDeckBody');if(!p||!body)return;
@@ -1815,9 +2382,13 @@
     ${!d?'<div class="experience-deck-guidance"><strong>Sea Trial needs an outpost.</strong><span>Preview is available first. Create and save an outpost when you are ready to test persistence, deployment identity, session behavior, workflow and customer submission.</span><button type="button" id="experienceOpenShipwright" class="secondary-btn">OPEN SHIPWRIGHT</button></div>':''}`;
   }
 
+
   async function openExperienceTestDeck(projectId){const p=projectById(projectId);if(!p)return;const deck=ensureExperienceTestDeck();experienceTestDeckProjectId=p.id;deck.classList.remove('hidden');document.body.classList.add('experience-test-deck-open');await renderExperienceTestDeck(p);}
+
   function closeExperienceTestDeck(){document.getElementById('experienceTestDeck')?.classList.add('hidden');document.body.classList.remove('experience-test-deck-open');}
+
   function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';banner.innerHTML=`<span><b>${escapeHtml(label)}</b><small>${escapeHtml(p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':'RETURN TO TEST DECK'}</button>`;banner.classList.remove('hidden');}
+
   async function enterExperienceMode(p,mode){
     if(!p)return;
     const d=mode==='live'?migrateLegacyDeployment(p).find(x=>x.state==='deployed'):experienceDeploymentFor(p);
@@ -1833,7 +2404,9 @@
     if(projectShellFor(p)==='universal'&&mode!=='live')clearUniversalReceipt(p);
     closeExperienceTestDeck();ensureExperienceModeBanner(p,mode);await enterProject(p.id);
   }
+
   async function returnFromExperienceMode(){const state=experienceTestReturnState;experienceTestReturnState=null;window.__deploymentCustomerContext=null;document.getElementById('experienceModeBanner')?.classList.add('hidden');hideAllCustomerShells();document.body.classList.remove('project-mode','universal-project','ikes-project','mugs-project','flowers-project');document.body.classList.add('engine-mode');$('enginePanel')?.classList.remove('hidden');$('returnToEngineBtn')?.classList.add('hidden');activeProjectId=null;engineSessionUnlocked=true;if(state?.projectId&&state.mode!=='live')await openExperienceTestDeck(state.projectId);else await renderEngineRoom();}
+
 
   function projectFleetLaunchState(p){
     const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
@@ -1864,7 +2437,9 @@
     await renderProjectCommand();
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics refresh warning',err); }
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats refresh warning',err); }
-    try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command refresh warning',err); }
+    try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v4 command refresh warning',err); }
+    try{ window.renderDarkSkyV4EngineStatus?.(); }catch(err){ console.warn('v4 status render warning',err); }
+    try{ await renderFullSailCommandDeck(); }catch(err){ console.warn('full sail render warning',err); }
     return true;
   }
 
@@ -1910,15 +2485,37 @@
     return true;
   }
 
+  function projectShowroomPreviewReady(p){
+    if(!p)return false;
+    const shell=projectShellFor(p);
+    const publishedOffer=(p.products||[]).some(pr=>pr && pr.active!==false && pr.published===true);
+    return ['ikes','mugs','flowers'].includes(shell) && publishedOffer;
+  }
+
   async function continueProjectLaunch(p){
     if(!p)return;
     const launch=projectFleetLaunchState(p);
-    if(launch.key==='live'){enterProject(p.id);return;}
+    if(launch.key==='live'){await enterProject(p.id);return;}
     if(launch.key==='fleet_ready'){await joinProjectFleet(p);return;}
-    if(launch.action==='experience'){await openExperienceTestDeck(p.id);return;}
+
+    // 4.3.7 — Showroom Restore.
+    // Ike's customer ordering experience predates the V4 deployment lane. A published
+    // bespoke shell must remain demonstrable even when the newer Business Brief /
+    // deployment records are incomplete. Continue Launch therefore opens the existing
+    // customer showroom instead of routing into a removed legacy `customer` tab.
+    if(p.id===LEGACY_IKE_PROJECT_ID && p.publish?.status==='live' && projectShowroomPreviewReady(p)){
+      logActivity(p.id,'Customer showroom opened','Legacy Ike customer experience compatibility route');
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'project',action:'project.showroom.opened',detail:`${p.name} • compatibility preview • build ${BUILD_VERSION}`});
+      await enterProject(p.id);
+      return;
+    }
+
     await openProjectEngineControl(p.id);
     if(launch.key==='draft'){
-      if(!launch.brief){await renderProjectTab(p.id,'customer');return;}
+      // `customer` was an old project-tab name removed by the V4 Project Control
+      // redesign. Route incomplete business understanding to the supported Experience
+      // tab so a launch action can never leave the Project Control body blank.
+      if(!launch.brief){await renderProjectTab(p.id,'experience');return;}
       if(!launch.offers.length){await renderProjectTab(p.id,'products');return;}
     }
     await renderProjectTab(p.id,'deployment');
@@ -1928,6 +2525,10 @@
   }
 
   function projectActivityMetricLabel(p){
+    // Project Command's first KPI is backed by projectStats().orders. Keep the label
+    // aligned with the value being rendered for the Grizzly Bear retail vessel even
+    // while its broader customer-relationship model is still being configured.
+    if(canonicalProjectId(p?.id)===CANONICAL_GRIZZLY_PROJECT_ID)return 'ORDERS';
     const type=customerRelationshipForProject(p)?.type||'purchase';
     return ({purchase:'ORDERS',service_request:'REQUESTS',quote:'QUOTES',booking:'BOOKINGS',inquiry:'INQUIRIES',partnership:'ENGAGEMENTS',application:'APPLICATIONS',reservation:'RESERVATIONS',custom_project:'PROJECTS'})[type]||'ACTIVITY';
   }
@@ -1941,10 +2542,7 @@
     const live=list.filter(p=>p.publish?.status==='live').length;
     const journal=readCommissionJournal();
     const journalState=journal?.project?.id && !list.some(p=>String(p.id)===String(journal.project.id)) ? ` • 1 RECOVERY PENDING` : '';
-    const continuity=registryContinuityStatus(list);
-    const vaultState=` • VAULT ${continuity.vaultSnapshots}${String(continuity.storage||'').includes('indexeddb')?' ✓':' !'}`;
-    const continuityAlert=continuity.missingIds.length?` • CONTINUITY ALERT ${continuity.missingIds.length}`:' • CONTINUITY OK';
-    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${vaultState}${continuityAlert}${journalState}`;
+    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${journalState}`;
     const cards=[];
     for(const p of list){
       const s=await projectStats(p);
@@ -1976,7 +2574,7 @@
           <span><small>LEDGER</small><strong>${s.completed}</strong></span>
         </div>
         <div class="project-launch-line ${launch.key}"><span>${escapeHtml(launch.label)}</span><small>${escapeHtml(launch.detail)}</small></div>
-        <div class="project-card-actions project-card-actions-three">
+        <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
           <button data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">TEST EXPERIENCE</button>
           <button data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
@@ -2357,7 +2955,7 @@
       ${(()=>{const launch=projectFleetLaunchState(p);return `<section class="pc-fleet-launch-lane ${launch.key}">
         <div class="pc-fleet-launch-copy"><span>FLEET COMMISSIONING LANE</span><h4>${escapeHtml(launch.label)}</h4><p>${escapeHtml(launch.detail)}</p></div>
         <div class="pc-fleet-launch-progress" aria-label="Fleet launch progress">${['Create','Prepare','Sea Trial','Fleet Ready','Live'].map((label,i)=>`<span class="${launch.step>i+1?'done':''} ${launch.step===i+1?'current':''}"><b>${i+1}</b>${label}</span>`).join('')}</div>
-        <div class="pc-fleet-launch-actions"><button type="button" data-project-test-experience-action="${escapeHtml(p.id)}" class="secondary-btn pc-fleet-launch-test">TEST EXPERIENCE</button><button type="button" data-project-launch-action="${escapeHtml(p.id)}" class="primary-btn pc-fleet-launch-action">${escapeHtml(launch.actionLabel)}</button></div>
+        <button type="button" data-project-launch-action="${escapeHtml(p.id)}" class="primary-btn pc-fleet-launch-action">${escapeHtml(launch.actionLabel)}</button>
       </section>`})()}
 
       <section class="pc-kpi-grid" aria-label="Project operating indicators">
@@ -2408,8 +3006,8 @@
         </div>
       </section>`;
     bindProjectControlJumpLinks(p);
-    box.querySelectorAll('[data-project-launch-action]').forEach(btn=>btn.addEventListener('click',async()=>{const target=projectById(btn.dataset.projectLaunchAction);if(target)await continueProjectLaunch(target);}));
     box.querySelectorAll('[data-project-test-experience-action]').forEach(btn=>btn.addEventListener('click',async()=>{const target=projectById(btn.dataset.projectTestExperienceAction);if(target)await openExperienceTestDeck(target.id);}));
+    box.querySelectorAll('[data-project-launch-action]').forEach(btn=>btn.addEventListener('click',async()=>{const target=projectById(btn.dataset.projectLaunchAction);if(target)await continueProjectLaunch(target);}));
   }
 
   function monthlyProjectBuckets(orders,count=6){
@@ -2992,8 +3590,19 @@
 
   async function renderProjectTab(id,tab){
     const p=projectById(id), box=$('projectTabContent');if(!p||!box)return;
-    box.innerHTML=projectTabsHtml(p,tab);
+    // Backward-compatible tab aliases. Never render a blank Project Control body just
+    // because an older launch path names a tab that V4 renamed.
+    const requestedTab=String(tab||'overview');
+    const resolvedTab=({customer:'experience',customers:'experience',deployments:'deployment'}[requestedTab]||requestedTab);
+    tab=resolvedTab;
+    const html=projectTabsHtml(p,tab);
+    box.innerHTML=html || `<section class="pec-card project-route-recovery"><div class="engine-kicker">PROJECT ROUTE RECOVERY</div><h4>That project view is no longer available.</h4><p class="helper">Dark Sky redirected an outdated project route instead of leaving this page blank.</p><button type="button" class="primary-btn small" id="projectRouteRecoveryBtn">OPEN OVERVIEW</button></section>`;
     syncProjectCommandNavigation(tab,{expandedGroup:PROJECT_COMMAND_GROUPS[tab]||null});
+    if(!html){
+      $('projectRouteRecoveryBtn')?.addEventListener('click',()=>renderProjectTab(p.id,'overview'));
+      window.DarkSkyV4?.diagnostic?.('project.route.recovered',`Recovered unsupported project tab: ${requestedTab}`,{projectId:p.id,requestedTab,resolvedTab,build:BUILD_VERSION});
+      return;
+    }
     bindProjectControlJumpLinks(p);
     if(tab==='overview'){await renderProjectControlOverview(p);return;}
     if(tab==='analytics'){await renderProjectAnalytics(p);return;}
@@ -3451,7 +4060,12 @@
       };
     }
     if(tab==='orders'){
-      const orders=approvedProjectOrders(await getMergedOrders(),p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+      const mergedOrders=await getMergedOrders();
+      const orders=approvedProjectOrders(mergedOrders,p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+      const selected=(commandSelectedOrderTarget && commandSelectedOrderTarget.projectId===p.id)
+        ? mergedOrders.find(o=>String(o?.id||'')===String(commandSelectedOrderTarget.orderId||'') && canonicalProjectId(o?.projectId||'')===p.id)
+        : null;
+      const selectedApproved=selected ? approvedProjectOrders([selected],p).length===1 : false;
       const stats={
         total:orders.length,
         newOrders:orders.filter(o=>canonicalOrderStatus(o.status)==='New').length,
@@ -3464,13 +4078,17 @@
         <article><span>Active</span><strong>${stats.active}</strong></article>
         <article><span>Completed</span><strong>${stats.completed}</strong></article>
       </div>`;
+      const historicalDetail=(selected && !selectedApproved)
+        ? historicalOrderDetailCard(selected,p)
+        : '';
       const commandList=orders.length?`<div class="pec-order-command-list">${orders.map(o=>{
         const status=canonicalOrderStatus(o.status);
         const statusClass=adminStatusClass(status);
         const request=orderRequestedText(o);
         const style=orderStyleSummary(o);
         const offer=orderOfferSummary(o,p)||p.name;
-        return `<article class="pec-order-command-card ${escapeHtml(statusClass)}">
+        const selectedClass=selectedApproved && selected && String(selected.id)===String(o.id)?' command-find-target':'';
+        return `<article class="pec-order-command-card ${escapeHtml(statusClass)}${selectedClass}" data-id="${escapeHtml(o.id)}">
           <div class="pec-order-command-head">
             <div class="pec-order-command-id"><small>ORDER</small><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(compactOrderDate(o.createdAt))}</span></div>
             <div class="pec-order-command-state"><span class="pec-order-status ${escapeHtml(statusClass)}">${escapeHtml(status)}</span><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
@@ -3482,7 +4100,20 @@
           </div>
         </article>`;
       }).join('')}</div>`:`<div class="pec-order-empty"><strong>No orders yet</strong><span>The first approved project order will appear here.</span></div>`;
-      $('ptOrders').innerHTML=summary+commandList;
+      $('ptOrders').innerHTML=historicalDetail+summary+commandList;
+      if(commandSelectedOrderTarget && commandSelectedOrderTarget.projectId===p.id){
+        const targetId=String(commandSelectedOrderTarget.orderId||'');
+        const focus=()=>{
+          const el=$('ptOrders')?.querySelector(`[data-command-historical-order="${CSS.escape(targetId)}"]`) || $('ptOrders')?.querySelector(`.pec-order-command-card[data-id="${CSS.escape(targetId)}"]`);
+          if(!el)return false;
+          el.classList.add('command-find-target');
+          try{el.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){el.scrollIntoView()}
+          return true;
+        };
+        if(!focus()) setTimeout(()=>focus(),120);
+        if(!selected) window.DarkSkyV4?.diagnostic?.('command_find.order_missing_in_renderer',`Brightwork could not find ${targetId} in the canonical merged order source.`,{projectId:p.id,orderId:targetId,build:BUILD_VERSION});
+        commandSelectedOrderTarget=null;
+      }
     }
   }
 
@@ -3882,7 +4513,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.9.10'
+      commissioningVersion:'4.4.1'
     };
 
     // Commissioning is a durable registry transaction, not a visual completion.
@@ -3908,7 +4539,8 @@
       }
       companies=canonicalReadback.map(normalizeProjectCode).map(ensureProjectGovernance);
       if(!projectById(id)) throw new Error(`${p.name} could not be resolved after registry reload.`);
-      writeCommissionJournal(p,'registry_verified','Canonical project registry read-back verified. Rendering Engine card.');
+      await addProjectToV4FleetManifest(id);
+      writeCommissionJournal(p,'registry_verified','Canonical project registry read-back verified and Project ID added to the V4 fleet manifest. Rendering Engine card.');
     }catch(err){
       companies=beforeCommission;
       commissionDraft._lastError=String(err?.message||err);
@@ -3964,6 +4596,56 @@
     await renderProjectTab(p.id,'deployment');
   }
   window.addEventListener('blackflag:open-deployment',e=>openCaptainDeploymentRoute(e.detail||{}));
+
+  let commandSelectedOrderTarget=null;
+
+  function closeCaptainSurfacesForEngineRoute(){
+    document.getElementById('captainFleetChart')?.classList.add('hidden');
+    document.getElementById('captainQuarters')?.classList.add('hidden');
+    const workspace=document.getElementById('captainCommandWorkspace');
+    workspace?.classList.add('hidden');
+    workspace?.setAttribute('aria-hidden','true');
+    document.body.classList.remove('captain-command-open');
+  }
+
+  async function openCaptainCommandRoute(route){
+    const requestedProjectId=canonicalProjectId(route?.projectId||'');
+    const p=projectById(requestedProjectId);
+    if(!p){
+      const message=`Command route could not resolve project ${requestedProjectId||'(missing)'}.`;
+      window.DarkSkyV4?.diagnostic?.('command_find.route_failed',message,{route,build:BUILD_VERSION});
+      throw new Error(message);
+    }
+    const type=String(route?.type||'project');
+    const targetId=String(route?.id||'');
+    const openInsideEngine=async()=>{
+      closeCaptainSurfacesForEngineRoute();
+      await openEnginePanel();
+      await openProjectEngineControl(p.id);
+      if(type==='order'){
+        commandSelectedOrderTarget=targetId?{projectId:p.id,orderId:targetId}:null;
+        await renderProjectTab(p.id,'orders');
+            }else{
+        await renderProjectTab(p.id,'overview');
+      }
+      window.BlackFlagV3Core?.audit?.({actorRole:'captain',projectId:p.id,category:'navigation',action:'command_find.opened',detail:`${type} • ${targetId||p.id}`});
+      return {ok:true,projectId:p.id,type,id:targetId};
+    };
+    if(!engineSessionUnlocked){
+      pendingCaptainCommandRoute={...route,projectId:p.id};
+      closeCaptainSurfacesForEngineRoute();
+      const gate=$('engineRoomBtn');
+      if(!gate) throw new Error('Engine authorization gate is unavailable.');
+      gate.click();
+      return {ok:true,pendingAuthorization:true,projectId:p.id,type,id:targetId};
+    }
+    return await openInsideEngine();
+  }
+  window.BlackFlagOpenCommandResult=async route=>openCaptainCommandRoute(route||{});
+  window.addEventListener('blackflag:open-command-result',e=>{openCaptainCommandRoute(e.detail||{}).catch(err=>{
+    console.error('Command Find route failed',err);
+    window.DarkSkyV4?.diagnostic?.('command_find.route_failed',String(err?.message||err),{route:e.detail||{},build:BUILD_VERSION});
+  })});
 
 
 
@@ -4055,6 +4737,9 @@
       localStorage.removeItem(PROJECT_ASSET_STORAGE_KEY);
     }catch(err){console.warn('Legacy project graphics migration deferred',err);}
   }
+  // Clear Horizon: expose the legacy graphics migrator through an explicit runtime bridge.
+  // Old startup paths may call the bridge, but missing helpers can no longer throw a ReferenceError.
+  window.blackFlagMigrateLegacyProjectAssets = migrateLegacyProjectAssets;
   function setSlotImage(id,data){
     const el=$(id);if(!el)return;
     if(data){el.src=data;el.classList.remove('hidden');}
@@ -4542,7 +5227,6 @@
     const ctx=universalCustomerContextFor(p);
     if(ctx.state==='deployed')return 'ACTIVE OUTPOST';
     if(ctx.state==='sea_trial')return 'SEA TRIAL • CUSTOMER TEST';
-    if(ctx.state==='preview')return 'PRIVATE PREVIEW • NO RECORDS';
     return 'PRIVATE PROJECT TEST';
   }
   function universalSelectedOffer(p){
@@ -4696,7 +5380,7 @@
       alert('This project does not yet have a customer operating model. Add a customer-ready offer in Project Control before testing.');
       return;
     }
-    activeProjectId=id;if(!currentExperienceContext(p)||currentExperienceContext(p)?.state==='deployed')logActivity(id,'Project opened');engineSessionUnlocked=false;
+    activeProjectId=id;logActivity(id,'Project opened');engineSessionUnlocked=false;
     document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');$('adminPanel')?.classList.add('hidden');
     showCustomerShellForProject(p);
     await applyProjectAssetSlots(p);
@@ -5219,6 +5903,22 @@
     await renderEnginePerformance();
   }
 
+
+
+  function renderDarkSkyV4EngineStatus(){
+    const host=$('v3ArchitectureStatus'); if(!host||!window.DarkSkyV4)return;
+    const st=window.DarkSkyV4.status(companies);
+    const flags=st.flags||{};
+    host.innerHTML=`<div class="v4-broadside-grid">
+      <article class="v4-broadside-card ${st.preflight.ok?'clear':'attention'}"><small>PLATFORM CONTRACT</small><strong>${st.preflight.ok?'SEALED':'REVIEW REQUIRED'}</strong><span>${st.preflight.critical} critical • ${st.preflight.warnings} warning</span></article>
+      <article class="v4-broadside-card"><small>RECOVERY VAULT</small><strong>${st.recoveryPoints}</strong><span>fleet recovery point${st.recoveryPoints===1?'':'s'}</span></article>
+      <article class="v4-broadside-card"><small>BLACK BOX</small><strong>${flags.black_box?.enabled?'ARMED':'OFF'}</strong><span>${st.diagnostics} diagnostic event${st.diagnostics===1?'':'s'}</span></article>
+      <article class="v4-broadside-card"><small>RELEASE RING</small><strong>${escapeHtml(String(st.release.currentRing||'captain').replaceAll('_',' ').toUpperCase())}</strong><span>controlled rollout</span></article>
+    </div>
+    <div class="v4-contract-strip">${st.contract.map((x,i)=>`<span><b>0${i+1}</b>${escapeHtml(x)}</span>`).join('')}</div>`;
+    const badge=$('v3SchemaBadge');if(badge)badge.textContent=`V4 SCHEMA ${st.schema}`;
+  }
+  window.renderDarkSkyV4EngineStatus=renderDarkSkyV4EngineStatus;
 
   let engineAppearance='business';
   let pirateModeEnabled=false; // compatibility alias for older Engine code.
@@ -5824,9 +6524,7 @@
     retry.classList.add('hidden');
     status.className='submit-status centered sending';
     const p=activeProject();
-    const experienceCtx=currentExperienceContext(p);
     const projectName=p?.branding?.businessName||p?.name||businessConfig.businessName||'this project';
-    if(experienceCtx?.state==='preview'){status.className='submit-status centered success';status.textContent='Preview complete — no order, customer, email, analytics, or lifecycle record was created.';return true;}
     status.textContent=`Sending your order to ${projectName}…`;
 
     if(String(order?.projectId||'')!==LEGACY_IKE_PROJECT_ID){
@@ -6027,6 +6725,43 @@ The full order and approved media remain stored with this project.`;
         </div>
       </div>
     </article>`;
+  }
+  function historicalOrderDetailCard(o,p){
+    const status=canonicalOrderStatus(o?.status||'New');
+    const request=orderRequestedText(o)||'No request detail retained';
+    const style=orderStyleSummary(o)||'No style / finish detail retained';
+    const offer=orderOfferSummary(o,p)||p?.name||'Project';
+    const contactName=o?.customerName||'Not captured';
+    const phone=o?.customerPhone||'';
+    const email=o?.customerEmail||'';
+    const created=formatOrderDateTime(o?.createdAt);
+    const updated=formatOrderDateTime(o?.updatedAt||o?.createdAt);
+    const contactPref=o?.contactPreference||'Not recorded';
+    const price=Number(o?.price||0).toFixed(2);
+    const preview=o?.approvedPreviewData||'';
+    const statusAtRecord=status==='New'?'New at time of record':`${status} at time of record`;
+    return `<section class="pec-command-historical command-find-target" data-command-historical-order="${escapeHtml(o.id)}">
+      <header class="historical-order-banner">
+        <div><small>RETAINED RECORD</small><h3>Historical Order Detail</h3><p>Found outside the active approved roll. This record is read-only and has not been restored to active work.</p></div>
+        <span class="historical-order-state">HISTORICAL</span>
+      </header>
+      <div class="historical-order-shell">
+        <div class="historical-order-titlebar">
+          <div><small>ORDER</small><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(created)}</span></div>
+          <div class="historical-order-price"><strong>$${price}</strong><span>${escapeHtml(statusAtRecord)}</span></div>
+        </div>
+        <div class="historical-order-content${preview?' has-preview':''}">
+          ${preview?`<button class="historical-order-preview admin-preview-open" type="button" data-preview-src="${preview}" aria-label="Open retained preview for ${escapeHtml(o.id)}"><img src="${preview}" alt="Retained preview for ${escapeHtml(o.id)}"><span>VIEW PREVIEW</span></button>`:''}
+          <div class="historical-order-groups">
+            <section class="historical-order-group"><small>CUSTOMER</small><strong>${escapeHtml(contactName)}</strong><div class="historical-order-lines">${phone?`<a href="tel:${escapeHtml(phone)}">${escapeHtml(phone)}</a>`:'<span>No phone retained</span>'}${email?`<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>`:'<span>No email retained</span>'}<span>Contact preference: ${escapeHtml(contactPref)}</span></div></section>
+            <section class="historical-order-group"><small>REQUEST</small><strong>${escapeHtml(request)}</strong><div class="historical-order-lines"><span>${escapeHtml(style)}</span></div></section>
+            <section class="historical-order-group"><small>OFFER / SOURCE</small><strong>${escapeHtml(offer)}</strong><div class="historical-order-lines"><span>${escapeHtml(p?.name||'Project')} · ${escapeHtml(p?.projectCode||p?.orderPrefix||'PROJECT')}</span><span>Project ID: ${escapeHtml(o?.projectId||p?.id||'unscoped')}</span></div></section>
+            <section class="historical-order-group"><small>RECORD HISTORY</small><strong>Created ${escapeHtml(created)}</strong><div class="historical-order-lines"><span>Last updated ${escapeHtml(updated)}</span>${o?.emailSentAt?`<span>Delivery sent ${escapeHtml(formatOrderDateTime(o.emailSentAt))}</span>`:'<span>No delivery timestamp retained</span>'}</div></section>
+          </div>
+        </div>
+      </div>
+      <footer class="historical-order-footer"><span>Read-only historical record</span><span>Current active order roll continues below</span></footer>
+    </section>`;
   }
   async function renderProjectOrdersView(){
     const p=activeProject(), pm=p?.permissions||{};
@@ -6291,7 +7026,7 @@ The full order and approved media remain stored with this project.`;
       // For photo-required projects the generated approved preview is the proof
       // that the required customer photo made it through approval.
       const photoOkay=!requiresPhoto || !!o.approvedPreviewData;
-      return sameProject && approved && photoOkay && o.testMode!==true;
+      return sameProject && approved && photoOkay;
     });
   }
 
@@ -6763,7 +7498,7 @@ The full order and approved media remain stored with this project.`;
     const kpis=$('captainsLogKpis');
     if(!kpis) return;
 
-    const allOrders=(await getMergedOrders()).filter(o=>o.testMode!==true);
+    const allOrders=await getMergedOrders();
     const rows=[];
 
     for(const p of projects()){
@@ -6986,9 +7721,6 @@ The full order and approved media remain stored with this project.`;
       card.hidden=!(matchesText&&matchesMode);
     });
     host.scrollLeft=0;
-    const visible=Array.from(host.children).filter(card=>!card.hidden && !card.classList.contains('add-project-card')).length;
-    const hint=document.querySelector('.project-fleet-rail-tools>span');
-    if(hint)hint.textContent=`Swipe left or right to browse ${visible} ${visible===1?'project':'projects'}${mode!=='all'?' in this filter':''}`;
     requestAnimationFrame(updateEngineFleetRailState);
   }
 
@@ -7097,7 +7829,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function ownerPortalMetrics(p){
-    const orders=(await getMergedOrders()).filter(o=>String(o?.projectId||'')===String(p.id) && o.testMode!==true);
+    const orders=(await getMergedOrders()).filter(o=>String(o?.projectId||'')===String(p.id));
     const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
     const customers=Object.values(readCustomerDirectory()[p.id]||{});
     return {orders,deployments,customers};
@@ -7548,8 +8280,15 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function runShipIntegrityV3({record=false}={}){
+    // V4.1.1 uses one admission-authoritative convergence routine for storage, status, and certification.
+    // Integrity therefore cannot disagree with the Broadside envelope counter.
+    const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
+    try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
     const base=window.BlackFlagV3Core?.integrity?.(companies,document)||{issues:[]};
     const issues=[...(base.issues||[])], valid=new Set(companies.map(p=>p.id));
+    for(const row of (convergence?.rows||[])){
+      if(!row.ok)issues.push({level:'critical',code:'V4_ENVELOPE_CONVERGENCE_FAILED',projectId:row.projectId,detail:`registry=${row.registrySealed} local=${row.localEnvelope} idb=${row.dbEnvelope} memory=${row.memorySealed}`});
+    }
 
     try{
       for(const o of await getMergedOrders()){
@@ -7563,6 +8302,11 @@ The full order and approved media remain stored with this project.`;
       }
     }catch(e){issues.push({level:'warning',code:'ORDER_STORE_CHECK_FAILED',detail:String(e?.message||e)})}
 
+    const orphanOrderCount=quarantinedOrderIds().size;
+    if(orphanOrderCount){
+      issues.push({level:'info',code:'ORPHAN_ORDER_QUARANTINED',detail:`${orphanOrderCount} preserved in Recovery Vault`});
+    }
+
     try{
       Object.keys(readLedgers()||{}).forEach(pid=>{
         if(!valid.has(pid))issues.push({level:'critical',code:'LEDGER_PROJECT_UNKNOWN',projectId:pid});
@@ -7574,6 +8318,27 @@ The full order and approved media remain stored with this project.`;
         if(!valid.has(pid))issues.push({level:'critical',code:'CUSTOMER_PROJECT_UNKNOWN',projectId:pid});
       });
     }catch(_){}
+
+    try{
+      const canonical=await readCanonicalProjectRegistry();
+      const mirror=(await getSetting('companies'))?.value||[];
+      const expected=projectRegistryIds(companies), canonicalIds=projectRegistryIds(canonical), mirrorIds=projectRegistryIds(mirror);
+      for(const id of expected){
+        if(!canonicalIds.has(id))issues.push({level:'critical',code:'REGISTRY_PROJECT_MISSING',projectId:id,detail:'Missing from canonical projects store'});
+        if(!mirrorIds.has(id))issues.push({level:'critical',code:'REGISTRY_MIRROR_MISSING',projectId:id,detail:'Missing from settings mirror'});
+      }
+      if(canonicalIds.size!==expected.size)issues.push({level:'critical',code:'REGISTRY_COUNT_MISMATCH',detail:`memory ${expected.size} • canonical ${canonicalIds.size}`});
+      const schema=Number((await getSetting(FLEET_REGISTRY_SCHEMA_KEY))?.value||0);
+      if(schema!==FLEET_REGISTRY_SCHEMA_VERSION)issues.push({level:'warning',code:'REGISTRY_SCHEMA_MISMATCH',detail:`expected ${FLEET_REGISTRY_SCHEMA_VERSION} • found ${schema||'unset'}`});
+      if(expected.has(LEGACY_GRIZZLE_PROJECT_ID)||canonicalIds.has(LEGACY_GRIZZLE_PROJECT_ID)||mirrorIds.has(LEGACY_GRIZZLE_PROJECT_ID))issues.push({level:'critical',code:'LEGACY_PROJECT_ID_UNSEALED',projectId:LEGACY_GRIZZLE_PROJECT_ID,detail:`Must resolve only through alias to ${CANONICAL_GRIZZLY_PROJECT_ID}`});
+      const grizzly=companies.find(p=>p.id===CANONICAL_GRIZZLY_PROJECT_ID);
+      if(grizzly){
+        const expectedNamespace=window.BlackFlagV3Core?.namespaceFor?.(CANONICAL_GRIZZLY_PROJECT_ID)||`bf.project.${CANONICAL_GRIZZLY_PROJECT_ID}`;
+        if(grizzly.namespace && grizzly.namespace!==expectedNamespace)issues.push({level:'critical',code:'PROJECT_NAMESPACE_IDENTITY_MISMATCH',projectId:grizzly.id,detail:`expected ${expectedNamespace} • found ${grizzly.namespace}`});
+        if(projectById(LEGACY_GRIZZLE_PROJECT_ID)?.id!==CANONICAL_GRIZZLY_PROJECT_ID)issues.push({level:'critical',code:'PROJECT_ALIAS_RESOLUTION_FAILED',projectId:grizzly.id,detail:`${LEGACY_GRIZZLE_PROJECT_ID} alias did not resolve to canonical vessel`});
+        if(projectActivityMetricLabel(grizzly)!=='ORDERS')issues.push({level:'warning',code:'PROJECT_COMMAND_METRIC_LABEL_MISMATCH',projectId:grizzly.id,detail:'Grizzly Bear first fleet KPI must render as ORDERS'});
+      }
+    }catch(e){issues.push({level:'critical',code:'REGISTRY_VERIFY_FAILED',detail:String(e?.message||e)})}
 
     const criticalIds=['engineConfigureBtn','captainModeAccessBtn','projectEngineControl','engineConfigurationDock','projectCommandCards','ownerPortal','firstMateWatch','v3ArchitectureDeck','seaTrialsStation'];
     criticalIds.forEach(id=>{if(!$(id))issues.push({level:'critical',code:'CRITICAL_CONTROL_MISSING',detail:id})});
@@ -7663,11 +8428,13 @@ The full order and approved media remain stored with this project.`;
 
   async function renderV3ArchitectureStatus(){
     const box=$('v3ArchitectureStatus');if(!box)return;
+    const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
     const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
     const report=await runShipIntegrityV3();
-    const migration=window.BlackFlagV3Core?.migrationState?.();
-    const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||6);
-    const sealed=companies.filter(p=>Number(p?.schemaVersion)===activeSchema&&p?.isolation?.crossProjectAccess==='deny').length;
+    const migration=window.DarkSkyV4?.migrationState?.()||window.BlackFlagV3Core?.migrationState?.();
+    const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||8);
+    const sealed=Number(convergence?.sealed||0);
+    renderV4EnvelopeTrace(convergence);
     if($('v3SchemaBadge')) $('v3SchemaBadge').textContent=`SCHEMA ${activeSchema}`;
     const live=states.filter(x=>x==='live').length;
     const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
@@ -7677,7 +8444,7 @@ The full order and approved media remain stored with this project.`;
       <article><span>TESTING</span><strong>${testing}</strong><small>Deployment / sea trial</small></article>
       <article><span>INTEGRITY</span><strong class="${report.ok?'ok':'warn'}">${report.ok?'CLEAR':'ATTENTION'}</strong><small>${report.critical} critical • ${report.warnings} warning</small></article>
       <article><span>IDENTITY</span><strong>POLICY LIVE</strong><small>Production server auth still required</small></article>
-      <article><span>MIGRATION</span><strong>${migration?.status==='complete'?'V3 COMPLETE':'V3 ACTIVE'}</strong><small>${migration?.at?new Date(migration.at).toLocaleString():'Structural core active'}</small></article>`;
+      <article><span>MIGRATION</span><strong>${sealed===companies.length&&migration?.completed?'V4 COMMISSIONED':migration?.failed?'COMMISSIONING FAILED':'V4 COMMISSIONING'}</strong><small>${migration?.at?new Date(migration.at).toLocaleString():'Broadside migration gate active'}</small></article>`;
   }
 
   async function firstMateWatchItems(){
@@ -7866,10 +8633,11 @@ The full order and approved media remain stored with this project.`;
   async function refreshV3CommandSystems(){
     await renderV3ArchitectureStatus();
     await renderFirstMateWatch();
+    await renderFullSailCommandDeck();
   }
 
   window.blackFlagV3={
-    version:'3.9.10',
+    version:'4.1.2-full-sail-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7884,7 +8652,7 @@ The full order and approved media remain stored with this project.`;
     // Navigation that must survive every project/template/control-center refit.
     // Capture phase intentionally owns these routes before feature-level handlers.
     document.addEventListener('click',event=>{
-      const target=event.target?.closest?.('#projectTabs [data-project-tab],#projectTabs [data-project-group],#closeProjectEngineControl,#returnToEngineBtn');
+      const target=event.target?.closest?.('#projectTabs [data-project-tab],#projectTabs [data-project-group],#closeProjectEngineControl,#returnToEngineBtn,#engineConfigureBtn,#engineConfigurationCloseBtn,[data-full-sail="configure"]');
       if(!target)return;
 
       if(target.matches('#projectTabs [data-project-group]')){
@@ -7915,6 +8683,20 @@ The full order and approved media remain stored with this project.`;
             if(box)box.innerHTML=`<div class="pc-navigation-error"><strong>COMMAND ROUTE INTERRUPTED</strong><span>${escapeHtml(String(err?.message||'This Project Control section could not be opened.'))}</span><button type="button" data-project-jump="overview">RETURN TO OVERVIEW</button></div>`;
           })
           .finally(()=>{delete target.dataset.navBusy;});
+        return;
+      }
+
+      if(target.id==='engineConfigureBtn'||target.matches('[data-full-sail="configure"]')){
+        event.preventDefault();
+        event.stopPropagation();
+        openEngineConfiguration('top');
+        return;
+      }
+
+      if(target.id==='engineConfigurationCloseBtn'){
+        event.preventDefault();
+        event.stopPropagation();
+        closeEngineWorkspace($('engineConfigurationDock'));
         return;
       }
 
@@ -7959,6 +8741,7 @@ The full order and approved media remain stored with this project.`;
       if(target.id==='experienceOpenShipwright'){closeExperienceTestDeck();await openProjectEngineControl(p.id);await renderProjectTab(p.id,'deployment');return;}
     },true);
   }
+
 
   function bindWatchCommandBus(){
     if(window.__blackFlagWatchCommandBusBound)return;
@@ -8226,6 +9009,11 @@ The full order and approved media remain stored with this project.`;
         pendingCaptainDeploymentRoute=null;
         await openCaptainDeploymentRoute(route);
       }
+      if(pendingCaptainCommandRoute){
+        const route=pendingCaptainCommandRoute;
+        pendingCaptainCommandRoute=null;
+        await openCaptainCommandRoute(route);
+      }
     });
     if($('closeEngineBtn')) $('closeEngineBtn').addEventListener('click',()=>{
       lockEngineSession();
@@ -8393,7 +9181,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.13.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.1.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • native Experience Test Deck • admission ledger + fleet manifest + project envelopes`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -8407,6 +9195,7 @@ The full order and approved media remain stored with this project.`;
   // Arm independent command buses immediately. init() calls these again safely.
   bindWatchCommandBus();
   bindEngineProjectCommandBus();
+  bindExperienceTestDeckBus();
   bindMissionCriticalNavigation();
   init().catch(err=>{
     console.error('Secondary app initialization warning',err);
@@ -8561,7 +9350,9 @@ document.addEventListener('click', (event) => {
     if(!t) return;
     lockEngineSession();
   });
-  migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
+  if(typeof window.blackFlagMigrateLegacyProjectAssets==='function'){
+    window.blackFlagMigrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
+  }
 
 
   // v3.8.18 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().

@@ -1,12 +1,13 @@
-const CACHE='dark-sky-v3-9-13-durable-recovery-vault';
+const CACHE='dark-sky-v4-4-1-full-hull-rebase';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.9.13',
-  './platform_core.js?v=3.9.13',
-  './platform_identity.js?v=3.9.13',
-  './app.js?v=3.9.13',
-  './captain.js?v=3.9.13',
+  './styles.css?v=4.4.1',
+  './platform_core.js?v=4.4.1',
+  './platform_v4.js?v=4.4.1',
+  './platform_identity.js?v=4.4.1',
+  './app.js?v=4.4.1',
+  './captain.js?v=4.4.1',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
