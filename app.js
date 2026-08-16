@@ -9,10 +9,14 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.10.0';
-  const FLEET_REGISTRY_SCHEMA_VERSION = 4;
+  const BUILD_VERSION = '3.10.1';
+  const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
+  const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
+  const CANONICAL_GRIZZLY_PROJECT_ID = 'grizzly-bear';
+  const PROJECT_ID_ALIASES = Object.freeze({[LEGACY_GRIZZLE_PROJECT_ID]:CANONICAL_GRIZZLY_PROJECT_ID});
+  function canonicalProjectId(id){ return PROJECT_ID_ALIASES[String(id||'')]||String(id||''); }
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
   const DEFAULT_COMPANIES = [
@@ -88,7 +92,7 @@
     }
 ,
     {
-      id:'grizzle-bear',
+      id:'grizzly-bear',
       projectCode:'GRZ',
       name:'Grizzly Bear',
       tagline:'Outdoor and camping equipment built for the wild.',
@@ -324,7 +328,7 @@
   function activeProject(){return activeProjectId ? projectById(activeProjectId) : null}
 
   function projects(){ return companies; }
-  function projectById(id){ return companies.find(p=>p.id===id); }
+  function projectById(id){ const canonical=canonicalProjectId(id); return companies.find(p=>p.id===canonical); }
 
   const OWNER_CAPABILITIES=[
     'orders','customers','products','pricing','branding','kiosks','deployments','staff','reporting','notifications'
@@ -1236,7 +1240,7 @@
 
   function normalizeProjectCode(p){
     if(!p)return p;
-    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzle-bear':'GRZ' };
+    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzly-bear':'GRZ' };
     const fallback=String(p.orderPrefix||p.name||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ';
     p.projectCode=String(p.projectCode||seeded[p.id]||fallback).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
     if(!p.orderPrefix)p.orderPrefix=p.projectCode;
@@ -1266,16 +1270,111 @@
     // path for the Grizzle/Grizzly Bear regression seen in 3.9.9.
     const existingNames=new Set(merged.map(projectNameKey));
     for(const seed of DEFAULT_COMPANIES){
-      const aliases=seed.id==='grizzle-bear'?new Set(['grizzle bear','grizzly bear']):new Set([projectNameKey(seed)]);
+      const aliases=seed.id==='grizzly-bear'?new Set(['grizzle bear','grizzly bear']):new Set([projectNameKey(seed)]);
       const hasAlias=[...existingNames].some(n=>aliases.has(n));
       if(!byId.has(seed.id) && !hasAlias){
         const clone=structuredClone(seed);
-        clone.registryRecovery={restoredBy:'3.10.0-fleet-registry',restoredAt:new Date().toISOString(),reason:'baseline-project-missing'};
-        add(clone,'3.10.0-baseline-rescue');
+        clone.registryRecovery={restoredBy:'3.10.1-registry-seal',restoredAt:new Date().toISOString(),reason:'baseline-project-missing'};
+        add(clone,'3.10.1-baseline-rescue');
         existingNames.add(projectNameKey(clone));
       }
     }
     return uniqueRegistryRows(merged);
+  }
+
+  function replaceProjectIdDeep(value,fromId,toId){
+    if(value===fromId)return toId;
+    if(Array.isArray(value))return value.map(v=>replaceProjectIdDeep(v,fromId,toId));
+    if(!value || typeof value!=='object')return value;
+    const out={};
+    for(const [key,val] of Object.entries(value)){
+      const nextKey=key===fromId?toId:key.replaceAll(`:${fromId}`,`:${toId}`);
+      out[nextKey]=replaceProjectIdDeep(val,fromId,toId);
+    }
+    return out;
+  }
+
+  function canonicalizeRegistryAliasRows(rows){
+    const out=[];
+    let changed=false;
+    for(const raw of (Array.isArray(rows)?rows:[])){
+      const row=structuredClone(raw);
+      if(String(row?.id||'')===LEGACY_GRIZZLE_PROJECT_ID){
+        row.id=CANONICAL_GRIZZLY_PROJECT_ID;
+        if(row.namespace===`bf.project.${LEGACY_GRIZZLE_PROJECT_ID}`)row.namespace=`bf.project.${CANONICAL_GRIZZLY_PROJECT_ID}`;
+        row.identity=row.identity&&typeof row.identity==='object'?row.identity:{};
+        if(row.identity.projectId===LEGACY_GRIZZLE_PROJECT_ID)row.identity.projectId=CANONICAL_GRIZZLY_PROJECT_ID;
+        row.registryMigration={...(row.registryMigration||{}),legacyProjectId:LEGACY_GRIZZLE_PROJECT_ID,canonicalProjectId:CANONICAL_GRIZZLY_PROJECT_ID,sealedBy:'3.10.1',sealedAt:new Date().toISOString()};
+        changed=true;
+      }
+      out.push(replaceProjectIdDeep(row,LEGACY_GRIZZLE_PROJECT_ID,CANONICAL_GRIZZLY_PROJECT_ID));
+    }
+    // If both legacy and canonical somehow survived, canonical identity wins and the
+    // alias row is folded into one vessel rather than becoming a duplicate.
+    const map=new Map();
+    for(const row of out){
+      const id=String(row?.id||'');
+      if(!id)continue;
+      if(!map.has(id))map.set(id,row);
+      else changed=true;
+    }
+    return {rows:[...map.values()],changed};
+  }
+
+  async function migrateGrizzlyProjectAliasData(){
+    const fromId=LEGACY_GRIZZLE_PROJECT_ID,toId=CANONICAL_GRIZZLY_PROJECT_ID;
+    let changed=false;
+
+    // Orders in IndexedDB retain their order IDs; only project scope is canonicalized.
+    try{
+      const rows=await getAll(STORE_ORDERS);
+      const affected=rows.filter(o=>String(o?.projectId||'')===fromId);
+      if(affected.length){
+        const transaction=db.transaction(STORE_ORDERS,'readwrite');
+        const store=transaction.objectStore(STORE_ORDERS);
+        affected.forEach(order=>store.put(replaceProjectIdDeep(order,fromId,toId)));
+        await transactionToPromise(transaction); changed=true;
+      }
+    }catch(err){console.warn('Grizzly order alias migration could not complete',err);}
+
+    // Project-scoped settings (admin PIN, owner access, business brief, etc.).
+    try{
+      const rows=await getAll(STORE_SETTINGS);
+      const existingKeys=new Set(rows.map(r=>String(r?.key||'')));
+      const transaction=db.transaction(STORE_SETTINGS,'readwrite');
+      const store=transaction.objectStore(STORE_SETTINGS);
+      for(const row of rows){
+        const oldKey=String(row?.key||'');
+        if(oldKey==='companies')continue;
+        const newKey=oldKey.replaceAll(`:${fromId}`,`:${toId}`);
+        const next=replaceProjectIdDeep(row,fromId,toId);
+        if(newKey!==oldKey){
+          next.key=newKey;
+          if(!existingKeys.has(newKey))store.put(next);
+          store.delete(oldKey); changed=true;
+        }else if(JSON.stringify(next)!==JSON.stringify(row)){
+          store.put(next); changed=true;
+        }
+      }
+      await transactionToPromise(transaction);
+    }catch(err){console.warn('Grizzly settings alias migration could not complete',err);}
+
+    // Local recovery/state stores are project scoped too. Rewrite exact ID values and
+    // map keys without changing the human-facing business name.
+    try{
+      const keys=Object.keys(localStorage).filter(k=>k.startsWith('blackFlag') || k.startsWith(DRAFT_KEY+':'));
+      for(const key of keys){
+        const raw=localStorage.getItem(key); if(raw==null)continue;
+        let parsed; try{parsed=JSON.parse(raw);}catch(_){continue;}
+        const next=replaceProjectIdDeep(parsed,fromId,toId);
+        const newKey=key.replaceAll(`:${fromId}`,`:${toId}`);
+        if(newKey!==key){ if(localStorage.getItem(newKey)==null)localStorage.setItem(newKey,JSON.stringify(next)); localStorage.removeItem(key); changed=true; }
+        else if(JSON.stringify(next)!==raw){ localStorage.setItem(key,JSON.stringify(next)); changed=true; }
+      }
+    }catch(err){console.warn('Grizzly local state alias migration could not complete',err);}
+
+    if(changed)window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:toId,category:'migration',action:'v3.10.1.grizzly.project_id.sealed',detail:`${fromId} → ${toId} • legacy alias retained for resolution`});
+    return changed;
   }
 
   async function loadCompanies(){
@@ -1315,13 +1414,16 @@
     // atomically to the canonical store and the compatibility mirror.
     let registrySchema=0;
     try{registrySchema=Number((await getSetting(FLEET_REGISTRY_SCHEMA_KEY))?.value||0);}catch(_){}
+    const aliasCanonicalized=canonicalizeRegistryAliasRows(companies);
+    companies=aliasCanonicalized.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
+    if(registrySchema<FLEET_REGISTRY_SCHEMA_VERSION) await migrateGrizzlyProjectAliasData();
     const canonicalIdsBefore=projectRegistryIds(canonicalRows);
     const reconciledIds=projectRegistryIds(companies);
     const registryReconciled=canonicalIdsBefore.size!==reconciledIds.size || [...reconciledIds].some(id=>!canonicalIdsBefore.has(id));
-    if(!canonicalRows.length || migrationChanged || registryReconciled || registrySchema<FLEET_REGISTRY_SCHEMA_VERSION){
-      companies=await persistProjectRegistry(companies);
+    if(!canonicalRows.length || migrationChanged || aliasCanonicalized.changed || registryReconciled || registrySchema<FLEET_REGISTRY_SCHEMA_VERSION){
+      companies=await persistProjectRegistry(companies,{allowRemovalIds:aliasCanonicalized.changed?[LEGACY_GRIZZLE_PROJECT_ID]:[]});
       companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v3.10.0.fleet.registry.reconciled',detail:`${companies.length} projects • schema ${FLEET_REGISTRY_SCHEMA_VERSION}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v3.10.1.fleet.registry.reconciled',detail:`${companies.length} projects • schema ${FLEET_REGISTRY_SCHEMA_VERSION}`});
     }
 
     // v3.9.9 — reconcile commissioning artifacts against the canonical Project ID.
@@ -7319,6 +7421,13 @@ The full order and approved media remain stored with this project.`;
       if(canonicalIds.size!==expected.size)issues.push({level:'critical',code:'REGISTRY_COUNT_MISMATCH',detail:`memory ${expected.size} • canonical ${canonicalIds.size}`});
       const schema=Number((await getSetting(FLEET_REGISTRY_SCHEMA_KEY))?.value||0);
       if(schema!==FLEET_REGISTRY_SCHEMA_VERSION)issues.push({level:'warning',code:'REGISTRY_SCHEMA_MISMATCH',detail:`expected ${FLEET_REGISTRY_SCHEMA_VERSION} • found ${schema||'unset'}`});
+      if(expected.has(LEGACY_GRIZZLE_PROJECT_ID)||canonicalIds.has(LEGACY_GRIZZLE_PROJECT_ID)||mirrorIds.has(LEGACY_GRIZZLE_PROJECT_ID))issues.push({level:'critical',code:'LEGACY_PROJECT_ID_UNSEALED',projectId:LEGACY_GRIZZLE_PROJECT_ID,detail:`Must resolve only through alias to ${CANONICAL_GRIZZLY_PROJECT_ID}`});
+      const grizzly=companies.find(p=>p.id===CANONICAL_GRIZZLY_PROJECT_ID);
+      if(grizzly){
+        const expectedNamespace=window.BlackFlagV3Core?.namespaceFor?.(CANONICAL_GRIZZLY_PROJECT_ID)||`bf.project.${CANONICAL_GRIZZLY_PROJECT_ID}`;
+        if(grizzly.namespace && grizzly.namespace!==expectedNamespace)issues.push({level:'critical',code:'PROJECT_NAMESPACE_IDENTITY_MISMATCH',projectId:grizzly.id,detail:`expected ${expectedNamespace} • found ${grizzly.namespace}`});
+        if(projectById(LEGACY_GRIZZLE_PROJECT_ID)?.id!==CANONICAL_GRIZZLY_PROJECT_ID)issues.push({level:'critical',code:'PROJECT_ALIAS_RESOLUTION_FAILED',projectId:grizzly.id,detail:`${LEGACY_GRIZZLE_PROJECT_ID} alias did not resolve to canonical vessel`});
+      }
     }catch(e){issues.push({level:'critical',code:'REGISTRY_VERIFY_FAILED',detail:String(e?.message||e)})}
 
     const criticalIds=['engineConfigureBtn','captainModeAccessBtn','projectEngineControl','engineConfigurationDock','projectCommandCards','ownerPortal','firstMateWatch','v3ArchitectureDeck','seaTrialsStation'];

@@ -1,3 +1,12 @@
+# Dark Sky 3.10.1 — Registry Seal
+
+- Canonicalized Grizzly Bear project identity from legacy `grizzle-bear` to `grizzly-bear`.
+- Preserved `grizzle-bear` as a read-time legacy alias so old links resolve to the same vessel.
+- Migrates project-scoped IndexedDB orders, settings, local recovery data, and draft keys to the canonical ID without changing order IDs.
+- Fleet Registry Schema v5 removes the legacy canonical row and blocks duplicate-vessel survival.
+- Ship Integrity now checks Grizzly display identity, canonical ID, namespace, registry rows, and alias resolution.
+- Project Command activity metric remains relationship-driven; Grizzly Bear now defaults to the purchase relationship and therefore displays ORDERS.
+
 # 3.10.0 — Fleet Registry
 
 - Restored the missing Grizzly Bear vessel into the current four-project fleet.
