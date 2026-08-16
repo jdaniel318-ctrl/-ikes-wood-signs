@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.4.3';
+  const BUILD_VERSION = '4.4.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -333,14 +333,24 @@
   }
   function activeProject(){return activeProjectId ? projectById(activeProjectId) : null}
 
+  // v4.4.4 — Project Command Identity Seal. The Engine may render while later V4
+  // convergence work is still completing. Preserve the exact immutable project
+  // objects used to render the visible fleet rail so a command can never lose its
+  // vessel between paint and tap. This is a command snapshot, not a second registry.
+  const projectCommandProjectSnapshots=new Map();
+
   function projects(){ return companies; }
   function projectById(id){
     const requested=String(id||'').trim();
     const canonical=canonicalProjectId(requested);
-    return companies.find(p=>{
+    const match=(rows)=>Array.from(rows||[]).find(p=>{
       const pid=String(p?.id||'').trim();
       return pid===requested || pid===canonical || canonicalProjectId(pid)===canonical;
     });
+    // Live fleet memory remains first authority. If a late boot/convergence pass
+    // changes memory after Project Command painted, the render-time command snapshot
+    // keeps the visible control attached to the exact immutable vessel it displayed.
+    return match(companies) || match(projectCommandProjectSnapshots.values());
   }
 
   async function resolveProjectReference(projectRef,{rehydrate=true}={}){
@@ -356,6 +366,11 @@
 
     let project=match(companies);
     let source=project?'memory':'';
+
+    if(!project){
+      project=match(projectCommandProjectSnapshots.values());
+      if(project)source='project-command-snapshot';
+    }
 
     if(!project){
       try{
@@ -381,6 +396,15 @@
       const backup=readProjectRegistryBackup();
       project=match(Array.isArray(backup?.projects)?backup.projects:[]);
       if(project)source='verified-local-backup';
+    }
+
+    // The four V4 Fleet Marks baseline vessels are explicit architecture, not name
+    // guesses. If every browser registry source is temporarily stale but the visible
+    // command references one of these immutable baseline IDs, use the sealed baseline
+    // definition so Preview can still open while registry convergence heals.
+    if(!project && V4_BASELINE_FLEET_IDS?.includes?.(canonical)){
+      project=match(DEFAULT_COMPANIES);
+      if(project)source='v4-baseline-definition';
     }
 
     if(!project)return {project:null,requested,canonical,source:'not-found'};
@@ -1982,6 +2006,27 @@
   }
 
 
+  async function ensureV4BaselineRegistrySeal(){
+    // V4.4.4 — Fleet Marks baseline seal. The V4 hull ships with four explicit
+    // baseline immutable IDs. A stale browser registry must not prune one of those
+    // vessels between Engine paint and command execution. Restore only by exact ID.
+    let canonical=[];
+    try{canonical=await readCanonicalProjectRegistry();}catch(_){canonical=[];}
+    const byId=new Map((canonical||[]).map(p=>[canonicalProjectId(String(p?.id||'')),p]).filter(([id])=>id));
+    let changed=false;
+    for(const id of V4_BASELINE_FLEET_IDS){
+      if(byId.has(id))continue;
+      const live=(companies||[]).find(p=>canonicalProjectId(String(p?.id||''))===id);
+      const seed=live || DEFAULT_COMPANIES.find(p=>canonicalProjectId(String(p?.id||''))===id);
+      if(seed){canonical.push(ensureProjectGovernance(normalizeProjectCode(structuredClone(seed))));byId.set(id,seed);changed=true;}
+    }
+    if(changed)canonical=await persistProjectRegistry(canonical);
+    await ensureV4AdmissionLedger(canonical);
+    const state=await ensureCanonicalFleetManifest({repairRegistry:false});
+    if(state?.rows?.length)companies=state.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
+    return {changed,ids:state?.ids||[]};
+  }
+
   async function loadCompanies(){
     let canonicalRows=[];
     let savedRows=null;
@@ -2038,9 +2083,11 @@
     await reconcileCommissioningArtifacts({attemptRepair:true,source:'engine-boot'});
 
     try{ await ensureCanonicalFleetManifest({repairRegistry:true}); }catch(err){ console.warn('V4 fleet manifest repair warning',err); window.DarkSkyV4?.diagnostic?.('fleet_manifest.repair.failed',String(err?.message||err)); }
+    try{ await ensureV4BaselineRegistrySeal(); }catch(err){ console.warn('V4 baseline registry seal warning',err); window.DarkSkyV4?.diagnostic?.('fleet_baseline.seal.failed',String(err?.message||err)); }
     try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
     try{ await repairLegacyProjectReferences(); }catch(err){ console.warn('V4 legacy project-reference repair warning',err); window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references.failed',String(err?.message||err)); }
     try{ await ensureV4EnvelopeConvergence({persistRegistry:true,record:true}); }catch(err){ console.warn('V4 envelope convergence warning',err); }
+    try{ await ensureV4BaselineRegistrySeal(); }catch(err){ console.warn('V4 post-convergence baseline seal warning',err); }
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
 
@@ -2454,7 +2501,7 @@
     const body=document.getElementById('experienceTestDeckBody');
     if(body) body.innerHTML='<section class="experience-results-card"><div class="experience-results-head"><div><span>EXPERIENCE TEST DECK</span><h3>Opening project experience…</h3></div><b class="watch">VERIFYING</b></div><p>Resolving project identity and current customer configuration.</p></section>';
     if(!p){
-      const detail=`Requested: ${requested||'missing'} • Canonical: ${resolution.canonical||'missing'} • Sources searched: memory, canonical project store, settings mirror, verified backup`;
+      const detail=`Requested: ${requested||'missing'} • Canonical: ${resolution.canonical||'missing'} • Sources searched: memory, Project Command snapshot, canonical project store, settings mirror, verified backup, V4 baseline definition`;
       if(body) body.innerHTML=`<section class="experience-results-card"><div class="experience-results-head"><div><span>COMMAND FAILURE</span><h3>Project could not be resolved</h3></div><b class="watch">STOPPED</b></div><p>${escapeHtml(detail)}</p></section>`;
       throw new Error(`Experience Test Deck could not resolve Project reference ${requested||'(missing)'} after canonical registry lookup.`);
     }
@@ -2462,7 +2509,7 @@
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
-      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.3 canonical resolver • ${resolution.source}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.4 project command identity seal • ${resolution.source}`});
       return true;
     }catch(err){
       console.error('Experience Test Deck render failed',err);
@@ -2631,7 +2678,9 @@
     const journalState=journal?.project?.id && !list.some(p=>String(p.id)===String(journal.project.id)) ? ` • 1 RECOVERY PENDING` : '';
     $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${journalState}`;
     const cards=[];
+    projectCommandProjectSnapshots.clear();
     for(const p of list){
+      if(p?.id)projectCommandProjectSnapshots.set(canonicalProjectId(String(p.id)),structuredClone(p));
       const s=await projectStats(p);
       const brandVisual=await projectBrandVisual(p);
       ensureProjectGovernance(p);
@@ -8828,7 +8877,12 @@ The full order and approved media remain stored with this project.`;
       const target=event.target?.closest?.('#closeExperienceTestDeck,[data-experience-mode],#approveExperienceBtn,#experienceOpenShipwright,#returnExperienceTestDeck');if(!target)return;
       if(target.id==='returnExperienceTestDeck'){event.preventDefault();event.stopPropagation();await returnFromExperienceMode();return;}
       if(target.id==='closeExperienceTestDeck'){closeExperienceTestDeck();return;}
-      const p=projectById(experienceTestDeckProjectId);if(!p)return;
+      const resolution=await resolveProjectReference(experienceTestDeckProjectId,{rehydrate:true});
+      const p=resolution.project;
+      if(!p){
+        alert(`Experience command stopped: project ${experienceTestDeckProjectId||'(missing)'} is no longer resolvable.`);
+        return;
+      }
       if(target.matches('[data-experience-mode]')){if(target.disabled)return;await enterExperienceMode(p,target.dataset.experienceMode);return;}
       if(target.id==='approveExperienceBtn'){
         const state=ensureExperienceTestState(p);
@@ -9282,7 +9336,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.3.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • canonical Experience Test Deck identity resolver • admission ledger + fleet manifest + project envelopes`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.4.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • project-command identity snapshot + canonical Test Deck resolver • admission ledger + fleet manifest + project envelopes`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

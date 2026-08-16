@@ -1,4 +1,4 @@
-# Dark Sky v4.4.3 — Canonical Experience Identity Resolver
+# Dark Sky v4.4.4 — Project Command Identity Seal
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
 
