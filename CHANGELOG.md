@@ -1,4 +1,4 @@
-# Dark Sky 4.0.3 — Keel Seal
+# Dark Sky 4.0.4 — Convergence Watch
 
 - Added a dedicated Project Envelope Ledger keyed by immutable Project ID.
 - Security envelopes are hydrated into live project rows before integrity/status checks and persisted back to the canonical registry.
@@ -7,7 +7,7 @@
 - Quarantine writes are idempotent for the same legacy record.
 - Broadside status can no longer remain 0/4 merely because a legacy serializer dropped envelope fields.
 
-# Dark Sky 4.0.3 — Keel Seal
+# Dark Sky 4.0.4 — Convergence Watch
 
 - Forces live Fleet Registry rows through Schema 8 envelope sealing on every startup until read-back proves 4/4.
 - Makes the verified canonical read-back authoritative after commissioning.

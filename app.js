@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.0.3';
+  const BUILD_VERSION = '4.0.4';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1381,51 +1381,14 @@
 
 
   async function commissionV4ProjectEnvelopes({force=false}={}){
-    const core=window.BlackFlagV3Core;
-    const activeSchema=Number(core?.schemaVersion||8);
-    if(!core||!Array.isArray(companies)||!companies.length)return {changed:false,sealed:0,total:Array.isArray(companies)?companies.length:0};
-    const isSealed=project=>Number(project?.schemaVersion)===activeSchema &&
-      String(project?.namespace||'')===String(core.namespaceFor?.(project.id)||`bf.project.${project.id}`) &&
-      project?.isolation?.projectId===project?.id &&
-      project?.isolation?.crossProjectAccess==='deny' && project?.permissions?.defaultDeny===true;
-    const before=structuredClone(companies);
-    try{
-      // The dedicated envelope ledger is the security source of truth. Rebuild it
-      // from immutable Project IDs on every commissioning pass, then hydrate the
-      // registry rows so legacy serializers cannot erase the contract.
-      sealFleetEnvelopeLedger();
-      companies=companies.map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
-      await persistProjectRegistry(companies);
-      const verified=await readCanonicalProjectRegistry();
-      const ledger=readV4EnvelopeLedger();
-      companies=verified.map(project=>sealProjectFromEnvelope(project,ledger[String(project?.id||'')])).map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
-      // Persist the hydrated read-back once more. This makes the canonical registry
-      // self-describing while the ledger remains the durable recovery contract.
-      await persistProjectRegistry(companies);
-      const readback=await readCanonicalProjectRegistry();
-      companies=readback.map(project=>sealProjectFromEnvelope(project,ledger[String(project?.id||'')])).map(normalizeProjectCode).map(ensureProjectGovernance);
-      const sealed=companies.filter(isSealed).length;
-      const ledgerSealed=companies.filter(p=>{
-        const e=ledger[String(p?.id||'')];
-        return e&&Number(e.schemaVersion)===activeSchema&&e.projectId===p.id&&e.namespace===(core.namespaceFor?.(p.id)||`bf.project.${p.id}`)&&e?.isolation?.crossProjectAccess==='deny'&&e?.permissions?.defaultDeny===true;
-      }).length;
-      if(sealed!==companies.length||ledgerSealed!==companies.length)throw new Error(`V4 commissioning read-back failed: registry ${sealed}/${companies.length}, envelope ledger ${ledgerSealed}/${companies.length}.`);
-      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.3.project.envelopes.keel_sealed',detail:`${sealed}/${companies.length} registry rows • ${ledgerSealed}/${companies.length} ledger envelopes • schema ${activeSchema}`});
-      window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes',`${sealed}/${companies.length} project envelopes keel-sealed`,{schema:activeSchema,ledger:V4_ENVELOPE_LEDGER_KEY,verified:true});
-      window.DarkSkyV4?.completeCommissioning?.(companies,{sealedCount:sealed});
-      return {changed:true,sealed,total:companies.length};
-    }catch(err){
-      companies=before;
-      hydrateFleetFromEnvelopeLedger();
-      window.DarkSkyV4?.markCommissioningFailed?.(companies,String(err?.message||err));
-      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.3.project.envelopes.failed',detail:String(err?.message||err)});
-      window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes.failed',String(err?.message||err));
-      throw err;
-    }
+    const result=await ensureV4EnvelopeConvergence({persistRegistry:true,record:true});
+    if(result.sealed!==result.total)throw new Error(result.error||`V4 convergence incomplete: ${result.sealed}/${result.total}.`);
+    return {changed:true,sealed:result.sealed,total:result.total,rows:result.rows};
   }
 
 
-  // V4.0.3 — Project Envelope Ledger. The registry owns business/project data;
+
+  // V4.0.4 — Project Envelope Ledger. The registry owns business/project data;
   // this ledger owns the security envelope contract. Keeping the contract in a
   // dedicated, project-ID-keyed ledger prevents older project serializers from
   // accidentally dropping security fields while preserving canonical identity.
@@ -1468,6 +1431,79 @@
     }
     writeV4EnvelopeLedger(next);
     return hydrateFleetFromEnvelopeLedger();
+  }
+
+  const V4_ENVELOPE_MIRROR_SETTING='darkSkyV4ProjectEnvelopesV1';
+  let v4EnvelopeConvergenceState={at:null,total:0,sealed:0,rows:[],error:''};
+
+  function envelopeValidForProject(envelope,project){
+    const core=window.BlackFlagV3Core, id=String(project?.id||'').trim(), schema=Number(core?.schemaVersion||8);
+    const namespace=core?.namespaceFor?.(id)||`bf.project.${id}`;
+    return !!(id&&envelope&&String(envelope.projectId||'')===id&&Number(envelope.schemaVersion)===schema&&String(envelope.namespace||'')===namespace&&String(envelope?.isolation?.projectId||'')===id&&String(envelope?.isolation?.namespace||'')===namespace&&envelope?.isolation?.crossProjectAccess==='deny'&&envelope?.permissions?.defaultDeny===true&&envelope?.permissions?.projectScoped===true);
+  }
+
+  async function ensureV4EnvelopeConvergence({persistRegistry=true,record=false}={}){
+    const core=window.BlackFlagV3Core;
+    const rows=[];
+    if(!core||!Array.isArray(companies)){
+      v4EnvelopeConvergenceState={at:new Date().toISOString(),total:0,sealed:0,rows:[],error:'Core or fleet unavailable'};
+      return v4EnvelopeConvergenceState;
+    }
+    try{
+      const expected={};
+      for(const project of companies){
+        const e=buildV4ProjectEnvelope(project); if(e) expected[String(project.id)]=e;
+      }
+      writeV4EnvelopeLedger(expected);
+      await setSetting(V4_ENVELOPE_MIRROR_SETTING,expected);
+      const localRead=readV4EnvelopeLedger();
+      const dbRead=(await getSetting(V4_ENVELOPE_MIRROR_SETTING))?.value||{};
+
+      companies=companies.map(project=>sealProjectFromEnvelope(project,localRead[String(project?.id||'')])).map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
+      if(persistRegistry){
+        await persistProjectRegistry(companies);
+        const canonical=await readCanonicalProjectRegistry();
+        companies=canonical.map(project=>sealProjectFromEnvelope(project,localRead[String(project?.id||'')])).map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
+      }
+
+      const canonicalRows=await readCanonicalProjectRegistry();
+      const canonicalById=new Map(canonicalRows.map(p=>[String(p?.id||''),p]));
+      const schema=Number(core.schemaVersion||8);
+      for(const project of companies){
+        const id=String(project?.id||''), localEnvelope=localRead[id], dbEnvelope=dbRead?.[id], canonical=canonicalById.get(id);
+        const namespace=core.namespaceFor?.(id)||`bf.project.${id}`;
+        const localOk=envelopeValidForProject(localEnvelope,project);
+        const dbOk=envelopeValidForProject(dbEnvelope,project);
+        const memoryOk=Number(project?.schemaVersion)===schema&&String(project?.namespace||'')===namespace&&String(project?.isolation?.projectId||'')===id&&project?.isolation?.crossProjectAccess==='deny'&&project?.permissions?.defaultDeny===true;
+        const registryOk=!!canonical&&Number(canonical?.schemaVersion)===schema&&String(canonical?.namespace||'')===namespace&&String(canonical?.isolation?.projectId||'')===id&&canonical?.isolation?.crossProjectAccess==='deny'&&canonical?.permissions?.defaultDeny===true;
+        const ok=localOk&&dbOk&&memoryOk&&registryOk;
+        rows.push({projectId:id,name:project?.name||id,registryFound:!!canonical,localEnvelope:localOk,dbEnvelope:dbOk,memorySealed:memoryOk,registrySealed:registryOk,ok});
+      }
+      const sealed=rows.filter(r=>r.ok).length;
+      v4EnvelopeConvergenceState={at:new Date().toISOString(),total:rows.length,sealed,rows,error:''};
+      window.__darkSkyV4EnvelopeConvergence=v4EnvelopeConvergenceState;
+      if(record||sealed!==rows.length)window.DarkSkyV4?.diagnostic?.('commissioning.convergence',`${sealed}/${rows.length} envelope contracts converged`,{rows});
+      if(sealed===rows.length&&rows.length)window.DarkSkyV4?.completeCommissioning?.(companies,{sealedCount:sealed});
+      else window.DarkSkyV4?.markCommissioningFailed?.(companies,`Convergence invariant failed: ${sealed}/${rows.length}.`);
+      return v4EnvelopeConvergenceState;
+    }catch(err){
+      v4EnvelopeConvergenceState={at:new Date().toISOString(),total:Array.isArray(companies)?companies.length:0,sealed:0,rows,error:String(err?.message||err)};
+      window.__darkSkyV4EnvelopeConvergence=v4EnvelopeConvergenceState;
+      window.DarkSkyV4?.markCommissioningFailed?.(companies,v4EnvelopeConvergenceState.error);
+      window.DarkSkyV4?.diagnostic?.('commissioning.convergence.failed',v4EnvelopeConvergenceState.error);
+      return v4EnvelopeConvergenceState;
+    }
+  }
+
+  function renderV4EnvelopeTrace(state=v4EnvelopeConvergenceState){
+    const box=$('v4EnvelopeTrace'); if(!box)return;
+    if(!state||!state.total){box.innerHTML='';return;}
+    const cell=(ok)=>`<span class="${ok?'pass':'fail'}">${ok?'PASS':'FAIL'}</span>`;
+    box.innerHTML=`<div class="trace-head"><span>V4 ENVELOPE CONVERGENCE</span><strong>${state.sealed}/${state.total} SEALED</strong></div>
+      <div class="trace-grid">
+        <span>PROJECT</span><span>REGISTRY</span><span>LOCAL LEDGER</span><span>IDB MIRROR</span><span>MEMORY</span><span>RESULT</span>
+        ${state.rows.map(r=>`<span class="trace-label">${escapeHtml(r.name)}<br><small>${escapeHtml(r.projectId)}</small></span>${cell(r.registrySealed)}${cell(r.localEnvelope)}${cell(r.dbEnvelope)}${cell(r.memorySealed)}${cell(r.ok)}`).join('')}
+      </div>${state.error?`<div class="trace-note">${escapeHtml(state.error)}</div>`:'<div class="trace-note">The Broadside counter, commissioning gate, and Integrity preflight use this same convergence result.</div>'}`;
   }
 
   const V4_PROJECT_REFERENCE_ALIASES=Object.freeze({
@@ -1532,7 +1568,7 @@
     }
     writeCustomerDirectory(next);
     if(migrated||quarantined){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.3.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.4.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
       window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
     }
     return {migrated,quarantined};
@@ -1596,8 +1632,7 @@
 
     try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
     try{ await repairLegacyProjectReferences(); }catch(err){ console.warn('V4 legacy project-reference repair warning',err); window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references.failed',String(err?.message||err)); }
-    try{ await commissionV4ProjectEnvelopes({force:true}); }catch(err){ console.warn('V4 project-envelope commissioning warning',err); }
-    hydrateFleetFromEnvelopeLedger();
+    try{ await ensureV4EnvelopeConvergence({persistRegistry:true,record:true}); }catch(err){ console.warn('V4 envelope convergence warning',err); }
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
 
@@ -7570,13 +7605,15 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function runShipIntegrityV3({record=false}={}){
-    // V4.0.3 self-heals the security envelope before certification. This is not a
-    // cosmetic suppression: the dedicated ledger is hydrated into each live vessel
-    // and legacy project references are repaired/quarantined before checks run.
-    hydrateFleetFromEnvelopeLedger();
+    // V4.0.4 uses one convergence routine for storage, status, and certification.
+    // Integrity therefore cannot disagree with the Broadside envelope counter.
+    const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
     try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
     const base=window.BlackFlagV3Core?.integrity?.(companies,document)||{issues:[]};
     const issues=[...(base.issues||[])], valid=new Set(companies.map(p=>p.id));
+    for(const row of (convergence?.rows||[])){
+      if(!row.ok)issues.push({level:'critical',code:'V4_ENVELOPE_CONVERGENCE_FAILED',projectId:row.projectId,detail:`registry=${row.registrySealed} local=${row.localEnvelope} idb=${row.dbEnvelope} memory=${row.memorySealed}`});
+    }
 
     try{
       for(const o of await getMergedOrders()){
@@ -7711,12 +7748,13 @@ The full order and approved media remain stored with this project.`;
 
   async function renderV3ArchitectureStatus(){
     const box=$('v3ArchitectureStatus');if(!box)return;
-    hydrateFleetFromEnvelopeLedger();
+    const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
     const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
     const report=await runShipIntegrityV3();
     const migration=window.DarkSkyV4?.migrationState?.()||window.BlackFlagV3Core?.migrationState?.();
     const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||8);
-    const sealed=companies.filter(p=>Number(p?.schemaVersion)===activeSchema&&p?.isolation?.projectId===p?.id&&p?.isolation?.crossProjectAccess==='deny'&&p?.permissions?.defaultDeny===true).length;
+    const sealed=Number(convergence?.sealed||0);
+    renderV4EnvelopeTrace(convergence);
     if($('v3SchemaBadge')) $('v3SchemaBadge').textContent=`SCHEMA ${activeSchema}`;
     const live=states.filter(x=>x==='live').length;
     const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
@@ -7918,7 +7956,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'4.0.3-keel-seal-compat',
+    version:'4.0.4-keel-seal-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
