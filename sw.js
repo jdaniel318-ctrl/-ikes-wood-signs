@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-3-5-exact-bearing';
+const CACHE='dark-sky-v4-3-7-showroom-restore';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.3.6',
-  './platform_core.js?v=4.3.6',
-  './platform_v4.js?v=4.3.6',
-  './platform_identity.js?v=4.3.6',
-  './app.js?v=4.3.6',
-  './captain.js?v=4.3.6',
+  './styles.css?v=4.3.7',
+  './platform_core.js?v=4.3.7',
+  './platform_v4.js?v=4.3.7',
+  './platform_identity.js?v=4.3.7',
+  './app.js?v=4.3.7',
+  './captain.js?v=4.3.7',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

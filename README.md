@@ -1,3 +1,3 @@
-# Dark Sky 4.3.6 — Brightwork
+# Dark Sky 4.3.7 — Showroom Restore
 
-Brightwork polishes the retained historical-order experience without changing the Exact Bearing targeting architecture. Historical orders now render as a compact, native Dark Sky read-only detail with grouped Customer, Request, Offer / Source, and Record History sections; a historical state badge; clearer status-at-record language; optional retained preview; and a clear boundary to the current active roll below. No historical order is restored to active work and no project/order data model is changed.
+Showroom Restore repairs the Ike's Wood Signs Continue Launch regression without rebuilding the project or resetting customer/order data. Ike's existing bespoke customer ordering experience remains available as a compatibility showroom while the newer V4 Business Brief and deployment lane can be completed separately. Legacy project-tab routes are also normalized so an outdated route can never leave Project Control blank.

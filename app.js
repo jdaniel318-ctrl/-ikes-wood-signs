@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.3.6';
+  const BUILD_VERSION = '4.3.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2325,14 +2325,37 @@
     return true;
   }
 
+  function projectShowroomPreviewReady(p){
+    if(!p)return false;
+    const shell=projectShellFor(p);
+    const publishedOffer=(p.products||[]).some(pr=>pr && pr.active!==false && pr.published===true);
+    return ['ikes','mugs','flowers'].includes(shell) && publishedOffer;
+  }
+
   async function continueProjectLaunch(p){
     if(!p)return;
     const launch=projectFleetLaunchState(p);
-    if(launch.key==='live'){enterProject(p.id);return;}
+    if(launch.key==='live'){await enterProject(p.id);return;}
     if(launch.key==='fleet_ready'){await joinProjectFleet(p);return;}
+
+    // 4.3.7 — Showroom Restore.
+    // Ike's customer ordering experience predates the V4 deployment lane. A published
+    // bespoke shell must remain demonstrable even when the newer Business Brief /
+    // deployment records are incomplete. Continue Launch therefore opens the existing
+    // customer showroom instead of routing into a removed legacy `customer` tab.
+    if(p.id===LEGACY_IKE_PROJECT_ID && p.publish?.status==='live' && projectShowroomPreviewReady(p)){
+      logActivity(p.id,'Customer showroom opened','Legacy Ike customer experience compatibility route');
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'project',action:'project.showroom.opened',detail:`${p.name} • compatibility preview • build ${BUILD_VERSION}`});
+      await enterProject(p.id);
+      return;
+    }
+
     await openProjectEngineControl(p.id);
     if(launch.key==='draft'){
-      if(!launch.brief){await renderProjectTab(p.id,'customer');return;}
+      // `customer` was an old project-tab name removed by the V4 Project Control
+      // redesign. Route incomplete business understanding to the supported Experience
+      // tab so a launch action can never leave the Project Control body blank.
+      if(!launch.brief){await renderProjectTab(p.id,'experience');return;}
       if(!launch.offers.length){await renderProjectTab(p.id,'products');return;}
     }
     await renderProjectTab(p.id,'deployment');
@@ -3405,8 +3428,19 @@
 
   async function renderProjectTab(id,tab){
     const p=projectById(id), box=$('projectTabContent');if(!p||!box)return;
-    box.innerHTML=projectTabsHtml(p,tab);
+    // Backward-compatible tab aliases. Never render a blank Project Control body just
+    // because an older launch path names a tab that V4 renamed.
+    const requestedTab=String(tab||'overview');
+    const resolvedTab=({customer:'experience',customers:'experience',deployments:'deployment'}[requestedTab]||requestedTab);
+    tab=resolvedTab;
+    const html=projectTabsHtml(p,tab);
+    box.innerHTML=html || `<section class="pec-card project-route-recovery"><div class="engine-kicker">PROJECT ROUTE RECOVERY</div><h4>That project view is no longer available.</h4><p class="helper">Dark Sky redirected an outdated project route instead of leaving this page blank.</p><button type="button" class="primary-btn small" id="projectRouteRecoveryBtn">OPEN OVERVIEW</button></section>`;
     syncProjectCommandNavigation(tab,{expandedGroup:PROJECT_COMMAND_GROUPS[tab]||null});
+    if(!html){
+      $('projectRouteRecoveryBtn')?.addEventListener('click',()=>renderProjectTab(p.id,'overview'));
+      window.DarkSkyV4?.diagnostic?.('project.route.recovered',`Recovered unsupported project tab: ${requestedTab}`,{projectId:p.id,requestedTab,resolvedTab,build:BUILD_VERSION});
+      return;
+    }
     bindProjectControlJumpLinks(p);
     if(tab==='overview'){await renderProjectControlOverview(p);return;}
     if(tab==='analytics'){await renderProjectAnalytics(p);return;}
