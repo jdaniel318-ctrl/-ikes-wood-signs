@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.9.8';
+  const BUILD_VERSION = '3.9.9';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -1119,6 +1119,70 @@
     return {row,project};
   }
 
+
+  function draftMatchesProject(draft,project){
+    if(!draft||!project)return false;
+    if(draft.projectId && String(draft.projectId)===String(project.id))return true;
+    return String(draft.name||'').trim().toLowerCase()===String(project.name||'').trim().toLowerCase();
+  }
+
+  async function reconcileCommissioningArtifacts({attemptRepair=true,source='engine'}={}){
+    // v3.9.9 — canonical Project ID is the sole authority after commissioning.
+    // Recovery/journal/draft state may preserve an interrupted transition, but it
+    // must never compete with a project that is actually present in the canonical
+    // registry. Reconcile by immutable Project ID only; display names are used only
+    // to clear the matching pre-commission draft after identity has been verified.
+    const recovery=commissioningRecoveryCandidate();
+    if(!recovery)return {status:'none'};
+    const candidate=recovery.project;
+    let canonical=[];
+    try{ canonical=await readCanonicalProjectRegistry(); }
+    catch(err){
+      writeCommissionJournal(candidate,'recovery_pending',`Canonical registry read failed: ${String(err?.message||err)}`);
+      return {status:'read_failed',error:err,candidate};
+    }
+
+    if(registryContainsProject(canonical,candidate.id)){
+      companies=canonical.map(normalizeProjectCode).map(ensureProjectGovernance);
+      const draft=readCommissionDraft();
+      clearCommissionJournal(candidate.id);
+      if(draftMatchesProject(draft,candidate))clearCommissionDraft();
+      writeProjectRegistryBackup(companies,`reconciled-${source}`);
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:candidate.id,category:'recovery',action:'commissioning.registry_wins',detail:`${candidate.name} reconciled from canonical registry • ${source}`});
+      return {status:'commissioned',candidate,canonical};
+    }
+
+    if(!attemptRepair){
+      return {status:'missing',candidate,canonical,row:recovery.row};
+    }
+
+    // One controlled repair attempt. Persist against the registry we just read,
+    // never against a stale in-memory collection. This makes the repair idempotent
+    // and prevents duplicate Project IDs.
+    const sameId=canonical.find(p=>String(p.id)===String(candidate.id));
+    if(sameId){
+      return {status:'identity_conflict',candidate,canonical};
+    }
+    try{
+      writeCommissionJournal(candidate,'recovery_committing','Canonical registry is missing this Project ID. Retrying the preserved commissioned candidate.');
+      const repaired=await persistProjectRegistry([...canonical,candidate]);
+      const verify=await readCanonicalProjectRegistry();
+      if(!registryContainsProject(repaired,candidate.id)||!registryContainsProject(verify,candidate.id)){
+        throw new Error('Project ID was not present after canonical registry recovery read-back.');
+      }
+      companies=verify.map(normalizeProjectCode).map(ensureProjectGovernance);
+      const draft=readCommissionDraft();
+      clearCommissionJournal(candidate.id);
+      if(draftMatchesProject(draft,candidate))clearCommissionDraft();
+      writeProjectRegistryBackup(companies,`recovery-verified-${source}`);
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:candidate.id,category:'recovery',action:'commissioning.registry_recovery.verified',detail:`${candidate.name} promoted to canonical fleet registry • ${source}`});
+      return {status:'recovered',candidate,canonical:verify};
+    }catch(err){
+      writeCommissionJournal(candidate,'recovery_failed',String(err?.message||err));
+      return {status:'repair_failed',candidate,canonical,error:err};
+    }
+  }
+
   function normalizeProjectCode(p){
     if(!p)return p;
     const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS' };
@@ -1178,44 +1242,11 @@
       companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
     }
 
-    // v3.9.7 — commissioning journal recovery. A project candidate is written to
-    // localStorage BEFORE the fleet registry transaction begins. If Safari, an
-    // IndexedDB upgrade, a tab collision, or a deployment interruption prevents the
-    // canonical write, the candidate survives independently of the registry. On
-    // boot we attempt one safe repair. If that repair fails, Project Command renders
-    // the journal as a recovery card instead of allowing the vessel to disappear.
-    const recovery=commissioningRecoveryCandidate();
-    if(recovery && !registryContainsProject(companies,recovery.project.id)){
-      const candidate=recovery.project;
-      const conflict=companies.some(p=>String(p.id)===String(candidate.id) || (String(p.name||'').trim().toLowerCase()===String(candidate.name||'').trim().toLowerCase() && String(p.id)!==String(candidate.id)));
-      if(!conflict){
-        try{
-          const repairRows=[...companies,candidate];
-          const repaired=await persistProjectRegistry(repairRows);
-          if(registryContainsProject(repaired,candidate.id)){
-            companies=repaired.map(normalizeProjectCode).map(ensureProjectGovernance);
-            writeCommissionJournal(candidate,'registry_recovered','Recovered automatically during Engine boot.');
-            clearCommissionJournal(candidate.id);
-            window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:candidate.id,category:'recovery',action:'commissioning.journal.recovered',detail:`${candidate.name} restored to canonical project registry`});
-          }
-        }catch(err){
-          writeCommissionJournal(candidate,'recovery_pending',String(err?.message||err));
-          console.warn('Commissioning journal recovery remains pending',err);
-        }
-      }else{
-        writeCommissionJournal(candidate,'recovery_conflict','Project ID or display-name conflict requires review.');
-      }
-    }else if(recovery && registryContainsProject(companies,recovery.project.id)){
-      // The registry already owns this immutable Project ID. Clear any stale
-      // commissioning artifacts left behind by an interrupted post-commit UI refresh.
-      const recoveredName=String(recovery.project.name||'').trim().toLowerCase();
-      const draft=readCommissionDraft();
-      clearCommissionJournal(recovery.project.id);
-      if(draft && String(draft.name||'').trim().toLowerCase()===recoveredName){
-        clearCommissionDraft();
-      }
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:recovery.project.id,category:'recovery',action:'commissioning.post_commit_artifacts.cleared',detail:`${recovery.project.name} already verified in canonical registry`});
-    }
+    // v3.9.9 — reconcile commissioning artifacts against the canonical Project ID.
+    // A verified canonical project wins and stale journal/draft artifacts are removed.
+    // If the Project ID is missing, one idempotent recovery attempt uses the preserved
+    // commissioned candidate and verifies it by reading the canonical store back.
+    await reconcileCommissioningArtifacts({attemptRepair:true,source:'engine-boot'});
 
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
@@ -1555,6 +1586,9 @@
 
   async function renderProjectCommand(){
     const box=$('projectCommandCards');if(!box)return;
+    // Reconcile before counting/rendering so Project Command cannot show a verified
+    // project as both recovery cargo and a Shipyard Draft.
+    const reconciliation=await reconcileCommissioningArtifacts({attemptRepair:true,source:'project-command'});
     const list=projects();
     const live=list.filter(p=>p.publish?.status==='live').length;
     const journal=readCommissionJournal();
@@ -1600,16 +1634,19 @@
     const journalRecovery=commissioningRecoveryCandidate();
     if(journalRecovery && !list.some(p=>String(p.id)===String(journalRecovery.project.id))){
       const jp=journalRecovery.project;
+      const stage=String(journalRecovery.row.stage||'recovery_pending');
+      const failed=stage==='recovery_failed'||stage==='recovery_pending';
       cards.push(`<article class="project-card commission-draft-card registry-recovery-card">
         <div class="project-card-head"><div class="project-brand-badge code-only"><span>${escapeHtml(commissionCode(jp.name))}</span></div><span class="commission-draft-badge">REGISTRY RECOVERY</span></div>
         <h4>${escapeHtml(jp.name)}</h4>
-        <p>Dark Sky captured this commissioned vessel before the registry write completed. Its identity is preserved.</p>
-        <div class="project-launch-line draft"><span>${escapeHtml(String(journalRecovery.row.stage||'RECOVERY').replaceAll('_',' ').toUpperCase())}</span><small>${escapeHtml(journalRecovery.row.detail||'Registry repair will be retried when the Engine loads.')}</small></div>
-        <div class="project-card-actions"><button type="button" data-retry-project-registry="${escapeHtml(jp.id)}" class="primary-btn small">RETRY REGISTRY SAVE</button></div>
+        <p>Dark Sky preserved this commissioned Project ID, but the canonical fleet registry has not verified it yet.</p>
+        <div class="project-launch-line draft"><span>${escapeHtml(stage.replaceAll('_',' ').toUpperCase())}</span><small>${escapeHtml(journalRecovery.row.detail||'Canonical registry recovery remains pending.')}</small></div>
+        <div class="project-card-actions"><button type="button" data-retry-project-registry="${escapeHtml(jp.id)}" class="primary-btn small">${failed?'RETRY RECOVERY':'VERIFY REGISTRY'}</button></div>
       </article>`);
     }
     const pendingDraft=readCommissionDraft();
-    if(pendingDraft?.name && !list.some(p=>String(p.name||'').trim().toLowerCase()===String(pendingDraft.name||'').trim().toLowerCase())){
+    const draftShadowedByJournal=journalRecovery && draftMatchesProject(pendingDraft,journalRecovery.project);
+    if(pendingDraft?.name && !draftShadowedByJournal && !list.some(p=>String(p.name||'').trim().toLowerCase()===String(pendingDraft.name||'').trim().toLowerCase())){
       cards.push(`<article class="project-card commission-draft-card">
         <div class="project-card-head"><div class="project-brand-badge code-only"><span>${escapeHtml(commissionCode(pendingDraft.name))}</span></div><span class="commission-draft-badge">SHIPYARD DRAFT</span></div>
         <h4>${escapeHtml(pendingDraft.name)}</h4>
@@ -3492,7 +3529,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.9.8'
+      commissioningVersion:'3.9.9'
     };
 
     // Commissioning is a durable registry transaction, not a visual completion.
@@ -6647,24 +6684,20 @@ The full order and approved media remain stored with this project.`;
       if(target.matches('[data-retry-project-registry]')){
         const recovery=commissioningRecoveryCandidate();
         if(!recovery || String(recovery.project.id)!==String(target.dataset.retryProjectRegistry||'')){alert('No matching commissioning recovery record is available.');return;}
-        const prior=target.textContent;target.disabled=true;target.textContent='RETRYING…';
+        const prior=target.textContent;target.disabled=true;target.textContent='VERIFYING…';
         try{
-          const candidate=recovery.project;
-          const base=companies.filter(p=>String(p.id)!==String(candidate.id));
-          const persisted=await persistProjectRegistry([...base,candidate]);
-          if(!registryContainsProject(persisted,candidate.id))throw new Error('Canonical registry read-back did not contain the recovered Project ID.');
-          companies=persisted.map(normalizeProjectCode).map(ensureProjectGovernance);
-          writeProjectRegistryBackup(companies,'commissioning-journal-manual-recovery');
-          clearCommissionJournal(candidate.id);
-          clearCommissionDraft();
+          const result=await reconcileCommissioningArtifacts({attemptRepair:true,source:'manual-recovery'});
+          if(!['commissioned','recovered'].includes(result.status)){
+            throw result.error||new Error(`Registry recovery remains ${result.status}.`);
+          }
           await renderProjectCommand();
-          alert(`${candidate.name} is now verified in the fleet registry.`);
+          alert(`${recovery.project.name} is verified in the fleet registry.`);
         }catch(err){
-          writeCommissionJournal(recovery.project,'recovery_pending',String(err?.message||err));
           alert(`Registry recovery did not complete: ${String(err?.message||err)}`);
         }finally{if(document.body.contains(target)){target.disabled=false;target.textContent=prior;}}
         return;
       }
+
       if(target.matches('[data-fleet-health-project]')){await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
       if(target.matches('[data-open-project-control]')){await openProjectEngineControl(target.dataset.openProjectControl);return;}
       if(target.matches('[data-project-launch]')){
@@ -7487,7 +7520,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.8',
+    version:'3.9.9',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7988,7 +8021,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.8.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.9.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

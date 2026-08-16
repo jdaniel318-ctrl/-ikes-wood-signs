@@ -1,17 +1,17 @@
-# Dark Sky / Black Flag — v3.9.8 Post-Commit Engine Refresh Repair
+# Dark Sky / Black Flag — v3.9.9 Canonical Registry Reconciliation
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
 
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.9.8 — Post-Commit Engine Refresh Repair
+**Current release:** v3.9.9 — Canonical Registry Reconciliation
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
 
 
-## v3.9.8 post-commit Engine refresh repair
-Commissioning had one remaining presentation-layer defect: after a project was durably written and verified in the canonical registry, the success path called a `renderEngineRoom()` helper that did not exist. The registry transaction could succeed while the already-rendered Engine stayed stale, making a newly commissioned vessel appear to remain a Shipyard Draft. v3.9.8 adds one canonical Engine refresh route, clears stale commissioning artifacts when the immutable Project ID is already present in the registry, and separates durable registry success from presentation verification.
+## v3.9.9 canonical registry reconciliation
+Project Command now reconciles commissioning state against the canonical IndexedDB `projects` store before it counts or renders the fleet. The immutable Project ID is authoritative: if it exists canonically, Dark Sky clears matching recovery/draft artifacts and renders one normal project card; if it is missing, Dark Sky performs one controlled recovery from the preserved commissioned candidate and verifies the Project ID by reading the canonical store back. A vessel can no longer appear simultaneously as Registry Recovery and Shipyard Draft, and historical journal text can no longer claim a project is verified when the current canonical registry says otherwise.
 
 ## v3.9.1 command-watch reliability
 First Mate Watch is now a real command router rather than a set of visually active cards with individually rebound click closures. Watch actions route through one controller with busy state, visible success/error feedback, and highlighted destinations. Run Watch and Ship Integrity also expose working state so a command can no longer appear to do nothing. The Watch cards and integrity results use iPad-readable type and clearer signal hierarchy.

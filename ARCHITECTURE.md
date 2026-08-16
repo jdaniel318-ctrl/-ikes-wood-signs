@@ -158,6 +158,12 @@ Commissioning obeys a strict durability sequence: **seal identity → commit reg
 This law prevents a visually successful commissioning flow from producing a missing vessel and preserves the doctrine: **names can change; identity cannot; successful commands must be proven by durable evidence.**
 
 
-### Post-Commit Presentation Law — v3.9.8
+### Canonical Commissioning Reconciliation Law — v3.9.9
 
-A durable registry commit and an Engine presentation refresh are separate phases. Once a commissioned Project ID is verified in the canonical registry, presentation code must never roll back or obscure that durable fact. All Engine mutations that require a full command-deck refresh use one defined refresh route; undefined or feature-local refresh helpers are forbidden. If presentation verification fails after persistence succeeds, Dark Sky preserves the Project ID, records the presentation failure, and recovers the UI without creating a second project identity.
+The canonical IndexedDB `projects` store is the sole authority for whether a commissioned vessel belongs to the fleet. Recovery journals and commissioning drafts preserve interrupted work, but they may never compete with a Project ID that is already present in the canonical registry.
+
+Before Project Command counts or renders the fleet, Dark Sky reconciles commissioning artifacts against a fresh canonical registry read. If the immutable Project ID is present, canonical state wins: the project is loaded, matching recovery artifacts are cleared, and exactly one normal project card is rendered. If the Project ID is absent, one idempotent recovery transaction may write the preserved candidate against the freshly read registry and must verify that exact Project ID by reading the canonical store back before recovery is considered complete.
+
+A matching Shipyard Draft is suppressed while a commissioning journal owns recovery for the same vessel. Historical journal stages are diagnostic history only and must never be presented as current registry truth. Manual recovery, boot recovery, and Project Command recovery use the same reconciliation controller.
+
+This law strengthens the doctrine: **one immutable identity, one canonical fleet record, one visible project card.**

@@ -1,12 +1,14 @@
-## 3.9.8 — Post-Commit Engine Refresh Repair
+## 3.9.9 — Canonical Registry Reconciliation
 
-- Fixed the confirmed commissioning defect where a successful registry commit called a non-existent `renderEngineRoom()` helper, leaving Project Command visually stale after commissioning.
-- Added a canonical Engine refresh route that re-renders Project Command, diagnostics, Fleet Health/metrics, and V3 command systems after project mutations.
-- Durable project success is now recorded before presentation refresh; a UI failure can no longer be mistaken for a failed registry write.
-- If a commissioning journal Project ID is already present in the canonical registry, stale matching commissioning drafts/journal artifacts are cleared automatically on boot.
-- Presentation verification now audits the exact Project ID after the refreshed Engine card is found.
-- Bumped HTML asset query strings, runtime version, core version, commissioning version, and service-worker cache together to 3.9.8.
-
+- Made immutable Project ID in the canonical IndexedDB `projects` store the sole authority after commissioning.
+- Added a single reconciliation controller used during Engine boot, Project Command render, and manual recovery.
+- If a journaled Project ID already exists canonically, Dark Sky now loads the canonical registry, clears the stale commissioning journal/draft, and renders one normal fleet card.
+- If the Project ID is missing, Dark Sky performs one idempotent recovery transaction against a fresh canonical read, verifies the Project ID by reading the store back, and only then clears recovery artifacts.
+- Removed the contradictory state where one vessel could appear simultaneously as **REGISTRY VERIFIED** and **SHIPYARD DRAFT**. A matching draft is suppressed while a journal owns the recovery state.
+- Recovery cards no longer claim verification from a historical journal stage; they report the current canonical state and preserve the exact failure detail when recovery cannot complete.
+- Manual recovery now calls the same reconciliation controller as boot-time recovery instead of maintaining a second registry-write implementation.
+- Preserved the direct-touch horizontal fleet rail, immutable identity, no-new-damage integrity gate, and atomic canonical + compatibility-mirror writes.
+- Bumped runtime, boot audit, asset query strings, and service-worker cache identity together to 3.9.9.
 ## 3.9.6 — Durable Project Registry
 
 - Promoted project persistence from a single `settings.companies` array into a dedicated IndexedDB `projects` object store.

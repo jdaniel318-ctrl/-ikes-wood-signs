@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-9-8-post-commit-engine-refresh';
+const CACHE='dark-sky-v3-9-9-canonical-registry-reconciliation';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.9.8',
-  './platform_core.js?v=3.9.8',
-  './platform_identity.js?v=3.9.8',
-  './app.js?v=3.9.8',
-  './captain.js?v=3.9.8',
+  './styles.css?v=3.9.9',
+  './platform_core.js?v=3.9.9',
+  './platform_identity.js?v=3.9.9',
+  './app.js?v=3.9.9',
+  './captain.js?v=3.9.9',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
