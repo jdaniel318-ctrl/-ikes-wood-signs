@@ -1,3 +1,11 @@
+## v3.8.29 — Repeatable Business Understanding
+- Replaces the commissioning short-description bottleneck with a 12,000-character Business Brief.
+- Preserves the owner-written brief separately from Dark Sky’s structured operating interpretation.
+- Adds repeatable operating-model derivation for customer flow, fulfillment, required inputs, scheduling, visual profile, offers, and workflow signals.
+- Adds editable Business Brief + Dark Sky Understanding controls in Project Control → Customer Experience.
+- Makes the universal customer shell adapt its request prompt and optionally collect timing/fulfillment based on the project operating model.
+- Keeps all understanding scoped to the immutable Project ID.
+
 # Dark Sky Changelog
 
 ## v3.8.28 — Unified Engine Authentication

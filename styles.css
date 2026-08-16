@@ -10287,3 +10287,31 @@ body.universal-project .universal-customer-shell{display:block}
   font-weight:700;
   letter-spacing:.01em;
 }
+
+/* v3.8.29 — Repeatable Business Understanding */
+.commission-brief-field{grid-column:1/-1}
+.commission-brief-field textarea,
+.business-brief-card textarea{width:100%;min-height:190px;resize:vertical;line-height:1.55;font-size:16px;background:var(--bf-field,#07161c);color:var(--bf-text,#eef5f5);border:1px solid rgba(104,190,219,.42);border-radius:14px;padding:16px}
+.business-brief-prompts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px;padding:14px;border:1px solid rgba(104,190,219,.2);border-radius:14px;background:rgba(4,18,24,.55)}
+.business-brief-prompts span{grid-column:1/-1;color:#8fcfe4;font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.business-brief-prompts b{font-size:15px;font-weight:650;color:#d8e7e9}
+.commission-understanding-preview{margin-top:16px;padding:16px 18px;border-radius:14px;border:1px solid rgba(105,193,219,.32);background:rgba(7,30,38,.78);display:grid;gap:6px}
+.commission-understanding-preview small,.business-understanding-head small{color:#83cbe2;font-weight:800;letter-spacing:.14em}
+.commission-understanding-preview strong{font-size:18px;color:#f1f6f4}
+.commission-understanding-preview span{font-size:15px;color:#b6c8cb}
+.business-brief-card{display:grid;gap:18px}
+.business-understanding-head{display:flex;justify-content:space-between;align-items:end;gap:16px;padding-top:4px}
+.business-understanding-head h4{margin:3px 0 0}
+.business-understanding-head>span{font-size:14px;color:#8fa5a9}
+.business-understanding-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.business-understanding-grid>div{padding:14px;border-radius:12px;border:1px solid rgba(104,190,219,.22);background:rgba(4,18,24,.52);display:grid;gap:6px}
+.business-understanding-grid small{font-size:12px;letter-spacing:.12em;color:#7fa8b2;font-weight:800}
+.business-understanding-grid strong{font-size:16px;color:#eef4f4;text-transform:capitalize}
+.business-model-corrections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.business-model-corrections label{display:grid;gap:7px;font-size:14px;color:#aebfc2;font-weight:700}
+.business-model-corrections select,.business-model-corrections input{min-height:48px;background:#07161c;color:#f0f5f5;border:1px solid rgba(104,190,219,.38);border-radius:11px;padding:0 12px;font-size:16px}
+.business-model-corrections .checkline{display:flex;align-items:center;gap:10px;padding:10px 0}
+.universal-section-head p{margin:7px 0 0;color:#aec1c5;font-size:15px;line-height:1.45;max-width:64ch}
+.universal-adaptive-field{display:grid;gap:8px;margin-top:14px;color:#d8e4e5;font-weight:700}
+@media(max-width:900px){.business-understanding-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.business-model-corrections,.business-brief-prompts{grid-template-columns:1fr}}
+@media(max-width:620px){.business-understanding-grid{grid-template-columns:1fr}}

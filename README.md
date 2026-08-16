@@ -1,6 +1,6 @@
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.8.28 — Operator Save Feedback
+**Current release:** v3.8.29 — Repeatable Business Understanding
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
@@ -39,3 +39,7 @@ Historical build audits are development records and do not need to remain in the
 - **Data isolation and presentation isolation are both required.**
 - The Engine is the first ship, not the fleet. Captain's Quarters remains the future shipyard for separate products that reuse proven Dark Sky primitives without inheriting Engine-specific baggage.
 - The current GitHub Pages/browser build remains a prototype boundary; unrelated production tenants ultimately require server-side identity, authorization, secret management, and durable storage controls.
+
+
+## Repeatable business understanding
+Every project now preserves a long-form Business Brief and a structured operating model derived from it. The original brief and the structured interpretation are stored separately, so owners/Captain can correct Dark Sky’s understanding without losing the source description. The universal customer shell can use that model for adaptive prompts, fulfillment choices, and scheduling fields.

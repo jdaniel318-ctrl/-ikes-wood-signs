@@ -95,3 +95,11 @@ This is presentation-only simplification. Project/deployment identity, authoriza
 ## v3.8.27 Engine authentication law
 
 All Engine PIN gates must use the single `BlackFlagAuth.verify()` controller. `5615` remains the test-build recovery/default PIN and the configured Engine PIN remains valid. Authentication failures and lockout state are shared across Engine entry surfaces; no individual screen may implement its own PIN comparison. A lockout must be surfaced as a lockout, never as an incorrect-PIN message.
+
+
+## Repeatable Business Understanding (v3.8.29)
+A project owns two distinct business-understanding records:
+1. `businessBrief` — the human-authored source of truth.
+2. `operatingModel` — a structured, correctable interpretation derived from the brief plus project capabilities.
+
+The operating model may inform customer flow, fulfillment, scheduling, required inputs, visual presentation, offers, and workflow. Corrections are stored as project-scoped overrides; the original brief is never replaced by the interpretation. This contract is reusable by future Dark Sky ships without inheriting the Business Command Engine UI.

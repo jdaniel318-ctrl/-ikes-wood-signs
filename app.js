@@ -1878,7 +1878,14 @@
 
     if(tab==='products') return `${projectModuleHero(p,'OPERATE','Products & Services','Manage the offers this business can sell and whether each offer is ready for customers.',`<span>${products.length} OFFERS</span>`)}<div class="pec-card"><div class="pec-title-row"><h4>Offer Registry</h4><button id="addProductBtn" class="secondary-btn small">ADD PRODUCT</button></div>
       <div class="product-list">${products.map(pr=>`<div class="product-row"><div><strong>${escapeHtml(pr.name)}</strong><small>${pr.characterLimit?`${pr.characterLimit} char max`:'Character limit unset'}</small></div><label><input data-product-publish="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}> Published</label></div>`).join('')}</div></div>`;
-    if(tab==='experience'){ const visual=visualPresentationFor(p); return `${projectModuleHero(p,'EXPERIENCE','Customer Experience','Control the customer-facing steps and visual presentation capabilities this project requires before an order is accepted.',`<span>${escapeHtml(visualPresets()[visual.profile]?.label||visual.profile||'No Visual Preview')}</span>`)}<div class="pec-card"><h4>Experience Rules</h4>
+    if(tab==='experience'){ const visual=visualPresentationFor(p); const operating=operatingModelForProject(p); const brief=window.BlackFlagV3Core?.normalizeBusinessBrief?.(p)||{text:p.description||''}; return `${projectModuleHero(p,'EXPERIENCE','Customer Experience','Teach Dark Sky how this business operates, then control the customer-facing steps and visual capabilities it needs.',`<span>${escapeHtml(String(operating.mode||'other').replaceAll('-',' ').toUpperCase())}</span>`)}
+      <div class="pec-card business-brief-card"><div class="pec-title-row"><div><h4>Business Brief</h4><p class="helper">The owner's original explanation stays with this Project ID. Dark Sky derives a structured operating model from it, and you can correct that interpretation without rewriting the brief.</p></div></div>
+      <label>How this business works<textarea id="ptBusinessBrief" rows="9" maxlength="12000" placeholder="What does this business do? What does it sell or provide? How should customers interact with it? How is work fulfilled? What information, scheduling, photos, approvals, or special rules matter?">${escapeHtml(brief.text||'')}</textarea></label>
+      <div class="business-understanding-head"><div><small>DARK SKY UNDERSTANDING</small><h4>Structured operating model</h4></div><span>Repeatable • Project-scoped</span></div>
+      ${operatingUnderstandingMarkup(p)}
+      <div class="business-model-corrections"><label>Operating model<select id="ptOperatingMode">${operatingModelModeOptions(operating.mode||'other')}</select></label><label>Customer journey<select id="ptOperatingFlow"><option value="guided" ${operating.customerFlow==='guided'?'selected':''}>Guided</option><option value="catalog" ${operating.customerFlow==='catalog'?'selected':''}>Catalog</option><option value="request" ${operating.customerFlow==='request'?'selected':''}>Request / Quote</option></select></label><label>Fulfillment methods<input id="ptOperatingFulfillment" class="text-input" value="${escapeHtml((operating.fulfillment||[]).join(', '))}" placeholder="pickup, delivery, shipping, on-site"></label><label class="checkline"><input id="ptOperatingScheduling" type="checkbox" ${operating.schedulingNeeded?'checked':''}> Scheduling / appointment needed</label></div>
+      <div class="visual-cap-note"><strong>Interpretation stays correctable.</strong><span>Dark Sky keeps both the source brief and the structured model. Changes here affect this project only and do not alter another vessel.</span></div></div>
+      <div class="pec-card"><h4>Experience Rules</h4>
       <label class="admin-toggle-row compact-toggle"><span><strong>Photo step</strong><small>Require product photo.</small></span><input id="ptPhoto" type="checkbox" ${p.customerExperience?.photoRequired!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Preview approval</strong><small>Require customer approval.</small></span><input id="ptPreview" type="checkbox" ${p.customerExperience?.previewApproval!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Custom colors</strong><small>Allow custom color picker.</small></span><input id="ptColors" type="checkbox" ${p.customization?.allowCustomColors!==false?'checked':''}></label>
@@ -1887,7 +1894,7 @@
       <label class="visual-profile-select">Starting profile<select id="ptVisualProfile">${visualProfileOptions(visual.profile||'none')}</select></label>
       <div id="visualCapabilityDeck" class="visual-cap-deck">${visualCapabilityDeck(visual)}</div>
       <div class="visual-cap-note"><strong>Composable by design.</strong><span>A project can combine multiple inputs, placement zones, transforms, preview styles, approval stages, and outputs. New ships can extend this catalog without inheriting an Engine-specific customer shell.</span></div>
-      <button id="saveExperienceTab" class="primary-btn small">SAVE EXPERIENCE & VISUAL CAPABILITIES</button></div>`;}
+      <button id="saveExperienceTab" class="primary-btn small">SAVE BUSINESS & EXPERIENCE MODEL</button></div>`;}
     if(tab==='ai') return `${projectModuleHero(p,'SYSTEM','AI Recognition','Configure assistive recognition without giving AI authority over pricing or project policy.')}<div class="pec-card"><h4>Recognition Policy</h4><p class="helper">Recognition suggests structured attributes. Project pricing rules remain authoritative.</p>
       <label>Mode<select id="ptAI"><option value="off">Off</option><option value="assist">Assist</option><option value="automatic">Automatic</option></select></label>
       <label>Minimum confidence<input id="ptConfidence" class="text-input" type="number" min=".5" max=".99" step=".01" value="${Number(p.ai?.minConfidence||.9).toFixed(2)}"></label>
@@ -2236,7 +2243,11 @@
       });
     }
     if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{if(!requireEngineProjectMutation(p,'ai.policy.update'))return;p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await saveCompanies();logActivity(p.id,'AI policy changed',p.ai.mode);};}
-    if(tab==='experience'){ const profile=$('ptVisualProfile'); if(profile) profile.onchange=()=>{ const preset=visualPresets()[profile.value]; if(!preset)return; VISUAL_FAMILIES.forEach(f=>{ $$(`[data-visual-family=\"${f}\"]`).forEach(cb=>{cb.checked=(preset[f]||[]).includes(cb.value);cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked);}); }); }; $$('#visualCapabilityDeck input[type=\"checkbox\"]').forEach(cb=>cb.onchange=()=>cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked)); $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;p.customerExperience={...(p.customerExperience||{}),photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;p.visualPresentation=collectVisualPresentationFromControls(p);await saveCompanies();logActivity(p.id,'Customer experience updated',`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
+    if(tab==='experience'){ const profile=$('ptVisualProfile'); if(profile) profile.onchange=()=>{ const preset=visualPresets()[profile.value]; if(!preset)return; VISUAL_FAMILIES.forEach(f=>{ $$(`[data-visual-family=\"${f}\"]`).forEach(cb=>{cb.checked=(preset[f]||[]).includes(cb.value);cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked);}); }); }; $$('#visualCapabilityDeck input[type=\"checkbox\"]').forEach(cb=>cb.onchange=()=>cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked)); $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;
+        p.customerExperience={...(p.customerExperience||{}),mode:$('ptOperatingFlow')?.value||p.customerExperience?.mode||'guided',photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};
+        p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;p.visualPresentation=collectVisualPresentationFromControls(p);
+        window.BlackFlagV3Core?.updateBusinessUnderstanding?.(p,{briefText:$('ptBusinessBrief')?.value||'',overrides:{mode:$('ptOperatingMode')?.value||'other',customerFlow:$('ptOperatingFlow')?.value||'guided',fulfillment:String($('ptOperatingFulfillment')?.value||'').split(',').map(x=>x.trim()).filter(Boolean),schedulingNeeded:!!$('ptOperatingScheduling')?.checked}});
+        await saveCompanies();logActivity(p.id,'Business understanding updated',window.BlackFlagV3Core?.resolveOperatingModel?.(p)?.summary||`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
     if(tab==='workflow') $('saveWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.update'))return;const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));}};
     if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'project.publishing.update'))return;const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await saveCompanies();logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
     if(tab==='products'){
@@ -2717,7 +2728,7 @@
       updatedAt:new Date().toISOString(),
       _step:1,_maxStepReached:1,_recovered:false,
       name:'',ownerName:'',ownerEmail:'',
-      businessType:'other',description:'',
+      businessType:'other',description:'',businessBrief:'',
       primaryOffer:'',characterLimit:32,pricingMode:'manual',
       customerMode:'guided',photoRequired:false,contactCapture:true,visualProfile:'none',
       ownerPortal:true,customerRetention:false,notifications:false,
@@ -2766,9 +2777,26 @@
       commissionDraft.projectCode=commissionDraft.projectCode||commissionCode(commissionDraft.name);
       commissionDraft.orderPrefix=commissionDraft.orderPrefix||commissionDraft.projectCode;
     }
+    if(String(commissionDraft.businessBrief||'').trim()){
+      commissionDraft.description=String(commissionDraft.businessBrief).trim().split(/\n+/)[0].slice(0,180);
+    }
     commissionDraft._step=commissionStep;
     commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);
     commissionDraft.updatedAt=new Date().toISOString();
+  }
+
+  function commissioningOperatingPreview(){
+    const core=window.BlackFlagV3Core;
+    const sample={
+      businessType:commissionDraft?.businessType||'other',
+      type:commissionDraft?.businessType||'other',
+      description:commissionDraft?.description||'',
+      businessBrief:{text:commissionDraft?.businessBrief||commissionDraft?.description||''},
+      products:commissionDraft?.primaryOffer?[{name:commissionDraft.primaryOffer,active:true}]:[],
+      customerExperience:{mode:commissionDraft?.customerMode||'guided',photoRequired:!!commissionDraft?.photoRequired,contactCapture:commissionDraft?.contactCapture!==false},
+      visualPresentation:{profile:commissionDraft?.visualProfile||'none'}
+    };
+    return core?.deriveOperatingProfile?.(sample,commissionDraft?.businessBrief||commissionDraft?.description||'')||{mode:'other',customerFlow:commissionDraft?.customerMode||'guided',fulfillment:[],schedulingNeeded:false,requiredInputs:[],summary:'Operating model will be derived at commissioning.'};
   }
 
   function commissioningStepMarkup(){
@@ -2787,14 +2815,16 @@
       </div>`;
     if(commissionStep===2)return `
       <div class="commission-panel">
-        <div class="eyebrow">02 • STARTING MODEL</div><h2>Choose the closest operating pattern</h2>
-        <div class="commission-grid two">
+        <div class="eyebrow">02 • BUSINESS BRIEF</div><h2>Teach Dark Sky how this business works</h2>
+        <p>Choose the closest starting model, then describe the business in your own words. Dark Sky keeps the original brief and turns it into a structured operating model that can be reviewed and corrected later.</p>
+        <div class="commission-grid">
           <label>Starting model<select data-cfield="businessType">
             ${['wood_signs','mugs','flowers','retail','service','food','other'].map(x=>`<option value="${x}" ${d.businessType===x?'selected':''}>${x.replace(/_/g,' ').toUpperCase()}</option>`).join('')}
           </select></label>
-          <label>Short description<input data-cfield="description" value="${escapeHtml(d.description)}" placeholder="What does this business do?"></label>
+          <label class="commission-brief-field">Business brief<textarea data-cfield="businessBrief" rows="9" maxlength="12000" placeholder="Tell Dark Sky what the business does, what it sells or provides, how customers should interact with it, how work is fulfilled, whether scheduling matters, what information customers need to provide, and anything unusual about how the business operates.">${escapeHtml(d.businessBrief||d.description||'')}</textarea></label>
         </div>
-        <div class="commission-callout"><b>STARTING POINT, NOT A CAGE</b><span>This choice seeds the initial operating pattern. Project identity stays independent, and capabilities can be changed later without turning an existing business into somebody else's template.</span></div>
+        <div class="business-brief-prompts"><span>Helpful prompts</span><b>What do you sell or provide?</b><b>How should customers buy or request it?</b><b>Pickup, delivery, shipping, on-site, event, or digital?</b><b>Does scheduling or a photo/reference matter?</b></div>
+        <div class="commission-callout"><b>ONE BRIEF • REUSABLE UNDERSTANDING</b><span>The brief stays attached to this Project ID. Dark Sky derives customer flow, fulfillment, required inputs, scheduling needs, visual needs, and workflow signals from it without replacing what the owner actually wrote.</span></div>
       </div>`;
     if(commissionStep===3)return `
       <div class="commission-panel">
@@ -2851,6 +2881,7 @@
           <div><small>OWNER HANDOFF</small><b>${d.ownerPortal&&d.ownerName&&d.ownerEmail?'READY TO INVITE':'CONFIGURE LATER'}</b></div>
           <div><small>LAUNCH STATE</small><b>PRIVATE • SEA TRIAL</b></div>
         </div>
+        ${(()=>{const m=commissioningOperatingPreview();return `<div class="commission-understanding-preview"><small>DARK SKY UNDERSTANDING</small><strong>${escapeHtml(String(m.mode||'other').replaceAll('-',' ').toUpperCase())}</strong><span>${escapeHtml(m.summary||'')}</span><span>Fulfillment: ${escapeHtml((m.fulfillment||[]).join(', ')||'project-defined')} • Scheduling: ${m.schedulingNeeded?'needed':'not currently indicated'}</span></div>`})()}
         <div class="commission-readiness" aria-label="Commissioning readiness">
           <div class="ready"><span>✓</span><b>IDENTITY SEALED</b><small>A unique immutable Project ID is generated at commission; names and branding can change later.</small></div>
           <div class="ready"><span>✓</span><b>PRIVATE BY DEFAULT</b><small>No customer deployment is published by commissioning alone.</small></div>
@@ -3026,7 +3057,8 @@
     const p={
       id,
       name:commissionDraft.name.trim(),
-      description:commissionDraft.description||commissionDraft.primaryOffer||'New commissioned project',
+      description:commissionDraft.description||commissionDraft.businessBrief||commissionDraft.primaryOffer||'New commissioned project',
+      businessBrief:{text:String(commissionDraft.businessBrief||commissionDraft.description||'').trim(),source:'commissioning',updatedAt:new Date().toISOString()},
       projectCode:code,
       orderPrefix:commissionDraft.orderPrefix||code,
       namespace:core?.namespaceFor?.(id)||('bf.project.'+id),
@@ -3065,7 +3097,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.28'
+      commissioningVersion:'3.8.29'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -3606,6 +3638,27 @@
     if($('graphicsExpandModal')) $('graphicsExpandModal').onclick=e=>{if(e.target.id==='graphicsExpandModal')closeGraphicsExpandedPreview();};
   }
 
+  function operatingModelForProject(p){
+    return window.BlackFlagV3Core?.resolveOperatingModel?.(p)||{mode:'other',customerFlow:p?.customerExperience?.mode||'guided',fulfillment:[],schedulingNeeded:false,requiredInputs:[],summary:'Project operating model'};
+  }
+  function operatingModelModeOptions(selected='other'){
+    const labels={'custom-product':'Custom Product','retail':'Retail','food-service':'Food / Beverage','service':'Service','request-quote':'Request / Quote','mixed':'Mixed','other':'Other'};
+    return Object.entries(labels).map(([id,label])=>`<option value="${id}" ${id===selected?'selected':''}>${label}</option>`).join('');
+  }
+  function operatingUnderstandingMarkup(p){
+    const model=operatingModelForProject(p);
+    const fulfillment=(model.fulfillment||[]).join(', ')||'Project-defined';
+    const inputs=(model.requiredInputs||[]).map(x=>x.replaceAll('_',' ')).join(', ')||'No special inputs detected';
+    return `<div class="business-understanding-grid">
+      <div><small>OPERATING MODEL</small><strong>${escapeHtml(String(model.mode||'other').replaceAll('-',' '))}</strong></div>
+      <div><small>CUSTOMER FLOW</small><strong>${escapeHtml(String(model.customerFlow||'guided').replaceAll('-',' '))}</strong></div>
+      <div><small>FULFILLMENT</small><strong>${escapeHtml(fulfillment)}</strong></div>
+      <div><small>SCHEDULING</small><strong>${model.schedulingNeeded?'Needed':'Not currently indicated'}</strong></div>
+      <div><small>REQUIRED INPUTS</small><strong>${escapeHtml(inputs)}</strong></div>
+      <div><small>VISUAL PROFILE</small><strong>${escapeHtml(model.visualProfile||'none')}</strong></div>
+    </div>`;
+  }
+
   const PROJECT_SHELL_TEMPLATES={
     'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'flat-surface',previewGeometry:'flat-surface'}},
     'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'cylindrical-wrap',previewGeometry:'cylindrical-wrap'}},
@@ -3632,10 +3685,10 @@
     const built=window.BlackFlagV3Core?.normalizeVisualPresentation?.({...(p||{}),visualPresentation:next});
     return built||next;
   }
-  const universalCustomerState={projectId:null,offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',submittedOrderId:''};
+  const universalCustomerState={projectId:null,offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',submittedOrderId:''};
   function resetUniversalCustomerState(p){
     const offers=universalOffersFor(p);
-    Object.assign(universalCustomerState,{projectId:p?.id||null,offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',submittedOrderId:''});
+    Object.assign(universalCustomerState,{projectId:p?.id||null,offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',submittedOrderId:''});
   }
   function universalCustomerContextFor(p){
     const ctx=window.__deploymentCustomerContext;
@@ -3664,6 +3717,9 @@
     const photoRequired=!!p.customerExperience?.photoRequired;
     const contactCapture=p.customerExperience?.contactCapture!==false;
     const ctx=universalCustomerContextFor(p);
+    const operating=operatingModelForProject(p);
+    const detailHeading=operating.mode==='service'||operating.mode==='request-quote'?'Tell us about the work':operating.mode==='food-service'?'Tell us how you want it':'Tell us what you need';
+    const detailPlaceholder=operating.mode==='service'?'Describe the job, location, timing, and anything we should know.':operating.mode==='food-service'?'Quantity, flavors, preferences, event details, or special instructions.':'Details, wording, preferences, or special instructions';
     const initials=(p.projectCode||p.orderPrefix||p.name||'PRJ').replace(/[^A-Za-z0-9]/g,'').slice(0,3).toUpperCase()||'PRJ';
     if(universalCustomerState.submittedOrderId){
       shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div>${ctx.deploymentId?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
@@ -3681,12 +3737,14 @@
           <div class="universal-offer-grid">${offers.length?offers.map(x=>`<button type="button" class="universal-offer ${offer?.id===x.id?'selected':''}" data-universal-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(universalPriceLabel(x))}</span></button>`).join(''):'<div class="universal-empty"><strong>No customer-ready offers yet.</strong><span>Return to Project Control and make an offer available before testing this vessel.</span></div>'}</div>
         </section>
         ${photoRequired?`<section class="universal-order-card"><div class="universal-section-head"><small>2 • REFERENCE</small><h2>Add the required photo</h2></div><label class="universal-photo-picker"><input id="universalPhotoInput" type="file" accept="image/*" capture="environment"><span>${universalCustomerState.photoData?'CHANGE PHOTO':'TAKE OR CHOOSE PHOTO'}</span></label>${universalCustomerState.photoData?`<img class="universal-photo-preview" src="${universalCustomerState.photoData}" alt="Customer reference photo">`:''}</section>`:''}
-        <section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'3':'2'} • DETAILS</small><h2>Tell us what you need</h2></div><textarea id="universalNotes" class="universal-input" rows="4" maxlength="${Number(p.characterLimit||500)}" placeholder="Details, wording, preferences, or special instructions">${escapeHtml(universalCustomerState.notes)}</textarea></section>
+        <section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'3':'2'} • DETAILS</small><h2>${escapeHtml(detailHeading)}</h2><p>${escapeHtml((window.BlackFlagV3Core?.normalizeBusinessBrief?.(p)?.text||'').slice(0,240))}</p></div><textarea id="universalNotes" class="universal-input" rows="5" maxlength="${Math.max(1000,Number(p.characterLimit||500))}" placeholder="${escapeHtml(detailPlaceholder)}">${escapeHtml(universalCustomerState.notes)}</textarea>${operating.schedulingNeeded?`<label class="universal-adaptive-field">Preferred date / timing<input id="universalPreferredTiming" class="universal-input" value="${escapeHtml(universalCustomerState.preferredTiming)}" placeholder="When would you like this?"></label>`:''}${(operating.fulfillment||[]).length?`<label class="universal-adaptive-field">Fulfillment<select id="universalFulfillment" class="universal-input"><option value="">Choose an option</option>${operating.fulfillment.map(x=>`<option value="${escapeHtml(x)}" ${universalCustomerState.fulfillment===x?'selected':''}>${escapeHtml(x.replaceAll('-',' '))}</option>`).join('')}</select></label>`:''}</section>
         ${contactCapture?`<section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'4':'3'} • CONTACT</small><h2>How should we reach you?</h2></div><div class="universal-contact-grid"><label>Name<input id="universalCustomerName" class="universal-input" autocomplete="name" value="${escapeHtml(universalCustomerState.customerName)}"></label><label>Phone<input id="universalCustomerPhone" class="universal-input" type="tel" autocomplete="tel" value="${escapeHtml(universalCustomerState.customerPhone)}"></label><label>Email<input id="universalCustomerEmail" class="universal-input" type="email" autocomplete="email" value="${escapeHtml(universalCustomerState.customerEmail)}"></label></div></section>`:''}
         <section class="universal-review-card"><div><small>READY TO SEND</small><h2>${escapeHtml(offer?.name||'Select an offer')}</h2><p>${escapeHtml(universalPriceLabel(offer))}</p></div><button type="button" id="universalSubmitOrder" class="primary-btn" ${offers.length?'':'disabled'}>${ctx.state==='sea_trial'?'PLACE TEST ORDER':'PLACE ORDER'}</button></section>
       </main>`;
     $$('[data-universal-offer]').forEach(btn=>btn.addEventListener('click',()=>{universalCustomerState.offerId=btn.dataset.universalOffer;renderUniversalCustomerShell(p)}));
     $('universalNotes')?.addEventListener('input',e=>universalCustomerState.notes=e.target.value);
+    $('universalPreferredTiming')?.addEventListener('input',e=>universalCustomerState.preferredTiming=e.target.value);
+    $('universalFulfillment')?.addEventListener('change',e=>universalCustomerState.fulfillment=e.target.value);
     $('universalCustomerName')?.addEventListener('input',e=>universalCustomerState.customerName=e.target.value);
     $('universalCustomerPhone')?.addEventListener('input',e=>universalCustomerState.customerPhone=e.target.value);
     $('universalCustomerEmail')?.addEventListener('input',e=>universalCustomerState.customerEmail=e.target.value);
@@ -3719,7 +3777,7 @@
     const id=`${prefix}-${y}${mo}${day}-${suffix}`;
     const ctx=universalCustomerContextFor(p);
     const price=Number(offer.price||offer.basePrice||0);
-    const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||p.namespace,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:prefix},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New',price,productId:offer.id,productName:offer.name,offerName:offer.name,wording:universalCustomerState.notes.trim(),notes:universalCustomerState.notes.trim(),photoData:universalCustomerState.photoData||'',contactPreference:universalCustomerState.customerPhone?'Text':'Email',customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'universal_customer_shell'};
+    const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||p.namespace,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:prefix},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New',price,productId:offer.id,productName:offer.name,offerName:offer.name,wording:universalCustomerState.notes.trim(),notes:universalCustomerState.notes.trim(),preferredTiming:universalCustomerState.preferredTiming.trim(),fulfillment:universalCustomerState.fulfillment||'',operatingModel:operatingModelForProject(p).mode,photoData:universalCustomerState.photoData||'',contactPreference:universalCustomerState.customerPhone?'Text':'Email',customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'universal_customer_shell'};
     backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Universal order save failed',err);alert('The order could not be saved. Please try again.');return;}
     if(ctx.state==='sea_trial' && ctx.deploymentId){
       const canonicalProject=projectById(p.id);
@@ -6832,7 +6890,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.28',
+    version:'3.8.29',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7259,7 +7317,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.28.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • operator save feedback + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.29.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

@@ -1,4 +1,4 @@
-/* Dark Sky / Black Flag v3.8.16 — Fleet Project Rail & Visibility Repair */
+/* Dark Sky / Black Flag v3.8.29 — Repeatable Business Understanding */
 (function(g){
 'use strict';
 const SCHEMA=7, POLICY='3.5', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
@@ -10,6 +10,76 @@ const FLEET_FOUNDATION=Object.freeze({
  engineSpecific:Object.freeze(['business_projects','orders','customers','products_services','project_control','business_deployments']),
  futureShipRule:'Reuse Dark Sky primitives without inheriting Engine-specific workflows or UI.'
 });
+
+
+const BUSINESS_MODEL_MODES=Object.freeze(['custom-product','retail','food-service','service','request-quote','mixed','other']);
+const BUSINESS_BRIEF_MAX=12000;
+function normalizeBusinessBrief(p={}){
+ const raw=p.businessBrief;
+ const text=typeof raw==='string'?raw:(raw&&typeof raw==='object'?raw.text:'')||p.description||'';
+ return {
+  version:1,
+  text:String(text||'').trim().slice(0,BUSINESS_BRIEF_MAX),
+  source:(raw&&typeof raw==='object'&&raw.source)|| (p.commissionedAt?'commissioning':'legacy'),
+  updatedAt:(raw&&typeof raw==='object'&&raw.updatedAt)||p.updatedAt||new Date().toISOString()
+ };
+}
+function detectFulfillment(text=''){
+ const t=String(text).toLowerCase(), out=[];
+ const add=(id,words)=>{if(words.some(w=>t.includes(w))&&!out.includes(id))out.push(id)};
+ add('pickup',['pickup','pick up','collect']); add('delivery',['delivery','deliver']); add('shipping',['ship','shipping','mail']);
+ add('on-site',['on site','on-site','at your home','at your business','service call']); add('event',['event','festival','market','pop-up','popup']);
+ add('mobile',['mobile','truck','trailer','stand']); add('digital',['digital','download','online delivery']);
+ return out;
+}
+function deriveOperatingProfile(p={},briefOverride){
+ const brief=typeof briefOverride==='string'?briefOverride:normalizeBusinessBrief(p).text;
+ const text=[brief,p.description||'',...(p.products||[]).map(x=>x.name||'')].join(' ').toLowerCase();
+ const type=String(p.businessType||p.type||'other').toLowerCase();
+ let mode='other';
+ if(type.includes('food')||/lemonade|bakery|restaurant|cafe|coffee|food|drink|beverage/.test(text))mode='food-service';
+ else if(type.includes('service')||/service|repair|clean|consult|install|landscap|electric|plumb|appointment/.test(text))mode='service';
+ else if(type.includes('retail')||/retail|store|shop|merchandise/.test(text))mode='retail';
+ else if(type.includes('wood')||type.includes('mug')||type.includes('flower')||/custom|personaliz|engrave|print|sign|mug|shirt|apparel/.test(text))mode='custom-product';
+ if(/quote|estimate|bid|proposal/.test(text))mode='request-quote';
+ const customerFlow=p.customerExperience?.mode|| (mode==='request-quote'||mode==='service'?'request':'guided');
+ const fulfillment=detectFulfillment(text);
+ const schedulingNeeded=/schedule|appointment|booking|reservation|date|time slot|calendar/.test(text);
+ const requiredInputs=[];
+ if(p.customerExperience?.contactCapture!==false)requiredInputs.push('customer_contact');
+ if(p.customerExperience?.photoRequired)requiredInputs.push('photo_or_reference');
+ if(mode==='request-quote'||mode==='service')requiredInputs.push('request_details');
+ if(schedulingNeeded)requiredInputs.push('preferred_timing');
+ const visual=normalizeVisualPresentation(p);
+ const offers=(p.products||[]).filter(x=>x.active!==false).map(x=>x.name).filter(Boolean);
+ const summaryParts=[
+  mode.replaceAll('-',' '),
+  customerFlow==='catalog'?'catalog customer flow':customerFlow==='request'?'request / quote customer flow':'guided customer flow'
+ ];
+ if(fulfillment.length)summaryParts.push(fulfillment.join(', ')+' fulfillment');
+ if(schedulingNeeded)summaryParts.push('scheduling needed');
+ return {version:1,derivedAt:new Date().toISOString(),mode,customerFlow,fulfillment,schedulingNeeded,requiredInputs,visualProfile:visual.profile||'none',offers,workflow:Array.isArray(p.workflow)?p.workflow.slice():[],summary:summaryParts.join(' • ')};
+}
+function resolveOperatingModel(p={}){
+ const derived=deriveOperatingProfile(p);
+ const saved=p.operatingModel&&typeof p.operatingModel==='object'?p.operatingModel:{};
+ const o=saved.overrides&&typeof saved.overrides==='object'?saved.overrides:{};
+ return {...derived,...saved,mode:o.mode||saved.mode||derived.mode,customerFlow:o.customerFlow||saved.customerFlow||derived.customerFlow,fulfillment:Array.isArray(o.fulfillment)?o.fulfillment:(Array.isArray(saved.fulfillment)?saved.fulfillment:derived.fulfillment),schedulingNeeded:typeof o.schedulingNeeded==='boolean'?o.schedulingNeeded:(typeof saved.schedulingNeeded==='boolean'?saved.schedulingNeeded:derived.schedulingNeeded),overrides:o,derived};
+}
+function updateBusinessUnderstanding(p,{briefText,overrides={}}={}){
+ const now=new Date().toISOString();
+ p.businessBrief={...normalizeBusinessBrief(p),text:String(briefText??normalizeBusinessBrief(p).text).trim().slice(0,BUSINESS_BRIEF_MAX),source:'project_control',updatedAt:now};
+ const base=deriveOperatingProfile(p,p.businessBrief.text);
+ const cleanOverrides={};
+ if(BUSINESS_MODEL_MODES.includes(overrides.mode))cleanOverrides.mode=overrides.mode;
+ if(['guided','catalog','request'].includes(overrides.customerFlow))cleanOverrides.customerFlow=overrides.customerFlow;
+ if(Array.isArray(overrides.fulfillment))cleanOverrides.fulfillment=[...new Set(overrides.fulfillment.map(x=>String(x).trim()).filter(Boolean))].slice(0,12);
+ if(typeof overrides.schedulingNeeded==='boolean')cleanOverrides.schedulingNeeded=overrides.schedulingNeeded;
+ p.operatingModel={...base,overrides:cleanOverrides,reviewedAt:now,reviewVersion:1};
+ p.description=p.businessBrief.text.split(/\n+/)[0].trim().slice(0,180)||p.description||p.name||'Project';
+ p.updatedAt=now;
+ return resolveOperatingModel(p);
+}
 
 const VISUAL_CAPABILITY_CATALOG=Object.freeze({
  input:Object.freeze({
@@ -138,6 +208,8 @@ function ensure(p){
  p.lifecycle={...(p.lifecycle||{}),state:lifecycle(p),version:2,updatedAt:p.lifecycle?.updatedAt||new Date().toISOString()};
  p.audit={...(p.audit||{}),enabled:true,policyVersion:POLICY};
  p.visualPresentation=normalizeVisualPresentation(p);
+ p.businessBrief=normalizeBusinessBrief(p);
+ p.operatingModel=resolveOperatingModel(p);
  deployments(p).forEach(d=>sealDeployment(p,d));
  return p;
 }
@@ -227,5 +299,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.8.21-deployment-voyage-refit',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.8.29-repeatable-business-understanding',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);
