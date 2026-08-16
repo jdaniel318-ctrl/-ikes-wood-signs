@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-0-4-convergence-watch';
+const CACHE='dark-sky-v4-0-5-ghost-ship-sweep';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.0.4',
-  './platform_core.js?v=4.0.4',
-  './platform_v4.js?v=4.0.4',
-  './platform_identity.js?v=4.0.4',
-  './app.js?v=4.0.4',
-  './captain.js?v=4.0.4',
+  './styles.css?v=4.0.5',
+  './platform_core.js?v=4.0.5',
+  './platform_v4.js?v=4.0.5',
+  './platform_identity.js?v=4.0.5',
+  './app.js?v=4.0.5',
+  './captain.js?v=4.0.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

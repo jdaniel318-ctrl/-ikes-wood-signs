@@ -1,4 +1,12 @@
-# Dark Sky 4.0.4 — Convergence Watch
+# Dark Sky 4.0.5 — Ghost Ship Sweep
+
+- Canonical Fleet Registry is now the sole commissioning denominator.
+- Memory-only project artifacts are quarantined and can no longer inflate the fleet count.
+- Envelope ledger and IndexedDB mirror are rebuilt only for canonical Project IDs.
+- Ghost artifacts are recorded in the Recovery/Quarantine trail and Black Box diagnostics.
+- V4 commissioning can complete only when every canonical vessel is sealed.
+
+# Dark Sky 4.0.3 — Keel Seal
 
 - Added a dedicated Project Envelope Ledger keyed by immutable Project ID.
 - Security envelopes are hydrated into live project rows before integrity/status checks and persisted back to the canonical registry.
@@ -7,7 +15,7 @@
 - Quarantine writes are idempotent for the same legacy record.
 - Broadside status can no longer remain 0/4 merely because a legacy serializer dropped envelope fields.
 
-# Dark Sky 4.0.4 — Convergence Watch
+# Dark Sky 4.0.3 — Keel Seal
 
 - Forces live Fleet Registry rows through Schema 8 envelope sealing on every startup until read-back proves 4/4.
 - Makes the verified canonical read-back authoritative after commissioning.

@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.0.4';
+  const BUILD_VERSION = '4.0.5';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1450,6 +1450,30 @@
       return v4EnvelopeConvergenceState;
     }
     try{
+      // v4.0.5 — Ghost Ship Sweep. The canonical Fleet Registry defines the
+      // commissioning denominator. Memory-only/project-like artifacts may be useful
+      // recovery evidence, but they are never allowed to become an extra vessel.
+      // This specifically prevents stale pre-registry project objects from turning
+      // a healthy 4-vessel fleet into a false 4/5 commissioning failure.
+      let canonicalSeed=[];
+      try{ canonicalSeed=await readCanonicalProjectRegistry(); }catch(_){ canonicalSeed=[]; }
+      if(canonicalSeed.length){
+        const canonicalIds=new Set(canonicalSeed.map(p=>String(p?.id||'')).filter(Boolean));
+        const memoryGhosts=companies.filter(p=>p?.id&&!canonicalIds.has(String(p.id)));
+        if(memoryGhosts.length){
+          for(const ghost of memoryGhosts) appendV4Quarantine('memory_project_ghost',String(ghost.id),structuredClone(ghost));
+          window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.0.5.ghost_ship.quarantined',detail:`${memoryGhosts.length} memory-only project artifact${memoryGhosts.length===1?'':'s'} removed from active fleet denominator`});
+          window.DarkSkyV4?.diagnostic?.('commissioning.ghost_ship.quarantined',`${memoryGhosts.length} memory-only project artifact${memoryGhosts.length===1?'':'s'} quarantined`,{projectIds:memoryGhosts.map(p=>p.id)});
+        }
+        const memoryById=new Map(companies.map(p=>[String(p?.id||''),p]));
+        companies=canonicalSeed.map(row=>{
+          const mem=memoryById.get(String(row?.id||''));
+          // Canonical identity/registry fields win. Runtime-enriched fields may be
+          // retained only for the same immutable Project ID.
+          return mem?{...mem,...row,id:row.id}:row;
+        }).map(normalizeProjectCode).map(ensureProjectGovernance);
+      }
+
       const expected={};
       for(const project of companies){
         const e=buildV4ProjectEnvelope(project); if(e) expected[String(project.id)]=e;
@@ -1568,7 +1592,7 @@
     }
     writeCustomerDirectory(next);
     if(migrated||quarantined){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.4.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.5.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
       window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
     }
     return {migrated,quarantined};
@@ -7605,7 +7629,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function runShipIntegrityV3({record=false}={}){
-    // V4.0.4 uses one convergence routine for storage, status, and certification.
+    // V4.0.5 uses one canonical-registry convergence routine for storage, status, and certification.
     // Integrity therefore cannot disagree with the Broadside envelope counter.
     const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
     try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
@@ -7956,7 +7980,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'4.0.4-keel-seal-compat',
+    version:'4.0.5-ghost-ship-sweep-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
