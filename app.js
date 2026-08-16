@@ -14,8 +14,8 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.2.2';
-  // Ballast Trim: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
+  const BUILD_VERSION = '4.2.3';
+  // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1006,7 +1006,7 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.2.2'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.2.3'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -8257,7 +8257,7 @@ The full order and approved media remain stored with this project.`;
     // Navigation that must survive every project/template/control-center refit.
     // Capture phase intentionally owns these routes before feature-level handlers.
     document.addEventListener('click',event=>{
-      const target=event.target?.closest?.('#projectTabs [data-project-tab],#projectTabs [data-project-group],#closeProjectEngineControl,#returnToEngineBtn');
+      const target=event.target?.closest?.('#projectTabs [data-project-tab],#projectTabs [data-project-group],#closeProjectEngineControl,#returnToEngineBtn,#engineConfigureBtn,#engineConfigurationCloseBtn,[data-full-sail="configure"]');
       if(!target)return;
 
       if(target.matches('#projectTabs [data-project-group]')){
@@ -8288,6 +8288,20 @@ The full order and approved media remain stored with this project.`;
             if(box)box.innerHTML=`<div class="pc-navigation-error"><strong>COMMAND ROUTE INTERRUPTED</strong><span>${escapeHtml(String(err?.message||'This Project Control section could not be opened.'))}</span><button type="button" data-project-jump="overview">RETURN TO OVERVIEW</button></div>`;
           })
           .finally(()=>{delete target.dataset.navBusy;});
+        return;
+      }
+
+      if(target.id==='engineConfigureBtn'||target.matches('[data-full-sail="configure"]')){
+        event.preventDefault();
+        event.stopPropagation();
+        openEngineConfiguration('top');
+        return;
+      }
+
+      if(target.id==='engineConfigurationCloseBtn'){
+        event.preventDefault();
+        event.stopPropagation();
+        closeEngineWorkspace($('engineConfigurationDock'));
         return;
       }
 
@@ -8643,7 +8657,7 @@ The full order and approved media remain stored with this project.`;
       refreshEngineDiagnostics();
     });
     $('engineExportBtn').addEventListener('click',exportBackup);
-    $('engineStorageStewardCleanBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus'),btn=$('engineStorageStewardCleanBtn');if(box?.dataset.inspectOk!=='1'){if(box)box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Run Inspect Storage before any cleanup.</span>';return;}if(!confirm('Safe housekeeping will remove only stale Dark Sky application caches and compact bounded diagnostic/recovery-manifest history. It will NOT delete projects, orders, customers, graphics, admissions, active settings, or quarantine evidence. Continue?'))return;try{if(btn){btn.disabled=true;btn.textContent='TRIMMING…'}if(box)box.innerHTML='<strong>BALLAST TRIM IN PROGRESS</strong><br><span>Removing stale application cache ballast only.</span>';const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');const reclaimed=Number(r.before?.oldCacheBytes||0);if(box)box.innerHTML=`<strong>BALLAST TRIM COMPLETE</strong><br><span>${r.removedCaches.length} stale cache${r.removedCaches.length===1?'':'s'} removed • about ${formatStorageMb(reclaimed)} MB cache ballast targeted • ${r.diagnosticsTrimmed} old diagnostics • ${r.recoveryPointsTrimmed} old recovery manifests compacted.</span>`;try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}await refreshEngineDiagnostics();await renderFullSailCommandDeck();}catch(err){if(box)box.innerHTML='<strong>CLEANUP INTERRUPTED</strong><br><span>'+escapeHtml(String(err.message||err))+'</span>';}finally{if(btn){btn.disabled=false;btn.textContent='INSPECT AGAIN BEFORE CLEANING'}}});
+    $('engineStorageStewardCleanBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus'),btn=$('engineStorageStewardCleanBtn');if(box?.dataset.inspectOk!=='1'){if(box)box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Run Inspect Storage before any cleanup.</span>';return;}if(!confirm('Safe housekeeping will remove only stale Dark Sky application caches and compact bounded diagnostic/recovery-manifest history. It will NOT delete projects, orders, customers, graphics, admissions, active settings, or quarantine evidence. Continue?'))return;try{if(btn){btn.disabled=true;btn.textContent='TRIMMING…'}if(box)box.innerHTML='<strong>HELM LINK IN PROGRESS</strong><br><span>Removing stale application cache ballast only.</span>';const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');const reclaimed=Number(r.before?.oldCacheBytes||0);if(box)box.innerHTML=`<strong>HELM LINK COMPLETE</strong><br><span>${r.removedCaches.length} stale cache${r.removedCaches.length===1?'':'s'} removed • about ${formatStorageMb(reclaimed)} MB cache ballast targeted • ${r.diagnosticsTrimmed} old diagnostics • ${r.recoveryPointsTrimmed} old recovery manifests compacted.</span>`;try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}await refreshEngineDiagnostics();await renderFullSailCommandDeck();}catch(err){if(box)box.innerHTML='<strong>CLEANUP INTERRUPTED</strong><br><span>'+escapeHtml(String(err.message||err))+'</span>';}finally{if(btn){btn.disabled=false;btn.textContent='INSPECT AGAIN BEFORE CLEANING'}}});
     $('engineResetSettingsBtn').addEventListener('click',()=>{
       $('engineResetPinInput').value='';
       $('engineResetError').textContent='';
