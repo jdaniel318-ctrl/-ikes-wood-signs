@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.4.1';
+  const BUILD_VERSION = '4.4.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2383,7 +2383,32 @@
   }
 
 
-  async function openExperienceTestDeck(projectId){const p=projectById(projectId);if(!p)return;const deck=ensureExperienceTestDeck();experienceTestDeckProjectId=p.id;deck.classList.remove('hidden');document.body.classList.add('experience-test-deck-open');await renderExperienceTestDeck(p);}
+  async function openExperienceTestDeck(projectId){
+    const requested=String(projectId||'');
+    const p=projectById(requested);
+    const deck=ensureExperienceTestDeck();
+    deck.classList.remove('hidden');
+    deck.setAttribute('aria-hidden','false');
+    document.body.classList.add('experience-test-deck-open');
+    const body=document.getElementById('experienceTestDeckBody');
+    if(body) body.innerHTML='<section class="experience-results-card"><div class="experience-results-head"><div><span>EXPERIENCE TEST DECK</span><h3>Opening project experience…</h3></div><b class="watch">VERIFYING</b></div><p>Resolving project identity and current customer configuration.</p></section>';
+    if(!p){
+      if(body) body.innerHTML=`<section class="experience-results-card"><div class="experience-results-head"><div><span>COMMAND FAILURE</span><h3>Project could not be resolved</h3></div><b class="watch">STOPPED</b></div><p>Requested Project ID: ${escapeHtml(requested||'missing')}</p></section>`;
+      throw new Error(`Experience Test Deck could not resolve Project ID ${requested||'(missing)'}.`);
+    }
+    experienceTestDeckProjectId=p.id;
+    const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
+    try{
+      await renderExperienceTestDeck(p);
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:'v4.4.2 direct verified route'});
+      return true;
+    }catch(err){
+      console.error('Experience Test Deck render failed',err);
+      if(body) body.innerHTML=`<section class="experience-results-card"><div class="experience-results-head"><div><span>COMMAND FAILURE</span><h3>Test Experience could not finish opening</h3></div><b class="watch">ERROR</b></div><p>${escapeHtml(String(err?.message||err))}</p><p>The project remains unchanged. Return to Engine and report this message.</p></section>`;
+      throw err;
+    }
+  }
+  window.blackFlagOpenExperienceTestDeck=(projectId)=>openExperienceTestDeck(projectId);
 
   function closeExperienceTestDeck(){document.getElementById('experienceTestDeck')?.classList.add('hidden');document.body.classList.remove('experience-test-deck-open');}
 
@@ -2576,7 +2601,7 @@
         <div class="project-launch-line ${launch.key}"><span>${escapeHtml(launch.label)}</span><small>${escapeHtml(launch.detail)}</small></div>
         <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
-          <button data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">TEST EXPERIENCE</button>
+          <button type="button" data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">TEST EXPERIENCE</button>
           <button data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
         </div>
       </article>`);
@@ -7780,7 +7805,21 @@ The full order and approved media remain stored with this project.`;
 
       if(target.matches('[data-fleet-health-project]')){await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
       if(target.matches('[data-open-project-control]')){await openProjectEngineControl(target.dataset.openProjectControl);return;}
-      if(target.matches('[data-project-test-experience]')){await openExperienceTestDeck(target.dataset.projectTestExperience);return;}
+      if(target.matches('[data-project-test-experience]')){
+        if(target.dataset.commandBusy==='1')return;
+        const prior=target.textContent;target.dataset.commandBusy='1';target.disabled=true;target.textContent='OPENING…';
+        try{
+          await openExperienceTestDeck(target.dataset.projectTestExperience);
+          const deck=document.getElementById('experienceTestDeck');
+          if(!deck||deck.classList.contains('hidden'))throw new Error('Experience Test Deck did not become visible.');
+        }catch(err){
+          console.error('Test Experience command failed',err);
+          alert(`Test Experience could not open: ${String(err?.message||err)}`);
+        }finally{
+          if(document.body.contains(target)){delete target.dataset.commandBusy;target.disabled=false;target.textContent=prior;}
+        }
+        return;
+      }
       if(target.matches('[data-project-launch]')){
         const p=projectById(target.dataset.projectLaunch);if(!p||target.disabled)return;
         const prior=target.textContent;target.disabled=true;target.dataset.commandBusy='1';
@@ -9181,7 +9220,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.1.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • native Experience Test Deck • admission ledger + fleet manifest + project envelopes`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.2.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • verified Experience Test Deck command route • admission ledger + fleet manifest + project envelopes`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

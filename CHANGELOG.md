@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.4.1 — Full-Hull Fleet Rebase
+## 4.4.2 — Full-Hull Fleet Rebase
 - Rebased on the Captain-supplied complete 4.3.8 Fleet Marks hull.
 - Retained V4 admission ledger, manifest, envelope convergence, commissioning journal, and canonical registry.
 - Sealed legacy `grizzle-bear` references to canonical `grizzly-bear` across registry, orders, settings, and local recovery state.

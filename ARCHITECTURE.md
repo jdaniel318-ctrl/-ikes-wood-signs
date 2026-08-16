@@ -1,4 +1,4 @@
-# Dark Sky Architecture — v4.4.1
+# Dark Sky Architecture — v4.4.2
 
 ## Fleet identity law
 The immutable Project ID is authoritative. `grizzle-bear` is a legacy alias only; the canonical Grizzly vessel ID is `grizzly-bear`. Identity migration rewrites project-scoped references without relying on the display name.
