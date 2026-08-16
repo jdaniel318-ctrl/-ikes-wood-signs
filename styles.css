@@ -10664,3 +10664,9 @@ body.universal-project .universal-customer-shell{display:block}
 .easy-bearing-route-error span{font-size:.86rem;opacity:.9}
 .command-find-target{outline:3px solid rgba(222,178,83,.95)!important;outline-offset:3px;box-shadow:0 0 0 6px rgba(222,178,83,.16)!important;animation:commandFindPulse 1.1s ease 2}
 @keyframes commandFindPulse{50%{box-shadow:0 0 0 12px rgba(222,178,83,.24)}}
+
+/* 4.3.4 Muster Roll — exact Command Find order targeting */
+.command-order-historical{border:1px solid rgba(215,177,91,.75);border-radius:16px;padding:12px;margin:0 0 16px;background:rgba(215,177,91,.07)}
+.command-order-historical-head{display:flex;flex-direction:column;gap:5px;margin:0 0 10px;color:#d7b15b}
+.command-order-historical-head span{color:var(--muted,#9aa8ad);font-size:.88rem;line-height:1.35}
+.command-find-target{outline:3px solid rgba(215,177,91,.9)!important;outline-offset:3px;box-shadow:0 0 0 7px rgba(215,177,91,.12),0 16px 44px rgba(0,0,0,.22)!important}

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.3.3';
+  const BUILD_VERSION = '4.3.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1007,7 +1007,7 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.3'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.4'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -1038,7 +1038,7 @@
       const reclaimed=Number(r.before?.oldCacheBytes||0);
       box.dataset.inspectOk='0';
       try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
-      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.3',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.4',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
       if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
       // Re-sound immediately so the user gets visible proof of what changed.
       const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
@@ -1055,15 +1055,29 @@
     }catch(err){
       const message=String(err?.message||err||'Unknown cleanup failure');
       box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.3'});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.4'});
       if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
       return false;
     }
   };
 
+  function commandOrderLifecycle(order){
+    const p=projectById(canonicalProjectId(order?.projectId||''));
+    if(!p)return {key:'historical',label:'HISTORICAL',displayable:false,reason:'Project record is not active'};
+    const displayable=approvedProjectOrders([order],p).length===1;
+    if(!displayable)return {key:'historical',label:'HISTORICAL',displayable:false,reason:'Legacy/unapproved record retained outside the active order roll'};
+    const status=canonicalOrderStatus(order?.status||'New');
+    if(status==='Completed'&&completedAgeDays(order)>10)return {key:'archived',label:'ARCHIVED',displayable:true,reason:'Completed more than 10 days ago'};
+    if(status==='Completed')return {key:'completed',label:'COMPLETED',displayable:true,reason:'Recently completed'};
+    return {key:'active',label:'ACTIVE',displayable:true,reason:'Current project order'};
+  }
+
   async function blackFlagCommandSearchData(){
     const projectRows=companies.map(p=>({type:'project',id:p.id,projectId:p.id,title:p.name||p.id,detail:`${p.publish?.status||p.publishStatus||'development'} • ${p.description||''}`}));
-    const orders=(await getMergedOrders()).map(o=>({type:'order',id:o.id,projectId:o.projectId||'',title:o.id||'Order',detail:`${o.customerName||'Customer not named'} • ${canonicalOrderStatus(o.status||'New')} • $${Number(o.price||0).toFixed(0)}`}));
+    const orders=(await getMergedOrders()).map(o=>{
+      const life=commandOrderLifecycle(o);
+      return {type:'order',id:o.id,projectId:o.projectId||'',title:o.id||'Order',lifecycle:life.key,lifecycleLabel:life.label,detail:`${life.label} • ${o.customerName||'Customer not named'} • ${canonicalOrderStatus(o.status||'New')} • $${Number(o.price||0).toFixed(0)}`};
+    });
     const customers=[];
     for(const p of companies){for(const c of projectCustomerRows(p.id)){customers.push({type:'customer',id:c.customerKey||`${p.id}:${c.email||c.phone||c.name||''}`,projectId:p.id,title:c.name||c.email||c.phone||'Customer',detail:`${p.name} • ${Number(c.orderCount||0)} order${Number(c.orderCount||0)===1?'':'s'}`})}}
     return [...projectRows,...orders,...customers];
@@ -4391,18 +4405,30 @@
       if(type==='order'){
         await renderProjectTab(p.id,'orders');
         if(targetId){
+          const allOrders=await getMergedOrders();
+          const target=allOrders.find(o=>String(o?.id||'')===targetId && canonicalProjectId(o?.projectId||'')===p.id);
+          const life=target?commandOrderLifecycle(target):null;
+          if(target && life && !life.displayable){
+            const host=$('projectActiveOrders');
+            if(host){
+              const existing=host.querySelector(`[data-command-historical-order="${CSS.escape(targetId)}"]`);
+              if(!existing){
+                host.insertAdjacentHTML('afterbegin',`<section class="command-order-historical" data-command-historical-order="${escapeHtml(targetId)}"><div class="command-order-historical-head"><strong>HISTORICAL ORDER DETAIL</strong><span>This retained record is outside the active approved order roll. It is shown read-only so Command Find never drops you at the wrong order.</span></div>${projectOrderCard(target,false)}</section>`);
+              }
+            }
+          }
           const focusTarget=()=>{
-            const cards=[...document.querySelectorAll('.pec-order-command-card')];
-            const card=cards.find(x=>x.textContent.includes(targetId));
-            if(!card)return false;
-            cards.forEach(x=>x.classList.remove('command-find-target'));
-            card.classList.add('command-find-target');
-            card.scrollIntoView({behavior:'smooth',block:'center'});
+            const direct=document.querySelector(`[data-command-historical-order="${CSS.escape(targetId)}"]`) || document.querySelector(`.order-card[data-id="${CSS.escape(targetId)}"]`);
+            if(!direct)return false;
+            document.querySelectorAll('.command-find-target').forEach(x=>x.classList.remove('command-find-target'));
+            direct.classList.add('command-find-target');
+            direct.scrollIntoView({behavior:'smooth',block:'center'});
             return true;
           };
           if(!focusTarget()) setTimeout(()=>{
-            if(!focusTarget()) window.DarkSkyV4?.diagnostic?.('command_find.order_focus_missing',`Order ${targetId} opened but target card was not found.`,{projectId:p.id,orderId:targetId,build:BUILD_VERSION});
+            if(!focusTarget()) window.DarkSkyV4?.diagnostic?.('command_find.order_focus_missing',`Order ${targetId} opened but target detail was not found.`,{projectId:p.id,orderId:targetId,lifecycle:life?.key||'unknown',build:BUILD_VERSION});
           },220);
+          if(!target) window.DarkSkyV4?.diagnostic?.('command_find.order_missing',`Order ${targetId} was returned by Command Find but is no longer present in the canonical merged order source.`,{projectId:p.id,orderId:targetId,build:BUILD_VERSION});
         }
       }else{
         await renderProjectTab(p.id,'overview');
