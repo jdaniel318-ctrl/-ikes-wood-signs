@@ -1,4 +1,4 @@
-# Dark Sky v4.4.4 — Project Command Identity Seal
+# Dark Sky v4.4.3 — Canonical Experience Identity Resolver
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
 
@@ -17,3 +17,7 @@ Experience identity contract:
 - Legacy aliases are migration inputs only; business names are never used to authorize or resolve the Test Deck.
 - Durable registry resolution rehydrates the active fleet row before Preview / Sea Trial / Live.
 
+
+
+## V4.4.5 — Fleet-safe project mutations
+Outpost and Experience Test mutations now update only the owning canonical project row. They never clear/rewrite the full fleet registry. Primary IndexedDB operations retry once after a closed/interrupted connection, and Project Command reseals the admitted V4 baseline before rendering so a failed project mutation cannot collapse the fleet to one visible vessel.

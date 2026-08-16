@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-4-4-project-command-identity-seal';
+const CACHE='dark-sky-v4-4-5-project-local-persistence';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.4.4',
-  './platform_core.js?v=4.4.4',
-  './platform_v4.js?v=4.4.4',
-  './platform_identity.js?v=4.4.4',
-  './app.js?v=4.4.4',
-  './captain.js?v=4.4.4',
+  './styles.css?v=4.4.5',
+  './platform_core.js?v=4.4.5',
+  './platform_v4.js?v=4.4.5',
+  './platform_identity.js?v=4.4.5',
+  './app.js?v=4.4.5',
+  './captain.js?v=4.4.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.4.4';
+  const BUILD_VERSION = '4.4.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1205,13 +1205,33 @@
   }
   window.blackFlagFleetIntelligenceData=blackFlagFleetIntelligenceData;
 
+  function primaryDbRetryable(err){
+    const name=String(err?.name||'');
+    const message=String(err?.message||err||'');
+    return ['InvalidStateError','TransactionInactiveError','AbortError','UnknownError'].includes(name) || /database.*closed|connection.*closed|transaction.*inactive|not a valid state/i.test(message);
+  }
+  async function reopenPrimaryDb(reason='retry'){
+    try{db?.close?.();}catch(_){}
+    db=await openDb();
+    window.DarkSkyV4?.diagnostic?.('storage.primary_db.reopened',String(reason||'retry'),{build:BUILD_VERSION});
+    return db;
+  }
+  async function withPrimaryDbRetry(work,label='storage operation'){
+    try{return await work();}
+    catch(err){
+      if(!primaryDbRetryable(err))throw err;
+      console.warn(`${label} retrying after IndexedDB connection interruption`,err);
+      await reopenPrimaryDb(label);
+      return work();
+    }
+  }
   async function put(store,value){
-    const result=await reqToPromise(tx(store,'readwrite').put(value));
+    const result=await withPrimaryDbRetry(()=>reqToPromise(tx(store,'readwrite').put(value)),`put:${store}`);
     if(store===STORE_ORDERS) backupOrderLocally(value);
     return result;
   }
-  async function getAll(store){ return reqToPromise(tx(store).getAll()); }
-  async function getSetting(key){ return reqToPromise(tx(STORE_SETTINGS).get(key)); }
+  async function getAll(store){ return withPrimaryDbRetry(()=>reqToPromise(tx(store).getAll()),`getAll:${store}`); }
+  async function getSetting(key){ return withPrimaryDbRetry(()=>reqToPromise(tx(STORE_SETTINGS).get(key)),`getSetting:${key}`); }
   async function setSetting(key,value){
     try{ return await put(STORE_SETTINGS,{key,value}); }
     catch(err){ console.warn('Setting could not be saved',key,err); throw err; }
@@ -1225,14 +1245,19 @@
     });
   }
 
+  async function readCanonicalProjectRegistryStrict(){
+    const rows=await getAll(STORE_PROJECTS);
+    return Array.isArray(rows)?rows:[];
+  }
   async function readCanonicalProjectRegistry(){
-    try{
-      const rows=await getAll(STORE_PROJECTS);
-      return Array.isArray(rows)?rows:[];
-    }catch(err){
-      console.warn('Canonical project registry could not be read',err);
-      return [];
-    }
+    try{return await readCanonicalProjectRegistryStrict();}
+    catch(err){console.warn('Canonical project registry could not be read',err);return []}
+  }
+  async function readCanonicalProject(projectId){
+    const id=canonicalProjectId(String(projectId||'').trim());
+    if(!id)return null;
+    try{return await withPrimaryDbRetry(()=>reqToPromise(tx(STORE_PROJECTS).get(id)),`project.read:${id}`)||null;}
+    catch(err){console.warn('Canonical project row could not be read',id,err);return null;}
   }
 
   function uniqueRegistryRows(rows){
@@ -1290,6 +1315,73 @@
       throw new Error(`Fleet registry read-back verification failed (${canonical.length}/${projects.length} canonical, ${mirrorRows.length}/${projects.length} mirror).`);
     }
     return canonical;
+  }
+
+  async function persistProjectMutation(project,{reason='project.mutation'}={}){
+    if(!project?.id)throw new Error('Project mutation requires an immutable Project ID.');
+    const id=canonicalProjectId(String(project.id));
+    const candidate=ensureProjectGovernance(normalizeProjectCode(window.BlackFlagV3Core?.ensure?.(structuredClone(project))||structuredClone(project)));
+    candidate.id=id;
+    if(candidate.identity&&typeof candidate.identity==='object')candidate.identity.projectId=id;
+
+    // V4.4.5 — Project-local writes never clear or replace the fleet registry.
+    // The canonical projects store is keyed by immutable Project ID, so update the
+    // owning row in place and read that exact row back before reporting success.
+    await withPrimaryDbRetry(async()=>{
+      const tr=db.transaction(STORE_PROJECTS,'readwrite');
+      tr.objectStore(STORE_PROJECTS).put(candidate);
+      await transactionToPromise(tr);
+    },`project.mutation:${id}`);
+
+    const verified=await readCanonicalProject(id);
+    if(!verified)throw new Error(`Project ${id} was not present after canonical project read-back.`);
+
+    const idx=companies.findIndex(p=>canonicalProjectId(String(p?.id||''))===id);
+    if(idx>=0)companies[idx]=ensureProjectGovernance(normalizeProjectCode(verified));
+    else companies.push(ensureProjectGovernance(normalizeProjectCode(verified)));
+
+    // Compatibility mirror is secondary. Refresh it from the canonical store when
+    // available, but never make a successful project-row commit fail because the
+    // mirror is temporarily unavailable.
+    try{
+      const canonical=await readCanonicalProjectRegistryStrict();
+      if(canonical.length){
+        await setSetting('companies',canonical);
+        await setSetting(FLEET_REGISTRY_SCHEMA_KEY,FLEET_REGISTRY_SCHEMA_VERSION);
+        writeProjectRegistryBackup(canonical,`project-mutation:${reason}`);
+      }
+    }catch(err){
+      console.warn('Project mutation compatibility mirror refresh deferred',err);
+      window.DarkSkyV4?.diagnostic?.('project.mutation.mirror_deferred',String(err?.message||err),{projectId:id,reason,build:BUILD_VERSION});
+    }
+
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.row.persisted',detail:`${reason} • canonical row read-back verified`});
+    return companies.find(p=>canonicalProjectId(String(p?.id||''))===id)||verified;
+  }
+
+  function restoreV4BaselineMemory(){
+    const byId=new Map((companies||[]).map(p=>[canonicalProjectId(String(p?.id||'')),p]).filter(([id])=>id));
+    for(const id of V4_BASELINE_FLEET_IDS||[]){
+      if(byId.has(id))continue;
+      const snapshot=projectCommandProjectSnapshots.get(id);
+      const seed=snapshot || DEFAULT_COMPANIES.find(p=>canonicalProjectId(String(p?.id||''))===id);
+      if(seed)byId.set(id,ensureProjectGovernance(normalizeProjectCode(structuredClone(seed))));
+    }
+    companies=[...byId.values()];
+    return companies;
+  }
+
+  async function sealOperationalFleetForCommand(){
+    restoreV4BaselineMemory();
+    try{
+      await ensureV4BaselineRegistrySeal();
+      restoreV4BaselineMemory();
+      return {ok:true,count:companies.length};
+    }catch(err){
+      console.warn('Operational fleet seal deferred; preserving in-memory fleet',err);
+      window.DarkSkyV4?.diagnostic?.('fleet.command_seal.deferred',String(err?.message||err),{count:companies.length,build:BUILD_VERSION});
+      return {ok:false,count:companies.length,error:err};
+    }
   }
 
   function projectAdminPinKey(projectId=activeProjectId){
@@ -2017,7 +2109,8 @@
     for(const id of V4_BASELINE_FLEET_IDS){
       if(byId.has(id))continue;
       const live=(companies||[]).find(p=>canonicalProjectId(String(p?.id||''))===id);
-      const seed=live || DEFAULT_COMPANIES.find(p=>canonicalProjectId(String(p?.id||''))===id);
+      const snapshot=projectCommandProjectSnapshots.get(id);
+      const seed=live || snapshot || DEFAULT_COMPANIES.find(p=>canonicalProjectId(String(p?.id||''))===id);
       if(seed){canonical.push(ensureProjectGovernance(normalizeProjectCode(structuredClone(seed))));byId.set(id,seed);changed=true;}
     }
     if(changed)canonical=await persistProjectRegistry(canonical);
@@ -2432,7 +2525,7 @@
     const at=new Date().toISOString();
     deployment.lastTestedAt=at;deployment.lastTestOrderId=orderId;deployment.testMode='customer_engagement';deployment.updatedAt=at;
     const state=ensureExperienceTestState(canonicalProject);state.lastSeaTrialAt=at;state.lastSeaTrialDeploymentId=deployment.id;state.seaTrialSignature=experienceConfigurationSignature(canonicalProject);
-    try{await saveCompanies();logActivity(p.id,'Experience Sea Trial completed',`${deployment.name} • ${orderId}`);window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'sea_trial',action:'experience.sea_trial.customer_submission',detail:`${deployment.id} • ${orderId}`});return true;}
+    try{await persistProjectMutation(canonicalProject,{reason:'experience.sea_trial.completed'});logActivity(p.id,'Experience Sea Trial completed',`${deployment.name} • ${orderId}`);window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'sea_trial',action:'experience.sea_trial.customer_submission',detail:`${deployment.id} • ${orderId}`});return true;}
     catch(err){console.warn('Experience Sea Trial metadata sync failed',err);return false;}
   }
 
@@ -2509,7 +2602,7 @@
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
-      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.4 project command identity seal • ${resolution.source}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.5 project-local fleet-safe persistence • ${resolution.source}`});
       return true;
     }catch(err){
       console.error('Experience Test Deck render failed',err);
@@ -2531,7 +2624,7 @@
     if(mode==='sea_trial'&&d.state==='draft'){
       if(!window.BlackFlagV3Core?.canTransitionDeployment?.('draft','sea_trial')){alert('Dark Sky blocked the Sea Trial because the deployment lifecycle transition is invalid.');return;}
       d.state='sea_trial';d.updatedAt=new Date().toISOString();d.manifestVersion=Number(d.manifestVersion||1)+1;normalizeDeploymentIdentity(p,d);
-      try{await saveCompanies();logActivity(p.id,'Experience Sea Trial started',d.name||d.id);}catch(err){alert(`Sea Trial could not start: ${String(err?.message||err)}`);return;}
+      try{await persistProjectMutation(p,{reason:'experience.sea_trial.started'});logActivity(p.id,'Experience Sea Trial started',d.name||d.id);}catch(err){alert(`Sea Trial could not start: ${String(err?.message||err)}`);return;}
     }
     if(mode==='live'&&!(d?.state==='deployed'&&p.publish?.status==='live'))return;
     experienceTestReturnState={projectId:p.id,mode,deploymentId:d?.id||null};window.__deploymentCustomerContext=experienceModeContext(p,mode,d);
@@ -2561,6 +2654,9 @@
   }
 
   async function renderEngineRoom(){
+    // V4.4.5 — reseal the admitted fleet before any Engine repaint. A failed
+    // project-local mutation may never collapse Project Command to the active vessel.
+    await sealOperationalFleetForCommand();
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
     // paths called a non-existent helper after a successful registry commit, which
     // left the Engine DOM stale and made a durable project look as if it vanished.
@@ -2669,6 +2765,7 @@
 
   async function renderProjectCommand(){
     const box=$('projectCommandCards');if(!box)return;
+    await sealOperationalFleetForCommand();
     // Reconcile before counting/rendering so Project Command cannot show a verified
     // project as both recovery cargo and a Shipyard Draft.
     const reconciliation=await reconcileCommissioningArtifacts({attemptRepair:true,source:'project-command'});
@@ -4024,11 +4121,8 @@
           if(!migrateLegacyDeployment(canonicalProject).some(x=>x.id===fresh.id)){
             throw new Error('deployment_not_attached_to_project');
           }
-          await saveCompanies();
-          const persisted=await getSetting('companies');
-          const persistedProject=Array.isArray(persisted?.value)
-            ? persisted.value.find(x=>String(x?.id||'')===String(canonicalProject.id))
-            : null;
+          await persistProjectMutation(canonicalProject,{reason:'deployment.create'});
+          const persistedProject=await readCanonicalProject(canonicalProject.id);
           const persistedDeployment=Array.isArray(persistedProject?.deployments)
             ? persistedProject.deployments.find(x=>String(x?.id||'')===String(fresh.id))
             : null;
@@ -4066,7 +4160,7 @@
         d.attractTitle=$('deployAttractTitle').value.trim()||'Ready when you are.';
         d.manifestVersion=Number(d.manifestVersion||1)+1;
         d.updatedAt=new Date().toISOString();
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'deployment.manifest.update'});
         logActivity(p.id,'Deployment manifest revised',`${d.name} • v${d.manifestVersion}`);
         const saveStatus=$('deploymentSaveStatus');
         if(saveStatus){
@@ -4100,7 +4194,7 @@
         };
         canonicalProject.products.push(offer);
         try{
-          await saveCompanies();
+          await persistProjectMutation(canonicalProject,{reason:'deployment.launch_offer.create'});
           logActivity(canonicalProject.id,'Customer launch offer created',offer.name);
           window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:canonicalProject.id,category:'product',action:'product.launch_offer.created',detail:offer.name});
           await renderProjectTab(canonicalProject.id,'deployment');
@@ -4133,7 +4227,7 @@
               if(!(await deploymentCommissionOrder(p,current))){proxy.remove();return;}
             }
             const prior=current.state; current.state=action; current.updatedAt=new Date().toISOString(); normalizeDeploymentIdentity(p,current); current.manifestVersion=Number(current.manifestVersion||1)+1;
-            await saveCompanies(); logActivity(p.id,'Deployment lifecycle changed',`${current.name}: ${prior} → ${action}`); await renderProjectCommand(); await renderProjectTab(p.id,'deployment'); proxy.remove();
+            await persistProjectMutation(p,{reason:'deployment.lifecycle.update'}); logActivity(p.id,'Deployment lifecycle changed',`${current.name}: ${prior} → ${action}`); await renderProjectCommand(); await renderProjectTab(p.id,'deployment'); proxy.remove();
           })();
         }
       });
@@ -4146,7 +4240,7 @@
         d.testOpenedAt=new Date().toISOString();
         d.updatedAt=d.testOpenedAt;
         d.testMode='customer_shell';
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'deployment.customer_test.open'});
         logActivity(p.id,'Deployment customer test opened',d.name);
         openDeploymentTestDock(p,d);
       };
@@ -4181,7 +4275,7 @@
         if(next==='retired')d.deviceIdentity.revokedAt=d.updatedAt;
         else if(d.deviceIdentity)delete d.deviceIdentity.revokedAt;
         d.manifestVersion=Number(d.manifestVersion||1)+1;
-        await saveCompanies();
+        await persistProjectMutation(p,{reason:'deployment.lifecycle.update'});
         logActivity(p.id,'Deployment lifecycle changed',`${d.name}: ${prior} → ${next}`);
         await renderProjectCommand();
         await renderProjectTab(p.id,'deployment');
@@ -4649,7 +4743,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'4.4.1'
+      commissioningVersion:'4.4.5'
     };
 
     // Commissioning is a durable registry transaction, not a visual completion.
@@ -9336,7 +9430,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.4.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • project-command identity snapshot + canonical Test Deck resolver • admission ledger + fleet manifest + project envelopes`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.5.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • project-local canonical mutation writes • resilient IndexedDB reconnect • fleet command reseal • canonical Test Deck resolver`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
