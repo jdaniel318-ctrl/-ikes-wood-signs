@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-9-6-durable-project-registry';
+const CACHE='dark-sky-v3-9-7-commissioning-journal';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.9.6',
-  './platform_core.js?v=3.9.6',
-  './platform_identity.js?v=3.9.6',
-  './app.js?v=3.9.6',
-  './captain.js?v=3.9.6',
+  './styles.css?v=3.9.7',
+  './platform_core.js?v=3.9.7',
+  './platform_identity.js?v=3.9.7',
+  './app.js?v=3.9.7',
+  './captain.js?v=3.9.7',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

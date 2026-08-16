@@ -156,3 +156,7 @@ The fleet registry is now a first-class persistent resource, not a convenience s
 Commissioning obeys a strict durability sequence: **seal identity → commit registry → canonical read-back → resolve project in memory → render Engine card → clear commissioning draft**. Any failure before durable verification preserves the draft and restores pre-commission in-memory state. A rendering failure after verified persistence must never delete or recreate the project; the UI must report that persistence succeeded and recovery is a presentation concern.
 
 This law prevents a visually successful commissioning flow from producing a missing vessel and preserves the doctrine: **names can change; identity cannot; successful commands must be proven by durable evidence.**
+
+
+## Commissioning durability law — v3.9.7
+A project may not depend on a single storage transaction for its existence during commissioning. Before the canonical registry mutation starts, Dark Sky records the complete sealed project candidate in an independent commissioning journal. The journal is a recovery record, not a second canonical registry. It is cleared only after the canonical project store contains the same immutable Project ID and Project Command has rendered that verified registry. If canonical persistence is interrupted, the journal must remain visible and recoverable rather than allowing the vessel to disappear.

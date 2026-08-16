@@ -1,10 +1,10 @@
-# Dark Sky / Black Flag — v3.9.6 Durable Project Registry
+# Dark Sky / Black Flag — v3.9.7 Durable Project Registry
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
 
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.9.6 — Durable Project Registry
+**Current release:** v3.9.7 — Durable Project Registry
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
@@ -62,13 +62,13 @@ New projects now follow one Captain-facing launch journey: Create → Prepare �
 
 
 
-### v3.9.6 durable project registry
+### v3.9.7 durable project registry
 
 Project commissioning is now treated as a durable transaction rather than a completed screen flow. The canonical fleet registry lives in a dedicated IndexedDB `projects` object store. Every registry mutation is committed atomically with the legacy `companies` settings mirror, then read back and verified before the UI can declare success or clear a commissioning draft.
 
 Commissioning specifically follows **seal → atomic commit → canonical read-back → Engine render verification → clear draft**. If persistence fails, the pre-commission in-memory registry is restored and the draft remains recoverable. If persistence succeeds but rendering fails, Dark Sky reports that the vessel is safe in the registry instead of pretending it vanished.
 
-### v3.9.6 fleet registry integrity gate repair
+### v3.9.7 fleet registry integrity gate repair
 
 Historical Sea Trial findings no longer freeze every project write. Dark Sky compares the proposed registry against the last persisted registry and blocks only newly introduced critical integrity failures. Existing findings stay visible in Structural Certification until repaired. Commissioning still verifies the new immutable Project ID by reading IndexedDB back before clearing its draft.
 
@@ -82,3 +82,6 @@ Engine Project Command uses an early-bound delegated command bus for filters, pr
 
 ### v3.9.2 command reliability
 Waters Ahead and structural command controls are now attached to an independent early-bound command bus. This prevents a partial boot or migration warning from producing visually healthy but non-interactive command cards, particularly on iPad/Safari.
+
+## v3.9.7 Commissioning Journal
+Project commissioning now captures the complete immutable project candidate in a local commissioning journal before any IndexedDB registry transaction begins. The journal is cleared only after canonical registry read-back and Engine-card rendering are verified. If registry persistence is interrupted, Project Command exposes a Registry Recovery card and can retry the exact preserved Project ID instead of losing or regenerating the vessel. Project Command also displays the running build version for field verification on iPad/Safari.

@@ -8,6 +8,8 @@
   const LEGACY_DB_NAMES = ['ikesWoodSignsV1'];
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
+  const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
+  const BUILD_VERSION = '3.9.7';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -1078,6 +1080,45 @@
     return (Array.isArray(rows)?rows:[]).some(p=>String(p?.id||'')===String(projectId||''));
   }
 
+  function readCommissionJournal(){
+    try{
+      const row=JSON.parse(localStorage.getItem(COMMISSION_JOURNAL_KEY)||'null');
+      if(!row || !row.project || !row.project.id)return null;
+      return row;
+    }catch(_){return null;}
+  }
+
+  function writeCommissionJournal(project,stage='candidate_captured',detail=''){
+    if(!project?.id)return null;
+    const existing=readCommissionJournal();
+    const row={
+      version:1,
+      build:BUILD_VERSION,
+      stage,
+      detail:String(detail||''),
+      createdAt:existing?.project?.id===project.id ? existing.createdAt : new Date().toISOString(),
+      updatedAt:new Date().toISOString(),
+      project:structuredClone(project)
+    };
+    localStorage.setItem(COMMISSION_JOURNAL_KEY,JSON.stringify(row));
+    return row;
+  }
+
+  function clearCommissionJournal(projectId=''){
+    const row=readCommissionJournal();
+    if(!row)return;
+    if(projectId && String(row.project?.id||'')!==String(projectId))return;
+    localStorage.removeItem(COMMISSION_JOURNAL_KEY);
+  }
+
+  function commissioningRecoveryCandidate(){
+    const row=readCommissionJournal();
+    if(!row?.project?.id)return null;
+    const project=structuredClone(row.project);
+    window.BlackFlagV3Core?.ensure?.(project);
+    return {row,project};
+  }
+
   function normalizeProjectCode(p){
     if(!p)return p;
     const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS' };
@@ -1135,6 +1176,37 @@
     if(!canonicalRows.length || migrationChanged){
       companies=await persistProjectRegistry(companies);
       companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
+    }
+
+    // v3.9.7 — commissioning journal recovery. A project candidate is written to
+    // localStorage BEFORE the fleet registry transaction begins. If Safari, an
+    // IndexedDB upgrade, a tab collision, or a deployment interruption prevents the
+    // canonical write, the candidate survives independently of the registry. On
+    // boot we attempt one safe repair. If that repair fails, Project Command renders
+    // the journal as a recovery card instead of allowing the vessel to disappear.
+    const recovery=commissioningRecoveryCandidate();
+    if(recovery && !registryContainsProject(companies,recovery.project.id)){
+      const candidate=recovery.project;
+      const conflict=companies.some(p=>String(p.id)===String(candidate.id) || (String(p.name||'').trim().toLowerCase()===String(candidate.name||'').trim().toLowerCase() && String(p.id)!==String(candidate.id)));
+      if(!conflict){
+        try{
+          const repairRows=[...companies,candidate];
+          const repaired=await persistProjectRegistry(repairRows);
+          if(registryContainsProject(repaired,candidate.id)){
+            companies=repaired.map(normalizeProjectCode).map(ensureProjectGovernance);
+            writeCommissionJournal(candidate,'registry_recovered','Recovered automatically during Engine boot.');
+            clearCommissionJournal(candidate.id);
+            window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:candidate.id,category:'recovery',action:'commissioning.journal.recovered',detail:`${candidate.name} restored to canonical project registry`});
+          }
+        }catch(err){
+          writeCommissionJournal(candidate,'recovery_pending',String(err?.message||err));
+          console.warn('Commissioning journal recovery remains pending',err);
+        }
+      }else{
+        writeCommissionJournal(candidate,'recovery_conflict','Project ID or display-name conflict requires review.');
+      }
+    }else if(recovery && registryContainsProject(companies,recovery.project.id)){
+      clearCommissionJournal(recovery.project.id);
     }
 
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
@@ -1462,7 +1534,9 @@
     const box=$('projectCommandCards');if(!box)return;
     const list=projects();
     const live=list.filter(p=>p.publish?.status==='live').length;
-    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST`;
+    const journal=readCommissionJournal();
+    const journalState=journal?.project?.id && !list.some(p=>String(p.id)===String(journal.project.id)) ? ` • 1 RECOVERY PENDING` : '';
+    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${journalState}`;
     const cards=[];
     for(const p of list){
       const s=await projectStats(p);
@@ -1498,6 +1572,17 @@
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
           <button data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
         </div>
+      </article>`);
+    }
+    const journalRecovery=commissioningRecoveryCandidate();
+    if(journalRecovery && !list.some(p=>String(p.id)===String(journalRecovery.project.id))){
+      const jp=journalRecovery.project;
+      cards.push(`<article class="project-card commission-draft-card registry-recovery-card">
+        <div class="project-card-head"><div class="project-brand-badge code-only"><span>${escapeHtml(commissionCode(jp.name))}</span></div><span class="commission-draft-badge">REGISTRY RECOVERY</span></div>
+        <h4>${escapeHtml(jp.name)}</h4>
+        <p>Dark Sky captured this commissioned vessel before the registry write completed. Its identity is preserved.</p>
+        <div class="project-launch-line draft"><span>${escapeHtml(String(journalRecovery.row.stage||'RECOVERY').replaceAll('_',' ').toUpperCase())}</span><small>${escapeHtml(journalRecovery.row.detail||'Registry repair will be retried when the Engine loads.')}</small></div>
+        <div class="project-card-actions"><button type="button" data-retry-project-registry="${escapeHtml(jp.id)}" class="primary-btn small">RETRY REGISTRY SAVE</button></div>
       </article>`);
     }
     const pendingDraft=readCommissionDraft();
@@ -3384,7 +3469,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.9.6'
+      commissioningVersion:'3.9.7'
     };
 
     // Commissioning is a durable registry transaction, not a visual completion.
@@ -3392,11 +3477,15 @@
     // mirror atomically, read the registry back, then render FROM that read-back.
     // The draft is cleared only after all of those checks succeed.
     core?.ensure?.(p);
+    // First durable checkpoint: preserve the complete immutable project candidate
+    // outside IndexedDB before attempting any registry transaction.
+    writeCommissionJournal(p,'candidate_captured','Project identity sealed; canonical registry write has not completed yet.');
     const beforeCommission=structuredClone(companies);
     companies.push(p);
     let persistedRegistry;
     try{
       persistedRegistry=await saveCompanies();
+      writeCommissionJournal(p,'registry_written','Canonical registry transaction completed; verifying read-back.');
       if(!registryContainsProject(persistedRegistry,id)){
         throw new Error(`${p.name} was not verified in the canonical fleet registry.`);
       }
@@ -3406,6 +3495,7 @@
       }
       companies=canonicalReadback.map(normalizeProjectCode).map(ensureProjectGovernance);
       if(!projectById(id)) throw new Error(`${p.name} could not be resolved after registry reload.`);
+      writeCommissionJournal(p,'registry_verified','Canonical project registry read-back verified. Rendering Engine card.');
     }catch(err){
       companies=beforeCommission;
       commissionDraft._lastError=String(err?.message||err);
@@ -3413,6 +3503,7 @@
       commissionDraft._maxStepReached=6;
       commissionDraft.updatedAt=new Date().toISOString();
       localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+      writeCommissionJournal(p,'registry_failed',String(err?.message||err));
       throw err;
     }
 
@@ -3428,7 +3519,8 @@
       throw new Error(`${p.name} is safely in the fleet registry, but its Engine card did not render. Reload the Engine; the project has NOT been lost.`);
     }
     clearCommissionDraft();
-    localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:true}));
+    clearCommissionJournal(id);
+    localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:true,build:BUILD_VERSION}));
     setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},80);
   }
 
@@ -6518,7 +6610,7 @@ The full order and approved media remain stored with this project.`;
     // project cards and launch controls must remain actionable even if a later
     // migration or optional initializer fails.
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-launch],[data-fleet-health-project],#addProjectBtn,#addProjectCard,[data-resume-commissioning]');
+      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-launch],[data-fleet-health-project],#addProjectBtn,#addProjectCard,[data-resume-commissioning],[data-retry-project-registry]');
       if(!target)return;
       event.preventDefault();
       event.stopPropagation();
@@ -6528,6 +6620,27 @@ The full order and approved media remain stored with this project.`;
         applyEngineFleetFilter();return;
       }
       if(target.id==='addProjectBtn'||target.id==='addProjectCard'||target.matches('[data-resume-commissioning]')){openProjectCommissioning();return;}
+      if(target.matches('[data-retry-project-registry]')){
+        const recovery=commissioningRecoveryCandidate();
+        if(!recovery || String(recovery.project.id)!==String(target.dataset.retryProjectRegistry||'')){alert('No matching commissioning recovery record is available.');return;}
+        const prior=target.textContent;target.disabled=true;target.textContent='RETRYING…';
+        try{
+          const candidate=recovery.project;
+          const base=companies.filter(p=>String(p.id)!==String(candidate.id));
+          const persisted=await persistProjectRegistry([...base,candidate]);
+          if(!registryContainsProject(persisted,candidate.id))throw new Error('Canonical registry read-back did not contain the recovered Project ID.');
+          companies=persisted.map(normalizeProjectCode).map(ensureProjectGovernance);
+          writeProjectRegistryBackup(companies,'commissioning-journal-manual-recovery');
+          clearCommissionJournal(candidate.id);
+          clearCommissionDraft();
+          await renderProjectCommand();
+          alert(`${candidate.name} is now verified in the fleet registry.`);
+        }catch(err){
+          writeCommissionJournal(recovery.project,'recovery_pending',String(err?.message||err));
+          alert(`Registry recovery did not complete: ${String(err?.message||err)}`);
+        }finally{if(document.body.contains(target)){target.disabled=false;target.textContent=prior;}}
+        return;
+      }
       if(target.matches('[data-fleet-health-project]')){await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
       if(target.matches('[data-open-project-control]')){await openProjectEngineControl(target.dataset.openProjectControl);return;}
       if(target.matches('[data-project-launch]')){
@@ -7350,7 +7463,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.6',
+    version:'3.9.7',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7851,7 +7964,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.6.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.7.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

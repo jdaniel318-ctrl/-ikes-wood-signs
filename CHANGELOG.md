@@ -1,3 +1,12 @@
+# v3.9.7 — Commissioning Journal & Field Verification
+
+- Added a durable commissioning journal written before IndexedDB fleet-registry mutation.
+- Added boot-time recovery of journaled projects missing from the canonical registry.
+- Added a visible Registry Recovery project card with manual retry if automatic repair cannot complete.
+- Added build version to Project Command summary so field screenshots prove which runtime is actually loaded.
+- Commission journal clears only after canonical read-back and Engine-card verification.
+- Preserves immutable Project ID across interrupted commissioning; no silent regeneration.
+
 ## 3.9.6 — Durable Project Registry
 
 - Promoted project persistence from a single `settings.companies` array into a dedicated IndexedDB `projects` object store.
