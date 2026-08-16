@@ -309,6 +309,16 @@
     bind();
   }
 
+  // v3.9.3 static command-surface review: legacy Captain object panel close
+  // must remain actionable even though the five-door workspace superseded it.
+  document.addEventListener('click',event=>{
+    const target=event.target?.closest?.('#captainObjectClose');
+    if(!target)return;
+    event.preventDefault();
+    const panel=document.getElementById('captainObjectPanel');
+    if(panel){panel.classList.add('hidden');panel.setAttribute('aria-hidden','true');}
+  },true);
+
   // Captain authority is never persisted.
   window.addEventListener('pagehide', () => { authorized = false; });
 })();

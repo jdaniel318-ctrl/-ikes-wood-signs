@@ -1,3 +1,14 @@
+## 3.9.3 — Command Surface Reliability Review
+
+- Moved Engine Project Command filters, search, rail arrows, project Control Center, Continue Launch / Join Fleet, Add Project, Fleet Health OPEN actions, and publish toggles onto an independent early-bound delegated command bus.
+- Project Command controls no longer depend on optional migrations or late `bindEvents()` completion.
+- Removed duplicate per-render project-card and Fleet Health click handlers so dynamic rerenders cannot strand or double-bind controls.
+- Mission-critical navigation and both independent command buses now arm before asynchronous platform initialization.
+- Added iPad/Safari hit-test hardening for Project Command controls and decorative layers.
+- Added visible failure handling for project launch and publish command interruptions.
+- Completed a static command-surface coverage review across 183 static buttons / 101 unique button IDs and fixed the one uncovered legacy control (`RETURN TO THE CABIN` on the Captain object panel).
+- Completed runtime syntax/version/cache integrity checks.
+
 ## 3.9.1 — Command Watch Reliability & Visual Refit
 - Replaced per-render First Mate button closures with one delegated command router.
 - Added explicit routes for Integrity, Engine Economics, project Owner Access, Deployment, Fleet Launch, and Project Command.

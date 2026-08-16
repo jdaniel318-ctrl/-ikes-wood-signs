@@ -60,5 +60,9 @@ Dark Sky now treats customer activity as a project-specific engagement rather th
 ## Fleet Commissioning Lane (v3.8.30)
 New projects now follow one Captain-facing launch journey: Create → Prepare → Sea Trial → Fleet Ready → Live. Engine project cards and Project Control expose one Continue Launch / Join Fleet action, while the existing deployment, customer-test, immutable identity and isolation rules remain underneath.
 
+### v3.9.3 command-surface reliability
+
+Engine Project Command now uses an early-bound delegated command bus for filters, project search, rail arrows, project opening, launch/join-fleet, publishing, Fleet Health links, and Add Project. These controls remain actionable even when a later optional initializer fails. Mission-critical navigation is armed before asynchronous boot work.
+
 ### v3.9.2 command reliability
 Waters Ahead and structural command controls are now attached to an independent early-bound command bus. This prevents a partial boot or migration warning from producing visually healthy but non-interactive command cards, particularly on iPad/Safari.

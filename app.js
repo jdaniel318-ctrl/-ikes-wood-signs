@@ -1187,7 +1187,7 @@
           <article><span>Owner invites</span><strong>${pendingOwners}</strong><small>Awaiting claim</small></article>
         </div>
         <div class="fleet-health-flags">${flags.length?flags.slice(0,4).map(({p,issue})=>`<button type="button" data-fleet-health-project="${escapeHtml(p.id)}"><span><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(issue.title)}</small></span><b>OPEN →</b></button>`).join(''):`<div class="fleet-health-clear"><strong>ALL PROJECTS CLEAR</strong><span>No rule-based project warnings are active.</span></div>`}</div>`;
-      box.querySelectorAll('[data-fleet-health-project]').forEach(btn=>btn.addEventListener('click',()=>openProjectEngineControl(btn.dataset.fleetHealthProject)));
+      // Fleet Health OPEN actions are owned by the early Engine Project Command bus.
     }catch(err){
       console.warn('Fleet health render warning',err);
       box.innerHTML=`<section class="fleet-health-head"><div><span>FLEET HEALTH</span><h3>Health check interrupted</h3><p>The fleet panel stayed visible, but its live summary could not be completed. Project Command remains available below.</p></div><strong class="fleet-health-state watch">CHECK</strong></section>`;
@@ -1317,29 +1317,7 @@
     }
     cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business or project in the Engine.</p><span class="pirate-add-copy">RAISE ANOTHER FLAG</span></button>`);
     box.innerHTML=cards.join('');
-    box.querySelectorAll('[data-open-project-control]').forEach(b=>b.addEventListener('click',()=>openProjectEngineControl(b.dataset.openProjectControl)));
-    box.querySelectorAll('[data-enter-project]').forEach(b=>b.addEventListener('click',()=>enterProject(b.dataset.enterProject)));
-    box.querySelectorAll('[data-project-launch]').forEach(b=>b.addEventListener('click',async()=>{const p=projectById(b.dataset.projectLaunch);if(!p||b.disabled)return;const prior=b.textContent;b.disabled=true;b.textContent=projectFleetLaunchState(p).key==='fleet_ready'?'JOINING…':'OPENING…';try{await continueProjectLaunch(p);}finally{if(document.body.contains(b)){b.disabled=false;b.textContent=prior;}}}));
-    box.querySelectorAll('[data-project-publish]').forEach(t=>t.addEventListener('change',async()=>{
-      const p=projectById(t.dataset.projectPublish);if(!p)return;
-      if(!requireEngineFleetMutation(p,'project.publishing.quick_update')){t.checked=!t.checked;return;}
-      const next=t.checked?'live':'development';
-      if(t.checked){
-        const launch=projectFleetLaunchState(p);
-        if(launch.key!=='fleet_ready'&&launch.key!=='live'){
-          t.checked=false;
-          alert(`${p.name} is ${launch.label}. Continue Launch will take you to the next required step before publishing.`);
-          await continueProjectLaunch(p);
-          return;
-        }
-        if(launch.key==='fleet_ready'){t.checked=false;await joinProjectFleet(p);return;}
-        if(!confirm(`Publish ${p.name}? Customers may be able to access this project.`)){t.checked=false;return;}
-      }
-      p.publish={status:next};p.visibility=t.checked?'published':'engine_only';p.published=!!t.checked;
-      if(!t.checked&&p.lifecycle?.state==='live')p.lifecycle={...p.lifecycle,state:'paused',updatedAt:new Date().toISOString()};
-      await saveCompanies();logActivity(p.id,t.checked?'Project published':'Project returned to private service');await renderProjectCommand();
-    }));
-    const add=$('addProjectCard');if(add)add.addEventListener('click',(e)=>{e.preventDefault();openProjectCommissioning();});
+    // Project card actions are owned by the early Engine Project Command bus.
     await renderFleetHealth();
   }
 
@@ -6240,66 +6218,122 @@ The full order and approved media remain stored with this project.`;
 
 
 
-  function bindEngineFleetCommand(){
+  function engineFleetCommandContext(){
     const search=$('engineFleetSearch');
     const host=$('projectCommandCards');
     const filterButtons=Array.from(document.querySelectorAll('[data-engine-fleet-filter]'));
+    return {search,host,filterButtons,prev:$('projectFleetPrev'),next:$('projectFleetNext')};
+  }
+
+  function updateEngineFleetRailState(){
+    const {host,prev,next}=engineFleetCommandContext();
+    if(!host||!prev||!next)return;
+    const max=Math.max(0,host.scrollWidth-host.clientWidth);
+    prev.disabled=host.scrollLeft<=3;
+    next.disabled=host.scrollLeft>=max-3;
+  }
+
+  function scrollEngineFleetOne(direction){
+    const {host}=engineFleetCommandContext();if(!host)return;
+    const visible=Array.from(host.children).filter(card=>!card.hidden);
+    const first=visible[0];
+    const amount=(first?.getBoundingClientRect?.().width||280)+14;
+    host.scrollBy({left:Number(direction||0)*amount,behavior:'smooth'});
+    setTimeout(updateEngineFleetRailState,220);
+  }
+
+  function applyEngineFleetFilter(){
+    const {search,host,filterButtons}=engineFleetCommandContext();
     if(!search||!host||!filterButtons.length)return;
+    const q=String(search.value||'').trim().toLowerCase();
+    const mode=filterButtons.find(b=>b.classList.contains('active'))?.dataset.engineFleetFilter||'all';
 
-    const prev=$('projectFleetPrev');
-    const next=$('projectFleetNext');
-    const scrollOne=(direction)=>{
-      const visible=Array.from(host.children).filter(card=>!card.hidden);
-      const first=visible[0];
-      const amount=(first?.getBoundingClientRect?.().width||280)+14;
-      host.scrollBy({left:direction*amount,behavior:'smooth'});
-    };
-    if(prev)prev.onclick=()=>scrollOne(-1);
-    if(next)next.onclick=()=>scrollOne(1);
-    const updateRailState=()=>{
-      if(!prev||!next)return;
-      const max=Math.max(0,host.scrollWidth-host.clientWidth);
-      prev.disabled=host.scrollLeft<=3;
-      next.disabled=host.scrollLeft>=max-3;
-    };
-    host.addEventListener('scroll',updateRailState,{passive:true});
+    Array.from(host.children).forEach(card=>{
+      const addCard=card.id==='addProjectCard' || card.classList.contains('add-project-card');
+      if(addCard){card.hidden=mode!=='all'||!!q;return;}
+      const control=card.querySelector('[data-open-project-control]');
+      const projectId=control?.dataset.openProjectControl||'';
+      const p=projectId?projectById(projectId):null;
+      const text=(card.textContent||'').toLowerCase();
+      const matchesText=!q || text.includes(q);
+      let matchesMode=true;
+      if(mode==='active') matchesMode=!!p && (p.publish?.status==='live' || p.status==='active');
+      if(mode==='private') matchesMode=!!p && p.publish?.status!=='live';
+      if(mode==='future') matchesMode=!!p && p.status==='future';
+      card.hidden=!(matchesText&&matchesMode);
+    });
+    host.scrollLeft=0;
+    requestAnimationFrame(updateEngineFleetRailState);
+  }
 
-    const apply=()=>{
-      const q=String(search.value||'').trim().toLowerCase();
-      const mode=filterButtons.find(b=>b.classList.contains('active'))?.dataset.engineFleetFilter||'all';
+  async function handleProjectPublishToggle(t){
+    const p=projectById(t.dataset.projectPublish);if(!p)return;
+    if(!requireEngineFleetMutation(p,'project.publishing.quick_update')){t.checked=!t.checked;return;}
+    const next=t.checked?'live':'development';
+    if(t.checked){
+      const launch=projectFleetLaunchState(p);
+      if(launch.key!=='fleet_ready'&&launch.key!=='live'){
+        t.checked=false;
+        alert(`${p.name} is ${launch.label}. Continue Launch will take you to the next required step before publishing.`);
+        await continueProjectLaunch(p);return;
+      }
+      if(launch.key==='fleet_ready'){t.checked=false;await joinProjectFleet(p);return;}
+      if(!confirm(`Publish ${p.name}? Customers may be able to access this project.`)){t.checked=false;return;}
+    }
+    p.publish={status:next};p.visibility=t.checked?'published':'engine_only';p.published=!!t.checked;
+    if(!t.checked&&p.lifecycle?.state==='live')p.lifecycle={...p.lifecycle,state:'paused',updatedAt:new Date().toISOString()};
+    await saveCompanies();logActivity(p.id,t.checked?'Project published':'Project returned to private service');await renderProjectCommand();
+  }
 
-      Array.from(host.children).forEach(card=>{
-        const addCard=card.id==='addProjectCard' || card.classList.contains('add-project-card');
-        if(addCard){
-          card.hidden=mode!=='all'||!!q;
-          return;
-        }
+  function bindEngineProjectCommandBus(){
+    if(window.__blackFlagEngineProjectCommandBusBound)return;
+    window.__blackFlagEngineProjectCommandBusBound=true;
 
-        const control=card.querySelector('[data-open-project-control]');
-        const projectId=control?.dataset.openProjectControl||'';
-        const p=projectId?projectById(projectId):null;
-        const text=(card.textContent||'').toLowerCase();
-        const matchesText=!q || text.includes(q);
+    // v3.9.3 — Project Command is an independent command surface. Filters, rail,
+    // project cards and launch controls must remain actionable even if a later
+    // migration or optional initializer fails.
+    document.addEventListener('click',async event=>{
+      const target=event.target?.closest?.('[data-engine-fleet-filter],#projectFleetPrev,#projectFleetNext,[data-open-project-control],[data-project-launch],[data-fleet-health-project],#addProjectCard');
+      if(!target)return;
+      event.preventDefault();
+      event.stopPropagation();
 
-        let matchesMode=true;
-        if(mode==='active') matchesMode=!!p && (p.publish?.status==='live' || p.status==='active');
-        if(mode==='private') matchesMode=!!p && p.publish?.status!=='live';
-        if(mode==='future') matchesMode=!!p && p.status==='future';
+      if(target.matches('[data-engine-fleet-filter]')){
+        document.querySelectorAll('[data-engine-fleet-filter]').forEach(b=>b.classList.toggle('active',b===target));
+        applyEngineFleetFilter();return;
+      }
+      if(target.id==='projectFleetPrev'){scrollEngineFleetOne(-1);return;}
+      if(target.id==='projectFleetNext'){scrollEngineFleetOne(1);return;}
+      if(target.id==='addProjectCard'){openProjectCommissioning();return;}
+      if(target.matches('[data-fleet-health-project]')){await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
+      if(target.matches('[data-open-project-control]')){await openProjectEngineControl(target.dataset.openProjectControl);return;}
+      if(target.matches('[data-project-launch]')){
+        const p=projectById(target.dataset.projectLaunch);if(!p||target.disabled)return;
+        const prior=target.textContent;target.disabled=true;target.dataset.commandBusy='1';
+        target.textContent=projectFleetLaunchState(p).key==='fleet_ready'?'JOINING…':'OPENING…';
+        try{await continueProjectLaunch(p);}catch(err){console.error('Project launch command failed',err);alert(`Launch command interrupted: ${String(err?.message||err)}`);}finally{if(document.body.contains(target)){target.disabled=false;delete target.dataset.commandBusy;target.textContent=prior;}}
+      }
+    },true);
 
-        card.hidden=!(matchesText&&matchesMode);
-      });
-      host.scrollLeft=0;
-      requestAnimationFrame(updateRailState);
-    };
+    document.addEventListener('input',event=>{
+      if(event.target?.id==='engineFleetSearch')applyEngineFleetFilter();
+    },true);
 
-    search.addEventListener('input',apply);
-    filterButtons.forEach(btn=>btn.addEventListener('click',()=>{
-      filterButtons.forEach(b=>b.classList.toggle('active',b===btn));
-      apply();
-    }));
+    document.addEventListener('change',event=>{
+      const target=event.target;
+      if(target?.matches?.('[data-project-publish]')){
+        event.stopPropagation();
+        Promise.resolve(handleProjectPublishToggle(target)).catch(err=>{console.error('Project publish command failed',err);alert(`Publish command interrupted: ${String(err?.message||err)}`);});
+      }
+    },true);
 
-    new MutationObserver(apply).observe(host,{childList:true});
-    apply();
+    document.addEventListener('scroll',event=>{if(event.target?.id==='projectCommandCards')updateEngineFleetRailState();},true);
+  }
+
+  function bindEngineFleetCommand(){
+    // Compatibility shim: all actionable behavior now lives on the early command bus.
+    applyEngineFleetFilter();
+    updateEngineFleetRailState();
   }
 
   function hideCoreSurfacesForOwner(){
@@ -7093,7 +7127,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.2',
+    version:'3.9.3',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7166,7 +7200,7 @@ The full order and approved media remain stored with this project.`;
     if(window.__blackFlagWatchCommandBusBound)return;
     window.__blackFlagWatchCommandBusBound=true;
 
-    // v3.9.2 — Command Watch controls live on their own delegated bus.
+    // v3.9.3 — Command Watch controls live on their own delegated bus.
     // This intentionally binds before IndexedDB migrations / optional Engine setup.
     // Waters Ahead must remain actionable even when a noncritical initializer fails.
     document.addEventListener('click',async event=>{
@@ -7252,7 +7286,7 @@ The full order and approved media remain stored with this project.`;
     bindMissionCriticalNavigation();
     bindEngineFleetCommand();
 
-    // v3.9.2 Watch / integrity / Sea Trial buttons are owned by bindWatchCommandBus().
+    // v3.9.3 Watch / integrity / Sea Trial buttons are owned by bindWatchCommandBus().
 
 
     $('pirateSettingsBtn')?.addEventListener('click',()=>{
@@ -7582,6 +7616,8 @@ The full order and approved media remain stored with this project.`;
   async function init(){
     // Mission-critical command controls must exist even if a later migration fails.
     bindWatchCommandBus();
+    bindEngineProjectCommandBus();
+    bindMissionCriticalNavigation();
     await loadEngineAppearance();
     db=await openDb();
     await migrateLegacyPlatformStorage();
@@ -7592,7 +7628,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.2.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.3.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -7603,8 +7639,10 @@ The full order and approved media remain stored with this project.`;
     await routeOwnerAccessFromHash();
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
-  // Arm the independent command bus immediately. init() calls this again safely.
+  // Arm independent command buses immediately. init() calls these again safely.
   bindWatchCommandBus();
+  bindEngineProjectCommandBus();
+  bindMissionCriticalNavigation();
   init().catch(err=>{
     console.error('Secondary app initialization warning',err);
     // Do not block Black Flag entry. The PIN portal is the recovery surface.

@@ -133,3 +133,8 @@ Operational notifications are actionable command surfaces, not decorative cards.
 
 ### Command Surface Reliability Law — v3.9.2
 Mission-critical command surfaces must not depend on completion of optional data migrations or secondary initialization. Waters Ahead, structural checks, audit/log access, and Sea Trials use an early-bound delegated command bus. Rendering a command without an actionable route is a platform defect.
+
+
+### Engine Project Command Reliability Law — v3.9.3
+
+Engine Project Command is a mission-critical surface. Fleet filters, search, horizontal rail navigation, project opening, launch/join-fleet, publish controls, Fleet Health project links, and Add Project must be routed by an early-bound delegated command bus. Dynamic rendering may replace cards, but must never replace the command route. Optional migrations or feature initializers may fail without disabling these controls. Decorative layers must never intercept pointer/touch input.

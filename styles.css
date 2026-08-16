@@ -10499,3 +10499,42 @@ body.universal-project .universal-customer-shell{display:block}
   touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(77,164,198,.18)!important;
 }
 #firstMateWatchItems .first-mate-item{pointer-events:auto!important}
+
+
+/* ==========================================================
+   v3.9.3 — ENGINE PROJECT COMMAND TOUCH / HIT-TEST HARDENING
+   ========================================================== */
+#engineProjectsSection,
+#engineProjectsSection .engine-section-inner,
+#projectCommandCards,
+#projectCommandCards .project-card,
+#engineFleetSearch,
+[data-engine-fleet-filter],
+#projectFleetPrev,
+#projectFleetNext,
+[data-open-project-control],
+[data-project-launch],
+[data-fleet-health-project],
+#addProjectCard,
+[data-project-publish] {
+  position: relative;
+  z-index: 4;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+#engineProjectsSection::before,
+#engineProjectsSection::after,
+#projectCommandCards::before,
+#projectCommandCards::after,
+.project-card::before,
+.project-card::after {
+  pointer-events: none !important;
+}
+[data-engine-fleet-filter],
+#projectFleetPrev,
+#projectFleetNext,
+[data-open-project-control],
+[data-project-launch],
+#addProjectCard {
+  min-height: 44px;
+}
