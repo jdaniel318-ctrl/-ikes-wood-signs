@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-3-0-high-watch';
+const CACHE='dark-sky-v4-3-1-easy-bearing';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.3.0',
-  './platform_core.js?v=4.3.0',
-  './platform_v4.js?v=4.3.0',
-  './platform_identity.js?v=4.3.0',
-  './app.js?v=4.3.0',
-  './captain.js?v=4.3.0',
+  './styles.css?v=4.3.1',
+  './platform_core.js?v=4.3.1',
+  './platform_v4.js?v=4.3.1',
+  './platform_identity.js?v=4.3.1',
+  './app.js?v=4.3.1',
+  './captain.js?v=4.3.1',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

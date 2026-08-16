@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.3.0';
+  const BUILD_VERSION = '4.3.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1006,7 +1006,7 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.0'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.1'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -1037,7 +1037,7 @@
       const reclaimed=Number(r.before?.oldCacheBytes||0);
       box.dataset.inspectOk='0';
       try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
-      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.0',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.1',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
       if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
       // Re-sound immediately so the user gets visible proof of what changed.
       const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
@@ -1054,7 +1054,7 @@
     }catch(err){
       const message=String(err?.message||err||'Unknown cleanup failure');
       box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.0'});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.1'});
       if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
       return false;
     }
@@ -1092,7 +1092,7 @@
         if(!offers){score+=10;reasons.push('no customer-ready offers')}
         if(p.ownerStatus==='not_claimed'||p.ownerStatus==='pending'){score+=5;reasons.push('owner access not claimed')}
         if(activeDeployments===0&&p.publish?.status==='live'){score+=15;reasons.push('published without active deployment')}
-        const level=score>=45?'critical':score>=25?'attention':score>=10?'watch':'clear';
+        const level=score>=45?'high':score>=25?'action':score>=10?'watch':'clear';
         const next=launch.key==='draft'?'Finish business brief / customer-ready offer':launch.key==='preparing'?'Finish outpost setup':launch.key==='sea_trial'?'Complete Sea Trial proof':launch.key==='fleet_ready'?'Review for fleet join':open?'Work oldest open orders':'Maintain current course';
         rows.push({projectId:p.id,projectName:p.name,code:p.code||'',score,level,reasons,next,launchKey:launch.key,launchLabel:launch.label,open,ready,completed,customers:customers.length,offers,activeDeployments,publishStatus:p.publish?.status||p.publishStatus||'development'});
       }catch(err){
