@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.3.1';
+  const BUILD_VERSION = '4.3.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -742,6 +742,7 @@
   // Engine security is intentionally session-only. Leaving Black Flag locks it again.
   let engineSessionUnlocked = false;
   let pendingCaptainDeploymentRoute = null;
+  let pendingCaptainCommandRoute = null;
   window.__darkSkyBootStage = 'app-declarations';
   function lockEngineSession(){
     engineSessionUnlocked = false;
@@ -1006,7 +1007,7 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.1'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.2'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -1037,7 +1038,7 @@
       const reclaimed=Number(r.before?.oldCacheBytes||0);
       box.dataset.inspectOk='0';
       try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
-      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.1',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.2',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
       if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
       // Re-sound immediately so the user gets visible proof of what changed.
       const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
@@ -1054,7 +1055,7 @@
     }catch(err){
       const message=String(err?.message||err||'Unknown cleanup failure');
       box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.1'});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.2'});
       if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
       return false;
     }
@@ -4363,6 +4364,36 @@
     await renderProjectTab(p.id,'deployment');
   }
   window.addEventListener('blackflag:open-deployment',e=>openCaptainDeploymentRoute(e.detail||{}));
+
+  async function openCaptainCommandRoute(route){
+    const p=projectById(route?.projectId); if(!p)return;
+    const type=String(route?.type||'project');
+    const openInsideEngine=async()=>{
+      await openProjectEngineControl(p.id);
+      if(type==='order'){
+        await renderProjectTab(p.id,'orders');
+        const targetId=String(route?.id||'');
+        if(targetId){
+          setTimeout(()=>{
+            const cards=[...document.querySelectorAll('.pec-order-command-card')];
+            const card=cards.find(x=>x.textContent.includes(targetId));
+            if(card){card.classList.add('command-find-target');card.scrollIntoView({behavior:'smooth',block:'center'});}
+          },120);
+        }
+      }else{
+        await renderProjectTab(p.id,'overview');
+      }
+    };
+    if(!engineSessionUnlocked){
+      pendingCaptainCommandRoute={...route,projectId:p.id};
+      document.getElementById('captainFleetChart')?.classList.add('hidden');
+      document.getElementById('captainQuarters')?.classList.add('hidden');
+      $('engineRoomBtn')?.click();
+      return;
+    }
+    await openInsideEngine();
+  }
+  window.addEventListener('blackflag:open-command-result',e=>openCaptainCommandRoute(e.detail||{}));
 
 
 
@@ -8675,6 +8706,11 @@ The full order and approved media remain stored with this project.`;
         const route=pendingCaptainDeploymentRoute;
         pendingCaptainDeploymentRoute=null;
         await openCaptainDeploymentRoute(route);
+      }
+      if(pendingCaptainCommandRoute){
+        const route=pendingCaptainCommandRoute;
+        pendingCaptainCommandRoute=null;
+        await openCaptainCommandRoute(route);
       }
     });
     if($('closeEngineBtn')) $('closeEngineBtn').addEventListener('click',()=>{
