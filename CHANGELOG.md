@@ -1,12 +1,21 @@
-# Dark Sky 4.1.0 — Full Sail
+# Dark Sky 4.1.1 — Clear Horizon
+
+- Replaces the legacy graphics migration startup call with an explicit runtime bridge so missing/stale call paths cannot throw `ReferenceError: migrateLegacyProjectAssets`.
+- Compacts Black Box history by fault signature, preserving first seen, last seen, and occurrence count instead of storing duplicate rows.
+- Caps retained diagnostic signatures at 150 and Storage Steward cleanup at 100 unique signatures.
+- Adds Black Box health to Captain's Command Brief: recent fault signatures, unique events, and total occurrences.
+- Storage Steward inspection now distinguishes unique diagnostic signatures from total occurrences.
+- Preserves project registry, 4/4 envelope commissioning, quarantine, orders, customers, graphics, and Captain/Engine authority boundaries.
+
+# Dark Sky 4.1.1 — Full Sail
 
 - Adds the Engine Room **Full Sail Command Deck** with live workload, fleet readiness, customer-ready offer count, storage posture, Captain priorities, and quick command routes.
 - Adds **Storage Steward**, a guarded maintenance tool that trims only stale V4 diagnostics/recovery manifests and old application caches; it never deletes project, order, customer, graphics, admission, or quarantine records.
 - Upgrades Captain’s Quarters **Platform Command** into a Captain Command Brief with priorities, release/recovery controls, Captain Lab board, controlled feature flags, recent Recovery Vault entries, and Black Box visibility.
 - Captain Lab approvals remain production-write denied: approval records intent; Engine execution remains separately authorized and audited.
-- Advances runtime and service-worker cache to 4.1.0 Full Sail while preserving the commissioned 4/4 fleet envelope contract.
+- Advances runtime and service-worker cache to 4.1.1 Full Sail while preserving the commissioned 4/4 fleet envelope contract.
 
-# Dark Sky 4.1.0 — Orphan Watch
+# Dark Sky 4.1.1 — Orphan Watch
 
 - Adds a durable Orphan Order Quarantine for orders whose Project ID is not admitted to the canonical fleet.
 - Preserves the full orphan order payload for recovery instead of guessing ownership or deleting evidence.

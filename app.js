@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.1.0';
+  const BUILD_VERSION = '4.1.1';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1396,7 +1396,7 @@
   // this ledger owns the security envelope contract. Keeping the contract in a
   // dedicated, project-ID-keyed ledger prevents older project serializers from
   // accidentally dropping security fields while preserving canonical identity.
-  // V4.1.0 — Harbor Master. Project existence and project security now share one
+  // V4.1.1 — Harbor Master. Project existence and project security now share one
   // explicit fleet manifest. The canonical projects object store remains the durable
   // record store, but only immutable IDs on this manifest are active vessels. Recovery
   // artifacts and legacy/ghost rows are preserved in quarantine instead of being
@@ -1460,12 +1460,12 @@
     const record={projectId:id,admitted:true,source:String(source||'commissioning'),transactionId:`admit:${id}:${Date.now().toString(36)}:${Math.random().toString(36).slice(2,7)}`,admittedAt:new Date().toISOString(),detail:String(detail||''),build:BUILD_VERSION};
     ledger[id]=record;
     await persistV4AdmissionLedger(ledger);
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'v4.1.0.project.admitted',detail:`${record.source} • ${record.transactionId}`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'v4.1.1.project.admitted',detail:`${record.source} • ${record.transactionId}`});
     window.DarkSkyV4?.diagnostic?.('fleet_admission.complete',`${id} admitted to active fleet`,{transactionId:record.transactionId,source:record.source});
     return record;
   }
   async function addProjectToV4FleetManifest(projectId){
-    // Compatibility entry point used by the project factory. In V4.1.0 this is an
+    // Compatibility entry point used by the project factory. In V4.1.1 this is an
     // admission transaction, not a list append.
     await admitProjectToV4Fleet(projectId,{source:'commissioning',detail:'Canonical registry read-back verified.'});
     const state=await ensureCanonicalFleetManifest({repairRegistry:false});
@@ -1486,7 +1486,7 @@
     const orphans=canonical.filter(p=>p?.id&&!allowed.has(String(p.id)));
     if(orphans.length){
       for(const ghost of orphans)appendV4Quarantine('unadmitted_registry_orphan',String(ghost.id),structuredClone(ghost));
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.1.0.harbor_master.quarantined',detail:`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.1.1.harbor_master.quarantined',detail:`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
       window.DarkSkyV4?.diagnostic?.('fleet_admission.orphans.quarantined',`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined`,{projectIds:orphans.map(p=>p.id)});
       if(repairRegistry){
         const keep=canonical.filter(p=>allowed.has(String(p?.id||'')));
@@ -1570,7 +1570,7 @@
       return v4EnvelopeConvergenceState;
     }
     try{
-      // v4.1.0 — Harbor Master. Explicit admissions define the fleet. The
+      // v4.1.1 — Harbor Master. Explicit admissions define the fleet. The
       // registry cannot expand the denominator merely because it contains recovery
       // cargo, and memory cannot resurrect a quarantined project.
       const manifest=await ensureCanonicalFleetManifest({repairRegistry:true});
@@ -1698,7 +1698,7 @@
       try{const tr=db.transaction(STORE_ORDERS,'readwrite'),st=tr.objectStore(STORE_ORDERS);st.clear();keep.forEach(o=>st.put(o));await transactionToPromise(tr)}catch(err){console.warn('V4 order reference repair could not rewrite IndexedDB',err)}
       writeLocalOrders(keep);
     }
-    // V4.1.0 — Orphan Watch: quarantine is authoritative even if a browser keeps a stale IDB row alive.
+    // V4.1.1 — Orphan Watch: quarantine is authoritative even if a browser keeps a stale IDB row alive.
     // Physically delete tombstoned order IDs when possible; getMergedOrders also excludes them as a fail-safe.
     try{
       const tombstones=readOrphanOrderTombstones();
@@ -1723,7 +1723,7 @@
     }
     writeCustomerDirectory(next);
     if(migrated||quarantined){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.1.0.orphan_watch.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.orphan_watch.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
       window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
     }
     return {migrated,quarantined};
@@ -2041,7 +2041,7 @@
       }
       const brief=window.DarkSkyV4?.commandBrief?.(list)||null;
       let usage='—';try{const e=await navigator.storage?.estimate?.();if(e?.usage!=null)usage=`${(e.usage/1024/1024).toFixed(1)} MB`}catch(_){}
-      const posture=brief?.preflight?.ok?'FULL SAIL':'WATCH';if(state){state.textContent=posture;state.className=`full-sail-state ${brief?.preflight?.ok?'clear':'watch'}`;}
+      const posture=brief?.preflight?.ok?'CLEAR HORIZON':'WATCH';if(state){state.textContent=posture;state.className=`full-sail-state ${brief?.preflight?.ok?'clear':'watch'}`;}
       const priorities=(brief?.priorities||[]).map(x=>`<article class="full-sail-priority ${escapeHtml(x.level)}"><span>${escapeHtml(x.level.toUpperCase())}</span><strong>${escapeHtml(x.title)}</strong><small>${escapeHtml(x.detail)}</small></article>`).join('');
       host.innerHTML=`<div class="full-sail-kpis">
         <article><span>OPEN WORKLOAD</span><strong>${open}</strong><small>${list.length} admitted vessels</small></article>
@@ -4274,6 +4274,9 @@
       localStorage.removeItem(PROJECT_ASSET_STORAGE_KEY);
     }catch(err){console.warn('Legacy project graphics migration deferred',err);}
   }
+  // Clear Horizon: expose the legacy graphics migrator through an explicit runtime bridge.
+  // Old startup paths may call the bridge, but missing helpers can no longer throw a ReferenceError.
+  window.blackFlagMigrateLegacyProjectAssets = migrateLegacyProjectAssets;
   function setSlotImage(id,data){
     const el=$(id);if(!el)return;
     if(data){el.src=data;el.classList.remove('hidden');}
@@ -7787,7 +7790,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function runShipIntegrityV3({record=false}={}){
-    // V4.1.0 uses one admission-authoritative convergence routine for storage, status, and certification.
+    // V4.1.1 uses one admission-authoritative convergence routine for storage, status, and certification.
     // Integrity therefore cannot disagree with the Broadside envelope counter.
     const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
     try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
@@ -8144,7 +8147,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'4.1.0-full-sail-compat',
+    version:'4.1.1-full-sail-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -8545,7 +8548,7 @@ The full order and approved media remain stored with this project.`;
       refreshEngineDiagnostics();
     });
     $('engineExportBtn').addEventListener('click',exportBackup);
-    $('engineStorageStewardPreviewBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');try{const r=await window.DarkSkyV4?.storageStewardPreview?.();if(!r)throw new Error('Storage Steward unavailable');const used=r.usage!=null?(r.usage/1024/1024).toFixed(1)+' MB':'unknown';if(box)box.textContent=`${used} used • ${r.diagnostics} diagnostics • ${r.recoveryPoints} recovery points • ${r.oldCaches.length} stale cache${r.oldCaches.length===1?'':'s'} safe to remove.`;}catch(err){if(box)box.textContent='Inspection interrupted: '+String(err.message||err);}});
+    $('engineStorageStewardPreviewBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');try{const r=await window.DarkSkyV4?.storageStewardPreview?.();if(!r)throw new Error('Storage Steward unavailable');const used=r.usage!=null?(r.usage/1024/1024).toFixed(1)+' MB':'unknown';const health=r.blackBoxHealth||{};if(box)box.textContent=`${used} origin storage • ${health.uniqueEvents??r.diagnostics} unique diagnostics / ${health.occurrences??r.diagnostics} occurrences • ${r.recoveryPoints} recovery points • ${r.oldCaches.length} stale cache${r.oldCaches.length===1?'':'s'} safe to remove.`;}catch(err){if(box)box.textContent='Inspection interrupted: '+String(err.message||err);}});
     $('engineStorageStewardCleanBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');if(!confirm('Clean only stale caches and older V4 diagnostic/recovery manifests? Projects, orders, customers, graphics and quarantine evidence will not be touched.'))return;try{if(box)box.textContent='Cleaning temporary debris…';const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');if(box)box.textContent=`Safe cleanup complete • ${r.removedCaches.length} stale caches • ${r.diagnosticsTrimmed} old diagnostics • ${r.recoveryPointsTrimmed} old recovery manifests.`;await refreshEngineDiagnostics();await renderFullSailCommandDeck();}catch(err){if(box)box.textContent='Cleanup interrupted: '+String(err.message||err);}});
     $('engineResetSettingsBtn').addEventListener('click',()=>{
       $('engineResetPinInput').value='';
@@ -8815,7 +8818,9 @@ document.addEventListener('click', (event) => {
     if(!t) return;
     lockEngineSession();
   });
-  migrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
+  if(typeof window.blackFlagMigrateLegacyProjectAssets==='function'){
+    window.blackFlagMigrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));
+  }
 
 
   // v3.8.18 commissioning controls are rebound by openProjectCommissioning()/renderCommissioning().

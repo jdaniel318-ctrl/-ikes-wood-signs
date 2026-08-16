@@ -1,3 +1,7 @@
+# Dark Sky 4.1.1 — Clear Horizon
+
+Clear Horizon is a quiet-deck maintenance release on top of Full Sail. It removes obsolete migration-call noise, deduplicates Black Box faults without erasing evidence, and surfaces diagnostic health to Captain and Engine while preserving the commissioned V4 hull.
+
 # Dark Sky Architecture — Standing Rules
 
 These rules describe the boundaries that future Black Flag work must preserve unless the Captain explicitly changes course.
@@ -201,7 +205,7 @@ On the first successful fleet load after 4.0.0, Dark Sky creates one sanitized p
 V4 commissioning is an invariant, not a marker: every canonical fleet project must satisfy Schema 8 namespace/isolation/default-deny requirements after canonical read-back. Legacy references are deterministically migrated when safe; ambiguous orphan records are preserved in a quarantine vault rather than cross-assigned.
 
 
-## V4.1.0 Orphan Order Boundary
+## V4.1.1 Orphan Order Boundary
 
 Active order telemetry is derived only from non-quarantined orders whose Project ID resolves to an admitted canonical vessel. Unknown legacy orders are copied intact into the V4 Recovery/Quarantine vault and tombstoned by immutable order ID. The tombstone is enforced during merged-order reads in addition to best-effort physical deletion from IndexedDB and the local backup. This intentionally favors isolation and evidence preservation over speculative reassignment.
 

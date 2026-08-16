@@ -1,8 +1,8 @@
-/* Dark Sky 4.1.0 — Full Sail platform generation layer */
+/* Dark Sky 4.1.1 — Clear Horizon platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.1.0';
-const NAME='Full Sail';
+const VERSION='4.1.1';
+const NAME='Clear Horizon';
 const SCHEMA=2;
 const KEYS=Object.freeze({
  state:'darkSkyV4StateV1', flags:'darkSkyV4FeatureFlagsV1', decisions:'darkSkyV4DecisionLedgerV1',
@@ -61,11 +61,49 @@ function decision(entry={}){
  rows.unshift(row);write(KEYS.decisions,rows.slice(0,500));core()?.audit?.({actorRole:'captain',projectId:row.projectId,category:'governance',action:'v4.captain.decision.recorded',detail:row.decision});return row;
 }
 function decisions(){return read(KEYS.decisions,[])}
-function diagnostic(type,detail='',extra={}){
- const rows=read(KEYS.diagnostics,[]);const row={id:uid('BBX'),at:new Date().toISOString(),type:String(type||'event'),detail:String(detail||''),build:VERSION,url:location.pathname,projectId:document.body?.dataset?.activeProject||null,...extra};
- rows.unshift(row);write(KEYS.diagnostics,rows.slice(0,300));return row;
+function diagnosticFingerprint(row={}){
+ return [String(row.type||'event'),String(row.detail||''),String(row.source||''),String(row.line||''),String(row.column||''),String(row.projectId||'')].join('|');
 }
-function diagnostics(){return read(KEYS.diagnostics,[])}
+function compactDiagnostics(rows=read(KEYS.diagnostics,[])){
+ const out=[],bySig=new Map();
+ for(const raw of Array.isArray(rows)?rows:[]){
+   const row={...raw};const sig=row.fingerprint||diagnosticFingerprint(row);const prior=bySig.get(sig);
+   const occurrences=Math.max(1,Number(row.occurrences||1));
+   if(prior){
+     prior.occurrences+=occurrences;
+     prior.firstSeen=prior.firstSeen||row.firstSeen||row.at;
+     const candidate=row.lastSeen||row.at;
+     if(candidate && (!prior.lastSeen||candidate>prior.lastSeen)){
+       prior.lastSeen=candidate;prior.at=candidate;prior.build=row.build||prior.build;prior.url=row.url||prior.url;
+     }
+   }else{
+     const normalized={...row,fingerprint:sig,occurrences,firstSeen:row.firstSeen||row.at||new Date().toISOString(),lastSeen:row.lastSeen||row.at||new Date().toISOString()};
+     bySig.set(sig,normalized);out.push(normalized);
+   }
+ }
+ out.sort((a,b)=>String(b.lastSeen||b.at||'').localeCompare(String(a.lastSeen||a.at||'')));
+ return out.slice(0,150);
+}
+function diagnostic(type,detail='',extra={}){
+ const now=new Date().toISOString();const base={type:String(type||'event'),detail:String(detail||''),build:VERSION,url:location.pathname,projectId:document.body?.dataset?.activeProject||null,...extra};
+ const sig=diagnosticFingerprint(base);const rows=compactDiagnostics();const idx=rows.findIndex(x=>(x.fingerprint||diagnosticFingerprint(x))===sig);
+ if(idx>=0){
+   const row=rows.splice(idx,1)[0];row.occurrences=Math.max(1,Number(row.occurrences||1))+1;row.lastSeen=now;row.at=now;row.build=VERSION;row.url=location.pathname;rows.unshift(row);write(KEYS.diagnostics,rows.slice(0,150));return row;
+ }
+ const row={id:uid('BBX'),at:now,firstSeen:now,lastSeen:now,occurrences:1,fingerprint:sig,...base};rows.unshift(row);write(KEYS.diagnostics,rows.slice(0,150));return row;
+}
+function diagnostics(){
+ const raw=read(KEYS.diagnostics,[]),compact=compactDiagnostics(raw);
+ if(JSON.stringify(raw)!==JSON.stringify(compact))write(KEYS.diagnostics,compact);
+ return compact;
+}
+function blackBoxHealth(){
+ const rows=diagnostics();const now=Date.now(),recentWindow=30*60*1000;
+ const occurrences=rows.reduce((n,x)=>n+Math.max(1,Number(x.occurrences||1)),0);
+ const errors=rows.filter(x=>/javascript\.error|promise\.rejection|commissioning\.failed/i.test(String(x.type||'')));
+ const recentErrors=errors.filter(x=>{const t=Date.parse(x.lastSeen||x.at||'');return Number.isFinite(t)&&now-t<=recentWindow;});
+ return {uniqueEvents:rows.length,occurrences,errorSignatures:errors.length,recentFaults:recentErrors.length,status:recentErrors.length?'attention':'clear'};
+}
 function labCreate(project,brief=''){
  if(!project?.id)throw new Error('A project is required for a Captain Lab experiment.');
  const rows=read(KEYS.labs,[]);const row={id:uid('LAB'),at:new Date().toISOString(),updatedAt:new Date().toISOString(),projectId:project.id,projectName:project.name||project.id,state:'sandbox',brief:String(brief||'').trim(),productionWriteAllowed:false,clone:cleanProject(project)};
@@ -117,50 +155,51 @@ function completeCommissioning(projects=[],meta={}){
  const prior=migrationState()||{};
  const row={...prior,from:prior.from||'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,failed:false,stage:'v4-project-envelopes',projectIds:projects.map(p=>p.id),commissionedProjectCount:sealed};
  write(KEYS.migration,row);write(KEYS.state,{version:VERSION,name:NAME,schema:SCHEMA,installedAt:read(KEYS.state,{})?.installedAt||row.at,commissionedAt:row.at,contract:CONTRACT});
- core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.0.commissioning.harbor_master_sealed',detail:`${sealed}/${expected} project envelopes read-back verified`});
+ core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.commissioning.harbor_master_sealed',detail:`${sealed}/${expected} project envelopes read-back verified`});
  return row;
 }
 function markCommissioningFailed(projects=[],reason='Commissioning invariant failed'){
  const prior=migrationState()||{}, expected=Array.isArray(projects)?projects.length:0;
  const row={...prior,to:VERSION,at:new Date().toISOString(),completed:false,failed:true,stage:'v4-project-envelopes',projectIds:(projects||[]).map(p=>p.id),commissionedProjectCount:0,failure:String(reason||'Commissioning failed')};
- write(KEYS.migration,row);core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.0.commissioning.failed',detail:row.failure});diagnostic('commissioning.failed',row.failure,{projectCount:expected});return row;
+ write(KEYS.migration,row);core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.commissioning.failed',detail:row.failure});diagnostic('commissioning.failed',row.failure,{projectCount:expected});return row;
 }
 
 async function storageStewardPreview(){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-1-0-full-sail');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-1-1-clear-horizon');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
  return {
    at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,
-   diagnostics:diagnostics().length,recoveryPoints:recoveryVault().length,labs:labs().length,
+   diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,labs:labs().length,
    cacheCount:cacheNames.length,oldCaches
  };
 }
 async function storageStewardClean(){
  const before=await storageStewardPreview();
- const diag=diagnostics();write(KEYS.diagnostics,diag.slice(0,120));
+ const diag=diagnostics();write(KEYS.diagnostics,compactDiagnostics(diag).slice(0,100));
  const vault=recoveryVault();write(KEYS.recovery,vault.slice(0,10));
  const removedCaches=[];
  if(typeof caches!=='undefined'){for(const key of before.oldCaches){try{if(await caches.delete(key))removedCaches.push(key)}catch(_){}}}
  const row={at:new Date().toISOString(),diagnosticsTrimmed:Math.max(0,diag.length-120),recoveryPointsTrimmed:Math.max(0,vault.length-10),removedCaches};
- core()?.audit?.({actorRole:'engine_admin',category:'maintenance',action:'v4.1.0.storage_steward.safe_cleanup',detail:`${row.diagnosticsTrimmed} diagnostics • ${row.recoveryPointsTrimmed} recovery manifests • ${removedCaches.length} stale caches`});
+ core()?.audit?.({actorRole:'engine_admin',category:'maintenance',action:'v4.1.1.storage_steward.safe_cleanup',detail:`${row.diagnosticsTrimmed} diagnostics • ${row.recoveryPointsTrimmed} recovery manifests • ${removedCaches.length} stale caches`});
  diagnostic('storage.steward.cleaned','Safe housekeeping completed',row);
  return {before,after:await storageStewardPreview(),...row};
 }
 function commandBrief(projects=[]){
- const pf=preflight(projects,null), rel=releaseState(), recentDiagnostics=diagnostics().slice(0,5), activeLabs=labs().filter(x=>!['rejected','promoted'].includes(x.state));
+ const pf=preflight(projects,null), rel=releaseState(), recentDiagnostics=diagnostics().slice(0,5), bb=blackBoxHealth(), activeLabs=labs().filter(x=>!['rejected','promoted'].includes(x.state));
  const priorities=[];
  if(!pf.ok)priorities.push({level:'critical',title:'Platform contract needs attention',detail:`${pf.critical} critical • ${pf.warnings} warning`});
  const draft=projects.filter(p=>String(p?.publish?.status||p?.publishStatus||'development')!=='live');
  if(draft.length)priorities.push({level:'attention',title:`${draft.length} vessel${draft.length===1?'':'s'} not live`,detail:'Continue launch, Sea Trial, or keep intentionally private.'});
  if(activeLabs.length)priorities.push({level:'recommendation',title:`${activeLabs.length} Captain Lab experiment${activeLabs.length===1?'':'s'} active`,detail:'Review candidates before any Engine implementation.'});
- if(recentDiagnostics.length)priorities.push({level:'info',title:`${recentDiagnostics.length} recent Black Box event${recentDiagnostics.length===1?'':'s'}`,detail:'Review only if behavior looks abnormal.'});
+ if(bb.recentFaults)priorities.push({level:'attention',title:`${bb.recentFaults} recent Black Box fault signature${bb.recentFaults===1?'':'s'}`,detail:'Review the latest fault before promoting the release ring.'});
+ else if(recentDiagnostics.length)priorities.push({level:'info',title:'Black Box quiet',detail:`${bb.uniqueEvents} unique historical event${bb.uniqueEvents===1?'':'s'} retained; no fault signature repeated in the last 30 minutes.`});
  if(!priorities.length)priorities.push({level:'clear',title:'Full Sail posture',detail:'No platform-level blockers detected.'});
- return {at:new Date().toISOString(),projectCount:projects.length,preflight:pf,releaseRing:rel.currentRing,recoveryPoints:recoveryVault().length,diagnostics:diagnostics().length,labs:labs().length,decisions:decisions().length,priorities:priorities.slice(0,4)};
+ return {at:new Date().toISOString(),projectCount:projects.length,preflight:pf,releaseRing:rel.currentRing,recoveryPoints:recoveryVault().length,diagnostics:diagnostics().length,blackBoxHealth:bb,labs:labs().length,decisions:decisions().length,priorities:priorities.slice(0,4)};
 }
 
-function status(projects=[]){const pf=preflight(projects,null),rel=releaseState();return {version:VERSION,name:NAME,schema:SCHEMA,contract:CONTRACT,preflight:pf,release:rel,flags:featureFlags(),decisions:decisions().length,labs:labs().length,diagnostics:diagnostics().length,recoveryPoints:recoveryVault().length,migration:migrationState()}}
+function status(projects=[]){const pf=preflight(projects,null),rel=releaseState();return {version:VERSION,name:NAME,schema:SCHEMA,contract:CONTRACT,preflight:pf,release:rel,flags:featureFlags(),decisions:decisions().length,labs:labs().length,diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,migration:migrationState()}}
 window.addEventListener('error',e=>{if(featureFlags().black_box?.enabled)diagnostic('javascript.error',e.message||'Unknown error',{source:e.filename||'',line:e.lineno||0,column:e.colno||0})});
 window.addEventListener('unhandledrejection',e=>{if(featureFlags().black_box?.enabled)diagnostic('promise.rejection',String(e.reason?.message||e.reason||'Unhandled rejection'))});
-g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,markCommissioningFailed,exportProject,storageStewardPreview,storageStewardClean,commandBrief,status};
+g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,blackBoxHealth,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,markCommissioningFailed,exportProject,storageStewardPreview,storageStewardClean,commandBrief,status};
 })(window);
