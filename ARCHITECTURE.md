@@ -172,3 +172,8 @@ This law strengthens the doctrine: **one immutable identity, one canonical fleet
 ## Fleet Registry v4 (3.10.1)
 
 The canonical `projects` IndexedDB store remains the fleet authority, but normal registry writes are non-destructive: a previously registered immutable Project ID cannot be omitted by an unrelated save. Startup reconciliation compares the canonical store, compatibility mirror, and verified local backup by immutable Project ID before rendering Project Command. The current fleet baseline is a final rescue source only when every persisted source has lost a known vessel. Duplicate Project IDs are rejected before commit. Registry schema version 4 is committed with the project collection and Ship Integrity verifies the in-memory registry, canonical store, mirror, project count, and schema marker. Publication/private/test state never determines project existence.
+
+
+## Registry Rivets (3.10.2)
+
+This is intentionally not a registry schema change. The v5 canonical registry and `grizzle-bear` → `grizzly-bear` alias remain unchanged. Project Command overrides the Grizzly Bear first KPI label to `ORDERS` because the displayed statistic is the project order count. Ship Integrity verifies that presentation contract. User-selected branding is not rewritten by this patch.

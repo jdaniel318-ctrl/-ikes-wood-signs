@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.10.1';
+  const BUILD_VERSION = '3.10.2';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1764,6 +1764,10 @@
   }
 
   function projectActivityMetricLabel(p){
+    // Project Command's first KPI is backed by projectStats().orders. Keep the label
+    // aligned with the value being rendered for the Grizzly Bear retail vessel even
+    // while its broader customer-relationship model is still being configured.
+    if(canonicalProjectId(p?.id)===CANONICAL_GRIZZLY_PROJECT_ID)return 'ORDERS';
     const type=customerRelationshipForProject(p)?.type||'purchase';
     return ({purchase:'ORDERS',service_request:'REQUESTS',quote:'QUOTES',booking:'BOOKINGS',inquiry:'INQUIRIES',partnership:'ENGAGEMENTS',application:'APPLICATIONS',reservation:'RESERVATIONS',custom_project:'PROJECTS'})[type]||'ACTIVITY';
   }
@@ -7427,6 +7431,7 @@ The full order and approved media remain stored with this project.`;
         const expectedNamespace=window.BlackFlagV3Core?.namespaceFor?.(CANONICAL_GRIZZLY_PROJECT_ID)||`bf.project.${CANONICAL_GRIZZLY_PROJECT_ID}`;
         if(grizzly.namespace && grizzly.namespace!==expectedNamespace)issues.push({level:'critical',code:'PROJECT_NAMESPACE_IDENTITY_MISMATCH',projectId:grizzly.id,detail:`expected ${expectedNamespace} • found ${grizzly.namespace}`});
         if(projectById(LEGACY_GRIZZLE_PROJECT_ID)?.id!==CANONICAL_GRIZZLY_PROJECT_ID)issues.push({level:'critical',code:'PROJECT_ALIAS_RESOLUTION_FAILED',projectId:grizzly.id,detail:`${LEGACY_GRIZZLE_PROJECT_ID} alias did not resolve to canonical vessel`});
+        if(projectActivityMetricLabel(grizzly)!=='ORDERS')issues.push({level:'warning',code:'PROJECT_COMMAND_METRIC_LABEL_MISMATCH',projectId:grizzly.id,detail:'Grizzly Bear first fleet KPI must render as ORDERS'});
       }
     }catch(e){issues.push({level:'critical',code:'REGISTRY_VERIFY_FAILED',detail:String(e?.message||e)})}
 

@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-10-0';
+const CACHE='dark-sky-v3-10-2';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.9.9',
-  './platform_core.js?v=3.9.9',
-  './platform_identity.js?v=3.9.9',
-  './app.js?v=3.9.9',
-  './captain.js?v=3.9.9',
+  './styles.css?v=3.10.2',
+  './platform_core.js?v=3.10.2',
+  './platform_identity.js?v=3.10.2',
+  './app.js?v=3.10.2',
+  './captain.js?v=3.10.2',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

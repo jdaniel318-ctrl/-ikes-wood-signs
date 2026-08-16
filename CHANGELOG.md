@@ -1,3 +1,11 @@
+# Dark Sky 3.10.2 — Registry Rivets
+
+- Cleaned up the Grizzly Bear Project Command card without changing the stable Fleet Registry architecture.
+- Corrected the first Grizzly Bear fleet KPI label to **ORDERS**; the rendered value was already the project order count.
+- Preserved the user's newly selected Grizzly Bear logo and made no logo migration changes in this patch.
+- Added a Ship Integrity warning if the Grizzly Bear fleet KPI ever stops resolving to **ORDERS**.
+- Kept canonical `grizzly-bear` identity and legacy `grizzle-bear` alias behavior unchanged from 3.10.1.
+
 # Dark Sky 3.10.1 — Registry Seal
 
 - Canonicalized Grizzly Bear project identity from legacy `grizzle-bear` to `grizzly-bear`.
