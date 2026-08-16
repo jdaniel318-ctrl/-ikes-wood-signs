@@ -1,6 +1,6 @@
-# Dark Sky 4.1.3 — First Light
+# Dark Sky 4.2.0 — Spyglass
 
-First Light fixes an early-startup DOM-helper ordering fault that could raise `ReferenceError: Can't find variable: $` on Safari/iPad. DOM helpers now initialize before any security/startup path can use them. Black Box health now distinguishes faults from the current runtime session from preserved historical evidence, so resolved history does not keep the Captain in an attention state. No project, order, customer, graphics, admission, quarantine, or V4 envelope architecture is changed.
+Spyglass fixes an early-startup DOM-helper ordering fault that could raise `ReferenceError: Can't find variable: $` on Safari/iPad. DOM helpers now initialize before any security/startup path can use them. Black Box health now distinguishes faults from the current runtime session from preserved historical evidence, so resolved history does not keep the Captain in an attention state. No project, order, customer, graphics, admission, quarantine, or V4 envelope architecture is changed.
 
 # Dark Sky 4.1.1 — Clear Horizon
 
@@ -487,3 +487,10 @@ Replaced the fixed full-screen Engine workspace overlay with a dedicated in-flow
 - Removed duplicate direct Watch handlers to prevent double execution.
 - Added iPad/Safari hit-test hardening so decorative Engine layers cannot intercept command taps.
 - Preserved visible busy/error feedback for every command route.
+
+
+## 4.2.0 — Spyglass
+- Added non-destructive Storage Steward breakdown across Cache Storage, IndexedDB, and LocalStorage.
+- Added Captain Command Search across admitted projects, project-scoped orders, and retained customer records.
+- Command Search is read-only and constrained to the admitted fleet.
+- Storage inspection performs no cleanup; housekeeping remains a separate confirmed action.

@@ -14,8 +14,8 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.1.3';
-  // First Light: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
+  const BUILD_VERSION = '4.2.0';
+  // Spyglass: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -934,6 +934,40 @@
     });
     return [...map.values()];
   }
+
+  function roughBytes(value){
+    try{return new Blob([typeof value==='string'?value:JSON.stringify(value)]).size}catch(_){try{return JSON.stringify(value).length*2}catch(__){return 0}}
+  }
+  async function blackFlagStorageBreakdown(){
+    const local=[];let localBytes=0;
+    try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);const val=localStorage.getItem(key)||'';const bytes=roughBytes(key)+roughBytes(val);local.push({key,bytes});localBytes+=bytes}}catch(_){}
+    local.sort((a,b)=>b.bytes-a.bytes);
+    const stores={};let indexedDbBytes=0;
+    for(const store of [STORE_ORDERS,STORE_SETTINGS,STORE_PROJECTS]){
+      try{const rows=await getAll(store);const bytes=roughBytes(rows);stores[store]={rows:rows.length,bytes};indexedDbBytes+=bytes}catch(err){stores[store]={rows:null,bytes:null,error:String(err?.message||err)}}
+    }
+    const cacheRows=[];let cacheBytes=0;
+    if(typeof caches!=='undefined'){
+      for(const name of await caches.keys().catch(()=>[])){
+        let bytes=0,entries=0;
+        try{const c=await caches.open(name);const reqs=await c.keys();entries=reqs.length;for(const req of reqs){try{const res=await c.match(req);const len=Number(res?.headers?.get('content-length')||0);if(len)bytes+=len;else if(res){const blob=await res.clone().blob();bytes+=blob.size}}catch(_){}}}catch(_){}
+        cacheRows.push({name,entries,bytes});cacheBytes+=bytes;
+      }
+    }
+    cacheRows.sort((a,b)=>b.bytes-a.bytes);
+    return {at:new Date().toISOString(),localStorage:{bytes:localBytes,topKeys:local.slice(0,12)},indexedDb:{bytes:indexedDbBytes,stores},cacheStorage:{bytes:cacheBytes,caches:cacheRows},knownBytes:localBytes+indexedDbBytes+cacheBytes};
+  }
+  window.blackFlagStorageBreakdown=blackFlagStorageBreakdown;
+
+  async function blackFlagCommandSearchData(){
+    const projectRows=companies.map(p=>({type:'project',id:p.id,projectId:p.id,title:p.name||p.id,detail:`${p.publish?.status||p.publishStatus||'development'} • ${p.description||''}`}));
+    const orders=(await getMergedOrders()).map(o=>({type:'order',id:o.id,projectId:o.projectId||'',title:o.id||'Order',detail:`${o.customerName||'Customer not named'} • ${canonicalOrderStatus(o.status||'New')} • $${Number(o.price||0).toFixed(0)}`}));
+    const customers=[];
+    for(const p of companies){for(const c of projectCustomerRows(p.id)){customers.push({type:'customer',id:c.customerKey||`${p.id}:${c.email||c.phone||c.name||''}`,projectId:p.id,title:c.name||c.email||c.phone||'Customer',detail:`${p.name} • ${Number(c.orderCount||0)} order${Number(c.orderCount||0)===1?'':'s'}`})}}
+    return [...projectRows,...orders,...customers];
+  }
+  window.blackFlagCommandSearchData=blackFlagCommandSearchData;
+
   async function put(store,value){
     const result=await reqToPromise(tx(store,'readwrite').put(value));
     if(store===STORE_ORDERS) backupOrderLocally(value);
@@ -8553,7 +8587,7 @@ The full order and approved media remain stored with this project.`;
       refreshEngineDiagnostics();
     });
     $('engineExportBtn').addEventListener('click',exportBackup);
-    $('engineStorageStewardPreviewBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');try{const r=await window.DarkSkyV4?.storageStewardPreview?.();if(!r)throw new Error('Storage Steward unavailable');const used=r.usage!=null?(r.usage/1024/1024).toFixed(1)+' MB':'unknown';const health=r.blackBoxHealth||{};if(box)box.textContent=`${used} origin storage • ${health.uniqueEvents??r.diagnostics} unique diagnostics / ${health.occurrences??r.diagnostics} occurrences • ${r.recoveryPoints} recovery points • ${r.oldCaches.length} stale cache${r.oldCaches.length===1?'':'s'} safe to remove.`;}catch(err){if(box)box.textContent='Inspection interrupted: '+String(err.message||err);}});
+    $('engineStorageStewardPreviewBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');try{const r=await window.DarkSkyV4?.storageStewardPreview?.();if(!r)throw new Error('Storage Steward unavailable');const used=r.usage!=null?(r.usage/1024/1024).toFixed(1)+' MB':'unknown';const health=r.blackBoxHealth||{};const b=r.breakdown||{};const mb=n=>n==null?'?':(Number(n)/1024/1024).toFixed(1);const stores=b.indexedDb?.stores||{};const cacheTop=(b.cacheStorage?.caches||[]).slice(0,3).map(x=>`${x.name} ${mb(x.bytes)} MB`).join(' • ')||'none measured';if(box)box.innerHTML=`<strong>${used} origin storage</strong><br>Known Dark Sky footprint: ${mb(b.knownBytes)} MB • Cache ${mb(b.cacheStorage?.bytes)} MB • IndexedDB ${mb(b.indexedDb?.bytes)} MB • LocalStorage ${mb(b.localStorage?.bytes)} MB.<br>Stores: orders ${mb(stores.orders?.bytes)} MB / ${stores.orders?.rows??'?'} rows • projects ${mb(stores.projects?.bytes)} MB / ${stores.projects?.rows??'?'} rows • settings ${mb(stores.settings?.bytes)} MB / ${stores.settings?.rows??'?'} rows.<br>Largest caches: ${cacheTop}.<br>${health.uniqueEvents??r.diagnostics} unique diagnostics / ${health.occurrences??r.diagnostics} occurrences • ${r.recoveryPoints} recovery points • ${r.oldCaches.length} stale cache${r.oldCaches.length===1?'':'s'} safe to remove.`;}catch(err){if(box)box.textContent='Inspection interrupted: '+String(err.message||err);}});
     $('engineStorageStewardCleanBtn')?.addEventListener('click',async()=>{const box=$('engineStorageStewardStatus');if(!confirm('Clean only stale caches and older V4 diagnostic/recovery manifests? Projects, orders, customers, graphics and quarantine evidence will not be touched.'))return;try{if(box)box.textContent='Cleaning temporary debris…';const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');if(box)box.textContent=`Safe cleanup complete • ${r.removedCaches.length} stale caches • ${r.diagnosticsTrimmed} old diagnostics • ${r.recoveryPointsTrimmed} old recovery manifests.`;await refreshEngineDiagnostics();await renderFullSailCommandDeck();}catch(err){if(box)box.textContent='Cleanup interrupted: '+String(err.message||err);}});
     $('engineResetSettingsBtn').addEventListener('click',()=>{
       $('engineResetPinInput').value='';

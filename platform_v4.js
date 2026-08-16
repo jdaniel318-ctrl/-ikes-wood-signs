@@ -1,8 +1,8 @@
-/* Dark Sky 4.1.3 — First Light platform generation layer */
+/* Dark Sky 4.2.0 — Spyglass platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.1.3';
-const NAME='First Light';
+const VERSION='4.2.0';
+const NAME='Spyglass';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({
@@ -31,7 +31,7 @@ const DEFAULT_FLAGS=Object.freeze({
  captain_lab:{enabled:true,scope:'captain',ring:'captain'},
  decision_ledger:{enabled:true,scope:'captain',ring:'stable'},
  release_rings:{enabled:true,scope:'fleet',ring:'stable'},
- command_search:{enabled:false,scope:'fleet',ring:'captain'},
+ command_search:{enabled:true,scope:'fleet',ring:'captain'},
  attention_center:{enabled:true,scope:'fleet',ring:'stable'},
  workflow_engine:{enabled:false,scope:'project',ring:'captain'},
  captain_brief:{enabled:true,scope:'captain',ring:'stable'},
@@ -168,10 +168,11 @@ function markCommissioningFailed(projects=[],reason='Commissioning invariant fai
 
 async function storageStewardPreview(){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-1-2-quiet-deck');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-2-0-spyglass');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
+ let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.()}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
  return {
-   at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,
+   at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,breakdown,
    diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,labs:labs().length,
    cacheCount:cacheNames.length,oldCaches
  };
