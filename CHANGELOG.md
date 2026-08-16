@@ -1,3 +1,13 @@
+# Dark Sky 4.5.4 — ScheduleJoe Shipyard Berth
+
+- Added a Captain's Quarters **Shipyard** command workspace for new-vessel development.
+- Added **ScheduleJoe (SJ-01)** as a Captain-only residential construction scheduling concept vessel.
+- Added four initial ScheduleJoe working areas: Mission, Build Sequence, Prototype Deck, and Vessel Decisions.
+- Added a deliberate ScheduleJoe launch control inside Captain's Quarters plus a Shipyard command tab.
+- ScheduleJoe notes persist only as Captain-side shipyard working state.
+- ScheduleJoe is **not** enrolled in the Engine project registry and has no customer workflow, deployment manifest, production namespace, or cross-project access.
+- No Engine Room workflow, project identity, project isolation, orders, deployment behavior, or existing vessel functionality was changed.
+
 # Dark Sky 4.5.3 — Functional Composition Polish
 
 - Presentation-only refinement below the Engine Room header.

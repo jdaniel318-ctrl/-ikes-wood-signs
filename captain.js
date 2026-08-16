@@ -391,6 +391,7 @@ function bootCaptainCommand(){
   async function render(section){
     const names={
       cargo:["Cargo Hold","AI Workshop & Innovation"],
+      shipyard:["Shipyard","New Vessel Development"],
       powder:["Powder Keg","Dangerous Authority"],
       blackflag:["Black Flag","Fleet Command Center"],
       log:["Captain's Log","Orders, Notes & History"],
@@ -400,10 +401,68 @@ function bootCaptainCommand(){
     workspace.dataset.section=section;
     title.textContent=t; subtitle.textContent=s;
     if(section==='cargo') return renderCargo();
+    if(section==='shipyard') return renderShipyard();
     if(section==='powder') return renderPowder();
     if(section==='blackflag') return renderBlackFlag();
     if(section==='log') return renderLog();
     if(section==='blueprint') return renderBlueprint();
+  }
+
+
+  function renderShipyard(){
+    const key='blackFlagShipyardScheduleJoe';
+    const defaults={
+      mission:'Create a builder-first residential construction scheduling system that reflects how homes are actually built in the field, not merely how calendar software expects work to be entered.',
+      sequence:[
+        'Pre-construction / permits','Site work','Foundation','Framing','Dry-in','Rough trades','Inspections','Insulation','Drywall','Interior trim','Cabinets','Paint','Flooring','Fixtures & finishes','Final inspections','Punch','Closing'
+      ],
+      prototype:'Start with one house, one master build sequence, dependencies, planned dates, actual dates, responsible trade, and clear delay/attention signals.',
+      decisions:"ScheduleJoe remains a Captain's Quarters concept vessel until the Captain commissions it. It is not an Engine project and must not inherit another vessel's workflow or data."
+    };
+    const state={...defaults,...read(key,{})};
+    const saveState=()=>write(key,state);
+    body.innerHTML=`<section class="captain-command-intro shipyard-intro"><small>CAPTAIN'S SHIPYARD • CONCEPT VESSEL</small><h3>ScheduleJoe</h3><p>Residential construction scheduling built from a home builder's workflow. This berth is isolated from the Engine until the Captain commissions the vessel.</p></section>
+      <div class="shipyard-vessel-banner">
+        <div><span>VESSEL SJ-01</span><strong>SCHEDULEJOE</strong><small>Residential Construction Scheduling</small></div>
+        <div class="shipyard-vessel-state"><b>IN DEVELOPMENT</b><small>CAPTAIN'S QUARTERS ONLY</small></div>
+      </div>
+      <nav class="shipyard-area-tabs" aria-label="ScheduleJoe working areas">
+        <button type="button" data-shipyard-area="mission" class="active">MISSION</button>
+        <button type="button" data-shipyard-area="sequence">BUILD SEQUENCE</button>
+        <button type="button" data-shipyard-area="prototype">PROTOTYPE DECK</button>
+        <button type="button" data-shipyard-area="decisions">VESSEL DECISIONS</button>
+      </nav>
+      <div id="scheduleJoeArea"></div>`;
+
+    const areaHost=document.getElementById('scheduleJoeArea');
+    const tabs=[...document.querySelectorAll('[data-shipyard-area]')];
+    const field=(label,value,id,help)=>`<section class="captain-command-card schedulejoe-work-card"><small>${label}</small><textarea id="${id}">${safe(value||'')}</textarea>${help?`<p>${help}</p>`:''}<button type="button" data-sj-save="${id}">SAVE TO SCHEDULEJOE</button></section>`;
+    const renderArea=(area)=>{
+      tabs.forEach(b=>b.classList.toggle('active',b.dataset.shipyardArea===area));
+      if(area==='mission'){
+        areaHost.innerHTML=`${field('MISSION • WHAT THIS VESSEL MUST SOLVE',state.mission,'sjMission','Keep this builder-first. Define the real scheduling problem before designing features.')}<section class="shipyard-guardrail"><strong>SHIPYARD GUARDRAIL</strong><span>ScheduleJoe stays outside the Engine project registry until commissioning.</span></section>`;
+      }else if(area==='sequence'){
+        areaHost.innerHTML=`<section class="captain-command-card schedulejoe-work-card"><small>BASELINE HOME BUILD SEQUENCE</small><h3>First construction spine</h3><p>One stage per line. This is the starting sequence, not a locked template.</p><textarea id="sjSequence">${safe((state.sequence||[]).join('\n'))}</textarea><button type="button" data-sj-save="sjSequence">SAVE BUILD SEQUENCE</button></section>`;
+      }else if(area==='prototype'){
+        areaHost.innerHTML=`${field('PROTOTYPE DECK • FIRST WORKING VERSION',state.prototype,'sjPrototype','Describe the smallest field-useful scheduler before adding integrations or automation.')}<div class="schedulejoe-prototype-grid"><article><span>01</span><strong>ONE HOUSE</strong><small>Prove the workflow on a real residential build.</small></article><article><span>02</span><strong>DEPENDENCIES</strong><small>Understand what truly moves when an activity slips.</small></article><article><span>03</span><strong>FIELD SIGNALS</strong><small>Show what needs attention today.</small></article><article><span>04</span><strong>BASELINE VS ACTUAL</strong><small>Preserve the original plan while recording reality.</small></article></div>`;
+      }else{
+        areaHost.innerHTML=`${field('VESSEL DECISIONS • ARCHITECTURE & BOUNDARIES',state.decisions,'sjDecisions','Record what belongs uniquely to ScheduleJoe and what may later become shared Dark Sky infrastructure.')}<section class="shipyard-commissioning-note"><small>COMMISSIONING STATUS</small><strong>NOT YET AN ENGINE VESSEL</strong><p>No project registry entry, customer workflow, deployment manifest, or production data namespace has been created.</p></section>`;
+      }
+      areaHost.querySelectorAll('[data-sj-save]').forEach(btn=>btn.onclick=()=>{
+        const id=btn.dataset.sjSave;
+        const el=document.getElementById(id);
+        if(!el)return;
+        if(id==='sjMission')state.mission=el.value.trim();
+        if(id==='sjSequence')state.sequence=el.value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+        if(id==='sjPrototype')state.prototype=el.value.trim();
+        if(id==='sjDecisions')state.decisions=el.value.trim();
+        saveState();
+        audit('ScheduleJoe shipyard note saved',area);
+        const prior=btn.textContent;btn.textContent='SAVED';window.setTimeout(()=>btn.textContent=prior,900);
+      });
+    };
+    tabs.forEach(btn=>btn.onclick=()=>renderArea(btn.dataset.shipyardArea));
+    renderArea('mission');
   }
 
   function renderCargo(){
@@ -859,8 +918,9 @@ function bootCaptainCommand(){
 
   close?.addEventListener('click',closeWorkspace);
   document.querySelectorAll('[data-captain-command]').forEach(btn=>btn.addEventListener('click',()=>open(btn.dataset.captainCommand)));
+  document.getElementById('captainShipyardLaunch')?.addEventListener('click',()=>open('shipyard'));
 
-  // The five painted lower controls are now the sole command doors.
+  // The five painted lower controls remain the room's original command doors; Shipyard is a dedicated Captain workspace launch.
   // Legacy desk-object duplicates were removed from the cabin DOM.
 
   // Existing blueprint hotspot remains functional; command tab offers same destination.

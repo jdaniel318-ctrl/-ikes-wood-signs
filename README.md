@@ -34,3 +34,7 @@ Dark Sky never requests a database schema lower than one already installed on th
 
 ## v4.5 Trust Release
 Project identity is preserved before governance metadata is repaired. Project-level actions write one immutable Project ID; missing V4 admission evidence can restrict operation but cannot delete the canonical project row. Project Command filters derive from the actual launch state, and Published/Private is now a status indicator rather than a hidden workflow toggle.
+
+
+## 4.5.4 Captain's Shipyard
+Captain's Quarters now includes a Shipyard workspace. ScheduleJoe is berthed there as a concept vessel for residential construction scheduling. It remains outside the Engine registry until a future explicit commissioning decision.

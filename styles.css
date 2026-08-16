@@ -11495,3 +11495,34 @@ body.engine-mode #enginePanel .modern-project-command .project-governance-strip{
     align-items:flex-start!important;
   }
 }
+
+/* v4.5.4 — Captain's Shipyard / ScheduleJoe concept vessel */
+.captain-shipyard-launch{
+  width:min(920px,94%);
+  margin:10px auto 16px;
+  min-height:70px;
+  display:grid;
+  grid-template-columns:52px 1fr auto;
+  align-items:center;
+  gap:14px;
+  padding:10px 15px;
+  border:1px solid rgba(190,148,72,.62);
+  border-radius:10px;
+  background:linear-gradient(110deg,rgba(37,29,17,.94),rgba(16,28,32,.96));
+  color:#f1ead8;
+  text-align:left;
+  box-shadow:0 10px 28px rgba(0,0,0,.22);
+}
+.captain-shipyard-launch:hover,.captain-shipyard-launch:focus-visible{border-color:#d0a357;transform:translateY(-1px)}
+.captain-shipyard-mark{display:grid;place-items:center;width:46px;height:46px;border:1px solid #8b6a36;border-radius:50%;font-size:23px;color:#d7b36d;background:#111a1d}
+.captain-shipyard-copy{display:grid;gap:2px;min-width:0}
+.captain-shipyard-copy small{font-size:8px;font-weight:900;letter-spacing:.15em;color:#b89961}
+.captain-shipyard-copy strong{font:900 20px Georgia,serif;letter-spacing:.03em;color:#f4efe2}
+.captain-shipyard-copy b{font-size:9px;font-weight:600;color:#aab7b2}
+.captain-shipyard-status{font-size:8px;font-weight:900;letter-spacing:.09em;color:#ebc979;white-space:nowrap}
+.shipyard-intro{border-left-color:#c49a4f}
+.shipyard-vessel-banner{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:12px;padding:14px 16px;border:1px solid #4a5d63;border-radius:10px;background:linear-gradient(120deg,#111d21,#17231f)}
+.shipyard-vessel-banner>div:first-child{display:grid;gap:2px}.shipyard-vessel-banner span,.shipyard-vessel-banner small{font-size:8px;letter-spacing:.11em;color:#9eaaa5}.shipyard-vessel-banner strong{font:900 23px Georgia,serif;color:#f2eee3}.shipyard-vessel-state{display:grid;justify-items:end;gap:3px}.shipyard-vessel-state b{padding:6px 9px;border:1px solid #8a6d39;border-radius:999px;color:#e4c477;font-size:8px;letter-spacing:.1em}
+.shipyard-area-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}.shipyard-area-tabs button{min-height:42px!important;background:#101a1e!important;border-color:#43535a!important;color:#aab5b1!important}.shipyard-area-tabs button.active{background:#302617!important;border-color:#a98143!important;color:#efd28d!important}
+.schedulejoe-work-card small{display:block;margin-bottom:4px;color:#c4a261;font-size:8px;font-weight:900;letter-spacing:.12em}.schedulejoe-work-card textarea{min-height:150px}.shipyard-guardrail,.shipyard-commissioning-note{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #3e5359;border-radius:9px;background:#10191d;color:#aab5b1}.shipyard-guardrail strong,.shipyard-commissioning-note strong{color:#dfc27f;font-size:9px;letter-spacing:.1em}.shipyard-commissioning-note{display:grid;gap:4px}.shipyard-commissioning-note small{color:#93a29d;font-size:8px;letter-spacing:.12em}.shipyard-commissioning-note p{margin:0;color:#9aa7a3}.schedulejoe-prototype-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.schedulejoe-prototype-grid article{padding:12px;border:1px solid #405057;border-radius:9px;background:#10191d;display:grid;gap:3px}.schedulejoe-prototype-grid span{color:#b79758;font-size:8px}.schedulejoe-prototype-grid strong{color:#ece9df;font-size:10px}.schedulejoe-prototype-grid small{color:#97a39f;line-height:1.35}
+@media(max-width:760px){.captain-shipyard-launch{grid-template-columns:44px 1fr}.captain-shipyard-status{grid-column:2}.shipyard-vessel-banner{align-items:flex-start;flex-direction:column}.shipyard-vessel-state{justify-items:start}.shipyard-area-tabs{grid-template-columns:1fr 1fr}.schedulejoe-prototype-grid{grid-template-columns:1fr 1fr}}
