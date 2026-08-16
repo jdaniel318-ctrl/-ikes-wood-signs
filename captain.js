@@ -601,42 +601,9 @@ function bootCaptainCommand(){
     });
   }
 
-  function renderHighWatch(intel=[]){
-    const top=intel[0]||null;
-    const counts={
-      critical:intel.filter(x=>x.level==='critical').length,
-      high:intel.filter(x=>x.level==='high').length,
-      action:intel.filter(x=>x.level==='action').length,
-      watch:intel.filter(x=>x.level==='watch').length,
-      clear:intel.filter(x=>x.level==='clear').length
-    };
-    const fleetState=counts.critical?'CRITICAL':counts.high?'HIGH PRIORITY':counts.action?'ACTION REQUIRED':counts.watch?'WATCH':'CLEAR';
-    const fleetClass=counts.critical?'critical':counts.high?'high':counts.action?'action':counts.watch?'watch':'clear';
-    const levelLabel=(level)=>({critical:'CRITICAL',high:'HIGH PRIORITY',action:'ACTION REQUIRED',watch:'WATCH',clear:'CLEAR'}[level]||String(level||'clear').toUpperCase());
-    return `<section class="captain-command-card high-watch-board easy-bearing-board">
-      <div class="high-watch-head"><div><small>DARK SKY 4.3.7 • SHOWROOM RESTORE</small><h3>Fleet Intelligence</h3><p>One prioritized operating picture across the admitted fleet. Read-only in Captain's Quarters.</p></div><strong class="${fleetClass}">${safe(fleetState)}</strong></div>
-      <div class="high-watch-kpis easy-bearing-kpis"><span><b>${counts.critical}</b> critical</span><span><b>${counts.high}</b> high priority</span><span><b>${counts.action}</b> action required</span><span><b>${counts.watch}</b> watch</span><span><b>${counts.clear}</b> clear</span></div>
-      ${top?`<article class="high-watch-lead ${safe(top.level)}"><small>HIGHEST PRIORITY • SCORE ${Number(top.score||0)}</small><strong>${safe(top.projectName)}</strong><span>${safe(top.next)}</span><p>${safe((top.reasons||[]).join(' • ')||'No active concern.')}</p></article>`:''}
-      <div class="high-watch-fleet">${intel.map(x=>`<details class="high-watch-vessel ${safe(x.level)}"><summary><span><small>${safe(x.code||'VESSEL')} • ${safe(x.launchLabel||'')}</small><strong>${safe(x.projectName)}</strong></span><span><b>${Number(x.score||0)}</b><small>${safe(levelLabel(x.level))}</small></span></summary><div><p>${safe((x.reasons||[]).join(' • ')||'No active concern.')}</p><ul><li>${Number(x.open||0)} open orders</li><li>${Number(x.customers||0)} retained customers</li><li>${Number(x.offers||0)} customer-ready offers</li><li>${Number(x.activeDeployments||0)} active deployments</li></ul><strong>Next move: ${safe(x.next||'Maintain course')}</strong></div></details>`).join('')}</div>
-      <section class="cq-spyglass-search high-watch-search easy-bearing-search">
-        <div><small>DARK SKY 4.3.7 • COMMAND FIND</small><h4>Find anything in the fleet</h4><p>Start typing a project, order number, customer, phone, email, or a phrase like “open Ike orders.” Results update automatically and never change production data.</p></div>
-        <div class="easy-bearing-filter" role="group" aria-label="Search type">
-          <button type="button" data-command-search-type="all" class="active">All</button>
-          <button type="button" data-command-search-type="project">Projects</button>
-          <button type="button" data-command-search-type="order">Orders</button>
-          <button type="button" data-command-search-type="customer">Customers</button>
-        </div>
-        <div class="easy-bearing-input-wrap"><input id="captainCommandSearchInput" placeholder="Search project, order #, customer, phone, or email" autocomplete="off" enterkeyhint="search"><button id="captainCommandSearchClear" type="button" aria-label="Clear search">CLEAR</button></div>
-        <div class="easy-bearing-suggestions"><button type="button" data-command-suggestion="open orders">Open orders</button><button type="button" data-command-suggestion="Ike">Ike's</button><button type="button" data-command-suggestion="Becca">Becca</button><button type="button" data-command-suggestion="Grizzly">Grizzly</button></div>
-        <div id="captainCommandSearchResults" class="cq-spyglass-results easy-bearing-results"><span>Type two characters and Showroom Restore will find the best matches.</span></div>
-      </section>
-    </section>`;
-  }
-
   async function renderBlackFlag(){
     const snap=await snapshot();
     const projects=snap.projects||[];
-    const intel=await window.blackFlagFleetIntelligenceData?.()||[];
     const operating=projects.filter(p=>p.publishStatus==='live'||p.status==='active').length;
     const future=projects.filter(p=>p.status==='future').length;
     const priv=projects.filter(p=>p.publishStatus!=='live').length;
@@ -653,156 +620,7 @@ function bootCaptainCommand(){
         return `<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong><small>${safe(p.publishStatus)} • ${safe(p.status)} • PLATFORM ${safe((p.platformStatus==='relationship_ended'||p.platformStatus==='refused')?'RELATIONSHIP ENDED':(p.platformStatus||'approved').toUpperCase())} • OWNER ${safe((p.ownerStatus||'not_claimed').replace(/_/g,' ').toUpperCase())}</small></div><div><b>${sailing} sailing</b>${harbor?`<small>${harbor} in harbor</small>`:''}${trials?`<small>${trials} sea trial</small>`:''}</div></article>`;
       }).join(''):'<p class="captain-empty">No project snapshot available.</p>'}</div>
     </section>
-    ${renderHighWatch(intel)}
-    <section class="captain-command-card"><h3>Command Boundary</h3><p>Black Flag tells the Captain what is happening. The Engine Room remains where the First Mate changes project machinery.</p></section>
-    ${renderBroadsideCommand(projects)}`;
-    bindBroadsideCommand(projects);
-  }
-
-  function renderBroadsideCommand(projects=[]){
-    if(!window.DarkSkyV4)return '';
-    const fleet=window.blackFlagV4Projects?.()||[];
-    const st=window.DarkSkyV4.status(fleet),brief=window.DarkSkyV4.commandBrief?.(fleet)||{priorities:[]};
-    const ring=st.release?.currentRing||'captain', labs=window.DarkSkyV4.labs().slice(0,6), vault=window.DarkSkyV4.recoveryVault().slice(0,4), blackbox=window.DarkSkyV4.diagnostics().slice(0,4), bb=window.DarkSkyV4.blackBoxHealth?.()||st.blackBoxHealth||{}, flags=window.DarkSkyV4.featureFlags();
-    const priorityHtml=(brief.priorities||[]).map(x=>`<article class="cq-full-sail-priority ${safe(x.level)}"><span>${safe(String(x.level).toUpperCase())}</span><strong>${safe(x.title)}</strong><small>${safe(x.detail)}</small></article>`).join('');
-    const queue=window.DarkSkyV4.implementationQueue?.()||[];
-    const labHtml=labs.length?labs.map(x=>`<article class="cq-lab-row high-watch-lab"><div><strong>${safe(x.projectName)}</strong><small>${safe((x.category||'general').toUpperCase())} • RISK ${safe((x.risk||'low').toUpperCase())} • ${safe(x.state.toUpperCase())}</small><p>${safe(x.brief||'No brief')}</p>${x.objective?`<span><b>Objective:</b> ${safe(x.objective)}</span>`:''}${x.successCriteria?`<span><b>Success:</b> ${safe(x.successCriteria)}</span>`:''}</div><div>${x.state==='sandbox'?`<button data-v4-lab="${safe(x.id)}" data-state="candidate">MARK CANDIDATE</button>`:''}${x.state==='candidate'?`<button data-v4-lab="${safe(x.id)}" data-state="promoted">APPROVE PLAN</button>`:''}${x.state==='promoted'?`<button data-v4-queue="${safe(x.id)}">SEND TO ENGINE</button>`:''}${!['rejected','promoted'].includes(x.state)?`<button data-v4-lab="${safe(x.id)}" data-state="rejected">RETIRE</button>`:''}</div></article>`).join(''):'<p class="captain-empty">No active experiments yet.</p>';
-    const flagKeys=['command_search','attention_center','workflow_engine'];
-    return `<section class="captain-command-card v4-captain-broadside full-sail-captain">
-      <div class="v4-captain-head"><div><small>DARK SKY 4.3.7 • SHOWROOM RESTORE</small><h3>Captain's Command Brief</h3><p>Fleet posture, controlled experimentation, release discipline, and platform memory in one command surface.</p></div><strong class="${st.preflight.ok?'clear':'attention'}">${st.preflight.ok?'EASY BEARING':'REVIEW'}</strong></div>
-      <div class="v4-captain-metrics"><span><b>${fleet.length}</b> admitted vessels</span><span><b>${st.recoveryPoints}</b> recovery points</span><span><b>${bb.currentSessionFaults||0}</b> current-session Black Box faults</span><span><b>${st.decisions}</b> decisions</span></div>
-      <div class="cq-full-sail-grid"><section><h4>Captain priorities</h4><div class="cq-full-sail-priorities">${priorityHtml}</div></section><section><h4>Release & recovery</h4><div class="v4-release-rings"><label>Release ring<select id="captainV4ReleaseRing">${['captain','private','selected_live','fleet'].map(x=>`<option value="${x}" ${x===ring?'selected':''}>${x.replaceAll('_',' ').toUpperCase()}</option>`).join('')}</select></label><button id="captainV4RecoveryPoint" type="button">SEAL RECOVERY POINT</button></div><div class="cq-vault-mini">${vault.length?vault.map(x=>`<span><b>${safe(x.id)}</b>${safe(new Date(x.at).toLocaleString())}</span>`).join(''):'<span>No recovery points yet.</span>'}</div></section></div>
-      <div class="cq-full-sail-grid"><section><h4>Captain Lab Board</h4><div class="lab-template-row"><button type="button" data-lab-template="customer">CUSTOMER FLOW</button><button type="button" data-lab-template="pricing">PRICING</button><button type="button" data-lab-template="brand">BRAND</button><button type="button" data-lab-template="operations">OPERATIONS</button></div><div class="v4-captain-lab high-watch-lab-create"><label>Vessel<select id="captainV4LabProject"><option value="">Select vessel…</option>${projects.map(p=>`<option value="${safe(p.projectId||p.id||'')}">${safe(p.name)}</option>`).join('')}</select></label><label>Category<select id="captainV4LabCategory"><option value="general">General</option><option value="customer_flow">Customer flow</option><option value="pricing">Pricing</option><option value="brand">Brand</option><option value="operations">Operations</option></select></label><label>Risk<select id="captainV4LabRisk"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label><label>Experiment brief<input id="captainV4LabBrief" placeholder="What are we trying?"></label><label>Objective<input id="captainV4LabObjective" placeholder="What should improve?"></label><label>Success criteria<input id="captainV4LabSuccess" placeholder="What proves this worked?"></label><button id="captainV4CreateLab" type="button">CREATE SANDBOX</button></div><div class="cq-lab-board">${labHtml}</div><div class="implementation-queue"><small>ENGINE IMPLEMENTATION QUEUE</small><strong>${queue.filter(x=>x.status!=='closed').length} request${queue.filter(x=>x.status!=='closed').length===1?'':'s'}</strong>${queue.filter(x=>x.status!=='closed').slice(0,3).map(x=>`<span>${safe(x.projectName)} • ${safe(x.category||'general')} • ${safe(x.status.toUpperCase())}</span>`).join('')}</div></section><section><h4>Controlled capabilities</h4><div class="cq-feature-flags">${flagKeys.map(k=>`<label><span><strong>${safe(k.replaceAll('_',' ').toUpperCase())}</strong><small>${safe(flags[k]?.scope||'fleet')} • ${safe(flags[k]?.ring||'stable')}</small></span><input type="checkbox" data-v4-flag="${k}" ${flags[k]?.enabled?'checked':''}></label>`).join('')}</div><h4>Black Box <small>${safe((bb.status||'clear').toUpperCase())} • ${Number(bb.uniqueEvents||0)} unique / ${Number(bb.occurrences||0)} occurrences</small></h4><div class="cq-blackbox-mini">${blackbox.length?blackbox.map(x=>`<span><b>${safe(x.type)}${Number(x.occurrences||1)>1?` ×${Number(x.occurrences||1)}`:''}</b>${safe(x.detail||'event')}<small>${safe(new Date(x.lastSeen||x.at).toLocaleString())}</small></span>`).join(''):'<span>No diagnostic events retained.</span>'}</div></section></div>
-      <p class="v4-boundary-note"><b>CAPTAIN BOUNDARY:</b> Labs and approvals never write production project machinery. Engine execution remains separately authorized and auditable.</p>
-    </section>`;
-  }
-
-  function bindBroadsideCommand(projects=[]){
-    const ring=document.getElementById('captainV4ReleaseRing');
-    if(ring)ring.onchange=()=>{try{window.DarkSkyV4.setReleaseRing(ring.value,'Captain changed rollout ring');audit('V4 release ring changed',ring.value)}catch(err){alert(err.message)}};
-    const rec=document.getElementById('captainV4RecoveryPoint');
-    if(rec)rec.onclick=()=>{try{const rows=window.blackFlagV4Projects?.()||[];const r=window.DarkSkyV4.recoveryPoint(rows,'captain-manual-v4');audit('V4 recovery point sealed',r.id);renderBlackFlag();}catch(err){alert(err.message)}};
-    const create=document.getElementById('captainV4CreateLab');
-    if(create)create.onclick=()=>{try{const id=document.getElementById('captainV4LabProject')?.value||'';const p=window.blackFlagV4ProjectById?.(id);if(!p){alert('Select a vessel for the experiment.');return;}const brief=document.getElementById('captainV4LabBrief')?.value||'';const options={objective:document.getElementById('captainV4LabObjective')?.value||'',successCriteria:document.getElementById('captainV4LabSuccess')?.value||'',risk:document.getElementById('captainV4LabRisk')?.value||'low',category:document.getElementById('captainV4LabCategory')?.value||'general'};const lab=window.DarkSkyV4.labCreate(p,brief,options);audit('Captain Lab sandbox created',`${p.name} • ${lab.id}`);renderBlackFlag();}catch(err){alert(err.message)}};
-    document.querySelectorAll('[data-lab-template]').forEach(btn=>btn.onclick=()=>{const key=btn.dataset.labTemplate;const templates={customer:{category:'customer_flow',brief:'Prototype a cleaner customer ordering journey',objective:'Reduce friction while preserving required project data',success:'Customer can complete the flow with fewer confusing steps and no loss of validation'},pricing:{category:'pricing',brief:'Prototype a clearer pricing model',objective:'Make pricing understandable before checkout',success:'Price is explainable, project-scoped, and matches the configured offer'},brand:{category:'brand',brief:'Prototype a stronger project-specific brand experience',objective:'Increase identity without cross-project branding leakage',success:'Branding is unmistakably project-specific and all isolation checks remain clear'},operations:{category:'operations',brief:'Prototype a faster admin operating workflow',objective:'Reduce touches required to move work from new to completed',success:'Fewer admin steps with status, audit, and customer data preserved'}};const t=templates[key];if(!t)return;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v};set('captainV4LabCategory',t.category);set('captainV4LabBrief',t.brief);set('captainV4LabObjective',t.objective);set('captainV4LabSuccess',t.success)});
-    document.querySelectorAll('[data-v4-lab]').forEach(btn=>btn.onclick=()=>{try{window.DarkSkyV4.labMark(btn.dataset.v4Lab,btn.dataset.state,'Captain Showroom Restore review');audit('Captain Lab state changed',`${btn.dataset.v4Lab} → ${btn.dataset.state}`);renderBlackFlag();}catch(err){alert(err.message)}});
-    document.querySelectorAll('[data-v4-queue]').forEach(btn=>btn.onclick=()=>{try{const row=window.DarkSkyV4.queueImplementation(btn.dataset.v4Queue);audit('Captain implementation request queued',`${row.projectName} • ${row.id}`);renderBlackFlag();}catch(err){alert(err.message)}});
-    document.querySelectorAll('[data-v4-flag]').forEach(input=>input.onchange=()=>{try{window.DarkSkyV4.setFeatureFlag(input.dataset.v4Flag,{enabled:input.checked});audit('V4 feature flag changed',`${input.dataset.v4Flag} → ${input.checked?'on':'off'}`);renderBlackFlag();}catch(err){input.checked=!input.checked;alert(err.message)}});
-    const searchInput=document.getElementById('captainCommandSearchInput');
-    const searchHost=document.getElementById('captainCommandSearchResults');
-    const searchClear=document.getElementById('captainCommandSearchClear');
-    const filterButtons=[...document.querySelectorAll('[data-command-search-type]')];
-    let searchType='all';
-    try{searchType=sessionStorage.getItem('darkSkyCaptainSearchType')||'all'}catch(_){ }
-    if(!['all','project','order','customer'].includes(searchType))searchType='all';
-    const setFilter=(type)=>{
-      searchType=type;
-      filterButtons.forEach(b=>b.classList.toggle('active',b.dataset.commandSearchType===type));
-      try{sessionStorage.setItem('darkSkyCaptainSearchType',type)}catch(_){ }
-    };
-    setFilter(searchType);
-    const escapeRegExp=(v)=>String(v).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-    const highlight=(value,terms=[])=>{
-      let text=safe(String(value??''));
-      [...new Set(terms.filter(t=>t.length>1))].sort((a,b)=>b.length-a.length).forEach(term=>{
-        const re=new RegExp(`(${escapeRegExp(safe(term))})`,'ig');
-        text=text.replace(re,'<mark>$1</mark>');
-      });
-      return text;
-    };
-    const parseIntent=(raw)=>{
-      const lower=String(raw||'').trim().toLowerCase();
-      let inferred=searchType;
-      if(searchType==='all'){
-        if(/\borders?\b/.test(lower))inferred='order';
-        else if(/\bcustomers?|people|phone|email\b/.test(lower))inferred='customer';
-        else if(/\bprojects?|vessels?\b/.test(lower))inferred='project';
-      }
-      const wantsOpen=/\b(open|new|active|working|ready)\b/.test(lower);
-      const wantsCompleted=/\b(completed|complete|finished|closed)\b/.test(lower);
-      const stop=new Set(['find','show','me','the','a','an','all','project','projects','vessel','vessels','order','orders','customer','customers','open','new','active','working','ready','completed','complete','finished','closed']);
-      const terms=lower.split(/\s+/).map(x=>x.replace(/[^a-z0-9@.+_-]/g,'')).filter(x=>x&& !stop.has(x));
-      return {raw:lower,type:inferred,terms,wantsOpen,wantsCompleted};
-    };
-    const scoreHit=(row,intent)=>{
-      const blob=`${row.type} ${row.id} ${row.title} ${row.detail} ${row.projectId}`.toLowerCase();
-      if(intent.terms.some(t=>!blob.includes(t)))return -1;
-      if(intent.type!=='all'&&row.type!==intent.type)return -1;
-      if(intent.wantsCompleted&&row.type==='order'&&!/completed|complete|finished|closed/.test(String(row.detail).toLowerCase()))return -1;
-      if(intent.wantsOpen&&row.type==='order'&&/completed|complete|finished|closed/.test(String(row.detail).toLowerCase()))return -1;
-      let score=0;
-      for(const t of intent.terms){
-        const title=String(row.title||'').toLowerCase(),id=String(row.id||'').toLowerCase(),pid=String(row.projectId||'').toLowerCase();
-        if(title===t||id===t)score+=100;
-        else if(title.startsWith(t)||id.startsWith(t))score+=55;
-        else if(title.includes(t)||id.includes(t))score+=35;
-        if(pid.includes(t))score+=20;
-      }
-      if(row.type==='project')score+=8;
-      return score;
-    };
-    const visibleLimits={project:4,order:6,customer:5};
-    const expandedGroups=new Set();
-    const actionLabel=(type)=>type==='order'?'VIEW ORDER':type==='customer'?'OPEN PROJECT':'OPEN PROJECT';
-    const renderHits=(hits,intent)=>{
-      if(!searchHost)return;
-      if(!hits.length){searchHost.innerHTML='<div class="easy-bearing-empty"><strong>No fleet matches.</strong><span>Try a project name, customer, order number, phone, or email.</span></div>';return;}
-      const groups=[['project','Projects'],['order','Orders'],['customer','Customers']];
-      const body=groups.map(([type,label])=>{
-        const rows=hits.filter(x=>x.type===type);if(!rows.length)return '';
-        const expanded=expandedGroups.has(type);
-        const shown=expanded?rows:rows.slice(0,visibleLimits[type]||6);
-        const more=rows.length-shown.length;
-        return `<section class="easy-bearing-group" data-result-group="${type}"><header><strong>${label}</strong><span>${rows.length}</span></header><div>${shown.map(r=>`<article class="easy-bearing-result ${safe(r.type)}" data-command-open="${safe(r.type)}" data-command-project="${safe(r.projectId||r.id||'')}" data-command-id="${safe(r.id||'')}" tabindex="0" role="button" aria-label="${safe(actionLabel(r.type))}: ${safe(r.title||r.id||'result')}"><div class="easy-bearing-result-copy"><small>${safe(String(r.type||'result').toUpperCase())} • ${safe(r.projectId||'fleet')}</small><strong>${highlight(r.title||r.id,intent.terms)}</strong><span>${highlight(r.detail||'',intent.terms)}</span></div><button type="button" class="easy-bearing-result-action" data-command-open-action="1">${actionLabel(r.type)}</button></article>`).join('')}</div>${more>0?`<button type="button" class="easy-bearing-show-more" data-command-expand="${type}">SHOW ALL ${rows.length} ${label.toUpperCase()}</button>`:expanded&&rows.length>(visibleLimits[type]||6)?`<button type="button" class="easy-bearing-show-more" data-command-collapse="${type}">SHOW LESS</button>`:''}</section>`;
-      }).join('');
-      searchHost.innerHTML=`<div class="easy-bearing-summary"><strong>${hits.length} result${hits.length===1?'':'s'}</strong><span>${intent.type==='all'?'across the admitted fleet':`in ${intent.type}s`}</span></div>${body}`;
-      searchHost.querySelectorAll('[data-command-open]').forEach(card=>{
-        const open=async()=>{
-          const route={type:card.dataset.commandOpen,projectId:card.dataset.commandProject,id:card.dataset.commandId};
-          card.classList.add('command-route-launching');
-          const action=card.querySelector('.easy-bearing-result-action');
-          const prior=action?.textContent||'';
-          if(action)action.textContent='OPENING…';
-          try{
-            if(typeof window.BlackFlagOpenCommandResult==='function') await window.BlackFlagOpenCommandResult(route);
-            else window.dispatchEvent(new CustomEvent('blackflag:open-command-result',{detail:route}));
-          }catch(err){
-            card.classList.remove('command-route-launching');
-            if(action)action.textContent=prior||actionLabel(route.type);
-            searchHost.insertAdjacentHTML('afterbegin',`<div class="easy-bearing-route-error"><strong>Could not open that result.</strong><span>${safe(String(err?.message||err))}</span></div>`);
-          }
-        };
-        card.onclick=e=>{if(e.target.closest('[data-command-expand],[data-command-collapse]'))return;open()};
-        card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}};
-      });
-      searchHost.querySelectorAll('[data-command-expand]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();expandedGroups.add(btn.dataset.commandExpand);renderHits(hits,intent)});
-      searchHost.querySelectorAll('[data-command-collapse]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();expandedGroups.delete(btn.dataset.commandCollapse);renderHits(hits,intent)});
-    };
-    let searchTimer=0,searchNonce=0;
-    const runSearch=async()=>{
-      const raw=String(searchInput?.value||'').trim();
-      if(!searchHost)return;
-      if(raw.length<2){searchHost.innerHTML='<span>Type two characters and Showroom Restore will find the best matches.</span>';return;}
-      const nonce=++searchNonce;
-      const intent=parseIntent(raw);
-      searchHost.innerHTML='<span>Finding the best admitted-fleet matches…</span>';
-      try{
-        const rows=await window.blackFlagCommandSearchData?.()||[];
-        if(nonce!==searchNonce)return;
-        const admitted=new Set((window.blackFlagV4Projects?.()||[]).map(p=>String(p.id)));
-        const ranked=rows.filter(r=>admitted.has(String(r.projectId||r.id||''))).map(r=>({...r,_score:scoreHit(r,intent)})).filter(r=>r._score>=0).sort((a,b)=>b._score-a._score||String(a.title||a.id).localeCompare(String(b.title||b.id))).slice(0,30);
-        renderHits(ranked,intent);
-      }catch(err){searchHost.innerHTML=`<span>Search interrupted: ${safe(String(err?.message||err))}</span>`;}
-    };
-    const scheduleSearch=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(runSearch,180)};
-    if(searchInput){
-      searchInput.oninput=scheduleSearch;
-      searchInput.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();clearTimeout(searchTimer);runSearch()}else if(e.key==='Escape'){searchInput.value='';runSearch()}};
-    }
-    filterButtons.forEach(btn=>btn.onclick=()=>{setFilter(btn.dataset.commandSearchType||'all');if(searchInput?.value.trim().length>=2)runSearch()});
-    document.querySelectorAll('[data-command-suggestion]').forEach(btn=>btn.onclick=()=>{if(!searchInput)return;searchInput.value=btn.dataset.commandSuggestion||'';searchInput.focus();runSearch()});
-    if(searchClear)searchClear.onclick=()=>{if(searchInput){searchInput.value='';searchInput.focus()}runSearch()};
-
+    <section class="captain-command-card"><h3>Command Boundary</h3><p>Black Flag tells the Captain what is happening. The Engine Room remains where the First Mate changes project machinery.</p></section>`;
   }
 
   async function renderLog(){
@@ -822,7 +640,6 @@ function bootCaptainCommand(){
       <section class="captain-command-card"><h3>Waived Fees Ledger</h3><p>Captain-only and separate from project billing.</p><div class="captain-note-list">${waived.length?waived.slice(0,20).map(w=>`<div><strong>${safe(w.project||w.projectName||'Project')}</strong><span>${safe(w.amountWaived??w.amount??'')} ${safe(w.service||w.feature||'')}</span></div>`).join(''):'<p class="captain-empty">No waived-fee records yet.</p>'}</div></section>
     </div>
     <section class="captain-command-card"><h3>Fleet Performance</h3><div class="captain-fleet-list">${(snap.projects||[]).map(p=>`<article><div><span>${safe(p.code)}</span><strong>${safe(p.name)}</strong></div><div><b>${Number(p.orders||0)} orders</b><small>$${Number(p.ledgerRevenue||0).toFixed(0)} recorded</small></div></article>`).join('')||'<p class="captain-empty">No project performance data yet.</p>'}</div></section>
-    ${renderV4DecisionLedger()}
     <section class="captain-command-card"><h3>Captain Audit History</h3><div class="captain-note-list">${auditRows.length?auditRows.slice(0,40).map(a=>`<div><strong>${safe(new Date(a.at).toLocaleString())}</strong><span>${safe(a.action)}${a.detail?` — ${safe(a.detail)}`:''}</span></div>`).join(''):'<p class="captain-empty">No Captain events recorded yet.</p>'}</div></section>`;
     const drawStanding=()=>{
       const rows=standingOrders();
@@ -832,17 +649,6 @@ function bootCaptainCommand(){
     };
     document.getElementById('captainStandingOrderAdd').onclick=()=>{const input=document.getElementById('captainStandingOrderInput');const text=input.value.trim();if(!text)return;const rows=standingOrders();rows.push(text);write('blackFlagStandingOrders',rows);audit('Standing order added',text);input.value='';drawStanding()};
     drawStanding();
-    bindV4DecisionLedger();
-  }
-
-  function renderV4DecisionLedger(){
-    if(!window.DarkSkyV4)return '';
-    const rows=window.DarkSkyV4.decisions().slice(0,12);
-    return `<section class="captain-command-card v4-decision-ledger"><small>DARK SKY 4.0</small><h3>Decision Ledger</h3><p>Major platform decisions, architectural warnings, experiments and Captain overrides live here so future releases preserve why the ship was built this way.</p><div class="v4-decision-add"><input id="captainV4Decision" placeholder="Record a platform decision…"><input id="captainV4Rationale" placeholder="Rationale / warning…"><button id="captainV4DecisionAdd" type="button">RECORD DECISION</button></div><div class="captain-note-list">${rows.length?rows.map(x=>`<div><strong>${safe(new Date(x.at).toLocaleString())}</strong><span>${safe(x.decision)}${x.rationale?` — ${safe(x.rationale)}`:''}</span></div>`).join(''):'<p class="captain-empty">No V4 platform decisions recorded yet.</p>'}</div></section>`;
-  }
-  function bindV4DecisionLedger(){
-    const btn=document.getElementById('captainV4DecisionAdd');if(!btn||!window.DarkSkyV4)return;
-    btn.onclick=()=>{const d=document.getElementById('captainV4Decision')?.value.trim()||'';const r=document.getElementById('captainV4Rationale')?.value.trim()||'';if(!d)return;window.DarkSkyV4.decision({decision:d,rationale:r,scope:'platform'});audit('V4 decision recorded',d);renderLog();};
   }
 
   function renderBlueprint(){

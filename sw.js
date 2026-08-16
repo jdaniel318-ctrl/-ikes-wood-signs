@@ -1,13 +1,12 @@
-const CACHE='dark-sky-v4-3-8-fleet-marks';
+const CACHE='dark-sky-v3-9-10-experience-test-deck';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.3.8',
-  './platform_core.js?v=4.3.8',
-  './platform_v4.js?v=4.3.8',
-  './platform_identity.js?v=4.3.8',
-  './app.js?v=4.3.8',
-  './captain.js?v=4.3.8',
+  './styles.css?v=3.9.10',
+  './platform_core.js?v=3.9.10',
+  './platform_identity.js?v=3.9.10',
+  './app.js?v=3.9.10',
+  './captain.js?v=3.9.10',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
