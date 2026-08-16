@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.3.5';
+  const BUILD_VERSION = '4.3.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1007,7 +1007,7 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.5'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.6'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -1038,7 +1038,7 @@
       const reclaimed=Number(r.before?.oldCacheBytes||0);
       box.dataset.inspectOk='0';
       try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
-      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.5',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.6',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
       if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
       // Re-sound immediately so the user gets visible proof of what changed.
       const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
@@ -1055,7 +1055,7 @@
     }catch(err){
       const message=String(err?.message||err||'Unknown cleanup failure');
       box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.5'});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.6'});
       if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
       return false;
     }
@@ -3883,7 +3883,7 @@
         <article><span>Completed</span><strong>${stats.completed}</strong></article>
       </div>`;
       const historicalDetail=(selected && !selectedApproved)
-        ? `<section class="pec-command-historical command-find-target" data-command-historical-order="${escapeHtml(selected.id)}"><div class="command-order-historical-head"><strong>HISTORICAL ORDER DETAIL</strong><span>Exact Bearing found this retained order outside the active approved roll. It is shown read-only and is not restored to active work.</span></div>${projectOrderCard(selected,false)}</section>`
+        ? historicalOrderDetailCard(selected,p)
         : '';
       const commandList=orders.length?`<div class="pec-order-command-list">${orders.map(o=>{
         const status=canonicalOrderStatus(o.status);
@@ -3915,7 +3915,7 @@
           return true;
         };
         if(!focus()) setTimeout(()=>focus(),120);
-        if(!selected) window.DarkSkyV4?.diagnostic?.('command_find.order_missing_in_renderer',`Exact Bearing could not find ${targetId} in the canonical merged order source.`,{projectId:p.id,orderId:targetId,build:BUILD_VERSION});
+        if(!selected) window.DarkSkyV4?.diagnostic?.('command_find.order_missing_in_renderer',`Brightwork could not find ${targetId} in the canonical merged order source.`,{projectId:p.id,orderId:targetId,build:BUILD_VERSION});
         commandSelectedOrderTarget=null;
       }
     }
@@ -6538,6 +6538,43 @@ The full order and approved media remain stored with this project.`;
         </div>
       </div>
     </article>`;
+  }
+  function historicalOrderDetailCard(o,p){
+    const status=canonicalOrderStatus(o?.status||'New');
+    const request=orderRequestedText(o)||'No request detail retained';
+    const style=orderStyleSummary(o)||'No style / finish detail retained';
+    const offer=orderOfferSummary(o,p)||p?.name||'Project';
+    const contactName=o?.customerName||'Not captured';
+    const phone=o?.customerPhone||'';
+    const email=o?.customerEmail||'';
+    const created=formatOrderDateTime(o?.createdAt);
+    const updated=formatOrderDateTime(o?.updatedAt||o?.createdAt);
+    const contactPref=o?.contactPreference||'Not recorded';
+    const price=Number(o?.price||0).toFixed(2);
+    const preview=o?.approvedPreviewData||'';
+    const statusAtRecord=status==='New'?'New at time of record':`${status} at time of record`;
+    return `<section class="pec-command-historical command-find-target" data-command-historical-order="${escapeHtml(o.id)}">
+      <header class="historical-order-banner">
+        <div><small>RETAINED RECORD</small><h3>Historical Order Detail</h3><p>Found outside the active approved roll. This record is read-only and has not been restored to active work.</p></div>
+        <span class="historical-order-state">HISTORICAL</span>
+      </header>
+      <div class="historical-order-shell">
+        <div class="historical-order-titlebar">
+          <div><small>ORDER</small><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(created)}</span></div>
+          <div class="historical-order-price"><strong>$${price}</strong><span>${escapeHtml(statusAtRecord)}</span></div>
+        </div>
+        <div class="historical-order-content${preview?' has-preview':''}">
+          ${preview?`<button class="historical-order-preview admin-preview-open" type="button" data-preview-src="${preview}" aria-label="Open retained preview for ${escapeHtml(o.id)}"><img src="${preview}" alt="Retained preview for ${escapeHtml(o.id)}"><span>VIEW PREVIEW</span></button>`:''}
+          <div class="historical-order-groups">
+            <section class="historical-order-group"><small>CUSTOMER</small><strong>${escapeHtml(contactName)}</strong><div class="historical-order-lines">${phone?`<a href="tel:${escapeHtml(phone)}">${escapeHtml(phone)}</a>`:'<span>No phone retained</span>'}${email?`<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>`:'<span>No email retained</span>'}<span>Contact preference: ${escapeHtml(contactPref)}</span></div></section>
+            <section class="historical-order-group"><small>REQUEST</small><strong>${escapeHtml(request)}</strong><div class="historical-order-lines"><span>${escapeHtml(style)}</span></div></section>
+            <section class="historical-order-group"><small>OFFER / SOURCE</small><strong>${escapeHtml(offer)}</strong><div class="historical-order-lines"><span>${escapeHtml(p?.name||'Project')} · ${escapeHtml(p?.projectCode||p?.orderPrefix||'PROJECT')}</span><span>Project ID: ${escapeHtml(o?.projectId||p?.id||'unscoped')}</span></div></section>
+            <section class="historical-order-group"><small>RECORD HISTORY</small><strong>Created ${escapeHtml(created)}</strong><div class="historical-order-lines"><span>Last updated ${escapeHtml(updated)}</span>${o?.emailSentAt?`<span>Delivery sent ${escapeHtml(formatOrderDateTime(o.emailSentAt))}</span>`:'<span>No delivery timestamp retained</span>'}</div></section>
+          </div>
+        </div>
+      </div>
+      <footer class="historical-order-footer"><span>Read-only historical record</span><span>Current active order roll continues below</span></footer>
+    </section>`;
   }
   async function renderProjectOrdersView(){
     const p=activeProject(), pm=p?.permissions||{};

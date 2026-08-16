@@ -1,9 +1,8 @@
-# Dark Sky 4.3.5 — Exact Bearing
+# Dark Sky 4.3.6 — Brightwork
 
-- Moved exact-order targeting into the Project Orders renderer.
-- Added transient selected-order state carried from Captain Command Find into the Engine.
-- Approved target orders are now rendered with a direct focus marker and scrolled into view.
-- Historical/legacy target orders now render as a read-only detail above the current project roll.
-- Added explicit `data-id` hooks to Project Orders cards for deterministic targeting.
-- Preserved current order counts and active roll semantics; historical records are never promoted.
-- Preserved V4 commissioning, isolation, quarantine, Storage Steward, and Captain/Engine authorization boundaries.
+- Replaced the raw historical `projectOrderCard()` dump with a dedicated read-only retained-order presentation.
+- Grouped historical fields into Customer, Request, Offer / Source, and Record History.
+- Replaced active-looking status treatment with an explicit HISTORICAL badge and “at time of record” status language.
+- Added optional retained-preview presentation without changing stored media.
+- Reduced historical detail footprint and preserved the current active roll below.
+- Preserved Command Find targeting, V4 isolation, admissions, quarantine, storage, and Captain/Engine boundaries.

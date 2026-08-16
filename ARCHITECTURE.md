@@ -1,3 +1,3 @@
-# Dark Sky 4.3.5 — Exact Bearing Architecture Note
+# Dark Sky 4.3.6 — Brightwork Architecture Note
 
-Command Find remains read-only in Captain's Quarters and crosses into the Engine only through the authorized command route. The route now sets a transient `commandSelectedOrderTarget` before rendering the Project Orders tab. The Project Orders renderer itself resolves that order from `getMergedOrders()`, ensuring targeting occurs in the same layer that owns the visible order roll. Approved orders receive an exact focus marker; retained historical orders receive a temporary read-only detail block above the approved roll. The transient target is cleared after render. No retained record is made mutable or restored to active work.
+Brightwork is presentation-only for historical Command Find order targets. The canonical merged-order lookup and transient `selectedOrderId` targeting remain unchanged. Historical records use a dedicated renderer and remain read-only; no historical record is inserted into the approved active-order roll or mutated during rendering.

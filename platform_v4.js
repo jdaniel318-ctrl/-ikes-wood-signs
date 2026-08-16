@@ -1,8 +1,8 @@
-/* Dark Sky 4.3.5 — Exact Bearing platform generation layer */
+/* Dark Sky 4.3.6 — Brightwork platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.3.5';
-const NAME='Exact Bearing';
+const VERSION='4.3.6';
+const NAME='Brightwork';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({
