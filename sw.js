@@ -1,8 +1,8 @@
-const CACHE='dark-sky-v4-5-0-trust-release';
+const CACHE='dark-sky-v4-5-1-visual-polish';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.5.0',
+  './styles.css?v=4.5.1',
   './platform_core.js?v=4.5.0',
   './platform_v4.js?v=4.5.0',
   './platform_identity.js?v=4.5.0',
