@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.0.1';
+  const BUILD_VERSION = '4.0.2';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1200,7 +1200,7 @@
     }
 
     if(registryContainsProject(canonical,candidate.id)){
-      companies=canonical.map(normalizeProjectCode).map(ensureProjectGovernance);
+      companies=canonical.map(p=>window.BlackFlagV3Core?.ensure?.(p)||p).map(normalizeProjectCode).map(ensureProjectGovernance);
       const draft=readCommissionDraft();
       clearCommissionJournal(candidate.id);
       if(draftMatchesProject(draft,candidate))clearCommissionDraft();
@@ -1227,7 +1227,7 @@
       if(!registryContainsProject(repaired,candidate.id)||!registryContainsProject(verify,candidate.id)){
         throw new Error('Project ID was not present after canonical registry recovery read-back.');
       }
-      companies=verify.map(normalizeProjectCode).map(ensureProjectGovernance);
+      companies=verify.map(p=>window.BlackFlagV3Core?.ensure?.(p)||p).map(normalizeProjectCode).map(ensureProjectGovernance);
       const draft=readCommissionDraft();
       clearCommissionJournal(candidate.id);
       if(draftMatchesProject(draft,candidate))clearCommissionDraft();
@@ -1380,46 +1380,110 @@
   }
 
 
-  async function commissionV4ProjectEnvelopes(){
+  async function commissionV4ProjectEnvelopes({force=false}={}){
     const core=window.BlackFlagV3Core;
     const activeSchema=Number(core?.schemaVersion||8);
-    if(!core||!Array.isArray(companies)||!companies.length)return {changed:false,sealed:0,total:companies.length};
-
-    const needsSeal=companies.some(project=>
-      Number(project?.schemaVersion)!==activeSchema ||
-      String(project?.namespace||'')!==String(core.namespaceFor?.(project.id)||`bf.project.${project.id}`) ||
-      project?.isolation?.projectId!==project?.id ||
-      project?.isolation?.crossProjectAccess!=='deny' ||
-      project?.permissions?.defaultDeny!==true
-    );
-
+    if(!core||!Array.isArray(companies)||!companies.length)return {changed:false,sealed:0,total:Array.isArray(companies)?companies.length:0};
+    const isSealed=project=>Number(project?.schemaVersion)===activeSchema &&
+      String(project?.namespace||'')===String(core.namespaceFor?.(project.id)||`bf.project.${project.id}`) &&
+      project?.isolation?.projectId===project?.id &&
+      project?.isolation?.crossProjectAccess==='deny' && project?.permissions?.defaultDeny===true;
+    const needsSeal=force || companies.some(project=>!isSealed(project));
     if(!needsSeal){
-      const sealed=companies.filter(project=>Number(project?.schemaVersion)===activeSchema&&project?.isolation?.projectId===project?.id&&project?.isolation?.crossProjectAccess==='deny'&&project?.permissions?.defaultDeny===true).length;
-      if(sealed===companies.length)window.DarkSkyV4?.completeCommissioning?.(companies);
+      const sealed=companies.filter(isSealed).length;
+      if(sealed===companies.length)window.DarkSkyV4?.completeCommissioning?.(companies,{sealedCount:sealed});
       return {changed:false,sealed,total:companies.length};
     }
-
     const before=structuredClone(companies);
     try{
-      // Seal the legacy fleet into the V4 envelope contract in memory first.
-      companies=companies.map(project=>core.ensure(project));
-      // Persist through the canonical non-destructive registry path so the same
-      // envelopes survive reloads and stay mirrored into compatibility storage.
-      companies=await persistProjectRegistry(companies);
-      companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
-      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.1.project.envelopes.commissioned',detail:`${companies.length} projects • schema ${activeSchema} • default deny`});
-      window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes',`${companies.length}/${companies.length} project envelopes sealed`,{schema:activeSchema});
-      window.DarkSkyV4?.completeCommissioning?.(companies);
-      return {changed:true,sealed:companies.length,total:companies.length};
+      // Seal every live registry row, regardless of a stale migration marker.
+      const sealedRows=companies.map(project=>core.ensure(structuredClone(project)));
+      await persistProjectRegistry(sealedRows);
+      // Read the canonical store back and make that verified copy authoritative in memory.
+      const verified=await readCanonicalProjectRegistry();
+      companies=verified.map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
+      const sealed=companies.filter(isSealed).length;
+      if(sealed!==companies.length)throw new Error(`V4 commissioning read-back failed: ${sealed}/${companies.length} envelopes satisfy Schema ${activeSchema}.`);
+      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.2.project.envelopes.commissioned',detail:`${sealed}/${companies.length} projects • schema ${activeSchema} • default deny • read-back verified`});
+      window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes',`${sealed}/${companies.length} project envelopes sealed`,{schema:activeSchema,verified:true});
+      window.DarkSkyV4?.completeCommissioning?.(companies,{sealedCount:sealed});
+      return {changed:true,sealed,total:companies.length};
     }catch(err){
-      // Keep the last known-good in-memory fleet if persistence fails. The recovery
-      // snapshot makes the attempted commissioning traceable without deleting data.
       companies=before;
-      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.1.project.envelopes.failed',detail:String(err?.message||err)});
+      window.DarkSkyV4?.markCommissioningFailed?.(companies,String(err?.message||err));
+      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.2.project.envelopes.failed',detail:String(err?.message||err)});
       window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes.failed',String(err?.message||err));
       throw err;
     }
   }
+
+  const V4_PROJECT_REFERENCE_ALIASES=Object.freeze({
+    'grizzle-bear':'grizzly-bear',
+    'becca-s-bloom-shop':'beccas-bloom-shop'
+  });
+  const V4_QUARANTINE_KEY='darkSkyV4LegacyQuarantineV1';
+  function readV4Quarantine(){try{const v=JSON.parse(localStorage.getItem(V4_QUARANTINE_KEY)||'[]');return Array.isArray(v)?v:[]}catch(_){return[]}}
+  function appendV4Quarantine(kind,projectId,payload){
+    const rows=readV4Quarantine();
+    rows.unshift({id:`Q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,at:new Date().toISOString(),kind,projectId:String(projectId||''),payload});
+    localStorage.setItem(V4_QUARANTINE_KEY,JSON.stringify(rows.slice(0,250)));
+  }
+  function inferCanonicalProjectId(row,valid){
+    const raw=String(row?.projectId||'');
+    if(valid.has(raw))return raw;
+    const alias=V4_PROJECT_REFERENCE_ALIASES[raw]; if(alias&&valid.has(alias))return alias;
+    const prefix=String(row?.id||'').split('-')[0].toUpperCase();
+    const byPrefix={IKE:'ikes-wood-signs',MUG:'mugshot-after-dark',BBS:'beccas-bloom-shop',GRZ:'grizzly-bear'}[prefix];
+    if(byPrefix&&valid.has(byPrefix))return byPrefix;
+    const business=String(row?.business?.name||row?.projectName||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');
+    if(business){
+      const hits=companies.filter(p=>String(p?.name||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'')===business);
+      if(hits.length===1)return hits[0].id;
+      if(business==='mugsafterdark'&&valid.has('mugshot-after-dark'))return'mugshot-after-dark';
+    }
+    return '';
+  }
+  async function repairLegacyProjectReferences(){
+    const valid=new Set(companies.map(p=>p.id)); let migrated=0,quarantined=0;
+    // Orders: deterministic aliases/prefixes are re-scoped; ambiguous legacy rows are preserved in quarantine, never assigned by guess.
+    let indexed=[]; try{indexed=await getAll(STORE_ORDERS)}catch(_){}
+    const local=readLocalOrders(); const merged=new Map(); [...local,...indexed].forEach(o=>{if(o?.id)merged.set(o.id,structuredClone(o))});
+    const keep=[];
+    for(const order of merged.values()){
+      const original=String(order?.projectId||''); const canonical=inferCanonicalProjectId(order,valid);
+      if(canonical){
+        if(canonical!==original)migrated++;
+        order.projectId=canonical; order.namespace=window.BlackFlagV3Core?.namespaceFor?.(canonical)||`bf.project.${canonical}`;
+        order.isolation={...(order.isolation||{}),projectId:canonical,namespace:order.namespace,crossProjectAccess:'deny'};
+        keep.push(order);
+      }else if(original && !valid.has(original)){
+        appendV4Quarantine('order',original,order); quarantined++;
+      }else keep.push(order);
+    }
+    if(indexed.length||keep.length){
+      try{const tr=db.transaction(STORE_ORDERS,'readwrite'),st=tr.objectStore(STORE_ORDERS);st.clear();keep.forEach(o=>st.put(o));await transactionToPromise(tr)}catch(err){console.warn('V4 order reference repair could not rewrite IndexedDB',err)}
+      writeLocalOrders(keep);
+    }
+    // Customer directory buckets are project-scoped. Known aliases move atomically; unknown buckets are quarantined intact.
+    const dir=readCustomerDirectory(),next={};
+    for(const [pid,bucket] of Object.entries(dir||{})){
+      const canonical=valid.has(pid)?pid:(V4_PROJECT_REFERENCE_ALIASES[pid]&&valid.has(V4_PROJECT_REFERENCE_ALIASES[pid])?V4_PROJECT_REFERENCE_ALIASES[pid]:'');
+      if(canonical){
+        if(canonical!==pid)migrated++;
+        const existing=next[canonical]&&typeof next[canonical]==='object'?next[canonical]:{};
+        next[canonical]={...existing,...(bucket&&typeof bucket==='object'?bucket:{})};
+      }else{
+        appendV4Quarantine('customer_directory',pid,bucket); quarantined++;
+      }
+    }
+    writeCustomerDirectory(next);
+    if(migrated||quarantined){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.2.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
+    }
+    return {migrated,quarantined};
+  }
+
 
   async function loadCompanies(){
     let canonicalRows=[];
@@ -1477,7 +1541,8 @@
     await reconcileCommissioningArtifacts({attemptRepair:true,source:'engine-boot'});
 
     try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
-    try{ await commissionV4ProjectEnvelopes(); }catch(err){ console.warn('V4 project-envelope commissioning warning',err); }
+    try{ await repairLegacyProjectReferences(); }catch(err){ console.warn('V4 legacy project-reference repair warning',err); window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references.failed',String(err?.message||err)); }
+    try{ await commissionV4ProjectEnvelopes({force:true}); }catch(err){ console.warn('V4 project-envelope commissioning warning',err); }
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
 
@@ -7600,7 +7665,7 @@ The full order and approved media remain stored with this project.`;
       <article><span>TESTING</span><strong>${testing}</strong><small>Deployment / sea trial</small></article>
       <article><span>INTEGRITY</span><strong class="${report.ok?'ok':'warn'}">${report.ok?'CLEAR':'ATTENTION'}</strong><small>${report.critical} critical • ${report.warnings} warning</small></article>
       <article><span>IDENTITY</span><strong>POLICY LIVE</strong><small>Production server auth still required</small></article>
-      <article><span>MIGRATION</span><strong>${migration?.completed||migration?.status==='complete'?'V4 COMMISSIONED':'V4 COMMISSIONING'}</strong><small>${migration?.at?new Date(migration.at).toLocaleString():'Broadside migration gate active'}</small></article>`;
+      <article><span>MIGRATION</span><strong>${sealed===companies.length&&migration?.completed?'V4 COMMISSIONED':migration?.failed?'COMMISSIONING FAILED':'V4 COMMISSIONING'}</strong><small>${migration?.at?new Date(migration.at).toLocaleString():'Broadside migration gate active'}</small></article>`;
   }
 
   async function firstMateWatchItems(){
@@ -7792,7 +7857,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'4.0.1-broadside-commissioning-compat',
+    version:'4.0.2-commissioning-lock-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,

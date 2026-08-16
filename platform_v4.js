@@ -1,7 +1,7 @@
-/* Dark Sky 4.0.1 — Broadside Commissioning platform generation layer */
+/* Dark Sky 4.0.2 — Commissioning Lock platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.0.1';
+const VERSION='4.0.2';
 const NAME='Broadside';
 const SCHEMA=1;
 const KEYS=Object.freeze({
@@ -108,15 +108,22 @@ function exportProject(project){
  return new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
 }
 function migrationState(){return read(KEYS.migration,null)}
-function completeCommissioning(projects=[]){
+function completeCommissioning(projects=[],meta={}){
+ const expected=Array.isArray(projects)?projects.length:0, sealed=Number(meta.sealedCount??expected);
+ if(!expected||sealed!==expected)return markCommissioningFailed(projects,`Envelope invariant failed: ${sealed}/${expected} sealed.`);
  const prior=migrationState()||{};
- const row={...prior,from:prior.from||'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,stage:'v4-project-envelopes',projectIds:projects.map(p=>p.id),commissionedProjectCount:projects.length};
+ const row={...prior,from:prior.from||'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,failed:false,stage:'v4-project-envelopes',projectIds:projects.map(p=>p.id),commissionedProjectCount:sealed};
  write(KEYS.migration,row);write(KEYS.state,{version:VERSION,name:NAME,schema:SCHEMA,installedAt:read(KEYS.state,{})?.installedAt||row.at,commissionedAt:row.at,contract:CONTRACT});
- core()?.audit?.({actorRole:'system',category:'migration',action:'v4.0.1.broadside.commissioning.complete',detail:`${projects.length} project envelopes sealed`});
+ core()?.audit?.({actorRole:'system',category:'migration',action:'v4.0.2.commissioning.locked',detail:`${sealed}/${expected} project envelopes read-back verified`});
  return row;
+}
+function markCommissioningFailed(projects=[],reason='Commissioning invariant failed'){
+ const prior=migrationState()||{}, expected=Array.isArray(projects)?projects.length:0;
+ const row={...prior,to:VERSION,at:new Date().toISOString(),completed:false,failed:true,stage:'v4-project-envelopes',projectIds:(projects||[]).map(p=>p.id),commissionedProjectCount:0,failure:String(reason||'Commissioning failed')};
+ write(KEYS.migration,row);core()?.audit?.({actorRole:'system',category:'migration',action:'v4.0.2.commissioning.failed',detail:row.failure});diagnostic('commissioning.failed',row.failure,{projectCount:expected});return row;
 }
 function status(projects=[]){const pf=preflight(projects,null),rel=releaseState();return {version:VERSION,name:NAME,schema:SCHEMA,contract:CONTRACT,preflight:pf,release:rel,flags:featureFlags(),decisions:decisions().length,labs:labs().length,diagnostics:diagnostics().length,recoveryPoints:recoveryVault().length,migration:migrationState()}}
 window.addEventListener('error',e=>{if(featureFlags().black_box?.enabled)diagnostic('javascript.error',e.message||'Unknown error',{source:e.filename||'',line:e.lineno||0,column:e.colno||0})});
 window.addEventListener('unhandledrejection',e=>{if(featureFlags().black_box?.enabled)diagnostic('promise.rejection',String(e.reason?.message||e.reason||'Unhandled rejection'))});
-g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,exportProject,status};
+g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,markCommissioningFailed,exportProject,status};
 })(window);

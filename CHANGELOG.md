@@ -1,3 +1,13 @@
+# Dark Sky 4.0.2 — Commissioning Lock
+
+- Forces live Fleet Registry rows through Schema 8 envelope sealing on every startup until read-back proves 4/4.
+- Makes the verified canonical read-back authoritative after commissioning.
+- Prevents a stale migration marker from claiming V4 commissioned while envelopes are missing.
+- Repairs deterministic legacy project aliases, including `becca-s-bloom-shop` → `beccas-bloom-shop`.
+- Quarantines ambiguous orphan order/customer references instead of guessing or deleting them.
+- Commissioning failure is now explicit and auditable.
+- Migration UI requires the envelope invariant before displaying V4 COMMISSIONED.
+
 # Dark Sky 4.0.1 — Broadside Commissioning
 
 - Automatically commissions every existing fleet project into the active V4 project envelope on startup.
