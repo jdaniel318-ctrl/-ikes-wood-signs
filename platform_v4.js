@@ -1,8 +1,8 @@
 /* Dark Sky 4.2.0 — Spyglass platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.2.0';
-const NAME='Spyglass';
+const VERSION='4.2.1';
+const NAME='Sounding Line';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({
@@ -166,11 +166,11 @@ function markCommissioningFailed(projects=[],reason='Commissioning invariant fai
  write(KEYS.migration,row);core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.commissioning.failed',detail:row.failure});diagnostic('commissioning.failed',row.failure,{projectCount:expected});return row;
 }
 
-async function storageStewardPreview(){
+async function storageStewardPreview(onProgress){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-2-0-spyglass');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-2-1-sounding-line');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
- let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.()}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
+ let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.(onProgress)}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
  return {
    at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,breakdown,
    diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,labs:labs().length,

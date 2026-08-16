@@ -1,6 +1,6 @@
-# Dark Sky 4.2.0 — Spyglass
+# Dark Sky 4.2.1 — Sounding Line
 
-Spyglass fixes an early-startup DOM-helper ordering fault that could raise `ReferenceError: Can't find variable: $` on Safari/iPad. DOM helpers now initialize before any security/startup path can use them. Black Box health now distinguishes faults from the current runtime session from preserved historical evidence, so resolved history does not keep the Captain in an attention state. No project, order, customer, graphics, admission, quarantine, or V4 envelope architecture is changed.
+Sounding Line fixes an early-startup DOM-helper ordering fault that could raise `ReferenceError: Can't find variable: $` on Safari/iPad. DOM helpers now initialize before any security/startup path can use them. Black Box health now distinguishes faults from the current runtime session from preserved historical evidence, so resolved history does not keep the Captain in an attention state. No project, order, customer, graphics, admission, quarantine, or V4 envelope architecture is changed.
 
 # Dark Sky 4.1.1 — Clear Horizon
 

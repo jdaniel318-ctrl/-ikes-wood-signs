@@ -1,3 +1,11 @@
+# Dark Sky 4.2.1 — Sounding Line
+
+- Repairs Storage Steward INSPECT STORAGE with a direct, independent click path.
+- Shows immediate sounding progress and a visible storage report on iPad.
+- Breaks down origin usage, Cache Storage, IndexedDB, LocalStorage, largest caches, and stale-cache count.
+- Keeps cleanup disabled until a successful inspection.
+- Logs inspection failures to Black Box instead of failing silently.
+
 # Dark Sky 4.2.0 — Spyglass
 
 Spyglass fixes an early-startup DOM-helper ordering fault that could raise `ReferenceError: Can't find variable: $` on Safari/iPad. DOM helpers now initialize before any security/startup path can use them. Black Box health now distinguishes faults from the current runtime session from preserved historical evidence, so resolved history does not keep the Captain in an attention state. No project, order, customer, graphics, admission, quarantine, or V4 envelope architecture is changed.
