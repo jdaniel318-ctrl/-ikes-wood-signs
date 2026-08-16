@@ -10273,3 +10273,17 @@ body.universal-project .universal-customer-shell{display:block}
 @media(max-width:900px){
   .deployment-guided-launch{grid-template-columns:1fr}.deployment-guided-state{grid-column:auto}.deployment-advanced-settings summary,.deployment-operational-details summary{grid-template-columns:1fr}.deployment-advanced-settings summary small,.deployment-operational-details summary small{text-align:left}
 }
+
+/* v3.8.28 — operator-facing save feedback */
+#deploymentSaveStatus[data-state="success"]{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+  padding:0 12px;
+  border:1px solid rgba(94,201,137,.36);
+  border-radius:12px;
+  background:rgba(31,105,70,.18);
+  color:#d7f5e4;
+  font-weight:700;
+  letter-spacing:.01em;
+}

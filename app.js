@@ -2529,7 +2529,13 @@
         d.updatedAt=new Date().toISOString();
         await saveCompanies();
         logActivity(p.id,'Deployment manifest revised',`${d.name} • v${d.manifestVersion}`);
-        $('deploymentSaveStatus').textContent=`Manifest v${d.manifestVersion} saved. Project bulkhead remains sealed.`;
+        const saveStatus=$('deploymentSaveStatus');
+        if(saveStatus){
+          saveStatus.textContent='✓ Changes saved · Project isolation confirmed';
+          saveStatus.dataset.state='success';
+          saveStatus.title=`Manifest v${d.manifestVersion} saved. Project bulkhead remains sealed.`;
+          saveStatus.setAttribute('aria-live','polite');
+        }
         setTimeout(()=>renderProjectTab(p.id,'deployment'),500);
       };
 
@@ -3059,7 +3065,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.27'
+      commissioningVersion:'3.8.28'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6826,7 +6832,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.27',
+    version:'3.8.28',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7253,7 +7259,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.27.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.28.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • operator save feedback + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

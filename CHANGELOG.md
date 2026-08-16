@@ -1,6 +1,6 @@
 # Dark Sky Changelog
 
-## v3.8.27 — Unified Engine Authentication
+## v3.8.28 — Unified Engine Authentication
 
 - Consolidates every Engine PIN surface onto one authentication controller.
 - Recovery PIN `5615` and the configured Engine PIN are accepted consistently at the main Engine gate, legacy Engine modal, and protected Engine reset.
@@ -73,6 +73,12 @@
 - Preserved the v3.8.11 Sea Trials and fleet-foundation boundaries.
 
 # Changelog
+
+## v3.8.28 — Operator Save Feedback
+- Simplified deployment save confirmation to operator-friendly “Changes saved · Project isolation confirmed”.
+- Preserved manifest revision and bulkhead detail as technical metadata via the status tooltip and Advanced Manifest Details.
+- Added a reusable success-state hook (`data-state="success"`) and polite live-region feedback for save confirmations.
+
 
 ## v3.8.11 — Sea Trials & Fleet Foundations
 - Added non-destructive end-to-end Sea Trials inside Engine Configuration.
