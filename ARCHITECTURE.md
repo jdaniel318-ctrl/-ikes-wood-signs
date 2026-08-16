@@ -197,5 +197,5 @@ Captain's Quarters may review, approve, experiment, record decisions, seal recov
 On the first successful fleet load after 4.0.0, Dark Sky creates one sanitized pre-V4 recovery point and records the known project IDs before marking migration complete. Existing registry IDs/namespaces remain authoritative.
 
 
-## 4.0.2 Commissioning Lock
+## 4.0.3 Keel Seal
 V4 commissioning is an invariant, not a marker: every canonical fleet project must satisfy Schema 8 namespace/isolation/default-deny requirements after canonical read-back. Legacy references are deterministically migrated when safe; ambiguous orphan records are preserved in a quarantine vault rather than cross-assigned.

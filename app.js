@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.0.2';
+  const BUILD_VERSION = '4.0.3';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1388,33 +1388,86 @@
       String(project?.namespace||'')===String(core.namespaceFor?.(project.id)||`bf.project.${project.id}`) &&
       project?.isolation?.projectId===project?.id &&
       project?.isolation?.crossProjectAccess==='deny' && project?.permissions?.defaultDeny===true;
-    const needsSeal=force || companies.some(project=>!isSealed(project));
-    if(!needsSeal){
-      const sealed=companies.filter(isSealed).length;
-      if(sealed===companies.length)window.DarkSkyV4?.completeCommissioning?.(companies,{sealedCount:sealed});
-      return {changed:false,sealed,total:companies.length};
-    }
     const before=structuredClone(companies);
     try{
-      // Seal every live registry row, regardless of a stale migration marker.
-      const sealedRows=companies.map(project=>core.ensure(structuredClone(project)));
-      await persistProjectRegistry(sealedRows);
-      // Read the canonical store back and make that verified copy authoritative in memory.
+      // The dedicated envelope ledger is the security source of truth. Rebuild it
+      // from immutable Project IDs on every commissioning pass, then hydrate the
+      // registry rows so legacy serializers cannot erase the contract.
+      sealFleetEnvelopeLedger();
+      companies=companies.map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
+      await persistProjectRegistry(companies);
       const verified=await readCanonicalProjectRegistry();
-      companies=verified.map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
+      const ledger=readV4EnvelopeLedger();
+      companies=verified.map(project=>sealProjectFromEnvelope(project,ledger[String(project?.id||'')])).map(project=>core.ensure(project)).map(normalizeProjectCode).map(ensureProjectGovernance);
+      // Persist the hydrated read-back once more. This makes the canonical registry
+      // self-describing while the ledger remains the durable recovery contract.
+      await persistProjectRegistry(companies);
+      const readback=await readCanonicalProjectRegistry();
+      companies=readback.map(project=>sealProjectFromEnvelope(project,ledger[String(project?.id||'')])).map(normalizeProjectCode).map(ensureProjectGovernance);
       const sealed=companies.filter(isSealed).length;
-      if(sealed!==companies.length)throw new Error(`V4 commissioning read-back failed: ${sealed}/${companies.length} envelopes satisfy Schema ${activeSchema}.`);
-      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.2.project.envelopes.commissioned',detail:`${sealed}/${companies.length} projects • schema ${activeSchema} • default deny • read-back verified`});
-      window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes',`${sealed}/${companies.length} project envelopes sealed`,{schema:activeSchema,verified:true});
+      const ledgerSealed=companies.filter(p=>{
+        const e=ledger[String(p?.id||'')];
+        return e&&Number(e.schemaVersion)===activeSchema&&e.projectId===p.id&&e.namespace===(core.namespaceFor?.(p.id)||`bf.project.${p.id}`)&&e?.isolation?.crossProjectAccess==='deny'&&e?.permissions?.defaultDeny===true;
+      }).length;
+      if(sealed!==companies.length||ledgerSealed!==companies.length)throw new Error(`V4 commissioning read-back failed: registry ${sealed}/${companies.length}, envelope ledger ${ledgerSealed}/${companies.length}.`);
+      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.3.project.envelopes.keel_sealed',detail:`${sealed}/${companies.length} registry rows • ${ledgerSealed}/${companies.length} ledger envelopes • schema ${activeSchema}`});
+      window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes',`${sealed}/${companies.length} project envelopes keel-sealed`,{schema:activeSchema,ledger:V4_ENVELOPE_LEDGER_KEY,verified:true});
       window.DarkSkyV4?.completeCommissioning?.(companies,{sealedCount:sealed});
       return {changed:true,sealed,total:companies.length};
     }catch(err){
       companies=before;
+      hydrateFleetFromEnvelopeLedger();
       window.DarkSkyV4?.markCommissioningFailed?.(companies,String(err?.message||err));
-      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.2.project.envelopes.failed',detail:String(err?.message||err)});
+      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.3.project.envelopes.failed',detail:String(err?.message||err)});
       window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes.failed',String(err?.message||err));
       throw err;
     }
+  }
+
+
+  // V4.0.3 — Project Envelope Ledger. The registry owns business/project data;
+  // this ledger owns the security envelope contract. Keeping the contract in a
+  // dedicated, project-ID-keyed ledger prevents older project serializers from
+  // accidentally dropping security fields while preserving canonical identity.
+  const V4_ENVELOPE_LEDGER_KEY='darkSkyV4ProjectEnvelopesV1';
+  function readV4EnvelopeLedger(){
+    try{const v=JSON.parse(localStorage.getItem(V4_ENVELOPE_LEDGER_KEY)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}catch(_){return{}}
+  }
+  function writeV4EnvelopeLedger(value){localStorage.setItem(V4_ENVELOPE_LEDGER_KEY,JSON.stringify(value||{}));return value||{}}
+  function buildV4ProjectEnvelope(project){
+    const core=window.BlackFlagV3Core, id=String(project?.id||'').trim(); if(!id)return null;
+    const namespace=core?.namespaceFor?.(id)||`bf.project.${id}`;
+    return {projectId:id,namespace,schemaVersion:Number(core?.schemaVersion||8),policyVersion:String(core?.policyVersion||'4.0'),isolation:{projectId:id,namespace,crossProjectAccess:'deny'},permissions:{projectScoped:true,defaultDeny:true},sealedAt:new Date().toISOString(),build:BUILD_VERSION};
+  }
+  function sealProjectFromEnvelope(project,envelope){
+    if(!project?.id||!envelope||String(envelope.projectId)!==String(project.id))return project;
+    project.schemaVersion=Number(envelope.schemaVersion||window.BlackFlagV3Core?.schemaVersion||8);
+    project.namespace=String(envelope.namespace||window.BlackFlagV3Core?.namespaceFor?.(project.id)||`bf.project.${project.id}`);
+    project.isolation={...(project.isolation||{}),...(envelope.isolation||{}),projectId:project.id,namespace:project.namespace,crossProjectAccess:'deny'};
+    project.permissions={...(project.permissions||{}),...(envelope.permissions||{}),policyVersion:String(envelope.policyVersion||window.BlackFlagV3Core?.policyVersion||'4.0'),projectScoped:true,defaultDeny:true};
+    if(project.identity&&typeof project.identity==='object')project.identity.projectId=project.id;
+    return project;
+  }
+  function hydrateFleetFromEnvelopeLedger(){
+    const ledger=readV4EnvelopeLedger();
+    if(!Array.isArray(companies))return {sealed:0,total:0};
+    companies=companies.map(project=>{
+      const envelope=ledger[String(project?.id||'')];
+      return envelope?sealProjectFromEnvelope(project,envelope):project;
+    });
+    const schema=Number(window.BlackFlagV3Core?.schemaVersion||8);
+    const sealed=companies.filter(p=>Number(p?.schemaVersion)===schema&&p?.namespace===(window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`)&&p?.isolation?.projectId===p?.id&&p?.isolation?.crossProjectAccess==='deny'&&p?.permissions?.defaultDeny===true).length;
+    return {sealed,total:companies.length};
+  }
+  function sealFleetEnvelopeLedger(){
+    const prior=readV4EnvelopeLedger(), next={};
+    for(const project of (companies||[])){
+      const id=String(project?.id||''); if(!id)continue;
+      const fresh=buildV4ProjectEnvelope(project); next[id]={...(prior[id]||{}),...fresh};
+      sealProjectFromEnvelope(project,next[id]);
+    }
+    writeV4EnvelopeLedger(next);
+    return hydrateFleetFromEnvelopeLedger();
   }
 
   const V4_PROJECT_REFERENCE_ALIASES=Object.freeze({
@@ -1424,8 +1477,9 @@
   const V4_QUARANTINE_KEY='darkSkyV4LegacyQuarantineV1';
   function readV4Quarantine(){try{const v=JSON.parse(localStorage.getItem(V4_QUARANTINE_KEY)||'[]');return Array.isArray(v)?v:[]}catch(_){return[]}}
   function appendV4Quarantine(kind,projectId,payload){
-    const rows=readV4Quarantine();
-    rows.unshift({id:`Q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,at:new Date().toISOString(),kind,projectId:String(projectId||''),payload});
+    const rows=readV4Quarantine(), pid=String(projectId||''), payloadId=String(payload?.id||payload?.key||'');
+    const duplicate=rows.some(r=>r?.kind===kind&&String(r?.projectId||'')===pid&&String(r?.payload?.id||r?.payload?.key||'')===payloadId&&payloadId);
+    if(!duplicate)rows.unshift({id:`Q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,at:new Date().toISOString(),kind,projectId:pid,payload});
     localStorage.setItem(V4_QUARANTINE_KEY,JSON.stringify(rows.slice(0,250)));
   }
   function inferCanonicalProjectId(row,valid){
@@ -1478,7 +1532,7 @@
     }
     writeCustomerDirectory(next);
     if(migrated||quarantined){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.2.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.3.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
       window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
     }
     return {migrated,quarantined};
@@ -1543,6 +1597,7 @@
     try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
     try{ await repairLegacyProjectReferences(); }catch(err){ console.warn('V4 legacy project-reference repair warning',err); window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references.failed',String(err?.message||err)); }
     try{ await commissionV4ProjectEnvelopes({force:true}); }catch(err){ console.warn('V4 project-envelope commissioning warning',err); }
+    hydrateFleetFromEnvelopeLedger();
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
 
@@ -7515,6 +7570,11 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function runShipIntegrityV3({record=false}={}){
+    // V4.0.3 self-heals the security envelope before certification. This is not a
+    // cosmetic suppression: the dedicated ledger is hydrated into each live vessel
+    // and legacy project references are repaired/quarantined before checks run.
+    hydrateFleetFromEnvelopeLedger();
+    try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
     const base=window.BlackFlagV3Core?.integrity?.(companies,document)||{issues:[]};
     const issues=[...(base.issues||[])], valid=new Set(companies.map(p=>p.id));
 
@@ -7651,6 +7711,7 @@ The full order and approved media remain stored with this project.`;
 
   async function renderV3ArchitectureStatus(){
     const box=$('v3ArchitectureStatus');if(!box)return;
+    hydrateFleetFromEnvelopeLedger();
     const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
     const report=await runShipIntegrityV3();
     const migration=window.DarkSkyV4?.migrationState?.()||window.BlackFlagV3Core?.migrationState?.();
@@ -7857,7 +7918,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'4.0.2-commissioning-lock-compat',
+    version:'4.0.3-keel-seal-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,

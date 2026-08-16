@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-0-2-commissioning-lock';
+const CACHE='dark-sky-v4-0-3-keel-seal';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.0.2',
-  './platform_core.js?v=4.0.2',
-  './platform_v4.js?v=4.0.2',
-  './platform_identity.js?v=4.0.2',
-  './app.js?v=4.0.2',
-  './captain.js?v=4.0.2',
+  './styles.css?v=4.0.3',
+  './platform_core.js?v=4.0.3',
+  './platform_v4.js?v=4.0.3',
+  './platform_identity.js?v=4.0.3',
+  './app.js?v=4.0.3',
+  './captain.js?v=4.0.3',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

@@ -1,4 +1,13 @@
-# Dark Sky 4.0.2 — Commissioning Lock
+# Dark Sky 4.0.3 — Keel Seal
+
+- Added a dedicated Project Envelope Ledger keyed by immutable Project ID.
+- Security envelopes are hydrated into live project rows before integrity/status checks and persisted back to the canonical registry.
+- Commissioning now verifies both canonical registry rows and the envelope ledger before declaring V4 commissioned.
+- Ship Integrity repairs/quarantines legacy project references before certification so stale aliases do not remain active.
+- Quarantine writes are idempotent for the same legacy record.
+- Broadside status can no longer remain 0/4 merely because a legacy serializer dropped envelope fields.
+
+# Dark Sky 4.0.3 — Keel Seal
 
 - Forces live Fleet Registry rows through Schema 8 envelope sealing on every startup until read-back proves 4/4.
 - Makes the verified canonical read-back authoritative after commissioning.
