@@ -1,53 +1,69 @@
-const CACHE='ikes-wood-signs-v2-start-repair';
-const CORE=['./','./index.html','./styles.css','./manifest.webmanifest','./assets/ike_logo.jpg'];
+const CACHE='dark-sky-v4-6-1-customer-nav-recovery';
+const ASSETS=[
+  './',
+  './index.html',
+  './styles.css?v=4.6.0',
+  './platform_core.js?v=4.6.0',
+  './platform_v4.js?v=4.6.0',
+  './platform_identity.js?v=4.6.0',
+  './app.js?v=4.6.1',
+  './captain.js?v=4.5.7',
+  './manifest.webmanifest',
+  './assets/black_flag_primary_lockup.png',
+  './assets/black_flag_platform_icon.png',
+  './assets/ike_character.jpg',
+  './assets/captains_quarters_cinematic_v2953.jpg',
+  './assets/engine_room_modern_benchmark_v2976.png',
+  './assets/engine_room_pirate_benchmark_v2978.png'
+];
 
 self.addEventListener('install',event=>{
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE).then(cache=>cache.addAll(CORE)).catch(()=>{})
+    caches.open(CACHE).then(cache=>
+      Promise.allSettled(ASSETS.map(asset=>cache.add(asset)))
+    )
   );
 });
 
 self.addEventListener('activate',event=>{
   event.waitUntil(
     caches.keys()
-      .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+      .then(keys=>Promise.all(
+        keys.filter(k=>(
+          k.startsWith('ikes-wood-signs-') ||
+          k.startsWith('workshop-engine-') ||
+          k.startsWith('black-flag-v3-7-4') ||
+          k.startsWith('dark-sky-')
+        ) && k!==CACHE).map(k=>caches.delete(k))
+      ))
       .then(()=>self.clients.claim())
   );
 });
 
 self.addEventListener('fetch',event=>{
-  const req=event.request;
-  if(req.method!=='GET') return;
-  const url=new URL(req.url);
-  if(url.origin!==self.location.origin) return;
-
-  // Network-first for pages, scripts and styles so a repaired deployment
-  // cannot remain stuck behind an old cached app.js/index.html.
-  const freshFirst =
-    req.mode==='navigate' ||
-    url.pathname.endsWith('.html') ||
-    url.pathname.endsWith('.js') ||
-    url.pathname.endsWith('.css');
-
-  if(freshFirst){
+  if(event.request.method!=='GET') return;
+  if(event.request.mode==='navigate'){
     event.respondWith(
-      fetch(req)
-        .then(resp=>{
-          const copy=resp.clone();
-          caches.open(CACHE).then(cache=>cache.put(req,copy)).catch(()=>{});
-          return resp;
+      fetch(event.request)
+        .then(response=>{
+          const copy=response.clone();
+          caches.open(CACHE).then(cache=>cache.put('./index.html',copy)).catch(()=>{});
+          return response;
         })
-        .catch(()=>caches.match(req).then(r=>r||caches.match('./index.html')))
+        .catch(()=>caches.match('./index.html'))
     );
     return;
   }
-
   event.respondWith(
-    caches.match(req).then(cached=>cached||fetch(req).then(resp=>{
-      const copy=resp.clone();
-      caches.open(CACHE).then(cache=>cache.put(req,copy)).catch(()=>{});
-      return resp;
-    }))
+    fetch(event.request)
+      .then(response=>{
+        if(response && response.ok){
+          const copy=response.clone();
+          caches.open(CACHE).then(cache=>cache.put(event.request,copy)).catch(()=>{});
+        }
+        return response;
+      })
+      .catch(()=>caches.match(event.request))
   );
 });

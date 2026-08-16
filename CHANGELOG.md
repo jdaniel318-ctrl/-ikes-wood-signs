@@ -1,3 +1,11 @@
+# v4.6.1 — Customer Navigation Recovery
+
+- Preserves the Dark Sky 4.6 Fleet Commissioning hull and Black Flag boot gate.
+- Binds Ike’s core customer step navigation before IndexedDB and migrations.
+- Prevents a storage startup interruption from leaving START YOUR SIGN and other basic step controls visually present but unresponsive.
+- Leaves persistence-dependent order saving behind the existing database boundary.
+- Bumps the service-worker cache so repaired application code replaces stale deployments cleanly.
+
 # Dark Sky 4.5.7 — ScheduleJoe Keel Architecture
 
 - Locked the current organizational backbone as Company → Region → Division → Community → Build / Lot → optional Unit.
