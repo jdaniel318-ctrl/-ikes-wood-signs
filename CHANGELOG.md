@@ -1,3 +1,13 @@
+# Dark Sky 4.0.8 — Orphan Watch
+
+- Adds a durable Orphan Order Quarantine for orders whose Project ID is not admitted to the canonical fleet.
+- Preserves the full orphan order payload for recovery instead of guessing ownership or deleting evidence.
+- Adds order tombstones so quarantined records cannot re-enter active workload, revenue, customer, or integrity calculations even if Safari retains a stale IndexedDB row.
+- Physically removes tombstoned orphan orders from the active IndexedDB order store when possible and rewrites the local order backup without them.
+- Makes `getMergedOrders()` quarantine-aware, creating a fail-safe separation between active operational data and Recovery Vault evidence.
+- Ship Integrity reports quarantined orphan orders as recovery information rather than a structural critical once they are safely isolated.
+- Keeps the 4.0.7 Project Admission Ledger, 4/4 envelope commissioning, project isolation, and canonical fleet authority unchanged.
+
 # Dark Sky 4.0.7 — Harbor Master
 
 - Replaces persisted-manifest authority with an explicit Project Admission Ledger.

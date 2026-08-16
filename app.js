@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.0.7';
+  const BUILD_VERSION = '4.0.8';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -921,8 +921,12 @@
     let indexed=[];
     try{ indexed=await getAll(STORE_ORDERS); }catch(err){ console.warn('IndexedDB orders unavailable',err); }
     const local=readLocalOrders();
+    const quarantined=quarantinedOrderIds();
     const map=new Map();
-    [...local,...indexed].forEach(o=>{ const row=normalizeOrderIsolation(o); if(row && row.id) map.set(row.id,row); });
+    [...local,...indexed].forEach(o=>{
+      const row=normalizeOrderIsolation(o);
+      if(row && row.id && !quarantined.has(String(row.id))) map.set(row.id,row);
+    });
     return [...map.values()];
   }
   async function put(store,value){
@@ -1392,7 +1396,7 @@
   // this ledger owns the security envelope contract. Keeping the contract in a
   // dedicated, project-ID-keyed ledger prevents older project serializers from
   // accidentally dropping security fields while preserving canonical identity.
-  // V4.0.7 — Harbor Master. Project existence and project security now share one
+  // V4.0.8 — Harbor Master. Project existence and project security now share one
   // explicit fleet manifest. The canonical projects object store remains the durable
   // record store, but only immutable IDs on this manifest are active vessels. Recovery
   // artifacts and legacy/ghost rows are preserved in quarantine instead of being
@@ -1456,12 +1460,12 @@
     const record={projectId:id,admitted:true,source:String(source||'commissioning'),transactionId:`admit:${id}:${Date.now().toString(36)}:${Math.random().toString(36).slice(2,7)}`,admittedAt:new Date().toISOString(),detail:String(detail||''),build:BUILD_VERSION};
     ledger[id]=record;
     await persistV4AdmissionLedger(ledger);
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'v4.0.7.project.admitted',detail:`${record.source} • ${record.transactionId}`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'v4.0.8.project.admitted',detail:`${record.source} • ${record.transactionId}`});
     window.DarkSkyV4?.diagnostic?.('fleet_admission.complete',`${id} admitted to active fleet`,{transactionId:record.transactionId,source:record.source});
     return record;
   }
   async function addProjectToV4FleetManifest(projectId){
-    // Compatibility entry point used by the project factory. In V4.0.7 this is an
+    // Compatibility entry point used by the project factory. In V4.0.8 this is an
     // admission transaction, not a list append.
     await admitProjectToV4Fleet(projectId,{source:'commissioning',detail:'Canonical registry read-back verified.'});
     const state=await ensureCanonicalFleetManifest({repairRegistry:false});
@@ -1482,7 +1486,7 @@
     const orphans=canonical.filter(p=>p?.id&&!allowed.has(String(p.id)));
     if(orphans.length){
       for(const ghost of orphans)appendV4Quarantine('unadmitted_registry_orphan',String(ghost.id),structuredClone(ghost));
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.0.7.harbor_master.quarantined',detail:`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.0.8.harbor_master.quarantined',detail:`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
       window.DarkSkyV4?.diagnostic?.('fleet_admission.orphans.quarantined',`${orphans.length} unadmitted registry row${orphans.length===1?'':'s'} quarantined`,{projectIds:orphans.map(p=>p.id)});
       if(repairRegistry){
         const keep=canonical.filter(p=>allowed.has(String(p?.id||'')));
@@ -1566,7 +1570,7 @@
       return v4EnvelopeConvergenceState;
     }
     try{
-      // v4.0.7 — Harbor Master. Explicit admissions define the fleet. The
+      // v4.0.8 — Harbor Master. Explicit admissions define the fleet. The
       // registry cannot expand the denominator merely because it contains recovery
       // cargo, and memory cannot resurrect a quarantined project.
       const manifest=await ensureCanonicalFleetManifest({repairRegistry:true});
@@ -1634,6 +1638,21 @@
     'becca-s-bloom-shop':'beccas-bloom-shop'
   });
   const V4_QUARANTINE_KEY='darkSkyV4LegacyQuarantineV1';
+  const V4_ORPHAN_ORDER_TOMBSTONES_KEY='darkSkyV4OrphanOrderTombstonesV1';
+  function readOrphanOrderTombstones(){
+    try{const v=JSON.parse(localStorage.getItem(V4_ORPHAN_ORDER_TOMBSTONES_KEY)||'[]');return new Set(Array.isArray(v)?v.map(String):[])}catch(_){return new Set()}
+  }
+  function writeOrphanOrderTombstones(ids){
+    try{localStorage.setItem(V4_ORPHAN_ORDER_TOMBSTONES_KEY,JSON.stringify([...new Set([...ids].map(String))].slice(-500)));return true}catch(_){return false}
+  }
+  function quarantinedOrderIds(){
+    const ids=readOrphanOrderTombstones();
+    for(const row of readV4Quarantine()){
+      if((row?.kind==='order'||row?.kind==='orphan_order')&&row?.payload?.id)ids.add(String(row.payload.id));
+    }
+    return ids;
+  }
+  function isQuarantinedOrder(order){return !!order?.id&&quarantinedOrderIds().has(String(order.id));}
   function readV4Quarantine(){try{const v=JSON.parse(localStorage.getItem(V4_QUARANTINE_KEY)||'[]');return Array.isArray(v)?v:[]}catch(_){return[]}}
   function appendV4Quarantine(kind,projectId,payload){
     const rows=readV4Quarantine(), pid=String(projectId||''), payloadId=String(payload?.id||payload?.key||'');
@@ -1670,13 +1689,26 @@
         order.isolation={...(order.isolation||{}),projectId:canonical,namespace:order.namespace,crossProjectAccess:'deny'};
         keep.push(order);
       }else if(original && !valid.has(original)){
-        appendV4Quarantine('order',original,order); quarantined++;
+        appendV4Quarantine('orphan_order',original,order);
+        const tombstones=readOrphanOrderTombstones(); tombstones.add(String(order.id||'')); writeOrphanOrderTombstones(tombstones);
+        quarantined++;
       }else keep.push(order);
     }
     if(indexed.length||keep.length){
       try{const tr=db.transaction(STORE_ORDERS,'readwrite'),st=tr.objectStore(STORE_ORDERS);st.clear();keep.forEach(o=>st.put(o));await transactionToPromise(tr)}catch(err){console.warn('V4 order reference repair could not rewrite IndexedDB',err)}
       writeLocalOrders(keep);
     }
+    // V4.0.8 — Orphan Watch: quarantine is authoritative even if a browser keeps a stale IDB row alive.
+    // Physically delete tombstoned order IDs when possible; getMergedOrders also excludes them as a fail-safe.
+    try{
+      const tombstones=readOrphanOrderTombstones();
+      if(tombstones.size){
+        const tr=db.transaction(STORE_ORDERS,'readwrite'),st=tr.objectStore(STORE_ORDERS);
+        tombstones.forEach(id=>{if(id)st.delete(id)});
+        await transactionToPromise(tr);
+        writeLocalOrders(readLocalOrders().filter(o=>!tombstones.has(String(o?.id||''))));
+      }
+    }catch(err){console.warn('V4 orphan order purge could not fully rewrite IndexedDB',err)}
     // Customer directory buckets are project-scoped. Known aliases move atomically; unknown buckets are quarantined intact.
     const dir=readCustomerDirectory(),next={};
     for(const [pid,bucket] of Object.entries(dir||{})){
@@ -1691,7 +1723,7 @@
     }
     writeCustomerDirectory(next);
     if(migrated||quarantined){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.7.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.8.orphan_watch.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
       window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
     }
     return {migrated,quarantined};
@@ -7730,7 +7762,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function runShipIntegrityV3({record=false}={}){
-    // V4.0.7 uses one admission-authoritative convergence routine for storage, status, and certification.
+    // V4.0.8 uses one admission-authoritative convergence routine for storage, status, and certification.
     // Integrity therefore cannot disagree with the Broadside envelope counter.
     const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
     try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
@@ -7751,6 +7783,11 @@ The full order and approved media remain stored with this project.`;
         }
       }
     }catch(e){issues.push({level:'warning',code:'ORDER_STORE_CHECK_FAILED',detail:String(e?.message||e)})}
+
+    const orphanOrderCount=quarantinedOrderIds().size;
+    if(orphanOrderCount){
+      issues.push({level:'info',code:'ORPHAN_ORDER_QUARANTINED',detail:`${orphanOrderCount} preserved in Recovery Vault`});
+    }
 
     try{
       Object.keys(readLedgers()||{}).forEach(pid=>{
@@ -8081,7 +8118,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'4.0.7-harbor-master-compat',
+    version:'4.0.8-orphan-watch-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,

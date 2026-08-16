@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-0-6-harbor-master';
+const CACHE='dark-sky-v4-0-8-orphan-watch';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.0.7',
-  './platform_core.js?v=4.0.7',
-  './platform_v4.js?v=4.0.7',
-  './platform_identity.js?v=4.0.7',
-  './app.js?v=4.0.7',
-  './captain.js?v=4.0.7',
+  './styles.css?v=4.0.8',
+  './platform_core.js?v=4.0.8',
+  './platform_v4.js?v=4.0.8',
+  './platform_identity.js?v=4.0.8',
+  './app.js?v=4.0.8',
+  './captain.js?v=4.0.8',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
