@@ -147,3 +147,12 @@ The Engine fleet rail is a native horizontal-scroll surface. Finger/trackpad scr
 ### No-New-Damage Registry Gate — v3.9.5
 
 Fleet persistence must not be globally disabled by pre-existing test or migration findings. Before any project-registry write, Dark Sky compares critical integrity findings in the last persisted registry with the candidate registry. A write is rejected when it introduces a new critical finding or when the prior registry cannot be verified. Existing findings remain visible and actionable but do not prevent safe commissioning or repair work. Commissioning is not complete until the new immutable Project ID is confirmed by reading the persisted registry back.
+
+
+### Durable Project Registry Law — v3.9.6
+
+The fleet registry is now a first-class persistent resource, not a convenience setting. The IndexedDB `projects` object store is canonical; `settings.companies` remains an atomic compatibility mirror during transition. Fleet writes must update both inside the same transaction and verify both by immutable Project ID before success is reported.
+
+Commissioning obeys a strict durability sequence: **seal identity → commit registry → canonical read-back → resolve project in memory → render Engine card → clear commissioning draft**. Any failure before durable verification preserves the draft and restores pre-commission in-memory state. A rendering failure after verified persistence must never delete or recreate the project; the UI must report that persistence succeeded and recovery is a presentation concern.
+
+This law prevents a visually successful commissioning flow from producing a missing vessel and preserves the doctrine: **names can change; identity cannot; successful commands must be proven by durable evidence.**

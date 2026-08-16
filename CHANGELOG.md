@@ -1,3 +1,15 @@
+## 3.9.6 — Durable Project Registry
+
+- Promoted project persistence from a single `settings.companies` array into a dedicated IndexedDB `projects` object store.
+- Upgraded `blackFlagPlatformV1` to schema version 2 and seeds the canonical project store from the existing registry on first launch.
+- Fleet registry saves now commit the canonical per-project store and compatibility `companies` mirror in one IndexedDB transaction.
+- Added full canonical + mirror read-back verification, including project IDs and project counts, before a save can report success.
+- Commissioning now rolls back in-memory state and preserves the commissioning draft on any persistence failure.
+- A newly commissioned vessel is reloaded from the canonical registry before Engine rendering, and the draft is not cleared until its Engine card is verified.
+- Added a commission verification marker so a rare render failure can distinguish “project safely persisted” from “project was never saved.”
+- Retained the v3.9.5 no-new-damage integrity gate: historical test findings remain visible without freezing safe commissioning, while new critical boundary violations are still blocked.
+- Runtime, service-worker cache, and commissioning identity advanced to v3.9.6.
+
 ## 3.9.5 — Fleet Registry Integrity Gate Repair
 
 - Fixed the root cause that could prevent newly commissioned projects from joining the fleet while historical/test integrity findings were present.

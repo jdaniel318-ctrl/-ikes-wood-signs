@@ -1,8 +1,9 @@
 (() => {
   const DB_NAME = 'blackFlagPlatformV1';
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
   const STORE_ORDERS = 'orders';
   const STORE_SETTINGS = 'settings';
+  const STORE_PROJECTS = 'projects';
   const LOCAL_ORDERS_KEY = 'blackFlagOrdersBackupV1';
   const LEGACY_DB_NAMES = ['ikesWoodSignsV1'];
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
@@ -733,7 +734,12 @@
   function openNamedDb(name){
     return new Promise((resolve,reject)=>{
       const req=indexedDB.open(name);
-      req.onsuccess=()=>resolve(req.result);
+      req.onsuccess=()=>{
+        const opened=req.result;
+        opened.onversionchange=()=>{ try{ opened.close(); }catch(_){} };
+        resolve(opened);
+      };
+      req.onblocked=()=>console.warn('Dark Sky storage upgrade is waiting for another open tab to release the database.');
       req.onerror=()=>reject(req.error);
     });
   }
@@ -839,8 +845,14 @@
           s.createIndex('status','status');
         }
         if(!d.objectStoreNames.contains(STORE_SETTINGS)) d.createObjectStore(STORE_SETTINGS,{keyPath:'key'});
+        if(!d.objectStoreNames.contains(STORE_PROJECTS)) d.createObjectStore(STORE_PROJECTS,{keyPath:'id'});
       };
-      req.onsuccess=()=>resolve(req.result);
+      req.onsuccess=()=>{
+        const opened=req.result;
+        opened.onversionchange=()=>{ try{ opened.close(); }catch(_){} };
+        resolve(opened);
+      };
+      req.onblocked=()=>console.warn('Dark Sky storage upgrade is waiting for another open tab to release the database.');
       req.onerror=()=>reject(req.error);
     });
   }
@@ -895,6 +907,51 @@
   async function setSetting(key,value){
     try{ return await put(STORE_SETTINGS,{key,value}); }
     catch(err){ console.warn('Setting could not be saved',key,err); throw err; }
+  }
+
+  function transactionToPromise(transaction){
+    return new Promise((resolve,reject)=>{
+      transaction.oncomplete=()=>resolve(true);
+      transaction.onerror=()=>reject(transaction.error||new Error('IndexedDB transaction failed.'));
+      transaction.onabort=()=>reject(transaction.error||new Error('IndexedDB transaction was aborted.'));
+    });
+  }
+
+  async function readCanonicalProjectRegistry(){
+    try{
+      const rows=await getAll(STORE_PROJECTS);
+      return Array.isArray(rows)?rows:[];
+    }catch(err){
+      console.warn('Canonical project registry could not be read',err);
+      return [];
+    }
+  }
+
+  async function persistProjectRegistry(rows){
+    const projects=structuredClone(Array.isArray(rows)?rows:[]);
+    const transaction=db.transaction([STORE_PROJECTS,STORE_SETTINGS],'readwrite');
+    const projectStore=transaction.objectStore(STORE_PROJECTS);
+    const settingsStore=transaction.objectStore(STORE_SETTINGS);
+    projectStore.clear();
+    projects.forEach(project=>projectStore.put(project));
+    // Keep the legacy collection mirror during the transition so older code and
+    // recovery tooling can still inspect the same fleet snapshot. Both writes are
+    // committed by ONE IndexedDB transaction.
+    settingsStore.put({key:'companies',value:projects});
+    await transactionToPromise(transaction);
+
+    const canonical=await readCanonicalProjectRegistry();
+    const mirror=await getSetting('companies');
+    const mirrorRows=Array.isArray(mirror?.value)?mirror.value:[];
+    const expectedIds=projectRegistryIds(projects);
+    const canonicalIds=projectRegistryIds(canonical);
+    const mirrorIds=projectRegistryIds(mirrorRows);
+    const canonicalComplete=[...expectedIds].every(id=>canonicalIds.has(id)) && canonicalIds.size===expectedIds.size;
+    const mirrorComplete=[...expectedIds].every(id=>mirrorIds.has(id)) && mirrorIds.size===expectedIds.size;
+    if(!canonicalComplete || !mirrorComplete){
+      throw new Error(`Fleet registry read-back verification failed (${canonical.length}/${projects.length} canonical, ${mirrorRows.length}/${projects.length} mirror).`);
+    }
+    return canonical;
   }
 
   function projectAdminPinKey(projectId=activeProjectId){
@@ -1030,19 +1087,27 @@
     return p;
   }
   async function loadCompanies(){
+    let canonicalRows=[];
     let savedRows=null;
+    try{ canonicalRows=await readCanonicalProjectRegistry(); }catch(_){ canonicalRows=[]; }
     try{
       const saved=await getSetting('companies');
       savedRows=Array.isArray(saved?.value)&&saved.value.length?saved.value:null;
     }catch(err){
-      console.warn('Project registry could not be read from IndexedDB',err);
+      console.warn('Legacy project registry mirror could not be read from IndexedDB',err);
     }
 
     const backup=readProjectRegistryBackup();
-    if(savedRows){
+    let registrySource='defaults';
+    if(canonicalRows.length){
+      companies=canonicalRows;
+      registrySource='canonical-project-store';
+    }else if(savedRows){
       companies=savedRows;
+      registrySource='legacy-settings-mirror';
     }else if(Array.isArray(backup?.projects)&&backup.projects.length){
       companies=structuredClone(backup.projects);
+      registrySource='verified-local-backup';
       window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.loaded_from_backup',detail:`${companies.length} projects • ${backup.savedAt||'unknown time'}`});
     }else{
       companies=structuredClone(DEFAULT_COMPANIES);
@@ -1050,24 +1115,31 @@
 
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
     const core=window.BlackFlagV3Core;
+    let migrationChanged=false;
     if(core){
       const before=structuredClone(companies);
       const migration=core.migrate(companies);
       companies=migration.projects;
+      migrationChanged=!!migration.changed;
       if(migration.changed){
         core.snapshot(before,'pre-v3.8.2-identity-migration');
-        await setSetting('companies',companies);
         core.markMigration({from:'3.3',to:'3.4',stage:'immutable-project-identity',status:'complete',projectCount:companies.length});
         core.audit({category:'migration',action:'v3.8.2.project.identity.migration.complete',detail:`${companies.length} projects`});
       }
     }
 
-    // A local verified registry copy protects the fleet from a transient IndexedDB
-    // read failure or an accidental settings reset. It is never used to silently
-    // merge projects into a healthy registry; it is only a fallback when the main
-    // registry is unavailable.
-    writeProjectRegistryBackup(companies,savedRows?'load-verified':'load-fallback');
+    // v3.9.6: the dedicated `projects` object store is now the canonical registry.
+    // On the first launch after upgrade, seed it from the existing settings mirror
+    // (or verified backup/defaults). Thereafter every fleet mutation is committed
+    // atomically to the canonical store and the compatibility mirror.
+    if(!canonicalRows.length || migrationChanged){
+      companies=await persistProjectRegistry(companies);
+      companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
+    }
+
+    writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
+
   function criticalIntegrityFingerprint(issue){
     return [String(issue?.code||''),String(issue?.projectId||''),String(issue?.detail||'')].join('::');
   }
@@ -1095,15 +1167,18 @@
   async function saveCompanies(){
     companies=companies.map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(p))||ensureProjectGovernance(p));
 
-    // v3.9.5 — Existing test/legacy integrity findings must remain visible, but they
+    // v3.9.6 — Existing test/legacy integrity findings must remain visible, but they
     // must not freeze the entire fleet registry. Compare the candidate registry with
     // the last persisted registry and fail closed only when this write INTRODUCES a
     // new critical boundary violation. This permits safe commissioning and repairs
     // while preserving the strict hull-integrity standard.
     let prior=[];
     try{
-      const current=await getSetting('companies');
-      prior=Array.isArray(current?.value)?current.value:[];
+      prior=await readCanonicalProjectRegistry();
+      if(!prior.length){
+        const current=await getSetting('companies');
+        prior=Array.isArray(current?.value)?current.value:[];
+      }
     }catch(err){
       console.warn('Could not read prior project registry before save',err);
       if(companies.length){
@@ -1124,16 +1199,15 @@
       window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'project.collection.save.with_existing_findings',detail:`${remainingIntegrity.critical} pre-existing critical finding(s) remain visible for repair`});
     }
 
-    await setSetting('companies',companies);
-    const verified=await getSetting('companies');
-    const persisted=Array.isArray(verified?.value)?verified.value:[];
+    const persisted=await persistProjectRegistry(companies);
     const missing=companies.filter(p=>!registryContainsProject(persisted,p.id));
     if(missing.length){
       window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.verify_failed',detail:missing.map(p=>`${p.name}:${p.id}`).join(' • ')});
       throw new Error(`Project registry verification failed for ${missing.map(p=>p.name).join(', ')}.`);
     }
-    writeProjectRegistryBackup(persisted,'verified-save');
-    return persisted;
+    companies=persisted.map(normalizeProjectCode).map(ensureProjectGovernance);
+    writeProjectRegistryBackup(companies,'verified-atomic-save');
+    return companies;
   }
 
 
@@ -3310,21 +3384,52 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.9.5'
+      commissioningVersion:'3.9.6'
     };
 
-    // Use the same project collection the Engine already persists and seal it through the canonical project core.
+    // Commissioning is a durable registry transaction, not a visual completion.
+    // Seal the candidate, commit it to the canonical per-project store + legacy
+    // mirror atomically, read the registry back, then render FROM that read-back.
+    // The draft is cleared only after all of those checks succeed.
     core?.ensure?.(p);
+    const beforeCommission=structuredClone(companies);
     companies.push(p);
-    const persistedRegistry=await saveCompanies();
-    if(!registryContainsProject(persistedRegistry,id)){
-      throw new Error(`${p.name} was not verified in the fleet registry. The commissioning draft has been preserved.`);
+    let persistedRegistry;
+    try{
+      persistedRegistry=await saveCompanies();
+      if(!registryContainsProject(persistedRegistry,id)){
+        throw new Error(`${p.name} was not verified in the canonical fleet registry.`);
+      }
+      const canonicalReadback=await readCanonicalProjectRegistry();
+      if(!registryContainsProject(canonicalReadback,id)){
+        throw new Error(`${p.name} disappeared during canonical registry read-back.`);
+      }
+      companies=canonicalReadback.map(normalizeProjectCode).map(ensureProjectGovernance);
+      if(!projectById(id)) throw new Error(`${p.name} could not be resolved after registry reload.`);
+    }catch(err){
+      companies=beforeCommission;
+      commissionDraft._lastError=String(err?.message||err);
+      commissionDraft._step=6;
+      commissionDraft._maxStepReached=6;
+      commissionDraft.updatedAt=new Date().toISOString();
+      localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+      throw err;
     }
-    clearCommissionDraft();
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • private sea trial`});
+
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • canonical registry verified`});
     closeProjectCommissioning();
     await renderEngineRoom();
-    setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},50);
+    const rendered=document.querySelector(`[data-open-project-control="${CSS.escape(id)}"]`);
+    if(!rendered){
+      // Persistence succeeded, so do not erase the durable project. Preserve a
+      // recovery marker and surface the issue rather than pretending commission
+      // failed or silently losing the vessel.
+      localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:false}));
+      throw new Error(`${p.name} is safely in the fleet registry, but its Engine card did not render. Reload the Engine; the project has NOT been lost.`);
+    }
+    clearCommissionDraft();
+    localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:true}));
+    setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},80);
   }
 
   async function openProjectEngineControl(id){
@@ -7245,7 +7350,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.5',
+    version:'3.9.6',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7746,7 +7851,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.5.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.6.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
