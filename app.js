@@ -8,8 +8,10 @@
   const LEGACY_DB_NAMES = ['ikesWoodSignsV1'];
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
+  const PROJECT_REGISTRY_VAULT_KEY = 'blackFlagProjectRegistryVaultV1';
+  const PROJECT_RETIREMENT_LEDGER_KEY = 'blackFlagProjectRetirementLedgerV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.9.11';
+  const BUILD_VERSION = '3.9.12';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -1057,16 +1059,117 @@
     }catch(_){return null;}
   }
 
+  function readProjectRetirementLedger(){
+    try{
+      const rows=JSON.parse(localStorage.getItem(PROJECT_RETIREMENT_LEDGER_KEY)||'[]');
+      return Array.isArray(rows)?rows:[];
+    }catch(_){return [];}
+  }
+
+  function retirementTombstoneIds(){
+    return new Set(readProjectRetirementLedger().filter(x=>x?.projectId && x?.state==='retired').map(x=>String(x.projectId)));
+  }
+
+  function recordProjectRetirement(projectId,{reason='explicit-retirement',actorRole='engine_admin'}={}){
+    const id=String(projectId||'');
+    if(!id)return false;
+    const rows=readProjectRetirementLedger().filter(x=>String(x?.projectId||'')!==id);
+    rows.unshift({version:1,projectId:id,state:'retired',reason:String(reason||'explicit-retirement'),actorRole:String(actorRole||'engine_admin'),at:new Date().toISOString(),build:BUILD_VERSION});
+    localStorage.setItem(PROJECT_RETIREMENT_LEDGER_KEY,JSON.stringify(rows.slice(0,250)));
+    window.BlackFlagV3Core?.audit?.({actorRole,projectId:id,category:'governance',action:'project.retirement.tombstone.recorded',detail:reason});
+    return true;
+  }
+  window.BlackFlagProjectRetirement={record:recordProjectRetirement,read:readProjectRetirementLedger};
+
+  function registryIdArray(rows){
+    return [...projectRegistryIds(rows)].sort();
+  }
+
+  function registrySnapshotKey(rows){
+    return registryIdArray(rows).join('|');
+  }
+
+  function readProjectRegistryVault(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(PROJECT_REGISTRY_VAULT_KEY)||'null');
+      if(!raw||!Array.isArray(raw.snapshots))return {version:1,snapshots:[]};
+      return raw;
+    }catch(_){return {version:1,snapshots:[]};}
+  }
+
+  function vaultSnapshotSources(){
+    const vault=readProjectRegistryVault();
+    const rows=[...(vault.snapshots||[])];
+    const backup=readProjectRegistryBackup();
+    if(Array.isArray(backup?.projects)&&backup.projects.length){
+      rows.push({id:'legacy-single-backup',savedAt:backup.savedAt||null,reason:backup.reason||'legacy-backup',projectCount:backup.projects.length,projects:structuredClone(backup.projects),source:'legacy-backup'});
+    }
+    try{
+      const coreRows=window.BlackFlagV3Core?.readSnapshots?.()||[];
+      for(const snap of coreRows){
+        if(Array.isArray(snap?.projects)&&snap.projects.length){
+          rows.push({id:snap.id||`core-${snap.at||''}`,savedAt:snap.at||null,reason:snap.reason||'core-recovery-snapshot',projectCount:snap.projects.length,projects:structuredClone(snap.projects),source:'core-recovery'});
+        }
+      }
+    }catch(_){ }
+    return rows;
+  }
+
+  function missingIdsAllowedByTombstones(previousRows,nextRows){
+    const prev=projectRegistryIds(previousRows), next=projectRegistryIds(nextRows), tombstones=retirementTombstoneIds();
+    return [...prev].filter(id=>!next.has(id)).every(id=>tombstones.has(id));
+  }
+
+  function writeProjectRegistryVault(rows,reason='verified-save'){
+    try{
+      const projects=structuredClone(Array.isArray(rows)?rows:[]);
+      if(!projects.length)return false;
+      const vault=readProjectRegistryVault();
+      const snapshots=Array.isArray(vault.snapshots)?vault.snapshots:[];
+      const key=registrySnapshotKey(projects);
+      const existingIndex=snapshots.findIndex(x=>registrySnapshotKey(x?.projects||[])===key);
+      const row={
+        id:`RV-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`,
+        version:1,
+        build:BUILD_VERSION,
+        savedAt:new Date().toISOString(),
+        reason,
+        projectCount:projects.length,
+        projectIds:registryIdArray(projects),
+        projects
+      };
+      if(existingIndex>=0)snapshots.splice(existingIndex,1);
+      snapshots.unshift(row);
+      // Keep multiple verified generations. A later smaller registry cannot erase
+      // richer historical identity evidence simply by becoming the newest snapshot.
+      localStorage.setItem(PROJECT_REGISTRY_VAULT_KEY,JSON.stringify({version:1,updatedAt:row.savedAt,snapshots:snapshots.slice(0,12)}));
+      return true;
+    }catch(err){
+      console.warn('Project registry recovery vault could not be written',err);
+      return false;
+    }
+  }
+
   function writeProjectRegistryBackup(rows,reason='verified-save'){
     try{
       const projects=structuredClone(Array.isArray(rows)?rows:[]);
+      const prior=readProjectRegistryBackup();
+      // Legacy single-slot backup remains for compatibility, but it may not discard
+      // richer identity evidence unless every missing Project ID has an explicit
+      // retirement tombstone. The rotating vault is the durable continuity source.
+      if(Array.isArray(prior?.projects)&&prior.projects.length>projects.length && !missingIdsAllowedByTombstones(prior.projects,projects)){
+        writeProjectRegistryVault(projects,`${reason}-smaller-observed`);
+        window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'project.registry.backup.shrink_refused',detail:`Kept ${prior.projects.length}-project backup; observed ${projects.length}-project registry without retirement evidence`});
+        return false;
+      }
       localStorage.setItem(PROJECT_REGISTRY_BACKUP_KEY,JSON.stringify({
-        version:1,
+        version:2,
         savedAt:new Date().toISOString(),
         reason,
         projectCount:projects.length,
         projects
       }));
+      writeProjectRegistryVault(projects,reason);
       return true;
     }catch(err){
       console.warn('Project registry backup could not be written',err);
@@ -1194,27 +1297,33 @@
     return p;
   }
   function verifiedBackupRecoveryRows(canonicalRows,savedRows,backup){
-    // v3.9.11 — Fleet continuity recovery. The canonical registry remains the
-    // authority, but a browser/version interruption must not silently drop a
-    // previously verified Project ID. Recovery is identity-based only: never name-based.
+    // v3.9.12 — Recovery Vault. Canonical storage is authoritative for current
+    // operation, but it may not silently erase a previously verified immutable ID.
+    // Search multiple verified generations and core recovery snapshots; never names.
     const canonical=Array.isArray(canonicalRows)?canonicalRows:[];
     const mirror=Array.isArray(savedRows)?savedRows:[];
-    const backupRows=Array.isArray(backup?.projects)?backup.projects:[];
-    if(!canonical.length)return [];
-    const have=projectRegistryIds(canonical), candidates=new Map();
-    for(const row of [...mirror,...backupRows]){
-      const id=String(row?.id||'');
-      if(!id||have.has(id))continue;
-      const current=candidates.get(id);
-      candidates.set(id,current?{row:current.row,seen:current.seen+1,sources:new Set([...current.sources,row===undefined?'unknown':'secondary'])}:{row:structuredClone(row),seen:1,sources:new Set(['secondary'])});
+    const have=projectRegistryIds(canonical), tombstones=retirementTombstoneIds();
+    const candidates=new Map();
+    const sources=[
+      {source:'settings-mirror',projects:mirror,savedAt:null},
+      ...vaultSnapshotSources().map(x=>({source:x.source||'recovery-vault',projects:x.projects||[],savedAt:x.savedAt||null}))
+    ];
+    for(const src of sources){
+      for(const row of (Array.isArray(src.projects)?src.projects:[])){
+        const id=String(row?.id||'');
+        if(!id||have.has(id)||tombstones.has(id))continue;
+        const current=candidates.get(id);
+        const at=Date.parse(src.savedAt||'')||0;
+        if(!current || at>=current.at)candidates.set(id,{row:structuredClone(row),at,source:src.source});
+      }
     }
     const recovered=[];
     for(const [id,entry] of candidates){
       const row=entry.row;
-      // Only restore sealed projects with an immutable identity and default-deny
-      // boundary. Archived/retired cargo is not automatically resurrected.
       if(!row?.id || row?.archived===true || row?.status==='retired')continue;
       if(String(row.id)!==id)continue;
+      // Immutable identity + default deny are minimum recovery qualifications.
+      window.BlackFlagV3Core?.ensure?.(row);
       if(row?.isolation?.crossProjectAccess!=='deny')continue;
       const proposed=[...canonical,...recovered,row];
       const introduced=newlyIntroducedCriticalIssues(canonical,proposed);
@@ -1225,18 +1334,27 @@
   }
 
   async function healCanonicalRegistryContinuity(canonicalRows,savedRows,backup){
-    const recovered=verifiedBackupRecoveryRows(canonicalRows,savedRows,backup);
+    const canonical=Array.isArray(canonicalRows)?canonicalRows:[];
+    const recovered=verifiedBackupRecoveryRows(canonical,savedRows,backup);
     if(!recovered.length)return canonicalRows;
-    const merged=[...canonicalRows,...recovered];
+    const merged=[...canonical,...recovered];
     const persisted=await persistProjectRegistry(merged);
     const verify=await readCanonicalProjectRegistry();
     const missing=recovered.filter(p=>!registryContainsProject(verify,p.id));
     if(missing.length)throw new Error(`Fleet continuity recovery failed read-back for ${missing.map(p=>p.id).join(', ')}`);
     for(const p of recovered){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:p.id,category:'recovery',action:'project.registry.continuity_restored',detail:`${p.name||p.id} restored by immutable Project ID from verified browser recovery cargo`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:p.id,category:'recovery',action:'project.registry.vault_restored',detail:`${p.name||p.id} restored by immutable Project ID from verified registry history`});
     }
-    writeProjectRegistryBackup(verify,'continuity-healed');
+    writeProjectRegistryBackup(verify,'continuity-vault-healed');
     return verify;
+  }
+
+  function registryContinuityStatus(rows){
+    const ids=projectRegistryIds(rows), tombstones=retirementTombstoneIds();
+    const historical=new Set();
+    for(const snap of vaultSnapshotSources())for(const p of (snap.projects||[]))if(p?.id)historical.add(String(p.id));
+    const missing=[...historical].filter(id=>!ids.has(id)&&!tombstones.has(id));
+    return {vaultSnapshots:readProjectRegistryVault().snapshots.length,historicalIds:historical.size,missingIds:missing};
   }
 
   async function loadCompanies(){
@@ -1254,7 +1372,7 @@
     // v3.9.11: if a prior verified Project ID exists in browser recovery cargo but
     // disappeared from the canonical store during a version/deployment transition,
     // heal the canonical registry by immutable ID before rendering the fleet.
-    if(canonicalRows.length){
+    if(canonicalRows.length || savedRows?.length || vaultSnapshotSources().length){
       try{canonicalRows=await healCanonicalRegistryContinuity(canonicalRows,savedRows,backup);}catch(err){console.warn('Fleet continuity recovery warning',err);}
     }
     let registrySource='defaults';
@@ -1776,7 +1894,9 @@
     const live=list.filter(p=>p.publish?.status==='live').length;
     const journal=readCommissionJournal();
     const journalState=journal?.project?.id && !list.some(p=>String(p.id)===String(journal.project.id)) ? ` • 1 RECOVERY PENDING` : '';
-    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${journalState}`;
+    const continuity=registryContinuityStatus(list);
+    const vaultState=continuity.vaultSnapshots?` • VAULT ${continuity.vaultSnapshots}`:'';
+    $('projectSummaryBadge').textContent=`${list.length} PROJECTS • ${live} PUBLISHED • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION}${vaultState}${journalState}`;
     const cards=[];
     for(const p of list){
       const s=await projectStats(p);
@@ -8225,7 +8345,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.11.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.12.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

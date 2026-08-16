@@ -179,8 +179,17 @@ A project may become Fleet Ready only when its current customer experience is ap
 
 
 
-## Fleet Rail Law — v3.9.11
+## Fleet Rail Law — v3.9.12
 Project Command is a filterable horizontal fleet rail. Filters reduce the working set; technicians then browse that set by native finger/trackpad horizontal scrolling. Navigation arrows are not part of the product. Project cards must keep a fixed touch-friendly width and must not shrink to conceal fleet overflow.
 
-## Fleet Continuity Law — v3.9.11
+## Fleet Continuity Law — v3.9.12
 The canonical projects store remains authoritative. If a deployment/version transition causes a previously verified immutable Project ID to disappear from that store while verified browser recovery cargo still contains it, Dark Sky may restore that exact Project ID only after integrity comparison and canonical read-back verification. Recovery is never name-based and must not silently resurrect archived or retired vessels.
+
+
+## Project Registry Recovery Vault Law — v3.9.12
+
+The canonical IndexedDB `projects` store remains the current operational authority, but no later registry load may erase previously verified immutable Project-ID evidence merely by becoming newer. Dark Sky retains multiple verified fleet generations in a rotating Recovery Vault. A smaller registry may supersede a richer history only when every missing Project ID has explicit retirement/tombstone evidence.
+
+Continuity reconciliation is identity-only. Dark Sky may restore a missing vessel from verified registry generations, the compatibility mirror, or protected recovery snapshots only when the exact immutable Project ID is preserved, default-deny isolation is valid, the project is not archived/retired, and recovery introduces no new critical integrity finding. Business names are never recovery keys.
+
+Intentional removal is a governance event, not absence. Retirement must create a tombstone before continuity logic is permitted to accept the missing Project ID as deliberate. This prevents version transitions, cache drift, partial loads, and bad migrations from silently shrinking the fleet.

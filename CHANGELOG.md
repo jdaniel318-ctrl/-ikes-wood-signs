@@ -1,4 +1,15 @@
-# Dark Sky v3.9.11 — Fleet Rail & Continuity
+# Dark Sky v3.9.12 — Project Registry Recovery Vault
+
+- Replaces the single-slot fleet continuity assumption with a rotating verified Project Registry Recovery Vault.
+- Keeps up to 12 verified registry generations keyed by immutable Project ID.
+- Refuses to let a smaller registry overwrite the legacy rich backup unless every missing Project ID has explicit retirement evidence.
+- Recovers missing Project IDs from verified vault history, compatibility mirror, or core recovery snapshots only after default-deny and no-new-damage checks.
+- Adds an explicit retirement tombstone ledger so intentional removals can remain removed without weakening continuity protection.
+- Never recovers by business name.
+- Project Command now exposes the count of retained vault generations beside the build number.
+- Preserves filter-first, finger-scroll fleet navigation and outlined Control Center / Test Experience actions.
+
+# Dark Sky v3.9.12 — Fleet Rail & Continuity
 
 - Locked Project Command to native finger-driven horizontal scrolling; no arrow navigation.
 - Preserved All / Current / Test-Private / Future filters; the rail now reports how many projects are visible after filtering.
