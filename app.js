@@ -1095,6 +1095,17 @@
     }
     return true;
   }
+
+  function requireEngineFleetDeploymentBoundary(p,d,action){
+    if(!requireEngineFleetMutation(p,action))return false;
+    const result=window.BlackFlagV3Core?.validateDeployment?.(p,d);
+    if(result && !result.ok){
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'authorization',action:'deployment.fleet_mutation.blocked',detail:`${action} • ${result.error} • ${(result.failures||[]).join(', ')}`});
+      alert('Dark Sky blocked this fleet action because the outpost identity does not match its project boundary.');
+      return false;
+    }
+    return true;
+  }
   function companyById(id){return companies.find(c=>c.id===id);}
   function companyStatusLabel(c){
     return c.publish?.status==='live'?'LIVE':(c.publish?.status==='test'?'TEST':'DEVELOPMENT');
@@ -1210,7 +1221,7 @@
     if(launch.key==='live')return true;
     let outpost=launch.tested[0]||launch.active[0];
     if(!outpost){alert('Dark Sky could not find the tested outpost required to join the fleet.');return false;}
-    if(!requireDeploymentBoundary(p,outpost,'project.join_fleet'))return false;
+    if(!requireEngineFleetDeploymentBoundary(p,outpost,'project.join_fleet'))return false;
     if(outpost.state==='sea_trial'){
       if(!(await deploymentCommissionOrder(p,outpost)))return false;
       if(!window.BlackFlagV3Core?.canTransitionDeployment?.(outpost.state,'deployed')){
@@ -1227,7 +1238,13 @@
     p.published=true;
     p.lifecycle={...(p.lifecycle||{}),state:'live',version:Math.max(2,Number(p.lifecycle?.version||2)),updatedAt:new Date().toISOString()};
     p.updatedAt=new Date().toISOString();
-    await saveCompanies();
+    try{
+      await saveCompanies();
+    }catch(err){
+      console.error('Join Fleet persistence failed',err);
+      alert('Dark Sky could not finish joining this vessel to the fleet. Nothing was reported as complete. Please try again.');
+      return false;
+    }
     logActivity(p.id,'Project joined fleet',`${p.name} • ${outpost.name} active`);
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'project',action:'project.joined_fleet',detail:`${p.name} • ${outpost.id}`});
     await renderEngineRoom();
@@ -1249,6 +1266,11 @@
     if(!launch.deployments.length){
       setTimeout(()=>document.getElementById('createDeploymentBtn')?.click(),80);
     }
+  }
+
+  function projectActivityMetricLabel(p){
+    const type=customerRelationshipForProject(p)?.type||'purchase';
+    return ({purchase:'ORDERS',service_request:'REQUESTS',quote:'QUOTES',booking:'BOOKINGS',inquiry:'INQUIRIES',partnership:'ENGAGEMENTS',application:'APPLICATIONS',reservation:'RESERVATIONS',custom_project:'PROJECTS'})[type]||'ACTIVITY';
   }
 
   async function renderProjectCommand(){
@@ -1275,14 +1297,14 @@
         </div>
         <h4>${escapeHtml(p.name)}</h4>
         <p>${escapeHtml(p.tagline||String(p.type||p.businessType||'project').replaceAll('_',' '))}</p>
-        ${(()=>{const ds=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');const active=ds.filter(d=>d.state==='deployed').length;return `<div class="project-deployment-badge ${active?'active':''}">${active?`${active} OUTPOST${active===1?'':'S'} SAILING`:ds.length?`${ds.length} OUTPOST${ds.length===1?'':'S'} IN HARBOR`:'STANDARD DEPLOYMENT'}</div>`;})()}
+        ${(()=>{const ds=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');const active=ds.filter(d=>d.state==='deployed').length;return `<div class="project-deployment-badge ${active?'active':''}">${active?(p.publish?.status==='live'?`${active} OUTPOST${active===1?'':'S'} SAILING`:`${active} OUTPOST${active===1?'':'S'} READY`):ds.length?`${ds.length} OUTPOST${ds.length===1?'':'S'} IN HARBOR`:'STANDARD DEPLOYMENT'}</div>`;})()}
         <div class="project-governance-strip">
           <span class="platform-status ${platformState}">${platformStatusLabel(p)}</span>
           <span>${ownerState}</span>
           <span class="v3-lifecycle-badge">${escapeHtml(window.BlackFlagV3Core?.lifecycle?.(p)||'project')}</span>
         </div>
         <div class="project-kpis">
-          <span><small>ORDERS</small><strong>${s.orders}</strong></span>
+          <span><small>${escapeHtml(projectActivityMetricLabel(p))}</small><strong>${s.orders}</strong></span>
           <span><small>REVENUE · 30D</small><strong>$${s.revenueMonth.toFixed(0)}</strong></span>
           <span><small>LEDGER</small><strong>${s.completed}</strong></span>
         </div>
@@ -1297,7 +1319,7 @@
     box.innerHTML=cards.join('');
     box.querySelectorAll('[data-open-project-control]').forEach(b=>b.addEventListener('click',()=>openProjectEngineControl(b.dataset.openProjectControl)));
     box.querySelectorAll('[data-enter-project]').forEach(b=>b.addEventListener('click',()=>enterProject(b.dataset.enterProject)));
-    box.querySelectorAll('[data-project-launch]').forEach(b=>b.addEventListener('click',async()=>{const p=projectById(b.dataset.projectLaunch);if(p)await continueProjectLaunch(p);}));
+    box.querySelectorAll('[data-project-launch]').forEach(b=>b.addEventListener('click',async()=>{const p=projectById(b.dataset.projectLaunch);if(!p||b.disabled)return;const prior=b.textContent;b.disabled=true;b.textContent=projectFleetLaunchState(p).key==='fleet_ready'?'JOINING…':'OPENING…';try{await continueProjectLaunch(p);}finally{if(document.body.contains(b)){b.disabled=false;b.textContent=prior;}}}));
     box.querySelectorAll('[data-project-publish]').forEach(t=>t.addEventListener('change',async()=>{
       const p=projectById(t.dataset.projectPublish);if(!p)return;
       if(!requireEngineFleetMutation(p,'project.publishing.quick_update')){t.checked=!t.checked;return;}
@@ -3189,7 +3211,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.31'
+      commissioningVersion:'3.8.32'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -6927,12 +6949,21 @@ The full order and approved media remain stored with this project.`;
     }));
 
     const testing=companies.filter(p=>['testing','deployment_ready'].includes(window.BlackFlagV3Core?.lifecycle?.(p)));
-    testing.forEach(p=>items.push({
-      level:'recommendation',title:`${p.name} — Sea Trial Watch`,
-      detail:'This project is in deployment/testing state.',
-      recommendation:'Open Deployment and verify the project is ready for its next lifecycle step.',
-      action:'project-deployment',projectId:p.id,cta:'OPEN DEPLOYMENT'
-    }));
+    testing.forEach(p=>{
+      const launch=projectFleetLaunchState(p);
+      if(launch.key==='fleet_ready')items.push({
+        level:'recommendation',title:`${p.name} — Fleet Ready`,
+        detail:'Sea Trial proof is recorded and the vessel is waiting for Captain approval.',
+        recommendation:'Join this vessel to the live fleet when you are ready.',
+        action:'project-launch',projectId:p.id,cta:'JOIN FLEET'
+      });
+      else items.push({
+        level:'recommendation',title:`${p.name} — Sea Trial Watch`,
+        detail:'This project is still in deployment/testing state.',
+        recommendation:'Open Deployment and complete the next Sea Trial step.',
+        action:'project-deployment',projectId:p.id,cta:'OPEN DEPLOYMENT'
+      });
+    });
     return items.slice(0,8);
   }
 
@@ -6961,6 +6992,9 @@ The full order and approved media remain stored with this project.`;
       }else if(x.action==='project-deployment'&&x.projectId){
         await openProjectEngineControl(x.projectId);
         await renderProjectTab(x.projectId,'deployment');
+      }else if(x.action==='project-launch'&&x.projectId){
+        const target=projectById(x.projectId);
+        if(target)await continueProjectLaunch(target);
       }else if(x.action==='projects'){
         $('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
       }
@@ -7000,7 +7034,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.31',
+    version:'3.8.32',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7427,7 +7461,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.31.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.32.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

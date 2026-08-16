@@ -115,3 +115,10 @@ The universal customer shell no longer assumes every business interaction is an 
 Customer-facing action language, detail prompts, confirmation copy, and record semantics derive from this contract. For compatibility, engagement records continue to persist in the existing project-scoped order store, but non-purchase records are explicitly marked `recordType: engagement` with `relationshipType` metadata. A future storage migration can separate these records without losing provenance.
 
 Post-submit confirmation is a distinct persisted session state keyed by Project ID + Deployment ID. A successful customer submission never automatically returns to a blank form. Sea Trial confirmation routes back to Shipwright; active customer confirmation remains visible until the customer deliberately begins another engagement.
+
+
+## Fleet-level commissioning authorization (v3.8.32)
+A Join Fleet action originates at the Engine fleet layer, where no Project Control context is necessarily open. Fleet commissioning therefore uses engine-session authorization scoped explicitly to the target Project ID, followed by deployment identity validation for the selected outpost. Project-local deployment mutations still require the stricter active Project Control context. This preserves project isolation without making Engine-level commissioning depend on UI navigation state.
+
+## Fleet rail alignment law (v3.8.32)
+The Engine project rail is horizontally scrollable and touch-first. Cards share a stable internal vertical rhythm so identity, deployment state, governance, KPIs, launch status, and actions remain visually aligned even when project names and launch messages vary in length. Horizontal swipe remains the primary iPad browsing behavior; arrow controls are an explicit secondary navigation aid.

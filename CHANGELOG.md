@@ -1,3 +1,13 @@
+## v3.8.32 — Fleet Rail Alignment & Join Fleet Repair
+
+- Fixed Join Fleet from Engine project cards by validating the selected outpost with fleet-scoped authorization instead of requiring an already-open Project Control context.
+- Added visible JOINING state and fail-closed persistence feedback so a fleet join cannot appear to do nothing.
+- Normalized project-card vertical structure so titles, badges, KPIs, launch status, and actions stay on one horizontal visual plane across the fleet rail.
+- Preserved iPad/Safari horizontal swipe navigation and clarified the rail instruction: swipe to browse; arrows move one project.
+- Project KPI language now follows the customer relationship contract (for example, Partnerships show ENGAGEMENTS instead of ORDERS).
+- Private Fleet Ready projects with an already-active outpost now say OUTPOST READY rather than OUTPOST SAILING until the vessel actually joins the live fleet.
+- First Mate Watch now reports a tested vessel as Fleet Ready instead of leaving stale Sea Trial wording above the Engine.
+
 ## v3.8.31 — Customer Engagement Contracts
 
 - Added a repeatable project-level customer relationship contract: purchase, service request, quote, booking, inquiry, partnership, application, reservation, or custom project.

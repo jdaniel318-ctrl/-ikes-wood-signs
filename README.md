@@ -1,6 +1,6 @@
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.8.31 — Customer Engagement Contracts
+**Current release:** v3.8.32 — Fleet Rail Alignment & Join Fleet Repair
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
