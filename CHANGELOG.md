@@ -1,3 +1,12 @@
+# Changelog
+
+## 4.5.2 — Functional Visual Polish
+- Tightened the Engine Room header after iPad review so it behaves like a working command console rather than a landing-page hero.
+- Preserved one deliberate Black Flag primary lockup while reducing unnecessary vertical space.
+- Centers content within logical groups instead of forcing the full header into a centered stack.
+- Keeps the 4.5.1 spacing, action-button clarity, and platform branding discipline.
+- Presentation/cache delivery only; no application logic, navigation, project identity, storage, security, or workflow changes.
+
 # v4.5.0 — Trust Release
 
 - Project Command filters now derive from actual launch state: Current = live; Test / Private = Draft, Preparing, Sea Trial, Fleet Ready; Future = intentionally parked/other future state.

@@ -11068,3 +11068,166 @@ body.engine-mode #enginePanel .modern-system-capabilities{
   .experience-test-shell>header{align-items:center!important}
   .experience-test-shell>header button{align-self:center!important}
 }
+
+/* ==========================================================
+   v4.5.2 — FUNCTIONAL VISUAL POLISH
+   Presentation only. Restores compact command-console proportions while
+   preserving the deliberate 4.5.1 visual hierarchy and button treatment.
+   ========================================================== */
+
+/* Engine Room: centered within logical groups, not stacked like a landing page. */
+body.engine-mode #enginePanel .modern-engine-hero{
+  display:grid!important;
+  grid-template-columns:minmax(330px,.9fr) minmax(560px,1.1fr)!important;
+  justify-items:stretch!important;
+  align-items:center!important;
+  gap:clamp(18px,2.4vw,34px)!important;
+  min-height:112px!important;
+  padding:14px clamp(18px,2.1vw,28px)!important;
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .black-flag-modern-brand{
+  display:flex!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+}
+body.engine-mode #enginePanel .modern-engine-brand-copy{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto!important;
+  column-gap:18px!important;
+  row-gap:1px!important;
+  align-items:center!important;
+  width:100%!important;
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .modern-engine-wordmark{
+  grid-column:1!important;
+  grid-row:1 / 4!important;
+  display:block!important;
+  width:clamp(118px,11vw,164px)!important;
+  max-height:92px!important;
+  margin:0!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.18))!important;
+}
+body.engine-mode #enginePanel .modern-engine-brand-copy .engine-kicker,
+body.engine-mode #enginePanel .modern-engine-brand-copy h2,
+body.engine-mode #enginePanel .modern-engine-brand-copy p{
+  grid-column:2!important;
+  text-align:left!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+body.engine-mode #enginePanel .modern-engine-brand-copy .engine-kicker{
+  align-self:end!important;
+  font-size:8px!important;
+  letter-spacing:.16em!important;
+}
+body.engine-mode #enginePanel .modern-engine-brand-copy h2{
+  margin-top:2px!important;
+  margin-bottom:2px!important;
+  font-size:clamp(25px,2.2vw,34px)!important;
+  line-height:1!important;
+}
+body.engine-mode #enginePanel .modern-engine-brand-copy p{
+  align-self:start!important;
+  max-width:440px!important;
+  font-size:10.5px!important;
+  line-height:1.3!important;
+}
+body.engine-mode #enginePanel .modern-engine-top-actions{
+  display:grid!important;
+  grid-template-columns:minmax(190px,1.08fr) minmax(150px,.92fr) minmax(165px,.94fr)!important;
+  align-items:stretch!important;
+  width:100%!important;
+  max-width:none!important;
+  gap:9px!important;
+  margin:0!important;
+}
+body.engine-mode #enginePanel .engine-configure-btn,
+body.engine-mode #enginePanel .modern-engine-secure,
+body.engine-mode #enginePanel .modern-captain-access{
+  min-width:0!important;
+  min-height:58px!important;
+  justify-content:center!important;
+  border-radius:11px!important;
+}
+body.engine-mode #enginePanel .engine-configure-btn{
+  padding:9px 12px!important;
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .modern-engine-secure,
+body.engine-mode #enginePanel .modern-captain-access{
+  padding:9px 12px!important;
+  text-align:center!important;
+}
+body.engine-mode #enginePanel .engine-configure-btn span:last-child{
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .modern-engine-secure div,
+body.engine-mode #enginePanel .modern-captain-access span{
+  text-align:center!important;
+}
+
+/* Mid-width iPads: preserve a compact two-tier command header without excess height. */
+@media(max-width:1180px){
+  body.engine-mode #enginePanel .modern-engine-hero{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:11px!important;
+    padding:13px 16px!important;
+  }
+  body.engine-mode #enginePanel .black-flag-modern-brand{
+    justify-content:center!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-brand-copy{
+    grid-template-columns:auto auto!important;
+    width:max-content!important;
+    max-width:100%!important;
+    margin:0 auto!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-wordmark{
+    width:118px!important;
+    max-height:72px!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-brand-copy p{
+    max-width:420px!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-top-actions{
+    width:min(760px,100%)!important;
+    margin:0 auto!important;
+  }
+}
+
+/* Phone / narrow portrait: stack only when space genuinely requires it. */
+@media(max-width:720px){
+  body.engine-mode #enginePanel .modern-engine-hero{
+    padding:12px!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-brand-copy{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    width:100%!important;
+    text-align:center!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-wordmark{
+    width:min(190px,58vw)!important;
+    max-height:78px!important;
+    margin:0 auto 5px!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-brand-copy .engine-kicker,
+  body.engine-mode #enginePanel .modern-engine-brand-copy h2,
+  body.engine-mode #enginePanel .modern-engine-brand-copy p{
+    text-align:center!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+  body.engine-mode #enginePanel .modern-engine-top-actions{
+    grid-template-columns:1fr!important;
+    width:min(430px,100%)!important;
+  }
+}

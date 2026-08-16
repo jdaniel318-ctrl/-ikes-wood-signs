@@ -1,8 +1,8 @@
-const CACHE='dark-sky-v4-5-1-visual-polish';
+const CACHE='dark-sky-v4-5-2-functional-polish';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.5.1',
+  './styles.css?v=4.5.2',
   './platform_core.js?v=4.5.0',
   './platform_v4.js?v=4.5.0',
   './platform_identity.js?v=4.5.0',
