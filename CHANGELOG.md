@@ -1,4 +1,13 @@
-# Dark Sky 4.0.6 — Clean Manifest
+# Dark Sky 4.0.7 — Harbor Master
+
+- Replaces persisted-manifest authority with an explicit Project Admission Ledger.
+- Seeds the four proven baseline vessels with durable admission records.
+- Future projects enter the active fleet only after canonical registry read-back and a successful admission transaction.
+- Quarantines unadmitted canonical rows such as legacy `bf-p-*` ghosts instead of commissioning them.
+- Rebuilds the fleet manifest, envelope ledger, and IndexedDB envelope mirror strictly from admitted canonical Project IDs.
+- Prevents a stale manifest from increasing the Broadside denominator or granting a recovery artifact fleet citizenship.
+- Preserves quarantined evidence for recovery/audit while excluding it from active project and security counts.
+
 
 - Canonical Fleet Registry is now the sole commissioning denominator.
 - Memory-only project artifacts are quarantined and can no longer inflate the fleet count.
