@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.6.5';
+  const BUILD_VERSION = '4.6.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -9435,6 +9435,42 @@ The full order and approved media remain stored with this project.`;
     },true);
   }
 
+  function bindCustomerChoiceCore(){
+    if(window.__darkSkyCustomerChoiceBound)return;
+    window.__darkSkyCustomerChoiceBound=true;
+
+    // v4.6.6 recovery seam: customer selections/inputs are mission-critical
+    // journey controls and must not depend on late bindEvents() completion.
+    const bindEarlyChoice=(containerId,attr,key,transform=v=>v)=>{
+      const box=$(containerId);
+      if(!box)return;
+      box.addEventListener('click',e=>{
+        const b=e.target?.closest?.(`[${attr}]`);
+        if(!b || !box.contains(b))return;
+        state[key]=transform(b.getAttribute(attr));
+        updateUi();
+      });
+    };
+
+    bindEarlyChoice('priceChoices','data-price','price',Number);
+    bindEarlyChoice('orientationChoices','data-orientation','orientation');
+    bindEarlyChoice('fontChoices','data-font','font');
+    bindEarlyChoice('fillChoices','data-fill','fill');
+    bindEarlyChoice('contactChoices','data-contact','contactPreference');
+
+    $('customColor')?.addEventListener('input',e=>{
+      state.customColor=e.target.value;
+      state.fill='Other';
+      updateUi();
+    });
+    $('topSide')?.addEventListener('change',e=>{state.topSide=e.target.value;});
+    $('wordingInput')?.addEventListener('input',e=>{
+      state.wording=e.target.value;
+      if($('charCount')) $('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;
+      applyPreview();
+    });
+  }
+
   function bindCustomerMediaCore(){
     if(window.__darkSkyCustomerMediaBound)return;
     window.__darkSkyCustomerMediaBound=true;
@@ -9553,16 +9589,8 @@ The full order and approved media remain stored with this project.`;
     bindProjectAssetEditor();
     bindProjectTemplateShells();
     bindCustomerNavigationCore();
-    bindChoice('priceChoices','data-price','price',Number);bindChoice('orientationChoices','data-orientation','orientation');bindChoice('fontChoices','data-font','font');bindChoice('fillChoices','data-fill','fill');bindChoice('contactChoices','data-contact','contactPreference');
-    if($('customColor')){
-      $('customColor').addEventListener('input',e=>{
-        state.customColor=e.target.value;
-        state.fill='Other';
-        updateUi();
-      });
-    }
-    $('topSide').addEventListener('change',e=>state.topSide=e.target.value);
-    $('wordingInput').addEventListener('input',e=>{state.wording=e.target.value;$('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;applyPreview();});
+    // Customer choice/input controls are owned by bindCustomerChoiceCore()
+    // and are armed before storage/migrations.
     // Customer media controls are owned by bindCustomerMediaCore() and are armed before storage.
     $('reviewBtn').addEventListener('click',()=>{if(validateCustomer())setScreen('review');});
     $('approveBtn').addEventListener('click',async()=>{
@@ -9828,6 +9856,7 @@ The full order and approved media remain stored with this project.`;
     // Customer step navigation is also mission-critical. Bind it before storage so
     // a stalled/failed IndexedDB open cannot leave a fully-rendered dead experience.
     bindCustomerNavigationCore();
+    bindCustomerChoiceCore();
     bindCustomerMediaCore();
     await loadEngineAppearance();
     db=await openDb();
@@ -9853,6 +9882,7 @@ The full order and approved media remain stored with this project.`;
   // Arm independent command buses immediately. init() calls these again safely.
   // The Seaworthiness spine goes first so core routes exist before storage/migrations/renderers.
   bindSeaworthinessCommandSpine();
+  bindCustomerChoiceCore();
   bindCustomerMediaCore();
   bindWatchCommandBus();
   bindEngineProjectCommandBus();

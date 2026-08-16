@@ -1,3 +1,22 @@
+# v4.6.6 — Customer Choice Command Repair
+
+## Root cause
+- Customer navigation and media controls had already been moved to early, storage-independent command modules.
+- Font/style selection (and the other customer choice controls) still depended on the late `bindEvents()` sequence.
+- This allowed the customer journey to reach Step 6 while the visible font cards had no active selection handler.
+
+## Structural repair
+- Adds `bindCustomerChoiceCore()` as an early-bound customer interaction module.
+- Price, orientation, font style, letter fill, contact preference, custom color, top-side, and wording controls now bind before IndexedDB/migrations.
+- Removes their duplicate late bindings so each control has one owner.
+- Font selection immediately updates selected styling and the sign preview through the existing `updateUi()` / `applyPreview()` path.
+
+## Preserved
+- v4.6.1 customer navigation recovery.
+- v4.6.5 customer media recovery.
+- v4.6.4 Seaworthiness Command Spine and Fleet Commissioning work.
+- Refresh security, project isolation, Captain's Quarters, and Shipyard.
+
 # v4.6.5 — Customer Media Command Repair
 
 ## Root cause
