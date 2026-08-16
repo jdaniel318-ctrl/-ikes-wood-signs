@@ -1,9 +1,7 @@
-# Dark Sky 4.3.7 — Showroom Restore
+# Dark Sky 4.3.8 — Fleet Marks
 
-- Restored Ike's existing customer ordering showroom from Project Command → Continue Launch when its published bespoke shell is available.
-- Preserved Ike's V4 launch/deployment state instead of falsely marking a legacy showroom preview as a completed V4 deployment.
-- Replaced the obsolete `customer` launch-tab route with the supported `experience` Project Control tab.
-- Added backward-compatible project-tab aliases (`customer` → `experience`, `deployments` → `deployment`).
-- Added a visible Project Route Recovery panel so an unsupported project-tab route cannot produce an empty body.
-- Added audit/diagnostic evidence for showroom compatibility and recovered legacy routes.
-- Advanced runtime/cache generation to 4.3.7 without changing projects, orders, customers, admissions, quarantine, or Captain/Engine security boundaries.
+- Project Command now displays the best available project-owned identity graphic on fleet cards.
+- Resolution order: Project Logo / Mark → Hero Graphic → Footer Graphic → initials.
+- Added an Ike-only compatibility fallback to the existing bundled Ike character artwork so the published Ike vessel no longer appears as a plain `IKE` placeholder.
+- Becca's Bloom Shop and Grizzly Bear automatically pick up their own assigned project graphics when present; no cross-project or hard-coded foreign branding is allowed.
+- Advanced runtime/cache generation to 4.3.8.

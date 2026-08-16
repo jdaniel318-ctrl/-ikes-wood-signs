@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.3.7';
+  const BUILD_VERSION = '4.3.8';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2162,9 +2162,23 @@
 
   async function projectBrandVisual(p){
     const code=String(p?.projectCode||p?.orderPrefix||'PRJ').toUpperCase().slice(0,3);
-    let logo='';
-    try{logo=(await readProjectAssets(p.id))?.projectLogo||'';}catch(_){}
-    return {code,logo};
+    let logo='',source='initials';
+    try{
+      const assets=await readProjectAssets(p.id);
+      // Fleet identity should reuse the best project-owned mark already aboard.
+      // Prefer the dedicated logo slot, then a customer-facing hero/footer graphic.
+      // Never borrow another project's artwork.
+      logo=assets?.projectLogo||assets?.heroGraphic||assets?.footerGraphic||'';
+      if(logo) source=assets?.projectLogo?'projectLogo':(assets?.heroGraphic?'heroGraphic':'footerGraphic');
+    }catch(_){}
+    // Ike's original customer experience predates the V4 Graphics Library. Preserve
+    // that established identity as a project-specific compatibility fallback until
+    // a dedicated Project Logo / Mark is assigned in the Engine.
+    if(!logo && canonicalProjectId(p?.id)==='ikes-wood-signs'){
+      logo='assets/ike_character.jpg';
+      source='ikeCompatibilityMark';
+    }
+    return {code,logo,source};
   }
 
   async function applyProjectControlBrand(p){
