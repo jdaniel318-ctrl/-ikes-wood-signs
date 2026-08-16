@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.3.2';
+  const BUILD_VERSION = '4.3.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1007,7 +1007,7 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.2'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.3'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -1038,7 +1038,7 @@
       const reclaimed=Number(r.before?.oldCacheBytes||0);
       box.dataset.inspectOk='0';
       try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
-      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.2',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.3',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
       if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
       // Re-sound immediately so the user gets visible proof of what changed.
       const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
@@ -1055,7 +1055,7 @@
     }catch(err){
       const message=String(err?.message||err||'Unknown cleanup failure');
       box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.2'});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.3'});
       if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
       return false;
     }
@@ -4365,35 +4365,66 @@
   }
   window.addEventListener('blackflag:open-deployment',e=>openCaptainDeploymentRoute(e.detail||{}));
 
+  function closeCaptainSurfacesForEngineRoute(){
+    document.getElementById('captainFleetChart')?.classList.add('hidden');
+    document.getElementById('captainQuarters')?.classList.add('hidden');
+    const workspace=document.getElementById('captainCommandWorkspace');
+    workspace?.classList.add('hidden');
+    workspace?.setAttribute('aria-hidden','true');
+    document.body.classList.remove('captain-command-open');
+  }
+
   async function openCaptainCommandRoute(route){
-    const p=projectById(route?.projectId); if(!p)return;
+    const requestedProjectId=canonicalProjectId(route?.projectId||'');
+    const p=projectById(requestedProjectId);
+    if(!p){
+      const message=`Command route could not resolve project ${requestedProjectId||'(missing)'}.`;
+      window.DarkSkyV4?.diagnostic?.('command_find.route_failed',message,{route,build:BUILD_VERSION});
+      throw new Error(message);
+    }
     const type=String(route?.type||'project');
+    const targetId=String(route?.id||'');
     const openInsideEngine=async()=>{
+      closeCaptainSurfacesForEngineRoute();
+      await openEnginePanel();
       await openProjectEngineControl(p.id);
       if(type==='order'){
         await renderProjectTab(p.id,'orders');
-        const targetId=String(route?.id||'');
         if(targetId){
-          setTimeout(()=>{
+          const focusTarget=()=>{
             const cards=[...document.querySelectorAll('.pec-order-command-card')];
             const card=cards.find(x=>x.textContent.includes(targetId));
-            if(card){card.classList.add('command-find-target');card.scrollIntoView({behavior:'smooth',block:'center'});}
-          },120);
+            if(!card)return false;
+            cards.forEach(x=>x.classList.remove('command-find-target'));
+            card.classList.add('command-find-target');
+            card.scrollIntoView({behavior:'smooth',block:'center'});
+            return true;
+          };
+          if(!focusTarget()) setTimeout(()=>{
+            if(!focusTarget()) window.DarkSkyV4?.diagnostic?.('command_find.order_focus_missing',`Order ${targetId} opened but target card was not found.`,{projectId:p.id,orderId:targetId,build:BUILD_VERSION});
+          },220);
         }
       }else{
         await renderProjectTab(p.id,'overview');
       }
+      window.BlackFlagV3Core?.audit?.({actorRole:'captain',projectId:p.id,category:'navigation',action:'command_find.opened',detail:`${type} • ${targetId||p.id}`});
+      return {ok:true,projectId:p.id,type,id:targetId};
     };
     if(!engineSessionUnlocked){
       pendingCaptainCommandRoute={...route,projectId:p.id};
-      document.getElementById('captainFleetChart')?.classList.add('hidden');
-      document.getElementById('captainQuarters')?.classList.add('hidden');
-      $('engineRoomBtn')?.click();
-      return;
+      closeCaptainSurfacesForEngineRoute();
+      const gate=$('engineRoomBtn');
+      if(!gate) throw new Error('Engine authorization gate is unavailable.');
+      gate.click();
+      return {ok:true,pendingAuthorization:true,projectId:p.id,type,id:targetId};
     }
-    await openInsideEngine();
+    return await openInsideEngine();
   }
-  window.addEventListener('blackflag:open-command-result',e=>openCaptainCommandRoute(e.detail||{}));
+  window.BlackFlagOpenCommandResult=async route=>openCaptainCommandRoute(route||{});
+  window.addEventListener('blackflag:open-command-result',e=>{openCaptainCommandRoute(e.detail||{}).catch(err=>{
+    console.error('Command Find route failed',err);
+    window.DarkSkyV4?.diagnostic?.('command_find.route_failed',String(err?.message||err),{route:e.detail||{},build:BUILD_VERSION});
+  })});
 
 
 

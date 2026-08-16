@@ -1,8 +1,8 @@
-# Dark Sky 4.3.2 — Close Aboard
+# Dark Sky 4.3.3 — Boarding Party
 
-- Command Find result cards are now tappable with OPEN PROJECT / VIEW ORDER actions.
-- Opening a result preserves the Captain/Engine boundary and requests Engine authorization when required.
-- Order results open the owning Project Control Orders view and visually highlight the selected order.
-- Broad result groups show a concise subset first and offer Show All / Show Less controls.
-- Keyboard activation works on result cards for iPad/desktop accessibility.
-- No production data is modified by search or result navigation.
+- Hardened OPEN PROJECT / VIEW ORDER through a direct Engine command route.
+- Captain overlays close before Engine navigation so the destination cannot open invisibly underneath Captain's Quarters.
+- Engine authorization remains required when the Engine session is locked.
+- Canonical project ID and target order ID are carried explicitly.
+- Target orders are scrolled into view and highlighted.
+- Route failures surface in Command Find and Black Box instead of failing silently.

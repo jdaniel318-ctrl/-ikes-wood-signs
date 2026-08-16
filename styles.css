@@ -10647,7 +10647,7 @@ body.universal-project .universal-customer-shell{display:block}
 .easy-bearing-search{display:block}.easy-bearing-filter{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 9px}.easy-bearing-filter button,.easy-bearing-suggestions button{border:1px solid #31505a;background:#0b2027;color:#c9d6d9;border-radius:999px;padding:8px 13px;font-size:.72rem;font-weight:800;letter-spacing:.04em}.easy-bearing-filter button.active{background:#1a5668;border-color:#62a9bb;color:#fff}.easy-bearing-input-wrap{display:grid;grid-template-columns:1fr auto;gap:8px}.easy-bearing-input-wrap input{min-height:50px;border:1px solid #3a6570;border-radius:11px;background:#071d24;color:#eef5f6;padding:0 15px;font-size:1rem}.easy-bearing-input-wrap button{min-width:74px}.easy-bearing-suggestions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0 12px}.easy-bearing-suggestions button{font-weight:600;opacity:.9}.easy-bearing-results{display:block!important}.easy-bearing-summary{display:flex;gap:8px;align-items:baseline;margin:4px 0 10px;color:#a8bbc0}.easy-bearing-summary strong{color:#e8d18b}.easy-bearing-group{margin:10px 0 14px}.easy-bearing-group>header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #31505a;padding:0 2px 7px;margin-bottom:8px}.easy-bearing-group>header strong{color:#d8e3e5}.easy-bearing-group>header span{border:1px solid #31505a;border-radius:999px;padding:2px 8px;font-size:.72rem}.easy-bearing-group>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.easy-bearing-result{border:1px solid #31505a;border-radius:10px;padding:11px;background:#091f26}.easy-bearing-result strong,.easy-bearing-result span{display:block}.easy-bearing-result strong{margin:3px 0;color:#f0d17a}.easy-bearing-result span{color:#aebcc0}.easy-bearing-result mark{background:rgba(240,209,122,.18);color:#ffe29a;border-radius:3px;padding:0 2px}.easy-bearing-empty{display:flex;flex-direction:column;gap:3px;padding:13px;border:1px dashed #31505a;border-radius:10px}.easy-bearing-empty span{color:#91a5aa}
 @media(max-width:900px){.easy-bearing-kpis{grid-template-columns:repeat(2,1fr)}.easy-bearing-group>div{grid-template-columns:1fr}}
 
-/* Dark Sky 4.3.2 — Close Aboard */
+/* Dark Sky 4.3.3 — Boarding Party */
 .easy-bearing-result{display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;transition:border-color .16s ease,background .16s ease,transform .16s ease}
 .easy-bearing-result:hover,.easy-bearing-result:focus{border-color:#b5944e;background:#b5944e0a;outline:none;transform:translateY(-1px)}
 .easy-bearing-result-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
@@ -10656,3 +10656,11 @@ body.universal-project .universal-customer-shell{display:block}
 .command-find-target{outline:2px solid #d5aa4b;outline-offset:3px;animation:commandTargetPulse 1.5s ease 2}
 @keyframes commandTargetPulse{0%,100%{box-shadow:0 0 0 0 #d5aa4b00}50%{box-shadow:0 0 0 8px #d5aa4b20}}
 @media(max-width:760px){.easy-bearing-result{align-items:flex-start}.easy-bearing-result-action{padding:8px 9px;font-size:10px}}
+
+
+/* Dark Sky 4.3.3 — Boarding Party */
+.easy-bearing-result.command-route-launching{opacity:.72;pointer-events:none}
+.easy-bearing-route-error{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:0 0 12px;padding:12px 14px;border:1px solid rgba(210,84,84,.7);border-radius:12px;background:rgba(91,24,24,.32);color:#f6d4d4}
+.easy-bearing-route-error span{font-size:.86rem;opacity:.9}
+.command-find-target{outline:3px solid rgba(222,178,83,.95)!important;outline-offset:3px;box-shadow:0 0 0 6px rgba(222,178,83,.16)!important;animation:commandFindPulse 1.1s ease 2}
+@keyframes commandFindPulse{50%{box-shadow:0 0 0 12px rgba(222,178,83,.24)}}

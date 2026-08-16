@@ -1,8 +1,8 @@
-/* Dark Sky 4.3.2 — Easy Bearing platform generation layer */
+/* Dark Sky 4.3.3 — Easy Bearing platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.3.2';
-const NAME='Close Aboard';
+const VERSION='4.3.3';
+const NAME='Boarding Party';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({
