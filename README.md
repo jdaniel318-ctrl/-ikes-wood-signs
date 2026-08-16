@@ -41,3 +41,6 @@ Captain's Quarters now includes a Shipyard workspace. ScheduleJoe is berthed the
 
 ### 4.5.5 Captain's Shipyard Berth
 ScheduleJoe remains a pre-commissioning Captain's Quarters concept. Its launch is intentionally secondary to fleet command. Engine patterns can be reused when they fit ScheduleJoe's needs, but Engine behavior is not automatically inherited by Captain projects.
+
+### 4.5.6 ScheduleJoe — Hull Design
+ScheduleJoe is now explicitly in architecture-first development inside Captain's Shipyard. The working sequence is Mission → Build Model → States → Movement Rules → Permanent Record → Roles / Permissions → Vessel Decisions. Prototype ideas remain visible but held at dock until the core model is accepted. A First Mate's Table challenges each area so builder knowledge and system-design concerns are both recorded before software assumptions harden into architecture.

@@ -413,22 +413,37 @@ function bootCaptainCommand(){
     const key='blackFlagShipyardScheduleJoe';
     const defaults={
       mission:'Create a builder-first residential construction scheduling system that reflects how homes are actually built in the field, not merely how calendar software expects work to be entered.',
+      coreObject:'WORKING HYPOTHESIS — ScheduleJoe needs one durable build record for each home under construction. Before naming the final object, confirm how the Captain thinks about a house, lot, job, plan, community, and customer relationship in the field.',
+      states:'WORKING HYPOTHESIS — A home moves through meaningful construction states, not merely calendar dates. Define the states from dirt to keys and the evidence required before each transition is considered real.',
+      movement:'Define what is allowed to move the build: completed work, inspections, material readiness, trade readiness, weather, builder judgment, exceptions, and approved overrides. Dates should reflect these facts rather than replace them.',
+      permanentRecord:'Preserve the original baseline, every meaningful revision, actual start/finish dates, delay causes, inspections, overrides, and the Captain’s decisions. Schedule changes must not erase history.',
+      roles:'Start with the Captain / builder as final authority. Identify which future roles may view, recommend, update, approve, or override schedule information before permissions become software.',
       sequence:[
         'Pre-construction / permits','Site work','Foundation','Framing','Dry-in','Rough trades','Inspections','Insulation','Drywall','Interior trim','Cabinets','Paint','Flooring','Fixtures & finishes','Final inspections','Punch','Closing'
       ],
-      prototype:'Start with one house, one master build sequence, dependencies, planned dates, actual dates, responsible trade, and clear delay/attention signals.',
+      prototype:'HELD AT DOCK — Do not build the scheduler until the Build Model, States, Movement Rules, Permanent Record, and Roles / Permissions have been challenged and accepted. Prototype ideas may be captured here without becoming architecture.',
       decisions:"ScheduleJoe remains a Captain's Quarters concept vessel until the Captain commissions it. Engine lessons, primitives, and infrastructure may be reused only after they are evaluated against ScheduleJoe's own mission, users, workflow, data, permissions, and product needs. Nothing is inherited automatically."
     };
     const state={...defaults,...read(key,{})};
     const saveState=()=>write(key,state);
-    body.innerHTML=`<section class="captain-command-intro shipyard-intro"><small>CAPTAIN'S SHIPYARD • CONCEPT VESSEL</small><h3>ScheduleJoe</h3><p>Residential construction scheduling built from a home builder's workflow. This berth is isolated from the Engine until the Captain commissions the vessel.</p></section>
+    body.innerHTML=`<section class="captain-command-intro shipyard-intro"><small>CAPTAIN'S SHIPYARD • HULL DESIGN</small><h3>ScheduleJoe</h3><p>Architecture before features. Reality before automation. Stability before polish.</p></section>
       <div class="shipyard-vessel-banner">
         <div><span>VESSEL SJ-01</span><strong>SCHEDULEJOE</strong><small>Residential Construction Scheduling</small></div>
-        <div class="shipyard-vessel-state"><b>IN DEVELOPMENT</b><small>CAPTAIN'S QUARTERS ONLY</small></div>
+        <div class="shipyard-vessel-state"><b>ARCHITECTURE PHASE</b><small>CAPTAIN + FIRST MATE</small></div>
       </div>
-      <nav class="shipyard-area-tabs" aria-label="ScheduleJoe working areas">
+      <section class="schedulejoe-hull-status" aria-label="ScheduleJoe hull design status">
+        <div><small>HULL DESIGN</small><strong>5 CORE DECISIONS</strong><span>Define the vessel before building the controls.</span></div>
+        <ol>
+          <li><b>01</b><span>Build Model</span></li><li><b>02</b><span>States</span></li><li><b>03</b><span>Movement</span></li><li><b>04</b><span>Permanent Record</span></li><li><b>05</b><span>Roles</span></li>
+        </ol>
+      </section>
+      <nav class="shipyard-area-tabs schedulejoe-architecture-tabs" aria-label="ScheduleJoe architecture areas">
         <button type="button" data-shipyard-area="mission" class="active">MISSION</button>
-        <button type="button" data-shipyard-area="sequence">BUILD SEQUENCE</button>
+        <button type="button" data-shipyard-area="model">BUILD MODEL</button>
+        <button type="button" data-shipyard-area="states">STATES</button>
+        <button type="button" data-shipyard-area="movement">MOVEMENT</button>
+        <button type="button" data-shipyard-area="record">PERMANENT RECORD</button>
+        <button type="button" data-shipyard-area="roles">ROLES</button>
         <button type="button" data-shipyard-area="prototype">PROTOTYPE DECK</button>
         <button type="button" data-shipyard-area="decisions">VESSEL DECISIONS</button>
       </nav>
@@ -436,24 +451,37 @@ function bootCaptainCommand(){
 
     const areaHost=document.getElementById('scheduleJoeArea');
     const tabs=[...document.querySelectorAll('[data-shipyard-area]')];
-    const field=(label,value,id,help)=>`<section class="captain-command-card schedulejoe-work-card"><small>${label}</small><textarea id="${id}">${safe(value||'')}</textarea>${help?`<p>${help}</p>`:''}<button type="button" data-sj-save="${id}">SAVE TO SCHEDULEJOE</button></section>`;
+    const field=(label,value,id,help,button='SAVE TO SCHEDULEJOE')=>`<section class="captain-command-card schedulejoe-work-card"><small>${label}</small><textarea id="${id}">${safe(value||'')}</textarea>${help?`<p>${help}</p>`:''}<button type="button" data-sj-save="${id}">${button}</button></section>`;
+    const mateTable=(heading,question,warning)=>`<aside class="schedulejoe-first-mate-table"><small>FIRST MATE'S TABLE</small><strong>${heading}</strong><p>${question}</p>${warning?`<span>${warning}</span>`:''}</aside>`;
     const renderArea=(area)=>{
       tabs.forEach(b=>b.classList.toggle('active',b.dataset.shipyardArea===area));
       if(area==='mission'){
-        areaHost.innerHTML=`${field('MISSION • WHAT THIS VESSEL MUST SOLVE',state.mission,'sjMission','Keep this builder-first. Define the real scheduling problem before designing features.')}<section class="shipyard-guardrail"><strong>SHIPYARD GUARDRAIL</strong><span>Captain's Quarters incubates. The Engine operates commissioned vessels. Engine lessons may be reused here only when ScheduleJoe proves they fit.</span></section>`;
-      }else if(area==='sequence'){
-        areaHost.innerHTML=`<section class="captain-command-card schedulejoe-work-card"><small>BASELINE HOME BUILD SEQUENCE</small><h3>First construction spine</h3><p>One stage per line. This is the starting sequence, not a locked template.</p><textarea id="sjSequence">${safe((state.sequence||[]).join('\n'))}</textarea><button type="button" data-sj-save="sjSequence">SAVE BUILD SEQUENCE</button></section>`;
+        areaHost.innerHTML=`${field('MISSION • WHAT THIS VESSEL MUST SOLVE',state.mission,'sjMission','Keep this builder-first. We are defining the problem, not selling ourselves features.')} ${mateTable('MISSION CHECK','If ScheduleJoe disappeared tomorrow, what specific scheduling pain would the Captain immediately miss it solving?','Do not let “construction software” become the mission.')}<section class="shipyard-guardrail"><strong>SHIPYARD GUARDRAIL</strong><span>Captain's Quarters incubates. The Engine operates commissioned vessels. Engine lessons may be reused here only when ScheduleJoe proves they fit.</span></section>`;
+      }else if(area==='model'){
+        areaHost.innerHTML=`${field('01 • BUILD MODEL • WHAT IS THE CORE OBJECT?',state.coreObject,'sjCoreObject','Decide what ScheduleJoe is actually tracking before we create tables, calendars, or screens.')} ${mateTable('FIRST ARCHITECTURE QUESTION','When you say “this house,” what information makes it one distinct build in your real operation—lot, address, job number, plan, customer, community, or something else?','A bad core object will infect every later feature.')}<section class="schedulejoe-evidence-card"><small>FIELD EVIDENCE • STARTING SPINE, NOT ARCHITECTURE</small><strong>DIRT → KEYS</strong><p>${safe((state.sequence||[]).join(' → '))}</p><em>The sequence is evidence we will use to test the Build Model. It is not yet a locked template.</em></section>`;
+      }else if(area==='states'){
+        areaHost.innerHTML=`${field('02 • STATES • HOW DOES THE BUILD BECOME DIFFERENT?',state.states,'sjStates','Define meaningful states and what proves a transition occurred. Avoid making every trade task a top-level state.')} ${mateTable('STATE TEST','What must be true in the field before you would confidently tell someone the house has moved into its next phase?','A date alone is not proof that construction advanced.')}`;
+      }else if(area==='movement'){
+        areaHost.innerHTML=`${field('03 • MOVEMENT RULES • WHAT MAY CHANGE THE SCHEDULE?',state.movement,'sjMovement','Capture dependencies, readiness, inspections, materials, weather, trade availability, exceptions, and Captain judgment before automation.')} ${mateTable('AUTOMATION GUARDRAIL','Which changes should ScheduleJoe merely flag, which may it recommend, and which—if any—could it ever move automatically?','Early versions should recommend consequential moves rather than silently rewriting the build.')}`;
+      }else if(area==='record'){
+        areaHost.innerHTML=`${field('04 • PERMANENT RECORD • WHAT MUST NEVER DISAPPEAR?',state.permanentRecord,'sjPermanentRecord','The schedule must preserve the promise, the reality, and why they diverged.')} ${mateTable('TRUTH TEST','Six months after closing, what would we need to reconstruct exactly what was planned, what happened, and why?','Never “fix” a late schedule by erasing the original baseline.')}`;
+      }else if(area==='roles'){
+        areaHost.innerHTML=`${field('05 • ROLES / PERMISSIONS • WHO MAY DO WHAT?',state.roles,'sjRoles','Define authority before building user screens. Start with real people and responsibilities, not software role names.')} ${mateTable('AUTHORITY TEST','Who may observe, recommend, change, approve, or override the build schedule—and whose decision is final when the field disagrees with the software?','Permissions added after the fact become leaks and workarounds.')}`;
       }else if(area==='prototype'){
-        areaHost.innerHTML=`${field('PROTOTYPE DECK • FIRST WORKING VERSION',state.prototype,'sjPrototype','Describe the smallest field-useful scheduler before adding integrations or automation.')}<div class="schedulejoe-prototype-grid"><article><span>01</span><strong>ONE HOUSE</strong><small>Prove the workflow on a real residential build.</small></article><article><span>02</span><strong>DEPENDENCIES</strong><small>Understand what truly moves when an activity slips.</small></article><article><span>03</span><strong>FIELD SIGNALS</strong><small>Show what needs attention today.</small></article><article><span>04</span><strong>BASELINE VS ACTUAL</strong><small>Preserve the original plan while recording reality.</small></article></div>`;
+        areaHost.innerHTML=`<section class="schedulejoe-dock-hold"><small>PROTOTYPE DECK • HELD AT DOCK</small><strong>NO SAILING BEFORE THE HULL IS SOUND</strong><p>We can capture prototype ideas here, but none become approved product architecture until the five core hull decisions have been challenged and accepted.</p></section>${field('PROTOTYPE NOTES • IDEAS, NOT COMMITMENTS',state.prototype,'sjPrototype','Useful ideas belong here so we do not lose them. They are deliberately separated from architecture decisions.','SAVE PROTOTYPE NOTES')}`;
       }else{
-        areaHost.innerHTML=`${field('VESSEL DECISIONS • ARCHITECTURE & BOUNDARIES',state.decisions,'sjDecisions','Record what belongs uniquely to ScheduleJoe, what proven Dark Sky capability is worth reusing, and what must remain separate.')}<section class="shipyard-commissioning-note"><small>COMMISSIONING STATUS</small><strong>NOT YET AN ENGINE VESSEL</strong><p>No project registry entry, customer workflow, deployment manifest, or production data namespace has been created.</p></section>`;
+        areaHost.innerHTML=`${field('VESSEL DECISIONS • ARCHITECTURE & BOUNDARIES',state.decisions,'sjDecisions','Record accepted laws of the vessel, deliberate Dark Sky reuse, and boundaries that must remain separate.')}<section class="shipyard-commissioning-note"><small>COMMISSIONING STATUS</small><strong>NOT YET AN ENGINE VESSEL</strong><p>No project registry entry, customer workflow, deployment manifest, or production data namespace has been created.</p></section>`;
       }
       areaHost.querySelectorAll('[data-sj-save]').forEach(btn=>btn.onclick=()=>{
         const id=btn.dataset.sjSave;
         const el=document.getElementById(id);
         if(!el)return;
         if(id==='sjMission')state.mission=el.value.trim();
-        if(id==='sjSequence')state.sequence=el.value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+        if(id==='sjCoreObject')state.coreObject=el.value.trim();
+        if(id==='sjStates')state.states=el.value.trim();
+        if(id==='sjMovement')state.movement=el.value.trim();
+        if(id==='sjPermanentRecord')state.permanentRecord=el.value.trim();
+        if(id==='sjRoles')state.roles=el.value.trim();
         if(id==='sjPrototype')state.prototype=el.value.trim();
         if(id==='sjDecisions')state.decisions=el.value.trim();
         saveState();

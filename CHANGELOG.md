@@ -72,3 +72,11 @@
 - Recorded the hierarchy rule: Captain's Quarters incubates; the Engine operates commissioned vessels.
 - Recorded the reuse rule: Engine lessons/primitives may inform Captain projects, but no Engine workflow or capability is inherited automatically.
 - No existing Engine, project registry, project identity, order, deployment, or storage structure changed.
+
+## 4.5.6 — ScheduleJoe Hull Design
+- Moved ScheduleJoe into an explicit architecture-first phase: architecture before features, reality before automation, stability before polish.
+- Reframed the Shipyard workspace around five core hull decisions: Build Model, States, Movement Rules, Permanent Record, and Roles / Permissions.
+- Added a First Mate's Table to challenge assumptions in each architecture area instead of treating Captain notes as automatically approved design.
+- Kept the existing dirt-to-keys sequence as field evidence rather than promoting it to a locked software template.
+- Held Prototype Deck at dock: prototype ideas can be recorded but do not become approved architecture by implication.
+- Preserved the Captain's Quarters / Engine boundary and deliberate-reuse rule. No Engine registry, project identity, order, deployment, or storage behavior changed.

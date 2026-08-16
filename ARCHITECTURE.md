@@ -44,3 +44,13 @@ Captain's Quarters is the Captain-level command and incubation layer. It may hos
 Black Flag Engine remains the operating/governance layer for commissioned project vessels. Knowledge learned in the Engine—patterns, primitives, infrastructure, security approaches, analytics, and integrations—may be reused by a Captain-side concept only after evaluating whether it fits that concept's own mission, users, workflow, data model, permissions, and product requirements. Reuse is deliberate; inheritance is never automatic.
 
 ScheduleJoe is currently a Shipyard concept vessel and is not enrolled in the Engine project registry.
+
+## ScheduleJoe Hull Design Law (4.5.6)
+ScheduleJoe does not begin as a calendar. Its first architecture phase must establish five core decisions before prototype behavior is treated as approved product law:
+1. Build Model — identify the durable real-world object being scheduled.
+2. States — define meaningful build states and evidence of transition.
+3. Movement Rules — define dependencies, readiness, exceptions, recommendations, overrides, and where automation is prohibited or requires approval.
+4. Permanent Record — preserve baseline, revisions, actuals, delay causes, inspections, and Captain decisions without rewriting history.
+5. Roles / Permissions — define real authority to view, recommend, change, approve, and override before implementing user roles.
+
+The dirt-to-keys construction sequence is field evidence used to challenge the model; it is not automatically a universal template. Prototype notes may be retained without gaining architectural authority. First Mate review exists to challenge assumptions, surface risk, and distinguish builder reality from software convenience.
