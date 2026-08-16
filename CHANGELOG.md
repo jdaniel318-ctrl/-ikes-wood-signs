@@ -1,14 +1,24 @@
-## 3.9.10 — Experience Test Deck, Stage 1
+# Dark Sky v3.9.11 — Fleet Rail & Continuity
 
-- Added one **TEST EXPERIENCE** command to Engine project cards and the Project Control commissioning lane.
-- Added a unified Experience Test Deck with explicit **Preview**, **Sea Trial**, and **Live** modes that use the same project/customer renderer.
-- Preview is read-only from the operating-system perspective: submissions do not persist customers, orders/engagements, analytics, deployment state, or lifecycle evidence.
-- Sea Trial uses a saved project-owned outpost and marks generated customer records as test data while exercising the real persistence/workflow path.
-- Added an always-visible mode banner with a reliable return path to the Test Deck.
-- Added an **Open Shipwright** route when Sea Trial cannot begin because no saved outpost exists.
-- Kept the existing Fleet Ready / Join Fleet rules unchanged in Stage 1; automated evidence scoring and experience approval gates are intentionally deferred to later stages.
-- Added early delegated command routing for Test Experience controls so dynamic rerenders do not strand the buttons.
-- Bumped runtime, cache, and commissioning identity together to 3.9.10.
+- Locked Project Command to native finger-driven horizontal scrolling; no arrow navigation.
+- Preserved All / Current / Test-Private / Future filters; the rail now reports how many projects are visible after filtering.
+- Project cards use fixed touch-rail widths so additional vessels remain off-canvas and reachable by swipe instead of being squeezed or hidden.
+- Added outlined button affordances for Control Center and Test Experience.
+- Added immutable-ID fleet continuity healing: a previously verified project missing after a browser/version transition can be restored from verified browser recovery cargo, read back from the canonical registry, and audited.
+- Recovery never matches by business name and does not automatically resurrect archived/retired projects.
+
+## 3.9.10 — Experience Test Deck
+
+- Added one Engine-level **TEST EXPERIENCE** command for every project and a matching Project Control command.
+- Combined Preview, Sea Trial, Test Results and Live access into one Experience Test Deck while preserving explicit operating modes.
+- Preview now uses the real customer renderer but prevents persistence, customer capture, analytics meaning, external email delivery and lifecycle evidence.
+- Sea Trial submissions are project/deployment scoped, marked `testMode: true`, and excluded from normal Engine/Project Control/Owner/Captain production metrics.
+- Added Experience Approval bound to a customer-configuration signature; customer-facing configuration changes automatically invalidate stale approval.
+- Bound Sea Trial evidence to the same configuration signature so changed customer behavior must be retested before Fleet Ready.
+- Added Test Results checks for identity, customer operating model, offer readiness, deployment manifest, project isolation, test-data boundary, customer submission and receipt evidence.
+- Fleet Ready now requires both current Experience Approval and current Sea Trial evidence.
+- Added a persistent mode banner so iPad testing always shows whether the operator is in PRIVATE PREVIEW, SEA TRIAL, or LIVE.
+- Bumped runtime, service-worker cache and asset query strings together to 3.9.10.
 
 ## 3.9.9 — Canonical Registry Reconciliation
 

@@ -10573,7 +10573,7 @@ body.universal-project .universal-customer-shell{display:block}
 .modern-project-command .commission-draft-card .project-card-actions{grid-template-columns:1fr!important}
 
 /* ==========================================================
-   DARK SKY v3.9.10 — EXPERIENCE TEST DECK
+   DARK SKY v3.9.11 — EXPERIENCE TEST DECK + FLEET RAIL
    One customer renderer, explicit Preview / Sea Trial / Live contracts.
    ========================================================== */
 .project-card-actions-three{grid-template-columns:1fr 1fr!important;align-items:stretch}
@@ -10653,3 +10653,63 @@ body.universal-project .universal-customer-shell{display:block}
 .experience-stage-note strong{color:#e6efeb;font:900 11px Arial,sans-serif;letter-spacing:.08em;white-space:nowrap}
 .experience-stage-note span{font-size:11px;line-height:1.45}
 @media(max-width:760px){.experience-stage-note{align-items:flex-start;flex-direction:column}.experience-stage-note strong{white-space:normal}.experience-stage-note span{font-size:12px}}
+
+
+/* ==========================================================
+   DARK SKY v3.9.11 — DIRECT-TOUCH FLEET RAIL
+   Technician filters first, then finger-scrolls the resulting rail.
+   No arrow navigation. Cards never shrink to fit the viewport.
+   ========================================================== */
+.modern-project-command .project-command-cards{
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  align-items:stretch!important;
+  gap:12px!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:scroll!important;
+  overflow-y:hidden!important;
+  padding:2px 4px 14px!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-x:contain!important;
+  touch-action:pan-x!important;
+  scroll-snap-type:x proximity!important;
+  scroll-padding-inline:4px!important;
+  scrollbar-width:thin;
+}
+.modern-project-command .project-command-cards>.project-card{
+  flex:0 0 clamp(270px,22.5vw,315px)!important;
+  width:clamp(270px,22.5vw,315px)!important;
+  max-width:315px!important;
+  min-width:270px!important;
+  scroll-snap-align:start!important;
+}
+.modern-project-command .project-command-cards>.add-project-card{
+  flex-basis:230px!important;
+  width:230px!important;
+  min-width:230px!important;
+}
+.modern-project-command .project-command-cards>.project-card[hidden]{display:none!important}
+.modern-project-command .project-fleet-rail-buttons{display:none!important}
+.modern-project-command .project-fleet-rail-tools>span{font-size:13px!important;letter-spacing:.01em!important}
+@media(max-width:900px){
+  .modern-project-command .project-command-cards>.project-card{
+    flex-basis:min(82vw,305px)!important;width:min(82vw,305px)!important;min-width:min(82vw,305px)!important;
+  }
+  .modern-project-command .project-command-cards>.add-project-card{flex-basis:min(64vw,240px)!important;width:min(64vw,240px)!important;min-width:min(64vw,240px)!important}
+}
+
+/* Project-card command affordance: outlined controls read as buttons on iPad. */
+.modern-project-command .project-card-actions [data-open-project-control],
+.modern-project-command .project-card-actions [data-project-test-experience]{
+  min-height:46px!important;
+  border:1px solid #3b6673!important;
+  border-radius:9px!important;
+  background:linear-gradient(145deg,#0b1a20,#0d252d)!important;
+  color:#dcebed!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.modern-project-command .project-card-actions [data-open-project-control]:active,
+.modern-project-command .project-card-actions [data-project-test-experience]:active{
+  border-color:#6ab8d0!important;background:#123541!important;transform:translateY(1px);
+}

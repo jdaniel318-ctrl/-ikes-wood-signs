@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.9.10';
+  const BUILD_VERSION = '3.9.11';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -253,7 +253,7 @@
     const directory=readCustomerDirectory();
     directory[projectId]={};
     writeCustomerDirectory(directory);
-    projectScopedOrders(orders||[],projectId).forEach(captureCustomerFromOrder);
+    projectScopedOrders(orders||[],projectId).filter(o=>o.testMode!==true).forEach(captureCustomerFromOrder);
   }
 
   function engineWideCustomerMatches(customerKey){
@@ -1193,6 +1193,52 @@
     if(!p.orderPrefix)p.orderPrefix=p.projectCode;
     return p;
   }
+  function verifiedBackupRecoveryRows(canonicalRows,savedRows,backup){
+    // v3.9.11 — Fleet continuity recovery. The canonical registry remains the
+    // authority, but a browser/version interruption must not silently drop a
+    // previously verified Project ID. Recovery is identity-based only: never name-based.
+    const canonical=Array.isArray(canonicalRows)?canonicalRows:[];
+    const mirror=Array.isArray(savedRows)?savedRows:[];
+    const backupRows=Array.isArray(backup?.projects)?backup.projects:[];
+    if(!canonical.length)return [];
+    const have=projectRegistryIds(canonical), candidates=new Map();
+    for(const row of [...mirror,...backupRows]){
+      const id=String(row?.id||'');
+      if(!id||have.has(id))continue;
+      const current=candidates.get(id);
+      candidates.set(id,current?{row:current.row,seen:current.seen+1,sources:new Set([...current.sources,row===undefined?'unknown':'secondary'])}:{row:structuredClone(row),seen:1,sources:new Set(['secondary'])});
+    }
+    const recovered=[];
+    for(const [id,entry] of candidates){
+      const row=entry.row;
+      // Only restore sealed projects with an immutable identity and default-deny
+      // boundary. Archived/retired cargo is not automatically resurrected.
+      if(!row?.id || row?.archived===true || row?.status==='retired')continue;
+      if(String(row.id)!==id)continue;
+      if(row?.isolation?.crossProjectAccess!=='deny')continue;
+      const proposed=[...canonical,...recovered,row];
+      const introduced=newlyIntroducedCriticalIssues(canonical,proposed);
+      if(introduced.length)continue;
+      recovered.push(structuredClone(row));
+    }
+    return recovered;
+  }
+
+  async function healCanonicalRegistryContinuity(canonicalRows,savedRows,backup){
+    const recovered=verifiedBackupRecoveryRows(canonicalRows,savedRows,backup);
+    if(!recovered.length)return canonicalRows;
+    const merged=[...canonicalRows,...recovered];
+    const persisted=await persistProjectRegistry(merged);
+    const verify=await readCanonicalProjectRegistry();
+    const missing=recovered.filter(p=>!registryContainsProject(verify,p.id));
+    if(missing.length)throw new Error(`Fleet continuity recovery failed read-back for ${missing.map(p=>p.id).join(', ')}`);
+    for(const p of recovered){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:p.id,category:'recovery',action:'project.registry.continuity_restored',detail:`${p.name||p.id} restored by immutable Project ID from verified browser recovery cargo`});
+    }
+    writeProjectRegistryBackup(verify,'continuity-healed');
+    return verify;
+  }
+
   async function loadCompanies(){
     let canonicalRows=[];
     let savedRows=null;
@@ -1205,6 +1251,12 @@
     }
 
     const backup=readProjectRegistryBackup();
+    // v3.9.11: if a prior verified Project ID exists in browser recovery cargo but
+    // disappeared from the canonical store during a version/deployment transition,
+    // heal the canonical registry by immutable ID before rendering the fleet.
+    if(canonicalRows.length){
+      try{canonicalRows=await healCanonicalRegistryContinuity(canonicalRows,savedRows,backup);}catch(err){console.warn('Fleet continuity recovery warning',err);}
+    }
     let registrySource='defaults';
     if(canonicalRows.length){
       companies=canonicalRows;
@@ -1582,20 +1634,40 @@
   async function renderExperienceTestDeck(p){
     const deck=ensureExperienceTestDeck(),body=document.getElementById('experienceTestDeckBody');if(!p||!body)return;
     experienceTestDeckProjectId=p.id;document.getElementById('experienceTestTitle').textContent=p.name;
-    const shellReady=projectCustomerOperatingModelReady(p),d=experienceDeploymentFor(p),live=d?.state==='deployed'&&p.publish?.status==='live';
+    const snap=await experienceTestSnapshot(p),shellReady=projectCustomerOperatingModelReady(p),d=snap.deployment;
+    const liveDeployment=migrateLegacyDeployment(p).find(x=>x.state==='deployed');
+    const live=!!liveDeployment&&p.publish?.status==='live';
     body.innerHTML=`<section class="experience-mode-grid">
-      <article class="experience-mode-card preview"><small>LOOK ONLY</small><h3>Preview</h3><p>Walk through the real customer renderer using this project's current configuration. Preview submissions create no customer, engagement, order, analytics, deployment, or lifecycle records.</p><button type="button" data-experience-mode="preview" class="primary-btn" ${shellReady?'':'disabled'}>OPEN PRIVATE PREVIEW</button><span>${shellReady?'Safe visual/customer-journey inspection.':'Add a customer-ready offer before previewing this vessel.'}</span></article>
-      <article class="experience-mode-card sea-trial"><small>TEST INFRASTRUCTURE</small><h3>Sea Trial</h3><p>Run the same customer experience through a saved project-owned outpost. Submissions exercise real persistence and workflow paths but are explicitly marked as test data.</p><button type="button" data-experience-mode="sea_trial" class="primary-btn" ${d&&Number(d.manifestVersion||1)>1&&shellReady?'':'disabled'}>${d&&Number(d.manifestVersion||1)>1?'RUN SEA TRIAL':'SAVED OUTPOST REQUIRED'}</button><span>${d?`${escapeHtml(d.name)} • ${escapeHtml(d.state.replaceAll('_',' '))}`:'Create and save an outpost in Shipwright first.'}</span></article>
-      <article class="experience-mode-card live"><small>PRODUCTION</small><h3>Live</h3><p>Open the actual published customer experience. Stage 1 does not change live lifecycle rules.</p><button type="button" data-experience-mode="live" class="primary-btn" ${live?'':'disabled'}>${live?'OPEN LIVE EXPERIENCE':'NOT LIVE YET'}</button></article>
+      <article class="experience-mode-card preview"><small>LOOK ONLY</small><h3>Preview</h3><p>Walk through the real customer renderer using the current project configuration. Preview submissions are simulated and create no customer, engagement/order, analytics, email, deployment, or lifecycle records.</p><button type="button" data-experience-mode="preview" class="primary-btn" ${shellReady?'':'disabled'}>OPEN PRIVATE PREVIEW</button><span>${shellReady?'Safe visual and customer-journey inspection.':'Add a customer-ready offer before previewing this vessel.'}</span></article>
+      <article class="experience-mode-card sea-trial"><small>TEST INFRASTRUCTURE</small><h3>Sea Trial</h3><p>Exercise the same customer experience against a saved project-owned outpost. Test records use the real persistence/workflow path but stay explicitly marked as test data.</p><button type="button" data-experience-mode="sea_trial" class="primary-btn" ${d&&Number(d.manifestVersion||1)>1&&shellReady?'':'disabled'}>${d&&Number(d.manifestVersion||1)>1?'RUN SEA TRIAL':'SAVED OUTPOST REQUIRED'}</button><span>${d?`${escapeHtml(d.name)} • ${escapeHtml(d.state.replaceAll('_',' '))}`:'Create and save an outpost in Shipwright first.'}</span></article>
+      <article class="experience-mode-card live"><small>PRODUCTION</small><h3>Live</h3><p>Open the actual published customer experience. No test flags and no simulation.</p><button type="button" data-experience-mode="live" class="primary-btn" ${live?'':'disabled'}>${live?'OPEN LIVE EXPERIENCE':'NOT LIVE YET'}</button></article>
     </section>
-    <section class="experience-stage-note"><strong>STAGE 1 • UNIFIED EXPERIENCE DECK</strong><span>Preview and Sea Trial now share one customer renderer with explicit execution modes. Automated evidence scoring and approval gates come in later stages after this navigation and isolation layer passes your iPad sea trial.</span></section>
-    ${!d?'<div class="experience-deck-guidance"><strong>Sea Trial needs an outpost.</strong><span>Preview is available first. Create and save an outpost when you are ready to test the real infrastructure.</span><button type="button" id="experienceOpenShipwright" class="secondary-btn">OPEN SHIPWRIGHT</button></div>':''}`;
+    <section class="experience-certification-grid">
+      <article class="experience-approval-card ${snap.approved?'approved':'pending'}"><span>VISUAL / EXPERIENCE APPROVAL</span><strong>${snap.approved?'APPROVED':'PENDING'}</strong><p>${snap.approved?'Approval matches the current customer-facing configuration.':'Preview the customer journey and approve it when branding, language, offers, inputs and presentation are ready.'}</p><button type="button" id="approveExperienceBtn" class="${snap.approved?'secondary-btn':'primary-btn'}">${snap.approved?'REVOKE APPROVAL':'APPROVE EXPERIENCE'}</button></article>
+      <article class="experience-approval-card ${snap.seaTrialPassed?'approved':'pending'}"><span>SEA TRIAL CERTIFICATION</span><strong>${snap.seaTrialPassed?'PASSED':'NOT PASSED'}</strong><p>${snap.seaTrialPassed?'The current configuration has real project-scoped test evidence.':'Run the current configuration through a saved outpost and complete a customer submission.'}</p></article>
+    </section>
+    <section class="experience-results-card"><div class="experience-results-head"><div><span>TEST RESULTS</span><h3>${snap.checklist.filter(x=>x.pass).length} passed • ${snap.checklist.filter(x=>!x.pass).length} open</h3></div><b class="${snap.seaTrialPassed&&snap.approved?'ready':'watch'}">${snap.seaTrialPassed&&snap.approved?'FLEET READY EVIDENCE':'KEEP TESTING'}</b></div><div class="experience-checklist">${snap.checklist.map(x=>`<div class="${x.pass?'pass':'open'}"><i>${x.pass?'✓':'!'}</i><span><strong>${escapeHtml(x.label)}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div></section>
+    ${!d?'<div class="experience-deck-guidance"><strong>Sea Trial needs an outpost.</strong><span>Preview is available first. Create and save an outpost when you are ready to test persistence, deployment identity, session behavior, workflow and customer submission.</span><button type="button" id="experienceOpenShipwright" class="secondary-btn">OPEN SHIPWRIGHT</button></div>':''}`;
   }
 
   async function openExperienceTestDeck(projectId){const p=projectById(projectId);if(!p)return;const deck=ensureExperienceTestDeck();experienceTestDeckProjectId=p.id;deck.classList.remove('hidden');document.body.classList.add('experience-test-deck-open');await renderExperienceTestDeck(p);}
   function closeExperienceTestDeck(){document.getElementById('experienceTestDeck')?.classList.add('hidden');document.body.classList.remove('experience-test-deck-open');}
   function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';banner.innerHTML=`<span><b>${escapeHtml(label)}</b><small>${escapeHtml(p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':'RETURN TO TEST DECK'}</button>`;banner.classList.remove('hidden');}
-  async function enterExperienceMode(p,mode){if(!p)return;const d=mode==='live'?migrateLegacyDeployment(p).find(x=>x.state==='deployed'):experienceDeploymentFor(p);if(mode==='sea_trial'&&(!d||Number(d.manifestVersion||1)<=1)){alert('Sea Trial requires a saved outpost manifest. Preview is available now; use Shipwright to create and save the outpost before infrastructure testing.');return;}if(mode==='live'&&!(d?.state==='deployed'&&p.publish?.status==='live'))return;experienceTestReturnState={projectId:p.id,mode,deploymentId:d?.id||null};window.__deploymentCustomerContext=experienceModeContext(p,mode,d);if(projectShellFor(p)==='universal'&&mode!=='live')clearUniversalReceipt(p);closeExperienceTestDeck();ensureExperienceModeBanner(p,mode);await enterProject(p.id);}
+  async function enterExperienceMode(p,mode){
+    if(!p)return;
+    const d=mode==='live'?migrateLegacyDeployment(p).find(x=>x.state==='deployed'):experienceDeploymentFor(p);
+    if(mode==='sea_trial'&&(!d||Number(d.manifestVersion||1)<=1)){alert('Sea Trial requires a saved outpost manifest. Preview is available now; use Shipwright to create and save the outpost before infrastructure testing.');return;}
+    if(mode==='sea_trial'&&d.state==='paused'){alert('This outpost is paused. Resume it or return it to an appropriate test state in Shipwright before running Sea Trial.');return;}
+    if(mode==='sea_trial'&&d.state==='draft'){
+      if(!window.BlackFlagV3Core?.canTransitionDeployment?.('draft','sea_trial')){alert('Dark Sky blocked the Sea Trial because the deployment lifecycle transition is invalid.');return;}
+      d.state='sea_trial';d.updatedAt=new Date().toISOString();d.manifestVersion=Number(d.manifestVersion||1)+1;normalizeDeploymentIdentity(p,d);
+      try{await saveCompanies();logActivity(p.id,'Experience Sea Trial started',d.name||d.id);}catch(err){alert(`Sea Trial could not start: ${String(err?.message||err)}`);return;}
+    }
+    if(mode==='live'&&!(d?.state==='deployed'&&p.publish?.status==='live'))return;
+    experienceTestReturnState={projectId:p.id,mode,deploymentId:d?.id||null};window.__deploymentCustomerContext=experienceModeContext(p,mode,d);
+    if(projectShellFor(p)==='universal'&&mode!=='live')clearUniversalReceipt(p);
+    closeExperienceTestDeck();ensureExperienceModeBanner(p,mode);await enterProject(p.id);
+  }
   async function returnFromExperienceMode(){const state=experienceTestReturnState;experienceTestReturnState=null;window.__deploymentCustomerContext=null;document.getElementById('experienceModeBanner')?.classList.add('hidden');hideAllCustomerShells();document.body.classList.remove('project-mode','universal-project','ikes-project','mugs-project','flowers-project');document.body.classList.add('engine-mode');$('enginePanel')?.classList.remove('hidden');$('returnToEngineBtn')?.classList.add('hidden');activeProjectId=null;engineSessionUnlocked=true;if(state?.projectId&&state.mode!=='live')await openExperienceTestDeck(state.projectId);else await renderEngineRoom();}
 
   function projectFleetLaunchState(p){
@@ -1607,8 +1679,10 @@
     const brief=String(p.businessBrief?.text||p.description||'').trim();
     const live=p.publish?.status==='live'&&active.length>0;
     if(live)return {key:'live',label:'LIVE',step:5,detail:`${active.length} active outpost${active.length===1?'':'s'} serving customers.`,action:'open',actionLabel:'OPEN PROJECT',deployments,active,tested,trials,offers,brief};
-    if(tested.length||active.length)return {key:'fleet_ready',label:'FLEET READY',step:4,detail:'Sea Trial proof is recorded. Captain approval can join this vessel to the live fleet.',action:'join',actionLabel:'JOIN FLEET',deployments,active,tested,trials,offers,brief};
-    if(trials.length)return {key:'sea_trial',label:'SEA TRIAL',step:3,detail:'Complete one customer test order through the Sea Trial outpost.',action:'continue',actionLabel:'CONTINUE SEA TRIAL',deployments,active,tested,trials,offers,brief};
+    const approvedExperience=experienceApproved(p);
+    if(tested.length&&approvedExperience)return {key:'fleet_ready',label:'FLEET READY',step:4,detail:'Experience approval and Sea Trial evidence are current. Captain approval can join this vessel to the live fleet.',action:'join',actionLabel:'JOIN FLEET',deployments,active,tested,trials,offers,brief};
+    if(tested.length&&!approvedExperience)return {key:'sea_trial',label:'EXPERIENCE REVIEW',step:3,detail:'Sea Trial evidence is current. Preview and approve the customer experience before joining the fleet.',action:'experience',actionLabel:'TEST EXPERIENCE',deployments,active,tested,trials,offers,brief};
+    if(trials.length)return {key:'sea_trial',label:'SEA TRIAL',step:3,detail:'Complete one customer test through the Experience Test Deck.',action:'experience',actionLabel:'TEST EXPERIENCE',deployments,active,tested,trials,offers,brief};
     if(deployments.length)return {key:'preparing',label:'PREPARING',step:2,detail:'An outpost exists. Finish its setup and begin Sea Trial.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
     if(offers.length&&brief)return {key:'preparing',label:'PREPARING',step:2,detail:'The business is defined. Create its first customer outpost.',action:'continue',actionLabel:'CREATE FIRST OUTPOST',deployments,active,tested,trials,offers,brief};
     return {key:'draft',label:'DRAFT',step:1,detail:!brief?'Finish the Business Brief so Dark Sky understands this vessel.':'Add at least one customer-ready offer before launch.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
@@ -4329,14 +4403,14 @@
       universalCustomerState.receipt=receipt;
       const contact=[receipt.customerName,receipt.customerPhone,receipt.customerEmail].filter(Boolean).join(' • ');
       const contextBits=[receipt.fulfillment?`Fulfillment: ${receipt.fulfillment.replaceAll('-',' ')}`:'',receipt.preferredTiming?`Timing: ${receipt.preferredTiming}`:''].filter(Boolean);
-      shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div>${ctx.deploymentId?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
-      <main class="universal-shell-main"><section class="universal-done-card universal-receipt-card"><div class="universal-done-mark">✓</div><small>${escapeHtml(ctx.state==='sea_trial'?`SEA TRIAL • ${relationship.receiptLabel}`:relationship.receiptLabel)}</small><h2>${escapeHtml(ctx.state==='sea_trial'?'Customer test complete.':relationship.confirmationHeading)}</h2><p class="universal-receipt-next">${escapeHtml(ctx.state==='sea_trial'?'The customer engagement was recorded against this outpost. Return to Shipwright to continue launch.':relationship.nextStep)}</p><div class="universal-receipt-summary"><div><span>REFERENCE</span><strong>${escapeHtml(receipt.id)}</strong></div><div><span>ENGAGEMENT</span><strong>${escapeHtml(relationship.label)}</strong></div><div><span>WHAT THEY SENT</span><strong>${escapeHtml(receipt.offerName||'Request')}</strong></div>${contact?`<div><span>CONTACT</span><strong>${escapeHtml(contact)}</strong></div>`:''}${contextBits.length?`<div><span>DETAILS</span><strong>${escapeHtml(contextBits.join(' • '))}</strong></div>`:''}</div>${ctx.deploymentId?'<button type="button" id="universalDoneReturnShipwright" class="primary-btn">RETURN TO SHIPWRIGHT</button>':'<div class="universal-receipt-actions"><button type="button" id="universalAnotherOrder" class="secondary-btn">START ANOTHER</button></div>'}</section></main>`;
+      shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
+      <main class="universal-shell-main"><section class="universal-done-card universal-receipt-card"><div class="universal-done-mark">✓</div><small>${escapeHtml(ctx.state==='preview'?'PRIVATE PREVIEW • NO RECORD CREATED':ctx.state==='sea_trial'?`SEA TRIAL • ${relationship.receiptLabel}`:relationship.receiptLabel)}</small><h2>${escapeHtml(ctx.state==='preview'?'Preview complete.':ctx.state==='sea_trial'?'Customer test complete.':relationship.confirmationHeading)}</h2><p class="universal-receipt-next">${escapeHtml(ctx.state==='preview'?'This is the real confirmation experience, but no customer, order, engagement, analytics, or lifecycle record was written.':ctx.state==='sea_trial'?'The customer engagement was recorded against this outpost as test data. Return to the Test Deck to review results.':relationship.nextStep)}</p><div class="universal-receipt-summary"><div><span>REFERENCE</span><strong>${escapeHtml(receipt.id)}</strong></div><div><span>ENGAGEMENT</span><strong>${escapeHtml(relationship.label)}</strong></div><div><span>WHAT THEY SENT</span><strong>${escapeHtml(receipt.offerName||'Request')}</strong></div>${contact?`<div><span>CONTACT</span><strong>${escapeHtml(contact)}</strong></div>`:''}${contextBits.length?`<div><span>DETAILS</span><strong>${escapeHtml(contextBits.join(' • '))}</strong></div>`:''}</div>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalDoneReturnShipwright" class="primary-btn">RETURN TO SHIPWRIGHT</button>':'<div class="universal-receipt-actions"><button type="button" id="universalAnotherOrder" class="secondary-btn">START ANOTHER</button></div>'}</section></main>`;
       $('universalAnotherOrder')?.addEventListener('click',()=>{clearUniversalReceipt(p);resetUniversalCustomerState(p);renderUniversalCustomerShell(p)});
       $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       $('universalDoneReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       return;
     }
-    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Choose an offer and send your request.')}</p></div>${ctx.deploymentId?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
+    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Choose an offer and send your request.')}</p></div>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
       <main class="universal-shell-main">
         ${ctx.state==='sea_trial'?'<div class="universal-trial-banner">SEA TRIAL — Activity created here is marked test data and remains subordinate to this Project ID.</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only">PRIVATE PREVIEW — Walk the real customer experience. Nothing submitted here is persisted.</div>':''}
         <section class="universal-order-card">
@@ -4346,7 +4420,7 @@
         ${photoRequired?`<section class="universal-order-card"><div class="universal-section-head"><small>2 • REFERENCE</small><h2>Add the required photo</h2></div><label class="universal-photo-picker"><input id="universalPhotoInput" type="file" accept="image/*" capture="environment"><span>${universalCustomerState.photoData?'CHANGE PHOTO':'TAKE OR CHOOSE PHOTO'}</span></label>${universalCustomerState.photoData?`<img class="universal-photo-preview" src="${universalCustomerState.photoData}" alt="Customer reference photo">`:''}</section>`:''}
         <section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'3':'2'} • DETAILS</small><h2>${escapeHtml(detailHeading)}</h2><p>${escapeHtml((window.BlackFlagV3Core?.normalizeBusinessBrief?.(p)?.text||'').slice(0,240))}</p></div><textarea id="universalNotes" class="universal-input" rows="5" maxlength="${Math.max(1000,Number(p.characterLimit||500))}" placeholder="${escapeHtml(detailPlaceholder)}">${escapeHtml(universalCustomerState.notes)}</textarea>${operating.schedulingNeeded?`<label class="universal-adaptive-field">Preferred date / timing<input id="universalPreferredTiming" class="universal-input" value="${escapeHtml(universalCustomerState.preferredTiming)}" placeholder="When would you like this?"></label>`:''}${(operating.fulfillment||[]).length?`<label class="universal-adaptive-field">Fulfillment<select id="universalFulfillment" class="universal-input"><option value="">Choose an option</option>${operating.fulfillment.map(x=>`<option value="${escapeHtml(x)}" ${universalCustomerState.fulfillment===x?'selected':''}>${escapeHtml(x.replaceAll('-',' '))}</option>`).join('')}</select></label>`:''}</section>
         ${contactCapture?`<section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'4':'3'} • CONTACT</small><h2>How should we reach you?</h2></div><div class="universal-contact-grid"><label>Name<input id="universalCustomerName" class="universal-input" autocomplete="name" value="${escapeHtml(universalCustomerState.customerName)}"></label><label>Phone<input id="universalCustomerPhone" class="universal-input" type="tel" autocomplete="tel" value="${escapeHtml(universalCustomerState.customerPhone)}"></label><label>Email<input id="universalCustomerEmail" class="universal-input" type="email" autocomplete="email" value="${escapeHtml(universalCustomerState.customerEmail)}"></label></div></section>`:''}
-        <section class="universal-review-card"><div><small>READY TO SEND</small><h2>${escapeHtml(offer?.name||'Select an offer')}</h2><p>${escapeHtml(universalPriceLabel(offer))}</p></div><button type="button" id="universalSubmitOrder" class="primary-btn" ${offers.length?'':'disabled'}>${escapeHtml(ctx.state==='sea_trial'?relationship.testActionLabel:relationship.actionLabel)}</button></section>
+        <section class="universal-review-card"><div><small>READY TO SEND</small><h2>${escapeHtml(offer?.name||'Select an offer')}</h2><p>${escapeHtml(universalPriceLabel(offer))}</p></div><button type="button" id="universalSubmitOrder" class="primary-btn" ${offers.length?'':'disabled'}>${escapeHtml(ctx.state==='preview'?'SIMULATE '+relationship.actionLabel:ctx.state==='sea_trial'?relationship.testActionLabel:relationship.actionLabel)}</button></section>
       </main>`;
     $$('[data-universal-offer]').forEach(btn=>btn.addEventListener('click',()=>{universalCustomerState.offerId=btn.dataset.universalOffer;renderUniversalCustomerShell(p)}));
     $('universalNotes')?.addEventListener('input',e=>universalCustomerState.notes=e.target.value);
@@ -6399,7 +6473,7 @@ The full order and approved media remain stored with this project.`;
     chars.forEach((ch,i)=>{const cw=scaled[i],mid=x+cw/2,n=Math.max(-1,Math.min(1,mid/(maxWidth/2))),edge=Math.abs(n),y=cy+(edge*edge*size*.11),sx=.68+.32*Math.cos(edge*Math.PI/2),rot=n*.075;ctx.save();ctx.translate(cx+mid,y);ctx.rotate(rot);ctx.scale(sx,1);ctx.font=`700 ${size}px ${family}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=Math.max(3,size*.075);ctx.strokeStyle='rgba(255,255,255,.9)';ctx.fillStyle='#111';ctx.strokeText(ch,0,0);ctx.fillText(ch,0,0);ctx.restore();x+=cw;});
   }
   async function createMugsApprovedPreview(){if(!mugsState.photoData)return '';return new Promise(resolve=>{const img=new Image();img.onload=()=>{try{const scale=Math.min(1,1600/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height)),w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale)),h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale)),canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return resolve('');ctx.drawImage(img,0,0,w,h);const lines=mugWrapLines(mugsState.message||'');let size=Math.max(30,Math.min(Math.round(w*.075),Math.round(h*.16)));const family=mugsState.style==='classic'?'Georgia':mugsState.style==='script'?'cursive':'Arial';const maxWidth=w*.58,spacing=size*1.05,startY=h*.5-((lines.length-1)*spacing/2);lines.forEach((line,i)=>drawMugWrapLine(ctx,line,w*.5,startY+i*spacing,maxWidth,size,family));resolve(canvas.toDataURL('image/jpeg',.86));}catch(err){console.warn('Mugs preview failed',err);resolve('');}};img.onerror=()=>resolve('');img.src=mugsState.photoData;});}
-  async function submitMugsOrder(){if(activeProjectId!=='mugshot-after-dark')return;if(!mugsState.photoData){alert('A confirmed mug photo is required.');showMugsScreen('photo');return;}if(!mugsState.message.trim()){alert('Enter the mug message.');showMugsScreen('message');return;}if(!mugsState.customerName.trim()||!mugsState.customerPhone.trim()){alert('Name and phone are required.');showMugsScreen('customer');return;}if(!$('mugsApprovalCheck')?.checked)return;const approvedPreviewData=await createMugsApprovedPreview();if(!approvedPreviewData){alert('The approved mug preview could not be confirmed.');showMugsScreen('photo');return;}const d=new Date(),y=String(d.getFullYear()).slice(-2),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`MUG-${y}${mo}${day}-${suffix}`;const order={projectId:'mugshot-after-dark',namespace:window.BlackFlagV3Core?.namespaceFor?.('mugshot-after-dark')||'bf.project.mugshot-after-dark',isolation:{projectId:'mugshot-after-dark',crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:'Mugs After Dark',orderPrefix:'MUG'},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:0,photoData:mugsState.photoData,approvedPreviewData,wording:mugsState.message,font:mugsState.style,fill:'Black',contactPreference:'Text',customerName:mugsState.customerName,customerPhone:mugsState.customerPhone,customerEmail:mugsState.customerEmail,approved:true,testMode:currentExperienceContext(projectById(activeProjectId))?.state!=='deployed',deploymentId:currentExperienceContext(projectById(activeProjectId))?.deploymentId||null};const mugsCtx=currentExperienceContext(projectById(activeProjectId));if(mugsCtx?.state!=='preview'){backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Mugs order save failed',err);}if(mugsCtx?.state==='sea_trial')await recordExperienceSeaTrialSubmission(projectById(activeProjectId),id);}mugsState.approvedPreviewData=approvedPreviewData;$('mugsDoneOrderId').textContent=id;$('mugsDonePreview').src=approvedPreviewData;showMugsScreen('done');}
+  async function submitMugsOrder(){if(activeProjectId!=='mugshot-after-dark')return;if(!mugsState.photoData){alert('A confirmed mug photo is required.');showMugsScreen('photo');return;}if(!mugsState.message.trim()){alert('Enter the mug message.');showMugsScreen('message');return;}if(!mugsState.customerName.trim()||!mugsState.customerPhone.trim()){alert('Name and phone are required.');showMugsScreen('customer');return;}if(!$('mugsApprovalCheck')?.checked)return;const approvedPreviewData=await createMugsApprovedPreview();if(!approvedPreviewData){alert('The approved mug preview could not be confirmed.');showMugsScreen('photo');return;}const d=new Date(),y=String(d.getFullYear()).slice(-2),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`MUG-${y}${mo}${day}-${suffix}`;const order={projectId:'mugshot-after-dark',namespace:window.BlackFlagV3Core?.namespaceFor?.('mugshot-after-dark')||'bf.project.mugshot-after-dark',isolation:{projectId:'mugshot-after-dark',crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:'Mugs After Dark',orderPrefix:'MUG'},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:0,photoData:mugsState.photoData,approvedPreviewData,wording:mugsState.message,font:mugsState.style,fill:'Black',contactPreference:'Text',customerName:mugsState.customerName,customerPhone:mugsState.customerPhone,customerEmail:mugsState.customerEmail,approved:true,testMode:currentExperienceContext(projectById(activeProjectId))?.state!=='deployed',deploymentId:currentExperienceContext(projectById(activeProjectId))?.deploymentId||null};const mugsCtx=currentExperienceContext(projectById(activeProjectId));if(mugsCtx?.state!=='preview'){backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Mugs order save failed',err);}if(mugsCtx?.state==='sea_trial')await recordExperienceSeaTrialSubmission(projectById(activeProjectId),id);}mugsState.approvedPreviewData=approvedPreviewData;$('mugsDoneOrderId').textContent=id;$('mugsDonePreview').src=approvedPreviewData;showMugsScreen('done');}
   function bindMugsShell(){if(window.__mugsShellBound)return;window.__mugsShellBound=true;$('mugsCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-mugs-next]');if(n&&!n.disabled){showMugsScreen(n.dataset.mugsNext);return;}const b=e.target.closest('[data-mugs-back]');if(b){showMugsScreen(b.dataset.mugsBack);}});$('mugsPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{mugsState.photoData=String(r.result||'');$('mugsPhotoPreview').src=mugsState.photoData;$('mugsPhotoPreviewWrap').classList.remove('hidden');$('mugsPhotoNext').disabled=!mugsState.photoData;};r.readAsDataURL(file);});$('mugsRetakePhoto')?.addEventListener('click',()=>{mugsState.photoData='';$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap').classList.add('hidden');$('mugsPhotoNext').disabled=true;$('mugsPhotoInput').click();});$('mugsMessage')?.addEventListener('input',e=>{mugsState.message=e.target.value;$('mugsCharCount').textContent=String(mugsState.message.length);});$('mugsStyle')?.addEventListener('change',e=>mugsState.style=e.target.value);$('mugsCustomerNext')?.addEventListener('click',()=>{mugsState.customerName=$('mugsCustomerName').value.trim();mugsState.customerPhone=$('mugsCustomerPhone').value.trim();mugsState.customerEmail=$('mugsCustomerEmail').value.trim();if(!mugsState.customerName||!mugsState.customerPhone){alert('Name and phone are required.');return;}showMugsScreen('review');});$('mugsApprovalCheck')?.addEventListener('change',e=>$('mugsSubmitOrder').disabled=!e.target.checked);$('mugsSubmitOrder')?.addEventListener('click',submitMugsOrder);$('mugsNewOrder')?.addEventListener('click',()=>{resetMugsShell();showMugsScreen('welcome');});$('mugsAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
 
   const flowersState={screen:'welcome',photoData:'',message:'',style:'bold',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''};
@@ -6744,6 +6818,9 @@ The full order and approved media remain stored with this project.`;
       card.hidden=!(matchesText&&matchesMode);
     });
     host.scrollLeft=0;
+    const visible=Array.from(host.children).filter(card=>!card.hidden && !card.classList.contains('add-project-card')).length;
+    const hint=document.querySelector('.project-fleet-rail-tools>span');
+    if(hint)hint.textContent=`Swipe left or right to browse ${visible} ${visible===1?'project':'projects'}${mode!=='all'?' in this filter':''}`;
     requestAnimationFrame(updateEngineFleetRailState);
   }
 
@@ -7697,11 +7774,20 @@ The full order and approved media remain stored with this project.`;
   function bindExperienceTestDeckBus(){
     if(window.__blackFlagExperienceTestDeckBound)return;window.__blackFlagExperienceTestDeckBound=true;
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('#closeExperienceTestDeck,[data-experience-mode],#experienceOpenShipwright,#returnExperienceTestDeck');if(!target)return;
+      const target=event.target?.closest?.('#closeExperienceTestDeck,[data-experience-mode],#approveExperienceBtn,#experienceOpenShipwright,#returnExperienceTestDeck');if(!target)return;
       if(target.id==='returnExperienceTestDeck'){event.preventDefault();event.stopPropagation();await returnFromExperienceMode();return;}
       if(target.id==='closeExperienceTestDeck'){closeExperienceTestDeck();return;}
       const p=projectById(experienceTestDeckProjectId);if(!p)return;
       if(target.matches('[data-experience-mode]')){if(target.disabled)return;await enterExperienceMode(p,target.dataset.experienceMode);return;}
+      if(target.id==='approveExperienceBtn'){
+        const state=ensureExperienceTestState(p);
+        if(state.approvedAt){delete state.approvedAt;delete state.approvedBy;delete state.approvedSignature;}
+        else{state.approvedAt=new Date().toISOString();state.approvedBy='engine_admin';state.approvedSignature=experienceConfigurationSignature(p);}
+        p.updatedAt=new Date().toISOString();
+        try{await saveCompanies();logActivity(p.id,state.approvedAt?'Customer experience approved':'Customer experience approval revoked');await renderExperienceTestDeck(p);await renderProjectCommand();}
+        catch(err){alert(`Experience approval could not be saved: ${String(err?.message||err)}`);}
+        return;
+      }
       if(target.id==='experienceOpenShipwright'){closeExperienceTestDeck();await openProjectEngineControl(p.id);await renderProjectTab(p.id,'deployment');return;}
     },true);
   }
@@ -8139,7 +8225,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.10.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.11.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

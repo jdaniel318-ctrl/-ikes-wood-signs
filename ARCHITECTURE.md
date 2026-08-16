@@ -169,17 +169,18 @@ A matching Shipyard Draft is suppressed while a commissioning journal owns recov
 This law strengthens the doctrine: **one immutable identity, one canonical fleet record, one visible project card.**
 
 
-### Unified Experience Test Deck Law — v3.9.10 Stage 1
+### Experience Test Deck Law — v3.9.10
 
-Preview and Sea Trial are two execution modes of the **same project/customer experience**, not separate renderers. A project must be inspectable before publication without creating operational records, while Sea Trial must exercise the real project-scoped infrastructure using explicitly marked test data. Live mode remains the actual published customer experience.
+Dark Sky uses one customer renderer with three execution contracts: **Preview**, **Sea Trial**, and **Live**. Preview may simulate a complete customer journey but must not create durable customer/business records or lifecycle evidence. Sea Trial uses the real project/deployment boundary and may persist only explicitly marked test records. Live is production behavior.
 
-Stage 1 establishes the mode boundary and navigation contract only:
+Experience approval and infrastructure proof are independent. Both are tied to a signature of the customer-facing project configuration; material configuration changes invalidate stale proof and force re-approval/retest. Test records remain subordinate to immutable `projectId`, include deployment identity when applicable, and are excluded from normal production KPIs and customer directories. Structural Certification remains a platform/hull concern; the Experience Test Deck certifies one vessel's customer-operating path.
 
-- **Preview** may simulate a complete customer journey but must not persist customer, engagement/order, analytics, deployment, or lifecycle records.
-- **Sea Trial** requires a saved project-owned outpost, may persist test records, and those records must retain Project ID + Deployment ID + test-mode identity.
-- **Live** is available only when the project/outpost are actually live.
-- All modes use the same customer renderer and current project configuration so Preview cannot drift away from Sea Trial or Live presentation.
-- Test Experience commands are mission-critical navigation and must use a delegated command route that survives dynamic rerenders.
-- Stage 1 must not silently add new launch gates. Automated evidence certification and separate experience approval are later-stage concerns after this foundation passes real-device sea trials.
+A project may become Fleet Ready only when its current customer experience is approved **and** its current configuration has passed Sea Trial evidence.
 
-This preserves the doctrine: **one experience, explicit modes, no ambiguity about test data.**
+
+
+## Fleet Rail Law — v3.9.11
+Project Command is a filterable horizontal fleet rail. Filters reduce the working set; technicians then browse that set by native finger/trackpad horizontal scrolling. Navigation arrows are not part of the product. Project cards must keep a fixed touch-friendly width and must not shrink to conceal fleet overflow.
+
+## Fleet Continuity Law — v3.9.11
+The canonical projects store remains authoritative. If a deployment/version transition causes a previously verified immutable Project ID to disappear from that store while verified browser recovery cargo still contains it, Dark Sky may restore that exact Project ID only after integrity comparison and canonical read-back verification. Recovery is never name-based and must not silently resurrect archived or retired vessels.

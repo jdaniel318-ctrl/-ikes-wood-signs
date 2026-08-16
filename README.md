@@ -1,24 +1,24 @@
-# Dark Sky / Black Flag — v3.9.10 Experience Test Deck — Stage 1
+# Dark Sky / Black Flag — v3.9.11 Experience Test Deck
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
 
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.9.10 — Experience Test Deck, Stage 1
+**Current release:** v3.9.10 — Experience Test Deck
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
 
 
 
-## v3.9.10 Experience Test Deck — Stage 1
-Every project now exposes one **TEST EXPERIENCE** entry point from Engine Project Command and Project Control. The deck uses the same project customer renderer in three explicit modes:
+## v3.9.10 Experience Test Deck
+Every project now exposes one **TEST EXPERIENCE** entry point from Engine Project Command and Project Control. Preview, Sea Trial, Test Results, approval evidence, and Live access share the same project customer renderer.
 
-- **Preview** — private look-only mode. Customer submissions do not create customer, engagement/order, analytics, deployment, or lifecycle records.
-- **Sea Trial** — runs the same customer experience through a saved project-owned outpost. Test submissions exercise real persistence/workflow paths and are explicitly marked as test data.
-- **Live** — opens the actual published experience only when the project and outpost are live.
-
-Stage 1 intentionally does **not** add new fleet-readiness approval gates or automated certification scoring. Those belong to later stages after Preview/Sea Trial navigation, isolation, and iPad behavior are proven.
+- **Preview** is look-only. A full customer journey can be simulated without creating customer, engagement/order, email, analytics, deployment, or lifecycle records.
+- **Sea Trial** starts/uses a saved project-owned outpost, exercises real persistence/workflow paths, and writes only explicitly marked test data.
+- **Live** opens the actual published experience.
+- **Experience Approval** and **Sea Trial evidence** are separate and both must match the current customer-facing configuration before Fleet Ready. If customer-facing configuration changes, stale approval/test evidence no longer qualifies.
+- Test records remain available as engineering evidence but are excluded from normal production KPIs and customer directories.
 
 ## v3.9.9 canonical registry reconciliation
 Project Command now reconciles commissioning state against the canonical IndexedDB `projects` store before it counts or renders the fleet. The immutable Project ID is authoritative: if it exists canonically, Dark Sky clears matching recovery/draft artifacts and renders one normal project card; if it is missing, Dark Sky performs one controlled recovery from the preserved commissioned candidate and verifies the Project ID by reading the canonical store back. A vessel can no longer appear simultaneously as Registry Recovery and Shipyard Draft, and historical journal text can no longer claim a project is verified when the current canonical registry says otherwise.
@@ -55,6 +55,18 @@ The Captain upload package intentionally stays lean. Runtime capability is in th
 - `assets/` referenced by the runtime
 
 Historical build audits are development records and do not need to remain in the live GitHub root once their durable decisions are consolidated into the canonical docs above.
+
+## v3.9.10 Experience Test Deck
+
+Dark Sky now exposes one reusable **Experience Test Deck** from every Engine project card and from Project Control. The same customer renderer operates under three explicit contracts:
+
+- **Preview** — look-only inspection of the real customer experience. Preview submissions are simulated and create no customer, engagement/order, analytics, email, or lifecycle records.
+- **Sea Trial** — infrastructure testing through a saved project outpost. Records are marked `testMode: true`, remain project/deployment scoped, and are excluded from normal production KPIs and customer directories.
+- **Live** — the actual published experience with no test simulation.
+
+Experience approval and Sea Trial evidence are independent. Approval is bound to a signature of the customer-facing configuration; changing the brief, branding, offers, customer experience, operating model, workflow, or visual presentation automatically makes the prior approval stale. Sea Trial evidence is bound to the same configuration signature and must be rerun after relevant configuration changes.
+
+The Test Deck presents an evidence checklist for identity, customer model, offer readiness, deployment manifest, project isolation, test-data marking, customer submission, and confirmation evidence. Fleet Ready now requires both current Experience Approval and current Sea Trial evidence.
 
 ## Platform doctrine
 - **Names can change. Identity cannot.** Immutable Project IDs own project data and deployment boundaries.
@@ -96,3 +108,7 @@ Engine Project Command uses an early-bound delegated command bus for filters, pr
 
 ### v3.9.2 command reliability
 Waters Ahead and structural command controls are now attached to an independent early-bound command bus. This prevents a partial boot or migration warning from producing visually healthy but non-interactive command cards, particularly on iPad/Safari.
+
+
+## v3.9.11 Fleet Rail & Continuity
+Project Command keeps the status filters and uses a direct-touch horizontal fleet rail. Cards never shrink to hide overflow; technicians filter first, then swipe the resulting project set. Control Center and Test Experience use outlined button affordances. Fleet boot also heals a previously verified immutable Project ID from browser recovery cargo when a version transition dropped it from the canonical store, without recovering by business name.
