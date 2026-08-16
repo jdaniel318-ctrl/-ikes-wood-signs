@@ -7093,7 +7093,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.1',
+    version:'3.9.2',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7162,48 +7162,98 @@ The full order and approved media remain stored with this project.`;
     },true);
   }
 
+  function bindWatchCommandBus(){
+    if(window.__blackFlagWatchCommandBusBound)return;
+    window.__blackFlagWatchCommandBusBound=true;
+
+    // v3.9.2 — Command Watch controls live on their own delegated bus.
+    // This intentionally binds before IndexedDB migrations / optional Engine setup.
+    // Waters Ahead must remain actionable even when a noncritical initializer fails.
+    document.addEventListener('click',async event=>{
+      const target=event.target?.closest?.('#firstMateRefreshBtn,[data-first-mate-action],#runShipIntegrityBtn,#createRecoverySnapshotBtn,#showAuditTrailBtn,#openShipsLogBtn,#runSeaTrialsBtn');
+      if(!target)return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if(target.matches('[data-first-mate-action]')){
+        if(target.dataset.commandBusy==='1')return;
+        await routeFirstMateAction(target.dataset.firstMateAction,target.dataset.firstMateProject||'',target);
+        return;
+      }
+
+      if(target.id==='firstMateRefreshBtn'){
+        if(target.disabled||target.dataset.commandBusy==='1')return;
+        const prior=target.textContent;
+        target.disabled=true;target.dataset.commandBusy='1';target.textContent='SCANNING…';
+        setFirstMateActionStatus('Running First Mate watch across the fleet…','working');
+        try{
+          await refreshV3CommandSystems();
+          setFirstMateActionStatus('Watch refreshed. Recommendations are current.','success');
+        }catch(err){
+          console.error('First Mate watch refresh failed',err);
+          setFirstMateActionStatus(`Watch interrupted: ${String(err?.message||err)}`,'error');
+        }finally{
+          target.disabled=false;delete target.dataset.commandBusy;target.textContent=prior||'RUN WATCH';
+        }
+        return;
+      }
+
+      if(target.id==='runShipIntegrityBtn'){
+        if(target.disabled||target.dataset.commandBusy==='1')return;
+        const prior=target.textContent;
+        target.disabled=true;target.dataset.commandBusy='1';target.textContent='RUNNING CHECK…';
+        try{
+          const report=await runShipIntegrityV3({record:true});
+          renderShipIntegrity(report);
+          await renderFirstMateWatch();
+          await renderV3ArchitectureStatus();
+          pulseCommandTarget($('shipIntegritySummary'));
+        }catch(err){
+          console.error('Ship Integrity check failed',err);
+          const box=$('shipIntegritySummary');
+          if(box)box.innerHTML=`<div class="v3-integrity-result fail"><div><small>CHECK INTERRUPTED</small><strong>SHIP INTEGRITY COULD NOT COMPLETE</strong><span>${escapeHtml(String(err?.message||err))}</span></div></div>`;
+        }finally{
+          target.disabled=false;delete target.dataset.commandBusy;target.textContent=prior||'RUN SHIP INTEGRITY CHECK';
+        }
+        return;
+      }
+
+      if(target.id==='createRecoverySnapshotBtn'){
+        await createV3RecoverySnapshot();
+        return;
+      }
+      if(target.id==='showAuditTrailBtn'||target.id==='openShipsLogBtn'){
+        renderV3AuditTrail();
+        return;
+      }
+      if(target.id==='runSeaTrialsBtn'){
+        const prior=target.textContent;
+        if(target.dataset.commandBusy==='1')return;
+        target.dataset.commandBusy='1';target.disabled=true;target.textContent='RUNNING SEA TRIALS…';
+        try{
+          const report=await runSeaTrialsV3811({record:true});
+          renderSeaTrials(report);
+          await renderFirstMateWatch();
+          await renderV3ArchitectureStatus();
+        }catch(err){
+          console.error('Sea Trials command failed',err);
+          setFirstMateActionStatus(`Sea Trials interrupted: ${String(err?.message||err)}`,'error');
+        }finally{
+          delete target.dataset.commandBusy;target.disabled=false;target.textContent=prior||'RUN SEA TRIALS';
+        }
+      }
+    },true);
+  }
+
   function bindEvents(){
     // Bind the ship's primary escape routes first. If a later optional control
     // ever throws during setup, the Captain can still navigate safely.
     bindMissionCriticalNavigation();
     bindEngineFleetCommand();
 
-    $('firstMateRefreshBtn')?.addEventListener('click',async e=>{
-      const btn=e.currentTarget;if(btn.disabled)return;
-      const prior=btn.textContent;btn.disabled=true;btn.textContent='SCANNING…';
-      setFirstMateActionStatus('Running First Mate watch across the fleet…','working');
-      try{await refreshV3CommandSystems();setFirstMateActionStatus('Watch refreshed. Recommendations are current.','success');}
-      catch(err){console.error('First Mate watch refresh failed',err);setFirstMateActionStatus(`Watch interrupted: ${String(err?.message||err)}`,'error');}
-      finally{btn.disabled=false;btn.textContent=prior||'RUN WATCH';}
-    });
-    $('firstMateWatchItems')?.addEventListener('click',e=>{
-      const btn=e.target.closest('[data-first-mate-action]');if(!btn||btn.dataset.commandBusy==='1')return;
-      e.preventDefault();
-      routeFirstMateAction(btn.dataset.firstMateAction,btn.dataset.firstMateProject||'',btn);
-    });
-    $('runShipIntegrityBtn')?.addEventListener('click',async e=>{
-      const btn=e.currentTarget;if(btn.disabled)return;
-      const prior=btn.textContent;btn.disabled=true;btn.textContent='RUNNING CHECK…';
-      try{
-        const report=await runShipIntegrityV3({record:true});
-        renderShipIntegrity(report);
-        await renderFirstMateWatch();
-        await renderV3ArchitectureStatus();
-        pulseCommandTarget($('shipIntegritySummary'));
-      }catch(err){
-        console.error('Ship Integrity check failed',err);
-        const box=$('shipIntegritySummary');if(box)box.innerHTML=`<div class="v3-integrity-result fail"><div><small>CHECK INTERRUPTED</small><strong>SHIP INTEGRITY COULD NOT COMPLETE</strong><span>${escapeHtml(String(err?.message||err))}</span></div></div>`;
-      }finally{btn.disabled=false;btn.textContent=prior||'RUN SHIP INTEGRITY CHECK';}
-    });
-    $('createRecoverySnapshotBtn')?.addEventListener('click',createV3RecoverySnapshot);
-    $('showAuditTrailBtn')?.addEventListener('click',renderV3AuditTrail);
-    $('openShipsLogBtn')?.addEventListener('click',renderV3AuditTrail);
-    $('runSeaTrialsBtn')?.addEventListener('click',async()=>{
-      const report=await runSeaTrialsV3811({record:true});
-      renderSeaTrials(report);
-      await renderFirstMateWatch();
-      await renderV3ArchitectureStatus();
-    });
+    // v3.9.2 Watch / integrity / Sea Trial buttons are owned by bindWatchCommandBus().
+
 
     $('pirateSettingsBtn')?.addEventListener('click',()=>{
       $('engineConfigurationDock')?.classList.remove('hidden');
@@ -7530,6 +7580,8 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
+    // Mission-critical command controls must exist even if a later migration fails.
+    bindWatchCommandBus();
     await loadEngineAppearance();
     db=await openDb();
     await migrateLegacyPlatformStorage();
@@ -7540,7 +7592,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.1.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.2.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
@@ -7551,6 +7603,8 @@ The full order and approved media remain stored with this project.`;
     await routeOwnerAccessFromHash();
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
+  // Arm the independent command bus immediately. init() calls this again safely.
+  bindWatchCommandBus();
   init().catch(err=>{
     console.error('Secondary app initialization warning',err);
     // Do not block Black Flag entry. The PIN portal is the recovery surface.

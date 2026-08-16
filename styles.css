@@ -10481,3 +10481,21 @@ body.universal-project .universal-customer-shell{display:block}
   .first-mate-watch-items{grid-template-columns:1fr!important}
   .first-mate-item{min-height:0!important}
 }
+
+/* ========================================================================== 
+   v3.9.2 — COMMAND WATCH TOUCH / HIT-TEST HARDENING
+   Watch actions remain above decorative Engine layers on iPad/Safari.
+   ========================================================================== */
+#firstMateWatch{isolation:isolate!important}
+#firstMateWatch header,
+#firstMateWatchSummary,
+#firstMateWatchItems,
+#firstMateActionStatus{position:relative!important;z-index:3!important;pointer-events:auto!important}
+#firstMateWatch::before,#firstMateWatch::after,
+#firstMateWatch .first-mate-item::before{pointer-events:none!important}
+#firstMateRefreshBtn,
+#firstMateWatchItems .first-mate-action-btn{
+  position:relative!important;z-index:6!important;pointer-events:auto!important;
+  touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(77,164,198,.18)!important;
+}
+#firstMateWatchItems .first-mate-item{pointer-events:auto!important}

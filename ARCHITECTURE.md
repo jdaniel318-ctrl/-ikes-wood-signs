@@ -130,3 +130,6 @@ A project must not be forced into purchase/order language or workflow. The Custo
 
 ## Command Watch routing law — v3.9.1
 Operational notifications are actionable command surfaces, not decorative cards. First Mate Watch actions must route through one centralized controller, report busy/success/failure state, preserve project-scoped authorization, and visibly identify the destination command surface. Dynamic Watch cards use delegated routing so re-rendering cannot detach or stale their button behavior. Critical command controls must never fail silently.
+
+### Command Surface Reliability Law — v3.9.2
+Mission-critical command surfaces must not depend on completion of optional data migrations or secondary initialization. Waters Ahead, structural checks, audit/log access, and Sea Trials use an early-bound delegated command bus. Rendering a command without an actionable route is a platform defect.

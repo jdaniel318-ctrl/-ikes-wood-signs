@@ -309,3 +309,9 @@ Replaced the fixed full-screen Engine workspace overlay with a dedicated in-flow
 - Positioned Fleet Health between Structural Status and Waters Ahead.
 - Added non-empty loading and render-failure states.
 - Isolated per-project fleet-health calculation failures so one project cannot blank the fleet panel.
+## 3.9.2 — Command Bus Repair
+- Moved Waters Ahead, Ship Integrity, audit/log, and Sea Trials controls onto an independent delegated command bus.
+- The command bus binds before IndexedDB migrations and optional Engine initialization, so a noncritical boot failure can no longer leave rendered Watch cards with dead buttons.
+- Removed duplicate direct Watch handlers to prevent double execution.
+- Added iPad/Safari hit-test hardening so decorative Engine layers cannot intercept command taps.
+- Preserved visible busy/error feedback for every command route.
