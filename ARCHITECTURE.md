@@ -1,4 +1,4 @@
-# Dark Sky Architecture — v4.4.2
+# Dark Sky Architecture — v4.4.3
 
 ## Fleet identity law
 The immutable Project ID is authoritative. `grizzle-bear` is a legacy alias only; the canonical Grizzly vessel ID is `grizzly-bear`. Identity migration rewrites project-scoped references without relying on the display name.
@@ -12,3 +12,6 @@ The immutable Project ID is authoritative. `grizzle-bear` is a legacy alias only
 
 ## Experience Test Deck
 Preview, Sea Trial, and Live use the same customer renderer. Preview is no-write. Sea Trial uses real infrastructure but marks test records and binds them to Project ID + Deployment ID. Live is production.
+## Experience identity boundary
+Project Command and the Experience Test Deck share one canonical project-reference resolver. A card may present a legacy or canonical reference, but the Test Deck must resolve the vessel by immutable Project ID across the active fleet and durable registry sources before it opens. Display names are never identity authority. If a durable canonical row is found while the in-memory fleet is stale, that exact row is rehydrated into memory before Preview, Sea Trial, or Live mode begins.
+

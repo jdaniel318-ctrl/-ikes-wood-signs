@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.4.2';
+  const BUILD_VERSION = '4.4.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -334,8 +334,68 @@
   function activeProject(){return activeProjectId ? projectById(activeProjectId) : null}
 
   function projects(){ return companies; }
-  function projectById(id){ const canonical=canonicalProjectId(id); return companies.find(p=>p.id===canonical); }
+  function projectById(id){
+    const requested=String(id||'').trim();
+    const canonical=canonicalProjectId(requested);
+    return companies.find(p=>{
+      const pid=String(p?.id||'').trim();
+      return pid===requested || pid===canonical || canonicalProjectId(pid)===canonical;
+    });
+  }
+
+  async function resolveProjectReference(projectRef,{rehydrate=true}={}){
+    const requested=String(projectRef||'').trim();
+    const canonical=canonicalProjectId(requested);
+    const match=(rows)=>{
+      const list=Array.isArray(rows)?rows:[];
+      return list.find(p=>{
+        const pid=String(p?.id||'').trim();
+        return pid===requested || pid===canonical || canonicalProjectId(pid)===canonical;
+      })||null;
+    };
+
+    let project=match(companies);
+    let source=project?'memory':'';
+
+    if(!project){
+      try{
+        const canonicalRows=await readCanonicalProjectRegistry();
+        project=match(canonicalRows);
+        if(project)source='canonical-project-store';
+      }catch(err){
+        console.warn('Project reference canonical read warning',err);
+      }
+    }
+
+    if(!project){
+      try{
+        const mirror=await getSetting('companies');
+        project=match(Array.isArray(mirror?.value)?mirror.value:[]);
+        if(project)source='settings-mirror';
+      }catch(err){
+        console.warn('Project reference mirror read warning',err);
+      }
+    }
+
+    if(!project){
+      const backup=readProjectRegistryBackup();
+      project=match(Array.isArray(backup?.projects)?backup.projects:[]);
+      if(project)source='verified-local-backup';
+    }
+
+    if(!project)return {project:null,requested,canonical,source:'not-found'};
+
+    const normalized=ensureProjectGovernance(normalizeProjectCode(window.BlackFlagV3Core?.ensure?.(structuredClone(project))||structuredClone(project)));
+    if(rehydrate){
+      const idx=companies.findIndex(p=>canonicalProjectId(String(p?.id||''))===canonicalProjectId(String(normalized.id||'')));
+      if(idx>=0)companies[idx]=normalized;
+      else companies.push(normalized);
+    }
+    return {project:normalized,requested,canonical,source};
+  }
+
   window.blackFlagV4ProjectById=(id)=>projectById(id);
+  window.blackFlagResolveProjectReference=(id)=>resolveProjectReference(id);
   window.blackFlagV4Projects=()=>companies.map(p=>structuredClone(p));
 
   const OWNER_CAPABILITIES=[
@@ -2384,8 +2444,9 @@
 
 
   async function openExperienceTestDeck(projectId){
-    const requested=String(projectId||'');
-    const p=projectById(requested);
+    const requested=String(projectId||'').trim();
+    const resolution=await resolveProjectReference(requested,{rehydrate:true});
+    const p=resolution.project;
     const deck=ensureExperienceTestDeck();
     deck.classList.remove('hidden');
     deck.setAttribute('aria-hidden','false');
@@ -2393,14 +2454,15 @@
     const body=document.getElementById('experienceTestDeckBody');
     if(body) body.innerHTML='<section class="experience-results-card"><div class="experience-results-head"><div><span>EXPERIENCE TEST DECK</span><h3>Opening project experience…</h3></div><b class="watch">VERIFYING</b></div><p>Resolving project identity and current customer configuration.</p></section>';
     if(!p){
-      if(body) body.innerHTML=`<section class="experience-results-card"><div class="experience-results-head"><div><span>COMMAND FAILURE</span><h3>Project could not be resolved</h3></div><b class="watch">STOPPED</b></div><p>Requested Project ID: ${escapeHtml(requested||'missing')}</p></section>`;
-      throw new Error(`Experience Test Deck could not resolve Project ID ${requested||'(missing)'}.`);
+      const detail=`Requested: ${requested||'missing'} • Canonical: ${resolution.canonical||'missing'} • Sources searched: memory, canonical project store, settings mirror, verified backup`;
+      if(body) body.innerHTML=`<section class="experience-results-card"><div class="experience-results-head"><div><span>COMMAND FAILURE</span><h3>Project could not be resolved</h3></div><b class="watch">STOPPED</b></div><p>${escapeHtml(detail)}</p></section>`;
+      throw new Error(`Experience Test Deck could not resolve Project reference ${requested||'(missing)'} after canonical registry lookup.`);
     }
     experienceTestDeckProjectId=p.id;
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
-      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:'v4.4.2 direct verified route'});
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.3 canonical resolver • ${resolution.source}`});
       return true;
     }catch(err){
       console.error('Experience Test Deck render failed',err);
@@ -9220,7 +9282,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.2.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • verified Experience Test Deck command route • admission ledger + fleet manifest + project envelopes`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.3.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • canonical Experience Test Deck identity resolver • admission ledger + fleet manifest + project envelopes`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
