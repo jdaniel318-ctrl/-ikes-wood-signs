@@ -1,4 +1,4 @@
-# Dark Sky v4.5.0 — Forward-Only IndexedDB Migration
+# Dark Sky v4.6.2 — Forward-Only IndexedDB Migration
 
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
@@ -51,3 +51,7 @@ The Shipyard now contains the first three ScheduleJoe foundation systems: Organi
 
 ### 4.6 Fleet Commissioning
 The Engine Room now includes a Fleet Commissioning / Seaworthiness Dock. Ike's Wood Signs is the first reference vessel. Open a vessel's Commissioning action to see the seven common fleet gates and the Captain's final commissioning order. Project-specific requirements remain inside each project's own Control Center and Test Experience.
+
+
+## v4.6.2 Heading
+Operation Prove the Fleet uses the existing Fleet Commissioning Dock as the fleet operating scorecard. Ike's is the reference vessel; the next strategic proof is a materially different commissioned vessel, followed by a Shipyard-born product. Captain's Quarters remains the fleet-command/R&D layer until the fleet earns a broader command model through demonstrated use.

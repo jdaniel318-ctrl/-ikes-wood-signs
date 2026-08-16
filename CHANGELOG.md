@@ -1,3 +1,18 @@
+# v4.6.2 — Operation Prove the Fleet
+
+## Fleet Commissioning becomes the operating scorecard
+- Keeps the existing Dark Sky hierarchy; no new Admiralty layer was added.
+- Adds an explicit Operation Prove the Fleet mission lane to the existing Fleet Commissioning Dock.
+- Shows every current vessel as a commissioning scorecard with status, gate progress, and the next provable move.
+- Keeps Ike's as Vessel #1 / reference vessel without automatically treating later projects as equivalent.
+- Fleet proof is derived from the existing seven commissioning gates; no new unverified telemetry was invented.
+- Captain commissioning remains a deliberate final act after technical gates clear.
+
+## Release posture
+- Built directly on v4.6.1 Customer Navigation Recovery.
+- Engine boot gate, project isolation, Captain's Quarters, Shipyard, and customer-navigation recovery are preserved.
+- Build/cache identifier advanced to 4.6.2.
+
 # v4.6.1 — Customer Navigation Recovery
 
 - Preserves the Dark Sky 4.6 Fleet Commissioning hull and Black Flag boot gate.

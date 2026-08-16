@@ -11695,3 +11695,85 @@ body.engine-mode #enginePanel .modern-project-command .project-governance-strip{
 .commissioning-vessel-status{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border:1px solid rgba(113,154,163,.34);border-radius:12px;margin-bottom:12px}.commissioning-vessel-status span{font-size:9px;letter-spacing:.14em;color:#9eb6bc}.commissioning-vessel-status strong{display:block;font-size:19px;margin-top:3px}.commissioning-vessel-status>b{font-size:11px;letter-spacing:.16em}.commissioning-vessel-status.ready,.commissioning-vessel-status.commissioned{border-color:rgba(81,174,103,.48)}.commissioning-vessel-status.ready>b,.commissioning-vessel-status.commissioned>b{color:#87d397}
 .commissioning-gate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.commissioning-gate{display:flex;gap:12px;align-items:flex-start;padding:13px;border:1px solid rgba(111,151,160,.28);border-radius:11px;background:rgba(255,255,255,.015)}.commissioning-gate>span{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;border:1px solid rgba(120,153,160,.4);font-weight:900}.commissioning-gate.pass>span{color:#7fd28f;border-color:rgba(72,169,95,.52)}.commissioning-gate strong{display:block;font-size:12px}.commissioning-gate p{margin:3px 0 0;color:rgba(222,231,232,.58);font-size:11px}.commissioning-captain-order{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-top:14px;padding:16px;border:1px solid rgba(195,148,58,.38);border-radius:12px;background:rgba(46,31,8,.19)}.commissioning-captain-order small{color:#cfaa5c;letter-spacing:.14em;font-weight:900}.commissioning-captain-order h3{margin:4px 0}.commissioning-captain-order p{margin:0;max-width:760px;color:rgba(223,231,232,.62)}
 @media(max-width:850px){.fleet-commissioning-head{align-items:flex-start;flex-direction:column}.fleet-commissioning-head-actions{justify-content:flex-start}.fleet-commissioning-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.fleet-commissioning-reference{grid-template-columns:1fr auto}.fleet-commissioning-reference button{grid-column:1/-1}.commissioning-gate-grid{grid-template-columns:1fr}.commissioning-captain-order{align-items:flex-start;flex-direction:column}}
+
+
+/* v4.6.2 — Operation Prove the Fleet */
+.prove-fleet-mission{
+  margin:16px 0;
+  padding:18px 20px;
+  border:1px solid rgba(222,184,79,.34);
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(17,28,37,.98),rgba(31,44,53,.96));
+  box-shadow:0 14px 34px rgba(0,0,0,.16);
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(280px,.8fr);
+  gap:18px;
+  align-items:center;
+}
+.prove-fleet-mission>div:first-child>span{
+  display:block;
+  font-size:.72rem;
+  letter-spacing:.16em;
+  font-weight:900;
+  color:#deb84f;
+  margin-bottom:6px;
+}
+.prove-fleet-mission>div:first-child>strong{
+  display:block;
+  color:#fff;
+  font-size:1.08rem;
+  margin-bottom:7px;
+}
+.prove-fleet-mission p{margin:0;color:rgba(255,255,255,.7);line-height:1.45}
+.prove-fleet-route{
+  display:grid;
+  grid-template-columns:auto 1fr auto auto 1fr auto auto 1.35fr;
+  gap:7px;
+  align-items:center;
+  padding:12px 14px;
+  border-radius:14px;
+  background:rgba(0,0,0,.2);
+  border:1px solid rgba(255,255,255,.08);
+}
+.prove-fleet-route b{color:#deb84f;font-size:.72rem}
+.prove-fleet-route span{color:#fff;font-size:.68rem;font-weight:900;letter-spacing:.06em}
+.prove-fleet-route i{color:rgba(255,255,255,.35);font-style:normal}
+.fleet-commissioning-fleet{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+  margin:14px 0;
+}
+.fleet-proof-card{
+  min-width:0;
+  padding:16px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.09);
+  background:rgba(12,21,28,.82);
+  box-shadow:0 10px 24px rgba(0,0,0,.12);
+}
+.fleet-proof-card.ready{border-color:rgba(222,184,79,.42)}
+.fleet-proof-card.commissioned{border-color:rgba(104,180,125,.5)}
+.fleet-proof-card header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.fleet-proof-card header small{display:block;color:rgba(255,255,255,.45);font-weight:900;letter-spacing:.12em;font-size:.65rem}
+.fleet-proof-card header strong{display:block;color:#fff;font-size:1rem;margin-top:3px}
+.fleet-proof-card header>span{font-size:.62rem;font-weight:950;letter-spacing:.08em;color:#deb84f;text-align:right}
+.fleet-proof-card.commissioned header>span{color:#7ed196}
+.fleet-proof-meter{height:7px;margin:14px 0 8px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08)}
+.fleet-proof-meter i{display:block;height:100%;background:currentColor;color:#deb84f;border-radius:inherit}
+.fleet-proof-card.commissioned .fleet-proof-meter i{color:#7ed196}
+.fleet-proof-numbers{display:flex;align-items:baseline;gap:7px;color:#fff}
+.fleet-proof-numbers b{font-size:1.4rem}
+.fleet-proof-numbers span{font-size:.75rem;color:rgba(255,255,255,.5)}
+.fleet-proof-next{margin:12px 0 14px;padding-top:11px;border-top:1px solid rgba(255,255,255,.07)}
+.fleet-proof-next small{display:block;color:rgba(255,255,255,.42);font-size:.62rem;font-weight:900;letter-spacing:.1em}
+.fleet-proof-next strong{display:block;color:#fff;margin:4px 0}
+.fleet-proof-next p{margin:0;color:rgba(255,255,255,.62);font-size:.78rem;line-height:1.35}
+.fleet-proof-empty{padding:18px;border:1px dashed rgba(255,255,255,.15);border-radius:14px;color:rgba(255,255,255,.55)}
+@media(max-width:900px){
+  .prove-fleet-mission{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .prove-fleet-route{grid-template-columns:auto 1fr auto auto 1fr;row-gap:8px}
+  .prove-fleet-route i:nth-of-type(2),.prove-fleet-route b:nth-of-type(3),.prove-fleet-route span:nth-of-type(3){display:none}
+}
