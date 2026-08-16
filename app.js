@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.3.4';
+  const BUILD_VERSION = '4.3.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1007,7 +1007,7 @@
       return true;
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.4'});return false;
+      window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.5'});return false;
     }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
   };
 
@@ -1038,7 +1038,7 @@
       const reclaimed=Number(r.before?.oldCacheBytes||0);
       box.dataset.inspectOk='0';
       try{localStorage.removeItem('bf.v4.storage.lastSounding')}catch(_){}
-      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.4',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.complete','Safe stale-cache trim completed',{build:'4.3.5',removedCaches:r.removedCaches||[],targetedBytes:reclaimed});
       if(btn){delete btn.dataset.confirmClean;btn.textContent='RE-SOUNDING…'}
       // Re-sound immediately so the user gets visible proof of what changed.
       const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
@@ -1055,7 +1055,7 @@
     }catch(err){
       const message=String(err?.message||err||'Unknown cleanup failure');
       box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
-      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.4'});
+      window.DarkSkyV4?.diagnostic?.('storage.clean.ui_failed',message,{build:'4.3.5'});
       if(btn){btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='INSPECT STORAGE FIRST'}
       return false;
     }
@@ -3864,7 +3864,12 @@
       };
     }
     if(tab==='orders'){
-      const orders=approvedProjectOrders(await getMergedOrders(),p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+      const mergedOrders=await getMergedOrders();
+      const orders=approvedProjectOrders(mergedOrders,p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+      const selected=(commandSelectedOrderTarget && commandSelectedOrderTarget.projectId===p.id)
+        ? mergedOrders.find(o=>String(o?.id||'')===String(commandSelectedOrderTarget.orderId||'') && canonicalProjectId(o?.projectId||'')===p.id)
+        : null;
+      const selectedApproved=selected ? approvedProjectOrders([selected],p).length===1 : false;
       const stats={
         total:orders.length,
         newOrders:orders.filter(o=>canonicalOrderStatus(o.status)==='New').length,
@@ -3877,13 +3882,17 @@
         <article><span>Active</span><strong>${stats.active}</strong></article>
         <article><span>Completed</span><strong>${stats.completed}</strong></article>
       </div>`;
+      const historicalDetail=(selected && !selectedApproved)
+        ? `<section class="pec-command-historical command-find-target" data-command-historical-order="${escapeHtml(selected.id)}"><div class="command-order-historical-head"><strong>HISTORICAL ORDER DETAIL</strong><span>Exact Bearing found this retained order outside the active approved roll. It is shown read-only and is not restored to active work.</span></div>${projectOrderCard(selected,false)}</section>`
+        : '';
       const commandList=orders.length?`<div class="pec-order-command-list">${orders.map(o=>{
         const status=canonicalOrderStatus(o.status);
         const statusClass=adminStatusClass(status);
         const request=orderRequestedText(o);
         const style=orderStyleSummary(o);
         const offer=orderOfferSummary(o,p)||p.name;
-        return `<article class="pec-order-command-card ${escapeHtml(statusClass)}">
+        const selectedClass=selectedApproved && selected && String(selected.id)===String(o.id)?' command-find-target':'';
+        return `<article class="pec-order-command-card ${escapeHtml(statusClass)}${selectedClass}" data-id="${escapeHtml(o.id)}">
           <div class="pec-order-command-head">
             <div class="pec-order-command-id"><small>ORDER</small><strong>${escapeHtml(o.id)}</strong><span>${escapeHtml(compactOrderDate(o.createdAt))}</span></div>
             <div class="pec-order-command-state"><span class="pec-order-status ${escapeHtml(statusClass)}">${escapeHtml(status)}</span><strong>$${Number(o.price||0).toFixed(2)}</strong></div>
@@ -3895,7 +3904,20 @@
           </div>
         </article>`;
       }).join('')}</div>`:`<div class="pec-order-empty"><strong>No orders yet</strong><span>The first approved project order will appear here.</span></div>`;
-      $('ptOrders').innerHTML=summary+commandList;
+      $('ptOrders').innerHTML=historicalDetail+summary+commandList;
+      if(commandSelectedOrderTarget && commandSelectedOrderTarget.projectId===p.id){
+        const targetId=String(commandSelectedOrderTarget.orderId||'');
+        const focus=()=>{
+          const el=$('ptOrders')?.querySelector(`[data-command-historical-order="${CSS.escape(targetId)}"]`) || $('ptOrders')?.querySelector(`.pec-order-command-card[data-id="${CSS.escape(targetId)}"]`);
+          if(!el)return false;
+          el.classList.add('command-find-target');
+          try{el.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){el.scrollIntoView()}
+          return true;
+        };
+        if(!focus()) setTimeout(()=>focus(),120);
+        if(!selected) window.DarkSkyV4?.diagnostic?.('command_find.order_missing_in_renderer',`Exact Bearing could not find ${targetId} in the canonical merged order source.`,{projectId:p.id,orderId:targetId,build:BUILD_VERSION});
+        commandSelectedOrderTarget=null;
+      }
     }
   }
 
@@ -4379,6 +4401,8 @@
   }
   window.addEventListener('blackflag:open-deployment',e=>openCaptainDeploymentRoute(e.detail||{}));
 
+  let commandSelectedOrderTarget=null;
+
   function closeCaptainSurfacesForEngineRoute(){
     document.getElementById('captainFleetChart')?.classList.add('hidden');
     document.getElementById('captainQuarters')?.classList.add('hidden');
@@ -4403,34 +4427,9 @@
       await openEnginePanel();
       await openProjectEngineControl(p.id);
       if(type==='order'){
+        commandSelectedOrderTarget=targetId?{projectId:p.id,orderId:targetId}:null;
         await renderProjectTab(p.id,'orders');
-        if(targetId){
-          const allOrders=await getMergedOrders();
-          const target=allOrders.find(o=>String(o?.id||'')===targetId && canonicalProjectId(o?.projectId||'')===p.id);
-          const life=target?commandOrderLifecycle(target):null;
-          if(target && life && !life.displayable){
-            const host=$('projectActiveOrders');
-            if(host){
-              const existing=host.querySelector(`[data-command-historical-order="${CSS.escape(targetId)}"]`);
-              if(!existing){
-                host.insertAdjacentHTML('afterbegin',`<section class="command-order-historical" data-command-historical-order="${escapeHtml(targetId)}"><div class="command-order-historical-head"><strong>HISTORICAL ORDER DETAIL</strong><span>This retained record is outside the active approved order roll. It is shown read-only so Command Find never drops you at the wrong order.</span></div>${projectOrderCard(target,false)}</section>`);
-              }
-            }
-          }
-          const focusTarget=()=>{
-            const direct=document.querySelector(`[data-command-historical-order="${CSS.escape(targetId)}"]`) || document.querySelector(`.order-card[data-id="${CSS.escape(targetId)}"]`);
-            if(!direct)return false;
-            document.querySelectorAll('.command-find-target').forEach(x=>x.classList.remove('command-find-target'));
-            direct.classList.add('command-find-target');
-            direct.scrollIntoView({behavior:'smooth',block:'center'});
-            return true;
-          };
-          if(!focusTarget()) setTimeout(()=>{
-            if(!focusTarget()) window.DarkSkyV4?.diagnostic?.('command_find.order_focus_missing',`Order ${targetId} opened but target detail was not found.`,{projectId:p.id,orderId:targetId,lifecycle:life?.key||'unknown',build:BUILD_VERSION});
-          },220);
-          if(!target) window.DarkSkyV4?.diagnostic?.('command_find.order_missing',`Order ${targetId} was returned by Command Find but is no longer present in the canonical merged order source.`,{projectId:p.id,orderId:targetId,build:BUILD_VERSION});
-        }
-      }else{
+            }else{
         await renderProjectTab(p.id,'overview');
       }
       window.BlackFlagV3Core?.audit?.({actorRole:'captain',projectId:p.id,category:'navigation',action:'command_find.opened',detail:`${type} • ${targetId||p.id}`});

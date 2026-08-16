@@ -1,8 +1,8 @@
-/* Dark Sky 4.3.4 — Muster Roll platform generation layer */
+/* Dark Sky 4.3.5 — Exact Bearing platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.3.4';
-const NAME='Muster Roll';
+const VERSION='4.3.5';
+const NAME='Exact Bearing';
 const SCHEMA=2;
 const SESSION_STARTED_AT=Date.now();
 const KEYS=Object.freeze({

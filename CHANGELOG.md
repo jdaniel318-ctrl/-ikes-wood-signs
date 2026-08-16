@@ -1,8 +1,9 @@
-# Dark Sky 4.3.4 — Muster Roll
+# Dark Sky 4.3.5 — Exact Bearing
 
-- Classified Command Find order results as Active, Completed, Archived, or Historical.
-- Unified Command Find and exact-order routing on the canonical merged order source.
-- Historical/legacy retained orders now render read-only inside the correct project Orders view.
-- Exact order targets scroll into view and receive a visible focus highlight.
-- Missing canonical targets are logged to Black Box instead of silently dropping the Captain at the top of the list.
-- Preserved V4 commissioned hull and production-write boundaries.
+- Moved exact-order targeting into the Project Orders renderer.
+- Added transient selected-order state carried from Captain Command Find into the Engine.
+- Approved target orders are now rendered with a direct focus marker and scrolled into view.
+- Historical/legacy target orders now render as a read-only detail above the current project roll.
+- Added explicit `data-id` hooks to Project Orders cards for deterministic targeting.
+- Preserved current order counts and active roll semantics; historical records are never promoted.
+- Preserved V4 commissioning, isolation, quarantine, Storage Steward, and Captain/Engine authorization boundaries.
