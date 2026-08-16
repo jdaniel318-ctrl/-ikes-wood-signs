@@ -1,3 +1,12 @@
+# Dark Sky 4.5.3 — Functional Composition Polish
+
+- Presentation-only refinement below the Engine Room header.
+- Tightened telemetry density and operational section spacing for iPad/landscape.
+- Removed repeated Black Flag section cues where the primary Engine lockup already establishes platform identity.
+- Rebalanced Broadside, Command Deck, Fleet Health, First Mate Watch, and Project Command toward compact command-console layouts.
+- Restored left-aligned scanning inside project cards while preserving clear, outlined action buttons.
+- No application structure, navigation, project identity, storage, security, or workflow logic changed.
+
 # Changelog
 
 ## 4.5.2 — Functional Visual Polish

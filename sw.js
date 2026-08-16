@@ -1,4 +1,4 @@
-const CACHE='dark-sky-v4-5-2-functional-polish';
+const CACHE='dark-sky-v4-5-3-functional-composition';
 const ASSETS=[
   './',
   './index.html',

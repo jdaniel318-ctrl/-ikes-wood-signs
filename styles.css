@@ -11231,3 +11231,267 @@ body.engine-mode #enginePanel .modern-captain-access span{
     width:min(430px,100%)!important;
   }
 }
+
+/* ==========================================================
+   v4.5.3 — FUNCTIONAL COMPOSITION POLISH
+   Presentation only. Applies the compact command-console principle
+   below the Engine header without changing DOM structure or behavior.
+   ========================================================== */
+
+/* Performance: preserve four-up telemetry, reclaim vertical space. */
+body.engine-mode #enginePanel .engine-performance-deck{
+  gap:10px!important;
+  margin:11px 0!important;
+}
+body.engine-mode #enginePanel .engine-performance-card{
+  padding:12px 13px 8px!important;
+  border-radius:11px!important;
+}
+body.engine-mode #enginePanel .engine-performance-card-head{
+  align-items:center!important;
+}
+body.engine-mode #enginePanel .engine-performance-card-head strong{
+  font-size:22px!important;
+}
+body.engine-mode #enginePanel .engine-performance-card-head i{
+  width:34px!important;
+  height:34px!important;
+  font-size:17px!important;
+}
+body.engine-mode #enginePanel .engine-performance-card canvas{
+  height:92px!important;
+  margin-top:6px!important;
+}
+
+/* System Operations: compact instrumentation strip, not a centered banner. */
+body.engine-mode #enginePanel .modern-system-operations{
+  grid-template-columns:minmax(300px,.9fr) minmax(480px,1.45fr) minmax(155px,.45fr)!important;
+  min-height:78px!important;
+  padding:11px 16px!important;
+  gap:14px!important;
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .modern-system-operations-copy{
+  justify-content:flex-start!important;
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .system-shield{
+  width:42px!important;
+  height:42px!important;
+}
+body.engine-mode #enginePanel .modern-system-capabilities{
+  justify-content:stretch!important;
+}
+body.engine-mode #enginePanel .modern-system-capabilities span{
+  padding:7px 5px!important;
+}
+
+/* Repeated platform marks inside the Engine add noise. The main lockup owns identity. */
+body.engine-mode #enginePanel #v3ArchitectureDeck .black-flag-section-cue,
+body.engine-mode #enginePanel #fullSailCommandDeck .black-flag-section-cue,
+body.engine-mode #enginePanel #firstMateWatch .black-flag-section-cue,
+body.engine-mode #enginePanel #engineProjectsSection .black-flag-section-cue{
+  display:none!important;
+}
+
+/* Broadside: status report first, badge second, minimal ceremony. */
+body.engine-mode #enginePanel .v3-architecture-deck{
+  padding:12px 14px!important;
+  margin-bottom:11px!important;
+}
+body.engine-mode #enginePanel .v3-architecture-head{
+  align-items:center!important;
+  margin-bottom:8px!important;
+}
+body.engine-mode #enginePanel .v3-architecture-head>div{
+  text-align:left!important;
+  min-width:0!important;
+}
+body.engine-mode #enginePanel .v3-architecture-head h3{
+  margin:0 0 2px!important;
+  font-size:20px!important;
+}
+body.engine-mode #enginePanel .v3-architecture-head p{
+  margin:0!important;
+  max-width:780px!important;
+  font-size:9px!important;
+}
+body.engine-mode #enginePanel .v3-architecture-status{
+  gap:7px!important;
+}
+body.engine-mode #enginePanel .v3-architecture-status article{
+  min-height:64px!important;
+  padding:8px 9px!important;
+}
+body.engine-mode #enginePanel .v3-architecture-status strong{
+  font-size:15px!important;
+}
+
+/* Command Deck: operational heading left, horizon state right. */
+body.engine-mode #enginePanel .full-sail-command-deck{
+  margin:11px 0 13px!important;
+  padding:14px 16px!important;
+  border-radius:14px!important;
+}
+body.engine-mode #enginePanel .full-sail-head{
+  align-items:center!important;
+  gap:16px!important;
+}
+body.engine-mode #enginePanel .full-sail-head>div{
+  text-align:left!important;
+  min-width:0!important;
+}
+body.engine-mode #enginePanel .full-sail-head h3{
+  margin:0 0 3px!important;
+  font-size:22px!important;
+}
+body.engine-mode #enginePanel .full-sail-head p{
+  margin:0!important;
+  max-width:780px!important;
+  font-size:11px!important;
+}
+body.engine-mode #enginePanel .full-sail-state{
+  flex:0 0 auto!important;
+  padding:7px 12px!important;
+}
+body.engine-mode #enginePanel .full-sail-kpis{
+  gap:9px!important;
+  margin-top:11px!important;
+}
+body.engine-mode #enginePanel .full-sail-kpis article{
+  padding:11px 12px!important;
+}
+body.engine-mode #enginePanel .full-sail-kpis strong{
+  font-size:22px!important;
+  margin:3px 0!important;
+}
+body.engine-mode #enginePanel .full-sail-lower{
+  margin-top:9px!important;
+}
+
+/* Fleet Health: same command-report proportions. */
+body.engine-mode #enginePanel .engine-fleet-health{
+  margin:12px 0!important;
+  padding:15px 16px!important;
+  border-radius:15px!important;
+}
+body.engine-mode #enginePanel .fleet-health-head{
+  align-items:center!important;
+  margin-bottom:10px!important;
+}
+body.engine-mode #enginePanel .fleet-health-head h3{
+  font-size:21px!important;
+}
+body.engine-mode #enginePanel .fleet-health-head p{
+  font-size:10px!important;
+  max-width:760px!important;
+}
+body.engine-mode #enginePanel .fleet-health-kpis{
+  gap:8px!important;
+}
+body.engine-mode #enginePanel .fleet-health-kpis article{
+  padding:11px 12px!important;
+  border-radius:11px!important;
+}
+body.engine-mode #enginePanel .fleet-health-kpis strong{
+  font-size:21px!important;
+}
+
+/* First Mate: retain the distinct watch identity while avoiding another hero block. */
+body.engine-mode #enginePanel .first-mate-watch{
+  padding:16px!important;
+  border-radius:14px!important;
+}
+body.engine-mode #enginePanel .first-mate-watch header{
+  gap:12px!important;
+  margin-bottom:10px!important;
+}
+body.engine-mode #enginePanel .first-mate-mark{
+  flex-basis:46px!important;
+  height:46px!important;
+  font-size:12px!important;
+}
+body.engine-mode #enginePanel .first-mate-watch header h3{
+  margin:0 0 2px!important;
+  font-size:22px!important;
+}
+body.engine-mode #enginePanel .first-mate-watch header p{
+  max-width:760px!important;
+  font-size:11px!important;
+  line-height:1.4!important;
+}
+body.engine-mode #enginePanel .first-mate-watch-summary{
+  min-height:46px!important;
+  margin-bottom:10px!important;
+  padding:8px 11px!important;
+}
+
+/* Project Command: project identity and tools matter more than another platform banner. */
+body.engine-mode #enginePanel .modern-project-command{
+  padding:15px!important;
+}
+body.engine-mode #enginePanel .modern-project-command-head{
+  align-items:center!important;
+  margin-bottom:11px!important;
+}
+body.engine-mode #enginePanel .modern-project-command-head>div{
+  text-align:left!important;
+  min-width:0!important;
+}
+body.engine-mode #enginePanel .modern-project-command h3{
+  margin:2px 0!important;
+  font-size:23px!important;
+}
+body.engine-mode #enginePanel .modern-project-command-head>div>p{
+  margin:0!important;
+  max-width:700px!important;
+}
+body.engine-mode #enginePanel .modern-project-tools{
+  flex:0 0 auto!important;
+}
+
+/* Cards themselves are easier to scan with left-aligned content; actions stay orderly. */
+body.engine-mode #enginePanel .modern-project-command .project-card{
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .modern-project-command .project-card-head{
+  justify-content:flex-start!important;
+}
+body.engine-mode #enginePanel .modern-project-command .project-card h4{
+  justify-content:flex-start!important;
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .modern-project-command .project-card>p,
+body.engine-mode #enginePanel .modern-project-command .project-kpis,
+body.engine-mode #enginePanel .modern-project-command .project-launch-line{
+  text-align:left!important;
+}
+body.engine-mode #enginePanel .modern-project-command .project-deployment-badge{
+  align-self:flex-start!important;
+}
+body.engine-mode #enginePanel .modern-project-command .project-governance-strip{
+  justify-content:flex-start!important;
+}
+
+/* Responsive: preserve hierarchy, then stack only where needed. */
+@media(max-width:1180px){
+  body.engine-mode #enginePanel .modern-system-operations{
+    grid-template-columns:minmax(270px,.8fr) minmax(0,1.2fr)!important;
+  }
+  body.engine-mode #enginePanel .modern-vessel-wireframe{display:none!important}
+}
+@media(max-width:900px){
+  body.engine-mode #enginePanel .modern-system-operations{
+    grid-template-columns:1fr!important;
+    text-align:left!important;
+  }
+  body.engine-mode #enginePanel .modern-system-capabilities{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body.engine-mode #enginePanel .v3-architecture-head,
+  body.engine-mode #enginePanel .full-sail-head,
+  body.engine-mode #enginePanel .fleet-health-head,
+  body.engine-mode #enginePanel .modern-project-command-head{
+    align-items:flex-start!important;
+  }
+}
