@@ -1,10 +1,10 @@
-# Dark Sky / Black Flag — v3.9.4 Direct-Touch Fleet Rail & Registry Safeguard
+# Dark Sky / Black Flag — v3.9.5 Fleet Registry Integrity Gate Repair
 
 Dark Sky now lets each project relationship contract drive its working language and suggested workflow. Projects inherit reusable operating behavior, then may override it without affecting any other vessel.
 
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.9.4 — Direct-Touch Fleet Rail & Project Registry Safeguard
+**Current release:** v3.9.5 — Fleet Registry Integrity Gate Repair
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
@@ -59,6 +59,11 @@ Dark Sky now treats customer activity as a project-specific engagement rather th
 
 ## Fleet Commissioning Lane (v3.8.30)
 New projects now follow one Captain-facing launch journey: Create → Prepare → Sea Trial → Fleet Ready → Live. Engine project cards and Project Control expose one Continue Launch / Join Fleet action, while the existing deployment, customer-test, immutable identity and isolation rules remain underneath.
+
+
+### v3.9.5 fleet registry integrity gate repair
+
+Historical Sea Trial findings no longer freeze every project write. Dark Sky compares the proposed registry against the last persisted registry and blocks only newly introduced critical integrity failures. Existing findings stay visible in Structural Certification until repaired. Commissioning still verifies the new immutable Project ID by reading IndexedDB back before clearing its draft.
 
 ### v3.9.4 direct-touch fleet rail and registry safeguard
 

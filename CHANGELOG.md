@@ -1,3 +1,11 @@
+## 3.9.5 — Fleet Registry Integrity Gate Repair
+
+- Fixed the root cause that could prevent newly commissioned projects from joining the fleet while historical/test integrity findings were present.
+- Replaced the all-or-nothing registry save gate with a no-new-damage integrity gate: existing critical findings remain visible, but safe writes and repairs are permitted when they introduce no new critical boundary violation.
+- Registry writes still fail closed if the prior registry cannot be verified or if a mutation introduces a new critical integrity finding.
+- Commissioning still requires IndexedDB read-back verification before a project draft is cleared or success is reported.
+- Updated commissioning records and runtime/cache identity to v3.9.5.
+
 ## 3.9.4 — Direct-Touch Fleet Rail & Project Registry Safeguard
 
 - Removed the fleet-arrow controls. Project Command now uses native horizontal finger/trackpad scrolling as the primary fleet navigation model.

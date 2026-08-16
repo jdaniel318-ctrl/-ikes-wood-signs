@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-9-4-fleet-rail-registry';
+const CACHE='dark-sky-v3-9-5-registry-integrity-gate';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.9.4',
-  './platform_core.js?v=3.9.4',
-  './platform_identity.js?v=3.9.4',
-  './app.js?v=3.9.4',
-  './captain.js?v=3.9.4',
+  './styles.css?v=3.9.5',
+  './platform_core.js?v=3.9.5',
+  './platform_identity.js?v=3.9.5',
+  './app.js?v=3.9.5',
+  './captain.js?v=3.9.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

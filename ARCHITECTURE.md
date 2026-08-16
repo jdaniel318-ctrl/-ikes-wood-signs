@@ -142,3 +142,8 @@ Engine Project Command is a mission-critical surface. Fleet filters, search, hor
 ### Direct-Touch Fleet Rail & Registry Durability Law — v3.9.4
 
 The Engine fleet rail is a native horizontal-scroll surface. Finger/trackpad scrolling is the primary navigation mechanism; auxiliary arrow controls are not part of the product contract. Project visibility is governed by the persisted fleet registry plus explicit search/status filters. Commissioning must not report success or clear its draft until the new immutable Project ID is verified by reading the persisted registry back from IndexedDB. A local verified registry backup may be used only when the primary registry cannot be read; it must never silently merge or resurrect projects into a healthy registry. Named commissioning drafts that are not yet registered must remain visible as Shipyard Drafts so unfinished project creation cannot disappear from the operator’s view.
+
+
+### No-New-Damage Registry Gate — v3.9.5
+
+Fleet persistence must not be globally disabled by pre-existing test or migration findings. Before any project-registry write, Dark Sky compares critical integrity findings in the last persisted registry with the candidate registry. A write is rejected when it introduces a new critical finding or when the prior registry cannot be verified. Existing findings remain visible and actionable but do not prevent safe commissioning or repair work. Commissioning is not complete until the new immutable Project ID is confirmed by reading the persisted registry back.

@@ -1068,13 +1068,60 @@
     // registry is unavailable.
     writeProjectRegistryBackup(companies,savedRows?'load-verified':'load-fallback');
   }
+  function criticalIntegrityFingerprint(issue){
+    return [String(issue?.code||''),String(issue?.projectId||''),String(issue?.detail||'')].join('::');
+  }
+
+  function newlyIntroducedCriticalIssues(beforeRows,afterRows){
+    const core=window.BlackFlagV3Core;
+    if(!core?.integrity)return [];
+    const before=core.integrity(Array.isArray(beforeRows)?beforeRows:[],null);
+    const after=core.integrity(Array.isArray(afterRows)?afterRows:[],null);
+    const priorCounts=new Map();
+    (before?.issues||[]).filter(x=>x.level==='critical').forEach(issue=>{
+      const key=criticalIntegrityFingerprint(issue);
+      priorCounts.set(key,(priorCounts.get(key)||0)+1);
+    });
+    const introduced=[];
+    (after?.issues||[]).filter(x=>x.level==='critical').forEach(issue=>{
+      const key=criticalIntegrityFingerprint(issue);
+      const remaining=priorCounts.get(key)||0;
+      if(remaining>0)priorCounts.set(key,remaining-1);
+      else introduced.push(issue);
+    });
+    return introduced;
+  }
+
   async function saveCompanies(){
     companies=companies.map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(p))||ensureProjectGovernance(p));
-    const integrity=window.BlackFlagV3Core?.integrity?.(companies,null);
-    if(integrity && !integrity.ok){
-      const summary=integrity.issues.filter(x=>x.level==='critical').slice(0,4).map(x=>`${x.code}${x.projectId?`:${x.projectId}`:''}`).join(' • ');
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'project.collection.save.blocked',detail:summary||'Critical integrity failure'});
-      throw new Error(`Dark Sky blocked a project write because hull integrity failed. ${summary}`);
+
+    // v3.9.5 — Existing test/legacy integrity findings must remain visible, but they
+    // must not freeze the entire fleet registry. Compare the candidate registry with
+    // the last persisted registry and fail closed only when this write INTRODUCES a
+    // new critical boundary violation. This permits safe commissioning and repairs
+    // while preserving the strict hull-integrity standard.
+    let prior=[];
+    try{
+      const current=await getSetting('companies');
+      prior=Array.isArray(current?.value)?current.value:[];
+    }catch(err){
+      console.warn('Could not read prior project registry before save',err);
+      if(companies.length){
+        window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'project.collection.save.blocked',detail:'Prior registry unavailable; refusing unverified fleet mutation'});
+        throw new Error('Dark Sky could not verify the existing fleet registry before saving. No project changes were written.');
+      }
+    }
+
+    const introduced=newlyIntroducedCriticalIssues(prior,companies);
+    if(introduced.length){
+      const summary=introduced.slice(0,4).map(x=>`${x.code}${x.projectId?`:${x.projectId}`:''}`).join(' • ');
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'project.collection.save.blocked_new_critical',detail:summary||'New critical integrity failure'});
+      throw new Error(`Dark Sky blocked this write because it introduced a new hull-integrity failure. ${summary}`);
+    }
+
+    const remainingIntegrity=window.BlackFlagV3Core?.integrity?.(companies,null);
+    if(remainingIntegrity?.critical){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'project.collection.save.with_existing_findings',detail:`${remainingIntegrity.critical} pre-existing critical finding(s) remain visible for repair`});
     }
 
     await setSetting('companies',companies);
@@ -3263,7 +3310,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.32'
+      commissioningVersion:'3.9.5'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -7198,7 +7245,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.4',
+    version:'3.9.5',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7699,7 +7746,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.4.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.5.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));
