@@ -1,3 +1,9 @@
+## 4.4.6 — Primary DB Readiness Gate
+- Guarantees a live IndexedDB handle before project-local mutations.
+- Reopens and retries once for closed, inactive, or undefined DB transaction failures.
+- Adds a descriptive storage readiness guard instead of raw `db.transaction` failures.
+- Preserves the v4.4.5 project-local persistence boundary and full fleet integrity.
+
 ## 4.4.5 — Fleet-safe Project Mutations
 - Replaced deployment/outpost full-fleet saves with immutable Project-ID row updates.
 - Added one-time primary IndexedDB reconnect for interrupted/closed Safari database connections.

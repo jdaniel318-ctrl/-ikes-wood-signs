@@ -19,3 +19,7 @@ Project Command and the Experience Test Deck share one canonical project-referen
 
 ## V4.4.5 Project Mutation Boundary
 A project-scoped operational change (deployment/outpost, offer, Sea Trial evidence) MUST persist by immutable Project ID into that project’s canonical row. It MUST NOT clear or replace the fleet registry. The compatibility `companies` mirror is secondary and may be refreshed after canonical read-back; failure of that mirror cannot invalidate an already verified project-row commit. Project Command restores/seals admitted fleet memory before every render so a project-local storage fault cannot reduce fleet visibility.
+
+
+## V4.4.6 Primary Storage Readiness Law
+No project-level mutation may assume an IndexedDB connection already exists. The storage gate must ensure a live primary DB before opening a transaction, may reopen/retry once on connection interruption, and must preserve the immutable project-local write boundary.

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.4.5';
+  const BUILD_VERSION = '4.4.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -977,7 +977,7 @@
     });
   }
 
-  function tx(store,mode='readonly'){ return db.transaction(store,mode).objectStore(store); }
+  function tx(store,mode='readonly'){ if(!db||typeof db.transaction!=='function') throw new Error('Primary Dark Sky database is not ready.'); return db.transaction(store,mode).objectStore(store); }
   function reqToPromise(req){ return new Promise((resolve,reject)=>{req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);}); }
 
   function readLocalOrders(){
@@ -1208,15 +1208,21 @@
   function primaryDbRetryable(err){
     const name=String(err?.name||'');
     const message=String(err?.message||err||'');
-    return ['InvalidStateError','TransactionInactiveError','AbortError','UnknownError'].includes(name) || /database.*closed|connection.*closed|transaction.*inactive|not a valid state/i.test(message);
+    return ['InvalidStateError','TransactionInactiveError','AbortError','UnknownError'].includes(name) || /database.*closed|connection.*closed|transaction.*inactive|not a valid state|db\.transaction|undefined.*transaction/i.test(message);
   }
   async function reopenPrimaryDb(reason='retry'){
     try{db?.close?.();}catch(_){}
     db=await openDb();
+    if(!db || typeof db.transaction!=='function') throw new Error('Primary Dark Sky database did not open correctly.');
     window.DarkSkyV4?.diagnostic?.('storage.primary_db.reopened',String(reason||'retry'),{build:BUILD_VERSION});
     return db;
   }
+  async function ensurePrimaryDb(reason='storage operation'){
+    if(db && typeof db.transaction==='function') return db;
+    return reopenPrimaryDb(`ensure:${reason}`);
+  }
   async function withPrimaryDbRetry(work,label='storage operation'){
+    await ensurePrimaryDb(label);
     try{return await work();}
     catch(err){
       if(!primaryDbRetryable(err))throw err;
@@ -1324,7 +1330,7 @@
     candidate.id=id;
     if(candidate.identity&&typeof candidate.identity==='object')candidate.identity.projectId=id;
 
-    // V4.4.5 — Project-local writes never clear or replace the fleet registry.
+    // V4.4.6 — Project-local writes never clear or replace the fleet registry.
     // The canonical projects store is keyed by immutable Project ID, so update the
     // owning row in place and read that exact row back before reporting success.
     await withPrimaryDbRetry(async()=>{
@@ -2602,7 +2608,7 @@
     const title=document.getElementById('experienceTestTitle');if(title)title.textContent=p.name;
     try{
       await renderExperienceTestDeck(p);
-      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.5 project-local fleet-safe persistence • ${resolution.source}`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'experience_test',action:'experience.deck.opened',detail:`v4.4.6 primary DB readiness gate • ${resolution.source}`});
       return true;
     }catch(err){
       console.error('Experience Test Deck render failed',err);
@@ -2654,7 +2660,7 @@
   }
 
   async function renderEngineRoom(){
-    // V4.4.5 — reseal the admitted fleet before any Engine repaint. A failed
+    // V4.4.6 — reseal the admitted fleet before any Engine repaint. A failed
     // project-local mutation may never collapse Project Command to the active vessel.
     await sealOperationalFleetForCommand();
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
@@ -4743,7 +4749,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'4.4.5'
+      commissioningVersion:'4.4.6'
     };
 
     // Commissioning is a durable registry transaction, not a visual completion.
@@ -9430,7 +9436,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.5.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • project-local canonical mutation writes • resilient IndexedDB reconnect • fleet command reseal • canonical Test Deck resolver`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.4.6.ready',detail:`${companies.length} projects • full V4 hull rebase • canonical Grizzly identity seal • project-local canonical mutation writes • resilient IndexedDB reconnect • fleet command reseal • canonical Test Deck resolver`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

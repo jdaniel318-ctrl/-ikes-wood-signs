@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-4-5-project-local-persistence';
+const CACHE='dark-sky-v4-4-6-primary-db-readiness';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.4.5',
-  './platform_core.js?v=4.4.5',
-  './platform_v4.js?v=4.4.5',
-  './platform_identity.js?v=4.4.5',
-  './app.js?v=4.4.5',
-  './captain.js?v=4.4.5',
+  './styles.css?v=4.4.6',
+  './platform_core.js?v=4.4.6',
+  './platform_v4.js?v=4.4.6',
+  './platform_identity.js?v=4.4.6',
+  './app.js?v=4.4.6',
+  './captain.js?v=4.4.6',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

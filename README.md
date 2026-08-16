@@ -1,4 +1,5 @@
-# Dark Sky v4.4.3 — Canonical Experience Identity Resolver
+# Dark Sky v4.4.6 — Primary DB Readiness Gate
+
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
 
@@ -21,3 +22,7 @@ Experience identity contract:
 
 ## V4.4.5 — Fleet-safe project mutations
 Outpost and Experience Test mutations now update only the owning canonical project row. They never clear/rewrite the full fleet registry. Primary IndexedDB operations retry once after a closed/interrupted connection, and Project Command reseals the admitted V4 baseline before rendering so a failed project mutation cannot collapse the fleet to one visible vessel.
+
+
+## V4.4.6 — Primary DB readiness
+Project-scoped mutations now guarantee that the primary IndexedDB connection exists before any transaction starts. Safari connection loss or an uninitialized DB handle triggers one controlled reopen/retry. A project mutation still updates only its owning canonical Project ID and never rewrites the fleet.
