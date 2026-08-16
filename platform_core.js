@@ -1,4 +1,4 @@
-/* Dark Sky / Black Flag v3.8.29 — Repeatable Business Understanding */
+/* Dark Sky / Black Flag v3.8.31 — Customer Engagement Contracts */
 (function(g){
 'use strict';
 const SCHEMA=7, POLICY='3.5', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
@@ -14,6 +14,39 @@ const FLEET_FOUNDATION=Object.freeze({
 
 const BUSINESS_MODEL_MODES=Object.freeze(['custom-product','retail','food-service','service','request-quote','mixed','other']);
 const BUSINESS_BRIEF_MAX=12000;
+
+const CUSTOMER_RELATIONSHIP_TYPES=Object.freeze({
+ purchase:Object.freeze({label:'Purchase / Order',noun:'order',actionLabel:'PLACE ORDER',testActionLabel:'PLACE TEST ORDER',receiptLabel:'ORDER RECEIVED',confirmationHeading:'Order received.',nextStep:'The business has your order and can take it from here.',detailHeading:'Tell us how you want it',detailPlaceholder:'Quantity, options, preferences, or special instructions.'}),
+ service_request:Object.freeze({label:'Service Request',noun:'service request',actionLabel:'REQUEST SERVICE',testActionLabel:'SUBMIT TEST SERVICE REQUEST',receiptLabel:'SERVICE REQUEST RECEIVED',confirmationHeading:'Service request received.',nextStep:'The business can review the work and follow up with you.',detailHeading:'Tell us about the work',detailPlaceholder:'Describe the job, location, timing, and anything the business should know.'}),
+ quote:Object.freeze({label:'Quote / Estimate',noun:'quote request',actionLabel:'REQUEST QUOTE',testActionLabel:'SUBMIT TEST QUOTE REQUEST',receiptLabel:'QUOTE REQUEST RECEIVED',confirmationHeading:'Quote request received.',nextStep:'The business can review the details and prepare the next step.',detailHeading:'Tell us what you need priced',detailPlaceholder:'Describe the scope, quantities, timing, location, and any important requirements.'}),
+ booking:Object.freeze({label:'Booking / Appointment',noun:'booking request',actionLabel:'REQUEST APPOINTMENT',testActionLabel:'SUBMIT TEST BOOKING',receiptLabel:'BOOKING REQUEST RECEIVED',confirmationHeading:'Booking request received.',nextStep:'The business can confirm availability and timing with you.',detailHeading:'Tell us what you want to schedule',detailPlaceholder:'Describe the service, preferred timing, location, and any special requirements.'}),
+ inquiry:Object.freeze({label:'Inquiry',noun:'inquiry',actionLabel:'SEND INQUIRY',testActionLabel:'SUBMIT TEST INQUIRY',receiptLabel:'INQUIRY RECEIVED',confirmationHeading:'Inquiry received.',nextStep:'The business can review your message and respond.',detailHeading:'What would you like to know?',detailPlaceholder:'Tell the business what you are looking for or what you would like to discuss.'}),
+ partnership:Object.freeze({label:'Partnership / Engagement',noun:'partnership request',actionLabel:'START PARTNERSHIP',testActionLabel:'SUBMIT TEST PARTNERSHIP',receiptLabel:'PARTNERSHIP REQUEST RECEIVED',confirmationHeading:'Partnership request received.',nextStep:'This starts the conversation. The business can review the opportunity and follow up with you.',detailHeading:'Tell us about the partnership',detailPlaceholder:'Describe what you want to accomplish together, where it would happen, timing, responsibilities, quantities, and anything else the business should understand.'}),
+ application:Object.freeze({label:'Application',noun:'application',actionLabel:'SUBMIT APPLICATION',testActionLabel:'SUBMIT TEST APPLICATION',receiptLabel:'APPLICATION RECEIVED',confirmationHeading:'Application received.',nextStep:'The business can review the application and follow up.',detailHeading:'Tell us about your application',detailPlaceholder:'Provide the information the business should consider when reviewing this application.'}),
+ reservation:Object.freeze({label:'Reservation',noun:'reservation request',actionLabel:'REQUEST RESERVATION',testActionLabel:'SUBMIT TEST RESERVATION',receiptLabel:'RESERVATION REQUEST RECEIVED',confirmationHeading:'Reservation request received.',nextStep:'The business can confirm availability and the reservation details.',detailHeading:'Tell us what you want to reserve',detailPlaceholder:'Include date, time, quantity, location, and any special requirements.'}),
+ custom_project:Object.freeze({label:'Custom Project',noun:'project request',actionLabel:'START PROJECT',testActionLabel:'SUBMIT TEST PROJECT',receiptLabel:'PROJECT REQUEST RECEIVED',confirmationHeading:'Project request received.',nextStep:'The business can review the project and determine the next step with you.',detailHeading:'Tell us about the project',detailPlaceholder:'Describe what you want to accomplish, timing, requirements, and anything else the business should know.'})
+});
+function deriveCustomerRelationship(p={},model=null){
+ const explicit=String(p?.customerExperience?.relationshipType||p?.operatingModel?.overrides?.relationshipType||p?.operatingModel?.relationshipType||'').trim();
+ if(CUSTOMER_RELATIONSHIP_TYPES[explicit])return explicit;
+ const operating=model||deriveOperatingProfile(p);
+ const text=[normalizeBusinessBrief(p).text,p.description||'',...(p.products||[]).map(x=>x.name||'')].join(' ').toLowerCase();
+ if(/partner|partnership|collaborat|sponsor|joint venture|vendor relationship|work together/.test(text))return'partnership';
+ if(/application|apply for|candidate|enroll/.test(text))return'application';
+ if(/reservation|reserve a|reserve our/.test(text))return'reservation';
+ if(/appointment|booking|book a|schedule a/.test(text))return'booking';
+ if(/quote|estimate|bid|proposal|pricing request/.test(text)||operating.mode==='request-quote')return'quote';
+ if(/inquiry|question|learn more|contact us|discuss/.test(text))return'inquiry';
+ if(operating.mode==='service')return'service_request';
+ if(['custom-product','retail','food-service'].includes(operating.mode))return'purchase';
+ return'custom_project';
+}
+function resolveCustomerRelationship(p={}){
+ const model=resolveOperatingModel(p);
+ const type=deriveCustomerRelationship(p,model);
+ return {type,...CUSTOMER_RELATIONSHIP_TYPES[type]};
+}
+
 function normalizeBusinessBrief(p={}){
  const raw=p.businessBrief;
  const text=typeof raw==='string'?raw:(raw&&typeof raw==='object'?raw.text:'')||p.description||'';
@@ -58,13 +91,14 @@ function deriveOperatingProfile(p={},briefOverride){
  ];
  if(fulfillment.length)summaryParts.push(fulfillment.join(', ')+' fulfillment');
  if(schedulingNeeded)summaryParts.push('scheduling needed');
- return {version:1,derivedAt:new Date().toISOString(),mode,customerFlow,fulfillment,schedulingNeeded,requiredInputs,visualProfile:visual.profile||'none',offers,workflow:Array.isArray(p.workflow)?p.workflow.slice():[],summary:summaryParts.join(' • ')};
+ const relationshipType=deriveCustomerRelationship(p,{mode,customerFlow,fulfillment,schedulingNeeded,requiredInputs});
+ return {version:1,derivedAt:new Date().toISOString(),mode,customerFlow,relationshipType,fulfillment,schedulingNeeded,requiredInputs,visualProfile:visual.profile||'none',offers,workflow:Array.isArray(p.workflow)?p.workflow.slice():[],summary:summaryParts.join(' • ')};
 }
 function resolveOperatingModel(p={}){
  const derived=deriveOperatingProfile(p);
  const saved=p.operatingModel&&typeof p.operatingModel==='object'?p.operatingModel:{};
  const o=saved.overrides&&typeof saved.overrides==='object'?saved.overrides:{};
- return {...derived,...saved,mode:o.mode||saved.mode||derived.mode,customerFlow:o.customerFlow||saved.customerFlow||derived.customerFlow,fulfillment:Array.isArray(o.fulfillment)?o.fulfillment:(Array.isArray(saved.fulfillment)?saved.fulfillment:derived.fulfillment),schedulingNeeded:typeof o.schedulingNeeded==='boolean'?o.schedulingNeeded:(typeof saved.schedulingNeeded==='boolean'?saved.schedulingNeeded:derived.schedulingNeeded),overrides:o,derived};
+ return {...derived,...saved,mode:o.mode||saved.mode||derived.mode,customerFlow:o.customerFlow||saved.customerFlow||derived.customerFlow,relationshipType:CUSTOMER_RELATIONSHIP_TYPES[o.relationshipType]?o.relationshipType:(CUSTOMER_RELATIONSHIP_TYPES[saved.relationshipType]?saved.relationshipType:derived.relationshipType),fulfillment:Array.isArray(o.fulfillment)?o.fulfillment:(Array.isArray(saved.fulfillment)?saved.fulfillment:derived.fulfillment),schedulingNeeded:typeof o.schedulingNeeded==='boolean'?o.schedulingNeeded:(typeof saved.schedulingNeeded==='boolean'?saved.schedulingNeeded:derived.schedulingNeeded),overrides:o,derived};
 }
 function updateBusinessUnderstanding(p,{briefText,overrides={}}={}){
  const now=new Date().toISOString();
@@ -73,6 +107,7 @@ function updateBusinessUnderstanding(p,{briefText,overrides={}}={}){
  const cleanOverrides={};
  if(BUSINESS_MODEL_MODES.includes(overrides.mode))cleanOverrides.mode=overrides.mode;
  if(['guided','catalog','request'].includes(overrides.customerFlow))cleanOverrides.customerFlow=overrides.customerFlow;
+ if(CUSTOMER_RELATIONSHIP_TYPES[overrides.relationshipType])cleanOverrides.relationshipType=overrides.relationshipType;
  if(Array.isArray(overrides.fulfillment))cleanOverrides.fulfillment=[...new Set(overrides.fulfillment.map(x=>String(x).trim()).filter(Boolean))].slice(0,12);
  if(typeof overrides.schedulingNeeded==='boolean')cleanOverrides.schedulingNeeded=overrides.schedulingNeeded;
  p.operatingModel={...base,overrides:cleanOverrides,reviewedAt:now,reviewVersion:1};
@@ -299,5 +334,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'3.8.29-repeatable-business-understanding',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'3.8.31-customer-engagement-contracts',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,customerRelationshipTypes:CUSTOMER_RELATIONSHIP_TYPES,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,deriveCustomerRelationship,resolveCustomerRelationship,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);

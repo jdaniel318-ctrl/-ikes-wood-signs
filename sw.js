@@ -1,12 +1,12 @@
-const CACHE='dark-sky-v3-8-29-repeatable-business-understanding';
+const CACHE='dark-sky-v3-8-31-customer-engagement-contracts';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=3.8.29',
-  './platform_core.js?v=3.8.29',
-  './platform_identity.js?v=3.8.29',
-  './app.js?v=3.8.29',
-  './captain.js?v=3.8.29',
+  './styles.css?v=3.8.31',
+  './platform_core.js?v=3.8.31',
+  './platform_identity.js?v=3.8.31',
+  './app.js?v=3.8.31',
+  './captain.js?v=3.8.31',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

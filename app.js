@@ -1183,6 +1183,74 @@
     }
   }
 
+  function projectFleetLaunchState(p){
+    const deployments=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');
+    const active=deployments.filter(d=>d.state==='deployed');
+    const tested=deployments.filter(d=>d.state==='sea_trial'&&d.lastTestedAt);
+    const trials=deployments.filter(d=>d.state==='sea_trial');
+    const offers=(p.products||[]).filter(x=>x&&x.active!==false&&(x.customerReady===true||x.published===true));
+    const brief=String(p.businessBrief?.text||p.description||'').trim();
+    const live=p.publish?.status==='live'&&active.length>0;
+    if(live)return {key:'live',label:'LIVE',step:5,detail:`${active.length} active outpost${active.length===1?'':'s'} serving customers.`,action:'open',actionLabel:'OPEN PROJECT',deployments,active,tested,trials,offers,brief};
+    if(tested.length||active.length)return {key:'fleet_ready',label:'FLEET READY',step:4,detail:'Sea Trial proof is recorded. Captain approval can join this vessel to the live fleet.',action:'join',actionLabel:'JOIN FLEET',deployments,active,tested,trials,offers,brief};
+    if(trials.length)return {key:'sea_trial',label:'SEA TRIAL',step:3,detail:'Complete one customer test order through the Sea Trial outpost.',action:'continue',actionLabel:'CONTINUE SEA TRIAL',deployments,active,tested,trials,offers,brief};
+    if(deployments.length)return {key:'preparing',label:'PREPARING',step:2,detail:'An outpost exists. Finish its setup and begin Sea Trial.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
+    if(offers.length&&brief)return {key:'preparing',label:'PREPARING',step:2,detail:'The business is defined. Create its first customer outpost.',action:'continue',actionLabel:'CREATE FIRST OUTPOST',deployments,active,tested,trials,offers,brief};
+    return {key:'draft',label:'DRAFT',step:1,detail:!brief?'Finish the Business Brief so Dark Sky understands this vessel.':'Add at least one customer-ready offer before launch.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
+  }
+
+  async function joinProjectFleet(p){
+    if(!p||!requireEngineFleetMutation(p,'project.join_fleet'))return false;
+    const launch=projectFleetLaunchState(p);
+    if(!['fleet_ready','live'].includes(launch.key)){
+      alert('This vessel is not Fleet Ready yet. Continue Launch will take you to the next required step.');
+      await continueProjectLaunch(p);
+      return false;
+    }
+    if(launch.key==='live')return true;
+    let outpost=launch.tested[0]||launch.active[0];
+    if(!outpost){alert('Dark Sky could not find the tested outpost required to join the fleet.');return false;}
+    if(!requireDeploymentBoundary(p,outpost,'project.join_fleet'))return false;
+    if(outpost.state==='sea_trial'){
+      if(!(await deploymentCommissionOrder(p,outpost)))return false;
+      if(!window.BlackFlagV3Core?.canTransitionDeployment?.(outpost.state,'deployed')){
+        alert('Dark Sky blocked an invalid deployment transition.');
+        return false;
+      }
+      outpost.state='deployed';
+      outpost.updatedAt=new Date().toISOString();
+      outpost.manifestVersion=Number(outpost.manifestVersion||1)+1;
+      normalizeDeploymentIdentity(p,outpost);
+    }
+    p.publish={...(p.publish||{}),status:'live'};
+    p.visibility='published';
+    p.published=true;
+    p.lifecycle={...(p.lifecycle||{}),state:'live',version:Math.max(2,Number(p.lifecycle?.version||2)),updatedAt:new Date().toISOString()};
+    p.updatedAt=new Date().toISOString();
+    await saveCompanies();
+    logActivity(p.id,'Project joined fleet',`${p.name} • ${outpost.name} active`);
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'project',action:'project.joined_fleet',detail:`${p.name} • ${outpost.id}`});
+    await renderEngineRoom();
+    if(engineActiveProjectId===p.id)await renderProjectTab(p.id,'overview');
+    return true;
+  }
+
+  async function continueProjectLaunch(p){
+    if(!p)return;
+    const launch=projectFleetLaunchState(p);
+    if(launch.key==='live'){enterProject(p.id);return;}
+    if(launch.key==='fleet_ready'){await joinProjectFleet(p);return;}
+    await openProjectEngineControl(p.id);
+    if(launch.key==='draft'){
+      if(!launch.brief){await renderProjectTab(p.id,'customer');return;}
+      if(!launch.offers.length){await renderProjectTab(p.id,'products');return;}
+    }
+    await renderProjectTab(p.id,'deployment');
+    if(!launch.deployments.length){
+      setTimeout(()=>document.getElementById('createDeploymentBtn')?.click(),80);
+    }
+  }
+
   async function renderProjectCommand(){
     const box=$('projectCommandCards');if(!box)return;
     const list=projects();
@@ -1195,8 +1263,9 @@
       ensureProjectGovernance(p);
       const platformState=platformStatus(p);
       const ownerState=ownerAccessLabel(p);
-      cards.push(`<article class="project-card ${platformState!=='approved'?'platform-blocked':''}">
-        <span class="pirate-card-ribbon">ACTIVE</span>
+      const launch=projectFleetLaunchState(p);
+      cards.push(`<article class="project-card ${platformState!=='approved'?'platform-blocked':''} fleet-launch-${launch.key}">
+        <span class="pirate-card-ribbon fleet-launch-ribbon ${launch.key}">${escapeHtml(launch.label)}</span>
         <span class="pirate-card-watermark" aria-hidden="true">☠</span>
         <div class="project-card-head">
           <div class="project-brand-badge ${brandVisual.logo?'has-logo':'code-only'}" title="${escapeHtml(p.name)}">
@@ -1217,9 +1286,10 @@
           <span><small>REVENUE · 30D</small><strong>$${s.revenueMonth.toFixed(0)}</strong></span>
           <span><small>LEDGER</small><strong>${s.completed}</strong></span>
         </div>
+        <div class="project-launch-line ${launch.key}"><span>${escapeHtml(launch.label)}</span><small>${escapeHtml(launch.detail)}</small></div>
         <div class="project-card-actions">
           <button data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
-          <button data-enter-project="${escapeHtml(p.id)}" data-project-shell="${escapeHtml(projectShellFor(p))}" class="primary-btn small">${p.publish?.status==='live'?'OPEN PROJECT':'OPEN PRIVATE TEST'}</button>
+          <button data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
         </div>
       </article>`);
     }
@@ -1227,12 +1297,25 @@
     box.innerHTML=cards.join('');
     box.querySelectorAll('[data-open-project-control]').forEach(b=>b.addEventListener('click',()=>openProjectEngineControl(b.dataset.openProjectControl)));
     box.querySelectorAll('[data-enter-project]').forEach(b=>b.addEventListener('click',()=>enterProject(b.dataset.enterProject)));
+    box.querySelectorAll('[data-project-launch]').forEach(b=>b.addEventListener('click',async()=>{const p=projectById(b.dataset.projectLaunch);if(p)await continueProjectLaunch(p);}));
     box.querySelectorAll('[data-project-publish]').forEach(t=>t.addEventListener('change',async()=>{
       const p=projectById(t.dataset.projectPublish);if(!p)return;
       if(!requireEngineFleetMutation(p,'project.publishing.quick_update')){t.checked=!t.checked;return;}
       const next=t.checked?'live':'development';
-      if(t.checked && !confirm(`Publish ${p.name}? Customers may be able to access this project.`)){t.checked=false;return;}
-      p.publish={status:next};p.visibility=t.checked?'published':'engine_only';await saveCompanies();logActivity(p.id,t.checked?'Project published':'Project unpublished');await renderProjectCommand();
+      if(t.checked){
+        const launch=projectFleetLaunchState(p);
+        if(launch.key!=='fleet_ready'&&launch.key!=='live'){
+          t.checked=false;
+          alert(`${p.name} is ${launch.label}. Continue Launch will take you to the next required step before publishing.`);
+          await continueProjectLaunch(p);
+          return;
+        }
+        if(launch.key==='fleet_ready'){t.checked=false;await joinProjectFleet(p);return;}
+        if(!confirm(`Publish ${p.name}? Customers may be able to access this project.`)){t.checked=false;return;}
+      }
+      p.publish={status:next};p.visibility=t.checked?'published':'engine_only';p.published=!!t.checked;
+      if(!t.checked&&p.lifecycle?.state==='live')p.lifecycle={...p.lifecycle,state:'paused',updatedAt:new Date().toISOString()};
+      await saveCompanies();logActivity(p.id,t.checked?'Project published':'Project returned to private service');await renderProjectCommand();
     }));
     const add=$('addProjectCard');if(add)add.addEventListener('click',(e)=>{e.preventDefault();openProjectCommissioning();});
     await renderFleetHealth();
@@ -1579,6 +1662,12 @@
         <div class="pc-operational-state ${s.status.toLowerCase()}"><span>OPERATIONAL STATE</span><strong>${s.status}</strong><small>${escapeHtml(platformStatusLabel(p))}</small></div>
       </section>
 
+      ${(()=>{const launch=projectFleetLaunchState(p);return `<section class="pc-fleet-launch-lane ${launch.key}">
+        <div class="pc-fleet-launch-copy"><span>FLEET COMMISSIONING LANE</span><h4>${escapeHtml(launch.label)}</h4><p>${escapeHtml(launch.detail)}</p></div>
+        <div class="pc-fleet-launch-progress" aria-label="Fleet launch progress">${['Create','Prepare','Sea Trial','Fleet Ready','Live'].map((label,i)=>`<span class="${launch.step>i+1?'done':''} ${launch.step===i+1?'current':''}"><b>${i+1}</b>${label}</span>`).join('')}</div>
+        <button type="button" data-project-launch-action="${escapeHtml(p.id)}" class="primary-btn pc-fleet-launch-action">${escapeHtml(launch.actionLabel)}</button>
+      </section>`})()}
+
       <section class="pc-kpi-grid" aria-label="Project operating indicators">
         ${projectControlKpi('Revenue · 30 days',projectControlMoney(s.revenue30),revenueTrend.label)}
         ${projectControlKpi('Orders · 30 days',s.recent.length,orderTrend.label)}
@@ -1627,6 +1716,7 @@
         </div>
       </section>`;
     bindProjectControlJumpLinks(p);
+    box.querySelectorAll('[data-project-launch-action]').forEach(btn=>btn.addEventListener('click',async()=>{const target=projectById(btn.dataset.projectLaunchAction);if(target)await continueProjectLaunch(target);}));
   }
 
   function monthlyProjectBuckets(orders,count=6){
@@ -1883,7 +1973,7 @@
       <label>How this business works<textarea id="ptBusinessBrief" rows="9" maxlength="12000" placeholder="What does this business do? What does it sell or provide? How should customers interact with it? How is work fulfilled? What information, scheduling, photos, approvals, or special rules matter?">${escapeHtml(brief.text||'')}</textarea></label>
       <div class="business-understanding-head"><div><small>DARK SKY UNDERSTANDING</small><h4>Structured operating model</h4></div><span>Repeatable • Project-scoped</span></div>
       ${operatingUnderstandingMarkup(p)}
-      <div class="business-model-corrections"><label>Operating model<select id="ptOperatingMode">${operatingModelModeOptions(operating.mode||'other')}</select></label><label>Customer journey<select id="ptOperatingFlow"><option value="guided" ${operating.customerFlow==='guided'?'selected':''}>Guided</option><option value="catalog" ${operating.customerFlow==='catalog'?'selected':''}>Catalog</option><option value="request" ${operating.customerFlow==='request'?'selected':''}>Request / Quote</option></select></label><label>Fulfillment methods<input id="ptOperatingFulfillment" class="text-input" value="${escapeHtml((operating.fulfillment||[]).join(', '))}" placeholder="pickup, delivery, shipping, on-site"></label><label class="checkline"><input id="ptOperatingScheduling" type="checkbox" ${operating.schedulingNeeded?'checked':''}> Scheduling / appointment needed</label></div>
+      <div class="business-model-corrections"><label>Operating model<select id="ptOperatingMode">${operatingModelModeOptions(operating.mode||'other')}</select></label><label>Customer journey<select id="ptOperatingFlow"><option value="guided" ${operating.customerFlow==='guided'?'selected':''}>Guided</option><option value="catalog" ${operating.customerFlow==='catalog'?'selected':''}>Catalog</option><option value="request" ${operating.customerFlow==='request'?'selected':''}>Request / Quote</option></select></label><label>Customer relationship<select id="ptRelationshipType">${customerRelationshipOptions(operating.overrides?.relationshipType||operating.relationshipType||'auto')}</select></label><label>Fulfillment methods<input id="ptOperatingFulfillment" class="text-input" value="${escapeHtml((operating.fulfillment||[]).join(', '))}" placeholder="pickup, delivery, shipping, on-site"></label><label class="checkline"><input id="ptOperatingScheduling" type="checkbox" ${operating.schedulingNeeded?'checked':''}> Scheduling / appointment needed</label></div>
       <div class="visual-cap-note"><strong>Interpretation stays correctable.</strong><span>Dark Sky keeps both the source brief and the structured model. Changes here affect this project only and do not alter another vessel.</span></div></div>
       <div class="pec-card"><h4>Experience Rules</h4>
       <label class="admin-toggle-row compact-toggle"><span><strong>Photo step</strong><small>Require product photo.</small></span><input id="ptPhoto" type="checkbox" ${p.customerExperience?.photoRequired!==false?'checked':''}></label>
@@ -2246,7 +2336,7 @@
     if(tab==='experience'){ const profile=$('ptVisualProfile'); if(profile) profile.onchange=()=>{ const preset=visualPresets()[profile.value]; if(!preset)return; VISUAL_FAMILIES.forEach(f=>{ $$(`[data-visual-family=\"${f}\"]`).forEach(cb=>{cb.checked=(preset[f]||[]).includes(cb.value);cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked);}); }); }; $$('#visualCapabilityDeck input[type=\"checkbox\"]').forEach(cb=>cb.onchange=()=>cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked)); $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;
         p.customerExperience={...(p.customerExperience||{}),mode:$('ptOperatingFlow')?.value||p.customerExperience?.mode||'guided',photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};
         p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;p.visualPresentation=collectVisualPresentationFromControls(p);
-        window.BlackFlagV3Core?.updateBusinessUnderstanding?.(p,{briefText:$('ptBusinessBrief')?.value||'',overrides:{mode:$('ptOperatingMode')?.value||'other',customerFlow:$('ptOperatingFlow')?.value||'guided',fulfillment:String($('ptOperatingFulfillment')?.value||'').split(',').map(x=>x.trim()).filter(Boolean),schedulingNeeded:!!$('ptOperatingScheduling')?.checked}});
+        window.BlackFlagV3Core?.updateBusinessUnderstanding?.(p,{briefText:$('ptBusinessBrief')?.value||'',overrides:{mode:$('ptOperatingMode')?.value||'other',customerFlow:$('ptOperatingFlow')?.value||'guided',relationshipType:($('ptRelationshipType')?.value&&$('ptRelationshipType').value!=='auto')?$('ptRelationshipType').value:undefined,fulfillment:String($('ptOperatingFulfillment')?.value||'').split(',').map(x=>x.trim()).filter(Boolean),schedulingNeeded:!!$('ptOperatingScheduling')?.checked}});
         await saveCompanies();logActivity(p.id,'Business understanding updated',window.BlackFlagV3Core?.resolveOperatingModel?.(p)?.summary||`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
     if(tab==='workflow') $('saveWorkflowTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'workflow.update'))return;const rows=$('ptWorkflow').value.split('\n').map(x=>x.trim()).filter(Boolean);if(rows.length>=2){p.workflow=rows;await saveCompanies();logActivity(p.id,'Workflow updated',rows.join(' → '));}};
     if(tab==='publishing'){ $('ptPublish').value=p.publish?.status||'development'; $('savePublishingTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'project.publishing.update'))return;const next=$('ptPublish').value;if(next==='live'&&!confirm(`Publish ${p.name}?`))return;p.publish={status:next};p.visibility=next==='live'?'published':'engine_only';await saveCompanies();logActivity(p.id,'Publishing changed',next);await renderProjectCommand();};}
@@ -2730,7 +2820,7 @@
       name:'',ownerName:'',ownerEmail:'',
       businessType:'other',description:'',businessBrief:'',
       primaryOffer:'',characterLimit:32,pricingMode:'manual',
-      customerMode:'guided',photoRequired:false,contactCapture:true,visualProfile:'none',
+      customerMode:'guided',relationshipType:'auto',photoRequired:false,contactCapture:true,visualProfile:'none',
       ownerPortal:true,customerRetention:false,notifications:false,
       namespace:'',projectCode:'',orderPrefix:'',
       status:'development',visibility:'private',deploymentState:'sea_trial'
@@ -2793,7 +2883,7 @@
       description:commissionDraft?.description||'',
       businessBrief:{text:commissionDraft?.businessBrief||commissionDraft?.description||''},
       products:commissionDraft?.primaryOffer?[{name:commissionDraft.primaryOffer,active:true}]:[],
-      customerExperience:{mode:commissionDraft?.customerMode||'guided',photoRequired:!!commissionDraft?.photoRequired,contactCapture:commissionDraft?.contactCapture!==false},
+      customerExperience:{mode:commissionDraft?.customerMode||'guided',relationshipType:commissionDraft?.relationshipType&&commissionDraft.relationshipType!=='auto'?commissionDraft.relationshipType:undefined,photoRequired:!!commissionDraft?.photoRequired,contactCapture:commissionDraft?.contactCapture!==false},
       visualPresentation:{profile:commissionDraft?.visualProfile||'none'}
     };
     return core?.deriveOperatingProfile?.(sample,commissionDraft?.businessBrief||commissionDraft?.description||'')||{mode:'other',customerFlow:commissionDraft?.customerMode||'guided',fulfillment:[],schedulingNeeded:false,requiredInputs:[],summary:'Operating model will be derived at commissioning.'};
@@ -2849,6 +2939,7 @@
             <option value="catalog" ${d.customerMode==='catalog'?'selected':''}>CATALOG</option>
             <option value="request" ${d.customerMode==='request'?'selected':''}>REQUEST / QUOTE</option>
           </select></label>
+          <label>Customer relationship<select data-cfield="relationshipType">${customerRelationshipOptions(d.relationshipType||'auto')}</select></label>
           <label class="checkline"><input type="checkbox" data-cfield="photoRequired" ${d.photoRequired?'checked':''}> Require customer photo</label>
           <label class="checkline"><input type="checkbox" data-cfield="contactCapture" ${d.contactCapture?'checked':''}> Capture customer contact information</label>
           <label>Visual presentation<select data-cfield="visualProfile">${visualProfileOptions(d.visualProfile||'none')}</select></label>
@@ -3073,6 +3164,7 @@
       type:commissionDraft.businessType||'custom_service',
       customerExperience:{
         mode:commissionDraft.customerMode,
+        relationshipType:commissionDraft.relationshipType&&commissionDraft.relationshipType!=='auto'?commissionDraft.relationshipType:undefined,
         photoRequired:!!commissionDraft.photoRequired,
         contactCapture:!!commissionDraft.contactCapture
       },
@@ -3095,9 +3187,9 @@
       createdAt:new Date().toISOString(),
       updatedAt:new Date().toISOString(),
       commissionedAt:new Date().toISOString(),
-      lifecycle:{state:'draft',version:2,updatedAt:new Date().toISOString()},
+      lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.8.29'
+      commissioningVersion:'3.8.31'
     };
 
     // Use the same project collection the Engine already persists and seal it through the canonical project core.
@@ -3108,7 +3200,7 @@
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • private sea trial`});
     closeProjectCommissioning();
     await renderEngineRoom();
-    setTimeout(()=>openProjectEngineControl(id),50);
+    setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},50);
   }
 
   async function openProjectEngineControl(id){
@@ -3641,6 +3733,13 @@
   function operatingModelForProject(p){
     return window.BlackFlagV3Core?.resolveOperatingModel?.(p)||{mode:'other',customerFlow:p?.customerExperience?.mode||'guided',fulfillment:[],schedulingNeeded:false,requiredInputs:[],summary:'Project operating model'};
   }
+  function customerRelationshipForProject(p){
+    return window.BlackFlagV3Core?.resolveCustomerRelationship?.(p)||{type:'custom_project',label:'Custom Project',noun:'project request',actionLabel:'START PROJECT',testActionLabel:'SUBMIT TEST PROJECT',receiptLabel:'PROJECT REQUEST RECEIVED',confirmationHeading:'Project request received.',nextStep:'The business can review the project and follow up.',detailHeading:'Tell us about the project',detailPlaceholder:'Describe what you want to accomplish and anything the business should know.'};
+  }
+  function customerRelationshipOptions(selected='auto'){
+    const rels=window.BlackFlagV3Core?.customerRelationshipTypes||{};
+    return `<option value="auto" ${selected==='auto'?'selected':''}>AUTO — DERIVE FROM BUSINESS BRIEF</option>`+Object.entries(rels).map(([id,meta])=>`<option value="${escapeHtml(id)}" ${id===selected?'selected':''}>${escapeHtml(meta.label||id)}</option>`).join('');
+  }
   function operatingModelModeOptions(selected='other'){
     const labels={'custom-product':'Custom Product','retail':'Retail','food-service':'Food / Beverage','service':'Service','request-quote':'Request / Quote','mixed':'Mixed','other':'Other'};
     return Object.entries(labels).map(([id,label])=>`<option value="${id}" ${id===selected?'selected':''}>${label}</option>`).join('');
@@ -3652,6 +3751,7 @@
     return `<div class="business-understanding-grid">
       <div><small>OPERATING MODEL</small><strong>${escapeHtml(String(model.mode||'other').replaceAll('-',' '))}</strong></div>
       <div><small>CUSTOMER FLOW</small><strong>${escapeHtml(String(model.customerFlow||'guided').replaceAll('-',' '))}</strong></div>
+      <div><small>CUSTOMER RELATIONSHIP</small><strong>${escapeHtml(customerRelationshipForProject(p).label)}</strong></div>
       <div><small>FULFILLMENT</small><strong>${escapeHtml(fulfillment)}</strong></div>
       <div><small>SCHEDULING</small><strong>${model.schedulingNeeded?'Needed':'Not currently indicated'}</strong></div>
       <div><small>REQUIRED INPUTS</small><strong>${escapeHtml(inputs)}</strong></div>
@@ -3685,10 +3785,14 @@
     const built=window.BlackFlagV3Core?.normalizeVisualPresentation?.({...(p||{}),visualPresentation:next});
     return built||next;
   }
-  const universalCustomerState={projectId:null,offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',submittedOrderId:''};
+  const universalCustomerState={projectId:null,offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',receipt:null};
+  function universalReceiptKey(p,ctx=universalCustomerContextFor(p)){return `bfUniversalReceipt:${p?.id||'project'}:${ctx?.deploymentId||'private'}`;}
+  function readUniversalReceipt(p){try{return JSON.parse(sessionStorage.getItem(universalReceiptKey(p))||'null')}catch(_){return null}}
+  function writeUniversalReceipt(p,receipt){try{sessionStorage.setItem(universalReceiptKey(p),JSON.stringify(receipt))}catch(_){} universalCustomerState.receipt=receipt;}
+  function clearUniversalReceipt(p){try{sessionStorage.removeItem(universalReceiptKey(p))}catch(_){} universalCustomerState.receipt=null;}
   function resetUniversalCustomerState(p){
     const offers=universalOffersFor(p);
-    Object.assign(universalCustomerState,{projectId:p?.id||null,offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',submittedOrderId:''});
+    Object.assign(universalCustomerState,{projectId:p?.id||null,offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',receipt:readUniversalReceipt(p)});
   }
   function universalCustomerContextFor(p){
     const ctx=window.__deploymentCustomerContext;
@@ -3718,13 +3822,18 @@
     const contactCapture=p.customerExperience?.contactCapture!==false;
     const ctx=universalCustomerContextFor(p);
     const operating=operatingModelForProject(p);
-    const detailHeading=operating.mode==='service'||operating.mode==='request-quote'?'Tell us about the work':operating.mode==='food-service'?'Tell us how you want it':'Tell us what you need';
-    const detailPlaceholder=operating.mode==='service'?'Describe the job, location, timing, and anything we should know.':operating.mode==='food-service'?'Quantity, flavors, preferences, event details, or special instructions.':'Details, wording, preferences, or special instructions';
+    const relationship=customerRelationshipForProject(p);
+    const detailHeading=relationship.detailHeading||'Tell us what you need';
+    const detailPlaceholder=relationship.detailPlaceholder||'Details, preferences, or special instructions';
     const initials=(p.projectCode||p.orderPrefix||p.name||'PRJ').replace(/[^A-Za-z0-9]/g,'').slice(0,3).toUpperCase()||'PRJ';
-    if(universalCustomerState.submittedOrderId){
+    const receipt=universalCustomerState.receipt||readUniversalReceipt(p);
+    if(receipt){
+      universalCustomerState.receipt=receipt;
+      const contact=[receipt.customerName,receipt.customerPhone,receipt.customerEmail].filter(Boolean).join(' • ');
+      const contextBits=[receipt.fulfillment?`Fulfillment: ${receipt.fulfillment.replaceAll('-',' ')}`:'',receipt.preferredTiming?`Timing: ${receipt.preferredTiming}`:''].filter(Boolean);
       shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div>${ctx.deploymentId?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
-      <main class="universal-shell-main"><section class="universal-done-card"><div class="universal-done-mark">✓</div><small>${ctx.state==='sea_trial'?'SEA TRIAL ORDER RECORDED':'ORDER RECEIVED'}</small><h2>${ctx.state==='sea_trial'?'Customer test complete.':"You're in the queue."}</h2><p>Order <strong>${escapeHtml(universalCustomerState.submittedOrderId)}</strong> is sealed to ${escapeHtml(p.name)} only.</p>${ctx.deploymentId?'<button type="button" id="universalDoneReturnShipwright" class="primary-btn">RETURN TO SHIPWRIGHT</button>':'<button type="button" id="universalAnotherOrder" class="primary-btn">START ANOTHER ORDER</button>'}</section></main>`;
-      $('universalAnotherOrder')?.addEventListener('click',()=>{resetUniversalCustomerState(p);renderUniversalCustomerShell(p)});
+      <main class="universal-shell-main"><section class="universal-done-card universal-receipt-card"><div class="universal-done-mark">✓</div><small>${escapeHtml(ctx.state==='sea_trial'?`SEA TRIAL • ${relationship.receiptLabel}`:relationship.receiptLabel)}</small><h2>${escapeHtml(ctx.state==='sea_trial'?'Customer test complete.':relationship.confirmationHeading)}</h2><p class="universal-receipt-next">${escapeHtml(ctx.state==='sea_trial'?'The customer engagement was recorded against this outpost. Return to Shipwright to continue launch.':relationship.nextStep)}</p><div class="universal-receipt-summary"><div><span>REFERENCE</span><strong>${escapeHtml(receipt.id)}</strong></div><div><span>ENGAGEMENT</span><strong>${escapeHtml(relationship.label)}</strong></div><div><span>WHAT THEY SENT</span><strong>${escapeHtml(receipt.offerName||'Request')}</strong></div>${contact?`<div><span>CONTACT</span><strong>${escapeHtml(contact)}</strong></div>`:''}${contextBits.length?`<div><span>DETAILS</span><strong>${escapeHtml(contextBits.join(' • '))}</strong></div>`:''}</div>${ctx.deploymentId?'<button type="button" id="universalDoneReturnShipwright" class="primary-btn">RETURN TO SHIPWRIGHT</button>':'<div class="universal-receipt-actions"><button type="button" id="universalAnotherOrder" class="secondary-btn">START ANOTHER</button></div>'}</section></main>`;
+      $('universalAnotherOrder')?.addEventListener('click',()=>{clearUniversalReceipt(p);resetUniversalCustomerState(p);renderUniversalCustomerShell(p)});
       $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       $('universalDoneReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       return;
@@ -3733,13 +3842,13 @@
       <main class="universal-shell-main">
         ${ctx.state==='sea_trial'?'<div class="universal-trial-banner">SEA TRIAL — Orders created here are test orders until this outpost is activated.</div>':''}
         <section class="universal-order-card">
-          <div class="universal-section-head"><small>1 • OFFER</small><h2>What can we help with?</h2></div>
+          <div class="universal-section-head"><small>1 • ${escapeHtml(relationship.type==='purchase'?'OFFER':'ENGAGEMENT')}</small><h2>${escapeHtml(relationship.type==='partnership'?'How can we work together?':'What can we help with?')}</h2></div>
           <div class="universal-offer-grid">${offers.length?offers.map(x=>`<button type="button" class="universal-offer ${offer?.id===x.id?'selected':''}" data-universal-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(universalPriceLabel(x))}</span></button>`).join(''):'<div class="universal-empty"><strong>No customer-ready offers yet.</strong><span>Return to Project Control and make an offer available before testing this vessel.</span></div>'}</div>
         </section>
         ${photoRequired?`<section class="universal-order-card"><div class="universal-section-head"><small>2 • REFERENCE</small><h2>Add the required photo</h2></div><label class="universal-photo-picker"><input id="universalPhotoInput" type="file" accept="image/*" capture="environment"><span>${universalCustomerState.photoData?'CHANGE PHOTO':'TAKE OR CHOOSE PHOTO'}</span></label>${universalCustomerState.photoData?`<img class="universal-photo-preview" src="${universalCustomerState.photoData}" alt="Customer reference photo">`:''}</section>`:''}
         <section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'3':'2'} • DETAILS</small><h2>${escapeHtml(detailHeading)}</h2><p>${escapeHtml((window.BlackFlagV3Core?.normalizeBusinessBrief?.(p)?.text||'').slice(0,240))}</p></div><textarea id="universalNotes" class="universal-input" rows="5" maxlength="${Math.max(1000,Number(p.characterLimit||500))}" placeholder="${escapeHtml(detailPlaceholder)}">${escapeHtml(universalCustomerState.notes)}</textarea>${operating.schedulingNeeded?`<label class="universal-adaptive-field">Preferred date / timing<input id="universalPreferredTiming" class="universal-input" value="${escapeHtml(universalCustomerState.preferredTiming)}" placeholder="When would you like this?"></label>`:''}${(operating.fulfillment||[]).length?`<label class="universal-adaptive-field">Fulfillment<select id="universalFulfillment" class="universal-input"><option value="">Choose an option</option>${operating.fulfillment.map(x=>`<option value="${escapeHtml(x)}" ${universalCustomerState.fulfillment===x?'selected':''}>${escapeHtml(x.replaceAll('-',' '))}</option>`).join('')}</select></label>`:''}</section>
         ${contactCapture?`<section class="universal-order-card"><div class="universal-section-head"><small>${photoRequired?'4':'3'} • CONTACT</small><h2>How should we reach you?</h2></div><div class="universal-contact-grid"><label>Name<input id="universalCustomerName" class="universal-input" autocomplete="name" value="${escapeHtml(universalCustomerState.customerName)}"></label><label>Phone<input id="universalCustomerPhone" class="universal-input" type="tel" autocomplete="tel" value="${escapeHtml(universalCustomerState.customerPhone)}"></label><label>Email<input id="universalCustomerEmail" class="universal-input" type="email" autocomplete="email" value="${escapeHtml(universalCustomerState.customerEmail)}"></label></div></section>`:''}
-        <section class="universal-review-card"><div><small>READY TO SEND</small><h2>${escapeHtml(offer?.name||'Select an offer')}</h2><p>${escapeHtml(universalPriceLabel(offer))}</p></div><button type="button" id="universalSubmitOrder" class="primary-btn" ${offers.length?'':'disabled'}>${ctx.state==='sea_trial'?'PLACE TEST ORDER':'PLACE ORDER'}</button></section>
+        <section class="universal-review-card"><div><small>READY TO SEND</small><h2>${escapeHtml(offer?.name||'Select an offer')}</h2><p>${escapeHtml(universalPriceLabel(offer))}</p></div><button type="button" id="universalSubmitOrder" class="primary-btn" ${offers.length?'':'disabled'}>${escapeHtml(ctx.state==='sea_trial'?relationship.testActionLabel:relationship.actionLabel)}</button></section>
       </main>`;
     $$('[data-universal-offer]').forEach(btn=>btn.addEventListener('click',()=>{universalCustomerState.offerId=btn.dataset.universalOffer;renderUniversalCustomerShell(p)}));
     $('universalNotes')?.addEventListener('input',e=>universalCustomerState.notes=e.target.value);
@@ -3777,7 +3886,8 @@
     const id=`${prefix}-${y}${mo}${day}-${suffix}`;
     const ctx=universalCustomerContextFor(p);
     const price=Number(offer.price||offer.basePrice||0);
-    const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||p.namespace,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:prefix},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New',price,productId:offer.id,productName:offer.name,offerName:offer.name,wording:universalCustomerState.notes.trim(),notes:universalCustomerState.notes.trim(),preferredTiming:universalCustomerState.preferredTiming.trim(),fulfillment:universalCustomerState.fulfillment||'',operatingModel:operatingModelForProject(p).mode,photoData:universalCustomerState.photoData||'',contactPreference:universalCustomerState.customerPhone?'Text':'Email',customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'universal_customer_shell'};
+    const relationship=customerRelationshipForProject(p);
+    const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||p.namespace,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:prefix},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New',price,productId:offer.id,productName:offer.name,offerName:offer.name,wording:universalCustomerState.notes.trim(),notes:universalCustomerState.notes.trim(),preferredTiming:universalCustomerState.preferredTiming.trim(),fulfillment:universalCustomerState.fulfillment||'',operatingModel:operatingModelForProject(p).mode,photoData:universalCustomerState.photoData||'',contactPreference:universalCustomerState.customerPhone?'Text':'Email',customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'universal_customer_shell',recordType:relationship.type==='purchase'?'order':'engagement',relationshipType:relationship.type,engagementLabel:relationship.label,customerAction:relationship.actionLabel};
     backupOrderLocally(order);captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Universal order save failed',err);alert('The order could not be saved. Please try again.');return;}
     if(ctx.state==='sea_trial' && ctx.deploymentId){
       const canonicalProject=projectById(p.id);
@@ -3787,11 +3897,11 @@
         deployment.lastTestOrderId=id;
         deployment.testMode='customer_order';
         deployment.updatedAt=deployment.lastTestedAt;
-        await saveCompanies();
-        logActivity(p.id,'Sea Trial customer order completed',`${deployment.name} • ${id}`);
+        try{await saveCompanies();logActivity(p.id,'Sea Trial customer engagement completed',`${deployment.name} • ${relationship.label} • ${id}`);}catch(err){console.warn('Sea Trial engagement metadata sync failed',err);window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:p.id,category:'deployment',action:'sea_trial.engagement_sync_failed',detail:`${deployment.name} • ${id} • ${err?.message||err}`});}
       }
     }
-    universalCustomerState.submittedOrderId=id;renderUniversalCustomerShell(p);
+    const receipt={id,relationshipType:relationship.type,offerName:offer.name,customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),fulfillment:universalCustomerState.fulfillment||'',preferredTiming:universalCustomerState.preferredTiming.trim(),submittedAt:new Date().toISOString()};
+    writeUniversalReceipt(p,receipt);renderUniversalCustomerShell(p);
   }
 
   const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers'};
@@ -6890,7 +7000,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.8.29',
+    version:'3.8.31',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7317,7 +7427,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.29.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.8.31.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

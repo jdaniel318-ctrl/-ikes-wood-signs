@@ -103,3 +103,15 @@ A project owns two distinct business-understanding records:
 2. `operatingModel` — a structured, correctable interpretation derived from the brief plus project capabilities.
 
 The operating model may inform customer flow, fulfillment, scheduling, required inputs, visual presentation, offers, and workflow. Corrections are stored as project-scoped overrides; the original brief is never replaced by the interpretation. This contract is reusable by future Dark Sky ships without inheriting the Business Command Engine UI.
+
+
+## Fleet Commissioning Lane (v3.8.30)
+A project is the vessel; deployments are its outposts. Project creation alone does not imply fleet membership. Dark Sky derives a launch state from real project evidence: business understanding/offers, outpost existence, Sea Trial state, recorded customer test, deployment activation and publishing. The Captain-facing lifecycle is **Draft → Preparing → Sea Trial → Fleet Ready → Live**. `Continue Launch` resolves the next incomplete requirement. `Join Fleet` is the final Captain-approved operation that activates a tested outpost and publishes the project while preserving the immutable Project ID.
+
+
+## Customer Engagement Contract (v3.8.31)
+The universal customer shell no longer assumes every business interaction is an order. Each project resolves a customer relationship contract from its Business Brief and Operating Model, with an explicit Project Control override. Supported relationships include purchase/order, service request, quote/estimate, booking, inquiry, partnership/engagement, application, reservation, and custom project.
+
+Customer-facing action language, detail prompts, confirmation copy, and record semantics derive from this contract. For compatibility, engagement records continue to persist in the existing project-scoped order store, but non-purchase records are explicitly marked `recordType: engagement` with `relationshipType` metadata. A future storage migration can separate these records without losing provenance.
+
+Post-submit confirmation is a distinct persisted session state keyed by Project ID + Deployment ID. A successful customer submission never automatically returns to a blank form. Sea Trial confirmation routes back to Shipwright; active customer confirmation remains visible until the customer deliberately begins another engagement.

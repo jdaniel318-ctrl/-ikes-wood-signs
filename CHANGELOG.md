@@ -1,3 +1,22 @@
+## v3.8.31 — Customer Engagement Contracts
+
+- Added a repeatable project-level customer relationship contract: purchase, service request, quote, booking, inquiry, partnership, application, reservation, or custom project.
+- Universal customer experience now adapts action labels, detail prompts, confirmation copy, and record semantics to the project relationship instead of assuming every interaction is an order.
+- Added editable Customer Relationship control in Project Control → Customer Experience and Commissioning.
+- Customer submissions now produce a dedicated durable receipt state with reference, engagement type, submitted offer/request, contact, and fulfillment/timing context.
+- Sea Trial receipts return directly to Shipwright; active customer receipts stay on confirmation until the customer deliberately starts another engagement.
+- Engagement records remain stored in the existing project-scoped order store for backward compatibility, with `recordType`, `relationshipType`, and customer-action metadata for future migration.
+
+## v3.8.30 — Fleet Commissioning Lane
+
+- Added a single guided project launch state: Draft → Preparing → Sea Trial → Fleet Ready → Live.
+- Engine project cards now show launch state and one context-aware Continue Launch / Join Fleet command.
+- Project Control Overview now includes a Fleet Commissioning Lane with visible progress and next action.
+- Commissioning now hands a new project directly into its next launch step instead of leaving the Captain to find it manually.
+- Join Fleet promotes a tested Sea Trial outpost to active service and publishes the project in one Captain-approved operation.
+- Quick publishing now routes incomplete projects back into Continue Launch instead of bypassing launch readiness.
+- Existing immutable Project ID, universal customer shell, Sea Trial order proof, deployment boundary and presentation-isolation rules remain enforced.
+
 ## v3.8.29 — Repeatable Business Understanding
 - Replaces the commissioning short-description bottleneck with a 12,000-character Business Brief.
 - Preserves the owner-written brief separately from Dark Sky’s structured operating interpretation.

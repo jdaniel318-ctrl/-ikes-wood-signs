@@ -1,6 +1,6 @@
 # Dark Sky / Black Flag Business Command Platform
 
-**Current release:** v3.8.29 — Repeatable Business Understanding
+**Current release:** v3.8.31 — Customer Engagement Contracts
 
 Dark Sky is the platform and shipyard. The Black Flag Engine is the first operational ship: it commissions isolated projects, gives each business a Project Control Center, and launches customer-facing outposts without requiring every new project to inherit Ike's original sign workflow.
 
@@ -43,3 +43,11 @@ Historical build audits are development records and do not need to remain in the
 
 ## Repeatable business understanding
 Every project now preserves a long-form Business Brief and a structured operating model derived from it. The original brief and the structured interpretation are stored separately, so owners/Captain can correct Dark Sky’s understanding without losing the source description. The universal customer shell can use that model for adaptive prompts, fulfillment choices, and scheduling fields.
+
+
+## Customer Engagement Contracts (v3.8.31)
+
+Dark Sky now treats customer activity as a project-specific engagement rather than assuming every vessel ends in an order. Projects can resolve to purchase, service request, quote, booking, inquiry, partnership, application, reservation, or custom-project relationships. The universal customer shell adapts its action language and confirmation receipt to that relationship. Post-submit receipts persist for the current customer session so a successful submission cannot silently fall back to the form.
+
+## Fleet Commissioning Lane (v3.8.30)
+New projects now follow one Captain-facing launch journey: Create → Prepare → Sea Trial → Fleet Ready → Live. Engine project cards and Project Control expose one Continue Launch / Join Fleet action, while the existing deployment, customer-test, immutable identity and isolation rules remain underneath.

@@ -10315,3 +10315,44 @@ body.universal-project .universal-customer-shell{display:block}
 .universal-adaptive-field{display:grid;gap:8px;margin-top:14px;color:#d8e4e5;font-weight:700}
 @media(max-width:900px){.business-understanding-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.business-model-corrections,.business-brief-prompts{grid-template-columns:1fr}}
 @media(max-width:620px){.business-understanding-grid{grid-template-columns:1fr}}
+
+/* ==========================================================
+   v3.8.30 — Fleet Commissioning Lane
+   One Captain-facing launch journey above the underlying
+   commissioning, deployment, Sea Trial and publishing machinery.
+   ========================================================== */
+.project-launch-line{margin:9px 0 10px;padding:9px 10px;border:1px solid #2b4651;border-radius:10px;background:#08151b;display:grid;gap:3px}
+.project-launch-line span{font:900 11px Arial,sans-serif;letter-spacing:.08em;color:#a8bbc0}
+.project-launch-line small{font-size:11px!important;line-height:1.35!important;color:#a9b7b7!important}
+.project-launch-line.live{border-color:#3b7455;background:#0a1a13}.project-launch-line.live span{color:#86d5a4}
+.project-launch-line.fleet_ready{border-color:#8d743d;background:#1b160b}.project-launch-line.fleet_ready span{color:#f0c86e}
+.project-launch-line.sea_trial{border-color:#326f8f;background:#081b25}.project-launch-line.sea_trial span{color:#7ecbf2}
+.fleet-launch-ribbon.live{background:#1d633b!important}.fleet-launch-ribbon.fleet_ready{background:#8b641e!important}.fleet-launch-ribbon.sea_trial{background:#165f82!important}.fleet-launch-ribbon.preparing,.fleet-launch-ribbon.draft{background:#3f4b52!important}
+.pc-fleet-launch-lane{margin:14px 0 16px;padding:16px;border:1px solid #2e5260;border-radius:16px;background:linear-gradient(145deg,#08151b,#0b1d25);display:grid;grid-template-columns:minmax(210px,1.15fr) minmax(330px,2fr) minmax(160px,.7fr);gap:16px;align-items:center;box-shadow:inset 0 1px 0 #ffffff08}
+.pc-fleet-launch-lane.live{border-color:#34684c;background:linear-gradient(145deg,#081711,#0d2118)}
+.pc-fleet-launch-lane.fleet_ready{border-color:#876f39;background:linear-gradient(145deg,#161207,#211a0c)}
+.pc-fleet-launch-lane.sea_trial{border-color:#2f6886;background:linear-gradient(145deg,#061822,#0a2230)}
+.pc-fleet-launch-copy span{display:block;font:900 11px Arial,sans-serif;letter-spacing:.11em;color:#7897a4;margin-bottom:4px}
+.pc-fleet-launch-copy h4{margin:0;color:#eef5f3;font:900 22px Georgia,serif}.pc-fleet-launch-copy p{margin:5px 0 0;color:#a9b9b8;font-size:14px;line-height:1.4}
+.pc-fleet-launch-progress{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.pc-fleet-launch-progress span{min-height:52px;border:1px solid #29424c;border-radius:10px;background:#071219;color:#70858d;display:grid;place-items:center;align-content:center;gap:2px;font:800 10px Arial,sans-serif;text-align:center;padding:5px}
+.pc-fleet-launch-progress span b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#111e24;color:#82969d;font-size:10px}
+.pc-fleet-launch-progress span.done{border-color:#315d48;color:#95b7a2;background:#091711}.pc-fleet-launch-progress span.done b{background:#1b5236;color:#e8fff0}
+.pc-fleet-launch-progress span.current{border-color:#2b8ec2;color:#eaf8ff;background:#09202c;box-shadow:0 0 0 1px #2b8ec233 inset}.pc-fleet-launch-progress span.current b{background:#17698f;color:#fff}
+.pc-fleet-launch-action{min-height:50px!important;font-size:13px!important;white-space:normal}
+@media(max-width:1000px){.pc-fleet-launch-lane{grid-template-columns:1fr}.pc-fleet-launch-progress{order:2}.pc-fleet-launch-action{order:3;width:100%}}
+@media(max-width:700px){.pc-fleet-launch-progress{grid-template-columns:repeat(5,minmax(58px,1fr));overflow-x:auto;padding-bottom:4px}.pc-fleet-launch-progress span{min-width:64px}.pc-fleet-launch-copy p{font-size:15px}}
+
+
+/* v3.8.31 — Customer engagement contracts + durable confirmation receipt */
+.universal-receipt-card{max-width:860px;margin:0 auto;text-align:left;padding:clamp(1.4rem,3vw,2.4rem)}
+.universal-receipt-card .universal-done-mark{margin-left:0}
+.universal-receipt-card>small{font-size:.9rem}
+.universal-receipt-card>h2{font-size:clamp(1.8rem,3vw,2.45rem);margin-bottom:.55rem}
+.universal-receipt-next{font-size:1.08rem;color:#c8d9dc;line-height:1.55;max-width:720px}
+.universal-receipt-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin:1.4rem 0}
+.universal-receipt-summary>div{padding:1rem;border:1px solid rgba(117,205,229,.22);border-radius:14px;background:#081c22;display:grid;gap:.35rem}
+.universal-receipt-summary span{font-size:.78rem;letter-spacing:.13em;font-weight:850;color:#78c6df}
+.universal-receipt-summary strong{font-size:1rem;color:#eef8f9;overflow-wrap:anywhere}
+.universal-receipt-actions{display:flex;gap:.75rem;margin-top:1rem}
+@media(max-width:800px){.universal-receipt-summary{grid-template-columns:1fr}.universal-receipt-card .primary-btn,.universal-receipt-card .secondary-btn{width:100%;min-height:54px}}
