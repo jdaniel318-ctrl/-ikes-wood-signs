@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '3.9.7';
+  const BUILD_VERSION = '3.9.8';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -1206,7 +1206,15 @@
         writeCommissionJournal(candidate,'recovery_conflict','Project ID or display-name conflict requires review.');
       }
     }else if(recovery && registryContainsProject(companies,recovery.project.id)){
+      // The registry already owns this immutable Project ID. Clear any stale
+      // commissioning artifacts left behind by an interrupted post-commit UI refresh.
+      const recoveredName=String(recovery.project.name||'').trim().toLowerCase();
+      const draft=readCommissionDraft();
       clearCommissionJournal(recovery.project.id);
+      if(draft && String(draft.name||'').trim().toLowerCase()===recoveredName){
+        clearCommissionDraft();
+      }
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:recovery.project.id,category:'recovery',action:'commissioning.post_commit_artifacts.cleared',detail:`${recovery.project.name} already verified in canonical registry`});
     }
 
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
@@ -1465,6 +1473,21 @@
     if(deployments.length)return {key:'preparing',label:'PREPARING',step:2,detail:'An outpost exists. Finish its setup and begin Sea Trial.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
     if(offers.length&&brief)return {key:'preparing',label:'PREPARING',step:2,detail:'The business is defined. Create its first customer outpost.',action:'continue',actionLabel:'CREATE FIRST OUTPOST',deployments,active,tested,trials,offers,brief};
     return {key:'draft',label:'DRAFT',step:1,detail:!brief?'Finish the Business Brief so Dark Sky understands this vessel.':'Add at least one customer-ready offer before launch.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
+  }
+
+  async function renderEngineRoom(){
+    // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
+    // paths called a non-existent helper after a successful registry commit, which
+    // left the Engine DOM stale and made a durable project look as if it vanished.
+    if(typeof window.renderBlackFlagHome==='function'){
+      await window.renderBlackFlagHome();
+      return true;
+    }
+    await renderProjectCommand();
+    try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics refresh warning',err); }
+    try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats refresh warning',err); }
+    try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command refresh warning',err); }
+    return true;
   }
 
   async function joinProjectFleet(p){
@@ -3469,7 +3492,7 @@
       commissionedAt:new Date().toISOString(),
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
-      commissioningVersion:'3.9.7'
+      commissioningVersion:'3.9.8'
     };
 
     // Commissioning is a durable registry transaction, not a visual completion.
@@ -3508,20 +3531,21 @@
     }
 
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • canonical registry verified`});
+    // Record durable success BEFORE any presentation work. A UI refresh is allowed
+    // to fail without changing the truth that the vessel is already in the registry.
+    localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:false,build:BUILD_VERSION}));
     closeProjectCommissioning();
     await renderEngineRoom();
     const rendered=document.querySelector(`[data-open-project-control="${CSS.escape(id)}"]`);
     if(!rendered){
-      // Persistence succeeded, so do not erase the durable project. Preserve a
-      // recovery marker and surface the issue rather than pretending commission
-      // failed or silently losing the vessel.
-      localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:false}));
+      writeCommissionJournal(p,'presentation_refresh_failed','Registry verified, but the Engine card did not appear after refresh.');
       throw new Error(`${p.name} is safely in the fleet registry, but its Engine card did not render. Reload the Engine; the project has NOT been lost.`);
     }
     clearCommissionDraft();
     clearCommissionJournal(id);
     localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:true,build:BUILD_VERSION}));
-    setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},80);
+    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'commissioning.presentation.verified',detail:`${p.name} rendered in Project Command on build ${BUILD_VERSION}`});
+    setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},120);
   }
 
   async function openProjectEngineControl(id){
@@ -7463,7 +7487,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'3.9.7',
+    version:'3.9.8',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
@@ -7964,7 +7988,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.7.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v3.9.8.ready',detail:`${companies.length} projects • schema 7 • policy 3.5 • customer engagement contracts + durable post-submit receipts + fleet commissioning lane + repeatable business understanding + adaptive universal customer shell + unified Engine authentication + guided deployment launch + shell isolation`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
     $$('.screen').forEach(s=>s.classList.toggle('active',s.dataset.screen===state.current));

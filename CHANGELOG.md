@@ -1,11 +1,11 @@
-# v3.9.7 — Commissioning Journal & Field Verification
+## 3.9.8 — Post-Commit Engine Refresh Repair
 
-- Added a durable commissioning journal written before IndexedDB fleet-registry mutation.
-- Added boot-time recovery of journaled projects missing from the canonical registry.
-- Added a visible Registry Recovery project card with manual retry if automatic repair cannot complete.
-- Added build version to Project Command summary so field screenshots prove which runtime is actually loaded.
-- Commission journal clears only after canonical read-back and Engine-card verification.
-- Preserves immutable Project ID across interrupted commissioning; no silent regeneration.
+- Fixed the confirmed commissioning defect where a successful registry commit called a non-existent `renderEngineRoom()` helper, leaving Project Command visually stale after commissioning.
+- Added a canonical Engine refresh route that re-renders Project Command, diagnostics, Fleet Health/metrics, and V3 command systems after project mutations.
+- Durable project success is now recorded before presentation refresh; a UI failure can no longer be mistaken for a failed registry write.
+- If a commissioning journal Project ID is already present in the canonical registry, stale matching commissioning drafts/journal artifacts are cleared automatically on boot.
+- Presentation verification now audits the exact Project ID after the refreshed Engine card is found.
+- Bumped HTML asset query strings, runtime version, core version, commissioning version, and service-worker cache together to 3.9.8.
 
 ## 3.9.6 — Durable Project Registry
 

@@ -158,5 +158,6 @@ Commissioning obeys a strict durability sequence: **seal identity → commit reg
 This law prevents a visually successful commissioning flow from producing a missing vessel and preserves the doctrine: **names can change; identity cannot; successful commands must be proven by durable evidence.**
 
 
-## Commissioning durability law — v3.9.7
-A project may not depend on a single storage transaction for its existence during commissioning. Before the canonical registry mutation starts, Dark Sky records the complete sealed project candidate in an independent commissioning journal. The journal is a recovery record, not a second canonical registry. It is cleared only after the canonical project store contains the same immutable Project ID and Project Command has rendered that verified registry. If canonical persistence is interrupted, the journal must remain visible and recoverable rather than allowing the vessel to disappear.
+### Post-Commit Presentation Law — v3.9.8
+
+A durable registry commit and an Engine presentation refresh are separate phases. Once a commissioned Project ID is verified in the canonical registry, presentation code must never roll back or obscure that durable fact. All Engine mutations that require a full command-deck refresh use one defined refresh route; undefined or feature-local refresh helpers are forbidden. If presentation verification fails after persistence succeeds, Dark Sky preserves the Project ID, records the presentation failure, and recovers the UI without creating a second project identity.
