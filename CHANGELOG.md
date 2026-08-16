@@ -1,3 +1,24 @@
+# v4.6.4 — Seaworthiness Refit
+
+## Command spine
+- Adds one early capture-phase Seaworthiness Command Spine for the routes that must survive storage, migration, and renderer failures.
+- Fleet Commissioning open/close, project-to-Engine return, Project Control close, Experience Test Deck close, and commissioning next-step routing are owned by this spine.
+- Core route handlers are armed before IndexedDB and optional initialization work.
+- Critical command failures now surface a visible command-route warning instead of leaving a dead-looking control.
+
+## Commissioning Dock refit
+- Rebuilds the Fleet Commissioning modal as an operational vessel screen rather than a flat checklist.
+- Adds vessel status, visual gate progress, a highlighted next required gate, and an explicit next-workstation action.
+- Distinguishes cleared, next-required, and pending commissioning gates.
+- Captain's Final Order remains locked until the existing technical commissioning rules are actually satisfied.
+- No commissioning standards were weakened or auto-passed.
+
+## Preserved
+- v4.6.1 customer navigation recovery.
+- v4.6.2 Operation Prove the Fleet.
+- v4.6.3 declarative Fleet Commissioning routing.
+- Refresh-to-Engine security posture, project isolation, Captain's Quarters, Shipyard, and project-scoped data boundaries.
+
 # v4.6.3 — Commissioning Dock Command Repair
 
 ## Root cause

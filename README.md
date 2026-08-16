@@ -1,4 +1,4 @@
-# Dark Sky v4.6.2 — Forward-Only IndexedDB Migration
+# Dark Sky v4.6.4 — Forward-Only IndexedDB Migration
 
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
@@ -55,3 +55,7 @@ The Engine Room now includes a Fleet Commissioning / Seaworthiness Dock. Ike's W
 
 ## v4.6.2 Heading
 Operation Prove the Fleet uses the existing Fleet Commissioning Dock as the fleet operating scorecard. Ike's is the reference vessel; the next strategic proof is a materially different commissioned vessel, followed by a Shipyard-born product. Captain's Quarters remains the fleet-command/R&D layer until the fleet earns a broader command model through demonstrated use.
+
+
+## v4.6.4 Seaworthiness Refit
+Critical navigation is now owned by an early command spine rather than by async render completion. Fleet Commissioning also presents the next provable gate as an operating action, while preserving the existing seven-gate standard.

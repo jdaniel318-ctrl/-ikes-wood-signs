@@ -11777,3 +11777,100 @@ body.engine-mode #enginePanel .modern-project-command .project-governance-strip{
   .prove-fleet-route{grid-template-columns:auto 1fr auto auto 1fr;row-gap:8px}
   .prove-fleet-route i:nth-of-type(2),.prove-fleet-route b:nth-of-type(3),.prove-fleet-route span:nth-of-type(3){display:none}
 }
+
+
+/* v4.6.4 — Seaworthiness Refit */
+.seaworthy-command-fault{
+  position:fixed;left:50%;bottom:22px;z-index:99999;transform:translateX(-50%);
+  width:min(760px,calc(100vw - 32px));display:grid;grid-template-columns:auto 1fr auto;
+  gap:12px;align-items:center;padding:13px 16px;border-radius:14px;
+  background:#18120f;border:1px solid rgba(222,184,79,.55);box-shadow:0 18px 50px rgba(0,0,0,.48);
+  color:#fff;
+}
+.seaworthy-command-fault.hidden{display:none}
+.seaworthy-command-fault strong{font-size:.72rem;letter-spacing:.11em;color:#deb84f}
+.seaworthy-command-fault span{font-size:.82rem;color:rgba(255,255,255,.82)}
+.seaworthy-command-fault button{border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:8px 10px;background:transparent;color:#fff;font-weight:800}
+
+.fleet-commissioning-modal{background:rgba(2,8,12,.84);backdrop-filter:blur(10px)}
+.fleet-commissioning-shell{
+  width:min(1120px,calc(100vw - 42px));max-height:calc(100vh - 44px);overflow:auto;
+  border:1px solid rgba(222,184,79,.42);border-radius:22px;
+  background:
+    radial-gradient(circle at 88% 5%,rgba(31,101,132,.12),transparent 32%),
+    linear-gradient(180deg,#09151b,#071116);
+  box-shadow:0 28px 90px rgba(0,0,0,.56);
+}
+.commissioning-dock-head{
+  display:flex;justify-content:space-between;align-items:center;gap:22px;
+  padding:24px 28px;border-bottom:1px solid rgba(222,184,79,.2);
+}
+.commissioning-dock-head>div>span{display:block;color:#deb84f;font-size:.7rem;font-weight:950;letter-spacing:.16em}
+.commissioning-dock-head h2{margin:5px 0 3px;color:#f5f7f8;font-size:clamp(1.35rem,2.6vw,2rem)}
+.commissioning-dock-head p{margin:0;color:rgba(255,255,255,.58)}
+.commissioning-return{min-width:auto!important;padding:10px 14px!important;white-space:nowrap}
+#fleetCommissioningBody{padding:20px}
+
+.commissioning-vessel-hero{
+  display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:22px;align-items:center;
+  padding:24px;border-radius:18px;border:1px solid rgba(222,184,79,.28);
+  background:linear-gradient(135deg,rgba(19,32,40,.98),rgba(11,22,28,.98));
+}
+.commissioning-vessel-hero.ready{border-color:rgba(222,184,79,.55)}
+.commissioning-vessel-hero.commissioned{border-color:rgba(84,186,119,.5)}
+.commissioning-vessel-copy>span{display:block;color:#deb84f;font-size:.68rem;font-weight:950;letter-spacing:.15em}
+.commissioning-vessel-copy>strong{display:block;color:#fff;font-size:1.55rem;margin:5px 0}
+.commissioning-vessel-copy p{margin:0;color:rgba(255,255,255,.62);line-height:1.45}
+.commissioning-vessel-score{padding:16px 18px;border-radius:15px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.07)}
+.commissioning-vessel-score>b{display:block;color:#fff;font-size:2rem}
+.commissioning-vessel-score>b i{font-style:normal;color:rgba(255,255,255,.35);font-size:1.1rem}
+.commissioning-vessel-score>span,.commissioning-vessel-score>small{display:block;font-size:.65rem;font-weight:900;letter-spacing:.1em;color:rgba(255,255,255,.48)}
+.commissioning-progress-track{height:8px;margin:11px 0 7px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08)}
+.commissioning-progress-track i{display:block;height:100%;border-radius:inherit;background:#deb84f}
+
+.commissioning-next-move{
+  display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;
+  margin:14px 0;padding:17px 19px;border-radius:15px;
+  border:1px solid rgba(46,132,174,.46);background:rgba(23,76,103,.16);
+}
+.commissioning-next-move small{display:block;color:#6eb7dc;font-size:.66rem;font-weight:950;letter-spacing:.13em}
+.commissioning-next-move strong{display:block;color:#fff;font-size:1.06rem;margin:3px 0}
+.commissioning-next-move p{margin:0;color:rgba(255,255,255,.62);font-size:.82rem}
+
+.commissioning-gate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:14px 0}
+.commissioning-gate{
+  display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;
+  min-height:92px;padding:14px 16px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.09);background:rgba(8,18,24,.78);
+}
+.commissioning-gate.pass{border-color:rgba(77,176,108,.42);background:rgba(21,76,42,.11)}
+.commissioning-gate.next{border-color:rgba(222,184,79,.55);box-shadow:inset 3px 0 #deb84f}
+.commissioning-gate-mark{
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.5);font-size:.7rem;font-weight:950;
+}
+.commissioning-gate.pass .commissioning-gate-mark{border-color:rgba(77,176,108,.65);color:#72d18d;font-size:1rem}
+.commissioning-gate.next .commissioning-gate-mark{border-color:#deb84f;color:#deb84f}
+.commissioning-gate small{display:block;font-size:.6rem;font-weight:950;letter-spacing:.11em;color:rgba(255,255,255,.38)}
+.commissioning-gate.next small{color:#deb84f}
+.commissioning-gate strong{display:block;color:#f2f5f7;margin:2px 0}
+.commissioning-gate p{margin:0;color:rgba(255,255,255,.53);font-size:.76rem;line-height:1.35}
+
+.commissioning-captain-order{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,38%);gap:22px;align-items:center;
+  margin-top:16px;padding:21px 22px;border-radius:16px;border:1px solid rgba(222,184,79,.34);
+  background:linear-gradient(135deg,rgba(49,39,13,.2),rgba(13,24,29,.78));
+}
+.commissioning-captain-order.locked{opacity:.78}
+.commissioning-captain-order small{display:block;color:#deb84f;font-weight:950;letter-spacing:.14em}
+.commissioning-captain-order h3{margin:5px 0;color:#fff;font-size:1.05rem}
+.commissioning-captain-order p{margin:0;color:rgba(255,255,255,.6);line-height:1.4}
+.commissioning-captain-order button{min-height:54px}
+
+@media(max-width:760px){
+  .commissioning-dock-head,.commissioning-vessel-hero,.commissioning-next-move,.commissioning-captain-order{grid-template-columns:1fr}
+  .commissioning-dock-head{align-items:flex-start}
+  .commissioning-gate-grid{grid-template-columns:1fr}
+  .commissioning-return{justify-self:start}
+  .seaworthy-command-fault{grid-template-columns:1fr}
+}
