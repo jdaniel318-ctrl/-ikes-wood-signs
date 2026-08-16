@@ -417,7 +417,7 @@ function bootCaptainCommand(){
         'Pre-construction / permits','Site work','Foundation','Framing','Dry-in','Rough trades','Inspections','Insulation','Drywall','Interior trim','Cabinets','Paint','Flooring','Fixtures & finishes','Final inspections','Punch','Closing'
       ],
       prototype:'Start with one house, one master build sequence, dependencies, planned dates, actual dates, responsible trade, and clear delay/attention signals.',
-      decisions:"ScheduleJoe remains a Captain's Quarters concept vessel until the Captain commissions it. It is not an Engine project and must not inherit another vessel's workflow or data."
+      decisions:"ScheduleJoe remains a Captain's Quarters concept vessel until the Captain commissions it. Engine lessons, primitives, and infrastructure may be reused only after they are evaluated against ScheduleJoe's own mission, users, workflow, data, permissions, and product needs. Nothing is inherited automatically."
     };
     const state={...defaults,...read(key,{})};
     const saveState=()=>write(key,state);
@@ -440,13 +440,13 @@ function bootCaptainCommand(){
     const renderArea=(area)=>{
       tabs.forEach(b=>b.classList.toggle('active',b.dataset.shipyardArea===area));
       if(area==='mission'){
-        areaHost.innerHTML=`${field('MISSION • WHAT THIS VESSEL MUST SOLVE',state.mission,'sjMission','Keep this builder-first. Define the real scheduling problem before designing features.')}<section class="shipyard-guardrail"><strong>SHIPYARD GUARDRAIL</strong><span>ScheduleJoe stays outside the Engine project registry until commissioning.</span></section>`;
+        areaHost.innerHTML=`${field('MISSION • WHAT THIS VESSEL MUST SOLVE',state.mission,'sjMission','Keep this builder-first. Define the real scheduling problem before designing features.')}<section class="shipyard-guardrail"><strong>SHIPYARD GUARDRAIL</strong><span>Captain's Quarters incubates. The Engine operates commissioned vessels. Engine lessons may be reused here only when ScheduleJoe proves they fit.</span></section>`;
       }else if(area==='sequence'){
         areaHost.innerHTML=`<section class="captain-command-card schedulejoe-work-card"><small>BASELINE HOME BUILD SEQUENCE</small><h3>First construction spine</h3><p>One stage per line. This is the starting sequence, not a locked template.</p><textarea id="sjSequence">${safe((state.sequence||[]).join('\n'))}</textarea><button type="button" data-sj-save="sjSequence">SAVE BUILD SEQUENCE</button></section>`;
       }else if(area==='prototype'){
         areaHost.innerHTML=`${field('PROTOTYPE DECK • FIRST WORKING VERSION',state.prototype,'sjPrototype','Describe the smallest field-useful scheduler before adding integrations or automation.')}<div class="schedulejoe-prototype-grid"><article><span>01</span><strong>ONE HOUSE</strong><small>Prove the workflow on a real residential build.</small></article><article><span>02</span><strong>DEPENDENCIES</strong><small>Understand what truly moves when an activity slips.</small></article><article><span>03</span><strong>FIELD SIGNALS</strong><small>Show what needs attention today.</small></article><article><span>04</span><strong>BASELINE VS ACTUAL</strong><small>Preserve the original plan while recording reality.</small></article></div>`;
       }else{
-        areaHost.innerHTML=`${field('VESSEL DECISIONS • ARCHITECTURE & BOUNDARIES',state.decisions,'sjDecisions','Record what belongs uniquely to ScheduleJoe and what may later become shared Dark Sky infrastructure.')}<section class="shipyard-commissioning-note"><small>COMMISSIONING STATUS</small><strong>NOT YET AN ENGINE VESSEL</strong><p>No project registry entry, customer workflow, deployment manifest, or production data namespace has been created.</p></section>`;
+        areaHost.innerHTML=`${field('VESSEL DECISIONS • ARCHITECTURE & BOUNDARIES',state.decisions,'sjDecisions','Record what belongs uniquely to ScheduleJoe, what proven Dark Sky capability is worth reusing, and what must remain separate.')}<section class="shipyard-commissioning-note"><small>COMMISSIONING STATUS</small><strong>NOT YET AN ENGINE VESSEL</strong><p>No project registry entry, customer workflow, deployment manifest, or production data namespace has been created.</p></section>`;
       }
       areaHost.querySelectorAll('[data-sj-save]').forEach(btn=>btn.onclick=()=>{
         const id=btn.dataset.sjSave;

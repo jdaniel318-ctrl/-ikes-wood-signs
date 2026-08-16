@@ -65,3 +65,10 @@
 - A project recovered from a durable registry source is rehydrated into the active fleet collection before Preview / Sea Trial / Live opens, preventing a stale in-memory fleet from stranding the Test Deck.
 - Failure diagnostics now report the requested identity, canonical identity, and registry sources searched instead of a silent/dead command.
 - Preserved the full v4 hull, Grizzle→Grizzly alias migration, finger-swipe fleet rail, filters, outlined project controls, and no-write Preview / marked-data Sea Trial contracts.
+
+## 4.5.5 — Captain's Shipyard Berth
+- Demoted ScheduleJoe from the Captain's Quarters visual headline to a compact starboard Shipyard berth.
+- Preserved Captain's Quarters as fleet-command-first while keeping ScheduleJoe one-tap accessible.
+- Recorded the hierarchy rule: Captain's Quarters incubates; the Engine operates commissioned vessels.
+- Recorded the reuse rule: Engine lessons/primitives may inform Captain projects, but no Engine workflow or capability is inherited automatically.
+- No existing Engine, project registry, project identity, order, deployment, or storage structure changed.

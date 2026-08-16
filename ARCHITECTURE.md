@@ -37,3 +37,10 @@ Primary browser storage schema versions only move forward. A build must never re
 4. Published/Private is observable state; publishing is an explicit launch workflow.
 5. Legacy Fleet Marks defaults are migration seeds only. New projects are first-class citizens without hard-coded baseline membership.
 6. Storage Schema, Project Envelope, and Platform Contract are distinct version concepts.
+
+## Captain's Quarters / Shipyard Boundary (4.5.5)
+Captain's Quarters is the Captain-level command and incubation layer. It may host pre-commissioning vessel concepts in the Shipyard while continuing to oversee the active fleet.
+
+Black Flag Engine remains the operating/governance layer for commissioned project vessels. Knowledge learned in the Engine—patterns, primitives, infrastructure, security approaches, analytics, and integrations—may be reused by a Captain-side concept only after evaluating whether it fits that concept's own mission, users, workflow, data model, permissions, and product requirements. Reuse is deliberate; inheritance is never automatic.
+
+ScheduleJoe is currently a Shipyard concept vessel and is not enrolled in the Engine project registry.

@@ -38,3 +38,6 @@ Project identity is preserved before governance metadata is repaired. Project-le
 
 ## 4.5.4 Captain's Shipyard
 Captain's Quarters now includes a Shipyard workspace. ScheduleJoe is berthed there as a concept vessel for residential construction scheduling. It remains outside the Engine registry until a future explicit commissioning decision.
+
+### 4.5.5 Captain's Shipyard Berth
+ScheduleJoe remains a pre-commissioning Captain's Quarters concept. Its launch is intentionally secondary to fleet command. Engine patterns can be reused when they fit ScheduleJoe's needs, but Engine behavior is not automatically inherited by Captain projects.

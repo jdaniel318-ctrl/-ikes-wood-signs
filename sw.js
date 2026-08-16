@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-5-4-schedulejoe-shipyard';
+const CACHE='dark-sky-v4-5-5-captain-shipyard-berth';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.5.4',
+  './styles.css?v=4.5.5',
   './platform_core.js?v=4.5.0',
   './platform_v4.js?v=4.5.0',
   './platform_identity.js?v=4.5.0',
   './app.js?v=4.5.0',
-  './captain.js?v=4.5.4',
+  './captain.js?v=4.5.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
