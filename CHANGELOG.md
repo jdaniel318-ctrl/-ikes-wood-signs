@@ -1,4 +1,4 @@
-# Dark Sky 4.0.5 — Ghost Ship Sweep
+# Dark Sky 4.0.6 — Clean Manifest
 
 - Canonical Fleet Registry is now the sole commissioning denominator.
 - Memory-only project artifacts are quarantined and can no longer inflate the fleet count.

@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.0.5';
+  const BUILD_VERSION = '4.0.6';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1392,6 +1392,80 @@
   // this ledger owns the security envelope contract. Keeping the contract in a
   // dedicated, project-ID-keyed ledger prevents older project serializers from
   // accidentally dropping security fields while preserving canonical identity.
+  // V4.0.6 — Clean Manifest. Project existence and project security now share one
+  // explicit fleet manifest. The canonical projects object store remains the durable
+  // record store, but only immutable IDs on this manifest are active vessels. Recovery
+  // artifacts and legacy/ghost rows are preserved in quarantine instead of being
+  // silently promoted into the fleet or counted by telemetry/commissioning.
+  const V4_FLEET_MANIFEST_KEY='darkSkyV4FleetManifestV1';
+  const V4_FLEET_MANIFEST_SETTING='darkSkyV4FleetManifestV1';
+  const V4_BASELINE_FLEET_IDS=Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear']);
+  function readV4FleetManifest(){
+    try{const v=JSON.parse(localStorage.getItem(V4_FLEET_MANIFEST_KEY)||'null');return Array.isArray(v)?[...new Set(v.map(String).filter(Boolean))]:[]}catch(_){return[]}
+  }
+  function writeV4FleetManifest(ids){
+    const clean=[...new Set((ids||[]).map(String).filter(Boolean))];
+    localStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));
+    return clean;
+  }
+  async function addProjectToV4FleetManifest(projectId){
+    const id=String(projectId||'').trim(); if(!id)return readV4FleetManifest();
+    const ids=readV4FleetManifest(); if(!ids.includes(id))ids.push(id);
+    const clean=writeV4FleetManifest(ids);
+    try{await setSetting(V4_FLEET_MANIFEST_SETTING,clean);}catch(_){}
+    return clean;
+  }
+  async function ensureCanonicalFleetManifest({repairRegistry=true}={}){
+    let canonical=await readCanonicalProjectRegistry();
+    const canonicalById=new Map(canonical.map(p=>[String(p?.id||''),p]).filter(([id])=>id));
+    let ids=readV4FleetManifest();
+    if(!ids.length){
+      try{const stored=(await getSetting(V4_FLEET_MANIFEST_SETTING))?.value;if(Array.isArray(stored))ids=[...new Set(stored.map(String).filter(Boolean))];}catch(_){}
+    }
+    // First V4.0.6 commissioning has four already-proven vessels. Seed only those
+    // known immutable identities when present; random pre-registry bf-p-* artifacts
+    // are evidence, not authority. Future vessels are explicitly appended by the
+    // commissioning transaction.
+    if(!ids.length){
+      ids=V4_BASELINE_FLEET_IDS.filter(id=>canonicalById.has(id));
+      if(!ids.length)ids=canonical.map(p=>String(p?.id||'')).filter(Boolean);
+    }
+    for(const id of V4_BASELINE_FLEET_IDS)if(canonicalById.has(id)&&!ids.includes(id))ids.push(id);
+    ids=[...new Set(ids)].filter(id=>canonicalById.has(id));
+    writeV4FleetManifest(ids);
+    try{await setSetting(V4_FLEET_MANIFEST_SETTING,ids);}catch(_){}
+
+    const allowed=new Set(ids);
+    const orphans=canonical.filter(p=>p?.id&&!allowed.has(String(p.id)));
+    if(orphans.length){
+      for(const ghost of orphans)appendV4Quarantine('canonical_registry_orphan',String(ghost.id),structuredClone(ghost));
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.0.6.clean_manifest.quarantined',detail:`${orphans.length} non-manifest registry row${orphans.length===1?'':'s'} quarantined: ${orphans.map(p=>p.id).join(' • ')}`});
+      window.DarkSkyV4?.diagnostic?.('fleet_manifest.orphans.quarantined',`${orphans.length} non-manifest registry row${orphans.length===1?'':'s'} quarantined`,{projectIds:orphans.map(p=>p.id)});
+      if(repairRegistry){
+        const keep=canonical.filter(p=>allowed.has(String(p?.id||'')));
+        canonical=await persistProjectRegistry(keep,{allowRemovalIds:orphans.map(p=>String(p.id))});
+      }
+    }
+
+    // Purge security envelopes for anything not on the fleet manifest. The raw
+    // project evidence remains in Recovery Vault quarantine, but it can no longer
+    // influence commissioning or security counts.
+    const localLedger=readV4EnvelopeLedger();
+    const cleanLedger={};
+    for(const id of ids)if(localLedger[id])cleanLedger[id]=localLedger[id];
+    if(Object.keys(localLedger).some(id=>!allowed.has(id)))writeV4EnvelopeLedger(cleanLedger);
+    try{
+      const mirror=(await getSetting(V4_ENVELOPE_MIRROR_SETTING))?.value||{};
+      const cleanMirror={};for(const id of ids)if(mirror?.[id])cleanMirror[id]=mirror[id];
+      if(Object.keys(mirror||{}).some(id=>!allowed.has(id)))await setSetting(V4_ENVELOPE_MIRROR_SETTING,cleanMirror);
+    }catch(_){}
+
+    const latest=repairRegistry?canonical:canonical.filter(p=>allowed.has(String(p?.id||'')));
+    const memoryById=new Map((companies||[]).map(p=>[String(p?.id||''),p]));
+    companies=ids.map(id=>{const row=latest.find(p=>String(p?.id||'')===id);const mem=memoryById.get(id);return row?(mem?{...mem,...row,id:row.id}:row):null;}).filter(Boolean).map(normalizeProjectCode).map(ensureProjectGovernance);
+    return {ids,rows:companies,orphans};
+  }
+
   const V4_ENVELOPE_LEDGER_KEY='darkSkyV4ProjectEnvelopesV1';
   function readV4EnvelopeLedger(){
     try{const v=JSON.parse(localStorage.getItem(V4_ENVELOPE_LEDGER_KEY)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}catch(_){return{}}
@@ -1450,29 +1524,12 @@
       return v4EnvelopeConvergenceState;
     }
     try{
-      // v4.0.5 — Ghost Ship Sweep. The canonical Fleet Registry defines the
-      // commissioning denominator. Memory-only/project-like artifacts may be useful
-      // recovery evidence, but they are never allowed to become an extra vessel.
-      // This specifically prevents stale pre-registry project objects from turning
-      // a healthy 4-vessel fleet into a false 4/5 commissioning failure.
-      let canonicalSeed=[];
-      try{ canonicalSeed=await readCanonicalProjectRegistry(); }catch(_){ canonicalSeed=[]; }
-      if(canonicalSeed.length){
-        const canonicalIds=new Set(canonicalSeed.map(p=>String(p?.id||'')).filter(Boolean));
-        const memoryGhosts=companies.filter(p=>p?.id&&!canonicalIds.has(String(p.id)));
-        if(memoryGhosts.length){
-          for(const ghost of memoryGhosts) appendV4Quarantine('memory_project_ghost',String(ghost.id),structuredClone(ghost));
-          window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'v4.0.5.ghost_ship.quarantined',detail:`${memoryGhosts.length} memory-only project artifact${memoryGhosts.length===1?'':'s'} removed from active fleet denominator`});
-          window.DarkSkyV4?.diagnostic?.('commissioning.ghost_ship.quarantined',`${memoryGhosts.length} memory-only project artifact${memoryGhosts.length===1?'':'s'} quarantined`,{projectIds:memoryGhosts.map(p=>p.id)});
-        }
-        const memoryById=new Map(companies.map(p=>[String(p?.id||''),p]));
-        companies=canonicalSeed.map(row=>{
-          const mem=memoryById.get(String(row?.id||''));
-          // Canonical identity/registry fields win. Runtime-enriched fields may be
-          // retained only for the same immutable Project ID.
-          return mem?{...mem,...row,id:row.id}:row;
-        }).map(normalizeProjectCode).map(ensureProjectGovernance);
-      }
+      // v4.0.6 — Clean Manifest. One explicit manifest defines the fleet. The
+      // registry cannot expand the denominator merely because it contains recovery
+      // cargo, and memory cannot resurrect a quarantined project.
+      const manifest=await ensureCanonicalFleetManifest({repairRegistry:true});
+      const canonicalSeed=manifest.rows||[];
+      if(canonicalSeed.length)companies=canonicalSeed.map(normalizeProjectCode).map(ensureProjectGovernance);
 
       const expected={};
       for(const project of companies){
@@ -1592,7 +1649,7 @@
     }
     writeCustomerDirectory(next);
     if(migrated||quarantined){
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.5.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.0.6.legacy.project.references.repaired',detail:`${migrated} migrated • ${quarantined} quarantined`});
       window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references',`${migrated} migrated • ${quarantined} quarantined`,{quarantineKey:V4_QUARANTINE_KEY});
     }
     return {migrated,quarantined};
@@ -1654,6 +1711,7 @@
     // commissioned candidate and verifies it by reading the canonical store back.
     await reconcileCommissioningArtifacts({attemptRepair:true,source:'engine-boot'});
 
+    try{ await ensureCanonicalFleetManifest({repairRegistry:true}); }catch(err){ console.warn('V4 fleet manifest repair warning',err); window.DarkSkyV4?.diagnostic?.('fleet_manifest.repair.failed',String(err?.message||err)); }
     try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
     try{ await repairLegacyProjectReferences(); }catch(err){ console.warn('V4 legacy project-reference repair warning',err); window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references.failed',String(err?.message||err)); }
     try{ await ensureV4EnvelopeConvergence({persistRegistry:true,record:true}); }catch(err){ console.warn('V4 envelope convergence warning',err); }
@@ -3969,7 +4027,8 @@
       }
       companies=canonicalReadback.map(normalizeProjectCode).map(ensureProjectGovernance);
       if(!projectById(id)) throw new Error(`${p.name} could not be resolved after registry reload.`);
-      writeCommissionJournal(p,'registry_verified','Canonical project registry read-back verified. Rendering Engine card.');
+      await addProjectToV4FleetManifest(id);
+      writeCommissionJournal(p,'registry_verified','Canonical project registry read-back verified and Project ID added to the V4 fleet manifest. Rendering Engine card.');
     }catch(err){
       companies=beforeCommission;
       commissionDraft._lastError=String(err?.message||err);
@@ -7629,7 +7688,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function runShipIntegrityV3({record=false}={}){
-    // V4.0.5 uses one canonical-registry convergence routine for storage, status, and certification.
+    // V4.0.6 uses one manifest-authoritative convergence routine for storage, status, and certification.
     // Integrity therefore cannot disagree with the Broadside envelope counter.
     const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
     try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
@@ -7980,7 +8039,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'4.0.5-ghost-ship-sweep-compat',
+    version:'4.0.6-clean-manifest-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,
