@@ -1,3 +1,22 @@
+# v4.6.7 — Customer Journey Action Repair
+
+## Root cause
+- Customer navigation, media, and selectable inputs had already been moved to early storage-independent modules.
+- Bespoke customer CTAs such as **REVIEW MY ORDER** were still attached later inside `bindEvents()`.
+- That allowed the journey to reach Step 9 with a fully rendered Review button that had no active handler.
+
+## Structural repair
+- Adds `bindCustomerActionCore()` as the early owner for customer journey CTAs.
+- REVIEW MY ORDER, PLACE MY ORDER, START ANOTHER ORDER, COMPLETE, and submission retry now bind before IndexedDB/migrations.
+- Removes the duplicate late action bindings so each CTA has a single owner.
+- REVIEW failures surface in the customer form error area; order-placement failures surface on the approval screen instead of appearing as dead controls.
+
+## Preserved
+- v4.6.1 customer navigation recovery.
+- v4.6.5 customer media recovery.
+- v4.6.6 customer choice/input recovery.
+- v4.6.4 Seaworthiness Command Spine and Fleet Commissioning structure.
+
 # v4.6.6 — Customer Choice Command Repair
 
 ## Root cause

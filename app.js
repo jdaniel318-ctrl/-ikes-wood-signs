@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.6.6';
+  const BUILD_VERSION = '4.6.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -9435,6 +9435,57 @@ The full order and approved media remain stored with this project.`;
     },true);
   }
 
+  function bindCustomerActionCore(){
+    if(window.__darkSkyCustomerActionBound)return;
+    window.__darkSkyCustomerActionBound=true;
+
+    // v4.6.7 recovery seam: bespoke customer CTAs must exist as soon as the
+    // customer shell exists. They cannot depend on late bindEvents() completion.
+    $('reviewBtn')?.addEventListener('click',()=>{
+      try{
+        if(validateCustomer())setScreen('review');
+      }catch(err){
+        console.error('Review order command failed',err);
+        if($('customerError')) $('customerError').textContent=`Review could not open: ${String(err?.message||err)}`;
+      }
+    });
+
+    $('approveBtn')?.addEventListener('click',async()=>{
+      if(!$('approvalCheck')?.checked){
+        if($('approvalError')) $('approvalError').textContent='Please check the approval box first.';
+        return;
+      }
+      if($('approvalError')) $('approvalError').textContent='';
+      const btn=$('approveBtn');
+      if(!btn)return;
+      btn.disabled=true;
+      btn.textContent='PLACING YOUR ORDER…';
+      try{
+        const order=await saveOrder();
+        setScreen('done');
+        await submitOrder(order);
+      }catch(err){
+        console.error('Place order command failed',err);
+        if($('approvalError')) $('approvalError').textContent=`The order could not be completed: ${String(err?.message||err)}`;
+      }finally{
+        btn.disabled=false;
+        btn.textContent='PLACE MY ORDER →';
+      }
+    });
+
+    $('newOrderBtn')?.addEventListener('click',resetOrder);
+    $('completeOrderBtn')?.addEventListener('click',resetOrder);
+
+    $('retrySubmitBtn')?.addEventListener('click',async()=>{
+      try{
+        if(state.currentOrder)await submitOrder(state.currentOrder);
+      }catch(err){
+        console.error('Retry submit command failed',err);
+        if($('submitStatus')) $('submitStatus').textContent=`Retry failed: ${String(err?.message||err)}`;
+      }
+    });
+  }
+
   function bindCustomerChoiceCore(){
     if(window.__darkSkyCustomerChoiceBound)return;
     window.__darkSkyCustomerChoiceBound=true;
@@ -9592,23 +9643,8 @@ The full order and approved media remain stored with this project.`;
     // Customer choice/input controls are owned by bindCustomerChoiceCore()
     // and are armed before storage/migrations.
     // Customer media controls are owned by bindCustomerMediaCore() and are armed before storage.
-    $('reviewBtn').addEventListener('click',()=>{if(validateCustomer())setScreen('review');});
-    $('approveBtn').addEventListener('click',async()=>{
-      if(!$('approvalCheck').checked){$('approvalError').textContent='Please check the approval box first.';return;}
-      $('approvalError').textContent='';
-      const btn=$('approveBtn');
-      btn.disabled=true;btn.textContent='PLACING YOUR ORDER…';
-      try{
-        const order=await saveOrder();
-        setScreen('done');
-        await submitOrder(order);
-      }finally{
-        btn.disabled=false;btn.textContent='PLACE MY ORDER →';
-      }
-    });
-    $('newOrderBtn').addEventListener('click',resetOrder);
-    if($('completeOrderBtn')) $('completeOrderBtn').addEventListener('click',resetOrder);
-    $('retrySubmitBtn').addEventListener('click',async()=>{if(state.currentOrder)await submitOrder(state.currentOrder);});
+    // Customer journey CTAs are owned by bindCustomerActionCore()
+    // and are armed before storage/migrations.
     $('adminBtn').addEventListener('click',async()=>{
       await configureProjectAdminGate();
       window.__pendingProtectedPage='settings';
@@ -9856,6 +9892,7 @@ The full order and approved media remain stored with this project.`;
     // Customer step navigation is also mission-critical. Bind it before storage so
     // a stalled/failed IndexedDB open cannot leave a fully-rendered dead experience.
     bindCustomerNavigationCore();
+    bindCustomerActionCore();
     bindCustomerChoiceCore();
     bindCustomerMediaCore();
     await loadEngineAppearance();
@@ -9882,6 +9919,7 @@ The full order and approved media remain stored with this project.`;
   // Arm independent command buses immediately. init() calls these again safely.
   // The Seaworthiness spine goes first so core routes exist before storage/migrations/renderers.
   bindSeaworthinessCommandSpine();
+  bindCustomerActionCore();
   bindCustomerChoiceCore();
   bindCustomerMediaCore();
   bindWatchCommandBus();

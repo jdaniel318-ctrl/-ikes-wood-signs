@@ -1,4 +1,4 @@
-# Dark Sky v4.6.6 — Forward-Only IndexedDB Migration
+# Dark Sky v4.6.7 — Forward-Only IndexedDB Migration
 
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
@@ -67,3 +67,7 @@ Camera and photo controls are now armed before storage/migrations, matching the 
 
 ## v4.6.6 Customer Choice Recovery
 All customer selection/input controls—including font style—are now early-bound and storage-independent, matching the navigation and camera recovery architecture.
+
+
+## v4.6.7 Customer Journey Actions
+The remaining bespoke customer CTAs—including REVIEW MY ORDER and PLACE MY ORDER—are now early-bound, completing the storage-independent customer interaction spine.
