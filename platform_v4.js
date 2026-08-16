@@ -1,7 +1,7 @@
-/* Dark Sky 4.0.0 — Broadside platform generation layer */
+/* Dark Sky 4.0.1 — Broadside Commissioning platform generation layer */
 (function(g){
 'use strict';
-const VERSION='4.0.0';
+const VERSION='4.0.1';
 const NAME='Broadside';
 const SCHEMA=1;
 const KEYS=Object.freeze({
@@ -107,8 +107,16 @@ function exportProject(project){
  const payload={exportedAt:new Date().toISOString(),darkSkyVersion:VERSION,project:cleanProject(project),audit:(core()?.readAudit?.()||[]).filter(x=>x.projectId===project.id)};
  return new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
 }
-function status(projects=[]){const pf=preflight(projects,null),rel=releaseState();return {version:VERSION,name:NAME,schema:SCHEMA,contract:CONTRACT,preflight:pf,release:rel,flags:featureFlags(),decisions:decisions().length,labs:labs().length,diagnostics:diagnostics().length,recoveryPoints:recoveryVault().length}}
+function migrationState(){return read(KEYS.migration,null)}
+function completeCommissioning(projects=[]){
+ const prior=migrationState()||{};
+ const row={...prior,from:prior.from||'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,stage:'v4-project-envelopes',projectIds:projects.map(p=>p.id),commissionedProjectCount:projects.length};
+ write(KEYS.migration,row);write(KEYS.state,{version:VERSION,name:NAME,schema:SCHEMA,installedAt:read(KEYS.state,{})?.installedAt||row.at,commissionedAt:row.at,contract:CONTRACT});
+ core()?.audit?.({actorRole:'system',category:'migration',action:'v4.0.1.broadside.commissioning.complete',detail:`${projects.length} project envelopes sealed`});
+ return row;
+}
+function status(projects=[]){const pf=preflight(projects,null),rel=releaseState();return {version:VERSION,name:NAME,schema:SCHEMA,contract:CONTRACT,preflight:pf,release:rel,flags:featureFlags(),decisions:decisions().length,labs:labs().length,diagnostics:diagnostics().length,recoveryPoints:recoveryVault().length,migration:migrationState()}}
 window.addEventListener('error',e=>{if(featureFlags().black_box?.enabled)diagnostic('javascript.error',e.message||'Unknown error',{source:e.filename||'',line:e.lineno||0,column:e.colno||0})});
 window.addEventListener('unhandledrejection',e=>{if(featureFlags().black_box?.enabled)diagnostic('promise.rejection',String(e.reason?.message||e.reason||'Unhandled rejection'))});
-g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,exportProject,status};
+g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,labCreate,labs,labMark,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,exportProject,status};
 })(window);

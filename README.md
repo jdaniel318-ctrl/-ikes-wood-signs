@@ -1,6 +1,6 @@
-# Dark Sky / Black Flag — v4.0.0 Broadside
+# Dark Sky / Black Flag — v4.0.1 Broadside Commissioning
 
-**Current release:** v4.0.0 — Broadside
+**Current release:** v4.0.1 — Broadside Commissioning
 
 Broadside is the first Dark Sky platform-generation release after the 3.10.x fleet-registry hardening line. It intentionally preserves the proven project registry and security boundaries while adding a higher-level platform contract, recovery discipline, diagnostics, release rings, Captain Lab, and a decision ledger.
 

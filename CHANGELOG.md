@@ -1,3 +1,12 @@
+# Dark Sky 4.0.1 — Broadside Commissioning
+
+- Automatically commissions every existing fleet project into the active V4 project envelope on startup.
+- Persists Schema 8, canonical namespace, project isolation, default-deny permissions, and project identity through the non-destructive Fleet Registry path.
+- Corrects the Broadside status panel so PROJECT ENVELOPES reflects the actual V4 contract instead of stale legacy schema state.
+- Corrects migration language from V3 COMPLETE to V4 COMMISSIONED / V4 COMMISSIONING and reads the V4 migration gate directly.
+- Adds Black Box and audit events for successful or failed envelope commissioning.
+- Leaves owner-production authentication and operating-cost readiness visible as deployment advisories rather than hiding them.
+
 # Dark Sky 4.0.0 — Broadside
 
 - Preserved the 3.10.2 Fleet Registry / Registry Seal foundation as the V4 keel.
@@ -11,7 +20,7 @@
 - Added Broadside Engine status surface and upgraded visible platform version to 4.0.0.
 - Added Captain's Quarters Broadside command controls without moving Engine machinery into Captain authority.
 - Advanced core schema to 8 / policy 4.0 while preserving `BlackFlagV3Core` compatibility for existing Engine modules.
-- Advanced service-worker cache to `dark-sky-v4-0-0-broadside`.
+- Advanced service-worker cache to `dark-sky-v4-0-1-broadside-commissioning`.
 
 # Dark Sky 3.10.2 — Registry Rivets
 

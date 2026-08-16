@@ -9,7 +9,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.0.0';
+  const BUILD_VERSION = '4.0.1';
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
@@ -1379,6 +1379,48 @@
     return changed;
   }
 
+
+  async function commissionV4ProjectEnvelopes(){
+    const core=window.BlackFlagV3Core;
+    const activeSchema=Number(core?.schemaVersion||8);
+    if(!core||!Array.isArray(companies)||!companies.length)return {changed:false,sealed:0,total:companies.length};
+
+    const needsSeal=companies.some(project=>
+      Number(project?.schemaVersion)!==activeSchema ||
+      String(project?.namespace||'')!==String(core.namespaceFor?.(project.id)||`bf.project.${project.id}`) ||
+      project?.isolation?.projectId!==project?.id ||
+      project?.isolation?.crossProjectAccess!=='deny' ||
+      project?.permissions?.defaultDeny!==true
+    );
+
+    if(!needsSeal){
+      const sealed=companies.filter(project=>Number(project?.schemaVersion)===activeSchema&&project?.isolation?.projectId===project?.id&&project?.isolation?.crossProjectAccess==='deny'&&project?.permissions?.defaultDeny===true).length;
+      if(sealed===companies.length)window.DarkSkyV4?.completeCommissioning?.(companies);
+      return {changed:false,sealed,total:companies.length};
+    }
+
+    const before=structuredClone(companies);
+    try{
+      // Seal the legacy fleet into the V4 envelope contract in memory first.
+      companies=companies.map(project=>core.ensure(project));
+      // Persist through the canonical non-destructive registry path so the same
+      // envelopes survive reloads and stay mirrored into compatibility storage.
+      companies=await persistProjectRegistry(companies);
+      companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
+      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.1.project.envelopes.commissioned',detail:`${companies.length} projects • schema ${activeSchema} • default deny`});
+      window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes',`${companies.length}/${companies.length} project envelopes sealed`,{schema:activeSchema});
+      window.DarkSkyV4?.completeCommissioning?.(companies);
+      return {changed:true,sealed:companies.length,total:companies.length};
+    }catch(err){
+      // Keep the last known-good in-memory fleet if persistence fails. The recovery
+      // snapshot makes the attempted commissioning traceable without deleting data.
+      companies=before;
+      core.audit?.({actorRole:'system',category:'migration',action:'v4.0.1.project.envelopes.failed',detail:String(err?.message||err)});
+      window.DarkSkyV4?.diagnostic?.('commissioning.project_envelopes.failed',String(err?.message||err));
+      throw err;
+    }
+  }
+
   async function loadCompanies(){
     let canonicalRows=[];
     let savedRows=null;
@@ -1435,6 +1477,7 @@
     await reconcileCommissioningArtifacts({attemptRepair:true,source:'engine-boot'});
 
     try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
+    try{ await commissionV4ProjectEnvelopes(); }catch(err){ console.warn('V4 project-envelope commissioning warning',err); }
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
   }
 
@@ -7545,9 +7588,9 @@ The full order and approved media remain stored with this project.`;
     const box=$('v3ArchitectureStatus');if(!box)return;
     const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
     const report=await runShipIntegrityV3();
-    const migration=window.BlackFlagV3Core?.migrationState?.();
-    const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||6);
-    const sealed=companies.filter(p=>Number(p?.schemaVersion)===activeSchema&&p?.isolation?.crossProjectAccess==='deny').length;
+    const migration=window.DarkSkyV4?.migrationState?.()||window.BlackFlagV3Core?.migrationState?.();
+    const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||8);
+    const sealed=companies.filter(p=>Number(p?.schemaVersion)===activeSchema&&p?.isolation?.projectId===p?.id&&p?.isolation?.crossProjectAccess==='deny'&&p?.permissions?.defaultDeny===true).length;
     if($('v3SchemaBadge')) $('v3SchemaBadge').textContent=`SCHEMA ${activeSchema}`;
     const live=states.filter(x=>x==='live').length;
     const testing=states.filter(x=>x==='testing'||x==='deployment_ready').length;
@@ -7557,7 +7600,7 @@ The full order and approved media remain stored with this project.`;
       <article><span>TESTING</span><strong>${testing}</strong><small>Deployment / sea trial</small></article>
       <article><span>INTEGRITY</span><strong class="${report.ok?'ok':'warn'}">${report.ok?'CLEAR':'ATTENTION'}</strong><small>${report.critical} critical • ${report.warnings} warning</small></article>
       <article><span>IDENTITY</span><strong>POLICY LIVE</strong><small>Production server auth still required</small></article>
-      <article><span>MIGRATION</span><strong>${migration?.status==='complete'?'V3 COMPLETE':'V3 ACTIVE'}</strong><small>${migration?.at?new Date(migration.at).toLocaleString():'Structural core active'}</small></article>`;
+      <article><span>MIGRATION</span><strong>${migration?.completed||migration?.status==='complete'?'V4 COMMISSIONED':'V4 COMMISSIONING'}</strong><small>${migration?.at?new Date(migration.at).toLocaleString():'Broadside migration gate active'}</small></article>`;
   }
 
   async function firstMateWatchItems(){
@@ -7749,7 +7792,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   window.blackFlagV3={
-    version:'4.0.0-broadside-compat',
+    version:'4.0.1-broadside-commissioning-compat',
     runIntegrity:()=>runShipIntegrityV3({record:true}),
     refresh:refreshV3CommandSystems,
     createSnapshot:createV3RecoverySnapshot,

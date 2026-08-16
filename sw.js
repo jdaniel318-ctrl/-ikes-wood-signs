@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-0-0-broadside';
+const CACHE='dark-sky-v4-0-1-broadside-commissioning';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.0.0',
-  './platform_core.js?v=4.0.0',
-  './platform_v4.js?v=4.0.0',
-  './platform_identity.js?v=4.0.0',
-  './app.js?v=4.0.0',
-  './captain.js?v=4.0.0',
+  './styles.css?v=4.0.1',
+  './platform_core.js?v=4.0.1',
+  './platform_v4.js?v=4.0.1',
+  './platform_identity.js?v=4.0.1',
+  './app.js?v=4.0.1',
+  './captain.js?v=4.0.1',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
