@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.7.2';
+  const BUILD_VERSION = '4.7.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -9853,7 +9853,8 @@ The full order and approved media remain stored with this project.`;
     $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
     $('unlockEngineBtn').addEventListener('click',async()=>{
       const entered=$('enginePinInput').value.trim();
-      const result=isTestAccessActive()?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
+      const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
+    const result=testAccessActive?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
       if(!result.ok){
         if(result.code==='locked'){
           $('enginePinError').textContent='';
@@ -10127,7 +10128,8 @@ document.addEventListener('click', (event) => {
     const input=byId('blackFlagEntryPin');
     const entered=(input?.value||'').trim();
 
-    const result=isTestAccessActive()?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
+    const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
+    const result=testAccessActive?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
     if(!result.ok){
       const err=byId('blackFlagEntryError');
       if(result.code==='locked'){
@@ -10140,7 +10142,7 @@ document.addEventListener('click', (event) => {
       return;
     }
 
-    if(window.BlackFlagAuth&&!isTestAccessActive()) window.BlackFlagAuth.unlock();
+    if(window.BlackFlagAuth&&!testAccessActive) window.BlackFlagAuth.unlock();
     if(input) input.value='';
     leaveEntry();
     if(typeof restoreBlackFlagTheme==='function') restoreBlackFlagTheme();

@@ -1,3 +1,12 @@
+# v4.7.3 — Login Gate Repair
+
+- Fixed a Black Flag login regression introduced by the v4.7.2 Test Access hook.
+- The outer Black Flag portal now reads Test Access through the public `window.DarkSkyTestAccess` API instead of referencing an internal function outside its scope.
+- Normal PIN authentication works again when Test Access is off.
+- Test Access can still bypass the Black Flag gate when it has been explicitly authorized from Captain's Quarters.
+- No PIN values, role boundaries, project isolation rules, or existing project structure were removed.
+- Advanced executable/cache versioning to 4.7.3.
+
 # v4.7.2 — Test Access Foundation
 
 - Engine appearance now always starts in Business Mode on a fresh load; Pirate Mode remains available for the current session only.
