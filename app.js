@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.7.0';
+  const BUILD_VERSION = '4.7.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -6670,9 +6670,17 @@
   }
 
   function bindEngineAppearanceControls(){
-    if(window.__engineAppearanceControlsBound)return;
-    window.__engineAppearanceControlsBound=true;
-    bindEngineAppearanceControls();
+    $$('[data-engine-appearance]').forEach(btn=>{
+      if(btn.dataset.engineAppearanceBound==='true')return;
+      btn.dataset.engineAppearanceBound='true';
+      btn.addEventListener('click',()=>setEngineAppearance(btn.dataset.engineAppearance));
+    });
+    const legacyToggles=[$('blackFlagPirateModeToggle'),$('enginePirateModeToggle')].filter(Boolean);
+    legacyToggles.forEach(toggle=>{
+      if(toggle.dataset.engineAppearanceBound==='true')return;
+      toggle.dataset.engineAppearanceBound='true';
+      toggle.addEventListener('change',e=>setPirateMode(e.target.checked));
+    });
   }
 
   async function loadPirateMode(){ return loadEngineAppearance(); } // legacy compatibility only
@@ -9787,9 +9795,7 @@ The full order and approved media remain stored with this project.`;
     $('engineConfigureBtn')?.addEventListener('click',()=>openEngineConfiguration('top'));
     $('engineConfigurationCloseBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('saveEngineEconomicsBtn')?.addEventListener('click',saveEngineEconomics);
-    $('blackFlagPirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
-    $('enginePirateModeToggle')?.addEventListener('change',e=>setPirateMode(e.target.checked));
-    $$('[data-engine-appearance]').forEach(btn=>btn.addEventListener('click',()=>setEngineAppearance(btn.dataset.engineAppearance)));
+    bindEngineAppearanceControls();
 
     bindProjectAssetEditor();
     bindProjectTemplateShells();
