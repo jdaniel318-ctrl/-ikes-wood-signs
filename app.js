@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.6.9';
+  const BUILD_VERSION = '4.7.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -6524,6 +6524,18 @@
 
   let engineAppearance='business';
   let pirateModeEnabled=false; // compatibility alias for older Engine code.
+  const ENGINE_APPEARANCE_LOCAL_KEY='darkSkyEngineAppearanceV1';
+
+  function readLocalEngineAppearance(){
+    try{
+      const value=localStorage.getItem(ENGINE_APPEARANCE_LOCAL_KEY);
+      return value==='business'||value==='pirate'?value:null;
+    }catch(_){ return null; }
+  }
+
+  function writeLocalEngineAppearance(mode){
+    try{ localStorage.setItem(ENGINE_APPEARANCE_LOCAL_KEY,mode==='pirate'?'pirate':'business'); }catch(_){}
+  }
 
   function applyEngineAppearance(mode,{announce=false}={}){
     engineAppearance=mode==='pirate'?'pirate':'business';
@@ -6621,6 +6633,14 @@
   }
 
   async function loadEngineAppearance(){
+    // Appearance is a presentation preference, not an authorization record. Keep a tiny
+    // local mirror so the login selector works before IndexedDB and migrations are ready.
+    const local=readLocalEngineAppearance();
+    if(local){
+      engineAppearance=local;
+      applyEngineAppearance(engineAppearance);
+      return;
+    }
     try{
       const explicit=await getSetting('engineAppearance');
       if(explicit?.value==='business'||explicit?.value==='pirate'){
@@ -6632,15 +6652,27 @@
     }catch(_){
       engineAppearance='business';
     }
+    writeLocalEngineAppearance(engineAppearance);
     applyEngineAppearance(engineAppearance);
   }
 
   async function setEngineAppearance(mode){
     applyEngineAppearance(mode,{announce:true});
+    // Persist synchronously first so a pre-login tap survives refresh even while the
+    // database is still opening. IndexedDB remains a compatibility mirror only.
+    writeLocalEngineAppearance(engineAppearance);
     try{
-      await setSetting('engineAppearance',engineAppearance);
-      await setSetting('darkFlagPirateMode',engineAppearance==='pirate'); // backwards compatibility
-    }catch(err){ console.warn('Engine appearance could not be saved',err); }
+      if(db){
+        await setSetting('engineAppearance',engineAppearance);
+        await setSetting('darkFlagPirateMode',engineAppearance==='pirate'); // backwards compatibility
+      }
+    }catch(err){ console.warn('Engine appearance database mirror could not be saved',err); }
+  }
+
+  function bindEngineAppearanceControls(){
+    if(window.__engineAppearanceControlsBound)return;
+    window.__engineAppearanceControlsBound=true;
+    bindEngineAppearanceControls();
   }
 
   async function loadPirateMode(){ return loadEngineAppearance(); } // legacy compatibility only
@@ -10041,6 +10073,10 @@ The full order and approved media remain stored with this project.`;
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
+  // Engine appearance is also armed here because the selector lives on the pre-login gate
+  // and must never wait for IndexedDB, migrations, or the late bindEvents() sequence.
+  bindEngineAppearanceControls();
+  applyEngineAppearance(readLocalEngineAppearance()||'business');
   // The Seaworthiness spine goes first so core routes exist before storage/migrations/renderers.
   bindSeaworthinessCommandSpine();
   bindCustomerActionCore();

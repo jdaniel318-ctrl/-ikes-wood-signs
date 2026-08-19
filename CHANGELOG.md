@@ -1,3 +1,20 @@
+# v4.7.0 — Engine Shell Stabilization I / Pirate Gate Repair
+
+## Root cause
+- The Business / Pirate selector was visible on the pre-login Engine gate, but its click handlers were owned by the late `bindEvents()` path after IndexedDB and migrations.
+- Pirate presentation CSS was also still gated behind the obsolete `legacy-pirate-disabled` body class, which the current application never sets.
+- Appearance persistence attempted to use the Engine settings database before the database was guaranteed to be open.
+
+## Structural repair
+- Engine appearance controls now bind immediately, before storage initialization, so the login-screen selector is live as soon as the gate appears.
+- Pirate CSS now keys directly from the authoritative `dark-flag-pirate-mode` class; the obsolete legacy gate was removed.
+- Business/Pirate presentation persists through a tiny local presentation-only preference that is safe to read before login; IndexedDB remains a compatibility mirror after it is available.
+- Appearance remains presentation-only: Engine PIN, permissions, project isolation, Captain authority, and customer/project shells are unchanged.
+- Cache namespace and executable asset version strings advanced to 4.7.0.
+
+## Captain's verification route
+Business → Pirate → Business → Pirate → enter Engine → return to login → refresh. The selected presentation should react immediately and survive refresh without changing authorization behavior.
+
 # v4.6.9 — Read-Only Test Deck / Cache Reset
 
 ## What 4.6.8 proved

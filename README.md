@@ -1,4 +1,5 @@
-# Dark Sky v4.6.9 — Forward-Only IndexedDB Migration
+# Dark Sky v4.7.0 — Engine Shell Stabilization I
+This build advances the 4.6.9 Read-Only Test Deck forward without discarding any fleet work. The first Engine-shell stabilization repair makes the Business/Pirate selector live on the pre-login gate, removes the obsolete Pirate CSS gate, and preserves the appearance choice across refreshes without changing authorization.
 
 
 This build keeps the complete v4 hull and repairs the identity boundary between Project Command and the Experience Test Deck.
