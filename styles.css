@@ -6246,44 +6246,44 @@ body.captain-command-open #captainCommandWorkspace{pointer-events:auto}
 #captainCommandWorkspace[data-section="log"] .captain-command-header{background:#261f15}
 #captainCommandWorkspace[data-section="blueprint"] .captain-command-header{background:#182327}
 
-/* Five visible cinematic bottom buttons are the live targets. */
+/* Six visible Captain command compartments are live themed controls. */
 .captain-command-door-rail{
   position:absolute;
-  inset:0;
-  z-index:150;
-  pointer-events:none;
-}
-.captain-command-door{
-  position:absolute;
-  bottom:5.2%;
-  height:8.4%;
-  border:0;
-  border-radius:7px;
-  background:transparent;
-  color:transparent;
+  left:1.35%; right:1.35%; bottom:4.65%; height:9.25%;
+  z-index:150; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:.55%;
   pointer-events:auto;
-  appearance:none;
-  -webkit-appearance:none;
 }
-.captain-command-door.cargo{left:2.1%;width:16.2%}
-.captain-command-door.powder{left:20.6%;width:16.2%}
-.captain-command-door.blackflag{left:39%;width:16%}
-.captain-command-door.log{left:57.3%;width:16%}
-.captain-command-door.blueprint{left:75.6%;width:15.8%}
 .captain-command-door{
-  -webkit-tap-highlight-color:transparent;
-  outline:none;
+  position:relative; inset:auto; width:auto; height:100%; min-width:0;
+  display:flex; align-items:center; justify-content:center; gap:7%;
+  padding:5% 5.5%; box-sizing:border-box;
+  border:1px solid #72562f; border-radius:5px;
+  background:linear-gradient(180deg,rgba(45,31,18,.98),rgba(18,13,9,.99));
+  box-shadow:0 0 0 2px rgba(7,5,3,.95),inset 0 0 14px rgba(0,0,0,.72),0 4px 11px rgba(0,0,0,.45);
+  color:#d9c086; appearance:none; -webkit-appearance:none; cursor:pointer;
+  -webkit-tap-highlight-color:transparent; outline:none; overflow:hidden;
 }
+.captain-command-door::before{
+  content:""; position:absolute; inset:4px; border:1px solid rgba(161,122,60,.35); border-radius:3px; pointer-events:none;
+}
+.captain-command-door>span:last-child{display:block;min-width:0;text-align:left;position:relative;z-index:1}
+.captain-command-door strong{display:block;color:#d6bd7a;font:700 clamp(7px,.78vw,13px) Georgia,serif;letter-spacing:.055em;white-space:nowrap}
+.captain-command-door small{display:block;margin-top:3px;color:#9f8d69;font:600 clamp(4px,.43vw,7px) Arial,sans-serif;letter-spacing:.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cq-rail-icon{position:relative;z-index:1;flex:0 0 auto;color:#b99350;font-size:clamp(13px,1.55vw,24px);line-height:1;text-shadow:0 1px 2px #000}
+.captain-command-door.testaccess .cq-test-access-lamp{position:relative;z-index:1;flex:0 0 auto;width:clamp(9px,.85vw,14px);aspect-ratio:1;border-radius:50%;background:#6b3f24;border:1px solid #a16c3f;box-shadow:inset 0 0 5px #000,0 0 6px #7a4b2f55}
+.captain-command-door.testaccess.active{border-color:#b88c42;box-shadow:0 0 0 2px rgba(7,5,3,.95),inset 0 0 14px rgba(0,0,0,.72),0 0 17px rgba(205,158,69,.32)}
+.captain-command-door.testaccess.active .cq-test-access-lamp{background:#e7b956;box-shadow:0 0 9px #e7b956,0 0 18px #d59436aa,inset 0 0 3px #fff6}
+.captain-command-door.testaccess.active strong{color:#efd58f}
+.captain-command-door.testaccess.active small{color:#d0af67}
 @media (hover:hover) and (pointer:fine){
-  .captain-command-door:focus-visible{
-    outline:2px solid #e2bd70;
-    outline-offset:3px;
-    box-shadow:0 0 22px rgba(216,169,78,.38);
-  }
+  .captain-command-door:hover{filter:brightness(1.08)}
+  .captain-command-door:focus-visible{outline:2px solid #e2bd70;outline-offset:3px;box-shadow:0 0 22px rgba(216,169,78,.38)}
 }
-#captainQuarters:not(.captain-entry-complete) .captain-command-door{
-  pointer-events:none;
-  opacity:0;
+#captainQuarters:not(.captain-entry-complete) .captain-command-door-rail{pointer-events:none;opacity:0}
+@media(max-width:900px){
+  .captain-command-door-rail{left:1%;right:1%;gap:.35%;bottom:4.5%;height:9.5%}
+  .captain-command-door{padding:4% 3%;gap:5%}
+  .captain-command-door small{display:none}
 }
 
 /* ---------- Responsive ---------- */
@@ -11936,3 +11936,11 @@ body.test-access-active #engineResetGate label[for="engineResetPinInput"],body.t
   #captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn.cq-test-access-plaque{right:2.2%!important;width:17.5%!important}
   #captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn small{display:none!important}
 }
+
+
+/* ==========================================================
+   v4.7.5 — TEST ACCESS COMMAND RAIL
+   The old floating plaque is retired. Test Access is the sixth
+   visible Captain command compartment in the bottom rail.
+   ========================================================== */
+.cq-test-access-plaque{display:none!important}
