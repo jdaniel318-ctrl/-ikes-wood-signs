@@ -1,3 +1,7 @@
+# Dark Sky v4.7.2 — Test Access Foundation
+
+This build continues forward from v4.7.1 without removing the existing security architecture. Business Mode is the default on every fresh load. A Captain can deliberately enable session-only Test Access after entering both the Engine PIN and Captain PIN; while active, repetitive PIN entry is bypassed for testing while existing PIN values, roles, project isolation, and destructive-action confirmations remain intact.
+
 # Dark Sky v4.7.1 — Engine Appearance Binding Repair
 
 This release advances from v4.7.0 and repairs the pre-login Business/Pirate appearance selector.

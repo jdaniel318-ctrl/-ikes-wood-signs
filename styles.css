@@ -11874,3 +11874,19 @@ body.engine-mode #enginePanel .modern-project-command .project-governance-strip{
   .commissioning-return{justify-self:start}
   .seaworthy-command-fault{grid-template-columns:1fr}
 }
+
+
+/* v4.7.2 — Captain-authorized session Test Access. Security structure remains intact. */
+.test-access-banner{position:fixed;z-index:100000;left:50%;top:8px;transform:translateX(-50%);padding:8px 16px;border:1px solid #d0a64c;border-radius:999px;background:#16120a;color:#f2d27c;font:800 10px/1.2 system-ui,sans-serif;letter-spacing:.12em;box-shadow:0 8px 24px #0008}
+body.test-access-active #blackFlagEntryGate label[for="blackFlagEntryPin"],body.test-access-active #blackFlagEntryPin,
+body.test-access-active #enginePinGate label[for="enginePinInput"],body.test-access-active #enginePinInput,
+body.test-access-active #pinGate label[for="adminPinInput"],body.test-access-active #adminPinInput,
+body.test-access-active #engineResetGate label[for="engineResetPinInput"],body.test-access-active #engineResetPinInput{display:none!important}
+.captain-test-access-card button{margin-top:9px;width:100%;padding:9px 12px;border:1px solid #b88936;border-radius:8px;background:#1d160b;color:#f2d27c;font-weight:900;letter-spacing:.08em}
+#captainTestAccessStatus.active{color:#f2c75c}
+.captain-test-access-gate{position:fixed;inset:0;z-index:100100;display:grid;place-items:center;background:#020608dc;padding:24px}
+.captain-test-access-gate.hidden{display:none!important}
+.captain-test-access-shell{width:min(560px,94vw);padding:26px;border:1px solid #9a7334;border-radius:18px;background:#101316;color:#eee;box-shadow:0 30px 90px #000}
+.captain-test-access-shell h3{margin:7px 0 8px;font:700 30px Georgia,serif;color:#f2d59b}.captain-test-access-shell p{color:#b9c0c2;line-height:1.45}
+.captain-test-access-shell label{display:block;margin:14px 0 5px;font-size:10px;font-weight:900;letter-spacing:.14em;color:#d4b36b}.captain-test-access-shell input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #67512a;border-radius:9px;background:#080c0e;color:#fff;font-size:20px}
+.captain-test-access-actions{display:flex;gap:10px;margin-top:16px}.captain-test-access-actions button{flex:1;padding:12px;border-radius:9px;border:1px solid #876a31;background:#c39a42;color:#080808;font-weight:900}.captain-test-access-actions button:last-child{background:#161a1c;color:#ddd}

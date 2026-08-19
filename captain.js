@@ -17,6 +17,16 @@
   }
 
   function openGate() {
+    if(window.DarkSkyTestAccess?.isActive?.()){
+      authorized=true;
+      hide('captainQuartersGate');
+      show('captainQuarters');
+      refreshCaptainWatch();
+      clearHash();
+      document.body.classList.add('captain-modal-open','captain-authorized');
+      playEntrance();
+      return;
+    }
     authorized = false;
     hide('captainQuarters');
     const gate = byId('captainQuartersGate');
@@ -283,6 +293,34 @@
       event.preventDefault();
       hide('captainSpyglassPanel');
     });
+    byId('captainTestAccessToggle')?.addEventListener('click',async(event)=>{
+      event.preventDefault();
+      if(window.DarkSkyTestAccess?.isActive?.()){
+        window.DarkSkyTestAccess.disable();
+        hide('captainTestAccessGate');
+        return;
+      }
+      if(byId('testAccessEnginePin')) byId('testAccessEnginePin').value='';
+      if(byId('testAccessCaptainPin')) byId('testAccessCaptainPin').value='';
+      if(byId('captainTestAccessError')) byId('captainTestAccessError').textContent='';
+      show('captainTestAccessGate');
+      requestAnimationFrame(()=>byId('testAccessEnginePin')?.focus());
+    });
+    byId('captainTestAccessCancel')?.addEventListener('click',()=>hide('captainTestAccessGate'));
+    byId('captainTestAccessConfirm')?.addEventListener('click',async()=>{
+      const enginePin=String(byId('testAccessEnginePin')?.value||'').trim();
+      const captainPin=String(byId('testAccessCaptainPin')?.value||'').trim();
+      const error=byId('captainTestAccessError');
+      if(captainPin!==CAPTAIN_PIN){ if(error)error.textContent='Captain PIN is incorrect.'; return; }
+      const result=await window.BlackFlagAuth?.verify?.(enginePin);
+      if(!result?.ok){ if(error)error.textContent=window.BlackFlagAuth?.message?.(result)||'Engine PIN is incorrect.'; return; }
+      window.DarkSkyTestAccess?.enable?.();
+      if(byId('testAccessEnginePin')) byId('testAccessEnginePin').value='';
+      if(byId('testAccessCaptainPin')) byId('testAccessCaptainPin').value='';
+      hide('captainTestAccessGate');
+    });
+    window.addEventListener('darksky:testaccesschange',()=>window.DarkSkyTestAccess?.refresh?.());
+
     byId('captainPinInput')?.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();

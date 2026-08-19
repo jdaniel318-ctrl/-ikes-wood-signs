@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.7.1';
+  const BUILD_VERSION = '4.7.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -25,6 +25,21 @@
   function canonicalProjectId(id){ return PROJECT_ID_ALIASES[String(id||'')]||String(id||''); }
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
+  const TEST_ACCESS_SESSION_KEY = 'darkSkyTestAccessSessionV1';
+  function isTestAccessActive(){try{return sessionStorage.getItem(TEST_ACCESS_SESSION_KEY)==='active';}catch(_){return false;}}
+  function renderTestAccessState(){
+    const active=isTestAccessActive(); document.body.classList.toggle('test-access-active',active); document.body.dataset.testAccess=active?'active':'off';
+    document.getElementById('testAccessBanner')?.classList.toggle('hidden',!active);
+    const st=document.getElementById('captainTestAccessStatus'); if(st){st.textContent=active?'ACTIVE — PIN ENTRY BYPASSED FOR THIS TESTING SESSION':'OFF — NORMAL PIN SECURITY ACTIVE';st.classList.toggle('active',active);}
+    const tg=document.getElementById('captainTestAccessToggle'); if(tg)tg.textContent=active?'DISABLE TEST ACCESS':'ENABLE TEST ACCESS';
+    const entry=document.getElementById('blackFlagEntryUnlock'); if(entry)entry.textContent=active?'CONTINUE — TEST ACCESS →':(document.body.classList.contains('dark-flag-pirate-mode')?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →');
+    const eg=document.getElementById('unlockEngineBtn'); if(eg)eg.textContent=active?'CONTINUE — TEST ACCESS →':'BOARD THE ENGINE ROOM →';
+    const ag=document.getElementById('unlockAdminBtn'); if(ag)ag.textContent=active?'CONTINUE — TEST ACCESS →':'UNLOCK ADMIN';
+    const rg=document.getElementById('confirmEngineResetBtn'); if(rg)rg.textContent=active?'CONFIRM RESET — TEST ACCESS':'CONFIRM RESET';
+  }
+  function setTestAccessActive(enabled){try{enabled?sessionStorage.setItem(TEST_ACCESS_SESSION_KEY,'active'):sessionStorage.removeItem(TEST_ACCESS_SESSION_KEY);}catch(_){} renderTestAccessState(); window.dispatchEvent(new CustomEvent('darksky:testaccesschange',{detail:{active:isTestAccessActive()}})); return isTestAccessActive();}
+  window.DarkSkyTestAccess={isActive:isTestAccessActive,enable:()=>setTestAccessActive(true),disable:()=>setTestAccessActive(false),refresh:renderTestAccessState};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderTestAccessState,{once:true});else renderTestAccessState();
   const DEFAULT_COMPANIES = [
     {
       id:'ikes-wood-signs',
@@ -6572,7 +6587,7 @@
     if(sub) sub.textContent=pirateModeEnabled
       ? 'Secure Engine access with the themed presentation.'
       : 'Secure project operations and platform control.';
-    if(enter) enter.textContent=pirateModeEnabled?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →';
+    if(enter) enter.textContent=isTestAccessActive()?'CONTINUE — TEST ACCESS →':(pirateModeEnabled?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →');
 
     const engineKicker=document.querySelector('#enginePanel .command-masthead .engine-kicker');
     const engineTitle=document.querySelector('#enginePanel .command-masthead h2');
@@ -6633,40 +6648,14 @@
   }
 
   async function loadEngineAppearance(){
-    // Appearance is a presentation preference, not an authorization record. Keep a tiny
-    // local mirror so the login selector works before IndexedDB and migrations are ready.
-    const local=readLocalEngineAppearance();
-    if(local){
-      engineAppearance=local;
-      applyEngineAppearance(engineAppearance);
-      return;
-    }
-    try{
-      const explicit=await getSetting('engineAppearance');
-      if(explicit?.value==='business'||explicit?.value==='pirate'){
-        engineAppearance=explicit.value;
-      }else{
-        const legacy=await getSetting('darkFlagPirateMode');
-        engineAppearance=legacy?.value===true?'pirate':'business';
-      }
-    }catch(_){
-      engineAppearance='business';
-    }
-    writeLocalEngineAppearance(engineAppearance);
-    applyEngineAppearance(engineAppearance);
+    engineAppearance='business';
+    try{localStorage.setItem(ENGINE_APPEARANCE_LOCAL_KEY,'business');}catch(_){}
+    applyEngineAppearance('business');
   }
 
   async function setEngineAppearance(mode){
     applyEngineAppearance(mode,{announce:true});
-    // Persist synchronously first so a pre-login tap survives refresh even while the
-    // database is still opening. IndexedDB remains a compatibility mirror only.
-    writeLocalEngineAppearance(engineAppearance);
-    try{
-      if(db){
-        await setSetting('engineAppearance',engineAppearance);
-        await setSetting('darkFlagPirateMode',engineAppearance==='pirate'); // backwards compatibility
-      }
-    }catch(err){ console.warn('Engine appearance database mirror could not be saved',err); }
+    try{localStorage.setItem(ENGINE_APPEARANCE_LOCAL_KEY,'business');}catch(_){}
   }
 
   function bindEngineAppearanceControls(){
@@ -7587,6 +7576,7 @@ The full order and approved media remain stored with this project.`;
     if(kind==='orders' && !pm.ordersView) return;
     if(kind==='ledger' && !pm.ledgerView) return;
     window.__pendingProtectedPage=kind;
+    if(isTestAccessActive()){ await showProtectedProjectPage(kind); return; }
     $('adminPinInput').value='';
     $('pinGateError').textContent='';
     $('pinGate').classList.remove('hidden');
@@ -7821,7 +7811,7 @@ The full order and approved media remain stored with this project.`;
 
     if(next||confirmNext){
       const expected=String(await getAdminPin());
-      if(current!==expected){
+      if(!isTestAccessActive()&&current!==expected){
         $('adminCoreSettingsStatus').textContent='Current PIN is incorrect.';
         return;
       }
@@ -9808,6 +9798,7 @@ The full order and approved media remain stored with this project.`;
     $('adminBtn').addEventListener('click',async()=>{
       await configureProjectAdminGate();
       window.__pendingProtectedPage='settings';
+      if(isTestAccessActive()){ await showProtectedProjectPage('settings'); return; }
       document.body.classList.add('modal-open');
       $('adminPinInput').value='';
       $('pinGateError').textContent='';
@@ -9850,7 +9841,8 @@ The full order and approved media remain stored with this project.`;
     });
     $('orderList').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(s)updateOrderStatus(s.dataset.orderStatus,s.value);});
 
-    if($('engineRoomBtn')) $('engineRoomBtn').addEventListener('click',()=>{
+    if($('engineRoomBtn')) $('engineRoomBtn').addEventListener('click',async()=>{
+      if(isTestAccessActive()){ await openEnginePanel(); return; }
       document.body.classList.add('modal-open');
       $('enginePinInput').value='';
       $('enginePinError').textContent='';
@@ -9861,7 +9853,7 @@ The full order and approved media remain stored with this project.`;
     $('enginePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockEngineBtn').click();});
     $('unlockEngineBtn').addEventListener('click',async()=>{
       const entered=$('enginePinInput').value.trim();
-      const result=await window.BlackFlagAuth.verify(entered);
+      const result=isTestAccessActive()?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
       if(!result.ok){
         if(result.code==='locked'){
           $('enginePinError').textContent='';
@@ -9971,7 +9963,7 @@ The full order and approved media remain stored with this project.`;
     });
     $('confirmEngineResetBtn').addEventListener('click',async()=>{
       const entered=$('engineResetPinInput').value.trim();
-      const result=await window.BlackFlagAuth.verify(entered);
+      const result=isTestAccessActive()?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
       if(!result.ok){
         $('engineResetError').textContent=window.BlackFlagAuth.message(result);
         if(result.code==='locked') window.showPinLock('engine','engineResetLockTimer','engineResetPinInput','confirmEngineResetBtn');
@@ -9997,10 +9989,10 @@ The full order and approved media remain stored with this project.`;
       await refreshEngineDiagnostics();
     });
     $('unlockAdminBtn').addEventListener('click',async()=>{
-      if(pinLocked(adminSecurityKey())){showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');return;}
+      if(!isTestAccessActive()&&pinLocked(adminSecurityKey())){showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');return;}
       const entered=$('adminPinInput').value.trim();
-      const expected=await getAdminPin();
-      if(entered!==expected){
+      const expected=isTestAccessActive()?entered:await getAdminPin();
+      if(!isTestAccessActive()&&entered!==expected){
         const row=recordBadPin(adminSecurityKey());
         $('pinGateError').textContent='Incorrect PIN.';
         if(row.lockedUntil>Date.now()) showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');
@@ -10135,7 +10127,7 @@ document.addEventListener('click', (event) => {
     const input=byId('blackFlagEntryPin');
     const entered=(input?.value||'').trim();
 
-    const result=await window.BlackFlagAuth.verify(entered);
+    const result=isTestAccessActive()?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
     if(!result.ok){
       const err=byId('blackFlagEntryError');
       if(result.code==='locked'){
@@ -10148,7 +10140,7 @@ document.addEventListener('click', (event) => {
       return;
     }
 
-    if(window.BlackFlagAuth) window.BlackFlagAuth.unlock();
+    if(window.BlackFlagAuth&&!isTestAccessActive()) window.BlackFlagAuth.unlock();
     if(input) input.value='';
     leaveEntry();
     if(typeof restoreBlackFlagTheme==='function') restoreBlackFlagTheme();

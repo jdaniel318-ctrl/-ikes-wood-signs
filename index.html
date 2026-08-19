@@ -19,13 +19,14 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=4.7.1" />
+  <link rel="stylesheet" href="styles.css?v=4.7.2" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
   </style>
 </head>
 <body class="boot-locked">
+  <div id="testAccessBanner" class="test-access-banner hidden" role="status">TEST ACCESS ACTIVE • PIN ENTRY BYPASSED • SESSION ONLY</div>
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
@@ -237,6 +238,18 @@
         <section><span>CREATIVE HOLD</span><strong>Ready for experiments</strong><small>Future visual ideas, prototypes and Captain-only toys dock here.</small></section>
         <section><span>PROJECT BULKHEADS</span><strong>Sealed</strong><small>Customer and project namespaces stay outside the chamber.</small></section>
         <section><span>PIRATE MODE</span><strong>Still aboard</strong><small>Personality remains separate from Captain privileges.</small></section>
+        <section class="captain-test-access-card"><span>TEST ACCESS</span><strong id="captainTestAccessStatus">OFF — NORMAL PIN SECURITY ACTIVE</strong><small>Session-only testing shortcut. PINs, roles, lockouts and project isolation remain intact.</small><button id="captainTestAccessToggle" type="button">ENABLE TEST ACCESS</button></section>
+      </div>
+      <div id="captainTestAccessGate" class="captain-test-access-gate hidden" role="dialog" aria-modal="true" aria-labelledby="captainTestAccessTitle">
+        <div class="captain-test-access-shell">
+          <div class="captain-kicker">CAPTAIN CONTROL • DUAL AUTHORIZATION</div>
+          <h3 id="captainTestAccessTitle">Enable Test Access</h3>
+          <p>This does not remove or change any PIN. It only bypasses PIN entry for this browser session and leaves project boundaries intact.</p>
+          <label for="testAccessEnginePin">ENGINE PIN</label><input id="testAccessEnginePin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+          <label for="testAccessCaptainPin">CAPTAIN PIN</label><input id="testAccessCaptainPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+          <p id="captainTestAccessError" class="error-text" aria-live="polite"></p>
+          <div class="captain-test-access-actions"><button id="captainTestAccessConfirm" type="button">AUTHORIZE TEST ACCESS</button><button id="captainTestAccessCancel" type="button">CANCEL</button></div>
+        </div>
       </div>
       <div class="captain-rule">CAPTAIN'S RULE: creativity may roam; production boundaries do not.</div>
       <button id="captainShipyardLaunch" class="captain-shipyard-launch" type="button" aria-label="Open Captain's Shipyard and resume ScheduleJoe">
@@ -1255,11 +1268,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=4.5.0"></script>
-  <script src="platform_v4.js?v=4.5.0"></script>
-  <script src="platform_identity.js?v=4.5.0"></script>
-  <script src="app.js?v=4.7.1"></script>
-  <script src="captain.js?v=4.5.7"></script>
+  <script src="platform_core.js?v=4.7.2"></script>
+  <script src="platform_v4.js?v=4.7.2"></script>
+  <script src="platform_identity.js?v=4.7.2"></script>
+  <script src="app.js?v=4.7.2"></script>
+  <script src="captain.js?v=4.7.2"></script>
 
 </body>
 </html>

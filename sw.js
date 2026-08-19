@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-7-1-engine-appearance-binding';
+const CACHE='dark-sky-v4-7-2-test-access-foundation';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.7.1',
-  './platform_core.js?v=4.7.1',
-  './platform_v4.js?v=4.7.1',
-  './platform_identity.js?v=4.7.1',
-  './app.js?v=4.7.1',
-  './captain.js?v=4.7.1',
+  './styles.css?v=4.7.2',
+  './platform_core.js?v=4.7.2',
+  './platform_v4.js?v=4.7.2',
+  './platform_identity.js?v=4.7.2',
+  './app.js?v=4.7.2',
+  './captain.js?v=4.7.2',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
