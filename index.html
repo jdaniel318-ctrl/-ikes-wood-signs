@@ -19,7 +19,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=4.7.3" />
+  <link rel="stylesheet" href="styles.css?v=4.7.4" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -306,6 +306,11 @@
       </div>
 
       <div id="captainObjectPanel" class="cq-object-panel hidden" role="dialog" aria-modal="true"><div class="cq-object-card"><div class="captain-kicker">CAPTAIN'S CABIN</div><h3 id="captainObjectTitle">Object</h3><p id="captainObjectCopy"></p><div id="captainPowderControls" class="cq-powder-controls hidden"><div class="cq-danger-plaque">⚠ CAPTAIN AUTHORITY REQUIRED</div><p>Reset Engine returns Engine and project settings to port defaults. Saved orders remain. A fresh Engine PIN and final confirmation are still required.</p><button id="engineResetSettingsBtn" class="danger-btn" type="button">RESET ENGINE TO PORT DEFAULTS</button></div><button id="captainObjectClose" type="button">RETURN TO THE CABIN</button></div></div>
+
+      <button id="captainTestAccessDeckBtn" class="cq-test-access-plaque" type="button" aria-label="Open Test Access controls" aria-pressed="false">
+        <span class="cq-test-access-lamp" aria-hidden="true"></span>
+        <span class="cq-test-access-copy"><small>CAPTAIN CONTROL</small><strong>TEST ACCESS</strong><b id="captainTestAccessDeckStatus">OFF • NORMAL SECURITY</b></span>
+      </button>
 
       <div class="captain-command-door-rail" aria-label="Captain command doors">
         <button id="captainCargoDoor" class="captain-command-door cargo" type="button" data-captain-command-door="cargo" aria-label="Open Cargo Hold"></button>
@@ -1268,11 +1273,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=4.7.3"></script>
-  <script src="platform_v4.js?v=4.7.3"></script>
-  <script src="platform_identity.js?v=4.7.3"></script>
-  <script src="app.js?v=4.7.3"></script>
-  <script src="captain.js?v=4.7.3"></script>
+  <script src="platform_core.js?v=4.7.4"></script>
+  <script src="platform_v4.js?v=4.7.4"></script>
+  <script src="platform_identity.js?v=4.7.4"></script>
+  <script src="app.js?v=4.7.4"></script>
+  <script src="captain.js?v=4.7.4"></script>
 
 </body>
 </html>

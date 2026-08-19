@@ -1,3 +1,11 @@
+# v4.7.4 — Captain Test Access Plaque
+
+- Added a visible, brass-and-lantern styled TEST ACCESS control directly to the cinematic Captain's Quarters dashboard.
+- Reused the existing dual-authorization Test Access flow rather than creating a second security path.
+- Added live OFF/ACTIVE status and indicator lamp to the Captain dashboard control.
+- Preserved session-only bypass behavior, PIN architecture, lockouts, project isolation, and Captain authority boundaries.
+- Advanced executable/cache versioning to 4.7.4.
+
 # v4.7.3 — Login Gate Repair
 
 - Fixed a Black Flag login regression introduced by the v4.7.2 Test Access hook.

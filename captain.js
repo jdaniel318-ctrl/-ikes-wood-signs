@@ -306,6 +306,10 @@
       show('captainTestAccessGate');
       requestAnimationFrame(()=>byId('testAccessEnginePin')?.focus());
     });
+    byId('captainTestAccessDeckBtn')?.addEventListener('click',(event)=>{
+      event.preventDefault();
+      byId('captainTestAccessToggle')?.click();
+    });
     byId('captainTestAccessCancel')?.addEventListener('click',()=>hide('captainTestAccessGate'));
     byId('captainTestAccessConfirm')?.addEventListener('click',async()=>{
       const enginePin=String(byId('testAccessEnginePin')?.value||'').trim();

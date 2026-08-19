@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-7-2-test-access-foundation';
+const CACHE='dark-sky-v4-7-4-captain-test-access-plaque';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.7.3',
-  './platform_core.js?v=4.7.3',
-  './platform_v4.js?v=4.7.3',
-  './platform_identity.js?v=4.7.3',
-  './app.js?v=4.7.3',
-  './captain.js?v=4.7.3',
+  './styles.css?v=4.7.4',
+  './platform_core.js?v=4.7.4',
+  './platform_v4.js?v=4.7.4',
+  './platform_identity.js?v=4.7.4',
+  './app.js?v=4.7.4',
+  './captain.js?v=4.7.4',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

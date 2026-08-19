@@ -11890,3 +11890,49 @@ body.test-access-active #engineResetGate label[for="engineResetPinInput"],body.t
 .captain-test-access-shell h3{margin:7px 0 8px;font:700 30px Georgia,serif;color:#f2d59b}.captain-test-access-shell p{color:#b9c0c2;line-height:1.45}
 .captain-test-access-shell label{display:block;margin:14px 0 5px;font-size:10px;font-weight:900;letter-spacing:.14em;color:#d4b36b}.captain-test-access-shell input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #67512a;border-radius:9px;background:#080c0e;color:#fff;font-size:20px}
 .captain-test-access-actions{display:flex;gap:10px;margin-top:16px}.captain-test-access-actions button{flex:1;padding:12px;border-radius:9px;border:1px solid #876a31;background:#c39a42;color:#080808;font-weight:900}.captain-test-access-actions button:last-child{background:#161a1c;color:#ddd}
+
+
+/* ==========================================================
+   v4.7.4 — CAPTAIN TEST ACCESS PLAQUE
+   Visible commissioning control integrated into cinematic cabin.
+   ========================================================== */
+.cq-test-access-plaque{display:none}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn.cq-test-access-plaque{
+  display:flex!important;position:absolute!important;z-index:128!important;
+  right:2.55%!important;top:17.2%!important;width:15.4%!important;height:8.3%!important;
+  align-items:center!important;gap:8%!important;padding:7% 8%!important;
+  border:2px solid #76572e!important;border-radius:5px!important;
+  background:linear-gradient(180deg,rgba(24,18,11,.97),rgba(10,8,5,.98))!important;
+  box-shadow:0 0 0 2px #070503,0 9px 22px #000b,inset 0 0 18px #000!important;
+  color:#ead9aa!important;text-align:left!important;cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn .cq-test-access-lamp{
+  flex:0 0 12%;aspect-ratio:1;border-radius:50%;background:#6c4a22;
+  border:1px solid #a67b3f;box-shadow:inset 0 0 5px #000,0 0 8px #7a532966;
+}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn.active .cq-test-access-lamp{
+  background:#e6b957;box-shadow:0 0 10px #e6b957,0 0 20px #d49637aa,inset 0 0 4px #fff5;
+}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn .cq-test-access-copy{display:block;min-width:0}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn small{
+  display:block;color:#94784b;font:700 clamp(5px,.46vw,8px) Georgia,serif;letter-spacing:.13em;white-space:nowrap;
+}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn strong{
+  display:block;margin:3% 0 2%;color:#e3c378;font:700 clamp(9px,.88vw,14px) Georgia,serif;letter-spacing:.08em;white-space:nowrap;
+}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn b{
+  display:block;color:#ae9b71;font:700 clamp(5px,.46vw,8px) Arial,sans-serif;letter-spacing:.04em;white-space:nowrap;
+}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn.active{
+  border-color:#b28a46!important;box-shadow:0 0 0 2px #070503,0 9px 22px #000b,0 0 18px #c4943b33,inset 0 0 18px #000!important;
+}
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn:hover,
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn:focus-visible{
+  outline:2px solid #d3ae62!important;outline-offset:2px!important;filter:brightness(1.08);
+}
+#captainQuarters:not(.captain-entry-complete) #captainTestAccessDeckBtn{pointer-events:none!important;opacity:0!important}
+@media(max-width:900px){
+  #captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn.cq-test-access-plaque{right:2.2%!important;width:17.5%!important}
+  #captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn small{display:none!important}
+}
