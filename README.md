@@ -1,5 +1,5 @@
-# Dark Sky v4.8.2 — Project Isolation Guard
+# Dark Sky v4.8.3 — BOR Commissioning Repair
 
-Built from 4.8.1 BOR North Richmond Response. Adds a fail-closed runtime boundary around the new BOR vessel, clears BOR customer/photo/runtime residue whenever another project or Black Flag is entered, and preserves the existing Dark Sky core modules unchanged from 4.8.0.
+Built from the protected 4.8.2 Isolation Guard. This release admits Best Option Restoration — North Richmond as the fifth Dark Sky project on existing installations without changing the four existing vessel definitions.
 
-BOR remains an isolated project package in behavior and data. Reusable lessons may be promoted later only after Captain review and separate platform testing.
+The repair is deliberately narrow: BOR receives an explicit release admission only after its immutable Project ID exists in the canonical registry. Future source-code project definitions do not automatically become fleet vessels.

@@ -14,14 +14,18 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.8.2';
+  const BUILD_VERSION = '4.8.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
-  const FLEET_REGISTRY_SCHEMA_VERSION = 5;
+  const FLEET_REGISTRY_SCHEMA_VERSION = 6;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
   const CANONICAL_GRIZZLY_PROJECT_ID = 'grizzly-bear';
   const PROJECT_ID_ALIASES = Object.freeze({[LEGACY_GRIZZLE_PROJECT_ID]:CANONICAL_GRIZZLY_PROJECT_ID});
+  // 4.8.3 — Release Vessel Admission. New bundled projects must be named here deliberately.
+  // Merely adding a project definition is not enough to alter an existing fleet.
+  const RELEASE_BUNDLED_PROJECT_IDS = Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear','bor-north-richmond']);
+  const RELEASE_NEW_PROJECT_IDS = Object.freeze(['bor-north-richmond']);
   function canonicalProjectId(id){ return PROJECT_ID_ALIASES[String(id||'')]||String(id||''); }
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -1778,7 +1782,7 @@
 
   function normalizeProjectCode(p){
     if(!p)return p;
-    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzly-bear':'GRZ' };
+    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzly-bear':'GRZ','bor-north-richmond':'BOR' };
     const fallback=String(p.orderPrefix||p.name||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ';
     p.projectCode=String(p.projectCode||seeded[p.id]||fallback).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
     if(!p.orderPrefix)p.orderPrefix=p.projectCode;
@@ -1808,6 +1812,9 @@
     // path for the Grizzle/Grizzly Bear regression seen in 3.9.9.
     const existingNames=new Set(merged.map(projectNameKey));
     for(const seed of DEFAULT_COMPANIES){
+      // Fail closed: a definition in source code does not automatically become a vessel.
+      // Only projects explicitly approved for this release may seed a missing canonical row.
+      if(!RELEASE_BUNDLED_PROJECT_IDS.includes(String(seed?.id||'')))continue;
       const aliases=seed.id==='grizzly-bear'?new Set(['grizzle bear','grizzly bear']):new Set([projectNameKey(seed)]);
       const hasAlias=[...existingNames].some(n=>aliases.has(n));
       if(!byId.has(seed.id) && !hasAlias){
@@ -1976,6 +1983,13 @@
     for(const id of V4_BASELINE_FLEET_IDS){
       if(!canonicalById.has(id))continue;
       if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'v4-baseline',transactionId:`baseline:${id}`,admittedAt:now,build:BUILD_VERSION};
+    }
+    // 4.8.3 — explicit one-time admission for projects bundled by this release.
+    // This does not alter or reserialize existing vessel definitions; it grants fleet
+    // citizenship only after the exact immutable Project ID exists in the canonical store.
+    for(const id of RELEASE_NEW_PROJECT_IDS){
+      if(!canonicalById.has(id))continue;
+      if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.8.3`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
     }
     // Drop malformed admission rows. Valid rows for projects no longer present are
     // retained as historical evidence, but they cannot enter the active manifest.

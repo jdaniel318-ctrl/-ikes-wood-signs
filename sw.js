@@ -1,20 +1,21 @@
-const CACHE='dark-sky-v4-8-1-bor-response';
+const CACHE='dark-sky-v4-8-3-bor-commissioning';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.8.2',
-  './platform_core.js?v=4.8.2',
-  './platform_v4.js?v=4.8.2',
-  './platform_identity.js?v=4.8.2',
-  './app.js?v=4.8.2',
-  './captain.js?v=4.8.2',
+  './styles.css?v=4.8.3',
+  './platform_core.js?v=4.8.3',
+  './platform_v4.js?v=4.8.3',
+  './platform_identity.js?v=4.8.3',
+  './app.js?v=4.8.3',
+  './captain.js?v=4.8.3',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
   './assets/ike_character.jpg',
   './assets/captains_quarters_cinematic_v2953.jpg',
   './assets/engine_room_modern_benchmark_v2976.png',
-  './assets/engine_room_pirate_benchmark_v2978.png'
+  './assets/engine_room_pirate_benchmark_v2978.png',
+  './assets/best_option_restoration_logo.jpg'
 ];
 
 self.addEventListener('install',event=>{
