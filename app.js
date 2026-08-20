@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.9.4';
+  const BUILD_VERSION = '4.9.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1614,45 +1614,67 @@
   function projectAdminPinKey(projectId=activeProjectId){
     return projectId ? `projectAdminPin:${projectId}` : '';
   }
+  function projectAdminPinOverrideKey(projectId=activeProjectId){
+    return projectId ? `projectAdminPinOverride:${projectId}` : '';
+  }
+
+  async function hasExplicitProjectAdminPinOverride(projectId=activeProjectId){
+    const key=projectAdminPinOverrideKey(projectId);
+    if(!key) return false;
+    try{
+      const row=await getSetting(key);
+      return row?.value?.explicit===true;
+    }catch(_){ return false; }
+  }
 
   async function getAdminPin(projectId=activeProjectId){
     try{
-      const scopedKey=projectAdminPinKey(projectId);
-      if(scopedKey){
-        const scoped=await getSetting(scopedKey);
-        if(scoped?.value) return scoped.value;
-      }
-      // Compatibility bridge only for the original Ike project. Other projects never inherit Ike's legacy PIN.
-      if(String(projectId||'')===LEGACY_IKE_PROJECT_ID){
-        const legacy=await getSetting('adminPin');
-        if(legacy?.value) return legacy.value;
+      const id=String(projectId||'').trim();
+      if(!id) return DEFAULT_ADMIN_PIN;
+      // Fleet contract: every project uses 4353 unless a project administrator
+      // deliberately changes that project's PIN through the protected Control Center.
+      if(await hasExplicitProjectAdminPinOverride(id)){
+        const scoped=await getSetting(projectAdminPinKey(id));
+        if(scoped?.value) return String(scoped.value);
       }
       return DEFAULT_ADMIN_PIN;
     }catch(err){
-      console.warn('Project admin PIN setting unavailable; using default',err);
+      console.warn('Project admin PIN setting unavailable; using fleet default',err);
       return DEFAULT_ADMIN_PIN;
     }
   }
 
   async function setAdminPin(value,projectId=activeProjectId){
-    const scopedKey=projectAdminPinKey(projectId);
+    const id=String(projectId||'').trim();
+    const scopedKey=projectAdminPinKey(id);
     if(!scopedKey) throw new Error('Project context required for admin PIN changes.');
-    return setSetting(scopedKey,String(value||'').trim());
+    const pin=String(value||'').trim();
+    await setSetting(scopedKey,pin);
+    await setSetting(projectAdminPinOverrideKey(id),{explicit:true,changedAt:new Date().toISOString(),build:BUILD_VERSION});
+    return pin;
   }
 
-  async function enforceSignalRestorationAdminBaseline(){
-    const projectId='bor-north-richmond';
-    const marker='migration:4.9.3:signalAdminBaseline';
+  async function enforceFleetProjectAdminBaseline(){
+    const marker='migration:4.9.5:fleetProjectAdminBaseline';
     try{
       const done=await getSetting(marker);
       if(done?.value?.complete) return;
-      // Signal Restoration is still in private testing. Re-seal its project-local admin
-      // credential to the fleet standard so stale preview storage cannot lock the Captain out.
-      await setSetting(projectAdminPinKey(projectId),DEFAULT_ADMIN_PIN);
-      await setSetting(marker,{complete:true,at:new Date().toISOString(),pinBaseline:'fleet-default'});
-      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId,category:'migration',action:'signal_restoration.admin_pin_baseline.repaired',detail:`Fleet standard restored • ${BUILD_VERSION}`});
+      const fleet=Array.isArray(companies)?companies:[];
+      for(const project of fleet){
+        const id=String(project?.id||'').trim();
+        if(!id) continue;
+        const explicit=await hasExplicitProjectAdminPinOverride(id);
+        if(!explicit){
+          await setSetting(projectAdminPinKey(id),DEFAULT_ADMIN_PIN);
+          clearPinFailures(adminSecurityKey(id));
+        }
+      }
+      // Retire the old unscoped Ike PIN as an authentication source. It remains
+      // harmless historical storage but can no longer override the fleet contract.
+      await setSetting(marker,{complete:true,at:new Date().toISOString(),pinBaseline:'4353',projects:fleet.length});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'fleet.project_admin_pin_baseline.repaired',detail:`${fleet.length} projects • fleet default 4353 • ${BUILD_VERSION}`});
     }catch(err){
-      console.warn('Signal Restoration admin baseline repair deferred',err);
+      console.warn('Fleet project admin baseline repair deferred',err);
     }
   }
 
@@ -10557,7 +10579,7 @@ The full order and approved media remain stored with this project.`;
     await loadBusinessConfig();
     await loadCompanies();
     await migrateLegacyProjectSettings();
-    await enforceSignalRestorationAdminBaseline();
+    await enforceFleetProjectAdminBaseline();
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();

@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-9-4-capability-workspace';
+const CACHE='dark-sky-v4-9-5-project-access';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.9.4',
-  './platform_core.js?v=4.9.4',
-  './platform_v4.js?v=4.9.4',
-  './platform_identity.js?v=4.9.4',
-  './app.js?v=4.9.4',
-  './captain.js?v=4.9.4',
+  './styles.css?v=4.9.5',
+  './platform_core.js?v=4.9.5',
+  './platform_v4.js?v=4.9.5',
+  './platform_identity.js?v=4.9.5',
+  './app.js?v=4.9.5',
+  './captain.js?v=4.9.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

@@ -1,3 +1,12 @@
+# Dark Sky 4.9.5 — Project Access Contract + Show the Flag
+
+- Makes `4353` the fleet-standard Project Admin PIN for every project unless that project has been deliberately given an override through protected project settings.
+- Adds explicit override metadata so stale project-local PIN rows cannot silently defeat the fleet default.
+- Performs a one-time fleet repair for existing projects and clears stale per-project lockout state when restoring the default.
+- Improves Project Admin gate contrast and readability across project themes.
+- Restores the approved Black Flag platform icon as the fixed bottom-right return control on customer, PIN gate, Project Manager, Orders, and Ledger project surfaces.
+- Replaces the embedded return-control image with the canonical bundled Black Flag asset and bumps service-worker cache identity.
+
 # Dark Sky 4.9.4 — Capability Authority + Project Manager Workspace
 
 - Added a master project capability catalog with AVAILABLE vs FOUNDATION status.

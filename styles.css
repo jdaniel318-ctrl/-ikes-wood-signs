@@ -12332,3 +12332,90 @@ body[data-pin-project-code="SIG"] .project-admin-gate-logo{object-fit:contain;ba
 .project-capability-card{display:grid;gap:18px}.project-capability-intro{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:14px;border:1px solid #29434b;border-radius:14px;background:#0a191e}.project-capability-intro small,.manager-workspace-head small{font-size:9px;letter-spacing:.14em;font-weight:900;color:#8fb5bf}.project-capability-intro h4,.manager-workspace-head h4{margin:4px 0 5px}.project-capability-intro p,.manager-workspace-head p{margin:0;color:#9fb0b5}.project-capability-rule{max-width:320px;padding:10px 12px;border-radius:10px;background:#10262d;border:1px solid #315360;display:grid;gap:4px}.project-capability-rule strong{font-size:9px;letter-spacing:.1em;color:#d7bd72}.project-capability-rule span{font-size:11px;color:#aebdc1}.project-capability-deck{display:grid;gap:16px}.project-capability-family{display:grid;gap:8px}.project-capability-family-head{display:flex;justify-content:space-between;align-items:center;padding:0 3px}.project-capability-family-head strong{font-size:10px;letter-spacing:.14em;color:#a8c1c7}.project-capability-family-head span{font-size:9px;color:#718c93}.project-capability-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.project-capability-option{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid #29424a;border-radius:12px;background:#08171c;cursor:pointer}.project-capability-option.selected{border-color:#367c94;background:#0d2832}.project-capability-option.recommended:not(.selected){box-shadow:inset 3px 0 0 #8a7d3a}.project-capability-option input{width:auto!important;margin:0!important}.project-capability-option>span:nth-of-type(1){display:grid;gap:3px}.project-capability-option b{font-size:13px}.project-capability-option small{font-size:10px;color:#90a1a6}.project-capability-badges{display:flex!important;gap:5px!important;align-items:center;flex-wrap:wrap;justify-content:flex-end}.project-capability-badges em{font-style:normal;font-size:7px;font-weight:900;letter-spacing:.08em;padding:4px 6px;border-radius:999px;border:1px solid #46545a;color:#96a2a5}.project-capability-badges .available{border-color:#276546;color:#9fd6b7}.project-capability-badges .foundation{border-color:#71652c;color:#d4c87b}.project-capability-badges .recommended{border-color:#2f7086;color:#a8d7e6}.project-capability-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.business-low-priority{border-style:dashed!important}.advanced-visual-library{margin-top:10px;border:1px solid #31464c;border-radius:12px;overflow:hidden}.advanced-visual-library summary{cursor:pointer;padding:12px 14px;font-size:9px;font-weight:900;letter-spacing:.12em;color:#a9c0c6;background:#0a1a1f}.advanced-visual-library .visual-cap-deck{padding:12px}.manager-workspace{display:grid;gap:13px;margin:16px 0}.manager-workspace-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:16px;border:1px solid #dbe4e6;border-radius:16px;background:#f7fafb}.manager-workspace-head>span{white-space:nowrap;padding:6px 9px;border-radius:999px;background:#163d49;color:white;font-size:9px;font-weight:900;letter-spacing:.08em}.manager-workspace-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.manager-workspace-card{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid #dce4e5;border-radius:14px;background:#fff;min-height:180px}.manager-workspace-card small{font-size:8px;letter-spacing:.11em;color:#65808a;font-weight:900}.manager-workspace-card h5{margin:3px 0;font-size:16px;color:#203c45}.manager-workspace-card p{margin:0;font-size:11px;color:#718188}.manager-capability-list{display:grid;gap:5px}.manager-capability-list>span{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 8px;border-radius:8px;background:#f4f7f7}.manager-capability-list b{font-size:10px;color:#32484f}.manager-capability-list em{font-style:normal;font-size:7px;font-weight:900;letter-spacing:.06em;color:#738087}.manager-capability-list .available em{color:#2d7750}.manager-capability-list .foundation em{color:#89762d}.manager-workspace-open{margin-top:auto;border:0;border-radius:9px;background:#183f4a;color:#fff;padding:9px;font-size:9px;font-weight:900;letter-spacing:.07em;cursor:pointer}.manager-workspace-state{margin-top:auto;font-size:8px;font-weight:900;letter-spacing:.08em;color:#7b898d}.manager-workspace-law{display:flex;justify-content:space-between;gap:14px;padding:11px 13px;border-radius:11px;background:#eef4f5;border:1px solid #d5e1e3}.manager-workspace-law strong{font-size:9px;letter-spacing:.08em;color:#2f5965}.manager-workspace-law span{font-size:10px;color:#667a80;text-align:right}
 @media(max-width:900px){.project-capability-grid,.manager-workspace-grid{grid-template-columns:1fr 1fr}.project-capability-intro{display:grid}.project-capability-rule{max-width:none}}
 @media(max-width:620px){.project-capability-grid,.manager-workspace-grid{grid-template-columns:1fr}.project-capability-option{grid-template-columns:auto 1fr}.project-capability-badges{grid-column:2;justify-content:flex-start}.manager-workspace-head,.manager-workspace-law{display:grid}.manager-workspace-law span{text-align:left}}
+
+/* ==========================================================================
+   4.9.5 — PROJECT ACCESS CONTRACT + SHOW THE FLAG
+   Fleet project PIN defaults to 4353 unless deliberately overridden.
+   Keep Black Flag return navigation visible on every project-owned surface.
+   ========================================================================== */
+.project-admin-gate-card{
+  background:#fffdf8!important;
+  border:2px solid color-mix(in srgb,var(--gate-header,#173742) 68%,#ffffff)!important;
+  box-shadow:0 22px 64px rgba(8,25,31,.34)!important;
+}
+.project-admin-gate-card #pinGateTitle{
+  color:#102f3b!important;
+  text-shadow:none!important;
+  font-weight:950!important;
+}
+.project-admin-gate-card #projectAdminGatePrompt{
+  color:#334a53!important;
+  font-weight:650!important;
+  opacity:1!important;
+}
+.project-admin-gate-card .project-admin-gate-kicker{
+  color:#245f7c!important;
+  opacity:1!important;
+  font-weight:900!important;
+}
+.project-admin-gate-card .pin-input{
+  background:#f0f5f6!important;
+  color:#10262f!important;
+  border:2px solid #c8d5d9!important;
+  -webkit-text-fill-color:#10262f!important;
+}
+.project-admin-gate-card .project-admin-gate-secondary{
+  color:#173742!important;
+  border-color:#2c7da0!important;
+  background:#fff!important;
+}
+.project-admin-gate-card .project-admin-gate-secondary:hover,
+.project-admin-gate-card .project-admin-gate-secondary:focus-visible{
+  background:#edf7fb!important;
+  color:#102f3b!important;
+}
+
+/* Old privacy rules correctly hide customer chrome, but must not hide the
+   platform return mark. Project data stays isolated; navigation stays visible. */
+body.project-mode #returnToEngineBtn.dark-sky-return-control,
+body.project-admin-mode #returnToEngineBtn.dark-sky-return-control,
+body.project-orders-mode #returnToEngineBtn.dark-sky-return-control,
+body.project-ledger-mode #returnToEngineBtn.dark-sky-return-control,
+body.modal-open.project-mode #returnToEngineBtn.dark-sky-return-control{
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  position:fixed!important;
+  right:max(18px,env(safe-area-inset-right))!important;
+  bottom:max(18px,env(safe-area-inset-bottom))!important;
+  z-index:10000!important;
+  width:60px!important;height:60px!important;
+  min-width:60px!important;min-height:60px!important;
+  max-width:60px!important;max-height:60px!important;
+  padding:6px!important;
+  background:#fffdf7!important;
+  border:2px solid #38535d!important;
+  border-radius:16px!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.28)!important;
+}
+#returnToEngineBtn.dark-sky-return-control .dark-sky-return-icon{
+  display:block!important;
+  width:100%!important;height:100%!important;
+  object-fit:contain!important;
+  opacity:1!important;
+  filter:none!important;
+}
+body.engine-mode #returnToEngineBtn.dark-sky-return-control,
+body.boot-locked #returnToEngineBtn.dark-sky-return-control{
+  display:none!important;
+}
+@media(max-width:720px){
+  body.project-mode #returnToEngineBtn.dark-sky-return-control,
+  body.project-admin-mode #returnToEngineBtn.dark-sky-return-control,
+  body.project-orders-mode #returnToEngineBtn.dark-sky-return-control,
+  body.project-ledger-mode #returnToEngineBtn.dark-sky-return-control{
+    width:56px!important;height:56px!important;
+    min-width:56px!important;min-height:56px!important;
+    max-width:56px!important;max-height:56px!important;
+  }
+}

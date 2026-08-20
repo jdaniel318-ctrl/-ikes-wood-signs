@@ -26,3 +26,8 @@
 - PASS: Signal Restoration default capability set is restoration-focused and project-scoped.
 - PASS: Signal Restoration visual-placement library remains available but is demoted to an Advanced Visual Capability Library.
 - PASS: existing Signal Restoration test/private-preview contact safety logic remains unchanged.
+
+## 4.9.5 Project Admin Access + Navigation Repair
+- Verified fleet default project PIN contract: 4353 unless deliberately overridden in protected project settings.
+- Verified canonical Black Flag return control remains visible on project customer, PIN, admin, orders, and ledger surfaces.
+- Verified Project Admin gate contrast overrides remain project-branded but readable.
