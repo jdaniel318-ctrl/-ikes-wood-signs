@@ -83,3 +83,11 @@ Dark Sky customer projects are required to support phone, tablet, and desktop us
 
 ## 4.9.1 Customer Trust + Deployment Boundary
 BOR remains a project package, not a platform skin. Its restoration workflow, visual identity, phone number, and customer copy stay local to `bor-north-richmond`. Shared mobile fixes are limited to generic gesture/viewport behavior. Test-mode contact actions are inert; live deployment state controls whether real-world contact links are exposed. This keeps future standalone-domain deployment possible without coupling a customer site to Black Flag navigation.
+
+
+## 4.9.4 Capability Authority + Manager Projection
+Dark Sky owns a master capability library. Capability existence does not grant project use. Each project stores an explicit project-scoped enabled capability set, and only Black Flag Project Control may activate or deactivate that set. Business descriptions/types provide recommendations, not automatic authority.
+
+The Project Manager Workspace is a projection of the enabled set. It groups capabilities around operational work rather than exposing platform architecture directly. Multiple capabilities may feed one manager area; enabling a capability does not require creating a new navigation item. Project managers may operate approved capabilities but cannot broaden project authority.
+
+AVAILABLE means the current build has working behavior. FOUNDATION means the capability is recognized and may be enabled for project planning/visibility, but the runtime must not imply production-ready behavior that does not yet exist.

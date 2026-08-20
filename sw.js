@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-9-3-sig-control-center';
+const CACHE='dark-sky-v4-9-4-capability-workspace';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.9.3',
-  './platform_core.js?v=4.9.3',
-  './platform_v4.js?v=4.9.3',
-  './platform_identity.js?v=4.9.3',
-  './app.js?v=4.9.3',
-  './captain.js?v=4.9.3',
+  './styles.css?v=4.9.4',
+  './platform_core.js?v=4.9.4',
+  './platform_v4.js?v=4.9.4',
+  './platform_identity.js?v=4.9.4',
+  './app.js?v=4.9.4',
+  './captain.js?v=4.9.4',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

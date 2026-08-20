@@ -17,3 +17,12 @@
 - Live BOR calling: rendered as `tel:` anchors.
 - JavaScript syntax checked with Node.
 - ZIP integrity checked before release.
+
+## 4.9.4 Capability Authority + Manager Workspace
+- PASS: JavaScript syntax checks for app.js, platform_core.js, platform_v4.js, captain.js.
+- PASS: protected DOM IDs remain unique; Engine, Project Control, Admin, Orders, and Ledger shells each occur exactly once.
+- PASS: capability activation UI exists only in Project Control Center → Operate → Capabilities.
+- PASS: Project Manager Workspace renders enabled capabilities as operational areas and provides no capability activation controls.
+- PASS: Signal Restoration default capability set is restoration-focused and project-scoped.
+- PASS: Signal Restoration visual-placement library remains available but is demoted to an Advanced Visual Capability Library.
+- PASS: existing Signal Restoration test/private-preview contact safety logic remains unchanged.

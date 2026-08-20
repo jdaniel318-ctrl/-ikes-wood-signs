@@ -1,5 +1,3 @@
-# Dark Sky v4.9.3 — SIG Admin + Project Control Center
+# Dark Sky v4.9.4 — Capability Authority + Project Manager Workspace
 
-Protected successor to 4.9.1. The restoration test vessel is now the original Signal Restoration brand with a Greater Richmond launch market and a project-local multi-market expansion model. Existing Dark Sky vessels remain isolated.
-
-The hidden legacy project key `bor-north-richmond` is retained only for data continuity during testing; customer-facing and Engine-facing branding is Signal Restoration.
+This build separates the Dark Sky master capability library from project authorization and project-manager operations. Capabilities are enabled only in each Project Control Center, while the Project Manager Workspace presents the enabled set in business-specific operational groups. Signal Restoration is the proving ground and now prioritizes restoration operations while keeping visual-placement tooling as an advanced option.

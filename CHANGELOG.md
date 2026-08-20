@@ -1,3 +1,14 @@
+# Dark Sky 4.9.4 — Capability Authority + Project Manager Workspace
+
+- Added a master project capability catalog with AVAILABLE vs FOUNDATION status.
+- Added business-profile recommendations so each project starts with capabilities relevant to its business description.
+- Added Project Control Center → Operate → Capabilities as the sole activation/deactivation authority.
+- Added a Project Manager Workspace that reorganizes enabled capabilities into Jobs, Schedule, Customers, Field Documentation, Estimates, Team, Reports, Customer Experience, and System.
+- Project managers can see/use enabled capabilities but cannot activate or deactivate them.
+- Signal Restoration now defaults to restoration-focused capabilities: intake/status, customers/property, field documentation, crew/scheduling, insurance, estimates/authorizations, notes, and reporting.
+- Signal Restoration visual-placement catalog is retained but moved behind an Advanced Visual Capability Library with No Visual Placement as the appropriate default.
+- Preserved project isolation and test/private-preview contact safety boundaries.
+
 # Dark Sky 4.9.3 — SIG Admin + Project Control Center Standard
 
 ## Signal Restoration repair
