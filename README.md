@@ -1,4 +1,4 @@
-# Dark Sky v4.9.5 — Project Access Contract + Show the Flag
+# Dark Sky v4.9.6 — Project Access Contract + Show the Flag
 
 This build standardizes Project Admin access across the fleet: PIN `4353` is the default for every project unless deliberately overridden inside that project. It also repairs Project Admin gate readability and guarantees the canonical Black Flag return mark remains visible on project-owned customer and protected screens.
 

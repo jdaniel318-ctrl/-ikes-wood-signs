@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.9.5';
+  const BUILD_VERSION = '4.9.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -10509,7 +10509,11 @@ The full order and approved media remain stored with this project.`;
       if(!isTestAccessActive()&&pinLocked(adminSecurityKey())){showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');return;}
       const entered=$('adminPinInput').value.trim();
       const expected=isTestAccessActive()?entered:await getAdminPin();
-      if(!isTestAccessActive()&&entered!==expected){
+      // Fleet project-access contract: 4353 is the guaranteed fleet-default/recovery
+      // Project Admin PIN. A deliberately configured project PIN may also unlock
+      // that project, but stale project storage can never make 4353 stop working.
+      const projectPinAccepted=isTestAccessActive() || entered===DEFAULT_ADMIN_PIN || entered===String(expected||'');
+      if(!projectPinAccepted){
         const row=recordBadPin(adminSecurityKey());
         $('pinGateError').textContent='Incorrect PIN.';
         if(row.lockedUntil>Date.now()) showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');

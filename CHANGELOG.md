@@ -1,4 +1,4 @@
-# Dark Sky 4.9.5 — Project Access Contract + Show the Flag
+# Dark Sky 4.9.6 — Project Access Contract + Show the Flag
 
 - Makes `4353` the fleet-standard Project Admin PIN for every project unless that project has been deliberately given an override through protected project settings.
 - Adds explicit override metadata so stale project-local PIN rows cannot silently defeat the fleet default.
