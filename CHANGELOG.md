@@ -1,3 +1,11 @@
+## 4.7.9 — Project Settings Access Repair
+
+- Made project settings/admin access a mission-critical early-bound control.
+- Test Access opens project admin without a redundant PIN prompt while preserving active project identity and isolation.
+- Fixed customer-shell hiding/restoration so project admin works correctly for Ike's, Mugs, Flowers, and universal commissioned projects.
+- Added a settings gear to the reusable universal project header for access parity.
+- Preserved the 4.7.7 Captain's Quarters visual baseline.
+
 ## 4.7.7 — Captain Rail Restoration
 - Fixed the delayed bottom overlay revealed by the Captain's Quarters image-load transition.
 - Restored the original five transparent command hit targets over the cinematic cabin's painted drawers.

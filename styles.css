@@ -12090,3 +12090,9 @@ body.test-access-active #engineResetGate label[for="engineResetPinInput"],body.t
 @media(max-width:900px){
   #captainQuarters.cinematic-cabin-ready .cq-test-access-watch{left:2.75%!important;top:12.9%!important;width:13.4%!important;height:3.4%!important}
 }
+
+/* v4.7.9 — universal project settings access parity */
+.universal-header-actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+.universal-settings-btn{width:46px;height:46px;min-width:46px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:rgba(8,24,30,.9);color:#fff;font-size:22px;font-weight:800;display:grid;place-items:center;cursor:pointer;box-shadow:0 5px 16px rgba(0,0,0,.18)}
+.universal-settings-btn:active{transform:translateY(1px)}
+@media(max-width:700px){.universal-header-actions{gap:7px}.universal-settings-btn{width:42px;height:42px;min-width:42px}}

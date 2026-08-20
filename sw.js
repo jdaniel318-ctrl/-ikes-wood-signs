@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-7-6-captain-rail-repair';
+const CACHE='dark-sky-v4-7-9-project-settings-access';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.7.7',
-  './platform_core.js?v=4.7.7',
-  './platform_v4.js?v=4.7.7',
-  './platform_identity.js?v=4.7.7',
-  './app.js?v=4.7.7',
-  './captain.js?v=4.7.7',
+  './styles.css?v=4.7.9',
+  './platform_core.js?v=4.7.9',
+  './platform_v4.js?v=4.7.9',
+  './platform_identity.js?v=4.7.9',
+  './app.js?v=4.7.9',
+  './captain.js?v=4.7.9',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

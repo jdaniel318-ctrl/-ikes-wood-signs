@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.7.7';
+  const BUILD_VERSION = '4.7.9';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -5874,14 +5874,14 @@
       universalCustomerState.receipt=receipt;
       const contact=[receipt.customerName,receipt.customerPhone,receipt.customerEmail].filter(Boolean).join(' • ');
       const contextBits=[receipt.fulfillment?`Fulfillment: ${receipt.fulfillment.replaceAll('-',' ')}`:'',receipt.preferredTiming?`Timing: ${receipt.preferredTiming}`:''].filter(Boolean);
-      shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
+      shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
       <main class="universal-shell-main"><section class="universal-done-card universal-receipt-card"><div class="universal-done-mark">✓</div><small>${escapeHtml(ctx.state==='preview'?'PRIVATE PREVIEW • NO RECORD CREATED':ctx.state==='sea_trial'?`SEA TRIAL • ${relationship.receiptLabel}`:relationship.receiptLabel)}</small><h2>${escapeHtml(ctx.state==='preview'?'Preview complete.':ctx.state==='sea_trial'?'Customer test complete.':relationship.confirmationHeading)}</h2><p class="universal-receipt-next">${escapeHtml(ctx.state==='preview'?'This is the real confirmation experience, but no customer, order, engagement, analytics, or lifecycle record was written.':ctx.state==='sea_trial'?'The customer engagement was recorded against this outpost as test data. Return to the Test Deck to review results.':relationship.nextStep)}</p><div class="universal-receipt-summary"><div><span>REFERENCE</span><strong>${escapeHtml(receipt.id)}</strong></div><div><span>ENGAGEMENT</span><strong>${escapeHtml(relationship.label)}</strong></div><div><span>WHAT THEY SENT</span><strong>${escapeHtml(receipt.offerName||'Request')}</strong></div>${contact?`<div><span>CONTACT</span><strong>${escapeHtml(contact)}</strong></div>`:''}${contextBits.length?`<div><span>DETAILS</span><strong>${escapeHtml(contextBits.join(' • '))}</strong></div>`:''}</div>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalDoneReturnShipwright" class="primary-btn">RETURN TO SHIPWRIGHT</button>':'<div class="universal-receipt-actions"><button type="button" id="universalAnotherOrder" class="secondary-btn">START ANOTHER</button></div>'}</section></main>`;
       $('universalAnotherOrder')?.addEventListener('click',()=>{clearUniversalReceipt(p);resetUniversalCustomerState(p);renderUniversalCustomerShell(p)});
       $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       $('universalDoneReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       return;
     }
-    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Choose an offer and send your request.')}</p></div>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</header>
+    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Choose an offer and send your request.')}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
       <main class="universal-shell-main">
         ${ctx.state==='sea_trial'?'<div class="universal-trial-banner">SEA TRIAL — Activity created here is marked test data and remains subordinate to this Project ID.</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only">PRIVATE PREVIEW — Walk the real customer experience. Nothing submitted here is persisted.</div>':''}
         <section class="universal-order-card">
@@ -5976,9 +5976,9 @@
     document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project');
     const shell=projectShellFor(p);
     enforceCustomerShellIsolation(shell);
-    if(shell==='ikes') $('customerApp')?.classList.remove('hidden');
-    else if(shell==='mugs') $('mugsCustomerShell')?.classList.remove('hidden');
-    else if(shell==='flowers') $('flowersCustomerShell')?.classList.remove('hidden');
+    if(shell==='ikes'){ $('customerApp')?.classList.remove('hidden'); document.body.classList.add('ikes-project'); }
+    else if(shell==='mugs'){ $('mugsCustomerShell')?.classList.remove('hidden'); document.body.classList.add('mugs-project'); }
+    else if(shell==='flowers'){ $('flowersCustomerShell')?.classList.remove('hidden'); document.body.classList.add('flowers-project'); }
     else if(shell==='universal'){ $('universalCustomerShell')?.classList.remove('hidden'); document.body.classList.add('universal-project'); renderUniversalCustomerShell(p); }
     else console.warn('No customer shell registered for project',p?.id);
   }
@@ -7564,9 +7564,11 @@ The full order and approved media remain stored with this project.`;
     $('projectLedgerPanel')?.classList.add('hidden');
     $('pinGate')?.classList.add('hidden');
     $('adminSettings')?.classList.add('hidden');
-    $('customerApp')?.classList.remove('hidden');
+    hideAllCustomerShells();
     document.body.classList.remove('modal-open','project-admin-mode','project-orders-mode','project-ledger-mode');
     document.body.classList.add('project-mode');
+    const p=activeProject();
+    if(p) showCustomerShellForProject(p);
     if($('adminPinInput')) $('adminPinInput').value='';
     if($('pinGateError')) $('pinGateError').textContent='';
     window.__pendingProtectedPage=null;
@@ -7947,7 +7949,8 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function showProtectedProjectPage(kind){
-    $('customerApp')?.classList.add('hidden');
+    hideAllCustomerShells();
+    document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project');
     $('enginePanel')?.classList.add('hidden');
     $('blackFlagEntryGate')?.classList.add('hidden');
     $('adminPanel')?.classList.add('hidden');
@@ -8011,7 +8014,7 @@ The full order and approved media remain stored with this project.`;
   }
   async function createMugsApprovedPreview(){if(!mugsState.photoData)return '';return new Promise(resolve=>{const img=new Image();img.onload=()=>{try{const scale=Math.min(1,1600/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height)),w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale)),h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale)),canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return resolve('');ctx.drawImage(img,0,0,w,h);const lines=mugWrapLines(mugsState.message||'');let size=Math.max(30,Math.min(Math.round(w*.075),Math.round(h*.16)));const family=mugsState.style==='classic'?'Georgia':mugsState.style==='script'?'cursive':'Arial';const maxWidth=w*.58,spacing=size*1.05,startY=h*.5-((lines.length-1)*spacing/2);lines.forEach((line,i)=>drawMugWrapLine(ctx,line,w*.5,startY+i*spacing,maxWidth,size,family));resolve(canvas.toDataURL('image/jpeg',.86));}catch(err){console.warn('Mugs preview failed',err);resolve('');}};img.onerror=()=>resolve('');img.src=mugsState.photoData;});}
   async function submitMugsOrder(){if(activeProjectId!=='mugshot-after-dark')return;if(!mugsState.photoData){alert('A confirmed mug photo is required.');showMugsScreen('photo');return;}if(!mugsState.message.trim()){alert('Enter the mug message.');showMugsScreen('message');return;}if(!mugsState.customerName.trim()||!mugsState.customerPhone.trim()){alert('Name and phone are required.');showMugsScreen('customer');return;}if(!$('mugsApprovalCheck')?.checked)return;const approvedPreviewData=await createMugsApprovedPreview();if(!approvedPreviewData){alert('The approved mug preview could not be confirmed.');showMugsScreen('photo');return;}const d=new Date(),y=String(d.getFullYear()).slice(-2),mo=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`MUG-${y}${mo}${day}-${suffix}`;const order={projectId:'mugshot-after-dark',namespace:window.BlackFlagV3Core?.namespaceFor?.('mugshot-after-dark')||'bf.project.mugshot-after-dark',isolation:{projectId:'mugshot-after-dark',crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:'Mugs After Dark',orderPrefix:'MUG'},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:0,photoData:mugsState.photoData,approvedPreviewData,wording:mugsState.message,font:mugsState.style,fill:'Black',contactPreference:'Text',customerName:mugsState.customerName,customerPhone:mugsState.customerPhone,customerEmail:mugsState.customerEmail,approved:true,testMode:currentExperienceContext(projectById(activeProjectId))?.state!=='deployed',deploymentId:currentExperienceContext(projectById(activeProjectId))?.deploymentId||null};const mugsCtx=currentExperienceContext(projectById(activeProjectId));if(mugsCtx?.state!=='preview'){backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Mugs order save failed',err);}if(mugsCtx?.state==='sea_trial')await recordExperienceSeaTrialSubmission(projectById(activeProjectId),id);}mugsState.approvedPreviewData=approvedPreviewData;$('mugsDoneOrderId').textContent=id;$('mugsDonePreview').src=approvedPreviewData;showMugsScreen('done');}
-  function bindMugsShell(){if(window.__mugsShellBound)return;window.__mugsShellBound=true;$('mugsCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-mugs-next]');if(n&&!n.disabled){showMugsScreen(n.dataset.mugsNext);return;}const b=e.target.closest('[data-mugs-back]');if(b){showMugsScreen(b.dataset.mugsBack);}});$('mugsPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{mugsState.photoData=String(r.result||'');$('mugsPhotoPreview').src=mugsState.photoData;$('mugsPhotoPreviewWrap').classList.remove('hidden');$('mugsPhotoNext').disabled=!mugsState.photoData;};r.readAsDataURL(file);});$('mugsRetakePhoto')?.addEventListener('click',()=>{mugsState.photoData='';$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap').classList.add('hidden');$('mugsPhotoNext').disabled=true;$('mugsPhotoInput').click();});$('mugsMessage')?.addEventListener('input',e=>{mugsState.message=e.target.value;$('mugsCharCount').textContent=String(mugsState.message.length);});$('mugsStyle')?.addEventListener('change',e=>mugsState.style=e.target.value);$('mugsCustomerNext')?.addEventListener('click',()=>{mugsState.customerName=$('mugsCustomerName').value.trim();mugsState.customerPhone=$('mugsCustomerPhone').value.trim();mugsState.customerEmail=$('mugsCustomerEmail').value.trim();if(!mugsState.customerName||!mugsState.customerPhone){alert('Name and phone are required.');return;}showMugsScreen('review');});$('mugsApprovalCheck')?.addEventListener('change',e=>$('mugsSubmitOrder').disabled=!e.target.checked);$('mugsSubmitOrder')?.addEventListener('click',submitMugsOrder);$('mugsNewOrder')?.addEventListener('click',()=>{resetMugsShell();showMugsScreen('welcome');});$('mugsAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
+  function bindMugsShell(){if(window.__mugsShellBound)return;window.__mugsShellBound=true;$('mugsCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-mugs-next]');if(n&&!n.disabled){showMugsScreen(n.dataset.mugsNext);return;}const b=e.target.closest('[data-mugs-back]');if(b){showMugsScreen(b.dataset.mugsBack);}});$('mugsPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{mugsState.photoData=String(r.result||'');$('mugsPhotoPreview').src=mugsState.photoData;$('mugsPhotoPreviewWrap').classList.remove('hidden');$('mugsPhotoNext').disabled=!mugsState.photoData;};r.readAsDataURL(file);});$('mugsRetakePhoto')?.addEventListener('click',()=>{mugsState.photoData='';$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap').classList.add('hidden');$('mugsPhotoNext').disabled=true;$('mugsPhotoInput').click();});$('mugsMessage')?.addEventListener('input',e=>{mugsState.message=e.target.value;$('mugsCharCount').textContent=String(mugsState.message.length);});$('mugsStyle')?.addEventListener('change',e=>mugsState.style=e.target.value);$('mugsCustomerNext')?.addEventListener('click',()=>{mugsState.customerName=$('mugsCustomerName').value.trim();mugsState.customerPhone=$('mugsCustomerPhone').value.trim();mugsState.customerEmail=$('mugsCustomerEmail').value.trim();if(!mugsState.customerName||!mugsState.customerPhone){alert('Name and phone are required.');return;}showMugsScreen('review');});$('mugsApprovalCheck')?.addEventListener('change',e=>$('mugsSubmitOrder').disabled=!e.target.checked);$('mugsSubmitOrder')?.addEventListener('click',submitMugsOrder);$('mugsNewOrder')?.addEventListener('click',()=>{resetMugsShell();showMugsScreen('welcome');});}
 
   const flowersState={screen:'welcome',photoData:'',message:'',style:'bold',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''};
   const FLOWERS_SCREEN_ORDER=['welcome','photo','message','preview','customer','review','done'];
@@ -8303,7 +8306,7 @@ The full order and approved media remain stored with this project.`;
     try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command systems warning',err); }
   };
 
-  function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone){alert('Name and phone are required.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});$('flowersAdminBtn')?.addEventListener('click',()=>{$('adminBtn')?.click();});}
+  function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone){alert('Name and phone are required.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});}
 
   function bindProjectTemplateShells(){
     // Template-level customer behaviors. These are bound once and are not tied
@@ -9729,6 +9732,48 @@ The full order and approved media remain stored with this project.`;
     });
   }
 
+  async function openProjectSettingsFromCustomer(){
+    const p=activeProject();
+    if(!p){
+      console.warn('Project settings launch ignored: no active project.');
+      return;
+    }
+    window.__pendingProtectedPage='settings';
+    try{
+      // Commissioning/Test Access is already Captain-authorized for this browser
+      // session. It bypasses PIN entry only; project identity and isolation stay intact.
+      if(isTestAccessActive()){
+        await showProtectedProjectPage('settings');
+        return;
+      }
+      await configureProjectAdminGate();
+      document.body.classList.add('modal-open');
+      if($('adminPinInput')) $('adminPinInput').value='';
+      if($('pinGateError')) $('pinGateError').textContent='';
+      $('pinGate')?.classList.remove('hidden');
+      setTimeout(()=>{
+        if(pinLocked(adminSecurityKey())) showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');
+        else $('adminPinInput')?.focus();
+      },50);
+    }catch(err){
+      console.error('Project settings launch failed',err);
+      window.__pendingProtectedPage=null;
+      alert('Project settings could not open. Return to Black Flag and reopen this project, then try again.');
+    }
+  }
+
+  function bindProjectSettingsAccessCore(){
+    if(window.__darkSkyProjectSettingsAccessBound)return;
+    window.__darkSkyProjectSettingsAccessBound=true;
+    document.addEventListener('click',e=>{
+      const trigger=e.target?.closest?.('#adminBtn,#mugsAdminBtn,#flowersAdminBtn,[data-project-settings-launch]');
+      if(!trigger)return;
+      e.preventDefault();
+      e.stopPropagation();
+      openProjectSettingsFromCustomer();
+    },true);
+  }
+
   function bindCustomerNavigationCore(){
     if(window.__darkSkyCustomerNavigationBound)return;
     window.__darkSkyCustomerNavigationBound=true;
@@ -9797,16 +9842,6 @@ The full order and approved media remain stored with this project.`;
     // Customer media controls are owned by bindCustomerMediaCore() and are armed before storage.
     // Customer journey CTAs are owned by bindCustomerActionCore()
     // and are armed before storage/migrations.
-    $('adminBtn').addEventListener('click',async()=>{
-      await configureProjectAdminGate();
-      window.__pendingProtectedPage='settings';
-      if(isTestAccessActive()){ await showProtectedProjectPage('settings'); return; }
-      document.body.classList.add('modal-open');
-      $('adminPinInput').value='';
-      $('pinGateError').textContent='';
-      $('pinGate').classList.remove('hidden');
-      setTimeout(()=>{if(pinLocked(adminSecurityKey()))showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');else $('adminPinInput').focus()},50);
-    });
     $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
     const closeAdminPreviewLightbox=()=>{
       const gate=$('adminPreviewLightbox');
@@ -10044,6 +10079,9 @@ The full order and approved media remain stored with this project.`;
     bindEngineProjectCommandBus();
     bindExperienceTestDeckBus();
     bindMissionCriticalNavigation();
+    // Project settings/admin access is mission-critical during commissioning.
+    // Bind it before storage/migrations so every project shell has a live gear.
+    bindProjectSettingsAccessCore();
     // Customer step navigation is also mission-critical. Bind it before storage so
     // a stalled/failed IndexedDB open cannot leave a fully-rendered dead experience.
     bindCustomerNavigationCore();
