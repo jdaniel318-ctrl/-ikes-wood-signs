@@ -1,3 +1,11 @@
+# Dark Sky 5.0.4 — Black Flag Structure Restore
+
+- Restores the proven Black Flag Engine authentication contract from the pre-5.0 cleanup: `5615` is always a valid Engine PIN.
+- Restores compatibility with an explicitly configured Engine PIN without allowing Project Admin (`4353`) or Captain (`19613`) credentials to authenticate Black Flag.
+- Captain Test Access remains the only session-only Engine bypass and does not rewrite any credential.
+- Adds a one-time Engine lockout repair because repeated tests against the incorrect 5.0.1–5.0.3 credential changes could leave the correct `5615` PIN locally locked out. Future brute-force lockouts continue normally.
+- Keeps the 5.0 project-isolation and fleet-boundary work intact; this release changes the Engine authentication spine only.
+
 # Dark Sky 5.0.3 — Authority Spine Correction
 
 - Restored Black Flag / Engine Room normal PIN to **5615**.

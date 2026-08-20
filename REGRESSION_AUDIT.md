@@ -1,3 +1,13 @@
+# 5.0.4 Authentication Regression Addendum
+
+- Black Flag normal PIN: `5615`.
+- Project Admin default/recovery PIN: `4353`.
+- Captain's Quarters PIN: `19613`.
+- Captain Test Access is session-only and is not a credential rewrite.
+- Engine verifier accepts the historical default and an explicitly configured Engine PIN only.
+- Project and Captain credentials are not consulted by Engine verification.
+- One-time 5.0.4 repair clears only stale Engine lockout state created during the cleanup PIN regression.
+
 # Dark Sky 5.0.3 — Authentication + Isolation Regression Check
 
 ## Required authority behavior

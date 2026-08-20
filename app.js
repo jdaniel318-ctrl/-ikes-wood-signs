@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.0.3';
+  const BUILD_VERSION = '5.0.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1714,10 +1714,16 @@
   window.verifyProjectAdminPin=verifyProjectAdminPin;
 
   async function getEnginePin(){
-    // Stable authority spine: Black Flag owns one normal Engine credential.
-    // Historical/stale enginePin settings are intentionally ignored so a project
-    // PIN, migration, or prior test build can never redefine the Engine layer.
-    return DEFAULT_ENGINE_PIN;
+    // Restore the proven Black Flag contract used before the 5.0 cleanup:
+    // 5615 is always valid, while an explicitly stored Engine PIN may also be valid.
+    // Project Admin and Captain credentials are never consulted here.
+    try{
+      const saved=await getSetting('enginePin');
+      return saved?.value || DEFAULT_ENGINE_PIN;
+    }catch(err){
+      console.warn('Engine PIN setting unavailable; using default',err);
+      return DEFAULT_ENGINE_PIN;
+    }
   }
 
   // Unified Black Flag Engine authentication. Every Engine gate uses this controller.
@@ -1729,9 +1735,12 @@
     if(security.lockedUntil>Date.now()){
       return {ok:false,code:'locked',lockedUntil:security.lockedUntil};
     }
-    if(entered===String(DEFAULT_ENGINE_PIN)){
+    let configured=DEFAULT_ENGINE_PIN;
+    try{ configured=String(await getEnginePin() || DEFAULT_ENGINE_PIN); }catch(_){ configured=DEFAULT_ENGINE_PIN; }
+    const ok=entered===String(DEFAULT_ENGINE_PIN) || entered===configured;
+    if(ok){
       clearPinFailures('engine');
-      return {ok:true,code:'engine-pin',configured:DEFAULT_ENGINE_PIN,recovery:false};
+      return {ok:true,code:'ok',configured,recovery:entered===String(DEFAULT_ENGINE_PIN)};
     }
     const row=recordFailure ? recordBadPin('engine') : pinSecurityState('engine');
     return {ok:false,code:row.lockedUntil>Date.now()?'locked':'incorrect',lockedUntil:row.lockedUntil||0};
@@ -1769,6 +1778,18 @@
     pinLocked, recordBadPin, clearPinFailures, showPinLock
   };
   window.pinLocked=pinLocked; window.recordBadPin=recordBadPin; window.clearPinFailures=clearPinFailures; window.showPinLock=showPinLock;
+
+  // 5.0.4 one-time recovery: the 5.0.1-5.0.3 credential churn could leave the
+  // correct historical Engine PIN locked out in localStorage. Clear only the Engine
+  // lockout once on this build; future brute-force lockouts continue normally.
+  (function repairEngineLockoutFromCleanup(){
+    const marker='darkSky:5.0.4:engineLockoutRepair';
+    try{
+      if(localStorage.getItem(marker)==='done') return;
+      clearPinFailures('engine');
+      localStorage.setItem(marker,'done');
+    }catch(_){ }
+  })();
 
   function readProjectRegistryBackup(){
     try{

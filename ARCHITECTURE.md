@@ -1,3 +1,7 @@
+# 5.0.4 Authority Spine Note
+
+The stable authentication hierarchy is Project Admin (`4353`) → Black Flag Engine (`5615`) → Captain's Quarters (`19613`). These are separate authority domains. Captain Test Access may grant a session-only Engine bypass when deliberately enabled, but it does not alter any PIN. The 5.0 isolation boundary remains independent from authentication and must not be weakened when credentials are repaired.
+
 # Dark Sky Architecture — 5.0 Fleet Boundary Contract
 
 ## Non-negotiable fleet isolation law

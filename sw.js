@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-0-3-authority-spine';
+const CACHE='dark-sky-v5-0-4-engine-structure-restore';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.0.3',
-  './platform_core.js?v=5.0.3',
-  './platform_v4.js?v=5.0.3',
-  './platform_identity.js?v=5.0.3',
-  './app.js?v=5.0.3',
-  './captain.js?v=5.0.3',
+  './styles.css?v=5.0.4',
+  './platform_core.js?v=5.0.4',
+  './platform_v4.js?v=5.0.4',
+  './platform_identity.js?v=5.0.4',
+  './app.js?v=5.0.4',
+  './captain.js?v=5.0.4',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
