@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.9.7';
+  const BUILD_VERSION = '5.0.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -40,7 +40,8 @@
     const deckStatus=document.getElementById('captainTestAccessDeckStatus'); if(deckStatus)deckStatus.textContent=active?'ACTIVE':'SECURE';
     const entry=document.getElementById('blackFlagEntryUnlock'); if(entry)entry.textContent=active?'CONTINUE — TEST ACCESS →':(document.body.classList.contains('dark-flag-pirate-mode')?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →');
     const eg=document.getElementById('unlockEngineBtn'); if(eg)eg.textContent=active?'CONTINUE — TEST ACCESS →':'BOARD THE ENGINE ROOM →';
-    const ag=document.getElementById('unlockAdminBtn'); if(ag)ag.textContent=active?'CONTINUE — TEST ACCESS →':'UNLOCK ADMIN';
+    // Project Admin is never controlled by Captain/Test Access. Keep the gate visually and behaviorally independent.
+    const ag=document.getElementById('unlockAdminBtn'); if(ag)ag.textContent='UNLOCK ADMIN';
     const rg=document.getElementById('confirmEngineResetBtn'); if(rg)rg.textContent=active?'CONFIRM RESET — TEST ACCESS':'CONFIRM RESET';
   }
   function setTestAccessActive(enabled){try{enabled?sessionStorage.setItem(TEST_ACCESS_SESSION_KEY,'active'):sessionStorage.removeItem(TEST_ACCESS_SESSION_KEY);}catch(_){} renderTestAccessState(); window.dispatchEvent(new CustomEvent('darksky:testaccesschange',{detail:{active:isTestAccessActive()}})); return isTestAccessActive();}
@@ -3007,7 +3008,19 @@
     closeExperienceTestDeck();ensureExperienceModeBanner(p,mode);await enterProject(p.id);
   }
 
-  async function returnFromExperienceMode(){const state=experienceTestReturnState;experienceTestReturnState=null;window.__deploymentCustomerContext=null;document.getElementById('experienceModeBanner')?.classList.add('hidden');hideAllCustomerShells();document.body.classList.remove('project-mode','universal-project','ikes-project','mugs-project','flowers-project');document.body.classList.add('engine-mode');$('enginePanel')?.classList.remove('hidden');$('returnToEngineBtn')?.classList.add('hidden');activeProjectId=null;engineSessionUnlocked=true;if(state?.projectId&&state.mode!=='live')await openExperienceTestDeck(state.projectId);else await renderEngineRoom();}
+  async function returnFromExperienceMode(){
+    const state=experienceTestReturnState;
+    experienceTestReturnState=null;
+    window.__deploymentCustomerContext=null;
+    document.getElementById('experienceModeBanner')?.classList.add('hidden');
+    prepareEngineBoundary();
+    document.body.classList.remove('boot-locked','project-mode');
+    document.body.classList.add('engine-mode');
+    $('enginePanel')?.classList.remove('hidden');
+    engineSessionUnlocked=true;
+    if(state?.projectId&&state.mode!=='live')await openExperienceTestDeck(state.projectId);
+    else await renderEngineRoom();
+  }
 
 
   function projectFleetLaunchState(p){
@@ -3315,7 +3328,8 @@
       });
     }
 
-    const ike=projectById(LEGACY_IKE_PROJECT_ID)||list[0];
+    // Reference-vessel presentation must never silently substitute another project.
+    const ike=projectById(LEGACY_IKE_PROJECT_ID);
     if(!ike){reference.innerHTML='';return;}
     const snap=commissioningSnapshot(ike);
     const next=commissioningNextMove(snap);
@@ -5408,8 +5422,12 @@
 
   async function openProjectEngineControl(id){
     const p=projectById(id);if(!p)return;
+    // Engine Project Control is not a customer/project-admin session. Clear any
+    // lingering project presentation before selecting this immutable Engine target.
+    clearProjectPresentation();
+    clearActiveProjectContext();
     clearGraphicsTransientUi();
-    engineActiveProjectId=id;
+    engineActiveProjectId=p.id;
     $('pecTitle').textContent=p.name;
     $('pecSubtitle').textContent='Business command, operating visibility, and project-scoped controls. Black Flag remains unlocked only while you stay in the Engine.';
     await applyProjectControlBrand(p);
@@ -6200,12 +6218,10 @@
     if(experienceTestReturnState){await returnFromExperienceMode();return;}
     if(!ctx.deploymentId)return;
     window.__deploymentCustomerContext=null;
-    hideAllCustomerShells();
-    $('returnToEngineBtn')?.classList.add('hidden');
-    document.body.classList.remove('project-mode','universal-project');
+    prepareEngineBoundary();
+    document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
     $('enginePanel')?.classList.remove('hidden');
-    activeProjectId=null;
     engineSessionUnlocked=true;
     await openProjectEngineControl(p.id);
     deploymentSelectionByProject.set(p.id,ctx.deploymentId);
@@ -6425,6 +6441,79 @@
     return false;
   }
   function hideAllCustomerShells(){$('customerApp')?.classList.add('hidden');$('mugsCustomerShell')?.classList.add('hidden');$('flowersCustomerShell')?.classList.add('hidden');$('universalCustomerShell')?.classList.add('hidden');}
+
+  // 5.0 Fleet Boundary Spine — one transition contract owns every layer change.
+  // No project surface is allowed to remain visible or authenticated while another
+  // project, the Engine, or Captain authority is active. This deliberately clears
+  // UI state before any route renders so stale SIG/Ike/etc. screens cannot bleed
+  // through a successful navigation.
+  function hideAllProjectProtectedSurfaces(){
+    ['pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','adminPreviewLightbox','ownerClaimGate','ownerPortal'].forEach(id=>$(id)?.classList.add('hidden'));
+    document.body.classList.remove('modal-open','project-admin-mode','project-orders-mode','project-ledger-mode');
+    window.__pendingProtectedPage=null;
+    clearProjectAdminGateTheme();
+  }
+  function clearProjectPresentation(){
+    hideAllCustomerShells();
+    hideAllProjectProtectedSurfaces();
+    $('returnToEngineBtn')?.classList.add('hidden');
+    document.body.classList.remove('project-mode','ikes-project','mugs-project','flowers-project','universal-project','bor-project');
+    document.body.removeAttribute('data-active-project');
+    document.body.removeAttribute('data-project-theme');
+    document.body.removeAttribute('data-admin-project-code');
+    document.body.removeAttribute('data-pin-project-code');
+    document.body.removeAttribute('data-pin-gate-project-id');
+  }
+  function assertProjectBoundary(projectId,{surface='project'}={}){
+    const expected=canonicalProjectId(String(projectId||''));
+    const active=canonicalProjectId(String(activeProjectId||''));
+    if(!expected || expected!==active){
+      console.error('Dark Sky project boundary blocked', {surface,expected,active});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:expected||active||null,category:'integrity',action:'project.boundary.blocked',detail:`${surface} • expected ${expected||'(none)'} • active ${active||'(none)'} • ${BUILD_VERSION}`});
+      return false;
+    }
+    return true;
+  }
+  function activateProjectContext(project){
+    const id=canonicalProjectId(String(project?.id||''));
+    if(!id) throw new Error('Project context requires an immutable Project ID.');
+    activeProjectId=id;
+    document.body.dataset.activeProject=id;
+    window.DarkSkyActiveProject={projectId:id,namespace:window.BlackFlagV3Core?.namespaceFor?.(id)||`bf.project.${id}`,activatedAt:Date.now()};
+    return id;
+  }
+  function clearActiveProjectContext(){
+    activeProjectId=null;
+    window.DarkSkyActiveProject=null;
+    document.body.removeAttribute('data-active-project');
+  }
+  function prepareEngineBoundary(){
+    clearProjectPresentation();
+    clearActiveProjectContext();
+    engineActiveProjectId=null;
+    $('projectEngineControl')?.classList.add('hidden');
+    $('engineConfigurationDock')?.classList.add('hidden');
+    document.body.classList.remove('engine-workspace-open');
+  }
+  function surfaceVisible(id){const el=$(id);return !!el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none';}
+  function isolationSnapshot(){
+    const ids=['blackFlagEntryGate','customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','enginePanel','projectEngineControl','ownerPortal','captainQuarters'];
+    return {build:BUILD_VERSION,activeProjectId:activeProjectId||null,engineActiveProjectId:engineActiveProjectId||null,bodyActiveProject:document.body.dataset.activeProject||null,visible:ids.filter(surfaceVisible)};
+  }
+  function verifyLayerIsolation(expectedLayer,expectedProjectId=''){
+    const snap=isolationSnapshot(), projectSurfaces=['customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel'];
+    const failures=[];
+    if(expectedLayer==='engine' && snap.visible.some(id=>projectSurfaces.includes(id)))failures.push('project_surface_visible_in_engine');
+    if(expectedLayer==='project'){
+      const expected=canonicalProjectId(String(expectedProjectId||''));
+      if(canonicalProjectId(String(snap.activeProjectId||''))!==expected)failures.push('active_project_mismatch');
+      if(canonicalProjectId(String(snap.bodyActiveProject||''))!==expected)failures.push('body_project_mismatch');
+    }
+    if(failures.length)window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:expectedProjectId||null,category:'integrity',action:'layer.isolation.failed',detail:`${expectedLayer} • ${failures.join(',')} • ${JSON.stringify(snap.visible)} • ${BUILD_VERSION}`});
+    return {ok:!failures.length,failures,...snap};
+  }
+  window.darkSkyIsolationSnapshot=isolationSnapshot;
+  window.darkSkyVerifyIsolation=verifyLayerIsolation;
   function enforceCustomerShellIsolation(shell){
     const legacyHeader=document.querySelector('#app > .brand-header');
     const legacyProgress=document.querySelector('#app > .progress-track');
@@ -6463,8 +6552,11 @@
       alert('This project does not yet have a customer operating model. Add a customer-ready offer in Project Control before testing.');
       return;
     }
-    activeProjectId=id;logActivity(id,'Project opened');engineSessionUnlocked=false;
-    document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');$('adminPanel')?.classList.add('hidden');
+    clearProjectPresentation();
+    const projectId=activateProjectContext(p);
+    engineActiveProjectId=null;
+    logActivity(projectId,'Project opened');engineSessionUnlocked=false;
+    document.body.classList.remove('boot-locked','engine-mode');$('enginePanel')?.classList.add('hidden');$('blackFlagEntryGate')?.classList.add('hidden');document.body.classList.add('project-mode');
     showCustomerShellForProject(p);
     await applyProjectAssetSlots(p);
     if(resolvedShell==='ikes'){
@@ -6479,6 +6571,7 @@
     }else if(resolvedShell==='universal'){
       $('returnToEngineBtn')?.classList.remove('hidden');document.title=p.name||'Project';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='universal';document.body.classList.remove('ikes-project','mugs-project','flowers-project','bor-project');document.body.classList.add('universal-project');resetUniversalCustomerState(p);renderUniversalCustomerShell(p);
     }
+    requestAnimationFrame(()=>verifyLayerIsolation('project',p.id));
   }
 
   function normalizeProjectArchitecture(p){
@@ -6594,19 +6687,16 @@
   }
 
   function requestEngineFromProject(){
-    // Crossing toward Black Flag always locks authorization, but retain the project id
-    // only while the login gate is open so CLOSE can safely return to the same project.
+    // 5.0 hard boundary: preserve only the immutable return Project ID, then remove
+    // every project UI/auth context BEFORE the Engine gate is displayed.
+    const returnProjectId=canonicalProjectId(String(activeProjectId||''));
     lockEngineSession();
-    window.pendingEngineReturnProjectId=activeProjectId||null;
+    window.pendingEngineReturnProjectId=returnProjectId||null;
     restoreBlackFlagTheme();
+    prepareEngineBoundary();
 
     document.body.classList.remove('engine-mode');
     document.body.classList.add('boot-locked');
-    $('returnToEngineBtn')?.classList.add('hidden');
-    hideAllCustomerShells();
-    $('adminPanel')?.classList.add('hidden');
-    $('projectOrdersPanel')?.classList.add('hidden');
-    $('projectLedgerPanel')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
 
     if(typeof window.requireEngineEntry==='function') window.requireEngineEntry();
@@ -6614,27 +6704,16 @@
   }
 
   async function cancelEngineEntryToProject(){
-    const id=window.pendingEngineReturnProjectId||activeProjectId;
+    const id=canonicalProjectId(String(window.pendingEngineReturnProjectId||''));
     window.pendingEngineReturnProjectId=null;
-    const p=projectById(id);
-    if(!p)return;
-
-    activeProjectId=id;
-    document.body.classList.remove('boot-locked','engine-mode');
-    document.body.classList.add('project-mode');
-    $('enginePanel')?.classList.add('hidden');
-    $('adminPanel')?.classList.add('hidden');
-    showCustomerShellForProject(p);
-    $('returnToEngineBtn')?.classList.remove('hidden');
-
-    if(projectShellFor(p)==='ikes'){
-      applyProjectTheme(p);
-      if(typeof setScreen==='function')setScreen(state.current||'welcome');
-    }else if(projectShellFor(p)==='mugs'){
-      document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');showMugsScreen(mugsState.screen||'welcome');
-    }else if(projectShellFor(p)==='flowers'){
-      applyFlowersIdentity(p);document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project');document.body.classList.add('flowers-project');showFlowersScreen(flowersState.screen||'welcome');
+    if(!id){
+      prepareEngineBoundary();
+      document.body.classList.remove('boot-locked');
+      return;
     }
+    // Re-enter through the canonical project route instead of reconstructing a
+    // partial shell. This guarantees SIG returns to SIG, Ike returns to Ike, etc.
+    await enterProject(id);
   }
   window.cancelEngineEntryToProject=cancelEngineEntryToProject;
 
@@ -7186,8 +7265,13 @@
   }
 
   async function openEnginePanel(){
-    $('adminPanel').classList.add('hidden');
+    prepareEngineBoundary();
+    window.pendingEngineReturnProjectId=null;
+    document.body.classList.remove('boot-locked','project-mode');
+    document.body.classList.add('engine-mode');
+    $('blackFlagEntryGate')?.classList.add('hidden');
     $('enginePanel').classList.remove('hidden');
+    requestAnimationFrame(()=>verifyLayerIsolation('engine'));
     populateEngineSettings();
     await refreshEngineDiagnostics();
     await renderFleetStats();
@@ -7701,7 +7785,7 @@
   }
 
   function emailBody(order){
-    const p=projectById(order?.projectId)||activeProject();
+    const p=projectById(canonicalProjectId(String(order?.projectId||'')));
     const name=p?.branding?.businessName||p?.name||order?.business?.name||'Project';
     return `${name} Order
 
@@ -7723,8 +7807,9 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function prepareEmail(order){
-    const p=projectById(order?.projectId)||activeProject();
-    const cfg=p ? await loadProjectAdminSettings(p.id) : {};
+    const p=projectById(canonicalProjectId(String(order?.projectId||'')));
+    if(!p){ alert('This order is not sealed to a valid project. Email preparation was blocked.'); return; }
+    const cfg=await loadProjectAdminSettings(p.id);
     const recipients=String(cfg?.email||'').trim() || (p?.id===LEGACY_IKE_PROJECT_ID?LEGACY_IKE_ORDER_EMAIL:'');
     if(!recipients){ alert('No project admin email is configured.'); return; }
     const name=p?.branding?.businessName||p?.name||order?.business?.name||'Project';
@@ -7734,8 +7819,17 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function updateOrderStatus(id,status){
-    const orders=await getMergedOrders(),o=orders.find(x=>x.id===id&&(!activeProjectId||String(x.projectId||'')===String(activeProjectId)));if(!o)return;
-    o.status=status;o.updatedAt=new Date().toISOString();if(status==='Completed'&&!o.completedAt)o.completedAt=o.updatedAt;backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}
+    const projectId=canonicalProjectId(String(activeProjectId||''));
+    if(!projectId || !assertProjectBoundary(projectId,{surface:'order-status-update'}))return;
+    const orders=await getMergedOrders();
+    if(!assertProjectBoundary(projectId,{surface:'order-status-update:commit'}))return;
+    const o=orders.find(x=>x.id===id&&canonicalProjectId(String(x.projectId||''))===projectId);
+    if(!o)return;
+    o.status=status;o.updatedAt=new Date().toISOString();
+    const p=projectById(projectId);
+    const finalStage=projectWorkflowFor(p).at(-1)||'Completed';
+    if(status===finalStage&&!o.completedAt)o.completedAt=o.updatedAt;
+    backupOrderLocally(o);try{await put(STORE_ORDERS,o)}catch(_){}
     if(status==='Completed') postOrderToLedger(o);
     await renderAdmin();
     if(document.body.classList.contains('project-admin-mode')) await renderProjectAdminQuickStats();
@@ -7747,7 +7841,15 @@ The full order and approved media remain stored with this project.`;
     const list=$('orderList');
     if(!orders.length){list.innerHTML='<div class="empty">No saved orders yet.</div>';return;}
     list.innerHTML=orders.map(o=>`<article class="order-card" data-id="${escapeHtml(o.id)}"><div class="order-card-head"><div><h3>${escapeHtml(o.id)}</h3><div class="helper">${new Date(o.createdAt).toLocaleString()}</div></div><strong>$${o.price}</strong></div><div class="summary-row"><span>Sign</span><strong>${escapeHtml(o.wording)}</strong></div><div class="summary-row"><span>Customer</span><strong>${escapeHtml(o.customerName)}</strong></div><div class="summary-row"><span>Cell</span><strong>${escapeHtml(o.customerPhone)}</strong></div><div class="summary-row"><span>Email</span><strong>${escapeHtml(o.customerEmail)}</strong></div><div class="summary-row"><span>Letter finish</span><strong>${escapeHtml(o.fill)}${o.fill==='Other'&&o.customColor?` • <span class="color-dot" style="background:${escapeHtml(o.customColor)}"></span> ${escapeHtml(o.customColor.toUpperCase())}`:''}</strong></div>${o.approvedPreviewData?`<div class="admin-preview-label">APPROVED CUSTOMER PREVIEW</div><img src="${o.approvedPreviewData}" alt="Approved sign preview for ${escapeHtml(o.id)}" class="thumb approved-thumb">`:o.photoData?`<img src="${o.photoData}" alt="Wood blank for ${escapeHtml(o.id)}" class="thumb">`:''}<label>Status<select class="status-select" data-status><option ${o.status==='New'?'selected':''}>New</option><option ${o.status==='In Production'?'selected':''}>In Production</option><option ${o.status==='Ready'?'selected':''}>Ready</option><option ${o.status==='Picked Up'?'selected':''}>Picked Up</option></select></label><div class="order-status-control"><label>Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${o.status===s?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div><div class="order-actions"><span class="helper">${o.emailSentAt?'Automatic email sent':'Saved locally'}</span></div></article>`).join('');
-    list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async e=>{const card=e.target.closest('[data-id]');const orders=await getMergedOrders();const o=orders.find(x=>x.id===card.dataset.id);if(o){o.status=e.target.value;await put(STORE_ORDERS,o);}}));
+    list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async e=>{
+      const projectId=canonicalProjectId(String(activeProjectId||''));
+      if(!projectId || !assertProjectBoundary(projectId,{surface:'legacy-admin-status-update'}))return;
+      const card=e.target.closest('[data-id]');
+      const orders=await getMergedOrders();
+      if(!assertProjectBoundary(projectId,{surface:'legacy-admin-status-update:commit'}))return;
+      const o=orders.find(x=>x.id===card.dataset.id && canonicalProjectId(String(x?.projectId||''))===projectId);
+      if(o){o.status=e.target.value;o.updatedAt=new Date().toISOString();await put(STORE_ORDERS,o);}
+    }));
   }
 
 
@@ -7803,7 +7905,7 @@ The full order and approved media remain stored with this project.`;
     const d=o.completedAt||o.updatedAt||o.createdAt; return (Date.now()-new Date(d).getTime())/86400000;
   }
   function projectOrderCard(o,canUpdate=true){
-    const p=projectById(o?.projectId)||activeProject();
+    const p=projectById(canonicalProjectId(String(o?.projectId||'')));
     const preview=o.approvedPreviewData||'';
     const status=canonicalOrderStatus(o.status);
     const statusClass=adminStatusClass(status);
@@ -7822,7 +7924,7 @@ The full order and approved media remain stored with this project.`;
           <div class="summary-row"><span>${escapeHtml(activityTermsForProject(p).singular)}</span><strong>${escapeHtml(orderRequestedText(o))}</strong></div>
           <div class="project-order-meta-grid">${infoRows}</div>
           <div class="project-order-notes">${notes}</div>
-          ${canUpdate?`<div class="order-status-control ${statusClass}" data-workflow-status="${escapeHtml(statusClass)}"><label class="order-status-label" style="color:${adminStatusColor(status)}">Status</label><select data-order-status="${escapeHtml(o.id)}">${businessConfig.orderStatuses.map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
+          ${canUpdate?`<div class="order-status-control ${statusClass}" data-workflow-status="${escapeHtml(statusClass)}"><label class="order-status-label" style="color:${adminStatusColor(status)}">Status</label><select data-order-status="${escapeHtml(o.id)}">${projectWorkflowFor(p).map(s=>`<option value="${escapeHtml(s)}" ${canonicalOrderStatus(o.status)===canonicalOrderStatus(s)?'selected':''}>${escapeHtml(s)}</option>`).join('')}</select></div>`:`<span class="admin-status-pill ${statusClass}">${adminStatusLabel(status)}</span>`}
         </div>
       </div>
     </article>`;
@@ -7866,16 +7968,22 @@ The full order and approved media remain stored with this project.`;
   }
   async function renderProjectOrdersView(){
     const p=activeProject(), pm=p?.permissions||{};
-    const terms=activityTermsForProject(p);if(!pm.ordersView){$('projectActiveOrders').innerHTML=`<div class="empty">${escapeHtml(terms.plural)} access is disabled in Black Flag.</div>`;$('projectCompletedOrders').innerHTML='';return;}
-    const rows=approvedProjectOrders(await getMergedOrders(),p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
-    const recent=rows.filter(o=>o.status!=='Completed'||completedAgeDays(o)<=10);
-    const archived=rows.filter(o=>o.status==='Completed'&&completedAgeDays(o)>10);
+    if(!p || !assertProjectBoundary(p.id,{surface:'project-orders-render'}))return;
+    const projectId=p.id, terms=activityTermsForProject(p);
+    if(!pm.ordersView){$('projectActiveOrders').innerHTML=`<div class="empty">${escapeHtml(terms.plural)} access is disabled in Black Flag.</div>`;$('projectCompletedOrders').innerHTML='';return;}
+    const merged=await getMergedOrders();
+    if(!assertProjectBoundary(projectId,{surface:'project-orders-render:commit'}))return;
+    const rows=approvedProjectOrders(merged,p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    const finalStage=projectWorkflowFor(p).at(-1)||'Completed';
+    const recent=rows.filter(o=>String(o.status||'')!==finalStage||completedAgeDays(o)<=10);
+    const archived=rows.filter(o=>String(o.status||'')===finalStage&&completedAgeDays(o)>10);
     $('projectActiveOrders').innerHTML=recent.map(o=>projectOrderCard(o,!!pm.ordersUpdate)).join('')||`<div class="empty">No current ${escapeHtml(terms.lowerPlural)}.</div>`;
     $('projectCompletedOrders').innerHTML=archived.map(o=>projectOrderCard(o,false)).join('')||`<div class="empty">No archived completed ${escapeHtml(terms.lowerPlural)}.</div>`;
     document.querySelectorAll('#projectActiveOrders [data-order-status], #projectCompletedOrders [data-order-status]').forEach(s=>s.addEventListener('change',e=>updateOrderStatus(s.dataset.orderStatus,e.target.value)));
   }
   async function renderProjectLedgerView(){
     const p=activeProject(),pm=p?.permissions||{};
+    if(!p || !assertProjectBoundary(p.id,{surface:'project-ledger-render'}))return;
     if(!pm.ledgerView){$('projectLedgerView').innerHTML='<div class="empty">Ledger access is disabled in Black Flag.</div>';return;}
     const rows=projectLedger(p.id).slice().reverse();
     $('projectLedgerView').innerHTML=rows.map(x=>{
@@ -8027,6 +8135,11 @@ The full order and approved media remain stored with this project.`;
 
   function returnToCustomerAndLockProtected(){
     stopProjectAdminIdleTimer();
+    const p=activeProject();
+    if(!p || !assertProjectBoundary(p.id,{surface:'project-admin-return'})){
+      clearProjectPresentation();
+      return;
+    }
     $('adminPanel')?.classList.add('hidden');
     $('projectOrdersPanel')?.classList.add('hidden');
     $('projectLedgerPanel')?.classList.add('hidden');
@@ -8035,18 +8148,21 @@ The full order and approved media remain stored with this project.`;
     hideAllCustomerShells();
     document.body.classList.remove('modal-open','project-admin-mode','project-orders-mode','project-ledger-mode');
     document.body.classList.add('project-mode');
-    const p=activeProject();
-    if(p) showCustomerShellForProject(p);
+    showCustomerShellForProject(p);
     if($('adminPinInput')) $('adminPinInput').value='';
     if($('pinGateError')) $('pinGateError').textContent='';
     window.__pendingProtectedPage=null;
+    document.body.removeAttribute('data-pin-gate-project-id');
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
   async function openProtectedProjectPage(kind){
     const p=activeProject(), pm=p?.permissions||{};
+    if(!p || !assertProjectBoundary(p.id,{surface:`project-admin-launch:${kind}`}))return;
     if(kind==='orders' && !pm.ordersView) return;
     if(kind==='ledger' && !pm.ledgerView) return;
+    await configureProjectAdminGate();
+    document.body.dataset.pinGateProjectId=p.id;
     window.__pendingProtectedPage=kind;
     $('adminPinInput').value='';
     $('pinGateError').textContent='';
@@ -8090,7 +8206,10 @@ The full order and approved media remain stored with this project.`;
     const box=$('projectAdminQuickStats');
     if(!p||!box)return;
 
-    const orders=approvedProjectOrders(await getMergedOrders(),p);
+    const projectId=p.id;
+    const merged=await getMergedOrders();
+    if(!assertProjectBoundary(projectId,{surface:'project-admin-stats:commit'}))return;
+    const orders=approvedProjectOrders(merged,p);
     const workflow=projectWorkflowFor(p);
     const doneLabels=new Set(['Completed','Closed','Archived']);
     const completed=orders.filter(o=>doneLabels.has(String(o.status||''))).length;
@@ -8164,12 +8283,10 @@ The full order and approved media remain stored with this project.`;
   }
 
   function adminFilterTitle(){
-    if(adminOrderFilter==='all') return 'All Orders';
-    if(adminOrderFilter==='New') return 'New Orders';
-    if(adminOrderFilter==='In Production') return 'In Production';
-    if(adminOrderFilter==='Ready for Pickup') return 'Ready';
-    if(adminOrderFilter==='Completed') return 'Completed';
-    return 'Orders';
+    const p=activeProject();
+    const terms=p?activityTermsForProject(p):{plural:'Orders'};
+    if(adminOrderFilter==='all') return `All ${terms.plural}`;
+    return String(adminOrderFilter||terms.plural);
   }
 
   function syncAdminFilterActiveState(){
@@ -8188,15 +8305,14 @@ The full order and approved media remain stored with this project.`;
   }
 
   function renderAdminOrderFilterChips(counts){
-    const box=$('adminOrderFilterChips');
-    if(!box)return;
-    box.innerHTML=`
-      <button class="filter-chip chip-all" data-order-filter="all">All Orders (${counts.all})</button>
-      <button class="filter-chip chip-new" data-order-filter="New">New Orders (${counts.New})</button>
-      <button class="filter-chip chip-production" data-order-filter="In Production">In Production (${counts['In Production']})</button>
-      <button class="filter-chip chip-ready" data-order-filter="Ready for Pickup">Ready (${counts['Ready for Pickup']})</button>
-      <button class="filter-chip chip-completed" data-order-filter="Completed">Completed (${counts.Completed})</button>
-    `;
+    const box=$('adminOrderFilterChips'), p=activeProject();
+    if(!box||!p)return;
+    const workflow=projectWorkflowFor(p);
+    const terms=activityTermsForProject(p);
+    box.innerHTML=[
+      `<button class="filter-chip chip-all" data-order-filter="all">All ${escapeHtml(terms.plural)} (${Number(counts.all||0)})</button>`,
+      ...workflow.map((stage,index)=>`<button class="filter-chip ${index===0?'chip-new':index===workflow.length-1?'chip-completed':'chip-production'}" data-order-filter="${escapeHtml(stage)}">${escapeHtml(stage)} (${Number(counts[stage]||0)})</button>`)
+    ].join('');
     [...box.querySelectorAll('[data-order-filter]')].forEach(btn=>btn.addEventListener('click',()=>setAdminOrderFilter(btn.dataset.orderFilter)));
     syncAdminFilterActiveState();
   }
@@ -8336,7 +8452,7 @@ The full order and approved media remain stored with this project.`;
 
   async function configureProjectAdminGate(){
     const p=activeProject();
-    if(!p)return;
+    if(!p || !assertProjectBoundary(p.id,{surface:'project-admin-gate'}))return;
     normalizeProjectCode(p);
     const code=String(p.projectCode||p.orderPrefix||'PRJ').toUpperCase();
     const name=p?.branding?.businessName||p.name||'Project';
@@ -8421,24 +8537,22 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function renderAdminOrderOverview(){
-    const p=activeProject(); if(!p||!$('adminOrderOverviewList'))return;
-    const all=approvedProjectOrders(await getMergedOrders(),p)
-      .sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
-    const counts={
-      all:all.length,
-      New:all.filter(o=>canonicalOrderStatus(o.status)==='New').length,
-      'In Production':all.filter(o=>canonicalOrderStatus(o.status)==='In Production').length,
-      'Ready for Pickup':all.filter(o=>canonicalOrderStatus(o.status)==='Ready for Pickup').length,
-      Completed:all.filter(o=>canonicalOrderStatus(o.status)==='Completed').length
-    };
+    const p=activeProject(), box=$('adminOrderOverviewList');
+    if(!p||!box||!assertProjectBoundary(p.id,{surface:'project-admin-orders'}))return;
+    const projectId=p.id;
+    const merged=await getMergedOrders();
+    if(!assertProjectBoundary(projectId,{surface:'project-admin-orders:commit'}))return;
+    const all=approvedProjectOrders(merged,p).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+    const workflow=projectWorkflowFor(p);
+    const counts={all:all.length};
+    workflow.forEach(stage=>counts[stage]=all.filter(o=>String(o.status||'')===String(stage)).length);
     const rows=all.filter(orderMatchesAdminFilter);
     if($('adminOrdersHeading')) $('adminOrdersHeading').textContent=adminFilterTitle();
     renderAdminOrderFilterChips(counts);
-    $('adminOrderOverviewList').innerHTML=
-      rows.map(o=>projectOrderCard(o,true)).join('') || `<div class="empty">No ${adminFilterTitle().toLowerCase()}.</div>`;
-    $('adminOrderOverviewList').querySelectorAll('[data-order-status]').forEach(s=>{
-      s.addEventListener('change',async e=>{
-        await updateOrderStatus(s.dataset.orderStatus,e.target.value);
+    box.innerHTML=rows.map(o=>projectOrderCard(o,true)).join('') || `<div class="empty">No ${escapeHtml(adminFilterTitle().toLowerCase())}.</div>`;
+    box.querySelectorAll('[data-order-status]').forEach(control=>{
+      control.addEventListener('change',async e=>{
+        await updateOrderStatus(control.dataset.orderStatus,e.target.value);
         await renderProjectAdminQuickStats();
         await renderAdminOrderOverview();
       });
@@ -8446,6 +8560,8 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function showProtectedProjectPage(kind){
+    const p=activeProject();
+    if(!p || !assertProjectBoundary(p.id,{surface:`project-admin:${kind}`})) throw new Error('Project Admin boundary lost before protected page render.');
     hideAllCustomerShells();
     document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project','bor-project');
     $('enginePanel')?.classList.add('hidden');
@@ -8475,6 +8591,7 @@ The full order and approved media remain stored with this project.`;
       await renderProjectLedgerView();
     }
     window.__pendingProtectedPage=null;
+    requestAnimationFrame(()=>verifyLayerIsolation('project',p.id));
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
@@ -10240,6 +10357,7 @@ The full order and approved media remain stored with this project.`;
       // Project Admin authentication is fleet-scoped and remains independent of
       // Captain/Test Access. Every project shell uses the same gate contract.
       await configureProjectAdminGate();
+      document.body.dataset.pinGateProjectId=p.id;
       document.body.classList.add('modal-open');
       if($('adminPinInput')) $('adminPinInput').value='';
       if($('pinGateError')) $('pinGateError').textContent='';
@@ -10280,7 +10398,11 @@ The full order and approved media remain stored with this project.`;
       const button=$('unlockAdminBtn');
       const error=$('pinGateError');
       if(!input||!button)return;
-      const projectId=activeProjectId;
+      const projectId=canonicalProjectId(String(document.body.dataset.pinGateProjectId||activeProjectId||''));
+      if(!projectId || !assertProjectBoundary(projectId,{surface:'project-admin-unlock'})){
+        if(error) error.textContent='Project context changed. Return to the project and reopen Admin.';
+        return;
+      }
       const result=await verifyProjectAdminPin(input.value,projectId);
       if(!result.ok){
         if(error) error.textContent=result.code==='locked'?'Project Admin access is temporarily locked.':'Incorrect PIN.';
@@ -10292,6 +10414,7 @@ The full order and approved media remain stored with this project.`;
       input.value='';
       $('pinGate')?.classList.add('hidden');
       document.body.classList.remove('modal-open');
+      document.body.removeAttribute('data-pin-gate-project-id');
       const target=window.__pendingProtectedPage||'settings';
       try{
         await showProtectedProjectPage(target);
@@ -10608,8 +10731,6 @@ The full order and approved media remain stored with this project.`;
     if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').addEventListener('change',saveFeatureSettings);
     
     if($('saveBusinessSettingsBtn')) $('saveBusinessSettingsBtn').addEventListener('click',saveBusinessConfigFromAdmin);
-    if($('exportBtn')) $('exportBtn').addEventListener('click',exportBackup);
-    if($('restoreInput')) $('restoreInput').addEventListener('change',async e=>{try{if(e.target.files?.[0])await restoreBackup(e.target.files[0]);}catch(err){alert('That backup file could not be restored.');}});
   }
 
   async function init(){
@@ -10735,13 +10856,11 @@ document.addEventListener('click', (event) => {
     leaveEntry();
     if(typeof restoreBlackFlagTheme==='function') restoreBlackFlagTheme();
     window.pendingEngineReturnProjectId=null;
-    activeProjectId=null;
+    if(typeof prepareEngineBoundary==='function') prepareEngineBoundary();
+    else{ activeProjectId=null; hideAllCustomerShells(); hideAllProjectProtectedSurfaces?.(); }
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
 
-    const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
-    const mugs=byId('mugsCustomerShell'); if(mugs) mugs.classList.add('hidden'); const flowers=byId('flowersCustomerShell'); if(flowers) flowers.classList.add('hidden');
-    const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
     const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
 
     // Render through the normal engine routines when available.
@@ -10753,24 +10872,21 @@ document.addEventListener('click', (event) => {
   }
 
   function openCompanyApp(){
-    lockEngineSession();
+    // 5.0: no implicit 'company' is allowed. The old shortcut defaulted to Ike and
+    // could cross a fleet boundary after leaving another project. Selection belongs
+    // in the Engine fleet rail where an immutable Project ID is explicit.
     leaveEntry();
-    document.body.classList.remove('engine-mode');
-    const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
-    const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
-    const customer=byId('customerApp'); if(customer) customer.classList.remove('hidden');
-    if(typeof setScreen==='function') setScreen('welcome');
+    if(typeof prepareEngineBoundary==='function')prepareEngineBoundary();
+    document.body.classList.remove('boot-locked','project-mode');
+    document.body.classList.add('engine-mode');
+    const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
+    Promise.resolve(window.renderBlackFlagHome?.()).catch(()=>{});
   }
 
   function openCompanyAdminGate(){
-    lockEngineSession();
-    leaveEntry();
-    document.body.classList.remove('engine-mode');
-    const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
-    const customer=byId('customerApp'); if(customer) customer.classList.remove('hidden');
-    // Re-use the existing 4353 admin PIN gate.
-    const adminBtn=byId('adminBtn');
-    if(adminBtn) adminBtn.click();
+    // Retired unsafe legacy behavior: never click Ike's #adminBtn as a generic
+    // project-admin destination. Project Admin must originate inside that project.
+    openCompanyApp();
   }
 
   function lockAndReturnToEntry(){
@@ -10778,8 +10894,7 @@ document.addEventListener('click', (event) => {
     document.body.classList.remove('engine-mode','project-mode');
     document.body.classList.add('boot-locked');
     const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
-    const customer=byId('customerApp'); if(customer) customer.classList.add('hidden');
-    const admin=byId('adminPanel'); if(admin) admin.classList.add('hidden');
+    if(typeof clearProjectPresentation==='function')clearProjectPresentation();
     requireEngineEntry();
   }
 
@@ -10802,12 +10917,13 @@ document.addEventListener('click', (event) => {
         await window.cancelEngineEntryToProject();
         return;
       }
-      document.body.classList.remove('boot-locked','engine-mode');
-      document.body.classList.add('project-mode');
+      // Fail closed if the canonical return route is unavailable. Never expose the
+      // legacy Ike customer shell as a generic fallback because that crosses fleet boundaries.
+      if(typeof prepareEngineBoundary==='function')prepareEngineBoundary();
+      document.body.classList.remove('engine-mode','project-mode');
+      document.body.classList.add('boot-locked');
       const engine=byId('enginePanel');if(engine)engine.classList.add('hidden');
-      const customer=byId('customerApp');if(customer)customer.classList.remove('hidden');
-      const ret=byId('returnToEngineBtn');if(ret)ret.classList.remove('hidden');
-      if(typeof setScreen==='function')setScreen('welcome');
+      requireEngineEntry();
     });
     if(pin) pin.addEventListener('keydown',e=>{if(e.key==='Enter') unlockFromEntry();});
     if(company) company.addEventListener('click',openCompanyApp);

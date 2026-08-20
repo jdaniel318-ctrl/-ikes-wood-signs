@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-9-7-fleet-admin-auth-spine';
+const CACHE='dark-sky-v5-0-1-isolation-hardening';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.9.7',
-  './platform_core.js?v=4.9.7',
-  './platform_v4.js?v=4.9.7',
-  './platform_identity.js?v=4.9.7',
-  './app.js?v=4.9.7',
-  './captain.js?v=4.9.7',
+  './styles.css?v=5.0.1',
+  './platform_core.js?v=5.0.1',
+  './platform_v4.js?v=5.0.1',
+  './platform_identity.js?v=5.0.1',
+  './app.js?v=5.0.1',
+  './captain.js?v=5.0.1',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

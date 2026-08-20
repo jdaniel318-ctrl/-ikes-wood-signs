@@ -1,3 +1,26 @@
+# Dark Sky 5.0.1 — Additional Regression Checks
+
+- Engine-gate cancel must never reveal any project shell without an immutable Project ID.
+- Captain/Test Access may alter Engine access only; Project Admin continues to say `UNLOCK ADMIN` and requires Project Admin authentication.
+- Order render/email helpers must not borrow branding or settings from the currently active project when an order Project ID is invalid.
+- Any project-admin status write must match both active Project ID and order Project ID.
+- Full-fleet backup/export remains Engine-level only.
+
+# Dark Sky 5.0.0 — Boundary Regression Checklist
+
+Required Sea Trial paths:
+- SIG Experience → Admin → 4353 → SIG Manager Workspace → Black Flag return → Engine gate: **no SIG Admin/PIN surface remains visible**.
+- After Engine unlock from SIG: **no Ike customer/admin surface appears** and active project session is null.
+- Ike Experience → Admin → return to Engine follows the same boundary route.
+- Mugs, Becca's, Grizzly/universal future projects use the same project settings launcher and verifier.
+- Close/cancel at the Engine gate returns to the exact project that initiated the Engine transition, never a default project.
+- Project Admin unlock is blocked if gate Project ID and active Project ID differ.
+- Engine Project Control can select one project without creating a customer/admin project session.
+- Orders shown/updated in Project Admin match only the active Project ID.
+- Project Manager status controls are generated from that project's workflow.
+- `4353` remains the project-fleet default/recovery Project Admin PIN.
+- Captain/Test Access does not replace Project Admin authentication or project identity.
+
 # 4.9.7 Fleet Project Admin Authentication Regression
 
 Required invariants:

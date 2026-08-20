@@ -1,3 +1,27 @@
+# Dark Sky 5.0.1 — Isolation Hardening
+
+Second-pass audit of the 5.0 fleet boundary release.
+
+- Removed the last unsafe Engine-entry cancel fallback that could expose Ike's customer shell without an explicit Project ID.
+- Project Admin UI no longer changes to a Captain/Test Access message; project-admin authentication stays visibly independent.
+- Reference-vessel rendering no longer substitutes the first fleet project if Ike's reference vessel is unavailable.
+- Bumped runtime and service-worker cache references to 5.0.1.
+
+# Dark Sky 5.0.0 — Fleet Boundary Spine
+
+- Reworked cross-layer navigation so Project Experience, Project Admin, Engine, Engine Project Control, and Captain layers cannot remain visually active at the same time.
+- Fixed the failure that allowed a Signal Restoration Project Admin gate to remain on screen while returning toward the Engine.
+- Fixed Engine entry cleanup so the universal/Signal customer shell is hidden just like Ike, Mugs, and Flowers.
+- Engine entry now clears active project identity before Engine rendering. The only project identity preserved during a cancelled Engine entry is an immutable return Project ID.
+- Cancelling Engine entry re-enters that exact project through the canonical `enterProject()` route rather than rebuilding a partial shell.
+- Retired the unsafe legacy generic Company/Admin shortcut that could click Ike's admin button without an explicit Project ID.
+- Project Admin PIN gates now carry the Project ID that launched them and fail closed if the active project changes before unlock.
+- Added boundary guards to protected Admin, Orders, Ledger, status-update, and async admin-render paths.
+- Converted Project Manager status controls and filters to the project's own workflow contract instead of global/Ike defaults.
+- Added runtime isolation snapshot/verification diagnostics for Sea Trial and regression work.
+- Removed unused legacy BOR logo artwork while retaining the historical internal Signal Project ID for continuity.
+- Bumped all runtime/cache references to 5.0.0.
+
 # Dark Sky 4.9.7 — Fleet Project Admin Authentication Spine
 
 - Fixed the actual failure mode behind the Project Admin PIN screen: the gear/settings route was bound early, but the **UNLOCK ADMIN** handler was still bound late inside the full application event setup. If initialization stalled before that point, the gate appeared correctly while the button was effectively dead.

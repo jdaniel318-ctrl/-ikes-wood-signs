@@ -1,3 +1,21 @@
+# Dark Sky Architecture — 5.0 Fleet Boundary Contract
+
+## Non-negotiable fleet isolation law
+A Project ID defines a sealed operating namespace. Project display name, customer shell, admin theme, test state, or Captain route may never substitute for Project ID authority. No project transition may leave another project's customer, PIN, admin, order, ledger, owner, or project-control surface active.
+
+## Layer contract
+1. **Project Experience** — exactly one active Project ID; only that project's customer shell may be visible.
+2. **Project Admin / Manager Workspace** — requires the same active Project ID that launched the gate. PIN authentication cannot change project context.
+3. **Black Flag Engine** — has no active customer/admin Project ID. Project Control may select an `engineActiveProjectId`, which is an Engine target, not a project session.
+4. **Captain authority** — may inspect fleet-wide state but does not become project identity and cannot override project isolation.
+5. **Return navigation** — a project-to-Engine transition may preserve one immutable return Project ID only for cancel/back behavior; it must clear the active project before Engine UI is rendered.
+
+## 5.0 boundary spine
+`clearProjectPresentation()` hides all customer and protected project surfaces. `clearActiveProjectContext()` removes the active project identity. `prepareEngineBoundary()` applies both before Engine rendering. `activateProjectContext(project)` is the canonical project-session entry point. Protected surfaces call `assertProjectBoundary()` before render or mutation.
+
+## Workflow isolation
+Project Manager status controls use `projectWorkflowFor(project)`. Global/Ike order statuses are not permitted to define another project's operational workflow. Async project operations capture the Project ID before storage reads and re-check the same boundary before committing.
+
 # Dark Sky Architecture — v4.4.3
 
 ## Fleet identity law

@@ -1,3 +1,36 @@
+# Dark Sky 5.0.1 — Second-Pass Isolation Audit
+
+A second code pass found and removed four residual cross-fleet risks after 5.0.0:
+
+- Engine-gate cancel no longer has a legacy fallback that exposes `customerApp` (Ike) when the canonical return route is unavailable; it now fails closed back to the Engine gate.
+- Project Admin button copy no longer inherits Captain/Test Access state, eliminating a misleading visual coupling between Captain authority and project authentication.
+- Order email/card helpers no longer fall back to `activeProject()` when an order has an invalid/missing Project ID.
+- Legacy admin status mutation now requires both the active Project ID and the order Project ID to match before write-back.
+- Dead project-level hooks to the full-fleet backup/restore functions were removed; fleet backup remains an Engine function.
+- Reference-vessel display no longer substitutes the first project in the fleet if Ike is absent.
+
+Static checks: JavaScript syntax PASS; duplicate DOM IDs NONE; missing local runtime references NONE; missing referenced assets NONE.
+
+# Dark Sky 5.0.0 — Fleet Isolation Audit
+
+## Failure reproduced from 4.9.7 architecture
+The project-to-Engine route hid customer/admin panels but did not consistently hide `pinGate`, the Signal/universal customer shell, or all protected project surfaces. The Engine portal also contained legacy generic Company/Admin code that could implicitly route through Ike's `#adminBtn`. Together these paths could visually retain SIG admin state and later expose Ike as an unintended fallback.
+
+## 5.0 corrections
+- All project surfaces are cleared through one boundary helper before Engine entry/render.
+- `universalCustomerShell` is included in Engine cleanup.
+- `pinGate`, Admin, Orders, Ledger, preview, owner claim, and owner portal are included in project protected-surface cleanup.
+- Active Project ID is cleared before Engine rendering.
+- Engine Project Control uses `engineActiveProjectId` only and clears customer/admin project context first.
+- Cancel from the Engine gate returns only to the immutable Project ID saved before crossing the boundary.
+- Generic Company/Admin fallback to Ike has been retired.
+- Project Admin gate/unlock is stamped and verified against the same immutable Project ID.
+- Order writes and admin async renders re-check Project ID after awaits.
+- Project Manager workflows are project-local.
+
+## Runtime test hook
+`window.darkSkyIsolationSnapshot()` reports visible major surfaces and active IDs. `window.darkSkyVerifyIsolation(layer, projectId)` records an integrity audit event if an Engine/project boundary is violated.
+
 # Dark Sky 4.8.2 — Isolation Audit
 
 Pre-release isolation audit for BOR North Richmond.

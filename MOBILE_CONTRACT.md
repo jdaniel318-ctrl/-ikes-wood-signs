@@ -13,5 +13,5 @@ All current and future customer-facing vessels must remain viable on iPhone, iPa
 - Customer temporary state must reset reliably between sessions/requests.
 
 ## Certification status
-- BOR North Richmond: active mobile reference implementation.
+- Signal Restoration: active restoration/mobile reference implementation (legacy internal Project ID retained only for continuity).
 - Existing fleet: preserved; certify individually rather than applying global project restyles.
