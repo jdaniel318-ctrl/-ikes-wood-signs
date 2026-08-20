@@ -79,3 +79,7 @@ Captain commissioning metadata is stored separately from the canonical project r
 
 ## 4.9.0 Responsive Customer Contract
 Dark Sky customer projects are required to support phone, tablet, and desktop use. BOR North Richmond is the first project certified against the full contract. The contract provides safe-area handling, touch-first controls, no accidental horizontal overflow, readable phone typography, mobile camera/photo support, and customer-flow navigation that does not depend on hover. Existing projects are not automatically restyled by BOR; they must be upgraded and regression-tested individually before certification.
+
+
+## 4.9.1 Customer Trust + Deployment Boundary
+BOR remains a project package, not a platform skin. Its restoration workflow, visual identity, phone number, and customer copy stay local to `bor-north-richmond`. Shared mobile fixes are limited to generic gesture/viewport behavior. Test-mode contact actions are inert; live deployment state controls whether real-world contact links are exposed. This keeps future standalone-domain deployment possible without coupling a customer site to Black Flag navigation.

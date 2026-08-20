@@ -14,9 +14,9 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.9.0';
+  const BUILD_VERSION = '4.9.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
-  const FLEET_REGISTRY_SCHEMA_VERSION = 6;
+  const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
@@ -120,15 +120,17 @@
 ,
     {
       id:'bor-north-richmond',
-      projectCode:'BOR',
-      name:'Best Option Restoration — North Richmond',
-      description:'24/7 local restoration response for water, fire, storm, mold, and property damage.',
-      tagline:'Fast local help when property damage happens.',
+      projectCode:'SIG',
+      name:'Signal Restoration',
+      description:'24/7 restoration response for water, fire, storm, mold, and property damage.',
+      tagline:'Fast help when property damage happens.',
       type:'emergency_restoration',
       businessType:'restoration_services',
       shellType:'bor-response',
-      branding:{businessName:'Best Option Restoration — North Richmond',adminLabel:'BEST OPTION RESTORATION',primary:'#0b5ca8',accent:'#f59a23',subtitle:'24/7 Emergency Restoration'},
-      visibility:'engine_only',projectTheme:'bor-response',status:'development',orderPrefix:'BOR',
+      branding:{businessName:'Signal Restoration',adminLabel:'SIGNAL RESTORATION',primary:'#075ea8',accent:'#f58b22',subtitle:'24/7 Property Restoration'},
+      contact:{email:'jdaniel318@gmail.com',phone:'804-317-3230',phoneE164:'+18043173230',address:'19600 Genito Rd'},
+      marketArchitecture:{model:'multi_market',companyBrand:'Signal Restoration',primaryMarketId:'richmond-va',allowAdditionalMarkets:true,markets:[{id:'richmond-va',name:'Richmond',status:'active',serviceArea:'Greater Richmond',baseAddress:'19600 Genito Rd',phone:'804-317-3230',phoneE164:'+18043173230',email:'jdaniel318@gmail.com'}]},
+      visibility:'engine_only',projectTheme:'bor-response',status:'development',orderPrefix:'SIG',
       ai:{mode:'off',minConfidence:0.90,requireScaleReference:false},
       customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:false},
       workflow:['New Loss','Contacted','Dispatched','On Site','Mitigation','Monitoring','Reconstruction','Closed'],
@@ -1522,6 +1524,30 @@
     return added;
   }
 
+
+  const SIGNAL_BRAND_SCHEMA_KEY='signalRestorationBrandSchema';
+  const SIGNAL_BRAND_SCHEMA_VERSION=1;
+  async function ensureSignalRestorationBranding(){
+    let applied=0;
+    try{applied=Number((await getSetting(SIGNAL_BRAND_SCHEMA_KEY))?.value||0);}catch(_){applied=0;}
+    if(applied>=SIGNAL_BRAND_SCHEMA_VERSION)return false;
+    const existing=await readCanonicalProject('bor-north-richmond');
+    if(!existing)return false;
+    const next=structuredClone(existing);
+    next.projectCode='SIG';
+    next.name='Signal Restoration';
+    next.description='24/7 restoration response for water, fire, storm, mold, and property damage.';
+    next.tagline='Fast help when property damage happens.';
+    next.orderPrefix='SIG';
+    next.branding={...(next.branding||{}),businessName:'Signal Restoration',adminLabel:'SIGNAL RESTORATION',primary:'#075ea8',accent:'#f58b22',subtitle:'24/7 Property Restoration'};
+    next.contact={email:'jdaniel318@gmail.com',phone:'804-317-3230',phoneE164:'+18043173230',address:'19600 Genito Rd'};
+    next.marketArchitecture={model:'multi_market',companyBrand:'Signal Restoration',primaryMarketId:'richmond-va',allowAdditionalMarkets:true,markets:[{id:'richmond-va',name:'Richmond',status:'active',serviceArea:'Greater Richmond',baseAddress:'19600 Genito Rd',phone:'804-317-3230',phoneE164:'+18043173230',email:'jdaniel318@gmail.com'}]};
+    await persistProjectMutation(next,{reason:'signal-restoration.brand-market-migration'});
+    await setSetting(SIGNAL_BRAND_SCHEMA_KEY,SIGNAL_BRAND_SCHEMA_VERSION);
+    window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:next.id,category:'migration',action:'signal_restoration.brand_market_migration.complete',detail:`Signal Restoration brand + Richmond market profile • ${BUILD_VERSION}`});
+    return true;
+  }
+
   async function persistProjectMutation(project,{reason='project.mutation'}={}){
     if(!project?.id)throw new Error('Project mutation requires an immutable Project ID.');
     const id=canonicalProjectId(String(project.id));
@@ -1814,7 +1840,7 @@
 
   function normalizeProjectCode(p){
     if(!p)return p;
-    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzly-bear':'GRZ','bor-north-richmond':'BOR' };
+    const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzly-bear':'GRZ','bor-north-richmond':'SIG' };
     const fallback=String(p.orderPrefix||p.name||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ';
     p.projectCode=String(p.projectCode||seeded[p.id]||fallback).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
     if(!p.orderPrefix)p.orderPrefix=p.projectCode;
@@ -2021,7 +2047,7 @@
     // citizenship only after the exact immutable Project ID exists in the canonical store.
     for(const id of RELEASE_NEW_PROJECT_IDS){
       if(!canonicalById.has(id))continue;
-      if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.9.0`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
+      if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.9.2`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
     }
     // Drop malformed admission rows. Valid rows for projects no longer present are
     // retained as historical evidence, but they cannot enter the active manifest.
@@ -2890,7 +2916,7 @@
 
   function closeExperienceTestDeck(){document.getElementById('experienceTestDeck')?.classList.add('hidden');document.body.classList.remove('experience-test-deck-open');}
 
-  function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';banner.innerHTML=`<span><b>${escapeHtml(label)}</b><small>${escapeHtml(p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':'RETURN TO TEST DECK'}</button>`;banner.classList.remove('hidden');}
+  function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';const isBor=p?.id===BOR_PROJECT_ID;banner.classList.toggle('bor-test-banner',isBor&&mode!=='live');banner.innerHTML=`<span><b>${escapeHtml(isBor&&mode!=='live'?'DARK SKY • TEST':label)}</b><small>${escapeHtml(isBor&&mode!=='live'?'Private project preview':p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':isBor?'← TEST DECK':'RETURN TO TEST DECK'}</button>`;banner.classList.remove('hidden');}
 
   async function enterExperienceMode(p,mode){
     if(!p)return;
@@ -6071,6 +6097,11 @@
       if(!button||!shell.contains(button))return;
       const currentP=shell._borProject;
       if(!currentP||currentP.id!==BOR_PROJECT_ID)return;
+      if(button.hasAttribute('data-bor-test-call')){
+        e.preventDefault();
+        alert('Calling is disabled in Private Preview and Test Experience. Call buttons become active only on a LIVE deployment.');
+        return;
+      }
       if(button.id==='borNewRequest'||button.dataset.borAction==='restart'){
         e.preventDefault();
         resetBorCustomerState();
@@ -6138,18 +6169,31 @@
       }
     });
   }
+  function borCallIsLive(ctx){return ctx?.state==='deployed';}
+  function borCallControl(ctx,{kind='header',label='CALL 24/7'}={}){
+    const live=borCallIsLive(ctx);
+    const cls=kind==='mobile'?'bor-mobile-call':kind==='hero'?'bor-emergency-call':kind==='confirm'?'bor-call primary':'bor-call';
+    if(live){
+      if(kind==='mobile')return `<a class="${cls}" href="tel:18043173230" aria-label="Call Signal Restoration now"><span>24/7 EMERGENCY</span><strong>CALL NOW</strong></a>`;
+      if(kind==='hero')return `<a href="tel:18043173230" class="${cls}"><small>NEED HELP NOW?</small><strong>(804) 317-3230</strong></a>`;
+      return `<a class="${cls}" href="tel:18043173230">${escapeHtml(label)}</a>`;
+    }
+    if(kind==='mobile')return `<button type="button" class="${cls} bor-call-disabled" data-bor-test-call aria-label="Calling disabled in private testing"><span>24/7 EMERGENCY</span><strong>CALL PREVIEW</strong></button>`;
+    if(kind==='hero')return `<button type="button" class="${cls} bor-call-disabled" data-bor-test-call><small>24/7 CALLING</small><strong>DISABLED IN TEST</strong></button>`;
+    return `<button type="button" class="${cls} bor-call-disabled" data-bor-test-call>${escapeHtml(label)}</button>`;
+  }
   function renderBorCustomerShell(p){
     if(!assertBorProjectContext(p))return;
     const shell=$('universalCustomerShell'); if(!shell||!p)return;
     ensureBorCustomerDelegation(shell,p);
     const ctx=universalCustomerContextFor(p);
     const testLabel=ctx.state==='sea_trial'?'TEST EXPERIENCE':ctx.state==='preview'?'PRIVATE PREVIEW':'NORTH RICHMOND';
-    const mobileCall=`<a class="bor-mobile-call" href="tel:18044026019" aria-label="Call Best Option Restoration North Richmond now"><span>24/7 EMERGENCY</span><strong>CALL NOW</strong></a>`;
+    const mobileCall=borCallControl(ctx,{kind:'mobile'});
     if(borCustomerState.receipt){
       const r=borCustomerState.receipt;
       shell.innerHTML=`<div class="bor-shell bor-receipt-shell">
-        <header class="bor-header"><div class="bor-brand"><img src="assets/best_option_restoration_logo.jpg" alt="Best Option Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Best Option Restoration</h1><p>North Richmond</p></div></div><div class="bor-header-actions"><a class="bor-call" href="tel:18044026019">CALL 24/7</a><button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
-        <main class="bor-main bor-confirm-main"><section class="bor-confirm"><div class="bor-confirm-icon">✓</div><small>REQUEST RECEIVED</small><h2>We’ve got it.</h2><p>Your North Richmond team has the information you provided and can follow up with you.</p><div class="bor-next-step"><b>What happens next?</b><span>A local team member can review your request and contact you. If you need immediate help, call now.</span></div><div class="bor-confirm-ref"><span>REFERENCE</span><strong>${escapeHtml(r.id)}</strong></div><div class="bor-confirm-grid"><div><span>HELP NEEDED</span><strong>${escapeHtml(r.lossType)}</strong></div><div><span>PROPERTY</span><strong>${escapeHtml(r.address||'Address not entered')}</strong></div></div><div class="bor-confirm-actions"><a class="bor-call primary" href="tel:18044026019">CALL THE TEAM NOW</a><button type="button" id="borNewRequest" data-bor-action="restart" class="bor-secondary">START ANOTHER REQUEST</button></div></section></main>
+        <header class="bor-header"><div class="bor-brand"><img src="assets/signal_restoration_logo.png" alt="Signal Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Signal Restoration</h1><p>Serving Greater Richmond</p></div></div><div class="bor-header-actions">${borCallControl(ctx,{kind:'header'})}<button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
+        <main class="bor-main bor-confirm-main"><section class="bor-confirm"><div class="bor-confirm-icon">✓</div><small>REQUEST RECEIVED</small><h2>We’ve got it.</h2><p>Our restoration team has the information you provided and can follow up with you.</p><div class="bor-next-step"><b>What happens next?</b><span>${borCallIsLive(ctx)?'A local team member can review your request and contact you. If you need immediate help, call now.':'This is a private test. No real request or phone call is being placed.'}</span></div><div class="bor-confirm-ref"><span>REFERENCE</span><strong>${escapeHtml(r.id)}</strong></div><div class="bor-confirm-grid"><div><span>HELP NEEDED</span><strong>${escapeHtml(r.lossType)}</strong></div><div><span>PROPERTY</span><strong>${escapeHtml(r.address||'Address not entered')}</strong></div></div><div class="bor-confirm-actions">${borCallControl(ctx,{kind:'confirm',label:'CALL THE TEAM NOW'})}<button type="button" id="borNewRequest" data-bor-action="restart" class="bor-secondary">START ANOTHER REQUEST</button></div></section></main>
         ${mobileCall}
       </div>`;
       return;
@@ -6158,26 +6202,26 @@
     const lossMeta=borLossMeta(borCustomerState.lossType);
     const photoSummary=borCustomerState.photoData?'1 photo attached':'No photo attached';
     shell.innerHTML=`<div class="bor-shell">
-      <header class="bor-header"><div class="bor-brand"><img src="assets/best_option_restoration_logo.jpg" alt="Best Option Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Best Option Restoration</h1><p>North Richmond</p></div></div><div class="bor-header-actions"><a class="bor-call" href="tel:18044026019">CALL 24/7</a><button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
+      <header class="bor-header"><div class="bor-brand"><img src="assets/signal_restoration_logo.png" alt="Signal Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Signal Restoration</h1><p>Serving Greater Richmond</p></div></div><div class="bor-header-actions">${borCallControl(ctx,{kind:'header'})}<button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
       <main class="bor-main">
-        <section class="bor-hero"><div class="bor-hero-copy"><small>24/7 PROPERTY RESTORATION</small><h2>${borCustomerState.step==='start'?'Need help with property damage?':borCustomerState.step==='details'?'Where do you need help?':'How can we reach you?'}</h2><p>${borCustomerState.step==='start'?"Tell us what happened. We’ll keep this quick.":borCustomerState.step==='details'?'A few details help the local team respond faster.':'Share the best way to reach you.'}</p></div><a href="tel:18044026019" class="bor-emergency-call"><small>NEED HELP NOW?</small><strong>(804) 402-6019</strong></a></section>
+        <section class="bor-hero"><div class="bor-hero-copy"><small>LOCAL • 24/7 PROPERTY RESTORATION</small><h2>${borCustomerState.step==='start'?'Property damage? Start here.':borCustomerState.step==='details'?'Where do you need help?':'How can we reach you?'}</h2><p>${borCustomerState.step==='start'?"Tell us what happened. Most requests take about a minute.":borCustomerState.step==='details'?'A few details help the local team understand the loss.':'Share the best way to reach you.'}</p></div>${borCallControl(ctx,{kind:'hero'})}</section>
         <nav class="bor-progress" aria-label="Request progress"><span class="${borCustomerState.step==='start'?'active':borCustomerState.step!=='start'?'done':''}"><b>1</b><em>Damage</em></span><i></i><span class="${borCustomerState.step==='details'?'active':borCustomerState.step==='contact'?'done':''}"><b>2</b><em>Property</em></span><i></i><span class="${borCustomerState.step==='contact'?'active':''}"><b>3</b><em>Contact</em></span></nav>
         ${borCustomerState.step==='start'?`<section class="bor-card bor-flow-card"><div class="bor-card-title"><div><small>START HERE</small><h3>What happened?</h3><p>Choose the closest match. You can explain more on the next screen.</p></div></div><div class="bor-loss-grid">
           ${['water-damage','fire-smoke','storm-damage','mold','commercial','other-damage'].map(id=>{const m=borLossMeta(id);return `<button type="button" data-bor-loss="${id}"><b class="bor-service-icon">${m.icon}</b><span><strong>${escapeHtml(m.short)}</strong><small>${escapeHtml(m.detail)}</small></span><i>›</i></button>`}).join('')}
-        </div><div class="bor-assurance"><span>✓ Local North Richmond team</span><span>✓ 24/7 response</span><span>✓ Insurance coordination</span></div></section>`:''}
+        </div><div class="bor-assurance"><span>✓ Richmond-area response team</span><span>✓ 24/7 emergency response</span><span>✓ IICRC-certified technicians</span><span>✓ Insurance coordination</span></div></section>`:''}
         ${borCustomerState.step==='details'?`<section class="bor-card bor-flow-card"><div class="bor-step-head"><button type="button" class="bor-back" data-bor-back="start">← BACK</button><div><small>STEP 2 OF 3</small><h3>${escapeHtml(lossMeta.label)}</h3><p>Tell us where help is needed.</p></div></div><div class="bor-segment"><button type="button" data-bor-property="home" class="${borCustomerState.propertyType==='home'?'selected':''}">HOME</button><button type="button" data-bor-property="business" class="${borCustomerState.propertyType==='business'?'selected':''}">BUSINESS</button></div>${isWater?`<fieldset class="bor-choice-group"><legend>Is water still flowing?</legend><div class="bor-choice-buttons">${[['yes','YES'],['no','NO'],['unknown','NOT SURE']].map(([v,l])=>`<button type="button" class="${borCustomerState.waterActive===v?'selected':''}" data-bor-water="${v}">${l}</button>`).join('')}</div><select id="borWaterActive" class="bor-visually-hidden" aria-label="Is water still flowing"><option value="">Choose one</option><option value="yes" ${borCustomerState.waterActive==='yes'?'selected':''}>Yes</option><option value="no" ${borCustomerState.waterActive==='no'?'selected':''}>No</option><option value="unknown" ${borCustomerState.waterActive==='unknown'?'selected':''}>Not sure</option></select></fieldset>`:''}<label class="bor-field">Property address<input id="borAddress" class="bor-input" autocomplete="street-address" value="${escapeHtml(borCustomerState.address)}" placeholder="Street address"></label><label class="bor-field">Anything we should know? <span class="bor-optional">Optional</span><textarea id="borNotes" class="bor-input" rows="3" placeholder="Affected rooms, visible damage, safety concerns…">${escapeHtml(borCustomerState.notes)}</textarea></label><div class="bor-photo-zone"><div><strong>Show us what happened</strong><span>A photo can help the team understand the damage before they call.</span></div><label class="bor-photo"><input id="borPhotoInput" type="file" accept="image/*" capture="environment"><span>${borCustomerState.photoData?'CHANGE PHOTO':'TAKE OR ADD PHOTO'}</span></label>${borCustomerState.photoData?`<img class="bor-photo-preview" src="${borCustomerState.photoData}" alt="Damage photo preview">`:'<small>Optional — you can continue without a photo.</small>'}</div><button type="button" id="borDetailsNext" class="bor-primary">CONTINUE →</button></section>`:''}
         ${borCustomerState.step==='contact'?`<section class="bor-card bor-flow-card"><div class="bor-step-head"><button type="button" class="bor-back" data-bor-back="details">← BACK</button><div><small>STEP 3 OF 3</small><h3>How should we reach you?</h3><p>We only need the basics to get the request to the local team.</p></div></div><div class="bor-contact-grid"><label class="bor-field">Name<input id="borName" class="bor-input" autocomplete="name" value="${escapeHtml(borCustomerState.name)}" placeholder="Your name"></label><label class="bor-field">Mobile number<input id="borPhone" class="bor-input" type="tel" inputmode="tel" autocomplete="tel" value="${escapeHtml(borCustomerState.phone)}" placeholder="(804) 555-0123"></label><label class="bor-field">Email <span class="bor-optional">Optional</span><input id="borEmail" class="bor-input" type="email" inputmode="email" autocomplete="email" value="${escapeHtml(borCustomerState.email)}" placeholder="you@example.com"></label></div><div class="bor-submit-summary"><div class="bor-summary-card"><div class="bor-summary-icon">${lossMeta.icon}</div><div><small>YOUR REQUEST</small><strong>${escapeHtml(lossMeta.label)}</strong><span>${escapeHtml(borCustomerState.address||'Address not entered')}</span><em>${escapeHtml(photoSummary)}</em></div></div><button type="button" id="borSubmit" class="bor-primary">REQUEST HELP →</button></div></section>`:''}
-        <section class="bor-trust"><strong>Best Option Restoration • North Richmond</strong><span>Local response • Insurance coordination • IICRC-certified technicians</span></section>
+        <section class="bor-trust"><strong>Local people. Professional restoration.</strong><span>Greater Richmond • 24/7 response • Insurance coordination • IICRC-certified technicians</span></section>
       </main>${mobileCall}</div>`;
   }
   async function submitBorCustomerRequest(p){
-    if(!assertBorProjectContext(p,{requireActive:true})){alert('This request was blocked because the active project changed. Return to Best Option Restoration and try again.');return;}
+    if(!assertBorProjectContext(p,{requireActive:true})){alert('This request was blocked because the active project changed. Return to Signal Restoration and try again.');return;}
     borCustomerState.name=$('borName')?.value.trim()||borCustomerState.name;borCustomerState.phone=$('borPhone')?.value.trim()||borCustomerState.phone;borCustomerState.email=$('borEmail')?.value.trim()||borCustomerState.email;
     if(!borCustomerState.name){alert('Enter your name.');return;} if(!borCustomerState.phone){alert('Enter a phone number so the local team can reach you.');return;}
     const now=new Date(),y=String(now.getFullYear()).slice(-2),mo=String(now.getMonth()+1).padStart(2,'0'),day=String(now.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`BOR-${y}${mo}${day}-${suffix}`;
     const ctx=universalCustomerContextFor(p), label=borLossLabel(borCustomerState.lossType);
     const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:'BOR'},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New Loss',price:0,productId:borCustomerState.lossType,productName:label,offerName:label,wording:borCustomerState.notes,notes:borCustomerState.notes,photoData:borCustomerState.photoData||'',propertyAddress:borCustomerState.address,propertyType:borCustomerState.propertyType,waterActive:borCustomerState.waterActive,customerName:borCustomerState.name,customerPhone:borCustomerState.phone,customerEmail:borCustomerState.email,contactPreference:'Phone',approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'bor_emergency_intake',recordType:'engagement',relationshipType:'emergency_service_request',engagementLabel:'Restoration Request',customerAction:'SEND REQUEST'};
-    if(ctx.state!=='preview'){backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('BOR request save failed',err);alert('The request could not be saved. Please try again or call (804) 402-6019.');return;}if(ctx.state==='sea_trial')await recordExperienceSeaTrialSubmission(p,id);}
+    if(ctx.state!=='preview'){backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('BOR request save failed',err);alert('The request could not be saved. Please try again or call (804) 317-3230.');return;}if(ctx.state==='sea_trial')await recordExperienceSeaTrialSubmission(p,id);}
     borCustomerState.receipt={id:ctx.state==='preview'?'PREVIEW-NO-RECORD':id,lossType:label,address:borCustomerState.address};renderBorCustomerShell(p);
   }
 
@@ -6256,7 +6300,7 @@
       $('returnToEngineBtn')?.classList.remove('hidden');applyFlowersIdentity(p);document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project','universal-project');document.body.classList.add('flowers-project');resetFlowersShell();showFlowersScreen('welcome');
     }else if(resolvedShell==='bor'){
       if(!assertBorProjectContext(p,{requireActive:true}))return;
-      $('returnToEngineBtn')?.classList.remove('hidden');document.title='Best Option Restoration — North Richmond';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='bor-response';document.body.classList.remove('ikes-project','mugs-project','flowers-project');document.body.classList.add('universal-project','bor-project');resetBorCustomerState();renderBorCustomerShell(p);
+      $('returnToEngineBtn')?.classList.remove('hidden');document.title='Signal Restoration';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='bor-response';document.body.classList.remove('ikes-project','mugs-project','flowers-project');document.body.classList.add('universal-project','bor-project');resetBorCustomerState();renderBorCustomerShell(p);
     }else if(resolvedShell==='universal'){
       $('returnToEngineBtn')?.classList.remove('hidden');document.title=p.name||'Project';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='universal';document.body.classList.remove('ikes-project','mugs-project','flowers-project','bor-project');document.body.classList.add('universal-project');resetUniversalCustomerState(p);renderUniversalCustomerShell(p);
     }
@@ -10359,6 +10403,7 @@ The full order and approved media remain stored with this project.`;
     // Materialize Captain-approved bundled vessels by exact immutable Project ID
     // before any fleet reconciliation or command rendering can project stale rows.
     await materializeApprovedReleaseVessels();
+    await ensureSignalRestorationBranding();
     await loadFeatureSettings();
     await loadBusinessConfig();
     await loadCompanies();

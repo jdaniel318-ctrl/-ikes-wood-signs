@@ -1,5 +1,5 @@
-# Dark Sky v4.9.0 — Mobile Customer Experience Foundation
+# Dark Sky v4.9.2 — Signal Restoration
 
-BOR North Richmond is the first fully mobile-first Dark Sky customer project. This build keeps the protected 4.8.5 fleet/commissioning structure while redesigning BOR around fast phone use, stronger consumer presentation, reliable customer-flow reset, and iPhone safe-area/touch behavior.
+Protected successor to 4.9.1. The restoration test vessel is now the original Signal Restoration brand with a Greater Richmond launch market and a project-local multi-market expansion model. Existing Dark Sky vessels remain isolated.
 
-Existing project definitions, Captain’s Quarters, security, Test Access, and project isolation remain structurally preserved. See `MOBILE_CONTRACT.md` and `REGRESSION_AUDIT.md`.
+The hidden legacy project key `bor-north-richmond` is retained only for data continuity during testing; customer-facing and Engine-facing branding is Signal Restoration.

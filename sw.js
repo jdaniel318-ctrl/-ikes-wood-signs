@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-9-0-mobile-customer';
+const CACHE='dark-sky-v4-9-2-signal-restoration';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.9.0',
-  './platform_core.js?v=4.9.0',
-  './platform_v4.js?v=4.9.0',
-  './platform_identity.js?v=4.9.0',
-  './app.js?v=4.9.0',
-  './captain.js?v=4.9.0',
+  './styles.css?v=4.9.2',
+  './platform_core.js?v=4.9.2',
+  './platform_v4.js?v=4.9.2',
+  './platform_identity.js?v=4.9.2',
+  './app.js?v=4.9.2',
+  './captain.js?v=4.9.2',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -15,7 +15,7 @@ const ASSETS=[
   './assets/captains_quarters_cinematic_v2953.jpg',
   './assets/engine_room_modern_benchmark_v2976.png',
   './assets/engine_room_pirate_benchmark_v2978.png',
-  './assets/best_option_restoration_logo.jpg'
+  './assets/signal_restoration_logo.png'
 ];
 
 self.addEventListener('install',event=>{

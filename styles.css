@@ -12171,3 +12171,145 @@ body.bor-project{overflow-x:hidden;background:#f4f7fa}
 @media(min-width:761px) and (max-width:1024px){
   .bor-main{padding-left:24px;padding-right:24px}.bor-loss-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bor-hero h2{font-size:46px}
 }
+
+/* ==========================================================
+   Dark Sky 4.9.2 — Signal Restoration Brand + Market Foundation
+   BOR keeps its own visual identity while adopting proven customer UX
+   patterns: clear hierarchy, confidence signals, fast actions, and phone-first behavior.
+   Shared Engine mobile overrides fix gesture/keyboard regressions without changing project data.
+   ========================================================== */
+
+/* Shared iPhone Engine shell: keep vertical document scrolling available while
+   project cards remain horizontally swipeable. */
+@media(max-width:760px){
+  body.boot-locked{overflow-x:hidden!important;overflow-y:auto!important;min-height:100dvh!important;height:auto!important}
+  body.boot-locked #blackFlagEntryGate{
+    position:absolute!important;inset:0 0 auto 0!important;min-height:100dvh!important;height:auto!important;
+    overflow:visible!important;place-items:start center!important;
+    padding:calc(18px + env(safe-area-inset-top)) 12px calc(40px + env(safe-area-inset-bottom))!important;
+  }
+  body.boot-locked #blackFlagEntryGate .bf-entry-shell{margin:0 auto!important;width:min(100%,620px)!important;box-sizing:border-box!important}
+  .modern-project-command .project-command-cards{
+    touch-action:pan-x pan-y!important;
+    overscroll-behavior-x:auto!important;
+    overscroll-behavior-y:auto!important;
+  }
+}
+
+/* Signal Restoration visual system — original brand, customer-first and mobile-first. */
+body.bor-project{
+  --bor-blue:#0869ad;
+  --bor-blue-dark:#074a78;
+  --bor-blue-deep:#053b61;
+  --bor-blue-soft:#edf7fd;
+  --bor-orange:#f59a1b;
+  --bor-orange-deep:#cd7208;
+  --bor-ink:#123247;
+  --bor-muted:#5f7483;
+  --bor-line:#d8e5ed;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(8,105,173,.08),transparent 30%),
+    linear-gradient(180deg,#f7fbfe 0%,#f3f7fa 55%,#f7f8f6 100%)!important;
+}
+.bor-header{
+  border-bottom:4px solid var(--bor-orange)!important;
+  box-shadow:0 8px 28px rgba(13,66,100,.08)!important;
+  background:rgba(255,255,255,.97)!important;
+  backdrop-filter:blur(14px)!important;
+}
+.bor-brand img{border-radius:50%!important;box-shadow:0 0 0 3px #fff,0 0 0 4px #d8e6ee,0 7px 16px rgba(6,70,111,.15)!important}
+.bor-brand h1{letter-spacing:-.025em!important}.bor-brand small{color:var(--bor-orange-deep)!important}
+.bor-call,.bor-emergency-call,.bor-mobile-call{
+  border-radius:999px!important;
+  box-shadow:0 5px 0 rgba(159,86,4,.19),0 11px 22px rgba(138,79,11,.12)!important;
+}
+.bor-call-disabled{cursor:not-allowed!important;filter:saturate(.55)!important;opacity:.86!important}
+.bor-call-disabled::after{content:'TEST';margin-left:7px;padding:3px 6px;border-radius:999px;background:rgba(0,0,0,.12);font-size:8px;letter-spacing:.08em;font-weight:900}
+
+.bor-hero{
+  position:relative!important;overflow:hidden!important;
+  background:
+    radial-gradient(circle at 88% 30%,rgba(255,255,255,.15) 0 4%,transparent 4.5%),
+    radial-gradient(circle at 82% 42%,rgba(255,255,255,.08) 0 9%,transparent 9.5%),
+    linear-gradient(125deg,var(--bor-blue-deep),#0878c4 64%,#1590d2)!important;
+  box-shadow:0 18px 44px rgba(4,69,112,.19)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+}
+.bor-hero::before{
+  content:'';position:absolute;inset:auto -70px -115px auto;width:310px;height:310px;border-radius:50%;
+  border:36px solid rgba(255,255,255,.055);box-shadow:0 0 0 34px rgba(255,255,255,.025);pointer-events:none
+}
+.bor-hero-copy,.bor-emergency-call{position:relative;z-index:1}.bor-hero-copy small{color:#ffd390!important}.bor-hero h2{letter-spacing:-.045em!important;text-wrap:balance}.bor-hero p{max-width:620px!important;color:#e8f5fd!important}
+
+.bor-progress span.active b{box-shadow:0 0 0 5px rgba(245,154,27,.14)!important}.bor-progress span.done b{background:#1e9852!important;color:white!important}
+.bor-card{
+  border:1px solid rgba(31,102,145,.15)!important;
+  box-shadow:0 17px 48px rgba(22,70,99,.09),0 2px 6px rgba(22,70,99,.04)!important;
+}
+.bor-card-title h3,.bor-step-head h3{color:var(--bor-ink)!important}.bor-card-title small,.bor-step-head small{color:var(--bor-orange-deep)!important}
+
+.bor-loss-grid button{
+  position:relative!important;overflow:hidden!important;
+  border-color:#d5e4ed!important;
+  box-shadow:0 5px 14px rgba(16,74,109,.06),0 2px 0 #dce7ed!important;
+  transform:translateZ(0);
+}
+.bor-loss-grid button::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:#8ab6cf}
+.bor-loss-grid button[data-bor-loss="water-damage"]::before{background:#138bd1}
+.bor-loss-grid button[data-bor-loss="fire-smoke"]::before{background:#df5b31}
+.bor-loss-grid button[data-bor-loss="storm-damage"]::before{background:#697cae}
+.bor-loss-grid button[data-bor-loss="mold"]::before{background:#5a9663}
+.bor-loss-grid button[data-bor-loss="commercial"]::before{background:#596674}
+.bor-loss-grid button[data-bor-loss="other-damage"]::before{background:#d08d24}
+.bor-loss-grid button:hover,.bor-loss-grid button:focus-visible{transform:translateY(-2px)!important;box-shadow:0 12px 24px rgba(16,74,109,.11)!important}
+.bor-loss-grid button:active{transform:translateY(1px)!important}
+.bor-loss-grid button .bor-service-icon{font-family:Arial,sans-serif!important;font-weight:900!important;box-shadow:inset 0 0 0 1px rgba(8,105,173,.07)!important}
+
+.bor-assurance{background:#f8fbfd!important;border:1px solid #e1edf3!important;border-radius:14px!important;padding:11px!important;margin-top:18px!important}
+.bor-assurance span{background:#fff!important;border:1px solid #e2ebf0!important;box-shadow:0 2px 7px rgba(26,76,102,.04)!important;color:#365b70!important}
+.bor-photo-zone{border-style:dashed!important;border-width:2px!important;background:linear-gradient(145deg,#f8fcff,#f2f8fc)!important}
+.bor-summary-card{border-color:#d8e7ef!important;background:linear-gradient(145deg,#f9fcfe,#eff7fc)!important}
+.bor-primary{background:linear-gradient(135deg,#f7a326,var(--bor-orange))!important;color:white!important;border:0!important;box-shadow:0 5px 0 var(--bor-orange-deep),0 12px 24px rgba(196,107,7,.16)!important}
+.bor-primary:active{transform:translateY(2px)!important;box-shadow:0 3px 0 var(--bor-orange-deep)!important}
+.bor-secondary,.bor-back{border-color:#a9c8db!important;background:#fff!important;color:var(--bor-blue-dark)!important}
+.bor-trust{max-width:1120px!important;margin:0 auto!important;border-top:1px solid #dce8ee!important;color:#587283!important}
+.bor-trust strong{color:var(--bor-blue-dark)!important}
+
+.bor-confirm{border:1px solid #dbe8ef!important;box-shadow:0 24px 60px rgba(20,70,101,.12)!important;background:linear-gradient(180deg,#fff,#fbfdfe)!important}
+.bor-confirm-icon{box-shadow:0 0 0 10px rgba(32,164,86,.08)!important}.bor-next-step{border-left:5px solid var(--bor-blue)!important;background:#f5faff!important}
+
+/* BOR test navigation stays available to the tester, but stops competing with the business brand on phones. */
+@media(max-width:760px){
+  body.bor-project .experience-mode-banner.bor-test-banner{
+    top:calc(7px + env(safe-area-inset-top))!important;left:auto!important;right:8px!important;transform:none!important;
+    width:auto!important;max-width:190px!important;gap:7px!important;padding:6px 7px 6px 9px!important;border-radius:999px!important;
+    border-color:#54727b!important;background:rgba(5,22,28,.92)!important;box-shadow:0 7px 22px rgba(0,0,0,.20)!important;
+  }
+  body.bor-project .experience-mode-banner.bor-test-banner span small{display:none!important}
+  body.bor-project .experience-mode-banner.bor-test-banner b{font-size:7px!important;letter-spacing:.08em!important;white-space:nowrap!important}
+  body.bor-project .experience-mode-banner.bor-test-banner button{min-height:30px!important;padding:5px 8px!important;font-size:7px!important;border-radius:999px!important}
+
+  .bor-shell{padding-bottom:calc(26px + var(--ds-safe-bottom))!important}
+  .bor-header{padding-top:calc(12px + var(--ds-safe-top))!important}
+  .bor-brand h1{max-width:50vw!important}
+  .bor-hero{padding:24px 19px 22px!important}
+  .bor-hero h2{font-size:clamp(30px,9.2vw,38px)!important;max-width:12ch!important}
+  .bor-hero p{max-width:31ch!important}
+  .bor-loss-grid button{min-height:84px!important}
+  .bor-assurance{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
+  .bor-assurance span{display:flex!important;align-items:center!important;min-height:38px!important;margin:0!important;line-height:1.2!important}
+
+  /* A live deployment can keep an emergency call shortcut. Test mode renders a static preview control instead. */
+  .bor-mobile-call{left:14px!important;right:14px!important;bottom:calc(12px + var(--ds-safe-bottom))!important;min-height:56px!important;padding:10px 16px!important}
+  .bor-mobile-call.bor-call-disabled{position:static!important;width:calc(100% - 28px)!important;margin:4px 14px calc(14px + var(--ds-safe-bottom))!important;box-sizing:border-box!important;border:1px dashed rgba(255,255,255,.75)!important;box-shadow:none!important}
+  .bor-mobile-call.bor-call-disabled span::after{content:' • disabled while testing';text-transform:none;letter-spacing:0;font-weight:700;opacity:.88}
+}
+@media(max-width:390px){
+  .bor-assurance{grid-template-columns:1fr!important}
+  body.bor-project .experience-mode-banner.bor-test-banner{max-width:172px!important}
+}
+
+
+/* 4.9.2 Signal Restoration primary lockup */
+body.bor-project .bor-brand img{width:118px!important;height:64px!important;object-fit:contain!important;object-position:center!important;border-radius:12px!important;background:#fff!important;padding:4px!important;box-sizing:border-box!important}
+@media(max-width:760px){body.bor-project .bor-brand img{width:92px!important;height:54px!important}.bor-brand h1{font-size:clamp(18px,5.7vw,24px)!important}.bor-brand p{font-size:11px!important}}

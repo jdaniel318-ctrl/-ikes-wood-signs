@@ -1,18 +1,17 @@
-# Dark Sky Responsive Customer Contract — 4.9.0
+# Dark Sky Responsive Customer Contract — 4.9.1
 
-Permanent project requirement:
+All current and future customer-facing vessels must remain viable on iPhone, iPad/tablet, and desktop.
 
-- iPhone portrait is a first-class customer target, not a fallback.
-- iPhone landscape, iPad portrait/landscape, and desktop must remain functional.
-- Touch targets must be large enough for finger use; essential actions may not depend on hover.
-- Forms must not require horizontal scrolling or browser zoom.
-- iPhone safe-area insets must be respected at the top, sides, and home-indicator edge.
-- Camera/photo capture must remain reachable from mobile customer flows where enabled.
-- Project Settings and Dark Sky return controls must remain reachable without covering primary customer actions.
-- Customer state must reset cleanly on Start New / Start Another and when leaving a project.
-- Project-specific mobile improvements do not automatically alter another project's branding, workflow, or data.
-- Shared responsive primitives may be promoted only after regression testing.
+## Required behavior
+- iPhone portrait is a first-class commissioning target.
+- Vertical document scrolling must remain available even inside horizontally swipeable components.
+- Keyboard focus must not trap or permanently compress the page viewport.
+- Controls must be touch-sized and not depend on hover.
+- Fixed/sticky actions must respect device safe areas and must not obscure core content.
+- Test/Private Preview cannot initiate real-world contact actions.
+- Platform/test navigation is subordinate to project branding; launched standalone projects may hide it entirely.
+- Customer temporary state must reset reliably between sessions/requests.
 
-Certification status in 4.9.0:
-- BOR North Richmond: first full mobile-first implementation.
-- Existing fleet projects: preserved from 4.8.5; mobile certification to be completed project-by-project rather than through an unsafe global restyle.
+## Certification status
+- BOR North Richmond: active mobile reference implementation.
+- Existing fleet: preserved; certify individually rather than applying global project restyles.
