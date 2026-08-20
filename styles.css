@@ -12005,3 +12005,88 @@ body.test-access-active #engineResetGate label[for="engineResetPinInput"],body.t
   #captainQuarters.cinematic-cabin-ready .captain-command-door{padding:3.5% 2.5%!important;gap:4%!important}
   #captainQuarters.cinematic-cabin-ready .captain-command-door small{display:none!important}
 }
+
+
+/* ==========================================================
+   v4.7.7 — CAPTAIN RAIL RESTORATION
+   Root-cause repair: the five bottom drawers are painted into
+   the cinematic cabin artwork. Keep their original transparent
+   hit targets; do not render a second visual rail over them.
+   Test Access moves to its own compact brass control beneath
+   First Mate's Watch instead of altering the cabin footprint.
+   ========================================================== */
+#captainQuarters.cinematic-cabin-ready .captain-command-door-rail{
+  position:absolute!important;
+  inset:0!important;
+  z-index:150!important;
+  display:block!important;
+  padding:0!important;
+  height:auto!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+}
+#captainQuarters.cinematic-cabin-ready .captain-command-door{
+  position:absolute!important;
+  bottom:5.2%!important;
+  height:8.4%!important;
+  width:auto!important;
+  min-height:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:transparent!important;
+  pointer-events:auto!important;
+  overflow:visible!important;
+}
+#captainQuarters.cinematic-cabin-ready .captain-command-door::before,
+#captainQuarters.cinematic-cabin-ready .captain-command-door>*{display:none!important}
+#captainQuarters.cinematic-cabin-ready .captain-command-door.cargo{left:2.1%!important;width:16.2%!important}
+#captainQuarters.cinematic-cabin-ready .captain-command-door.powder{left:20.6%!important;width:16.2%!important}
+#captainQuarters.cinematic-cabin-ready .captain-command-door.blackflag{left:39%!important;width:16%!important}
+#captainQuarters.cinematic-cabin-ready .captain-command-door.log{left:57.3%!important;width:16%!important}
+#captainQuarters.cinematic-cabin-ready .captain-command-door.blueprint{left:75.6%!important;width:15.8%!important}
+#captainQuarters:not(.captain-entry-complete) .captain-command-door-rail{opacity:1!important}
+#captainQuarters:not(.captain-entry-complete) .captain-command-door{pointer-events:none!important;opacity:0!important}
+
+.cq-test-access-watch{display:none}
+#captainQuarters.cinematic-cabin-ready .cq-test-access-watch{
+  display:flex!important;
+  position:absolute!important;
+  z-index:130!important;
+  left:3.15%!important;
+  top:12.85%!important;
+  width:12.2%!important;
+  height:3.35%!important;
+  min-height:28px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8%!important;
+  padding:.35% .7%!important;
+  box-sizing:border-box!important;
+  border:1px solid #72562f!important;
+  border-radius:4px!important;
+  background:linear-gradient(180deg,rgba(32,22,13,.98),rgba(15,10,7,.99))!important;
+  box-shadow:0 0 0 1px #070503,inset 0 0 10px #0009!important;
+  color:#d8bd7a!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-test-access-watch .cq-test-access-lamp{
+  flex:0 0 auto;width:clamp(8px,.65vw,11px);aspect-ratio:1;border-radius:50%;
+  background:#6b3f24;border:1px solid #a16c3f;box-shadow:inset 0 0 4px #000;
+}
+#captainQuarters.cinematic-cabin-ready .cq-test-access-watch>span:last-child{display:flex;align-items:baseline;gap:7%;min-width:0}
+#captainQuarters.cinematic-cabin-ready .cq-test-access-watch strong{color:#d6bd7a;font:700 clamp(6px,.62vw,10px) Georgia,serif;letter-spacing:.06em;white-space:nowrap}
+#captainQuarters.cinematic-cabin-ready .cq-test-access-watch small{color:#9f8d69;font:700 clamp(5px,.48vw,8px) Arial,sans-serif;letter-spacing:.06em;white-space:nowrap}
+#captainQuarters.cinematic-cabin-ready .cq-test-access-watch.active{border-color:#b88c42!important;box-shadow:0 0 0 1px #070503,0 0 12px rgba(205,158,69,.28),inset 0 0 10px #0009!important}
+#captainQuarters.cinematic-cabin-ready .cq-test-access-watch.active .cq-test-access-lamp{background:#e7b956;box-shadow:0 0 8px #e7b956,0 0 14px #d59436aa,inset 0 0 3px #fff6}
+#captainQuarters.cinematic-cabin-ready .cq-test-access-watch.active small{color:#d0af67}
+#captainQuarters:not(.captain-entry-complete) .cq-test-access-watch{pointer-events:none!important;opacity:0!important}
+@media(max-width:900px){
+  #captainQuarters.cinematic-cabin-ready .cq-test-access-watch{left:2.75%!important;top:12.9%!important;width:13.4%!important;height:3.4%!important}
+}

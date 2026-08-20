@@ -1,3 +1,10 @@
+## 4.7.7 — Captain Rail Restoration
+- Fixed the delayed bottom overlay revealed by the Captain's Quarters image-load transition.
+- Restored the original five transparent command hit targets over the cinematic cabin's painted drawers.
+- Removed the rendered six-button overlay that covered the original rail and reduced usable screen space.
+- Moved Test Access to a compact themed brass control beneath First Mate's Watch.
+- Kept Test Access authorization and session-only bypass behavior unchanged.
+
 
 ## 4.7.6 — Captain Command Rail Integration Repair
 - Restored the Captain’s Quarters bottom command area to the original visual footprint.

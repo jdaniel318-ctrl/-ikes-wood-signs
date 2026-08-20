@@ -19,7 +19,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=4.7.6" />
+  <link rel="stylesheet" href="styles.css?v=4.7.7" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -266,6 +266,10 @@
           <b id="captainWatchDetail">Dark Sky signal intelligence</b>
         </span>
       </button>
+      <button id="captainTestAccessDeckBtn" class="cq-test-access-watch" type="button" aria-label="Open Test Access controls" aria-pressed="false">
+        <span class="cq-test-access-lamp" aria-hidden="true"></span>
+        <span><strong>TEST ACCESS</strong><small id="captainTestAccessDeckStatus">SECURE</small></span>
+      </button>
       <div class="cq-rustic-desk" aria-label="Captain's command desk"><div class="cq-desk-grain"></div>
         <div class="cq-desk-history" aria-hidden="true">
           <span class="cq-knife"></span>
@@ -313,7 +317,6 @@
         <button id="captainBlackFlagDoor" class="captain-command-door blackflag" type="button" data-captain-command-door="blackflag" aria-label="Open Black Flag Fleet Command"><span class="cq-rail-icon">☠</span><span><strong>BLACK FLAG</strong><small>Fleet Command Center</small></span></button>
         <button id="captainLogDoor" class="captain-command-door log captain-log-hit-target" type="button" data-captain-command-door="log" aria-label="Open Captain's Log" title="Open Captain's Log"><span class="cq-rail-icon">✒</span><span><strong>CAPTAIN'S LOG</strong><small>Orders, Notes & History</small></span></button>
         <button id="captainBlueprintDoor" class="captain-command-door blueprint" type="button" data-captain-command-door="blueprint" aria-label="Open Ship's Blueprint"><span class="cq-rail-icon">⌘</span><span><strong>SHIP'S BLUEPRINT</strong><small>Understand the Flagship</small></span></button>
-        <button id="captainTestAccessDeckBtn" class="captain-command-door testaccess" type="button" aria-label="Open Test Access controls" aria-pressed="false"><span class="cq-test-access-lamp" aria-hidden="true"></span><span><strong>TEST ACCESS</strong><small id="captainTestAccessDeckStatus">SECURE</small></span></button>
       </div>
       <button id="captainExitBtn" class="captain-primary" type="button">EXIT PREVIEW</button>
     </div>
@@ -1269,11 +1272,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=4.7.6"></script>
-  <script src="platform_v4.js?v=4.7.6"></script>
-  <script src="platform_identity.js?v=4.7.6"></script>
-  <script src="app.js?v=4.7.6"></script>
-  <script src="captain.js?v=4.7.6"></script>
+  <script src="platform_core.js?v=4.7.7"></script>
+  <script src="platform_v4.js?v=4.7.7"></script>
+  <script src="platform_identity.js?v=4.7.7"></script>
+  <script src="app.js?v=4.7.7"></script>
+  <script src="captain.js?v=4.7.7"></script>
 
 </body>
 </html>
