@@ -1,3 +1,21 @@
+# Dark Sky 5.0.3 — Authority Spine Correction
+
+- Restored Black Flag / Engine Room normal PIN to **5615**.
+- Kept Project Admin fleet default/recovery PIN at **4353**.
+- Kept Captain's Quarters PIN at **19613**.
+- Preserved the established Captain Test Access behavior: when deliberately enabled for the browser session, Engine PIN entry is bypassed; the Engine PIN itself is not changed.
+- Engine authentication now ignores stale/historical `enginePin` storage so a project PIN or prior regression build cannot redefine Black Flag.
+- All Engine gates continue to route through the same `BlackFlagAuth.verify` controller when Test Access is not active.
+- Bumped executable and service-worker cache references to **5.0.3**.
+
+# Dark Sky 5.0.2 — Engine Authentication Repair
+
+- Restored the fleet-standard 4353 PIN as the guaranteed Black Flag Engine default/recovery credential.
+- Preserved any deliberately configured Engine PIN as an additional accepted credential; it can no longer make 4353 fail.
+- Kept Project Admin on the same 4353 fleet default/recovery contract.
+- Captain's Quarters remains a separate privileged platform layer with its own credential.
+- Bumped all executable/cache references to 5.0.2 so Safari/GitHub Pages cannot remain pinned to the broken 5.0.1 Engine PIN constant.
+
 # Dark Sky 5.0.1 — Isolation Hardening
 
 Second-pass audit of the 5.0 fleet boundary release.

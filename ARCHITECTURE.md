@@ -109,3 +109,23 @@ Dark Sky owns a master capability library. Capability existence does not grant p
 The Project Manager Workspace is a projection of the enabled set. It groups capabilities around operational work rather than exposing platform architecture directly. Multiple capabilities may feed one manager area; enabling a capability does not require creating a new navigation item. Project managers may operate approved capabilities but cannot broaden project authority.
 
 AVAILABLE means the current build has working behavior. FOUNDATION means the capability is recognized and may be enabled for project planning/visibility, but the runtime must not imply production-ready behavior that does not yet exist.
+
+## Dark Sky 5.0.3 — Stable Authority Spine
+
+The platform must be adaptable without allowing feature work to rewrite authority boundaries.
+
+| Layer | Normal credential | Scope |
+| --- | --- | --- |
+| Project Admin | 4353 fleet default/recovery | One immutable project namespace only |
+| Black Flag / Engine Room | 5615 | Fleet command and project control |
+| Captain's Quarters | 19613 | Platform/captain authority |
+| Captain Test Access | Session-only bypass after Engine + Captain verification | Engine entry convenience only; does not redefine credentials or project scope |
+
+Rules:
+1. Project lifecycle state (`development`, `test`, `live`) is not authentication state.
+2. Captain Test Access is the only established Engine PIN bypass and exists only for the current browser session.
+3. Test Access does not bypass Project Admin and does not change Project ID.
+4. Stored project settings cannot redefine Black Flag or Captain credentials.
+5. Engine selection state (`engineActiveProjectId`) is not a project customer/admin session (`activeProjectId`).
+6. Crossing a layer boundary clears incompatible UI/state before the destination layer renders.
+7. No generic route may infer Ike's or any other project when an immutable Project ID is absent.

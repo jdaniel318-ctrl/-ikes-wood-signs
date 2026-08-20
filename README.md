@@ -1,6 +1,24 @@
-# Dark Sky 5.0.1 — Fleet Boundary Hardening
+# Dark Sky 5.0.3 — Authority Spine + SIG Test Release
 
-Dark Sky 5.0 is a structural cleanup release. Its primary contract is simple: **one project may never inherit another project's UI, admin state, data context, or navigation state.** Project identity is always the immutable Project ID. Project Admin remains project-scoped with fleet default/recovery PIN **4353**. Engine and Captain authority remain separate layers.
+This release finishes the 5.0 authentication correction before Signal Restoration sea trials. The authority layers are deliberately different and must not bleed into one another:
+
+- **Project Admin:** `4353` fleet default/recovery credential. A project may add its own scoped PIN, but 4353 remains valid at the project-admin layer.
+- **Black Flag / Engine Room:** `5615` during normal operation. Historical `enginePin` storage is ignored so project PINs, migrations, or stale builds cannot redefine Black Flag.
+- **Captain's Quarters:** `19613`. Captain authority remains separate from both Engine and project administration.
+- **Captain Test Access:** session-only bypass for Engine PIN entry after it is deliberately enabled with both the Engine and Captain credentials. It does not change any PIN and does not bypass Project Admin.
+
+## Stable spine, flexible modules
+
+Dark Sky 5.0 treats authentication, immutable Project ID, project namespaces, layer transitions, permissions, and routing as the stable spine. Business capabilities, manager workspaces, layouts, workflows, and project experiences remain flexible modules inside those boundaries.
+
+## Isolation contract
+
+One project may never inherit another project's UI, admin state, data context, branding, settings, orders, media, or navigation state. Project identity is always resolved by immutable Project ID. Engine project selection is not a customer/admin project session. Crossing into Black Flag clears project-owned surfaces before Engine rendering.
+
+## Signal Restoration test target
+
+The immediate sea-trial path is: Signal Restoration → Project Admin (`4353`) → Project Manager Workspace → Black Flag → Engine (`5615`, unless Captain Test Access is already active) → return/select projects without cross-project carryover.
+
 
 Key 5.0 changes:
 - Added a single Fleet Boundary Spine for transitions between Project Experience, Project Admin, Black Flag Engine, Project Control, and Captain authority.

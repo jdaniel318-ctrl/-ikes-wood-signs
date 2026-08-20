@@ -73,3 +73,7 @@ The following existing platform/security/Captain files are byte-for-byte unchang
 ## Promotion rule
 
 BOR lessons are local until separately reviewed and promoted into shared Dark Sky capabilities.
+
+
+## 5.0.3 authority boundary note
+Black Flag normal authentication is fixed to 5615 and ignores stale Engine PIN storage. Project Admin remains 4353 by fleet contract; Captain remains 19613. Captain Test Access is session-only and may bypass Engine entry but never changes project identity or Project Admin authentication.

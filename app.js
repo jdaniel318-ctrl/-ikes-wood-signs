@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.0.1';
+  const BUILD_VERSION = '5.0.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1714,29 +1714,24 @@
   window.verifyProjectAdminPin=verifyProjectAdminPin;
 
   async function getEnginePin(){
-    try{
-      const saved=await getSetting('enginePin');
-      return saved?.value || DEFAULT_ENGINE_PIN;
-    }catch(err){
-      console.warn('Engine PIN setting unavailable; using default',err);
-      return DEFAULT_ENGINE_PIN;
-    }
+    // Stable authority spine: Black Flag owns one normal Engine credential.
+    // Historical/stale enginePin settings are intentionally ignored so a project
+    // PIN, migration, or prior test build can never redefine the Engine layer.
+    return DEFAULT_ENGINE_PIN;
   }
 
-  // Unified Black Flag Engine authentication. Every Engine gate must use this controller.
-  // 5615 remains the guaranteed recovery/default PIN for this test build.
+  // Unified Black Flag Engine authentication. Every Engine gate uses this controller.
+  // Normal Black Flag authentication is 5615. Captain Test Access is a separate,
+  // session-only bypass checked by the calling gate; it never changes this PIN.
   async function verifyEnginePin(rawValue,{recordFailure=true}={}){
     const entered=String(rawValue||'').trim();
     const security=pinSecurityState('engine');
     if(security.lockedUntil>Date.now()){
       return {ok:false,code:'locked',lockedUntil:security.lockedUntil};
     }
-    let configured=DEFAULT_ENGINE_PIN;
-    try{ configured=String(await getEnginePin() || DEFAULT_ENGINE_PIN); }catch(_){ configured=DEFAULT_ENGINE_PIN; }
-    const ok=entered===String(DEFAULT_ENGINE_PIN) || entered===configured;
-    if(ok){
+    if(entered===String(DEFAULT_ENGINE_PIN)){
       clearPinFailures('engine');
-      return {ok:true,code:'ok',configured,recovery:entered===String(DEFAULT_ENGINE_PIN)};
+      return {ok:true,code:'engine-pin',configured:DEFAULT_ENGINE_PIN,recovery:false};
     }
     const row=recordFailure ? recordBadPin('engine') : pinSecurityState('engine');
     return {ok:false,code:row.lockedUntil>Date.now()?'locked':'incorrect',lockedUntil:row.lockedUntil||0};
