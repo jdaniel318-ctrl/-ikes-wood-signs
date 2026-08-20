@@ -1,10 +1,19 @@
-# v4.7.5 — Test Access Command Rail
+
+## 4.7.6 — Captain Command Rail Integration Repair
+- Restored the Captain’s Quarters bottom command area to the original visual footprint.
+- Removed the duplicate/stacked command-layer effect introduced in 4.7.5.
+- Integrated six themed command compartments into one rail, including Test Access.
+- Removed the floating “Captain command controls are live” hint from the cabin.
+- Shortened Test Access rail status to SECURE / ACTIVE for cleaner iPad fit.
+- Test Access authorization and underlying PIN/security structure remain unchanged.
+
+# v4.7.6 — Test Access Command Rail
 
 - Moved Test Access from the unreliable floating plaque position into the Captain's Quarters bottom command rail.
 - Added a sixth visible brass/wood themed compartment labeled TEST ACCESS with a live SECURE/ACTIVE indicator lamp.
 - Preserved the existing five Captain command destinations and their handlers.
 - Reused the existing Engine PIN + Captain PIN authorization flow; no PIN values, roles, project isolation, or lockout architecture were removed.
-- Kept Test Access session-only and advanced executable/cache versioning to 4.7.5.
+- Kept Test Access session-only and advanced executable/cache versioning to 4.7.6.
 
 # v4.7.4 — Captain Test Access Plaque
 

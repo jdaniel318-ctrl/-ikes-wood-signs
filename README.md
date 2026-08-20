@@ -1,4 +1,4 @@
-# Dark Sky v4.7.5 — Test Access Command Rail
+# Dark Sky v4.7.6 — Test Access Command Rail
 
 This build preserves the working v4.7.4 Captain's Quarters and moves Test Access into the established bottom command rail as a sixth themed compartment. The underlying dual-authorization, session-only Test Access security architecture is unchanged. Business remains the fresh-load default and Pirate remains an in-session appearance option.
 

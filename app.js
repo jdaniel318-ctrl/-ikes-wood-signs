@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.7.5';
+  const BUILD_VERSION = '4.7.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -33,7 +33,7 @@
     const st=document.getElementById('captainTestAccessStatus'); if(st){st.textContent=active?'ACTIVE — PIN ENTRY BYPASSED FOR THIS TESTING SESSION':'OFF — NORMAL PIN SECURITY ACTIVE';st.classList.toggle('active',active);}
     const tg=document.getElementById('captainTestAccessToggle'); if(tg)tg.textContent=active?'DISABLE TEST ACCESS':'ENABLE TEST ACCESS';
     const deck=document.getElementById('captainTestAccessDeckBtn'); if(deck){deck.classList.toggle('active',active);deck.setAttribute('aria-pressed',active?'true':'false');}
-    const deckStatus=document.getElementById('captainTestAccessDeckStatus'); if(deckStatus)deckStatus.textContent=active?'ACTIVE • PINS BYPASSED':'SECURE • NORMAL PINS';
+    const deckStatus=document.getElementById('captainTestAccessDeckStatus'); if(deckStatus)deckStatus.textContent=active?'ACTIVE':'SECURE';
     const entry=document.getElementById('blackFlagEntryUnlock'); if(entry)entry.textContent=active?'CONTINUE — TEST ACCESS →':(document.body.classList.contains('dark-flag-pirate-mode')?'BOARD ENGINE ROOM →':'ENTER ENGINE ROOM →');
     const eg=document.getElementById('unlockEngineBtn'); if(eg)eg.textContent=active?'CONTINUE — TEST ACCESS →':'BOARD THE ENGINE ROOM →';
     const ag=document.getElementById('unlockAdminBtn'); if(ag)ag.textContent=active?'CONTINUE — TEST ACCESS →':'UNLOCK ADMIN';
