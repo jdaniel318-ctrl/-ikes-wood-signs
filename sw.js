@@ -1,18 +1,18 @@
-const CACHE='dark-sky-v4-7-6-captain-rail-repair';
+const CACHE='dark-sky-v4-7-8-flagship-quarters-polish';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.7.7',
-  './platform_core.js?v=4.7.7',
-  './platform_v4.js?v=4.7.7',
-  './platform_identity.js?v=4.7.7',
-  './app.js?v=4.7.7',
-  './captain.js?v=4.7.7',
+  './styles.css?v=4.7.8',
+  './platform_core.js?v=4.7.8',
+  './platform_v4.js?v=4.7.8',
+  './platform_identity.js?v=4.7.8',
+  './app.js?v=4.7.8',
+  './captain.js?v=4.7.8',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
   './assets/ike_character.jpg',
-  './assets/captains_quarters_cinematic_v2953.jpg',
+  './assets/captains_quarters_flagship_v478.png',
   './assets/engine_room_modern_benchmark_v2976.png',
   './assets/engine_room_pirate_benchmark_v2978.png'
 ];

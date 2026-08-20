@@ -1,3 +1,12 @@
+## 4.7.8 — Flagship Quarters Polish
+
+- Re-art-directed the Captain’s Quarters cinematic cabin around the approved premium mockup.
+- Preserved the existing Captain security, Test Access, fleet chart, blueprint, Spyglass, Shipyard and command-door behavior.
+- Repositioned invisible interaction targets to the new cabin artwork instead of adding floating replacement controls.
+- Kept First Mate’s Watch and Test Access as live DOM surfaces so their status remains truthful.
+- Maintained the five baked-in command drawers as transparent hit targets to avoid the prior duplicate-rail regression.
+- No changes to project isolation, PIN values, roles, order data or Engine structure.
+
 ## 4.7.7 — Captain Rail Restoration
 - Fixed the delayed bottom overlay revealed by the Captain's Quarters image-load transition.
 - Restored the original five transparent command hit targets over the cinematic cabin's painted drawers.
