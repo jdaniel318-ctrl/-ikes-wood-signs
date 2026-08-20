@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.8.0';
+  const BUILD_VERSION = '4.8.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -114,6 +114,33 @@
       products:[{id:'custom-flower-arrangement',name:'Custom Flower Arrangement',published:false,characterLimit:60}]
     }
 ,
+    {
+      id:'bor-north-richmond',
+      projectCode:'BOR',
+      name:'Best Option Restoration — North Richmond',
+      description:'24/7 local restoration response for water, fire, storm, mold, and property damage.',
+      tagline:'Fast local help when property damage happens.',
+      type:'emergency_restoration',
+      businessType:'restoration_services',
+      shellType:'bor-response',
+      branding:{businessName:'Best Option Restoration — North Richmond',adminLabel:'BEST OPTION RESTORATION',primary:'#0b5ca8',accent:'#f59a23',subtitle:'24/7 Emergency Restoration'},
+      visibility:'engine_only',projectTheme:'bor-response',status:'development',orderPrefix:'BOR',
+      ai:{mode:'off',minConfidence:0.90,requireScaleReference:false},
+      customization:{maxCharacters:null,characterLimitStatus:'unset',allowCustomColors:false},
+      workflow:['New Loss','Contacted','Dispatched','On Site','Mitigation','Monitoring','Reconstruction','Closed'],
+      customerExperience:{photoRequired:false,previewApproval:false,contactCapture:true,mode:'emergency_intake'},publish:{status:'development'},
+      payments:{enabled:false,mode:'insurance_or_direct',provider:'not_configured',customerVisible:false},
+      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
+      customerHistory:{adminVisible:true},notifications:{customerConfirmationEmail:false},
+      products:[
+        {id:'water-damage',name:'Water Damage',published:true,active:true},
+        {id:'fire-smoke',name:'Fire / Smoke',published:true,active:true},
+        {id:'storm-damage',name:'Storm Damage',published:true,active:true},
+        {id:'mold',name:'Mold',published:true,active:true},
+        {id:'commercial',name:'Commercial / Large Loss',published:true,active:true},
+        {id:'other-damage',name:'Other Property Damage',published:true,active:true}
+      ]
+    },
     {
       id:'grizzly-bear',
       projectCode:'GRZ',
@@ -5939,7 +5966,80 @@
     writeUniversalReceipt(p,receipt);renderUniversalCustomerShell(p);
   }
 
-  const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers'};
+  const BOR_PROJECT_ID='bor-north-richmond';
+  const borCustomerState={step:'start',lossType:'',propertyType:'home',waterActive:'',safetyIssue:'',address:'',name:'',phone:'',email:'',notes:'',photoData:'',receipt:null};
+  function resetBorCustomerState(){Object.assign(borCustomerState,{step:'start',lossType:'',propertyType:'home',waterActive:'',safetyIssue:'',address:'',name:'',phone:'',email:'',notes:'',photoData:'',receipt:null});}
+  function clearBorRuntimeResidue(){
+    resetBorCustomerState();
+    document.body.classList.remove('bor-project');
+    if(document.body.dataset.projectTheme==='bor-response')document.body.removeAttribute('data-project-theme');
+    const shell=$('universalCustomerShell');
+    if(shell && !shell.classList.contains('hidden')) shell.classList.add('hidden');
+    if(shell && shell.querySelector('.bor-shell')) shell.replaceChildren();
+  }
+  function assertBorProjectContext(p,{requireActive=false}={}){
+    const projectId=String(p?.id||'');
+    const activeId=String(activeProjectId||'');
+    const ok=projectId===BOR_PROJECT_ID && (!requireActive || activeId===BOR_PROJECT_ID);
+    if(!ok){
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:projectId||activeId||null,category:'integrity',action:'bor.context.blocked',detail:`project=${projectId||'none'} active=${activeId||'none'}`});
+      console.error('BOR project boundary blocked a cross-project operation.',{projectId,activeId});
+    }
+    return ok;
+  }
+  function borLossLabel(id){return ({'water-damage':'Water Damage','fire-smoke':'Fire / Smoke','storm-damage':'Storm Damage','mold':'Mold','commercial':'Commercial / Large Loss','other-damage':'Other Property Damage'})[id]||'Property Damage';}
+  function renderBorCustomerShell(p){
+    if(!assertBorProjectContext(p))return;
+    const shell=$('universalCustomerShell'); if(!shell||!p)return;
+    const ctx=universalCustomerContextFor(p);
+    const testLabel=ctx.state==='sea_trial'?'TEST EXPERIENCE':ctx.state==='preview'?'PRIVATE PREVIEW':'24/7 LOCAL RESPONSE';
+    if(borCustomerState.receipt){
+      const r=borCustomerState.receipt;
+      shell.innerHTML=`<div class="bor-shell">
+        <header class="bor-header"><div class="bor-brand"><img src="assets/best_option_restoration_logo.jpg" alt="Best Option Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Best Option Restoration</h1><p>North Richmond</p></div></div><button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></header>
+        <main class="bor-main"><section class="bor-confirm"><div class="bor-confirm-icon">✓</div><small>REQUEST RECEIVED</small><h2>We have your information.</h2><p>A local North Richmond team member can follow up using the contact information you provided.</p><div class="bor-confirm-ref"><span>REFERENCE</span><strong>${escapeHtml(r.id)}</strong></div><div class="bor-confirm-grid"><div><span>HELP NEEDED</span><strong>${escapeHtml(r.lossType)}</strong></div><div><span>PROPERTY</span><strong>${escapeHtml(r.address||'Address not entered')}</strong></div></div><div class="bor-confirm-actions"><a class="bor-call primary" href="tel:18044026019">CALL NOW • (804) 402-6019</a><button type="button" id="borNewRequest" class="bor-secondary">START ANOTHER REQUEST</button></div></section></main>
+      </div>`;
+      $('borNewRequest')?.addEventListener('click',()=>{resetBorCustomerState();renderBorCustomerShell(p)});
+      return;
+    }
+    const isWater=borCustomerState.lossType==='water-damage';
+    shell.innerHTML=`<div class="bor-shell">
+      <header class="bor-header"><div class="bor-brand"><img src="assets/best_option_restoration_logo.jpg" alt="Best Option Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Best Option Restoration</h1><p>North Richmond</p></div></div><div class="bor-header-actions"><a class="bor-call" href="tel:18044026019">CALL 24/7</a><button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
+      <main class="bor-main">
+        <section class="bor-hero"><div><small>24/7 EMERGENCY RESTORATION</small><h2>What happened?</h2><p>Tell us what you need. We’ll keep this quick.</p></div><a href="tel:18044026019" class="bor-emergency-call">EMERGENCY? CALL (804) 402-6019</a></section>
+        <div class="bor-progress"><span class="${borCustomerState.step==='start'?'active':''}">1</span><i></i><span class="${borCustomerState.step==='details'?'active':''}">2</span><i></i><span class="${borCustomerState.step==='contact'?'active':''}">3</span></div>
+        ${borCustomerState.step==='start'?`<section class="bor-card"><h3>Choose the type of damage</h3><div class="bor-loss-grid">
+          <button data-bor-loss="water-damage"><b>💧</b><span>Water</span></button><button data-bor-loss="fire-smoke"><b>🔥</b><span>Fire / Smoke</span></button><button data-bor-loss="storm-damage"><b>⛈</b><span>Storm</span></button><button data-bor-loss="mold"><b>●</b><span>Mold</span></button><button data-bor-loss="commercial"><b>🏢</b><span>Commercial</span></button><button data-bor-loss="other-damage"><b>＋</b><span>Other</span></button>
+        </div></section>`:''}
+        ${borCustomerState.step==='details'?`<section class="bor-card"><div class="bor-step-head"><button type="button" class="bor-back" data-bor-back="start">← BACK</button><div><small>STEP 2 OF 3</small><h3>${escapeHtml(borLossLabel(borCustomerState.lossType))}</h3></div></div><div class="bor-two-col"><label>Property type<select id="borPropertyType" class="bor-input"><option value="home" ${borCustomerState.propertyType==='home'?'selected':''}>Home</option><option value="business" ${borCustomerState.propertyType==='business'?'selected':''}>Business</option></select></label>${isWater?`<label>Is water still flowing?<select id="borWaterActive" class="bor-input"><option value="">Choose one</option><option value="yes" ${borCustomerState.waterActive==='yes'?'selected':''}>Yes</option><option value="no" ${borCustomerState.waterActive==='no'?'selected':''}>No</option><option value="unknown" ${borCustomerState.waterActive==='unknown'?'selected':''}>Not sure</option></select></label>`:''}</div><label>Property address<input id="borAddress" class="bor-input" autocomplete="street-address" value="${escapeHtml(borCustomerState.address)}" placeholder="Street address"></label><label>Anything we should know? <span class="bor-optional">Optional</span><textarea id="borNotes" class="bor-input" rows="3" placeholder="Affected rooms, visible damage, safety concerns…">${escapeHtml(borCustomerState.notes)}</textarea></label><label class="bor-photo"><input id="borPhotoInput" type="file" accept="image/*" capture="environment"><span>${borCustomerState.photoData?'✓ PHOTO ADDED • CHANGE PHOTO':'ADD A PHOTO • OPTIONAL'}</span></label><button type="button" id="borDetailsNext" class="bor-primary">NEXT →</button></section>`:''}
+        ${borCustomerState.step==='contact'?`<section class="bor-card"><div class="bor-step-head"><button type="button" class="bor-back" data-bor-back="details">← BACK</button><div><small>STEP 3 OF 3</small><h3>How should we reach you?</h3></div></div><div class="bor-contact-grid"><label>Name<input id="borName" class="bor-input" autocomplete="name" value="${escapeHtml(borCustomerState.name)}"></label><label>Phone<input id="borPhone" class="bor-input" type="tel" autocomplete="tel" value="${escapeHtml(borCustomerState.phone)}"></label><label>Email <span class="bor-optional">Optional</span><input id="borEmail" class="bor-input" type="email" autocomplete="email" value="${escapeHtml(borCustomerState.email)}"></label></div><div class="bor-submit-summary"><div><small>REQUEST</small><strong>${escapeHtml(borLossLabel(borCustomerState.lossType))}</strong><span>${escapeHtml(borCustomerState.address||'Address not entered')}</span></div><button type="button" id="borSubmit" class="bor-primary">SEND REQUEST →</button></div></section>`:''}
+        <section class="bor-trust"><strong>Local North Richmond team</strong><span>24/7 response • Insurance coordination • IICRC-certified technicians</span></section>
+      </main></div>`;
+    $$('[data-bor-loss]').forEach(btn=>btn.addEventListener('click',()=>{borCustomerState.lossType=btn.dataset.borLoss;borCustomerState.step='details';renderBorCustomerShell(p)}));
+    $$('[data-bor-back]').forEach(btn=>btn.addEventListener('click',()=>{borCustomerState.step=btn.dataset.borBack;renderBorCustomerShell(p)}));
+    $('borPropertyType')?.addEventListener('change',e=>borCustomerState.propertyType=e.target.value);
+    $('borWaterActive')?.addEventListener('change',e=>borCustomerState.waterActive=e.target.value);
+    $('borAddress')?.addEventListener('input',e=>borCustomerState.address=e.target.value);
+    $('borNotes')?.addEventListener('input',e=>borCustomerState.notes=e.target.value);
+    $('borPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{borCustomerState.photoData=String(r.result||'');renderBorCustomerShell(p)};r.readAsDataURL(file)});
+    $('borDetailsNext')?.addEventListener('click',()=>{borCustomerState.address=$('borAddress')?.value.trim()||borCustomerState.address;if(!borCustomerState.address){alert('Enter the property address so the team knows where help is needed.');return;}borCustomerState.step='contact';renderBorCustomerShell(p)});
+    $('borName')?.addEventListener('input',e=>borCustomerState.name=e.target.value);
+    $('borPhone')?.addEventListener('input',e=>borCustomerState.phone=e.target.value);
+    $('borEmail')?.addEventListener('input',e=>borCustomerState.email=e.target.value);
+    $('borSubmit')?.addEventListener('click',()=>submitBorCustomerRequest(p));
+  }
+  async function submitBorCustomerRequest(p){
+    if(!assertBorProjectContext(p,{requireActive:true})){alert('This request was blocked because the active project changed. Return to Best Option Restoration and try again.');return;}
+    borCustomerState.name=$('borName')?.value.trim()||borCustomerState.name;borCustomerState.phone=$('borPhone')?.value.trim()||borCustomerState.phone;borCustomerState.email=$('borEmail')?.value.trim()||borCustomerState.email;
+    if(!borCustomerState.name){alert('Enter your name.');return;} if(!borCustomerState.phone){alert('Enter a phone number so the local team can reach you.');return;}
+    const now=new Date(),y=String(now.getFullYear()).slice(-2),mo=String(now.getMonth()+1).padStart(2,'0'),day=String(now.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`BOR-${y}${mo}${day}-${suffix}`;
+    const ctx=universalCustomerContextFor(p), label=borLossLabel(borCustomerState.lossType);
+    const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:'BOR'},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New Loss',price:0,productId:borCustomerState.lossType,productName:label,offerName:label,wording:borCustomerState.notes,notes:borCustomerState.notes,photoData:borCustomerState.photoData||'',propertyAddress:borCustomerState.address,propertyType:borCustomerState.propertyType,waterActive:borCustomerState.waterActive,customerName:borCustomerState.name,customerPhone:borCustomerState.phone,customerEmail:borCustomerState.email,contactPreference:'Phone',approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'bor_emergency_intake',recordType:'engagement',relationshipType:'emergency_service_request',engagementLabel:'Restoration Request',customerAction:'SEND REQUEST'};
+    if(ctx.state!=='preview'){backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('BOR request save failed',err);alert('The request could not be saved. Please try again or call (804) 402-6019.');return;}if(ctx.state==='sea_trial')await recordExperienceSeaTrialSubmission(p,id);}
+    borCustomerState.receipt={id:ctx.state==='preview'?'PREVIEW-NO-RECORD':id,lossType:label,address:borCustomerState.address};renderBorCustomerShell(p);
+  }
+
+  const PROJECT_SHELLS={'ikes-wood-signs':'ikes','mugshot-after-dark':'mugs','beccas-bloom-shop':'flowers',[BOR_PROJECT_ID]:'bor'};
   function projectShellFor(p){
     if(!p)return 'generic';
     const explicit=PROJECT_SHELLS[p.id];
@@ -5948,6 +6048,7 @@
     if(shell==='ikes'||shell==='wood-sign'||shell==='custom_wood_sign'||shell==='wood_sign')return 'ikes';
     if(shell==='mugs'||shell==='custom-mug'||shell==='custom_mug'||shell==='mugshot-after-dark')return 'mugs';
     if(shell==='flowers'||shell==='flower-shop'||shell==='custom_flowers'||shell==='flowers-project')return 'flowers';
+    if(shell==='bor'||shell==='bor-response'||shell==='emergency_restoration'||shell==='restoration_services')return 'bor';
     // Every commissioned vessel receives the reusable Dark Sky customer shell.
     // Bespoke shells remain enhancements, never a prerequisite for leaving harbor.
     if(p.commissionedAt || p.registry?.source==='commissioning' || p.businessType || (p.products||[]).length)return 'universal';
@@ -5958,7 +6059,7 @@
   }
   function projectCustomerOperatingModelReady(p){
     const shell=projectShellFor(p);
-    if(['ikes','mugs','flowers'].includes(shell))return true;
+    if(['ikes','mugs','flowers','bor'].includes(shell))return true;
     if(shell==='universal')return universalOffersFor(p).length>0;
     return false;
   }
@@ -5973,12 +6074,14 @@
   }
   function showCustomerShellForProject(p){
     hideAllCustomerShells();
-    document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project');
+    document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project','bor-project');
     const shell=projectShellFor(p);
+    if(shell!=='bor') clearBorRuntimeResidue();
     enforceCustomerShellIsolation(shell);
     if(shell==='ikes'){ $('customerApp')?.classList.remove('hidden'); document.body.classList.add('ikes-project'); }
     else if(shell==='mugs'){ $('mugsCustomerShell')?.classList.remove('hidden'); document.body.classList.add('mugs-project'); }
     else if(shell==='flowers'){ $('flowersCustomerShell')?.classList.remove('hidden'); document.body.classList.add('flowers-project'); }
+    else if(shell==='bor'){ $('universalCustomerShell')?.classList.remove('hidden'); document.body.classList.add('universal-project','bor-project'); if(borCustomerState.step==='start' && !borCustomerState.lossType) resetBorCustomerState(); renderBorCustomerShell(p); }
     else if(shell==='universal'){ $('universalCustomerShell')?.classList.remove('hidden'); document.body.classList.add('universal-project'); renderUniversalCustomerShell(p); }
     else console.warn('No customer shell registered for project',p?.id);
   }
@@ -6009,8 +6112,11 @@
       $('returnToEngineBtn')?.classList.remove('hidden');document.title='Mugs After Dark';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='mugshot-after-dark';document.body.classList.remove('ikes-project','flowers-project');document.body.classList.add('mugs-project');resetMugsShell();showMugsScreen('welcome');
     }else if(resolvedShell==='flowers'){
       $('returnToEngineBtn')?.classList.remove('hidden');applyFlowersIdentity(p);document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='flowers';document.body.classList.remove('ikes-project','mugs-project','universal-project');document.body.classList.add('flowers-project');resetFlowersShell();showFlowersScreen('welcome');
+    }else if(resolvedShell==='bor'){
+      if(!assertBorProjectContext(p,{requireActive:true}))return;
+      $('returnToEngineBtn')?.classList.remove('hidden');document.title='Best Option Restoration — North Richmond';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='bor-response';document.body.classList.remove('ikes-project','mugs-project','flowers-project');document.body.classList.add('universal-project','bor-project');resetBorCustomerState();renderBorCustomerShell(p);
     }else if(resolvedShell==='universal'){
-      $('returnToEngineBtn')?.classList.remove('hidden');document.title=p.name||'Project';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='universal';document.body.classList.remove('ikes-project','mugs-project','flowers-project');document.body.classList.add('universal-project');resetUniversalCustomerState(p);renderUniversalCustomerShell(p);
+      $('returnToEngineBtn')?.classList.remove('hidden');document.title=p.name||'Project';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='universal';document.body.classList.remove('ikes-project','mugs-project','flowers-project','bor-project');document.body.classList.add('universal-project');resetUniversalCustomerState(p);renderUniversalCustomerShell(p);
     }
   }
 
@@ -6106,7 +6212,8 @@
   }
 
   function restoreBlackFlagTheme(){
-    document.body.classList.remove('project-mode','mugs-project','ikes-project','flowers-project');
+    clearBorRuntimeResidue();
+    document.body.classList.remove('project-mode','mugs-project','ikes-project','flowers-project','universal-project','bor-project');
     document.body.removeAttribute('data-active-project');
     document.body.removeAttribute('data-project-theme');
     document.documentElement.style.removeProperty('--project-primary');
@@ -7950,7 +8057,7 @@ The full order and approved media remain stored with this project.`;
 
   async function showProtectedProjectPage(kind){
     hideAllCustomerShells();
-    document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project');
+    document.body.classList.remove('ikes-project','mugs-project','flowers-project','universal-project','bor-project');
     $('enginePanel')?.classList.add('hidden');
     $('blackFlagEntryGate')?.classList.add('hidden');
     $('adminPanel')?.classList.add('hidden');

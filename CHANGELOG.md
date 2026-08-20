@@ -1,11 +1,23 @@
-# Dark Sky 4.8.0 — Project Return Contract
+# Dark Sky 4.8.2 — Project Isolation Guard
 
-- Fixed **Back to Ordering** from Project Admin with a storage-independent delegated command route.
-- The return route is now a platform contract (`data-project-return-customer`) shared by Project Admin, Orders, Ledger, and future project shells.
-- Armed the return command before IndexedDB and migrations, matching the 4.7.9 project-settings reliability pattern.
-- Preserved Test Access, project isolation, security gates, project-specific customer shells, and the 4.7.7 Captain’s Quarters baseline.
+- Added fail-closed BOR project-context checks before rendering and before any BOR request can be persisted.
+- BOR submissions are blocked if the active Project ID changes, preventing cross-project writes.
+- Added explicit BOR runtime cleanup when leaving the vessel: customer state, photo state, BOR body class, BOR theme marker, and rendered BOR shell content are removed.
+- Existing Captain’s Quarters, security, platform core, identity, V4 governance modules, and existing project assets remain byte-for-byte unchanged from 4.8.0.
+- BOR remains a local vessel implementation; no BOR-specific workflow, branding, phone number, or status model is promoted into other projects.
+- Added an isolation audit manifest and static regression checks before packaging.
 
-## 4.8.0 — Project Settings Access Repair
+# Dark Sky 4.8.1 — BOR North Richmond Response
+
+- Added **Best Option Restoration — North Richmond** as an isolated Dark Sky project while preserving Captain’s Quarters, Black Flag Engine, Test Access, and existing project contracts.
+- Added a purpose-built, customer-first emergency intake with only three steps: choose damage type, give property details, give contact information.
+- Added direct 24/7 call actions for the North Richmond number, optional photo capture, clear back/next controls, and a simple confirmation/reference screen.
+- Added a restoration workflow: New Loss → Contacted → Dispatched → On Site → Mitigation → Monitoring → Reconstruction → Closed.
+- Reused the platform-wide project settings and return contracts so the project admin gear and Back to Ordering remain standardized.
+- Added the current Best Option Restoration blue/orange circular brand mark as a project-owned asset; no other project inherits it.
+- Preserved project isolation and marks test submissions as test data during Sea Trial/Test Experience.
+
+## 4.7.9 — Project Settings Access Repair
 
 - Made project settings/admin access a mission-critical early-bound control.
 - Test Access opens project admin without a redundant PIN prompt while preserving active project identity and isolation.

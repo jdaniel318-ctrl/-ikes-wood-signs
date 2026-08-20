@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v4-7-9-project-settings-access';
+const CACHE='dark-sky-v4-8-1-bor-response';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=4.8.0',
-  './platform_core.js?v=4.8.0',
-  './platform_v4.js?v=4.8.0',
-  './platform_identity.js?v=4.8.0',
-  './app.js?v=4.8.0',
-  './captain.js?v=4.8.0',
+  './styles.css?v=4.8.2',
+  './platform_core.js?v=4.8.2',
+  './platform_v4.js?v=4.8.2',
+  './platform_identity.js?v=4.8.2',
+  './app.js?v=4.8.2',
+  './captain.js?v=4.8.2',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
