@@ -1,4 +1,11 @@
-# Dark Sky 4.8.3 — BOR Commissioning Repair
+# Dark Sky 4.8.4 — BOR Commissioning Repair
+
+## 4.8.4 — BOR Registry Materialization Repair
+- Fixed the upgrade path that left BOR absent on browsers whose canonical fleet already contained the four existing projects.
+- Release-approved new vessels are now appended by immutable Project ID before registry reconciliation.
+- Existing project rows are preserved; the repair appends BOR rather than replacing or rebuilding the fleet.
+- BOR admission still occurs only after canonical registry persistence/read-back.
+
 
 - Fixed BOR North Richmond not appearing in Project Command on existing four-project installations.
 - Added an explicit, one-time fleet admission for immutable Project ID `bor-north-richmond`.
@@ -6,7 +13,7 @@
 - Added a release allowlist: merely defining a future project in source code can no longer automatically seed it into an existing fleet.
 - Preserved the four existing project definition blocks byte-for-byte from 4.8.2.
 - Kept BOR's 4.8.2 fail-closed isolation boundary and project-specific data namespace intact.
-- Advanced executable/service-worker cache references to 4.8.3 and added the BOR brand asset to offline caching.
+- Advanced executable/service-worker cache references to 4.8.4 and added the BOR brand asset to offline caching.
 - Added `COMMISSIONING_AUDIT.md` with preservation and admission checks.
 
 # Dark Sky 4.8.2 — Project Isolation Guard

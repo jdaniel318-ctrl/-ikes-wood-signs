@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.8.3';
+  const BUILD_VERSION = '4.8.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 6;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1984,12 +1984,12 @@
       if(!canonicalById.has(id))continue;
       if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'v4-baseline',transactionId:`baseline:${id}`,admittedAt:now,build:BUILD_VERSION};
     }
-    // 4.8.3 — explicit one-time admission for projects bundled by this release.
+    // 4.8.4 — explicit one-time admission for projects bundled by this release.
     // This does not alter or reserialize existing vessel definitions; it grants fleet
     // citizenship only after the exact immutable Project ID exists in the canonical store.
     for(const id of RELEASE_NEW_PROJECT_IDS){
       if(!canonicalById.has(id))continue;
-      if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.8.3`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
+      if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.8.4`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
     }
     // Drop malformed admission rows. Valid rows for projects no longer present are
     // retained as historical evidence, but they cannot enter the active manifest.
@@ -2315,6 +2315,23 @@
     companies=reconcileFleetSources(canonicalRows,savedRows||[],backupRows);
     if(!companies.length)companies=structuredClone(DEFAULT_COMPANIES);
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
+
+    // 4.8.4 — Release Vessel Materialization. Existing browsers correctly treat the
+    // canonical registry as authority, which means a newly bundled project definition
+    // is not automatically present in `companies`. Deliberately approved release
+    // vessels are appended by immutable Project ID only; existing project objects are
+    // not rewritten, renamed, reordered, or replaced. The normal registry transaction
+    // below then persists and verifies the expanded fleet.
+    const releaseIdsPresent=new Set(companies.map(p=>String(p?.id||'')));
+    for(const releaseId of RELEASE_NEW_PROJECT_IDS){
+      if(releaseIdsPresent.has(releaseId))continue;
+      const bundled=DEFAULT_COMPANIES.find(p=>String(p?.id||'')===releaseId);
+      if(!bundled)continue;
+      companies.push(ensureProjectGovernance(normalizeProjectCode(structuredClone(bundled))));
+      releaseIdsPresent.add(releaseId);
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:releaseId,category:'migration',action:'release.vessel.materialized',detail:`${releaseId} appended without modifying existing fleet rows • ${BUILD_VERSION}`});
+    }
+
     const core=window.BlackFlagV3Core;
     let migrationChanged=false;
     if(core){
