@@ -19,7 +19,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=4.9.2" />
+  <link rel="stylesheet" href="styles.css?v=4.9.3" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -587,13 +587,13 @@
       <div class="admin-timeout-note">Automatically returns to ordering after 15 minutes of inactivity.</div><section class="project-admin-dashboard-head">
         <div>
           <div class="project-admin-dashboard-kicker">PROJECT COMMAND</div>
-          <h3>Admin</h3>
+          <h3>Project Control Center</h3>
         </div>
         <div id="projectAdminQuickStats" class="project-admin-quick-stats"></div>
       </section>
       <section id="projectAdminMenu" class="project-admin-menu project-admin-nav-strip">
-        <button id="adminHomeMenuBtn" class="project-admin-nav-home" type="button">⚙ ADMIN MENU</button>
-        <button id="adminOrdersMenuBtn" class="project-admin-nav-item active" data-admin-module="orders" type="button">▤ <span>Orders</span></button>
+        <button id="adminHomeMenuBtn" class="project-admin-nav-home" data-admin-module="overview" type="button">⌂ OVERVIEW</button>
+        <button id="adminOrdersMenuBtn" class="project-admin-nav-item" data-admin-module="orders" type="button">▤ <span>Jobs / Orders</span></button>
         <button id="adminCustomersMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="customers" type="button" disabled>◎ <span>Customers</span></button>
         <button id="adminLedgerMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="ledger" type="button" disabled>▦ <span>Ledger</span></button>
         <button id="adminPaymentsMenuBtn" class="project-admin-nav-item module-disabled" data-admin-module="payments" type="button" disabled>$ <span>Payments</span></button>
@@ -631,8 +631,9 @@
         <input id="confirmAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Re-enter the new PIN" />
         <p id="pinSettingsError" class="error-text" aria-live="polite"></p>
         <button type="button" id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
-        <p class="helper">Default PIN for Version 1.5 is 4353 until changed here.</p>
+        <p class="helper">Fleet default project PIN is 4353 unless this project is deliberately given its own PIN.</p>
       </div>
+      <section id="adminOverviewModule" class="admin-module-panel project-admin-command-center hidden" data-admin-panel="overview"></section>
       <section id="adminCustomerHistory" class="admin-customer-history admin-module-panel hidden" data-admin-panel="customers"></section>
       <section id="adminOrdersModule" class="admin-order-overview admin-module-panel hidden" data-admin-panel="orders">
         <div class="admin-order-overview-head">
@@ -1272,11 +1273,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=4.9.2"></script>
-  <script src="platform_v4.js?v=4.9.2"></script>
-  <script src="platform_identity.js?v=4.9.2"></script>
-  <script src="app.js?v=4.9.2"></script>
-  <script src="captain.js?v=4.9.2"></script>
+  <script src="platform_core.js?v=4.9.3"></script>
+  <script src="platform_v4.js?v=4.9.3"></script>
+  <script src="platform_identity.js?v=4.9.3"></script>
+  <script src="app.js?v=4.9.3"></script>
+  <script src="captain.js?v=4.9.3"></script>
 
 </body>
 </html>

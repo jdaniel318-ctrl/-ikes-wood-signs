@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.9.2';
+  const BUILD_VERSION = '4.9.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1636,7 +1636,23 @@
   async function setAdminPin(value,projectId=activeProjectId){
     const scopedKey=projectAdminPinKey(projectId);
     if(!scopedKey) throw new Error('Project context required for admin PIN changes.');
-    return setSetting(scopedKey,value);
+    return setSetting(scopedKey,String(value||'').trim());
+  }
+
+  async function enforceSignalRestorationAdminBaseline(){
+    const projectId='bor-north-richmond';
+    const marker='migration:4.9.3:signalAdminBaseline';
+    try{
+      const done=await getSetting(marker);
+      if(done?.value?.complete) return;
+      // Signal Restoration is still in private testing. Re-seal its project-local admin
+      // credential to the fleet standard so stale preview storage cannot lock the Captain out.
+      await setSetting(projectAdminPinKey(projectId),DEFAULT_ADMIN_PIN);
+      await setSetting(marker,{complete:true,at:new Date().toISOString(),pinBaseline:'fleet-default'});
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId,category:'migration',action:'signal_restoration.admin_pin_baseline.repaired',detail:`Fleet standard restored • ${BUILD_VERSION}`});
+    }catch(err){
+      console.warn('Signal Restoration admin baseline repair deferred',err);
+    }
   }
 
   async function getEnginePin(){
@@ -7887,26 +7903,49 @@ The full order and approved media remain stored with this project.`;
 
 
 
+  async function renderProjectAdminOverview(){
+    const p=activeProject(), box=$('adminOverviewModule');
+    if(!p||!box)return;
+    const s=await projectControlSnapshot(p);
+    const terms=activityTermsForProject(p);
+    const contact=p.contact||{};
+    const isTest=(p.publish?.status!=='live');
+    const sig=p.projectCode==='SIG';
+    const actions=[
+      ['orders',terms.plural,`${s.open.length} open • ${s.orders.length} total`],
+      ['customers','Customers',`${s.customers.length} retained in this project`],
+      ['admin','Access & Contact','Admin PIN, phone, email and address'],
+      ['options','Experience','Project-local options and customer settings']
+    ];
+    box.innerHTML=`<section class="project-admin-command-hero"><div><small>${escapeHtml(p.projectCode||'PROJECT')} • PROJECT CONTROL CENTER</small><h3>${escapeHtml(p.name)}</h3><p>${escapeHtml(p.description||'Project operations, customer activity and protected settings.')}</p></div><span class="project-admin-state ${isTest?'test':'live'}">${isTest?'TEST / PRIVATE PREVIEW':'LIVE'}</span></section>
+      <div class="project-admin-command-kpis"><article><span>OPEN ${escapeHtml(terms.plural.toUpperCase())}</span><strong>${s.open.length}</strong></article><article><span>CUSTOMERS</span><strong>${s.customers.length}</strong></article><article><span>30-DAY ACTIVITY</span><strong>${s.recent.length}</strong></article><article><span>PROJECT HEALTH</span><strong>${escapeHtml(s.status)}</strong></article></div>
+      ${sig?`<section class="sig-ops-strip"><div><small>RESTORATION OPERATIONS</small><strong>Richmond response vessel</strong><span>Water • Fire / Smoke • Storm • Mold • Commercial / Large Loss</span></div><div><small>CONTACT</small><strong>${escapeHtml(contact.phone||'804-317-3230')}</strong><span>${escapeHtml(contact.email||'jdaniel318@gmail.com')}</span></div><div><small>SAFETY STATE</small><strong>${isTest?'CALL ACTIONS DISABLED':'LIVE CONTACT ENABLED'}</strong><span>${isTest?'Private preview cannot place real-world calls.':'Customer contact follows live deployment rules.'}</span></div></section>`:''}
+      <section class="project-admin-command-grid">${actions.map(([tab,title,copy])=>`<button type="button" class="project-admin-command-card" data-admin-jump="${tab}"><span>${escapeHtml(title)}</span><strong>${escapeHtml(copy)}</strong><b>OPEN →</b></button>`).join('')}</section>
+      <section class="project-admin-command-notes"><div><small>PROJECT ISOLATION</small><strong>Sealed to ${escapeHtml(p.name)}</strong><span>Orders, customers, settings and credentials remain in this project namespace.</span></div><div><small>SYSTEM</small><strong>Dark Sky ${BUILD_VERSION}</strong><span>${escapeHtml(platformStatusLabel(p))}</span></div></section>`;
+    box.querySelectorAll('[data-admin-jump]').forEach(btn=>btn.addEventListener('click',()=>showProjectAdminModule(btn.dataset.adminJump)));
+  }
+
   async function renderProjectAdminQuickStats(){
     const p=activeProject();
     const box=$('projectAdminQuickStats');
     if(!p||!box)return;
 
     const orders=approvedProjectOrders(await getMergedOrders(),p);
-    const counts={
-      all:orders.length,
-      New:orders.filter(o=>o.status==='New').length,
-      'In Production':orders.filter(o=>o.status==='In Production').length,
-      'Ready for Pickup':orders.filter(o=>o.status==='Ready for Pickup'||o.status==='Ready').length,
-      Completed:orders.filter(o=>o.status==='Completed').length
-    };
+    const workflow=projectWorkflowFor(p);
+    const doneLabels=new Set(['Completed','Closed','Archived']);
+    const completed=orders.filter(o=>doneLabels.has(String(o.status||''))).length;
+    const open=Math.max(0,orders.length-completed);
+    const firstStage=workflow[0]||'New';
+    const firstCount=orders.filter(o=>String(o.status||'')===firstStage).length;
+    const activeStages=workflow.slice(1,-1);
+    const activeCount=orders.filter(o=>activeStages.includes(String(o.status||''))).length;
 
     box.innerHTML=`
-      <button class="admin-stat-block stat-all" data-order-filter="all"><span>All Orders</span><strong>${counts.all}</strong></button>
-      <button class="admin-stat-block stat-new" data-order-filter="New"><span>New Orders</span><strong>${counts.New}</strong></button>
-      <button class="admin-stat-block stat-production" data-order-filter="In Production"><span>In Production</span><strong>${counts['In Production']}</strong></button>
-      <button class="admin-stat-block stat-ready" data-order-filter="Ready for Pickup"><span>Ready</span><strong>${counts['Ready for Pickup']}</strong></button>
-      <button class="admin-stat-block stat-completed" data-order-filter="Completed"><span>Completed</span><strong>${counts.Completed}</strong></button>
+      <button class="admin-stat-block stat-all" data-order-filter="all"><span>All ${escapeHtml(activityTermsForProject(p).plural)}</span><strong>${orders.length}</strong></button>
+      <button class="admin-stat-block stat-new" data-order-filter="${escapeHtml(firstStage)}"><span>${escapeHtml(firstStage)}</span><strong>${firstCount}</strong></button>
+      <button class="admin-stat-block stat-production" data-order-filter="all"><span>Open Work</span><strong>${open}</strong></button>
+      <button class="admin-stat-block stat-ready" data-order-filter="all"><span>Active Stages</span><strong>${activeCount}</strong></button>
+      <button class="admin-stat-block stat-completed" data-order-filter="all"><span>Closed</span><strong>${completed}</strong></button>
     `;
     $$('#projectAdminQuickStats [data-order-filter]').forEach(btn=>{
       btn.addEventListener('click',()=>setAdminOrderFilter(btn.dataset.orderFilter));
@@ -8029,7 +8068,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function showProjectAdminMenu(){
-    await showProjectAdminModule('orders');
+    await showProjectAdminModule('overview');
   }
 
   async function showProjectAdminModule(moduleName){
@@ -8037,6 +8076,7 @@ The full order and approved media remain stored with this project.`;
     const pm=p.permissions||{};
 
     const allowed={
+      overview:true,
       admin:true,
       orders:pm.ordersView!==false,
       customers:!!p.customerHistory?.adminVisible,
@@ -8051,7 +8091,10 @@ The full order and approved media remain stored with this project.`;
     $$('.admin-module-panel').forEach(el=>el.classList.add('hidden'));
     $$('#projectAdminMenu [data-admin-module]').forEach(btn=>btn.classList.toggle('active',btn.dataset.adminModule===moduleName));
 
-    if(moduleName==='admin'){
+    if(moduleName==='overview'){
+      $('adminOverviewModule')?.classList.remove('hidden');
+      await renderProjectAdminOverview();
+    }else if(moduleName==='admin'){
       $('adminCoreSettingsModule')?.classList.remove('hidden');
       populateAdminCoreSettings();
     }else if(moduleName==='orders'){
@@ -8156,6 +8199,7 @@ The full order and approved media remain stored with this project.`;
     const mark=$('projectAdminGateMark');
     if(logo){
       let src=assets.projectLogo||'';
+      if(!src && code==='SIG') src='assets/signal_restoration_logo.png';
       if(!src && code==='IKE') src='assets/ike_character.jpg';
       if(src){
         logo.src=src;
@@ -8259,7 +8303,7 @@ The full order and approved media remain stored with this project.`;
       applyProjectAdminMenuPermissions();
       adminOrderFilter='all';
       await renderProjectAdminQuickStats();
-      await showProjectAdminModule('orders');
+      await showProjectAdminModule('overview');
       startProjectAdminIdleTimer();
     }else if(kind==='orders'){
       $('projectOrdersPanel')?.classList.remove('hidden');
@@ -10169,7 +10213,7 @@ The full order and approved media remain stored with this project.`;
       $('adminPreviewLightbox').classList.remove('hidden');
     });
 
-    $('adminHomeMenuBtn')?.addEventListener('click',()=>showProjectAdminModule('admin'));
+    $('adminHomeMenuBtn')?.addEventListener('click',()=>showProjectAdminModule('overview'));
     $('saveAdminCoreSettingsBtn')?.addEventListener('click',saveAdminCoreSettings);
     $('projectAdminMenu')?.addEventListener('click',e=>{
       const card=e.target.closest('[data-admin-module]');
@@ -10408,6 +10452,7 @@ The full order and approved media remain stored with this project.`;
     await loadBusinessConfig();
     await loadCompanies();
     await migrateLegacyProjectSettings();
+    await enforceSignalRestorationAdminBaseline();
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();

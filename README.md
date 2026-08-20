@@ -1,4 +1,4 @@
-# Dark Sky v4.9.2 — Signal Restoration
+# Dark Sky v4.9.3 — SIG Admin + Project Control Center
 
 Protected successor to 4.9.1. The restoration test vessel is now the original Signal Restoration brand with a Greater Richmond launch market and a project-local multi-market expansion model. Existing Dark Sky vessels remain isolated.
 
