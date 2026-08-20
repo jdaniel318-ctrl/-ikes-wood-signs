@@ -1,4 +1,15 @@
-# Dark Sky 4.9.6 — Project Access Contract + Show the Flag
+# Dark Sky 4.9.7 — Fleet Project Admin Authentication Spine
+
+- Fixed the actual failure mode behind the Project Admin PIN screen: the gear/settings route was bound early, but the **UNLOCK ADMIN** handler was still bound late inside the full application event setup. If initialization stalled before that point, the gate appeared correctly while the button was effectively dead.
+- Added an early, storage-independent Project Admin authentication spine bound before IndexedDB and migrations.
+- `4353` is a hard fleet invariant and always unlocks Project Admin for every current/future project, independent of stale project settings, project-specific PINs, Test Experience, Private Preview, live deployment, or Captain/Test Access state.
+- Deliberate project-specific PINs remain additional valid credentials; they can never replace or disable `4353`.
+- Project Admin no longer bypasses its PIN merely because Captain Test Access is active. Captain/Test Access and Project Admin authentication are now explicitly separate authority layers.
+- All Project Admin launch controls converge on the same route: Ike's admin control, Mugs, Becca's, Signal Restoration, universal/future project shells, Test Experience, preview, and live project shells.
+- Enter-key submission and button submission now use the same verifier and same lockout state.
+- A valid PIN is no longer reported as incorrect if a downstream workspace-render/storage error occurs after authentication.
+
+# Dark Sky 4.9.7 — Project Access Contract + Show the Flag
 
 - Makes `4353` the fleet-standard Project Admin PIN for every project unless that project has been deliberately given an override through protected project settings.
 - Adds explicit override metadata so stale project-local PIN rows cannot silently defeat the fleet default.

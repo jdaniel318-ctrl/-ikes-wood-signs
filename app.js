@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.9.6';
+  const BUILD_VERSION = '4.9.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -34,7 +34,7 @@
   function renderTestAccessState(){
     const active=isTestAccessActive(); document.body.classList.toggle('test-access-active',active); document.body.dataset.testAccess=active?'active':'off';
     document.getElementById('testAccessBanner')?.classList.toggle('hidden',!active);
-    const st=document.getElementById('captainTestAccessStatus'); if(st){st.textContent=active?'ACTIVE — PIN ENTRY BYPASSED FOR THIS TESTING SESSION':'OFF — NORMAL PIN SECURITY ACTIVE';st.classList.toggle('active',active);}
+    const st=document.getElementById('captainTestAccessStatus'); if(st){st.textContent=active?'ACTIVE — ENGINE TEST ACCESS ENABLED • PROJECT ADMIN STILL REQUIRES PIN':'OFF — NORMAL PIN SECURITY ACTIVE';st.classList.toggle('active',active);}
     const tg=document.getElementById('captainTestAccessToggle'); if(tg)tg.textContent=active?'DISABLE TEST ACCESS':'ENABLE TEST ACCESS';
     const deck=document.getElementById('captainTestAccessDeckBtn'); if(deck){deck.classList.toggle('active',active);deck.setAttribute('aria-pressed',active?'true':'false');}
     const deckStatus=document.getElementById('captainTestAccessDeckStatus'); if(deckStatus)deckStatus.textContent=active?'ACTIVE':'SECURE';
@@ -1644,6 +1644,38 @@
     }
   }
 
+  // Fleet-wide Project Admin authentication contract. This verifier is the ONLY
+  // authority for project-admin PIN entry from customer, test, preview, and live
+  // project shells. 4353 is always accepted as the fleet recovery/default PIN.
+  // Captain's Quarters/Test Access state is intentionally NOT consulted here, so
+  // Captain-level overrides can never suppress or replace the project fleet PIN.
+  async function verifyProjectAdminPin(rawValue,projectId=activeProjectId,{recordFailure=true}={}){
+    const id=String(projectId||'').trim();
+    const entered=String(rawValue||'').trim();
+    const securityKey=adminSecurityKey(id);
+    const security=pinSecurityState(securityKey);
+    if(security.lockedUntil>Date.now()) return {ok:false,code:'locked',lockedUntil:security.lockedUntil};
+
+    // Hard fleet invariant: 4353 works even if IndexedDB/settings are unavailable,
+    // stale, partially migrated, or a project-specific override exists.
+    if(entered===DEFAULT_ADMIN_PIN){
+      clearPinFailures(securityKey);
+      return {ok:true,code:'fleet-default',projectId:id};
+    }
+
+    // A deliberately configured project PIN is an additional valid credential; it
+    // never replaces 4353. Storage failure falls back safely to the fleet default.
+    let configured=DEFAULT_ADMIN_PIN;
+    try{ configured=String(await getAdminPin(id)||DEFAULT_ADMIN_PIN); }catch(_){ configured=DEFAULT_ADMIN_PIN; }
+    if(entered===configured){
+      clearPinFailures(securityKey);
+      return {ok:true,code:'project-pin',projectId:id};
+    }
+
+    const row=recordFailure?recordBadPin(securityKey):pinSecurityState(securityKey);
+    return {ok:false,code:row.lockedUntil>Date.now()?'locked':'incorrect',lockedUntil:row.lockedUntil||0,projectId:id};
+  }
+
   async function setAdminPin(value,projectId=activeProjectId){
     const id=String(projectId||'').trim();
     const scopedKey=projectAdminPinKey(id);
@@ -1677,6 +1709,8 @@
       console.warn('Fleet project admin baseline repair deferred',err);
     }
   }
+
+  window.verifyProjectAdminPin=verifyProjectAdminPin;
 
   async function getEnginePin(){
     try{
@@ -8014,7 +8048,6 @@ The full order and approved media remain stored with this project.`;
     if(kind==='orders' && !pm.ordersView) return;
     if(kind==='ledger' && !pm.ledgerView) return;
     window.__pendingProtectedPage=kind;
-    if(isTestAccessActive()){ await showProtectedProjectPage(kind); return; }
     $('adminPinInput').value='';
     $('pinGateError').textContent='';
     $('pinGate').classList.remove('hidden');
@@ -8277,8 +8310,8 @@ The full order and approved media remain stored with this project.`;
     const confirmNext=$('adminConfirmPinChange')?.value.trim()||'';
 
     if(next||confirmNext){
-      const expected=String(await getAdminPin());
-      if(!isTestAccessActive()&&current!==expected){
+      const currentCheck=await verifyProjectAdminPin(current,p.id,{recordFailure:false});
+      if(!currentCheck.ok){
         $('adminCoreSettingsStatus').textContent='Current PIN is incorrect.';
         return;
       }
@@ -10204,12 +10237,8 @@ The full order and approved media remain stored with this project.`;
     }
     window.__pendingProtectedPage='settings';
     try{
-      // Commissioning/Test Access is already Captain-authorized for this browser
-      // session. It bypasses PIN entry only; project identity and isolation stay intact.
-      if(isTestAccessActive()){
-        await showProtectedProjectPage('settings');
-        return;
-      }
+      // Project Admin authentication is fleet-scoped and remains independent of
+      // Captain/Test Access. Every project shell uses the same gate contract.
       await configureProjectAdminGate();
       document.body.classList.add('modal-open');
       if($('adminPinInput')) $('adminPinInput').value='';
@@ -10235,6 +10264,57 @@ The full order and approved media remain stored with this project.`;
       e.preventDefault();
       e.stopPropagation();
       openProjectSettingsFromCustomer();
+    },true);
+  }
+
+  // Mission-critical Project Admin gate binding. This is deliberately event-
+  // delegated and bound before IndexedDB/migrations. A later startup failure may
+  // affect secondary modules, but it must never leave a visible UNLOCK ADMIN
+  // button dead. It covers every project shell because all routes converge here.
+  function bindProjectAdminAuthCore(){
+    if(window.__darkSkyProjectAdminAuthBound)return;
+    window.__darkSkyProjectAdminAuthBound=true;
+
+    const submit=async()=>{
+      const input=$('adminPinInput');
+      const button=$('unlockAdminBtn');
+      const error=$('pinGateError');
+      if(!input||!button)return;
+      const projectId=activeProjectId;
+      const result=await verifyProjectAdminPin(input.value,projectId);
+      if(!result.ok){
+        if(error) error.textContent=result.code==='locked'?'Project Admin access is temporarily locked.':'Incorrect PIN.';
+        if(result.code==='locked') showPinLock(adminSecurityKey(projectId),'adminLockTimer','adminPinInput','unlockAdminBtn');
+        else{ input.select(); input.focus(); }
+        return;
+      }
+      if(error) error.textContent='';
+      input.value='';
+      $('pinGate')?.classList.add('hidden');
+      document.body.classList.remove('modal-open');
+      const target=window.__pendingProtectedPage||'settings';
+      try{
+        await showProtectedProjectPage(target);
+      }catch(err){
+        console.error('Project Admin page open failed after successful authentication',err);
+        // Do not misreport a valid PIN as incorrect. Keep authentication semantics
+        // separate from downstream rendering/storage faults.
+        alert('PIN accepted, but the Project Admin workspace could not finish loading. Return to Dark Sky and reopen the project.');
+      }
+    };
+
+    document.addEventListener('click',e=>{
+      const trigger=e.target?.closest?.('#unlockAdminBtn');
+      if(!trigger)return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      submit();
+    },true);
+    document.addEventListener('keydown',e=>{
+      if(e.key!=='Enter'||e.target?.id!=='adminPinInput')return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      submit();
     },true);
   }
 
@@ -10505,28 +10585,6 @@ The full order and approved media remain stored with this project.`;
       $('engineStorageDetail').textContent='Engine settings reset to defaults. Saved orders were preserved.';
       await refreshEngineDiagnostics();
     });
-    $('unlockAdminBtn').addEventListener('click',async()=>{
-      if(!isTestAccessActive()&&pinLocked(adminSecurityKey())){showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');return;}
-      const entered=$('adminPinInput').value.trim();
-      const expected=isTestAccessActive()?entered:await getAdminPin();
-      // Fleet project-access contract: 4353 is the guaranteed fleet-default/recovery
-      // Project Admin PIN. A deliberately configured project PIN may also unlock
-      // that project, but stale project storage can never make 4353 stop working.
-      const projectPinAccepted=isTestAccessActive() || entered===DEFAULT_ADMIN_PIN || entered===String(expected||'');
-      if(!projectPinAccepted){
-        const row=recordBadPin(adminSecurityKey());
-        $('pinGateError').textContent='Incorrect PIN.';
-        if(row.lockedUntil>Date.now()) showPinLock(adminSecurityKey(),'adminLockTimer','adminPinInput','unlockAdminBtn');
-        else $('adminPinInput').select();
-        return;
-      }
-      clearPinFailures(adminSecurityKey());
-      $('pinGate').classList.add('hidden');
-      document.body.classList.remove('modal-open');
-      const target=window.__pendingProtectedPage||'settings';
-      await showProtectedProjectPage(target);
-    });
-    $('adminPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('unlockAdminBtn').click();});
     $('cancelAdminPinBtn').addEventListener('click',returnToCustomerAndLockProtected);
     $('savePinBtn').addEventListener('click',async()=>{
       const p=$('newAdminPin').value.trim();
@@ -10563,6 +10621,7 @@ The full order and approved media remain stored with this project.`;
     // Project settings/admin access is mission-critical during commissioning.
     // Bind it before storage/migrations so every project shell has a live gear.
     bindProjectSettingsAccessCore();
+    bindProjectAdminAuthCore();
     bindProjectReturnToCustomerCore();
     // Customer step navigation is also mission-critical. Bind it before storage so
     // a stalled/failed IndexedDB open cannot leave a fully-rendered dead experience.

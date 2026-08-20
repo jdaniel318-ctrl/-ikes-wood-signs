@@ -1,3 +1,14 @@
+# 4.9.7 Fleet Project Admin Authentication Regression
+
+Required invariants:
+- `verifyProjectAdminPin('4353', <any project id>)` succeeds before any project-specific settings lookup is required.
+- Project Admin unlock is event-delegated and bound in `init()` before storage/migrations.
+- Test Access does not bypass Project Admin authentication.
+- Captain authority is not read by Project Admin PIN verification.
+- Every settings launcher (`#adminBtn`, `#mugsAdminBtn`, `#flowersAdminBtn`, `[data-project-settings-launch]`) converges on `openProjectSettingsFromCustomer()`.
+- No second late `#unlockAdminBtn` authentication handler exists.
+- Project-specific PINs are optional additional credentials; fleet PIN `4353` remains valid.
+
 # Dark Sky 4.9.1 Regression Audit
 
 ## Protected surfaces
@@ -27,7 +38,7 @@
 - PASS: Signal Restoration visual-placement library remains available but is demoted to an Advanced Visual Capability Library.
 - PASS: existing Signal Restoration test/private-preview contact safety logic remains unchanged.
 
-## 4.9.6 Project Admin Access + Navigation Repair
+## 4.9.7 Project Admin Access + Navigation Repair
 - Verified fleet default project PIN contract: 4353 unless deliberately overridden in protected project settings.
 - Verified canonical Black Flag return control remains visible on project customer, PIN, admin, orders, and ledger surfaces.
 - Verified Project Admin gate contrast overrides remain project-branded but readable.
