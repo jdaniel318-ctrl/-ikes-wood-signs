@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.7.9';
+  const BUILD_VERSION = '4.8.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 5;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -9774,6 +9774,22 @@ The full order and approved media remain stored with this project.`;
     },true);
   }
 
+  // 4.8.0 project-shell contract: every current and future project-admin surface
+  // returns through one storage-independent route. This is deliberately armed
+  // before IndexedDB/migrations so a visible Back to Ordering control can never
+  // be left dead by a secondary startup failure.
+  function bindProjectReturnToCustomerCore(){
+    if(window.__darkSkyProjectReturnToCustomerBound)return;
+    window.__darkSkyProjectReturnToCustomerBound=true;
+    document.addEventListener('click',e=>{
+      const trigger=e.target?.closest?.('[data-project-return-customer],#closeAdminBtn,#closeProjectOrdersBtn,#closeProjectLedgerBtn');
+      if(!trigger)return;
+      e.preventDefault();
+      e.stopPropagation();
+      returnToCustomerAndLockProtected();
+    },true);
+  }
+
   function bindCustomerNavigationCore(){
     if(window.__darkSkyCustomerNavigationBound)return;
     window.__darkSkyCustomerNavigationBound=true;
@@ -9842,7 +9858,6 @@ The full order and approved media remain stored with this project.`;
     // Customer media controls are owned by bindCustomerMediaCore() and are armed before storage.
     // Customer journey CTAs are owned by bindCustomerActionCore()
     // and are armed before storage/migrations.
-    $('closeAdminBtn').addEventListener('click',returnToCustomerAndLockProtected);
     const closeAdminPreviewLightbox=()=>{
       const gate=$('adminPreviewLightbox');
       if(gate) gate.classList.add('hidden');
@@ -10064,8 +10079,6 @@ The full order and approved media remain stored with this project.`;
 
     $('projectOrdersLaunchBtn')?.addEventListener('click',()=>openProtectedProjectPage('orders'));
     $('projectLedgerLaunchBtn')?.addEventListener('click',()=>openProtectedProjectPage('ledger'));
-    $('closeProjectOrdersBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
-    $('closeProjectLedgerBtn')?.addEventListener('click',returnToCustomerAndLockProtected);
     if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').addEventListener('change',saveFeatureSettings);
     
     if($('saveBusinessSettingsBtn')) $('saveBusinessSettingsBtn').addEventListener('click',saveBusinessConfigFromAdmin);
@@ -10082,6 +10095,7 @@ The full order and approved media remain stored with this project.`;
     // Project settings/admin access is mission-critical during commissioning.
     // Bind it before storage/migrations so every project shell has a live gear.
     bindProjectSettingsAccessCore();
+    bindProjectReturnToCustomerCore();
     // Customer step navigation is also mission-critical. Bind it before storage so
     // a stalled/failed IndexedDB open cannot leave a fully-rendered dead experience.
     bindCustomerNavigationCore();
@@ -10118,6 +10132,8 @@ The full order and approved media remain stored with this project.`;
   applyEngineAppearance(readLocalEngineAppearance()||'business');
   // The Seaworthiness spine goes first so core routes exist before storage/migrations/renderers.
   bindSeaworthinessCommandSpine();
+  bindProjectSettingsAccessCore();
+  bindProjectReturnToCustomerCore();
   bindCustomerActionCore();
   bindCustomerChoiceCore();
   bindCustomerMediaCore();

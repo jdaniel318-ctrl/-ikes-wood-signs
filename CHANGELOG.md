@@ -1,4 +1,11 @@
-## 4.7.9 — Project Settings Access Repair
+# Dark Sky 4.8.0 — Project Return Contract
+
+- Fixed **Back to Ordering** from Project Admin with a storage-independent delegated command route.
+- The return route is now a platform contract (`data-project-return-customer`) shared by Project Admin, Orders, Ledger, and future project shells.
+- Armed the return command before IndexedDB and migrations, matching the 4.7.9 project-settings reliability pattern.
+- Preserved Test Access, project isolation, security gates, project-specific customer shells, and the 4.7.7 Captain’s Quarters baseline.
+
+## 4.8.0 — Project Settings Access Repair
 
 - Made project settings/admin access a mission-critical early-bound control.
 - Test Access opens project admin without a redundant PIN prompt while preserving active project identity and isolation.
