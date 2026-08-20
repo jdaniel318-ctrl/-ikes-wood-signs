@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '4.8.4';
+  const BUILD_VERSION = '4.8.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 6;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1490,6 +1490,38 @@
     return canonical;
   }
 
+  async function materializeApprovedReleaseVessels(){
+    // 4.8.5 — Release Vessel Exact-Row Upsert. A bundled Captain-approved vessel
+    // must exist in the canonical project store before fleet reconciliation begins.
+    // Upsert ONLY the missing approved Project ID; never rewrite existing project rows.
+    const added=[];
+    for(const releaseId of RELEASE_NEW_PROJECT_IDS){
+      const id=canonicalProjectId(String(releaseId||''));
+      if(!id)continue;
+      const existing=await readCanonicalProject(id);
+      if(existing)continue;
+      const bundled=DEFAULT_COMPANIES.find(p=>canonicalProjectId(String(p?.id||''))===id);
+      if(!bundled)throw new Error(`Approved release vessel definition missing: ${id}`);
+      const candidate=ensureProjectGovernance(normalizeProjectCode(structuredClone(bundled)));
+      candidate.id=id;
+      if(candidate.identity&&typeof candidate.identity==='object')candidate.identity.projectId=id;
+      await withPrimaryDbRetry(async()=>{
+        const tr=db.transaction(STORE_PROJECTS,'readwrite');
+        tr.objectStore(STORE_PROJECTS).put(candidate);
+        await transactionToPromise(tr);
+      },`release.materialize:${id}`);
+      const verified=await readCanonicalProject(id);
+      if(!verified)throw new Error(`Release vessel ${id} failed canonical read-back verification.`);
+      added.push(id);
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:id,category:'migration',action:'release.vessel.exact_row_materialized',detail:`${id} added without rewriting existing fleet rows • ${BUILD_VERSION}`});
+    }
+    if(added.length){
+      const canonical=await readCanonicalProjectRegistry();
+      await ensureV4AdmissionLedger(canonical);
+    }
+    return added;
+  }
+
   async function persistProjectMutation(project,{reason='project.mutation'}={}){
     if(!project?.id)throw new Error('Project mutation requires an immutable Project ID.');
     const id=canonicalProjectId(String(project.id));
@@ -1989,7 +2021,7 @@
     // citizenship only after the exact immutable Project ID exists in the canonical store.
     for(const id of RELEASE_NEW_PROJECT_IDS){
       if(!canonicalById.has(id))continue;
-      if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.8.4`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
+      if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.8.5`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
     }
     // Drop malformed admission rows. Valid rows for projects no longer present are
     // retained as historical evidence, but they cannot enter the active manifest.
@@ -10245,6 +10277,9 @@ The full order and approved media remain stored with this project.`;
     await loadEngineAppearance();
     db=await openDb();
     await migrateLegacyPlatformStorage();
+    // Materialize Captain-approved bundled vessels by exact immutable Project ID
+    // before any fleet reconciliation or command rendering can project stale rows.
+    await materializeApprovedReleaseVessels();
     await loadFeatureSettings();
     await loadBusinessConfig();
     await loadCompanies();

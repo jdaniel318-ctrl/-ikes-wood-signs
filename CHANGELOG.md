@@ -1,6 +1,14 @@
-# Dark Sky 4.8.4 — BOR Commissioning Repair
+# Dark Sky 4.8.5 — BOR Exact-Row Commissioning Repair
 
-## 4.8.4 — BOR Registry Materialization Repair
+- Fixes BOR remaining absent from existing four-project browsers after 4.8.4.
+- Captain-approved release vessels are now materialized as an exact canonical project-row upsert immediately after storage opens, before fleet reconciliation or Project Command rendering.
+- Existing project rows are never rewritten by this repair.
+- Canonical read-back is required before BOR receives its release admission.
+- Project isolation, Captain’s Quarters, Test Access, Settings, and return-navigation contracts remain unchanged.
+
+# Dark Sky 4.8.5 — BOR Commissioning Repair
+
+## 4.8.5 — BOR Registry Materialization Repair
 - Fixed the upgrade path that left BOR absent on browsers whose canonical fleet already contained the four existing projects.
 - Release-approved new vessels are now appended by immutable Project ID before registry reconciliation.
 - Existing project rows are preserved; the repair appends BOR rather than replacing or rebuilding the fleet.
@@ -13,7 +21,7 @@
 - Added a release allowlist: merely defining a future project in source code can no longer automatically seed it into an existing fleet.
 - Preserved the four existing project definition blocks byte-for-byte from 4.8.2.
 - Kept BOR's 4.8.2 fail-closed isolation boundary and project-specific data namespace intact.
-- Advanced executable/service-worker cache references to 4.8.4 and added the BOR brand asset to offline caching.
+- Advanced executable/service-worker cache references to 4.8.5 and added the BOR brand asset to offline caching.
 - Added `COMMISSIONING_AUDIT.md` with preservation and admission checks.
 
 # Dark Sky 4.8.2 — Project Isolation Guard
