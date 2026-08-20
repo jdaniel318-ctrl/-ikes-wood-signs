@@ -1,3 +1,13 @@
+# Dark Sky 4.9.0 — Mobile Customer Experience Foundation
+
+- Rebuilt BOR customer presentation as a modern, mobile-first service experience while preserving the three-step intake structure.
+- Added consumer-style service cards, concise supporting copy, clearer progress, stronger request summary, improved photo presentation, and a more actionable confirmation screen.
+- Added iPhone safe-area handling, phone-first single-column service navigation, touch-sized controls, sticky mobile emergency call action, and responsive layouts through iPad/desktop.
+- Replaced BOR’s fragile per-render action bindings with delegated customer-flow controls so Start Another Request, Back, damage selection, Continue, and Submit survive re-rendering.
+- Fixed Start Another Request to clear temporary BOR customer state and return to Step 1 without leaving Private Preview/Test Experience.
+- Established the Dark Sky Responsive Customer Contract. BOR is the first certified implementation; existing projects remain unchanged until individually regression-tested against the contract.
+- Preserved BOR project isolation and the protected fleet/commissioning structure from 4.8.5.
+
 # Dark Sky 4.8.5 — BOR Exact-Row Commissioning Repair
 
 - Fixes BOR remaining absent from existing four-project browsers after 4.8.4.

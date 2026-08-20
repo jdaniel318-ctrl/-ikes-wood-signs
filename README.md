@@ -1,5 +1,5 @@
-# Dark Sky v4.8.5 — BOR Commissioning Repair
+# Dark Sky v4.9.0 — Mobile Customer Experience Foundation
 
-Built from the protected 4.8.2 Isolation Guard. This release admits Best Option Restoration — North Richmond as the fifth Dark Sky project on existing installations without changing the four existing vessel definitions.
+BOR North Richmond is the first fully mobile-first Dark Sky customer project. This build keeps the protected 4.8.5 fleet/commissioning structure while redesigning BOR around fast phone use, stronger consumer presentation, reliable customer-flow reset, and iPhone safe-area/touch behavior.
 
-The repair is deliberately narrow: BOR receives an explicit release admission only after its immutable Project ID exists in the canonical registry. Future source-code project definitions do not automatically become fleet vessels.
+Existing project definitions, Captain’s Quarters, security, Test Access, and project isolation remain structurally preserved. See `MOBILE_CONTRACT.md` and `REGRESSION_AUDIT.md`.

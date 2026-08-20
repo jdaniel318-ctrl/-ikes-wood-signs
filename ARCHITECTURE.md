@@ -76,3 +76,6 @@ The common fleet gate checks seven categories: explicit project identity, admitt
 Ike's Wood Signs is the first reference vessel. Lessons proven there may be promoted into the fleet standard, but no Ike-specific business workflow becomes a fleet requirement merely because Ike proves it.
 
 Captain commissioning metadata is stored separately from the canonical project registry. Revoking a commissioning order never changes Project ID, project data, or project governance status.
+
+## 4.9.0 Responsive Customer Contract
+Dark Sky customer projects are required to support phone, tablet, and desktop use. BOR North Richmond is the first project certified against the full contract. The contract provides safe-area handling, touch-first controls, no accidental horizontal overflow, readable phone typography, mobile camera/photo support, and customer-flow navigation that does not depend on hover. Existing projects are not automatically restyled by BOR; they must be upgraded and regression-tested individually before certification.
