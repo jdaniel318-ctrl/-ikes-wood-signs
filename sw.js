@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-9-7-north-star';
+const CACHE='dark-sky-v5-9-8-true-bearing';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.9.7',
-  './platform_core.js?v=5.9.7',
-  './platform_v4.js?v=5.9.7',
-  './platform_identity.js?v=5.9.7',
-  './app.js?v=5.9.7',
-  './captain.js?v=5.9.7',
+  './styles.css?v=5.9.8',
+  './platform_core.js?v=5.9.8',
+  './platform_v4.js?v=5.9.8',
+  './platform_identity.js?v=5.9.8',
+  './app.js?v=5.9.8',
+  './captain.js?v=5.9.8',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

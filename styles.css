@@ -13691,3 +13691,85 @@ body.premium-plumbing-customer .experience-mode-banner button,body.legacy-plumbi
   .legacy-contractor-site .contractor-mobile-brand .project-experience-brand-card .universal-brand-logo{width:210px!important;height:108px!important;flex-basis:210px!important}
   .legacy-contractor-site .contractor-hero{min-height:690px!important}.legacy-contractor-site .contractor-hero-copy{min-height:690px!important;padding:26px 22px 22px!important}
 }
+
+/* =========================================================
+   5.9.8 — TRUE BEARING
+   Benchmark-locked responsive Legacy composition.
+   The bundled benchmark is a QA reference only; live UI remains native.
+   ========================================================= */
+
+/* Desktop: make the hero read as one composed billboard, not two adjacent panels. */
+@media(min-width:1051px){
+  .legacy-contractor-site .contractor-main{max-width:1440px!important;padding-top:0!important}
+  .legacy-contractor-site .contractor-hero{grid-template-columns:minmax(0,.9fr) minmax(560px,1.1fr)!important;min-height:560px!important;border-radius:0!important}
+  .legacy-contractor-site .contractor-hero-copy{padding:62px 54px 46px!important;background:linear-gradient(90deg,#061f2b 0%,#062a38 76%,rgba(6,42,56,.72) 100%)!important}
+  .legacy-contractor-site .contractor-hero-copy h2{font-size:clamp(58px,4.7vw,78px)!important;max-width:560px!important}
+  .legacy-contractor-site .contractor-hero-photo{background-position:63% center!important}
+  .legacy-contractor-site .contractor-hero-visual::after{background:linear-gradient(90deg,rgba(5,31,42,.45),rgba(5,31,42,.04) 36%,rgba(5,31,42,.08))!important}
+  .legacy-contractor-site .contractor-hero-brand{left:50%!important;right:auto!important;top:44px!important;bottom:auto!important;width:min(430px,72%)!important;transform:translateX(-50%)!important;padding:14px 18px!important;background:rgba(255,255,255,.96)!important}
+  .legacy-contractor-site .contractor-hero-brand .project-experience-brand-card{justify-content:center!important}
+  .legacy-contractor-site .contractor-hero-brand .project-experience-brand-card .universal-brand-logo{width:270px!important;height:124px!important;flex-basis:270px!important}
+  .legacy-contractor-site .contractor-hero-brand .project-experience-brand-card-copy{display:none!important}
+  .legacy-contractor-site .contractor-proof-strip.trust-strip{border-radius:0!important}
+}
+
+/* Tablet: preserve image + copy together, with a compact centered logo panel. */
+@media(min-width:701px) and (max-width:1050px){
+  .legacy-contractor-site .contractor-hero{grid-template-columns:.9fr 1.1fr!important;min-height:470px!important}
+  .legacy-contractor-site .contractor-hero-copy{padding:42px 32px 30px!important}
+  .legacy-contractor-site .contractor-hero-copy h2{font-size:clamp(44px,5.4vw,58px)!important}
+  .legacy-contractor-site .contractor-hero-photo{background-position:66% center!important}
+  .legacy-contractor-site .contractor-hero-brand{left:50%!important;right:auto!important;top:28px!important;width:min(360px,78%)!important;transform:translateX(-50%)!important;padding:12px 14px!important}
+  .legacy-contractor-site .contractor-hero-brand .project-experience-brand-card{justify-content:center!important}
+  .legacy-contractor-site .contractor-hero-brand .project-experience-brand-card-copy{display:none!important}
+  .legacy-contractor-site .contractor-hero-brand .project-experience-brand-card .universal-brand-logo{width:225px!important;height:104px!important;flex-basis:225px!important}
+}
+
+/* Phone: match the approved benchmark closely. */
+@media(max-width:700px){
+  .legacy-contractor-site .contractor-brand-header{min-height:126px!important;padding:15px 18px!important;grid-template-columns:minmax(0,1fr) auto!important}
+  .legacy-contractor-site .contractor-brand-header .premium-brand-lockup{min-width:0!important;gap:15px!important}
+  .legacy-contractor-site .contractor-brand-header .legacy-real-logo{width:126px!important;height:96px!important;flex-basis:126px!important;padding:8px!important;border-radius:19px!important}
+  .legacy-contractor-site .contractor-brand-header .universal-brand-copy h1{font-size:34px!important;line-height:.95!important}
+  .legacy-contractor-site .contractor-brand-header .universal-brand-copy p{font-size:12px!important;line-height:1.35!important}
+  .legacy-contractor-site .universal-settings-btn{width:52px!important;height:52px!important;border-radius:15px!important}
+
+  .legacy-contractor-site .contractor-main{padding:10px 10px calc(76px + env(safe-area-inset-bottom))!important}
+  .legacy-contractor-site .full-sail-test-ribbon{margin-bottom:12px!important}
+  .legacy-contractor-site .contractor-hero{min-height:760px!important;border-radius:24px!important;border-color:#164353!important}
+  .legacy-contractor-site .contractor-hero-visual{display:block!important;position:absolute!important;inset:0!important;height:100%!important;z-index:1!important}
+  .legacy-contractor-site .contractor-hero-photo{background-position:70% center!important;background-size:cover!important;filter:saturate(.92) contrast(1.08)!important}
+  .legacy-contractor-site .contractor-hero-visual::after{background:linear-gradient(90deg,rgba(4,28,39,.96) 0%,rgba(4,28,39,.88) 43%,rgba(4,28,39,.48) 63%,rgba(4,28,39,.08) 86%)!important}
+  .legacy-contractor-site .contractor-hero-copy{min-height:760px!important;padding:26px 24px 22px!important;background:transparent!important}
+  .legacy-contractor-site .contractor-mobile-brand{width:74%!important;max-width:330px!important;margin:0 0 26px!important;align-self:flex-start!important}
+  .legacy-contractor-site .contractor-mobile-brand .project-experience-brand-card{width:100%!important;padding:12px 14px!important;border:1px solid rgba(255,255,255,.65)!important;border-radius:20px!important;background:rgba(255,255,255,.97)!important;box-shadow:0 16px 34px rgba(0,0,0,.22)!important}
+  .legacy-contractor-site .contractor-mobile-brand .project-experience-brand-card .universal-brand-logo{width:100%!important;height:118px!important;flex-basis:auto!important;padding:4px 10px!important;object-fit:contain!important}
+  .legacy-contractor-site .premium-eyebrow{margin:0 0 10px!important;font-size:11px!important;letter-spacing:.16em!important}
+  .legacy-contractor-site .contractor-hero-copy h2{max-width:430px!important;font-size:clamp(47px,12.6vw,58px)!important;line-height:.94!important;margin:0 0 18px!important}
+  .legacy-contractor-site .contractor-hero-copy>p{max-width:390px!important;font-size:16.5px!important;line-height:1.48!important;margin-bottom:22px!important}
+  .legacy-contractor-site .contractor-hero-actions{margin-top:0!important;gap:9px!important}
+  .legacy-contractor-site .contractor-hero-actions button{min-height:55px!important;font-size:12px!important}
+  .legacy-contractor-site .contractor-availability{margin-top:auto!important;padding-top:16px!important;border-top-color:rgba(255,255,255,.25)!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+  .legacy-contractor-site .contractor-hero-brand{display:none!important}
+
+  .legacy-contractor-site .contractor-proof-strip.trust-strip{margin-top:0!important;border-radius:0 0 20px 20px!important;background:#072631!important;padding:8px 4px!important}
+  .legacy-contractor-site .contractor-proof-strip.trust-strip .trust-chip{min-height:76px!important}
+  .legacy-contractor-site .contractor-proof-strip.trust-strip .trust-chip strong{font-size:8.5px!important}
+  .legacy-contractor-site .contractor-proof-strip.trust-strip .trust-chip-bbb img{width:60px!important;height:36px!important}
+
+  .legacy-contractor-site .contractor-services-section{margin-top:16px!important;padding:24px 16px 26px!important}
+  .legacy-contractor-site .contractor-section-heading{margin-bottom:15px!important}
+  .legacy-contractor-site .contractor-section-heading h2{font-size:32px!important}
+  .legacy-contractor-site .contractor-service-mosaic{gap:7px!important}
+  .legacy-contractor-site .contractor-service-card,.legacy-contractor-site .contractor-service-card:nth-child(n),.legacy-contractor-site .contractor-service-card.contractor-service-other{min-height:82px!important}
+}
+
+@media(max-width:430px){
+  .legacy-contractor-site .contractor-brand-header{min-height:120px!important;padding:14px!important}
+  .legacy-contractor-site .contractor-brand-header .legacy-real-logo{width:116px!important;height:90px!important;flex-basis:116px!important}
+  .legacy-contractor-site .contractor-brand-header .universal-brand-copy h1{font-size:31px!important}
+  .legacy-contractor-site .contractor-hero{min-height:735px!important}
+  .legacy-contractor-site .contractor-hero-copy{min-height:735px!important;padding:24px 22px 20px!important}
+  .legacy-contractor-site .contractor-mobile-brand{width:76%!important;max-width:310px!important;margin-bottom:24px!important}
+  .legacy-contractor-site .contractor-mobile-brand .project-experience-brand-card .universal-brand-logo{height:110px!important}
+}
