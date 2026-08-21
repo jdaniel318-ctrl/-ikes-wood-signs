@@ -1,3 +1,14 @@
+# Dark Sky 5.4.1 — iPhone Compatibility Hardening
+
+- Added a fleet-wide narrow-mobile layout contract across customer, Engine, commissioning, Project Admin/Manager, Test Deck, and Captain surfaces.
+- Added iPhone safe-area handling for persistent controls and sticky action bars.
+- Added dynamic viewport-height support for Safari toolbar/keyboard changes.
+- Prevented Safari form-focus zoom by enforcing 16px inputs on phone.
+- Converted dense commissioning and Project Admin navigation into touch-friendly swipe rails.
+- Converted Engine project cards and major operational panels to single-column phone layouts.
+- Hardened Legacy Plumbing / contractor landing and request flows for portrait phones.
+- Kept Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, project isolation, and Test/Private Preview safety contracts unchanged.
+
 # Dark Sky 5.4.0 — Contractor Platform Proof
 
 - Promoted plumbing from a generic service skin into a contractor-grade operating experience.

@@ -12598,3 +12598,146 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
 .contractor-intake-shell{min-height:100vh;background:radial-gradient(circle at 85% 0,rgba(62,164,197,.1),transparent 30%),#eef5f5}.contractor-intake-header{min-height:108px!important;padding:16px 34px!important;background:#071b25!important;display:grid!important;grid-template-columns:minmax(340px,1fr) auto auto!important;align-items:center!important;gap:24px!important}.contractor-intake-header .legacy-real-logo{width:118px!important;height:70px!important;flex-basis:118px!important}.contractor-step-rail{display:flex;align-items:center;gap:9px}.contractor-step-rail span{padding:9px 11px;border-radius:999px;border:1px solid #34505a;color:#6f8991;font:900 8px Arial,sans-serif;letter-spacing:.08em}.contractor-step-rail span.active{background:#143f50;color:#fff;border-color:#4aa9c6}.contractor-step-rail i{width:22px;height:1px;background:#34505a}.contractor-intake-main{max-width:1160px;margin:0 auto;padding:34px 24px 80px}.contractor-preview-note{margin-bottom:14px;padding:11px 14px;border:1px solid #a9d0dc;border-radius:12px;background:#e7f5f9;color:#28667a;font:900 9px Arial,sans-serif;letter-spacing:.08em}.contractor-intake-card{padding:42px;border:1px solid #d0dcdf;border-radius:28px;background:#fff;box-shadow:0 24px 65px rgba(6,42,54,.1)}.contractor-intake-heading{margin-bottom:28px}.contractor-intake-heading small{color:#1880a3;font:900 10px Arial,sans-serif;letter-spacing:.14em}.contractor-intake-heading h2{margin:8px 0 10px;color:#0c2b37;font:850 42px/1 Arial,sans-serif;letter-spacing:-.035em}.contractor-intake-heading p{margin:0;color:#697d83;font-size:14px;line-height:1.55}.contractor-selected-service{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding:16px;border-radius:18px;background:#082a37;color:#fff}.contractor-selected-service>span{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#164d61}.contractor-selected-service svg{width:25px;height:25px}.contractor-selected-service>div{flex:1}.contractor-selected-service small{display:block;color:#7fc5da;font:900 8px Arial,sans-serif;letter-spacing:.12em}.contractor-selected-service strong{display:block;margin-top:4px;font-size:17px}.contractor-selected-service button{border:0;background:transparent;color:#e8bd77;font:900 9px Arial,sans-serif;letter-spacing:.08em;cursor:pointer}.contractor-field-grid{display:grid;gap:14px}.contractor-field-grid.three{grid-template-columns:repeat(3,1fr)}.contractor-field-grid label,.contractor-full-field,.contractor-prep-fields label{display:grid;gap:7px;color:#2d4953;font:800 11px Arial,sans-serif}.contractor-intake-card .universal-input{min-height:54px!important;border:1px solid #c8d7db!important;border-radius:13px!important;background:#fbfdfd!important;color:#0e2d39!important;font-size:14px!important;padding:13px 14px!important}.contractor-intake-card textarea.universal-input{min-height:150px!important}.contractor-full-field{margin-top:16px}.contractor-intake-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:28px;padding-top:22px;border-top:1px solid #e1e9ea}.contractor-intake-actions .contractor-secondary-cta{color:#234651;border-color:#a8bcc1;min-width:170px}.contractor-intake-actions .contractor-primary-cta{min-width:260px}.contractor-prep-grid{display:grid;grid-template-columns:minmax(360px,.9fr) minmax(0,1.1fr);gap:18px}.contractor-photo-zone{position:relative;min-height:310px;padding:28px;border:2px dashed #9ebcc5;border-radius:20px;background:#f1f7f7;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#365963;overflow:hidden}.contractor-photo-zone input{position:absolute;inset:0;opacity:0;cursor:pointer}.contractor-photo-zone span{font:900 13px Arial,sans-serif;color:#126d8c}.contractor-photo-zone small{max-width:330px;margin-top:10px;line-height:1.5}.contractor-photo-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.contractor-prep-fields{display:grid;align-content:start;gap:14px}.contractor-request-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:24px}.contractor-request-summary>div{padding:16px;border:1px solid #d6e1e3;border-radius:16px;background:#f8fbfb}.contractor-request-summary small{display:block;color:#789096;font:900 8px Arial,sans-serif;letter-spacing:.1em}.contractor-request-summary strong{display:block;margin-top:7px;color:#17343e;font-size:13px;line-height:1.35}
 @media(max-width:1050px){.contractor-brand-header{grid-template-columns:1fr auto!important}.contractor-nav{display:none}.contractor-hero{grid-template-columns:1fr}.contractor-hero-visual{min-height:440px}.contractor-service-card,.contractor-service-card:nth-child(1),.contractor-service-card:nth-child(6){grid-column:span 6}.contractor-why-section{grid-template-columns:1fr}.contractor-why-photo{min-height:380px}.contractor-process-grid{grid-template-columns:repeat(2,1fr)}.contractor-review-grid{grid-template-columns:1fr}.contractor-intake-header{grid-template-columns:1fr auto!important}.contractor-step-rail{display:none}.contractor-field-grid.three,.contractor-request-summary{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.legacy-plumbing-customer .experience-mode-banner,.premium-plumbing-customer .experience-mode-banner{left:10px!important;bottom:10px!important;max-width:calc(100vw - 20px)!important}.contractor-main{padding:12px 10px 58px!important}.contractor-brand-header,.contractor-intake-header{padding:12px!important}.contractor-brand-header .legacy-real-logo,.contractor-intake-header .legacy-real-logo{width:86px!important;height:58px!important;flex-basis:86px!important}.contractor-hero-copy{padding:46px 26px}.contractor-hero-copy h2{font-size:52px}.contractor-hero-copy>p{font-size:17px}.contractor-hero-actions{grid-template-columns:1fr}.contractor-hero-visual{min-height:340px}.contractor-hero-brand{left:18px;right:18px;bottom:18px}.contractor-hero-brand .universal-brand-logo{width:130px!important;height:74px!important;flex-basis:130px!important}.contractor-proof-strip{grid-template-columns:1fr 1fr}.contractor-services-section,.contractor-process-section,.contractor-reviews-section{padding:28px 18px;border-radius:22px}.contractor-section-heading{align-items:flex-start;flex-direction:column}.contractor-section-heading>p{text-align:left}.contractor-service-mosaic{grid-auto-rows:190px}.contractor-service-card,.contractor-service-card:nth-child(1),.contractor-service-card:nth-child(6),.contractor-service-card:nth-child(7){grid-column:span 12}.contractor-why-copy{padding:34px 24px}.contractor-why-copy li{grid-template-columns:1fr}.contractor-process-grid{grid-template-columns:1fr}.contractor-bottom-cta{grid-template-columns:1fr;padding:30px 22px}.contractor-footer{align-items:flex-start;flex-direction:column}.contractor-intake-main{padding:20px 12px 64px}.contractor-intake-card{padding:26px 18px}.contractor-intake-heading h2{font-size:34px}.contractor-field-grid.three,.contractor-request-summary,.contractor-prep-grid{grid-template-columns:1fr}.contractor-intake-actions{flex-direction:column-reverse}.contractor-intake-actions button{width:100%;min-width:0!important}}
+
+/* ==========================================================
+   5.4.1 — iPhone / narrow-mobile compatibility contract
+   Applies to customer experiences, Engine Room, commissioning,
+   Project Control/Admin, Test Deck, and Captain surfaces.
+   Layout-only hardening; project identity/data boundaries unchanged.
+   ========================================================== */
+@supports (height:100dvh){
+  .experience-test-deck,.commissioning-workspace,.pin-gate,.add-project-gate,
+  .project-admin-page,.project-orders-page,.project-ledger-page,
+  .contractor-intake-shell,.admin-panel{min-height:100dvh}
+}
+@media(max-width:767px){
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}
+  body{overflow-x:hidden;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+  button,a,input,select,textarea{touch-action:manipulation}
+  input,select,textarea{font-size:16px!important}
+  img,svg,video,canvas{max-width:100%}
+  .app-shell,.screen,.main-panel,.admin-panel,.engine-panel,.black-flag-command,
+  .commissioning-shell,.experience-test-shell,.project-admin-page,.project-orders-page,
+  .project-ledger-page,.contractor-main,.contractor-intake-main{max-width:100%!important;min-width:0!important}
+
+  /* persistent/fixed controls respect the iPhone safe area */
+  .project-engine-return{right:max(10px,env(safe-area-inset-right))!important;bottom:max(10px,env(safe-area-inset-bottom))!important}
+  .experience-mode-banner{bottom:max(10px,env(safe-area-inset-bottom))!important}
+  .commissioning-workspace,.experience-test-deck{padding-bottom:calc(28px + env(safe-area-inset-bottom))!important}
+  .commissioning-footer{padding-bottom:calc(12px + env(safe-area-inset-bottom))!important}
+
+  /* Engine Room: no desktop minimums, no clipped actions */
+  #enginePanel.modern-engine-room{padding:8px!important}
+  .modern-engine-hero{padding:14px!important;border-radius:12px!important}
+  .modern-engine-brand{gap:11px!important;width:100%!important;min-width:0!important}
+  .modern-engine-brand h1{font-size:28px!important;line-height:1!important}
+  .modern-engine-brand p{font-size:12px!important;line-height:1.4!important}
+  .modern-engine-top-actions{grid-template-columns:1fr!important;width:100%!important}
+  .modern-engine-top-actions>*{width:100%!important;min-width:0!important}
+  .modern-system-capabilities{grid-template-columns:1fr!important}
+  .modern-project-tools{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+  .modern-project-tools>*{width:100%!important;min-width:0!important}
+  .modern-project-command .project-command-cards{display:grid!important;grid-template-columns:1fr!important;overflow:visible!important}
+  .modern-project-command .project-command-cards>.project-card{width:100%!important;min-width:0!important;max-width:none!important;flex-basis:auto!important}
+  .project-card-actions{display:grid!important;grid-template-columns:1fr!important}
+  .project-card-actions button,.project-card-actions a{width:100%!important;min-height:48px!important}
+  .modern-engine-footer{grid-template-columns:1fr!important;text-align:left!important}
+
+  /* Commissioning: progress becomes a swipeable rail; actions stay reachable */
+  .commissioning-workspace{padding:12px 10px 0!important}
+  .commissioning-head{align-items:flex-start!important;gap:12px!important;padding:12px 0 14px!important}
+  .commissioning-head h1{font-size:31px!important;line-height:1.02!important}
+  .commissioning-head p{font-size:13px!important}
+  .commission-engine-return{flex:0 0 46px!important;width:46px!important;height:46px!important}
+  .commission-progress{display:flex!important;gap:8px!important;overflow-x:auto!important;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;padding:2px 0 8px!important;margin:12px 0!important}
+  .commission-progress button{flex:0 0 132px!important;min-height:62px!important;scroll-snap-align:start}
+  .commission-body{min-height:0!important}
+  .commission-panel{padding:20px 14px!important;border-radius:12px!important}
+  .commission-panel h2{font-size:27px!important;line-height:1.08!important}
+  .commission-grid.two,.commission-grid.three,.commission-review-grid{grid-template-columns:1fr!important}
+  .commission-callout{flex-direction:column!important;gap:7px!important}
+  .commission-callout b{min-width:0!important}
+  .commissioning-footer{position:sticky!important;bottom:0!important;z-index:20!important;align-items:stretch!important;margin:10px -2px 0!important;padding-top:14px!important;background:linear-gradient(180deg,rgba(6,16,20,.15),#061014 16%)!important}
+  .commissioning-footer .commission-actions{width:100%!important;display:grid!important;grid-template-columns:1fr!important}
+  .commission-action-main{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important}
+  .commission-action-main .primary{grid-column:1/-1!important}
+  .commission-action{min-height:50px!important;font-size:12px!important}
+
+  /* Test Deck: one readable decision at a time */
+  .experience-test-deck{padding:10px 9px 30px!important}
+  .experience-test-shell>header{position:relative!important;top:auto!important;padding:12px 0!important}
+  .experience-test-shell>header button{width:100%!important;min-height:48px!important}
+  .experience-mode-grid,.experience-certification-grid,.experience-checklist{grid-template-columns:1fr!important}
+  .experience-mode-card{padding:16px!important}
+  .experience-mode-card h3{font-size:22px!important}
+  .experience-mode-card p{font-size:13px!important}
+  .experience-results-head{align-items:flex-start!important;flex-direction:column!important}
+  .experience-deck-guidance{align-items:stretch!important}
+  .experience-deck-guidance button{width:100%!important;min-height:46px!important}
+
+  /* Project Admin/Manager workspace: nav scrolls rather than compresses */
+  .project-admin-page,.project-orders-page,.project-ledger-page{padding-left:10px!important;padding-right:10px!important}
+  .project-admin-brandbar{padding-left:10px!important;padding-right:10px!important}
+  .project-admin-menu,.project-admin-nav-strip{display:flex!important;overflow-x:auto!important;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;gap:6px!important;padding-bottom:6px!important}
+  .project-admin-menu button,.project-admin-nav-strip button{flex:0 0 auto!important;min-width:145px!important;min-height:46px!important;scroll-snap-align:start}
+  .project-admin-quick-stats{grid-template-columns:1fr 1fr!important}
+  .project-admin-dashboard-head{padding-left:12px!important;padding-right:12px!important}
+
+  /* PIN/admin dialogs: fit the keyboard viewport and remain tappable */
+  .pin-gate,.add-project-gate{align-items:start!important;overflow-y:auto!important;padding:calc(14px + env(safe-area-inset-top)) 10px calc(14px + env(safe-area-inset-bottom))!important}
+  .pin-card,.project-admin-gate-card,.add-project-card{width:100%!important;max-width:460px!important;margin:auto!important;padding:20px 16px!important;border-radius:22px!important}
+  .project-admin-gate-primary,.project-admin-gate-secondary{min-height:52px!important}
+
+  /* Contractor/customer pages: iPhone-first reading and request path */
+  .contractor-brand-header,.contractor-intake-header{grid-template-columns:1fr auto!important;gap:10px!important;min-height:82px!important;padding:10px 12px!important}
+  .contractor-brand-header .legacy-real-logo,.contractor-intake-header .legacy-real-logo{width:72px!important;height:52px!important;flex-basis:72px!important}
+  .contractor-main{padding:9px 8px calc(64px + env(safe-area-inset-bottom))!important}
+  .contractor-hero{display:flex!important;flex-direction:column!important;min-height:0!important;border-radius:22px!important}
+  .contractor-hero-copy{padding:34px 20px 28px!important}
+  .contractor-hero-copy h2{font-size:clamp(42px,13vw,58px)!important;line-height:.94!important;letter-spacing:-.045em!important;overflow-wrap:normal!important}
+  .contractor-hero-copy>p{font-size:16px!important;line-height:1.5!important;margin-bottom:24px!important}
+  .contractor-primary-cta,.contractor-secondary-cta{min-height:54px!important;font-size:12px!important}
+  .contractor-hero-visual{min-height:280px!important}
+  .contractor-hero-brand{left:12px!important;right:12px!important;bottom:12px!important;padding:12px!important;gap:10px!important}
+  .contractor-hero-brand .universal-brand-logo{width:110px!important;height:62px!important;flex-basis:110px!important}
+  .contractor-proof-strip{grid-template-columns:1fr!important;gap:8px!important}
+  .contractor-proof-strip article{min-height:58px!important;padding:12px 14px!important}
+  .contractor-services-section,.contractor-process-section,.contractor-reviews-section{margin-top:18px!important;padding:22px 14px!important;border-radius:20px!important}
+  .contractor-section-heading{gap:10px!important;margin-bottom:18px!important}
+  .contractor-section-heading h2,.contractor-why-copy h2,.contractor-bottom-cta h2{font-size:34px!important;line-height:1!important}
+  .contractor-service-mosaic{display:grid!important;grid-template-columns:1fr!important;grid-auto-rows:auto!important;gap:10px!important}
+  .contractor-service-card,.contractor-service-card:nth-child(n){grid-column:auto!important;min-height:190px!important}
+  .contractor-service-content{padding:18px!important}
+  .contractor-service-content strong{font-size:22px!important}
+  .contractor-why-section{display:flex!important;flex-direction:column!important;margin-top:18px!important;border-radius:20px!important}
+  .contractor-why-photo{min-height:260px!important}
+  .contractor-why-copy{padding:28px 18px!important}
+  .contractor-process-grid,.contractor-review-grid{grid-template-columns:1fr!important}
+  .contractor-review-card{grid-template-columns:82px 1fr!important;min-height:200px!important}
+  .contractor-bottom-cta{margin-top:18px!important;padding:24px 16px!important;border-radius:20px!important}
+  .contractor-footer{gap:12px!important;padding-bottom:env(safe-area-inset-bottom)!important}
+  .contractor-intake-main{padding:16px 9px calc(74px + env(safe-area-inset-bottom))!important}
+  .contractor-intake-card{padding:22px 14px!important;border-radius:20px!important}
+  .contractor-intake-heading h2{font-size:32px!important}
+  .contractor-selected-service{align-items:flex-start!important;flex-wrap:wrap!important}
+  .contractor-selected-service button{width:100%!important;min-height:42px!important;text-align:left!important}
+  .contractor-field-grid.three,.contractor-request-summary,.contractor-prep-grid{grid-template-columns:1fr!important}
+  .contractor-photo-zone{min-height:230px!important}
+  .contractor-intake-actions{position:sticky!important;bottom:0!important;z-index:12!important;margin:22px -14px -22px!important;padding:12px 14px calc(12px + env(safe-area-inset-bottom))!important;background:rgba(255,255,255,.97)!important;box-shadow:0 -10px 28px rgba(5,36,46,.08)!important}
+  .contractor-intake-actions button{min-height:50px!important}
+
+  /* Captain's Quarters remains usable on phone without changing authority */
+  #captainQuarters .cq-object-card,.cq-blueprint-sheet{width:calc(100vw - 20px)!important;max-width:100%!important;max-height:calc(100dvh - 28px)!important;overflow:auto!important;padding:18px!important}
+  #captainExitBtn{top:max(8px,env(safe-area-inset-top))!important;right:max(8px,env(safe-area-inset-right))!important;min-height:44px!important}
+}
+@media(max-width:430px){
+  .modern-engine-brand h1{font-size:25px!important}
+  .commissioning-head h1{font-size:28px!important}
+  .commission-progress button{flex-basis:116px!important}
+  .project-admin-quick-stats{grid-template-columns:1fr!important}
+  .contractor-hero-copy h2{font-size:42px!important}
+  .contractor-hero-visual{min-height:240px!important}
+  .contractor-review-card{grid-template-columns:1fr!important}
+  .contractor-review-card img{height:150px!important}
+  .experience-mode-banner{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;transform:none!important}
+}
