@@ -1,8 +1,10 @@
-# Dark Sky 5.0.6
+# Dark Sky 5.1.0
+
+5.1.0 adds the first Existing Business Intake / Fleet Learning commissioning workflow. Black Flag can analyze a current business from an accessible website or uploaded HTML/text site files, propose a business model, opportunity scan and project-specific visual directions, then let the Captain accept or change every recommendation before commissioning. Imported evidence is stored only inside that Project ID; fleet learning is pattern guidance, not cross-project data sharing.
 
 Black Flag authentication structure restored after the 5.0 cleanup regression. Normal Engine access uses `5615`; Project Admin uses `4353`; Captain's Quarters uses `19613`; Captain Test Access remains a session-only bypass. Project isolation work from 5.0 remains in place.
 
-5.0.6 begins the reversible Engine commissioning model: Configure → Preview → Approve → Sea Trial → Ready → Live. The lifecycle exists only in Black Flag Engine governance; customer and Project Manager layers do not own it. Returning to configuration preserves project identity and data, while customer-facing changes automatically stale downstream preview/approval/Sea Trial evidence until retested.
+5.1.0 begins the reversible Engine commissioning model: Configure → Preview → Approve → Sea Trial → Ready → Live. The lifecycle exists only in Black Flag Engine governance; customer and Project Manager layers do not own it. Returning to configuration preserves project identity and data, while customer-facing changes automatically stale downstream preview/approval/Sea Trial evidence until retested.
 
 # Dark Sky 5.0.3 — Authority Spine + SIG Test Release
 

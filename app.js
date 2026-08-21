@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.0.6';
+  const BUILD_VERSION = '5.1.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -4069,6 +4069,8 @@
         </article>
       </div>
 
+      ${p.businessIntake?`<article class="pec-card business-intake-control-card"><div class="pec-title-row"><div><div class="engine-kicker">BUSINESS INTAKE SNAPSHOT</div><h4>What Black Flag learned at commissioning</h4></div><span class="project-status-badge">${escapeHtml(String(p.businessIntake.confidence||'working').toUpperCase())} CONFIDENCE</span></div><p class="helper">This is project-owned evidence and guidance, not a locked template. Change the business brief, offers, capabilities and graphics anywhere in this Control Center without changing the Project ID.</p><div class="business-intake-facts"><span>${p.businessIntake.sourceWebsite?`SOURCE • ${escapeHtml(p.businessIntake.sourceWebsite)}`:'SOURCE • UPLOADED FILES'}</span><span>TYPE • ${escapeHtml(String(p.businessIntake.businessType||p.businessType||'other').replaceAll('_',' ').toUpperCase())}</span><span>${(p.businessIntake.colors||[]).length?`COLORS • ${escapeHtml(p.businessIntake.colors.slice(0,4).join(' '))}`:'COLORS • REVIEW'}</span></div><div class="business-intake-columns"><div><small>OPPORTUNITIES</small>${(p.businessIntake.opportunities||[]).slice(0,5).map(x=>`<p>• ${escapeHtml(x)}</p>`).join('')}</div><div><small>VISUAL DIRECTIONS</small>${(p.businessIntake.visualDirections||[]).map(x=>`<p><b>${escapeHtml(x.name)}</b> — ${escapeHtml(x.detail)}</p>`).join('')}</div></div></article>`:''}
+
       <article class="pec-card project-marketing-graphics">
         <div class="graphics-manager-head">
           <div>
@@ -5061,6 +5063,7 @@
       _step:1,_maxStepReached:1,_recovered:false,
       name:'',ownerName:'',ownerEmail:'',
       businessType:'other',description:'',businessBrief:'',
+      sourceWebsite:'',businessIntake:null,intakeAppliedAt:'',
       primaryOffer:'',characterLimit:32,pricingMode:'manual',
       customerMode:'guided',relationshipType:'auto',photoRequired:false,contactCapture:true,visualProfile:'none',
       ownerPortal:true,customerRetention:false,notifications:false,
@@ -5117,6 +5120,162 @@
     commissionDraft.updatedAt=new Date().toISOString();
   }
 
+  function intakePlainTextFromHtml(html){
+    try{
+      const doc=new DOMParser().parseFromString(String(html||''),'text/html');
+      doc.querySelectorAll('script,style,noscript,svg').forEach(n=>n.remove());
+      const title=doc.querySelector('title')?.textContent?.trim()||'';
+      const meta=doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim()||'';
+      const headings=[...doc.querySelectorAll('h1,h2,h3')].map(n=>n.textContent.trim()).filter(Boolean).slice(0,24);
+      const ctas=[...doc.querySelectorAll('a,button')].map(n=>n.textContent.trim()).filter(x=>x&&x.length<80).slice(0,50);
+      const body=(doc.body?.innerText||doc.body?.textContent||'').replace(/\s+/g,' ').trim();
+      const htmlText=String(html||'');
+      const emails=[...new Set((htmlText.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/ig)||[]).slice(0,10))];
+      const phones=[...new Set((body.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/g)||[]).slice(0,10))];
+      const colors=[...new Set((htmlText.match(/#[0-9a-fA-F]{6}\b/g)||[]).map(x=>x.toUpperCase()))].slice(0,12);
+      return {title,meta,headings,ctas,body:body.slice(0,22000),emails,phones,colors};
+    }catch(_){return {title:'',meta:'',headings:[],ctas:[],body:String(html||'').replace(/\s+/g,' ').slice(0,22000),emails:[],phones:[],colors:[]};}
+  }
+
+  function inferIntakeBusinessType(text){
+    const t=String(text||'').toLowerCase();
+    const tests=[
+      ['service',/(restoration|repair|contractor|plumb|electric|roof|hvac|cleaning|landscap|consult|service|appointment|estimate|quote)/],
+      ['flowers',/(flower|floral|bouquet|blossom|arrangement|wedding flowers|florist)/],
+      ['wood_signs',/(wood sign|engraved sign|carved sign|cnc|plaque|sign shop)/],
+      ['mugs',/(mug|tumbler|drinkware|cup printing|wrap)/],
+      ['food',/(restaurant|cafe|coffee|bakery|catering|menu|food truck)/],
+      ['retail',/(shop|store|apparel|gear|merchandise|retail|ecommerce|e-commerce|products)/]
+    ];
+    return tests.find(([,re])=>re.test(t))?.[0]||'other';
+  }
+
+  function intakeRecommendations(type,text){
+    const t=String(text||'').toLowerCase();
+    const base={customerMode:'guided',relationshipType:'auto',photoRequired:false,contactCapture:true,visualProfile:'none',capabilities:{customerRetention:true,notifications:true}};
+    if(type==='service')Object.assign(base,{customerMode:'request',relationshipType:'service_request',photoRequired:/(damage|restoration|repair|property|roof|claim|inspection)/.test(t),visualProfile:/(property|damage|room|site|vehicle)/.test(t)?'freeform':'none'});
+    if(type==='retail')Object.assign(base,{customerMode:'catalog',relationshipType:'purchase',visualProfile:'none'});
+    if(type==='wood_signs')Object.assign(base,{customerMode:'guided',relationshipType:'custom_project',photoRequired:true,visualProfile:'flat-surface'});
+    if(type==='mugs')Object.assign(base,{customerMode:'guided',relationshipType:'custom_project',photoRequired:true,visualProfile:'cylindrical-wrap'});
+    if(type==='flowers')Object.assign(base,{customerMode:'guided',relationshipType:'purchase',visualProfile:'arrangement'});
+    if(type==='food')Object.assign(base,{customerMode:'catalog',relationshipType:'purchase',visualProfile:'none'});
+    return base;
+  }
+
+  function intakeVisualDirections(type,colors=[]){
+    const accent=colors?.[0]||'';
+    const rows={
+      service:[['Trusted Response','High-clarity service header, direct CTA, reassuring proof points.'],['Modern Field','Clean operational photography, strong category cards, restrained technical accents.'],['Local Authority','Community-first presentation with credentials, service area and fast-contact emphasis.']],
+      retail:[['Brand Forward','Product-led hero, bold identity, clean shopping actions.'],['Editorial Shop','Lifestyle imagery with quieter controls and strong merchandising.'],['Utility Retail','Fast category access, concise product cards and conversion-first layout.']],
+      wood_signs:[['Workshop','Craft-forward texture, dimensional product imagery and guided customization.'],['Maker Modern','Cleaner studio presentation with product preview as the visual anchor.'],['Roadside Character','Bold local personality, large type and unmistakable ordering actions.']],
+      mugs:[['After Dark','Dark product stage, dramatic highlights and customization-first flow.'],['Collector','Premium product photography, restrained labels and edition-style presentation.'],['Graphic Shop','Artwork-forward cards with strong wrap/placement previews.']],
+      flowers:[['Garden Editorial','Warm botanical imagery, occasion-first navigation and elegant card spacing.'],['Local Florist','Friendly shop personality, delivery/pickup clarity and bouquet-led visuals.'],['Celebration','Occasion colors, message-card emphasis and fast gifting flow.']],
+      food:[['Menu First','Immediate menu/category access with appetizing hero photography.'],['Neighborhood','Local personality, hours/location prominence and simple order actions.'],['Chef Led','Editorial food imagery with restrained navigation and premium hierarchy.']],
+      other:[['Brand First','Use the current identity as the anchor and keep customer actions obvious.'],['Modern Utility','Clean, conversion-focused structure with project-owned graphics.'],['Story Led','Use the business story and strongest imagery to frame the customer journey.']]
+    };
+    return (rows[type]||rows.other).map((x,i)=>({id:`direction-${i+1}`,name:x[0],detail:x[1],accent}));
+  }
+
+  function buildBusinessIntakeAnalysis(parts,{sourceWebsite='',sourceNames=[]}={}){
+    const combined=parts.map(x=>[x.title,x.meta,(x.headings||[]).join(' '),x.body].join(' ')).join(' ').replace(/\s+/g,' ').trim();
+    const first=parts[0]||{};
+    const type=inferIntakeBusinessType(combined);
+    const emails=[...new Set(parts.flatMap(x=>x.emails||[]))].slice(0,8);
+    const phones=[...new Set(parts.flatMap(x=>x.phones||[]))].slice(0,8);
+    const colors=[...new Set(parts.flatMap(x=>x.colors||[]))].slice(0,10);
+    const headings=[...new Set(parts.flatMap(x=>x.headings||[]))].slice(0,16);
+    const ctas=[...new Set(parts.flatMap(x=>x.ctas||[]))].filter(x=>/shop|order|book|request|quote|contact|call|get started|schedule|buy|services?/i.test(x)).slice(0,12);
+    const businessName=(first.title||headings[0]||'').split(/[|•–—-]/)[0].trim().slice(0,80);
+    const description=(first.meta||combined.slice(0,280)).trim();
+    const serviceSignals=headings.filter(x=>x.length<90&&!/home|about|contact|privacy|terms/i.test(x)).slice(0,8);
+    const opportunities=[];
+    if(!emails.length)opportunities.push('Add a required customer email field so requests and orders have a durable contact anchor.');
+    if(!phones.length&&type==='service')opportunities.push('Capture a mobile number for service coordination and urgent follow-up.');
+    if(!ctas.length)opportunities.push('Create one unmistakable primary customer action instead of making customers hunt for the next step.');
+    if(type==='service')opportunities.push('Turn service categories into a guided request flow with project-owned records, photos and status tracking.');
+    if(['retail','wood_signs','mugs','flowers','food'].includes(type))opportunities.push('Convert the strongest offers into customer-ready Black Flag products/services with clear ordering actions.');
+    opportunities.push('Build a project-specific header and category graphic set from this business identity; never borrow another project’s visual skin.');
+    const rec=intakeRecommendations(type,combined);
+    return {version:1,analyzedAt:new Date().toISOString(),sourceWebsite:String(sourceWebsite||''),sourceNames:[...sourceNames],businessName,description,businessType:type,emails,phones,colors,headings:serviceSignals,ctas,opportunities:[...new Set(opportunities)].slice(0,8),recommendations:rec,visualDirections:intakeVisualDirections(type,colors),confidence:combined.length>1200?'high':combined.length>300?'medium':'low'};
+  }
+
+  function businessIntakeMarkup(d){
+    const a=d.businessIntake;
+    return `<section class="business-intake-shell">
+      <div class="business-intake-head"><div><span>EXISTING BUSINESS INTAKE</span><h3>Bring the business aboard</h3><p>Use the current website or uploaded site files as evidence. Black Flag extracts a starting business profile, opportunities and visual directions. Nothing is published automatically.</p></div><b>${a?'ANALYZED':'OPTIONAL'}</b></div>
+      <div class="business-intake-inputs">
+        <label>Current website URL<input id="commissionWebsiteUrl" value="${escapeHtml(d.sourceWebsite||'')}" placeholder="https://example.com"></label>
+        <label>Upload current website files<input id="commissionWebsiteFiles" type="file" multiple accept=".html,.htm,.txt,.md,.json,.css,text/html,text/plain,application/json"></label>
+      </div>
+      <div class="business-intake-actions"><button id="analyzeWebsiteBtn" class="secondary-btn" type="button">ANALYZE CURRENT BUSINESS</button><span id="businessIntakeStatus" class="helper">${a?`Last analysis: ${escapeHtml(new Date(a.analyzedAt).toLocaleString())}`:'URL fetch is attempted when the site allows it. Upload HTML/site files if the website blocks browser access.'}</span></div>
+      ${a?businessIntakeResultsMarkup(a):''}
+    </section>`;
+  }
+
+  function businessIntakeResultsMarkup(a){
+    const dirs=(a.visualDirections||[]).map((d,i)=>`<article><small>DIRECTION ${i+1}</small><strong>${escapeHtml(d.name)}</strong><span>${escapeHtml(d.detail)}</span></article>`).join('');
+    return `<div class="business-intake-results">
+      <div class="business-intake-summary"><div><small>WHAT BLACK FLAG LEARNED</small><strong>${escapeHtml(a.businessName||'Business profile')}</strong><span>${escapeHtml(String(a.businessType||'other').replaceAll('_',' '))} • ${escapeHtml(a.confidence||'working')} confidence</span></div><button id="applyBusinessIntakeBtn" class="primary-btn small" type="button">USE THESE RECOMMENDATIONS</button></div>
+      <div class="business-intake-facts"><span>${a.emails?.length?`EMAIL • ${escapeHtml(a.emails[0])}`:'EMAIL • NOT FOUND'}</span><span>${a.phones?.length?`PHONE • ${escapeHtml(a.phones[0])}`:'PHONE • NOT FOUND'}</span><span>${a.colors?.length?`BRAND COLORS • ${escapeHtml(a.colors.slice(0,4).join(' '))}`:'BRAND COLORS • REVIEW MANUALLY'}</span></div>
+      <div class="business-intake-columns"><div><small>OPPORTUNITY SCAN</small>${(a.opportunities||[]).map(x=>`<p>• ${escapeHtml(x)}</p>`).join('')}</div><div><small>LIKELY OFFERS / THEMES</small>${(a.headings||[]).slice(0,6).map(x=>`<p>• ${escapeHtml(x)}</p>`).join('')||'<p>• Review the current business brief manually.</p>'}</div></div>
+      <div class="business-visual-directions"><small>PROJECT-SPECIFIC VISUAL STARTING POINTS</small><div>${dirs}</div></div>
+    </div>`;
+  }
+
+  async function analyzeCommissionBusiness(){
+    const status=document.getElementById('businessIntakeStatus');
+    const url=String(document.getElementById('commissionWebsiteUrl')?.value||commissionDraft?.sourceWebsite||'').trim();
+    const files=[...(document.getElementById('commissionWebsiteFiles')?.files||[])];
+    const parts=[],sourceNames=[];
+    if(status)status.textContent='Analyzing business evidence…';
+    for(const file of files){
+      try{const text=await file.text();parts.push(intakePlainTextFromHtml(text));sourceNames.push(file.name);}catch(err){console.warn('Business intake file read skipped',file?.name,err);}
+    }
+    if(url){
+      commissionDraft.sourceWebsite=url;
+      try{
+        const response=await fetch(url,{method:'GET',mode:'cors',credentials:'omit',cache:'no-store'});
+        if(!response.ok)throw new Error(`HTTP ${response.status}`);
+        const text=await response.text();parts.unshift(intakePlainTextFromHtml(text));sourceNames.unshift(url);
+      }catch(err){
+        console.warn('Business intake website fetch unavailable',err);
+        if(!parts.length){if(status)status.textContent='This website blocks direct browser analysis. Upload its HTML/site files and run Analyze again.';return;}
+      }
+    }
+    if(!parts.length){if(status)status.textContent='Add a website URL or upload at least one current website file.';return;}
+    commissionDraft.businessIntake=buildBusinessIntakeAnalysis(parts,{sourceWebsite:url,sourceNames});
+    commissionDraft.updatedAt=new Date().toISOString();
+    localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+    renderCommissioning();
+  }
+
+  function applyCommissionBusinessIntake(){
+    const a=commissionDraft?.businessIntake;if(!a)return;
+    if(!String(commissionDraft.name||'').trim()&&a.businessName)commissionDraft.name=a.businessName;
+    commissionDraft.businessType=a.businessType||commissionDraft.businessType;
+    if(!String(commissionDraft.businessBrief||'').trim())commissionDraft.businessBrief=[a.description,(a.headings||[]).length?`Existing business themes: ${(a.headings||[]).join('; ')}`:''].filter(Boolean).join('\n\n');
+    commissionDraft.description=commissionDraft.description||a.description||'';
+    const r=a.recommendations||{};
+    commissionDraft.customerMode=r.customerMode||commissionDraft.customerMode;
+    commissionDraft.relationshipType=r.relationshipType||commissionDraft.relationshipType;
+    commissionDraft.photoRequired=!!r.photoRequired;
+    commissionDraft.contactCapture=r.contactCapture!==false;
+    commissionDraft.visualProfile=r.visualProfile||commissionDraft.visualProfile;
+    commissionDraft.customerRetention=r.capabilities?.customerRetention!==false;
+    commissionDraft.notifications=r.capabilities?.notifications!==false;
+    if(!commissionDraft.primaryOffer&&(a.headings||[])[0])commissionDraft.primaryOffer=a.headings[0];
+    commissionDraft.intakeAppliedAt=new Date().toISOString();
+    commissionDraft.updatedAt=new Date().toISOString();
+    localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+    renderCommissioning();
+    const status=document.getElementById('businessIntakeStatus');if(status)status.textContent='Recommendations applied. Review and change anything before continuing.';
+  }
+
+  function bindBusinessIntakeControls(){
+    const analyze=document.getElementById('analyzeWebsiteBtn');if(analyze)analyze.onclick=(e)=>{e.preventDefault();analyzeCommissionBusiness();};
+    const apply=document.getElementById('applyBusinessIntakeBtn');if(apply)apply.onclick=(e)=>{e.preventDefault();applyCommissionBusinessIntake();};
+  }
+
   function commissioningOperatingPreview(){
     const core=window.BlackFlagV3Core;
     const sample={
@@ -5147,7 +5306,8 @@
       </div>`;
     if(commissionStep===2)return `
       <div class="commission-panel">
-        <div class="eyebrow">02 • BUSINESS BRIEF</div><h2>Teach Dark Sky how this business works</h2>
+        <div class="eyebrow">02 • BUSINESS INTAKE & BRIEF</div><h2>Teach Dark Sky how this business works</h2>
+        ${businessIntakeMarkup(d)}
         <p>Choose the closest starting model, then describe the business in your own words. Dark Sky keeps the original brief and turns it into a structured operating model that can be reviewed and corrected later.</p>
         <div class="commission-grid">
           <label>Starting model<select data-cfield="businessType">
@@ -5215,6 +5375,7 @@
           <div><small>LAUNCH STATE</small><b>PRIVATE • SEA TRIAL</b></div>
         </div>
         ${(()=>{const m=commissioningOperatingPreview();return `<div class="commission-understanding-preview"><small>DARK SKY UNDERSTANDING</small><strong>${escapeHtml(String(m.mode||'other').replaceAll('-',' ').toUpperCase())}</strong><span>${escapeHtml(m.summary||'')}</span><span>Fulfillment: ${escapeHtml((m.fulfillment||[]).join(', ')||'project-defined')} • Scheduling: ${m.schedulingNeeded?'needed':'not currently indicated'}</span></div>`})()}
+        ${d.businessIntake?`<div class="commission-understanding-preview intake-review"><small>BUSINESS INTAKE</small><strong>${escapeHtml(d.businessIntake.businessName||d.name||'Imported business')}</strong><span>${escapeHtml((d.businessIntake.opportunities||[]).slice(0,3).join(' • '))}</span><span>Visual directions: ${escapeHtml((d.businessIntake.visualDirections||[]).map(x=>x.name).join(' • '))}</span></div>`:''}
         <div class="commission-readiness" aria-label="Commissioning readiness">
           <div class="ready"><span>✓</span><b>IDENTITY SEALED</b><small>A unique immutable Project ID is generated at commission; names and branding can change later.</small></div>
           <div class="ready"><span>✓</span><b>PRIVATE BY DEFAULT</b><small>No customer deployment is published by commissioning alone.</small></div>
@@ -5363,6 +5524,7 @@
     bind('commissionNext','continue');
     const close=$('closeProjectCommissioning');
     if(close)close.onclick=(event)=>{event.preventDefault();closeProjectCommissioning();};
+    bindBusinessIntakeControls();
     workspace.querySelectorAll('[data-commission-step]').forEach(btn=>{
       btn.onclick=(event)=>{
         event.preventDefault();
@@ -5391,7 +5553,8 @@
       id,
       name:commissionDraft.name.trim(),
       description:commissionDraft.description||commissionDraft.businessBrief||commissionDraft.primaryOffer||'New commissioned project',
-      businessBrief:{text:String(commissionDraft.businessBrief||commissionDraft.description||'').trim(),source:'commissioning',updatedAt:new Date().toISOString()},
+      businessBrief:{text:String(commissionDraft.businessBrief||commissionDraft.description||'').trim(),source:commissionDraft.businessIntake?'business_intake':'commissioning',updatedAt:new Date().toISOString()},
+      businessIntake:commissionDraft.businessIntake?{...commissionDraft.businessIntake,appliedAt:commissionDraft.intakeAppliedAt||null,sourceWebsite:commissionDraft.sourceWebsite||commissionDraft.businessIntake.sourceWebsite||''}:null,
       projectCode:code,
       orderPrefix:commissionDraft.orderPrefix||code,
       namespace:core?.namespaceFor?.(id)||('bf.project.'+id),

@@ -1,4 +1,14 @@
-# Dark Sky 5.0.6
+# Dark Sky 5.1.0 — Business Intake / Fleet Learning Foundation
+
+- Added Existing Business Intake to project commissioning: website URL or uploaded current-site files can seed a project-owned business profile.
+- Added local HTML/text analysis for business name, description, likely category, contact signals, brand colors, calls to action and business themes.
+- Added Opportunity Scan and three project-specific visual-direction recommendations.
+- Recommendations are optional and editable; applying them seeds the business brief, operating model, visual profile and capability defaults without publishing anything.
+- Commissioned projects retain a project-scoped Business Intake snapshot in Project Marketing so the evidence and opportunities remain reviewable without crossing project boundaries.
+- Website URL analysis is best-effort because third-party CORS policies can block browser reads; uploading HTML/site files is the reliable fallback.
+- Authentication and authority credentials are unchanged: Project Admin 4353, Black Flag 5615, Captain’s Quarters 19613.
+
+# Dark Sky 5.1.0
 
 - Added an Engine-only reversible project commissioning rail: Configure → Preview → Approve → Sea Trial → Ready → Live.
 - Added one-click return from the Test Deck to the project Customer Experience settings.
@@ -8,7 +18,7 @@
 - Added a compact current-revision fingerprint to make retest requirements visible without exposing lifecycle controls to Project Manager or customer layers.
 - Preserved project isolation and the 4353 / 5615 / 19613 authority spine.
 
-# Dark Sky 5.0.6 — Black Flag Structure Restore
+# Dark Sky 5.1.0 — Black Flag Structure Restore
 
 - Restores the proven Black Flag Engine authentication contract from the pre-5.0 cleanup: `5615` is always a valid Engine PIN.
 - Restores compatibility with an explicitly configured Engine PIN without allowing Project Admin (`4353`) or Captain (`19613`) credentials to authenticate Black Flag.

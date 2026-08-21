@@ -12441,3 +12441,18 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
 .experience-approval-card button:disabled{opacity:.4!important;cursor:not-allowed!important}
 @media(max-width:900px){.experience-lifecycle-head{flex-direction:column}.experience-lifecycle-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.experience-revision-strip{align-items:flex-start;flex-wrap:wrap}.experience-revision-strip>small{width:100%;margin-left:0}}
 @media(max-width:560px){.experience-lifecycle-rail{grid-template-columns:1fr 1fr}}
+
+/* 5.1.0 — Existing Business Intake / Fleet Learning setup */
+.business-intake-shell{margin:18px 0 24px;padding:18px;border:1px solid rgba(117,202,220,.25);border-radius:18px;background:linear-gradient(135deg,rgba(9,35,43,.96),rgba(8,23,29,.92));color:#eef8f8}
+.business-intake-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
+.business-intake-head span,.business-intake-results small{display:block;font-size:11px;letter-spacing:.16em;font-weight:800;color:#8fc3cf;margin-bottom:5px}
+.business-intake-head h3{margin:0 0 5px;font-size:22px}.business-intake-head p{margin:0;max-width:820px;color:#b8c9cd;line-height:1.45}.business-intake-head>b{padding:7px 10px;border:1px solid rgba(143,195,207,.35);border-radius:999px;font-size:10px;letter-spacing:.12em;white-space:nowrap}
+.business-intake-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.business-intake-inputs label{color:#dcebed;font-weight:700}.business-intake-inputs input{display:block;width:100%;margin-top:7px;box-sizing:border-box}
+.business-intake-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:13px}.business-intake-actions .helper{color:#aabdc1}
+.business-intake-results{margin-top:18px;padding-top:17px;border-top:1px solid rgba(143,195,207,.2)}
+.business-intake-summary{display:flex;align-items:center;justify-content:space-between;gap:15px}.business-intake-summary strong{display:block;font-size:19px}.business-intake-summary span{color:#aabdc1;font-size:13px}
+.business-intake-facts{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0}.business-intake-facts>span{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);font-size:11px;font-weight:750;letter-spacing:.04em}
+.business-intake-columns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.business-intake-columns>div{padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(0,0,0,.12)}.business-intake-columns p{margin:7px 0;color:#c7d6d9;line-height:1.35}
+.business-visual-directions{margin-top:13px}.business-visual-directions>div{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}.business-visual-directions article{padding:13px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}.business-visual-directions article strong,.business-visual-directions article span{display:block}.business-visual-directions article span{margin-top:5px;color:#afc2c6;line-height:1.35;font-size:12px}
+.business-intake-control-card .business-intake-columns{margin-top:14px}.business-intake-control-card .business-intake-columns p{color:inherit}.intake-review{margin-top:10px}
+@media(max-width:760px){.business-intake-inputs,.business-intake-columns,.business-visual-directions>div{grid-template-columns:1fr}.business-intake-summary,.business-intake-head{flex-direction:column}.business-intake-summary button{width:100%}}
