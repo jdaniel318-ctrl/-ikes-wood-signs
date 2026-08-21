@@ -1,3 +1,12 @@
+# Dark Sky 5.8.3 — Blue Lantern
+
+- Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
+- Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.
+- Added project settings for Licensed & Insured, Residential + Commercial, and Service Area trust badges.
+- Legacy Plumbing defaults to BBB enabled because its current BBB Business Profile confirms accreditation; other projects do not inherit that claim.
+- Added the BBB badge asset to the offline/service-worker package and corrected the service-worker cache identity to this build.
+- Trust settings remain project-scoped and collapse cleanly when a badge is disabled.
+
 # Dark Sky 5.8.2 — Repeatable Fleet Capability Shipyard
 
 - Turned enabled FOUNDATION capabilities into explicit, project-scoped implementation next steps instead of passive labels.

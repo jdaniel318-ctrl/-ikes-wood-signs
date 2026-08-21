@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-8-1-capability-shipyard';
+const CACHE='dark-sky-v5-8-3-blue-lantern';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.8.2',
-  './platform_core.js?v=5.8.2',
-  './platform_v4.js?v=5.8.2',
-  './platform_identity.js?v=5.8.2',
-  './app.js?v=5.8.2',
-  './captain.js?v=5.8.2',
+  './styles.css?v=5.8.3',
+  './platform_core.js?v=5.8.3',
+  './platform_v4.js?v=5.8.3',
+  './platform_identity.js?v=5.8.3',
+  './app.js?v=5.8.3',
+  './captain.js?v=5.8.3',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -15,7 +15,8 @@ const ASSETS=[
   './assets/captains_quarters_cinematic_v2953.jpg',
   './assets/engine_room_modern_benchmark_v2976.png',
   './assets/engine_room_pirate_benchmark_v2978.png',
-  './assets/signal_restoration_logo.png'
+  './assets/signal_restoration_logo.png',
+  './assets/bbb_accredited_business.jpg'
 ];
 
 self.addEventListener('install',event=>{

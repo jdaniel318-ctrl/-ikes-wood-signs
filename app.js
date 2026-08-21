@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.8.2';
+  const BUILD_VERSION = '5.8.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -673,7 +673,14 @@
       supportingCopy:suppliedLanding.supportingCopy||suppliedLanding.supporting_copy||p.customerExperience.landingPage?.supportingCopy||p.description,
       primaryCta:suppliedLanding.primaryCta||suppliedLanding.primary_cta||p.customerExperience.landingPage?.primaryCta||'I NEED PLUMBING HELP',
       secondaryCta:suppliedLanding.secondaryCta||suppliedLanding.secondary_cta||p.customerExperience.landingPage?.secondaryCta||'VIEW SERVICES',
-      trustSignals:suppliedTrust.length?suppliedTrust:(isLegacyPlumbing?['Licensed & insured','BBB Accredited','Residential & commercial','Richmond-area service']:['Licensed & insured','Residential & commercial','Clear communication']),
+      trustSignals:suppliedTrust.length?suppliedTrust:(isLegacyPlumbing?['Licensed & insured','BBB Accredited','Residential + Commercial','Serving Richmond']:['Licensed & insured','Residential + Commercial','Clear communication']),
+      trustBadges:{
+        ...(p.customerExperience.landingPage?.trustBadges||{}),
+        licensedInsured:p.customerExperience.landingPage?.trustBadges?.licensedInsured??true,
+        bbbAccredited:p.customerExperience.landingPage?.trustBadges?.bbbAccredited??isLegacyPlumbing,
+        residentialCommercial:p.customerExperience.landingPage?.trustBadges?.residentialCommercial??true,
+        serviceArea:p.customerExperience.landingPage?.trustBadges?.serviceArea??true
+      },
       hours:intake.hours||(isLegacyPlumbing?'Mon–Fri • 7:00 AM–4:00 PM':''),
       market:intake.market||(isLegacyPlumbing?'Richmond, VA area':''),
       phone:intake.contact?.phone||(isLegacyPlumbing?'804-955-7865':''),
@@ -4472,6 +4479,13 @@
       <label class="admin-toggle-row compact-toggle"><span><strong>Preview approval</strong><small>Require customer approval.</small></span><input id="ptPreview" type="checkbox" ${p.customerExperience?.previewApproval!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Custom colors</strong><small>Allow custom color picker.</small></span><input id="ptColors" type="checkbox" ${p.customization?.allowCustomColors!==false?'checked':''}></label>
       </div>
+      <div class="pec-card trust-settings-card"><div class="pec-title-row"><div><h4>Trust & Credibility Strip</h4><p class="helper">Project-specific proof only. A badge disappears completely when switched off. Never enable a claim that the business has not verified.</p></div></div>
+      <label class="admin-toggle-row compact-toggle"><span><strong>Licensed &amp; Insured</strong><small>Show a concise credential badge.</small></span><input id="ptTrustLicensed" type="checkbox" ${customerTrustBadgeState(p).licensedInsured?'checked':''}></label>
+      <label class="admin-toggle-row compact-toggle bbb-setting-row"><span><strong>BBB Accredited Business</strong><small>Show the BBB mark only for a currently accredited business.</small></span><input id="ptTrustBBB" type="checkbox" ${customerTrustBadgeState(p).bbbAccredited?'checked':''}></label>
+      <label class="admin-toggle-row compact-toggle"><span><strong>Residential + Commercial</strong><small>Show when the business serves both markets.</small></span><input id="ptTrustResidentialCommercial" type="checkbox" ${customerTrustBadgeState(p).residentialCommercial?'checked':''}></label>
+      <label class="admin-toggle-row compact-toggle"><span><strong>Service Area</strong><small>Show the project market as a compact service-area badge.</small></span><input id="ptTrustServiceArea" type="checkbox" ${customerTrustBadgeState(p).serviceArea?'checked':''}></label>
+      <div class="trust-settings-preview"><span>PREVIEW</span>${customerTrustStripMarkup(p,{compact:true})}</div>
+      </div>
       <div class="pec-card visual-capability-card ${p.businessType==='restoration_services'?'business-low-priority':''}"><div class="pec-title-row"><div><h4>Visual Presentation Capability</h4><p class="helper">${p.businessType==='restoration_services'?'Signal Restoration does not normally need a customer placement renderer. No Visual Placement is the recommended profile; the full library remains available below as an advanced project capability.':'Start with a profile, then tailor the capability families to the business. AVAILABLE means the current Engine has working behavior; FOUNDATION records a supported requirement for future renderers without pretending it is already production-ready.'}</p></div></div>
       <label class="visual-profile-select">Starting profile<select id="ptVisualProfile">${visualProfileOptions(visual.profile||'none')}</select></label>
       ${p.businessType==='restoration_services'?'<details class="advanced-visual-library"><summary>ADVANCED VISUAL CAPABILITY LIBRARY</summary>':''}<div id="visualCapabilityDeck" class="visual-cap-deck">${visualCapabilityDeck(visual)}</div>${p.businessType==='restoration_services'?'</details>':''}
@@ -4863,6 +4877,7 @@
     }
     if(tab==='experience'){ const profile=$('ptVisualProfile'); if(profile) profile.onchange=()=>{ const preset=visualPresets()[profile.value]; if(!preset)return; VISUAL_FAMILIES.forEach(f=>{ $$(`[data-visual-family=\"${f}\"]`).forEach(cb=>{cb.checked=(preset[f]||[]).includes(cb.value);cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked);}); }); }; $$('#visualCapabilityDeck input[type=\"checkbox\"]').forEach(cb=>cb.onchange=()=>cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked)); $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;
         p.customerExperience={...(p.customerExperience||{}),mode:$('ptOperatingFlow')?.value||p.customerExperience?.mode||'guided',photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};
+        p.customerExperience.landingPage={...(p.customerExperience.landingPage||{}),trustBadges:{licensedInsured:!!$('ptTrustLicensed')?.checked,bbbAccredited:!!$('ptTrustBBB')?.checked,residentialCommercial:!!$('ptTrustResidentialCommercial')?.checked,serviceArea:!!$('ptTrustServiceArea')?.checked}};
         p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;p.visualPresentation=collectVisualPresentationFromControls(p);
         window.BlackFlagV3Core?.updateBusinessUnderstanding?.(p,{briefText:$('ptBusinessBrief')?.value||'',overrides:{mode:$('ptOperatingMode')?.value||'other',customerFlow:$('ptOperatingFlow')?.value||'guided',relationshipType:($('ptRelationshipType')?.value&&$('ptRelationshipType').value!=='auto')?$('ptRelationshipType').value:undefined,fulfillment:String($('ptOperatingFulfillment')?.value||'').split(',').map(x=>x.trim()).filter(Boolean),schedulingNeeded:!!$('ptOperatingScheduling')?.checked}});
         await persistProjectMutation(p,{reason:'business.understanding.update'});logActivity(p.id,'Business understanding updated',window.BlackFlagV3Core?.resolveOperatingModel?.(p)?.summary||`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
@@ -6925,6 +6940,28 @@
     const host=String(p?.businessIntake?.sourceWebsite||p?.businessIntake?.visualAssets?.sourceHost||'').toLowerCase();
     return host.includes('legacyplumbingrva.com')||/legacy plumbing/i.test(String(p?.name||''));
   }
+  function customerTrustBadgeState(p){
+    const landing=p?.customerExperience?.landingPage||{};
+    const saved=landing.trustBadges&&typeof landing.trustBadges==='object'?landing.trustBadges:{};
+    const legacy=isLegacyPlumbingProject(p);
+    const trust=Array.isArray(landing.trustSignals)?landing.trustSignals.map(x=>String(x).toLowerCase()):[];
+    return {
+      licensedInsured:saved.licensedInsured??trust.some(x=>x.includes('licensed')||x.includes('insured')),
+      bbbAccredited:saved.bbbAccredited??(legacy&&trust.some(x=>x.includes('bbb'))),
+      residentialCommercial:saved.residentialCommercial??trust.some(x=>x.includes('residential')||x.includes('commercial')),
+      serviceArea:saved.serviceArea??trust.some(x=>x.includes('richmond')||x.includes('service area'))
+    };
+  }
+  function customerTrustStripMarkup(p,{compact=false}={}){
+    const landing=p?.customerExperience?.landingPage||{};
+    const badges=customerTrustBadgeState(p);
+    const items=[];
+    if(badges.licensedInsured)items.push(`<article class="trust-chip"><span class="trust-chip-icon" aria-hidden="true">✓</span><strong>Licensed &amp; Insured</strong></article>`);
+    if(badges.bbbAccredited)items.push(`<article class="trust-chip trust-chip-bbb"><img src="assets/bbb_accredited_business.jpg" alt="BBB Accredited Business"></article>`);
+    if(badges.residentialCommercial)items.push(`<article class="trust-chip"><span class="trust-chip-icon" aria-hidden="true">⌂</span><strong>Residential + Commercial</strong></article>`);
+    if(badges.serviceArea){const area=String(landing.market||'Local service').replace(/\s+area$/i,'').replace(/,?\s+VA$/i,'').trim();items.push(`<article class="trust-chip"><span class="trust-chip-icon" aria-hidden="true">◎</span><strong>Serving ${escapeHtml(area)}</strong></article>`);}
+    return items.length?`<section class="contractor-proof-strip trust-strip ${compact?'compact':''}">${items.join('')}</section>`:'';
+  }
   function plumbingVisualAssets(p){
     const supplied=p?.businessIntake?.visualAssets&&typeof p.businessIntake.visualAssets==='object'?p.businessIntake.visualAssets:{};
     if(isLegacyPlumbingProject(p)){
@@ -7018,12 +7055,11 @@
         const testimonials=Array.isArray(landing.testimonials)?landing.testimonials:[];
         const heroPhoto=visuals.why||visuals.services?.service_repair||'';
         const serviceCards=offers.map(x=>{const key=plumbingServiceVisualKey(x.name);const image=key?visuals.services?.[key]:'';return `<button type="button" class="contractor-service-card ${image?'has-photo':''}" data-universal-landing-offer="${escapeHtml(x.id)}" ${image?`style="--service-photo:url('${escapeHtml(image)}')"`:''}><span class="contractor-service-photo"></span><span class="contractor-service-overlay"></span><span class="contractor-service-content"><span class="contractor-service-icon">${universalServiceIcon(x.name)}</span><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small><b>START REQUEST →</b></span></button>`}).join('');
-        const proofSignals=(trust.length?trust:['Licensed & insured','Residential & commercial','Richmond-area service','Clear communication']).slice(0,4);
         const testimonialCards=testimonials.length?testimonials.map((t,i)=>`<article class="contractor-review-card">${visuals.testimonials?.[i]?`<img src="${escapeHtml(visuals.testimonials[i])}" alt="" loading="lazy">`:''}<div><span aria-label="5 stars">★★★★★</span><p>“${escapeHtml(t.quote||'')}”</p><strong>${escapeHtml(t.label||'Local customer')}</strong><small>${escapeHtml(t.service||'Plumbing service')}</small></div></article>`).join(''):'';
         shell.innerHTML=`<div class="universal-service-landing premium-plumbing-landing ${legacy?'legacy-contractor-site':''}"><header class="universal-shell-header landing-header premium-brand-header contractor-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml([market,hours].filter(Boolean).join(' • ')||description)}</p></div></div><nav class="contractor-nav" aria-label="Customer navigation"><button type="button" data-scroll-target="services">SERVICES</button><button type="button" data-scroll-target="why">WHY ${legacy?'LEGACY':'US'}</button><button type="button" data-scroll-target="process">HOW IT WORKS</button><button type="button" id="contractorHeaderHelp">${escapeHtml(requestCtaLabel)}</button></nav><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
           <main class="universal-landing-main premium-plumbing-main contractor-main">${previewBanner}${testContactSafety}
             <section class="contractor-hero"><div class="contractor-hero-copy"><div class="premium-eyebrow"><span></span>${escapeHtml(landing.eyebrow||'RICHMOND, VA • LICENSED & INSURED')}</div><h2>${escapeHtml(landing.headline||'Fast, reliable plumbing—done right.')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="contractor-hero-actions"><button type="button" id="universalHelpNow" class="contractor-primary-cta">${escapeHtml(contactLocked?helpCtaLabel:(landing.primaryCta||'I NEED PLUMBING HELP'))}</button><button type="button" id="universalViewServices" class="contractor-secondary-cta">VIEW SERVICES</button></div><div class="contractor-availability"><b>LOCAL SERVICE TEAM</b><span>${escapeHtml(hours||'Business-hour response')}</span><span>${escapeHtml(market)}</span></div></div><div class="contractor-hero-visual" ${heroPhoto?`style="--contractor-hero:url('${escapeHtml(heroPhoto)}')"`:''}><div class="contractor-hero-photo"></div><div class="contractor-hero-brand">${logoMarkup}<small>Professional plumbing for homes & businesses</small></div></div></section>
-            <section class="contractor-proof-strip">${proofSignals.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong></article>`).join('')}</section>
+            ${customerTrustStripMarkup(p,{compact:true})}
             <section id="services" class="contractor-services-section"><div class="contractor-section-heading"><div><small>PLUMBING SERVICES</small><h2>Start with the job in front of you.</h2></div><p>Choose the closest match. Black Flag will open the right request path and keep the details tied to ${escapeHtml(p.name)}.</p></div><div class="contractor-service-mosaic">${serviceCards}</div></section>
             <section id="why" class="contractor-why-section"><div class="contractor-why-photo" ${visuals.why?`style="--why-photo:url('${escapeHtml(visuals.why)}')"`:''}></div><div class="contractor-why-copy"><small>WHY ${legacy?'LEGACY':'THIS TEAM'}</small><h2>${escapeHtml(landing.proofTitle||'Trusted, straightforward service')}</h2><p>${escapeHtml(landing.proofCopy||'Clear recommendations, quality workmanship, and dependable local follow-up.')}</p><ul><li><b>Licensed & insured</b><span>Professional work with safety and code compliance in mind.</span></li><li><b>Clear communication</b><span>Know what the next step is before work begins.</span></li><li><b>Homes & businesses</b><span>From repairs and replacements to remodels and larger projects.</span></li></ul></div></section>
             <section id="process" class="contractor-process-section"><div class="contractor-section-heading compact"><div><small>HOW SERVICE STARTS</small><h2>A better request means a better first conversation.</h2></div><p>No generic contact form. Give the plumbing team the details they need before they call you back.</p></div><div class="contractor-process-grid">${process.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong><small>${['Choose the service or problem that is closest.','Tell us where the work is and what is happening.','Add photos, timing and the best way to contact you.','The team reviews the request and follows up with the right next step.'][i]||'Move forward with a clear next step.'}</small></article>`).join('')}</div></section>
@@ -7032,7 +7068,7 @@
             <footer class="contractor-footer"><div>${logoMarkup}<div><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(market)} • ${escapeHtml(hours)}</span></div></div><div><span>${escapeHtml(landing.phone||'')}</span><span>${escapeHtml(landing.email||'')}</span></div></footer>
           </main></div>`;
       }else{
-        shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(description)}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header><main class="universal-landing-main">${previewBanner}${testContactSafety}<section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(contactLocked?'START TEST REQUEST':(landing.primaryCta||'I NEED HELP NOW'))}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>${trust.length?`<section class="universal-trust-row">${trust.map(x=>`<span>✓ ${escapeHtml(x)}</span>`).join('')}</section>`:''}<section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section></main></div>`;
+        shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(description)}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header><main class="universal-landing-main">${previewBanner}${testContactSafety}<section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(contactLocked?'START TEST REQUEST':(landing.primaryCta||'I NEED HELP NOW'))}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>${(p.customerExperience?.landingPage?.trustBadges||trust.length)?customerTrustStripMarkup(p,{compact:true}):''}<section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section></main></div>`;
       }
       const begin=(offerId='')=>{if(offerId)universalCustomerState.offerId=offerId;universalCustomerState.stage='intake';renderUniversalCustomerShell(p);};
       $('universalHelpNow')?.addEventListener('click',()=>begin());
@@ -11790,7 +11826,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.2',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.3',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11827,7 +11863,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.2',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.3',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -11998,7 +12034,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.2'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.3'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});
