@@ -12442,7 +12442,7 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
 @media(max-width:900px){.experience-lifecycle-head{flex-direction:column}.experience-lifecycle-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.experience-revision-strip{align-items:flex-start;flex-wrap:wrap}.experience-revision-strip>small{width:100%;margin-left:0}}
 @media(max-width:560px){.experience-lifecycle-rail{grid-template-columns:1fr 1fr}}
 
-/* 5.1.0 — Existing Business Intake / Fleet Learning setup */
+/* 5.2.0 — Existing Business Intake / Fleet Learning setup */
 .business-intake-shell{margin:18px 0 24px;padding:18px;border:1px solid rgba(117,202,220,.25);border-radius:18px;background:linear-gradient(135deg,rgba(9,35,43,.96),rgba(8,23,29,.92));color:#eef8f8}
 .business-intake-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
 .business-intake-head span,.business-intake-results small{display:block;font-size:11px;letter-spacing:.16em;font-weight:800;color:#8fc3cf;margin-bottom:5px}
@@ -12456,3 +12456,43 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
 .business-visual-directions{margin-top:13px}.business-visual-directions>div{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}.business-visual-directions article{padding:13px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}.business-visual-directions article strong,.business-visual-directions article span{display:block}.business-visual-directions article span{margin-top:5px;color:#afc2c6;line-height:1.35;font-size:12px}
 .business-intake-control-card .business-intake-columns{margin-top:14px}.business-intake-control-card .business-intake-columns p{color:inherit}.intake-review{margin-top:10px}
 @media(max-width:760px){.business-intake-inputs,.business-intake-columns,.business-visual-directions>div{grid-template-columns:1fr}.business-intake-summary,.business-intake-head{flex-direction:column}.business-intake-summary button{width:100%}}
+
+
+/* ==========================================================
+   v5.2.0 — Engine Command Hierarchy + Isolated Project Header Chassis
+   Shared geometry, project-owned skin. Artwork never owns controls.
+   ========================================================== */
+.engine-commission-btn{
+  display:flex;align-items:center;gap:10px;min-width:210px;padding:12px 16px;
+  border:1px solid #3d8199;border-radius:9px;background:linear-gradient(135deg,#145a7e,#0d3546);
+  color:#fff;box-shadow:0 10px 26px rgba(0,0,0,.16);cursor:pointer
+}
+.engine-commission-btn .commission-plus{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.1);font-size:20px;font-weight:900}
+.engine-commission-btn strong{display:block;color:#fff;font:900 10px Arial,sans-serif;letter-spacing:.04em}
+.engine-commission-btn small{display:block;margin-top:5px;color:#b7d6df;font:600 8px Arial,sans-serif}
+.full-sail-actions .command-primary{border-color:#3f839b!important;background:linear-gradient(135deg,#145a7e,#0e3647)!important;color:#fff!important;font-weight:900!important}
+.modern-project-command .project-next-command{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:10px 0 7px;padding:9px 10px;border:1px solid #284b58;border-radius:8px;background:rgba(10,31,39,.78)}
+.modern-project-command .project-next-command small{color:#7899a5;font:900 8px Arial,sans-serif;letter-spacing:.13em}
+.modern-project-command .project-next-command strong{color:#eaf4f3;font:900 9px Arial,sans-serif;text-align:right}
+.modern-project-command .project-card-actions-command{grid-template-columns:1fr 1fr!important}
+.modern-project-command .project-card-actions-command .project-next-action{grid-column:1/-1!important;order:-2!important;min-height:50px!important}
+.modern-project-command .project-card-actions-command .project-proof-action{grid-column:1/-1!important;min-height:36px!important;opacity:.9}
+
+/* Header chassis: every project gets the same protected geometry, never the same skin. */
+#projectEngineControl .project-engine-head{position:relative!important;overflow:hidden!important;isolation:isolate!important;min-height:132px!important;padding:20px 22px!important;border:1px solid rgba(111,158,173,.42)!important;border-radius:14px!important;background:#0a2028!important}
+#projectEngineControl .project-engine-head::before{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;background-image:var(--project-header-art,none);background-size:cover;background-position:center;opacity:.22;filter:saturate(.9) contrast(1.05)}
+#projectEngineControl .project-engine-head::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(100deg,rgba(4,19,25,.96) 0%,rgba(4,25,33,.86) 54%,rgba(7,28,35,.72) 100%)}
+#projectEngineControl .project-engine-identity,#projectEngineControl #closeProjectEngineControl{position:relative;z-index:2}
+#projectEngineControl .project-engine-head h3{color:#f7fbfa!important;text-shadow:0 2px 12px rgba(0,0,0,.28)!important}
+#projectEngineControl .project-engine-head p{color:#bac9cb!important}
+#projectEngineControl .project-platform-cue,#projectEngineControl .project-engine-head .engine-kicker{color:#91bac5!important}
+#projectEngineControl[data-project-type*="restoration"] .project-engine-head{border-color:rgba(62,151,202,.58)!important;background:#063a5d!important}
+#projectEngineControl[data-project-type*="restoration"] .project-engine-head::after{background:linear-gradient(100deg,rgba(2,48,78,.96),rgba(6,91,141,.82),rgba(10,52,72,.76))}
+#projectEngineControl[data-project-type*="wood"] .project-engine-head{border-color:rgba(231,190,56,.55)!important;background:#163f60!important}
+#projectEngineControl[data-project-type*="mug"] .project-engine-head{border-color:rgba(136,69,82,.62)!important;background:#24151d!important}
+#projectEngineControl[data-project-type*="flower"] .project-engine-head,#projectEngineControl[data-project-type*="blossom"] .project-engine-head{border-color:rgba(163,137,92,.58)!important;background:#263927!important}
+#projectEngineControl[data-project-type*="outdoor"] .project-engine-head,#projectEngineControl[data-project-type*="camp"] .project-engine-head{border-color:rgba(123,139,83,.62)!important;background:#18291e!important}
+#projectEngineControl .pec-brand-mark{box-shadow:0 9px 24px rgba(0,0,0,.25)!important;border-color:rgba(255,255,255,.42)!important}
+#closeProjectEngineControl.black-flag-back-mark{background:rgba(245,248,246,.94)!important;border-color:rgba(255,255,255,.65)!important;box-shadow:0 8px 20px rgba(0,0,0,.22)!important}
+@media(max-width:900px){.engine-commission-btn{grid-column:1/-1;min-width:0}.modern-engine-top-actions{grid-template-columns:1fr 1fr!important}.modern-project-command .project-next-command{align-items:flex-start;flex-direction:column}.modern-project-command .project-next-command strong{text-align:left}}
+@media(max-width:620px){.modern-engine-top-actions{grid-template-columns:1fr!important}#projectEngineControl .project-engine-head{min-height:0!important;padding:17px!important}}

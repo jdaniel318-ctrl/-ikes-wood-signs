@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.1.0';
+  const BUILD_VERSION = '5.2.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2731,7 +2731,19 @@
 
   async function applyProjectControlBrand(p){
     const visual=await projectBrandVisual(p);
+    let assets={};try{assets=await readProjectAssets(p.id)||{};}catch(_){}
     if(engineActiveProjectId!==p.id)return;
+    const control=$('projectEngineControl');
+    if(control){
+      const type=String(p.businessIntake?.businessType||p.businessType||p.type||'other').toLowerCase().replace(/[^a-z0-9_-]+/g,'-');
+      control.dataset.projectId=canonicalProjectId(p.id);
+      control.dataset.projectType=type;
+      const colors=(p.businessIntake?.colors||p.branding?.colors||[]).filter(x=>/^#[0-9a-f]{6}$/i.test(String(x))).slice(0,2);
+      control.style.setProperty('--project-brand-accent',colors[0]||'');
+      control.style.setProperty('--project-brand-accent-2',colors[1]||'');
+      const headerAsset=assets.backgroundImage||assets.heroGraphic||'';
+      control.style.setProperty('--project-header-art',headerAsset?`url("${String(headerAsset).replaceAll('"','\"')}")`:'none');
+    }
     const mark=$('pecBrandMark'), img=$('pecBrandLogo'), code=$('pecBrandCode');
     if(code) code.textContent=visual.code;
     if(img){
@@ -2805,9 +2817,9 @@
         <article><span>FLEET READY</span><strong>${fleetReady}</strong><small>${activeDeployments} active deployment${activeDeployments===1?'':'s'}</small></article>
         <article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article>
         <article><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
-      </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>Next best moves</h4>${priorities}</div><div class="full-sail-actions"><h4>Quick command</h4><button type="button" data-full-sail="watch">RUN WATCH</button><button type="button" data-full-sail="projects">PROJECT COMMAND</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
+      </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4>${priorities}</div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
       host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
-        const a=btn.dataset.fullSail;if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
+        const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
       });
     }catch(err){console.warn('Full Sail command deck warning',err);if(state){state.textContent='CHECK';state.className='full-sail-state watch';}host.innerHTML='<p class="helper">Command Deck could not finish its live read. Fleet controls below remain available.</p>';}
   }
@@ -2875,7 +2887,7 @@
       {key:'live',label:'Live',done:life.live,detail:life.live?'Serving customers':'Not published'}
     ];
     const currentIndex=Math.max(0,stages.findIndex(x=>x.key===life.current));
-    return `<section class="experience-lifecycle-card"><div class="experience-lifecycle-head"><div><span>ENGINE COMMISSIONING</span><h3>Project lifecycle</h3><p>Move forward when ready or return to configuration whenever the vessel needs another pass. Downstream approvals automatically become stale when customer-facing configuration changes.</p></div><button type="button" id="experienceEditConfiguration" class="secondary-btn">EDIT CONFIGURATION</button></div><div class="experience-lifecycle-rail">${stages.map((x,i)=>`<div class="experience-lifecycle-step ${x.done?'done':''} ${i===currentIndex?'current':''}"><i>${x.done?'✓':i+1}</i><span><strong>${x.label}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div><div class="experience-revision-strip"><span>CURRENT REVISION</span><strong>${escapeHtml(life.signature.slice(-8).toUpperCase())}</strong><small>${life.previewed?'Preview evidence matches this revision.':'Preview evidence not yet recorded for this revision.'}</small></div></section>`;
+    return `<section class="experience-lifecycle-card"><div class="experience-lifecycle-head"><div><span>PREPARE • INTERNAL CHECKLIST</span><h3>Configure → Preview → Approve</h3><p>The Engine overview stays simple: Create → Prepare → Sea Trial → Fleet Ready → Live. This deck shows the detailed work inside Prepare and the evidence that carries forward. You can return to configuration at any time; affected downstream evidence becomes stale automatically.</p></div><button type="button" id="experienceEditConfiguration" class="secondary-btn">EDIT CONFIGURATION</button></div><div class="experience-lifecycle-rail">${stages.map((x,i)=>`<div class="experience-lifecycle-step ${x.done?'done':''} ${i===currentIndex?'current':''}"><i>${x.done?'✓':i+1}</i><span><strong>${x.label}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div><div class="experience-revision-strip"><span>CURRENT REVISION</span><strong>${escapeHtml(life.signature.slice(-8).toUpperCase())}</strong><small>${life.previewed?'Preview evidence matches this revision.':'Preview evidence not yet recorded for this revision.'}</small></div></section>`;
   }
 
 
@@ -3464,11 +3476,12 @@
           <span><small>LEDGER</small><strong>${s.completed}</strong></span>
         </div>
         <div class="project-launch-line ${launch.key}"><span>${escapeHtml(launch.label)}</span><small>${escapeHtml(launch.detail)}</small></div>
-        <div class="project-card-actions">
+        <div class="project-next-command"><small>NEXT BEST MOVE</small><strong>${escapeHtml(launch.actionLabel)}</strong></div>
+        <div class="project-card-actions project-card-actions-command">
+          <button type="button" data-project-launch="${escapeHtml(p.id)}" class="primary-btn small project-next-action">${escapeHtml(launch.actionLabel)}</button>
           <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
           <button type="button" data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">TEST EXPERIENCE</button>
-          <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn small">COMMISSIONING</button>
-          <button type="button" data-project-launch="${escapeHtml(p.id)}" class="primary-btn small">${escapeHtml(launch.actionLabel)}</button>
+          <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn small project-proof-action">SEAWORTHINESS</button>
         </div>
       </article>`);
     }
@@ -3496,7 +3509,7 @@
         <div class="project-card-actions"><button type="button" data-resume-commissioning="1" class="primary-btn small">CONTINUE COMMISSIONING</button></div>
       </article>`);
     }
-    cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Add Project</h4><p>Create another private business or project in the Engine.</p><span class="pirate-add-copy">RAISE ANOTHER FLAG</span></button>`);
+    cards.push(`<button id="addProjectCard" class="project-card add-project-card"><div class="add-project-plus">＋</div><h4>Commission New Project</h4><p>Import an existing business or start clean. Black Flag will recommend a project-specific starting model.</p><span class="pirate-add-copy">START COMMISSIONING</span></button>`);
     box.innerHTML=cards.join('');
     applyEngineFleetFilter();
     // Project card actions are owned by the early Engine Project Command bus.
@@ -9264,7 +9277,7 @@ The full order and approved media remain stored with this project.`;
     // project cards and launch controls must remain actionable even if a later
     // migration or optional initializer fails.
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-test-experience],[data-project-launch],[data-fleet-health-project],#addProjectBtn,#addProjectCard,[data-resume-commissioning],[data-retry-project-registry]');
+      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-test-experience],[data-project-launch],[data-fleet-health-project],#commissionNewProjectBtn,#addProjectBtn,#addProjectCard,[data-resume-commissioning],[data-retry-project-registry]');
       if(!target)return;
       event.preventDefault();
       event.stopPropagation();
@@ -9273,7 +9286,7 @@ The full order and approved media remain stored with this project.`;
         document.querySelectorAll('[data-engine-fleet-filter]').forEach(b=>b.classList.toggle('active',b===target));
         applyEngineFleetFilter();return;
       }
-      if(target.id==='addProjectBtn'||target.id==='addProjectCard'||target.matches('[data-resume-commissioning]')){openProjectCommissioning();return;}
+      if(target.id==='commissionNewProjectBtn'||target.id==='addProjectBtn'||target.id==='addProjectCard'||target.matches('[data-resume-commissioning]')){openProjectCommissioning();return;}
       if(target.matches('[data-retry-project-registry]')){
         const recovery=commissioningRecoveryCandidate();
         if(!recovery || String(recovery.project.id)!==String(target.dataset.retryProjectRegistry||'')){alert('No matching commissioning recovery record is available.');return;}

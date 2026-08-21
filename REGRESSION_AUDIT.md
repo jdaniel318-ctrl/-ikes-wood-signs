@@ -1,3 +1,13 @@
+# 5.2.0 Engine Strengthening Regression Addendum
+
+- Commission New Project appears in the Engine hero and routes to the canonical commissioning workspace.
+- Project Command remains available and project cards retain exact Project IDs on every action.
+- Project cards expose a single visually dominant next action while Control Center/Test/Seaworthiness remain secondary.
+- Experience Test Deck copy distinguishes fleet-level Prepare from its Configure/Preview/Approve checklist.
+- Project Control header artwork is project-owned, pointer-inert, and rendered beneath protected controls.
+- Project Admin 4353, Engine 5615, Captain 19613 remain unchanged.
+- No customer/order/asset query was broadened across project namespaces.
+
 # 5.1.0 Authentication Regression Addendum
 
 - Black Flag normal PIN: `5615`.

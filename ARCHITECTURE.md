@@ -1,3 +1,17 @@
+# 5.2.0 Engine Command & Header Contract
+
+## Engine command hierarchy
+Black Flag presents three operational questions in order: what needs attention, what vessels are being operated, and what should happen next. **Commission New Project** is a first-class Engine command and routes to the same isolated commissioning workspace as the Project Command entry point.
+
+## Commissioning vocabulary
+The fleet-level lifecycle is **Create → Prepare → Sea Trial → Fleet Ready → Live**. The detailed reversible work inside Prepare is **Configure → Preview → Approve**. Configuration changes may stale downstream evidence, but never change the immutable Project ID.
+
+## Project header chassis
+Project Control Center headers share safe geometry and protected control zones. The visual skin is resolved only from that project's business profile and project-owned assets. Cross-project asset fallback is forbidden. Header artwork is a non-interactive presentation layer and cannot reposition or obscure Black Flag navigation controls.
+
+## Authority spine
+Project Admin **4353**, Black Flag Engine **5615**, Captain's Quarters **19613**. 5.2.0 does not alter authentication semantics.
+
 # 5.1.0 Business Intake & Fleet Learning Contract
 
 - Business intake evidence is project-scoped from the moment it becomes a commissioned project.

@@ -1,3 +1,13 @@
+# Dark Sky 5.2.0 — Engine Command Strengthening
+
+- Elevated **Commission New Project** into the Engine hero and Command Deck while preserving the Project Command entry point.
+- Clarified Engine hierarchy around attention, operating vessels, and the next useful action.
+- Project cards now present one explicit **Next Best Move** before Control Center, Test Experience, and Seaworthiness tools.
+- Consolidated commissioning vocabulary: Engine overview remains **Create → Prepare → Sea Trial → Fleet Ready → Live**; the detailed Test Deck identifies **Configure → Preview → Approve** as Prepare work.
+- Reframed Seaworthiness Dock as proof/release review for already-created vessels, not the new-project entry point.
+- Added an isolated Project Header Chassis: shared safe geometry, project-owned logo/hero/background skin, business-aware defaults, non-interactive artwork layer, protected Black Flag controls.
+- Preserved authentication contracts and project namespace boundaries unchanged.
+
 # Dark Sky 5.1.0 — Business Intake / Fleet Learning Foundation
 
 - Added Existing Business Intake to project commissioning: website URL or uploaded current-site files can seed a project-owned business profile.

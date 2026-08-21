@@ -19,7 +19,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.1.0" />
+  <link rel="stylesheet" href="styles.css?v=5.2.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -750,6 +750,10 @@
         </div>
 
         <div class="modern-engine-top-actions">
+          <button id="commissionNewProjectBtn" class="engine-commission-btn" type="button">
+            <span class="commission-plus" aria-hidden="true">＋</span>
+            <span><strong>COMMISSION NEW PROJECT</strong><small>Import a business or start clean</small></span>
+          </button>
           <button id="engineConfigureBtn" class="engine-configure-btn" type="button">
             <span class="configure-sliders" aria-hidden="true">☷</span>
             <span><strong>CONFIGURE ENGINE</strong><small>Settings & system configuration</small></span>
@@ -872,7 +876,7 @@
           <div>
             <div class="engine-kicker">FLEET COMMISSIONING</div>
             <h3>SEAWORTHINESS DOCK</h3>
-            <p>One standard for every vessel. Project-specific requirements stay project-specific; the fleet gate proves identity, isolation, experience, recovery, and Captain approval.</p>
+            <p>Proof and release review for vessels already in the fleet. New businesses enter through Commission New Project; project-specific requirements stay project-specific.</p>
           </div>
           <div class="fleet-commissioning-head-actions">
             <span id="fleetCommissioningState" class="fleet-commissioning-state">READING FLEET</span>
@@ -913,7 +917,7 @@
               <button type="button" data-engine-fleet-filter="private">Test / Private</button>
               <button type="button" data-engine-fleet-filter="future">Future</button>
             </div>
-            <button type="button" id="addProjectBtn" class="project-add-btn">＋ ADD PROJECT</button>
+            <button type="button" id="addProjectBtn" class="project-add-btn">＋ COMMISSION PROJECT</button>
           </div>
         </div>
         <div class="project-fleet-rail-tools" aria-label="Project fleet navigation">
@@ -1274,11 +1278,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.1.0"></script>
-  <script src="platform_v4.js?v=5.1.0"></script>
-  <script src="platform_identity.js?v=5.1.0"></script>
-  <script src="app.js?v=5.1.0"></script>
-  <script src="captain.js?v=5.1.0"></script>
+  <script src="platform_core.js?v=5.2.0"></script>
+  <script src="platform_v4.js?v=5.2.0"></script>
+  <script src="platform_identity.js?v=5.2.0"></script>
+  <script src="app.js?v=5.2.0"></script>
+  <script src="captain.js?v=5.2.0"></script>
 
 </body>
 </html>

@@ -1,3 +1,11 @@
+# Dark Sky 5.2.0
+
+5.2.0 strengthens the Black Flag Engine command hierarchy without changing the authority spine. Commission New Project is now a first-class Engine action, Project Command cards emphasize one next best move, Seaworthiness is framed as proof/release review for vessels already in the fleet, and the Experience Test Deck explicitly shows Configure → Preview → Approve as the internal work inside the high-level Prepare stage.
+
+Project Control headers now use a protected shared chassis with project-owned graphics and business-category styling. Project assets remain scoped to the exact Project ID; artwork cannot own or move navigation/control hit areas.
+
+Authority remains Project Admin 4353 • Black Flag Engine 5615 • Captain's Quarters 19613.
+
 # Dark Sky 5.1.0
 
 5.1.0 adds the first Existing Business Intake / Fleet Learning commissioning workflow. Black Flag can analyze a current business from an accessible website or uploaded HTML/text site files, propose a business model, opportunity scan and project-specific visual directions, then let the Captain accept or change every recommendation before commissioning. Imported evidence is stored only inside that Project ID; fleet learning is pattern guidance, not cross-project data sharing.
