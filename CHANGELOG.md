@@ -1,4 +1,4 @@
-# Dark Sky 5.4.1 — iPhone Compatibility Hardening
+# Dark Sky 5.5.0 — iPhone Compatibility Hardening
 
 - Added a fleet-wide narrow-mobile layout contract across customer, Engine, commissioning, Project Admin/Manager, Test Deck, and Captain surfaces.
 - Added iPhone safe-area handling for persistent controls and sticky action bars.
@@ -191,3 +191,11 @@ Second-pass audit of the 5.0 fleet boundary release.
 ## Isolation
 - Existing vessel definitions and Captain’s Quarters assets are not rebranded or modified by Signal Restoration.
 - Signal Restoration brand/market migration updates only its canonical project row.
+
+## 5.5.0 — Fleet Customer Experience Hardening
+- Added a fleet-wide fresh-entry viewport contract: every project, Private Preview, Test Experience, and Home entry resets to the top of that project's landing page, including iOS Safari nested/document scroll recovery.
+- Applied Legacy Plumbing lessons as reusable principles rather than shared project state: confidence-first entry, clear primary action, business-appropriate categories, guided intake, required transactional email, mobile-first behavior, and project-owned visual identity.
+- Added a dedicated Signal Restoration confidence-first landing page before damage intake; the existing damage workflow remains behind `I NEED HELP NOW`.
+- Signal Restoration email is now required and validated for requests.
+- Mugs After Dark and Becca's Bloom Shop now require and validate email before transactional review/submission, matching the fleet transactional-contact contract.
+- Preserved strict Project ID isolation and the authority spine: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.

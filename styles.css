@@ -12600,7 +12600,7 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
 @media(max-width:700px){.legacy-plumbing-customer .experience-mode-banner,.premium-plumbing-customer .experience-mode-banner{left:10px!important;bottom:10px!important;max-width:calc(100vw - 20px)!important}.contractor-main{padding:12px 10px 58px!important}.contractor-brand-header,.contractor-intake-header{padding:12px!important}.contractor-brand-header .legacy-real-logo,.contractor-intake-header .legacy-real-logo{width:86px!important;height:58px!important;flex-basis:86px!important}.contractor-hero-copy{padding:46px 26px}.contractor-hero-copy h2{font-size:52px}.contractor-hero-copy>p{font-size:17px}.contractor-hero-actions{grid-template-columns:1fr}.contractor-hero-visual{min-height:340px}.contractor-hero-brand{left:18px;right:18px;bottom:18px}.contractor-hero-brand .universal-brand-logo{width:130px!important;height:74px!important;flex-basis:130px!important}.contractor-proof-strip{grid-template-columns:1fr 1fr}.contractor-services-section,.contractor-process-section,.contractor-reviews-section{padding:28px 18px;border-radius:22px}.contractor-section-heading{align-items:flex-start;flex-direction:column}.contractor-section-heading>p{text-align:left}.contractor-service-mosaic{grid-auto-rows:190px}.contractor-service-card,.contractor-service-card:nth-child(1),.contractor-service-card:nth-child(6),.contractor-service-card:nth-child(7){grid-column:span 12}.contractor-why-copy{padding:34px 24px}.contractor-why-copy li{grid-template-columns:1fr}.contractor-process-grid{grid-template-columns:1fr}.contractor-bottom-cta{grid-template-columns:1fr;padding:30px 22px}.contractor-footer{align-items:flex-start;flex-direction:column}.contractor-intake-main{padding:20px 12px 64px}.contractor-intake-card{padding:26px 18px}.contractor-intake-heading h2{font-size:34px}.contractor-field-grid.three,.contractor-request-summary,.contractor-prep-grid{grid-template-columns:1fr}.contractor-intake-actions{flex-direction:column-reverse}.contractor-intake-actions button{width:100%;min-width:0!important}}
 
 /* ==========================================================
-   5.4.1 — iPhone / narrow-mobile compatibility contract
+   5.5.0 — iPhone / narrow-mobile compatibility contract
    Applies to customer experiences, Engine Room, commissioning,
    Project Control/Admin, Test Deck, and Captain surfaces.
    Layout-only hardening; project identity/data boundaries unchanged.
@@ -12740,4 +12740,22 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
   .contractor-review-card{grid-template-columns:1fr!important}
   .contractor-review-card img{height:150px!important}
   .experience-mode-banner{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;transform:none!important}
+}
+
+/* 5.5.0 Fleet Customer Experience Contract */
+.bor-landing-hero{min-height:300px;align-items:center}
+.bor-landing-card{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:28px;align-items:stretch}
+.bor-landing-copy{display:flex;flex-direction:column;justify-content:center;gap:12px}
+.bor-landing-copy>small,.bor-landing-services>small{font-size:12px;letter-spacing:.18em;font-weight:900;color:#b66b18}
+.bor-landing-copy h3{font-size:clamp(30px,3vw,48px);line-height:1;margin:0;color:#0c2d43}
+.bor-landing-copy p{font-size:17px;line-height:1.55;color:#4d6472;max-width:760px}
+.bor-landing-cta{margin-top:8px;max-width:520px;font-size:18px;min-height:62px}
+.bor-landing-services{border-radius:22px;padding:22px;background:linear-gradient(145deg,#eef8fb,#f8fbfc);border:1px solid #d7e9ef;display:grid;gap:10px}
+.bor-landing-services>div{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #dce9ed}
+.bor-landing-services>div:last-child{border-bottom:0}
+.bor-landing-services b{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#fff;font-size:21px;box-shadow:0 4px 14px rgba(18,58,77,.08)}
+.bor-landing-services span{display:grid;gap:2px}.bor-landing-services strong{color:#0b2c40}.bor-landing-services small{color:#607782}
+.bor-required{font-size:11px;font-weight:800;color:#a24c14;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:760px){
+  .bor-landing-card{grid-template-columns:1fr;gap:18px}.bor-landing-hero{min-height:0}.bor-landing-cta{max-width:none;width:100%}.bor-landing-copy h3{font-size:34px}
 }

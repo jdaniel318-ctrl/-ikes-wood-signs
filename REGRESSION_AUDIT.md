@@ -72,3 +72,11 @@ Checks required: Legacy Plumbing source assets are selected only for the Legacy 
 - Duplicate HTML ids checked.
 - Runtime asset references checked.
 - ZIP integrity checked.
+
+## 5.5.0 Fleet Customer Entry / UX regression targets
+- Fresh entry into every customer project resets document + shell scroll to top.
+- Private Preview and Test Experience always begin at the project's landing page top.
+- Explicit Home returns to landing/top; intra-request Back retains the intended workflow step.
+- Signal Restoration opens on a confidence-first landing page before damage-category intake.
+- Signal Restoration, Mugs After Dark, Becca's Bloom Shop, Ike's, and universal transactional shells require valid email before final transactional submission.
+- Customer visual/state data remains project-scoped; no cross-project fallback branding or scroll state.
