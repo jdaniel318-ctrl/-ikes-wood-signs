@@ -1,4 +1,12 @@
-# Dark Sky 5.3.1 — Intake Compiler & Service Preview
+# Dark Sky 5.3.2 — Premium Project-Aware Customer Experience
+
+- Rebuilt the plumbing landing experience around confidence, trust, local service, a single Help Now action, plumbing-specific service graphics, proof sections, and a stronger brand chassis.
+- Added first-class parsing for `black-flag-business-intake-package-v1` JSON so structured evidence no longer leaks raw JSON into customer-facing copy.
+- Structured intake now carries service catalog, trust signals, hours, market and contact evidence into the isolated project compiler.
+- Kept the customer renderer project-scoped and compatible with project-owned uploaded logos when available.
+- Authority contracts unchanged: Project Admin 4353, Engine 5615, Captain 19613.
+
+# Dark Sky 5.3.2 — Intake Compiler & Service Preview
 
 - Accepted business-intake evidence now compiles into a runnable, project-scoped customer configuration instead of remaining advisory only.
 - Plumbing intake creates a confidence-first landing page, plumbing-specific service categories, required email/contact capture, and a universal service-request workflow.

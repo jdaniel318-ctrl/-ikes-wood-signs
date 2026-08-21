@@ -1,4 +1,12 @@
-# 5.3.1 Preview Regression Addendum
+# 5.3.2 Premium Landing Regression Addendum
+
+- Verify structured intake JSON is parsed, not copied into project description.
+- Verify Plumbing preview renders only plumbing/project-owned identity and services.
+- Verify Help Now and every service card enters the same project-scoped intake.
+- Verify private preview writes no records; Sea Trial writes only marked test records.
+- Verify project asset lookup is keyed only to the active Project ID.
+
+# 5.3.2 Preview Regression Addendum
 
 - Accepted business-intake evidence now compiles into a runnable, project-scoped customer configuration instead of remaining advisory only.
 - Plumbing intake creates a confidence-first landing page, plumbing-specific service categories, required email/contact capture, and a universal service-request workflow.

@@ -1,4 +1,4 @@
-# 5.3.1 Business Intake Compiler Contract
+# 5.3.2 Business Intake Compiler Contract
 
 - Accepted business-intake evidence now compiles into a runnable, project-scoped customer configuration instead of remaining advisory only.
 - Plumbing intake creates a confidence-first landing page, plumbing-specific service categories, required email/contact capture, and a universal service-request workflow.

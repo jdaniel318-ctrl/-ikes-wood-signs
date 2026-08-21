@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.3.1';
+  const BUILD_VERSION = '5.3.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -485,34 +485,53 @@
     if(category!=='plumbing')return p;
     p.businessType='plumbing';
     p.type=p.type&&p.type!=='other'?p.type:'service_business';
-    p.description=p.description||intake.description||'Professional plumbing service for homes and businesses.';
+    const rawDescription=String(p.description||'').trim();
+    const descriptionLooksLikeImport=/^[\[{]/.test(rawDescription)||/black-flag-business-intake-package|"schema"\s*:/.test(rawDescription);
+    if(!rawDescription||descriptionLooksLikeImport){
+      p.description=intake.positioning||intake.description||'Licensed and insured plumbing for homes and businesses, with clear options and dependable local service.';
+    }
     p.customerExperience=p.customerExperience&&typeof p.customerExperience==='object'?p.customerExperience:{};
     p.customerExperience.mode='guided_service';
     p.customerExperience.relationshipType='service_request';
     p.customerExperience.contactCapture=true;
     p.customerExperience.emailRequired=true;
+    const sourceHost=String(intake.sourceWebsite||'').toLowerCase();
+    const isLegacyPlumbing=sourceHost.includes('legacyplumbingrva.com')||/legacy plumbing/i.test(String(p.name||''));
+    const suppliedLanding=intake.landingPage&&typeof intake.landingPage==='object'?intake.landingPage:{};
+    const suppliedTrust=Array.isArray(intake.trustSignals)?intake.trustSignals:[];
     p.customerExperience.landingPage={
       ...(p.customerExperience.landingPage||{}),
       enabled:true,
-      headline:p.customerExperience.landingPage?.headline||'Fast, reliable plumbing—done right.',
-      supportingCopy:p.customerExperience.landingPage?.supportingCopy||'Professional plumbing help for homes and businesses, with a clear path to request service.',
-      primaryCta:p.customerExperience.landingPage?.primaryCta||'I NEED PLUMBING HELP',
-      secondaryCta:p.customerExperience.landingPage?.secondaryCta||'VIEW SERVICES',
-      trustSignals:Array.isArray(p.customerExperience.landingPage?.trustSignals)&&p.customerExperience.landingPage.trustSignals.length?p.customerExperience.landingPage.trustSignals:['Residential & commercial','Richmond-area service','Clear service request process']
+      eyebrow:suppliedLanding.eyebrow||intake.market||'LOCAL PLUMBING • READY TO HELP',
+      headline:suppliedLanding.headline||p.customerExperience.landingPage?.headline||'Fast, reliable plumbing—done right.',
+      supportingCopy:suppliedLanding.supportingCopy||suppliedLanding.supporting_copy||p.customerExperience.landingPage?.supportingCopy||p.description,
+      primaryCta:suppliedLanding.primaryCta||suppliedLanding.primary_cta||p.customerExperience.landingPage?.primaryCta||'I NEED PLUMBING HELP',
+      secondaryCta:suppliedLanding.secondaryCta||suppliedLanding.secondary_cta||p.customerExperience.landingPage?.secondaryCta||'VIEW SERVICES',
+      trustSignals:suppliedTrust.length?suppliedTrust:(isLegacyPlumbing?['Licensed & insured','BBB Accredited','Residential & commercial','Richmond-area service']:['Licensed & insured','Residential & commercial','Clear communication']),
+      hours:intake.hours||(isLegacyPlumbing?'Mon–Fri • 7:00 AM–4:00 PM':''),
+      market:intake.market||(isLegacyPlumbing?'Richmond, VA area':''),
+      phone:intake.contact?.phone||(isLegacyPlumbing?'804-955-7865':''),
+      email:intake.contact?.email||(isLegacyPlumbing?'info@legacyplumbinginc.com':''),
+      proofTitle:'Trusted, straightforward service',
+      proofCopy:'Clear recommendations, quality workmanship, and a local team that keeps the next step easy to understand.',
+      customerPromise:'Tell us what is going on. We will collect the right details and help the team prepare for your service request.'
     };
-    const starters=[
+    const fallbackStarters=[
       ['service-repairs','Service & Repairs','Leaks, clogs, fixtures, and troubleshooting.'],
-      ['water-heater','Water Heater','Replacement, repair, and water-heater service.'],
-      ['remodel-addition','Remodel / Addition','Plumbing for kitchens, baths, remodels, and additions.'],
-      ['new-construction','New Construction','Plumbing installations for new builds.'],
-      ['gas-piping','Gas Piping','Gas line installation and modification requests.'],
-      ['water-sewer','Water / Sewer','Water and sewer line repair or replacement.'],
+      ['water-heater','Water Heater Change-Outs','Replace aging units and restore hot water with safe installation.'],
+      ['remodel-addition','Remodels & Additions','Rough-ins and finish plumbing for kitchens, baths, and additions.'],
+      ['new-construction','New Construction','Plumbing installations for new builds with dependable coordination.'],
+      ['gas-piping','Gas Piping','Gas line installation and modifications for appliances and upgrades.'],
+      ['water-sewer','Water & Sewer Repair','Repair or replace water and sewer lines to protect the property.'],
       ['something-else','Something Else','Tell the plumbing team what you need help with.']
     ];
+    const suppliedServices=Array.isArray(intake.serviceCatalog)&&intake.serviceCatalog.length
+      ? intake.serviceCatalog.map((s,i)=>[String(s.id||s.name||`service-${i+1}`).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),String(s.name||`Service ${i+1}`),String(s.description||'Request plumbing service.')])
+      : fallbackStarters;
     p.products=Array.isArray(p.products)?p.products:[];
     const ready=p.products.filter(x=>x&&x.active!==false&&(x.customerReady===true||x.published===true));
-    if(!ready.length){
-      p.products=starters.map(([key,name,description])=>({id:`intake-plumbing-${key}`,name,description,active:true,published:true,customerReady:true,pricingMode:'manual',price:0,generatedBy:'business_intake_compiler'}));
+    if(!ready.length || ready.every(x=>x.generatedBy==='business_intake_compiler')){
+      p.products=suppliedServices.map(([key,name,description])=>({id:`intake-plumbing-${key}`,name,description,active:true,published:true,customerReady:true,pricingMode:'manual',price:0,generatedBy:'business_intake_compiler'}));
     }
     p.capabilities=p.capabilities&&typeof p.capabilities==='object'?p.capabilities:{};
     p.capabilities.customerRetention=true;
@@ -521,7 +540,7 @@
     const recommended=['job_intake','job_status','customer_records','field_photos','scheduling','estimates_authorizations','project_notes','operational_reporting','customer_notifications'];
     p.capabilityControl.enabled=[...new Set([...(Array.isArray(p.capabilityControl.enabled)?p.capabilityControl.enabled:[]),...recommended])];
     p.capabilityControl.source=p.capabilityControl.source||'business_intake_compiler';
-    p.businessIntakeCompiled={version:1,category:'plumbing',build:BUILD_VERSION,compiledAt:p.businessIntakeCompiled?.compiledAt||new Date().toISOString()};
+    p.businessIntakeCompiled={version:2,category:'plumbing',build:BUILD_VERSION,compiledAt:new Date().toISOString()};
     return p;
   }
 
@@ -5256,6 +5275,60 @@
     return (rows[category]||rows[type]||rows.other).map((x,i)=>({id:`direction-${i+1}`,name:x[0],detail:x[1],accent}));
   }
 
+  function businessIntakeFromStructuredPackage(pkg,sourceName='Business intake package'){
+    if(!pkg||pkg.schema!=='black-flag-business-intake-package-v1')return null;
+    const b=pkg.business||{}, rec=pkg.black_flag_recommendation||{}, landing=rec.landing_page||{};
+    const services=(b.services||[]).map((s,i)=>({id:String(s.id||s.name||`service-${i+1}`).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),name:String(s.name||`Service ${i+1}`),description:String(s.description||'')}));
+    const capabilities=Array.isArray(rec.recommended_capabilities)?rec.recommended_capabilities:[];
+    const visualSuggestions=Array.isArray(rec.visual_direction?.suggestions)?rec.visual_direction.suggestions:[];
+    return {
+      version:2,
+      analyzedAt:new Date().toISOString(),
+      sourceWebsite:String(pkg.source?.url||''),
+      sourceNames:[sourceName],
+      businessName:String(b.name||''),
+      description:String(b.positioning||''),
+      positioning:String(b.positioning||''),
+      businessType:'service',
+      businessCategory:String(b.category||'service').toLowerCase().replace(/[^a-z0-9]+/g,'_'),
+      market:String(b.market||''),
+      hours:String(b.hours||''),
+      contact:{...(b.contact||{})},
+      trustSignals:Array.isArray(b.trust_signals)?b.trust_signals.map(String):[],
+      serviceCatalog:services,
+      emails:[b.contact?.email].filter(Boolean),
+      phones:[b.contact?.phone].filter(Boolean),
+      colors:[],
+      headings:services.map(s=>s.name),
+      ctas:Array.isArray(b.existing_calls_to_action)?b.existing_calls_to_action.map(String):[],
+      opportunities:[
+        'Lead with confidence and a single immediate help action before asking customers to complete intake fields.',
+        'Turn plumbing services into a guided request flow with project-owned customer and job records.',
+        'Keep name, mobile number, and email required so every request has a durable contact anchor.',
+        'Use plumbing-specific service graphics and project-owned branding instead of a generic service template.',
+        'Keep scheduling, photo documentation, job status, estimates, notes, and reporting available to the Project Manager.'
+      ],
+      recommendations:{customerMode:'request',relationshipType:'service_request',photoRequired:false,contactCapture:true,visualProfile:'none',capabilities:{customerRetention:true,notifications:true}},
+      visualDirections:[
+        {id:'direction-1',name:'Trusted Local Plumber',detail:'Confident local-service identity, strong workmanship proof, visible hours and one immediate help action.'},
+        {id:'direction-2',name:'Home Service Modern',detail:'Bright, polished residential/commercial presentation with plumbing-specific service graphics and easy request flow.'},
+        {id:'direction-3',name:'Craft & Reliability',detail:'Trade credibility, straightforward service language and clean, durable visual hierarchy.'}
+      ].map((d,i)=>({...d,detail:visualSuggestions[i]||d.detail,accent:''})),
+      landingPage:{
+        headline:String(landing.headline||'Fast, reliable plumbing—done right.'),
+        supportingCopy:String(landing.supporting_copy||'Licensed and insured plumbing for homes and businesses with clear options and dependable local service.'),
+        primaryCta:String(landing.primary_cta||'I NEED PLUMBING HELP'),
+        secondaryCta:String(landing.secondary_cta||'VIEW SERVICES'),
+        showTrustSignals:landing.show_trust_signals!==false,
+        showCoreServices:landing.show_core_services!==false,
+        showBusinessHours:landing.show_business_hours!==false
+      },
+      capabilityRecommendations:capabilities,
+      confidence:'high',
+      source:'structured_business_intake_package'
+    };
+  }
+
   function buildBusinessIntakeAnalysis(parts,{sourceWebsite='',sourceNames=[]}={}){
     const combined=parts.map(x=>[x.title,x.meta,(x.headings||[]).join(' '),x.body].join(' ')).join(' ').replace(/\s+/g,' ').trim();
     const first=parts[0]||{};
@@ -5370,10 +5443,25 @@
     const files=[...(document.getElementById('commissionWebsiteFiles')?.files||[])];
     const parts=[],sourceNames=[];
     if(status){status.classList.remove('error','success');status.innerHTML='<span class="status-dot"></span><span>Reading business evidence…</span>';}
+    let structuredAnalysis=null;
     if(mode!=='website'){
       for(const file of files){
-        try{const text=await file.text();parts.push(intakePlainTextFromHtml(text));sourceNames.push(file.name);}catch(err){console.warn('Business intake file read skipped',file?.name,err);}
+        try{
+          const text=await file.text();
+          if(/\.json$/i.test(file.name||'')){
+            try{structuredAnalysis=businessIntakeFromStructuredPackage(JSON.parse(text),file.name)||structuredAnalysis;}catch(_){}
+          }
+          if(!structuredAnalysis){parts.push(intakePlainTextFromHtml(text));sourceNames.push(file.name);}
+        }catch(err){console.warn('Business intake file read skipped',file?.name,err);}
       }
+    }
+    if(structuredAnalysis){
+      commissionDraft.businessIntake=structuredAnalysis;
+      commissionDraft.sourceWebsite=structuredAnalysis.sourceWebsite||commissionDraft.sourceWebsite||'';
+      commissionDraft.updatedAt=new Date().toISOString();
+      localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+      renderCommissioning();
+      return;
     }
     if(mode!=='files' && rawUrl){
       if(!url){if(status){status.classList.add('error');status.innerHTML='<span class="status-dot"></span><span>That website address does not look valid. Try something like https://yourbusiness.com.</span>';}return;}
@@ -5402,9 +5490,10 @@
   function applyCommissionBusinessIntake(){
     const a=commissionDraft?.businessIntake;if(!a)return;
     if(!String(commissionDraft.name||'').trim()&&a.businessName)commissionDraft.name=a.businessName;
-    commissionDraft.businessType=a.businessType||commissionDraft.businessType;
-    if(!String(commissionDraft.businessBrief||'').trim())commissionDraft.businessBrief=[a.description,(a.headings||[]).length?`Existing business themes: ${(a.headings||[]).join('; ')}`:''].filter(Boolean).join('\n\n');
-    commissionDraft.description=commissionDraft.description||a.description||'';
+    commissionDraft.businessType=a.businessCategory||a.businessType||commissionDraft.businessType;
+    if(!String(commissionDraft.businessBrief||'').trim())commissionDraft.businessBrief=[a.description,(a.headings||[]).length?`Services: ${(a.headings||[]).join('; ')}`:''].filter(Boolean).join('\n\n');
+    const existingDescription=String(commissionDraft.description||'').trim();
+    commissionDraft.description=(!existingDescription||/^[\[{]/.test(existingDescription)||/black-flag-business-intake-package|\"schema\"\s*:/.test(existingDescription))?(a.positioning||a.description||''):existingDescription;
     const r=a.recommendations||{};
     commissionDraft.customerMode=r.customerMode||commissionDraft.customerMode;
     commissionDraft.relationshipType=r.relationshipType||commissionDraft.relationshipType;
@@ -6549,6 +6638,31 @@
     const price=Number(offer?.price||offer?.basePrice||0);
     return price>0?`$${price.toFixed(2)}`:'PRICE CONFIRMED BY BUSINESS';
   }
+  function universalSafeDescription(p,fallback='Professional service when you need it.'){
+    const raw=String(p?.description||'').trim();
+    if(!raw||/^[\[{]/.test(raw)||/black-flag-business-intake-package|"schema"\s*:/.test(raw))return String(p?.businessIntake?.positioning||p?.businessIntake?.description||fallback);
+    return raw;
+  }
+  function universalLandingLogoMarkup(p,initials){
+    const assets=projectAssetMemory.get(p?.id)||{};
+    if(assets.projectLogo)return `<div class="universal-brand-logo has-real-logo"><img src="${assets.projectLogo}" alt="${escapeHtml(p.name)} logo"></div>`;
+    if(String(p?.businessType||p?.businessIntake?.businessCategory||'').toLowerCase().includes('plumb')){
+      return `<div class="universal-brand-logo plumbing-generated-mark" aria-label="${escapeHtml(p.name)}"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 5C23 17 14 27 14 39a18 18 0 0 0 36 0C50 27 41 17 32 5Z" fill="none" stroke="currentColor" stroke-width="4"/><path d="M23 40h18M27 32h10v16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><span>${escapeHtml(initials)}</span></div>`;
+    }
+    return `<div class="universal-brand-logo generated-mark"><span>${escapeHtml(initials)}</span></div>`;
+  }
+  function universalServiceIcon(name=''){
+    const n=String(name).toLowerCase();
+    let path='M12 3v18M5 10h14';
+    if(/water heater/.test(n))path='M8 3h8v18H8z M10 7h4 M10 17h4';
+    else if(/gas/.test(n))path='M12 2c1 5 5 6 5 11a5 5 0 0 1-10 0c0-3 2-5 5-8 0 3 2 4 2 6';
+    else if(/sewer|water \/ sewer/.test(n))path='M4 8h16v8H4z M7 8V5m10 3V5M8 12h8';
+    else if(/new construction|remodel|addition/.test(n))path='M3 11 12 4l9 7v9H3z M9 20v-6h6v6';
+    else if(/repair|service/.test(n))path='M14 6a4 4 0 0 0-5 5L3 17l4 4 6-6a4 4 0 0 0 5-5l-4 2-2-2 2-4z';
+    else if(/something|other/.test(n))path='M12 4v16M4 12h16';
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+
   function renderUniversalCustomerShell(p){
     const shell=$('universalCustomerShell'); if(!shell||!p)return;
     if(universalCustomerState.projectId!==p.id)resetUniversalCustomerState(p);
@@ -6577,20 +6691,33 @@
     const landing=p.customerExperience?.landingPage||{};
     if(landing.enabled!==false && universalCustomerState.stage==='landing'){
       const trust=Array.isArray(landing.trustSignals)?landing.trustSignals:[];
-      shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Professional service when you need it.')}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
-        <main class="universal-landing-main">${ctx.state==='sea_trial'?'<div class="universal-trial-banner">SEA TRIAL — Requests created here are test data for this project only.</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only">PRIVATE PREVIEW — Explore the customer experience. Nothing submitted here is persisted.</div>':''}
-          <section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||p.description||'Tell us what you need and we will guide you through the next step.')}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(landing.primaryCta||'I NEED HELP NOW')}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>
-          ${trust.length?`<section class="universal-trust-row">${trust.map(x=>`<span>✓ ${escapeHtml(x)}</span>`).join('')}</section>`:''}
-          <section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section>
-        </main></div>`;
+      const isPlumbing=String(p.businessType||p.businessIntake?.businessCategory||'').toLowerCase().includes('plumb');
+      const description=universalSafeDescription(p,'Licensed and insured local service for homes and businesses.');
+      const previewBanner=ctx.state==='sea_trial'?'<div class="universal-trial-banner premium-preview-banner">SEA TRIAL • TEST DATA ONLY</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only premium-preview-banner">PRIVATE PREVIEW • NO CUSTOMER RECORDS</div>':'';
+      const logoMarkup=universalLandingLogoMarkup(p,initials);
+      if(isPlumbing){
+        const hours=landing.hours||'';
+        const market=landing.market||'Richmond area';
+        shell.innerHTML=`<div class="universal-service-landing premium-plumbing-landing"><header class="universal-shell-header landing-header premium-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml([market,hours].filter(Boolean).join(' • ')||description)}</p></div></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
+          <main class="universal-landing-main premium-plumbing-main">${previewBanner}
+            <section class="premium-plumbing-hero"><div class="premium-plumbing-copy"><div class="premium-eyebrow"><span></span>${escapeHtml(landing.eyebrow||'RICHMOND, VA • LICENSED & INSURED')}</div><h2>${escapeHtml(landing.headline||'Fast, reliable plumbing—done right.')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions premium-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(landing.primaryCta||'I NEED PLUMBING HELP')}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div><div class="premium-response-note"><strong>Need service?</strong><span>Tell us what is happening. We will collect the right details so the team can follow up prepared.</span></div></div><div class="premium-plumbing-art" aria-hidden="true"><div class="pipe-scene"><span class="pipe pipe-a"></span><span class="pipe pipe-b"></span><span class="pipe pipe-c"></span><span class="valve"></span><span class="drop drop-a"></span><span class="drop drop-b"></span></div><div class="premium-art-copy"><small>LOCAL • RESPONSIVE • PROFESSIONAL</small><strong>${escapeHtml(landing.proofTitle||'Trusted, straightforward service')}</strong><p>${escapeHtml(landing.proofCopy||'Clear recommendations and quality workmanship with no mystery about the next step.')}</p></div></div></section>
+            ${trust.length?`<section class="universal-trust-row premium-trust-row">${trust.slice(0,4).map((x,i)=>`<span><b>${['01','02','03','04'][i]||'•'}</b>${escapeHtml(x)}</span>`).join('')}</section>`:''}
+            <section class="universal-service-preview premium-service-preview"><div class="premium-section-intro"><div><small>PLUMBING SERVICES</small><h2>What can we help with?</h2></div><p>Choose the closest match. You can explain the details after you start.</p></div><div class="universal-offer-grid landing-offers premium-service-grid">${offers.map(x=>`<button type="button" class="universal-offer premium-service-card" data-universal-landing-offer="${escapeHtml(x.id)}"><span class="premium-service-icon">${universalServiceIcon(x.name)}</span><span class="premium-service-text"><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small></span><b class="premium-service-arrow">→</b></button>`).join('')}</div></section>
+            <section class="premium-proof-section"><div><small>WHY LEGACY</small><h2>${escapeHtml(landing.proofTitle||'Trusted, straightforward service')}</h2><p>${escapeHtml(landing.proofCopy||'Clear recommendations, quality workmanship, and dependable local follow-up.')}</p></div><div class="premium-proof-grid"><article><strong>Clear communication</strong><span>Know what the next step is before the work begins.</span></article><article><strong>Built for homes & businesses</strong><span>Service requests, repairs, remodels, and larger plumbing projects.</span></article><article><strong>${escapeHtml(hours||'Local business hours')}</strong><span>${escapeHtml(market||'Local service area')}</span></article></div></section>
+            <section class="premium-bottom-cta"><div><small>READY WHEN YOU ARE</small><h2>Tell us what’s going on.</h2><p>${escapeHtml(landing.customerPromise||'Start a request now and give the plumbing team the information they need to help.')}</p></div><button type="button" id="universalHelpNowBottom" class="primary-btn">${escapeHtml(landing.primaryCta||'I NEED PLUMBING HELP')}</button></section>
+          </main></div>`;
+      }else{
+        shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(description)}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header><main class="universal-landing-main">${previewBanner}<section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(landing.primaryCta||'I NEED HELP NOW')}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>${trust.length?`<section class="universal-trust-row">${trust.map(x=>`<span>✓ ${escapeHtml(x)}</span>`).join('')}</section>`:''}<section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section></main></div>`;
+      }
       const begin=(offerId='')=>{if(offerId)universalCustomerState.offerId=offerId;universalCustomerState.stage='intake';renderUniversalCustomerShell(p);};
       $('universalHelpNow')?.addEventListener('click',()=>begin());
+      $('universalHelpNowBottom')?.addEventListener('click',()=>begin());
       $('universalViewServices')?.addEventListener('click',()=>document.querySelector('.universal-service-preview')?.scrollIntoView({behavior:'smooth',block:'start'}));
       $$('[data-universal-landing-offer]').forEach(btn=>btn.addEventListener('click',()=>begin(btn.dataset.universalLandingOffer)));
       $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       return;
     }
-    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Choose an offer and send your request.')}</p></div><div class="universal-header-actions"><button type="button" class="secondary-btn universal-home-btn" id="universalBackHome">HOME</button><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
+    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(universalSafeDescription(p,'Choose an offer and send your request.'))}</p></div><div class="universal-header-actions"><button type="button" class="secondary-btn universal-home-btn" id="universalBackHome">HOME</button><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
       <main class="universal-shell-main">
         ${ctx.state==='sea_trial'?'<div class="universal-trial-banner">SEA TRIAL — Activity created here is marked test data and remains subordinate to this Project ID.</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only">PRIVATE PREVIEW — Walk the real customer experience. Nothing submitted here is persisted.</div>':''}
         <section class="universal-order-card">
