@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-9-1-narrow-channel';
+const CACHE='dark-sky-v5-9-2-open-hatch';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.9.1',
-  './platform_core.js?v=5.9.1',
-  './platform_v4.js?v=5.9.1',
-  './platform_identity.js?v=5.9.1',
-  './app.js?v=5.9.1',
-  './captain.js?v=5.9.1',
+  './styles.css?v=5.9.2',
+  './platform_core.js?v=5.9.2',
+  './platform_v4.js?v=5.9.2',
+  './platform_identity.js?v=5.9.2',
+  './app.js?v=5.9.2',
+  './captain.js?v=5.9.2',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

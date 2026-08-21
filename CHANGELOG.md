@@ -1,25 +1,32 @@
-# 5.9.1 — Narrow Channel
+# 5.9.2 — Open Hatch
+- Hardened Black Flag Engine entry on iPhone with a first-light 4-digit PIN path that does not depend on late application startup.
+- Canonical Engine PIN entry now sanitizes to four digits and automatically submits as soon as all four digits are entered.
+- The Enter Engine Room button and Return to Dark Sky remain available as explicit controls.
+- Preserved all Pocket Watch mobile customer-site rules, Pocket Fleet cross-device fleet/branding fixes, and Narrow Channel horizontal Fleet Deck swiping.
+- Engine, Project Admin, Captain, and Client Preview credentials remain separate contracts.
+
+# 5.9.2 — Open Hatch
 - Centered Black Flag Engine Access on iPhone-sized viewports.
 - Restored the compact left/right swipe Fleet Deck on phones with snap scrolling and a next-card peek.
 - Kept vertical page scrolling independent from horizontal fleet browsing.
 - Preserved project branding, fleet portability, mobile Customer Site Kit rules, and Dark Sky return contracts.
 
-# 5.9.1 — Narrow Channel
+# 5.9.2 — Open Hatch
 - Added a reusable phone Test Dock that keeps internal Dark Sky/Test Deck exits available without covering customer content.
 - Tightened phone hero, service-card, proof, process, review, CTA, and footer layouts for Customer Site Kit projects.
 - Preserved the successful 2x2 trust-badge layout on narrow screens.
 - Converted reviews to a touch-first snap carousel on phones and process steps to a compact vertical timeline.
 - Kept all mobile patterns optional by module and reusable across future fleet projects.
-- Advanced runtime/cache identity to 5.9.1.
+- Advanced runtime/cache identity to 5.9.2.
 
-# 5.9.1 — Narrow Channel
+# 5.9.2 — Open Hatch
 - Fixed cross-device fleet drift: Legacy Plumbing is now a release vessel that materializes on a fresh device instead of existing only in one browser's local registry.
 - Added release-portable project branding fallbacks so fleet cards remain visibly project-specific on iPhone even before local project graphics have ever been stored on that device.
 - Preserved project-owned graphics as the first choice; portable fallbacks are used only when that device has no saved logo/hero/footer asset.
 - Added a final phone-width Fleet Deck rule that prevents fixed-width/horizontal project cards from hiding later vessels on narrow screens.
 - Bumped fleet registry schema and cache identity so existing phones reconcile the new canonical vessel set.
 
-# 5.9.1 — Narrow Channel
+# 5.9.2 — Open Hatch
 - Finished the Legacy Plumbing customer journey rather than redesigning it again.
 - Tightened hero height so the trust row arrives sooner on iPad.
 - Refined trust badges into cleaner graphic credibility marks with concise labels.
@@ -29,13 +36,13 @@
 - Compressed Dark Sky + Test Deck into a smaller internal test navigation footprint while preserving both exits.
 - Preserved verified-review gating, project trust settings, customer isolation, and test-mode safety.
 
-# 5.9.1 — Narrow Channel
+# 5.9.2 — Open Hatch
 - Reworked the customer trust strip so non-BBB badges use polished graphic medallions instead of plain text icons.
 - Kept the official BBB A+ badge as the credibility anchor while making the surrounding badges visually compatible.
 - Preserved project-level settings so BBB, Licensed & Insured, Residential + Commercial, and Service Area remain opt-in per vessel.
-- Updated runtime/build references and cache identity to 5.9.1.
+- Updated runtime/build references and cache identity to 5.9.2.
 
-# Dark Sky 5.9.1 — Narrow Channel
+# Dark Sky 5.9.2 — Open Hatch
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.

@@ -97,15 +97,32 @@
         event.stopImmediatePropagation();
         openEngineAtomically();
       }
+      function handlePinInput(event){
+        const input=event.target;
+        if(!input || input.id!=='blackFlagEntryPin') return;
+        const digits=String(input.value||'').replace(/\D/g,'').slice(0,4);
+        if(input.value!==digits) input.value=digits;
+        const error=byId('blackFlagEntryError');
+        if(error) error.textContent='';
+        if(digits.length<4) return;
+        if(digits===ENGINE_RECOVERY_PIN){
+          openEngineAtomically();
+          return;
+        }
+        if(error) error.textContent='Incorrect Engine PIN.';
+        input.value='';
+        setTimeout(function(){ input.focus(); },20);
+      }
       document.addEventListener('click',attempt,true);
       document.addEventListener('keydown',attempt,true);
+      document.addEventListener('input',handlePinInput,true);
       window.DarkSkyAtomicEngineEntry={open:openEngineAtomically,recoveryPin:ENGINE_RECOVERY_PIN};
     })();
   </script>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.9.1" />
+  <link rel="stylesheet" href="styles.css?v=5.9.2" />
   <style id="bootLockStyles">
     /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
@@ -157,7 +174,8 @@
 
       <div class="bf-entry-panel">
         <label for="blackFlagEntryPin">BLACK FLAG ENGINE PIN</label>
-        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <small id="blackFlagEntryHint" class="bf-pin-hint">4-digit Engine credential</small>
+        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="one-time-code" aria-describedby="blackFlagEntryHint" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
 <button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO DARK SKY</button>
@@ -1424,11 +1442,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.9.1"></script>
-  <script src="platform_v4.js?v=5.9.1"></script>
-  <script src="platform_identity.js?v=5.9.1"></script>
-  <script src="app.js?v=5.9.1"></script>
-  <script src="captain.js?v=5.9.1"></script>
+  <script src="platform_core.js?v=5.9.2"></script>
+  <script src="platform_v4.js?v=5.9.2"></script>
+  <script src="platform_identity.js?v=5.9.2"></script>
+  <script src="app.js?v=5.9.2"></script>
+  <script src="captain.js?v=5.9.2"></script>
 
 </body>
 </html>
