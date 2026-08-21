@@ -13052,3 +13052,65 @@ body.project-mode.ikes-project #customerApp {
 .dark-sky-primary span{color:#f5d26a}.dark-sky-secondary{border:1px solid rgba(153,177,184,.27);background:rgba(255,255,255,.045);color:#eef3f2}.dark-sky-secondary span{color:#7fdba3}
 .dark-sky-home-foot{margin:10px 0 0;color:#6f878e;font:650 10px/1.4 system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase}
 @media(max-width:680px){.dark-sky-home-shell{padding:38px 20px 28px}.dark-sky-home-actions{grid-template-columns:1fr}.dark-sky-home-actions button{min-height:105px}.dark-sky-home-status small{display:none}}
+
+
+/* ==========================================================
+   DARK SKY 5.7.9 — FLEET POLISH + UNIVERSAL HOME CONTRACT
+   Shared quality rules apply to every project without sharing branding/data.
+   ========================================================== */
+:root{--ds-touch:48px;--ds-safe-bottom:max(18px,env(safe-area-inset-bottom));}
+html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;}
+button,a,input,select,textarea{touch-action:manipulation;}
+button,[role="button"],.primary-btn,.secondary-btn{min-height:var(--ds-touch);}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+button:active,[role="button"]:active{transform:translateY(1px);}
+img{max-width:100%;height:auto;}
+.hidden{display:none!important;}
+
+/* One platform escape hatch on every internal Dark Sky surface. It stays out of
+   client previews and owner/customer invitation experiences. */
+.global-dark-sky-home{
+  position:fixed;left:max(16px,env(safe-area-inset-left));bottom:var(--ds-safe-bottom);z-index:2147482000;
+  display:flex;align-items:center;gap:9px;min-height:48px;padding:8px 14px 8px 9px;
+  border:1px solid rgba(135,190,207,.42);border-radius:999px;background:rgba(5,24,31,.94);
+  color:#f4f1e9;font:800 12px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.14em;box-shadow:0 12px 34px rgba(0,0,0,.34);backdrop-filter:blur(14px);
+}
+.global-dark-sky-home img{width:30px;height:30px;object-fit:contain;}
+.global-dark-sky-home:hover,.global-dark-sky-home:focus-visible{border-color:rgba(112,208,232,.88);box-shadow:0 14px 38px rgba(0,0,0,.42);}
+body.boot-locked .global-dark-sky-home,body.bf-entry-open .global-dark-sky-home,
+body.client-preview-mode .global-dark-sky-home,body.client-preview-locked .global-dark-sky-home,
+body.owner-portal-open .global-dark-sky-home{display:none!important;}
+
+/* Project customer shells: cleaner rhythm, safer iPad sizing, and consistent tap targets. */
+body.project-mode #app,body.project-mode #mugsCustomerShell,body.project-mode #flowersCustomerShell,body.project-mode #universalCustomerShell{
+  min-height:100dvh;padding-bottom:calc(78px + env(safe-area-inset-bottom));
+}
+body.project-mode main,body.project-mode .screen,body.project-mode .customer-shell,body.project-mode .universal-customer-shell{
+  scroll-margin-top:18px;
+}
+body.project-mode input,body.project-mode select,body.project-mode textarea{
+  min-height:48px;font-size:max(16px,1em);border-radius:12px;
+}
+body.project-mode button{min-height:48px;}
+body.project-mode .primary-btn,body.project-mode .secondary-btn{
+  font-weight:800;letter-spacing:.035em;
+}
+body.project-mode .card,body.project-mode article,body.project-mode .panel{
+  max-width:100%;
+}
+
+/* Internal workspaces stay inside the iPad viewport instead of trapping actions below Safari chrome. */
+.commissioning-workspace,.owner-portal,.project-engine-control,.engine-configuration-dock{min-height:100dvh;max-height:100dvh;overflow:auto;-webkit-overflow-scrolling:touch;}
+.commissioning-shell{min-height:100dvh;padding-bottom:env(safe-area-inset-bottom);}
+.commissioning-head{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);}
+.commissioning-head-actions{display:flex;align-items:center;gap:10px;}
+.commission-dark-sky-home{min-height:44px;padding:0 14px;border:1px solid rgba(117,187,205,.38);border-radius:999px;background:rgba(3,24,31,.72);color:#f3f1e9;font-weight:850;letter-spacing:.09em;}
+.commissioning-footer{position:sticky;bottom:0;z-index:25;padding-bottom:max(12px,env(safe-area-inset-bottom));backdrop-filter:blur(16px);}
+
+/* Motion is brief and functional; users who request reduced motion get none. */
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}}
+@media (max-width:700px){
+  .global-dark-sky-home span{display:none}.global-dark-sky-home{width:50px;height:50px;padding:9px;justify-content:center}
+  .commissioning-head{align-items:flex-start}.commissioning-head-actions{flex-direction:column-reverse;align-items:flex-end}.commission-dark-sky-home{font-size:11px;}
+}

@@ -1,3 +1,7 @@
+# Dark Sky 5.7.9
+
+Fleet polish release. Dark Sky is the permanent platform home, Black Flag remains the Engine, and every internal project/commissioning route has a reliable return to Dark Sky. Customer/client-preview isolation remains intact.
+
 # Dark Sky 5.7.8
 
 Dark Sky is once again the platform-first landing experience. A fresh root visit opens Dark Sky, and Black Flag is entered as the protected Engine beneath it. Client Preview links remain direct customer routes and do not expose platform or Engine controls.

@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-7-8-platform-home';
+const CACHE='dark-sky-v5-7-9-fleet-polish';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.7.8',
-  './platform_core.js?v=5.7.8',
-  './platform_v4.js?v=5.7.8',
-  './platform_identity.js?v=5.7.8',
-  './app.js?v=5.7.8',
-  './captain.js?v=5.7.8',
+  './styles.css?v=5.7.9',
+  './platform_core.js?v=5.7.9',
+  './platform_v4.js?v=5.7.9',
+  './platform_identity.js?v=5.7.9',
+  './app.js?v=5.7.9',
+  './captain.js?v=5.7.9',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

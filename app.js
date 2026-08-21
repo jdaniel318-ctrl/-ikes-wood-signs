@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.7.7';
+  const BUILD_VERSION = '5.7.9';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -10872,11 +10872,7 @@ The full order and approved media remain stored with this project.`;
         }
 
         if(target.id==='returnToEngineBtn'){
-          if(experienceTestReturnState){
-            await returnFromExperienceMode();
-            return;
-          }
-          requestEngineFromProject();
+          showDarkSkyHome();
           return;
         }
 
@@ -10904,6 +10900,18 @@ The full order and approved media remain stored with this project.`;
       }finally{
         if(document.body.contains(target))delete target.dataset.commandBusy;
       }
+    },true);
+  }
+
+  function bindUniversalDarkSkyHome(){
+    if(window.__darkSkyUniversalHomeBound)return;
+    window.__darkSkyUniversalHomeBound=true;
+    document.addEventListener('click',event=>{
+      const target=event.target?.closest?.('[data-return-dark-sky]');
+      if(!target)return;
+      event.preventDefault();
+      event.stopPropagation();
+      showDarkSkyHome();
     },true);
   }
 
@@ -10977,8 +10985,7 @@ The full order and approved media remain stored with this project.`;
       if(target.id==='returnToEngineBtn'){
         event.preventDefault();
         event.stopPropagation();
-        if(experienceTestReturnState){Promise.resolve(returnFromExperienceMode()).catch(err=>console.warn('Experience Test Deck return warning',err));return;}
-        requestEngineFromProject();
+        showDarkSkyHome();
       }
     },true);
   }
@@ -11649,7 +11656,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.7',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11686,7 +11693,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.7',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -11704,6 +11711,7 @@ The full order and approved media remain stored with this project.`;
   bindEngineProjectCommandBus();
   bindExperienceTestDeckBus();
   bindMissionCriticalNavigation();
+  bindUniversalDarkSkyHome();
   init().then(()=>{
     window.DarkSkyBootState={ready:true,error:null,at:Date.now(),build:BUILD_VERSION};
   }).catch(err=>{
@@ -11762,15 +11770,20 @@ document.addEventListener('click', (event) => {
 
 
   function showDarkSkyHome(){
-    window.DarkSkyBoundaryBridge?.lockEngine?.();
-    const home=byId('darkSkyHomeGate');
-    const gate=byId('blackFlagEntryGate');
-    const engine=byId('enginePanel');
-    gate?.classList.add('hidden');
-    engine?.classList.add('hidden');
-    document.body.classList.remove('bf-entry-open','engine-mode','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode');
+    // 5.7.9 UNIVERSAL HOME CONTRACT: every internal route gets one dependable
+    // escape hatch. This closes project, commissioning, Captain, owner-preview,
+    // test-deck, settings and modal surfaces before revealing Dark Sky.
+    try{ window.DarkSkyBoundaryBridge?.lockEngine?.(); }catch(_){}
+    try{ window.DarkSkyBoundaryBridge?.clearProject?.(); }catch(_){}
+    window.__darkSkyAtomicEngineUnlocked=false;
+    const internalSurfaces=['blackFlagEntryGate','enginePanel','customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','ownerClaimGate','captainQuarters','captainQuartersGate','captainCommandWorkspace','projectCommissioningWorkspace','fleetCommissioningModal','experienceTestDeck','engineConfigurationDock','clientPreviewBuilder'];
+    internalSurfaces.forEach(id=>byId(id)?.classList.add('hidden'));
+    document.querySelectorAll('.client-preview-builder,.modal,.overlay').forEach(el=>{ if(el.id!=='darkSkyHomeGate') el.classList.add('hidden'); });
+    document.body.classList.remove('bf-entry-open','engine-mode','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','owner-portal-open','engine-workspace-open','modal-open','ikes-project','mugs-project','flowers-project','universal-project','bor-project','client-preview-mode','client-preview-locked');
     document.body.classList.add('boot-locked');
     document.body.removeAttribute('data-active-project');
+    document.body.removeAttribute('data-project-theme');
+    const home=byId('darkSkyHomeGate');
     home?.classList.remove('hidden');
     window.__darkSkyEngineEntryOrigin='home';
     try{ history.replaceState(null,'',location.pathname+location.search); }catch(_){}
@@ -11851,7 +11864,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.8'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.9'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});

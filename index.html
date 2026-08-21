@@ -48,8 +48,27 @@
         Promise.resolve(window.renderBlackFlagHome?.()).catch(function(err){ console.warn('5.7.4 Engine render recovery warning',err); });
         try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
       }
+      function returnDarkSkyAtomically(){
+        try{ window.BlackFlagAuth?.lock?.(); }catch(_){}
+        window.__darkSkyAtomicEngineUnlocked=false;
+        ['blackFlagEntryGate','enginePanel','customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','ownerClaimGate','captainQuarters','captainQuartersGate','captainCommandWorkspace','projectCommissioningWorkspace','fleetCommissioningModal','experienceTestDeck','engineConfigurationDock'].forEach(function(id){ byId(id)?.classList.add('hidden'); });
+        document.body.className='boot-locked';
+        document.body.removeAttribute('data-active-project');
+        document.body.removeAttribute('data-project-theme');
+        byId('darkSkyHomeGate')?.classList.remove('hidden');
+        try{ history.replaceState(null,'',location.pathname+location.search); }catch(_){}
+        try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
+      }
+      window.DarkSkyAtomicHome={open:returnDarkSkyAtomically};
       function attempt(event){
         const target=event.target;
+        const homeTarget=target && (target.matches?.('[data-return-dark-sky]') || target.closest?.('[data-return-dark-sky]'));
+        if(homeTarget){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          returnDarkSkyAtomically();
+          return;
+        }
         const openBlackFlag=target && (target.id==='darkSkyEnterBlackFlag' || target.closest?.('#darkSkyEnterBlackFlag'));
         const closeBlackFlag=target && (target.id==='closeBlackFlagEntry' || target.closest?.('#closeBlackFlagEntry'));
         if(openBlackFlag){
@@ -86,7 +105,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.7.8" />
+  <link rel="stylesheet" href="styles.css?v=5.7.9" />
   <style id="bootLockStyles">
     /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
@@ -109,6 +128,7 @@
 </head>
 <body class="boot-locked">
   <div id="testAccessBanner" class="test-access-banner hidden" role="status">TEST ACCESS ACTIVE • PIN ENTRY BYPASSED • SESSION ONLY</div>
+  <button id="globalDarkSkyHomeBtn" class="global-dark-sky-home" type="button" data-return-dark-sky aria-label="Return to Dark Sky" title="Return to Dark Sky"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>DARK SKY</span></button>
 
   <section id="darkSkyHomeGate" class="dark-sky-home-gate" aria-label="Dark Sky home">
     <div class="dark-sky-home-shell">
@@ -1341,7 +1361,7 @@
           <p>Create, configure, and prepare a new business for private Sea Trial.</p>
         </div>
       </div>
-      <button id="closeProjectCommissioning" class="commission-engine-return" type="button" aria-label="Back to Engine" title="Back to Engine"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"></button>
+      <div class="commissioning-head-actions"><button id="commissionDarkSkyHomeBtn" class="commission-dark-sky-home" type="button" data-return-dark-sky>← DARK SKY</button><button id="closeProjectCommissioning" class="commission-engine-return" type="button" aria-label="Back to Engine" title="Back to Engine"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"></button></div>
     </header>
 
     <div class="commission-progress" id="commissionProgress">
@@ -1375,11 +1395,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.7.8"></script>
-  <script src="platform_v4.js?v=5.7.8"></script>
-  <script src="platform_identity.js?v=5.7.8"></script>
-  <script src="app.js?v=5.7.8"></script>
-  <script src="captain.js?v=5.7.8"></script>
+  <script src="platform_core.js?v=5.7.9"></script>
+  <script src="platform_v4.js?v=5.7.9"></script>
+  <script src="platform_identity.js?v=5.7.9"></script>
+  <script src="app.js?v=5.7.9"></script>
+  <script src="captain.js?v=5.7.9"></script>
 
 </body>
 </html>

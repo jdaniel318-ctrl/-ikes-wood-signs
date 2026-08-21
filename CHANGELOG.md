@@ -1,3 +1,12 @@
+# Dark Sky 5.7.9 — Fleet Polish + Universal Home
+
+- Added a fail-safe Dark Sky home route that closes project, commissioning, Captain, test-deck, settings, and modal surfaces before returning home.
+- Project return control now returns directly to Dark Sky instead of silently routing back into Black Flag.
+- Added a persistent internal Dark Sky home control, hidden from client previews and external owner invitation/customer flows.
+- Added an explicit Dark Sky exit to Project Commissioning so a new-project workflow can never trap the Captain.
+- Added shared iPad/touch/viewport polish across every project shell without sharing project branding or data.
+- Normalized runtime/cache/build references to 5.7.9 and refreshed service-worker cache isolation.
+
 # Dark Sky 5.7.8 — Platform-First Landing
 
 - Restored **Dark Sky** as the root landing page; a fresh visit no longer drops directly into Black Flag Engine authentication.
