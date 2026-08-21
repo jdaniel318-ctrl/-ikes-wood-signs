@@ -1,4 +1,10 @@
-# Dark Sky 5.8.3 — Blue Lantern
+# 5.8.4 — Signal Pennant
+- Replaced the generic BBB accreditation artwork with the supplied Accredited Business A+ Rating badge.
+- Fixed the customer trust-strip asset path so the BBB tile no longer renders as a missing-image placeholder.
+- Sized the BBB mark as the recognizable visual anchor while keeping the trust strip concise.
+- BBB remains strictly project-configurable and disappears completely when disabled.
+
+# Dark Sky 5.8.4 — Blue Lantern
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.
