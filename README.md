@@ -1,6 +1,23 @@
-# Dark Sky 5.6.0
+# Dark Sky 5.7.0
 
-Contractor-grade customer experience pass. Legacy Plumbing is the proof vessel for a stronger service-business platform: project-owned public website evidence, source-aware visual assets, confidence-first landing, service-path cards, guided contractor intake, and persistent project isolation.
+Dark Sky 5.7.0 is the cloud-readiness and portability hardening release. It keeps the current static/browser fleet fully testable while making the future migration contract explicit: source code is recoverable from version control, devices are clients rather than authoritative data stores, routing remains host/domain agnostic, and future production data/assets are expected to move to managed cloud storage without rewriting customer experiences.
+
+## Standing authority and safety contracts
+
+- **Project Admin:** `4353` fleet default/recovery credential.
+- **Black Flag / Engine Room:** `5615` normal Engine credential.
+- **Captain's Quarters:** `19613`.
+- **Client Preview:** unique invite-specific PIN; never one of the authority credentials.
+- **Test / Private Preview:** real calls, texts, emails, payments, notifications, and external submissions remain blocked/simulated.
+- **Project isolation:** customer, order, asset, configuration, admin, lifecycle, and preview state remain scoped to the exact Project ID.
+
+## Cloud-readiness direction
+
+The current iPad/iPhone/kiosk experiences remain first-class clients. GitHub Pages can continue serving the test build, but no future production architecture should require a particular device, repository path, registrar, or hosting vendor. See `CLOUD_READINESS.md` and `DEPLOYMENT_MANIFEST.json`.
+
+## Recovery principle
+
+Losing a device must never mean losing Dark Sky. Code recovery, production-data recovery, asset recovery, and deployment rollback are separate responsibilities and must each have a durable path before Live customer data is entrusted to the platform.
 
 # Dark Sky 5.3.2
 

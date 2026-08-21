@@ -1,3 +1,28 @@
+# Dark Sky 5.7.0 — Cloud Readiness + Portability Contract
+
+- Added a formal cloud-readiness and portability contract so future cleanup cannot accidentally bind Dark Sky to the current iPad, GitHub Pages path, registrar, or future cloud vendor.
+- Added a machine-readable deployment manifest describing runtime files, entrypoint, storage assumptions, external dependencies, authority contracts, and migration expectations.
+- Declared Git/source history as the canonical code recovery path and separated code recovery from future production-data recovery.
+- Defined a no-single-device/no-single-service design target: an iPad remains a client/console, never the authoritative home of production data.
+- Added migration gates for domain changes, managed hosting, cloud database/object storage, Client Preview backend evolution, secrets/configuration, and rollback.
+- Preserved the working fleet contracts: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, unique Client Preview PINs, strict Project ID isolation, and Test/Private Preview outbound-contact safety.
+- Bumped executable/cache identity to 5.7.0 and retained network-first delivery of navigation and executable assets to reduce stale Safari deployments.
+
+# Dark Sky 5.6.2 — Fleet Cleanup Pass
+
+- Tightened Project Command cards around identity, status, next best move, and compact project tools.
+- Removed superseded one-off audit clutter from the deployable package while retaining canonical architecture, commissioning, isolation, mobile, and regression documentation.
+- Corrected service-worker cache identity so Safari does not remain pinned to an older build.
+- Preserved the authority and isolation contracts without structural rewrites.
+
+# Dark Sky 5.6.1 — Unique Client Invite PINs
+
+- Client Preview PINs are generated automatically by Black Flag for each invite; the user no longer supplies or reuses the PIN.
+- Every invite receives a cryptographically random six-digit PIN plus a unique invite ID/salt.
+- Client invite PIN generation excludes the authority credentials 4353, 5615, and 19613 and avoids recent invite PIN reuse on the same device.
+- A new invite always produces a new invite ID and a new PIN.
+- Existing 5.6.0 preview links remain compatible.
+
 # Dark Sky 5.6.0 — Client Preview + Project Command Tightening
 
 - Added a project-scoped **Client Preview** mode for customer demonstrations before publication.
@@ -9,7 +34,7 @@
 - Portable project graphics are included only when small enough for a cross-device link; source-site/public project assets remain available through the project snapshot.
 - Preserved authority spine: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
 
-# Dark Sky 5.6.0 — iPhone Compatibility Hardening
+# Dark Sky 5.4.1 — iPhone Compatibility Hardening
 
 - Added a fleet-wide narrow-mobile layout contract across customer, Engine, commissioning, Project Admin/Manager, Test Deck, and Captain surfaces.
 - Added iPhone safe-area handling for persistent controls and sticky action bars.
@@ -203,10 +228,18 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Existing vessel definitions and Captain’s Quarters assets are not rebranded or modified by Signal Restoration.
 - Signal Restoration brand/market migration updates only its canonical project row.
 
-## 5.6.0 — Fleet Customer Experience Hardening
+## 5.5.0 — Fleet Customer Experience Hardening
 - Added a fleet-wide fresh-entry viewport contract: every project, Private Preview, Test Experience, and Home entry resets to the top of that project's landing page, including iOS Safari nested/document scroll recovery.
 - Applied Legacy Plumbing lessons as reusable principles rather than shared project state: confidence-first entry, clear primary action, business-appropriate categories, guided intake, required transactional email, mobile-first behavior, and project-owned visual identity.
 - Added a dedicated Signal Restoration confidence-first landing page before damage intake; the existing damage workflow remains behind `I NEED HELP NOW`.
 - Signal Restoration email is now required and validated for requests.
 - Mugs After Dark and Becca's Bloom Shop now require and validate email before transactional review/submission, matching the fleet transactional-contact contract.
 - Preserved strict Project ID isolation and the authority spine: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
+
+## 5.6.2 — Fleet Cleanup Pass
+- Tightened Project Command cards without removing project state, next action, Client Preview, Control Center, Internal Test, or Seaworthiness.
+- Consolidated repeated deployment/governance chrome into one compact project-status line.
+- Consolidated project activity into a compact three-metric strip.
+- Reduced card height so more of the fleet is visible at once on iPad and desktop; preserved swipeable single-card behavior on phones.
+- Removed superseded one-off audit documents from the deployable package. Canonical architecture, commissioning, isolation, mobile contract, regression, changelog, and README documents remain.
+- No changes to the authority spine or Client Preview invite security.

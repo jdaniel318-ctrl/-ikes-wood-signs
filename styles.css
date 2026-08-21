@@ -12815,3 +12815,37 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
   .client-preview-gate{padding:14px}.client-preview-gate-card{padding:30px 20px;border-radius:22px}.client-preview-gate-card h1{font-size:28px}
   .client-preview-safety-badge{right:max(14px,env(safe-area-inset-right));left:max(14px,env(safe-area-inset-left));justify-content:center;flex-wrap:wrap;text-align:center}
 }
+
+/* ===== Dark Sky 5.6.1 — Unique Client Invite PIN ===== */
+.client-preview-unique-note{display:grid;gap:6px;padding:12px 14px;border:1px solid rgba(73,196,214,.28);border-radius:12px;background:rgba(73,196,214,.07);margin:12px 0 16px}.client-preview-unique-note strong{font-size:.76rem;letter-spacing:.14em;color:#8de5ef}.client-preview-unique-note span{font-size:.88rem;line-height:1.45;color:var(--muted,#aab7bd)}.client-preview-pin-reveal{display:grid;gap:4px;padding:16px;border-radius:14px;background:rgba(32,167,199,.12);border:1px solid rgba(69,203,232,.3);margin:14px 0}.client-preview-pin-reveal span{font-size:.72rem;letter-spacing:.14em}.client-preview-pin-reveal strong{font-size:2rem;letter-spacing:.16em}.client-preview-pin-reveal small{opacity:.78}
+
+/* ===== Dark Sky 5.6.2 — Project Command cleanup =====
+   Preserve every control while reducing card height and repeated status chrome. */
+.modern-project-command .project-card{
+  min-height:0!important;
+  height:auto!important;
+  padding:15px!important;
+  gap:0!important;
+}
+.modern-project-command .project-card-head{min-height:58px!important;flex:0 0 58px!important}
+.modern-project-command .project-brand-badge{width:58px!important;height:58px!important}
+.modern-project-command .project-card h4{min-height:0!important;margin:9px 0 3px!important;font-size:18px!important;line-height:1.12!important}
+.modern-project-command .project-card>p{min-height:0!important;margin-bottom:9px!important;font-size:10px!important;line-height:1.35!important}
+.project-command-statusline{display:flex;flex-wrap:wrap;gap:5px;margin:2px 0 9px}
+.project-command-statusline>span{display:inline-flex;align-items:center;min-height:23px;padding:4px 7px;border:1px solid rgba(125,171,186,.24);border-radius:999px;background:rgba(7,23,30,.42);color:#9fb0b5;font-size:7px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.project-command-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 8px}
+.project-command-metrics>span{min-width:0;padding:8px 7px;border:1px solid rgba(117,164,179,.2);border-radius:9px;background:rgba(4,18,24,.34)}
+.project-command-metrics b{display:block;color:#eef5f5;font-size:15px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.project-command-metrics small{display:block;margin-top:3px;color:#81969d;font-size:6.7px;font-weight:800;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modern-project-command .project-card .project-launch-line{margin-top:0!important;padding:8px 9px!important;min-height:47px!important}
+.modern-project-command .project-card .project-launch-line span{font-size:9px!important}
+.modern-project-command .project-card .project-launch-line small{font-size:8px!important;line-height:1.25!important}
+.project-card-primary-actions{margin-top:8px!important;gap:7px!important}
+.project-card-tools{margin-top:7px!important}
+.project-card-tools>summary{min-height:34px!important;padding:8px 10px!important}
+.modern-project-command .project-command-cards>.project-card{flex-basis:255px!important;width:255px!important;min-width:255px!important}
+.modern-project-command .add-project-card{min-height:360px!important}
+@media(max-width:900px){
+  .modern-project-command .project-command-cards>.project-card{flex-basis:min(82vw,300px)!important;width:min(82vw,300px)!important;min-width:min(82vw,300px)!important}
+  .project-command-metrics small{font-size:7px}
+}

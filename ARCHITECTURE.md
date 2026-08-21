@@ -1,3 +1,9 @@
+# Dark Sky 5.7.0 — Cloud Readiness / Portability Spine
+
+Dark Sky treats infrastructure as replaceable and the platform spine as durable. Devices are clients, Git/source history is the code-recovery authority, and future live project/customer data must move to managed cloud data/file services with independent backup and restore. Domain, registrar, DNS, static host, API host, database, object storage, and MSP are infrastructure choices rather than project identity. See `CLOUD_READINESS.md` and `DEPLOYMENT_MANIFEST.json`.
+
+The authority spine remains Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, with unique Client Preview PINs. Project ID isolation and test-contact safety remain invariant across any migration.
+
 # 5.4.0 Contractor Experience Contract
 
 Shared structure may learn from a business category, but visual evidence is project-scoped. Public website assets may seed a project-specific experience when tied to that project's source URL. Another project may reuse contractor interaction patterns, never the source business's logo, imagery, customers, records, or settings.

@@ -1,3 +1,12 @@
+# Dark Sky 5.7.0 — Cloud Readiness Regression Gate
+
+- Runtime executable references and service-worker cache identity must report 5.7.0.
+- No navigation/client-preview path may require the current GitHub Pages origin or repository path.
+- Required runtime assets must remain relative/application-local unless they are deliberate project-owned public source assets.
+- Losing browser/device-local test state must not be described as a production recovery strategy.
+- Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, unique Client Preview PINs, exact Project ID isolation, and test outbound-contact safety remain unchanged.
+- Future backend migration may change transport/storage implementation but not customer experience identity or security semantics.
+
 # 5.4.0 Contractor Experience Regression Addendum
 
 Checks required: Legacy Plumbing source assets are selected only for the Legacy Plumbing project; no other project inherits its logo or images. Plumbing preview opens at the landing page, service-card selection opens the guided intake, Back to Home returns to the landing page, and preview submissions do not persist. Project Admin 4353, Black Flag 5615, and Captain's Quarters 19613 remain unchanged.
@@ -81,9 +90,16 @@ Checks required: Legacy Plumbing source assets are selected only for the Legacy 
 - Signal Restoration, Mugs After Dark, Becca's Bloom Shop, Ike's, and universal transactional shells require valid email before final transactional submission.
 - Customer visual/state data remains project-scoped; no cross-project fallback branding or scroll state.
 
-## 5.6.0 test-contact gate
+## 5.5.1 test-contact gate
 - [x] Non-live `tel:`, `sms:`, and `mailto:` actions are intercepted before browser navigation.
 - [x] Web3Forms and legacy automatic email delivery fail closed for test/non-live orders.
 - [x] Private Preview / Sea Trial request buttons are explicitly labeled as test actions.
 - [x] Signal Restoration test calling remains non-live and its request CTA is explicitly marked as a test request.
 - [x] LIVE external contact requires a matching deployed customer context.
+
+## 5.6.2 cleanup verification
+- Project Command remains project-scoped and preserves one primary lifecycle action plus Client Preview.
+- Project Tools remain collapsed by default and retain Control Center, Internal Test, and Seaworthiness.
+- Client Preview unique-per-invite PIN behavior remains unchanged.
+- Authority contracts unchanged: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
+- Packaging removes only superseded audit notes; no runtime assets or application modules were removed.
