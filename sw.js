@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-9-6-broadside';
+const CACHE='dark-sky-v5-9-7-north-star';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.9.6',
-  './platform_core.js?v=5.9.6',
-  './platform_v4.js?v=5.9.6',
-  './platform_identity.js?v=5.9.6',
-  './app.js?v=5.9.6',
-  './captain.js?v=5.9.6',
+  './styles.css?v=5.9.7',
+  './platform_core.js?v=5.9.7',
+  './platform_v4.js?v=5.9.7',
+  './platform_identity.js?v=5.9.7',
+  './app.js?v=5.9.7',
+  './captain.js?v=5.9.7',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -16,7 +16,8 @@ const ASSETS=[
   './assets/engine_room_modern_benchmark_v2976.png',
   './assets/engine_room_pirate_benchmark_v2978.png',
   './assets/signal_restoration_logo.png',
-  './assets/bbb_accredited_a_plus.png'
+  './assets/bbb_accredited_a_plus.png',
+  './assets/legacy_responsive_benchmark.png'
 ];
 
 self.addEventListener('install',event=>{

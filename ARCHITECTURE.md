@@ -216,3 +216,7 @@ The repeatable sequence is: understand business → recommend capabilities → E
 - Real project-owned brand assets override generated fallbacks.
 - Mobile, tablet, and desktop are first-class layouts with device-specific composition rather than simple scaling.
 - Strong project identity is required at header and hero levels while Black Flag remains visually behind the customer experience.
+
+
+## 5.9.7 North Star Responsive Benchmark
+Legacy Plumbing is the proving vessel for a responsive Customer Site Kit composition: strong project identity, unified photo-led hero, trust row, compact service chooser, proof/process/reviews/CTA, and device-specific layout behavior. The reference asset `assets/legacy_responsive_benchmark.png` is a visual QA benchmark only; customer experiences render from project data and native HTML/CSS. Other projects may reuse the composition primitives but must retain project-specific graphics, colors, copy, services, and optional modules.
