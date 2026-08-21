@@ -13055,7 +13055,7 @@ body.project-mode.ikes-project #customerApp {
 
 
 /* ==========================================================
-   DARK SKY 5.7.9 — FLEET POLISH + UNIVERSAL HOME CONTRACT
+   DARK SKY 5.8.0 — FLEET POLISH + UNIVERSAL HOME CONTRACT
    Shared quality rules apply to every project without sharing branding/data.
    ========================================================== */
 :root{--ds-touch:48px;--ds-safe-bottom:max(18px,env(safe-area-inset-bottom));}
@@ -13114,3 +13114,19 @@ body.project-mode .card,body.project-mode article,body.project-mode .panel{
   .global-dark-sky-home span{display:none}.global-dark-sky-home{width:50px;height:50px;padding:9px;justify-content:center}
   .commissioning-head{align-items:flex-start}.commissioning-head-actions{flex-direction:column-reverse;align-items:flex-end}.commission-dark-sky-home{font-size:11px;}
 }
+
+
+/* ==========================================================
+   v5.8.0 — FLEET-FIRST ENGINE ROOM
+   Customer-facing vessels are the working deck. Platform diagnostics remain
+   available, but no longer stand between the Captain and the fleet.
+   ========================================================== */
+body.engine-mode #enginePanel .fleet-command-bridge{margin:12px 0 14px;padding:15px 16px;border:1px solid rgba(83,167,190,.42);border-radius:15px;background:linear-gradient(135deg,rgba(6,27,35,.98),rgba(8,20,27,.97));box-shadow:inset 0 1px rgba(255,255,255,.035)}
+.fleet-command-bridge-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:12px}.fleet-command-eyebrow{display:block;color:#76b7c8;font:900 9px Arial,sans-serif;letter-spacing:.15em}.fleet-command-bridge h3{margin:3px 0 4px;color:#eef6f6;font-size:24px;line-height:1}.fleet-command-bridge p{margin:0;max-width:790px;color:#9db0b6;font-size:11px;line-height:1.45}.fleet-command-law{flex:0 0 auto;display:grid;gap:2px;text-align:right}.fleet-command-law strong{color:#d9edf2;font:900 11px Arial,sans-serif;letter-spacing:.13em}.fleet-command-law span{color:#6f929c;font:800 8px Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em}
+.fleet-command-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.fleet-command-status article{padding:10px 11px;border:1px solid rgba(106,154,168,.22);border-radius:10px;background:rgba(3,16,22,.46)}.fleet-command-status small,.fleet-command-status span{display:block;color:#79939b;font:800 7px Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}.fleet-command-status strong{display:block;margin:3px 0;color:#f0f7f7;font:900 22px Arial,sans-serif;line-height:1}.fleet-command-bridge.has-attention .fleet-command-attention{border-color:rgba(210,165,91,.5);background:rgba(54,38,12,.28)}
+.fleet-command-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:10px}.fleet-command-actions button{min-height:55px;display:flex;align-items:center;gap:9px;padding:9px 10px;border:1px solid #315462;border-radius:10px;background:#0b2028;color:#dfecee;text-align:left;cursor:pointer}.fleet-command-actions button:hover,.fleet-command-actions button:focus-visible{border-color:#68aec2;background:#102b35;outline:none}.fleet-command-actions b{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:8px;background:rgba(91,166,186,.11);color:#78bfd1;font-size:15px}.fleet-command-actions span{min-width:0}.fleet-command-actions strong{display:block;color:#e7f1f2;font:900 9px Arial,sans-serif;letter-spacing:.07em}.fleet-command-actions small{display:block;margin-top:2px;color:#718f98;font:700 7px Arial,sans-serif;line-height:1.2}.fleet-command-actions .fleet-command-home{border-color:rgba(90,150,168,.52);background:linear-gradient(135deg,#0b222c,#101d25)}
+body.engine-mode #engineProjectsSection{scroll-margin-top:14px;border-color:rgba(95,178,199,.42)!important;box-shadow:0 16px 46px rgba(0,0,0,.16)!important}body.engine-mode #engineProjectsSection .modern-project-command-head{padding-bottom:10px!important}body.engine-mode #engineProjectsSection h3::after{content:'  •  FLEET DECK';color:#6ba6b7;font-size:9px;letter-spacing:.12em;vertical-align:middle}
+.project-engine-route-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.project-engine-route-actions button{min-height:40px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;padding:8px 11px!important}.project-route-engine img{width:22px!important;height:22px!important;object-fit:contain}.project-route-engine span,.project-route-dark-sky span:last-child{font:900 8px Arial,sans-serif;letter-spacing:.1em}.project-route-dark-sky{border-color:rgba(88,169,192,.48)!important;color:#cbeaf2!important}
+body.engine-mode #v3ArchitectureDeck,body.engine-mode #fleetCommissioningDock{scroll-margin-top:14px}
+@media(max-width:900px){.fleet-command-status{grid-template-columns:repeat(2,minmax(0,1fr))}.fleet-command-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.fleet-command-actions .fleet-command-home{grid-column:1/-1}.fleet-command-bridge-head{flex-direction:column}.fleet-command-law{text-align:left}.project-engine-route-actions{width:100%;justify-content:flex-end}}
+@media(max-width:560px){body.engine-mode #enginePanel .fleet-command-bridge{padding:12px}.fleet-command-actions{grid-template-columns:1fr}.fleet-command-actions .fleet-command-home{grid-column:auto}.fleet-command-status strong{font-size:19px}.project-engine-route-actions{justify-content:stretch}.project-engine-route-actions button{flex:1}}

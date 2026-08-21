@@ -105,7 +105,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.7.9" />
+  <link rel="stylesheet" href="styles.css?v=5.8.0" />
   <style id="bootLockStyles">
     /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
@@ -884,6 +884,30 @@
         </div>
       </header>
 
+      <section id="fleetCommandBridge" class="fleet-command-bridge" aria-label="Fleet command bridge">
+        <div class="fleet-command-bridge-head">
+          <div>
+            <span class="fleet-command-eyebrow">BLACK FLAG • FLEET FIRST</span>
+            <h3>Fleet Command</h3>
+            <p>Run the customer-facing fleet from one clean watch. Open a vessel, test the experience, handle attention, or commission the next project without losing the ship.</p>
+          </div>
+          <div class="fleet-command-law"><strong>DARK SKY</strong><span>Always one move away</span></div>
+        </div>
+        <div class="fleet-command-status" aria-label="Fleet summary">
+          <article><small>VESSELS</small><strong id="fleetBridgeProjects">—</strong><span>registered</span></article>
+          <article><small>LIVE</small><strong id="fleetBridgeLive">—</strong><span>customer-facing</span></article>
+          <article><small>PRIVATE / TEST</small><strong id="fleetBridgePrivate">—</strong><span>protected</span></article>
+          <article class="fleet-command-attention"><small>ATTENTION</small><strong id="fleetBridgeAttention">—</strong><span id="fleetBridgeAttentionLabel">reading watch</span></article>
+        </div>
+        <nav class="fleet-command-actions" aria-label="Fleet command shortcuts">
+          <button type="button" data-engine-command-jump="fleet"><b>☸</b><span><strong>FLEET</strong><small>Projects & customer experiences</small></span></button>
+          <button type="button" data-engine-command-jump="attention"><b>!</b><span><strong>WATCH</strong><small>Warnings & readiness</small></span></button>
+          <button type="button" data-engine-command-jump="commission"><b>＋</b><span><strong>COMMISSION</strong><small>Add the next vessel</small></span></button>
+          <button type="button" data-engine-command-jump="systems"><b>⚙</b><span><strong>SYSTEMS</strong><small>Engine health & recovery</small></span></button>
+          <button type="button" data-return-dark-sky class="fleet-command-home"><b>✦</b><span><strong>DARK SKY</strong><small>Return to platform home</small></span></button>
+        </nav>
+      </section>
+
       <section id="enginePerformanceDeck" class="engine-performance-deck" aria-label="Engine performance">
         <article class="engine-performance-card revenue">
           <div class="engine-performance-card-head">
@@ -1053,13 +1077,16 @@
               <p id="pecSubtitle">Project-specific controls.</p>
             </div>
           </div>
-          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine" type="button"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"></button>
+          <div class="project-engine-route-actions" aria-label="Project navigation">
+            <button id="closeProjectEngineControl" class="secondary-btn small project-route-engine" aria-label="Back to Engine Room" title="Back to Engine Room" type="button"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"><span>ENGINE ROOM</span></button>
+            <button class="secondary-btn small project-route-dark-sky" type="button" data-return-dark-sky><span>✦</span><span>DARK SKY</span></button>
+          </div>
         </div>
 
         <nav class="project-tabs project-command-nav" id="projectTabs" aria-label="Project Control navigation">
           <div class="project-command-primary" aria-label="Primary project commands">
             <button type="button" data-project-tab="overview" class="project-nav-direct active"><span class="project-nav-icon" aria-hidden="true">⌂</span><span>Overview</span></button>
-            <button type="button" data-project-tab="orders" class="project-nav-direct"><span class="project-nav-icon" aria-hidden="true">≡</span><span>Activity</span></button>
+            <button type="button" data-project-tab="orders" class="project-nav-direct"><span class="project-nav-icon" aria-hidden="true">≡</span><span>Orders / Work</span></button>
             <button type="button" data-project-tab="customers" class="project-nav-direct"><span class="project-nav-icon" aria-hidden="true">◎</span><span>Customers</span></button>
             <button type="button" data-project-group="operate"><span class="project-nav-icon" aria-hidden="true">⚙</span><span>Operate</span></button>
             <button type="button" data-project-group="insight"><span class="project-nav-icon" aria-hidden="true">▥</span><span>Insight</span></button>
@@ -1395,11 +1422,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.7.9"></script>
-  <script src="platform_v4.js?v=5.7.9"></script>
-  <script src="platform_identity.js?v=5.7.9"></script>
-  <script src="app.js?v=5.7.9"></script>
-  <script src="captain.js?v=5.7.9"></script>
+  <script src="platform_core.js?v=5.8.0"></script>
+  <script src="platform_v4.js?v=5.8.0"></script>
+  <script src="platform_identity.js?v=5.8.0"></script>
+  <script src="app.js?v=5.8.0"></script>
+  <script src="captain.js?v=5.8.0"></script>
 
 </body>
 </html>

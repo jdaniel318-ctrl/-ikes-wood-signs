@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.7.9';
+  const BUILD_VERSION = '5.8.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3793,6 +3793,7 @@
     applyEngineFleetFilter();
     // Project card actions are owned by the early Engine Project Command bus.
     await renderFleetHealth();
+    renderFleetCommandBridge();
   }
 
   const DEPLOYMENT_PROFILES={
@@ -9799,6 +9800,7 @@ The full order and approved media remain stored with this project.`;
   };
 
   window.renderBlackFlagHome = async function(){
+    try{ composeFleetFirstEngine(); renderFleetCommandBridge(); }catch(err){ console.warn('fleet bridge warning',err); }
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
@@ -9817,6 +9819,58 @@ The full order and approved media remain stored with this project.`;
   }
 
 
+
+  function renderFleetCommandBridge(){
+    const list=projects();
+    const live=list.filter(p=>projectFleetLaunchState(p).key==='live').length;
+    const privateCount=Math.max(0,list.length-live);
+    const attention=list.filter(p=>p?.v4AdmissionReviewRequired || platformStatus(p)!=='approved').length;
+    const set=(id,value)=>{const el=$(id);if(el)el.textContent=String(value);};
+    set('fleetBridgeProjects',list.length);
+    set('fleetBridgeLive',live);
+    set('fleetBridgePrivate',privateCount);
+    set('fleetBridgeAttention',attention);
+    const label=$('fleetBridgeAttentionLabel');
+    if(label)label.textContent=attention?`${attention} vessel${attention===1?'':'s'} to review`:'fleet clear';
+    $('fleetCommandBridge')?.classList.toggle('has-attention',attention>0);
+  }
+
+  function composeFleetFirstEngine(){
+    const hero=document.querySelector('#enginePanel .modern-engine-hero');
+    const bridge=$('fleetCommandBridge');
+    const fleet=$('engineProjectsSection');
+    const health=$('engineFleetHealth');
+    const command=$('fullSailCommandDeck');
+    const performance=$('enginePerformanceDeck');
+    if(!hero||!bridge||!fleet)return;
+    // Fleet is the working deck. Technical instrumentation follows it instead of
+    // forcing the Captain through diagnostics before reaching customer vessels.
+    hero.insertAdjacentElement('afterend',bridge);
+    bridge.insertAdjacentElement('afterend',fleet);
+    if(health)fleet.insertAdjacentElement('afterend',health);
+    if(command)(health||fleet).insertAdjacentElement('afterend',command);
+    if(performance)(command||health||fleet).insertAdjacentElement('afterend',performance);
+  }
+
+  function jumpEngineCommand(target){
+    const map={fleet:'engineProjectsSection',attention:'engineFleetHealth',systems:'v3ArchitectureDeck'};
+    if(target==='commission'){openProjectCommissioning();return;}
+    const id=map[target];
+    const el=id?$(id):null;
+    if(el){el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>el.querySelector('button,input,[tabindex]')?.focus?.({preventScroll:true}),380);}
+  }
+
+  function bindFleetCommandBridge(){
+    if(window.__fleetCommandBridgeBound)return;
+    window.__fleetCommandBridgeBound=true;
+    document.addEventListener('click',event=>{
+      const target=event.target?.closest?.('[data-engine-command-jump]');
+      if(!target)return;
+      event.preventDefault();event.stopPropagation();
+      jumpEngineCommand(target.dataset.engineCommandJump);
+    },true);
+    composeFleetFirstEngine();
+  }
 
   function engineFleetCommandContext(){
     const search=$('engineFleetSearch');
@@ -11636,6 +11690,7 @@ The full order and approved media remain stored with this project.`;
     // Mission-critical command controls must exist even if a later migration fails.
     bindWatchCommandBus();
     bindEngineProjectCommandBus();
+    bindFleetCommandBridge();
     bindExperienceTestDeckBus();
     bindMissionCriticalNavigation();
     // Project settings/admin access is mission-critical during commissioning.
@@ -11656,7 +11711,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.0',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11693,7 +11748,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.0',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -11770,7 +11825,7 @@ document.addEventListener('click', (event) => {
 
 
   function showDarkSkyHome(){
-    // 5.7.9 UNIVERSAL HOME CONTRACT: every internal route gets one dependable
+    // 5.8.0 UNIVERSAL HOME CONTRACT: every internal route gets one dependable
     // escape hatch. This closes project, commissioning, Captain, owner-preview,
     // test-deck, settings and modal surfaces before revealing Dark Sky.
     try{ window.DarkSkyBoundaryBridge?.lockEngine?.(); }catch(_){}
@@ -11864,7 +11919,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.9'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.0'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});

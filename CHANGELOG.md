@@ -1,11 +1,21 @@
-# Dark Sky 5.7.9 — Fleet Polish + Universal Home
+# Dark Sky 5.8.0 — Fleet-First Engine Room
+
+- Promoted Project Command to the primary working deck directly beneath Engine identity.
+- Added a compact Fleet Command bridge with live/private/attention counts and one-touch routes to Fleet, Watch, Commissioning, Systems, and Dark Sky.
+- Preserved strict project isolation while making customer-facing vessels faster to reach and manage.
+- Clarified Project Control navigation with explicit ENGINE ROOM and DARK SKY routes.
+- Renamed the generic Activity primary tab to Orders / Work so mixed fleet operating models remain clear.
+- Kept diagnostics, recovery, Captain authority, commissioning, and telemetry intact but subordinate to daily fleet operations.
+- Maintained universal Dark Sky escape behavior and client-preview isolation.
+
+# Dark Sky 5.8.0 — Fleet Polish + Universal Home
 
 - Added a fail-safe Dark Sky home route that closes project, commissioning, Captain, test-deck, settings, and modal surfaces before returning home.
 - Project return control now returns directly to Dark Sky instead of silently routing back into Black Flag.
 - Added a persistent internal Dark Sky home control, hidden from client previews and external owner invitation/customer flows.
 - Added an explicit Dark Sky exit to Project Commissioning so a new-project workflow can never trap the Captain.
 - Added shared iPad/touch/viewport polish across every project shell without sharing project branding or data.
-- Normalized runtime/cache/build references to 5.7.9 and refreshed service-worker cache isolation.
+- Normalized runtime/cache/build references to 5.8.0 and refreshed service-worker cache isolation.
 
 # Dark Sky 5.7.8 — Platform-First Landing
 
