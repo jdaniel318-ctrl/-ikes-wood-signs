@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.0.0';
+  const BUILD_VERSION = '6.0.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 8;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -11964,7 +11964,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.0',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.1',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -12001,7 +12001,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.0',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.1',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12172,7 +12172,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.0'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.1'};
     }
 
     // Commit the visual crossing only after the Engine has had a chance to render.

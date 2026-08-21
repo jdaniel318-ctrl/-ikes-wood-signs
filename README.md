@@ -1,8 +1,8 @@
-# Dark Sky 6.0.0 — Open Water
+# Dark Sky 6.0.1 — Benchmark Wake
 
 Benchmark-locked responsive customer experience pass. Legacy Plumbing remains the proving vessel; the responsive primitives are intended for reuse across project-specific fleet experiences.
 
-Open Water finishing pass: customer-site polish, reusable trust/process graphics, clean footer termination, compact internal test navigation, and preserved fleet contracts.
+Benchmark Wake finishing pass: customer-site polish, reusable trust/process graphics, clean footer termination, compact internal test navigation, and preserved fleet contracts.
 
 Repeatable fleet capability release. Engine foundations now become explicit project next steps, with a Fleet Command shipyard queue and project-scoped preparation contract. Dark Sky remains the permanent platform home and Black Flag remains the Engine authority.
 
