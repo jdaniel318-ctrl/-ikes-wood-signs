@@ -14,9 +14,9 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.8.8';
+  const BUILD_VERSION = '5.8.9';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
-  const FLEET_REGISTRY_SCHEMA_VERSION = 7;
+  const FLEET_REGISTRY_SCHEMA_VERSION = 8;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
@@ -24,8 +24,8 @@
   const PROJECT_ID_ALIASES = Object.freeze({[LEGACY_GRIZZLE_PROJECT_ID]:CANONICAL_GRIZZLY_PROJECT_ID});
   // 4.8.3 — Release Vessel Admission. New bundled projects must be named here deliberately.
   // Merely adding a project definition is not enough to alter an existing fleet.
-  const RELEASE_BUNDLED_PROJECT_IDS = Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear','bor-north-richmond']);
-  const RELEASE_NEW_PROJECT_IDS = Object.freeze(['bor-north-richmond']);
+  const RELEASE_BUNDLED_PROJECT_IDS = Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear','bor-north-richmond','legacy-plumbing']);
+  const RELEASE_NEW_PROJECT_IDS = Object.freeze(['bor-north-richmond','legacy-plumbing']);
   function canonicalProjectId(id){ return PROJECT_ID_ALIASES[String(id||'')]||String(id||''); }
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -164,6 +164,30 @@
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
       permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
       customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},
+      products:[]
+    },
+    {
+      id:'legacy-plumbing',
+      projectCode:'LEG',
+      name:'Legacy Plumbing',
+      description:'Licensed and insured plumbing for homes and businesses across the Richmond area.',
+      tagline:'Fast, reliable plumbing—done right.',
+      type:'service_business',businessType:'plumbing',
+      branding:{businessName:'Legacy Plumbing',adminLabel:'LEGACY PLUMBING',primary:'#4f3191',accent:'#2f94c7',subtitle:'Professional Plumbing Services'},
+      businessIntake:{
+        businessCategory:'Plumbing',businessType:'plumbing',sourceWebsite:'https://legacyplumbingrva.com',market:'Richmond, VA area',hours:'Mon–Fri • 7:00 AM–4:00 PM',
+        positioning:'Fast, reliable plumbing with clear options, quality workmanship, and straightforward service.',
+        contact:{phone:'804-955-7865',email:'info@legacyplumbinginc.com'},
+        trustSignals:['Licensed & insured','BBB Accredited','Residential + Commercial','Serving Richmond']
+      },
+      visibility:'engine_only',projectTheme:'universal',status:'development',orderPrefix:'LEG',
+      workflow:['New Request','Contacted','Scheduled','In Progress','Completed'],
+      customerExperience:{photoRequired:false,previewApproval:false,contactCapture:true,mode:'guided_service',relationshipType:'service_request',emailRequired:true},
+      publish:{status:'development'},
+      payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
+      customerHistory:{adminVisible:true},notifications:{customerConfirmationEmail:false},
+      capabilityControl:{enabled:['job_intake','job_status','customer_records','property_records','field_photos','scheduling','crew_assignment','estimates_authorizations','project_notes','operational_reporting'],source:'business_profile'},
       products:[]
     }
   ];
@@ -2730,6 +2754,10 @@
     const releaseIdsPresent=new Set(companies.map(p=>String(p?.id||'')));
     for(const releaseId of RELEASE_NEW_PROJECT_IDS){
       if(releaseIdsPresent.has(releaseId))continue;
+      // Existing commissioned Legacy Plumbing vessels may have an older/generated Project ID.
+      // Treat the business identity/source as canonical enough to avoid creating a duplicate on iPad,
+      // while still materializing the bundled vessel on fresh phones with no Legacy project at all.
+      if(releaseId==='legacy-plumbing' && companies.some(row=>isLegacyPlumbingProject(row)))continue;
       const bundled=DEFAULT_COMPANIES.find(p=>String(p?.id||'')===releaseId);
       if(!bundled)continue;
       companies.push(ensureProjectGovernance(normalizeProjectCode(structuredClone(bundled))));
@@ -2965,6 +2993,22 @@
     };
   }
 
+  function portableProjectBrandFallback(p){
+    const id=canonicalProjectId(p?.id);
+    if(id==='ikes-wood-signs')return 'assets/ike_character.jpg';
+    if(id==='bor-north-richmond')return 'assets/signal_restoration_logo.png';
+    if(id==='legacy-plumbing'||isLegacyPlumbingProject(p))return 'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png';
+    const palette={
+      'mugshot-after-dark':['#12151c','#d43d62','MUG','☕'],
+      'beccas-bloom-shop':['#496b4f','#b85f79','BBS','✿'],
+      'grizzly-bear':['#3d3027','#b86b32','GRZ','▲']
+    }[id];
+    if(!palette)return '';
+    const [bg,accent,code,mark]=palette;
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160"><rect width="240" height="160" rx="28" fill="${bg}"/><circle cx="120" cy="60" r="38" fill="${accent}"/><text x="120" y="73" text-anchor="middle" font-size="34" font-family="Arial,sans-serif" font-weight="900" fill="white">${mark}</text><text x="120" y="124" text-anchor="middle" font-size="28" font-family="Arial,sans-serif" font-weight="900" letter-spacing="3" fill="white">${code}</text></svg>`;
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  }
+
   async function projectBrandVisual(p){
     const code=String(p?.projectCode||p?.orderPrefix||'PRJ').toUpperCase().slice(0,3);
     let logo='',source='initials';
@@ -2979,9 +3023,9 @@
     // Ike's original customer experience predates the V4 Graphics Library. Preserve
     // that established identity as a project-specific compatibility fallback until
     // a dedicated Project Logo / Mark is assigned in the Engine.
-    if(!logo && canonicalProjectId(p?.id)==='ikes-wood-signs'){
-      logo='assets/ike_character.jpg';
-      source='ikeCompatibilityMark';
+    if(!logo){
+      logo=portableProjectBrandFallback(p);
+      if(logo)source='portableReleaseBrand';
     }
     return {code,logo,source};
   }
@@ -11844,7 +11888,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.8',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11881,7 +11925,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.8',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12052,7 +12096,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.8'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.9'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});

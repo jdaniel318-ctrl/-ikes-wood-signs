@@ -13235,3 +13235,27 @@ body.premium-plumbing-customer .experience-mode-banner button,body.legacy-plumbi
   body.premium-plumbing-customer .global-dark-sky-home span,body.legacy-plumbing-customer .global-dark-sky-home span{display:none!important}
   body.premium-plumbing-customer .experience-mode-banner,body.legacy-plumbing-customer .experience-mode-banner{left:64px!important;bottom:10px!important}
 }
+
+
+/* 5.8.9 — Pocket Fleet: phone registry + brand portability hardening */
+@media(max-width:760px){
+  body.engine-mode #enginePanel .modern-project-command .project-command-cards{
+    display:grid!important;grid-template-columns:1fr!important;gap:12px!important;
+    overflow:visible!important;scroll-snap-type:none!important;padding:0!important;
+  }
+  body.engine-mode #enginePanel .modern-project-command .project-command-cards>.project-card{
+    display:flex!important;width:100%!important;min-width:0!important;max-width:none!important;
+    flex:initial!important;flex-basis:auto!important;margin:0!important;overflow:visible!important;
+  }
+  body.engine-mode #enginePanel .modern-project-command .project-brand-badge{
+    width:72px!important;height:64px!important;flex:0 0 72px!important;background:#f4f7f6!important;
+  }
+  body.engine-mode #enginePanel .modern-project-command .project-brand-badge img{
+    display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;opacity:1!important;visibility:visible!important;
+  }
+  body.engine-mode #enginePanel .modern-project-command .project-card-head{min-height:64px!important}
+  body.engine-mode #enginePanel .modern-project-command .project-card h4{font-size:20px!important;margin-top:10px!important}
+  body.engine-mode #enginePanel .modern-project-command .project-card-primary-actions{grid-template-columns:1fr!important}
+  body.engine-mode #enginePanel .modern-project-command .project-card-primary-actions button{width:100%!important;min-height:48px!important}
+  #engineProjectsSection{overflow:visible!important}
+}

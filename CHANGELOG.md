@@ -1,4 +1,11 @@
-# 5.8.8 — Shipshape
+# 5.8.9 — Pocket Fleet
+- Fixed cross-device fleet drift: Legacy Plumbing is now a release vessel that materializes on a fresh device instead of existing only in one browser's local registry.
+- Added release-portable project branding fallbacks so fleet cards remain visibly project-specific on iPhone even before local project graphics have ever been stored on that device.
+- Preserved project-owned graphics as the first choice; portable fallbacks are used only when that device has no saved logo/hero/footer asset.
+- Added a final phone-width Fleet Deck rule that prevents fixed-width/horizontal project cards from hiding later vessels on narrow screens.
+- Bumped fleet registry schema and cache identity so existing phones reconcile the new canonical vessel set.
+
+# 5.8.9 — Pocket Fleet
 - Finished the Legacy Plumbing customer journey rather than redesigning it again.
 - Tightened hero height so the trust row arrives sooner on iPad.
 - Refined trust badges into cleaner graphic credibility marks with concise labels.
@@ -8,13 +15,13 @@
 - Compressed Dark Sky + Test Deck into a smaller internal test navigation footprint while preserving both exits.
 - Preserved verified-review gating, project trust settings, customer isolation, and test-mode safety.
 
-# 5.8.8 — Shipshape
+# 5.8.9 — Pocket Fleet
 - Reworked the customer trust strip so non-BBB badges use polished graphic medallions instead of plain text icons.
 - Kept the official BBB A+ badge as the credibility anchor while making the surrounding badges visually compatible.
 - Preserved project-level settings so BBB, Licensed & Insured, Residential + Commercial, and Service Area remain opt-in per vessel.
-- Updated runtime/build references and cache identity to 5.8.8.
+- Updated runtime/build references and cache identity to 5.8.9.
 
-# Dark Sky 5.8.8 — Shipshape
+# Dark Sky 5.8.9 — Pocket Fleet
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.
