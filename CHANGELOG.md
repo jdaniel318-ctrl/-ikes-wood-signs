@@ -1,10 +1,18 @@
-# 5.8.6 — Compass Row
+# 5.8.7 — Full Sail
+- Consolidated private/test notices into one compact safety ribbon.
+- Removed customer-visible Black Flag language from the plumbing service journey.
+- Standardized the plumbing service grid and made Something Else a compact intentional fallback.
+- Added content-integrity handling: sample testimonials are labeled in test and hidden from live unless explicitly verified.
+- Added reusable proof graphics to the Why section, tightened CTA reassurance and footer spacing.
+- Preserved project isolation, test safety, and permanent Dark Sky return.
+
+# 5.8.7 — Full Sail
 - Reworked the customer trust strip so non-BBB badges use polished graphic medallions instead of plain text icons.
 - Kept the official BBB A+ badge as the credibility anchor while making the surrounding badges visually compatible.
 - Preserved project-level settings so BBB, Licensed & Insured, Residential + Commercial, and Service Area remain opt-in per vessel.
-- Updated runtime/build references and cache identity to 5.8.6.
+- Updated runtime/build references and cache identity to 5.8.7.
 
-# Dark Sky 5.8.6 — Compass Row
+# Dark Sky 5.8.7 — Full Sail
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.
