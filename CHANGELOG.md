@@ -1,18 +1,20 @@
-# 5.8.7 — Full Sail
-- Consolidated private/test notices into one compact safety ribbon.
-- Removed customer-visible Black Flag language from the plumbing service journey.
-- Standardized the plumbing service grid and made Something Else a compact intentional fallback.
-- Added content-integrity handling: sample testimonials are labeled in test and hidden from live unless explicitly verified.
-- Added reusable proof graphics to the Why section, tightened CTA reassurance and footer spacing.
-- Preserved project isolation, test safety, and permanent Dark Sky return.
+# 5.8.8 — Shipshape
+- Finished the Legacy Plumbing customer journey rather than redesigning it again.
+- Tightened hero height so the trust row arrives sooner on iPad.
+- Refined trust badges into cleaner graphic credibility marks with concise labels.
+- Upgraded service-process cards with a reusable graphic step language.
+- Moved CTA reassurance below the action button for better readability.
+- Eliminated the exposed dark application canvas after the customer footer.
+- Compressed Dark Sky + Test Deck into a smaller internal test navigation footprint while preserving both exits.
+- Preserved verified-review gating, project trust settings, customer isolation, and test-mode safety.
 
-# 5.8.7 — Full Sail
+# 5.8.8 — Shipshape
 - Reworked the customer trust strip so non-BBB badges use polished graphic medallions instead of plain text icons.
 - Kept the official BBB A+ badge as the credibility anchor while making the surrounding badges visually compatible.
 - Preserved project-level settings so BBB, Licensed & Insured, Residential + Commercial, and Service Area remain opt-in per vessel.
-- Updated runtime/build references and cache identity to 5.8.7.
+- Updated runtime/build references and cache identity to 5.8.8.
 
-# Dark Sky 5.8.7 — Full Sail
+# Dark Sky 5.8.8 — Shipshape
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.

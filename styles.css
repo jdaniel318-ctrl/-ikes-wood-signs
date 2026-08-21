@@ -13174,3 +13174,64 @@ body.engine-mode #v3ArchitectureDeck,body.engine-mode #fleetCommissioningDock{sc
 .contractor-why-copy li{grid-template-columns:38px 150px 1fr;align-items:center}.contractor-why-copy li::before{content:'✓';display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#104b5f;color:#8ed9ef;font:900 13px Arial,sans-serif}.contractor-why-copy li:nth-child(2)::before{content:'↔'}.contractor-why-copy li:nth-child(3)::before{content:'⌂'}
 @media(max-width:1050px){.contractor-service-mosaic{grid-template-columns:repeat(2,minmax(0,1fr))!important}.contractor-service-card.contractor-service-other{grid-column:1/-1!important}.contractor-why-copy li{grid-template-columns:38px 150px 1fr!important}}
 @media(max-width:700px){.contractor-service-mosaic{grid-template-columns:1fr!important;grid-auto-rows:auto!important}.contractor-service-card,.contractor-service-card:nth-child(n){min-height:190px!important}.contractor-service-card.contractor-service-other{grid-column:auto!important;min-height:130px!important;max-height:none!important}.contractor-service-card.contractor-service-other .contractor-service-content{display:block!important}.contractor-service-card.contractor-service-other .contractor-service-icon{margin-bottom:10px!important}.contractor-service-card.contractor-service-other b{display:block;margin-top:10px}.contractor-why-copy li{grid-template-columns:34px 1fr!important}.contractor-why-copy li span{grid-column:2}.full-sail-test-ribbon{align-items:flex-start!important;flex-direction:column!important;gap:4px!important}}
+
+
+/* 5.8.8 — Shipshape: final customer-site finishing pass */
+/* Tighten the hero enough that the complete credibility row enters the first iPad view. */
+.legacy-contractor-site .contractor-hero{min-height:500px!important}
+.legacy-contractor-site .contractor-hero-copy{padding:52px 50px 46px!important}
+.legacy-contractor-site .contractor-hero-copy h2{font-size:clamp(54px,5.15vw,74px)!important;margin-bottom:20px!important}
+.legacy-contractor-site .contractor-hero-copy>p{margin-bottom:26px!important}
+.legacy-contractor-site .contractor-availability{margin-top:24px!important;padding-top:20px!important}
+
+/* Trust marks: badge first, concise label second. No UI-looking text capsules. */
+.legacy-contractor-site .contractor-proof-strip.trust-strip{gap:12px!important;margin-top:12px!important}
+.legacy-contractor-site .contractor-proof-strip.trust-strip .trust-chip{min-height:82px!important;padding:12px 18px!important;border-color:#dbe5e6!important;border-radius:18px!important;background:#fff!important;box-shadow:0 8px 20px rgba(8,49,65,.055)!important}
+.legacy-contractor-site .trust-chip-copy,.legacy-contractor-site .trust-chip-copy strong{background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important}
+.legacy-contractor-site .trust-chip-copy strong{font-size:15px!important;line-height:1.08!important;text-align:left!important;color:#142f39!important}
+.legacy-contractor-site .trust-chip-graphic{flex-basis:58px!important;width:58px!important;height:58px!important;box-shadow:0 7px 16px rgba(9,104,141,.16)!important}
+.legacy-contractor-site .trust-chip-graphic svg{width:58px!important;height:58px!important}
+.legacy-contractor-site .trust-chip-bbb{justify-content:center!important}
+.legacy-contractor-site .trust-chip-bbb img{width:min(184px,100%)!important;height:58px!important}
+
+/* Process cards now belong to the same graphic family as trust + service cards. */
+.legacy-contractor-site .contractor-process-grid article{position:relative;min-height:178px;padding:24px 22px 22px!important;border-radius:20px!important;box-shadow:0 8px 22px rgba(13,54,67,.045)!important}
+.legacy-contractor-site .contractor-process-grid article>span{width:42px!important;height:42px!important;margin-bottom:16px!important;background:linear-gradient(145deg,#1590b6,#0a607f)!important;box-shadow:0 7px 15px rgba(7,100,134,.16)!important}
+.legacy-contractor-site .contractor-process-grid article::after{position:absolute;right:18px;top:18px;width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:#e8f4f6;color:#0c7394;font:900 16px/1 Arial,sans-serif}
+.legacy-contractor-site .contractor-process-grid article:nth-child(1)::after{content:'?'}
+.legacy-contractor-site .contractor-process-grid article:nth-child(2)::after{content:'⌂'}
+.legacy-contractor-site .contractor-process-grid article:nth-child(3)::after{content:'◉'}
+.legacy-contractor-site .contractor-process-grid article:nth-child(4)::after{content:'✓'}
+
+/* Strong but calm CTA: reassurance belongs below the action, not inside the button. */
+.contractor-bottom-action{display:grid;gap:8px;justify-items:stretch}
+.contractor-bottom-action .contractor-primary-cta{width:100%!important}
+.contractor-bottom-action .contractor-cta-reassure{margin:0!important;color:#64777c!important;text-align:center!important;font:700 11px/1.3 Arial,sans-serif!important}
+
+/* Finish naturally; do not expose the dark application canvas after the customer footer. */
+body.premium-plumbing-customer,body.legacy-plumbing-customer{background:#eef4f3!important}
+body.premium-plumbing-customer #app,body.legacy-plumbing-customer #app,
+body.premium-plumbing-customer #universalCustomerShell,body.legacy-plumbing-customer #universalCustomerShell{background:#eef4f3!important;min-height:100dvh!important}
+.legacy-contractor-site{background:radial-gradient(circle at 82% 4%,rgba(72,184,218,.12),transparent 28%),linear-gradient(180deg,#f5f8f7 0,#eef4f3 100%)!important;padding-bottom:26px!important}
+.legacy-contractor-site .contractor-footer{margin-bottom:0!important;padding-bottom:18px!important}
+
+/* Internal test navigation: compact dock footprint while preserving both guaranteed exits. */
+body.premium-plumbing-customer .global-dark-sky-home,body.legacy-plumbing-customer .global-dark-sky-home{left:18px!important;bottom:14px!important;min-height:44px!important;padding:6px 12px 6px 7px!important;gap:7px!important}
+body.premium-plumbing-customer .global-dark-sky-home img,body.legacy-plumbing-customer .global-dark-sky-home img{width:28px!important;height:28px!important}
+body.premium-plumbing-customer .experience-mode-banner,body.legacy-plumbing-customer .experience-mode-banner{left:160px!important;bottom:14px!important;right:auto!important;top:auto!important;width:auto!important;max-width:none!important;min-height:44px!important;padding:5px!important;border-radius:999px!important;background:rgba(5,24,31,.94)!important;border-color:rgba(135,190,207,.42)!important;box-shadow:0 12px 34px rgba(0,0,0,.28)!important}
+body.premium-plumbing-customer .experience-mode-banner>span,body.legacy-plumbing-customer .experience-mode-banner>span{display:none!important}
+body.premium-plumbing-customer .experience-mode-banner button,body.legacy-plumbing-customer .experience-mode-banner button{min-height:34px!important;padding:7px 13px!important;border-radius:999px!important;font-size:9px!important}
+
+@media(max-width:1050px){
+  .legacy-contractor-site .contractor-hero{min-height:0!important}
+  .legacy-contractor-site .contractor-hero-copy{padding:46px 34px!important}
+}
+@media(max-width:700px){
+  .legacy-contractor-site .contractor-proof-strip.trust-strip{grid-template-columns:1fr 1fr!important}
+  .legacy-contractor-site .contractor-proof-strip.trust-strip .trust-chip{min-height:72px!important;padding:9px 11px!important}
+  .legacy-contractor-site .trust-chip-graphic{flex-basis:48px!important;width:48px!important;height:48px!important}.legacy-contractor-site .trust-chip-graphic svg{width:48px!important;height:48px!important}
+  .legacy-contractor-site .trust-chip-copy strong{font-size:13px!important}
+  body.premium-plumbing-customer .global-dark-sky-home,body.legacy-plumbing-customer .global-dark-sky-home{left:10px!important;bottom:10px!important;width:48px!important;height:48px!important;padding:8px!important}
+  body.premium-plumbing-customer .global-dark-sky-home span,body.legacy-plumbing-customer .global-dark-sky-home span{display:none!important}
+  body.premium-plumbing-customer .experience-mode-banner,body.legacy-plumbing-customer .experience-mode-banner{left:64px!important;bottom:10px!important}
+}
