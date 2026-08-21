@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.7.1';
+  const BUILD_VERSION = '5.7.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1955,7 +1955,7 @@
   async function verifyEnginePin(rawValue,{recordFailure=true}={}){
     const entered=String(rawValue||'').trim();
 
-    // 5.7.1 Engine Recovery Invariant: the historic Black Flag credential 5615
+    // 5.7.3 Engine Recovery Invariant: the historic Black Flag credential 5615
     // is verified before any persisted lockout/settings state is consulted. A stale
     // browser lockout created by a prior regression build must never strand the
     // Captain outside Black Flag when the correct recovery credential is supplied.
@@ -11449,7 +11449,9 @@ The full order and approved media remain stored with this project.`;
       const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
     const result=testAccessActive?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
       if(!result.ok){
-        if(result.code==='locked'){
+        if(result.code==='startup'){
+        if(err) err.textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
+      }else if(result.code==='locked'){
           $('enginePinError').textContent='';
           window.showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');
         }else{
@@ -11672,12 +11674,28 @@ The full order and approved media remain stored with this project.`;
   bindEngineProjectCommandBus();
   bindExperienceTestDeckBus();
   bindMissionCriticalNavigation();
-  init().catch(err=>{
+  init().then(()=>{
+    window.DarkSkyBootState={ready:true,error:null,at:Date.now(),build:BUILD_VERSION};
+  }).catch(err=>{
     console.error('Secondary app initialization warning',err);
-    // Do not block Black Flag entry. The PIN portal is the recovery surface.
-    const gate=document.getElementById('blackFlagEntryGate');
-    if(gate) gate.classList.remove('hidden');
-    document.body.classList.add('boot-locked');
+    window.DarkSkyBootState={ready:false,error:String(err?.message||err||'unknown'),at:Date.now(),build:BUILD_VERSION};
+    // 5.7.3: an unrelated secondary boot/migration failure must never revoke an
+    // Engine session that has already authenticated successfully. Previously this
+    // catch unconditionally reopened the PIN gate and boot-locked the page, which
+    // could make 5615 appear to fail after a successful verification and briefly
+    // expose the legacy Ike shell beneath the modal. Keep the portal available only
+    // when Black Flag is not already unlocked.
+    if(window.BlackFlagAuth?.isUnlocked?.()!==true){
+      const gate=document.getElementById('blackFlagEntryGate');
+      if(gate) gate.classList.remove('hidden');
+      document.body.classList.add('boot-locked');
+    }else{
+      document.body.classList.remove('boot-locked','project-mode');
+      document.body.classList.add('engine-mode');
+      document.getElementById('enginePanel')?.classList.remove('hidden');
+      const warning=document.getElementById('engineStorageDetail');
+      if(warning && !warning.textContent.trim()) warning.textContent='Engine opened in recovery mode. A secondary startup task needs review, but Black Flag access remains available.';
+    }
   });
 })();
 
@@ -11711,15 +11729,38 @@ document.addEventListener('click', (event) => {
     document.body.classList.remove('bf-entry-open');
   }
 
+  function hideProjectSurfacesBeforeEngine(){
+    // Atomic visual boundary: hide every project/customer/admin surface while the
+    // Black Flag gate is still covering the page. This prevents a one-frame flash
+    // of Ike or another vessel during the authenticated transition.
+    ['customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','captainQuarters'].forEach(id=>byId(id)?.classList.add('hidden'));
+    document.body.classList.remove('project-mode','project-admin-mode','project-orders-mode','project-ledger-mode');
+    document.body.removeAttribute('data-active-project');
+  }
+
   async function unlockFromEntry(){
     const input=byId('blackFlagEntryPin');
     const entered=(input?.value||'').trim();
 
     const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
-    const result=testAccessActive?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
+    // The historical Black Flag credential is an entry invariant and must not depend
+    // on IndexedDB, migrations, project state, or a late application initializer.
+    // BlackFlagAuth remains the shared controller for alternate configured Engine PINs.
+    let result;
+    if(testAccessActive) result={ok:true,code:'test-access'};
+    else if(entered==='5615'){
+      try{ window.BlackFlagAuth?.clearPinFailures?.('engine'); }catch(_){}
+      result={ok:true,code:'recovery',recovery:true};
+    }else if(window.BlackFlagAuth?.verify){
+      result=await window.BlackFlagAuth.verify(entered);
+    }else{
+      result={ok:false,code:'startup'};
+    }
     if(!result.ok){
       const err=byId('blackFlagEntryError');
-      if(result.code==='locked'){
+      if(result.code==='startup'){
+        if(err) err.textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
+      }else if(result.code==='locked'){
         if(err) err.textContent='';
         window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');
       }else{
@@ -11731,28 +11772,38 @@ document.addEventListener('click', (event) => {
 
     if(window.BlackFlagAuth&&!testAccessActive) window.BlackFlagAuth.unlock();
     if(input) input.value='';
-    leaveEntry();
-    window.DarkSkyBoundaryBridge?.restoreEngineTheme?.();
     window.pendingEngineReturnProjectId=null;
-    // Cross the project/Engine boundary only through the exported bridge. The old
-    // 5.0.x portal referenced closure-private functions here; Safari verified 5615
-    // correctly and then threw before enginePanel was opened.
-    try{ window.DarkSkyBoundaryBridge?.prepareEngine?.(); }
-    catch(err){
+
+    // 5.7.3 atomic Engine crossing. Prepare and hide all project surfaces BEFORE
+    // removing the PIN cover. A successful 5615 must result in either Engine Room
+    // or a visible error on the still-covered gate — never an Ike/project flash.
+    hideProjectSurfacesBeforeEngine();
+    try{
+      window.DarkSkyBoundaryBridge?.restoreEngineTheme?.();
+      if(!window.DarkSkyBoundaryBridge?.prepareEngine) throw new Error('Engine boundary bridge unavailable');
+      window.DarkSkyBoundaryBridge.prepareEngine();
+      document.body.classList.remove('boot-locked','project-mode');
+      document.body.classList.add('engine-mode');
+      const engine=byId('enginePanel');
+      if(!engine) throw new Error('Engine panel unavailable');
+      engine.classList.remove('hidden');
+      leaveEntry();
+    }catch(err){
       console.error('Black Flag boundary transition failed',err);
-      const e=byId('blackFlagEntryError'); if(e)e.textContent='Engine boundary could not be prepared. Reload and try again.';
+      const e=byId('blackFlagEntryError'); if(e)e.textContent='Black Flag accepted the PIN, but the Engine could not finish opening. Reload this build and try again.';
+      document.body.classList.add('boot-locked');
       await requireEngineEntry();
       return;
     }
-    document.body.classList.remove('boot-locked','project-mode');
-    document.body.classList.add('engine-mode');
 
-    const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
-
-    // Render through the normal engine routines when available.
+    // Render through the normal Engine routines when available. A rendering warning
+    // must not relock a correctly authenticated Engine session.
     try{
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
-    }catch(err){ console.warn('Engine home render warning',err); }
+    }catch(err){
+      console.warn('Engine home render warning',err);
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.3'};
+    }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }

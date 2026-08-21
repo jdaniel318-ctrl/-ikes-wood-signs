@@ -1,6 +1,6 @@
-# Dark Sky 5.7.1
+# Dark Sky 5.7.3
 
-Dark Sky 5.7.1 is the cloud-readiness and portability hardening release. It keeps the current static/browser fleet fully testable while making the future migration contract explicit: source code is recoverable from version control, devices are clients rather than authoritative data stores, routing remains host/domain agnostic, and future production data/assets are expected to move to managed cloud storage without rewriting customer experiences.
+Dark Sky 5.7.3 is the cloud-readiness and portability hardening release. It keeps the current static/browser fleet fully testable while making the future migration contract explicit: source code is recoverable from version control, devices are clients rather than authoritative data stores, routing remains host/domain agnostic, and future production data/assets are expected to move to managed cloud storage without rewriting customer experiences.
 
 ## Standing authority and safety contracts
 
@@ -97,3 +97,9 @@ This build separates the Dark Sky master capability library from project authori
 ## Client Preview
 
 From Project Command, use **Client Preview** to create a clean unpublished customer-facing link. Create a unique preview PIN, choose an expiration window, generate the link, and share the PIN separately. Client Preview cannot call, email, text, submit to the real business, take payments, or expose Engine/Captain/Project Admin controls.
+
+## 5.7.3 Engine entry stabilization
+- Black Flag 5615 is treated as a pre-storage entry invariant.
+- The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
+- A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
+- Engine render warnings remain visible/recoverable without silently locking the Captain back out.

@@ -19,7 +19,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.7.1" />
+  <link rel="stylesheet" href="styles.css?v=5.7.3" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -30,19 +30,19 @@
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
-      <div class="bf-entry-kicker">DARK SKY • ENGINE ACCESS</div>
+      <div class="bf-entry-kicker">BLACK FLAG • SECURE COMMAND ACCESS</div>
       <div class="black-flag-engine-brand"><div class="bf-engine-title-lockup">
       <img class="bf-engine-primary-lockup" src="assets/black_flag_primary_lockup.png" alt="Black Flag — Business Command Platform" />
       <div class="bf-entry-engine-title"><div class="bf-platform-name">ENGINE ACCESS</div><h1>Engine Room</h1><div class="bf-platform-subtitle">DARK SKY COMMAND</div></div>
     </div></div>
-      <p class="bf-entry-sub">Secure project operations and platform control.</p>
+      <p class="bf-entry-sub">Authorized access to project operations, fleet controls, and platform command.</p><div class="bf-entry-trust"><span class="bf-entry-trust-dot"></span><strong>SECURE ENGINE ACCESS</strong><span>Session isolated • project boundaries enforced</span></div>
 
       <div class="bf-entry-panel">
-        <label for="blackFlagEntryPin">ENGINE PIN</label>
+        <label for="blackFlagEntryPin">BLACK FLAG ENGINE PIN</label>
         <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
-        <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER BLACK FLAG →</button>
-<button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">CLOSE / RETURN TO ORDER</button>
+        <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
+<button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO PROJECT</button>
 <div class="engine-entry-mode" role="group" aria-label="Engine appearance">
   <span><strong>ENGINE APPEARANCE</strong><small>Choose how the Engine Room presents itself.</small></span>
   <div class="engine-mode-segment">
@@ -707,7 +707,7 @@
         <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
-        <button type="button" id="cancelEngineBtn" class="secondary-btn">CLOSE / RETURN TO ORDER</button>
+        <button type="button" id="cancelEngineBtn" class="secondary-btn">RETURN TO PROJECT</button>
       </div>
     </div>
 
@@ -1278,11 +1278,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.7.1"></script>
-  <script src="platform_v4.js?v=5.7.1"></script>
-  <script src="platform_identity.js?v=5.7.1"></script>
-  <script src="app.js?v=5.7.1"></script>
-  <script src="captain.js?v=5.7.1"></script>
+  <script src="platform_core.js?v=5.7.3"></script>
+  <script src="platform_v4.js?v=5.7.3"></script>
+  <script src="platform_identity.js?v=5.7.3"></script>
+  <script src="app.js?v=5.7.3"></script>
+  <script src="captain.js?v=5.7.3"></script>
 
 </body>
 </html>

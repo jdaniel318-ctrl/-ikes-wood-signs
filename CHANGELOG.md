@@ -1,4 +1,4 @@
-# Dark Sky 5.7.1 — Black Flag Entry Recovery
+# Dark Sky 5.7.3 — Black Flag Entry Recovery
 
 - Restores the Black Flag Engine entry contract without altering the authority hierarchy: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
 - The canonical Engine recovery PIN 5615 is now checked before persisted browser lockout/settings state. This prevents stale lockout state from an earlier regression/test cycle from rejecting the correct Black Flag credential.
@@ -250,3 +250,9 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Reduced card height so more of the fleet is visible at once on iPad and desktop; preserved swipeable single-card behavior on phones.
 - Removed superseded one-off audit documents from the deployable package. Canonical architecture, commissioning, isolation, mobile contract, regression, changelog, and README documents remain.
 - No changes to the authority spine or Client Preview invite security.
+
+## 5.7.3 Engine entry stabilization
+- Black Flag 5615 is treated as a pre-storage entry invariant.
+- The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
+- A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
+- Engine render warnings remain visible/recoverable without silently locking the Captain back out.

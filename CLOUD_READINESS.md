@@ -1,4 +1,4 @@
-# Dark Sky Cloud Readiness & Portability Contract — 5.7.1
+# Dark Sky Cloud Readiness & Portability Contract — 5.7.3
 
 ## Purpose
 Dark Sky must be able to move from the current test harbor to a custom domain and managed cloud infrastructure without redesigning the fleet. This contract is a standing engineering constraint for cleanup, feature work, deployment, and vendor selection.

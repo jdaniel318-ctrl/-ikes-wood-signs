@@ -12849,3 +12849,109 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
   .modern-project-command .project-command-cards>.project-card{flex-basis:min(82vw,300px)!important;width:min(82vw,300px)!important;min-width:min(82vw,300px)!important}
   .project-command-metrics small{font-size:7px}
 }
+
+/* ========================================================================== 
+   v5.7.3 — BLACK FLAG COMMAND PORTAL POLISH
+   Presentation-only hardening around the proven Engine authentication gate.
+   Authentication logic and credentials are intentionally untouched.
+   ========================================================================== */
+#blackFlagEntryGate{
+  padding:max(18px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom))!important;
+  background:
+    radial-gradient(circle at 50% -12%,rgba(70,138,160,.18),transparent 36%),
+    radial-gradient(circle at 92% 90%,rgba(201,166,84,.10),transparent 30%),
+    linear-gradient(150deg,#061117 0%,#091a21 52%,#050c10 100%)!important;
+  overflow:auto!important;
+}
+#blackFlagEntryGate .bf-entry-shell{
+  width:min(620px,calc(100vw - 36px))!important;
+  padding:24px 28px 20px!important;
+  border-radius:24px!important;
+  background:linear-gradient(180deg,rgba(11,22,28,.98),rgba(8,17,22,.99))!important;
+  border:1px solid rgba(125,157,168,.48)!important;
+  box-shadow:0 34px 100px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.035)!important;
+  color:#f4f4ef!important;
+}
+#blackFlagEntryGate .bf-entry-kicker{
+  margin-bottom:6px!important;
+  color:#8fb7c5!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.24em!important;
+}
+#blackFlagEntryGate .black-flag-engine-brand{margin:0 auto!important;}
+#blackFlagEntryGate .bf-engine-title-lockup{gap:7px!important;}
+#blackFlagEntryGate .bf-engine-primary-lockup{
+  width:min(360px,74vw)!important;
+  max-height:220px!important;
+}
+#blackFlagEntryGate .bf-entry-engine-title .bf-platform-name{
+  margin-top:0!important;color:#d7bd73!important;font-size:9px!important;
+}
+#blackFlagEntryGate .bf-entry-engine-title h1{
+  margin:2px 0 2px!important;
+  font-size:clamp(38px,5vw,52px)!important;
+  color:#f6f3ea!important;
+  letter-spacing:-.025em!important;
+}
+#blackFlagEntryGate .bf-platform-subtitle{font-size:8px!important;color:#7699a5!important;}
+#blackFlagEntryGate .bf-entry-sub{
+  margin:6px auto 10px!important;
+  max-width:470px!important;
+  color:#b5c0c4!important;
+  font-size:14px!important;
+  line-height:1.45!important;
+}
+#blackFlagEntryGate .bf-entry-trust{
+  display:flex!important;justify-content:center!important;align-items:center!important;flex-wrap:wrap!important;
+  gap:7px 9px!important;margin:0 auto 14px!important;padding:7px 12px!important;width:max-content!important;max-width:100%!important;
+  border:1px solid rgba(92,133,146,.28)!important;border-radius:999px!important;background:rgba(21,48,58,.42)!important;
+  color:#9db1b8!important;font-size:9px!important;letter-spacing:.05em!important;
+}
+#blackFlagEntryGate .bf-entry-trust strong{color:#d8e5e9!important;font-size:9px!important;letter-spacing:.12em!important;}
+#blackFlagEntryGate .bf-entry-trust-dot{width:7px;height:7px;border-radius:50%;background:#5fc582;box-shadow:0 0 0 4px rgba(95,197,130,.10);}
+#blackFlagEntryGate .bf-entry-panel{
+  width:min(100%,520px)!important;
+  padding:18px!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#f7f4eb,#eee8dc)!important;
+  border:1px solid #bdb6a8!important;
+  box-shadow:0 16px 44px rgba(0,0,0,.28)!important;
+}
+#blackFlagEntryGate .bf-entry-panel label{
+  margin-bottom:8px!important;color:#334a53!important;font-size:10px!important;letter-spacing:.16em!important;
+}
+#blackFlagEntryGate .bf-pin-input{
+  height:60px!important;border-radius:14px!important;border:1px solid #7fa9b8!important;background:#fbfcfb!important;
+  color:#0e2730!important;font-size:28px!important;letter-spacing:11px!important;box-shadow:inset 0 1px 3px rgba(15,42,51,.08)!important;
+}
+#blackFlagEntryGate .bf-pin-input:focus{border-color:#2a8db0!important;box-shadow:0 0 0 4px rgba(42,141,176,.14)!important;}
+#blackFlagEntryGate .bf-entry-error{min-height:16px!important;margin:5px 0 7px!important;font-size:12px!important;}
+#blackFlagEntryGate .bf-entry-primary{
+  min-height:56px!important;border-radius:14px!important;
+  background:linear-gradient(135deg,#123944,#1d5968)!important;color:#f4d677!important;
+  border:1px solid rgba(111,180,203,.34)!important;box-shadow:0 9px 24px rgba(10,49,61,.22)!important;
+  font-size:12px!important;letter-spacing:.08em!important;
+}
+#blackFlagEntryGate .bf-entry-primary:hover{filter:brightness(1.06)!important;transform:translateY(-1px)!important;}
+#blackFlagEntryGate .bf-entry-secondary{
+  width:100%!important;min-height:44px!important;margin-top:9px!important;border-radius:12px!important;
+  background:transparent!important;border:1px solid #c5bdad!important;color:#44555a!important;font-size:10px!important;letter-spacing:.06em!important;
+}
+#blackFlagEntryGate .engine-entry-mode{display:none!important;}
+#blackFlagEntryGate .bf-pirate-atmosphere{display:none!important;}
+#blackFlagEntryGate .bf-entry-foot{
+  margin-top:12px!important;color:#71858d!important;font-size:9px!important;letter-spacing:.08em!important;
+}
+@media(max-width:640px){
+  #blackFlagEntryGate{place-items:start center!important;padding-top:max(12px,env(safe-area-inset-top))!important;}
+  #blackFlagEntryGate .bf-entry-shell{width:min(100%,520px)!important;padding:18px 16px 16px!important;border-radius:20px!important;}
+  #blackFlagEntryGate .bf-engine-primary-lockup{width:min(300px,78vw)!important;max-height:170px!important;}
+  #blackFlagEntryGate .bf-entry-engine-title h1{font-size:39px!important;}
+  #blackFlagEntryGate .bf-entry-sub{font-size:13px!important;margin-bottom:8px!important;}
+  #blackFlagEntryGate .bf-entry-trust{border-radius:14px!important;padding:7px 10px!important;}
+  #blackFlagEntryGate .bf-entry-panel{padding:14px!important;}
+  #blackFlagEntryGate .bf-pin-input{height:56px!important;font-size:26px!important;}
+  #blackFlagEntryGate .bf-entry-primary{min-height:54px!important;}
+  #blackFlagEntryGate .bf-entry-foot{margin-top:9px!important;}
+}

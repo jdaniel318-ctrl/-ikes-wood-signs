@@ -195,3 +195,9 @@ Customer experience reuse follows the rule: **shared principles, unique vessel**
 ## Client Preview Boundary (5.6.0)
 
 Client Preview is a fourth customer-facing lifecycle surface alongside Internal Preview, Sea Trial, and Live. It is presentation-only and is designed for sharing with a prospective or current business owner before publication. The preview transport is project-scoped and revision-scoped, protected by a unique preview PIN, and always executes under non-live contact safety. It must never expose Dark Sky/Black Flag/Captain authority surfaces.
+
+## 5.7.3 Engine entry stabilization
+- Black Flag 5615 is treated as a pre-storage entry invariant.
+- The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
+- A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
+- Engine render warnings remain visible/recoverable without silently locking the Captain back out.

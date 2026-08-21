@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-7-1-engine-recovery';
+const CACHE='dark-sky-v5-7-2-engine-atomic-entry';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.7.1',
-  './platform_core.js?v=5.7.1',
-  './platform_v4.js?v=5.7.1',
-  './platform_identity.js?v=5.7.1',
-  './app.js?v=5.7.1',
-  './captain.js?v=5.7.1',
+  './styles.css?v=5.7.3',
+  './platform_core.js?v=5.7.3',
+  './platform_v4.js?v=5.7.3',
+  './platform_identity.js?v=5.7.3',
+  './app.js?v=5.7.3',
+  './captain.js?v=5.7.3',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

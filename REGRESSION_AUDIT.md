@@ -1,4 +1,4 @@
-# 5.7.1 Engine Entry Regression Gate
+# 5.7.3 Engine Entry Regression Gate
 
 - Entering `5615` at the pre-login Black Flag portal must succeed even if `blackFlagPinSecurityV1.engine.lockedUntil` contains stale future state.
 - Successful 5615 entry must clear Engine PIN failure state before crossing the boundary bridge.
@@ -110,3 +110,9 @@ Checks required: Legacy Plumbing source assets are selected only for the Legacy 
 - Client Preview unique-per-invite PIN behavior remains unchanged.
 - Authority contracts unchanged: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
 - Packaging removes only superseded audit notes; no runtime assets or application modules were removed.
+
+## 5.7.3 Engine entry stabilization
+- Black Flag 5615 is treated as a pre-storage entry invariant.
+- The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
+- A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
+- Engine render warnings remain visible/recoverable without silently locking the Captain back out.
