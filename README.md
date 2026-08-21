@@ -1,6 +1,6 @@
-# Dark Sky 5.9.4 — Dead Reckoning
+# Dark Sky 5.9.5 — Hard Tack
 
-Dead Reckoning finishing pass: customer-site polish, reusable trust/process graphics, clean footer termination, compact internal test navigation, and preserved fleet contracts.
+Hard Tack finishing pass: customer-site polish, reusable trust/process graphics, clean footer termination, compact internal test navigation, and preserved fleet contracts.
 
 Repeatable fleet capability release. Engine foundations now become explicit project next steps, with a Fleet Command shipyard queue and project-scoped preparation contract. Dark Sky remains the permanent platform home and Black Flag remains the Engine authority.
 
