@@ -1,0 +1,17 @@
+{
+  "name": "Dark Sky \u2014 Black Flag Business Command Platform",
+  "short_name": "Dark Sky",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#071419",
+  "theme_color": "#071419",
+  "icons": [
+    {
+      "src": "assets/black_flag_platform_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command."
+}

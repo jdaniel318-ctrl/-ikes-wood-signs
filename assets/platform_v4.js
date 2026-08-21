@@ -1,0 +1,224 @@
+/* Dark Sky 4.3.6 — Brightwork platform generation layer */
+(function(g){
+'use strict';
+const VERSION='4.5.0';
+const NAME='Brightwork';
+const SCHEMA=2;
+const SESSION_STARTED_AT=Date.now();
+const KEYS=Object.freeze({
+ state:'darkSkyV4StateV1', flags:'darkSkyV4FeatureFlagsV1', decisions:'darkSkyV4DecisionLedgerV1',
+ diagnostics:'darkSkyV4BlackBoxV1', labs:'darkSkyV4CaptainLabV1', release:'darkSkyV4ReleaseRingsV1',
+ recovery:'darkSkyV4RecoveryVaultV1', migration:'darkSkyV4MigrationGateV1', implementation:'darkSkyV4ImplementationQueueV1'
+});
+const CONTRACT=Object.freeze([
+ 'Nothing disappears during an ordinary upgrade.',
+ 'Nothing crosses project boundaries.',
+ 'Every important change is traceable.',
+ 'Experiments cannot silently alter production.',
+ 'Every vessel can be recovered and carried forward.'
+]);
+const ROLE_CAPABILITIES=Object.freeze({
+ captain:['fleet.read','governance.decide','lab.create','lab.promote','recovery.create','recovery.review','release.review','audit.read','diagnostics.read','feature_flags.manage'],
+ engine_admin:['fleet.read','project.configure','project.test','deployment.manage','recovery.create','audit.read','diagnostics.read'],
+ project_admin:['project.read','project.configure','orders.manage','customers.manage'],
+ limited_admin:['project.read','orders.manage'],
+ owner:['project.read','orders.manage','customers.read'],
+ customer:['customer_flow.use']
+});
+const DEFAULT_FLAGS=Object.freeze({
+ recovery_vault:{enabled:true,scope:'fleet',ring:'stable'},
+ black_box:{enabled:true,scope:'fleet',ring:'stable'},
+ captain_lab:{enabled:true,scope:'captain',ring:'captain'},
+ decision_ledger:{enabled:true,scope:'captain',ring:'stable'},
+ release_rings:{enabled:true,scope:'fleet',ring:'stable'},
+ command_search:{enabled:true,scope:'fleet',ring:'captain'},
+ attention_center:{enabled:true,scope:'fleet',ring:'stable'},
+ workflow_engine:{enabled:false,scope:'project',ring:'captain'},
+ captain_brief:{enabled:true,scope:'captain',ring:'stable'},
+ storage_steward:{enabled:true,scope:'engine_admin',ring:'stable'},
+ lab_board:{enabled:true,scope:'captain',ring:'stable'}
+});
+function read(key,fallback){try{const v=JSON.parse(localStorage.getItem(key));return v==null?fallback:v}catch(_){return fallback}}
+function write(key,value){localStorage.setItem(key,JSON.stringify(value));return value}
+function uid(prefix){return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`}
+function core(){return g.BlackFlagV3Core||null}
+function cleanProject(p){
+ const c=structuredClone(p||{});
+ if(c?.ownerAccess?.credential)c.ownerAccess.credential={login:c.ownerAccess.credential.login||'',secretMaterialOmitted:true};
+ if(c?.ownerAccess?.invitation)c.ownerAccess.invitation={...c.ownerAccess.invitation,tokenHash:'[omitted]'};
+ return c;
+}
+function featureFlags(){return {...DEFAULT_FLAGS,...read(KEYS.flags,{})}}
+function setFeatureFlag(key,patch={}){
+ if(!DEFAULT_FLAGS[key])throw new Error('Unknown V4 feature flag.');
+ const rows=featureFlags(); rows[key]={...rows[key],...patch,updatedAt:new Date().toISOString()}; write(KEYS.flags,rows);
+ core()?.audit?.({actorRole:'captain',category:'v4.feature',action:'v4.feature_flag.changed',detail:`${key} → ${rows[key].enabled?'enabled':'disabled'} • ${rows[key].ring||'stable'}`});
+ return rows[key];
+}
+function can(role,capability){return !!ROLE_CAPABILITIES[role]?.includes(capability)}
+function decision(entry={}){
+ const text=String(entry.decision||entry.title||'').trim(); if(!text)throw new Error('Decision text is required.');
+ const rows=read(KEYS.decisions,[]); const row={id:uid('DEC'),at:new Date().toISOString(),status:entry.status||'active',decision:text,rationale:String(entry.rationale||'').trim(),scope:entry.scope||'platform',projectId:entry.projectId||null,warning:String(entry.warning||'').trim(),supersedes:entry.supersedes||null};
+ rows.unshift(row);write(KEYS.decisions,rows.slice(0,500));core()?.audit?.({actorRole:'captain',projectId:row.projectId,category:'governance',action:'v4.captain.decision.recorded',detail:row.decision});return row;
+}
+function decisions(){return read(KEYS.decisions,[])}
+function diagnosticFingerprint(row={}){
+ return [String(row.type||'event'),String(row.detail||''),String(row.source||''),String(row.line||''),String(row.column||''),String(row.projectId||'')].join('|');
+}
+function compactDiagnostics(rows=read(KEYS.diagnostics,[])){
+ const out=[],bySig=new Map();
+ for(const raw of Array.isArray(rows)?rows:[]){
+   const row={...raw};const sig=row.fingerprint||diagnosticFingerprint(row);const prior=bySig.get(sig);
+   const occurrences=Math.max(1,Number(row.occurrences||1));
+   if(prior){
+     prior.occurrences+=occurrences;
+     prior.firstSeen=prior.firstSeen||row.firstSeen||row.at;
+     const candidate=row.lastSeen||row.at;
+     if(candidate && (!prior.lastSeen||candidate>prior.lastSeen)){
+       prior.lastSeen=candidate;prior.at=candidate;prior.build=row.build||prior.build;prior.url=row.url||prior.url;
+     }
+   }else{
+     const normalized={...row,fingerprint:sig,occurrences,firstSeen:row.firstSeen||row.at||new Date().toISOString(),lastSeen:row.lastSeen||row.at||new Date().toISOString()};
+     bySig.set(sig,normalized);out.push(normalized);
+   }
+ }
+ out.sort((a,b)=>String(b.lastSeen||b.at||'').localeCompare(String(a.lastSeen||a.at||'')));
+ return out.slice(0,150);
+}
+function diagnostic(type,detail='',extra={}){
+ const now=new Date().toISOString();const base={type:String(type||'event'),detail:String(detail||''),build:VERSION,url:location.pathname,projectId:document.body?.dataset?.activeProject||null,...extra};
+ const sig=diagnosticFingerprint(base);const rows=compactDiagnostics();const idx=rows.findIndex(x=>(x.fingerprint||diagnosticFingerprint(x))===sig);
+ if(idx>=0){
+   const row=rows.splice(idx,1)[0];row.occurrences=Math.max(1,Number(row.occurrences||1))+1;row.lastSeen=now;row.at=now;row.build=VERSION;row.url=location.pathname;rows.unshift(row);write(KEYS.diagnostics,rows.slice(0,150));return row;
+ }
+ const row={id:uid('BBX'),at:now,firstSeen:now,lastSeen:now,occurrences:1,fingerprint:sig,...base};rows.unshift(row);write(KEYS.diagnostics,rows.slice(0,150));return row;
+}
+function diagnostics(){
+ const raw=read(KEYS.diagnostics,[]),compact=compactDiagnostics(raw);
+ if(JSON.stringify(raw)!==JSON.stringify(compact))write(KEYS.diagnostics,compact);
+ return compact;
+}
+function blackBoxHealth(){
+ const rows=diagnostics();const now=Date.now(),recentWindow=30*60*1000;
+ const occurrences=rows.reduce((n,x)=>n+Math.max(1,Number(x.occurrences||1)),0);
+ const errors=rows.filter(x=>/javascript\.error|promise\.rejection|commissioning\.failed/i.test(String(x.type||'')));
+ const recentErrors=errors.filter(x=>{const t=Date.parse(x.lastSeen||x.at||'');return Number.isFinite(t)&&now-t<=recentWindow;});
+ const sessionErrors=errors.filter(x=>{const t=Date.parse(x.lastSeen||x.at||'');return Number.isFinite(t)&&t>=SESSION_STARTED_AT;});
+ return {uniqueEvents:rows.length,occurrences,errorSignatures:errors.length,recentFaults:recentErrors.length,currentSessionFaults:sessionErrors.length,historicalFaults:Math.max(0,errors.length-sessionErrors.length),status:sessionErrors.length?'attention':'clear'};
+}
+function labCreate(project,brief='',options={}){
+ if(!project?.id)throw new Error('A project is required for a Captain Lab experiment.');
+ const rows=read(KEYS.labs,[]);const clean=cleanProject(project);const row={id:uid('LAB'),at:new Date().toISOString(),updatedAt:new Date().toISOString(),projectId:project.id,projectName:project.name||project.id,state:'sandbox',brief:String(brief||'').trim(),objective:String(options.objective||'').trim(),successCriteria:String(options.successCriteria||'').trim(),risk:String(options.risk||'low'),category:String(options.category||'general'),productionWriteAllowed:false,productionFingerprint:JSON.stringify(clean).length,clone:clean};
+ rows.unshift(row);write(KEYS.labs,rows.slice(0,40));core()?.audit?.({actorRole:'captain',projectId:project.id,category:'experiment',action:'v4.captain_lab.created',detail:`${row.id} • ${row.category} • production writes denied`});return row;
+}
+function labs(){return read(KEYS.labs,[])}
+function labUpdate(id,patch={}){
+ const rows=labs(),row=rows.find(x=>x.id===id);if(!row)throw new Error('Lab experiment not found.');
+ const allowed=['brief','objective','successCriteria','risk','category','notes'];for(const key of allowed){if(Object.prototype.hasOwnProperty.call(patch,key))row[key]=String(patch[key]??'').trim();}
+ row.updatedAt=new Date().toISOString();write(KEYS.labs,rows);core()?.audit?.({actorRole:'captain',projectId:row.projectId,category:'experiment',action:'v4.captain_lab.updated',detail:`${id} • experiment brief updated`});return row;
+}
+function implementationQueue(){return read(KEYS.implementation,[])}
+function queueImplementation(labId){
+ const lab=labs().find(x=>x.id===labId);if(!lab)throw new Error('Lab experiment not found.');
+ if(lab.state!=='promoted')throw new Error('Only an approved Captain Lab plan can be queued for Engine implementation.');
+ const rows=implementationQueue();const existing=rows.find(x=>x.labId===labId&&x.status!=='closed');if(existing)return existing;
+ const row={id:uid('IMP'),at:new Date().toISOString(),labId,projectId:lab.projectId,projectName:lab.projectName,brief:lab.brief,objective:lab.objective||'',successCriteria:lab.successCriteria||'',risk:lab.risk||'low',category:lab.category||'general',status:'requested',productionWriteAllowed:false};
+ rows.unshift(row);write(KEYS.implementation,rows.slice(0,100));core()?.audit?.({actorRole:'captain',projectId:lab.projectId,category:'experiment',action:'v4.engine_implementation.requested',detail:`${row.id} from ${labId} • no production write`});return row;
+}
+function labMark(id,state,notes=''){
+ const rows=labs(),row=rows.find(x=>x.id===id);if(!row)throw new Error('Lab experiment not found.');
+ if(!['sandbox','candidate','rejected','promoted'].includes(state))throw new Error('Invalid lab state.');
+ if(state==='candidate'&&!String(row.successCriteria||'').trim())throw new Error('Add success criteria before marking a lab experiment as Candidate.');
+ row.state=state;row.notes=String(notes||'');row.updatedAt=new Date().toISOString();row.productionWriteAllowed=false;write(KEYS.labs,rows);core()?.audit?.({actorRole:'captain',projectId:row.projectId,category:'experiment',action:`v4.captain_lab.${state}`,detail:`${id} • promotion records approval only; Engine applies changes separately`});return row;
+}
+function releaseState(){return read(KEYS.release,{currentRing:'captain',rings:['captain','private','selected_live','fleet'],lastPromotion:null})}
+function setReleaseRing(ring,detail=''){
+ const state=releaseState();if(!state.rings.includes(ring))throw new Error('Unknown release ring.');
+ const next={...state,currentRing:ring,lastPromotion:{at:new Date().toISOString(),ring,detail:String(detail||'')}};write(KEYS.release,next);core()?.audit?.({actorRole:'captain',category:'release',action:'v4.release_ring.changed',detail:`${state.currentRing} → ${ring}${detail?' • '+detail:''}`});return next;
+}
+function recoveryPoint(projects=[],reason='manual-v4'){
+ const coreSnap=core()?.snapshot?.(projects,reason)||null;
+ const rows=read(KEYS.recovery,[]);const row={id:uid('VAULT'),at:new Date().toISOString(),reason,build:VERSION,projectCount:projects.length,projectIds:projects.map(p=>p.id),coreSnapshotId:coreSnap?.id||null,registryFingerprint:projects.map(p=>`${p.id}:${p.namespace||core()?.namespaceFor?.(p.id)||''}`).sort().join('|')};
+ rows.unshift(row);write(KEYS.recovery,rows.slice(0,20));core()?.audit?.({actorRole:'system',category:'recovery',action:'v4.recovery_vault.sealed',detail:`${row.id} • ${row.projectCount} projects`});return row;
+}
+function recoveryVault(){return read(KEYS.recovery,[])}
+function preflight(projects=[],doc=document){
+ const base=core()?.integrity?.(projects,doc)||{issues:[]};const issues=[...(base.issues||[])];
+ if(!Array.isArray(projects)||!projects.length)issues.push({level:'critical',code:'V4_FLEET_EMPTY',detail:'No registered projects were supplied to V4 preflight.'});
+ projects.forEach(p=>{
+   const expected=core()?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
+   if(String(p.namespace||expected)!==expected)issues.push({level:'critical',code:'V4_NAMESPACE_CONTRACT',projectId:p.id,detail:`Expected ${expected}`});
+   if(!p.id)issues.push({level:'critical',code:'V4_IDENTITY_CONTRACT',detail:p.name||'Unnamed project'});
+ });
+ const flags=featureFlags();if(!flags.recovery_vault?.enabled)issues.push({level:'warning',code:'V4_RECOVERY_VAULT_DISABLED'});if(!flags.black_box?.enabled)issues.push({level:'warning',code:'V4_BLACK_BOX_DISABLED'});
+ const critical=issues.filter(x=>x.level==='critical').length,warnings=issues.filter(x=>x.level==='warning').length;
+ return {at:new Date().toISOString(),version:VERSION,name:NAME,ok:critical===0,critical,warnings,contract:CONTRACT,issues};
+}
+function bootstrap(projects=[]){
+ const prior=read(KEYS.migration,null);if(prior?.completed)return prior;
+ const vault=recoveryPoint(projects,'pre-v4.0.0-broadside-migration');
+ const row={from:'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,recoveryPointId:vault.id,projectIds:projects.map(p=>p.id)};write(KEYS.migration,row);write(KEYS.state,{version:VERSION,name:NAME,schema:SCHEMA,installedAt:row.at,contract:CONTRACT});core()?.audit?.({actorRole:'system',category:'migration',action:'v4.0.0.broadside.migration.complete',detail:`${projects.length} projects • recovery ${vault.id}`});return row;
+}
+function exportProject(project){
+ if(!project?.id)throw new Error('Project missing.');
+ const payload={exportedAt:new Date().toISOString(),darkSkyVersion:VERSION,project:cleanProject(project),audit:(core()?.readAudit?.()||[]).filter(x=>x.projectId===project.id)};
+ return new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+}
+function migrationState(){return read(KEYS.migration,null)}
+function completeCommissioning(projects=[],meta={}){
+ const expected=Array.isArray(projects)?projects.length:0, sealed=Number(meta.sealedCount??expected);
+ if(!expected||sealed!==expected)return markCommissioningFailed(projects,`Envelope invariant failed: ${sealed}/${expected} sealed.`);
+ const prior=migrationState()||{};
+ const row={...prior,from:prior.from||'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,failed:false,stage:'v4-project-envelopes',projectIds:projects.map(p=>p.id),commissionedProjectCount:sealed};
+ write(KEYS.migration,row);write(KEYS.state,{version:VERSION,name:NAME,schema:SCHEMA,installedAt:read(KEYS.state,{})?.installedAt||row.at,commissionedAt:row.at,contract:CONTRACT});
+ core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.commissioning.harbor_master_sealed',detail:`${sealed}/${expected} project envelopes read-back verified`});
+ return row;
+}
+function markCommissioningFailed(projects=[],reason='Commissioning invariant failed'){
+ const prior=migrationState()||{}, expected=Array.isArray(projects)?projects.length:0;
+ const row={...prior,to:VERSION,at:new Date().toISOString(),completed:false,failed:true,stage:'v4-project-envelopes',projectIds:(projects||[]).map(p=>p.id),commissionedProjectCount:0,failure:String(reason||'Commissioning failed')};
+ write(KEYS.migration,row);core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.commissioning.failed',detail:row.failure});diagnostic('commissioning.failed',row.failure,{projectCount:expected});return row;
+}
+
+async function storageStewardPreview(onProgress){
+ const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-3-0-high-watch');
+ let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
+ let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.(onProgress)}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
+ const cacheSizeMap=new Map((breakdown?.cacheStorage?.caches||[]).map(row=>[row.name,Number(row.bytes||0)]));
+ const oldCacheBytes=oldCaches.reduce((sum,name)=>sum+(cacheSizeMap.get(name)||0),0);
+ return {
+   at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,breakdown,
+   diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,labs:labs().length,
+   cacheCount:cacheNames.length,oldCaches,oldCacheBytes
+ };
+}
+async function storageStewardClean(){
+ const before=await storageStewardPreview();
+ const diag=diagnostics();write(KEYS.diagnostics,compactDiagnostics(diag).slice(0,100));
+ const vault=recoveryVault();write(KEYS.recovery,vault.slice(0,10));
+ const removedCaches=[];
+ if(typeof caches!=='undefined'){for(const key of before.oldCaches){try{if(await caches.delete(key))removedCaches.push(key)}catch(_){}}}
+ const row={at:new Date().toISOString(),diagnosticsTrimmed:Math.max(0,diag.length-120),recoveryPointsTrimmed:Math.max(0,vault.length-10),removedCaches};
+ core()?.audit?.({actorRole:'engine_admin',category:'maintenance',action:'v4.1.1.storage_steward.safe_cleanup',detail:`${row.diagnosticsTrimmed} diagnostics • ${row.recoveryPointsTrimmed} recovery manifests • ${removedCaches.length} stale caches`});
+ diagnostic('storage.steward.cleaned','Safe housekeeping completed',row);
+ return {before,after:await storageStewardPreview(),...row};
+}
+function commandBrief(projects=[]){
+ const pf=preflight(projects,null), rel=releaseState(), recentDiagnostics=diagnostics().slice(0,5), bb=blackBoxHealth(), activeLabs=labs().filter(x=>!['rejected','promoted'].includes(x.state));
+ const priorities=[];
+ if(!pf.ok)priorities.push({level:'critical',title:'Platform contract needs attention',detail:`${pf.critical} critical • ${pf.warnings} warning`});
+ const draft=projects.filter(p=>String(p?.publish?.status||p?.publishStatus||'development')!=='live');
+ if(draft.length)priorities.push({level:'attention',title:`${draft.length} vessel${draft.length===1?'':'s'} not live`,detail:'Continue launch, Sea Trial, or keep intentionally private.'});
+ if(activeLabs.length)priorities.push({level:'recommendation',title:`${activeLabs.length} Captain Lab experiment${activeLabs.length===1?'':'s'} active`,detail:'Review candidates before any Engine implementation.'});
+ if(bb.currentSessionFaults)priorities.push({level:'attention',title:`${bb.currentSessionFaults} current-session Black Box fault signature${bb.currentSessionFaults===1?'':'s'}`,detail:'Review the latest fault before promoting the release ring.'});
+ else if(recentDiagnostics.length)priorities.push({level:'info',title:'Black Box quiet',detail:`${bb.uniqueEvents} unique historical event${bb.uniqueEvents===1?'':'s'} retained; no fault signature repeated in the last 30 minutes.`});
+ if(!priorities.length)priorities.push({level:'clear',title:'Full Sail posture',detail:'No platform-level blockers detected.'});
+ return {at:new Date().toISOString(),projectCount:projects.length,preflight:pf,releaseRing:rel.currentRing,recoveryPoints:recoveryVault().length,diagnostics:diagnostics().length,blackBoxHealth:bb,labs:labs().length,decisions:decisions().length,priorities:priorities.slice(0,4)};
+}
+
+function status(projects=[]){const pf=preflight(projects,null),rel=releaseState();return {version:VERSION,name:NAME,schema:SCHEMA,contract:CONTRACT,preflight:pf,release:rel,flags:featureFlags(),decisions:decisions().length,labs:labs().length,diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,migration:migrationState()}}
+window.addEventListener('error',e=>{if(featureFlags().black_box?.enabled)diagnostic('javascript.error',e.message||'Unknown error',{source:e.filename||'',line:e.lineno||0,column:e.colno||0})});
+window.addEventListener('unhandledrejection',e=>{if(featureFlags().black_box?.enabled)diagnostic('promise.rejection',String(e.reason?.message||e.reason||'Unhandled rejection'))});
+g.DarkSkyV4={version:VERSION,name:NAME,schemaVersion:SCHEMA,contract:CONTRACT,roles:ROLE_CAPABILITIES,can,featureFlags,setFeatureFlag,decision,decisions,diagnostic,diagnostics,blackBoxHealth,labCreate,labUpdate,labs,labMark,implementationQueue,queueImplementation,releaseState,setReleaseRing,recoveryPoint,recoveryVault,preflight,bootstrap,migrationState,completeCommissioning,markCommissioningFailed,exportProject,storageStewardPreview,storageStewardClean,commandBrief,status};
+})(window);
