@@ -1,4 +1,14 @@
-# Dark Sky 5.0.5 — Black Flag Structure Restore
+# Dark Sky 5.0.6
+
+- Added an Engine-only reversible project commissioning rail: Configure → Preview → Approve → Sea Trial → Ready → Live.
+- Added one-click return from the Test Deck to the project Customer Experience settings.
+- Experience approval is now blocked until the current project revision has been previewed.
+- Sea Trial is now blocked until that same current revision is approved, preserving the Engine commissioning sequence.
+- Preview, approval, and Sea Trial evidence are signature-bound to the current project configuration; customer-facing changes automatically make downstream evidence stale without deleting project configuration.
+- Added a compact current-revision fingerprint to make retest requirements visible without exposing lifecycle controls to Project Manager or customer layers.
+- Preserved project isolation and the 4353 / 5615 / 19613 authority spine.
+
+# Dark Sky 5.0.6 — Black Flag Structure Restore
 
 - Restores the proven Black Flag Engine authentication contract from the pre-5.0 cleanup: `5615` is always a valid Engine PIN.
 - Restores compatibility with an explicitly configured Engine PIN without allowing Project Admin (`4353`) or Captain (`19613`) credentials to authenticate Black Flag.

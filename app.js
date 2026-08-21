@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.0.5';
+  const BUILD_VERSION = '5.0.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2838,6 +2838,47 @@
   }
 
 
+  function experiencePreviewCurrent(p){
+    const state=ensureExperienceTestState(p);
+    return !!state.previewedAt && state.previewedSignature===experienceConfigurationSignature(p);
+  }
+
+
+  function experienceLifecycleSnapshot(p,snap=null){
+    const shellReady=projectCustomerOperatingModelReady(p);
+    const state=ensureExperienceTestState(p);
+    const signature=experienceConfigurationSignature(p);
+    const previewed=experiencePreviewCurrent(p);
+    const approved=experienceApproved(p);
+    const seaTrialPassed=!!snap?.seaTrialPassed;
+    const liveDeployment=migrateLegacyDeployment(p).find(x=>x.state==='deployed');
+    const live=!!liveDeployment&&p.publish?.status==='live';
+    const ready=approved&&seaTrialPassed;
+    let current='configure';
+    if(live)current='live';
+    else if(ready)current='ready';
+    else if(approved)current='sea_trial';
+    else if(previewed)current='approve';
+    else if(shellReady)current='preview';
+    return {shellReady,state,signature,previewed,approved,seaTrialPassed,ready,live,current};
+  }
+
+
+  function experienceLifecycleRail(p,snap){
+    const life=experienceLifecycleSnapshot(p,snap);
+    const stages=[
+      {key:'configure',label:'Configure',done:life.shellReady,detail:life.shellReady?'Customer model ready':'Offer / customer model needs work'},
+      {key:'preview',label:'Preview',done:life.previewed,detail:life.previewed?'Current revision reviewed':life.shellReady?'Review the customer experience':'Configure first'},
+      {key:'approve',label:'Approve',done:life.approved,detail:life.approved?'Current revision approved':life.previewed?'Approval available':'Preview required'},
+      {key:'sea_trial',label:'Sea Trial',done:life.seaTrialPassed,detail:life.seaTrialPassed?'Current revision passed':life.approved?'Infrastructure test required':'Approval required'},
+      {key:'ready',label:'Ready',done:life.ready,detail:life.ready?'Ready for release review':'Complete approval + Sea Trial'},
+      {key:'live',label:'Live',done:life.live,detail:life.live?'Serving customers':'Not published'}
+    ];
+    const currentIndex=Math.max(0,stages.findIndex(x=>x.key===life.current));
+    return `<section class="experience-lifecycle-card"><div class="experience-lifecycle-head"><div><span>ENGINE COMMISSIONING</span><h3>Project lifecycle</h3><p>Move forward when ready or return to configuration whenever the vessel needs another pass. Downstream approvals automatically become stale when customer-facing configuration changes.</p></div><button type="button" id="experienceEditConfiguration" class="secondary-btn">EDIT CONFIGURATION</button></div><div class="experience-lifecycle-rail">${stages.map((x,i)=>`<div class="experience-lifecycle-step ${x.done?'done':''} ${i===currentIndex?'current':''}"><i>${x.done?'✓':i+1}</i><span><strong>${x.label}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div><div class="experience-revision-strip"><span>CURRENT REVISION</span><strong>${escapeHtml(life.signature.slice(-8).toUpperCase())}</strong><small>${life.previewed?'Preview evidence matches this revision.':'Preview evidence not yet recorded for this revision.'}</small></div></section>`;
+  }
+
+
   function experienceSeaTrialCurrent(p,d){
     const state=ensureExperienceTestState(p);
     return !!d?.lastTestedAt && state.seaTrialSignature===experienceConfigurationSignature(p) && state.lastSeaTrialDeploymentId===d?.id;
@@ -2926,6 +2967,7 @@
       {id:'identity',label:'Project identity',pass:!!p.id&&isolationClean,detail:p.id||'Missing Project ID'},
       {id:'model',label:'Customer operating model',pass:projectCustomerOperatingModelReady(p),detail:projectShellFor(p)},
       {id:'offer',label:'Customer-ready offer',pass:specialized||offers.length>0,detail:specialized?'Specialized customer shell':offers.length?`${offers.length} ready`:'No customer-ready offer'},
+      {id:'preview',label:'Current revision previewed',pass:experiencePreviewCurrent(p),detail:experiencePreviewCurrent(p)?'Preview evidence matches configuration':'Open Private Preview for this revision'},
       {id:'deployment',label:'Deployment manifest',pass:!!d,detail:d?`${d.name} • ${d.state}`:'No outpost yet'},
       {id:'saved',label:'Deployment saved',pass:!!d&&Number(d.manifestVersion||1)>1,detail:d?`Manifest v${Number(d.manifestVersion||1)}`:'Create an outpost first'},
       {id:'isolation',label:'Project isolation',pass:isolationClean&&testBoundaryClean,detail:isolationClean&&testBoundaryClean?'Project boundary clean':'Boundary mismatch detected'},
@@ -2934,7 +2976,7 @@
       {id:'receipt',label:'Receipt / confirmation evidence',pass:!!testOrder,detail:testOrder?.id||'Complete a Sea Trial submission'}
     ];
     const critical=checklist.filter(x=>!x.pass&&['identity','model','deployment','saved','isolation','testdata','submission'].includes(x.id));
-    return {deployment:d,checklist,critical,seaTrialPassed:critical.length===0&&experienceSeaTrialCurrent(p,d),approved:experienceApproved(p)};
+    return {deployment:d,checklist,critical,seaTrialPassed:critical.length===0&&experienceSeaTrialCurrent(p,d),approved:experienceApproved(p),previewed:experiencePreviewCurrent(p)};
   }
 
 
@@ -2959,13 +3001,14 @@
     const shellReady=projectCustomerOperatingModelReady(p),d=snap.deployment;
     const liveDeployment=migrateLegacyDeployment(p).find(x=>x.state==='deployed');
     const live=!!liveDeployment&&p.publish?.status==='live';
-    body.innerHTML=`<section class="experience-mode-grid">
+    const lifecycle=experienceLifecycleSnapshot(p,snap);
+    body.innerHTML=`${experienceLifecycleRail(p,snap)}<section class="experience-mode-grid">
       <article class="experience-mode-card preview"><small>LOOK ONLY</small><h3>Preview</h3><p>Walk through the real customer renderer using the current project configuration. Preview submissions are simulated and create no customer, engagement/order, analytics, email, deployment, or lifecycle records.</p><button type="button" data-experience-mode="preview" class="primary-btn" ${shellReady?'':'disabled'}>OPEN PRIVATE PREVIEW</button><span>${shellReady?'Safe visual and customer-journey inspection.':'Add a customer-ready offer before previewing this vessel.'}</span></article>
-      <article class="experience-mode-card sea-trial"><small>TEST INFRASTRUCTURE</small><h3>Sea Trial</h3><p>Exercise the same customer experience against a saved project-owned outpost. Test records use the real persistence/workflow path but stay explicitly marked as test data.</p><button type="button" data-experience-mode="sea_trial" class="primary-btn" ${d&&Number(d.manifestVersion||1)>1&&shellReady?'':'disabled'}>${d&&Number(d.manifestVersion||1)>1?'RUN SEA TRIAL':'SAVED OUTPOST REQUIRED'}</button><span>${d?`${escapeHtml(d.name)} • ${escapeHtml(d.state.replaceAll('_',' '))}`:'Create and save an outpost in Shipwright first.'}</span></article>
+      <article class="experience-mode-card sea-trial"><small>TEST INFRASTRUCTURE</small><h3>Sea Trial</h3><p>Exercise the approved customer experience against a saved project-owned outpost. Test records use the real persistence/workflow path but stay explicitly marked as test data.</p><button type="button" data-experience-mode="sea_trial" class="primary-btn" ${d&&Number(d.manifestVersion||1)>1&&shellReady&&lifecycle.approved?'':'disabled'}>${!lifecycle.approved?'APPROVAL REQUIRED':d&&Number(d.manifestVersion||1)>1?'RUN SEA TRIAL':'SAVED OUTPOST REQUIRED'}</button><span>${!lifecycle.approved?'Preview and approve the current revision before infrastructure testing.':d?`${escapeHtml(d.name)} • ${escapeHtml(d.state.replaceAll('_',' '))}`:'Create and save an outpost in Shipwright first.'}</span></article>
       <article class="experience-mode-card live"><small>PRODUCTION</small><h3>Live</h3><p>Open the actual published customer experience. No test flags and no simulation.</p><button type="button" data-experience-mode="live" class="primary-btn" ${live?'':'disabled'}>${live?'OPEN LIVE EXPERIENCE':'NOT LIVE YET'}</button></article>
     </section>
     <section class="experience-certification-grid">
-      <article class="experience-approval-card ${snap.approved?'approved':'pending'}"><span>VISUAL / EXPERIENCE APPROVAL</span><strong>${snap.approved?'APPROVED':'PENDING'}</strong><p>${snap.approved?'Approval matches the current customer-facing configuration.':'Preview the customer journey and approve it when branding, language, offers, inputs and presentation are ready.'}</p><button type="button" id="approveExperienceBtn" class="${snap.approved?'secondary-btn':'primary-btn'}">${snap.approved?'REVOKE APPROVAL':'APPROVE EXPERIENCE'}</button></article>
+      <article class="experience-approval-card ${snap.approved?'approved':'pending'}"><span>VISUAL / EXPERIENCE APPROVAL</span><strong>${snap.approved?'APPROVED':lifecycle.previewed?'READY TO APPROVE':'PREVIEW REQUIRED'}</strong><p>${snap.approved?'Approval matches the current customer-facing configuration.':lifecycle.previewed?'The current revision has been previewed. Approve it when branding, language, offers, inputs and presentation are ready.':'Open Private Preview before approving this revision. If configuration changes later, this approval automatically becomes stale.'}</p><button type="button" id="approveExperienceBtn" class="${snap.approved?'secondary-btn':'primary-btn'}" ${!snap.approved&&!lifecycle.previewed?'disabled':''}>${snap.approved?'REVOKE APPROVAL':'APPROVE EXPERIENCE'}</button></article>
       <article class="experience-approval-card ${snap.seaTrialPassed?'approved':'pending'}"><span>SEA TRIAL CERTIFICATION</span><strong>${snap.seaTrialPassed?'PASSED':'NOT PASSED'}</strong><p>${snap.seaTrialPassed?'The current configuration has real project-scoped test evidence.':'Run the current configuration through a saved outpost and complete a customer submission.'}</p></article>
     </section>
     <section class="experience-results-card"><div class="experience-results-head"><div><span>TEST RESULTS</span><h3>${snap.evidenceReadError?'Evidence read limited':`${snap.checklist.filter(x=>x.pass).length} passed • ${snap.checklist.filter(x=>!x.pass).length} open`}</h3></div><b class="${snap.seaTrialPassed&&snap.approved?'ready':'watch'}">${snap.seaTrialPassed&&snap.approved?'FLEET READY EVIDENCE':'KEEP TESTING'}</b></div>${snap.evidenceReadError?`<p>Test Deck opened in read-only recovery mode. Evidence read warning: ${escapeHtml(snap.evidenceReadError)}</p>`:`<div class="experience-checklist">${snap.checklist.map(x=>`<div class="${x.pass?'pass':'open'}"><i>${x.pass?'✓':'!'}</i><span><strong>${escapeHtml(x.label)}</strong><small>${escapeHtml(x.detail)}</small></span></div>`).join('')}</div>`}</section>
@@ -3011,7 +3054,8 @@
   async function enterExperienceMode(p,mode){
     if(!p)return;
     const d=mode==='live'?migrateLegacyDeployment(p).find(x=>x.state==='deployed'):experienceDeploymentFor(p);
-    if(mode==='sea_trial'&&(!d||Number(d.manifestVersion||1)<=1)){alert('Sea Trial requires a saved outpost manifest. Preview is available now; use Shipwright to create and save the outpost before infrastructure testing.');return;}
+    if(mode==='sea_trial'&&!experienceApproved(p)){alert('Preview and approve the current project revision before running Sea Trial.');return;}
+    if(mode==='sea_trial'&&(!d||Number(d.manifestVersion||1)<=1)){alert('Sea Trial requires a saved outpost manifest. Use Shipwright to create and save the outpost before infrastructure testing.');return;}
     if(mode==='sea_trial'&&d.state==='paused'){alert('This outpost is paused. Resume it or return it to an appropriate test state in Shipwright before running Sea Trial.');return;}
     if(mode==='sea_trial'&&d.state==='draft'){
       if(!window.BlackFlagV3Core?.canTransitionDeployment?.('draft','sea_trial')){alert('Dark Sky blocked the Sea Trial because the deployment lifecycle transition is invalid.');return;}
@@ -3019,6 +3063,14 @@
       try{await persistProjectMutation(p,{reason:'experience.sea_trial.started'});logActivity(p.id,'Experience Sea Trial started',d.name||d.id);}catch(err){alert(`Sea Trial could not start: ${String(err?.message||err)}`);return;}
     }
     if(mode==='live'&&!(d?.state==='deployed'&&p.publish?.status==='live'))return;
+    if(mode==='preview'){
+      const canonicalProject=projectById(p.id)||p;
+      const state=ensureExperienceTestState(canonicalProject);
+      state.previewedAt=new Date().toISOString();state.previewedBy='engine_admin';state.previewedSignature=experienceConfigurationSignature(canonicalProject);
+      canonicalProject.updatedAt=new Date().toISOString();
+      try{await persistProjectMutation(canonicalProject,{reason:'experience.preview.reviewed'});logActivity(canonicalProject.id,'Customer experience preview reviewed');}
+      catch(err){console.warn('Preview evidence could not be saved',err);}
+    }
     experienceTestReturnState={projectId:p.id,mode,deploymentId:d?.id||null};window.__deploymentCustomerContext=experienceModeContext(p,mode,d);
     if(projectShellFor(p)==='universal'&&mode!=='live')clearUniversalReceipt(p);
     closeExperienceTestDeck();ensureExperienceModeBanner(p,mode);await enterProject(p.id);
@@ -6512,7 +6564,7 @@
     document.body.classList.remove('engine-workspace-open');
   }
 
-  // 5.0.5 Boundary Bridge — this is the only supported crossing point from the
+  // 5.0.6 Boundary Bridge — this is the only supported crossing point from the
   // pre-login Black Flag portal (which lives outside the application closure) into
   // project/Engine navigation state. Never let the portal reach closure-private
   // functions or variables directly; doing so made a correct 5615 verify succeed
@@ -10126,7 +10178,7 @@ The full order and approved media remain stored with this project.`;
   function bindExperienceTestDeckBus(){
     if(window.__blackFlagExperienceTestDeckBound)return;window.__blackFlagExperienceTestDeckBound=true;
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('#closeExperienceTestDeck,[data-experience-mode],#approveExperienceBtn,#experienceOpenShipwright,#returnExperienceTestDeck');if(!target)return;
+      const target=event.target?.closest?.('#closeExperienceTestDeck,[data-experience-mode],#approveExperienceBtn,#experienceOpenShipwright,#experienceEditConfiguration,#returnExperienceTestDeck');if(!target)return;
       if(target.id==='returnExperienceTestDeck'){event.preventDefault();event.stopPropagation();await returnFromExperienceMode();return;}
       if(target.id==='closeExperienceTestDeck'){closeExperienceTestDeck();return;}
       const resolution=await resolveProjectReference(experienceTestDeckProjectId,{rehydrate:true});
@@ -10138,6 +10190,7 @@ The full order and approved media remain stored with this project.`;
       if(target.matches('[data-experience-mode]')){if(target.disabled)return;await enterExperienceMode(p,target.dataset.experienceMode);return;}
       if(target.id==='approveExperienceBtn'){
         const state=ensureExperienceTestState(p);
+        if(!state.approvedAt&&!experiencePreviewCurrent(p)){alert('Preview this current revision before approving it.');return;}
         if(state.approvedAt){delete state.approvedAt;delete state.approvedBy;delete state.approvedSignature;}
         else{state.approvedAt=new Date().toISOString();state.approvedBy='engine_admin';state.approvedSignature=experienceConfigurationSignature(p);}
         p.updatedAt=new Date().toISOString();
@@ -10145,6 +10198,7 @@ The full order and approved media remain stored with this project.`;
         catch(err){alert(`Experience approval could not be saved: ${String(err?.message||err)}`);}
         return;
       }
+      if(target.id==='experienceEditConfiguration'){closeExperienceTestDeck();await openProjectEngineControl(p.id);await renderProjectTab(p.id,'experience');return;}
       if(target.id==='experienceOpenShipwright'){closeExperienceTestDeck();await openProjectEngineControl(p.id);await renderProjectTab(p.id,'deployment');return;}
     },true);
   }

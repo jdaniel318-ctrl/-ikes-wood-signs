@@ -1,4 +1,4 @@
-# 5.0.5 Authority Spine Note
+# 5.0.6 Authority Spine Note
 
 The stable authentication hierarchy is Project Admin (`4353`) → Black Flag Engine (`5615`) → Captain's Quarters (`19613`). These are separate authority domains. Captain Test Access may grant a session-only Engine bypass when deliberately enabled, but it does not alter any PIN. The 5.0 isolation boundary remains independent from authentication and must not be weakened when credentials are repaired.
 
@@ -133,3 +133,6 @@ Rules:
 5. Engine selection state (`engineActiveProjectId`) is not a project customer/admin session (`activeProjectId`).
 6. Crossing a layer boundary clears incompatible UI/state before the destination layer renders.
 7. No generic route may infer Ike's or any other project when an immutable Project ID is absent.
+
+## 5.0.6 Engine Commissioning Contract
+Project lifecycle governance belongs to the Black Flag Engine Room. The canonical commissioning path is Configure → Preview → Approve → Sea Trial → Ready → Live. Operators may return to configuration or rerun preview/testing without rebuilding project identity. Preview, approval, and Sea Trial evidence are bound to the current customer-facing configuration signature, so later customer-facing changes invalidate downstream evidence by becoming stale rather than by deleting project data. Project Manager and customer layers do not own or expose this lifecycle machinery. Every transition remains project-scoped and default-deny across project boundaries.

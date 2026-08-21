@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-0-4-engine-structure-restore';
+const CACHE='dark-sky-v5-0-6-engine-commissioning';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.0.5',
-  './platform_core.js?v=5.0.5',
-  './platform_v4.js?v=5.0.5',
-  './platform_identity.js?v=5.0.5',
-  './app.js?v=5.0.5',
-  './captain.js?v=5.0.5',
+  './styles.css?v=5.0.6',
+  './platform_core.js?v=5.0.6',
+  './platform_v4.js?v=5.0.6',
+  './platform_identity.js?v=5.0.6',
+  './app.js?v=5.0.6',
+  './captain.js?v=5.0.6',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

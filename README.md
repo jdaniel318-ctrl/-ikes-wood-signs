@@ -1,6 +1,8 @@
-# Dark Sky 5.0.5
+# Dark Sky 5.0.6
 
 Black Flag authentication structure restored after the 5.0 cleanup regression. Normal Engine access uses `5615`; Project Admin uses `4353`; Captain's Quarters uses `19613`; Captain Test Access remains a session-only bypass. Project isolation work from 5.0 remains in place.
+
+5.0.6 begins the reversible Engine commissioning model: Configure → Preview → Approve → Sea Trial → Ready → Live. The lifecycle exists only in Black Flag Engine governance; customer and Project Manager layers do not own it. Returning to configuration preserves project identity and data, while customer-facing changes automatically stale downstream preview/approval/Sea Trial evidence until retested.
 
 # Dark Sky 5.0.3 — Authority Spine + SIG Test Release
 
