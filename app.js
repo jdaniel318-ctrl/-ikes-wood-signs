@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.8.9';
+  const BUILD_VERSION = '5.9.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 8;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -11888,7 +11888,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.1',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11925,7 +11925,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.1',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12096,7 +12096,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.9'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.9.1'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});
@@ -12198,6 +12198,25 @@ document.addEventListener('click', (event) => {
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bindBlackFlagPortal);
   else bindBlackFlagPortal();
+
+  // 5.9.0 — Pocket Watch mobile test dock. Internal controls collapse behind one
+  // small phone control so customer content remains unobstructed. Desktop/iPad
+  // retain the normal internal controls.
+  document.addEventListener('click',e=>{
+    const toggle=e.target.closest && e.target.closest('#mobileTestDockToggle');
+    if(toggle){
+      e.preventDefault();
+      const open=document.body.classList.toggle('mobile-test-dock-open');
+      toggle.setAttribute('aria-expanded',open?'true':'false');
+      toggle.setAttribute('aria-label',open?'Close test navigation':'Open test navigation');
+      return;
+    }
+    if(e.target.closest && e.target.closest('#globalDarkSkyHomeBtn,#returnExperienceTestDeck')){
+      document.body.classList.remove('mobile-test-dock-open');
+      const dock=document.getElementById('mobileTestDockToggle');
+      dock?.setAttribute('aria-expanded','false');
+    }
+  });
 
   // Any explicit back/exit from Engine locks the Engine.
   document.addEventListener('click',e=>{

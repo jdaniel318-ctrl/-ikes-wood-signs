@@ -13259,3 +13259,173 @@ body.premium-plumbing-customer .experience-mode-banner button,body.legacy-plumbi
   body.engine-mode #enginePanel .modern-project-command .project-card-primary-actions button{width:100%!important;min-height:48px!important}
   #engineProjectsSection{overflow:visible!important}
 }
+
+
+/* =========================================================
+   5.9.0 — Pocket Watch
+   Fleet-wide phone discipline for Customer Site Kit surfaces.
+   Modules remain project-optional; formatting is reusable.
+   ========================================================= */
+.mobile-test-dock-toggle{display:none}
+@media(max-width:700px){
+  /* Compact internal test dock: one button by default, two exits on demand. */
+  body.project-mode .mobile-test-dock-toggle{
+    display:flex;position:fixed;z-index:2147483000;left:max(12px,env(safe-area-inset-left));
+    bottom:max(14px,calc(env(safe-area-inset-bottom) + 8px));width:54px;height:54px;padding:7px;
+    align-items:center;justify-content:center;border:2px solid #294c58;border-radius:50%;
+    background:rgba(6,27,34,.96);box-shadow:0 12px 30px rgba(0,0,0,.24);color:#fff;
+  }
+  body.project-mode .mobile-test-dock-toggle img{width:36px;height:36px;object-fit:contain}
+  body.project-mode .mobile-test-dock-toggle span{display:none}
+  body.project-mode.premium-plumbing-customer .global-dark-sky-home,
+  body.project-mode.legacy-plumbing-customer .global-dark-sky-home,
+  body.project-mode.premium-plumbing-customer .experience-mode-banner,
+  body.project-mode.legacy-plumbing-customer .experience-mode-banner{
+    opacity:0!important;pointer-events:none!important;transform:translateY(12px) scale(.94)!important;
+    transition:opacity .16s ease,transform .16s ease!important;
+  }
+  body.project-mode.mobile-test-dock-open.premium-plumbing-customer .global-dark-sky-home,
+  body.project-mode.mobile-test-dock-open.legacy-plumbing-customer .global-dark-sky-home,
+  body.project-mode.mobile-test-dock-open.premium-plumbing-customer .experience-mode-banner,
+  body.project-mode.mobile-test-dock-open.legacy-plumbing-customer .experience-mode-banner{
+    opacity:1!important;pointer-events:auto!important;transform:none!important;
+  }
+  body.project-mode.mobile-test-dock-open.premium-plumbing-customer .mobile-test-dock-toggle,
+  body.project-mode.mobile-test-dock-open.legacy-plumbing-customer .mobile-test-dock-toggle{
+    left:max(12px,env(safe-area-inset-left));transform:rotate(45deg);filter:brightness(.9);
+  }
+  body.project-mode.premium-plumbing-customer .global-dark-sky-home,
+  body.project-mode.legacy-plumbing-customer .global-dark-sky-home{
+    left:max(76px,calc(env(safe-area-inset-left) + 76px))!important;bottom:max(14px,calc(env(safe-area-inset-bottom) + 8px))!important;
+    width:52px!important;height:52px!important;padding:8px!important;border-radius:50%!important;
+  }
+  body.project-mode.premium-plumbing-customer .experience-mode-banner,
+  body.project-mode.legacy-plumbing-customer .experience-mode-banner{
+    left:max(140px,calc(env(safe-area-inset-left) + 140px))!important;bottom:max(14px,calc(env(safe-area-inset-bottom) + 8px))!important;
+  }
+  /* The redundant project-return flag stays hidden while the dock owns phone navigation. */
+  body.premium-plumbing-customer #returnToEngineBtn,body.legacy-plumbing-customer #returnToEngineBtn{display:none!important}
+
+  /* Phone hero: retain impact without consuming the first several screens. */
+  .legacy-contractor-site .contractor-hero-copy{padding:34px 24px 30px!important}
+  .legacy-contractor-site .contractor-hero-copy h2{font-size:clamp(42px,12.2vw,50px)!important;line-height:.98!important;margin-bottom:18px!important}
+  .legacy-contractor-site .contractor-hero-copy>p{font-size:16px!important;line-height:1.48!important;margin-bottom:20px!important}
+  .legacy-contractor-site .contractor-hero-actions{gap:10px!important}
+  .legacy-contractor-site .contractor-hero-actions button{min-height:52px!important}
+  .legacy-contractor-site .contractor-availability{margin-top:18px!important;padding-top:16px!important;gap:8px 14px!important}
+  .legacy-contractor-site .contractor-hero-visual{min-height:300px!important}
+  .legacy-contractor-site .contractor-hero-brand{left:16px!important;right:16px!important;bottom:16px!important;padding:12px!important}
+
+  /* Trust remains compact 2x2 on phones; never collapse this good pattern to a long list. */
+  .legacy-contractor-site .contractor-proof-strip.trust-strip{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .legacy-contractor-site .contractor-proof-strip.trust-strip .trust-chip{min-height:68px!important;padding:8px 9px!important;gap:8px!important}
+  .legacy-contractor-site .trust-chip-graphic{flex-basis:44px!important;width:44px!important;height:44px!important}
+  .legacy-contractor-site .trust-chip-graphic svg{width:44px!important;height:44px!important}
+  .legacy-contractor-site .trust-chip-copy strong{font-size:12px!important;line-height:1.05!important}
+  .legacy-contractor-site .trust-chip-bbb img{height:45px!important;width:min(142px,100%)!important}
+
+  /* Service photography stays important but cards stop becoming full-screen panels. */
+  .legacy-contractor-site .contractor-service-card,.legacy-contractor-site .contractor-service-card:nth-child(n){min-height:165px!important}
+  .legacy-contractor-site .contractor-service-content{padding:15px 16px!important}
+  .legacy-contractor-site .contractor-service-content strong{font-size:20px!important;line-height:1.08!important}
+  .legacy-contractor-site .contractor-service-content small{font-size:12px!important;line-height:1.35!important;margin-top:6px!important}
+  .legacy-contractor-site .contractor-service-card.contractor-service-other{min-height:112px!important}
+
+  /* Why/Proof section keeps the strong composition but uses phone-scale rhythm. */
+  .legacy-contractor-site .contractor-why-photo{min-height:270px!important}
+  .legacy-contractor-site .contractor-why-copy{padding:30px 24px!important}
+  .legacy-contractor-site .contractor-why-copy h2{font-size:38px!important;line-height:1.02!important}
+  .legacy-contractor-site .contractor-why-copy li{padding:16px 0!important;gap:10px!important}
+
+  /* Process becomes a tight timeline instead of four oversized cards. */
+  .legacy-contractor-site .contractor-process-grid{display:grid!important;grid-template-columns:1fr!important;gap:9px!important;position:relative}
+  .legacy-contractor-site .contractor-process-grid article{
+    min-height:0!important;padding:16px 52px 16px 70px!important;border-radius:16px!important;
+    display:block!important;box-shadow:0 5px 15px rgba(13,54,67,.035)!important;
+  }
+  .legacy-contractor-site .contractor-process-grid article>span{
+    position:absolute;left:16px;top:16px;width:40px!important;height:40px!important;margin:0!important;
+  }
+  .legacy-contractor-site .contractor-process-grid article::after{right:14px!important;top:16px!important;width:30px!important;height:30px!important}
+  .legacy-contractor-site .contractor-process-grid strong{font-size:16px!important}
+  .legacy-contractor-site .contractor-process-grid small{font-size:12px!important;line-height:1.4!important;margin-top:5px!important}
+
+  /* Reviews are a touch-first snap carousel instead of a three-card vertical wall. */
+  .legacy-contractor-site .contractor-review-grid{
+    display:flex!important;overflow-x:auto!important;gap:12px!important;scroll-snap-type:x mandatory!important;
+    -webkit-overflow-scrolling:touch;padding:2px 16px 12px 2px!important;scrollbar-width:none;
+  }
+  .legacy-contractor-site .contractor-review-grid::-webkit-scrollbar{display:none}
+  .legacy-contractor-site .contractor-review-card{
+    flex:0 0 min(82vw,330px)!important;display:grid!important;grid-template-columns:1fr!important;
+    min-height:0!important;scroll-snap-align:start;border-radius:18px!important;
+  }
+  .legacy-contractor-site .contractor-review-card img{width:100%!important;height:170px!important;object-fit:cover!important}
+  .legacy-contractor-site .contractor-review-card>div{padding:20px!important}
+  .legacy-contractor-site .contractor-review-card p{font-size:14px!important;line-height:1.45!important;margin:10px 0 14px!important}
+
+  .legacy-contractor-site .contractor-bottom-cta{padding:26px 20px!important;gap:18px!important}
+  .legacy-contractor-site .contractor-bottom-cta h2{font-size:36px!important;line-height:1.04!important}
+  .legacy-contractor-site .contractor-footer{padding:22px 16px 86px!important;gap:16px!important}
+}
+
+/* =========================================================
+   5.9.1 — Narrow Channel
+   iPhone Engine Room: centered access + compact swipe fleet deck.
+   ========================================================= */
+@media(max-width:700px){
+  /* Engine Access should read as one centered doorway, not a tall page aligned to the top. */
+  #blackFlagEntryGate{
+    display:grid!important;
+    place-items:center!important;
+    min-height:100dvh!important;
+    padding:max(18px,env(safe-area-inset-top)) 12px max(18px,env(safe-area-inset-bottom))!important;
+    overflow:auto!important;
+  }
+  #blackFlagEntryGate .bf-entry-shell{
+    width:min(94vw,430px)!important;
+    max-width:430px!important;
+    margin:auto!important;
+    padding:18px 14px 16px!important;
+  }
+  #blackFlagEntryGate .bf-engine-primary-lockup{width:min(270px,72vw)!important;max-height:150px!important;}
+  #blackFlagEntryGate .bf-entry-engine-title h1{font-size:clamp(34px,10.4vw,42px)!important;line-height:.96!important;}
+  #blackFlagEntryGate .bf-entry-sub{max-width:330px!important;text-align:center!important;}
+  #blackFlagEntryGate .bf-entry-trust{width:100%!important;max-width:360px!important;overflow:hidden!important;white-space:nowrap!important;}
+  #blackFlagEntryGate .bf-entry-trust span:last-child{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+  #blackFlagEntryGate .bf-entry-panel{width:100%!important;max-width:380px!important;margin-inline:auto!important;}
+  #blackFlagEntryGate .bf-entry-foot{max-width:330px!important;margin-inline:auto!important;text-align:center!important;}
+
+  /* Phone Fleet Deck intentionally returns to horizontal browse.
+     One vessel dominates the viewport; the next edge peeks in to teach swipe. */
+  body.engine-mode #enginePanel .modern-project-command .project-command-cards{
+    display:flex!important;
+    grid-template-columns:none!important;
+    gap:12px!important;
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    scroll-snap-type:x mandatory!important;
+    scroll-padding-inline:14px!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding:2px 14px 14px 2px!important;
+    scrollbar-width:none!important;
+    overscroll-behavior-x:contain!important;
+  }
+  body.engine-mode #enginePanel .modern-project-command .project-command-cards::-webkit-scrollbar{display:none!important;}
+  body.engine-mode #enginePanel .modern-project-command .project-command-cards>.project-card{
+    display:flex!important;
+    flex:0 0 min(86vw,390px)!important;
+    width:min(86vw,390px)!important;
+    min-width:min(86vw,390px)!important;
+    max-width:min(86vw,390px)!important;
+    scroll-snap-align:start!important;
+    scroll-snap-stop:always!important;
+    margin:0!important;
+  }
+  body.engine-mode #enginePanel .modern-project-command .project-card-primary-actions{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  body.engine-mode #enginePanel .modern-project-command .project-card-primary-actions button{min-height:46px!important;font-size:11px!important;}
+  body.engine-mode #enginePanel .modern-project-command .project-card-secondary-actions{margin-top:8px!important;}
+  body.engine-mode #enginePanel .modern-project-command .project-brand-badge{width:76px!important;height:68px!important;flex:0 0 76px!important;}
+  body.engine-mode #enginePanel .modern-project-command .project-card h4{font-size:22px!important;}
+  #engineProjectsSection{overflow:hidden!important;}
+}

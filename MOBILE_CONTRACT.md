@@ -15,3 +15,9 @@ All current and future customer-facing vessels must remain viable on iPhone, iPa
 ## Certification status
 - Signal Restoration: active restoration/mobile reference implementation (legacy internal Project ID retained only for continuity).
 - Existing fleet: preserved; certify individually rather than applying global project restyles.
+
+
+## 5.9.1 iPhone Engine Rule
+- Engine Access is vertically and horizontally centered within the usable phone viewport.
+- Fleet project cards use horizontal touch scrolling with snap alignment on phones to keep the Engine condensed.
+- A visible partial next-card edge may be used as a swipe affordance; cards must not trap vertical scrolling.
