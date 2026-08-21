@@ -1,3 +1,13 @@
+# Dark Sky 5.3.0 — Guided Business Intake
+
+- Rebuilt Commissioning Step 2 as guided onboarding rather than a dense setup form.
+- Website URL is now the recommended import path.
+- Added direct fetch + public-site reader fallback for public business websites that block browser CORS.
+- Kept uploaded files local to the browser commissioning flow; the public reader fallback is not used for uploaded project files.
+- Added friendly retry/fallback states and a first-class manual Business Brief path.
+- Added trade/category inference for plumbing and restoration so business-specific opportunity and visual recommendations can diverge without copying another project.
+- Preserved project isolation and the existing authority PIN spine.
+
 # Dark Sky 5.2.0 — Engine Command Strengthening
 
 - Elevated **Commission New Project** into the Engine hero and Command Deck while preserving the Project Command entry point.

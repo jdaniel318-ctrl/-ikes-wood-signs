@@ -1,3 +1,11 @@
+# 5.3.0 Guided Intake Contract
+
+Commissioning is evidence-assisted, not template-copying. A new project may be taught from (1) its public website, (2) uploaded project-owned website files, or (3) a manual Business Brief. Public URL retrieval may use a public-site text reader only when direct browser access is blocked. Uploaded files do not use that fallback. All derived business profile data, opportunities, brand guidance, and visual directions remain attached to the commissioning draft and eventual immutable Project ID.
+
+Business category inference may improve recommendations, but it never imports another vessel's branding, settings, customers, records, assets, or lifecycle evidence. The commissioning UI may suggest; the Captain/project configuration remains editable.
+
+Authority spine remains: Project Admin 4353; Black Flag Engine 5615; Captain's Quarters 19613.
+
 # 5.2.0 Engine Command & Header Contract
 
 ## Engine command hierarchy

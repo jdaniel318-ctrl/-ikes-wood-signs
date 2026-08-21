@@ -1,3 +1,9 @@
+# Dark Sky 5.3.0
+
+5.3.0 turns Existing Business Intake into a guided onboarding experience. Website import is now the recommended path, with direct public-site reading first and a public-site text reader fallback when browser CORS blocks the business website. Uploads remain a separate local-evidence path, and manual Business Brief entry remains a first-class option. The intake UI now explains the three paths clearly, provides friendly failure states, and keeps every recommendation editable and project-scoped.
+
+The authority spine is unchanged: Project Admin 4353, Black Flag Engine 5615, Captain's Quarters 19613. No customer, project, asset, or admin state is shared across Project IDs.
+
 # Dark Sky 5.2.0
 
 5.2.0 strengthens the Black Flag Engine command hierarchy without changing the authority spine. Commission New Project is now a first-class Engine action, Project Command cards emphasize one next best move, Seaworthiness is framed as proof/release review for vessels already in the fleet, and the Experience Test Deck explicitly shows Configure → Preview → Approve as the internal work inside the high-level Prepare stage.

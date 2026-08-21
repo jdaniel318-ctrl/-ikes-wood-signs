@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-2-0-engine-command';
+const CACHE='dark-sky-v5-3-0-guided-intake';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.2.0',
-  './platform_core.js?v=5.2.0',
-  './platform_v4.js?v=5.2.0',
-  './platform_identity.js?v=5.2.0',
-  './app.js?v=5.2.0',
-  './captain.js?v=5.2.0',
+  './styles.css?v=5.3.0',
+  './platform_core.js?v=5.3.0',
+  './platform_v4.js?v=5.3.0',
+  './platform_identity.js?v=5.3.0',
+  './app.js?v=5.3.0',
+  './captain.js?v=5.3.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.2.0';
+  const BUILD_VERSION = '5.3.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -5163,6 +5163,23 @@
     return tests.find(([,re])=>re.test(t))?.[0]||'other';
   }
 
+  function inferIntakeBusinessCategory(text,type='other'){
+    const t=String(text||'').toLowerCase();
+    const tests=[
+      ['plumbing',/(plumb|drain cleaning|water heater|sewer|pipe repair|faucet|toilet)/],
+      ['restoration',/(restoration|water damage|fire damage|smoke damage|mold remediation|storm damage)/],
+      ['electrical',/(electrician|electrical service|panel upgrade|generator|wiring)/],
+      ['hvac',/(hvac|heating|air conditioning|heat pump|furnace|ac repair)/],
+      ['roofing',/(roofing|roof repair|roof replacement|shingle|gutter)/],
+      ['landscaping',/(landscap|lawn care|hardscape|tree service|mulch)/],
+      ['florist',/(flower|floral|bouquet|florist|arrangement)/],
+      ['custom_signs',/(wood sign|engraved sign|carved sign|cnc|plaque)/],
+      ['drinkware',/(mug|tumbler|drinkware|cup printing)/],
+      ['outdoor_retail',/(camping|outdoor gear|hiking|fishing|hunting|apparel)/]
+    ];
+    return tests.find(([,re])=>re.test(t))?.[0]||type;
+  }
+
   function intakeRecommendations(type,text){
     const t=String(text||'').toLowerCase();
     const base={customerMode:'guided',relationshipType:'auto',photoRequired:false,contactCapture:true,visualProfile:'none',capabilities:{customerRetention:true,notifications:true}};
@@ -5175,9 +5192,11 @@
     return base;
   }
 
-  function intakeVisualDirections(type,colors=[]){
+  function intakeVisualDirections(type,colors=[],category=''){
     const accent=colors?.[0]||'';
     const rows={
+      plumbing:[['Trusted Local Plumber','Clean service-truck and technician imagery, strong emergency/schedule split, unmistakable request action.'],['Home Service Modern','Bright residential imagery, service-category graphics, trust badges and simple appointment flow.'],['Craft & Reliability','Rugged trade credibility with project-owned photography, clear service area and repair-first messaging.']],
+      restoration:[['Rapid Response','High-clarity emergency header, damage-category graphics, safety reassurance and one dominant request action.'],['Property Recovery','Professional field imagery, insurance coordination proof points and guided incident intake.'],['Local Restoration Team','Community-first identity with technicians, service area and confidence-building recovery steps.']],
       service:[['Trusted Response','High-clarity service header, direct CTA, reassuring proof points.'],['Modern Field','Clean operational photography, strong category cards, restrained technical accents.'],['Local Authority','Community-first presentation with credentials, service area and fast-contact emphasis.']],
       retail:[['Brand Forward','Product-led hero, bold identity, clean shopping actions.'],['Editorial Shop','Lifestyle imagery with quieter controls and strong merchandising.'],['Utility Retail','Fast category access, concise product cards and conversion-first layout.']],
       wood_signs:[['Workshop','Craft-forward texture, dimensional product imagery and guided customization.'],['Maker Modern','Cleaner studio presentation with product preview as the visual anchor.'],['Roadside Character','Bold local personality, large type and unmistakable ordering actions.']],
@@ -5186,13 +5205,14 @@
       food:[['Menu First','Immediate menu/category access with appetizing hero photography.'],['Neighborhood','Local personality, hours/location prominence and simple order actions.'],['Chef Led','Editorial food imagery with restrained navigation and premium hierarchy.']],
       other:[['Brand First','Use the current identity as the anchor and keep customer actions obvious.'],['Modern Utility','Clean, conversion-focused structure with project-owned graphics.'],['Story Led','Use the business story and strongest imagery to frame the customer journey.']]
     };
-    return (rows[type]||rows.other).map((x,i)=>({id:`direction-${i+1}`,name:x[0],detail:x[1],accent}));
+    return (rows[category]||rows[type]||rows.other).map((x,i)=>({id:`direction-${i+1}`,name:x[0],detail:x[1],accent}));
   }
 
   function buildBusinessIntakeAnalysis(parts,{sourceWebsite='',sourceNames=[]}={}){
     const combined=parts.map(x=>[x.title,x.meta,(x.headings||[]).join(' '),x.body].join(' ')).join(' ').replace(/\s+/g,' ').trim();
     const first=parts[0]||{};
     const type=inferIntakeBusinessType(combined);
+    const category=inferIntakeBusinessCategory(combined,type);
     const emails=[...new Set(parts.flatMap(x=>x.emails||[]))].slice(0,8);
     const phones=[...new Set(parts.flatMap(x=>x.phones||[]))].slice(0,8);
     const colors=[...new Set(parts.flatMap(x=>x.colors||[]))].slice(0,10);
@@ -5205,22 +5225,42 @@
     if(!emails.length)opportunities.push('Add a required customer email field so requests and orders have a durable contact anchor.');
     if(!phones.length&&type==='service')opportunities.push('Capture a mobile number for service coordination and urgent follow-up.');
     if(!ctas.length)opportunities.push('Create one unmistakable primary customer action instead of making customers hunt for the next step.');
-    if(type==='service')opportunities.push('Turn service categories into a guided request flow with project-owned records, photos and status tracking.');
+    if(type==='service')opportunities.push('Turn service categories into a guided request flow with project-owned records, scheduling/status tracking, and only the customer inputs this trade actually needs.');
+    if(category==='plumbing'){opportunities.push('Separate urgent plumbing problems from scheduled service so customers reach the right path immediately.');opportunities.push('Use plumbing-specific request categories such as leaks, drains, fixtures, water heaters and sewer/service work instead of generic service labels.');}
+    if(category==='restoration')opportunities.push('Separate emergency loss intake from routine follow-up while keeping photos, property details and insurance coordination attached to the same project-owned request.');
     if(['retail','wood_signs','mugs','flowers','food'].includes(type))opportunities.push('Convert the strongest offers into customer-ready Black Flag products/services with clear ordering actions.');
     opportunities.push('Build a project-specific header and category graphic set from this business identity; never borrow another project’s visual skin.');
     const rec=intakeRecommendations(type,combined);
-    return {version:1,analyzedAt:new Date().toISOString(),sourceWebsite:String(sourceWebsite||''),sourceNames:[...sourceNames],businessName,description,businessType:type,emails,phones,colors,headings:serviceSignals,ctas,opportunities:[...new Set(opportunities)].slice(0,8),recommendations:rec,visualDirections:intakeVisualDirections(type,colors),confidence:combined.length>1200?'high':combined.length>300?'medium':'low'};
+    return {version:1,analyzedAt:new Date().toISOString(),sourceWebsite:String(sourceWebsite||''),sourceNames:[...sourceNames],businessName,description,businessType:type,emails,phones,colors,headings:serviceSignals,ctas,opportunities:[...new Set(opportunities)].slice(0,8),recommendations:rec,visualDirections:intakeVisualDirections(type,colors,category),businessCategory:category,confidence:combined.length>1200?'high':combined.length>300?'medium':'low'};
   }
 
   function businessIntakeMarkup(d){
     const a=d.businessIntake;
-    return `<section class="business-intake-shell">
-      <div class="business-intake-head"><div><span>EXISTING BUSINESS INTAKE</span><h3>Bring the business aboard</h3><p>Use the current website or uploaded site files as evidence. Black Flag extracts a starting business profile, opportunities and visual directions. Nothing is published automatically.</p></div><b>${a?'ANALYZED':'OPTIONAL'}</b></div>
-      <div class="business-intake-inputs">
-        <label>Current website URL<input id="commissionWebsiteUrl" value="${escapeHtml(d.sourceWebsite||'')}" placeholder="https://example.com"></label>
-        <label>Upload current website files<input id="commissionWebsiteFiles" type="file" multiple accept=".html,.htm,.txt,.md,.json,.css,text/html,text/plain,application/json"></label>
+    return `<section class="business-intake-shell intake-v2">
+      <div class="business-intake-head"><div><span>EXISTING BUSINESS INTAKE</span><h3>Bring the business aboard</h3><p>Start with what the business already has. Black Flag studies public business evidence, proposes a starting operating model, and keeps every recommendation editable before anything is commissioned.</p></div><b>${a?'ANALYZED':'OPTIONAL'}</b></div>
+      <div class="intake-method-grid" aria-label="Choose how to teach Black Flag about this business">
+        <article class="intake-method-card recommended">
+          <div class="intake-method-top"><span class="intake-method-number">1</span><div><small>RECOMMENDED</small><h4>Use the current website</h4></div></div>
+          <p>Paste the public business website. Black Flag first tries the site directly, then a public-site reader when normal browser access is blocked.</p>
+          <label class="intake-url-label">Business website<input id="commissionWebsiteUrl" inputmode="url" autocomplete="url" value="${escapeHtml(d.sourceWebsite||'')}" placeholder="https://yourbusiness.com"></label>
+          <button id="analyzeWebsiteBtn" class="intake-primary-action" type="button"><span>ANALYZE WEBSITE</span><small>Learn the business and suggest a starting model</small></button>
+        </article>
+        <article class="intake-method-card">
+          <div class="intake-method-top"><span class="intake-method-number">2</span><div><small>FALLBACK / MORE EVIDENCE</small><h4>Upload existing files</h4></div></div>
+          <p>Add exported HTML, text, JSON, CSS, or other website files when you want Black Flag to study local source material too.</p>
+          <label class="intake-file-drop"><span>Choose website files</span><small>Multiple files are welcome</small><input id="commissionWebsiteFiles" type="file" multiple accept=".html,.htm,.txt,.md,.json,.css,text/html,text/plain,application/json"></label>
+          <button id="analyzeFilesBtn" class="intake-secondary-action" type="button">ANALYZE UPLOADED FILES</button>
+        </article>
+        <article class="intake-method-card manual">
+          <div class="intake-method-top"><span class="intake-method-number">3</span><div><small>NO WEBSITE NEEDED</small><h4>Describe it yourself</h4></div></div>
+          <p>Starting fresh? Skip the import and use the Business Brief below. Black Flag will derive the operating model from what you tell it.</p>
+          <button id="jumpToBusinessBriefBtn" class="intake-tertiary-action" type="button">GO TO BUSINESS BRIEF ↓</button>
+        </article>
       </div>
-      <div class="business-intake-actions"><button id="analyzeWebsiteBtn" class="secondary-btn" type="button">ANALYZE CURRENT BUSINESS</button><span id="businessIntakeStatus" class="helper">${a?`Last analysis: ${escapeHtml(new Date(a.analyzedAt).toLocaleString())}`:'URL fetch is attempted when the site allows it. Upload HTML/site files if the website blocks browser access.'}</span></div>
+      <div class="business-intake-statusbar ${a?'success':''}" id="businessIntakeStatus" role="status" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span><span>${a?`Analysis ready • ${escapeHtml(new Date(a.analyzedAt).toLocaleString())}`:'Choose the easiest path. Nothing here publishes, contacts customers, or mixes data with another project.'}</span>
+      </div>
+      <p class="intake-privacy-note">Public website fallback uses a public-site text reader only when direct browser access is blocked. Uploaded project files stay in this browser commissioning flow and are not sent through that fallback.</p>
       ${a?businessIntakeResultsMarkup(a):''}
     </section>`;
   }
@@ -5228,34 +5268,83 @@
   function businessIntakeResultsMarkup(a){
     const dirs=(a.visualDirections||[]).map((d,i)=>`<article><small>DIRECTION ${i+1}</small><strong>${escapeHtml(d.name)}</strong><span>${escapeHtml(d.detail)}</span></article>`).join('');
     return `<div class="business-intake-results">
-      <div class="business-intake-summary"><div><small>WHAT BLACK FLAG LEARNED</small><strong>${escapeHtml(a.businessName||'Business profile')}</strong><span>${escapeHtml(String(a.businessType||'other').replaceAll('_',' '))} • ${escapeHtml(a.confidence||'working')} confidence</span></div><button id="applyBusinessIntakeBtn" class="primary-btn small" type="button">USE THESE RECOMMENDATIONS</button></div>
+      <div class="business-intake-summary"><div><small>WHAT BLACK FLAG LEARNED</small><strong>${escapeHtml(a.businessName||'Business profile')}</strong><span>${escapeHtml(String(a.businessCategory||a.businessType||'other').replaceAll('_',' '))} • ${escapeHtml(a.confidence||'working')} confidence</span></div><button id="applyBusinessIntakeBtn" class="primary-btn small" type="button">USE THESE RECOMMENDATIONS</button></div>
       <div class="business-intake-facts"><span>${a.emails?.length?`EMAIL • ${escapeHtml(a.emails[0])}`:'EMAIL • NOT FOUND'}</span><span>${a.phones?.length?`PHONE • ${escapeHtml(a.phones[0])}`:'PHONE • NOT FOUND'}</span><span>${a.colors?.length?`BRAND COLORS • ${escapeHtml(a.colors.slice(0,4).join(' '))}`:'BRAND COLORS • REVIEW MANUALLY'}</span></div>
       <div class="business-intake-columns"><div><small>OPPORTUNITY SCAN</small>${(a.opportunities||[]).map(x=>`<p>• ${escapeHtml(x)}</p>`).join('')}</div><div><small>LIKELY OFFERS / THEMES</small>${(a.headings||[]).slice(0,6).map(x=>`<p>• ${escapeHtml(x)}</p>`).join('')||'<p>• Review the current business brief manually.</p>'}</div></div>
       <div class="business-visual-directions"><small>PROJECT-SPECIFIC VISUAL STARTING POINTS</small><div>${dirs}</div></div>
     </div>`;
   }
 
-  async function analyzeCommissionBusiness(){
+  function normalizePublicBusinessUrl(value){
+    const raw=String(value||'').trim();
+    if(!raw)return '';
+    try{return new URL(/^https?:\/\//i.test(raw)?raw:`https://${raw}`).href;}catch(_){return '';}
+  }
+
+  function intakePlainTextFromReaderText(text){
+    const raw=String(text||'').replace(/\r/g,'');
+    const title=(raw.match(/^Title:\s*(.+)$/mi)?.[1]||raw.match(/^#\s+(.+)$/m)?.[1]||'').trim();
+    const meta=(raw.match(/^(?:Description|Published Time):\s*(.+)$/mi)?.[1]||'').trim();
+    const headings=[...raw.matchAll(/^#{1,3}\s+(.+)$/gm)].map(m=>m[1].trim()).filter(Boolean).slice(0,24);
+    const emails=[...new Set((raw.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/ig)||[]).slice(0,10))];
+    const phones=[...new Set((raw.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/g)||[]).slice(0,10))];
+    const ctas=[...raw.matchAll(/\[([^\]\n]{2,70})\]\([^)]*\)/g)].map(m=>m[1].trim()).slice(0,50);
+    const body=raw.replace(/^Title:.*$/gmi,'').replace(/^URL Source:.*$/gmi,'').replace(/^Markdown Content:.*$/gmi,'').replace(/\s+/g,' ').trim().slice(0,26000);
+    return {title,meta,headings,ctas,body,emails,phones,colors:[]};
+  }
+
+  async function fetchBusinessEvidenceFromUrl(url,status){
+    const direct=async()=>{
+      const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),9000);
+      try{
+        const response=await fetch(url,{method:'GET',mode:'cors',credentials:'omit',cache:'no-store',signal:controller.signal});
+        if(!response.ok)throw new Error(`HTTP ${response.status}`);
+        return {part:intakePlainTextFromHtml(await response.text()),method:'direct'};
+      }finally{clearTimeout(timer);}
+    };
+    try{return await direct();}catch(err){console.warn('Business intake direct website fetch unavailable',err);}
+    if(status)status.innerHTML='<span class="status-dot"></span><span>Normal website access is blocked. Trying the public-site reader…</span>';
+    const readerUrl=`https://r.jina.ai/${url}`;
+    const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),18000);
+    try{
+      const response=await fetch(readerUrl,{method:'GET',credentials:'omit',cache:'no-store',signal:controller.signal,headers:{Accept:'text/plain'}});
+      if(!response.ok)throw new Error(`Reader HTTP ${response.status}`);
+      const text=await response.text();
+      if(!text||text.length<80)throw new Error('Reader returned too little content');
+      return {part:intakePlainTextFromReaderText(text),method:'public-reader'};
+    }finally{clearTimeout(timer);}
+  }
+
+  async function analyzeCommissionBusiness(mode='auto'){
     const status=document.getElementById('businessIntakeStatus');
-    const url=String(document.getElementById('commissionWebsiteUrl')?.value||commissionDraft?.sourceWebsite||'').trim();
+    const rawUrl=String(document.getElementById('commissionWebsiteUrl')?.value||commissionDraft?.sourceWebsite||'').trim();
+    const url=normalizePublicBusinessUrl(rawUrl);
     const files=[...(document.getElementById('commissionWebsiteFiles')?.files||[])];
     const parts=[],sourceNames=[];
-    if(status)status.textContent='Analyzing business evidence…';
-    for(const file of files){
-      try{const text=await file.text();parts.push(intakePlainTextFromHtml(text));sourceNames.push(file.name);}catch(err){console.warn('Business intake file read skipped',file?.name,err);}
-    }
-    if(url){
-      commissionDraft.sourceWebsite=url;
-      try{
-        const response=await fetch(url,{method:'GET',mode:'cors',credentials:'omit',cache:'no-store'});
-        if(!response.ok)throw new Error(`HTTP ${response.status}`);
-        const text=await response.text();parts.unshift(intakePlainTextFromHtml(text));sourceNames.unshift(url);
-      }catch(err){
-        console.warn('Business intake website fetch unavailable',err);
-        if(!parts.length){if(status)status.textContent='This website blocks direct browser analysis. Upload its HTML/site files and run Analyze again.';return;}
+    if(status){status.classList.remove('error','success');status.innerHTML='<span class="status-dot"></span><span>Reading business evidence…</span>';}
+    if(mode!=='website'){
+      for(const file of files){
+        try{const text=await file.text();parts.push(intakePlainTextFromHtml(text));sourceNames.push(file.name);}catch(err){console.warn('Business intake file read skipped',file?.name,err);}
       }
     }
-    if(!parts.length){if(status)status.textContent='Add a website URL or upload at least one current website file.';return;}
+    if(mode!=='files' && rawUrl){
+      if(!url){if(status){status.classList.add('error');status.innerHTML='<span class="status-dot"></span><span>That website address does not look valid. Try something like https://yourbusiness.com.</span>';}return;}
+      commissionDraft.sourceWebsite=url;
+      try{
+        const result=await fetchBusinessEvidenceFromUrl(url,status);
+        parts.unshift(result.part);sourceNames.unshift(`${url} • ${result.method==='direct'?'direct':'public reader'}`);
+      }catch(err){
+        console.warn('Business intake public website retrieval unavailable',err);
+        if(!parts.length){
+          if(status){status.classList.add('error');status.innerHTML='<span class="status-dot"></span><span>We could not read this public site automatically. You can retry, upload website files, or continue with the Business Brief below.</span>';}
+          return;
+        }
+      }
+    }
+    if(!parts.length){
+      if(status){status.classList.add('error');status.innerHTML=`<span class="status-dot"></span><span>${mode==='files'?'Choose at least one website file first.':'Add a website address, upload files, or use the Business Brief below.'}</span>`;}
+      return;
+    }
     commissionDraft.businessIntake=buildBusinessIntakeAnalysis(parts,{sourceWebsite:url,sourceNames});
     commissionDraft.updatedAt=new Date().toISOString();
     localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
@@ -5285,7 +5374,10 @@
   }
 
   function bindBusinessIntakeControls(){
-    const analyze=document.getElementById('analyzeWebsiteBtn');if(analyze)analyze.onclick=(e)=>{e.preventDefault();analyzeCommissionBusiness();};
+    const analyze=document.getElementById('analyzeWebsiteBtn');if(analyze)analyze.onclick=(e)=>{e.preventDefault();analyzeCommissionBusiness('website');};
+    const analyzeFiles=document.getElementById('analyzeFilesBtn');if(analyzeFiles)analyzeFiles.onclick=(e)=>{e.preventDefault();analyzeCommissionBusiness('files');};
+    const fileInput=document.getElementById('commissionWebsiteFiles');if(fileInput)fileInput.onchange=()=>{const label=fileInput.closest('.intake-file-drop');const small=label?.querySelector('small');if(small)small.textContent=fileInput.files?.length?`${fileInput.files.length} file${fileInput.files.length===1?'':'s'} selected`:'Multiple files are welcome';};
+    const jump=document.getElementById('jumpToBusinessBriefBtn');if(jump)jump.onclick=(e)=>{e.preventDefault();document.querySelector('.commission-brief-field')?.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>document.querySelector('.commission-brief-field textarea')?.focus(),260);};
     const apply=document.getElementById('applyBusinessIntakeBtn');if(apply)apply.onclick=(e)=>{e.preventDefault();applyCommissionBusinessIntake();};
   }
 
@@ -5319,9 +5411,9 @@
       </div>`;
     if(commissionStep===2)return `
       <div class="commission-panel">
-        <div class="eyebrow">02 • BUSINESS INTAKE & BRIEF</div><h2>Teach Dark Sky how this business works</h2>
+        <div class="eyebrow">02 • BUSINESS INTAKE & BRIEF</div><h2>Start with what already exists</h2><p class="commission-step-lede">Give Black Flag one good source and it will do the first pass. You stay in control of every recommendation.</p>
         ${businessIntakeMarkup(d)}
-        <p>Choose the closest starting model, then describe the business in your own words. Dark Sky keeps the original brief and turns it into a structured operating model that can be reviewed and corrected later.</p>
+        <div class="commission-section-divider"><span>REVIEW / COMPLETE THE MODEL</span><small>Black Flag can suggest these fields; you can change them now or later.</small></div>
         <div class="commission-grid">
           <label>Starting model<select data-cfield="businessType">
             ${['wood_signs','mugs','flowers','retail','service','food','other'].map(x=>`<option value="${x}" ${d.businessType===x?'selected':''}>${x.replace(/_/g,' ').toUpperCase()}</option>`).join('')}

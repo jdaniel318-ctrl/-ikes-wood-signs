@@ -1,3 +1,11 @@
+# 5.3.0 Guided Intake Regression Addendum
+
+- Commissioning website analysis tries direct fetch first, then a public-site reader fallback.
+- Uploaded files are read locally and are never sent through the public-site fallback.
+- Website failure does not block commissioning; file upload and manual Business Brief remain available.
+- Intake recommendations remain editable and project-scoped.
+- Project Admin 4353 / Engine 5615 / Captain's Quarters 19613 unchanged.
+
 # 5.2.0 Engine Strengthening Regression Addendum
 
 - Commission New Project appears in the Engine hero and routes to the canonical commissioning workspace.
