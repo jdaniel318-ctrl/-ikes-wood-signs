@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.0.4';
+  const BUILD_VERSION = '5.0.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -6511,6 +6511,18 @@
     $('engineConfigurationDock')?.classList.add('hidden');
     document.body.classList.remove('engine-workspace-open');
   }
+
+  // 5.0.5 Boundary Bridge — this is the only supported crossing point from the
+  // pre-login Black Flag portal (which lives outside the application closure) into
+  // project/Engine navigation state. Never let the portal reach closure-private
+  // functions or variables directly; doing so made a correct 5615 verify succeed
+  // and then crash before the Engine could render.
+  window.DarkSkyBoundaryBridge={
+    prepareEngine(){ prepareEngineBoundary(); return true; },
+    clearProject(){ clearProjectPresentation(); clearActiveProjectContext(); return true; },
+    restoreEngineTheme(){ try{ restoreBlackFlagTheme(); }catch(_){ } return true; },
+    lockEngine(){ lockEngineSession(); return true; }
+  };
   function surfaceVisible(id){const el=$(id);return !!el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none';}
   function isolationSnapshot(){
     const ids=['blackFlagEntryGate','customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','enginePanel','projectEngineControl','ownerPortal','captainQuarters'];
@@ -10822,7 +10834,7 @@ The full order and approved media remain stored with this project.`;
 // v2.4.1 security boundary: leaving Engine always destroys Engine authorization.
 document.addEventListener('click', (event) => {
   const target = event.target.closest && event.target.closest('#backToAdminBtn,[data-engine-logout],.engine-logout');
-  if(target) lockEngineSession();
+  if(target) window.DarkSkyBoundaryBridge?.lockEngine?.();
 });
 
 
@@ -10870,10 +10882,18 @@ document.addEventListener('click', (event) => {
     if(window.BlackFlagAuth&&!testAccessActive) window.BlackFlagAuth.unlock();
     if(input) input.value='';
     leaveEntry();
-    if(typeof restoreBlackFlagTheme==='function') restoreBlackFlagTheme();
+    window.DarkSkyBoundaryBridge?.restoreEngineTheme?.();
     window.pendingEngineReturnProjectId=null;
-    if(typeof prepareEngineBoundary==='function') prepareEngineBoundary();
-    else{ activeProjectId=null; hideAllCustomerShells(); hideAllProjectProtectedSurfaces?.(); }
+    // Cross the project/Engine boundary only through the exported bridge. The old
+    // 5.0.x portal referenced closure-private functions here; Safari verified 5615
+    // correctly and then threw before enginePanel was opened.
+    try{ window.DarkSkyBoundaryBridge?.prepareEngine?.(); }
+    catch(err){
+      console.error('Black Flag boundary transition failed',err);
+      const e=byId('blackFlagEntryError'); if(e)e.textContent='Engine boundary could not be prepared. Reload and try again.';
+      await requireEngineEntry();
+      return;
+    }
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
 
@@ -10892,7 +10912,7 @@ document.addEventListener('click', (event) => {
     // could cross a fleet boundary after leaving another project. Selection belongs
     // in the Engine fleet rail where an immutable Project ID is explicit.
     leaveEntry();
-    if(typeof prepareEngineBoundary==='function')prepareEngineBoundary();
+    window.DarkSkyBoundaryBridge?.prepareEngine?.();
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
     const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
@@ -10906,11 +10926,11 @@ document.addEventListener('click', (event) => {
   }
 
   function lockAndReturnToEntry(){
-    lockEngineSession();
+    window.DarkSkyBoundaryBridge?.lockEngine?.();
     document.body.classList.remove('engine-mode','project-mode');
     document.body.classList.add('boot-locked');
     const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
-    if(typeof clearProjectPresentation==='function')clearProjectPresentation();
+    window.DarkSkyBoundaryBridge?.clearProject?.();
     requireEngineEntry();
   }
 
@@ -10935,7 +10955,7 @@ document.addEventListener('click', (event) => {
       }
       // Fail closed if the canonical return route is unavailable. Never expose the
       // legacy Ike customer shell as a generic fallback because that crosses fleet boundaries.
-      if(typeof prepareEngineBoundary==='function')prepareEngineBoundary();
+      window.DarkSkyBoundaryBridge?.prepareEngine?.();
       document.body.classList.remove('engine-mode','project-mode');
       document.body.classList.add('boot-locked');
       const engine=byId('enginePanel');if(engine)engine.classList.add('hidden');
@@ -10948,7 +10968,11 @@ document.addEventListener('click', (event) => {
     if(logout) logout.addEventListener('click',lockAndReturnToEntry);
 
     // Engine portal is always the first screen after a fresh page load.
-        requireEngineEntry();
+    requireEngineEntry();
+    if(!window.BlackFlagAuth || !window.DarkSkyBoundaryBridge){
+      const err=byId('blackFlagEntryError');
+      if(err)err.textContent='Black Flag startup is incomplete. Reload this page before entering a PIN.';
+    }
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bindBlackFlagPortal);
   else bindBlackFlagPortal();
@@ -10957,7 +10981,7 @@ document.addEventListener('click', (event) => {
   document.addEventListener('click',e=>{
     const t=e.target.closest && e.target.closest('#backToAdminBtn,[data-engine-logout],.engine-logout');
     if(!t) return;
-    lockEngineSession();
+    window.DarkSkyBoundaryBridge?.lockEngine?.();
   });
   if(typeof window.blackFlagMigrateLegacyProjectAssets==='function'){
     window.blackFlagMigrateLegacyProjectAssets().catch(err=>console.warn('Graphics migration warning',err));

@@ -1,4 +1,4 @@
-# Dark Sky 5.0.4
+# Dark Sky 5.0.5
 
 Black Flag authentication structure restored after the 5.0 cleanup regression. Normal Engine access uses `5615`; Project Admin uses `4353`; Captain's Quarters uses `19613`; Captain Test Access remains a session-only bypass. Project isolation work from 5.0 remains in place.
 

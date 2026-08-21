@@ -1,4 +1,4 @@
-# Dark Sky 5.0.4 — Black Flag Structure Restore
+# Dark Sky 5.0.5 — Black Flag Structure Restore
 
 - Restores the proven Black Flag Engine authentication contract from the pre-5.0 cleanup: `5615` is always a valid Engine PIN.
 - Restores compatibility with an explicitly configured Engine PIN without allowing Project Admin (`4353`) or Captain (`19613`) credentials to authenticate Black Flag.
