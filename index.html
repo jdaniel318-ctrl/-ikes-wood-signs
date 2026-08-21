@@ -90,39 +90,26 @@
         const isButton=target && (target.id==='blackFlagEntryUnlock' || target.closest?.('#blackFlagEntryUnlock'));
         const isEnter=event.type==='keydown' && event.key==='Enter' && target?.id==='blackFlagEntryPin';
         if(!isButton && !isEnter) return;
+        // 5.9.3: normal entry is owned by the configured Engine authenticator.
+        // First-light recovery is only a last-resort fallback if the application
+        // authenticator failed to initialize; it never auto-submits while typing.
+        if(window.BlackFlagAuth?.verify) return;
         const input=byId('blackFlagEntryPin');
         const entered=String(input?.value||'').trim();
-        if(entered!==ENGINE_RECOVERY_PIN) return; // configured alternates remain owned by normal auth
+        if(entered!==ENGINE_RECOVERY_PIN) return;
         event.preventDefault();
         event.stopImmediatePropagation();
         openEngineAtomically();
       }
-      function handlePinInput(event){
-        const input=event.target;
-        if(!input || input.id!=='blackFlagEntryPin') return;
-        const digits=String(input.value||'').replace(/\D/g,'').slice(0,4);
-        if(input.value!==digits) input.value=digits;
-        const error=byId('blackFlagEntryError');
-        if(error) error.textContent='';
-        if(digits.length<4) return;
-        if(digits===ENGINE_RECOVERY_PIN){
-          openEngineAtomically();
-          return;
-        }
-        if(error) error.textContent='Incorrect Engine PIN.';
-        input.value='';
-        setTimeout(function(){ input.focus(); },20);
-      }
       document.addEventListener('click',attempt,true);
       document.addEventListener('keydown',attempt,true);
-      document.addEventListener('input',handlePinInput,true);
       window.DarkSkyAtomicEngineEntry={open:openEngineAtomically,recoveryPin:ENGINE_RECOVERY_PIN};
     })();
   </script>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.9.2" />
+  <link rel="stylesheet" href="styles.css?v=5.9.3" />
   <style id="bootLockStyles">
     /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
@@ -174,8 +161,8 @@
 
       <div class="bf-entry-panel">
         <label for="blackFlagEntryPin">BLACK FLAG ENGINE PIN</label>
-        <small id="blackFlagEntryHint" class="bf-pin-hint">4-digit Engine credential</small>
-        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="one-time-code" aria-describedby="blackFlagEntryHint" />
+        <small id="blackFlagEntryHint" class="bf-pin-hint">Engine credential</small>
+        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="blackFlagEntryHint" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
 <button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO DARK SKY</button>
@@ -381,7 +368,7 @@
           <div class="captain-kicker">CAPTAIN CONTROL • DUAL AUTHORIZATION</div>
           <h3 id="captainTestAccessTitle">Enable Test Access</h3>
           <p>This does not remove or change any PIN. It only bypasses PIN entry for this browser session and leaves project boundaries intact.</p>
-          <label for="testAccessEnginePin">ENGINE PIN</label><input id="testAccessEnginePin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+          <label for="testAccessEnginePin">ENGINE PIN</label><input id="testAccessEnginePin" type="password" inputmode="numeric" autocomplete="off">
           <label for="testAccessCaptainPin">CAPTAIN PIN</label><input id="testAccessCaptainPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
           <p id="captainTestAccessError" class="error-text" aria-live="polite"></p>
           <div class="captain-test-access-actions"><button id="captainTestAccessConfirm" type="button">AUTHORIZE TEST ACCESS</button><button id="captainTestAccessCancel" type="button">CANCEL</button></div>
@@ -840,7 +827,7 @@
         <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
         <p>Only captains, code-wranglers, and suspiciously competent pirates beyond this point.</p>
         <label for="enginePinInput">Enter Captain's Code</label>
-        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off" />
         <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
         <button type="button" id="cancelEngineBtn" class="secondary-btn">RETURN TO PROJECT</button>
@@ -1312,7 +1299,7 @@
           <h2 id="engineResetTitle">Confirm Engine Reset</h2>
           <p>Enter the Engine PIN again. You will receive one final confirmation before anything is reset.</p>
           <label for="engineResetPinInput">Engine PIN</label>
-          <input id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+          <input id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off" />
           <p id="engineResetError" class="pirate-error" aria-live="polite"></p><p id="engineResetLockTimer" class="pin-lock-timer hidden"></p>
           <button type="button" id="confirmEngineResetBtn" class="danger-btn">CONTINUE RESET</button>
           <button type="button" id="cancelEngineResetBtn" class="secondary-btn">CANCEL</button>
@@ -1442,11 +1429,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.9.2"></script>
-  <script src="platform_v4.js?v=5.9.2"></script>
-  <script src="platform_identity.js?v=5.9.2"></script>
-  <script src="app.js?v=5.9.2"></script>
-  <script src="captain.js?v=5.9.2"></script>
+  <script src="platform_core.js?v=5.9.3"></script>
+  <script src="platform_v4.js?v=5.9.3"></script>
+  <script src="platform_identity.js?v=5.9.3"></script>
+  <script src="app.js?v=5.9.3"></script>
+  <script src="captain.js?v=5.9.3"></script>
 
 </body>
 </html>

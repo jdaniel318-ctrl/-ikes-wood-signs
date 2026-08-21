@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.9.2';
+  const BUILD_VERSION = '5.9.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 8;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -11888,7 +11888,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.2',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.3',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11925,7 +11925,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.2',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.3',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12037,16 +12037,16 @@ document.addEventListener('click', (event) => {
     const entered=(input?.value||'').trim();
 
     const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
-    // The historical Black Flag credential is an entry invariant and must not depend
-    // on IndexedDB, migrations, project state, or a late application initializer.
-    // BlackFlagAuth remains the shared controller for alternate configured Engine PINs.
+    // 5.9.3 STEADY HELM: use the configured Engine authenticator for every explicit
+    // submission. PIN length is deliberately not assumed here. The historic 5615
+    // recovery credential remains accepted by verifyEnginePin, while a deliberately
+    // configured Engine PIN may be any length supported by Engine settings.
     let result;
     if(testAccessActive) result={ok:true,code:'test-access'};
-    else if(entered==='5615'){
-      try{ window.BlackFlagAuth?.clearPinFailures?.('engine'); }catch(_){}
-      result={ok:true,code:'recovery',recovery:true};
-    }else if(window.BlackFlagAuth?.verify){
+    else if(window.BlackFlagAuth?.verify){
       result=await window.BlackFlagAuth.verify(entered);
+    }else if(entered===String(DEFAULT_ENGINE_PIN)){
+      result={ok:true,code:'recovery-fallback',recovery:true};
     }else{
       result={ok:false,code:'startup'};
     }
@@ -12065,12 +12065,13 @@ document.addEventListener('click', (event) => {
     }
 
     if(window.BlackFlagAuth&&!testAccessActive) window.BlackFlagAuth.unlock();
-    if(input) input.value='';
+    if(input){ input.value=''; try{ input.blur(); }catch(_){} }
     window.pendingEngineReturnProjectId=null;
 
-    // 5.7.4 atomic Engine crossing. Prepare and hide all project surfaces BEFORE
-    // removing the PIN cover. A successful 5615 must result in either Engine Room
-    // or a visible error on the still-covered gate — never an Ike/project flash.
+    // 5.9.3 steady crossing: the gate remains visibly in place while the Engine
+    // boundary and home render are prepared. Only after the Engine is ready do we
+    // remove the gate. This prevents the iPhone from exposing a half-transitioned
+    // Engine underneath the PIN panel or jumping mid-page as the keyboard closes.
     hideProjectSurfacesBeforeEngine();
     try{
       window.DarkSkyBoundaryBridge?.restoreEngineTheme?.();
@@ -12081,7 +12082,6 @@ document.addEventListener('click', (event) => {
       const engine=byId('enginePanel');
       if(!engine) throw new Error('Engine panel unavailable');
       engine.classList.remove('hidden');
-      leaveEntry();
     }catch(err){
       console.error('Black Flag boundary transition failed',err);
       const e=byId('blackFlagEntryError'); if(e)e.textContent='Black Flag accepted the PIN, but the Engine could not finish opening. Reload this build and try again.';
@@ -12096,10 +12096,14 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.9.2'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.9.3'};
     }
 
-    window.scrollTo({top:0,left:0,behavior:'instant'});
+    // Commit the visual crossing only after the Engine has had a chance to render.
+    leaveEntry();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
+    }));
   }
 
   function openCompanyApp(){

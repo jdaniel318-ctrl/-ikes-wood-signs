@@ -21,3 +21,9 @@ All current and future customer-facing vessels must remain viable on iPhone, iPa
 - Engine Access is vertically and horizontally centered within the usable phone viewport.
 - Fleet project cards use horizontal touch scrolling with snap alignment on phones to keep the Engine condensed.
 - A visible partial next-card edge may be used as a swipe affordance; cards must not trap vertical scrolling.
+
+## Engine entry on mobile
+- The Engine credential field must not assume a fixed PIN length.
+- Typing must never auto-submit or move the viewport on the final digit; entry occurs only on explicit submit/keyboard Enter.
+- Keep the Engine gate visually stable until Fleet Command is ready, then perform one clean transition.
+- The configured Engine PIN remains valid at its configured length; recovery credential 5615 remains separate and valid.
