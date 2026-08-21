@@ -1,3 +1,11 @@
+# 5.3.1 Preview Regression Addendum
+
+- Accepted business-intake evidence now compiles into a runnable, project-scoped customer configuration instead of remaining advisory only.
+- Plumbing intake creates a confidence-first landing page, plumbing-specific service categories, required email/contact capture, and a universal service-request workflow.
+- Existing commissioned plumbing projects with intake evidence are upgraded deterministically at read time, so Preview is available without recreating the vessel.
+- Project IDs, assets, orders, admin state, and runtime context remain isolated; the compiler never borrows another project's state.
+- Authority spine unchanged: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
+
 # 5.3.0 Guided Intake Regression Addendum
 
 - Commissioning website analysis tries direct fetch first, then a public-site reader fallback.

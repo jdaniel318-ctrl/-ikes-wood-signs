@@ -1,3 +1,11 @@
+# 5.3.1 Business Intake Compiler Contract
+
+- Accepted business-intake evidence now compiles into a runnable, project-scoped customer configuration instead of remaining advisory only.
+- Plumbing intake creates a confidence-first landing page, plumbing-specific service categories, required email/contact capture, and a universal service-request workflow.
+- Existing commissioned plumbing projects with intake evidence are upgraded deterministically at read time, so Preview is available without recreating the vessel.
+- Project IDs, assets, orders, admin state, and runtime context remain isolated; the compiler never borrows another project's state.
+- Authority spine unchanged: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
+
 # 5.3.0 Guided Intake Contract
 
 Commissioning is evidence-assisted, not template-copying. A new project may be taught from (1) its public website, (2) uploaded project-owned website files, or (3) a manual Business Brief. Public URL retrieval may use a public-site text reader only when direct browser access is blocked. Uploaded files do not use that fallback. All derived business profile data, opportunities, brand guidance, and visual directions remain attached to the commissioning draft and eventual immutable Project ID.

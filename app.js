@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.3.0';
+  const BUILD_VERSION = '5.3.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -478,8 +478,56 @@
     'orders','customers','products','pricing','branding','kiosks','deployments','staff','reporting','notifications'
   ];
 
+  function compileBusinessIntakeProject(p){
+    if(!p || typeof p!=='object' || !p.businessIntake)return p;
+    const intake=p.businessIntake||{};
+    const category=String(intake.businessCategory||intake.businessType||p.businessType||'').toLowerCase().replace(/[\s_-]+/g,'_');
+    if(category!=='plumbing')return p;
+    p.businessType='plumbing';
+    p.type=p.type&&p.type!=='other'?p.type:'service_business';
+    p.description=p.description||intake.description||'Professional plumbing service for homes and businesses.';
+    p.customerExperience=p.customerExperience&&typeof p.customerExperience==='object'?p.customerExperience:{};
+    p.customerExperience.mode='guided_service';
+    p.customerExperience.relationshipType='service_request';
+    p.customerExperience.contactCapture=true;
+    p.customerExperience.emailRequired=true;
+    p.customerExperience.landingPage={
+      ...(p.customerExperience.landingPage||{}),
+      enabled:true,
+      headline:p.customerExperience.landingPage?.headline||'Fast, reliable plumbing—done right.',
+      supportingCopy:p.customerExperience.landingPage?.supportingCopy||'Professional plumbing help for homes and businesses, with a clear path to request service.',
+      primaryCta:p.customerExperience.landingPage?.primaryCta||'I NEED PLUMBING HELP',
+      secondaryCta:p.customerExperience.landingPage?.secondaryCta||'VIEW SERVICES',
+      trustSignals:Array.isArray(p.customerExperience.landingPage?.trustSignals)&&p.customerExperience.landingPage.trustSignals.length?p.customerExperience.landingPage.trustSignals:['Residential & commercial','Richmond-area service','Clear service request process']
+    };
+    const starters=[
+      ['service-repairs','Service & Repairs','Leaks, clogs, fixtures, and troubleshooting.'],
+      ['water-heater','Water Heater','Replacement, repair, and water-heater service.'],
+      ['remodel-addition','Remodel / Addition','Plumbing for kitchens, baths, remodels, and additions.'],
+      ['new-construction','New Construction','Plumbing installations for new builds.'],
+      ['gas-piping','Gas Piping','Gas line installation and modification requests.'],
+      ['water-sewer','Water / Sewer','Water and sewer line repair or replacement.'],
+      ['something-else','Something Else','Tell the plumbing team what you need help with.']
+    ];
+    p.products=Array.isArray(p.products)?p.products:[];
+    const ready=p.products.filter(x=>x&&x.active!==false&&(x.customerReady===true||x.published===true));
+    if(!ready.length){
+      p.products=starters.map(([key,name,description])=>({id:`intake-plumbing-${key}`,name,description,active:true,published:true,customerReady:true,pricingMode:'manual',price:0,generatedBy:'business_intake_compiler'}));
+    }
+    p.capabilities=p.capabilities&&typeof p.capabilities==='object'?p.capabilities:{};
+    p.capabilities.customerRetention=true;
+    p.capabilities.notifications=true;
+    p.capabilityControl=p.capabilityControl&&typeof p.capabilityControl==='object'?p.capabilityControl:{};
+    const recommended=['job_intake','job_status','customer_records','field_photos','scheduling','estimates_authorizations','project_notes','operational_reporting','customer_notifications'];
+    p.capabilityControl.enabled=[...new Set([...(Array.isArray(p.capabilityControl.enabled)?p.capabilityControl.enabled:[]),...recommended])];
+    p.capabilityControl.source=p.capabilityControl.source||'business_intake_compiler';
+    p.businessIntakeCompiled={version:1,category:'plumbing',build:BUILD_VERSION,compiledAt:p.businessIntakeCompiled?.compiledAt||new Date().toISOString()};
+    return p;
+  }
+
   function ensureProjectGovernance(p){
     if(!p || typeof p!=='object') return p;
+    p=compileBusinessIntakeProject(p);
     p.governance=p.governance&&typeof p.governance==='object'?p.governance:{};
 
     // v2.9.66 migration: "refused" meant business relationship refusal,
@@ -6473,14 +6521,14 @@
     const built=window.BlackFlagV3Core?.normalizeVisualPresentation?.({...(p||{}),visualPresentation:next});
     return built||next;
   }
-  const universalCustomerState={projectId:null,offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',receipt:null};
+  const universalCustomerState={projectId:null,stage:'landing',offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',receipt:null};
   function universalReceiptKey(p,ctx=universalCustomerContextFor(p)){return `bfUniversalReceipt:${p?.id||'project'}:${ctx?.deploymentId||'private'}`;}
   function readUniversalReceipt(p){try{return JSON.parse(sessionStorage.getItem(universalReceiptKey(p))||'null')}catch(_){return null}}
   function writeUniversalReceipt(p,receipt){try{sessionStorage.setItem(universalReceiptKey(p),JSON.stringify(receipt))}catch(_){} universalCustomerState.receipt=receipt;}
   function clearUniversalReceipt(p){try{sessionStorage.removeItem(universalReceiptKey(p))}catch(_){} universalCustomerState.receipt=null;}
   function resetUniversalCustomerState(p){
     const offers=universalOffersFor(p);
-    Object.assign(universalCustomerState,{projectId:p?.id||null,offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',receipt:readUniversalReceipt(p)});
+    Object.assign(universalCustomerState,{projectId:p?.id||null,stage:p?.customerExperience?.landingPage?.enabled===false?'intake':'landing',offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',receipt:readUniversalReceipt(p)});
   }
   function universalCustomerContextFor(p){
     const ctx=window.__deploymentCustomerContext;
@@ -6526,7 +6574,23 @@
       $('universalDoneReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       return;
     }
-    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Choose an offer and send your request.')}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
+    const landing=p.customerExperience?.landingPage||{};
+    if(landing.enabled!==false && universalCustomerState.stage==='landing'){
+      const trust=Array.isArray(landing.trustSignals)?landing.trustSignals:[];
+      shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Professional service when you need it.')}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
+        <main class="universal-landing-main">${ctx.state==='sea_trial'?'<div class="universal-trial-banner">SEA TRIAL — Requests created here are test data for this project only.</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only">PRIVATE PREVIEW — Explore the customer experience. Nothing submitted here is persisted.</div>':''}
+          <section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||p.description||'Tell us what you need and we will guide you through the next step.')}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(landing.primaryCta||'I NEED HELP NOW')}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>
+          ${trust.length?`<section class="universal-trust-row">${trust.map(x=>`<span>✓ ${escapeHtml(x)}</span>`).join('')}</section>`:''}
+          <section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section>
+        </main></div>`;
+      const begin=(offerId='')=>{if(offerId)universalCustomerState.offerId=offerId;universalCustomerState.stage='intake';renderUniversalCustomerShell(p);};
+      $('universalHelpNow')?.addEventListener('click',()=>begin());
+      $('universalViewServices')?.addEventListener('click',()=>document.querySelector('.universal-service-preview')?.scrollIntoView({behavior:'smooth',block:'start'}));
+      $$('[data-universal-landing-offer]').forEach(btn=>btn.addEventListener('click',()=>begin(btn.dataset.universalLandingOffer)));
+      $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
+      return;
+    }
+    shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(p.description||'Choose an offer and send your request.')}</p></div><div class="universal-header-actions"><button type="button" class="secondary-btn universal-home-btn" id="universalBackHome">HOME</button><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
       <main class="universal-shell-main">
         ${ctx.state==='sea_trial'?'<div class="universal-trial-banner">SEA TRIAL — Activity created here is marked test data and remains subordinate to this Project ID.</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only">PRIVATE PREVIEW — Walk the real customer experience. Nothing submitted here is persisted.</div>':''}
         <section class="universal-order-card">
@@ -6547,6 +6611,7 @@
     $('universalCustomerEmail')?.addEventListener('input',e=>universalCustomerState.customerEmail=e.target.value);
     $('universalPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{universalCustomerState.photoData=String(r.result||'');renderUniversalCustomerShell(p)};r.readAsDataURL(file)});
     $('universalSubmitOrder')?.addEventListener('click',()=>submitUniversalCustomerOrder(p));
+    $('universalBackHome')?.addEventListener('click',()=>{universalCustomerState.stage='landing';renderUniversalCustomerShell(p)});
     $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
   }
   async function returnUniversalTestToShipwright(p){
@@ -6566,8 +6631,10 @@
   async function submitUniversalCustomerOrder(p){
     const offer=universalSelectedOffer(p); if(!offer){alert('Choose an offer first.');return;}
     if(p.customerExperience?.photoRequired && !universalCustomerState.photoData){alert(`Add the required photo before sending this ${activityTermsForProject(p).lowerSingular}.`);return;}
-    if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerName.trim()){alert('Enter your name before sending this order.');return;}
-    if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerPhone.trim() && !universalCustomerState.customerEmail.trim()){alert('Add a phone number or email so the business can reach you.');return;}
+    if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerName.trim()){alert('Enter your name before sending this request.');return;}
+    if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerPhone.trim()){alert('Add a mobile number so the business can reach you.');return;}
+    if(p.customerExperience?.emailRequired!==false && !universalCustomerState.customerEmail.trim()){alert('Add your email address before sending this request.');return;}
+    if(p.customerExperience?.emailRequired!==false && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(universalCustomerState.customerEmail.trim())){alert('Enter a valid email address.');return;}
     const prefix=(p.orderPrefix||p.projectCode||'ORD').replace(/[^A-Za-z0-9]/g,'').slice(0,8).toUpperCase()||'ORD';
     const now=new Date(), y=String(now.getFullYear()).slice(-2), mo=String(now.getMonth()+1).padStart(2,'0'), day=String(now.getDate()).padStart(2,'0'), suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase();
     const id=`${prefix}-${y}${mo}${day}-${suffix}`;
