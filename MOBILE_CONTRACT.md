@@ -27,3 +27,6 @@ All current and future customer-facing vessels must remain viable on iPhone, iPa
 - Typing must never auto-submit or move the viewport on the final digit; entry occurs only on explicit submit/keyboard Enter.
 - Keep the Engine gate visually stable until Fleet Command is ready, then perform one clean transition.
 - The configured Engine PIN remains valid at its configured length; recovery credential 5615 remains separate and valid.
+
+## 6.0.0 Benchmark-aware responsive composition
+A saved Design Benchmark may select responsive composition rules for a project, but it does not become customer-facing artwork. Phone, tablet, and desktop adapt the same project identity and content deliberately. Canonical logos render intact at every breakpoint; surrounding layout changes around them. Legacy Plumbing is the proving vessel for the responsive benchmark contract.

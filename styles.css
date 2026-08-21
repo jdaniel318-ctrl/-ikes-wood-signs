@@ -13794,3 +13794,170 @@ body.premium-plumbing-customer .experience-mode-banner button,body.legacy-plumbi
 .legacy-contractor-site .project-experience-brand-card .universal-brand-logo,
 .legacy-contractor-site .contractor-hero-brand img,
 .legacy-contractor-site .universal-shell-header img{object-fit:contain!important;object-position:center!important;filter:none!important;mix-blend-mode:normal!important}
+
+/* =========================================================
+   6.0.0 — OPEN WATER
+   Active project benchmark contract.
+   A saved/bundled benchmark selects composition rules; it never
+   replaces canonical logo or customer content.
+   ========================================================= */
+.benchmark-contract-active{--benchmark-navy:#061b31;--benchmark-navy-2:#082944;--benchmark-blue:#0b73e0;--benchmark-blue-2:#1498f0;--benchmark-paper:#f7f9fb;--benchmark-ink:#0b213b}
+
+/* Legacy flagship benchmark: exact logo in a restrained white masthead. */
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header{
+  background:#fff!important;color:#071a30!important;border:0!important;border-bottom:1px solid #d6e2ec!important;
+  box-shadow:none!important;padding:18px clamp(24px,5vw,72px)!important;min-height:108px!important;
+  display:grid!important;grid-template-columns:minmax(250px,.75fr) minmax(330px,1fr) auto!important;align-items:center!important;gap:24px!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .premium-brand-lockup{display:contents!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .legacy-real-logo{
+  width:260px!important;height:82px!important;flex-basis:260px!important;background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .legacy-real-logo img{width:100%!important;height:100%!important;object-fit:contain!important;object-position:left center!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .universal-brand-copy{display:flex!important;flex-direction:column!important;gap:7px!important;justify-self:start!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .universal-brand-copy small,
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .universal-brand-copy h1{display:none!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .universal-brand-copy p{margin:0!important;color:#203850!important;font:700 14px/1.45 Arial,sans-serif!important;max-width:420px!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-nav{display:none!important}
+.legacy-contractor-site.benchmark-contract-active .universal-header-actions{justify-self:end!important}
+.legacy-contractor-site.benchmark-contract-active .universal-settings-btn{background:#061b31!important;color:#fff!important;border-color:#163d57!important;box-shadow:0 8px 18px rgba(6,27,49,.16)!important}
+
+/* Private test bar visually belongs to the header rather than floating as a card. */
+.legacy-contractor-site.benchmark-contract-active .contractor-main{max-width:none!important;padding:0!important;background:#eef5f7!important}
+.legacy-contractor-site.benchmark-contract-active .full-sail-test-ribbon{
+  margin:0!important;border:0!important;border-radius:0!important;min-height:44px!important;padding:9px clamp(24px,5vw,72px)!important;background:#eef6fb!important;color:#15374c!important;box-shadow:none!important;
+}
+.legacy-contractor-site.benchmark-contract-active .full-sail-test-ribbon b{color:#0a4e7a!important}
+
+/* Hero + trust rail become one benchmark stage. */
+.legacy-contractor-site.benchmark-contract-active .contractor-benchmark-stage{background:var(--benchmark-navy)!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero{position:relative!important;display:grid!important;grid-template-columns:minmax(360px,.78fr) minmax(520px,1.22fr)!important;min-height:500px!important;margin:0!important;border:0!important;border-radius:0!important;background:var(--benchmark-navy)!important;overflow:hidden!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-copy{position:relative!important;z-index:3!important;padding:48px 42px 38px clamp(44px,6vw,92px)!important;background:linear-gradient(90deg,#061b31 0%,#061f37 82%,rgba(6,31,55,.2) 100%)!important;color:#fff!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-mobile-brand,
+.legacy-contractor-site.benchmark-contract-active .premium-eyebrow,
+.legacy-contractor-site.benchmark-contract-active .contractor-availability,
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-brand{display:none!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-copy h2{margin:0 0 20px!important;color:#fff!important;font:900 clamp(54px,4.5vw,76px)/.94 Arial,sans-serif!important;letter-spacing:-.045em!important;max-width:560px!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-copy h2 em{font-style:normal!important;color:var(--benchmark-blue)!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-copy>p{max-width:470px!important;margin:0 0 26px!important;color:#f2f7fb!important;font:500 18px/1.45 Arial,sans-serif!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-actions{display:grid!important;grid-template-columns:minmax(230px,1fr) minmax(190px,.75fr)!important;max-width:580px!important;gap:14px!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-actions button{min-height:58px!important;border-radius:10px!important;font-size:13px!important;letter-spacing:.07em!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-primary-cta{background:linear-gradient(135deg,var(--benchmark-blue-2),#0b65cf)!important;color:#fff!important;border:1px solid #4fc7ff!important;box-shadow:0 10px 24px rgba(11,115,224,.2)!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-secondary-cta{background:rgba(4,20,35,.7)!important;color:#fff!important;border-color:#8aaac0!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-visual{position:relative!important;z-index:1!important;min-height:500px!important;background:#071a2b!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-photo{background-position:center!important;background-size:cover!important;filter:saturate(.9) contrast(1.14) brightness(.72)!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-visual::after{background:linear-gradient(90deg,rgba(6,27,49,.36),rgba(6,27,49,.02) 35%,rgba(6,27,49,.06))!important}
+
+/* Trust rail: iconography and labels, not floating white cards. */
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip{
+  margin:0!important;padding:12px clamp(42px,6vw,92px)!important;border:0!important;border-radius:0!important;background:#071f38!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;box-shadow:none!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip{
+  min-height:82px!important;padding:9px 22px!important;background:transparent!important;border:0!important;border-right:1px solid rgba(173,201,224,.2)!important;border-radius:0!important;box-shadow:none!important;display:flex!important;justify-content:flex-start!important;gap:13px!important;text-align:left!important;color:#fff!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip:last-child{border-right:0!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-graphic{width:42px!important;height:42px!important;flex-basis:42px!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-graphic svg{width:42px!important;height:42px!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip strong{font-size:13px!important;line-height:1.15!important;color:#fff!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-bbb{justify-content:center!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-bbb img{width:min(130px,100%)!important;height:54px!important}
+
+/* Services: light six-card benchmark grid, no stock-photo mosaic. */
+.legacy-contractor-site.benchmark-contract-active .contractor-services-section{margin:0!important;padding:20px clamp(42px,6vw,92px) 28px!important;border:0!important;border-radius:0!important;background:#f8fafc!important;box-shadow:none!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-services-head{margin:0 0 14px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-services-head h2{margin:0!important;color:#10233b!important;font:800 28px/1.1 Arial,sans-serif!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-service-mosaic{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-card{position:relative!important;min-height:112px!important;padding:16px 38px 16px 16px!important;border:1px solid #d9e2ea!important;border-radius:9px!important;background:#fff!important;color:#0d2541!important;display:grid!important;grid-template-columns:42px 1fr!important;align-items:center!important;gap:12px!important;text-align:left!important;box-shadow:0 5px 14px rgba(9,38,62,.035)!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-icon{width:42px!important;height:42px!important;display:grid!important;place-items:center!important;color:#0b4d94!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-icon svg{width:32px!important;height:32px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-copy{display:grid!important;gap:5px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-copy strong{font:800 13px/1.16 Arial,sans-serif!important;color:#10233b!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-copy small{font:500 10.5px/1.3 Arial,sans-serif!important;color:#53687a!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-arrow{position:absolute!important;right:14px!important;top:50%!important;transform:translateY(-50%)!important;font-size:22px!important;color:#284760!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-other{grid-column:1/-1!important;min-height:74px!important}
+
+/* Benchmark closure. The richer legacy proof/review modules remain available in the
+   project system, but the approved benchmark is the active customer composition. */
+.legacy-contractor-site.benchmark-contract-active .contractor-why-section,
+.legacy-contractor-site.benchmark-contract-active .contractor-reviews-section,
+.legacy-contractor-site.benchmark-contract-active .contractor-bottom-cta,
+.legacy-contractor-site.benchmark-contract-active .contractor-footer{display:none!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-section{margin:0!important;padding:22px clamp(42px,6vw,92px) 28px!important;background:linear-gradient(180deg,#071d34,#061a30)!important;color:#fff!important;border:0!important;border-radius:0!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-head{display:flex!important;align-items:end!important;justify-content:space-between!important;gap:24px!important;margin-bottom:18px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-head h2{margin:0!important;font:800 25px/1.1 Arial,sans-serif!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-head span{font:600 12px/1.3 Arial,sans-serif!important;color:#e8eff5!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-grid article{position:relative!important;display:grid!important;grid-template-columns:34px 1fr!important;grid-template-rows:auto auto!important;gap:5px 10px!important;align-items:start!important;padding:8px 28px 6px 0!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-step-num{position:absolute!important;left:1px!important;top:-8px!important;width:20px!important;height:20px!important;border-radius:50%!important;background:#0877dc!important;display:grid!important;place-items:center!important;font:800 10px Arial,sans-serif!important;color:#fff!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-icon{grid-row:1/span 2!important;width:34px!important;height:34px!important;color:#fff!important;margin-top:10px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-icon svg{width:34px!important;height:34px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-grid article>div{display:grid!important;gap:4px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-grid strong{font:800 12px/1.15 Arial,sans-serif!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-grid small{font:500 10px/1.32 Arial,sans-serif!important;color:#d2dee7!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-grid article>i{position:absolute!important;right:10px!important;top:24px!important;font:300 25px/1 Arial,sans-serif!important;color:#d6e7f4!important}
+
+/* Tablet composition: still side-by-side, deliberately denser. */
+@media(min-width:701px) and (max-width:1050px){
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header{grid-template-columns:minmax(200px,.7fr) minmax(270px,1fr) auto!important;padding:14px 22px!important;min-height:88px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header .legacy-real-logo{width:205px!important;height:66px!important;flex-basis:205px!important}
+  .legacy-contractor-site.benchmark-contract-active .full-sail-test-ribbon{padding:8px 22px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero{grid-template-columns:.82fr 1.18fr!important;min-height:400px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy{padding:34px 28px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy h2{font-size:clamp(42px,5.4vw,56px)!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy>p{font-size:14px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-actions{gap:10px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip{padding:9px 18px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip{padding:8px 12px!important;min-height:66px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-services-section{padding:18px 22px 24px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-card{min-height:92px!important;padding:13px 30px 13px 12px!important;grid-template-columns:34px 1fr!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-icon{width:34px!important;height:34px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-copy strong{font-size:11px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-copy small{font-size:9px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-section{padding:18px 22px 22px!important}
+}
+
+/* Phone composition: benchmark-quality adaptation, no oversized logo card in hero. */
+@media(max-width:700px){
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header{padding:10px 14px!important;min-height:82px!important;grid-template-columns:1fr auto!important;gap:10px!important;background:#fff!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header .legacy-real-logo{width:190px!important;height:58px!important;flex-basis:190px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header .universal-brand-copy{display:none!important}
+  .legacy-contractor-site.benchmark-contract-active .universal-settings-btn{width:44px!important;height:44px!important;border-radius:11px!important}
+  .legacy-contractor-site.benchmark-contract-active .full-sail-test-ribbon{padding:8px 14px!important;min-height:52px!important;font-size:9px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero{display:block!important;min-height:510px!important;border-radius:0!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-visual{position:absolute!important;inset:0!important;min-height:510px!important;height:100%!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-photo{background-position:67% center!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-visual::after{background:linear-gradient(90deg,rgba(6,27,49,.98) 0%,rgba(6,27,49,.9) 47%,rgba(6,27,49,.38) 68%,rgba(6,27,49,.05) 100%)!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy{position:relative!important;min-height:510px!important;padding:22px 18px 18px!important;background:transparent!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy h2{font-size:clamp(39px,10.8vw,48px)!important;max-width:310px!important;margin:0 0 14px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy>p{font-size:13px!important;line-height:1.42!important;max-width:300px!important;margin-bottom:16px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-actions{grid-template-columns:1fr!important;max-width:100%!important;gap:8px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-actions button{min-height:48px!important;font-size:11px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip{grid-template-columns:repeat(4,minmax(0,1fr))!important;padding:5px 3px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip{min-height:66px!important;padding:6px 3px!important;display:grid!important;justify-items:center!important;text-align:center!important;gap:4px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-graphic{width:28px!important;height:28px!important;flex-basis:28px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-graphic svg{width:28px!important;height:28px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip strong{font-size:7.5px!important;line-height:1.05!important;text-align:center!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-bbb img{width:48px!important;height:31px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-services-section{padding:14px 12px 16px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-services-head h2{font-size:20px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-service-mosaic{grid-template-columns:1fr!important;gap:5px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-card{min-height:58px!important;padding:8px 28px 8px 9px!important;grid-template-columns:26px 1fr!important;gap:8px!important;border-radius:6px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-icon{width:26px!important;height:26px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-icon svg{width:21px!important;height:21px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-copy{grid-template-columns:auto 1fr!important;align-items:center!important;gap:5px 8px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-copy strong{font-size:10px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-copy small{font-size:8px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-service-other{grid-column:auto!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-section{padding:14px 12px calc(78px + env(safe-area-inset-bottom))!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-head{display:block!important;margin-bottom:10px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-head h2{font-size:18px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-head span{display:none!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-grid{grid-template-columns:1fr!important;gap:6px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-grid article{grid-template-columns:30px 1fr!important;padding:5px 0!important;min-height:46px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-step-num{left:0!important;top:3px!important;width:18px!important;height:18px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-icon{width:28px!important;height:28px!important;margin-top:7px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-icon svg{width:28px!important;height:28px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-grid strong{font-size:10px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-grid small{font-size:8px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-grid article>i{display:none!important}
+}

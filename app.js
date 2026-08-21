@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.9.9';
+  const BUILD_VERSION = '6.0.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 8;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -7101,6 +7101,31 @@
     return '';
   }
 
+
+  function projectDesignBenchmarkState(p){
+    const assets=projectAssetMemory.get(p?.id)||{};
+    const saved=String(assets.designBenchmark||'').trim();
+    const baseline=String(bundledProjectBenchmark(p)||'').trim();
+    return {
+      active:!!(saved||baseline),
+      saved:!!saved,
+      source:saved||baseline,
+      mode:isLegacyPlumbingProject(p)?'legacy-responsive-flagship':'project-benchmark'
+    };
+  }
+  function benchmarkHowIcon(i){
+    const paths=[
+      'M4 5h16v11H8l-4 3V5zm4 5h8M8 13h5',
+      'M5 12a7 7 0 0 1 14 0v5h-3v-5a4 4 0 0 0-8 0v5H5v-5zm3 6h8',
+      'M12 3a9 9 0 1 0 9 9M12 7v5l3 2M5 20l3-3M19 20l-3-3',
+      'M12 3l8 3v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3zm-4 9 3 3 5-6'
+    ];
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[i]||paths[0]}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+  function benchmarkServiceCardMarkup(x){
+    const other=/something else/i.test(String(x?.name||''));
+    return `<button type="button" class="benchmark-service-card ${other?'benchmark-service-other':''}" data-universal-landing-offer="${escapeHtml(x.id)}"><span class="benchmark-service-icon">${universalServiceIcon(x.name)}</span><span class="benchmark-service-copy"><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small></span><span class="benchmark-service-arrow" aria-hidden="true">›</span></button>`;
+  }
   function universalServiceIcon(name=''){
     const n=String(name).toLowerCase();
     let path='M12 3v18M5 10h14';
@@ -7156,22 +7181,26 @@
         const hours=landing.hours||'';
         const market=landing.market||'Richmond area';
         const legacy=isLegacyPlumbingProject(p);
+        const benchmark=projectDesignBenchmarkState(p);
+        const benchmarkActive=benchmark.active;
         const visuals=plumbingVisualAssets(p);
         const process=Array.isArray(landing.serviceProcess)&&landing.serviceProcess.length?landing.serviceProcess:['Tell us what you need','Add property and job details','Choose how to reach you','We review and follow up'];
         const testimonials=Array.isArray(landing.testimonials)?landing.testimonials:[];
         const reviewsVerified=landing.reviewsVerified===true;
         const visibleTestimonials=reviewsVerified?testimonials:(contactLocked?testimonials.filter(t=>t?.sample===true):[]);
         const heroPhoto=visuals.why||visuals.services?.service_repair||'';
-        const serviceCards=offers.map(x=>{const key=plumbingServiceVisualKey(x.name);const image=key?visuals.services?.[key]:'';const other=/something else/i.test(x.name);return `<button type="button" class="contractor-service-card ${image?'has-photo':''} ${other?'contractor-service-other':''}" data-universal-landing-offer="${escapeHtml(x.id)}" ${image?`style="--service-photo:url('${escapeHtml(image)}')"`:''}><span class="contractor-service-photo"></span><span class="contractor-service-overlay"></span><span class="contractor-service-content"><span class="contractor-service-icon">${universalServiceIcon(x.name)}</span><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small><b>START REQUEST →</b></span></button>`}).join('');
+        const serviceCards=benchmarkActive&&legacy
+          ?offers.map(benchmarkServiceCardMarkup).join('')
+          :offers.map(x=>{const key=plumbingServiceVisualKey(x.name);const image=key?visuals.services?.[key]:'';const other=/something else/i.test(x.name);return `<button type="button" class="contractor-service-card ${image?'has-photo':''} ${other?'contractor-service-other':''}" data-universal-landing-offer="${escapeHtml(x.id)}" ${image?`style="--service-photo:url('${escapeHtml(image)}')"`:''}><span class="contractor-service-photo"></span><span class="contractor-service-overlay"></span><span class="contractor-service-content"><span class="contractor-service-icon">${universalServiceIcon(x.name)}</span><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small><b>START REQUEST →</b></span></button>`}).join('');
         const testimonialCards=visibleTestimonials.length?visibleTestimonials.map((t,i)=>`<article class="contractor-review-card">${visuals.testimonials?.[i]?`<img src="${escapeHtml(visuals.testimonials[i])}" alt="" loading="lazy">`:''}<div><span aria-label="5 stars">★★★★★</span><p>“${escapeHtml(t.quote||'')}”</p><strong>${escapeHtml(t.label||'Local customer')}</strong><small>${escapeHtml(t.service||'Plumbing service')}</small></div></article>`).join(''):'';
         const reviewNotice=!reviewsVerified&&testimonialCards?'<div class="contractor-review-notice">SAMPLE TEST CONTENT • Replace with verified customer reviews before launch.</div>':'';
-        shell.innerHTML=`<div class="universal-service-landing premium-plumbing-landing project-brand-first ${legacy?'legacy-contractor-site':''}" style="${projectExperienceStyle(p)}"><header class="universal-shell-header landing-header premium-brand-header contractor-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml([market,hours].filter(Boolean).join(' • ')||description)}</p></div></div><nav class="contractor-nav" aria-label="Customer navigation"><button type="button" data-scroll-target="services">SERVICES</button><button type="button" data-scroll-target="why">WHY ${legacy?'LEGACY':'US'}</button><button type="button" data-scroll-target="process">HOW IT WORKS</button><button type="button" id="contractorHeaderHelp">${escapeHtml(requestCtaLabel)}</button></nav><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
+        shell.innerHTML=`<div class="universal-service-landing premium-plumbing-landing project-brand-first ${legacy?'legacy-contractor-site':''} ${benchmarkActive?'benchmark-contract-active':''}" data-benchmark-contract="${benchmarkActive?'active':'none'}" style="${projectExperienceStyle(p)}"><header class="universal-shell-header landing-header premium-brand-header contractor-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml([market,hours].filter(Boolean).join(' • ')||description)}</p></div></div><nav class="contractor-nav" aria-label="Customer navigation"><button type="button" data-scroll-target="services">SERVICES</button><button type="button" data-scroll-target="why">WHY ${legacy?'LEGACY':'US'}</button><button type="button" data-scroll-target="process">HOW IT WORKS</button><button type="button" id="contractorHeaderHelp">${escapeHtml(requestCtaLabel)}</button></nav><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
           <main class="universal-landing-main premium-plumbing-main contractor-main">${previewBanner}${testContactSafety}
-            <section class="contractor-hero"><div class="contractor-hero-copy"><div class="contractor-mobile-brand">${projectExperienceBrandCard(p,initials,{tagline:landing.market||p?.branding?.subtitle||''})}</div><div class="premium-eyebrow"><span></span>${escapeHtml(landing.eyebrow||'RICHMOND, VA • LICENSED & INSURED')}</div><h2>${escapeHtml(landing.headline||'Fast, reliable plumbing—done right.')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="contractor-hero-actions"><button type="button" id="universalHelpNow" class="contractor-primary-cta">${escapeHtml(contactLocked?helpCtaLabel:(landing.primaryCta||'I NEED PLUMBING HELP'))}</button><button type="button" id="universalViewServices" class="contractor-secondary-cta">VIEW SERVICES</button></div><div class="contractor-availability"><b>LOCAL SERVICE TEAM</b><span>${escapeHtml(hours||'Business-hour response')}</span><span>${escapeHtml(market)}</span></div></div><div class="contractor-hero-visual" ${heroPhoto?`style="--contractor-hero:url('${escapeHtml(heroPhoto)}')"`:''}><div class="contractor-hero-photo"></div><div class="contractor-hero-brand">${projectExperienceBrandCard(p,initials,{tagline:landing.heroBrandLine||p?.branding?.subtitle||'Professional plumbing for homes & businesses'})}</div></div></section>
-            ${customerTrustStripMarkup(p,{compact:true})}
-            <section id="services" class="contractor-services-section"><div class="contractor-section-heading"><div><small>PLUMBING SERVICES</small><h2>Start with the job in front of you.</h2></div><p>Choose the service that best matches what you need. We’ll guide you through the right request and keep it simple.</p></div><div class="contractor-service-mosaic">${serviceCards}</div></section>
+            <div class="contractor-benchmark-stage"><section class="contractor-hero"><div class="contractor-hero-copy"><div class="contractor-mobile-brand">${projectExperienceBrandCard(p,initials,{tagline:landing.market||p?.branding?.subtitle||''})}</div><div class="premium-eyebrow"><span></span>${escapeHtml(landing.eyebrow||'RICHMOND, VA • LICENSED & INSURED')}</div><h2>${benchmarkActive&&legacy?'Fast, reliable<br><em>plumbing—</em><br>done right.':escapeHtml(landing.headline||'Fast, reliable plumbing—done right.')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="contractor-hero-actions"><button type="button" id="universalHelpNow" class="contractor-primary-cta">${escapeHtml(contactLocked?helpCtaLabel:(landing.primaryCta||'I NEED PLUMBING HELP'))}</button><button type="button" id="universalViewServices" class="contractor-secondary-cta">VIEW SERVICES</button></div><div class="contractor-availability"><b>LOCAL SERVICE TEAM</b><span>${escapeHtml(hours||'Business-hour response')}</span><span>${escapeHtml(market)}</span></div></div><div class="contractor-hero-visual" ${heroPhoto?`style="--contractor-hero:url('${escapeHtml(heroPhoto)}')"`:''}><div class="contractor-hero-photo"></div><div class="contractor-hero-brand">${projectExperienceBrandCard(p,initials,{tagline:landing.heroBrandLine||p?.branding?.subtitle||'Professional plumbing for homes & businesses'})}</div></div></section>
+            ${customerTrustStripMarkup(p,{compact:true})}</div>
+            <section id="services" class="contractor-services-section">${benchmarkActive&&legacy?'<div class="benchmark-services-head"><h2>Our Services</h2></div>':'<div class="contractor-section-heading"><div><small>PLUMBING SERVICES</small><h2>Start with the job in front of you.</h2></div><p>Choose the service that best matches what you need. We’ll guide you through the right request and keep it simple.</p></div>'}<div class="contractor-service-mosaic">${serviceCards}</div></section>
             <section id="why" class="contractor-why-section"><div class="contractor-why-photo" ${visuals.why?`style="--why-photo:url('${escapeHtml(visuals.why)}')"`:''}></div><div class="contractor-why-copy"><small>WHY ${legacy?'LEGACY':'THIS TEAM'}</small><h2>${escapeHtml(landing.proofTitle||'Trusted, straightforward service')}</h2><p>${escapeHtml(landing.proofCopy||'Clear recommendations, quality workmanship, and dependable local follow-up.')}</p><ul><li><b>Licensed & insured</b><span>Professional work with safety and code compliance in mind.</span></li><li><b>Clear communication</b><span>Know what the next step is before work begins.</span></li><li><b>Homes & businesses</b><span>From repairs and replacements to remodels and larger projects.</span></li></ul></div></section>
-            <section id="process" class="contractor-process-section"><div class="contractor-section-heading compact"><div><small>HOW SERVICE STARTS</small><h2>A better request means a better first conversation.</h2></div><p>No generic contact form. Give the plumbing team the details they need before they call you back.</p></div><div class="contractor-process-grid">${process.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong><small>${['Choose the service or problem that is closest.','Tell us where the work is and what is happening.','Add photos, timing and the best way to contact you.','The team reviews the request and follows up with the right next step.'][i]||'Move forward with a clear next step.'}</small></article>`).join('')}</div></section>
+            ${benchmarkActive&&legacy?`<section id="process" class="benchmark-how-section"><div class="benchmark-how-head"><h2>How It Works</h2><span>Proudly serving the ${escapeHtml(String(market).replace(/\s+area$/i,''))} area.</span></div><div class="benchmark-how-grid">${process.slice(0,4).map((x,i)=>`<article><span class="benchmark-step-num">${i+1}</span><span class="benchmark-how-icon">${benchmarkHowIcon(i)}</span><div><strong>${escapeHtml(['Request Help','We Respond','We Get to Work','You’re Covered'][i]||x)}</strong><small>${escapeHtml(['Tell us what you need. We’ll gather the details.','A local expert will reach out quickly.','We show up on time and get it done right.','Quality service you can count on.'][i]||'')}</small></div>${i<3?'<i aria-hidden="true">→</i>':''}</article>`).join('')}</div></section>`:`<section id="process" class="contractor-process-section"><div class="contractor-section-heading compact"><div><small>HOW SERVICE STARTS</small><h2>A better request means a better first conversation.</h2></div><p>No generic contact form. Give the plumbing team the details they need before they call you back.</p></div><div class="contractor-process-grid">${process.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong><small>${['Choose the service or problem that is closest.','Tell us where the work is and what is happening.','Add photos, timing and the best way to contact you.','The team reviews the request and follows up with the right next step.'][i]||'Move forward with a clear next step.'}</small></article>`).join('')}</div></section>`}
             ${testimonialCards?`<section class="contractor-reviews-section"><div class="contractor-section-heading compact"><div><small>CUSTOMER EXPERIENCE</small><h2>Proof that the details matter.</h2></div><p>Clear work, clear communication, dependable results.</p></div>${reviewNotice}<div class="contractor-review-grid">${testimonialCards}</div></section>`:''}
             <section class="contractor-bottom-cta"><div><small>READY WHEN YOU ARE</small><h2>Need a plumber in the Richmond area?</h2><p>${escapeHtml(landing.customerPromise||'Tell us what is happening and we will collect the right details for the next step.')}</p></div><div class="contractor-bottom-action"><button type="button" id="universalHelpNowBottom" class="contractor-primary-cta">${escapeHtml(requestCtaLabel)}</button><small class="contractor-cta-reassure">Tell us what’s happening — it only takes a minute.</small></div></section>
             <footer class="contractor-footer"><div>${logoMarkup}<div><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(market)} • ${escapeHtml(hours)}</span></div></div><div><span>${escapeHtml(landing.phone||'')}</span><span>${escapeHtml(landing.email||'')}</span></div></footer>
@@ -11935,7 +11964,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.0',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11972,7 +12001,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.0',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12143,7 +12172,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.9.9'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.0'};
     }
 
     // Commit the visual crossing only after the Engine has had a chance to render.

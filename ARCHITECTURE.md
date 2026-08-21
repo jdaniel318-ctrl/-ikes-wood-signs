@@ -228,3 +228,6 @@ Legacy Plumbing is the proving vessel for a responsive Customer Site Kit composi
 - `designBenchmark` is a separate project-scoped reference asset. It guides design/QA but is never customer-facing by implication.
 - Benchmarks are project-specific. Reusable Customer Site Kit structure may be shared across the fleet, but another vessel’s brand assets are never inherited.
 - Legacy Plumbing carries a byte-identical bundled canonical-logo fallback and its approved responsive benchmark so fresh devices retain the correct identity and design target.
+
+## 6.0.0 Benchmark Contract — Open Water
+A project may carry a canonical Project Logo / Mark and a separate Design Benchmark / Reference. The logo is live identity; the benchmark is a non-rendered design contract. When a benchmark is present, the Customer Site Kit may select a project-specific benchmark composition profile while continuing to render native HTML/CSS, project data, and project-owned graphics. Benchmark imagery must never substitute for the canonical logo or customer-facing assets. Legacy Plumbing is the first flagship implementation of this contract.

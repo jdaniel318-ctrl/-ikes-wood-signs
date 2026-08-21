@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-9-9-flagship-standard';
+const CACHE='dark-sky-v6-0-0-open-water';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.9.9',
-  './platform_core.js?v=5.9.9',
-  './platform_v4.js?v=5.9.9',
-  './platform_identity.js?v=5.9.9',
-  './app.js?v=5.9.9',
-  './captain.js?v=5.9.9',
+  './styles.css?v=6.0.0',
+  './platform_core.js?v=6.0.0',
+  './platform_v4.js?v=6.0.0',
+  './platform_identity.js?v=6.0.0',
+  './app.js?v=6.0.0',
+  './captain.js?v=6.0.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
