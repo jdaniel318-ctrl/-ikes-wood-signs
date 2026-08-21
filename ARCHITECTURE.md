@@ -208,3 +208,11 @@ Client Preview is a fourth customer-facing lifecycle surface alongside Internal 
 Dark Sky owns one master capability catalog. Each capability has an Engine maturity state: `available` means working behavior exists now; `foundation` means the Engine recognizes the capability contract but still owes implementation behavior. Enabled foundation capabilities are projected into a project-scoped implementation plan with a concrete next step. Preparing a foundation creates only that project's scaffold (`capabilityImplementation` + `foundationConfig`) and never mutates another Project ID. Fleet Command surfaces the highest-priority unprepared foundations as the Engine Shipyard queue. This makes lessons learned on one vessel reusable without assuming every vessel needs the same feature.
 
 The repeatable sequence is: understand business → recommend capabilities → Engine approves capabilities → available capabilities operate immediately → foundation capabilities become explicit next steps → prepare project-local scaffold → implement/test behavior → promote the master capability to available only after the reusable Engine behavior is proven.
+
+
+## 5.9.6 Responsive Project Experience Contract
+- Customer Site Kit components are responsive primitives, not Legacy Plumbing templates.
+- Each vessel supplies its own logo, colors, imagery, service content, trust marks, and copy.
+- Real project-owned brand assets override generated fallbacks.
+- Mobile, tablet, and desktop are first-class layouts with device-specific composition rather than simple scaling.
+- Strong project identity is required at header and hero levels while Black Flag remains visually behind the customer experience.

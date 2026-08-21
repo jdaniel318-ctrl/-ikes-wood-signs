@@ -13438,3 +13438,71 @@ body.premium-plumbing-customer .experience-mode-banner button,body.legacy-plumbi
 #blackFlagEntryGate .bf-pin-hint{display:block;margin:-2px 0 8px;text-align:center;color:#69808a;font:800 9px/1.2 Arial,sans-serif;letter-spacing:.11em;text-transform:uppercase}
 #blackFlagEntryGate .bf-pin-input{text-align:center!important;font-variant-numeric:tabular-nums}
 @media(max-width:700px){#blackFlagEntryGate .bf-pin-input{touch-action:manipulation!important;-webkit-user-select:text!important;user-select:text!important}}
+
+
+/* 5.9.6 — Broadside: responsive project-brand experience system */
+.project-brand-first{--project-primary:#0b3f53;--project-accent:#2fa8cf}
+.project-brand-first .contractor-primary-cta,.project-brand-first .primary-btn{background:linear-gradient(135deg,var(--project-accent),color-mix(in srgb,var(--project-primary) 72%,#0b6f91))!important}
+.project-experience-brand-card{display:flex;align-items:center;gap:14px;min-width:0}
+.project-experience-brand-card .universal-brand-logo{background:#fff!important;border:1px solid rgba(18,55,68,.08)!important;box-shadow:0 10px 26px rgba(4,25,33,.12)}
+.project-experience-brand-card-copy{display:grid;gap:3px;min-width:0}
+.project-experience-brand-card-copy strong{color:#17343e;font:850 17px/1.05 Arial,sans-serif;letter-spacing:-.015em}
+.project-experience-brand-card-copy small{color:#5e747b;font:750 11px/1.25 Arial,sans-serif}
+.contractor-mobile-brand{display:none}
+.contractor-hero-brand{padding:16px 18px!important}
+.contractor-hero-brand .project-experience-brand-card{width:100%}
+.contractor-hero-brand .project-experience-brand-card .universal-brand-logo{width:190px!important;height:104px!important;flex-basis:190px!important;padding:8px 10px!important}
+.contractor-hero-brand .project-experience-brand-card-copy strong{font-size:18px}
+.contractor-hero-brand .project-experience-brand-card-copy small{font-size:12px}
+.project-brand-header{background:color-mix(in srgb,var(--project-primary) 88%,#06161d)!important;color:#fff!important;border-bottom:1px solid color-mix(in srgb,var(--project-accent) 42%,transparent)!important}
+.project-brand-header .universal-brand-copy h1,.project-brand-header .universal-brand-copy small{color:#fff!important}
+.project-brand-header .universal-brand-copy p{color:rgba(255,255,255,.72)!important}
+.project-brand-header .universal-brand-logo{width:84px;height:84px;flex-basis:84px;border-radius:20px;padding:7px;background:#fff}
+.universal-confidence-brand{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid rgba(25,74,87,.12)}
+.universal-confidence-brand .project-experience-brand-card .universal-brand-logo{width:110px;height:66px;flex-basis:110px;border-radius:14px}
+
+@media(min-width:1051px){
+  .contractor-brand-header .legacy-real-logo{width:146px!important;height:86px!important;flex-basis:146px!important}
+  .premium-brand-lockup{gap:20px!important}
+  .contractor-brand-header .universal-brand-copy h1{font-size:32px!important}
+  .contractor-hero-brand{left:30px!important;right:30px!important;bottom:28px!important}
+}
+
+@media(min-width:701px) and (max-width:1050px){
+  .contractor-brand-header .legacy-real-logo,.contractor-intake-header .legacy-real-logo{width:118px!important;height:74px!important;flex-basis:118px!important}
+  .contractor-brand-header{min-height:98px!important}
+  .contractor-hero-brand .project-experience-brand-card .universal-brand-logo{width:176px!important;height:96px!important;flex-basis:176px!important}
+  .project-brand-header .universal-brand-logo{width:76px;height:76px;flex-basis:76px}
+}
+
+@media(max-width:700px){
+  .contractor-brand-header,.contractor-intake-header{min-height:104px!important;padding:14px 14px!important;gap:12px!important}
+  .contractor-brand-header .premium-brand-lockup,.contractor-intake-header .premium-brand-lockup{gap:13px!important}
+  .contractor-brand-header .legacy-real-logo,.contractor-intake-header .legacy-real-logo{width:102px!important;height:74px!important;flex-basis:102px!important;border-radius:16px!important;padding:8px!important}
+  .contractor-brand-header .universal-brand-copy h1,.contractor-intake-header .universal-brand-copy h1{font-size:29px!important;line-height:1!important}
+  .contractor-brand-header .universal-brand-copy p,.contractor-intake-header .universal-brand-copy p{font-size:12px!important;line-height:1.35!important}
+  .contractor-brand-header .universal-settings-btn,.contractor-intake-header .universal-settings-btn{width:52px!important;height:52px!important;min-width:52px!important;border-radius:15px!important}
+  .legacy-contractor-site .contractor-hero-copy{padding:30px 24px 28px!important}
+  .contractor-mobile-brand{display:block;margin:0 0 22px}
+  .contractor-mobile-brand .project-experience-brand-card{padding:12px 14px;background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.28);border-radius:18px;box-shadow:0 14px 30px rgba(0,0,0,.16)}
+  .contractor-mobile-brand .project-experience-brand-card .universal-brand-logo{width:150px!important;height:82px!important;flex-basis:150px!important;border:0!important;box-shadow:none!important}
+  .contractor-mobile-brand .project-experience-brand-card-copy{display:none}
+  .contractor-hero-visual{min-height:300px!important}
+  .contractor-hero-brand{left:16px!important;right:16px!important;bottom:16px!important;padding:14px!important}
+  .contractor-hero-brand .project-experience-brand-card{gap:12px}
+  .contractor-hero-brand .project-experience-brand-card .universal-brand-logo{width:152px!important;height:84px!important;flex-basis:152px!important}
+  .contractor-hero-brand .project-experience-brand-card-copy strong{display:none}
+  .contractor-hero-brand .project-experience-brand-card-copy small{font-size:12px!important;color:#243f49!important}
+  .project-brand-header{padding:12px 14px!important}
+  .project-brand-header .premium-brand-lockup{gap:12px}
+  .project-brand-header .universal-brand-logo{width:76px;height:76px;flex-basis:76px;border-radius:18px}
+  .project-brand-header .universal-brand-copy h1{font-size:27px!important}
+  .universal-confidence-brand .project-experience-brand-card{flex-direction:column;align-items:flex-start}
+  .universal-confidence-brand .project-experience-brand-card .universal-brand-logo{width:132px;height:76px;flex-basis:76px}
+}
+
+@media(max-width:430px){
+  .contractor-brand-header .legacy-real-logo,.contractor-intake-header .legacy-real-logo{width:94px!important;height:70px!important;flex-basis:94px!important}
+  .contractor-brand-header .universal-brand-copy h1,.contractor-intake-header .universal-brand-copy h1{font-size:27px!important}
+  .contractor-mobile-brand .project-experience-brand-card .universal-brand-logo{width:142px!important;height:78px!important;flex-basis:142px!important}
+}
