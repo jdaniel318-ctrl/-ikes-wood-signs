@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-4-0-contractor-platform';
+const CACHE='dark-sky-v5-5-1-test-contact-safety';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.5.0',
-  './platform_core.js?v=5.5.0',
-  './platform_v4.js?v=5.5.0',
-  './platform_identity.js?v=5.5.0',
-  './app.js?v=5.5.0',
-  './captain.js?v=5.5.0',
+  './styles.css?v=5.6.0',
+  './platform_core.js?v=5.6.0',
+  './platform_v4.js?v=5.6.0',
+  './platform_identity.js?v=5.6.0',
+  './app.js?v=5.6.0',
+  './captain.js?v=5.6.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

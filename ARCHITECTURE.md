@@ -180,7 +180,12 @@ Rules:
 ## 5.1.0 Engine Commissioning Contract
 Project lifecycle governance belongs to the Black Flag Engine Room. The canonical commissioning path is Configure → Preview → Approve → Sea Trial → Ready → Live. Operators may return to configuration or rerun preview/testing without rebuilding project identity. Preview, approval, and Sea Trial evidence are bound to the current customer-facing configuration signature, so later customer-facing changes invalidate downstream evidence by becoming stale rather than by deleting project data. Project Manager and customer layers do not own or expose this lifecycle machinery. Every transition remains project-scoped and default-deny across project boundaries.
 
-## Fleet Customer Entry Contract (5.5.0)
+## Fleet Customer Entry Contract (5.6.0)
 Every customer-facing vessel enters through its own landing experience at scroll origin. Fresh project entry, Private Preview, Test Experience, and explicit Home navigation must reset document and customer-shell scroll state. Scroll state is never shared across Project IDs. Business-category learning may improve layout and journey recommendations across the fleet, but customer data, assets, brand state, workflow state, and presentation state remain project-scoped.
 
 Customer experience reuse follows the rule: **shared principles, unique vessel**. Confidence-first landing, one dominant customer action, business-appropriate categories, guided intake, required transactional email by default, and mobile-first navigation are reusable contracts. Brand assets, imagery, copy, offers, and project data are never inherited from another project.
+
+
+## Client Preview Boundary (5.6.0)
+
+Client Preview is a fourth customer-facing lifecycle surface alongside Internal Preview, Sea Trial, and Live. It is presentation-only and is designed for sharing with a prospective or current business owner before publication. The preview transport is project-scoped and revision-scoped, protected by a unique preview PIN, and always executes under non-live contact safety. It must never expose Dark Sky/Black Flag/Captain authority surfaces.

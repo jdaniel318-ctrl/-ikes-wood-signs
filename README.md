@@ -1,4 +1,4 @@
-# Dark Sky 5.5.0
+# Dark Sky 5.6.0
 
 Contractor-grade customer experience pass. Legacy Plumbing is the proof vessel for a stronger service-business platform: project-owned public website evidence, source-aware visual assets, confidence-first landing, service-path cards, guided contractor intake, and persistent project isolation.
 
@@ -76,3 +76,7 @@ This build standardizes Project Admin access across the fleet: PIN `4353` is the
 # Dark Sky v4.9.4 — Capability Authority + Project Manager Workspace
 
 This build separates the Dark Sky master capability library from project authorization and project-manager operations. Capabilities are enabled only in each Project Control Center, while the Project Manager Workspace presents the enabled set in business-specific operational groups. Signal Restoration is the proving ground and now prioritizes restoration operations while keeping visual-placement tooling as an advanced option.
+
+## Client Preview
+
+From Project Command, use **Client Preview** to create a clean unpublished customer-facing link. Create a unique preview PIN, choose an expiration window, generate the link, and share the PIN separately. Client Preview cannot call, email, text, submit to the real business, take payments, or expose Engine/Captain/Project Admin controls.

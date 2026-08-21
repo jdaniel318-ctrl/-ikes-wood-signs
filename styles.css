@@ -12600,7 +12600,7 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
 @media(max-width:700px){.legacy-plumbing-customer .experience-mode-banner,.premium-plumbing-customer .experience-mode-banner{left:10px!important;bottom:10px!important;max-width:calc(100vw - 20px)!important}.contractor-main{padding:12px 10px 58px!important}.contractor-brand-header,.contractor-intake-header{padding:12px!important}.contractor-brand-header .legacy-real-logo,.contractor-intake-header .legacy-real-logo{width:86px!important;height:58px!important;flex-basis:86px!important}.contractor-hero-copy{padding:46px 26px}.contractor-hero-copy h2{font-size:52px}.contractor-hero-copy>p{font-size:17px}.contractor-hero-actions{grid-template-columns:1fr}.contractor-hero-visual{min-height:340px}.contractor-hero-brand{left:18px;right:18px;bottom:18px}.contractor-hero-brand .universal-brand-logo{width:130px!important;height:74px!important;flex-basis:130px!important}.contractor-proof-strip{grid-template-columns:1fr 1fr}.contractor-services-section,.contractor-process-section,.contractor-reviews-section{padding:28px 18px;border-radius:22px}.contractor-section-heading{align-items:flex-start;flex-direction:column}.contractor-section-heading>p{text-align:left}.contractor-service-mosaic{grid-auto-rows:190px}.contractor-service-card,.contractor-service-card:nth-child(1),.contractor-service-card:nth-child(6),.contractor-service-card:nth-child(7){grid-column:span 12}.contractor-why-copy{padding:34px 24px}.contractor-why-copy li{grid-template-columns:1fr}.contractor-process-grid{grid-template-columns:1fr}.contractor-bottom-cta{grid-template-columns:1fr;padding:30px 22px}.contractor-footer{align-items:flex-start;flex-direction:column}.contractor-intake-main{padding:20px 12px 64px}.contractor-intake-card{padding:26px 18px}.contractor-intake-heading h2{font-size:34px}.contractor-field-grid.three,.contractor-request-summary,.contractor-prep-grid{grid-template-columns:1fr}.contractor-intake-actions{flex-direction:column-reverse}.contractor-intake-actions button{width:100%;min-width:0!important}}
 
 /* ==========================================================
-   5.5.0 — iPhone / narrow-mobile compatibility contract
+   5.5.1 — iPhone / narrow-mobile compatibility contract
    Applies to customer experiences, Engine Room, commissioning,
    Project Control/Admin, Test Deck, and Captain surfaces.
    Layout-only hardening; project identity/data boundaries unchanged.
@@ -12742,7 +12742,7 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
   .experience-mode-banner{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;transform:none!important}
 }
 
-/* 5.5.0 Fleet Customer Experience Contract */
+/* 5.5.1 Fleet Customer Experience Contract */
 .bor-landing-hero{min-height:300px;align-items:center}
 .bor-landing-card{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:28px;align-items:stretch}
 .bor-landing-copy{display:flex;flex-direction:column;justify-content:center;gap:12px}
@@ -12758,4 +12758,60 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
 .bor-required{font-size:11px;font-weight:800;color:#a24c14;text-transform:uppercase;letter-spacing:.08em}
 @media(max-width:760px){
   .bor-landing-card{grid-template-columns:1fr;gap:18px}.bor-landing-hero{min-height:0}.bor-landing-cta{max-width:none;width:100%}.bor-landing-copy h3{font-size:34px}
+}
+
+/* Dark Sky 5.5.1 — fleet test-contact safety */
+.fleet-test-contact-safety{
+  display:flex;align-items:center;gap:12px;margin:0 auto 14px;padding:12px 16px;
+  max-width:1200px;border:1px solid rgba(208,151,55,.42);border-radius:14px;
+  background:rgba(255,247,226,.96);color:#4b3a16;box-shadow:0 8px 24px rgba(8,27,35,.08);
+}
+.fleet-test-contact-safety b{font-size:.76rem;letter-spacing:.14em;white-space:nowrap}
+.fleet-test-contact-safety span{font-size:.9rem;line-height:1.35}
+@media(max-width:680px){
+  .fleet-test-contact-safety{margin:0 12px 12px;align-items:flex-start;flex-direction:column;gap:4px}
+  .legacy-contractor-site .contractor-nav #contractorHeaderHelp{min-width:150px}
+}
+
+/* ===== Dark Sky 5.6.0 — Compact Project Command + Client Preview ===== */
+.project-card-primary-actions{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.9fr);gap:10px;margin-top:10px}
+.client-preview-btn{border:1px solid rgba(111,211,255,.5);background:linear-gradient(135deg,rgba(24,126,170,.22),rgba(18,75,107,.34));color:#dff8ff;border-radius:12px;font:800 11px/1.1 inherit;letter-spacing:.08em;padding:12px 10px;min-height:44px;cursor:pointer}
+.client-preview-btn:hover{border-color:rgba(111,211,255,.85);background:linear-gradient(135deg,rgba(31,146,195,.34),rgba(20,90,126,.46))}
+.client-preview-btn:disabled{opacity:.34;cursor:not-allowed}
+.project-card-tools{margin-top:8px;border:1px solid rgba(131,184,203,.22);border-radius:12px;overflow:hidden;background:rgba(3,18,24,.28)}
+.project-card-tools>summary{list-style:none;cursor:pointer;min-height:38px;padding:10px 12px;display:flex;align-items:center;justify-content:center;color:#9eb8c2;font-size:10px;font-weight:800;letter-spacing:.12em}
+.project-card-tools>summary::-webkit-details-marker{display:none}
+.project-card-tools[open]>summary{border-bottom:1px solid rgba(131,184,203,.16);color:#dce9ed}
+.project-card-tools .project-card-actions{padding:9px;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.project-card-tools .secondary-btn{min-height:39px;padding:8px 6px;font-size:9px}
+.project-card .project-kpis{margin-top:12px}
+.project-card .project-launch-line{margin-top:10px;min-height:auto;padding:10px 11px}
+
+.client-preview-builder{position:fixed;inset:0;z-index:10050;background:rgba(2,12,17,.78);backdrop-filter:blur(12px);display:grid;place-items:center;padding:24px}
+.client-preview-builder-card{position:relative;width:min(620px,100%);max-height:min(86vh,820px);overflow:auto;border:1px solid rgba(139,210,232,.42);border-radius:24px;background:linear-gradient(160deg,#071a22,#0b2832);box-shadow:0 30px 80px rgba(0,0,0,.46);padding:30px;color:#edf8fb}
+.client-preview-builder-card>small{display:block;color:#6ed9a0;font-size:11px;font-weight:900;letter-spacing:.2em;margin-bottom:8px}
+.client-preview-builder-card h2{font-size:32px;margin:0 0 8px}
+.client-preview-builder-card p{color:#b4c7cf;line-height:1.55}
+.client-preview-builder-card label{display:grid;gap:7px;margin:18px 0;color:#d9e7eb;font-size:12px;font-weight:800;letter-spacing:.05em}
+.client-preview-builder-card input,.client-preview-builder-card select,.client-preview-builder-card textarea{width:100%;box-sizing:border-box;border:1px solid rgba(132,190,208,.4);border-radius:12px;background:#f7fbfc;color:#0c2028;padding:13px 14px;font-size:16px}
+.client-preview-close{position:absolute;right:16px;top:14px;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:25px;cursor:pointer}
+.client-preview-result{margin-top:20px;padding-top:20px;border-top:1px solid rgba(141,194,211,.22)}
+.client-preview-seal{display:grid;gap:4px;border:1px solid rgba(83,210,145,.35);background:rgba(36,139,93,.12);border-radius:14px;padding:14px 16px}
+.client-preview-seal span{font-size:10px;color:#70dca1;font-weight:900;letter-spacing:.18em}.client-preview-seal strong{font-size:18px}.client-preview-seal small{color:#9db8c1}
+.client-preview-share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.client-preview-warning{border-left:3px solid #dca84c;padding-left:12px;color:#e9cc94!important}
+
+.client-preview-gate{position:fixed;inset:0;z-index:20000;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 20%,#f7fafb 0,#eaf1f3 48%,#dce7ea 100%)}
+.client-preview-gate-card{width:min(520px,100%);box-sizing:border-box;text-align:center;background:#fff;color:#10242b;border:1px solid rgba(17,69,84,.15);border-radius:28px;box-shadow:0 28px 80px rgba(9,35,44,.2);padding:38px 34px}
+.client-preview-gate-card>small{display:block;color:#137b92;font-size:11px;font-weight:900;letter-spacing:.19em;margin:8px 0}.client-preview-gate-card h1{font-size:34px;line-height:1.05;margin:8px 0 12px}.client-preview-gate-card p{color:#587078;line-height:1.55;margin:0 0 22px}.client-preview-gate-logo{display:block;max-width:190px;max-height:86px;object-fit:contain;margin:0 auto 12px}.client-preview-gate-card input{display:block;width:100%;box-sizing:border-box;border:1px solid #b7c9ce;border-radius:14px;padding:15px;text-align:center;font-size:20px;letter-spacing:.18em;margin:0 0 12px}.client-preview-gate-card .primary-btn{width:100%;min-height:52px}.client-preview-error{min-height:22px;color:#a83d3d;font-weight:700;margin-top:10px}
+
+body.client-preview-mode{background:#fff!important;background-image:none!important}
+body.client-preview-mode #blackFlagEntryGate,body.client-preview-mode #enginePanel,body.client-preview-mode #adminPanel,body.client-preview-mode #projectAdminGate,body.client-preview-mode #experienceTestDeck,body.client-preview-mode #testAccessBanner,body.client-preview-mode #experienceModeBanner,body.client-preview-mode [data-project-settings-launch],body.client-preview-mode #returnToEngineBtn,body.client-preview-mode .project-platform-return,body.client-preview-mode .black-flag-return{display:none!important}
+body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-admin-btn,body.client-preview-mode .flowers-admin-btn{display:none!important}
+.client-preview-safety-badge{position:fixed;left:max(14px,env(safe-area-inset-left));bottom:max(14px,env(safe-area-inset-bottom));z-index:9000;display:flex;gap:10px;align-items:center;padding:10px 13px;border-radius:14px;background:rgba(10,34,42,.94);box-shadow:0 8px 28px rgba(0,0,0,.22);color:#fff;font-size:10px;pointer-events:none}.client-preview-safety-badge strong{letter-spacing:.1em}.client-preview-safety-badge span{color:#bdd0d6}
+
+@media(max-width:720px){
+  .project-card-primary-actions{grid-template-columns:1fr}.project-card-tools .project-card-actions{grid-template-columns:1fr}
+  .client-preview-builder{padding:12px}.client-preview-builder-card{border-radius:18px;padding:24px 18px}.client-preview-builder-card h2{font-size:26px}.client-preview-share-row{grid-template-columns:1fr}
+  .client-preview-gate{padding:14px}.client-preview-gate-card{padding:30px 20px;border-radius:22px}.client-preview-gate-card h1{font-size:28px}
+  .client-preview-safety-badge{right:max(14px,env(safe-area-inset-right));left:max(14px,env(safe-area-inset-left));justify-content:center;flex-wrap:wrap;text-align:center}
 }

@@ -73,10 +73,17 @@ Checks required: Legacy Plumbing source assets are selected only for the Legacy 
 - Runtime asset references checked.
 - ZIP integrity checked.
 
-## 5.5.0 Fleet Customer Entry / UX regression targets
+## 5.6.0 Fleet Customer Entry / UX regression targets
 - Fresh entry into every customer project resets document + shell scroll to top.
 - Private Preview and Test Experience always begin at the project's landing page top.
 - Explicit Home returns to landing/top; intra-request Back retains the intended workflow step.
 - Signal Restoration opens on a confidence-first landing page before damage-category intake.
 - Signal Restoration, Mugs After Dark, Becca's Bloom Shop, Ike's, and universal transactional shells require valid email before final transactional submission.
 - Customer visual/state data remains project-scoped; no cross-project fallback branding or scroll state.
+
+## 5.6.0 test-contact gate
+- [x] Non-live `tel:`, `sms:`, and `mailto:` actions are intercepted before browser navigation.
+- [x] Web3Forms and legacy automatic email delivery fail closed for test/non-live orders.
+- [x] Private Preview / Sea Trial request buttons are explicitly labeled as test actions.
+- [x] Signal Restoration test calling remains non-live and its request CTA is explicitly marked as a test request.
+- [x] LIVE external contact requires a matching deployed customer context.

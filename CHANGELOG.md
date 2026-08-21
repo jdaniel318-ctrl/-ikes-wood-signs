@@ -1,4 +1,15 @@
-# Dark Sky 5.5.0 — iPhone Compatibility Hardening
+# Dark Sky 5.6.0 — Client Preview + Project Command Tightening
+
+- Added a project-scoped **Client Preview** mode for customer demonstrations before publication.
+- Client Preview uses a unique 4–10 digit preview PIN and a sealed, self-contained URL-fragment payload representing one project revision.
+- Client Preview exposes no Engine Room, Captain, Project Admin, Test Deck, or other fleet controls.
+- Client Preview always runs under preview/test contact safety: calls, email, SMS, payments, notifications, and real submissions remain blocked/simulated.
+- Preview links carry an expiration date and revision fingerprint.
+- Project Command cards were tightened: one primary lifecycle action, one prominent Client Preview action, and internal tools collapsed under Project Tools.
+- Portable project graphics are included only when small enough for a cross-device link; source-site/public project assets remain available through the project snapshot.
+- Preserved authority spine: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
+
+# Dark Sky 5.6.0 — iPhone Compatibility Hardening
 
 - Added a fleet-wide narrow-mobile layout contract across customer, Engine, commissioning, Project Admin/Manager, Test Deck, and Captain surfaces.
 - Added iPhone safe-area handling for persistent controls and sticky action bars.
@@ -192,7 +203,7 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Existing vessel definitions and Captain’s Quarters assets are not rebranded or modified by Signal Restoration.
 - Signal Restoration brand/market migration updates only its canonical project row.
 
-## 5.5.0 — Fleet Customer Experience Hardening
+## 5.6.0 — Fleet Customer Experience Hardening
 - Added a fleet-wide fresh-entry viewport contract: every project, Private Preview, Test Experience, and Home entry resets to the top of that project's landing page, including iOS Safari nested/document scroll recovery.
 - Applied Legacy Plumbing lessons as reusable principles rather than shared project state: confidence-first entry, clear primary action, business-appropriate categories, guided intake, required transactional email, mobile-first behavior, and project-owned visual identity.
 - Added a dedicated Signal Restoration confidence-first landing page before damage intake; the existing damage workflow remains behind `I NEED HELP NOW`.

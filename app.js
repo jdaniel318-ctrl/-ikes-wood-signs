@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.5.0';
+  const BUILD_VERSION = '5.6.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -390,6 +390,12 @@
   // objects used to render the visible fleet rail so a command can never lose its
   // vessel between paint and tap. This is a command snapshot, not a second registry.
   const projectCommandProjectSnapshots=new Map();
+  // 5.6.0 — Client Preview runtime. A client preview is one sealed project snapshot
+  // carried in the URL fragment, protected by its own preview-only PIN. It is never
+  // an Engine, Captain, or Project Admin credential and never enables live contact.
+  let clientPreviewRuntimeProject=null;
+  let clientPreviewRuntimeMeta=null;
+
 
   function projects(){ return companies; }
   function projectById(id){
@@ -402,8 +408,133 @@
     // Live fleet memory remains first authority. If a late boot/convergence pass
     // changes memory after Project Command painted, the render-time command snapshot
     // keeps the visible control attached to the exact immutable vessel it displayed.
-    return match(companies) || match(projectCommandProjectSnapshots.values());
+    return match(companies) || match(projectCommandProjectSnapshots.values()) || match(clientPreviewRuntimeProject?[clientPreviewRuntimeProject]:[]);
   }
+
+  function clientPreviewHashPayload(){
+    const raw=String(location.hash||'');
+    if(!raw.startsWith('#client-preview='))return null;
+    return raw.slice('#client-preview='.length);
+  }
+  function clientPreviewBase64UrlEncode(text){
+    const bytes=new TextEncoder().encode(String(text||''));
+    let bin=''; for(const b of bytes)bin+=String.fromCharCode(b);
+    return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function clientPreviewBase64UrlDecode(text){
+    const norm=String(text||'').replace(/-/g,'+').replace(/_/g,'/');
+    const pad=norm+'='.repeat((4-norm.length%4)%4);
+    const bin=atob(pad); const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  }
+  async function clientPreviewHashPin(pin){
+    const bytes=new TextEncoder().encode(String(pin||''));
+    const digest=await crypto.subtle.digest('SHA-256',bytes);
+    return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  function clientPreviewProjectSnapshot(p){
+    const keep=['id','projectCode','name','tagline','description','type','businessType','projectTheme','status','orderPrefix','branding','customerExperience','products','services','offers','visualPresentation','businessBrief','businessIntake','workflow','publish'];
+    const out={}; for(const k of keep){if(p?.[k]!==undefined)out[k]=structuredClone(p[k]);}
+    out.publish={status:'test'};
+    out.clientPreview={sealed:true,sourceProjectId:p?.id||'',build:BUILD_VERSION};
+    return out;
+  }
+  async function clientPreviewPortableAsset(dataUrl,maxSide=320,maxChars=90000){
+    if(!dataUrl || !String(dataUrl).startsWith('data:image/'))return String(dataUrl||'');
+    if(String(dataUrl).length<=maxChars)return String(dataUrl);
+    try{
+      const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=dataUrl;});
+      const scale=Math.min(1,maxSide/Math.max(img.naturalWidth||1,img.naturalHeight||1));
+      const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.naturalWidth*scale));c.height=Math.max(1,Math.round(img.naturalHeight*scale));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      let q=.82, out=c.toDataURL('image/webp',q);
+      while(out.length>maxChars && q>.42){q-=.1;out=c.toDataURL('image/webp',q);}
+      return out.length<=maxChars?out:'';
+    }catch(_){return '';}
+  }
+  async function clientPreviewPortableAssets(projectId){
+    const raw=await readProjectAssets(projectId).catch(()=>({}));
+    const assets={}; let total=0;
+    for(const slot of ['projectLogo','heroGraphic']){
+      const portable=await clientPreviewPortableAsset(raw?.[slot]||'',slot==='projectLogo'?280:520,slot==='projectLogo'?42000:52000);
+      if(portable && total+portable.length<65000){assets[slot]=portable; total+=portable.length;}
+    }
+    return assets;
+  }
+  function randomClientPreviewPin(){
+    const a=new Uint32Array(1);crypto.getRandomValues(a);return String(100000+(a[0]%900000));
+  }
+  function closeClientPreviewBuilder(){document.getElementById('clientPreviewBuilder')?.remove();}
+  async function openClientPreviewBuilder(projectId){
+    const p=projectById(projectId); if(!p)return;
+    if(!projectCustomerOperatingModelReady(p)){alert('Create a customer-ready experience before generating a client preview.');return;}
+    closeClientPreviewBuilder();
+    const modal=document.createElement('div');modal.id='clientPreviewBuilder';modal.className='client-preview-builder';
+    const suggested=randomClientPreviewPin();
+    modal.innerHTML=`<div class="client-preview-builder-card"><button type="button" class="client-preview-close" aria-label="Close">×</button><small>CLIENT PREVIEW</small><h2>${escapeHtml(p.name)}</h2><p>Create a clean customer-facing preview that contains no Engine, Captain, or Project Admin controls. All calls, messages, submissions, payments, and external actions remain simulated.</p><label>Unique preview PIN<input id="clientPreviewPin" inputmode="numeric" pattern="[0-9]*" maxlength="10" value="${suggested}"></label><label>Link expires<select id="clientPreviewExpiry"><option value="7">7 days</option><option value="14" selected>14 days</option><option value="30">30 days</option></select></label><button type="button" id="clientPreviewGenerate" class="primary-btn">GENERATE PRIVATE LINK</button><div id="clientPreviewResult" class="client-preview-result hidden"></div></div>`;
+    document.body.appendChild(modal);
+    modal.querySelector('.client-preview-close')?.addEventListener('click',closeClientPreviewBuilder);
+    modal.addEventListener('click',e=>{if(e.target===modal)closeClientPreviewBuilder();});
+    modal.querySelector('#clientPreviewGenerate')?.addEventListener('click',async()=>{
+      const pin=String(modal.querySelector('#clientPreviewPin')?.value||'').trim();
+      if(!/^\d{4,10}$/.test(pin)){alert('Create a 4–10 digit PIN for this client preview.');return;}
+      const days=Math.max(1,Number(modal.querySelector('#clientPreviewExpiry')?.value||14));
+      const assets=await clientPreviewPortableAssets(p.id);
+      const payload={v:1,project:clientPreviewProjectSnapshot(p),assets,pinHash:await clientPreviewHashPin(pin),createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+days*86400000).toISOString(),revision:experienceConfigurationSignature(p),build:BUILD_VERSION};
+      const encoded=clientPreviewBase64UrlEncode(JSON.stringify(payload));
+      const link=`${location.origin}${location.pathname}#client-preview=${encoded}`;
+      const result=modal.querySelector('#clientPreviewResult');
+      result.classList.remove('hidden');
+      result.innerHTML=`<div class="client-preview-seal"><span>SEALED PREVIEW</span><strong>${escapeHtml(p.name)}</strong><small>One project • one revision • expires ${new Date(payload.expiresAt).toLocaleDateString()}</small></div><label>Private link<textarea id="clientPreviewLink" readonly rows="3">${escapeHtml(link)}</textarea></label><div class="client-preview-share-row"><button type="button" id="clientPreviewCopy" class="primary-btn small">COPY LINK</button><button type="button" id="clientPreviewOpen" class="secondary-btn small">OPEN PREVIEW</button></div><p class="helper"><b>PIN: ${escapeHtml(pin)}</b> — share the PIN separately from the link. This PIN unlocks only this client preview.</p>${Object.keys(assets).length?'':'<p class="client-preview-warning">Large locally uploaded graphics could not be embedded in the portable link. Public/source-site brand assets will still render when available.</p>'}`;
+      result.querySelector('#clientPreviewCopy')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(link);result.querySelector('#clientPreviewCopy').textContent='COPIED';}catch(_){result.querySelector('#clientPreviewLink')?.select();}});
+      result.querySelector('#clientPreviewOpen')?.addEventListener('click',()=>window.open(link,'_blank','noopener'));
+    });
+  }
+  function clientPreviewCleanCustomerChrome(){
+    document.body.classList.add('client-preview-mode');
+    document.body.classList.remove('engine-mode','boot-locked','bf-entry-open','client-preview-locked');
+    ['blackFlagEntryGate','enginePanel','adminPanel','projectAdminGate','experienceTestDeck','captainQuartersPanel'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+    document.getElementById('experienceModeBanner')?.classList.add('hidden');
+    document.querySelectorAll('[data-project-settings-launch],#returnToEngineBtn,.project-platform-return,.black-flag-return').forEach(el=>el.classList.add('hidden'));
+    let badge=document.getElementById('clientPreviewSafetyBadge');
+    if(!badge){badge=document.createElement('div');badge.id='clientPreviewSafetyBadge';badge.className='client-preview-safety-badge';document.body.appendChild(badge);}
+    badge.innerHTML='<strong>PRIVATE CLIENT PREVIEW</strong><span>Calls, messages and submissions are simulated.</span>';
+  }
+  async function unlockClientPreview(payload,pin){
+    const hash=await clientPreviewHashPin(pin);
+    if(hash!==payload.pinHash)return false;
+    const p=payload.project;
+    clientPreviewRuntimeProject=p; clientPreviewRuntimeMeta=payload;
+    if(payload.assets&&typeof payload.assets==='object')projectAssetMemory.set(p.id,payload.assets);
+    activeProjectId=p.id;
+    window.__deploymentCustomerContext={projectId:p.id,deploymentId:null,state:'preview',mode:'client_preview',clientPreview:true};
+    document.getElementById('clientPreviewGate')?.remove();
+    clientPreviewCleanCustomerChrome();
+    showCustomerShellForProject(p);
+    await applyProjectAssetSlots(p).catch(()=>{});
+    resetCustomerEntryViewport();
+    document.title=`${p.name} — Private Preview`;
+    return true;
+  }
+  async function routeClientPreviewFromHash(){
+    const encoded=clientPreviewHashPayload(); if(!encoded)return false;
+    let payload=null;
+    try{payload=JSON.parse(clientPreviewBase64UrlDecode(encoded));}catch(_){payload=null;}
+    document.body.classList.add('client-preview-mode','client-preview-locked');
+    ['blackFlagEntryGate','enginePanel','adminPanel','customerApp','universalCustomerShell','mugsCustomerShell','flowersCustomerShell','borCustomerShell'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+    const gate=document.createElement('div');gate.id='clientPreviewGate';gate.className='client-preview-gate';
+    if(!payload?.project?.id || !payload?.pinHash){gate.innerHTML='<div class="client-preview-gate-card"><h1>Preview unavailable</h1><p>This private preview link is incomplete or invalid.</p></div>';document.body.appendChild(gate);return true;}
+    if(payload.expiresAt && Date.now()>Date.parse(payload.expiresAt)){gate.innerHTML=`<div class="client-preview-gate-card"><h1>Preview expired</h1><p>Ask ${escapeHtml(payload.project.name||'the project owner')} for a new private preview link.</p></div>`;document.body.appendChild(gate);return true;}
+    const logo=payload.assets?.projectLogo||payload.project?.businessIntake?.visualAssets?.logo||'';
+    gate.innerHTML=`<div class="client-preview-gate-card">${logo?`<img class="client-preview-gate-logo" src="${escapeHtml(logo)}" alt="${escapeHtml(payload.project.name)} logo">`:''}<small>PRIVATE CLIENT PREVIEW</small><h1>${escapeHtml(payload.project.name||'Project Preview')}</h1><p>This unpublished preview is protected by a project-specific PIN. No calls, emails, texts, payments, or real submissions can leave this preview.</p><input id="clientPreviewUnlockPin" type="password" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="Preview PIN"><button id="clientPreviewUnlockBtn" type="button" class="primary-btn">OPEN PREVIEW</button><div id="clientPreviewUnlockError" class="client-preview-error"></div></div>`;
+    document.body.appendChild(gate);
+    const unlock=async()=>{const input=document.getElementById('clientPreviewUnlockPin');const ok=await unlockClientPreview(payload,String(input?.value||'').trim());if(!ok){const e=document.getElementById('clientPreviewUnlockError');if(e)e.textContent='That preview PIN is not correct.';if(input){input.value='';input.focus();}}};
+    document.getElementById('clientPreviewUnlockBtn')?.addEventListener('click',unlock);
+    document.getElementById('clientPreviewUnlockPin')?.addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+    setTimeout(()=>document.getElementById('clientPreviewUnlockPin')?.focus(),80);
+    return true;
+  }
+  window.BlackFlagClientPreview={open:openClientPreviewBuilder,route:routeClientPreviewFromHash};
 
   async function resolveProjectReference(projectRef,{rehydrate=true}={}){
     const requested=String(projectRef||'').trim();
@@ -2990,6 +3121,38 @@
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
 
+  // Fleet safety contract: no real-world contact may leave a project while its
+  // customer experience is in Private Preview, Sea Trial, or another non-live state.
+  function projectExternalContactAllowed(p=activeProject()){
+    if(!p)return false;
+    const ctx=currentExperienceContext(p);
+    return !!ctx && ctx.projectId===p.id && ctx.state==='deployed';
+  }
+  function projectIsContactSafeTest(p=activeProject()){
+    return !!p && !projectExternalContactAllowed(p);
+  }
+  function explainBlockedExternalContact(kind='contact'){
+    const noun=String(kind||'contact').toLowerCase();
+    alert(`TEST / PRIVATE PREVIEW — ${noun} is disabled. No call, text, email, request, or external notification will be sent until this project is LIVE.`);
+  }
+  function installFleetExternalContactGuard(){
+    if(document.documentElement.dataset.fleetContactGuard==='1')return;
+    document.documentElement.dataset.fleetContactGuard='1';
+    document.addEventListener('click',(event)=>{
+      const link=event.target?.closest?.('a[href]');
+      if(!link)return;
+      const href=String(link.getAttribute('href')||'').trim();
+      const match=href.match(/^(tel|mailto|sms):/i);
+      if(!match)return;
+      const p=activeProject();
+      if(!p || projectExternalContactAllowed(p))return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      explainBlockedExternalContact(match[1]==='tel'?'calling':match[1]==='sms'?'text messaging':'email');
+    },true);
+  }
+  installFleetExternalContactGuard();
+
 
   async function recordExperienceSeaTrialSubmission(p,orderId){
     const ctx=currentExperienceContext(p);
@@ -3552,13 +3715,15 @@
           <span><small>LEDGER</small><strong>${s.completed}</strong></span>
         </div>
         <div class="project-launch-line ${launch.key}"><span>${escapeHtml(launch.label)}</span><small>${escapeHtml(launch.detail)}</small></div>
-        <div class="project-next-command"><small>NEXT BEST MOVE</small><strong>${escapeHtml(launch.actionLabel)}</strong></div>
-        <div class="project-card-actions project-card-actions-command">
+        <div class="project-card-primary-actions">
           <button type="button" data-project-launch="${escapeHtml(p.id)}" class="primary-btn small project-next-action">${escapeHtml(launch.actionLabel)}</button>
-          <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
-          <button type="button" data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">TEST EXPERIENCE</button>
-          <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn small project-proof-action">SEAWORTHINESS</button>
+          <button type="button" data-project-client-preview="${escapeHtml(p.id)}" class="client-preview-btn small" ${projectCustomerOperatingModelReady(p)?'':'disabled'}>CLIENT PREVIEW</button>
         </div>
+        <details class="project-card-tools"><summary>PROJECT TOOLS</summary><div class="project-card-actions project-card-actions-command">
+          <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
+          <button type="button" data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">INTERNAL TEST</button>
+          <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn small project-proof-action">SEAWORTHINESS</button>
+        </div></details>
       </article>`);
     }
     const journalRecovery=commissioningRecoveryCandidate();
@@ -6735,6 +6900,10 @@
       const isPlumbing=plumbingProject;
       const description=universalSafeDescription(p,'Licensed and insured local service for homes and businesses.');
       const previewBanner=ctx.state==='sea_trial'?'<div class="universal-trial-banner premium-preview-banner">SEA TRIAL • TEST DATA ONLY</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only premium-preview-banner">PRIVATE PREVIEW • NO CUSTOMER RECORDS</div>':'';
+      const contactLocked=ctx.state!=='deployed';
+      const requestCtaLabel=contactLocked?'START TEST REQUEST':'REQUEST SERVICE';
+      const helpCtaLabel=contactLocked?'I NEED HELP • TEST':'I NEED PLUMBING HELP';
+      const testContactSafety=contactLocked?'<div class="fleet-test-contact-safety"><b>TEST MODE</b><span>No calls, texts, emails, service requests, or external notifications leave this project.</span></div>':'';
       const logoMarkup=universalLandingLogoMarkup(p,initials);
       if(isPlumbing){
         const hours=landing.hours||'';
@@ -6747,19 +6916,19 @@
         const serviceCards=offers.map(x=>{const key=plumbingServiceVisualKey(x.name);const image=key?visuals.services?.[key]:'';return `<button type="button" class="contractor-service-card ${image?'has-photo':''}" data-universal-landing-offer="${escapeHtml(x.id)}" ${image?`style="--service-photo:url('${escapeHtml(image)}')"`:''}><span class="contractor-service-photo"></span><span class="contractor-service-overlay"></span><span class="contractor-service-content"><span class="contractor-service-icon">${universalServiceIcon(x.name)}</span><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small><b>START REQUEST →</b></span></button>`}).join('');
         const proofSignals=(trust.length?trust:['Licensed & insured','Residential & commercial','Richmond-area service','Clear communication']).slice(0,4);
         const testimonialCards=testimonials.length?testimonials.map((t,i)=>`<article class="contractor-review-card">${visuals.testimonials?.[i]?`<img src="${escapeHtml(visuals.testimonials[i])}" alt="" loading="lazy">`:''}<div><span aria-label="5 stars">★★★★★</span><p>“${escapeHtml(t.quote||'')}”</p><strong>${escapeHtml(t.label||'Local customer')}</strong><small>${escapeHtml(t.service||'Plumbing service')}</small></div></article>`).join(''):'';
-        shell.innerHTML=`<div class="universal-service-landing premium-plumbing-landing ${legacy?'legacy-contractor-site':''}"><header class="universal-shell-header landing-header premium-brand-header contractor-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml([market,hours].filter(Boolean).join(' • ')||description)}</p></div></div><nav class="contractor-nav" aria-label="Customer navigation"><button type="button" data-scroll-target="services">SERVICES</button><button type="button" data-scroll-target="why">WHY ${legacy?'LEGACY':'US'}</button><button type="button" data-scroll-target="process">HOW IT WORKS</button><button type="button" id="contractorHeaderHelp">REQUEST SERVICE</button></nav><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
-          <main class="universal-landing-main premium-plumbing-main contractor-main">${previewBanner}
-            <section class="contractor-hero"><div class="contractor-hero-copy"><div class="premium-eyebrow"><span></span>${escapeHtml(landing.eyebrow||'RICHMOND, VA • LICENSED & INSURED')}</div><h2>${escapeHtml(landing.headline||'Fast, reliable plumbing—done right.')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="contractor-hero-actions"><button type="button" id="universalHelpNow" class="contractor-primary-cta">${escapeHtml(landing.primaryCta||'I NEED PLUMBING HELP')}</button><button type="button" id="universalViewServices" class="contractor-secondary-cta">VIEW SERVICES</button></div><div class="contractor-availability"><b>LOCAL SERVICE TEAM</b><span>${escapeHtml(hours||'Business-hour response')}</span><span>${escapeHtml(market)}</span></div></div><div class="contractor-hero-visual" ${heroPhoto?`style="--contractor-hero:url('${escapeHtml(heroPhoto)}')"`:''}><div class="contractor-hero-photo"></div><div class="contractor-hero-brand">${logoMarkup}<small>Professional plumbing for homes & businesses</small></div></div></section>
+        shell.innerHTML=`<div class="universal-service-landing premium-plumbing-landing ${legacy?'legacy-contractor-site':''}"><header class="universal-shell-header landing-header premium-brand-header contractor-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml([market,hours].filter(Boolean).join(' • ')||description)}</p></div></div><nav class="contractor-nav" aria-label="Customer navigation"><button type="button" data-scroll-target="services">SERVICES</button><button type="button" data-scroll-target="why">WHY ${legacy?'LEGACY':'US'}</button><button type="button" data-scroll-target="process">HOW IT WORKS</button><button type="button" id="contractorHeaderHelp">${escapeHtml(requestCtaLabel)}</button></nav><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
+          <main class="universal-landing-main premium-plumbing-main contractor-main">${previewBanner}${testContactSafety}
+            <section class="contractor-hero"><div class="contractor-hero-copy"><div class="premium-eyebrow"><span></span>${escapeHtml(landing.eyebrow||'RICHMOND, VA • LICENSED & INSURED')}</div><h2>${escapeHtml(landing.headline||'Fast, reliable plumbing—done right.')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="contractor-hero-actions"><button type="button" id="universalHelpNow" class="contractor-primary-cta">${escapeHtml(contactLocked?helpCtaLabel:(landing.primaryCta||'I NEED PLUMBING HELP'))}</button><button type="button" id="universalViewServices" class="contractor-secondary-cta">VIEW SERVICES</button></div><div class="contractor-availability"><b>LOCAL SERVICE TEAM</b><span>${escapeHtml(hours||'Business-hour response')}</span><span>${escapeHtml(market)}</span></div></div><div class="contractor-hero-visual" ${heroPhoto?`style="--contractor-hero:url('${escapeHtml(heroPhoto)}')"`:''}><div class="contractor-hero-photo"></div><div class="contractor-hero-brand">${logoMarkup}<small>Professional plumbing for homes & businesses</small></div></div></section>
             <section class="contractor-proof-strip">${proofSignals.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong></article>`).join('')}</section>
             <section id="services" class="contractor-services-section"><div class="contractor-section-heading"><div><small>PLUMBING SERVICES</small><h2>Start with the job in front of you.</h2></div><p>Choose the closest match. Black Flag will open the right request path and keep the details tied to ${escapeHtml(p.name)}.</p></div><div class="contractor-service-mosaic">${serviceCards}</div></section>
             <section id="why" class="contractor-why-section"><div class="contractor-why-photo" ${visuals.why?`style="--why-photo:url('${escapeHtml(visuals.why)}')"`:''}></div><div class="contractor-why-copy"><small>WHY ${legacy?'LEGACY':'THIS TEAM'}</small><h2>${escapeHtml(landing.proofTitle||'Trusted, straightforward service')}</h2><p>${escapeHtml(landing.proofCopy||'Clear recommendations, quality workmanship, and dependable local follow-up.')}</p><ul><li><b>Licensed & insured</b><span>Professional work with safety and code compliance in mind.</span></li><li><b>Clear communication</b><span>Know what the next step is before work begins.</span></li><li><b>Homes & businesses</b><span>From repairs and replacements to remodels and larger projects.</span></li></ul></div></section>
             <section id="process" class="contractor-process-section"><div class="contractor-section-heading compact"><div><small>HOW SERVICE STARTS</small><h2>A better request means a better first conversation.</h2></div><p>No generic contact form. Give the plumbing team the details they need before they call you back.</p></div><div class="contractor-process-grid">${process.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong><small>${['Choose the service or problem that is closest.','Tell us where the work is and what is happening.','Add photos, timing and the best way to contact you.','The team reviews the request and follows up with the right next step.'][i]||'Move forward with a clear next step.'}</small></article>`).join('')}</div></section>
             ${testimonialCards?`<section class="contractor-reviews-section"><div class="contractor-section-heading compact"><div><small>CUSTOMER EXPERIENCE</small><h2>Proof that the details matter.</h2></div><p>Clear work, clear communication, dependable results.</p></div><div class="contractor-review-grid">${testimonialCards}</div></section>`:''}
-            <section class="contractor-bottom-cta"><div><small>READY WHEN YOU ARE</small><h2>Need a plumber in the Richmond area?</h2><p>${escapeHtml(landing.customerPromise||'Tell us what is happening and we will collect the right details for the next step.')}</p></div><button type="button" id="universalHelpNowBottom" class="contractor-primary-cta">REQUEST SERVICE</button></section>
+            <section class="contractor-bottom-cta"><div><small>READY WHEN YOU ARE</small><h2>Need a plumber in the Richmond area?</h2><p>${escapeHtml(landing.customerPromise||'Tell us what is happening and we will collect the right details for the next step.')}</p></div><button type="button" id="universalHelpNowBottom" class="contractor-primary-cta">${escapeHtml(requestCtaLabel)}</button></section>
             <footer class="contractor-footer"><div>${logoMarkup}<div><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(market)} • ${escapeHtml(hours)}</span></div></div><div><span>${escapeHtml(landing.phone||'')}</span><span>${escapeHtml(landing.email||'')}</span></div></footer>
           </main></div>`;
       }else{
-        shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(description)}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header><main class="universal-landing-main">${previewBanner}<section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(landing.primaryCta||'I NEED HELP NOW')}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>${trust.length?`<section class="universal-trust-row">${trust.map(x=>`<span>✓ ${escapeHtml(x)}</span>`).join('')}</section>`:''}<section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section></main></div>`;
+        shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(description)}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header><main class="universal-landing-main">${previewBanner}${testContactSafety}<section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(contactLocked?'START TEST REQUEST':(landing.primaryCta||'I NEED HELP NOW'))}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>${trust.length?`<section class="universal-trust-row">${trust.map(x=>`<span>✓ ${escapeHtml(x)}</span>`).join('')}</section>`:''}<section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section></main></div>`;
       }
       const begin=(offerId='')=>{if(offerId)universalCustomerState.offerId=offerId;universalCustomerState.stage='intake';renderUniversalCustomerShell(p);};
       $('universalHelpNow')?.addEventListener('click',()=>begin());
@@ -6777,6 +6946,10 @@
       const offer=universalSelectedOffer(p);
       const logoMarkup=universalLandingLogoMarkup(p,initials);
       const previewNotice=ctx.state==='preview'?'PRIVATE PREVIEW • NOTHING SUBMITTED HERE IS SAVED':ctx.state==='sea_trial'?'SEA TRIAL • TEST RECORDS ONLY':'';
+      const contactLocked=ctx.state!=='deployed';
+      const requestCtaLabel=contactLocked?'START TEST REQUEST':'REQUEST SERVICE';
+      const helpCtaLabel=contactLocked?'I NEED HELP • TEST':'I NEED PLUMBING HELP';
+      const testContactSafety=contactLocked?'<div class="fleet-test-contact-safety"><b>TEST MODE</b><span>No calls, texts, emails, service requests, or external notifications leave this project.</span></div>':'';
       const stepBody=step===1?`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 1 OF 3 • JOB DETAILS</small><h2>What do you need help with?</h2><p>Start with the closest service, then tell the team what is happening.</p></div><div class="contractor-selected-service"><span>${universalServiceIcon(offer?.name||'Service')}</span><div><small>SELECTED SERVICE</small><strong>${escapeHtml(offer?.name||'Choose a service')}</strong></div><button type="button" id="plumbingChangeService">CHANGE</button></div><div class="contractor-field-grid three"><label>Urgency<select id="plumbingUrgency" class="universal-input"><option value="">Choose timing</option><option value="as-soon-as-possible" ${universalCustomerState.urgency==='as-soon-as-possible'?'selected':''}>As soon as possible</option><option value="this-week" ${universalCustomerState.urgency==='this-week'?'selected':''}>This week</option><option value="planning" ${universalCustomerState.urgency==='planning'?'selected':''}>Planning / estimate</option></select></label><label>Property type<select id="plumbingPropertyType" class="universal-input"><option value="">Choose property</option><option value="home" ${universalCustomerState.propertyType==='home'?'selected':''}>Home / residential</option><option value="business" ${universalCustomerState.propertyType==='business'?'selected':''}>Business / commercial</option><option value="construction" ${universalCustomerState.propertyType==='construction'?'selected':''}>Construction project</option></select></label><label>Service address<input id="plumbingServiceAddress" class="universal-input" autocomplete="street-address" value="${escapeHtml(universalCustomerState.serviceAddress||'')}" placeholder="Where is the work?"></label></div><label class="contractor-full-field">What is happening?<textarea id="universalNotes" class="universal-input" rows="6" placeholder="Leak location, symptoms, project scope, what you have already tried, or anything the plumber should know.">${escapeHtml(universalCustomerState.notes)}</textarea></label><div class="contractor-intake-actions"><button type="button" id="plumbingIntakeHome" class="contractor-secondary-cta">BACK TO HOME</button><button type="button" id="plumbingNextStep" class="contractor-primary-cta">NEXT • PROPERTY & PHOTOS</button></div></section>`:step===2?`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 2 OF 3 • PROPERTY & PREPARATION</small><h2>Help the plumber arrive prepared.</h2><p>Add a photo if it helps explain the issue and tell us when service would work best.</p></div><div class="contractor-prep-grid"><label class="contractor-photo-zone"><input id="universalPhotoInput" type="file" accept="image/*" capture="environment"><span>${universalCustomerState.photoData?'CHANGE PHOTO':'ADD A PHOTO'}</span><small>Optional, but useful for leaks, fixtures, water heaters, piping, and job-site conditions.</small>${universalCustomerState.photoData?`<img src="${universalCustomerState.photoData}" alt="Customer plumbing reference photo">`:''}</label><div class="contractor-prep-fields"><label>Preferred timing<input id="universalPreferredTiming" class="universal-input" value="${escapeHtml(universalCustomerState.preferredTiming||'')}" placeholder="Example: Tuesday morning or next available"></label><label>Best contact method<select id="plumbingPreferredContact" class="universal-input"><option value="">Choose one</option><option value="phone" ${universalCustomerState.preferredContact==='phone'?'selected':''}>Phone call</option><option value="text" ${universalCustomerState.preferredContact==='text'?'selected':''}>Text message</option><option value="email" ${universalCustomerState.preferredContact==='email'?'selected':''}>Email</option></select></label><label>Best callback window<input id="plumbingCallbackTime" class="universal-input" value="${escapeHtml(universalCustomerState.callbackTime||'')}" placeholder="Example: 9–11 AM"></label></div></div><div class="contractor-intake-actions"><button type="button" id="plumbingPrevStep" class="contractor-secondary-cta">BACK</button><button type="button" id="plumbingNextStep" class="contractor-primary-cta">NEXT • CONTACT</button></div></section>`:`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 3 OF 3 • CONTACT & REVIEW</small><h2>How should Legacy Plumbing reach you?</h2><p>Name, mobile number and email are required so the request can be tracked and followed up reliably.</p></div><div class="contractor-field-grid three"><label>Name<input id="universalCustomerName" class="universal-input" autocomplete="name" value="${escapeHtml(universalCustomerState.customerName)}"></label><label>Mobile number<input id="universalCustomerPhone" class="universal-input" type="tel" autocomplete="tel" value="${escapeHtml(universalCustomerState.customerPhone)}"></label><label>Email<input id="universalCustomerEmail" class="universal-input" type="email" autocomplete="email" value="${escapeHtml(universalCustomerState.customerEmail)}"></label></div><div class="contractor-request-summary"><div><small>SERVICE</small><strong>${escapeHtml(offer?.name||'Plumbing request')}</strong></div><div><small>LOCATION</small><strong>${escapeHtml(universalCustomerState.serviceAddress||'Not entered')}</strong></div><div><small>TIMING</small><strong>${escapeHtml(universalCustomerState.preferredTiming||universalCustomerState.urgency||'Not specified')}</strong></div><div><small>CONTACT</small><strong>${escapeHtml(universalCustomerState.preferredContact||'Best available method')}</strong></div></div><div class="contractor-intake-actions"><button type="button" id="plumbingPrevStep" class="contractor-secondary-cta">BACK</button><button type="button" id="universalSubmitOrder" class="contractor-primary-cta">${escapeHtml(ctx.state==='preview'?'PREVIEW REQUEST':ctx.state==='sea_trial'?'SEND TEST REQUEST':'REQUEST SERVICE')}</button></div></section>`;
       shell.innerHTML=`<div class="contractor-intake-shell"><header class="universal-shell-header contractor-intake-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(landing.market||'Richmond area')} • ${escapeHtml(landing.hours||'Business-hour response')}</p></div></div><div class="contractor-step-rail"><span class="${step>=1?'active':''}">1 JOB</span><i></i><span class="${step>=2?'active':''}">2 PREP</span><i></i><span class="${step>=3?'active':''}">3 CONTACT</span></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header><main class="contractor-intake-main">${previewNotice?`<div class="contractor-preview-note">${escapeHtml(previewNotice)}</div>`:''}${stepBody}</main></div>`;
       const rerender=()=>renderUniversalCustomerShell(p);
@@ -7004,6 +7177,8 @@
     ensureBorCustomerDelegation(shell,p);
     const ctx=universalCustomerContextFor(p);
     const testLabel=ctx.state==='sea_trial'?'TEST EXPERIENCE':ctx.state==='preview'?'PRIVATE PREVIEW':'NORTH RICHMOND';
+    const borContactLocked=ctx.state!=='deployed';
+    const borSafety=borContactLocked?'<div class="fleet-test-contact-safety bor-test-contact-safety"><b>TEST MODE</b><span>No call, text, email, restoration request, or external notification will leave Signal Restoration.</span></div>':'';
     const mobileCall=borCallControl(ctx,{kind:'mobile'});
     if(borCustomerState.receipt){
       const r=borCustomerState.receipt;
@@ -7019,15 +7194,15 @@
     const photoSummary=borCustomerState.photoData?'1 photo attached':'No photo attached';
     shell.innerHTML=`<div class="bor-shell">
       <header class="bor-header"><div class="bor-brand"><img src="assets/signal_restoration_logo.png" alt="Signal Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Signal Restoration</h1><p>Serving Greater Richmond</p></div></div><div class="bor-header-actions">${borCallControl(ctx,{kind:'header'})}<button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
-      <main class="bor-main">
+      <main class="bor-main">${borSafety}
         <section class="bor-hero ${borCustomerState.step==='landing'?'bor-landing-hero':''}"><div class="bor-hero-copy"><small>LOCAL • 24/7 PROPERTY RESTORATION</small><h2>${borCustomerState.step==='landing'?"Property damage? We're ready to help.":borCustomerState.step==='start'?'Tell us what happened.':borCustomerState.step==='details'?'Where do you need help?':'How can we reach you?'}</h2><p>${borCustomerState.step==='landing'?'Water, fire, storm, mold, and commercial restoration for Greater Richmond. Start here and give the local team the details they need.':borCustomerState.step==='start'?"Choose the closest match. Most requests take about a minute.":borCustomerState.step==='details'?'A few details help the local team understand the loss.':'Share the best way to reach you.'}</p></div>${borCallControl(ctx,{kind:'hero'})}</section>
-        ${borCustomerState.step==='landing'?`<section class="bor-card bor-landing-card"><div class="bor-landing-copy"><small>SIGNAL RESTORATION</small><h3>Local help. Clear next steps.</h3><p>Tell us what happened and where help is needed. We’ll collect the right information for the restoration team before they follow up.</p><div class="bor-assurance"><span>✓ Greater Richmond response</span><span>✓ 24/7 emergency response</span><span>✓ IICRC-certified technicians</span><span>✓ Insurance coordination</span></div><button type="button" id="borStartRequest" class="bor-primary bor-landing-cta">I NEED HELP NOW →</button></div><div class="bor-landing-services"><small>WE CAN HELP WITH</small>${['water-damage','fire-smoke','storm-damage','mold','commercial'].map(id=>{const m=borLossMeta(id);return `<div><b>${m.icon}</b><span><strong>${escapeHtml(m.short)}</strong><small>${escapeHtml(m.detail)}</small></span></div>`}).join('')}</div></section>`:''}
+        ${borCustomerState.step==='landing'?`<section class="bor-card bor-landing-card"><div class="bor-landing-copy"><small>SIGNAL RESTORATION</small><h3>Local help. Clear next steps.</h3><p>Tell us what happened and where help is needed. We’ll collect the right information for the restoration team before they follow up.</p><div class="bor-assurance"><span>✓ Greater Richmond response</span><span>✓ 24/7 emergency response</span><span>✓ IICRC-certified technicians</span><span>✓ Insurance coordination</span></div><button type="button" id="borStartRequest" class="bor-primary bor-landing-cta">${escapeHtml(borContactLocked?'START TEST REQUEST →':'I NEED HELP NOW →')}</button></div><div class="bor-landing-services"><small>WE CAN HELP WITH</small>${['water-damage','fire-smoke','storm-damage','mold','commercial'].map(id=>{const m=borLossMeta(id);return `<div><b>${m.icon}</b><span><strong>${escapeHtml(m.short)}</strong><small>${escapeHtml(m.detail)}</small></span></div>`}).join('')}</div></section>`:''}
         ${borCustomerState.step!=='landing'?`<nav class="bor-progress" aria-label="Request progress"><span class="${borCustomerState.step==='start'?'active':borCustomerState.step!=='start'?'done':''}"><b>1</b><em>Damage</em></span><i></i><span class="${borCustomerState.step==='details'?'active':borCustomerState.step==='contact'?'done':''}"><b>2</b><em>Property</em></span><i></i><span class="${borCustomerState.step==='contact'?'active':''}"><b>3</b><em>Contact</em></span></nav>`:''}
         ${borCustomerState.step==='start'?`<section class="bor-card bor-flow-card"><div class="bor-card-title"><div><button type="button" class="bor-back" data-bor-home="1">← HOME</button><small>START HERE</small><h3>What happened?</h3><p>Choose the closest match. You can explain more on the next screen.</p></div></div><div class="bor-loss-grid">
           ${['water-damage','fire-smoke','storm-damage','mold','commercial','other-damage'].map(id=>{const m=borLossMeta(id);return `<button type="button" data-bor-loss="${id}"><b class="bor-service-icon">${m.icon}</b><span><strong>${escapeHtml(m.short)}</strong><small>${escapeHtml(m.detail)}</small></span><i>›</i></button>`}).join('')}
         </div><div class="bor-assurance"><span>✓ Richmond-area response team</span><span>✓ 24/7 emergency response</span><span>✓ IICRC-certified technicians</span><span>✓ Insurance coordination</span></div></section>`:''}
         ${borCustomerState.step==='details'?`<section class="bor-card bor-flow-card"><div class="bor-step-head"><button type="button" class="bor-back" data-bor-back="start">← BACK</button><div><small>STEP 2 OF 3</small><h3>${escapeHtml(lossMeta.label)}</h3><p>Tell us where help is needed.</p></div></div><div class="bor-segment"><button type="button" data-bor-property="home" class="${borCustomerState.propertyType==='home'?'selected':''}">HOME</button><button type="button" data-bor-property="business" class="${borCustomerState.propertyType==='business'?'selected':''}">BUSINESS</button></div>${isWater?`<fieldset class="bor-choice-group"><legend>Is water still flowing?</legend><div class="bor-choice-buttons">${[['yes','YES'],['no','NO'],['unknown','NOT SURE']].map(([v,l])=>`<button type="button" class="${borCustomerState.waterActive===v?'selected':''}" data-bor-water="${v}">${l}</button>`).join('')}</div><select id="borWaterActive" class="bor-visually-hidden" aria-label="Is water still flowing"><option value="">Choose one</option><option value="yes" ${borCustomerState.waterActive==='yes'?'selected':''}>Yes</option><option value="no" ${borCustomerState.waterActive==='no'?'selected':''}>No</option><option value="unknown" ${borCustomerState.waterActive==='unknown'?'selected':''}>Not sure</option></select></fieldset>`:''}<label class="bor-field">Property address<input id="borAddress" class="bor-input" autocomplete="street-address" value="${escapeHtml(borCustomerState.address)}" placeholder="Street address"></label><label class="bor-field">Anything we should know? <span class="bor-optional">Optional</span><textarea id="borNotes" class="bor-input" rows="3" placeholder="Affected rooms, visible damage, safety concerns…">${escapeHtml(borCustomerState.notes)}</textarea></label><div class="bor-photo-zone"><div><strong>Show us what happened</strong><span>A photo can help the team understand the damage before they call.</span></div><label class="bor-photo"><input id="borPhotoInput" type="file" accept="image/*" capture="environment"><span>${borCustomerState.photoData?'CHANGE PHOTO':'TAKE OR ADD PHOTO'}</span></label>${borCustomerState.photoData?`<img class="bor-photo-preview" src="${borCustomerState.photoData}" alt="Damage photo preview">`:'<small>Optional — you can continue without a photo.</small>'}</div><button type="button" id="borDetailsNext" class="bor-primary">CONTINUE →</button></section>`:''}
-        ${borCustomerState.step==='contact'?`<section class="bor-card bor-flow-card"><div class="bor-step-head"><button type="button" class="bor-back" data-bor-back="details">← BACK</button><div><small>STEP 3 OF 3</small><h3>How should we reach you?</h3><p>We only need the basics to get the request to the local team.</p></div></div><div class="bor-contact-grid"><label class="bor-field">Name<input id="borName" class="bor-input" autocomplete="name" value="${escapeHtml(borCustomerState.name)}" placeholder="Your name"></label><label class="bor-field">Mobile number<input id="borPhone" class="bor-input" type="tel" inputmode="tel" autocomplete="tel" value="${escapeHtml(borCustomerState.phone)}" placeholder="(804) 555-0123"></label><label class="bor-field">Email <span class="bor-required">Required</span><input id="borEmail" required class="bor-input" type="email" inputmode="email" autocomplete="email" value="${escapeHtml(borCustomerState.email)}" placeholder="you@example.com"></label></div><div class="bor-submit-summary"><div class="bor-summary-card"><div class="bor-summary-icon">${lossMeta.icon}</div><div><small>YOUR REQUEST</small><strong>${escapeHtml(lossMeta.label)}</strong><span>${escapeHtml(borCustomerState.address||'Address not entered')}</span><em>${escapeHtml(photoSummary)}</em></div></div><button type="button" id="borSubmit" class="bor-primary">REQUEST HELP →</button></div></section>`:''}
+        ${borCustomerState.step==='contact'?`<section class="bor-card bor-flow-card"><div class="bor-step-head"><button type="button" class="bor-back" data-bor-back="details">← BACK</button><div><small>STEP 3 OF 3</small><h3>How should we reach you?</h3><p>We only need the basics to get the request to the local team.</p></div></div><div class="bor-contact-grid"><label class="bor-field">Name<input id="borName" class="bor-input" autocomplete="name" value="${escapeHtml(borCustomerState.name)}" placeholder="Your name"></label><label class="bor-field">Mobile number<input id="borPhone" class="bor-input" type="tel" inputmode="tel" autocomplete="tel" value="${escapeHtml(borCustomerState.phone)}" placeholder="(804) 555-0123"></label><label class="bor-field">Email <span class="bor-required">Required</span><input id="borEmail" required class="bor-input" type="email" inputmode="email" autocomplete="email" value="${escapeHtml(borCustomerState.email)}" placeholder="you@example.com"></label></div><div class="bor-submit-summary"><div class="bor-summary-card"><div class="bor-summary-icon">${lossMeta.icon}</div><div><small>YOUR REQUEST</small><strong>${escapeHtml(lossMeta.label)}</strong><span>${escapeHtml(borCustomerState.address||'Address not entered')}</span><em>${escapeHtml(photoSummary)}</em></div></div><button type="button" id="borSubmit" class="bor-primary">${escapeHtml(borContactLocked?'SUBMIT TEST REQUEST →':'REQUEST HELP →')}</button></div></section>`:''}
         <section class="bor-trust"><strong>Local people. Professional restoration.</strong><span>Greater Richmond • 24/7 response • Insurance coordination • IICRC-certified technicians</span></section>
       </main>${mobileCall}</div>`;
   }
@@ -7040,7 +7215,7 @@
     const now=new Date(),y=String(now.getFullYear()).slice(-2),mo=String(now.getMonth()+1).padStart(2,'0'),day=String(now.getDate()).padStart(2,'0'),suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase(),id=`BOR-${y}${mo}${day}-${suffix}`;
     const ctx=universalCustomerContextFor(p), label=borLossLabel(borCustomerState.lossType);
     const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:'BOR'},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:'New Loss',price:0,productId:borCustomerState.lossType,productName:label,offerName:label,wording:borCustomerState.notes,notes:borCustomerState.notes,photoData:borCustomerState.photoData||'',propertyAddress:borCustomerState.address,propertyType:borCustomerState.propertyType,waterActive:borCustomerState.waterActive,customerName:borCustomerState.name,customerPhone:borCustomerState.phone,customerEmail:borCustomerState.email,contactPreference:'Phone',approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'bor_emergency_intake',recordType:'engagement',relationshipType:'emergency_service_request',engagementLabel:'Restoration Request',customerAction:'SEND REQUEST'};
-    if(ctx.state!=='preview'){backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('BOR request save failed',err);alert('The request could not be saved. Please try again or call (804) 317-3230.');return;}if(ctx.state==='sea_trial')await recordExperienceSeaTrialSubmission(p,id);}
+    if(ctx.state!=='preview'){backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('BOR request save failed',err);alert(ctx.state==='deployed'?'The request could not be saved. Please try again or call (804) 317-3230.':'The test request could not be saved. No real contact was attempted.');return;}if(ctx.state==='sea_trial')await recordExperienceSeaTrialSubmission(p,id);}
     borCustomerState.receipt={id:ctx.state==='preview'?'PREVIEW-NO-RECORD':id,lossType:label,address:borCustomerState.address};renderBorCustomerShell(p);
   }
 
@@ -7162,7 +7337,7 @@
     legacyProgress?.classList.toggle('hidden',!ikeOnly);
     if(!ikeOnly)$('customerApp')?.classList.add('hidden');
   }
-  // 5.5.0 Fleet Customer Entry Contract — every fresh project entry, preview,
+  // 5.5.1 Fleet Customer Entry Contract — every fresh project entry, preview,
   // Test Experience and explicit Home action starts at the top of that vessel's
   // landing page. Safari may preserve both document and nested scroll positions,
   // so reset all customer surfaces across multiple layout frames. State remains
@@ -8330,6 +8505,9 @@
   }
 
   async function sendWeb3FormsWithOptionalPreview(order,payload){
+    if(order?.testMode===true || !projectExternalContactAllowed(projectById(canonicalProjectId(String(order?.projectId||''))))){
+      return {response:null,result:{success:true,simulated:true,message:'Blocked by Test / Private Preview safety contract.'},attachmentSent:false,simulated:true};
+    }
     // Web3Forms accepts a single attachment using multipart/form-data on plans
     // that support file attachments. If the attachment is rejected, the caller
     // falls back automatically to the proven text-only submission.
@@ -8372,6 +8550,11 @@
     status.className='submit-status centered sending';
     const p=activeProject();
     const projectName=p?.branding?.businessName||p?.name||businessConfig.businessName||'this project';
+    if(order?.testMode===true || !projectExternalContactAllowed(p)){
+      status.className='submit-status centered success';
+      status.textContent=`TEST MODE — ${projectName} was not contacted. This submission is simulated and remains inside the project test boundary.`;
+      return true;
+    }
     status.textContent=`Sending your order to ${projectName}…`;
 
     if(String(order?.projectId||'')!==LEGACY_IKE_PROJECT_ID){
@@ -8471,6 +8654,10 @@ The full order and approved media remain stored with this project.`;
   async function prepareEmail(order){
     const p=projectById(canonicalProjectId(String(order?.projectId||'')));
     if(!p){ alert('This order is not sealed to a valid project. Email preparation was blocked.'); return; }
+    if(order?.testMode===true || !projectExternalContactAllowed(p)){
+      explainBlockedExternalContact('email');
+      return;
+    }
     const cfg=await loadProjectAdminSettings(p.id);
     const recipients=String(cfg?.email||'').trim() || (p?.id===LEGACY_IKE_PROJECT_ID?LEGACY_IKE_ORDER_EMAIL:'');
     if(!recipients){ alert('No project admin email is configured.'); return; }
@@ -9683,7 +9870,7 @@ The full order and approved media remain stored with this project.`;
     // project cards and launch controls must remain actionable even if a later
     // migration or optional initializer fails.
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-test-experience],[data-project-launch],[data-fleet-health-project],#commissionNewProjectBtn,#addProjectBtn,#addProjectCard,[data-resume-commissioning],[data-retry-project-registry]');
+      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-test-experience],[data-project-client-preview],[data-project-launch],[data-fleet-health-project],#commissionNewProjectBtn,#addProjectBtn,#addProjectCard,[data-resume-commissioning],[data-retry-project-registry]');
       if(!target)return;
       event.preventDefault();
       event.stopPropagation();
@@ -9712,6 +9899,7 @@ The full order and approved media remain stored with this project.`;
 
       if(target.matches('[data-fleet-health-project]')){await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
       if(target.matches('[data-open-project-control]')){await openProjectEngineControl(target.dataset.openProjectControl);return;}
+      if(target.matches('[data-project-client-preview]')){if(!target.disabled)await openClientPreviewBuilder(target.dataset.projectClientPreview);return;}
       if(target.matches('[data-project-test-experience]')){
         if(target.dataset.commandBusy==='1')return;
         const prior=target.textContent;target.dataset.commandBusy='1';target.disabled=true;target.textContent='OPENING…';
@@ -11431,6 +11619,10 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
+    if(await routeClientPreviewFromHash()){
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      return;
+    }
     window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.5.0.ready',detail:`${companies.length} projects • Trust Release • preserved canonical project identity • project-local mutations • launch-state filters • non-destructive admission review • canonical Test Deck resolver`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
@@ -11573,6 +11765,11 @@ document.addEventListener('click', (event) => {
   function bindBlackFlagPortal(){
     if(window.__blackFlagPortalBound) return;
     window.__blackFlagPortalBound=true;
+    if(String(location.hash||'').startsWith('#client-preview=')){
+      const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
+      document.body.classList.remove('bf-entry-open','boot-locked');
+      return;
+    }
 
     const unlock=byId('blackFlagEntryUnlock');
     const pin=byId('blackFlagEntryPin');
