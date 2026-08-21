@@ -1,3 +1,7 @@
+# Dark Sky 5.4.0
+
+Contractor-grade customer experience pass. Legacy Plumbing is the proof vessel for a stronger service-business platform: project-owned public website evidence, source-aware visual assets, confidence-first landing, service-path cards, guided contractor intake, and persistent project isolation.
+
 # Dark Sky 5.3.2
 
 - Accepted business-intake evidence now compiles into a runnable, project-scoped customer configuration instead of remaining advisory only.

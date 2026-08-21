@@ -1,3 +1,14 @@
+# Dark Sky 5.4.0 — Contractor Platform Proof
+
+- Promoted plumbing from a generic service skin into a contractor-grade operating experience.
+- Legacy Plumbing can use project-scoped public website visual evidence: source logo, service imagery, and trust imagery.
+- Added a responsive contractor header/nav with protected control zones.
+- Rebuilt the landing journey around trust, service selection, proof, process, testimonials, and request service.
+- Added a three-step plumbing request workflow: Job Details → Property & Photos → Contact & Review.
+- Required service address, name, mobile number, and email before submission; photos remain optional.
+- Moved Private Preview control away from central content for plumbing experiences.
+- Preserved project isolation and existing authority credentials.
+
 # Dark Sky 5.3.2 — Premium Project-Aware Customer Experience
 
 - Rebuilt the plumbing landing experience around confidence, trust, local service, a single Help Now action, plumbing-specific service graphics, proof sections, and a stronger brand chassis.

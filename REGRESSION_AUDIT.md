@@ -1,3 +1,7 @@
+# 5.4.0 Contractor Experience Regression Addendum
+
+Checks required: Legacy Plumbing source assets are selected only for the Legacy Plumbing project; no other project inherits its logo or images. Plumbing preview opens at the landing page, service-card selection opens the guided intake, Back to Home returns to the landing page, and preview submissions do not persist. Project Admin 4353, Black Flag 5615, and Captain's Quarters 19613 remain unchanged.
+
 # 5.3.2 Premium Landing Regression Addendum
 
 - Verify structured intake JSON is parsed, not copied into project description.

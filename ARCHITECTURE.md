@@ -1,3 +1,7 @@
+# 5.4.0 Contractor Experience Contract
+
+Shared structure may learn from a business category, but visual evidence is project-scoped. Public website assets may seed a project-specific experience when tied to that project's source URL. Another project may reuse contractor interaction patterns, never the source business's logo, imagery, customers, records, or settings.
+
 # 5.3.2 Business Intake Compiler Contract
 
 - Accepted business-intake evidence now compiles into a runnable, project-scoped customer configuration instead of remaining advisory only.
