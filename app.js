@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.7.6';
+  const BUILD_VERSION = '5.7.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -549,6 +549,7 @@
   }
   async function routeClientPreviewFromHash(){
     const encoded=clientPreviewHashPayload(); if(!encoded)return false;
+    document.documentElement.classList.remove('client-preview-first-light');
     let payload=null;
     try{payload=JSON.parse(clientPreviewBase64UrlDecode(encoded));}catch(_){payload=null;}
     document.body.classList.add('client-preview-mode','client-preview-locked');
@@ -11643,6 +11644,14 @@ The full order and approved media remain stored with this project.`;
     bindCustomerMediaCore();
     relieveSecondaryStoragePressure();
     repairLocalOrderBackupFootprint();
+    // 5.7.7 CUSTOMER-ROUTE PRIORITY: a portable client preview must route before
+    // Engine appearance, IndexedDB, migrations, fleet reconciliation, or admin
+    // state. The preview payload is self-contained in the URL, so none of those
+    // systems may block a customer from reaching the six-digit preview gate.
+    if(await routeClientPreviewFromHash()){
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.7',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      return;
+    }
     await loadEngineAppearance();
     db=await openDb();
     await migrateLegacyPlatformStorage();
@@ -11658,10 +11667,6 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.6',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
-      return;
-    }
     window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.5.0.ready',detail:`${companies.length} projects • Trust Release • preserved canonical project identity • project-local mutations • launch-state filters • non-destructive admission review • canonical Test Deck resolver`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
@@ -11681,7 +11686,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.6',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.7',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -11827,7 +11832,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.6'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.7'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});
