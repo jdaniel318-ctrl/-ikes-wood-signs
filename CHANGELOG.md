@@ -1,10 +1,10 @@
-# 5.8.5 — Harbor Marks
+# 5.8.6 — Compass Row
 - Reworked the customer trust strip so non-BBB badges use polished graphic medallions instead of plain text icons.
 - Kept the official BBB A+ badge as the credibility anchor while making the surrounding badges visually compatible.
 - Preserved project-level settings so BBB, Licensed & Insured, Residential + Commercial, and Service Area remain opt-in per vessel.
-- Updated runtime/build references and cache identity to 5.8.5.
+- Updated runtime/build references and cache identity to 5.8.6.
 
-# Dark Sky 5.8.5 — Harbor Marks
+# Dark Sky 5.8.6 — Compass Row
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.

@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-8-5-harbor-marks';
+const CACHE='dark-sky-v5-8-6-compass-row';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.8.5',
-  './platform_core.js?v=5.8.5',
-  './platform_v4.js?v=5.8.5',
-  './platform_identity.js?v=5.8.5',
-  './app.js?v=5.8.5',
-  './captain.js?v=5.8.5',
+  './styles.css?v=5.8.6',
+  './platform_core.js?v=5.8.6',
+  './platform_v4.js?v=5.8.6',
+  './platform_identity.js?v=5.8.6',
+  './app.js?v=5.8.6',
+  './captain.js?v=5.8.6',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

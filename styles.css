@@ -13142,21 +13142,20 @@ body.engine-mode #v3ArchitectureDeck,body.engine-mode #fleetCommissioningDock{sc
 .project-strength-line>span{min-width:0;flex:1;display:grid;gap:2px}.project-strength-line b{font-size:10px;letter-spacing:.09em;color:#cfe9ef}.project-strength-line small{font-size:9px;color:#88a9b1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.project-strength-line i{display:block;width:72px;height:6px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08)}.project-strength-line i em{display:block;width:var(--strength,0%);height:100%;border-radius:inherit;background:linear-gradient(90deg,#337f91,#70c9a0)}
 @media(max-width:760px){.project-strength-line i{width:54px}.project-strength-line small{white-space:normal}}
 
-/* 5.8.5 — Harbor Marks: graphic trust badges */
-.contractor-proof-strip.trust-strip{display:flex;align-items:stretch;justify-content:center;gap:10px;margin:14px 0 0;flex-wrap:wrap}
-.contractor-proof-strip.trust-strip .trust-chip{flex:1 1 230px;min-width:0;min-height:76px;padding:10px 16px;border:1px solid #d5e1e3;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 7px 18px rgba(10,49,64,.045);display:flex;align-items:center;justify-content:flex-start;gap:12px}
-.contractor-proof-strip.trust-strip .trust-chip-copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
-.contractor-proof-strip.trust-strip .trust-chip strong{font:800 13px/1.18 Arial,sans-serif;color:#17323c;white-space:normal}
-.contractor-proof-strip.trust-strip .trust-chip small{margin-top:4px;font:800 10px/1.12 Arial,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#79909b}
-.contractor-proof-strip.trust-strip .trust-chip-graphic{display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border-radius:50%;background:linear-gradient(145deg,#2ca6db,#0a648c);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 14px rgba(10,90,123,.14);overflow:hidden}
-.contractor-proof-strip.trust-strip .trust-chip-graphic svg{display:block;width:54px;height:54px}
-.contractor-proof-strip.trust-strip .trust-chip-bbb{flex-basis:260px;padding:8px 14px;overflow:hidden;justify-content:center}
-.contractor-proof-strip.trust-strip .trust-chip-bbb img{width:min(190px,100%);height:52px;object-fit:contain;object-position:center;display:block;border-radius:0}
+/* 5.8.6 — Compass Row: refined trust badges */
+.contractor-proof-strip.trust-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 0}
+.contractor-proof-strip.trust-strip .trust-chip{min-width:0;min-height:78px;padding:12px 16px;border:1px solid #d9e3e4;border-radius:18px;background:rgba(255,255,255,.97);box-shadow:0 8px 20px rgba(11,49,63,.05);display:flex;align-items:center;justify-content:flex-start;gap:14px;overflow:hidden}
+.contractor-proof-strip.trust-strip .trust-chip-copy{display:flex;flex-direction:column;justify-content:center;min-width:0;flex:1}
+.contractor-proof-strip.trust-strip .trust-chip strong{display:block;font:800 15px/1.05 Arial,sans-serif;color:#17323c;white-space:normal;letter-spacing:-.01em}
+.contractor-proof-strip.trust-strip .trust-chip-graphic{display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border-radius:50%;background:linear-gradient(145deg,#37afe1,#0b6e96);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 14px rgba(10,90,123,.14);overflow:hidden}
+.contractor-proof-strip.trust-strip .trust-chip-graphic svg{display:block;width:52px;height:52px}
+.contractor-proof-strip.trust-strip .trust-chip-bbb{justify-content:center;padding:10px 16px}
+.contractor-proof-strip.trust-strip .trust-chip-bbb img{width:min(168px,100%);height:54px;object-fit:contain;object-position:center;display:block;border-radius:0}
 .contractor-proof-strip.trust-strip.compact{margin-top:12px}
 .trust-settings-card .bbb-setting-row{border-color:rgba(10,111,145,.24)}
 .trust-settings-preview{margin-top:16px;padding:14px;border:1px dashed rgba(120,150,158,.45);border-radius:14px;background:rgba(255,255,255,.025)}
 .trust-settings-preview>span{display:block;margin-bottom:6px;font:900 9px/1 Arial,sans-serif;letter-spacing:.15em;color:#7ca2aa}
 .trust-settings-preview .contractor-proof-strip{margin-top:0}
-@media(max-width:900px){.contractor-proof-strip.trust-strip .trust-chip{flex-basis:calc(50% - 6px)}}
-@media(max-width:560px){.contractor-proof-strip.trust-strip{gap:7px}.contractor-proof-strip.trust-strip .trust-chip{flex-basis:100%;min-height:64px;justify-content:flex-start;padding:10px 14px}.contractor-proof-strip.trust-strip .trust-chip-graphic{flex-basis:48px;width:48px;height:48px}.contractor-proof-strip.trust-strip .trust-chip-graphic svg{width:48px;height:48px}.contractor-proof-strip.trust-strip .trust-chip-bbb img{width:min(176px,100%);height:48px}}
+@media(max-width:980px){.contractor-proof-strip.trust-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.contractor-proof-strip.trust-strip{grid-template-columns:1fr;gap:8px}.contractor-proof-strip.trust-strip .trust-chip{min-height:68px;padding:10px 14px}.contractor-proof-strip.trust-strip .trust-chip strong{font-size:14px}.contractor-proof-strip.trust-strip .trust-chip-graphic{flex-basis:46px;width:46px;height:46px}.contractor-proof-strip.trust-strip .trust-chip-graphic svg{width:46px;height:46px}.contractor-proof-strip.trust-strip .trust-chip-bbb img{width:min(160px,100%);height:50px}}
 
