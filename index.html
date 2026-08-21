@@ -60,7 +60,7 @@
         try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
       }
       window.DarkSkyAtomicHome={open:returnDarkSkyAtomically};
-      function attempt(event){
+      async function attempt(event){
         const target=event.target;
         const homeTarget=target && (target.matches?.('[data-return-dark-sky]') || target.closest?.('[data-return-dark-sky]'));
         if(homeTarget){
@@ -90,15 +90,36 @@
         const isButton=target && (target.id==='blackFlagEntryUnlock' || target.closest?.('#blackFlagEntryUnlock'));
         const isEnter=event.type==='keydown' && event.key==='Enter' && target?.id==='blackFlagEntryPin';
         if(!isButton && !isEnter) return;
-        // 5.9.3: normal entry is owned by the configured Engine authenticator.
-        // First-light recovery is only a last-resort fallback if the application
-        // authenticator failed to initialize; it never auto-submits while typing.
-        if(window.BlackFlagAuth?.verify) return;
-        const input=byId('blackFlagEntryPin');
-        const entered=String(input?.value||'').trim();
-        if(entered!==ENGINE_RECOVERY_PIN) return;
+
+        // 5.9.4 DEAD-MAN AUTH BRIDGE: every explicit Engine submission is owned here
+        // at first light. This avoids the failure mode where BlackFlagAuth exists but
+        // later portal event binding never completes. No auto-submit: only click/Enter.
         event.preventDefault();
         event.stopImmediatePropagation();
+        const input=byId('blackFlagEntryPin');
+        const error=byId('blackFlagEntryError');
+        const entered=String(input?.value||'').trim();
+        if(error) error.textContent='';
+        if(!entered){ if(error) error.textContent='Enter the Engine PIN.'; input?.focus(); return; }
+
+        let result=null;
+        try{
+          if(window.BlackFlagAuth?.verify){
+            result=await window.BlackFlagAuth.verify(entered);
+          }else{
+            result={ok:entered===ENGINE_RECOVERY_PIN,code:entered===ENGINE_RECOVERY_PIN?'recovery-fallback':'startup'};
+          }
+        }catch(err){
+          console.warn('First-light Engine authentication warning',err);
+          result={ok:entered===ENGINE_RECOVERY_PIN,code:entered===ENGINE_RECOVERY_PIN?'recovery-fallback':'startup'};
+        }
+
+        if(!result?.ok){
+          if(error) error.textContent=result?.code==='locked'?'Engine access is temporarily locked. Wait for the lock timer, then try again.':(result?.code==='startup'?'Engine authentication is still loading. The recovery PIN 5615 remains available.':'Incorrect Engine PIN.');
+          if(input){ input.value=''; input.focus(); }
+          return;
+        }
+        try{ window.BlackFlagAuth?.unlock?.(); }catch(_){ }
         openEngineAtomically();
       }
       document.addEventListener('click',attempt,true);
@@ -109,7 +130,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.9.3" />
+  <link rel="stylesheet" href="styles.css?v=5.9.4" />
   <style id="bootLockStyles">
     /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
@@ -1429,11 +1450,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.9.3"></script>
-  <script src="platform_v4.js?v=5.9.3"></script>
-  <script src="platform_identity.js?v=5.9.3"></script>
-  <script src="app.js?v=5.9.3"></script>
-  <script src="captain.js?v=5.9.3"></script>
+  <script src="platform_core.js?v=5.9.4"></script>
+  <script src="platform_v4.js?v=5.9.4"></script>
+  <script src="platform_identity.js?v=5.9.4"></script>
+  <script src="app.js?v=5.9.4"></script>
+  <script src="captain.js?v=5.9.4"></script>
 
 </body>
 </html>

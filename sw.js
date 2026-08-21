@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-9-3-steady-helm';
+const CACHE='dark-sky-v5-9-4-dead-reckoning';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.9.3',
-  './platform_core.js?v=5.9.3',
-  './platform_v4.js?v=5.9.3',
-  './platform_identity.js?v=5.9.3',
-  './app.js?v=5.9.3',
-  './captain.js?v=5.9.3',
+  './styles.css?v=5.9.4',
+  './platform_core.js?v=5.9.4',
+  './platform_v4.js?v=5.9.4',
+  './platform_identity.js?v=5.9.4',
+  './app.js?v=5.9.4',
+  './captain.js?v=5.9.4',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
