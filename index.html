@@ -16,7 +16,7 @@
       try { window.__darkSkyLastEarlyError = {stage:window.__darkSkyBootStage||'preflight',message:String(event.message||''),source:String(event.filename||''),line:Number(event.lineno||0),column:Number(event.colno||0),at:new Date().toISOString()}; } catch(_) {}
     }, true);
 
-    // Dark Sky 5.7.5 FIRST-LIGHT ENGINE ENTRY.
+    // Dark Sky 5.7.6 FIRST-LIGHT ENGINE ENTRY.
     // This tiny recovery path is intentionally independent of app.js, IndexedDB,
     // migrations, project state, Captain/Test Access, and service-worker state.
     // The canonical Black Flag Engine PIN (5615) must open the Engine even if a
@@ -61,7 +61,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.7.5" />
+  <link rel="stylesheet" href="styles.css?v=5.7.6" />
   <style id="bootLockStyles">
     /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
@@ -1330,11 +1330,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.7.5"></script>
-  <script src="platform_v4.js?v=5.7.5"></script>
-  <script src="platform_identity.js?v=5.7.5"></script>
-  <script src="app.js?v=5.7.5"></script>
-  <script src="captain.js?v=5.7.5"></script>
+  <script src="platform_core.js?v=5.7.6"></script>
+  <script src="platform_v4.js?v=5.7.6"></script>
+  <script src="platform_identity.js?v=5.7.6"></script>
+  <script src="app.js?v=5.7.6"></script>
+  <script src="captain.js?v=5.7.6"></script>
 
 </body>
 </html>

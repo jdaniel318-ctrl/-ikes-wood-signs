@@ -1,3 +1,13 @@
+# Dark Sky 5.7.6 — Simple Client Preview
+
+- Client Preview now prepares automatically when opened; no separate Generate step.
+- Added one-tap **Copy Invite Message** plus separate **Copy Link**, **Copy Code**, and **Test Preview** actions.
+- Simplified the customer gate to project branding + six-digit code + Continue.
+- Moved expiry and technical preview details behind **Preview settings**.
+- Hardened iPad/Safari modal scrolling so all controls stay reachable.
+- Preserved simulated-only safety restrictions and per-invite six-digit codes.
+- Bumped app/service-worker build and cache to 5.7.6.
+
 # Dark Sky 5.7.4 — Engine Entry Recovery
 
 - Added a first-light, storage-independent recovery path for the canonical Black Flag Engine PIN `5615`.
@@ -266,9 +276,9 @@ Second-pass audit of the 5.0 fleet boundary release.
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
 
-## 5.7.5 — Zero-Ike-Flash Boundary
+## 5.7.6 — Zero-Ike-Flash Boundary
 - Made the legacy Ike customer header, progress bar, and customer shell opt-in instead of default-rendered.
 - Ike customer UI can now appear only when the route is explicitly `project-mode` + `ikes-project`.
 - Engine, boot, project-admin, orders, and ledger states hard-hide Ike customer surfaces with `!important` boundary rules.
 - Added an inline first-paint version of the same boundary so Safari cannot briefly paint Ike branding while the main stylesheet or JavaScript is still loading.
-- Bumped all executable asset cache keys and the service-worker cache to 5.7.5 to prevent a repaired build from remaining pinned to 5.7.4.
+- Bumped all executable asset cache keys and the service-worker cache to 5.7.6 to prevent a repaired build from remaining pinned to 5.7.4.

@@ -12985,3 +12985,45 @@ body.project-mode.ikes-project > #app > .progress-track,
 body.project-mode.ikes-project #customerApp {
   display:block;
 }
+
+/* ===== Dark Sky 5.7.6 — one-tap Client Preview handoff ===== */
+.client-preview-builder{
+  align-items:center!important;
+  overflow:hidden!important;
+  padding:max(12px,env(safe-area-inset-top)) 16px max(12px,env(safe-area-inset-bottom))!important;
+}
+.client-preview-builder-card{
+  width:min(620px,100%)!important;
+  max-height:calc(100dvh - max(24px,env(safe-area-inset-top)) - max(24px,env(safe-area-inset-bottom)))!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding:28px 28px 24px!important;
+}
+.client-preview-close{position:sticky!important;float:right!important;top:0!important;z-index:5!important;margin:-8px -8px 0 10px!important;backdrop-filter:blur(8px)!important}
+.client-preview-simple-intro{margin:0 0 16px!important;max-width:540px}
+.client-preview-preparing{display:flex;align-items:center;gap:12px;padding:18px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(139,210,232,.22)}
+.client-preview-spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.18);border-top-color:#76dba2;border-radius:50%;animation:clientPreviewSpin .8s linear infinite;flex:0 0 auto}
+@keyframes clientPreviewSpin{to{transform:rotate(360deg)}}
+.client-preview-ready{display:grid;gap:3px;padding:13px 15px;border:1px solid rgba(83,210,145,.35);background:rgba(36,139,93,.12);border-radius:14px}
+.client-preview-ready span{font-size:10px;color:#70dca1;font-weight:900;letter-spacing:.18em}.client-preview-ready strong{font-size:20px}.client-preview-ready small{color:#9db8c1}
+.client-preview-send-btn{width:100%;min-height:58px!important;margin:8px 0 10px!important;font-size:13px!important;letter-spacing:.06em!important}
+.client-preview-quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.client-preview-quick-actions .secondary-btn{min-height:44px}
+.client-preview-link-label{margin:10px 0!important;font-size:10px!important;opacity:.82}
+.client-preview-link-label textarea{font-size:11px!important;line-height:1.25!important;min-height:52px!important;resize:none!important}
+.client-preview-new-btn{display:block;margin:4px auto 0;border:0;background:transparent;color:#a9c1ca;text-decoration:underline;text-underline-offset:3px;padding:9px 12px;cursor:pointer;font:700 11px/1.2 inherit}
+.client-preview-details{margin-top:14px;border-top:1px solid rgba(141,194,211,.18);padding-top:10px;color:#abc0c8}
+.client-preview-details summary{cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.06em;color:#bcd1d8;padding:8px 0}
+.client-preview-details p{font-size:12px!important;margin:6px 0!important}
+.client-preview-details label{margin:10px 0!important}
+.client-preview-gate-card p{font-size:17px!important;margin-bottom:18px!important}
+.client-preview-gate-card input{font-size:24px!important;letter-spacing:.26em!important;min-height:58px!important}
+.client-preview-safe-note{display:block!important;margin-top:13px!important;color:#71858c!important;letter-spacing:.02em!important;font-size:10px!important}
+@media(max-width:720px){
+  .client-preview-builder-card{padding:20px 16px 18px!important;max-height:calc(100dvh - 16px)!important}
+  .client-preview-quick-actions{grid-template-columns:1fr!important}
+  .client-preview-send-btn{min-height:56px!important}
+  .client-preview-link-label{display:none!important}
+  .client-preview-gate-card{padding:28px 18px!important}
+}
