@@ -11644,7 +11644,7 @@ The full order and approved media remain stored with this project.`;
     await loadEngineConfig();
     bindEvents();
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.4',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.5',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.5.0.ready',detail:`${companies.length} projects • Trust Release • preserved canonical project identity • project-local mutations • launch-state filters • non-destructive admission review • canonical Test Deck resolver`});
@@ -11666,7 +11666,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.4',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.7.5',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -11812,7 +11812,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.4'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.5'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});

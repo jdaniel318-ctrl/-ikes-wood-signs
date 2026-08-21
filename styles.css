@@ -12955,3 +12955,33 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
   #blackFlagEntryGate .bf-entry-primary{min-height:54px!important;}
   #blackFlagEntryGate .bf-entry-foot{margin-top:9px!important;}
 }
+
+/* ===== Dark Sky 5.7.5 — zero-Ike-flash boundary =====
+   Legacy Ike customer chrome is opt-in only. It is never allowed to render
+   merely because its markup exists in index.html. This prevents one-frame
+   flashes during boot, Engine unlock, route changes, and late initialization. */
+body:not(.project-mode) > #app > .brand-header,
+body:not(.project-mode) > #app > .progress-track,
+body:not(.project-mode) #customerApp,
+body.engine-mode > #app > .brand-header,
+body.engine-mode > #app > .progress-track,
+body.engine-mode #customerApp,
+body.project-admin-mode > #app > .brand-header,
+body.project-admin-mode > #app > .progress-track,
+body.project-admin-mode #customerApp,
+body.project-orders-mode > #app > .brand-header,
+body.project-orders-mode > #app > .progress-track,
+body.project-orders-mode #customerApp,
+body.project-ledger-mode > #app > .brand-header,
+body.project-ledger-mode > #app > .progress-track,
+body.project-ledger-mode #customerApp {
+  display:none!important;
+}
+
+/* Ike's legacy customer shell may appear only when BOTH the selected project
+   and the route explicitly say this is Ike's customer experience. */
+body.project-mode.ikes-project > #app > .brand-header,
+body.project-mode.ikes-project > #app > .progress-track,
+body.project-mode.ikes-project #customerApp {
+  display:block;
+}

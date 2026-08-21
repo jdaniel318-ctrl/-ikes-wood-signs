@@ -265,3 +265,10 @@ Second-pass audit of the 5.0 fleet boundary release.
 - The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
+
+## 5.7.5 — Zero-Ike-Flash Boundary
+- Made the legacy Ike customer header, progress bar, and customer shell opt-in instead of default-rendered.
+- Ike customer UI can now appear only when the route is explicitly `project-mode` + `ikes-project`.
+- Engine, boot, project-admin, orders, and ledger states hard-hide Ike customer surfaces with `!important` boundary rules.
+- Added an inline first-paint version of the same boundary so Safari cannot briefly paint Ike branding while the main stylesheet or JavaScript is still loading.
+- Bumped all executable asset cache keys and the service-worker cache to 5.7.5 to prevent a repaired build from remaining pinned to 5.7.4.
