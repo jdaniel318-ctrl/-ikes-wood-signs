@@ -1,3 +1,13 @@
+# Dark Sky 5.7.8 — Platform-First Landing
+
+- Restored **Dark Sky** as the root landing page; a fresh visit no longer drops directly into Black Flag Engine authentication.
+- Black Flag is now explicitly entered from Dark Sky and retains its separate Engine PIN boundary.
+- Captain's Quarters is reachable from Dark Sky while preserving its own authorization.
+- Client Preview links continue to bypass Dark Sky/Black Flag and enter the project-specific customer preview directly.
+- Engine logout returns to Dark Sky instead of immediately reopening the Engine PIN gate.
+- Preserved strict project isolation and the existing authority contracts.
+- Bumped executable/service-worker cache identity to 5.7.8.
+
 # Dark Sky 5.7.7 — Simple Client Preview
 
 - Client Preview now prepares automatically when opened; no separate Generate step.

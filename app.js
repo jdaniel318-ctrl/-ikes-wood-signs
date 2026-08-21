@@ -11741,6 +11741,7 @@ document.addEventListener('click', (event) => {
   function byId(id){ return document.getElementById(id); }
 
   async function requireEngineEntry(){
+    byId('darkSkyHomeGate')?.classList.add('hidden');
     const gate=byId('blackFlagEntryGate');
     if(gate){
       gate.classList.remove('hidden');
@@ -11758,6 +11759,24 @@ document.addEventListener('click', (event) => {
     if(gate) gate.classList.add('hidden');
     document.body.classList.remove('bf-entry-open');
   }
+
+
+  function showDarkSkyHome(){
+    window.DarkSkyBoundaryBridge?.lockEngine?.();
+    const home=byId('darkSkyHomeGate');
+    const gate=byId('blackFlagEntryGate');
+    const engine=byId('enginePanel');
+    gate?.classList.add('hidden');
+    engine?.classList.add('hidden');
+    document.body.classList.remove('bf-entry-open','engine-mode','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode');
+    document.body.classList.add('boot-locked');
+    document.body.removeAttribute('data-active-project');
+    home?.classList.remove('hidden');
+    window.__darkSkyEngineEntryOrigin='home';
+    try{ history.replaceState(null,'',location.pathname+location.search); }catch(_){}
+    try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
+  }
+  window.showDarkSkyHome=showDarkSkyHome;
 
   function hideProjectSurfacesBeforeEngine(){
     // Atomic visual boundary: hide every project/customer/admin surface while the
@@ -11832,7 +11851,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.7'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.8'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});
@@ -11858,17 +11877,15 @@ document.addEventListener('click', (event) => {
 
   function lockAndReturnToEntry(){
     window.DarkSkyBoundaryBridge?.lockEngine?.();
-    document.body.classList.remove('engine-mode','project-mode');
-    document.body.classList.add('boot-locked');
-    const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
     window.DarkSkyBoundaryBridge?.clearProject?.();
-    requireEngineEntry();
+    showDarkSkyHome();
   }
 
   function bindBlackFlagPortal(){
     if(window.__blackFlagPortalBound) return;
     window.__blackFlagPortalBound=true;
     if(String(location.hash||'').startsWith('#client-preview=')){
+      byId('darkSkyHomeGate')?.classList.add('hidden');
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
       document.body.classList.remove('bf-entry-open','boot-locked');
       return;
@@ -11885,6 +11902,10 @@ document.addEventListener('click', (event) => {
     const closeEntry=byId('closeBlackFlagEntry');
     if(closeEntry) closeEntry.addEventListener('click',async()=>{
       leaveEntry();
+      if(window.__darkSkyEngineEntryOrigin==='home'){
+        showDarkSkyHome();
+        return;
+      }
       if(typeof window.cancelEngineEntryToProject==='function'){
         await window.cancelEngineEntryToProject();
         return;
@@ -11902,8 +11923,18 @@ document.addEventListener('click', (event) => {
     if(admin) admin.addEventListener('click',openCompanyAdminGate);
     if(engineCompany) engineCompany.addEventListener('click',openCompanyApp);
     if(logout) logout.addEventListener('click',lockAndReturnToEntry);
+    const darkSkyEnterBlackFlag=byId('darkSkyEnterBlackFlag');
+    const darkSkyEnterCaptain=byId('darkSkyEnterCaptain');
+    if(darkSkyEnterBlackFlag) darkSkyEnterBlackFlag.addEventListener('click',()=>{
+      window.__darkSkyEngineEntryOrigin='home';
+      requireEngineEntry();
+    });
+    if(darkSkyEnterCaptain) darkSkyEnterCaptain.addEventListener('click',()=>{
+      byId('captainModeAccessBtn')?.click();
+    });
 
-    // Engine portal is the first screen after a fresh page load unless the
+    // Dark Sky is the first screen after a fresh root load. Black Flag is a
+    // protected Engine behind the platform home; Client Preview remains direct.
     // first-light atomic entry path already authenticated 5615 during recovery.
     if(window.__darkSkyAtomicEngineUnlocked===true){
       try{ window.BlackFlagAuth?.unlock?.(); }catch(_){}
@@ -11913,7 +11944,7 @@ document.addEventListener('click', (event) => {
       byId('blackFlagEntryGate')?.classList.add('hidden');
       byId('enginePanel')?.classList.remove('hidden');
     }else{
-      requireEngineEntry();
+      showDarkSkyHome();
     }
     if(!window.BlackFlagAuth || !window.DarkSkyBoundaryBridge){
       const err=byId('blackFlagEntryError');

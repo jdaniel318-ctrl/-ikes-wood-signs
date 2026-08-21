@@ -13027,3 +13027,28 @@ body.project-mode.ikes-project #customerApp {
   .client-preview-link-label{display:none!important}
   .client-preview-gate-card{padding:28px 18px!important}
 }
+
+/* Dark Sky 5.7.8 — platform-first home. Black Flag is an Engine behind Dark Sky, never the root landing page. */
+.dark-sky-home-gate{position:fixed;inset:0;z-index:12000;display:none;place-items:center;overflow:auto;padding:max(24px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));background:radial-gradient(circle at 50% 18%,rgba(25,92,112,.22),transparent 35%),linear-gradient(180deg,#061319 0%,#07191f 52%,#051015 100%);color:#f4f1e8}
+.dark-sky-home-shell{width:min(760px,100%);position:relative;text-align:center;padding:54px 48px 42px;border:1px solid rgba(139,199,216,.34);border-radius:26px;background:linear-gradient(180deg,rgba(7,29,36,.96),rgba(5,19,24,.98));box-shadow:0 28px 80px rgba(0,0,0,.42);overflow:hidden}
+.dark-sky-horizon{height:92px;position:relative;margin:-10px auto 4px;max-width:430px}
+.dark-sky-horizon:before{content:"";position:absolute;left:50%;top:12px;width:74px;height:74px;transform:translateX(-50%);border:2px solid rgba(238,240,223,.88);border-radius:50%;box-shadow:0 0 34px rgba(184,222,228,.15)}
+.dark-sky-horizon:after{content:"";position:absolute;left:14%;right:14%;bottom:19px;height:1px;background:linear-gradient(90deg,transparent,rgba(161,217,230,.7),transparent)}
+.dark-sky-horizon span,.dark-sky-horizon i,.dark-sky-horizon b{position:absolute;width:3px;height:3px;border-radius:50%;background:#dbe9e8;opacity:.9;box-shadow:0 0 9px rgba(219,233,232,.5)}
+.dark-sky-horizon span{left:22%;top:31px}.dark-sky-horizon i{right:27%;top:21px}.dark-sky-horizon b{right:18%;top:49px}
+.dark-sky-home-kicker{font:800 11px/1.2 system-ui,sans-serif;letter-spacing:.34em;color:#73d39c;margin-top:5px}
+.dark-sky-home-shell h1{font:900 clamp(48px,8vw,82px)/.92 system-ui,sans-serif;letter-spacing:.08em;margin:14px 0 12px;color:#f7f4e9;text-shadow:0 8px 26px rgba(0,0,0,.25)}
+.dark-sky-home-lead{margin:0 auto 22px;max-width:560px;color:#b8c8cc;font:500 17px/1.5 system-ui,sans-serif}
+.dark-sky-home-status{display:inline-flex;align-items:center;gap:9px;padding:8px 13px;border:1px solid rgba(106,183,205,.25);border-radius:999px;background:rgba(24,72,82,.24);font:700 10px/1.2 system-ui,sans-serif;letter-spacing:.12em;color:#c8d6d9}
+.dark-sky-home-status span{width:8px;height:8px;border-radius:50%;background:#50d38b;box-shadow:0 0 10px rgba(80,211,139,.65)}
+.dark-sky-home-status small{font-weight:500;letter-spacing:.03em;color:#829aa1}
+.dark-sky-home-actions{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:32px 0 18px}
+.dark-sky-home-actions button{min-height:132px;border-radius:18px;padding:22px;text-align:left;cursor:pointer;font-family:system-ui,sans-serif;transition:transform .15s ease,border-color .15s ease}
+.dark-sky-home-actions button:active{transform:scale(.985)}
+.dark-sky-home-actions button span{display:block;font-size:10px;font-weight:900;letter-spacing:.18em;margin-bottom:9px}
+.dark-sky-home-actions button strong{display:block;font-size:21px;line-height:1.15;margin-bottom:7px}
+.dark-sky-home-actions button small{display:block;font-size:12px;line-height:1.35;opacity:.72}
+.dark-sky-primary{border:1px solid rgba(112,205,222,.55);background:linear-gradient(135deg,#0e5263,#177694);color:#f8f8f2;box-shadow:0 12px 28px rgba(0,0,0,.24)}
+.dark-sky-primary span{color:#f5d26a}.dark-sky-secondary{border:1px solid rgba(153,177,184,.27);background:rgba(255,255,255,.045);color:#eef3f2}.dark-sky-secondary span{color:#7fdba3}
+.dark-sky-home-foot{margin:10px 0 0;color:#6f878e;font:650 10px/1.4 system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase}
+@media(max-width:680px){.dark-sky-home-shell{padding:38px 20px 28px}.dark-sky-home-actions{grid-template-columns:1fr}.dark-sky-home-actions button{min-height:105px}.dark-sky-home-status small{display:none}}

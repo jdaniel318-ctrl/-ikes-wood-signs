@@ -1,3 +1,7 @@
+# Dark Sky 5.7.8
+
+Dark Sky is once again the platform-first landing experience. A fresh root visit opens Dark Sky, and Black Flag is entered as the protected Engine beneath it. Client Preview links remain direct customer routes and do not expose platform or Engine controls.
+
 # Dark Sky 5.7.4
 
 Dark Sky 5.7.4 is the Engine-entry recovery release. It adds a first-light authentication path for the canonical Black Flag PIN `5615` so Engine access does not depend on secondary startup modules, storage migrations, or stale browser application state. It also refreshes the service-worker cache identity and preserves the existing project-isolation and authority contracts.

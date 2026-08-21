@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#071419" />
-  <title>Engine Room — Black Flag Harbor</title>
+  <title>Dark Sky — Command Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 4.3.7 Showroom Restore: DOM helpers exist before any application script executes.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
@@ -50,6 +50,24 @@
       }
       function attempt(event){
         const target=event.target;
+        const openBlackFlag=target && (target.id==='darkSkyEnterBlackFlag' || target.closest?.('#darkSkyEnterBlackFlag'));
+        const closeBlackFlag=target && (target.id==='closeBlackFlagEntry' || target.closest?.('#closeBlackFlagEntry'));
+        if(openBlackFlag){
+          window.__darkSkyEngineEntryOrigin='home';
+          byId('darkSkyHomeGate')?.classList.add('hidden');
+          document.body.classList.add('bf-entry-open');
+          byId('blackFlagEntryGate')?.classList.remove('hidden');
+          setTimeout(function(){ byId('blackFlagEntryPin')?.focus(); },30);
+          return;
+        }
+        if(closeBlackFlag && window.__darkSkyEngineEntryOrigin==='home'){
+          event.preventDefault();
+          byId('blackFlagEntryGate')?.classList.add('hidden');
+          document.body.classList.remove('bf-entry-open');
+          document.body.classList.add('boot-locked');
+          byId('darkSkyHomeGate')?.classList.remove('hidden');
+          return;
+        }
         const isButton=target && (target.id==='blackFlagEntryUnlock' || target.closest?.('#blackFlagEntryUnlock'));
         const isEnter=event.type==='keydown' && event.key==='Enter' && target?.id==='blackFlagEntryPin';
         if(!isButton && !isEnter) return;
@@ -68,11 +86,15 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.7.7" />
+  <link rel="stylesheet" href="styles.css?v=5.7.8" />
   <style id="bootLockStyles">
     /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
-    body.boot-locked #blackFlagEntryGate {display:grid!important}
+    body.boot-locked #darkSkyHomeGate {display:grid!important}
+    body.boot-locked #blackFlagEntryGate {display:none!important}
+    body.bf-entry-open #darkSkyHomeGate {display:none!important}
+    body.bf-entry-open #blackFlagEntryGate {display:grid!important}
+    html.client-preview-first-light #darkSkyHomeGate,
     html.client-preview-first-light #blackFlagEntryGate {display:none!important}
     body:not(.project-mode) > #app > .brand-header,
     body:not(.project-mode) > #app > .progress-track,
@@ -88,6 +110,21 @@
 <body class="boot-locked">
   <div id="testAccessBanner" class="test-access-banner hidden" role="status">TEST ACCESS ACTIVE • PIN ENTRY BYPASSED • SESSION ONLY</div>
 
+  <section id="darkSkyHomeGate" class="dark-sky-home-gate" aria-label="Dark Sky home">
+    <div class="dark-sky-home-shell">
+      <div class="dark-sky-horizon" aria-hidden="true"><span></span><i></i><b></b></div>
+      <div class="dark-sky-home-kicker">PLATFORM COMMAND</div>
+      <h1>DARK SKY</h1>
+      <p class="dark-sky-home-lead">One platform. Independent projects. Clear command.</p>
+      <div class="dark-sky-home-status"><span></span><strong>HARBOR READY</strong><small>Project boundaries protected</small></div>
+      <div class="dark-sky-home-actions">
+        <button id="darkSkyEnterBlackFlag" class="dark-sky-primary" type="button"><span>BLACK FLAG</span><strong>Enter Engine Room</strong><small>Projects • operations • control</small></button>
+        <button id="darkSkyEnterCaptain" class="dark-sky-secondary" type="button"><span>CAPTAIN'S QUARTERS</span><strong>Captain Command</strong><small>Captain authorization required</small></button>
+      </div>
+      <p class="dark-sky-home-foot">Dark Sky is the platform. Black Flag is the Engine.</p>
+    </div>
+  </section>
+
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
       <div class="bf-entry-kicker">BLACK FLAG • SECURE COMMAND ACCESS</div>
@@ -102,7 +139,7 @@
         <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
-<button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO PROJECT</button>
+<button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO DARK SKY</button>
 <div class="engine-entry-mode" role="group" aria-label="Engine appearance">
   <span><strong>ENGINE APPEARANCE</strong><small>Choose how the Engine Room presents itself.</small></span>
   <div class="engine-mode-segment">
@@ -1338,11 +1375,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.7.7"></script>
-  <script src="platform_v4.js?v=5.7.7"></script>
-  <script src="platform_identity.js?v=5.7.7"></script>
-  <script src="app.js?v=5.7.7"></script>
-  <script src="captain.js?v=5.7.7"></script>
+  <script src="platform_core.js?v=5.7.8"></script>
+  <script src="platform_v4.js?v=5.7.8"></script>
+  <script src="platform_identity.js?v=5.7.8"></script>
+  <script src="app.js?v=5.7.8"></script>
+  <script src="captain.js?v=5.7.8"></script>
 
 </body>
 </html>
