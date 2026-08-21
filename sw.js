@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-9-8-true-bearing';
+const CACHE='dark-sky-v5-9-9-flagship-standard';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.9.8',
-  './platform_core.js?v=5.9.8',
-  './platform_v4.js?v=5.9.8',
-  './platform_identity.js?v=5.9.8',
-  './app.js?v=5.9.8',
-  './captain.js?v=5.9.8',
+  './styles.css?v=5.9.9',
+  './platform_core.js?v=5.9.9',
+  './platform_v4.js?v=5.9.9',
+  './platform_identity.js?v=5.9.9',
+  './app.js?v=5.9.9',
+  './captain.js?v=5.9.9',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -17,6 +17,8 @@ const ASSETS=[
   './assets/engine_room_pirate_benchmark_v2978.png',
   './assets/signal_restoration_logo.png',
   './assets/bbb_accredited_a_plus.png',
+  './assets/legacy_plumbing_canonical_logo.jpeg',
+  './assets/legacy_customer_site_benchmark.png',
   './assets/legacy_responsive_benchmark.png'
 ];
 

@@ -220,3 +220,11 @@ The repeatable sequence is: understand business → recommend capabilities → E
 
 ## 5.9.7 North Star Responsive Benchmark
 Legacy Plumbing is the proving vessel for a responsive Customer Site Kit composition: strong project identity, unified photo-led hero, trust row, compact service chooser, proof/process/reviews/CTA, and device-specific layout behavior. The reference asset `assets/legacy_responsive_benchmark.png` is a visual QA benchmark only; customer experiences render from project data and native HTML/CSS. Other projects may reuse the composition primitives but must retain project-specific graphics, colors, copy, services, and optional modules.
+
+## 5.9.9 Branding Authority + Benchmark Contract
+- Every project may have one active canonical `projectLogo`, controlled only by the Project Control Center.
+- The canonical logo is rendered as-uploaded; layout adapts around it. The Engine must not redraw, recolor, crop, rearrange, or substitute it.
+- Replacing the Control Center logo is an explicit brand-authority action and the new upload becomes canonical for that project.
+- `designBenchmark` is a separate project-scoped reference asset. It guides design/QA but is never customer-facing by implication.
+- Benchmarks are project-specific. Reusable Customer Site Kit structure may be shared across the fleet, but another vessel’s brand assets are never inherited.
+- Legacy Plumbing carries a byte-identical bundled canonical-logo fallback and its approved responsive benchmark so fresh devices retain the correct identity and design target.

@@ -1,18 +1,27 @@
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
+- Established a project Branding Authority contract: the Control Center Project Logo / Mark is the canonical live identity and is used exactly as uploaded.
+- Added a separate Design Benchmark / Reference asset slot to the Project Graphics Library. Benchmark artwork is reference-only and can never silently become a live logo or customer graphic.
+- Bundled the approved Legacy Plumbing logo byte-for-byte as a fresh-device fallback; a Control Center logo upload still overrides it immediately.
+- Bundled the approved Legacy responsive customer-site benchmark as a project-specific QA reference.
+- Added benchmark support to reusable project graphics templates so future vessels can carry their own approved visual target without inheriting another project’s brand.
+- Added canonical-logo rendering guards to prevent crop, recolor, blend-mode, or filter effects from altering the approved logo asset.
+- Advanced runtime and cache identity to 5.9.9.
+
+# 5.9.9 — Flagship Standard
 - Tightened Legacy Plumbing against the approved responsive benchmark instead of using it only as general inspiration.
 - Rebalanced phone hero proportions so project photography remains visible beside the brand and headline.
 - Reduced the mobile hero logo panel width, strengthened header branding, and aligned CTA/trust/service density to the benchmark.
 - Refined tablet and desktop hero composition to preserve the same hierarchy without stretching the phone design.
 - Benchmark image remains a QA reference asset; the customer experience is native HTML/CSS and project data.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Promoted the approved Legacy responsive showcase into the real customer-site benchmark.
 - Rebuilt Legacy header/hero/trust/services presentation across phone, tablet, and desktop without altering request-flow logic.
 - Added a bundled benchmark reference asset for future fleet visual QA; the runtime site remains native HTML/CSS rather than a screenshot.
 - Preserved project-specific branding, trust settings, test safety, project isolation, and mobile Test Dock behavior.
 - Established this composition as a Customer Site Kit benchmark that other projects may adapt without inheriting Legacy-specific graphics or copy.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Promoted the strongest Legacy Plumbing visual lessons into a reusable responsive Project Experience system.
 - Project logos now receive stronger visual priority at phone, tablet, and desktop breakpoints.
 - Added project-brand color variables so shared Customer Site Kit components adapt to each vessel instead of copying Legacy styling.
@@ -20,54 +29,54 @@
 - Upgraded the generic universal customer landing to use project logos and project-specific branding instead of initials-only identity.
 - Preserved all mobile Test Dock, fleet portability, Engine login, trust, safety, and project-isolation contracts.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Fixed the iPhone Engine login overlay regression introduced by the centered mobile gate.
 - Mobile centering now applies only while the Black Flag entry route is actually open.
 - Added an ID-specific hidden rule so successful authentication can always remove the Engine gate on iPhone.
 - Preserved flexible Engine PIN length, deliberate submit behavior, recovery PIN 5615, horizontal Fleet Deck swiping, and all 5.9.0 mobile Customer Site Kit work.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Fixed the iPhone Engine login dead-button failure by moving explicit PIN submission into the first-light authentication bridge.
 - The bridge now authenticates through the configured Engine verifier when available and falls back to recovery PIN 5615 if later startup wiring is unavailable.
 - Preserves arbitrary configured Engine PIN length and never auto-submits while typing.
 - Successful authentication opens the Engine atomically without depending on the later portal click binder.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Removed the forced four-digit Engine PIN assumption and the auto-submit-on-fourth-digit behavior.
 - Engine entry now submits only when the Captain presses Enter Engine Room or the keyboard Enter key.
 - Configured Engine PINs are verified through the shared authenticator without a fixed UI length; the 5615 recovery credential remains valid.
 - Keeps the Engine gate covering the transition until Fleet Command is rendered, preventing the iPhone mid-page jump/half-open state.
 - Removed artificial maxlength limits from other Engine credential entry surfaces.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Hardened Black Flag Engine entry on iPhone with a first-light 4-digit PIN path that does not depend on late application startup.
 - Canonical Engine PIN entry now sanitizes to four digits and automatically submits as soon as all four digits are entered.
 - The Enter Engine Room button and Return to Dark Sky remain available as explicit controls.
 - Preserved all Pocket Watch mobile customer-site rules, Pocket Fleet cross-device fleet/branding fixes, and Narrow Channel horizontal Fleet Deck swiping.
 - Engine, Project Admin, Captain, and Client Preview credentials remain separate contracts.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Centered Black Flag Engine Access on iPhone-sized viewports.
 - Restored the compact left/right swipe Fleet Deck on phones with snap scrolling and a next-card peek.
 - Kept vertical page scrolling independent from horizontal fleet browsing.
 - Preserved project branding, fleet portability, mobile Customer Site Kit rules, and Dark Sky return contracts.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Added a reusable phone Test Dock that keeps internal Dark Sky/Test Deck exits available without covering customer content.
 - Tightened phone hero, service-card, proof, process, review, CTA, and footer layouts for Customer Site Kit projects.
 - Preserved the successful 2x2 trust-badge layout on narrow screens.
 - Converted reviews to a touch-first snap carousel on phones and process steps to a compact vertical timeline.
 - Kept all mobile patterns optional by module and reusable across future fleet projects.
-- Advanced runtime/cache identity to 5.9.8.
+- Advanced runtime/cache identity to 5.9.9.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Fixed cross-device fleet drift: Legacy Plumbing is now a release vessel that materializes on a fresh device instead of existing only in one browser's local registry.
 - Added release-portable project branding fallbacks so fleet cards remain visibly project-specific on iPhone even before local project graphics have ever been stored on that device.
 - Preserved project-owned graphics as the first choice; portable fallbacks are used only when that device has no saved logo/hero/footer asset.
 - Added a final phone-width Fleet Deck rule that prevents fixed-width/horizontal project cards from hiding later vessels on narrow screens.
 - Bumped fleet registry schema and cache identity so existing phones reconcile the new canonical vessel set.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Finished the Legacy Plumbing customer journey rather than redesigning it again.
 - Tightened hero height so the trust row arrives sooner on iPad.
 - Refined trust badges into cleaner graphic credibility marks with concise labels.
@@ -77,13 +86,13 @@
 - Compressed Dark Sky + Test Deck into a smaller internal test navigation footprint while preserving both exits.
 - Preserved verified-review gating, project trust settings, customer isolation, and test-mode safety.
 
-# 5.9.8 — True Bearing
+# 5.9.9 — Flagship Standard
 - Reworked the customer trust strip so non-BBB badges use polished graphic medallions instead of plain text icons.
 - Kept the official BBB A+ badge as the credibility anchor while making the surrounding badges visually compatible.
 - Preserved project-level settings so BBB, Licensed & Insured, Residential + Commercial, and Service Area remain opt-in per vessel.
-- Updated runtime/build references and cache identity to 5.9.8.
+- Updated runtime/build references and cache identity to 5.9.9.
 
-# Dark Sky 5.9.8 — True Bearing
+# Dark Sky 5.9.9 — Flagship Standard
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.

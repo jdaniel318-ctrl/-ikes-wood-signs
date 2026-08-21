@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.9.8';
+  const BUILD_VERSION = '5.9.9';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 8;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -685,7 +685,7 @@
     const sourceHost=String(intake.sourceWebsite||'').toLowerCase();
     const isLegacyPlumbing=sourceHost.includes('legacyplumbingrva.com')||/legacy plumbing/i.test(String(p.name||''));
     if(isLegacyPlumbing){
-      p.businessIntake.visualAssets={...(p.businessIntake.visualAssets||{}),source:'public_business_website',sourceHost:'legacyplumbingrva.com',logo:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png',why:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/171591945-2.jpg',services:{service_repair:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/514104433-3.jpg',water_heater:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2236314443-1.jpg',remodel:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2260044476.jpg',new_construction:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2245924642-1.jpg',gas_piping:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2192329599-1.jpg',water_sewer:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/1332113600-2.jpg'},testimonials:['https://legacyplumbingrva.com/wp-content/uploads/2026/04/143922145.jpg','https://legacyplumbingrva.com/wp-content/uploads/2026/04/153651214.jpg','https://legacyplumbingrva.com/wp-content/uploads/2026/04/2260044476.jpg']};
+      p.businessIntake.visualAssets={...(p.businessIntake.visualAssets||{}),source:'project_brand_contract',sourceHost:'legacyplumbingrva.com',logo:p.businessIntake.visualAssets?.logo||'assets/legacy_plumbing_canonical_logo.jpeg',designBenchmark:p.businessIntake.visualAssets?.designBenchmark||'assets/legacy_customer_site_benchmark.png',why:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/171591945-2.jpg',services:{service_repair:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/514104433-3.jpg',water_heater:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2236314443-1.jpg',remodel:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2260044476.jpg',new_construction:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2245924642-1.jpg',gas_piping:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2192329599-1.jpg',water_sewer:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/1332113600-2.jpg'},testimonials:['https://legacyplumbingrva.com/wp-content/uploads/2026/04/143922145.jpg','https://legacyplumbingrva.com/wp-content/uploads/2026/04/153651214.jpg','https://legacyplumbingrva.com/wp-content/uploads/2026/04/2260044476.jpg']};
     }
     const suppliedLanding=intake.landingPage&&typeof intake.landingPage==='object'?intake.landingPage:{};
     const suppliedTrust=Array.isArray(intake.trustSignals)?intake.trustSignals:[];
@@ -2997,7 +2997,7 @@
     const id=canonicalProjectId(p?.id);
     if(id==='ikes-wood-signs')return 'assets/ike_character.jpg';
     if(id==='bor-north-richmond')return 'assets/signal_restoration_logo.png';
-    if(id==='legacy-plumbing'||isLegacyPlumbingProject(p))return 'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png';
+    if(id==='legacy-plumbing'||isLegacyPlumbingProject(p))return 'assets/legacy_plumbing_canonical_logo.jpeg';
     const palette={
       'mugshot-after-dark':['#12151c','#d43d62','MUG','☕'],
       'beccas-bloom-shop':['#496b4f','#b85f79','BBS','✿'],
@@ -3007,6 +3007,17 @@
     const [bg,accent,code,mark]=palette;
     const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160"><rect width="240" height="160" rx="28" fill="${bg}"/><circle cx="120" cy="60" r="38" fill="${accent}"/><text x="120" y="73" text-anchor="middle" font-size="34" font-family="Arial,sans-serif" font-weight="900" fill="white">${mark}</text><text x="120" y="124" text-anchor="middle" font-size="28" font-family="Arial,sans-serif" font-weight="900" letter-spacing="3" fill="white">${code}</text></svg>`;
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  }
+
+  function bundledProjectBenchmark(p){
+    const id=canonicalProjectId(p?.id);
+    if(id==='legacy-plumbing'||isLegacyPlumbingProject(p))return 'assets/legacy_customer_site_benchmark.png';
+    return String(p?.businessIntake?.visualAssets?.designBenchmark||'');
+  }
+  function bundledProjectCanonicalLogo(p){
+    const id=canonicalProjectId(p?.id);
+    if(id==='legacy-plumbing'||isLegacyPlumbingProject(p))return 'assets/legacy_plumbing_canonical_logo.jpeg';
+    return '';
   }
 
   async function projectBrandVisual(p){
@@ -4450,6 +4461,16 @@
               <button type="button" class="asset-expand-btn hidden" data-expand-asset="projectLogo" aria-label="Expand Project Logo / Mark">+</button>
             </div>
             <button id="assetProjectLogoClear" type="button" class="secondary-btn small">CLEAR</button>
+          </label>
+          <label class="asset-slot benchmark-asset-slot" data-asset-slot-card="designBenchmark">
+            <span>Design Benchmark / Reference</span>
+            <input id="assetDesignBenchmarkInput" type="file" accept="image/*">
+            <div class="asset-preview-stage benchmark-preview-stage">
+              <img id="assetDesignBenchmarkPreview" alt="Project design benchmark preview"><div class="asset-preview-empty" data-preview-empty-for="assetDesignBenchmarkPreview"><strong>No Design Benchmark Yet</strong><span>Upload an approved reference image. Black Flag keeps it separate from the live logo and customer graphics.</span></div>
+              <button type="button" class="asset-expand-btn hidden" data-expand-asset="designBenchmark" aria-label="Expand Design Benchmark / Reference">+</button>
+            </div>
+            <div class="benchmark-asset-note"><strong>REFERENCE ONLY</strong><span>Never rendered as the project logo or customer-facing artwork.</span></div>
+            <button id="assetDesignBenchmarkClear" type="button" class="secondary-btn small">CLEAR</button>
           </label>
           <label class="asset-slot" data-asset-slot-card="heroGraphic">
             <span>Hero Graphic</span>
@@ -6263,7 +6284,7 @@
   const PROJECT_ASSET_DB='blackFlagGraphicsDB';
   const PROJECT_ASSET_DB_VERSION=1;
   const PROJECT_ASSET_STORE='projectGraphics';
-  const PROJECT_ASSET_SLOTS=['projectLogo','heroGraphic','footerGraphic','backgroundImage'];
+  const PROJECT_ASSET_SLOTS=['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'];
   const projectAssetMemory=new Map();
 
   function openProjectAssetDb(){
@@ -6427,6 +6448,7 @@
   const PROJECT_ASSET_META_KEY='blackFlagProjectAssetMetaV1';
   const GRAPHIC_SLOT_LABELS={
     projectLogo:'Project Logo / Mark',
+    designBenchmark:'Design Benchmark / Reference',
     heroGraphic:'Welcome Hero Graphic',
     footerGraphic:'Footer Graphic',
     backgroundImage:'Background / Texture'
@@ -6470,10 +6492,10 @@
     return p||null;
   }
   function clearGraphicsTransientUi(){
-    ['assetProjectLogoInput','assetHeroGraphicInput','assetFooterGraphicInput','assetBackgroundInput'].forEach(id=>{
+    ['assetProjectLogoInput','assetDesignBenchmarkInput','assetHeroGraphicInput','assetFooterGraphicInput','assetBackgroundInput'].forEach(id=>{
       const el=$(id); if(el) el.value='';
     });
-    ['assetProjectLogoPreview','assetHeroGraphicPreview','assetFooterGraphicPreview','assetBackgroundPreview'].forEach(id=>{
+    ['assetProjectLogoPreview','assetDesignBenchmarkPreview','assetHeroGraphicPreview','assetFooterGraphicPreview','assetBackgroundPreview'].forEach(id=>{
       const el=$(id); if(el){el.removeAttribute('src');el.classList.add('hidden');}
     });
     $$('[data-expand-asset]').forEach(b=>b.classList.add('hidden'));
@@ -6520,14 +6542,17 @@
     }
     if($('graphicsLibrary')){
       $('graphicsLibrary').innerHTML=slots.map(slot=>{
-        const has=!!assets[slot], m=meta[slot]||{};
-        return `<article class="graphics-library-item ${has?'has-graphic':'empty-graphic'}" data-manage-graphic="${escapeHtml(slot)}" tabindex="0" role="button" aria-label="Manage ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">
+        const bundled=slot==='designBenchmark'?bundledProjectBenchmark(p):(slot==='projectLogo'?bundledProjectCanonicalLogo(p):'');
+        const src=assets[slot]||bundled||'';
+        const hasSaved=!!assets[slot], has=!!src, m=meta[slot]||{};
+        const baseline=!hasSaved&&!!bundled;
+        return `<article class="graphics-library-item ${has?'has-graphic':'empty-graphic'} ${baseline?'bundled-baseline':''}" data-manage-graphic="${escapeHtml(slot)}" tabindex="0" role="button" aria-label="Manage ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">
           <div class="graphics-library-preview">
-            ${has?`<img src="${assets[slot]}" alt="${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}"><button type="button" class="graphics-library-expand" data-expand-asset="${escapeHtml(slot)}" aria-label="Expand ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">+</button>`:`<span>${escapeHtml((p.projectCode||'PRJ').slice(0,3))}</span>`}
+            ${has?`<img src="${src}" alt="${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}"><button type="button" class="graphics-library-expand" data-expand-asset="${escapeHtml(slot)}" aria-label="Expand ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">+</button>`:`<span>${escapeHtml((p.projectCode||'PRJ').slice(0,3))}</span>`}
           </div>
           <div class="graphics-library-copy"><strong>${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}</strong>
-          <small>${has?escapeHtml(m.fileName||'Assigned project graphic'):'No graphic assigned to this project'}</small></div>
-          <span class="graphics-slot-state">${has?'SAVED':'OPEN SLOT'}<b>MANAGE</b></span>
+          <small>${hasSaved?escapeHtml(m.fileName||'Assigned project graphic'):baseline?(slot==='projectLogo'?'Bundled canonical fallback • Control Center upload remains authoritative':'Bundled design reference • upload a replacement benchmark anytime'):'No graphic assigned to this project'}</small></div>
+          <span class="graphics-slot-state">${hasSaved?'SAVED':baseline?'BASELINE':'OPEN SLOT'}<b>MANAGE</b></span>
         </article>`;
       }).join('');
     }
@@ -6535,25 +6560,29 @@
 
 
   const GRAPHIC_SLOT_HELP={
-    projectLogo:'Primary identity mark used throughout this project. The original artwork is preserved exactly.',
+    projectLogo:'Primary identity mark used throughout this project. The original artwork is preserved exactly. Uploading a replacement here deliberately changes the canonical project logo.',
+    designBenchmark:'Project-specific visual reference for Black Flag and future design work. It is never used as the live logo or rendered automatically to customers.',
     heroGraphic:'Shown prominently on the customer welcome screen. It takes priority over the project logo in Project Showcase.',
     footerGraphic:'Displayed near the bottom of this project’s customer experience when assigned.',
     backgroundImage:'Used as a softened customer-experience background so content remains readable.'
   };
   const GRAPHIC_SLOT_SAVE_LABEL={
     projectLogo:'SAVE PROJECT LOGO',
+    designBenchmark:'SAVE DESIGN BENCHMARK',
     heroGraphic:'SAVE HERO GRAPHIC',
     footerGraphic:'SAVE FOOTER GRAPHIC',
     backgroundImage:'SAVE BACKGROUND / TEXTURE'
   };
   const GRAPHIC_SLOT_INPUT={
     projectLogo:'assetProjectLogoInput',
+    designBenchmark:'assetDesignBenchmarkInput',
     heroGraphic:'assetHeroGraphicInput',
     footerGraphic:'assetFooterGraphicInput',
     backgroundImage:'assetBackgroundInput'
   };
   const GRAPHIC_SLOT_PREVIEW={
     projectLogo:'assetProjectLogoPreview',
+    designBenchmark:'assetDesignBenchmarkPreview',
     heroGraphic:'assetHeroGraphicPreview',
     footerGraphic:'assetFooterGraphicPreview',
     backgroundImage:'assetBackgroundPreview'
@@ -6604,15 +6633,17 @@
     });
 
     const preview=$(GRAPHIC_SLOT_PREVIEW[slot]);
-    const hasSaved=!!(preview?.src && !preview.classList.contains('hidden'));
-    updatePreviewEmptyState(GRAPHIC_SLOT_PREVIEW[slot],hasSaved);
+    const hasVisual=!!(preview?.src && !preview.classList.contains('hidden'));
+    const savedMeta=readProjectAssetMeta(p.id)?.[slot]||null;
+    const baseline=hasVisual&&!savedMeta&&((slot==='designBenchmark'&&!!bundledProjectBenchmark(p))||(slot==='projectLogo'&&!!bundledProjectCanonicalLogo(p)));
+    updatePreviewEmptyState(GRAPHIC_SLOT_PREVIEW[slot],hasVisual);
     const save=$('assetSaveBtn');
     if(save){
       save.textContent=GRAPHIC_SLOT_SAVE_LABEL[slot]||'SAVE GRAPHIC';
       save.disabled=true;
     }
-    setGraphicEditState(hasSaved?'saved':'open',hasSaved?'SAVED':'OPEN SLOT');
-    if($('assetSaveMessage')) $('assetSaveMessage').textContent=hasSaved?'Choose a new image to replace the saved graphic.':'Choose an image to begin.';
+    setGraphicEditState(savedMeta?'saved':baseline?'open':'open',savedMeta?'SAVED':baseline?'BUNDLED BASELINE':'OPEN SLOT');
+    if($('assetSaveMessage')) $('assetSaveMessage').textContent=savedMeta?'Choose a new image to replace the saved graphic.':baseline?(slot==='projectLogo'?'The bundled canonical logo is active until you deliberately upload a replacement here.':'The bundled benchmark is available as the current design reference. Upload a replacement to make a new project benchmark.'):'Choose an image to begin.';
     editor?.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function closeMarketingGraphicSlot(){
@@ -6636,13 +6667,15 @@
     if(engineActiveProjectId!==requestedProjectId)return;
     const map={
       projectLogo:'assetProjectLogoPreview',
+      designBenchmark:'assetDesignBenchmarkPreview',
       heroGraphic:'assetHeroGraphicPreview',
       footerGraphic:'assetFooterGraphicPreview',
       backgroundImage:'assetBackgroundPreview'
     };
     Object.entries(map).forEach(([slot,id])=>{
       const el=$(id);if(!el)return;
-      const data=assets[slot];
+      const bundled=slot==='designBenchmark'?bundledProjectBenchmark(p):(slot==='projectLogo'?bundledProjectCanonicalLogo(p):'');
+      const data=assets[slot]||bundled||'';
       if(data){
         el.src=data;el.classList.remove('hidden');
         updatePreviewEmptyState(id,true);
@@ -6706,6 +6739,7 @@
 
     const clears={
       assetProjectLogoClear:'projectLogo',
+      assetDesignBenchmarkClear:'designBenchmark',
       assetHeroGraphicClear:'heroGraphic',
       assetFooterGraphicClear:'footerGraphic',
       assetBackgroundClear:'backgroundImage'
@@ -6922,10 +6956,10 @@
   }
 
   const PROJECT_SHELL_TEMPLATES={
-    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'flat-surface',previewGeometry:'flat-surface'}},
-    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'cylindrical-wrap',previewGeometry:'cylindrical-wrap'}},
-    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'card-overlay',previewGeometry:'card-overlay'}},
-    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false,visualProfile:'none'}}
+    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',graphicSlots:['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'flat-surface',previewGeometry:'flat-surface'}},
+    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',graphicSlots:['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'cylindrical-wrap',previewGeometry:'cylindrical-wrap'}},
+    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',graphicSlots:['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'card-overlay',previewGeometry:'card-overlay'}},
+    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,graphicSlots:['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false,visualProfile:'none'}}
   };
   const VISUAL_FAMILIES=['input','placement','transform','preview','approval','output'];
   function visualCatalog(){return window.BlackFlagV3Core?.visualCapabilityCatalog||{};}
@@ -11901,7 +11935,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.8',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11938,7 +11972,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.8',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.9.9',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12109,7 +12143,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.9.8'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.9.9'};
     }
 
     // Commit the visual crossing only after the Engine has had a chance to render.
