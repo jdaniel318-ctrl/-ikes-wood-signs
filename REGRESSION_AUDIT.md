@@ -1,3 +1,10 @@
+# 5.7.1 Engine Entry Regression Gate
+
+- Entering `5615` at the pre-login Black Flag portal must succeed even if `blackFlagPinSecurityV1.engine.lockedUntil` contains stale future state.
+- Successful 5615 entry must clear Engine PIN failure state before crossing the boundary bridge.
+- Incorrect PIN attempts retain the established brute-force lockout behavior.
+- Project Admin remains 4353; Captain's Quarters remains 19613; Client Preview PINs remain invite-unique.
+
 # Dark Sky 5.7.0 — Cloud Readiness Regression Gate
 
 - Runtime executable references and service-worker cache identity must report 5.7.0.

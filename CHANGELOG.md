@@ -1,3 +1,10 @@
+# Dark Sky 5.7.1 — Black Flag Entry Recovery
+
+- Restores the Black Flag Engine entry contract without altering the authority hierarchy: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.
+- The canonical Engine recovery PIN 5615 is now checked before persisted browser lockout/settings state. This prevents stale lockout state from an earlier regression/test cycle from rejecting the correct Black Flag credential.
+- Incorrect Engine PIN attempts still use the established brute-force lockout policy.
+- No project routing, Client Preview, cloud-readiness, customer experience, or isolation behavior was changed in this repair.
+
 # Dark Sky 5.7.0 — Cloud Readiness + Portability Contract
 
 - Added a formal cloud-readiness and portability contract so future cleanup cannot accidentally bind Dark Sky to the current iPad, GitHub Pages path, registrar, or future cloud vendor.

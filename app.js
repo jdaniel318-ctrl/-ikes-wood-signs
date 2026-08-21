@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.7.0';
+  const BUILD_VERSION = '5.7.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1954,6 +1954,17 @@
   // session-only bypass checked by the calling gate; it never changes this PIN.
   async function verifyEnginePin(rawValue,{recordFailure=true}={}){
     const entered=String(rawValue||'').trim();
+
+    // 5.7.1 Engine Recovery Invariant: the historic Black Flag credential 5615
+    // is verified before any persisted lockout/settings state is consulted. A stale
+    // browser lockout created by a prior regression build must never strand the
+    // Captain outside Black Flag when the correct recovery credential is supplied.
+    // Incorrect guesses still use the normal brute-force lockout path below.
+    if(entered===String(DEFAULT_ENGINE_PIN)){
+      clearPinFailures('engine');
+      return {ok:true,code:'recovery',configured:DEFAULT_ENGINE_PIN,recovery:true};
+    }
+
     const security=pinSecurityState('engine');
     if(security.lockedUntil>Date.now()){
       return {ok:false,code:'locked',lockedUntil:security.lockedUntil};

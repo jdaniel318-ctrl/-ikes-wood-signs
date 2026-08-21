@@ -1,6 +1,6 @@
-# Dark Sky 5.7.0
+# Dark Sky 5.7.1
 
-Dark Sky 5.7.0 is the cloud-readiness and portability hardening release. It keeps the current static/browser fleet fully testable while making the future migration contract explicit: source code is recoverable from version control, devices are clients rather than authoritative data stores, routing remains host/domain agnostic, and future production data/assets are expected to move to managed cloud storage without rewriting customer experiences.
+Dark Sky 5.7.1 is the cloud-readiness and portability hardening release. It keeps the current static/browser fleet fully testable while making the future migration contract explicit: source code is recoverable from version control, devices are clients rather than authoritative data stores, routing remains host/domain agnostic, and future production data/assets are expected to move to managed cloud storage without rewriting customer experiences.
 
 ## Standing authority and safety contracts
 
