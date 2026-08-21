@@ -1,4 +1,4 @@
-const CACHE='dark-sky-v5-9-5-hard-tack';
+const CACHE='dark-sky-v5-9-5-clear-passage';
 const ASSETS=[
   './',
   './index.html',

@@ -12147,7 +12147,7 @@ document.addEventListener('click', (event) => {
     const engineCompany=byId('engineCompanyAppBtn');
     const logout=byId('engineLogoutBtn');
 
-    // 5.9.5: Engine PIN submission is owned by #blackFlagEntryForm at first light.
+    if(unlock) unlock.addEventListener('click',unlockFromEntry);
     const closeEntry=byId('closeBlackFlagEntry');
     if(closeEntry) closeEntry.addEventListener('click',async()=>{
       leaveEntry();
@@ -12167,6 +12167,7 @@ document.addEventListener('click', (event) => {
       const engine=byId('enginePanel');if(engine)engine.classList.add('hidden');
       requireEngineEntry();
     });
+    if(pin) pin.addEventListener('keydown',e=>{if(e.key==='Enter') unlockFromEntry();});
     if(company) company.addEventListener('click',openCompanyApp);
     if(admin) admin.addEventListener('click',openCompanyAdminGate);
     if(engineCompany) engineCompany.addEventListener('click',openCompanyApp);

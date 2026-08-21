@@ -60,50 +60,15 @@
         try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
       }
       window.DarkSkyAtomicHome={open:returnDarkSkyAtomically};
-      async function verifySubmittedEngineCredential(entered){
-        // Recovery must never wait for IndexedDB, settings, migration, or late binders.
-        if(entered===ENGINE_RECOVERY_PIN) return {ok:true,code:'recovery-first-light',recovery:true};
-        try{
-          if(window.BlackFlagAuth?.verify) return await window.BlackFlagAuth.verify(entered);
-        }catch(err){
-          console.warn('First-light configured Engine PIN verification warning',err);
-        }
-        return {ok:false,code:'startup'};
-      }
-      async function submitEngineCredential(){
-        const input=byId('blackFlagEntryPin');
-        const error=byId('blackFlagEntryError');
-        const button=byId('blackFlagEntryUnlock');
-        const entered=String(input?.value||'').trim();
-        if(error) error.textContent='';
-        if(!entered){ if(error) error.textContent='Enter the Engine PIN.'; input?.focus(); return false; }
-        if(button){ button.disabled=true; button.textContent='OPENING ENGINE…'; }
-        const result=await verifySubmittedEngineCredential(entered);
-        if(!result?.ok){
-          if(button){ button.disabled=false; button.textContent='ENTER ENGINE ROOM →'; }
-          if(error) error.textContent=result?.code==='locked'?'Engine access is temporarily locked. Wait for the lock timer, then try again.':(result?.code==='startup'?'Engine authentication is still loading. Recovery PIN 5615 remains available.':'Incorrect Engine PIN.');
-          if(input){ input.value=''; input.focus(); }
-          return false;
-        }
-        try{ window.BlackFlagAuth?.clearPinFailures?.('engine'); }catch(_){}
-        try{ window.BlackFlagAuth?.unlock?.(); }catch(_){}
-        if(input){ try{ input.blur(); }catch(_){} }
-        // Let iPhone Safari finish dismissing the numeric keyboard before changing
-        // the visible surface. This prevents viewport jumps during a valid login.
-        requestAnimationFrame(function(){ requestAnimationFrame(openEngineAtomically); });
-        return false;
-      }
-      // Direct form contract for Mobile Safari. This does not depend on delegated
-      // click handlers and survives a failure in the later application binder.
-      window.DarkSkyEngineSubmit=function(event){
-        try{ event?.preventDefault?.(); event?.stopPropagation?.(); }catch(_){}
-        void submitEngineCredential();
-        return false;
-      };
-      function navigationAttempt(event){
+      async function attempt(event){
         const target=event.target;
         const homeTarget=target && (target.matches?.('[data-return-dark-sky]') || target.closest?.('[data-return-dark-sky]'));
-        if(homeTarget){ event.preventDefault(); returnDarkSkyAtomically(); return; }
+        if(homeTarget){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          returnDarkSkyAtomically();
+          return;
+        }
         const openBlackFlag=target && (target.id==='darkSkyEnterBlackFlag' || target.closest?.('#darkSkyEnterBlackFlag'));
         const closeBlackFlag=target && (target.id==='closeBlackFlagEntry' || target.closest?.('#closeBlackFlagEntry'));
         if(openBlackFlag){
@@ -120,9 +85,45 @@
           document.body.classList.remove('bf-entry-open');
           document.body.classList.add('boot-locked');
           byId('darkSkyHomeGate')?.classList.remove('hidden');
+          return;
         }
+        const isButton=target && (target.id==='blackFlagEntryUnlock' || target.closest?.('#blackFlagEntryUnlock'));
+        const isEnter=event.type==='keydown' && event.key==='Enter' && target?.id==='blackFlagEntryPin';
+        if(!isButton && !isEnter) return;
+
+        // 5.9.5 DEAD-MAN AUTH BRIDGE: every explicit Engine submission is owned here
+        // at first light. This avoids the failure mode where BlackFlagAuth exists but
+        // later portal event binding never completes. No auto-submit: only click/Enter.
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const input=byId('blackFlagEntryPin');
+        const error=byId('blackFlagEntryError');
+        const entered=String(input?.value||'').trim();
+        if(error) error.textContent='';
+        if(!entered){ if(error) error.textContent='Enter the Engine PIN.'; input?.focus(); return; }
+
+        let result=null;
+        try{
+          if(window.BlackFlagAuth?.verify){
+            result=await window.BlackFlagAuth.verify(entered);
+          }else{
+            result={ok:entered===ENGINE_RECOVERY_PIN,code:entered===ENGINE_RECOVERY_PIN?'recovery-fallback':'startup'};
+          }
+        }catch(err){
+          console.warn('First-light Engine authentication warning',err);
+          result={ok:entered===ENGINE_RECOVERY_PIN,code:entered===ENGINE_RECOVERY_PIN?'recovery-fallback':'startup'};
+        }
+
+        if(!result?.ok){
+          if(error) error.textContent=result?.code==='locked'?'Engine access is temporarily locked. Wait for the lock timer, then try again.':(result?.code==='startup'?'Engine authentication is still loading. The recovery PIN 5615 remains available.':'Incorrect Engine PIN.');
+          if(input){ input.value=''; input.focus(); }
+          return;
+        }
+        try{ window.BlackFlagAuth?.unlock?.(); }catch(_){ }
+        openEngineAtomically();
       }
-      document.addEventListener('click',navigationAttempt,true);
+      document.addEventListener('click',attempt,true);
+      document.addEventListener('keydown',attempt,true);
       window.DarkSkyAtomicEngineEntry={open:openEngineAtomically,recoveryPin:ENGINE_RECOVERY_PIN};
     })();
   </script>
@@ -179,12 +180,12 @@
     </div></div>
       <p class="bf-entry-sub">Authorized access to project operations, fleet controls, and platform command.</p><div class="bf-entry-trust"><span class="bf-entry-trust-dot"></span><strong>SECURE ENGINE ACCESS</strong><span>Session isolated • project boundaries enforced</span></div>
 
-      <form id="blackFlagEntryForm" class="bf-entry-panel" action="#" method="post" novalidate onsubmit="return window.DarkSkyEngineSubmit(event)">
+      <div class="bf-entry-panel">
         <label for="blackFlagEntryPin">BLACK FLAG ENGINE PIN</label>
         <small id="blackFlagEntryHint" class="bf-pin-hint">Engine credential</small>
-        <input id="blackFlagEntryPin" class="bf-pin-input" name="blackFlagEnginePin" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-describedby="blackFlagEntryHint" />
+        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="blackFlagEntryHint" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
-        <button type="submit" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
+        <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
 <button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO DARK SKY</button>
 <div class="engine-entry-mode" role="group" aria-label="Engine appearance">
   <span><strong>ENGINE APPEARANCE</strong><small>Choose how the Engine Room presents itself.</small></span>
@@ -194,7 +195,7 @@
   </div>
 </div>
 <input id="blackFlagPirateModeToggle" type="checkbox" class="engine-legacy-mode-toggle" aria-hidden="true" tabindex="-1" />
-      </form>
+      </div>
 
       <div class="bf-pirate-atmosphere" aria-hidden="true">
         <span>☠ DARK FLAG COVE</span><span>⚓ ONE ENGINE • MANY CREWS</span><span>✦ TOTAL SEPARATION</span>

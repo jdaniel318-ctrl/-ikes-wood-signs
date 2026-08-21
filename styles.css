@@ -13374,8 +13374,12 @@ body.premium-plumbing-customer .experience-mode-banner button,body.legacy-plumbi
    iPhone Engine Room: centered access + compact swipe fleet deck.
    ========================================================= */
 @media(max-width:700px){
-  /* Engine Access should read as one centered doorway, not a tall page aligned to the top. */
-  #blackFlagEntryGate{
+  /* Engine Access should read as one centered doorway, not a tall page aligned to the top.
+     IMPORTANT: only force grid while the entry route is actually open. The prior ID-level
+     display:grid!important overrode .hidden!important on iPhone and made a successful login
+     look like a failed login because the gate stayed painted over the Engine. */
+  #blackFlagEntryGate.hidden{display:none!important;}
+  body.bf-entry-open #blackFlagEntryGate:not(.hidden){
     display:grid!important;
     place-items:center!important;
     min-height:100dvh!important;
