@@ -1,4 +1,4 @@
-# Dark Sky 5.8.1 — Repeatable Fleet Capability Shipyard
+# Dark Sky 5.8.2 — Repeatable Fleet Capability Shipyard
 
 - Turned enabled FOUNDATION capabilities into explicit, project-scoped implementation next steps instead of passive labels.
 - Added a reusable capability implementation contract: AVAILABLE = usable now; FOUNDATION = queued next step; PREPARED = project-local scaffold created for implementation.
@@ -6,9 +6,9 @@
 - Added per-project Implementation Queue controls in Project Capabilities with one-step PREPARE NEXT STEP actions.
 - Preparing a foundation creates only project-scoped configuration and never activates another vessel or leaks data across projects.
 - Preserved Dark Sky as the universal internal escape route, Black Flag as Engine authority, and direct isolated client-preview routing.
-- Bumped runtime and service-worker cache identity to 5.8.1 to prevent stale 5.7.x/5.8.0 shells from masking the release.
+- Bumped runtime and service-worker cache identity to 5.8.2 to prevent stale 5.7.x/5.8.0 shells from masking the release.
 
-# Dark Sky 5.8.1 — Fleet-First Engine Room
+# Dark Sky 5.8.2 — Fleet-First Engine Room
 
 - Promoted Project Command to the primary working deck directly beneath Engine identity.
 - Added a compact Fleet Command bridge with live/private/attention counts and one-touch routes to Fleet, Watch, Commissioning, Systems, and Dark Sky.
@@ -18,14 +18,14 @@
 - Kept diagnostics, recovery, Captain authority, commissioning, and telemetry intact but subordinate to daily fleet operations.
 - Maintained universal Dark Sky escape behavior and client-preview isolation.
 
-# Dark Sky 5.8.1 — Fleet Polish + Universal Home
+# Dark Sky 5.8.2 — Fleet Polish + Universal Home
 
 - Added a fail-safe Dark Sky home route that closes project, commissioning, Captain, test-deck, settings, and modal surfaces before returning home.
 - Project return control now returns directly to Dark Sky instead of silently routing back into Black Flag.
 - Added a persistent internal Dark Sky home control, hidden from client previews and external owner invitation/customer flows.
 - Added an explicit Dark Sky exit to Project Commissioning so a new-project workflow can never trap the Captain.
 - Added shared iPad/touch/viewport polish across every project shell without sharing project branding or data.
-- Normalized runtime/cache/build references to 5.8.1 and refreshed service-worker cache isolation.
+- Normalized runtime/cache/build references to 5.8.2 and refreshed service-worker cache isolation.
 
 # Dark Sky 5.7.8 — Platform-First Landing
 
@@ -321,3 +321,11 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Engine, boot, project-admin, orders, and ledger states hard-hide Ike customer surfaces with `!important` boundary rules.
 - Added an inline first-paint version of the same boundary so Safari cannot briefly paint Ike branding while the main stylesheet or JavaScript is still loading.
 - Bumped all executable asset cache keys and the service-worker cache to 5.7.7 to prevent a repaired build from remaining pinned to 5.7.4.
+
+## 5.8.2 — Fleet Strength Standard
+- Strengthened every vessel with an additive, business-aware reusable capability baseline.
+- Added dedicated profiles for plumbing/service businesses, restoration, wood signs, mugs, flowers, outdoor retail, and generic commissioned projects.
+- Existing project-specific capability choices are preserved; stronger Engine recommendations are merged in rather than replacing them.
+- Fleet cards now show a project-local strength score and the next foundation worth preparing.
+- Foundation capabilities count as progress only after they are prepared for that project; labels never pretend unfinished infrastructure is complete.
+- Project isolation remains absolute: no customer data, orders, media, credentials, or project state are shared across vessels.

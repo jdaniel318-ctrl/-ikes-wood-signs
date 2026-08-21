@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.8.1';
+  const BUILD_VERSION = '5.8.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3747,6 +3747,7 @@
         <h4>${escapeHtml(p.name)}</h4>
         <p>${escapeHtml(p.tagline||String(p.type||p.businessType||'project').replaceAll('_',' '))}</p>
         ${(()=>{const ds=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');const active=ds.filter(d=>d.state==='deployed').length;const deployment=active?(p.publish?.status==='live'?`${active} SAILING`:`${active} READY`):ds.length?`${ds.length} IN HARBOR`:'STANDARD';return `<div class="project-command-statusline"><span class="platform-status ${platformState}">${platformStatusLabel(p)}</span><span>${escapeHtml(ownerState)}</span><span>${escapeHtml(deployment)}</span>${p.v4AdmissionReviewRequired?'<span class="admission-review-badge">REVIEW</span>':''}</div>`;})()}
+        ${(()=>{const strength=projectStrengthSnapshot(p);return `<div class="project-strength-line"><span><b>FLEET STRENGTH ${strength.score}%</b><small>${strength.next?`NEXT: ${escapeHtml(strength.nextLabel)}`:'REUSABLE BASELINE ABOARD'}</small></span><i style="--strength:${strength.score}%"><em></em></i></div>`;})()}
         <div class="project-command-metrics" aria-label="Project activity summary">
           <span><b>${s.orders}</b><small>${escapeHtml(projectActivityMetricLabel(p))}</small></span>
           <span><b>$${s.revenueMonth.toFixed(0)}</b><small>30D REVENUE</small></span>
@@ -6769,14 +6770,22 @@
     system:{label:'System',order:90,description:'Project-scoped deployment and technical controls.'}
   };
   const PROJECT_CAPABILITY_PROFILES={
-    restoration_services:['job_intake','job_status','customer_records','property_records','field_photos','damage_documentation','crew_assignment','scheduling','insurance_contacts','estimates_authorizations','project_notes','operational_reporting'],
-    'wood-sign':['job_intake','job_status','customer_records','visual_presentation','operational_reporting','customer_notifications','kiosk_deployment'],
-    'custom-mug':['job_intake','job_status','customer_records','visual_presentation','operational_reporting','customer_notifications','kiosk_deployment'],
-    custom_flowers:['job_intake','job_status','customer_records','scheduling','visual_presentation','customer_notifications','operational_reporting'],
-    outdoor_camping_equipment:['job_intake','job_status','customer_records','operational_reporting'],
-    default:['job_intake','job_status','customer_records','operational_reporting']
+    restoration_services:['job_intake','job_status','customer_records','property_records','field_photos','damage_documentation','crew_assignment','scheduling','insurance_contacts','estimates_authorizations','project_notes','operational_reporting','customer_notifications'],
+    plumbing:['job_intake','job_status','customer_records','property_records','field_photos','project_notes','scheduling','crew_assignment','estimates_authorizations','operational_reporting','customer_notifications'],
+    service_business:['job_intake','job_status','customer_records','property_records','field_photos','project_notes','scheduling','crew_assignment','estimates_authorizations','operational_reporting','customer_notifications'],
+    custom_wood_signs:['job_intake','job_status','customer_records','visual_presentation','project_notes','operational_reporting','customer_notifications','kiosk_deployment'],
+    'wood-sign':['job_intake','job_status','customer_records','visual_presentation','project_notes','operational_reporting','customer_notifications','kiosk_deployment'],
+    custom_mugs:['job_intake','job_status','customer_records','visual_presentation','project_notes','operational_reporting','customer_notifications','kiosk_deployment'],
+    'custom-mug':['job_intake','job_status','customer_records','visual_presentation','project_notes','operational_reporting','customer_notifications','kiosk_deployment'],
+    custom_flowers:['job_intake','job_status','customer_records','scheduling','project_notes','visual_presentation','customer_notifications','operational_reporting'],
+    outdoor_camping_equipment:['job_intake','job_status','customer_records','project_notes','customer_notifications','operational_reporting'],
+    default:['job_intake','job_status','customer_records','project_notes','customer_notifications','operational_reporting']
   };
-  function capabilityProfileKey(p){return p?.businessType||p?.type||'default';}
+  function capabilityProfileKey(p){
+    const business=String(p?.businessType||'').trim();
+    const type=String(p?.type||'').trim();
+    return PROJECT_CAPABILITY_PROFILES[business]?business:(PROJECT_CAPABILITY_PROFILES[type]?type:'default');
+  }
   function recommendedCapabilitiesForProject(p){
     return [...(PROJECT_CAPABILITY_PROFILES[capabilityProfileKey(p)]||PROJECT_CAPABILITY_PROFILES.default)];
   }
@@ -6785,11 +6794,25 @@
     const valid=new Set(Object.keys(PROJECT_CAPABILITY_CATALOG));
     const recommended=recommendedCapabilitiesForProject(p).filter(x=>valid.has(x));
     if(!p.capabilityControl||!Array.isArray(p.capabilityControl.enabled)){
-      p.capabilityControl={enabled:[...recommended],source:'business_profile'};
+      p.capabilityControl={enabled:[...recommended],source:'fleet_strength_standard'};
     }else{
-      p.capabilityControl.enabled=[...new Set(p.capabilityControl.enabled.filter(x=>valid.has(x)))];
+      p.capabilityControl.enabled=[...new Set([...p.capabilityControl.enabled.filter(x=>valid.has(x)),...recommended])];
+      if(!p.capabilityControl.source)p.capabilityControl.source='fleet_strength_standard';
     }
+    p.capabilityControl.strengthStandard={version:2,build:BUILD_VERSION,profile:capabilityProfileKey(p)};
     return p.capabilityControl;
+  }
+  function projectStrengthSnapshot(p){
+    const recommended=new Set(recommendedCapabilitiesForProject(p));
+    const enabled=enabledCapabilitiesForProject(p);
+    const plan=ensureCapabilityImplementationPlan(p);
+    const foundations=[...recommended].filter(id=>PROJECT_CAPABILITY_CATALOG[id]?.status==='foundation');
+    const prepared=foundations.filter(id=>plan[id]?.state==='prepared');
+    const ready=[...recommended].filter(id=>PROJECT_CAPABILITY_CATALOG[id]?.status==='available').length;
+    const total=Math.max(1,recommended.size);
+    const score=Math.round(((ready+prepared.length)/total)*100);
+    const next=foundations.find(id=>plan[id]?.state!=='prepared')||'';
+    return {score,total,next,nextLabel:next?(PROJECT_CAPABILITY_CATALOG[next]?.label||next):'Reusable baseline aboard'};
   }
   function enabledCapabilitiesForProject(p){return new Set(ensureProjectCapabilityControl(p).enabled||[]);}
   function ensureCapabilityImplementationPlan(p){
@@ -11767,7 +11790,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.1',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.2',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11804,7 +11827,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.1',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.2',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -11975,7 +11998,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.1'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.2'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});
