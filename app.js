@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.8.0';
+  const BUILD_VERSION = '5.8.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -4454,6 +4454,7 @@
           <div class="project-capability-intro"><div><small>BUSINESS PROFILE</small><h4>${escapeHtml((p.businessType||p.type||'project').replaceAll('_',' ').replaceAll('-',' '))}</h4><p>Recommended capabilities are guidance, not automatic platform law. Enable only what belongs in this business.</p></div><div class="project-capability-rule"><strong>CONTROL CENTER ONLY</strong><span>Project managers can see and use enabled capabilities, but cannot activate them.</span></div></div>
           <div id="projectCapabilityDeck" class="project-capability-deck">${capabilityCatalogMarkup(p)}</div>
           <div class="project-capability-actions"><button id="saveProjectCapabilities" class="primary-btn small" type="button">SAVE PROJECT CAPABILITIES</button><button id="useRecommendedCapabilities" class="secondary-btn small" type="button">USE BUSINESS RECOMMENDATIONS</button><span id="projectCapabilityStatus" class="helper"></span></div>
+          <div id="capabilityImplementationHost">${capabilityImplementationMarkup(p)}</div>
         </div>`;
     }
     if(tab==='products') return `${projectModuleHero(p,'OPERATE','Products & Services','Manage the offers this business can sell and whether each offer is ready for customers.',`<span>${products.length} OFFERS</span>`)}<div class="pec-card"><div class="pec-title-row"><h4>Offer Registry</h4><button id="addProductBtn" class="secondary-btn small">ADD PRODUCT</button></div>
@@ -4850,6 +4851,14 @@
         if($('projectCapabilityStatus'))$('projectCapabilityStatus').textContent='Project capability authority saved.';
         await renderProjectTab(p.id,'capabilities');
       });
+      $$('[data-prepare-foundation]').forEach(btn=>btn.addEventListener('click',async()=>{
+        const id=btn.dataset.prepareFoundation;
+        if(!requireEngineProjectMutation(p,'project.capability.prepare'))return;
+        if(!prepareFoundationCapability(p,id))return;
+        await persistProjectMutation(p,{reason:`capability.prepare.${id}`});
+        logActivity(p.id,'Capability foundation prepared',PROJECT_CAPABILITY_CATALOG[id]?.label||id);
+        await renderProjectTab(p.id,'capabilities');
+      }));
     }
     if(tab==='experience'){ const profile=$('ptVisualProfile'); if(profile) profile.onchange=()=>{ const preset=visualPresets()[profile.value]; if(!preset)return; VISUAL_FAMILIES.forEach(f=>{ $$(`[data-visual-family=\"${f}\"]`).forEach(cb=>{cb.checked=(preset[f]||[]).includes(cb.value);cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked);}); }); }; $$('#visualCapabilityDeck input[type=\"checkbox\"]').forEach(cb=>cb.onchange=()=>cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked)); $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;
         p.customerExperience={...(p.customerExperience||{}),mode:$('ptOperatingFlow')?.value||p.customerExperience?.mode||'guided',photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};
@@ -6731,14 +6740,14 @@
     job_intake:{label:'Job / Order Intake',group:'work',status:'available',managerArea:'jobs',description:'Capture new work requests and create project-scoped records.'},
     job_status:{label:'Job Status & Workflow',group:'work',status:'available',managerArea:'jobs',description:'Move work through the project workflow and track open workload.'},
     customer_records:{label:'Customer Records',group:'customers',status:'available',managerArea:'customers',description:'Retain project-scoped customer history when enabled.'},
-    property_records:{label:'Property / Site Records',group:'customers',status:'foundation',managerArea:'jobs',description:'Keep service-location and property context with the job.'},
-    field_photos:{label:'Field Photos',group:'field',status:'foundation',managerArea:'field',description:'Capture project-scoped jobsite evidence and progress photos.'},
-    damage_documentation:{label:'Damage Documentation',group:'field',status:'foundation',managerArea:'field',description:'Organize affected areas, loss type, notes, and evidence.'},
-    project_notes:{label:'Project Notes',group:'field',status:'foundation',managerArea:'field',description:'Keep internal job notes with the project record.'},
-    scheduling:{label:'Scheduling',group:'operations',status:'foundation',managerArea:'schedule',description:'Coordinate appointments, visits, deliveries, or production windows.'},
-    crew_assignment:{label:'Crew / Team Assignment',group:'operations',status:'foundation',managerArea:'team',description:'Assign project-scoped work to responsible team members.'},
-    insurance_contacts:{label:'Insurance & Contact Details',group:'work',status:'foundation',managerArea:'jobs',description:'Keep carrier, adjuster, claim, and related contact context.'},
-    estimates_authorizations:{label:'Estimates & Authorizations',group:'financial',status:'foundation',managerArea:'estimates',description:'Track estimates, approvals, and work authorization milestones.'},
+    property_records:{label:'Property / Site Records',group:'customers',status:'foundation',managerArea:'jobs',description:'Keep service-location and property context with the job.',nextStep:'Add project-scoped site cards tied to each job and customer.'},
+    field_photos:{label:'Field Photos',group:'field',status:'foundation',managerArea:'field',description:'Capture project-scoped jobsite evidence and progress photos.',nextStep:'Add a job photo timeline with capture, labels, timestamps, and project isolation.'},
+    damage_documentation:{label:'Damage Documentation',group:'field',status:'foundation',managerArea:'field',description:'Organize affected areas, loss type, notes, and evidence.',nextStep:'Add affected-area records, loss categories, notes, and evidence bundles.'},
+    project_notes:{label:'Project Notes',group:'field',status:'foundation',managerArea:'field',description:'Keep internal job notes with the project record.',nextStep:'Add timestamped internal notes to each project job with author context.'},
+    scheduling:{label:'Scheduling',group:'operations',status:'foundation',managerArea:'schedule',description:'Coordinate appointments, visits, deliveries, or production windows.',nextStep:'Add project-local appointments, windows, assignments, and calendar-ready records.'},
+    crew_assignment:{label:'Crew / Team Assignment',group:'operations',status:'foundation',managerArea:'team',description:'Assign project-scoped work to responsible team members.',nextStep:'Add project team roster and assignment controls tied to active jobs.'},
+    insurance_contacts:{label:'Insurance & Contact Details',group:'work',status:'foundation',managerArea:'jobs',description:'Keep carrier, adjuster, claim, and related contact context.',nextStep:'Add claim, carrier, adjuster, and reference fields to applicable jobs.'},
+    estimates_authorizations:{label:'Estimates & Authorizations',group:'financial',status:'foundation',managerArea:'estimates',description:'Track estimates, approvals, and work authorization milestones.',nextStep:'Add estimate versions, approval state, and authorization milestones per job.'},
     payments:{label:'Payments',group:'financial',status:'available',managerArea:'estimates',description:'Use the project payment structure when separately configured.'},
     operational_reporting:{label:'Operational Reporting',group:'insight',status:'available',managerArea:'reports',description:'See project-scoped activity, workload, and operating signals.'},
     customer_notifications:{label:'Customer Notifications',group:'experience',status:'available',managerArea:'customers',description:'Use project-approved customer confirmation and notification rules.'},
@@ -6783,18 +6792,51 @@
     return p.capabilityControl;
   }
   function enabledCapabilitiesForProject(p){return new Set(ensureProjectCapabilityControl(p).enabled||[]);}
+  function ensureCapabilityImplementationPlan(p){
+    if(!p)return {};
+    const enabled=enabledCapabilitiesForProject(p);
+    p.capabilityImplementation=p.capabilityImplementation&&typeof p.capabilityImplementation==='object'?p.capabilityImplementation:{};
+    Object.entries(PROJECT_CAPABILITY_CATALOG).forEach(([id,meta])=>{
+      if(!enabled.has(id)){ delete p.capabilityImplementation[id]; return; }
+      const prior=p.capabilityImplementation[id]&&typeof p.capabilityImplementation[id]==='object'?p.capabilityImplementation[id]:{};
+      p.capabilityImplementation[id]={
+        ...prior,
+        capabilityId:id,
+        state:meta.status==='available'?'ready':(prior.state==='prepared'?'prepared':'next'),
+        nextStep:meta.nextStep||'Use the existing Engine capability in this project.',
+        source:p.capabilityControl?.source||'control_center',
+        schemaVersion:1
+      };
+    });
+    return p.capabilityImplementation;
+  }
+  function prepareFoundationCapability(p,id){
+    const meta=PROJECT_CAPABILITY_CATALOG[id];
+    if(!p||!meta||meta.status!=='foundation')return false;
+    ensureCapabilityImplementationPlan(p);
+    p.capabilityImplementation[id]={...(p.capabilityImplementation[id]||{}),state:'prepared',preparedAt:new Date().toISOString(),build:BUILD_VERSION,nextStep:meta.nextStep||''};
+    p.foundationConfig=p.foundationConfig&&typeof p.foundationConfig==='object'?p.foundationConfig:{};
+    p.foundationConfig[id]={enabled:true,projectId:p.id,preparedAt:new Date().toISOString(),schemaVersion:1};
+    return true;
+  }
+  function capabilityImplementationMarkup(p){
+    const plan=ensureCapabilityImplementationPlan(p);
+    const rows=Object.entries(plan).filter(([id])=>PROJECT_CAPABILITY_CATALOG[id]?.status==='foundation');
+    if(!rows.length)return '<div class="capability-implementation-empty"><strong>No foundation work queued.</strong><span>This project currently uses Engine capabilities that are already available.</span></div>';
+    return `<section class="capability-implementation-board"><div class="capability-implementation-head"><div><small>ENGINE → PROJECT</small><h4>Implementation Queue</h4><p>Every enabled foundation becomes a concrete next step instead of a dead-end label. Preparing a step creates project-local configuration without changing another vessel.</p></div><span>${rows.length} NEXT STEP${rows.length===1?'':'S'}</span></div><div class="capability-implementation-list">${rows.map(([id,row])=>{const m=PROJECT_CAPABILITY_CATALOG[id];const prepared=row.state==='prepared';return `<article class="capability-implementation-row ${prepared?'prepared':''}"><div><small>${prepared?'PREPARED FOR PROJECT':'NEXT IMPLEMENTATION'}</small><strong>${escapeHtml(m.label)}</strong><p>${escapeHtml(row.nextStep||m.nextStep||'')}</p></div><button type="button" data-prepare-foundation="${escapeHtml(id)}" class="${prepared?'secondary-btn':'primary-btn'} small" ${prepared?'disabled':''}>${prepared?'PREPARED':'PREPARE NEXT STEP'}</button></article>`}).join('')}</div><div class="capability-implementation-law"><strong>REPEATABLE BY DESIGN</strong><span>The Engine owns the capability contract; each project receives only its own configuration, data, permissions, and customer experience.</span></div></section>`;
+  }
   function capabilityCatalogMarkup(p){
     const enabled=enabledCapabilitiesForProject(p), recommended=new Set(recommendedCapabilitiesForProject(p));
     const groups={};
     Object.entries(PROJECT_CAPABILITY_CATALOG).forEach(([id,meta])=>{(groups[meta.group]||(groups[meta.group]=[])).push([id,meta]);});
     const ordered=Object.entries(groups).sort(([a],[b])=>Object.keys(CAPABILITY_GROUP_LABELS).indexOf(a)-Object.keys(CAPABILITY_GROUP_LABELS).indexOf(b));
-    return ordered.map(([group,items])=>`<section class="project-capability-family"><div class="project-capability-family-head"><strong>${escapeHtml(CAPABILITY_GROUP_LABELS[group]||group.toUpperCase())}</strong><span>${items.filter(([id])=>enabled.has(id)).length} enabled</span></div><div class="project-capability-grid">${items.map(([id,meta])=>{const on=enabled.has(id), rec=recommended.has(id);return `<label class="project-capability-option ${on?'selected':''} ${rec?'recommended':''}"><input type="checkbox" data-project-capability="${escapeHtml(id)}" ${on?'checked':''}><span><b>${escapeHtml(meta.label)}</b><small>${escapeHtml(meta.description)}</small></span><span class="project-capability-badges">${rec?'<em class="recommended">RECOMMENDED</em>':''}<em class="${meta.status==='available'?'available':'foundation'}">${meta.status==='available'?'AVAILABLE':'FOUNDATION'}</em></span></label>`}).join('')}</div></section>`).join('');
+    return ordered.map(([group,items])=>`<section class="project-capability-family"><div class="project-capability-family-head"><strong>${escapeHtml(CAPABILITY_GROUP_LABELS[group]||group.toUpperCase())}</strong><span>${items.filter(([id])=>enabled.has(id)).length} enabled</span></div><div class="project-capability-grid">${items.map(([id,meta])=>{const on=enabled.has(id), rec=recommended.has(id);return `<label class="project-capability-option ${on?'selected':''} ${rec?'recommended':''}"><input type="checkbox" data-project-capability="${escapeHtml(id)}" ${on?'checked':''}><span><b>${escapeHtml(meta.label)}</b><small>${escapeHtml(meta.description)}</small>${meta.status==='foundation'&&meta.nextStep?`<small class="capability-next-step"><b>NEXT:</b> ${escapeHtml(meta.nextStep)}</small>`:''}</span><span class="project-capability-badges">${rec?'<em class="recommended">RECOMMENDED</em>':''}<em class="${meta.status==='available'?'available':'foundation'}">${meta.status==='available'?'AVAILABLE':'FOUNDATION'}</em></span></label>`}).join('')}</div></section>`).join('');
   }
   function projectManagerWorkspaceMarkup(p){
     const enabled=enabledCapabilitiesForProject(p), areas={};
     enabled.forEach(id=>{const meta=PROJECT_CAPABILITY_CATALOG[id];if(!meta)return;const area=meta.managerArea||'system';(areas[area]||(areas[area]=[])).push([id,meta]);});
     const ordered=Object.entries(areas).sort(([a],[b])=>(MANAGER_AREA_META[a]?.order||999)-(MANAGER_AREA_META[b]?.order||999));
-    return `<section class="manager-workspace"><div class="manager-workspace-head"><div><small>PROJECT MANAGER WORKSPACE</small><h4>Enabled for ${escapeHtml(p.name)}</h4><p>The Control Center decides what this project may use. This workspace groups those approved capabilities around the manager's day-to-day work.</p></div><span>${enabled.size} ENABLED</span></div><div class="manager-workspace-grid">${ordered.map(([area,caps])=>{const am=MANAGER_AREA_META[area]||{label:area,description:''};const working=caps.filter(([,m])=>m.status==='available').length;const route=area==='jobs'?'orders':area==='customers'?'customers':null;return `<article class="manager-workspace-card"><div><small>${escapeHtml(am.label.toUpperCase())}</small><h5>${escapeHtml(am.label)}</h5><p>${escapeHtml(am.description)}</p></div><div class="manager-capability-list">${caps.map(([,m])=>`<span class="${m.status}"><b>${escapeHtml(m.label)}</b><em>${m.status==='available'?'READY':'FOUNDATION'}</em></span>`).join('')}</div>${route?`<button type="button" data-admin-jump="${route}" class="manager-workspace-open">OPEN ${escapeHtml(am.label.toUpperCase())} →</button>`:`<span class="manager-workspace-state">${working?`${working} READY NOW`:'ENABLED • FOUNDATION'}</span>`}</article>`}).join('')}</div><div class="manager-workspace-law"><strong>CONTROL CENTER AUTHORITY</strong><span>Project managers can use approved capabilities here, but they cannot activate or deactivate capabilities. Capability authority remains in Black Flag Project Control.</span></div></section>`;
+    return `<section class="manager-workspace"><div class="manager-workspace-head"><div><small>PROJECT MANAGER WORKSPACE</small><h4>Enabled for ${escapeHtml(p.name)}</h4><p>The Control Center decides what this project may use. This workspace groups those approved capabilities around the manager's day-to-day work.</p></div><span>${enabled.size} ENABLED</span></div><div class="manager-workspace-grid">${ordered.map(([area,caps])=>{const am=MANAGER_AREA_META[area]||{label:area,description:''};const working=caps.filter(([,m])=>m.status==='available').length;const route=area==='jobs'?'orders':area==='customers'?'customers':null;return `<article class="manager-workspace-card"><div><small>${escapeHtml(am.label.toUpperCase())}</small><h5>${escapeHtml(am.label)}</h5><p>${escapeHtml(am.description)}</p></div><div class="manager-capability-list">${caps.map(([,m])=>`<span class="${m.status}"><b>${escapeHtml(m.label)}</b><em>${m.status==='available'?'READY':'NEXT STEP'}</em>${m.status==='foundation'&&m.nextStep?`<small>${escapeHtml(m.nextStep)}</small>`:''}</span>`).join('')}</div>${route?`<button type="button" data-admin-jump="${route}" class="manager-workspace-open">OPEN ${escapeHtml(am.label.toUpperCase())} →</button>`:`<span class="manager-workspace-state">${working?`${working} READY NOW`:'ENABLED • FOUNDATION'}</span>`}</article>`}).join('')}</div><div class="manager-workspace-law"><strong>CONTROL CENTER AUTHORITY</strong><span>Project managers can use approved capabilities here, but they cannot activate or deactivate capabilities. Capability authority remains in Black Flag Project Control.</span></div></section>`;
   }
 
   const PROJECT_SHELL_TEMPLATES={
@@ -9833,6 +9875,13 @@ The full order and approved media remain stored with this project.`;
     const label=$('fleetBridgeAttentionLabel');
     if(label)label.textContent=attention?`${attention} vessel${attention===1?'':'s'} to review`:'fleet clear';
     $('fleetCommandBridge')?.classList.toggle('has-attention',attention>0);
+    const queue=$('fleetFoundationQueue');
+    if(queue){
+      const items=[];
+      list.forEach(p=>{ensureProjectCapabilityControl(p);const plan=ensureCapabilityImplementationPlan(p);Object.entries(plan).forEach(([id,row])=>{const meta=PROJECT_CAPABILITY_CATALOG[id];if(meta?.status==='foundation'&&row.state!=='prepared')items.push({p,id,meta,row});});});
+      const shown=items.slice(0,4);
+      queue.innerHTML=shown.length?`<div class="fleet-foundation-head"><div><small>ENGINE SHIPYARD</small><strong>Reusable foundations → project next steps</strong></div><span>${items.length} QUEUED</span></div><div class="fleet-foundation-list">${shown.map(x=>`<button type="button" data-open-project-capabilities="${escapeHtml(x.p.id)}"><span><small>${escapeHtml(x.p.projectCode||'PROJECT')} • ${escapeHtml(x.meta.label)}</small><strong>${escapeHtml(x.p.name)}</strong><em>${escapeHtml(x.meta.nextStep||'Prepare the next implementation step.')}</em></span><b>OPEN →</b></button>`).join('')}</div>`:`<div class="fleet-foundation-clear"><strong>Reusable foundation queue is clear.</strong><span>Enabled capabilities are ready or already prepared for their projects.</span></div>`;
+    }
   }
 
   function composeFleetFirstEngine(){
@@ -9863,7 +9912,14 @@ The full order and approved media remain stored with this project.`;
   function bindFleetCommandBridge(){
     if(window.__fleetCommandBridgeBound)return;
     window.__fleetCommandBridgeBound=true;
-    document.addEventListener('click',event=>{
+    document.addEventListener('click',async event=>{
+      const projectTarget=event.target?.closest?.('[data-open-project-capabilities]');
+      if(projectTarget){
+        event.preventDefault();event.stopPropagation();
+        const p=projectById(projectTarget.dataset.openProjectCapabilities);
+        if(p){await openProjectEngineControl(p.id);await renderProjectTab(p.id,'capabilities');}
+        return;
+      }
       const target=event.target?.closest?.('[data-engine-command-jump]');
       if(!target)return;
       event.preventDefault();event.stopPropagation();
@@ -11711,7 +11767,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.0',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.1',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11748,7 +11804,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.0',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.1',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -11825,7 +11881,7 @@ document.addEventListener('click', (event) => {
 
 
   function showDarkSkyHome(){
-    // 5.8.0 UNIVERSAL HOME CONTRACT: every internal route gets one dependable
+    // 5.8.1 UNIVERSAL HOME CONTRACT: every internal route gets one dependable
     // escape hatch. This closes project, commissioning, Captain, owner-preview,
     // test-deck, settings and modal surfaces before revealing Dark Sky.
     try{ window.DarkSkyBoundaryBridge?.lockEngine?.(); }catch(_){}
@@ -11919,7 +11975,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.0'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.1'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});

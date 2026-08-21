@@ -201,3 +201,10 @@ Client Preview is a fourth customer-facing lifecycle surface alongside Internal 
 - The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
+
+
+## 5.8.1 Repeatable Capability Shipyard
+
+Dark Sky owns one master capability catalog. Each capability has an Engine maturity state: `available` means working behavior exists now; `foundation` means the Engine recognizes the capability contract but still owes implementation behavior. Enabled foundation capabilities are projected into a project-scoped implementation plan with a concrete next step. Preparing a foundation creates only that project's scaffold (`capabilityImplementation` + `foundationConfig`) and never mutates another Project ID. Fleet Command surfaces the highest-priority unprepared foundations as the Engine Shipyard queue. This makes lessons learned on one vessel reusable without assuming every vessel needs the same feature.
+
+The repeatable sequence is: understand business → recommend capabilities → Engine approves capabilities → available capabilities operate immediately → foundation capabilities become explicit next steps → prepare project-local scaffold → implement/test behavior → promote the master capability to available only after the reusable Engine behavior is proven.

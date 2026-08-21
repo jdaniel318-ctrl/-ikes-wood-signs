@@ -1,4 +1,14 @@
-# Dark Sky 5.8.0 — Fleet-First Engine Room
+# Dark Sky 5.8.1 — Repeatable Fleet Capability Shipyard
+
+- Turned enabled FOUNDATION capabilities into explicit, project-scoped implementation next steps instead of passive labels.
+- Added a reusable capability implementation contract: AVAILABLE = usable now; FOUNDATION = queued next step; PREPARED = project-local scaffold created for implementation.
+- Added an Engine Shipyard queue to Fleet Command so the next reusable platform work is visible across vessels without burying the fleet.
+- Added per-project Implementation Queue controls in Project Capabilities with one-step PREPARE NEXT STEP actions.
+- Preparing a foundation creates only project-scoped configuration and never activates another vessel or leaks data across projects.
+- Preserved Dark Sky as the universal internal escape route, Black Flag as Engine authority, and direct isolated client-preview routing.
+- Bumped runtime and service-worker cache identity to 5.8.1 to prevent stale 5.7.x/5.8.0 shells from masking the release.
+
+# Dark Sky 5.8.1 — Fleet-First Engine Room
 
 - Promoted Project Command to the primary working deck directly beneath Engine identity.
 - Added a compact Fleet Command bridge with live/private/attention counts and one-touch routes to Fleet, Watch, Commissioning, Systems, and Dark Sky.
@@ -8,14 +18,14 @@
 - Kept diagnostics, recovery, Captain authority, commissioning, and telemetry intact but subordinate to daily fleet operations.
 - Maintained universal Dark Sky escape behavior and client-preview isolation.
 
-# Dark Sky 5.8.0 — Fleet Polish + Universal Home
+# Dark Sky 5.8.1 — Fleet Polish + Universal Home
 
 - Added a fail-safe Dark Sky home route that closes project, commissioning, Captain, test-deck, settings, and modal surfaces before returning home.
 - Project return control now returns directly to Dark Sky instead of silently routing back into Black Flag.
 - Added a persistent internal Dark Sky home control, hidden from client previews and external owner invitation/customer flows.
 - Added an explicit Dark Sky exit to Project Commissioning so a new-project workflow can never trap the Captain.
 - Added shared iPad/touch/viewport polish across every project shell without sharing project branding or data.
-- Normalized runtime/cache/build references to 5.8.0 and refreshed service-worker cache isolation.
+- Normalized runtime/cache/build references to 5.8.1 and refreshed service-worker cache isolation.
 
 # Dark Sky 5.7.8 — Platform-First Landing
 

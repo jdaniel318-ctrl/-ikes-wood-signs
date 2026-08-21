@@ -1,4 +1,6 @@
-# Dark Sky 5.8.0
+# Dark Sky 5.8.1
+
+Repeatable fleet capability release. Engine foundations now become explicit project next steps, with a Fleet Command shipyard queue and project-scoped preparation contract. Dark Sky remains the permanent platform home and Black Flag remains the Engine authority.
 
 Fleet polish release. Dark Sky is the permanent platform home, Black Flag remains the Engine, and every internal project/commissioning route has a reliable return to Dark Sky. Customer/client-preview isolation remains intact.
 

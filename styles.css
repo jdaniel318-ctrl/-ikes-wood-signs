@@ -13055,7 +13055,7 @@ body.project-mode.ikes-project #customerApp {
 
 
 /* ==========================================================
-   DARK SKY 5.8.0 — FLEET POLISH + UNIVERSAL HOME CONTRACT
+   DARK SKY 5.8.1 — FLEET POLISH + UNIVERSAL HOME CONTRACT
    Shared quality rules apply to every project without sharing branding/data.
    ========================================================== */
 :root{--ds-touch:48px;--ds-safe-bottom:max(18px,env(safe-area-inset-bottom));}
@@ -13117,7 +13117,7 @@ body.project-mode .card,body.project-mode article,body.project-mode .panel{
 
 
 /* ==========================================================
-   v5.8.0 — FLEET-FIRST ENGINE ROOM
+   v5.8.1 — FLEET-FIRST ENGINE ROOM
    Customer-facing vessels are the working deck. Platform diagnostics remain
    available, but no longer stand between the Captain and the fleet.
    ========================================================== */
@@ -13130,3 +13130,9 @@ body.engine-mode #engineProjectsSection{scroll-margin-top:14px;border-color:rgba
 body.engine-mode #v3ArchitectureDeck,body.engine-mode #fleetCommissioningDock{scroll-margin-top:14px}
 @media(max-width:900px){.fleet-command-status{grid-template-columns:repeat(2,minmax(0,1fr))}.fleet-command-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.fleet-command-actions .fleet-command-home{grid-column:1/-1}.fleet-command-bridge-head{flex-direction:column}.fleet-command-law{text-align:left}.project-engine-route-actions{width:100%;justify-content:flex-end}}
 @media(max-width:560px){body.engine-mode #enginePanel .fleet-command-bridge{padding:12px}.fleet-command-actions{grid-template-columns:1fr}.fleet-command-actions .fleet-command-home{grid-column:auto}.fleet-command-status strong{font-size:19px}.project-engine-route-actions{justify-content:stretch}.project-engine-route-actions button{flex:1}}
+
+/* Dark Sky 5.8.1 — repeatable capability shipyard */
+.capability-next-step{display:block;margin-top:7px;color:var(--muted,#8fa9b1);line-height:1.35}.capability-next-step b{color:#d5b65d;letter-spacing:.08em;font-size:.72em}
+.capability-implementation-board{margin-top:18px;border-top:1px solid rgba(124,192,205,.22);padding-top:18px}.capability-implementation-head{display:flex;gap:20px;justify-content:space-between;align-items:flex-start;margin-bottom:12px}.capability-implementation-head small,.fleet-foundation-head small{letter-spacing:.16em;color:#78d4a3;font-weight:800}.capability-implementation-head h4{margin:3px 0 5px}.capability-implementation-head p{margin:0;max-width:760px;color:var(--muted,#9aacb2)}.capability-implementation-head>span,.fleet-foundation-head>span{white-space:nowrap;border:1px solid rgba(120,212,163,.35);border-radius:999px;padding:6px 9px;font-size:.72rem;letter-spacing:.1em}.capability-implementation-list{display:grid;gap:9px}.capability-implementation-row{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:14px;border:1px solid rgba(124,192,205,.2);border-radius:13px;background:rgba(7,32,39,.5)}.capability-implementation-row.prepared{border-color:rgba(120,212,163,.32)}.capability-implementation-row small{display:block;letter-spacing:.12em;color:#d5b65d;font-size:.7rem}.capability-implementation-row strong{display:block;margin:3px 0}.capability-implementation-row p{margin:0;color:var(--muted,#9aacb2);max-width:760px}.capability-implementation-law{display:flex;gap:10px;margin-top:12px;padding:11px 13px;border-radius:11px;background:rgba(120,212,163,.07);font-size:.82rem}.capability-implementation-law strong{color:#78d4a3}.capability-implementation-empty{padding:16px;border:1px dashed rgba(124,192,205,.25);border-radius:12px;display:flex;flex-direction:column;gap:4px}.capability-implementation-empty span{color:var(--muted,#9aacb2)}
+.fleet-foundation-queue{margin-top:14px;padding-top:14px;border-top:1px solid rgba(124,192,205,.18)}.fleet-foundation-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:9px}.fleet-foundation-head strong{display:block;margin-top:2px}.fleet-foundation-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fleet-foundation-list button{display:flex;justify-content:space-between;gap:12px;text-align:left;border:1px solid rgba(124,192,205,.2);border-radius:11px;background:rgba(6,25,32,.66);padding:11px 12px;color:inherit}.fleet-foundation-list button:hover{border-color:rgba(120,212,163,.42)}.fleet-foundation-list span{min-width:0}.fleet-foundation-list small,.fleet-foundation-list strong,.fleet-foundation-list em{display:block}.fleet-foundation-list small{color:#78d4a3;letter-spacing:.08em;font-size:.68rem}.fleet-foundation-list strong{margin:2px 0}.fleet-foundation-list em{font-style:normal;color:var(--muted,#9aacb2);font-size:.77rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px}.fleet-foundation-list b{align-self:center;color:#d5b65d;white-space:nowrap;font-size:.75rem}.fleet-foundation-clear{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted,#9aacb2)}.fleet-foundation-clear strong{color:#78d4a3}.manager-capability-list span small{display:block;margin:3px 0 0;color:var(--muted,#9aacb2);font-size:.72rem;line-height:1.25}
+@media(max-width:900px){.fleet-foundation-list{grid-template-columns:1fr}.capability-implementation-row{align-items:flex-start;flex-direction:column}.capability-implementation-row button{width:100%}.capability-implementation-head{flex-direction:column}}
