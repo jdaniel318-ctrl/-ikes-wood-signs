@@ -1,10 +1,10 @@
-# 5.8.4 — Signal Pennant
-- Replaced the generic BBB accreditation artwork with the supplied Accredited Business A+ Rating badge.
-- Fixed the customer trust-strip asset path so the BBB tile no longer renders as a missing-image placeholder.
-- Sized the BBB mark as the recognizable visual anchor while keeping the trust strip concise.
-- BBB remains strictly project-configurable and disappears completely when disabled.
+# 5.8.5 — Harbor Marks
+- Reworked the customer trust strip so non-BBB badges use polished graphic medallions instead of plain text icons.
+- Kept the official BBB A+ badge as the credibility anchor while making the surrounding badges visually compatible.
+- Preserved project-level settings so BBB, Licensed & Insured, Residential + Commercial, and Service Area remain opt-in per vessel.
+- Updated runtime/build references and cache identity to 5.8.5.
 
-# Dark Sky 5.8.4 — Blue Lantern
+# Dark Sky 5.8.5 — Harbor Marks
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.

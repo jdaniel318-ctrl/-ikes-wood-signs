@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.8.4';
+  const BUILD_VERSION = '5.8.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -6952,14 +6952,29 @@
       serviceArea:saved.serviceArea??trust.some(x=>x.includes('richmond')||x.includes('service area'))
     };
   }
+  function customerTrustGraphic(kind){
+    switch(kind){
+      case 'licensed':
+        return `<span class="trust-chip-graphic trust-graphic-licensed" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 6 51 13v16c0 13.5-7.7 24.3-19 29-11.3-4.7-19-15.5-19-29V13L32 6Z" fill="url(#shieldGrad)"/><path d="M32 10.7 17 16v13c0 11.1 5.9 20 15 24.2 9.1-4.2 15-13.1 15-24.2V16L32 10.7Z" stroke="rgba(255,255,255,.92)" stroke-width="2.3"/><path d="m24 32.5 5.1 5.1L40.8 26" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="shieldGrad" x1="13" y1="9" x2="53" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#29A3D9"/><stop offset="1" stop-color="#0B5E86"/></linearGradient></defs></svg></span>`;
+      case 'residential':
+        return `<span class="trust-chip-graphic trust-graphic-residential" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="31" fill="url(#urbanGrad)"/><path d="M11 31.5 24.8 20a2.5 2.5 0 0 1 3.2 0L41.5 31.5" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 28.8V47h17.5V28.8" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/><path d="M22.4 47V36h5V47" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/><path d="M39.5 20h10v27h-10z" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/><path d="M43.2 24.8h2.5M43.2 30.5h2.5M43.2 36.2h2.5" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><defs><linearGradient id="urbanGrad" x1="9" y1="8" x2="55" y2="57" gradientUnits="userSpaceOnUse"><stop stop-color="#37A6D9"/><stop offset="1" stop-color="#0A6A90"/></linearGradient></defs></svg></span>`;
+      case 'serviceArea':
+        return `<span class="trust-chip-graphic trust-graphic-service-area" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="31" fill="url(#pinGrad)"/><path d="M32 52s16-12.4 16-24.2C48 18.5 40.8 12 32 12s-16 6.5-16 15.8C16 39.6 32 52 32 52Z" fill="#fff"/><circle cx="32" cy="28.4" r="5.8" fill="#0E78A0"/><defs><linearGradient id="pinGrad" x1="10" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#38A8DD"/><stop offset="1" stop-color="#0A6B91"/></linearGradient></defs></svg></span>`;
+      default:
+        return '';
+    }
+  }
+  function customerTrustChip(kind,label,subLabel=''){
+    return `<article class="trust-chip trust-chip-${kind}">${customerTrustGraphic(kind)}<span class="trust-chip-copy"><strong>${label}</strong>${subLabel?`<small>${subLabel}</small>`:''}</span></article>`;
+  }
   function customerTrustStripMarkup(p,{compact=false}={}){
     const landing=p?.customerExperience?.landingPage||{};
     const badges=customerTrustBadgeState(p);
     const items=[];
-    if(badges.licensedInsured)items.push(`<article class="trust-chip"><span class="trust-chip-icon" aria-hidden="true">✓</span><strong>Licensed &amp; Insured</strong></article>`);
-    if(badges.bbbAccredited)items.push(`<article class="trust-chip trust-chip-bbb"><img src="assets/bbb_accredited_a_plus.png" alt="BBB Accredited Business"></article>`);
-    if(badges.residentialCommercial)items.push(`<article class="trust-chip"><span class="trust-chip-icon" aria-hidden="true">⌂</span><strong>Residential + Commercial</strong></article>`);
-    if(badges.serviceArea){const area=String(landing.market||'Local service').replace(/\s+area$/i,'').replace(/,?\s+VA$/i,'').trim();items.push(`<article class="trust-chip"><span class="trust-chip-icon" aria-hidden="true">◎</span><strong>Serving ${escapeHtml(area)}</strong></article>`);}
+    if(badges.licensedInsured)items.push(customerTrustChip('licensed','Licensed &amp; Insured','Verified business protection'));
+    if(badges.bbbAccredited)items.push(`<article class="trust-chip trust-chip-bbb"><img src="assets/bbb_accredited_a_plus.png" alt="BBB Accredited Business A+ Rating"></article>`);
+    if(badges.residentialCommercial)items.push(customerTrustChip('residential','Residential + Commercial','Homes and businesses'));
+    if(badges.serviceArea){const area=String(landing.market||'Local service').replace(/\s+area$/i,'').replace(/,?\s+VA$/i,'').trim();items.push(customerTrustChip('service-area',`Serving ${escapeHtml(area)}`,'Primary response area'));}
     return items.length?`<section class="contractor-proof-strip trust-strip ${compact?'compact':''}">${items.join('')}</section>`:'';
   }
   function plumbingVisualAssets(p){
@@ -11826,7 +11841,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.4',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.5',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -11863,7 +11878,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.4',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=5.8.5',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12034,7 +12049,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.4'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.5'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});
