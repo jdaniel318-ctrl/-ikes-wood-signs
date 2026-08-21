@@ -1,3 +1,12 @@
+# Dark Sky 5.7.4 — Engine Entry Recovery
+
+- Added a first-light, storage-independent recovery path for the canonical Black Flag Engine PIN `5615`.
+- Engine entry no longer depends on IndexedDB, migrations, project state, Captain/Test Access, or late application initialization.
+- Late initialization now preserves an already-authenticated Engine session instead of re-covering it with the PIN gate.
+- Fixed a legacy Engine PIN error-handler reference that could throw while reporting startup state.
+- Bumped all executable asset versions and service-worker cache identity to 5.7.4; navigation/executable fetches are network-first with no-store.
+- Project Admin remains isolated and keeps fleet default/recovery PIN `4353`.
+
 # Dark Sky 5.7.3 — Black Flag Entry Recovery
 
 - Restores the Black Flag Engine entry contract without altering the authority hierarchy: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613.

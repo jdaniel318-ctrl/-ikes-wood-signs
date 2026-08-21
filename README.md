@@ -1,6 +1,8 @@
-# Dark Sky 5.7.3
+# Dark Sky 5.7.4
 
-Dark Sky 5.7.3 is the cloud-readiness and portability hardening release. It keeps the current static/browser fleet fully testable while making the future migration contract explicit: source code is recoverable from version control, devices are clients rather than authoritative data stores, routing remains host/domain agnostic, and future production data/assets are expected to move to managed cloud storage without rewriting customer experiences.
+Dark Sky 5.7.4 is the Engine-entry recovery release. It adds a first-light authentication path for the canonical Black Flag PIN `5615` so Engine access does not depend on secondary startup modules, storage migrations, or stale browser application state. It also refreshes the service-worker cache identity and preserves the existing project-isolation and authority contracts.
+
+Dark Sky 5.7.3 was the cloud-readiness and portability hardening release. It keeps the current static/browser fleet fully testable while making the future migration contract explicit: source code is recoverable from version control, devices are clients rather than authoritative data stores, routing remains host/domain agnostic, and future production data/assets are expected to move to managed cloud storage without rewriting customer experiences.
 
 ## Standing authority and safety contracts
 

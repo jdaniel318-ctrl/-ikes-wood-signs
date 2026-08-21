@@ -15,11 +15,53 @@
     window.addEventListener('error', function(event){
       try { window.__darkSkyLastEarlyError = {stage:window.__darkSkyBootStage||'preflight',message:String(event.message||''),source:String(event.filename||''),line:Number(event.lineno||0),column:Number(event.colno||0),at:new Date().toISOString()}; } catch(_) {}
     }, true);
+
+    // Dark Sky 5.7.4 FIRST-LIGHT ENGINE ENTRY.
+    // This tiny recovery path is intentionally independent of app.js, IndexedDB,
+    // migrations, project state, Captain/Test Access, and service-worker state.
+    // The canonical Black Flag Engine PIN (5615) must open the Engine even if a
+    // secondary application module fails during startup. Project Admin remains a
+    // separate 4353 contract and is never consulted here.
+    (function(){
+      const ENGINE_RECOVERY_PIN='5615';
+      function byId(id){ return document.getElementById(id); }
+      function openEngineAtomically(){
+        window.__darkSkyAtomicEngineUnlocked=true;
+        try{ window.BlackFlagAuth?.clearPinFailures?.('engine'); }catch(_){}
+        try{ window.BlackFlagAuth?.unlock?.(); }catch(_){}
+        ['customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','captainQuarters','captainQuartersGate'].forEach(function(id){ byId(id)?.classList.add('hidden'); });
+        document.body.classList.remove('boot-locked','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','bf-entry-open');
+        document.body.classList.add('engine-mode');
+        document.body.removeAttribute('data-active-project');
+        byId('blackFlagEntryGate')?.classList.add('hidden');
+        byId('enginePanel')?.classList.remove('hidden');
+        const input=byId('blackFlagEntryPin'); if(input) input.value='';
+        const error=byId('blackFlagEntryError'); if(error) error.textContent='';
+        try{ window.DarkSkyBoundaryBridge?.prepareEngine?.(); }catch(_){}
+        Promise.resolve(window.renderBlackFlagHome?.()).catch(function(err){ console.warn('5.7.4 Engine render recovery warning',err); });
+        try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
+      }
+      function attempt(event){
+        const target=event.target;
+        const isButton=target && (target.id==='blackFlagEntryUnlock' || target.closest?.('#blackFlagEntryUnlock'));
+        const isEnter=event.type==='keydown' && event.key==='Enter' && target?.id==='blackFlagEntryPin';
+        if(!isButton && !isEnter) return;
+        const input=byId('blackFlagEntryPin');
+        const entered=String(input?.value||'').trim();
+        if(entered!==ENGINE_RECOVERY_PIN) return; // configured alternates remain owned by normal auth
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openEngineAtomically();
+      }
+      document.addEventListener('click',attempt,true);
+      document.addEventListener('keydown',attempt,true);
+      window.DarkSkyAtomicEngineEntry={open:openEngineAtomically,recoveryPin:ENGINE_RECOVERY_PIN};
+    })();
   </script>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.7.3" />
+  <link rel="stylesheet" href="styles.css?v=5.7.4" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1278,11 +1320,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.7.3"></script>
-  <script src="platform_v4.js?v=5.7.3"></script>
-  <script src="platform_identity.js?v=5.7.3"></script>
-  <script src="app.js?v=5.7.3"></script>
-  <script src="captain.js?v=5.7.3"></script>
+  <script src="platform_core.js?v=5.7.4"></script>
+  <script src="platform_v4.js?v=5.7.4"></script>
+  <script src="platform_identity.js?v=5.7.4"></script>
+  <script src="app.js?v=5.7.4"></script>
+  <script src="captain.js?v=5.7.4"></script>
 
 </body>
 </html>

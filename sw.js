@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v5-7-2-engine-atomic-entry';
+const CACHE='dark-sky-v5-7-4-engine-entry-recovery';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.7.3',
-  './platform_core.js?v=5.7.3',
-  './platform_v4.js?v=5.7.3',
-  './platform_identity.js?v=5.7.3',
-  './app.js?v=5.7.3',
-  './captain.js?v=5.7.3',
+  './styles.css?v=5.7.4',
+  './platform_core.js?v=5.7.4',
+  './platform_v4.js?v=5.7.4',
+  './platform_identity.js?v=5.7.4',
+  './app.js?v=5.7.4',
+  './captain.js?v=5.7.4',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -56,7 +56,7 @@ self.addEventListener('fetch',event=>{
 
   if(freshFirst){
     event.respondWith(
-      fetch(req)
+      fetch(req,{cache:'no-store'})
         .then(response=>{
           if(response && response.ok){
             const copy=response.clone();
