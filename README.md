@@ -1,8 +1,12 @@
-# Dark Sky 6.0.4 — Benchmark Lock
+# Dark Sky 6.0.6 — Benchmark Helm
+
+Legacy benchmark mode now uses a compiled project design profile rather than a benchmark on/off styling flag. The approved canonical logo remains untouched; the project benchmark drives the responsive customer composition.
+
+# Dark Sky 6.0.6 — Benchmark Helm
 
 Benchmark-locked responsive customer experience pass. Legacy Plumbing remains the proving vessel; the responsive primitives are intended for reuse across project-specific fleet experiences.
 
-Benchmark Lock finishing pass: customer-site polish, reusable trust/process graphics, clean footer termination, compact internal test navigation, and preserved fleet contracts.
+Benchmark Helm finishing pass: customer-site polish, reusable trust/process graphics, clean footer termination, compact internal test navigation, and preserved fleet contracts.
 
 Repeatable fleet capability release. Engine foundations now become explicit project next steps, with a Fleet Command shipyard queue and project-scoped preparation contract. Dark Sky remains the permanent platform home and Black Flag remains the Engine authority.
 

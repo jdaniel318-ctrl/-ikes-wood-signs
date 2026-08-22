@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.0.4';
+  const BUILD_VERSION = '6.0.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 8;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -7106,11 +7106,14 @@
     const assets=projectAssetMemory.get(p?.id)||{};
     const saved=String(assets.designBenchmark||'').trim();
     const baseline=String(bundledProjectBenchmark(p)||'').trim();
+    const legacy=isLegacyPlumbingProject(p);
     return {
       active:!!(saved||baseline),
       saved:!!saved,
       source:saved||baseline,
-      mode:isLegacyPlumbingProject(p)?'legacy-responsive-flagship':'project-benchmark'
+      mode:legacy?'legacy-responsive-flagship':'project-benchmark',
+      profileId:legacy?'legacy-benchmark-v1':'project-benchmark-generic-v1',
+      renderer:legacy?'legacy-benchmark-native':'universal-benchmark'
     };
   }
   function benchmarkHowIcon(i){
@@ -7122,9 +7125,35 @@
     ];
     return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[i]||paths[0]}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   }
+  function benchmarkTrustMarkup(p){
+    const landing=p?.customerExperience?.landingPage||{};
+    const badges=customerTrustBadgeState(p);
+    const area=String(landing.market||'Richmond, VA').replace(/\s+area$/i,'').replace(/,?\s+VA$/i,'').trim();
+    const shield=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 5-3 8.5-8 10-5-1.5-8-5-8-10V6l8-3Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m8.5 12 2.2 2.2 4.8-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
+    const home=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7v9H3z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 20v-6h6v6M16 8h4v12" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
+    const pin=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
+    const items=[];
+    if(badges.licensedInsured)items.push(`<article><span class="benchmark-trust-icon">${shield}</span><span><strong>Licensed &amp;<br>Insured</strong></span></article>`);
+    if(badges.bbbAccredited)items.push(`<article class="benchmark-trust-bbb"><img src="assets/bbb_accredited_a_plus.png" alt="BBB Accredited Business A+ Rating"><span><strong>BBB Accredited</strong><small>A+ Rating</small></span></article>`);
+    if(badges.residentialCommercial)items.push(`<article><span class="benchmark-trust-icon">${home}</span><span><strong>Residential +<br>Commercial</strong></span></article>`);
+    if(badges.serviceArea)items.push(`<article><span class="benchmark-trust-icon">${pin}</span><span><strong>Serving<br>${escapeHtml(area||'Richmond')}</strong></span></article>`);
+    return items.join('');
+  }
+
+  function legacyBenchmarkServiceCopy(name=''){
+    const n=String(name).toLowerCase();
+    if(/service|repair/.test(n) && !/water|sewer/.test(n)) return 'Leaky pipes, fixtures, and more';
+    if(/water heater/.test(n)) return 'Tank & tankless solutions';
+    if(/remodel|addition/.test(n)) return 'Kitchens, baths, and beyond';
+    if(/new construction/.test(n)) return 'Ground-up plumbing experts';
+    if(/gas/.test(n)) return 'Safe installation & repair';
+    if(/water.*sewer|sewer/.test(n)) return 'Fast, reliable solutions';
+    return 'Request plumbing service';
+  }
   function benchmarkServiceCardMarkup(x){
     const other=/something else/i.test(String(x?.name||''));
-    return `<button type="button" class="benchmark-service-card ${other?'benchmark-service-other':''}" data-universal-landing-offer="${escapeHtml(x.id)}"><span class="benchmark-service-icon">${universalServiceIcon(x.name)}</span><span class="benchmark-service-copy"><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small></span><span class="benchmark-service-arrow" aria-hidden="true">›</span></button>`;
+    const detail=legacyBenchmarkServiceCopy(x?.name||'');
+    return `<button type="button" class="benchmark-service-card ${other?'benchmark-service-other':''}" data-universal-landing-offer="${escapeHtml(x.id)}"><span class="benchmark-service-icon">${universalServiceIcon(x.name)}</span><span class="benchmark-service-copy"><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(detail)}</small></span><span class="benchmark-service-arrow" aria-hidden="true">›</span></button>`;
   }
   function universalServiceIcon(name=''){
     const n=String(name).toLowerCase();
@@ -7187,8 +7216,8 @@
         const benchmarkPhone=String(landing.phone||p?.businessIntake?.contact?.phone||'').trim();
         const benchmarkMastheadAction=benchmarkLegacy&&benchmarkPhone
           ?(contactLocked
-            ?`<button type="button" class="benchmark-contact-button benchmark-contact-locked" disabled aria-label="Phone contact disabled in private test mode"><span aria-hidden="true">☎</span><strong>${escapeHtml(benchmarkPhone)}</strong></button>`
-            :`<a class="benchmark-contact-button" href="tel:${escapeHtml(benchmarkPhone.replace(/[^+\d]/g,''))}"><span aria-hidden="true">☎</span><strong>${escapeHtml(benchmarkPhone)}</strong></a>`)
+            ?`<button type="button" class="benchmark-contact-button benchmark-contact-locked" disabled aria-label="Phone contact disabled in private test mode"><span class="benchmark-phone-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h3l2 5-2 1.5a16 16 0 0 0 4.5 4.5L16 12l5 2v3c0 2-1.6 4-3.7 4C9.4 21 3 14.6 3 6.7 3 4.6 5 3 7 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong>${escapeHtml(benchmarkPhone)}</strong></button>`
+            :`<a class="benchmark-contact-button" href="tel:${escapeHtml(benchmarkPhone.replace(/[^+\d]/g,''))}"><span class="benchmark-phone-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h3l2 5-2 1.5a16 16 0 0 0 4.5 4.5L16 12l5 2v3c0 2-1.6 4-3.7 4C9.4 21 3 14.6 3 6.7 3 4.6 5 3 7 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong>${escapeHtml(benchmarkPhone)}</strong></a>`)
           :'';
         const visuals=plumbingVisualAssets(p);
         const projectAssets=projectAssetMemory.get(p?.id)||{};
@@ -7196,7 +7225,7 @@
         const testimonials=Array.isArray(landing.testimonials)?landing.testimonials:[];
         const reviewsVerified=landing.reviewsVerified===true;
         const visibleTestimonials=reviewsVerified?testimonials:(contactLocked?testimonials.filter(t=>t?.sample===true):[]);
-        const heroPhoto=projectAssets.heroGraphic||visuals.hero||visuals.why||visuals.services?.service_repair||'';
+        const heroPhoto=projectAssets.heroGraphic||(benchmarkLegacy?'assets/legacy_benchmark_hero.jpg':'')||visuals.hero||visuals.why||visuals.services?.service_repair||'';
         const serviceCards=benchmarkActive&&legacy
           ?offers.map(benchmarkServiceCardMarkup).join('')
           :offers.map(x=>{const key=plumbingServiceVisualKey(x.name);const image=key?visuals.services?.[key]:'';const other=/something else/i.test(x.name);return `<button type="button" class="contractor-service-card ${image?'has-photo':''} ${other?'contractor-service-other':''}" data-universal-landing-offer="${escapeHtml(x.id)}" ${image?`style="--service-photo:url('${escapeHtml(image)}')"`:''}><span class="contractor-service-photo"></span><span class="contractor-service-overlay"></span><span class="contractor-service-content"><span class="contractor-service-icon">${universalServiceIcon(x.name)}</span><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small><b>START REQUEST →</b></span></button>`}).join('');
@@ -7206,13 +7235,13 @@
           const benchmarkOffers=offers.filter(x=>!/something else/i.test(String(x?.name||''))).slice(0,6);
           const benchmarkCards=benchmarkOffers.map(benchmarkServiceCardMarkup).join('');
           const benchmarkMarket=String(market||'Richmond, VA').replace(/\s+area$/i,'').trim();
-          shell.innerHTML=`<div class="legacy-benchmark-page benchmark-contract-active" data-benchmark-contract="active" data-benchmark-version="6.0.4" style="${projectExperienceStyle(p)}">
+          shell.innerHTML=`<div class="legacy-benchmark-page benchmark-contract-active" data-benchmark-contract="active" data-benchmark-version="6.0.6" style="${projectExperienceStyle(p)}">
             <header class="legacy-benchmark-masthead">
               <div class="legacy-benchmark-logo">${logoMarkup}</div>
               <div class="legacy-benchmark-meta"><span>⌖ ${escapeHtml(benchmarkMarket)}</span><span>◷ ${escapeHtml(hours||'Business-hour response')}</span></div>
               <div class="legacy-benchmark-action">${benchmarkMastheadAction}</div>
             </header>
-            <div class="legacy-benchmark-test-wrap">${previewBanner}<span class="legacy-benchmark-build">6.0.4</span></div>
+            <div class="legacy-benchmark-test-wrap">${previewBanner}<span class="legacy-benchmark-build">6.0.6</span></div>
             <main class="legacy-benchmark-main">
               <section class="legacy-benchmark-hero" ${heroPhoto?`style="--legacy-hero:url('${escapeHtml(heroPhoto)}')"`:''}>
                 <div class="legacy-benchmark-hero-overlay"></div>
@@ -7222,7 +7251,7 @@
                   <div class="legacy-benchmark-actions"><button type="button" id="universalHelpNow" class="legacy-benchmark-primary">${escapeHtml(helpCtaLabel)}</button><button type="button" id="universalViewServices" class="legacy-benchmark-secondary">VIEW SERVICES</button></div>
                 </div>
               </section>
-              <div class="legacy-benchmark-trust">${customerTrustStripMarkup(p,{compact:true})}</div>
+              <div class="legacy-benchmark-trust"><div class="legacy-benchmark-trust-grid">${benchmarkTrustMarkup(p)}</div></div>
               <section id="services" class="legacy-benchmark-services"><h2>Our Services</h2><div class="legacy-benchmark-service-grid">${benchmarkCards}</div></section>
               <section id="process" class="legacy-benchmark-how"><div class="legacy-benchmark-how-title"><h2>How It Works</h2><span>Proudly serving the ${escapeHtml(benchmarkMarket)} area.</span></div><div class="legacy-benchmark-how-grid">${process.slice(0,4).map((x,i)=>`<article><span class="benchmark-step-num">${i+1}</span><span class="benchmark-how-icon">${benchmarkHowIcon(i)}</span><div><strong>${escapeHtml(['Request Help','We Respond','We Get to Work','You’re Covered'][i]||x)}</strong><small>${escapeHtml(['Tell us what you need. We’ll gather the details.','A local expert will reach out quickly.','We show up on time and get it done right.','Quality service you can count on.'][i]||'')}</small></div>${i<3?'<i aria-hidden="true">→</i>':''}</article>`).join('')}</div></section>
             </main>
@@ -11999,7 +12028,7 @@ The full order and approved media remain stored with this project.`;
     // state. The preview payload is self-contained in the URL, so none of those
     // systems may block a customer from reaching the six-digit preview gate.
     if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.4',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.6',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
       return;
     }
     await loadEngineAppearance();
@@ -12036,7 +12065,7 @@ The full order and approved media remain stored with this project.`;
     }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.4',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.6',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12207,7 +12236,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.4'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.6'};
     }
 
     // Commit the visual crossing only after the Engine has had a chance to render.

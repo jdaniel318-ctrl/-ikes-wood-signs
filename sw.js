@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v6-0-4-benchmark-lock';
+const CACHE='dark-sky-v6-0-6-benchmark-helm';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.0.4',
-  './platform_core.js?v=6.0.4',
-  './platform_v4.js?v=6.0.4',
-  './platform_identity.js?v=6.0.4',
-  './app.js?v=6.0.4',
-  './captain.js?v=6.0.4',
+  './styles.css?v=6.0.6',
+  './platform_core.js?v=6.0.6',
+  './platform_v4.js?v=6.0.6',
+  './platform_identity.js?v=6.0.6',
+  './app.js?v=6.0.6',
+  './captain.js?v=6.0.6',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -19,6 +19,7 @@ const ASSETS=[
   './assets/bbb_accredited_a_plus.png',
   './assets/legacy_plumbing_canonical_logo.jpeg',
   './assets/legacy_customer_site_benchmark.png',
+  './assets/legacy_benchmark_hero.jpg',
   './assets/legacy_responsive_benchmark.png'
 ];
 
