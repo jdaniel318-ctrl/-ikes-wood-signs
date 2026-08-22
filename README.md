@@ -1,8 +1,11 @@
-# Dark Sky 6.0.5 — Fair Wind
+# Dark Sky 6.0.7 — Brass Compass
+
+Captain's Desk station-state pass on the stabilized 6.0 platform spine. Working Captain tools remain visually warm and fully interactive; future or temporarily unavailable stations remain visible, clearly identified, and intentionally non-operational instead of appearing broken.
+
+No Black Flag, project, Client Preview, authority-PIN, or customer-experience routing contracts were changed.
 
 Transition-performance cleanup on the stabilized Clear Decks spine. Captain navigation releases sooner, repeated Captain entries no longer replay the full cinematic gate, and the service-worker pre-cache now targets the real Captain production asset while leaving large optional Engine benchmarks on demand.
 
-# Dark Sky 6.0.5 — Clear Decks
 
 Stabilization and repository-hygiene release on the reconciled Dark Sky 6.0 platform spine. This build fixes Captain navigation authority without changing the working Black Flag, Project Admin, Client Preview, or project-isolation contracts.
 
@@ -13,7 +16,7 @@ Stabilization and repository-hygiene release on the reconciled Dark Sky 6.0 plat
 - The global Captain exit is hidden while a Captain subview is open.
 - Escape closes an open Captain subview first; it exits Captain’s Quarters only from the main room.
 - A defensive cleanup closes any Captain subview before the Captain → Engine crossing.
-- Runtime/cache/release identity is aligned on 6.0.5.
+- Runtime/cache/release identity is aligned on 6.0.7.
 - The deployable package keeps one clean runtime tree at repository root and media-only `assets/`.
 
 ## Authority contracts

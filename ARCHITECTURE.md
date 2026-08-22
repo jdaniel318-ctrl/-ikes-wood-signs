@@ -1,4 +1,4 @@
-# Dark Sky 6.0.5 — Clear Decks Architecture Note
+# Dark Sky 6.0.6 — Clear Decks Architecture Note
 
 Captain navigation is explicitly hierarchical: **Engine Room → Captain’s Quarters → Captain subview**. Only the main Captain room may exit to Black Flag. Captain subviews must return to Captain’s Quarters first. This prevents overlapping navigation authorities and keeps Captain-only state from leaking into Engine transitions.
 

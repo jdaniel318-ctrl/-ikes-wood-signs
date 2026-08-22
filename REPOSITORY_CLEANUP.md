@@ -1,6 +1,6 @@
-# GitHub Cleanup Checklist — after 6.0.5 is confirmed live
+# GitHub Cleanup Checklist — after 6.0.6 is confirmed live
 
-Do not delete anything before the 6.0.5 root deployment is tested. After confirmation:
+Do not delete anything before the 6.0.6 root deployment is tested. After confirmation:
 
 ## Safe cleanup targets
 Archive or remove historical one-off audit files from repository root that are not part of the canonical release documentation. Examples include old `*_AUDIT.md`, old command/deployment repair reports, superseded mobile audits, `README.txt`, and duplicate checksum files.

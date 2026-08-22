@@ -1,4 +1,17 @@
-# Dark Sky 6.0.5 — Clear Decks Regression Gates
+# Dark Sky 6.0.7 — Captain Desk Station Audit
+
+- Fleet Map target present: captainDarkSkyChartBtn
+- First Mate target present: captainWatchStrip
+- Workshop target present: captainCargoDoor
+- Shipyard target present: captainShipyardLaunch
+- Blueprint target present: captainBlueprintDeskBtn
+- Captain's Log target present: captainLogDoor
+- Spyglass target present: captainSpyglassBtn
+- Test Access target present: captainTestAccessDeckBtn
+- Trade Routes deliberately FUTURE and non-operational.
+- Missing active targets downgrade visibly to UNAVAILABLE at runtime rather than failing silently.
+
+# Dark Sky 6.0.7 — Clear Decks Regression Gates
 
 - Captain main room shows one Return to Engine control.
 - Cargo Hold / Workshop and other Captain subviews do not show the global Return to Engine control.

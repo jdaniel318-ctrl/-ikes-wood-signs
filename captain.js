@@ -288,6 +288,99 @@
     return layer;
   }
 
+
+
+  function showCaptainDeskNotice(message,tone='future'){
+    const room=byId('captainQuarters');
+    if(!room)return;
+    let notice=byId('captainDeskNotice');
+    if(!notice){
+      notice=document.createElement('div');
+      notice.id='captainDeskNotice';
+      notice.className='cq-desk-notice';
+      notice.setAttribute('role','status');
+      notice.setAttribute('aria-live','polite');
+      room.appendChild(notice);
+    }
+    notice.dataset.tone=tone;
+    notice.textContent=message;
+    notice.classList.add('show');
+    clearTimeout(showCaptainDeskNotice.timer);
+    showCaptainDeskNotice.timer=setTimeout(()=>notice.classList.remove('show'),2300);
+  }
+
+  function ensureCaptainDeskIndex(){
+    const room=byId('captainQuarters');
+    if(!room)return null;
+    let desk=byId('captainDeskIndex');
+    if(desk)return desk;
+    desk=document.createElement('nav');
+    desk.id='captainDeskIndex';
+    desk.className='cq-desk-index';
+    desk.setAttribute('aria-label',"Captain's Desk");
+    desk.innerHTML=`
+      <div class="cq-desk-index-title"><small>CAPTAIN'S DESK</small><strong>Command tools at hand</strong><span><i></i> READY NOW <b></b> FUTURE</span></div>
+      <section class="cq-desk-group" aria-label="Command tools"><h4>COMMAND</h4>
+        <button type="button" data-cq-desk-route="fleet" data-cq-desk-state="active"><span>✥</span><b>Fleet Map</b><small>Chart the fleet</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="watch" data-cq-desk-state="active"><span>◉</span><b>First Mate</b><small>Signals & counsel</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="log" data-cq-desk-state="active"><span>✒</span><b>Captain's Log</b><small>Orders & history</small><em>READY</em></button>
+      </section>
+      <section class="cq-desk-group" aria-label="Build tools"><h4>BUILD</h4>
+        <button type="button" data-cq-desk-route="workshop" data-cq-desk-state="active"><span>⚒</span><b>Workshop</b><small>Ideas & experiments</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="shipyard" data-cq-desk-state="active"><span>⚓</span><b>Shipyard</b><small>Future vessels</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="blueprint" data-cq-desk-state="active"><span>⌘</span><b>Blueprint</b><small>Architecture map</small><em>READY</em></button>
+      </section>
+      <section class="cq-desk-group" aria-label="Explore tools"><h4>EXPLORE</h4>
+        <button type="button" data-cq-desk-route="spyglass" data-cq-desk-state="active"><span>⌖</span><b>Spyglass</b><small>Fleet intelligence</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="test" data-cq-desk-state="active"><span>◇</span><b>Test Access</b><small>Session controls</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="trade" data-cq-desk-state="future" aria-disabled="true"><span>☸</span><b>Trade Routes</b><small>Route planning</small><em>FUTURE</em></button>
+      </section>`;
+
+    const targets={
+      fleet:'captainDarkSkyChartBtn',
+      watch:'captainWatchStrip',
+      workshop:'captainCargoDoor',
+      shipyard:'captainShipyardLaunch',
+      blueprint:'captainBlueprintDeskBtn',
+      log:'captainLogDoor',
+      spyglass:'captainSpyglassBtn',
+      test:'captainTestAccessDeckBtn'
+    };
+    desk.querySelectorAll('[data-cq-desk-state="active"]').forEach(btn=>{
+      const target=targets[btn.dataset.cqDeskRoute];
+      if(!target || !byId(target)){
+        btn.dataset.cqDeskState='unavailable';
+        btn.setAttribute('aria-disabled','true');
+        const tag=btn.querySelector('em'); if(tag)tag.textContent='UNAVAILABLE';
+      }
+    });
+    desk.addEventListener('click',(event)=>{
+      const btn=event.target.closest('[data-cq-desk-route]');
+      if(!btn)return;
+      const state=btn.dataset.cqDeskState||'active';
+      if(state==='future'){
+        showCaptainDeskNotice(`${btn.querySelector('b')?.textContent||'This station'} is charted for a future voyage.`,'future');
+        return;
+      }
+      if(state==='unavailable'){
+        showCaptainDeskNotice(`${btn.querySelector('b')?.textContent||'This station'} is temporarily unavailable.`,'unavailable');
+        return;
+      }
+      const target=targets[btn.dataset.cqDeskRoute];
+      const targetEl=byId(target);
+      if(!targetEl){
+        btn.dataset.cqDeskState='unavailable';
+        btn.setAttribute('aria-disabled','true');
+        const tag=btn.querySelector('em'); if(tag)tag.textContent='UNAVAILABLE';
+        showCaptainDeskNotice('This station is temporarily unavailable.','unavailable');
+        return;
+      }
+      targetEl.click();
+    });
+    room.appendChild(desk);
+    return desk;
+  }
+
   function refreshChartroomLive(){
     const layer=ensureChartroomLiveLayer();
     if(!layer)return;
@@ -313,6 +406,7 @@
       room.classList.add('cinematic-cabin-ready');
       room.classList.remove('cinematic-cabin-failed');
       ensureChartroomLiveLayer();
+      ensureCaptainDeskIndex();
       refreshChartroomLive();
     };
     image.onerror=()=>{

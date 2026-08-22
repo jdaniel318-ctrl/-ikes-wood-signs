@@ -13113,7 +13113,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 
 
 /* ========================================================================== 
-   v6.0.5 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
+   v6.0.6 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
    Captain-only refinement over Chartroom. The cinematic art remains the skin;
    real Captain intelligence and controls are separate, readable DOM layers.
    ========================================================================== */
@@ -13187,7 +13187,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 @media (prefers-reduced-motion:reduce){#captainQuarters.cinematic-cabin-ready *{transition:none!important;animation:none!important}}
 
 /* ========================================================================== 
-   v6.0.5 — BLACK FLAG ENGINE GATE: COMMAND PRESENCE PASS
+   v6.0.6 — BLACK FLAG ENGINE GATE: COMMAND PRESENCE PASS
    Presentation only. Authentication, entry routing and authority contracts are
    intentionally untouched. Legacy DOM hooks remain present but visually silent.
    ========================================================================== */
@@ -13288,7 +13288,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 }
 
 /* ========================================================================== 
-   v6.0.5 — CAPTAIN GANGWAY: PERMANENT ENGINE ESCAPE
+   v6.0.6 — CAPTAIN GANGWAY: PERMANENT ENGINE ESCAPE
    Captain-only navigation safety. This control lives outside the cinematic
    Captain DOM so artwork, mapped hotspots, and Captain subviews cannot cover it.
    ========================================================================== */
@@ -13335,3 +13335,4 @@ body.captain-authorized #captainExitBtn{visibility:hidden!important;pointer-even
     font-size:10px!important;
   }
 }
+\n\n/* ==========================================================================\n   v6.0.6 — CAPTAIN'S QUARTERS: DESK ORGANIZATION PASS\n   Keeps the selected cinematic room intact while replacing the ambiguous\n   decorative lower command rail with one clear, real Captain's Desk index.\n   ========================================================================== */\n#captainQuarters.cinematic-cabin-ready .cq-desk-index{\n  position:absolute;z-index:145;left:1.15%;right:1.15%;bottom:1.15%;height:15.7%;\n  display:grid;grid-template-columns:1.2fr repeat(8,1fr);gap:.55%;padding:.6%;box-sizing:border-box;\n  border:1px solid rgba(198,154,73,.70);border-radius:10px;\n  background:linear-gradient(180deg,rgba(5,18,24,.965),rgba(3,12,17,.985));\n  box-shadow:0 12px 32px rgba(0,0,0,.52),inset 0 0 24px rgba(205,157,73,.025);\n  pointer-events:auto;font-family:Georgia,'Times New Roman',serif;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index-title{\n  display:flex;flex-direction:column;justify-content:center;padding:0 8%;border-right:1px solid rgba(190,145,70,.32);\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index-title small{\n  color:#8fb5bb;font:700 clamp(6px,.52vw,9px)/1.2 system-ui,sans-serif;letter-spacing:.18em;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index-title strong{\n  margin-top:.35em;color:#e5c77d;font-size:clamp(12px,1.05vw,17px);line-height:1.08;font-weight:500;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button{\n  min-width:0;border:1px solid rgba(183,140,69,.36);border-radius:8px;padding:5% 5.5%;\n  display:grid;grid-template-rows:auto auto auto;align-content:center;justify-items:start;text-align:left;\n  color:#ead7a2;background:linear-gradient(180deg,rgba(18,39,47,.76),rgba(7,23,30,.84));\n  box-shadow:inset 0 0 18px rgba(214,165,77,.025);cursor:pointer;overflow:hidden;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button span{\n  color:#d6ad58;font:700 clamp(11px,1.05vw,18px)/1 Georgia,serif;margin-bottom:.28em;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button b{\n  color:#f0db9f;font-size:clamp(8px,.72vw,12px);font-weight:600;line-height:1.05;white-space:nowrap;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button small{\n  margin-top:.22em;color:#8fa8ad;font:500 clamp(5px,.48vw,8px)/1.18 system-ui,sans-serif;white-space:normal;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button:hover,\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button:focus-visible{\n  outline:2px solid rgba(236,201,123,.82);outline-offset:1px;filter:brightness(1.12);\n  border-color:rgba(224,183,96,.82);background:linear-gradient(180deg,rgba(25,52,60,.92),rgba(9,29,36,.95));\n}\n/* The desk index is now the primary discoverable feature rail. Keep the painted\n   command tiles behind it as scenery, not a second competing set of controls. */\n#captainQuarters.cinematic-cabin-ready #captainBlackFlagDoor{pointer-events:none!important}\n#captainQuarters.cinematic-cabin-ready .cq-chartroom-boundary{bottom:17.6%!important}\n@media(max-width:1100px) and (orientation:landscape){\n  #captainQuarters.cinematic-cabin-ready .cq-desk-index{grid-template-columns:1.05fr repeat(4,1fr);grid-template-rows:1fr 1fr;height:22.2%;gap:4px;padding:5px}\n  #captainQuarters.cinematic-cabin-ready .cq-desk-index-title{grid-row:1/3}\n}\n@media(max-width:700px),(orientation:portrait) and (max-width:900px){\n  #captainQuarters.cinematic-cabin-ready .cq-desk-index{display:none!important}\n}\n

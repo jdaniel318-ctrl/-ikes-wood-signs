@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v6-0-5-fair-wind';
+const CACHE='dark-sky-v6-0-7-brass-compass';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.0.5',
-  './platform_core.js?v=6.0.5',
-  './platform_v4.js?v=6.0.5',
-  './platform_identity.js?v=6.0.5',
-  './app.js?v=6.0.5',
-  './captain.js?v=6.0.5',
+  './styles.css?v=6.0.7',
+  './platform_core.js?v=6.0.7',
+  './platform_v4.js?v=6.0.7',
+  './platform_identity.js?v=6.0.7',
+  './app.js?v=6.0.7',
+  './captain.js?v=6.0.7',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

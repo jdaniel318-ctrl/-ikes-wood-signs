@@ -1,4 +1,4 @@
-# Repository Reconciliation — Dark Sky 6.0.5 Clear Decks
+# Repository Reconciliation — Dark Sky 6.0.6 Clear Decks
 
 ## Canonical layout
 Runtime/application files live at repository root. `assets/` is media-only.

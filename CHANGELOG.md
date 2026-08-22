@@ -1,10 +1,19 @@
-# Dark Sky 6.0.5 — Clear Decks
+# Dark Sky 6.0.7 — Brass Compass
+
+- Audited every visible Captain's Desk station against its actual runtime target.
+- Added explicit READY, FUTURE, and UNAVAILABLE station states without removing roadmap controls.
+- Added Captain-style feedback for future/unavailable stations so no control fails silently.
+- Grouped Captain tools into Command, Build, and Explore while preserving the selected cinematic room.
+- Added the future Trade Routes station as an intentionally non-operational roadmap control.
+- Preserved Black Flag 5615, Project Admin 4353, Captain's Quarters 19613, Client Preview unique invite PINs, project isolation, and customer routing.
+
+# Dark Sky 6.0.7 — Clear Decks
 
 - Separated Captain navigation authority: the main Captain room owns Return to Engine; Captain subviews own Return to Quarters.
 - Hid the global Captain exit while a Captain command workspace is open.
 - Escape now backs out of a Captain subview before it can leave Captain’s Quarters.
 - Hardened Captain exit cleanup so stale subview state cannot survive into Black Flag.
-- Aligned runtime and service-worker cache identity on 6.0.5.
+- Aligned runtime and service-worker cache identity on 6.0.7.
 - Kept Black Flag 5615, Project Admin 4353, Captain 19613, Client Preview, project isolation, and customer surfaces unchanged.
 - Kept the deployment ZIP intentionally lean: runtime + canonical docs + media-only assets.
 
