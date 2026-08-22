@@ -31,7 +31,7 @@
 - Recovery export is explicit and never auto-restores or mutates live state.
 
 
-## 6.4.0 Grand Passage
+## 6.5.0 Flag Bridge
 - [ ] Captain first-entry ceremony completes and controls unlock after ~4.5s.
 - [ ] Repeat Captain entry completes in ~1.1s.
 - [ ] Captain room has no primary vertical overflow on iPad landscape.

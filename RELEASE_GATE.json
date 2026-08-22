@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "6.4.0",
-  "release": "6.4.0",
+  "build": "6.5.0",
+  "release": "6.5.0",
   "generatedAt": "2026-08-22",
   "checks": {
     "build_version": true,

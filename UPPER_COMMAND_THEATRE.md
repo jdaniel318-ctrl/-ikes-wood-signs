@@ -1,4 +1,4 @@
-# Upper Command Theatre Contract — 6.4.0
+# Upper Command Theatre Contract — 6.5.0
 
 Theatrical visuals are a reusable capability, not a one-off skin.
 

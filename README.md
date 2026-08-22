@@ -1,4 +1,7 @@
-# Dark Sky 6.4.0 — Grand Passage
+# Dark Sky 6.5.0 — Flag Bridge
+
+Ceremonial Admiral command-surface release. Visual Forge-installed Admiral art now becomes the environment layer for real responsive controls, while Professional Mode remains a separate clean governance console. Live readiness, fleet counts, recovery/report actions, and future governance stations are rendered independently of the artwork.
+
 
 Upper-command theatre and reusable visual-slot release.
 

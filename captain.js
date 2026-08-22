@@ -369,6 +369,53 @@
     showCaptainDeskNotice.timer=setTimeout(()=>notice.classList.remove('show'),2300);
   }
 
+  function refreshAdmiralCeremonialSurface(){
+    const rows=fleetSnapshot();
+    const sailing=rows.reduce((n,v)=>n+(v.outposts||[]).filter(o=>o.state==='deployed').length,0);
+    const trials=rows.reduce((n,v)=>n+(v.outposts||[]).filter(o=>o.state==='sea_trial').length,0);
+    if(byId('admiralCeremonialVessels'))byId('admiralCeremonialVessels').textContent=String(rows.length);
+    if(byId('admiralCeremonialSailing'))byId('admiralCeremonialSailing').textContent=String(sailing);
+    if(byId('admiralCeremonialTrials'))byId('admiralCeremonialTrials').textContent=String(trials);
+  }
+
+  function syncAdmiralReadiness(report){
+    if(!report)return;
+    const label=report.pass?(report.warnings?'WATCH':'CLEAR'):'HOLD';
+    const copy=report.pass?`${report.checks.length-report.warnings} checks clear${report.warnings?` • ${report.warnings} watch`:''}.`:`${report.criticalFailures} critical hold${report.criticalFailures===1?'':'s'} remain.`;
+    for(const id of ['admiralDeckReadinessState','admiralCeremonialReadinessState']){const el=byId(id);if(el){el.textContent=label;el.dataset.state=label.toLowerCase();}}
+    for(const id of ['admiralDeckReadinessCopy','admiralCeremonialReadinessCopy']){const el=byId(id);if(el)el.textContent=copy;}
+    const domains=byId('admiralCeremonialDomains');
+    if(domains){
+      domains.innerHTML=(report.checks||[]).slice(0,8).map(c=>`<span data-state="${c.state}"><i>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</i><b>${c.label}</b><em>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</em></span>`).join('')||'<span>No readiness domains returned.</span>';
+    }
+    window.__lastAdmiralReadinessReport=report;
+  }
+
+  async function runAdmiralDeckReadiness(){
+    for(const id of ['admiralDeckReadinessState','admiralCeremonialReadinessState']){const el=byId(id);if(el)el.textContent='CHECKING';}
+    try{
+      const report=await window.DarkSkyAdmiralReadiness?.run?.();
+      if(!report)throw new Error('Fleet Readiness service unavailable');
+      syncAdmiralReadiness(report);
+      return report;
+    }catch(err){
+      for(const id of ['admiralDeckReadinessState','admiralCeremonialReadinessState']){const el=byId(id);if(el)el.textContent='UNAVAILABLE';}
+      for(const id of ['admiralDeckReadinessCopy','admiralCeremonialReadinessCopy']){const el=byId(id);if(el)el.textContent=String(err?.message||err);}
+      throw err;
+    }
+  }
+
+  function exportAdmiralReadinessReport(){
+    const report=window.__lastAdmiralReadinessReport;
+    if(!report){
+      const notice=byId('admiralDeckNotice')||byId('admiralCeremonialNotice');
+      if(notice)notice.textContent='Run Fleet Readiness first.';
+      return;
+    }
+    const blob=new Blob([JSON.stringify({schema:'dark-sky-fleet-readiness-v1',...report},null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`dark-sky-fleet-readiness-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);
+  }
+
   function ensureAdmiralDeck(){
     let gate=byId('admiralGateOverlay');
     if(gate)return gate;
@@ -408,12 +455,43 @@
           <div><small>TRIAL COMMAND • FLEET GOVERNANCE</small><h2 id="admiralDeckTitle">Admiral's Deck</h2><p>Above Captain command. Governs Dark Sky, Black Flag and fleet standards.</p></div>
           <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckModeBtn" type="button" aria-pressed="false">PROFESSIONAL MODE</button><button id="admiralDeckReturnBtn" type="button">← RETURN TO CAPTAIN'S QUARTERS</button></div>
         </header>
+        <main class="admiral-command-surface" aria-label="Admiral ceremonial command surface">
+          <nav class="admiral-command-rail" aria-label="Admiral governance controls">
+            <div class="admiral-command-rail-title"><small>ADMIRAL COMMAND</small><strong>Govern the platform</strong><span>PROVISIONAL • TRIAL</span></div>
+            <button id="admiralCeremonialForge" type="button"><b>Visual Forge</b><small>Shape upper command</small><em>READY</em></button>
+            <button type="button" data-admiral-future="Delegation"><b>Delegation</b><small>Grant governed authority</small><em>FUTURE</em></button>
+            <button type="button" data-admiral-future="Fleet Standards"><b>Fleet Standards</b><small>Set fleet-wide rules</small><em>FUTURE</em></button>
+            <button type="button" data-admiral-future="Expansion"><b>Expansion</b><small>Chart fleet growth</small><em>FUTURE</em></button>
+          </nav>
+          <section class="admiral-command-center" aria-label="Admiral command state">
+            <div class="admiral-command-center-badge"><small>ADMIRAL'S DECK</small><strong>Fleet Governance</strong><span>Rank not yet commissioned</span></div>
+          </section>
+          <aside class="admiral-command-readiness" aria-label="Live fleet readiness">
+            <small>LIVE FLEET READINESS</small>
+            <strong id="admiralCeremonialReadinessState">NOT RUN</strong>
+            <p id="admiralCeremonialReadinessCopy">Run the fleet checks before treating this deck as proven.</p>
+            <div class="admiral-command-counts">
+              <span><b id="admiralCeremonialVessels">0</b><small>VESSELS</small></span>
+              <span><b id="admiralCeremonialSailing">0</b><small>SAILING</small></span>
+              <span><b id="admiralCeremonialTrials">0</b><small>SEA TRIAL</small></span>
+            </div>
+            <div id="admiralCeremonialDomains" class="admiral-command-domains"><span>Awaiting readiness check.</span></div>
+            <button id="admiralCeremonialRunReadiness" type="button">RUN FLEET READINESS</button>
+          </aside>
+          <div class="admiral-command-dock" aria-label="Admiral continuity tools">
+            <button id="admiralCeremonialRecovery" type="button"><b>Recovery Snapshot</b><small>Protect the fleet</small><em>READY</em></button>
+            <button id="admiralCeremonialReport" type="button"><b>Readiness Report</b><small>Download evidence</small><em>READY</em></button>
+            <button type="button" data-admiral-future="Admiral Log"><b>Admiral Log</b><small>Governance history</small><em>FUTURE</em></button>
+            <button type="button" data-admiral-future="Fleet Directives"><b>Fleet Directives</b><small>Issue governed orders</small><em>FUTURE</em></button>
+          </div>
+          <section class="admiral-command-notice" id="admiralCeremonialNotice" role="status" aria-live="polite">Ceremonial command surface active. Live controls remain separate from the artwork.</section>
+        </main>
         <main class="admiral-deck-grid">
           <section class="admiral-deck-hero"><small>THE HIGHER WATCH</small><h3>Govern the platform. Protect the fleet.</h3><p>The Captain commands the mission. The Admiral sets the standards that Dark Sky, Black Flag and every vessel must obey.</p><div class="admiral-scope"><span>DARK SKY</span><span>BLACK FLAG</span><span>FLEET</span></div></section>
           <aside class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></aside>
           <section class="admiral-governance-card"><h4>Governance</h4><div><button id="admiralDeckForge" type="button">Visual Forge <em>READY</em></button><button type="button" data-admiral-future="Delegation">Delegation <em>FUTURE</em></button><button type="button" data-admiral-future="Fleet Standards">Fleet Standards <em>FUTURE</em></button><button type="button" data-admiral-future="Expansion">Expansion <em>FUTURE</em></button></div></section>
           <section class="admiral-governance-card"><h4>Continuity</h4><div><button id="admiralDeckRecovery" type="button">Recovery Snapshot <em>READY</em></button><button id="admiralDeckReport" type="button">Readiness Report <em>READY</em></button><button type="button" data-admiral-future="Admiral Log">Admiral Log <em>FUTURE</em></button></div></section>
-          <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Trial Deck active. Rank is not implied by access.</section>
+          <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Professional Mode active. Rank is not implied by access.</section>
         </main>
       </div>`;
     document.body.appendChild(deck);
@@ -429,6 +507,7 @@
       const btn=byId('admiralDeckModeBtn');
       if(btn){btn.setAttribute('aria-pressed',String(!professional));btn.textContent=professional?'PROFESSIONAL MODE':'CEREMONIAL MODE';}
       try{localStorage.setItem('darkSkyAdmiralDeckMode',deck.dataset.mode);}catch(_){ }
+      refreshAdmiralCeremonialSurface();
     };
     byId('admiralUnlockBtn').onclick=async()=>{
       const input=byId('admiralPinInput'),error=byId('admiralPinError');
@@ -440,29 +519,19 @@
       deck.classList.remove('admiral-deck-enter','admiral-deck-enter-repeat');void deck.offsetWidth;
       let seenDeck=false;try{seenDeck=sessionStorage.getItem('darkSkyAdmiralTrialSeen')==='1';}catch(_){ }
       deck.classList.add(seenDeck?'admiral-deck-enter-repeat':'admiral-deck-enter');
+      refreshAdmiralCeremonialSurface();
+      if(window.__lastAdmiralReadinessReport)syncAdmiralReadiness(window.__lastAdmiralReadinessReport);
       try{sessionStorage.setItem('darkSkyAdmiralTrialSeen','1');}catch(_){ }
     };
     byId('admiralPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')byId('admiralUnlockBtn').click();});
-    byId('admiralDeckRunReadiness').onclick=async()=>{
-      const state=byId('admiralDeckReadinessState'),copy=byId('admiralDeckReadinessCopy');
-      if(state)state.textContent='CHECKING';
-      try{
-        const report=await window.DarkSkyAdmiralReadiness?.run?.();
-        if(!report)throw new Error('Fleet Readiness service unavailable');
-        const label=report.pass?(report.warnings?'WATCH':'CLEAR'):'HOLD';
-        if(state){state.textContent=label;state.dataset.state=label.toLowerCase();}
-        if(copy)copy.textContent=report.pass?`${report.checks.length-report.warnings} checks clear${report.warnings?` • ${report.warnings} watch`:''}.`:`${report.criticalFailures} critical hold${report.criticalFailures===1?'':'s'} remain.`;
-        window.__lastAdmiralReadinessReport=report;
-      }catch(err){if(state)state.textContent='UNAVAILABLE';if(copy)copy.textContent=String(err?.message||err);}
-    };
+    byId('admiralDeckRunReadiness').onclick=()=>runAdmiralDeckReadiness();
+    byId('admiralCeremonialRunReadiness').onclick=()=>runAdmiralDeckReadiness();
     byId('admiralDeckRecovery').onclick=()=>window.DarkSkyAdmiralReadiness?.exportRecovery?.();
+    byId('admiralCeremonialRecovery').onclick=()=>window.DarkSkyAdmiralReadiness?.exportRecovery?.();
     byId('admiralDeckForge').onclick=()=>openVisualForge('admiral');
-    byId('admiralDeckReport').onclick=()=>{
-      const report=window.__lastAdmiralReadinessReport;
-      if(!report){byId('admiralDeckNotice').textContent='Run Fleet Readiness first.';return;}
-      const blob=new Blob([JSON.stringify({schema:'dark-sky-fleet-readiness-v1',...report},null,2)],{type:'application/json'});
-      const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`dark-sky-fleet-readiness-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);
-    };
+    byId('admiralCeremonialForge').onclick=()=>openVisualForge('admiral');
+    byId('admiralDeckReport').onclick=exportAdmiralReadinessReport;
+    byId('admiralCeremonialReport').onclick=exportAdmiralReadinessReport;
     deck.querySelectorAll('[data-admiral-future]').forEach(btn=>btn.onclick=()=>{byId('admiralDeckNotice').textContent=`${btn.dataset.admiralFuture} is charted for a future Admiral voyage.`;});
     return gate;
   }

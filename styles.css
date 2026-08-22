@@ -13840,3 +13840,135 @@ body.captain-modal-open #captainQuarters.cinematic-cabin-ready{
   .admiral-deck-enter .admiral-deck-atmosphere,.admiral-deck-enter .admiral-deck-head,.admiral-deck-enter .admiral-deck-grid{animation-duration:.01ms!important;animation-delay:0s!important}
   .admiral-gate-enter .admiral-door.left,.admiral-gate-enter .admiral-door.right,.admiral-gate-enter .admiral-gate-card{transition-duration:.01ms!important;transition-delay:0s!important}
 }
+
+/* ========================================================================== 
+   6.5.0 — FLAG BRIDGE / ADMIRAL COMMAND SURFACE
+   Ceremonial Mode uses the forged visual as the environment itself. Real HTML
+   controls occupy protected zones. Professional Mode retains the clean deck.
+   ========================================================================== */
+
+.admiral-command-surface{display:none}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-shell,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-shell{
+  width:min(1380px,98vw)!important;
+  height:min(900px,94svh)!important;
+  min-height:0!important;
+  max-height:94svh!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-head,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-head{
+  flex:0 0 auto!important;
+  padding:12px 18px!important;
+  background:linear-gradient(180deg,rgba(3,16,22,.94),rgba(3,16,22,.72))!important;
+  border-bottom-color:rgba(212,174,86,.42)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-head h2,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-head h2{font-size:clamp(25px,2.2vw,35px)!important;margin:2px 0!important}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-head p,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-head p{font-size:12px!important;margin:2px 0 0!important;opacity:.78}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-grid,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-grid{display:none!important}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-command-surface,
+.admiral-deck-overlay:not([data-mode]) .admiral-command-surface{
+  position:relative!important;
+  z-index:2!important;
+  display:block!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere{
+  z-index:0!important;
+  filter:saturate(.98) contrast(1.04)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere:after,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere:after{
+  background:
+    linear-gradient(90deg,rgba(1,8,12,.58) 0 18%,rgba(1,8,12,.08) 33% 68%,rgba(1,8,12,.58) 82% 100%),
+    linear-gradient(180deg,rgba(1,8,12,.18),rgba(1,8,12,.08) 60%,rgba(1,8,12,.64) 100%)!important;
+}
+
+/* Live rail on the left. */
+.admiral-command-rail{
+  position:absolute;left:14px;top:14px;bottom:94px;width:196px;
+  display:flex;flex-direction:column;gap:7px;padding:12px;
+  border:1px solid rgba(213,176,89,.48);border-radius:14px;
+  background:linear-gradient(180deg,rgba(4,19,25,.91),rgba(2,12,17,.86));
+  box-shadow:0 18px 44px rgba(0,0,0,.34);backdrop-filter:blur(9px);
+}
+.admiral-command-rail-title{padding:4px 4px 10px;border-bottom:1px solid rgba(214,176,87,.26)}
+.admiral-command-rail-title small{display:block;color:#caa75c;font-size:9px;letter-spacing:.17em;font-weight:900}
+.admiral-command-rail-title strong{display:block;color:#f0dfb2;font:700 17px/1.1 Georgia,serif;margin:4px 0}
+.admiral-command-rail-title span{color:#82979a;font-size:8px;letter-spacing:.11em}
+.admiral-command-rail button,.admiral-command-dock button{
+  text-align:left;border:1px solid rgba(104,151,158,.30);border-radius:10px;background:rgba(3,20,26,.82);color:#e8d6a3;padding:9px 10px;min-height:50px;
+}
+.admiral-command-rail button:hover,.admiral-command-rail button:focus-visible,.admiral-command-dock button:hover,.admiral-command-dock button:focus-visible{border-color:rgba(225,183,82,.66);background:rgba(17,37,40,.94);outline:none;box-shadow:0 0 0 1px rgba(225,183,82,.12),0 8px 22px rgba(0,0,0,.24)}
+.admiral-command-rail button b,.admiral-command-dock button b{display:block;font-size:12px}
+.admiral-command-rail button small,.admiral-command-dock button small{display:block;color:#87999c;font-size:9px;margin-top:2px}
+.admiral-command-rail button em,.admiral-command-dock button em{display:inline-block;margin-top:4px;color:#a8c28b;font-size:7px;font-style:normal;letter-spacing:.13em;font-weight:900}
+.admiral-command-rail [data-admiral-future],.admiral-command-dock [data-admiral-future]{opacity:.78;border-color:rgba(164,141,91,.25)}
+.admiral-command-rail [data-admiral-future] em,.admiral-command-dock [data-admiral-future] em{color:#b59c69}
+
+/* Center stays mostly visual. Only a small live authority badge is layered over it. */
+.admiral-command-center{position:absolute;left:230px;right:306px;top:14px;bottom:94px;pointer-events:none;display:flex;align-items:flex-start;justify-content:center}
+.admiral-command-center-badge{margin-top:8px;padding:8px 18px;border:1px solid rgba(210,171,78,.34);border-radius:999px;background:rgba(2,13,18,.62);backdrop-filter:blur(7px);text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.2)}
+.admiral-command-center-badge small{display:block;color:#c8a657;font-size:8px;letter-spacing:.18em;font-weight:900}
+.admiral-command-center-badge strong{display:block;color:#f0dfb2;font:700 17px Georgia,serif;margin:2px 0}
+.admiral-command-center-badge span{display:block;color:#9aa9aa;font-size:8px;letter-spacing:.1em}
+
+/* Right rail contains only live, generated readiness data. */
+.admiral-command-readiness{
+  position:absolute;right:14px;top:14px;bottom:94px;width:274px;padding:13px;
+  border:1px solid rgba(213,176,89,.48);border-radius:14px;background:linear-gradient(180deg,rgba(4,19,25,.92),rgba(2,12,17,.88));
+  box-shadow:0 18px 44px rgba(0,0,0,.34);backdrop-filter:blur(9px);overflow:hidden;display:flex;flex-direction:column;
+}
+.admiral-command-readiness>small{color:#caa75c;font-size:9px;letter-spacing:.17em;font-weight:900}
+.admiral-command-readiness>strong{font:700 clamp(27px,2.4vw,36px) Georgia,serif;color:#e9d695;margin:8px 0 3px}
+.admiral-command-readiness>strong[data-state="clear"]{color:#8ed593}.admiral-command-readiness>strong[data-state="watch"]{color:#dfbd67}.admiral-command-readiness>strong[data-state="hold"],.admiral-command-readiness>strong[data-state="unavailable"]{color:#d48169}
+.admiral-command-readiness>p{color:#93a5a8;font-size:10px;line-height:1.35;margin:0 0 9px}
+.admiral-command-counts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:2px 0 9px}
+.admiral-command-counts span{padding:7px 5px;border:1px solid rgba(102,148,156,.22);border-radius:8px;background:rgba(4,22,28,.72);text-align:center}
+.admiral-command-counts b{display:block;color:#ead7a4;font:700 17px Georgia,serif}.admiral-command-counts small{font-size:7px;color:#82979a;letter-spacing:.1em}
+.admiral-command-domains{flex:1;min-height:0;overflow:auto;display:grid;align-content:start;gap:4px;padding-right:2px;scrollbar-width:none}.admiral-command-domains::-webkit-scrollbar{display:none}
+.admiral-command-domains>span{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:5px;align-items:center;padding:5px 6px;border-bottom:1px solid rgba(109,145,151,.13);color:#9eadaf;font-size:8px}
+.admiral-command-domains i{font-style:normal;color:#8ed593}.admiral-command-domains [data-state="warn"] i{color:#dfbd67}.admiral-command-domains [data-state="fail"] i{color:#d48169}.admiral-command-domains b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.admiral-command-domains em{font-style:normal;font-size:7px;letter-spacing:.08em;color:#8ed593}.admiral-command-domains [data-state="warn"] em{color:#dfbd67}.admiral-command-domains [data-state="fail"] em{color:#d48169}
+#admiralCeremonialRunReadiness{margin-top:8px;min-height:40px;border:1px solid rgba(213,176,89,.55);border-radius:9px;background:rgba(25,41,41,.92);color:#e8d5a1;font-size:10px;font-weight:900;letter-spacing:.08em}
+
+/* Bottom command dock replaces fake baked controls with real tools. */
+.admiral-command-dock{position:absolute;left:230px;right:306px;bottom:14px;height:68px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;padding:7px;border:1px solid rgba(213,176,89,.44);border-radius:13px;background:rgba(2,14,19,.86);backdrop-filter:blur(9px);box-shadow:0 14px 34px rgba(0,0,0,.28)}
+.admiral-command-dock button{min-height:52px;padding:7px 9px}
+.admiral-command-notice{position:absolute;left:50%;bottom:88px;transform:translateX(-50%);max-width:520px;padding:6px 12px;border:1px solid rgba(207,171,85,.25);border-radius:999px;background:rgba(2,13,18,.72);color:#aebaba;font-size:9px;text-align:center;pointer-events:none}
+
+/* Professional Mode remains the clean governance console and ignores forged art. */
+.admiral-deck-overlay[data-mode="professional"] .admiral-command-surface{display:none!important}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-grid{display:grid!important}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-shell{height:auto!important;min-height:min(760px,90svh)!important;max-height:none!important;display:block!important;overflow:hidden!important}
+
+/* Forge: compact two-pane working surface with a fixed action dock. */
+.visual-forge-shell{height:min(860px,92svh)!important;max-height:92svh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+.visual-forge-head{position:relative!important;flex:0 0 auto!important;padding:16px 20px!important}
+.visual-forge-head h2{font-size:clamp(28px,2.5vw,40px)!important;margin:4px 0!important}.visual-forge-head p{font-size:12px!important}
+.visual-forge-grid{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;padding:14px!important;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr)!important}
+.visual-forge-input,.visual-forge-output{min-height:0!important;overflow:auto!important;padding:14px!important;scrollbar-width:thin}
+.visual-forge-input{align-content:start!important}.visual-forge-input textarea{min-height:118px!important;max-height:190px!important}.visual-forge-refs{min-height:96px!important}.visual-forge-primary{min-height:46px!important;max-height:48px!important}
+.visual-forge-blueprint{min-height:180px!important;max-height:none!important;overflow:auto!important}
+.visual-forge-actions{position:sticky!important;bottom:0!important;z-index:3!important;padding-top:8px!important;background:linear-gradient(180deg,rgba(6,23,29,0),#06171d 30%)!important}
+.visual-forge-actions button{min-height:42px!important;font-size:9px!important}
+.visual-forge-boundary{font-size:9px!important}
+
+@media(max-width:1100px){
+  .admiral-command-rail{width:166px;left:9px;padding:9px}.admiral-command-readiness{width:230px;right:9px;padding:10px}.admiral-command-center{left:186px;right:249px}.admiral-command-dock{left:186px;right:249px}.admiral-command-rail button{min-height:44px;padding:7px 8px}.admiral-command-rail button small{display:none}.admiral-command-domains>span{font-size:7px}
+}
+@media(max-width:900px){
+  .admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-shell,.admiral-deck-overlay:not([data-mode]) .admiral-deck-shell{height:94dvh!important;max-height:94dvh!important}
+  .admiral-command-rail{width:146px;bottom:82px}.admiral-command-readiness{width:206px;bottom:82px}.admiral-command-center{left:164px;right:224px;bottom:82px}.admiral-command-dock{left:164px;right:224px;height:58px;bottom:10px}.admiral-command-dock button{min-height:42px}.admiral-command-dock button small{display:none}.admiral-command-notice{display:none}
+  .visual-forge-grid{grid-template-columns:1fr!important;overflow:auto!important}.visual-forge-input,.visual-forge-output{overflow:visible!important}.visual-forge-shell{overflow:auto!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .admiral-command-surface *{scroll-behavior:auto!important}
+}

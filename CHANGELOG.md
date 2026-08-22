@@ -1,4 +1,11 @@
-# Dark Sky 6.4.0 — Grand Passage
+# Dark Sky 6.5.0 — Flag Bridge
+
+- Completes the Visual Forge promise for Admiral ceremonial environments: installed art becomes the command environment, not wallpaper under a generic modal.
+- Adds a real ceremonial command surface with live Fleet Readiness, vessel/sailing/Sea Trial counts, Recovery Snapshot, Readiness Report, Visual Forge, and explicitly FUTURE governance stations.
+- Keeps Professional Mode visually and operationally separate from ceremonial art.
+- Synchronizes readiness state across Ceremonial and Professional modes.
+- Tightens Visual Forge into a two-pane iPad workspace with a compact sticky action dock.
+- Preserves 4353 / 5615 / 19613 authority contracts, Client Preview isolation, test-contact safety, and project boundaries.
 
 - Extended Captain first-entry and repeat threshold animation cadence by roughly 80%.
 - Locked Captain’s Quarters to the Safari dynamic viewport and vignetted obsolete baked lower-HUD content.
