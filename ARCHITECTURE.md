@@ -234,3 +234,11 @@ A sealed Client Preview is a standalone runtime, not a temporary project route t
 The tested authority hierarchy is Admiral → Captain → Black Flag / fleet operations → project-scoped administration. Admiral is singular by default and governs Dark Sky, Black Flag, and fleet standards. Captain remains singular strategic/mission command. Delegation occurs only by explicit owner discretion.
 
 The Admiral's Deck is currently a provisional testing surface reached upward from Captain's Quarters through Admiral's Gate. It uses a distinct Admiral credential contract even while temporarily accepting the same `19613` value as Captain's Quarters. The deck returns to Captain's Quarters, preserving the hierarchy.
+
+
+## 6.3.0 — Ascension / command threshold contract
+- Authority hierarchy remains Admiral > Captain > Black Flag operations > project-scoped authority.
+- Captain's Helm is the proving ground for Fleet Readiness, Visual Forge, Workshop, Blueprint and controlled ascent to Admiral's Gate.
+- Captain and Admiral command entrances may use theatrical transitions, but repeat entries are shortened and reduced-motion preferences remain authoritative.
+- Admiral's Deck offers Ceremonial and Professional presentation modes over the same governance/authority state.
+- Visual capability proven at Captain or Admiral level may later be promoted explicitly into reusable fleet capability; no automatic cross-project promotion is allowed.

@@ -1,3 +1,13 @@
+# Dark Sky 6.3.0 — Ascension Watch
+
+- Replaces the lower Captain command band with a persistent Captain's Helm rail; working, future, trial and unavailable functions remain visible and intentional.
+- Adds live Fleet Readiness at the Captain's Helm so the path toward Admiral is proven through command.
+- Restores a short theatrical repeat entrance for Captain's Quarters while preserving the fuller first-session entrance and reduced-motion support.
+- Strengthens Admiral's Gate with a ceremonial first ascent and shortened repeat entry.
+- Adds Admiral's Deck Ceremonial mode (default) plus Professional mode with a persistent preference; modes do not change authority or fleet data.
+- Keeps Visual Forge available to both Captain and Admiral at their respective authority layers.
+- Preserves Black Flag 5615, Project Admin 4353, Captain 19613, temporary Admiral 19613, unique Client Preview PINs, isolation, recovery and test-contact safety.
+
 # Dark Sky 6.2.0 — Foundry
 
 - Added Visual Command Forge to Captain's Desk.

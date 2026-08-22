@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "6.2.0",
+  "build": "6.3.0",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -44,11 +44,11 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Upper Deck Trial",
-  "version": "6.2.0",
-  "releaseName": "Upper Deck Trial",
+  "release_name": "Ascension Watch",
+  "version": "6.3.0",
+  "releaseName": "Ascension Watch",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "admirals-gate-admirals-deck-trial-hierarchy-and-fleet-readiness",
+  "release_focus": "captain-helm-ceremonial-thresholds-admirals-deck-cinematic-professional-modes",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",
@@ -58,7 +58,7 @@
   },
   "capabilities": {
     "visual_command_forge": {
-      "captain": "ready-blueprint",
+      "captain": "ready-blueprint-at-helm",
       "admiral": "ready-governance-blueprint",
       "generative_execution": "managed-backend-future"
     }

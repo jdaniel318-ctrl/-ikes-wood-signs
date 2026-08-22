@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "6.2.0",
-  "release": "Upper Deck Trial",
+  "build": "6.3.0",
+  "release": "Ascension Watch",
   "generatedAt": "2026-08-22",
   "checks": {
     "build_version": true,
@@ -12,11 +12,11 @@
     "contact_guard": true,
     "admiral_gate_runtime": true,
     "recovery_snapshot": true,
-    "sw_cache_610": true,
-    "manifest_610": true,
     "no_duplicate_ids": true,
     "no_missing_local_refs": true,
-    "assets_media_only": true
+    "assets_media_only": true,
+    "sw_cache_630": true,
+    "manifest_630": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],

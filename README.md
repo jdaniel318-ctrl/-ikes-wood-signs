@@ -1,3 +1,9 @@
+# Dark Sky 6.3.0 — Ascension Watch
+
+Captain/Admiral command hardening release. Captain tools move from the lower overlay band into a persistent Captain's Helm rail; Fleet Readiness is now provable from the Helm; Captain and Admiral thresholds regain short theatrical transitions; and Admiral's Deck adds Ceremonial and Professional modes while remaining explicitly provisional.
+
+The established authority spine remains unchanged: Project Admin 4353, Black Flag 5615, Captain 19613, Admiral 19613 temporarily, and Client Preview unique per invite.
+
 # Dark Sky 6.2.0 — Foundry
 
 Visual Command Forge release. Captain and Admiral now share a real visual-to-blueprint creation capability while preserving separate authority and fleet isolation.

@@ -103,8 +103,11 @@
     // a tax on every Captain navigation round-trip. Subsequent entries in the
     // same browser session become interactive immediately.
     if (seen) {
-      entry?.classList.remove('captain-entry-play');
-      quarters?.classList.add('captain-entry-complete');
+      quarters?.classList.remove('captain-entry-complete');
+      entry?.classList.remove('captain-entry-play','captain-entry-repeat');
+      if (entry) void entry.offsetWidth;
+      entry?.classList.add('captain-entry-repeat');
+      window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 620);
       return;
     }
 
@@ -359,9 +362,10 @@
     deck.setAttribute('aria-labelledby','admiralDeckTitle');
     deck.innerHTML=`
       <div class="admiral-deck-shell">
+        <div class="admiral-deck-atmosphere" aria-hidden="true"><i></i><i></i><i></i></div>
         <header class="admiral-deck-head">
           <div><small>TRIAL COMMAND • FLEET GOVERNANCE</small><h2 id="admiralDeckTitle">Admiral's Deck</h2><p>Above Captain command. Governs Dark Sky, Black Flag and fleet standards.</p></div>
-          <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckReturnBtn" type="button">← RETURN TO CAPTAIN'S QUARTERS</button></div>
+          <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckModeBtn" type="button" aria-pressed="false">PROFESSIONAL MODE</button><button id="admiralDeckReturnBtn" type="button">← RETURN TO CAPTAIN'S QUARTERS</button></div>
         </header>
         <main class="admiral-deck-grid">
           <section class="admiral-deck-hero"><small>THE HIGHER WATCH</small><h3>Govern the platform. Protect the fleet.</h3><p>The Captain commands the mission. The Admiral sets the standards that Dark Sky, Black Flag and every vessel must obey.</p><div class="admiral-scope"><span>DARK SKY</span><span>BLACK FLAG</span><span>FLEET</span></div></section>
@@ -377,11 +381,23 @@
     const returnToCaptain=()=>{hide('admiralDeck');closeGate();show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
     byId('admiralGateReturnBtn').onclick=closeGate;
     byId('admiralDeckReturnBtn').onclick=returnToCaptain;
+    byId('admiralDeckModeBtn').onclick=()=>{
+      const professional=deck.dataset.mode==='professional';
+      deck.dataset.mode=professional?'ceremonial':'professional';
+      const btn=byId('admiralDeckModeBtn');
+      if(btn){btn.setAttribute('aria-pressed',String(!professional));btn.textContent=professional?'PROFESSIONAL MODE':'CEREMONIAL MODE';}
+      try{localStorage.setItem('darkSkyAdmiralDeckMode',deck.dataset.mode);}catch(_){ }
+    };
     byId('admiralUnlockBtn').onclick=async()=>{
       const input=byId('admiralPinInput'),error=byId('admiralPinError');
       if(String(input?.value||'').trim()!==ADMIRAL_PIN){if(error)error.textContent='Admiral access denied.';if(input){input.value='';input.focus();}return;}
       if(error)error.textContent='';hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');show('admiralDeck');
-      deck.classList.remove('admiral-deck-enter');void deck.offsetWidth;deck.classList.add('admiral-deck-enter');
+      let savedMode='ceremonial';try{savedMode=localStorage.getItem('darkSkyAdmiralDeckMode')||'ceremonial';}catch(_){ }
+      deck.dataset.mode=savedMode==='professional'?'professional':'ceremonial';
+      const modeBtn=byId('admiralDeckModeBtn');if(modeBtn){const pro=deck.dataset.mode==='professional';modeBtn.setAttribute('aria-pressed',String(pro));modeBtn.textContent=pro?'CEREMONIAL MODE':'PROFESSIONAL MODE';}
+      deck.classList.remove('admiral-deck-enter','admiral-deck-enter-repeat');void deck.offsetWidth;
+      let seenDeck=false;try{seenDeck=sessionStorage.getItem('darkSkyAdmiralTrialSeen')==='1';}catch(_){ }
+      deck.classList.add(seenDeck?'admiral-deck-enter-repeat':'admiral-deck-enter');
       try{sessionStorage.setItem('darkSkyAdmiralTrialSeen','1');}catch(_){ }
     };
     byId('admiralPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')byId('admiralUnlockBtn').click();});
@@ -415,8 +431,11 @@
     const gate=byId('admiralGateOverlay');
     const input=byId('admiralPinInput');
     gate?.classList.remove('hidden');
-    gate?.classList.remove('admiral-gate-enter');void gate?.offsetWidth;gate?.classList.add('admiral-gate-enter');
-    if(input){input.value='';requestAnimationFrame(()=>input.focus());}
+    gate?.classList.remove('admiral-gate-enter','admiral-gate-repeat');void gate?.offsetWidth;
+    let seen=false;try{seen=sessionStorage.getItem('darkSkyAdmiralGateSeen')==='1';}catch(_){ }
+    gate?.classList.add(seen?'admiral-gate-repeat':'admiral-gate-enter');
+    try{sessionStorage.setItem('darkSkyAdmiralGateSeen','1');}catch(_){ }
+    if(input){input.value='';window.setTimeout(()=>input.focus(),seen?220:950);}
   }
 
   function ensureVisualForge(){
@@ -504,14 +523,15 @@
     if(desk)return desk;
     desk=document.createElement('nav');
     desk.id='captainDeskIndex';
-    desk.className='cq-desk-index';
-    desk.setAttribute('aria-label',"Captain's Desk");
+    desk.className='cq-desk-index cq-command-rail';
+    desk.setAttribute('aria-label',"Captain's Helm and command tools");
     desk.innerHTML=`
-      <div class="cq-desk-index-title"><small>CAPTAIN'S DESK</small><strong>Command tools at hand</strong><span><i></i> READY NOW <b></b> FUTURE</span></div>
+      <div class="cq-desk-index-title cq-helm-title"><small>CAPTAIN'S HELM</small><strong>Command & proving ground</strong><span id="captainHelmReadiness"><i></i> FLEET READINESS • NOT RUN</span></div>
       <section class="cq-desk-group" aria-label="Command tools"><h4>COMMAND</h4>
         <button type="button" data-cq-desk-route="fleet" data-cq-desk-state="active"><span>✥</span><b>Fleet Map</b><small>Chart the fleet</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="watch" data-cq-desk-state="active"><span>◉</span><b>First Mate</b><small>Signals & counsel</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="log" data-cq-desk-state="active"><span>✒</span><b>Captain's Log</b><small>Orders & history</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="readiness" data-cq-desk-state="active" class="cq-readiness-station"><span>✦</span><b>Fleet Readiness</b><small>Prove the hull</small><em>READY</em></button>
       </section>
       <section class="cq-desk-group" aria-label="Build tools"><h4>BUILD</h4>
         <button type="button" data-cq-desk-route="workshop" data-cq-desk-state="active"><span>⚒</span><b>Workshop</b><small>Ideas & experiments</small><em>READY</em></button>
@@ -519,13 +539,13 @@
         <button type="button" data-cq-desk-route="shipyard" data-cq-desk-state="active"><span>⚓</span><b>Shipyard</b><small>Future vessels</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="blueprint" data-cq-desk-state="active"><span>⌘</span><b>Blueprint</b><small>Architecture map</small><em>READY</em></button>
       </section>
-      <section class="cq-desk-group cq-desk-ascend" aria-label="Higher command"><h4>ASCEND</h4>
-        <button type="button" data-cq-desk-route="admiral" data-cq-desk-state="active" class="cq-admiral-gate-station"><span>⚓</span><b>Admiral's Gate</b><small>Trial higher command</small><em>TRIAL</em></button>
-      </section>
       <section class="cq-desk-group" aria-label="Explore tools"><h4>EXPLORE</h4>
         <button type="button" data-cq-desk-route="spyglass" data-cq-desk-state="active"><span>⌖</span><b>Spyglass</b><small>Fleet intelligence</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="test" data-cq-desk-state="active"><span>◇</span><b>Test Access</b><small>Session controls</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="trade" data-cq-desk-state="future" aria-disabled="true"><span>☸</span><b>Trade Routes</b><small>Route planning</small><em>FUTURE</em></button>
+      </section>
+      <section class="cq-desk-group cq-desk-ascend" aria-label="Higher command"><h4>ASCEND</h4>
+        <button type="button" data-cq-desk-route="admiral" data-cq-desk-state="active" class="cq-admiral-gate-station"><span>⚓</span><b>Admiral's Gate</b><small>Trial higher command</small><em>TRIAL</em></button>
       </section>`;
 
     const targets={
@@ -538,11 +558,12 @@
       spyglass:'captainSpyglassBtn',
       test:'captainTestAccessDeckBtn',
       admiral:'__admiralGate__',
-      forge:'__visualForgeCaptain__'
+      forge:'__visualForgeCaptain__',
+      readiness:'__fleetReadiness__'
     };
     desk.querySelectorAll('[data-cq-desk-state="active"]').forEach(btn=>{
       const target=targets[btn.dataset.cqDeskRoute];
-      if(target==='__admiralGate__' || target==='__visualForgeCaptain__') return;
+      if(target==='__admiralGate__' || target==='__visualForgeCaptain__' || target==='__fleetReadiness__') return;
       if(!target || !byId(target)){
         btn.dataset.cqDeskState='unavailable';
         btn.setAttribute('aria-disabled','true');
@@ -562,6 +583,18 @@
         return;
       }
       const target=targets[btn.dataset.cqDeskRoute];
+      if(btn.dataset.cqDeskRoute==='readiness'){
+        const chip=byId('captainHelmReadiness');
+        if(chip) chip.innerHTML='<i></i> FLEET READINESS • CHECKING';
+        Promise.resolve(window.DarkSkyAdmiralReadiness?.run?.()).then(report=>{
+          if(!report) throw new Error('Fleet Readiness unavailable');
+          const label=report.pass?(report.warnings?'WATCH':'CLEAR'):'HOLD';
+          if(chip){chip.dataset.state=label.toLowerCase();chip.innerHTML=`<i></i> FLEET READINESS • ${label}`;}
+          window.__lastAdmiralReadinessReport=report;
+          showCaptainDeskNotice(report.pass?(report.warnings?`Fleet readiness clear with ${report.warnings} watch item(s).`:'Fleet readiness clear. Hull proven for this check.'):`Hold in harbor: ${report.criticalFailures} critical readiness check(s).`,report.pass?(report.warnings?'future':'ready'):'unavailable');
+        }).catch(err=>{if(chip){chip.dataset.state='hold';chip.innerHTML='<i></i> FLEET READINESS • UNAVAILABLE';}showCaptainDeskNotice(String(err?.message||err),'unavailable');});
+        return;
+      }
       if(target==='__admiralGate__'){openAdmiralGate();return;}
       if(target==='__visualForgeCaptain__'){openVisualForge('captain');return;}
       const targetEl=byId(target);
