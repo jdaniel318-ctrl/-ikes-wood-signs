@@ -1,12 +1,20 @@
-# Dark Sky 6.0.0 — Drydock Reconciliation
+# 6.0.1 True North Captain Regression Gate
+
+- Captain runtime restored from the known-good 5.7.9 Quarterdeck implementation.
+- Captain production asset is `assets/captains_quarters_command_center_v578.png`.
+- `captains_quarters_cinematic_v2953.jpg` retained only because the proven 5.7.9 stylesheet references it.
+- No 5.8.x Helm/canonical Captain asset or render path is active.
+- Black Flag 5615, Project Admin 4353, Captain’s Quarters 19613, Client Preview unique PIN contracts are unchanged.
+
+# Dark Sky 6.0.1 — Drydock Reconciliation
 
 Canonical repository/root reconciliation release. Captain’s Quarters now uses one canonical production environment asset (`assets/captains_quarters_canonical.png`) across all runtime and fallback paths. The deployable `assets/` directory contains media only; application/runtime files remain at repository root. Client Preview isolation, Black Flag, project routing, authority contracts, and cloud-readiness contracts are preserved.
 
-# 6.0.0 Captain regression note
+# 6.0.1 Captain regression note
 
 Scope: Captain's Quarters environment asset only. Authentication, Engine routing, Client Preview isolation and project runtime remain unchanged. The Helm UI no longer depends on or displays the old cabin artwork.
 
-# 6.0.0 Helm regression note
+# 6.0.1 Helm regression note
 
 - Captain’s Quarters only: clean room asset + responsive real UI.
 - No Black Flag authentication, Client Preview isolation, project admin, routing, or customer experience logic changed.

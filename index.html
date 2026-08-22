@@ -12,7 +12,7 @@
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'dom-helpers-ready';
-    // 6.0.0 Client Preview pre-paint bulkhead. Detect a sealed preview link before
+    // 6.0.1 Client Preview pre-paint bulkhead. Detect a sealed preview link before
     // the body or legacy project DOM can paint. This prevents the default Ike shell
     // from appearing for even one frame while the standalone preview runtime boots.
     if(String(location.hash||'').startsWith('#client-preview=')){
@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=6.0.0" />
+  <link rel="stylesheet" href="styles.css?v=6.0.1" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -110,61 +110,6 @@
       <div class="cq-lantern cq-lantern-left"></div><div class="cq-lantern cq-lantern-right"></div>
       <div class="captain-entry-flash"></div>
     </div>
-    <section id="captainHelm" class="cq-helm" aria-label="Captain's Quarters command room">
-      <div class="cq-helm-bg" aria-hidden="true"></div>
-      <header class="cq-helm-header">
-        <div class="cq-helm-brand">
-          <span class="cq-helm-mark" aria-hidden="true">⚓</span>
-          <div><small>CAPTAIN AUTHORIZED • PRIVATE COMMAND</small><h2>Captain's Quarters</h2><p>Where the future fleet is charted.</p></div>
-        </div>
-        <div class="cq-helm-status" aria-live="polite"><span>FLEET</span><strong id="cqHelmFleetCount">—</strong><span>SAILING</span><strong id="cqHelmSailingCount">—</strong><span>SIGNALS</span><strong id="cqHelmSignalCount">—</strong></div>
-        <button id="cqHelmReturn" class="cq-helm-return" type="button">← RETURN TO ENGINE</button>
-      </header>
-
-      <div class="cq-helm-body">
-        <nav class="cq-helm-nav" aria-label="Captain navigation">
-          <button id="cqHelmCommand" class="active" type="button"><span>✦</span><strong>Command</strong><small>Overview</small></button>
-          <button id="cqHelmFleet" type="button"><span>⚓</span><strong>Fleet</strong><small>Live chart</small></button>
-          <button id="cqHelmSignals" type="button"><span>⚑</span><strong>Signals</strong><small>First Mate</small></button>
-          <button id="cqHelmWorkshop" type="button"><span>⚒</span><strong>Workshop</strong><small>Build ideas</small></button>
-          <button id="cqHelmBlueprint" type="button"><span>⌘</span><strong>Blueprint</strong><small>Architecture</small></button>
-          <button id="cqHelmLog" type="button"><span>✒</span><strong>Log</strong><small>History</small></button>
-        </nav>
-
-        <main class="cq-helm-scene">
-          <div class="cq-helm-copy">
-            <small>STRATEGIC COMMAND • LONG-RANGE PLANNING</small>
-            <h3>Charting the Future Fleet</h3>
-            <p>Chart. Decide. Build.</p>
-            <div class="cq-helm-actions">
-              <button id="cqHelmMap" type="button">OPEN FLEET MAP</button>
-              <button id="cqHelmFuture" type="button">FUTURE SHIPS</button>
-            </div>
-          </div>
-          <button id="cqHelmChartHotspot" class="cq-helm-hotspot map" type="button" aria-label="Open Fleet Strategy"><span></span><b>Fleet Strategy</b></button>
-          <button id="cqHelmGlobeHotspot" class="cq-helm-hotspot globe" type="button" aria-label="Open Fleet Map"><span></span><b>Fleet Map</b></button>
-          <button id="cqHelmClockHotspot" class="cq-helm-hotspot clock" type="button" aria-label="Open Roadmap and Releases"><span></span><b>Roadmap</b></button>
-        </main>
-
-        <aside class="cq-helm-intel" aria-label="Live Captain intelligence">
-          <div class="cq-helm-intel-head"><small>LIVE CAPTAIN INTELLIGENCE</small><strong id="cqHelmIntelHeadline">Reading the horizon…</strong></div>
-          <article><span>VESSELS</span><strong id="cqHelmVessels">—</strong><small>Known to Dark Sky</small></article>
-          <article><span>SAILING</span><strong id="cqHelmSailing">—</strong><small>Active outposts</small></article>
-          <article><span>SEA TRIAL</span><strong id="cqHelmTrials">—</strong><small>Testing now</small></article>
-          <article class="signal"><span>SIGNALS</span><strong id="cqHelmSignalsCount">—</strong><small>Need your eye</small></article>
-          <button id="cqHelmIntelOpen" type="button">OPEN FIRST MATE'S WATCH</button>
-        </aside>
-      </div>
-
-      <footer class="cq-helm-quickbar" aria-label="Captain quick actions">
-        <button id="cqHelmLaunch" type="button"><span>⚓</span><strong>Active Fleet</strong><small>Review vessels and outposts</small></button>
-        <button id="cqHelmShipyard" type="button"><span>⚒</span><strong>Captain's Workshop</strong><small>Resume future ships</small></button>
-        <button id="cqHelmExpansion" type="button"><span>✧</span><strong>Plot Expansion</strong><small>Explore new headings</small></button>
-        <button id="cqHelmQuickLog" type="button"><span>✒</span><strong>Captain's Log</strong><small>Orders, notes and history</small></button>
-      </footer>
-      <div class="cq-helm-mobile-note">Captain's Quarters is optimized for landscape command.</div>
-    </section>
-
     <div class="cq-chamber-world" aria-hidden="true">
       <div class="cq-cabin-sky"><span class="cq-room-lightning rl1"></span><span class="cq-room-lightning rl2"></span></div>
       <div class="cq-room-window rw-left"><div class="cq-room-moon"></div><div class="cq-room-sea"></div><div class="cq-room-ship">⛵</div></div>
@@ -1352,11 +1297,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=6.0.0"></script>
-  <script src="platform_v4.js?v=6.0.0"></script>
-  <script src="platform_identity.js?v=6.0.0"></script>
-  <script src="app.js?v=6.0.0"></script>
-  <script src="captain.js?v=6.0.0"></script>
+  <script src="platform_core.js?v=6.0.1"></script>
+  <script src="platform_v4.js?v=6.0.1"></script>
+  <script src="platform_identity.js?v=6.0.1"></script>
+  <script src="app.js?v=6.0.1"></script>
+  <script src="captain.js?v=6.0.1"></script>
 
 </body>
 </html>

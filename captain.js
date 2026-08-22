@@ -22,7 +22,6 @@
       hide('captainQuartersGate');
       show('captainQuarters');
       refreshCaptainWatch();
-      refreshCaptainHelm();
       clearHash();
       document.body.classList.add('captain-modal-open','captain-authorized');
       playEntrance();
@@ -81,7 +80,6 @@
     hide('captainQuartersGate');
     show('captainQuarters');
     refreshCaptainWatch();
-    refreshCaptainHelm();
     clearHash();
     document.body.classList.add('captain-modal-open', 'captain-authorized');
     playEntrance();
@@ -265,66 +263,27 @@
     layer.classList.toggle('attention',attention>0);
   }
 
-  function refreshCaptainHelm(){
-    const fleet=fleetSnapshot();
-    const active=fleet.reduce((n,v)=>n+(Number(v.activeOutposts)||0),0);
-    const attention=fleet.reduce((n,v)=>n+(Number(v.attentionOutposts)||0),0);
-    const trials=fleet.reduce((n,v)=>n+(v.outposts||[]).filter(o=>o.state==='sea_trial').length,0);
-    const set=(id,value)=>{ const el=byId(id); if(el)el.textContent=String(value); };
-    ['cqHelmFleetCount','cqHelmVessels'].forEach(id=>set(id,fleet.length));
-    ['cqHelmSailingCount','cqHelmSailing'].forEach(id=>set(id,active));
-    ['cqHelmSignalCount','cqHelmSignalsCount'].forEach(id=>set(id,attention));
-    set('cqHelmTrials',trials);
-    const headline=byId('cqHelmIntelHeadline');
-    if(headline) headline.textContent=attention?`${attention} signal${attention===1?'':'s'} require your eye`:(fleet.length?'Waters are steady':'Fleet data standing by');
-    byId('cqHelmSignalsCount')?.closest('article')?.classList.toggle('attention',attention>0);
-  }
-
-  function triggerCaptain(id){
-    const target=byId(id); if(!target)return;
-    target.click();
-  }
-
   function prepareCinematicCabin(){
     const room=document.getElementById('captainQuarters');
     if(!room)return;
-
-    // 6.0.0 HELM FIX: Captain's Quarters mode must never depend on an image
-    // load event. 5.8.0 could fall back to the legacy cabin whenever Safari
-    // had not completed the clean-room asset request, which made the old UI
-    // reappear even though the new Helm markup was present.
-    room.classList.add('cinematic-cabin-ready');
-    room.classList.remove('cinematic-cabin-failed');
-    ensureChartroomLiveLayer();
-    refreshChartroomLive();
-    refreshCaptainHelm();
-
     const image=new Image();
     image.onload=()=>{
+      room.classList.add('cinematic-cabin-ready');
       room.classList.remove('cinematic-cabin-failed');
-      room.classList.add('cinematic-cabin-asset-ready');
+      ensureChartroomLiveLayer();
+      refreshChartroomLive();
     };
     image.onerror=()=>{
-      // Keep the responsive Helm interface active and fall back to the
-      // existing Captain cinematic asset rather than resurrecting legacy UI.
+      // Deliberate fallback: keep the known-good v2.9.51 cabin fully usable.
+      room.classList.remove('cinematic-cabin-ready');
       room.classList.add('cinematic-cabin-failed');
-      const bg=document.querySelector('#captainQuarters .cq-helm-bg');
-      if(bg) bg.style.backgroundImage="linear-gradient(90deg,rgba(2,9,12,.78) 0 13%,rgba(2,9,12,.18) 27% 70%,rgba(2,9,12,.76) 88% 100%),linear-gradient(180deg,rgba(2,7,10,.42),transparent 28%,rgba(2,7,10,.52)),url('assets/captains_quarters_canonical.png')";
     };
-    image.src='assets/captains_quarters_canonical.png?v=6.0.0';
+    image.src='assets/captains_quarters_command_center_v578.png';
   }
 
   function bind() {
     document.documentElement.classList.add('captain-controller-ready');
     prepareCinematicCabin();
-    const helmBindings={
-      cqHelmReturn:'captainExitBtn',cqHelmFleet:'captainDarkSkyChartBtn',cqHelmMap:'captainDarkSkyChartBtn',cqHelmGlobeHotspot:'captainDarkSkyChartBtn',cqHelmLaunch:'captainDarkSkyChartBtn',
-      cqHelmSignals:'captainWatchStrip',cqHelmIntelOpen:'captainWatchStrip',
-      cqHelmWorkshop:'captainCargoDoor',cqHelmShipyard:'captainShipyardLaunch',cqHelmFuture:'captainShipyardLaunch',cqHelmExpansion:'captainCargoDoor',
-      cqHelmBlueprint:'captainBlueprintDeskBtn',cqHelmClockHotspot:'captainBlueprintDeskBtn',
-      cqHelmLog:'captainLogDoor',cqHelmQuickLog:'captainLogDoor',cqHelmChartHotspot:'captainDarkSkyChartBtn'
-    };
-    Object.entries(helmBindings).forEach(([source,target])=>byId(source)?.addEventListener('click',event=>{event.preventDefault();triggerCaptain(target);}));
 
     // Direct listeners are safe here because this file loads at the very end of BODY.
     byId('captainModeAccessBtn')?.addEventListener('click', (event) => {

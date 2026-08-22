@@ -4173,7 +4173,7 @@ html.captain-controller-ready #captainQuartersGate.hidden{
    ========================================================== */
 
 #captainQuarters.cinematic-cabin-ready{
-  background:#090604 url("assets/captains_quarters_canonical.png") center center/cover no-repeat!important;
+  background:#090604 url("assets/captains_quarters_cinematic_v2953.jpg") center center/cover no-repeat!important;
   overflow:hidden!important;
   isolation:isolate;
 }
@@ -12983,7 +12983,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
    No Black Flag, project, customer, or Client Preview styling is changed here.
    ========================================================================== */
 #captainQuarters.cinematic-cabin-ready{
-  background:#071014 url("assets/captains_quarters_canonical.png") center center/cover no-repeat!important;
+  background:#071014 url("assets/captains_quarters_command_center_v578.png") center center/cover no-repeat!important;
   color:#ead7a2!important;
 }
 
@@ -13113,7 +13113,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 
 
 /* ========================================================================== 
-   v5.7.9 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
+   v6.0.1 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
    Captain-only refinement over Chartroom. The cinematic art remains the skin;
    real Captain intelligence and controls are separate, readable DOM layers.
    ========================================================================== */
@@ -13185,42 +13185,3 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
   #captainQuarters.cinematic-cabin-ready #captainExitBtn{width:42%!important;height:48px!important;right:3%!important;top:max(10px,env(safe-area-inset-top))!important;font-size:10px!important}
 }
 @media (prefers-reduced-motion:reduce){#captainQuarters.cinematic-cabin-ready *{transition:none!important;animation:none!important}}
-
-
-/* ==========================================================
-   Dark Sky 6.0.0 — CAPTAIN'S QUARTERS: HELM
-   Production UI is responsive HTML/CSS over a clean cinematic room asset.
-   The generated concept dashboard remains design reference only.
-   Scoped to Captain's Quarters; Black Flag and project surfaces are untouched.
-   ========================================================== */
-#captainQuarters.cinematic-cabin-ready{inset:0!important;padding:0!important;overflow:hidden!important;background:#03080b!important}
-#captainQuarters.cinematic-cabin-ready>.cq-chamber-world,
-#captainQuarters.cinematic-cabin-ready>.cq-cinematic-hint,
-#captainQuarters.cinematic-cabin-ready>.cq-interactive-map,
-#captainQuarters.cinematic-cabin-ready>.cq-blueprint-roll,
-#captainQuarters.cinematic-cabin-ready>.captain-chamber,
-#captainQuarters.cinematic-cabin-ready>.captain-command-door-rail,
-#captainQuarters.cinematic-cabin-ready>.cq-chartroom-live{display:none!important}
-#captainQuarters.cinematic-cabin-ready .cq-helm{display:grid!important}
-.cq-helm{display:none;position:absolute;inset:0;z-index:126;grid-template-rows:auto minmax(0,1fr) auto;background:#061015;color:#ead9aa;overflow:hidden;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.cq-helm-bg{position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(2,9,12,.72) 0 12%,rgba(2,9,12,.08) 25% 72%,rgba(2,9,12,.70) 89% 100%),linear-gradient(180deg,rgba(2,7,10,.26),transparent 34%,rgba(2,7,10,.40)),url('assets/captains_quarters_canonical.png');background-size:cover;background-position:center center;filter:saturate(1.02) contrast(1.04) brightness(.92);transform:scale(1.002);pointer-events:none}
-.cq-helm>*:not(.cq-helm-bg){position:relative;z-index:1}
-.cq-helm-header{min-height:72px;display:grid;grid-template-columns:minmax(300px,1fr) auto auto;align-items:center;gap:18px;padding:max(10px,env(safe-area-inset-top)) max(18px,calc(18px + env(safe-area-inset-right))) 10px max(18px,calc(18px + env(safe-area-inset-left)));background:linear-gradient(180deg,rgba(4,13,18,.92),rgba(4,13,18,.70));border-bottom:1px solid rgba(201,157,75,.46);box-shadow:0 8px 24px rgba(0,0,0,.32)}
-.cq-helm-brand{display:flex;align-items:center;gap:12px;min-width:0}.cq-helm-mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #a77b35;border-radius:50%;color:#dfbd75;background:#0b1b21;box-shadow:inset 0 0 18px rgba(212,159,64,.08)}
-.cq-helm-brand small,.cq-helm-intel-head small{display:block;color:#8eb4ba;font-size:9px;font-weight:900;letter-spacing:.18em}.cq-helm-brand h2{margin:1px 0 0;font:500 clamp(24px,2.5vw,38px)/1 Georgia,serif;color:#e4c37d;white-space:nowrap}.cq-helm-brand p{margin:4px 0 0;color:#b8aa8d;font-size:11px}
-.cq-helm-status{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid rgba(172,128,55,.4);border-radius:12px;background:rgba(5,17,23,.76);backdrop-filter:blur(10px)}.cq-helm-status span{font-size:7px;letter-spacing:.12em;color:#8ca4a7}.cq-helm-status strong{font:500 18px Georgia,serif;color:#e4c37d;margin-right:5px}
-.cq-helm-return{min-height:44px;padding:0 17px;border:1px solid #b98d45;border-radius:12px;background:linear-gradient(180deg,#18303a,#0d1f27);color:#f0d79c;font-weight:900;letter-spacing:.05em;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.28)}
-.cq-helm-body{min-height:0;display:grid;grid-template-columns:clamp(118px,12vw,170px) minmax(0,1fr) clamp(200px,21vw,285px);gap:12px;padding:12px max(14px,calc(14px + env(safe-area-inset-right))) 10px max(14px,calc(14px + env(safe-area-inset-left)))}
-.cq-helm-nav{display:flex;min-height:0;flex-direction:column;justify-content:center;gap:7px}.cq-helm-nav button{min-height:54px;display:grid;grid-template-columns:32px 1fr;grid-template-rows:auto auto;align-items:center;text-align:left;padding:7px 10px;border:1px solid rgba(177,135,66,.4);border-radius:10px;background:rgba(5,16,21,.82);color:#d8bc7e;cursor:pointer;backdrop-filter:blur(8px)}.cq-helm-nav button span{grid-row:1/3;font-size:18px;color:#c99a49}.cq-helm-nav button strong{font:600 14px Georgia,serif}.cq-helm-nav button small{font-size:8px;color:#8ba4a8;letter-spacing:.05em}.cq-helm-nav button.active,.cq-helm-nav button:hover,.cq-helm-nav button:focus-visible{border-color:#d0a45d;background:rgba(28,37,29,.92);box-shadow:inset 3px 0 0 #d1a353,0 0 18px rgba(211,166,80,.14);outline:none}
-.cq-helm-scene{position:relative;min-height:0;border:1px solid rgba(185,142,69,.44);border-radius:18px;overflow:hidden;background:linear-gradient(180deg,rgba(5,12,15,.08),rgba(5,12,15,.28));box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 14px 34px rgba(0,0,0,.26)}
-.cq-helm-copy{position:absolute;left:5%;top:7%;max-width:62%;padding:16px 19px;border-left:2px solid #c99a4b;background:linear-gradient(90deg,rgba(3,12,17,.82),rgba(3,12,17,.38),transparent);text-shadow:0 2px 12px #000}.cq-helm-copy small{font-size:8px;font-weight:900;letter-spacing:.2em;color:#98bcc2}.cq-helm-copy h3{margin:5px 0 3px;font:500 clamp(28px,3.5vw,54px)/.98 Georgia,serif;color:#e6c782}.cq-helm-copy p{margin:0;color:#d6c39a;font-weight:800;letter-spacing:.16em;font-size:10px}.cq-helm-actions{display:flex;gap:8px;margin-top:13px}.cq-helm-actions button{min-height:40px;padding:0 14px;border:1px solid #b98b42;border-radius:10px;background:rgba(7,26,33,.9);color:#f0d498;font-weight:900;font-size:9px;letter-spacing:.08em;cursor:pointer}
-.cq-helm-hotspot{position:absolute;border:0;background:transparent;color:#edcf8a;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;text-shadow:0 2px 7px #000}.cq-helm-hotspot span{width:17px;height:17px;border:2px solid #e2b960;border-radius:50%;box-shadow:0 0 0 6px rgba(221,173,80,.12),0 0 18px rgba(241,193,92,.55);background:rgba(9,26,28,.88)}.cq-helm-hotspot b{padding:4px 7px;border:1px solid rgba(198,151,70,.45);border-radius:999px;background:rgba(5,16,20,.78);font:600 10px Georgia,serif;white-space:nowrap}.cq-helm-hotspot.map{left:43%;bottom:19%}.cq-helm-hotspot.globe{right:8%;bottom:9%}.cq-helm-hotspot.clock{right:10%;top:26%}
-.cq-helm-intel{min-height:0;display:grid;grid-template-rows:auto repeat(4,minmax(58px,1fr)) auto;gap:7px;padding:11px;border:1px solid rgba(184,139,66,.5);border-radius:16px;background:rgba(4,15,20,.82);backdrop-filter:blur(12px);box-shadow:0 12px 30px rgba(0,0,0,.28)}.cq-helm-intel-head{padding:4px 4px 7px;border-bottom:1px solid rgba(187,143,66,.25)}.cq-helm-intel-head strong{display:block;margin-top:5px;color:#e6cf98;font:500 15px Georgia,serif}.cq-helm-intel article{display:grid;grid-template-columns:1fr auto;align-content:center;padding:9px 10px;border:1px solid rgba(129,165,170,.22);border-radius:10px;background:rgba(11,31,38,.78)}.cq-helm-intel article span{font-size:7px;font-weight:900;letter-spacing:.14em;color:#9db8bb}.cq-helm-intel article strong{grid-row:1/3;grid-column:2;font:500 26px Georgia,serif;color:#e4c47f}.cq-helm-intel article small{margin-top:3px;color:#81979a;font-size:8px}.cq-helm-intel article.signal.attention{border-color:rgba(211,101,66,.6);box-shadow:inset 3px 0 0 rgba(211,101,66,.75)}.cq-helm-intel>button{min-height:40px;border:1px solid #a97d3b;border-radius:9px;background:#102832;color:#e7c77d;font-weight:900;font-size:8px;letter-spacing:.08em;cursor:pointer}
-.cq-helm-quickbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:8px max(14px,calc(14px + env(safe-area-inset-right))) max(10px,calc(8px + env(safe-area-inset-bottom))) max(14px,calc(14px + env(safe-area-inset-left)));background:linear-gradient(180deg,rgba(3,11,15,.7),rgba(3,11,15,.97));border-top:1px solid rgba(194,149,73,.35)}.cq-helm-quickbar button{min-height:62px;display:grid;grid-template-columns:38px 1fr;grid-template-rows:auto auto;align-items:center;text-align:left;padding:8px 12px;border:1px solid rgba(183,138,66,.42);border-radius:11px;background:rgba(8,24,30,.9);color:#ddc182;cursor:pointer}.cq-helm-quickbar span{grid-row:1/3;font-size:20px;color:#d2a453}.cq-helm-quickbar strong{font:600 13px Georgia,serif}.cq-helm-quickbar small{font-size:8px;color:#8fa4a6}.cq-helm-quickbar button:hover,.cq-helm-quickbar button:focus-visible{border-color:#d2a45b;outline:none;filter:brightness(1.08)}
-.cq-helm-mobile-note{display:none}
-#captainQuarters.cinematic-cabin-ready .captain-entry-sequence{z-index:400}
-#captainQuarters.cinematic-cabin-ready .cq-fleet-chart,#captainQuarters.cinematic-cabin-ready .cq-blueprint-overlay,#captainQuarters.cinematic-cabin-ready .cq-spyglass-panel,#captainQuarters.cinematic-cabin-ready .captain-test-access-gate,#captainQuarters.cinematic-cabin-ready #captainCommandWorkspace{z-index:500!important}
-@media(max-width:980px){.cq-helm-body{grid-template-columns:82px minmax(0,1fr) 190px}.cq-helm-nav button{grid-template-columns:1fr;grid-template-rows:auto auto auto;text-align:center;justify-items:center;min-height:52px;padding:5px}.cq-helm-nav button span{grid-row:auto}.cq-helm-nav button small{display:none}.cq-helm-status{display:none}.cq-helm-copy{max-width:74%}.cq-helm-intel{padding:8px}.cq-helm-intel article{padding:7px}.cq-helm-intel article strong{font-size:21px}}
-@media(max-height:720px){.cq-helm-header{min-height:58px;padding-top:7px;padding-bottom:7px}.cq-helm-brand p{display:none}.cq-helm-body{padding-top:7px;padding-bottom:6px}.cq-helm-nav{gap:5px}.cq-helm-nav button{min-height:44px}.cq-helm-quickbar{padding-top:6px;padding-bottom:6px}.cq-helm-quickbar button{min-height:50px}.cq-helm-copy{top:5%;padding-top:11px;padding-bottom:11px}.cq-helm-intel{gap:5px}.cq-helm-intel article{min-height:48px}}
-@media(max-width:700px) and (orientation:portrait){.cq-helm{grid-template-rows:auto 1fr}.cq-helm-header{grid-template-columns:1fr auto}.cq-helm-brand h2{font-size:22px}.cq-helm-brand p,.cq-helm-status{display:none}.cq-helm-body,.cq-helm-quickbar{display:none}.cq-helm-mobile-note{display:grid;place-items:center;margin:18px;padding:24px;border:1px solid rgba(199,152,69,.45);border-radius:18px;background:rgba(5,17,23,.9);color:#e3c57f;text-align:center;font:600 18px/1.4 Georgia,serif}.cq-helm-mobile-note:after{content:'Rotate your device to landscape to enter the command room.';display:block;margin-top:8px;color:#a9bdc0;font:600 12px/1.4 system-ui,sans-serif}.cq-helm-bg{background-position:48% center}}
-@media(prefers-reduced-motion:reduce){.cq-helm *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
