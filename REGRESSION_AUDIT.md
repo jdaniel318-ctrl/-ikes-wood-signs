@@ -1,12 +1,16 @@
-# 5.7.6 Ironclad Regression Gate
+# 5.7.8 — Chartroom regression note
+
+Captain's Quarters visual implementation is scoped to `#captainQuarters.cinematic-cabin-ready` and the Captain controller asset loader. Black Flag authentication, project isolation, Client Preview routing, project customer shells, and authority credentials are not modified by this visual pass.
+
+# 5.7.8 Ironclad Regression Gate
 
 - Engine PIN remains 5615.
 - Project Admin default/recovery remains 4353.
 - Captain's Quarters remains 19613.
 - Client Preview PIN remains unique per invite.
 - Black Flag gate DOM hooks from 5.7.3 remain present.
-- No authentication/routing logic change in 5.7.6.
-- Runtime/cache/manifest versions must all report 5.7.6.
+- No authentication/routing logic change in 5.7.8.
+- Runtime/cache/manifest versions must all report 5.7.8.
 
 # 5.7.3 Engine Entry Regression Gate
 
@@ -127,7 +131,7 @@ Checks required: Legacy Plumbing source assets are selected only for the Legacy 
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
 
-## 5.7.6 Client Preview pre-paint isolation
+## 5.7.8 Client Preview pre-paint isolation
 - PASS: `index.html` detects `#client-preview=` in the head before body paint and arms `client-preview-preflight`.
 - PASS: preflight CSS hides `#app`, Black Flag entry, Engine, Admin, Captain, test banner, and return controls until the Client Preview gate exists.
 - PASS: `init()` routes Client Preview before IndexedDB/openDb, migrations, fleet materialization, and normal project restoration.

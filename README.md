@@ -1,4 +1,4 @@
-# Dark Sky 5.7.6 — Ironclad
+# Dark Sky 5.7.8 — Ironclad
 
 Ironclad is a conservative stabilization build based on the proven 5.7.3 Engine-entry structure. It advances cache/version bookkeeping and login presentation without deleting gate DOM hooks or changing authentication/routing behavior.
 

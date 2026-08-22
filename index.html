@@ -12,7 +12,7 @@
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'dom-helpers-ready';
-    // 5.7.6 Client Preview pre-paint bulkhead. Detect a sealed preview link before
+    // 5.7.8 Client Preview pre-paint bulkhead. Detect a sealed preview link before
     // the body or legacy project DOM can paint. This prevents the default Ike shell
     // from appearing for even one frame while the standalone preview runtime boots.
     if(String(location.hash||'').startsWith('#client-preview=')){
@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.7.6" />
+  <link rel="stylesheet" href="styles.css?v=5.7.8" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -337,7 +337,7 @@
         <button id="captainLogDoor" class="captain-command-door log captain-log-hit-target" type="button" data-captain-command-door="log" aria-label="Open Captain's Log" title="Open Captain's Log"><span class="cq-rail-icon">✒</span><span><strong>CAPTAIN'S LOG</strong><small>Orders, Notes & History</small></span></button>
         <button id="captainBlueprintDoor" class="captain-command-door blueprint" type="button" data-captain-command-door="blueprint" aria-label="Open Ship's Blueprint"><span class="cq-rail-icon">⌘</span><span><strong>SHIP'S BLUEPRINT</strong><small>Understand the Flagship</small></span></button>
       </div>
-      <button id="captainExitBtn" class="captain-primary" type="button">EXIT PREVIEW</button>
+      <button id="captainExitBtn" class="captain-primary" type="button">RETURN TO ENGINE</button>
     </div>
   </div>
 
@@ -1297,11 +1297,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.7.6"></script>
-  <script src="platform_v4.js?v=5.7.6"></script>
-  <script src="platform_identity.js?v=5.7.6"></script>
-  <script src="app.js?v=5.7.6"></script>
-  <script src="captain.js?v=5.7.6"></script>
+  <script src="platform_core.js?v=5.7.8"></script>
+  <script src="platform_v4.js?v=5.7.8"></script>
+  <script src="platform_identity.js?v=5.7.8"></script>
+  <script src="app.js?v=5.7.8"></script>
+  <script src="captain.js?v=5.7.8"></script>
 
 </body>
 </html>

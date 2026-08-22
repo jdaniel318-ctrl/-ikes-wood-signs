@@ -1,6 +1,6 @@
-## 5.7.6 Ironclad stabilization
+## 5.7.8 Ironclad stabilization
 
-The 5.7.6 line intentionally retains the proven 5.7.3 Black Flag Engine gate DOM/authentication structure. Cleanup around this boundary is presentation- and bookkeeping-only unless a regression test explicitly proves a structural change safe.
+The 5.7.8 line intentionally retains the proven 5.7.3 Black Flag Engine gate DOM/authentication structure. Cleanup around this boundary is presentation- and bookkeeping-only unless a regression test explicitly proves a structural change safe.
 
 # Dark Sky 5.7.0 — Cloud Readiness / Portability Spine
 
@@ -206,5 +206,5 @@ Client Preview is a fourth customer-facing lifecycle surface alongside Internal 
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
 
-## Client Preview isolation bulkhead (5.7.6)
+## Client Preview isolation bulkhead (5.7.8)
 A sealed Client Preview is a standalone runtime, not a temporary project route through the fleet application. The URL fragment is detected before first paint. The normal app, default Ike shell, Engine, Project Admin, Captain surfaces, and Test Deck remain visually sealed while the preview PIN gate is constructed. The preview route executes before project storage or fleet migrations, and only the project snapshot carried by the invite may be activated. This prevents cross-project first-frame leakage and makes Client Preview independent of the browser's last active vessel.

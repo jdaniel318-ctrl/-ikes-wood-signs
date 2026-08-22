@@ -1,8 +1,17 @@
-# Dark Sky 5.7.6 — Ironclad
+# 5.7.8 — Chartroom
+
+- Captain's Quarters only: installs the selected cinematic command-center artwork as the Captain chamber visual foundation.
+- Existing Captain features remain real DOM controls; major functions are remapped to visual hotspots instead of being replaced by a static screenshot.
+- Fleet chart, Shipyard, Signals/First Mate Watch, Captain's Log, Blueprint/Archives, Test Access and return-to-Engine controls remain operational.
+- Covers the mockup's fictional top-right profile area with the real return-to-Engine control.
+- Black Flag, project, customer and Client Preview surfaces are intentionally unchanged.
+- Preserves the 5.7.6 Bulkhead Client Preview pre-paint isolation fix.
+
+# Dark Sky 5.7.8 — Ironclad
 
 - Based on the proven 5.7.3 Engine-entry structure; no authentication or routing logic changes.
 - Preserved every Black Flag gate DOM hook to avoid another cleanup-induced regression.
-- Aligned runtime, service-worker cache, and deployment manifest on 5.7.6.
+- Aligned runtime, service-worker cache, and deployment manifest on 5.7.8.
 - Added presentation-only command-portal finish and reduced-motion support.
 - Authority spine unchanged: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, Client Preview unique per invite.
 
@@ -265,7 +274,7 @@ Second-pass audit of the 5.0 fleet boundary release.
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
 
-## 5.7.6 — Bulkhead
+## 5.7.8 — Bulkhead
 - Added a pre-paint Client Preview isolation bulkhead so sealed preview links cannot expose the default Ike customer shell for even one frame while Safari/JavaScript starts.
 - Client Preview now routes before IndexedDB, fleet migrations, bundled-project materialization, or project restoration. The sealed invite snapshot is the only project allowed to enter that runtime.
 - The Black Flag portal no longer removes the boot lock while a Client Preview hash is waiting to route.
