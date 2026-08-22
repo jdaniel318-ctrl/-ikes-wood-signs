@@ -1,3 +1,7 @@
+## 5.7.5 Ironclad stabilization
+
+The 5.7.5 line intentionally retains the proven 5.7.3 Black Flag Engine gate DOM/authentication structure. Cleanup around this boundary is presentation- and bookkeeping-only unless a regression test explicitly proves a structural change safe.
+
 # Dark Sky 5.7.0 — Cloud Readiness / Portability Spine
 
 Dark Sky treats infrastructure as replaceable and the platform spine as durable. Devices are clients, Git/source history is the code-recovery authority, and future live project/customer data must move to managed cloud data/file services with independent backup and restore. Domain, registrar, DNS, static host, API host, database, object storage, and MSP are infrastructure choices rather than project identity. See `CLOUD_READINESS.md` and `DEPLOYMENT_MANIFEST.json`.
@@ -201,33 +205,3 @@ Client Preview is a fourth customer-facing lifecycle surface alongside Internal 
 - The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
-
-
-## 5.8.1 Repeatable Capability Shipyard
-
-Dark Sky owns one master capability catalog. Each capability has an Engine maturity state: `available` means working behavior exists now; `foundation` means the Engine recognizes the capability contract but still owes implementation behavior. Enabled foundation capabilities are projected into a project-scoped implementation plan with a concrete next step. Preparing a foundation creates only that project's scaffold (`capabilityImplementation` + `foundationConfig`) and never mutates another Project ID. Fleet Command surfaces the highest-priority unprepared foundations as the Engine Shipyard queue. This makes lessons learned on one vessel reusable without assuming every vessel needs the same feature.
-
-The repeatable sequence is: understand business → recommend capabilities → Engine approves capabilities → available capabilities operate immediately → foundation capabilities become explicit next steps → prepare project-local scaffold → implement/test behavior → promote the master capability to available only after the reusable Engine behavior is proven.
-
-
-## 5.9.6 Responsive Project Experience Contract
-- Customer Site Kit components are responsive primitives, not Legacy Plumbing templates.
-- Each vessel supplies its own logo, colors, imagery, service content, trust marks, and copy.
-- Real project-owned brand assets override generated fallbacks.
-- Mobile, tablet, and desktop are first-class layouts with device-specific composition rather than simple scaling.
-- Strong project identity is required at header and hero levels while Black Flag remains visually behind the customer experience.
-
-
-## 5.9.7 North Star Responsive Benchmark
-Legacy Plumbing is the proving vessel for a responsive Customer Site Kit composition: strong project identity, unified photo-led hero, trust row, compact service chooser, proof/process/reviews/CTA, and device-specific layout behavior. The reference asset `assets/legacy_responsive_benchmark.png` is a visual QA benchmark only; customer experiences render from project data and native HTML/CSS. Other projects may reuse the composition primitives but must retain project-specific graphics, colors, copy, services, and optional modules.
-
-## 5.9.9 Branding Authority + Benchmark Contract
-- Every project may have one active canonical `projectLogo`, controlled only by the Project Control Center.
-- The canonical logo is rendered as-uploaded; layout adapts around it. The Engine must not redraw, recolor, crop, rearrange, or substitute it.
-- Replacing the Control Center logo is an explicit brand-authority action and the new upload becomes canonical for that project.
-- `designBenchmark` is a separate project-scoped reference asset. It guides design/QA but is never customer-facing by implication.
-- Benchmarks are project-specific. Reusable Customer Site Kit structure may be shared across the fleet, but another vessel’s brand assets are never inherited.
-- Legacy Plumbing carries a byte-identical bundled canonical-logo fallback and its approved responsive benchmark so fresh devices retain the correct identity and design target.
-
-## 6.0.0 Benchmark Contract — Open Water
-A project may carry a canonical Project Logo / Mark and a separate Design Benchmark / Reference. The logo is live identity; the benchmark is a non-rendered design contract. When a benchmark is present, the Customer Site Kit may select a project-specific benchmark composition profile while continuing to render native HTML/CSS, project data, and project-owned graphics. Benchmark imagery must never substitute for the canonical logo or customer-facing assets. Legacy Plumbing is the first flagship implementation of this contract.

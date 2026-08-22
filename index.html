@@ -6,170 +6,27 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#071419" />
-  <title>Dark Sky — Command Harbor</title>
+  <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 4.3.7 Showroom Restore: DOM helpers exist before any application script executes.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'dom-helpers-ready';
-    // 5.7.7: client-preview URLs are a customer route, never an Engine route.
-    // Mark the document before first paint so Safari cannot flash the Engine gate
-    // while app.js is loading or while local storage/IndexedDB is unavailable.
-    if(String(location.hash||'').startsWith('#client-preview=')){
-      document.documentElement.classList.add('client-preview-first-light');
-      window.__darkSkyClientPreviewFirstLight=true;
-    }
     window.addEventListener('error', function(event){
       try { window.__darkSkyLastEarlyError = {stage:window.__darkSkyBootStage||'preflight',message:String(event.message||''),source:String(event.filename||''),line:Number(event.lineno||0),column:Number(event.colno||0),at:new Date().toISOString()}; } catch(_) {}
     }, true);
-
-    // Dark Sky 5.7.7 FIRST-LIGHT ENGINE ENTRY.
-    // This tiny recovery path is intentionally independent of app.js, IndexedDB,
-    // migrations, project state, Captain/Test Access, and service-worker state.
-    // The canonical Black Flag Engine PIN (5615) must open the Engine even if a
-    // secondary application module fails during startup. Project Admin remains a
-    // separate 4353 contract and is never consulted here.
-    (function(){
-      const ENGINE_RECOVERY_PIN='5615';
-      function byId(id){ return document.getElementById(id); }
-      function openEngineAtomically(){
-        window.__darkSkyAtomicEngineUnlocked=true;
-        try{ window.BlackFlagAuth?.clearPinFailures?.('engine'); }catch(_){}
-        try{ window.BlackFlagAuth?.unlock?.(); }catch(_){}
-        ['customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','captainQuarters','captainQuartersGate'].forEach(function(id){ byId(id)?.classList.add('hidden'); });
-        document.body.classList.remove('boot-locked','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','bf-entry-open');
-        document.body.classList.add('engine-mode');
-        document.body.removeAttribute('data-active-project');
-        byId('blackFlagEntryGate')?.classList.add('hidden');
-        byId('enginePanel')?.classList.remove('hidden');
-        const input=byId('blackFlagEntryPin'); if(input) input.value='';
-        const error=byId('blackFlagEntryError'); if(error) error.textContent='';
-        try{ window.DarkSkyBoundaryBridge?.prepareEngine?.(); }catch(_){}
-        Promise.resolve(window.renderBlackFlagHome?.()).catch(function(err){ console.warn('5.7.4 Engine render recovery warning',err); });
-        try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
-      }
-      function returnDarkSkyAtomically(){
-        try{ window.BlackFlagAuth?.lock?.(); }catch(_){}
-        window.__darkSkyAtomicEngineUnlocked=false;
-        ['blackFlagEntryGate','enginePanel','customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','ownerClaimGate','captainQuarters','captainQuartersGate','captainCommandWorkspace','projectCommissioningWorkspace','fleetCommissioningModal','experienceTestDeck','engineConfigurationDock'].forEach(function(id){ byId(id)?.classList.add('hidden'); });
-        document.body.className='boot-locked';
-        document.body.removeAttribute('data-active-project');
-        document.body.removeAttribute('data-project-theme');
-        byId('darkSkyHomeGate')?.classList.remove('hidden');
-        try{ history.replaceState(null,'',location.pathname+location.search); }catch(_){}
-        try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
-      }
-      window.DarkSkyAtomicHome={open:returnDarkSkyAtomically};
-      async function attempt(event){
-        const target=event.target;
-        const homeTarget=target && (target.matches?.('[data-return-dark-sky]') || target.closest?.('[data-return-dark-sky]'));
-        if(homeTarget){
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          returnDarkSkyAtomically();
-          return;
-        }
-        const openBlackFlag=target && (target.id==='darkSkyEnterBlackFlag' || target.closest?.('#darkSkyEnterBlackFlag'));
-        const closeBlackFlag=target && (target.id==='closeBlackFlagEntry' || target.closest?.('#closeBlackFlagEntry'));
-        if(openBlackFlag){
-          window.__darkSkyEngineEntryOrigin='home';
-          byId('darkSkyHomeGate')?.classList.add('hidden');
-          document.body.classList.add('bf-entry-open');
-          byId('blackFlagEntryGate')?.classList.remove('hidden');
-          setTimeout(function(){ byId('blackFlagEntryPin')?.focus(); },30);
-          return;
-        }
-        if(closeBlackFlag && window.__darkSkyEngineEntryOrigin==='home'){
-          event.preventDefault();
-          byId('blackFlagEntryGate')?.classList.add('hidden');
-          document.body.classList.remove('bf-entry-open');
-          document.body.classList.add('boot-locked');
-          byId('darkSkyHomeGate')?.classList.remove('hidden');
-          return;
-        }
-        const isButton=target && (target.id==='blackFlagEntryUnlock' || target.closest?.('#blackFlagEntryUnlock'));
-        const isEnter=event.type==='keydown' && event.key==='Enter' && target?.id==='blackFlagEntryPin';
-        if(!isButton && !isEnter) return;
-
-        // 6.0.7 DEAD-MAN AUTH BRIDGE: every explicit Engine submission is owned here
-        // at first light. This avoids the failure mode where BlackFlagAuth exists but
-        // later portal event binding never completes. No auto-submit: only click/Enter.
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        const input=byId('blackFlagEntryPin');
-        const error=byId('blackFlagEntryError');
-        const entered=String(input?.value||'').trim();
-        if(error) error.textContent='';
-        if(!entered){ if(error) error.textContent='Enter the Engine PIN.'; input?.focus(); return; }
-
-        let result=null;
-        try{
-          if(window.BlackFlagAuth?.verify){
-            result=await window.BlackFlagAuth.verify(entered);
-          }else{
-            result={ok:entered===ENGINE_RECOVERY_PIN,code:entered===ENGINE_RECOVERY_PIN?'recovery-fallback':'startup'};
-          }
-        }catch(err){
-          console.warn('First-light Engine authentication warning',err);
-          result={ok:entered===ENGINE_RECOVERY_PIN,code:entered===ENGINE_RECOVERY_PIN?'recovery-fallback':'startup'};
-        }
-
-        if(!result?.ok){
-          if(error) error.textContent=result?.code==='locked'?'Engine access is temporarily locked. Wait for the lock timer, then try again.':(result?.code==='startup'?'Engine authentication is still loading. The recovery PIN 5615 remains available.':'Incorrect Engine PIN.');
-          if(input){ input.value=''; input.focus(); }
-          return;
-        }
-        try{ window.BlackFlagAuth?.unlock?.(); }catch(_){ }
-        openEngineAtomically();
-      }
-      document.addEventListener('click',attempt,true);
-      document.addEventListener('keydown',attempt,true);
-      window.DarkSkyAtomicEngineEntry={open:openEngineAtomically,recoveryPin:ENGINE_RECOVERY_PIN};
-    })();
   </script>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=6.0.7" />
+  <link rel="stylesheet" href="styles.css?v=5.7.5" />
   <style id="bootLockStyles">
-    /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
-    body.boot-locked #darkSkyHomeGate {display:grid!important}
-    body.boot-locked #blackFlagEntryGate {display:none!important}
-    body.bf-entry-open #darkSkyHomeGate {display:none!important}
-    body.bf-entry-open #blackFlagEntryGate {display:grid!important}
-    html.client-preview-first-light #darkSkyHomeGate,
-    html.client-preview-first-light #blackFlagEntryGate {display:none!important}
-    body:not(.project-mode) > #app > .brand-header,
-    body:not(.project-mode) > #app > .progress-track,
-    body:not(.project-mode) #customerApp {display:none!important}
-    body.engine-mode > #app > .brand-header,
-    body.engine-mode > #app > .progress-track,
-    body.engine-mode #customerApp {display:none!important}
-    body.project-mode.ikes-project > #app > .brand-header,
-    body.project-mode.ikes-project > #app > .progress-track,
-    body.project-mode.ikes-project #customerApp {display:block}
+    body.boot-locked #blackFlagEntryGate {display:grid!important}
   </style>
 </head>
 <body class="boot-locked">
   <div id="testAccessBanner" class="test-access-banner hidden" role="status">TEST ACCESS ACTIVE • PIN ENTRY BYPASSED • SESSION ONLY</div>
-  <button id="globalDarkSkyHomeBtn" class="global-dark-sky-home" type="button" data-return-dark-sky aria-label="Return to Dark Sky" title="Return to Dark Sky"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>DARK SKY</span></button>
-  <button id="mobileTestDockToggle" class="mobile-test-dock-toggle" type="button" aria-label="Open test navigation" aria-expanded="false"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>TEST</span></button>
-
-  <section id="darkSkyHomeGate" class="dark-sky-home-gate" aria-label="Dark Sky home">
-    <div class="dark-sky-home-shell">
-      <div class="dark-sky-horizon" aria-hidden="true"><span></span><i></i><b></b></div>
-      <div class="dark-sky-home-kicker">PLATFORM COMMAND</div>
-      <h1>DARK SKY</h1>
-      <p class="dark-sky-home-lead">One platform. Independent projects. Clear command.</p>
-      <div class="dark-sky-home-status"><span></span><strong>HARBOR READY</strong><small>Project boundaries protected</small></div>
-      <div class="dark-sky-home-actions">
-        <button id="darkSkyEnterBlackFlag" class="dark-sky-primary" type="button"><span>BLACK FLAG</span><strong>Enter Engine Room</strong><small>Projects • operations • control</small></button>
-        <button id="darkSkyEnterCaptain" class="dark-sky-secondary" type="button"><span>CAPTAIN'S QUARTERS</span><strong>Captain Command</strong><small>Captain authorization required</small></button>
-      </div>
-      <p class="dark-sky-home-foot">Dark Sky is the platform. Black Flag is the Engine.</p>
-    </div>
-  </section>
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
@@ -182,11 +39,10 @@
 
       <div class="bf-entry-panel">
         <label for="blackFlagEntryPin">BLACK FLAG ENGINE PIN</label>
-        <small id="blackFlagEntryHint" class="bf-pin-hint">Engine credential</small>
-        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="blackFlagEntryHint" />
+        <input id="blackFlagEntryPin" class="bf-pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="blackFlagEntryError" class="bf-entry-error" aria-live="polite"></p><p id="blackFlagLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="blackFlagEntryUnlock" class="bf-entry-primary">ENTER ENGINE ROOM →</button>
-<button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO DARK SKY</button>
+<button type="button" id="closeBlackFlagEntry" class="bf-entry-secondary bf-close-entry">RETURN TO PROJECT</button>
 <div class="engine-entry-mode" role="group" aria-label="Engine appearance">
   <span><strong>ENGINE APPEARANCE</strong><small>Choose how the Engine Room presents itself.</small></span>
   <div class="engine-mode-segment">
@@ -389,7 +245,7 @@
           <div class="captain-kicker">CAPTAIN CONTROL • DUAL AUTHORIZATION</div>
           <h3 id="captainTestAccessTitle">Enable Test Access</h3>
           <p>This does not remove or change any PIN. It only bypasses PIN entry for this browser session and leaves project boundaries intact.</p>
-          <label for="testAccessEnginePin">ENGINE PIN</label><input id="testAccessEnginePin" type="password" inputmode="numeric" autocomplete="off">
+          <label for="testAccessEnginePin">ENGINE PIN</label><input id="testAccessEnginePin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
           <label for="testAccessCaptainPin">CAPTAIN PIN</label><input id="testAccessCaptainPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
           <p id="captainTestAccessError" class="error-text" aria-live="polite"></p>
           <div class="captain-test-access-actions"><button id="captainTestAccessConfirm" type="button">AUTHORIZE TEST ACCESS</button><button id="captainTestAccessCancel" type="button">CANCEL</button></div>
@@ -848,7 +704,7 @@
         <h2 id="enginePinTitle">Ye Be Entering the Engine Room</h2>
         <p>Only captains, code-wranglers, and suspiciously competent pirates beyond this point.</p>
         <label for="enginePinInput">Enter Captain's Code</label>
-        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off" />
+        <input id="enginePinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
         <p id="enginePinError" class="pirate-error" aria-live="polite"></p><p id="engineLockTimer" class="pin-lock-timer hidden"></p>
         <button type="button" id="unlockEngineBtn" class="pirate-primary-btn">BOARD THE ENGINE ROOM →</button>
         <button type="button" id="cancelEngineBtn" class="secondary-btn">RETURN TO PROJECT</button>
@@ -910,31 +766,6 @@
           </a>
         </div>
       </header>
-
-      <section id="fleetCommandBridge" class="fleet-command-bridge" aria-label="Fleet command bridge">
-        <div class="fleet-command-bridge-head">
-          <div>
-            <span class="fleet-command-eyebrow">BLACK FLAG • FLEET FIRST</span>
-            <h3>Fleet Command</h3>
-            <p>Run the customer-facing fleet from one clean watch. Open a vessel, test the experience, handle attention, or commission the next project without losing the ship.</p>
-          </div>
-          <div class="fleet-command-law"><strong>DARK SKY</strong><span>Always one move away</span></div>
-        </div>
-        <div class="fleet-command-status" aria-label="Fleet summary">
-          <article><small>VESSELS</small><strong id="fleetBridgeProjects">—</strong><span>registered</span></article>
-          <article><small>LIVE</small><strong id="fleetBridgeLive">—</strong><span>customer-facing</span></article>
-          <article><small>PRIVATE / TEST</small><strong id="fleetBridgePrivate">—</strong><span>protected</span></article>
-          <article class="fleet-command-attention"><small>ATTENTION</small><strong id="fleetBridgeAttention">—</strong><span id="fleetBridgeAttentionLabel">reading watch</span></article>
-        </div>
-        <nav class="fleet-command-actions" aria-label="Fleet command shortcuts">
-          <button type="button" data-engine-command-jump="fleet"><b>☸</b><span><strong>FLEET</strong><small>Projects & customer experiences</small></span></button>
-          <button type="button" data-engine-command-jump="attention"><b>!</b><span><strong>WATCH</strong><small>Warnings & readiness</small></span></button>
-          <button type="button" data-engine-command-jump="commission"><b>＋</b><span><strong>COMMISSION</strong><small>Add the next vessel</small></span></button>
-          <button type="button" data-engine-command-jump="systems"><b>⚙</b><span><strong>SYSTEMS</strong><small>Engine health & recovery</small></span></button>
-          <button type="button" data-return-dark-sky class="fleet-command-home"><b>✦</b><span><strong>DARK SKY</strong><small>Return to platform home</small></span></button>
-        </nav>
-        <div id="fleetFoundationQueue" class="fleet-foundation-queue" aria-label="Reusable foundation implementation queue"></div>
-      </section>
 
       <section id="enginePerformanceDeck" class="engine-performance-deck" aria-label="Engine performance">
         <article class="engine-performance-card revenue">
@@ -1006,7 +837,7 @@
       </section>
 
       
-      <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Dark Sky v4 Benchmark True North structural status">
+      <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Dark Sky v4 Broadside structural status">
         <header class="v3-architecture-head">
           <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>SYSTEM STATUS</span></div><h3>V4 BROADSIDE STATUS</h3><p>Platform contract, recovery, diagnostics, release discipline, and sealed project boundaries.</p></div>
           <span id="v3SchemaBadge">PROJECT ENVELOPE</span>
@@ -1014,7 +845,7 @@
         <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
       </section>
 
-      <section id="fullSailCommandDeck" class="full-sail-command-deck" aria-label="Pocket Fleet Command Deck">
+      <section id="fullSailCommandDeck" class="full-sail-command-deck" aria-label="Full Sail Command Deck">
         <header class="full-sail-head">
           <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>CLEAR HORIZON</span></div><h3>Command Deck</h3><p>Daily operating posture, release readiness, and the next useful moves across the fleet.</p></div>
           <strong id="fullSailState" class="full-sail-state">READING</strong>
@@ -1105,16 +936,13 @@
               <p id="pecSubtitle">Project-specific controls.</p>
             </div>
           </div>
-          <div class="project-engine-route-actions" aria-label="Project navigation">
-            <button id="closeProjectEngineControl" class="secondary-btn small project-route-engine" aria-label="Back to Engine Room" title="Back to Engine Room" type="button"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"><span>ENGINE ROOM</span></button>
-            <button class="secondary-btn small project-route-dark-sky" type="button" data-return-dark-sky><span>✦</span><span>DARK SKY</span></button>
-          </div>
+          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine" type="button"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"></button>
         </div>
 
         <nav class="project-tabs project-command-nav" id="projectTabs" aria-label="Project Control navigation">
           <div class="project-command-primary" aria-label="Primary project commands">
             <button type="button" data-project-tab="overview" class="project-nav-direct active"><span class="project-nav-icon" aria-hidden="true">⌂</span><span>Overview</span></button>
-            <button type="button" data-project-tab="orders" class="project-nav-direct"><span class="project-nav-icon" aria-hidden="true">≡</span><span>Orders / Work</span></button>
+            <button type="button" data-project-tab="orders" class="project-nav-direct"><span class="project-nav-icon" aria-hidden="true">≡</span><span>Activity</span></button>
             <button type="button" data-project-tab="customers" class="project-nav-direct"><span class="project-nav-icon" aria-hidden="true">◎</span><span>Customers</span></button>
             <button type="button" data-project-group="operate"><span class="project-nav-icon" aria-hidden="true">⚙</span><span>Operate</span></button>
             <button type="button" data-project-group="insight"><span class="project-nav-icon" aria-hidden="true">▥</span><span>Insight</span></button>
@@ -1320,7 +1148,7 @@
           <h2 id="engineResetTitle">Confirm Engine Reset</h2>
           <p>Enter the Engine PIN again. You will receive one final confirmation before anything is reset.</p>
           <label for="engineResetPinInput">Engine PIN</label>
-          <input id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" autocomplete="off" />
+          <input id="engineResetPinInput" class="text-input pin-input" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
           <p id="engineResetError" class="pirate-error" aria-live="polite"></p><p id="engineResetLockTimer" class="pin-lock-timer hidden"></p>
           <button type="button" id="confirmEngineResetBtn" class="danger-btn">CONTINUE RESET</button>
           <button type="button" id="cancelEngineResetBtn" class="secondary-btn">CANCEL</button>
@@ -1416,7 +1244,7 @@
           <p>Create, configure, and prepare a new business for private Sea Trial.</p>
         </div>
       </div>
-      <div class="commissioning-head-actions"><button id="commissionDarkSkyHomeBtn" class="commission-dark-sky-home" type="button" data-return-dark-sky>← DARK SKY</button><button id="closeProjectCommissioning" class="commission-engine-return" type="button" aria-label="Back to Engine" title="Back to Engine"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"></button></div>
+      <button id="closeProjectCommissioning" class="commission-engine-return" type="button" aria-label="Back to Engine" title="Back to Engine"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"></button>
     </header>
 
     <div class="commission-progress" id="commissionProgress">
@@ -1450,11 +1278,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=6.0.7"></script>
-  <script src="platform_v4.js?v=6.0.7"></script>
-  <script src="platform_identity.js?v=6.0.7"></script>
-  <script src="app.js?v=6.0.7"></script>
-  <script src="captain.js?v=6.0.7"></script>
+  <script src="platform_core.js?v=5.7.5"></script>
+  <script src="platform_v4.js?v=5.7.5"></script>
+  <script src="platform_identity.js?v=5.7.5"></script>
+  <script src="app.js?v=5.7.5"></script>
+  <script src="captain.js?v=5.7.5"></script>
 
 </body>
 </html>

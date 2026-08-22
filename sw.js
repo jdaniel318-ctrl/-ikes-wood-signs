@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v6-0-7-benchmark-true-north';
+const CACHE='dark-sky-v5-7-5-ironclad';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.0.7',
-  './platform_core.js?v=6.0.7',
-  './platform_v4.js?v=6.0.7',
-  './platform_identity.js?v=6.0.7',
-  './app.js?v=6.0.7',
-  './captain.js?v=6.0.7',
+  './styles.css?v=5.7.5',
+  './platform_core.js?v=5.7.5',
+  './platform_v4.js?v=5.7.5',
+  './platform_identity.js?v=5.7.5',
+  './app.js?v=5.7.5',
+  './captain.js?v=5.7.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
@@ -15,12 +15,7 @@ const ASSETS=[
   './assets/captains_quarters_cinematic_v2953.jpg',
   './assets/engine_room_modern_benchmark_v2976.png',
   './assets/engine_room_pirate_benchmark_v2978.png',
-  './assets/signal_restoration_logo.png',
-  './assets/bbb_accredited_a_plus.png',
-  './assets/legacy_plumbing_canonical_logo.jpeg',
-  './assets/legacy_customer_site_benchmark.png',
-  './assets/legacy_benchmark_hero.jpg',
-  './assets/legacy_responsive_benchmark.png'
+  './assets/signal_restoration_logo.png'
 ];
 
 self.addEventListener('install',event=>{
@@ -61,7 +56,7 @@ self.addEventListener('fetch',event=>{
 
   if(freshFirst){
     event.respondWith(
-      fetch(req,{cache:'no-store'})
+      fetch(req)
         .then(response=>{
           if(response && response.ok){
             const copy=response.clone();

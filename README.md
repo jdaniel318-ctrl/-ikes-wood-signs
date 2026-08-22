@@ -1,26 +1,6 @@
-# Dark Sky 6.0.7 — Benchmark True North
+# Dark Sky 5.7.5 — Ironclad
 
-Legacy benchmark mode now uses a compiled project design profile rather than a benchmark on/off styling flag. The approved canonical logo remains untouched; the project benchmark drives the responsive customer composition.
-
-# Dark Sky 6.0.7 — Benchmark True North
-
-Benchmark-locked responsive customer experience pass. Legacy Plumbing remains the proving vessel; the responsive primitives are intended for reuse across project-specific fleet experiences.
-
-Benchmark True North finishing pass: customer-site polish, reusable trust/process graphics, clean footer termination, compact internal test navigation, and preserved fleet contracts.
-
-Repeatable fleet capability release. Engine foundations now become explicit project next steps, with a Fleet Command shipyard queue and project-scoped preparation contract. Dark Sky remains the permanent platform home and Black Flag remains the Engine authority.
-
-Fleet polish release. Dark Sky is the permanent platform home, Black Flag remains the Engine, and every internal project/commissioning route has a reliable return to Dark Sky. Customer/client-preview isolation remains intact.
-
-# Dark Sky 5.7.8
-
-Dark Sky is once again the platform-first landing experience. A fresh root visit opens Dark Sky, and Black Flag is entered as the protected Engine beneath it. Client Preview links remain direct customer routes and do not expose platform or Engine controls.
-
-# Dark Sky 5.7.4
-
-Dark Sky 5.7.4 is the Engine-entry recovery release. It adds a first-light authentication path for the canonical Black Flag PIN `5615` so Engine access does not depend on secondary startup modules, storage migrations, or stale browser application state. It also refreshes the service-worker cache identity and preserves the existing project-isolation and authority contracts.
-
-Dark Sky 5.7.3 was the cloud-readiness and portability hardening release. It keeps the current static/browser fleet fully testable while making the future migration contract explicit: source code is recoverable from version control, devices are clients rather than authoritative data stores, routing remains host/domain agnostic, and future production data/assets are expected to move to managed cloud storage without rewriting customer experiences.
+Ironclad is a conservative stabilization build based on the proven 5.7.3 Engine-entry structure. It advances cache/version bookkeeping and login presentation without deleting gate DOM hooks or changing authentication/routing behavior.
 
 ## Standing authority and safety contracts
 

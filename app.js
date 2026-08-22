@@ -14,9 +14,9 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.0.7';
+  const BUILD_VERSION = '5.7.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
-  const FLEET_REGISTRY_SCHEMA_VERSION = 8;
+  const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
@@ -24,8 +24,8 @@
   const PROJECT_ID_ALIASES = Object.freeze({[LEGACY_GRIZZLE_PROJECT_ID]:CANONICAL_GRIZZLY_PROJECT_ID});
   // 4.8.3 — Release Vessel Admission. New bundled projects must be named here deliberately.
   // Merely adding a project definition is not enough to alter an existing fleet.
-  const RELEASE_BUNDLED_PROJECT_IDS = Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear','bor-north-richmond','legacy-plumbing']);
-  const RELEASE_NEW_PROJECT_IDS = Object.freeze(['bor-north-richmond','legacy-plumbing']);
+  const RELEASE_BUNDLED_PROJECT_IDS = Object.freeze(['ikes-wood-signs','mugshot-after-dark','beccas-bloom-shop','grizzly-bear','bor-north-richmond']);
+  const RELEASE_NEW_PROJECT_IDS = Object.freeze(['bor-north-richmond']);
   function canonicalProjectId(id){ return PROJECT_ID_ALIASES[String(id||'')]||String(id||''); }
   const DEFAULT_ADMIN_PIN = '4353';
   const DEFAULT_ENGINE_PIN = '5615';
@@ -164,30 +164,6 @@
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
       permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
       customerHistory:{adminVisible:false},notifications:{customerConfirmationEmail:false},
-      products:[]
-    },
-    {
-      id:'legacy-plumbing',
-      projectCode:'LEG',
-      name:'Legacy Plumbing',
-      description:'Licensed and insured plumbing for homes and businesses across the Richmond area.',
-      tagline:'Fast, reliable plumbing—done right.',
-      type:'service_business',businessType:'plumbing',
-      branding:{businessName:'Legacy Plumbing',adminLabel:'LEGACY PLUMBING',primary:'#06284a',accent:'#0a86ef',subtitle:'Professional Plumbing Services'},
-      businessIntake:{
-        businessCategory:'Plumbing',businessType:'plumbing',sourceWebsite:'https://legacyplumbingrva.com',market:'Richmond, VA area',hours:'Mon–Fri • 7:00 AM–4:00 PM',
-        positioning:'Fast, reliable plumbing with clear options, quality workmanship, and straightforward service.',
-        contact:{phone:'804-955-7865',email:'info@legacyplumbinginc.com'},
-        trustSignals:['Licensed & insured','BBB Accredited','Residential + Commercial','Serving Richmond']
-      },
-      visibility:'engine_only',projectTheme:'universal',status:'development',orderPrefix:'LEG',
-      workflow:['New Request','Contacted','Scheduled','In Progress','Completed'],
-      customerExperience:{photoRequired:false,previewApproval:false,contactCapture:true,mode:'guided_service',relationshipType:'service_request',emailRequired:true},
-      publish:{status:'development'},
-      payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
-      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
-      customerHistory:{adminVisible:true},notifications:{customerConfirmationEmail:false},
-      capabilityControl:{enabled:['job_intake','job_status','customer_records','property_records','field_photos','scheduling','crew_assignment','estimates_authorizations','project_notes','operational_reporting'],source:'business_profile'},
       products:[]
     }
   ];
@@ -510,40 +486,25 @@
     if(!projectCustomerOperatingModelReady(p)){alert('Create a customer-ready experience before generating a client preview.');return;}
     closeClientPreviewBuilder();
     const modal=document.createElement('div');modal.id='clientPreviewBuilder';modal.className='client-preview-builder';
-    modal.innerHTML=`<div class="client-preview-builder-card"><button type="button" class="client-preview-close" aria-label="Close">×</button><small>CLIENT PREVIEW</small><h2>${escapeHtml(p.name)}</h2><p class="client-preview-simple-intro">Your customer preview is being prepared. When it is ready, send the invite message below. Your customer only needs to tap the link and enter the six-digit code.</p><div id="clientPreviewPreparing" class="client-preview-preparing"><span class="client-preview-spinner" aria-hidden="true"></span><strong>Preparing customer preview…</strong></div><div id="clientPreviewResult" class="client-preview-result hidden"></div><details class="client-preview-details"><summary>Preview settings</summary><label>Link expires<select id="clientPreviewExpiry"><option value="7">7 days</option><option value="14" selected>14 days</option><option value="30">30 days</option></select></label><p>Every new preview receives its own six-digit code. Preview actions remain simulated and cannot place real calls, send messages, take payments, or submit live requests.</p></details></div>`;
+    modal.innerHTML=`<div class="client-preview-builder-card"><button type="button" class="client-preview-close" aria-label="Close">×</button><small>CLIENT PREVIEW</small><h2>${escapeHtml(p.name)}</h2><p>Create a clean customer-facing preview that contains no Engine, Captain, or Project Admin controls. Every invite receives a new six-digit PIN generated by Black Flag. All calls, messages, submissions, payments, and external actions remain simulated.</p><div class="client-preview-unique-note"><strong>NEW PIN PER INVITE</strong><span>The Client Preview PIN is never Project Admin 4353, Black Flag 5615, or Captain's Quarters 19613, and it is not reused from a recent invite on this device.</span></div><label>Link expires<select id="clientPreviewExpiry"><option value="7">7 days</option><option value="14" selected>14 days</option><option value="30">30 days</option></select></label><button type="button" id="clientPreviewGenerate" class="primary-btn">GENERATE NEW INVITE</button><div id="clientPreviewResult" class="client-preview-result hidden"></div></div>`;
     document.body.appendChild(modal);
     modal.querySelector('.client-preview-close')?.addEventListener('click',closeClientPreviewBuilder);
     modal.addEventListener('click',e=>{if(e.target===modal)closeClientPreviewBuilder();});
-
-    const generate=async()=>{
-      const preparing=modal.querySelector('#clientPreviewPreparing');
+    modal.querySelector('#clientPreviewGenerate')?.addEventListener('click',async()=>{
+      const pin=randomClientPreviewPin();
+      const inviteId=randomClientPreviewInviteId();
+      const days=Math.max(1,Number(modal.querySelector('#clientPreviewExpiry')?.value||14));
+      const assets=await clientPreviewPortableAssets(p.id);
+      const payload={v:2,inviteId,project:clientPreviewProjectSnapshot(p),assets,pinHash:await clientPreviewHashPin(pin,inviteId),createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+days*86400000).toISOString(),revision:experienceConfigurationSignature(p),build:BUILD_VERSION};
+      const encoded=clientPreviewBase64UrlEncode(JSON.stringify(payload));
+      const link=`${location.origin}${location.pathname}#client-preview=${encoded}`;
       const result=modal.querySelector('#clientPreviewResult');
-      if(preparing)preparing.classList.remove('hidden');
-      if(result)result.classList.add('hidden');
-      try{
-        const pin=randomClientPreviewPin();
-        const inviteId=randomClientPreviewInviteId();
-        const days=Math.max(1,Number(modal.querySelector('#clientPreviewExpiry')?.value||14));
-        const assets=await clientPreviewPortableAssets(p.id);
-        const payload={v:2,inviteId,project:clientPreviewProjectSnapshot(p),assets,pinHash:await clientPreviewHashPin(pin,inviteId),createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+days*86400000).toISOString(),revision:experienceConfigurationSignature(p),build:BUILD_VERSION};
-        const encoded=clientPreviewBase64UrlEncode(JSON.stringify(payload));
-        const link=`${location.origin}${location.pathname}#client-preview=${encoded}`;
-        const inviteMessage=`${p.name} private preview\n\nOpen this link:\n${link}\n\nPreview code: ${pin}`;
-        if(preparing)preparing.classList.add('hidden');
-        result.classList.remove('hidden');
-        result.innerHTML=`<div class="client-preview-ready"><span>READY TO SEND</span><strong>${escapeHtml(p.name)}</strong><small>Expires ${new Date(payload.expiresAt).toLocaleDateString()}</small></div><div class="client-preview-pin-reveal"><span>PREVIEW CODE</span><strong>${escapeHtml(pin)}</strong><small>Your customer enters this after opening the link.</small></div><button type="button" id="clientPreviewCopyInvite" class="primary-btn client-preview-send-btn">COPY INVITE MESSAGE</button><div class="client-preview-quick-actions"><button type="button" id="clientPreviewCopyLink" class="secondary-btn small">COPY LINK</button><button type="button" id="clientPreviewCopyPin" class="secondary-btn small">COPY CODE</button><button type="button" id="clientPreviewOpen" class="secondary-btn small">TEST PREVIEW</button></div><label class="client-preview-link-label">Preview link<textarea id="clientPreviewLink" readonly rows="2">${escapeHtml(link)}</textarea></label><button type="button" id="clientPreviewAnother" class="client-preview-new-btn">Create a new preview</button>${Object.keys(assets).length?'':'<p class="client-preview-warning">A locally uploaded graphic was too large to carry inside the portable link. Public/source-site brand assets will still render when available.</p>'}`;
-        const copyText=async(text,button,doneText)=>{try{await navigator.clipboard.writeText(text);const old=button.textContent;button.textContent=doneText;setTimeout(()=>{button.textContent=old;},1400);return true;}catch(_){return false;}};
-        result.querySelector('#clientPreviewCopyInvite')?.addEventListener('click',e=>copyText(inviteMessage,e.currentTarget,'INVITE COPIED'));
-        result.querySelector('#clientPreviewCopyLink')?.addEventListener('click',async e=>{if(!await copyText(link,e.currentTarget,'COPIED'))result.querySelector('#clientPreviewLink')?.select();});
-        result.querySelector('#clientPreviewCopyPin')?.addEventListener('click',e=>copyText(pin,e.currentTarget,'COPIED'));
-        result.querySelector('#clientPreviewOpen')?.addEventListener('click',()=>window.open(link,'_blank','noopener'));
-        result.querySelector('#clientPreviewAnother')?.addEventListener('click',generate);
-      }catch(err){
-        if(preparing){preparing.classList.remove('hidden');preparing.innerHTML='<strong>Preview could not be prepared. Close this window and try again.</strong>';}
-        console.error('Client preview generation failed',err);
-      }
-    };
-    await generate();
+      result.classList.remove('hidden');
+      result.innerHTML=`<div class="client-preview-seal"><span>SEALED CLIENT INVITE</span><strong>${escapeHtml(p.name)}</strong><small>Invite ${escapeHtml(inviteId.slice(0,8).toUpperCase())} • one project • one revision • expires ${new Date(payload.expiresAt).toLocaleDateString()}</small></div><div class="client-preview-pin-reveal"><span>UNIQUE INVITE PIN</span><strong>${escapeHtml(pin)}</strong><small>Generated for this invite only. Share it separately from the link.</small></div><label>Private link<textarea id="clientPreviewLink" readonly rows="3">${escapeHtml(link)}</textarea></label><div class="client-preview-share-row"><button type="button" id="clientPreviewCopy" class="primary-btn small">COPY LINK</button><button type="button" id="clientPreviewOpen" class="secondary-btn small">OPEN PREVIEW</button><button type="button" id="clientPreviewAnother" class="secondary-btn small">NEW INVITE + NEW PIN</button></div>${Object.keys(assets).length?'':'<p class="client-preview-warning">Large locally uploaded graphics could not be embedded in the portable link. Public/source-site brand assets will still render when available.</p>'}`;
+      result.querySelector('#clientPreviewCopy')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(link);result.querySelector('#clientPreviewCopy').textContent='COPIED';}catch(_){result.querySelector('#clientPreviewLink')?.select();}});
+      result.querySelector('#clientPreviewOpen')?.addEventListener('click',()=>window.open(link,'_blank','noopener'));
+      result.querySelector('#clientPreviewAnother')?.addEventListener('click',()=>modal.querySelector('#clientPreviewGenerate')?.click());
+    });
   }
   function clientPreviewCleanCustomerChrome(){
     document.body.classList.add('client-preview-mode');
@@ -573,7 +534,6 @@
   }
   async function routeClientPreviewFromHash(){
     const encoded=clientPreviewHashPayload(); if(!encoded)return false;
-    document.documentElement.classList.remove('client-preview-first-light');
     let payload=null;
     try{payload=JSON.parse(clientPreviewBase64UrlDecode(encoded));}catch(_){payload=null;}
     document.body.classList.add('client-preview-mode','client-preview-locked');
@@ -582,9 +542,9 @@
     if(!payload?.project?.id || !payload?.pinHash){gate.innerHTML='<div class="client-preview-gate-card"><h1>Preview unavailable</h1><p>This private preview link is incomplete or invalid.</p></div>';document.body.appendChild(gate);return true;}
     if(payload.expiresAt && Date.now()>Date.parse(payload.expiresAt)){gate.innerHTML=`<div class="client-preview-gate-card"><h1>Preview expired</h1><p>Ask ${escapeHtml(payload.project.name||'the project owner')} for a new private preview link.</p></div>`;document.body.appendChild(gate);return true;}
     const logo=payload.assets?.projectLogo||payload.project?.businessIntake?.visualAssets?.logo||'';
-    gate.innerHTML=`<div class="client-preview-gate-card">${logo?`<img class="client-preview-gate-logo" src="${escapeHtml(logo)}" alt="${escapeHtml(payload.project.name)} logo">`:''}<small>PRIVATE PREVIEW</small><h1>${escapeHtml(payload.project.name||'Project Preview')}</h1><p>Enter the six-digit preview code you received.</p><input id="clientPreviewUnlockPin" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" maxlength="6" aria-label="Six-digit preview code" placeholder="6-digit code"><button id="clientPreviewUnlockBtn" type="button" class="primary-btn">CONTINUE</button><div id="clientPreviewUnlockError" class="client-preview-error"></div><small class="client-preview-safe-note">Preview only • no live calls, payments, or submissions</small></div>`;
+    gate.innerHTML=`<div class="client-preview-gate-card">${logo?`<img class="client-preview-gate-logo" src="${escapeHtml(logo)}" alt="${escapeHtml(payload.project.name)} logo">`:''}<small>PRIVATE CLIENT PREVIEW</small><h1>${escapeHtml(payload.project.name||'Project Preview')}</h1><p>This unpublished preview is protected by a project-specific PIN. No calls, emails, texts, payments, or real submissions can leave this preview.</p><input id="clientPreviewUnlockPin" type="password" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="Preview PIN"><button id="clientPreviewUnlockBtn" type="button" class="primary-btn">OPEN PREVIEW</button><div id="clientPreviewUnlockError" class="client-preview-error"></div></div>`;
     document.body.appendChild(gate);
-    const unlock=async()=>{const input=document.getElementById('clientPreviewUnlockPin');const ok=await unlockClientPreview(payload,String(input?.value||'').trim());if(!ok){const e=document.getElementById('clientPreviewUnlockError');if(e)e.textContent='That code is not correct. Please try again.';if(input){input.value='';input.focus();}}};
+    const unlock=async()=>{const input=document.getElementById('clientPreviewUnlockPin');const ok=await unlockClientPreview(payload,String(input?.value||'').trim());if(!ok){const e=document.getElementById('clientPreviewUnlockError');if(e)e.textContent='That preview PIN is not correct.';if(input){input.value='';input.focus();}}};
     document.getElementById('clientPreviewUnlockBtn')?.addEventListener('click',unlock);
     document.getElementById('clientPreviewUnlockPin')?.addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
     setTimeout(()=>document.getElementById('clientPreviewUnlockPin')?.focus(),80);
@@ -685,7 +645,7 @@
     const sourceHost=String(intake.sourceWebsite||'').toLowerCase();
     const isLegacyPlumbing=sourceHost.includes('legacyplumbingrva.com')||/legacy plumbing/i.test(String(p.name||''));
     if(isLegacyPlumbing){
-      p.businessIntake.visualAssets={...(p.businessIntake.visualAssets||{}),source:'project_brand_contract',sourceHost:'legacyplumbingrva.com',logo:p.businessIntake.visualAssets?.logo||'assets/legacy_plumbing_canonical_logo.jpeg',designBenchmark:p.businessIntake.visualAssets?.designBenchmark||'assets/legacy_customer_site_benchmark.png',why:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/171591945-2.jpg',services:{service_repair:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/514104433-3.jpg',water_heater:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2236314443-1.jpg',remodel:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2260044476.jpg',new_construction:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2245924642-1.jpg',gas_piping:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2192329599-1.jpg',water_sewer:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/1332113600-2.jpg'},testimonials:['https://legacyplumbingrva.com/wp-content/uploads/2026/04/143922145.jpg','https://legacyplumbingrva.com/wp-content/uploads/2026/04/153651214.jpg','https://legacyplumbingrva.com/wp-content/uploads/2026/04/2260044476.jpg']};
+      p.businessIntake.visualAssets={...(p.businessIntake.visualAssets||{}),source:'public_business_website',sourceHost:'legacyplumbingrva.com',logo:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png',why:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/171591945-2.jpg',services:{service_repair:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/514104433-3.jpg',water_heater:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2236314443-1.jpg',remodel:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2260044476.jpg',new_construction:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2245924642-1.jpg',gas_piping:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/2192329599-1.jpg',water_sewer:'https://legacyplumbingrva.com/wp-content/uploads/2026/04/1332113600-2.jpg'},testimonials:['https://legacyplumbingrva.com/wp-content/uploads/2026/04/143922145.jpg','https://legacyplumbingrva.com/wp-content/uploads/2026/04/153651214.jpg','https://legacyplumbingrva.com/wp-content/uploads/2026/04/2260044476.jpg']};
     }
     const suppliedLanding=intake.landingPage&&typeof intake.landingPage==='object'?intake.landingPage:{};
     const suppliedTrust=Array.isArray(intake.trustSignals)?intake.trustSignals:[];
@@ -697,14 +657,7 @@
       supportingCopy:suppliedLanding.supportingCopy||suppliedLanding.supporting_copy||p.customerExperience.landingPage?.supportingCopy||p.description,
       primaryCta:suppliedLanding.primaryCta||suppliedLanding.primary_cta||p.customerExperience.landingPage?.primaryCta||'I NEED PLUMBING HELP',
       secondaryCta:suppliedLanding.secondaryCta||suppliedLanding.secondary_cta||p.customerExperience.landingPage?.secondaryCta||'VIEW SERVICES',
-      trustSignals:suppliedTrust.length?suppliedTrust:(isLegacyPlumbing?['Licensed & insured','BBB Accredited','Residential + Commercial','Serving Richmond']:['Licensed & insured','Residential + Commercial','Clear communication']),
-      trustBadges:{
-        ...(p.customerExperience.landingPage?.trustBadges||{}),
-        licensedInsured:p.customerExperience.landingPage?.trustBadges?.licensedInsured??true,
-        bbbAccredited:p.customerExperience.landingPage?.trustBadges?.bbbAccredited??isLegacyPlumbing,
-        residentialCommercial:p.customerExperience.landingPage?.trustBadges?.residentialCommercial??true,
-        serviceArea:p.customerExperience.landingPage?.trustBadges?.serviceArea??true
-      },
+      trustSignals:suppliedTrust.length?suppliedTrust:(isLegacyPlumbing?['Licensed & insured','BBB Accredited','Residential & commercial','Richmond-area service']:['Licensed & insured','Residential & commercial','Clear communication']),
       hours:intake.hours||(isLegacyPlumbing?'Mon–Fri • 7:00 AM–4:00 PM':''),
       market:intake.market||(isLegacyPlumbing?'Richmond, VA area':''),
       phone:intake.contact?.phone||(isLegacyPlumbing?'804-955-7865':''),
@@ -714,9 +667,9 @@
       customerPromise:'Tell us what is happening and Legacy Plumbing will have the right information to prepare the next step.',
       serviceProcess:['Tell us what you need','Add property and job details','Choose how to reach you','Legacy reviews and follows up'],
       testimonials:isLegacyPlumbing?[
-        {quote:'Quick response, professional work, and everything was left spotless. Highly recommend.',label:'Richmond Homeowner',service:'Service & Repairs',sample:true},
-        {quote:'They explained the options clearly and completed the water heater change-out fast.',label:'Henrico Customer',service:'Water Heater Replacement',sample:true},
-        {quote:'Reliable crew for our remodel—great coordination and quality from start to finish.',label:'Local Contractor',service:'Remodel Project',sample:true}
+        {quote:'Quick response, professional work, and everything was left spotless. Highly recommend.',label:'Richmond Homeowner',service:'Service & Repairs'},
+        {quote:'They explained the options clearly and completed the water heater change-out fast.',label:'Henrico Customer',service:'Water Heater Replacement'},
+        {quote:'Reliable crew for our remodel—great coordination and quality from start to finish.',label:'Local Contractor',service:'Remodel Project'}
       ]:[]
     };
     const fallbackStarters=[
@@ -2002,7 +1955,7 @@
   async function verifyEnginePin(rawValue,{recordFailure=true}={}){
     const entered=String(rawValue||'').trim();
 
-    // 5.7.4 Engine Recovery Invariant: the historic Black Flag credential 5615
+    // 5.7.3 Engine Recovery Invariant: the historic Black Flag credential 5615
     // is verified before any persisted lockout/settings state is consulted. A stale
     // browser lockout created by a prior regression build must never strand the
     // Captain outside Black Flag when the correct recovery credential is supplied.
@@ -2754,10 +2707,6 @@
     const releaseIdsPresent=new Set(companies.map(p=>String(p?.id||'')));
     for(const releaseId of RELEASE_NEW_PROJECT_IDS){
       if(releaseIdsPresent.has(releaseId))continue;
-      // Existing commissioned Legacy Plumbing vessels may have an older/generated Project ID.
-      // Treat the business identity/source as canonical enough to avoid creating a duplicate on iPad,
-      // while still materializing the bundled vessel on fresh phones with no Legacy project at all.
-      if(releaseId==='legacy-plumbing' && companies.some(row=>isLegacyPlumbingProject(row)))continue;
       const bundled=DEFAULT_COMPANIES.find(p=>String(p?.id||'')===releaseId);
       if(!bundled)continue;
       companies.push(ensureProjectGovernance(normalizeProjectCode(structuredClone(bundled))));
@@ -2993,33 +2942,6 @@
     };
   }
 
-  function portableProjectBrandFallback(p){
-    const id=canonicalProjectId(p?.id);
-    if(id==='ikes-wood-signs')return 'assets/ike_character.jpg';
-    if(id==='bor-north-richmond')return 'assets/signal_restoration_logo.png';
-    if(id==='legacy-plumbing'||isLegacyPlumbingProject(p))return 'assets/legacy_plumbing_canonical_logo.jpeg';
-    const palette={
-      'mugshot-after-dark':['#12151c','#d43d62','MUG','☕'],
-      'beccas-bloom-shop':['#496b4f','#b85f79','BBS','✿'],
-      'grizzly-bear':['#3d3027','#b86b32','GRZ','▲']
-    }[id];
-    if(!palette)return '';
-    const [bg,accent,code,mark]=palette;
-    const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160"><rect width="240" height="160" rx="28" fill="${bg}"/><circle cx="120" cy="60" r="38" fill="${accent}"/><text x="120" y="73" text-anchor="middle" font-size="34" font-family="Arial,sans-serif" font-weight="900" fill="white">${mark}</text><text x="120" y="124" text-anchor="middle" font-size="28" font-family="Arial,sans-serif" font-weight="900" letter-spacing="3" fill="white">${code}</text></svg>`;
-    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-  }
-
-  function bundledProjectBenchmark(p){
-    const id=canonicalProjectId(p?.id);
-    if(id==='legacy-plumbing'||isLegacyPlumbingProject(p))return 'assets/legacy_customer_site_benchmark.png';
-    return String(p?.businessIntake?.visualAssets?.designBenchmark||'');
-  }
-  function bundledProjectCanonicalLogo(p){
-    const id=canonicalProjectId(p?.id);
-    if(id==='legacy-plumbing'||isLegacyPlumbingProject(p))return 'assets/legacy_plumbing_canonical_logo.jpeg';
-    return '';
-  }
-
   async function projectBrandVisual(p){
     const code=String(p?.projectCode||p?.orderPrefix||'PRJ').toUpperCase().slice(0,3);
     let logo='',source='initials';
@@ -3034,9 +2956,9 @@
     // Ike's original customer experience predates the V4 Graphics Library. Preserve
     // that established identity as a project-specific compatibility fallback until
     // a dedicated Project Logo / Mark is assigned in the Engine.
-    if(!logo){
-      logo=portableProjectBrandFallback(p);
-      if(logo)source='portableReleaseBrand';
+    if(!logo && canonicalProjectId(p?.id)==='ikes-wood-signs'){
+      logo='assets/ike_character.jpg';
+      source='ikeCompatibilityMark';
     }
     return {code,logo,source};
   }
@@ -3405,7 +3327,7 @@
 
   function closeExperienceTestDeck(){document.getElementById('experienceTestDeck')?.classList.add('hidden');document.body.classList.remove('experience-test-deck-open');}
 
-  function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';const isBor=p?.id===BOR_PROJECT_ID;banner.classList.toggle('bor-test-banner',isBor&&mode!=='live');banner.innerHTML=`<span><b>${escapeHtml(isBor&&mode!=='live'?'DARK SKY • TEST':label)}</b><small>${escapeHtml(isBor&&mode!=='live'?'Private project preview':p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':isBor?'← TEST DECK':'TEST DECK'}</button>`;banner.classList.remove('hidden');}
+  function ensureExperienceModeBanner(p,mode){let banner=document.getElementById('experienceModeBanner');if(!banner){banner=document.createElement('div');banner.id='experienceModeBanner';banner.className='experience-mode-banner';document.body.appendChild(banner);}const label=mode==='preview'?'PRIVATE PREVIEW • NO RECORDS':mode==='sea_trial'?'SEA TRIAL • TEST DATA':'LIVE CUSTOMER EXPERIENCE';const isBor=p?.id===BOR_PROJECT_ID;banner.classList.toggle('bor-test-banner',isBor&&mode!=='live');banner.innerHTML=`<span><b>${escapeHtml(isBor&&mode!=='live'?'DARK SKY • TEST':label)}</b><small>${escapeHtml(isBor&&mode!=='live'?'Private project preview':p.name)}</small></span><button type="button" id="returnExperienceTestDeck" class="secondary-btn">${mode==='live'?'RETURN TO ENGINE':isBor?'← TEST DECK':'RETURN TO TEST DECK'}</button>`;banner.classList.remove('hidden');}
 
   async function enterExperienceMode(p,mode){
     if(!p)return;
@@ -3809,7 +3731,6 @@
         <h4>${escapeHtml(p.name)}</h4>
         <p>${escapeHtml(p.tagline||String(p.type||p.businessType||'project').replaceAll('_',' '))}</p>
         ${(()=>{const ds=migrateLegacyDeployment(p).filter(d=>d.state!=='retired');const active=ds.filter(d=>d.state==='deployed').length;const deployment=active?(p.publish?.status==='live'?`${active} SAILING`:`${active} READY`):ds.length?`${ds.length} IN HARBOR`:'STANDARD';return `<div class="project-command-statusline"><span class="platform-status ${platformState}">${platformStatusLabel(p)}</span><span>${escapeHtml(ownerState)}</span><span>${escapeHtml(deployment)}</span>${p.v4AdmissionReviewRequired?'<span class="admission-review-badge">REVIEW</span>':''}</div>`;})()}
-        ${(()=>{const strength=projectStrengthSnapshot(p);return `<div class="project-strength-line"><span><b>FLEET STRENGTH ${strength.score}%</b><small>${strength.next?`NEXT: ${escapeHtml(strength.nextLabel)}`:'REUSABLE BASELINE ABOARD'}</small></span><i style="--strength:${strength.score}%"><em></em></i></div>`;})()}
         <div class="project-command-metrics" aria-label="Project activity summary">
           <span><b>${s.orders}</b><small>${escapeHtml(projectActivityMetricLabel(p))}</small></span>
           <span><b>$${s.revenueMonth.toFixed(0)}</b><small>30D REVENUE</small></span>
@@ -3856,7 +3777,6 @@
     applyEngineFleetFilter();
     // Project card actions are owned by the early Engine Project Command bus.
     await renderFleetHealth();
-    renderFleetCommandBridge();
   }
 
   const DEPLOYMENT_PROFILES={
@@ -4462,16 +4382,6 @@
             </div>
             <button id="assetProjectLogoClear" type="button" class="secondary-btn small">CLEAR</button>
           </label>
-          <label class="asset-slot benchmark-asset-slot" data-asset-slot-card="designBenchmark">
-            <span>Design Benchmark / Reference</span>
-            <input id="assetDesignBenchmarkInput" type="file" accept="image/*">
-            <div class="asset-preview-stage benchmark-preview-stage">
-              <img id="assetDesignBenchmarkPreview" alt="Project design benchmark preview"><div class="asset-preview-empty" data-preview-empty-for="assetDesignBenchmarkPreview"><strong>No Design Benchmark Yet</strong><span>Upload an approved reference image. Black Flag keeps it separate from the live logo and customer graphics.</span></div>
-              <button type="button" class="asset-expand-btn hidden" data-expand-asset="designBenchmark" aria-label="Expand Design Benchmark / Reference">+</button>
-            </div>
-            <div class="benchmark-asset-note"><strong>REFERENCE ONLY</strong><span>Never rendered as the project logo or customer-facing artwork.</span></div>
-            <button id="assetDesignBenchmarkClear" type="button" class="secondary-btn small">CLEAR</button>
-          </label>
           <label class="asset-slot" data-asset-slot-card="heroGraphic">
             <span>Hero Graphic</span>
             <input id="assetHeroGraphicInput" type="file" accept="image/*">
@@ -4527,7 +4437,6 @@
           <div class="project-capability-intro"><div><small>BUSINESS PROFILE</small><h4>${escapeHtml((p.businessType||p.type||'project').replaceAll('_',' ').replaceAll('-',' '))}</h4><p>Recommended capabilities are guidance, not automatic platform law. Enable only what belongs in this business.</p></div><div class="project-capability-rule"><strong>CONTROL CENTER ONLY</strong><span>Project managers can see and use enabled capabilities, but cannot activate them.</span></div></div>
           <div id="projectCapabilityDeck" class="project-capability-deck">${capabilityCatalogMarkup(p)}</div>
           <div class="project-capability-actions"><button id="saveProjectCapabilities" class="primary-btn small" type="button">SAVE PROJECT CAPABILITIES</button><button id="useRecommendedCapabilities" class="secondary-btn small" type="button">USE BUSINESS RECOMMENDATIONS</button><span id="projectCapabilityStatus" class="helper"></span></div>
-          <div id="capabilityImplementationHost">${capabilityImplementationMarkup(p)}</div>
         </div>`;
     }
     if(tab==='products') return `${projectModuleHero(p,'OPERATE','Products & Services','Manage the offers this business can sell and whether each offer is ready for customers.',`<span>${products.length} OFFERS</span>`)}<div class="pec-card"><div class="pec-title-row"><h4>Offer Registry</h4><button id="addProductBtn" class="secondary-btn small">ADD PRODUCT</button></div>
@@ -4543,13 +4452,6 @@
       <label class="admin-toggle-row compact-toggle"><span><strong>Photo step</strong><small>Require product photo.</small></span><input id="ptPhoto" type="checkbox" ${p.customerExperience?.photoRequired!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Preview approval</strong><small>Require customer approval.</small></span><input id="ptPreview" type="checkbox" ${p.customerExperience?.previewApproval!==false?'checked':''}></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Custom colors</strong><small>Allow custom color picker.</small></span><input id="ptColors" type="checkbox" ${p.customization?.allowCustomColors!==false?'checked':''}></label>
-      </div>
-      <div class="pec-card trust-settings-card"><div class="pec-title-row"><div><h4>Trust & Credibility Strip</h4><p class="helper">Project-specific proof only. A badge disappears completely when switched off. Never enable a claim that the business has not verified.</p></div></div>
-      <label class="admin-toggle-row compact-toggle"><span><strong>Licensed &amp; Insured</strong><small>Show a concise credential badge.</small></span><input id="ptTrustLicensed" type="checkbox" ${customerTrustBadgeState(p).licensedInsured?'checked':''}></label>
-      <label class="admin-toggle-row compact-toggle bbb-setting-row"><span><strong>BBB Accredited Business</strong><small>Show the BBB mark only for a currently accredited business.</small></span><input id="ptTrustBBB" type="checkbox" ${customerTrustBadgeState(p).bbbAccredited?'checked':''}></label>
-      <label class="admin-toggle-row compact-toggle"><span><strong>Residential + Commercial</strong><small>Show when the business serves both markets.</small></span><input id="ptTrustResidentialCommercial" type="checkbox" ${customerTrustBadgeState(p).residentialCommercial?'checked':''}></label>
-      <label class="admin-toggle-row compact-toggle"><span><strong>Service Area</strong><small>Show the project market as a compact service-area badge.</small></span><input id="ptTrustServiceArea" type="checkbox" ${customerTrustBadgeState(p).serviceArea?'checked':''}></label>
-      <div class="trust-settings-preview"><span>PREVIEW</span>${customerTrustStripMarkup(p,{compact:true})}</div>
       </div>
       <div class="pec-card visual-capability-card ${p.businessType==='restoration_services'?'business-low-priority':''}"><div class="pec-title-row"><div><h4>Visual Presentation Capability</h4><p class="helper">${p.businessType==='restoration_services'?'Signal Restoration does not normally need a customer placement renderer. No Visual Placement is the recommended profile; the full library remains available below as an advanced project capability.':'Start with a profile, then tailor the capability families to the business. AVAILABLE means the current Engine has working behavior; FOUNDATION records a supported requirement for future renderers without pretending it is already production-ready.'}</p></div></div>
       <label class="visual-profile-select">Starting profile<select id="ptVisualProfile">${visualProfileOptions(visual.profile||'none')}</select></label>
@@ -4931,18 +4833,9 @@
         if($('projectCapabilityStatus'))$('projectCapabilityStatus').textContent='Project capability authority saved.';
         await renderProjectTab(p.id,'capabilities');
       });
-      $$('[data-prepare-foundation]').forEach(btn=>btn.addEventListener('click',async()=>{
-        const id=btn.dataset.prepareFoundation;
-        if(!requireEngineProjectMutation(p,'project.capability.prepare'))return;
-        if(!prepareFoundationCapability(p,id))return;
-        await persistProjectMutation(p,{reason:`capability.prepare.${id}`});
-        logActivity(p.id,'Capability foundation prepared',PROJECT_CAPABILITY_CATALOG[id]?.label||id);
-        await renderProjectTab(p.id,'capabilities');
-      }));
     }
     if(tab==='experience'){ const profile=$('ptVisualProfile'); if(profile) profile.onchange=()=>{ const preset=visualPresets()[profile.value]; if(!preset)return; VISUAL_FAMILIES.forEach(f=>{ $$(`[data-visual-family=\"${f}\"]`).forEach(cb=>{cb.checked=(preset[f]||[]).includes(cb.value);cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked);}); }); }; $$('#visualCapabilityDeck input[type=\"checkbox\"]').forEach(cb=>cb.onchange=()=>cb.closest('.visual-cap-option')?.classList.toggle('selected',cb.checked)); $('saveExperienceTab').onclick=async()=>{if(!requireEngineProjectMutation(p,'customer.experience.update'))return;
         p.customerExperience={...(p.customerExperience||{}),mode:$('ptOperatingFlow')?.value||p.customerExperience?.mode||'guided',photoRequired:$('ptPhoto').checked,previewApproval:$('ptPreview').checked};
-        p.customerExperience.landingPage={...(p.customerExperience.landingPage||{}),trustBadges:{licensedInsured:!!$('ptTrustLicensed')?.checked,bbbAccredited:!!$('ptTrustBBB')?.checked,residentialCommercial:!!$('ptTrustResidentialCommercial')?.checked,serviceArea:!!$('ptTrustServiceArea')?.checked}};
         p.customization=p.customization||{};p.customization.allowCustomColors=$('ptColors').checked;p.visualPresentation=collectVisualPresentationFromControls(p);
         window.BlackFlagV3Core?.updateBusinessUnderstanding?.(p,{briefText:$('ptBusinessBrief')?.value||'',overrides:{mode:$('ptOperatingMode')?.value||'other',customerFlow:$('ptOperatingFlow')?.value||'guided',relationshipType:($('ptRelationshipType')?.value&&$('ptRelationshipType').value!=='auto')?$('ptRelationshipType').value:undefined,fulfillment:String($('ptOperatingFulfillment')?.value||'').split(',').map(x=>x.trim()).filter(Boolean),schedulingNeeded:!!$('ptOperatingScheduling')?.checked}});
         await persistProjectMutation(p,{reason:'business.understanding.update'});logActivity(p.id,'Business understanding updated',window.BlackFlagV3Core?.resolveOperatingModel?.(p)?.summary||`visual: ${p.visualPresentation.profile}`);await renderProjectTab(p.id,'experience');};}
@@ -6284,7 +6177,7 @@
   const PROJECT_ASSET_DB='blackFlagGraphicsDB';
   const PROJECT_ASSET_DB_VERSION=1;
   const PROJECT_ASSET_STORE='projectGraphics';
-  const PROJECT_ASSET_SLOTS=['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'];
+  const PROJECT_ASSET_SLOTS=['projectLogo','heroGraphic','footerGraphic','backgroundImage'];
   const projectAssetMemory=new Map();
 
   function openProjectAssetDb(){
@@ -6448,7 +6341,6 @@
   const PROJECT_ASSET_META_KEY='blackFlagProjectAssetMetaV1';
   const GRAPHIC_SLOT_LABELS={
     projectLogo:'Project Logo / Mark',
-    designBenchmark:'Design Benchmark / Reference',
     heroGraphic:'Welcome Hero Graphic',
     footerGraphic:'Footer Graphic',
     backgroundImage:'Background / Texture'
@@ -6492,10 +6384,10 @@
     return p||null;
   }
   function clearGraphicsTransientUi(){
-    ['assetProjectLogoInput','assetDesignBenchmarkInput','assetHeroGraphicInput','assetFooterGraphicInput','assetBackgroundInput'].forEach(id=>{
+    ['assetProjectLogoInput','assetHeroGraphicInput','assetFooterGraphicInput','assetBackgroundInput'].forEach(id=>{
       const el=$(id); if(el) el.value='';
     });
-    ['assetProjectLogoPreview','assetDesignBenchmarkPreview','assetHeroGraphicPreview','assetFooterGraphicPreview','assetBackgroundPreview'].forEach(id=>{
+    ['assetProjectLogoPreview','assetHeroGraphicPreview','assetFooterGraphicPreview','assetBackgroundPreview'].forEach(id=>{
       const el=$(id); if(el){el.removeAttribute('src');el.classList.add('hidden');}
     });
     $$('[data-expand-asset]').forEach(b=>b.classList.add('hidden'));
@@ -6542,17 +6434,14 @@
     }
     if($('graphicsLibrary')){
       $('graphicsLibrary').innerHTML=slots.map(slot=>{
-        const bundled=slot==='designBenchmark'?bundledProjectBenchmark(p):(slot==='projectLogo'?bundledProjectCanonicalLogo(p):'');
-        const src=assets[slot]||bundled||'';
-        const hasSaved=!!assets[slot], has=!!src, m=meta[slot]||{};
-        const baseline=!hasSaved&&!!bundled;
-        return `<article class="graphics-library-item ${has?'has-graphic':'empty-graphic'} ${baseline?'bundled-baseline':''}" data-manage-graphic="${escapeHtml(slot)}" tabindex="0" role="button" aria-label="Manage ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">
+        const has=!!assets[slot], m=meta[slot]||{};
+        return `<article class="graphics-library-item ${has?'has-graphic':'empty-graphic'}" data-manage-graphic="${escapeHtml(slot)}" tabindex="0" role="button" aria-label="Manage ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">
           <div class="graphics-library-preview">
-            ${has?`<img src="${src}" alt="${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}"><button type="button" class="graphics-library-expand" data-expand-asset="${escapeHtml(slot)}" aria-label="Expand ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">+</button>`:`<span>${escapeHtml((p.projectCode||'PRJ').slice(0,3))}</span>`}
+            ${has?`<img src="${assets[slot]}" alt="${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}"><button type="button" class="graphics-library-expand" data-expand-asset="${escapeHtml(slot)}" aria-label="Expand ${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}">+</button>`:`<span>${escapeHtml((p.projectCode||'PRJ').slice(0,3))}</span>`}
           </div>
           <div class="graphics-library-copy"><strong>${escapeHtml(GRAPHIC_SLOT_LABELS[slot]||slot)}</strong>
-          <small>${hasSaved?escapeHtml(m.fileName||'Assigned project graphic'):baseline?(slot==='projectLogo'?'Bundled canonical fallback • Control Center upload remains authoritative':'Bundled design reference • upload a replacement benchmark anytime'):'No graphic assigned to this project'}</small></div>
-          <span class="graphics-slot-state">${hasSaved?'SAVED':baseline?'BASELINE':'OPEN SLOT'}<b>MANAGE</b></span>
+          <small>${has?escapeHtml(m.fileName||'Assigned project graphic'):'No graphic assigned to this project'}</small></div>
+          <span class="graphics-slot-state">${has?'SAVED':'OPEN SLOT'}<b>MANAGE</b></span>
         </article>`;
       }).join('');
     }
@@ -6560,29 +6449,25 @@
 
 
   const GRAPHIC_SLOT_HELP={
-    projectLogo:'Primary identity mark used throughout this project. The original artwork is preserved exactly. Uploading a replacement here deliberately changes the canonical project logo.',
-    designBenchmark:'Project-specific visual reference for Black Flag and future design work. It is never used as the live logo or rendered automatically to customers.',
+    projectLogo:'Primary identity mark used throughout this project. The original artwork is preserved exactly.',
     heroGraphic:'Shown prominently on the customer welcome screen. It takes priority over the project logo in Project Showcase.',
     footerGraphic:'Displayed near the bottom of this project’s customer experience when assigned.',
     backgroundImage:'Used as a softened customer-experience background so content remains readable.'
   };
   const GRAPHIC_SLOT_SAVE_LABEL={
     projectLogo:'SAVE PROJECT LOGO',
-    designBenchmark:'SAVE DESIGN BENCHMARK',
     heroGraphic:'SAVE HERO GRAPHIC',
     footerGraphic:'SAVE FOOTER GRAPHIC',
     backgroundImage:'SAVE BACKGROUND / TEXTURE'
   };
   const GRAPHIC_SLOT_INPUT={
     projectLogo:'assetProjectLogoInput',
-    designBenchmark:'assetDesignBenchmarkInput',
     heroGraphic:'assetHeroGraphicInput',
     footerGraphic:'assetFooterGraphicInput',
     backgroundImage:'assetBackgroundInput'
   };
   const GRAPHIC_SLOT_PREVIEW={
     projectLogo:'assetProjectLogoPreview',
-    designBenchmark:'assetDesignBenchmarkPreview',
     heroGraphic:'assetHeroGraphicPreview',
     footerGraphic:'assetFooterGraphicPreview',
     backgroundImage:'assetBackgroundPreview'
@@ -6633,17 +6518,15 @@
     });
 
     const preview=$(GRAPHIC_SLOT_PREVIEW[slot]);
-    const hasVisual=!!(preview?.src && !preview.classList.contains('hidden'));
-    const savedMeta=readProjectAssetMeta(p.id)?.[slot]||null;
-    const baseline=hasVisual&&!savedMeta&&((slot==='designBenchmark'&&!!bundledProjectBenchmark(p))||(slot==='projectLogo'&&!!bundledProjectCanonicalLogo(p)));
-    updatePreviewEmptyState(GRAPHIC_SLOT_PREVIEW[slot],hasVisual);
+    const hasSaved=!!(preview?.src && !preview.classList.contains('hidden'));
+    updatePreviewEmptyState(GRAPHIC_SLOT_PREVIEW[slot],hasSaved);
     const save=$('assetSaveBtn');
     if(save){
       save.textContent=GRAPHIC_SLOT_SAVE_LABEL[slot]||'SAVE GRAPHIC';
       save.disabled=true;
     }
-    setGraphicEditState(savedMeta?'saved':baseline?'open':'open',savedMeta?'SAVED':baseline?'BUNDLED BASELINE':'OPEN SLOT');
-    if($('assetSaveMessage')) $('assetSaveMessage').textContent=savedMeta?'Choose a new image to replace the saved graphic.':baseline?(slot==='projectLogo'?'The bundled canonical logo is active until you deliberately upload a replacement here.':'The bundled benchmark is available as the current design reference. Upload a replacement to make a new project benchmark.'):'Choose an image to begin.';
+    setGraphicEditState(hasSaved?'saved':'open',hasSaved?'SAVED':'OPEN SLOT');
+    if($('assetSaveMessage')) $('assetSaveMessage').textContent=hasSaved?'Choose a new image to replace the saved graphic.':'Choose an image to begin.';
     editor?.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function closeMarketingGraphicSlot(){
@@ -6667,15 +6550,13 @@
     if(engineActiveProjectId!==requestedProjectId)return;
     const map={
       projectLogo:'assetProjectLogoPreview',
-      designBenchmark:'assetDesignBenchmarkPreview',
       heroGraphic:'assetHeroGraphicPreview',
       footerGraphic:'assetFooterGraphicPreview',
       backgroundImage:'assetBackgroundPreview'
     };
     Object.entries(map).forEach(([slot,id])=>{
       const el=$(id);if(!el)return;
-      const bundled=slot==='designBenchmark'?bundledProjectBenchmark(p):(slot==='projectLogo'?bundledProjectCanonicalLogo(p):'');
-      const data=assets[slot]||bundled||'';
+      const data=assets[slot];
       if(data){
         el.src=data;el.classList.remove('hidden');
         updatePreviewEmptyState(id,true);
@@ -6739,7 +6620,6 @@
 
     const clears={
       assetProjectLogoClear:'projectLogo',
-      assetDesignBenchmarkClear:'designBenchmark',
       assetHeroGraphicClear:'heroGraphic',
       assetFooterGraphicClear:'footerGraphic',
       assetBackgroundClear:'backgroundImage'
@@ -6834,14 +6714,14 @@
     job_intake:{label:'Job / Order Intake',group:'work',status:'available',managerArea:'jobs',description:'Capture new work requests and create project-scoped records.'},
     job_status:{label:'Job Status & Workflow',group:'work',status:'available',managerArea:'jobs',description:'Move work through the project workflow and track open workload.'},
     customer_records:{label:'Customer Records',group:'customers',status:'available',managerArea:'customers',description:'Retain project-scoped customer history when enabled.'},
-    property_records:{label:'Property / Site Records',group:'customers',status:'foundation',managerArea:'jobs',description:'Keep service-location and property context with the job.',nextStep:'Add project-scoped site cards tied to each job and customer.'},
-    field_photos:{label:'Field Photos',group:'field',status:'foundation',managerArea:'field',description:'Capture project-scoped jobsite evidence and progress photos.',nextStep:'Add a job photo timeline with capture, labels, timestamps, and project isolation.'},
-    damage_documentation:{label:'Damage Documentation',group:'field',status:'foundation',managerArea:'field',description:'Organize affected areas, loss type, notes, and evidence.',nextStep:'Add affected-area records, loss categories, notes, and evidence bundles.'},
-    project_notes:{label:'Project Notes',group:'field',status:'foundation',managerArea:'field',description:'Keep internal job notes with the project record.',nextStep:'Add timestamped internal notes to each project job with author context.'},
-    scheduling:{label:'Scheduling',group:'operations',status:'foundation',managerArea:'schedule',description:'Coordinate appointments, visits, deliveries, or production windows.',nextStep:'Add project-local appointments, windows, assignments, and calendar-ready records.'},
-    crew_assignment:{label:'Crew / Team Assignment',group:'operations',status:'foundation',managerArea:'team',description:'Assign project-scoped work to responsible team members.',nextStep:'Add project team roster and assignment controls tied to active jobs.'},
-    insurance_contacts:{label:'Insurance & Contact Details',group:'work',status:'foundation',managerArea:'jobs',description:'Keep carrier, adjuster, claim, and related contact context.',nextStep:'Add claim, carrier, adjuster, and reference fields to applicable jobs.'},
-    estimates_authorizations:{label:'Estimates & Authorizations',group:'financial',status:'foundation',managerArea:'estimates',description:'Track estimates, approvals, and work authorization milestones.',nextStep:'Add estimate versions, approval state, and authorization milestones per job.'},
+    property_records:{label:'Property / Site Records',group:'customers',status:'foundation',managerArea:'jobs',description:'Keep service-location and property context with the job.'},
+    field_photos:{label:'Field Photos',group:'field',status:'foundation',managerArea:'field',description:'Capture project-scoped jobsite evidence and progress photos.'},
+    damage_documentation:{label:'Damage Documentation',group:'field',status:'foundation',managerArea:'field',description:'Organize affected areas, loss type, notes, and evidence.'},
+    project_notes:{label:'Project Notes',group:'field',status:'foundation',managerArea:'field',description:'Keep internal job notes with the project record.'},
+    scheduling:{label:'Scheduling',group:'operations',status:'foundation',managerArea:'schedule',description:'Coordinate appointments, visits, deliveries, or production windows.'},
+    crew_assignment:{label:'Crew / Team Assignment',group:'operations',status:'foundation',managerArea:'team',description:'Assign project-scoped work to responsible team members.'},
+    insurance_contacts:{label:'Insurance & Contact Details',group:'work',status:'foundation',managerArea:'jobs',description:'Keep carrier, adjuster, claim, and related contact context.'},
+    estimates_authorizations:{label:'Estimates & Authorizations',group:'financial',status:'foundation',managerArea:'estimates',description:'Track estimates, approvals, and work authorization milestones.'},
     payments:{label:'Payments',group:'financial',status:'available',managerArea:'estimates',description:'Use the project payment structure when separately configured.'},
     operational_reporting:{label:'Operational Reporting',group:'insight',status:'available',managerArea:'reports',description:'See project-scoped activity, workload, and operating signals.'},
     customer_notifications:{label:'Customer Notifications',group:'experience',status:'available',managerArea:'customers',description:'Use project-approved customer confirmation and notification rules.'},
@@ -6863,22 +6743,14 @@
     system:{label:'System',order:90,description:'Project-scoped deployment and technical controls.'}
   };
   const PROJECT_CAPABILITY_PROFILES={
-    restoration_services:['job_intake','job_status','customer_records','property_records','field_photos','damage_documentation','crew_assignment','scheduling','insurance_contacts','estimates_authorizations','project_notes','operational_reporting','customer_notifications'],
-    plumbing:['job_intake','job_status','customer_records','property_records','field_photos','project_notes','scheduling','crew_assignment','estimates_authorizations','operational_reporting','customer_notifications'],
-    service_business:['job_intake','job_status','customer_records','property_records','field_photos','project_notes','scheduling','crew_assignment','estimates_authorizations','operational_reporting','customer_notifications'],
-    custom_wood_signs:['job_intake','job_status','customer_records','visual_presentation','project_notes','operational_reporting','customer_notifications','kiosk_deployment'],
-    'wood-sign':['job_intake','job_status','customer_records','visual_presentation','project_notes','operational_reporting','customer_notifications','kiosk_deployment'],
-    custom_mugs:['job_intake','job_status','customer_records','visual_presentation','project_notes','operational_reporting','customer_notifications','kiosk_deployment'],
-    'custom-mug':['job_intake','job_status','customer_records','visual_presentation','project_notes','operational_reporting','customer_notifications','kiosk_deployment'],
-    custom_flowers:['job_intake','job_status','customer_records','scheduling','project_notes','visual_presentation','customer_notifications','operational_reporting'],
-    outdoor_camping_equipment:['job_intake','job_status','customer_records','project_notes','customer_notifications','operational_reporting'],
-    default:['job_intake','job_status','customer_records','project_notes','customer_notifications','operational_reporting']
+    restoration_services:['job_intake','job_status','customer_records','property_records','field_photos','damage_documentation','crew_assignment','scheduling','insurance_contacts','estimates_authorizations','project_notes','operational_reporting'],
+    'wood-sign':['job_intake','job_status','customer_records','visual_presentation','operational_reporting','customer_notifications','kiosk_deployment'],
+    'custom-mug':['job_intake','job_status','customer_records','visual_presentation','operational_reporting','customer_notifications','kiosk_deployment'],
+    custom_flowers:['job_intake','job_status','customer_records','scheduling','visual_presentation','customer_notifications','operational_reporting'],
+    outdoor_camping_equipment:['job_intake','job_status','customer_records','operational_reporting'],
+    default:['job_intake','job_status','customer_records','operational_reporting']
   };
-  function capabilityProfileKey(p){
-    const business=String(p?.businessType||'').trim();
-    const type=String(p?.type||'').trim();
-    return PROJECT_CAPABILITY_PROFILES[business]?business:(PROJECT_CAPABILITY_PROFILES[type]?type:'default');
-  }
+  function capabilityProfileKey(p){return p?.businessType||p?.type||'default';}
   function recommendedCapabilitiesForProject(p){
     return [...(PROJECT_CAPABILITY_PROFILES[capabilityProfileKey(p)]||PROJECT_CAPABILITY_PROFILES.default)];
   }
@@ -6887,79 +6759,32 @@
     const valid=new Set(Object.keys(PROJECT_CAPABILITY_CATALOG));
     const recommended=recommendedCapabilitiesForProject(p).filter(x=>valid.has(x));
     if(!p.capabilityControl||!Array.isArray(p.capabilityControl.enabled)){
-      p.capabilityControl={enabled:[...recommended],source:'fleet_strength_standard'};
+      p.capabilityControl={enabled:[...recommended],source:'business_profile'};
     }else{
-      p.capabilityControl.enabled=[...new Set([...p.capabilityControl.enabled.filter(x=>valid.has(x)),...recommended])];
-      if(!p.capabilityControl.source)p.capabilityControl.source='fleet_strength_standard';
+      p.capabilityControl.enabled=[...new Set(p.capabilityControl.enabled.filter(x=>valid.has(x)))];
     }
-    p.capabilityControl.strengthStandard={version:2,build:BUILD_VERSION,profile:capabilityProfileKey(p)};
     return p.capabilityControl;
   }
-  function projectStrengthSnapshot(p){
-    const recommended=new Set(recommendedCapabilitiesForProject(p));
-    const enabled=enabledCapabilitiesForProject(p);
-    const plan=ensureCapabilityImplementationPlan(p);
-    const foundations=[...recommended].filter(id=>PROJECT_CAPABILITY_CATALOG[id]?.status==='foundation');
-    const prepared=foundations.filter(id=>plan[id]?.state==='prepared');
-    const ready=[...recommended].filter(id=>PROJECT_CAPABILITY_CATALOG[id]?.status==='available').length;
-    const total=Math.max(1,recommended.size);
-    const score=Math.round(((ready+prepared.length)/total)*100);
-    const next=foundations.find(id=>plan[id]?.state!=='prepared')||'';
-    return {score,total,next,nextLabel:next?(PROJECT_CAPABILITY_CATALOG[next]?.label||next):'Reusable baseline aboard'};
-  }
   function enabledCapabilitiesForProject(p){return new Set(ensureProjectCapabilityControl(p).enabled||[]);}
-  function ensureCapabilityImplementationPlan(p){
-    if(!p)return {};
-    const enabled=enabledCapabilitiesForProject(p);
-    p.capabilityImplementation=p.capabilityImplementation&&typeof p.capabilityImplementation==='object'?p.capabilityImplementation:{};
-    Object.entries(PROJECT_CAPABILITY_CATALOG).forEach(([id,meta])=>{
-      if(!enabled.has(id)){ delete p.capabilityImplementation[id]; return; }
-      const prior=p.capabilityImplementation[id]&&typeof p.capabilityImplementation[id]==='object'?p.capabilityImplementation[id]:{};
-      p.capabilityImplementation[id]={
-        ...prior,
-        capabilityId:id,
-        state:meta.status==='available'?'ready':(prior.state==='prepared'?'prepared':'next'),
-        nextStep:meta.nextStep||'Use the existing Engine capability in this project.',
-        source:p.capabilityControl?.source||'control_center',
-        schemaVersion:1
-      };
-    });
-    return p.capabilityImplementation;
-  }
-  function prepareFoundationCapability(p,id){
-    const meta=PROJECT_CAPABILITY_CATALOG[id];
-    if(!p||!meta||meta.status!=='foundation')return false;
-    ensureCapabilityImplementationPlan(p);
-    p.capabilityImplementation[id]={...(p.capabilityImplementation[id]||{}),state:'prepared',preparedAt:new Date().toISOString(),build:BUILD_VERSION,nextStep:meta.nextStep||''};
-    p.foundationConfig=p.foundationConfig&&typeof p.foundationConfig==='object'?p.foundationConfig:{};
-    p.foundationConfig[id]={enabled:true,projectId:p.id,preparedAt:new Date().toISOString(),schemaVersion:1};
-    return true;
-  }
-  function capabilityImplementationMarkup(p){
-    const plan=ensureCapabilityImplementationPlan(p);
-    const rows=Object.entries(plan).filter(([id])=>PROJECT_CAPABILITY_CATALOG[id]?.status==='foundation');
-    if(!rows.length)return '<div class="capability-implementation-empty"><strong>No foundation work queued.</strong><span>This project currently uses Engine capabilities that are already available.</span></div>';
-    return `<section class="capability-implementation-board"><div class="capability-implementation-head"><div><small>ENGINE → PROJECT</small><h4>Implementation Queue</h4><p>Every enabled foundation becomes a concrete next step instead of a dead-end label. Preparing a step creates project-local configuration without changing another vessel.</p></div><span>${rows.length} NEXT STEP${rows.length===1?'':'S'}</span></div><div class="capability-implementation-list">${rows.map(([id,row])=>{const m=PROJECT_CAPABILITY_CATALOG[id];const prepared=row.state==='prepared';return `<article class="capability-implementation-row ${prepared?'prepared':''}"><div><small>${prepared?'PREPARED FOR PROJECT':'NEXT IMPLEMENTATION'}</small><strong>${escapeHtml(m.label)}</strong><p>${escapeHtml(row.nextStep||m.nextStep||'')}</p></div><button type="button" data-prepare-foundation="${escapeHtml(id)}" class="${prepared?'secondary-btn':'primary-btn'} small" ${prepared?'disabled':''}>${prepared?'PREPARED':'PREPARE NEXT STEP'}</button></article>`}).join('')}</div><div class="capability-implementation-law"><strong>REPEATABLE BY DESIGN</strong><span>The Engine owns the capability contract; each project receives only its own configuration, data, permissions, and customer experience.</span></div></section>`;
-  }
   function capabilityCatalogMarkup(p){
     const enabled=enabledCapabilitiesForProject(p), recommended=new Set(recommendedCapabilitiesForProject(p));
     const groups={};
     Object.entries(PROJECT_CAPABILITY_CATALOG).forEach(([id,meta])=>{(groups[meta.group]||(groups[meta.group]=[])).push([id,meta]);});
     const ordered=Object.entries(groups).sort(([a],[b])=>Object.keys(CAPABILITY_GROUP_LABELS).indexOf(a)-Object.keys(CAPABILITY_GROUP_LABELS).indexOf(b));
-    return ordered.map(([group,items])=>`<section class="project-capability-family"><div class="project-capability-family-head"><strong>${escapeHtml(CAPABILITY_GROUP_LABELS[group]||group.toUpperCase())}</strong><span>${items.filter(([id])=>enabled.has(id)).length} enabled</span></div><div class="project-capability-grid">${items.map(([id,meta])=>{const on=enabled.has(id), rec=recommended.has(id);return `<label class="project-capability-option ${on?'selected':''} ${rec?'recommended':''}"><input type="checkbox" data-project-capability="${escapeHtml(id)}" ${on?'checked':''}><span><b>${escapeHtml(meta.label)}</b><small>${escapeHtml(meta.description)}</small>${meta.status==='foundation'&&meta.nextStep?`<small class="capability-next-step"><b>NEXT:</b> ${escapeHtml(meta.nextStep)}</small>`:''}</span><span class="project-capability-badges">${rec?'<em class="recommended">RECOMMENDED</em>':''}<em class="${meta.status==='available'?'available':'foundation'}">${meta.status==='available'?'AVAILABLE':'FOUNDATION'}</em></span></label>`}).join('')}</div></section>`).join('');
+    return ordered.map(([group,items])=>`<section class="project-capability-family"><div class="project-capability-family-head"><strong>${escapeHtml(CAPABILITY_GROUP_LABELS[group]||group.toUpperCase())}</strong><span>${items.filter(([id])=>enabled.has(id)).length} enabled</span></div><div class="project-capability-grid">${items.map(([id,meta])=>{const on=enabled.has(id), rec=recommended.has(id);return `<label class="project-capability-option ${on?'selected':''} ${rec?'recommended':''}"><input type="checkbox" data-project-capability="${escapeHtml(id)}" ${on?'checked':''}><span><b>${escapeHtml(meta.label)}</b><small>${escapeHtml(meta.description)}</small></span><span class="project-capability-badges">${rec?'<em class="recommended">RECOMMENDED</em>':''}<em class="${meta.status==='available'?'available':'foundation'}">${meta.status==='available'?'AVAILABLE':'FOUNDATION'}</em></span></label>`}).join('')}</div></section>`).join('');
   }
   function projectManagerWorkspaceMarkup(p){
     const enabled=enabledCapabilitiesForProject(p), areas={};
     enabled.forEach(id=>{const meta=PROJECT_CAPABILITY_CATALOG[id];if(!meta)return;const area=meta.managerArea||'system';(areas[area]||(areas[area]=[])).push([id,meta]);});
     const ordered=Object.entries(areas).sort(([a],[b])=>(MANAGER_AREA_META[a]?.order||999)-(MANAGER_AREA_META[b]?.order||999));
-    return `<section class="manager-workspace"><div class="manager-workspace-head"><div><small>PROJECT MANAGER WORKSPACE</small><h4>Enabled for ${escapeHtml(p.name)}</h4><p>The Control Center decides what this project may use. This workspace groups those approved capabilities around the manager's day-to-day work.</p></div><span>${enabled.size} ENABLED</span></div><div class="manager-workspace-grid">${ordered.map(([area,caps])=>{const am=MANAGER_AREA_META[area]||{label:area,description:''};const working=caps.filter(([,m])=>m.status==='available').length;const route=area==='jobs'?'orders':area==='customers'?'customers':null;return `<article class="manager-workspace-card"><div><small>${escapeHtml(am.label.toUpperCase())}</small><h5>${escapeHtml(am.label)}</h5><p>${escapeHtml(am.description)}</p></div><div class="manager-capability-list">${caps.map(([,m])=>`<span class="${m.status}"><b>${escapeHtml(m.label)}</b><em>${m.status==='available'?'READY':'NEXT STEP'}</em>${m.status==='foundation'&&m.nextStep?`<small>${escapeHtml(m.nextStep)}</small>`:''}</span>`).join('')}</div>${route?`<button type="button" data-admin-jump="${route}" class="manager-workspace-open">OPEN ${escapeHtml(am.label.toUpperCase())} →</button>`:`<span class="manager-workspace-state">${working?`${working} READY NOW`:'ENABLED • FOUNDATION'}</span>`}</article>`}).join('')}</div><div class="manager-workspace-law"><strong>CONTROL CENTER AUTHORITY</strong><span>Project managers can use approved capabilities here, but they cannot activate or deactivate capabilities. Capability authority remains in Black Flag Project Control.</span></div></section>`;
+    return `<section class="manager-workspace"><div class="manager-workspace-head"><div><small>PROJECT MANAGER WORKSPACE</small><h4>Enabled for ${escapeHtml(p.name)}</h4><p>The Control Center decides what this project may use. This workspace groups those approved capabilities around the manager's day-to-day work.</p></div><span>${enabled.size} ENABLED</span></div><div class="manager-workspace-grid">${ordered.map(([area,caps])=>{const am=MANAGER_AREA_META[area]||{label:area,description:''};const working=caps.filter(([,m])=>m.status==='available').length;const route=area==='jobs'?'orders':area==='customers'?'customers':null;return `<article class="manager-workspace-card"><div><small>${escapeHtml(am.label.toUpperCase())}</small><h5>${escapeHtml(am.label)}</h5><p>${escapeHtml(am.description)}</p></div><div class="manager-capability-list">${caps.map(([,m])=>`<span class="${m.status}"><b>${escapeHtml(m.label)}</b><em>${m.status==='available'?'READY':'FOUNDATION'}</em></span>`).join('')}</div>${route?`<button type="button" data-admin-jump="${route}" class="manager-workspace-open">OPEN ${escapeHtml(am.label.toUpperCase())} →</button>`:`<span class="manager-workspace-state">${working?`${working} READY NOW`:'ENABLED • FOUNDATION'}</span>`}</article>`}).join('')}</div><div class="manager-workspace-law"><strong>CONTROL CENTER AUTHORITY</strong><span>Project managers can use approved capabilities here, but they cannot activate or deactivate capabilities. Capability authority remains in Black Flag Project Control.</span></div></section>`;
   }
 
   const PROJECT_SHELL_TEMPLATES={
-    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',graphicSlots:['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'flat-surface',previewGeometry:'flat-surface'}},
-    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',graphicSlots:['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'cylindrical-wrap',previewGeometry:'cylindrical-wrap'}},
-    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',graphicSlots:['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'card-overlay',previewGeometry:'card-overlay'}},
-    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,graphicSlots:['projectLogo','designBenchmark','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false,visualProfile:'none'}}
+    'wood-sign':{id:'wood-sign',name:'Wood Sign',customerShell:'ikes',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'flat-surface',previewGeometry:'flat-surface'}},
+    'custom-mug':{id:'custom-mug',name:'Custom Mug',customerShell:'mugs',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'cylindrical-wrap',previewGeometry:'cylindrical-wrap'}},
+    'custom_flowers':{id:'custom_flowers',name:'Flower Shop',customerShell:'flowers',graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:true,previewApproval:true,wording:true,styles:true,visualProfile:'card-overlay',previewGeometry:'card-overlay'}},
+    'custom-product':{id:'custom-product',name:'Custom Product',customerShell:null,graphicSlots:['projectLogo','heroGraphic','footerGraphic','backgroundImage'],capabilities:{photoRequired:false,previewApproval:false,wording:true,styles:false,visualProfile:'none'}}
   };
   const VISUAL_FAMILIES=['input','placement','transform','preview','approval','output'];
   function visualCatalog(){return window.BlackFlagV3Core?.visualCapabilityCatalog||{};}
@@ -7018,43 +6843,6 @@
     const host=String(p?.businessIntake?.sourceWebsite||p?.businessIntake?.visualAssets?.sourceHost||'').toLowerCase();
     return host.includes('legacyplumbingrva.com')||/legacy plumbing/i.test(String(p?.name||''));
   }
-  function customerTrustBadgeState(p){
-    const landing=p?.customerExperience?.landingPage||{};
-    const saved=landing.trustBadges&&typeof landing.trustBadges==='object'?landing.trustBadges:{};
-    const legacy=isLegacyPlumbingProject(p);
-    const trust=Array.isArray(landing.trustSignals)?landing.trustSignals.map(x=>String(x).toLowerCase()):[];
-    return {
-      licensedInsured:saved.licensedInsured??trust.some(x=>x.includes('licensed')||x.includes('insured')),
-      bbbAccredited:saved.bbbAccredited??(legacy&&trust.some(x=>x.includes('bbb'))),
-      residentialCommercial:saved.residentialCommercial??trust.some(x=>x.includes('residential')||x.includes('commercial')),
-      serviceArea:saved.serviceArea??trust.some(x=>x.includes('richmond')||x.includes('service area'))
-    };
-  }
-  function customerTrustGraphic(kind){
-    switch(kind){
-      case 'licensed':
-        return `<span class="trust-chip-graphic trust-graphic-licensed" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 6 51 13v16c0 13.5-7.7 24.3-19 29-11.3-4.7-19-15.5-19-29V13L32 6Z" fill="url(#shieldGrad)"/><path d="M32 10.7 17 16v13c0 11.1 5.9 20 15 24.2 9.1-4.2 15-13.1 15-24.2V16L32 10.7Z" stroke="rgba(255,255,255,.92)" stroke-width="2.3"/><path d="m24 32.5 5.1 5.1L40.8 26" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="shieldGrad" x1="13" y1="9" x2="53" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#29A3D9"/><stop offset="1" stop-color="#0B5E86"/></linearGradient></defs></svg></span>`;
-      case 'residential':
-        return `<span class="trust-chip-graphic trust-graphic-residential" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="31" fill="url(#urbanGrad)"/><path d="M11 31.5 24.8 20a2.5 2.5 0 0 1 3.2 0L41.5 31.5" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 28.8V47h17.5V28.8" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/><path d="M22.4 47V36h5V47" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/><path d="M39.5 20h10v27h-10z" stroke="#fff" stroke-width="3.2" stroke-linejoin="round"/><path d="M43.2 24.8h2.5M43.2 30.5h2.5M43.2 36.2h2.5" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/><defs><linearGradient id="urbanGrad" x1="9" y1="8" x2="55" y2="57" gradientUnits="userSpaceOnUse"><stop stop-color="#37A6D9"/><stop offset="1" stop-color="#0A6A90"/></linearGradient></defs></svg></span>`;
-      case 'serviceArea':
-        return `<span class="trust-chip-graphic trust-graphic-service-area" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="31" fill="url(#pinGrad)"/><path d="M32 52s16-12.4 16-24.2C48 18.5 40.8 12 32 12s-16 6.5-16 15.8C16 39.6 32 52 32 52Z" fill="#fff"/><circle cx="32" cy="28.4" r="5.8" fill="#0E78A0"/><defs><linearGradient id="pinGrad" x1="10" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#38A8DD"/><stop offset="1" stop-color="#0A6B91"/></linearGradient></defs></svg></span>`;
-      default:
-        return '';
-    }
-  }
-  function customerTrustChip(kind,labelHtml){
-    return `<article class="trust-chip trust-chip-${kind}">${customerTrustGraphic(kind)}<span class="trust-chip-copy"><strong>${labelHtml}</strong></span></article>`;
-  }
-  function customerTrustStripMarkup(p,{compact=false}={}){
-    const landing=p?.customerExperience?.landingPage||{};
-    const badges=customerTrustBadgeState(p);
-    const items=[];
-    if(badges.licensedInsured)items.push(customerTrustChip('licensed','Licensed &amp; Insured'));
-    if(badges.bbbAccredited)items.push(`<article class="trust-chip trust-chip-bbb"><img src="assets/bbb_accredited_a_plus.png" alt="BBB Accredited Business A+ Rating"></article>`);
-    if(badges.residentialCommercial)items.push(customerTrustChip('residential','Residential +<br>Commercial'));
-    if(badges.serviceArea){const area=String(landing.market||'Local service').replace(/\s+area$/i,'').replace(/,?\s+VA$/i,'').trim();items.push(customerTrustChip('service-area',`Serving<br>${escapeHtml(area)}`));}
-    return items.length?`<section class="contractor-proof-strip trust-strip ${compact?'compact':''}">${items.join('')}</section>`:'';
-  }
   function plumbingVisualAssets(p){
     const supplied=p?.businessIntake?.visualAssets&&typeof p.businessIntake.visualAssets==='object'?p.businessIntake.visualAssets:{};
     if(isLegacyPlumbingProject(p)){
@@ -7077,19 +6865,6 @@
     }
     return `<div class="universal-brand-logo generated-mark"><span>${escapeHtml(initials)}</span></div>`;
   }
-  function projectExperienceStyle(p){
-    const primary=String(p?.branding?.primary||p?.businessIntake?.colors?.[0]||'#0b3f53');
-    const accent=String(p?.branding?.accent||p?.businessIntake?.colors?.[1]||'#2fa8cf');
-    const safePrimary=/^#[0-9a-f]{6}$/i.test(primary)?primary:'#0b3f53';
-    const safeAccent=/^#[0-9a-f]{6}$/i.test(accent)?accent:'#2fa8cf';
-    return `--project-primary:${safePrimary};--project-accent:${safeAccent};`;
-  }
-  function projectExperienceBrandCard(p,initials,{tagline=''}={}){
-    const logo=universalLandingLogoMarkup(p,initials);
-    const subtitle=String(tagline||p?.branding?.subtitle||p?.tagline||'').trim();
-    return `<div class="project-experience-brand-card">${logo}<div class="project-experience-brand-card-copy"><strong>${escapeHtml(p?.name||'')}</strong>${subtitle?`<small>${escapeHtml(subtitle)}</small>`:''}</div></div>`;
-  }
-
   function plumbingServiceVisualKey(name=''){
     const n=String(name).toLowerCase();
     if(/water heater/.test(n))return 'water_heater';
@@ -7101,60 +6876,6 @@
     return '';
   }
 
-
-  function projectDesignBenchmarkState(p){
-    const assets=projectAssetMemory.get(p?.id)||{};
-    const saved=String(assets.designBenchmark||'').trim();
-    const baseline=String(bundledProjectBenchmark(p)||'').trim();
-    const legacy=isLegacyPlumbingProject(p);
-    return {
-      active:!!(saved||baseline),
-      saved:!!saved,
-      source:saved||baseline,
-      mode:legacy?'legacy-responsive-flagship':'project-benchmark',
-      profileId:legacy?'legacy-benchmark-v1':'project-benchmark-generic-v1',
-      renderer:legacy?'legacy-benchmark-native':'universal-benchmark'
-    };
-  }
-  function benchmarkHowIcon(i){
-    const paths=[
-      'M4 5h16v11H8l-4 3V5zm4 5h8M8 13h5',
-      'M5 12a7 7 0 0 1 14 0v5h-3v-5a4 4 0 0 0-8 0v5H5v-5zm3 6h8',
-      'M12 3a9 9 0 1 0 9 9M12 7v5l3 2M5 20l3-3M19 20l-3-3',
-      'M12 3l8 3v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3zm-4 9 3 3 5-6'
-    ];
-    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[i]||paths[0]}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  }
-  function benchmarkTrustMarkup(p){
-    const landing=p?.customerExperience?.landingPage||{};
-    const badges=customerTrustBadgeState(p);
-    const area=String(landing.market||'Richmond, VA').replace(/\s+area$/i,'').replace(/,?\s+VA$/i,'').trim();
-    const shield=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v6c0 5-3 8.5-8 10-5-1.5-8-5-8-10V6l8-3Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m8.5 12 2.2 2.2 4.8-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
-    const home=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7v9H3z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 20v-6h6v6M16 8h4v12" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
-    const pin=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>`;
-    const items=[];
-    if(badges.licensedInsured)items.push(`<article><span class="benchmark-trust-icon">${shield}</span><span><strong>Licensed &amp;<br>Insured</strong></span></article>`);
-    if(badges.bbbAccredited)items.push(`<article class="benchmark-trust-bbb"><img src="assets/bbb_accredited_a_plus.png" alt="BBB Accredited Business A+ Rating"><span><strong>BBB Accredited</strong><small>A+ Rating</small></span></article>`);
-    if(badges.residentialCommercial)items.push(`<article><span class="benchmark-trust-icon">${home}</span><span><strong>Residential +<br>Commercial</strong></span></article>`);
-    if(badges.serviceArea)items.push(`<article><span class="benchmark-trust-icon">${pin}</span><span><strong>Serving<br>${escapeHtml(area||'Richmond')}</strong></span></article>`);
-    return items.join('');
-  }
-
-  function legacyBenchmarkServiceCopy(name=''){
-    const n=String(name).toLowerCase();
-    if(/service|repair/.test(n) && !/water|sewer/.test(n)) return 'Leaky pipes, fixtures, and more';
-    if(/water heater/.test(n)) return 'Tank & tankless solutions';
-    if(/remodel|addition/.test(n)) return 'Kitchens, baths, and beyond';
-    if(/new construction/.test(n)) return 'Ground-up plumbing experts';
-    if(/gas/.test(n)) return 'Safe installation & repair';
-    if(/water.*sewer|sewer/.test(n)) return 'Fast, reliable solutions';
-    return 'Request plumbing service';
-  }
-  function benchmarkServiceCardMarkup(x){
-    const other=/something else/i.test(String(x?.name||''));
-    const detail=legacyBenchmarkServiceCopy(x?.name||'');
-    return `<button type="button" class="benchmark-service-card ${other?'benchmark-service-other':''}" data-universal-landing-offer="${escapeHtml(x.id)}"><span class="benchmark-service-icon">${universalServiceIcon(x.name)}</span><span class="benchmark-service-copy"><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(detail)}</small></span><span class="benchmark-service-arrow" aria-hidden="true">›</span></button>`;
-  }
   function universalServiceIcon(name=''){
     const n=String(name).toLowerCase();
     let path='M12 3v18M5 10h14';
@@ -7188,7 +6909,7 @@
       universalCustomerState.receipt=receipt;
       const contact=[receipt.customerName,receipt.customerPhone,receipt.customerEmail].filter(Boolean).join(' • ');
       const contextBits=[receipt.fulfillment?`Fulfillment: ${receipt.fulfillment.replaceAll('-',' ')}`:'',receipt.preferredTiming?`Timing: ${receipt.preferredTiming}`:''].filter(Boolean);
-      shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div><div class="universal-header-actions">${benchmarkLegacy?benchmarkMastheadAction:`<button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}`}</div></header>
+      shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
       <main class="universal-shell-main"><section class="universal-done-card universal-receipt-card"><div class="universal-done-mark">✓</div><small>${escapeHtml(ctx.state==='preview'?'PRIVATE PREVIEW • NO RECORD CREATED':ctx.state==='sea_trial'?`SEA TRIAL • ${relationship.receiptLabel}`:relationship.receiptLabel)}</small><h2>${escapeHtml(ctx.state==='preview'?'Preview complete.':ctx.state==='sea_trial'?'Customer test complete.':relationship.confirmationHeading)}</h2><p class="universal-receipt-next">${escapeHtml(ctx.state==='preview'?'This is the real confirmation experience, but no customer, order, engagement, analytics, or lifecycle record was written.':ctx.state==='sea_trial'?'The customer engagement was recorded against this outpost as test data. Return to the Test Deck to review results.':relationship.nextStep)}</p><div class="universal-receipt-summary"><div><span>REFERENCE</span><strong>${escapeHtml(receipt.id)}</strong></div><div><span>ENGAGEMENT</span><strong>${escapeHtml(relationship.label)}</strong></div><div><span>WHAT THEY SENT</span><strong>${escapeHtml(receipt.offerName||'Request')}</strong></div>${contact?`<div><span>CONTACT</span><strong>${escapeHtml(contact)}</strong></div>`:''}${contextBits.length?`<div><span>DETAILS</span><strong>${escapeHtml(contextBits.join(' • '))}</strong></div>`:''}</div>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalDoneReturnShipwright" class="primary-btn">RETURN TO SHIPWRIGHT</button>':'<div class="universal-receipt-actions"><button type="button" id="universalAnotherOrder" class="secondary-btn">START ANOTHER</button></div>'}</section></main>`;
       $('universalAnotherOrder')?.addEventListener('click',()=>{clearUniversalReceipt(p);resetUniversalCustomerState(p);renderUniversalCustomerShell(p)});
       $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
@@ -7200,84 +6921,43 @@
       const trust=Array.isArray(landing.trustSignals)?landing.trustSignals:[];
       const isPlumbing=plumbingProject;
       const description=universalSafeDescription(p,'Licensed and insured local service for homes and businesses.');
+      const previewBanner=ctx.state==='sea_trial'?'<div class="universal-trial-banner premium-preview-banner">SEA TRIAL • TEST DATA ONLY</div>':ctx.state==='preview'?'<div class="universal-trial-banner preview-only premium-preview-banner">PRIVATE PREVIEW • NO CUSTOMER RECORDS</div>':'';
       const contactLocked=ctx.state!=='deployed';
-      const previewBanner=contactLocked?`<div class="universal-trial-banner premium-preview-banner full-sail-test-ribbon"><b>${ctx.state==='sea_trial'?'SEA TRIAL':'PRIVATE TEST'}</b><span>${ctx.state==='preview'?'No customer records • ':''}No calls, texts, emails, payments, or external requests leave this project.</span></div>`:'';
       const requestCtaLabel=contactLocked?'START TEST REQUEST':'REQUEST SERVICE';
       const helpCtaLabel=contactLocked?'I NEED HELP • TEST':'I NEED PLUMBING HELP';
-      const testContactSafety='';
+      const testContactSafety=contactLocked?'<div class="fleet-test-contact-safety"><b>TEST MODE</b><span>No calls, texts, emails, service requests, or external notifications leave this project.</span></div>':'';
       const logoMarkup=universalLandingLogoMarkup(p,initials);
       if(isPlumbing){
         const hours=landing.hours||'';
         const market=landing.market||'Richmond area';
         const legacy=isLegacyPlumbingProject(p);
-        const benchmark=projectDesignBenchmarkState(p);
-        const benchmarkActive=benchmark.active;
-        const benchmarkLegacy=benchmarkActive&&legacy;
-        const benchmarkPhone=String(landing.phone||p?.businessIntake?.contact?.phone||'').trim();
-        const benchmarkMastheadAction=benchmarkLegacy&&benchmarkPhone
-          ?(contactLocked
-            ?`<button type="button" class="benchmark-contact-button benchmark-contact-locked" disabled aria-label="Phone contact disabled in private test mode"><span class="benchmark-phone-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h3l2 5-2 1.5a16 16 0 0 0 4.5 4.5L16 12l5 2v3c0 2-1.6 4-3.7 4C9.4 21 3 14.6 3 6.7 3 4.6 5 3 7 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong>${escapeHtml(benchmarkPhone)}</strong></button>`
-            :`<a class="benchmark-contact-button" href="tel:${escapeHtml(benchmarkPhone.replace(/[^+\d]/g,''))}"><span class="benchmark-phone-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h3l2 5-2 1.5a16 16 0 0 0 4.5 4.5L16 12l5 2v3c0 2-1.6 4-3.7 4C9.4 21 3 14.6 3 6.7 3 4.6 5 3 7 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong>${escapeHtml(benchmarkPhone)}</strong></a>`)
-          :'';
         const visuals=plumbingVisualAssets(p);
-        const projectAssets=projectAssetMemory.get(p?.id)||{};
         const process=Array.isArray(landing.serviceProcess)&&landing.serviceProcess.length?landing.serviceProcess:['Tell us what you need','Add property and job details','Choose how to reach you','We review and follow up'];
         const testimonials=Array.isArray(landing.testimonials)?landing.testimonials:[];
-        const reviewsVerified=landing.reviewsVerified===true;
-        const visibleTestimonials=reviewsVerified?testimonials:(contactLocked?testimonials.filter(t=>t?.sample===true):[]);
-        const heroPhoto=projectAssets.heroGraphic||(benchmarkLegacy?'assets/legacy_benchmark_hero.jpg':'')||visuals.hero||visuals.why||visuals.services?.service_repair||'';
-        const serviceCards=benchmarkActive&&legacy
-          ?offers.map(benchmarkServiceCardMarkup).join('')
-          :offers.map(x=>{const key=plumbingServiceVisualKey(x.name);const image=key?visuals.services?.[key]:'';const other=/something else/i.test(x.name);return `<button type="button" class="contractor-service-card ${image?'has-photo':''} ${other?'contractor-service-other':''}" data-universal-landing-offer="${escapeHtml(x.id)}" ${image?`style="--service-photo:url('${escapeHtml(image)}')"`:''}><span class="contractor-service-photo"></span><span class="contractor-service-overlay"></span><span class="contractor-service-content"><span class="contractor-service-icon">${universalServiceIcon(x.name)}</span><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small><b>START REQUEST →</b></span></button>`}).join('');
-        const testimonialCards=visibleTestimonials.length?visibleTestimonials.map((t,i)=>`<article class="contractor-review-card">${visuals.testimonials?.[i]?`<img src="${escapeHtml(visuals.testimonials[i])}" alt="" loading="lazy">`:''}<div><span aria-label="5 stars">★★★★★</span><p>“${escapeHtml(t.quote||'')}”</p><strong>${escapeHtml(t.label||'Local customer')}</strong><small>${escapeHtml(t.service||'Plumbing service')}</small></div></article>`).join(''):'';
-        const reviewNotice=!reviewsVerified&&testimonialCards?'<div class="contractor-review-notice">SAMPLE TEST CONTENT • Replace with verified customer reviews before launch.</div>':'';
-        if(benchmarkLegacy){
-          const benchmarkOffers=offers.filter(x=>!/something else/i.test(String(x?.name||''))).slice(0,6);
-          const benchmarkCards=benchmarkOffers.map(benchmarkServiceCardMarkup).join('');
-          const benchmarkMarket=String(market||'Richmond, VA').replace(/\s+area$/i,'').trim();
-          shell.innerHTML=`<div class="legacy-benchmark-page benchmark-contract-active" data-benchmark-contract="active" data-benchmark-version="6.0.7" style="${projectExperienceStyle(p)}">
-            <header class="legacy-benchmark-masthead">
-              <div class="legacy-benchmark-logo">${logoMarkup}</div>
-              <div class="legacy-benchmark-meta"><span>⌖ ${escapeHtml(benchmarkMarket)}</span><span>◷ ${escapeHtml(hours||'Business-hour response')}</span></div>
-              <div class="legacy-benchmark-action">${benchmarkMastheadAction}</div>
-            </header>
-            <div class="legacy-benchmark-test-wrap">${previewBanner}<span class="legacy-benchmark-build">6.0.7</span></div>
-            <main class="legacy-benchmark-main">
-              <section class="legacy-benchmark-hero" ${heroPhoto?`style="--legacy-hero:url('${escapeHtml(heroPhoto)}')"`:''}>
-                <div class="legacy-benchmark-hero-overlay"></div>
-                <div class="legacy-benchmark-hero-copy">
-                  <h1>Fast, reliable<br><em>plumbing—</em><br>done right.</h1>
-                  <p>Licensed and insured plumbing for homes and businesses across the Richmond area.</p>
-                  <div class="legacy-benchmark-actions"><button type="button" id="universalHelpNow" class="legacy-benchmark-primary">${escapeHtml(helpCtaLabel)}</button><button type="button" id="universalViewServices" class="legacy-benchmark-secondary">VIEW SERVICES</button></div>
-                </div>
-              </section>
-              <div class="legacy-benchmark-trust"><div class="legacy-benchmark-trust-grid">${benchmarkTrustMarkup(p)}</div></div>
-              <section id="services" class="legacy-benchmark-services"><h2>Our Services</h2><div class="legacy-benchmark-service-grid">${benchmarkCards}</div></section>
-              <section id="process" class="legacy-benchmark-how"><div class="legacy-benchmark-how-title"><h2>How It Works</h2><span>Proudly serving the ${escapeHtml(benchmarkMarket)} area.</span></div><div class="legacy-benchmark-how-grid">${process.slice(0,4).map((x,i)=>`<article><span class="benchmark-step-num">${i+1}</span><span class="benchmark-how-icon">${benchmarkHowIcon(i)}</span><div><strong>${escapeHtml(['Request Help','We Respond','We Get to Work','You’re Covered'][i]||x)}</strong><small>${escapeHtml(['Tell us what you need. We’ll gather the details.','A local expert will reach out quickly.','We show up on time and get it done right.','Quality service you can count on.'][i]||'')}</small></div>${i<3?'<i aria-hidden="true">→</i>':''}</article>`).join('')}</div></section>
-            </main>
-          </div>`;
-        }else{
-          shell.innerHTML=`<div class="universal-service-landing premium-plumbing-landing project-brand-first ${legacy?'legacy-contractor-site':''} ${benchmarkActive?'benchmark-contract-active':''}" data-benchmark-contract="${benchmarkActive?'active':'none'}" style="${projectExperienceStyle(p)}"><header class="universal-shell-header landing-header premium-brand-header contractor-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml([market,hours].filter(Boolean).join(' • ')||description)}</p></div></div><nav class="contractor-nav" aria-label="Customer navigation"><button type="button" data-scroll-target="services">SERVICES</button><button type="button" data-scroll-target="why">WHY ${legacy?'LEGACY':'US'}</button><button type="button" data-scroll-target="process">HOW IT WORKS</button><button type="button" id="contractorHeaderHelp">${escapeHtml(requestCtaLabel)}</button></nav><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
+        const heroPhoto=visuals.why||visuals.services?.service_repair||'';
+        const serviceCards=offers.map(x=>{const key=plumbingServiceVisualKey(x.name);const image=key?visuals.services?.[key]:'';return `<button type="button" class="contractor-service-card ${image?'has-photo':''}" data-universal-landing-offer="${escapeHtml(x.id)}" ${image?`style="--service-photo:url('${escapeHtml(image)}')"`:''}><span class="contractor-service-photo"></span><span class="contractor-service-overlay"></span><span class="contractor-service-content"><span class="contractor-service-icon">${universalServiceIcon(x.name)}</span><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.description||'Request plumbing service')}</small><b>START REQUEST →</b></span></button>`}).join('');
+        const proofSignals=(trust.length?trust:['Licensed & insured','Residential & commercial','Richmond-area service','Clear communication']).slice(0,4);
+        const testimonialCards=testimonials.length?testimonials.map((t,i)=>`<article class="contractor-review-card">${visuals.testimonials?.[i]?`<img src="${escapeHtml(visuals.testimonials[i])}" alt="" loading="lazy">`:''}<div><span aria-label="5 stars">★★★★★</span><p>“${escapeHtml(t.quote||'')}”</p><strong>${escapeHtml(t.label||'Local customer')}</strong><small>${escapeHtml(t.service||'Plumbing service')}</small></div></article>`).join(''):'';
+        shell.innerHTML=`<div class="universal-service-landing premium-plumbing-landing ${legacy?'legacy-contractor-site':''}"><header class="universal-shell-header landing-header premium-brand-header contractor-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml([market,hours].filter(Boolean).join(' • ')||description)}</p></div></div><nav class="contractor-nav" aria-label="Customer navigation"><button type="button" data-scroll-target="services">SERVICES</button><button type="button" data-scroll-target="why">WHY ${legacy?'LEGACY':'US'}</button><button type="button" data-scroll-target="process">HOW IT WORKS</button><button type="button" id="contractorHeaderHelp">${escapeHtml(requestCtaLabel)}</button></nav><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
           <main class="universal-landing-main premium-plumbing-main contractor-main">${previewBanner}${testContactSafety}
-            <div class="contractor-benchmark-stage"><section class="contractor-hero"><div class="contractor-hero-copy"><div class="contractor-mobile-brand">${projectExperienceBrandCard(p,initials,{tagline:landing.market||p?.branding?.subtitle||''})}</div><div class="premium-eyebrow"><span></span>${escapeHtml(landing.eyebrow||'RICHMOND, VA • LICENSED & INSURED')}</div><h2>${benchmarkLegacy?'Fast, reliable<br><em>plumbing—</em><br>done right.':escapeHtml(landing.headline||'Fast, reliable plumbing—done right.')}</h2><p>${escapeHtml(benchmarkLegacy?'Licensed and insured plumbing for homes and businesses across the Richmond, VA area.':(landing.supportingCopy||description))}</p><div class="contractor-hero-actions"><button type="button" id="universalHelpNow" class="contractor-primary-cta">${escapeHtml(contactLocked?helpCtaLabel:(landing.primaryCta||'I NEED PLUMBING HELP'))}</button><button type="button" id="universalViewServices" class="contractor-secondary-cta">VIEW SERVICES</button></div><div class="contractor-availability"><b>LOCAL SERVICE TEAM</b><span>${escapeHtml(hours||'Business-hour response')}</span><span>${escapeHtml(market)}</span></div></div><div class="contractor-hero-visual" ${heroPhoto?`style="--contractor-hero:url('${escapeHtml(heroPhoto)}')"`:''}><div class="contractor-hero-photo"></div><div class="contractor-hero-brand">${projectExperienceBrandCard(p,initials,{tagline:landing.heroBrandLine||p?.branding?.subtitle||'Professional plumbing for homes & businesses'})}</div></div></section>
-            ${customerTrustStripMarkup(p,{compact:true})}</div>
-            <section id="services" class="contractor-services-section">${benchmarkActive&&legacy?'<div class="benchmark-services-head"><h2>Our Services</h2></div>':'<div class="contractor-section-heading"><div><small>PLUMBING SERVICES</small><h2>Start with the job in front of you.</h2></div><p>Choose the service that best matches what you need. We’ll guide you through the right request and keep it simple.</p></div>'}<div class="contractor-service-mosaic">${serviceCards}</div></section>
+            <section class="contractor-hero"><div class="contractor-hero-copy"><div class="premium-eyebrow"><span></span>${escapeHtml(landing.eyebrow||'RICHMOND, VA • LICENSED & INSURED')}</div><h2>${escapeHtml(landing.headline||'Fast, reliable plumbing—done right.')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="contractor-hero-actions"><button type="button" id="universalHelpNow" class="contractor-primary-cta">${escapeHtml(contactLocked?helpCtaLabel:(landing.primaryCta||'I NEED PLUMBING HELP'))}</button><button type="button" id="universalViewServices" class="contractor-secondary-cta">VIEW SERVICES</button></div><div class="contractor-availability"><b>LOCAL SERVICE TEAM</b><span>${escapeHtml(hours||'Business-hour response')}</span><span>${escapeHtml(market)}</span></div></div><div class="contractor-hero-visual" ${heroPhoto?`style="--contractor-hero:url('${escapeHtml(heroPhoto)}')"`:''}><div class="contractor-hero-photo"></div><div class="contractor-hero-brand">${logoMarkup}<small>Professional plumbing for homes & businesses</small></div></div></section>
+            <section class="contractor-proof-strip">${proofSignals.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong></article>`).join('')}</section>
+            <section id="services" class="contractor-services-section"><div class="contractor-section-heading"><div><small>PLUMBING SERVICES</small><h2>Start with the job in front of you.</h2></div><p>Choose the closest match. Black Flag will open the right request path and keep the details tied to ${escapeHtml(p.name)}.</p></div><div class="contractor-service-mosaic">${serviceCards}</div></section>
             <section id="why" class="contractor-why-section"><div class="contractor-why-photo" ${visuals.why?`style="--why-photo:url('${escapeHtml(visuals.why)}')"`:''}></div><div class="contractor-why-copy"><small>WHY ${legacy?'LEGACY':'THIS TEAM'}</small><h2>${escapeHtml(landing.proofTitle||'Trusted, straightforward service')}</h2><p>${escapeHtml(landing.proofCopy||'Clear recommendations, quality workmanship, and dependable local follow-up.')}</p><ul><li><b>Licensed & insured</b><span>Professional work with safety and code compliance in mind.</span></li><li><b>Clear communication</b><span>Know what the next step is before work begins.</span></li><li><b>Homes & businesses</b><span>From repairs and replacements to remodels and larger projects.</span></li></ul></div></section>
-            ${benchmarkActive&&legacy?`<section id="process" class="benchmark-how-section"><div class="benchmark-how-head"><h2>How It Works</h2><span>Proudly serving the ${escapeHtml(String(market).replace(/\s+area$/i,''))} area.</span></div><div class="benchmark-how-grid">${process.slice(0,4).map((x,i)=>`<article><span class="benchmark-step-num">${i+1}</span><span class="benchmark-how-icon">${benchmarkHowIcon(i)}</span><div><strong>${escapeHtml(['Request Help','We Respond','We Get to Work','You’re Covered'][i]||x)}</strong><small>${escapeHtml(['Tell us what you need. We’ll gather the details.','A local expert will reach out quickly.','We show up on time and get it done right.','Quality service you can count on.'][i]||'')}</small></div>${i<3?'<i aria-hidden="true">→</i>':''}</article>`).join('')}</div></section>`:`<section id="process" class="contractor-process-section"><div class="contractor-section-heading compact"><div><small>HOW SERVICE STARTS</small><h2>A better request means a better first conversation.</h2></div><p>No generic contact form. Give the plumbing team the details they need before they call you back.</p></div><div class="contractor-process-grid">${process.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong><small>${['Choose the service or problem that is closest.','Tell us where the work is and what is happening.','Add photos, timing and the best way to contact you.','The team reviews the request and follows up with the right next step.'][i]||'Move forward with a clear next step.'}</small></article>`).join('')}</div></section>`}
-            ${testimonialCards?`<section class="contractor-reviews-section"><div class="contractor-section-heading compact"><div><small>CUSTOMER EXPERIENCE</small><h2>Proof that the details matter.</h2></div><p>Clear work, clear communication, dependable results.</p></div>${reviewNotice}<div class="contractor-review-grid">${testimonialCards}</div></section>`:''}
-            <section class="contractor-bottom-cta"><div><small>READY WHEN YOU ARE</small><h2>Need a plumber in the Richmond area?</h2><p>${escapeHtml(landing.customerPromise||'Tell us what is happening and we will collect the right details for the next step.')}</p></div><div class="contractor-bottom-action"><button type="button" id="universalHelpNowBottom" class="contractor-primary-cta">${escapeHtml(requestCtaLabel)}</button><small class="contractor-cta-reassure">Tell us what’s happening — it only takes a minute.</small></div></section>
+            <section id="process" class="contractor-process-section"><div class="contractor-section-heading compact"><div><small>HOW SERVICE STARTS</small><h2>A better request means a better first conversation.</h2></div><p>No generic contact form. Give the plumbing team the details they need before they call you back.</p></div><div class="contractor-process-grid">${process.map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><strong>${escapeHtml(x)}</strong><small>${['Choose the service or problem that is closest.','Tell us where the work is and what is happening.','Add photos, timing and the best way to contact you.','The team reviews the request and follows up with the right next step.'][i]||'Move forward with a clear next step.'}</small></article>`).join('')}</div></section>
+            ${testimonialCards?`<section class="contractor-reviews-section"><div class="contractor-section-heading compact"><div><small>CUSTOMER EXPERIENCE</small><h2>Proof that the details matter.</h2></div><p>Clear work, clear communication, dependable results.</p></div><div class="contractor-review-grid">${testimonialCards}</div></section>`:''}
+            <section class="contractor-bottom-cta"><div><small>READY WHEN YOU ARE</small><h2>Need a plumber in the Richmond area?</h2><p>${escapeHtml(landing.customerPromise||'Tell us what is happening and we will collect the right details for the next step.')}</p></div><button type="button" id="universalHelpNowBottom" class="contractor-primary-cta">${escapeHtml(requestCtaLabel)}</button></section>
             <footer class="contractor-footer"><div>${logoMarkup}<div><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(market)} • ${escapeHtml(hours)}</span></div></div><div><span>${escapeHtml(landing.phone||'')}</span><span>${escapeHtml(landing.email||'')}</span></div></footer>
           </main></div>`;
-        }
       }else{
-        shell.innerHTML=`<div class="universal-service-landing project-brand-first" style="${projectExperienceStyle(p)}"><header class="universal-shell-header landing-header project-brand-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(description)}</p></div></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header><main class="universal-landing-main">${previewBanner}${testContactSafety}<section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(contactLocked?'START TEST REQUEST':(landing.primaryCta||'I NEED HELP NOW'))}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><div class="universal-confidence-brand">${projectExperienceBrandCard(p,initials,{tagline:p?.branding?.subtitle||''})}</div><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>${(p.customerExperience?.landingPage?.trustBadges||trust.length)?customerTrustStripMarkup(p,{compact:true}):''}<section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section></main></div>`;
+        shell.innerHTML=`<div class="universal-service-landing"><header class="universal-shell-header landing-header"><div class="universal-mark">${escapeHtml(initials)}</div><div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(description)}</p></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header><main class="universal-landing-main">${previewBanner}${testContactSafety}<section class="universal-landing-hero"><div class="universal-landing-copy"><small>LOCAL SERVICE • READY TO HELP</small><h2>${escapeHtml(landing.headline||'How can we help?')}</h2><p>${escapeHtml(landing.supportingCopy||description)}</p><div class="universal-landing-actions"><button type="button" id="universalHelpNow" class="primary-btn universal-help-now">${escapeHtml(contactLocked?'START TEST REQUEST':(landing.primaryCta||'I NEED HELP NOW'))}</button><button type="button" id="universalViewServices" class="secondary-btn">${escapeHtml(landing.secondaryCta||'VIEW SERVICES')}</button></div></div><div class="universal-confidence-panel"><span>WHY CUSTOMERS CAN START HERE</span><strong>Clear request. Clear next step.</strong><p>Your information stays with ${escapeHtml(p.name)} and this project.</p></div></section>${trust.length?`<section class="universal-trust-row">${trust.map(x=>`<span>✓ ${escapeHtml(x)}</span>`).join('')}</section>`:''}<section class="universal-service-preview"><div class="universal-section-head"><small>SERVICES</small><h2>What can we help with?</h2><p>Choose a service now or use Help Now and we will guide you.</p></div><div class="universal-offer-grid landing-offers">${offers.map(x=>`<button type="button" class="universal-offer" data-universal-landing-offer="${escapeHtml(x.id)}"><strong>${escapeHtml(x.name)}</strong><span>${escapeHtml(x.description||'Request service')}</span></button>`).join('')}</div></section></main></div>`;
       }
       const begin=(offerId='')=>{if(offerId)universalCustomerState.offerId=offerId;universalCustomerState.stage='intake';renderUniversalCustomerShell(p);};
       $('universalHelpNow')?.addEventListener('click',()=>begin());
       $('universalHelpNowBottom')?.addEventListener('click',()=>begin());
       $('contractorHeaderHelp')?.addEventListener('click',()=>begin());
       $$('[data-scroll-target]').forEach(btn=>btn.addEventListener('click',()=>document.getElementById(btn.dataset.scrollTarget)?.scrollIntoView({behavior:'smooth',block:'start'})));
-      $('universalViewServices')?.addEventListener('click',()=>document.querySelector('#services, .universal-service-preview')?.scrollIntoView({behavior:'smooth',block:'start'}));
+      $('universalViewServices')?.addEventListener('click',()=>document.querySelector('.universal-service-preview')?.scrollIntoView({behavior:'smooth',block:'start'}));
       $$('[data-universal-landing-offer]').forEach(btn=>btn.addEventListener('click',()=>begin(btn.dataset.universalLandingOffer)));
       $('universalReturnShipwright')?.addEventListener('click',()=>returnUniversalTestToShipwright(p));
       return;
@@ -10103,7 +9783,6 @@ The full order and approved media remain stored with this project.`;
   };
 
   window.renderBlackFlagHome = async function(){
-    try{ composeFleetFirstEngine(); renderFleetCommandBridge(); }catch(err){ console.warn('fleet bridge warning',err); }
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
@@ -10122,72 +9801,6 @@ The full order and approved media remain stored with this project.`;
   }
 
 
-
-  function renderFleetCommandBridge(){
-    const list=projects();
-    const live=list.filter(p=>projectFleetLaunchState(p).key==='live').length;
-    const privateCount=Math.max(0,list.length-live);
-    const attention=list.filter(p=>p?.v4AdmissionReviewRequired || platformStatus(p)!=='approved').length;
-    const set=(id,value)=>{const el=$(id);if(el)el.textContent=String(value);};
-    set('fleetBridgeProjects',list.length);
-    set('fleetBridgeLive',live);
-    set('fleetBridgePrivate',privateCount);
-    set('fleetBridgeAttention',attention);
-    const label=$('fleetBridgeAttentionLabel');
-    if(label)label.textContent=attention?`${attention} vessel${attention===1?'':'s'} to review`:'fleet clear';
-    $('fleetCommandBridge')?.classList.toggle('has-attention',attention>0);
-    const queue=$('fleetFoundationQueue');
-    if(queue){
-      const items=[];
-      list.forEach(p=>{ensureProjectCapabilityControl(p);const plan=ensureCapabilityImplementationPlan(p);Object.entries(plan).forEach(([id,row])=>{const meta=PROJECT_CAPABILITY_CATALOG[id];if(meta?.status==='foundation'&&row.state!=='prepared')items.push({p,id,meta,row});});});
-      const shown=items.slice(0,4);
-      queue.innerHTML=shown.length?`<div class="fleet-foundation-head"><div><small>ENGINE SHIPYARD</small><strong>Reusable foundations → project next steps</strong></div><span>${items.length} QUEUED</span></div><div class="fleet-foundation-list">${shown.map(x=>`<button type="button" data-open-project-capabilities="${escapeHtml(x.p.id)}"><span><small>${escapeHtml(x.p.projectCode||'PROJECT')} • ${escapeHtml(x.meta.label)}</small><strong>${escapeHtml(x.p.name)}</strong><em>${escapeHtml(x.meta.nextStep||'Prepare the next implementation step.')}</em></span><b>OPEN →</b></button>`).join('')}</div>`:`<div class="fleet-foundation-clear"><strong>Reusable foundation queue is clear.</strong><span>Enabled capabilities are ready or already prepared for their projects.</span></div>`;
-    }
-  }
-
-  function composeFleetFirstEngine(){
-    const hero=document.querySelector('#enginePanel .modern-engine-hero');
-    const bridge=$('fleetCommandBridge');
-    const fleet=$('engineProjectsSection');
-    const health=$('engineFleetHealth');
-    const command=$('fullSailCommandDeck');
-    const performance=$('enginePerformanceDeck');
-    if(!hero||!bridge||!fleet)return;
-    // Fleet is the working deck. Technical instrumentation follows it instead of
-    // forcing the Captain through diagnostics before reaching customer vessels.
-    hero.insertAdjacentElement('afterend',bridge);
-    bridge.insertAdjacentElement('afterend',fleet);
-    if(health)fleet.insertAdjacentElement('afterend',health);
-    if(command)(health||fleet).insertAdjacentElement('afterend',command);
-    if(performance)(command||health||fleet).insertAdjacentElement('afterend',performance);
-  }
-
-  function jumpEngineCommand(target){
-    const map={fleet:'engineProjectsSection',attention:'engineFleetHealth',systems:'v3ArchitectureDeck'};
-    if(target==='commission'){openProjectCommissioning();return;}
-    const id=map[target];
-    const el=id?$(id):null;
-    if(el){el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>el.querySelector('button,input,[tabindex]')?.focus?.({preventScroll:true}),380);}
-  }
-
-  function bindFleetCommandBridge(){
-    if(window.__fleetCommandBridgeBound)return;
-    window.__fleetCommandBridgeBound=true;
-    document.addEventListener('click',async event=>{
-      const projectTarget=event.target?.closest?.('[data-open-project-capabilities]');
-      if(projectTarget){
-        event.preventDefault();event.stopPropagation();
-        const p=projectById(projectTarget.dataset.openProjectCapabilities);
-        if(p){await openProjectEngineControl(p.id);await renderProjectTab(p.id,'capabilities');}
-        return;
-      }
-      const target=event.target?.closest?.('[data-engine-command-jump]');
-      if(!target)return;
-      event.preventDefault();event.stopPropagation();
-      jumpEngineCommand(target.dataset.engineCommandJump);
-    },true);
-    composeFleetFirstEngine();
-  }
 
   function engineFleetCommandContext(){
     const search=$('engineFleetSearch');
@@ -11243,7 +10856,11 @@ The full order and approved media remain stored with this project.`;
         }
 
         if(target.id==='returnToEngineBtn'){
-          showDarkSkyHome();
+          if(experienceTestReturnState){
+            await returnFromExperienceMode();
+            return;
+          }
+          requestEngineFromProject();
           return;
         }
 
@@ -11271,18 +10888,6 @@ The full order and approved media remain stored with this project.`;
       }finally{
         if(document.body.contains(target))delete target.dataset.commandBusy;
       }
-    },true);
-  }
-
-  function bindUniversalDarkSkyHome(){
-    if(window.__darkSkyUniversalHomeBound)return;
-    window.__darkSkyUniversalHomeBound=true;
-    document.addEventListener('click',event=>{
-      const target=event.target?.closest?.('[data-return-dark-sky]');
-      if(!target)return;
-      event.preventDefault();
-      event.stopPropagation();
-      showDarkSkyHome();
     },true);
   }
 
@@ -11356,7 +10961,8 @@ The full order and approved media remain stored with this project.`;
       if(target.id==='returnToEngineBtn'){
         event.preventDefault();
         event.stopPropagation();
-        showDarkSkyHome();
+        if(experienceTestReturnState){Promise.resolve(returnFromExperienceMode()).catch(err=>console.warn('Experience Test Deck return warning',err));return;}
+        requestEngineFromProject();
       }
     },true);
   }
@@ -11844,7 +11450,7 @@ The full order and approved media remain stored with this project.`;
     const result=testAccessActive?{ok:true,code:'test-access'}:await window.BlackFlagAuth.verify(entered);
       if(!result.ok){
         if(result.code==='startup'){
-        $('enginePinError').textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
+        if(err) err.textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
       }else if(result.code==='locked'){
           $('enginePinError').textContent='';
           window.showPinLock('engine','engineLockTimer','enginePinInput','unlockEngineBtn');
@@ -12007,7 +11613,6 @@ The full order and approved media remain stored with this project.`;
     // Mission-critical command controls must exist even if a later migration fails.
     bindWatchCommandBus();
     bindEngineProjectCommandBus();
-    bindFleetCommandBridge();
     bindExperienceTestDeckBus();
     bindMissionCriticalNavigation();
     // Project settings/admin access is mission-critical during commissioning.
@@ -12023,14 +11628,6 @@ The full order and approved media remain stored with this project.`;
     bindCustomerMediaCore();
     relieveSecondaryStoragePressure();
     repairLocalOrderBackupFootprint();
-    // 5.7.7 CUSTOMER-ROUTE PRIORITY: a portable client preview must route before
-    // Engine appearance, IndexedDB, migrations, fleet reconciliation, or admin
-    // state. The preview payload is self-contained in the URL, so none of those
-    // systems may block a customer from reaching the six-digit preview gate.
-    if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.7',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
-      return;
-    }
     await loadEngineAppearance();
     db=await openDb();
     await migrateLegacyPlatformStorage();
@@ -12046,6 +11643,10 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
+    if(await routeClientPreviewFromHash()){
+      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+      return;
+    }
     window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.5.0.ready',detail:`${companies.length} projects • Trust Release • preserved canonical project identity • project-local mutations • launch-state filters • non-destructive admission review • canonical Test Deck resolver`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
@@ -12053,19 +11654,9 @@ The full order and approved media remain stored with this project.`;
     $('customerApp')?.classList.add('hidden');
     $('adminPanel')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
-    // 5.7.4 atomic-entry recovery: if the first-light bootstrap already accepted
-    // the canonical Engine PIN, late initialization may populate the Engine but
-    // must never put the login cover back over an authenticated session.
-    if(window.__darkSkyAtomicEngineUnlocked===true){
-      try{ window.BlackFlagAuth?.unlock?.(); }catch(_){}
-      document.body.classList.remove('boot-locked','project-mode','bf-entry-open');
-      document.body.classList.add('engine-mode');
-      $('blackFlagEntryGate')?.classList.add('hidden');
-      $('enginePanel')?.classList.remove('hidden');
-    }
     bindOwnerPortal();
     await routeOwnerAccessFromHash();
-    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js?v=6.0.7',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
   // Engine appearance is also armed here because the selector lives on the pre-login gate
@@ -12083,19 +11674,18 @@ The full order and approved media remain stored with this project.`;
   bindEngineProjectCommandBus();
   bindExperienceTestDeckBus();
   bindMissionCriticalNavigation();
-  bindUniversalDarkSkyHome();
   init().then(()=>{
     window.DarkSkyBootState={ready:true,error:null,at:Date.now(),build:BUILD_VERSION};
   }).catch(err=>{
     console.error('Secondary app initialization warning',err);
     window.DarkSkyBootState={ready:false,error:String(err?.message||err||'unknown'),at:Date.now(),build:BUILD_VERSION};
-    // 5.7.4: an unrelated secondary boot/migration failure must never revoke an
+    // 5.7.3: an unrelated secondary boot/migration failure must never revoke an
     // Engine session that has already authenticated successfully. Previously this
     // catch unconditionally reopened the PIN gate and boot-locked the page, which
     // could make 5615 appear to fail after a successful verification and briefly
     // expose the legacy Ike shell beneath the modal. Keep the portal available only
     // when Black Flag is not already unlocked.
-    if(window.BlackFlagAuth?.isUnlocked?.()!==true && window.__darkSkyAtomicEngineUnlocked!==true){
+    if(window.BlackFlagAuth?.isUnlocked?.()!==true){
       const gate=document.getElementById('blackFlagEntryGate');
       if(gate) gate.classList.remove('hidden');
       document.body.classList.add('boot-locked');
@@ -12121,7 +11711,6 @@ document.addEventListener('click', (event) => {
   function byId(id){ return document.getElementById(id); }
 
   async function requireEngineEntry(){
-    byId('darkSkyHomeGate')?.classList.add('hidden');
     const gate=byId('blackFlagEntryGate');
     if(gate){
       gate.classList.remove('hidden');
@@ -12140,29 +11729,6 @@ document.addEventListener('click', (event) => {
     document.body.classList.remove('bf-entry-open');
   }
 
-
-  function showDarkSkyHome(){
-    // 5.8.1 UNIVERSAL HOME CONTRACT: every internal route gets one dependable
-    // escape hatch. This closes project, commissioning, Captain, owner-preview,
-    // test-deck, settings and modal surfaces before revealing Dark Sky.
-    try{ window.DarkSkyBoundaryBridge?.lockEngine?.(); }catch(_){}
-    try{ window.DarkSkyBoundaryBridge?.clearProject?.(); }catch(_){}
-    window.__darkSkyAtomicEngineUnlocked=false;
-    const internalSurfaces=['blackFlagEntryGate','enginePanel','customerApp','mugsCustomerShell','flowersCustomerShell','universalCustomerShell','pinGate','adminPanel','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','ownerClaimGate','captainQuarters','captainQuartersGate','captainCommandWorkspace','projectCommissioningWorkspace','fleetCommissioningModal','experienceTestDeck','engineConfigurationDock','clientPreviewBuilder'];
-    internalSurfaces.forEach(id=>byId(id)?.classList.add('hidden'));
-    document.querySelectorAll('.client-preview-builder,.modal,.overlay').forEach(el=>{ if(el.id!=='darkSkyHomeGate') el.classList.add('hidden'); });
-    document.body.classList.remove('bf-entry-open','engine-mode','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','owner-portal-open','engine-workspace-open','modal-open','ikes-project','mugs-project','flowers-project','universal-project','bor-project','client-preview-mode','client-preview-locked');
-    document.body.classList.add('boot-locked');
-    document.body.removeAttribute('data-active-project');
-    document.body.removeAttribute('data-project-theme');
-    const home=byId('darkSkyHomeGate');
-    home?.classList.remove('hidden');
-    window.__darkSkyEngineEntryOrigin='home';
-    try{ history.replaceState(null,'',location.pathname+location.search); }catch(_){}
-    try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
-  }
-  window.showDarkSkyHome=showDarkSkyHome;
-
   function hideProjectSurfacesBeforeEngine(){
     // Atomic visual boundary: hide every project/customer/admin surface while the
     // Black Flag gate is still covering the page. This prevents a one-frame flash
@@ -12177,23 +11743,23 @@ document.addEventListener('click', (event) => {
     const entered=(input?.value||'').trim();
 
     const testAccessActive=window.DarkSkyTestAccess?.isActive?.()===true;
-    // 5.9.3 STEADY HELM: use the configured Engine authenticator for every explicit
-    // submission. PIN length is deliberately not assumed here. The historic 5615
-    // recovery credential remains accepted by verifyEnginePin, while a deliberately
-    // configured Engine PIN may be any length supported by Engine settings.
+    // The historical Black Flag credential is an entry invariant and must not depend
+    // on IndexedDB, migrations, project state, or a late application initializer.
+    // BlackFlagAuth remains the shared controller for alternate configured Engine PINs.
     let result;
     if(testAccessActive) result={ok:true,code:'test-access'};
-    else if(window.BlackFlagAuth?.verify){
+    else if(entered==='5615'){
+      try{ window.BlackFlagAuth?.clearPinFailures?.('engine'); }catch(_){}
+      result={ok:true,code:'recovery',recovery:true};
+    }else if(window.BlackFlagAuth?.verify){
       result=await window.BlackFlagAuth.verify(entered);
-    }else if(entered===String(DEFAULT_ENGINE_PIN)){
-      result={ok:true,code:'recovery-fallback',recovery:true};
     }else{
       result={ok:false,code:'startup'};
     }
     if(!result.ok){
       const err=byId('blackFlagEntryError');
       if(result.code==='startup'){
-        $('enginePinError').textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
+        if(err) err.textContent='Black Flag startup is incomplete. Reload this build before entering the Engine PIN.';
       }else if(result.code==='locked'){
         if(err) err.textContent='';
         window.showPinLock('engine','blackFlagLockTimer','blackFlagEntryPin','blackFlagEntryUnlock');
@@ -12205,13 +11771,12 @@ document.addEventListener('click', (event) => {
     }
 
     if(window.BlackFlagAuth&&!testAccessActive) window.BlackFlagAuth.unlock();
-    if(input){ input.value=''; try{ input.blur(); }catch(_){} }
+    if(input) input.value='';
     window.pendingEngineReturnProjectId=null;
 
-    // 5.9.3 steady crossing: the gate remains visibly in place while the Engine
-    // boundary and home render are prepared. Only after the Engine is ready do we
-    // remove the gate. This prevents the iPhone from exposing a half-transitioned
-    // Engine underneath the PIN panel or jumping mid-page as the keyboard closes.
+    // 5.7.3 atomic Engine crossing. Prepare and hide all project surfaces BEFORE
+    // removing the PIN cover. A successful 5615 must result in either Engine Room
+    // or a visible error on the still-covered gate — never an Ike/project flash.
     hideProjectSurfacesBeforeEngine();
     try{
       window.DarkSkyBoundaryBridge?.restoreEngineTheme?.();
@@ -12222,6 +11787,7 @@ document.addEventListener('click', (event) => {
       const engine=byId('enginePanel');
       if(!engine) throw new Error('Engine panel unavailable');
       engine.classList.remove('hidden');
+      leaveEntry();
     }catch(err){
       console.error('Black Flag boundary transition failed',err);
       const e=byId('blackFlagEntryError'); if(e)e.textContent='Black Flag accepted the PIN, but the Engine could not finish opening. Reload this build and try again.';
@@ -12236,14 +11802,10 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.7'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.5'};
     }
 
-    // Commit the visual crossing only after the Engine has had a chance to render.
-    leaveEntry();
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(_){}
-    }));
+    window.scrollTo({top:0,left:0,behavior:'instant'});
   }
 
   function openCompanyApp(){
@@ -12266,15 +11828,17 @@ document.addEventListener('click', (event) => {
 
   function lockAndReturnToEntry(){
     window.DarkSkyBoundaryBridge?.lockEngine?.();
+    document.body.classList.remove('engine-mode','project-mode');
+    document.body.classList.add('boot-locked');
+    const engine=byId('enginePanel'); if(engine) engine.classList.add('hidden');
     window.DarkSkyBoundaryBridge?.clearProject?.();
-    showDarkSkyHome();
+    requireEngineEntry();
   }
 
   function bindBlackFlagPortal(){
     if(window.__blackFlagPortalBound) return;
     window.__blackFlagPortalBound=true;
     if(String(location.hash||'').startsWith('#client-preview=')){
-      byId('darkSkyHomeGate')?.classList.add('hidden');
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
       document.body.classList.remove('bf-entry-open','boot-locked');
       return;
@@ -12291,10 +11855,6 @@ document.addEventListener('click', (event) => {
     const closeEntry=byId('closeBlackFlagEntry');
     if(closeEntry) closeEntry.addEventListener('click',async()=>{
       leaveEntry();
-      if(window.__darkSkyEngineEntryOrigin==='home'){
-        showDarkSkyHome();
-        return;
-      }
       if(typeof window.cancelEngineEntryToProject==='function'){
         await window.cancelEngineEntryToProject();
         return;
@@ -12312,29 +11872,9 @@ document.addEventListener('click', (event) => {
     if(admin) admin.addEventListener('click',openCompanyAdminGate);
     if(engineCompany) engineCompany.addEventListener('click',openCompanyApp);
     if(logout) logout.addEventListener('click',lockAndReturnToEntry);
-    const darkSkyEnterBlackFlag=byId('darkSkyEnterBlackFlag');
-    const darkSkyEnterCaptain=byId('darkSkyEnterCaptain');
-    if(darkSkyEnterBlackFlag) darkSkyEnterBlackFlag.addEventListener('click',()=>{
-      window.__darkSkyEngineEntryOrigin='home';
-      requireEngineEntry();
-    });
-    if(darkSkyEnterCaptain) darkSkyEnterCaptain.addEventListener('click',()=>{
-      byId('captainModeAccessBtn')?.click();
-    });
 
-    // Dark Sky is the first screen after a fresh root load. Black Flag is a
-    // protected Engine behind the platform home; Client Preview remains direct.
-    // first-light atomic entry path already authenticated 5615 during recovery.
-    if(window.__darkSkyAtomicEngineUnlocked===true){
-      try{ window.BlackFlagAuth?.unlock?.(); }catch(_){}
-      hideProjectSurfacesBeforeEngine();
-      document.body.classList.remove('boot-locked','project-mode','bf-entry-open');
-      document.body.classList.add('engine-mode');
-      byId('blackFlagEntryGate')?.classList.add('hidden');
-      byId('enginePanel')?.classList.remove('hidden');
-    }else{
-      showDarkSkyHome();
-    }
+    // Engine portal is always the first screen after a fresh page load.
+    requireEngineEntry();
     if(!window.BlackFlagAuth || !window.DarkSkyBoundaryBridge){
       const err=byId('blackFlagEntryError');
       if(err)err.textContent='Black Flag startup is incomplete. Reload this page before entering a PIN.';
@@ -12342,25 +11882,6 @@ document.addEventListener('click', (event) => {
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bindBlackFlagPortal);
   else bindBlackFlagPortal();
-
-  // 5.9.0 — Pocket Watch mobile test dock. Internal controls collapse behind one
-  // small phone control so customer content remains unobstructed. Desktop/iPad
-  // retain the normal internal controls.
-  document.addEventListener('click',e=>{
-    const toggle=e.target.closest && e.target.closest('#mobileTestDockToggle');
-    if(toggle){
-      e.preventDefault();
-      const open=document.body.classList.toggle('mobile-test-dock-open');
-      toggle.setAttribute('aria-expanded',open?'true':'false');
-      toggle.setAttribute('aria-label',open?'Close test navigation':'Open test navigation');
-      return;
-    }
-    if(e.target.closest && e.target.closest('#globalDarkSkyHomeBtn,#returnExperienceTestDeck')){
-      document.body.classList.remove('mobile-test-dock-open');
-      const dock=document.getElementById('mobileTestDockToggle');
-      dock?.setAttribute('aria-expanded','false');
-    }
-  });
 
   // Any explicit back/exit from Engine locks the Engine.
   document.addEventListener('click',e=>{

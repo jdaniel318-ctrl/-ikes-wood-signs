@@ -1,3 +1,13 @@
+# 5.7.5 Ironclad Regression Gate
+
+- Engine PIN remains 5615.
+- Project Admin default/recovery remains 4353.
+- Captain's Quarters remains 19613.
+- Client Preview PIN remains unique per invite.
+- Black Flag gate DOM hooks from 5.7.3 remain present.
+- No authentication/routing logic change in 5.7.5.
+- Runtime/cache/manifest versions must all report 5.7.5.
+
 # 5.7.3 Engine Entry Regression Gate
 
 - Entering `5615` at the pre-login Black Flag portal must succeed even if `blackFlagPinSecurityV1.engine.lockedUntil` contains stale future state.
