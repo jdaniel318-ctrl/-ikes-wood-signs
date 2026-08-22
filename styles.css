@@ -13113,7 +13113,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 
 
 /* ========================================================================== 
-   v6.0.1 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
+   v6.0.2 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
    Captain-only refinement over Chartroom. The cinematic art remains the skin;
    real Captain intelligence and controls are separate, readable DOM layers.
    ========================================================================== */
@@ -13185,3 +13185,104 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
   #captainQuarters.cinematic-cabin-ready #captainExitBtn{width:42%!important;height:48px!important;right:3%!important;top:max(10px,env(safe-area-inset-top))!important;font-size:10px!important}
 }
 @media (prefers-reduced-motion:reduce){#captainQuarters.cinematic-cabin-ready *{transition:none!important;animation:none!important}}
+
+/* ========================================================================== 
+   v6.0.2 — BLACK FLAG ENGINE GATE: COMMAND PRESENCE PASS
+   Presentation only. Authentication, entry routing and authority contracts are
+   intentionally untouched. Legacy DOM hooks remain present but visually silent.
+   ========================================================================== */
+#blackFlagEntryGate{
+  background:
+    radial-gradient(circle at 50% 19%,rgba(31,86,98,.20),transparent 34%),
+    radial-gradient(circle at 50% 100%,rgba(205,160,73,.055),transparent 28%),
+    linear-gradient(180deg,#07141a 0%,#071116 55%,#050d11 100%)!important;
+  padding:max(22px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(22px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))!important;
+}
+#blackFlagEntryGate .bf-entry-shell{
+  width:min(720px,calc(100vw - 36px))!important;
+  padding:32px 42px 26px!important;
+  border-radius:28px!important;
+  background:
+    linear-gradient(180deg,rgba(13,28,34,.985),rgba(7,19,24,.99))!important;
+  border:1px solid rgba(142,180,190,.38)!important;
+  box-shadow:0 34px 90px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.018)!important;
+  color:#eef3f1!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+#blackFlagEntryGate .bf-entry-shell:before{
+  content:""!important;position:absolute!important;inset:0 0 auto!important;height:3px!important;
+  background:linear-gradient(90deg,transparent,rgba(89,166,190,.82),rgba(223,187,94,.86),rgba(89,166,190,.82),transparent)!important;
+  opacity:.95!important;pointer-events:none!important;
+}
+#blackFlagEntryGate .bf-entry-kicker{
+  color:#8fb8c3!important;font-size:10px!important;letter-spacing:.26em!important;margin-bottom:12px!important;
+}
+#blackFlagEntryGate .black-flag-engine-brand{margin:0 auto 6px!important}
+#blackFlagEntryGate .bf-engine-primary-lockup{
+  width:min(330px,72vw)!important;max-height:230px!important;object-fit:contain!important;
+  filter:drop-shadow(0 14px 24px rgba(0,0,0,.34))!important;
+}
+#blackFlagEntryGate .bf-entry-engine-title .bf-platform-name{
+  color:#d5b867!important;letter-spacing:.22em!important;font-size:9px!important;margin-top:4px!important;
+}
+#blackFlagEntryGate .bf-entry-engine-title h1{
+  color:#f4f0e6!important;font-family:Georgia,'Times New Roman',serif!important;
+  font-size:clamp(48px,5.6vw,68px)!important;line-height:.94!important;margin:6px 0 4px!important;
+  text-shadow:0 6px 24px rgba(0,0,0,.38)!important;
+}
+#blackFlagEntryGate .bf-platform-subtitle{
+  color:#6fa1af!important;font-size:8px!important;letter-spacing:.24em!important;margin-top:7px!important;
+}
+#blackFlagEntryGate .bf-entry-sub{
+  color:#aebbc0!important;font-size:15px!important;line-height:1.42!important;max-width:540px!important;
+  margin:10px auto 10px!important;
+}
+#blackFlagEntryGate .bf-entry-trust{
+  width:max-content!important;max-width:100%!important;margin:0 auto 14px!important;
+  padding:8px 13px!important;border-radius:999px!important;
+  background:rgba(18,45,52,.72)!important;border:1px solid rgba(90,143,157,.34)!important;
+  color:#829ba3!important;box-shadow:inset 0 0 18px rgba(55,115,130,.04)!important;
+}
+#blackFlagEntryGate .bf-entry-trust strong{color:#dbe8ea!important}
+#blackFlagEntryGate .bf-entry-panel{
+  max-width:600px!important;margin:0 auto!important;padding:20px!important;border-radius:22px!important;
+  background:linear-gradient(180deg,#f8f3e8,#eee5d2)!important;
+  border:1px solid rgba(218,197,151,.80)!important;
+  box-shadow:0 18px 36px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+#blackFlagEntryGate .bf-entry-panel label{
+  color:#253f47!important;font-size:10px!important;letter-spacing:.19em!important;margin-bottom:8px!important;
+}
+#blackFlagEntryGate .bf-pin-input{
+  min-height:66px!important;border-radius:16px!important;background:#fff!important;
+  border:1.5px solid #4c9ab0!important;color:#0c2932!important;font-size:26px!important;
+  letter-spacing:.22em!important;box-shadow:inset 0 2px 8px rgba(0,0,0,.035)!important;
+}
+#blackFlagEntryGate .bf-entry-primary{
+  min-height:60px!important;margin-top:4px!important;border-radius:16px!important;
+  background:linear-gradient(135deg,#123945,#236272)!important;color:#f2d174!important;
+  border:1px solid rgba(46,116,133,.72)!important;box-shadow:0 12px 24px rgba(8,45,55,.20)!important;
+  font-size:13px!important;letter-spacing:.08em!important;
+}
+#blackFlagEntryGate .bf-entry-secondary{
+  width:100%!important;min-height:48px!important;margin-top:10px!important;border-radius:14px!important;
+  border:1px solid rgba(167,155,128,.65)!important;background:rgba(255,255,255,.30)!important;
+  color:#344a50!important;font-size:11px!important;letter-spacing:.07em!important;
+}
+/* Keep compatibility DOM hooks in place without making authentication visually busy. */
+#blackFlagEntryGate .engine-entry-mode,
+#blackFlagEntryGate .bf-pirate-atmosphere{display:none!important}
+#blackFlagEntryGate .bf-entry-foot{
+  color:#6e858c!important;margin-top:14px!important;font-size:9px!important;letter-spacing:.08em!important;
+}
+@media (max-width:700px){
+  #blackFlagEntryGate .bf-entry-shell{width:min(100%,540px)!important;padding:22px 18px 18px!important;border-radius:22px!important}
+  #blackFlagEntryGate .bf-engine-primary-lockup{width:min(260px,68vw)!important;max-height:170px!important}
+  #blackFlagEntryGate .bf-entry-engine-title h1{font-size:clamp(40px,11vw,52px)!important}
+  #blackFlagEntryGate .bf-entry-sub{font-size:13px!important;margin:8px auto!important}
+  #blackFlagEntryGate .bf-entry-trust{font-size:8px!important;padding:7px 10px!important;margin-bottom:10px!important}
+  #blackFlagEntryGate .bf-entry-panel{padding:14px!important;border-radius:18px!important}
+  #blackFlagEntryGate .bf-pin-input{min-height:58px!important;font-size:22px!important}
+  #blackFlagEntryGate .bf-entry-primary{min-height:54px!important}
+}

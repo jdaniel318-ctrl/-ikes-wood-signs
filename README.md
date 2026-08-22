@@ -1,6 +1,10 @@
-# Dark Sky 6.0.1 — Drydock Refit
+# Dark Sky 6.0.2 — Harbor Sentinel
 
-Dark Sky 6.0.1 is the reconciled fleet baseline. It restores one canonical application tree at repository root, one canonical Captain’s Quarters production environment, and one runtime path for that Captain environment.
+Presentation-only Black Flag entrance refinement on the reconciled 6.0 platform spine. No authentication, project-isolation, Client Preview, or Captain routing logic was changed.
+
+# Dark Sky 6.0.2 — Drydock Refit
+
+Dark Sky 6.0.2 is the reconciled fleet baseline. It restores one canonical application tree at repository root, one canonical Captain’s Quarters production environment, and one runtime path for that Captain environment.
 
 ## Canonical structure
 
@@ -30,4 +34,4 @@ No runtime or fallback path selects an alternate Captain background.
 
 ## GitHub deployment note
 
-Deploy this package from the repository root. If an older upload left application files inside GitHub `/assets`, remove those non-media duplicates after the 6.0.1 root deployment is confirmed. See `REPOSITORY_RECONCILIATION.md`.
+Deploy this package from the repository root. If an older upload left application files inside GitHub `/assets`, remove those non-media duplicates after the 6.0.2 root deployment is confirmed. See `REPOSITORY_RECONCILIATION.md`.

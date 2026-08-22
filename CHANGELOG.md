@@ -1,8 +1,15 @@
-# Dark Sky 6.0.1 — Drydock Reconciliation
+# Dark Sky 6.0.2 — Harbor Sentinel
+
+- Black Flag Engine gate visual-presence pass only: larger brand lockup, stronger Engine Room hierarchy, integrated secure access panel, and tighter iPad/iPhone composition.
+- Authentication and routing contracts are unchanged; 5615 remains the Black Flag Engine credential.
+- Legacy appearance hooks remain in the DOM for compatibility but are visually silent on the gate.
+- Captain’s Quarters, project routing, Client Preview isolation, and customer experiences are unchanged.
+
+# Dark Sky 6.0.2 — Drydock Reconciliation
 
 Canonical repository/root reconciliation release. Captain’s Quarters now uses one canonical production environment asset (`assets/captains_quarters_canonical.png`) across all runtime and fallback paths. The deployable `assets/` directory contains media only; application/runtime files remain at repository root. Client Preview isolation, Black Flag, project routing, authority contracts, and cloud-readiness contracts are preserved.
 
-# 6.0.1 — Helm Sunset Fix
+# 6.0.2 — Helm Sunset Fix
 
 - Restored the selected clean sunset harbor Captain's Quarters environment.
 - Preserved the responsive 5.8.1 Helm interface and real live controls.
@@ -10,7 +17,7 @@ Canonical repository/root reconciliation release. Captain’s Quarters now uses 
 - Tuned overlays so the room remains visible while controls keep contrast.
 - Captain-only visual change; Black Flag, project surfaces and Client Preview are untouched.
 
-# 6.0.1 — Helm
+# 6.0.2 — Helm
 
 - Rebuilt Captain’s Quarters production surface over a clean cinematic room asset.
 - Removed reliance on baked-in concept controls and fictional dashboard data.
@@ -310,7 +317,7 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Expanded the preview boundary clear to include customer shells, project admin surfaces, Engine controls, owner surfaces, Captain surfaces, Test Deck, and return controls.
 - No changes to Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, or unique Client Preview PIN generation.
 
-## 6.0.1 — Helm Fix
+## 6.0.2 — Helm Fix
 - Fixed Captain's Quarters falling back to the legacy cabin when the cinematic background asset had not loaded yet in Safari.
 - The responsive Helm UI is now the deterministic Captain's Quarters surface; image loading only affects background quality, never interface selection.
 - Added the clean Captain room asset to the service-worker pre-cache for more reliable iPad/iPhone loading.
