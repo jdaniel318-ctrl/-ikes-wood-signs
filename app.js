@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.8.2';
+  const BUILD_VERSION = '6.0.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -536,7 +536,7 @@
     const encoded=clientPreviewHashPayload(); if(!encoded)return false;
     let payload=null;
     try{payload=JSON.parse(clientPreviewBase64UrlDecode(encoded));}catch(_){payload=null;}
-    // 5.8.2 Client Preview Isolation Bulkhead: the sealed preview is a standalone
+    // 6.0.0 Client Preview Isolation Bulkhead: the sealed preview is a standalone
     // runtime. Clear every fleet/project surface before revealing anything, and do
     // not depend on Engine/project boot, IndexedDB migrations, or a default vessel.
     document.body.classList.add('client-preview-mode','client-preview-locked');
@@ -11619,7 +11619,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
-    // 5.8.2: sealed Client Preview links route before storage, migrations, fleet
+    // 6.0.0: sealed Client Preview links route before storage, migrations, fleet
     // materialization, or any project restoration. The URL already carries the one
     // permitted project snapshot, so loading fleet state first is both unnecessary
     // and a visual/isolation risk.
@@ -11822,7 +11822,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.8.2'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.0'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});

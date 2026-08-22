@@ -4173,7 +4173,7 @@ html.captain-controller-ready #captainQuartersGate.hidden{
    ========================================================== */
 
 #captainQuarters.cinematic-cabin-ready{
-  background:#090604 url("assets/captains_quarters_cinematic_v2953.jpg") center center/cover no-repeat!important;
+  background:#090604 url("assets/captains_quarters_canonical.png") center center/cover no-repeat!important;
   overflow:hidden!important;
   isolation:isolate;
 }
@@ -12983,7 +12983,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
    No Black Flag, project, customer, or Client Preview styling is changed here.
    ========================================================================== */
 #captainQuarters.cinematic-cabin-ready{
-  background:#071014 url("assets/captains_quarters_command_center_v578.png") center center/cover no-repeat!important;
+  background:#071014 url("assets/captains_quarters_canonical.png") center center/cover no-repeat!important;
   color:#ead7a2!important;
 }
 
@@ -13188,7 +13188,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 
 
 /* ==========================================================
-   Dark Sky 5.8.2 — CAPTAIN'S QUARTERS: HELM
+   Dark Sky 6.0.0 — CAPTAIN'S QUARTERS: HELM
    Production UI is responsive HTML/CSS over a clean cinematic room asset.
    The generated concept dashboard remains design reference only.
    Scoped to Captain's Quarters; Black Flag and project surfaces are untouched.
@@ -13203,7 +13203,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 #captainQuarters.cinematic-cabin-ready>.cq-chartroom-live{display:none!important}
 #captainQuarters.cinematic-cabin-ready .cq-helm{display:grid!important}
 .cq-helm{display:none;position:absolute;inset:0;z-index:126;grid-template-rows:auto minmax(0,1fr) auto;background:#061015;color:#ead9aa;overflow:hidden;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.cq-helm-bg{position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(2,9,12,.72) 0 12%,rgba(2,9,12,.08) 25% 72%,rgba(2,9,12,.70) 89% 100%),linear-gradient(180deg,rgba(2,7,10,.26),transparent 34%,rgba(2,7,10,.40)),url('assets/captains_quarters_helm_sunset_v582.png');background-size:cover;background-position:center center;filter:saturate(1.02) contrast(1.04) brightness(.92);transform:scale(1.002);pointer-events:none}
+.cq-helm-bg{position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(2,9,12,.72) 0 12%,rgba(2,9,12,.08) 25% 72%,rgba(2,9,12,.70) 89% 100%),linear-gradient(180deg,rgba(2,7,10,.26),transparent 34%,rgba(2,7,10,.40)),url('assets/captains_quarters_canonical.png');background-size:cover;background-position:center center;filter:saturate(1.02) contrast(1.04) brightness(.92);transform:scale(1.002);pointer-events:none}
 .cq-helm>*:not(.cq-helm-bg){position:relative;z-index:1}
 .cq-helm-header{min-height:72px;display:grid;grid-template-columns:minmax(300px,1fr) auto auto;align-items:center;gap:18px;padding:max(10px,env(safe-area-inset-top)) max(18px,calc(18px + env(safe-area-inset-right))) 10px max(18px,calc(18px + env(safe-area-inset-left)));background:linear-gradient(180deg,rgba(4,13,18,.92),rgba(4,13,18,.70));border-bottom:1px solid rgba(201,157,75,.46);box-shadow:0 8px 24px rgba(0,0,0,.32)}
 .cq-helm-brand{display:flex;align-items:center;gap:12px;min-width:0}.cq-helm-mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #a77b35;border-radius:50%;color:#dfbd75;background:#0b1b21;box-shadow:inset 0 0 18px rgba(212,159,64,.08)}

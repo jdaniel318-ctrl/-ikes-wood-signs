@@ -1,8 +1,12 @@
-## 5.8.2 Helm — Sunset environment restoration
+# Dark Sky 6.0.0 — Drydock Reconciliation
+
+Canonical repository/root reconciliation release. Captain’s Quarters now uses one canonical production environment asset (`assets/captains_quarters_canonical.png`) across all runtime and fallback paths. The deployable `assets/` directory contains media only; application/runtime files remain at repository root. Client Preview isolation, Black Flag, project routing, authority contracts, and cloud-readiness contracts are preserved.
+
+## 6.0.0 Helm — Sunset environment restoration
 
 Captain's Quarters keeps the 5.8.1 responsive Helm architecture, but restores the clean sunset harbor command room as the production environment layer. Real controls remain HTML/CSS/JS; the environment is visual only. Black Flag, projects, Client Preview and authority boundaries remain unchanged.
 
-## 5.8.2 Helm — Captain environment/UI separation
+## 6.0.0 Helm — Captain environment/UI separation
 
 Captain’s Quarters now follows a strict environment/UI split: cinematic art is non-interactive background; all controls, data, navigation, and accessibility are real DOM elements. Captain-only responsive layout targets a single landscape viewport and preserves modal overlays above the room.
 
