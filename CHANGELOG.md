@@ -1,3 +1,12 @@
+# Dark Sky 6.4.0 — Grand Passage
+
+- Extended Captain first-entry and repeat threshold animation cadence by roughly 80%.
+- Locked Captain’s Quarters to the Safari dynamic viewport and vignetted obsolete baked lower-HUD content.
+- Extended Admiral Gate and Admiral Deck ceremonial transitions.
+- Added a cinematic Admiral ceremonial environment with Professional Mode preserved.
+- Added browser-local upper-command visual slots through Visual Forge; Admiral ceremonial visuals may be staged without changing authority state.
+- Added `UPPER_COMMAND_THEATRE.md` as a reusable fleet capability contract.
+
 # Dark Sky 6.3.0 — Ascension Watch
 
 - Replaces the lower Captain command band with a persistent Captain's Helm rail; working, future, trial and unavailable functions remain visible and intentional.

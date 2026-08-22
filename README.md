@@ -1,56 +1,20 @@
-# Dark Sky 6.3.0 — Ascension Watch
+# Dark Sky 6.4.0 — Grand Passage
 
-Captain/Admiral command hardening release. Captain tools move from the lower overlay band into a persistent Captain's Helm rail; Fleet Readiness is now provable from the Helm; Captain and Admiral thresholds regain short theatrical transitions; and Admiral's Deck adds Ceremonial and Professional modes while remaining explicitly provisional.
+Upper-command theatre and reusable visual-slot release.
 
-The established authority spine remains unchanged: Project Admin 4353, Black Flag 5615, Captain 19613, Admiral 19613 temporarily, and Client Preview unique per invite.
-
-# Dark Sky 6.2.0 — Foundry
-
-Visual Command Forge release. Captain and Admiral now share a real visual-to-blueprint creation capability while preserving separate authority and fleet isolation.
-
-# Dark Sky 6.2.0 — Upper Deck Trial
-
-Adds a testable authority layer above Captain’s Quarters: **Admiral’s Gate → Admiral’s Deck**. The deck is explicitly provisional while the fleet is being proven. Captain and Admiral use separate credential contracts even though both temporarily accept `19613`. Fleet Readiness replaces “Admiral Readiness” as the name of the hardening standard; the checks prove the fleet, not the rank.
-
-# Dark Sky 6.2.0 — Admiral Watch
-
-Fleet-hardening release on the reconciled 6.0 platform spine. This build adds a non-destructive Admiral Readiness Gate to Black Flag, a downloadable fleet recovery snapshot, release/readiness evidence, and explicit staging/recovery contracts while preserving the proven customer/project/Captain boundaries.
-
-## Admiral Readiness Gate
-
-Black Flag can now verify, without changing authentication state:
-
-- Black Flag `5615` recovery access
-- Project Admin `4353` recovery access across the current fleet
-- Captain's Quarters `19613` authority contract
-- unique Client Preview credential generation
-- canonical Project ID uniqueness
-- order/project isolation consistency
-- test/private external-contact guard
-- Client Preview pre-paint isolation bulkhead
-- Captain main-room/subview navigation contract
-- runtime/deployment-manifest release identity
-
-The gate reports **CLEAR**, **WATCH**, or **HOLD**. It does not silently publish, mutate project lifecycle, or bypass any authority layer.
-
-## Recovery
-
-`CREATE RECOVERY SNAPSHOT` downloads an interim fleet recovery artifact containing the canonical project rows available to the browser, merged orders, settings, and verified local registry backup. The file may contain sensitive configuration and must be stored securely. It is not a substitute for the planned managed production database/object-storage backup architecture.
+## Mission
+- Captain’s Quarters first-entry ceremony is ~80% longer and repeat entry remains shorter.
+- Captain’s Quarters is constrained to the Safari dynamic viewport; real tools remain in the left Helm.
+- Admiral’s Gate and Admiral’s Deck receive longer, stronger ceremonial transitions.
+- Admiral’s Deck ships with a cinematic ceremonial visual while Professional Mode remains clean and operational.
+- Visual Forge can stage an Admiral ceremonial visual locally without changing authority or governance state. Captain visuals are saved as Forge references until Sea Trial rather than silently replacing proven command geometry.
 
 ## Authority contracts
-
-- Project Admin: `4353` fleet default/recovery
+- Project Admin: `4353`
 - Black Flag Engine: `5615`
-- Captain's Quarters: `19613`
+- Captain’s Quarters: `19613`
+- Admiral’s Deck: `19613` temporarily, via a separate Admiral credential contract
 - Client Preview: unique PIN per invite
 
-## Preserved contracts
-
-- strict project isolation
-- Test / Private Preview real-world contact blocking
-- Client Preview pre-paint isolation
-- iPad/iPhone responsive behavior
-- host/domain portability
-- Captain-only visual identity and navigation
-
-Deploy from the repository root. Runtime files belong at root; `assets/` is media-only.
+## Safety
+Test, Private Preview, Client Preview and Sea Trial remain unable to perform real-world contact actions.

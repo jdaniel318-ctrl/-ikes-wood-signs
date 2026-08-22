@@ -13765,3 +13765,78 @@ body.captain-authorized #captainExitBtn{visibility:hidden!important;pointer-even
   .captain-entry-sequence.captain-entry-repeat,.admiral-gate-enter .admiral-gate-scene:after,.admiral-gate-enter .admiral-seal,.admiral-deck-enter .admiral-deck-atmosphere,.admiral-deck-enter .admiral-deck-head,.admiral-deck-enter .admiral-deck-grid,.admiral-deck-enter-repeat .admiral-deck-shell{animation-duration:.01ms!important;animation-delay:0s!important}
   .admiral-gate-enter .admiral-door.left,.admiral-gate-enter .admiral-door.right,.admiral-gate-enter .admiral-gate-card{transition-duration:.01ms!important;transition-delay:0s!important}
 }
+
+
+/* ========================================================================== 
+   6.4.0 — GRAND PASSAGE / UPPER COMMAND THEATRE
+   Theatrical thresholds become reusable upper-command capability. Captain room
+   stays geometry-locked; Admiral ceremonial visuals are swappable through Forge.
+   ========================================================================== */
+
+/* Captain entrance is intentionally ~80% longer than 6.3.0. Extend the scene,
+   not an empty delay: veil, crest, copy and doors all carry the longer cadence. */
+.captain-entry-sequence.captain-entry-play{animation-duration:4.32s!important}
+.captain-entry-sequence.captain-entry-play .captain-entry-storm:after{animation-duration:2.9s!important}
+.captain-entry-sequence.captain-entry-repeat{animation-duration:1.12s!important}
+.captain-entry-sequence.captain-entry-repeat .cq-wheel,
+.captain-entry-sequence.captain-entry-repeat .cq-copy,
+.captain-entry-sequence.captain-entry-repeat .cq-left,
+.captain-entry-sequence.captain-entry-repeat .cq-right{animation-duration:1.12s!important}
+
+/* Fit the Captain command chamber to the actual Safari dynamic viewport. The
+   lower baked HUD is deliberately vignetted because real functions now live in
+   the left Helm; no important control depends on the painting below the fold. */
+body.captain-modal-open #captainQuarters.cinematic-cabin-ready{
+  inset:0!important;width:100vw!important;height:100svh!important;max-height:100svh!important;
+  padding:0!important;overflow:hidden!important;background-position:center top!important;
+}
+#captainQuarters.cinematic-cabin-ready:after{
+  background:
+    linear-gradient(180deg,rgba(2,9,13,.10),rgba(2,9,13,0) 15%,rgba(2,9,13,0) 68%,rgba(2,9,13,.72) 92%,rgba(2,9,13,.92) 100%),
+    radial-gradient(circle at 49% 34%,rgba(238,183,89,.06),transparent 27%)!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-command-rail{max-height:calc(100svh - 18px)!important;overflow:auto!important;scrollbar-width:none}
+#captainQuarters.cinematic-cabin-ready .cq-command-rail::-webkit-scrollbar{display:none}
+
+/* Admiral Gate receives the same 80% ceremony lift and a stronger layered
+   horizon. Repeat entry remains intentionally shorter than the first ascent. */
+.admiral-gate-enter .admiral-gate-scene:after{animation-duration:2.20s!important;animation-delay:.22s!important}
+.admiral-gate-enter .admiral-door.left,.admiral-gate-enter .admiral-door.right{transition-duration:2.02s!important;transition-delay:.90s!important}
+.admiral-gate-enter .admiral-seal{animation-duration:2.43s!important}
+.admiral-gate-enter .admiral-gate-card{transition-delay:1.88s!important;transition-duration:.86s!important}
+
+/* Admiral's Deck gets a true ceremonial graphic environment. The shipped visual
+   is the default; Forge can replace only the ceremonial layer without touching
+   authority, data, layout, or Professional Mode. */
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere{
+  background-image:
+    linear-gradient(110deg,rgba(3,15,21,.28),rgba(0,6,10,.70)),
+    var(--admiral-command-visual,url("assets/admirals_deck_ceremonial_v640.png"))!important;
+  background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;
+  filter:saturate(.92) contrast(1.03);
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere:after,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere:after{
+  background:linear-gradient(180deg,rgba(2,9,13,.16),rgba(2,9,13,.58)),radial-gradient(ellipse at center,transparent 25%,rgba(0,0,0,.56) 100%)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-shell{border-color:rgba(211,172,81,.58)!important;box-shadow:0 30px 90px rgba(0,0,0,.55),inset 0 0 80px rgba(190,139,43,.035)!important}
+.admiral-deck-enter .admiral-deck-atmosphere{animation-duration:2.20s!important}
+.admiral-deck-enter .admiral-deck-head{animation-duration:1.70s!important;animation-delay:.32s!important}
+.admiral-deck-enter .admiral-deck-grid{animation-duration:1.80s!important;animation-delay:.61s!important}
+
+/* Forge now supports a staged upper-command visual slot. */
+.visual-forge-actions{grid-template-columns:1.15fr 1fr .72fr!important}
+#visualForgeInstall{border-color:rgba(218,179,85,.62)!important;background:linear-gradient(180deg,rgba(56,42,19,.82),rgba(8,28,34,.94))!important;color:#eedba2!important}
+#visualForgeInstall:disabled{opacity:.38!important;filter:saturate(.45)}
+
+@media(max-width:900px){
+  .visual-forge-actions{grid-template-columns:1fr!important}
+  body.captain-modal-open #captainQuarters.cinematic-cabin-ready{height:100dvh!important;max-height:100dvh!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .captain-entry-sequence.captain-entry-play,.captain-entry-sequence.captain-entry-repeat,
+  .admiral-gate-enter .admiral-gate-scene:after,.admiral-gate-enter .admiral-seal,
+  .admiral-deck-enter .admiral-deck-atmosphere,.admiral-deck-enter .admiral-deck-head,.admiral-deck-enter .admiral-deck-grid{animation-duration:.01ms!important;animation-delay:0s!important}
+  .admiral-gate-enter .admiral-door.left,.admiral-gate-enter .admiral-door.right,.admiral-gate-enter .admiral-gate-card{transition-duration:.01ms!important;transition-delay:0s!important}
+}

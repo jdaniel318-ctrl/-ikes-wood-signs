@@ -29,3 +29,13 @@
 - Fleet external-contact guard and Client Preview pre-paint bulkhead are checked.
 - Deployment manifest/runtime version agreement is checked.
 - Recovery export is explicit and never auto-restores or mutates live state.
+
+
+## 6.4.0 Grand Passage
+- [ ] Captain first-entry ceremony completes and controls unlock after ~4.5s.
+- [ ] Repeat Captain entry completes in ~1.1s.
+- [ ] Captain room has no primary vertical overflow on iPad landscape.
+- [ ] Admiral Gate ceremony is longer than 6.3.0 and remains skippable via reduced motion.
+- [ ] Admiral Ceremonial Mode shows cinematic graphics; Professional Mode removes them.
+- [ ] Visual Forge can stage an Admiral ceremonial image without changing PIN/rank/readiness.
+- [ ] Project Admin 4353, Engine 5615, Captain 19613, Admiral 19613 temporary contract remain intact.

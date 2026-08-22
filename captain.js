@@ -11,6 +11,47 @@
   const show = (id) => byId(id)?.classList.remove('hidden');
   const hide = (id) => byId(id)?.classList.add('hidden');
 
+
+  // Upper-command visual slots. Browser-local for now; production storage moves to
+  // managed object storage under the Cloud Readiness contract.
+  const UPPER_VISUAL_DB = 'dark-sky-upper-command-visuals-v1';
+  const UPPER_VISUAL_STORE = 'visuals';
+  const upperVisualUrls = new Map();
+  function openUpperVisualDb(){
+    return new Promise((resolve,reject)=>{
+      const req=indexedDB.open(UPPER_VISUAL_DB,1);
+      req.onupgradeneeded=()=>{ if(!req.result.objectStoreNames.contains(UPPER_VISUAL_STORE)) req.result.createObjectStore(UPPER_VISUAL_STORE,{keyPath:'slot'}); };
+      req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error);
+    });
+  }
+  async function saveUpperCommandVisual(slot,file){
+    if(!file || !String(file.type||'').startsWith('image/')) throw new Error('Choose an image file first.');
+    const db=await openUpperVisualDb();
+    await new Promise((resolve,reject)=>{const tx=db.transaction(UPPER_VISUAL_STORE,'readwrite');tx.objectStore(UPPER_VISUAL_STORE).put({slot,blob:file,name:file.name,type:file.type,updatedAt:new Date().toISOString()});tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});
+    db.close();
+    applyUpperCommandVisual(slot,file);
+    return {slot,name:file.name};
+  }
+  async function loadUpperCommandVisual(slot){
+    try{
+      const db=await openUpperVisualDb();
+      const row=await new Promise((resolve,reject)=>{const tx=db.transaction(UPPER_VISUAL_STORE,'readonly');const req=tx.objectStore(UPPER_VISUAL_STORE).get(slot);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
+      db.close(); if(row?.blob) applyUpperCommandVisual(slot,row.blob); return row||null;
+    }catch(_){ return null; }
+  }
+  function applyUpperCommandVisual(slot,blob){
+    const old=upperVisualUrls.get(slot); if(old) try{URL.revokeObjectURL(old);}catch(_){ }
+    const url=URL.createObjectURL(blob); upperVisualUrls.set(slot,url);
+    if(slot==='admiral'){
+      const deck=byId('admiralDeck'); if(deck){deck.style.setProperty('--admiral-command-visual',`url("${url}")`);deck.classList.add('admiral-custom-visual');}
+    }else if(slot==='captain'){
+      // Captain visual uploads are retained as forge references until the command
+      // surface is Sea-Trialed; never silently replace the proven room geometry.
+      const room=byId('captainQuarters'); if(room){room.dataset.forgeVisualReady='1';room.style.setProperty('--captain-forge-reference',`url("${url}")`);}
+    }
+  }
+  function hydrateUpperCommandVisuals(){ loadUpperCommandVisual('captain'); loadUpperCommandVisual('admiral'); }
+
   function enterCaptainSubview(id) {
     hide('captainGlobalExit');
     show(id);
@@ -107,7 +148,7 @@
       entry?.classList.remove('captain-entry-play','captain-entry-repeat');
       if (entry) void entry.offsetWidth;
       entry?.classList.add('captain-entry-repeat');
-      window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 620);
+      window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 1120);
       return;
     }
 
@@ -118,7 +159,7 @@
     try { sessionStorage.setItem('darkSkyCaptainEntrySeen', '1'); } catch (_) {}
     // Match the visible entrance instead of leaving the controls gated for
     // ~2 seconds after the primary animation has already finished.
-    window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 2500);
+    window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 4500);
   }
 
   function unlock() {
@@ -376,6 +417,7 @@
         </main>
       </div>`;
     document.body.appendChild(deck);
+    loadUpperCommandVisual('admiral');
 
     const closeGate=()=>{hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';};
     const returnToCaptain=()=>{hide('admiralDeck');closeGate();show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
@@ -466,7 +508,7 @@
           <section class="visual-forge-output">
             <div class="visual-forge-status"><small>FORGE STATE</small><strong id="visualForgeState">STANDING BY</strong><span id="visualForgeStateCopy">Add a visual and objective, then forge a build brief.</span></div>
             <div id="visualForgeBlueprint" class="visual-forge-blueprint"><h3>Blueprint preview</h3><p>The Forge will translate the visual into structure, interactions, protected zones, isolation rules and next build steps.</p></div>
-            <div class="visual-forge-actions"><button id="visualForgeExport" type="button" disabled>EXPORT BLUEPRINT</button><button id="visualForgeReset" type="button">RESET</button></div>
+            <div class="visual-forge-actions"><button id="visualForgeInstall" type="button" disabled>INSTALL VISUAL TO TARGET</button><button id="visualForgeExport" type="button" disabled>EXPORT BLUEPRINT</button><button id="visualForgeReset" type="button">RESET</button></div>
             <div class="visual-forge-boundary"><b>BOUNDARY:</b> Blueprint generation is local and project-neutral. Real generative execution remains a separate capability until a managed backend is commissioned.</div>
           </section>
         </main>
@@ -481,7 +523,8 @@
     };
     byId('visualForgeFiles').addEventListener('change',e=>{
       refs.forEach(r=>{try{URL.revokeObjectURL(r.url);}catch(_){}}); refs=[];
-      [...(e.target.files||[])].slice(0,6).forEach(file=>refs.push({name:file.name,type:file.type,size:file.size,url:URL.createObjectURL(file)}));
+      [...(e.target.files||[])].slice(0,6).forEach(file=>refs.push({name:file.name,type:file.type,size:file.size,file,url:URL.createObjectURL(file)}));
+      byId('visualForgeInstall').disabled=!refs.length;
       renderRefs();
     });
     const principles={
@@ -500,9 +543,21 @@
       byId('visualForgeState').textContent='BLUEPRINT READY';byId('visualForgeStateCopy').textContent=`${scopeLabel()} translated the reference into a build contract.`;
       byId('visualForgeBlueprint').innerHTML=`<small>${scope.toUpperCase()} • ${target}</small><h3>${name}</h3><p>${objective||'No objective supplied yet.'}</p><h4>Build principles</h4><ol>${current.principles.map(x=>`<li>${x}</li>`).join('')}</ol><h4>Next move</h4><p>${scope==='admiral'?'Review whether this pattern should become a governed fleet standard before promotion.':'Prototype the blueprint in Workshop, then Sea Trial it before any fleet promotion.'}</p>`;
       byId('visualForgeExport').disabled=false;
+      byId('visualForgeInstall').disabled=!refs.length || !["Captain's Quarters","Admiral's Deck"].includes(target);
+    };
+    byId('visualForgeInstall').onclick=async()=>{
+      const file=refs[0]?.file; const target=byId('visualForgeTarget')?.value;
+      if(!file){showCaptainDeskNotice('Choose a reference visual first.','unavailable');return;}
+      if(target!=="Captain's Quarters" && target!=="Admiral's Deck"){showCaptainDeskNotice('Upper-command visual install is available for Captain or Admiral targets.','future');return;}
+      const slot=target==="Admiral's Deck"?'admiral':'captain';
+      try{
+        await saveUpperCommandVisual(slot,file);
+        byId('visualForgeState').textContent=slot==='admiral'?'ADMIRAL VISUAL INSTALLED':'CAPTAIN REFERENCE STAGED';
+        byId('visualForgeStateCopy').textContent=slot==='admiral'?'Ceremonial Admiral graphics will use this visual; Professional Mode remains clean.':'Captain reference saved for Forge/Sea Trial. The proven command-room geometry is not silently replaced.';
+      }catch(err){byId('visualForgeState').textContent='INSTALL HOLD';byId('visualForgeStateCopy').textContent=String(err?.message||err);}
     };
     byId('visualForgeExport').onclick=()=>{if(!current)return;const blob=new Blob([JSON.stringify(current,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${current.id}-${current.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'visual-forge'}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);};
-    byId('visualForgeReset').onclick=()=>{current=null;byId('visualForgeName').value='';byId('visualForgeObjective').value='';byId('visualForgeFiles').value='';refs.forEach(r=>{try{URL.revokeObjectURL(r.url);}catch(_){}});refs=[];renderRefs();byId('visualForgeState').textContent='STANDING BY';byId('visualForgeStateCopy').textContent='Add a visual and objective, then forge a build brief.';byId('visualForgeBlueprint').innerHTML='<h3>Blueprint preview</h3><p>The Forge will translate the visual into structure, interactions, protected zones, isolation rules and next build steps.</p>';byId('visualForgeExport').disabled=true;};
+    byId('visualForgeReset').onclick=()=>{current=null;byId('visualForgeName').value='';byId('visualForgeObjective').value='';byId('visualForgeFiles').value='';refs.forEach(r=>{try{URL.revokeObjectURL(r.url);}catch(_){}});refs=[];renderRefs();byId('visualForgeState').textContent='STANDING BY';byId('visualForgeStateCopy').textContent='Add a visual and objective, then forge a build brief.';byId('visualForgeBlueprint').innerHTML='<h3>Blueprint preview</h3><p>The Forge will translate the visual into structure, interactions, protected zones, isolation rules and next build steps.</p>';byId('visualForgeExport').disabled=true;byId('visualForgeInstall').disabled=true;};
     byId('visualForgeClose').onclick=()=>hide('visualForgeOverlay');
     overlay.addEventListener('click',e=>{if(e.target===overlay)hide('visualForgeOverlay');});
     return overlay;
@@ -650,6 +705,7 @@
   function bind() {
     document.documentElement.classList.add('captain-controller-ready');
     prepareCinematicCabin();
+    hydrateUpperCommandVisuals();
 
     // Direct listeners are safe here because this file loads at the very end of BODY.
     byId('captainModeAccessBtn')?.addEventListener('click', (event) => {

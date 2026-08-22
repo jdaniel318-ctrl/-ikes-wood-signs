@@ -1,18 +1,19 @@
-const CACHE='dark-sky-v6-3-0-ascension-watch';
+const CACHE='dark-sky-v6-4-0-grand-passage';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.3.0',
-  './platform_core.js?v=6.3.0',
-  './platform_v4.js?v=6.3.0',
-  './platform_identity.js?v=6.3.0',
-  './app.js?v=6.3.0',
-  './captain.js?v=6.3.0',
+  './styles.css?v=6.4.0',
+  './platform_core.js?v=6.4.0',
+  './platform_v4.js?v=6.4.0',
+  './platform_identity.js?v=6.4.0',
+  './app.js?v=6.4.0',
+  './captain.js?v=6.4.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
   './assets/ike_character.jpg',
   './assets/captains_quarters_command_center_v578.png',
+  './assets/admirals_deck_ceremonial_v640.png',
   './assets/signal_restoration_logo.png'
 ];
 
