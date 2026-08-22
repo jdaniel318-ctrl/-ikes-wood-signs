@@ -1,10 +1,10 @@
-# Dark Sky 6.0.4 — Clear Decks
+# Dark Sky 6.0.5 — Clear Decks
 
 - Separated Captain navigation authority: the main Captain room owns Return to Engine; Captain subviews own Return to Quarters.
 - Hid the global Captain exit while a Captain command workspace is open.
 - Escape now backs out of a Captain subview before it can leave Captain’s Quarters.
 - Hardened Captain exit cleanup so stale subview state cannot survive into Black Flag.
-- Aligned runtime and service-worker cache identity on 6.0.4.
+- Aligned runtime and service-worker cache identity on 6.0.5.
 - Kept Black Flag 5615, Project Admin 4353, Captain 19613, Client Preview, project isolation, and customer surfaces unchanged.
 - Kept the deployment ZIP intentionally lean: runtime + canonical docs + media-only assets.
 

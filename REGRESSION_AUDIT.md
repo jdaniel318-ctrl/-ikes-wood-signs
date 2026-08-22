@@ -1,4 +1,4 @@
-# Dark Sky 6.0.4 — Clear Decks Regression Gates
+# Dark Sky 6.0.5 — Clear Decks Regression Gates
 
 - Captain main room shows one Return to Engine control.
 - Cargo Hold / Workshop and other Captain subviews do not show the global Return to Engine control.

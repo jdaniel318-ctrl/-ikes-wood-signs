@@ -12,7 +12,7 @@
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'dom-helpers-ready';
-    // 6.0.4 Client Preview pre-paint bulkhead. Detect a sealed preview link before
+    // 6.0.5 Client Preview pre-paint bulkhead. Detect a sealed preview link before
     // the body or legacy project DOM can paint. This prevents the default Ike shell
     // from appearing for even one frame while the standalone preview runtime boots.
     if(String(location.hash||'').startsWith('#client-preview=')){
@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=6.0.4" />
+  <link rel="stylesheet" href="styles.css?v=6.0.5" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1299,11 +1299,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=6.0.4"></script>
-  <script src="platform_v4.js?v=6.0.4"></script>
-  <script src="platform_identity.js?v=6.0.4"></script>
-  <script src="app.js?v=6.0.4"></script>
-  <script src="captain.js?v=6.0.4"></script>
+  <script src="platform_core.js?v=6.0.5"></script>
+  <script src="platform_v4.js?v=6.0.5"></script>
+  <script src="platform_identity.js?v=6.0.5"></script>
+  <script src="app.js?v=6.0.5"></script>
+  <script src="captain.js?v=6.0.5"></script>
 
 </body>
 </html>

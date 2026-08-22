@@ -80,11 +80,26 @@
   function playEntrance() {
     const quarters = byId('captainQuarters');
     const entry = byId('captainEntrySequence');
+    let seen = false;
+    try { seen = sessionStorage.getItem('darkSkyCaptainEntrySeen') === '1'; } catch (_) {}
+
+    // Performance contract: the cinematic entrance is a first-entry flourish, not
+    // a tax on every Captain navigation round-trip. Subsequent entries in the
+    // same browser session become interactive immediately.
+    if (seen) {
+      entry?.classList.remove('captain-entry-play');
+      quarters?.classList.add('captain-entry-complete');
+      return;
+    }
+
     quarters?.classList.remove('captain-entry-complete');
     entry?.classList.remove('captain-entry-play');
     if (entry) void entry.offsetWidth;
     entry?.classList.add('captain-entry-play');
-    window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 4300);
+    try { sessionStorage.setItem('darkSkyCaptainEntrySeen', '1'); } catch (_) {}
+    // Match the visible entrance instead of leaving the controls gated for
+    // ~2 seconds after the primary animation has already finished.
+    window.setTimeout(() => quarters?.classList.add('captain-entry-complete'), 2500);
   }
 
   function unlock() {

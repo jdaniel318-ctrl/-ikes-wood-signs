@@ -1,20 +1,18 @@
-const CACHE='dark-sky-v6-0-4-clear-decks';
+const CACHE='dark-sky-v6-0-5-fair-wind';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.0.4',
-  './platform_core.js?v=6.0.4',
-  './platform_v4.js?v=6.0.4',
-  './platform_identity.js?v=6.0.4',
-  './app.js?v=6.0.4',
-  './captain.js?v=6.0.4',
+  './styles.css?v=6.0.5',
+  './platform_core.js?v=6.0.5',
+  './platform_v4.js?v=6.0.5',
+  './platform_identity.js?v=6.0.5',
+  './app.js?v=6.0.5',
+  './captain.js?v=6.0.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
   './assets/ike_character.jpg',
-  './assets/captains_quarters_canonical.png',
-  './assets/engine_room_modern_benchmark_v2976.png',
-  './assets/engine_room_pirate_benchmark_v2978.png',
+  './assets/captains_quarters_command_center_v578.png',
   './assets/signal_restoration_logo.png'
 ];
 
