@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '5.7.5';
+  const BUILD_VERSION = '5.7.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -536,14 +536,23 @@
     const encoded=clientPreviewHashPayload(); if(!encoded)return false;
     let payload=null;
     try{payload=JSON.parse(clientPreviewBase64UrlDecode(encoded));}catch(_){payload=null;}
+    // 5.7.6 Client Preview Isolation Bulkhead: the sealed preview is a standalone
+    // runtime. Clear every fleet/project surface before revealing anything, and do
+    // not depend on Engine/project boot, IndexedDB migrations, or a default vessel.
     document.body.classList.add('client-preview-mode','client-preview-locked');
-    ['blackFlagEntryGate','enginePanel','adminPanel','customerApp','universalCustomerShell','mugsCustomerShell','flowersCustomerShell','borCustomerShell'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+    document.body.classList.remove('engine-mode','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','bf-entry-open');
+    ['blackFlagEntryGate','enginePanel','adminPanel','customerApp','universalCustomerShell','mugsCustomerShell','flowersCustomerShell','borCustomerShell','pinGate','projectOrdersPanel','projectLedgerPanel','projectEngineControl','ownerPortal','captainQuarters','captainQuartersGate','experienceTestDeck','returnToEngineBtn','testAccessBanner'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+    document.body.removeAttribute('data-active-project');
     const gate=document.createElement('div');gate.id='clientPreviewGate';gate.className='client-preview-gate';
     if(!payload?.project?.id || !payload?.pinHash){gate.innerHTML='<div class="client-preview-gate-card"><h1>Preview unavailable</h1><p>This private preview link is incomplete or invalid.</p></div>';document.body.appendChild(gate);return true;}
     if(payload.expiresAt && Date.now()>Date.parse(payload.expiresAt)){gate.innerHTML=`<div class="client-preview-gate-card"><h1>Preview expired</h1><p>Ask ${escapeHtml(payload.project.name||'the project owner')} for a new private preview link.</p></div>`;document.body.appendChild(gate);return true;}
     const logo=payload.assets?.projectLogo||payload.project?.businessIntake?.visualAssets?.logo||'';
     gate.innerHTML=`<div class="client-preview-gate-card">${logo?`<img class="client-preview-gate-logo" src="${escapeHtml(logo)}" alt="${escapeHtml(payload.project.name)} logo">`:''}<small>PRIVATE CLIENT PREVIEW</small><h1>${escapeHtml(payload.project.name||'Project Preview')}</h1><p>This unpublished preview is protected by a project-specific PIN. No calls, emails, texts, payments, or real submissions can leave this preview.</p><input id="clientPreviewUnlockPin" type="password" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="Preview PIN"><button id="clientPreviewUnlockBtn" type="button" class="primary-btn">OPEN PREVIEW</button><div id="clientPreviewUnlockError" class="client-preview-error"></div></div>`;
     document.body.appendChild(gate);
+    document.body.classList.remove('boot-locked');
+    document.documentElement.classList.remove('client-preview-preflight');
+    window.__darkSkyClientPreviewPreflight=false;
+    window.__darkSkyBootStage='client-preview-gate-ready';
     const unlock=async()=>{const input=document.getElementById('clientPreviewUnlockPin');const ok=await unlockClientPreview(payload,String(input?.value||'').trim());if(!ok){const e=document.getElementById('clientPreviewUnlockError');if(e)e.textContent='That preview PIN is not correct.';if(input){input.value='';input.focus();}}};
     document.getElementById('clientPreviewUnlockBtn')?.addEventListener('click',unlock);
     document.getElementById('clientPreviewUnlockPin')?.addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
@@ -11610,6 +11619,20 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
+    // 5.7.6: sealed Client Preview links route before storage, migrations, fleet
+    // materialization, or any project restoration. The URL already carries the one
+    // permitted project snapshot, so loading fleet state first is both unnecessary
+    // and a visual/isolation risk.
+    if(clientPreviewHashPayload()){
+      bindCustomerNavigationCore();
+      bindCustomerActionCore();
+      bindCustomerChoiceCore();
+      bindCustomerMediaCore();
+      if(await routeClientPreviewFromHash()){
+        if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+        return;
+      }
+    }
     // Mission-critical command controls must exist even if a later migration fails.
     bindWatchCommandBus();
     bindEngineProjectCommandBus();
@@ -11643,10 +11666,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
-    if(await routeClientPreviewFromHash()){
-      if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
-      return;
-    }
+    // Client Preview routes before storage/migrations at the top of init().
     window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.5.0.ready',detail:`${companies.length} projects • Trust Release • preserved canonical project identity • project-local mutations • launch-state filters • non-destructive admission review • canonical Test Deck resolver`});
     const recovered=recoverDraft();
     state.current=recovered?state.current:'welcome';
@@ -11802,7 +11822,7 @@ document.addEventListener('click', (event) => {
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
     }catch(err){
       console.warn('Engine home render warning',err);
-      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.5'};
+      window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'5.7.6'};
     }
 
     window.scrollTo({top:0,left:0,behavior:'instant'});
@@ -11839,8 +11859,10 @@ document.addEventListener('click', (event) => {
     if(window.__blackFlagPortalBound) return;
     window.__blackFlagPortalBound=true;
     if(String(location.hash||'').startsWith('#client-preview=')){
+      // Standalone preview routing owns first paint. Keep the app bulkhead closed
+      // until routeClientPreviewFromHash() has installed the preview PIN gate.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
-      document.body.classList.remove('bf-entry-open','boot-locked');
+      document.body.classList.remove('bf-entry-open');
       return;
     }
 

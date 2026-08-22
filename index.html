@@ -12,6 +12,14 @@
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'dom-helpers-ready';
+    // 5.7.6 Client Preview pre-paint bulkhead. Detect a sealed preview link before
+    // the body or legacy project DOM can paint. This prevents the default Ike shell
+    // from appearing for even one frame while the standalone preview runtime boots.
+    if(String(location.hash||'').startsWith('#client-preview=')){
+      document.documentElement.classList.add('client-preview-preflight');
+      window.__darkSkyClientPreviewPreflight = true;
+      window.__darkSkyBootStage = 'client-preview-preflight';
+    }
     window.addEventListener('error', function(event){
       try { window.__darkSkyLastEarlyError = {stage:window.__darkSkyBootStage||'preflight',message:String(event.message||''),source:String(event.filename||''),line:Number(event.lineno||0),column:Number(event.colno||0),at:new Date().toISOString()}; } catch(_) {}
     }, true);
@@ -19,10 +27,21 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=5.7.5" />
+  <link rel="stylesheet" href="styles.css?v=5.7.6" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
+    /* Standalone client-preview links must never expose a fleet/project surface while
+       JavaScript is starting. The preview PIN gate is the first paint. */
+    html.client-preview-preflight body {background:#06151b!important;}
+    html.client-preview-preflight body #app,
+    html.client-preview-preflight body #blackFlagEntryGate,
+    html.client-preview-preflight body #enginePanel,
+    html.client-preview-preflight body #adminPanel,
+    html.client-preview-preflight body #returnToEngineBtn,
+    html.client-preview-preflight body #testAccessBanner,
+    html.client-preview-preflight body #captainQuartersGate,
+    html.client-preview-preflight body #captainQuarters {display:none!important;}
   </style>
 </head>
 <body class="boot-locked">
@@ -1278,11 +1297,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=5.7.5"></script>
-  <script src="platform_v4.js?v=5.7.5"></script>
-  <script src="platform_identity.js?v=5.7.5"></script>
-  <script src="app.js?v=5.7.5"></script>
-  <script src="captain.js?v=5.7.5"></script>
+  <script src="platform_core.js?v=5.7.6"></script>
+  <script src="platform_v4.js?v=5.7.6"></script>
+  <script src="platform_identity.js?v=5.7.6"></script>
+  <script src="app.js?v=5.7.6"></script>
+  <script src="captain.js?v=5.7.6"></script>
 
 </body>
 </html>

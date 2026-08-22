@@ -1,8 +1,8 @@
-# Dark Sky 5.7.5 — Ironclad
+# Dark Sky 5.7.6 — Ironclad
 
 - Based on the proven 5.7.3 Engine-entry structure; no authentication or routing logic changes.
 - Preserved every Black Flag gate DOM hook to avoid another cleanup-induced regression.
-- Aligned runtime, service-worker cache, and deployment manifest on 5.7.5.
+- Aligned runtime, service-worker cache, and deployment manifest on 5.7.6.
 - Added presentation-only command-portal finish and reduced-motion support.
 - Authority spine unchanged: Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, Client Preview unique per invite.
 
@@ -264,3 +264,11 @@ Second-pass audit of the 5.0 fleet boundary release.
 - The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
+
+## 5.7.6 — Bulkhead
+- Added a pre-paint Client Preview isolation bulkhead so sealed preview links cannot expose the default Ike customer shell for even one frame while Safari/JavaScript starts.
+- Client Preview now routes before IndexedDB, fleet migrations, bundled-project materialization, or project restoration. The sealed invite snapshot is the only project allowed to enter that runtime.
+- The Black Flag portal no longer removes the boot lock while a Client Preview hash is waiting to route.
+- Client Preview first paint is now the preview PIN gate; project/customer content is revealed only after that gate is installed and the invite PIN is accepted.
+- Expanded the preview boundary clear to include customer shells, project admin surfaces, Engine controls, owner surfaces, Captain surfaces, Test Deck, and return controls.
+- No changes to Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, or unique Client Preview PIN generation.

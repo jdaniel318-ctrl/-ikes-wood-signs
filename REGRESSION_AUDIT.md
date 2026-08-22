@@ -1,12 +1,12 @@
-# 5.7.5 Ironclad Regression Gate
+# 5.7.6 Ironclad Regression Gate
 
 - Engine PIN remains 5615.
 - Project Admin default/recovery remains 4353.
 - Captain's Quarters remains 19613.
 - Client Preview PIN remains unique per invite.
 - Black Flag gate DOM hooks from 5.7.3 remain present.
-- No authentication/routing logic change in 5.7.5.
-- Runtime/cache/manifest versions must all report 5.7.5.
+- No authentication/routing logic change in 5.7.6.
+- Runtime/cache/manifest versions must all report 5.7.6.
 
 # 5.7.3 Engine Entry Regression Gate
 
@@ -126,3 +126,11 @@ Checks required: Legacy Plumbing source assets are selected only for the Legacy 
 - The Engine transition is atomic: all project/customer/admin surfaces are hidden before the PIN cover is removed, preventing legacy Ike/project flashes.
 - A secondary initialization or migration failure no longer revokes an already-authenticated Engine session or reopens the PIN gate.
 - Engine render warnings remain visible/recoverable without silently locking the Captain back out.
+
+## 5.7.6 Client Preview pre-paint isolation
+- PASS: `index.html` detects `#client-preview=` in the head before body paint and arms `client-preview-preflight`.
+- PASS: preflight CSS hides `#app`, Black Flag entry, Engine, Admin, Captain, test banner, and return controls until the Client Preview gate exists.
+- PASS: `init()` routes Client Preview before IndexedDB/openDb, migrations, fleet materialization, and normal project restoration.
+- PASS: the Black Flag portal does not remove `boot-locked` for Client Preview URLs.
+- PASS: Client Preview clears every known project/fleet protected surface before installing its PIN gate.
+- PASS: the preflight bulkhead is removed only after the Client Preview gate has been appended.
