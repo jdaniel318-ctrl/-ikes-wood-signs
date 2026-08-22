@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v6-0-7-brass-compass';
+const CACHE='dark-sky-v6-0-8-chart-table';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.0.7',
-  './platform_core.js?v=6.0.7',
-  './platform_v4.js?v=6.0.7',
-  './platform_identity.js?v=6.0.7',
-  './app.js?v=6.0.7',
-  './captain.js?v=6.0.7',
+  './styles.css?v=6.0.8',
+  './platform_core.js?v=6.0.8',
+  './platform_v4.js?v=6.0.8',
+  './platform_identity.js?v=6.0.8',
+  './app.js?v=6.0.8',
+  './captain.js?v=6.0.8',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

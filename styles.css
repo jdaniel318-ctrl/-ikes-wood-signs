@@ -13335,4 +13335,220 @@ body.captain-authorized #captainExitBtn{visibility:hidden!important;pointer-even
     font-size:10px!important;
   }
 }
-\n\n/* ==========================================================================\n   v6.0.6 — CAPTAIN'S QUARTERS: DESK ORGANIZATION PASS\n   Keeps the selected cinematic room intact while replacing the ambiguous\n   decorative lower command rail with one clear, real Captain's Desk index.\n   ========================================================================== */\n#captainQuarters.cinematic-cabin-ready .cq-desk-index{\n  position:absolute;z-index:145;left:1.15%;right:1.15%;bottom:1.15%;height:15.7%;\n  display:grid;grid-template-columns:1.2fr repeat(8,1fr);gap:.55%;padding:.6%;box-sizing:border-box;\n  border:1px solid rgba(198,154,73,.70);border-radius:10px;\n  background:linear-gradient(180deg,rgba(5,18,24,.965),rgba(3,12,17,.985));\n  box-shadow:0 12px 32px rgba(0,0,0,.52),inset 0 0 24px rgba(205,157,73,.025);\n  pointer-events:auto;font-family:Georgia,'Times New Roman',serif;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index-title{\n  display:flex;flex-direction:column;justify-content:center;padding:0 8%;border-right:1px solid rgba(190,145,70,.32);\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index-title small{\n  color:#8fb5bb;font:700 clamp(6px,.52vw,9px)/1.2 system-ui,sans-serif;letter-spacing:.18em;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index-title strong{\n  margin-top:.35em;color:#e5c77d;font-size:clamp(12px,1.05vw,17px);line-height:1.08;font-weight:500;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button{\n  min-width:0;border:1px solid rgba(183,140,69,.36);border-radius:8px;padding:5% 5.5%;\n  display:grid;grid-template-rows:auto auto auto;align-content:center;justify-items:start;text-align:left;\n  color:#ead7a2;background:linear-gradient(180deg,rgba(18,39,47,.76),rgba(7,23,30,.84));\n  box-shadow:inset 0 0 18px rgba(214,165,77,.025);cursor:pointer;overflow:hidden;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button span{\n  color:#d6ad58;font:700 clamp(11px,1.05vw,18px)/1 Georgia,serif;margin-bottom:.28em;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button b{\n  color:#f0db9f;font-size:clamp(8px,.72vw,12px);font-weight:600;line-height:1.05;white-space:nowrap;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button small{\n  margin-top:.22em;color:#8fa8ad;font:500 clamp(5px,.48vw,8px)/1.18 system-ui,sans-serif;white-space:normal;\n}\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button:hover,\n#captainQuarters.cinematic-cabin-ready .cq-desk-index button:focus-visible{\n  outline:2px solid rgba(236,201,123,.82);outline-offset:1px;filter:brightness(1.12);\n  border-color:rgba(224,183,96,.82);background:linear-gradient(180deg,rgba(25,52,60,.92),rgba(9,29,36,.95));\n}\n/* The desk index is now the primary discoverable feature rail. Keep the painted\n   command tiles behind it as scenery, not a second competing set of controls. */\n#captainQuarters.cinematic-cabin-ready #captainBlackFlagDoor{pointer-events:none!important}\n#captainQuarters.cinematic-cabin-ready .cq-chartroom-boundary{bottom:17.6%!important}\n@media(max-width:1100px) and (orientation:landscape){\n  #captainQuarters.cinematic-cabin-ready .cq-desk-index{grid-template-columns:1.05fr repeat(4,1fr);grid-template-rows:1fr 1fr;height:22.2%;gap:4px;padding:5px}\n  #captainQuarters.cinematic-cabin-ready .cq-desk-index-title{grid-row:1/3}\n}\n@media(max-width:700px),(orientation:portrait) and (max-width:900px){\n  #captainQuarters.cinematic-cabin-ready .cq-desk-index{display:none!important}\n}\n
+
+/* ========================================================================== 
+   v6.0.8 — CAPTAIN'S TABLE: COHERENT COMMAND SURFACE
+   Surgical Captain-only pass:
+   - the cinematic room remains the skin,
+   - duplicate live title overlay is removed,
+   - First Mate no longer collides with the painted Signals region,
+   - the real Captain's Desk fully occupies the lower command band,
+   - working/future/unavailable stations remain clearly identifiable.
+   ========================================================================== */
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-doctrine{
+  display:none!important;
+}
+
+/* The right-side live intelligence is the canonical at-a-glance signal readout.
+   First Mate remains reachable from the Captain's Desk and opens the real
+   Spyglass/Watch detail view without sitting on top of the painted Signals card. */
+#captainQuarters.cinematic-cabin-ready #captainWatchStrip.cq-watch-instrument{
+  display:none!important;
+}
+
+/* The small boundary plaque competes with the real desk and is redundant here. */
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-boundary{
+  display:none!important;
+}
+
+/* Mask the decorative lower HUD and make the real Captain's Desk the single
+   readable operational surface in this band. */
+#captainQuarters.cinematic-cabin-ready .cq-desk-index{
+  position:absolute!important;
+  z-index:150!important;
+  left:.8%!important;
+  right:.8%!important;
+  bottom:.65%!important;
+  height:14.7%!important;
+  padding:.55%!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:1.12fr repeat(3,3fr)!important;
+  gap:.55%!important;
+  border:1px solid rgba(203,160,79,.82)!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(5,18,24,.985),rgba(3,12,17,.995))!important;
+  box-shadow:0 -10px 34px rgba(0,0,0,.48),inset 0 0 28px rgba(208,164,79,.035)!important;
+  color:#ead7a2!important;
+  pointer-events:auto!important;
+  overflow:hidden!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(207,163,80,.025),transparent 28%,transparent 72%,rgba(207,163,80,.025));
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index-title{
+  position:relative;
+  z-index:1;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-width:0!important;
+  padding:0 8%!important;
+  border-right:1px solid rgba(190,145,70,.35)!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index-title small{
+  color:#9bb9bd!important;
+  font:700 clamp(6px,.48vw,8px)/1.2 system-ui,sans-serif!important;
+  letter-spacing:.18em!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index-title strong{
+  margin-top:.28em!important;
+  color:#e8cb82!important;
+  font:500 clamp(13px,1.08vw,18px)/1.05 Georgia,'Times New Roman',serif!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index-title span{
+  margin-top:.42em!important;
+  color:#80979c!important;
+  font:700 clamp(5px,.42vw,7px)/1.2 system-ui,sans-serif!important;
+  letter-spacing:.09em!important;
+  white-space:normal!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index-title span i,
+#captainQuarters.cinematic-cabin-ready .cq-desk-index-title span b{
+  display:inline-block!important;
+  width:7px!important;
+  height:7px!important;
+  margin:0 4px 0 1px!important;
+  border-radius:50%!important;
+  vertical-align:-1px!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index-title span i{background:#d6aa55!important;box-shadow:0 0 8px rgba(214,170,85,.42)!important}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index-title span b{background:#6f7e83!important}
+
+#captainQuarters.cinematic-cabin-ready .cq-desk-group{
+  position:relative!important;
+  z-index:1!important;
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:auto 1fr!important;
+  gap:4px!important;
+  align-items:stretch!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-group h4{
+  grid-column:1/-1!important;
+  margin:0!important;
+  padding:0 3px 2px!important;
+  color:#b99652!important;
+  font:700 clamp(5px,.43vw,7px)/1.1 system-ui,sans-serif!important;
+  letter-spacing:.18em!important;
+  text-align:center!important;
+  border-bottom:1px solid rgba(177,136,67,.22)!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button{
+  position:relative!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:5px 6px 4px!important;
+  display:grid!important;
+  grid-template-rows:auto auto 1fr auto!important;
+  align-content:center!important;
+  justify-items:center!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  border:1px solid rgba(183,140,69,.45)!important;
+  border-radius:7px!important;
+  background:linear-gradient(180deg,rgba(18,39,47,.86),rgba(7,23,30,.92))!important;
+  color:#ead7a2!important;
+  box-shadow:inset 0 0 16px rgba(214,165,77,.025)!important;
+  cursor:pointer!important;
+  transition:filter .15s ease,border-color .15s ease,transform .15s ease,background .15s ease!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button>span{
+  margin:0 0 2px!important;
+  color:#d7ad58!important;
+  font:700 clamp(12px,1.05vw,18px)/1 Georgia,serif!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button>b{
+  min-width:0!important;
+  color:#f0dc9f!important;
+  font:600 clamp(7px,.66vw,11px)/1.05 Georgia,'Times New Roman',serif!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button>small{
+  margin-top:2px!important;
+  color:#8ea5aa!important;
+  font:500 clamp(5px,.43vw,7px)/1.1 system-ui,sans-serif!important;
+  white-space:normal!important;
+  overflow:hidden!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button>em{
+  align-self:end!important;
+  margin-top:2px!important;
+  padding:2px 5px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(207,166,83,.45)!important;
+  color:#d9b86b!important;
+  background:rgba(161,116,45,.09)!important;
+  font:800 clamp(4px,.36vw,6px)/1 system-ui,sans-serif!important;
+  font-style:normal!important;
+  letter-spacing:.08em!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button[data-cq-desk-state="active"]:hover,
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button[data-cq-desk-state="active"]:focus-visible{
+  outline:2px solid rgba(236,201,123,.82)!important;
+  outline-offset:1px!important;
+  filter:brightness(1.12)!important;
+  transform:translateY(-1px)!important;
+  border-color:rgba(224,183,96,.86)!important;
+  background:linear-gradient(180deg,rgba(25,52,60,.96),rgba(9,29,36,.98))!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button[data-cq-desk-state="future"]{
+  filter:saturate(.58) brightness(.82)!important;
+  border-color:rgba(123,132,132,.34)!important;
+  background:linear-gradient(180deg,rgba(18,31,36,.72),rgba(8,19,24,.84))!important;
+  cursor:help!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button[data-cq-desk-state="future"]>span,
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button[data-cq-desk-state="future"]>b{color:#b9aa87!important}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button[data-cq-desk-state="future"]>em{
+  color:#b7a56e!important;border-color:rgba(149,133,88,.38)!important;background:rgba(93,82,53,.10)!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button[data-cq-desk-state="unavailable"]{
+  filter:saturate(.34) brightness(.68)!important;
+  border-color:rgba(108,124,129,.30)!important;
+  background:linear-gradient(180deg,rgba(16,27,31,.66),rgba(8,17,21,.78))!important;
+  cursor:not-allowed!important;
+}
+#captainQuarters.cinematic-cabin-ready .cq-desk-index button[data-cq-desk-state="unavailable"]>em{
+  color:#91a0a3!important;border-color:rgba(116,132,136,.32)!important;background:rgba(80,94,98,.10)!important;
+}
+
+/* The desk index replaces the decorative control-center band as the readable
+   operational layer; invisible mapped controls in that band should not compete. */
+#captainQuarters.cinematic-cabin-ready #captainBlackFlagDoor,
+#captainQuarters.cinematic-cabin-ready #captainShipyardLaunch,
+#captainQuarters.cinematic-cabin-ready #captainBlueprintDeskBtn,
+#captainQuarters.cinematic-cabin-ready #captainSpyglassBtn,
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn{
+  pointer-events:none!important;
+}
+
+@media(max-width:1120px) and (orientation:landscape){
+  #captainQuarters.cinematic-cabin-ready .cq-desk-index{
+    left:.6%!important;right:.6%!important;bottom:.55%!important;height:17.4%!important;
+    grid-template-columns:.95fr repeat(3,3fr)!important;gap:3px!important;padding:4px!important;
+  }
+  #captainQuarters.cinematic-cabin-ready .cq-desk-index button>small{display:none!important}
+  #captainQuarters.cinematic-cabin-ready .cq-desk-index-title span{display:none!important}
+}
+@media(max-width:700px),(orientation:portrait) and (max-width:900px){
+  #captainQuarters.cinematic-cabin-ready .cq-desk-index{display:none!important}
+}

@@ -1,40 +1,23 @@
-# Dark Sky 6.0.7 — Brass Compass
+# Dark Sky 6.0.8 — Chart Table
 
-Captain's Desk station-state pass on the stabilized 6.0 platform spine. Working Captain tools remain visually warm and fully interactive; future or temporarily unavailable stations remain visible, clearly identified, and intentionally non-operational instead of appearing broken.
+Captain-only command-surface consolidation on the reconciled 6.0 platform spine. The selected Captain's Quarters cinematic environment remains unchanged while duplicate/competing live overlays are removed and the real Captain's Desk becomes the single organized operational band.
 
-No Black Flag, project, Client Preview, authority-PIN, or customer-experience routing contracts were changed.
+## Captain pass
 
-Transition-performance cleanup on the stabilized Clear Decks spine. Captain navigation releases sooner, repeated Captain entries no longer replay the full cinematic gate, and the service-worker pre-cache now targets the real Captain production asset while leaving large optional Engine benchmarks on demand.
-
-
-Stabilization and repository-hygiene release on the reconciled Dark Sky 6.0 platform spine. This build fixes Captain navigation authority without changing the working Black Flag, Project Admin, Client Preview, or project-isolation contracts.
-
-## What changed
-
-- Captain’s Quarters main room alone owns **Return to Engine**.
-- Captain subviews such as Cargo Hold / Workshop, Shipyard, Blueprint, Log, Signals and Fleet Map return to **Captain’s Quarters**, not directly to Black Flag.
-- The global Captain exit is hidden while a Captain subview is open.
-- Escape closes an open Captain subview first; it exits Captain’s Quarters only from the main room.
-- A defensive cleanup closes any Captain subview before the Captain → Engine crossing.
-- Runtime/cache/release identity is aligned on 6.0.7.
-- The deployable package keeps one clean runtime tree at repository root and media-only `assets/`.
+- Removes the duplicate live "Charting the Future Fleet" overlay; the selected cinematic room remains the visual source of that title.
+- Removes the pasted-on First Mate Watch from the painted Signals region; live signal status remains in Captain Intelligence and First Mate remains a working Desk station.
+- Brings the real Captain's Desk fully into the iPad landscape viewport with Command / Build / Explore groupings.
+- Working stations show READY; planned stations remain visible with FUTURE; missing runtime targets downgrade to UNAVAILABLE.
+- Future/unavailable controls return intentional Captain feedback instead of silently failing.
+- Captain visual identity, Black Flag, Client Preview, project routing, and authority contracts remain isolated.
 
 ## Authority contracts
 
-- Project Admin fleet default/recovery PIN: `4353`
-- Black Flag Engine PIN: `5615`
-- Captain’s Quarters PIN: `19613`
-- Client Preview PIN: unique per invite
+- Project Admin: `4353` fleet default/recovery
+- Black Flag Engine: `5615`
+- Captain's Quarters: `19613`
+- Client Preview: unique invite PIN per preview
 
-## Preserved platform contracts
+## Deployment
 
-- strict project isolation
-- Client Preview pre-paint isolation bulkhead
-- Test/Private Preview real-world contact blocking
-- domain/host portability
-- iPad/iPhone responsive contracts
-- cloud-readiness and recovery posture
-
-## Canonical deployment layout
-
-Deploy the contents of this ZIP at the **repository root**. Runtime files stay at root; `assets/` contains media only. Historical one-off audit files already in GitHub may be archived or deleted after this build is confirmed. See `REPOSITORY_CLEANUP.md`.
+Deploy from the repository root. Runtime/application files live at root; `assets/` contains media only.
