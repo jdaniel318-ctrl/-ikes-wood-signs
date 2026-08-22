@@ -1,4 +1,4 @@
-# 5.8.0 — Helm
+# 5.8.1 — Helm
 
 - Rebuilt Captain’s Quarters production surface over a clean cinematic room asset.
 - Removed reliance on baked-in concept controls and fictional dashboard data.
@@ -297,3 +297,9 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Client Preview first paint is now the preview PIN gate; project/customer content is revealed only after that gate is installed and the invite PIN is accepted.
 - Expanded the preview boundary clear to include customer shells, project admin surfaces, Engine controls, owner surfaces, Captain surfaces, Test Deck, and return controls.
 - No changes to Project Admin 4353, Black Flag 5615, Captain's Quarters 19613, or unique Client Preview PIN generation.
+
+## 5.8.1 — Helm Fix
+- Fixed Captain's Quarters falling back to the legacy cabin when the cinematic background asset had not loaded yet in Safari.
+- The responsive Helm UI is now the deterministic Captain's Quarters surface; image loading only affects background quality, never interface selection.
+- Added the clean Captain room asset to the service-worker pre-cache for more reliable iPad/iPhone loading.
+- If the preferred room asset fails, Helm remains active and falls back to the existing Captain cinematic background instead of exposing the legacy Captain UI.

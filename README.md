@@ -1,4 +1,4 @@
-# Dark Sky 5.8.0 — Helm
+# Dark Sky 5.8.1 — Helm
 
 Captain’s Quarters now uses a clean cinematic room as an environment layer with a responsive real HTML/CSS command interface. The concept dashboard is no longer the production UI. Primary iPad landscape command fits within the viewport; Captain data and actions are live and isolated.
 

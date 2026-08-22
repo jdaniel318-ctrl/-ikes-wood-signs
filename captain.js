@@ -288,20 +288,30 @@
   function prepareCinematicCabin(){
     const room=document.getElementById('captainQuarters');
     if(!room)return;
+
+    // 5.8.1 HELM FIX: Captain's Quarters mode must never depend on an image
+    // load event. 5.8.0 could fall back to the legacy cabin whenever Safari
+    // had not completed the clean-room asset request, which made the old UI
+    // reappear even though the new Helm markup was present.
+    room.classList.add('cinematic-cabin-ready');
+    room.classList.remove('cinematic-cabin-failed');
+    ensureChartroomLiveLayer();
+    refreshChartroomLive();
+    refreshCaptainHelm();
+
     const image=new Image();
     image.onload=()=>{
-      room.classList.add('cinematic-cabin-ready');
       room.classList.remove('cinematic-cabin-failed');
-      ensureChartroomLiveLayer();
-      refreshChartroomLive();
-      refreshCaptainHelm();
+      room.classList.add('cinematic-cabin-asset-ready');
     };
     image.onerror=()=>{
-      // Deliberate fallback: keep the known-good v2.9.51 cabin fully usable.
-      room.classList.remove('cinematic-cabin-ready');
+      // Keep the responsive Helm interface active and fall back to the
+      // existing Captain cinematic asset rather than resurrecting legacy UI.
       room.classList.add('cinematic-cabin-failed');
+      const bg=document.querySelector('#captainQuarters .cq-helm-bg');
+      if(bg) bg.style.backgroundImage="linear-gradient(90deg,rgba(2,9,12,.78) 0 13%,rgba(2,9,12,.18) 27% 70%,rgba(2,9,12,.76) 88% 100%),linear-gradient(180deg,rgba(2,7,10,.42),transparent 28%,rgba(2,7,10,.52)),url('assets/captains_quarters_cinematic_v2953.jpg')";
     };
-    image.src='assets/captains_quarters_clean_room_v580.png';
+    image.src='assets/captains_quarters_clean_room_v580.png?v=5.8.1';
   }
 
   function bind() {

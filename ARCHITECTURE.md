@@ -1,4 +1,4 @@
-## 5.8.0 Helm — Captain environment/UI separation
+## 5.8.1 Helm — Captain environment/UI separation
 
 Captain’s Quarters now follows a strict environment/UI split: cinematic art is non-interactive background; all controls, data, navigation, and accessibility are real DOM elements. Captain-only responsive layout targets a single landscape viewport and preserves modal overlays above the room.
 

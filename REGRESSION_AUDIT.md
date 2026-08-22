@@ -1,4 +1,4 @@
-# 5.8.0 Helm regression note
+# 5.8.1 Helm regression note
 
 - Captain’s Quarters only: clean room asset + responsive real UI.
 - No Black Flag authentication, Client Preview isolation, project admin, routing, or customer experience logic changed.

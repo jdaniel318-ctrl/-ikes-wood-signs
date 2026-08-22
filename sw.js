@@ -1,18 +1,19 @@
-const CACHE='dark-sky-v5-8-0-helm';
+const CACHE='dark-sky-v5-8-1-helmfix';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=5.8.0',
-  './platform_core.js?v=5.8.0',
-  './platform_v4.js?v=5.8.0',
-  './platform_identity.js?v=5.8.0',
-  './app.js?v=5.8.0',
-  './captain.js?v=5.8.0',
+  './styles.css?v=5.8.1',
+  './platform_core.js?v=5.8.1',
+  './platform_v4.js?v=5.8.1',
+  './platform_identity.js?v=5.8.1',
+  './app.js?v=5.8.1',
+  './captain.js?v=5.8.1',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
   './assets/ike_character.jpg',
   './assets/captains_quarters_command_center_v578.png',
+  './assets/captains_quarters_clean_room_v580.png',
   './assets/engine_room_modern_benchmark_v2976.png',
   './assets/engine_room_pirate_benchmark_v2978.png',
   './assets/signal_restoration_logo.png'
