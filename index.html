@@ -91,7 +91,7 @@
         const isEnter=event.type==='keydown' && event.key==='Enter' && target?.id==='blackFlagEntryPin';
         if(!isButton && !isEnter) return;
 
-        // 6.0.1 DEAD-MAN AUTH BRIDGE: every explicit Engine submission is owned here
+        // 6.0.4 DEAD-MAN AUTH BRIDGE: every explicit Engine submission is owned here
         // at first light. This avoids the failure mode where BlackFlagAuth exists but
         // later portal event binding never completes. No auto-submit: only click/Enter.
         event.preventDefault();
@@ -130,7 +130,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=6.0.1" />
+  <link rel="stylesheet" href="styles.css?v=6.0.4" />
   <style id="bootLockStyles">
     /* FIRST PAINT CONTRACT: no project branding can exist on screen before routing is resolved. */
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
@@ -1006,7 +1006,7 @@
       </section>
 
       
-      <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Dark Sky v4 Benchmark Wake structural status">
+      <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Dark Sky v4 Benchmark Lock structural status">
         <header class="v3-architecture-head">
           <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>SYSTEM STATUS</span></div><h3>V4 BROADSIDE STATUS</h3><p>Platform contract, recovery, diagnostics, release discipline, and sealed project boundaries.</p></div>
           <span id="v3SchemaBadge">PROJECT ENVELOPE</span>
@@ -1450,11 +1450,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=6.0.1"></script>
-  <script src="platform_v4.js?v=6.0.1"></script>
-  <script src="platform_identity.js?v=6.0.1"></script>
-  <script src="app.js?v=6.0.1"></script>
-  <script src="captain.js?v=6.0.1"></script>
+  <script src="platform_core.js?v=6.0.4"></script>
+  <script src="platform_v4.js?v=6.0.4"></script>
+  <script src="platform_identity.js?v=6.0.4"></script>
+  <script src="app.js?v=6.0.4"></script>
+  <script src="captain.js?v=6.0.4"></script>
 
 </body>
 </html>

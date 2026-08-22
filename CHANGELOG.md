@@ -1,4 +1,23 @@
-# Dark Sky 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
+- Second-pass benchmark parity: tighter masthead, full canonical-logo presentation, explicit phone treatment, denser hero/trust/services/how-it-works proportions, and project hero-graphic priority.
+- Added a tiny private-test build marker so Safari cache/state can be verified during device testing without affecting live customer mode.
+- Preserved the benchmark as reference-only and the canonical logo as the sole live project identity.
+
+# 6.0.4 — Benchmark Lock
+- Replaced the Legacy benchmark-mode landing renderer instead of layering more styling on the legacy page structure.
+- Benchmark-native masthead, private-test rail, unified photographic hero, attached trust rail, six-service grid, and How It Works closure now define the Legacy landing experience.
+- Canonical project logo remains untouched; benchmark remains reference-only.
+- Existing Black Flag request flow, project isolation, test safety, settings authority, and customer actions remain wired underneath the new renderer.
+
+# Dark Sky 6.0.4 — Benchmark Lock
+
+- Promoted the saved Legacy benchmark from design influence to full customer-layout authority.
+- Replaced the customer masthead admin gear with benchmark-style contact treatment; private/test mode remains non-calling.
+- Matched the approved benchmark copy, masthead rhythm, unified hero, attached trust rail, compact services grid, and dark How It Works close.
+- Preserved the exact canonical Legacy logo asset without crop, redraw, recolor, or rearrangement.
+- Kept responsive parity across phone, tablet, and desktop while preserving project isolation and test safety.
+
+# Dark Sky 6.0.4 — Benchmark Lock
 - Precision pass against the approved Legacy responsive benchmark.
 - Fixed canonical Legacy masthead rendering so the exact logo asset is never clipped or cropped.
 - Rebalanced masthead spacing and hero proportions on desktop, iPad/tablet, and phone.
@@ -13,30 +32,30 @@
 - Updated the bundled Legacy benchmark fallback to the approved multi-device reference so fresh devices share the same target.
 - Preserved project isolation, private/test safety, Engine access, fleet portability, and responsive mobile contracts.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Established a project Branding Authority contract: the Control Center Project Logo / Mark is the canonical live identity and is used exactly as uploaded.
 - Added a separate Design Benchmark / Reference asset slot to the Project Graphics Library. Benchmark artwork is reference-only and can never silently become a live logo or customer graphic.
 - Bundled the approved Legacy Plumbing logo byte-for-byte as a fresh-device fallback; a Control Center logo upload still overrides it immediately.
 - Bundled the approved Legacy responsive customer-site benchmark as a project-specific QA reference.
 - Added benchmark support to reusable project graphics templates so future vessels can carry their own approved visual target without inheriting another project’s brand.
 - Added canonical-logo rendering guards to prevent crop, recolor, blend-mode, or filter effects from altering the approved logo asset.
-- Advanced runtime and cache identity to 6.0.1.
+- Advanced runtime and cache identity to 6.0.4.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Tightened Legacy Plumbing against the approved responsive benchmark instead of using it only as general inspiration.
 - Rebalanced phone hero proportions so project photography remains visible beside the brand and headline.
 - Reduced the mobile hero logo panel width, strengthened header branding, and aligned CTA/trust/service density to the benchmark.
 - Refined tablet and desktop hero composition to preserve the same hierarchy without stretching the phone design.
 - Benchmark image remains a QA reference asset; the customer experience is native HTML/CSS and project data.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Promoted the approved Legacy responsive showcase into the real customer-site benchmark.
 - Rebuilt Legacy header/hero/trust/services presentation across phone, tablet, and desktop without altering request-flow logic.
 - Added a bundled benchmark reference asset for future fleet visual QA; the runtime site remains native HTML/CSS rather than a screenshot.
 - Preserved project-specific branding, trust settings, test safety, project isolation, and mobile Test Dock behavior.
 - Established this composition as a Customer Site Kit benchmark that other projects may adapt without inheriting Legacy-specific graphics or copy.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Promoted the strongest Legacy Plumbing visual lessons into a reusable responsive Project Experience system.
 - Project logos now receive stronger visual priority at phone, tablet, and desktop breakpoints.
 - Added project-brand color variables so shared Customer Site Kit components adapt to each vessel instead of copying Legacy styling.
@@ -44,54 +63,54 @@
 - Upgraded the generic universal customer landing to use project logos and project-specific branding instead of initials-only identity.
 - Preserved all mobile Test Dock, fleet portability, Engine login, trust, safety, and project-isolation contracts.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Fixed the iPhone Engine login overlay regression introduced by the centered mobile gate.
 - Mobile centering now applies only while the Black Flag entry route is actually open.
 - Added an ID-specific hidden rule so successful authentication can always remove the Engine gate on iPhone.
 - Preserved flexible Engine PIN length, deliberate submit behavior, recovery PIN 5615, horizontal Fleet Deck swiping, and all 5.9.0 mobile Customer Site Kit work.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Fixed the iPhone Engine login dead-button failure by moving explicit PIN submission into the first-light authentication bridge.
 - The bridge now authenticates through the configured Engine verifier when available and falls back to recovery PIN 5615 if later startup wiring is unavailable.
 - Preserves arbitrary configured Engine PIN length and never auto-submits while typing.
 - Successful authentication opens the Engine atomically without depending on the later portal click binder.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Removed the forced four-digit Engine PIN assumption and the auto-submit-on-fourth-digit behavior.
 - Engine entry now submits only when the Captain presses Enter Engine Room or the keyboard Enter key.
 - Configured Engine PINs are verified through the shared authenticator without a fixed UI length; the 5615 recovery credential remains valid.
 - Keeps the Engine gate covering the transition until Fleet Command is rendered, preventing the iPhone mid-page jump/half-open state.
 - Removed artificial maxlength limits from other Engine credential entry surfaces.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Hardened Black Flag Engine entry on iPhone with a first-light 4-digit PIN path that does not depend on late application startup.
 - Canonical Engine PIN entry now sanitizes to four digits and automatically submits as soon as all four digits are entered.
 - The Enter Engine Room button and Return to Dark Sky remain available as explicit controls.
 - Preserved all Pocket Watch mobile customer-site rules, Pocket Fleet cross-device fleet/branding fixes, and Narrow Channel horizontal Fleet Deck swiping.
 - Engine, Project Admin, Captain, and Client Preview credentials remain separate contracts.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Centered Black Flag Engine Access on iPhone-sized viewports.
 - Restored the compact left/right swipe Fleet Deck on phones with snap scrolling and a next-card peek.
 - Kept vertical page scrolling independent from horizontal fleet browsing.
 - Preserved project branding, fleet portability, mobile Customer Site Kit rules, and Dark Sky return contracts.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Added a reusable phone Test Dock that keeps internal Dark Sky/Test Deck exits available without covering customer content.
 - Tightened phone hero, service-card, proof, process, review, CTA, and footer layouts for Customer Site Kit projects.
 - Preserved the successful 2x2 trust-badge layout on narrow screens.
 - Converted reviews to a touch-first snap carousel on phones and process steps to a compact vertical timeline.
 - Kept all mobile patterns optional by module and reusable across future fleet projects.
-- Advanced runtime/cache identity to 6.0.1.
+- Advanced runtime/cache identity to 6.0.4.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Fixed cross-device fleet drift: Legacy Plumbing is now a release vessel that materializes on a fresh device instead of existing only in one browser's local registry.
 - Added release-portable project branding fallbacks so fleet cards remain visibly project-specific on iPhone even before local project graphics have ever been stored on that device.
 - Preserved project-owned graphics as the first choice; portable fallbacks are used only when that device has no saved logo/hero/footer asset.
 - Added a final phone-width Fleet Deck rule that prevents fixed-width/horizontal project cards from hiding later vessels on narrow screens.
 - Bumped fleet registry schema and cache identity so existing phones reconcile the new canonical vessel set.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Finished the Legacy Plumbing customer journey rather than redesigning it again.
 - Tightened hero height so the trust row arrives sooner on iPad.
 - Refined trust badges into cleaner graphic credibility marks with concise labels.
@@ -101,13 +120,13 @@
 - Compressed Dark Sky + Test Deck into a smaller internal test navigation footprint while preserving both exits.
 - Preserved verified-review gating, project trust settings, customer isolation, and test-mode safety.
 
-# 6.0.1 — Benchmark Wake
+# 6.0.4 — Benchmark Lock
 - Reworked the customer trust strip so non-BBB badges use polished graphic medallions instead of plain text icons.
 - Kept the official BBB A+ badge as the credibility anchor while making the surrounding badges visually compatible.
 - Preserved project-level settings so BBB, Licensed & Insured, Residential + Commercial, and Service Area remain opt-in per vessel.
-- Updated runtime/build references and cache identity to 6.0.1.
+- Updated runtime/build references and cache identity to 6.0.4.
 
-# Dark Sky 6.0.1 — Benchmark Wake
+# Dark Sky 6.0.4 — Benchmark Lock
 
 - Rebuilt customer trust strips as compact credibility chips instead of oversized numbered cards.
 - Added a project-level BBB Accredited Business setting; the BBB badge is absent from customer pages unless explicitly enabled for that project.

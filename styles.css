@@ -14069,3 +14069,206 @@ body.premium-plumbing-customer .experience-mode-banner button,body.legacy-plumbi
   body.project-mode.legacy-plumbing-customer #returnToEngineBtn,
   body.project-mode.premium-plumbing-customer #returnToEngineBtn{display:none!important}
 }
+
+
+/* =========================================================
+   6.0.2 — BENCHMARK UNFURLED
+   Full benchmark authority: the approved reference dictates the
+   customer masthead, hero rhythm, trust rail, service grid and close.
+   Canonical logo remains unchanged and customer test mode stays safe.
+   ========================================================= */
+.legacy-contractor-site.benchmark-contract-active{
+  background:#eef4f6!important;
+  --benchmark-navy:#041a2f;
+  --benchmark-navy-2:#062844;
+  --benchmark-blue:#0879e8;
+  --benchmark-blue-2:#159cf2;
+}
+/* Masthead: benchmark composition, not an admin header. */
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header{
+  min-height:118px!important;
+  padding:14px clamp(34px,6vw,92px)!important;
+  grid-template-columns:minmax(280px,.9fr) minmax(330px,1fr) auto!important;
+  align-items:center!important;
+  gap:32px!important;
+  background:#fff!important;
+  border-bottom:1px solid #c8dce6!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .legacy-real-logo{
+  width:280px!important;height:90px!important;flex:0 0 280px!important;
+  overflow:visible!important;background:transparent!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .legacy-real-logo img{
+  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;
+  object-fit:contain!important;object-position:left center!important;transform:none!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-brand-header .universal-brand-copy p{
+  font:700 14px/1.45 Arial,sans-serif!important;color:#16334d!important;max-width:470px!important;
+}
+.legacy-contractor-site.benchmark-contract-active .benchmark-contact-button{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;
+  min-width:176px!important;min-height:48px!important;padding:0 18px!important;border-radius:8px!important;
+  border:1px solid #55b8ff!important;background:linear-gradient(135deg,#0e83ed,#0a61ce)!important;
+  color:#fff!important;text-decoration:none!important;box-shadow:0 8px 18px rgba(10,105,211,.18)!important;
+  font:800 13px/1 Arial,sans-serif!important;letter-spacing:.01em!important;
+}
+.legacy-contractor-site.benchmark-contract-active .benchmark-contact-button span{font-size:18px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-contact-locked{opacity:.78!important;cursor:default!important}
+
+/* Safety ribbon: attached directly to the benchmark masthead. */
+.legacy-contractor-site.benchmark-contract-active .full-sail-test-ribbon{
+  min-height:42px!important;padding:8px clamp(34px,6vw,92px)!important;
+  border:0!important;border-bottom:1px solid #c8dce6!important;border-radius:0!important;margin:0!important;
+  background:#edf8ff!important;color:#17364d!important;font-size:10px!important;letter-spacing:.04em!important;
+}
+/* Hero: treat photo and message as one stage. */
+.legacy-contractor-site.benchmark-contract-active .contractor-hero{
+  grid-template-columns:minmax(410px,.82fr) minmax(560px,1.18fr)!important;
+  min-height:430px!important;background:var(--benchmark-navy)!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-copy{
+  padding:38px 36px 34px clamp(46px,6vw,92px)!important;
+  background:linear-gradient(90deg,#041a2f 0%,#05233c 88%,rgba(5,35,60,.12) 100%)!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-copy h2{
+  max-width:500px!important;margin-bottom:18px!important;font-size:clamp(52px,4.15vw,70px)!important;line-height:.93!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-copy>p{
+  max-width:410px!important;margin-bottom:22px!important;font-size:16px!important;line-height:1.42!important;color:#eef6fb!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-actions{max-width:520px!important;grid-template-columns:1.05fr .8fr!important;gap:12px!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-actions button{min-height:52px!important;border-radius:8px!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-visual{min-height:430px!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-photo{
+  background-position:52% 48%!important;background-size:cover!important;
+  filter:saturate(.94) contrast(1.17) brightness(.58)!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-hero-visual::after{
+  background:linear-gradient(90deg,rgba(4,26,47,.52) 0%,rgba(4,26,47,.14) 30%,rgba(4,26,47,.03) 72%)!important;
+}
+/* Trust rail is the hero footer, not a separate card row. */
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip{
+  margin:0!important;padding:10px clamp(34px,5vw,74px)!important;gap:0!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;background:#061d35!important;border:0!important;border-radius:0!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip{
+  min-height:74px!important;padding:8px 18px!important;border:0!important;border-right:1px solid rgba(142,183,210,.22)!important;
+  border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#fff!important;justify-content:flex-start!important;
+}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip:last-child{border-right:0!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip strong{color:#fff!important;font-size:12px!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-graphic{background:transparent!important;box-shadow:none!important;border-radius:0!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip .trust-chip-bbb img{width:120px!important;height:48px!important;filter:none!important}
+
+/* Services + close follow the benchmark density exactly. */
+.legacy-contractor-site.benchmark-contract-active .contractor-services-section{padding:16px clamp(34px,6vw,92px) 24px!important;background:#f8fafc!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-services-head h2{margin:0 0 12px!important;font-size:25px!important;color:#0a223d!important}
+.legacy-contractor-site.benchmark-contract-active .contractor-service-mosaic{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-card{min-height:86px!important;border-radius:7px!important;padding:11px 30px 11px 12px!important;background:#fff!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-copy strong{font-size:11px!important;color:#0b2846!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-service-copy small{font-size:9px!important;line-height:1.28!important;color:#465f73!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-section{padding:18px clamp(34px,6vw,92px) 22px!important;background:linear-gradient(180deg,#061d35,#04172b)!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-head{margin-bottom:11px!important}
+.legacy-contractor-site.benchmark-contract-active .benchmark-how-head h2{font-size:23px!important}
+
+/* Tablet: preserve the benchmark, only compress it. */
+@media(min-width:701px) and (max-width:1100px){
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header{
+    min-height:102px!important;padding:10px 28px!important;grid-template-columns:minmax(220px,.8fr) minmax(290px,1fr) auto!important;gap:20px!important;
+  }
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header .legacy-real-logo{width:220px!important;height:76px!important;flex-basis:220px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-contact-button{min-width:150px!important;min-height:44px!important;padding:0 14px!important;font-size:11px!important}
+  .legacy-contractor-site.benchmark-contract-active .full-sail-test-ribbon{padding:7px 28px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero{grid-template-columns:.86fr 1.14fr!important;min-height:390px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy{padding:30px 28px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy h2{font-size:clamp(42px,5.5vw,56px)!important;max-width:440px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy>p{font-size:14px!important;max-width:360px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-visual{min-height:390px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip{padding:8px 24px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-services-section{padding:15px 28px 22px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-section{padding:16px 28px 20px!important}
+}
+/* Phone: same composition hierarchy, not a different design. */
+@media(max-width:700px){
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header{
+    min-height:82px!important;padding:8px 12px!important;grid-template-columns:1fr auto!important;gap:8px!important;
+  }
+  .legacy-contractor-site.benchmark-contract-active .contractor-brand-header .legacy-real-logo{width:185px!important;height:62px!important;flex-basis:185px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-contact-button{min-width:44px!important;width:44px!important;min-height:44px!important;padding:0!important;border-radius:8px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-contact-button strong{display:none!important}
+  .legacy-contractor-site.benchmark-contract-active .full-sail-test-ribbon{padding:7px 12px!important;min-height:48px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero{min-height:480px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-visual{min-height:480px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy{min-height:480px!important;padding:18px 16px 16px!important;justify-content:flex-end!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy h2{font-size:clamp(37px,10vw,46px)!important;max-width:300px!important;margin-bottom:12px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-copy>p{font-size:12.5px!important;max-width:285px!important;margin-bottom:14px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-hero-actions{grid-template-columns:1fr!important;gap:7px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-proof-strip.trust-strip{padding:4px 2px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-services-section{padding:12px 10px 14px!important}
+  .legacy-contractor-site.benchmark-contract-active .contractor-service-mosaic{grid-template-columns:1fr!important;gap:4px!important}
+  .legacy-contractor-site.benchmark-contract-active .benchmark-how-section{padding:12px 10px calc(72px + env(safe-area-inset-bottom))!important}
+}
+
+/* 6.0.3 — Bluewater: benchmark-native Legacy renderer */
+.legacy-benchmark-page{--legacy-navy:#061d35;--legacy-navy-deep:#031526;--legacy-blue:#087be7;--legacy-line:#173a5b;--legacy-ink:#0b2741;min-height:100vh;background:#eef3f6;color:#fff;font-family:Arial,Helvetica,sans-serif}
+.legacy-benchmark-masthead{display:grid;grid-template-columns:minmax(230px,.9fr) minmax(280px,1fr) auto;align-items:center;gap:32px;min-height:118px;padding:18px clamp(34px,6vw,86px);background:#fff;color:var(--legacy-ink);border-bottom:1px solid #dbe5eb}
+.legacy-benchmark-logo{display:flex;align-items:center;min-width:0}
+.legacy-benchmark-logo .universal-brand-logo{width:min(270px,100%)!important;height:82px!important;flex:0 1 270px!important;background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;overflow:visible!important}
+.legacy-benchmark-logo .universal-brand-logo img{width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:left center!important;filter:none!important;transform:none!important}
+.legacy-benchmark-meta{display:grid;gap:10px;justify-self:start;font-weight:800;font-size:13px;line-height:1.2;color:#102b46}.legacy-benchmark-meta span{display:block}
+.legacy-benchmark-action{justify-self:end}.legacy-benchmark-action:empty{display:none}
+.legacy-benchmark-page .benchmark-contact-button{display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;min-width:170px!important;min-height:48px!important;padding:0 16px!important;border:1px solid #1597ff!important;border-radius:8px!important;background:linear-gradient(180deg,#138af2,#076fd3)!important;color:#fff!important;text-decoration:none!important;font:800 13px/1 Arial,sans-serif!important;box-shadow:0 5px 14px rgba(3,83,160,.18)!important}
+.legacy-benchmark-page .full-sail-test-ribbon{display:flex!important;align-items:center!important;gap:12px!important;min-height:42px!important;margin:0!important;padding:7px clamp(34px,6vw,86px)!important;border:0!important;border-radius:0!important;background:#09233d!important;color:#fff!important;box-shadow:none!important;font-size:10px!important;letter-spacing:0!important}.legacy-benchmark-page .full-sail-test-ribbon b{letter-spacing:.08em!important}.legacy-benchmark-page .full-sail-test-ribbon span{color:#e2ebf2!important}
+.legacy-benchmark-main{background:#f7fafc}
+.legacy-benchmark-hero{position:relative;min-height:455px;background:var(--legacy-navy-deep);overflow:hidden;isolation:isolate}.legacy-benchmark-hero::before{content:"";position:absolute;inset:0;background-image:var(--legacy-hero);background-size:cover;background-position:72% center;filter:saturate(.92) contrast(1.06) brightness(.68);z-index:-3}.legacy-benchmark-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#061d35 0%,rgba(6,29,53,.98) 27%,rgba(6,29,53,.78) 46%,rgba(6,29,53,.12) 72%,rgba(6,29,53,0) 100%);z-index:-2}.legacy-benchmark-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,16,29,.04),rgba(2,16,29,.18));z-index:-1}
+.legacy-benchmark-hero-copy{display:flex;flex-direction:column;justify-content:center;min-height:455px;width:min(48%,590px);padding:42px 0 40px clamp(34px,6vw,86px)}.legacy-benchmark-hero-copy h1{margin:0 0 20px;font:800 clamp(48px,5.8vw,68px)/.94 Arial,sans-serif;letter-spacing:-.045em;color:#fff}.legacy-benchmark-hero-copy h1 em{font-style:normal;color:var(--legacy-blue)}.legacy-benchmark-hero-copy p{max-width:390px;margin:0 0 24px;font:500 15px/1.45 Arial,sans-serif;color:#f0f5f8}
+.legacy-benchmark-actions{display:grid;grid-template-columns:minmax(210px,1fr) minmax(175px,.78fr);gap:12px;max-width:490px}.legacy-benchmark-actions button{min-height:52px;border-radius:8px;font:800 12px/1 Arial,sans-serif;letter-spacing:.04em}.legacy-benchmark-primary{border:1px solid #20a5ff;background:linear-gradient(180deg,#0e91ee,#0675d8);color:#fff;box-shadow:0 7px 16px rgba(3,87,167,.22)}.legacy-benchmark-secondary{border:1px solid #7591a7;background:rgba(5,24,43,.78);color:#fff}
+.legacy-benchmark-trust{background:#061d35;border-top:1px solid rgba(96,142,179,.28);border-bottom:1px solid rgba(96,142,179,.23)}.legacy-benchmark-trust .contractor-proof-strip.trust-strip{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:0!important;padding:8px clamp(34px,6vw,86px)!important;background:transparent!important}.legacy-benchmark-trust .trust-chip{min-height:66px!important;padding:7px 20px!important;border:0!important;border-right:1px solid rgba(115,151,181,.24)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#fff!important}.legacy-benchmark-trust .trust-chip:last-child{border-right:0!important}.legacy-benchmark-trust .trust-chip strong{color:#fff!important;font-size:12px!important}.legacy-benchmark-trust .trust-chip-graphic{background:transparent!important;box-shadow:none!important;width:35px!important;height:35px!important;flex-basis:35px!important}.legacy-benchmark-trust .trust-chip-graphic svg{width:35px!important;height:35px!important}.legacy-benchmark-trust .trust-chip-bbb{justify-content:center!important}.legacy-benchmark-trust .trust-chip-bbb img{width:112px!important;height:45px!important;object-fit:contain!important}
+.legacy-benchmark-services{padding:20px clamp(34px,6vw,86px) 30px;background:#f9fbfd;color:var(--legacy-ink)}.legacy-benchmark-services h2{margin:0 0 14px;font:800 25px/1.1 Arial,sans-serif}.legacy-benchmark-service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.legacy-benchmark-service-grid .benchmark-service-card{min-height:88px!important;padding:12px 34px 12px 13px!important;border:1px solid #d8e2e8!important;border-radius:7px!important;background:#fff!important;box-shadow:0 2px 7px rgba(11,39,65,.035)!important}.legacy-benchmark-service-grid .benchmark-service-copy strong{font-size:11px!important;color:#0d2947!important}.legacy-benchmark-service-grid .benchmark-service-copy small{font-size:9px!important;line-height:1.3!important;color:#4d6374!important}.legacy-benchmark-service-grid .benchmark-service-icon{color:#0b579d!important}
+.legacy-benchmark-how{padding:20px clamp(34px,6vw,86px) 24px;background:linear-gradient(180deg,#061d35,#04162a);color:#fff}.legacy-benchmark-how-title{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:13px}.legacy-benchmark-how-title h2{margin:0;font:800 24px/1.1 Arial,sans-serif}.legacy-benchmark-how-title span{font:600 12px/1.3 Arial,sans-serif;color:#edf4f8}.legacy-benchmark-how-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}.legacy-benchmark-how-grid article{position:relative;display:grid;grid-template-columns:38px 1fr;gap:6px 11px;align-items:start;padding:8px 30px 5px 0}.legacy-benchmark-how-grid .benchmark-step-num{left:1px;top:-7px}.legacy-benchmark-how-grid .benchmark-how-icon{grid-row:1/span 2;width:36px;height:36px;margin-top:11px;color:#fff}.legacy-benchmark-how-grid .benchmark-how-icon svg{width:36px;height:36px}.legacy-benchmark-how-grid article>div{display:grid;gap:4px}.legacy-benchmark-how-grid strong{font:800 12px/1.15 Arial,sans-serif}.legacy-benchmark-how-grid small{font:500 10px/1.32 Arial,sans-serif;color:#d2dee7}.legacy-benchmark-how-grid article>i{position:absolute;right:10px;top:26px;color:#d8e7f2;font:300 25px/1 Arial,sans-serif}
+/* Benchmark-native pages deliberately omit legacy proof/review/footer modules; the benchmark structure is the page. */
+@media(max-width:1000px){.legacy-benchmark-masthead{grid-template-columns:minmax(200px,.8fr) minmax(240px,1fr) auto;gap:18px;padding:14px 26px;min-height:94px}.legacy-benchmark-logo .universal-brand-logo{width:220px!important;height:70px!important;flex-basis:220px!important}.legacy-benchmark-page .full-sail-test-ribbon{padding:7px 26px!important}.legacy-benchmark-hero{min-height:405px}.legacy-benchmark-hero-copy{min-height:405px;width:46%;padding:30px 0 28px 28px}.legacy-benchmark-hero-copy h1{font-size:clamp(44px,5.6vw,58px)}.legacy-benchmark-trust .contractor-proof-strip.trust-strip{padding:8px 24px!important}.legacy-benchmark-services,.legacy-benchmark-how{padding-left:28px;padding-right:28px}}
+@media(max-width:720px){.legacy-benchmark-masthead{grid-template-columns:auto 1fr auto;gap:8px;min-height:66px;padding:8px 10px;background:#fff}.legacy-benchmark-logo .universal-brand-logo{width:132px!important;height:48px!important;flex-basis:132px!important}.legacy-benchmark-meta{gap:3px;font-size:7.5px;justify-self:center}.legacy-benchmark-page .benchmark-contact-button{min-width:40px!important;width:40px!important;min-height:40px!important;padding:0!important;border-radius:8px!important}.legacy-benchmark-page .benchmark-contact-button strong{display:none}.legacy-benchmark-page .full-sail-test-ribbon{min-height:45px!important;padding:6px 10px!important;font-size:7.5px!important;gap:7px!important}.legacy-benchmark-hero{min-height:470px}.legacy-benchmark-hero::before{background-position:69% center}.legacy-benchmark-hero::after{background:linear-gradient(90deg,rgba(5,25,45,.97) 0%,rgba(5,25,45,.88) 48%,rgba(5,25,45,.32) 72%,rgba(5,25,45,.06) 100%)}.legacy-benchmark-hero-copy{min-height:470px;width:72%;padding:18px 14px 16px;justify-content:flex-end}.legacy-benchmark-hero-copy h1{font-size:clamp(35px,10vw,44px);max-width:275px;margin-bottom:12px}.legacy-benchmark-hero-copy p{max-width:260px;margin-bottom:13px;font-size:11.5px}.legacy-benchmark-actions{grid-template-columns:1fr;gap:6px;max-width:100%}.legacy-benchmark-actions button{min-height:44px;font-size:9px}.legacy-benchmark-trust .contractor-proof-strip.trust-strip{grid-template-columns:repeat(4,minmax(0,1fr))!important;padding:4px 1px!important}.legacy-benchmark-trust .trust-chip{min-height:60px!important;padding:4px 2px!important;display:grid!important;justify-items:center!important;text-align:center!important;gap:3px!important}.legacy-benchmark-trust .trust-chip-graphic{width:25px!important;height:25px!important;flex-basis:25px!important}.legacy-benchmark-trust .trust-chip-graphic svg{width:25px!important;height:25px!important}.legacy-benchmark-trust .trust-chip strong{font-size:6.8px!important;line-height:1.05!important}.legacy-benchmark-trust .trust-chip-bbb img{width:43px!important;height:27px!important}.legacy-benchmark-services{padding:11px 9px 13px}.legacy-benchmark-services h2{font-size:18px;margin-bottom:8px}.legacy-benchmark-service-grid{grid-template-columns:1fr;gap:4px}.legacy-benchmark-service-grid .benchmark-service-card{min-height:50px!important;padding:7px 25px 7px 8px!important;grid-template-columns:24px 1fr!important;gap:7px!important;border-radius:5px!important}.legacy-benchmark-service-grid .benchmark-service-icon{width:24px!important;height:24px!important}.legacy-benchmark-service-grid .benchmark-service-icon svg{width:19px!important;height:19px!important}.legacy-benchmark-service-grid .benchmark-service-copy{grid-template-columns:auto 1fr!important;align-items:center!important;gap:3px 7px!important}.legacy-benchmark-service-grid .benchmark-service-copy strong{font-size:9px!important}.legacy-benchmark-service-grid .benchmark-service-copy small{font-size:7px!important}.legacy-benchmark-how{padding:11px 9px calc(72px + env(safe-area-inset-bottom))}.legacy-benchmark-how-title{align-items:start;margin-bottom:7px}.legacy-benchmark-how-title h2{font-size:17px}.legacy-benchmark-how-title span{font-size:8px;text-align:right;max-width:120px}.legacy-benchmark-how-grid{grid-template-columns:1fr}.legacy-benchmark-how-grid article{min-height:48px;padding:5px 3px 5px 0;grid-template-columns:30px 1fr}.legacy-benchmark-how-grid article>i{display:none}.legacy-benchmark-how-grid .benchmark-how-icon{width:28px;height:28px;margin-top:8px}.legacy-benchmark-how-grid .benchmark-how-icon svg{width:28px;height:28px}.legacy-benchmark-how-grid strong{font-size:9px}.legacy-benchmark-how-grid small{font-size:7.5px}.legacy-benchmark-how-grid .benchmark-step-num{width:17px!important;height:17px!important;font-size:8px!important}}
+
+/* 6.0.4 — Benchmark Lock: direct Legacy benchmark renderer parity */
+body.legacy-plumbing-customer #universalCustomerShell{max-width:none!important;margin:0!important;padding:0!important;background:#eef3f6!important}
+.legacy-benchmark-page{--legacy-navy:#031a31;--legacy-navy-deep:#021426;--legacy-blue:#0a86ef;--legacy-line:#173a5b;--legacy-ink:#0a2742;background:#eef3f6!important}
+.legacy-benchmark-masthead{grid-template-columns:minmax(260px,.9fr) minmax(330px,1fr) minmax(180px,.55fr)!important;min-height:112px!important;padding:14px clamp(56px,6.4vw,96px)!important;gap:28px!important}
+.legacy-benchmark-logo .universal-brand-logo{width:min(285px,100%)!important;height:86px!important;flex-basis:285px!important}
+.legacy-benchmark-meta{justify-self:center!important;gap:9px!important;font-size:13px!important;white-space:nowrap!important}
+.legacy-benchmark-action{justify-self:end!important}
+.legacy-benchmark-page .benchmark-contact-button,.legacy-benchmark-page .benchmark-contact-button:disabled{display:flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;filter:none!important;cursor:default!important;min-width:178px!important;min-height:48px!important;background:linear-gradient(180deg,#0f8ff4,#076fd7)!important;border:1px solid #28a1ff!important;color:#fff!important}
+.legacy-benchmark-test-wrap{position:relative;background:#09233d!important}
+.legacy-benchmark-test-wrap .full-sail-test-ribbon{background:#09233d!important}
+.legacy-benchmark-build{position:absolute;right:clamp(16px,2.2vw,34px);top:50%;transform:translateY(-50%);font:800 8px/1 Arial,sans-serif;letter-spacing:.12em;color:#6e8da8;opacity:.85}
+.legacy-benchmark-hero{min-height:470px!important;background:#031a31!important}
+.legacy-benchmark-hero::before{background-size:cover!important;background-position:72% 52%!important;filter:saturate(.92) contrast(1.17) brightness(.52)!important;transform:scale(1.01)}
+.legacy-benchmark-hero::after{background:linear-gradient(90deg,#031a31 0%,#031a31 27%,rgba(3,26,49,.96) 39%,rgba(3,26,49,.68) 53%,rgba(3,26,49,.13) 72%,rgba(3,26,49,0) 100%)!important}
+.legacy-benchmark-hero-overlay{background:linear-gradient(180deg,rgba(0,10,20,.02),rgba(0,10,20,.25))!important}
+.legacy-benchmark-hero-copy{min-height:470px!important;width:min(43%,550px)!important;padding:44px 0 42px clamp(56px,6.4vw,96px)!important}
+.legacy-benchmark-hero-copy h1{font-size:clamp(50px,5.2vw,68px)!important;line-height:.93!important;letter-spacing:-.047em!important;margin-bottom:20px!important}
+.legacy-benchmark-hero-copy p{max-width:350px!important;font-size:14.5px!important;line-height:1.48!important;margin-bottom:24px!important;color:#f4f7fa!important}
+.legacy-benchmark-actions{grid-template-columns:minmax(220px,1fr) minmax(190px,.8fr)!important;gap:13px!important;max-width:500px!important}
+.legacy-benchmark-actions button{min-height:54px!important;font-size:11.5px!important;border-radius:7px!important}
+.legacy-benchmark-trust{background:#041b32!important}
+.legacy-benchmark-trust .contractor-proof-strip.trust-strip{padding:0 clamp(56px,6.4vw,96px)!important;min-height:78px!important}
+.legacy-benchmark-trust .trust-chip{min-height:78px!important;padding:10px 26px!important;justify-content:flex-start!important}
+.legacy-benchmark-trust .trust-chip strong{font-size:11.5px!important;line-height:1.08!important}
+.legacy-benchmark-trust .trust-chip-graphic{width:38px!important;height:38px!important;flex-basis:38px!important}
+.legacy-benchmark-trust .trust-chip-graphic svg{width:38px!important;height:38px!important}
+.legacy-benchmark-trust .trust-chip-bbb img{width:102px!important;height:48px!important}
+.legacy-benchmark-services{padding:19px clamp(56px,6.4vw,96px) 27px!important;background:#f9fbfd!important}
+.legacy-benchmark-services h2{font-size:23px!important;margin-bottom:12px!important}
+.legacy-benchmark-service-grid{gap:9px!important}
+.legacy-benchmark-service-grid .benchmark-service-card{min-height:92px!important;padding:13px 36px 13px 14px!important;border-color:#dbe4e9!important;border-radius:6px!important}
+.legacy-benchmark-service-grid .benchmark-service-icon{width:33px!important;height:33px!important}
+.legacy-benchmark-service-grid .benchmark-service-icon svg{width:28px!important;height:28px!important}
+.legacy-benchmark-service-grid .benchmark-service-copy strong{font-size:11.2px!important}
+.legacy-benchmark-service-grid .benchmark-service-copy small{font-size:8.8px!important;line-height:1.3!important}
+.legacy-benchmark-how{padding:19px clamp(56px,6.4vw,96px) 24px!important;background:#04182c!important}
+.legacy-benchmark-how-title{margin-bottom:11px!important}.legacy-benchmark-how-title h2{font-size:22px!important}.legacy-benchmark-how-title span{font-size:10.5px!important}
+.legacy-benchmark-how-grid article{padding-right:28px!important}.legacy-benchmark-how-grid strong{font-size:11px!important}.legacy-benchmark-how-grid small{font-size:8.8px!important}
+/* In benchmark mode, internal test navigation may remain reachable but may not sit over the customer composition on tablet/desktop. */
+@media(min-width:721px){body.legacy-plumbing-customer .mobile-test-dock{position:fixed!important;left:14px!important;bottom:14px!important;transform:scale(.86);transform-origin:left bottom;opacity:.92}body.legacy-plumbing-customer .project-engine-return{right:14px!important;bottom:14px!important;transform:scale(.86);transform-origin:right bottom;opacity:.92}}
+@media(max-width:1000px) and (min-width:721px){.legacy-benchmark-masthead{grid-template-columns:minmax(220px,.8fr) minmax(280px,1fr) minmax(150px,.5fr)!important;padding:12px 28px!important;min-height:96px!important}.legacy-benchmark-logo .universal-brand-logo{width:230px!important;height:72px!important;flex-basis:230px!important}.legacy-benchmark-meta{font-size:11px!important}.legacy-benchmark-page .benchmark-contact-button,.legacy-benchmark-page .benchmark-contact-button:disabled{min-width:152px!important;min-height:44px!important;font-size:11px!important}.legacy-benchmark-page .full-sail-test-ribbon{padding-left:28px!important;padding-right:70px!important}.legacy-benchmark-hero{min-height:430px!important}.legacy-benchmark-hero-copy{min-height:430px!important;width:44%!important;padding:34px 0 32px 30px!important}.legacy-benchmark-hero-copy h1{font-size:50px!important}.legacy-benchmark-trust .contractor-proof-strip.trust-strip{padding:0 28px!important}.legacy-benchmark-services,.legacy-benchmark-how{padding-left:30px!important;padding-right:30px!important}}
+@media(max-width:720px){.legacy-benchmark-masthead{grid-template-columns:138px 1fr 42px!important;padding:7px 9px!important;min-height:64px!important;gap:7px!important}.legacy-benchmark-logo .universal-brand-logo{width:134px!important;height:48px!important;flex-basis:134px!important}.legacy-benchmark-meta{font-size:7.2px!important;gap:2px!important;justify-self:start!important}.legacy-benchmark-page .benchmark-contact-button,.legacy-benchmark-page .benchmark-contact-button:disabled{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important}.legacy-benchmark-test-wrap .full-sail-test-ribbon{padding-right:42px!important}.legacy-benchmark-build{right:8px;font-size:6px}.legacy-benchmark-hero{min-height:445px!important}.legacy-benchmark-hero::before{background-position:70% center!important}.legacy-benchmark-hero::after{background:linear-gradient(90deg,rgba(3,26,49,.98) 0%,rgba(3,26,49,.94) 45%,rgba(3,26,49,.56) 68%,rgba(3,26,49,.08) 100%)!important}.legacy-benchmark-hero-copy{min-height:445px!important;width:72%!important;padding:18px 13px 14px!important}.legacy-benchmark-hero-copy h1{font-size:39px!important;max-width:270px!important}.legacy-benchmark-hero-copy p{font-size:10.8px!important;max-width:245px!important}.legacy-benchmark-actions{grid-template-columns:1fr!important}.legacy-benchmark-trust .contractor-proof-strip.trust-strip{min-height:62px!important}.legacy-benchmark-trust .trust-chip{min-height:62px!important}.legacy-benchmark-services{padding-top:10px!important}.legacy-benchmark-service-grid{grid-template-columns:1fr!important}.legacy-benchmark-how-title span{max-width:100px!important}}
