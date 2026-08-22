@@ -1,3 +1,9 @@
+# 5.8.0 Helm regression note
+
+- Captain’s Quarters only: clean room asset + responsive real UI.
+- No Black Flag authentication, Client Preview isolation, project admin, routing, or customer experience logic changed.
+- Captain modal functions remain routed through existing proven controls.
+
 # 5.7.9 Quarterdeck regression note
 
 - Captain’s Quarters-only CSS/JS refinement.

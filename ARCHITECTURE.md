@@ -1,3 +1,7 @@
+## 5.8.0 Helm — Captain environment/UI separation
+
+Captain’s Quarters now follows a strict environment/UI split: cinematic art is non-interactive background; all controls, data, navigation, and accessibility are real DOM elements. Captain-only responsive layout targets a single landscape viewport and preserves modal overlays above the room.
+
 ## 5.7.9 Quarterdeck — Captain-only refinement
 
 Captain’s Quarters keeps the cinematic Chartroom art as a skin while live fleet facts, routing, and controls remain separate DOM/controller layers. Decorative concept metrics are masked by real Captain intelligence. No project or Engine state is stored in the artwork.

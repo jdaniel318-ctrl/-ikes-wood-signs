@@ -1,3 +1,7 @@
+# Dark Sky 5.8.0 — Helm
+
+Captain’s Quarters now uses a clean cinematic room as an environment layer with a responsive real HTML/CSS command interface. The concept dashboard is no longer the production UI. Primary iPad landscape command fits within the viewport; Captain data and actions are live and isolated.
+
 # Dark Sky 5.7.9 — Quarterdeck
 
 Captain’s Quarters refinement over the 5.7.8 Chartroom baseline. Real Captain intelligence now masks fictional concept metrics; exit/readability and live-signal integration are tightened. No Black Flag/project/customer auth or isolation paths were changed.

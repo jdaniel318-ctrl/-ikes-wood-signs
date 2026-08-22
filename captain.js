@@ -22,6 +22,7 @@
       hide('captainQuartersGate');
       show('captainQuarters');
       refreshCaptainWatch();
+      refreshCaptainHelm();
       clearHash();
       document.body.classList.add('captain-modal-open','captain-authorized');
       playEntrance();
@@ -80,6 +81,7 @@
     hide('captainQuartersGate');
     show('captainQuarters');
     refreshCaptainWatch();
+    refreshCaptainHelm();
     clearHash();
     document.body.classList.add('captain-modal-open', 'captain-authorized');
     playEntrance();
@@ -263,6 +265,26 @@
     layer.classList.toggle('attention',attention>0);
   }
 
+  function refreshCaptainHelm(){
+    const fleet=fleetSnapshot();
+    const active=fleet.reduce((n,v)=>n+(Number(v.activeOutposts)||0),0);
+    const attention=fleet.reduce((n,v)=>n+(Number(v.attentionOutposts)||0),0);
+    const trials=fleet.reduce((n,v)=>n+(v.outposts||[]).filter(o=>o.state==='sea_trial').length,0);
+    const set=(id,value)=>{ const el=byId(id); if(el)el.textContent=String(value); };
+    ['cqHelmFleetCount','cqHelmVessels'].forEach(id=>set(id,fleet.length));
+    ['cqHelmSailingCount','cqHelmSailing'].forEach(id=>set(id,active));
+    ['cqHelmSignalCount','cqHelmSignalsCount'].forEach(id=>set(id,attention));
+    set('cqHelmTrials',trials);
+    const headline=byId('cqHelmIntelHeadline');
+    if(headline) headline.textContent=attention?`${attention} signal${attention===1?'':'s'} require your eye`:(fleet.length?'Waters are steady':'Fleet data standing by');
+    byId('cqHelmSignalsCount')?.closest('article')?.classList.toggle('attention',attention>0);
+  }
+
+  function triggerCaptain(id){
+    const target=byId(id); if(!target)return;
+    target.click();
+  }
+
   function prepareCinematicCabin(){
     const room=document.getElementById('captainQuarters');
     if(!room)return;
@@ -272,18 +294,27 @@
       room.classList.remove('cinematic-cabin-failed');
       ensureChartroomLiveLayer();
       refreshChartroomLive();
+      refreshCaptainHelm();
     };
     image.onerror=()=>{
       // Deliberate fallback: keep the known-good v2.9.51 cabin fully usable.
       room.classList.remove('cinematic-cabin-ready');
       room.classList.add('cinematic-cabin-failed');
     };
-    image.src='assets/captains_quarters_command_center_v578.png';
+    image.src='assets/captains_quarters_clean_room_v580.png';
   }
 
   function bind() {
     document.documentElement.classList.add('captain-controller-ready');
     prepareCinematicCabin();
+    const helmBindings={
+      cqHelmReturn:'captainExitBtn',cqHelmFleet:'captainDarkSkyChartBtn',cqHelmMap:'captainDarkSkyChartBtn',cqHelmGlobeHotspot:'captainDarkSkyChartBtn',cqHelmLaunch:'captainDarkSkyChartBtn',
+      cqHelmSignals:'captainWatchStrip',cqHelmIntelOpen:'captainWatchStrip',
+      cqHelmWorkshop:'captainCargoDoor',cqHelmShipyard:'captainShipyardLaunch',cqHelmFuture:'captainShipyardLaunch',cqHelmExpansion:'captainCargoDoor',
+      cqHelmBlueprint:'captainBlueprintDeskBtn',cqHelmClockHotspot:'captainBlueprintDeskBtn',
+      cqHelmLog:'captainLogDoor',cqHelmQuickLog:'captainLogDoor',cqHelmChartHotspot:'captainDarkSkyChartBtn'
+    };
+    Object.entries(helmBindings).forEach(([source,target])=>byId(source)?.addEventListener('click',event=>{event.preventDefault();triggerCaptain(target);}));
 
     // Direct listeners are safe here because this file loads at the very end of BODY.
     byId('captainModeAccessBtn')?.addEventListener('click', (event) => {

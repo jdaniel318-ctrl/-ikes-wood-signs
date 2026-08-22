@@ -1,3 +1,10 @@
+# 5.8.0 — Helm
+
+- Rebuilt Captain’s Quarters production surface over a clean cinematic room asset.
+- Removed reliance on baked-in concept controls and fictional dashboard data.
+- Added responsive real navigation, live Captain intelligence, quick actions, and visible Return to Engine.
+- Kept Black Flag, Client Preview, project routing, auth, and project/customer surfaces unchanged.
+
 # 5.7.9 — Quarterdeck
 
 - Refined Captain’s Quarters only.
