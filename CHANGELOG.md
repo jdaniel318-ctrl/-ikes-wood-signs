@@ -1,3 +1,12 @@
+# 5.7.9 — Quarterdeck
+
+- Refined Captain’s Quarters only.
+- Replaced baked fictional intelligence metrics with a live fleet snapshot overlay.
+- Strengthened Return to Engine visibility and interaction contrast.
+- Replaced conquest-style hero language with “Chart. Decide. Build.”
+- Integrated First Mate Watch more cleanly into the Chartroom visual.
+- Preserved Chartroom asset, Captain controller hooks, Engine auth, Client Preview bulkhead, and all project isolation paths.
+
 # 5.7.8 — Chartroom
 
 - Captain's Quarters only: installs the selected cinematic command-center artwork as the Captain chamber visual foundation.

@@ -213,6 +213,54 @@
     detail.textContent=`${fleet.length} vessels • ${active} sailing${trials?` • ${trials} sea trial${trials===1?'':'s'}`:''}${harbor?` • ${harbor} in harbor`:''}`;
     const strip=byId('captainWatchStrip');
     strip?.classList.toggle('attention',attention>0);
+    refreshChartroomLive();
+  }
+
+
+
+  function ensureChartroomLiveLayer(){
+    const room=byId('captainQuarters');
+    if(!room)return null;
+    let layer=byId('captainChartroomLive');
+    if(layer)return layer;
+    layer=document.createElement('div');
+    layer.id='captainChartroomLive';
+    layer.className='cq-chartroom-live';
+    layer.innerHTML=`
+      <div class="cq-chartroom-doctrine" aria-hidden="true">
+        <small>CAPTAIN'S QUARTERS</small>
+        <strong>Charting the Future Fleet</strong>
+        <span>Chart. Decide. Build.</span>
+      </div>
+      <section class="cq-chartroom-intel" aria-label="Live Captain intelligence">
+        <div class="cq-live-head"><small>LIVE CAPTAIN INTELLIGENCE</small><b id="cqLiveState">Reading the horizon…</b></div>
+        <div class="cq-live-grid">
+          <article><span>VESSELS</span><strong id="cqLiveVessels">—</strong><small>Known to Dark Sky</small></article>
+          <article><span>SAILING</span><strong id="cqLiveSailing">—</strong><small>Active outposts</small></article>
+          <article><span>SEA TRIAL</span><strong id="cqLiveTrials">—</strong><small>Testing now</small></article>
+          <article><span>SIGNALS</span><strong id="cqLiveSignals">—</strong><small>Need your eye</small></article>
+        </div>
+      </section>
+      <div class="cq-chartroom-boundary">CAPTAIN VIEW • READ / ROUTE • PROJECT MACHINERY REMAINS ISOLATED</div>`;
+    room.appendChild(layer);
+    return layer;
+  }
+
+  function refreshChartroomLive(){
+    const layer=ensureChartroomLiveLayer();
+    if(!layer)return;
+    const fleet=fleetSnapshot();
+    const active=fleet.reduce((n,v)=>n+(Number(v.activeOutposts)||0),0);
+    const attention=fleet.reduce((n,v)=>n+(Number(v.attentionOutposts)||0),0);
+    const trials=fleet.reduce((n,v)=>n+(v.outposts||[]).filter(o=>o.state==='sea_trial').length,0);
+    const set=(id,value)=>{ const el=byId(id); if(el)el.textContent=String(value); };
+    set('cqLiveVessels',fleet.length);
+    set('cqLiveSailing',active);
+    set('cqLiveTrials',trials);
+    set('cqLiveSignals',attention);
+    const state=byId('cqLiveState');
+    if(state)state.textContent=attention?`${attention} signal${attention===1?'':'s'} require your eye`:(fleet.length?'Waters are steady':'Fleet data standing by');
+    layer.classList.toggle('attention',attention>0);
   }
 
   function prepareCinematicCabin(){
@@ -222,6 +270,8 @@
     image.onload=()=>{
       room.classList.add('cinematic-cabin-ready');
       room.classList.remove('cinematic-cabin-failed');
+      ensureChartroomLiveLayer();
+      refreshChartroomLive();
     };
     image.onerror=()=>{
       // Deliberate fallback: keep the known-good v2.9.51 cabin fully usable.

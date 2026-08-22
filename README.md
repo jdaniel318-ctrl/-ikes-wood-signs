@@ -1,3 +1,7 @@
+# Dark Sky 5.7.9 — Quarterdeck
+
+Captain’s Quarters refinement over the 5.7.8 Chartroom baseline. Real Captain intelligence now masks fictional concept metrics; exit/readability and live-signal integration are tightened. No Black Flag/project/customer auth or isolation paths were changed.
+
 # Dark Sky 5.7.8 — Ironclad
 
 Ironclad is a conservative stabilization build based on the proven 5.7.3 Engine-entry structure. It advances cache/version bookkeeping and login presentation without deleting gate DOM hooks or changing authentication/routing behavior.

@@ -13110,3 +13110,78 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
     background:rgba(4,15,21,.88);color:#e3c47d;font:700 9px/1 Georgia,serif;letter-spacing:.08em;pointer-events:none;
   }
 }
+
+
+/* ========================================================================== 
+   v5.7.9 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
+   Captain-only refinement over Chartroom. The cinematic art remains the skin;
+   real Captain intelligence and controls are separate, readable DOM layers.
+   ========================================================================== */
+#captainQuarters.cinematic-cabin-ready{
+  background-position:center center!important;
+  background-color:#061017!important;
+}
+/* Lift the room slightly away from the baked game-HUD look without flattening it. */
+#captainQuarters.cinematic-cabin-ready:after{
+  content:"";position:absolute;inset:0;z-index:120;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(2,9,13,.12),rgba(2,9,13,0) 18%,rgba(2,9,13,0) 72%,rgba(2,9,13,.24)),
+    radial-gradient(circle at 49% 34%,rgba(238,183,89,.06),transparent 27%);
+}
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-live{position:absolute;inset:0;z-index:128;pointer-events:none;color:#ead7a2;font-family:Georgia,'Times New Roman',serif}
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-doctrine{
+  position:absolute;left:30.2%;top:22.3%;width:39.5%;text-align:center;padding:1.0% 1.2% 1.15%;
+  background:linear-gradient(180deg,rgba(3,13,18,.72),rgba(3,13,18,.18));
+  border-top:1px solid rgba(206,157,73,.28);border-bottom:1px solid rgba(206,157,73,.20);
+  text-shadow:0 3px 12px #000;backdrop-filter:blur(1.5px);
+}
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-doctrine small{display:block;font:700 clamp(6px,.55vw,9px)/1.2 system-ui,sans-serif;letter-spacing:.22em;color:#9dbfc5;margin-bottom:.25em}
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-doctrine strong{display:block;font-size:clamp(22px,3.0vw,48px);font-weight:500;letter-spacing:.01em;color:#e4c883;line-height:1.05}
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-doctrine span{display:block;margin-top:.4em;font:700 clamp(7px,.7vw,11px)/1.2 system-ui,sans-serif;letter-spacing:.17em;text-transform:uppercase;color:#e8d6a4}
+/* Mask the concept art's fictional intelligence stack and replace it with live fleet facts. */
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-intel{
+  position:absolute;right:1.15%;top:15.1%;width:19.0%;height:42.8%;padding:1.0%;box-sizing:border-box;
+  background:linear-gradient(180deg,rgba(5,18,24,.97),rgba(3,13,18,.965));
+  border:1px solid rgba(184,137,63,.72);border-radius:9px;box-shadow:0 12px 28px rgba(0,0,0,.43),inset 0 0 34px rgba(194,145,66,.035);
+  pointer-events:auto;
+}
+#captainQuarters.cinematic-cabin-ready .cq-live-head{padding:.4% 3% 5%;border-bottom:1px solid rgba(183,140,69,.32)}
+#captainQuarters.cinematic-cabin-ready .cq-live-head small{display:block;color:#c9a760;font:700 clamp(6px,.58vw,9px)/1.2 system-ui,sans-serif;letter-spacing:.16em}
+#captainQuarters.cinematic-cabin-ready .cq-live-head b{display:block;margin-top:.45em;color:#f0dfad;font-size:clamp(10px,1.0vw,16px);font-weight:500;line-height:1.2}
+#captainQuarters.cinematic-cabin-ready .cq-live-grid{display:grid;grid-template-columns:1fr;gap:2.3%;height:77%;padding-top:5%}
+#captainQuarters.cinematic-cabin-ready .cq-live-grid article{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;align-items:center;padding:5% 5.5%;border:1px solid rgba(183,140,69,.28);border-radius:7px;background:linear-gradient(100deg,rgba(18,39,47,.72),rgba(8,24,31,.74))}
+#captainQuarters.cinematic-cabin-ready .cq-live-grid span{font:700 clamp(6px,.57vw,9px)/1.2 system-ui,sans-serif;letter-spacing:.12em;color:#d5b46c}
+#captainQuarters.cinematic-cabin-ready .cq-live-grid strong{grid-row:1/3;grid-column:2;font-size:clamp(18px,2.0vw,32px);line-height:1;color:#f3dfaa;font-weight:500;margin-left:.5em}
+#captainQuarters.cinematic-cabin-ready .cq-live-grid small{font:500 clamp(6px,.56vw,9px)/1.25 system-ui,sans-serif;color:#8fa8ad;margin-top:.2em}
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-live.attention .cq-live-grid article:last-child{border-color:rgba(218,114,77,.65);box-shadow:inset 3px 0 0 rgba(218,114,77,.72)}
+#captainQuarters.cinematic-cabin-ready .cq-chartroom-boundary{position:absolute;right:1.2%;bottom:1.1%;width:22%;padding:.45% .75%;border:1px solid rgba(170,132,66,.34);border-radius:999px;background:rgba(4,15,21,.90);text-align:center;color:#9eb5b9;font:700 clamp(5px,.48vw,8px)/1.2 system-ui,sans-serif;letter-spacing:.10em}
+/* Stronger, unmistakable exit. */
+#captainQuarters.cinematic-cabin-ready #captainExitBtn{
+  right:1.55%!important;top:1.5%!important;width:15.8%!important;height:5.2%!important;
+  border:1px solid rgba(225,185,100,.92)!important;background:linear-gradient(180deg,rgba(24,48,56,.99),rgba(7,24,31,.99))!important;
+  color:#f2d993!important;box-shadow:0 0 0 1px rgba(0,0,0,.7),0 8px 22px rgba(0,0,0,.5),inset 0 0 18px rgba(219,170,84,.08)!important;
+  text-shadow:0 1px 4px #000!important;
+}
+#captainQuarters.cinematic-cabin-ready #captainExitBtn:before{content:"⚓  ";color:#dcb65f}
+#captainQuarters.cinematic-cabin-ready #captainExitBtn:hover,#captainQuarters.cinematic-cabin-ready #captainExitBtn:focus-visible{filter:brightness(1.18)!important;outline:2px solid rgba(242,217,147,.78)!important;outline-offset:2px!important}
+/* Integrate First Mate Watch as a polished live inset instead of a pasted-on card. */
+#captainQuarters.cinematic-cabin-ready #captainWatchStrip.cq-watch-instrument{
+  left:64.1%!important;top:60.0%!important;width:14.2%!important;height:19.9%!important;
+  border-color:rgba(188,144,69,.60)!important;background:linear-gradient(180deg,rgba(5,19,25,.955),rgba(4,14,19,.975))!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.38),inset 0 0 24px rgba(201,152,71,.025)!important;
+}
+#captainQuarters.cinematic-cabin-ready #captainWatchStrip.cq-watch-instrument:hover,#captainQuarters.cinematic-cabin-ready #captainWatchStrip.cq-watch-instrument:focus-visible{border-color:rgba(226,188,105,.92)!important;filter:brightness(1.08)!important;outline:none!important}
+/* Give invisible mapped controls a discoverable Captain-only hover/focus glow. */
+#captainQuarters.cinematic-cabin-ready .captain-command-door:hover:after,
+#captainQuarters.cinematic-cabin-ready .captain-command-door:focus-visible:after,
+#captainQuarters.cinematic-cabin-ready #captainShipyardLaunch:hover:after,
+#captainQuarters.cinematic-cabin-ready #captainShipyardLaunch:focus-visible:after,
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn:hover:after,
+#captainQuarters.cinematic-cabin-ready #captainTestAccessDeckBtn:focus-visible:after{
+  content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(239,205,128,.78),0 0 18px rgba(216,171,81,.18);pointer-events:none;
+}
+@media(max-width:700px),(orientation:portrait) and (max-width:900px){
+  #captainQuarters.cinematic-cabin-ready .cq-chartroom-live{display:none!important}
+  #captainQuarters.cinematic-cabin-ready #captainExitBtn{width:42%!important;height:48px!important;right:3%!important;top:max(10px,env(safe-area-inset-top))!important;font-size:10px!important}
+}
+@media (prefers-reduced-motion:reduce){#captainQuarters.cinematic-cabin-ready *{transition:none!important;animation:none!important}}

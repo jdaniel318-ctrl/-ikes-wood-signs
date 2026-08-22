@@ -1,3 +1,11 @@
+# 5.7.9 Quarterdeck regression note
+
+- Captain’s Quarters-only CSS/JS refinement.
+- Black Flag 5615, Project Admin 4353, Captain 19613 unchanged.
+- Client Preview pre-paint bulkhead unchanged.
+- Real fleet snapshot populates Captain intelligence overlay.
+- Captain modal/control IDs retained.
+
 # 5.7.8 — Chartroom regression note
 
 Captain's Quarters visual implementation is scoped to `#captainQuarters.cinematic-cabin-ready` and the Captain controller asset loader. Black Flag authentication, project isolation, Client Preview routing, project customer shells, and authority credentials are not modified by this visual pass.
