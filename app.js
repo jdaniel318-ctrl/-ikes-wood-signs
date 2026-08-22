@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.0.3';
+  const BUILD_VERSION = '6.0.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -536,7 +536,7 @@
     const encoded=clientPreviewHashPayload(); if(!encoded)return false;
     let payload=null;
     try{payload=JSON.parse(clientPreviewBase64UrlDecode(encoded));}catch(_){payload=null;}
-    // 6.0.3 Client Preview Isolation Bulkhead: the sealed preview is a standalone
+    // 6.0.4 Client Preview Isolation Bulkhead: the sealed preview is a standalone
     // runtime. Clear every fleet/project surface before revealing anything, and do
     // not depend on Engine/project boot, IndexedDB migrations, or a default vessel.
     document.body.classList.add('client-preview-mode','client-preview-locked');

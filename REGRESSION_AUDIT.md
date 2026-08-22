@@ -1,3 +1,13 @@
+# Dark Sky 6.0.4 — Clear Decks Regression Gates
+
+- Captain main room shows one Return to Engine control.
+- Cargo Hold / Workshop and other Captain subviews do not show the global Return to Engine control.
+- Return to Quarters closes the subview and restores the Captain room.
+- Escape from a Captain subview returns to the Captain room; Escape from the main Captain room exits to Engine.
+- Captain → Engine crossing clears Captain overlays and returns to the Engine top when the Engine session is valid.
+- Black Flag Engine PIN remains 5615; Project Admin 4353; Captain’s Quarters 19613.
+- Client Preview and test-contact safety contracts remain unchanged.
+
 # 6.0.3 True North Captain Regression Gate
 
 - Captain runtime restored from the known-good 5.7.9 Quarterdeck implementation.

@@ -1,37 +1,33 @@
-# Dark Sky 6.0.3 — Harbor Sentinel
+# Dark Sky 6.0.4 — Clear Decks
 
-Presentation-only Black Flag entrance refinement on the reconciled 6.0 platform spine. No authentication, project-isolation, Client Preview, or Captain routing logic was changed.
+Stabilization and repository-hygiene release on the reconciled Dark Sky 6.0 platform spine. This build fixes Captain navigation authority without changing the working Black Flag, Project Admin, Client Preview, or project-isolation contracts.
 
-# Dark Sky 6.0.3 — Drydock Refit
+## What changed
 
-Dark Sky 6.0.3 is the reconciled fleet baseline. It restores one canonical application tree at repository root, one canonical Captain’s Quarters production environment, and one runtime path for that Captain environment.
-
-## Canonical structure
-
-Runtime/application files live at repository root. `assets/` contains media only.
-
-Captain’s Quarters production environment:
-
-- `assets/captains_quarters_canonical.png`
-
-No runtime or fallback path selects an alternate Captain background.
+- Captain’s Quarters main room alone owns **Return to Engine**.
+- Captain subviews such as Cargo Hold / Workshop, Shipyard, Blueprint, Log, Signals and Fleet Map return to **Captain’s Quarters**, not directly to Black Flag.
+- The global Captain exit is hidden while a Captain subview is open.
+- Escape closes an open Captain subview first; it exits Captain’s Quarters only from the main room.
+- A defensive cleanup closes any Captain subview before the Captain → Engine crossing.
+- Runtime/cache/release identity is aligned on 6.0.4.
+- The deployable package keeps one clean runtime tree at repository root and media-only `assets/`.
 
 ## Authority contracts
 
 - Project Admin fleet default/recovery PIN: `4353`
 - Black Flag Engine PIN: `5615`
 - Captain’s Quarters PIN: `19613`
-- Client Preview: unique invite PIN per preview
+- Client Preview PIN: unique per invite
 
 ## Preserved platform contracts
 
-- Strict project isolation
+- strict project isolation
 - Client Preview pre-paint isolation bulkhead
-- Test/private-preview real-world contact blocking
-- Domain/host portability
+- Test/Private Preview real-world contact blocking
+- domain/host portability
 - iPad/iPhone responsive contracts
-- Cloud-readiness and recovery documentation
+- cloud-readiness and recovery posture
 
-## GitHub deployment note
+## Canonical deployment layout
 
-Deploy this package from the repository root. If an older upload left application files inside GitHub `/assets`, remove those non-media duplicates after the 6.0.3 root deployment is confirmed. See `REPOSITORY_RECONCILIATION.md`.
+Deploy the contents of this ZIP at the **repository root**. Runtime files stay at root; `assets/` contains media only. Historical one-off audit files already in GitHub may be archived or deleted after this build is confirmed. See `REPOSITORY_CLEANUP.md`.

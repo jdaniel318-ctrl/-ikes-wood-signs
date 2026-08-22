@@ -13113,7 +13113,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 
 
 /* ========================================================================== 
-   v6.0.3 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
+   v6.0.4 — CAPTAIN'S QUARTERS: QUARTERDECK REFINEMENT
    Captain-only refinement over Chartroom. The cinematic art remains the skin;
    real Captain intelligence and controls are separate, readable DOM layers.
    ========================================================================== */
@@ -13187,7 +13187,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 @media (prefers-reduced-motion:reduce){#captainQuarters.cinematic-cabin-ready *{transition:none!important;animation:none!important}}
 
 /* ========================================================================== 
-   v6.0.3 — BLACK FLAG ENGINE GATE: COMMAND PRESENCE PASS
+   v6.0.4 — BLACK FLAG ENGINE GATE: COMMAND PRESENCE PASS
    Presentation only. Authentication, entry routing and authority contracts are
    intentionally untouched. Legacy DOM hooks remain present but visually silent.
    ========================================================================== */
@@ -13288,7 +13288,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
 }
 
 /* ========================================================================== 
-   v6.0.3 — CAPTAIN GANGWAY: PERMANENT ENGINE ESCAPE
+   v6.0.4 — CAPTAIN GANGWAY: PERMANENT ENGINE ESCAPE
    Captain-only navigation safety. This control lives outside the cinematic
    Captain DOM so artwork, mapped hotspots, and Captain subviews cannot cover it.
    ========================================================================== */

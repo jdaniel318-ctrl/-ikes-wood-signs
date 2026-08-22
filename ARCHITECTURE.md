@@ -1,3 +1,7 @@
+# Dark Sky 6.0.4 — Clear Decks Architecture Note
+
+Captain navigation is explicitly hierarchical: **Engine Room → Captain’s Quarters → Captain subview**. Only the main Captain room may exit to Black Flag. Captain subviews must return to Captain’s Quarters first. This prevents overlapping navigation authorities and keeps Captain-only state from leaking into Engine transitions.
+
 # Dark Sky 6.0.3 — Drydock Reconciliation
 
 Canonical repository/root reconciliation release. Captain’s Quarters now uses one canonical production environment asset (`assets/captains_quarters_canonical.png`) across all runtime and fallback paths. The deployable `assets/` directory contains media only; application/runtime files remain at repository root. Client Preview isolation, Black Flag, project routing, authority contracts, and cloud-readiness contracts are preserved.

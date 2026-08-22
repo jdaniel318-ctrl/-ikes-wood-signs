@@ -8,6 +8,32 @@
   const show = (id) => byId(id)?.classList.remove('hidden');
   const hide = (id) => byId(id)?.classList.add('hidden');
 
+  function enterCaptainSubview(id) {
+    hide('captainGlobalExit');
+    show(id);
+  }
+
+  function leaveCaptainSubview(id) {
+    hide(id);
+    const quarters = byId('captainQuarters');
+    if (authorized && quarters && !quarters.classList.contains('hidden')) show('captainGlobalExit');
+  }
+
+  function closeTopCaptainSubview() {
+    if (document.body.classList.contains('captain-command-open') && window.BlackFlagCaptainCommand?.close) {
+      window.BlackFlagCaptainCommand.close();
+      return true;
+    }
+    for (const id of ['captainTestAccessGate','captainSpyglassPanel','captainObjectPanel','captainFleetChart','captainBlueprint']) {
+      const el = byId(id);
+      if (el && !el.classList.contains('hidden')) {
+        leaveCaptainSubview(id);
+        return true;
+      }
+    }
+    return false;
+  }
+
   function clearHash() {
     try {
       if (location.hash === '#captainQuartersGate') {
@@ -90,11 +116,11 @@
   function secure() {
     authorized = false;
     // Captain-only escape invariant: close every Captain subview before revealing Engine.
-    ['captainBlueprint','captainFleetChart','captainSpyglassPanel','captainObjectPanel','captainTestAccessGate','captainQuarters','captainQuartersGate','captainGlobalExit'].forEach(hide);
+    ['captainBlueprint','captainFleetChart','captainSpyglassPanel','captainObjectPanel','captainTestAccessGate','captainCommandWorkspace','captainQuarters','captainQuartersGate','captainGlobalExit'].forEach(hide);
     byId('captainQuarters')?.classList.remove('captain-entry-complete');
     byId('captainEntrySequence')?.classList.remove('captain-entry-play');
     if (byId('captainPinInput')) byId('captainPinInput').value = '';
-    document.body.classList.remove('captain-modal-open', 'captain-authorized');
+    document.body.classList.remove('captain-modal-open', 'captain-authorized', 'captain-command-open');
     clearHash();
     requestAnimationFrame(() => { try { window.scrollTo({top:0,left:0,behavior:'auto'}); } catch (_) { window.scrollTo(0,0); } });
   }
@@ -303,28 +329,31 @@
     byId('captainExitBtn')?.addEventListener('click', secure);
     byId('captainGlobalExit')?.addEventListener('click', secure);
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && authorized) { event.preventDefault(); secure(); }
+      if (event.key !== 'Escape' || !authorized) return;
+      event.preventDefault();
+      if (closeTopCaptainSubview()) return;
+      secure();
     });
     byId('captainBlueprintBtn')?.addEventListener('click', (event) => {
       event.preventDefault();
-      show('captainBlueprint');
+      enterCaptainSubview('captainBlueprint');
     });
     byId('captainBlueprintDeskBtn')?.addEventListener('click', (event) => {
       event.preventDefault();
-      show('captainBlueprint');
+      enterCaptainSubview('captainBlueprint');
     });
     byId('captainBlueprintClose')?.addEventListener('click', (event) => {
       event.preventDefault();
-      hide('captainBlueprint');
+      leaveCaptainSubview('captainBlueprint');
     });
     byId('captainDarkSkyChartBtn')?.addEventListener('click', (event) => {
       event.preventDefault();
       refreshCaptainFleetChart();
-      show('captainFleetChart');
+      enterCaptainSubview('captainFleetChart');
     });
     byId('captainFleetChartClose')?.addEventListener('click', (event) => {
       event.preventDefault();
-      hide('captainFleetChart');
+      leaveCaptainSubview('captainFleetChart');
     });
     byId('captainFleetChart')?.addEventListener('click',event=>{
       const route=event.target.closest?.('[data-captain-route-project]');
@@ -337,28 +366,28 @@
     byId('captainSpyglassBtn')?.addEventListener('click',event=>{
       event.preventDefault();
       refreshSpyglass();
-      show('captainSpyglassPanel');
+      enterCaptainSubview('captainSpyglassPanel');
     });
     byId('captainWatchStrip')?.addEventListener('click',event=>{
       event.preventDefault();
       refreshSpyglass();
-      show('captainSpyglassPanel');
+      enterCaptainSubview('captainSpyglassPanel');
     });
     byId('captainSpyglassClose')?.addEventListener('click',event=>{
       event.preventDefault();
-      hide('captainSpyglassPanel');
+      leaveCaptainSubview('captainSpyglassPanel');
     });
     byId('captainTestAccessToggle')?.addEventListener('click',async(event)=>{
       event.preventDefault();
       if(window.DarkSkyTestAccess?.isActive?.()){
         window.DarkSkyTestAccess.disable();
-        hide('captainTestAccessGate');
+        leaveCaptainSubview('captainTestAccessGate');
         return;
       }
       if(byId('testAccessEnginePin')) byId('testAccessEnginePin').value='';
       if(byId('testAccessCaptainPin')) byId('testAccessCaptainPin').value='';
       if(byId('captainTestAccessError')) byId('captainTestAccessError').textContent='';
-      show('captainTestAccessGate');
+      enterCaptainSubview('captainTestAccessGate');
       requestAnimationFrame(()=>byId('testAccessEnginePin')?.focus());
     });
     byId('captainTestAccessDeckBtn')?.addEventListener('click',(event)=>{
@@ -376,7 +405,7 @@
       window.DarkSkyTestAccess?.enable?.();
       if(byId('testAccessEnginePin')) byId('testAccessEnginePin').value='';
       if(byId('testAccessCaptainPin')) byId('testAccessCaptainPin').value='';
-      hide('captainTestAccessGate');
+      leaveCaptainSubview('captainTestAccessGate');
     });
     window.addEventListener('darksky:testaccesschange',()=>window.DarkSkyTestAccess?.refresh?.());
 
@@ -472,6 +501,7 @@ function bootCaptainCommand(){
   function open(section){
     if(!workspace||!body)return;
     document.getElementById('captainFleetChart')?.classList.add('hidden');
+    document.getElementById('captainGlobalExit')?.classList.add('hidden');
     workspace.classList.remove('hidden');
     workspace.setAttribute('aria-hidden','false');
     document.body.classList.add('captain-command-open');
@@ -483,6 +513,8 @@ function bootCaptainCommand(){
     workspace?.classList.add('hidden');
     workspace?.setAttribute('aria-hidden','true');
     document.body.classList.remove('captain-command-open');
+    const quarters=document.getElementById('captainQuarters');
+    if(quarters && !quarters.classList.contains('hidden')) document.getElementById('captainGlobalExit')?.classList.remove('hidden');
   }
 
   async function render(section){
