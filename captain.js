@@ -2,7 +2,9 @@
   'use strict';
 
   const CAPTAIN_PIN = '19613';
+  const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
+  window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -21,6 +23,19 @@
   }
 
   function closeTopCaptainSubview() {
+    const admiralDeck = byId('admiralDeck');
+    if (admiralDeck && !admiralDeck.classList.contains('hidden')) {
+      hide('admiralDeck');
+      show('captainQuarters');
+      show('captainGlobalExit');
+      return true;
+    }
+    const admiralGate = byId('admiralGateOverlay');
+    if (admiralGate && !admiralGate.classList.contains('hidden')) {
+      hide('admiralGateOverlay');
+      show('captainGlobalExit');
+      return true;
+    }
     if (document.body.classList.contains('captain-command-open') && window.BlackFlagCaptainCommand?.close) {
       window.BlackFlagCaptainCommand.close();
       return true;
@@ -132,7 +147,7 @@
   function secure() {
     authorized = false;
     // Captain-only escape invariant: close every Captain subview before revealing Engine.
-    ['captainBlueprint','captainFleetChart','captainSpyglassPanel','captainObjectPanel','captainTestAccessGate','captainCommandWorkspace','captainQuarters','captainQuartersGate','captainGlobalExit'].forEach(hide);
+    ['admiralDeck','admiralGateOverlay','captainBlueprint','captainFleetChart','captainSpyglassPanel','captainObjectPanel','captainTestAccessGate','captainCommandWorkspace','captainQuarters','captainQuartersGate','captainGlobalExit'].forEach(hide);
     byId('captainQuarters')?.classList.remove('captain-entry-complete');
     byId('captainEntrySequence')?.classList.remove('captain-entry-play');
     if (byId('captainPinInput')) byId('captainPinInput').value = '';
@@ -310,6 +325,99 @@
     showCaptainDeskNotice.timer=setTimeout(()=>notice.classList.remove('show'),2300);
   }
 
+  function ensureAdmiralDeck(){
+    let gate=byId('admiralGateOverlay');
+    if(gate)return gate;
+    gate=document.createElement('div');
+    gate.id='admiralGateOverlay';
+    gate.className='admiral-gate-overlay hidden';
+    gate.setAttribute('role','dialog');
+    gate.setAttribute('aria-modal','true');
+    gate.setAttribute('aria-labelledby','admiralGateTitle');
+    gate.innerHTML=`
+      <div class="admiral-gate-shell">
+        <div class="admiral-gate-scene" aria-hidden="true"><div class="admiral-door left"></div><div class="admiral-door right"></div><div class="admiral-seal">⚓</div></div>
+        <section class="admiral-gate-card">
+          <small>ABOVE CAPTAIN COMMAND • PROVING ACCESS</small>
+          <h2 id="admiralGateTitle">Admiral's Gate</h2>
+          <p>The Admiral's Deck governs Dark Sky, Black Flag and the fleet. This trial entrance exists so the Captain can prove the machinery before the rank is earned.</p>
+          <div class="admiral-trial-badge">ADMIRAL STATUS • NOT YET COMMISSIONED</div>
+          <label for="admiralPinInput">ADMIRAL ACCESS PIN</label>
+          <input id="admiralPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
+          <p id="admiralPinError" class="captain-error" aria-live="polite"></p>
+          <button id="admiralUnlockBtn" type="button" class="admiral-primary">ENTER ADMIRAL'S DECK →</button>
+          <button id="admiralGateReturnBtn" type="button" class="admiral-secondary">← RETURN TO CAPTAIN'S QUARTERS</button>
+        </section>
+      </div>`;
+    document.body.appendChild(gate);
+
+    const deck=document.createElement('div');
+    deck.id='admiralDeck';
+    deck.className='admiral-deck-overlay hidden';
+    deck.setAttribute('role','dialog');
+    deck.setAttribute('aria-modal','true');
+    deck.setAttribute('aria-labelledby','admiralDeckTitle');
+    deck.innerHTML=`
+      <div class="admiral-deck-shell">
+        <header class="admiral-deck-head">
+          <div><small>TRIAL COMMAND • FLEET GOVERNANCE</small><h2 id="admiralDeckTitle">Admiral's Deck</h2><p>Above Captain command. Governs Dark Sky, Black Flag and fleet standards.</p></div>
+          <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckReturnBtn" type="button">← RETURN TO CAPTAIN'S QUARTERS</button></div>
+        </header>
+        <main class="admiral-deck-grid">
+          <section class="admiral-deck-hero"><small>THE HIGHER WATCH</small><h3>Govern the platform. Protect the fleet.</h3><p>The Captain commands the mission. The Admiral sets the standards that Dark Sky, Black Flag and every vessel must obey.</p><div class="admiral-scope"><span>DARK SKY</span><span>BLACK FLAG</span><span>FLEET</span></div></section>
+          <aside class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></aside>
+          <section class="admiral-governance-card"><h4>Governance</h4><div><button type="button" data-admiral-future="Delegation">Delegation <em>FUTURE</em></button><button type="button" data-admiral-future="Fleet Standards">Fleet Standards <em>FUTURE</em></button><button type="button" data-admiral-future="Expansion">Expansion <em>FUTURE</em></button></div></section>
+          <section class="admiral-governance-card"><h4>Continuity</h4><div><button id="admiralDeckRecovery" type="button">Recovery Snapshot <em>READY</em></button><button id="admiralDeckReport" type="button">Readiness Report <em>READY</em></button><button type="button" data-admiral-future="Admiral Log">Admiral Log <em>FUTURE</em></button></div></section>
+          <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Trial Deck active. Rank is not implied by access.</section>
+        </main>
+      </div>`;
+    document.body.appendChild(deck);
+
+    const closeGate=()=>{hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';};
+    const returnToCaptain=()=>{hide('admiralDeck');closeGate();show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
+    byId('admiralGateReturnBtn').onclick=closeGate;
+    byId('admiralDeckReturnBtn').onclick=returnToCaptain;
+    byId('admiralUnlockBtn').onclick=async()=>{
+      const input=byId('admiralPinInput'),error=byId('admiralPinError');
+      if(String(input?.value||'').trim()!==ADMIRAL_PIN){if(error)error.textContent='Admiral access denied.';if(input){input.value='';input.focus();}return;}
+      if(error)error.textContent='';hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');show('admiralDeck');
+      deck.classList.remove('admiral-deck-enter');void deck.offsetWidth;deck.classList.add('admiral-deck-enter');
+      try{sessionStorage.setItem('darkSkyAdmiralTrialSeen','1');}catch(_){ }
+    };
+    byId('admiralPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')byId('admiralUnlockBtn').click();});
+    byId('admiralDeckRunReadiness').onclick=async()=>{
+      const state=byId('admiralDeckReadinessState'),copy=byId('admiralDeckReadinessCopy');
+      if(state)state.textContent='CHECKING';
+      try{
+        const report=await window.DarkSkyAdmiralReadiness?.run?.();
+        if(!report)throw new Error('Fleet Readiness service unavailable');
+        const label=report.pass?(report.warnings?'WATCH':'CLEAR'):'HOLD';
+        if(state){state.textContent=label;state.dataset.state=label.toLowerCase();}
+        if(copy)copy.textContent=report.pass?`${report.checks.length-report.warnings} checks clear${report.warnings?` • ${report.warnings} watch`:''}.`:`${report.criticalFailures} critical hold${report.criticalFailures===1?'':'s'} remain.`;
+        window.__lastAdmiralReadinessReport=report;
+      }catch(err){if(state)state.textContent='UNAVAILABLE';if(copy)copy.textContent=String(err?.message||err);}
+    };
+    byId('admiralDeckRecovery').onclick=()=>window.DarkSkyAdmiralReadiness?.exportRecovery?.();
+    byId('admiralDeckReport').onclick=()=>{
+      const report=window.__lastAdmiralReadinessReport;
+      if(!report){byId('admiralDeckNotice').textContent='Run Fleet Readiness first.';return;}
+      const blob=new Blob([JSON.stringify({schema:'dark-sky-fleet-readiness-v1',...report},null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`dark-sky-fleet-readiness-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);
+    };
+    deck.querySelectorAll('[data-admiral-future]').forEach(btn=>btn.onclick=()=>{byId('admiralDeckNotice').textContent=`${btn.dataset.admiralFuture} is charted for a future Admiral voyage.`;});
+    return gate;
+  }
+
+  function openAdmiralGate(){
+    ensureAdmiralDeck();
+    hide('captainGlobalExit');
+    const gate=byId('admiralGateOverlay');
+    const input=byId('admiralPinInput');
+    gate?.classList.remove('hidden');
+    gate?.classList.remove('admiral-gate-enter');void gate?.offsetWidth;gate?.classList.add('admiral-gate-enter');
+    if(input){input.value='';requestAnimationFrame(()=>input.focus());}
+  }
+
   function ensureCaptainDeskIndex(){
     const room=byId('captainQuarters');
     if(!room)return null;
@@ -331,6 +439,9 @@
         <button type="button" data-cq-desk-route="shipyard" data-cq-desk-state="active"><span>⚓</span><b>Shipyard</b><small>Future vessels</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="blueprint" data-cq-desk-state="active"><span>⌘</span><b>Blueprint</b><small>Architecture map</small><em>READY</em></button>
       </section>
+      <section class="cq-desk-group cq-desk-ascend" aria-label="Higher command"><h4>ASCEND</h4>
+        <button type="button" data-cq-desk-route="admiral" data-cq-desk-state="active" class="cq-admiral-gate-station"><span>⚓</span><b>Admiral's Gate</b><small>Trial higher command</small><em>TRIAL</em></button>
+      </section>
       <section class="cq-desk-group" aria-label="Explore tools"><h4>EXPLORE</h4>
         <button type="button" data-cq-desk-route="spyglass" data-cq-desk-state="active"><span>⌖</span><b>Spyglass</b><small>Fleet intelligence</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="test" data-cq-desk-state="active"><span>◇</span><b>Test Access</b><small>Session controls</small><em>READY</em></button>
@@ -345,10 +456,12 @@
       blueprint:'captainBlueprintDeskBtn',
       log:'captainLogDoor',
       spyglass:'captainSpyglassBtn',
-      test:'captainTestAccessDeckBtn'
+      test:'captainTestAccessDeckBtn',
+      admiral:'__admiralGate__'
     };
     desk.querySelectorAll('[data-cq-desk-state="active"]').forEach(btn=>{
       const target=targets[btn.dataset.cqDeskRoute];
+      if(target==='__admiralGate__') return;
       if(!target || !byId(target)){
         btn.dataset.cqDeskState='unavailable';
         btn.setAttribute('aria-disabled','true');
@@ -368,6 +481,7 @@
         return;
       }
       const target=targets[btn.dataset.cqDeskRoute];
+      if(target==='__admiralGate__'){openAdmiralGate();return;}
       const targetEl=byId(target);
       if(!targetEl){
         btn.dataset.cqDeskState='unavailable';

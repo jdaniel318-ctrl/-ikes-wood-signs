@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "6.1.0",
+  "build": "6.1.1",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -25,7 +25,9 @@
     "project_admin_default_recovery_pin": "4353",
     "black_flag_engine_pin": "5615",
     "captains_quarters_pin": "19613",
-    "client_preview_pin": "unique-per-invite"
+    "client_preview_pin": "unique-per-invite",
+    "admirals_deck_pin": "19613-temporary-shared-with-captain",
+    "admiral_authority": "singular-owner-discretion-delegation-only"
   },
   "safety_contracts": {
     "test_private_preview_real_world_contact": "blocked",
@@ -42,11 +44,11 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Admiral Watch",
-  "version": "6.1.0",
-  "releaseName": "Admiral Watch",
+  "release_name": "Upper Deck Trial",
+  "version": "6.1.1",
+  "releaseName": "Upper Deck Trial",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "fleet-hardening-admiral-readiness-recovery-gate",
+  "release_focus": "admirals-gate-admirals-deck-trial-hierarchy-and-fleet-readiness",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",

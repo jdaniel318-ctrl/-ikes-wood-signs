@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.1.0';
+  const BUILD_VERSION = '6.1.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3060,7 +3060,7 @@
         <article><span>FLEET READY</span><strong>${fleetReady}</strong><small>${activeDeployments} active deployment${activeDeployments===1?'':'s'}</small></article>
         <article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article>
         <article><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
-      </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4>${priorities}</div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="admiral">RUN ADMIRAL GATE</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
+      </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4>${priorities}</div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="admiral">RUN FLEET READINESS</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
       host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
         const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
       });
@@ -3480,7 +3480,7 @@
     $('admiralRerunBtn')?.addEventListener('click',()=>renderAdmiralReadiness({announce:true}));
     $('admiralRecoveryBtn')?.addEventListener('click',exportFleetRecoverySnapshot);
     $('admiralReportBtn')?.addEventListener('click',()=>downloadAdmiralReadinessReport(report));
-    if(announce){const msg=report.pass?(report.warnings?`Readiness gate clear with ${report.warnings} watch item(s).`:'Admiral Readiness gate clear. No critical holds detected.'):`Hold in harbor: ${report.criticalFailures} critical readiness check(s) failed.`;const box=$('admiralReadinessNotice');if(box){box.textContent=msg;box.className=`admiral-readiness-notice ${report.pass?'clear':'hold'}`;}}
+    if(announce){const msg=report.pass?(report.warnings?`Fleet Readiness clear with ${report.warnings} watch item(s).`:'Fleet Readiness clear. No critical holds detected.'):`Hold in harbor: ${report.criticalFailures} critical readiness check(s) failed.`;const box=$('admiralReadinessNotice');if(box){box.textContent=msg;box.className=`admiral-readiness-notice ${report.pass?'clear':'hold'}`;}}
     return report;
   }
 

@@ -20,7 +20,7 @@
 - Project isolation preserved
 
 
-## 6.1.0 Admiral Watch additions
+## 6.1.1 Admiral Watch additions
 
 - Runtime readiness gate performs read-only authentication checks (`recordFailure:false`).
 - Project Admin 4353 is checked across every current project.

@@ -1,6 +1,16 @@
+# Dark Sky 6.1.1 — Upper Deck Trial
+
+- Added Admiral’s Gate as a deliberate upward route from Captain’s Quarters.
+- Added provisional Admiral’s Deck governing Dark Sky, Black Flag, and fleet-level standards.
+- Admiral credential is a separate contract while temporarily sharing Captain PIN `19613`.
+- Renamed user-facing Admiral Readiness to Fleet Readiness: the system proves the fleet, not the owner’s rank.
+- Admiral’s Deck returns to Captain’s Quarters; Captain remains the normal mission command layer.
+- Added trial Fleet Readiness, recovery snapshot, readiness report, and future governance stations.
+- No changes to Project Admin `4353`, Black Flag `5615`, Client Preview isolation, or test-contact blocking.
+
 # Dark Sky Changelog
 
-## 6.1.0 — Admiral Watch
+## 6.1.1 — Admiral Watch
 
 - Added Black Flag Admiral Readiness Gate with non-destructive checks for authority, isolation, Client Preview, contact safety, Captain navigation, and release identity.
 - Added secure downloadable fleet recovery snapshot for interim off-device recovery.
