@@ -1,4 +1,4 @@
-# Fleet Readiness Contract — 6.1.1
+# Fleet Readiness Contract — 6.2.0
 
 Fleet Readiness is a release gate, not a decorative rank. A fleet is Admiral-ready only when authority, isolation, preview safety, recovery, navigation, and release identity can be proved without relying on a single device or hidden manual knowledge.
 

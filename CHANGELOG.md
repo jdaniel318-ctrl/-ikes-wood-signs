@@ -1,4 +1,13 @@
-# Dark Sky 6.1.1 — Upper Deck Trial
+# Dark Sky 6.2.0 — Foundry
+
+- Added Visual Command Forge to Captain's Desk.
+- Added Visual Forge governance station to Admiral's Deck.
+- Reference visuals can be uploaded locally and translated into exportable build blueprints.
+- Forge stores only blueprint metadata in localStorage; it does not publish or contact external systems.
+- Generative execution remains explicitly future/backend-dependent.
+- Preserved 4353 / 5615 / 19613 / unique Client Preview authority contracts.
+
+# Dark Sky 6.2.0 — Upper Deck Trial
 
 - Added Admiral’s Gate as a deliberate upward route from Captain’s Quarters.
 - Added provisional Admiral’s Deck governing Dark Sky, Black Flag, and fleet-level standards.
@@ -10,7 +19,7 @@
 
 # Dark Sky Changelog
 
-## 6.1.1 — Admiral Watch
+## 6.2.0 — Admiral Watch
 
 - Added Black Flag Admiral Readiness Gate with non-destructive checks for authority, isolation, Client Preview, contact safety, Captain navigation, and release identity.
 - Added secure downloadable fleet recovery snapshot for interim off-device recovery.

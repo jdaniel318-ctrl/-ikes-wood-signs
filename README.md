@@ -1,8 +1,12 @@
-# Dark Sky 6.1.1 — Upper Deck Trial
+# Dark Sky 6.2.0 — Foundry
+
+Visual Command Forge release. Captain and Admiral now share a real visual-to-blueprint creation capability while preserving separate authority and fleet isolation.
+
+# Dark Sky 6.2.0 — Upper Deck Trial
 
 Adds a testable authority layer above Captain’s Quarters: **Admiral’s Gate → Admiral’s Deck**. The deck is explicitly provisional while the fleet is being proven. Captain and Admiral use separate credential contracts even though both temporarily accept `19613`. Fleet Readiness replaces “Admiral Readiness” as the name of the hardening standard; the checks prove the fleet, not the rank.
 
-# Dark Sky 6.1.1 — Admiral Watch
+# Dark Sky 6.2.0 — Admiral Watch
 
 Fleet-hardening release on the reconciled 6.0 platform spine. This build adds a non-destructive Admiral Readiness Gate to Black Flag, a downloadable fleet recovery snapshot, release/readiness evidence, and explicit staging/recovery contracts while preserving the proven customer/project/Captain boundaries.
 

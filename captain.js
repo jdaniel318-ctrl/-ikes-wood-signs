@@ -366,7 +366,7 @@
         <main class="admiral-deck-grid">
           <section class="admiral-deck-hero"><small>THE HIGHER WATCH</small><h3>Govern the platform. Protect the fleet.</h3><p>The Captain commands the mission. The Admiral sets the standards that Dark Sky, Black Flag and every vessel must obey.</p><div class="admiral-scope"><span>DARK SKY</span><span>BLACK FLAG</span><span>FLEET</span></div></section>
           <aside class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></aside>
-          <section class="admiral-governance-card"><h4>Governance</h4><div><button type="button" data-admiral-future="Delegation">Delegation <em>FUTURE</em></button><button type="button" data-admiral-future="Fleet Standards">Fleet Standards <em>FUTURE</em></button><button type="button" data-admiral-future="Expansion">Expansion <em>FUTURE</em></button></div></section>
+          <section class="admiral-governance-card"><h4>Governance</h4><div><button id="admiralDeckForge" type="button">Visual Forge <em>READY</em></button><button type="button" data-admiral-future="Delegation">Delegation <em>FUTURE</em></button><button type="button" data-admiral-future="Fleet Standards">Fleet Standards <em>FUTURE</em></button><button type="button" data-admiral-future="Expansion">Expansion <em>FUTURE</em></button></div></section>
           <section class="admiral-governance-card"><h4>Continuity</h4><div><button id="admiralDeckRecovery" type="button">Recovery Snapshot <em>READY</em></button><button id="admiralDeckReport" type="button">Readiness Report <em>READY</em></button><button type="button" data-admiral-future="Admiral Log">Admiral Log <em>FUTURE</em></button></div></section>
           <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Trial Deck active. Rank is not implied by access.</section>
         </main>
@@ -398,6 +398,7 @@
       }catch(err){if(state)state.textContent='UNAVAILABLE';if(copy)copy.textContent=String(err?.message||err);}
     };
     byId('admiralDeckRecovery').onclick=()=>window.DarkSkyAdmiralReadiness?.exportRecovery?.();
+    byId('admiralDeckForge').onclick=()=>openVisualForge('admiral');
     byId('admiralDeckReport').onclick=()=>{
       const report=window.__lastAdmiralReadinessReport;
       if(!report){byId('admiralDeckNotice').textContent='Run Fleet Readiness first.';return;}
@@ -418,6 +419,84 @@
     if(input){input.value='';requestAnimationFrame(()=>input.focus());}
   }
 
+  function ensureVisualForge(){
+    let overlay=byId('visualForgeOverlay');
+    if(overlay)return overlay;
+    overlay=document.createElement('div');
+    overlay.id='visualForgeOverlay';
+    overlay.className='visual-forge-overlay hidden';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-labelledby','visualForgeTitle');
+    overlay.innerHTML=`
+      <div class="visual-forge-shell">
+        <header class="visual-forge-head">
+          <div><small id="visualForgeScope">CAPTAIN VISUAL FORGE</small><h2 id="visualForgeTitle">Visual Command Forge</h2><p>Turn a reference visual into a buildable Dark Sky command brief without mixing project data or silently publishing anything.</p></div>
+          <button id="visualForgeClose" type="button" aria-label="Close Visual Forge">×</button>
+        </header>
+        <main class="visual-forge-grid">
+          <section class="visual-forge-input">
+            <label>Forge mode<select id="visualForgeMode"><option value="scene-command">Scene → Command Surface</option><option value="visual-interface">Visual → Interface</option><option value="brand-experience">Brand → Customer Experience</option><option value="new-vessel">Visual → New Vessel</option><option value="asset-system">Visual → Asset System</option></select></label>
+            <label>Target<select id="visualForgeTarget"><option>Captain's Quarters</option><option>Admiral's Deck</option><option>New Vessel</option><option>Existing Project</option><option>Dark Sky / Black Flag</option></select></label>
+            <label>Working title<input id="visualForgeName" type="text" placeholder="Name this concept" /></label>
+            <label>What should this become?<textarea id="visualForgeObjective" rows="5" placeholder="Describe what you want the visual to become, what must work, what must stay isolated, and what the user should be able to do."></textarea></label>
+            <label class="visual-forge-upload">Reference visuals<input id="visualForgeFiles" type="file" accept="image/*" multiple /><span>Choose one or more images</span></label>
+            <div id="visualForgeRefs" class="visual-forge-refs"><p>No references loaded yet.</p></div>
+            <button id="visualForgeBuild" class="visual-forge-primary" type="button">FORGE BLUEPRINT</button>
+          </section>
+          <section class="visual-forge-output">
+            <div class="visual-forge-status"><small>FORGE STATE</small><strong id="visualForgeState">STANDING BY</strong><span id="visualForgeStateCopy">Add a visual and objective, then forge a build brief.</span></div>
+            <div id="visualForgeBlueprint" class="visual-forge-blueprint"><h3>Blueprint preview</h3><p>The Forge will translate the visual into structure, interactions, protected zones, isolation rules and next build steps.</p></div>
+            <div class="visual-forge-actions"><button id="visualForgeExport" type="button" disabled>EXPORT BLUEPRINT</button><button id="visualForgeReset" type="button">RESET</button></div>
+            <div class="visual-forge-boundary"><b>BOUNDARY:</b> Blueprint generation is local and project-neutral. Real generative execution remains a separate capability until a managed backend is commissioned.</div>
+          </section>
+        </main>
+      </div>`;
+    document.body.appendChild(overlay);
+    let refs=[];
+    let current=null;
+    const refsHost=byId('visualForgeRefs');
+    const renderRefs=()=>{
+      if(!refs.length){refsHost.innerHTML='<p>No references loaded yet.</p>';return;}
+      refsHost.innerHTML=refs.map((r,i)=>`<figure><img src="${r.url}" alt="Reference ${i+1}" /><figcaption>${r.name}</figcaption></figure>`).join('');
+    };
+    byId('visualForgeFiles').addEventListener('change',e=>{
+      refs.forEach(r=>{try{URL.revokeObjectURL(r.url);}catch(_){}}); refs=[];
+      [...(e.target.files||[])].slice(0,6).forEach(file=>refs.push({name:file.name,type:file.type,size:file.size,url:URL.createObjectURL(file)}));
+      renderRefs();
+    });
+    const principles={
+      'scene-command':['Separate environment art from the interactive layer','Map natural visual zones to real tools','Protect navigation and safe-area controls','Use live state instead of baked-in fake metrics','Keep reduced-motion and fast repeat entry'],
+      'visual-interface':['Preserve the strongest visual hierarchy','Translate decorative controls into real components','Keep tap targets and accessibility independent of artwork','Make responsive behavior explicit','Avoid duplicate UI over baked-in text'],
+      'brand-experience':['Extract brand identity without copying another project','Lead with confidence and one primary customer action','Use category-appropriate journeys and graphics','Keep transactional contact data required and isolated','Keep Test/Preview real-world actions blocked'],
+      'new-vessel':['Define mission, business model and customer first action','Create a project-scoped visual identity','Select only relevant fleet capabilities','Prepare Preview before Sea Trial','Never inherit another vessel’s state or assets'],
+      'asset-system':['Define canonical logo, hero, category and background roles','Keep project-owned assets scoped to one Project ID','Use upload/generate fallbacks without cross-project borrowing','Protect responsive crops and control safe zones','Version assets independently of runtime code']
+    };
+    const scopeLabel=()=>overlay.dataset.scope==='admiral'?'ADMIRAL VISUAL FORGE':'CAPTAIN VISUAL FORGE';
+    byId('visualForgeBuild').onclick=()=>{
+      const mode=byId('visualForgeMode').value,target=byId('visualForgeTarget').value,name=(byId('visualForgeName').value||'Untitled Forge').trim(),objective=(byId('visualForgeObjective').value||'').trim();
+      const scope=overlay.dataset.scope||'captain';
+      current={schema:'dark-sky-visual-forge-v1',id:`forge-${Date.now().toString(36)}`,createdAt:new Date().toISOString(),scope,mode,target,name,objective,references:refs.map(({name,type,size})=>({name,type,size})),principles:principles[mode]||[],status:'blueprint-ready',execution:'managed-backend-not-yet-connected'};
+      try{const key='darkSkyVisualForgeEntries';const rows=JSON.parse(localStorage.getItem(key)||'[]');rows.unshift(current);localStorage.setItem(key,JSON.stringify(rows.slice(0,20)));}catch(_){ }
+      byId('visualForgeState').textContent='BLUEPRINT READY';byId('visualForgeStateCopy').textContent=`${scopeLabel()} translated the reference into a build contract.`;
+      byId('visualForgeBlueprint').innerHTML=`<small>${scope.toUpperCase()} • ${target}</small><h3>${name}</h3><p>${objective||'No objective supplied yet.'}</p><h4>Build principles</h4><ol>${current.principles.map(x=>`<li>${x}</li>`).join('')}</ol><h4>Next move</h4><p>${scope==='admiral'?'Review whether this pattern should become a governed fleet standard before promotion.':'Prototype the blueprint in Workshop, then Sea Trial it before any fleet promotion.'}</p>`;
+      byId('visualForgeExport').disabled=false;
+    };
+    byId('visualForgeExport').onclick=()=>{if(!current)return;const blob=new Blob([JSON.stringify(current,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${current.id}-${current.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'visual-forge'}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);};
+    byId('visualForgeReset').onclick=()=>{current=null;byId('visualForgeName').value='';byId('visualForgeObjective').value='';byId('visualForgeFiles').value='';refs.forEach(r=>{try{URL.revokeObjectURL(r.url);}catch(_){}});refs=[];renderRefs();byId('visualForgeState').textContent='STANDING BY';byId('visualForgeStateCopy').textContent='Add a visual and objective, then forge a build brief.';byId('visualForgeBlueprint').innerHTML='<h3>Blueprint preview</h3><p>The Forge will translate the visual into structure, interactions, protected zones, isolation rules and next build steps.</p>';byId('visualForgeExport').disabled=true;};
+    byId('visualForgeClose').onclick=()=>hide('visualForgeOverlay');
+    overlay.addEventListener('click',e=>{if(e.target===overlay)hide('visualForgeOverlay');});
+    return overlay;
+  }
+
+  function openVisualForge(scope='captain'){
+    const forge=ensureVisualForge();
+    forge.dataset.scope=scope;
+    const label=byId('visualForgeScope'); if(label)label.textContent=scope==='admiral'?'ADMIRAL VISUAL FORGE • FLEET GOVERNANCE':'CAPTAIN VISUAL FORGE • CREATE & PROTOTYPE';
+    const target=byId('visualForgeTarget'); if(target)target.value=scope==='admiral'?"Admiral's Deck":"Captain's Quarters";
+    show('visualForgeOverlay');
+  }
+
   function ensureCaptainDeskIndex(){
     const room=byId('captainQuarters');
     if(!room)return null;
@@ -436,6 +515,7 @@
       </section>
       <section class="cq-desk-group" aria-label="Build tools"><h4>BUILD</h4>
         <button type="button" data-cq-desk-route="workshop" data-cq-desk-state="active"><span>⚒</span><b>Workshop</b><small>Ideas & experiments</small><em>READY</em></button>
+        <button type="button" data-cq-desk-route="forge" data-cq-desk-state="active" class="cq-visual-forge-station"><span>✦</span><b>Visual Forge</b><small>Visual → build brief</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="shipyard" data-cq-desk-state="active"><span>⚓</span><b>Shipyard</b><small>Future vessels</small><em>READY</em></button>
         <button type="button" data-cq-desk-route="blueprint" data-cq-desk-state="active"><span>⌘</span><b>Blueprint</b><small>Architecture map</small><em>READY</em></button>
       </section>
@@ -457,11 +537,12 @@
       log:'captainLogDoor',
       spyglass:'captainSpyglassBtn',
       test:'captainTestAccessDeckBtn',
-      admiral:'__admiralGate__'
+      admiral:'__admiralGate__',
+      forge:'__visualForgeCaptain__'
     };
     desk.querySelectorAll('[data-cq-desk-state="active"]').forEach(btn=>{
       const target=targets[btn.dataset.cqDeskRoute];
-      if(target==='__admiralGate__') return;
+      if(target==='__admiralGate__' || target==='__visualForgeCaptain__') return;
       if(!target || !byId(target)){
         btn.dataset.cqDeskState='unavailable';
         btn.setAttribute('aria-disabled','true');
@@ -482,6 +563,7 @@
       }
       const target=targets[btn.dataset.cqDeskRoute];
       if(target==='__admiralGate__'){openAdmiralGate();return;}
+      if(target==='__visualForgeCaptain__'){openVisualForge('captain');return;}
       const targetEl=byId(target);
       if(!targetEl){
         btn.dataset.cqDeskState='unavailable';

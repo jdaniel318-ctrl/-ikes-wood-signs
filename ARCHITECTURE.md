@@ -229,7 +229,7 @@ Client Preview is a fourth customer-facing lifecycle surface alongside Internal 
 ## Client Preview isolation bulkhead (5.7.8)
 A sealed Client Preview is a standalone runtime, not a temporary project route through the fleet application. The URL fragment is detected before first paint. The normal app, default Ike shell, Engine, Project Admin, Captain surfaces, and Test Deck remain visually sealed while the preview PIN gate is constructed. The preview route executes before project storage or fleet migrations, and only the project snapshot carried by the invite may be activated. This prevents cross-project first-frame leakage and makes Client Preview independent of the browser's last active vessel.
 
-## 6.1.1 authority hierarchy trial
+## 6.2.0 authority hierarchy trial
 
 The tested authority hierarchy is Admiral → Captain → Black Flag / fleet operations → project-scoped administration. Admiral is singular by default and governs Dark Sky, Black Flag, and fleet standards. Captain remains singular strategic/mission command. Delegation occurs only by explicit owner discretion.
 

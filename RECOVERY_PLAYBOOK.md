@@ -1,4 +1,4 @@
-# Dark Sky Recovery Playbook — 6.1.1
+# Dark Sky Recovery Playbook — 6.2.0
 
 ## Recovery objective
 

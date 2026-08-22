@@ -1,4 +1,4 @@
-# Dark Sky 6.1.1 Hardening Audit
+# Dark Sky 6.2.0 Hardening Audit
 
 Scope: Admiral Readiness, recovery/export evidence, release discipline, and preserved authority/isolation contracts.
 

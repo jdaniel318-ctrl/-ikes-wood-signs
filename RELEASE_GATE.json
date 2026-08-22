@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "6.1.1",
+  "build": "6.2.0",
   "release": "Upper Deck Trial",
   "generatedAt": "2026-08-22",
   "checks": {
