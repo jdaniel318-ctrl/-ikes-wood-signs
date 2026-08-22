@@ -1,4 +1,8 @@
-## 5.8.1 Helm — Captain environment/UI separation
+## 5.8.2 Helm — Sunset environment restoration
+
+Captain's Quarters keeps the 5.8.1 responsive Helm architecture, but restores the clean sunset harbor command room as the production environment layer. Real controls remain HTML/CSS/JS; the environment is visual only. Black Flag, projects, Client Preview and authority boundaries remain unchanged.
+
+## 5.8.2 Helm — Captain environment/UI separation
 
 Captain’s Quarters now follows a strict environment/UI split: cinematic art is non-interactive background; all controls, data, navigation, and accessibility are real DOM elements. Captain-only responsive layout targets a single landscape viewport and preserves modal overlays above the room.
 

@@ -1,4 +1,4 @@
-# Dark Sky Cloud Readiness & Portability Contract — 5.8.1 Helm
+# Dark Sky Cloud Readiness & Portability Contract — 5.8.2 Helm
 
 
 ## Purpose
