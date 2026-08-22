@@ -43,7 +43,10 @@
     const old=upperVisualUrls.get(slot); if(old) try{URL.revokeObjectURL(old);}catch(_){ }
     const url=URL.createObjectURL(blob); upperVisualUrls.set(slot,url);
     if(slot==='admiral'){
-      const deck=byId('admiralDeck'); if(deck){deck.style.setProperty('--admiral-command-visual',`url("${url}")`);deck.classList.add('admiral-custom-visual');}
+      const deck=byId('admiralDeck');
+      const gate=byId('admiralGateOverlay');
+      if(deck){deck.style.setProperty('--admiral-command-visual',`url("${url}")`);deck.classList.add('admiral-custom-visual');}
+      if(gate){gate.style.setProperty('--admiral-command-visual',`url("${url}")`);gate.classList.add('admiral-custom-visual');const status=gate.querySelector('#admiralVisualStatus');if(status)status.textContent='CEREMONIAL VISUAL • INSTALLED FROM FORGE';}
     }else if(slot==='captain'){
       // Captain visual uploads are retained as forge references until the command
       // surface is Sea-Trialed; never silently replace the proven room geometry.
@@ -433,6 +436,7 @@
           <h2 id="admiralGateTitle">Admiral's Gate</h2>
           <p>The Admiral's Deck governs Dark Sky, Black Flag and the fleet. This trial entrance exists so the Captain can prove the machinery before the rank is earned.</p>
           <div class="admiral-trial-badge">ADMIRAL STATUS • NOT YET COMMISSIONED</div>
+          <div class="admiral-visual-status" id="admiralVisualStatus">CEREMONIAL VISUAL • FORGE READY</div>
           <label for="admiralPinInput">ADMIRAL ACCESS PIN</label>
           <input id="admiralPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
           <p id="admiralPinError" class="captain-error" aria-live="polite"></p>
@@ -567,7 +571,7 @@
         <main class="visual-forge-grid">
           <section class="visual-forge-input">
             <label>Forge mode<select id="visualForgeMode"><option value="scene-command">Scene → Command Surface</option><option value="visual-interface">Visual → Interface</option><option value="brand-experience">Brand → Customer Experience</option><option value="new-vessel">Visual → New Vessel</option><option value="asset-system">Visual → Asset System</option></select></label>
-            <label>Target<select id="visualForgeTarget"><option>Captain's Quarters</option><option>Admiral's Deck</option><option>New Vessel</option><option>Existing Project</option><option>Dark Sky / Black Flag</option></select></label>
+            <label>Target<select id="visualForgeTarget"><option>Captain's Quarters</option><option>Admiral's Gate + Deck</option><option>Admiral's Deck</option><option>New Vessel</option><option>Existing Project</option><option>Dark Sky / Black Flag</option></select></label>
             <label>Working title<input id="visualForgeName" type="text" placeholder="Name this concept" /></label>
             <label>What should this become?<textarea id="visualForgeObjective" rows="5" placeholder="Describe what you want the visual to become, what must work, what must stay isolated, and what the user should be able to do."></textarea></label>
             <label class="visual-forge-upload">Reference visuals<input id="visualForgeFiles" type="file" accept="image/*" multiple /><span>Choose one or more images</span></label>
@@ -610,19 +614,19 @@
       current={schema:'dark-sky-visual-forge-v1',id:`forge-${Date.now().toString(36)}`,createdAt:new Date().toISOString(),scope,mode,target,name,objective,references:refs.map(({name,type,size})=>({name,type,size})),principles:principles[mode]||[],status:'blueprint-ready',execution:'managed-backend-not-yet-connected'};
       try{const key='darkSkyVisualForgeEntries';const rows=JSON.parse(localStorage.getItem(key)||'[]');rows.unshift(current);localStorage.setItem(key,JSON.stringify(rows.slice(0,20)));}catch(_){ }
       byId('visualForgeState').textContent='BLUEPRINT READY';byId('visualForgeStateCopy').textContent=`${scopeLabel()} translated the reference into a build contract.`;
-      byId('visualForgeBlueprint').innerHTML=`<small>${scope.toUpperCase()} • ${target}</small><h3>${name}</h3><p>${objective||'No objective supplied yet.'}</p><h4>Build principles</h4><ol>${current.principles.map(x=>`<li>${x}</li>`).join('')}</ol><h4>Next move</h4><p>${scope==='admiral'?'Review whether this pattern should become a governed fleet standard before promotion.':'Prototype the blueprint in Workshop, then Sea Trial it before any fleet promotion.'}</p>`;
+      byId('visualForgeBlueprint').innerHTML=`<small>FORGED BY ${scope.toUpperCase()} → TARGET: ${target.toUpperCase()}</small><h3>${name}</h3><p>${objective||'No objective supplied yet.'}</p><h4>Build principles</h4><ol>${current.principles.map(x=>`<li>${x}</li>`).join('')}</ol><h4>Next move</h4><p>${scope==='admiral'?'Review whether this pattern should become a governed fleet standard before promotion.':'Prototype the blueprint in Workshop, then Sea Trial it before any fleet promotion.'}</p>`;
       byId('visualForgeExport').disabled=false;
-      byId('visualForgeInstall').disabled=!refs.length || !["Captain's Quarters","Admiral's Deck"].includes(target);
+      byId('visualForgeInstall').disabled=!refs.length || !["Captain's Quarters","Admiral's Deck","Admiral's Gate + Deck"].includes(target);
     };
     byId('visualForgeInstall').onclick=async()=>{
       const file=refs[0]?.file; const target=byId('visualForgeTarget')?.value;
       if(!file){showCaptainDeskNotice('Choose a reference visual first.','unavailable');return;}
-      if(target!=="Captain's Quarters" && target!=="Admiral's Deck"){showCaptainDeskNotice('Upper-command visual install is available for Captain or Admiral targets.','future');return;}
-      const slot=target==="Admiral's Deck"?'admiral':'captain';
+      if(target!=="Captain's Quarters" && target!=="Admiral's Deck" && target!=="Admiral's Gate + Deck"){showCaptainDeskNotice('Upper-command visual install is available for Captain or Admiral targets.','future');return;}
+      const slot=target.startsWith("Admiral's")?'admiral':'captain';
       try{
         await saveUpperCommandVisual(slot,file);
         byId('visualForgeState').textContent=slot==='admiral'?'ADMIRAL VISUAL INSTALLED':'CAPTAIN REFERENCE STAGED';
-        byId('visualForgeStateCopy').textContent=slot==='admiral'?'Ceremonial Admiral graphics will use this visual; Professional Mode remains clean.':'Captain reference saved for Forge/Sea Trial. The proven command-room geometry is not silently replaced.';
+        byId('visualForgeStateCopy').textContent=slot==='admiral'?'Admiral’s Gate and Ceremonial Deck will use this visual; Professional Mode remains clean.':'Captain reference saved for Forge/Sea Trial. The proven command-room geometry is not silently replaced.';
       }catch(err){byId('visualForgeState').textContent='INSTALL HOLD';byId('visualForgeStateCopy').textContent=String(err?.message||err);}
     };
     byId('visualForgeExport').onclick=()=>{if(!current)return;const blob=new Blob([JSON.stringify(current,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${current.id}-${current.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'visual-forge'}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);};
@@ -636,7 +640,7 @@
     const forge=ensureVisualForge();
     forge.dataset.scope=scope;
     const label=byId('visualForgeScope'); if(label)label.textContent=scope==='admiral'?'ADMIRAL VISUAL FORGE • FLEET GOVERNANCE':'CAPTAIN VISUAL FORGE • CREATE & PROTOTYPE';
-    const target=byId('visualForgeTarget'); if(target)target.value=scope==='admiral'?"Admiral's Deck":"Captain's Quarters";
+    const target=byId('visualForgeTarget'); if(target)target.value=scope==='admiral'?"Admiral's Gate + Deck":"Captain's Quarters";
     show('visualForgeOverlay');
   }
 

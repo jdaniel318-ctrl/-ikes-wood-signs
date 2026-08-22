@@ -1,4 +1,4 @@
-# Dark Sky 6.5.0 — Flag Bridge
+# Dark Sky 6.6.0 — Sovereign Passage
 
 - Completes the Visual Forge promise for Admiral ceremonial environments: installed art becomes the command environment, not wallpaper under a generic modal.
 - Adds a real ceremonial command surface with live Fleet Readiness, vessel/sailing/Sea Trial counts, Recovery Snapshot, Readiness Report, Visual Forge, and explicitly FUTURE governance stations.
