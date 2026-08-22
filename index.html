@@ -12,7 +12,7 @@
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'dom-helpers-ready';
-    // 6.0.2 Client Preview pre-paint bulkhead. Detect a sealed preview link before
+    // 6.0.3 Client Preview pre-paint bulkhead. Detect a sealed preview link before
     // the body or legacy project DOM can paint. This prevents the default Ike shell
     // from appearing for even one frame while the standalone preview runtime boots.
     if(String(location.hash||'').startsWith('#client-preview=')){
@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=6.0.2" />
+  <link rel="stylesheet" href="styles.css?v=6.0.3" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -99,6 +99,8 @@
       <a id="captainGateCloseBtn" class="captain-secondary captain-link-button" href="#">← RETURN TO ENGINE</a>
     </div>
   </div>
+
+  <button id="captainGlobalExit" class="captain-global-exit hidden" type="button" aria-label="Return from Captain's Quarters to Black Flag Engine">← RETURN TO ENGINE</button>
 
   <div id="captainQuarters" class="captain-quarters-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="captainChamberTitle">
     <div id="captainEntrySequence" class="captain-entry-sequence flagship-arrival" aria-hidden="true">
@@ -1297,11 +1299,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=6.0.2"></script>
-  <script src="platform_v4.js?v=6.0.2"></script>
-  <script src="platform_identity.js?v=6.0.2"></script>
-  <script src="app.js?v=6.0.2"></script>
-  <script src="captain.js?v=6.0.2"></script>
+  <script src="platform_core.js?v=6.0.3"></script>
+  <script src="platform_v4.js?v=6.0.3"></script>
+  <script src="platform_identity.js?v=6.0.3"></script>
+  <script src="app.js?v=6.0.3"></script>
+  <script src="captain.js?v=6.0.3"></script>
 
 </body>
 </html>

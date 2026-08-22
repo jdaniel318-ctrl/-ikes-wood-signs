@@ -1,4 +1,4 @@
-# 6.0.2 True North Captain Regression Gate
+# 6.0.3 True North Captain Regression Gate
 
 - Captain runtime restored from the known-good 5.7.9 Quarterdeck implementation.
 - Captain production asset is `assets/captains_quarters_command_center_v578.png`.
@@ -6,15 +6,15 @@
 - No 5.8.x Helm/canonical Captain asset or render path is active.
 - Black Flag 5615, Project Admin 4353, Captain’s Quarters 19613, Client Preview unique PIN contracts are unchanged.
 
-# Dark Sky 6.0.2 — Drydock Reconciliation
+# Dark Sky 6.0.3 — Drydock Reconciliation
 
 Canonical repository/root reconciliation release. Captain’s Quarters now uses one canonical production environment asset (`assets/captains_quarters_canonical.png`) across all runtime and fallback paths. The deployable `assets/` directory contains media only; application/runtime files remain at repository root. Client Preview isolation, Black Flag, project routing, authority contracts, and cloud-readiness contracts are preserved.
 
-# 6.0.2 Captain regression note
+# 6.0.3 Captain regression note
 
 Scope: Captain's Quarters environment asset only. Authentication, Engine routing, Client Preview isolation and project runtime remain unchanged. The Helm UI no longer depends on or displays the old cabin artwork.
 
-# 6.0.2 Helm regression note
+# 6.0.3 Helm regression note
 
 - Captain’s Quarters only: clean room asset + responsive real UI.
 - No Black Flag authentication, Client Preview isolation, project admin, routing, or customer experience logic changed.
@@ -168,3 +168,9 @@ Checks required: Legacy Plumbing source assets are selected only for the Legacy 
 - PASS: the Black Flag portal does not remove `boot-locked` for Client Preview URLs.
 - PASS: Client Preview clears every known project/fleet protected surface before installing its PIN gate.
 - PASS: the preflight bulkhead is removed only after the Client Preview gate has been appended.
+
+### 6.0.3 Captain Gangway regression contract
+- `#captainGlobalExit` is a body-level sibling, not a child of Captain artwork or Captain subviews.
+- It appears only while Captain authorization is active and is fixed above all Captain modal layers.
+- Exit clears Captain Blueprint, Fleet Chart, Spyglass, object panel, Test Access gate, room, gate, and global exit state.
+- Returning to Engine does not alter the Black Flag 5615 authentication contract.

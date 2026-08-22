@@ -21,6 +21,7 @@
       authorized=true;
       hide('captainQuartersGate');
       show('captainQuarters');
+      show('captainGlobalExit');
       refreshCaptainWatch();
       clearHash();
       document.body.classList.add('captain-modal-open','captain-authorized');
@@ -79,6 +80,7 @@
     byId('captainPinInput')?.blur();
     hide('captainQuartersGate');
     show('captainQuarters');
+    show('captainGlobalExit');
     refreshCaptainWatch();
     clearHash();
     document.body.classList.add('captain-modal-open', 'captain-authorized');
@@ -87,15 +89,14 @@
 
   function secure() {
     authorized = false;
-    hide('captainBlueprint');
-    hide('captainFleetChart');
-    hide('captainQuarters');
-    hide('captainQuartersGate');
+    // Captain-only escape invariant: close every Captain subview before revealing Engine.
+    ['captainBlueprint','captainFleetChart','captainSpyglassPanel','captainObjectPanel','captainTestAccessGate','captainQuarters','captainQuartersGate','captainGlobalExit'].forEach(hide);
     byId('captainQuarters')?.classList.remove('captain-entry-complete');
     byId('captainEntrySequence')?.classList.remove('captain-entry-play');
     if (byId('captainPinInput')) byId('captainPinInput').value = '';
     document.body.classList.remove('captain-modal-open', 'captain-authorized');
     clearHash();
+    requestAnimationFrame(() => { try { window.scrollTo({top:0,left:0,behavior:'auto'}); } catch (_) { window.scrollTo(0,0); } });
   }
 
   function fleetSnapshot(){
@@ -300,6 +301,10 @@
     });
     byId('captainQuartersCloseBtn')?.addEventListener('click', secure);
     byId('captainExitBtn')?.addEventListener('click', secure);
+    byId('captainGlobalExit')?.addEventListener('click', secure);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && authorized) { event.preventDefault(); secure(); }
+    });
     byId('captainBlueprintBtn')?.addEventListener('click', (event) => {
       event.preventDefault();
       show('captainBlueprint');
