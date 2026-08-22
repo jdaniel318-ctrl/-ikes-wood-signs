@@ -13337,7 +13337,7 @@ body.captain-authorized #captainExitBtn{visibility:hidden!important;pointer-even
 }
 
 /* ========================================================================== 
-   v6.0.8 — CAPTAIN'S TABLE: COHERENT COMMAND SURFACE
+   v6.1.0 — CAPTAIN'S TABLE: COHERENT COMMAND SURFACE
    Surgical Captain-only pass:
    - the cinematic room remains the skin,
    - duplicate live title overlay is removed,
@@ -13552,3 +13552,13 @@ body.captain-authorized #captainExitBtn{visibility:hidden!important;pointer-even
 @media(max-width:700px),(orientation:portrait) and (max-width:900px){
   #captainQuarters.cinematic-cabin-ready .cq-desk-index{display:none!important}
 }
+
+
+/* 6.1.0 — Admiral Readiness Gate. Read-only operational proof above release/commissioning work. */
+.admiral-readiness{margin:18px 20px 0;border:1px solid rgba(91,174,196,.34);border-radius:18px;background:linear-gradient(135deg,rgba(5,27,34,.96),rgba(7,21,28,.98));box-shadow:0 18px 45px rgba(0,0,0,.18);overflow:hidden}
+.admiral-readiness-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:22px 24px;border-bottom:1px solid rgba(91,174,196,.22)}
+.admiral-readiness-head h3{margin:4px 0 5px;font-size:clamp(22px,2.1vw,34px);letter-spacing:.02em}.admiral-readiness-head p{max-width:820px;margin:0;color:#9eb0b8;line-height:1.45}.admiral-readiness-head-state{text-align:right;min-width:190px}.admiral-readiness-head-state small{display:block;margin-top:7px;color:#80949d;font-size:11px;letter-spacing:.04em}
+.admiral-readiness-state{display:inline-flex;padding:8px 13px;border-radius:999px;border:1px solid rgba(91,174,196,.38);font-size:11px;letter-spacing:.16em}.admiral-readiness-state.ready{color:#9be7ad;border-color:#3f9b5f;background:rgba(25,91,48,.18)}.admiral-readiness-state.watch{color:#e8c875;border-color:#9c7a2e;background:rgba(105,77,20,.17)}.admiral-readiness-state.hold{color:#ff9f8e;border-color:#a55445;background:rgba(112,45,35,.2)}.admiral-readiness-state.checking{color:#9dc9d5}
+.admiral-readiness-body{padding:20px 24px 24px}.admiral-readiness-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.admiral-check{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;padding:14px 15px;border:1px solid rgba(130,156,164,.22);border-radius:13px;background:rgba(255,255,255,.025)}.admiral-check>span{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;font-weight:900}.admiral-check small{color:#78909a;font-size:9px;letter-spacing:.16em}.admiral-check strong{display:block;margin:2px 0 3px;color:#e8eff1}.admiral-check p{margin:0;color:#93a6ae;font-size:12px;line-height:1.4}.admiral-check>b{font-size:9px;letter-spacing:.14em;padding-top:5px}.admiral-check.pass{border-color:rgba(75,155,96,.34)}.admiral-check.pass>span,.admiral-check.pass>b{color:#86dda0}.admiral-check.warn{border-color:rgba(173,129,50,.42)}.admiral-check.warn>span,.admiral-check.warn>b{color:#e2bd69}.admiral-check.fail{border-color:rgba(183,78,60,.55);background:rgba(96,31,23,.12)}.admiral-check.fail>span,.admiral-check.fail>b{color:#ff9b88}
+.admiral-readiness-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.admiral-readiness-actions button{min-height:44px}.admiral-readiness-notice{margin:0 24px;max-height:0;overflow:hidden;transition:.2s ease}.admiral-readiness-notice:not(:empty){max-height:90px;margin-top:16px;padding:11px 14px;border-radius:10px;font-size:12px}.admiral-readiness-notice.clear{background:rgba(34,113,58,.16);border:1px solid rgba(79,169,101,.35);color:#a7e7b5}.admiral-readiness-notice.hold{background:rgba(116,42,31,.18);border:1px solid rgba(181,79,62,.4);color:#ffc0b3}
+@media(max-width:820px){.admiral-readiness{margin:12px 10px 0}.admiral-readiness-head{padding:18px 16px;display:block}.admiral-readiness-head-state{text-align:left;margin-top:12px}.admiral-readiness-body{padding:14px 16px 18px}.admiral-readiness-grid{grid-template-columns:1fr}.admiral-readiness-actions{display:grid;grid-template-columns:1fr}.admiral-readiness-notice{margin-left:16px;margin-right:16px}}

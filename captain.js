@@ -2,6 +2,7 @@
   'use strict';
 
   const CAPTAIN_PIN = '19613';
+  window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);

@@ -18,3 +18,14 @@
 - Client Preview pre-paint isolation preserved
 - Test/private-preview real-world contact blocking preserved
 - Project isolation preserved
+
+
+## 6.1.0 Admiral Watch additions
+
+- Runtime readiness gate performs read-only authentication checks (`recordFailure:false`).
+- Project Admin 4353 is checked across every current project.
+- Client Preview generated code is checked against authority credentials.
+- Canonical Project ID uniqueness and order isolation consistency are checked.
+- Fleet external-contact guard and Client Preview pre-paint bulkhead are checked.
+- Deployment manifest/runtime version agreement is checked.
+- Recovery export is explicit and never auto-restores or mutates live state.

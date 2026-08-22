@@ -1,3 +1,13 @@
+# Dark Sky Changelog
+
+## 6.1.0 — Admiral Watch
+
+- Added Black Flag Admiral Readiness Gate with non-destructive checks for authority, isolation, Client Preview, contact safety, Captain navigation, and release identity.
+- Added secure downloadable fleet recovery snapshot for interim off-device recovery.
+- Added downloadable machine-readable readiness report.
+- Added formal Admiral Readiness, Recovery Playbook, and Staging/Live contracts.
+- Preserved Black Flag 5615, Project Admin 4353, Captain 19613, unique Client Preview PINs, project isolation, Captain visual/navigation, and customer behavior.
+
 # Dark Sky 6.0.8 — Chart Table
 
 - Captain-only consolidation of the three seams found in the iPad review.

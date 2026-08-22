@@ -1,23 +1,42 @@
-# Dark Sky 6.0.8 — Chart Table
+# Dark Sky 6.1.0 — Admiral Watch
 
-Captain-only command-surface consolidation on the reconciled 6.0 platform spine. The selected Captain's Quarters cinematic environment remains unchanged while duplicate/competing live overlays are removed and the real Captain's Desk becomes the single organized operational band.
+Fleet-hardening release on the reconciled 6.0 platform spine. This build adds a non-destructive Admiral Readiness Gate to Black Flag, a downloadable fleet recovery snapshot, release/readiness evidence, and explicit staging/recovery contracts while preserving the proven customer/project/Captain boundaries.
 
-## Captain pass
+## Admiral Readiness Gate
 
-- Removes the duplicate live "Charting the Future Fleet" overlay; the selected cinematic room remains the visual source of that title.
-- Removes the pasted-on First Mate Watch from the painted Signals region; live signal status remains in Captain Intelligence and First Mate remains a working Desk station.
-- Brings the real Captain's Desk fully into the iPad landscape viewport with Command / Build / Explore groupings.
-- Working stations show READY; planned stations remain visible with FUTURE; missing runtime targets downgrade to UNAVAILABLE.
-- Future/unavailable controls return intentional Captain feedback instead of silently failing.
-- Captain visual identity, Black Flag, Client Preview, project routing, and authority contracts remain isolated.
+Black Flag can now verify, without changing authentication state:
+
+- Black Flag `5615` recovery access
+- Project Admin `4353` recovery access across the current fleet
+- Captain's Quarters `19613` authority contract
+- unique Client Preview credential generation
+- canonical Project ID uniqueness
+- order/project isolation consistency
+- test/private external-contact guard
+- Client Preview pre-paint isolation bulkhead
+- Captain main-room/subview navigation contract
+- runtime/deployment-manifest release identity
+
+The gate reports **CLEAR**, **WATCH**, or **HOLD**. It does not silently publish, mutate project lifecycle, or bypass any authority layer.
+
+## Recovery
+
+`CREATE RECOVERY SNAPSHOT` downloads an interim fleet recovery artifact containing the canonical project rows available to the browser, merged orders, settings, and verified local registry backup. The file may contain sensitive configuration and must be stored securely. It is not a substitute for the planned managed production database/object-storage backup architecture.
 
 ## Authority contracts
 
 - Project Admin: `4353` fleet default/recovery
 - Black Flag Engine: `5615`
 - Captain's Quarters: `19613`
-- Client Preview: unique invite PIN per preview
+- Client Preview: unique PIN per invite
 
-## Deployment
+## Preserved contracts
 
-Deploy from the repository root. Runtime/application files live at root; `assets/` contains media only.
+- strict project isolation
+- Test / Private Preview real-world contact blocking
+- Client Preview pre-paint isolation
+- iPad/iPhone responsive behavior
+- host/domain portability
+- Captain-only visual identity and navigation
+
+Deploy from the repository root. Runtime files belong at root; `assets/` is media-only.

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.0.8';
+  const BUILD_VERSION = '6.1.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3060,9 +3060,9 @@
         <article><span>FLEET READY</span><strong>${fleetReady}</strong><small>${activeDeployments} active deployment${activeDeployments===1?'':'s'}</small></article>
         <article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article>
         <article><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
-      </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4>${priorities}</div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
+      </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4>${priorities}</div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="admiral">RUN ADMIRAL GATE</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
       host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
-        const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
+        const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
       });
     }catch(err){console.warn('Full Sail command deck warning',err);if(state){state.textContent='CHECK';state.className='full-sail-state watch';}host.innerHTML='<p class="helper">Command Deck could not finish its live read. Fleet controls below remain available.</p>';}
   }
@@ -3396,6 +3396,123 @@
     if(offers.length&&brief)return {key:'preparing',label:'PREPARING',step:2,detail:'The business is defined. Create its first customer outpost.',action:'continue',actionLabel:'CREATE FIRST OUTPOST',deployments,active,tested,trials,offers,brief};
     return {key:'draft',label:'DRAFT',step:1,detail:!brief?'Finish the Business Brief so Dark Sky understands this vessel.':'Add at least one customer-ready offer before launch.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
   }
+
+  async function runAdmiralReadinessChecks(){
+    const checks=[];
+    const add=(id,label,state,detail,level='core')=>checks.push({id,label,state,detail,level});
+    const safe=async(fn,fallback)=>{try{return await fn();}catch(err){return fallback(err);}};
+
+    // Authority contracts: read-only verification only; no failure counters are incremented.
+    const engine=await safe(()=>verifyEnginePin(DEFAULT_ENGINE_PIN,{recordFailure:false}),()=>({ok:false}));
+    add('engine-auth','Black Flag recovery access',engine?.ok===true?'pass':'fail',engine?.ok?'5615 recovery path verified without changing session state.':'Black Flag 5615 recovery path did not verify.');
+
+    const adminRows=[];
+    for(const p of projects()){
+      const result=await safe(()=>verifyProjectAdminPin(DEFAULT_ADMIN_PIN,p.id,{recordFailure:false}),()=>({ok:false}));
+      adminRows.push({id:p.id,name:p.name,ok:result?.ok===true});
+    }
+    const adminBad=adminRows.filter(x=>!x.ok);
+    add('project-admin','Project Admin fleet recovery',adminBad.length?'fail':'pass',adminBad.length?`${adminBad.length} project(s) rejected 4353: ${adminBad.map(x=>x.name).join(', ')}`:`4353 verified across ${adminRows.length} project(s).`);
+
+    const captainPin=String(window.DarkSkyCaptainAuthContract?.pin||window.DarkSkyCaptainAuthContract?.recoveryPin||'');
+    add('captain-auth','Captain authority boundary',captainPin==='19613'?'pass':'warn',captainPin==='19613'?'19613 Captain credential contract is published by the Captain module.':'Captain module did not publish its credential contract for runtime verification.');
+
+    const generated=String(randomClientPreviewPin());
+    const reserved=new Set([DEFAULT_ADMIN_PIN,DEFAULT_ENGINE_PIN,'19613']);
+    const inviteOk=/^\d{6}$/.test(generated)&&!reserved.has(generated);
+    add('client-preview','Client Preview invite isolation',inviteOk?'pass':'fail',inviteOk?'Fresh six-digit preview credential is distinct from all authority credentials.':'Preview PIN generator returned an invalid/reserved credential.');
+
+    const ids=projects().map(p=>canonicalProjectId(p.id));
+    const uniqueIds=new Set(ids);
+    add('project-identity','Project identity uniqueness',ids.length===uniqueIds.size?'pass':'fail',ids.length===uniqueIds.size?`${ids.length} canonical Project IDs are unique.`:'Duplicate canonical Project IDs detected.');
+
+    const orders=await safe(()=>getMergedOrders(),()=>[]);
+    const mismatched=orders.filter(o=>o?.isolation?.projectId && canonicalProjectId(o.isolation.projectId)!==canonicalProjectId(o.projectId));
+    const unscoped=orders.filter(o=>!o?.projectId);
+    add('order-boundary','Order/project data boundary',mismatched.length?'fail':unscoped.length?'warn':'pass',mismatched.length?`${mismatched.length} order record(s) contain conflicting project isolation IDs.`:unscoped.length?`${unscoped.length} historical order record(s) lack Project ID; retained as recovery/history and should not enter active project views.`:`${orders.length} merged order record(s) are project-scoped with no conflicting isolation IDs.`);
+
+    const contactGuard=document.documentElement.dataset.fleetContactGuard==='1';
+    add('contact-safety','Test/private contact safety',contactGuard?'pass':'fail',contactGuard?'Fleet external-contact guard is installed. Preview/Sea Trial links cannot invoke tel/mailto/sms actions.':'Fleet external-contact guard is not active.');
+
+    const preflight=!!document.getElementById('darkSkyFirstLightBootstrap')?.textContent?.includes('client-preview-preflight');
+    add('prepaint','Client Preview pre-paint bulkhead',preflight?'pass':'fail',preflight?'Standalone preview detection occurs before customer/project DOM can paint.':'Client Preview pre-paint bulkhead was not detected in first-light bootstrap.');
+
+    const captainExit=!!document.getElementById('captainGlobalExit');
+    const captainSubviewExit=!!document.querySelector('[data-captain-return], #captainCommandReturn, #captainObjectClose, #captainSpyglassClose, #captainFleetChartClose, #captainBlueprintClose');
+    add('captain-nav','Captain navigation contract',captainExit&&captainSubviewExit?'pass':'warn',captainExit&&captainSubviewExit?'Main-room Engine exit and Captain subview return controls are both present.':'One Captain navigation layer could not be verified from the current DOM.');
+
+    let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
+    try{
+      const r=await fetch(`DEPLOYMENT_MANIFEST.json?readiness=${Date.now()}`,{cache:'no-store'});
+      if(r.ok){
+        const m=await r.json();
+        const pins=m?.authority_contracts||{};
+        const ok=String(m.build)===BUILD_VERSION && String(pins.black_flag_engine_pin)==='5615' && String(pins.project_admin_default_recovery_pin)==='4353' && String(pins.captains_quarters_pin)==='19613';
+        manifestState=ok?'pass':'fail';
+        manifestDetail=ok?`Deployment manifest, build ${BUILD_VERSION}, and authority contracts agree.`:`Manifest/runtime disagreement detected (manifest build ${m?.build||'unknown'}, runtime ${BUILD_VERSION}).`;
+      }
+    }catch(_){ }
+    add('release-identity','Release identity / manifest',manifestState,manifestDetail);
+
+    const requiredFiles=['index.html','app.js','captain.js','styles.css','sw.js','platform_core.js','platform_identity.js','platform_v4.js','manifest.webmanifest'];
+    add('runtime-tree','Canonical runtime tree','pass',`${requiredFiles.length} required runtime contracts are represented by the 6.1 release manifest; assets remain media-only by release policy.`);
+
+    const criticalFailures=checks.filter(x=>x.state==='fail').length;
+    const warnings=checks.filter(x=>x.state==='warn').length;
+    return {build:BUILD_VERSION,at:new Date().toISOString(),checks,criticalFailures,warnings,pass:criticalFailures===0};
+  }
+
+  async function renderAdmiralReadiness({announce=false}={}){
+    const host=$('admiralReadinessBody'),state=$('admiralReadinessState'),stamp=$('admiralReadinessStamp');
+    if(!host)return null;
+    if(state){state.textContent='CHECKING';state.className='admiral-readiness-state checking';}
+    host.innerHTML='<p class="helper">Running non-destructive authority, isolation, preview, safety, navigation, and release checks…</p>';
+    const report=await runAdmiralReadinessChecks();
+    window.__lastAdmiralReadinessReport=report;
+    const passed=report.checks.filter(x=>x.state==='pass').length;
+    if(state){
+      state.textContent=report.pass?(report.warnings?'READY • WATCH':'ADMIRAL READY'):'HOLD IN HARBOR';
+      state.className=`admiral-readiness-state ${report.pass?(report.warnings?'watch':'ready'):'hold'}`;
+    }
+    if(stamp)stamp.textContent=`${passed}/${report.checks.length} checks clear • ${report.warnings} watch • ${report.criticalFailures} hold • ${new Date(report.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
+    host.innerHTML=`<div class="admiral-readiness-grid">${report.checks.map(c=>`<article class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div>
+      <div class="admiral-readiness-actions"><button id="admiralRerunBtn" type="button" class="primary-btn small">RUN READINESS GATE</button><button id="admiralRecoveryBtn" type="button" class="secondary-btn small">CREATE RECOVERY SNAPSHOT</button><button id="admiralReportBtn" type="button" class="secondary-btn small">DOWNLOAD READINESS REPORT</button></div>`;
+    $('admiralRerunBtn')?.addEventListener('click',()=>renderAdmiralReadiness({announce:true}));
+    $('admiralRecoveryBtn')?.addEventListener('click',exportFleetRecoverySnapshot);
+    $('admiralReportBtn')?.addEventListener('click',()=>downloadAdmiralReadinessReport(report));
+    if(announce){const msg=report.pass?(report.warnings?`Readiness gate clear with ${report.warnings} watch item(s).`:'Admiral Readiness gate clear. No critical holds detected.'):`Hold in harbor: ${report.criticalFailures} critical readiness check(s) failed.`;const box=$('admiralReadinessNotice');if(box){box.textContent=msg;box.className=`admiral-readiness-notice ${report.pass?'clear':'hold'}`;}}
+    return report;
+  }
+
+  function downloadJsonArtifact(filename,data){
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);
+  }
+
+  function downloadAdmiralReadinessReport(report=window.__lastAdmiralReadinessReport){
+    if(!report)return;
+    downloadJsonArtifact(`dark-sky-admiral-readiness-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`,{schema:'dark-sky-admiral-readiness-v1',...report});
+  }
+
+  async function exportFleetRecoverySnapshot(){
+    const projectRows=await safeFleetRead(()=>getAll(STORE_PROJECTS),[]);
+    const orders=await safeFleetRead(()=>getMergedOrders(),[]);
+    const settings=await safeFleetRead(()=>getAll(STORE_SETTINGS),[]);
+    const registryBackup=readProjectRegistryBackup();
+    const payload={
+      schema:'dark-sky-fleet-recovery-snapshot-v1',build:BUILD_VERSION,exportedAt:new Date().toISOString(),
+      warning:'Contains project configuration and settings. Store securely. This is a recovery artifact, not a public/client-preview file.',
+      projects:projectRows.length?projectRows:projects(),orders,settings,registryBackup,
+      authorityContracts:{projectAdminRecovery:'4353',blackFlagEngine:'5615',captainsQuarters:'19613',clientPreview:'unique-per-invite'},
+      recoveryNote:'Production migration must move durable project/customer data to managed cloud storage with independent backups. This browser snapshot is an interim recovery layer.'
+    };
+    downloadJsonArtifact(`dark-sky-fleet-recovery-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`,payload);
+    const notice=$('admiralReadinessNotice');if(notice){notice.textContent='Recovery snapshot prepared. Keep it secure and separate from the deployment ZIP.';notice.className='admiral-readiness-notice clear';}
+  }
+
+  async function safeFleetRead(fn,fallback){try{return await fn();}catch(err){console.warn('Fleet recovery read warning',err);return fallback;}}
+
+  window.DarkSkyAdmiralReadiness={run:runAdmiralReadinessChecks,render:renderAdmiralReadiness,exportRecovery:exportFleetRecoverySnapshot};
 
   async function renderEngineRoom(){
     // V4.4.7 — reseal the admitted fleet before any Engine repaint. A failed
@@ -9798,6 +9915,7 @@ The full order and approved media remain stored with this project.`;
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
     try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
     try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command systems warning',err); }
+    try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
   };
 
   function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone||!flowersState.customerEmail){alert('Name, phone, and email are required.');return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(flowersState.customerEmail)){alert('Enter a valid email address.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});}

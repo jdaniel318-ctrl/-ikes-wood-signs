@@ -1,0 +1,26 @@
+{
+  "schema": "dark-sky-static-release-gate-v1",
+  "build": "6.1.0",
+  "release": "Admiral Watch",
+  "generatedAt": "2026-08-22",
+  "checks": {
+    "build_version": true,
+    "engine_pin_5615": true,
+    "admin_pin_4353": true,
+    "captain_pin_19613": true,
+    "client_prepaint_bulkhead": true,
+    "contact_guard": true,
+    "admiral_gate_runtime": true,
+    "recovery_snapshot": true,
+    "sw_cache_610": true,
+    "manifest_610": true,
+    "no_duplicate_ids": true,
+    "no_missing_local_refs": true,
+    "assets_media_only": true
+  },
+  "duplicateIds": [],
+  "missingLocalReferences": [],
+  "nonMediaAssets": [],
+  "pass": true,
+  "note": "Static package gate. Black Flag Admiral Readiness reruns live non-destructive checks against the browser/fleet after deployment."
+}
