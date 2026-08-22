@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v6-0-6-benchmark-helm';
+const CACHE='dark-sky-v6-0-7-benchmark-true-north';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.0.6',
-  './platform_core.js?v=6.0.6',
-  './platform_v4.js?v=6.0.6',
-  './platform_identity.js?v=6.0.6',
-  './app.js?v=6.0.6',
-  './captain.js?v=6.0.6',
+  './styles.css?v=6.0.7',
+  './platform_core.js?v=6.0.7',
+  './platform_v4.js?v=6.0.7',
+  './platform_identity.js?v=6.0.7',
+  './app.js?v=6.0.7',
+  './captain.js?v=6.0.7',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
