@@ -1,27 +1,21 @@
-# Dark Sky 7.0.0 — Plankwright
+# Dark Sky 7.1.0 — True Grain
 
-Plankwright is an Ike's-first customer-experience candidate built on the proven Dark Sky 6.9.1 Known Good anchor. The release restructures Ike's around the exact plank and one live design workspace while keeping the platform authority, isolation, recovery, Client Preview, test-safety, Captain, and provisional Admiral contracts intact.
+True Grain is the refinement candidate built from the successful Ike's Plankwright customer voyage. It keeps the seven-step experience intact, makes the ordering surface easier to scan on iPad, and converts the most valuable Ike lessons into explicit Fleet Capability Candidates rather than silently copying them across projects.
 
-## Ike's candidate journey
-1. Welcome / start with the plank.
-2. Photograph the exact plank.
-3. Confirm the plank through an honest Plank Recognition scaffold.
-4. Design wording, lettering, finish/color, top marker, and orientation in one **Design Your Sign** workspace.
-5. Explicitly approve the design.
-6. Enter contact information after approval.
-7. Review the compact production record and place the order.
-8. Receive the order number and approved-design confirmation.
+## Ike's refinement
+- Photo-first seven-step journey remains intact.
+- Internal ordering header is smaller so the plank/design receives more space.
+- Plank Recognition remains truthful: geometry/orientation now, calibrated real-world measurement later.
+- Conservative safe-margin rendering reduces edge/hole collisions while real usable-area/obstacle detection is still in Sea Trial.
+- Lettering choices are larger and reference-photo staging remains available.
+- Required contact fields are visibly marked.
+- Final review is tightened for shorter landscape viewports.
 
-## Plank Recognition
-7.0.0 does **not** invent real-world dimensions from an ordinary photograph. It may detect image geometry/orientation and exposes the place where calibrated measurement will run later. Until a validated scale source is commissioned, the posted-price confirmation remains a temporary fallback.
-
-Candidate scale sources include a known trailer measurement zone/reference marker, validated device depth/AR, or another tested calibration method. See `IKES_PLANKWRIGHT_700.md`.
-
-## Lettering Library
-The unified design surface presents Ike-owned lettering choices before placing the words on the plank. An optional reference-photo upload stages visual lettering inspiration for future matching/creation; it is not falsely represented as an installable font.
+## Fleet-strengthening rule
+The Plank/Object Intelligence and Reference→Lettering Style patterns are now registered in `FLEET_CAPABILITY_CANDIDATES.md`. They remain candidates until repeated Sea Trial evidence supports promotion. Project-specific Ike branding and workflows stay isolated.
 
 ## Release discipline
-Dark Sky 6.9.1 remains the Last Known Good recovery anchor until 7.0.0 is deployed, reruns the Fleet Proving Ground successfully, produces recovery/evidence artifacts, and is deliberately promoted by the Captain.
+Dark Sky 6.9.1 remains the Last Known Good recovery anchor until 7.1.0 is deployed, reruns the Fleet Proving Ground successfully, produces recovery/evidence artifacts, and is deliberately promoted by the Captain.
 
 ## Authority contracts
 - Project Admin fleet default/recovery PIN: `4353`

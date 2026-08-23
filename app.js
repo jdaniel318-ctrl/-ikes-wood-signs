@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.0.0';
+  const BUILD_VERSION = '7.1.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -8340,6 +8340,7 @@
   function setScreen(name){
     if(state.current==='photo' && name!=='photo') stopCamera();
     state.current=name;
+    document.body.classList.toggle('ikes-flow-active',activeProjectId==='ikes-wood-signs'&&!['welcome','done'].includes(name));
     $$('.screen').forEach(s=>{
       const isCurrent=s.dataset.screen===name;
       s.classList.toggle('active',isCurrent);
@@ -8444,6 +8445,8 @@
       if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientation||state.orientation||'—';
       if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.measurement==='calibration-required'?'Calibration marker needed':'Not analyzed';
       if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':'Visual geometry only';
+      if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableArea==='safe-margin-preview'?'Safe-margin preview active':'Not analyzed';
+      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleAvoidance==='not-commissioned'?'Hole/edge avoidance: Sea Trial':'Not analyzed';
       if($('ikeDesignPrice'))$('ikeDesignPrice').textContent=`$${Number(state.price||0)}`;
       if($('ikeDesignOrientation'))$('ikeDesignOrientation').textContent=state.orientation;
       if($('ikeDesignFill'))$('ikeDesignFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
@@ -8488,7 +8491,7 @@
     const build=(label,value,kind='detail')=>`<article class="review-summary-item ${kind}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`;
     if(activeProjectId==='ikes-wood-signs'){
       const r=state.plankRecognition||{};
-      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Orientation',state.orientation],['Plank recognition',r.status==='detected'?'Photo geometry confirmed':'Photo confirmed']].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
+      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Orientation',state.orientation],['Plank recognition',r.status==='detected'?'Geometry confirmed • safe margin':'Photo confirmed']].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
       return;
     }
     $('orderSummary').innerHTML=`
@@ -8544,7 +8547,7 @@
           else if(state.fill==='Other') color=state.customColor||'#1f6feb';
 
           const text=state.wording||'';
-          const maxWidth=w*0.88;
+          const maxWidth=activeProjectId==='ikes-wood-signs'?w*0.72:w*0.88;
           let drawSize=fontSize;
           while(drawSize>20){
             ctx.font=`${style}${weight} ${drawSize}px ${family}`;
@@ -9116,7 +9119,7 @@ The full order and approved media remain stored with this project.`;
       const orientation=w>=h?'Horizontal':'Vertical';
       state.orientation=orientation;
       state.topSide='Top of photo';
-      state.plankRecognition={status:'detected',method:'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,measurement:'calibration-required',confidence:'geometry-clear',analyzedAt:new Date().toISOString()};
+      state.plankRecognition={status:'detected',method:'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,measurement:'calibration-required',measurementReadiness:'needs-validated-scale',usableArea:'safe-margin-preview',obstacleAvoidance:'not-commissioned',confidence:'geometry-clear',analyzedAt:new Date().toISOString()};
       updateUi();
     };
     img.src=state.photoData;

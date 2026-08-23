@@ -1,3 +1,12 @@
+## 7.1.0 — True Grain
+- Refined Ike's proven seven-step customer flow after live voyage testing.
+- Compacted in-flow customer header.
+- Added honest recognition readiness + safe-margin/obstacle-avoidance scaffold.
+- Reduced preview lettering width until real usable-area segmentation is proven.
+- Enlarged lettering choices and marked required contact fields.
+- Added Fleet Capability Candidate contract so project lessons promote through evidence rather than copy/paste.
+- Preserved 6.9.1 as Known Good until live Proving Ground promotion.
+
 ## 7.0.0 — Plankwright
 - Reworked Ike’s into a plank-first candidate journey without changing other project customer shells.
 - Added Plank Recognition scaffolding with explicit calibration-required measurement state; no fabricated dimensions.

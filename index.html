@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.0.0" />
+  <link rel="stylesheet" href="styles.css?v=7.1.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -373,9 +373,9 @@
           <span><b>PREVIEW FIRST</b><small>Approve the design before ordering.</small></span>
         </div>
         <div class="brand-actions ikes-journey">
-          <div class="brand-action"><span class="action-icon blue">1</span><div><strong>Pick Your Plank</strong><small>Start with the wood and posted price you chose.</small></div></div>
-          <div class="brand-action"><span class="action-icon red">2</span><div><strong>Make It Yours</strong><small>Add your exact words, style, orientation, and fill.</small></div></div>
-          <div class="brand-action"><span class="action-icon green">3</span><div><strong>See It Before Ike Makes It</strong><small>Preview the sign on your actual plank, then approve it.</small></div></div>
+          <div class="brand-action"><span class="action-icon blue">1</span><div><strong>Photograph Your Plank</strong><small>Start with the exact piece of wood you picked.</small></div></div>
+          <div class="brand-action"><span class="action-icon red">2</span><div><strong>Design Your Sign</strong><small>Choose your words, lettering, finish, and orientation together.</small></div></div>
+          <div class="brand-action"><span class="action-icon green">3</span><div><strong>Approve & Order</strong><small>Review the exact design, then send Ike the approved order.</small></div></div>
         </div>
         <div class="ikes-start-card">
           <div><span>READY WHEN YOU ARE</span><strong>Build your sign step by step.</strong><small>No long form. No guessing. Your approved preview stays with the order.</small></div>
@@ -437,6 +437,8 @@
               <div><span>Detected orientation</span><strong id="ikeDetectedOrientation">—</strong></div>
               <div><span>Measurement</span><strong id="ikeDetectedSize">Calibration needed</strong></div>
               <div><span>Confidence</span><strong id="ikeRecognitionConfidence">Visual geometry only</strong></div>
+              <div><span>Design protection</span><strong id="ikeRecognitionSafeArea">Not analyzed</strong></div>
+              <div><span>Obstacle avoidance</span><strong id="ikeRecognitionObstacle">Not analyzed</strong></div>
             </div>
             <p class="ike-recognition-note">Until calibrated measurement is commissioned, confirm the posted price on the plank. This fallback can disappear once Plank Recognition is proven.</p>
             <div id="ikePriceChoices" class="ike-price-strip" aria-label="Confirm posted price">
@@ -581,13 +583,13 @@
         <div class="ike-customer-context ike-only"><div class="preview-card"><img class="preview-image" data-preview-img alt="Approved sign thumbnail"><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div><div><small>APPROVED DESIGN</small><strong id="ikeCustomerDesignName">Smoke Hole</strong><span id="ikeCustomerDesignMeta">Style B • Black • $65</span></div></div>
         <h2>Your Contact Information</h2>
         <p id="customerStepCopy">Ike will use this information to let you know when your sign is ready for pickup.</p>
-        <label for="customerName">Name</label>
+        <label for="customerName">Name <span class="required-cue">Required</span></label>
         <input id="customerName" class="text-input" autocomplete="name" />
-        <label for="customerPhone">Cell Phone Number</label>
+        <label for="customerPhone">Cell Phone Number <span class="required-cue">Required</span></label>
         <input id="customerPhone" class="text-input" type="tel" autocomplete="tel" inputmode="tel" />
-        <label for="customerEmail">Email Address</label>
+        <label for="customerEmail">Email Address <span class="required-cue">Required</span></label>
         <input id="customerEmail" class="text-input" type="email" autocomplete="email" inputmode="email" />
-        <label>How would you like Ike to contact you?</label>
+        <label>Preferred pickup contact</label>
         <div id="contactChoices" class="choice-grid two-col">
           <button type="button" class="choice-btn selected" data-contact="Text">TEXT ME</button>
           <button type="button" class="choice-btn" data-contact="Call">CALL ME</button>
@@ -602,7 +604,7 @@
         <div class="summary-box" id="orderSummary"></div>
         <button type="button" id="reviewEditDesignBtn" class="secondary-btn ike-only">EDIT DESIGN</button>
         <div class="proofread-callout"><strong>Please check your wording carefully.</strong><span>Your sign will be made from the approved preview.</span></div>
-        <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I have reviewed and approve the spelling, capitalization, punctuation, layout, orientation, letter style, and fill shown in my preview. I understand Ike's Wood Signs may refuse or cancel any order at its discretion.</span></label>
+        <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I approve this exact design, wording, lettering, finish, orientation, and contact information. Ike's Wood Signs may refuse or cancel an order at its discretion.</span></label>
         <button type="button" id="approveBtn" class="primary-btn">PLACE MY ORDER →</button>
         <p id="approvalError" class="error-text" aria-live="polite"></p>
       </section>
@@ -1395,11 +1397,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.0.0"></script>
-  <script src="platform_v4.js?v=7.0.0"></script>
-  <script src="platform_identity.js?v=7.0.0"></script>
-  <script src="app.js?v=7.0.0"></script>
-  <script src="captain.js?v=7.0.0"></script>
+  <script src="platform_core.js?v=7.1.0"></script>
+  <script src="platform_v4.js?v=7.1.0"></script>
+  <script src="platform_identity.js?v=7.1.0"></script>
+  <script src="app.js?v=7.1.0"></script>
+  <script src="captain.js?v=7.1.0"></script>
 
 </body>
 </html>
