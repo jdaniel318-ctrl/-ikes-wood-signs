@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.2.1",
-  "release": "7.2.1",
+  "build": "7.3.0",
+  "release": "7.3.0",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -43,5 +43,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.2.1 Design Lock freezes the customer-approved Ike visual artifact before contact/review, stores its render metadata with the order, and adds an Approved Artifact Integrity voyage. 7.2.0/7.1.0 remain prior anchors until live proving and deliberate promotion."
+  "note": "7.3.0 Plank Bond strengthens Approved Artifact Integrity: approval flattens the live design once, fingerprints it, blocks order creation if the fingerprint changes, and carries the same artifact into review, confirmation, admin, and archive. It also records Ike canonical paper-form rules: A/B/C lettering, Black/White/None/Other fill, 2/4/6 ft character limits, top/side orientation, text/call pickup, 7\u201310 day window, approval, and refusal right."
 }

@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.2.1" />
+  <link rel="stylesheet" href="styles.css?v=7.3.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -440,7 +440,7 @@
               <div><span>Design protection</span><strong id="ikeRecognitionSafeArea">Not analyzed</strong></div>
               <div><span>Obstacle avoidance</span><strong id="ikeRecognitionObstacle">Not analyzed</strong></div>
             </div>
-            <p class="ike-recognition-note">Until calibrated measurement is commissioned, confirm the posted price on the plank. This fallback can disappear once Plank Recognition is proven.</p>
+            <p class="ike-recognition-note">Until calibrated measurement is commissioned, confirm the posted price on the plank. Once size is proven, Ike's paper-form limits apply automatically: 2 ft — 14 characters; 4 ft — 24; 6 ft — 36. Spaces count.</p>
             <div id="ikePriceChoices" class="ike-price-strip" aria-label="Confirm posted price">
               <button type="button" data-ike-price="45">$45</button><button type="button" data-ike-price="55">$55</button><button type="button" data-ike-price="65">$65</button><button type="button" data-ike-price="90">$90</button><button type="button" data-ike-price="135">$135</button>
             </div>
@@ -477,7 +477,7 @@
                   <button type="button" data-ike-fill="Natural"><i class="carved-sample">A</i>Carved</button>
                   <button type="button" data-ike-fill="Other"><i id="ikeCustomSwatch" class="finish-swatch custom"></i>Custom</button>
                 </div>
-                <div id="ikeCustomColorPanel" class="ike-custom-color hidden"><input id="ikeCustomColor" type="color" value="#1f6feb" aria-label="Choose custom letter color"><span id="ikeCustomColorName">#1F6FEB</span></div>
+                <div id="ikeCustomColorPanel" class="ike-custom-color hidden"><input id="ikeCustomColor" type="color" value="#1f6feb" aria-label="Choose custom letter color"><span id="ikeCustomColorName">#1F6FEB</span><small>OTHER COLOR: Ike may ask you to supply the spray paint; it will be returned at pickup.</small></div>
                 <div class="ike-orientation-confirm"><button type="button" id="ikeRotateBtn">↻ ROTATE SIGN</button><div id="ikeTopMarkerButtons" class="ike-top-buttons"><button data-ike-top="Top of photo">↑ TOP</button><button data-ike-top="Right side of photo">→</button><button data-ike-top="Bottom of photo">↓</button><button data-ike-top="Left side of photo">←</button></div></div>
               </div>
             </section>
@@ -627,7 +627,7 @@
           <div class="helper centered">Your approved design</div>
           <img id="doneApprovedPreview" class="done-approved-preview" alt="Approved custom sign preview" />
         </div>
-        <p class="centered done-personal-note">Ike will use your approved design and order details to make your sign as requested.</p>
+        <p class="centered done-personal-note">Ike will use your locked approved design and order details to make your sign as requested. Typical pickup window: 7–10 days after acceptance.</p>
         <p id="submitStatus" class="submit-status centered" aria-live="polite"></p>
         <div id="customerEmailStatus" class="customer-email-status hidden"></div>
         <button type="button" id="retrySubmitBtn" class="primary-btn hidden">TRY SENDING AGAIN</button>
@@ -1397,11 +1397,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.2.1"></script>
-  <script src="platform_v4.js?v=7.2.1"></script>
-  <script src="platform_identity.js?v=7.2.1"></script>
-  <script src="app.js?v=7.2.1"></script>
-  <script src="captain.js?v=7.2.1"></script>
+  <script src="platform_core.js?v=7.3.0"></script>
+  <script src="platform_v4.js?v=7.3.0"></script>
+  <script src="platform_identity.js?v=7.3.0"></script>
+  <script src="app.js?v=7.3.0"></script>
+  <script src="captain.js?v=7.3.0"></script>
 
 </body>
 </html>

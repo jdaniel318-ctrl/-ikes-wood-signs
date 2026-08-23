@@ -1,4 +1,13 @@
-## 7.2.1 — Design Lock
+## 7.3.0 — Plank Bond
+
+- Flatten exact live Ike preview on approval and fingerprint the artifact.
+- Block order creation if approved artifact integrity fails.
+- Reuse the exact approved artifact across review, confirmation, admin, and archive.
+- Record Ike canonical paper-form production rules as project-scoped production metadata.
+- Surface 2/4/6 ft character limits, Other-color spray-paint note, and 7–10 day pickup expectation without inventing measurement capability.
+- Keep Sounding Line recognition/placement work in Sea Trial.
+
+## 7.3.0 — Plank Bond
 - Freeze Ike approved preview at the approval checkpoint.
 - Final review and confirmation consume the same locked visual artifact.
 - Store approved-design lock metadata with the order.

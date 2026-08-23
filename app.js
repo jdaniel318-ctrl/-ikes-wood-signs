@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.2.1';
+  const BUILD_VERSION = '7.3.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3464,8 +3464,8 @@
     const requiredFiles=['index.html','app.js','captain.js','styles.css','sw.js','platform_core.js','platform_identity.js','platform_v4.js','manifest.webmanifest'];
     add('runtime-tree','Canonical runtime tree','pass',`${requiredFiles.length} required runtime contracts are represented by the 6.1 release manifest; assets remain media-only by release policy.`);
 
-    const lockContract=typeof lockIkeApprovedDesign==='function' && String(lockIkeApprovedDesign).includes('approvedDesignLock') && String(saveOrder).includes('approvedDesignLock');
-    add('approved-design-lock','Approved artifact integrity',lockContract?'pass':'fail',lockContract?'Customer-approved Ike design is frozen before contact/review and the order stores the lock metadata instead of silently re-rendering it.':'Approved-design lock contract is missing or incomplete.');
+    const lockContract=typeof lockIkeApprovedDesign==='function' && typeof verifyIkeApprovedArtifact==='function' && String(lockIkeApprovedDesign).includes('artifactHash') && String(saveOrder).includes('verifyIkeApprovedArtifact') && String(saveOrder).includes('approvedArtifactHash');
+    add('approved-design-lock','Approved artifact integrity',lockContract?'pass':'fail',lockContract?'Customer-approved Ike design is flattened once, fingerprinted, verified before order creation, and reused by review/confirmation/admin/archive without post-approval re-rendering.':'Approved artifact fingerprint / reuse contract is missing or incomplete.');
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
@@ -8544,9 +8544,45 @@
     state.approvedPreviewData='';state.approvedDesignLock=null;
   }
 
+  const IKE_PRODUCTION_CONTRACT=Object.freeze({
+    version:'ike-paper-contract-2026-08',source:'canonical-front-and-back-paper-order-form',
+    characterLimits:{'2ft':14,'4ft':24,'6ft':36},fonts:['A','B','C'],fills:['Black','White','None','Other'],
+    contactPreferences:['Text','Call'],pickupWindowDays:'7-10',customerApprovalRequired:true,refusalRight:true,
+    otherColorRule:'Customer-supplied spray paint may be required for Other; return at pickup.',
+    orientationRule:'Exact side and top must remain attached to the approved production record.'
+  });
+
+  function ikeRenderedTextLines(el){
+    const node=el?.firstChild;if(!node||node.nodeType!==Node.TEXT_NODE)return [String(el?.textContent||'').trim()].filter(Boolean);
+    const text=node.nodeValue||'';if(!text)return [];
+    const range=document.createRange(),rows=[];let row=null,lastTop=null;
+    for(let i=0;i<text.length;i++){
+      range.setStart(node,i);range.setEnd(node,i+1);const rect=range.getBoundingClientRect();
+      const ch=text[i],top=Number.isFinite(rect.top)?rect.top:lastTop;
+      if(lastTop!==null&&top!==null&&Math.abs(top-lastTop)>2){if(row&&row.text.trim())rows.push(row);row=null;}
+      if(!row)row={text:'',top:top||0};row.text+=ch;if(rect.width>0)lastTop=top;
+    }
+    if(row&&row.text.trim())rows.push(row);
+    return rows.map(r=>r.text.trim()).filter(Boolean);
+  }
+
+  function ikeCaptureLiveRenderSpec(){
+    const el=$('ikeDesignPreviewText'),card=el?.closest('.preview-card'),img=card?.querySelector('.preview-image');
+    if(!el||!card||!img||!img.complete||!img.naturalWidth)return null;
+    const ir=ikeImageContentRect(card,img),cr=card.getBoundingClientRect(),er=el.getBoundingClientRect(),cs=getComputedStyle(el);
+    const fontSize=parseFloat(cs.fontSize)||32,lineHeight=parseFloat(cs.lineHeight)||fontSize*1.05;
+    const left=er.left-cr.left,top=er.top-cr.top;
+    return {
+      strategy:'approved-live-layout-v2',singleLinePreferred:true,wrapOnlyWhenRequired:true,
+      box:{x:(left-ir.x)/ir.w,y:(top-ir.y)/ir.h,w:er.width/ir.w,h:er.height/ir.h},
+      font:{sizeN:fontSize/ir.h,lineHeightN:lineHeight/ir.h,family:cs.fontFamily||'Georgia',style:cs.fontStyle||'normal',weight:cs.fontWeight||'700'},
+      lines:ikeRenderedTextLines(el)
+    };
+  }
+
   function ikeCurrentRenderLock(){
     const r=state.plankRecognition||{},region=r.usableRegion||null;
-    return {version:'ike-approved-design-lock-v1',approvedAt:new Date().toISOString(),wording:String(state.wording||''),font:String(state.font||'B'),fill:String(state.fill||'Black'),customColor:String(state.customColor||'#1f6feb'),orientation:String(state.orientation||'Horizontal'),topSide:String(state.topSide||'Top of photo'),price:Number(state.price||0),usableRegion:region?{x:Number(region.x),y:Number(region.y),w:Number(region.w),h:Number(region.h),source:String(region.source||'')}:null,obstacleDetected:!!r.obstacleDetected,recognition:{method:r.method||'',confidence:r.confidence||'',referenceCandidate:!!r.referenceCandidate,measurementReadiness:r.measurementReadiness||''},render:{strategy:'usable-region-word-wrap-v1',singleLinePreferred:true,wrapOnlyWhenRequired:true}};
+    return {version:'ike-approved-design-lock-v2',approvedAt:new Date().toISOString(),wording:String(state.wording||''),font:String(state.font||'B'),fill:String(state.fill||'Black'),customColor:String(state.customColor||'#1f6feb'),orientation:String(state.orientation||'Horizontal'),topSide:String(state.topSide||'Top of photo'),price:Number(state.price||0),usableRegion:region?{x:Number(region.x),y:Number(region.y),w:Number(region.w),h:Number(region.h),source:String(region.source||'')}:null,obstacleDetected:!!r.obstacleDetected,recognition:{method:r.method||'',confidence:r.confidence||'',referenceCandidate:!!r.referenceCandidate,measurementReadiness:r.measurementReadiness||''},productionContract:IKE_PRODUCTION_CONTRACT,render:ikeCaptureLiveRenderSpec()||{strategy:'usable-region-word-wrap-v1',singleLinePreferred:true,wrapOnlyWhenRequired:true}};
   }
 
   function wrapCanvasText(ctx,text,maxWidth){
@@ -8559,8 +8595,15 @@
   async function lockIkeApprovedDesign(){
     if(activeProjectId!=='ikes-wood-signs')return true;
     const lock=ikeCurrentRenderLock();const preview=await createApprovedPreview(lock);if(!preview)return false;
-    lock.hash=ikeFastHash(ikeDesignLockHashPayload(lock));lock.previewData=preview;
+    lock.hash=ikeFastHash(ikeDesignLockHashPayload(lock));
+    lock.artifactHash=ikeFastHash(preview);lock.artifactId=`IKE-ART-${lock.artifactHash.toUpperCase()}`;lock.previewData=preview;
     state.approvedDesignLock=lock;state.approvedPreviewData=preview;return true;
+  }
+
+  function verifyIkeApprovedArtifact(){
+    if(activeProjectId!=='ikes-wood-signs')return true;
+    const lock=state.approvedDesignLock,preview=state.approvedPreviewData;
+    return !!(lock?.artifactHash&&preview&&ikeFastHash(preview)===lock.artifactHash);
   }
 
   async function createApprovedPreview(lockOverride=null){
@@ -8574,10 +8617,14 @@
         const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return resolve('');ctx.drawImage(img,0,0,w,h);
         const family=lock.font==='A'?'Georgia':lock.font==='C'?"Times New Roman":'Georgia',style=lock.font==='B'?'italic ':'',weight=lock.font==='C'?'400':'700';
         let color='#111111';if(lock.fill==='White')color='#ffffff';else if(lock.fill==='Natural')color='#6b4429';else if(lock.fill==='Other')color=lock.customColor||'#1f6feb';
-        const ur=lock.usableRegion,rx=ur?Math.round(ur.x*w):Math.round(w*.14),ry=ur?Math.round(ur.y*h):Math.round(h*.28),rw=ur?Math.round(ur.w*w):Math.round(w*.72),rh=ur?Math.round(ur.h*h):Math.round(h*.44);
-        const text=String(lock.wording||''),factor=lock.font==='B'?.58:(lock.font==='C'?.52:.56);let drawSize=Math.max(20,Math.min(96,rw/(Math.max(1,text.length)*factor),rh/1.35)),lines=[];
-        while(drawSize>=18){ctx.font=`${style}${weight} ${drawSize}px ${family}`;lines=wrapCanvasText(ctx,text,rw*.94);const lh=drawSize*1.03;if(lines.length*lh<=rh*.9&&lines.every(line=>ctx.measureText(line).width<=rw*.94))break;drawSize-=2;}
-        if(!lines.length)lines=[text];const lineHeight=drawSize*1.03,totalH=lines.length*lineHeight,cx=rx+rw/2,startY=ry+(rh-totalH)/2+lineHeight/2;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+        const live=lock.render?.strategy==='approved-live-layout-v2'?lock.render:null,ur=lock.usableRegion;
+        const box=live?.box||null;
+        const rx=box?Math.round(box.x*w):(ur?Math.round(ur.x*w):Math.round(w*.14)),ry=box?Math.round(box.y*h):(ur?Math.round(ur.y*h):Math.round(h*.28)),rw=box?Math.round(box.w*w):(ur?Math.round(ur.w*w):Math.round(w*.72)),rh=box?Math.round(box.h*h):(ur?Math.round(ur.h*h):Math.round(h*.44));
+        const text=String(lock.wording||''),factor=lock.font==='B'?.58:(lock.font==='C'?.52:.56);let drawSize=live?.font?.sizeN?Math.max(12,live.font.sizeN*h):Math.max(20,Math.min(96,rw/(Math.max(1,text.length)*factor),rh/1.35));
+        let lines=Array.isArray(live?.lines)&&live.lines.length?[...live.lines]:[];
+        if(live?.font){ctx.font=`${live.font.style||style} ${live.font.weight||weight} ${drawSize}px ${live.font.family||family}`;}
+        if(!lines.length){while(drawSize>=18){ctx.font=`${style}${weight} ${drawSize}px ${family}`;lines=wrapCanvasText(ctx,text,rw*.94);const lh=drawSize*1.03;if(lines.length*lh<=rh*.9&&lines.every(line=>ctx.measureText(line).width<=rw*.94))break;drawSize-=2;}}
+        if(!lines.length)lines=[text];const lineHeight=live?.font?.lineHeightN?live.font.lineHeightN*h:drawSize*1.03,totalH=lines.length*lineHeight,cx=rx+rw/2,startY=ry+(rh-totalH)/2+lineHeight/2;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
         lines.forEach((line,idx)=>{const y=startY+idx*lineHeight;if(lock.fill==='Natural'){ctx.save();ctx.lineWidth=Math.max(2,drawSize*.055);ctx.strokeStyle='rgba(255,235,202,.48)';ctx.strokeText(line,cx-2,y-2,rw*.94);ctx.strokeStyle='rgba(58,28,13,.72)';ctx.strokeText(line,cx+2,y+3,rw*.94);ctx.fillStyle='rgba(92,54,30,.58)';ctx.fillText(line,cx,y,rw*.94);ctx.restore();}else{ctx.lineWidth=Math.max(2,drawSize*.045);ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';ctx.strokeText(line,cx,y,rw*.94);ctx.fillStyle=color;ctx.fillText(line,cx,y,rw*.94);}});
         lock.render={...(lock.render||{}),region:{x:rx/w,y:ry/h,w:rw/w,h:rh/h},fontSizePx:drawSize,lines:[...lines]};
         resolve(canvas.toDataURL('image/jpeg',0.84));
@@ -8605,8 +8652,17 @@
       return null;
     }
 
-    // Build and verify the approved preview before creating a confirmation/order number.
-    const approvedPreviewData=state.approvedPreviewData || await createApprovedPreview(state.approvedDesignLock||null);
+    // Approved Ike orders must reuse the exact frozen artifact; never silently re-render after approval.
+    let approvedPreviewData='';
+    if(activeProjectId==='ikes-wood-signs'){
+      if(!verifyIkeApprovedArtifact()){
+        alert('Approved Design Lock is not intact. Return to Design Review and approve the exact visual again before placing this order.');
+        return null;
+      }
+      approvedPreviewData=state.approvedPreviewData;
+    }else{
+      approvedPreviewData=state.approvedPreviewData || await createApprovedPreview(state.approvedDesignLock||null);
+    }
     if(projectRequiresPhoto() && !approvedPreviewData){
       alert('The approved photo preview could not be confirmed. Please return to the photo/preview step and try again.');
       return null;
@@ -8615,7 +8671,7 @@
     const id=newOrderId();
     const experienceCtx=currentExperienceContext(activeProject());
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:state.plankRecognition||null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:state.plankRecognition||null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
     if(experienceCtx?.state!=='preview'){
       backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
       try{await put(STORE_ORDERS,order);}catch(err){console.warn('IndexedDB save failed; local backup retained',err);}

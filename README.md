@@ -1,6 +1,10 @@
-# Dark Sky 7.2.1 — Design Lock
+# Dark Sky 7.3.0 — Plank Bond
 
-Design Lock is the integrity follow-up to Sounding Line. It closes the live-test mismatch where final review showed a two-line approved design but confirmation silently re-rendered it as one line.
+Plank Bond hardens Ike’s production contract around the canonical front/back paper form and upgrades Design Lock from metadata-only locking to a flattened, fingerprinted approved artifact. The customer journey remains unchanged.
+
+# Dark Sky 7.3.0 — Plank Bond
+
+Plank Bond is the integrity follow-up to Sounding Line. It closes the live-test mismatch where final review showed a two-line approved design but confirmation silently re-rendered it as one line.
 
 The customer journey remains frozen. This candidate changes approved-artifact integrity only and adds a new proving voyage.
 

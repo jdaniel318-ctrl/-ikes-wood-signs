@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v7-2-1-design-lock';
+const CACHE='dark-sky-v7-3-0-plank-bond';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=7.2.1',
-  './platform_core.js?v=7.2.1',
-  './platform_v4.js?v=7.2.1',
-  './platform_identity.js?v=7.2.1',
-  './app.js?v=7.2.1',
-  './captain.js?v=7.2.1',
+  './styles.css?v=7.3.0',
+  './platform_core.js?v=7.3.0',
+  './platform_v4.js?v=7.3.0',
+  './platform_identity.js?v=7.3.0',
+  './app.js?v=7.3.0',
+  './captain.js?v=7.3.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
