@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.6.1';
+  const BUILD_VERSION = '7.7.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1488,6 +1488,34 @@
       <details class="storage-report-details"><summary>Largest caches</summary><table><thead><tr><th>Cache</th><th>Entries</th><th>Size</th></tr></thead><tbody>${cacheRows}</tbody></table></details>
       <details class="storage-report-details"><summary>Largest LocalStorage keys</summary><table><tbody>${localRows}</tbody></table></details>`;
   }
+
+  function storageTelemetryApply(r){
+    if(!r)return;
+    const b=r.breakdown||{};const origin=Number(r.usage||0),known=Number(b.knownBytes||0),gap=Math.max(0,origin-known),cleanup=Number(r.oldCacheBytes||0);
+    if($('storageTelemetryOrigin')) $('storageTelemetryOrigin').textContent=r.usage!=null?`${formatStorageMb(origin)} MB`:'Unavailable';
+    if($('storageTelemetryMeasured')) $('storageTelemetryMeasured').textContent=`${formatStorageMb(known)} MB`;
+    if($('storageTelemetryUnattributed')) $('storageTelemetryUnattributed').textContent=`${formatStorageMb(gap)} MB`;
+    if($('storageTelemetryCleanup')) $('storageTelemetryCleanup').textContent=`${formatStorageMb(cleanup)} MB`;
+    const box=$('storageTelemetryStatus');if(box){box.classList.add('is-active');box.innerHTML=renderStorageStewardReport(r);box.dataset.inspectOk='1';}
+    const clean=$('storageTelemetryCleanBtn');if(clean){clean.disabled=false;clean.textContent=(r.oldCaches?.length||0)?`CLEAN ${r.oldCaches.length} STALE CACHE${r.oldCaches.length===1?'':'S'}`:'COMPACT DIAGNOSTICS';}
+  }
+  async function openStorageTelemetry({inspect=true}={}){
+    openEngineConfiguration('storage');
+    if(inspect){
+      const box=$('storageTelemetryStatus');if(box){box.classList.add('is-active');box.innerHTML='<strong>Storage sounding started…</strong><br><span>Reading browser storage. Large caches can take several seconds on iPad.</span>';}
+      const btn=$('storageTelemetryInspectBtn');if(btn){btn.disabled=true;btn.textContent='SOUNDING…';}
+      try{
+        const r=await window.DarkSkyV4?.storageStewardPreview?.((stage,detail)=>{if(box)box.innerHTML=`<strong>Storage sounding…</strong><br><span>${escapeHtml(detail||stage||'Working')}</span>`});
+        if(!r)throw new Error('Storage Steward unavailable');
+        storageTelemetryApply(r);
+        try{localStorage.setItem('bf.v4.storage.lastSounding',JSON.stringify({at:r.at,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0,unattributedBytes:Math.max(0,Number(r.usage||0)-Number(r.breakdown?.knownBytes||0)),oldCaches:r.oldCaches||[],oldCacheBytes:r.oldCacheBytes||0}))}catch(_){}
+      }catch(err){if(box)box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err||'Unknown inspection failure'))}</span>`;}
+      finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE';}}
+    }
+    return true;
+  }
+  window.BlackFlagOpenStorageTelemetry=openStorageTelemetry;
+
   window.BlackFlagStorageStewardInspect=async function(){
     const btn=$('engineStorageStewardPreviewBtn'), clean=$('engineStorageStewardCleanBtn'), box=$('engineStorageStewardStatus');
     if(!box)return false;
@@ -1500,6 +1528,7 @@
       if(!r)throw new Error('Storage Steward unavailable');
       box.innerHTML=renderStorageStewardReport(r);
       box.dataset.inspectOk='1';
+      storageTelemetryApply(r);
       try{localStorage.setItem('bf.v4.storage.lastSounding',JSON.stringify({at:r.at,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0,unattributedBytes:Math.max(0,Number(r.usage||0)-Number(r.breakdown?.knownBytes||0)),oldCaches:r.oldCaches||[],oldCacheBytes:r.oldCacheBytes||0}))}catch(_){}
       if(clean){clean.disabled=false;clean.textContent=(r.oldCaches?.length||0)?`CLEAN ${r.oldCaches.length} STALE CACHE${r.oldCaches.length===1?'':'S'}`:'COMPACT DIAGNOSTICS'}
       window.DarkSkyV4?.diagnostic?.('storage.inspect.complete','Storage sounding completed',{usage:r.usage,knownBytes:r.breakdown?.knownBytes,cacheBytes:r.breakdown?.cacheStorage?.bytes,indexedDbBytes:r.breakdown?.indexedDb?.bytes,localStorageBytes:r.breakdown?.localStorage?.bytes,staleCaches:r.oldCaches?.length||0,staleCacheBytes:r.oldCacheBytes||0});
@@ -1544,6 +1573,7 @@
       if(fresh){
         box.innerHTML=`<strong>CLEANUP COMPLETE</strong><br><span>${(r.removedCaches||[]).length} stale cache${(r.removedCaches||[]).length===1?'':'s'} removed • about ${formatStorageMb(reclaimed)} MB targeted.</span>`+renderStorageStewardReport(fresh);
         box.dataset.inspectOk='1';
+        storageTelemetryApply(fresh);
         if(btn){btn.disabled=false;btn.textContent=(fresh.oldCaches?.length||0)?`CLEAN ${fresh.oldCaches.length} STALE CACHE${fresh.oldCaches.length===1?'':'S'}`:'NO STALE CACHES';btn.disabled=!(fresh.oldCaches?.length||0)}
       }else{
         if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}
@@ -3069,10 +3099,10 @@
         <article><span>OPEN WORKLOAD</span><strong>${open}</strong><small>${list.length} admitted vessels</small></article>
         <article><span>FLEET READY</span><strong>${fleetReady}</strong><small>${activeDeployments} active deployment${activeDeployments===1?'':'s'}</small></article>
         <article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article>
-        <article><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
+        <article data-full-sail="storage" tabindex="0" role="button" aria-label="Inspect Engine storage and telemetry"><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
       </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4>${priorities}</div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="admiral">RUN FLEET READINESS</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
       host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
-        const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
+        const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='storage'){await openStorageTelemetry({inspect:true});}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
       });
     }catch(err){console.warn('Full Sail command deck warning',err);if(state){state.textContent='CHECK';state.className='full-sail-state watch';}host.innerHTML='<p class="helper">Command Deck could not finish its live read. Fleet controls below remain available.</p>';}
   }
@@ -3161,7 +3191,7 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
-  // 7.6.1 Clear Signals — deployment state and customer-session state are separate
+  // 7.7.0 Deep Sounding — deployment state and customer-session state are separate
   // contracts. Every customer entry must establish its session explicitly so a
   // stale Test Experience context can never leak into a published live route.
   function customerSessionLabel(ctx){
@@ -3530,6 +3560,10 @@
     }
     add('session-boundary','Customer session boundary',sessionBoundaryOk?'pass':'fail',sessionBoundaryDetail);
 
+    const storageEntryOk=!!document.getElementById('engineTelemetryLaunchBtn')&&!!document.getElementById('engineStorageTelemetryStation')&&typeof window.BlackFlagOpenStorageTelemetry==='function';
+    const storageSafeOk=typeof window.DarkSkyV4?.storageStewardPreview==='function'&&typeof window.DarkSkyV4?.storageStewardClean==='function'&&String(window.DarkSkyV4.storageStewardClean).includes('oldCaches');
+    add('storage-telemetry','Storage & telemetry access',storageEntryOk&&storageSafeOk?'pass':'fail',storageEntryOk&&storageSafeOk?'Engine Telemetry and Engine Storage expose a real inspection surface; cleanup is constrained to stale application caches after inspection.':'Storage & Telemetry entry point or safe-cleanup contract is missing.');
+
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
     return {build:BUILD_VERSION,at:new Date().toISOString(),runId:`PG-${BUILD_VERSION}-${Date.now().toString(36).toUpperCase()}`,source,checks,criticalFailures,warnings,pass:criticalFailures===0};
@@ -3550,12 +3584,13 @@
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav'],'Captain main-room and subview return boundaries.'),
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto'],'Customer-approved visual artifacts stay immutable through review, confirmation, admin, and archive.'),
-      combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.')
+      combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
+      combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.')
     ];
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-6-1-clear-signals';
+  const FORTIFIED_CACHE='dark-sky-v7-7-0-deep-sounding';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -11036,6 +11071,7 @@ The full order and approved media remain stored with this project.`;
     openEngineWorkspace(dock);
     if(target==='economics') requestAnimationFrame(()=>$('engineFixedCost30')?.focus({preventScroll:false}));
     if(target==='integrity') requestAnimationFrame(()=>$('shipIntegritySummary')?.scrollIntoView({behavior:'smooth',block:'center'}));
+    if(target==='storage') requestAnimationFrame(()=>{const station=$('engineStorageTelemetryStation');station?.scrollIntoView({behavior:'instant',block:'start'});});
   }
 
   function v3LifecycleLabel(state){
@@ -12025,6 +12061,16 @@ The full order and approved media remain stored with this project.`;
     }));
 
     $('engineConfigureBtn')?.addEventListener('click',()=>openEngineConfiguration('top'));
+    $('engineTelemetryLaunchBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
+    $('storageTelemetryInspectBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
+    $('storageTelemetryBackBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
+    $('storageTelemetryCleanBtn')?.addEventListener('click',async()=>{
+      const btn=$('storageTelemetryCleanBtn'),box=$('storageTelemetryStatus');
+      if(!box?.dataset.inspectOk){if(box){box.classList.add('is-active');box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Inspect storage before cleanup.</span>';}return;}
+      if(btn?.dataset.confirmClean!=='1'){btn.dataset.confirmClean='1';btn.textContent='CONFIRM SAFE CLEANUP';if(box)box.innerHTML='<strong>CLEANUP ARMED</strong><br><span>Press once more to remove only stale Dark Sky application caches. Protected records remain untouched.</span>';return;}
+      btn.disabled=true;btn.textContent='TRIMMING…';
+      try{const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');delete btn.dataset.confirmClean;box.dataset.inspectOk='';await openStorageTelemetry({inspect:true});}catch(err){if(box)box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err))}</span>`;btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='SAFE CLEANUP';}
+    });
     $('engineConfigurationCloseBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('saveEngineEconomicsBtn')?.addEventListener('click',saveEngineEconomics);
     bindEngineAppearanceControls();

@@ -1,6 +1,6 @@
-# Dark Sky 7.6.1 — Clear Signals — Session Clarity Contract
+# Dark Sky 7.7.0 — Deep Sounding — Session Clarity Contract
 
-True Bearing separated deployment state from customer-session state. Clear Signals makes every customer-facing confirmation say exactly which non-live boundary is active.
+True Bearing separated deployment state from customer-session state. Deep Sounding makes every customer-facing confirmation say exactly which non-live boundary is active.
 
 ## Required labels
 

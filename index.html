@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.6.1" />
+  <link rel="stylesheet" href="styles.css?v=7.7.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -938,7 +938,7 @@
           <span>Independent project isolation</span>
           <span>Performance monitoring</span>
         </div>
-        <div class="modern-vessel-wireframe" aria-hidden="true">ENGINE TELEMETRY</div>
+        <button id="engineTelemetryLaunchBtn" class="modern-vessel-wireframe telemetry-launch-btn" type="button" aria-label="Open Engine Storage and Telemetry">ENGINE TELEMETRY →</button>
       </section>
 
       
@@ -1211,6 +1211,26 @@
         
       </div>
 
+      <section id="engineStorageTelemetryStation" class="engine-storage-telemetry-station" aria-label="Engine storage and telemetry">
+        <div class="storage-telemetry-head">
+          <div><div class="engine-kicker">ENGINE TELEMETRY · STORAGE</div><h3>Storage & Telemetry</h3><p>See what Dark Sky can measure before cleaning anything. Protected records are never deleted by safe cleanup.</p></div>
+          <span class="storage-telemetry-badge">CAPTAIN SAFE</span>
+        </div>
+        <div class="storage-telemetry-summary">
+          <article><span>ORIGIN USAGE</span><strong id="storageTelemetryOrigin">—</strong><small>Safari browser estimate</small></article>
+          <article><span>MEASURED DARK SKY</span><strong id="storageTelemetryMeasured">—</strong><small>Enumerated application data</small></article>
+          <article><span>UNATTRIBUTED</span><strong id="storageTelemetryUnattributed">—</strong><small>Browser-managed gap</small></article>
+          <article><span>SAFE CLEANUP</span><strong id="storageTelemetryCleanup">—</strong><small>Stale application cache only</small></article>
+        </div>
+        <div class="storage-telemetry-actions">
+          <button id="storageTelemetryInspectBtn" class="primary-btn" type="button">INSPECT STORAGE</button>
+          <button id="storageTelemetryCleanBtn" class="secondary-btn" type="button" disabled>SAFE CLEANUP</button>
+          <button id="storageTelemetryBackBtn" class="secondary-btn" type="button">BACK TO ENGINE</button>
+        </div>
+        <div id="storageTelemetryStatus" class="storage-steward-status" role="status" aria-live="polite"></div>
+        <p class="helper storage-telemetry-safety"><strong>Protected:</strong> projects, orders, approved artifacts, customer records, project graphics, settings, recovery anchors, admissions and quarantine evidence.</p>
+      </section>
+
       <section class="protected-control-center">
         <div class="protected-control-head">
           <div><div class="engine-kicker">PROTECTED CONTROLS</div><h3>Engine Controls</h3></div>
@@ -1397,11 +1417,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.6.1"></script>
-  <script src="platform_v4.js?v=7.6.1"></script>
-  <script src="platform_identity.js?v=7.6.1"></script>
-  <script src="app.js?v=7.6.1"></script>
-  <script src="captain.js?v=7.6.1"></script>
+  <script src="platform_core.js?v=7.7.0"></script>
+  <script src="platform_v4.js?v=7.7.0"></script>
+  <script src="platform_identity.js?v=7.7.0"></script>
+  <script src="app.js?v=7.7.0"></script>
+  <script src="captain.js?v=7.7.0"></script>
 
 </body>
 </html>

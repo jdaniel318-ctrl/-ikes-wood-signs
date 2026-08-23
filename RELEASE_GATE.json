@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.6.1",
-  "release": "7.6.1",
+  "build": "7.7.0",
+  "release": "7.7.0",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -62,5 +62,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.6.1 Clear Signals cleans up session-state language after True Bearing: Private Preview, Test Experience, and Live Customer are reported explicitly, preview receipts state that no live record was created, and Session Boundary proving verifies the labeling contract."
+  "note": "7.7.0 Deep Sounding makes Engine Telemetry and Engine Storage real inspection entry points, exposes measured vs browser-managed storage, constrains safe cleanup to stale application caches, and adds a Storage Steward Proving Ground voyage."
 }

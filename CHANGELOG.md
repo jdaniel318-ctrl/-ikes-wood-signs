@@ -1,4 +1,11 @@
-## 7.6.1 — Clear Signals
+# 7.7.0 — Deep Sounding
+- Added a real Storage & Telemetry surface reachable from ENGINE TELEMETRY and the Engine Storage KPI.
+- Added visible origin/measured/unattributed/safe-cleanup buckets and detailed cache/IndexedDB/LocalStorage sounding.
+- Added guarded two-step Safe Cleanup limited to stale application caches.
+- Added Storage Steward Voyage to Fleet Proving Ground.
+- Corrected stale-cache logic so the current 7.7.0 service-worker cache is protected.
+
+## 7.7.0 — Deep Sounding
 
 - Replaced generic non-live `TEST MODE` order confirmation text with exact `PRIVATE PREVIEW`, `TEST EXPERIENCE`, or fallback non-live session language.
 - Private Preview receipt now states that no live order record was created.

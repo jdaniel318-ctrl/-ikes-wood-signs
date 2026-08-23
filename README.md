@@ -1,4 +1,10 @@
-# Dark Sky 7.6.1 — Clear Signals
+# Dark Sky 7.7.0 — Deep Sounding
+
+Deep Sounding turns the previously decorative Engine Telemetry/storage labels into a real inspection and safe-housekeeping surface while preserving Iron Hull, True Bearing, approved-artifact integrity, project isolation, and future extensibility.
+
+See `STORAGE_TELEMETRY_770.md` for the storage safety contract.
+
+# Dark Sky 7.7.0 — Deep Sounding
 
 Session-boundary correction and state-clarity release built on Iron Hull. Published projects and customer sessions are now separate, explicit contracts.
 
@@ -14,7 +20,7 @@ Session-boundary correction and state-clarity release built on Iron Hull. Publis
 The live route now enables real project contact behavior only when the project is actually published and the session is explicitly `LIVE CUSTOMER`. Test and Preview remain contained.
 
 ## Release discipline
-7.6.0 remains the prior release line; promote 7.6.1 only after fresh Proving Ground evidence and deliberate Captain approval.
+7.6.0 remains the prior release line; promote 7.7.0 only after fresh Proving Ground evidence and deliberate Captain approval.
 
 # Dark Sky 7.5.0 — Iron Hull
 

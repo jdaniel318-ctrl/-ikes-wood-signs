@@ -182,7 +182,7 @@ function markCommissioningFailed(projects=[],reason='Commissioning invariant fai
 
 async function storageStewardPreview(onProgress){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v4-3-0-high-watch');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v7-7-0-deep-sounding');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
  let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.(onProgress)}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
  const cacheSizeMap=new Map((breakdown?.cacheStorage?.caches||[]).map(row=>[row.name,Number(row.bytes||0)]));
@@ -196,11 +196,10 @@ async function storageStewardPreview(onProgress){
 async function storageStewardClean(){
  const before=await storageStewardPreview();
  const diag=diagnostics();write(KEYS.diagnostics,compactDiagnostics(diag).slice(0,100));
- const vault=recoveryVault();write(KEYS.recovery,vault.slice(0,10));
  const removedCaches=[];
  if(typeof caches!=='undefined'){for(const key of before.oldCaches){try{if(await caches.delete(key))removedCaches.push(key)}catch(_){}}}
- const row={at:new Date().toISOString(),diagnosticsTrimmed:Math.max(0,diag.length-120),recoveryPointsTrimmed:Math.max(0,vault.length-10),removedCaches};
- core()?.audit?.({actorRole:'engine_admin',category:'maintenance',action:'v4.1.1.storage_steward.safe_cleanup',detail:`${row.diagnosticsTrimmed} diagnostics • ${row.recoveryPointsTrimmed} recovery manifests • ${removedCaches.length} stale caches`});
+ const row={at:new Date().toISOString(),diagnosticsTrimmed:Math.max(0,diag.length-100),recoveryPointsTrimmed:0,removedCaches};
+ core()?.audit?.({actorRole:'engine_admin',category:'maintenance',action:'v4.1.1.storage_steward.safe_cleanup',detail:`${row.diagnosticsTrimmed} old diagnostics • ${removedCaches.length} stale caches • recovery anchors preserved`});
  diagnostic('storage.steward.cleaned','Safe housekeeping completed',row);
  return {before,after:await storageStewardPreview(),...row};
 }
