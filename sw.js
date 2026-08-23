@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v7-8-2-harbor-exit';
+const CACHE='dark-sky-v7-8-3-harbor-exit';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=7.8.2',
-  './platform_core.js?v=7.8.2',
-  './platform_v4.js?v=7.8.2',
-  './platform_identity.js?v=7.8.2',
-  './app.js?v=7.8.2',
-  './captain.js?v=7.8.2',
+  './styles.css?v=7.8.3',
+  './platform_core.js?v=7.8.3',
+  './platform_v4.js?v=7.8.3',
+  './platform_identity.js?v=7.8.3',
+  './app.js?v=7.8.3',
+  './captain.js?v=7.8.3',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

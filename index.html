@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.8.2" />
+  <link rel="stylesheet" href="styles.css?v=7.8.3" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1225,7 +1225,7 @@
         <div class="storage-telemetry-actions">
           <button id="storageTelemetryInspectBtn" class="primary-btn" type="button">INSPECT STORAGE</button>
           <button id="storageTelemetryDiagnosticsBtn" class="secondary-btn" type="button" onclick="window.BlackFlagCompactStorageDiagnostics && window.BlackFlagCompactStorageDiagnostics()">COMPACT DIAGNOSTICS</button>
-          <button id="storageTelemetryCleanBtn" class="secondary-btn" type="button" disabled>SAFE CLEANUP</button>
+          <button id="storageTelemetryCleanBtn" class="secondary-btn" type="button" disabled onclick="return window.BlackFlagTelemetrySafeClean ? window.BlackFlagTelemetrySafeClean(event) : false">SAFE CLEANUP</button>
           <button id="storageTelemetryBackBtn" class="secondary-btn" type="button">BACK TO ENGINE</button>
         </div>
         <div id="storageTelemetryStatus" class="storage-steward-status" role="status" aria-live="polite"></div>
@@ -1418,11 +1418,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.8.2"></script>
-  <script src="platform_v4.js?v=7.8.2"></script>
-  <script src="platform_identity.js?v=7.8.2"></script>
-  <script src="app.js?v=7.8.2"></script>
-  <script src="captain.js?v=7.8.2"></script>
+  <script src="platform_core.js?v=7.8.3"></script>
+  <script src="platform_v4.js?v=7.8.3"></script>
+  <script src="platform_identity.js?v=7.8.3"></script>
+  <script src="app.js?v=7.8.3"></script>
+  <script src="captain.js?v=7.8.3"></script>
 
 </body>
 </html>

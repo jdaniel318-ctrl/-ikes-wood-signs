@@ -1,3 +1,10 @@
+# Dark Sky 7.8.3 — Harbor Exit Safe Cleanup Acknowledgement
+
+- Safe Cleanup now has a direct inline iPad activation path, matching the successful Compact Diagnostics approach.
+- First tap immediately changes the button to CONFIRM SAFE CLEANUP and displays CLEANUP ARMED.
+- Removed the competing late cleanup click binding to prevent duplicate or swallowed activation.
+- Cleanup remains constrained to positively identified stale Dark Sky application caches only.
+
 # Dark Sky 7.8.2 — Harbor Exit Immediate Acknowledgement
 
 - Compact Diagnostics now opens its modal immediately on tap, before Safari storage enumeration begins.

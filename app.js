@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.2';
+  const BUILD_VERSION = '7.8.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1590,6 +1590,52 @@
       if(box){box.classList.add('is-active');box.innerHTML=`<strong>DIAGNOSTICS INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err||'Unknown diagnostics failure'))}</span>`}
       return showCompactStorageDiagnosticsError(err);
     }finally{if(btn){delete btn.dataset.opening;btn.disabled=false;btn.textContent='COMPACT DIAGNOSTICS'}}
+  };
+
+  // 7.8.3 Harbor Exit: iPad-safe, direct Safe Cleanup activation.
+  // The button owns an inline activation path just like Compact Diagnostics so a tap
+  // cannot disappear inside a late/fragile event binding. First tap only arms cleanup.
+  window.BlackFlagTelemetrySafeClean=async function(event){
+    try{event?.preventDefault?.();event?.stopPropagation?.();}catch(_){}
+    const btn=$('storageTelemetryCleanBtn'),box=$('storageTelemetryStatus');
+    if(!btn||!box)return false;
+    if(btn.disabled)return false;
+    if(box.dataset.inspectOk!=='1'){
+      box.classList.add('is-active');
+      box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Run Inspect Storage before any cleanup.</span>';
+      try{box.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){}
+      return false;
+    }
+    if(btn.dataset.confirmClean!=='1'){
+      btn.dataset.confirmClean='1';
+      btn.textContent='CONFIRM SAFE CLEANUP';
+      box.classList.add('is-active');
+      box.innerHTML='<strong>CLEANUP ARMED</strong><br><span>Your tap worked. Press CONFIRM SAFE CLEANUP once to remove only the stale Dark Sky application cache identified by the last sounding. Protected records remain untouched.</span>';
+      try{box.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){}
+      return false;
+    }
+    btn.disabled=true;btn.textContent='TRIMMING…';
+    box.classList.add('is-active');
+    box.innerHTML='<strong>SAFE CACHE TRIM IN PROGRESS</strong><br><span>Removing only positively identified stale Dark Sky application cache ballast.</span>';
+    try{box.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){}
+    try{
+      const r=await window.DarkSkyV4?.storageStewardClean?.();
+      if(!r)throw new Error('Storage Steward unavailable');
+      delete btn.dataset.confirmClean;
+      box.dataset.inspectOk='';
+      window.__blackFlagLastStorageSounding=null;
+      const fresh=await window.DarkSkyV4?.storageStewardPreview?.();
+      if(!fresh)throw new Error('Cleanup completed, but re-sounding was unavailable');
+      storageTelemetryApply(fresh);
+      const removed=(r.removedCaches||[]).length;
+      box.innerHTML=`<strong>CLEANUP COMPLETE</strong><br><span>${removed} stale cache${removed===1?'':'s'} removed. Storage has been re-measured below.</span>`+renderStorageStewardReport(fresh);
+      return false;
+    }catch(err){
+      box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err||'Unknown cleanup failure'))}</span>`;
+      delete btn.dataset.confirmClean;
+      btn.disabled=false;btn.textContent='SAFE CLEANUP';
+      return false;
+    }
   };
   function storageTelemetryApply(r){
     if(!r)return;
@@ -3294,7 +3340,7 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
-  // 7.8.2 Harbor Exit — deployment state and customer-session state are separate
+  // 7.8.3 Harbor Exit — deployment state and customer-session state are separate
   // contracts. Every customer entry must establish its session explicitly so a
   // stale Test Experience context can never leak into a published live route.
   function customerSessionLabel(ctx){
@@ -12169,13 +12215,6 @@ The full order and approved media remain stored with this project.`;
     $('engineStorageKpi')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('storageTelemetryInspectBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('storageTelemetryBackBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
-    $('storageTelemetryCleanBtn')?.addEventListener('click',async()=>{
-      const btn=$('storageTelemetryCleanBtn'),box=$('storageTelemetryStatus');
-      if(!box?.dataset.inspectOk){if(box){box.classList.add('is-active');box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Inspect storage before cleanup or diagnostics.</span>';}return;}
-      if(btn?.dataset.confirmClean!=='1'){btn.dataset.confirmClean='1';btn.textContent='CONFIRM SAFE CLEANUP';if(box)box.innerHTML='<strong>CLEANUP ARMED</strong><br><span>Press once more to remove only stale Dark Sky application caches. Protected records remain untouched.</span>';return;}
-      btn.disabled=true;btn.textContent='TRIMMING…';
-      try{const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');delete btn.dataset.confirmClean;box.dataset.inspectOk='';await openStorageTelemetry({inspect:true});}catch(err){if(box)box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err))}</span>`;btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='SAFE CLEANUP';}
-    });
     $('engineConfigurationCloseBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('saveEngineEconomicsBtn')?.addEventListener('click',saveEngineEconomics);
     bindEngineAppearanceControls();

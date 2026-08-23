@@ -1,10 +1,10 @@
-# Dark Sky 7.8.2 — Harbor Exit
+# Dark Sky 7.8.3 — Harbor Exit
 
-Harbor Exit makes Compact Diagnostics an unmistakable full-screen read-only surface with redundant iPad-safe activation, while preserving Deep Sounding storage inspection, Iron Hull, True Bearing, approved-artifact integrity, project isolation, and future extensibility.
+Harbor Exit makes Compact Diagnostics and Safe Cleanup unmistakable iPad-safe interactions with direct activation, while preserving Deep Sounding storage inspection, Iron Hull, True Bearing, approved-artifact integrity, project isolation, and future extensibility.
 
 See `STORAGE_TELEMETRY_781.md` for the diagnostics interaction contract and `STORAGE_TELEMETRY_770.md` for the storage safety contract.
 
-# Dark Sky 7.8.2 — Harbor Exit
+# Dark Sky 7.8.3 — Harbor Exit
 
 Session-boundary correction and state-clarity release built on Iron Hull. Published projects and customer sessions are now separate, explicit contracts.
 
@@ -20,7 +20,7 @@ Session-boundary correction and state-clarity release built on Iron Hull. Publis
 The live route now enables real project contact behavior only when the project is actually published and the session is explicitly `LIVE CUSTOMER`. Test and Preview remain contained.
 
 ## Release discipline
-7.6.0 remains the prior release line; promote 7.8.2 only after fresh Proving Ground evidence and deliberate Captain approval.
+7.6.0 remains the prior release line; promote 7.8.3 only after fresh Proving Ground evidence and deliberate Captain approval.
 
 # Dark Sky 7.5.0 — Iron Hull
 
