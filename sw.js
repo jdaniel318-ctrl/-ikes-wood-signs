@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v6-6-0-sovereign-passage';
+const CACHE='dark-sky-v6-7-0-lantern-watch';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.6.0',
-  './platform_core.js?v=6.6.0',
-  './platform_v4.js?v=6.6.0',
-  './platform_identity.js?v=6.6.0',
-  './app.js?v=6.6.0',
-  './captain.js?v=6.6.0',
+  './styles.css?v=6.7.0',
+  './platform_core.js?v=6.7.0',
+  './platform_v4.js?v=6.7.0',
+  './platform_identity.js?v=6.7.0',
+  './app.js?v=6.7.0',
+  './captain.js?v=6.7.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

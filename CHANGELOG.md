@@ -1,3 +1,13 @@
+# Dark Sky 6.7.0 — Lantern Watch
+
+- Focused Admiral Ceremonial Integration pass; no authority or routing changes.
+- Raises exposure and color fidelity of Captain-forged Admiral visuals.
+- Replaces broad full-screen dimming with protected-zone gradients behind live command rails and docks.
+- Keeps the center Admiral gate / compass region nearly unobstructed.
+- Softens live panel opacity while maintaining command readability.
+- Professional Mode remains frozen and independent from ceremonial artwork.
+- Preserves browser-local forged Admiral visual storage and the Gate + Deck pipeline.
+
 # Dark Sky 6.6.0 — Sovereign Passage
 
 - Completes the Visual Forge promise for Admiral ceremonial environments: installed art becomes the command environment, not wallpaper under a generic modal.

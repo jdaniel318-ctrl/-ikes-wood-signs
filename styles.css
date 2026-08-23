@@ -14013,3 +14013,82 @@ body.captain-modal-open #captainQuarters.cinematic-cabin-ready{
 .admiral-deck-enter .admiral-command-surface{animation:admiralCommandSurfaceArrive 2.65s .82s ease both}
 @keyframes admiralCommandSurfaceArrive{from{opacity:0;transform:translateY(12px) scale(.995)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.admiral-deck-enter .admiral-command-surface{animation:none!important}}
+
+/* ========================================================================== 
+   6.7.0 — LANTERN WATCH / ADMIRAL CEREMONIAL INTEGRATION
+   Preserve the forged environment and darken only the protected live-control zones.
+   Professional Mode is intentionally untouched.
+   ========================================================================== */
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-shell,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-shell{
+  background:rgba(2,9,13,.18)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere{
+  background-image:var(--admiral-command-visual,url("assets/admirals_deck_ceremonial_v640.png"))!important;
+  background-size:cover!important;
+  background-position:center 46%!important;
+  background-repeat:no-repeat!important;
+  filter:brightness(1.28) saturate(1.06) contrast(1.035)!important;
+  opacity:1!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere:before,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere:before{
+  opacity:.06!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere i,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere i{
+  opacity:.12!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere:after,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere:after{
+  background:
+    linear-gradient(90deg,
+      rgba(1,8,12,.68) 0%, rgba(1,8,12,.52) 13%, rgba(1,8,12,.13) 23%,
+      rgba(1,8,12,.015) 34%, rgba(1,8,12,.015) 67%,
+      rgba(1,8,12,.13) 77%, rgba(1,8,12,.52) 88%, rgba(1,8,12,.68) 100%),
+    linear-gradient(180deg,
+      rgba(1,8,12,.34) 0%, rgba(1,8,12,.11) 11%, rgba(1,8,12,.015) 23%,
+      rgba(1,8,12,.015) 76%, rgba(1,8,12,.28) 88%, rgba(1,8,12,.58) 100%)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-head,
+.admiral-deck-overlay:not([data-mode]) .admiral-deck-head{
+  background:linear-gradient(180deg,rgba(3,16,22,.88),rgba(3,16,22,.68))!important;
+  backdrop-filter:blur(7px)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-command-rail,
+.admiral-deck-overlay:not([data-mode]) .admiral-command-rail{
+  background:linear-gradient(180deg,rgba(4,19,25,.84),rgba(2,12,17,.79))!important;
+  backdrop-filter:blur(7px)!important;
+  box-shadow:0 16px 36px rgba(0,0,0,.28)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-command-readiness,
+.admiral-deck-overlay:not([data-mode]) .admiral-command-readiness{
+  background:linear-gradient(180deg,rgba(4,19,25,.86),rgba(2,12,17,.81))!important;
+  backdrop-filter:blur(7px)!important;
+  box-shadow:0 16px 36px rgba(0,0,0,.28)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-command-dock,
+.admiral-deck-overlay:not([data-mode]) .admiral-command-dock{
+  background:rgba(2,14,19,.78)!important;
+  backdrop-filter:blur(7px)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-command-center-badge,
+.admiral-deck-overlay:not([data-mode]) .admiral-command-center-badge{
+  background:rgba(2,13,18,.44)!important;
+  border-color:rgba(210,171,78,.28)!important;
+  backdrop-filter:blur(5px)!important;
+}
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-command-notice,
+.admiral-deck-overlay:not([data-mode]) .admiral-command-notice{
+  background:rgba(2,13,18,.60)!important;
+}
+/* Make the center environment the focal point; live rails sit around it. */
+.admiral-deck-overlay[data-mode="ceremonial"] .admiral-command-center,
+.admiral-deck-overlay:not([data-mode]) .admiral-command-center{
+  left:222px!important;right:300px!important;
+}
+@media(max-width:1100px){
+  .admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere,
+  .admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere{background-position:center 44%!important;filter:brightness(1.22) saturate(1.04) contrast(1.03)!important}
+}

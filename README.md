@@ -1,14 +1,14 @@
-# Dark Sky 6.6.0 — Sovereign Passage
+# Dark Sky 6.7.0 — Lantern Watch
 
-Sovereign Passage hardens the Visual Command Forge path for Admiral ceremonial command. One Captain-forged visual can now target **Admiral’s Gate + Deck**, while Professional Mode remains visually independent and operational.
+Lantern Watch is a focused Admiral Ceremonial Integration pass. It keeps the proven Forge pipeline and Professional Mode intact while making the Captain-forged Admiral visual readable as the command environment rather than a darkened background.
 
 ## What changed
-- Visual Forge adds an explicit `Admiral’s Gate + Deck` target.
-- Installed Admiral art drives both Gate theatre and Ceremonial Admiral’s Deck.
-- Gate theatre is longer and reveals the forged environment behind the animated doors.
-- Forge layout is tighter on iPad: larger reference preview, compact action dock, scrollable blueprint summary.
-- Blueprint labeling now shows `FORGED BY ... → TARGET ...` to make authority and destination explicit.
-- Professional Mode never consumes the ceremonial visual.
+- Brightens forged Admiral ceremonial art without changing Professional Mode.
+- Replaces the broad dark veil with protected-zone gradients behind live controls only.
+- Keeps the center Admiral gate / compass zone visually dominant.
+- Reduces opacity of the live left rail, readiness rail, header, and continuity dock while retaining readable contrast.
+- Preserves the installed browser-local Admiral visual across the update.
+- No routing, PIN, project, Client Preview, readiness, or recovery logic changed.
 
 ## Authority contracts
 - Project Admin: `4353`
@@ -17,8 +17,5 @@ Sovereign Passage hardens the Visual Command Forge path for Admiral ceremonial c
 - Admiral’s Deck: `19613` temporarily through a separate Admiral credential contract
 - Client Preview: unique PIN per invite
 
-## Safety and isolation
-Test, Private Preview, Client Preview and Sea Trial remain unable to perform real-world contact actions. Project isolation, recovery contracts, and the current Captain/Admiral hierarchy are unchanged.
-
-## Visual install path
-Captain’s Quarters → Visual Forge → Scene → Command Surface → `Admiral’s Gate + Deck` → Forge Blueprint → Install Visual to Target → Admiral’s Gate → Admiral’s Deck.
+## Test path
+Captain’s Quarters → Admiral’s Gate → `19613` → Admiral’s Deck → Ceremonial Mode → Professional Mode → Return to Captain’s Quarters.
