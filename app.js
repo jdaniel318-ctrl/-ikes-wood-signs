@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.9.0';
+  const BUILD_VERSION = '6.9.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3498,13 +3498,19 @@
     const holds=voyages.filter(v=>v.state==='hold').length,watches=voyages.filter(v=>v.state==='watch').length,clears=voyages.filter(v=>v.state==='clear').length;
     const overall=holds?'hold':watches?'watch':'clear';
     const knownGood=currentKnownGoodRelease();
+    const isKnownGood=String(knownGood)===String(BUILD_VERSION);
     const next=voyages.find(v=>v.state==='hold')||voyages.find(v=>v.state==='watch');
     if(state){state.textContent=overall==='clear'?'CLEAR':overall==='watch'?'WATCH':'HOLD';state.className=`admiral-readiness-state ${overall==='clear'?'ready':overall}`;}
     if(stamp)stamp.textContent=`${clears}/${voyages.length} voyages clear • candidate ${BUILD_VERSION} • known good ${knownGood}`;
     if(summary){
-      summary.innerHTML=`<article class="proving-status-card ${overall}"><small>FLEET STATUS</small><strong>${provingStateLabel(overall)}</strong><p>${overall==='clear'?'All required proving voyages are clear. This candidate can be considered for promotion.':overall==='watch'?'The hull is sound, but at least one voyage needs Captain attention before promotion.':'A critical proving voyage failed. This release is not promotable.'}</p></article>
-      <article class="proving-next-card"><small>NEXT BEST MOVE</small><strong>${escapeHtml(next?`Run / inspect ${next.label}`:'Promote the cleared candidate')}</strong><p>${escapeHtml(next?.detail||`Candidate ${BUILD_VERSION} has no current HOLD or WATCH voyages.`)}</p><button id="provingNextBtn" type="button" class="primary-btn small">${next?'VIEW VOYAGE EVIDENCE':'MARK CANDIDATE KNOWN GOOD'}</button></article>
-      <article class="proving-release-card"><small>RELEASE ANCHOR</small><strong>${escapeHtml(knownGood)}</strong><p>Last Known Good stays separate from the current candidate until the Captain deliberately promotes it.</p><span>Candidate <b>${escapeHtml(BUILD_VERSION)}</b></span></article>`;
+      const statusCopy=overall==='clear'?(isKnownGood?'All required proving voyages are clear. This release is already the current Known Good anchor.':'All required proving voyages are clear. This candidate can be considered for promotion.'):overall==='watch'?'The hull is sound, but at least one voyage needs Captain attention before promotion.':'A critical proving voyage failed. This release is not promotable.';
+      const nextTitle=next?`Run / inspect ${next.label}`:(isKnownGood?`Known Good — ${BUILD_VERSION}`:'Promote the cleared candidate');
+      const nextDetail=next?.detail||(isKnownGood?`Dark Sky ${BUILD_VERSION} is already the current recovery anchor on this device.`:`Candidate ${BUILD_VERSION} has no current HOLD or WATCH voyages.`);
+      const nextButton=next?'VIEW VOYAGE EVIDENCE':(isKnownGood?'KNOWN GOOD':'MARK CANDIDATE KNOWN GOOD');
+      const releaseCopy=isKnownGood?'This release is the current Last Known Good anchor on this device. A future candidate must pass the Proving Ground before replacing it.':'Last Known Good stays separate from the current candidate until the Captain deliberately promotes it.';
+      summary.innerHTML=`<article class="proving-status-card ${overall}"><small>FLEET STATUS</small><strong>${provingStateLabel(overall)}</strong><p>${statusCopy}</p></article>
+      <article class="proving-next-card ${isKnownGood&&!next?'known-good':''}"><small>NEXT BEST MOVE</small><strong>${escapeHtml(nextTitle)}</strong><p>${escapeHtml(nextDetail)}</p><button id="provingNextBtn" type="button" class="primary-btn small" ${isKnownGood&&!next?'disabled aria-disabled="true"':''}>${nextButton}</button></article>
+      <article class="proving-release-card ${isKnownGood?'known-good':''}"><small>RELEASE ANCHOR</small><strong>${escapeHtml(knownGood)}</strong><p>${releaseCopy}</p><span>${isKnownGood?'Current release':'Candidate'} <b>${escapeHtml(BUILD_VERSION)}</b></span></article>`;
     }
     host.innerHTML=`<div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
       <details class="proving-evidence"><summary>VIEW ENGINEERING EVIDENCE</summary><div class="admiral-readiness-grid">${report.checks.map(c=>`<article class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div></details>
@@ -3514,6 +3520,7 @@
     $('admiralReportBtn')?.addEventListener('click',()=>downloadAdmiralReadinessReport(report));
     $('provingNextBtn')?.addEventListener('click',()=>{
       if(next){document.querySelector(`[data-proving-voyage="${next.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+      if(isKnownGood)return;
       if(confirm(`Mark Dark Sky ${BUILD_VERSION} as the Last Known Good release on this device? This records promotion evidence only; it does not deploy or publish anything.`)){
         setKnownGoodRelease(BUILD_VERSION);renderAdmiralReadiness({announce:true});
       }

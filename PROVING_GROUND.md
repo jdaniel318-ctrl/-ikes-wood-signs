@@ -1,4 +1,4 @@
-# Fleet Proving Ground — 6.9.0
+# Fleet Proving Ground — 6.9.1
 
 ## Purpose
 Make fleet hardening rigorous underneath and simple at the helm. The Captain should see fleet status, the highest-priority issue, the next best move, and the Last Known Good release before engineering evidence.

@@ -1,6 +1,7 @@
+## 6.9.1 — Anchor Set
 
 
-## 6.9.0 — Proven Keel
+## 6.9.1 — Anchor Set
 - Added the Fleet Proving Ground command surface: Status → priority → next best move, with six required non-destructive voyages and expandable evidence.
 - Added deliberate Last Known Good promotion evidence; no automatic deployment or publishing.
 - Applied fleet-learned customer-experience standards to Ike's without changing its project identity or sign workflow.

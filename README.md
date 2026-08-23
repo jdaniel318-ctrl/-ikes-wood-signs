@@ -1,6 +1,12 @@
-# Dark Sky 6.9.0 — Proven Keel
+# Dark Sky 6.9.1 — Anchor Set
 
-Proven Keel is a hardening-and-product release built from the 6.8.0 upper-command baseline. It keeps the proven authority, Client Preview, Captain, Admiral, recovery, and isolation contracts while turning fleet hardening into a Captain-friendly Proving Ground and applying the strongest customer-experience lessons to Ike's Wood Signs.
+Anchor Set is a focused Proving Ground state-consistency release built from the proven 6.9.0 baseline. It preserves the working authority, isolation, Client Preview, Captain, Admiral, recovery, and Ike's experience contracts while making Known Good promotion state refresh accurately and unambiguously.
+
+## 6.9.1 focus
+- Once the current candidate is promoted, the Proving Ground immediately changes from **Promote the cleared candidate** to **Known Good — current version**.
+- The promotion button becomes intentionally inactive after promotion instead of inviting the Captain to repeat the same action.
+- Release Anchor copy now distinguishes an active candidate from the current Known Good release.
+- No proving checks, authority rules, project behavior, or customer experience logic changed.
 
 ## What changed
 - Fleet Proving Ground presents Status → Highest Priority → Next Best Move first.
