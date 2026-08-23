@@ -1,4 +1,4 @@
-# Dark Sky 7.6.0 — True Bearing
+# Dark Sky 7.6.1 — Clear Signals
 
 Session-boundary correction and state-clarity release built on Iron Hull. Published projects and customer sessions are now separate, explicit contracts.
 
@@ -14,7 +14,7 @@ Session-boundary correction and state-clarity release built on Iron Hull. Publis
 The live route now enables real project contact behavior only when the project is actually published and the session is explicitly `LIVE CUSTOMER`. Test and Preview remain contained.
 
 ## Release discipline
-7.5.0 remains the Last Known Good anchor until 7.6.0 is proven and deliberately promoted.
+7.6.0 remains the prior release line; promote 7.6.1 only after fresh Proving Ground evidence and deliberate Captain approval.
 
 # Dark Sky 7.5.0 — Iron Hull
 

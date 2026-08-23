@@ -1,3 +1,10 @@
+## 7.6.1 — Clear Signals
+
+- Replaced generic non-live `TEST MODE` order confirmation text with exact `PRIVATE PREVIEW`, `TEST EXPERIENCE`, or fallback non-live session language.
+- Private Preview receipt now states that no live order record was created.
+- Strengthened Session Boundary Voyage so session-specific confirmation labeling is part of the required contract.
+- Preserved True Bearing live/test/preview routing, Iron Hull fortification, Iron Proof approved artifacts, project isolation, and customer journey behavior.
+
 ## 7.6.0 — True Bearing
 - Fix published **OPEN PROJECT** routing so a stale Test Experience context cannot force a live project into simulated TEST MODE.
 - Add explicit customer session contexts: LIVE CUSTOMER, TEST EXPERIENCE, PRIVATE PREVIEW, CLIENT PREVIEW.

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.6.0';
+  const BUILD_VERSION = '7.6.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3161,7 +3161,7 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
-  // 7.6.0 True Bearing — deployment state and customer-session state are separate
+  // 7.6.1 Clear Signals — deployment state and customer-session state are separate
   // contracts. Every customer entry must establish its session explicitly so a
   // stale Test Experience context can never leak into a published live route.
   function customerSessionLabel(ctx){
@@ -3524,8 +3524,9 @@
       const testCtx=experienceModeContext(liveIke,'sea_trial',experienceDeploymentFor(liveIke));
       const previewCtx=experienceModeContext(liveIke,'preview',null);
       const routeContract=String(continueProjectLaunch).includes('enterLiveCustomerProject')&&String(enterLiveCustomerProject).includes("setCustomerSessionContext(p,'live'");
-      sessionBoundaryOk=liveCtx.state==='deployed'&&testCtx.state==='sea_trial'&&previewCtx.state==='preview'&&routeContract;
-      sessionBoundaryDetail=sessionBoundaryOk?'Published Open Project resolves explicitly to LIVE CUSTOMER while Test Experience and Preview remain non-live. No stale test context can be inherited by the live route.':'Published/live session routing contract is incomplete or does not distinguish live, test, and preview contexts.';
+      const labelContract=String(submitOrder).includes('PRIVATE PREVIEW —')&&String(submitOrder).includes('TEST EXPERIENCE —')&&!String(submitOrder).includes('TEST MODE — ${projectName}');
+      sessionBoundaryOk=liveCtx.state==='deployed'&&testCtx.state==='sea_trial'&&previewCtx.state==='preview'&&routeContract&&labelContract;
+      sessionBoundaryDetail=sessionBoundaryOk?'Published Open Project resolves explicitly to LIVE CUSTOMER; Test Experience and Private Preview remain non-live, and non-live confirmations report the exact session boundary instead of a generic TEST MODE label.':'Published/live session routing or session-specific confirmation labeling is incomplete.';
     }
     add('session-boundary','Customer session boundary',sessionBoundaryOk?'pass':'fail',sessionBoundaryDetail);
 
@@ -3554,7 +3555,7 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-6-0-true-bearing';
+  const FORTIFIED_CACHE='dark-sky-v7-6-1-clear-signals';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -8852,6 +8853,7 @@
     state.currentOrder=order;
     if(experienceCtx?.state!=='preview')clearDraft();
     $('doneOrderId').textContent=experienceCtx?.state==='preview'?'PREVIEW-NO-RECORD':id;
+    if($('doneOrderRecordNote')) $('doneOrderRecordNote').textContent=experienceCtx?.state==='preview'?'No live order record was created.':'Keep this number for your records.';
     if($('doneApprovedPreview')){
       if(order.approvedPreviewData){
         $('doneApprovedPreview').src=order.approvedPreviewData;
@@ -9029,8 +9031,15 @@
     const p=activeProject();
     const projectName=p?.branding?.businessName||p?.name||businessConfig.businessName||'this project';
     if(order?.testMode===true || !projectExternalContactAllowed(p)){
+      const ctx=currentExperienceContext(p);
       status.className='submit-status centered success';
-      status.textContent=`TEST MODE — ${projectName} was not contacted. This submission is simulated and remains inside the project test boundary.`;
+      if(ctx?.state==='preview'){
+        status.textContent=`PRIVATE PREVIEW — ${projectName} was not contacted. No live order record was created; this submission remained inside the preview boundary.`;
+      }else if(ctx?.state==='sea_trial'){
+        status.textContent=`TEST EXPERIENCE — ${projectName} was not contacted. This submission is test data and remains inside the project test boundary.`;
+      }else{
+        status.textContent=`NON-LIVE SESSION — ${projectName} was not contacted. No external call, text, email, request, or notification was sent.`;
+      }
       return true;
     }
     status.textContent=`Sending your order to ${projectName}…`;

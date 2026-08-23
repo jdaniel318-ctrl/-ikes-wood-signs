@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "7.6.0",
+  "build": "7.6.1",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -45,7 +45,7 @@
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
   "release_name": "True Bearing",
-  "version": "7.6.0",
+  "version": "7.6.1",
   "releaseName": "True Bearing",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
   "release_focus": "explicit-customer-session-boundaries-and-state-clarity",
@@ -126,5 +126,5 @@
       "stale_context": "cleared-at-engine-boundary"
     }
   },
-  "release_note": "7.6.0 True Bearing separates project deployment from customer-session state, fixes published Open Project routing to establish LIVE CUSTOMER explicitly, clears stale test contexts at Engine boundaries, and adds a Session Boundary Voyage while preserving Iron Hull fortification."
+  "release_note": "7.6.1 Clear Signals keeps True Bearing session routing intact, replaces generic TEST MODE confirmation wording with exact LIVE / TEST EXPERIENCE / PRIVATE PREVIEW semantics, clarifies PREVIEW-NO-RECORD receipts, and strengthens the Session Boundary Voyage to verify session-specific confirmation labels."
 }

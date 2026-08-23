@@ -14437,7 +14437,7 @@ body.ikes-project.ikes-flow-active .main-panel{padding-top:10px}
 .ikes-project .ike-recognition-panel strong{line-height:1.12}
 @media(max-width:820px){.ikes-project .ike-design-summary-line{grid-template-columns:1fr 1fr}}
 
-/* 7.6.0 True Bearing — state clarity: deployment/readiness/approval/session are separate facts. */
+/* 7.6.1 Clear Signals — state clarity: deployment/readiness/approval/session are separate facts. */
 .pc-state-matrix{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 16px}
 .pc-state-matrix article{min-width:0;padding:12px 14px;border:1px solid rgba(92,158,181,.28);border-radius:12px;background:rgba(7,32,40,.48)}
 .pc-state-matrix small{display:block;font-size:10px;letter-spacing:.16em;color:#82a9b4;margin-bottom:5px}
