@@ -14477,3 +14477,9 @@ body.ikes-project.ikes-flow-active .main-panel{padding-top:10px}
 .storage-diagnostics-toolbar div{display:grid;gap:2px}.storage-diagnostics-toolbar small{letter-spacing:.16em;color:#9bb4bd}.storage-diagnostics-toolbar strong{font-size:1.25rem;color:#f3ead7}
 .storage-telemetry-actions #storageTelemetryDiagnosticsBtn{min-height:48px}
 @media(max-width:760px){.storage-diagnostics-modal{padding:10px}.storage-diagnostics-sheet{width:100%;max-height:94vh}.storage-diagnostics-toolbar{align-items:flex-start}}
+
+/* Dark Sky 7.8.2 — Harbor Exit Immediate Acknowledgement */
+.storage-diagnostics-progress{display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px;border:1px solid rgba(93,190,214,.25);border-radius:12px;background:rgba(4,20,27,.72)}
+.storage-diagnostics-progress span{width:18px;height:18px;border:2px solid rgba(119,201,231,.25);border-top-color:#77c9e7;border-radius:50%;animation:storageDiagSpin .85s linear infinite;flex:0 0 auto}
+.storage-diagnostics-progress b{font-size:.88rem;color:#dbe9ec;letter-spacing:.02em}
+@keyframes storageDiagSpin{to{transform:rotate(360deg)}}

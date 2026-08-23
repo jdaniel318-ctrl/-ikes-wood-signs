@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.1';
+  const BUILD_VERSION = '7.8.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1520,8 +1520,7 @@
     document.getElementById('storageDiagnosticsModal')?.remove();
     document.body.classList.remove('storage-diagnostics-open');
   }
-  function showCompactStorageDiagnostics(r){
-    if(!r)return false;
+  function installCompactStorageDiagnosticsModal(contentHtml,mode='ready'){
     closeCompactStorageDiagnostics();
     const modal=document.createElement('div');
     modal.id='storageDiagnosticsModal';
@@ -1529,36 +1528,68 @@
     modal.setAttribute('role','dialog');
     modal.setAttribute('aria-modal','true');
     modal.setAttribute('aria-label','Compact storage diagnostics');
+    modal.dataset.mode=mode;
     modal.innerHTML=`<div class="storage-diagnostics-sheet">
       <div class="storage-diagnostics-toolbar"><div><small>ENGINE TELEMETRY</small><strong>Compact Diagnostics</strong></div><button id="storageDiagnosticsCloseBtn" type="button" class="secondary-btn">CLOSE</button></div>
-      ${renderCompactStorageDiagnostics(r)}
+      <div id="storageDiagnosticsContent">${contentHtml}</div>
     </div>`;
     document.body.appendChild(modal);
     document.body.classList.add('storage-diagnostics-open');
     modal.querySelector('#storageDiagnosticsCloseBtn')?.addEventListener('click',closeCompactStorageDiagnostics);
     modal.addEventListener('click',e=>{if(e.target===modal)closeCompactStorageDiagnostics()});
     setTimeout(()=>modal.querySelector('#storageDiagnosticsCloseBtn')?.focus(),0);
+    return modal;
+  }
+  function showCompactStorageDiagnosticsLoading(){
+    const content=`<section class="storage-compact-diagnostics storage-diagnostics-loading">
+      <div class="storage-report-head"><strong>DIAGNOSTIC SOUNDING…</strong><span>Read-only</span></div>
+      <p class="helper"><strong>Visible confirmation:</strong> your tap worked. Safari is gathering browser storage evidence now. Nothing is being deleted or changed.</p>
+      <div class="storage-diagnostics-progress" role="status" aria-live="polite"><span></span><b>Gathering storage evidence…</b></div>
+    </section>`;
+    return installCompactStorageDiagnosticsModal(content,'loading');
+  }
+  function showCompactStorageDiagnostics(r){
+    if(!r)return false;
+    const existing=document.getElementById('storageDiagnosticsModal');
+    const content=existing?.querySelector('#storageDiagnosticsContent');
+    if(existing&&content){
+      content.innerHTML=renderCompactStorageDiagnostics(r);
+      existing.dataset.mode='ready';
+    }else installCompactStorageDiagnosticsModal(renderCompactStorageDiagnostics(r),'ready');
     window.DarkSkyV4?.diagnostic?.('storage.compact_diagnostics.opened','Compact storage diagnostics displayed as modal',{build:BUILD_VERSION,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0});
     return true;
   }
+  function showCompactStorageDiagnosticsError(err){
+    const message=escapeHtml(String(err?.message||err||'Unknown diagnostics failure'));
+    const existing=document.getElementById('storageDiagnosticsModal');
+    const content=existing?.querySelector('#storageDiagnosticsContent');
+    const html=`<section class="storage-compact-diagnostics storage-diagnostics-error"><div class="storage-report-head"><strong>DIAGNOSTICS INTERRUPTED</strong><span>Read-only</span></div><p class="helper">${message}</p><p class="helper">No storage was deleted or modified. Close this panel and try INSPECT STORAGE if you want to run a fresh sounding.</p></section>`;
+    if(existing&&content){content.innerHTML=html;existing.dataset.mode='error';}
+    else installCompactStorageDiagnosticsModal(html,'error');
+    return false;
+  }
   window.BlackFlagCompactStorageDiagnostics=async function(){
     const btn=$('storageTelemetryDiagnosticsBtn');
-    if(btn){btn.disabled=true;btn.textContent='OPENING…'}
+    if(btn?.dataset.opening==='1')return false;
+    if(btn){btn.dataset.opening='1';btn.disabled=true;btn.textContent='OPENING…'}
+    let last=window.__blackFlagLastStorageSounding;
+    if(last){
+      try{return showCompactStorageDiagnostics(last)}finally{if(btn){delete btn.dataset.opening;btn.disabled=false;btn.textContent='COMPACT DIAGNOSTICS'}}
+    }
+    // Harbor Exit contract: the tap must create visible state before any Safari storage API can stall.
+    showCompactStorageDiagnosticsLoading();
     try{
-      let last=window.__blackFlagLastStorageSounding;
-      if(!last){
-        const box=$('storageTelemetryStatus');
-        if(box){box.classList.add('is-active');box.innerHTML='<strong>DIAGNOSTIC SOUNDING…</strong><br><span>Gathering read-only browser storage evidence.</span>'}
-        last=await window.DarkSkyV4?.storageStewardPreview?.();
-        if(!last)throw new Error('Storage diagnostics unavailable');
-        storageTelemetryApply(last);
-      }
+      const box=$('storageTelemetryStatus');
+      if(box){box.classList.add('is-active');box.innerHTML='<strong>DIAGNOSTIC SOUNDING…</strong><br><span>Gathering read-only browser storage evidence.</span>'}
+      last=await window.DarkSkyV4?.storageStewardPreview?.();
+      if(!last)throw new Error('Storage diagnostics unavailable');
+      storageTelemetryApply(last);
       return showCompactStorageDiagnostics(last);
     }catch(err){
       const box=$('storageTelemetryStatus');
       if(box){box.classList.add('is-active');box.innerHTML=`<strong>DIAGNOSTICS INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err||'Unknown diagnostics failure'))}</span>`}
-      return false;
-    }finally{if(btn){btn.disabled=false;btn.textContent='COMPACT DIAGNOSTICS'}}
+      return showCompactStorageDiagnosticsError(err);
+    }finally{if(btn){delete btn.dataset.opening;btn.disabled=false;btn.textContent='COMPACT DIAGNOSTICS'}}
   };
   function storageTelemetryApply(r){
     if(!r)return;
@@ -3263,7 +3294,7 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
-  // 7.8.1 Harbor Exit — deployment state and customer-session state are separate
+  // 7.8.2 Harbor Exit — deployment state and customer-session state are separate
   // contracts. Every customer entry must establish its session explicitly so a
   // stale Test Experience context can never leak into a published live route.
   function customerSessionLabel(ctx){
@@ -3663,7 +3694,7 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-8-1-harbor-exit';
+  const FORTIFIED_CACHE='dark-sky-v7-8-2-harbor-exit';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -12137,7 +12168,6 @@ The full order and approved media remain stored with this project.`;
     $('engineTelemetryLaunchBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('engineStorageKpi')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('storageTelemetryInspectBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
-    $('storageTelemetryDiagnosticsBtn')?.addEventListener('click',e=>{e.preventDefault();window.BlackFlagCompactStorageDiagnostics?.()});
     $('storageTelemetryBackBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('storageTelemetryCleanBtn')?.addEventListener('click',async()=>{
       const btn=$('storageTelemetryCleanBtn'),box=$('storageTelemetryStatus');

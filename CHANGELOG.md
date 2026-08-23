@@ -1,3 +1,12 @@
+# Dark Sky 7.8.2 — Harbor Exit Immediate Acknowledgement
+
+- Compact Diagnostics now opens its modal immediately on tap, before Safari storage enumeration begins.
+- The modal shows a visible read-only sounding state so a slow Safari storage API can no longer look like a dead button.
+- Successful results replace the loading state inside the same modal; failures are also shown visibly in the modal.
+- Removed the duplicate late-bound diagnostics click listener while preserving the storage-independent inline activation path.
+- Added a re-entry guard so one tap cannot launch overlapping diagnostic soundings.
+- Safe Cleanup remains separate and stale-cache-only.
+
 # 7.8.1 — Harbor Exit
 - Rebuilt Compact Diagnostics as a dedicated modal route so tapping it always creates an obvious visible state change on iPad.
 - Added a dedicated diagnostics button instead of overloading Safe Cleanup when no stale cache exists.

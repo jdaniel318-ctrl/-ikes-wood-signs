@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.8.1",
-  "release": "7.8.1",
+  "build": "7.8.2",
+  "release": "7.8.2",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -62,5 +62,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.8.1 Harbor Exit requires Compact Diagnostics to create a visible modal state change on iPad, keeps diagnostics read-only, and keeps Safe Cleanup separate and stale-cache-only."
+  "note": "7.8.2 Harbor Exit requires Compact Diagnostics to create a visible modal state change on iPad, keeps diagnostics read-only, and keeps Safe Cleanup separate and stale-cache-only."
 }
