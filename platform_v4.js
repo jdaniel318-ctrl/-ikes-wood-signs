@@ -204,7 +204,7 @@ async function storageDeepProbe(onProgress){
 }
 async function storageStewardPreview(onProgress){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v7-8-0-sounding-glass');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v7-8-1-harbor-exit');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
  let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.(onProgress)}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
  let deepProbe=null;try{deepProbe=await storageDeepProbe(onProgress)}catch(err){diagnostic('storage.deep_probe.failed',String(err?.message||err))}

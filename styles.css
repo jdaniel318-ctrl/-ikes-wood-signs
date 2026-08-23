@@ -14467,3 +14467,13 @@ body.ikes-project.ikes-flow-active .main-panel{padding-top:10px}
 .engine-storage-telemetry-station .storage-telemetry-actions button{min-height:52px}
 [data-full-sail="storage"]{cursor:pointer;touch-action:manipulation}
 [data-full-sail="storage"]:focus-visible{outline:2px solid #67c8e6;outline-offset:3px}
+
+
+/* 7.8.1 Harbor Exit — diagnostics must create an unmistakable visible state change */
+.storage-diagnostics-open{overflow:hidden}
+.storage-diagnostics-modal{position:fixed;inset:0;z-index:2147483000;background:rgba(2,10,14,.82);display:flex;align-items:center;justify-content:center;padding:28px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.storage-diagnostics-sheet{width:min(1080px,96vw);max-height:88vh;overflow:auto;background:#071d24;border:1px solid rgba(219,176,84,.55);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.55);padding:18px}
+.storage-diagnostics-toolbar{position:sticky;top:-18px;z-index:2;margin:-18px -18px 14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(7,29,36,.97);border-bottom:1px solid rgba(93,190,214,.22)}
+.storage-diagnostics-toolbar div{display:grid;gap:2px}.storage-diagnostics-toolbar small{letter-spacing:.16em;color:#9bb4bd}.storage-diagnostics-toolbar strong{font-size:1.25rem;color:#f3ead7}
+.storage-telemetry-actions #storageTelemetryDiagnosticsBtn{min-height:48px}
+@media(max-width:760px){.storage-diagnostics-modal{padding:10px}.storage-diagnostics-sheet{width:100%;max-height:94vh}.storage-diagnostics-toolbar{align-items:flex-start}}

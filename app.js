@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.0';
+  const BUILD_VERSION = '7.8.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1516,15 +1516,50 @@
       <p class="helper"><strong>Boundary:</strong> Diagnostics do not delete anything. A browser-managed/unattributed figure is intentionally not classified as safe cleanup unless Dark Sky can enumerate and prove ownership of it.</p>
     </section>`;
   }
+  function closeCompactStorageDiagnostics(){
+    document.getElementById('storageDiagnosticsModal')?.remove();
+    document.body.classList.remove('storage-diagnostics-open');
+  }
   function showCompactStorageDiagnostics(r){
-    const box=$('storageTelemetryStatus'); if(!box||!r)return false;
-    box.querySelector('#storageCompactDiagnosticsPanel')?.remove();
-    box.insertAdjacentHTML('beforeend',renderCompactStorageDiagnostics(r));
-    const panel=box.querySelector('#storageCompactDiagnosticsPanel');
-    try{panel?.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){}
-    window.DarkSkyV4?.diagnostic?.('storage.compact_diagnostics.opened','Compact storage diagnostics displayed',{build:BUILD_VERSION,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0});
+    if(!r)return false;
+    closeCompactStorageDiagnostics();
+    const modal=document.createElement('div');
+    modal.id='storageDiagnosticsModal';
+    modal.className='storage-diagnostics-modal';
+    modal.setAttribute('role','dialog');
+    modal.setAttribute('aria-modal','true');
+    modal.setAttribute('aria-label','Compact storage diagnostics');
+    modal.innerHTML=`<div class="storage-diagnostics-sheet">
+      <div class="storage-diagnostics-toolbar"><div><small>ENGINE TELEMETRY</small><strong>Compact Diagnostics</strong></div><button id="storageDiagnosticsCloseBtn" type="button" class="secondary-btn">CLOSE</button></div>
+      ${renderCompactStorageDiagnostics(r)}
+    </div>`;
+    document.body.appendChild(modal);
+    document.body.classList.add('storage-diagnostics-open');
+    modal.querySelector('#storageDiagnosticsCloseBtn')?.addEventListener('click',closeCompactStorageDiagnostics);
+    modal.addEventListener('click',e=>{if(e.target===modal)closeCompactStorageDiagnostics()});
+    setTimeout(()=>modal.querySelector('#storageDiagnosticsCloseBtn')?.focus(),0);
+    window.DarkSkyV4?.diagnostic?.('storage.compact_diagnostics.opened','Compact storage diagnostics displayed as modal',{build:BUILD_VERSION,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0});
     return true;
   }
+  window.BlackFlagCompactStorageDiagnostics=async function(){
+    const btn=$('storageTelemetryDiagnosticsBtn');
+    if(btn){btn.disabled=true;btn.textContent='OPENING…'}
+    try{
+      let last=window.__blackFlagLastStorageSounding;
+      if(!last){
+        const box=$('storageTelemetryStatus');
+        if(box){box.classList.add('is-active');box.innerHTML='<strong>DIAGNOSTIC SOUNDING…</strong><br><span>Gathering read-only browser storage evidence.</span>'}
+        last=await window.DarkSkyV4?.storageStewardPreview?.();
+        if(!last)throw new Error('Storage diagnostics unavailable');
+        storageTelemetryApply(last);
+      }
+      return showCompactStorageDiagnostics(last);
+    }catch(err){
+      const box=$('storageTelemetryStatus');
+      if(box){box.classList.add('is-active');box.innerHTML=`<strong>DIAGNOSTICS INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err||'Unknown diagnostics failure'))}</span>`}
+      return false;
+    }finally{if(btn){btn.disabled=false;btn.textContent='COMPACT DIAGNOSTICS'}}
+  };
   function storageTelemetryApply(r){
     if(!r)return;
     window.__blackFlagLastStorageSounding=r;
@@ -1534,7 +1569,7 @@
     if($('storageTelemetryUnattributed')) $('storageTelemetryUnattributed').textContent=`${formatStorageMb(gap)} MB`;
     if($('storageTelemetryCleanup')) $('storageTelemetryCleanup').textContent=`${formatStorageMb(cleanup)} MB`;
     const box=$('storageTelemetryStatus');if(box){box.classList.add('is-active');box.innerHTML=renderStorageStewardReport(r);box.dataset.inspectOk='1';}
-    const clean=$('storageTelemetryCleanBtn');if(clean){clean.disabled=false;const stale=(r.oldCaches?.length||0);clean.dataset.mode=stale?'cleanup':'diagnostics';clean.textContent=stale?`CLEAN ${stale} STALE CACHE${stale===1?'':'S'}`:'COMPACT DIAGNOSTICS';}
+    const diag=$('storageTelemetryDiagnosticsBtn');if(diag){diag.disabled=false;diag.textContent='COMPACT DIAGNOSTICS';} const clean=$('storageTelemetryCleanBtn');if(clean){const stale=(r.oldCaches?.length||0);clean.disabled=!stale;clean.dataset.mode='cleanup';clean.textContent=stale?`CLEAN ${stale} STALE CACHE${stale===1?'':'S'}`:'SAFE CLEANUP • NONE';}
   }
   async function openStorageTelemetry({inspect=true}={}){
     openEngineConfiguration('storage');
@@ -1567,7 +1602,7 @@
       box.dataset.inspectOk='1';
       storageTelemetryApply(r);
       try{localStorage.setItem('bf.v4.storage.lastSounding',JSON.stringify({at:r.at,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0,unattributedBytes:Math.max(0,Number(r.usage||0)-Number(r.breakdown?.knownBytes||0)),oldCaches:r.oldCaches||[],oldCacheBytes:r.oldCacheBytes||0}))}catch(_){}
-      if(clean){clean.disabled=false;clean.textContent=(r.oldCaches?.length||0)?`CLEAN ${r.oldCaches.length} STALE CACHE${r.oldCaches.length===1?'':'S'}`:'COMPACT DIAGNOSTICS'}
+      if(clean){const stale=(r.oldCaches?.length||0);clean.disabled=!stale;clean.textContent=stale?`CLEAN ${stale} STALE CACHE${stale===1?'':'S'}`:'SAFE CLEANUP • NONE'}
       window.DarkSkyV4?.diagnostic?.('storage.inspect.complete','Storage sounding completed',{usage:r.usage,knownBytes:r.breakdown?.knownBytes,cacheBytes:r.breakdown?.cacheStorage?.bytes,indexedDbBytes:r.breakdown?.indexedDb?.bytes,localStorageBytes:r.breakdown?.localStorage?.bytes,staleCaches:r.oldCaches?.length||0,staleCacheBytes:r.oldCacheBytes||0});
       return true;
     }catch(err){
@@ -3228,7 +3263,7 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
-  // 7.8.0 Sounding Glass — deployment state and customer-session state are separate
+  // 7.8.1 Harbor Exit — deployment state and customer-session state are separate
   // contracts. Every customer entry must establish its session explicitly so a
   // stale Test Experience context can never leak into a published live route.
   function customerSessionLabel(ctx){
@@ -3628,7 +3663,7 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-8-0-sounding-glass';
+  const FORTIFIED_CACHE='dark-sky-v7-8-1-harbor-exit';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -12102,15 +12137,11 @@ The full order and approved media remain stored with this project.`;
     $('engineTelemetryLaunchBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('engineStorageKpi')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('storageTelemetryInspectBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
+    $('storageTelemetryDiagnosticsBtn')?.addEventListener('click',e=>{e.preventDefault();window.BlackFlagCompactStorageDiagnostics?.()});
     $('storageTelemetryBackBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('storageTelemetryCleanBtn')?.addEventListener('click',async()=>{
       const btn=$('storageTelemetryCleanBtn'),box=$('storageTelemetryStatus');
       if(!box?.dataset.inspectOk){if(box){box.classList.add('is-active');box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Inspect storage before cleanup or diagnostics.</span>';}return;}
-      if(btn?.dataset.mode==='diagnostics'){
-        const last=window.__blackFlagLastStorageSounding;
-        if(!last){box.innerHTML='<strong>DIAGNOSTICS NEED A SOUNDING</strong><br><span>Run Inspect Storage first.</span>';return;}
-        showCompactStorageDiagnostics(last);return;
-      }
       if(btn?.dataset.confirmClean!=='1'){btn.dataset.confirmClean='1';btn.textContent='CONFIRM SAFE CLEANUP';if(box)box.innerHTML='<strong>CLEANUP ARMED</strong><br><span>Press once more to remove only stale Dark Sky application caches. Protected records remain untouched.</span>';return;}
       btn.disabled=true;btn.textContent='TRIMMING…';
       try{const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');delete btn.dataset.confirmClean;box.dataset.inspectOk='';await openStorageTelemetry({inspect:true});}catch(err){if(box)box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err))}</span>`;btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='SAFE CLEANUP';}

@@ -1,4 +1,12 @@
-# 7.8.0 — Sounding Glass
+# 7.8.1 — Harbor Exit
+- Rebuilt Compact Diagnostics as a dedicated modal route so tapping it always creates an obvious visible state change on iPad.
+- Added a dedicated diagnostics button instead of overloading Safe Cleanup when no stale cache exists.
+- Added redundant direct and bound activation paths for iPad/Safari reliability.
+- Diagnostics can perform its own read-only sounding if no current sounding is available.
+- Safe Cleanup now stays a separate control and is disabled when there are no positively identified stale application caches.
+- Preserved all protected storage boundaries and never classifies browser-managed/unattributed storage as disposable.
+
+# 7.8.1 — Harbor Exit
 - Fixed Compact Diagnostics so it opens a visible read-only diagnostic panel instead of behaving like a cleanup confirmation.
 - Added deeper storage probes for Safari `usageDetails` when available, IndexedDB database catalog, service-worker registrations, SessionStorage, and Origin Private File System files.
 - Added a Captain-readable explanation when Safari cannot expose the source of browser-managed / unattributed storage.
@@ -6,7 +14,7 @@
 - Strengthened Storage Steward Voyage to require visible diagnostics, deep-probe wiring, and guarded stale-cache-only cleanup.
 - Preserved 7.7.0 Deep Sounding storage breakdowns, 7.6.x session boundaries, Iron Hull fortification, and Iron Proof approved-artifact integrity.
 
-## 7.8.0 — Sounding Glass
+## 7.8.1 — Harbor Exit
 
 - Replaced generic non-live `TEST MODE` order confirmation text with exact `PRIVATE PREVIEW`, `TEST EXPERIENCE`, or fallback non-live session language.
 - Private Preview receipt now states that no live order record was created.
