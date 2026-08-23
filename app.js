@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.5.0';
+  const BUILD_VERSION = '7.6.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -523,7 +523,7 @@
     clientPreviewRuntimeProject=p; clientPreviewRuntimeMeta=payload;
     if(payload.assets&&typeof payload.assets==='object')projectAssetMemory.set(p.id,payload.assets);
     activeProjectId=p.id;
-    window.__deploymentCustomerContext={projectId:p.id,deploymentId:null,state:'preview',mode:'client_preview',clientPreview:true};
+    window.__deploymentCustomerContext={projectId:p.id,deploymentId:null,state:'preview',mode:'client_preview',clientPreview:true,sessionKind:'client_preview',sessionSource:'sealed_client_preview',establishedAt:new Date().toISOString()};document.body.dataset.customerSession='client_preview';
     document.getElementById('clientPreviewGate')?.remove();
     clientPreviewCleanCustomerChrome();
     showCustomerShellForProject(p);
@@ -3161,6 +3161,51 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
+  // 7.6.0 True Bearing — deployment state and customer-session state are separate
+  // contracts. Every customer entry must establish its session explicitly so a
+  // stale Test Experience context can never leak into a published live route.
+  function customerSessionLabel(ctx){
+    if(!ctx)return 'UNRESOLVED';
+    if(ctx.sessionKind==='live_customer'||ctx.state==='deployed')return 'LIVE CUSTOMER';
+    if(ctx.clientPreview||ctx.mode==='client_preview')return 'CLIENT PREVIEW';
+    if(ctx.mode==='sea_trial'||ctx.state==='sea_trial')return 'TEST EXPERIENCE';
+    if(ctx.mode==='preview'||ctx.state==='preview')return 'PRIVATE PREVIEW';
+    return 'NON-LIVE';
+  }
+  function setCustomerSessionContext(p,mode,deployment=null,{source='explicit'}={}){
+    const ctx=experienceModeContext(p,mode,deployment);
+    ctx.sessionKind=mode==='live'?'live_customer':mode==='sea_trial'?'test_experience':'private_preview';
+    ctx.sessionSource=source;
+    ctx.establishedAt=new Date().toISOString();
+    window.__deploymentCustomerContext=ctx;
+    document.body.dataset.customerSession=ctx.sessionKind;
+    return ctx;
+  }
+  function clearCustomerSessionContext(){
+    window.__deploymentCustomerContext=null;
+    document.body.removeAttribute('data-customer-session');
+    document.getElementById('customerSessionIndicator')?.remove();
+  }
+  function renderCustomerSessionIndicator(p){
+    document.getElementById('customerSessionIndicator')?.remove();
+    const ctx=currentExperienceContext(p);
+    if(!ctx||ctx.clientPreview)return;
+    const internalSources=new Set(['project_card_open_project','legacy_published_showroom','experience_test_deck','deployment_test_dock']);
+    if(!internalSources.has(String(ctx.sessionSource||'')))return;
+    const badge=document.createElement('div');badge.id='customerSessionIndicator';badge.className=`customer-session-indicator ${ctx.state==='deployed'?'live':'test'}`;
+    badge.innerHTML=`<span>DEPLOYMENT ${p?.publish?.status==='live'?'LIVE':'PRIVATE'}</span><strong>SESSION ${customerSessionLabel(ctx)}</strong>`;
+    document.body.appendChild(badge);
+  }
+  function liveCustomerDeploymentFor(p){
+    return migrateLegacyDeployment(p).find(d=>d.state==='deployed')||null;
+  }
+  async function enterLiveCustomerProject(p,source='published_open_project'){
+    if(!p||p.publish?.status!=='live')return false;
+    setCustomerSessionContext(p,'live',liveCustomerDeploymentFor(p),{source});
+    await enterProject(p.id);
+    return true;
+  }
+
 
   function currentExperienceContext(p=activeProject()){
     const ctx=window.__deploymentCustomerContext;
@@ -3368,7 +3413,7 @@
       try{await persistProjectMutation(canonicalProject,{reason:'experience.preview.reviewed'});logActivity(canonicalProject.id,'Customer experience preview reviewed');}
       catch(err){console.warn('Preview evidence could not be saved',err);}
     }
-    experienceTestReturnState={projectId:p.id,mode,deploymentId:d?.id||null};window.__deploymentCustomerContext=experienceModeContext(p,mode,d);
+    experienceTestReturnState={projectId:p.id,mode,deploymentId:d?.id||null};setCustomerSessionContext(p,mode,d,{source:'experience_test_deck'});
     if(projectShellFor(p)==='universal'&&mode!=='live')clearUniversalReceipt(p);
     closeExperienceTestDeck();ensureExperienceModeBanner(p,mode);await enterProject(p.id);
   }
@@ -3376,7 +3421,7 @@
   async function returnFromExperienceMode(){
     const state=experienceTestReturnState;
     experienceTestReturnState=null;
-    window.__deploymentCustomerContext=null;
+    clearCustomerSessionContext();
     document.getElementById('experienceModeBanner')?.classList.add('hidden');
     prepareEngineBoundary();
     document.body.classList.remove('boot-locked','project-mode');
@@ -3472,6 +3517,18 @@
     const artifactAuto=await safe(()=>runIkeApprovedArtifactAutomatedVoyage(),err=>({ok:false,detail:`Automated artifact voyage failed: ${err?.message||err}`}));
     add('approved-artifact-auto','Automated approved-artifact voyage',artifactAuto?.ok?'pass':'fail',artifactAuto?.detail||'Automated approved-artifact voyage did not return evidence.');
 
+    const liveIke=projectById(LEGACY_IKE_PROJECT_ID);
+    let sessionBoundaryOk=false,sessionBoundaryDetail='No published Ike project was available for the session-boundary contract check.';
+    if(liveIke&&liveIke.publish?.status==='live'){
+      const liveCtx=experienceModeContext(liveIke,'live',liveCustomerDeploymentFor(liveIke));
+      const testCtx=experienceModeContext(liveIke,'sea_trial',experienceDeploymentFor(liveIke));
+      const previewCtx=experienceModeContext(liveIke,'preview',null);
+      const routeContract=String(continueProjectLaunch).includes('enterLiveCustomerProject')&&String(enterLiveCustomerProject).includes("setCustomerSessionContext(p,'live'");
+      sessionBoundaryOk=liveCtx.state==='deployed'&&testCtx.state==='sea_trial'&&previewCtx.state==='preview'&&routeContract;
+      sessionBoundaryDetail=sessionBoundaryOk?'Published Open Project resolves explicitly to LIVE CUSTOMER while Test Experience and Preview remain non-live. No stale test context can be inherited by the live route.':'Published/live session routing contract is incomplete or does not distinguish live, test, and preview contexts.';
+    }
+    add('session-boundary','Customer session boundary',sessionBoundaryOk?'pass':'fail',sessionBoundaryDetail);
+
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
     return {build:BUILD_VERSION,at:new Date().toISOString(),runId:`PG-${BUILD_VERSION}-${Date.now().toString(36).toUpperCase()}`,source,checks,criticalFailures,warnings,pass:criticalFailures===0};
@@ -3491,12 +3548,13 @@
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav'],'Captain main-room and subview return boundaries.'),
-      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto'],'Customer-approved visual artifacts stay immutable through review, confirmation, admin, and archive.')
+      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto'],'Customer-approved visual artifacts stay immutable through review, confirmation, admin, and archive.'),
+      combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.')
     ];
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-5-0-iron-hull';
+  const FORTIFIED_CACHE='dark-sky-v7-6-0-true-bearing';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -3540,7 +3598,6 @@
       report.voyages=provingVoyagesFromReport(report);
       const evidence=saveFreshProvingEvidence(report);
       window.__lastAdmiralReadinessReport=report;
-    const freshEvidence=saveFreshProvingEvidence(report);
       sessionStorage.setItem(sessionKey,'done');
       const stamp=$('admiralReadinessStamp');
       if(stamp&&evidence){const clear=evidence.voyages.filter(v=>v.state==='clear').length;stamp.textContent=`${clear}/${evidence.voyages.length} voyages clear • candidate ${BUILD_VERSION} • auto-verified ${new Date(evidence.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;}
@@ -3706,7 +3763,7 @@
   async function continueProjectLaunch(p){
     if(!p)return;
     const launch=projectFleetLaunchState(p);
-    if(launch.key==='live'){await enterProject(p.id);return;}
+    if(launch.key==='live'){await enterLiveCustomerProject(p,'project_card_open_project');return;}
     if(launch.key==='fleet_ready'){await joinProjectFleet(p);return;}
 
     // 4.3.7 — Showroom Restore.
@@ -3717,7 +3774,7 @@
     if(p.id===LEGACY_IKE_PROJECT_ID && p.publish?.status==='live' && projectShowroomPreviewReady(p)){
       logActivity(p.id,'Customer showroom opened','Legacy Ike customer experience compatibility route');
       window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:p.id,category:'project',action:'project.showroom.opened',detail:`${p.name} • compatibility preview • build ${BUILD_VERSION}`});
-      await enterProject(p.id);
+      await enterLiveCustomerProject(p,'legacy_published_showroom');
       return;
     }
 
@@ -4191,7 +4248,7 @@
   function openDeploymentTestDock(p,d){
     const shellReady=projectCustomerOperatingModelReady(p);
     if(shellReady){
-      window.__deploymentCustomerContext={projectId:p.id,deploymentId:d.id,state:d.state,attractTitle:d.attractTitle||'Ready when you are.'};
+      setCustomerSessionContext(p,d.state==='deployed'?'live':'sea_trial',d,{source:'deployment_test_dock'});
       d.testOpenedAt=new Date().toISOString();
       d.updatedAt=d.testOpenedAt;
       saveCompanies().catch(()=>{});
@@ -4362,8 +4419,10 @@
           <h4>${escapeHtml(p.name)}</h4>
           <p>${escapeHtml(p.description||'Project operating overview.')}</p>
         </div>
-        <div class="pc-operational-state ${s.status.toLowerCase()}"><span>OPERATIONAL STATE</span><strong>${s.status}</strong><small>${escapeHtml(platformStatusLabel(p))}</small></div>
+        <div class="pc-operational-state ${s.status.toLowerCase()}"><span>READINESS</span><strong>${s.status}</strong><small>${escapeHtml(platformStatusLabel(p))}</small></div>
       </section>
+
+      ${(()=>{const launch=projectFleetLaunchState(p);const approval=experienceApproved(p)?'APPROVED':'NOT APPROVED';const deployment=launch.key==='live'?'LIVE':launch.key==='sea_trial'?'SEA TRIAL':launch.key==='fleet_ready'?'FLEET READY':launch.key==='preparing'?'PREPARING':'DRAFT';return `<section class="pc-state-matrix" aria-label="Project state clarity"><article><small>DEPLOYMENT</small><strong>${deployment}</strong></article><article><small>READINESS</small><strong>${s.status}</strong></article><article><small>APPROVAL</small><strong>${approval}</strong></article><article><small>CURRENT SESSION</small><strong>ADMIN CONTROL</strong></article></section>`})()}
 
       ${(()=>{const launch=projectFleetLaunchState(p);return `<section class="pc-fleet-launch-lane ${launch.key}">
         <div class="pc-fleet-launch-copy"><span>FLEET COMMISSIONING LANE</span><h4>${escapeHtml(launch.label)}</h4><p>${escapeHtml(launch.detail)}</p></div>
@@ -7266,7 +7325,7 @@
     const ctx=universalCustomerContextFor(p);
     if(experienceTestReturnState){await returnFromExperienceMode();return;}
     if(!ctx.deploymentId)return;
-    window.__deploymentCustomerContext=null;
+    clearCustomerSessionContext();
     prepareEngineBoundary();
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
@@ -7560,6 +7619,7 @@
   function prepareEngineBoundary(){
     clearProjectPresentation();
     clearActiveProjectContext();
+    clearCustomerSessionContext();
     engineActiveProjectId=null;
     $('projectEngineControl')?.classList.add('hidden');
     $('engineConfigurationDock')?.classList.add('hidden');
@@ -7674,6 +7734,7 @@
     }else if(resolvedShell==='universal'){
       $('returnToEngineBtn')?.classList.remove('hidden');document.title=p.name||'Project';document.body.dataset.activeProject=p.id;document.body.dataset.projectTheme='universal';document.body.classList.remove('ikes-project','mugs-project','flowers-project','bor-project');document.body.classList.add('universal-project');resetUniversalCustomerState(p);renderUniversalCustomerShell(p);
     }
+    renderCustomerSessionIndicator(p);
     resetCustomerEntryViewport();
     requestAnimationFrame(()=>verifyLayerIsolation('project',p.id));
   }

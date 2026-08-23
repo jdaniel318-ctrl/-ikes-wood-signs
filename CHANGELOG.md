@@ -1,3 +1,11 @@
+## 7.6.0 — True Bearing
+- Fix published **OPEN PROJECT** routing so a stale Test Experience context cannot force a live project into simulated TEST MODE.
+- Add explicit customer session contexts: LIVE CUSTOMER, TEST EXPERIENCE, PRIVATE PREVIEW, CLIENT PREVIEW.
+- Clear stale customer-session context at Engine boundaries.
+- Separate Deployment / Readiness / Approval / Current Session in Project Control.
+- Add Session Boundary Voyage to Fleet Proving Ground.
+- Preserve Iron Hull fresh-build proof, Approved Artifact integrity, isolation, and test-safety contracts.
+
 
 ## 7.5.0 — Iron Hull
 - Fortification and cleanup pass; no intentional customer-journey redesign.

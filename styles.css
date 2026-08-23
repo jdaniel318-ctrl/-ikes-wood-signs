@@ -14436,3 +14436,12 @@ body.ikes-project.ikes-flow-active .main-panel{padding-top:10px}
 .ikes-project .ike-customer-context .preview-text{transition:left .2s ease,top .2s ease,width .2s ease,height .2s ease,font-size .2s ease}
 .ikes-project .ike-recognition-panel strong{line-height:1.12}
 @media(max-width:820px){.ikes-project .ike-design-summary-line{grid-template-columns:1fr 1fr}}
+
+/* 7.6.0 True Bearing — state clarity: deployment/readiness/approval/session are separate facts. */
+.pc-state-matrix{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 16px}
+.pc-state-matrix article{min-width:0;padding:12px 14px;border:1px solid rgba(92,158,181,.28);border-radius:12px;background:rgba(7,32,40,.48)}
+.pc-state-matrix small{display:block;font-size:10px;letter-spacing:.16em;color:#82a9b4;margin-bottom:5px}
+.pc-state-matrix strong{display:block;font-size:15px;color:#edf6f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:900px){.pc-state-matrix{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.customer-session-indicator{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:9994;display:flex;gap:8px;align-items:center;padding:7px 11px;border-radius:999px;background:rgba(5,26,34,.88);border:1px solid rgba(203,177,96,.62);box-shadow:0 8px 24px rgba(0,0,0,.2);font-size:10px;letter-spacing:.08em;pointer-events:none;backdrop-filter:blur(10px)}
+.customer-session-indicator span{color:#b5c5c9}.customer-session-indicator strong{color:#f5e5a6}.customer-session-indicator.live{border-color:rgba(76,180,112,.65)}.customer-session-indicator.live strong{color:#9be0ad}.customer-session-indicator.test strong{color:#f4cf76}

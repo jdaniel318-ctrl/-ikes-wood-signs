@@ -1,3 +1,21 @@
+# Dark Sky 7.6.0 — True Bearing
+
+Session-boundary correction and state-clarity release built on Iron Hull. Published projects and customer sessions are now separate, explicit contracts.
+
+## Core changes
+- **OPEN PROJECT** on a published project establishes an explicit `LIVE CUSTOMER` session before customer UI renders.
+- Test Experience / Sea Trial and Client Preview remain explicit simulated contexts and cannot leak into the live route.
+- Engine/project boundary cleanup clears stale customer-session context.
+- Project Control separates **Deployment**, **Readiness**, **Approval**, and **Current Session** instead of overloading one status label.
+- Proving Ground adds an eighth **Session Boundary Voyage**. A broken live/test/preview route is HOLD-worthy.
+- Iron Hull automatic fresh-build proving and cache hygiene remain intact.
+
+## Safety
+The live route now enables real project contact behavior only when the project is actually published and the session is explicitly `LIVE CUSTOMER`. Test and Preview remain contained.
+
+## Release discipline
+7.5.0 remains the Last Known Good anchor until 7.6.0 is proven and deliberately promoted.
+
 # Dark Sky 7.5.0 — Iron Hull
 
 Fortification release. See `FORTIFICATION_750.md`.

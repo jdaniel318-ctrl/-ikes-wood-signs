@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.5.0",
-  "release": "7.5.0",
+  "build": "7.6.0",
+  "release": "7.6.0",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -50,11 +50,17 @@
     "project_order_customer_data_untouched": true,
     "iron_hull_extension_points": true,
     "sw_cache_750": true,
-    "manifest_750": true
+    "manifest_750": true,
+    "session_boundary_live_route_explicit": true,
+    "stale_test_context_cleared": true,
+    "project_control_state_matrix": true,
+    "session_boundary_voyage": true,
+    "sw_cache_760": true,
+    "manifest_760": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.5.0 Iron Hull fortifies rather than freezes: automatic build-scoped proof, stale-proof rejection, safe cache/evidence hygiene, and protected extension points around the proven customer, authority, isolation, recovery, and approved-artifact contracts."
+  "note": "7.6.0 True Bearing fixes live/test/preview customer-session routing, adds state clarity in Project Control, and makes Session Boundary a required proving voyage while retaining Iron Hull fortification."
 }
