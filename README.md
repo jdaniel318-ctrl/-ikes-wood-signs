@@ -1,37 +1,19 @@
-# Dark Sky 7.1.0 — True Grain
+# Dark Sky 7.2.0 — Sounding Line
 
-True Grain is the refinement candidate built from the successful Ike's Plankwright customer voyage. It keeps the seven-step experience intact, makes the ordering surface easier to scan on iPad, and converts the most valuable Ike lessons into explicit Fleet Capability Candidates rather than silently copying them across projects.
+Sounding Line is the narrow Plank Intelligence 2.0 candidate built on the proven True Grain customer journey. It freezes the seven-step Ike flow and focuses on the weak link exposed in live testing: placing lettering against the actual usable wood surface rather than the photograph rectangle.
 
-## Ike's refinement
-- Photo-first seven-step journey remains intact.
-- Internal ordering header is smaller so the plank/design receives more space.
-- Plank Recognition remains truthful: geometry/orientation now, calibrated real-world measurement later.
-- Conservative safe-margin rendering reduces edge/hole collisions while real usable-area/obstacle detection is still in Sea Trial.
-- Lettering choices are larger and reference-photo staging remains available.
-- Required contact fields are visibly marked.
-- Final review is tightened for shorter landscape viewports.
+## Ike's Plank Intelligence 2.0
+- Detects a probable plank contour from the uploaded/camera image using a local largest-component image analysis pass.
+- Erodes that contour to create a safer interior region and finds the largest usable lettering rectangle.
+- Uses that detected region to size and place lettering across Design, Approval, Review and customer-context previews.
+- Treats likely holes/cutouts as obstacles during the Sea Trial placement pass.
+- Detects only a **reference candidate** for future scale work; it does not claim inches or feet without a validated calibration method.
+- Preserves the posted-price fallback until physical measurement is commissioned.
 
-## Fleet-strengthening rule
-The Plank/Object Intelligence and Reference→Lettering Style patterns are now registered in `FLEET_CAPABILITY_CANDIDATES.md`. They remain candidates until repeated Sea Trial evidence supports promotion. Project-specific Ike branding and workflows stay isolated.
+## What did not change
+The proven seven-step Ike customer flow, contact timing, confirmation screen, test-mode containment, Black Flag authority boundaries, project isolation, Captain/Admiral contracts and Professional Mode remain unchanged.
 
 ## Release discipline
-Dark Sky 6.9.1 remains the Last Known Good recovery anchor until 7.1.0 is deployed, reruns the Fleet Proving Ground successfully, produces recovery/evidence artifacts, and is deliberately promoted by the Captain.
+Dark Sky 7.1.0 remains the Last Known Good recovery anchor until 7.2.0 is deployed, passes the live Fleet Proving Ground, produces recovery/evidence artifacts, and is deliberately promoted by the Captain.
 
-## Authority contracts
-- Project Admin fleet default/recovery PIN: `4353`
-- Black Flag Engine PIN: `5615`
-- Captain's Quarters PIN: `19613`
-- Admiral's Deck PIN: separate authority contract, temporarily also `19613`
-- Client Preview: unique six-digit invite PIN per preview
-
-## Preserved safety contracts
-- Strict project isolation
-- Client Preview pre-paint isolation
-- Test / Private Preview real-world contact blocking
-- Domain/host portability
-- iPad/iPhone responsive contracts
-- Recovery snapshot + Known Good release discipline
-- Professional Admiral Mode remains independent of ceremonial visuals
-
-## Deployment
-Upload the contents of this release at the repository root. `assets/` remains media-only. Do not treat local browser state as the target production datastore.
+See `IKES_SOUNDING_LINE_720.md` for the Sea Trial contract.

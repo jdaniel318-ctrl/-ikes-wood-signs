@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.1.0",
-  "release": "7.1.0",
+  "build": "7.2.0",
+  "release": "7.2.0",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -31,11 +31,17 @@
     "ikes_obstacle_avoidance_truthful_scaffold": true,
     "fleet_capability_candidate_contract": true,
     "sw_cache_710": true,
-    "manifest_710": true
+    "manifest_710": true,
+    "ikes_plank_contour_detection": true,
+    "ikes_usable_lettering_region": true,
+    "ikes_cutout_avoidance_sea_trial": true,
+    "ikes_reference_scale_truthful_sea_trial": true,
+    "sw_cache_720": true,
+    "manifest_720": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "Static candidate gate. 6.9.1 remains the Captain-promoted Known Good anchor until 7.1.0 passes the live Fleet Proving Ground and is deliberately promoted. True Grain promotes lessons as candidates, not automatic fleet standards."
+  "note": "Static candidate gate. 7.1.0 remains the Captain-promoted Known Good anchor until 7.2.0 passes the live Fleet Proving Ground and is deliberately promoted. Sounding Line advances Ike plank contour and usable-lettering placement while keeping physical measurement in Sea Trial."
 }

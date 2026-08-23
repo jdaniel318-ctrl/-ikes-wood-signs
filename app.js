@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.1.0';
+  const BUILD_VERSION = '7.2.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -8443,15 +8443,17 @@
       const r=state.plankRecognition||{};
       if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.status==='detected'?'PLANK DETECTED':'PHOTO READY';
       if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientation||state.orientation||'—';
-      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.measurement==='calibration-required'?'Calibration marker needed':'Not analyzed';
-      if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':'Visual geometry only';
-      if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableArea==='safe-margin-preview'?'Safe-margin preview active':'Not analyzed';
-      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleAvoidance==='not-commissioned'?'Hole/edge avoidance: Sea Trial':'Not analyzed';
+      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.referenceCandidate?'Reference candidate detected • Sea Trial':(r.measurement==='calibration-required'?'Calibration marker needed':'Not analyzed');
+      if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':(r.confidence==='geometry-probable'?'Geometry: Medium':'Visual geometry only');
+      if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Usable lettering zone detected':(r.usableArea==='safe-margin-preview'?'Basic margin active':'Not analyzed');
+      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleDetected?'Cutout/edge avoidance: Active Sea Trial':(r.obstacleAvoidance==='sea-trial-active'?'Edge avoidance: Active Sea Trial':'No interior obstacle detected');
       if($('ikeDesignPrice'))$('ikeDesignPrice').textContent=`$${Number(state.price||0)}`;
       if($('ikeDesignOrientation'))$('ikeDesignOrientation').textContent=state.orientation;
       if($('ikeDesignFill'))$('ikeDesignFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
       if($('ikeDesignFont'))$('ikeDesignFont').textContent=state.fontChosen?`Style ${state.font}`:'Choose style';
+      if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=(r.usableRegion?'Detected lettering zone':(r.usableArea==='safe-margin-preview'?'Basic margin':'Zone pending'));
       if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');el.textContent=state.fontChosen?(state.wording||'Your Sign'):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':'');if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
+      scheduleIkeDetectedTextPlacement();
       if($('ikeStylePrompt'))$('ikeStylePrompt').classList.toggle('hidden',!!state.fontChosen);
       $$('.ike-top-marker').forEach(el=>el.textContent=state.topSide==='Top of photo'?'TOP ↑':state.topSide==='Bottom of photo'?'TOP ↓':state.topSide==='Left side of photo'?'TOP ←':'TOP →');
       $$('#ikeTopMarkerButtons [data-ike-top]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeTop===state.topSide));
@@ -8491,7 +8493,7 @@
     const build=(label,value,kind='detail')=>`<article class="review-summary-item ${kind}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`;
     if(activeProjectId==='ikes-wood-signs'){
       const r=state.plankRecognition||{};
-      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Orientation',state.orientation],['Plank recognition',r.status==='detected'?'Geometry confirmed • safe margin':'Photo confirmed']].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
+      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Orientation',state.orientation],['Plank recognition',r.usableRegion?(r.obstacleDetected?'Usable zone • cutout avoidance Sea Trial':'Usable lettering zone detected'):(r.status==='detected'?'Geometry confirmed • basic margin':'Photo confirmed')]].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
       return;
     }
     $('orderSummary').innerHTML=`
@@ -9111,15 +9113,142 @@ The full order and approved media remain stored with this project.`;
     for(const raw of data.orders){const o=normalizeOrderIsolation(raw,{legacyImport:!raw?.projectId});await put(STORE_ORDERS,o);}for(const s of (data.settings||[])) await put(STORE_SETTINGS,s);await renderAdmin();
   }
 
+  function ikeRgbToHsv(r,g,b){
+    r/=255;g/=255;b/=255;
+    const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
+    let h=0;
+    if(d){
+      if(max===r)h=((g-b)/d)%6;
+      else if(max===g)h=(b-r)/d+2;
+      else h=(r-g)/d+4;
+      h*=60;if(h<0)h+=360;
+    }
+    return {h,s:max?d/max:0,v:max};
+  }
+
+  function ikeLargestComponent(mask,w,h){
+    const seen=new Uint8Array(mask.length);let best=[];
+    const dirs=[-1,1,-w,w,-w-1,-w+1,w-1,w+1];
+    for(let i=0;i<mask.length;i++){
+      if(!mask[i]||seen[i])continue;
+      const q=[i],comp=[];seen[i]=1;
+      for(let qi=0;qi<q.length;qi++){
+        const cur=q[qi],x=cur%w,y=(cur/w)|0;comp.push(cur);
+        for(const d of dirs){
+          const n=cur+d;if(n<0||n>=mask.length||seen[n]||!mask[n])continue;
+          const nx=n%w,ny=(n/w)|0;if(Math.abs(nx-x)>1||Math.abs(ny-y)>1)continue;
+          seen[n]=1;q.push(n);
+        }
+      }
+      if(comp.length>best.length)best=comp;
+    }
+    return best;
+  }
+
+  function ikeErodeMask(componentMask,w,h,radius=3){
+    const out=new Uint8Array(componentMask.length);
+    for(let y=radius;y<h-radius;y++)for(let x=radius;x<w-radius;x++){
+      const i=y*w+x;if(!componentMask[i])continue;
+      let safe=1;
+      outer:for(let yy=y-radius;yy<=y+radius;yy+=Math.max(1,radius))for(let xx=x-radius;xx<=x+radius;xx+=Math.max(1,radius)){
+        if(!componentMask[yy*w+xx]){safe=0;break outer;}
+      }
+      if(safe)out[i]=1;
+    }
+    return out;
+  }
+
+  function ikeLargestRectangle(mask,w,h){
+    const heights=new Int16Array(w);let best={area:0,x:0,y:0,w:0,h:0};
+    for(let y=0;y<h;y++){
+      for(let x=0;x<w;x++)heights[x]=mask[y*w+x]?heights[x]+1:0;
+      const stack=[];
+      for(let x=0;x<=w;x++){
+        const cur=x<w?heights[x]:0;
+        while(stack.length&&heights[stack[stack.length-1]]>cur){
+          const top=stack.pop(),hh=heights[top],left=stack.length?stack[stack.length-1]+1:0,ww=x-left,area=hh*ww;
+          if(area>best.area){best={area,x:left,y:y-hh+1,w:ww,h:hh};}
+        }
+        stack.push(x);
+      }
+    }
+    return best;
+  }
+
+  function ikeAnalyzePlankPixels(img){
+    const maxW=220,scale=Math.min(1,maxW/Math.max(1,img.naturalWidth||img.width));
+    const w=Math.max(60,Math.round((img.naturalWidth||img.width)*scale));
+    const h=Math.max(40,Math.round((img.naturalHeight||img.height)*scale));
+    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,w,h);
+    const data=ctx.getImageData(0,0,w,h).data,mask=new Uint8Array(w*h),yellow=new Uint8Array(w*h);
+    for(let i=0,p=0;i<data.length;i+=4,p++){
+      const r=data[i],g=data[i+1],b=data[i+2],hsv=ikeRgbToHsv(r,g,b);
+      const brown=(hsv.h>=5&&hsv.h<=65&&hsv.s>=.18&&hsv.v>=.12&&hsv.v<=.78&&r>=g*.92&&g>=b*.72);
+      if(brown)mask[p]=1;
+      if(hsv.h>=35&&hsv.h<=70&&hsv.s>=.35&&hsv.v>=.45)yellow[p]=1;
+    }
+    const comp=ikeLargestComponent(mask,w,h);if(comp.length<Math.max(180,w*h*.02))return null;
+    const cm=new Uint8Array(w*h);let minX=w,minY=h,maxX=0,maxY=0;
+    comp.forEach(i=>{cm[i]=1;const x=i%w,y=(i/w)|0;minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);});
+    const bw=Math.max(1,maxX-minX+1),bh=Math.max(1,maxY-minY+1),bboxArea=bw*bh,fill=comp.length/bboxArea;
+    const eroded=ikeErodeMask(cm,w,h,Math.max(2,Math.round(Math.min(bw,bh)*.045)));
+    let rect=ikeLargestRectangle(eroded,w,h);
+    if(rect.area<Math.max(80,bboxArea*.08)){
+      const insetX=Math.round(bw*.12),insetY=Math.round(bh*.16);
+      rect={x:minX+insetX,y:minY+insetY,w:Math.max(1,bw-insetX*2),h:Math.max(1,bh-insetY*2),area:1};
+    }
+    const obstacleDetected=fill<.86;
+    let yellowCount=0,yellowMinX=w,yellowMaxX=0,yellowMinY=h,yellowMaxY=0;
+    for(let i=0;i<yellow.length;i++)if(yellow[i]){yellowCount++;const x=i%w,y=(i/w)|0;yellowMinX=Math.min(yellowMinX,x);yellowMaxX=Math.max(yellowMaxX,x);yellowMinY=Math.min(yellowMinY,y);yellowMaxY=Math.max(yellowMaxY,y);}
+    const referenceCandidate=yellowCount>w*h*.003&&(yellowMaxX-yellowMinX)>w*.25&&(yellowMaxY-yellowMinY)<h*.28;
+    return {
+      contour:{x:minX/w,y:minY/h,w:bw/w,h:bh/h,fill:Number(fill.toFixed(3))},
+      usableRegion:{x:rect.x/w,y:rect.y/h,w:rect.w/w,h:rect.h/h,source:'largest-safe-rectangle'},
+      obstacleDetected,referenceCandidate,
+      confidence:comp.length>w*h*.07?'geometry-clear':'geometry-probable'
+    };
+  }
+
+  function ikeImageContentRect(card,img){
+    const cw=card.clientWidth,ch=card.clientHeight,nw=img.naturalWidth||1,nh=img.naturalHeight||1;
+    const scale=Math.min(cw/nw,ch/nh),w=nw*scale,h=nh*scale;
+    return {x:(cw-w)/2,y:(ch-h)/2,w,h};
+  }
+
+  function ikeApplyDetectedTextPlacementTo(el){
+    const r=state.plankRecognition||{},region=r.usableRegion,card=el.closest('.preview-card'),img=card?.querySelector('.preview-image');
+    if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
+    const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
+    const chars=Math.max(1,String(state.wording||'Your Sign').length),factor=state.font==='B'?.58:(state.font==='C'?.52:.56);
+    const fs=Math.max(18,Math.min(64,w/(chars*factor),h/1.35));
+    Object.assign(el.style,{left:`${x}px`,top:`${y}px`,width:`${w}px`,height:`${h}px`,transform:'none',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'4px 6px'});
+  }
+
+  function scheduleIkeDetectedTextPlacement(){
+    if(activeProjectId!=='ikes-wood-signs')return;
+    requestAnimationFrame(()=>{
+      const els=[$('ikeDesignPreviewText'),...$$('.ikes-project [data-preview-text]')].filter(Boolean);
+      els.forEach(el=>{const img=el.closest('.preview-card')?.querySelector('.preview-image');if(img&&!img.complete)img.addEventListener('load',()=>ikeApplyDetectedTextPlacementTo(el),{once:true});ikeApplyDetectedTextPlacementTo(el);});
+    });
+  }
+
   function analyzeIkePlankPhoto(){
     if(activeProjectId!=='ikes-wood-signs'||!state.photoData)return;
     const img=new Image();
     img.onload=()=>{
       const w=Number(img.naturalWidth||img.width||0),h=Number(img.naturalHeight||img.height||0);
-      const orientation=w>=h?'Horizontal':'Vertical';
+      const pixelAnalysis=ikeAnalyzePlankPixels(img);
+      const orientation=pixelAnalysis?.contour?(pixelAnalysis.contour.w>=pixelAnalysis.contour.h?'Horizontal':'Vertical'):(w>=h?'Horizontal':'Vertical');
       state.orientation=orientation;
       state.topSide='Top of photo';
-      state.plankRecognition={status:'detected',method:'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,measurement:'calibration-required',measurementReadiness:'needs-validated-scale',usableArea:'safe-margin-preview',obstacleAvoidance:'not-commissioned',confidence:'geometry-clear',analyzedAt:new Date().toISOString()};
+      state.plankRecognition={
+        status:'detected',method:pixelAnalysis?'photo-contour-segmentation':'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,
+        measurement:'calibration-required',measurementReadiness:pixelAnalysis?.referenceCandidate?'reference-candidate-sea-trial':'needs-validated-scale',
+        usableArea:pixelAnalysis?.usableRegion?'detected-usable-region':'safe-margin-preview',usableRegion:pixelAnalysis?.usableRegion||null,contour:pixelAnalysis?.contour||null,
+        obstacleAvoidance:pixelAnalysis?'sea-trial-active':'not-commissioned',obstacleDetected:!!pixelAnalysis?.obstacleDetected,referenceCandidate:!!pixelAnalysis?.referenceCandidate,
+        confidence:pixelAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
+      };
       updateUi();
     };
     img.src=state.photoData;
@@ -12178,4 +12307,6 @@ document.addEventListener('click', (event) => {
 
   if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',(e)=>{e.stopImmediatePropagation();e.preventDefault();openProjectCommissioning();},true);
 
+
+  window.addEventListener('resize',()=>{if(activeProjectId==='ikes-wood-signs')scheduleIkeDetectedTextPlacement();});
 })();

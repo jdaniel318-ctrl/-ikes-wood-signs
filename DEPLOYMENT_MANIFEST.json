@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "7.1.0",
+  "build": "7.2.0",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -44,11 +44,11 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "True Grain",
-  "version": "7.1.0",
-  "releaseName": "True Grain",
+  "release_name": "Sounding Line",
+  "version": "7.2.0",
+  "releaseName": "Sounding Line",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "ikes-proven-flow-refinement-safe-design-margins-calibration-candidate-and-fleet-capability-promotion",
+  "release_focus": "ikes-plank-intelligence-contour-cutout-usable-lettering-zone-and-reference-scale-sea-trial",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",
@@ -92,6 +92,14 @@
       "lettering_library": "project-owned-style-selection-plus-reference-photo-staging",
       "design_workspace": "wording-lettering-finish-orientation-live-preview-with-conservative-safe-margin",
       "capability_promotion": "plank-intelligence-and-reference-lettering-remain-ike-candidates-until-sea-trial"
+    },
+    "ikes_plank_intelligence": {
+      "status": "sea-trial",
+      "contour_detection": "largest-connected-plank-color-component",
+      "usable_lettering_zone": "largest-eroded-safe-rectangle",
+      "cutout_obstacle_avoidance": "active-sea-trial",
+      "reference_scale_detection": "candidate-only-no-physical-measurement-claim",
+      "physical_measurement": "not-commissioned-until-validated-scale"
     }
   }
 }

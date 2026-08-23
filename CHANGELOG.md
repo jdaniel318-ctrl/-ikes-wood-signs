@@ -1,3 +1,11 @@
+## 7.2.0 — Sounding Line
+- Froze Ike's proven seven-step journey and targeted the preview-placement engine only.
+- Added local plank contour segmentation using a largest connected component heuristic.
+- Added an eroded usable-region pass and largest-safe-rectangle lettering zone.
+- Applied detected lettering-zone placement to live design, approval, final review and customer-context previews.
+- Added truthful cutout/edge avoidance Sea Trial state and reference-scale candidate detection without claiming physical measurement.
+- Preserved 7.1.0 as Known Good until live proving/promotion.
+
 ## 7.1.0 — True Grain
 - Refined Ike's proven seven-step customer flow after live voyage testing.
 - Compacted in-flow customer header.
