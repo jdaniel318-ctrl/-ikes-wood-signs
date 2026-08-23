@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.4.0",
-  "release": "7.4.0",
+  "build": "7.5.0",
+  "release": "7.5.0",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -43,11 +43,18 @@
     "automated_approved_artifact_voyage": true,
     "no_inherited_artifact_clear": true,
     "sw_cache_740": true,
-    "manifest_740": true
+    "manifest_740": true,
+    "fresh_build_proving_evidence": true,
+    "automatic_proving_on_engine_entry": true,
+    "safe_cache_hygiene_only": true,
+    "project_order_customer_data_untouched": true,
+    "iron_hull_extension_points": true,
+    "sw_cache_750": true,
+    "manifest_750": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.4.0 Iron Proof replaces post-approval rendering with an exact approval-candidate PNG. The customer approves the frozen artifact itself; later stages reuse those bytes. Proving Ground adds an automated artifact voyage and stage-reuse contract check."
+  "note": "7.5.0 Iron Hull fortifies rather than freezes: automatic build-scoped proof, stale-proof rejection, safe cache/evidence hygiene, and protected extension points around the proven customer, authority, isolation, recovery, and approved-artifact contracts."
 }

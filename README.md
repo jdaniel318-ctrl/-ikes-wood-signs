@@ -1,4 +1,8 @@
-# Dark Sky 7.4.0 — Iron Proof
+# Dark Sky 7.5.0 — Iron Hull
+
+Fortification release. See `FORTIFICATION_750.md`.
+
+# Dark Sky 7.5.0 — Iron Proof
 
 Iron Proof is the approval-integrity foundation release. It does not broaden Ike's customer flow. Instead, it changes approval mechanics so the visual the customer sees on the approval screen is the exact immutable PNG that later becomes the production artifact. No post-approval re-render is allowed.
 
@@ -15,7 +19,7 @@ Iron Proof is the approval-integrity foundation release. It does not broaden Ike
 - Ike's 7-step journey remains unchanged.
 - Plank Recognition / cutout avoidance remain Sea Trial.
 - Physical measurement remains uncommissioned.
-- 7.3.0/previous Known Good remains the recovery anchor until the Captain proves and promotes 7.4.0.
+- 7.3.0/previous Known Good remains the recovery anchor until the Captain proves and promotes 7.5.0.
 
 # Dark Sky 7.3.0 — Plank Bond
 

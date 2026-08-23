@@ -1,4 +1,12 @@
-## 7.4.0 — Iron Proof
+
+## 7.5.0 — Iron Hull
+- Fortification and cleanup pass; no intentional customer-journey redesign.
+- Adds automatic, build-scoped Proving Ground execution after Engine entry.
+- Fresh proof evidence is timestamped, build-bound, and cannot inherit from older candidates.
+- Safely trims obsolete application caches and stale proving evidence only.
+- Preserves projects, orders, customers, approved artifacts, branding, settings, and recovery evidence.
+- Keeps Approved Artifact, authority, isolation, staging safety, recovery, and Visual Forge contracts extensible for future improvement.
+## 7.5.0 — Iron Proof
 
 - Approval candidate artifact is rendered before approval and displayed directly on the approval screen.
 - Customer approval adopts exact candidate PNG bytes; there is no approval-time re-render.

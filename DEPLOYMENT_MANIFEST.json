@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "7.4.0",
+  "build": "7.5.0",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -44,19 +44,19 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Iron Proof",
-  "version": "7.4.0",
-  "releaseName": "Iron Proof",
+  "release_name": "Iron Hull",
+  "version": "7.5.0",
+  "releaseName": "Iron Hull",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "approved-artifact-freeze-and-automated-proof",
+  "release_focus": "fortification-runtime-hygiene-fresh-proof-and-clean-extension-points",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",
     "release_gate": "critical failures hold release; warnings require review",
     "staging_rule": "test/private revisions must not contact real-world endpoints",
     "single_device_dependency": "prohibited target state",
-    "proving_ground": "status-priority-next-best-move-with-required-voyages",
-    "known_good_anchor": "captain-recorded-evidence-only-no-auto-deploy"
+    "proving_ground": "fresh-build-evidence-auto-run-plus-captain-rerun-status-priority-next-best-move",
+    "known_good_anchor": "captain-recorded-fresh-evidence-only-no-auto-deploy"
   },
   "capabilities": {
     "visual_command_forge": {
@@ -84,7 +84,10 @@
       ],
       "evidence": "expandable-live-runtime-checks",
       "promotion": "captain-deliberate-known-good-evidence",
-      "artifact_automation": "synthetic-png-freeze-plus-stage-reuse-contract-verification"
+      "artifact_automation": "synthetic-png-freeze-plus-stage-reuse-contract-verification",
+      "automation": "background-current-build-proof-on-engine-entry-plus-manual-captain-rerun",
+      "freshness": "build-scoped-six-hour-evidence-window-no-prior-build-inheritance",
+      "hygiene": "obsolete-app-caches-and-stale-proof-evidence-only-no-project-data"
     },
     "ikes_customer_experience": {
       "status": "candidate-proven-flow-refinement",
@@ -104,7 +107,7 @@
       "physical_measurement": "not-commissioned-until-validated-scale"
     },
     "approved_artifact_engine": {
-      "status": "candidate-automated-proof",
+      "status": "fortified-proven-contract-extensible",
       "approval_candidate": "render-exact-png-before-customer-approval",
       "approval_lock": "adopt-exact-candidate-bytes-no-rerender",
       "fingerprint": "artifact-data-url-byte-hash",
@@ -112,5 +115,5 @@
       "mutation": "any-design-edit-invalidates-candidate-and-lock"
     }
   },
-  "release_note": "7.4.0 Iron Proof builds the exact immutable PNG before approval, makes the approval screen display those bytes, adopts the same artifact on approval, and adds an automated approved-artifact proving voyage."
+  "release_note": "7.5.0 Iron Hull fortifies the proven platform: current-build Proving Ground evidence runs automatically on Engine entry, stale proof state cannot masquerade as current evidence, obsolete app caches/proof records are safely trimmed, and approved-artifact/customer/authority contracts remain extensible rather than frozen."
 }

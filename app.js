@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.4.0';
+  const BUILD_VERSION = '7.5.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3407,7 +3407,7 @@
     return {key:'draft',label:'DRAFT',step:1,detail:!brief?'Finish the Business Brief so Dark Sky understands this vessel.':'Add at least one customer-ready offer before launch.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
   }
 
-  async function runAdmiralReadinessChecks(){
+  async function runAdmiralReadinessChecks(source='manual'){
     const checks=[];
     const add=(id,label,state,detail,level='core')=>checks.push({id,label,state,detail,level});
     const safe=async(fn,fallback)=>{try{return await fn();}catch(err){return fallback(err);}};
@@ -3474,7 +3474,7 @@
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
-    return {build:BUILD_VERSION,at:new Date().toISOString(),checks,criticalFailures,warnings,pass:criticalFailures===0};
+    return {build:BUILD_VERSION,at:new Date().toISOString(),runId:`PG-${BUILD_VERSION}-${Date.now().toString(36).toUpperCase()}`,source,checks,criticalFailures,warnings,pass:criticalFailures===0};
   }
 
   function provingVoyagesFromReport(report){
@@ -3495,6 +3495,64 @@
     ];
   }
 
+  const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
+  const FORTIFIED_CACHE='dark-sky-v7-5-0-iron-hull';
+  function saveFreshProvingEvidence(report){
+    try{
+      const voyages=report?.voyages||provingVoyagesFromReport(report);
+      const evidence={schema:'dark-sky-proving-evidence-v2',build:BUILD_VERSION,at:report?.at||new Date().toISOString(),runId:report?.runId||'',source:report?.source||'manual',pass:report?.pass===true,criticalFailures:Number(report?.criticalFailures||0),warnings:Number(report?.warnings||0),voyages:voyages.map(v=>({id:v.id,label:v.label,state:v.state}))};
+      localStorage.setItem(PROVING_EVIDENCE_KEY,JSON.stringify(evidence));
+      return evidence;
+    }catch(_){return null;}
+  }
+  function loadFreshProvingEvidence(maxAgeMs=6*60*60*1000){
+    try{
+      const e=JSON.parse(localStorage.getItem(PROVING_EVIDENCE_KEY)||'null');
+      if(!e||String(e.build)!==String(BUILD_VERSION))return null;
+      const age=Date.now()-Date.parse(e.at||0);
+      if(!Number.isFinite(age)||age<0||age>maxAgeMs)return null;
+      return e;
+    }catch(_){return null;}
+  }
+  async function runFortificationHygiene(){
+    const result={build:BUILD_VERSION,at:new Date().toISOString(),oldCachesRemoved:0,staleEvidenceRemoved:0};
+    try{
+      // Only obsolete application caches are eligible. Project/order/customer data is never touched.
+      if(typeof caches!=='undefined'){
+        const names=await caches.keys();
+        const stale=names.filter(n=>(n.startsWith('ikes-wood-signs-')||n.startsWith('workshop-engine-')||n.startsWith('black-flag-')||n.startsWith('dark-sky-'))&&n!==FORTIFIED_CACHE);
+        for(const n of stale){try{if(await caches.delete(n))result.oldCachesRemoved++;}catch(_){}}
+      }
+      for(let i=localStorage.length-1;i>=0;i--){
+        const k=localStorage.key(i)||'';
+        if((k.startsWith('darkSkyProvingEvidence')||k.startsWith('darkSkyProvingRun:'))&&k!==PROVING_EVIDENCE_KEY){try{localStorage.removeItem(k);result.staleEvidenceRemoved++;}catch(_){}}
+      }
+    }catch(err){result.warning=String(err?.message||err)}
+    try{window.DarkSkyV4?.diagnostic?.('fortification.hygiene',`Iron Hull hygiene completed`,result)}catch(_){ }
+    return result;
+  }
+  async function runAutomaticProvingGround(){
+    try{
+      const sessionKey=`darkSkyAutoProving:${BUILD_VERSION}`;
+      if(sessionStorage.getItem(sessionKey)==='done')return loadFreshProvingEvidence();
+      sessionStorage.setItem(sessionKey,'running');
+      const report=await runAdmiralReadinessChecks('auto');
+      report.voyages=provingVoyagesFromReport(report);
+      const evidence=saveFreshProvingEvidence(report);
+      window.__lastAdmiralReadinessReport=report;
+    const freshEvidence=saveFreshProvingEvidence(report);
+      sessionStorage.setItem(sessionKey,'done');
+      const stamp=$('admiralReadinessStamp');
+      if(stamp&&evidence){const clear=evidence.voyages.filter(v=>v.state==='clear').length;stamp.textContent=`${clear}/${evidence.voyages.length} voyages clear • candidate ${BUILD_VERSION} • auto-verified ${new Date(evidence.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;}
+      return evidence;
+    }catch(err){try{sessionStorage.setItem(`darkSkyAutoProving:${BUILD_VERSION}`,'failed')}catch(_){ }return null;}
+  }
+  function scheduleIronHullFortification(){
+    if(window.__ironHullFortificationScheduled)return;
+    window.__ironHullFortificationScheduled=true;
+    setTimeout(()=>runFortificationHygiene().catch(()=>{}),250);
+    setTimeout(()=>runAutomaticProvingGround().catch(()=>{}),900);
+  }
   function provingStateLabel(v){return v==='clear'?'CLEAR':v==='watch'?'WATCH':'HOLD';}
   function currentKnownGoodRelease(){
     try{return localStorage.getItem('darkSkyKnownGoodRelease')||'6.8.0';}catch(_){return '6.8.0';}
@@ -3507,7 +3565,7 @@
     if(state){state.textContent='CHECKING';state.className='admiral-readiness-state checking';}
     if(summary)summary.innerHTML='<p class="helper">Freezing the current release identity and running non-destructive proving checks…</p>';
     host.innerHTML='<p class="helper">Running authority, isolation, Client Preview, staging safety, release, recovery, and navigation checks…</p>';
-    const report=await runAdmiralReadinessChecks();
+    const report=await runAdmiralReadinessChecks(announce?'manual':'view');
     const voyages=provingVoyagesFromReport(report);
     report.voyages=voyages;
     window.__lastAdmiralReadinessReport=report;
@@ -3517,7 +3575,7 @@
     const isKnownGood=String(knownGood)===String(BUILD_VERSION);
     const next=voyages.find(v=>v.state==='hold')||voyages.find(v=>v.state==='watch');
     if(state){state.textContent=overall==='clear'?'CLEAR':overall==='watch'?'WATCH':'HOLD';state.className=`admiral-readiness-state ${overall==='clear'?'ready':overall}`;}
-    if(stamp)stamp.textContent=`${clears}/${voyages.length} voyages clear • candidate ${BUILD_VERSION} • known good ${knownGood}`;
+    if(stamp)stamp.textContent=`${clears}/${voyages.length} voyages clear • candidate ${BUILD_VERSION} • known good ${knownGood} • fresh ${new Date(report.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
     if(summary){
       const statusCopy=overall==='clear'?(isKnownGood?'All required proving voyages are clear. This release is already the current Known Good anchor.':'All required proving voyages are clear. This candidate can be considered for promotion.'):overall==='watch'?'The hull is sound, but at least one voyage needs Captain attention before promotion.':'A critical proving voyage failed. This release is not promotable.';
       const nextTitle=next?`Run / inspect ${next.label}`:(isKnownGood?`Known Good — ${BUILD_VERSION}`:'Promote the cleared candidate');
@@ -12321,6 +12379,7 @@ document.addEventListener('click', (event) => {
     // must not relock a correctly authenticated Engine session.
     try{
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
+      scheduleIronHullFortification();
     }catch(err){
       console.warn('Engine home render warning',err);
       window.DarkSkyBootState={...(window.DarkSkyBootState||{}),renderWarning:String(err?.message||err),build:'6.0.0'};
@@ -12338,7 +12397,7 @@ document.addEventListener('click', (event) => {
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
     const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
-    Promise.resolve(window.renderBlackFlagHome?.()).catch(()=>{});
+    Promise.resolve(window.renderBlackFlagHome?.()).then(()=>scheduleIronHullFortification()).catch(()=>{});
   }
 
   function openCompanyAdminGate(){

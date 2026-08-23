@@ -1,4 +1,4 @@
-# Iron Proof 7.4.0
+# Iron Proof 7.5.0
 
 ## Problem proved in live testing
 7.3.0 could show a two-line live approval design but later review/confirmation could lose or reconstruct lettering. Metadata and a nominal artifact record were insufficient.
