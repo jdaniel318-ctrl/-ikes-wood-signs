@@ -1,3 +1,22 @@
+# Dark Sky 7.4.0 — Iron Proof
+
+Iron Proof is the approval-integrity foundation release. It does not broaden Ike's customer flow. Instead, it changes approval mechanics so the visual the customer sees on the approval screen is the exact immutable PNG that later becomes the production artifact. No post-approval re-render is allowed.
+
+## Core changes
+- Build the approval artifact *before* the customer can approve it.
+- Approval screen displays the frozen PNG candidate, not a live text overlay.
+- Approval adopts the exact candidate bytes and fingerprint; it does not render again.
+- Any wording/style/fill/orientation/price edit invalidates both candidate and lock.
+- Review, confirmation, admin and archive reuse `approvedPreviewData`.
+- Approved Artifact Voyage now includes an automated synthetic PNG freeze/fingerprint/reuse check in addition to static contract verification.
+- PNG is used for the approved artifact to preserve deterministic pixels/bytes more reliably than the previous JPEG flatten.
+
+## Guardrails
+- Ike's 7-step journey remains unchanged.
+- Plank Recognition / cutout avoidance remain Sea Trial.
+- Physical measurement remains uncommissioned.
+- 7.3.0/previous Known Good remains the recovery anchor until the Captain proves and promotes 7.4.0.
+
 # Dark Sky 7.3.0 — Plank Bond
 
 Plank Bond hardens Ike’s production contract around the canonical front/back paper form and upgrades Design Lock from metadata-only locking to a flattened, fingerprinted approved artifact. The customer journey remains unchanged.

@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v7-3-0-plank-bond';
+const CACHE='dark-sky-v7-4-0-iron-proof';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=7.3.0',
-  './platform_core.js?v=7.3.0',
-  './platform_v4.js?v=7.3.0',
-  './platform_identity.js?v=7.3.0',
-  './app.js?v=7.3.0',
-  './captain.js?v=7.3.0',
+  './styles.css?v=7.4.0',
+  './platform_core.js?v=7.4.0',
+  './platform_v4.js?v=7.4.0',
+  './platform_identity.js?v=7.4.0',
+  './app.js?v=7.4.0',
+  './captain.js?v=7.4.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

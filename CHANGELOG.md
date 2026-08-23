@@ -1,3 +1,12 @@
+## 7.4.0 — Iron Proof
+
+- Approval candidate artifact is rendered before approval and displayed directly on the approval screen.
+- Customer approval adopts exact candidate PNG bytes; there is no approval-time re-render.
+- Design mutations invalidate candidate + approved lock.
+- Approved Artifact Voyage adds an automated synthetic artifact freeze/fingerprint/reuse check.
+- Approved artifact export changes from JPEG to PNG.
+- Proving Ground artifact voyage now requires both contract and automated proof checks.
+
 ## 7.3.0 — Plank Bond
 
 - Flatten exact live Ike preview on approval and fingerprint the artifact.

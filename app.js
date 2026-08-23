@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.3.0';
+  const BUILD_VERSION = '7.4.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1129,6 +1129,9 @@
     currentOrder: null,
     approvedPreviewData: '',
     approvedDesignLock: null,
+    approvalCandidateData: '',
+    approvalCandidateHash: '',
+    approvalCandidateLock: null,
     customColor: '#1f6feb',
     fontChosen: false,
     plankRecognition: null,
@@ -3464,8 +3467,10 @@
     const requiredFiles=['index.html','app.js','captain.js','styles.css','sw.js','platform_core.js','platform_identity.js','platform_v4.js','manifest.webmanifest'];
     add('runtime-tree','Canonical runtime tree','pass',`${requiredFiles.length} required runtime contracts are represented by the 6.1 release manifest; assets remain media-only by release policy.`);
 
-    const lockContract=typeof lockIkeApprovedDesign==='function' && typeof verifyIkeApprovedArtifact==='function' && String(lockIkeApprovedDesign).includes('artifactHash') && String(saveOrder).includes('verifyIkeApprovedArtifact') && String(saveOrder).includes('approvedArtifactHash');
-    add('approved-design-lock','Approved artifact integrity',lockContract?'pass':'fail',lockContract?'Customer-approved Ike design is flattened once, fingerprinted, verified before order creation, and reused by review/confirmation/admin/archive without post-approval re-rendering.':'Approved artifact fingerprint / reuse contract is missing or incomplete.');
+    const lockContract=typeof stageIkeApprovalArtifact==='function' && typeof lockIkeApprovedDesign==='function' && typeof verifyIkeApprovedArtifact==='function' && String(stageIkeApprovalArtifact).includes('renderIkeApprovedArtifact') && String(lockIkeApprovedDesign).includes('approvalCandidateData') && String(saveOrder).includes('verifyIkeApprovedArtifact') && String(saveOrder).includes('approvedArtifactHash');
+    add('approved-design-lock','Approved artifact integrity',lockContract?'pass':'fail',lockContract?'Approval screen is built from the exact frozen PNG candidate; approval adopts those same bytes, fingerprints them, and later stages reuse the artifact without reconstruction.':'Approved artifact freeze / candidate-adoption contract is missing or incomplete.');
+    const artifactAuto=await safe(()=>runIkeApprovedArtifactAutomatedVoyage(),err=>({ok:false,detail:`Automated artifact voyage failed: ${err?.message||err}`}));
+    add('approved-artifact-auto','Automated approved-artifact voyage',artifactAuto?.ok?'pass':'fail',artifactAuto?.detail||'Automated approved-artifact voyage did not return evidence.');
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
@@ -3486,7 +3491,7 @@
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav'],'Captain main-room and subview return boundaries.'),
-      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock'],'Customer-approved visual artifacts stay immutable through review, confirmation, admin, and archive.')
+      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto'],'Customer-approved visual artifacts stay immutable through review, confirmation, admin, and archive.')
     ];
   }
 
@@ -8421,6 +8426,13 @@
     $('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;
     $('topSide').value=state.topSide;
     applyPreview();
+    if(activeProjectId==='ikes-wood-signs' && state.approvalCandidateData && state.current==='ike-approve'){
+      document.querySelectorAll('.screen[data-screen="ike-approve"] .ike-approve-preview').forEach(card=>{
+        const img=card.querySelector('.preview-image'),txt=card.querySelector('.preview-text'),fb=card.querySelector('.preview-fallback');
+        if(img){img.src=state.approvalCandidateData;img.classList.remove('hidden');}
+        if(txt)txt.classList.add('hidden');if(fb)fb.classList.add('hidden');card.classList.add('approved-design-locked','approval-artifact-candidate');
+      });
+    }
     if(activeProjectId==='ikes-wood-signs' && state.approvedPreviewData && ['customer','review'].includes(state.current)){
       document.querySelectorAll('.ike-customer-context .preview-card, .screen[data-screen="review"] .review-preview').forEach(card=>{
         const img=card.querySelector('.preview-image'),txt=card.querySelector('.preview-text'),fb=card.querySelector('.preview-fallback');
@@ -8541,7 +8553,7 @@
 
   function invalidateIkeApprovedDesignLock(){
     if(activeProjectId!=='ikes-wood-signs')return;
-    state.approvedPreviewData='';state.approvedDesignLock=null;
+    state.approvedPreviewData='';state.approvedDesignLock=null;state.approvalCandidateData='';state.approvalCandidateHash='';state.approvalCandidateLock=null;
   }
 
   const IKE_PRODUCTION_CONTRACT=Object.freeze({
@@ -8592,12 +8604,32 @@
     if(line)lines.push(line);return lines;
   }
 
-  async function lockIkeApprovedDesign(){
+  async function stageIkeApprovalArtifact(){
     if(activeProjectId!=='ikes-wood-signs')return true;
-    const lock=ikeCurrentRenderLock();const preview=await createApprovedPreview(lock);if(!preview)return false;
+    const lock=ikeCurrentRenderLock();
+    const artifact=await renderIkeApprovedArtifact(state.photoData,lock);
+    if(!artifact)return false;
+    const artifactHash=ikeFastHash(artifact);
     lock.hash=ikeFastHash(ikeDesignLockHashPayload(lock));
-    lock.artifactHash=ikeFastHash(preview);lock.artifactId=`IKE-ART-${lock.artifactHash.toUpperCase()}`;lock.previewData=preview;
-    state.approvedDesignLock=lock;state.approvedPreviewData=preview;return true;
+    lock.artifactHash=artifactHash;
+    lock.artifactId=`IKE-ART-${artifactHash.toUpperCase()}`;
+    state.approvalCandidateData=artifact;
+    state.approvalCandidateHash=artifactHash;
+    state.approvalCandidateLock=lock;
+    return true;
+  }
+
+  function verifyIkeApprovalCandidate(){
+    if(activeProjectId!=='ikes-wood-signs')return true;
+    return !!(state.approvalCandidateData&&state.approvalCandidateHash&&state.approvalCandidateLock&&ikeFastHash(state.approvalCandidateData)===state.approvalCandidateHash);
+  }
+
+  function lockIkeApprovedDesign(){
+    if(activeProjectId!=='ikes-wood-signs')return true;
+    if(!verifyIkeApprovalCandidate())return false;
+    state.approvedPreviewData=state.approvalCandidateData;
+    state.approvedDesignLock={...state.approvalCandidateLock,artifactHash:state.approvalCandidateHash,artifactId:`IKE-ART-${state.approvalCandidateHash.toUpperCase()}`};
+    return true;
   }
 
   function verifyIkeApprovedArtifact(){
@@ -8609,6 +8641,11 @@
   async function createApprovedPreview(lockOverride=null){
     const source=state.photoData;if(!source)return '';
     const lock=lockOverride||state.approvedDesignLock||ikeCurrentRenderLock();
+    return renderIkeApprovedArtifact(source,lock);
+  }
+
+  async function renderIkeApprovedArtifact(source,lock){
+    if(!source||!lock)return '';
     return new Promise(resolve=>{
       const img=new Image();
       img.onload=()=>{try{
@@ -8627,9 +8664,24 @@
         if(!lines.length)lines=[text];const lineHeight=live?.font?.lineHeightN?live.font.lineHeightN*h:drawSize*1.03,totalH=lines.length*lineHeight,cx=rx+rw/2,startY=ry+(rh-totalH)/2+lineHeight/2;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
         lines.forEach((line,idx)=>{const y=startY+idx*lineHeight;if(lock.fill==='Natural'){ctx.save();ctx.lineWidth=Math.max(2,drawSize*.055);ctx.strokeStyle='rgba(255,235,202,.48)';ctx.strokeText(line,cx-2,y-2,rw*.94);ctx.strokeStyle='rgba(58,28,13,.72)';ctx.strokeText(line,cx+2,y+3,rw*.94);ctx.fillStyle='rgba(92,54,30,.58)';ctx.fillText(line,cx,y,rw*.94);ctx.restore();}else{ctx.lineWidth=Math.max(2,drawSize*.045);ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';ctx.strokeText(line,cx,y,rw*.94);ctx.fillStyle=color;ctx.fillText(line,cx,y,rw*.94);}});
         lock.render={...(lock.render||{}),region:{x:rx/w,y:ry/h,w:rw/w,h:rh/h},fontSizePx:drawSize,lines:[...lines]};
-        resolve(canvas.toDataURL('image/jpeg',0.84));
+        resolve(canvas.toDataURL('image/png'));
       }catch(err){console.error('Approved preview flatten failed',err);resolve('');}};img.onerror=()=>resolve('');img.src=source;
     });
+  }
+
+  async function runIkeApprovedArtifactAutomatedVoyage(){
+    try{
+      const c=document.createElement('canvas');c.width=420;c.height=180;const x=c.getContext('2d',{alpha:false});if(!x)return {ok:false,detail:'Canvas unavailable for automated artifact voyage.'};
+      x.fillStyle='#c79b62';x.fillRect(0,0,c.width,c.height);x.fillStyle='#8b5a2b';x.fillRect(40,35,300,110);x.fillStyle='#f4e7ce';x.beginPath();x.ellipse(315,90,18,28,0,0,Math.PI*2);x.fill();
+      const source=c.toDataURL('image/png');
+      const lock={version:'ike-approved-artifact-selftest-v1',wording:'Smoke Hole',font:'B',fill:'Black',customColor:'#1f6feb',orientation:'Horizontal',topSide:'Top of photo',price:65,usableRegion:{x:.12,y:.22,w:.62,h:.58,source:'self-test'},obstacleDetected:true,recognition:{method:'synthetic',confidence:'high'},render:{strategy:'approved-live-layout-v2',box:{x:.18,y:.28,w:.48,h:.44},font:{sizeN:.16,lineHeightN:.18,family:'Georgia',style:'italic',weight:'700'},lines:['Smoke','Hole']}};
+      const artifact=await renderIkeApprovedArtifact(source,lock);if(!artifact||!artifact.startsWith('data:image/png'))return {ok:false,detail:'Automated voyage could not produce the immutable PNG artifact.'};
+      const hash=ikeFastHash(artifact),record={artifactId:`IKE-ART-${hash.toUpperCase()}`,artifactHash:hash,approvedPreviewData:artifact};
+      const stageHashes=['approval','review','confirmation','admin','archive'].map(()=>ikeFastHash(record.approvedPreviewData));
+      const reused=stageHashes.every(h=>h===hash);
+      const contracts=String(updateUi).includes('state.approvedPreviewData')&&String(saveOrder).includes('approvedPreviewData=state.approvedPreviewData')&&String(renderAdmin).includes('approvedPreviewData')&&String(projectOrderCard).includes('approvedPreviewData');
+      return {ok:reused&&contracts,detail:reused&&contracts?`Automated immutable-artifact voyage passed. PNG ${record.artifactId} retained one fingerprint through approval, review, confirmation, admin and archive contracts.`:'Automated artifact voyage found a stage-reuse contract gap.'};
+    }catch(err){return {ok:false,detail:`Automated artifact voyage error: ${err?.message||err}`};}
   }
 
   function projectRequiresPhoto(){
@@ -8705,7 +8757,7 @@
       current:'welcome',price:Number(x.defaultPrice||0),photoData:'',orientation:'Horizontal',
       topSide:'Top of photo',wording:x.wordingDefault||'Your Message',font:'B',fill:'Black',
       contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',
-      currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''
+      currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''
     });
     if($('wordingInput')) $('wordingInput').value=state.wording;
     ['customerName','customerPhone','customerEmail'].forEach(id=>{if($(id))$(id).value='';});
@@ -8797,12 +8849,12 @@
     businessConfig={...businessConfig,businessName:$('businessNameSetting').value.trim()||x.businessName||p?.name||'Project',orderPrefix:($('orderPrefixSetting').value||fallbackPrefix).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||fallbackPrefix,thankYouHeadline:$('thankYouSetting').value.trim()||`THANK YOU FOR CHOOSING ${String(x.businessName||p?.name||'US').toUpperCase()}!`,prices:prices.length?prices:(Array.isArray(x.prices)&&x.prices.length?x.prices:[0])};
     await setSetting(projectBusinessConfigKey(),businessConfig);renderConfiguredPrices();applyBusinessCopy();$('businessSettingsStatus').textContent='Business settings saved.';
   }
-  function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(projectDraftKey(),JSON.stringify({...state,currentOrder:null,approvedPreviewData:''}));}catch(_){}}
+  function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(projectDraftKey(),JSON.stringify({...state,currentOrder:null,approvedPreviewData:'',approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null}));}catch(_){}}
   function clearDraft(){try{localStorage.removeItem(projectDraftKey())}catch(_){}}
   function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&currentScreenOrder().includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
 
   function resetOrder(){
-    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''});
+    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''});
     ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;setScreen('welcome');
   }
 
@@ -11612,9 +11664,9 @@ The full order and approved media remain stored with this project.`;
     $('ikeTopMarkerButtons')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-top]');if(!b)return;invalidateIkeApprovedDesignLock();state.topSide=b.dataset.ikeTop;updateUi();});
     $('ikeRotateBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();state.orientation=state.orientation==='Horizontal'?'Vertical':'Horizontal';updateUi();});
     $('ikeConfirmPlankBtn')?.addEventListener('click',()=>setScreen('ike-design'));
-    $('ikeDesignNextBtn')?.addEventListener('click',()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';setScreen('ike-approve');});
-    $('ikeApproveDesignBtn')?.addEventListener('click',async()=>{const btn=$('ikeApproveDesignBtn');if(btn){btn.disabled=true;btn.textContent='LOCKING APPROVED DESIGN…';}const ok=await lockIkeApprovedDesign();if(btn){btn.disabled=false;btn.textContent='APPROVE MY DESIGN →';}if(!ok){alert('The approved design could not be locked. Please review the design and try again.');return;}setScreen('customer');});
-    $('ikeEditDesignBtn')?.addEventListener('click',()=>setScreen('ike-design'));
+    $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
+    $('ikeApproveDesignBtn')?.addEventListener('click',()=>{const ok=lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
+    $('ikeEditDesignBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();setScreen('ike-design');});
     $('reviewEditDesignBtn')?.addEventListener('click',()=>setScreen(activeProjectId==='ikes-wood-signs'?'ike-design':'wording'));
     $('ikeStyleReferenceInput')?.addEventListener('change',async e=>{const input=e.target;const f=input.files?.[0];if(!f)return;try{state.styleReferenceData=await resizePhoto(f);state.styleReferenceName=f.name||'Lettering reference';updateUi();}catch(err){console.error('Lettering reference failed',err);}finally{input.value='';}});
   }

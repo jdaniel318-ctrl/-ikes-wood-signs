@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.3.0",
-  "release": "7.3.0",
+  "build": "7.4.0",
+  "release": "7.4.0",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -37,11 +37,17 @@
     "ikes_cutout_avoidance_sea_trial": true,
     "ikes_reference_scale_truthful_sea_trial": true,
     "sw_cache_720": true,
-    "manifest_720": true
+    "manifest_720": true,
+    "approved_artifact_png_candidate": true,
+    "approval_screen_exact_artifact": true,
+    "automated_approved_artifact_voyage": true,
+    "no_inherited_artifact_clear": true,
+    "sw_cache_740": true,
+    "manifest_740": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.3.0 Plank Bond strengthens Approved Artifact Integrity: approval flattens the live design once, fingerprints it, blocks order creation if the fingerprint changes, and carries the same artifact into review, confirmation, admin, and archive. It also records Ike canonical paper-form rules: A/B/C lettering, Black/White/None/Other fill, 2/4/6 ft character limits, top/side orientation, text/call pickup, 7\u201310 day window, approval, and refusal right."
+  "note": "7.4.0 Iron Proof replaces post-approval rendering with an exact approval-candidate PNG. The customer approves the frozen artifact itself; later stages reuse those bytes. Proving Ground adds an automated artifact voyage and stage-reuse contract check."
 }
