@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "6.7.0",
-  "release": "6.7.0",
+  "build": "6.8.0",
+  "release": "6.8.0",
   "generatedAt": "2026-08-22",
   "checks": {
     "build_version": true,
@@ -15,9 +15,12 @@
     "no_duplicate_ids": true,
     "no_missing_local_refs": true,
     "assets_media_only": true,
-    "sw_cache_670": true,
-    "manifest_670": true,
-    "admiral_ceremonial_protected_zones": true
+    "admiral_ceremonial_protected_zones": true,
+    "sw_cache_680": true,
+    "manifest_680": true,
+    "admiral_repeat_gate_theatre": true,
+    "admiral_post_auth_ascent": true,
+    "professional_mode_preserved": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],

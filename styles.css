@@ -14092,3 +14092,133 @@ body.captain-modal-open #captainQuarters.cinematic-cabin-ready{
   .admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere,
   .admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere{background-position:center 44%!important;filter:brightness(1.22) saturate(1.04) contrast(1.03)!important}
 }
+
+/* ========================================================================== 
+   6.8.0 — HIGH ADMIRAL'S WAKE / ASCENSION THEATRE
+   The Admiral threshold remains ceremonial on repeat entry. A dedicated
+   post-auth ascent curtain bridges the Gate to either Ceremonial or Professional
+   Deck without changing authority, readiness, or the forged visual pipeline.
+   ========================================================================== */
+
+/* Gate choreography: repeat entry keeps ~65% of the first-entry theatre instead
+   of collapsing into a near-instant modal. */
+.admiral-gate-shell{transform-origin:50% 58%}
+.admiral-gate-enter .admiral-gate-shell{animation:admiralGateThresholdFirst 4.1s cubic-bezier(.18,.72,.18,1) both}
+.admiral-gate-repeat .admiral-gate-shell{animation:admiralGateThresholdRepeat 2.55s cubic-bezier(.18,.72,.18,1) both}
+.admiral-gate-enter .admiral-gate-scene:before{animation:admiralGateGlowFirst 4.1s ease both}
+.admiral-gate-repeat .admiral-gate-scene:before{animation:admiralGateGlowRepeat 2.55s ease both}
+.admiral-gate-repeat .admiral-gate-scene:after{animation:admiralTitleRepeat 2.25s .12s ease both!important}
+.admiral-gate-repeat .admiral-door.left{transform:translateX(-70%)!important;transition:transform 1.95s cubic-bezier(.2,.8,.2,1) .48s!important}
+.admiral-gate-repeat .admiral-door.right{transform:scaleX(-1) translateX(-70%)!important;transition:transform 1.95s cubic-bezier(.2,.8,.2,1) .48s!important}
+.admiral-gate-repeat .admiral-seal{animation:admiralSealRepeat 2.25s ease both!important}
+.admiral-gate-repeat .admiral-gate-card{opacity:1!important;transform:none!important;transition:opacity .72s ease 1.55s,transform .72s ease 1.55s!important}
+
+.admiral-gate-shell:after{
+  content:"";position:absolute;inset:-20% -45%;z-index:1;pointer-events:none;opacity:0;
+  background:linear-gradient(104deg,transparent 38%,rgba(255,221,142,.16) 48%,rgba(255,238,190,.24) 50%,rgba(255,221,142,.10) 52%,transparent 62%);
+  transform:translateX(-48%) skewX(-8deg);
+}
+.admiral-gate-enter .admiral-gate-shell:after{animation:admiralGateLightSweep 3.65s .18s ease-in-out both}
+.admiral-gate-repeat .admiral-gate-shell:after{animation:admiralGateLightSweepRepeat 2.25s .08s ease-in-out both}
+
+@keyframes admiralGateThresholdFirst{
+  0%{opacity:.12;transform:scale(1.022);filter:brightness(.68) saturate(.86)}
+  20%{opacity:1;transform:scale(1.012);filter:brightness(.86) saturate(.94)}
+  63%{transform:scale(1.002);filter:brightness(1.03) saturate(1.02)}
+  100%{opacity:1;transform:none;filter:none}
+}
+@keyframes admiralGateThresholdRepeat{
+  0%{opacity:.18;transform:scale(1.014);filter:brightness(.74) saturate(.9)}
+  28%{opacity:1;filter:brightness(.92) saturate(.96)}
+  72%{transform:scale(1.002);filter:brightness(1.03)}
+  100%{opacity:1;transform:none;filter:none}
+}
+@keyframes admiralGateGlowFirst{0%{opacity:.22;filter:brightness(.55)}35%{opacity:.78;filter:brightness(1.12)}70%{opacity:1;filter:brightness(1.24)}100%{opacity:1;filter:none}}
+@keyframes admiralGateGlowRepeat{0%{opacity:.28;filter:brightness(.65)}45%{opacity:1;filter:brightness(1.18)}100%{opacity:1;filter:none}}
+@keyframes admiralTitleRepeat{0%{opacity:0;letter-spacing:.32em;filter:blur(4px)}32%,72%{opacity:1;letter-spacing:.18em;filter:none}100%{opacity:.52}}
+@keyframes admiralSealRepeat{0%{opacity:0;transform:translate(-50%,-50%) scale(.66) rotate(-12deg)}28%{opacity:1;transform:translate(-50%,-50%) scale(1.05) rotate(0);filter:drop-shadow(0 0 30px rgba(229,187,93,.44))}66%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.82)}}
+@keyframes admiralGateLightSweep{0%,12%{opacity:0;transform:translateX(-52%) skewX(-8deg)}34%{opacity:1}68%{opacity:.85}100%{opacity:0;transform:translateX(54%) skewX(-8deg)}}
+@keyframes admiralGateLightSweepRepeat{0%{opacity:0;transform:translateX(-48%) skewX(-8deg)}30%{opacity:.82}72%{opacity:.62}100%{opacity:0;transform:translateX(48%) skewX(-8deg)}}
+
+/* Post-auth ascent: this ceremony is independent of the saved Deck mode. Even
+   Professional Mode arrives through the Admiral threshold before settling into
+   the clean governance console. */
+.admiral-ascent-curtain{
+  display:none;position:absolute;inset:0;z-index:80;pointer-events:none;overflow:hidden;opacity:0;
+  background:#020a0e;
+}
+.admiral-deck-ascent-first .admiral-ascent-curtain,
+.admiral-deck-ascent-repeat .admiral-ascent-curtain{display:block}
+.admiral-ascent-backdrop{
+  position:absolute;inset:-4%;
+  background-image:
+    linear-gradient(180deg,rgba(1,8,12,.12),rgba(1,8,12,.40)),
+    var(--admiral-command-visual,url("assets/admirals_deck_ceremonial_v640.png"));
+  background-size:cover;background-position:center 46%;background-repeat:no-repeat;
+  filter:brightness(1.12) saturate(1.05) contrast(1.03);transform:scale(1.055);
+}
+.admiral-ascent-backdrop:after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 46%,rgba(235,190,91,.10),transparent 20%),radial-gradient(ellipse at center,transparent 28%,rgba(0,0,0,.54) 92%);
+}
+.admiral-ascent-beam{
+  position:absolute;left:-32%;top:-10%;width:42%;height:120%;opacity:0;transform:skewX(-10deg);
+  background:linear-gradient(90deg,transparent,rgba(247,215,145,.08),rgba(255,235,183,.23),rgba(247,215,145,.07),transparent);
+}
+.admiral-ascent-seal{
+  position:absolute;left:50%;top:43%;transform:translate(-50%,-50%) scale(.62) rotate(-18deg);opacity:0;
+  width:118px;height:118px;display:grid;place-items:center;border:2px solid rgba(222,181,84,.78);border-radius:50%;
+  background:rgba(3,17,21,.76);color:#e3be66;font-size:52px;box-shadow:0 0 55px rgba(222,181,84,.18);
+}
+.admiral-ascent-copy{
+  position:absolute;left:50%;top:62%;transform:translate(-50%,16px);width:min(660px,78vw);text-align:center;opacity:0;
+  color:#f0dfb2;text-shadow:0 4px 28px #000;
+}
+.admiral-ascent-copy small{display:block;color:#d2ad5a;font-size:9px;letter-spacing:.28em;font-weight:900}
+.admiral-ascent-copy strong{display:block;margin:8px 0 6px;font:700 clamp(31px,4.1vw,58px)/1 Georgia,serif;letter-spacing:.03em}
+.admiral-ascent-copy span{display:block;color:#b9c4c3;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+
+.admiral-deck-ascent-first .admiral-ascent-curtain{animation:admiralAscentCurtainFirst 3.9s cubic-bezier(.2,.8,.2,1) both}
+.admiral-deck-ascent-first .admiral-ascent-backdrop{animation:admiralAscentBackdropFirst 3.9s ease both}
+.admiral-deck-ascent-first .admiral-ascent-beam{animation:admiralAscentBeamFirst 3.45s .2s ease both}
+.admiral-deck-ascent-first .admiral-ascent-seal{animation:admiralAscentSealFirst 3.35s .12s ease both}
+.admiral-deck-ascent-first .admiral-ascent-copy{animation:admiralAscentCopyFirst 3.35s .34s ease both}
+
+.admiral-deck-ascent-repeat .admiral-ascent-curtain{animation:admiralAscentCurtainRepeat 2.5s cubic-bezier(.2,.8,.2,1) both}
+.admiral-deck-ascent-repeat .admiral-ascent-backdrop{animation:admiralAscentBackdropRepeat 2.5s ease both}
+.admiral-deck-ascent-repeat .admiral-ascent-beam{animation:admiralAscentBeamRepeat 2.15s .08s ease both}
+.admiral-deck-ascent-repeat .admiral-ascent-seal{animation:admiralAscentSealRepeat 2.12s .06s ease both}
+.admiral-deck-ascent-repeat .admiral-ascent-copy{animation:admiralAscentCopyRepeat 2.10s .18s ease both}
+
+@keyframes admiralAscentCurtainFirst{0%{opacity:0}8%,76%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes admiralAscentBackdropFirst{0%{transform:scale(1.075);filter:brightness(.62) saturate(.86)}40%{transform:scale(1.04);filter:brightness(.90) saturate(.96)}77%{transform:scale(1.015);filter:brightness(1.20) saturate(1.06)}100%{transform:scale(1);filter:brightness(1.08)}}
+@keyframes admiralAscentBeamFirst{0%,12%{left:-34%;opacity:0}30%{opacity:1}72%{opacity:.88}100%{left:102%;opacity:0}}
+@keyframes admiralAscentSealFirst{0%{opacity:0;transform:translate(-50%,-50%) scale(.52) rotate(-24deg)}26%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(0);filter:drop-shadow(0 0 36px rgba(225,184,91,.48))}61%{opacity:1;transform:translate(-50%,-50%) scale(1)}86%,100%{opacity:0;transform:translate(-50%,-50%) scale(.88)}}
+@keyframes admiralAscentCopyFirst{0%,18%{opacity:0;transform:translate(-50%,18px)}36%,72%{opacity:1;transform:translate(-50%,0)}92%,100%{opacity:0;transform:translate(-50%,-8px)}}
+
+@keyframes admiralAscentCurtainRepeat{0%{opacity:0}9%,72%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes admiralAscentBackdropRepeat{0%{transform:scale(1.045);filter:brightness(.68)}48%{filter:brightness(1.08)}100%{transform:scale(1);filter:brightness(1.05)}}
+@keyframes admiralAscentBeamRepeat{0%{left:-30%;opacity:0}32%{opacity:.82}76%{opacity:.65}100%{left:100%;opacity:0}}
+@keyframes admiralAscentSealRepeat{0%{opacity:0;transform:translate(-50%,-50%) scale(.66) rotate(-14deg)}30%,65%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(.88)}}
+@keyframes admiralAscentCopyRepeat{0%,14%{opacity:0;transform:translate(-50%,12px)}34%,68%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-6px)}}
+
+/* The underlying Deck does not visually compete with the ascent curtain. */
+.admiral-deck-ascent-first .admiral-deck-head,
+.admiral-deck-ascent-first .admiral-command-surface,
+.admiral-deck-ascent-first .admiral-deck-grid,
+.admiral-deck-ascent-repeat .admiral-deck-head,
+.admiral-deck-ascent-repeat .admiral-command-surface,
+.admiral-deck-ascent-repeat .admiral-deck-grid{animation:none!important}
+
+@media(prefers-reduced-motion:reduce){
+  .admiral-gate-enter .admiral-gate-shell,.admiral-gate-repeat .admiral-gate-shell,
+  .admiral-gate-enter .admiral-gate-scene:before,.admiral-gate-repeat .admiral-gate-scene:before,
+  .admiral-gate-enter .admiral-gate-shell:after,.admiral-gate-repeat .admiral-gate-shell:after,
+  .admiral-gate-repeat .admiral-gate-scene:after,.admiral-gate-repeat .admiral-seal,
+  .admiral-deck-ascent-first .admiral-ascent-curtain,.admiral-deck-ascent-repeat .admiral-ascent-curtain,
+  .admiral-deck-ascent-first .admiral-ascent-backdrop,.admiral-deck-ascent-repeat .admiral-ascent-backdrop,
+  .admiral-deck-ascent-first .admiral-ascent-beam,.admiral-deck-ascent-repeat .admiral-ascent-beam,
+  .admiral-deck-ascent-first .admiral-ascent-seal,.admiral-deck-ascent-repeat .admiral-ascent-seal,
+  .admiral-deck-ascent-first .admiral-ascent-copy,.admiral-deck-ascent-repeat .admiral-ascent-copy{animation:none!important;transition:none!important}
+  .admiral-ascent-curtain{display:none!important}
+}

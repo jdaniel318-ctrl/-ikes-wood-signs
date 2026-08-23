@@ -455,6 +455,12 @@
     deck.innerHTML=`
       <div class="admiral-deck-shell">
         <div class="admiral-deck-atmosphere" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="admiral-ascent-curtain" aria-hidden="true">
+          <div class="admiral-ascent-backdrop"></div>
+          <div class="admiral-ascent-beam"></div>
+          <div class="admiral-ascent-seal">⚓</div>
+          <div class="admiral-ascent-copy"><small>ABOVE CAPTAIN COMMAND</small><strong>ADMIRAL'S DECK</strong><span>Fleet Governance • Provisional Command</span></div>
+        </div>
         <header class="admiral-deck-head">
           <div><small>TRIAL COMMAND • FLEET GOVERNANCE</small><h2 id="admiralDeckTitle">Admiral's Deck</h2><p>Above Captain command. Governs Dark Sky, Black Flag and fleet standards.</p></div>
           <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckModeBtn" type="button" aria-pressed="false">PROFESSIONAL MODE</button><button id="admiralDeckReturnBtn" type="button">← RETURN TO CAPTAIN'S QUARTERS</button></div>
@@ -520,9 +526,12 @@
       let savedMode='ceremonial';try{savedMode=localStorage.getItem('darkSkyAdmiralDeckMode')||'ceremonial';}catch(_){ }
       deck.dataset.mode=savedMode==='professional'?'professional':'ceremonial';
       const modeBtn=byId('admiralDeckModeBtn');if(modeBtn){const pro=deck.dataset.mode==='professional';modeBtn.setAttribute('aria-pressed',String(pro));modeBtn.textContent=pro?'CEREMONIAL MODE':'PROFESSIONAL MODE';}
-      deck.classList.remove('admiral-deck-enter','admiral-deck-enter-repeat');void deck.offsetWidth;
+      deck.classList.remove('admiral-deck-enter','admiral-deck-enter-repeat','admiral-deck-ascent-first','admiral-deck-ascent-repeat');void deck.offsetWidth;
       let seenDeck=false;try{seenDeck=sessionStorage.getItem('darkSkyAdmiralTrialSeen')==='1';}catch(_){ }
       deck.classList.add(seenDeck?'admiral-deck-enter-repeat':'admiral-deck-enter');
+      deck.classList.add(seenDeck?'admiral-deck-ascent-repeat':'admiral-deck-ascent-first');
+      const ascentMs=seenDeck?2500:3900;
+      window.setTimeout(()=>deck.classList.remove('admiral-deck-ascent-first','admiral-deck-ascent-repeat'),ascentMs+120);
       refreshAdmiralCeremonialSurface();
       if(window.__lastAdmiralReadinessReport)syncAdmiralReadiness(window.__lastAdmiralReadinessReport);
       try{sessionStorage.setItem('darkSkyAdmiralTrialSeen','1');}catch(_){ }
@@ -550,7 +559,7 @@
     let seen=false;try{seen=sessionStorage.getItem('darkSkyAdmiralGateSeen')==='1';}catch(_){ }
     gate?.classList.add(seen?'admiral-gate-repeat':'admiral-gate-enter');
     try{sessionStorage.setItem('darkSkyAdmiralGateSeen','1');}catch(_){ }
-    if(input){input.value='';window.setTimeout(()=>input.focus(),seen?220:950);}
+    if(input){input.value='';window.setTimeout(()=>input.focus(),seen?2050:3150);}
   }
 
   function ensureVisualForge(){

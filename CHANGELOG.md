@@ -1,3 +1,11 @@
+# Dark Sky 6.8.0 — High Admiral's Wake
+
+- Strengthened Admiral Gate repeat-entry ceremony to retain roughly two-thirds of the first-entry theatrical experience.
+- Added a post-auth Admiral ascent curtain that uses the forged Admiral visual before either Ceremonial or Professional Mode settles in.
+- Added longer gate light sweep, title reveal, seal pulse, and door choreography without changing PIN or authority behavior.
+- Preserved Professional Mode, Fleet Readiness, recovery tools, Visual Forge, project isolation, Client Preview safety, and test/private contact blocking.
+- Preserved reduced-motion behavior.
+
 # Dark Sky 6.7.0 — Lantern Watch
 
 - Focused Admiral Ceremonial Integration pass; no authority or routing changes.
