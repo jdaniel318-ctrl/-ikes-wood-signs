@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.2.0",
-  "release": "7.2.0",
+  "build": "7.2.1",
+  "release": "7.2.1",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -43,5 +43,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "Static candidate gate. 7.1.0 remains the Captain-promoted Known Good anchor until 7.2.0 passes the live Fleet Proving Ground and is deliberately promoted. Sounding Line advances Ike plank contour and usable-lettering placement while keeping physical measurement in Sea Trial."
+  "note": "7.2.1 Design Lock freezes the customer-approved Ike visual artifact before contact/review, stores its render metadata with the order, and adds an Approved Artifact Integrity voyage. 7.2.0/7.1.0 remain prior anchors until live proving and deliberate promotion."
 }

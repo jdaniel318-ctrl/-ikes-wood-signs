@@ -1,3 +1,9 @@
+# Dark Sky 7.2.1 — Design Lock
+
+Design Lock is the integrity follow-up to Sounding Line. It closes the live-test mismatch where final review showed a two-line approved design but confirmation silently re-rendered it as one line.
+
+The customer journey remains frozen. This candidate changes approved-artifact integrity only and adds a new proving voyage.
+
 # Dark Sky 7.2.0 — Sounding Line
 
 Sounding Line is the narrow Plank Intelligence 2.0 candidate built on the proven True Grain customer journey. It freezes the seven-step Ike flow and focuses on the weak link exposed in live testing: placing lettering against the actual usable wood surface rather than the photograph rectangle.

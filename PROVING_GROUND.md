@@ -22,3 +22,7 @@ Marking a candidate Known Good records local promotion evidence only. It does no
 
 ## Design rule
 Status → Problem → Next Move. Engineering evidence is available, never forced into the Captain's primary view.
+
+## 7.2.1 approved artifact integrity
+- **Approved Artifact Voyage** verifies that the customer-approved visual is locked before contact/review and stored as the production artifact rather than silently re-rendered later.
+- Editing the design invalidates the lock and requires fresh customer approval.

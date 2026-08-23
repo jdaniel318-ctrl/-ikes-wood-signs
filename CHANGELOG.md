@@ -1,3 +1,10 @@
+## 7.2.1 — Design Lock
+- Freeze Ike approved preview at the approval checkpoint.
+- Final review and confirmation consume the same locked visual artifact.
+- Store approved-design lock metadata with the order.
+- Invalidate the lock whenever design choices change.
+- Add Approved Artifact Voyage to Fleet Proving Ground.
+
 ## 7.2.0 — Sounding Line
 - Froze Ike's proven seven-step journey and targeted the preview-placement engine only.
 - Added local plank contour segmentation using a largest connected component heuristic.
