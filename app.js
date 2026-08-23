@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.8.0';
+  const BUILD_VERSION = '6.9.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3462,25 +3462,63 @@
     return {build:BUILD_VERSION,at:new Date().toISOString(),checks,criticalFailures,warnings,pass:criticalFailures===0};
   }
 
+  function provingVoyagesFromReport(report){
+    const byId=new Map(report.checks.map(c=>[c.id,c]));
+    const combine=(id,label,ids,detail)=>{
+      const rows=ids.map(x=>byId.get(x)).filter(Boolean);
+      const state=rows.some(x=>x.state==='fail')?'hold':rows.some(x=>x.state==='warn')?'watch':'clear';
+      return {id,label,state,detail,checks:rows};
+    };
+    return [
+      combine('authority','Authority Voyage',['engine-auth','project-admin','captain-auth'],'Black Flag → Project Admin → Captain authority contracts.'),
+      combine('isolation','Isolation Voyage',['project-identity','order-boundary'],'Canonical Project IDs and project-scoped operational records.'),
+      combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
+      combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
+      combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
+      combine('navigation','Command Navigation Voyage',['captain-nav'],'Captain main-room and subview return boundaries.')
+    ];
+  }
+
+  function provingStateLabel(v){return v==='clear'?'CLEAR':v==='watch'?'WATCH':'HOLD';}
+  function currentKnownGoodRelease(){
+    try{return localStorage.getItem('darkSkyKnownGoodRelease')||'6.8.0';}catch(_){return '6.8.0';}
+  }
+  function setKnownGoodRelease(version){try{localStorage.setItem('darkSkyKnownGoodRelease',String(version));}catch(_){}}
+
   async function renderAdmiralReadiness({announce=false}={}){
-    const host=$('admiralReadinessBody'),state=$('admiralReadinessState'),stamp=$('admiralReadinessStamp');
+    const host=$('admiralReadinessBody'),state=$('admiralReadinessState'),stamp=$('admiralReadinessStamp'),summary=$('provingGroundSummary');
     if(!host)return null;
     if(state){state.textContent='CHECKING';state.className='admiral-readiness-state checking';}
-    host.innerHTML='<p class="helper">Running non-destructive authority, isolation, preview, safety, navigation, and release checks…</p>';
+    if(summary)summary.innerHTML='<p class="helper">Freezing the current release identity and running non-destructive proving checks…</p>';
+    host.innerHTML='<p class="helper">Running authority, isolation, Client Preview, staging safety, release, recovery, and navigation checks…</p>';
     const report=await runAdmiralReadinessChecks();
+    const voyages=provingVoyagesFromReport(report);
+    report.voyages=voyages;
     window.__lastAdmiralReadinessReport=report;
-    const passed=report.checks.filter(x=>x.state==='pass').length;
-    if(state){
-      state.textContent=report.pass?(report.warnings?'READY • WATCH':'ADMIRAL READY'):'HOLD IN HARBOR';
-      state.className=`admiral-readiness-state ${report.pass?(report.warnings?'watch':'ready'):'hold'}`;
+    const holds=voyages.filter(v=>v.state==='hold').length,watches=voyages.filter(v=>v.state==='watch').length,clears=voyages.filter(v=>v.state==='clear').length;
+    const overall=holds?'hold':watches?'watch':'clear';
+    const knownGood=currentKnownGoodRelease();
+    const next=voyages.find(v=>v.state==='hold')||voyages.find(v=>v.state==='watch');
+    if(state){state.textContent=overall==='clear'?'CLEAR':overall==='watch'?'WATCH':'HOLD';state.className=`admiral-readiness-state ${overall==='clear'?'ready':overall}`;}
+    if(stamp)stamp.textContent=`${clears}/${voyages.length} voyages clear • candidate ${BUILD_VERSION} • known good ${knownGood}`;
+    if(summary){
+      summary.innerHTML=`<article class="proving-status-card ${overall}"><small>FLEET STATUS</small><strong>${provingStateLabel(overall)}</strong><p>${overall==='clear'?'All required proving voyages are clear. This candidate can be considered for promotion.':overall==='watch'?'The hull is sound, but at least one voyage needs Captain attention before promotion.':'A critical proving voyage failed. This release is not promotable.'}</p></article>
+      <article class="proving-next-card"><small>NEXT BEST MOVE</small><strong>${escapeHtml(next?`Run / inspect ${next.label}`:'Promote the cleared candidate')}</strong><p>${escapeHtml(next?.detail||`Candidate ${BUILD_VERSION} has no current HOLD or WATCH voyages.`)}</p><button id="provingNextBtn" type="button" class="primary-btn small">${next?'VIEW VOYAGE EVIDENCE':'MARK CANDIDATE KNOWN GOOD'}</button></article>
+      <article class="proving-release-card"><small>RELEASE ANCHOR</small><strong>${escapeHtml(knownGood)}</strong><p>Last Known Good stays separate from the current candidate until the Captain deliberately promotes it.</p><span>Candidate <b>${escapeHtml(BUILD_VERSION)}</b></span></article>`;
     }
-    if(stamp)stamp.textContent=`${passed}/${report.checks.length} checks clear • ${report.warnings} watch • ${report.criticalFailures} hold • ${new Date(report.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
-    host.innerHTML=`<div class="admiral-readiness-grid">${report.checks.map(c=>`<article class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div>
-      <div class="admiral-readiness-actions"><button id="admiralRerunBtn" type="button" class="primary-btn small">RUN READINESS GATE</button><button id="admiralRecoveryBtn" type="button" class="secondary-btn small">CREATE RECOVERY SNAPSHOT</button><button id="admiralReportBtn" type="button" class="secondary-btn small">DOWNLOAD READINESS REPORT</button></div>`;
+    host.innerHTML=`<div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
+      <details class="proving-evidence"><summary>VIEW ENGINEERING EVIDENCE</summary><div class="admiral-readiness-grid">${report.checks.map(c=>`<article class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div></details>
+      <div class="admiral-readiness-actions"><button id="admiralRerunBtn" type="button" class="primary-btn small">RUN PROVING GROUND</button><button id="admiralRecoveryBtn" type="button" class="secondary-btn small">CREATE RECOVERY SNAPSHOT</button><button id="admiralReportBtn" type="button" class="secondary-btn small">DOWNLOAD EVIDENCE REPORT</button></div>`;
     $('admiralRerunBtn')?.addEventListener('click',()=>renderAdmiralReadiness({announce:true}));
     $('admiralRecoveryBtn')?.addEventListener('click',exportFleetRecoverySnapshot);
     $('admiralReportBtn')?.addEventListener('click',()=>downloadAdmiralReadinessReport(report));
-    if(announce){const msg=report.pass?(report.warnings?`Fleet Readiness clear with ${report.warnings} watch item(s).`:'Fleet Readiness clear. No critical holds detected.'):`Hold in harbor: ${report.criticalFailures} critical readiness check(s) failed.`;const box=$('admiralReadinessNotice');if(box){box.textContent=msg;box.className=`admiral-readiness-notice ${report.pass?'clear':'hold'}`;}}
+    $('provingNextBtn')?.addEventListener('click',()=>{
+      if(next){document.querySelector(`[data-proving-voyage="${next.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+      if(confirm(`Mark Dark Sky ${BUILD_VERSION} as the Last Known Good release on this device? This records promotion evidence only; it does not deploy or publish anything.`)){
+        setKnownGoodRelease(BUILD_VERSION);renderAdmiralReadiness({announce:true});
+      }
+    });
+    if(announce){const msg=overall==='clear'?'Proving Ground clear. No required voyage is holding the release.':overall==='watch'?`Proving Ground has ${watches} watch voyage(s).`:`Hold in harbor: ${holds} required voyage(s) failed.`;const box=$('admiralReadinessNotice');if(box){box.textContent=msg;box.className=`admiral-readiness-notice ${overall==='hold'?'hold':'clear'}`;}}
     return report;
   }
 
@@ -3491,7 +3529,7 @@
 
   function downloadAdmiralReadinessReport(report=window.__lastAdmiralReadinessReport){
     if(!report)return;
-    downloadJsonArtifact(`dark-sky-admiral-readiness-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`,{schema:'dark-sky-admiral-readiness-v1',...report});
+    downloadJsonArtifact(`dark-sky-proving-ground-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`,{schema:'dark-sky-proving-ground-v1',...report});
   }
 
   async function exportFleetRecoverySnapshot(){

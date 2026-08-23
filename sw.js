@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v6-8-0-high-admirals-wake';
+const CACHE='dark-sky-v6-9-0-proven-keel';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.8.0',
-  './platform_core.js?v=6.8.0',
-  './platform_v4.js?v=6.8.0',
-  './platform_identity.js?v=6.8.0',
-  './app.js?v=6.8.0',
-  './captain.js?v=6.8.0',
+  './styles.css?v=6.9.0',
+  './platform_core.js?v=6.9.0',
+  './platform_v4.js?v=6.9.0',
+  './platform_identity.js?v=6.9.0',
+  './app.js?v=6.9.0',
+  './captain.js?v=6.9.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

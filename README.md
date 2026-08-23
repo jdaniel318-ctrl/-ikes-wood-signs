@@ -1,31 +1,21 @@
-# Dark Sky 6.8.0 — High Admiral's Wake
+# Dark Sky 6.9.0 — Proven Keel
 
-High Admiral's Wake is a focused upper-command theatre release built on the proven 6.7.0 Admiral ceremonial renderer. It preserves the Captain → Visual Forge → Admiral pipeline, Professional Mode, project isolation, Client Preview safety, recovery controls, and the current authority contracts while strengthening the Admiral threshold itself.
+Proven Keel is a hardening-and-product release built from the 6.8.0 upper-command baseline. It keeps the proven authority, Client Preview, Captain, Admiral, recovery, and isolation contracts while turning fleet hardening into a Captain-friendly Proving Ground and applying the strongest customer-experience lessons to Ike's Wood Signs.
 
 ## What changed
+- Fleet Proving Ground presents Status → Highest Priority → Next Best Move first.
+- Required voyages group the existing non-destructive evidence into Authority, Isolation, Client Preview, Staging Safety, Release Integrity, and Command Navigation.
+- A cleared candidate may be deliberately marked Last Known Good on the current device; this records promotion evidence only and never deploys/publishes.
+- Engineering evidence remains available under an expandable detail section.
+- Ike's landing experience is more confidence-first, visual, local, and action-oriented while preserving the established sign workflow.
+- Ike's now explains the order journey as Pick Your Plank → Make It Yours → See It Before Ike Makes It, with one obvious DESIGN MY SIGN action.
 
-- Repeat Admiral Gate entry now retains substantial ceremony instead of collapsing into a quick modal.
-- The Admiral Gate uses a longer light sweep, seal reveal, title cadence, and door opening on both first and repeat entry.
-- After Admiral PIN verification, a dedicated Admiral ascent curtain now bridges the Gate into the Deck before either Ceremonial or Professional Mode settles in.
-- The post-auth ascent uses the Captain-forged Admiral visual, so the same installed visual participates in both Gate and Deck theatre.
-- First Admiral Deck ascent is intentionally longer; repeat ascent remains shorter but still ceremonial.
-- Reduced-motion behavior remains respected.
-- No authority, readiness, project, recovery, Client Preview, or test-contact logic was changed.
+## Authority contracts preserved
+- Project Admin recovery: 4353
+- Black Flag Engine: 5615
+- Captain's Quarters: 19613
+- Admiral trial credential: 19613 (separate contract, temporary shared value)
+- Client Preview: unique per invite
 
-## Authority contracts
-
-- Project Admin default/recovery PIN: `4353`
-- Black Flag Engine PIN: `5615`
-- Captain's Quarters PIN: `19613`
-- Admiral's Deck PIN: `19613` temporarily, under a separate Admiral credential contract
-- Client Preview: unique invite PIN per preview
-
-## Test route
-
-1. Engine → Captain's Quarters.
-2. Captain's Helm → Admiral's Gate.
-3. Let the Gate ceremony complete and enter `19613`.
-4. Observe the post-auth Admiral ascent into the Deck.
-5. Return to Captain's Quarters and repeat the route.
-6. Confirm the repeat ceremony remains visibly substantial and the forged visual persists.
-7. Verify Professional Mode remains clean after the same ascent.
+## Release posture
+This build is a Release Candidate until the live Proving Ground is run after deployment. A Known Good label is evidence recorded by the Captain, not an automatic production deployment.

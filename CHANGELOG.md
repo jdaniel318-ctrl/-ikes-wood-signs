@@ -1,3 +1,11 @@
+
+
+## 6.9.0 — Proven Keel
+- Added the Fleet Proving Ground command surface: Status → priority → next best move, with six required non-destructive voyages and expandable evidence.
+- Added deliberate Last Known Good promotion evidence; no automatic deployment or publishing.
+- Applied fleet-learned customer-experience standards to Ike's without changing its project identity or sign workflow.
+- Strengthened Ike's landing page around handmade/local trust, actual-plank photography, preview-before-order, and one clear DESIGN MY SIGN action.
+- Preserved Black Flag 5615, Project Admin 4353, Captain 19613, provisional Admiral contract, Client Preview isolation, recovery, and contact-safety contracts.
 # Dark Sky 6.8.0 — High Admiral's Wake
 
 - Strengthened Admiral Gate repeat-entry ceremony to retain roughly two-thirds of the first-entry theatrical experience.

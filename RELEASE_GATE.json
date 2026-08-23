@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "6.8.0",
-  "release": "6.8.0",
+  "build": "6.9.0",
+  "release": "6.9.0",
   "generatedAt": "2026-08-22",
   "checks": {
     "build_version": true,
@@ -15,16 +15,17 @@
     "no_duplicate_ids": true,
     "no_missing_local_refs": true,
     "assets_media_only": true,
-    "admiral_ceremonial_protected_zones": true,
-    "sw_cache_680": true,
-    "manifest_680": true,
-    "admiral_repeat_gate_theatre": true,
-    "admiral_post_auth_ascent": true,
+    "sw_cache_690": true,
+    "manifest_690": true,
+    "proving_ground_surface": true,
+    "required_voyages": true,
+    "known_good_anchor": true,
+    "ikes_customer_experience_pass": true,
     "professional_mode_preserved": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "Static package gate. Black Flag Admiral Readiness reruns live non-destructive checks against the browser/fleet after deployment."
+  "note": "Static package gate. Black Flag Fleet Proving Ground reruns live non-destructive evidence after deployment before Captain promotion of a release candidate."
 }
