@@ -180,15 +180,40 @@ function markCommissioningFailed(projects=[],reason='Commissioning invariant fai
  write(KEYS.migration,row);core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.commissioning.failed',detail:row.failure});diagnostic('commissioning.failed',row.failure,{projectCount:expected});return row;
 }
 
+async function storageDeepProbe(onProgress){
+ const progress=(stage,detail='')=>{try{if(typeof onProgress==='function')onProgress(stage,detail)}catch(_){}};
+ const probe={at:new Date().toISOString(),usageDetails:null,persisted:null,indexedDbCatalog:[],sessionStorageBytes:0,serviceWorkers:[],opfs:{supported:false,bytes:null,files:null,error:null}};
+ try{const est=await navigator.storage?.estimate?.();if(est?.usageDetails&&typeof est.usageDetails==='object')probe.usageDetails={...est.usageDetails}}catch(_){}
+ try{if(navigator.storage?.persisted)probe.persisted=await navigator.storage.persisted()}catch(_){}
+ progress('catalog','Cataloging browser databases');
+ try{if(indexedDB?.databases){const rows=await indexedDB.databases();probe.indexedDbCatalog=(rows||[]).map(x=>({name:x.name||'(unnamed)',version:x.version??null}))}}catch(err){probe.indexedDbCatalogError=String(err?.message||err)}
+ try{let bytes=0;for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i)||'',v=sessionStorage.getItem(k)||'';bytes+=new Blob([k,v]).size}probe.sessionStorageBytes=bytes}catch(_){}
+ progress('workers','Reading service-worker registrations');
+ try{if(navigator.serviceWorker?.getRegistrations){const regs=await navigator.serviceWorker.getRegistrations();probe.serviceWorkers=(regs||[]).map(r=>({scope:r.scope||'',active:r.active?.scriptURL||'',waiting:r.waiting?.scriptURL||'',installing:r.installing?.scriptURL||''}))}}catch(err){probe.serviceWorkerError=String(err?.message||err)}
+ progress('opfs','Checking browser file storage');
+ try{
+   if(navigator.storage?.getDirectory){
+     probe.opfs.supported=true;
+     const root=await navigator.storage.getDirectory();
+     let bytes=0,files=0;
+     const walk=async dir=>{for await(const [,handle] of dir.entries()){if(handle.kind==='file'){try{const f=await handle.getFile();bytes+=Number(f.size||0);files++}catch(_){}}else if(handle.kind==='directory'){await walk(handle)}}};
+     await walk(root);probe.opfs.bytes=bytes;probe.opfs.files=files;
+   }
+ }catch(err){probe.opfs.error=String(err?.message||err)}
+ return probe;
+}
 async function storageStewardPreview(onProgress){
  const cacheNames=typeof caches!=='undefined'?await caches.keys().catch(()=>[]):[];
- const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v7-7-0-deep-sounding');
+ const oldCaches=cacheNames.filter(k=>(k.startsWith('dark-sky-')||k.startsWith('ikes-wood-signs-')||k.startsWith('workshop-engine-')||k.startsWith('black-flag-'))&&k!=='dark-sky-v7-8-0-sounding-glass');
  let estimate={usage:null,quota:null};try{estimate=await navigator.storage?.estimate?.()||estimate}catch(_){}
  let breakdown=null;try{breakdown=await g.blackFlagStorageBreakdown?.(onProgress)}catch(err){diagnostic('storage.inspect.failed',String(err?.message||err))}
+ let deepProbe=null;try{deepProbe=await storageDeepProbe(onProgress)}catch(err){diagnostic('storage.deep_probe.failed',String(err?.message||err))}
  const cacheSizeMap=new Map((breakdown?.cacheStorage?.caches||[]).map(row=>[row.name,Number(row.bytes||0)]));
  const oldCacheBytes=oldCaches.reduce((sum,name)=>sum+(cacheSizeMap.get(name)||0),0);
+ const opfsBytes=Number(deepProbe?.opfs?.bytes||0);
+ if(breakdown&&opfsBytes>0){breakdown.opfs={bytes:opfsBytes,files:Number(deepProbe?.opfs?.files||0)};breakdown.knownBytes=Number(breakdown.knownBytes||0)+opfsBytes;}
  return {
-   at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,breakdown,
+   at:new Date().toISOString(),usage:estimate.usage,quota:estimate.quota,usageDetails:estimate.usageDetails||deepProbe?.usageDetails||null,breakdown,deepProbe,
    diagnostics:diagnostics().length,blackBoxHealth:blackBoxHealth(),recoveryPoints:recoveryVault().length,labs:labs().length,
    cacheCount:cacheNames.length,oldCaches,oldCacheBytes
  };

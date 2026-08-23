@@ -1,11 +1,12 @@
-# 7.7.0 — Deep Sounding
-- Added a real Storage & Telemetry surface reachable from ENGINE TELEMETRY and the Engine Storage KPI.
-- Added visible origin/measured/unattributed/safe-cleanup buckets and detailed cache/IndexedDB/LocalStorage sounding.
-- Added guarded two-step Safe Cleanup limited to stale application caches.
-- Added Storage Steward Voyage to Fleet Proving Ground.
-- Corrected stale-cache logic so the current 7.7.0 service-worker cache is protected.
+# 7.8.0 — Sounding Glass
+- Fixed Compact Diagnostics so it opens a visible read-only diagnostic panel instead of behaving like a cleanup confirmation.
+- Added deeper storage probes for Safari `usageDetails` when available, IndexedDB database catalog, service-worker registrations, SessionStorage, and Origin Private File System files.
+- Added a Captain-readable explanation when Safari cannot expose the source of browser-managed / unattributed storage.
+- Kept unattributed storage non-deletable unless Dark Sky can enumerate and prove ownership of it.
+- Strengthened Storage Steward Voyage to require visible diagnostics, deep-probe wiring, and guarded stale-cache-only cleanup.
+- Preserved 7.7.0 Deep Sounding storage breakdowns, 7.6.x session boundaries, Iron Hull fortification, and Iron Proof approved-artifact integrity.
 
-## 7.7.0 — Deep Sounding
+## 7.8.0 — Sounding Glass
 
 - Replaced generic non-live `TEST MODE` order confirmation text with exact `PRIVATE PREVIEW`, `TEST EXPERIENCE`, or fallback non-live session language.
 - Private Preview receipt now states that no live order record was created.

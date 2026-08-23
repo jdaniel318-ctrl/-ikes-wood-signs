@@ -14459,3 +14459,11 @@ body.ikes-project.ikes-flow-active .main-panel{padding-top:10px}
 .storage-telemetry-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}.storage-telemetry-summary article{border:1px solid #284852;border-radius:12px;padding:13px;background:rgba(5,25,32,.7)}.storage-telemetry-summary span,.storage-telemetry-summary small{display:block}.storage-telemetry-summary span{font-size:9px;letter-spacing:.12em;color:#88a7b1}.storage-telemetry-summary strong{display:block;font-size:1.35rem;margin:5px 0}.storage-telemetry-summary small{color:#8fa1a7}
 .storage-telemetry-actions{display:flex;gap:9px;flex-wrap:wrap}.storage-telemetry-actions button{min-height:42px}.storage-telemetry-safety{margin-top:12px}
 @media(max-width:900px){.storage-telemetry-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* 7.8.0 Sounding Glass — visible read-only diagnostics and iPad-safe telemetry targets */
+.storage-compact-diagnostics{margin-top:14px;padding:14px;border:1px solid rgba(93,190,214,.28);border-radius:16px;background:rgba(8,28,34,.72)}
+.storage-compact-diagnostics .storage-report-head{margin-bottom:10px}
+.storage-compact-diagnostics .storage-report-grid{margin-bottom:10px}
+.engine-storage-telemetry-station .storage-telemetry-actions button{min-height:52px}
+[data-full-sail="storage"]{cursor:pointer;touch-action:manipulation}
+[data-full-sail="storage"]:focus-visible{outline:2px solid #67c8e6;outline-offset:3px}

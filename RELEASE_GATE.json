@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.7.0",
-  "release": "7.7.0",
+  "build": "7.8.0",
+  "release": "7.8.0",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -62,5 +62,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.7.0 Deep Sounding makes Engine Telemetry and Engine Storage real inspection entry points, exposes measured vs browser-managed storage, constrains safe cleanup to stale application caches, and adds a Storage Steward Proving Ground voyage."
+  "note": "7.8.0 Sounding Glass makes Compact Diagnostics visibly actionable, adds read-only deep storage probes for Safari usage details, IndexedDB catalog, service workers, SessionStorage, and OPFS, and preserves strict no-delete ownership boundaries for unattributed storage."
 }

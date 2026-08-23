@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v7-7-0-deep-sounding';
+const CACHE='dark-sky-v7-8-0-sounding-glass';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=7.7.0',
-  './platform_core.js?v=7.7.0',
-  './platform_v4.js?v=7.7.0',
-  './platform_identity.js?v=7.7.0',
-  './app.js?v=7.7.0',
-  './captain.js?v=7.7.0',
+  './styles.css?v=7.8.0',
+  './platform_core.js?v=7.8.0',
+  './platform_v4.js?v=7.8.0',
+  './platform_identity.js?v=7.8.0',
+  './app.js?v=7.8.0',
+  './captain.js?v=7.8.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

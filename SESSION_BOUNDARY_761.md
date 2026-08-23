@@ -1,6 +1,6 @@
-# Dark Sky 7.7.0 — Deep Sounding — Session Clarity Contract
+# Dark Sky 7.8.0 — Sounding Glass — Session Clarity Contract
 
-True Bearing separated deployment state from customer-session state. Deep Sounding makes every customer-facing confirmation say exactly which non-live boundary is active.
+True Bearing separated deployment state from customer-session state. Sounding Glass makes every customer-facing confirmation say exactly which non-live boundary is active.
 
 ## Required labels
 

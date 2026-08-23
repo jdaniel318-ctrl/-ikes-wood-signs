@@ -1,4 +1,4 @@
-# Dark Sky 7.7.0 — Deep Sounding
+# Dark Sky 7.8.0 — Sounding Glass
 
 ## Mission
 Make Engine storage and telemetry visible, tappable, explainable, and safe to maintain.

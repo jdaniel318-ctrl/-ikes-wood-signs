@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.7.0';
+  const BUILD_VERSION = '7.8.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1489,15 +1489,52 @@
       <details class="storage-report-details"><summary>Largest LocalStorage keys</summary><table><tbody>${localRows}</tbody></table></details>`;
   }
 
+  function renderCompactStorageDiagnostics(r){
+    const p=r?.deepProbe||{}, b=r?.breakdown||{}, usageDetails=r?.usageDetails||p.usageDetails||{};
+    const usageRows=Object.keys(usageDetails||{}).length?Object.entries(usageDetails).map(([k,v])=>`<tr><td>${escapeHtml(k)}</td><td>${formatStorageMb(Number(v||0))} MB</td></tr>`).join(''):'<tr><td colspan="2">Safari did not expose per-storage-class usageDetails on this device.</td></tr>';
+    const dbRows=(p.indexedDbCatalog||[]).length?p.indexedDbCatalog.map(x=>`<tr><td>${escapeHtml(x.name||'(unnamed)')}</td><td>v${escapeHtml(String(x.version??'?'))}</td></tr>`).join(''):'<tr><td colspan="2">IndexedDB database catalog is not exposed by this Safari build.</td></tr>';
+    const workerRows=(p.serviceWorkers||[]).length?p.serviceWorkers.map(x=>`<tr><td>${escapeHtml(x.scope||'scope')}</td><td>${escapeHtml((x.active||x.waiting||x.installing||'registered').split('/').pop())}</td></tr>`).join(''):'<tr><td colspan="2">No service-worker registrations were enumerated.</td></tr>';
+    const opfs=p.opfs||{};
+    const known=Number(b.knownBytes||0), origin=Number(r?.usage||0), gap=Math.max(0,origin-known);
+    const findings=[];
+    if(gap>known*3&&gap>100*1024*1024)findings.push(`The browser-managed gap is unusually large (${formatStorageMb(gap)} MB) compared with enumerated Dark Sky data (${formatStorageMb(known)} MB).`);
+    if(opfs.supported&&Number(opfs.bytes||0)===0)findings.push('Origin Private File System is available but contains no measured files.');
+    if(!Object.keys(usageDetails||{}).length)findings.push('Safari is not exposing a class-by-class storage estimate, so the remaining gap cannot be safely assigned to orders, caches, or files from page JavaScript alone.');
+    if((p.indexedDbCatalog||[]).length>1)findings.push(`Safari reports ${(p.indexedDbCatalog||[]).length} IndexedDB databases for this origin; only Dark Sky-owned stores are measured deeply.`);
+    return `<section class="storage-compact-diagnostics" id="storageCompactDiagnosticsPanel">
+      <div class="storage-report-head"><strong>COMPACT DIAGNOSTICS</strong><span>Read-only • ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</span></div>
+      <div class="storage-report-grid">
+        <div><b>${p.persisted===true?'YES':p.persisted===false?'NO':'?'}</b><small>Persistent storage granted</small></div>
+        <div><b>${formatStorageMb(p.sessionStorageBytes||0)} MB</b><small>SessionStorage (not counted as durable project data)</small></div>
+        <div><b>${opfs.supported?(formatStorageMb(opfs.bytes||0)+' MB'):'N/A'}</b><small>Origin private files${opfs.supported?` • ${Number(opfs.files||0)} file${Number(opfs.files||0)===1?'':'s'}`:''}</small></div>
+        <div><b>${(p.serviceWorkers||[]).length}</b><small>Service-worker registrations</small></div>
+      </div>
+      <p class="helper"><strong>Captain reading:</strong> ${escapeHtml(findings.join(' ')||'No abnormal browser-managed storage signature was detected by the APIs Safari exposes to this page.')}</p>
+      <details class="storage-report-details" open><summary>Safari usage details</summary><table><tbody>${usageRows}</tbody></table></details>
+      <details class="storage-report-details"><summary>IndexedDB catalog</summary><table><thead><tr><th>Database</th><th>Version</th></tr></thead><tbody>${dbRows}</tbody></table></details>
+      <details class="storage-report-details"><summary>Service workers</summary><table><thead><tr><th>Scope</th><th>Script</th></tr></thead><tbody>${workerRows}</tbody></table></details>
+      <p class="helper"><strong>Boundary:</strong> Diagnostics do not delete anything. A browser-managed/unattributed figure is intentionally not classified as safe cleanup unless Dark Sky can enumerate and prove ownership of it.</p>
+    </section>`;
+  }
+  function showCompactStorageDiagnostics(r){
+    const box=$('storageTelemetryStatus'); if(!box||!r)return false;
+    box.querySelector('#storageCompactDiagnosticsPanel')?.remove();
+    box.insertAdjacentHTML('beforeend',renderCompactStorageDiagnostics(r));
+    const panel=box.querySelector('#storageCompactDiagnosticsPanel');
+    try{panel?.scrollIntoView({behavior:'smooth',block:'center'})}catch(_){}
+    window.DarkSkyV4?.diagnostic?.('storage.compact_diagnostics.opened','Compact storage diagnostics displayed',{build:BUILD_VERSION,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0});
+    return true;
+  }
   function storageTelemetryApply(r){
     if(!r)return;
+    window.__blackFlagLastStorageSounding=r;
     const b=r.breakdown||{};const origin=Number(r.usage||0),known=Number(b.knownBytes||0),gap=Math.max(0,origin-known),cleanup=Number(r.oldCacheBytes||0);
     if($('storageTelemetryOrigin')) $('storageTelemetryOrigin').textContent=r.usage!=null?`${formatStorageMb(origin)} MB`:'Unavailable';
     if($('storageTelemetryMeasured')) $('storageTelemetryMeasured').textContent=`${formatStorageMb(known)} MB`;
     if($('storageTelemetryUnattributed')) $('storageTelemetryUnattributed').textContent=`${formatStorageMb(gap)} MB`;
     if($('storageTelemetryCleanup')) $('storageTelemetryCleanup').textContent=`${formatStorageMb(cleanup)} MB`;
     const box=$('storageTelemetryStatus');if(box){box.classList.add('is-active');box.innerHTML=renderStorageStewardReport(r);box.dataset.inspectOk='1';}
-    const clean=$('storageTelemetryCleanBtn');if(clean){clean.disabled=false;clean.textContent=(r.oldCaches?.length||0)?`CLEAN ${r.oldCaches.length} STALE CACHE${r.oldCaches.length===1?'':'S'}`:'COMPACT DIAGNOSTICS';}
+    const clean=$('storageTelemetryCleanBtn');if(clean){clean.disabled=false;const stale=(r.oldCaches?.length||0);clean.dataset.mode=stale?'cleanup':'diagnostics';clean.textContent=stale?`CLEAN ${stale} STALE CACHE${stale===1?'':'S'}`:'COMPACT DIAGNOSTICS';}
   }
   async function openStorageTelemetry({inspect=true}={}){
     openEngineConfiguration('storage');
@@ -3191,7 +3228,7 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
-  // 7.7.0 Deep Sounding — deployment state and customer-session state are separate
+  // 7.8.0 Sounding Glass — deployment state and customer-session state are separate
   // contracts. Every customer entry must establish its session explicitly so a
   // stale Test Experience context can never leak into a published live route.
   function customerSessionLabel(ctx){
@@ -3562,7 +3599,8 @@
 
     const storageEntryOk=!!document.getElementById('engineTelemetryLaunchBtn')&&!!document.getElementById('engineStorageTelemetryStation')&&typeof window.BlackFlagOpenStorageTelemetry==='function';
     const storageSafeOk=typeof window.DarkSkyV4?.storageStewardPreview==='function'&&typeof window.DarkSkyV4?.storageStewardClean==='function'&&String(window.DarkSkyV4.storageStewardClean).includes('oldCaches');
-    add('storage-telemetry','Storage & telemetry access',storageEntryOk&&storageSafeOk?'pass':'fail',storageEntryOk&&storageSafeOk?'Engine Telemetry and Engine Storage expose a real inspection surface; cleanup is constrained to stale application caches after inspection.':'Storage & Telemetry entry point or safe-cleanup contract is missing.');
+    const storageDiagOk=typeof showCompactStorageDiagnostics==='function'&&String(window.DarkSkyV4?.storageStewardPreview||'').includes('deepProbe');
+    add('storage-telemetry','Storage & telemetry access',storageEntryOk&&storageSafeOk&&storageDiagOk?'pass':'fail',storageEntryOk&&storageSafeOk&&storageDiagOk?'Engine Telemetry and Engine Storage expose a real inspection surface; Compact Diagnostics renders visible read-only evidence; cleanup is constrained to stale application caches after inspection.':'Storage & Telemetry entry point, visible diagnostics, deeper probe, or safe-cleanup contract is missing.');
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
@@ -3590,7 +3628,7 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-7-0-deep-sounding';
+  const FORTIFIED_CACHE='dark-sky-v7-8-0-sounding-glass';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -12062,11 +12100,17 @@ The full order and approved media remain stored with this project.`;
 
     $('engineConfigureBtn')?.addEventListener('click',()=>openEngineConfiguration('top'));
     $('engineTelemetryLaunchBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
+    $('engineStorageKpi')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('storageTelemetryInspectBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('storageTelemetryBackBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('storageTelemetryCleanBtn')?.addEventListener('click',async()=>{
       const btn=$('storageTelemetryCleanBtn'),box=$('storageTelemetryStatus');
-      if(!box?.dataset.inspectOk){if(box){box.classList.add('is-active');box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Inspect storage before cleanup.</span>';}return;}
+      if(!box?.dataset.inspectOk){if(box){box.classList.add('is-active');box.innerHTML='<strong>INSPECTION REQUIRED</strong><br><span>Inspect storage before cleanup or diagnostics.</span>';}return;}
+      if(btn?.dataset.mode==='diagnostics'){
+        const last=window.__blackFlagLastStorageSounding;
+        if(!last){box.innerHTML='<strong>DIAGNOSTICS NEED A SOUNDING</strong><br><span>Run Inspect Storage first.</span>';return;}
+        showCompactStorageDiagnostics(last);return;
+      }
       if(btn?.dataset.confirmClean!=='1'){btn.dataset.confirmClean='1';btn.textContent='CONFIRM SAFE CLEANUP';if(box)box.innerHTML='<strong>CLEANUP ARMED</strong><br><span>Press once more to remove only stale Dark Sky application caches. Protected records remain untouched.</span>';return;}
       btn.disabled=true;btn.textContent='TRIMMING…';
       try{const r=await window.DarkSkyV4?.storageStewardClean?.();if(!r)throw new Error('Storage Steward unavailable');delete btn.dataset.confirmClean;box.dataset.inspectOk='';await openStorageTelemetry({inspect:true});}catch(err){if(box)box.innerHTML=`<strong>CLEANUP INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err))}</span>`;btn.disabled=false;delete btn.dataset.confirmClean;btn.textContent='SAFE CLEANUP';}
