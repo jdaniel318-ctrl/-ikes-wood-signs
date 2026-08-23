@@ -1,3 +1,11 @@
+## 7.0.0 — Plankwright
+- Reworked Ike’s into a plank-first candidate journey without changing other project customer shells.
+- Added Plank Recognition scaffolding with explicit calibration-required measurement state; no fabricated dimensions.
+- Added unified Design Your Sign workspace for wording, lettering, finish/color, orientation, top marker, and live exact-plank preview.
+- Added optional lettering-reference photo staging for the future Ike Lettering Library.
+- Added explicit design approval checkpoint and compact Ike final review.
+- Preserved 6.9.1 as Last Known Good until live Proving Ground promotion.
+
 ## 6.9.1 — Anchor Set
 
 

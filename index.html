@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=6.9.1" />
+  <link rel="stylesheet" href="styles.css?v=7.0.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -426,6 +426,79 @@
         <p id="photoError" class="error-text" aria-live="polite"></p>
       </section>
 
+      <section class="screen ike-only-screen" data-screen="ike-plank">
+        <div class="screen-heading"><span class="step-badge">PLANK CHECK</span><h2>Confirm Your Plank</h2></div>
+        <p class="helper">We inspect the photo first so the rest of the design stays tied to the exact piece of wood you picked.</p>
+        <div class="ike-plank-grid">
+          <div class="ike-plank-photo-card"><img id="ikePlankConfirmPhoto" alt="Photographed wood plank" /></div>
+          <div class="ike-recognition-card">
+            <div class="ike-recognition-status"><span class="ike-recognition-dot"></span><div><small>PLANK RECOGNITION</small><strong id="ikeRecognitionHeadline">PHOTO READY</strong></div></div>
+            <div class="ike-recognition-facts">
+              <div><span>Detected orientation</span><strong id="ikeDetectedOrientation">—</strong></div>
+              <div><span>Measurement</span><strong id="ikeDetectedSize">Calibration needed</strong></div>
+              <div><span>Confidence</span><strong id="ikeRecognitionConfidence">Visual geometry only</strong></div>
+            </div>
+            <p class="ike-recognition-note">Until calibrated measurement is commissioned, confirm the posted price on the plank. This fallback can disappear once Plank Recognition is proven.</p>
+            <div id="ikePriceChoices" class="ike-price-strip" aria-label="Confirm posted price">
+              <button type="button" data-ike-price="45">$45</button><button type="button" data-ike-price="55">$55</button><button type="button" data-ike-price="65">$65</button><button type="button" data-ike-price="90">$90</button><button type="button" data-ike-price="135">$135</button>
+            </div>
+            <button type="button" id="ikeConfirmPlankBtn" class="primary-btn">CONFIRM THIS PLANK →</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen ike-only-screen" data-screen="ike-design">
+        <div class="screen-heading"><span class="step-badge">DESIGN YOUR SIGN</span><h2>Words, lettering, finish — all in one place.</h2></div>
+        <p class="helper">Choose the lettering before we place it on the plank. Every choice updates the same design workspace.</p>
+        <div class="ike-design-workspace">
+          <div class="ike-design-controls">
+            <section class="ike-design-block">
+              <div class="ike-design-number">1</div><div class="ike-design-block-body"><label for="ikeWordingInput"><strong>Your wording</strong></label><input id="ikeWordingInput" class="text-input big" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false" /><div class="input-meta"><span>Type it exactly as you want it made.</span><strong id="ikeCharCount">0 characters</strong></div></div>
+            </section>
+            <section class="ike-design-block">
+              <div class="ike-design-number">2</div><div class="ike-design-block-body"><div class="ike-design-label"><strong>Choose lettering style</strong><span>IKE LETTERING LIBRARY</span></div>
+                <div id="ikeFontChoices" class="ike-lettering-grid">
+                  <button type="button" class="ike-lettering-choice" data-ike-font="A"><small>STYLE A</small><span class="style-a">ABC abc • <b data-ike-font-sample>Smoke Hole</b></span></button>
+                  <button type="button" class="ike-lettering-choice" data-ike-font="B"><small>STYLE B</small><span class="style-b">ABC abc • <b data-ike-font-sample>Smoke Hole</b></span></button>
+                  <button type="button" class="ike-lettering-choice" data-ike-font="C"><small>STYLE C</small><span class="style-c">ABC abc • <b data-ike-font-sample>Smoke Hole</b></span></button>
+                </div>
+                <label class="ike-style-reference-btn" for="ikeStyleReferenceInput"><span>＋</span><div><strong>Add lettering reference photo</strong><small>Optional. Stages a visual style reference — it does not pretend a photo is an installable font.</small></div></label>
+                <input id="ikeStyleReferenceInput" type="file" accept="image/*" hidden />
+                <div id="ikeStyleReferenceStatus" class="ike-style-reference-status hidden"><img id="ikeStyleReferencePreview" alt="Lettering reference"><div><strong>REFERENCE STAGED</strong><span id="ikeStyleReferenceName"></span><small>Ready for future Lettering Library matching / creation.</small></div></div>
+              </div>
+            </section>
+            <section class="ike-design-block">
+              <div class="ike-design-number">3</div><div class="ike-design-block-body"><div class="ike-design-label"><strong>Finish & orientation</strong><span>LIVE PREVIEW</span></div>
+                <div id="ikeFillChoices" class="ike-finish-grid">
+                  <button type="button" data-ike-fill="Black"><i class="finish-swatch black"></i>Black</button>
+                  <button type="button" data-ike-fill="White"><i class="finish-swatch white"></i>White</button>
+                  <button type="button" data-ike-fill="Natural"><i class="carved-sample">A</i>Carved</button>
+                  <button type="button" data-ike-fill="Other"><i id="ikeCustomSwatch" class="finish-swatch custom"></i>Custom</button>
+                </div>
+                <div id="ikeCustomColorPanel" class="ike-custom-color hidden"><input id="ikeCustomColor" type="color" value="#1f6feb" aria-label="Choose custom letter color"><span id="ikeCustomColorName">#1F6FEB</span></div>
+                <div class="ike-orientation-confirm"><button type="button" id="ikeRotateBtn">↻ ROTATE SIGN</button><div id="ikeTopMarkerButtons" class="ike-top-buttons"><button data-ike-top="Top of photo">↑ TOP</button><button data-ike-top="Right side of photo">→</button><button data-ike-top="Bottom of photo">↓</button><button data-ike-top="Left side of photo">←</button></div></div>
+              </div>
+            </section>
+          </div>
+          <aside class="ike-design-preview-pane">
+            <div class="ike-design-preview-head"><span>YOUR EXACT PLANK</span><strong id="ikeDesignPrice">$65</strong></div>
+            <div class="preview-card ike-design-preview"><img class="preview-image" data-preview-img alt="Live sign preview" /><div class="preview-fallback"></div><div id="ikeDesignPreviewText" class="preview-text style-b"></div><div id="ikeStylePrompt" class="ike-style-prompt">Choose a lettering style to place your words on the plank.</div><div id="ikeTopMarker" class="ike-top-marker">TOP ↑</div></div>
+            <div class="ike-design-summary-line"><span id="ikeDesignOrientation">Horizontal</span><span id="ikeDesignFill">Black</span><span id="ikeDesignFont">Choose style</span></div>
+            <button type="button" id="ikeDesignNextBtn" class="primary-btn">REVIEW MY DESIGN →</button>
+            <p id="ikeDesignError" class="error-text" aria-live="polite"></p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="screen ike-only-screen" data-screen="ike-approve">
+        <div class="ike-approve-layout">
+          <div><div class="centered"><span class="eyebrow">DESIGN CHECKPOINT</span><h2>Approve the sign you want Ike to make.</h2></div>
+            <div class="preview-card hero-preview ike-approve-preview"><img class="preview-image" data-preview-img alt="Approved plank preview"><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div><div class="ike-top-marker approval-marker">TOP ↑</div></div>
+          </div>
+          <div class="ike-approve-panel"><span>YOUR DESIGN</span><h3 id="ikeApproveWording">Smoke Hole</h3><div class="ike-approve-facts"><div><small>LETTERING</small><strong id="ikeApproveFont">Style B</strong></div><div><small>FINISH</small><strong id="ikeApproveFill">Black</strong></div><div><small>ORIENTATION</small><strong id="ikeApproveOrientation">Horizontal</strong></div><div><small>PRICE</small><strong id="ikeApprovePrice">$65</strong></div></div><button id="ikeApproveDesignBtn" type="button" class="primary-btn">APPROVE MY DESIGN →</button><button id="ikeEditDesignBtn" type="button" class="secondary-btn">EDIT DESIGN</button></div>
+        </div>
+      </section>
+
       <section class="screen" data-screen="orientation">
         <h2 id="orientationStepTitle">How should your sign face?</h2>
         <p class="helper">Choose the orientation. We will add a clear “TOP” marker to Ike's order copy.</p>
@@ -505,6 +578,7 @@
       </section>
 
       <section class="screen" data-screen="customer">
+        <div class="ike-customer-context ike-only"><div class="preview-card"><img class="preview-image" data-preview-img alt="Approved sign thumbnail"><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div><div><small>APPROVED DESIGN</small><strong id="ikeCustomerDesignName">Smoke Hole</strong><span id="ikeCustomerDesignMeta">Style B • Black • $65</span></div></div>
         <h2>Your Contact Information</h2>
         <p id="customerStepCopy">Ike will use this information to let you know when your sign is ready for pickup.</p>
         <label for="customerName">Name</label>
@@ -526,6 +600,7 @@
         <h2>Review Before You Order</h2>
         <div class="preview-card review-preview"><img class="preview-image" data-preview-img alt="Wood preview" /><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div></div>
         <div class="summary-box" id="orderSummary"></div>
+        <button type="button" id="reviewEditDesignBtn" class="secondary-btn ike-only">EDIT DESIGN</button>
         <div class="proofread-callout"><strong>Please check your wording carefully.</strong><span>Your sign will be made from the approved preview.</span></div>
         <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I have reviewed and approve the spelling, capitalization, punctuation, layout, orientation, letter style, and fill shown in my preview. I understand Ike's Wood Signs may refuse or cancel any order at its discretion.</span></label>
         <button type="button" id="approveBtn" class="primary-btn">PLACE MY ORDER →</button>
@@ -1320,11 +1395,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=6.9.1"></script>
-  <script src="platform_v4.js?v=6.9.1"></script>
-  <script src="platform_identity.js?v=6.9.1"></script>
-  <script src="app.js?v=6.9.1"></script>
-  <script src="captain.js?v=6.9.1"></script>
+  <script src="platform_core.js?v=7.0.0"></script>
+  <script src="platform_v4.js?v=7.0.0"></script>
+  <script src="platform_identity.js?v=7.0.0"></script>
+  <script src="app.js?v=7.0.0"></script>
+  <script src="captain.js?v=7.0.0"></script>
 
 </body>
 </html>

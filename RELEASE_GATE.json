@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "6.9.1",
-  "release": "6.9.1",
-  "generatedAt": "2026-08-22",
+  "build": "7.0.0",
+  "release": "7.0.0",
+  "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -15,17 +15,22 @@
     "no_duplicate_ids": true,
     "no_missing_local_refs": true,
     "assets_media_only": true,
-    "sw_cache_690": true,
-    "manifest_690": true,
     "proving_ground_surface": true,
     "required_voyages": true,
     "known_good_anchor": true,
     "ikes_customer_experience_pass": true,
-    "professional_mode_preserved": true
+    "professional_mode_preserved": true,
+    "ikes_plank_recognition_scaffold": true,
+    "ikes_unified_design_workspace": true,
+    "ikes_lettering_reference_staging": true,
+    "ikes_compact_review": true,
+    "known_good_anchor_691_preserved": true,
+    "sw_cache_700": true,
+    "manifest_700": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "Static package gate. Black Flag Fleet Proving Ground reruns live non-destructive evidence after deployment before Captain promotion of a release candidate."
+  "note": "Static candidate gate. 6.9.1 remains the Captain-promoted Known Good anchor until 7.0.0 passes the live Fleet Proving Ground and is deliberately promoted."
 }

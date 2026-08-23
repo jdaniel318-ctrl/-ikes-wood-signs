@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "6.9.1",
+  "build": "7.0.0",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -44,11 +44,11 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Anchor Set",
-  "version": "6.9.1",
-  "releaseName": "Anchor Set",
+  "release_name": "Plankwright",
+  "version": "7.0.0",
+  "releaseName": "Plankwright",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "fleet-proving-ground-and-ikes-customer-experience-hardening",
+  "release_focus": "ikes-unified-design-workspace-plank-recognition-scaffold-and-fleet-safe-consolidation",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",
@@ -85,9 +85,12 @@
       "promotion": "captain-deliberate-known-good-evidence"
     },
     "ikes_customer_experience": {
-      "status": "hardened-landing-pass",
-      "pattern": "confidence-first-visual-sign-ordering",
-      "identity": "project-owned-ike-brand-only"
+      "status": "candidate-unified-design-pass",
+      "pattern": "plank-first-recognition-scaffold-unified-design-approval-contact-review",
+      "identity": "project-owned-ike-brand-only",
+      "plank_recognition": "photo-geometry-now-calibrated-measurement-future",
+      "lettering_library": "project-owned-style-selection-plus-reference-photo-staging",
+      "design_workspace": "wording-lettering-finish-orientation-live-preview-in-one-surface"
     }
   }
 }

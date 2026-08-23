@@ -1,27 +1,43 @@
-# Dark Sky 6.9.1 — Anchor Set
+# Dark Sky 7.0.0 — Plankwright
 
-Anchor Set is a focused Proving Ground state-consistency release built from the proven 6.9.0 baseline. It preserves the working authority, isolation, Client Preview, Captain, Admiral, recovery, and Ike's experience contracts while making Known Good promotion state refresh accurately and unambiguously.
+Plankwright is an Ike's-first customer-experience candidate built on the proven Dark Sky 6.9.1 Known Good anchor. The release restructures Ike's around the exact plank and one live design workspace while keeping the platform authority, isolation, recovery, Client Preview, test-safety, Captain, and provisional Admiral contracts intact.
 
-## 6.9.1 focus
-- Once the current candidate is promoted, the Proving Ground immediately changes from **Promote the cleared candidate** to **Known Good — current version**.
-- The promotion button becomes intentionally inactive after promotion instead of inviting the Captain to repeat the same action.
-- Release Anchor copy now distinguishes an active candidate from the current Known Good release.
-- No proving checks, authority rules, project behavior, or customer experience logic changed.
+## Ike's candidate journey
+1. Welcome / start with the plank.
+2. Photograph the exact plank.
+3. Confirm the plank through an honest Plank Recognition scaffold.
+4. Design wording, lettering, finish/color, top marker, and orientation in one **Design Your Sign** workspace.
+5. Explicitly approve the design.
+6. Enter contact information after approval.
+7. Review the compact production record and place the order.
+8. Receive the order number and approved-design confirmation.
 
-## What changed
-- Fleet Proving Ground presents Status → Highest Priority → Next Best Move first.
-- Required voyages group the existing non-destructive evidence into Authority, Isolation, Client Preview, Staging Safety, Release Integrity, and Command Navigation.
-- A cleared candidate may be deliberately marked Last Known Good on the current device; this records promotion evidence only and never deploys/publishes.
-- Engineering evidence remains available under an expandable detail section.
-- Ike's landing experience is more confidence-first, visual, local, and action-oriented while preserving the established sign workflow.
-- Ike's now explains the order journey as Pick Your Plank → Make It Yours → See It Before Ike Makes It, with one obvious DESIGN MY SIGN action.
+## Plank Recognition
+7.0.0 does **not** invent real-world dimensions from an ordinary photograph. It may detect image geometry/orientation and exposes the place where calibrated measurement will run later. Until a validated scale source is commissioned, the posted-price confirmation remains a temporary fallback.
 
-## Authority contracts preserved
-- Project Admin recovery: 4353
-- Black Flag Engine: 5615
-- Captain's Quarters: 19613
-- Admiral trial credential: 19613 (separate contract, temporary shared value)
-- Client Preview: unique per invite
+Candidate scale sources include a known trailer measurement zone/reference marker, validated device depth/AR, or another tested calibration method. See `IKES_PLANKWRIGHT_700.md`.
 
-## Release posture
-This build is a Release Candidate until the live Proving Ground is run after deployment. A Known Good label is evidence recorded by the Captain, not an automatic production deployment.
+## Lettering Library
+The unified design surface presents Ike-owned lettering choices before placing the words on the plank. An optional reference-photo upload stages visual lettering inspiration for future matching/creation; it is not falsely represented as an installable font.
+
+## Release discipline
+Dark Sky 6.9.1 remains the Last Known Good recovery anchor until 7.0.0 is deployed, reruns the Fleet Proving Ground successfully, produces recovery/evidence artifacts, and is deliberately promoted by the Captain.
+
+## Authority contracts
+- Project Admin fleet default/recovery PIN: `4353`
+- Black Flag Engine PIN: `5615`
+- Captain's Quarters PIN: `19613`
+- Admiral's Deck PIN: separate authority contract, temporarily also `19613`
+- Client Preview: unique six-digit invite PIN per preview
+
+## Preserved safety contracts
+- Strict project isolation
+- Client Preview pre-paint isolation
+- Test / Private Preview real-world contact blocking
+- Domain/host portability
+- iPad/iPhone responsive contracts
+- Recovery snapshot + Known Good release discipline
+- Professional Admiral Mode remains independent of ceremonial visuals
+
+## Deployment
+Upload the contents of this release at the repository root. `assets/` remains media-only. Do not treat local browser state as the target production datastore.

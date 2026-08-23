@@ -1,13 +1,13 @@
-const CACHE='dark-sky-v6-9-1-anchor-set';
+const CACHE='dark-sky-v7-0-0-plankwright';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=6.9.1',
-  './platform_core.js?v=6.9.1',
-  './platform_v4.js?v=6.9.1',
-  './platform_identity.js?v=6.9.1',
-  './app.js?v=6.9.1',
-  './captain.js?v=6.9.1',
+  './styles.css?v=7.0.0',
+  './platform_core.js?v=7.0.0',
+  './platform_v4.js?v=7.0.0',
+  './platform_identity.js?v=7.0.0',
+  './app.js?v=7.0.0',
+  './captain.js?v=7.0.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

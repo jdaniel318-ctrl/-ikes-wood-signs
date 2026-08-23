@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '6.9.1';
+  const BUILD_VERSION = '7.0.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -175,12 +175,12 @@
       defaultPrice:65,prices:[45,55,65,90,135],wordingDefault:'Smoke Hole',
       intro:'Pick the piece of wood you love. Ike will guide you through the rest.',
       ribbon:'YOUR WOOD • YOUR WORDS • YOUR SIGN',
-      start:'START YOUR SIGN →',
+      start:'START WITH MY PLANK →',
       priceTitle:'How long is the wood you picked?',
       priceCopy:"For now, choose the price posted with that length of wood in the trailer. Ike's current price groups are shown below.",
       priceTrust:'Pick the posted price for the length you chose — Ike will take it from there.',
-      photoBadge:'YOUR WOOD',photoTitle:'Take a Picture of Your Wood',
-      photoCopy:"Place the entire blank in view. The picture stays with Ike's order and becomes the background for your preview.",
+      photoBadge:'YOUR PLANK',photoTitle:'Photograph Your Plank',
+      photoCopy:"Place the entire plank in view. We’ll keep this exact photo with the order, inspect its geometry, and use it as the design canvas. Camera access is requested only when you start the camera.",
       orientationTitle:'How should your sign face?',
       wordingTitle:'What should your sign say?',fontTitle:'Choose Your Letter Style',fillTitle:'Choose Your Letter Finish',
       customerCopy:'Ike will use this information to let you know when your sign is ready for pickup.',
@@ -1108,7 +1108,9 @@
   // Legacy Ike integration is intentionally project-specific. New projects must never inherit it.
   const LEGACY_IKE_WEB3FORMS_ACCESS_KEY = 'c97f16ac-2070-46b8-923c-9d7524031bce';
   const LEGACY_IKE_ORDER_EMAIL = 'ikeswoodsigns.orders@yahoo.com';
-  const screenOrder = ['welcome','price','photo','orientation','wording','font','fill','preview','customer','review','done'];
+  const LEGACY_SCREEN_ORDER = ['welcome','price','photo','orientation','wording','font','fill','preview','customer','review','done'];
+  const IKE_SCREEN_ORDER = ['welcome','photo','ike-plank','ike-design','ike-approve','customer','review','done'];
+  function currentScreenOrder(){ return activeProjectId==='ikes-wood-signs'?IKE_SCREEN_ORDER:LEGACY_SCREEN_ORDER; }
 
   const state = {
     current: 'welcome',
@@ -1127,6 +1129,10 @@
     currentOrder: null,
     approvedPreviewData: '',
     customColor: '#1f6feb',
+    fontChosen: false,
+    plankRecognition: null,
+    styleReferenceData: '',
+    styleReferenceName: '',
     allowCustomColors: true,
     customerConfirmationEmail: false
   };
@@ -8339,9 +8345,10 @@
       s.classList.toggle('active',isCurrent);
       s.setAttribute('aria-hidden',isCurrent?'false':'true');
     });
-    const index=screenOrder.indexOf(name);
-    $('progressBar').style.width=`${Math.max(1,(index+1)/screenOrder.length*100)}%`;
-    $('stepLabel').textContent=name==='done'?'Complete':`Step ${index+1} of ${screenOrder.length-1}`;
+    const order=currentScreenOrder();
+    const index=order.indexOf(name);
+    $('progressBar').style.width=`${Math.max(1,(index+1)/order.length*100)}%`;
+    $('stepLabel').textContent=name==='done'?'Complete':`Step ${index+1} of ${order.length-1}`;
     $('backBtn').style.visibility=['welcome','done'].includes(name)?'hidden':'visible';
     updateUi();
     saveDraft();
@@ -8354,6 +8361,7 @@
 
   function selectButtons(containerId, attr, value){
     const box=$(containerId);
+    if(!box)return;
     [...box.querySelectorAll(`[${attr}]`)].forEach(b=>b.classList.toggle('selected',b.getAttribute(attr)===String(value)));
   }
 
@@ -8421,6 +8429,44 @@
       $('cameraPanel').classList.remove('hidden');
       $('cameraControls').classList.remove('hidden');
     }
+    if(activeProjectId==='ikes-wood-signs'){
+      selectButtons('ikePriceChoices','data-ike-price',state.price);
+      selectButtons('ikeFillChoices','data-ike-fill',state.fill);
+      const iw=$('ikeWordingInput');if(iw&&iw.value!==state.wording)iw.value=state.wording;
+      if($('ikeCharCount'))$('ikeCharCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;
+      $$('[data-ike-font-sample]').forEach(el=>el.textContent=state.wording||'Your Sign');
+      $$('#ikeFontChoices [data-ike-font]').forEach(b=>b.classList.toggle('selected',!!state.fontChosen&&b.dataset.ikeFont===state.font));
+      $$('#ikeFillChoices [data-ike-fill]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeFill===state.fill));
+      $$('#ikePriceChoices [data-ike-price]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.ikePrice)===Number(state.price)));
+      if($('ikePlankConfirmPhoto')&&state.photoData)$('ikePlankConfirmPhoto').src=state.photoData;
+      const r=state.plankRecognition||{};
+      if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.status==='detected'?'PLANK DETECTED':'PHOTO READY';
+      if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientation||state.orientation||'—';
+      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.measurement==='calibration-required'?'Calibration marker needed':'Not analyzed';
+      if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':'Visual geometry only';
+      if($('ikeDesignPrice'))$('ikeDesignPrice').textContent=`$${Number(state.price||0)}`;
+      if($('ikeDesignOrientation'))$('ikeDesignOrientation').textContent=state.orientation;
+      if($('ikeDesignFill'))$('ikeDesignFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
+      if($('ikeDesignFont'))$('ikeDesignFont').textContent=state.fontChosen?`Style ${state.font}`:'Choose style';
+      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');el.textContent=state.fontChosen?(state.wording||'Your Sign'):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':'');if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
+      if($('ikeStylePrompt'))$('ikeStylePrompt').classList.toggle('hidden',!!state.fontChosen);
+      $$('.ike-top-marker').forEach(el=>el.textContent=state.topSide==='Top of photo'?'TOP ↑':state.topSide==='Bottom of photo'?'TOP ↓':state.topSide==='Left side of photo'?'TOP ←':'TOP →');
+      $$('#ikeTopMarkerButtons [data-ike-top]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeTop===state.topSide));
+      if($('ikeCustomColorPanel'))$('ikeCustomColorPanel').classList.toggle('hidden',state.fill!=='Other');
+      if($('ikeCustomColor'))$('ikeCustomColor').value=state.customColor||'#1f6feb';
+      if($('ikeCustomColorName'))$('ikeCustomColorName').textContent=String(state.customColor||'#1f6feb').toUpperCase();
+      if($('ikeCustomSwatch'))$('ikeCustomSwatch').style.background=state.customColor||'#1f6feb';
+      if($('ikeStyleReferenceStatus'))$('ikeStyleReferenceStatus').classList.toggle('hidden',!state.styleReferenceData);
+      if(state.styleReferenceData&&$('ikeStyleReferencePreview'))$('ikeStyleReferencePreview').src=state.styleReferenceData;
+      if($('ikeStyleReferenceName'))$('ikeStyleReferenceName').textContent=state.styleReferenceName||'Lettering reference';
+      if($('ikeApproveWording'))$('ikeApproveWording').textContent=state.wording||'Your Sign';
+      if($('ikeApproveFont'))$('ikeApproveFont').textContent=`Style ${state.font}`;
+      if($('ikeApproveFill'))$('ikeApproveFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
+      if($('ikeApproveOrientation'))$('ikeApproveOrientation').textContent=state.orientation;
+      if($('ikeApprovePrice'))$('ikeApprovePrice').textContent=`$${Number(state.price||0)}`;
+      if($('ikeCustomerDesignName'))$('ikeCustomerDesignName').textContent=state.wording||'Your Sign';
+      if($('ikeCustomerDesignMeta'))$('ikeCustomerDesignMeta').textContent=`Style ${state.font} • ${state.fill==='Natural'?'Carved':state.fill} • $${Number(state.price||0)}`;
+    }
     if(state.current==='review') renderSummary();
   }
 
@@ -8440,6 +8486,11 @@
 
   function renderSummary(){
     const build=(label,value,kind='detail')=>`<article class="review-summary-item ${kind}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`;
+    if(activeProjectId==='ikes-wood-signs'){
+      const r=state.plankRecognition||{};
+      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Orientation',state.orientation],['Plank recognition',r.status==='detected'?'Photo geometry confirmed':'Photo confirmed']].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
+      return;
+    }
     $('orderSummary').innerHTML=`
       <section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section>
       <section class="review-summary-group"><h3>Sign details</h3><div class="review-summary-grid">${[
@@ -8562,7 +8613,7 @@
     const id=newOrderId();
     const experienceCtx=currentExperienceContext(activeProject());
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:state.plankRecognition||null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
     if(experienceCtx?.state!=='preview'){
       backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
       try{await put(STORE_ORDERS,order);}catch(err){console.warn('IndexedDB save failed; local backup retained',err);}
@@ -8596,7 +8647,7 @@
       current:'welcome',price:Number(x.defaultPrice||0),photoData:'',orientation:'Horizontal',
       topSide:'Top of photo',wording:x.wordingDefault||'Your Message',font:'B',fill:'Black',
       contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',
-      currentOrderId:'',currentOrder:null,approvedPreviewData:'',customColor:'#1f6feb'
+      currentOrderId:'',currentOrder:null,approvedPreviewData:'',customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''
     });
     if($('wordingInput')) $('wordingInput').value=state.wording;
     ['customerName','customerPhone','customerEmail'].forEach(id=>{if($(id))$(id).value='';});
@@ -8637,6 +8688,11 @@
     setProjectText('customerStepCopy',x.customerCopy);
     setProjectText('doneHeadline',x.doneHeadline);
     setProjectText('doneCopy',x.doneCopy);
+    if(p.id==='ikes-wood-signs'){
+      const start=$('projectStartButton');if(start)start.textContent='START WITH MY PLANK →';
+      const approval=$('approvalCheck')?.closest('.approval-row')?.querySelector('span');if(approval)approval.textContent="I approve this exact design, wording, lettering, finish, orientation, and contact information. Ike's Wood Signs may refuse or cancel an order at its discretion.";
+      const contactLabel=$('contactChoices')?.previousElementSibling;if(contactLabel)contactLabel.textContent='Preferred pickup contact';
+    }
 
     ['projectHeaderCharacter','welcomeCharacter'].forEach(id=>{
       const el=$(id);if(el)el.classList.toggle('project-character-hidden',!!x.hideIke);
@@ -8685,10 +8741,10 @@
   }
   function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(projectDraftKey(),JSON.stringify({...state,currentOrder:null,approvedPreviewData:''}));}catch(_){}}
   function clearDraft(){try{localStorage.removeItem(projectDraftKey())}catch(_){}}
-  function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&screenOrder.includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
+  function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&currentScreenOrder().includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
 
   function resetOrder(){
-    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',customColor:'#1f6feb'});
+    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''});
     ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;setScreen('welcome');
   }
 
@@ -9052,6 +9108,20 @@ The full order and approved media remain stored with this project.`;
     for(const raw of data.orders){const o=normalizeOrderIsolation(raw,{legacyImport:!raw?.projectId});await put(STORE_ORDERS,o);}for(const s of (data.settings||[])) await put(STORE_SETTINGS,s);await renderAdmin();
   }
 
+  function analyzeIkePlankPhoto(){
+    if(activeProjectId!=='ikes-wood-signs'||!state.photoData)return;
+    const img=new Image();
+    img.onload=()=>{
+      const w=Number(img.naturalWidth||img.width||0),h=Number(img.naturalHeight||img.height||0);
+      const orientation=w>=h?'Horizontal':'Vertical';
+      state.orientation=orientation;
+      state.topSide='Top of photo';
+      state.plankRecognition={status:'detected',method:'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,measurement:'calibration-required',confidence:'geometry-clear',analyzedAt:new Date().toISOString()};
+      updateUi();
+    };
+    img.src=state.photoData;
+  }
+
   function cameraSupported(){
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   }
@@ -9114,6 +9184,7 @@ The full order and approved media remain stored with this project.`;
       ctx.drawImage(video,0,0,w,h);
       state.photoData=canvas.toDataURL('image/jpeg',0.78);
       stopCamera();
+      if(activeProjectId==='ikes-wood-signs') analyzeIkePlankPhoto();
       $('photoHelp').textContent='Picture captured. Review it below before continuing.';
       updateUi();
     }catch(err){
@@ -11337,6 +11408,19 @@ The full order and approved media remain stored with this project.`;
       if($('charCount')) $('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;
       applyPreview();
     });
+    $('ikeWordingInput')?.addEventListener('input',e=>{state.wording=e.target.value;updateUi();});
+    $('ikePriceChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-price]');if(!b)return;state.price=Number(b.dataset.ikePrice);updateUi();});
+    $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;state.font=b.dataset.ikeFont;state.fontChosen=true;updateUi();});
+    $('ikeFillChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-fill]');if(!b)return;state.fill=b.dataset.ikeFill;updateUi();});
+    $('ikeCustomColor')?.addEventListener('input',e=>{state.customColor=e.target.value;state.fill='Other';updateUi();});
+    $('ikeTopMarkerButtons')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-top]');if(!b)return;state.topSide=b.dataset.ikeTop;updateUi();});
+    $('ikeRotateBtn')?.addEventListener('click',()=>{state.orientation=state.orientation==='Horizontal'?'Vertical':'Horizontal';updateUi();});
+    $('ikeConfirmPlankBtn')?.addEventListener('click',()=>setScreen('ike-design'));
+    $('ikeDesignNextBtn')?.addEventListener('click',()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';setScreen('ike-approve');});
+    $('ikeApproveDesignBtn')?.addEventListener('click',()=>setScreen('customer'));
+    $('ikeEditDesignBtn')?.addEventListener('click',()=>setScreen('ike-design'));
+    $('reviewEditDesignBtn')?.addEventListener('click',()=>setScreen(activeProjectId==='ikes-wood-signs'?'ike-design':'wording'));
+    $('ikeStyleReferenceInput')?.addEventListener('change',async e=>{const input=e.target;const f=input.files?.[0];if(!f)return;try{state.styleReferenceData=await resizePhoto(f);state.styleReferenceName=f.name||'Lettering reference';updateUi();}catch(err){console.error('Lettering reference failed',err);}finally{input.value='';}});
   }
 
   function bindCustomerMediaCore(){
@@ -11373,6 +11457,7 @@ The full order and approved media remain stored with this project.`;
       try{
         state.photoData=await resizePhoto(f);
         stopCamera();
+        if(activeProjectId==='ikes-wood-signs') analyzeIkePlankPhoto();
         updateUi();
         if($('photoHelp')) $('photoHelp').textContent='Picture added. Review it before continuing.';
       }catch(err){
@@ -11514,11 +11599,16 @@ The full order and approved media remain stored with this project.`;
     $$('.next').forEach(b=>b.addEventListener('click',()=>{
       if(b.dataset.busy==='1') return;
       b.dataset.busy='1';
-      setScreen(b.dataset.next);
+      let next=b.dataset.next;
+      if(activeProjectId==='ikes-wood-signs'){
+        if(state.current==='welcome') next='photo';
+        else if(state.current==='photo' && next==='orientation') next='ike-plank';
+      }
+      setScreen(next);
       setTimeout(()=>delete b.dataset.busy,220);
     }));
-    $$('.goto').forEach(b=>b.addEventListener('click',()=>setScreen(b.dataset.goto)));
-    $('backBtn')?.addEventListener('click',()=>{const i=screenOrder.indexOf(state.current);if(i>0)setScreen(screenOrder[i-1]);});
+    $$('.goto').forEach(b=>b.addEventListener('click',()=>setScreen(activeProjectId==='ikes-wood-signs'&&b.dataset.goto==='wording'?'ike-design':b.dataset.goto)));
+    $('backBtn')?.addEventListener('click',()=>{const order=currentScreenOrder();const i=order.indexOf(state.current);if(i>0)setScreen(order[i-1]);});
   }
 
   function bindEvents(){
