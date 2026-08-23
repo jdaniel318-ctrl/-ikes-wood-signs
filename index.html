@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.8.3" />
+  <link rel="stylesheet" href="styles.css?v=7.8.4" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1226,7 +1226,7 @@
           <button id="storageTelemetryInspectBtn" class="primary-btn" type="button">INSPECT STORAGE</button>
           <button id="storageTelemetryDiagnosticsBtn" class="secondary-btn" type="button" onclick="window.BlackFlagCompactStorageDiagnostics && window.BlackFlagCompactStorageDiagnostics()">COMPACT DIAGNOSTICS</button>
           <button id="storageTelemetryCleanBtn" class="secondary-btn" type="button" disabled onclick="return window.BlackFlagTelemetrySafeClean ? window.BlackFlagTelemetrySafeClean(event) : false">SAFE CLEANUP</button>
-          <button id="storageTelemetryBackBtn" class="secondary-btn" type="button">BACK TO ENGINE</button>
+          <button id="storageTelemetryBackBtn" class="secondary-btn" type="button" onclick="return window.BlackFlagCloseStorageTelemetry ? window.BlackFlagCloseStorageTelemetry(event) : false">CLOSE STORAGE &amp; TELEMETRY</button>
         </div>
         <div id="storageTelemetryStatus" class="storage-steward-status" role="status" aria-live="polite"></div>
         <p class="helper storage-telemetry-safety"><strong>Protected:</strong> projects, orders, approved artifacts, customer records, project graphics, settings, recovery anchors, admissions and quarantine evidence.</p>
@@ -1418,11 +1418,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.8.3"></script>
-  <script src="platform_v4.js?v=7.8.3"></script>
-  <script src="platform_identity.js?v=7.8.3"></script>
-  <script src="app.js?v=7.8.3"></script>
-  <script src="captain.js?v=7.8.3"></script>
+  <script src="platform_core.js?v=7.8.4"></script>
+  <script src="platform_v4.js?v=7.8.4"></script>
+  <script src="platform_identity.js?v=7.8.4"></script>
+  <script src="app.js?v=7.8.4"></script>
+  <script src="captain.js?v=7.8.4"></script>
 
 </body>
 </html>

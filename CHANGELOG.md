@@ -1,4 +1,4 @@
-# Dark Sky 7.8.3 — Harbor Exit Safe Cleanup Acknowledgement
+# Dark Sky 7.8.4 — Harbor Exit Workspace Return
 
 - Safe Cleanup now has a direct inline iPad activation path, matching the successful Compact Diagnostics approach.
 - First tap immediately changes the button to CONFIRM SAFE CLEANUP and displays CLEANUP ARMED.

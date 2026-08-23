@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.3';
+  const BUILD_VERSION = '7.8.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1592,7 +1592,7 @@
     }finally{if(btn){delete btn.dataset.opening;btn.disabled=false;btn.textContent='COMPACT DIAGNOSTICS'}}
   };
 
-  // 7.8.3 Harbor Exit: iPad-safe, direct Safe Cleanup activation.
+  // 7.8.4 Harbor Exit: iPad-safe, direct Safe Cleanup activation.
   // The button owns an inline activation path just like Compact Diagnostics so a tap
   // cannot disappear inside a late/fragile event binding. First tap only arms cleanup.
   window.BlackFlagTelemetrySafeClean=async function(event){
@@ -1664,6 +1664,22 @@
     return true;
   }
   window.BlackFlagOpenStorageTelemetry=openStorageTelemetry;
+
+  // 7.8.4 Harbor Exit: Storage & Telemetry is an Engine workspace, not a separate destination.
+  // Give iPad/Safari a direct activation path and name the action for what it actually does.
+  window.BlackFlagCloseStorageTelemetry=function(event){
+    try{event?.preventDefault?.();event?.stopPropagation?.();}catch(_){}
+    const dock=$('engineConfigurationDock');
+    if(dock) dock.classList.add('hidden');
+    $('enginePanel')?.classList.remove('hidden');
+    document.body.classList.remove('engine-workspace-open');
+    const restoreY=Number(engineWorkspaceReturnScrollY||0);
+    requestAnimationFrame(()=>{
+      try{window.scrollTo({top:restoreY,left:0,behavior:'instant'});}catch(_){window.scrollTo(0,restoreY);}
+      try{$('engineStorageKpi')?.focus?.({preventScroll:true});}catch(_){}
+    });
+    return false;
+  };
 
   window.BlackFlagStorageStewardInspect=async function(){
     const btn=$('engineStorageStewardPreviewBtn'), clean=$('engineStorageStewardCleanBtn'), box=$('engineStorageStewardStatus');
@@ -3340,7 +3356,7 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
-  // 7.8.3 Harbor Exit — deployment state and customer-session state are separate
+  // 7.8.4 Harbor Exit — deployment state and customer-session state are separate
   // contracts. Every customer entry must establish its session explicitly so a
   // stale Test Experience context can never leak into a published live route.
   function customerSessionLabel(ctx){
@@ -12214,7 +12230,6 @@ The full order and approved media remain stored with this project.`;
     $('engineTelemetryLaunchBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('engineStorageKpi')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
     $('storageTelemetryInspectBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
-    $('storageTelemetryBackBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('engineConfigurationCloseBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('saveEngineEconomicsBtn')?.addEventListener('click',saveEngineEconomics);
     bindEngineAppearanceControls();
