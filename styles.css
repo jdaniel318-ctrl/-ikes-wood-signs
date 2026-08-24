@@ -14587,3 +14587,25 @@ body.ikes-project:not(.ikes-flow-active) #stepLabel{
 body.project-admin-mode[data-active-project="ikes-wood-signs"] #adminOptionsMenuBtn{
   border-color:rgba(80,199,235,.62)!important;
 }
+
+
+/* ================================================================
+   7.8.9 — THREE WATCH
+   CUSTOMER • OWNER / PARTNER • BLACK FLAG / CAPTAIN
+   ================================================================ */
+/* A live customer who arrived publicly sees the business only. A Captain/operator
+   who deliberately opened the vessel from Black Flag keeps one explicit return
+   control so testing and service never depend on Safari Back or Refresh. */
+body[data-customer-session="live_customer"]:not([data-operator-entry="true"]) #returnToEngineBtn{display:none!important;}
+body[data-customer-session="live_customer"][data-operator-entry="true"] #returnToEngineBtn.dark-sky-return-control{display:flex!important;}
+body[data-customer-session="live_customer"] #adminBtn,
+body[data-customer-session="live_customer"] #mugsAdminBtn,
+body[data-customer-session="live_customer"] #flowersAdminBtn,
+body[data-customer-session="live_customer"] [data-project-settings-launch]{display:none!important;}
+.owner-access-action{border-color:rgba(207,167,74,.68)!important;background:rgba(92,65,18,.24)!important;}
+.owner-approved-feature-note{display:grid;gap:4px;margin-bottom:14px;padding:12px;border:1px solid rgba(207,167,74,.42);border-radius:10px;background:rgba(92,65,18,.16);}
+.owner-approved-feature-note strong{color:#e4c36d;font-size:10px;letter-spacing:.1em;}
+.owner-approved-feature-note span{color:#aeb9b5;font-size:12px;line-height:1.45;}
+
+.owner-partner-entry{display:grid;gap:8px;margin-top:14px;padding:12px;border:1px solid rgba(88,161,185,.4);border-radius:10px;background:rgba(12,39,48,.32)}
+.owner-partner-entry>span{color:#8cc5d6;font-size:9px;font-weight:900;letter-spacing:.11em}.owner-partner-entry p{margin:0!important;color:#a9b8b5!important;font-size:11px!important;line-height:1.45}.owner-partner-entry label{margin:0!important}

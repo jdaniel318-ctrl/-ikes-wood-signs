@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.8';
+  const BUILD_VERSION = '7.8.9';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -725,6 +725,11 @@
     p.governance.history=Array.isArray(p.governance.history)?p.governance.history:[];
 
     p.ownerAccess=p.ownerAccess&&typeof p.ownerAccess==='object'?p.ownerAccess:{};
+    // Three Watch: owner/partner access is a distinct project surface. Existing
+    // projects keep their explicit setting; Ike's reference vessel is enabled so
+    // the owner architecture can be proven without exposing Black Flag credentials.
+    if(typeof p.ownerAccess.enabled!=='boolean')p.ownerAccess.enabled=(p.id==='ikes-wood-signs');
+    if(p.id==='ikes-wood-signs')p.ownerAccess.enabled=true;
     p.ownerAccess.status=['not_claimed','invited','active'].includes(p.ownerAccess.status)?p.ownerAccess.status:'not_claimed';
     p.ownerAccess.ownerName=p.ownerAccess.ownerName||'';
     p.ownerAccess.ownerEmail=p.ownerAccess.ownerEmail||'';
@@ -841,6 +846,12 @@
   function ownerLoginLink(projectId){
     const base=location.href.split('#')[0];
     return `${base}#owner-login=${encodeURIComponent(projectId)}`;
+  }
+
+  function ownerPartnerEntryLink(projectId){
+    const base=new URL('owner.html',location.href.split('#')[0]);
+    base.searchParams.set('project',projectId);
+    return base.toString();
   }
 
   async function createOwnerCredential(p,login,password,{testMode=false}={}){
@@ -3175,7 +3186,7 @@
     // that established identity as a project-specific compatibility fallback until
     // a dedicated Project Logo / Mark is assigned in the Engine.
     if(!logo && canonicalProjectId(p?.id)==='ikes-wood-signs'){
-      logo='assets/ike_character.jpg';
+      logo='assets/ike_character_white_teeth.png';
       source='ikeCompatibilityMark';
     }
     return {code,logo,source};
@@ -3378,11 +3389,15 @@
     ctx.establishedAt=new Date().toISOString();
     window.__deploymentCustomerContext=ctx;
     document.body.dataset.customerSession=ctx.sessionKind;
+    const operatorSources=new Set(['project_card_open_project','legacy_published_showroom','engine_operational_picture','engine_ikes_dock']);
+    if(operatorSources.has(String(source||'')))document.body.dataset.operatorEntry='true';
+    else document.body.removeAttribute('data-operator-entry');
     return ctx;
   }
   function clearCustomerSessionContext(){
     window.__deploymentCustomerContext=null;
     document.body.removeAttribute('data-customer-session');
+    document.body.removeAttribute('data-operator-entry');
     document.getElementById('customerSessionIndicator')?.remove();
   }
   function renderCustomerSessionIndicator(p){
@@ -3760,7 +3775,7 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-8-6-grain-compass';
+  const FORTIFIED_CACHE='dark-sky-v7-8-9-three-watch';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -4251,6 +4266,7 @@
         </div>
         <details class="project-card-tools"><summary>PROJECT TOOLS</summary><div class="project-card-actions project-card-actions-command">
           <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="secondary-btn small">CONTROL CENTER</button>
+          ${p.ownerAccess?.enabled?`<button type="button" data-project-owner-access="${escapeHtml(p.id)}" class="secondary-btn small owner-access-action">OWNER / PARTNER ACCESS</button>`:''}
           <button type="button" data-project-test-experience="${escapeHtml(p.id)}" class="secondary-btn small">INTERNAL TEST</button>
           <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn small project-proof-action">SEAWORTHINESS</button>
         </div></details>
@@ -4793,6 +4809,7 @@
               <button id="revokeOwnerInvite" class="secondary-btn small" type="button" ${!oa.invitation||ownerInviteStatus(p)==='revoked'?'disabled':''}>REVOKE INVITATION</button>
               <button id="previewOwnerPortal" class="secondary-btn small" type="button">PREVIEW OWNER PORTAL</button>
             </div>
+            <div class="owner-partner-entry"><span>RETURNING OWNER / PARTNER</span><p>Once the owner has claimed access, this project-scoped entrance can be bookmarked and used without entering Black Flag.</p><label>Owner Portal entrance<input id="ownerPartnerEntryUrl" type="text" readonly value="${escapeHtml(ownerPartnerEntryLink(p.id))}"></label><div class="owner-invite-output-actions"><button id="copyOwnerPartnerEntry" class="secondary-btn small" type="button">COPY OWNER ENTRANCE</button><button id="openOwnerPartnerEntry" class="secondary-btn small" type="button">OPEN OWNER ENTRANCE</button></div></div>
             <div id="ownerInviteOutput" class="owner-invite-output hidden">
               <label>Claim link<textarea id="ownerInviteLink" readonly></textarea></label>
               <div class="owner-invite-output-actions">
@@ -5451,6 +5468,12 @@
         await persistProjectMutation(p,{reason:'owner.capabilities.update'});
         logActivity(p.id,'Owner capabilities updated',p.ownerAccess.capabilities.join(', '));
       }));
+
+      $('copyOwnerPartnerEntry')?.addEventListener('click',async()=>{
+        const value=ownerPartnerEntryLink(p.id);
+        try{await navigator.clipboard.writeText(value);}catch(_){const input=$('ownerPartnerEntryUrl');input?.focus();input?.select();}
+      });
+      $('openOwnerPartnerEntry')?.addEventListener('click',()=>{location.href=ownerPartnerEntryLink(p.id);});
 
       $('generateOwnerInvite')?.addEventListener('click',async()=>{
         if(!requireEngineProjectMutation(p,'owner.invitation.generate'))return;
@@ -7923,6 +7946,9 @@
       alert('This project does not yet have a customer operating model. Add a customer-ready offer in Project Control before testing.');
       return;
     }
+    // Navigation contract: project entry is an explicit app transition. Browser
+    // Back is not the primary return path; the in-app Black Flag control owns it.
+    try{history.pushState({darkSkyRoute:'project',projectId:p.id},'',location.pathname+location.search+`#project=${encodeURIComponent(p.id)}`);}catch(_){}
     clearProjectPresentation();
     const projectId=activateProjectContext(p);
     engineActiveProjectId=null;
@@ -10215,7 +10241,7 @@ The full order and approved media remain stored with this project.`;
     if(logo){
       let src=assets.projectLogo||'';
       if(!src && code==='SIG') src='assets/signal_restoration_logo.png';
-      if(!src && code==='IKE') src='assets/ike_character.jpg';
+      if(!src && code==='IKE') src='assets/ike_character_white_teeth.png';
       if(src){
         logo.src=src;
         logo.alt=`${name} admin mark`;
@@ -10761,7 +10787,7 @@ The full order and approved media remain stored with this project.`;
     // project cards and launch controls must remain actionable even if a later
     // migration or optional initializer fails.
     document.addEventListener('click',async event=>{
-      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-test-experience],[data-project-client-preview],[data-project-launch],[data-fleet-health-project],#commissionNewProjectBtn,#addProjectBtn,#addProjectCard,[data-resume-commissioning],[data-retry-project-registry]');
+      const target=event.target?.closest?.('[data-engine-fleet-filter],[data-open-project-control],[data-project-owner-access],[data-project-test-experience],[data-project-client-preview],[data-project-launch],[data-fleet-health-project],#commissionNewProjectBtn,#addProjectBtn,#addProjectCard,[data-resume-commissioning],[data-retry-project-registry]');
       if(!target)return;
       event.preventDefault();
       event.stopPropagation();
@@ -10790,6 +10816,16 @@ The full order and approved media remain stored with this project.`;
 
       if(target.matches('[data-fleet-health-project]')){await openProjectEngineControl(target.dataset.fleetHealthProject);return;}
       if(target.matches('[data-open-project-control]')){await openProjectEngineControl(target.dataset.openProjectControl);return;}
+      if(target.matches('[data-project-owner-access]')){
+        const p=projectById(target.dataset.projectOwnerAccess);if(!p)return;
+        ensureProjectGovernance(p);
+        if(!p.ownerAccess.enabled){alert('Owner / Partner Access is not enabled for this project.');return;}
+        // Open the same project-scoped owner gate used by a partner bookmark. No
+        // Black Flag credential is carried into the owner session.
+        history.pushState({darkSkyRoute:'owner-login',projectId:p.id},'',`#owner-login=${encodeURIComponent(p.id)}`);
+        await showOwnerLogin(p.id);
+        return;
+      }
       if(target.matches('[data-project-client-preview]')){if(!target.disabled)await openClientPreviewBuilder(target.dataset.projectClientPreview);return;}
       if(target.matches('[data-project-test-experience]')){
         if(target.dataset.commandBusy==='1')return;
@@ -10982,6 +11018,14 @@ The full order and approved media remain stored with this project.`;
       const n=p.notifications||{customerConfirmationEmail:false};
       body.innerHTML=ownerModuleShell('Notifications','Choose the customer notifications currently available for your business.',
         `<article class="owner-form-card"><label class="owner-toggle-row"><span><strong>Customer confirmation email</strong><small>Use the configured confirmation message after an order is placed.</small></span><input id="ownerConfirmationEmail" type="checkbox" ${n.customerConfirmationEmail?'checked':''}></label><button id="ownerSaveNotifications" class="primary-btn" type="button">SAVE NOTIFICATIONS</button><p id="ownerNotificationStatus" class="owner-save-status"></p></article>`);
+    } else if(moduleKey==='features'){
+      const canBrand=caps.has('branding');
+      const canNotify=caps.has('notifications');
+      const options=[];
+      if(canBrand)options.push(`<label class="owner-toggle-row"><span><strong>Custom color choices</strong><small>Approved project option. Let customers choose a custom lettering color.</small></span><input id="ownerFeatureCustomColors" type="checkbox" ${p.customization?.allowCustomColors!==false?'checked':''}></label>`);
+      if(canNotify)options.push(`<label class="owner-toggle-row"><span><strong>Customer confirmation email</strong><small>Approved notification option. Send the configured confirmation when external notifications are enabled.</small></span><input id="ownerFeatureConfirmationEmail" type="checkbox" ${p.notifications?.customerConfirmationEmail?'checked':''}></label>`);
+      body.innerHTML=ownerModuleShell('Features','Choose among features Black Flag has already approved for this project. Platform-level capabilities and security remain governed by the fleet.',
+        `<article class="owner-form-card"><div class="owner-approved-feature-note"><strong>APPROVED BOUNDARIES</strong><span>You can operate your vessel inside these rails. New platform capabilities appear here only after they are approved for your project.</span></div>${options.length?options.join(''):'<div class="owner-module-empty"><h3>No owner-selectable features yet</h3><p>Your existing project tools remain available. New approved choices will appear here when they are ready.</p></div>'}<button id="ownerSaveFeatures" class="primary-btn" type="button" ${options.length?'':'disabled'}>SAVE FEATURES</button><p id="ownerFeaturesStatus" class="owner-save-status"></p></article>`);
     } else if(moduleKey==='settings'){
       body.innerHTML=ownerModuleShell('Settings','Manage your Business Portal login.',
         `<article class="owner-form-card owner-settings-card">
@@ -11026,6 +11070,23 @@ The full order and approved media remain stored with this project.`;
       const next={...config,prices}; await setSetting(`businessConfig:${p.id}`,next); logActivity(p.id,'Owner updated pricing',prices.join(', '));
       if($('ownerPricingStatus'))$('ownerPricingStatus').textContent='Pricing saved.';
     });
+    $('ownerSaveFeatures')?.addEventListener('click',async()=>{
+      // Owner changes only project-scoped choices already approved by Black Flag.
+      if($('ownerFeatureCustomColors')){
+        if(!caps.has('branding'))return;
+        p.customization=p.customization||{};
+        p.customization.allowCustomColors=!!$('ownerFeatureCustomColors').checked;
+      }
+      if($('ownerFeatureConfirmationEmail')){
+        if(!caps.has('notifications'))return;
+        p.notifications=p.notifications||{};
+        p.notifications.customerConfirmationEmail=!!$('ownerFeatureConfirmationEmail').checked;
+      }
+      await persistProjectMutation(p,{reason:'owner.features.update'});
+      logActivity(p.id,'Owner updated approved features','Project-scoped choices');
+      if($('ownerFeaturesStatus'))$('ownerFeaturesStatus').textContent='Features saved.';
+    });
+
     $('ownerSaveBranding')?.addEventListener('click',async()=>{
       if(!requireOwnerProjectMutation(p,'branding','branding.update'))return;
       const name=String($('ownerBrandName')?.value||'').trim(),subtitle=String($('ownerBrandSubtitle')?.value||'').trim();
@@ -11148,6 +11209,8 @@ The full order and approved media remain stored with this project.`;
       ['reporting','Reporting','Review business activity'],
       ['notifications','Notifications','Manage customer notifications']
     ].filter(([key])=>caps.has(key));
+    // Features are owner-selectable only inside Black Flag-approved boundaries.
+    modules.push(['features','Features','Turn approved project features on or off']);
     modules.push(['settings','Settings','Manage your login and password']);
 
     body.innerHTML=`<section class="owner-portal-overview">

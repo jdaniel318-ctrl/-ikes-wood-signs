@@ -1,3 +1,13 @@
+# 7.8.9 — Three Watch
+
+- Establishes the reusable three-surface fleet architecture: Customer Experience, Owner / Partner Business Portal, and Black Flag / Captain governance.
+- Adds a durable project-scoped `owner.html?project=<project-id>` entrance so owners can manage their vessel without Black Flag credentials.
+- Adds an Engine-side Owner / Partner Access command for authorized setup and testing.
+- Owner portals keep project-scoped operations, pricing, branding, reporting, devices, staff, and settings inside Black Flag-approved capability boundaries.
+- Adds an owner Features module for safe project-scoped choices already approved by Black Flag; platform capabilities and security remain fleet-governed.
+- Published public customer sessions remain business-only; Captain/operator entries retain an explicit Black Flag return control so browser Back/Refresh are never required for normal navigation.
+- Preserves Ike’s owner-controlled species pricing, simple customer price presentation, Project Options access, and project isolation.
+
 # 7.8.8 — Clear Deck
 
 - Fleet-wide command/navigation affordance pass: actionable tabs and command-bar items now read unmistakably as buttons.

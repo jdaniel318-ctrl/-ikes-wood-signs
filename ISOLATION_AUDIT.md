@@ -48,7 +48,7 @@ The following existing platform/security/Captain files are byte-for-byte unchang
 - `assets/captains_quarters_cinematic_v2953.jpg` — unchanged — SHA-256 `f68e466636693e4dc9b47f2b7fbfca687b7bf4724ba2b5cb14dde179c790ef2b`
 - `assets/engine_room_modern_benchmark_v2976.png` — unchanged — SHA-256 `ffaec34c7feb88a7b05560e6b5469c4d57861b00f308d032d526760e5a422c1c`
 - `assets/engine_room_pirate_benchmark_v2978.png` — unchanged — SHA-256 `65ed8f851e5aa6a213c4eac37d3509d87c40c3ff431234eed6ff6b456381c7cf`
-- `assets/ike_character.jpg` — unchanged — SHA-256 `8d38dc8ad156fe00cf2f09eebf3e83fe0f775f8b59d9c6cd230856e01969fbad`
+- `assets/ike_character_white_teeth.png` — unchanged — SHA-256 `8d38dc8ad156fe00cf2f09eebf3e83fe0f775f8b59d9c6cd230856e01969fbad`
 
 ## Boundary checks
 

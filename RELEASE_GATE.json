@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.8.8",
-  "release": "7.8.8",
-  "generatedAt": "2026-08-23",
+  "build": "7.8.9",
+  "release": "7.8.9",
+  "generatedAt": "2026-08-24",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -56,11 +56,15 @@
     "project_control_state_matrix": true,
     "session_boundary_voyage": true,
     "sw_cache_760": true,
-    "manifest_760": true
+    "manifest_760": true,
+    "owner_partner_surface": true,
+    "mode_aware_customer_chrome": true,
+    "owner_approved_feature_choices": true,
+    "explicit_in_app_navigation": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.8.8 Clear Deck makes actionable navigation visibly button-like across the fleet, enables Ike’s Project Options, and exposes owner-controlled species pricing inside Ike’s Project Admin without changing customer-facing pricing simplicity."
+  "note": "7.8.9 Three Watch separates customer, owner/partner, and Black Flag/Captain surfaces; adds durable owner entry, approved owner feature choices, mode-aware operator return, and keeps project isolation intact."
 }

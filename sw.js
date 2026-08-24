@@ -1,17 +1,18 @@
-const CACHE='dark-sky-v7-8-6-grain-compass';
+const CACHE='dark-sky-v7-8-9-three-watch';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=7.8.8',
-  './platform_core.js?v=7.8.8',
-  './platform_v4.js?v=7.8.8',
-  './platform_identity.js?v=7.8.8',
-  './app.js?v=7.8.8',
-  './captain.js?v=7.8.8',
+  './owner.html',
+  './styles.css?v=7.8.9',
+  './platform_core.js?v=7.8.9',
+  './platform_v4.js?v=7.8.9',
+  './platform_identity.js?v=7.8.9',
+  './app.js?v=7.8.9',
+  './captain.js?v=7.8.9',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
-  './assets/ike_character.jpg',
+  './assets/ike_character_white_teeth.png',
   './assets/captains_quarters_command_center_v578.png',
   './assets/admirals_deck_ceremonial_v640.png',
   './assets/signal_restoration_logo.png'

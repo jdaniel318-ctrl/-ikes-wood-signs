@@ -1,3 +1,7 @@
+# Dark Sky 7.8.9 — Three Watch
+
+Three clean layers: customer, project owner/partner, and Black Flag/Captain. See CHANGELOG.md for release details.
+
 # Dark Sky 7.8.4 — Harbor Exit
 
 Harbor Exit makes Compact Diagnostics and Safe Cleanup unmistakable iPad-safe interactions with direct activation, while preserving Deep Sounding storage inspection, Iron Hull, True Bearing, approved-artifact integrity, project isolation, and future extensibility.
