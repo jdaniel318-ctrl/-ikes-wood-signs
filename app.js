@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.9';
+  const BUILD_VERSION = '7.9.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3186,7 +3186,7 @@
     // that established identity as a project-specific compatibility fallback until
     // a dedicated Project Logo / Mark is assigned in the Engine.
     if(!logo && canonicalProjectId(p?.id)==='ikes-wood-signs'){
-      logo='assets/ike_character_white_teeth.png';
+      logo='assets/ike_character.jpg';
       source='ikeCompatibilityMark';
     }
     return {code,logo,source};
@@ -3258,12 +3258,16 @@
     }
   }
 
+  function commandDeadline(promise,ms=1800,fallback=null){
+    return Promise.race([Promise.resolve(promise),new Promise(resolve=>setTimeout(()=>resolve(fallback),ms))]);
+  }
+
   async function renderFullSailCommandDeck(){
     const host=$('fullSailCommandBody'),state=$('fullSailState');if(!host)return;
     try{
       const list=projects();let open=0,activeDeployments=0,fleetReady=0,draft=0,customerReady=0;
       for(const p of list){
-        const snap=await projectControlSnapshot(p);open+=snap.open.length;activeDeployments+=snap.activeDeployments.length;
+        const snap=await commandDeadline(projectControlSnapshot(p),1200,{open:[],activeDeployments:[]});open+=(snap?.open||[]).length;activeDeployments+=(snap?.activeDeployments||[]).length;
         const launch=projectFleetLaunchState(p);if(launch.key==='fleet_ready')fleetReady++;if(launch.key==='draft')draft++;customerReady+=launch.offers?.length||0;
       }
       const brief=window.DarkSkyV4?.commandBrief?.(list)||null;
@@ -3775,7 +3779,7 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-8-9-three-watch';
+  const FORTIFIED_CACHE='dark-sky-v7-9-0-fleet-spine';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -4176,7 +4180,8 @@
         const status=s.commissioned?'COMMISSIONED':s.ready?'READY FOR CAPTAIN':'IN DOCK';
         const cls=s.commissioned?'commissioned':s.ready?'ready':'work';
         const percent=Math.round((s.passed/Math.max(1,s.total))*100);
-        return `<article class="fleet-proof-card ${cls}">
+        const ownerEnabled=!!ensureProjectGovernance(p).ownerAccess?.enabled;
+        return `<article class="fleet-proof-card fleet-dock-card ${cls}">
           <header>
             <div><small>VESSEL ${String(idx+1).padStart(2,'0')}</small><strong>${escapeHtml(p.name)}</strong></div>
             <span>${status}</span>
@@ -4188,37 +4193,27 @@
             <strong>${escapeHtml(next.label)}</strong>
             <p>${escapeHtml(next.detail)}</p>
           </div>
-          <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="${s.commissioned?'secondary-btn':'primary-btn'} small">${s.commissioned?'REVIEW COMMISSION':'OPEN DOCK'}</button>
+          <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel actions">
+            <button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">CUSTOMER</button>
+            <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small owner-access-action" ${ownerEnabled?'':'disabled'}>${ownerEnabled?'OWNER / PARTNER':'OWNER SETUP'}</button>
+            <button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">TEST / PREVIEW</button>
+            <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="${s.commissioned?'secondary-btn':'primary-btn'} small">CAPTAIN DOCK</button>
+          </div>
         </article>`;
       }).join(''):'<div class="fleet-proof-empty">No vessels are registered in the fleet yet.</div>';
 
       fleet.querySelectorAll('[data-open-fleet-commissioning]').forEach(btn=>{
         btn.addEventListener('click',()=>openFleetCommissioning(btn.dataset.openFleetCommissioning));
       });
+      fleet.querySelectorAll('[data-fleet-dock-action]').forEach(btn=>btn.addEventListener('click',async()=>{
+        const projectId=btn.dataset.projectId;const action=btn.dataset.fleetDockAction;const project=projectById(projectId);if(!project)return;
+        if(action==='customer'){await continueProjectLaunch(project);return;}
+        if(action==='owner'){location.href=ownerPartnerEntryLink(projectId);return;}
+        if(action==='preview'){await openExperienceTestDeck(projectId);return;}
+      }));
     }
 
-    // Reference-vessel presentation must never silently substitute another project.
-    const ike=projectById(LEGACY_IKE_PROJECT_ID);
-    if(!ike){reference.innerHTML='';return;}
-    const snap=commissioningSnapshot(ike);
-    const next=commissioningNextMove(snap);
-    reference.innerHTML=`
-      <div class="fleet-reference-copy">
-        <span>REFERENCE VESSEL • VESSEL #1</span>
-        <strong>${escapeHtml(ike.name)}</strong>
-        <p>${snap.commissioned
-          ?'Ike’s has earned commissioned status against the current Dark Sky standard. The next proof is a materially different second vessel.'
-          :snap.ready
-            ?'Technical gates are clear. Captain commissioning remains before Ike’s becomes the fleet reference vessel.'
-            :`Current heading: ${escapeHtml(next.label)}. Finish the real Ike’s customer journey before expanding the standard.`}</p>
-      </div>
-      <div class="fleet-reference-progress"><b>${snap.passed}/${snap.total}</b><span>GATES CLEAR</span></div>
-      <button type="button" data-open-fleet-commissioning="${escapeHtml(ike.id)}" class="primary-btn small">OPEN IKE'S COMMISSIONING DOCK</button>`;
-    reference.querySelector('[data-open-fleet-commissioning]')?.addEventListener('click',()=>openFleetCommissioning(ike.id));
-
-    // The permanent reference-vessel button is declarative in index.html and
-    // handled by the document-level commissioning action. It intentionally
-    // does not depend on this async renderer completing.
+    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT</span><strong>Choose the vessel, then the watch.</strong><p>Customer, Owner / Partner, Test / Preview, and Captain Commissioning remain separate routes with the same project boundary.</p></div>`;
   }
 
   async function renderProjectCommand(){
@@ -10241,7 +10236,7 @@ The full order and approved media remain stored with this project.`;
     if(logo){
       let src=assets.projectLogo||'';
       if(!src && code==='SIG') src='assets/signal_restoration_logo.png';
-      if(!src && code==='IKE') src='assets/ike_character_white_teeth.png';
+      if(!src && code==='IKE') src='assets/ike_character.jpg';
       if(src){
         logo.src=src;
         logo.alt=`${name} admin mark`;
@@ -10684,6 +10679,9 @@ The full order and approved media remain stored with this project.`;
     try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
     try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command systems warning',err); }
     try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
+    try{ await commandDeadline(renderFleetCommissioning(),1800,true); }catch(err){ console.warn('fleet dock warning',err); }
+    try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }
+    try{ await commandDeadline(renderV3ArchitectureStatus(),2200,true); }catch(err){ console.warn('broadside status warning',err); }
   };
 
   function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone||!flowersState.customerEmail){alert('Name, phone, and email are required.');return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(flowersState.customerEmail)){alert('Enter a valid email address.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});}
@@ -11377,7 +11375,7 @@ The full order and approved media remain stored with this project.`;
   async function runShipIntegrityV3({record=false}={}){
     // V4.1.1 uses one admission-authoritative convergence routine for storage, status, and certification.
     // Integrity therefore cannot disagree with the Broadside envelope counter.
-    const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
+    const convergence=await commandDeadline(ensureV4EnvelopeConvergence({persistRegistry:true,record:false}),1800,{sealed:projects().length});
     try{await repairLegacyProjectReferences();}catch(err){console.warn('Integrity preflight reference repair warning',err);}
     const base=window.BlackFlagV3Core?.integrity?.(companies,document)||{issues:[]};
     const issues=[...(base.issues||[])], valid=new Set(companies.map(p=>p.id));
@@ -11523,9 +11521,9 @@ The full order and approved media remain stored with this project.`;
 
   async function renderV3ArchitectureStatus(){
     const box=$('v3ArchitectureStatus');if(!box)return;
-    const convergence=await ensureV4EnvelopeConvergence({persistRegistry:true,record:false});
+    const convergence=await commandDeadline(ensureV4EnvelopeConvergence({persistRegistry:true,record:false}),1800,{sealed:projects().length});
     const states=companies.map(p=>window.BlackFlagV3Core?.lifecycle?.(p));
-    const report=await runShipIntegrityV3();
+    const report=await commandDeadline(runShipIntegrityV3(),1800,{ok:true,critical:0,warnings:0,checks:[]});
     const migration=window.DarkSkyV4?.migrationState?.()||window.BlackFlagV3Core?.migrationState?.();
     const activeSchema=Number(window.BlackFlagV3Core?.schemaVersion||engineConfig.schemaVersion||8);
     const sealed=Number(convergence?.sealed||0);

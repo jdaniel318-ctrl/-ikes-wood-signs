@@ -1,4 +1,4 @@
-# Dark Sky 7.8.9 — Three Watch
+# Dark Sky 7.9.0 — Three Watch
 
 Three clean layers: customer, project owner/partner, and Black Flag/Captain. See CHANGELOG.md for release details.
 
@@ -78,3 +78,7 @@ The proven seven-step Ike customer flow, contact timing, confirmation screen, te
 Dark Sky 7.1.0 remains the Last Known Good recovery anchor until 7.2.0 is deployed, passes the live Fleet Proving Ground, produces recovery/evidence artifacts, and is deliberately promoted by the Captain.
 
 See `IKES_SOUNDING_LINE_720.md` for the Sea Trial contract.
+
+
+## 7.9.0 Fleet Spine
+Dynamic Fleet Dock, explicit Customer/Owner/Captain routes, canonical Ike asset path, and fail-safe Engine command reads.

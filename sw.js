@@ -1,18 +1,18 @@
-const CACHE='dark-sky-v7-8-9-three-watch';
+const CACHE='dark-sky-v7-9-0-fleet-spine';
 const ASSETS=[
   './',
   './index.html',
   './owner.html',
-  './styles.css?v=7.8.9',
-  './platform_core.js?v=7.8.9',
-  './platform_v4.js?v=7.8.9',
-  './platform_identity.js?v=7.8.9',
-  './app.js?v=7.8.9',
-  './captain.js?v=7.8.9',
+  './styles.css?v=7.9.0',
+  './platform_core.js?v=7.9.0',
+  './platform_v4.js?v=7.9.0',
+  './platform_identity.js?v=7.9.0',
+  './app.js?v=7.9.0',
+  './captain.js?v=7.9.0',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',
-  './assets/ike_character_white_teeth.png',
+  './assets/ike_character.jpg',
   './assets/captains_quarters_command_center_v578.png',
   './assets/admirals_deck_ceremonial_v640.png',
   './assets/signal_restoration_logo.png'

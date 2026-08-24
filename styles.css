@@ -14590,7 +14590,7 @@ body.project-admin-mode[data-active-project="ikes-wood-signs"] #adminOptionsMenu
 
 
 /* ================================================================
-   7.8.9 — THREE WATCH
+   7.9.0 — THREE WATCH
    CUSTOMER • OWNER / PARTNER • BLACK FLAG / CAPTAIN
    ================================================================ */
 /* A live customer who arrived publicly sees the business only. A Captain/operator
@@ -14609,3 +14609,21 @@ body[data-customer-session="live_customer"] [data-project-settings-launch]{displ
 
 .owner-partner-entry{display:grid;gap:8px;margin-top:14px;padding:12px;border:1px solid rgba(88,161,185,.4);border-radius:10px;background:rgba(12,39,48,.32)}
 .owner-partner-entry>span{color:#8cc5d6;font-size:9px;font-weight:900;letter-spacing:.11em}.owner-partner-entry p{margin:0!important;color:#a9b8b5!important;font-size:11px!important;line-height:1.45}.owner-partner-entry label{margin:0!important}
+
+/* ================================================================
+   7.9.0 — FLEET SPINE
+   DYNAMIC FLEET DOCK • EXPLICIT THREE-WATCH ROUTING • FAIL-SAFE COMMAND READS
+   ================================================================ */
+.fleet-commissioning-fleet{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px!important;min-height:0!important}
+.fleet-dock-card{min-width:0!important}
+.fleet-dock-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.fleet-dock-actions button{min-height:42px;border-radius:10px;font-size:9px;font-weight:950;letter-spacing:.055em;white-space:normal}
+.fleet-dock-actions button:disabled{opacity:.42;cursor:not-allowed;border-style:dashed}
+.fleet-commissioning-reference{min-height:0!important}
+/* Private Preview and Sea Trial already have an explicit RETURN TO TEST DECK banner.
+   Hide the ambiguous floating Black Flag icon in those modes. */
+body[data-customer-session="preview"] #returnToEngineBtn,
+body[data-customer-session="sea_trial"] #returnToEngineBtn{display:none!important}
+/* Keep live customer public surface clean. Captain/operator live entry may retain the explicit return control. */
+body[data-customer-session="live_customer"]:not([data-operator-entry="true"]) #returnToEngineBtn{display:none!important}
+@media(max-width:860px){.fleet-commissioning-fleet{grid-template-columns:1fr!important}.fleet-dock-actions{grid-template-columns:1fr 1fr}}

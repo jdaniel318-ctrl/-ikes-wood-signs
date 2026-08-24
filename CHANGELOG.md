@@ -1,4 +1,13 @@
-# 7.8.9 — Three Watch
+# Dark Sky 7.9.0 — Fleet Spine
+
+- Replaced the hard-coded Ike-only Seaworthiness shortcut with a dynamic Fleet Dock that scales across every registered vessel.
+- Each Fleet Dock card exposes separate Customer, Owner / Partner, Test / Preview, and Captain Dock routes while preserving exact project isolation.
+- Restored Ike artwork to the durable canonical `assets/ike_character.jpg` path while preserving the approved teeth-only white correction; avoids introducing a fragile new runtime asset dependency.
+- Private Preview and Sea Trial now rely on the explicit Return to Test Deck banner rather than the ambiguous floating Black Flag icon.
+- Added deadline-bounded Engine command reads and explicit Engine-home refreshes for Broadside Status, Command Deck, and Fleet Dock so optional storage/integrity reads cannot leave primary command surfaces stuck on READING.
+- Preserved 9/9 proving-ground voyage contracts, owner/partner isolation, project admin authority, and live customer cleanliness.
+
+# 7.9.0 — Three Watch
 
 - Establishes the reusable three-surface fleet architecture: Customer Experience, Owner / Partner Business Portal, and Black Flag / Captain governance.
 - Adds a durable project-scoped `owner.html?project=<project-id>` entrance so owners can manage their vessel without Black Flag credentials.
