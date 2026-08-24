@@ -14483,3 +14483,9 @@ body.ikes-project.ikes-flow-active .main-panel{padding-top:10px}
 .storage-diagnostics-progress span{width:18px;height:18px;border:2px solid rgba(119,201,231,.25);border-top-color:#77c9e7;border-radius:50%;animation:storageDiagSpin .85s linear infinite;flex:0 0 auto}
 .storage-diagnostics-progress b{font-size:.88rem;color:#dbe9ec;letter-spacing:.02em}
 @keyframes storageDiagSpin{to{transform:rotate(360deg)}}
+
+/* 7.8.5 Service Proof: mission-critical address + requested-time clarity */
+.contractor-field-help{display:block;color:#6b8188;font:700 10px/1.4 Arial,sans-serif}.contractor-address-confirm{display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding:14px 16px;border:1px solid #c6d8dc;border-radius:14px;background:#f5fafb;color:#24444e;font:800 12px/1.45 Arial,sans-serif}.contractor-address-confirm input{width:20px;height:20px;margin:0;flex:0 0 auto}.contractor-schedule-note{margin:12px 0 0;padding:12px 14px;border-left:4px solid #d2a34b;background:#fff8e9;color:#5c4b2d;font:700 12px/1.5 Arial,sans-serif}.contractor-schedule-note strong{font-weight:900}
+
+/* 7.8.6 Grain Compass */
+.owner-pricing-rule{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:14px;background:rgba(15,23,42,.06);margin-bottom:14px}.owner-pricing-rule span{font-size:.86rem;opacity:.75}.ike-rate-row{display:grid!important;grid-template-columns:minmax(150px,1fr) 140px 34px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(15,23,42,.1)}.ike-rate-row span{display:flex;flex-direction:column}.ike-rate-row small{opacity:.65}.ike-rate-row input[type=number]{min-width:0}.ike-length-question{margin:16px 0 12px}.ike-length-question>strong{display:block;margin-bottom:8px}.ike-custom-length{display:flex!important;align-items:center;gap:10px;margin-top:10px;font-size:.9rem}.ike-custom-length input{max-width:110px}@media(max-width:700px){.ike-rate-row{grid-template-columns:1fr 110px 30px}}

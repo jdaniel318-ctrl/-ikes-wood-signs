@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.8.4" />
+  <link rel="stylesheet" href="styles.css?v=7.8.6" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -435,15 +435,14 @@
             <div class="ike-recognition-status"><span class="ike-recognition-dot"></span><div><small>PLANK RECOGNITION</small><strong id="ikeRecognitionHeadline">PHOTO READY</strong></div></div>
             <div class="ike-recognition-facts">
               <div><span>Detected orientation</span><strong id="ikeDetectedOrientation">—</strong></div>
-              <div><span>Measurement</span><strong id="ikeDetectedSize">Calibration needed</strong></div>
-              <div><span>Confidence</span><strong id="ikeRecognitionConfidence">Visual geometry only</strong></div>
+              <div><span>Wood</span><strong id="ikeDetectedSpecies">Analyzing</strong></div>
+              <div><span>Length</span><strong id="ikeDetectedSize">Choose length</strong></div>
+              <div><span>Price</span><strong id="ikePlankPrice">Set by Ike</strong></div>
               <div><span>Design protection</span><strong id="ikeRecognitionSafeArea">Not analyzed</strong></div>
               <div><span>Obstacle avoidance</span><strong id="ikeRecognitionObstacle">Not analyzed</strong></div>
             </div>
-            <p class="ike-recognition-note">Until calibrated measurement is commissioned, confirm the posted price on the plank. Once size is proven, Ike's paper-form limits apply automatically: 2 ft — 14 characters; 4 ft — 24; 6 ft — 36. Spaces count.</p>
-            <div id="ikePriceChoices" class="ike-price-strip" aria-label="Confirm posted price">
-              <button type="button" data-ike-price="45">$45</button><button type="button" data-ike-price="55">$55</button><button type="button" data-ike-price="65">$65</button><button type="button" data-ike-price="90">$90</button><button type="button" data-ike-price="135">$135</button>
-            </div>
+            <p class="ike-recognition-note">Dark Sky reads the wood from your photo. Tell us the plank length and Ike’s current species rate sets the price automatically.</p>
+            <div class="ike-length-question"><strong>How long is your plank?</strong><div id="ikeLengthChoices" class="ike-price-strip" aria-label="Plank length"><button type="button" data-ike-length="2">2 FT</button><button type="button" data-ike-length="4">4 FT</button><button type="button" data-ike-length="6">6 FT</button></div><label class="ike-custom-length">Other length <input id="ikeCustomLength" type="number" min="0.25" step="0.25" inputmode="decimal" placeholder="feet"></label></div>
             <button type="button" id="ikeConfirmPlankBtn" class="primary-btn">CONFIRM THIS PLANK →</button>
           </div>
         </div>
@@ -1418,11 +1417,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.8.4"></script>
-  <script src="platform_v4.js?v=7.8.4"></script>
-  <script src="platform_identity.js?v=7.8.4"></script>
-  <script src="app.js?v=7.8.4"></script>
-  <script src="captain.js?v=7.8.4"></script>
+  <script src="platform_core.js?v=7.8.6"></script>
+  <script src="platform_v4.js?v=7.8.6"></script>
+  <script src="platform_identity.js?v=7.8.6"></script>
+  <script src="app.js?v=7.8.6"></script>
+  <script src="captain.js?v=7.8.6"></script>
 
 </body>
 </html>

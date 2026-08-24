@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.4';
+  const BUILD_VERSION = '7.8.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1102,6 +1102,10 @@
   const DRAFT_KEY='blackFlagProjectDraftV1';
   const LEGACY_DRAFT_KEYS=['ikesOrderDraftV2'];
   const DEFAULT_BUSINESS_CONFIG={businessName:'Project',orderPrefix:'PRJ',thankYouHeadline:'THANK YOU FOR YOUR ORDER!',prices:[0],orderStatuses:['New','In Production','Ready for Pickup','Completed']};
+  const IKE_SPECIES_RATE_DEFAULTS=Object.freeze([['cedar','Cedar'],['pine','Pine'],['oak','Oak'],['walnut','Walnut'],['other','Other']].map(([id,name])=>({id,name,rate:0,enabled:true})));
+  function normalizeIkeSpeciesRates(rows){const src=Array.isArray(rows)?rows:[];return IKE_SPECIES_RATE_DEFAULTS.map(d=>{const hit=src.find(x=>String(x?.id||'').toLowerCase()===d.id);return {...d,...(hit||{}),id:d.id,name:d.name,rate:Math.max(0,Number(hit?.rate||0)),enabled:hit?.enabled!==false};});}
+  function ikeSpeciesRate(speciesId){return normalizeIkeSpeciesRates(businessConfig.ikeSpeciesRates).find(x=>x.id===speciesId&&x.enabled)?.rate||0;}
+  function recalcIkePrice(){if(activeProjectId!=='ikes-wood-signs')return;const r=state.plankRecognition||{},rate=ikeSpeciesRate(r.speciesId),feet=Number(r.lengthFeet||0);if(rate>0&&feet>0)state.price=Math.round(rate*feet*100)/100;}
   let businessConfig={...DEFAULT_BUSINESS_CONFIG};
   const PLATFORM_DEFAULT_WORKFLOW_KEY='blackFlagDefaultWorkflowV1';
   let platformDefaultWorkflow=[...DEFAULT_BUSINESS_CONFIG.orderStatuses];
@@ -1592,7 +1596,7 @@
     }finally{if(btn){delete btn.dataset.opening;btn.disabled=false;btn.textContent='COMPACT DIAGNOSTICS'}}
   };
 
-  // 7.8.4 Harbor Exit: iPad-safe, direct Safe Cleanup activation.
+  // 7.8.5 Harbor Exit: iPad-safe, direct Safe Cleanup activation.
   // The button owns an inline activation path just like Compact Diagnostics so a tap
   // cannot disappear inside a late/fragile event binding. First tap only arms cleanup.
   window.BlackFlagTelemetrySafeClean=async function(event){
@@ -1665,7 +1669,7 @@
   }
   window.BlackFlagOpenStorageTelemetry=openStorageTelemetry;
 
-  // 7.8.4 Harbor Exit: Storage & Telemetry is an Engine workspace, not a separate destination.
+  // 7.8.5 Harbor Exit: Storage & Telemetry is an Engine workspace, not a separate destination.
   // Give iPad/Safari a direct activation path and name the action for what it actually does.
   window.BlackFlagCloseStorageTelemetry=function(event){
     try{event?.preventDefault?.();event?.stopPropagation?.();}catch(_){}
@@ -3356,7 +3360,7 @@
     return {projectId:p?.id||null,deploymentId:mode==='preview'?null:(d?.id||null),state:mode==='live'?'deployed':mode==='sea_trial'?'sea_trial':'preview',mode,sourceDeploymentState:d?.state||null,attractTitle:d?.attractTitle||p?.description||'Ready when you are.'};
   }
 
-  // 7.8.4 Harbor Exit — deployment state and customer-session state are separate
+  // 7.8.5 Harbor Exit — deployment state and customer-session state are separate
   // contracts. Every customer entry must establish its session explicitly so a
   // stale Test Experience context can never leak into a published live route.
   function customerSessionLabel(ctx){
@@ -3756,7 +3760,7 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-8-2-harbor-exit';
+  const FORTIFIED_CACHE='dark-sky-v7-8-6-grain-compass';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -7312,14 +7316,14 @@
     const built=window.BlackFlagV3Core?.normalizeVisualPresentation?.({...(p||{}),visualPresentation:next});
     return built||next;
   }
-  const universalCustomerState={projectId:null,stage:'landing',offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',receipt:null};
+  const universalCustomerState={projectId:null,stage:'landing',offerId:'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',serviceAddressConfirmed:false,receipt:null};
   function universalReceiptKey(p,ctx=universalCustomerContextFor(p)){return `bfUniversalReceipt:${p?.id||'project'}:${ctx?.deploymentId||'private'}`;}
   function readUniversalReceipt(p){try{return JSON.parse(sessionStorage.getItem(universalReceiptKey(p))||'null')}catch(_){return null}}
   function writeUniversalReceipt(p,receipt){try{sessionStorage.setItem(universalReceiptKey(p),JSON.stringify(receipt))}catch(_){} universalCustomerState.receipt=receipt;}
   function clearUniversalReceipt(p){try{sessionStorage.removeItem(universalReceiptKey(p))}catch(_){} universalCustomerState.receipt=null;}
   function resetUniversalCustomerState(p){
     const offers=universalOffersFor(p);
-    Object.assign(universalCustomerState,{projectId:p?.id||null,stage:p?.customerExperience?.landingPage?.enabled===false?'intake':'landing',intakeStep:1,offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',serviceAddress:'',urgency:'',propertyType:'',preferredContact:'',callbackTime:'',receipt:readUniversalReceipt(p)});
+    Object.assign(universalCustomerState,{projectId:p?.id||null,stage:p?.customerExperience?.landingPage?.enabled===false?'intake':'landing',intakeStep:1,offerId:offers[0]?.id||'',photoData:'',customerName:'',customerPhone:'',customerEmail:'',notes:'',preferredTiming:'',fulfillment:'',serviceAddress:'',serviceAddressConfirmed:false,urgency:'',propertyType:'',preferredContact:'',callbackTime:'',receipt:readUniversalReceipt(p)});
   }
   function universalCustomerContextFor(p){
     const ctx=window.__deploymentCustomerContext;
@@ -7414,7 +7418,7 @@
     if(receipt){
       universalCustomerState.receipt=receipt;
       const contact=[receipt.customerName,receipt.customerPhone,receipt.customerEmail].filter(Boolean).join(' • ');
-      const contextBits=[receipt.fulfillment?`Fulfillment: ${receipt.fulfillment.replaceAll('-',' ')}`:'',receipt.preferredTiming?`Timing: ${receipt.preferredTiming}`:''].filter(Boolean);
+      const contextBits=[receipt.fulfillment?`Fulfillment: ${receipt.fulfillment.replaceAll('-',' ')}`:'',receipt.serviceAddress?`Service address: ${receipt.serviceAddress}`:'',receipt.preferredTiming?`Requested timing: ${receipt.preferredTiming}`:''].filter(Boolean);
       shell.innerHTML=`<header class="universal-shell-header"><div class="universal-mark">${escapeHtml(initials)}</div><div><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalReturnShipwright" class="secondary-btn universal-return-shipwright">RETURN TO SHIPWRIGHT</button>':''}</div></header>
       <main class="universal-shell-main"><section class="universal-done-card universal-receipt-card"><div class="universal-done-mark">✓</div><small>${escapeHtml(ctx.state==='preview'?'PRIVATE PREVIEW • NO RECORD CREATED':ctx.state==='sea_trial'?`SEA TRIAL • ${relationship.receiptLabel}`:relationship.receiptLabel)}</small><h2>${escapeHtml(ctx.state==='preview'?'Preview complete.':ctx.state==='sea_trial'?'Customer test complete.':relationship.confirmationHeading)}</h2><p class="universal-receipt-next">${escapeHtml(ctx.state==='preview'?'This is the real confirmation experience, but no customer, order, engagement, analytics, or lifecycle record was written.':ctx.state==='sea_trial'?'The customer engagement was recorded against this outpost as test data. Return to the Test Deck to review results.':relationship.nextStep)}</p><div class="universal-receipt-summary"><div><span>REFERENCE</span><strong>${escapeHtml(receipt.id)}</strong></div><div><span>ENGAGEMENT</span><strong>${escapeHtml(relationship.label)}</strong></div><div><span>WHAT THEY SENT</span><strong>${escapeHtml(receipt.offerName||'Request')}</strong></div>${contact?`<div><span>CONTACT</span><strong>${escapeHtml(contact)}</strong></div>`:''}${contextBits.length?`<div><span>DETAILS</span><strong>${escapeHtml(contextBits.join(' • '))}</strong></div>`:''}</div>${ctx.state==='sea_trial'&&ctx.deploymentId&&!experienceTestReturnState?'<button type="button" id="universalDoneReturnShipwright" class="primary-btn">RETURN TO SHIPWRIGHT</button>':'<div class="universal-receipt-actions"><button type="button" id="universalAnotherOrder" class="secondary-btn">START ANOTHER</button></div>'}</section></main>`;
       $('universalAnotherOrder')?.addEventListener('click',()=>{clearUniversalReceipt(p);resetUniversalCustomerState(p);renderUniversalCustomerShell(p)});
@@ -7478,24 +7482,25 @@
       const requestCtaLabel=contactLocked?'START TEST REQUEST':'REQUEST SERVICE';
       const helpCtaLabel=contactLocked?'I NEED HELP • TEST':'I NEED PLUMBING HELP';
       const testContactSafety=contactLocked?'<div class="fleet-test-contact-safety"><b>TEST MODE</b><span>No calls, texts, emails, service requests, or external notifications leave this project.</span></div>':'';
-      const stepBody=step===1?`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 1 OF 3 • JOB DETAILS</small><h2>What do you need help with?</h2><p>Start with the closest service, then tell the team what is happening.</p></div><div class="contractor-selected-service"><span>${universalServiceIcon(offer?.name||'Service')}</span><div><small>SELECTED SERVICE</small><strong>${escapeHtml(offer?.name||'Choose a service')}</strong></div><button type="button" id="plumbingChangeService">CHANGE</button></div><div class="contractor-field-grid three"><label>Urgency<select id="plumbingUrgency" class="universal-input"><option value="">Choose timing</option><option value="as-soon-as-possible" ${universalCustomerState.urgency==='as-soon-as-possible'?'selected':''}>As soon as possible</option><option value="this-week" ${universalCustomerState.urgency==='this-week'?'selected':''}>This week</option><option value="planning" ${universalCustomerState.urgency==='planning'?'selected':''}>Planning / estimate</option></select></label><label>Property type<select id="plumbingPropertyType" class="universal-input"><option value="">Choose property</option><option value="home" ${universalCustomerState.propertyType==='home'?'selected':''}>Home / residential</option><option value="business" ${universalCustomerState.propertyType==='business'?'selected':''}>Business / commercial</option><option value="construction" ${universalCustomerState.propertyType==='construction'?'selected':''}>Construction project</option></select></label><label>Service address<input id="plumbingServiceAddress" class="universal-input" autocomplete="street-address" value="${escapeHtml(universalCustomerState.serviceAddress||'')}" placeholder="Where is the work?"></label></div><label class="contractor-full-field">What is happening?<textarea id="universalNotes" class="universal-input" rows="6" placeholder="Leak location, symptoms, project scope, what you have already tried, or anything the plumber should know.">${escapeHtml(universalCustomerState.notes)}</textarea></label><div class="contractor-intake-actions"><button type="button" id="plumbingIntakeHome" class="contractor-secondary-cta">BACK TO HOME</button><button type="button" id="plumbingNextStep" class="contractor-primary-cta">NEXT • PROPERTY & PHOTOS</button></div></section>`:step===2?`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 2 OF 3 • PROPERTY & PREPARATION</small><h2>Help the plumber arrive prepared.</h2><p>Add a photo if it helps explain the issue and tell us when service would work best.</p></div><div class="contractor-prep-grid"><label class="contractor-photo-zone"><input id="universalPhotoInput" type="file" accept="image/*" capture="environment"><span>${universalCustomerState.photoData?'CHANGE PHOTO':'ADD A PHOTO'}</span><small>Optional, but useful for leaks, fixtures, water heaters, piping, and job-site conditions.</small>${universalCustomerState.photoData?`<img src="${universalCustomerState.photoData}" alt="Customer plumbing reference photo">`:''}</label><div class="contractor-prep-fields"><label>Preferred timing<input id="universalPreferredTiming" class="universal-input" value="${escapeHtml(universalCustomerState.preferredTiming||'')}" placeholder="Example: Tuesday morning or next available"></label><label>Best contact method<select id="plumbingPreferredContact" class="universal-input"><option value="">Choose one</option><option value="phone" ${universalCustomerState.preferredContact==='phone'?'selected':''}>Phone call</option><option value="text" ${universalCustomerState.preferredContact==='text'?'selected':''}>Text message</option><option value="email" ${universalCustomerState.preferredContact==='email'?'selected':''}>Email</option></select></label><label>Best callback window<input id="plumbingCallbackTime" class="universal-input" value="${escapeHtml(universalCustomerState.callbackTime||'')}" placeholder="Example: 9–11 AM"></label></div></div><div class="contractor-intake-actions"><button type="button" id="plumbingPrevStep" class="contractor-secondary-cta">BACK</button><button type="button" id="plumbingNextStep" class="contractor-primary-cta">NEXT • CONTACT</button></div></section>`:`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 3 OF 3 • CONTACT & REVIEW</small><h2>How should Legacy Plumbing reach you?</h2><p>Name, mobile number and email are required so the request can be tracked and followed up reliably.</p></div><div class="contractor-field-grid three"><label>Name<input id="universalCustomerName" class="universal-input" autocomplete="name" value="${escapeHtml(universalCustomerState.customerName)}"></label><label>Mobile number<input id="universalCustomerPhone" class="universal-input" type="tel" autocomplete="tel" value="${escapeHtml(universalCustomerState.customerPhone)}"></label><label>Email<input id="universalCustomerEmail" class="universal-input" type="email" autocomplete="email" value="${escapeHtml(universalCustomerState.customerEmail)}"></label></div><div class="contractor-request-summary"><div><small>SERVICE</small><strong>${escapeHtml(offer?.name||'Plumbing request')}</strong></div><div><small>LOCATION</small><strong>${escapeHtml(universalCustomerState.serviceAddress||'Not entered')}</strong></div><div><small>TIMING</small><strong>${escapeHtml(universalCustomerState.preferredTiming||universalCustomerState.urgency||'Not specified')}</strong></div><div><small>CONTACT</small><strong>${escapeHtml(universalCustomerState.preferredContact||'Best available method')}</strong></div></div><div class="contractor-intake-actions"><button type="button" id="plumbingPrevStep" class="contractor-secondary-cta">BACK</button><button type="button" id="universalSubmitOrder" class="contractor-primary-cta">${escapeHtml(ctx.state==='preview'?'PREVIEW REQUEST':ctx.state==='sea_trial'?'SEND TEST REQUEST':'REQUEST SERVICE')}</button></div></section>`;
+      const stepBody=step===1?`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 1 OF 3 • JOB DETAILS</small><h2>What do you need help with?</h2><p>Start with the closest service, then tell the team what is happening.</p></div><div class="contractor-selected-service"><span>${universalServiceIcon(offer?.name||'Service')}</span><div><small>SELECTED SERVICE</small><strong>${escapeHtml(offer?.name||'Choose a service')}</strong></div><button type="button" id="plumbingChangeService">CHANGE</button></div><div class="contractor-field-grid three"><label>Urgency<select id="plumbingUrgency" class="universal-input"><option value="">Choose timing</option><option value="as-soon-as-possible" ${universalCustomerState.urgency==='as-soon-as-possible'?'selected':''}>As soon as possible</option><option value="this-week" ${universalCustomerState.urgency==='this-week'?'selected':''}>This week</option><option value="planning" ${universalCustomerState.urgency==='planning'?'selected':''}>Planning / estimate</option></select></label><label>Property type<select id="plumbingPropertyType" class="universal-input"><option value="">Choose property</option><option value="home" ${universalCustomerState.propertyType==='home'?'selected':''}>Home / residential</option><option value="business" ${universalCustomerState.propertyType==='business'?'selected':''}>Business / commercial</option><option value="construction" ${universalCustomerState.propertyType==='construction'?'selected':''}>Construction project</option></select></label><label>Service address — where should the plumber go?<input id="plumbingServiceAddress" class="universal-input" autocomplete="street-address" value="${escapeHtml(universalCustomerState.serviceAddress||'')}" placeholder="Street address, city, state ZIP"><small class="contractor-field-help">Required. Enter the complete location where service is requested.</small></label></div><label class="contractor-full-field">What is happening?<textarea id="universalNotes" class="universal-input" rows="6" placeholder="Leak location, symptoms, project scope, what you have already tried, or anything the plumber should know.">${escapeHtml(universalCustomerState.notes)}</textarea></label><div class="contractor-intake-actions"><button type="button" id="plumbingIntakeHome" class="contractor-secondary-cta">BACK TO HOME</button><button type="button" id="plumbingNextStep" class="contractor-primary-cta">NEXT • PROPERTY & PHOTOS</button></div></section>`:step===2?`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 2 OF 3 • PROPERTY & PREPARATION</small><h2>Help the plumber arrive prepared.</h2><p>Add a photo if it helps explain the issue and tell us your preferred service window. This is a request, not a confirmed appointment.</p></div><div class="contractor-prep-grid"><label class="contractor-photo-zone"><input id="universalPhotoInput" type="file" accept="image/*" capture="environment"><span>${universalCustomerState.photoData?'CHANGE PHOTO':'ADD A PHOTO'}</span><small>Optional, but useful for leaks, fixtures, water heaters, piping, and job-site conditions.</small>${universalCustomerState.photoData?`<img src="${universalCustomerState.photoData}" alt="Customer plumbing reference photo">`:''}</label><div class="contractor-prep-fields"><label>Requested service window<input id="universalPreferredTiming" class="universal-input" value="${escapeHtml(universalCustomerState.preferredTiming||'')}" placeholder="Example: Tuesday morning or next available"><small class="contractor-field-help">We will confirm availability separately. This does not schedule an appointment.</small></label><label>Best contact method<select id="plumbingPreferredContact" class="universal-input"><option value="">Choose one</option><option value="phone" ${universalCustomerState.preferredContact==='phone'?'selected':''}>Phone call</option><option value="text" ${universalCustomerState.preferredContact==='text'?'selected':''}>Text message</option><option value="email" ${universalCustomerState.preferredContact==='email'?'selected':''}>Email</option></select></label><label>Best callback window<input id="plumbingCallbackTime" class="universal-input" value="${escapeHtml(universalCustomerState.callbackTime||'')}" placeholder="Example: 9–11 AM"></label></div></div><div class="contractor-intake-actions"><button type="button" id="plumbingPrevStep" class="contractor-secondary-cta">BACK</button><button type="button" id="plumbingNextStep" class="contractor-primary-cta">NEXT • CONTACT</button></div></section>`:`<section class="contractor-intake-card"><div class="contractor-intake-heading"><small>STEP 3 OF 3 • CONTACT & REVIEW</small><h2>How should Legacy Plumbing reach you?</h2><p>Name, mobile number and email are required so the request can be tracked and followed up reliably.</p></div><div class="contractor-field-grid three"><label>Name<input id="universalCustomerName" class="universal-input" autocomplete="name" value="${escapeHtml(universalCustomerState.customerName)}"></label><label>Mobile number<input id="universalCustomerPhone" class="universal-input" type="tel" autocomplete="tel" value="${escapeHtml(universalCustomerState.customerPhone)}"></label><label>Email<input id="universalCustomerEmail" class="universal-input" type="email" autocomplete="email" value="${escapeHtml(universalCustomerState.customerEmail)}"></label></div><div class="contractor-request-summary"><div><small>SERVICE</small><strong>${escapeHtml(offer?.name||'Plumbing request')}</strong></div><div><small>SERVICE ADDRESS</small><strong>${escapeHtml(universalCustomerState.serviceAddress||'Not entered')}</strong></div><div><small>REQUESTED TIMING</small><strong>${escapeHtml(universalCustomerState.preferredTiming||universalCustomerState.urgency||'Not specified')}</strong></div><div><small>CONTACT</small><strong>${escapeHtml(universalCustomerState.preferredContact||'Best available method')}</strong></div></div><label class="contractor-address-confirm"><input id="plumbingAddressConfirm" type="checkbox" ${universalCustomerState.serviceAddressConfirmed?'checked':''}><span>I confirm this is the complete service location where Legacy Plumbing should send the technician.</span></label><p class="contractor-schedule-note"><strong>Scheduling note:</strong> Requested timing is a preference only. Legacy Plumbing must confirm the actual appointment.</p><div class="contractor-intake-actions"><button type="button" id="plumbingPrevStep" class="contractor-secondary-cta">BACK</button><button type="button" id="universalSubmitOrder" class="contractor-primary-cta">${escapeHtml(ctx.state==='preview'?'PREVIEW REQUEST':ctx.state==='sea_trial'?'SEND TEST REQUEST':'REQUEST SERVICE')}</button></div></section>`;
       shell.innerHTML=`<div class="contractor-intake-shell"><header class="universal-shell-header contractor-intake-header"><div class="premium-brand-lockup">${logoMarkup}<div class="universal-brand-copy"><small>${escapeHtml(universalCustomerStageLabel(p))}</small><h1>${escapeHtml(p.name)}</h1><p>${escapeHtml(landing.market||'Richmond area')} • ${escapeHtml(landing.hours||'Business-hour response')}</p></div></div><div class="contractor-step-rail"><span class="${step>=1?'active':''}">1 JOB</span><i></i><span class="${step>=2?'active':''}">2 PREP</span><i></i><span class="${step>=3?'active':''}">3 CONTACT</span></div><div class="universal-header-actions"><button type="button" class="universal-settings-btn" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header><main class="contractor-intake-main">${previewNotice?`<div class="contractor-preview-note">${escapeHtml(previewNotice)}</div>`:''}${stepBody}</main></div>`;
       const rerender=()=>renderUniversalCustomerShell(p);
       $('plumbingChangeService')?.addEventListener('click',()=>{universalCustomerState.stage='landing';setTimeout(()=>{renderUniversalCustomerShell(p);document.getElementById('services')?.scrollIntoView({block:'start'});},0)});
       $('plumbingIntakeHome')?.addEventListener('click',()=>{universalCustomerState.stage='landing';universalCustomerState.intakeStep=1;rerender()});
       $('plumbingUrgency')?.addEventListener('change',e=>universalCustomerState.urgency=e.target.value);
       $('plumbingPropertyType')?.addEventListener('change',e=>universalCustomerState.propertyType=e.target.value);
-      $('plumbingServiceAddress')?.addEventListener('input',e=>universalCustomerState.serviceAddress=e.target.value);
+      $('plumbingServiceAddress')?.addEventListener('input',e=>{universalCustomerState.serviceAddress=e.target.value;universalCustomerState.serviceAddressConfirmed=false;});
       $('universalNotes')?.addEventListener('input',e=>universalCustomerState.notes=e.target.value);
       $('universalPreferredTiming')?.addEventListener('input',e=>universalCustomerState.preferredTiming=e.target.value);
       $('plumbingPreferredContact')?.addEventListener('change',e=>universalCustomerState.preferredContact=e.target.value);
       $('plumbingCallbackTime')?.addEventListener('input',e=>universalCustomerState.callbackTime=e.target.value);
+      $('plumbingAddressConfirm')?.addEventListener('change',e=>universalCustomerState.serviceAddressConfirmed=!!e.target.checked);
       $('universalCustomerName')?.addEventListener('input',e=>universalCustomerState.customerName=e.target.value);
       $('universalCustomerPhone')?.addEventListener('input',e=>universalCustomerState.customerPhone=e.target.value);
       $('universalCustomerEmail')?.addEventListener('input',e=>universalCustomerState.customerEmail=e.target.value);
       $('universalPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{universalCustomerState.photoData=String(r.result||'');rerender()};r.readAsDataURL(file)});
       $('plumbingPrevStep')?.addEventListener('click',()=>{universalCustomerState.intakeStep=Math.max(1,step-1);rerender()});
-      $('plumbingNextStep')?.addEventListener('click',()=>{if(step===1&&!universalCustomerState.serviceAddress.trim()){alert('Add the service address before continuing.');return;}universalCustomerState.intakeStep=Math.min(3,step+1);rerender()});
+      $('plumbingNextStep')?.addEventListener('click',()=>{if(step===1){const address=universalCustomerState.serviceAddress.trim();if(!address){alert('Add the complete service address before continuing.');return;}if(!/^\s*\d+\s+.+\b[A-Za-z]{2}\s+\d{5}(?:-\d{4})?\s*$/.test(address)){alert('Enter a complete service address with street number, city, state, and ZIP code. Example: 123 Main St, Richmond, VA 23220.');return;}}universalCustomerState.intakeStep=Math.min(3,step+1);rerender()});
       $('universalSubmitOrder')?.addEventListener('click',()=>submitUniversalCustomerOrder(p));
       return;
     }
@@ -7544,6 +7549,7 @@
     if(p.customerExperience?.contactCapture!==false && !universalCustomerState.customerPhone.trim()){alert('Add a mobile number so the business can reach you.');return;}
     if(p.customerExperience?.emailRequired!==false && !universalCustomerState.customerEmail.trim()){alert('Add your email address before sending this request.');return;}
     if(p.customerExperience?.emailRequired!==false && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(universalCustomerState.customerEmail.trim())){alert('Enter a valid email address.');return;}
+    if(String(p.businessType||p.businessIntake?.businessCategory||'').toLowerCase().includes('plumb') && !universalCustomerState.serviceAddressConfirmed){alert('Confirm the complete service location before sending this request.');return;}
     const prefix=(p.orderPrefix||p.projectCode||'ORD').replace(/[^A-Za-z0-9]/g,'').slice(0,8).toUpperCase()||'ORD';
     const now=new Date(), y=String(now.getFullYear()).slice(-2), mo=String(now.getMonth()+1).padStart(2,'0'), day=String(now.getDate()).padStart(2,'0'), suffix=(Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,4)).toUpperCase();
     const id=`${prefix}-${y}${mo}${day}-${suffix}`;
@@ -7554,7 +7560,7 @@
     const order={projectId:p.id,namespace:window.BlackFlagV3Core?.namespaceFor?.(p.id)||p.namespace,isolation:{projectId:p.id,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:p.name,orderPrefix:prefix},id,createdAt:now.toISOString(),updatedAt:now.toISOString(),status:projectWorkflowFor(p)[0]||'New',price,productId:offer.id,productName:offer.name,offerName:offer.name,wording:universalCustomerState.notes.trim(),notes:universalCustomerState.notes.trim(),preferredTiming:universalCustomerState.preferredTiming.trim(),serviceAddress:universalCustomerState.serviceAddress||'',urgency:universalCustomerState.urgency||'',propertyType:universalCustomerState.propertyType||'',preferredContact:universalCustomerState.preferredContact||'',callbackTime:universalCustomerState.callbackTime||'',fulfillment:universalCustomerState.fulfillment||'',operatingModel:operatingModelForProject(p).mode,photoData:universalCustomerState.photoData||'',contactPreference:universalCustomerState.customerPhone?'Text':'Email',customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),approved:true,testMode:ctx.state!=='deployed',deploymentId:ctx.deploymentId||null,source:'universal_customer_shell',recordType:relationship.type==='purchase'?'order':'engagement',relationshipType:relationship.type,engagementLabel:relationship.label,customerAction:relationship.actionLabel};
     backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);try{await put(STORE_ORDERS,order)}catch(err){console.warn('Universal order save failed',err);alert(`The ${activityTermsForProject(p).lowerSingular} could not be saved. Please try again.`);return;}
     if(ctx.state==='sea_trial')await recordExperienceSeaTrialSubmission(p,id);
-    const receipt={id,relationshipType:relationship.type,offerName:offer.name,customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),fulfillment:universalCustomerState.fulfillment||'',preferredTiming:universalCustomerState.preferredTiming.trim(),submittedAt:new Date().toISOString()};
+    const receipt={id,relationshipType:relationship.type,offerName:offer.name,customerName:universalCustomerState.customerName.trim(),customerPhone:universalCustomerState.customerPhone.trim(),customerEmail:universalCustomerState.customerEmail.trim(),fulfillment:universalCustomerState.fulfillment||'',preferredTiming:universalCustomerState.preferredTiming.trim(),serviceAddress:universalCustomerState.serviceAddress||'',submittedAt:new Date().toISOString()};
     writeUniversalReceipt(p,receipt);renderUniversalCustomerShell(p);
   }
 
@@ -8776,19 +8782,21 @@
       $('cameraControls').classList.remove('hidden');
     }
     if(activeProjectId==='ikes-wood-signs'){
-      selectButtons('ikePriceChoices','data-ike-price',state.price);
       selectButtons('ikeFillChoices','data-ike-fill',state.fill);
       const iw=$('ikeWordingInput');if(iw&&iw.value!==state.wording)iw.value=state.wording;
       if($('ikeCharCount'))$('ikeCharCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;
       $$('[data-ike-font-sample]').forEach(el=>el.textContent=state.wording||'Your Sign');
       $$('#ikeFontChoices [data-ike-font]').forEach(b=>b.classList.toggle('selected',!!state.fontChosen&&b.dataset.ikeFont===state.font));
       $$('#ikeFillChoices [data-ike-fill]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeFill===state.fill));
-      $$('#ikePriceChoices [data-ike-price]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.ikePrice)===Number(state.price)));
       if($('ikePlankConfirmPhoto')&&state.photoData)$('ikePlankConfirmPhoto').src=state.photoData;
       const r=state.plankRecognition||{};
       if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.status==='detected'?'PLANK DETECTED':'PHOTO READY';
       if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientation||state.orientation||'—';
-      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.referenceCandidate?'Reference candidate detected • Sea Trial':(r.measurement==='calibration-required'?'Calibration marker needed':'Not analyzed');
+      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthFeet?`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft`:'Choose length';
+      if($('ikeDetectedSpecies'))$('ikeDetectedSpecies').textContent=r.speciesName||'Analyzing';
+      if($('ikePlankPrice'))$('ikePlankPrice').textContent=ikeSpeciesRate(r.speciesId)>0&&r.lengthFeet?`$${Number(state.price||0).toFixed(2).replace('.00','')}`:'Set by Ike';
+      $$('#ikeLengthChoices [data-ike-length]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.ikeLength)===Number(r.lengthFeet)));
+      if($('ikeCustomLength')&&document.activeElement!==$('ikeCustomLength')) $('ikeCustomLength').value=(r.lengthFeet&&!([2,4,6].includes(Number(r.lengthFeet))))?r.lengthFeet:'';
       if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':(r.confidence==='geometry-probable'?'Geometry: Medium':'Visual geometry only');
       if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Usable lettering zone detected':(r.usableArea==='safe-margin-preview'?'Basic margin active':'Not analyzed');
       if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleDetected?'Cutout/edge avoidance: Active Sea Trial':(r.obstacleAvoidance==='sea-trial-active'?'Edge avoidance: Active Sea Trial':'No interior obstacle detected');
@@ -8838,7 +8846,7 @@
     const build=(label,value,kind='detail')=>`<article class="review-summary-item ${kind}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`;
     if(activeProjectId==='ikes-wood-signs'){
       const r=state.plankRecognition||{};
-      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Orientation',state.orientation],['Plank recognition',r.usableRegion?(r.obstacleDetected?'Usable zone • cutout avoidance Sea Trial':'Usable lettering zone detected'):(r.status==='detected'?'Geometry confirmed • basic margin':'Photo confirmed')]].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
+      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Wood',r.speciesName||'Recognized from photo'],['Length',r.lengthFeet?`${r.lengthFeet} ft`:'—'],['Orientation',state.orientation],['Plank recognition',r.usableRegion?(r.obstacleDetected?'Usable zone • cutout avoidance Sea Trial':'Usable lettering zone detected'):(r.status==='detected'?'Geometry confirmed • basic margin':'Photo confirmed')]].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
       return;
     }
     $('orderSummary').innerHTML=`
@@ -9044,7 +9052,7 @@
     const id=newOrderId();
     const experienceCtx=currentExperienceContext(activeProject());
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:state.plankRecognition||null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:state.plankRecognition||null,pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate'}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
     if(experienceCtx?.state!=='preview'){
       backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
       try{await put(STORE_ORDERS,order);}catch(err){console.warn('IndexedDB save failed; local backup retained',err);}
@@ -9138,13 +9146,15 @@
       businessName:x.businessName,orderPrefix:x.orderPrefix,
       thankYouHeadline:p?.id==='ikes-wood-signs'?'THANK YOU FOR CHOOSING IKE!':`THANK YOU FOR CHOOSING ${String(x.businessName).toUpperCase()}!`,
       prices:Array.isArray(x.prices)?x.prices:[0],
-      orderStatuses:projectWorkflowFor(p)
+      orderStatuses:projectWorkflowFor(p),
+      ikeSpeciesRates:p?.id==='ikes-wood-signs'?normalizeIkeSpeciesRates([]):undefined
     };
     try{
       const s=await getSetting(projectBusinessConfigKey());
       businessConfig={...defaults,...(s?.value||{})};
     }catch(_){businessConfig={...defaults};}
     if(!Array.isArray(businessConfig.prices)||!businessConfig.prices.length) businessConfig.prices=[0];
+    if(p?.id==='ikes-wood-signs') businessConfig.ikeSpeciesRates=normalizeIkeSpeciesRates(businessConfig.ikeSpeciesRates);
     renderConfiguredPrices();
     applyBusinessCopy();
   }
@@ -9678,6 +9688,20 @@ The full order and approved media remain stored with this project.`;
     });
   }
 
+  function ikeClassifySpeciesFromPhoto(img,analysis){
+    try{
+      const c=document.createElement('canvas'),ctx=c.getContext('2d',{willReadFrequently:true});const w=96,h=Math.max(48,Math.round(96*(img.naturalHeight||img.height)/(img.naturalWidth||img.width||1)));c.width=w;c.height=h;ctx.drawImage(img,0,0,w,h);const d=ctx.getImageData(0,0,w,h).data;let rs=0,gs=0,bs=0,n=0,dark=0,warm=0;
+      for(let i=0;i<d.length;i+=16){const r=d[i],g=d[i+1],b=d[i+2];if(r+g+b<90||r+g+b>720)continue;rs+=r;gs+=g;bs+=b;n++;if((r+g+b)/3<90)dark++;if(r>g*1.12&&g>b*1.05)warm++;}
+      if(!n)return {id:'other',name:'Other'};const ar=rs/n,ag=gs/n,ab=bs/n,lum=(ar+ag+ab)/3,warmRatio=warm/n,darkRatio=dark/n;
+      if(lum<105||darkRatio>.28)return {id:'walnut',name:'Walnut'};
+      if(warmRatio>.48&&ar>125)return {id:'cedar',name:'Cedar'};
+      if(lum>165&&Math.abs(ar-ag)<28)return {id:'pine',name:'Pine'};
+      if(ar>ag&&ag>ab&&lum>115)return {id:'oak',name:'Oak'};
+      return {id:'other',name:'Other'};
+    }catch(_){return {id:'other',name:'Other'};}
+  }
+  function setIkeLengthFeet(feet){const r=state.plankRecognition||(state.plankRecognition={});r.lengthFeet=Math.max(.25,Number(feet||0));recalcIkePrice();updateUi();}
+
   function analyzeIkePlankPhoto(){
     if(activeProjectId!=='ikes-wood-signs'||!state.photoData)return;
     const img=new Image();
@@ -9687,14 +9711,15 @@ The full order and approved media remain stored with this project.`;
       const orientation=pixelAnalysis?.contour?(pixelAnalysis.contour.w>=pixelAnalysis.contour.h?'Horizontal':'Vertical'):(w>=h?'Horizontal':'Vertical');
       state.orientation=orientation;
       state.topSide='Top of photo';
+      const species=ikeClassifySpeciesFromPhoto(img,pixelAnalysis);
       state.plankRecognition={
         status:'detected',method:pixelAnalysis?'photo-contour-segmentation':'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,
-        measurement:'calibration-required',measurementReadiness:pixelAnalysis?.referenceCandidate?'reference-candidate-sea-trial':'needs-validated-scale',
+        measurement:'customer-confirmed-length',measurementReadiness:pixelAnalysis?.referenceCandidate?'reference-candidate-sea-trial':'customer-length-confirmation',
         usableArea:pixelAnalysis?.usableRegion?'detected-usable-region':'safe-margin-preview',usableRegion:pixelAnalysis?.usableRegion||null,contour:pixelAnalysis?.contour||null,
         obstacleAvoidance:pixelAnalysis?'sea-trial-active':'not-commissioned',obstacleDetected:!!pixelAnalysis?.obstacleDetected,referenceCandidate:!!pixelAnalysis?.referenceCandidate,
-        confidence:pixelAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
+        speciesId:species.id,speciesName:species.name,lengthFeet:Number(state.plankRecognition?.lengthFeet||2),confidence:pixelAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
       };
-      updateUi();
+      recalcIkePrice();updateUi();
     };
     img.src=state.photoData;
   }
@@ -10817,10 +10842,11 @@ The full order and approved media remain stored with this project.`;
         orderPrefix:value.orderPrefix||p.orderPrefix||p.projectCode||'PRJ',
         thankYouHeadline:value.thankYouHeadline||`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,
         prices:Array.isArray(value.prices)&&value.prices.length?value.prices:(Array.isArray(defaults.prices)?defaults.prices:[0]),
-        orderStatuses:Array.isArray(value.orderStatuses)&&value.orderStatuses.length?value.orderStatuses:(Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow])
+        orderStatuses:Array.isArray(value.orderStatuses)&&value.orderStatuses.length?value.orderStatuses:(Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow]),
+        ikeSpeciesRates:normalizeIkeSpeciesRates(value.ikeSpeciesRates)
       };
     }catch(_){
-      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow]};
+      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow],ikeSpeciesRates:normalizeIkeSpeciesRates([])};
     }
   }
 
@@ -10890,8 +10916,14 @@ The full order and approved media remain stored with this project.`;
         `<div class="owner-module-toolbar"><button id="ownerAddProduct" class="primary-btn" type="button">+ ADD PRODUCT</button></div><div class="owner-product-list">${(p.products||[]).map(pr=>`
           <article class="owner-product-row"><div><small>PRODUCT</small><input data-owner-product-name="${escapeHtml(pr.id)}" value="${escapeHtml(pr.name)}"></div><label class="owner-switch"><input data-owner-product-published="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}><span>${pr.published?'AVAILABLE':'HIDDEN'}</span></label><button data-owner-product-save="${escapeHtml(pr.id)}" class="secondary-btn" type="button">SAVE</button></article>`).join('')||'<div class="owner-module-empty"><h3>No products yet</h3><p>Add your first product to begin.</p></div>'}`);
     } else if(moduleKey==='pricing'){
-      body.innerHTML=ownerModuleShell('Pricing','Manage the customer price choices used by this business.',
-        `<article class="owner-form-card"><label>Price choices <small>Enter amounts separated by commas.</small><input id="ownerPriceChoices" value="${escapeHtml(config.prices.join(', '))}"></label><button id="ownerSavePricing" class="primary-btn" type="button">SAVE PRICING</button><p id="ownerPricingStatus" class="owner-save-status"></p></article>`);
+      if(p.id==='ikes-wood-signs'){
+        const rates=normalizeIkeSpeciesRates(config.ikeSpeciesRates);
+        body.innerHTML=ownerModuleShell('Pricing','Set Ike’s private per-linear-foot rate by wood species. Customers see one simple final price.',
+          `<article class="owner-form-card ike-species-pricing"><div class="owner-pricing-rule"><strong>PHOTO → SPECIES → LENGTH → PRICE</strong><span>Recognition helps identify the wood. Your rates remain the authority.</span></div>${rates.map(r=>`<label class="ike-rate-row"><span><strong>${escapeHtml(r.name)}</strong><small>Price per linear foot</small></span><input data-ike-species-rate="${escapeHtml(r.id)}" type="number" min="0" step="0.01" inputmode="decimal" value="${Number(r.rate||0)||''}" placeholder="Set rate"><input data-ike-species-enabled="${escapeHtml(r.id)}" type="checkbox" ${r.enabled?'checked':''} aria-label="Enable ${escapeHtml(r.name)}"></label>`).join('')}<button id="ownerSavePricing" class="primary-btn" type="button">SAVE SPECIES PRICING</button><p id="ownerPricingStatus" class="owner-save-status"></p></article>`);
+      }else{
+        body.innerHTML=ownerModuleShell('Pricing','Manage the customer price choices used by this business.',
+          `<article class="owner-form-card"><label>Price choices <small>Enter amounts separated by commas.</small><input id="ownerPriceChoices" value="${escapeHtml(config.prices.join(', '))}"></label><button id="ownerSavePricing" class="primary-btn" type="button">SAVE PRICING</button><p id="ownerPricingStatus" class="owner-save-status"></p></article>`);
+      }
     } else if(moduleKey==='branding'){
       const branding=p.branding||{};
       body.innerHTML=ownerModuleShell('Branding','Manage your business name and customer-facing subtitle.',
@@ -10958,6 +10990,13 @@ The full order and approved media remain stored with this project.`;
     }));
     $('ownerSavePricing')?.addEventListener('click',async()=>{
       if(!requireOwnerProjectMutation(p,'pricing','pricing.update'))return;
+      if(p.id==='ikes-wood-signs'){
+        const rates=normalizeIkeSpeciesRates(config.ikeSpeciesRates).map(r=>{const el=document.querySelector(`[data-ike-species-rate="${CSS.escape(r.id)}"]`),en=document.querySelector(`[data-ike-species-enabled="${CSS.escape(r.id)}"]`);return {...r,rate:Math.max(0,Number(el?.value||0)),enabled:!!en?.checked};});
+        if(!rates.some(r=>r.enabled&&r.rate>0)){alert('Set at least one active wood-species rate.');return;}
+        const next={...config,ikeSpeciesRates:rates};await setSetting(`businessConfig:${p.id}`,next);businessConfig={...businessConfig,ikeSpeciesRates:rates};logActivity(p.id,'Owner updated species pricing',rates.filter(r=>r.enabled&&r.rate>0).map(r=>`${r.name} $${r.rate}/ft`).join(', '));
+        if($('ownerPricingStatus'))$('ownerPricingStatus').textContent='Species pricing saved.';
+        return;
+      }
       const prices=String($('ownerPriceChoices')?.value||'').split(',').map(x=>Number(x.trim())).filter(x=>Number.isFinite(x)&&x>=0);
       if(!prices.length){alert('Enter at least one valid price.');return;}
       const next={...config,prices}; await setSetting(`businessConfig:${p.id}`,next); logActivity(p.id,'Owner updated pricing',prices.join(', '));
@@ -11987,13 +12026,14 @@ The full order and approved media remain stored with this project.`;
       applyPreview();
     });
     $('ikeWordingInput')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.wording=e.target.value;updateUi();});
-    $('ikePriceChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-price]');if(!b)return;invalidateIkeApprovedDesignLock();state.price=Number(b.dataset.ikePrice);updateUi();});
+    $('ikeLengthChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-length]');if(!b)return;invalidateIkeApprovedDesignLock();setIkeLengthFeet(Number(b.dataset.ikeLength));});
+    $('ikeCustomLength')?.addEventListener('change',()=>{const v=Number($('ikeCustomLength')?.value||0);if(v>0){invalidateIkeApprovedDesignLock();setIkeLengthFeet(v);}});
     $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;updateUi();});
     $('ikeFillChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-fill]');if(!b)return;invalidateIkeApprovedDesignLock();state.fill=b.dataset.ikeFill;updateUi();});
     $('ikeCustomColor')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.customColor=e.target.value;state.fill='Other';updateUi();});
     $('ikeTopMarkerButtons')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-top]');if(!b)return;invalidateIkeApprovedDesignLock();state.topSide=b.dataset.ikeTop;updateUi();});
     $('ikeRotateBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();state.orientation=state.orientation==='Horizontal'?'Vertical':'Horizontal';updateUi();});
-    $('ikeConfirmPlankBtn')?.addEventListener('click',()=>setScreen('ike-design'));
+    $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthFeet){alert('Choose the plank length first.');return;}if(!(ikeSpeciesRate(r.speciesId)>0)){alert('Ike needs to set a price for this wood species before this order can continue.');return;}recalcIkePrice();setScreen('ike-design');});
     $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
     $('ikeApproveDesignBtn')?.addEventListener('click',()=>{const ok=lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
     $('ikeEditDesignBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();setScreen('ike-design');});

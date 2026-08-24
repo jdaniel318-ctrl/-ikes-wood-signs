@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.8.4",
-  "release": "7.8.4",
+  "build": "7.8.6",
+  "release": "7.8.6",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -62,5 +62,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.8.4 Harbor Exit requires Storage & Telemetry to close reliably on iPad through a direct activation path; diagnostics remain read-only and cleanup remains stale-cache-only."
+  "note": "7.8.6 Grain Compass adds Ike-specific photo-assisted wood-species recognition and owner-controlled per-linear-foot species pricing while keeping the customer-facing price simple and project-scoped."
 }

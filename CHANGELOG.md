@@ -1,3 +1,18 @@
+# 7.8.6 — Grain Compass
+
+- Ike’s plank photo now suggests wood species inside the existing project-specific recognition lane.
+- Ike’s owner Pricing module now controls per-linear-foot rates by species.
+- Customer plank confirmation asks only for length; the configured species rate calculates and shows one straightforward price.
+- Orders preserve species, length, owner rate, and calculated price as pricing proof.
+- Species recognition remains assistive and project-scoped; owner pricing remains authoritative.
+
+# 7.8.5 — Service Proof
+
+- Strengthens Legacy Plumbing service-address capture with full-address validation before continuing.
+- Adds explicit customer confirmation that the entered location is where the technician should be sent.
+- Renames timing language to requested service window / requested timing and states that it is not a confirmed appointment.
+- Carries the service address into the customer receipt and preserves all 7.8.4 Harbor Exit protections.
+
 # Dark Sky 7.8.4 — Harbor Exit Workspace Return
 
 - Safe Cleanup now has a direct inline iPad activation path, matching the successful Compact Diagnostics approach.
