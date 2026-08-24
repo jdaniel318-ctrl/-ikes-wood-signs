@@ -1,4 +1,4 @@
-# 7.8.7 — Command Rails
+# 7.8.8 — Clear Deck
 
 - Fleet-wide command/navigation affordance pass: actionable tabs and command-bar items now read unmistakably as buttons.
 - Disabled capabilities remain visible but are clearly unavailable rather than looking like process-description text.

@@ -14523,3 +14523,67 @@ body.ikes-project.ikes-flow-active .main-panel{padding-top:10px}
 .ike-admin-rate-row{display:grid;grid-template-columns:minmax(150px,1fr) minmax(110px,160px) auto auto;align-items:center;gap:10px;padding:12px 14px;border:1px solid #dbe6e9;border-radius:14px;background:#fff;}
 .ike-admin-rate-row span:first-child{display:grid;gap:2px}.ike-admin-rate-row small{color:#64757c}.ike-admin-rate-row input[type=number]{min-width:0;padding:10px 12px;border:1px solid #c6d7dc;border-radius:10px;font:inherit;background:#fbfdfe}.ike-rate-unit{font-weight:800;color:#60747c}.ike-admin-rate-row input[type=checkbox]{width:22px;height:22px;}
 @media(max-width:760px){.project-admin-nav-strip{grid-template-columns:repeat(2,minmax(0,1fr))!important}.ike-admin-rate-row{grid-template-columns:1fr minmax(90px,130px) auto}.ike-admin-rate-row input[type=checkbox]{grid-column:3}.ike-pricing-heading{flex-direction:column}}
+
+
+/* ============================================================
+   7.8.8 — CLEAR DECK
+   Fleet interaction contract + customer-surface separation.
+   Available actions look actionable, selected actions look selected,
+   unavailable actions look unavailable. Live customers see the
+   business, not Dark Sky's operator chrome.
+   ============================================================ */
+
+/* Fleet-wide interaction states for command/navigation surfaces. */
+.project-admin-nav-strip button:not(:disabled),
+#projectEngineControl .project-command-primary>button:not(:disabled),
+#projectEngineControl .project-subnav-group button:not(:disabled),
+.engine-room-visual-nav>a,
+.owner-module-nav button:not(:disabled),
+.admiral-command-rail button:not(:disabled),
+.admiral-command-dock button:not(:disabled),
+.cq-command-rail button[data-cq-desk-state="active"]{
+  cursor:pointer;
+}
+.project-admin-nav-strip .project-admin-nav-item:not(:disabled):not(.active){
+  border:1px solid rgba(116,184,207,.42)!important;
+  border-radius:16px!important;
+  background:rgba(16,63,79,.34)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
+}
+.project-admin-nav-strip .project-admin-nav-item:not(:disabled):not(.active):hover,
+.project-admin-nav-strip .project-admin-nav-item:not(:disabled):not(.active):focus-visible{
+  border-color:#48c4eb!important;
+  background:rgba(29,120,154,.25)!important;
+  outline:none!important;
+}
+.project-admin-nav-strip .project-admin-nav-item:disabled,
+.project-admin-nav-strip .project-admin-nav-item.module-disabled{
+  border:1px dashed rgba(174,192,200,.28)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.018)!important;
+  opacity:.42!important;
+}
+
+/* A published customer session is business-only. Operator/admin chrome
+   remains available in Sea Trial / Private Preview, not in LIVE customer mode. */
+body[data-customer-session="live_customer"] #returnToEngineBtn,
+body[data-customer-session="live_customer"] #adminBtn,
+body[data-customer-session="live_customer"] #mugsAdminBtn,
+body[data-customer-session="live_customer"] #flowersAdminBtn,
+body[data-customer-session="live_customer"] [data-project-settings-launch],
+body[data-customer-session="live_customer"] .project-platform-return,
+body[data-customer-session="live_customer"] .black-flag-return,
+body[data-customer-session="live_customer"] #customerSessionIndicator{
+  display:none!important;
+}
+
+/* Ike's welcome page is a landing page, not Step 1 of a workflow. */
+body.ikes-project:not(.ikes-flow-active) > #app > .progress-track,
+body.ikes-project:not(.ikes-flow-active) #stepLabel{
+  display:none!important;
+}
+
+/* Project Options is a core Ike operator control in 7.8.8. */
+body.project-admin-mode[data-active-project="ikes-wood-signs"] #adminOptionsMenuBtn{
+  border-color:rgba(80,199,235,.62)!important;
+}

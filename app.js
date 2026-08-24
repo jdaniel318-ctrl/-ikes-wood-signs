@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.7';
+  const BUILD_VERSION = '7.8.8';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3388,7 +3388,7 @@
   function renderCustomerSessionIndicator(p){
     document.getElementById('customerSessionIndicator')?.remove();
     const ctx=currentExperienceContext(p);
-    if(!ctx||ctx.clientPreview)return;
+    if(!ctx||ctx.clientPreview||ctx.sessionKind==='live_customer'||ctx.state==='deployed')return;
     const internalSources=new Set(['project_card_open_project','legacy_published_showroom','experience_test_deck','deployment_test_dock']);
     if(!internalSources.has(String(ctx.sessionSource||'')))return;
     const badge=document.createElement('div');badge.id='customerSessionIndicator';badge.className=`customer-session-indicator ${ctx.state==='deployed'?'live':'test'}`;
@@ -8685,8 +8685,8 @@
     });
     const order=currentScreenOrder();
     const index=order.indexOf(name);
-    $('progressBar').style.width=`${Math.max(1,(index+1)/order.length*100)}%`;
-    $('stepLabel').textContent=name==='done'?'Complete':`Step ${index+1} of ${order.length-1}`;
+    if($('progressBar')) $('progressBar').style.width=name==='welcome'?'0%':`${Math.max(1,(index+1)/order.length*100)}%`;
+    if($('stepLabel')) $('stepLabel').textContent=name==='welcome'?'':(name==='done'?'Complete':`Step ${index+1} of ${order.length-1}`);
     $('backBtn').style.visibility=['welcome','done'].includes(name)?'hidden':'visible';
     updateUi();
     saveDraft();
@@ -10063,7 +10063,7 @@ The full order and approved media remain stored with this project.`;
       customers:!!p.customerHistory?.adminVisible,
       ledger:!!pm.ledgerView,
       payments:!!p.payments?.enabled,
-      options:!!pm.projectOptionsView
+      options:(p.id==='ikes-wood-signs')||!!pm.projectOptionsView
     };
     const map={
       orders:'adminOrdersMenuBtn',
@@ -10097,7 +10097,7 @@ The full order and approved media remain stored with this project.`;
       customers:!!p.customerHistory?.adminVisible,
       ledger:!!pm.ledgerView,
       payments:!!p.payments?.enabled,
-      options:!!pm.projectOptionsView
+      options:(p.id==='ikes-wood-signs')||!!pm.projectOptionsView
     };
     if(!allowed[moduleName]) return;
 

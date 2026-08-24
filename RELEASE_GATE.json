@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.8.7",
-  "release": "7.8.7",
+  "build": "7.8.8",
+  "release": "7.8.8",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -62,5 +62,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.8.7 Command Rails makes actionable navigation visibly button-like across the fleet, enables Ike’s Project Options, and exposes owner-controlled species pricing inside Ike’s Project Admin without changing customer-facing pricing simplicity."
+  "note": "7.8.8 Clear Deck makes actionable navigation visibly button-like across the fleet, enables Ike’s Project Options, and exposes owner-controlled species pricing inside Ike’s Project Admin without changing customer-facing pricing simplicity."
 }
