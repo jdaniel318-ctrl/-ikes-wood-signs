@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.8.6",
-  "release": "7.8.6",
+  "build": "7.8.7",
+  "release": "7.8.7",
   "generatedAt": "2026-08-23",
   "checks": {
     "build_version": true,
@@ -62,5 +62,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.8.6 Grain Compass adds Ike-specific photo-assisted wood-species recognition and owner-controlled per-linear-foot species pricing while keeping the customer-facing price simple and project-scoped."
+  "note": "7.8.7 Command Rails makes actionable navigation visibly button-like across the fleet, enables Ike’s Project Options, and exposes owner-controlled species pricing inside Ike’s Project Admin without changing customer-facing pricing simplicity."
 }

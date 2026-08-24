@@ -27,7 +27,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.8.6" />
+  <link rel="stylesheet" href="styles.css?v=7.8.7" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -728,6 +728,13 @@
         </div>
         <button type="button" id="saveBusinessSettingsBtn" class="primary-btn small">SAVE BUSINESS SETTINGS</button>
         <p id="businessSettingsStatus" class="helper"></p>
+        <div id="ikeSpeciesPricingAdmin" class="ike-admin-species-pricing hidden">
+          <div class="admin-divider"></div>
+          <div class="ike-pricing-heading"><div><h3>Wood Species Pricing</h3><p class="helper">Ike controls the private price per linear foot. Customers see one simple final price.</p></div><span class="ike-owner-only-badge">OWNER CONTROL</span></div>
+          <div id="ikeSpeciesPricingRows" class="ike-admin-rate-list"></div>
+          <button type="button" id="saveIkeSpeciesPricingBtn" class="primary-btn small">SAVE SPECIES PRICING</button>
+          <p id="ikeSpeciesPricingStatus" class="helper"></p>
+        </div>
         <div class="admin-divider"></div>
         <label for="newAdminPin">Change admin PIN</label>
         <input id="newAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Enter a new PIN" />
@@ -1417,11 +1424,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.8.6"></script>
-  <script src="platform_v4.js?v=7.8.6"></script>
-  <script src="platform_identity.js?v=7.8.6"></script>
-  <script src="app.js?v=7.8.6"></script>
-  <script src="captain.js?v=7.8.6"></script>
+  <script src="platform_core.js?v=7.8.7"></script>
+  <script src="platform_v4.js?v=7.8.7"></script>
+  <script src="platform_identity.js?v=7.8.7"></script>
+  <script src="app.js?v=7.8.7"></script>
+  <script src="captain.js?v=7.8.7"></script>
 
 </body>
 </html>

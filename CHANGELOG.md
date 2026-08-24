@@ -1,3 +1,11 @@
+# 7.8.7 — Command Rails
+
+- Fleet-wide command/navigation affordance pass: actionable tabs and command-bar items now read unmistakably as buttons.
+- Disabled capabilities remain visible but are clearly unavailable rather than looking like process-description text.
+- Ike’s Project Options is enabled in Project Admin.
+- Ike’s Project Options now includes private per-linear-foot wood-species pricing controls for Cedar, Pine, Oak, Walnut, and Other.
+- Customer pricing remains simple; owner configuration stays in the background.
+
 # 7.8.6 — Grain Compass
 
 - Ike’s plank photo now suggests wood species inside the existing project-specific recognition lane.

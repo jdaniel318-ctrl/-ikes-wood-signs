@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.8.6';
+  const BUILD_VERSION = '7.8.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 7;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -70,7 +70,7 @@
       customerExperience:{photoRequired:true,previewApproval:true},
       publish:{status:'live'},
       payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
-      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
+      permissions:{ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:true},
       customerHistory:{adminVisible:false},
       notifications:{customerConfirmationEmail:false},
       products:[{id:'custom-wood-sign',name:'Custom Wood Sign',published:true,characterLimit:null}]
@@ -9173,6 +9173,16 @@
   function populateBusinessSettings(){
     if(!$('businessNameSetting'))return;
     $('businessNameSetting').value=businessConfig.businessName;$('orderPrefixSetting').value=businessConfig.orderPrefix;$('thankYouSetting').value=businessConfig.thankYouHeadline;$('priceChoicesSetting').value=businessConfig.prices.join(',');
+    const ikeBox=$('ikeSpeciesPricingAdmin');
+    if(ikeBox){
+      const isIke=activeProjectId==='ikes-wood-signs';
+      ikeBox.classList.toggle('hidden',!isIke);
+      if(isIke){
+        const rates=normalizeIkeSpeciesRates(businessConfig.ikeSpeciesRates);
+        const rows=$('ikeSpeciesPricingRows');
+        if(rows)rows.innerHTML=rates.map(r=>`<label class="ike-admin-rate-row"><span><strong>${escapeHtml(r.name)}</strong><small>Price per linear foot</small></span><input data-admin-ike-rate="${escapeHtml(r.id)}" type="number" min="0" step="0.01" inputmode="decimal" value="${Number(r.rate||0)||''}" placeholder="Set rate"><span class="ike-rate-unit">/ ft</span><input data-admin-ike-enabled="${escapeHtml(r.id)}" type="checkbox" ${r.enabled?'checked':''} aria-label="Enable ${escapeHtml(r.name)}"></label>`).join('');
+      }
+    }
   }
   async function saveBusinessConfigFromAdmin(){
     const prices=$('priceChoicesSetting').value.split(',').map(v=>Number(v.trim())).filter(v=>Number.isFinite(v)&&v>0);
@@ -9180,6 +9190,19 @@
     const fallbackPrefix=String(p?.orderPrefix||x.orderPrefix||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'PRJ';
     businessConfig={...businessConfig,businessName:$('businessNameSetting').value.trim()||x.businessName||p?.name||'Project',orderPrefix:($('orderPrefixSetting').value||fallbackPrefix).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||fallbackPrefix,thankYouHeadline:$('thankYouSetting').value.trim()||`THANK YOU FOR CHOOSING ${String(x.businessName||p?.name||'US').toUpperCase()}!`,prices:prices.length?prices:(Array.isArray(x.prices)&&x.prices.length?x.prices:[0])};
     await setSetting(projectBusinessConfigKey(),businessConfig);renderConfiguredPrices();applyBusinessCopy();$('businessSettingsStatus').textContent='Business settings saved.';
+  }
+  async function saveIkeSpeciesPricingFromAdmin(){
+    if(activeProjectId!=='ikes-wood-signs')return;
+    const rates=normalizeIkeSpeciesRates(businessConfig.ikeSpeciesRates).map(r=>{
+      const rateEl=document.querySelector(`[data-admin-ike-rate="${CSS.escape(r.id)}"]`);
+      const enabledEl=document.querySelector(`[data-admin-ike-enabled="${CSS.escape(r.id)}"]`);
+      return {...r,rate:Math.max(0,Number(rateEl?.value||0)),enabled:!!enabledEl?.checked};
+    });
+    if(!rates.some(r=>r.enabled&&r.rate>0)){alert('Set at least one active wood-species rate.');return;}
+    businessConfig={...businessConfig,ikeSpeciesRates:rates};
+    await setSetting(projectBusinessConfigKey(),businessConfig);
+    const status=$('ikeSpeciesPricingStatus');if(status)status.textContent='Species pricing saved. Customer prices will use these rates.';
+    logActivity(activeProjectId,'Project Admin updated species pricing',rates.filter(r=>r.enabled&&r.rate>0).map(r=>`${r.name} $${r.rate}/ft`).join(', '));
   }
   function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(projectDraftKey(),JSON.stringify({...state,currentOrder:null,approvedPreviewData:'',approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null}));}catch(_){}}
   function clearDraft(){try{localStorage.removeItem(projectDraftKey())}catch(_){}}
@@ -10055,6 +10078,7 @@ The full order and approved media remain stored with this project.`;
       btn.disabled=!access[key];
       btn.classList.toggle('module-disabled',!access[key]);
       btn.setAttribute('aria-disabled',String(!access[key]));
+      btn.title=access[key]?'Open '+(btn.textContent||key).trim():(btn.textContent||key).trim()+' — not enabled for this project';
     });
   }
 
@@ -12490,6 +12514,7 @@ The full order and approved media remain stored with this project.`;
     if($('allowCustomColorsToggle')) $('allowCustomColorsToggle').addEventListener('change',saveFeatureSettings);
     
     if($('saveBusinessSettingsBtn')) $('saveBusinessSettingsBtn').addEventListener('click',saveBusinessConfigFromAdmin);
+    if($('saveIkeSpeciesPricingBtn')) $('saveIkeSpeciesPricingBtn').addEventListener('click',saveIkeSpeciesPricingFromAdmin);
   }
 
   async function init(){
