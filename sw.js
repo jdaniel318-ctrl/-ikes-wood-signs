@@ -1,14 +1,14 @@
-const CACHE='dark-sky-v8-0-4-lookout';
+const CACHE='dark-sky-v8-0-5-sentry';
 const ASSETS=[
   './',
   './index.html',
   './owner.html',
-  './styles.css?v=8.0.4',
-  './platform_core.js?v=8.0.4',
-  './platform_v4.js?v=8.0.4',
-  './platform_identity.js?v=8.0.4',
-  './app.js?v=8.0.4',
-  './captain.js?v=8.0.4',
+  './styles.css?v=8.0.5',
+  './platform_core.js?v=8.0.5',
+  './platform_v4.js?v=8.0.5',
+  './platform_identity.js?v=8.0.5',
+  './app.js?v=8.0.5',
+  './captain.js?v=8.0.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

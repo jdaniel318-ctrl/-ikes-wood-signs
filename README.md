@@ -1,28 +1,21 @@
-# Dark Sky 8.0.4 — Lookout
+# Dark Sky 8.0.5 — Sentry
 
-**Candidate release:** 8.0.4 Lookout  
-**Known Good anchor:** 7.8.4 Harbor Exit
+**Candidate release:** 8.0.5 Sentry  
+**Known Good anchor:** 7.8.4  
 
-Lookout calibrates the confidence system so **safe does not become annoying**. A strong, diagnostically distinctive wood image may clear species identification from one photo, and a clearly separated known rack length may clear length from one full-plank photo. Extra evidence is requested only when the required confidence is not earned.
+Sentry hardens visual evidence before any customer-facing fact is allowed to become final. It preserves Owner Bridge, the six-vessel canonical fleet, and Lookout's progressive verification, while adding contradiction checks and geometry sanity guards.
 
 ## What changed
 
-- Species confidence is now **feature-weighted**, not globally loosened.
-- Cedar can clear from one strong photo only when multiple independent clues agree: reddish heartwood, pale sapwood, heartwood/sapwood contrast, and grain/texture evidence.
-- Oak remains family-only unless the exact priced species is safely resolved or the customer confirms Red Oak vs White Oak.
-- Length remains inventory-constrained; a single photo may resolve a known rack length only when geometry, framing, and separation from alternative rack lengths are strong.
-- If both species and length need more evidence, the customer is asked for **one better full-plank photo first**, not two chores at once.
-- That same second full-plank photo is reused as species evidence. A specialized grain photo appears only if species still needs help afterward.
-- Price remains locked until exact species, confirmed length, and an active owner rate are all resolved.
+- Whole-plank segmentation now includes pale sapwood instead of isolating only dark heartwood.
+- Orientation is derived from the plank body's long axis (PCA) and must pass geometry sanity checks before it is displayed as final.
+- Cedar and Walnut now compete through positive evidence, contradiction penalties, and a required confidence margin. A dark patch alone cannot make Walnut win when cedar-like sapwood/heartwood evidence contradicts it.
+- Species, orientation, and length remain independent gates. An unresolved field displays as checking rather than a confident but shaky answer.
+- Final plank confirmation and pricing require resolved orientation, species, length, and an active owner rate.
+- One good photo remains the target; extra evidence is requested only when a gate has not earned confidence.
 
-## Price contract
+## Acceptance test
 
-`resolved priced species × resolved rack length = one simple customer price`
+Use the same known cedar test plank with one normal full-plank photo and no tape measure. Sentry must never report an obviously contradictory orientation, must not call Walnut when cedar diagnostic evidence dominates, and must withhold final price whenever any independent gate remains unresolved.
 
-Lookout never converts weak evidence into a customer price.
-
-## Sea trial
-
-Use the same cedar test plank without a tape measure. A clear normal photo should proceed immediately when both confidence gates are earned. If not, verify that Lookout asks for the minimum additional evidence necessary, one step at a time.
-
-See `LOOKOUT_CONFIDENCE_CONTRACT.md`, `GRAIN_GUARD_CONTRACT.md`, and `SIGHTLINE_LENGTH_CONTRACT.md`.
+See `SENTRY_VISUAL_SANITY_CONTRACT.md` for the release contract and `CHANGELOG.md` for history.

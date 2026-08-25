@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.0.4",
-  "release": "8.0.4",
+  "build": "8.0.5",
+  "release": "8.0.5",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -104,6 +104,6 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.4 Lookout: feature-weighted species confidence, smarter known-rack-length confidence, one-photo resolution only when earned, and progressive shared evidence before specialized retakes.",
-  "candidate": "8.0.4"
+  "note": "8.0.5 Sentry: whole-plank segmentation, PCA orientation sanity, species contradiction guards, confidence margins, and independent visual gates before pricing.",
+  "candidate": "8.0.5"
 }

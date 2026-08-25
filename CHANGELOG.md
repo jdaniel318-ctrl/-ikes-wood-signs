@@ -1,3 +1,11 @@
+# Dark Sky 8.0.5 — Sentry
+
+- Rebuilt plank segmentation to retain pale sapwood and reduce false component geometry.
+- Added PCA long-axis orientation with contradiction guards.
+- Added species plausibility/contradiction scoring and top-vs-runner-up margin.
+- Final confirmation now requires orientation + species + length + active rate to be resolved.
+- Preserved Owner Bridge, canonical fleet registry, clean Engine boot, and confidence-aware progressive verification.
+
 # Dark Sky 8.0.4 — Lookout
 
 - Calibrated species confidence using diagnostic feature agreement instead of a blanket threshold reduction.
