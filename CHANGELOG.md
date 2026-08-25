@@ -1,4 +1,13 @@
-# Dark Sky 8.0.5 — Sentry
+# Dark Sky Changelog
+
+## 8.0.6 — Rangefinder
+- Adds inventory-constrained pixel ranging for Ike's 2/4/6 ft stock lengths.
+- Allows a clearly separated one-photo length candidate to unlock pricing while retaining owner visual verification.
+- Stores pixel evidence in the order pricing proof for audit/review.
+- Adds owner-side Visual Length Check flag before production.
+- Preserves Sentry species/orientation sanity gates and Owner Bridge authority boundaries.
+
+# Dark Sky 8.0.6 — Rangefinder
 
 - Rebuilt plank segmentation to retain pale sapwood and reduce false component geometry.
 - Added PCA long-axis orientation with contradiction guards.

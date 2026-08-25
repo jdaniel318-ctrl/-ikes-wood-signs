@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.0.5';
+  const BUILD_VERSION = '8.0.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -860,7 +860,7 @@
   }
 
   function ownerPartnerEntryLink(projectId){
-    // 8.0.5 Sentry: owner authority lives on a dedicated standalone entrypoint.
+    // 8.0.6 Rangefinder: owner authority lives on a dedicated standalone entrypoint.
     // The Engine never attempts to hydrate owner UI inside its own boot sequence.
     const p=projectById(projectId);
     const base=new URL('./owner.html',location.href.split('#')[0]);
@@ -2111,7 +2111,7 @@
   }
 
 
-  // 8.0.5 SENTRY — one canonical roster for every Engine fleet surface.
+  // 8.0.6 RANGEFINDER — one canonical roster for every Engine fleet surface.
   // Fleet Dock, Project Tools, readiness counts, owner state and commissioning
   // metrics must all consume the same reconciled canonical project store.
   let canonicalPresentationConvergence=null;
@@ -9403,7 +9403,7 @@
     const id=newOrderId();
     const experienceCtx=currentExperienceContext(activeProject());
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:state.plankRecognition||null,pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate'}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:state.plankRecognition||null,pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
     if(experienceCtx?.state!=='preview'){
       backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
       try{await put(STORE_ORDERS,order);}catch(err){console.warn('IndexedDB save failed; local backup retained',err);}
@@ -10002,7 +10002,7 @@ The full order and approved media remain stored with this project.`;
     const data=ctx.getImageData(0,0,w,h).data,mask=new Uint8Array(w*h),yellow=new Uint8Array(w*h);
     for(let i=0,p=0;i<data.length;i+=4,p++){
       const r=data[i],g=data[i+1],b=data[i+2],hsv=ikeRgbToHsv(r,g,b);
-      // 8.0.5 Sentry: segment the whole wood body, including pale sapwood.
+      // 8.0.6 Rangefinder: segment the whole wood body, including pale sapwood.
       // The previous dark-brown-only mask could isolate a vertical heartwood patch,
       // which then corrupted orientation and species evidence. Low-saturation white/
       // gray countertop stays excluded while cream sapwood remains part of the plank.
@@ -10081,7 +10081,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeVisualSpeciesEvidence(img,analysis){
-    // 8.0.5 Sentry: confidence is evidence-weighted, not merely threshold-lowered.
+    // 8.0.6 Rangefinder: confidence is evidence-weighted, not merely threshold-lowered.
     // Distinctive species may clear from one strong photo when several independent
     // visual clues agree. Ambiguous families (especially oak) still require an
     // exact rack-species confirmation before pricing.
@@ -10125,7 +10125,7 @@ The full order and approved media remain stored with this project.`;
       const quality=Math.max(.35,Math.min(1,(n/(w*h*.35))*(analysis?.confidence==='geometry-clear'?1:.9)));
       const diagnostics={sampleCount:n,quality:Number(quality.toFixed(2)),warmRatio:Number(warmRatio.toFixed(2)),centerWarm:Number(centerWarm.toFixed(2)),edgeLight:Number(edgeLight.toFixed(2)),heartSapContrast:Number(heartSapContrast.toFixed(1)),redHeart:Number(redHeart.toFixed(1)),texture:Number(tex.toFixed(2))};
 
-      // 8.0.5 Sentry: score positive evidence and contradictions separately.
+      // 8.0.6 Rangefinder: score positive evidence and contradictions separately.
       // A dark patch alone can no longer make Walnut win when cedar's diagnostic
       // heartwood/sapwood pattern is present.
       const cedarSignals=[centerWarm>=.38,redHeart>=13,edgeLight>=.18,heartSapContrast>=14,tex>=.13].filter(Boolean).length;
@@ -10212,43 +10212,69 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeLengthEvidenceFromGeometry(img,analysis){
-    // 8.0.5 Sentry: still no arbitrary pixel-to-feet conversion. Length is
-    // constrained to Ike's known rack lengths, but a clearly separated stock
-    // candidate may now resolve from one well-framed photo without unnecessary
-    // customer confirmation.
+    // 8.0.6 Rangefinder: inventory-constrained visual ranging.
+    // Pixels alone are not treated as an absolute ruler. Instead we classify the
+    // photographed plank against Ike's discrete rack lengths using whole-plank
+    // geometry, framing quality, perspective sanity, and separation from the
+    // next plausible stock length. A visually resolved length is retained with
+    // an owner-verification flag so Ike can reject a mismatch before production.
     const contour=analysis?.contour,iw=Number(img?.naturalWidth||img?.width||0),ih=Number(img?.naturalHeight||img?.height||0);
-    if(!contour||!iw||!ih)return {resolved:false,confidence:'low',score:.15,feet:0,candidateFeet:0,needsSecondPhoto:true,reason:'no-usable-contour'};
-    const pw=Math.max(1,contour.w*iw),ph=Math.max(1,contour.h*ih),ratio=Math.max(pw,ph)/Math.max(1,Math.min(pw,ph));
+    if(!contour||!iw||!ih)return {resolved:false,confidence:'low',score:.15,feet:0,candidateFeet:0,needsSecondPhoto:true,reviewRequired:true,reason:'no-usable-contour'};
+    const pw=Math.max(1,contour.w*iw),ph=Math.max(1,contour.h*ih);
+    const longPx=Math.max(pw,ph),shortPx=Math.max(1,Math.min(pw,ph)),ratio=longPx/shortPx;
     const stocks=[2,4,6],nominalWidthInches=8.75;
     const estimate=ratio*nominalWidthInches/12;
-    const ranked=stocks.map(feet=>({feet,rel:Math.abs(estimate-feet)/feet,abs:Math.abs(estimate-feet)})).sort((a,b)=>a.abs-b.abs);
-    const nearest=ranked[0].feet,rel=ranked[0].rel,runnerRel=ranked[1]?.rel??1;
-    const stockSeparation=Math.max(0,runnerRel-rel);
+    const ranked=stocks.map(feet=>({feet,abs:Math.abs(estimate-feet),rel:Math.abs(estimate-feet)/feet})).sort((a,b)=>a.abs-b.abs);
+    const best=ranked[0],runner=ranked[1];
+    const nearest=best.feet,rel=best.rel;
+    const pixelMargin=Math.max(0,(runner?.abs??9)-best.abs);
+    const normalizedMargin=pixelMargin/Math.max(1,nearest);
     const edgeMargin=Math.min(contour.x,contour.y,1-(contour.x+contour.w),1-(contour.y+contour.h));
-    const fullyFramed=edgeMargin>.006;
+    const fullyFramed=edgeMargin>.003;
     const geometryClear=analysis?.confidence==='geometry-clear';
-    const fill=Number(contour.fill||0);
-    let score=Math.max(.2,1-rel*2.05);
-    score+=Math.min(.12,stockSeparation*.18);
-    if(fill>.42)score+=.03;
-    if(!fullyFramed)score-=.13;
-    if(!geometryClear)score-=.06;
-    score=Math.max(.1,Math.min(.97,score));
-    const unambiguousStock=stockSeparation>=.24;
-    const high=score>=.76&&rel<=.23&&fullyFramed&&unambiguousStock;
-    const medium=score>=.57&&rel<=.34;
-    return {resolved:high,confidence:high?'high':(medium?'medium':'low'),score:Number(score.toFixed(2)),feet:high?nearest:0,candidateFeet:nearest,estimatedFeet:Number(estimate.toFixed(2)),aspectRatio:Number(ratio.toFixed(2)),stockSeparation:Number(stockSeparation.toFixed(2)),needsSecondPhoto:!high,reason:high?'stock-geometry-high-confidence-separated':(medium?'stock-geometry-needs-confirmation':'geometry-not-safe-enough')};
+    const fill=Number(contour.fill||0),elongation=Number(analysis?.elongation||ratio);
+    const orientationStable=elongation>=1.55;
+    // Perspective proxy: a long, well-framed body occupying useful image area is
+    // materially safer than a clipped or end-on plank. This is a classifier of
+    // known rack lengths, not a claim of survey-grade measurement.
+    let score=.42;
+    score+=Math.max(0,.34-Math.min(.34,rel*.90));
+    score+=Math.min(.16,normalizedMargin*.20);
+    if(fullyFramed)score+=.06; else score-=.14;
+    if(geometryClear)score+=.05;
+    if(fill>.34)score+=.03;
+    if(orientationStable)score+=.04; else score-=.10;
+    score=Math.max(.1,Math.min(.98,score));
+
+    // Strong one-photo stock classification: close to one known rack length and
+    // clearly farther from its runner-up. For the common 2 ft blank we accept a
+    // slightly wider visual tolerance because the 4 ft alternative is far away.
+    const relLimit=nearest===2?.24:.18;
+    const marginLimit=nearest===2?.70:.55;
+    const stockClearlySeparated=(runner?.abs??9)-best.abs>=marginLimit;
+    const high=score>=.78&&rel<=relLimit&&fullyFramed&&orientationStable&&stockClearlySeparated;
+    const medium=score>=.60&&rel<=Math.min(.34,relLimit+.10);
+    return {
+      resolved:high,
+      confidence:high?'high-visual':(medium?'medium':'low'),
+      score:Number(score.toFixed(2)),feet:high?nearest:0,candidateFeet:nearest,
+      estimatedFeet:Number(estimate.toFixed(2)),aspectRatio:Number(ratio.toFixed(2)),
+      stockSeparation:Number(((runner?.abs??0)-best.abs).toFixed(2)),pixelMargin:Number(pixelMargin.toFixed(2)),
+      longPixels:Math.round(longPx),shortPixels:Math.round(shortPx),needsSecondPhoto:!high,
+      reviewRequired:high,verificationPolicy:high?'ike-visual-order-review':'not-resolved',
+      reason:high?'pixel-stock-rangefinder-high-confidence':(medium?'pixel-stock-rangefinder-needs-more-evidence':'pixel-stock-rangefinder-not-safe-enough')
+    };
   }
 
   function ikeCombineLengthEvidence(primary,secondary){
     if(!primary)return {resolved:false,confidence:'low',score:.1,feet:0,candidateFeet:0,needsSecondPhoto:true,reason:'no-primary-length-evidence'};
-    if(primary.resolved)return {...primary,evidenceCount:1};
+    if(primary.resolved)return {...primary,evidenceCount:1,reviewRequired:primary.reviewRequired!==false};
     if(!secondary)return {...primary,evidenceCount:1,needsSecondPhoto:true};
     const same=Number(primary.candidateFeet||0)>0&&Number(primary.candidateFeet)===Number(secondary.candidateFeet||0);
     const estimateGap=Math.abs(Number(primary.estimatedFeet||0)-Number(secondary.estimatedFeet||0));
     if(same&&estimateGap<=.55){
       const score=Math.min(.94,(Number(primary.score||0)+Number(secondary.score||0))/2+.14);
-      if(score>=.76)return {resolved:true,confidence:'high',score:Number(score.toFixed(2)),feet:Number(primary.candidateFeet),candidateFeet:Number(primary.candidateFeet),estimatedFeet:Number(((Number(primary.estimatedFeet||0)+Number(secondary.estimatedFeet||0))/2).toFixed(2)),aspectRatio:Number(primary.aspectRatio||0),needsSecondPhoto:false,evidenceCount:2,reason:'two-full-plank-photos-agree'};
+      if(score>=.76)return {resolved:true,confidence:'high-visual',score:Number(score.toFixed(2)),feet:Number(primary.candidateFeet),candidateFeet:Number(primary.candidateFeet),estimatedFeet:Number(((Number(primary.estimatedFeet||0)+Number(secondary.estimatedFeet||0))/2).toFixed(2)),aspectRatio:Number(primary.aspectRatio||0),needsSecondPhoto:false,evidenceCount:2,reviewRequired:true,verificationPolicy:'ike-visual-order-review',reason:'two-full-plank-photos-agree'};
     }
     return {resolved:false,confidence:'low',score:Math.max(.2,Math.min(Number(primary.score||0),Number(secondary.score||0))),feet:0,candidateFeet:same?Number(primary.candidateFeet):0,needsSecondPhoto:false,evidenceCount:2,reason:same?'two-photos-still-not-safe':'two-photos-disagree'};
   }
@@ -10257,7 +10283,7 @@ The full order and approved media remain stored with this project.`;
     if(!r)return '';
     if(r.lengthResolved&&r.lengthFeet){
       const how=r.lengthConfidence==='customer-confirmed'?'confirmed from the rack length':'matched from the plank photo';
-      return `<div class="ike-species-assist-card ike-length-assist-card"><small>LENGTH CHECK</small><strong>${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft ${how}.</strong><p>No tape measure needed.</p></div>`;
+      return `<div class="ike-species-assist-card ike-length-assist-card"><small>LENGTH CHECK</small><strong>${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft ${how}.</strong><p>No tape measure needed.${r.lengthReviewRequired?' Ike will verify the plank photo before making the sign.':''}</p></div>`;
     }
     if(r.lengthNeedsSecondPhoto){
       const candidate=r.lengthCandidateFeet?` We think it may be ${Number(r.lengthCandidateFeet)} ft, but we want to be sure.`:'';
@@ -10271,7 +10297,7 @@ The full order and approved media remain stored with this project.`;
 
   function setIkeLengthFeet(feet,source='customer-confirmed'){
     const r=state.plankRecognition||(state.plankRecognition={});
-    r.lengthFeet=Math.max(.25,Number(feet||0));r.lengthResolved=true;r.lengthConfidence=source;r.lengthScore=source==='customer-confirmed'?1:Number(r.lengthScore||0);r.lengthNeedsSecondPhoto=false;r.lengthResolutionMethod=source;
+    r.lengthFeet=Math.max(.25,Number(feet||0));r.lengthResolved=true;r.lengthConfidence=source;r.lengthScore=source==='customer-confirmed'?1:Number(r.lengthScore||0);r.lengthNeedsSecondPhoto=false;r.lengthResolutionMethod=source;r.lengthReviewRequired=false;r.lengthVerificationPolicy=source==='customer-confirmed'?'customer-rack-confirmed':'manual';
     recalcIkePrice();updateUi();
   }
 
@@ -10319,7 +10345,7 @@ The full order and approved media remain stored with this project.`;
         obstacleAvoidance:pixelAnalysis?'sea-trial-active':'not-commissioned',obstacleDetected:!!pixelAnalysis?.obstacleDetected,referenceCandidate:!!pixelAnalysis?.referenceCandidate,
         primarySpeciesEvidence:primaryEvidence,
         family:species.family,speciesId:species.speciesId,speciesName:species.speciesName,speciesResolved:species.speciesResolved,speciesConfidence:species.speciesConfidence,speciesScore:species.speciesScore,evidenceCount:species.evidenceCount,needsSecondPhoto:species.needsSecondPhoto,speciesCandidates:species.candidates||[],speciesReason:species.reason||'',
-        primaryLengthEvidence,lengthFeet:Number(length.feet||0),lengthResolved:!!length.resolved,lengthConfidence:length.confidence||'low',lengthScore:Number(length.score||0),lengthCandidateFeet:Number(length.candidateFeet||0),lengthEstimatedFeet:Number(length.estimatedFeet||0),lengthNeedsSecondPhoto:!!length.needsSecondPhoto,lengthEvidenceCount:Number(length.evidenceCount||1),lengthReason:length.reason||'',
+        primaryLengthEvidence,lengthFeet:Number(length.feet||0),lengthResolved:!!length.resolved,lengthConfidence:length.confidence||'low',lengthScore:Number(length.score||0),lengthCandidateFeet:Number(length.candidateFeet||0),lengthEstimatedFeet:Number(length.estimatedFeet||0),lengthNeedsSecondPhoto:!!length.needsSecondPhoto,lengthEvidenceCount:Number(length.evidenceCount||1),lengthReason:length.reason||'',lengthReviewRequired:!!length.reviewRequired,lengthVerificationPolicy:length.verificationPolicy||'',
         confidence:pixelAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
       };
       recalcIkePrice();updateUi();
@@ -10347,7 +10373,7 @@ The full order and approved media remain stored with this project.`;
     const pixels=ikeAnalyzePlankPixels(img),secondary=ikeLengthEvidenceFromGeometry(img,pixels),r=state.plankRecognition||(state.plankRecognition={});
     r.secondaryLengthPhotoData=data;r.secondaryLengthEvidence=secondary;
     const combined=ikeCombineLengthEvidence(r.primaryLengthEvidence||null,secondary);
-    Object.assign(r,{lengthFeet:Number(combined.feet||0),lengthResolved:!!combined.resolved,lengthConfidence:combined.confidence||'low',lengthScore:Number(combined.score||0),lengthCandidateFeet:Number(combined.candidateFeet||0),lengthEstimatedFeet:Number(combined.estimatedFeet||0),lengthNeedsSecondPhoto:!!combined.needsSecondPhoto,lengthEvidenceCount:Number(combined.evidenceCount||2),lengthReason:combined.reason||'',secondaryLengthAnalyzedAt:new Date().toISOString()});
+    Object.assign(r,{lengthFeet:Number(combined.feet||0),lengthResolved:!!combined.resolved,lengthConfidence:combined.confidence||'low',lengthScore:Number(combined.score||0),lengthCandidateFeet:Number(combined.candidateFeet||0),lengthEstimatedFeet:Number(combined.estimatedFeet||0),lengthNeedsSecondPhoto:!!combined.needsSecondPhoto,lengthEvidenceCount:Number(combined.evidenceCount||2),lengthReason:combined.reason||'',lengthReviewRequired:!!combined.reviewRequired,lengthVerificationPolicy:combined.verificationPolicy||'',secondaryLengthAnalyzedAt:new Date().toISOString()});
 
     // Progressive evidence: the same better full-plank photo is also valid species
     // evidence. Only ask for a specialized close-grain photo if this still fails
@@ -11824,7 +11850,7 @@ The full order and approved media remain stored with this project.`;
     window.releaseDarkSkyFirstPaint?.('owner-portal-ready');
   }
 
-  // 8.0.5 SENTRY — owner authority gets an immediate, non-Engine first paint.
+  // 8.0.6 RANGEFINDER — owner authority gets an immediate, non-Engine first paint.
   // Protected owner navigation must never wait behind the full fleet/database boot sequence.
   // We paint a project-scoped owner shell immediately, then hydrate it from the canonical
   // registry once storage is ready. This keeps the authority boundary intact without a
@@ -11986,7 +12012,7 @@ The full order and approved media remain stored with this project.`;
     return routeOwnerAccessFromHashLegacy();
   }
 
-  // 8.0.5 SENTRY — protected route resolver. The head-level watchdog is
+  // 8.0.6 RANGEFINDER — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
@@ -13305,7 +13331,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
-    // 8.0.5 SENTRY: Owner/Partner is a first-class authority surface. Paint its
+    // 8.0.6 RANGEFINDER: Owner/Partner is a first-class authority surface. Paint its
     // project-scoped shell before IndexedDB, migrations, telemetry, fleet convergence,
     // or any secondary subsystem can delay the handoff. Canonical data hydrates later.
     const startupOwnerRequest=ownerStartupRequest();
@@ -13567,7 +13593,7 @@ document.addEventListener('click', (event) => {
     const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
     const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
     if(startupOwner){
-      // 8.0.5 Sentry: query-based Owner/Partner routes are first-class authority
+      // 8.0.6 Rangefinder: query-based Owner/Partner routes are first-class authority
       // routes. They must never traverse, paint, or fall through the Black Flag
       // Engine gate while project-scoped owner state is resolving.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.0.5",
-  "release": "8.0.5",
+  "build": "8.0.6",
+  "release": "8.0.6",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -98,12 +98,15 @@
     "no_cross_project_first_paint_preserved": true,
     "owner_entry_required_runtime": true,
     "sw_cache_800_breakwater_r1": true,
-    "owner_navigation_cache_separated": true
+    "owner_navigation_cache_separated": true,
+    "pixel_rangefinder_inventory_constrained": true,
+    "visual_length_owner_review_flag": true,
+    "pixel_evidence_preserved_in_order": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.5 Sentry: whole-plank segmentation, PCA orientation sanity, species contradiction guards, confidence margins, and independent visual gates before pricing.",
-  "candidate": "8.0.5"
+  "note": "8.0.6 Rangefinder: inventory-constrained pixel ranging with owner visual verification; Sentry visual sanity gates preserved.",
+  "candidate": "8.0.6"
 }

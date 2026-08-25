@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "8.0.5",
+  "build": "8.0.6",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -45,11 +45,11 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Sentry",
-  "version": "8.0.5",
-  "releaseName": "Sentry",
+  "release_name": "Rangefinder",
+  "version": "8.0.6",
+  "releaseName": "Rangefinder",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "diagnostic-confidence-calibration-progressive-evidence-single-photo-when-earned-species-length-price-gates",
+  "release_focus": "inventory-constrained-pixel-ranging-owner-visual-verification-species-orientation-length-price-gates",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",
@@ -64,7 +64,8 @@
     "owner_entry_runtime_file": "owner.html-standalone-project-scoped-owner-application",
     "ike_species_identification": "no-guess-confidence-ladder-two-photo-verification-oak-family-explicit-resolution",
     "ike_pricing": "resolved-species-active-owner-rate-times-confirmed-linear-feet",
-    "ike_confidence_calibration": "diagnostic-distinctiveness-quality-inventory-constrained-progressive-evidence-no-blanket-threshold-reduction"
+    "ike_confidence_calibration": "diagnostic-distinctiveness-quality-inventory-constrained-progressive-evidence-no-blanket-threshold-reduction",
+    "ike_pixel_rangefinder": "known-rack-length-classification-with-owner-visual-review-no-absolute-pixel-ruler-claim"
   },
   "capabilities": {
     "visual_command_forge": {
@@ -134,6 +135,6 @@
       "stale_context": "cleared-at-engine-boundary"
     }
   },
-  "release_note": "Breakwater makes explicit Engine intent authoritative, moves Owner/Partner entry onto a dedicated owner route, quarantines stale owner hashes, and preserves neutral no-bleed first paint with bounded recovery. Pre-upload R1 hardens service-worker cache identity and keeps owner.html navigation cached separately from index.html so protected owner entry cannot poison the Engine entrypoint.",
+  "release_note": "Rangefinder adds pixel-based classification of Ike's known rack lengths without claiming absolute physical measurement. Strongly separated visual length candidates can unlock pricing while retaining durable pixel evidence and an Ike visual-review requirement before production.",
   "owner_authority_boot": "immediate-project-scoped-shell"
 }
