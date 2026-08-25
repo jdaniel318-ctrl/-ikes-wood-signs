@@ -1,18 +1,19 @@
-# Dark Sky 8.0.1 — Owner Bridge
+# Dark Sky 8.0.2 — Grain Guard
 
-- Moves Owner / Partner authority to the standalone `owner.html` application surface.
-- Fleet Dock owner actions open the project-scoped owner route directly instead of depending on the full Engine boot path.
-- Owner login/session state is isolated from Black Flag Engine authentication and is restored on owner refresh when valid.
-- Owner first paint is project-scoped and can render before Engine-only fleet reconciliation, telemetry, migrations, and background reads complete.
-- Genuine owner initialization failures remain inside an owner-safe failure surface and do not expose another project or Captain authority.
-- Preserves the six-vessel canonical Keelson roster, Fleet Dock as the primary navigator, True Helm Engine precedence, no-cross-project first paint, and project isolation.
-- Release documentation and manifest identity were reconciled so README, changelog, deployment manifest, release gate, cache/build identity, and checksums describe the same 8.0.1 Owner Bridge candidate.
+- Aligns Ike customer runtime with the Owner Control Center’s six priced species: Pine, Cedar, Red Oak, White Oak, Walnut, and Hickory.
+- Replaces one-photo species guessing with conservative confidence-aware evidence.
+- Adds a positive second-photo request when visual evidence is not strong enough.
+- Treats Oak as a family-level result until Red Oak vs White Oak is explicitly resolved.
+- Never calculates a customer price until species is resolved, length is confirmed, and an active owner rate exists.
+- Combines two photo observations; disagreements fall back to customer rack-species confirmation instead of a fabricated match.
+- Preserves Owner Bridge session durability, canonical six-vessel fleet identity, clean Engine boot, and authority isolation.
+- Adds the Grain Guard contract and updates release identity/checksums for the 8.0.2 candidate.
 
 # Dark Sky 8.0.0 — Breakwater
 
 - Established an immediate owner-safe shell for Owner / Partner handoff.
 - Hardened owner failures so Black Flag authority and unrelated project surfaces remain sealed.
-- Added owner handoff and service-worker navigation-cache protections before the Owner Bridge standalone split.
+- Added owner handoff and service-worker navigation-cache protections before the Grain Guard standalone split.
 
 # Dark Sky 7.9.6 — Harbor Pilot
 
@@ -652,14 +653,14 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Owner/Partner and Client Preview routes retain project-safe first paint and gain an explicit neutral recovery state if route resolution misses its deadline.
 - Preserved the 7.9.4 no-cross-project-flash guarantee.
 
-## 8.0.1 — Breakwater
+## 8.0.2 — Breakwater
 - Promoted Owner/Partner routing to an immediate first-class authority shell.
 - Removed full fleet/database initialization from the critical owner first-paint path.
 - Added owner-safe hydration and owner-safe boot failure handling.
 - Preserved Keelson canonical six-vessel roster, True Helm Engine precedence, and no-cross-project-flash protection.
 
 
-## 8.0.1 Breakwater R1 — pre-upload audit
+## 8.0.2 Breakwater R1 — pre-upload audit
 - Corrected the service-worker cache identity from the stale 7.9.8 Keelson cache name to a unique Breakwater R1 cache.
 - Fixed navigation caching so `owner.html` can never overwrite the cached `index.html` Engine entrypoint.
 - Added `owner.html` to the deployment manifest's required runtime files.

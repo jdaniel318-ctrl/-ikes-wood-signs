@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "8.0.1",
+  "build": "8.0.2",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -45,11 +45,11 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Owner Bridge",
-  "version": "8.0.1",
-  "releaseName": "Owner Bridge",
+  "release_name": "Grain Guard",
+  "version": "8.0.2",
+  "releaseName": "Grain Guard",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "standalone-project-owner-authority-owner-refresh-persistence-canonical-fleet-preserved",
+  "release_focus": "confidence-aware-wood-species-identification-two-photo-verification-species-times-length-pricing-owner-bridge-preserved",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",
@@ -61,7 +61,9 @@
     "owner_authority_boundary": "project-scoped-owner-login-never-engine-pin",
     "legacy_duplicate_reconciliation": "single-canonical-vessel-with-folded-reference-migration-and-conflict-evidence",
     "bounded_route_resolution": "engine-safe-first-paint-owner-preview-hard-timeout-explicit-recovery",
-    "owner_entry_runtime_file": "owner.html-standalone-project-scoped-owner-application"
+    "owner_entry_runtime_file": "owner.html-standalone-project-scoped-owner-application",
+    "ike_species_identification": "no-guess-confidence-ladder-two-photo-verification-oak-family-explicit-resolution",
+    "ike_pricing": "resolved-species-active-owner-rate-times-confirmed-linear-feet"
   },
   "capabilities": {
     "visual_command_forge": {

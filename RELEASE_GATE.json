@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.0.1",
-  "release": "8.0.1",
+  "build": "8.0.2",
+  "release": "8.0.2",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -104,5 +104,6 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.1 Owner Bridge R1 documentation/release-identity audit: standalone project-owner surface, owner refresh persistence, canonical six-vessel roster preserved, manifest/README/changelog/cache/checksums reconciled."
+  "note": "8.0.2 Grain Guard R1 documentation/release-identity audit: standalone project-owner surface, owner refresh persistence, canonical six-vessel roster preserved, manifest/README/changelog/cache/checksums reconciled.",
+  "candidate": "8.0.2"
 }

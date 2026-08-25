@@ -14658,3 +14658,18 @@ html.dark-sky-route-preflight body #app,html.dark-sky-route-preflight body #engi
 
 /* 8.0.1 OWNER BRIDGE — fleet confirmations remain readable and leave a durable state cue. */
 .fleet-action-status{position:fixed;z-index:2147483000;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:min(720px,calc(100vw - 36px));padding:13px 18px;border-radius:14px;border:1px solid rgba(112,190,210,.35);background:rgba(5,25,33,.96);color:#eaf5f6;box-shadow:0 18px 50px rgba(0,0,0,.35);font-size:13px;font-weight:800;letter-spacing:.01em;text-align:center}.fleet-action-status.clear{border-color:rgba(86,180,111,.42);background:rgba(7,42,29,.96)}.fleet-action-status.attention{border-color:rgba(208,168,77,.48);background:rgba(46,35,8,.97)}.fleet-action-status.hidden{display:none!important}@media(max-width:700px){.fleet-action-status{left:16px;right:16px;transform:none;max-width:none}}
+
+/* 8.0.2 Grain Guard — confidence-aware wood verification */
+.ike-species-assist-card{margin:14px 0;padding:16px 18px;border:1px solid rgba(32,128,171,.28);border-radius:18px;background:linear-gradient(180deg,rgba(231,246,250,.72),rgba(255,255,255,.82));box-shadow:0 10px 24px rgba(24,74,96,.07)}
+.ike-species-assist-card small{display:block;font-size:.72rem;letter-spacing:.16em;font-weight:900;color:#2d7894;margin-bottom:5px}
+.ike-species-assist-card strong{display:block;font-size:1.02rem;color:#173b4a;margin-bottom:6px}
+.ike-species-assist-card p{margin:0 0 12px;color:#59717b;line-height:1.45}
+.ike-species-choice-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.ike-species-choice-row button{border:1px solid #b8cbd3;background:#fff;border-radius:14px;padding:12px 10px;font-weight:900;color:#173b4a;box-shadow:0 5px 10px rgba(34,61,75,.05)}
+.ike-species-choice-row button:active{transform:translateY(1px)}
+.ike-species-resolution-status{min-height:22px;margin:10px 0 8px;color:#246c45;font-weight:750}
+#ikeConfirmPlankBtn:disabled{opacity:.48;box-shadow:none;cursor:not-allowed}
+@media(max-width:650px){.ike-species-choice-row{grid-template-columns:1fr}}
+.ike-species-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
+.ike-species-choice-grid button{border:1px solid #b8cbd3;background:#fff;border-radius:12px;padding:11px 8px;font-weight:900;color:#173b4a}
+@media(max-width:650px){.ike-species-choice-grid{grid-template-columns:1fr}}
