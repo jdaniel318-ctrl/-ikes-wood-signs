@@ -12,7 +12,7 @@
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'dom-helpers-ready';
-    // 7.9.4 CLEAN WAKE — global first-paint bulkhead. No project-specific DOM may
+    // 7.9.5 HARBOR LIGHT — global first-paint bulkhead. No project-specific DOM may
     // paint until the active authority/route has been resolved. The shipped HTML
     // still contains project templates, so first paint is neutral by construction.
     document.documentElement.classList.add('dark-sky-route-preflight');
@@ -22,8 +22,44 @@
         document.documentElement.classList.remove('dark-sky-route-preflight');
         window.__darkSkyFirstPaintReleased = true;
         window.__darkSkyBootStage = stage || 'first-paint-released';
+        if(window.__darkSkyRouteWatchdog){ clearTimeout(window.__darkSkyRouteWatchdog); window.__darkSkyRouteWatchdog=null; }
       }catch(_){}
     };
+    // 7.9.5 HARBOR LIGHT — route resolution is bounded. The default root route is
+    // the Black Flag Engine gate, which is itself a neutral platform-safe first paint,
+    // so it does not wait on the late application boot. Owner/Preview routes keep the
+    // neutral shield until their project-scoped resolver is ready, with a safe explicit
+    // recovery surface instead of an infinite spinner if boot cannot complete.
+    const __dsHash=String(location.hash||'');
+    window.__darkSkyRouteIntent = __dsHash.startsWith('#owner-') ? 'owner' : (__dsHash.startsWith('#client-preview=') ? 'client-preview' : 'engine');
+    window.__darkSkyShowRouteRecovery = window.__darkSkyShowRouteRecovery || function(reason){
+      if(window.__darkSkyFirstPaintReleased) return;
+      const intent=window.__darkSkyRouteIntent||'engine';
+      if(intent==='engine'){
+        const gate=document.getElementById('blackFlagEntryGate');
+        if(gate){ gate.classList.remove('hidden'); document.body.classList.add('boot-locked','bf-entry-open'); }
+        window.releaseDarkSkyFirstPaint?.('engine-safe-first-paint');
+        return;
+      }
+      try{
+        if(typeof window.DarkSkyResolveRouteIntent==='function'){
+          Promise.resolve(window.DarkSkyResolveRouteIntent(intent)).catch(()=>{});
+          setTimeout(()=>{ if(!window.__darkSkyFirstPaintReleased) window.__darkSkyShowRouteRecovery('resolver-timeout'); },900);
+          return;
+        }
+      }catch(_){}
+      const shield=document.getElementById('darkSkyFirstPaintShield');
+      if(!shield) return;
+      shield.setAttribute('aria-hidden','false');
+      const label=intent==='owner'?'BUSINESS PORTAL':'PRIVATE PREVIEW';
+      shield.innerHTML='<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>'+label+' ROUTE RECOVERY</span><p>The route took longer than expected. No project surface was exposed.</p><button type="button" id="darkSkyRouteRetry">RETRY ROUTE</button></div>';
+      document.getElementById('darkSkyRouteRetry')?.addEventListener('click',()=>location.reload());
+      window.__darkSkyBootStage='route-recovery:'+String(reason||'timeout');
+    };
+    document.addEventListener('DOMContentLoaded',()=>{
+      if(window.__darkSkyRouteIntent==='engine') setTimeout(()=>window.__darkSkyShowRouteRecovery('engine-dom-ready'),40);
+    },{once:true});
+    window.__darkSkyRouteWatchdog=setTimeout(()=>window.__darkSkyShowRouteRecovery('hard-timeout'),3500);
     // 6.0.8 Client Preview pre-paint bulkhead. Detect a sealed preview link before
     // the body or legacy project DOM can paint. This prevents the default Ike shell
     // from appearing for even one frame while the standalone preview runtime boots.
@@ -46,11 +82,13 @@
     #darkSkyFirstPaintShield .ds-first-light-mark{width:50px;height:50px;border:2px solid rgba(238,245,244,.9);border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:24px;}
     #darkSkyFirstPaintShield strong{font-size:12px;letter-spacing:.18em;}
     #darkSkyFirstPaintShield span{font-size:10px;letter-spacing:.08em;color:#87a8b0;}
+    #darkSkyFirstPaintShield .ds-route-recovery p{max-width:360px;margin:8px 20px 2px;color:#a8bec4;font-size:13px;line-height:1.45;}
+    #darkSkyFirstPaintShield .ds-route-recovery button{margin-top:8px;min-width:170px;min-height:44px;border-radius:12px;border:1px solid rgba(125,190,207,.55);background:#176f99;color:#fff;font-weight:900;letter-spacing:.06em;}
   </style>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.9.4" />
+  <link rel="stylesheet" href="styles.css?v=7.9.5" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1463,11 +1501,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.9.4"></script>
-  <script src="platform_v4.js?v=7.9.4"></script>
-  <script src="platform_identity.js?v=7.9.4"></script>
-  <script src="app.js?v=7.9.4"></script>
-  <script src="captain.js?v=7.9.4"></script>
+  <script src="platform_core.js?v=7.9.5"></script>
+  <script src="platform_v4.js?v=7.9.5"></script>
+  <script src="platform_identity.js?v=7.9.5"></script>
+  <script src="app.js?v=7.9.5"></script>
+  <script src="captain.js?v=7.9.5"></script>
 
 </body>
 </html>

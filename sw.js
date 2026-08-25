@@ -1,14 +1,14 @@
-const CACHE='dark-sky-v7-9-4-clean-wake';
+const CACHE='dark-sky-v7-9-5-harbor-light';
 const ASSETS=[
   './',
   './index.html',
   './owner.html',
-  './styles.css?v=7.9.4',
-  './platform_core.js?v=7.9.4',
-  './platform_v4.js?v=7.9.4',
-  './platform_identity.js?v=7.9.4',
-  './app.js?v=7.9.4',
-  './captain.js?v=7.9.4',
+  './styles.css?v=7.9.5',
+  './platform_core.js?v=7.9.5',
+  './platform_v4.js?v=7.9.5',
+  './platform_identity.js?v=7.9.5',
+  './app.js?v=7.9.5',
+  './captain.js?v=7.9.5',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.4';
+  const BUILD_VERSION = '7.9.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 10;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -8847,7 +8847,7 @@
       if(!foot)return;
       const normal=foot.textContent;
       const finds=[
-        'Treasure found: a clean wake and a steady compass.',
+        'Treasure found: a harbor light and a steady compass.',
         'A small chest rattles below deck. Nothing mission-critical inside.',
         'Good seamanship detected. The charts remain yours.',
         'Hidden treasure: one less loose line in the Engine.'
@@ -11530,6 +11530,17 @@ The full order and approved media remain stored with this project.`;
       }
     }
   }
+
+  // 7.9.5 HARBOR LIGHT — bounded first-paint recovery may ask the loaded
+  // application to resolve the route explicitly. This never changes authority;
+  // it only re-runs the canonical route resolver for the already-declared intent.
+  window.DarkSkyResolveRouteIntent=async function(intent){
+    const kind=String(intent||window.__darkSkyRouteIntent||'engine');
+    if(kind==='client-preview') return routeClientPreviewFromHash();
+    if(kind==='owner') return routeOwnerAccessFromHash();
+    if(typeof window.requireEngineEntry==='function') return window.requireEngineEntry();
+    return false;
+  };
 
   function bindOwnerPortal(){
     $('ownerPortalSignOut')?.addEventListener('click',closeOwnerPortal);

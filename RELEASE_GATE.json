@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.4",
-  "release": "7.9.4",
+  "build": "7.9.5",
+  "release": "7.9.5",
   "generatedAt": "2026-08-24",
   "checks": {
     "build_version": true,
@@ -75,11 +75,15 @@
     "fleet_dock_primary_navigation": true,
     "owner_route_never_engine_pin": true,
     "legacy_plumbing_forced_canonical_fold": true,
-    "fleet_registry_schema_9": true
+    "fleet_registry_schema_9": true,
+    "clean_wake_neutral_first_paint": true,
+    "bounded_route_resolution": true,
+    "engine_safe_first_paint_without_app_boot": true,
+    "owner_preview_timeout_recovery": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.4 Clean Wake adds a global neutral first-paint bulkhead so no project identity can flash during refresh, startup, authentication, or route restoration."
+  "note": "7.9.5 Harbor Light adds a global neutral first-paint bulkhead so no project identity can flash during refresh, startup, authentication, or route restoration."
 }

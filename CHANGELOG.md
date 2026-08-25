@@ -1,4 +1,4 @@
-# Dark Sky 7.9.4 — Clean Wake
+# Dark Sky 7.9.5 — Harbor Light
 
 ## First-paint isolation
 - Adds a fleet-wide neutral first-paint bulkhead before any project DOM can paint.
@@ -621,3 +621,9 @@ Second-pass audit of the 5.0 fleet boundary release.
 - The Captain exit closes every Captain-only subview and returns to the Engine top without requiring a new Engine login while the current Engine session remains active.
 - Escape key also returns an authorized Captain session to Engine as a secondary accessibility/safety path.
 - Black Flag authentication, Client Preview, project routing, and project isolation were not changed.
+
+## 7.9.5 — Harbor Light
+- Bounded the neutral first-paint route resolver so `Securing Route` cannot hang indefinitely.
+- Default Engine routes reveal the neutral Black Flag Engine gate as soon as the DOM is ready, independent of secondary application boot.
+- Owner/Partner and Client Preview routes retain project-safe first paint and gain an explicit neutral recovery state if route resolution misses its deadline.
+- Preserved the 7.9.4 no-cross-project-flash guarantee.
