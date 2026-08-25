@@ -1,3 +1,11 @@
+# Dark Sky 7.9.3 — Bulkhead
+
+- Seals Owner/Partner session lifecycle away from Engine boot/auth: owner login, post-login render, refresh, and bookmark restore stay project-scoped.
+- Removes Engine boot-lock classes whenever an owner surface is active so the authenticated Owner Control Center cannot render as a blank page.
+- Owner-route startup hashes bypass the Black Flag Engine gate entirely; Engine credentials remain Captain-only.
+- Advances fleet registry schema to 10 and groups the known Legacy Plumbing identity by approved display name + business family, so stale branding/contact mirrors cannot create a second vessel.
+- Preserves project-scoped evidence during duplicate folding and keeps Fleet Dock/Test/Captain routes isolated.
+
 # Dark Sky 7.9.2 — Watertight
 
 - Sealed Owner / Partner entry as a project-scoped authority route; Fleet Dock owner access now opens the owner login directly and never requires the Black Flag Engine PIN.

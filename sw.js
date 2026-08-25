@@ -1,14 +1,14 @@
-const CACHE='dark-sky-v7-9-2-watertight';
+const CACHE='dark-sky-v7-9-3-bulkhead';
 const ASSETS=[
   './',
   './index.html',
   './owner.html',
-  './styles.css?v=7.9.2',
-  './platform_core.js?v=7.9.2',
-  './platform_v4.js?v=7.9.2',
-  './platform_identity.js?v=7.9.2',
-  './app.js?v=7.9.2',
-  './captain.js?v=7.9.2',
+  './styles.css?v=7.9.3',
+  './platform_core.js?v=7.9.3',
+  './platform_v4.js?v=7.9.3',
+  './platform_identity.js?v=7.9.3',
+  './app.js?v=7.9.3',
+  './captain.js?v=7.9.3',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

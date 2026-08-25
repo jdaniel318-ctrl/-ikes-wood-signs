@@ -14,9 +14,9 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.2';
+  const BUILD_VERSION = '7.9.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
-  const FLEET_REGISTRY_SCHEMA_VERSION = 9;
+  const FLEET_REGISTRY_SCHEMA_VERSION = 10;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
@@ -2498,7 +2498,14 @@
     const groups=new Map();
     for(const raw of (Array.isArray(rows)?rows:[])){
       const row=canonicalizeProjectDisplayIdentity(structuredClone(raw));
-      const key=strictBusinessIdentityKey(row);
+      const display=normalizeBusinessIdentityText(row?.name||row?.identity?.displayName||row?.branding?.businessName);
+      const family=projectTypeFamily(row);
+      // 7.9.3 Bulkhead: known canonical business identities group by approved
+      // display identity + business family even when a stale branding/contact mirror differs.
+      // This repairs the Legacy Plumbing split at the registry source rather than hiding it in Fleet Dock.
+      const key=(display&&FORCED_CANONICAL_BUSINESS_NAMES.has(display))
+        ? `forced|${display}|${family}`
+        : strictBusinessIdentityKey(row);
       if(!key){groups.set(`id:${row.id}`,[...(groups.get(`id:${row.id}`)||[]),row]);continue;}
       groups.set(key,[...(groups.get(key)||[]),row]);
     }
@@ -11074,7 +11081,11 @@ The full order and approved media remain stored with this project.`;
     $('customerApp')?.classList.add('hidden');
     $('adminPanel')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
+    // 7.9.3 Bulkhead: owner authority is its own first-class surface. Engine boot
+    // lock must never hide #app after owner authentication or on owner-route refresh.
+    document.body.classList.remove('boot-locked','engine-mode','project-mode','bf-entry-open');
     document.body.classList.add('owner-portal-open');
+    document.documentElement.classList.add('owner-route-intent');
   }
 
   async function closeOwnerPortal(){
@@ -13027,7 +13038,17 @@ document.addEventListener('click', (event) => {
   function bindBlackFlagPortal(){
     if(window.__blackFlagPortalBound) return;
     window.__blackFlagPortalBound=true;
-    if(String(location.hash||'').startsWith('#client-preview=')){
+    const startupHash=String(location.hash||'');
+    if(startupHash.startsWith('#owner-')){
+      // 7.9.3 Bulkhead: owner bookmarks and authenticated owner refreshes never
+      // traverse or paint the Black Flag Engine gate. routeOwnerAccessFromHash()
+      // owns this startup route after project data is loaded.
+      const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
+      document.body.classList.remove('boot-locked','bf-entry-open','engine-mode','project-mode');
+      document.body.classList.add('owner-portal-open');
+      return;
+    }
+    if(startupHash.startsWith('#client-preview=')){
       // Standalone preview routing owns first paint. Keep the app bulkhead closed
       // until routeClientPreviewFromHash() has installed the preview PIN gate.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');

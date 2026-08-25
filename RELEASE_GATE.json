@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.2",
-  "release": "7.9.2",
+  "build": "7.9.3",
+  "release": "7.9.3",
   "generatedAt": "2026-08-24",
   "checks": {
     "build_version": true,
@@ -81,5 +81,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.2 Watertight seals project-owner authentication away from Black Flag Engine credentials and deterministically folds the known Legacy Plumbing duplicate while preserving project-scoped evidence."
+  "note": "7.9.3 Bulkhead seals project-owner refresh/session routing and canonical duplicate grouping while preserving project isolation."
 }
