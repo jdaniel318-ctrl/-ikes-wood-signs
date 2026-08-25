@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.0.6",
-  "release": "8.0.6",
+  "build": "8.0.7",
+  "release": "8.0.7",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -101,12 +101,15 @@
     "owner_navigation_cache_separated": true,
     "pixel_rangefinder_inventory_constrained": true,
     "visual_length_owner_review_flag": true,
-    "pixel_evidence_preserved_in_order": true
+    "pixel_evidence_preserved_in_order": true,
+    "visual_helm_photo_rotation": true,
+    "orientation_from_rotated_photo": true,
+    "transient_secondary_photo_stripped": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.6 Rangefinder: inventory-constrained pixel ranging with owner visual verification; Sentry visual sanity gates preserved.",
-  "candidate": "8.0.6"
+  "note": "8.0.7 Visual Helm: photo-first orientation, real-sign lettering styles, forward-action camera layout, and transient media storage hardening; Rangefinder evidence model preserved.",
+  "candidate": "8.0.7"
 }

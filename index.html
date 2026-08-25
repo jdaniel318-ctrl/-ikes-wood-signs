@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.0.6 RANGEFINDER — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.0.7 VISUAL HELM — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -115,7 +115,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=8.0.6" />
+  <link rel="stylesheet" href="styles.css?v=8.0.7" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -508,8 +508,8 @@
         </div>
         <div id="cameraControls" class="camera-controls">
           <button type="button" id="startCameraBtn" class="primary-btn">START CAMERA</button>
-          <button type="button" id="capturePhotoBtn" class="primary-btn hidden">TAKE PICTURE</button>
           <button type="button" id="cancelCameraBtn" class="secondary-btn hidden">CANCEL CAMERA</button>
+          <button type="button" id="capturePhotoBtn" class="primary-btn hidden">TAKE PICTURE</button>
         </div>
         <div id="photoFrame" class="photo-frame placeholder hidden">
           <img id="woodPhoto" alt="Selected wood blank" />
@@ -517,8 +517,13 @@
         </div>
         <div id="photoReviewControls" class="photo-review-controls hidden">
           <button type="button" id="retakeBtn" class="secondary-btn">RETAKE</button>
-          <button type="button" class="primary-btn next" data-next="orientation">USE THIS PHOTO →</button>
+          <div class="photo-rotate-controls" aria-label="Rotate your board photo">
+            <button type="button" id="rotatePhotoLeftBtn" class="secondary-btn" aria-label="Rotate photo left">↶ ROTATE LEFT</button>
+            <button type="button" id="rotatePhotoRightBtn" class="secondary-btn" aria-label="Rotate photo right">ROTATE RIGHT ↷</button>
+          </div>
+          <button type="button" id="usePhotoBtn" class="primary-btn next" data-next="orientation">USE THIS PHOTO →</button>
         </div>
+        <div id="photoOrientationNote" class="photo-orientation-note hidden"><strong>Set the board upright.</strong><span>Rotate the photo until it looks the way the finished sign should hang. The top of the photo becomes the top of the sign.</span></div>
         <div class="library-fallback"><span>Camera not available?</span><label class="text-btn file-btn inline-file" for="photoInput">Choose a saved photo</label><input id="photoInput" type="file" accept="image/*" hidden /></div>
         <p id="photoHelp" class="helper">The app will use the iPad camera without leaving the ordering process.</p>
         <p id="photoError" class="error-text" aria-live="polite"></p>
@@ -558,11 +563,11 @@
               <div class="ike-design-number">1</div><div class="ike-design-block-body"><label for="ikeWordingInput"><strong>Your wording</strong></label><input id="ikeWordingInput" class="text-input big" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false" /><div class="input-meta"><span>Type it exactly as you want it made.</span><strong id="ikeCharCount">0 characters</strong></div></div>
             </section>
             <section class="ike-design-block">
-              <div class="ike-design-number">2</div><div class="ike-design-block-body"><div class="ike-design-label"><strong>Choose lettering style</strong><span>IKE LETTERING LIBRARY</span></div>
+              <div class="ike-design-number">2</div><div class="ike-design-block-body"><div class="ike-design-label"><strong>Choose lettering style</strong><span>BASED ON IKE'S REAL SIGN STYLES</span></div>
                 <div id="ikeFontChoices" class="ike-lettering-grid">
-                  <button type="button" class="ike-lettering-choice" data-ike-font="A"><small>STYLE A</small><span class="style-a">ABC abc • <b data-ike-font-sample>Smoke Hole</b></span></button>
-                  <button type="button" class="ike-lettering-choice" data-ike-font="B"><small>STYLE B</small><span class="style-b">ABC abc • <b data-ike-font-sample>Smoke Hole</b></span></button>
-                  <button type="button" class="ike-lettering-choice" data-ike-font="C"><small>STYLE C</small><span class="style-c">ABC abc • <b data-ike-font-sample>Smoke Hole</b></span></button>
+                  <button type="button" class="ike-lettering-choice" data-ike-font="A"><small>STYLE A · BOLD BLOCK</small><span class="style-a"><b data-ike-font-sample>RAMJET</b></span><em>Big, clean routed letters</em></button>
+                  <button type="button" class="ike-lettering-choice" data-ike-font="B"><small>STYLE B · TALL WESTERN</small><span class="style-b"><b data-ike-font-sample>SMOKE HOLE!</b></span><em>Tall decorative sign lettering</em></button>
+                  <button type="button" class="ike-lettering-choice" data-ike-font="C"><small>STYLE C · CLASSIC SERIF</small><span class="style-c"><b data-ike-font-sample>Your Sign</b></span><em>Traditional readable serif</em></button>
                 </div>
                 <label class="ike-style-reference-btn" for="ikeStyleReferenceInput"><span>＋</span><div><strong>Add lettering reference photo</strong><small>Optional. Stages a visual style reference — it does not pretend a photo is an installable font.</small></div></label>
                 <input id="ikeStyleReferenceInput" type="file" accept="image/*" hidden />
@@ -570,7 +575,7 @@
               </div>
             </section>
             <section class="ike-design-block">
-              <div class="ike-design-number">3</div><div class="ike-design-block-body"><div class="ike-design-label"><strong>Finish & orientation</strong><span>LIVE PREVIEW</span></div>
+              <div class="ike-design-number">3</div><div class="ike-design-block-body"><div class="ike-design-label"><strong>Finish</strong><span>LIVE PREVIEW</span></div>
                 <div id="ikeFillChoices" class="ike-finish-grid">
                   <button type="button" data-ike-fill="Black"><i class="finish-swatch black"></i>Black</button>
                   <button type="button" data-ike-fill="White"><i class="finish-swatch white"></i>White</button>
@@ -578,13 +583,13 @@
                   <button type="button" data-ike-fill="Other"><i id="ikeCustomSwatch" class="finish-swatch custom"></i>Custom</button>
                 </div>
                 <div id="ikeCustomColorPanel" class="ike-custom-color hidden"><input id="ikeCustomColor" type="color" value="#1f6feb" aria-label="Choose custom letter color"><span id="ikeCustomColorName">#1F6FEB</span><small>OTHER COLOR: Ike may ask you to supply the spray paint; it will be returned at pickup.</small></div>
-                <div class="ike-orientation-confirm"><button type="button" id="ikeRotateBtn">↻ ROTATE SIGN</button><div id="ikeTopMarkerButtons" class="ike-top-buttons"><button data-ike-top="Top of photo">↑ TOP</button><button data-ike-top="Right side of photo">→</button><button data-ike-top="Bottom of photo">↓</button><button data-ike-top="Left side of photo">←</button></div></div>
+                <div class="ike-orientation-trust"><div class="orientation-mini-visual"><span>TOP</span><div class="orientation-board-shape" id="ikeOrientationShape"></div></div><div><strong id="ikeOrientationTrustTitle">Photo sets the sign direction</strong><small id="ikeOrientationTrustCopy">The top of your photo is the top of your sign. Rotate the board during photo review if it needs to turn.</small></div></div>
               </div>
             </section>
           </div>
           <aside class="ike-design-preview-pane">
             <div class="ike-design-preview-head"><span>YOUR EXACT PLANK</span><strong id="ikeDesignPrice">$65</strong></div>
-            <div class="preview-card ike-design-preview"><img class="preview-image" data-preview-img alt="Live sign preview" /><div class="preview-fallback"></div><div id="ikeDesignPreviewText" class="preview-text style-b"></div><div id="ikeStylePrompt" class="ike-style-prompt">Choose a lettering style to place your words on the plank.</div><div id="ikeTopMarker" class="ike-top-marker">TOP ↑</div></div>
+            <div class="preview-card ike-design-preview"><img class="preview-image" data-preview-img alt="Live sign preview" /><div class="preview-fallback"></div><div id="ikeDesignPreviewText" class="preview-text style-b"></div><div id="ikeStylePrompt" class="ike-style-prompt">Choose a lettering style to place your words on the plank.</div><div id="ikeTopMarker" class="ike-top-marker">TOP</div></div>
             <div class="ike-design-summary-line"><span id="ikeDesignOrientation">Horizontal</span><span id="ikeDesignFill">Black</span><span id="ikeDesignFont">Choose style</span><span id="ikeDesignProtection">Detecting zone</span></div>
             <button type="button" id="ikeDesignNextBtn" class="primary-btn">REVIEW MY DESIGN →</button>
             <p id="ikeDesignError" class="error-text" aria-live="polite"></p>
@@ -595,7 +600,7 @@
       <section class="screen ike-only-screen" data-screen="ike-approve">
         <div class="ike-approve-layout">
           <div><div class="centered"><span class="eyebrow">DESIGN CHECKPOINT</span><h2>Approve the sign you want Ike to make.</h2></div>
-            <div class="preview-card hero-preview ike-approve-preview"><img class="preview-image" data-preview-img alt="Approved plank preview"><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div><div class="ike-top-marker approval-marker">TOP ↑</div></div>
+            <div class="preview-card hero-preview ike-approve-preview"><img class="preview-image" data-preview-img alt="Approved plank preview"><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div><div class="ike-top-marker approval-marker">TOP</div></div>
           </div>
           <div class="ike-approve-panel"><span>YOUR DESIGN</span><h3 id="ikeApproveWording">Smoke Hole</h3><div class="ike-approve-facts"><div><small>LETTERING</small><strong id="ikeApproveFont">Style B</strong></div><div><small>FINISH</small><strong id="ikeApproveFill">Black</strong></div><div><small>ORIENTATION</small><strong id="ikeApproveOrientation">Horizontal</strong></div><div><small>PRICE</small><strong id="ikeApprovePrice">$65</strong></div></div><button id="ikeApproveDesignBtn" type="button" class="primary-btn">APPROVE MY DESIGN →</button><button id="ikeEditDesignBtn" type="button" class="secondary-btn">EDIT DESIGN</button></div>
         </div>
@@ -1535,11 +1540,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=8.0.6"></script>
-  <script src="platform_v4.js?v=8.0.6"></script>
-  <script src="platform_identity.js?v=8.0.6"></script>
-  <script src="app.js?v=8.0.6"></script>
-  <script src="captain.js?v=8.0.6"></script>
+  <script src="platform_core.js?v=8.0.7"></script>
+  <script src="platform_v4.js?v=8.0.7"></script>
+  <script src="platform_identity.js?v=8.0.7"></script>
+  <script src="app.js?v=8.0.7"></script>
+  <script src="captain.js?v=8.0.7"></script>
 
 </body>
 </html>

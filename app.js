@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.0.6';
+  const BUILD_VERSION = '8.0.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -860,7 +860,7 @@
   }
 
   function ownerPartnerEntryLink(projectId){
-    // 8.0.6 Rangefinder: owner authority lives on a dedicated standalone entrypoint.
+    // 8.0.7 Rangefinder: owner authority lives on a dedicated standalone entrypoint.
     // The Engine never attempts to hydrate owner UI inside its own boot sequence.
     const p=projectById(projectId);
     const base=new URL('./owner.html',location.href.split('#')[0]);
@@ -1177,6 +1177,7 @@
     current: 'welcome',
     price: 65,
     photoData: '',
+    photoOriginalData: '',
     orientation: 'Horizontal',
     topSide: 'Top of photo',
     wording: 'Smoke Hole',
@@ -1198,12 +1199,14 @@
     plankRecognition: null,
     styleReferenceData: '',
     styleReferenceName: '',
+    photoQuarterTurns: 0,
     allowCustomColors: true,
     customerConfirmationEmail: false
   };
 
   let db;
   let cameraStream = null;
+  let ikePhotoRotationTask = Promise.resolve();
 
   // Engine security is intentionally session-only. Leaving Black Flag locks it again.
   let engineSessionUnlocked = false;
@@ -2111,7 +2114,7 @@
   }
 
 
-  // 8.0.6 RANGEFINDER — one canonical roster for every Engine fleet surface.
+  // 8.0.7 VISUAL HELM — one canonical roster for every Engine fleet surface.
   // Fleet Dock, Project Tools, readiness counts, owner state and commissioning
   // metrics must all consume the same reconciled canonical project store.
   let canonicalPresentationConvergence=null;
@@ -9156,11 +9159,13 @@
       if($('ikeDesignFill'))$('ikeDesignFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
       if($('ikeDesignFont'))$('ikeDesignFont').textContent=state.fontChosen?`Style ${state.font}`:'Choose style';
       if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=(r.usableRegion?'Detected lettering zone':(r.usableArea==='safe-margin-preview'?'Basic margin':'Zone pending'));
-      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');el.textContent=state.fontChosen?(state.wording||'Your Sign'):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':'');if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
+      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'Your Sign';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':'');if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
       scheduleIkeDetectedTextPlacement();
       if($('ikeStylePrompt'))$('ikeStylePrompt').classList.toggle('hidden',!!state.fontChosen);
-      $$('.ike-top-marker').forEach(el=>el.textContent=state.topSide==='Top of photo'?'TOP ↑':state.topSide==='Bottom of photo'?'TOP ↓':state.topSide==='Left side of photo'?'TOP ←':'TOP →');
-      $$('#ikeTopMarkerButtons [data-ike-top]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeTop===state.topSide));
+      $$('.ike-top-marker').forEach(el=>el.textContent='TOP');
+      const shape=$('ikeOrientationShape');if(shape)shape.classList.toggle('vertical',state.orientation==='Vertical');
+      const pane=document.querySelector('.ike-design-preview');if(pane)pane.classList.toggle('vertical-board',state.orientation==='Vertical');
+      if($('photoOrientationNote'))$('photoOrientationNote').classList.toggle('hidden',!state.photoData);
       if($('ikeCustomColorPanel'))$('ikeCustomColorPanel').classList.toggle('hidden',state.fill!=='Other');
       if($('ikeCustomColor'))$('ikeCustomColor').value=state.customColor||'#1f6feb';
       if($('ikeCustomColorName'))$('ikeCustomColorName').textContent=String(state.customColor||'#1f6feb').toUpperCase();
@@ -9403,7 +9408,7 @@
     const id=newOrderId();
     const experienceCtx=currentExperienceContext(activeProject());
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:state.topSide,wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:state.plankRecognition||null,pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:'Top of photo',photoQuarterTurns:Number(state.photoQuarterTurns||0),wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:activeProjectId==='ikes-wood-signs'?ikeRecognitionForOrder():(state.plankRecognition||null),pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
     if(experienceCtx?.state!=='preview'){
       backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
       try{await put(STORE_ORDERS,order);}catch(err){console.warn('IndexedDB save failed; local backup retained',err);}
@@ -9560,7 +9565,7 @@
   function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&currentScreenOrder().includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
 
   function resetOrder(){
-    Object.assign(state,{current:'welcome',price:65,photoData:'',orientation:'Horizontal',topSide:'Top of photo',wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''});
+    Object.assign(state,{current:'welcome',price:65,photoData:'',photoOriginalData:'',orientation:'Horizontal',topSide:'Top of photo',photoQuarterTurns:0,wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''});
     ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;setScreen('welcome');
   }
 
@@ -10002,7 +10007,7 @@ The full order and approved media remain stored with this project.`;
     const data=ctx.getImageData(0,0,w,h).data,mask=new Uint8Array(w*h),yellow=new Uint8Array(w*h);
     for(let i=0,p=0;i<data.length;i+=4,p++){
       const r=data[i],g=data[i+1],b=data[i+2],hsv=ikeRgbToHsv(r,g,b);
-      // 8.0.6 Rangefinder: segment the whole wood body, including pale sapwood.
+      // 8.0.7 Rangefinder: segment the whole wood body, including pale sapwood.
       // The previous dark-brown-only mask could isolate a vertical heartwood patch,
       // which then corrupted orientation and species evidence. Low-saturation white/
       // gray countertop stays excluded while cream sapwood remains part of the plank.
@@ -10081,7 +10086,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeVisualSpeciesEvidence(img,analysis){
-    // 8.0.6 Rangefinder: confidence is evidence-weighted, not merely threshold-lowered.
+    // 8.0.7 Rangefinder: confidence is evidence-weighted, not merely threshold-lowered.
     // Distinctive species may clear from one strong photo when several independent
     // visual clues agree. Ambiguous families (especially oak) still require an
     // exact rack-species confirmation before pricing.
@@ -10125,7 +10130,7 @@ The full order and approved media remain stored with this project.`;
       const quality=Math.max(.35,Math.min(1,(n/(w*h*.35))*(analysis?.confidence==='geometry-clear'?1:.9)));
       const diagnostics={sampleCount:n,quality:Number(quality.toFixed(2)),warmRatio:Number(warmRatio.toFixed(2)),centerWarm:Number(centerWarm.toFixed(2)),edgeLight:Number(edgeLight.toFixed(2)),heartSapContrast:Number(heartSapContrast.toFixed(1)),redHeart:Number(redHeart.toFixed(1)),texture:Number(tex.toFixed(2))};
 
-      // 8.0.6 Rangefinder: score positive evidence and contradictions separately.
+      // 8.0.7 Rangefinder: score positive evidence and contradictions separately.
       // A dark patch alone can no longer make Walnut win when cedar's diagnostic
       // heartwood/sapwood pattern is present.
       const cedarSignals=[centerWarm>=.38,redHeart>=13,edgeLight>=.18,heartSapContrast>=14,tex>=.13].filter(Boolean).length;
@@ -10212,7 +10217,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeLengthEvidenceFromGeometry(img,analysis){
-    // 8.0.6 Rangefinder: inventory-constrained visual ranging.
+    // 8.0.7 Rangefinder: inventory-constrained visual ranging.
     // Pixels alone are not treated as an absolute ruler. Instead we classify the
     // photographed plank against Ike's discrete rack lengths using whole-plank
     // geometry, framing quality, perspective sanity, and separation from the
@@ -10445,8 +10450,9 @@ The full order and approved media remain stored with this project.`;
       canvas.width=w;canvas.height=h;
       const ctx=canvas.getContext('2d',{alpha:false});
       ctx.drawImage(video,0,0,w,h);
-      if(activeProjectId==='ikes-wood-signs')state.plankRecognition={};
+      if(activeProjectId==='ikes-wood-signs'){state.plankRecognition={};state.photoQuarterTurns=0;}
       state.photoData=canvas.toDataURL('image/jpeg',0.78);
+      if(activeProjectId==='ikes-wood-signs') state.photoOriginalData=state.photoData;
       stopCamera();
       if(activeProjectId==='ikes-wood-signs') analyzeIkePlankPhoto();
       $('photoHelp').textContent='Picture captured. Review it below before continuing.';
@@ -10456,6 +10462,50 @@ The full order and approved media remain stored with this project.`;
       $('photoError').textContent='The picture could not be captured. Please try again.';
     }
   }
+
+  function renderIkePhotoFromOriginal(turns=0){
+    const source=state.photoOriginalData||state.photoData;
+    if(activeProjectId!=='ikes-wood-signs'||!source)return Promise.resolve(false);
+    const normalized=((Number(turns)||0)%4+4)%4;
+    if(normalized===0){
+      state.photoData=source;
+      state.photoQuarterTurns=0;
+      state.topSide='Top of photo';state.plankRecognition={};
+      analyzeIkePlankPhoto();updateUi();
+      return Promise.resolve(true);
+    }
+    return new Promise((resolve,reject)=>{
+      const img=new Image();
+      img.onload=()=>{try{
+        const quarter=normalized%2===1;
+        const canvas=document.createElement('canvas');
+        canvas.width=quarter?img.naturalHeight:img.naturalWidth;
+        canvas.height=quarter?img.naturalWidth:img.naturalHeight;
+        const ctx=canvas.getContext('2d',{alpha:false});
+        ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(normalized*Math.PI/2);
+        ctx.drawImage(img,-img.naturalWidth/2,-img.naturalHeight/2);
+        // Always render from the untouched base image so repeated quarter-turns
+        // do not repeatedly recompress the customer's evidence photo.
+        state.photoData=canvas.toDataURL('image/jpeg',0.82);
+        state.photoQuarterTurns=normalized;
+        state.topSide='Top of photo';state.plankRecognition={};
+        analyzeIkePlankPhoto();updateUi();resolve(true);
+      }catch(err){reject(err);}};img.onerror=reject;img.src=source;
+    });
+  }
+
+  function rotateIkePhotoQuarterTurn(direction=1){
+    const next=((Number(state.photoQuarterTurns||0)+(direction>0?1:3))%4);
+    return renderIkePhotoFromOriginal(next);
+  }
+
+  function queueIkePhotoQuarterTurn(direction=1){
+    ikePhotoRotationTask=ikePhotoRotationTask
+      .then(()=>rotateIkePhotoQuarterTurn(direction))
+      .catch(err=>{console.error('Ike photo rotation failed',err);if($('photoError'))$('photoError').textContent='The photo could not rotate. Please try again.';return false;});
+    return ikePhotoRotationTask;
+  }
+
 
   function resizePhoto(file){
     return new Promise((resolve,reject)=>{
@@ -11850,7 +11900,7 @@ The full order and approved media remain stored with this project.`;
     window.releaseDarkSkyFirstPaint?.('owner-portal-ready');
   }
 
-  // 8.0.6 RANGEFINDER — owner authority gets an immediate, non-Engine first paint.
+  // 8.0.7 VISUAL HELM — owner authority gets an immediate, non-Engine first paint.
   // Protected owner navigation must never wait behind the full fleet/database boot sequence.
   // We paint a project-scoped owner shell immediately, then hydrate it from the canonical
   // registry once storage is ready. This keeps the authority boundary intact without a
@@ -12012,7 +12062,7 @@ The full order and approved media remain stored with this project.`;
     return routeOwnerAccessFromHashLegacy();
   }
 
-  // 8.0.6 RANGEFINDER — protected route resolver. The head-level watchdog is
+  // 8.0.7 VISUAL HELM — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
@@ -12853,8 +12903,8 @@ The full order and approved media remain stored with this project.`;
     $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;updateUi();});
     $('ikeFillChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-fill]');if(!b)return;invalidateIkeApprovedDesignLock();state.fill=b.dataset.ikeFill;updateUi();});
     $('ikeCustomColor')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.customColor=e.target.value;state.fill='Other';updateUi();});
-    $('ikeTopMarkerButtons')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-top]');if(!b)return;invalidateIkeApprovedDesignLock();state.topSide=b.dataset.ikeTop;updateUi();});
-    $('ikeRotateBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();state.orientation=state.orientation==='Horizontal'?'Vertical':'Horizontal';updateUi();});
+    $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));
+    $('rotatePhotoRightBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(1));
     $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthResolved||!r.lengthFeet){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick length check first so we never guess on size.';return;}if(!r.speciesResolved){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick wood check first so we price the right species.';return;}if(!(ikeSpeciesRate(r.speciesId)>0)){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='This species does not have an active owner price yet. Please ask Ike before continuing.';return;}recalcIkePrice();setScreen('ike-design');});
     $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
     $('ikeApproveDesignBtn')?.addEventListener('click',()=>{const ok=lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
@@ -12895,8 +12945,9 @@ The full order and approved media remain stored with this project.`;
       if($('photoError')) $('photoError').textContent='';
       if($('photoHelp')) $('photoHelp').textContent='Preparing your picture…';
       try{
-        if(activeProjectId==='ikes-wood-signs')state.plankRecognition={};
+        if(activeProjectId==='ikes-wood-signs'){state.plankRecognition={};state.photoQuarterTurns=0;}
         state.photoData=await resizePhoto(f);
+        if(activeProjectId==='ikes-wood-signs') state.photoOriginalData=state.photoData;
         stopCamera();
         if(activeProjectId==='ikes-wood-signs') analyzeIkePlankPhoto();
         updateUi();
@@ -12910,7 +12961,7 @@ The full order and approved media remain stored with this project.`;
     });
     $('retakeBtn')?.addEventListener('click',()=>{
       state.photoData='';
-      if(activeProjectId==='ikes-wood-signs')state.plankRecognition={};
+      if(activeProjectId==='ikes-wood-signs'){state.photoOriginalData='';state.plankRecognition={};state.photoQuarterTurns=0;}
       updateUi();
       startCamera().catch(err=>{
         console.error('Camera retake command failed',err);
@@ -13331,7 +13382,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
-    // 8.0.6 RANGEFINDER: Owner/Partner is a first-class authority surface. Paint its
+    // 8.0.7 VISUAL HELM: Owner/Partner is a first-class authority surface. Paint its
     // project-scoped shell before IndexedDB, migrations, telemetry, fleet convergence,
     // or any secondary subsystem can delay the handoff. Canonical data hydrates later.
     const startupOwnerRequest=ownerStartupRequest();
@@ -13593,7 +13644,7 @@ document.addEventListener('click', (event) => {
     const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
     const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
     if(startupOwner){
-      // 8.0.6 Rangefinder: query-based Owner/Partner routes are first-class authority
+      // 8.0.7 Rangefinder: query-based Owner/Partner routes are first-class authority
       // routes. They must never traverse, paint, or fall through the Black Flag
       // Engine gate while project-scoped owner state is resolving.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');

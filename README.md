@@ -1,22 +1,26 @@
-# Dark Sky 8.0.6 — Rangefinder
+# Dark Sky 8.0.7 — Visual Helm
 
-**Candidate release:** 8.0.6 Rangefinder  
+**Candidate release:** 8.0.7 Visual Helm  
 **Known Good anchor:** 7.8.4
 
-Rangefinder builds on Sentry by testing a controlled pixel-based length classifier for Ike's known rack sizes. The goal is a one-photo customer experience when the visual evidence clearly supports a stock length, while preserving Ike's final visual review and right to reject a mismatch before production.
+**Pre-sea-trial audit:** R1 preserves the untouched source photo across repeated 90° rotations so visual evidence does not degrade with each turn.
+
+Visual Helm turns the customer's photo into the orientation authority. Customers rotate the photographed plank until it looks like the finished sign should hang; the top of that image is then the top of the sign. The design workspace follows the photo instead of asking customers to manage abstract TOP/orientation controls.
 
 ## What changed
 
-- Whole-plank pixels now classify against Ike's discrete 2 ft, 4 ft, and 6 ft rack lengths using aspect geometry, framing quality, long-axis stability, and distance from the next-best stock length.
-- Pixels are **not** treated as an absolute ruler. A length only clears automatically when the inventory-constrained candidate is strongly separated.
-- High-confidence visual length can unlock customer pricing immediately. The order keeps a durable `ownerVisualVerificationRequired` flag and the supporting pixel evidence for Ike's production review.
-- Owner Orders shows a visible **Visual Length Check** notice when a visually ranged order still requires Ike's photo verification.
-- Manual/rack length confirmation remains the fallback and removes the visual-review requirement for length.
-- Sentry orientation and species contradiction guards remain intact.
-- Price still requires resolved orientation, species, length, and an active owner species rate.
+- Added repeatable 90° **Rotate Left / Rotate Right** controls during photo review.
+- The rotated photo is persisted as the order image; **top of photo = top of sign**.
+- Removed Ike's normal design-step TOP/orientation button cluster and replaced it with a visual orientation cue.
+- Vertical boards receive orientation-aware text layout automatically.
+- Lettering choices now reflect two real Ike sign directions: **Bold Block** (RAMJET-style) and **Tall Western** (SMOKE HOLE!-style), plus a Classic Serif option.
+- Ike's back-side stamp is treated as non-authoritative visual content and is not used to set top/orientation.
+- Camera controls follow forward-action placement: cancel/secondary left, **Take Picture** right.
+- Persisted orders no longer retain full secondary verification-photo payloads; they keep the derived recognition evidence instead. This addresses the storage growth observed during repeated sea trials.
+- Rangefinder/Sentry species, orientation, length, pricing, Owner Bridge, and canonical fleet protections remain intact.
 
 ## Acceptance test
 
-Use the known cedar test plank with one normal full-plank photo and no tape measure. Expected best case: **Horizontal + Cedar + 2 ft + $18** from one photo. If 2 ft does not clearly beat 4 ft/6 ft on the pixel model, ask for one additional full-plank view rather than guessing. Any visually resolved length must remain flagged for Ike review on the resulting order.
+Photograph a 2 ft cedar plank, rotate the photo as needed, then use it. Confirm that the app treats the top of the rotated photo as sign top, identifies horizontal/vertical from the resulting board geometry, adapts lettering placement, and never asks the customer for a separate TOP selection in the normal Ike flow. Test Bold Block and Tall Western against the supplied real-sign reference image.
 
-See `PIXEL_RANGEFINDER_CONTRACT.md` for the contract and `CHANGELOG.md` for release history.
+See `VISUAL_HELM_CONTRACT.md` and `CHANGELOG.md`.

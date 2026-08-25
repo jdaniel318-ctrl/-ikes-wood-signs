@@ -1,3 +1,14 @@
+# 8.0.7 — Visual Helm
+
+**R1 pre-sea-trial audit:** repeated photo rotation now always renders from the untouched source image to prevent cumulative JPEG degradation; rotation taps are serialized; deployment focus/checksums were reconciled.
+
+- Photo review now owns orientation: repeatable quarter-turn rotation, top-of-photo authority, and no normal Ike TOP button matrix.
+- Camera forward action moved to the right.
+- Added orientation-aware vertical-board text layout.
+- Reworked Ike lettering library around real sign references: Bold Block, Tall Western, and Classic Serif.
+- Added transient media stewardship: secondary verification photos are not persisted inside completed order records.
+- Preserves Rangefinder visual length evidence and Ike visual-rejection authority.
+
 # Dark Sky Changelog
 
 ## 8.0.6 — Rangefinder
