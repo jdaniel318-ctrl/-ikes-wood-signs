@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.0.2",
-  "release": "8.0.2",
+  "build": "8.0.3",
+  "release": "8.0.3",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -104,6 +104,6 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.2 Grain Guard R1 documentation/release-identity audit: standalone project-owner surface, owner refresh persistence, canonical six-vessel roster preserved, manifest/README/changelog/cache/checksums reconciled.",
-  "candidate": "8.0.2"
+  "note": "8.0.3 Sightline: confidence-aware species and plank-length gates; automatic length when confidence is high; extra full-plank photo only when needed; price requires resolved species + length.",
+  "candidate": "8.0.3"
 }

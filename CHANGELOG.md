@@ -1,3 +1,15 @@
+# Dark Sky 8.0.3 — Sightline
+
+- Adds confidence-aware plank length identification parallel to Grain Guard species identification.
+- Removes the always-visible customer length picker from the normal path.
+- Uses known stock lengths plus detected plank geometry; never free-form pixel-to-feet guessing.
+- Requests one straight-on full-plank photo only when the first photo does not clear the confidence threshold.
+- Allows rack-length/manual confirmation only as a final fallback.
+- Requires resolved species + resolved length + active owner rate before customer pricing.
+- Clears stale secondary evidence whenever a new primary plank photo is taken.
+
+---
+
 # Dark Sky 8.0.2 — Grain Guard
 
 - Aligns Ike customer runtime with the Owner Control Center’s six priced species: Pine, Cedar, Red Oak, White Oak, Walnut, and Hickory.

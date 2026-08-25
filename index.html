@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.0.2 GRAIN GUARD — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.0.3 SIGHTLINE — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -115,7 +115,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=8.0.2" />
+  <link rel="stylesheet" href="styles.css?v=8.0.3" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -539,10 +539,10 @@
               <div><span>Design protection</span><strong id="ikeRecognitionSafeArea">Not analyzed</strong></div>
               <div><span>Obstacle avoidance</span><strong id="ikeRecognitionObstacle">Not analyzed</strong></div>
             </div>
-            <p class="ike-recognition-note">We check the wood conservatively so the price stays tied to the right species. If we need more evidence, we’ll guide you through one quick extra photo.</p>
+            <p class="ike-recognition-note">We check species and length conservatively. Most customers can continue from one photo; if either check needs more evidence, we’ll guide you through one quick extra photo.</p>
             <div id="ikeSpeciesAssist"></div>
             <input id="ikeSecondSpeciesPhotoInput" type="file" accept="image/*" capture="environment" hidden />
-            <div class="ike-length-question"><strong>How long is your plank?</strong><div id="ikeLengthChoices" class="ike-price-strip" aria-label="Plank length"><button type="button" data-ike-length="2">2 FT</button><button type="button" data-ike-length="4">4 FT</button><button type="button" data-ike-length="6">6 FT</button></div><label class="ike-custom-length">Other length <input id="ikeCustomLength" type="number" min="0.25" step="0.25" inputmode="decimal" placeholder="feet"></label></div>
+            <div id="ikeLengthAssist"></div><input id="ikeSecondLengthPhotoInput" type="file" accept="image/*" capture="environment" hidden />
             <p id="ikeSpeciesResolutionStatus" class="ike-species-resolution-status" aria-live="polite"></p>
             <button type="button" id="ikeConfirmPlankBtn" class="primary-btn">CONFIRM THIS PLANK →</button>
           </div>
@@ -1535,11 +1535,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=8.0.2"></script>
-  <script src="platform_v4.js?v=8.0.2"></script>
-  <script src="platform_identity.js?v=8.0.2"></script>
-  <script src="app.js?v=8.0.2"></script>
-  <script src="captain.js?v=8.0.2"></script>
+  <script src="platform_core.js?v=8.0.3"></script>
+  <script src="platform_v4.js?v=8.0.3"></script>
+  <script src="platform_identity.js?v=8.0.3"></script>
+  <script src="app.js?v=8.0.3"></script>
+  <script src="captain.js?v=8.0.3"></script>
 
 </body>
 </html>

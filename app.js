@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.0.2';
+  const BUILD_VERSION = '8.0.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -860,7 +860,7 @@
   }
 
   function ownerPartnerEntryLink(projectId){
-    // 8.0.2 Grain Guard: owner authority lives on a dedicated standalone entrypoint.
+    // 8.0.3 Sightline: owner authority lives on a dedicated standalone entrypoint.
     // The Engine never attempts to hydrate owner UI inside its own boot sequence.
     const p=projectById(projectId);
     const base=new URL('./owner.html',location.href.split('#')[0]);
@@ -1160,7 +1160,7 @@
   function recalcIkePrice(){
     if(activeProjectId!=='ikes-wood-signs')return;
     const r=state.plankRecognition||{},rate=ikeSpeciesRate(r.speciesId),feet=Number(r.lengthFeet||0);
-    if(rate>0&&feet>0&&r.speciesResolved===true) state.price=Math.round(rate*feet*100)/100;
+    if(rate>0&&feet>0&&r.speciesResolved===true&&r.lengthResolved===true) state.price=Math.round(rate*feet*100)/100;
     else state.price=0;
   }
   let businessConfig={...DEFAULT_BUSINESS_CONFIG};
@@ -2111,7 +2111,7 @@
   }
 
 
-  // 8.0.2 GRAIN GUARD — one canonical roster for every Engine fleet surface.
+  // 8.0.3 SIGHTLINE — one canonical roster for every Engine fleet surface.
   // Fleet Dock, Project Tools, readiness counts, owner state and commissioning
   // metrics must all consume the same reconciled canonical project store.
   let canonicalPresentationConvergence=null;
@@ -9142,14 +9142,12 @@
       const r=state.plankRecognition||{};
       if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.status==='detected'?(r.speciesResolved?'PLANK READY':'WOOD CHECK IN PROGRESS'):'PHOTO READY';
       if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientation||state.orientation||'—';
-      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthFeet?`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft`:'Choose length';
+      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved&&r.lengthFeet?`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft`:(r.lengthCandidateFeet?`Checking ${Number(r.lengthCandidateFeet)} ft`:'Checking length');
       if($('ikeDetectedSpecies'))$('ikeDetectedSpecies').textContent=r.speciesResolved?(r.speciesName||'Confirmed'):(r.family==='oak'?'Oak family — confirm type':(r.speciesName||'Checking wood'));
-      if($('ikePlankPrice'))$('ikePlankPrice').textContent=(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthFeet)?`$${Number(state.price||0).toFixed(2).replace('.00','')}`:'After wood check';
-      if($('ikeSpeciesAssist'))$('ikeSpeciesAssist').innerHTML=ikeSpeciesPromptMarkup(r);
-      if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent=r.speciesResolved?(r.speciesConfidence==='customer-confirmed'?`${r.speciesName} confirmed. Ike’s ${Number(r.lengthFeet||0)} ft pricing is ready.`:`${r.speciesName} matched from ${Number(r.evidenceCount||1)} photo${Number(r.evidenceCount||1)===1?'':'s'}.`):'';
-      if($('ikeConfirmPlankBtn'))$('ikeConfirmPlankBtn').disabled=!(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthFeet);
-      $$('#ikeLengthChoices [data-ike-length]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.ikeLength)===Number(r.lengthFeet)));
-      if($('ikeCustomLength')&&document.activeElement!==$('ikeCustomLength')) $('ikeCustomLength').value=(r.lengthFeet&&!([2,4,6].includes(Number(r.lengthFeet))))?r.lengthFeet:'';
+      if($('ikePlankPrice'))$('ikePlankPrice').textContent=(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet)?`$${Number(state.price||0).toFixed(2).replace('.00','')}`:'After checks';
+      if($('ikeSpeciesAssist'))$('ikeSpeciesAssist').innerHTML=ikeSpeciesPromptMarkup(r);if($('ikeLengthAssist'))$('ikeLengthAssist').innerHTML=ikeLengthPromptMarkup(r);
+      if($('ikeSpeciesResolutionStatus')){const bits=[];if(r.speciesResolved)bits.push(r.speciesConfidence==='customer-confirmed'?`${r.speciesName} confirmed.`:`${r.speciesName} matched.`);if(r.lengthResolved&&r.lengthFeet)bits.push(`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft length confirmed.`);if(r.speciesResolved&&r.lengthResolved&&ikeSpeciesRate(r.speciesId)>0)bits.push('Price ready.');$('ikeSpeciesResolutionStatus').textContent=bits.join(' ');}
+      if($('ikeConfirmPlankBtn'))$('ikeConfirmPlankBtn').disabled=!(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet);
       if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':(r.confidence==='geometry-probable'?'Geometry: Medium':'Visual geometry only');
       if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Usable lettering zone detected':(r.usableArea==='safe-margin-preview'?'Basic margin active':'Not analyzed');
       if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleDetected?'Cutout/edge avoidance: Active Sea Trial':(r.obstacleAvoidance==='sea-trial-active'?'Edge avoidance: Active Sea Trial':'No interior obstacle detected');
@@ -10065,7 +10063,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeVisualSpeciesEvidence(img,analysis){
-    // Grain Guard is intentionally conservative. These measurements are visual
+    // Sightline is intentionally conservative. These measurements are visual
     // evidence, not a botanical guarantee. Exact priced species are never
     // inferred from a weak color-only signal.
     try{
@@ -10143,7 +10141,63 @@ The full order and approved media remain stored with this project.`;
     return `<div class="ike-species-assist-card"><small>WOOD CHECK</small><strong>${copy}</strong><p>Take a closer photo of the wood grain in good light. We’ll combine it with your first photo.</p><button type="button" class="primary-btn small" data-ike-species-more-photo>TAKE ONE MORE PHOTO</button></div>`;
   }
 
-  function setIkeLengthFeet(feet){const r=state.plankRecognition||(state.plankRecognition={});r.lengthFeet=Math.max(.25,Number(feet||0));recalcIkePrice();updateUi();}
+  function ikeLengthEvidenceFromGeometry(img,analysis){
+    // Sightline: infer only against Ike's known stock lengths. A photograph does
+    // not contain absolute scale by itself, so this is an inventory-constrained
+    // geometry check, never free-form pixel-to-feet guessing.
+    const contour=analysis?.contour,iw=Number(img?.naturalWidth||img?.width||0),ih=Number(img?.naturalHeight||img?.height||0);
+    if(!contour||!iw||!ih)return {resolved:false,confidence:'low',score:.15,feet:0,candidateFeet:0,needsSecondPhoto:true,reason:'no-usable-contour'};
+    const pw=Math.max(1,contour.w*iw),ph=Math.max(1,contour.h*ih),ratio=Math.max(pw,ph)/Math.max(1,Math.min(pw,ph));
+    const stocks=[2,4,6],nominalWidthInches=8.75;
+    const estimate=ratio*nominalWidthInches/12;
+    const nearest=stocks.slice().sort((a,b)=>Math.abs(a-estimate)-Math.abs(b-estimate))[0];
+    const rel=Math.abs(estimate-nearest)/nearest;
+    const edgeMargin=Math.min(contour.x,contour.y,1-(contour.x+contour.w),1-(contour.y+contour.h));
+    const fullyFramed=edgeMargin>0.012;
+    const geometryClear=analysis?.confidence==='geometry-clear';
+    let score=Math.max(.2,1-rel*2.2);
+    if(!fullyFramed)score-=.16;
+    if(!geometryClear)score-=.10;
+    score=Math.max(.1,Math.min(.96,score));
+    const high=score>=.82&&rel<=.18&&fullyFramed;
+    const medium=score>=.58&&rel<=.32;
+    return {resolved:high,confidence:high?'high':(medium?'medium':'low'),score:Number(score.toFixed(2)),feet:high?nearest:0,candidateFeet:nearest,estimatedFeet:Number(estimate.toFixed(2)),aspectRatio:Number(ratio.toFixed(2)),needsSecondPhoto:!high,reason:high?'stock-geometry-high-confidence':(medium?'stock-geometry-needs-confirmation':'geometry-not-safe-enough')};
+  }
+
+  function ikeCombineLengthEvidence(primary,secondary){
+    if(!primary)return {resolved:false,confidence:'low',score:.1,feet:0,candidateFeet:0,needsSecondPhoto:true,reason:'no-primary-length-evidence'};
+    if(primary.resolved)return {...primary,evidenceCount:1};
+    if(!secondary)return {...primary,evidenceCount:1,needsSecondPhoto:true};
+    const same=Number(primary.candidateFeet||0)>0&&Number(primary.candidateFeet)===Number(secondary.candidateFeet||0);
+    const estimateGap=Math.abs(Number(primary.estimatedFeet||0)-Number(secondary.estimatedFeet||0));
+    if(same&&estimateGap<=.55){
+      const score=Math.min(.94,(Number(primary.score||0)+Number(secondary.score||0))/2+.14);
+      if(score>=.76)return {resolved:true,confidence:'high',score:Number(score.toFixed(2)),feet:Number(primary.candidateFeet),candidateFeet:Number(primary.candidateFeet),estimatedFeet:Number(((Number(primary.estimatedFeet||0)+Number(secondary.estimatedFeet||0))/2).toFixed(2)),aspectRatio:Number(primary.aspectRatio||0),needsSecondPhoto:false,evidenceCount:2,reason:'two-full-plank-photos-agree'};
+    }
+    return {resolved:false,confidence:'low',score:Math.max(.2,Math.min(Number(primary.score||0),Number(secondary.score||0))),feet:0,candidateFeet:same?Number(primary.candidateFeet):0,needsSecondPhoto:false,evidenceCount:2,reason:same?'two-photos-still-not-safe':'two-photos-disagree'};
+  }
+
+  function ikeLengthPromptMarkup(r){
+    if(!r)return '';
+    if(r.lengthResolved&&r.lengthFeet){
+      const how=r.lengthConfidence==='customer-confirmed'?'confirmed from the rack length':'matched from the plank photo';
+      return `<div class="ike-species-assist-card ike-length-assist-card"><small>LENGTH CHECK</small><strong>${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft ${how}.</strong><p>No tape measure needed.</p></div>`;
+    }
+    if(r.lengthNeedsSecondPhoto){
+      const candidate=r.lengthCandidateFeet?` We think it may be ${Number(r.lengthCandidateFeet)} ft, but we want to be sure.`:'';
+      return `<div class="ike-species-assist-card ike-length-assist-card"><small>ONE QUICK LENGTH CHECK</small><strong>One more full-plank photo will help us confirm the length.</strong><p>Keep the whole plank in view and take the photo as straight-on as you can.${candidate} No tape measure needed.</p><button type="button" class="primary-btn small" data-ike-length-more-photo>TAKE ONE MORE FULL-PLANK PHOTO</button></div>`;
+    }
+    if(Number(r.lengthEvidenceCount||0)>=2){
+      return `<div class="ike-species-assist-card ike-length-assist-card"><small>LENGTH CHECK</small><strong>Thanks — the photos are still too close to call safely.</strong><p>Choose the rack length you picked. A tape measure is only needed if you are unsure.</p><div class="ike-species-choice-row"><button type="button" data-ike-length-choice="2">2 FT</button><button type="button" data-ike-length-choice="4">4 FT</button><button type="button" data-ike-length-choice="6">6 FT</button></div><label class="ike-custom-length">Other length <input data-ike-length-custom type="number" min="0.25" step="0.25" inputmode="decimal" placeholder="feet"></label></div>`;
+    }
+    return '';
+  }
+
+  function setIkeLengthFeet(feet,source='customer-confirmed'){
+    const r=state.plankRecognition||(state.plankRecognition={});
+    r.lengthFeet=Math.max(.25,Number(feet||0));r.lengthResolved=true;r.lengthConfidence=source;r.lengthScore=source==='customer-confirmed'?1:Number(r.lengthScore||0);r.lengthNeedsSecondPhoto=false;r.lengthResolutionMethod=source;
+    recalcIkePrice();updateUi();
+  }
 
   function analyzeIkePlankPhoto(){
     if(activeProjectId!=='ikes-wood-signs'||!state.photoData)return;
@@ -10157,15 +10211,18 @@ The full order and approved media remain stored with this project.`;
       const primaryEvidence=ikeVisualSpeciesEvidence(img,pixelAnalysis);
       const prior=state.plankRecognition||{};
       const species=ikeCombineSpeciesEvidence(primaryEvidence,prior.secondarySpeciesEvidence||null);
+      const primaryLengthEvidence=ikeLengthEvidenceFromGeometry(img,pixelAnalysis);
+      const length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
       state.plankRecognition={
         ...prior,
         status:'detected',method:pixelAnalysis?'photo-contour-segmentation':'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,
-        measurement:'customer-confirmed-length',measurementReadiness:pixelAnalysis?.referenceCandidate?'reference-candidate-sea-trial':'customer-length-confirmation',
+        measurement:'confidence-aware-inventory-geometry',measurementReadiness:length.resolved?'length-resolved':(length.needsSecondPhoto?'needs-second-full-plank-photo':'manual-rack-confirmation'),
         usableArea:pixelAnalysis?.usableRegion?'detected-usable-region':'safe-margin-preview',usableRegion:pixelAnalysis?.usableRegion||null,contour:pixelAnalysis?.contour||null,
         obstacleAvoidance:pixelAnalysis?'sea-trial-active':'not-commissioned',obstacleDetected:!!pixelAnalysis?.obstacleDetected,referenceCandidate:!!pixelAnalysis?.referenceCandidate,
         primarySpeciesEvidence:primaryEvidence,
         family:species.family,speciesId:species.speciesId,speciesName:species.speciesName,speciesResolved:species.speciesResolved,speciesConfidence:species.speciesConfidence,speciesScore:species.speciesScore,evidenceCount:species.evidenceCount,needsSecondPhoto:species.needsSecondPhoto,speciesCandidates:species.candidates||[],speciesReason:species.reason||'',
-        lengthFeet:Number(prior.lengthFeet||2),confidence:pixelAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
+        primaryLengthEvidence,lengthFeet:Number(length.feet||0),lengthResolved:!!length.resolved,lengthConfidence:length.confidence||'low',lengthScore:Number(length.score||0),lengthCandidateFeet:Number(length.candidateFeet||0),lengthEstimatedFeet:Number(length.estimatedFeet||0),lengthNeedsSecondPhoto:!!length.needsSecondPhoto,lengthEvidenceCount:Number(length.evidenceCount||1),lengthReason:length.reason||'',
+        confidence:pixelAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
       };
       recalcIkePrice();updateUi();
     };
@@ -10182,6 +10239,17 @@ The full order and approved media remain stored with this project.`;
     r.secondarySpeciesPhotoData=data;r.secondarySpeciesEvidence=secondaryEvidence;
     const combined=ikeCombineSpeciesEvidence(r.primarySpeciesEvidence||null,secondaryEvidence);
     Object.assign(r,{family:combined.family,speciesId:combined.speciesId,speciesName:combined.speciesName,speciesResolved:combined.speciesResolved,speciesConfidence:combined.speciesConfidence,speciesScore:combined.speciesScore,evidenceCount:combined.evidenceCount,needsSecondPhoto:combined.needsSecondPhoto,speciesCandidates:combined.candidates||[],speciesReason:combined.reason||'',secondaryAnalyzedAt:new Date().toISOString()});
+    recalcIkePrice();updateUi();
+  }
+
+  async function analyzeIkeSecondLengthPhoto(file){
+    if(!file)return;
+    const data=await resizePhoto(file),img=new Image();
+    await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=data;});
+    const pixels=ikeAnalyzePlankPixels(img),secondary=ikeLengthEvidenceFromGeometry(img,pixels),r=state.plankRecognition||(state.plankRecognition={});
+    r.secondaryLengthPhotoData=data;r.secondaryLengthEvidence=secondary;
+    const combined=ikeCombineLengthEvidence(r.primaryLengthEvidence||null,secondary);
+    Object.assign(r,{lengthFeet:Number(combined.feet||0),lengthResolved:!!combined.resolved,lengthConfidence:combined.confidence||'low',lengthScore:Number(combined.score||0),lengthCandidateFeet:Number(combined.candidateFeet||0),lengthEstimatedFeet:Number(combined.estimatedFeet||0),lengthNeedsSecondPhoto:!!combined.needsSecondPhoto,lengthEvidenceCount:Number(combined.evidenceCount||2),lengthReason:combined.reason||'',secondaryLengthAnalyzedAt:new Date().toISOString()});
     recalcIkePrice();updateUi();
   }
 
@@ -10245,7 +10313,7 @@ The full order and approved media remain stored with this project.`;
       canvas.width=w;canvas.height=h;
       const ctx=canvas.getContext('2d',{alpha:false});
       ctx.drawImage(video,0,0,w,h);
-      if(activeProjectId==='ikes-wood-signs'){const len=Number(state.plankRecognition?.lengthFeet||2);state.plankRecognition={lengthFeet:len};}
+      if(activeProjectId==='ikes-wood-signs')state.plankRecognition={};
       state.photoData=canvas.toDataURL('image/jpeg',0.78);
       stopCamera();
       if(activeProjectId==='ikes-wood-signs') analyzeIkePlankPhoto();
@@ -11650,7 +11718,7 @@ The full order and approved media remain stored with this project.`;
     window.releaseDarkSkyFirstPaint?.('owner-portal-ready');
   }
 
-  // 8.0.2 GRAIN GUARD — owner authority gets an immediate, non-Engine first paint.
+  // 8.0.3 SIGHTLINE — owner authority gets an immediate, non-Engine first paint.
   // Protected owner navigation must never wait behind the full fleet/database boot sequence.
   // We paint a project-scoped owner shell immediately, then hydrate it from the canonical
   // registry once storage is ready. This keeps the authority boundary intact without a
@@ -11812,7 +11880,7 @@ The full order and approved media remain stored with this project.`;
     return routeOwnerAccessFromHashLegacy();
   }
 
-  // 8.0.2 GRAIN GUARD — protected route resolver. The head-level watchdog is
+  // 8.0.3 SIGHTLINE — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
@@ -12627,8 +12695,6 @@ The full order and approved media remain stored with this project.`;
       applyPreview();
     });
     $('ikeWordingInput')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.wording=e.target.value;updateUi();});
-    $('ikeLengthChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-length]');if(!b)return;invalidateIkeApprovedDesignLock();setIkeLengthFeet(Number(b.dataset.ikeLength));});
-    $('ikeCustomLength')?.addEventListener('change',()=>{const v=Number($('ikeCustomLength')?.value||0);if(v>0){invalidateIkeApprovedDesignLock();setIkeLengthFeet(v);}});
     $('ikeSpeciesAssist')?.addEventListener('click',e=>{
       const choice=e.target.closest('[data-ike-species-choice]');
       if(choice){ikeResolveSpeciesChoice(choice.dataset.ikeSpeciesChoice);return;}
@@ -12641,12 +12707,23 @@ The full order and approved media remain stored with this project.`;
       if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Checking this photo with your first one…';
       try{await analyzeIkeSecondSpeciesPhoto(file);}catch(err){console.error('Ike second wood photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That photo did not give us enough to use. Try one closer view of the grain.';}finally{input.value='';}
     });
+    $('ikeLengthAssist')?.addEventListener('click',e=>{
+      const choice=e.target.closest('[data-ike-length-choice]');
+      if(choice){invalidateIkeApprovedDesignLock();setIkeLengthFeet(Number(choice.dataset.ikeLengthChoice),'customer-confirmed');return;}
+      if(e.target.closest('[data-ike-length-more-photo]')){const input=$('ikeSecondLengthPhotoInput');if(input)input.click();}
+    });
+    $('ikeLengthAssist')?.addEventListener('change',e=>{const input=e.target.closest('[data-ike-length-custom]');if(!input)return;const v=Number(input.value||0);if(v>0){invalidateIkeApprovedDesignLock();setIkeLengthFeet(v,'customer-confirmed');}});
+    $('ikeSecondLengthPhotoInput')?.addEventListener('change',async e=>{
+      const input=e.target,file=input.files?.[0];if(!file)return;
+      if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Checking the full plank with your first photo…';
+      try{await analyzeIkeSecondLengthPhoto(file);}catch(err){console.error('Ike second length photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That angle did not give us enough scale evidence. Try one full-plank photo from straight on.';}finally{input.value='';}
+    });
     $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;updateUi();});
     $('ikeFillChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-fill]');if(!b)return;invalidateIkeApprovedDesignLock();state.fill=b.dataset.ikeFill;updateUi();});
     $('ikeCustomColor')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.customColor=e.target.value;state.fill='Other';updateUi();});
     $('ikeTopMarkerButtons')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-top]');if(!b)return;invalidateIkeApprovedDesignLock();state.topSide=b.dataset.ikeTop;updateUi();});
     $('ikeRotateBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();state.orientation=state.orientation==='Horizontal'?'Vertical':'Horizontal';updateUi();});
-    $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthFeet){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Choose the plank length first.';return;}if(!r.speciesResolved){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick wood check first so we price the right species.';return;}if(!(ikeSpeciesRate(r.speciesId)>0)){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='This species does not have an active owner price yet. Please ask Ike before continuing.';return;}recalcIkePrice();setScreen('ike-design');});
+    $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthResolved||!r.lengthFeet){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick length check first so we never guess on size.';return;}if(!r.speciesResolved){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick wood check first so we price the right species.';return;}if(!(ikeSpeciesRate(r.speciesId)>0)){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='This species does not have an active owner price yet. Please ask Ike before continuing.';return;}recalcIkePrice();setScreen('ike-design');});
     $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
     $('ikeApproveDesignBtn')?.addEventListener('click',()=>{const ok=lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
     $('ikeEditDesignBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();setScreen('ike-design');});
@@ -12686,7 +12763,7 @@ The full order and approved media remain stored with this project.`;
       if($('photoError')) $('photoError').textContent='';
       if($('photoHelp')) $('photoHelp').textContent='Preparing your picture…';
       try{
-        if(activeProjectId==='ikes-wood-signs'){const len=Number(state.plankRecognition?.lengthFeet||2);state.plankRecognition={lengthFeet:len};}
+        if(activeProjectId==='ikes-wood-signs')state.plankRecognition={};
         state.photoData=await resizePhoto(f);
         stopCamera();
         if(activeProjectId==='ikes-wood-signs') analyzeIkePlankPhoto();
@@ -12701,7 +12778,7 @@ The full order and approved media remain stored with this project.`;
     });
     $('retakeBtn')?.addEventListener('click',()=>{
       state.photoData='';
-      if(activeProjectId==='ikes-wood-signs'){const len=Number(state.plankRecognition?.lengthFeet||2);state.plankRecognition={lengthFeet:len};}
+      if(activeProjectId==='ikes-wood-signs')state.plankRecognition={};
       updateUi();
       startCamera().catch(err=>{
         console.error('Camera retake command failed',err);
@@ -13122,7 +13199,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
-    // 8.0.2 GRAIN GUARD: Owner/Partner is a first-class authority surface. Paint its
+    // 8.0.3 SIGHTLINE: Owner/Partner is a first-class authority surface. Paint its
     // project-scoped shell before IndexedDB, migrations, telemetry, fleet convergence,
     // or any secondary subsystem can delay the handoff. Canonical data hydrates later.
     const startupOwnerRequest=ownerStartupRequest();
@@ -13384,7 +13461,7 @@ document.addEventListener('click', (event) => {
     const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
     const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
     if(startupOwner){
-      // 8.0.2 Grain Guard: query-based Owner/Partner routes are first-class authority
+      // 8.0.3 Sightline: query-based Owner/Partner routes are first-class authority
       // routes. They must never traverse, paint, or fall through the Black Flag
       // Engine gate while project-scoped owner state is resolving.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
