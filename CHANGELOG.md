@@ -1,3 +1,12 @@
+# Dark Sky 7.9.4 — Clean Wake
+
+## First-paint isolation
+- Adds a fleet-wide neutral first-paint bulkhead before any project DOM can paint.
+- Resolves Engine, Owner/Partner, and Client Preview routes before removing the neutral shield.
+- Prevents Ike’s or any other project identity from flashing during refresh, startup, authentication transitions, or route restoration.
+- Engine gate and Owner/Preview surfaces explicitly release first paint only when their correct authority surface is ready.
+- Preserves project isolation, owner session bulkheads, Fleet Dock, Test/Preview containment, and the 7.9.3 session fixes.
+
 # Dark Sky 7.9.3 — Bulkhead
 
 - Seals Owner/Partner session lifecycle away from Engine boot/auth: owner login, post-login render, refresh, and bookmark restore stay project-scoped.

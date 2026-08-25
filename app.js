@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.3';
+  const BUILD_VERSION = '7.9.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 10;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -552,6 +552,7 @@
     document.body.classList.remove('boot-locked');
     document.documentElement.classList.remove('client-preview-preflight');
     window.__darkSkyClientPreviewPreflight=false;
+    window.releaseDarkSkyFirstPaint?.('client-preview-gate-ready');
     window.__darkSkyBootStage='client-preview-gate-ready';
     const unlock=async()=>{const input=document.getElementById('clientPreviewUnlockPin');const ok=await unlockClientPreview(payload,String(input?.value||'').trim());if(!ok){const e=document.getElementById('clientPreviewUnlockError');if(e)e.textContent='That preview PIN is not correct.';if(input){input.value='';input.focus();}}};
     document.getElementById('clientPreviewUnlockBtn')?.addEventListener('click',unlock);
@@ -953,6 +954,7 @@
     $('ownerLoginPassword')?.addEventListener('keydown',e=>{
       if(e.key==='Enter')$('ownerLoginSubmit')?.click();
     });
+    window.releaseDarkSkyFirstPaint?.('owner-login-ready');
   }
 
   async function generateOwnerInvitation(p){
@@ -3958,7 +3960,7 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
-  const FORTIFIED_CACHE='dark-sky-v7-9-0-fleet-spine';
+  const FORTIFIED_CACHE='dark-sky-v7-9-4-clean-wake';
   function saveFreshProvingEvidence(report){
     try{
       const voyages=report?.voyages||provingVoyagesFromReport(report);
@@ -11408,6 +11410,7 @@ The full order and approved media remain stored with this project.`;
 
     if(platformStatus(p)!=='approved'){
       body.innerHTML=`<div class="owner-portal-blocked"><small>BUSINESS PORTAL STATUS</small><h2>${escapeHtml(platformStatusLabel(p))}</h2><p>Your business portal is not currently available. Your saved business information remains preserved.</p></div>`;
+      window.releaseDarkSkyFirstPaint?.('owner-portal-blocked-ready');
       return;
     }
 
@@ -11442,6 +11445,7 @@ The full order and approved media remain stored with this project.`;
       </div>
       <section class="owner-portal-modules">${modules.map(([key,title,desc])=>`<button type="button" data-owner-module="${key}"><div><small>${key.toUpperCase()}</small><h3>${title}</h3><p>${desc}</p></div><span>OPEN →</span></button>`).join('')}</section>`;
     $$('[data-owner-module]').forEach(btn=>btn.addEventListener('click',()=>renderOwnerModule(p,btn.dataset.ownerModule)));
+    window.releaseDarkSkyFirstPaint?.('owner-portal-ready');
   }
 
   async function routeOwnerAccessFromHash(){
@@ -11464,6 +11468,7 @@ The full order and approved media remain stored with this project.`;
       if(!validation.ok){
         box.innerHTML=`<div class="owner-claim-error"><small>BUSINESS PORTAL INVITATION</small><h2>This invitation is unavailable</h2><p>${escapeHtml(validation.error)}</p><button id="ownerClaimExit" class="secondary-btn" type="button">CLOSE</button></div>`;
         $('ownerClaimExit')?.addEventListener('click',closeOwnerPortal);
+        window.releaseDarkSkyFirstPaint?.('owner-claim-error-ready');
         return;
       }
 
@@ -11507,6 +11512,7 @@ The full order and approved media remain stored with this project.`;
         await openOwnerPortal(projectId);
       });
       $('ownerClaimCancel')?.addEventListener('click',closeOwnerPortal);
+      window.releaseDarkSkyFirstPaint?.('owner-claim-ready');
       return;
     }
 
@@ -12917,6 +12923,7 @@ document.addEventListener('click', (event) => {
       const input=byId('blackFlagEntryPin');
       if(input){ input.value=''; setTimeout(()=>{input.value='';input.focus();},60); }
       const err=byId('blackFlagEntryError'); if(err) err.textContent='';
+      window.releaseDarkSkyFirstPaint?.('engine-entry-ready');
     }
   }
 
@@ -12987,6 +12994,7 @@ document.addEventListener('click', (event) => {
       if(!engine) throw new Error('Engine panel unavailable');
       engine.classList.remove('hidden');
       leaveEntry();
+      window.releaseDarkSkyFirstPaint?.('engine-room-ready');
     }catch(err){
       console.error('Black Flag boundary transition failed',err);
       const e=byId('blackFlagEntryError'); if(e)e.textContent='Black Flag accepted the PIN, but the Engine could not finish opening. Reload this build and try again.';

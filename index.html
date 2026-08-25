@@ -12,6 +12,18 @@
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'dom-helpers-ready';
+    // 7.9.4 CLEAN WAKE — global first-paint bulkhead. No project-specific DOM may
+    // paint until the active authority/route has been resolved. The shipped HTML
+    // still contains project templates, so first paint is neutral by construction.
+    document.documentElement.classList.add('dark-sky-route-preflight');
+    window.__darkSkyFirstPaintReleased = false;
+    window.releaseDarkSkyFirstPaint = window.releaseDarkSkyFirstPaint || function(stage){
+      try{
+        document.documentElement.classList.remove('dark-sky-route-preflight');
+        window.__darkSkyFirstPaintReleased = true;
+        window.__darkSkyBootStage = stage || 'first-paint-released';
+      }catch(_){}
+    };
     // 6.0.8 Client Preview pre-paint bulkhead. Detect a sealed preview link before
     // the body or legacy project DOM can paint. This prevents the default Ike shell
     // from appearing for even one frame while the standalone preview runtime boots.
@@ -24,10 +36,21 @@
       try { window.__darkSkyLastEarlyError = {stage:window.__darkSkyBootStage||'preflight',message:String(event.message||''),source:String(event.filename||''),line:Number(event.lineno||0),column:Number(event.colno||0),at:new Date().toISOString()}; } catch(_) {}
     }, true);
   </script>
+  <style id="darkSkyFirstPaintBulkhead">
+    html.dark-sky-route-preflight, html.dark-sky-route-preflight body{background:#06151b!important;}
+    html.dark-sky-route-preflight body{overflow:hidden!important;}
+    html.dark-sky-route-preflight body > *:not(#darkSkyFirstPaintShield){visibility:hidden!important;}
+    html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;display:flex!important;}
+    #darkSkyFirstPaintShield{display:none;position:fixed;inset:0;z-index:2147483647;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%,#0d2d38 0%,#071a21 38%,#06151b 72%);color:#eef5f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    #darkSkyFirstPaintShield .ds-first-light{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;opacity:.92;}
+    #darkSkyFirstPaintShield .ds-first-light-mark{width:50px;height:50px;border:2px solid rgba(238,245,244,.9);border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:24px;}
+    #darkSkyFirstPaintShield strong{font-size:12px;letter-spacing:.18em;}
+    #darkSkyFirstPaintShield span{font-size:10px;letter-spacing:.08em;color:#87a8b0;}
+  </style>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.9.3" />
+  <link rel="stylesheet" href="styles.css?v=7.9.4" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -51,6 +74,7 @@
   <style>.owner-route-intent #blackFlagEntryGate,.owner-route-intent #enginePinGate{display:none!important}</style>
 </head>
 <body class="boot-locked">
+  <div id="darkSkyFirstPaintShield" aria-hidden="true"><div class="ds-first-light"><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>SECURING ROUTE</span></div></div>
   <div id="testAccessBanner" class="test-access-banner hidden" role="status">TEST ACCESS ACTIVE • PIN ENTRY BYPASSED • SESSION ONLY</div>
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
@@ -1439,11 +1463,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.9.3"></script>
-  <script src="platform_v4.js?v=7.9.3"></script>
-  <script src="platform_identity.js?v=7.9.3"></script>
-  <script src="app.js?v=7.9.3"></script>
-  <script src="captain.js?v=7.9.3"></script>
+  <script src="platform_core.js?v=7.9.4"></script>
+  <script src="platform_v4.js?v=7.9.4"></script>
+  <script src="platform_identity.js?v=7.9.4"></script>
+  <script src="app.js?v=7.9.4"></script>
+  <script src="captain.js?v=7.9.4"></script>
 
 </body>
 </html>

@@ -93,3 +93,7 @@ Fleet Dock is the normal vessel navigator: searchable, filterable, priority-sort
 
 ## 7.9.3 Bulkhead
 Owner sessions are first-class project-scoped routes with refresh persistence independent of Black Flag Engine authentication. Fleet schema 10 seals forced canonical Legacy Plumbing grouping at the registry source.
+
+
+## 7.9.4 Clean Wake
+Refresh and startup now use a neutral Dark Sky first-paint shield until the active route and authority are resolved. Project-specific DOM is never permitted to paint as a fallback during boot.
