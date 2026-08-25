@@ -1,4 +1,4 @@
-# Sightline Length Contract — Dark Sky 8.0.3
+# Lookout Length Contract — Dark Sky 8.0.4
 
 1. A photograph is not treated as free-form absolute scale. Length inference is constrained to the business’s known stock-length model and detected plank geometry.
 2. High-confidence one-photo evidence may resolve length automatically.

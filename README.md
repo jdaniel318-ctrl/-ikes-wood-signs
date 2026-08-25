@@ -1,28 +1,28 @@
-# Dark Sky 8.0.3 — Sightline
+# Dark Sky 8.0.4 — Lookout
 
-**Candidate release:** 8.0.3 Sightline  
+**Candidate release:** 8.0.4 Lookout  
 **Known Good anchor:** 7.8.4 Harbor Exit
 
-Sightline extends Grain Guard so Ike’s customer flow treats **length with the same confidence discipline as wood species**. The customer should not choose a length when Dark Sky can establish it safely from the plank photo.
+Lookout calibrates the confidence system so **safe does not become annoying**. A strong, diagnostically distinctive wood image may clear species identification from one photo, and a clearly separated known rack length may clear length from one full-plank photo. Extra evidence is requested only when the required confidence is not earned.
 
 ## What changed
 
-- Full-plank geometry is evaluated against Ike’s known stock lengths rather than converting arbitrary pixels directly into feet.
-- A high-confidence one-photo match resolves length automatically. No tape measure and no customer length picker are shown.
-- Medium/low confidence asks for one additional **full-plank, straight-on photo**.
-- If two photos still cannot resolve length safely, the customer may confirm the rack length; a tape measure is only a fallback.
-- Species and length are independent confidence gates. Price is unlocked only when both are resolved and an active owner rate exists.
-- New primary photos clear stale secondary species/length evidence so an old photo cannot silently influence a new plank.
-- Owner Bridge, canonical six-vessel fleet identity, clean Engine boot, and project isolation remain preserved.
+- Species confidence is now **feature-weighted**, not globally loosened.
+- Cedar can clear from one strong photo only when multiple independent clues agree: reddish heartwood, pale sapwood, heartwood/sapwood contrast, and grain/texture evidence.
+- Oak remains family-only unless the exact priced species is safely resolved or the customer confirms Red Oak vs White Oak.
+- Length remains inventory-constrained; a single photo may resolve a known rack length only when geometry, framing, and separation from alternative rack lengths are strong.
+- If both species and length need more evidence, the customer is asked for **one better full-plank photo first**, not two chores at once.
+- That same second full-plank photo is reused as species evidence. A specialized grain photo appears only if species still needs help afterward.
+- Price remains locked until exact species, confirmed length, and an active owner rate are all resolved.
 
 ## Price contract
 
-`confirmed species rate × confirmed length = customer final price`
+`resolved priced species × resolved rack length = one simple customer price`
 
-No low-confidence species or length estimate may become a customer price.
+Lookout never converts weak evidence into a customer price.
 
 ## Sea trial
 
-Use the same Ike test plank. A normal full-plank photo should resolve length automatically when confidence is high. If it does not, follow the positive extra-photo prompt and verify that manual length choices appear only after two inconclusive full-plank photos.
+Use the same cedar test plank without a tape measure. A clear normal photo should proceed immediately when both confidence gates are earned. If not, verify that Lookout asks for the minimum additional evidence necessary, one step at a time.
 
-See `SIGHTLINE_LENGTH_CONTRACT.md` and `GRAIN_GUARD_CONTRACT.md`.
+See `LOOKOUT_CONFIDENCE_CONTRACT.md`, `GRAIN_GUARD_CONTRACT.md`, and `SIGHTLINE_LENGTH_CONTRACT.md`.

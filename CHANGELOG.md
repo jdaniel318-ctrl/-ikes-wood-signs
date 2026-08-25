@@ -1,14 +1,11 @@
-# Dark Sky 8.0.3 — Sightline
+# Dark Sky 8.0.4 — Lookout
 
-- Adds confidence-aware plank length identification parallel to Grain Guard species identification.
-- Removes the always-visible customer length picker from the normal path.
-- Uses known stock lengths plus detected plank geometry; never free-form pixel-to-feet guessing.
-- Requests one straight-on full-plank photo only when the first photo does not clear the confidence threshold.
-- Allows rack-length/manual confirmation only as a final fallback.
-- Requires resolved species + resolved length + active owner rate before customer pricing.
-- Clears stale secondary evidence whenever a new primary plank photo is taken.
-
----
+- Calibrated species confidence using diagnostic feature agreement instead of a blanket threshold reduction.
+- Added one-photo high-confidence resolution for genuinely distinctive species such as cedar when multiple clues agree.
+- Tuned known-rack-length confidence using framing and separation from alternate stock lengths.
+- Changed the customer verification sequence to request one better full-plank photo first when both species and length need help.
+- Reuses that second full-plank photo as species evidence before asking for a specialized grain photo.
+- Preserves Owner Bridge, canonical six-vessel registry, authority isolation, and no-guess pricing.
 
 # Dark Sky 8.0.2 — Grain Guard
 

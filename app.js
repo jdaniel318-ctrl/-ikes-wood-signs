@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.0.3';
+  const BUILD_VERSION = '8.0.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -860,7 +860,7 @@
   }
 
   function ownerPartnerEntryLink(projectId){
-    // 8.0.3 Sightline: owner authority lives on a dedicated standalone entrypoint.
+    // 8.0.4 Lookout: owner authority lives on a dedicated standalone entrypoint.
     // The Engine never attempts to hydrate owner UI inside its own boot sequence.
     const p=projectById(projectId);
     const base=new URL('./owner.html',location.href.split('#')[0]);
@@ -2111,7 +2111,7 @@
   }
 
 
-  // 8.0.3 SIGHTLINE — one canonical roster for every Engine fleet surface.
+  // 8.0.4 LOOKOUT — one canonical roster for every Engine fleet surface.
   // Fleet Dock, Project Tools, readiness counts, owner state and commissioning
   // metrics must all consume the same reconciled canonical project store.
   let canonicalPresentationConvergence=null;
@@ -10063,40 +10063,75 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeVisualSpeciesEvidence(img,analysis){
-    // Sightline is intentionally conservative. These measurements are visual
-    // evidence, not a botanical guarantee. Exact priced species are never
-    // inferred from a weak color-only signal.
+    // 8.0.4 Lookout: confidence is evidence-weighted, not merely threshold-lowered.
+    // Distinctive species may clear from one strong photo when several independent
+    // visual clues agree. Ambiguous families (especially oak) still require an
+    // exact rack-species confirmation before pricing.
     try{
       const c=document.createElement('canvas'),ctx=c.getContext('2d',{willReadFrequently:true});
       const iw=img.naturalWidth||img.width||1,ih=img.naturalHeight||img.height||1;
       const contour=analysis?.contour;
-      // Species evidence is sampled from the detected plank body, not the whole
-      // countertop/photo. Inset slightly to reduce live-edge, bark, tape, and
-      // background contamination.
       let sx=0,sy=0,sw=iw,sh=ih;
       if(contour){
-        const inset=.08;
+        const inset=.015;
         sx=Math.max(0,(contour.x+contour.w*inset)*iw);sy=Math.max(0,(contour.y+contour.h*inset)*ih);
         sw=Math.max(1,contour.w*(1-inset*2)*iw);sh=Math.max(1,contour.h*(1-inset*2)*ih);
       }
-      const w=128,h=Math.max(64,Math.round(128*sh/sw));
+      const w=160,h=Math.max(72,Math.round(160*sh/sw));
       c.width=w;c.height=h;ctx.drawImage(img,sx,sy,sw,sh,0,0,w,h);
       const d=ctx.getImageData(0,0,w,h).data;
-      let rs=0,gs=0,bs=0,n=0,dark=0,warm=0,light=0,contrast=0,prevLum=null;
-      for(let i=0;i<d.length;i+=16){
-        const r=d[i],g=d[i+1],b=d[i+2],sum=r+g+b;if(sum<90||sum>720)continue;
-        const lum=sum/3;rs+=r;gs+=g;bs+=b;n++;
-        if(lum<90)dark++; if(lum>165)light++; if(r>g*1.12&&g>b*1.05)warm++;
-        if(prevLum!==null)contrast+=Math.abs(lum-prevLum);prevLum=lum;
+      let n=0,rs=0,gs=0,bs=0,dark=0,light=0,warm=0,texture=0,prevLum=null;
+      let cn=0,cr=0,cg=0,cb=0,cwarm=0,clight=0;
+      let en=0,er=0,eg=0,eb=0,elight=0,ewarm=0;
+      for(let y=0;y<h;y++)for(let x=0;x<w;x+=2){
+        const i=(y*w+x)*4,r=d[i],g=d[i+1],b=d[i+2],sum=r+g+b;if(sum<90||sum>735)continue;
+        const hsv=ikeRgbToHsv(r,g,b),lum=sum/3;
+        // Keep cream sapwood and colored heartwood while rejecting most white
+        // countertop/background pixels that can fall inside an irregular bbox.
+        const woodLike=(hsv.h>=5&&hsv.h<=78&&hsv.s>=.075&&hsv.v>=.12&&hsv.v<=.94);
+        if(!woodLike)continue;
+        n++;rs+=r;gs+=g;bs+=b;
+        if(lum<92)dark++;if(lum>164)light++;if(r>g*1.10&&g>b*1.03)warm++;
+        if(prevLum!==null)texture+=Math.abs(lum-prevLum);prevLum=lum;
+        const nx=x/w,ny=y/h,edge=(nx<.19||nx>.81||ny<.17||ny>.83);
+        const center=(nx>.20&&nx<.80&&ny>.18&&ny<.82);
+        if(center){cn++;cr+=r;cg+=g;cb+=b;if(r>g*1.10&&g>b*1.03)cwarm++;if(lum>164)clight++;}
+        if(edge){en++;er+=r;eg+=g;eb+=b;if(lum>164)elight++;if(r>g*1.08&&g>b*1.02)ewarm++;}
       }
-      if(!n)return {family:'unknown',candidateId:'',candidateName:'Wood species',score:.20,reason:'insufficient-visual-evidence'};
-      const ar=rs/n,ag=gs/n,ab=bs/n,lum=(ar+ag+ab)/3,warmRatio=warm/n,darkRatio=dark/n,lightRatio=light/n,texture=Math.min(1,contrast/Math.max(1,n)/38);
-      if(lum<105||darkRatio>.28)return {family:'walnut',candidateId:'walnut',candidateName:'Walnut',score:Math.min(.82,.60+darkRatio*.45+texture*.08),reason:'dark-hardwood-pattern'};
-      if(warmRatio>.50&&ar>128)return {family:'cedar',candidateId:'cedar',candidateName:'Cedar',score:Math.min(.84,.62+warmRatio*.28+texture*.06),reason:'warm-reddish-pattern'};
-      if(lum>165&&lightRatio>.42&&Math.abs(ar-ag)<30)return {family:'pine',candidateId:'pine',candidateName:'Pine',score:Math.min(.82,.60+lightRatio*.28),reason:'light-softwood-pattern'};
-      if(ar>ag&&ag>ab&&lum>112)return {family:'oak',candidateId:'',candidateName:'Oak family',score:.62,reason:'oak-family-visual-pattern'};
-      return {family:'unknown',candidateId:'',candidateName:'Wood species',score:.35,reason:'ambiguous-visual-pattern'};
-    }catch(_){return {family:'unknown',candidateId:'',candidateName:'Wood species',score:.20,reason:'analysis-unavailable'};}
+      if(n<120)return {family:'unknown',candidateId:'',candidateName:'Wood species',score:.20,reason:'insufficient-visual-evidence',diagnostics:{sampleCount:n}};
+      const ar=rs/n,ag=gs/n,ab=bs/n,lum=(ar+ag+ab)/3,warmRatio=warm/n,darkRatio=dark/n,lightRatio=light/n,tex=Math.min(1,texture/Math.max(1,n)/34);
+      const centerLum=cn?((cr+cg+cb)/cn/3):lum,edgeLum=en?((er+eg+eb)/en/3):lum;
+      const centerWarm=cn?cwarm/cn:warmRatio,edgeLight=en?elight/en:lightRatio;
+      const heartSapContrast=edgeLum-centerLum;
+      const redHeart=cn?((cr/cn)-(cg/cn)):ar-ag;
+      const quality=Math.max(.35,Math.min(1,(n/(w*h*.35))*(analysis?.confidence==='geometry-clear'?1:.9)));
+      const diagnostics={sampleCount:n,quality:Number(quality.toFixed(2)),warmRatio:Number(warmRatio.toFixed(2)),centerWarm:Number(centerWarm.toFixed(2)),edgeLight:Number(edgeLight.toFixed(2)),heartSapContrast:Number(heartSapContrast.toFixed(1)),redHeart:Number(redHeart.toFixed(1)),texture:Number(tex.toFixed(2))};
+
+      // Eastern/aromatic red cedar is unusually distinctive in Ike's rack: warm
+      // reddish-purple heartwood + pale cream sapwood + knot/grain contrast.
+      // Require multiple independent signals so one color cast cannot win alone.
+      const cedarSignals=[centerWarm>=.42,redHeart>=16,edgeLight>=.22,heartSapContrast>=18,tex>=.16].filter(Boolean).length;
+      if(cedarSignals>=4&&quality>=.62){
+        const score=Math.min(.97,.84+cedarSignals*.022+Math.max(0,heartSapContrast-18)*.0015);
+        return {family:'cedar',candidateId:'cedar',candidateName:'Cedar',score:Number(score.toFixed(2)),reason:'diagnostic-heartwood-sapwood-cedar-pattern',distinctiveness:'high',diagnosticSignals:cedarSignals,diagnostics};
+      }
+      if(lum<105||darkRatio>.28){
+        const score=Math.min(.88,.62+darkRatio*.42+tex*.08);
+        return {family:'walnut',candidateId:'walnut',candidateName:'Walnut',score:Number(score.toFixed(2)),reason:'dark-hardwood-pattern',distinctiveness:score>=.86?'high':'medium',diagnostics};
+      }
+      if(warmRatio>.50&&ar>128){
+        const score=Math.min(.86,.62+warmRatio*.28+tex*.06);
+        return {family:'cedar',candidateId:'cedar',candidateName:'Cedar',score:Number(score.toFixed(2)),reason:'warm-reddish-pattern',distinctiveness:'medium',diagnostics};
+      }
+      if(lum>165&&lightRatio>.42&&Math.abs(ar-ag)<30){
+        const score=Math.min(.86,.60+lightRatio*.28+Math.max(0,quality-.6)*.08);
+        return {family:'pine',candidateId:'pine',candidateName:'Pine',score:Number(score.toFixed(2)),reason:'light-softwood-pattern',distinctiveness:score>=.84?'high':'medium',diagnostics};
+      }
+      if(ar>ag&&ag>ab&&lum>112){
+        return {family:'oak',candidateId:'',candidateName:'Oak family',score:.66,reason:'oak-family-visual-pattern',distinctiveness:'family-only',diagnostics};
+      }
+      return {family:'unknown',candidateId:'',candidateName:'Wood species',score:.35,reason:'ambiguous-visual-pattern',distinctiveness:'low',diagnostics};
+    }catch(_){return {family:'unknown',candidateId:'',candidateName:'Wood species',score:.20,reason:'analysis-unavailable',distinctiveness:'low'};}
   }
 
   function ikeCombineSpeciesEvidence(primary,secondary){
@@ -10105,17 +10140,22 @@ The full order and approved media remain stored with this project.`;
     const first=evidence[0],second=evidence[1];
     if(first.family==='oak' || second?.family==='oak'){
       const oakAgreement=!second||second.family==='oak';
-      return {family:'oak',speciesId:'',speciesName:'Oak family',speciesResolved:false,speciesConfidence:second&&oakAgreement?'medium':'low',speciesScore:(second&&oakAgreement)?0.72:0.58,evidenceCount:evidence.length,needsSecondPhoto:!second,candidates:['red-oak','white-oak'],reason:'oak-family-requires-exact-species-confirmation'};
+      return {family:'oak',speciesId:'',speciesName:'Oak family',speciesResolved:false,speciesConfidence:second&&oakAgreement?'medium':'low',speciesScore:(second&&oakAgreement)?0.74:0.60,evidenceCount:evidence.length,needsSecondPhoto:!second,candidates:['red-oak','white-oak'],reason:'oak-family-requires-exact-species-confirmation'};
+    }
+    // One excellent image can be enough when the species has genuinely diagnostic
+    // evidence. This is deliberately not a global threshold reduction.
+    if(!second&&first.candidateId&&first.score>=.90&&first.distinctiveness==='high'){
+      return {family:first.family,speciesId:first.candidateId,speciesName:first.candidateName,speciesResolved:true,speciesConfidence:'high',speciesScore:first.score,evidenceCount:1,needsSecondPhoto:false,candidates:[],reason:'one-photo-diagnostic-high-confidence'};
     }
     if(second&&first.candidateId&&first.candidateId===second.candidateId){
-      const score=Math.min(.96,(first.score+second.score)/2+.12);
-      return {family:first.family,speciesId:first.candidateId,speciesName:first.candidateName,speciesResolved:score>=.88,speciesConfidence:score>=.88?'high':'medium',speciesScore:score,evidenceCount:2,needsSecondPhoto:false,candidates:[],reason:'two-photo-consistent'};
+      const score=Math.min(.97,(first.score+second.score)/2+.10);
+      return {family:first.family,speciesId:first.candidateId,speciesName:first.candidateName,speciesResolved:score>=.86,speciesConfidence:score>=.86?'high':'medium',speciesScore:Number(score.toFixed(2)),evidenceCount:2,needsSecondPhoto:false,candidates:[],reason:'two-photo-consistent'};
     }
     if(second&&first.candidateId&&second.candidateId&&first.candidateId!==second.candidateId){
       return {family:'unknown',speciesId:'',speciesName:'Wood species',speciesResolved:false,speciesConfidence:'low',speciesScore:.30,evidenceCount:2,needsSecondPhoto:false,candidates:[],reason:'two-photo-disagreement'};
     }
     if(first.candidateId){
-      return {family:first.family,speciesId:first.candidateId,speciesName:first.candidateName,speciesResolved:false,speciesConfidence:'medium',speciesScore:first.score,evidenceCount:evidence.length,needsSecondPhoto:!second,candidates:[first.candidateId],reason:second?'second-photo-not-confirming':'one-photo-candidate'};
+      return {family:first.family,speciesId:first.candidateId,speciesName:first.candidateName,speciesResolved:false,speciesConfidence:first.score>=.78?'medium':'low',speciesScore:first.score,evidenceCount:evidence.length,needsSecondPhoto:!second,candidates:[first.candidateId],reason:second?'second-photo-not-confirming':'one-photo-candidate'};
     }
     return {family:'unknown',speciesId:'',speciesName:'Wood species',speciesResolved:false,speciesConfidence:'low',speciesScore:first.score||.3,evidenceCount:evidence.length,needsSecondPhoto:evidence.length<2,candidates:[],reason:'unresolved'};
   }
@@ -10130,6 +10170,7 @@ The full order and approved media remain stored with this project.`;
 
   function ikeSpeciesPromptMarkup(r){
     if(!r||r.speciesResolved)return '';
+    if(r.lengthNeedsSecondPhoto&&Number(r.lengthEvidenceCount||0)<2&&Number(r.evidenceCount||0)<2)return '';
     if(r.family==='oak'){
       return `<div class="ike-species-assist-card"><small>ONE QUICK WOOD CHECK</small><strong>We can see the oak family. Which oak did you pick?</strong><p>This keeps your price tied to the exact species Ike uses.</p><div class="ike-species-choice-row"><button type="button" data-ike-species-choice="red-oak">RED OAK</button><button type="button" data-ike-species-choice="white-oak">WHITE OAK</button></div><button type="button" class="text-btn" data-ike-species-more-photo>I’M NOT SURE — TAKE ONE MORE PHOTO</button></div>`;
     }
@@ -10142,26 +10183,32 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeLengthEvidenceFromGeometry(img,analysis){
-    // Sightline: infer only against Ike's known stock lengths. A photograph does
-    // not contain absolute scale by itself, so this is an inventory-constrained
-    // geometry check, never free-form pixel-to-feet guessing.
+    // 8.0.4 Lookout: still no arbitrary pixel-to-feet conversion. Length is
+    // constrained to Ike's known rack lengths, but a clearly separated stock
+    // candidate may now resolve from one well-framed photo without unnecessary
+    // customer confirmation.
     const contour=analysis?.contour,iw=Number(img?.naturalWidth||img?.width||0),ih=Number(img?.naturalHeight||img?.height||0);
     if(!contour||!iw||!ih)return {resolved:false,confidence:'low',score:.15,feet:0,candidateFeet:0,needsSecondPhoto:true,reason:'no-usable-contour'};
     const pw=Math.max(1,contour.w*iw),ph=Math.max(1,contour.h*ih),ratio=Math.max(pw,ph)/Math.max(1,Math.min(pw,ph));
     const stocks=[2,4,6],nominalWidthInches=8.75;
     const estimate=ratio*nominalWidthInches/12;
-    const nearest=stocks.slice().sort((a,b)=>Math.abs(a-estimate)-Math.abs(b-estimate))[0];
-    const rel=Math.abs(estimate-nearest)/nearest;
+    const ranked=stocks.map(feet=>({feet,rel:Math.abs(estimate-feet)/feet,abs:Math.abs(estimate-feet)})).sort((a,b)=>a.abs-b.abs);
+    const nearest=ranked[0].feet,rel=ranked[0].rel,runnerRel=ranked[1]?.rel??1;
+    const stockSeparation=Math.max(0,runnerRel-rel);
     const edgeMargin=Math.min(contour.x,contour.y,1-(contour.x+contour.w),1-(contour.y+contour.h));
-    const fullyFramed=edgeMargin>0.012;
+    const fullyFramed=edgeMargin>.006;
     const geometryClear=analysis?.confidence==='geometry-clear';
-    let score=Math.max(.2,1-rel*2.2);
-    if(!fullyFramed)score-=.16;
-    if(!geometryClear)score-=.10;
-    score=Math.max(.1,Math.min(.96,score));
-    const high=score>=.82&&rel<=.18&&fullyFramed;
-    const medium=score>=.58&&rel<=.32;
-    return {resolved:high,confidence:high?'high':(medium?'medium':'low'),score:Number(score.toFixed(2)),feet:high?nearest:0,candidateFeet:nearest,estimatedFeet:Number(estimate.toFixed(2)),aspectRatio:Number(ratio.toFixed(2)),needsSecondPhoto:!high,reason:high?'stock-geometry-high-confidence':(medium?'stock-geometry-needs-confirmation':'geometry-not-safe-enough')};
+    const fill=Number(contour.fill||0);
+    let score=Math.max(.2,1-rel*2.05);
+    score+=Math.min(.12,stockSeparation*.18);
+    if(fill>.42)score+=.03;
+    if(!fullyFramed)score-=.13;
+    if(!geometryClear)score-=.06;
+    score=Math.max(.1,Math.min(.97,score));
+    const unambiguousStock=stockSeparation>=.24;
+    const high=score>=.76&&rel<=.23&&fullyFramed&&unambiguousStock;
+    const medium=score>=.57&&rel<=.34;
+    return {resolved:high,confidence:high?'high':(medium?'medium':'low'),score:Number(score.toFixed(2)),feet:high?nearest:0,candidateFeet:nearest,estimatedFeet:Number(estimate.toFixed(2)),aspectRatio:Number(ratio.toFixed(2)),stockSeparation:Number(stockSeparation.toFixed(2)),needsSecondPhoto:!high,reason:high?'stock-geometry-high-confidence-separated':(medium?'stock-geometry-needs-confirmation':'geometry-not-safe-enough')};
   }
 
   function ikeCombineLengthEvidence(primary,secondary){
@@ -10250,6 +10297,14 @@ The full order and approved media remain stored with this project.`;
     r.secondaryLengthPhotoData=data;r.secondaryLengthEvidence=secondary;
     const combined=ikeCombineLengthEvidence(r.primaryLengthEvidence||null,secondary);
     Object.assign(r,{lengthFeet:Number(combined.feet||0),lengthResolved:!!combined.resolved,lengthConfidence:combined.confidence||'low',lengthScore:Number(combined.score||0),lengthCandidateFeet:Number(combined.candidateFeet||0),lengthEstimatedFeet:Number(combined.estimatedFeet||0),lengthNeedsSecondPhoto:!!combined.needsSecondPhoto,lengthEvidenceCount:Number(combined.evidenceCount||2),lengthReason:combined.reason||'',secondaryLengthAnalyzedAt:new Date().toISOString()});
+
+    // Progressive evidence: the same better full-plank photo is also valid species
+    // evidence. Only ask for a specialized close-grain photo if this still fails
+    // to clear the wood-confidence gate.
+    const speciesEvidence=ikeVisualSpeciesEvidence(img,pixels);
+    r.secondarySpeciesPhotoData=data;r.secondarySpeciesEvidence=speciesEvidence;
+    const species=ikeCombineSpeciesEvidence(r.primarySpeciesEvidence||null,speciesEvidence);
+    Object.assign(r,{family:species.family,speciesId:species.speciesId,speciesName:species.speciesName,speciesResolved:species.speciesResolved,speciesConfidence:species.speciesConfidence,speciesScore:species.speciesScore,evidenceCount:species.evidenceCount,needsSecondPhoto:species.needsSecondPhoto,speciesCandidates:species.candidates||[],speciesReason:species.reason||'',secondaryAnalyzedAt:new Date().toISOString()});
     recalcIkePrice();updateUi();
   }
 
@@ -11718,7 +11773,7 @@ The full order and approved media remain stored with this project.`;
     window.releaseDarkSkyFirstPaint?.('owner-portal-ready');
   }
 
-  // 8.0.3 SIGHTLINE — owner authority gets an immediate, non-Engine first paint.
+  // 8.0.4 LOOKOUT — owner authority gets an immediate, non-Engine first paint.
   // Protected owner navigation must never wait behind the full fleet/database boot sequence.
   // We paint a project-scoped owner shell immediately, then hydrate it from the canonical
   // registry once storage is ready. This keeps the authority boundary intact without a
@@ -11880,7 +11935,7 @@ The full order and approved media remain stored with this project.`;
     return routeOwnerAccessFromHashLegacy();
   }
 
-  // 8.0.3 SIGHTLINE — protected route resolver. The head-level watchdog is
+  // 8.0.4 LOOKOUT — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
@@ -13199,7 +13254,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
-    // 8.0.3 SIGHTLINE: Owner/Partner is a first-class authority surface. Paint its
+    // 8.0.4 LOOKOUT: Owner/Partner is a first-class authority surface. Paint its
     // project-scoped shell before IndexedDB, migrations, telemetry, fleet convergence,
     // or any secondary subsystem can delay the handoff. Canonical data hydrates later.
     const startupOwnerRequest=ownerStartupRequest();
@@ -13461,7 +13516,7 @@ document.addEventListener('click', (event) => {
     const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
     const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
     if(startupOwner){
-      // 8.0.3 Sightline: query-based Owner/Partner routes are first-class authority
+      // 8.0.4 Lookout: query-based Owner/Partner routes are first-class authority
       // routes. They must never traverse, paint, or fall through the Black Flag
       // Engine gate while project-scoped owner state is resolving.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
