@@ -1,14 +1,14 @@
-const CACHE='dark-sky-v8-0-7-visual-helm';
+const CACHE='dark-sky-v8-0-8-yardarm';
 const ASSETS=[
   './',
   './index.html',
   './owner.html',
-  './styles.css?v=8.0.7',
-  './platform_core.js?v=8.0.7',
-  './platform_v4.js?v=8.0.7',
-  './platform_identity.js?v=8.0.7',
-  './app.js?v=8.0.7',
-  './captain.js?v=8.0.7',
+  './styles.css?v=8.0.8',
+  './platform_core.js?v=8.0.8',
+  './platform_v4.js?v=8.0.8',
+  './platform_identity.js?v=8.0.8',
+  './app.js?v=8.0.8',
+  './captain.js?v=8.0.8',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

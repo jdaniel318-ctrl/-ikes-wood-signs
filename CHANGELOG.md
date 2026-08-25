@@ -1,3 +1,11 @@
+# 8.0.8 — Yardarm
+
+- Replaces the nominal-width Rangefinder estimate with inventory-constrained aspect-ratio classification for Ike's 2/4/6 ft rack lengths.
+- Adds calibrated core bands, overlap zones, framing checks, long-axis stability, and boundary-distance gating.
+- Allows a strong one-photo 2 ft classification when pixel geometry is safely separated from longer-stock alternatives.
+- Persists ratio/band/boundary evidence and keeps Ike visual production review for pixel-derived lengths.
+- Preserves Visual Helm rotation from the untouched source image, photo-top authority, lettering behavior, species sanity checks, owner pricing, and fleet isolation.
+
 # 8.0.7 — Visual Helm
 
 **R1 pre-sea-trial audit:** repeated photo rotation now always renders from the untouched source image to prevent cumulative JPEG degradation; rotation taps are serialized; deployment focus/checksums were reconciled.

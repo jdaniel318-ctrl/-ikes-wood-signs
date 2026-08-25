@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.0.7';
+  const BUILD_VERSION = '8.0.8';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -9408,7 +9408,7 @@
     const id=newOrderId();
     const experienceCtx=currentExperienceContext(activeProject());
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:'Top of photo',photoQuarterTurns:Number(state.photoQuarterTurns||0),wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:activeProjectId==='ikes-wood-signs'?ikeRecognitionForOrder():(state.plankRecognition||null),pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:'Top of photo',photoQuarterTurns:Number(state.photoQuarterTurns||0),wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:activeProjectId==='ikes-wood-signs'?ikeRecognitionForOrder():(state.plankRecognition||null),pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),aspectBand:String(state.plankRecognition?.primaryLengthEvidence?.aspectBand||''),boundaryDistance:Number(state.plankRecognition?.primaryLengthEvidence?.boundaryDistance||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
     if(experienceCtx?.state!=='preview'){
       backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
       try{await put(STORE_ORDERS,order);}catch(err){console.warn('IndexedDB save failed; local backup retained',err);}
@@ -10217,57 +10217,75 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeLengthEvidenceFromGeometry(img,analysis){
-    // 8.0.7 Rangefinder: inventory-constrained visual ranging.
-    // Pixels alone are not treated as an absolute ruler. Instead we classify the
-    // photographed plank against Ike's discrete rack lengths using whole-plank
-    // geometry, framing quality, perspective sanity, and separation from the
-    // next plausible stock length. A visually resolved length is retained with
-    // an owner-verification flag so Ike can reject a mismatch before production.
+    // 8.0.8 YARDARM — inventory-ratio ranging.
+    // We deliberately do not claim that raw pixels are an absolute ruler. Ike's
+    // customer experience is constrained to a small set of rack lengths, so the
+    // plank's long-axis / short-axis pixel ratio becomes a strong classification
+    // signal when the entire plank is framed and perspective is sane. The result
+    // is still retained as visual evidence and remains subject to Ike's final
+    // visual production review.
     const contour=analysis?.contour,iw=Number(img?.naturalWidth||img?.width||0),ih=Number(img?.naturalHeight||img?.height||0);
     if(!contour||!iw||!ih)return {resolved:false,confidence:'low',score:.15,feet:0,candidateFeet:0,needsSecondPhoto:true,reviewRequired:true,reason:'no-usable-contour'};
     const pw=Math.max(1,contour.w*iw),ph=Math.max(1,contour.h*ih);
     const longPx=Math.max(pw,ph),shortPx=Math.max(1,Math.min(pw,ph)),ratio=longPx/shortPx;
-    const stocks=[2,4,6],nominalWidthInches=8.75;
-    const estimate=ratio*nominalWidthInches/12;
-    const ranked=stocks.map(feet=>({feet,abs:Math.abs(estimate-feet),rel:Math.abs(estimate-feet)/feet})).sort((a,b)=>a.abs-b.abs);
-    const best=ranked[0],runner=ranked[1];
-    const nearest=best.feet,rel=best.rel;
-    const pixelMargin=Math.max(0,(runner?.abs??9)-best.abs);
-    const normalizedMargin=pixelMargin/Math.max(1,nearest);
     const edgeMargin=Math.min(contour.x,contour.y,1-(contour.x+contour.w),1-(contour.y+contour.h));
     const fullyFramed=edgeMargin>.003;
-    const geometryClear=analysis?.confidence==='geometry-clear';
     const fill=Number(contour.fill||0),elongation=Number(analysis?.elongation||ratio);
-    const orientationStable=elongation>=1.55;
-    // Perspective proxy: a long, well-framed body occupying useful image area is
-    // materially safer than a clipped or end-on plank. This is a classifier of
-    // known rack lengths, not a claim of survey-grade measurement.
-    let score=.42;
-    score+=Math.max(0,.34-Math.min(.34,rel*.90));
-    score+=Math.min(.16,normalizedMargin*.20);
-    if(fullyFramed)score+=.06; else score-=.14;
-    if(geometryClear)score+=.05;
-    if(fill>.34)score+=.03;
-    if(orientationStable)score+=.04; else score-=.10;
-    score=Math.max(.1,Math.min(.98,score));
+    const orientationStable=elongation>=1.45;
+    const geometryClear=analysis?.confidence==='geometry-clear';
 
-    // Strong one-photo stock classification: close to one known rack length and
-    // clearly farther from its runner-up. For the common 2 ft blank we accept a
-    // slightly wider visual tolerance because the 4 ft alternative is far away.
-    const relLimit=nearest===2?.24:.18;
-    const marginLimit=nearest===2?.70:.55;
-    const stockClearlySeparated=(runner?.abs??9)-best.abs>=marginLimit;
-    const high=score>=.78&&rel<=relLimit&&fullyFramed&&orientationStable&&stockClearlySeparated;
-    const medium=score>=.60&&rel<=Math.min(.34,relLimit+.10);
+    // Calibrated against Ike's real live-edge stock proportions. These are
+    // classifier bands, not physical inch conversions. A 2 ft live-edge blank is
+    // commonly much wider than the old nominal 8.75 in assumption, which made the
+    // previous model systematically underestimate length. Boundary zones remain
+    // deliberately conservative and request another view instead of forcing a call.
+    const bands=[
+      {feet:2,min:1.45,max:3.20,coreMin:1.65,coreMax:2.95,center:2.28},
+      {feet:4,min:3.05,max:5.45,coreMin:3.45,coreMax:5.05,center:4.25},
+      {feet:6,min:5.20,max:9.50,coreMin:5.85,coreMax:8.70,center:6.75}
+    ];
+    const matches=bands.filter(b=>ratio>=b.min&&ratio<=b.max);
+    let band=matches.length===1?matches[0]:null;
+    if(!band&&matches.length>1){
+      // In intentional overlap zones choose the nearer center, but keep the
+      // confidence capped so one more view is required unless separation is clear.
+      band=matches.slice().sort((a,b)=>Math.abs(ratio-a.center)-Math.abs(ratio-b.center))[0];
+    }
+    if(!band){
+      return {resolved:false,confidence:'low',score:.22,feet:0,candidateFeet:0,estimatedFeet:0,aspectRatio:Number(ratio.toFixed(2)),longPixels:Math.round(longPx),shortPixels:Math.round(shortPx),needsSecondPhoto:true,reviewRequired:true,reason:'aspect-ratio-outside-stock-bands'};
+    }
+
+    const insideCore=ratio>=band.coreMin&&ratio<=band.coreMax;
+    const overlap=matches.length>1;
+    const half=Math.max(.25,(band.max-band.min)/2);
+    const centerDistance=Math.abs(ratio-band.center)/half;
+    const boundaryDistance=Math.min(ratio-band.min,band.max-ratio);
+    let score=.58 + Math.max(0,.20*(1-Math.min(1,centerDistance)));
+    if(insideCore)score+=.10;
+    if(fullyFramed)score+=.06; else score-=.16;
+    if(orientationStable)score+=.05; else score-=.12;
+    if(geometryClear)score+=.03;
+    if(fill>.32)score+=.02;
+    if(overlap)score-=.18;
+    score=Math.max(.10,Math.min(.97,score));
+
+    // The 2 ft class receives a slightly more permissive one-photo gate because
+    // its aspect-ratio band is far from normal 4/6 ft stock and Ike still performs
+    // a final visual check before production. Longer boards need stronger framing.
+    const gate=band.feet===2?.78:.84;
+    const high=score>=gate&&insideCore&&fullyFramed&&orientationStable&&!overlap&&boundaryDistance>=.12;
+    const medium=score>=.62;
     return {
       resolved:high,
       confidence:high?'high-visual':(medium?'medium':'low'),
-      score:Number(score.toFixed(2)),feet:high?nearest:0,candidateFeet:nearest,
-      estimatedFeet:Number(estimate.toFixed(2)),aspectRatio:Number(ratio.toFixed(2)),
-      stockSeparation:Number(((runner?.abs??0)-best.abs).toFixed(2)),pixelMargin:Number(pixelMargin.toFixed(2)),
+      score:Number(score.toFixed(2)),feet:high?band.feet:0,candidateFeet:band.feet,
+      estimatedFeet:Number(band.feet),aspectRatio:Number(ratio.toFixed(2)),
+      aspectBand:`${band.min.toFixed(2)}-${band.max.toFixed(2)}`,
+      aspectCore:`${band.coreMin.toFixed(2)}-${band.coreMax.toFixed(2)}`,
+      boundaryDistance:Number(boundaryDistance.toFixed(2)),
       longPixels:Math.round(longPx),shortPixels:Math.round(shortPx),needsSecondPhoto:!high,
       reviewRequired:high,verificationPolicy:high?'ike-visual-order-review':'not-resolved',
-      reason:high?'pixel-stock-rangefinder-high-confidence':(medium?'pixel-stock-rangefinder-needs-more-evidence':'pixel-stock-rangefinder-not-safe-enough')
+      reason:high?'yardarm-stock-ratio-high-confidence':(medium?'yardarm-stock-ratio-needs-more-evidence':'yardarm-stock-ratio-not-safe-enough')
     };
   }
 

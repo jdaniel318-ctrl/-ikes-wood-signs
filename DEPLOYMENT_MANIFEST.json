@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-deployment-manifest-v1",
-  "build": "8.0.7",
+  "build": "8.0.8",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "host_portability": {
@@ -45,11 +45,11 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Visual Helm",
-  "version": "8.0.7",
-  "releaseName": "Visual Helm",
+  "release_name": "Yardarm",
+  "version": "8.0.8",
+  "releaseName": "Yardarm",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "photo-first-orientation-rotation-quality-orientation-aware-lettering-camera-forward-actions-transient-media-storage-hardening",
+  "release_focus": "inventory-ratio-length-ranging-one-photo-when-safe-visual-helm-preserved-owner-review-evidence",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",
@@ -66,7 +66,8 @@
     "ike_pricing": "resolved-species-active-owner-rate-times-confirmed-linear-feet",
     "ike_confidence_calibration": "diagnostic-distinctiveness-quality-inventory-constrained-progressive-evidence-no-blanket-threshold-reduction",
     "ike_pixel_rangefinder": "known-rack-length-classification-with-owner-visual-review-no-absolute-pixel-ruler-claim",
-    "ike_visual_helm": "rotated-customer-photo-is-orientation-authority-multiple-quarter-turns-preserve-source-evidence-no-top-selection"
+    "ike_visual_helm": "rotated-customer-photo-is-orientation-authority-multiple-quarter-turns-preserve-source-evidence-no-top-selection",
+    "ike_yardarm_length": "pixel-aspect-ratio-stock-classification-core-bands-overlap-hold-owner-visual-review"
   },
   "capabilities": {
     "visual_command_forge": {
@@ -136,6 +137,6 @@
       "stale_context": "cleared-at-engine-boundary"
     }
   },
-  "release_note": "Visual Helm makes the customer photo the orientation authority, adds reversible 90-degree photo rotation, orientation-aware lettering layout, real-sign lettering references, and strips transient secondary photo payloads from persisted orders while preserving recognition evidence.",
+  "release_note": "Yardarm upgrades Rangefinder from a nominal-width estimate to an inventory-constrained pixel aspect-ratio classifier. Strong full-plank geometry can resolve Ike\u2019s 2/4/6 ft rack lengths from one photo; ambiguous cases still request more evidence. Visual Helm rotation, Cedar/species sanity guards, owner pricing, and Ike visual production review remain intact.",
   "owner_authority_boot": "immediate-project-scoped-shell"
 }

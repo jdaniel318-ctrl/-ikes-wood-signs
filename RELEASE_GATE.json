@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.0.7",
-  "release": "8.0.7",
+  "build": "8.0.8",
+  "release": "8.0.8",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -110,6 +110,6 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.7 Visual Helm: photo-first orientation, real-sign lettering styles, forward-action camera layout, and transient media storage hardening; Rangefinder evidence model preserved.",
-  "candidate": "8.0.7"
+  "note": "8.0.8 Yardarm: inventory-ratio pixel ranging can auto-resolve strong 2/4/6 ft stock-length evidence while preserving visual review, Visual Helm rotation, and all authority/isolation contracts.",
+  "candidate": "8.0.8"
 }
