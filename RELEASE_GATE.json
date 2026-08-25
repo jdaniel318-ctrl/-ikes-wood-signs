@@ -104,5 +104,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.1 Breakwater R1 pre-upload audit: direct project-owner handoff plus corrected service-worker cache identity and owner/Engine navigation cache separation; canonical six-vessel roster preserved."
+  "note": "8.0.1 Owner Bridge R1 documentation/release-identity audit: standalone project-owner surface, owner refresh persistence, canonical six-vessel roster preserved, manifest/README/changelog/cache/checksums reconciled."
 }

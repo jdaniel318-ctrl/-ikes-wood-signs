@@ -1,121 +1,44 @@
-# Dark Sky 7.9.1 — True Bearing
+# Dark Sky 8.0.1 — Owner Bridge
 
-Three clean layers: customer, project owner/partner, and Black Flag/Captain. See CHANGELOG.md for release details.
+**Candidate release:** 8.0.1 Owner Bridge  
+**Known Good anchor:** 7.8.4 Harbor Exit  
+**Status:** Candidate — requires Captain sea-trial evidence before promotion.
 
-# Dark Sky 7.8.4 — Harbor Exit
+Owner Bridge is the project-owner authority release built on the canonical six-vessel Keelson fleet. Its purpose is to make the **Owner / Partner Control Center a standalone, project-scoped surface** that does not depend on Black Flag Engine authentication or full Engine startup.
 
-Harbor Exit makes Compact Diagnostics and Safe Cleanup unmistakable iPad-safe interactions with direct activation, while preserving Deep Sounding storage inspection, Iron Hull, True Bearing, approved-artifact integrity, project isolation, and future extensibility.
+## What this release changes
 
-See `STORAGE_TELEMETRY_781.md` for the diagnostics interaction contract and `STORAGE_TELEMETRY_770.md` for the storage safety contract.
+- **Standalone Owner / Partner entry:** Fleet Dock opens the dedicated `owner.html` project-owner surface directly.
+- **Project-scoped authority:** Owner login and Owner Control Center remain bound to the immutable project ID and never require the Black Flag Engine PIN.
+- **Owner refresh persistence:** an authenticated owner refresh should restore the owner surface in the same project boundary rather than fall back to Engine Access or generic Route Recovery.
+- **Independent owner boot:** the owner shell can render before fleet reconciliation, telemetry, migrations, and other Engine-only background work finish.
+- **Safe failure surface:** if owner initialization genuinely fails, the failure remains owner-safe and exposes no other project or Captain authority.
+- **Canonical fleet preserved:** the six-vessel source-of-truth roster, Fleet Dock hierarchy, callsigns, and duplicate-business reconciliation remain intact.
+- **Clean first paint preserved:** no project identity may flash on an unrelated route during refresh/startup.
+- **Readable state feedback:** consequential actions should remain visible long enough to read and leave a durable result after transient confirmation disappears.
 
-# Dark Sky 7.8.4 — Harbor Exit
+## First sea-trial sequence
 
-Session-boundary correction and state-clarity release built on Iron Hull. Published projects and customer sessions are now separate, explicit contracts.
+1. Open the normal Engine route and confirm Black Flag Engine Access appears without an Ike/project flash.
+2. Enter the Engine and confirm Fleet Dock still shows the canonical six-vessel roster.
+3. Open **Ike’s Wood Signs → Owner / Partner → Control Center**.
+4. Confirm the Ike Business Portal/owner login opens directly — not Engine Access and not generic Business Portal Route Recovery.
+5. Sign in, confirm Ike’s Owner Control Center renders, then refresh once.
+6. Confirm refresh remains inside Ike’s Owner authority and project boundary.
 
-## Core changes
-- **OPEN PROJECT** on a published project establishes an explicit `LIVE CUSTOMER` session before customer UI renders.
-- Test Experience / Sea Trial and Client Preview remain explicit simulated contexts and cannot leak into the live route.
-- Engine/project boundary cleanup clears stale customer-session context.
-- Project Control separates **Deployment**, **Readiness**, **Approval**, and **Current Session** instead of overloading one status label.
-- Proving Ground adds an eighth **Session Boundary Voyage**. A broken live/test/preview route is HOLD-worthy.
-- Iron Hull automatic fresh-build proving and cache hygiene remain intact.
+Do **not** promote 8.0.1 to Known Good until those owner-authority steps are proven in the deployed build.
 
-## Safety
-The live route now enables real project contact behavior only when the project is actually published and the session is explicitly `LIVE CUSTOMER`. Test and Preview remain contained.
+## Release contracts
 
-## Release discipline
-7.6.0 remains the prior release line; promote 7.8.4 only after fresh Proving Ground evidence and deliberate Captain approval.
+- `OWNER_BRIDGE_CONTRACT.md` — standalone owner application contract.
+- `BREAKWATER_OWNER_HANDOFF_CONTRACT.md` — protected owner handoff rules inherited from 8.0.0.
+- `KEELSON_CANONICAL_FLEET_CONTRACT.md` — one canonical fleet roster / one source of truth.
+- `TRUE_HELM_ROUTE_CONTRACT.md` — explicit route authority and Engine precedence.
+- `BULKHEAD_SESSION_CONTRACT.md` — Owner/Captain session separation.
+- `CLEAN_WAKE_FIRST_PAINT_CONTRACT.md` — no cross-project first-paint bleed.
+- `PROVING_GROUND.md` — release proving and evidence rules.
+- `CHANGELOG.md` — release history.
 
-# Dark Sky 7.5.0 — Iron Hull
+## Packaging contract
 
-Fortification release. See `FORTIFICATION_750.md`.
-
-# Dark Sky 7.5.0 — Iron Proof
-
-Iron Proof is the approval-integrity foundation release. It does not broaden Ike's customer flow. Instead, it changes approval mechanics so the visual the customer sees on the approval screen is the exact immutable PNG that later becomes the production artifact. No post-approval re-render is allowed.
-
-## Core changes
-- Build the approval artifact *before* the customer can approve it.
-- Approval screen displays the frozen PNG candidate, not a live text overlay.
-- Approval adopts the exact candidate bytes and fingerprint; it does not render again.
-- Any wording/style/fill/orientation/price edit invalidates both candidate and lock.
-- Review, confirmation, admin and archive reuse `approvedPreviewData`.
-- Approved Artifact Voyage now includes an automated synthetic PNG freeze/fingerprint/reuse check in addition to static contract verification.
-- PNG is used for the approved artifact to preserve deterministic pixels/bytes more reliably than the previous JPEG flatten.
-
-## Guardrails
-- Ike's 7-step journey remains unchanged.
-- Plank Recognition / cutout avoidance remain Sea Trial.
-- Physical measurement remains uncommissioned.
-- 7.3.0/previous Known Good remains the recovery anchor until the Captain proves and promotes 7.5.0.
-
-# Dark Sky 7.3.0 — Plank Bond
-
-Plank Bond hardens Ike’s production contract around the canonical front/back paper form and upgrades Design Lock from metadata-only locking to a flattened, fingerprinted approved artifact. The customer journey remains unchanged.
-
-# Dark Sky 7.3.0 — Plank Bond
-
-Plank Bond is the integrity follow-up to Sounding Line. It closes the live-test mismatch where final review showed a two-line approved design but confirmation silently re-rendered it as one line.
-
-The customer journey remains frozen. This candidate changes approved-artifact integrity only and adds a new proving voyage.
-
-# Dark Sky 7.2.0 — Sounding Line
-
-Sounding Line is the narrow Plank Intelligence 2.0 candidate built on the proven True Grain customer journey. It freezes the seven-step Ike flow and focuses on the weak link exposed in live testing: placing lettering against the actual usable wood surface rather than the photograph rectangle.
-
-## Ike's Plank Intelligence 2.0
-- Detects a probable plank contour from the uploaded/camera image using a local largest-component image analysis pass.
-- Erodes that contour to create a safer interior region and finds the largest usable lettering rectangle.
-- Uses that detected region to size and place lettering across Design, Approval, Review and customer-context previews.
-- Treats likely holes/cutouts as obstacles during the Sea Trial placement pass.
-- Detects only a **reference candidate** for future scale work; it does not claim inches or feet without a validated calibration method.
-- Preserves the posted-price fallback until physical measurement is commissioned.
-
-## What did not change
-The proven seven-step Ike customer flow, contact timing, confirmation screen, test-mode containment, Black Flag authority boundaries, project isolation, Captain/Admiral contracts and Professional Mode remain unchanged.
-
-## Release discipline
-Dark Sky 7.1.0 remains the Last Known Good recovery anchor until 7.2.0 is deployed, passes the live Fleet Proving Ground, produces recovery/evidence artifacts, and is deliberately promoted by the Captain.
-
-See `IKES_SOUNDING_LINE_720.md` for the Sea Trial contract.
-
-
-## 7.9.0 Fleet Spine
-Dynamic Fleet Dock, explicit Customer/Owner/Captain routes, canonical Ike asset path, and fail-safe Engine command reads.
-
-
-## 7.9.2 Watertight
-
-True Bearing hardens the Fleet Spine around canonical business identity and a scalable primary Fleet Dock. It preserves immutable Project IDs while repairing approved human-facing business identity, including Mugs After Dark. Strict duplicate-business folding now chooses the more mature canonical vessel only when business identity matches and contact evidence does not conflict, then migrates project-scoped references before removing the duplicate registry row.
-
-Fleet Dock is the normal vessel navigator: searchable, filterable, priority-sorted, and explicit about the three authority routes — Customer Experience, Owner / Partner, and Captain Dock. Test / Preview is shown separately as a safe mode rather than a fourth authority. Owner setup is now an actionable Captain route; active owners retain their project-scoped portal without Black Flag credentials. The older Project Command surface remains available as advanced administration rather than competing with Fleet Dock as the primary route.
-
-
-## 7.9.3 Bulkhead
-Owner sessions are first-class project-scoped routes with refresh persistence independent of Black Flag Engine authentication. Fleet schema 10 seals forced canonical Legacy Plumbing grouping at the registry source.
-
-
-## 7.9.6 Harbor Pilot
-Refresh and startup now use a neutral Dark Sky first-paint shield until the active route and authority are resolved. Project-specific DOM is never permitted to paint as a fallback during boot.
-
-### 7.9.6 Harbor Pilot
-Startup routing now has a fleet-wide bounded-resolution contract. The neutral route shield cannot become an infinite loading state, and the Engine login can paint safely without waiting for secondary boot tasks.
-
-
-## 7.9.6 Harbor Pilot
-Harbor Pilot makes first-paint routing deterministic: Engine access is immediate and platform-safe; protected routes are bounded and fail to neutral recovery instead of looping on Securing Route. Returning to Engine clears stale protected-route markers.
-
-
-## 8.0.1 — Breakwater
-Explicit route precedence and dedicated owner-route entry. See `TRUE_HELM_ROUTE_CONTRACT.md`.
-
-
-## 8.0.1 — Breakwater
-Breakwater establishes one canonical fleet spine for every Engine fleet surface. Fleet Dock, counts, readiness proof, owner state, and Advanced Project Command now converge on the canonical project registry before rendering. Duplicate business identities are repaired at the registry source rather than hidden in presentation logic. Fleet Dock is the primary navigator; Advanced Project Command is retained as a collapsed secondary tool. See `BREAKWATER_CANONICAL_FLEET_CONTRACT.md`.
-
-## 8.0.1 Breakwater
-Owner authority now paints and holds its own project-scoped surface before secondary fleet systems load. See `BREAKWATER_OWNER_HANDOFF_CONTRACT.md`.
-
-
-### Breakwater R1 pre-upload correction
-A second audit found and corrected a stale service-worker cache identity and a navigation-cache collision risk between `owner.html` and `index.html`. Use the R1 package for deployment.
+This release is delivered as one clean top-level folder with a unique release-folder identity for reliable iPad extraction. Runtime identity, service-worker/cache identity, deployment manifest, release gate, README, and checksums must all agree with the current release before handoff.

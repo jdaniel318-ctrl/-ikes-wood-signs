@@ -45,11 +45,11 @@
     "automated backups and restore"
   ],
   "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Breakwater",
+  "release_name": "Owner Bridge",
   "version": "8.0.1",
-  "releaseName": "Breakwater",
+  "releaseName": "Owner Bridge",
   "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "explicit-route-precedence-dedicated-owner-entry-neutral-first-paint",
+  "release_focus": "standalone-project-owner-authority-owner-refresh-persistence-canonical-fleet-preserved",
   "readiness_contracts": {
     "runtime_gate": "non-destructive authority/isolation/safety/release checks",
     "recovery_snapshot": "project+orders+settings+registry export",
@@ -61,7 +61,7 @@
     "owner_authority_boundary": "project-scoped-owner-login-never-engine-pin",
     "legacy_duplicate_reconciliation": "single-canonical-vessel-with-folded-reference-migration-and-conflict-evidence",
     "bounded_route_resolution": "engine-safe-first-paint-owner-preview-hard-timeout-explicit-recovery",
-    "owner_entry_runtime_file": "required-and-cache-separated-from-engine-entrypoint"
+    "owner_entry_runtime_file": "owner.html-standalone-project-scoped-owner-application"
   },
   "capabilities": {
     "visual_command_forge": {

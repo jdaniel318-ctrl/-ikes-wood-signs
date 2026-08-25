@@ -1,19 +1,18 @@
-8.0.1 — Breakwater
-- Added a canonical presentation convergence step before Fleet Dock, Project Tools, fleet metrics, and Engine repaint.
-- Duplicate business identities are folded at the canonical project-store source immediately before presentation, with project-scoped references migrated first.
-- Fleet Dock and Advanced Project Command now consume the same post-reconciliation roster.
-- Fleet cards no longer use display-order numbering as identity; they show stable project callsigns.
-- Fleet Dock exposes canonical-roster health and an identity hold if duplicate business identities somehow survive reconciliation.
-- Advanced Project Command remains available but is collapsed by default so Fleet Dock is the primary operational navigator.
-- Preserved True Helm route precedence, owner boundaries, Test/Preview separation, no-cross-project first paint, and existing project isolation.
+# Dark Sky 8.0.1 — Owner Bridge
 
-8.0.1 — Breakwater
-- Explicit Engine route now wins before stale owner/preview markers.
-- Owner/Partner uses a dedicated `owner.html` entrance and explicit `surface=owner` route contract.
-- Legacy owner hashes are quarantined unless armed by same-session owner navigation.
-- Owner login, portal refresh, and logout preserve project-scoped URLs.
-- Recovery visual hierarchy is bolder while retaining the blue radial Dark Sky motif.
-- Neutral first paint and no-cross-project-flash protections remain mandatory.
+- Moves Owner / Partner authority to the standalone `owner.html` application surface.
+- Fleet Dock owner actions open the project-scoped owner route directly instead of depending on the full Engine boot path.
+- Owner login/session state is isolated from Black Flag Engine authentication and is restored on owner refresh when valid.
+- Owner first paint is project-scoped and can render before Engine-only fleet reconciliation, telemetry, migrations, and background reads complete.
+- Genuine owner initialization failures remain inside an owner-safe failure surface and do not expose another project or Captain authority.
+- Preserves the six-vessel canonical Keelson roster, Fleet Dock as the primary navigator, True Helm Engine precedence, no-cross-project first paint, and project isolation.
+- Release documentation and manifest identity were reconciled so README, changelog, deployment manifest, release gate, cache/build identity, and checksums describe the same 8.0.1 Owner Bridge candidate.
+
+# Dark Sky 8.0.0 — Breakwater
+
+- Established an immediate owner-safe shell for Owner / Partner handoff.
+- Hardened owner failures so Black Flag authority and unrelated project surfaces remain sealed.
+- Added owner handoff and service-worker navigation-cache protections before the Owner Bridge standalone split.
 
 # Dark Sky 7.9.6 — Harbor Pilot
 
