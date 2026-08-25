@@ -1,4 +1,4 @@
-# Dark Sky 8.0.0 — Breakwater Owner Handoff Contract
+# Dark Sky 8.0.1 — Breakwater Owner Handoff Contract
 
 ## Mission
 Owner / Partner authority must open as a first-class project-scoped surface. It must never wait behind the full Engine/fleet boot sequence and must never fall through to Black Flag authority.

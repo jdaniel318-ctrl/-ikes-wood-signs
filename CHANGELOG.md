@@ -1,4 +1,4 @@
-8.0.0 — Breakwater
+8.0.1 — Breakwater
 - Added a canonical presentation convergence step before Fleet Dock, Project Tools, fleet metrics, and Engine repaint.
 - Duplicate business identities are folded at the canonical project-store source immediately before presentation, with project-scoped references migrated first.
 - Fleet Dock and Advanced Project Command now consume the same post-reconciliation roster.
@@ -7,7 +7,7 @@
 - Advanced Project Command remains available but is collapsed by default so Fleet Dock is the primary operational navigator.
 - Preserved True Helm route precedence, owner boundaries, Test/Preview separation, no-cross-project first paint, and existing project isolation.
 
-8.0.0 — Breakwater
+8.0.1 — Breakwater
 - Explicit Engine route now wins before stale owner/preview markers.
 - Owner/Partner uses a dedicated `owner.html` entrance and explicit `surface=owner` route contract.
 - Legacy owner hashes are quarantined unless armed by same-session owner navigation.
@@ -653,14 +653,14 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Owner/Partner and Client Preview routes retain project-safe first paint and gain an explicit neutral recovery state if route resolution misses its deadline.
 - Preserved the 7.9.4 no-cross-project-flash guarantee.
 
-## 8.0.0 — Breakwater
+## 8.0.1 — Breakwater
 - Promoted Owner/Partner routing to an immediate first-class authority shell.
 - Removed full fleet/database initialization from the critical owner first-paint path.
 - Added owner-safe hydration and owner-safe boot failure handling.
 - Preserved Keelson canonical six-vessel roster, True Helm Engine precedence, and no-cross-project-flash protection.
 
 
-## 8.0.0 Breakwater R1 — pre-upload audit
+## 8.0.1 Breakwater R1 — pre-upload audit
 - Corrected the service-worker cache identity from the stale 7.9.8 Keelson cache name to a unique Breakwater R1 cache.
 - Fixed navigation caching so `owner.html` can never overwrite the cached `index.html` Engine entrypoint.
 - Added `owner.html` to the deployment manifest's required runtime files.

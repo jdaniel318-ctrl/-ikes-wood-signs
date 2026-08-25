@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.0.0';
+  const BUILD_VERSION = '8.0.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -860,14 +860,13 @@
   }
 
   function ownerPartnerEntryLink(projectId){
-    // 8.0.0 Breakwater: Captain-to-owner handoff goes directly to the explicit
-    // project-scoped owner surface. owner.html remains the durable outside-owner
-    // entrance, but Engine navigation no longer depends on an extra redirect.
+    // 8.0.1 Owner Bridge: owner authority lives on a dedicated standalone entrypoint.
+    // The Engine never attempts to hydrate owner UI inside its own boot sequence.
     const p=projectById(projectId);
-    const base=new URL('./index.html',location.href.split('#')[0]);
-    base.searchParams.set('surface','owner');
+    const base=new URL('./owner.html',location.href.split('#')[0]);
     base.searchParams.set('project',projectId);
     base.searchParams.set('view',p?.ownerAccess?.status==='active'?'portal':'login');
+    base.searchParams.set('source','engine');
     base.hash='';
     return base.toString();
   }
@@ -2097,7 +2096,7 @@
   }
 
 
-  // 8.0.0 BREAKWATER — one canonical roster for every Engine fleet surface.
+  // 8.0.1 BREAKWATER — one canonical roster for every Engine fleet surface.
   // Fleet Dock, Project Tools, readiness counts, owner state and commissioning
   // metrics must all consume the same reconciled canonical project store.
   let canonicalPresentationConvergence=null;
@@ -11547,7 +11546,7 @@ The full order and approved media remain stored with this project.`;
     window.releaseDarkSkyFirstPaint?.('owner-portal-ready');
   }
 
-  // 8.0.0 BREAKWATER — owner authority gets an immediate, non-Engine first paint.
+  // 8.0.1 BREAKWATER — owner authority gets an immediate, non-Engine first paint.
   // Protected owner navigation must never wait behind the full fleet/database boot sequence.
   // We paint a project-scoped owner shell immediately, then hydrate it from the canonical
   // registry once storage is ready. This keeps the authority boundary intact without a
@@ -11709,7 +11708,7 @@ The full order and approved media remain stored with this project.`;
     return routeOwnerAccessFromHashLegacy();
   }
 
-  // 8.0.0 BREAKWATER — protected route resolver. The head-level watchdog is
+  // 8.0.1 BREAKWATER — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
@@ -13005,7 +13004,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
-    // 8.0.0 BREAKWATER: Owner/Partner is a first-class authority surface. Paint its
+    // 8.0.1 BREAKWATER: Owner/Partner is a first-class authority surface. Paint its
     // project-scoped shell before IndexedDB, migrations, telemetry, fleet convergence,
     // or any secondary subsystem can delay the handoff. Canonical data hydrates later.
     const startupOwnerRequest=ownerStartupRequest();
@@ -13267,7 +13266,7 @@ document.addEventListener('click', (event) => {
     const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
     const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
     if(startupOwner){
-      // 8.0.0 Breakwater: query-based Owner/Partner routes are first-class authority
+      // 8.0.1 Breakwater: query-based Owner/Partner routes are first-class authority
       // routes. They must never traverse, paint, or fall through the Black Flag
       // Engine gate while project-scoped owner state is resolving.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');

@@ -1,4 +1,4 @@
-# Breakwater Authority Handoff Contract — Dark Sky 8.0.0
+# Breakwater Authority Handoff Contract — Dark Sky 8.0.1
 
 ## Mission
 Customer, Owner / Partner, and Captain are separate authority routes over one canonical fleet registry.

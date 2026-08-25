@@ -106,14 +106,14 @@ Startup routing now has a fleet-wide bounded-resolution contract. The neutral ro
 Harbor Pilot makes first-paint routing deterministic: Engine access is immediate and platform-safe; protected routes are bounded and fail to neutral recovery instead of looping on Securing Route. Returning to Engine clears stale protected-route markers.
 
 
-## 8.0.0 — Breakwater
+## 8.0.1 — Breakwater
 Explicit route precedence and dedicated owner-route entry. See `TRUE_HELM_ROUTE_CONTRACT.md`.
 
 
-## 8.0.0 — Breakwater
+## 8.0.1 — Breakwater
 Breakwater establishes one canonical fleet spine for every Engine fleet surface. Fleet Dock, counts, readiness proof, owner state, and Advanced Project Command now converge on the canonical project registry before rendering. Duplicate business identities are repaired at the registry source rather than hidden in presentation logic. Fleet Dock is the primary navigator; Advanced Project Command is retained as a collapsed secondary tool. See `BREAKWATER_CANONICAL_FLEET_CONTRACT.md`.
 
-## 8.0.0 Breakwater
+## 8.0.1 Breakwater
 Owner authority now paints and holds its own project-scoped surface before secondary fleet systems load. See `BREAKWATER_OWNER_HANDOFF_CONTRACT.md`.
 
 
