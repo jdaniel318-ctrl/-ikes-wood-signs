@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.7",
-  "release": "7.9.7",
+  "build": "7.9.8",
+  "release": "7.9.8",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -82,11 +82,18 @@
     "owner_preview_timeout_recovery": true,
     "explicit_engine_route_precedence": true,
     "dedicated_owner_entry_route": true,
-    "stale_owner_hash_quarantine": true
+    "stale_owner_hash_quarantine": true,
+    "canonical_single_roster": true,
+    "fleet_dock_canonical_convergence": true,
+    "fleet_metrics_canonical_source": true,
+    "advanced_project_command_secondary": true,
+    "stable_vessel_callsigns": true,
+    "canonical_duplicate_identity_hold": true,
+    "fleet_registry_schema_11": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.7 True Helm: explicit Engine precedence, dedicated owner entry, signed owner-claim support, stale-owner quarantine, neutral no-bleed first paint."
+  "note": "7.9.8 Keelson: one canonical fleet roster, source-level duplicate reconciliation, trusted fleet metrics, stable vessel callsigns, Fleet Dock primary navigation, Advanced Project Command secondary."
 }

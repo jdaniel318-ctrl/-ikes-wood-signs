@@ -14645,4 +14645,13 @@ body.owner-portal-open #blackFlagEntryGate{display:none!important;}
 /* 7.9.6 HARBOR PILOT — defense in depth against cross-project first-paint bleed. */
 html.dark-sky-route-preflight body #app,html.dark-sky-route-preflight body #enginePanel,html.dark-sky-route-preflight body #adminPanel,html.dark-sky-route-preflight body #ownerPortal,html.dark-sky-route-preflight body #captainQuarters,html.dark-sky-route-preflight body #returnToEngineBtn{visibility:hidden!important;}
 
-/* 7.9.7 TRUE HELM — authority route visuals inherit the neutral Dark Sky first-paint bulkhead. */
+/* 7.9.8 KEELSON — authority route visuals inherit the neutral Dark Sky first-paint bulkhead. */
+
+/* 7.9.8 KEELSON — Fleet Dock is the primary fleet navigator. Advanced Project Command stays available but secondary. */
+#engineProjectsSection .advanced-project-toggle-wrap{display:flex;justify-content:flex-end;align-items:center;margin:0 0 10px 0}
+#engineProjectsSection.advanced-collapsed .modern-project-tools,
+#engineProjectsSection.advanced-collapsed .project-fleet-rail-tools,
+#engineProjectsSection.advanced-collapsed #projectCommandCards{display:none!important}
+#engineProjectsSection.advanced-collapsed{padding-bottom:18px}
+#engineProjectsSection:not(.advanced-collapsed) .advanced-project-toggle-wrap{margin-bottom:12px}
+.fleet-reference-copy span{letter-spacing:.12em}

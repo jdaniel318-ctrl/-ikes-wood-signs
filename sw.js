@@ -1,14 +1,14 @@
-const CACHE='dark-sky-v7-9-7-true-helm';
+const CACHE='dark-sky-v7-9-8-keelson';
 const ASSETS=[
   './',
   './index.html',
   './owner.html',
-  './styles.css?v=7.9.7',
-  './platform_core.js?v=7.9.7',
-  './platform_v4.js?v=7.9.7',
-  './platform_identity.js?v=7.9.7',
-  './app.js?v=7.9.7',
-  './captain.js?v=7.9.7',
+  './styles.css?v=7.9.8',
+  './platform_core.js?v=7.9.8',
+  './platform_v4.js?v=7.9.8',
+  './platform_identity.js?v=7.9.8',
+  './app.js?v=7.9.8',
+  './captain.js?v=7.9.8',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

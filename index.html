@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 7.9.7 TRUE HELM — explicit authority route wins before any persisted marker.
+    // Dark Sky 7.9.8 KEELSON — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -115,7 +115,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.9.7" />
+  <link rel="stylesheet" href="styles.css?v=7.9.8" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1127,7 +1127,7 @@
         <div id="fleetCommissioningReference" class="fleet-commissioning-reference"></div>
       </section>
 
-      <section id="engineProjectsSection" class="project-command-section modern-project-command">
+      <section id="engineProjectsSection" class="project-command-section modern-project-command advanced-collapsed">
         <div class="modern-project-command-head">
           <div>
             <div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="engine-kicker">ADVANCED PROJECT COMMAND</div>
@@ -1135,6 +1135,7 @@
             <p id="engineProjectsHelp">Advanced project administration and legacy project-card operations. Use Fleet Dock above for normal vessel navigation.</p>
             <div id="projectSummaryBadge" class="project-summary-badge"></div>
           </div>
+          <div class="advanced-project-toggle-wrap"><button type="button" id="advancedProjectCommandToggle" class="secondary-btn small" aria-expanded="false">OPEN ADVANCED PROJECT TOOLS</button></div>
           <div class="modern-project-tools">
             <label class="engine-fleet-search">
               <span class="sr-only">Find project</span>
@@ -1528,11 +1529,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.9.7"></script>
-  <script src="platform_v4.js?v=7.9.7"></script>
-  <script src="platform_identity.js?v=7.9.7"></script>
-  <script src="app.js?v=7.9.7"></script>
-  <script src="captain.js?v=7.9.7"></script>
+  <script src="platform_core.js?v=7.9.8"></script>
+  <script src="platform_v4.js?v=7.9.8"></script>
+  <script src="platform_identity.js?v=7.9.8"></script>
+  <script src="app.js?v=7.9.8"></script>
+  <script src="captain.js?v=7.9.8"></script>
 
 </body>
 </html>

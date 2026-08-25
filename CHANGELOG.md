@@ -1,4 +1,13 @@
-7.9.7 — True Helm
+7.9.8 — Keelson
+- Added a canonical presentation convergence step before Fleet Dock, Project Tools, fleet metrics, and Engine repaint.
+- Duplicate business identities are folded at the canonical project-store source immediately before presentation, with project-scoped references migrated first.
+- Fleet Dock and Advanced Project Command now consume the same post-reconciliation roster.
+- Fleet cards no longer use display-order numbering as identity; they show stable project callsigns.
+- Fleet Dock exposes canonical-roster health and an identity hold if duplicate business identities somehow survive reconciliation.
+- Advanced Project Command remains available but is collapsed by default so Fleet Dock is the primary operational navigator.
+- Preserved True Helm route precedence, owner boundaries, Test/Preview separation, no-cross-project first paint, and existing project isolation.
+
+7.9.8 — Keelson
 - Explicit Engine route now wins before stale owner/preview markers.
 - Owner/Partner uses a dedicated `owner.html` entrance and explicit `surface=owner` route contract.
 - Legacy owner hashes are quarantined unless armed by same-session owner navigation.

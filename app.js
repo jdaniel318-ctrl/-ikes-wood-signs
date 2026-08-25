@@ -14,9 +14,9 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.7';
+  const BUILD_VERSION = '7.9.8';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
-  const FLEET_REGISTRY_SCHEMA_VERSION = 10;
+  const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
@@ -2080,6 +2080,60 @@
     }
   }
 
+
+  // 7.9.8 KEELSON — one canonical roster for every Engine fleet surface.
+  // Fleet Dock, Project Tools, readiness counts, owner state and commissioning
+  // metrics must all consume the same reconciled canonical project store.
+  let canonicalPresentationConvergence=null;
+  function fleetStableCallsign(project){
+    const p=project||{};
+    const code=String(p.projectCode||'').trim().toUpperCase();
+    if(code)return code;
+    const id=String(p.id||'PROJECT').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'').toUpperCase();
+    return id.slice(0,18)||'PROJECT';
+  }
+  function canonicalBusinessDuplicateAudit(rows){
+    const seen=new Map(),duplicates=[];
+    for(const p of (Array.isArray(rows)?rows:[])){
+      const display=normalizeBusinessIdentityText(p?.name||p?.identity?.displayName||p?.branding?.businessName);
+      const family=projectTypeFamily(p);
+      if(!display)continue;
+      const key=`${display}|${family}`;
+      if(seen.has(key))duplicates.push({key,firstId:seen.get(key),duplicateId:String(p?.id||''),name:String(p?.name||'Project')});
+      else seen.set(key,String(p?.id||''));
+    }
+    return duplicates;
+  }
+  async function convergeCanonicalFleetForPresentation({source='engine-presentation',force=false}={}){
+    if(canonicalPresentationConvergence&&!force)return canonicalPresentationConvergence;
+    canonicalPresentationConvergence=(async()=>{
+      await sealOperationalFleetForCommand();
+      let canonical=await readCanonicalProjectRegistryStrict();
+      canonical=canonical.map(canonicalizeProjectDisplayIdentity).map(normalizeProjectCode).map(ensureProjectGovernance);
+      const plan=strictDuplicateBusinessPlan(canonical);
+      if(plan.aliases.length){
+        for(const alias of plan.aliases)await migrateProjectIdAliasData(alias.fromId,alias.toId,alias.name);
+        canonical=await persistProjectRegistry(plan.rows.map(normalizeProjectCode).map(ensureProjectGovernance),{allowRemovalIds:plan.aliases.map(x=>x.fromId)});
+        window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'fleet.keelson.duplicate_reconciliation',detail:`${plan.aliases.length} duplicate vessel identity${plan.aliases.length===1?'':'ies'} folded at canonical source • ${source} • ${BUILD_VERSION}`});
+      }
+      // Re-read after any fold. This read-back is the authoritative presentation roster.
+      canonical=await readCanonicalProjectRegistryStrict();
+      canonical=canonical.map(canonicalizeProjectDisplayIdentity).map(normalizeProjectCode).map(ensureProjectGovernance);
+      const remaining=canonicalBusinessDuplicateAudit(canonical);
+      if(remaining.length){
+        window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'fleet.keelson.identity_hold',detail:remaining.map(x=>`${x.name}:${x.firstId}/${x.duplicateId}`).join(' • ')});
+        window.DarkSkyV4?.diagnostic?.('fleet.identity_hold','Canonical fleet still contains duplicate business identities',{duplicates:remaining,build:BUILD_VERSION,source});
+      }
+      companies=canonical;
+      try{await ensureCanonicalFleetManifest({repairRegistry:false});}catch(err){console.warn('Keelson manifest projection warning',err);}
+      writeProjectRegistryBackup(companies,`keelson-${source}`);
+      window.__darkSkyCanonicalFleet={build:BUILD_VERSION,source,count:companies.length,duplicates:remaining,at:new Date().toISOString()};
+      return companies;
+    })();
+    try{return await canonicalPresentationConvergence;}
+    finally{canonicalPresentationConvergence=null;}
+  }
+
   function projectAdminPinKey(projectId=activeProjectId){
     return projectId ? `projectAdminPin:${projectId}` : '';
   }
@@ -4113,7 +4167,7 @@
   async function renderEngineRoom(){
     // V4.4.7 — reseal the admitted fleet before any Engine repaint. A failed
     // project-local mutation may never collapse Project Command to the active vessel.
-    await sealOperationalFleetForCommand();
+    await convergeCanonicalFleetForPresentation({source:'engine-room',force:true});
     await renderFleetCommissioning();
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
     // paths called a non-existent helper after a successful registry commit, which
@@ -4367,6 +4421,7 @@
   }
 
   async function renderFleetCommissioning(){
+    await convergeCanonicalFleetForPresentation({source:'fleet-dock'});
     const summary=$('fleetCommissioningSummary');
     const fleet=$('fleetCommissioningFleet');
     const reference=$('fleetCommissioningReference');
@@ -4402,7 +4457,7 @@
         const ownerEnabled=!!ensureProjectGovernance(p).ownerAccess?.enabled;
         return `<article class="fleet-proof-card fleet-dock-card ${cls}">
           <header>
-            <div><small>VESSEL ${String(idx+1).padStart(2,'0')}</small><strong>${escapeHtml(p.name)}</strong></div>
+            <div><small>VESSEL • ${escapeHtml(fleetStableCallsign(p))}</small><strong>${escapeHtml(p.name)}</strong></div>
             <span>${status}</span>
           </header>
           <div class="fleet-proof-meter"><i style="width:${percent}%"></i></div>
@@ -4442,14 +4497,16 @@
       }));
     }
 
-    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT</span><strong>Choose the vessel, then the watch.</strong><p>Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>`;
+    const canonicalState=window.__darkSkyCanonicalFleet||{};
+    const identityState=Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
+    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the watch.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>`;
     const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning();};}
     $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning();};});
   }
 
   async function renderProjectCommand(){
     const box=$('projectCommandCards');if(!box)return;
-    await sealOperationalFleetForCommand();
+    await convergeCanonicalFleetForPresentation({source:'project-tools'});
     // Reconcile before counting/rendering so Project Command cannot show a verified
     // project as both recovery cargo and a Shipyard Draft.
     const reconciliation=await reconcileCommissioningArtifacts({attemptRepair:true,source:'project-command'});
@@ -11576,7 +11633,7 @@ The full order and approved media remain stored with this project.`;
     return routeOwnerAccessFromHashLegacy();
   }
 
-  // 7.9.7 TRUE HELM — protected route resolver. The head-level watchdog is
+  // 7.9.8 KEELSON — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
@@ -12744,6 +12801,14 @@ The full order and approved media remain stored with this project.`;
     $('saveAISettingsBtn').addEventListener('click',saveAIForm);
 
     if($('addProjectBtn')) $('addProjectBtn').addEventListener('click',(e)=>{e.preventDefault();openProjectCommissioning();});
+    $('advancedProjectCommandToggle')?.addEventListener('click',()=>{
+      const section=$('engineProjectsSection'),btn=$('advancedProjectCommandToggle');if(!section||!btn)return;
+      const opening=section.classList.contains('advanced-collapsed');
+      section.classList.toggle('advanced-collapsed',!opening);
+      btn.textContent=opening?'CLOSE ADVANCED PROJECT TOOLS':'OPEN ADVANCED PROJECT TOOLS';
+      btn.setAttribute('aria-expanded',opening?'true':'false');
+      if(opening)Promise.resolve(renderProjectCommand()).catch(err=>console.warn('Advanced Project Tools render warning',err));
+    });
     // Project Control tabs and Black Flag return routes are owned by
     // bindMissionCriticalNavigation() so they cannot be lost in a module refit.
     $('editEngineNameBtn')?.addEventListener('click',()=>{
