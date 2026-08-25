@@ -1,3 +1,11 @@
+7.9.7 — True Helm
+- Explicit Engine route now wins before stale owner/preview markers.
+- Owner/Partner uses a dedicated `owner.html` entrance and explicit `surface=owner` route contract.
+- Legacy owner hashes are quarantined unless armed by same-session owner navigation.
+- Owner login, portal refresh, and logout preserve project-scoped URLs.
+- Recovery visual hierarchy is bolder while retaining the blue radial Dark Sky motif.
+- Neutral first paint and no-cross-project-flash protections remain mandatory.
+
 # Dark Sky 7.9.6 — Harbor Pilot
 
 - Deterministic Engine first paint: Engine Access releases on DOM ready without waiting on secondary startup work.

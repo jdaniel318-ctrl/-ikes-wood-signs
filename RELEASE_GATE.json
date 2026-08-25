@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.6",
-  "release": "7.9.6",
-  "generatedAt": "2026-08-24",
+  "build": "7.9.7",
+  "release": "7.9.7",
+  "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -79,11 +79,14 @@
     "clean_wake_neutral_first_paint": true,
     "bounded_route_resolution": true,
     "engine_safe_first_paint_without_app_boot": true,
-    "owner_preview_timeout_recovery": true
+    "owner_preview_timeout_recovery": true,
+    "explicit_engine_route_precedence": true,
+    "dedicated_owner_entry_route": true,
+    "stale_owner_hash_quarantine": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.6 Harbor Pilot: deterministic first-paint router, bounded protected recovery, stale-route cleanup, no cross-project flash."
+  "note": "7.9.7 True Helm: explicit Engine precedence, dedicated owner entry, signed owner-claim support, stale-owner quarantine, neutral no-bleed first paint."
 }

@@ -104,3 +104,7 @@ Startup routing now has a fleet-wide bounded-resolution contract. The neutral ro
 
 ## 7.9.6 Harbor Pilot
 Harbor Pilot makes first-paint routing deterministic: Engine access is immediate and platform-safe; protected routes are bounded and fail to neutral recovery instead of looping on Securing Route. Returning to Engine clears stale protected-route markers.
+
+
+## 7.9.7 — True Helm
+Explicit route precedence and dedicated owner-route entry. See `TRUE_HELM_ROUTE_CONTRACT.md`.

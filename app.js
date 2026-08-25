@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.6';
+  const BUILD_VERSION = '7.9.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 10;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -845,13 +845,14 @@
   }
 
   function ownerLoginLink(projectId){
-    const base=location.href.split('#')[0];
-    return `${base}#owner-login=${encodeURIComponent(projectId)}`;
+    const base=new URL('./owner.html',location.href.split('#')[0]);
+    base.searchParams.set('project',projectId);
+    return base.toString();
   }
 
   function ownerPartnerEntryLink(projectId){
-    const base=new URL('./index.html',location.href.split('#')[0]);
-    base.hash=`owner-login=${encodeURIComponent(projectId)}`;
+    const base=new URL('./owner.html',location.href.split('#')[0]);
+    base.searchParams.set('project',projectId);
     return base.toString();
   }
 
@@ -909,6 +910,18 @@
     }
   }
 
+  function ownerSurfaceUrl(projectId,view='login'){
+    const u=new URL('./index.html',location.href.split('#')[0]);
+    u.searchParams.set('surface','owner');
+    u.searchParams.set('project',projectId);
+    u.searchParams.set('view',view);
+    u.hash='';
+    return u.pathname+u.search;
+  }
+  function armOwnerRoute(projectId){
+    try{sessionStorage.setItem('darkSkyOwnerRouteArmV1',JSON.stringify({projectId,at:Date.now()}));}catch(_){}
+  }
+
   async function showOwnerLogin(projectId,message=''){
     const p=projectById(projectId);
     if(!p)return;
@@ -947,7 +960,8 @@
         return;
       }
       saveOwnerSession(p.id);
-      history.replaceState(null,'',location.pathname+location.search+'#owner-portal');
+      armOwnerRoute(p.id);
+      history.replaceState({darkSkyRoute:'owner-portal',projectId:p.id},'',ownerSurfaceUrl(p.id,'portal'));
       await openOwnerPortal(p.id);
     });
 
@@ -4420,8 +4434,8 @@
           if(!owner?.enabled){await openProjectEngineControl(projectId);await renderProjectTab(projectId,'owner');return;}
           // Owner/Partner is a project-scoped authority route. Never traverse the
           // Black Flag Engine login boundary just to enter the business portal.
-          history.pushState({darkSkyRoute:'owner-login',projectId},'',`#owner-login=${encodeURIComponent(projectId)}`);
-          await showOwnerLogin(projectId);
+          armOwnerRoute(projectId);
+          location.href=ownerPartnerEntryLink(projectId);
           return;
         }
         if(action==='preview'){await openExperienceTestDeck(projectId);return;}
@@ -5685,7 +5699,7 @@
         const value=ownerPartnerEntryLink(p.id);
         try{await navigator.clipboard.writeText(value);}catch(_){const input=$('ownerPartnerEntryUrl');input?.focus();input?.select();}
       });
-      $('openOwnerPartnerEntry')?.addEventListener('click',async()=>{history.pushState({darkSkyRoute:'owner-login',projectId:p.id},'',`#owner-login=${encodeURIComponent(p.id)}`);await showOwnerLogin(p.id);});
+      $('openOwnerPartnerEntry')?.addEventListener('click',()=>{armOwnerRoute(p.id);location.href=ownerPartnerEntryLink(p.id);});
 
       $('generateOwnerInvite')?.addEventListener('click',async()=>{
         if(!requireEngineProjectMutation(p,'owner.invitation.generate'))return;
@@ -11047,7 +11061,7 @@ The full order and approved media remain stored with this project.`;
         if(!p.ownerAccess.enabled){alert('Owner / Partner Access is not enabled for this project.');return;}
         // Open the same project-scoped owner gate used by a partner bookmark. No
         // Black Flag credential is carried into the owner session.
-        history.pushState({darkSkyRoute:'owner-login',projectId:p.id},'',`#owner-login=${encodeURIComponent(p.id)}`);
+        armOwnerRoute(p.id);location.href=ownerPartnerEntryLink(p.id);
         await showOwnerLogin(p.id);
         return;
       }
@@ -11106,7 +11120,8 @@ The full order and approved media remain stored with this project.`;
     $('ownerPortal')?.classList.add('hidden');
     clearOwnerSession();
     document.body.classList.add('owner-portal-open');
-    history.replaceState(null,'',location.pathname+location.search+`#owner-login=${encodeURIComponent(lastProjectId)}`);
+    armOwnerRoute(lastProjectId);
+    history.replaceState({darkSkyRoute:'owner-login',projectId:lastProjectId},'',ownerSurfaceUrl(lastProjectId,'login'));
     await showOwnerLogin(lastProjectId,'You have been signed out.');
   }
 
@@ -11458,7 +11473,7 @@ The full order and approved media remain stored with this project.`;
     window.releaseDarkSkyFirstPaint?.('owner-portal-ready');
   }
 
-  async function routeOwnerAccessFromHash(){
+  async function routeOwnerAccessFromHashLegacy(){
     const hash=String(location.hash||'');
     if(hash.startsWith('#owner-claim=')){
       const payload=decodeURIComponent(hash.slice('#owner-claim='.length));
@@ -11518,7 +11533,8 @@ The full order and approved media remain stored with this project.`;
           if($('ownerClaimPasswordError'))$('ownerClaimPasswordError').textContent=result.error;
           return;
         }
-        history.replaceState(null,'',location.pathname+location.search+'#owner-portal');
+        armOwnerRoute(projectId);
+        history.replaceState({darkSkyRoute:'owner-portal',projectId},'',ownerSurfaceUrl(projectId,'portal'));
         await openOwnerPortal(projectId);
       });
       $('ownerClaimCancel')?.addEventListener('click',closeOwnerPortal);
@@ -11541,7 +11557,26 @@ The full order and approved media remain stored with this project.`;
     }
   }
 
-  // 7.9.6 HARBOR PILOT — protected route resolver. The head-level watchdog is
+  async function routeOwnerAccessFromHash(){
+    const u=new URL(location.href);
+    if(String(u.searchParams.get('surface')||'').toLowerCase()==='owner'){
+      const projectId=String(u.searchParams.get('project')||'');
+      const view=String(u.searchParams.get('view')||'login').toLowerCase();
+      if(!projectId){ window.__darkSkyShowRecovery?.('owner-project-missing'); return; }
+      armOwnerRoute(projectId);
+      const p=projectById(projectId);
+      if(!p){ window.__darkSkyShowRecovery?.('owner-project-not-found'); return; }
+      if(view==='portal'){
+        const session=ownerSession();
+        if(session?.projectId===projectId && p.ownerAccess?.status==='active'){ await openOwnerPortal(projectId); return; }
+        await showOwnerLogin(projectId,'Please sign in to continue.'); return;
+      }
+      await showOwnerLogin(projectId); return;
+    }
+    return routeOwnerAccessFromHashLegacy();
+  }
+
+  // 7.9.7 TRUE HELM — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');

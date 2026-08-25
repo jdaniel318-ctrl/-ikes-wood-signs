@@ -8,18 +8,37 @@
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 7.9.6 HARBOR PILOT — deterministic first-paint router.
-    // Route authority is decided before any project-specific DOM is allowed to paint.
+    // Dark Sky 7.9.7 TRUE HELM — explicit authority route wins before any persisted marker.
+    // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
     window.__darkSkyBootStage = 'first-light';
     document.documentElement.classList.add('dark-sky-route-preflight');
     window.__darkSkyFirstPaintReleased = false;
 
-    const __dsHash = String(location.hash||'');
-    const __dsOwnerIntent = /^#owner-(?:login=|claim=|portal$)/.test(__dsHash);
-    const __dsPreviewIntent = __dsHash.startsWith('#client-preview=');
+    const __dsUrl = new URL(location.href);
+    const __dsHash = String(__dsUrl.hash||'');
+    const __dsSurface = String(__dsUrl.searchParams.get('surface')||'').toLowerCase();
+    const __dsProject = String(__dsUrl.searchParams.get('project')||'');
+    const __dsView = String(__dsUrl.searchParams.get('view')||'').toLowerCase();
+    const __dsPreviewHash = __dsHash.startsWith('#client-preview=');
+    const __dsOwnerClaimIntent = __dsHash.startsWith('#owner-claim=');
+    const __dsLegacyOwnerHash = /^#owner-(?:login=|portal$)/.test(__dsHash);
+    let __dsOwnerArmed = false;
+    try{
+      const raw=sessionStorage.getItem('darkSkyOwnerRouteArmV1');
+      const arm=raw?JSON.parse(raw):null;
+      __dsOwnerArmed=!!(arm&&arm.projectId&&Date.now()-Number(arm.at||0)<120000);
+    }catch(_){ }
+
+    // Authority precedence:
+    // 1) explicit ?surface=owner with project or signed owner claim, 2) explicit client-preview invite,
+    // 3) same-session armed legacy owner login/portal route, 4) otherwise Engine.
+    const __dsOwnerIntent = (__dsSurface==='owner' && !!__dsProject) || __dsOwnerClaimIntent || (__dsLegacyOwnerHash && __dsOwnerArmed);
+    const __dsPreviewIntent = __dsSurface==='preview' || __dsPreviewHash;
     window.__darkSkyRouteIntent = __dsOwnerIntent ? 'owner' : (__dsPreviewIntent ? 'client-preview' : 'engine');
+    window.__darkSkyExplicitProject = __dsProject;
+    window.__darkSkyExplicitOwnerView = __dsView;
 
     window.releaseDarkSkyFirstPaint = function(stage){
       if(window.__darkSkyFirstPaintReleased) return;
@@ -43,18 +62,24 @@
       if(!shield) return;
       const label=intent==='owner'?'BUSINESS PORTAL':'PRIVATE PREVIEW';
       shield.setAttribute('aria-hidden','false');
-      shield.innerHTML='<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>'+label+' ROUTE RECOVERY</span><p>The protected route could not finish opening. No other project or authority surface was exposed.</p><button type="button" id="darkSkyRouteRetry">RETRY ROUTE</button><button type="button" id="darkSkyRouteEngine">ENGINE ACCESS</button></div>';
+      shield.innerHTML='<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-eyebrow">ROUTE PROTECTED</div><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>'+label+' ROUTE RECOVERY</span><p>The protected route could not finish opening. No other project or authority surface was exposed.</p><button type="button" id="darkSkyRouteRetry">RETRY ROUTE</button><button type="button" id="darkSkyRouteEngine">ENGINE ACCESS</button></div>';
       document.getElementById('darkSkyRouteRetry')?.addEventListener('click',()=>location.reload());
-      document.getElementById('darkSkyRouteEngine')?.addEventListener('click',()=>{history.replaceState({darkSkyRoute:'engine'},'',location.pathname+location.search);location.reload();});
+      document.getElementById('darkSkyRouteEngine')?.addEventListener('click',()=>{
+        try{sessionStorage.removeItem('darkSkyOwnerRouteArmV1');}catch(_){ }
+        const u=new URL(location.href);u.search='';u.hash='';history.replaceState({darkSkyRoute:'engine'},'',u.pathname);location.reload();
+      });
       window.__darkSkyBootStage='route-recovery:'+String(reason||'timeout');
-      // Recovery is the resolved first paint. It must remain visible, not loop.
       window.releaseDarkSkyFirstPaint('protected-route-recovery');
       shield.style.display='flex';
     };
 
     document.addEventListener('DOMContentLoaded',()=>{
       if(window.__darkSkyRouteIntent==='engine'){
-        // Root/Engine route is synchronous: no database, migration, telemetry or SW may hold it.
+        // Engine intent is final. Quarantine stale owner markers before anything else paints.
+        if(__dsLegacyOwnerHash || __dsSurface==='owner' || __dsSurface==='preview'){
+          try{sessionStorage.removeItem('darkSkyOwnerRouteArmV1');}catch(_){ }
+          const u=new URL(location.href);u.search='';u.hash='';history.replaceState({darkSkyRoute:'engine'},'',u.pathname);
+        }
         const gate=document.getElementById('blackFlagEntryGate');
         if(gate) gate.classList.remove('hidden');
         document.body.classList.add('boot-locked','bf-entry-open');
@@ -62,14 +87,13 @@
       }
     },{once:true});
 
-    // Protected routes have a bounded window for the app resolver. There is no recursive retry loop.
-    window.__darkSkyRouteWatchdog=setTimeout(()=>window.__darkSkyShowRecovery('hard-timeout'),4000);
-
+    window.__darkSkyRouteWatchdog=setTimeout(()=>window.__darkSkyShowRecovery('hard-timeout'),3500);
     if(__dsPreviewIntent){
       document.documentElement.classList.add('client-preview-preflight');
       window.__darkSkyClientPreviewPreflight = true;
       window.__darkSkyBootStage = 'client-preview-preflight';
     }
+    if(__dsOwnerIntent) document.documentElement.classList.add('owner-route-intent');
     window.addEventListener('error', function(event){
       try { window.__darkSkyLastEarlyError = {stage:window.__darkSkyBootStage||'preflight',message:String(event.message||''),source:String(event.filename||''),line:Number(event.lineno||0),column:Number(event.colno||0),at:new Date().toISOString()}; } catch(_) {}
     }, true);
@@ -79,8 +103,9 @@
     html.dark-sky-route-preflight body{overflow:hidden!important;}
     html.dark-sky-route-preflight body > *:not(#darkSkyFirstPaintShield){visibility:hidden!important;}
     html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;display:flex!important;}
-    #darkSkyFirstPaintShield{display:none;position:fixed;inset:0;z-index:2147483647;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%,#0d2d38 0%,#071a21 38%,#06151b 72%);color:#eef5f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
-    #darkSkyFirstPaintShield .ds-first-light{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;opacity:.92;}
+    #darkSkyFirstPaintShield{display:none;position:fixed;inset:0;z-index:2147483647;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%,#123845 0%,#0a2731 24%,#071a21 48%,#06151b 78%);color:#eef5f4;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+    #darkSkyFirstPaintShield .ds-first-light{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;opacity:.96;padding:30px 34px;border:1px solid rgba(125,190,207,.16);border-radius:26px;background:linear-gradient(180deg,rgba(9,31,39,.38),rgba(6,21,27,.12));box-shadow:0 28px 90px rgba(0,0,0,.18),0 0 90px rgba(36,126,157,.08);}
+    #darkSkyFirstPaintShield .ds-first-light-eyebrow{font-size:9px;letter-spacing:.24em;font-weight:900;color:#d0a84d;}
     #darkSkyFirstPaintShield .ds-first-light-mark{width:50px;height:50px;border:2px solid rgba(238,245,244,.9);border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:24px;}
     #darkSkyFirstPaintShield strong{font-size:12px;letter-spacing:.18em;}
     #darkSkyFirstPaintShield span{font-size:10px;letter-spacing:.08em;color:#87a8b0;}
@@ -90,7 +115,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.9.6" />
+  <link rel="stylesheet" href="styles.css?v=7.9.7" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -114,7 +139,7 @@
   <style>.owner-route-intent #blackFlagEntryGate,.owner-route-intent #enginePinGate{display:none!important}</style>
 </head>
 <body class="boot-locked">
-  <div id="darkSkyFirstPaintShield" aria-hidden="true"><div class="ds-first-light"><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>SECURING ROUTE</span></div></div>
+  <div id="darkSkyFirstPaintShield" aria-hidden="true"><div class="ds-first-light"><div class="ds-first-light-eyebrow">AUTHORITY CHECK</div><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>SECURING ROUTE</span></div></div>
   <div id="testAccessBanner" class="test-access-banner hidden" role="status">TEST ACCESS ACTIVE • PIN ENTRY BYPASSED • SESSION ONLY</div>
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
@@ -1503,11 +1528,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.9.6"></script>
-  <script src="platform_v4.js?v=7.9.6"></script>
-  <script src="platform_identity.js?v=7.9.6"></script>
-  <script src="app.js?v=7.9.6"></script>
-  <script src="captain.js?v=7.9.6"></script>
+  <script src="platform_core.js?v=7.9.7"></script>
+  <script src="platform_v4.js?v=7.9.7"></script>
+  <script src="platform_identity.js?v=7.9.7"></script>
+  <script src="app.js?v=7.9.7"></script>
+  <script src="captain.js?v=7.9.7"></script>
 
 </body>
 </html>

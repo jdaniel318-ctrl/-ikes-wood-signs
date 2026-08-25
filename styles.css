@@ -14644,3 +14644,5 @@ body.owner-portal-open #blackFlagEntryGate{display:none!important;}
 
 /* 7.9.6 HARBOR PILOT — defense in depth against cross-project first-paint bleed. */
 html.dark-sky-route-preflight body #app,html.dark-sky-route-preflight body #enginePanel,html.dark-sky-route-preflight body #adminPanel,html.dark-sky-route-preflight body #ownerPortal,html.dark-sky-route-preflight body #captainQuarters,html.dark-sky-route-preflight body #returnToEngineBtn{visibility:hidden!important;}
+
+/* 7.9.7 TRUE HELM — authority route visuals inherit the neutral Dark Sky first-paint bulkhead. */
