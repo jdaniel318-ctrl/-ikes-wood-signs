@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.9';
+  const BUILD_VERSION = '8.0.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -860,7 +860,7 @@
   }
 
   function ownerPartnerEntryLink(projectId){
-    // 7.9.9 Ironclad: Captain-to-owner handoff goes directly to the explicit
+    // 8.0.0 Breakwater: Captain-to-owner handoff goes directly to the explicit
     // project-scoped owner surface. owner.html remains the durable outside-owner
     // entrance, but Engine navigation no longer depends on an extra redirect.
     const p=projectById(projectId);
@@ -2097,7 +2097,7 @@
   }
 
 
-  // 7.9.9 IRONCLAD — one canonical roster for every Engine fleet surface.
+  // 8.0.0 BREAKWATER — one canonical roster for every Engine fleet surface.
   // Fleet Dock, Project Tools, readiness counts, owner state and commissioning
   // metrics must all consume the same reconciled canonical project store.
   let canonicalPresentationConvergence=null;
@@ -2141,7 +2141,7 @@
         window.DarkSkyV4?.diagnostic?.('fleet.identity_hold','Canonical fleet still contains duplicate business identities',{duplicates:remaining,build:BUILD_VERSION,source});
       }
       companies=canonical;
-      try{await ensureCanonicalFleetManifest({repairRegistry:false});}catch(err){console.warn('Ironclad manifest projection warning',err);}
+      try{await ensureCanonicalFleetManifest({repairRegistry:false});}catch(err){console.warn('Breakwater manifest projection warning',err);}
       writeProjectRegistryBackup(companies,`keelson-${source}`);
       window.__darkSkyCanonicalFleet={build:BUILD_VERSION,source,count:companies.length,duplicates:remaining,at:new Date().toISOString()};
       return companies;
@@ -11547,6 +11547,65 @@ The full order and approved media remain stored with this project.`;
     window.releaseDarkSkyFirstPaint?.('owner-portal-ready');
   }
 
+  // 8.0.0 BREAKWATER — owner authority gets an immediate, non-Engine first paint.
+  // Protected owner navigation must never wait behind the full fleet/database boot sequence.
+  // We paint a project-scoped owner shell immediately, then hydrate it from the canonical
+  // registry once storage is ready. This keeps the authority boundary intact without a
+  // watchdog-induced false recovery screen.
+  function ownerStartupRequest(){
+    const u=new URL(location.href);
+    return {
+      active:(window.__darkSkyRouteIntent==='owner') || String(u.searchParams.get('surface')||'').toLowerCase()==='owner' || String(location.hash||'').startsWith('#owner-'),
+      projectId:String(u.searchParams.get('project')||window.__darkSkyExplicitProject||''),
+      view:String(u.searchParams.get('view')||window.__darkSkyExplicitOwnerView||'login').toLowerCase()
+    };
+  }
+
+  function ownerBootstrapProject(projectId){
+    const id=canonicalProjectId(projectId);
+    return projectById(id) || DEFAULT_COMPANIES.find(x=>canonicalProjectId(x.id)===id) || null;
+  }
+
+  function showOwnerBootstrapShell(projectId,view='login'){
+    const p=ownerBootstrapProject(projectId);
+    if(!projectId || !p){
+      window.__darkSkyShowRecovery?.('owner-project-bootstrap-missing');
+      return false;
+    }
+    hideCoreSurfacesForOwner();
+    const isPortal=view==='portal';
+    if(isPortal){
+      $('ownerClaimGate')?.classList.add('hidden');
+      $('ownerPortal')?.classList.remove('hidden');
+      if($('ownerPortalBusiness')) $('ownerPortalBusiness').textContent=p.name||'Business Portal';
+      if($('ownerPortalSubtitle')) $('ownerPortalSubtitle').textContent='OWNER • RESTORING SECURE SESSION';
+      const body=$('ownerPortalBody');
+      if(body) body.innerHTML=`<section class="owner-route-bootstrap"><small>OWNER / PARTNER</small><h2>Restoring ${escapeHtml(p.name||'your business')} Control Center…</h2><p>Your project boundary is secured. Business tools are loading from the canonical project record.</p><div class="owner-route-bootstrap-status">PROJECT • ${escapeHtml(String(p.projectCode||p.id||'BUSINESS').toUpperCase())}</div></section>`;
+    }else{
+      $('ownerPortal')?.classList.add('hidden');
+      $('ownerClaimGate')?.classList.remove('hidden');
+      const box=$('ownerClaimContent');
+      if(box) box.innerHTML=`<div class="owner-login-card owner-route-bootstrap"><small>BUSINESS PORTAL</small><h2>${escapeHtml(p.name||'Business Portal')}</h2><p>Preparing secure owner access…</p><label>Email or login<input type="text" value="${p.id==='ikes-wood-signs'?'joe':''}" disabled></label><label>Password<input type="password" disabled></label><button class="primary-btn" type="button" disabled>SECURING OWNER ACCESS…</button><p class="owner-test-login-note">Owner authority is project-scoped. Black Flag Engine access is not required.</p></div>`;
+    }
+    window.__darkSkyOwnerBootstrap={projectId:p.id,view:isPortal?'portal':'login',paintedAt:Date.now()};
+    window.releaseDarkSkyFirstPaint?.('owner-authority-shell-ready');
+    return true;
+  }
+
+  function showOwnerBootFailure(error){
+    const req=ownerStartupRequest();
+    const p=ownerBootstrapProject(req.projectId);
+    hideCoreSurfacesForOwner();
+    $('ownerPortal')?.classList.add('hidden');
+    $('ownerClaimGate')?.classList.remove('hidden');
+    const box=$('ownerClaimContent');
+    if(box) box.innerHTML=`<div class="owner-login-card owner-route-failure"><small>OWNER ROUTE SAFE</small><h2>${escapeHtml(p?.name||'Business Portal')}</h2><p>The business portal could not finish loading. Your project boundary remained protected and Black Flag authority was not exposed.</p><button id="ownerRouteRetryLocal" class="primary-btn" type="button">RETRY OWNER PORTAL</button><button id="ownerRouteEngineLocal" class="secondary-btn" type="button">RETURN TO ENGINE ACCESS</button></div>`;
+    $('ownerRouteRetryLocal')?.addEventListener('click',()=>location.reload());
+    $('ownerRouteEngineLocal')?.addEventListener('click',()=>{try{sessionStorage.removeItem('darkSkyOwnerRouteArmV1');}catch(_){} const u=new URL(location.href);u.search='';u.hash='';location.replace(u.pathname);});
+    window.releaseDarkSkyFirstPaint?.('owner-authority-safe-failure');
+    window.DarkSkyBootState={ready:false,error:String(error?.message||error||'owner boot failure'),at:Date.now(),build:BUILD_VERSION};
+  }
+
   async function routeOwnerAccessFromHashLegacy(){
     const hash=String(location.hash||'');
     if(hash.startsWith('#owner-claim=')){
@@ -11650,7 +11709,7 @@ The full order and approved media remain stored with this project.`;
     return routeOwnerAccessFromHashLegacy();
   }
 
-  // 7.9.9 IRONCLAD — protected route resolver. The head-level watchdog is
+  // 8.0.0 BREAKWATER — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
@@ -12946,6 +13005,14 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
+    // 8.0.0 BREAKWATER: Owner/Partner is a first-class authority surface. Paint its
+    // project-scoped shell before IndexedDB, migrations, telemetry, fleet convergence,
+    // or any secondary subsystem can delay the handoff. Canonical data hydrates later.
+    const startupOwnerRequest=ownerStartupRequest();
+    if(startupOwnerRequest.active){
+      bindOwnerPortal();
+      showOwnerBootstrapShell(startupOwnerRequest.projectId,startupOwnerRequest.view);
+    }
     // 6.0.0: sealed Client Preview links route before storage, migrations, fleet
     // materialization, or any project restoration. The URL already carries the one
     // permitted project snapshot, so loading fleet state first is both unnecessary
@@ -13002,7 +13069,7 @@ The full order and approved media remain stored with this project.`;
     $('adminPanel')?.classList.add('hidden');
     $('enginePanel')?.classList.add('hidden');
     bindOwnerPortal();
-    await routeOwnerAccessFromHash();
+    if(startupOwnerRequest.active || String(location.hash||'').startsWith('#owner-')) await routeOwnerAccessFromHash();
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
@@ -13025,6 +13092,7 @@ The full order and approved media remain stored with this project.`;
     window.DarkSkyBootState={ready:true,error:null,at:Date.now(),build:BUILD_VERSION};
   }).catch(err=>{
     console.error('Secondary app initialization warning',err);
+    if(ownerStartupRequest().active){ showOwnerBootFailure(err); return; }
     window.DarkSkyBootState={ready:false,error:String(err?.message||err||'unknown'),at:Date.now(),build:BUILD_VERSION};
     // 5.7.3: an unrelated secondary boot/migration failure must never revoke an
     // Engine session that has already authenticated successfully. Previously this
@@ -13199,7 +13267,7 @@ document.addEventListener('click', (event) => {
     const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
     const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
     if(startupOwner){
-      // 7.9.9 Ironclad: query-based Owner/Partner routes are first-class authority
+      // 8.0.0 Breakwater: query-based Owner/Partner routes are first-class authority
       // routes. They must never traverse, paint, or fall through the Black Flag
       // Engine gate while project-scoped owner state is resolving.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');

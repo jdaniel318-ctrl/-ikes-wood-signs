@@ -1,4 +1,4 @@
-# Ironclad Authority Handoff Contract — Dark Sky 7.9.9
+# Breakwater Authority Handoff Contract — Dark Sky 8.0.0
 
 ## Mission
 Customer, Owner / Partner, and Captain are separate authority routes over one canonical fleet registry.

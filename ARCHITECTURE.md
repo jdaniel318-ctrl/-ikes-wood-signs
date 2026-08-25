@@ -18,7 +18,7 @@ Captain’s Quarters now follows a strict environment/UI split: cinematic art is
 
 Captain’s Quarters keeps the cinematic Chartroom art as a skin while live fleet facts, routing, and controls remain separate DOM/controller layers. Decorative concept metrics are masked by real Captain intelligence. No project or Engine state is stored in the artwork.
 
-## 5.7.8 Ironclad stabilization
+## 5.7.8 Breakwater stabilization
 
 The 5.7.8 line intentionally retains the proven 5.7.3 Black Flag Engine gate DOM/authentication structure. Cleanup around this boundary is presentation- and bookkeeping-only unless a regression test explicitly proves a structural change safe.
 

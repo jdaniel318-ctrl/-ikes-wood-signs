@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.9",
-  "release": "7.9.9",
+  "build": "8.0.0",
+  "release": "8.0.0",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -89,11 +89,17 @@
     "advanced_project_command_secondary": true,
     "stable_vessel_callsigns": true,
     "canonical_duplicate_identity_hold": true,
-    "fleet_registry_schema_11": true
+    "fleet_registry_schema_11": true,
+    "breakwater_owner_immediate_shell": true,
+    "owner_handoff_not_blocked_by_full_fleet_boot": true,
+    "owner_safe_boot_failure": true,
+    "canonical_six_vessel_roster_preserved": true,
+    "engine_route_precedence_preserved": true,
+    "no_cross_project_first_paint_preserved": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.9 Ironclad: direct project-owner authority handoff, query-aware protected startup, owner refresh isolation, durable readable fleet confirmations, canonical six-vessel roster preserved."
+  "note": "8.0.0 Breakwater: direct project-owner authority handoff, query-aware protected startup, owner refresh isolation, durable readable fleet confirmations, canonical six-vessel roster preserved."
 }

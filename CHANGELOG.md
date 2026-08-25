@@ -1,4 +1,4 @@
-7.9.9 — Ironclad
+8.0.0 — Breakwater
 - Added a canonical presentation convergence step before Fleet Dock, Project Tools, fleet metrics, and Engine repaint.
 - Duplicate business identities are folded at the canonical project-store source immediately before presentation, with project-scoped references migrated first.
 - Fleet Dock and Advanced Project Command now consume the same post-reconciliation roster.
@@ -7,7 +7,7 @@
 - Advanced Project Command remains available but is collapsed by default so Fleet Dock is the primary operational navigator.
 - Preserved True Helm route precedence, owner boundaries, Test/Preview separation, no-cross-project first paint, and existing project isolation.
 
-7.9.9 — Ironclad
+8.0.0 — Breakwater
 - Explicit Engine route now wins before stale owner/preview markers.
 - Owner/Partner uses a dedicated `owner.html` entrance and explicit `surface=owner` route contract.
 - Legacy owner hashes are quarantined unless armed by same-session owner navigation.
@@ -360,7 +360,7 @@ Canonical repository/root reconciliation release. Captain’s Quarters now uses 
 - Black Flag, project, customer and Client Preview surfaces are intentionally unchanged.
 - Preserves the 5.7.6 Bulkhead Client Preview pre-paint isolation fix.
 
-# Dark Sky 5.7.8 — Ironclad
+# Dark Sky 5.7.8 — Breakwater
 
 - Based on the proven 5.7.3 Engine-entry structure; no authentication or routing logic changes.
 - Preserved every Black Flag gate DOM hook to avoid another cleanup-induced regression.
@@ -652,3 +652,9 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Default Engine routes reveal the neutral Black Flag Engine gate as soon as the DOM is ready, independent of secondary application boot.
 - Owner/Partner and Client Preview routes retain project-safe first paint and gain an explicit neutral recovery state if route resolution misses its deadline.
 - Preserved the 7.9.4 no-cross-project-flash guarantee.
+
+## 8.0.0 — Breakwater
+- Promoted Owner/Partner routing to an immediate first-class authority shell.
+- Removed full fleet/database initialization from the critical owner first-paint path.
+- Added owner-safe hydration and owner-safe boot failure handling.
+- Preserved Keelson canonical six-vessel roster, True Helm Engine precedence, and no-cross-project-flash protection.

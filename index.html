@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 7.9.9 IRONCLAD — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.0.0 BREAKWATER — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -87,7 +87,7 @@
       }
     },{once:true});
 
-    window.__darkSkyRouteWatchdog=setTimeout(()=>window.__darkSkyShowRecovery('hard-timeout'),3500);
+    window.__darkSkyRouteWatchdog=setTimeout(()=>window.__darkSkyShowRecovery('hard-timeout'),12000);
     if(__dsPreviewIntent){
       document.documentElement.classList.add('client-preview-preflight');
       window.__darkSkyClientPreviewPreflight = true;
@@ -115,7 +115,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.9.9" />
+  <link rel="stylesheet" href="styles.css?v=8.0.0" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -136,7 +136,9 @@
     // present the Black Flag Engine gate while the project-scoped portal resolves.
     if(String(location.hash||'').startsWith('#owner-')) document.documentElement.classList.add('owner-route-intent');
   </script>
-  <style>.owner-route-intent #blackFlagEntryGate,.owner-route-intent #enginePinGate{display:none!important}</style>
+  <style>.owner-route-intent #blackFlagEntryGate,.owner-route-intent #enginePinGate{display:none!important}
+    .owner-route-bootstrap{border:1px solid rgba(211,175,89,.28)!important;box-shadow:0 22px 70px rgba(0,0,0,.24),0 0 80px rgba(40,145,180,.06)!important}.owner-route-bootstrap-status{margin-top:16px;padding:10px 12px;border:1px solid rgba(125,190,207,.18);border-radius:12px;color:#8db8c8;font-size:11px;font-weight:800;letter-spacing:.1em}.owner-route-failure .secondary-btn{margin-top:10px;width:100%}
+</style>
 </head>
 <body class="boot-locked">
   <div id="darkSkyFirstPaintShield" aria-hidden="true"><div class="ds-first-light"><div class="ds-first-light-eyebrow">AUTHORITY CHECK</div><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>SECURING ROUTE</span></div></div>
@@ -1530,11 +1532,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.9.9"></script>
-  <script src="platform_v4.js?v=7.9.9"></script>
-  <script src="platform_identity.js?v=7.9.9"></script>
-  <script src="app.js?v=7.9.9"></script>
-  <script src="captain.js?v=7.9.9"></script>
+  <script src="platform_core.js?v=8.0.0"></script>
+  <script src="platform_v4.js?v=8.0.0"></script>
+  <script src="platform_identity.js?v=8.0.0"></script>
+  <script src="app.js?v=8.0.0"></script>
+  <script src="captain.js?v=8.0.0"></script>
 
 </body>
 </html>
