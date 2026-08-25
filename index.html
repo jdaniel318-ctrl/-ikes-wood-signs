@@ -8,62 +8,64 @@
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 4.3.7 Showroom Restore: DOM helpers exist before any application script executes.
+    // Dark Sky 7.9.6 HARBOR PILOT — deterministic first-paint router.
+    // Route authority is decided before any project-specific DOM is allowed to paint.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
-    window.__darkSkyBootStage = 'dom-helpers-ready';
-    // 7.9.5 HARBOR LIGHT — global first-paint bulkhead. No project-specific DOM may
-    // paint until the active authority/route has been resolved. The shipped HTML
-    // still contains project templates, so first paint is neutral by construction.
+    window.__darkSkyBootStage = 'first-light';
     document.documentElement.classList.add('dark-sky-route-preflight');
     window.__darkSkyFirstPaintReleased = false;
-    window.releaseDarkSkyFirstPaint = window.releaseDarkSkyFirstPaint || function(stage){
-      try{
-        document.documentElement.classList.remove('dark-sky-route-preflight');
-        window.__darkSkyFirstPaintReleased = true;
-        window.__darkSkyBootStage = stage || 'first-paint-released';
-        if(window.__darkSkyRouteWatchdog){ clearTimeout(window.__darkSkyRouteWatchdog); window.__darkSkyRouteWatchdog=null; }
-      }catch(_){}
+
+    const __dsHash = String(location.hash||'');
+    const __dsOwnerIntent = /^#owner-(?:login=|claim=|portal$)/.test(__dsHash);
+    const __dsPreviewIntent = __dsHash.startsWith('#client-preview=');
+    window.__darkSkyRouteIntent = __dsOwnerIntent ? 'owner' : (__dsPreviewIntent ? 'client-preview' : 'engine');
+
+    window.releaseDarkSkyFirstPaint = function(stage){
+      if(window.__darkSkyFirstPaintReleased) return;
+      document.documentElement.classList.remove('dark-sky-route-preflight');
+      window.__darkSkyFirstPaintReleased = true;
+      window.__darkSkyBootStage = stage || 'first-paint-released';
+      if(window.__darkSkyRouteWatchdog){ clearTimeout(window.__darkSkyRouteWatchdog); window.__darkSkyRouteWatchdog=null; }
     };
-    // 7.9.5 HARBOR LIGHT — route resolution is bounded. The default root route is
-    // the Black Flag Engine gate, which is itself a neutral platform-safe first paint,
-    // so it does not wait on the late application boot. Owner/Preview routes keep the
-    // neutral shield until their project-scoped resolver is ready, with a safe explicit
-    // recovery surface instead of an infinite spinner if boot cannot complete.
-    const __dsHash=String(location.hash||'');
-    window.__darkSkyRouteIntent = __dsHash.startsWith('#owner-') ? 'owner' : (__dsHash.startsWith('#client-preview=') ? 'client-preview' : 'engine');
-    window.__darkSkyShowRouteRecovery = window.__darkSkyShowRouteRecovery || function(reason){
+
+    window.__darkSkyShowRecovery = function(reason){
       if(window.__darkSkyFirstPaintReleased) return;
       const intent=window.__darkSkyRouteIntent||'engine';
       if(intent==='engine'){
         const gate=document.getElementById('blackFlagEntryGate');
-        if(gate){ gate.classList.remove('hidden'); document.body.classList.add('boot-locked','bf-entry-open'); }
-        window.releaseDarkSkyFirstPaint?.('engine-safe-first-paint');
+        if(gate) gate.classList.remove('hidden');
+        if(document.body) document.body.classList.add('boot-locked','bf-entry-open');
+        window.releaseDarkSkyFirstPaint('engine-gate-fallback');
         return;
       }
-      try{
-        if(typeof window.DarkSkyResolveRouteIntent==='function'){
-          Promise.resolve(window.DarkSkyResolveRouteIntent(intent)).catch(()=>{});
-          setTimeout(()=>{ if(!window.__darkSkyFirstPaintReleased) window.__darkSkyShowRouteRecovery('resolver-timeout'); },900);
-          return;
-        }
-      }catch(_){}
       const shield=document.getElementById('darkSkyFirstPaintShield');
       if(!shield) return;
-      shield.setAttribute('aria-hidden','false');
       const label=intent==='owner'?'BUSINESS PORTAL':'PRIVATE PREVIEW';
-      shield.innerHTML='<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>'+label+' ROUTE RECOVERY</span><p>The route took longer than expected. No project surface was exposed.</p><button type="button" id="darkSkyRouteRetry">RETRY ROUTE</button></div>';
+      shield.setAttribute('aria-hidden','false');
+      shield.innerHTML='<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>'+label+' ROUTE RECOVERY</span><p>The protected route could not finish opening. No other project or authority surface was exposed.</p><button type="button" id="darkSkyRouteRetry">RETRY ROUTE</button><button type="button" id="darkSkyRouteEngine">ENGINE ACCESS</button></div>';
       document.getElementById('darkSkyRouteRetry')?.addEventListener('click',()=>location.reload());
+      document.getElementById('darkSkyRouteEngine')?.addEventListener('click',()=>{history.replaceState({darkSkyRoute:'engine'},'',location.pathname+location.search);location.reload();});
       window.__darkSkyBootStage='route-recovery:'+String(reason||'timeout');
+      // Recovery is the resolved first paint. It must remain visible, not loop.
+      window.releaseDarkSkyFirstPaint('protected-route-recovery');
+      shield.style.display='flex';
     };
+
     document.addEventListener('DOMContentLoaded',()=>{
-      if(window.__darkSkyRouteIntent==='engine') setTimeout(()=>window.__darkSkyShowRouteRecovery('engine-dom-ready'),40);
+      if(window.__darkSkyRouteIntent==='engine'){
+        // Root/Engine route is synchronous: no database, migration, telemetry or SW may hold it.
+        const gate=document.getElementById('blackFlagEntryGate');
+        if(gate) gate.classList.remove('hidden');
+        document.body.classList.add('boot-locked','bf-entry-open');
+        window.releaseDarkSkyFirstPaint('engine-gate-dom-ready');
+      }
     },{once:true});
-    window.__darkSkyRouteWatchdog=setTimeout(()=>window.__darkSkyShowRouteRecovery('hard-timeout'),3500);
-    // 6.0.8 Client Preview pre-paint bulkhead. Detect a sealed preview link before
-    // the body or legacy project DOM can paint. This prevents the default Ike shell
-    // from appearing for even one frame while the standalone preview runtime boots.
-    if(String(location.hash||'').startsWith('#client-preview=')){
+
+    // Protected routes have a bounded window for the app resolver. There is no recursive retry loop.
+    window.__darkSkyRouteWatchdog=setTimeout(()=>window.__darkSkyShowRecovery('hard-timeout'),4000);
+
+    if(__dsPreviewIntent){
       document.documentElement.classList.add('client-preview-preflight');
       window.__darkSkyClientPreviewPreflight = true;
       window.__darkSkyBootStage = 'client-preview-preflight';
@@ -88,7 +90,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.9.5" />
+  <link rel="stylesheet" href="styles.css?v=7.9.6" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1501,11 +1503,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.9.5"></script>
-  <script src="platform_v4.js?v=7.9.5"></script>
-  <script src="platform_identity.js?v=7.9.5"></script>
-  <script src="app.js?v=7.9.5"></script>
-  <script src="captain.js?v=7.9.5"></script>
+  <script src="platform_core.js?v=7.9.6"></script>
+  <script src="platform_v4.js?v=7.9.6"></script>
+  <script src="platform_identity.js?v=7.9.6"></script>
+  <script src="app.js?v=7.9.6"></script>
+  <script src="captain.js?v=7.9.6"></script>
 
 </body>
 </html>

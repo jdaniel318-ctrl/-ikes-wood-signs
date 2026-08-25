@@ -1,6 +1,6 @@
-# Dark Sky 7.9.5 — Harbor Light Boot Contract
+# Dark Sky 7.9.6 — Harbor Pilot Boot Contract
 
-Harbor Light closes the startup hole found during Clean Wake testing.
+Harbor Pilot closes the startup hole found during Clean Wake testing.
 
 ## Fleet boot rules
 

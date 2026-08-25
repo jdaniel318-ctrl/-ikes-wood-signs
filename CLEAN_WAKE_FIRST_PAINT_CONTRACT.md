@@ -1,4 +1,4 @@
-# Harbor Light First-Paint Contract — 7.9.5
+# Harbor Pilot First-Paint Contract — 7.9.6
 
 1. No project-specific branding may paint before the active route, authority, and project identity are resolved.
 2. Every refresh begins behind a neutral Dark Sky first-paint bulkhead.

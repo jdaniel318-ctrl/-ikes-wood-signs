@@ -14638,9 +14638,9 @@ body[data-customer-session="live_customer"]:not([data-operator-entry="true"]) #r
 
 /* 7.9.2 WATERTIGHT — owner authority stays project-scoped; Fleet Dock remains the primary navigator. */
 
-/* 7.9.5 HARBOR LIGHT — owner authority is never hidden behind Engine boot lock. */
+/* 7.9.6 HARBOR PILOT — owner authority is never hidden behind Engine boot lock. */
 html.owner-route-intent body #app, body.owner-portal-open #app{display:block!important;}
 body.owner-portal-open #blackFlagEntryGate{display:none!important;}
 
-/* 7.9.5 HARBOR LIGHT — defense in depth against cross-project first-paint bleed. */
+/* 7.9.6 HARBOR PILOT — defense in depth against cross-project first-paint bleed. */
 html.dark-sky-route-preflight body #app,html.dark-sky-route-preflight body #enginePanel,html.dark-sky-route-preflight body #adminPanel,html.dark-sky-route-preflight body #ownerPortal,html.dark-sky-route-preflight body #captainQuarters,html.dark-sky-route-preflight body #returnToEngineBtn{visibility:hidden!important;}

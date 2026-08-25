@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.5",
-  "release": "7.9.5",
+  "build": "7.9.6",
+  "release": "7.9.6",
   "generatedAt": "2026-08-24",
   "checks": {
     "build_version": true,
@@ -85,5 +85,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.5 Harbor Light adds a global neutral first-paint bulkhead so no project identity can flash during refresh, startup, authentication, or route restoration."
+  "note": "7.9.6 Harbor Pilot: deterministic first-paint router, bounded protected recovery, stale-route cleanup, no cross-project flash."
 }

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.5';
+  const BUILD_VERSION = '7.9.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 10;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -8059,7 +8059,17 @@
     window.DarkSkyActiveProject=null;
     document.body.removeAttribute('data-active-project');
   }
+  function normalizeEngineHistoryRoute(){
+    try{
+      const hash=String(location.hash||'');
+      if(hash.startsWith('#owner-')||hash.startsWith('#client-preview=')){
+        history.replaceState({darkSkyRoute:'engine'},'',location.pathname+location.search);
+      }
+      window.__darkSkyRouteIntent='engine';
+    }catch(_){}
+  }
   function prepareEngineBoundary(){
+    normalizeEngineHistoryRoute();
     clearProjectPresentation();
     clearActiveProjectContext();
     clearCustomerSessionContext();
@@ -11531,9 +11541,8 @@ The full order and approved media remain stored with this project.`;
     }
   }
 
-  // 7.9.5 HARBOR LIGHT — bounded first-paint recovery may ask the loaded
-  // application to resolve the route explicitly. This never changes authority;
-  // it only re-runs the canonical route resolver for the already-declared intent.
+  // 7.9.6 HARBOR PILOT — protected route resolver. The head-level watchdog is
+  // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
     if(kind==='client-preview') return routeClientPreviewFromHash();
@@ -12927,6 +12936,11 @@ document.addEventListener('click', (event) => {
   function byId(id){ return document.getElementById(id); }
 
   async function requireEngineEntry(){
+    try{
+      if(!String(location.hash||'').startsWith('#owner-')&&!String(location.hash||'').startsWith('#client-preview=')){
+        window.__darkSkyRouteIntent='engine';
+      }
+    }catch(_){}
     const gate=byId('blackFlagEntryGate');
     if(gate){
       gate.classList.remove('hidden');
