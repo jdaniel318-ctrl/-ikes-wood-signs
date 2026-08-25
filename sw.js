@@ -1,4 +1,4 @@
-const CACHE='dark-sky-v7-9-8-keelson';
+const CACHE='dark-sky-v8-0-0-breakwater-r1';
 const ASSETS=[
   './',
   './index.html',
@@ -60,11 +60,18 @@ self.addEventListener('fetch',event=>{
         .then(response=>{
           if(response && response.ok){
             const copy=response.clone();
-            caches.open(CACHE).then(cache=>cache.put(req.mode==='navigate'?'./index.html':req,copy)).catch(()=>{});
+            // Keep protected owner navigation separate from Engine navigation.
+            // Never let owner.html overwrite the cached Engine entrypoint.
+            caches.open(CACHE).then(cache=>cache.put(req,copy)).catch(()=>{});
           }
           return response;
         })
-        .catch(()=>caches.match(req).then(r=>r||caches.match('./index.html')))
+        .catch(()=>{
+          const fallback = url.pathname.endsWith('/owner.html') || url.pathname.endsWith('owner.html')
+            ? './owner.html'
+            : './index.html';
+          return caches.match(req).then(r=>r||caches.match(fallback));
+        })
     );
     return;
   }

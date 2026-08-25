@@ -11,6 +11,7 @@
   },
   "required_runtime_files": [
     "index.html",
+    "owner.html",
     "styles.css",
     "app.js",
     "captain.js",
@@ -59,7 +60,8 @@
     "known_good_anchor": "captain-recorded-fresh-evidence-only-no-auto-deploy",
     "owner_authority_boundary": "project-scoped-owner-login-never-engine-pin",
     "legacy_duplicate_reconciliation": "single-canonical-vessel-with-folded-reference-migration-and-conflict-evidence",
-    "bounded_route_resolution": "engine-safe-first-paint-owner-preview-hard-timeout-explicit-recovery"
+    "bounded_route_resolution": "engine-safe-first-paint-owner-preview-hard-timeout-explicit-recovery",
+    "owner_entry_runtime_file": "required-and-cache-separated-from-engine-entrypoint"
   },
   "capabilities": {
     "visual_command_forge": {
@@ -129,6 +131,6 @@
       "stale_context": "cleared-at-engine-boundary"
     }
   },
-  "release_note": "Breakwater makes explicit Engine intent authoritative, moves Owner/Partner entry onto a dedicated owner route, quarantines stale owner hashes, and preserves neutral no-bleed first paint with bounded recovery.",
+  "release_note": "Breakwater makes explicit Engine intent authoritative, moves Owner/Partner entry onto a dedicated owner route, quarantines stale owner hashes, and preserves neutral no-bleed first paint with bounded recovery. Pre-upload R1 hardens service-worker cache identity and keeps owner.html navigation cached separately from index.html so protected owner entry cannot poison the Engine entrypoint.",
   "owner_authority_boot": "immediate-project-scoped-shell"
 }

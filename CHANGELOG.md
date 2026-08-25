@@ -658,3 +658,10 @@ Second-pass audit of the 5.0 fleet boundary release.
 - Removed full fleet/database initialization from the critical owner first-paint path.
 - Added owner-safe hydration and owner-safe boot failure handling.
 - Preserved Keelson canonical six-vessel roster, True Helm Engine precedence, and no-cross-project-flash protection.
+
+
+## 8.0.0 Breakwater R1 — pre-upload audit
+- Corrected the service-worker cache identity from the stale 7.9.8 Keelson cache name to a unique Breakwater R1 cache.
+- Fixed navigation caching so `owner.html` can never overwrite the cached `index.html` Engine entrypoint.
+- Added `owner.html` to the deployment manifest's required runtime files.
+- Preserved the Breakwater owner handoff, canonical six-vessel fleet, no-cross-project first paint, and bounded recovery contracts.

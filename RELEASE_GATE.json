@@ -95,11 +95,14 @@
     "owner_safe_boot_failure": true,
     "canonical_six_vessel_roster_preserved": true,
     "engine_route_precedence_preserved": true,
-    "no_cross_project_first_paint_preserved": true
+    "no_cross_project_first_paint_preserved": true,
+    "owner_entry_required_runtime": true,
+    "sw_cache_800_breakwater_r1": true,
+    "owner_navigation_cache_separated": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.0 Breakwater: direct project-owner authority handoff, query-aware protected startup, owner refresh isolation, durable readable fleet confirmations, canonical six-vessel roster preserved."
+  "note": "8.0.0 Breakwater R1 pre-upload audit: direct project-owner handoff plus corrected service-worker cache identity and owner/Engine navigation cache separation; canonical six-vessel roster preserved."
 }

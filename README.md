@@ -115,3 +115,7 @@ Breakwater establishes one canonical fleet spine for every Engine fleet surface.
 
 ## 8.0.0 Breakwater
 Owner authority now paints and holds its own project-scoped surface before secondary fleet systems load. See `BREAKWATER_OWNER_HANDOFF_CONTRACT.md`.
+
+
+### Breakwater R1 pre-upload correction
+A second audit found and corrected a stale service-worker cache identity and a navigation-cache collision risk between `owner.html` and `index.html`. Use the R1 package for deployment.
