@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.0",
-  "release": "7.9.0",
+  "build": "7.9.1",
+  "release": "7.9.1",
   "generatedAt": "2026-08-24",
   "checks": {
     "build_version": true,
@@ -65,11 +65,18 @@
     "three_watch_routes_explicit": true,
     "canonical_ikes_asset_path": true,
     "command_read_deadlines": true,
-    "private_preview_explicit_return": true
+    "private_preview_explicit_return": true,
+    "canonical_business_identity": true,
+    "strict_duplicate_vessel_fold": true,
+    "mugs_after_dark_identity": true,
+    "fleet_dock_search_filters": true,
+    "fleet_dock_owner_setup_action": true,
+    "test_mode_separate_from_authority_routes": true,
+    "fleet_dock_primary_navigation": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.0 Fleet Spine hardens the three-watch architecture with a dynamic Fleet Dock for every vessel, canonical Ike asset routing, explicit preview return behavior, and deadline-bounded Engine command reads so core surfaces cannot remain stuck on READING."
+  "note": "7.9.1 True Bearing makes Fleet Dock the primary scalable navigator, repairs canonical business identity, folds only strict duplicate vessels with project-scoped reference migration, corrects Mugs After Dark naming, and separates the three authority routes from Test / Preview mode."
 }

@@ -1,3 +1,13 @@
+# 7.9.1 — True Bearing
+
+- Made Fleet Dock the primary scalable vessel navigator and redirected normal “Operate Projects” navigation there.
+- Added Fleet Dock search plus Needs Attention, Owner Setup, Sea Trial, and Ready / Live filters.
+- Separated the three authority routes (Customer, Owner / Partner, Captain) from Test / Preview safe mode.
+- Made Owner Setup actionable: unconfigured owner routes open the project Access/Owner workstation; configured owner routes open the project-scoped owner entrance.
+- Added approved canonical display-identity repair for Mugs After Dark while preserving its immutable legacy Project ID.
+- Added strict duplicate-business reconciliation with maturity-based survivor selection, contact-conflict protection, project-scoped data/reference migration, and audited removal of folded registry rows.
+- Reframed the older Project Command area as Advanced Project Command so it no longer competes with Fleet Dock as the normal navigation backbone.
+
 # Dark Sky 7.9.0 — Fleet Spine
 
 - Replaced the hard-coded Ike-only Seaworthiness shortcut with a dynamic Fleet Dock that scales across every registered vessel.

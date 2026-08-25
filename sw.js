@@ -1,14 +1,14 @@
-const CACHE='dark-sky-v7-9-0-fleet-spine';
+const CACHE='dark-sky-v7-9-1-true-bearing';
 const ASSETS=[
   './',
   './index.html',
   './owner.html',
-  './styles.css?v=7.9.0',
-  './platform_core.js?v=7.9.0',
-  './platform_v4.js?v=7.9.0',
-  './platform_identity.js?v=7.9.0',
-  './app.js?v=7.9.0',
-  './captain.js?v=7.9.0',
+  './styles.css?v=7.9.1',
+  './platform_core.js?v=7.9.1',
+  './platform_v4.js?v=7.9.1',
+  './platform_identity.js?v=7.9.1',
+  './app.js?v=7.9.1',
+  './captain.js?v=7.9.1',
   './manifest.webmanifest',
   './assets/black_flag_primary_lockup.png',
   './assets/black_flag_platform_icon.png',

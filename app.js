@@ -14,9 +14,9 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.0';
+  const BUILD_VERSION = '7.9.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
-  const FLEET_REGISTRY_SCHEMA_VERSION = 7;
+  const FLEET_REGISTRY_SCHEMA_VERSION = 8;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
@@ -78,12 +78,12 @@
     {
       id:'mugshot-after-dark',
       projectCode:'MUG',
-      name:'Mugshot After Dark',
+      name:'Mugs After Dark',
       tagline:'Classy mugs. Questionable messages.',
       type:'custom_mugs',
       branding:{
-        businessName:'Mugshot After Dark',
-        adminLabel:'MUGSHOT AFTER DARK',
+        businessName:'Mugs After Dark',
+        adminLabel:'MUGS AFTER DARK',
         primary:'#1c1c1f',
         accent:'#9b2451',
         subtitle:'Custom Mug Ordering'
@@ -2391,8 +2391,157 @@
     }
   }
 
+  function normalizeBusinessIdentityText(value){
+    return String(value||'').trim().toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+  }
+
+  function canonicalizeProjectDisplayIdentity(p){
+    if(!p)return p;
+    // 7.9.1 True Bearing: immutable Project IDs stay immutable, but deliberate
+    // approved business-name corrections are allowed to repair stale display identity.
+    if(String(p.id||'')==='mugshot-after-dark'){
+      p.name='Mugs After Dark';
+      p.branding=p.branding&&typeof p.branding==='object'?p.branding:{};
+      p.branding.businessName='Mugs After Dark';
+      p.branding.adminLabel='MUGS AFTER DARK';
+      if(!p.branding.subtitle || /mugshot/i.test(p.branding.subtitle))p.branding.subtitle='Custom Mug Ordering';
+      p.tagline=p.tagline||'Custom mugs for the night shift.';
+      p.identity=p.identity&&typeof p.identity==='object'?p.identity:{};
+      p.identity.displayName='Mugs After Dark';
+    }
+    return p;
+  }
+
+  function projectTypeFamily(p){
+    const name=normalizeBusinessIdentityText(p?.branding?.businessName||p?.name||'');
+    const raw=normalizeBusinessIdentityText(p?.businessType||p?.type||'');
+    if(name.includes('plumbing')||raw.includes('plumbing'))return 'plumbing';
+    if(name.includes('restoration')||raw.includes('restoration'))return 'restoration';
+    if(name.includes('mug')||raw.includes('mug'))return 'mugs';
+    if(name.includes('bloom')||name.includes('flower')||raw.includes('flower'))return 'flowers';
+    if(name.includes('grizzly')||raw.includes('camping')||raw.includes('outdoor'))return 'outdoor';
+    if(name.includes('wood sign')||raw.includes('wood sign'))return 'wood-signs';
+    return raw||'general';
+  }
+  function strictBusinessIdentityKey(p){
+    const display=normalizeBusinessIdentityText(p?.name||p?.identity?.displayName);
+    const brand=normalizeBusinessIdentityText(p?.branding?.businessName||p?.name||p?.identity?.displayName);
+    if(!display||!brand)return '';
+    return [display,brand,projectTypeFamily(p)].join('|');
+  }
+  function duplicateContactConflict(a,b){
+    const aEmail=String(a?.contact?.email||'').trim().toLowerCase(),bEmail=String(b?.contact?.email||'').trim().toLowerCase();
+    const aPhone=String(a?.contact?.phoneE164||a?.contact?.phone||'').replace(/\D/g,''),bPhone=String(b?.contact?.phoneE164||b?.contact?.phone||'').replace(/\D/g,'');
+    return !!((aEmail&&bEmail&&aEmail!==bEmail)||(aPhone&&bPhone&&aPhone!==bPhone));
+  }
+
+  function projectMaturityScore(p){
+    let score=0;
+    if(p?.publish?.status==='live')score+=40;
+    if(p?.status==='active')score+=20;
+    if(p?.ownerAccess?.status==='active')score+=15;
+    if(p?.ownerAccess?.enabled)score+=5;
+    if(Array.isArray(p?.deployments))score+=Math.min(15,p.deployments.length*5);
+    if(Array.isArray(p?.products))score+=Math.min(8,p.products.length);
+    if(p?.capabilityControl?.enabled?.length)score+=5;
+    if(p?.branding?.logoAssetId||p?.branding?.logoData||p?.branding?.logoUrl)score+=4;
+    if(p?.createdAt)score+=1;
+    return score;
+  }
+
+  function mergeProjectEvidence(primary,duplicate){
+    const out=structuredClone(primary);
+    const mergeById=(a,b)=>{
+      const rows=[...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])],seen=new Set(),result=[];
+      for(const item of rows){const key=item&&typeof item==='object'?(item.id?`id:${item.id}`:`json:${JSON.stringify(item)}`):`value:${String(item)}`;if(seen.has(key))continue;seen.add(key);result.push(structuredClone(item));}
+      return result;
+    };
+    out.deployments=mergeById(out.deployments,duplicate?.deployments);
+    out.products=mergeById(out.products,duplicate?.products);
+    out.ownerAccess=out.ownerAccess&&typeof out.ownerAccess==='object'?out.ownerAccess:{};
+    out.ownerAccess.staff=mergeById(out.ownerAccess.staff,duplicate?.ownerAccess?.staff);
+    out.capabilityControl=out.capabilityControl&&typeof out.capabilityControl==='object'?out.capabilityControl:{};
+    out.capabilityControl.enabled=[...new Set([...(out.capabilityControl.enabled||[]),...(duplicate?.capabilityControl?.enabled||[])])];
+    const fill=(target,source)=>{
+      if(!source||typeof source!=='object'||Array.isArray(source))return target;
+      for(const [k,v] of Object.entries(source)){
+        if(v==null||v==='')continue;
+        if(target[k]==null||target[k]===''||(Array.isArray(target[k])&&target[k].length===0)){target[k]=structuredClone(v);continue;}
+        if(typeof target[k]==='object'&&!Array.isArray(target[k])&&typeof v==='object'&&!Array.isArray(v))fill(target[k],v);
+      }
+      return target;
+    };
+    fill(out,duplicate);
+    out.registryIdentity=out.registryIdentity&&typeof out.registryIdentity==='object'?out.registryIdentity:{};
+    out.registryIdentity.foldedProjectIds=[...new Set([...(out.registryIdentity.foldedProjectIds||[]),String(duplicate?.id||'')].filter(Boolean))];
+    out.registryIdentity.lastReconciledAt=new Date().toISOString();
+    out.registryIdentity.lastReconciledBuild=BUILD_VERSION;
+    return out;
+  }
+
+  function strictDuplicateBusinessPlan(rows){
+    const groups=new Map();
+    for(const raw of (Array.isArray(rows)?rows:[])){
+      const row=canonicalizeProjectDisplayIdentity(structuredClone(raw));
+      const key=strictBusinessIdentityKey(row);
+      if(!key){groups.set(`id:${row.id}`,[...(groups.get(`id:${row.id}`)||[]),row]);continue;}
+      groups.set(key,[...(groups.get(key)||[]),row]);
+    }
+    const survivors=[],aliases=[];
+    for(const group of groups.values()){
+      if(group.length===1){survivors.push(group[0]);continue;}
+      // Only fold exact business identities. If contact/type signals differ, the key differs and no fold occurs.
+      const ranked=[...group].sort((a,b)=>projectMaturityScore(b)-projectMaturityScore(a)||String(a.id).localeCompare(String(b.id)));
+      let survivor=ranked[0];
+      for(const duplicate of ranked.slice(1)){
+        if(duplicateContactConflict(survivor,duplicate)){survivors.push(duplicate);continue;}
+        survivor=mergeProjectEvidence(survivor,duplicate);
+        aliases.push({fromId:String(duplicate.id),toId:String(survivor.id),name:String(survivor.name||'Project')});
+      }
+      survivors.push(survivor);
+    }
+    return {rows:survivors,aliases};
+  }
+
+  async function migrateProjectIdAliasData(fromId,toId,label='Project identity'){
+    if(!fromId||!toId||fromId===toId)return false;
+    let changed=false;
+    try{
+      const rows=await getAll(STORE_ORDERS);
+      const affected=rows.filter(o=>String(o?.projectId||'')===fromId);
+      if(affected.length){
+        const transaction=db.transaction(STORE_ORDERS,'readwrite'),store=transaction.objectStore(STORE_ORDERS);
+        affected.forEach(order=>store.put(replaceProjectIdDeep(order,fromId,toId)));
+        await transactionToPromise(transaction); changed=true;
+      }
+    }catch(err){console.warn('Project alias order migration deferred',fromId,toId,err);}
+    try{
+      const rows=await getAll(STORE_SETTINGS),existingKeys=new Set(rows.map(r=>String(r?.key||'')));
+      const transaction=db.transaction(STORE_SETTINGS,'readwrite'),store=transaction.objectStore(STORE_SETTINGS);
+      for(const row of rows){
+        const oldKey=String(row?.key||''); if(oldKey==='companies')continue;
+        const newKey=oldKey.replaceAll(`:${fromId}`,`:${toId}`),next=replaceProjectIdDeep(row,fromId,toId);
+        if(newKey!==oldKey){next.key=newKey;if(!existingKeys.has(newKey))store.put(next);store.delete(oldKey);changed=true;}
+        else if(JSON.stringify(next)!==JSON.stringify(row)){store.put(next);changed=true;}
+      }
+      await transactionToPromise(transaction);
+    }catch(err){console.warn('Project alias settings migration deferred',fromId,toId,err);}
+    try{
+      const keys=Object.keys(localStorage).filter(k=>k.startsWith('blackFlag')||k.startsWith(DRAFT_KEY+':')||k.startsWith('darkSky'));
+      for(const key of keys){
+        const raw=localStorage.getItem(key);if(raw==null)continue;let parsed;try{parsed=JSON.parse(raw);}catch(_){continue;}
+        const next=replaceProjectIdDeep(parsed,fromId,toId),newKey=key.replaceAll(`:${fromId}`,`:${toId}`);
+        if(newKey!==key){if(localStorage.getItem(newKey)==null)localStorage.setItem(newKey,JSON.stringify(next));localStorage.removeItem(key);changed=true;}
+        else if(JSON.stringify(next)!==raw){localStorage.setItem(key,JSON.stringify(next));changed=true;}
+      }
+    }catch(err){console.warn('Project alias local-state migration deferred',fromId,toId,err);}
+    if(changed)window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:toId,category:'migration',action:'fleet.identity.duplicate_folded',detail:`${label}: ${fromId} → ${toId} • ${BUILD_VERSION}`});
+    return changed;
+  }
+
   function normalizeProjectCode(p){
     if(!p)return p;
+    canonicalizeProjectDisplayIdentity(p);
     const seeded={ 'ikes-wood-signs':'IKE','mugshot-after-dark':'MUG','beccas-bloom-shop':'BBS','grizzly-bear':'GRZ','bor-north-richmond':'SIG' };
     const fallback=String(p.orderPrefix||p.name||'PRJ').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3)||'PRJ';
     p.projectCode=String(p.projectCode||seeded[p.id]||fallback).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
@@ -2966,11 +3115,19 @@
     const aliasCanonicalized=canonicalizeRegistryAliasRows(companies);
     companies=aliasCanonicalized.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
     if(registrySchema<FLEET_REGISTRY_SCHEMA_VERSION) await migrateGrizzlyProjectAliasData();
+    // 7.9.1 True Bearing: fold only strict duplicate business identities, preserving
+    // the most mature vessel as canonical and migrating project-scoped references.
+    const duplicatePlan=strictDuplicateBusinessPlan(companies);
+    if(duplicatePlan.aliases.length){
+      for(const alias of duplicatePlan.aliases)await migrateProjectIdAliasData(alias.fromId,alias.toId,alias.name);
+      companies=duplicatePlan.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
+    }
     const canonicalIdsBefore=projectRegistryIds(canonicalRows);
     const reconciledIds=projectRegistryIds(companies);
     const registryReconciled=canonicalIdsBefore.size!==reconciledIds.size || [...reconciledIds].some(id=>!canonicalIdsBefore.has(id));
-    if(!canonicalRows.length || migrationChanged || aliasCanonicalized.changed || registryReconciled || registrySchema<FLEET_REGISTRY_SCHEMA_VERSION){
-      companies=await persistProjectRegistry(companies,{allowRemovalIds:aliasCanonicalized.changed?[LEGACY_GRIZZLE_PROJECT_ID]:[]});
+    if(!canonicalRows.length || migrationChanged || aliasCanonicalized.changed || duplicatePlan.aliases.length || registryReconciled || registrySchema<FLEET_REGISTRY_SCHEMA_VERSION){
+      const allowedRemovals=[...(aliasCanonicalized.changed?[LEGACY_GRIZZLE_PROJECT_ID]:[]),...duplicatePlan.aliases.map(x=>x.fromId)];
+      companies=await persistProjectRegistry(companies,{allowRemovalIds:allowedRemovals});
       companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
       window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.4.1.fleet.registry.reconciled',detail:`${companies.length} projects • schema ${FLEET_REGISTRY_SCHEMA_VERSION}`});
     }
@@ -3286,7 +3443,7 @@
         <article data-full-sail="storage" tabindex="0" role="button" aria-label="Inspect Engine storage and telemetry"><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
       </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4>${priorities}</div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="admiral">RUN FLEET READINESS</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
       host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
-        const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='storage'){await openStorageTelemetry({inspect:true});}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
+        const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('fleetCommissioningDock')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='storage'){await openStorageTelemetry({inspect:true});}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
       });
     }catch(err){console.warn('Full Sail command deck warning',err);if(state){state.textContent='CHECK';state.className='full-sail-state watch';}host.innerHTML='<p class="helper">Command Deck could not finish its live read. Fleet controls below remain available.</p>';}
   }
@@ -4148,6 +4305,29 @@
     return {label:moves[next.id]||'Clear next gate',detail:next.detail,gate:next.id};
   }
 
+  let fleetDockFilter='all';
+  let fleetDockSearch='';
+  function fleetDockPriority(p,s){
+    let score=0;
+    const owner=ensureProjectGovernance(p).ownerAccess;
+    if(!s.commissioned)score+=100;
+    if(s.ready&&!s.commissioned)score+=80;
+    if(!owner?.enabled||owner.status!=='active')score+=30;
+    if(p?.publish?.status==='live')score-=10;
+    score+=(s.total-s.passed)*10;
+    return score;
+  }
+  function fleetDockMatches(p,s){
+    const q=normalizeBusinessIdentityText(fleetDockSearch);
+    if(q && !normalizeBusinessIdentityText([p.name,p.projectCode,p.type,p.businessType,p.tagline].filter(Boolean).join(' ')).includes(q))return false;
+    const owner=ensureProjectGovernance(p).ownerAccess;
+    if(fleetDockFilter==='attention')return !s.commissioned && !s.ready;
+    if(fleetDockFilter==='owner')return !owner?.enabled || owner.status!=='active';
+    if(fleetDockFilter==='sea')return migrateLegacyDeployment(p).some(d=>d.state==='sea_trial');
+    if(fleetDockFilter==='ready')return s.ready||s.commissioned||p?.publish?.status==='live';
+    return true;
+  }
+
   async function renderFleetCommissioning(){
     const summary=$('fleetCommissioningSummary');
     const fleet=$('fleetCommissioningFleet');
@@ -4175,7 +4355,8 @@
       <article><small>FLEET PROOF</small><strong>${gatesPassed}/${gatesTotal||0}</strong><span>Verified gates across current vessels</span></article>`;
 
     if(fleet){
-      fleet.innerHTML=snaps.length?snaps.map(({p,s},idx)=>{
+      const visibleSnaps=snaps.filter(({p,s})=>fleetDockMatches(p,s)).sort((a,b)=>fleetDockPriority(b.p,b.s)-fleetDockPriority(a.p,a.s)||String(a.p.name).localeCompare(String(b.p.name)));
+      fleet.innerHTML=visibleSnaps.length?visibleSnaps.map(({p,s},idx)=>{
         const next=commissioningNextMove(s);
         const status=s.commissioned?'COMMISSIONED':s.ready?'READY FOR CAPTAIN':'IN DOCK';
         const cls=s.commissioned?'commissioned':s.ready?'ready':'work';
@@ -4193,14 +4374,16 @@
             <strong>${escapeHtml(next.label)}</strong>
             <p>${escapeHtml(next.detail)}</p>
           </div>
-          <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel actions">
-            <button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">CUSTOMER</button>
-            <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small owner-access-action" ${ownerEnabled?'':'disabled'}>${ownerEnabled?'OWNER / PARTNER':'OWNER SETUP'}</button>
-            <button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">TEST / PREVIEW</button>
-            <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="${s.commissioned?'secondary-btn':'primary-btn'} small">CAPTAIN DOCK</button>
+          <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel routes">
+            <div class="fleet-dock-watch-actions">
+              <button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small fleet-watch-btn customer-watch"><span>CUSTOMER</span><strong>EXPERIENCE</strong></button>
+              <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small owner-access-action fleet-watch-btn owner-watch"><span>OWNER / PARTNER</span><strong>${ownerEnabled?(p.ownerAccess?.status==='active'?'CONTROL CENTER':'OWNER ENTRANCE'):'SET UP ACCESS'}</strong></button>
+              <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="${s.commissioned?'secondary-btn':'primary-btn'} small fleet-watch-btn captain-watch"><span>CAPTAIN</span><strong>DOCK</strong></button>
+            </div>
+            <div class="fleet-dock-test-route"><span>TEST MODE</span><button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN TEST / PREVIEW</button></div>
           </div>
         </article>`;
-      }).join(''):'<div class="fleet-proof-empty">No vessels are registered in the fleet yet.</div>';
+      }).join(''):'<div class="fleet-proof-empty">No vessels match the current Fleet Dock view.</div>';
 
       fleet.querySelectorAll('[data-open-fleet-commissioning]').forEach(btn=>{
         btn.addEventListener('click',()=>openFleetCommissioning(btn.dataset.openFleetCommissioning));
@@ -4208,12 +4391,18 @@
       fleet.querySelectorAll('[data-fleet-dock-action]').forEach(btn=>btn.addEventListener('click',async()=>{
         const projectId=btn.dataset.projectId;const action=btn.dataset.fleetDockAction;const project=projectById(projectId);if(!project)return;
         if(action==='customer'){await continueProjectLaunch(project);return;}
-        if(action==='owner'){location.href=ownerPartnerEntryLink(projectId);return;}
+        if(action==='owner'){
+          const owner=ensureProjectGovernance(project).ownerAccess;
+          if(!owner?.enabled){await openProjectEngineControl(projectId);await renderProjectTab(projectId,'owner');return;}
+          location.href=ownerPartnerEntryLink(projectId);return;
+        }
         if(action==='preview'){await openExperienceTestDeck(projectId);return;}
       }));
     }
 
-    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT</span><strong>Choose the vessel, then the watch.</strong><p>Customer, Owner / Partner, Test / Preview, and Captain Commissioning remain separate routes with the same project boundary.</p></div>`;
+    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT</span><strong>Choose the vessel, then the watch.</strong><p>Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>`;
+    const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning();};}
+    $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning();};});
   }
 
   async function renderProjectCommand(){
@@ -11656,10 +11845,10 @@ The full order and approved media remain stored with this project.`;
         if(!target)throw new Error('The project could not be resolved from the fleet registry.');
         await continueProjectLaunch(target);
       }else if(action==='projects'){
-        const section=$('engineProjectsSection');
+        const section=$('fleetCommissioningDock');
         section?.scrollIntoView({behavior:'smooth',block:'start'});
         pulseCommandTarget(section);
-        setFirstMateActionStatus('Project Command is highlighted. Open a vessel’s Control Center → Access → Owner Access for project-specific owner controls.','success');
+        setFirstMateActionStatus('Fleet Dock is highlighted. Choose the vessel, then Customer, Owner / Partner, Test / Preview, or Captain Dock.','success');
       }else{
         throw new Error('This recommendation does not have a valid command route.');
       }
@@ -12335,7 +12524,7 @@ The full order and approved media remain stored with this project.`;
     $('pirateExitBtn')?.addEventListener('click',()=>setEngineAppearance('business'));
     $$('[data-pirate-jump]').forEach(btn=>btn.addEventListener('click',()=>{
       const target=btn.dataset.pirateJump;
-      if(target==='projects') $('engineProjectsSection')?.scrollIntoView({behavior:'smooth',block:'start'});
+      if(target==='projects') $('fleetCommissioningDock')?.scrollIntoView({behavior:'smooth',block:'start'});
       if(target==='config'||target==='settings'){
         $('engineConfigurationDock')?.classList.remove('hidden');
         $('engineConfigurationDock')?.scrollIntoView({behavior:'smooth',block:'start'});

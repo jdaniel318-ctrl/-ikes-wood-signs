@@ -1,4 +1,4 @@
-# Dark Sky 7.9.0 — Three Watch
+# Dark Sky 7.9.1 — True Bearing
 
 Three clean layers: customer, project owner/partner, and Black Flag/Captain. See CHANGELOG.md for release details.
 
@@ -82,3 +82,10 @@ See `IKES_SOUNDING_LINE_720.md` for the Sea Trial contract.
 
 ## 7.9.0 Fleet Spine
 Dynamic Fleet Dock, explicit Customer/Owner/Captain routes, canonical Ike asset path, and fail-safe Engine command reads.
+
+
+## 7.9.1 True Bearing
+
+True Bearing hardens the Fleet Spine around canonical business identity and a scalable primary Fleet Dock. It preserves immutable Project IDs while repairing approved human-facing business identity, including Mugs After Dark. Strict duplicate-business folding now chooses the more mature canonical vessel only when business identity matches and contact evidence does not conflict, then migrates project-scoped references before removing the duplicate registry row.
+
+Fleet Dock is the normal vessel navigator: searchable, filterable, priority-sorted, and explicit about the three authority routes — Customer Experience, Owner / Partner, and Captain Dock. Test / Preview is shown separately as a safe mode rather than a fourth authority. Owner setup is now an actionable Captain route; active owners retain their project-scoped portal without Black Flag credentials. The older Project Command surface remains available as advanced administration rather than competing with Fleet Dock as the primary route.
