@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.8",
-  "release": "7.9.8",
+  "build": "7.9.9",
+  "release": "7.9.9",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -95,5 +95,5 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.8 Keelson: one canonical fleet roster, source-level duplicate reconciliation, trusted fleet metrics, stable vessel callsigns, Fleet Dock primary navigation, Advanced Project Command secondary."
+  "note": "7.9.9 Ironclad: direct project-owner authority handoff, query-aware protected startup, owner refresh isolation, durable readable fleet confirmations, canonical six-vessel roster preserved."
 }

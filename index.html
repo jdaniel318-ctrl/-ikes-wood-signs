@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 7.9.8 KEELSON — explicit authority route wins before any persisted marker.
+    // Dark Sky 7.9.9 IRONCLAD — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -115,7 +115,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=7.9.8" />
+  <link rel="stylesheet" href="styles.css?v=7.9.9" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -141,6 +141,7 @@
 <body class="boot-locked">
   <div id="darkSkyFirstPaintShield" aria-hidden="true"><div class="ds-first-light"><div class="ds-first-light-eyebrow">AUTHORITY CHECK</div><div class="ds-first-light-mark">⚑</div><strong>DARK SKY</strong><span>SECURING ROUTE</span></div></div>
   <div id="testAccessBanner" class="test-access-banner hidden" role="status">TEST ACCESS ACTIVE • PIN ENTRY BYPASSED • SESSION ONLY</div>
+  <div id="fleetActionStatus" class="fleet-action-status hidden" role="status" aria-live="polite"></div>
 
   <div id="blackFlagEntryGate" class="black-flag-entry-gate">
     <div class="bf-entry-shell">
@@ -1529,11 +1530,11 @@
 </section>
 
 
-  <script src="platform_core.js?v=7.9.8"></script>
-  <script src="platform_v4.js?v=7.9.8"></script>
-  <script src="platform_identity.js?v=7.9.8"></script>
-  <script src="app.js?v=7.9.8"></script>
-  <script src="captain.js?v=7.9.8"></script>
+  <script src="platform_core.js?v=7.9.9"></script>
+  <script src="platform_v4.js?v=7.9.9"></script>
+  <script src="platform_identity.js?v=7.9.9"></script>
+  <script src="app.js?v=7.9.9"></script>
+  <script src="captain.js?v=7.9.9"></script>
 
 </body>
 </html>

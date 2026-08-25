@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.8';
+  const BUILD_VERSION = '7.9.9';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -754,6 +754,15 @@
     if(s==='relationship_ended') return 'RELATIONSHIP ENDED';
     return 'APPROVED';
   }
+  function showFleetActionStatus(message,{tone='clear',duration=4200}={}){
+    const el=$('fleetActionStatus');
+    if(!el)return;
+    el.textContent=String(message||'');
+    el.className=`fleet-action-status ${tone}`;
+    clearTimeout(window.__fleetActionStatusTimer);
+    window.__fleetActionStatusTimer=setTimeout(()=>el.classList.add('hidden'),Math.max(3200,Number(duration)||4200));
+  }
+
   function ownerAccessLabel(p){
     const s=ensureProjectGovernance(p).ownerAccess.status;
     if(s==='active') return 'OWNER ACTIVE';
@@ -851,8 +860,15 @@
   }
 
   function ownerPartnerEntryLink(projectId){
-    const base=new URL('./owner.html',location.href.split('#')[0]);
+    // 7.9.9 Ironclad: Captain-to-owner handoff goes directly to the explicit
+    // project-scoped owner surface. owner.html remains the durable outside-owner
+    // entrance, but Engine navigation no longer depends on an extra redirect.
+    const p=projectById(projectId);
+    const base=new URL('./index.html',location.href.split('#')[0]);
+    base.searchParams.set('surface','owner');
     base.searchParams.set('project',projectId);
+    base.searchParams.set('view',p?.ownerAccess?.status==='active'?'portal':'login');
+    base.hash='';
     return base.toString();
   }
 
@@ -2081,7 +2097,7 @@
   }
 
 
-  // 7.9.8 KEELSON — one canonical roster for every Engine fleet surface.
+  // 7.9.9 IRONCLAD — one canonical roster for every Engine fleet surface.
   // Fleet Dock, Project Tools, readiness counts, owner state and commissioning
   // metrics must all consume the same reconciled canonical project store.
   let canonicalPresentationConvergence=null;
@@ -2125,7 +2141,7 @@
         window.DarkSkyV4?.diagnostic?.('fleet.identity_hold','Canonical fleet still contains duplicate business identities',{duplicates:remaining,build:BUILD_VERSION,source});
       }
       companies=canonical;
-      try{await ensureCanonicalFleetManifest({repairRegistry:false});}catch(err){console.warn('Keelson manifest projection warning',err);}
+      try{await ensureCanonicalFleetManifest({repairRegistry:false});}catch(err){console.warn('Ironclad manifest projection warning',err);}
       writeProjectRegistryBackup(companies,`keelson-${source}`);
       window.__darkSkyCanonicalFleet={build:BUILD_VERSION,source,count:companies.length,duplicates:remaining,at:new Date().toISOString()};
       return companies;
@@ -4490,6 +4506,7 @@
           // Owner/Partner is a project-scoped authority route. Never traverse the
           // Black Flag Engine login boundary just to enter the business portal.
           armOwnerRoute(projectId);
+          showFleetActionStatus(`Opening ${project.name} Owner / Partner Control Center…`,{tone:'clear',duration:5200});
           location.href=ownerPartnerEntryLink(projectId);
           return;
         }
@@ -11633,7 +11650,7 @@ The full order and approved media remain stored with this project.`;
     return routeOwnerAccessFromHashLegacy();
   }
 
-  // 7.9.8 KEELSON — protected route resolver. The head-level watchdog is
+  // 7.9.9 IRONCLAD — protected route resolver. The head-level watchdog is
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
@@ -12807,7 +12824,12 @@ The full order and approved media remain stored with this project.`;
       section.classList.toggle('advanced-collapsed',!opening);
       btn.textContent=opening?'CLOSE ADVANCED PROJECT TOOLS':'OPEN ADVANCED PROJECT TOOLS';
       btn.setAttribute('aria-expanded',opening?'true':'false');
-      if(opening)Promise.resolve(renderProjectCommand()).catch(err=>console.warn('Advanced Project Tools render warning',err));
+      if(opening){
+        showFleetActionStatus('Advanced Project Tools opened. Fleet Dock remains the primary navigator.',{tone:'clear',duration:5200});
+        Promise.resolve(renderProjectCommand()).catch(err=>console.warn('Advanced Project Tools render warning',err));
+      }else{
+        showFleetActionStatus('Advanced Project Tools closed.',{tone:'clear',duration:3800});
+      }
     });
     // Project Control tabs and Black Flag return routes are owned by
     // bindMissionCriticalNavigation() so they cannot be lost in a module refit.
@@ -13172,16 +13194,20 @@ document.addEventListener('click', (event) => {
     if(window.__blackFlagPortalBound) return;
     window.__blackFlagPortalBound=true;
     const startupHash=String(location.hash||'');
-    if(startupHash.startsWith('#owner-')){
-      // 7.9.3 Bulkhead: owner bookmarks and authenticated owner refreshes never
-      // traverse or paint the Black Flag Engine gate. routeOwnerAccessFromHash()
-      // owns this startup route after project data is loaded.
+    const startupUrl=new URL(location.href);
+    const startupSurface=String(startupUrl.searchParams.get('surface')||'').toLowerCase();
+    const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
+    const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
+    if(startupOwner){
+      // 7.9.9 Ironclad: query-based Owner/Partner routes are first-class authority
+      // routes. They must never traverse, paint, or fall through the Black Flag
+      // Engine gate while project-scoped owner state is resolving.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
       document.body.classList.remove('boot-locked','bf-entry-open','engine-mode','project-mode');
       document.body.classList.add('owner-portal-open');
       return;
     }
-    if(startupHash.startsWith('#client-preview=')){
+    if(startupPreview){
       // Standalone preview routing owns first paint. Keep the app bulkhead closed
       // until routeClientPreviewFromHash() has installed the preview PIN gate.
       const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
