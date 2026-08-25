@@ -84,7 +84,7 @@ See `IKES_SOUNDING_LINE_720.md` for the Sea Trial contract.
 Dynamic Fleet Dock, explicit Customer/Owner/Captain routes, canonical Ike asset path, and fail-safe Engine command reads.
 
 
-## 7.9.1 True Bearing
+## 7.9.2 Watertight
 
 True Bearing hardens the Fleet Spine around canonical business identity and a scalable primary Fleet Dock. It preserves immutable Project IDs while repairing approved human-facing business identity, including Mugs After Dark. Strict duplicate-business folding now chooses the more mature canonical vessel only when business identity matches and contact evidence does not conflict, then migrates project-scoped references before removing the duplicate registry row.
 

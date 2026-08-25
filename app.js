@@ -14,9 +14,9 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '7.9.1';
+  const BUILD_VERSION = '7.9.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
-  const FLEET_REGISTRY_SCHEMA_VERSION = 8;
+  const FLEET_REGISTRY_SCHEMA_VERSION = 9;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
   const LEGACY_IKE_PROJECT_ID = 'ikes-wood-signs';
   const LEGACY_GRIZZLE_PROJECT_ID = 'grizzle-bear';
@@ -849,8 +849,8 @@
   }
 
   function ownerPartnerEntryLink(projectId){
-    const base=new URL('owner.html',location.href.split('#')[0]);
-    base.searchParams.set('project',projectId);
+    const base=new URL('./index.html',location.href.split('#')[0]);
+    base.hash=`owner-login=${encodeURIComponent(projectId)}`;
     return base.toString();
   }
 
@@ -2434,6 +2434,12 @@
     const aPhone=String(a?.contact?.phoneE164||a?.contact?.phone||'').replace(/\D/g,''),bPhone=String(b?.contact?.phoneE164||b?.contact?.phone||'').replace(/\D/g,'');
     return !!((aEmail&&bEmail&&aEmail!==bEmail)||(aPhone&&bPhone&&aPhone!==bPhone));
   }
+  const FORCED_CANONICAL_BUSINESS_NAMES=new Set(['legacy plumbing']);
+  function forceCanonicalBusinessFold(a,b){
+    const aName=normalizeBusinessIdentityText(a?.name||a?.identity?.displayName||a?.branding?.businessName);
+    const bName=normalizeBusinessIdentityText(b?.name||b?.identity?.displayName||b?.branding?.businessName);
+    return !!(aName&&aName===bName&&FORCED_CANONICAL_BUSINESS_NAMES.has(aName)&&projectTypeFamily(a)===projectTypeFamily(b));
+  }
 
   function projectMaturityScore(p){
     let score=0;
@@ -2474,6 +2480,15 @@
     fill(out,duplicate);
     out.registryIdentity=out.registryIdentity&&typeof out.registryIdentity==='object'?out.registryIdentity:{};
     out.registryIdentity.foldedProjectIds=[...new Set([...(out.registryIdentity.foldedProjectIds||[]),String(duplicate?.id||'')].filter(Boolean))];
+    if(duplicateContactConflict(primary,duplicate)){
+      out.registryIdentity.mergedContactConflicts=[...(out.registryIdentity.mergedContactConflicts||[]),{
+        foldedProjectId:String(duplicate?.id||''),
+        primaryContact:structuredClone(primary?.contact||{}),
+        foldedContact:structuredClone(duplicate?.contact||{}),
+        recordedAt:new Date().toISOString(),
+        build:BUILD_VERSION
+      }].slice(-12);
+    }
     out.registryIdentity.lastReconciledAt=new Date().toISOString();
     out.registryIdentity.lastReconciledBuild=BUILD_VERSION;
     return out;
@@ -2494,7 +2509,7 @@
       const ranked=[...group].sort((a,b)=>projectMaturityScore(b)-projectMaturityScore(a)||String(a.id).localeCompare(String(b.id)));
       let survivor=ranked[0];
       for(const duplicate of ranked.slice(1)){
-        if(duplicateContactConflict(survivor,duplicate)){survivors.push(duplicate);continue;}
+        if(duplicateContactConflict(survivor,duplicate) && !forceCanonicalBusinessFold(survivor,duplicate)){survivors.push(duplicate);continue;}
         survivor=mergeProjectEvidence(survivor,duplicate);
         aliases.push({fromId:String(duplicate.id),toId:String(survivor.id),name:String(survivor.name||'Project')});
       }
@@ -3115,7 +3130,7 @@
     const aliasCanonicalized=canonicalizeRegistryAliasRows(companies);
     companies=aliasCanonicalized.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
     if(registrySchema<FLEET_REGISTRY_SCHEMA_VERSION) await migrateGrizzlyProjectAliasData();
-    // 7.9.1 True Bearing: fold only strict duplicate business identities, preserving
+    // 7.9.2 Watertight: fold strict duplicate identities and the known Legacy Plumbing duplicate even when stale contact mirrors diverge, preserving
     // the most mature vessel as canonical and migrating project-scoped references.
     const duplicatePlan=strictDuplicateBusinessPlan(companies);
     if(duplicatePlan.aliases.length){
@@ -4394,7 +4409,11 @@
         if(action==='owner'){
           const owner=ensureProjectGovernance(project).ownerAccess;
           if(!owner?.enabled){await openProjectEngineControl(projectId);await renderProjectTab(projectId,'owner');return;}
-          location.href=ownerPartnerEntryLink(projectId);return;
+          // Owner/Partner is a project-scoped authority route. Never traverse the
+          // Black Flag Engine login boundary just to enter the business portal.
+          history.pushState({darkSkyRoute:'owner-login',projectId},'',`#owner-login=${encodeURIComponent(projectId)}`);
+          await showOwnerLogin(projectId);
+          return;
         }
         if(action==='preview'){await openExperienceTestDeck(projectId);return;}
       }));
@@ -5657,7 +5676,7 @@
         const value=ownerPartnerEntryLink(p.id);
         try{await navigator.clipboard.writeText(value);}catch(_){const input=$('ownerPartnerEntryUrl');input?.focus();input?.select();}
       });
-      $('openOwnerPartnerEntry')?.addEventListener('click',()=>{location.href=ownerPartnerEntryLink(p.id);});
+      $('openOwnerPartnerEntry')?.addEventListener('click',async()=>{history.pushState({darkSkyRoute:'owner-login',projectId:p.id},'',`#owner-login=${encodeURIComponent(p.id)}`);await showOwnerLogin(p.id);});
 
       $('generateOwnerInvite')?.addEventListener('click',async()=>{
         if(!requireEngineProjectMutation(p,'owner.invitation.generate'))return;

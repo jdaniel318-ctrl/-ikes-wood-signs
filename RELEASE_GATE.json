@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "7.9.1",
-  "release": "7.9.1",
+  "build": "7.9.2",
+  "release": "7.9.2",
   "generatedAt": "2026-08-24",
   "checks": {
     "build_version": true,
@@ -72,11 +72,14 @@
     "fleet_dock_search_filters": true,
     "fleet_dock_owner_setup_action": true,
     "test_mode_separate_from_authority_routes": true,
-    "fleet_dock_primary_navigation": true
+    "fleet_dock_primary_navigation": true,
+    "owner_route_never_engine_pin": true,
+    "legacy_plumbing_forced_canonical_fold": true,
+    "fleet_registry_schema_9": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "7.9.1 True Bearing makes Fleet Dock the primary scalable navigator, repairs canonical business identity, folds only strict duplicate vessels with project-scoped reference migration, corrects Mugs After Dark naming, and separates the three authority routes from Test / Preview mode."
+  "note": "7.9.2 Watertight seals project-owner authentication away from Black Flag Engine credentials and deterministically folds the known Legacy Plumbing duplicate while preserving project-scoped evidence."
 }

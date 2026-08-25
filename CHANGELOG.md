@@ -1,3 +1,12 @@
+# Dark Sky 7.9.2 — Watertight
+
+- Sealed Owner / Partner entry as a project-scoped authority route; Fleet Dock owner access now opens the owner login directly and never requires the Black Flag Engine PIN.
+- Changed durable owner bookmarks to canonical `index.html#owner-login=<project>` routes; legacy `owner.html` remains a compatibility redirect only.
+- Advanced fleet registry schema to 9 and deterministically folds the known Legacy Plumbing duplicate even when stale contact mirrors disagree.
+- Preserves conflicting contact values as reconciliation evidence rather than silently discarding them.
+- Migrates project-scoped orders/settings/local references from the folded duplicate Project ID into the surviving canonical vessel.
+- Preserves True Bearing Fleet Dock, search/filters, three-authority separation, Test mode, project isolation, and command-read protections.
+
 # 7.9.1 — True Bearing
 
 - Made Fleet Dock the primary scalable vessel navigator and redirected normal “Operate Projects” navigation there.
