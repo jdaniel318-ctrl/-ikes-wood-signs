@@ -1,4 +1,11 @@
-# 8.1.9 — True Fit
+
+## 8.2.0 — Real Face
+- Replaced character-count sizing with visible-glyph measurement using canvas text bounds.
+- Ike Fit now targets aggressive finished-sign face occupancy; Full Face pushes to maximum carve-safe occupancy, while More Room remains intentionally restrained.
+- Short Style A routed words receive a stronger vertical fill rule modeled on the real RAMJET sign.
+- True Fit remains a mission adapter: other vessels keep their own sizing vocabulary and constraints.
+
+# 8.2.0 — Real Face
 
 - Replaced generic size presets with More Room / Ike Fit / Full Face.
 - Removed legacy 64px preview ceiling; fit is style-aware and face-filling.
@@ -6,7 +13,7 @@
 - New Ike orders hard-reset stale wording, contact, recognition, and approved-design state.
 - Preserved 8.1.8 final-order serializer and complete-order boundary.
 
-# 8.1.9 — True Fit
+# 8.2.0 — Real Face
 
 - Fixed final Ike submission failure caused by missing `ikeRecognitionForOrder` serializer.
 - Added release-blocking automated Ike complete-order boundary evidence.

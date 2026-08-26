@@ -1,10 +1,10 @@
-# 8.1.9 Learning — Mission-Specific Fit Controls
+# 8.2.0 Learning — Mission-Specific Fit Controls
 
 Constrained customer sizing is reusable, but control vocabulary/defaults must match the vessel mission. Ike uses aggressive safe face-fit grounded in finished signs; other vessels may use S/M/L, sliders, or other controls.
 
-# Fleet Learning Registry — 8.1.9 True Fit
+# Fleet Learning Registry — 8.2.0 Real Face
 
-True Fit adds mission-fit confidence to recommendation compression.
+Real Face adds mission-fit confidence to recommendation compression.
 
 - **Strong** — direct mission evidence; may be bulk-staged for review.
 - **Plausible** — useful but adaptation evidence must be reviewed first.

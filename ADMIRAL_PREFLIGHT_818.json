@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-admiral-preflight-v1",
-  "build": "8.1.9",
-  "name": "True Fit",
+  "build": "8.2.0",
+  "name": "Real Face",
   "checks": [
     {
       "id": "ike-complete-order-boundary",

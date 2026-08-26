@@ -14,13 +14,13 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.1.9 CARVER'S HELM — atomic release seal.
-    const DARK_SKY_EXPECTED_BUILD = '8.1.9';
-    const DARK_SKY_RELEASE_SEAL = 'true-fit-819-root-keel-9f1c72';
+    // Dark Sky 8.2.0 CARVER'S HELM — atomic release seal.
+    const DARK_SKY_EXPECTED_BUILD = '8.2.0';
+    const DARK_SKY_RELEASE_SEAL = 'real-face-820-root-keel-9f1c72';
     window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
-    // Dark Sky 8.1.9 CARVER'S HELM — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.2.0 CARVER'S HELM — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -1578,7 +1578,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.1.9', SEAL='true-fit-819-root-keel-9f1c72';
+    const EXPECTED='8.2.0', SEAL='real-face-820-root-keel-9f1c72';
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
@@ -1640,7 +1640,7 @@
         step('Clearing Dark Sky application caches');
         if('caches' in window){for(const key of await caches.keys())if(APP_CACHE.test(key))await caches.delete(key);}
         step('Application caches cleared','done');
-        step('Verifying complete 8.1.9 runtime snapshot');
+        step('Verifying complete 8.2.0 runtime snapshot');
         await verifySnapshot(true);
         step('Complete runtime snapshot verified','done');
         step('Installing identity-only release sentinel');

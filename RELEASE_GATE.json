@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.1.9",
-  "release": "8.1.9",
+  "build": "8.2.0",
+  "release": "8.2.0",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -128,8 +128,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.1.9 True Fit: finished-sign-grounded lettering fit replaces generic sizes; new orders clear stale design state; complete-order boundary remains protected.",
-  "candidate": "8.1.9",
+  "note": "8.2.0 Real Face: finished-sign-grounded lettering fit replaces generic sizes; new orders clear stale design state; complete-order boundary remains protected.",
+  "candidate": "8.2.0",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

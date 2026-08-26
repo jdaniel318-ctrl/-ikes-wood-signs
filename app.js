@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.1.9';
+  const BUILD_VERSION='8.2.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.1.9',
+    build:'8.2.0',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -10564,17 +10564,42 @@ The full order and approved media remain stored with this project.`;
     const r=state.plankRecognition||{},region=r.usableRegion,card=el.closest('.preview-card'),img=card?.querySelector('.preview-image');
     if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
     const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
-    const chars=Math.max(1,String(state.wording||'Your Sign').replace(/\s+/g,'').length);
-    // 8.1.9 True Fit: finished Ike signs show that the mission target is
-    // strong face occupancy, not generic S/M/L typography. Fit is style-aware
-    // and the legacy 64px ceiling is removed.
-    const factor=state.font==='B'?.40:(state.font==='C'?.50:.47);
-    const widthMax=Math.max(1,w/(chars*factor));
-    const heightMax=Math.max(1,h*.90);
-    const safeMax=Math.max(1,Math.min(180,widthMax,heightMax));
-    const fitScale={'More Room':.82,'Ike Fit':.96,'Full Face':1}[state.letterSize||'Ike Fit']||.96;
-    const fs=Math.max(1,safeMax*fitScale);
-    Object.assign(el.style,{left:`${x}px`,top:`${y}px`,width:`${w}px`,height:`${h}px`,transform:'none',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'4px 6px'});
+    const wording=String(state.wording||'Your Sign').trim()||'Your Sign';
+    // 8.2.0 Real Face: fit the VISIBLE GLYPHS to Ike's usable wood face.
+    // Generic character-count math left too much dead space because font metrics
+    // include invisible side bearings/ascent. Measure the rendered lettering itself,
+    // then target real face occupancy while preserving carving clearance.
+    const mode=state.letterSize||'Ike Fit';
+    const targets={
+      'More Room':{w:.72,h:.60},
+      'Ike Fit':{w:.88,h:.74},
+      'Full Face':{w:.95,h:.86}
+    }[mode]||{w:.88,h:.74};
+    const css=getComputedStyle(el);
+    const probe=100;
+    const cv=document.createElement('canvas'),cx=cv.getContext('2d');
+    const fontFamily=css.fontFamily||'Impact, Arial Black, sans-serif';
+    const fontWeight=css.fontWeight||'900';
+    const fontStyle=css.fontStyle||'normal';
+    cx.font=`${fontStyle} ${fontWeight} ${probe}px ${fontFamily}`;
+    const m=cx.measureText(wording);
+    const glyphW=Math.max(1,(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width||1));
+    const glyphH=Math.max(1,(m.actualBoundingBoxAscent||probe*.76)+(m.actualBoundingBoxDescent||probe*.20));
+    const styleWidthBoost=state.font==='B'?1.03:(state.font==='C'?.98:1);
+    const byWidth=(w*targets.w)/(glyphW/probe);
+    const byHeight=(h*targets.h)/(glyphH/probe);
+    let fs=Math.min(byWidth,byHeight)*styleWidthBoost;
+    // Short, bold routed words are the signature Ike look. Let them push harder
+    // vertically when width still has room, like the finished RAMJET reference.
+    if(state.font==='A' && wording.replace(/\s+/g,'').length<=8){
+      const aggressiveH=(h*(mode==='More Room'?.64:mode==='Full Face'?.91:.80))/(glyphH/probe);
+      fs=Math.min(byWidth,Math.max(fs,aggressiveH));
+    }
+    fs=Math.max(18,Math.min(260,fs));
+    Object.assign(el.style,{left:`${x}px`,top:`${y}px`,width:`${w}px`,height:`${h}px`,transform:'none',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'0',lineHeight:'1'});
+    el.dataset.ikeFitMode=mode;
+    el.dataset.ikeFitFontPx=String(Math.round(fs));
+    el.dataset.ikeFitTarget=`${Math.round(targets.w*100)}x${Math.round(targets.h*100)}`;
   }
 
   function scheduleIkeDetectedTextPlacement(){

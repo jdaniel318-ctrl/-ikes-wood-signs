@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.1.9",
-  "release": "True Fit \u2014 Root Keel",
-  "seal": "true-fit-819-root-keel-9f1c72",
+  "build": "8.2.0",
+  "release": "Real Face \u2014 Root Keel",
+  "seal": "real-face-820-root-keel-9f1c72",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "True Fit \u2014 Root Keel"
+  "release_name": "Real Face \u2014 Root Keel"
 }
