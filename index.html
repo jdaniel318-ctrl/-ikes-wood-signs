@@ -8,6 +8,12 @@
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
   <script id="darkSkyFirstLightBootstrap">
+    // Dark Sky 8.0.8 YARDARM — atomic release seal.
+    const DARK_SKY_EXPECTED_BUILD = '8.0.8';
+    const DARK_SKY_RELEASE_SEAL = 'yardarm-808-atomic-6f2c91';
+    window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
+    window.__darkSkyReleaseGateState = 'preflight';
+    document.documentElement.classList.add('dark-sky-release-preflight');
     // Dark Sky 8.0.8 YARDARM — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
@@ -111,11 +117,20 @@
     #darkSkyFirstPaintShield span{font-size:10px;letter-spacing:.08em;color:#87a8b0;}
     #darkSkyFirstPaintShield .ds-route-recovery p{max-width:360px;margin:8px 20px 2px;color:#a8bec4;font-size:13px;line-height:1.45;}
     #darkSkyFirstPaintShield .ds-route-recovery button{margin-top:8px;min-width:170px;min-height:44px;border-radius:12px;border:1px solid rgba(125,190,207,.55);background:#176f99;color:#fff;font-weight:900;letter-spacing:.06em;}
+    #darkSkyFirstPaintShield .ds-release-hold{max-width:620px;align-items:stretch;text-align:left;}
+    #darkSkyFirstPaintShield .ds-release-hold h2{margin:2px 0 4px;font-size:24px;letter-spacing:.01em;}
+    #darkSkyFirstPaintShield .ds-release-hold .ds-release-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+    #darkSkyFirstPaintShield .ds-release-hold .ds-release-cell{border:1px solid rgba(125,190,207,.18);border-radius:12px;padding:11px 12px;background:rgba(7,26,33,.5);}
+    #darkSkyFirstPaintShield .ds-release-hold .ds-release-cell small{display:block;color:#87a8b0;font-size:9px;letter-spacing:.12em;margin-bottom:4px;}
+    #darkSkyFirstPaintShield .ds-release-hold .ds-release-cell strong{font-size:14px;letter-spacing:0;}
+    #darkSkyFirstPaintShield .ds-release-hold .ds-release-actions{display:flex;gap:10px;flex-wrap:wrap;}
+    #darkSkyFirstPaintShield .ds-release-hold .ds-release-actions button{flex:1 1 180px;}
+    @media(max-width:560px){#darkSkyFirstPaintShield .ds-release-hold .ds-release-grid{grid-template-columns:1fr;}}
   </style>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
   <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
-  <link rel="stylesheet" href="styles.css?v=8.0.8" />
+  <link rel="stylesheet" href="styles.css?seal=yardarm-808-atomic-6f2c91" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -1540,11 +1555,66 @@
 </section>
 
 
-  <script src="platform_core.js?v=8.0.8"></script>
-  <script src="platform_v4.js?v=8.0.8"></script>
-  <script src="platform_identity.js?v=8.0.8"></script>
-  <script src="app.js?v=8.0.8"></script>
-  <script src="captain.js?v=8.0.8"></script>
+  <script id="darkSkyAtomicReleaseLoader">
+  (async()=>{
+    const EXPECTED='8.0.8', SEAL='yardarm-808-atomic-6f2c91';
+    const shield=document.getElementById('darkSkyFirstPaintShield');
+    const safeText=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function hold(reason,details={}){
+      window.__darkSkyReleaseGateState='hold';
+      document.documentElement.classList.add('dark-sky-route-preflight');
+      if(shield){
+        shield.setAttribute('aria-hidden','false');
+        shield.style.display='flex';
+        shield.innerHTML=`<div class="ds-first-light ds-route-recovery ds-release-hold"><div class="ds-first-light-eyebrow">RELEASE HOLD</div><h2>MIXED BUILD DETECTED</h2><p>Dark Sky stopped before the Engine could paint because the files on this device do not belong to one release. Project data was not changed.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>EXPECTED BUILD</small><strong>${safeText(EXPECTED)}</strong></div><div class="ds-release-cell"><small>DEPLOYMENT MANIFEST</small><strong>${safeText(details.manifestBuild)}</strong></div><div class="ds-release-cell"><small>APP RUNTIME</small><strong>${safeText(details.runtimeBuild)}</strong></div><div class="ds-release-cell"><small>RELEASE SEAL</small><strong>${safeText(SEAL)}</strong></div></div><p>${safeText(reason)}</p><div class="ds-release-actions"><button type="button" id="darkSkyCleanReleaseRetry">CLEAN RELEASE RETRY</button><button type="button" id="darkSkyReleaseReload">RELOAD WITHOUT CLEANUP</button></div></div>`;
+        document.getElementById('darkSkyReleaseReload')?.addEventListener('click',()=>location.reload());
+        document.getElementById('darkSkyCleanReleaseRetry')?.addEventListener('click',async()=>{
+          try{
+            if('serviceWorker' in navigator){for(const r of await navigator.serviceWorker.getRegistrations()){try{await r.unregister();}catch(_){}}}
+            if('caches' in window){for(const k of await caches.keys()){if(/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/.test(k)){try{await caches.delete(k);}catch(_){}}}}
+            sessionStorage.setItem('darkSkyReleaseCleanRetry',SEAL);
+          }catch(_){}
+          const u=new URL(location.href);u.searchParams.set('release',SEAL);u.hash='';location.replace(u.toString());
+        });
+      }
+    }
+    async function fetchText(path){
+      const u=new URL(path,location.href);u.searchParams.set('seal',SEAL);u.searchParams.set('t',Date.now().toString());
+      const r=await fetch(u.toString(),{cache:'no-store',credentials:'same-origin'});
+      if(!r.ok)throw new Error(`${path} returned HTTP ${r.status}`);
+      return r.text();
+    }
+    async function fetchJson(path){return JSON.parse(await fetchText(path));}
+    async function loadScript(path){
+      return new Promise((resolve,reject)=>{
+        const el=document.createElement('script');el.src=`${path}?seal=${encodeURIComponent(SEAL)}`;el.async=false;el.dataset.darkSkyRelease=SEAL;el.onload=resolve;el.onerror=()=>reject(new Error(`Could not load ${path}`));document.body.appendChild(el);
+      });
+    }
+    try{
+      const [manifest,appSource,swSource]=await Promise.all([fetchJson('DEPLOYMENT_MANIFEST.json'),fetchText('app.js'),fetchText('sw.js')]);
+      const runtimeMatch=appSource.match(/const\s+BUILD_VERSION\s*=\s*['"]([^'"]+)['"]/);
+      const swBuildMatch=swSource.match(/const\s+RELEASE_BUILD\s*=\s*['"]([^'"]+)['"]/);
+      const swSealMatch=swSource.match(/const\s+RELEASE_SEAL\s*=\s*['"]([^'"]+)['"]/);
+      const manifestBuild=String(manifest?.build||manifest?.version||'unknown');
+      const runtimeBuild=runtimeMatch?.[1]||'unknown';
+      const swBuild=swBuildMatch?.[1]||'unknown';
+      const swSeal=swSealMatch?.[1]||'unknown';
+      const required=Array.isArray(manifest?.required_runtime_files)?manifest.required_runtime_files:[];
+      const must=['index.html','owner.html','styles.css','app.js','captain.js','platform_core.js','platform_identity.js','platform_v4.js','manifest.webmanifest','sw.js'];
+      const missing=must.filter(x=>!required.includes(x));
+      if(manifestBuild!==EXPECTED||runtimeBuild!==EXPECTED||swBuild!==EXPECTED||swSeal!==SEAL||missing.length){
+        hold(`Release contract mismatch. Missing manifest runtime files: ${missing.length?missing.join(', '):'none'}.`,{manifestBuild,runtimeBuild});return;
+      }
+      if('serviceWorker' in navigator){
+        try{const reg=await navigator.serviceWorker.register(`./sw.js?seal=${encodeURIComponent(SEAL)}`,{updateViaCache:'none'});await reg.update();}catch(err){hold('The release service worker could not be installed: '+String(err?.message||err),{manifestBuild,runtimeBuild});return;}
+      }
+      for(const path of ['platform_core.js','platform_v4.js','platform_identity.js','app.js','captain.js']) await loadScript(path);
+      window.__darkSkyReleaseGateState='clear';
+      document.documentElement.classList.remove('dark-sky-release-preflight');
+      window.dispatchEvent(new CustomEvent('darksky:release-seal-clear',{detail:{build:EXPECTED,seal:SEAL}}));
+    }catch(err){hold('Release verification could not complete: '+String(err?.message||err),{manifestBuild:'unknown',runtimeBuild:'unknown'});}
+  })();
+  </script>
 
 </body>
 </html>

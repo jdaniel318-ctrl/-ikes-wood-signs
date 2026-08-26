@@ -1,3 +1,13 @@
+# 8.0.8 — Yardarm Single-Build Seal
+
+- Added a unique release seal to defeat stale same-version Safari/service-worker runtime keys.
+- Engine runtime scripts are not executed until manifest build, `app.js` BUILD_VERSION, service-worker build, and release seal agree.
+- Mixed builds now stop at an explicit **MIXED BUILD DETECTED** surface before Engine paint.
+- Clean Release Retry removes only service-worker registrations and Dark Sky/Black Flag application caches; project/order/customer data is not deleted.
+- Service-worker install is atomic: missing core runtime files fail installation instead of creating a partial cache.
+- All executable requests share the same release seal and use no-store/network-first verification.
+- This is still semantic build **8.0.8 Yardarm**; the seal repairs deployment identity without creating a second build.
+
 # 8.0.8 — Yardarm
 
 - Replaces the nominal-width Rangefinder estimate with inventory-constrained aspect-ratio classification for Ike's 2/4/6 ft rack lengths.

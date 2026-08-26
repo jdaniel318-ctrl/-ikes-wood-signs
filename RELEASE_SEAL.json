@@ -1,0 +1,11 @@
+{
+  "schema": "dark-sky-release-seal-v1",
+  "build": "8.0.8",
+  "release": "Yardarm",
+  "seal": "yardarm-808-atomic-6f2c91",
+  "created": "2026-08-25",
+  "policy": "single-build-only",
+  "runtime_probe": "app.js const BUILD_VERSION",
+  "mixed_build": "block-before-engine-paint",
+  "same_version_cache_bust": "seal-query-token"
+}

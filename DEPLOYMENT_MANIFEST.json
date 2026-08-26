@@ -1,14 +1,13 @@
 {
-  "schema": "dark-sky-deployment-manifest-v1",
+  "schema": "dark-sky-deployment-manifest-v2",
   "build": "8.0.8",
+  "version": "8.0.8",
+  "release_name": "Yardarm",
+  "releaseName": "Yardarm",
+  "release_seal": "yardarm-808-atomic-6f2c91",
   "entrypoint": "index.html",
   "runtime": "static-web",
-  "host_portability": {
-    "custom_domain_ready_intent": true,
-    "relative_runtime_assets": true,
-    "current_test_host": "GitHub Pages",
-    "current_host_is_not_architecture": true
-  },
+  "deployment_mode": "atomic-single-build",
   "required_runtime_files": [
     "index.html",
     "owner.html",
@@ -18,125 +17,33 @@
     "platform_core.js",
     "platform_identity.js",
     "platform_v4.js",
+    "experience_test_deck.js",
     "manifest.webmanifest",
     "sw.js",
+    "RELEASE_SEAL.json",
     "assets/"
   ],
+  "atomic_release_contract": {
+    "manifest_runtime_agreement": "required-before-execution",
+    "service_worker_release_seal": "must-match",
+    "executable_cache_policy": "network-no-store-first-current-seal-cache-fallback",
+    "partial_runtime_promotion": "forbidden",
+    "mixed_build_behavior": "block-first-paint-explicit-MIXED-BUILD-DETECTED",
+    "safe_cleanup_scope": "service-worker-registrations-and-app-caches-only-never-project-data",
+    "upload_rule": "upload-one-release-folder-contents-together-do-not-cherry-pick-runtime-files",
+    "same_version_repair": "unique-release-seal-busts-stale-same-version-runtime"
+  },
   "authority_contracts": {
     "project_admin_default_recovery_pin": "4353",
     "black_flag_engine_pin": "5615",
     "captains_quarters_pin": "19613",
-    "client_preview_pin": "unique-per-invite",
-    "admirals_deck_pin": "19613-temporary-shared-with-captain",
-    "admiral_authority": "singular-owner-discretion-delegation-only"
+    "client_preview_pin": "unique-per-invite"
   },
   "safety_contracts": {
     "test_private_preview_real_world_contact": "blocked",
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "current_data_note": "Browser/local test state is not the target production datastore and must not be treated as authoritative production recovery.",
-  "future_managed_services": [
-    "application API / server-side website intake",
-    "managed database",
-    "object/file storage",
-    "secrets/configuration",
-    "observability/health monitoring",
-    "automated backups and restore"
-  ],
-  "migration_rule": "A hosting, domain, database, or cloud-provider change must not require redesign of customer/project experiences or weaken authority/isolation contracts.",
-  "release_name": "Yardarm",
-  "version": "8.0.8",
-  "releaseName": "Yardarm",
-  "captains_quarters_environment": "assets/captains_quarters_command_center_v578.png",
-  "release_focus": "inventory-ratio-length-ranging-one-photo-when-safe-visual-helm-preserved-owner-review-evidence",
-  "readiness_contracts": {
-    "runtime_gate": "non-destructive authority/isolation/safety/release checks",
-    "recovery_snapshot": "project+orders+settings+registry export",
-    "release_gate": "critical failures hold release; warnings require review",
-    "staging_rule": "test/private revisions must not contact real-world endpoints",
-    "single_device_dependency": "prohibited target state",
-    "proving_ground": "fresh-build-evidence-auto-run-plus-captain-rerun-status-priority-next-best-move",
-    "known_good_anchor": "captain-recorded-fresh-evidence-only-no-auto-deploy",
-    "owner_authority_boundary": "project-scoped-owner-login-never-engine-pin",
-    "legacy_duplicate_reconciliation": "single-canonical-vessel-with-folded-reference-migration-and-conflict-evidence",
-    "bounded_route_resolution": "engine-safe-first-paint-owner-preview-hard-timeout-explicit-recovery",
-    "owner_entry_runtime_file": "owner.html-standalone-project-scoped-owner-application",
-    "ike_species_identification": "no-guess-confidence-ladder-two-photo-verification-oak-family-explicit-resolution",
-    "ike_pricing": "resolved-species-active-owner-rate-times-confirmed-linear-feet",
-    "ike_confidence_calibration": "diagnostic-distinctiveness-quality-inventory-constrained-progressive-evidence-no-blanket-threshold-reduction",
-    "ike_pixel_rangefinder": "known-rack-length-classification-with-owner-visual-review-no-absolute-pixel-ruler-claim",
-    "ike_visual_helm": "rotated-customer-photo-is-orientation-authority-multiple-quarter-turns-preserve-source-evidence-no-top-selection",
-    "ike_yardarm_length": "pixel-aspect-ratio-stock-classification-core-bands-overlap-hold-owner-visual-review"
-  },
-  "capabilities": {
-    "visual_command_forge": {
-      "captain": "ready-blueprint-at-helm",
-      "admiral": "ready-governance-blueprint",
-      "generative_execution": "managed-backend-future"
-    },
-    "upper_command_theatre": {
-      "captain_threshold": "extended-ceremonial-entry",
-      "admiral_threshold": "extended-ceremonial-ascent-brightened-command-visual",
-      "professional_mode": "preserved",
-      "visual_slot": "browser-local-admiral-ceremonial-via-visual-forge-with-protected-zone-rendering",
-      "future_portability": "managed-object-storage-without-authority-rewrite"
-    },
-    "fleet_proving_ground": {
-      "status": "ready-non-destructive",
-      "voyages": [
-        "authority",
-        "isolation",
-        "client-preview",
-        "staging-safety",
-        "release-integrity",
-        "command-navigation",
-        "approved-artifact-automated",
-        "session-boundary"
-      ],
-      "evidence": "expandable-live-runtime-checks",
-      "promotion": "captain-deliberate-known-good-evidence",
-      "artifact_automation": "synthetic-png-freeze-plus-stage-reuse-contract-verification",
-      "automation": "background-current-build-proof-on-engine-entry-plus-manual-captain-rerun",
-      "freshness": "build-scoped-six-hour-evidence-window-no-prior-build-inheritance",
-      "hygiene": "obsolete-app-caches-and-stale-proof-evidence-only-no-project-data",
-      "session_boundary": "published-open-project-live-customer-test-preview-explicit-no-stale-context"
-    },
-    "ikes_customer_experience": {
-      "status": "candidate-proven-flow-refinement",
-      "pattern": "plank-first-recognition-scaffold-unified-design-approval-contact-review",
-      "identity": "project-owned-ike-brand-only",
-      "plank_recognition": "photo-geometry-plus-safe-margin-now-calibrated-measurement-and-obstacle-detection-future",
-      "lettering_library": "project-owned-style-selection-plus-reference-photo-staging",
-      "design_workspace": "wording-lettering-finish-orientation-live-preview-with-conservative-safe-margin",
-      "capability_promotion": "plank-intelligence-and-reference-lettering-remain-ike-candidates-until-sea-trial"
-    },
-    "ikes_plank_intelligence": {
-      "status": "sea-trial",
-      "contour_detection": "largest-connected-plank-color-component",
-      "usable_lettering_zone": "largest-eroded-safe-rectangle",
-      "cutout_obstacle_avoidance": "active-sea-trial",
-      "reference_scale_detection": "candidate-only-no-physical-measurement-claim",
-      "physical_measurement": "not-commissioned-until-validated-scale"
-    },
-    "approved_artifact_engine": {
-      "status": "fortified-proven-contract-extensible",
-      "approval_candidate": "render-exact-png-before-customer-approval",
-      "approval_lock": "adopt-exact-candidate-bytes-no-rerender",
-      "fingerprint": "artifact-data-url-byte-hash",
-      "reuse": "review-confirmation-admin-archive-use-approvedPreviewData",
-      "mutation": "any-design-edit-invalidates-candidate-and-lock"
-    },
-    "session_boundary_contract": {
-      "status": "required",
-      "deployment_and_session": "separate-facts",
-      "published_open_project": "live_customer",
-      "test_experience": "test_experience",
-      "client_preview": "client_preview",
-      "project_control": "admin_control",
-      "stale_context": "cleared-at-engine-boundary"
-    }
-  },
-  "release_note": "Yardarm upgrades Rangefinder from a nominal-width estimate to an inventory-constrained pixel aspect-ratio classifier. Strong full-plank geometry can resolve Ike\u2019s 2/4/6 ft rack lengths from one photo; ambiguous cases still request more evidence. Visual Helm rotation, Cedar/species sanity guards, owner pricing, and Ike visual production review remain intact.",
-  "owner_authority_boot": "immediate-project-scoped-shell"
+  "release_focus": "atomic-single-build-release-seal-plus-yardarm-length-ranging-visual-helm-owner-bridge-canonical-fleet",
+  "release_note": "Yardarm is sealed as one runtime. Before any Engine script executes, the boot gate verifies deployment manifest, app runtime BUILD_VERSION, service-worker build, and unique release seal. Mixed or partial builds stop at an explicit recovery surface and never paint the Engine."
 }
