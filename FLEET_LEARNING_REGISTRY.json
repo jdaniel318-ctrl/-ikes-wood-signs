@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-learning-registry-v1",
-  "build": "8.1.3",
-  "name": "Crossdeck",
+  "build": "8.1.4",
+  "name": "Incident Intelligence",
   "classes": {
     "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
     "capability": "Reusable primitive that must be adapted to mission/users/data/risk before adoption.",

@@ -1,4 +1,4 @@
-# Admiral Memory Ledger — 8.1.3
+# Admiral Memory Ledger — 8.1.4
 
 The shipyard now retains doctrine, calibration replay, automatic proving evidence, recovery history, and a decision brief.
 

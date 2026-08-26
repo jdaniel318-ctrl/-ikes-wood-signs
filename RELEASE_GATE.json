@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.1.3",
-  "release": "8.1.3",
+  "build": "8.1.4",
+  "release": "8.1.4",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -118,6 +118,6 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.1.3 Crossdeck: Fleet Learning Registry maps doctrine and reusable capabilities across canonical vessels without automatic business-specific propagation; final Known Good promotion remains manual.",
-  "candidate": "8.1.3"
+  "note": "8.1.4 Incident Intelligence: HOLDs are diagnosed to assertion level before Captain escalation; replay uses production species resolution; Known Good promotion remains manual.",
+  "candidate": "8.1.4"
 }

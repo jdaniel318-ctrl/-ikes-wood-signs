@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.1.3';
+  const BUILD_VERSION='8.1.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3956,7 +3956,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.1.3',
+    build:'8.1.4',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4090,9 +4090,9 @@
   }
   function admiralRunIkeCalibrationImage(img,label){
     const proven=ikeAnalyzePlankPixelsProven(img),lengthPixels=ikeAnalyzePlankPixelsLength(img);
-    const orientation=ikeOrientationEvidence(img,proven),species=ikeVisualSpeciesEvidence(img,proven),length=ikeLengthEvidenceFromGeometry(img,lengthPixels);
-    const speciesName=String(species?.speciesName||species?.label||species?.name||'');
-    return {label,orientation:orientation.orientation||'',orientationResolved:!!orientation.resolved,orientationScore:Number(orientation.score||0),speciesName,speciesResolved:!!species?.speciesResolved||speciesName==='Cedar',speciesScore:Number(species?.speciesScore||species?.score||0),lengthCandidateFeet:Number(length?.candidateFeet||0),lengthResolved:!!length?.resolved,lengthScore:Number(length?.score||0),lengthReason:length?.reason||'',shapeStability:Number(length?.shapeStability||0),backgroundSeparation:Number(length?.backgroundSeparation||0),grownSilhouetteRatio:Number(length?.grownSilhouetteRatio||length?.aspectRatio||0)};
+    const orientation=ikeOrientationEvidence(img,proven),visualSpecies=ikeVisualSpeciesEvidence(img,proven),species=ikeCombineSpeciesEvidence(visualSpecies,null),length=ikeLengthEvidenceFromGeometry(img,lengthPixels);
+    const speciesName=String(species?.speciesName||visualSpecies?.candidateName||visualSpecies?.label||visualSpecies?.name||'');
+    return {label,orientation:orientation.orientation||'',orientationResolved:!!orientation.resolved,orientationScore:Number(orientation.score||0),speciesName,speciesResolved:!!species?.speciesResolved,speciesScore:Number(species?.speciesScore||visualSpecies?.score||0),speciesReason:species?.reason||visualSpecies?.reason||'',speciesFamily:species?.family||visualSpecies?.family||'',visualSpeciesCandidate:visualSpecies?.candidateName||'',visualSpeciesScore:Number(visualSpecies?.score||0),lengthCandidateFeet:Number(length?.candidateFeet||0),lengthResolved:!!length?.resolved,lengthScore:Number(length?.score||0),lengthReason:length?.reason||'',shapeStability:Number(length?.shapeStability||0),backgroundSeparation:Number(length?.backgroundSeparation||0),grownSilhouetteRatio:Number(length?.grownSilhouetteRatio||length?.aspectRatio||0)};
   }
   async function admiralReplayKnownCalibrations(){
     const out={schema:'dark-sky-admiral-calibration-replay-v1',build:BUILD_VERSION,at:new Date().toISOString(),cases:[],protectedPass:true,lengthWatch:false};
@@ -4110,12 +4110,46 @@
     }catch(err){out.protectedPass=false;out.error=String(err?.message||err);}
     return out;
   }
+  function admiralDiagnoseCalibrationReplay(calibration){
+    if(!calibration)return null;
+    const rows=Array.isArray(calibration.cases)?calibration.cases:[];
+    const failedOrientation=rows.filter(r=>!r.orientationPass);
+    const failedSpecies=rows.filter(r=>!r.speciesPass);
+    const lengthWatch=rows.filter(r=>!r.lengthCandidatePass||!r.lengthResolved);
+    let category='none',title='Protected calibration replay clear',likelyCause='No protected detector regression detected.',recommendation='No shipyard repair is required.',captainRequired=false,severity='clear';
+    if(calibration.error){category='replay-runtime';title='Calibration replay could not run';likelyCause=calibration.error;recommendation='Repair the replay harness before changing any production detector.';severity='hold';}
+    else if(failedOrientation.length){category='orientation-detector';title='Protected orientation assertion failed';likelyCause='At least one retained calibration image no longer resolves to the expected orientation.';recommendation='Inspect the orientation detector path only; do not alter species or length until isolated.';severity='hold';}
+    else if(failedSpecies.length){
+      const highUnresolved=failedSpecies.every(r=>!r.speciesResolved&&Number(r.visualSpeciesScore||r.speciesScore)>=.84&&/cedar/i.test(String(r.visualSpeciesCandidate||r.speciesName||'')));
+      if(highUnresolved){category='species-resolution-harness';title='Species resolution harness failure';likelyCause='The visual classifier still produces a high-confidence Cedar candidate, but semantic resolution did not complete in replay.';recommendation='Repair the replay/species resolution handoff. Do not retrain or loosen the Cedar detector. No Captain plank retest is required yet.';}
+      else {category='species-detector';title='Protected species assertion failed';likelyCause='The retained calibration no longer resolves to the expected Cedar result.';recommendation='Inspect species evidence and resolution independently before modifying thresholds.';}
+      severity='hold';
+    } else if(lengthWatch.length){category='length-watch';title='Length remains experimental';likelyCause='Protected orientation and species are clear; stock-length geometry remains unresolved or outside calibrated bands.';recommendation='Continue length-only calibration without changing proven orientation/species behavior.';severity='watch';}
+    const expected=rows[0]?.expected||{};
+    const observations=rows.map(r=>({case:r.label,orientation:{expected:r.expected?.orientation||expected.orientation||'',observed:r.orientation||'unresolved',score:r.orientationScore,pass:!!r.orientationPass},species:{expected:r.expected?.species||expected.species||'',observed:r.speciesName||r.visualSpeciesCandidate||'unresolved',resolved:!!r.speciesResolved,score:r.speciesScore||r.visualSpeciesScore,pass:!!r.speciesPass,reason:r.speciesReason||''},length:{expected:r.expected?.lengthFeet||expected.lengthFeet||0,observed:r.lengthCandidateFeet||0,resolved:!!r.lengthResolved,score:r.lengthScore,pass:!!r.lengthCandidatePass,reason:r.lengthReason||''}}));
+    const incident={schema:'dark-sky-admiral-incident-v1',id:`AI-${String(BUILD_VERSION).replace(/\./g,'')}-${Date.now().toString(36).toUpperCase()}`,build:BUILD_VERSION,at:new Date().toISOString(),severity,category,title,likelyCause,recommendation,captainRequired,observations};
+    try{localStorage.setItem(`darkSkyAdmiralIncident:${BUILD_VERSION}`,JSON.stringify(incident));}catch(_){}
+    window.__darkSkyAdmiralIncident=incident;admiralLedgerRecord('incident-diagnosis',{incident});return incident;
+  }
+  function admiralIncidentClipboardText(incident=window.__darkSkyAdmiralIncident){
+    if(!incident)return '';
+    const lines=[`ADMIRAL INCIDENT ${incident.id}`,`Build: ${incident.build}`,`Severity: ${String(incident.severity).toUpperCase()}`,`Category: ${incident.category}`,`Diagnosis: ${incident.title}`,`Likely cause: ${incident.likelyCause}`,`Recommended action: ${incident.recommendation}`,`Captain required: ${incident.captainRequired?'YES':'NO'}`];
+    for(const o of incident.observations||[]){lines.push('',`Case: ${o.case}`,`Orientation: ${o.orientation.expected} -> ${o.orientation.observed} | ${o.orientation.pass?'PASS':'FAIL'} | ${Number(o.orientation.score||0).toFixed(2)}`,`Species: ${o.species.expected} -> ${o.species.observed} | ${o.species.pass?'PASS':'FAIL'} | ${Number(o.species.score||0).toFixed(2)} | ${o.species.reason||'no reason'}`,`Length: ${o.length.expected||'?'} ft -> ${o.length.observed||'unresolved'} | ${o.length.pass?'PASS':'WATCH'} | ${Number(o.length.score||0).toFixed(2)} | ${o.length.reason||'no reason'}`);}
+    return lines.join('\n');
+  }
+  async function copyAdmiralIncidentBrief(){
+    const text=admiralIncidentClipboardText();if(!text)return false;
+    try{await navigator.clipboard.writeText(text);return true;}catch(_){
+      const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(__){}ta.remove();return ok;
+    }
+  }
   function admiralBuildDecisionBrief(report,calibration){
     const prior=(()=>{try{return JSON.parse(localStorage.getItem('darkSkyAdmiralLastBrief')||'null');}catch(_){return null;}})();
     const passCount=(report?.checks||[]).filter(c=>c.state==='pass').length,holdCount=(report?.checks||[]).filter(c=>c.state==='fail').length,watchCount=(report?.checks||[]).filter(c=>c.state==='warn').length;
     const changed=prior?.build&&prior.build!==BUILD_VERSION?`Candidate advanced from ${prior.build} to ${BUILD_VERSION}.`:`Candidate ${BUILD_VERSION} auto-preflighted.`;
-    const needs=[];if(calibration?.lengthWatch)needs.push('Ike length calibration remains experimental; protected orientation/species are replayed automatically.');if(holdCount)needs.push(`${holdCount} doctrine/proving check(s) are on HOLD.`);if(watchCount)needs.push(`${watchCount} check(s) are on WATCH.`);if(!needs.length)needs.push('Only deliberate Known Good promotion remains manual.');
-    const brief={schema:'dark-sky-admiral-decision-brief-v1',build:BUILD_VERSION,at:new Date().toISOString(),changed,passed:`${passCount} checks passed; protected Ike orientation/species replay ${calibration?.protectedPass?'passed':'failed'}.`,needsCaptain:needs};
+    const incident=admiralDiagnoseCalibrationReplay(calibration);
+    const needs=[];if(incident?.severity==='hold'&&!incident.captainRequired)needs.push(`Shipyard action: ${incident.recommendation}`);else if(incident?.captainRequired)needs.push(incident.recommendation);if(calibration?.lengthWatch&&incident?.category!=='length-watch')needs.push('Ike length remains experimental WATCH evidence only.');if(watchCount&&!calibration?.lengthWatch)needs.push(`${watchCount} check(s) are on WATCH.`);if(!needs.length)needs.push('Only deliberate Known Good promotion remains manual.');
+    const brief={schema:'dark-sky-admiral-decision-brief-v1',build:BUILD_VERSION,at:new Date().toISOString(),changed,passed:`${passCount} checks passed. ${incident?.title||'Protected replay assessed.'}`,needsCaptain:needs,incident};
     try{localStorage.setItem('darkSkyAdmiralLastBrief',JSON.stringify(brief));}catch(_){ }
     const ledger=admiralLedgerRead();ledger.briefs=(Array.isArray(ledger.briefs)?ledger.briefs:[]).slice(-19);ledger.briefs.push(brief);admiralLedgerWrite(ledger);window.__darkSkyAdmiralDecisionBrief=brief;return brief;
   }
@@ -4130,7 +4164,8 @@
     add('admiral-doctrine','Admiral Release Doctrine registry',doctrine?.doctrineVersion===2?'pass':'fail',doctrine?.doctrineVersion===2?`${doctrine.principles.length} fleet principles and ${doctrine.learned.length} learned lessons retained for build ${BUILD_VERSION}.`:'Admiral release doctrine registry could not be retained.');
     add('detector-independence','Ike detector independence',doctrinePreflight.detectorIndependence?'pass':'fail',doctrinePreflight.detectorIndependence?'Proven orientation/species detectors are isolated from the experimental length pipeline.':'Experimental length segmentation can still suppress proven visual detectors.');
     const calibrationReplay=await admiralReplayKnownCalibrations();
-    add('known-calibration-replay','Known Ike calibration replay',calibrationReplay.protectedPass?(calibrationReplay.lengthWatch?'warn':'pass'):'fail',calibrationReplay.protectedPass?(calibrationReplay.lengthWatch?'Protected Horizontal + Cedar cases replayed cleanly; length remains experimental and retained as WATCH evidence.':'Known 2 ft Cedar calibration replay cleared protected and experimental expectations.'):`Known calibration replay regressed protected behavior: ${calibrationReplay.error||'orientation/species mismatch'}.`);
+    const calibrationIncident=admiralDiagnoseCalibrationReplay(calibrationReplay);
+    add('known-calibration-replay','Known Ike calibration replay',calibrationReplay.protectedPass?(calibrationReplay.lengthWatch?'warn':'pass'):'fail',calibrationReplay.protectedPass?(calibrationReplay.lengthWatch?'Protected Horizontal + Cedar cases replayed cleanly; length remains experimental and retained as WATCH evidence.':'Known 2 ft Cedar calibration replay cleared protected and experimental expectations.'):`${calibrationIncident?.title||'Protected calibration replay failed'}. ${calibrationIncident?.recommendation||''}`);
     const lastRecovery=admiralLastRecovery();
     add('release-recovery-history','Last release recovery','pass',lastRecovery?.ok===true?`Last clean recovery completed ${new Date(lastRecovery.at).toLocaleString()} for build ${lastRecovery.build}.`:'No retained clean-release recovery is required for this candidate.','check');
     const fleetLearning=persistFleetLearningRegistry();
@@ -4335,12 +4370,15 @@
       <article class="proving-release-card ${isKnownGood?'known-good':''}"><small>RELEASE ANCHOR</small><strong>${escapeHtml(knownGood)}</strong><p>${releaseCopy}</p><span>${isKnownGood?'Current release':'Candidate'} <b>${escapeHtml(BUILD_VERSION)}</b></span></article>`;
     }
     const brief=report.admiralBrief||admiralBuildDecisionBrief(report,report.calibrationReplay||window.__darkSkyAdmiralCalibrationReplay);
-    host.innerHTML=`<section class="admiral-auto-brief"><div><small>ADMIRAL AUTO BRIEF</small><strong>What changed</strong><p>${escapeHtml(brief.changed)}</p></div><div><small>AUTOMATIC REPLAY</small><strong>What passed</strong><p>${escapeHtml(brief.passed)}</p></div><div><small>CAPTAIN JUDGMENT</small><strong>What needs you</strong><p>${escapeHtml((brief.needsCaptain||[]).join(' '))}</p></div></section><div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
+    const incident=brief.incident||window.__darkSkyAdmiralIncident;
+    const incidentHtml=incident&&incident.severity!=='clear'?`<section class="admiral-incident ${escapeHtml(incident.severity)}"><header><div><small>ADMIRAL INCIDENT • ${escapeHtml(incident.id)}</small><strong>${escapeHtml(incident.title)}</strong></div><b>${escapeHtml(String(incident.severity).toUpperCase())}</b></header><div class="admiral-incident-grid"><div><small>LIKELY CAUSE</small><p>${escapeHtml(incident.likelyCause)}</p></div><div><small>RECOMMENDED ACTION</small><p>${escapeHtml(incident.recommendation)}</p></div><div><small>ADMIRAL NEEDED?</small><p>${incident.captainRequired?'YES — Captain judgment required.':'NO — shipyard can investigate before asking for a manual retest.'}</p></div></div><div class="admiral-assertions">${(incident.observations||[]).map(o=>`<article><strong>${escapeHtml(o.case)}</strong><span>Orientation: ${escapeHtml(o.orientation.expected)} → ${escapeHtml(o.orientation.observed)} • ${o.orientation.pass?'PASS':'FAIL'} • ${Number(o.orientation.score||0).toFixed(2)}</span><span>Species: ${escapeHtml(o.species.expected)} → ${escapeHtml(o.species.observed)} • ${o.species.pass?'PASS':'FAIL'} • ${Number(o.species.score||0).toFixed(2)}</span><span>Length: ${escapeHtml(String(o.length.expected||'?'))} ft → ${escapeHtml(o.length.observed?String(o.length.observed)+' ft':'unresolved')} • ${o.length.pass?'PASS':'WATCH'} • ${Number(o.length.score||0).toFixed(2)}</span></article>`).join('')}</div><button id="copyAdmiralBriefBtn" type="button" class="secondary-btn small">COPY ADMIRAL BRIEF</button><span id="copyAdmiralBriefState" class="helper"></span></section>`:'';
+    host.innerHTML=`${incidentHtml}<section class="admiral-auto-brief"><div><small>ADMIRAL AUTO BRIEF</small><strong>What changed</strong><p>${escapeHtml(brief.changed)}</p></div><div><small>AUTOMATIC REPLAY</small><strong>What passed</strong><p>${escapeHtml(brief.passed)}</p></div><div><small>CAPTAIN JUDGMENT</small><strong>What needs you</strong><p>${escapeHtml((brief.needsCaptain||[]).join(' '))}</p></div></section><div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
       <details class="proving-evidence"><summary>VIEW ENGINEERING EVIDENCE</summary><div class="admiral-readiness-grid">${report.checks.map(c=>`<article class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div></details>
       <div class="admiral-readiness-actions"><button id="admiralRerunBtn" type="button" class="primary-btn small">RUN PROVING GROUND</button><button id="admiralRecoveryBtn" type="button" class="secondary-btn small">CREATE RECOVERY SNAPSHOT</button><button id="admiralReportBtn" type="button" class="secondary-btn small">DOWNLOAD EVIDENCE REPORT</button></div>`;
     $('admiralRerunBtn')?.addEventListener('click',()=>renderAdmiralReadiness({announce:true}));
     $('admiralRecoveryBtn')?.addEventListener('click',exportFleetRecoverySnapshot);
     $('admiralReportBtn')?.addEventListener('click',()=>downloadAdmiralReadinessReport(report));
+    $('copyAdmiralBriefBtn')?.addEventListener('click',async()=>{const ok=await copyAdmiralIncidentBrief();const st=$('copyAdmiralBriefState');if(st)st.textContent=ok?'Admiral brief copied — paste directly into chat.':'Copy failed — use Download Evidence Report as fallback.';});
     $('provingNextBtn')?.addEventListener('click',()=>{
       if(next){document.querySelector(`[data-proving-voyage="${next.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});return;}
       if(isKnownGood)return;

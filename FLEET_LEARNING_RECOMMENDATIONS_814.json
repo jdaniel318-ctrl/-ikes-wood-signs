@@ -1,0 +1,87 @@
+{
+  "schema": "dark-sky-fleet-learning-recommendations-v1",
+  "build": "8.1.4",
+  "generatedAt": "2026-08-25T23:45:00-04:00",
+  "rule": "Recommendations are review targets, not automatic changes.",
+  "vessels": {
+    "IKE": {
+      "retain": [
+        "confidence-aware-visual",
+        "owner-controlled-rules",
+        "visual-source-of-truth",
+        "readable-feedback",
+        "proof-source-commissioning",
+        "three-watch-authority",
+        "atomic-release"
+      ],
+      "local_only": [
+        "wood-species-identification",
+        "pixel-length-calibration"
+      ]
+    },
+    "LP": {
+      "retain": [
+        "service-address-proof",
+        "requested-timing",
+        "owner-controlled-rules",
+        "readable-feedback",
+        "proof-source-commissioning",
+        "three-watch-authority",
+        "atomic-release"
+      ],
+      "consider": [
+        "confidence-aware-visual"
+      ]
+    },
+    "SIG": {
+      "recommended": [
+        "service-address-proof",
+        "requested-timing",
+        "confidence-aware-visual",
+        "owner-controlled-rules",
+        "readable-feedback",
+        "proof-source-commissioning",
+        "three-watch-authority",
+        "atomic-release"
+      ],
+      "adapter_note": "Use damage/property evidence and restoration workflow; do not inherit plumbing wording or Ike pricing logic."
+    },
+    "BBS": {
+      "recommended": [
+        "confidence-aware-visual",
+        "visual-source-of-truth",
+        "owner-controlled-rules",
+        "readable-feedback",
+        "proof-source-commissioning",
+        "three-watch-authority",
+        "atomic-release"
+      ],
+      "adapter_note": "Apply to flower/arrangement evidence only; no wood or restoration taxonomy."
+    },
+    "MUG": {
+      "recommended": [
+        "confidence-aware-visual",
+        "visual-source-of-truth",
+        "owner-controlled-rules",
+        "readable-feedback",
+        "proof-source-commissioning",
+        "three-watch-authority",
+        "atomic-release"
+      ],
+      "adapter_note": "Apply to mug imagery/layout only; no Ike plank rules."
+    },
+    "GRZ": {
+      "recommended": [
+        "owner-controlled-rules",
+        "readable-feedback",
+        "proof-source-commissioning",
+        "three-watch-authority",
+        "atomic-release"
+      ],
+      "consider": [
+        "confidence-aware-visual"
+      ],
+      "adapter_note": "Visual identification only if a product/equipment workflow proves it useful."
+    }
+  }
+}
