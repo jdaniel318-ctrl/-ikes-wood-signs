@@ -1,3 +1,21 @@
+# Dark Sky 8.1.0 — Plumb Line
+
+- Replaced one-axis structural filtering with cross-erosion to break skinny warm bridges into clutter.
+- Added border-derived background modeling and bounded core-to-sapwood silhouette growth.
+- Added `shapeStability`, `backgroundSeparation`, and `grownSilhouetteRatio` to internal length evidence.
+- Removed camera height/frame occupancy as a confidence contract.
+- Kept 2 ft as the only real-stock-calibrated one-photo class; 4/6 ft remain provisional.
+- Preserved Root Keel atomic release integrity and visual/customer safeguards.
+
+# Dark Sky 8.0.9 — Keel Gauge
+
+- Replaced warm-background-prone plank segmentation with saturated-core silhouette extraction.
+- Chooses the best centered/elongated/non-border wood component instead of the largest warm component.
+- Pads the trusted core to include pale sapwood without measuring the countertop.
+- Added real-stock calibration coverage: 2 ft can auto-resolve; 4/6 ft remain conservative until known examples exist.
+- Added internal length evidence telemetry for scientific tuning instead of blind threshold changes.
+- Preserves Root Keel atomic release, Visual Helm rotation, Cedar sanity guards, Owner pricing, and Ike visual production review.
+
 # Dark Sky 8.0.8 — Yardarm — Root Keel
 
 - Flattened all current release media to repository root so iPad GitHub web upload cannot silently omit nested assets.

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.0.8';
+  const BUILD_VERSION = '8.1.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -9999,66 +9999,142 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeAnalyzePlankPixels(img){
-    const maxW=220,scale=Math.min(1,maxW/Math.max(1,img.naturalWidth||img.width));
-    const w=Math.max(60,Math.round((img.naturalWidth||img.width)*scale));
-    const h=Math.max(40,Math.round((img.naturalHeight||img.height)*scale));
+    const maxW=240,scale=Math.min(1,maxW/Math.max(1,img.naturalWidth||img.width));
+    const w=Math.max(64,Math.round((img.naturalWidth||img.width)*scale));
+    const h=Math.max(44,Math.round((img.naturalHeight||img.height)*scale));
     const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
     const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,w,h);
-    const data=ctx.getImageData(0,0,w,h).data,mask=new Uint8Array(w*h),yellow=new Uint8Array(w*h);
+    const data=ctx.getImageData(0,0,w,h).data;
+
+    // 8.1.0 PLUMB LINE: learn the scene before trying to measure the plank.
+    // A single photo cannot provide survey-grade absolute scale by itself, so our
+    // job is to isolate the actual plank silhouette reliably and classify only
+    // against Ike's calibrated stock families. Camera distance is intentionally
+    // not a confidence input.
+    const border=[];
+    const bx=Math.max(2,Math.round(w*.08)),by=Math.max(2,Math.round(h*.08));
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+      if(x<bx||x>=w-bx||y<by||y>=h-by){const i=(y*w+x)*4;border.push([data[i],data[i+1],data[i+2]]);}
+    }
+    function medianChannel(k){const a=border.map(v=>v[k]).sort((a,b)=>a-b);return a[(a.length/2)|0]||0;}
+    const bg=[medianChannel(0),medianChannel(1),medianChannel(2)];
+    const permissive=new Uint8Array(w*h),core=new Uint8Array(w*h),growable=new Uint8Array(w*h),yellow=new Uint8Array(w*h);
+    let coreBgDistSum=0,coreBgDistCount=0;
     for(let i=0,p=0;i<data.length;i+=4,p++){
       const r=data[i],g=data[i+1],b=data[i+2],hsv=ikeRgbToHsv(r,g,b);
-      // 8.0.7 Rangefinder: segment the whole wood body, including pale sapwood.
-      // The previous dark-brown-only mask could isolate a vertical heartwood patch,
-      // which then corrupted orientation and species evidence. Low-saturation white/
-      // gray countertop stays excluded while cream sapwood remains part of the plank.
-      const woodBody=(hsv.h>=5&&hsv.h<=82&&hsv.s>=.075&&hsv.v>=.10&&hsv.v<=.94&&r>=b*.94);
-      if(woodBody)mask[p]=1;
+      const warmHue=hsv.h>=5&&hsv.h<=82&&r>=b*.92;
+      const bgDist=Math.hypot(r-bg[0],g-bg[1],b-bg[2]);
+      if(warmHue&&hsv.s>=.10&&hsv.v>=.08&&hsv.v<=.96)permissive[p]=1;
+      if(warmHue&&hsv.s>=.21&&hsv.v>=.08&&hsv.v<=.94){core[p]=1;coreBgDistSum+=bgDist;coreBgDistCount++;}
+      // Pale sapwood is allowed to join the silhouette only when it is visibly
+      // different from the learned border/background. This avoids the old warm
+      // countertop contamination while recovering the true live-edge dimensions.
+      if(warmHue&&hsv.v>=.08&&hsv.v<=.97&&(hsv.s>=.13||bgDist>=34))growable[p]=1;
       if(hsv.h>=35&&hsv.h<=70&&hsv.s>=.35&&hsv.v>=.45)yellow[p]=1;
     }
-    // Remove thin horizontal/vertical clutter (for example a tape measure) before
-    // choosing the plank candidate. Requiring vertical thickness makes the broad
-    // board body win over narrow reference objects while keeping this local-only.
-    const structural=new Uint8Array(mask.length),vr=3;
-    for(let y=vr;y<h-vr;y++)for(let x=0;x<w;x++){
-      const i=y*w+x;if(!mask[i])continue;let solid=1;
-      for(let d=1;d<=vr;d++){if(!mask[(y-d)*w+x]||!mask[(y+d)*w+x]){solid=0;break;}}
-      if(solid)structural[i]=1;
+    function structuralMask(source,vr){
+      const out=new Uint8Array(source.length);
+      for(let y=vr;y<h-vr;y++)for(let x=vr;x<w-vr;x++){
+        const i=y*w+x;if(!source[i])continue;let solid=1;
+        // Cross erosion rejects skinny warm bridges (arms, marble veins, clutter)
+        // that previously allowed unrelated scene regions to join the plank.
+        for(let d=1;d<=vr;d++){
+          if(!source[(y-d)*w+x]||!source[(y+d)*w+x]||!source[y*w+(x-d)]||!source[y*w+(x+d)]){solid=0;break;}
+        }
+        if(solid)out[i]=1;
+      }
+      return out;
     }
-    let comp=ikeLargestComponent(structural,w,h);
-    if(comp.length<Math.max(180,w*h*.02))comp=ikeLargestComponent(mask,w,h);
-    if(comp.length<Math.max(180,w*h*.02))return null;
-    const cm=new Uint8Array(w*h);let minX=w,minY=h,maxX=0,maxY=0;
-    comp.forEach(i=>{cm[i]=1;const x=i%w,y=(i/w)|0;minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);});
-    const bw=Math.max(1,maxX-minX+1),bh=Math.max(1,maxY-minY+1),bboxArea=bw*bh,fill=comp.length/bboxArea;
-    const eroded=ikeErodeMask(cm,w,h,Math.max(2,Math.round(Math.min(bw,bh)*.045)));
+    function components(source){
+      const seen=new Uint8Array(source.length),rows=[];
+      const dirs=[-1,1,-w,w,-w-1,-w+1,w-1,w+1];
+      for(let i=0;i<source.length;i++){
+        if(!source[i]||seen[i])continue;
+        const q=[i],comp=[];seen[i]=1;
+        let minX=w,minY=h,maxX=0,maxY=0,sx=0,sy=0;
+        for(let qi=0;qi<q.length;qi++){
+          const cur=q[qi],x=cur%w,y=(cur/w)|0;comp.push(cur);sx+=x;sy+=y;
+          minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);
+          for(const d of dirs){const n=cur+d;if(n<0||n>=source.length||seen[n]||!source[n])continue;const nx=n%w,ny=(n/w)|0;if(Math.abs(nx-x)>1||Math.abs(ny-y)>1)continue;seen[n]=1;q.push(n);}
+        }
+        const bw=Math.max(1,maxX-minX+1),bh=Math.max(1,maxY-minY+1),cx=sx/Math.max(1,comp.length),cy=sy/Math.max(1,comp.length);
+        const edgeTouch=minX<=1||minY<=1||maxX>=w-2||maxY>=h-2;
+        const elong=Math.max(bw,bh)/Math.max(1,Math.min(bw,bh));
+        const centerDist=Math.hypot(cx-w/2,cy-h/2)/Math.max(w,h);
+        let score=comp.length;
+        score*=Math.max(.35,1-centerDist*1.35);
+        if(elong>=1.55)score*=1.35; else if(elong<1.25)score*=.58;
+        if(edgeTouch)score*=.20;
+        rows.push({comp,minX,minY,maxX,maxY,bw,bh,cx,cy,edgeTouch,elong,score});
+      }
+      return rows.sort((a,b)=>b.score-a.score);
+    }
+    let mode='saturated-core',picked=components(structuralMask(core,2))[0]||null;
+    if(!picked||picked.comp.length<Math.max(110,w*h*.010)||picked.elong<1.30){
+      mode='permissive-fallback';picked=components(structuralMask(permissive,3))[0]||null;
+    }
+    if(!picked||picked.comp.length<Math.max(110,w*h*.010))return null;
+
+    // Guided silhouette growth: start from the trusted core, then admit neighboring
+    // sapwood only inside a bounded envelope. The growth cannot jump across the
+    // scene into the countertop or side clutter.
+    const seed=new Uint8Array(w*h);picked.comp.forEach(i=>seed[i]=1);
+    const envPadX=Math.max(3,Math.round(picked.bw*.16)),envPadY=Math.max(3,Math.round(picked.bh*.22));
+    const ex0=Math.max(0,picked.minX-envPadX),ex1=Math.min(w-1,picked.maxX+envPadX),ey0=Math.max(0,picked.minY-envPadY),ey1=Math.min(h-1,picked.maxY+envPadY);
+    const grown=new Uint8Array(w*h),queue=picked.comp.slice();picked.comp.forEach(i=>grown[i]=1);
+    const dirs=[-1,1,-w,w,-w-1,-w+1,w-1,w+1];
+    for(let qi=0;qi<queue.length;qi++){
+      const cur=queue[qi],x=cur%w,y=(cur/w)|0;
+      for(const d of dirs){
+        const n=cur+d;if(n<0||n>=grown.length||grown[n]||!growable[n])continue;
+        const nx=n%w,ny=(n/w)|0;if(Math.abs(nx-x)>1||Math.abs(ny-y)>1||nx<ex0||nx>ex1||ny<ey0||ny>ey1)continue;
+        grown[n]=1;queue.push(n);
+      }
+    }
+    const grownRows=components(grown),g=grownRows.find(r=>r.comp.some(i=>seed[i]))||grownRows[0]||picked;
+    const rawCoreRatio=Math.max(picked.bw,picked.bh)/Math.max(1,Math.min(picked.bw,picked.bh));
+    const grownRatio=Math.max(g.bw,g.bh)/Math.max(1,Math.min(g.bw,g.bh));
+    const shapeStability=Math.max(0,1-Math.abs(grownRatio-rawCoreRatio)/Math.max(.5,rawCoreRatio));
+    const backgroundSeparation=coreBgDistCount?coreBgDistSum/coreBgDistCount:0;
+
+    const padX=Math.max(1,Math.round(g.bw*.018)),padY=Math.max(1,Math.round(g.bh*.035));
+    const minX=Math.max(0,g.minX-padX),maxX=Math.min(w-1,g.maxX+padX);
+    const minY=Math.max(0,g.minY-padY),maxY=Math.min(h-1,g.maxY+padY);
+    const bw=Math.max(1,maxX-minX+1),bh=Math.max(1,maxY-minY+1);
+    const coreFill=g.comp.length/Math.max(1,g.bw*g.bh);
+    const cm=new Uint8Array(w*h);g.comp.forEach(i=>{cm[i]=1;});
+    const eroded=ikeErodeMask(cm,w,h,Math.max(2,Math.round(Math.min(g.bw,g.bh)*.04)));
     let rect=ikeLargestRectangle(eroded,w,h);
-    if(rect.area<Math.max(80,bboxArea*.08)){
-      const insetX=Math.round(bw*.12),insetY=Math.round(bh*.16);
-      rect={x:minX+insetX,y:minY+insetY,w:Math.max(1,bw-insetX*2),h:Math.max(1,bh-insetY*2),area:1};
+    if(rect.area<Math.max(60,g.bw*g.bh*.06)){
+      const insetX=Math.round(g.bw*.12),insetY=Math.round(g.bh*.16);
+      rect={x:g.minX+insetX,y:g.minY+insetY,w:Math.max(1,g.bw-insetX*2),h:Math.max(1,g.bh-insetY*2),area:1};
     }
-    const obstacleDetected=fill<.86;
+    const obstacleDetected=coreFill<.70;
     let yellowCount=0,yellowMinX=w,yellowMaxX=0,yellowMinY=h,yellowMaxY=0;
     for(let i=0;i<yellow.length;i++)if(yellow[i]){yellowCount++;const x=i%w,y=(i/w)|0;yellowMinX=Math.min(yellowMinX,x);yellowMaxX=Math.max(yellowMaxX,x);yellowMinY=Math.min(yellowMinY,y);yellowMaxY=Math.max(yellowMaxY,y);}
     const referenceCandidate=yellowCount>w*h*.003&&(yellowMaxX-yellowMinX)>w*.25&&(yellowMaxY-yellowMinY)<h*.28;
-    // PCA over the detected plank body gives a long-axis orientation that is much
-    // harder to fool than a noisy bounding box. It also supplies an elongation
-    // sanity check before orientation can be called final.
-    let mx=0,my=0;for(const i of comp){mx+=i%w;my+=(i/w)|0;}mx/=Math.max(1,comp.length);my/=Math.max(1,comp.length);
-    let xx=0,yy=0,xy=0;for(const i of comp){const dx=(i%w)-mx,dy=((i/w)|0)-my;xx+=dx*dx;yy+=dy*dy;xy+=dx*dy;}
-    xx/=Math.max(1,comp.length);yy/=Math.max(1,comp.length);xy/=Math.max(1,comp.length);
+
+    let mx=0,my=0;for(const i of g.comp){mx+=i%w;my+=(i/w)|0;}mx/=Math.max(1,g.comp.length);my/=Math.max(1,g.comp.length);
+    let xx=0,yy=0,xy=0;for(const i of g.comp){const dx=(i%w)-mx,dy=((i/w)|0)-my;xx+=dx*dx;yy+=dy*dy;xy+=dx*dy;}
+    xx/=Math.max(1,g.comp.length);yy/=Math.max(1,g.comp.length);xy/=Math.max(1,g.comp.length);
     const trace=xx+yy,disc=Math.sqrt(Math.max(0,(xx-yy)*(xx-yy)+4*xy*xy));
     const l1=Math.max(.0001,(trace+disc)/2),l2=Math.max(.0001,(trace-disc)/2);
     const angle=.5*Math.atan2(2*xy,xx-yy),elongation=Math.sqrt(l1/l2);
     const axisOrientation=Math.abs(Math.cos(angle))>=Math.abs(Math.sin(angle))?'Horizontal':'Vertical';
     const bboxOrientation=bw>=bh?'Horizontal':'Vertical';
-    const orientationResolved=elongation>=1.45 && (axisOrientation===bboxOrientation || Math.max(bw,bh)/Math.max(1,Math.min(bw,bh))>=1.75);
+    const orientationResolved=elongation>=1.42 && (axisOrientation===bboxOrientation || Math.max(bw,bh)/Math.max(1,Math.min(bw,bh))>=1.72);
     return {
-      contour:{x:minX/w,y:minY/h,w:bw/w,h:bh/h,fill:Number(fill.toFixed(3))},
-      usableRegion:{x:rect.x/w,y:rect.y/h,w:rect.w/w,h:rect.h/h,source:'largest-safe-rectangle'},
+      contour:{x:minX/w,y:minY/h,w:bw/w,h:bh/h,fill:Number(coreFill.toFixed(3))},
+      usableRegion:{x:rect.x/w,y:rect.y/h,w:rect.w/w,h:rect.h/h,source:'plumb-line-grown-silhouette-safe-rectangle'},
       obstacleDetected,referenceCandidate,
       axisOrientation,bboxOrientation,orientationResolved,
       axisAngleDeg:Number((angle*180/Math.PI).toFixed(1)),elongation:Number(elongation.toFixed(2)),
-      confidence:comp.length>w*h*.07?'geometry-clear':'geometry-probable'
+      segmentationMode:mode==='saturated-core'?'background-aware-core-growth':mode,
+      coreSaturationGate:.21,rawCoreRatio:Number(rawCoreRatio.toFixed(2)),grownSilhouetteRatio:Number(grownRatio.toFixed(2)),
+      shapeStability:Number(shapeStability.toFixed(2)),backgroundSeparation:Number(backgroundSeparation.toFixed(1)),
+      backgroundRgb:bg.map(v=>Math.round(v)),growthEnvelope:{x:ex0/w,y:ey0/h,w:(ex1-ex0+1)/w,h:(ey1-ey0+1)/h},
+      coreBounds:{x:picked.minX/w,y:picked.minY/h,w:picked.bw/w,h:picked.bh/h},
+      confidence:(mode==='saturated-core'&&g.comp.length>w*h*.03&&g.elong>=1.42&&shapeStability>=.55)?'geometry-clear':'geometry-probable'
     };
   }
 
@@ -10217,63 +10293,56 @@ The full order and approved media remain stored with this project.`;
   }
 
   function ikeLengthEvidenceFromGeometry(img,analysis){
-    // 8.0.8 YARDARM — inventory-ratio ranging.
-    // We deliberately do not claim that raw pixels are an absolute ruler. Ike's
-    // customer experience is constrained to a small set of rack lengths, so the
-    // plank's long-axis / short-axis pixel ratio becomes a strong classification
-    // signal when the entire plank is framed and perspective is sane. The result
-    // is still retained as visual evidence and remains subject to Ike's final
-    // visual production review.
+    // 8.1.0 PLUMB LINE — background-aware silhouette classification.
+    // Absolute physical length cannot be proven from unreferenced monocular pixels
+    // alone. We therefore classify only against Ike's calibrated stock families,
+    // require a stable isolated silhouette, and keep Ike's final visual review.
     const contour=analysis?.contour,iw=Number(img?.naturalWidth||img?.width||0),ih=Number(img?.naturalHeight||img?.height||0);
-    if(!contour||!iw||!ih)return {resolved:false,confidence:'low',score:.15,feet:0,candidateFeet:0,needsSecondPhoto:true,reviewRequired:true,reason:'no-usable-contour'};
+    if(!contour||!iw||!ih)return {resolved:false,confidence:'low',score:.12,feet:0,candidateFeet:0,needsSecondPhoto:true,reviewRequired:true,reason:'no-usable-silhouette'};
     const pw=Math.max(1,contour.w*iw),ph=Math.max(1,contour.h*ih);
     const longPx=Math.max(pw,ph),shortPx=Math.max(1,Math.min(pw,ph)),ratio=longPx/shortPx;
     const edgeMargin=Math.min(contour.x,contour.y,1-(contour.x+contour.w),1-(contour.y+contour.h));
-    const fullyFramed=edgeMargin>.003;
+    const fullyFramed=edgeMargin>.0025;
     const fill=Number(contour.fill||0),elongation=Number(analysis?.elongation||ratio);
-    const orientationStable=elongation>=1.45;
+    const orientationStable=elongation>=1.42;
     const geometryClear=analysis?.confidence==='geometry-clear';
+    const shapeStability=Number(analysis?.shapeStability||0);
+    const backgroundSeparation=Number(analysis?.backgroundSeparation||0);
+    const growthTrusted=String(analysis?.segmentationMode||'')==='background-aware-core-growth';
 
-    // Calibrated against Ike's real live-edge stock proportions. These are
-    // classifier bands, not physical inch conversions. A 2 ft live-edge blank is
-    // commonly much wider than the old nominal 8.75 in assumption, which made the
-    // previous model systematically underestimate length. Boundary zones remain
-    // deliberately conservative and request another view instead of forcing a call.
+    // Real-stock calibration currently exists only for the known 2 ft cedar blank.
+    // 4/6 ft remain provisional until physical examples are captured. Bands are
+    // classification priors, never a claim that pixels equal inches.
     const bands=[
-      {feet:2,min:1.45,max:3.20,coreMin:1.65,coreMax:2.95,center:2.28},
-      {feet:4,min:3.05,max:5.45,coreMin:3.45,coreMax:5.05,center:4.25},
-      {feet:6,min:5.20,max:9.50,coreMin:5.85,coreMax:8.70,center:6.75}
+      {feet:2,min:1.48,max:3.18,coreMin:1.62,coreMax:2.92,center:2.22,calibrated:true},
+      {feet:4,min:3.05,max:5.45,coreMin:3.45,coreMax:5.05,center:4.25,calibrated:false},
+      {feet:6,min:5.20,max:9.50,coreMin:5.85,coreMax:8.70,center:6.75,calibrated:false}
     ];
     const matches=bands.filter(b=>ratio>=b.min&&ratio<=b.max);
     let band=matches.length===1?matches[0]:null;
-    if(!band&&matches.length>1){
-      // In intentional overlap zones choose the nearer center, but keep the
-      // confidence capped so one more view is required unless separation is clear.
-      band=matches.slice().sort((a,b)=>Math.abs(ratio-a.center)-Math.abs(ratio-b.center))[0];
-    }
+    if(!band&&matches.length>1)band=matches.slice().sort((a,b)=>Math.abs(ratio-a.center)-Math.abs(ratio-b.center))[0];
     if(!band){
-      return {resolved:false,confidence:'low',score:.22,feet:0,candidateFeet:0,estimatedFeet:0,aspectRatio:Number(ratio.toFixed(2)),longPixels:Math.round(longPx),shortPixels:Math.round(shortPx),needsSecondPhoto:true,reviewRequired:true,reason:'aspect-ratio-outside-stock-bands'};
+      return {resolved:false,confidence:'low',score:.18,feet:0,candidateFeet:0,estimatedFeet:0,aspectRatio:Number(ratio.toFixed(2)),longPixels:Math.round(longPx),shortPixels:Math.round(shortPx),needsSecondPhoto:true,reviewRequired:true,shapeStability,backgroundSeparation,reason:'silhouette-ratio-outside-stock-bands'};
     }
 
-    const insideCore=ratio>=band.coreMin&&ratio<=band.coreMax;
-    const overlap=matches.length>1;
-    const half=Math.max(.25,(band.max-band.min)/2);
-    const centerDistance=Math.abs(ratio-band.center)/half;
+    const insideCore=ratio>=band.coreMin&&ratio<=band.coreMax,overlap=matches.length>1;
+    const half=Math.max(.25,(band.max-band.min)/2),centerDistance=Math.abs(ratio-band.center)/half;
     const boundaryDistance=Math.min(ratio-band.min,band.max-ratio);
-    let score=.58 + Math.max(0,.20*(1-Math.min(1,centerDistance)));
-    if(insideCore)score+=.10;
-    if(fullyFramed)score+=.06; else score-=.16;
+    let score=.54 + Math.max(0,.18*(1-Math.min(1,centerDistance)));
+    if(insideCore)score+=.11;
+    if(fullyFramed)score+=.05; else score-=.16;
     if(orientationStable)score+=.05; else score-=.12;
-    if(geometryClear)score+=.03;
-    if(fill>.32)score+=.02;
+    if(geometryClear)score+=.04;
+    if(growthTrusted)score+=.05;
+    if(shapeStability>=.72)score+=.06; else if(shapeStability<.50)score-=.18;
+    if(backgroundSeparation>=42)score+=.03; else if(backgroundSeparation<24)score-=.08;
+    if(fill>.26&&fill<.88)score+=.02;
     if(overlap)score-=.18;
-    score=Math.max(.10,Math.min(.97,score));
+    score=Math.max(.08,Math.min(.98,score));
 
-    // The 2 ft class receives a slightly more permissive one-photo gate because
-    // its aspect-ratio band is far from normal 4/6 ft stock and Ike still performs
-    // a final visual check before production. Longer boards need stronger framing.
-    const gate=band.feet===2?.78:.84;
-    const high=score>=gate&&insideCore&&fullyFramed&&orientationStable&&!overlap&&boundaryDistance>=.12;
+    const calibrationCoverage=band.calibrated?'real-stock-calibrated':'provisional-needs-real-stock-example';
+    const segmentationTrusted=growthTrusted&&shapeStability>=.55&&backgroundSeparation>=22;
+    const high=band.feet===2&&band.calibrated&&score>=.80&&insideCore&&fullyFramed&&orientationStable&&segmentationTrusted&&!overlap&&boundaryDistance>=.10;
     const medium=score>=.62;
     return {
       resolved:high,
@@ -10282,10 +10351,12 @@ The full order and approved media remain stored with this project.`;
       estimatedFeet:Number(band.feet),aspectRatio:Number(ratio.toFixed(2)),
       aspectBand:`${band.min.toFixed(2)}-${band.max.toFixed(2)}`,
       aspectCore:`${band.coreMin.toFixed(2)}-${band.coreMax.toFixed(2)}`,
-      boundaryDistance:Number(boundaryDistance.toFixed(2)),
+      boundaryDistance:Number(boundaryDistance.toFixed(2)),calibrationCoverage,
+      segmentationMode:String(analysis?.segmentationMode||''),rawCoreRatio:Number(analysis?.rawCoreRatio||0),grownSilhouetteRatio:Number(analysis?.grownSilhouetteRatio||0),
+      shapeStability,backgroundSeparation,
       longPixels:Math.round(longPx),shortPixels:Math.round(shortPx),needsSecondPhoto:!high,
       reviewRequired:high,verificationPolicy:high?'ike-visual-order-review':'not-resolved',
-      reason:high?'yardarm-stock-ratio-high-confidence':(medium?'yardarm-stock-ratio-needs-more-evidence':'yardarm-stock-ratio-not-safe-enough')
+      reason:high?'plumb-line-calibrated-silhouette-high-confidence':(medium?'plumb-line-silhouette-needs-more-evidence':'plumb-line-silhouette-not-safe-enough')
     };
   }
 
@@ -10360,6 +10431,9 @@ The full order and approved media remain stored with this project.`;
       const species=ikeCombineSpeciesEvidence(primaryEvidence,prior.secondarySpeciesEvidence||null);
       const primaryLengthEvidence=ikeLengthEvidenceFromGeometry(img,pixelAnalysis);
       const length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
+      const lengthTelemetry={build:BUILD_VERSION,projectId:activeProjectId,segmentationMode:pixelAnalysis?.segmentationMode||'',rawCoreRatio:Number(pixelAnalysis?.rawCoreRatio||0),contourRatio:primaryLengthEvidence?.aspectRatio||0,longPixels:primaryLengthEvidence?.longPixels||0,shortPixels:primaryLengthEvidence?.shortPixels||0,candidateFeet:primaryLengthEvidence?.candidateFeet||0,score:primaryLengthEvidence?.score||0,boundaryDistance:primaryLengthEvidence?.boundaryDistance||0,calibrationCoverage:primaryLengthEvidence?.calibrationCoverage||'',shapeStability:Number(primaryLengthEvidence?.shapeStability||0),backgroundSeparation:Number(primaryLengthEvidence?.backgroundSeparation||0),grownSilhouetteRatio:Number(primaryLengthEvidence?.grownSilhouetteRatio||0),resolved:!!primaryLengthEvidence?.resolved,reason:primaryLengthEvidence?.reason||''};
+      window.__ikeLengthLastEvidence=lengthTelemetry;
+      window.DarkSkyV4?.diagnostic?.('ike.length.evidence','Ike plank length evidence',lengthTelemetry);
       state.plankRecognition={
         ...prior,
         status:'detected',method:pixelAnalysis?'photo-contour-segmentation':'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,orientationResolved:!!orientationEvidence.resolved,orientationConfidence:orientationEvidence.confidence||'low',orientationScore:Number(orientationEvidence.score||0),orientationReason:orientationEvidence.reason||'',

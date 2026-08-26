@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-runtime-inventory-v2",
-  "build": "8.0.8",
-  "release": "Yardarm \u2014 Root Keel",
-  "seal": "yardarm-808-root-keel-6a31fd",
+  "build": "8.1.0",
+  "release": "Plumb Line \u2014 Root Keel",
+  "seal": "plumb-line-810-root-keel-5d82b4",
   "required_snapshot_files": [
     "styles.css",
     "platform_core.js",

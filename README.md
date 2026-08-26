@@ -1,3 +1,22 @@
+# Dark Sky 8.1.0 — Plumb Line
+
+Plumb Line is the second-pass length-classification build. It learns the photo background, isolates a cross-eroded wood core, grows the true live-edge silhouette into pale sapwood only where pixels remain distinct from the scene, and removes camera height/frame occupancy from the customer contract. One-photo 2 ft auto-resolution is permitted only when the calibrated silhouette passes stability and separation gates.
+
+Release seal: `plumb-line-810-root-keel-5d82b4`
+
+See `PLUMB_LINE_LENGTH_CONTRACT.md` and `PLUMB_LINE_CALIBRATION_AUDIT.json`.
+
+---
+
+# Dark Sky 8.0.9 — Keel Gauge — Root Keel
+
+**Release seal:** `keel-gauge-809-root-keel-a7c341`  
+**Length mission:** silhouette-first segmentation + real-stock 2 ft calibration.
+
+Keel Gauge fixes the key lesson from Yardarm: the length classifier was often measuring warm countertop contamination instead of the plank. Geometry now starts from a strong saturated wood core, chooses a centered elongated non-border component, and only then pads the contour to include pale sapwood. The known 2 ft cedar plank is the first real-stock calibration; 4 ft and 6 ft remain intentionally conservative until known physical examples are supplied.
+
+See `KEEL_GAUGE_LENGTH_CONTRACT.md`.
+
 # Dark Sky 8.0.8 — Yardarm — Root Keel
 
 **Release seal:** `yardarm-808-root-keel-6a31fd`  

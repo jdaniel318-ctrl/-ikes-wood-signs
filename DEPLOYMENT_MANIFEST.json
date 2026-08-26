@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.0.8",
-  "version": "8.0.8",
-  "release_name": "Yardarm \u2014 Root Keel",
-  "releaseName": "Yardarm \u2014 Root Keel",
-  "release_seal": "yardarm-808-root-keel-6a31fd",
+  "build": "8.1.0",
+  "version": "8.1.0",
+  "release_name": "Plumb Line \u2014 Root Keel",
+  "releaseName": "Plumb Line \u2014 Root Keel",
+  "release_seal": "plumb-line-810-root-keel-5d82b4",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -51,6 +51,6 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "root-upload-safe-admiral-grade-single-build-plus-yardarm-visual-helm-owner-bridge-canonical-fleet",
-  "release_note": "Root Keel flattens required runtime/media into repository-root files for iPad GitHub web upload, removes nested artwork from Engine boot dependencies, and preserves verified in-memory executable snapshot + identity-only service-worker sentinel."
+  "release_focus": "background-aware-grown-silhouette-length-calibration-plus-root-keel-single-build",
+  "release_note": "Plumb Line learns the scene background, isolates a strong wood core with cross-erosion, grows the true plank silhouette into pale sapwood without crossing into countertop/clutter, and gates 2 ft auto-resolution on shape stability and background separation. 4/6 ft remain provisional pending real stock examples."
 }

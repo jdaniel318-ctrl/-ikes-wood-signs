@@ -1,0 +1,21 @@
+{
+  "schema": "dark-sky-plumb-line-calibration-audit-v1",
+  "build": "8.1.0",
+  "release": "Plumb Line \u2014 Root Keel",
+  "seal": "plumb-line-810-root-keel-5d82b4",
+  "status": "PASS",
+  "ground_truth": {
+    "species": "Cedar",
+    "length_feet": 2,
+    "orientation": "Horizontal",
+    "reference_condition": "controlled overhead photo, whole plank visible, no tape measure"
+  },
+  "second_pass_findings": [
+    "Camera height did not solve Yardarm; confidence decreased on the controlled 32-inch image.",
+    "Absolute scale cannot be inferred from unreferenced pixels alone.",
+    "The classifier must isolate the plank silhouette independently from frame occupancy and scene background.",
+    "Cross-erosion is required to prevent skinny warm bridges from attaching unrelated scene regions to the plank."
+  ],
+  "acceptance_rule": "A normal customer photo may auto-resolve 2 ft only when the grown silhouette clears calibrated ratio, shape-stability, background-separation, framing, orientation, overlap, and boundary-distance gates. Camera height is not a customer requirement.",
+  "future_calibration": "4 ft and 6 ft require real known-stock examples before one-photo auto-resolution is allowed."
+}

@@ -1,22 +1,9 @@
 # Upload This One Build
 
-Upload the entire contents of `DarkSky808-Yardarm-AdmiralSeal` together. Do not cherry-pick individual runtime-control files.
+**Build:** `8.1.0`  
+**Release:** Plumb Line — Root Keel  
+**Release seal:** `plumb-line-810-root-keel-5d82b4`
 
-Release seal: `yardarm-808-root-keel-6a31fd`
-Build: `8.0.8`
+Upload the contents of this folder to the repository root together. Do not create a nested runtime folder. Root Keel's release bulkhead must report 8.1.0 consistently before customer testing.
 
-## Admiral release rule
-The control-plane files in this package are one sealed unit: `index.html`, `owner.html`, `sw.js`, `manifest.webmanifest`, `DEPLOYMENT_MANIFEST.json`, `RELEASE_SEAL.json`, and `RELEASE_INVENTORY.json`.
-
-The Engine will then fetch every required existing repository runtime/asset with `cache: no-store`, verify the 8.0.8 release identity, and execute the exact verified JS/CSS bytes from one in-memory snapshot. The service worker is identity-only and cannot serve stale executable files.
-
-If a required repository runtime/asset is missing or disagrees with the release identity, the Engine remains on Release Hold and names the failing file instead of blending builds.
-
-Project/order/customer/owner data in IndexedDB is outside cleanup scope.
-
-
-## Root Keel amendment
-- All upload-critical files are flat at repository root for iPad/Safari GitHub web upload.
-- Nested folders are forbidden as a release-critical dependency.
-- Core executable identity may HOLD the Engine. Route/decorative visual media may HOLD only the route that needs it, with a branded fallback where safe.
-- Release seal: `yardarm-808-root-keel-6a31fd`.
+First customer acceptance test: use the known 2 ft cedar plank with one normal full-plank photo, not a prescribed camera height. Target: **Horizontal → Cedar → 2 ft → $18**. If 2 ft does not resolve, inspect Plumb Line evidence (`grownSilhouetteRatio`, `shapeStability`, `backgroundSeparation`, boundary distance) rather than lowering thresholds blindly.

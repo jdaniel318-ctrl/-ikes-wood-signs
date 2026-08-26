@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.0.8",
-  "release": "8.0.8",
+  "build": "8.1.0",
+  "release": "8.1.0",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -110,6 +110,6 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.0.8 Yardarm: inventory-ratio pixel ranging can auto-resolve strong 2/4/6 ft stock-length evidence while preserving visual review, Visual Helm rotation, and all authority/isolation contracts.",
-  "candidate": "8.0.8"
+  "note": "8.1.0 Plumb Line: background-aware cross-eroded core selection plus bounded silhouette growth prevents warm scene contamination while recovering pale sapwood; 2 ft auto-resolution requires stable silhouette/background separation; 4/6 ft remain conservative pending physical examples.",
+  "candidate": "8.1.0"
 }

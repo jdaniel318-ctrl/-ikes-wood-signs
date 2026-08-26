@@ -1,0 +1,29 @@
+{
+  "schema": "dark-sky-keel-gauge-calibration-audit-v1",
+  "build": "8.0.9",
+  "release": "Keel Gauge \u2014 Root Keel",
+  "seal": "keel-gauge-809-root-keel-a7c341",
+  "status": "PASS",
+  "ground_truth": {
+    "species": "Cedar",
+    "length_feet": 2,
+    "orientation": "Horizontal",
+    "reference_condition": "controlled overhead photo, whole plank visible, no tape measure"
+  },
+  "offline_replay": {
+    "downsample_width": 220,
+    "segmentation_mode": "saturated-core",
+    "core_bbox_pixels": {
+      "w": 143,
+      "h": 61
+    },
+    "padded_geometry_ratio": 2.15,
+    "two_ft_core_band": "1.65-2.95",
+    "boundary_distance": 0.7,
+    "predicted_score": 0.97,
+    "expected_candidate_feet": 2,
+    "expected_resolution": "high-visual"
+  },
+  "finding": "The dominant Yardarm failure was warm countertop contamination. The prior permissive mask selected the whole photograph (approx. 220x159) instead of the plank. Saturated-core selection isolates the real plank body before length classification.",
+  "guardrail": "Only 2 ft is real-stock calibrated in this build. 4 ft and 6 ft remain provisional until known examples are tested."
+}
