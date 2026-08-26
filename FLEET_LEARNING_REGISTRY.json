@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-learning-registry-v1",
-  "build": "8.2.0",
-  "name": "Real Face",
+  "build": "8.2.1",
+  "name": "Gridwright",
   "classes": {
     "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
     "capability": "Reusable primitive that must be adapted to mission/users/data/risk before adoption.",
@@ -92,6 +92,12 @@
       "risk": "high",
       "applies": "all",
       "missionAdapter": "Never infer capability fit from a weak proxy such as photo availability alone."
+    },
+    {
+      "id": "manufacturable-face-fit",
+      "class": "capability",
+      "origin": "IKE",
+      "title": "Manufacturability-Aware Face Fit"
     }
   ],
   "governance": {

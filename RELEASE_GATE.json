@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.2.0",
-  "release": "8.2.0",
+  "build": "8.2.1",
+  "release": "8.2.1",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -117,19 +117,23 @@
     "nonblocking_watch_semantics": true,
     "escalation_by_exception": true,
     "ikes_complete_order_boundary": true,
-    "ikes_letter_size_presets": true,
     "ikes_rotation_state_feedback": true,
     "customer_sea_trial_language_removed": true,
     "ike_new_order_starts_blank": true,
     "camera_permission_gateway": true,
-    "review_button_gating": true
+    "review_button_gating": true,
+    "ikes_face_grid_corridor": true,
+    "ikes_finished_sign_calibration": true,
+    "ikes_broad_block_style_a": true,
+    "ikes_customer_reference_upload_removed": true,
+    "ikes_mission_fit_controls": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.2.0 Real Face: finished-sign-grounded lettering fit replaces generic sizes; new orders clear stale design state; complete-order boundary remains protected.",
-  "candidate": "8.2.0",
+  "note": "8.2.1 Gridwright: live-edge face grid selects the broad carve-safe corridor; Style A uses a broad block face; finished-sign calibration drives width, height, and placement.",
+  "candidate": "8.2.1",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

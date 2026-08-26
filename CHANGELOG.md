@@ -1,3 +1,11 @@
+## 8.2.1 — Gridwright
+- Replaces rectangle-only Ike text placement with a 14-column live-edge face grid.
+- Selects a width-biased carve-safe corridor so short words can claim the usable face.
+- Calibrates Style A to a broad block face and accounts for visible glyph bounds plus letter spacing.
+- Keeps More Room / Ike Fit / Full Face as customer intent while the layout engine owns safe size and placement.
+- Removes the customer lettering-reference upload control; real finished Ike signs are the retained proof source.
+- Adds an automated Ike face-grid fit contract to Proving Ground.
+
 
 ## 8.2.0 — Real Face
 - Replaced character-count sizing with visible-glyph measurement using canvas text bounds.

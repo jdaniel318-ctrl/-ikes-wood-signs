@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.2.0 \u2014 Real Face",
-  "short_name": "Dark Sky 8.2.0",
-  "start_url": "./index.html?release=real-face-820-root-keel-9f1c72",
+  "name": "Dark Sky 8.2.1 \u2014 Gridwright",
+  "short_name": "Dark Sky 8.2.1",
+  "start_url": "./index.html?release=gridwright-821-root-keel-c4a7e2",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.2.0"
+  "version": "8.2.1"
 }

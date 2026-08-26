@@ -1,22 +1,27 @@
 {
   "schema": "dark-sky-admiral-preflight-v1",
-  "build": "8.2.0",
-  "name": "Real Face",
+  "build": "8.2.1",
+  "name": "Gridwright",
   "checks": [
     {
-      "id": "ike-complete-order-boundary",
+      "id": "ike-face-grid-fit",
       "ok": true,
-      "detail": "Canonical recognition serializer exists and is exercised by automated Proving Ground order-boundary evidence."
+      "detail": "Live-edge segmentation retains a 14-column carve-safe face grid and selects a width-biased corridor for real sign composition."
     },
     {
-      "id": "manufacturable-choice",
+      "id": "finished-sign-grounding",
       "ok": true,
-      "detail": "Letter-size presets stay within detected usable-zone geometry and the exact approved render is frozen for Ike verification."
+      "detail": "RAMJET and SMOKE HOLE! physical examples remain the proof source for Ike-specific occupancy and placement."
     },
     {
-      "id": "customer-cx-cleanliness",
+      "id": "style-a-broad-block",
       "ok": true,
-      "detail": "New Ike orders start blank; internal Sea Trial language is removed from customer recognition summaries; required CTAs are visibly gated."
+      "detail": "Style A uses a broad heavy block face rather than condensed Impact geometry."
+    },
+    {
+      "id": "order-boundary",
+      "ok": true,
+      "detail": "Canonical order serialization and exact approved artifact continuity remain protected."
     },
     {
       "id": "manual-promotion",

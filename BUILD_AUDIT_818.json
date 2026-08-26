@@ -1,23 +1,24 @@
 {
   "schema": "dark-sky-build-audit-v1",
-  "build": "8.2.0",
-  "name": "Real Face",
+  "build": "8.2.1",
+  "name": "Gridwright",
   "uploadFileCount": 99,
   "maxWebUploadFiles": 99,
   "checks": {
     "completeOrderSerializer": true,
     "completeOrderAutomatedVoyage": true,
-    "letterSizePresets": true,
+    "liveEdgeFaceGrid": true,
+    "widthBiasedFitCorridor": true,
+    "visibleGlyphMeasurement": true,
+    "broadBlockStyleA": true,
+    "finishedSignReferenceGrounding": true,
+    "customerReferenceUploadRemoved": true,
+    "missionFitControls": true,
     "exactRenderLock": true,
-    "rotationFeedback": true,
-    "cameraPermissionGateway": true,
-    "customerLanguageClean": true,
     "newOrderBlank": true,
+    "customerLanguageClean": true,
     "reviewGating": true,
-    "manualKnownGoodPromotion": true,
-    "undefinedRecognitionSerializerFixed": true,
-    "finalSubmitUsesCanonicalSerializer": true,
-    "finalSubmitNullGuard": true
+    "manualKnownGoodPromotion": true
   },
   "at": "2026-08-26T10:20:00-04:00"
 }

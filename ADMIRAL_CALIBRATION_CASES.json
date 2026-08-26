@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-admiral-calibration-cases-v1",
-  "build": "8.2.0",
+  "build": "8.2.1",
   "cases": [
     {
       "id": "ike-2ft-cedar-reference",
@@ -23,6 +23,6 @@
       ]
     }
   ],
-  "name": "Real Face",
-  "seal": "real-face-820-root-keel-9f1c72"
+  "name": "Gridwright",
+  "seal": "gridwright-821-root-keel-c4a7e2"
 }

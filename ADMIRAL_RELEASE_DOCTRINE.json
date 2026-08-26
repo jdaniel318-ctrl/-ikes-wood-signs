@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-admiral-release-doctrine-v2",
   "doctrineVersion": 2,
-  "build": "8.2.0",
-  "name": "Real Face",
+  "build": "8.2.1",
+  "name": "Gridwright",
   "principles": [
     "single-build release identity",
     "zero unverified first paint",
@@ -21,6 +21,11 @@
     "decorative media cannot sink Engine",
     "rotation feedback must communicate state",
     "Captain time is reserved for changed behavior and promotion judgment",
-    "fleet learning transfer requires mission adaptation and deliberate adoption"
+    "fleet learning transfer requires mission adaptation and deliberate adoption",
+    {
+      "id": "live-edge-face-grid",
+      "scope": "capability",
+      "lesson": "For irregular physical products, safe layout should be derived from a face grid or shape-aware corridor rather than a single bounding rectangle; mission adapters set occupancy and placement targets."
+    }
   ]
 }
