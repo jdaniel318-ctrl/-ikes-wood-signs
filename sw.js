@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.1.0';
-const RELEASE_SEAL='plumb-line-810-root-keel-5d82b4';
+const RELEASE_BUILD='8.1.1';
+const RELEASE_SEAL='admiral-doctrine-811-root-keel-7f3a2c';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

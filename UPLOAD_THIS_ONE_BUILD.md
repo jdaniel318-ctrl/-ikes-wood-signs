@@ -1,9 +1,21 @@
-# Upload This One Build
+# Upload This One Build — Dark Sky 8.1.1 Admiral Doctrine
 
-**Build:** `8.1.0`  
-**Release:** Plumb Line — Root Keel  
-**Release seal:** `plumb-line-810-root-keel-5d82b4`
+Upload the contents of this folder to the repository root together.
 
-Upload the contents of this folder to the repository root together. Do not create a nested runtime folder. Root Keel's release bulkhead must report 8.1.0 consistently before customer testing.
+Release seal: `admiral-doctrine-811-root-keel-7f3a2c`
 
-First customer acceptance test: use the known 2 ft cedar plank with one normal full-plank photo, not a prescribed camera height. Target: **Horizontal → Cedar → 2 ft → $18**. If 2 ft does not resolve, inspect Plumb Line evidence (`grownSilhouetteRatio`, `shapeStability`, `backgroundSeparation`, boundary distance) rather than lowering thresholds blindly.
+## What is now automatic
+- release identity / manifest / authority checks;
+- project-isolation and Client Preview safety checks;
+- approved-artifact voyage;
+- Admiral Release Doctrine retention;
+- detector-independence preflight;
+- automatic Proving Ground evidence after boot.
+
+## What remains deliberate
+Final **MARK CANDIDATE KNOWN GOOD** promotion remains a Captain decision.
+
+## First human sea trial
+Use a normal customer-style photo of the known 2 ft cedar plank.
+Expected minimum: **Horizontal + Cedar** must resolve even if length holds.
+Target: **Horizontal + Cedar + 2 ft + $18**.

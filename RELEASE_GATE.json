@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.1.0",
-  "release": "8.1.0",
+  "build": "8.1.1",
+  "release": "8.1.1",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -104,12 +104,15 @@
     "pixel_evidence_preserved_in_order": true,
     "visual_helm_photo_rotation": true,
     "orientation_from_rotated_photo": true,
-    "transient_secondary_photo_stripped": true
+    "transient_secondary_photo_stripped": true,
+    "admiral_release_doctrine": true,
+    "detector_independence": true,
+    "automated_preflight": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.1.0 Plumb Line: background-aware cross-eroded core selection plus bounded silhouette growth prevents warm scene contamination while recovering pale sapwood; 2 ft auto-resolution requires stable silhouette/background separation; 4/6 ft remain conservative pending physical examples.",
-  "candidate": "8.1.0"
+  "note": "8.1.1 Admiral Doctrine: restores proven orientation/species recognition on an independent detector path, isolates experimental length segmentation, retains learned fleet release doctrine, and auto-runs preflight contracts before manual Known Good promotion.",
+  "candidate": "8.1.1"
 }

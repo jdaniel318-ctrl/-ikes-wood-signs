@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.1.0';
+  const BUILD_VERSION = '8.1.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3952,10 +3952,74 @@
     return {key:'draft',label:'DRAFT',step:1,detail:!brief?'Finish the Business Brief so Dark Sky understands this vessel.':'Add at least one customer-ready offer before launch.',action:'continue',actionLabel:'CONTINUE LAUNCH',deployments,active,tested,trials,offers,brief};
   }
 
+
+  const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
+    schema:'dark-sky-admiral-release-doctrine-v1',
+    doctrineVersion:1,
+    build:'8.1.1',
+    principles:[
+      {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
+      {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
+      {id:'project-isolation',level:'critical',rule:'Project data, branding, orders, customers, media, settings, and authority remain project-scoped by default deny.'},
+      {id:'authority-separation',level:'critical',rule:'Customer, Owner/Partner, Project Admin, Black Flag, Captain, and Admiral authority routes remain distinct.'},
+      {id:'known-good-separation',level:'critical',rule:'Candidate and Last Known Good remain separate until deliberate Captain promotion.'},
+      {id:'detector-independence',level:'critical',rule:'Experimental length recognition may abstain or fail without suppressing proven orientation or species detectors.'},
+      {id:'deployment-reality',level:'core',rule:'Release packaging remains root-upload safe for the iPad/GitHub workflow and cannot depend on nested runtime replacement.'},
+      {id:'route-scoped-media',level:'core',rule:'Missing decorative route media may hold that route or use a safe fallback, but cannot sink the Engine.'}
+    ],
+    learned:[
+      {id:'camera-height-not-scale',lesson:'Controlled camera height did not solve length classification; customer camera distance is not a confidence requirement.'},
+      {id:'shared-mask-regression',lesson:'A shared experimental segmentation mask regressed previously proven Cedar and Horizontal recognition; detectors must be independent.'},
+      {id:'worker-mix',lesson:'Stale service workers can mix releases; recovery must visibly unregister, clear app caches, install, verify identity, then reload.'},
+      {id:'nested-upload-loss',lesson:'The iPad/GitHub web upload path did not reliably replace nested assets; fleet-critical release files must be root-safe.'},
+      {id:'decorative-asset-hold',lesson:'A missing Admiral ceremonial image held the whole Engine; decorative media must not be fleet-critical.'}
+    ]
+  });
+
+  function persistAdmiralReleaseDoctrine(){
+    try{
+      const prior=JSON.parse(localStorage.getItem('darkSkyAdmiralReleaseDoctrine')||'null');
+      const history=Array.isArray(prior?.history)?prior.history.slice(-9):[];
+      const current={...ADMIRAL_RELEASE_DOCTRINE,recordedAt:new Date().toISOString()};
+      history.push({build:BUILD_VERSION,doctrineVersion:ADMIRAL_RELEASE_DOCTRINE.doctrineVersion,recordedAt:current.recordedAt});
+      localStorage.setItem('darkSkyAdmiralReleaseDoctrine',JSON.stringify({...current,history}));
+      window.__darkSkyAdmiralReleaseDoctrine=current;
+      return current;
+    }catch(_){return ADMIRAL_RELEASE_DOCTRINE;}
+  }
+
+  function admiralDoctrinePreflight(){
+    const source=String(analyzeIkePlankPhoto);
+    const split=source.includes('ikeAnalyzePlankPixelsProven')&&source.includes('ikeAnalyzePlankPixelsLength');
+    const orientationProven=source.includes('ikeOrientationEvidence(img,provenAnalysis)');
+    const speciesProven=source.includes('ikeVisualSpeciesEvidence(img,provenAnalysis)');
+    const lengthIsolated=source.includes('ikeLengthEvidenceFromGeometry(img,lengthAnalysis)');
+    const manualPromotion=String(renderAdmiralReadiness).includes('MARK CANDIDATE KNOWN GOOD');
+    const result={
+      build:BUILD_VERSION,
+      at:new Date().toISOString(),
+      detectorIndependence:split&&orientationProven&&speciesProven&&lengthIsolated,
+      manualPromotion,
+      checks:[
+        {id:'detector-independence',ok:split&&orientationProven&&speciesProven&&lengthIsolated,detail:split?'Proven orientation/species and experimental length pipelines are isolated.':'Detector pipelines are not independently wired.'},
+        {id:'captain-promotion',ok:manualPromotion,detail:manualPromotion?'Final Known Good promotion remains a deliberate Captain action.':'Known Good promotion contract could not be verified.'}
+      ]
+    };
+    try{
+      localStorage.setItem(`darkSkyAdmiralPreflight:${BUILD_VERSION}`,JSON.stringify(result));
+      window.__darkSkyAdmiralPreflight=result;
+      window.DarkSkyV4?.diagnostic?.('admiral.preflight',result.detectorIndependence?'Admiral doctrine preflight clear':'Admiral doctrine preflight hold',result);
+    }catch(_){}
+    return result;
+  }
   async function runAdmiralReadinessChecks(source='manual'){
     const checks=[];
     const add=(id,label,state,detail,level='core')=>checks.push({id,label,state,detail,level});
     const safe=async(fn,fallback)=>{try{return await fn();}catch(err){return fallback(err);}};
+    const doctrine=persistAdmiralReleaseDoctrine();
+    const doctrinePreflight=admiralDoctrinePreflight();
+    add('admiral-doctrine','Admiral Release Doctrine registry',doctrine?.doctrineVersion===1?'pass':'fail',doctrine?.doctrineVersion===1?`${doctrine.principles.length} fleet principles and ${doctrine.learned.length} learned lessons retained for build ${BUILD_VERSION}.`:'Admiral release doctrine registry could not be retained.');
+    add('detector-independence','Ike detector independence',doctrinePreflight.detectorIndependence?'pass':'fail',doctrinePreflight.detectorIndependence?'Proven orientation/species detectors are isolated from the experimental length pipeline.':'Experimental length segmentation can still suppress proven visual detectors.');
 
     // Authority contracts: read-only verification only; no failure counters are incremented.
     const engine=await safe(()=>verifyEnginePin(DEFAULT_ENGINE_PIN,{recordFailure:false}),()=>({ok:false}));
@@ -9998,7 +10062,71 @@ The full order and approved media remain stored with this project.`;
     return best;
   }
 
-  function ikeAnalyzePlankPixels(img){
+  function ikeAnalyzePlankPixelsProven(img){
+    const maxW=220,scale=Math.min(1,maxW/Math.max(1,img.naturalWidth||img.width));
+    const w=Math.max(60,Math.round((img.naturalWidth||img.width)*scale));
+    const h=Math.max(40,Math.round((img.naturalHeight||img.height)*scale));
+    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,w,h);
+    const data=ctx.getImageData(0,0,w,h).data,mask=new Uint8Array(w*h),yellow=new Uint8Array(w*h);
+    for(let i=0,p=0;i<data.length;i+=4,p++){
+      const r=data[i],g=data[i+1],b=data[i+2],hsv=ikeRgbToHsv(r,g,b);
+      // 8.0.7 Rangefinder: segment the whole wood body, including pale sapwood.
+      // The previous dark-brown-only mask could isolate a vertical heartwood patch,
+      // which then corrupted orientation and species evidence. Low-saturation white/
+      // gray countertop stays excluded while cream sapwood remains part of the plank.
+      const woodBody=(hsv.h>=5&&hsv.h<=82&&hsv.s>=.075&&hsv.v>=.10&&hsv.v<=.94&&r>=b*.94);
+      if(woodBody)mask[p]=1;
+      if(hsv.h>=35&&hsv.h<=70&&hsv.s>=.35&&hsv.v>=.45)yellow[p]=1;
+    }
+    // Remove thin horizontal/vertical clutter (for example a tape measure) before
+    // choosing the plank candidate. Requiring vertical thickness makes the broad
+    // board body win over narrow reference objects while keeping this local-only.
+    const structural=new Uint8Array(mask.length),vr=3;
+    for(let y=vr;y<h-vr;y++)for(let x=0;x<w;x++){
+      const i=y*w+x;if(!mask[i])continue;let solid=1;
+      for(let d=1;d<=vr;d++){if(!mask[(y-d)*w+x]||!mask[(y+d)*w+x]){solid=0;break;}}
+      if(solid)structural[i]=1;
+    }
+    let comp=ikeLargestComponent(structural,w,h);
+    if(comp.length<Math.max(180,w*h*.02))comp=ikeLargestComponent(mask,w,h);
+    if(comp.length<Math.max(180,w*h*.02))return null;
+    const cm=new Uint8Array(w*h);let minX=w,minY=h,maxX=0,maxY=0;
+    comp.forEach(i=>{cm[i]=1;const x=i%w,y=(i/w)|0;minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);});
+    const bw=Math.max(1,maxX-minX+1),bh=Math.max(1,maxY-minY+1),bboxArea=bw*bh,fill=comp.length/bboxArea;
+    const eroded=ikeErodeMask(cm,w,h,Math.max(2,Math.round(Math.min(bw,bh)*.045)));
+    let rect=ikeLargestRectangle(eroded,w,h);
+    if(rect.area<Math.max(80,bboxArea*.08)){
+      const insetX=Math.round(bw*.12),insetY=Math.round(bh*.16);
+      rect={x:minX+insetX,y:minY+insetY,w:Math.max(1,bw-insetX*2),h:Math.max(1,bh-insetY*2),area:1};
+    }
+    const obstacleDetected=fill<.86;
+    let yellowCount=0,yellowMinX=w,yellowMaxX=0,yellowMinY=h,yellowMaxY=0;
+    for(let i=0;i<yellow.length;i++)if(yellow[i]){yellowCount++;const x=i%w,y=(i/w)|0;yellowMinX=Math.min(yellowMinX,x);yellowMaxX=Math.max(yellowMaxX,x);yellowMinY=Math.min(yellowMinY,y);yellowMaxY=Math.max(yellowMaxY,y);}
+    const referenceCandidate=yellowCount>w*h*.003&&(yellowMaxX-yellowMinX)>w*.25&&(yellowMaxY-yellowMinY)<h*.28;
+    // PCA over the detected plank body gives a long-axis orientation that is much
+    // harder to fool than a noisy bounding box. It also supplies an elongation
+    // sanity check before orientation can be called final.
+    let mx=0,my=0;for(const i of comp){mx+=i%w;my+=(i/w)|0;}mx/=Math.max(1,comp.length);my/=Math.max(1,comp.length);
+    let xx=0,yy=0,xy=0;for(const i of comp){const dx=(i%w)-mx,dy=((i/w)|0)-my;xx+=dx*dx;yy+=dy*dy;xy+=dx*dy;}
+    xx/=Math.max(1,comp.length);yy/=Math.max(1,comp.length);xy/=Math.max(1,comp.length);
+    const trace=xx+yy,disc=Math.sqrt(Math.max(0,(xx-yy)*(xx-yy)+4*xy*xy));
+    const l1=Math.max(.0001,(trace+disc)/2),l2=Math.max(.0001,(trace-disc)/2);
+    const angle=.5*Math.atan2(2*xy,xx-yy),elongation=Math.sqrt(l1/l2);
+    const axisOrientation=Math.abs(Math.cos(angle))>=Math.abs(Math.sin(angle))?'Horizontal':'Vertical';
+    const bboxOrientation=bw>=bh?'Horizontal':'Vertical';
+    const orientationResolved=elongation>=1.45 && (axisOrientation===bboxOrientation || Math.max(bw,bh)/Math.max(1,Math.min(bw,bh))>=1.75);
+    return {
+      contour:{x:minX/w,y:minY/h,w:bw/w,h:bh/h,fill:Number(fill.toFixed(3))},
+      usableRegion:{x:rect.x/w,y:rect.y/h,w:rect.w/w,h:rect.h/h,source:'largest-safe-rectangle'},
+      obstacleDetected,referenceCandidate,
+      axisOrientation,bboxOrientation,orientationResolved,
+      axisAngleDeg:Number((angle*180/Math.PI).toFixed(1)),elongation:Number(elongation.toFixed(2)),
+      confidence:comp.length>w*h*.07?'geometry-clear':'geometry-probable'
+    };
+  }
+
+  function ikeAnalyzePlankPixelsLength(img){
     const maxW=240,scale=Math.min(1,maxW/Math.max(1,img.naturalWidth||img.width));
     const w=Math.max(64,Math.round((img.naturalWidth||img.width)*scale));
     const h=Math.max(44,Math.round((img.naturalHeight||img.height)*scale));
@@ -10421,29 +10549,30 @@ The full order and approved media remain stored with this project.`;
     const img=new Image();
     img.onload=()=>{
       const w=Number(img.naturalWidth||img.width||0),h=Number(img.naturalHeight||img.height||0);
-      const pixelAnalysis=ikeAnalyzePlankPixels(img);
-      const orientationEvidence=ikeOrientationEvidence(img,pixelAnalysis);
+      const provenAnalysis=ikeAnalyzePlankPixelsProven(img);
+      const lengthAnalysis=ikeAnalyzePlankPixelsLength(img);
+      const orientationEvidence=ikeOrientationEvidence(img,provenAnalysis);
       const orientation=orientationEvidence.resolved?orientationEvidence.orientation:'';
       if(orientationEvidence.resolved)state.orientation=orientation;
       state.topSide='Top of photo';
-      const primaryEvidence=ikeVisualSpeciesEvidence(img,pixelAnalysis);
+      const primaryEvidence=ikeVisualSpeciesEvidence(img,provenAnalysis);
       const prior=state.plankRecognition||{};
       const species=ikeCombineSpeciesEvidence(primaryEvidence,prior.secondarySpeciesEvidence||null);
-      const primaryLengthEvidence=ikeLengthEvidenceFromGeometry(img,pixelAnalysis);
+      const primaryLengthEvidence=ikeLengthEvidenceFromGeometry(img,lengthAnalysis);
       const length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
-      const lengthTelemetry={build:BUILD_VERSION,projectId:activeProjectId,segmentationMode:pixelAnalysis?.segmentationMode||'',rawCoreRatio:Number(pixelAnalysis?.rawCoreRatio||0),contourRatio:primaryLengthEvidence?.aspectRatio||0,longPixels:primaryLengthEvidence?.longPixels||0,shortPixels:primaryLengthEvidence?.shortPixels||0,candidateFeet:primaryLengthEvidence?.candidateFeet||0,score:primaryLengthEvidence?.score||0,boundaryDistance:primaryLengthEvidence?.boundaryDistance||0,calibrationCoverage:primaryLengthEvidence?.calibrationCoverage||'',shapeStability:Number(primaryLengthEvidence?.shapeStability||0),backgroundSeparation:Number(primaryLengthEvidence?.backgroundSeparation||0),grownSilhouetteRatio:Number(primaryLengthEvidence?.grownSilhouetteRatio||0),resolved:!!primaryLengthEvidence?.resolved,reason:primaryLengthEvidence?.reason||''};
+      const lengthTelemetry={build:BUILD_VERSION,projectId:activeProjectId,segmentationMode:lengthAnalysis?.segmentationMode||'',rawCoreRatio:Number(lengthAnalysis?.rawCoreRatio||0),contourRatio:primaryLengthEvidence?.aspectRatio||0,longPixels:primaryLengthEvidence?.longPixels||0,shortPixels:primaryLengthEvidence?.shortPixels||0,candidateFeet:primaryLengthEvidence?.candidateFeet||0,score:primaryLengthEvidence?.score||0,boundaryDistance:primaryLengthEvidence?.boundaryDistance||0,calibrationCoverage:primaryLengthEvidence?.calibrationCoverage||'',shapeStability:Number(primaryLengthEvidence?.shapeStability||0),backgroundSeparation:Number(primaryLengthEvidence?.backgroundSeparation||0),grownSilhouetteRatio:Number(primaryLengthEvidence?.grownSilhouetteRatio||0),resolved:!!primaryLengthEvidence?.resolved,reason:primaryLengthEvidence?.reason||''};
       window.__ikeLengthLastEvidence=lengthTelemetry;
       window.DarkSkyV4?.diagnostic?.('ike.length.evidence','Ike plank length evidence',lengthTelemetry);
       state.plankRecognition={
         ...prior,
-        status:'detected',method:pixelAnalysis?'photo-contour-segmentation':'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,orientationResolved:!!orientationEvidence.resolved,orientationConfidence:orientationEvidence.confidence||'low',orientationScore:Number(orientationEvidence.score||0),orientationReason:orientationEvidence.reason||'',
+        status:'detected',method:provenAnalysis?'proven-visual-detectors+isolated-length':'photo-geometry',pixelWidth:w,pixelHeight:h,orientation,orientationResolved:!!orientationEvidence.resolved,orientationConfidence:orientationEvidence.confidence||'low',orientationScore:Number(orientationEvidence.score||0),orientationReason:orientationEvidence.reason||'',
         measurement:'confidence-aware-inventory-geometry',measurementReadiness:length.resolved?'length-resolved':(length.needsSecondPhoto?'needs-second-full-plank-photo':'manual-rack-confirmation'),
-        usableArea:pixelAnalysis?.usableRegion?'detected-usable-region':'safe-margin-preview',usableRegion:pixelAnalysis?.usableRegion||null,contour:pixelAnalysis?.contour||null,
-        obstacleAvoidance:pixelAnalysis?'sea-trial-active':'not-commissioned',obstacleDetected:!!pixelAnalysis?.obstacleDetected,referenceCandidate:!!pixelAnalysis?.referenceCandidate,
+        usableArea:provenAnalysis?.usableRegion?'detected-usable-region':'safe-margin-preview',usableRegion:provenAnalysis?.usableRegion||null,contour:provenAnalysis?.contour||null,
+        obstacleAvoidance:provenAnalysis?'sea-trial-active':'not-commissioned',obstacleDetected:!!provenAnalysis?.obstacleDetected,referenceCandidate:!!provenAnalysis?.referenceCandidate,
         primarySpeciesEvidence:primaryEvidence,
         family:species.family,speciesId:species.speciesId,speciesName:species.speciesName,speciesResolved:species.speciesResolved,speciesConfidence:species.speciesConfidence,speciesScore:species.speciesScore,evidenceCount:species.evidenceCount,needsSecondPhoto:species.needsSecondPhoto,speciesCandidates:species.candidates||[],speciesReason:species.reason||'',
         primaryLengthEvidence,lengthFeet:Number(length.feet||0),lengthResolved:!!length.resolved,lengthConfidence:length.confidence||'low',lengthScore:Number(length.score||0),lengthCandidateFeet:Number(length.candidateFeet||0),lengthEstimatedFeet:Number(length.estimatedFeet||0),lengthNeedsSecondPhoto:!!length.needsSecondPhoto,lengthEvidenceCount:Number(length.evidenceCount||1),lengthReason:length.reason||'',lengthReviewRequired:!!length.reviewRequired,lengthVerificationPolicy:length.verificationPolicy||'',
-        confidence:pixelAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
+        confidence:provenAnalysis?.confidence||'geometry-probable',analyzedAt:new Date().toISOString()
       };
       recalcIkePrice();updateUi();
     };
@@ -10455,7 +10584,7 @@ The full order and approved media remain stored with this project.`;
     const data=await resizePhoto(file);
     const img=new Image();
     await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=data;});
-    const secondaryPixelAnalysis=ikeAnalyzePlankPixels(img);
+    const secondaryPixelAnalysis=ikeAnalyzePlankPixelsProven(img);
     const secondaryEvidence=ikeVisualSpeciesEvidence(img,secondaryPixelAnalysis),r=state.plankRecognition||(state.plankRecognition={});
     r.secondarySpeciesPhotoData=data;r.secondarySpeciesEvidence=secondaryEvidence;
     const combined=ikeCombineSpeciesEvidence(r.primarySpeciesEvidence||null,secondaryEvidence);
@@ -10467,7 +10596,7 @@ The full order and approved media remain stored with this project.`;
     if(!file)return;
     const data=await resizePhoto(file),img=new Image();
     await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=data;});
-    const pixels=ikeAnalyzePlankPixels(img),secondary=ikeLengthEvidenceFromGeometry(img,pixels),r=state.plankRecognition||(state.plankRecognition={});
+    const lengthPixels=ikeAnalyzePlankPixelsLength(img),provenPixels=ikeAnalyzePlankPixelsProven(img),secondary=ikeLengthEvidenceFromGeometry(img,lengthPixels),r=state.plankRecognition||(state.plankRecognition={});
     r.secondaryLengthPhotoData=data;r.secondaryLengthEvidence=secondary;
     const combined=ikeCombineLengthEvidence(r.primaryLengthEvidence||null,secondary);
     Object.assign(r,{lengthFeet:Number(combined.feet||0),lengthResolved:!!combined.resolved,lengthConfidence:combined.confidence||'low',lengthScore:Number(combined.score||0),lengthCandidateFeet:Number(combined.candidateFeet||0),lengthEstimatedFeet:Number(combined.estimatedFeet||0),lengthNeedsSecondPhoto:!!combined.needsSecondPhoto,lengthEvidenceCount:Number(combined.evidenceCount||2),lengthReason:combined.reason||'',lengthReviewRequired:!!combined.reviewRequired,lengthVerificationPolicy:combined.verificationPolicy||'',secondaryLengthAnalyzedAt:new Date().toISOString()});
@@ -10475,7 +10604,7 @@ The full order and approved media remain stored with this project.`;
     // Progressive evidence: the same better full-plank photo is also valid species
     // evidence. Only ask for a specialized close-grain photo if this still fails
     // to clear the wood-confidence gate.
-    const speciesEvidence=ikeVisualSpeciesEvidence(img,pixels);
+    const speciesEvidence=ikeVisualSpeciesEvidence(img,provenPixels);
     r.secondarySpeciesPhotoData=data;r.secondarySpeciesEvidence=speciesEvidence;
     const species=ikeCombineSpeciesEvidence(r.primarySpeciesEvidence||null,speciesEvidence);
     Object.assign(r,{family:species.family,speciesId:species.speciesId,speciesName:species.speciesName,speciesResolved:species.speciesResolved,speciesConfidence:species.speciesConfidence,speciesScore:species.speciesScore,evidenceCount:species.evidenceCount,needsSecondPhoto:species.needsSecondPhoto,speciesCandidates:species.candidates||[],speciesReason:species.reason||'',secondaryAnalyzedAt:new Date().toISOString()});

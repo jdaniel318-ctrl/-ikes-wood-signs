@@ -1,3 +1,15 @@
+# Dark Sky 8.1.1 — Admiral Doctrine
+
+**Release seal:** `admiral-doctrine-811-root-keel-7f3a2c`
+
+Admiral Doctrine turns lessons from the 8.0.x/8.1.0 sea trials into retained fleet contracts and automated preflight checks. The final Known Good promotion remains manual, but repeatable release identity, authority, isolation, detector-independence, and artifact checks run automatically.
+
+For Ike's, proven orientation/species recognition is restored on its own visual path while Plumb Line length segmentation runs independently. A length abstention can no longer erase Cedar or Horizontal.
+
+See `ADMIRAL_RELEASE_DOCTRINE.json`, `ADMIRAL_RELEASE_DOCTRINE.md`, and the Proving Ground engineering evidence.
+
+---
+
 # Dark Sky 8.1.0 — Plumb Line
 
 Plumb Line is the second-pass length-classification build. It learns the photo background, isolates a cross-eroded wood core, grows the true live-edge silhouette into pale sapwood only where pixels remain distinct from the scene, and removes camera height/frame occupancy from the customer contract. One-photo 2 ft auto-resolution is permitted only when the calibrated silhouette passes stability and separation gates.

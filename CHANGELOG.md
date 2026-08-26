@@ -1,3 +1,12 @@
+# Dark Sky 8.1.1 — Admiral Doctrine
+
+- Added persistent Admiral Release Doctrine and learned-contract registry.
+- Added automated doctrine preflight to Fleet Proving Ground.
+- Restored proven Ike orientation/species detector path from the stable Sentry/Rangefinder lineage.
+- Isolated Plumb Line experimental length segmentation so length can abstain without suppressing orientation/species/design-zone results.
+- Final Known Good promotion remains a deliberate Captain action.
+- Preserved Root Keel single-build, iPad-safe deployment, service-worker recovery, project isolation, and authority boundaries.
+
 # Dark Sky 8.1.0 — Plumb Line
 
 - Replaced one-axis structural filtering with cross-erosion to break skinny warm bridges into clutter.
