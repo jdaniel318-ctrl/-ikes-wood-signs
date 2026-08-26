@@ -1,0 +1,15 @@
+{
+  "schema": "dark-sky-build-audit-v1",
+  "build": "8.1.7",
+  "name": "Fleet Judgment",
+  "uploadFileCount": 99,
+  "maxWebUploadFiles": 99,
+  "checks": {
+    "missionFitConfidence": true,
+    "strongOnlyBulkStage": true,
+    "experimentalSuppression": true,
+    "doctrineInheritance": true,
+    "manualKnownGoodPromotion": true
+  },
+  "at": "2026-08-26T10:20:00-04:00"
+}

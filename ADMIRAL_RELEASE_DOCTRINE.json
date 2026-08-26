@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-admiral-release-doctrine-v2",
   "doctrineVersion": 2,
-  "build": "8.1.6",
-  "name": "Strong Heading",
+  "build": "8.1.7",
+  "name": "Fleet Judgment",
   "principles": [
     "single-build release identity",
     "zero unverified first paint",

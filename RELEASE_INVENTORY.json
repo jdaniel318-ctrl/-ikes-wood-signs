@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-runtime-inventory-v2",
-  "build": "8.1.6",
-  "release": "Strong Heading \u2014 Root Keel",
-  "seal": "strong-heading-816-root-keel-c91f42",
+  "build": "8.1.7",
+  "release": "Fleet Judgment \u2014 Root Keel",
+  "seal": "fleet-judgment-817-root-keel-f17a62",
   "required_snapshot_files": [
     "styles.css",
     "platform_core.js",

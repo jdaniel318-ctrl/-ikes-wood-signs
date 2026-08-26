@@ -1,15 +1,9 @@
-# Fleet Learning Registry — Dark Sky 8.1.6 Strong Heading
+# Fleet Learning Registry — 8.1.7 Fleet Judgment
 
-Strong Heading is the first fleet-learning pass. It separates what Dark Sky learns into **Fleet Doctrine**, **Reusable Capability**, and **Mission Adapter**.
+Fleet Judgment adds mission-fit confidence to recommendation compression.
 
-## Transfer law
-**Learn → Classify → Adapt → Captain Review → Adopt.**
+- **Strong** — direct mission evidence; may be bulk-staged for review.
+- **Plausible** — useful but adaptation evidence must be reviewed first.
+- **Experimental** — weak/indirect fit; never bulk-staged by default.
 
-No project-specific customer data, pricing, branding, media, or workflow is copied into another vessel automatically. Reusable capabilities may be staged for review; adoption remains project-scoped and deliberate.
-
-## First-pass examples
-- Ike’s: confidence-aware visual evidence, owner-controlled rules, image-as-source-of-truth.
-- Legacy Plumbing: operational address confirmation and requested-timing-not-appointment.
-- Shipyard: atomic release integrity and durable action feedback.
-
-The Engine now maps eligible learnings to canonical vessels and lets the Captain stage, adopt, reject, or re-review each pattern without changing customer behavior merely because a recommendation exists.
+The registry must explain *why* each vessel qualifies. Photo availability alone is not evidence that a classifier belongs in a mission. Doctrine remains centrally inherited; project business logic remains explicit and project-scoped.

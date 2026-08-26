@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-admiral-calibration-cases-v1",
-  "build": "8.1.6",
+  "build": "8.1.7",
   "cases": [
     {
       "id": "ike-2ft-cedar-reference",
@@ -23,6 +23,6 @@
       ]
     }
   ],
-  "name": "Strong Heading",
-  "seal": "strong-heading-816-root-keel-c91f42"
+  "name": "Fleet Judgment",
+  "seal": "fleet-judgment-817-root-keel-f17a62"
 }

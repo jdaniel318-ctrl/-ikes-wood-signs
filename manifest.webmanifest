@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.1.6 \u2014 Strong Heading",
-  "short_name": "Dark Sky 8.1.6",
-  "start_url": "./index.html?release=strong-heading-816-root-keel-c91f42",
+  "name": "Dark Sky 8.1.7 \u2014 Fleet Judgment",
+  "short_name": "Dark Sky 8.1.7",
+  "start_url": "./index.html?release=fleet-judgment-817-root-keel-f17a62",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -13,5 +13,6 @@
       "purpose": "any"
     }
   ],
-  "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command."
+  "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
+  "version": "8.1.7"
 }

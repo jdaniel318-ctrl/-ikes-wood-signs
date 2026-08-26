@@ -1,0 +1,22 @@
+{
+  "schema": "dark-sky-admiral-preflight-v1",
+  "build": "8.1.7",
+  "name": "Fleet Judgment",
+  "checks": [
+    {
+      "id": "mission-fit-confidence",
+      "ok": true,
+      "detail": "Every reusable capability recommendation carries explicit mission-fit confidence and rationale."
+    },
+    {
+      "id": "strong-only-bulk-stage",
+      "ok": true,
+      "detail": "Bulk staging is constrained to Strong matches; Plausible requires review; Experimental is suppressed."
+    },
+    {
+      "id": "manual-promotion",
+      "ok": true,
+      "detail": "Known Good promotion remains deliberate."
+    }
+  ]
+}

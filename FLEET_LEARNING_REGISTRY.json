@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-learning-registry-v1",
-  "build": "8.1.6",
-  "name": "Strong Heading",
+  "build": "8.1.7",
+  "name": "Fleet Judgment",
   "classes": {
     "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
     "capability": "Reusable primitive that must be adapted to mission/users/data/risk before adoption.",
@@ -82,11 +82,28 @@
       "risk": "high",
       "applies": "all",
       "missionAdapter": "Show the Admiral decisions, not the bookkeeping that produced them."
+    },
+    {
+      "id": "mission-fit-confidence",
+      "class": "doctrine",
+      "origin": "shipyard",
+      "title": "Mission-Fit Confidence",
+      "lesson": "Reusable capabilities must explain why they fit each vessel. Strong fits may be staged together; plausible fits require review; experimental fits are suppressed from bulk staging.",
+      "risk": "high",
+      "applies": "all",
+      "missionAdapter": "Never infer capability fit from a weak proxy such as photo availability alone."
     }
   ],
   "governance": {
     "auto_apply_business_logic": false,
     "final_known_good_manual": true,
-    "project_isolation_default_deny": true
+    "project_isolation_default_deny": true,
+    "bulk_stage_strong_only": true,
+    "weak_fit_auto_suppression": true
+  },
+  "confidence_rubric": {
+    "strong": "Mission evidence directly supports staging; bulk stage may include these matches.",
+    "plausible": "Useful fit, but mission adaptation or authority evidence should be reviewed before staging.",
+    "experimental": "Weak or indirect fit; automatically excluded from bulk staging and surfaced only as suppressed evidence."
   }
 }
