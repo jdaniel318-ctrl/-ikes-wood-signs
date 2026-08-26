@@ -1,8 +1,8 @@
 {
-  "schema": "dark-sky-runtime-inventory-v1",
+  "schema": "dark-sky-runtime-inventory-v2",
   "build": "8.0.8",
-  "release": "Yardarm",
-  "seal": "yardarm-808-full-keel-91d4c8",
+  "release": "Yardarm \u2014 Root Keel",
+  "seal": "yardarm-808-root-keel-6a31fd",
   "required_snapshot_files": [
     "styles.css",
     "platform_core.js",
@@ -17,17 +17,26 @@
     "manifest.webmanifest",
     "sw.js",
     "DEPLOYMENT_MANIFEST.json",
-    "RELEASE_SEAL.json"
+    "RELEASE_SEAL.json",
+    "RELEASE_INVENTORY.json"
   ],
-  "required_assets": [
-    "assets/black_flag_primary_lockup.png",
-    "assets/black_flag_platform_icon.png",
-    "assets/ike_character.jpg",
-    "assets/captains_quarters_command_center_v578.png",
-    "assets/admirals_deck_ceremonial_v640.png",
-    "assets/signal_restoration_logo.png"
+  "core_branding_files": [
+    "black_flag_primary_lockup.png",
+    "black_flag_platform_icon.png",
+    "ike_character.jpg"
   ],
-  "execution_rule": "Fetch snapshot files exactly once with cache:no-store; execute those exact fetched bytes from Blob URLs; never refetch executable JS during boot.",
+  "route_visual_files": [
+    "captains_quarters_command_center_v578.png",
+    "captains_quarters_cinematic_v2953.jpg",
+    "admirals_deck_ceremonial_v640.png",
+    "signal_restoration_logo.png",
+    "ike_character_white_teeth.png",
+    "engine_room_modern_benchmark_v2976.png",
+    "engine_room_pirate_benchmark_v2978.png",
+    "ikes_real_sign_lettering_reference.jpg"
+  ],
+  "execution_rule": "Fetch executable snapshot exactly once with cache:no-store; execute those exact fetched bytes from Blob URLs; never refetch executable JS during boot.",
+  "visual_rule": "Visual and route-specific media are root-upload-safe and may not block Engine boot. Missing route media must fall back or hold only that route.",
   "service_worker_rule": "Identity sentinel only. It must never cache or intercept executable runtime files.",
-  "failure_rule": "Any missing file, build mismatch, seal mismatch, worker mismatch, or fetch failure blocks first paint."
+  "failure_rule": "Missing or mismatched executable/core release identity blocks first paint. Missing decorative or route imagery does not sink the Engine."
 }

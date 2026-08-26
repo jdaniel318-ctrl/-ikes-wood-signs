@@ -13,4 +13,11 @@ Prevent any Captain, Admiral, Engine, project owner, or customer surface from ex
 7. Recovery may unregister workers and delete Dark Sky application caches, but must never delete IndexedDB project/order/customer/owner data.
 8. Any mismatch becomes a durable Release Hold with file-level evidence.
 
-Release seal: `yardarm-808-full-keel-91d4c8`
+Release seal: `yardarm-808-root-keel-6a31fd`
+
+
+## Root Keel amendment
+- All upload-critical files are flat at repository root for iPad/Safari GitHub web upload.
+- Nested folders are forbidden as a release-critical dependency.
+- Core executable identity may HOLD the Engine. Route/decorative visual media may HOLD only the route that needs it, with a branded fallback where safe.
+- Release seal: `yardarm-808-root-keel-6a31fd`.

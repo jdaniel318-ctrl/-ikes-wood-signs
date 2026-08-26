@@ -4173,7 +4173,7 @@ html.captain-controller-ready #captainQuartersGate.hidden{
    ========================================================== */
 
 #captainQuarters.cinematic-cabin-ready{
-  background:#090604 url("assets/captains_quarters_cinematic_v2953.jpg") center center/cover no-repeat!important;
+  background:#090604 url("captains_quarters_cinematic_v2953.jpg") center center/cover no-repeat!important;
   overflow:hidden!important;
   isolation:isolate;
 }
@@ -6325,7 +6325,7 @@ body.captain-command-open #captainCommandWorkspace{pointer-events:auto}
 
 /* ==========================================================
    v2.9.76 MODERN SHIP ENGINE ROOM
-   Approved benchmark: assets/engine_room_modern_benchmark_v2976.png
+   Approved benchmark: engine_room_modern_benchmark_v2976.png
    Business Mode = modern vessel control room, no pirate decoration.
    ========================================================== */
 #enginePanel.modern-engine-room{
@@ -6620,7 +6620,7 @@ body.business-engine-mode #enginePanel .project-engine-control{
   border-radius:14px!important;
   background:
     linear-gradient(180deg,rgba(7,18,24,.96),rgba(6,15,20,.98)),
-    url('assets/engine_room_modern_benchmark_v2976.png') center 28% / cover no-repeat!important;
+    url('engine_room_modern_benchmark_v2976.png') center 28% / cover no-repeat!important;
   box-shadow:0 22px 55px rgba(0,0,0,.28),inset 0 1px 0 rgba(124,193,219,.07)!important;
 }
 body.business-engine-mode #enginePanel .project-engine-control::before{
@@ -6759,7 +6759,7 @@ body.business-engine-mode #enginePanel .owner-access-hero{
   border-radius:11px!important;
   background:
     linear-gradient(100deg,rgba(14,35,44,.96),rgba(8,23,30,.93)),
-    url('assets/engine_room_modern_benchmark_v2976.png') center 22% / cover no-repeat!important;
+    url('engine_room_modern_benchmark_v2976.png') center 22% / cover no-repeat!important;
   color:var(--ews-text)!important;
   box-shadow:inset 0 1px 0 rgba(150,211,232,.06)!important;
 }
@@ -6926,7 +6926,7 @@ body.business-engine-mode #enginePanel .deployment-fleet-hero{
   border-radius:11px!important;
   background:
     linear-gradient(110deg,rgba(10,34,44,.97),rgba(8,21,27,.95)),
-    url('assets/engine_room_modern_benchmark_v2976.png') center 32% / cover no-repeat!important;
+    url('engine_room_modern_benchmark_v2976.png') center 32% / cover no-repeat!important;
   box-shadow:inset 0 -2px 0 rgba(42,167,247,.12)!important;
 }
 body.business-engine-mode #enginePanel .deployment-hero h3,
@@ -7057,7 +7057,7 @@ body.business-engine-mode #enginePanel .project-tab-content [style*="background:
    This block intentionally sits last in the cascade and replaces legacy pirate visuals.
 
    Approved inspiration:
-   assets/engine_room_pirate_benchmark_v2978.png
+   engine_room_pirate_benchmark_v2978.png
 
    Business Mode remains governed by the v2.9.76/v2.9.77 modern ship Engine system.
    ========================================================== */
@@ -7273,7 +7273,7 @@ body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card{
   border-color:#493927!important;
   background:
     linear-gradient(160deg,rgba(19,16,13,.98),rgba(10,9,8,.99)),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center 72% / 900px auto no-repeat!important;
+    url('engine_room_pirate_benchmark_v2978.png') center 72% / 900px auto no-repeat!important;
   color:#eadfcb!important;
 }
 body.dark-flag-pirate-mode #enginePanel .modern-project-command .project-card::after{
@@ -7345,7 +7345,7 @@ body.dark-flag-pirate-mode #enginePanel .engine-configuration-dock{
   border-color:#503e2b!important;
   background:
     linear-gradient(180deg,rgba(16,13,10,.99),rgba(10,8,7,.99)),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center 40% / cover no-repeat!important;
+    url('engine_room_pirate_benchmark_v2978.png') center 40% / cover no-repeat!important;
 }
 body.dark-flag-pirate-mode #enginePanel .engine-configuration-head{
   border-bottom-color:#413326!important;
@@ -7377,7 +7377,7 @@ body.dark-flag-pirate-mode #enginePanel .project-engine-control{
   border-color:#503e2b!important;
   background:
     linear-gradient(180deg,rgba(11,9,8,.97),rgba(8,7,6,.985)),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center 32% / cover no-repeat!important;
+    url('engine_room_pirate_benchmark_v2978.png') center 32% / cover no-repeat!important;
   box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(210,165,84,.05)!important;
 }
 body.dark-flag-pirate-mode #enginePanel .project-engine-control::before{
@@ -7473,7 +7473,7 @@ body.dark-flag-pirate-mode #enginePanel .deployment-fleet-hero{
   border-color:#5a412c!important;
   background:
     linear-gradient(100deg,rgba(22,16,12,.96),rgba(10,8,7,.93)),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center 28% / cover no-repeat!important;
+    url('engine_room_pirate_benchmark_v2978.png') center 28% / cover no-repeat!important;
 }
 body.dark-flag-pirate-mode #enginePanel .marketing-brand-hero h3,
 body.dark-flag-pirate-mode #enginePanel .owner-access-hero h3,
@@ -7656,7 +7656,7 @@ body.dark-flag-pirate-mode #pirateCommandHero{
   overflow:hidden;
   background:
     linear-gradient(90deg,rgba(7,6,5,.98),rgba(10,7,6,.88) 48%,rgba(14,5,5,.72)),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center 2% / cover no-repeat;
+    url('engine_room_pirate_benchmark_v2978.png') center 2% / cover no-repeat;
   box-shadow:0 18px 44px rgba(0,0,0,.42),inset 0 1px 0 rgba(211,160,83,.05);
 }
 .pirate-command-crest{
@@ -7788,7 +7788,7 @@ body.dark-flag-pirate-mode #enginePanel .modern-engine-footer{display:none!impor
 body.dark-flag-pirate-mode #enginePanel .project-engine-control{
   background:
     linear-gradient(180deg,rgba(9,7,6,.94),rgba(8,7,6,.985)),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center 18% / 1400px auto no-repeat!important;
+    url('engine_room_pirate_benchmark_v2978.png') center 18% / 1400px auto no-repeat!important;
 }
 body.dark-flag-pirate-mode #enginePanel .marketing-brand-hero,
 body.dark-flag-pirate-mode #enginePanel .owner-access-hero,
@@ -7796,7 +7796,7 @@ body.dark-flag-pirate-mode #enginePanel .deployment-hero,
 body.dark-flag-pirate-mode #enginePanel .deployment-fleet-hero{
   background:
     linear-gradient(100deg,rgba(17,12,9,.92),rgba(8,7,6,.9)),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center 24% / cover no-repeat!important;
+    url('engine_room_pirate_benchmark_v2978.png') center 24% / cover no-repeat!important;
 }
 
 /* Tablet fit */
@@ -7839,7 +7839,7 @@ body.dark-flag-pirate-mode #enginePanel .deployment-fleet-hero{
 
 .first-mate-watch{
   margin:0 0 12px;padding:14px;
-  background:linear-gradient(110deg,rgba(12,28,34,.96),rgba(7,18,23,.98)),url('assets/engine_room_modern_benchmark_v2976.png') center 44%/cover no-repeat
+  background:linear-gradient(110deg,rgba(12,28,34,.96),rgba(7,18,23,.98)),url('engine_room_modern_benchmark_v2976.png') center 44%/cover no-repeat
 }
 .first-mate-watch header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .first-mate-watch header>div:nth-child(2){flex:1}
@@ -7888,7 +7888,7 @@ body.business-engine-mode #enginePanel .protected-control-mark{display:none!impo
 body.dark-flag-pirate-mode .v3-architecture-deck,
 body.dark-flag-pirate-mode .first-mate-watch,
 body.dark-flag-pirate-mode .v3-integrity-station{border-color:#4b3928;background:linear-gradient(160deg,#15110e,#0d0b09);color:#eadfcb}
-body.dark-flag-pirate-mode .first-mate-watch{background:linear-gradient(110deg,rgba(18,13,10,.95),rgba(9,7,6,.97)),url('assets/engine_room_pirate_benchmark_v2978.png') center 45%/cover no-repeat}
+body.dark-flag-pirate-mode .first-mate-watch{background:linear-gradient(110deg,rgba(18,13,10,.95),rgba(9,7,6,.97)),url('engine_room_pirate_benchmark_v2978.png') center 45%/cover no-repeat}
 body.dark-flag-pirate-mode .first-mate-mark{border-color:#74512f;background:#17100c;color:#d0a04f}
 body.dark-flag-pirate-mode .v3-architecture-head small,body.dark-flag-pirate-mode .first-mate-watch header small{color:#bd3830}
 body.dark-flag-pirate-mode .v3-architecture-head h3,body.dark-flag-pirate-mode .first-mate-watch header h3{font-family:Georgia,'Times New Roman',serif;color:#efe3ce}
@@ -8019,14 +8019,14 @@ body.engine-workspace-open{overflow:hidden}
   border-radius:0!important;
   background:
     linear-gradient(180deg,rgba(8,18,23,.97),rgba(7,16,20,.985)),
-    url('assets/engine_room_modern_benchmark_v2976.png') center/cover fixed no-repeat!important;
+    url('engine_room_modern_benchmark_v2976.png') center/cover fixed no-repeat!important;
   box-shadow:none!important;
 }
 body.dark-flag-pirate-mode #projectEngineControl:not(.hidden),
 body.dark-flag-pirate-mode #engineConfigurationDock:not(.hidden){
   background:
     linear-gradient(180deg,rgba(16,12,9,.965),rgba(9,7,6,.985)),
-    url('assets/engine_room_pirate_benchmark_v2978.png') center/cover fixed no-repeat!important;
+    url('engine_room_pirate_benchmark_v2978.png') center/cover fixed no-repeat!important;
 }
 #projectEngineControl .project-engine-head,
 #engineConfigurationDock .engine-configuration-head{
@@ -8594,7 +8594,7 @@ body.project-mode #returnToEngineBtn.dark-sky-return-control:focus-visible{
    The project return control intentionally avoids the legacy [class*="black-flag"]
    project-isolation selector, so it cannot be hidden by old isolation rules.
    ========================================================================== */
-:root{--bf-platform-logo:url("assets/black_flag_platform_icon.png");}
+:root{--bf-platform-logo:url("black_flag_platform_icon.png");}
 .bf-platform-icon,
 .dark-sky-return-logo{
   display:block!important;
@@ -13056,7 +13056,7 @@ body.client-preview-mode .universal-settings-btn,body.client-preview-mode .mugs-
    No Black Flag, project, customer, or Client Preview styling is changed here.
    ========================================================================== */
 #captainQuarters.cinematic-cabin-ready{
-  background:#071014 url("assets/captains_quarters_command_center_v578.png") center center/cover no-repeat!important;
+  background:#071014 url("captains_quarters_command_center_v578.png") center center/cover no-repeat!important;
   color:#ead7a2!important;
 }
 
@@ -13885,7 +13885,7 @@ body.captain-modal-open #captainQuarters.cinematic-cabin-ready{
 .admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere{
   background-image:
     linear-gradient(110deg,rgba(3,15,21,.28),rgba(0,6,10,.70)),
-    var(--admiral-command-visual,url("assets/admirals_deck_ceremonial_v640.png"))!important;
+    var(--admiral-command-visual,url("admirals_deck_ceremonial_v640.png"))!important;
   background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;
   filter:saturate(.92) contrast(1.03);
 }
@@ -14098,7 +14098,7 @@ body.captain-modal-open #captainQuarters.cinematic-cabin-ready{
 }
 .admiral-deck-overlay[data-mode="ceremonial"] .admiral-deck-atmosphere,
 .admiral-deck-overlay:not([data-mode]) .admiral-deck-atmosphere{
-  background-image:var(--admiral-command-visual,url("assets/admirals_deck_ceremonial_v640.png"))!important;
+  background-image:var(--admiral-command-visual,url("admirals_deck_ceremonial_v640.png"))!important;
   background-size:cover!important;
   background-position:center 46%!important;
   background-repeat:no-repeat!important;
@@ -14226,7 +14226,7 @@ body.captain-modal-open #captainQuarters.cinematic-cabin-ready{
   position:absolute;inset:-4%;
   background-image:
     linear-gradient(180deg,rgba(1,8,12,.12),rgba(1,8,12,.40)),
-    var(--admiral-command-visual,url("assets/admirals_deck_ceremonial_v640.png"));
+    var(--admiral-command-visual,url("admirals_deck_ceremonial_v640.png"));
   background-size:cover;background-position:center 46%;background-repeat:no-repeat;
   filter:brightness(1.12) saturate(1.05) contrast(1.03);transform:scale(1.055);
 }

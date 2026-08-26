@@ -15,8 +15,8 @@ Runtime/application files live at repository root. `assets/` is media-only.
 - `manifest.webmanifest`
 
 ### Current Captain media
-- `assets/captains_quarters_command_center_v578.png` — production Captain command-center plate
-- `assets/captains_quarters_cinematic_v2953.jpg` — retained cinematic source/fallback asset
+- `captains_quarters_command_center_v578.png` — production Captain command-center plate
+- `captains_quarters_cinematic_v2953.jpg` — retained cinematic source/fallback asset
 
 ## Rule
 No application/runtime/documentation file belongs under `assets/`. No project or Captain runtime may select a different project’s media as a fallback.

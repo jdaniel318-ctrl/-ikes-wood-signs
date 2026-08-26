@@ -1,5 +1,5 @@
 const RELEASE_BUILD='8.0.8';
-const RELEASE_SEAL='yardarm-808-full-keel-91d4c8';
+const RELEASE_SEAL='yardarm-808-root-keel-6a31fd';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

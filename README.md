@@ -1,6 +1,15 @@
+# Dark Sky 8.0.8 — Yardarm — Root Keel
+
+**Release seal:** `yardarm-808-root-keel-6a31fd`  
+**Deployment contract:** root-upload-safe; every executable and required visual file is a repository-root file. No nested `assets/` upload is required.
+
+Root Keel repairs the iPad/GitHub web-upload failure discovered during Full Keel testing. The Engine now treats executable/runtime identity as fleet-critical while Admiral/Captain/project imagery is route-scoped. A missing ceremonial image can never sink Black Flag Engine again.
+
+The boot verifier still fetches and freezes the complete executable snapshot with `cache:no-store` before Engine paint. Route media is checked/fallback-rendered when its route opens.
+
 # Dark Sky 8.0.8 — Yardarm — Full Keel Snapshot (Admiral Seal)
 
-**Release seal:** `yardarm-808-full-keel-91d4c8`  
+**Release seal:** `yardarm-808-root-keel-6a31fd`  
 
 **Full snapshot status:** PASS — all required executable runtime files and required assets are physically aboard this ZIP.
 **First-paint bulkhead:** raw Engine DOM remains hidden until verified CSS/runtime release the shield.
@@ -12,7 +21,7 @@ See `ADMIRAL_RELEASE_BULKHEAD.md` and `RELEASE_INVENTORY.json`.
 
 # Dark Sky 8.0.8 — Yardarm (One-Build Recovery Hardened)
 
-**Release seal:** `yardarm-808-full-keel-91d4c8`  
+**Release seal:** `yardarm-808-root-keel-6a31fd`  
 **Service-worker URL:** stable `./sw.js`  
 **Recovery contract:** visible unregister → cache cleanup → fresh worker registration → identity verification → reload.
 

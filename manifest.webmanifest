@@ -7,7 +7,7 @@
   "theme_color": "#071419",
   "icons": [
     {
-      "src": "assets/black_flag_platform_icon.png",
+      "src": "black_flag_platform_icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

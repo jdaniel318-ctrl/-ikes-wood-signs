@@ -781,7 +781,7 @@
       room.classList.remove('cinematic-cabin-ready');
       room.classList.add('cinematic-cabin-failed');
     };
-    image.src='assets/captains_quarters_command_center_v578.png';
+    image.src='captains_quarters_command_center_v578.png';
   }
 
   function bind() {

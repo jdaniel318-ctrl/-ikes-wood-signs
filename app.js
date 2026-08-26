@@ -3468,7 +3468,7 @@
     // that established identity as a project-specific compatibility fallback until
     // a dedicated Project Logo / Mark is assigned in the Engine.
     if(!logo && canonicalProjectId(p?.id)==='ikes-wood-signs'){
-      logo='assets/ike_character.jpg';
+      logo='ike_character.jpg';
       source='ikeCompatibilityMark';
     }
     return {code,logo,source};
@@ -8057,7 +8057,7 @@
     if(borCustomerState.receipt){
       const r=borCustomerState.receipt;
       shell.innerHTML=`<div class="bor-shell bor-receipt-shell">
-        <header class="bor-header"><div class="bor-brand"><img src="assets/signal_restoration_logo.png" alt="Signal Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Signal Restoration</h1><p>Serving Greater Richmond</p></div></div><div class="bor-header-actions">${borCallControl(ctx,{kind:'header'})}<button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
+        <header class="bor-header"><div class="bor-brand"><img src="signal_restoration_logo.png" alt="Signal Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Signal Restoration</h1><p>Serving Greater Richmond</p></div></div><div class="bor-header-actions">${borCallControl(ctx,{kind:'header'})}<button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
         <main class="bor-main bor-confirm-main"><section class="bor-confirm"><div class="bor-confirm-icon">✓</div><small>REQUEST RECEIVED</small><h2>We’ve got it.</h2><p>Our restoration team has the information you provided and can follow up with you.</p><div class="bor-next-step"><b>What happens next?</b><span>${borCallIsLive(ctx)?'A local team member can review your request and contact you. If you need immediate help, call now.':'This is a private test. No real request or phone call is being placed.'}</span></div><div class="bor-confirm-ref"><span>REFERENCE</span><strong>${escapeHtml(r.id)}</strong></div><div class="bor-confirm-grid"><div><span>HELP NEEDED</span><strong>${escapeHtml(r.lossType)}</strong></div><div><span>PROPERTY</span><strong>${escapeHtml(r.address||'Address not entered')}</strong></div></div><div class="bor-confirm-actions">${borCallControl(ctx,{kind:'confirm',label:'CALL THE TEAM NOW'})}<button type="button" id="borNewRequest" data-bor-action="restart" class="bor-secondary">START ANOTHER REQUEST</button></div></section></main>
         ${mobileCall}
       </div>`;
@@ -8067,7 +8067,7 @@
     const lossMeta=borLossMeta(borCustomerState.lossType);
     const photoSummary=borCustomerState.photoData?'1 photo attached':'No photo attached';
     shell.innerHTML=`<div class="bor-shell">
-      <header class="bor-header"><div class="bor-brand"><img src="assets/signal_restoration_logo.png" alt="Signal Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Signal Restoration</h1><p>Serving Greater Richmond</p></div></div><div class="bor-header-actions">${borCallControl(ctx,{kind:'header'})}<button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
+      <header class="bor-header"><div class="bor-brand"><img src="signal_restoration_logo.png" alt="Signal Restoration"><div><small>${escapeHtml(testLabel)}</small><h1>Signal Restoration</h1><p>Serving Greater Richmond</p></div></div><div class="bor-header-actions">${borCallControl(ctx,{kind:'header'})}<button type="button" class="bor-settings" data-project-settings-launch aria-label="Open project admin">⚙︎</button></div></header>
       <main class="bor-main">${borSafety}
         <section class="bor-hero ${borCustomerState.step==='landing'?'bor-landing-hero':''}"><div class="bor-hero-copy"><small>LOCAL • 24/7 PROPERTY RESTORATION</small><h2>${borCustomerState.step==='landing'?"Property damage? We're ready to help.":borCustomerState.step==='start'?'Tell us what happened.':borCustomerState.step==='details'?'Where do you need help?':'How can we reach you?'}</h2><p>${borCustomerState.step==='landing'?'Water, fire, storm, mold, and commercial restoration for Greater Richmond. Start here and give the local team the details they need.':borCustomerState.step==='start'?"Choose the closest match. Most requests take about a minute.":borCustomerState.step==='details'?'A few details help the local team understand the loss.':'Share the best way to reach you.'}</p></div>${borCallControl(ctx,{kind:'hero'})}</section>
         ${borCustomerState.step==='landing'?`<section class="bor-card bor-landing-card"><div class="bor-landing-copy"><small>SIGNAL RESTORATION</small><h3>Local help. Clear next steps.</h3><p>Tell us what happened and where help is needed. We’ll collect the right information for the restoration team before they follow up.</p><div class="bor-assurance"><span>✓ Greater Richmond response</span><span>✓ 24/7 emergency response</span><span>✓ IICRC-certified technicians</span><span>✓ Insurance coordination</span></div><button type="button" id="borStartRequest" class="bor-primary bor-landing-cta">${escapeHtml(borContactLocked?'START TEST REQUEST →':'I NEED HELP NOW →')}</button></div><div class="bor-landing-services"><small>WE CAN HELP WITH</small>${['water-damage','fire-smoke','storm-damage','mold','commercial'].map(id=>{const m=borLossMeta(id);return `<div><b>${m.icon}</b><span><strong>${escapeHtml(m.short)}</strong><small>${escapeHtml(m.detail)}</small></span></div>`}).join('')}</div></section>`:''}
@@ -10921,8 +10921,8 @@ The full order and approved media remain stored with this project.`;
     const mark=$('projectAdminGateMark');
     if(logo){
       let src=assets.projectLogo||'';
-      if(!src && code==='SIG') src='assets/signal_restoration_logo.png';
-      if(!src && code==='IKE') src='assets/ike_character.jpg';
+      if(!src && code==='SIG') src='signal_restoration_logo.png';
+      if(!src && code==='IKE') src='ike_character.jpg';
       if(src){
         logo.src=src;
         logo.alt=`${name} admin mark`;

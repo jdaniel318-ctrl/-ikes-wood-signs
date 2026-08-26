@@ -2,12 +2,12 @@
   "schema": "dark-sky-deployment-manifest-v2",
   "build": "8.0.8",
   "version": "8.0.8",
-  "release_name": "Yardarm",
-  "releaseName": "Yardarm",
-  "release_seal": "yardarm-808-full-keel-91d4c8",
+  "release_name": "Yardarm \u2014 Root Keel",
+  "releaseName": "Yardarm \u2014 Root Keel",
+  "release_seal": "yardarm-808-root-keel-6a31fd",
   "entrypoint": "index.html",
   "runtime": "static-web",
-  "deployment_mode": "atomic-memory-snapshot-single-build",
+  "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
   "required_runtime_files": [
     "index.html",
     "owner.html",
@@ -20,8 +20,7 @@
     "manifest.webmanifest",
     "sw.js",
     "RELEASE_SEAL.json",
-    "RELEASE_INVENTORY.json",
-    "assets/"
+    "RELEASE_INVENTORY.json"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -30,7 +29,7 @@
     "partial_runtime_promotion": "forbidden-before-complete-runtime-snapshot",
     "mixed_build_behavior": "block-first-paint-with-explicit-file-level-evidence",
     "safe_cleanup_scope": "service-worker-registrations-and-app-caches-only-never-project-data",
-    "upload_rule": "upload-one-release-folder-contents-together-do-not-cherry-pick-runtime-files",
+    "upload_rule": "all release files are flat at repository root; nested folders are not required for core or route visuals",
     "same_version_repair": "unique-release-seal-busts-stale-same-version-runtime",
     "service_worker_script_url": "stable-./sw.js-no-release-query",
     "service_worker_recovery": "unregister-same-scope-clear-app-caches-register-fresh-verify-identity-reload",
@@ -38,7 +37,8 @@
     "bypass_mixed_build_gate": "forbidden",
     "service_worker_role": "identity-sentinel-only-no-fetch-handler",
     "atomic_execution_source": "verified-in-memory-snapshot",
-    "complete_runtime_preflight": "every required runtime URL must return 200 before any application script executes"
+    "complete_runtime_preflight": "every required runtime URL must return 200 before any application script executes",
+    "visual_dependency_policy": "route/decorative media can degrade or hold only that route; never block Engine boot"
   },
   "authority_contracts": {
     "project_admin_default_recovery_pin": "4353",
@@ -51,6 +51,6 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "admiral-grade-single-build-atomic-memory-snapshot-plus-yardarm-visual-helm-owner-bridge-canonical-fleet",
-  "release_note": "Admiral Seal removes executable service-worker caching entirely. Boot fetches the complete runtime with cache:no-store, validates release identity and required files, injects verified CSS, executes the exact verified JS bytes from in-memory Blob URLs, verifies an identity-only service worker, then releases Engine paint. No second network fetch may substitute different executable bytes."
+  "release_focus": "root-upload-safe-admiral-grade-single-build-plus-yardarm-visual-helm-owner-bridge-canonical-fleet",
+  "release_note": "Root Keel flattens required runtime/media into repository-root files for iPad GitHub web upload, removes nested artwork from Engine boot dependencies, and preserves verified in-memory executable snapshot + identity-only service-worker sentinel."
 }

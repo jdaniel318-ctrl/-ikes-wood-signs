@@ -1,8 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
   "build": "8.0.8",
-  "release": "Yardarm",
-  "seal": "yardarm-808-full-keel-91d4c8",
+  "release": "Yardarm \u2014 Root Keel",
+  "seal": "yardarm-808-root-keel-6a31fd",
   "execution_model": "verified-in-memory-atomic-snapshot",
-  "service_worker": "identity-only"
+  "service_worker": "identity-only",
+  "release_name": "Yardarm \u2014 Root Keel"
 }

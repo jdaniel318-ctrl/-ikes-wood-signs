@@ -16,7 +16,7 @@
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.0.8 YARDARM — atomic release seal.
     const DARK_SKY_EXPECTED_BUILD = '8.0.8';
-    const DARK_SKY_RELEASE_SEAL = 'yardarm-808-full-keel-91d4c8';
+    const DARK_SKY_RELEASE_SEAL = 'yardarm-808-root-keel-6a31fd';
     window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
@@ -139,8 +139,8 @@
     @media(max-width:560px){#darkSkyFirstPaintShield .ds-release-hold .ds-release-grid{grid-template-columns:1fr;}}
   </style>
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" type="image/png" href="assets/black_flag_platform_icon.png" />
-  <link rel="apple-touch-icon" href="assets/black_flag_platform_icon.png" />
+  <link rel="icon" type="image/png" href="black_flag_platform_icon.png" />
+  <link rel="apple-touch-icon" href="black_flag_platform_icon.png" />
   <style id="bootLockStyles">
     body.boot-locked #app, body.boot-locked #returnToEngineBtn {display:none!important}
     body.boot-locked #blackFlagEntryGate {display:grid!important}
@@ -174,7 +174,7 @@
     <div class="bf-entry-shell">
       <div class="bf-entry-kicker">BLACK FLAG • SECURE COMMAND ACCESS</div>
       <div class="black-flag-engine-brand"><div class="bf-engine-title-lockup">
-      <img class="bf-engine-primary-lockup" src="assets/black_flag_primary_lockup.png" alt="Black Flag — Business Command Platform" />
+      <img class="bf-engine-primary-lockup" src="black_flag_primary_lockup.png" alt="Black Flag — Business Command Platform" />
       <div class="bf-entry-engine-title"><div class="bf-platform-name">ENGINE ACCESS</div><h1>Engine Room</h1><div class="bf-platform-subtitle">DARK SKY COMMAND</div></div>
     </div></div>
       <p class="bf-entry-sub">Authorized access to project operations, fleet controls, and platform command.</p><div class="bf-entry-trust"><span class="bf-entry-trust-dot"></span><strong>SECURE ENGINE ACCESS</strong><span>Session isolated • project boundaries enforced</span></div>
@@ -203,7 +203,7 @@
   </div>
 
   
-    <button type="button" id="returnToEngineBtn" class="project-engine-return hidden dark-sky-return-control" aria-label="Return to Dark Sky" title="Return to Dark Sky"><img class="dark-sky-return-icon" src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"></button>
+    <button type="button" id="returnToEngineBtn" class="project-engine-return hidden dark-sky-return-control" aria-label="Return to Dark Sky" title="Return to Dark Sky"><img class="dark-sky-return-icon" src="black_flag_platform_icon.png" alt="" aria-hidden="true"></button>
 
   
   <!-- v2.9.40 Captain's Quarters: isolated Captain-only creative chamber -->
@@ -474,7 +474,7 @@
         <div class="brand-subtitle">Self-Serve Sign Ordering</div>
         <div class="brand-kicker">Pick your wood • Design • Preview • Order</div>
       </div>
-      <img id="projectHeaderCharacter" src="assets/ike_character.jpg" alt="Ike holding a wood sign blank" class="header-ike" />
+      <img id="projectHeaderCharacter" src="ike_character.jpg" alt="Ike holding a wood sign blank" class="header-ike" />
       <button type="button" id="adminBtn" class="icon-btn" aria-label="Open admin area">⚙︎</button>
     </header>
     <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
@@ -488,7 +488,7 @@
             <p id="welcomeIntro">Pick the piece of wood you love. Ike will guide you through the rest.</p>
             <div class="wood-ribbon" id="welcomeRibbon">YOUR WOOD • YOUR WORDS • YOUR SIGN</div>
           </div>
-          <img id="welcomeCharacter" src="assets/ike_character.jpg" alt="Cartoon Ike holding a wood sign blank" class="ike-character" />
+          <img id="welcomeCharacter" src="ike_character.jpg" alt="Cartoon Ike holding a wood sign blank" class="ike-character" />
         </div>
         <div class="ikes-trust-row" aria-label="Ike's order promises">
           <span><b>HANDMADE LOCAL</b><small>Every sign is made by Ike.</small></span>
@@ -741,7 +741,7 @@
 
       <section class="screen celebration-screen" data-screen="done">
         <div class="celebration-burst">
-          <img src="assets/ike_character.jpg" alt="Cartoon Ike" class="celebration-ike" />
+          <img src="ike_character.jpg" alt="Cartoon Ike" class="celebration-ike" />
           <div>
             <div class="celebration-kicker">THANK YOU FOR CHOOSING IKE!</div>
             <h2 id="doneHeadline">Your Custom Sign Is In Ike's Hands!</h2>
@@ -764,7 +764,7 @@
         <div class="final-action-row"><button type="button" id="newOrderBtn" class="final-green-btn">START ANOTHER ORDER</button><button type="button" id="completeOrderBtn" class="final-black-btn">COMPLETE</button></div>
       </section>
 
-      <div class="mini-brand"><img src="assets/ike_character.jpg" alt="Cartoon Ike" /><div><strong>Ike's Wood Signs</strong><span>Self-Serve Sign Ordering</span></div></div>
+      <div class="mini-brand"><img src="ike_character.jpg" alt="Cartoon Ike" /><div><strong>Ike's Wood Signs</strong><span>Self-Serve Sign Ordering</span></div></div>
       <div class="nav-row"><button type="button" id="backBtn" class="text-btn">← Back</button><span id="stepLabel" class="helper"></span></div>
     </main>
 
@@ -984,7 +984,7 @@
 <header class="modern-engine-hero">
         <div class="modern-engine-brand black-flag-modern-brand">
           <div class="modern-engine-brand-copy">
-            <img class="modern-engine-wordmark" src="assets/black_flag_primary_lockup.png" alt="Black Flag — Business Command Platform">
+            <img class="modern-engine-wordmark" src="black_flag_primary_lockup.png" alt="Black Flag — Business Command Platform">
             <div class="engine-kicker">ENGINE CONTROL</div>
             <h2>ENGINE ROOM</h2>
             <p>Multi-project operations, configuration, testing, and platform control.</p>
@@ -1081,7 +1081,7 @@
       
       <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Dark Sky v4 Broadside structural status">
         <header class="v3-architecture-head">
-          <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>SYSTEM STATUS</span></div><h3>V4 BROADSIDE STATUS</h3><p>Platform contract, recovery, diagnostics, release discipline, and sealed project boundaries.</p></div>
+          <div><div class="black-flag-section-cue"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>SYSTEM STATUS</span></div><h3>V4 BROADSIDE STATUS</h3><p>Platform contract, recovery, diagnostics, release discipline, and sealed project boundaries.</p></div>
           <span id="v3SchemaBadge">PROJECT ENVELOPE</span>
         </header>
         <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
@@ -1089,7 +1089,7 @@
 
       <section id="fullSailCommandDeck" class="full-sail-command-deck" aria-label="Full Sail Command Deck">
         <header class="full-sail-head">
-          <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>CLEAR HORIZON</span></div><h3>Command Deck</h3><p>Daily operating posture, release readiness, and the next useful moves across the fleet.</p></div>
+          <div><div class="black-flag-section-cue"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>CLEAR HORIZON</span></div><h3>Command Deck</h3><p>Daily operating posture, release readiness, and the next useful moves across the fleet.</p></div>
           <strong id="fullSailState" class="full-sail-state">READING</strong>
         </header>
         <div id="fullSailCommandBody" class="full-sail-command-body"><p class="helper">Reading fleet command signals…</p></div>
@@ -1105,7 +1105,7 @@
       <section id="firstMateWatch" class="first-mate-watch" aria-label="First Mate Watch">
         <header>
           <div class="first-mate-mark" aria-hidden="true">FM</div>
-          <div><div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG WATCH</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>FIRST MATE'S WATCH</span></div><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
+          <div><div class="black-flag-section-cue"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG WATCH</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>FIRST MATE'S WATCH</span></div><h3>Waters Ahead</h3><p>Operational warnings and recommendations. Captain-level decisions remain yours.</p></div>
           <button id="firstMateRefreshBtn" class="secondary-btn first-mate-refresh-btn" type="button">RUN WATCH</button>
         </header>
         <div id="firstMateWatchSummary" class="first-mate-watch-summary" aria-live="polite"></div>
@@ -1166,7 +1166,7 @@
       <section id="engineProjectsSection" class="project-command-section modern-project-command advanced-collapsed">
         <div class="modern-project-command-head">
           <div>
-            <div class="black-flag-section-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="engine-kicker">ADVANCED PROJECT COMMAND</div>
+            <div class="black-flag-section-cue"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="engine-kicker">ADVANCED PROJECT COMMAND</div>
             <div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>ADVANCED PROJECT COMMAND</span></div><h3>PROJECT TOOLS</h3>
             <p id="engineProjectsHelp">Advanced project administration and legacy project-card operations. Use Fleet Dock above for normal vessel navigation.</p>
             <div id="projectSummaryBadge" class="project-summary-badge"></div>
@@ -1197,12 +1197,12 @@
           <div class="project-engine-identity">
             <div id="pecBrandMark" class="pec-brand-mark"><span id="pecBrandCode">PRJ</span><img id="pecBrandLogo" class="hidden" alt=""></div>
             <div>
-              <div class="project-platform-cue"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="engine-kicker">PROJECT CONTROL CENTER</div>
+              <div class="project-platform-cue"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="engine-kicker">PROJECT CONTROL CENTER</div>
               <h3 id="pecTitle">Project</h3>
               <p id="pecSubtitle">Project-specific controls.</p>
             </div>
           </div>
-          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine" type="button"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"></button>
+          <button id="closeProjectEngineControl" class="secondary-btn small workspace-back-btn black-flag-back-mark" aria-label="Back to Engine" title="Back to Engine" type="button"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true" class="project-engine-back-logo"></button>
         </div>
 
         <nav class="project-tabs project-command-nav" id="projectTabs" aria-label="Project Control navigation">
@@ -1253,7 +1253,7 @@
 
       <section id="engineConfigurationDock" class="engine-configuration-dock hidden" aria-label="Engine configuration">
         <header class="engine-configuration-head">
-          <div class="engine-config-brandline"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"><div><div class="engine-kicker">ENGINE CONFIGURATION</div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>ENGINE CONFIGURATION</span></div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div></div>
+          <div class="engine-config-brandline"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"><div><div class="engine-kicker">ENGINE CONFIGURATION</div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>ENGINE CONFIGURATION</span></div><h3>Configure Engine</h3><p>Platform-wide operating settings. Project-specific controls remain inside each project Control Center.</p></div></div>
           <button id="engineConfigurationCloseBtn" class="secondary-btn workspace-back-btn" type="button">← BACK TO ENGINE</button>
         </header>
         <section id="engineEconomicsConfig" class="engine-economics-config">
@@ -1524,14 +1524,14 @@
   <div class="commissioning-shell">
     <header class="commissioning-head">
       <div class="commissioning-brand-block">
-        <img class="commissioning-platform-mark" src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true">
+        <img class="commissioning-platform-mark" src="black_flag_platform_icon.png" alt="" aria-hidden="true">
         <div>
           <div class="eyebrow">BLACK FLAG • PROJECT COMMISSIONING</div>
           <h1>Commission New Project</h1>
           <p>Create, configure, and prepare a new business for private Sea Trial.</p>
         </div>
       </div>
-      <button id="closeProjectCommissioning" class="commission-engine-return" type="button" aria-label="Back to Engine" title="Back to Engine"><img src="assets/black_flag_platform_icon.png" alt="" aria-hidden="true"></button>
+      <button id="closeProjectCommissioning" class="commission-engine-return" type="button" aria-label="Back to Engine" title="Back to Engine"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"></button>
     </header>
 
     <div class="commission-progress" id="commissionProgress">
@@ -1567,7 +1567,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.0.8', SEAL='yardarm-808-full-keel-91d4c8';
+    const EXPECTED='8.0.8', SEAL='yardarm-808-root-keel-6a31fd';
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
@@ -1575,7 +1575,7 @@
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
     const snapshotPaths=['styles.css','platform_core.js','platform_v4.js','platform_identity.js','app.js','captain.js'];
     const presencePaths=['owner.html','manifest.webmanifest','DEPLOYMENT_MANIFEST.json','RELEASE_SEAL.json','RELEASE_INVENTORY.json','sw.js'];
-    const assetPaths=['assets/black_flag_primary_lockup.png','assets/black_flag_platform_icon.png','assets/ike_character.jpg','assets/captains_quarters_command_center_v578.png','assets/admirals_deck_ceremonial_v640.png','assets/signal_restoration_logo.png'];
+    const assetPaths=[]; // Root Keel: visual/route assets never block Engine boot; route surfaces verify/fallback when opened.
     function releaseUrl(path){const u=new URL(path,location.href);u.searchParams.set('releaseSeal',SEAL);u.searchParams.set('_ds',Date.now().toString());return u.toString();}
     async function fetchResponse(path){
       const r=await fetch(releaseUrl(path),{cache:'no-store',credentials:'same-origin',redirect:'follow'});
@@ -1648,7 +1648,7 @@
       if(String(inventory?.build||'')!==EXPECTED||String(inventory?.seal||'')!==SEAL)throw Object.assign(new Error('RELEASE_INVENTORY.json does not match this page.'),{manifestBuild});
       const fetched={};
       for(const path of [...snapshotPaths,...presencePaths]) fetched[path]=await fetchText(path);
-      for(const path of assetPaths) await fetchResponse(path);
+      for(const path of assetPaths){try{await fetchResponse(path);}catch(err){console.warn('[Dark Sky] optional visual unavailable',path,err);}}
       const runtimeMatch=fetched['app.js'].match(/const\s+BUILD_VERSION\s*=\s*['"]([^'"]+)['"]/);
       const runtimeBuild=runtimeMatch?.[1]||'unknown';
       if(runtimeBuild!==EXPECTED)throw Object.assign(new Error(`App runtime ${runtimeBuild} does not match ${EXPECTED}.`),{manifestBuild,runtimeBuild});

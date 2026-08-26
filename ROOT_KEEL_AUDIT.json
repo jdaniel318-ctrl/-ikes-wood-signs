@@ -1,0 +1,25 @@
+{
+  "schema": "dark-sky-root-keel-audit-v1",
+  "build": "8.0.8",
+  "release": "Yardarm \u2014 Root Keel",
+  "seal": "yardarm-808-root-keel-6a31fd",
+  "status": "PASS",
+  "required_file_count": 24,
+  "missing": [],
+  "runtime_files_with_nested_asset_refs": [],
+  "flat_asset_count": 11,
+  "flat_assets": [
+    "admirals_deck_ceremonial_v640.png",
+    "black_flag_platform_icon.png",
+    "black_flag_primary_lockup.png",
+    "captains_quarters_cinematic_v2953.jpg",
+    "captains_quarters_command_center_v578.png",
+    "engine_room_modern_benchmark_v2976.png",
+    "engine_room_pirate_benchmark_v2978.png",
+    "ike_character.jpg",
+    "ike_character_white_teeth.png",
+    "ikes_real_sign_lettering_reference.jpg",
+    "signal_restoration_logo.png"
+  ],
+  "deployment_note": "Historical Markdown may mention the retired assets/ layout; no executable/manifest runtime file depends on a nested assets path."
+}

@@ -1,3 +1,11 @@
+# Dark Sky 8.0.8 — Yardarm — Root Keel
+
+- Flattened all current release media to repository root so iPad GitHub web upload cannot silently omit nested assets.
+- Removed Admiral/Captain/project visual assets from Engine first-paint hard requirements.
+- Missing route imagery can no longer sink Black Flag Engine.
+- Preserved atomic no-store executable snapshot, stable service-worker sentinel URL, and release-seal identity.
+- Added root-upload-safe inventory and packaging audit.
+
 # Dark Sky 8.0.8 — Yardarm Admiral Seal
 
 - Removed service-worker executable caching/fetch interception.
@@ -136,7 +144,7 @@
 
 - Replaced the hard-coded Ike-only Seaworthiness shortcut with a dynamic Fleet Dock that scales across every registered vessel.
 - Each Fleet Dock card exposes separate Customer, Owner / Partner, Test / Preview, and Captain Dock routes while preserving exact project isolation.
-- Restored Ike artwork to the durable canonical `assets/ike_character.jpg` path while preserving the approved teeth-only white correction; avoids introducing a fragile new runtime asset dependency.
+- Restored Ike artwork to the durable canonical `ike_character.jpg` path while preserving the approved teeth-only white correction; avoids introducing a fragile new runtime asset dependency.
 - Private Preview and Sea Trial now rely on the explicit Return to Test Deck banner rather than the ambiguous floating Black Flag icon.
 - Added deadline-bounded Engine command reads and explicit Engine-home refreshes for Broadside Status, Command Deck, and Fleet Dock so optional storage/integrity reads cannot leave primary command surfaces stuck on READING.
 - Preserved 9/9 proving-ground voyage contracts, owner/partner isolation, project admin authority, and live customer cleanliness.

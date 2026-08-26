@@ -2,7 +2,7 @@
 
 Upload the entire contents of `DarkSky808-Yardarm-AdmiralSeal` together. Do not cherry-pick individual runtime-control files.
 
-Release seal: `yardarm-808-full-keel-91d4c8`
+Release seal: `yardarm-808-root-keel-6a31fd`
 Build: `8.0.8`
 
 ## Admiral release rule
@@ -13,3 +13,10 @@ The Engine will then fetch every required existing repository runtime/asset with
 If a required repository runtime/asset is missing or disagrees with the release identity, the Engine remains on Release Hold and names the failing file instead of blending builds.
 
 Project/order/customer/owner data in IndexedDB is outside cleanup scope.
+
+
+## Root Keel amendment
+- All upload-critical files are flat at repository root for iPad/Safari GitHub web upload.
+- Nested folders are forbidden as a release-critical dependency.
+- Core executable identity may HOLD the Engine. Route/decorative visual media may HOLD only the route that needs it, with a branded fallback where safe.
+- Release seal: `yardarm-808-root-keel-6a31fd`.
