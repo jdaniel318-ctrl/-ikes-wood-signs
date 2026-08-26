@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.1.5';
+  const BUILD_VERSION='8.1.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3956,7 +3956,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.1.5',
+    build:'8.1.6',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4041,7 +4041,9 @@
     {id:'atomic-release',class:'doctrine',origin:'shipyard',title:'Atomic Release Integrity',lesson:'One candidate, one runtime identity, one release seal, deterministic recovery, and no mixed-build paint.',risk:'critical',applies:'all',missionAdapter:'Fleet-wide shipyard law; projects inherit it without customization.'},
     {id:'readable-feedback',class:'capability',origin:'fleet',title:'Durable Action Feedback',lesson:'Important taps must visibly change state, remain readable, and leave durable confirmation after transient feedback disappears.',risk:'low',applies:'all',missionAdapter:'Choose feedback appropriate to customer, owner, Captain, or Admiral context.'},
     {id:'safe-self-recovery',class:'doctrine',origin:'shipyard',title:'Verified Safe Self-Recovery',lesson:'A known stale runtime may be replaced automatically only after the incoming release snapshot fully verifies and cleanup is constrained to application runtime state.',risk:'critical',applies:'all',missionAdapter:'Fleet-wide release law; never delete project, customer, order, owner, or configuration data during automatic recovery.'},
-    {id:'escalation-by-exception',class:'doctrine',origin:'shipyard',title:'Escalation by Exception',lesson:'The shipyard diagnoses and owns deterministic WATCH work. Human authority is requested only for judgment, irreversible action, ambiguous safety, or deliberate promotion.',risk:'high',applies:'all',missionAdapter:'Every vessel should distinguish shipyard-owned work from Captain/Admiral decisions.'}
+    {id:'escalation-by-exception',class:'doctrine',origin:'shipyard',title:'Escalation by Exception',lesson:'The shipyard diagnoses and owns deterministic WATCH work. Human authority is requested only for judgment, irreversible action, ambiguous safety, or deliberate promotion.',risk:'high',applies:'all',missionAdapter:'Every vessel should distinguish shipyard-owned work from Captain/Admiral decisions.'},
+    {id:'doctrine-inheritance',class:'doctrine',origin:'shipyard',title:'Doctrine Inheritance',lesson:'True fleet doctrine is inherited automatically by every admitted vessel and is proven centrally; it must not create repetitive per-vessel review chores.',risk:'critical',applies:'all',missionAdapter:'Fleet law applies automatically while vessel-specific implementation evidence remains isolated.'},
+    {id:'recommendation-compression',class:'doctrine',origin:'shipyard',title:'Recommendation Compression',lesson:'Many raw project matches must be compressed into a small number of mission-aware Admiral decisions, with shared deficiencies grouped as fleet patterns.',risk:'high',applies:'all',missionAdapter:'Show the Admiral decisions, not the bookkeeping that produced them.'}
   ]);
   function fleetLearningStateRead(){try{return JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};}catch(_){return {};}}
   function fleetLearningStateWrite(v){try{localStorage.setItem('darkSkyFleetLearningState',JSON.stringify(v));}catch(_){} return v;}
@@ -4062,22 +4064,56 @@
   }
   function fleetLearningRecommendations(){
     const list=projects(),rows=[];
-    for(const p of list)for(const learning of FLEET_LEARNING_REGISTRY){const a=fleetLearningApplicability(learning,p);if(!a.eligible)continue;rows.push({projectId:p.id,projectCode:p.projectCode||'',projectName:p.name,projectType:fleetLearningProjectType(p),learningId:learning.id,title:learning.title,class:learning.class,origin:learning.origin,risk:learning.risk,fit:a.fit,status:fleetLearningAdoptionStatus(p.id,learning.id),missionAdapter:learning.missionAdapter});}
+    for(const p of list)for(const learning of FLEET_LEARNING_REGISTRY){
+      const a=fleetLearningApplicability(learning,p);if(!a.eligible)continue;
+      const inherited=learning.class==='doctrine';
+      rows.push({projectId:p.id,projectCode:p.projectCode||'',projectName:p.name,projectType:fleetLearningProjectType(p),learningId:learning.id,title:learning.title,class:learning.class,origin:learning.origin,risk:learning.risk,fit:a.fit,status:inherited?'inherited':fleetLearningAdoptionStatus(p.id,learning.id),missionAdapter:learning.missionAdapter});
+    }
     return rows;
   }
+  function fleetSharedCommissioningPatterns(){
+    const patterns=new Map();
+    for(const p of projects()){
+      const snap=commissioningSnapshot(p),next=snap.rows.find(r=>!r.pass&&r.id!=='captain');
+      if(!next)continue;
+      const row=patterns.get(next.id)||{gate:next.id,label:next.label,detail:next.detail,projects:[]};
+      row.projects.push({id:p.id,name:p.name});patterns.set(next.id,row);
+    }
+    return [...patterns.values()].sort((a,b)=>b.projects.length-a.projects.length);
+  }
+  function fleetLearningCompressedDecisions(rows=fleetLearningRecommendations()){
+    const groups=new Map();
+    for(const r of rows.filter(x=>x.class!=='doctrine'&&x.status!=='not_applicable')){
+      const key=r.learningId;const g=groups.get(key)||{learningId:key,title:r.title,class:r.class,origin:r.origin,risk:r.risk,missionAdapter:r.missionAdapter,rows:[]};g.rows.push(r);groups.set(key,g);
+    }
+    return [...groups.values()].map(g=>({...g,unreviewed:g.rows.filter(r=>r.status==='unreviewed').length,staged:g.rows.filter(r=>r.status==='staged').length,adopted:g.rows.filter(r=>r.status==='adopted').length})).filter(g=>g.unreviewed||g.staged).sort((a,b)=>({critical:4,high:3,medium:2,low:1}[b.risk]||0)-({critical:4,high:3,medium:2,low:1}[a.risk]||0)||b.rows.length-a.rows.length);
+  }
+  function fleetLearningBulkStatus(learningId,status){
+    const rows=fleetLearningRecommendations().filter(r=>r.learningId===learningId&&r.class!=='doctrine'&&r.status!=='not_applicable');
+    const st=fleetLearningStateRead();
+    for(const r of rows){st[r.projectId]=st[r.projectId]||{};st[r.projectId][learningId]=status;}
+    fleetLearningStateWrite(st);admiralLedgerRecord('fleet-learning-bulk-review',{learningId,status,projects:rows.map(r=>r.projectId)});renderFleetLearningRegistry();
+  }
   function persistFleetLearningRegistry(){
-    const snapshot={schema:'dark-sky-fleet-learning-registry-v1',build:BUILD_VERSION,at:new Date().toISOString(),learnings:FLEET_LEARNING_REGISTRY,recommendations:fleetLearningRecommendations()};
+    const recommendations=fleetLearningRecommendations();
+    const snapshot={schema:'dark-sky-fleet-learning-registry-v2',build:BUILD_VERSION,at:new Date().toISOString(),learnings:FLEET_LEARNING_REGISTRY,recommendations,compressedDecisions:fleetLearningCompressedDecisions(recommendations),sharedPatterns:fleetSharedCommissioningPatterns()};
     try{localStorage.setItem('darkSkyFleetLearningRegistry',JSON.stringify(snapshot));}catch(_){}
     window.__darkSkyFleetLearningRegistry=snapshot;return snapshot;
   }
   function renderFleetLearningRegistry(){
     const host=$('fleetLearningBody'),summary=$('fleetLearningSummary'),stateEl=$('fleetLearningState');if(!host||!summary)return;
-    const snap=persistFleetLearningRegistry(),rows=snap.recommendations;
-    const staged=rows.filter(r=>r.status==='staged').length,accepted=rows.filter(r=>r.status==='adopted').length,unreviewed=rows.filter(r=>r.status==='unreviewed').length;
-    if(stateEl){stateEl.textContent=unreviewed?'REVIEWING FLEET':'LEARNING ALIGNED';stateEl.className=`fleet-learning-state ${unreviewed?'watch':'clear'}`;}
-    summary.innerHTML=`<article><small>LEARNINGS</small><strong>${FLEET_LEARNING_REGISTRY.length}</strong><span>Doctrine + reusable capabilities</span></article><article><small>VESSEL MATCHES</small><strong>${rows.length}</strong><span>Mission-aware recommendations</span></article><article><small>STAGED</small><strong>${staged}</strong><span>Awaiting Captain review</span></article><article><small>ADOPTED</small><strong>${accepted}</strong><span>Explicitly accepted patterns</span></article>`;
-    const grouped=projects().map(p=>({p,rows:rows.filter(r=>r.projectId===p.id)})).filter(g=>g.rows.length);
-    host.innerHTML=grouped.map(({p,rows})=>`<article class="fleet-learning-vessel"><header><div><small>${escapeHtml(fleetStableCallsign(p))} • ${escapeHtml(fleetLearningProjectType(p)||'project')}</small><strong>${escapeHtml(p.name)}</strong></div><span>${rows.filter(r=>r.status==='staged').length} staged</span></header><div class="fleet-learning-row-list">${rows.map(r=>`<div class="fleet-learning-row ${escapeHtml(r.status)}"><div><small>${escapeHtml(r.class.toUpperCase())} • ORIGIN ${escapeHtml(r.origin)} • ${escapeHtml(r.risk.toUpperCase())} RISK</small><strong>${escapeHtml(r.title)}</strong><p>${escapeHtml(r.missionAdapter)}</p></div><div class="fleet-learning-actions"><span>${escapeHtml(r.status.replace('_',' ').toUpperCase())}</span>${r.status==='unreviewed'?`<button type="button" data-learning-stage="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">STAGE REVIEW</button><button type="button" data-learning-na="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">NOT FOR THIS VESSEL</button>`:r.status==='staged'?`<button type="button" data-learning-adopt="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">ADOPT PATTERN</button><button type="button" data-learning-reset="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">UNSTAGE</button>`:`<button type="button" data-learning-reset="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">REVIEW AGAIN</button>`}</div></div>`).join('')}</div></article>`).join('');
+    const snap=persistFleetLearningRegistry(),rows=snap.recommendations,decisions=snap.compressedDecisions||[],patterns=snap.sharedPatterns||[];
+    const doctrines=FLEET_LEARNING_REGISTRY.filter(x=>x.class==='doctrine');
+    const staged=rows.filter(r=>r.status==='staged').length,accepted=rows.filter(r=>r.status==='adopted').length;
+    const decisionCount=decisions.length;
+    if(stateEl){stateEl.textContent=decisionCount?'DECISIONS READY':'FLEET LEARNING ALIGNED';stateEl.className=`fleet-learning-state ${decisionCount?'watch':'clear'}`;}
+    summary.innerHTML=`<article><small>FLEET DOCTRINE</small><strong>${doctrines.length}</strong><span>Inherited automatically by all ${projects().length} vessels</span></article><article><small>RAW MATCHES</small><strong>${rows.length}</strong><span>Compressed below — bookkeeping hidden</span></article><article><small>ADMIRAL DECISIONS</small><strong>${decisionCount}</strong><span>Mission-aware reviews that still matter</span></article><article><small>ADOPTED</small><strong>${accepted}</strong><span>Explicit project capability adoptions</span></article>`;
+    const patternHtml=patterns.length?`<section class="fleet-learning-compressed"><header><small>SHARED FLEET PATTERNS</small><strong>Fix once. Validate per vessel.</strong></header>${patterns.slice(0,3).map(p=>`<article class="fleet-pattern-card"><div><small>${p.projects.length} VESSEL${p.projects.length===1?'':'S'} • ${escapeHtml(p.gate.toUpperCase())}</small><strong>${escapeHtml(p.label)}</strong><p>${escapeHtml(p.detail)} Shared across: ${escapeHtml(p.projects.map(x=>x.name).join(', '))}.</p></div><span>SHIPYARD PATTERN</span></article>`).join('')}</section>`:'';
+    const doctrineHtml=`<section class="fleet-learning-compressed"><header><small>INHERITED FLEET LAW</small><strong>${doctrines.length} doctrine rules — no repetitive vessel review</strong></header><div class="fleet-doctrine-chips">${doctrines.map(d=>`<span title="${escapeHtml(d.lesson)}">✓ ${escapeHtml(d.title)}</span>`).join('')}</div></section>`;
+    const decisionHtml=decisions.length?`<section class="fleet-learning-compressed"><header><small>ADMIRAL DECISION QUEUE</small><strong>${decisions.length} compressed decision${decisions.length===1?'':'s'}</strong></header>${decisions.map(g=>`<article class="fleet-decision-card"><div><small>${escapeHtml(g.class.toUpperCase())} • ORIGIN ${escapeHtml(g.origin)} • ${escapeHtml(g.risk.toUpperCase())} RISK</small><strong>${escapeHtml(g.title)}</strong><p>${escapeHtml(g.missionAdapter)}</p><span>Potential vessels: ${escapeHtml(g.rows.map(r=>r.projectName).join(', '))}</span></div><div class="fleet-learning-actions"><button type="button" data-learning-stage-group="${escapeHtml(g.learningId)}">STAGE ${g.rows.length} MATCH${g.rows.length===1?'':'ES'}</button><button type="button" data-learning-dismiss-group="${escapeHtml(g.learningId)}">DEFER</button></div></article>`).join('')}</section>`:`<section class="fleet-learning-compressed aligned"><strong>Fleet learning aligned.</strong><p>No capability transfer currently needs Admiral review.</p></section>`;
+    host.innerHTML=patternHtml+doctrineHtml+decisionHtml+`<details class="fleet-learning-raw"><summary>VIEW PROJECT-LEVEL LEARNING DETAILS</summary>${projects().map(p=>{const pr=rows.filter(r=>r.projectId===p.id&&r.class!=='doctrine');if(!pr.length)return'';return `<article class="fleet-learning-vessel"><header><div><small>${escapeHtml(fleetStableCallsign(p))} • ${escapeHtml(fleetLearningProjectType(p)||'project')}</small><strong>${escapeHtml(p.name)}</strong></div><span>${pr.filter(r=>r.status==='staged').length} staged</span></header><div class="fleet-learning-row-list">${pr.map(r=>`<div class="fleet-learning-row ${escapeHtml(r.status)}"><div><small>${escapeHtml(r.class.toUpperCase())} • ${escapeHtml(r.risk.toUpperCase())} RISK</small><strong>${escapeHtml(r.title)}</strong><p>${escapeHtml(r.missionAdapter)}</p></div><div class="fleet-learning-actions"><span>${escapeHtml(r.status.replace('_',' ').toUpperCase())}</span>${r.status==='unreviewed'?`<button type="button" data-learning-stage="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">STAGE REVIEW</button><button type="button" data-learning-na="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">NOT FOR THIS VESSEL</button>`:r.status==='staged'?`<button type="button" data-learning-adopt="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">ADOPT PATTERN</button><button type="button" data-learning-reset="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">UNSTAGE</button>`:`<button type="button" data-learning-reset="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">REVIEW AGAIN</button>`}</div></div>`).join('')}</div></article>`}).join('')}</details>`;
+    host.querySelectorAll('[data-learning-stage-group]').forEach(b=>b.onclick=()=>fleetLearningBulkStatus(b.dataset.learningStageGroup,'staged'));
+    host.querySelectorAll('[data-learning-dismiss-group]').forEach(b=>b.onclick=()=>fleetLearningBulkStatus(b.dataset.learningDismissGroup,'not_applicable'));
     host.querySelectorAll('[data-learning-stage]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningStage,'staged'));
     host.querySelectorAll('[data-learning-adopt]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningAdopt,'adopted'));
     host.querySelectorAll('[data-learning-na]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningNa,'not_applicable'));
@@ -4173,7 +4209,7 @@
     const fleetLearning=persistFleetLearningRegistry();
     const learningRecommendations=fleetLearning.recommendations||[];
     const dangerousAutoApply=learningRecommendations.some(r=>r.status==='adopted'&&r.risk==='critical'&&r.class!=='doctrine');
-    add('fleet-learning-registry','Fleet Learning Registry',dangerousAutoApply?'fail':'pass',dangerousAutoApply?'A critical reusable capability was adopted without a doctrine-only boundary.':`${FLEET_LEARNING_REGISTRY.length} retained learnings mapped across ${projects().length} canonical vessels; adoption remains explicit and project-scoped.`);
+    add('fleet-learning-registry','Fleet Learning Registry',dangerousAutoApply?'fail':'pass',dangerousAutoApply?'A critical reusable capability was adopted without a doctrine-only boundary.':`${FLEET_LEARNING_REGISTRY.filter(x=>x.class==='doctrine').length} fleet doctrines inherited automatically; ${fleetLearning.compressedDecisions?.length||0} compressed capability decision(s) remain; adoption stays explicit and project-scoped.`);
 
     // Authority contracts: read-only verification only; no failure counters are incremented.
     const engine=await safe(()=>verifyEnginePin(DEFAULT_ENGINE_PIN,{recordFailure:false}),()=>({ok:false}));

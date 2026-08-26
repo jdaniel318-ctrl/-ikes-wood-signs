@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.1.5",
-  "release": "8.1.5",
+  "build": "8.1.6",
+  "release": "8.1.6",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -121,6 +121,12 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.1.5 Admiral Autopilot: verified stale-worker handoffs self-recover safely; WATCH is non-blocking; shipyard-owned deterministic work does not escalate to the Admiral; Known Good promotion remains deliberate/manual.",
-  "candidate": "8.1.5"
+  "note": "8.1.6 Strong Heading: same-tab recovery completion, automatic fleet doctrine inheritance, recommendation compression, and shared deficiency grouping; Known Good promotion remains manual.",
+  "candidate": "8.1.6",
+  "features": {
+    "same_tab_recovery_completion": true,
+    "fleet_doctrine_inheritance": true,
+    "admiral_recommendation_compression": true,
+    "shared_fleet_pattern_detection": true
+  }
 }

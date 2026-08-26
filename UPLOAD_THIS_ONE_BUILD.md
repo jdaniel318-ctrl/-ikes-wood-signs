@@ -1,20 +1,9 @@
-# Upload This One Build — Dark Sky 8.1.5 Admiral Autopilot — iPad Safe
+# Upload This One Build — Dark Sky 8.1.6 Strong Heading — iPad Safe
 
-Release seal: `admiral-autopilot-815-root-keel-b58e31`
+Upload the contents of this folder to the repository root. This package stays below the GitHub iPad web-upload ceiling.
 
-This upload package is intentionally **99 files** so GitHub's iPad/web uploader accepts it in one pass.
+Expected first boot from 8.1.5: Automatic Safe Recovery should replace the stale worker and complete the handoff in the SAME TAB without requiring refresh/reopen.
 
-Six unchanged historical storage-telemetry notes are intentionally omitted from this upload because they already exist in the repository from 8.1.2 and their bytes/checksums are unchanged:
+Then inspect Fleet Proving Ground and Fleet Learning Registry. Expected learning behavior: fleet doctrine is shown as inherited once, shared fleet deficiencies are grouped, and only compressed capability decisions are placed in the Admiral queue. Project-level details remain available under the disclosure.
 
-- `STORAGE_TELEMETRY_770.md`
-- `STORAGE_TELEMETRY_780.md`
-- `STORAGE_TELEMETRY_781.md`
-- `STORAGE_TELEMETRY_782.md`
-- `STORAGE_TELEMETRY_783.md`
-- `STORAGE_TELEMETRY_784.md`
-
-No runtime, release-identity, Fleet Learning Registry, calibration, doctrine, route, or visual file is omitted.
-
-Upload all 99 files in this folder to the repository root. After GitHub Pages deploys, refresh once. If the previous worker is still active, use **CLEAN RELEASE RETRY**.
-
-Admiral Autopilot then auto-runs release doctrine, known-calibration replay, and Fleet Learning Registry preflight. Recommendations may be staged/adopted per vessel, but no business-specific behavior crosses projects automatically. Final **MARK CANDIDATE KNOWN GOOD** remains manual.
+Final MARK CANDIDATE KNOWN GOOD remains deliberate/manual.

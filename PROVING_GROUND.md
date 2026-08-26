@@ -1,5 +1,5 @@
 
-## 8.1.5 Admiral Autopilot
+## 8.1.6 Strong Heading
 - Known stale-worker handoffs self-recover only after the incoming runtime snapshot and release identity fully verify.
 - Automatic cleanup is constrained to Dark Sky service-worker registrations and application caches; project/customer/order/owner/configuration data is never touched.
 - WATCH is now explicitly non-blocking when protected release contracts are clear.

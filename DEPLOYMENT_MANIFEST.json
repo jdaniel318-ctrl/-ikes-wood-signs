@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.1.5",
-  "version": "8.1.5",
-  "release_name": "Admiral Autopilot \u2014 Root Keel",
-  "releaseName": "Admiral Autopilot \u2014 Root Keel",
-  "release_seal": "admiral-autopilot-815-root-keel-b58e31",
+  "build": "8.1.6",
+  "version": "8.1.6",
+  "release_name": "Strong Heading \u2014 Root Keel",
+  "releaseName": "Strong Heading \u2014 Root Keel",
+  "release_seal": "strong-heading-816-root-keel-c91f42",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -52,7 +52,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "admiral-doctrine-learned-contracts-auto-preflight-plus-independent-proven-visual-and-experimental-length-detectors",
-  "release_note": "8.1.5 Admiral Autopilot adds verified automatic stale-worker recovery, non-blocking WATCH semantics, and escalation-by-exception ownership.",
+  "release_note": "8.1.6 Strong Heading closes same-tab recovery, inherits fleet doctrine automatically, compresses Admiral transfer decisions, and groups shared fleet deficiencies.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

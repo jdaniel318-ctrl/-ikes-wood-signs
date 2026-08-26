@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.1.5",
-  "release": "Admiral Autopilot \u2014 Root Keel",
-  "seal": "admiral-autopilot-815-root-keel-b58e31",
+  "build": "8.1.6",
+  "release": "Strong Heading \u2014 Root Keel",
+  "seal": "strong-heading-816-root-keel-c91f42",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Admiral Autopilot \u2014 Root Keel"
+  "release_name": "Strong Heading \u2014 Root Keel"
 }

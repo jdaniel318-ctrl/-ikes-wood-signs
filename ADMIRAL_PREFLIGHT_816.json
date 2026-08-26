@@ -1,0 +1,54 @@
+{
+  "schema": "dark-sky-admiral-preflight-contract-v2",
+  "build": "8.1.6",
+  "name": "Strong Heading",
+  "automatic": [
+    "release identity",
+    "authority/isolation voyages",
+    "known 2 ft Cedar calibration replay",
+    "detector independence",
+    "recovery history retention",
+    "decision brief",
+    "verified stale-worker self-recovery",
+    "WATCH ownership and escalation triage",
+    "same-tab recovery completion",
+    "fleet doctrine inheritance",
+    "recommendation compression",
+    "shared fleet deficiency grouping"
+  ],
+  "protected_assertions": [
+    "Ike orientation = Horizontal on known reference",
+    "Ike species = Cedar on known reference"
+  ],
+  "experimental_observations": [
+    "Ike length candidate/resolution telemetry"
+  ],
+  "manual": [
+    "MARK CANDIDATE KNOWN GOOD"
+  ],
+  "seal": "strong-heading-816-root-keel-c91f42",
+  "fleetLearningRegistry": true,
+  "automaticPropagation": "fleet_doctrine_only",
+  "manualPromotion": true,
+  "incident_intelligence": {
+    "production_species_resolution_path": true,
+    "assertion_level_diagnosis": true,
+    "detector_vs_harness_triage": true,
+    "clipboard_brief": true,
+    "manual_known_good_promotion": true
+  },
+  "admiral_autopilot": {
+    "verified_auto_worker_recovery": true,
+    "ambiguous_recovery_fallback": "manual hold",
+    "watch_blocks_promotion": false,
+    "human_escalation": "judgment-only",
+    "manual_known_good_promotion": true
+  },
+  "capabilityPropagation": "explicit_project_scoped_review",
+  "strongHeading": {
+    "sameTabRecovery": true,
+    "doctrineInheritance": true,
+    "recommendationCompression": true,
+    "sharedFleetPatterns": true
+  }
+}

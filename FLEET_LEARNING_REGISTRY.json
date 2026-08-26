@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-learning-registry-v1",
-  "build": "8.1.5",
-  "name": "Admiral Autopilot",
+  "build": "8.1.6",
+  "name": "Strong Heading",
   "classes": {
     "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
     "capability": "Reusable primitive that must be adapted to mission/users/data/risk before adoption.",
@@ -62,6 +62,26 @@
       "class": "capability",
       "origin": "fleet",
       "title": "Durable Action Feedback"
+    },
+    {
+      "id": "doctrine-inheritance",
+      "class": "doctrine",
+      "origin": "shipyard",
+      "title": "Doctrine Inheritance",
+      "lesson": "True fleet doctrine is inherited automatically by every admitted vessel and proven centrally; it must not create repetitive per-vessel review chores.",
+      "risk": "critical",
+      "applies": "all",
+      "missionAdapter": "Fleet law applies automatically while vessel-specific implementation evidence remains isolated."
+    },
+    {
+      "id": "recommendation-compression",
+      "class": "doctrine",
+      "origin": "shipyard",
+      "title": "Recommendation Compression",
+      "lesson": "Many raw project matches must be compressed into a small number of mission-aware Admiral decisions, with shared deficiencies grouped as fleet patterns.",
+      "risk": "high",
+      "applies": "all",
+      "missionAdapter": "Show the Admiral decisions, not the bookkeeping that produced them."
     }
   ],
   "governance": {
