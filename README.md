@@ -1,22 +1,9 @@
-# Dark Sky 8.1.8 — Craftlock
+# Dark Sky 8.1.9 — True Fit
 
-Craftlock hardens Ike’s customer completion boundary and design CX: final order creation is repaired and automatically proven; lettering size is selected beside style within machine-safe limits; new orders start blank; rotation communicates state; customer copy is free of internal Sea Trial language; camera permission is prepared without attempting to bypass Safari/iPadOS; and Review/Place Order actions are visibly gated.
+Ike layout is grounded in the finished SMOKE HOLE! and RAMJET signs. Generic Small/Balanced/Large/Fill is replaced by More Room / Ike Fit / Full Face. Ike Fit is default; the old 64px text ceiling is removed. Start With My Plank hard-resets stale customer/order design state.
 
-Fleet Judgment refines Admiral recommendation compression with mission-fit confidence and automatic weak-fit suppression.
+# Dark Sky 8.1.9 — True Fit
 
-# Dark Sky 8.1.7 — Fleet Judgment
+True Fit hardens Ike's customer voyage at the production boundary. It fixes final order serialization, adds an automated complete-order boundary voyage, adds bounded lettering-size presets beside lettering style, improves rotation state feedback, starts new Ike orders with blank wording, removes internal Sea Trial language from customer summaries, adds permission-aware camera guidance, and makes required review/order buttons visibly gated.
 
-Fleet Judgment reduces Admiral bookkeeping while preserving project isolation. It closes the same-tab recovery handoff, auto-inherits true fleet doctrine, compresses transfer recommendations, and groups shared fleet deficiencies before they become six separate chores.
-
-
-## 8.1.7 Fleet Judgment
-- Known stale-worker handoffs self-recover only after the incoming runtime snapshot and release identity fully verify.
-- Automatic cleanup is constrained to Dark Sky service-worker registrations and application caches; project/customer/order/owner/configuration data is never touched.
-- WATCH is now explicitly non-blocking when protected release contracts are clear.
-- Deterministic WATCH work is owned by the shipyard; the Admiral is escalated only for judgment, ambiguity, irreversible action, or deliberate Known Good promotion.
-- Proving Ground reports all voyages assessed, separates CLEAR/WATCH/HOLD, and keeps WATCH evidence visible after promotion.
-# Dark Sky 8.1.7 — Fleet Judgment
-
-This candidate turns Proving Ground HOLDs into decision-grade incidents. The Admiral now diagnoses failing assertions before escalating work, identifies likely detector-vs-harness failures, and produces a compact clipboard brief so the Captain does not need to send scrolling screenshots or raw evidence files for routine diagnosis.
-
-The Fleet Learning Registry, project isolation, release doctrine, detector independence, and manual Known Good promotion contracts remain in force.
+Fleet Judgment and Admiral governance remain intact. Known Good promotion remains manual.

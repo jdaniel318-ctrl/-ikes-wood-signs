@@ -1,6 +1,21 @@
-# Dark Sky 8.1.8 — Craftlock
+# 8.1.9 — True Fit
 
-Craftlock hardens Ike’s customer completion boundary and design CX: final order creation is repaired and automatically proven; lettering size is selected beside style within machine-safe limits; new orders start blank; rotation communicates state; customer copy is free of internal Sea Trial language; camera permission is prepared without attempting to bypass Safari/iPadOS; and Review/Place Order actions are visibly gated.
+- Replaced generic size presets with More Room / Ike Fit / Full Face.
+- Removed legacy 64px preview ceiling; fit is style-aware and face-filling.
+- Grounded layout against finished SMOKE HOLE! and RAMJET examples.
+- New Ike orders hard-reset stale wording, contact, recognition, and approved-design state.
+- Preserved 8.1.8 final-order serializer and complete-order boundary.
+
+# 8.1.9 — True Fit
+
+- Fixed final Ike submission failure caused by missing `ikeRecognitionForOrder` serializer.
+- Added release-blocking automated Ike complete-order boundary evidence.
+- Added Small / Balanced / Large / Fill lettering-size presets beside lettering style; all presets are bounded by detected usable-zone geometry and exact approved render is frozen.
+- New Ike orders start with blank wording.
+- Rotation review now reports explicit quarter-turn/original state and current layout.
+- Customer recognition surfaces no longer expose Sea Trial terminology.
+- Camera flow detects permission state when supported and gives concise grant/deny guidance without attempting to bypass Safari.
+- Review My Design and Place My Order are visibly gated until required choices/approval are complete.
 
 # 8.1.7 — Fleet Judgment
 

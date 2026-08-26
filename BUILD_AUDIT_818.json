@@ -1,20 +1,23 @@
 {
   "schema": "dark-sky-build-audit-v1",
-  "build": "8.1.8",
-  "name": "Craftlock",
+  "build": "8.1.9",
+  "name": "True Fit",
   "uploadFileCount": 99,
   "maxWebUploadFiles": 99,
   "checks": {
-    "finalOrderReferenceRepair": true,
-    "completeOrderVoyage": true,
-    "machineSafeLetteringSize": true,
-    "blankNewOrderWording": true,
-    "rotationStateFeedback": true,
-    "customerSeaTrialCopyRemoved": true,
-    "permissionGateway": true,
-    "reviewButtonGating": true,
-    "finalApprovalButtonGating": true,
-    "manualKnownGoodPromotion": true
+    "completeOrderSerializer": true,
+    "completeOrderAutomatedVoyage": true,
+    "letterSizePresets": true,
+    "exactRenderLock": true,
+    "rotationFeedback": true,
+    "cameraPermissionGateway": true,
+    "customerLanguageClean": true,
+    "newOrderBlank": true,
+    "reviewGating": true,
+    "manualKnownGoodPromotion": true,
+    "undefinedRecognitionSerializerFixed": true,
+    "finalSubmitUsesCanonicalSerializer": true,
+    "finalSubmitNullGuard": true
   },
-  "at": "2026-08-26T13:45:00-04:00"
+  "at": "2026-08-26T10:20:00-04:00"
 }

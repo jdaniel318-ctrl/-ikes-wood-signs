@@ -1,10 +1,10 @@
-# Dark Sky 8.1.8 — Craftlock
+# 8.1.9 Learning — Mission-Specific Fit Controls
 
-Craftlock hardens Ike’s customer completion boundary and design CX: final order creation is repaired and automatically proven; lettering size is selected beside style within machine-safe limits; new orders start blank; rotation communicates state; customer copy is free of internal Sea Trial language; camera permission is prepared without attempting to bypass Safari/iPadOS; and Review/Place Order actions are visibly gated.
+Constrained customer sizing is reusable, but control vocabulary/defaults must match the vessel mission. Ike uses aggressive safe face-fit grounded in finished signs; other vessels may use S/M/L, sliders, or other controls.
 
-# Fleet Learning Registry — 8.1.7 Fleet Judgment
+# Fleet Learning Registry — 8.1.9 True Fit
 
-Fleet Judgment adds mission-fit confidence to recommendation compression.
+True Fit adds mission-fit confidence to recommendation compression.
 
 - **Strong** — direct mission evidence; may be bulk-staged for review.
 - **Plausible** — useful but adaptation evidence must be reviewed first.

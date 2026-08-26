@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.1.8 \u2014 Craftlock",
-  "short_name": "Dark Sky 8.1.8",
-  "start_url": "./index.html?release=craftlock-818-root-keel-c8f214",
+  "name": "Dark Sky 8.1.9 \u2014 True Fit",
+  "short_name": "Dark Sky 8.1.9",
+  "start_url": "./index.html?release=true-fit-819-root-keel-9f1c72",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.1.8"
+  "version": "8.1.9"
 }

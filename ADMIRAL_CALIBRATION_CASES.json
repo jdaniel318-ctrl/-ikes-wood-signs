@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-admiral-calibration-cases-v1",
-  "build": "8.1.8",
+  "build": "8.1.9",
   "cases": [
     {
       "id": "ike-2ft-cedar-reference",
@@ -23,6 +23,6 @@
       ]
     }
   ],
-  "name": "Fleet Judgment",
-  "seal": "craftlock-818-root-keel-c8f214"
+  "name": "True Fit",
+  "seal": "true-fit-819-root-keel-9f1c72"
 }

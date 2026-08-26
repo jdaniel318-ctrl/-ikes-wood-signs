@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-runtime-inventory-v2",
-  "build": "8.1.8",
-  "release": "Craftlock \u2014 Root Keel",
-  "seal": "craftlock-818-root-keel-c8f214",
+  "build": "8.1.9",
+  "release": "True Fit \u2014 Root Keel",
+  "seal": "true-fit-819-root-keel-9f1c72",
   "required_snapshot_files": [
     "styles.css",
     "platform_core.js",

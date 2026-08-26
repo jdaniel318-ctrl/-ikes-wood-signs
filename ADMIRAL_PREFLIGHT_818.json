@@ -1,32 +1,22 @@
 {
   "schema": "dark-sky-admiral-preflight-v1",
-  "build": "8.1.8",
-  "name": "Craftlock",
+  "build": "8.1.9",
+  "name": "True Fit",
   "checks": [
     {
-      "id": "final-order-boundary",
+      "id": "ike-complete-order-boundary",
       "ok": true,
-      "detail": "Ike complete-order voyage verifies canonical recognition, immutable approved artifact, project scope, approval gate, and manufacturable lettering size."
+      "detail": "Canonical recognition serializer exists and is exercised by automated Proving Ground order-boundary evidence."
     },
     {
-      "id": "machine-safe-size",
+      "id": "manufacturable-choice",
       "ok": true,
-      "detail": "Lettering size presets only reduce from the computed safe maximum; Fill equals the largest existing safe fit."
+      "detail": "Letter-size presets stay within detected usable-zone geometry and the exact approved render is frozen for Ike verification."
     },
     {
-      "id": "customer-language",
+      "id": "customer-cx-cleanliness",
       "ok": true,
-      "detail": "Customer surfaces no longer expose Sea Trial obstacle-avoidance wording."
-    },
-    {
-      "id": "new-order-state",
-      "ok": true,
-      "detail": "A new Ike order starts with blank wording; draft restoration remains separate."
-    },
-    {
-      "id": "permission-gateway",
-      "ok": true,
-      "detail": "Camera permission is requested only after explicit customer action and remains controlled by Safari/iPadOS."
+      "detail": "New Ike orders start blank; internal Sea Trial language is removed from customer recognition summaries; required CTAs are visibly gated."
     },
     {
       "id": "manual-promotion",

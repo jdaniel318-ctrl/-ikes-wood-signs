@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.1.8';
-const RELEASE_SEAL='craftlock-818-root-keel-c8f214';
+const RELEASE_BUILD='8.1.9';
+const RELEASE_SEAL='true-fit-819-root-keel-9f1c72';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

@@ -1,9 +1,5 @@
-# Dark Sky 8.1.8 — Craftlock
 
-Craftlock hardens Ike’s customer completion boundary and design CX: final order creation is repaired and automatically proven; lettering size is selected beside style within machine-safe limits; new orders start blank; rotation communicates state; customer copy is free of internal Sea Trial language; camera permission is prepared without attempting to bypass Safari/iPadOS; and Review/Place Order actions are visibly gated.
-
-
-## 8.1.7 Fleet Judgment
+## 8.1.9 True Fit
 - Known stale-worker handoffs self-recover only after the incoming runtime snapshot and release identity fully verify.
 - Automatic cleanup is constrained to Dark Sky service-worker registrations and application caches; project/customer/order/owner/configuration data is never touched.
 - WATCH is now explicitly non-blocking when protected release contracts are clear.
