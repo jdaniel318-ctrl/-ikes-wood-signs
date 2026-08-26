@@ -1,6 +1,6 @@
-# Fleet Learning Registry — Dark Sky 8.1.4 Incident Intelligence
+# Fleet Learning Registry — Dark Sky 8.1.5 Admiral Autopilot
 
-Incident Intelligence is the first fleet-learning pass. It separates what Dark Sky learns into **Fleet Doctrine**, **Reusable Capability**, and **Mission Adapter**.
+Admiral Autopilot is the first fleet-learning pass. It separates what Dark Sky learns into **Fleet Doctrine**, **Reusable Capability**, and **Mission Adapter**.
 
 ## Transfer law
 **Learn → Classify → Adapt → Captain Review → Adopt.**

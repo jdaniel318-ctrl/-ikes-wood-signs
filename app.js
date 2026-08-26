@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.1.4';
+  const BUILD_VERSION='8.1.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3956,7 +3956,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.1.4',
+    build:'8.1.5',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4039,7 +4039,9 @@
     {id:'service-address-proof',class:'capability',origin:'LP',title:'Operational Address Confirmation',lesson:'Service location is operationally critical; validate and explicitly confirm where the crew should go.',risk:'high',applies:['emergency_restoration','restoration_services','plumbing_services','contractor_services'],missionAdapter:'Adapt validation language and required fields to the service business.'},
     {id:'requested-timing',class:'capability',origin:'LP',title:'Requested Timing ≠ Appointment',lesson:'Customer-entered timing is a preference until the business confirms availability.',risk:'high',applies:['emergency_restoration','restoration_services','plumbing_services','contractor_services'],missionAdapter:'Carry request-vs-confirmed status through customer, owner, and notification surfaces.'},
     {id:'atomic-release',class:'doctrine',origin:'shipyard',title:'Atomic Release Integrity',lesson:'One candidate, one runtime identity, one release seal, deterministic recovery, and no mixed-build paint.',risk:'critical',applies:'all',missionAdapter:'Fleet-wide shipyard law; projects inherit it without customization.'},
-    {id:'readable-feedback',class:'capability',origin:'fleet',title:'Durable Action Feedback',lesson:'Important taps must visibly change state, remain readable, and leave durable confirmation after transient feedback disappears.',risk:'low',applies:'all',missionAdapter:'Choose feedback appropriate to customer, owner, Captain, or Admiral context.'}
+    {id:'readable-feedback',class:'capability',origin:'fleet',title:'Durable Action Feedback',lesson:'Important taps must visibly change state, remain readable, and leave durable confirmation after transient feedback disappears.',risk:'low',applies:'all',missionAdapter:'Choose feedback appropriate to customer, owner, Captain, or Admiral context.'},
+    {id:'safe-self-recovery',class:'doctrine',origin:'shipyard',title:'Verified Safe Self-Recovery',lesson:'A known stale runtime may be replaced automatically only after the incoming release snapshot fully verifies and cleanup is constrained to application runtime state.',risk:'critical',applies:'all',missionAdapter:'Fleet-wide release law; never delete project, customer, order, owner, or configuration data during automatic recovery.'},
+    {id:'escalation-by-exception',class:'doctrine',origin:'shipyard',title:'Escalation by Exception',lesson:'The shipyard diagnoses and owns deterministic WATCH work. Human authority is requested only for judgment, irreversible action, ambiguous safety, or deliberate promotion.',risk:'high',applies:'all',missionAdapter:'Every vessel should distinguish shipyard-owned work from Captain/Admiral decisions.'}
   ]);
   function fleetLearningStateRead(){try{return JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};}catch(_){return {};}}
   function fleetLearningStateWrite(v){try{localStorage.setItem('darkSkyFleetLearningState',JSON.stringify(v));}catch(_){} return v;}
@@ -4167,7 +4169,7 @@
     const calibrationIncident=admiralDiagnoseCalibrationReplay(calibrationReplay);
     add('known-calibration-replay','Known Ike calibration replay',calibrationReplay.protectedPass?(calibrationReplay.lengthWatch?'warn':'pass'):'fail',calibrationReplay.protectedPass?(calibrationReplay.lengthWatch?'Protected Horizontal + Cedar cases replayed cleanly; length remains experimental and retained as WATCH evidence.':'Known 2 ft Cedar calibration replay cleared protected and experimental expectations.'):`${calibrationIncident?.title||'Protected calibration replay failed'}. ${calibrationIncident?.recommendation||''}`);
     const lastRecovery=admiralLastRecovery();
-    add('release-recovery-history','Last release recovery','pass',lastRecovery?.ok===true?`Last clean recovery completed ${new Date(lastRecovery.at).toLocaleString()} for build ${lastRecovery.build}.`:'No retained clean-release recovery is required for this candidate.','check');
+    add('release-recovery-history','Last release recovery','pass',lastRecovery?.ok===true?`${lastRecovery.automatic?'Automatic safe recovery':'Clean recovery'} completed ${new Date(lastRecovery.at).toLocaleString()} for build ${lastRecovery.build}; project data remained untouched.`:'No retained clean-release recovery is required for this candidate.','check');
     const fleetLearning=persistFleetLearningRegistry();
     const learningRecommendations=fleetLearning.recommendations||[];
     const dangerousAutoApply=learningRecommendations.some(r=>r.status==='adopted'&&r.risk==='critical'&&r.class!=='doctrine');
@@ -4353,25 +4355,29 @@
     report.voyages=voyages;
     window.__lastAdmiralReadinessReport=report;
     const holds=voyages.filter(v=>v.state==='hold').length,watches=voyages.filter(v=>v.state==='watch').length,clears=voyages.filter(v=>v.state==='clear').length;
-    const overall=holds?'hold':watches?'watch':'clear';
+    const releaseBlocked=holds>0;
+    const overall=releaseBlocked?'hold':watches?'clear-watch':'clear';
     const knownGood=currentKnownGoodRelease();
     const isKnownGood=String(knownGood)===String(BUILD_VERSION);
-    const next=voyages.find(v=>v.state==='hold')||voyages.find(v=>v.state==='watch');
-    if(state){state.textContent=overall==='clear'?'CLEAR':overall==='watch'?'WATCH':'HOLD';state.className=`admiral-readiness-state ${overall==='clear'?'ready':overall}`;}
-    if(stamp)stamp.textContent=`${clears}/${voyages.length} voyages clear • candidate ${BUILD_VERSION} • known good ${knownGood} • fresh ${new Date(report.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
+    const holdVoyage=voyages.find(v=>v.state==='hold');
+    const watchVoyage=voyages.find(v=>v.state==='watch');
+    const incident=report.admiralBrief?.incident||window.__darkSkyAdmiralIncident;
+    const watchOwnedByShipyard=!releaseBlocked&&watches>0&&incident&&!incident.captainRequired;
+    if(state){state.textContent=releaseBlocked?'HOLD':watches?'CLEAR + WATCH':'CLEAR';state.className=`admiral-readiness-state ${releaseBlocked?'hold':watches?'watch':'ready'}`;}
+    if(stamp)stamp.textContent=`${voyages.length}/${voyages.length} voyages assessed • ${clears} clear${watches?` • ${watches} watch`:''}${holds?` • ${holds} hold`:''} • candidate ${BUILD_VERSION} • known good ${knownGood} • fresh ${new Date(report.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
     if(summary){
-      const statusCopy=overall==='clear'?(isKnownGood?'All required proving voyages are clear. This release is already the current Known Good anchor.':'All required proving voyages are clear. This candidate can be considered for promotion.'):overall==='watch'?'The hull is sound, but at least one voyage needs Captain attention before promotion.':'A critical proving voyage failed. This release is not promotable.';
-      const nextTitle=next?`Run / inspect ${next.label}`:(isKnownGood?`Known Good — ${BUILD_VERSION}`:'Promote the cleared candidate');
-      const nextDetail=next?.detail||(isKnownGood?`Dark Sky ${BUILD_VERSION} is already the current recovery anchor on this device.`:`Candidate ${BUILD_VERSION} has no current HOLD or WATCH voyages.`);
-      const nextButton=next?'VIEW VOYAGE EVIDENCE':(isKnownGood?'KNOWN GOOD':'MARK CANDIDATE KNOWN GOOD');
-      const releaseCopy=isKnownGood?'This release is the current Last Known Good anchor on this device. A future candidate must pass the Proving Ground before replacing it.':'Last Known Good stays separate from the current candidate until the Captain deliberately promotes it.';
-      summary.innerHTML=`<article class="proving-status-card ${overall}"><small>FLEET STATUS</small><strong>${provingStateLabel(overall)}</strong><p>${statusCopy}</p></article>
-      <article class="proving-next-card ${isKnownGood&&!next?'known-good':''}"><small>NEXT BEST MOVE</small><strong>${escapeHtml(nextTitle)}</strong><p>${escapeHtml(nextDetail)}</p><button id="provingNextBtn" type="button" class="primary-btn small" ${isKnownGood&&!next?'disabled aria-disabled="true"':''}>${nextButton}</button></article>
+      const statusCopy=releaseBlocked?'A critical proving voyage failed. This release is not promotable.':watches?`All release-blocking protections are clear. ${watches} experimental WATCH item${watches===1?' is':'s are'} retained without blocking promotion.`:(isKnownGood?'All required proving voyages are clear. This release is already the current Known Good anchor.':'All required proving voyages are clear. This candidate can be considered for promotion.');
+      const nextTitle=releaseBlocked?`Run / inspect ${holdVoyage.label}`:isKnownGood?`Known Good — ${BUILD_VERSION}`:watchOwnedByShipyard?'Shipyard owns the watch — promotion is your decision':'Promote the cleared candidate';
+      const nextDetail=releaseBlocked?holdVoyage.detail:isKnownGood?`Dark Sky ${BUILD_VERSION} is already the current recovery anchor on this device.`:watchOwnedByShipyard?`${incident.title}. ${incident.recommendation} No manual retest is requested.`:`Candidate ${BUILD_VERSION} has no release-blocking voyages.`;
+      const nextButton=releaseBlocked?'VIEW VOYAGE EVIDENCE':(isKnownGood?'KNOWN GOOD':'MARK CANDIDATE KNOWN GOOD');
+      const releaseCopy=isKnownGood?'This release is the current Last Known Good anchor on this device. A future candidate must pass the Proving Ground before replacing it.':'Last Known Good stays separate from the current candidate until the Admiral deliberately promotes it. WATCH items remain visible after promotion.';
+      summary.innerHTML=`<article class="proving-status-card ${releaseBlocked?'hold':watches?'watch':'clear'}"><small>FLEET STATUS</small><strong>${releaseBlocked?'HOLD':watches?'CLEAR + WATCH':'CLEAR'}</strong><p>${statusCopy}</p></article>
+      <article class="proving-next-card ${isKnownGood&&!releaseBlocked?'known-good':''}"><small>NEXT BEST MOVE</small><strong>${escapeHtml(nextTitle)}</strong><p>${escapeHtml(nextDetail)}</p><button id="provingNextBtn" type="button" class="primary-btn small" ${isKnownGood&&!releaseBlocked?'disabled aria-disabled="true"':''}>${nextButton}</button>${watchVoyage&&!releaseBlocked?`<button id="provingWatchBtn" type="button" class="secondary-btn small">REVIEW WATCHLIST</button>`:''}</article>
       <article class="proving-release-card ${isKnownGood?'known-good':''}"><small>RELEASE ANCHOR</small><strong>${escapeHtml(knownGood)}</strong><p>${releaseCopy}</p><span>${isKnownGood?'Current release':'Candidate'} <b>${escapeHtml(BUILD_VERSION)}</b></span></article>`;
     }
     const brief=report.admiralBrief||admiralBuildDecisionBrief(report,report.calibrationReplay||window.__darkSkyAdmiralCalibrationReplay);
-    const incident=brief.incident||window.__darkSkyAdmiralIncident;
-    const incidentHtml=incident&&incident.severity!=='clear'?`<section class="admiral-incident ${escapeHtml(incident.severity)}"><header><div><small>ADMIRAL INCIDENT • ${escapeHtml(incident.id)}</small><strong>${escapeHtml(incident.title)}</strong></div><b>${escapeHtml(String(incident.severity).toUpperCase())}</b></header><div class="admiral-incident-grid"><div><small>LIKELY CAUSE</small><p>${escapeHtml(incident.likelyCause)}</p></div><div><small>RECOMMENDED ACTION</small><p>${escapeHtml(incident.recommendation)}</p></div><div><small>ADMIRAL NEEDED?</small><p>${incident.captainRequired?'YES — Captain judgment required.':'NO — shipyard can investigate before asking for a manual retest.'}</p></div></div><div class="admiral-assertions">${(incident.observations||[]).map(o=>`<article><strong>${escapeHtml(o.case)}</strong><span>Orientation: ${escapeHtml(o.orientation.expected)} → ${escapeHtml(o.orientation.observed)} • ${o.orientation.pass?'PASS':'FAIL'} • ${Number(o.orientation.score||0).toFixed(2)}</span><span>Species: ${escapeHtml(o.species.expected)} → ${escapeHtml(o.species.observed)} • ${o.species.pass?'PASS':'FAIL'} • ${Number(o.species.score||0).toFixed(2)}</span><span>Length: ${escapeHtml(String(o.length.expected||'?'))} ft → ${escapeHtml(o.length.observed?String(o.length.observed)+' ft':'unresolved')} • ${o.length.pass?'PASS':'WATCH'} • ${Number(o.length.score||0).toFixed(2)}</span></article>`).join('')}</div><button id="copyAdmiralBriefBtn" type="button" class="secondary-btn small">COPY ADMIRAL BRIEF</button><span id="copyAdmiralBriefState" class="helper"></span></section>`:'';
+    const incidentForDisplay=brief.incident||window.__darkSkyAdmiralIncident;
+    const incidentHtml=incidentForDisplay&&incidentForDisplay.severity!=='clear'?`<section class="admiral-incident ${escapeHtml(incidentForDisplay.severity)}"><header><div><small>ADMIRAL INCIDENT • ${escapeHtml(incidentForDisplay.id)}</small><strong>${escapeHtml(incidentForDisplay.title)}</strong></div><b>${escapeHtml(String(incidentForDisplay.severity).toUpperCase())}</b></header><div class="admiral-incident-grid"><div><small>LIKELY CAUSE</small><p>${escapeHtml(incidentForDisplay.likelyCause)}</p></div><div><small>RECOMMENDED ACTION</small><p>${escapeHtml(incidentForDisplay.recommendation)}</p></div><div><small>OWNERSHIP</small><p>${incidentForDisplay.captainRequired?'ADMIRAL — human judgment required.':'SHIPYARD — no manual retest requested.'}</p></div></div><div class="admiral-assertions">${(incidentForDisplay.observations||[]).map(o=>`<article><strong>${escapeHtml(o.case)}</strong><span>Orientation: ${escapeHtml(o.orientation.expected)} → ${escapeHtml(o.orientation.observed)} • ${o.orientation.pass?'PASS':'FAIL'} • ${Number(o.orientation.score||0).toFixed(2)}</span><span>Species: ${escapeHtml(o.species.expected)} → ${escapeHtml(o.species.observed)} • ${o.species.pass?'PASS':'FAIL'} • ${Number(o.species.score||0).toFixed(2)}</span><span>Length: ${escapeHtml(String(o.length.expected||'?'))} ft → ${escapeHtml(o.length.observed?String(o.length.observed)+' ft':'unresolved')} • ${o.length.pass?'PASS':'WATCH'} • ${Number(o.length.score||0).toFixed(2)}</span></article>`).join('')}</div><button id="copyAdmiralBriefBtn" type="button" class="secondary-btn small">COPY ADMIRAL BRIEF</button><span id="copyAdmiralBriefState" class="helper"></span></section>`:'';
     host.innerHTML=`${incidentHtml}<section class="admiral-auto-brief"><div><small>ADMIRAL AUTO BRIEF</small><strong>What changed</strong><p>${escapeHtml(brief.changed)}</p></div><div><small>AUTOMATIC REPLAY</small><strong>What passed</strong><p>${escapeHtml(brief.passed)}</p></div><div><small>CAPTAIN JUDGMENT</small><strong>What needs you</strong><p>${escapeHtml((brief.needsCaptain||[]).join(' '))}</p></div></section><div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
       <details class="proving-evidence"><summary>VIEW ENGINEERING EVIDENCE</summary><div class="admiral-readiness-grid">${report.checks.map(c=>`<article class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div></details>
       <div class="admiral-readiness-actions"><button id="admiralRerunBtn" type="button" class="primary-btn small">RUN PROVING GROUND</button><button id="admiralRecoveryBtn" type="button" class="secondary-btn small">CREATE RECOVERY SNAPSHOT</button><button id="admiralReportBtn" type="button" class="secondary-btn small">DOWNLOAD EVIDENCE REPORT</button></div>`;
@@ -4379,14 +4385,16 @@
     $('admiralRecoveryBtn')?.addEventListener('click',exportFleetRecoverySnapshot);
     $('admiralReportBtn')?.addEventListener('click',()=>downloadAdmiralReadinessReport(report));
     $('copyAdmiralBriefBtn')?.addEventListener('click',async()=>{const ok=await copyAdmiralIncidentBrief();const st=$('copyAdmiralBriefState');if(st)st.textContent=ok?'Admiral brief copied — paste directly into chat.':'Copy failed — use Download Evidence Report as fallback.';});
+    $('provingWatchBtn')?.addEventListener('click',()=>{if(watchVoyage)document.querySelector(`[data-proving-voyage="${watchVoyage.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});});
     $('provingNextBtn')?.addEventListener('click',()=>{
-      if(next){document.querySelector(`[data-proving-voyage="${next.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+      if(releaseBlocked&&holdVoyage){document.querySelector(`[data-proving-voyage="${holdVoyage.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});return;}
       if(isKnownGood)return;
-      if(confirm(`Mark Dark Sky ${BUILD_VERSION} as the Last Known Good release on this device? This records promotion evidence only; it does not deploy or publish anything.`)){
+      const disclosure=watches?` ${watches} non-blocking WATCH item${watches===1?' remains':'s remain'} visible in the Proving Ground.`:'';
+      if(confirm(`Mark Dark Sky ${BUILD_VERSION} as the Last Known Good release on this device?${disclosure} This records promotion evidence only; it does not deploy or publish anything.`)){
         setKnownGoodRelease(BUILD_VERSION);renderAdmiralReadiness({announce:true});
       }
     });
-    if(announce){const msg=overall==='clear'?'Proving Ground clear. No required voyage is holding the release.':overall==='watch'?`Proving Ground has ${watches} watch voyage(s).`:`Hold in harbor: ${holds} required voyage(s) failed.`;const box=$('admiralReadinessNotice');if(box){box.textContent=msg;box.className=`admiral-readiness-notice ${overall==='hold'?'hold':'clear'}`;}}
+    if(announce){const msg=releaseBlocked?`Hold in harbor: ${holds} required voyage(s) failed.`:watches?`Proving Ground clear with ${watches} non-blocking watch item(s).`:'Proving Ground clear. No required voyage is holding the release.';const box=$('admiralReadinessNotice');if(box){box.textContent=msg;box.className=`admiral-readiness-notice ${releaseBlocked?'hold':'clear'}`;}}
     return report;
   }
 

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-admiral-calibration-cases-v1",
-  "build": "8.1.4",
+  "build": "8.1.5",
   "cases": [
     {
       "id": "ike-2ft-cedar-reference",
@@ -23,6 +23,6 @@
       ]
     }
   ],
-  "name": "Incident Intelligence",
-  "seal": "incident-intelligence-814-root-keel-a14c92"
+  "name": "Admiral Autopilot",
+  "seal": "admiral-autopilot-815-root-keel-b58e31"
 }

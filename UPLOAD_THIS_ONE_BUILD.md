@@ -1,6 +1,6 @@
-# Upload This One Build — Dark Sky 8.1.4 Incident Intelligence — iPad Safe
+# Upload This One Build — Dark Sky 8.1.5 Admiral Autopilot — iPad Safe
 
-Release seal: `incident-intelligence-814-root-keel-a14c92`
+Release seal: `admiral-autopilot-815-root-keel-b58e31`
 
 This upload package is intentionally **99 files** so GitHub's iPad/web uploader accepts it in one pass.
 
@@ -17,4 +17,4 @@ No runtime, release-identity, Fleet Learning Registry, calibration, doctrine, ro
 
 Upload all 99 files in this folder to the repository root. After GitHub Pages deploys, refresh once. If the previous worker is still active, use **CLEAN RELEASE RETRY**.
 
-Incident Intelligence then auto-runs release doctrine, known-calibration replay, and Fleet Learning Registry preflight. Recommendations may be staged/adopted per vessel, but no business-specific behavior crosses projects automatically. Final **MARK CANDIDATE KNOWN GOOD** remains manual.
+Admiral Autopilot then auto-runs release doctrine, known-calibration replay, and Fleet Learning Registry preflight. Recommendations may be staged/adopted per vessel, but no business-specific behavior crosses projects automatically. Final **MARK CANDIDATE KNOWN GOOD** remains manual.

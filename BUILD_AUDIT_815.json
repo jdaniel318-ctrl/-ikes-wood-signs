@@ -1,0 +1,45 @@
+{
+  "schema": "dark-sky-build-audit-v1",
+  "build": "8.1.5",
+  "seal": "admiral-autopilot-815-root-keel-b58e31",
+  "status": "PASS",
+  "checkedAt": "2026-08-25T23:47:00-04:00",
+  "checks": {
+    "app_js_syntax": true,
+    "sw_js_syntax": true,
+    "inline_boot_scripts": true,
+    "duplicate_ids": true,
+    "missing_local_refs": true,
+    "required_files_present": true,
+    "json_parse": true,
+    "stale_release_identity": true,
+    "admiral_doctrine_voyage": true,
+    "automatic_calibration_replay": true,
+    "manual_known_good_promotion": true,
+    "fleet_learning_registry": true,
+    "mission_aware_mapping": true,
+    "project_scoped_adoption": true
+  },
+  "counts": {
+    "dom_ids": 504,
+    "inline_scripts_checked": 3,
+    "required_files": 15,
+    "fleet_learnings": 11,
+    "canonical_vessels": 6
+  },
+  "name": "Admiral Autopilot",
+  "incident_intelligence": {
+    "production_species_resolution_path": true,
+    "assertion_level_diagnosis": true,
+    "detector_vs_harness_triage": true,
+    "clipboard_brief": true,
+    "manual_known_good_promotion": true
+  },
+  "admiral_autopilot": {
+    "verified_auto_worker_recovery": true,
+    "project_data_untouched": true,
+    "nonblocking_watch_semantics": true,
+    "shipyard_ownership": true,
+    "manual_known_good_promotion": true
+  }
+}

@@ -14,13 +14,13 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.1.4 ADMIRAL DOCTRINE — atomic release seal.
-    const DARK_SKY_EXPECTED_BUILD = '8.1.4';
-    const DARK_SKY_RELEASE_SEAL = 'incident-intelligence-814-root-keel-a14c92';
+    // Dark Sky 8.1.5 ADMIRAL DOCTRINE — atomic release seal.
+    const DARK_SKY_EXPECTED_BUILD = '8.1.5';
+    const DARK_SKY_RELEASE_SEAL = 'admiral-autopilot-815-root-keel-b58e31';
     window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
-    // Dark Sky 8.1.4 ADMIRAL DOCTRINE — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.1.5 ADMIRAL DOCTRINE — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -1577,7 +1577,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.1.4', SEAL='incident-intelligence-814-root-keel-a14c92';
+    const EXPECTED='8.1.5', SEAL='admiral-autopilot-815-root-keel-b58e31';
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
@@ -1639,7 +1639,7 @@
         step('Clearing Dark Sky application caches');
         if('caches' in window){for(const key of await caches.keys())if(APP_CACHE.test(key))await caches.delete(key);}
         step('Application caches cleared','done');
-        step('Verifying complete 8.1.4 runtime snapshot');
+        step('Verifying complete 8.1.5 runtime snapshot');
         await verifySnapshot(true);
         step('Complete runtime snapshot verified','done');
         step('Installing identity-only release sentinel');
@@ -1649,6 +1649,42 @@
         try{localStorage.setItem('darkSkyLastRecovery',JSON.stringify({ok:true,build:EXPECTED,seal:SEAL,at:new Date().toISOString(),steps:['worker-unregistered','app-caches-cleared','runtime-verified','sentinel-verified']}));}catch(_){ }
         await delay(900); location.reload();
       }catch(err){step(String(err?.message||err),'error');if(clean){clean.disabled=false;clean.textContent='TRY CLEAN RELEASE AGAIN';}if(retry)retry.disabled=false;}
+    }
+    function canAutoRecoverWorker(err){
+      const msg=String(err?.message||err||'');
+      if(!/Worker identity mismatch/i.test(msg))return false;
+      try{
+        const key=`darkSkyAutoReleaseRecovery:${EXPECTED}:${SEAL}`;
+        if(sessionStorage.getItem(key)==='attempted')return false;
+        sessionStorage.setItem(key,'attempted');
+      }catch(_){}
+      return true;
+    }
+    function renderAutoRecovery(reason){
+      window.__darkSkyReleaseGateState='recovering';
+      document.documentElement.classList.add('dark-sky-route-preflight');
+      if(!shield)return;
+      shield.setAttribute('aria-hidden','false');shield.style.display='flex';
+      shield.innerHTML=`<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-eyebrow">AUTOMATIC SAFE RECOVERY</div><h2>UPDATING VERIFIED RELEASE</h2><p>Dark Sky recognized a known stale-worker handoff and is replacing only application runtime state. Project data remains untouched.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>NEW BUILD</small><strong>${EXPECTED}</strong></div><div class="ds-release-cell"><small>RECOVERY MODE</small><strong>SAFE AUTO</strong></div></div><p>${safe(reason)}</p><div id="darkSkyRecoveryProgress" class="ds-release-progress" aria-live="polite"></div></div>`;
+    }
+    async function autoSafeRecovery(reason){
+      renderAutoRecovery(reason);
+      step('Verified new release snapshot before cleanup','done');
+      step('Replacing stale Dark Sky worker');
+      if('serviceWorker' in navigator){for(const reg of (await navigator.serviceWorker.getRegistrations()).filter(isOurRegistration))await reg.unregister();}
+      step('Stale worker removed','done');
+      step('Clearing application caches only');
+      if('caches' in window){for(const key of await caches.keys())if(APP_CACHE.test(key))await caches.delete(key);}
+      step('Application caches cleared; project data preserved','done');
+      step(`Re-verifying ${EXPECTED} release identity`);
+      const verified=await verifySnapshot(true);
+      step('Current release identity verified','done');
+      step('Installing fresh identity sentinel');
+      await registerAndVerifyWorker();
+      step('Fresh release sentinel verified','done');
+      try{localStorage.setItem('darkSkyLastRecovery',JSON.stringify({ok:true,automatic:true,build:EXPECTED,seal:SEAL,at:new Date().toISOString(),reason:String(reason||''),steps:['new-release-preverified','worker-replaced','app-caches-cleared','runtime-reverified','sentinel-verified']}));}catch(_){ }
+      await delay(850);
+      return verified;
     }
     async function verifySnapshot(forRecovery=false){
       const [manifest,sealDoc,inventory]=await Promise.all([fetchJson('DEPLOYMENT_MANIFEST.json'),fetchJson('RELEASE_SEAL.json'),fetchJson('RELEASE_INVENTORY.json')]);
@@ -1675,10 +1711,16 @@
       }
     }
     try{
-      const verified=await verifySnapshot(false);
-      if('serviceWorker' in navigator) await registerAndVerifyWorker();
+      let verified=await verifySnapshot(false);
+      if('serviceWorker' in navigator){
+        try{await registerAndVerifyWorker();}
+        catch(workerErr){
+          if(canAutoRecoverWorker(workerErr))verified=await autoSafeRecovery(workerErr?.message||workerErr);
+          else throw workerErr;
+        }
+      }
       await executeVerifiedSnapshot(verified.fetched);
-      window.__darkSkyReleaseGateState='clear';document.documentElement.classList.remove('dark-sky-release-preflight');window.dispatchEvent(new CustomEvent('darksky:release-seal-clear',{detail:{build:EXPECTED,seal:SEAL}}));
+      window.__darkSkyReleaseGateState='clear';document.documentElement.classList.remove('dark-sky-release-preflight','dark-sky-route-preflight');window.dispatchEvent(new CustomEvent('darksky:release-seal-clear',{detail:{build:EXPECTED,seal:SEAL}}));
     }catch(err){renderHold('RELEASE RECOVERY REQUIRED',String(err?.message||err),{manifestBuild:err?.manifestBuild||'unknown',runtimeBuild:err?.runtimeBuild||'unknown'});}
   })();
   </script>

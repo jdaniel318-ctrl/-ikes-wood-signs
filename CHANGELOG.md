@@ -1,4 +1,11 @@
-# Dark Sky 8.1.4 — Incident Intelligence
+
+## 8.1.5 Admiral Autopilot
+- Known stale-worker handoffs self-recover only after the incoming runtime snapshot and release identity fully verify.
+- Automatic cleanup is constrained to Dark Sky service-worker registrations and application caches; project/customer/order/owner/configuration data is never touched.
+- WATCH is now explicitly non-blocking when protected release contracts are clear.
+- Deterministic WATCH work is owned by the shipyard; the Admiral is escalated only for judgment, ambiguity, irreversible action, or deliberate Known Good promotion.
+- Proving Ground reports all voyages assessed, separates CLEAR/WATCH/HOLD, and keeps WATCH evidence visible after promotion.
+# Dark Sky 8.1.5 — Admiral Autopilot
 
 - Repairs the 8.1.3 Admiral calibration replay so species replay follows the same `ikeCombineSpeciesEvidence` resolution path as production customer recognition.
 - Adds assertion-level incident diagnosis: expected, observed, confidence, PASS/HOLD/WATCH and reason for orientation, species and length independently.

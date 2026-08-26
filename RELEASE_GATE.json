@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.1.4",
-  "release": "8.1.4",
+  "build": "8.1.5",
+  "release": "8.1.5",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -112,12 +112,15 @@
     "automatic_calibration_replay": true,
     "decision_grade_admiral_brief": true,
     "known_good_promotion_manual": true,
-    "release_recovery_history_retained": true
+    "release_recovery_history_retained": true,
+    "automatic_safe_release_recovery": true,
+    "nonblocking_watch_semantics": true,
+    "escalation_by_exception": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.1.4 Incident Intelligence: HOLDs are diagnosed to assertion level before Captain escalation; replay uses production species resolution; Known Good promotion remains manual.",
-  "candidate": "8.1.4"
+  "note": "8.1.5 Admiral Autopilot: verified stale-worker handoffs self-recover safely; WATCH is non-blocking; shipyard-owned deterministic work does not escalate to the Admiral; Known Good promotion remains deliberate/manual.",
+  "candidate": "8.1.5"
 }
