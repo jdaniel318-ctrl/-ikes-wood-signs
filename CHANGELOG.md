@@ -1,3 +1,12 @@
+# Dark Sky 8.0.8 — Yardarm Admiral Seal
+
+- Removed service-worker executable caching/fetch interception.
+- Added complete runtime/asset no-store preflight.
+- Executes exact verified JS/CSS bytes from one in-memory snapshot.
+- Added active service-worker identity sentinel.
+- Hardened Clean Release Retry with visible durable stages.
+- Added Admiral Release Bulkhead contract and runtime inventory.
+
 # 8.0.8 — Yardarm One-Build Recovery Hardening
 
 - Fixed Clean Release Retry after stale-worker removal: a missing registration is now the expected state and triggers a fresh `./sw.js` registration instead of an invalid update call.

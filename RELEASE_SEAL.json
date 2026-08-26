@@ -1,13 +1,8 @@
 {
-  "schema": "dark-sky-release-seal-v1",
+  "schema": "dark-sky-release-seal-v2",
   "build": "8.0.8",
   "release": "Yardarm",
-  "seal": "yardarm-808-onebuild-93e4b7",
-  "created": "2026-08-25",
-  "policy": "single-build-only",
-  "runtime_probe": "app.js const BUILD_VERSION",
-  "mixed_build": "block-before-engine-paint",
-  "same_version_cache_bust": "asset seal tokens; stable service-worker URL",
-  "service_worker_url": "./sw.js",
-  "recovery": "atomic clean retry with active-worker identity verification"
+  "seal": "yardarm-808-admiral-seal-4c7e21",
+  "execution_model": "verified-in-memory-atomic-snapshot",
+  "service_worker": "identity-only"
 }

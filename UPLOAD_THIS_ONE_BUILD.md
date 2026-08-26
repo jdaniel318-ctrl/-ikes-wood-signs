@@ -1,7 +1,15 @@
-# Dark Sky 8.0.8 Yardarm — One-Build Recovery Set
+# Upload This One Build
 
-This package fixes the service-worker recovery transaction and single-build gate for Yardarm 8.0.8.
+Upload the entire contents of `DarkSky808-Yardarm-AdmiralSeal` together. Do not cherry-pick individual runtime-control files.
 
-Important packaging rule: a truly self-contained release must include every file listed in `DEPLOYMENT_MANIFEST.json > required_runtime_files`. The release gate now verifies the deployed copies before Engine paint, but the upload package itself must also be audited for completeness before it is treated as a standalone replacement.
+Release seal: `yardarm-808-admiral-seal-4c7e21`
+Build: `8.0.8`
 
-The service worker must always be registered at `./sw.js` with no version or seal query in its script URL.
+## Admiral release rule
+The control-plane files in this package are one sealed unit: `index.html`, `owner.html`, `sw.js`, `manifest.webmanifest`, `DEPLOYMENT_MANIFEST.json`, `RELEASE_SEAL.json`, and `RELEASE_INVENTORY.json`.
+
+The Engine will then fetch every required existing repository runtime/asset with `cache: no-store`, verify the 8.0.8 release identity, and execute the exact verified JS/CSS bytes from one in-memory snapshot. The service worker is identity-only and cannot serve stale executable files.
+
+If a required repository runtime/asset is missing or disagrees with the release identity, the Engine remains on Release Hold and names the failing file instead of blending builds.
+
+Project/order/customer/owner data in IndexedDB is outside cleanup scope.

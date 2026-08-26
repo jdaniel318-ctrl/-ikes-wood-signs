@@ -1,0 +1,34 @@
+{
+  "schema": "dark-sky-runtime-inventory-v1",
+  "build": "8.0.8",
+  "release": "Yardarm",
+  "seal": "yardarm-808-admiral-seal-4c7e21",
+  "required_snapshot_files": [
+    "styles.css",
+    "platform_core.js",
+    "platform_v4.js",
+    "platform_identity.js",
+    "app.js",
+    "captain.js"
+  ],
+  "required_presence_files": [
+    "index.html",
+    "owner.html",
+    "experience_test_deck.js",
+    "manifest.webmanifest",
+    "sw.js",
+    "DEPLOYMENT_MANIFEST.json",
+    "RELEASE_SEAL.json"
+  ],
+  "required_assets": [
+    "assets/black_flag_primary_lockup.png",
+    "assets/black_flag_platform_icon.png",
+    "assets/ike_character.jpg",
+    "assets/captains_quarters_command_center_v578.png",
+    "assets/admirals_deck_ceremonial_v640.png",
+    "assets/signal_restoration_logo.png"
+  ],
+  "execution_rule": "Fetch snapshot files exactly once with cache:no-store; execute those exact fetched bytes from Blob URLs; never refetch executable JS during boot.",
+  "service_worker_rule": "Identity sentinel only. It must never cache or intercept executable runtime files.",
+  "failure_rule": "Any missing file, build mismatch, seal mismatch, worker mismatch, or fetch failure blocks first paint."
+}

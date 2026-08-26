@@ -1,3 +1,12 @@
+# Dark Sky 8.0.8 — Yardarm (Admiral Seal)
+
+**Release seal:** `yardarm-808-admiral-seal-4c7e21`  
+**Execution model:** complete no-store runtime snapshot → execute exact verified in-memory bytes → identity-only service-worker sentinel → Engine paint.
+
+This repair hardens the shipyard itself. A stale service worker can no longer serve executable JavaScript/CSS, and the Engine cannot execute a second network response after verification. If any required runtime file or required asset is missing or disagrees with 8.0.8, first paint remains blocked with a durable Release Hold.
+
+See `ADMIRAL_RELEASE_BULKHEAD.md` and `RELEASE_INVENTORY.json`.
+
 # Dark Sky 8.0.8 — Yardarm (One-Build Recovery Hardened)
 
 **Release seal:** `yardarm-808-onebuild-93e4b7`  

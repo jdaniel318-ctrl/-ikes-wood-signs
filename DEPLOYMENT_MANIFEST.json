@@ -4,10 +4,10 @@
   "version": "8.0.8",
   "release_name": "Yardarm",
   "releaseName": "Yardarm",
-  "release_seal": "yardarm-808-onebuild-93e4b7",
+  "release_seal": "yardarm-808-admiral-seal-4c7e21",
   "entrypoint": "index.html",
   "runtime": "static-web",
-  "deployment_mode": "atomic-single-build",
+  "deployment_mode": "atomic-memory-snapshot-single-build",
   "required_runtime_files": [
     "index.html",
     "owner.html",
@@ -21,21 +21,25 @@
     "manifest.webmanifest",
     "sw.js",
     "RELEASE_SEAL.json",
+    "RELEASE_INVENTORY.json",
     "assets/"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
     "service_worker_release_seal": "must-match",
-    "executable_cache_policy": "network-no-store-first-current-seal-cache-fallback",
-    "partial_runtime_promotion": "forbidden",
-    "mixed_build_behavior": "block-first-paint-explicit-MIXED-BUILD-DETECTED",
+    "executable_cache_policy": "no-service-worker-executable-cache; verify-no-store-once then execute exact in-memory bytes",
+    "partial_runtime_promotion": "forbidden-before-complete-runtime-snapshot",
+    "mixed_build_behavior": "block-first-paint-with-explicit-file-level-evidence",
     "safe_cleanup_scope": "service-worker-registrations-and-app-caches-only-never-project-data",
     "upload_rule": "upload-one-release-folder-contents-together-do-not-cherry-pick-runtime-files",
     "same_version_repair": "unique-release-seal-busts-stale-same-version-runtime",
     "service_worker_script_url": "stable-./sw.js-no-release-query",
     "service_worker_recovery": "unregister-same-scope-clear-app-caches-register-fresh-verify-identity-reload",
     "service_worker_identity_verification": "active-worker-build-and-seal-must-match-before-engine-paint",
-    "bypass_mixed_build_gate": "forbidden"
+    "bypass_mixed_build_gate": "forbidden",
+    "service_worker_role": "identity-sentinel-only-no-fetch-handler",
+    "atomic_execution_source": "verified-in-memory-snapshot",
+    "complete_runtime_preflight": "every required runtime URL must return 200 before any application script executes"
   },
   "authority_contracts": {
     "project_admin_default_recovery_pin": "4353",
@@ -48,6 +52,6 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "single-build-hard-guardrail-plus-yardarm-length-ranging-visual-helm-owner-bridge-canonical-fleet",
-  "release_note": "Yardarm is one sealed runtime. The service-worker URL stays stable across releases; boot verifies manifest, app runtime, worker source and active worker identity before Engine paint. Clean Release Retry visibly unregisters only this app scope, clears only Dark Sky application caches, registers a fresh worker, verifies the worker build/seal, then reloads. There is no bypass path."
+  "release_focus": "admiral-grade-single-build-atomic-memory-snapshot-plus-yardarm-visual-helm-owner-bridge-canonical-fleet",
+  "release_note": "Admiral Seal removes executable service-worker caching entirely. Boot fetches the complete runtime with cache:no-store, validates release identity and required files, injects verified CSS, executes the exact verified JS bytes from in-memory Blob URLs, verifies an identity-only service worker, then releases Engine paint. No second network fetch may substitute different executable bytes."
 }

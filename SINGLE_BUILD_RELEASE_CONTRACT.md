@@ -14,3 +14,7 @@ Dark Sky must never paint the Engine from a mixed runtime.
 
 ## Failure behavior
 Any mismatch or incomplete worker recovery blocks first paint and presents an explicit release hold with durable progress/evidence.
+
+
+## Admiral Seal addendum
+Release `yardarm-808-admiral-seal-4c7e21` upgrades the contract: executable service-worker caching is forbidden; the browser executes only the exact bytes fetched and verified in one no-store snapshot before first paint.
