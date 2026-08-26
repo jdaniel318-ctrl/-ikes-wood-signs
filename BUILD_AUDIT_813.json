@@ -1,0 +1,31 @@
+{
+  "schema": "dark-sky-build-audit-v1",
+  "build": "8.1.3",
+  "seal": "crossdeck-813-root-keel-c83a19",
+  "status": "PASS",
+  "checkedAt": "2026-08-25T23:47:00-04:00",
+  "checks": {
+    "app_js_syntax": true,
+    "sw_js_syntax": true,
+    "inline_boot_scripts": true,
+    "duplicate_ids": true,
+    "missing_local_refs": true,
+    "required_files_present": true,
+    "json_parse": true,
+    "stale_release_identity": true,
+    "admiral_doctrine_voyage": true,
+    "automatic_calibration_replay": true,
+    "manual_known_good_promotion": true,
+    "fleet_learning_registry": true,
+    "mission_aware_mapping": true,
+    "project_scoped_adoption": true
+  },
+  "counts": {
+    "dom_ids": 504,
+    "inline_scripts_checked": 3,
+    "required_files": 15,
+    "fleet_learnings": 9,
+    "canonical_vessels": 6
+  },
+  "name": "Crossdeck"
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "dark-sky-fleet-learning-registry-v1",
+  "build": "8.1.3",
+  "name": "Crossdeck",
+  "classes": {
+    "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
+    "capability": "Reusable primitive that must be adapted to mission/users/data/risk before adoption.",
+    "mission_adapter": "Project-specific implementation; never copied across vessels as-is."
+  },
+  "transfer_rule": "Learn -> classify -> adapt -> Captain review -> adopt. No business-specific data or branding transfers automatically.",
+  "learnings": [
+    {
+      "id": "proof-source-commissioning",
+      "class": "doctrine",
+      "origin": "fleet",
+      "title": "Proof-Source Commissioning"
+    },
+    {
+      "id": "three-watch-authority",
+      "class": "doctrine",
+      "origin": "IKE",
+      "title": "Three-Watch Authority Separation"
+    },
+    {
+      "id": "confidence-aware-visual",
+      "class": "capability",
+      "origin": "IKE",
+      "title": "Confidence-Aware Visual Identification"
+    },
+    {
+      "id": "owner-controlled-rules",
+      "class": "capability",
+      "origin": "IKE",
+      "title": "Owner-Controlled Business Rules"
+    },
+    {
+      "id": "visual-source-of-truth",
+      "class": "capability",
+      "origin": "IKE",
+      "title": "Visual Source of Truth"
+    },
+    {
+      "id": "service-address-proof",
+      "class": "capability",
+      "origin": "LP",
+      "title": "Operational Address Confirmation"
+    },
+    {
+      "id": "requested-timing",
+      "class": "capability",
+      "origin": "LP",
+      "title": "Requested Timing != Appointment"
+    },
+    {
+      "id": "atomic-release",
+      "class": "doctrine",
+      "origin": "shipyard",
+      "title": "Atomic Release Integrity"
+    },
+    {
+      "id": "readable-feedback",
+      "class": "capability",
+      "origin": "fleet",
+      "title": "Durable Action Feedback"
+    }
+  ],
+  "governance": {
+    "auto_apply_business_logic": false,
+    "final_known_good_manual": true,
+    "project_isolation_default_deny": true
+  }
+}

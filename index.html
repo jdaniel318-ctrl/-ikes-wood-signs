@@ -14,13 +14,13 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.1.1 ADMIRAL DOCTRINE — atomic release seal.
-    const DARK_SKY_EXPECTED_BUILD = '8.1.1';
-    const DARK_SKY_RELEASE_SEAL = 'admiral-doctrine-811-root-keel-7f3a2c';
+    // Dark Sky 8.1.3 ADMIRAL DOCTRINE — atomic release seal.
+    const DARK_SKY_EXPECTED_BUILD = '8.1.3';
+    const DARK_SKY_RELEASE_SEAL = 'crossdeck-813-root-keel-c83a19';
     window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
-    // Dark Sky 8.1.1 ADMIRAL DOCTRINE — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.1.3 ADMIRAL DOCTRINE — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -1163,6 +1163,16 @@
         <div id="fleetCommissioningReference" class="fleet-commissioning-reference"></div>
       </section>
 
+      <section id="fleetLearningRegistry" class="fleet-learning-registry" aria-label="Fleet Learning Registry">
+        <header class="fleet-learning-head">
+          <div><div class="engine-kicker">ADMIRAL • FLEET LEARNING</div><h3>FLEET LEARNING REGISTRY</h3><p>Retain what the fleet learns, separate doctrine from reusable capability from mission-specific behavior, and stage transfer to each vessel without cross-project bleed.</p></div>
+          <span id="fleetLearningState" class="fleet-learning-state">READING LESSONS</span>
+        </header>
+        <div class="fleet-learning-law"><strong>LEARN → CLASSIFY → ADAPT → REVIEW → ADOPT</strong><span>Nothing business-specific crosses decks automatically. Captain review remains deliberate.</span></div>
+        <div id="fleetLearningSummary" class="fleet-learning-summary"></div>
+        <div id="fleetLearningBody" class="fleet-learning-body"><p class="helper">Mapping retained fleet lessons to vessel missions…</p></div>
+      </section>
+
       <section id="engineProjectsSection" class="project-command-section modern-project-command advanced-collapsed">
         <div class="modern-project-command-head">
           <div>
@@ -1567,7 +1577,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.1.1', SEAL='admiral-doctrine-811-root-keel-7f3a2c';
+    const EXPECTED='8.1.3', SEAL='crossdeck-813-root-keel-c83a19';
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
@@ -1629,14 +1639,15 @@
         step('Clearing Dark Sky application caches');
         if('caches' in window){for(const key of await caches.keys())if(APP_CACHE.test(key))await caches.delete(key);}
         step('Application caches cleared','done');
-        step('Verifying complete 8.1.1 runtime snapshot');
+        step('Verifying complete 8.1.3 runtime snapshot');
         await verifySnapshot(true);
         step('Complete runtime snapshot verified','done');
         step('Installing identity-only release sentinel');
         await registerAndVerifyWorker();
         step('Release sentinel verified','done');
         step('Restarting Engine on one verified build','done');
-        await delay(600); location.reload();
+        try{localStorage.setItem('darkSkyLastRecovery',JSON.stringify({ok:true,build:EXPECTED,seal:SEAL,at:new Date().toISOString(),steps:['worker-unregistered','app-caches-cleared','runtime-verified','sentinel-verified']}));}catch(_){ }
+        await delay(900); location.reload();
       }catch(err){step(String(err?.message||err),'error');if(clean){clean.disabled=false;clean.textContent='TRY CLEAN RELEASE AGAIN';}if(retry)retry.disabled=false;}
     }
     async function verifySnapshot(forRecovery=false){

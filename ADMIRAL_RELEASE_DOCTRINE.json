@@ -1,75 +1,26 @@
 {
-  "schema": "dark-sky-admiral-release-doctrine-v1",
-  "doctrineVersion": 1,
-  "build": "8.1.1",
-  "release": "Admiral Doctrine \u2014 Root Keel",
+  "schema": "dark-sky-admiral-release-doctrine-v2",
+  "doctrineVersion": 2,
+  "build": "8.1.3",
+  "name": "Crossdeck",
   "principles": [
-    {
-      "id": "single-build",
-      "level": "critical",
-      "rule": "Manifest, runtime, release seal, worker identity, and canonical runtime tree agree before Engine paint."
-    },
-    {
-      "id": "zero-first-paint",
-      "level": "critical",
-      "rule": "Unverified route DOM never paints before route/release checks clear."
-    },
-    {
-      "id": "project-isolation",
-      "level": "critical",
-      "rule": "Project data, branding, media, orders, customers, settings, and authority are project-scoped by default deny."
-    },
-    {
-      "id": "authority-separation",
-      "level": "critical",
-      "rule": "Customer, Owner/Partner, Project Admin, Black Flag, Captain, and Admiral authority routes remain distinct."
-    },
-    {
-      "id": "known-good-separation",
-      "level": "critical",
-      "rule": "Candidate and Last Known Good remain separate until deliberate Captain promotion."
-    },
-    {
-      "id": "detector-independence",
-      "level": "critical",
-      "rule": "Experimental length detection may abstain without suppressing proven orientation/species recognition."
-    },
-    {
-      "id": "root-safe-deploy",
-      "level": "core",
-      "rule": "Fleet-critical release files remain root-upload safe for the iPad/GitHub workflow."
-    },
-    {
-      "id": "route-scoped-media",
-      "level": "core",
-      "rule": "Missing decorative route media cannot hold the Engine."
-    }
+    "single-build release identity",
+    "zero unverified first paint",
+    "project and authority isolation",
+    "manual Known Good promotion",
+    "detector independence",
+    "automatic regression replay",
+    "decision-grade Captain brief",
+    "root-safe iPad deployment"
   ],
   "learned": [
-    {
-      "id": "camera-height-not-solution",
-      "lesson": "Controlled camera height did not solve absolute length classification; customer distance is not a confidence requirement."
-    },
-    {
-      "id": "shared-mask-regression",
-      "lesson": "Shared experimental segmentation regressed Cedar and Horizontal recognition; detectors must be independently gated."
-    },
-    {
-      "id": "worker-mix",
-      "lesson": "Stale service workers can blend releases; recovery visibly unregisters, clears app caches, installs, verifies identity, then reloads."
-    },
-    {
-      "id": "nested-upload-loss",
-      "lesson": "The iPad/GitHub web uploader did not reliably replace nested assets; fleet-critical files must be root-safe."
-    },
-    {
-      "id": "decorative-media-hold",
-      "lesson": "Missing Admiral ceremonial imagery held the Engine; decorative media is route-scoped, not fleet-critical."
-    }
-  ],
-  "promotion_policy": {
-    "automated_preflight": true,
-    "manual_final_promotion": true,
-    "known_good_key": "darkSkyKnownGoodRelease"
-  }
+    "camera height is not a customer confidence requirement",
+    "shared experimental masks may not suppress proven detectors",
+    "stale workers require visible recovery",
+    "nested asset uploads are unreliable on iPad web workflow",
+    "decorative media cannot sink Engine",
+    "rotation feedback must communicate state",
+    "Captain time is reserved for changed behavior and promotion judgment",
+    "fleet learning transfer requires mission adaptation and deliberate adoption"
+  ]
 }

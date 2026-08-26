@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION = '8.1.1';
+  const BUILD_VERSION='8.1.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3955,8 +3955,8 @@
 
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
-    doctrineVersion:1,
-    build:'8.1.1',
+    doctrineVersion:2,
+    build:'8.1.3',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -3965,14 +3965,18 @@
       {id:'known-good-separation',level:'critical',rule:'Candidate and Last Known Good remain separate until deliberate Captain promotion.'},
       {id:'detector-independence',level:'critical',rule:'Experimental length recognition may abstain or fail without suppressing proven orientation or species detectors.'},
       {id:'deployment-reality',level:'core',rule:'Release packaging remains root-upload safe for the iPad/GitHub workflow and cannot depend on nested runtime replacement.'},
-      {id:'route-scoped-media',level:'core',rule:'Missing decorative route media may hold that route or use a safe fallback, but cannot sink the Engine.'}
+      {id:'route-scoped-media',level:'core',rule:'Missing decorative route media may hold that route or use a safe fallback, but cannot sink the Engine.'},
+      {id:'automatic-regression-replay',level:'critical',rule:'Known calibration and doctrine cases replay automatically on each candidate; previously proven behavior must not rely on repeated Captain discovery.'},
+      {id:'decision-grade-brief',level:'core',rule:'Each candidate produces a retained What changed / What passed / What needs Captain judgment brief before promotion.'}
     ],
     learned:[
       {id:'camera-height-not-scale',lesson:'Controlled camera height did not solve length classification; customer camera distance is not a confidence requirement.'},
       {id:'shared-mask-regression',lesson:'A shared experimental segmentation mask regressed previously proven Cedar and Horizontal recognition; detectors must be independent.'},
       {id:'worker-mix',lesson:'Stale service workers can mix releases; recovery must visibly unregister, clear app caches, install, verify identity, then reload.'},
       {id:'nested-upload-loss',lesson:'The iPad/GitHub web upload path did not reliably replace nested assets; fleet-critical release files must be root-safe.'},
-      {id:'decorative-asset-hold',lesson:'A missing Admiral ceremonial image held the whole Engine; decorative media must not be fleet-critical.'}
+      {id:'decorative-asset-hold',lesson:'A missing Admiral ceremonial image held the whole Engine; decorative media must not be fleet-critical.'},
+      {id:'rotation-cx-feedback',lesson:'Rotation mechanics can be correct while customer feedback is too quiet; every visual change should communicate direction, current orientation, and top state.'},
+      {id:'captain-time-is-scarce',lesson:'Repeatable release and calibration checks belong to the shipyard; Captain time should be reserved for changed behavior and promotion judgment.'}
     ]
   });
 
@@ -4012,14 +4016,127 @@
     }catch(_){}
     return result;
   }
+
+  function admiralLedgerRead(){
+    try{return JSON.parse(localStorage.getItem('darkSkyAdmiralLearningLedger')||'null')||{schema:'dark-sky-admiral-learning-ledger-v1',entries:[],calibrations:[],briefs:[]};}
+    catch(_){return {schema:'dark-sky-admiral-learning-ledger-v1',entries:[],calibrations:[],briefs:[]};}
+  }
+  function admiralLedgerWrite(ledger){
+    try{localStorage.setItem('darkSkyAdmiralLearningLedger',JSON.stringify(ledger));}catch(_){ }
+    window.__darkSkyAdmiralLearningLedger=ledger;return ledger;
+  }
+  function admiralLedgerRecord(kind,payload={}){
+    const ledger=admiralLedgerRead(),row={kind,build:BUILD_VERSION,at:new Date().toISOString(),...payload};
+    ledger.entries=(Array.isArray(ledger.entries)?ledger.entries:[]).slice(-79);ledger.entries.push(row);
+    return admiralLedgerWrite(ledger);
+  }
+  const FLEET_LEARNING_REGISTRY=Object.freeze([
+    {id:'proof-source-commissioning',class:'doctrine',origin:'fleet',title:'Proof-Source Commissioning',lesson:'Learn the real business from finished work, forms, photos, pricing evidence, and handoff behavior before inventing workflow.',risk:'low',applies:'all',missionAdapter:'Use project-specific proof only; never copy another vessel\'s business data or branding.'},
+    {id:'three-watch-authority',class:'doctrine',origin:'IKE',title:'Three-Watch Authority Separation',lesson:'Customer, Owner / Partner, and Captain are separate authority surfaces; Test / Preview is a mode, not a fourth authority.',risk:'critical',applies:'all',missionAdapter:'Give each vessel only the authority surfaces its mission needs while preserving Black Flag governance.'},
+    {id:'confidence-aware-visual',class:'capability',origin:'IKE',title:'Confidence-Aware Visual Identification',lesson:'Use image evidence automatically when confidence is strong; ask for the minimum additional evidence when it is not; never convert uncertainty into a business decision.',risk:'medium',applies:['custom_wood_signs','custom_flowers','emergency_restoration','restoration_services','custom_mugs'],missionAdapter:'The classifier and evidence vocabulary must be local to the vessel mission.'},
+    {id:'owner-controlled-rules',class:'capability',origin:'IKE',title:'Owner-Controlled Business Rules',lesson:'Keep rates, pricing rules, enabled capabilities, and business settings owner-controlled behind the project boundary while customers see a simple result.',risk:'medium',applies:'all',missionAdapter:'Expose only project-scoped controls approved for that vessel.'},
+    {id:'visual-source-of-truth',class:'capability',origin:'IKE',title:'Visual Source of Truth',lesson:'When customers can communicate orientation or placement more naturally by manipulating the actual image, prefer that over abstract direction buttons.',risk:'low',applies:['custom_wood_signs','custom_mugs','custom_flowers'],missionAdapter:'Only use when the customer is manipulating a real visual object or layout.'},
+    {id:'service-address-proof',class:'capability',origin:'LP',title:'Operational Address Confirmation',lesson:'Service location is operationally critical; validate and explicitly confirm where the crew should go.',risk:'high',applies:['emergency_restoration','restoration_services','plumbing_services','contractor_services'],missionAdapter:'Adapt validation language and required fields to the service business.'},
+    {id:'requested-timing',class:'capability',origin:'LP',title:'Requested Timing ≠ Appointment',lesson:'Customer-entered timing is a preference until the business confirms availability.',risk:'high',applies:['emergency_restoration','restoration_services','plumbing_services','contractor_services'],missionAdapter:'Carry request-vs-confirmed status through customer, owner, and notification surfaces.'},
+    {id:'atomic-release',class:'doctrine',origin:'shipyard',title:'Atomic Release Integrity',lesson:'One candidate, one runtime identity, one release seal, deterministic recovery, and no mixed-build paint.',risk:'critical',applies:'all',missionAdapter:'Fleet-wide shipyard law; projects inherit it without customization.'},
+    {id:'readable-feedback',class:'capability',origin:'fleet',title:'Durable Action Feedback',lesson:'Important taps must visibly change state, remain readable, and leave durable confirmation after transient feedback disappears.',risk:'low',applies:'all',missionAdapter:'Choose feedback appropriate to customer, owner, Captain, or Admiral context.'}
+  ]);
+  function fleetLearningStateRead(){try{return JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};}catch(_){return {};}}
+  function fleetLearningStateWrite(v){try{localStorage.setItem('darkSkyFleetLearningState',JSON.stringify(v));}catch(_){} return v;}
+  function fleetLearningProjectType(p){return String(p?.businessType||p?.type||'').toLowerCase();}
+  function fleetLearningApplicability(learning,p){
+    if(learning.applies==='all')return {eligible:true,fit:'fleet'};
+    const t=fleetLearningProjectType(p),list=Array.isArray(learning.applies)?learning.applies:[];
+    if(list.includes(t))return {eligible:true,fit:'direct'};
+    if(learning.id==='confidence-aware-visual' && p?.customerExperience?.photoRequired)return {eligible:true,fit:'consider'};
+    if(learning.id==='owner-controlled-rules' && ensureProjectGovernance(p)?.ownerAccess)return {eligible:true,fit:'direct'};
+    return {eligible:false,fit:'none'};
+  }
+  function fleetLearningAdoptionStatus(projectId,learningId){const st=fleetLearningStateRead();return st?.[projectId]?.[learningId]||'unreviewed';}
+  function fleetLearningSetStatus(projectId,learningId,status){
+    const st=fleetLearningStateRead();st[projectId]=st[projectId]||{};st[projectId][learningId]=status;fleetLearningStateWrite(st);
+    admiralLedgerRecord('fleet-learning-review',{projectId,learningId,status});
+    renderFleetLearningRegistry();
+  }
+  function fleetLearningRecommendations(){
+    const list=projects(),rows=[];
+    for(const p of list)for(const learning of FLEET_LEARNING_REGISTRY){const a=fleetLearningApplicability(learning,p);if(!a.eligible)continue;rows.push({projectId:p.id,projectCode:p.projectCode||'',projectName:p.name,projectType:fleetLearningProjectType(p),learningId:learning.id,title:learning.title,class:learning.class,origin:learning.origin,risk:learning.risk,fit:a.fit,status:fleetLearningAdoptionStatus(p.id,learning.id),missionAdapter:learning.missionAdapter});}
+    return rows;
+  }
+  function persistFleetLearningRegistry(){
+    const snapshot={schema:'dark-sky-fleet-learning-registry-v1',build:BUILD_VERSION,at:new Date().toISOString(),learnings:FLEET_LEARNING_REGISTRY,recommendations:fleetLearningRecommendations()};
+    try{localStorage.setItem('darkSkyFleetLearningRegistry',JSON.stringify(snapshot));}catch(_){}
+    window.__darkSkyFleetLearningRegistry=snapshot;return snapshot;
+  }
+  function renderFleetLearningRegistry(){
+    const host=$('fleetLearningBody'),summary=$('fleetLearningSummary'),stateEl=$('fleetLearningState');if(!host||!summary)return;
+    const snap=persistFleetLearningRegistry(),rows=snap.recommendations;
+    const staged=rows.filter(r=>r.status==='staged').length,accepted=rows.filter(r=>r.status==='adopted').length,unreviewed=rows.filter(r=>r.status==='unreviewed').length;
+    if(stateEl){stateEl.textContent=unreviewed?'REVIEWING FLEET':'LEARNING ALIGNED';stateEl.className=`fleet-learning-state ${unreviewed?'watch':'clear'}`;}
+    summary.innerHTML=`<article><small>LEARNINGS</small><strong>${FLEET_LEARNING_REGISTRY.length}</strong><span>Doctrine + reusable capabilities</span></article><article><small>VESSEL MATCHES</small><strong>${rows.length}</strong><span>Mission-aware recommendations</span></article><article><small>STAGED</small><strong>${staged}</strong><span>Awaiting Captain review</span></article><article><small>ADOPTED</small><strong>${accepted}</strong><span>Explicitly accepted patterns</span></article>`;
+    const grouped=projects().map(p=>({p,rows:rows.filter(r=>r.projectId===p.id)})).filter(g=>g.rows.length);
+    host.innerHTML=grouped.map(({p,rows})=>`<article class="fleet-learning-vessel"><header><div><small>${escapeHtml(fleetStableCallsign(p))} • ${escapeHtml(fleetLearningProjectType(p)||'project')}</small><strong>${escapeHtml(p.name)}</strong></div><span>${rows.filter(r=>r.status==='staged').length} staged</span></header><div class="fleet-learning-row-list">${rows.map(r=>`<div class="fleet-learning-row ${escapeHtml(r.status)}"><div><small>${escapeHtml(r.class.toUpperCase())} • ORIGIN ${escapeHtml(r.origin)} • ${escapeHtml(r.risk.toUpperCase())} RISK</small><strong>${escapeHtml(r.title)}</strong><p>${escapeHtml(r.missionAdapter)}</p></div><div class="fleet-learning-actions"><span>${escapeHtml(r.status.replace('_',' ').toUpperCase())}</span>${r.status==='unreviewed'?`<button type="button" data-learning-stage="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">STAGE REVIEW</button><button type="button" data-learning-na="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">NOT FOR THIS VESSEL</button>`:r.status==='staged'?`<button type="button" data-learning-adopt="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">ADOPT PATTERN</button><button type="button" data-learning-reset="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">UNSTAGE</button>`:`<button type="button" data-learning-reset="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">REVIEW AGAIN</button>`}</div></div>`).join('')}</div></article>`).join('');
+    host.querySelectorAll('[data-learning-stage]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningStage,'staged'));
+    host.querySelectorAll('[data-learning-adopt]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningAdopt,'adopted'));
+    host.querySelectorAll('[data-learning-na]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningNa,'not_applicable'));
+    host.querySelectorAll('[data-learning-reset]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningReset,'unreviewed'));
+  }
+  window.DarkSkyFleetLearning={registry:()=>persistFleetLearningRegistry(),recommendations:fleetLearningRecommendations,render:renderFleetLearningRegistry};
+  function admiralLoadImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error(`Calibration image could not load: ${src}`));img.src=`${src}?build=${encodeURIComponent(BUILD_VERSION)}`;});}
+  function admiralFramedVariant(img,scale=.72){
+    const c=document.createElement('canvas'),w=Math.max(320,img.naturalWidth||img.width),h=Math.max(240,img.naturalHeight||img.height);c.width=w;c.height=h;
+    const ctx=c.getContext('2d');ctx.fillStyle='#eee8dc';ctx.fillRect(0,0,w,h);
+    const sw=(img.naturalWidth||img.width)*scale,sh=(img.naturalHeight||img.height)*scale;ctx.drawImage(img,(w-sw)/2,(h-sh)/2,sw,sh);return c;
+  }
+  function admiralRunIkeCalibrationImage(img,label){
+    const proven=ikeAnalyzePlankPixelsProven(img),lengthPixels=ikeAnalyzePlankPixelsLength(img);
+    const orientation=ikeOrientationEvidence(img,proven),species=ikeVisualSpeciesEvidence(img,proven),length=ikeLengthEvidenceFromGeometry(img,lengthPixels);
+    const speciesName=String(species?.speciesName||species?.label||species?.name||'');
+    return {label,orientation:orientation.orientation||'',orientationResolved:!!orientation.resolved,orientationScore:Number(orientation.score||0),speciesName,speciesResolved:!!species?.speciesResolved||speciesName==='Cedar',speciesScore:Number(species?.speciesScore||species?.score||0),lengthCandidateFeet:Number(length?.candidateFeet||0),lengthResolved:!!length?.resolved,lengthScore:Number(length?.score||0),lengthReason:length?.reason||'',shapeStability:Number(length?.shapeStability||0),backgroundSeparation:Number(length?.backgroundSeparation||0),grownSilhouetteRatio:Number(length?.grownSilhouetteRatio||length?.aspectRatio||0)};
+  }
+  async function admiralReplayKnownCalibrations(){
+    const out={schema:'dark-sky-admiral-calibration-replay-v1',build:BUILD_VERSION,at:new Date().toISOString(),cases:[],protectedPass:true,lengthWatch:false};
+    try{
+      const img=await admiralLoadImage('ike_calibration_2ft_cedar_reference.jpg');
+      const variants=[['known-2ft-cedar-original',img],['known-2ft-cedar-framed',admiralFramedVariant(img,.72)]];
+      for(const [label,variant] of variants){
+        const r=admiralRunIkeCalibrationImage(variant,label);r.expected={orientation:'Horizontal',species:'Cedar',lengthFeet:2};
+        r.orientationPass=r.orientationResolved&&r.orientation==='Horizontal';r.speciesPass=r.speciesResolved&&/cedar/i.test(r.speciesName);r.lengthCandidatePass=r.lengthCandidateFeet===2;
+        if(!r.orientationPass||!r.speciesPass)out.protectedPass=false;if(!r.lengthCandidatePass||!r.lengthResolved)out.lengthWatch=true;out.cases.push(r);
+      }
+      const ledger=admiralLedgerRead();ledger.calibrations=(Array.isArray(ledger.calibrations)?ledger.calibrations:[]).slice(-19);ledger.calibrations.push(out);admiralLedgerWrite(ledger);
+      try{localStorage.setItem(`darkSkyAdmiralCalibrationReplay:${BUILD_VERSION}`,JSON.stringify(out));}catch(_){ }
+      window.__darkSkyAdmiralCalibrationReplay=out;
+    }catch(err){out.protectedPass=false;out.error=String(err?.message||err);}
+    return out;
+  }
+  function admiralBuildDecisionBrief(report,calibration){
+    const prior=(()=>{try{return JSON.parse(localStorage.getItem('darkSkyAdmiralLastBrief')||'null');}catch(_){return null;}})();
+    const passCount=(report?.checks||[]).filter(c=>c.state==='pass').length,holdCount=(report?.checks||[]).filter(c=>c.state==='fail').length,watchCount=(report?.checks||[]).filter(c=>c.state==='warn').length;
+    const changed=prior?.build&&prior.build!==BUILD_VERSION?`Candidate advanced from ${prior.build} to ${BUILD_VERSION}.`:`Candidate ${BUILD_VERSION} auto-preflighted.`;
+    const needs=[];if(calibration?.lengthWatch)needs.push('Ike length calibration remains experimental; protected orientation/species are replayed automatically.');if(holdCount)needs.push(`${holdCount} doctrine/proving check(s) are on HOLD.`);if(watchCount)needs.push(`${watchCount} check(s) are on WATCH.`);if(!needs.length)needs.push('Only deliberate Known Good promotion remains manual.');
+    const brief={schema:'dark-sky-admiral-decision-brief-v1',build:BUILD_VERSION,at:new Date().toISOString(),changed,passed:`${passCount} checks passed; protected Ike orientation/species replay ${calibration?.protectedPass?'passed':'failed'}.`,needsCaptain:needs};
+    try{localStorage.setItem('darkSkyAdmiralLastBrief',JSON.stringify(brief));}catch(_){ }
+    const ledger=admiralLedgerRead();ledger.briefs=(Array.isArray(ledger.briefs)?ledger.briefs:[]).slice(-19);ledger.briefs.push(brief);admiralLedgerWrite(ledger);window.__darkSkyAdmiralDecisionBrief=brief;return brief;
+  }
+  function admiralLastRecovery(){try{return JSON.parse(localStorage.getItem('darkSkyLastRecovery')||'null');}catch(_){return null;}}
+
   async function runAdmiralReadinessChecks(source='manual'){
     const checks=[];
     const add=(id,label,state,detail,level='core')=>checks.push({id,label,state,detail,level});
     const safe=async(fn,fallback)=>{try{return await fn();}catch(err){return fallback(err);}};
     const doctrine=persistAdmiralReleaseDoctrine();
     const doctrinePreflight=admiralDoctrinePreflight();
-    add('admiral-doctrine','Admiral Release Doctrine registry',doctrine?.doctrineVersion===1?'pass':'fail',doctrine?.doctrineVersion===1?`${doctrine.principles.length} fleet principles and ${doctrine.learned.length} learned lessons retained for build ${BUILD_VERSION}.`:'Admiral release doctrine registry could not be retained.');
+    add('admiral-doctrine','Admiral Release Doctrine registry',doctrine?.doctrineVersion===2?'pass':'fail',doctrine?.doctrineVersion===2?`${doctrine.principles.length} fleet principles and ${doctrine.learned.length} learned lessons retained for build ${BUILD_VERSION}.`:'Admiral release doctrine registry could not be retained.');
     add('detector-independence','Ike detector independence',doctrinePreflight.detectorIndependence?'pass':'fail',doctrinePreflight.detectorIndependence?'Proven orientation/species detectors are isolated from the experimental length pipeline.':'Experimental length segmentation can still suppress proven visual detectors.');
+    const calibrationReplay=await admiralReplayKnownCalibrations();
+    add('known-calibration-replay','Known Ike calibration replay',calibrationReplay.protectedPass?(calibrationReplay.lengthWatch?'warn':'pass'):'fail',calibrationReplay.protectedPass?(calibrationReplay.lengthWatch?'Protected Horizontal + Cedar cases replayed cleanly; length remains experimental and retained as WATCH evidence.':'Known 2 ft Cedar calibration replay cleared protected and experimental expectations.'):`Known calibration replay regressed protected behavior: ${calibrationReplay.error||'orientation/species mismatch'}.`);
+    const lastRecovery=admiralLastRecovery();
+    add('release-recovery-history','Last release recovery','pass',lastRecovery?.ok===true?`Last clean recovery completed ${new Date(lastRecovery.at).toLocaleString()} for build ${lastRecovery.build}.`:'No retained clean-release recovery is required for this candidate.','check');
+    const fleetLearning=persistFleetLearningRegistry();
+    const learningRecommendations=fleetLearning.recommendations||[];
+    const dangerousAutoApply=learningRecommendations.some(r=>r.status==='adopted'&&r.risk==='critical'&&r.class!=='doctrine');
+    add('fleet-learning-registry','Fleet Learning Registry',dangerousAutoApply?'fail':'pass',dangerousAutoApply?'A critical reusable capability was adopted without a doctrine-only boundary.':`${FLEET_LEARNING_REGISTRY.length} retained learnings mapped across ${projects().length} canonical vessels; adoption remains explicit and project-scoped.`);
 
     // Authority contracts: read-only verification only; no failure counters are incremented.
     const engine=await safe(()=>verifyEnginePin(DEFAULT_ENGINE_PIN,{recordFailure:false}),()=>({ok:false}));
@@ -4101,7 +4218,9 @@
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
-    return {build:BUILD_VERSION,at:new Date().toISOString(),runId:`PG-${BUILD_VERSION}-${Date.now().toString(36).toUpperCase()}`,source,checks,criticalFailures,warnings,pass:criticalFailures===0};
+    const report={build:BUILD_VERSION,at:new Date().toISOString(),runId:`PG-${BUILD_VERSION}-${Date.now().toString(36).toUpperCase()}`,source,checks,criticalFailures,warnings,pass:criticalFailures===0,calibrationReplay};
+    report.admiralBrief=admiralBuildDecisionBrief(report,calibrationReplay);
+    return report;
   }
 
   function provingVoyagesFromReport(report){
@@ -4120,7 +4239,8 @@
       combine('navigation','Command Navigation Voyage',['captain-nav'],'Captain main-room and subview return boundaries.'),
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto'],'Customer-approved visual artifacts stay immutable through review, confirmation, admin, and archive.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
-      combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.')
+      combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
+      combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
     ];
   }
 
@@ -4214,7 +4334,8 @@
       <article class="proving-next-card ${isKnownGood&&!next?'known-good':''}"><small>NEXT BEST MOVE</small><strong>${escapeHtml(nextTitle)}</strong><p>${escapeHtml(nextDetail)}</p><button id="provingNextBtn" type="button" class="primary-btn small" ${isKnownGood&&!next?'disabled aria-disabled="true"':''}>${nextButton}</button></article>
       <article class="proving-release-card ${isKnownGood?'known-good':''}"><small>RELEASE ANCHOR</small><strong>${escapeHtml(knownGood)}</strong><p>${releaseCopy}</p><span>${isKnownGood?'Current release':'Candidate'} <b>${escapeHtml(BUILD_VERSION)}</b></span></article>`;
     }
-    host.innerHTML=`<div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
+    const brief=report.admiralBrief||admiralBuildDecisionBrief(report,report.calibrationReplay||window.__darkSkyAdmiralCalibrationReplay);
+    host.innerHTML=`<section class="admiral-auto-brief"><div><small>ADMIRAL AUTO BRIEF</small><strong>What changed</strong><p>${escapeHtml(brief.changed)}</p></div><div><small>AUTOMATIC REPLAY</small><strong>What passed</strong><p>${escapeHtml(brief.passed)}</p></div><div><small>CAPTAIN JUDGMENT</small><strong>What needs you</strong><p>${escapeHtml((brief.needsCaptain||[]).join(' '))}</p></div></section><div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
       <details class="proving-evidence"><summary>VIEW ENGINEERING EVIDENCE</summary><div class="admiral-readiness-grid">${report.checks.map(c=>`<article class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div></details>
       <div class="admiral-readiness-actions"><button id="admiralRerunBtn" type="button" class="primary-btn small">RUN PROVING GROUND</button><button id="admiralRecoveryBtn" type="button" class="secondary-btn small">CREATE RECOVERY SNAPSHOT</button><button id="admiralReportBtn" type="button" class="secondary-btn small">DOWNLOAD EVIDENCE REPORT</button></div>`;
     $('admiralRerunBtn')?.addEventListener('click',()=>renderAdmiralReadiness({announce:true}));
@@ -11569,6 +11690,7 @@ The full order and approved media remain stored with this project.`;
     try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command systems warning',err); }
     try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
     try{ await commandDeadline(renderFleetCommissioning(),1800,true); }catch(err){ console.warn('fleet dock warning',err); }
+    try{ renderFleetLearningRegistry(); }catch(err){ console.warn('fleet learning warning',err); }
     try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }
     try{ await commandDeadline(renderV3ArchitectureStatus(),2200,true); }catch(err){ console.warn('broadside status warning',err); }
   };

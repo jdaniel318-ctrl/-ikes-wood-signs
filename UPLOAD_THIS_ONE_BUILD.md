@@ -1,21 +1,20 @@
-# Upload This One Build — Dark Sky 8.1.1 Admiral Doctrine
+# Upload This One Build — Dark Sky 8.1.3 Crossdeck — iPad Safe
 
-Upload the contents of this folder to the repository root together.
+Release seal: `crossdeck-813-root-keel-c83a19`
 
-Release seal: `admiral-doctrine-811-root-keel-7f3a2c`
+This upload package is intentionally **99 files** so GitHub's iPad/web uploader accepts it in one pass.
 
-## What is now automatic
-- release identity / manifest / authority checks;
-- project-isolation and Client Preview safety checks;
-- approved-artifact voyage;
-- Admiral Release Doctrine retention;
-- detector-independence preflight;
-- automatic Proving Ground evidence after boot.
+Six unchanged historical storage-telemetry notes are intentionally omitted from this upload because they already exist in the repository from 8.1.2 and their bytes/checksums are unchanged:
 
-## What remains deliberate
-Final **MARK CANDIDATE KNOWN GOOD** promotion remains a Captain decision.
+- `STORAGE_TELEMETRY_770.md`
+- `STORAGE_TELEMETRY_780.md`
+- `STORAGE_TELEMETRY_781.md`
+- `STORAGE_TELEMETRY_782.md`
+- `STORAGE_TELEMETRY_783.md`
+- `STORAGE_TELEMETRY_784.md`
 
-## First human sea trial
-Use a normal customer-style photo of the known 2 ft cedar plank.
-Expected minimum: **Horizontal + Cedar** must resolve even if length holds.
-Target: **Horizontal + Cedar + 2 ft + $18**.
+No runtime, release-identity, Fleet Learning Registry, calibration, doctrine, route, or visual file is omitted.
+
+Upload all 99 files in this folder to the repository root. After GitHub Pages deploys, refresh once. If the previous worker is still active, use **CLEAN RELEASE RETRY**.
+
+Crossdeck then auto-runs release doctrine, known-calibration replay, and Fleet Learning Registry preflight. Recommendations may be staged/adopted per vessel, but no business-specific behavior crosses projects automatically. Final **MARK CANDIDATE KNOWN GOOD** remains manual.

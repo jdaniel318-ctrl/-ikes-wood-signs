@@ -1,12 +1,24 @@
-# Dark Sky 8.1.1 — Admiral Doctrine
+# Dark Sky 8.1.3 — Crossdeck
 
-**Release seal:** `admiral-doctrine-811-root-keel-7f3a2c`
+Crossdeck is the first fleet-learning pass. It turns retained lessons into a governed transfer system: **Fleet Doctrine**, **Reusable Capability**, and **Mission Adapter**. The Engine maps relevant learnings to canonical vessels, but nothing business-specific crosses project boundaries automatically.
 
-Admiral Doctrine turns lessons from the 8.0.x/8.1.0 sea trials into retained fleet contracts and automated preflight checks. The final Known Good promotion remains manual, but repeatable release identity, authority, isolation, detector-independence, and artifact checks run automatically.
+**Release seal:** `crossdeck-813-root-keel-c83a19`
 
-For Ike's, proven orientation/species recognition is restored on its own visual path while Plumb Line length segmentation runs independently. A length abstention can no longer erase Cedar or Horizontal.
+## What Crossdeck adds
 
-See `ADMIRAL_RELEASE_DOCTRINE.json`, `ADMIRAL_RELEASE_DOCTRINE.md`, and the Proving Ground engineering evidence.
+- A persistent Fleet Learning Registry.
+- Mission-aware recommendations for each canonical vessel.
+- Staged review / adopt / not-applicable decisions that remain project-scoped.
+- Admiral preflight checks that verify learning transfer is still deliberate and isolated.
+- Manual Known Good promotion remains unchanged.
+
+## Transfer law
+
+**Learn → Classify → Adapt → Captain Review → Adopt.**
+
+A capability can be reused; a project's customer data, branding, pricing, media, or workflow implementation cannot be copied to another vessel merely because it originated the lesson.
+
+See `FLEET_LEARNING_REGISTRY.json`, `FLEET_LEARNING_REGISTRY.md`, `FLEET_LEARNING_RECOMMENDATIONS_813.json`, and `ADMIRAL_RELEASE_DOCTRINE.json`.
 
 ---
 

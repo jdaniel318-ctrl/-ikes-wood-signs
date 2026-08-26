@@ -1,11 +1,13 @@
-# Dark Sky 8.1.1 — Admiral Doctrine
+# Dark Sky 8.1.3 — Crossdeck
 
-- Added persistent Admiral Release Doctrine and learned-contract registry.
-- Added automated doctrine preflight to Fleet Proving Ground.
-- Restored proven Ike orientation/species detector path from the stable Sentry/Rangefinder lineage.
-- Isolated Plumb Line experimental length segmentation so length can abstain without suppressing orientation/species/design-zone results.
-- Final Known Good promotion remains a deliberate Captain action.
-- Preserved Root Keel single-build, iPad-safe deployment, service-worker recovery, project isolation, and authority boundaries.
+- Added Fleet Learning Registry with doctrine / reusable-capability / mission-adapter classification.
+- Added mission-aware per-vessel recommendation mapping across the canonical fleet.
+- Added staged transfer review states without automatic cross-project feature propagation.
+- Added Engine Fleet Learning Registry surface between Fleet Dock and Advanced Project Command.
+- Added Admiral Doctrine Voyage check for learning-registry integrity and project-scoped adoption.
+- Preserved detector independence, calibration replay, atomic release integrity, project isolation, owner boundaries, and manual Known Good promotion.
+
+---
 
 # Dark Sky 8.1.0 — Plumb Line
 

@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.1.1",
-  "version": "8.1.1",
+  "build": "8.1.3",
+  "version": "8.1.3",
   "release_name": "Admiral Doctrine \u2014 Root Keel",
   "releaseName": "Admiral Doctrine \u2014 Root Keel",
-  "release_seal": "admiral-doctrine-811-root-keel-7f3a2c",
+  "release_seal": "crossdeck-813-root-keel-c83a19",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -52,7 +52,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "admiral-doctrine-learned-contracts-auto-preflight-plus-independent-proven-visual-and-experimental-length-detectors",
-  "release_note": "8.1.1 retains learned Admiral release doctrine, auto-runs repeatable preflight checks, restores proven Cedar/orientation recognition on an independent path, and isolates experimental Plumb Line length segmentation so it cannot regress proven detectors.",
+  "release_note": "8.1.3 Crossdeck adds a project-scoped Fleet Learning Registry that classifies retained lessons, recommends reusable capabilities by vessel mission, and stages adoption for deliberate Captain review.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

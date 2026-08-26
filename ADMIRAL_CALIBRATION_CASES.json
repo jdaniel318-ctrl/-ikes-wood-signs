@@ -1,0 +1,28 @@
+{
+  "schema": "dark-sky-admiral-calibration-cases-v1",
+  "build": "8.1.3",
+  "cases": [
+    {
+      "id": "ike-2ft-cedar-reference",
+      "asset": "ike_calibration_2ft_cedar_reference.jpg",
+      "truth": {
+        "species": "Cedar",
+        "lengthFeet": 2,
+        "orientation": "Horizontal"
+      },
+      "replayVariants": [
+        "original",
+        "framed-72pct"
+      ],
+      "protectedAssertions": [
+        "orientation",
+        "species"
+      ],
+      "experimentalObservations": [
+        "length"
+      ]
+    }
+  ],
+  "name": "Crossdeck",
+  "seal": "crossdeck-813-root-keel-c83a19"
+}

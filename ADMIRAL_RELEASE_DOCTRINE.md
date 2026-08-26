@@ -1,4 +1,4 @@
-# Admiral Release Doctrine — 8.1.1
+# Admiral Release Doctrine — 8.1.3
 
 This is the fleet-level memory layer for Dark Sky / Black Flag releases.
 
@@ -14,7 +14,7 @@ Automate the repeatable proving work; keep final **MARK CANDIDATE KNOWN GOOD** a
 - camera height is not a customer measurement contract;
 - experimental length segmentation must not suppress proven orientation or species recognition.
 
-## 8.1.1 detector architecture
+## 8.1.3 detector architecture
 - **Proven visual path:** orientation, species, design-zone geometry.
 - **Experimental length path:** background-aware Plumb Line segmentation.
 - Each path can pass, abstain, or fail independently.
