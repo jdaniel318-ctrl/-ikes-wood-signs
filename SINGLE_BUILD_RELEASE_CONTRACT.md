@@ -4,7 +4,7 @@ Dark Sky must never paint the Engine from a mixed runtime.
 
 ## Required invariants
 1. Manifest, app runtime, service-worker source, and active service-worker identity must all report **8.0.8**.
-2. The release seal is **yardarm-808-onebuild-93e4b7** and must match in the manifest, release seal file, boot gate, and worker.
+2. The release seal is **yardarm-808-full-keel-91d4c8** and must match in the manifest, release seal file, boot gate, and worker.
 3. The service-worker registration URL is permanently stable: `./sw.js`. Release identity belongs inside the worker, never in the worker URL.
 4. A failed release verification has no bypass. `RETRY VERIFICATION` runs the same gate again; it does not paint the Engine around the gate.
 5. `CLEAN RELEASE RETRY` is a visible transaction: unregister this app's worker → clear Dark Sky application caches → register a fresh stable worker → verify build/seal → reload.
@@ -17,4 +17,4 @@ Any mismatch or incomplete worker recovery blocks first paint and presents an ex
 
 
 ## Admiral Seal addendum
-Release `yardarm-808-admiral-seal-4c7e21` upgrades the contract: executable service-worker caching is forbidden; the browser executes only the exact bytes fetched and verified in one no-store snapshot before first paint.
+Release `yardarm-808-full-keel-91d4c8` upgrades the contract: executable service-worker caching is forbidden; the browser executes only the exact bytes fetched and verified in one no-store snapshot before first paint.

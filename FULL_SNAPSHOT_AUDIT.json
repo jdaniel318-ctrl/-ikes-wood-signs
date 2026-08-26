@@ -1,0 +1,126 @@
+{
+  "schema": "dark-sky-full-snapshot-audit-v1",
+  "build": "8.0.8",
+  "release": "Yardarm",
+  "seal": "yardarm-808-full-keel-91d4c8",
+  "status": "PASS",
+  "required_file_count": 23,
+  "missing": [],
+  "files": [
+    {
+      "path": "RELEASE_INVENTORY.json",
+      "bytes": 1158,
+      "sha256": "6f01f0d9d8009cae9c3ce47176064d350f3b1caeb5c2593283656a977fd5712e"
+    },
+    {
+      "path": "RELEASE_SEAL.json",
+      "bytes": 225,
+      "sha256": "5363c291ad2806b149d9ff71b9472f5786512277d849ebd218ca098bc6821d2c"
+    },
+    {
+      "path": "app.js",
+      "bytes": 945236,
+      "sha256": "257e4ca7dfe01629f600a0869715b632534cf1b7018e13f83bfcb175ea0fcebf"
+    },
+    {
+      "path": "assets/admirals_deck_ceremonial_v640.png",
+      "bytes": 1980991,
+      "sha256": "4449380803aaa96085a143078afdd71fa4b302bdac7105a12b6e24fb3ed42440"
+    },
+    {
+      "path": "assets/black_flag_platform_icon.png",
+      "bytes": 169840,
+      "sha256": "dc4e3b99abd6478d75be1bb77709b8da136bdcfd76d86d39ecd8d0259753a7b0"
+    },
+    {
+      "path": "assets/black_flag_primary_lockup.png",
+      "bytes": 23472,
+      "sha256": "5dc518e32a9aa098d099bbb59b2a6eb1fb0d818328cb1ccbacda2ec60ee4ef2f"
+    },
+    {
+      "path": "assets/captains_quarters_cinematic_v2953.jpg",
+      "bytes": 393787,
+      "sha256": "f68e466636693e4dc9b47f2b7fbfca687b7bf4724ba2b5cb14dde179c790ef2b"
+    },
+    {
+      "path": "assets/captains_quarters_command_center_v578.png",
+      "bytes": 2227146,
+      "sha256": "343216079945f5c34711e442406fccdc18bb23a9aa8b4ebb135f243d19c2e5cf"
+    },
+    {
+      "path": "assets/engine_room_modern_benchmark_v2976.png",
+      "bytes": 1809971,
+      "sha256": "ffaec34c7feb88a7b05560e6b5469c4d57861b00f308d032d526760e5a422c1c"
+    },
+    {
+      "path": "assets/engine_room_pirate_benchmark_v2978.png",
+      "bytes": 1849432,
+      "sha256": "65ed8f851e5aa6a213c4eac37d3509d87c40c3ff431234eed6ff6b456381c7cf"
+    },
+    {
+      "path": "assets/ike_character.jpg",
+      "bytes": 72662,
+      "sha256": "2611d4f0ac95b4a974ab20749e1430b750efe33dead5e28ef1ffc14b3f8148a3"
+    },
+    {
+      "path": "assets/ike_character_white_teeth.png",
+      "bytes": 149919,
+      "sha256": "d4ffa7cbdfb27caf4567f1bec1737f83686cb31db754c5f331dd3de52f050062"
+    },
+    {
+      "path": "assets/ikes_real_sign_lettering_reference.jpg",
+      "bytes": 490839,
+      "sha256": "56fa2d509037b1bed83a86c5b6bf839d4d166590639b1b5f0953832ac3eeaa7d"
+    },
+    {
+      "path": "assets/signal_restoration_logo.png",
+      "bytes": 517315,
+      "sha256": "397f2a06823f2be11ef15707293f33e2d67c711706f5787c2406dad171c82de4"
+    },
+    {
+      "path": "captain.js",
+      "bytes": 122849,
+      "sha256": "8b1c7ed6cf3614a4f6e4366b208968298c5310927764e580e7378b604cdfef61"
+    },
+    {
+      "path": "index.html",
+      "bytes": 139971,
+      "sha256": "5ffa953b7d5006cace4d174c184810532d228520ba51722bb383ac6fdb1382d7"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "bytes": 587,
+      "sha256": "dc8139c73cef7ca95ae54eededb3e9ba5ff94c10e10514f695ff1c811dfc6bda"
+    },
+    {
+      "path": "owner.html",
+      "bytes": 21596,
+      "sha256": "e33dcb4b6586e0f7ce44aae844fa4e2cbee2cebee3d1cbe915bab603ef9b96c6"
+    },
+    {
+      "path": "platform_core.js",
+      "bytes": 36195,
+      "sha256": "cf30295342e93493065c4ea1a364ab203cdc965bac1cf895a2c282e28fc20cf0"
+    },
+    {
+      "path": "platform_identity.js",
+      "bytes": 2785,
+      "sha256": "40258a7826a10903bef5f63e4364f8298ec372e78cf9320ce4859a5ede84e6e1"
+    },
+    {
+      "path": "platform_v4.js",
+      "bytes": 22983,
+      "sha256": "554eb12e2c99100995247c8a5e88e1bb73ac2d5a3036788d02333b7793e5b753"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 903044,
+      "sha256": "4413a392bc9e903364b1fbe8cbc9d2b9fd627ba7fa2fba3928ff0a05f06a21c8"
+    },
+    {
+      "path": "sw.js",
+      "bytes": 1174,
+      "sha256": "fde5d43e9a78736dd258e49f46940b5c692bc3ee3c579cf9ec7f6756b95e9d4f"
+    }
+  ]
+}

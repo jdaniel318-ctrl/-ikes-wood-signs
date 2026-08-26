@@ -13,4 +13,4 @@ Prevent any Captain, Admiral, Engine, project owner, or customer surface from ex
 7. Recovery may unregister workers and delete Dark Sky application caches, but must never delete IndexedDB project/order/customer/owner data.
 8. Any mismatch becomes a durable Release Hold with file-level evidence.
 
-Release seal: `yardarm-808-admiral-seal-4c7e21`
+Release seal: `yardarm-808-full-keel-91d4c8`

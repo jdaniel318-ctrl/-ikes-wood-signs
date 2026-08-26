@@ -2,7 +2,7 @@
 
 Upload the entire contents of `DarkSky808-Yardarm-AdmiralSeal` together. Do not cherry-pick individual runtime-control files.
 
-Release seal: `yardarm-808-admiral-seal-4c7e21`
+Release seal: `yardarm-808-full-keel-91d4c8`
 Build: `8.0.8`
 
 ## Admiral release rule

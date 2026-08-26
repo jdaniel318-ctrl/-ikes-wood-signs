@@ -7,10 +7,16 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#071419" />
   <title>Engine Room — Black Flag Harbor</title>
+  <style id="darkSkyZeroPaintBulkhead">
+    html{background:#06151b!important;}
+    html.dark-sky-release-preflight body,html.dark-sky-route-preflight body{background:#06151b!important;overflow:hidden!important;}
+    html.dark-sky-release-preflight body>*:not(#darkSkyFirstPaintShield),html.dark-sky-route-preflight body>*:not(#darkSkyFirstPaintShield){visibility:hidden!important;}
+    html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
+  </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.0.8 YARDARM — atomic release seal.
     const DARK_SKY_EXPECTED_BUILD = '8.0.8';
-    const DARK_SKY_RELEASE_SEAL = 'yardarm-808-admiral-seal-4c7e21';
+    const DARK_SKY_RELEASE_SEAL = 'yardarm-808-full-keel-91d4c8';
     window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
@@ -1561,14 +1567,14 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.0.8', SEAL='yardarm-808-admiral-seal-4c7e21';
+    const EXPECTED='8.0.8', SEAL='yardarm-808-full-keel-91d4c8';
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
     const snapshotPaths=['styles.css','platform_core.js','platform_v4.js','platform_identity.js','app.js','captain.js'];
-    const presencePaths=['owner.html','experience_test_deck.js','manifest.webmanifest','DEPLOYMENT_MANIFEST.json','RELEASE_SEAL.json','RELEASE_INVENTORY.json','sw.js'];
+    const presencePaths=['owner.html','manifest.webmanifest','DEPLOYMENT_MANIFEST.json','RELEASE_SEAL.json','RELEASE_INVENTORY.json','sw.js'];
     const assetPaths=['assets/black_flag_primary_lockup.png','assets/black_flag_platform_icon.png','assets/ike_character.jpg','assets/captains_quarters_command_center_v578.png','assets/admirals_deck_ceremonial_v640.png','assets/signal_restoration_logo.png'];
     function releaseUrl(path){const u=new URL(path,location.href);u.searchParams.set('releaseSeal',SEAL);u.searchParams.set('_ds',Date.now().toString());return u.toString();}
     async function fetchResponse(path){

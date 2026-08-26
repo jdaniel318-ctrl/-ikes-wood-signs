@@ -2,7 +2,7 @@
   "schema": "dark-sky-runtime-inventory-v1",
   "build": "8.0.8",
   "release": "Yardarm",
-  "seal": "yardarm-808-admiral-seal-4c7e21",
+  "seal": "yardarm-808-full-keel-91d4c8",
   "required_snapshot_files": [
     "styles.css",
     "platform_core.js",
@@ -14,7 +14,6 @@
   "required_presence_files": [
     "index.html",
     "owner.html",
-    "experience_test_deck.js",
     "manifest.webmanifest",
     "sw.js",
     "DEPLOYMENT_MANIFEST.json",
