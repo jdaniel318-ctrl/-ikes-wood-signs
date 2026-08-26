@@ -1,13 +1,8 @@
-# Dark Sky 8.0.8 — Yardarm (Single-Build Sealed Package)
+# Dark Sky 8.0.8 — Yardarm (One-Build Recovery Hardened)
 
-**Release seal:** `yardarm-808-atomic-6f2c91`  
-**Rule:** one build or no boot.
-
-This package supersedes the earlier Yardarm ZIP without changing the semantic build number. It adds an atomic pre-execution release gate so Safari cannot combine a fresh manifest with a stale same-version runtime. A mixed build is blocked before the Engine paints and is shown explicitly as **MIXED BUILD DETECTED**.
-
-See `SINGLE_BUILD_RELEASE_CONTRACT.md`.
-
----
+**Release seal:** `yardarm-808-onebuild-93e4b7`  
+**Service-worker URL:** stable `./sw.js`  
+**Recovery contract:** visible unregister → cache cleanup → fresh worker registration → identity verification → reload.
 
 # Dark Sky 8.0.8 — Yardarm
 

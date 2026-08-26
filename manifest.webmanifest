@@ -1,7 +1,7 @@
 {
   "name": "Dark Sky \u2014 Black Flag Business Command Platform",
   "short_name": "Dark Sky",
-  "start_url": "./index.html?release=yardarm-808-atomic-6f2c91",
+  "start_url": "./index.html?release=yardarm-808-onebuild-93e4b7",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",

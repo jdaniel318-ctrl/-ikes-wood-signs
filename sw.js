@@ -1,5 +1,5 @@
 const RELEASE_BUILD='8.0.8';
-const RELEASE_SEAL='yardarm-808-atomic-6f2c91';
+const RELEASE_SEAL='yardarm-808-onebuild-93e4b7';
 const CACHE=`dark-sky-${RELEASE_BUILD}-${RELEASE_SEAL}`;
 const CORE=[
   './',
@@ -29,7 +29,11 @@ self.addEventListener('activate',event=>{
   event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>(/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/.test(k)&&k!==CACHE)).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
 self.addEventListener('message',event=>{
-  if(event.data?.type==='GET_RELEASE_IDENTITY') event.source?.postMessage({type:'DARK_SKY_RELEASE_IDENTITY',build:RELEASE_BUILD,seal:RELEASE_SEAL,cache:CACHE});
+  if(event.data?.type==='GET_RELEASE_IDENTITY'){
+    const payload={type:'DARK_SKY_RELEASE_IDENTITY',build:RELEASE_BUILD,seal:RELEASE_SEAL,cache:CACHE};
+    if(event.ports&&event.ports[0]) event.ports[0].postMessage(payload);
+    else event.source?.postMessage(payload);
+  }
 });
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;

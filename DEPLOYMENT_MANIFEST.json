@@ -4,7 +4,7 @@
   "version": "8.0.8",
   "release_name": "Yardarm",
   "releaseName": "Yardarm",
-  "release_seal": "yardarm-808-atomic-6f2c91",
+  "release_seal": "yardarm-808-onebuild-93e4b7",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "atomic-single-build",
@@ -31,7 +31,11 @@
     "mixed_build_behavior": "block-first-paint-explicit-MIXED-BUILD-DETECTED",
     "safe_cleanup_scope": "service-worker-registrations-and-app-caches-only-never-project-data",
     "upload_rule": "upload-one-release-folder-contents-together-do-not-cherry-pick-runtime-files",
-    "same_version_repair": "unique-release-seal-busts-stale-same-version-runtime"
+    "same_version_repair": "unique-release-seal-busts-stale-same-version-runtime",
+    "service_worker_script_url": "stable-./sw.js-no-release-query",
+    "service_worker_recovery": "unregister-same-scope-clear-app-caches-register-fresh-verify-identity-reload",
+    "service_worker_identity_verification": "active-worker-build-and-seal-must-match-before-engine-paint",
+    "bypass_mixed_build_gate": "forbidden"
   },
   "authority_contracts": {
     "project_admin_default_recovery_pin": "4353",
@@ -44,6 +48,6 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "atomic-single-build-release-seal-plus-yardarm-length-ranging-visual-helm-owner-bridge-canonical-fleet",
-  "release_note": "Yardarm is sealed as one runtime. Before any Engine script executes, the boot gate verifies deployment manifest, app runtime BUILD_VERSION, service-worker build, and unique release seal. Mixed or partial builds stop at an explicit recovery surface and never paint the Engine."
+  "release_focus": "single-build-hard-guardrail-plus-yardarm-length-ranging-visual-helm-owner-bridge-canonical-fleet",
+  "release_note": "Yardarm is one sealed runtime. The service-worker URL stays stable across releases; boot verifies manifest, app runtime, worker source and active worker identity before Engine paint. Clean Release Retry visibly unregisters only this app scope, clears only Dark Sky application caches, registers a fresh worker, verifies the worker build/seal, then reloads. There is no bypass path."
 }

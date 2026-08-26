@@ -2,10 +2,12 @@
   "schema": "dark-sky-release-seal-v1",
   "build": "8.0.8",
   "release": "Yardarm",
-  "seal": "yardarm-808-atomic-6f2c91",
+  "seal": "yardarm-808-onebuild-93e4b7",
   "created": "2026-08-25",
   "policy": "single-build-only",
   "runtime_probe": "app.js const BUILD_VERSION",
   "mixed_build": "block-before-engine-paint",
-  "same_version_cache_bust": "seal-query-token"
+  "same_version_cache_bust": "asset seal tokens; stable service-worker URL",
+  "service_worker_url": "./sw.js",
+  "recovery": "atomic clean retry with active-worker identity verification"
 }

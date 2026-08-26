@@ -1,16 +1,7 @@
-# Upload Dark Sky 8.0.8 Yardarm — Sealed
+# Dark Sky 8.0.8 Yardarm — One-Build Recovery Set
 
-This is a **same-build repair overlay**, not a second release. The repository runtime is already 8.0.8; this overlay adds the atomic release seal that prevents Safari/service-worker state from pairing an older cached runtime with the current manifest.
+This package fixes the service-worker recovery transaction and single-build gate for Yardarm 8.0.8.
 
-Upload **all files in this folder together**. Do not mix individual files from older Dark Sky folders into the same commit.
+Important packaging rule: a truly self-contained release must include every file listed in `DEPLOYMENT_MANIFEST.json > required_runtime_files`. The release gate now verifies the deployed copies before Engine paint, but the upload package itself must also be audited for completeness before it is treated as a standalone replacement.
 
-The seal verifies the live repository before the Engine starts:
-
-- `DEPLOYMENT_MANIFEST.json` must report 8.0.8.
-- `app.js` must expose `BUILD_VERSION = 8.0.8`.
-- `sw.js` must report 8.0.8 and the exact Yardarm release seal.
-- the required runtime-file list must be complete.
-
-If any check fails, Dark Sky blocks first paint and displays **MIXED BUILD DETECTED**.
-
-`CLEAN RELEASE RETRY` removes only service-worker registrations and Dark Sky/Black Flag application caches. It does **not** delete IndexedDB projects, orders, customers, owner settings, or other project data.
+The service worker must always be registered at `./sw.js` with no version or seal query in its script URL.

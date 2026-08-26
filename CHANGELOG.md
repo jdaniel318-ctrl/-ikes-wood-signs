@@ -1,3 +1,12 @@
+# 8.0.8 — Yardarm One-Build Recovery Hardening
+
+- Fixed Clean Release Retry after stale-worker removal: a missing registration is now the expected state and triggers a fresh `./sw.js` registration instead of an invalid update call.
+- Service-worker URL is stable across releases; build/seal identity is verified inside the active worker.
+- Clean Release Retry now shows durable step-by-step progress and disables actions while the recovery transaction runs.
+- Removed the unsafe “reload without cleanup” bypass; Retry Verification always re-runs the same release gate.
+- Cleanup is scoped to this app’s service worker and Dark Sky application caches; project data is preserved.
+- Added package-completeness requirement to the Single-Build Release Contract.
+
 # 8.0.8 — Yardarm Single-Build Seal
 
 - Added a unique release seal to defeat stale same-version Safari/service-worker runtime keys.
