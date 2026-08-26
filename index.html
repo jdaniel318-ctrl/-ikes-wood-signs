@@ -14,13 +14,13 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.1.7 ADMIRAL DOCTRINE — atomic release seal.
-    const DARK_SKY_EXPECTED_BUILD = '8.1.7';
-    const DARK_SKY_RELEASE_SEAL = 'fleet-judgment-817-root-keel-f17a62';
+    // Dark Sky 8.1.8 CRAFTLOCK — atomic release seal.
+    const DARK_SKY_EXPECTED_BUILD = '8.1.8';
+    const DARK_SKY_RELEASE_SEAL = 'craftlock-818-root-keel-c8f214';
     window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
-    // Dark Sky 8.1.7 ADMIRAL DOCTRINE — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.1.8 CRAFTLOCK — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -531,13 +531,13 @@
             <div class="camera-icon">📷</div><strong>Ready to photograph your wood</strong><span>Tap START CAMERA below.</span>
           </div>
         </div>
-        <div id="cameraControls" class="camera-controls">
+        <p id="cameraPermissionPrep" class="camera-permission-prep">Safari may ask once for camera access. Ike only requests it after you tap Start Camera.</p><div id="cameraControls" class="camera-controls">
           <button type="button" id="startCameraBtn" class="primary-btn">START CAMERA</button>
           <button type="button" id="cancelCameraBtn" class="secondary-btn hidden">CANCEL CAMERA</button>
           <button type="button" id="capturePhotoBtn" class="primary-btn hidden">TAKE PICTURE</button>
         </div>
         <div id="photoFrame" class="photo-frame placeholder hidden">
-          <img id="woodPhoto" alt="Selected wood blank" />
+          <img id="woodPhoto" alt="Selected wood blank" /><div id="photoReviewTopMarker" class="photo-review-top-marker hidden">TOP</div>
           <div id="photoPlaceholder" class="photo-placeholder"><strong>Your wood photo will appear here</strong></div>
         </div>
         <div id="photoReviewControls" class="photo-review-controls hidden">
@@ -548,7 +548,7 @@
           </div>
           <button type="button" id="usePhotoBtn" class="primary-btn next" data-next="orientation">USE THIS PHOTO →</button>
         </div>
-        <div id="photoOrientationNote" class="photo-orientation-note hidden"><strong>Set the board upright.</strong><span>Rotate the photo until it looks the way the finished sign should hang. The top of the photo becomes the top of the sign.</span></div>
+        <div id="photoOrientationNote" class="photo-orientation-note hidden"><strong>Set the board upright.</strong><span>Rotate the photo until it looks the way the finished sign should hang. The top of the photo becomes the top of the sign.</span><b id="photoRotationState">Original orientation • Horizontal • Top of photo = top of finished sign</b></div>
         <div class="library-fallback"><span>Camera not available?</span><label class="text-btn file-btn inline-file" for="photoInput">Choose a saved photo</label><input id="photoInput" type="file" accept="image/*" hidden /></div>
         <p id="photoHelp" class="helper">The app will use the iPad camera without leaving the ordering process.</p>
         <p id="photoError" class="error-text" aria-live="polite"></p>
@@ -594,6 +594,7 @@
                   <button type="button" class="ike-lettering-choice" data-ike-font="B"><small>STYLE B · TALL WESTERN</small><span class="style-b"><b data-ike-font-sample>SMOKE HOLE!</b></span><em>Tall decorative sign lettering</em></button>
                   <button type="button" class="ike-lettering-choice" data-ike-font="C"><small>STYLE C · CLASSIC SERIF</small><span class="style-c"><b data-ike-font-sample>Your Sign</b></span><em>Traditional readable serif</em></button>
                 </div>
+                <div class="ike-lettering-size-wrap"><div class="ike-design-label"><strong>Lettering size</strong><span>MACHINE-SAFE FOR THIS PLANK</span></div><div id="ikeLetteringSizeChoices" class="ike-size-grid"><button type="button" data-ike-size="Small"><strong>Small</strong><small>More breathing room</small></button><button type="button" class="selected" data-ike-size="Balanced"><strong>Balanced</strong><small>Comfortable spacing</small></button><button type="button" data-ike-size="Large"><strong>Large</strong><small>Bolder presence</small></button><button type="button" data-ike-size="Fill"><strong>Fill</strong><small>Largest safe fit</small></button></div><p class="ike-size-safety">Every option stays within the detected lettering zone. Fill means the largest size the machine can safely carve on this exact plank.</p></div>
                 <label class="ike-style-reference-btn" for="ikeStyleReferenceInput"><span>＋</span><div><strong>Add lettering reference photo</strong><small>Optional. Stages a visual style reference — it does not pretend a photo is an installable font.</small></div></label>
                 <input id="ikeStyleReferenceInput" type="file" accept="image/*" hidden />
                 <div id="ikeStyleReferenceStatus" class="ike-style-reference-status hidden"><img id="ikeStyleReferencePreview" alt="Lettering reference"><div><strong>REFERENCE STAGED</strong><span id="ikeStyleReferenceName"></span><small>Ready for future Lettering Library matching / creation.</small></div></div>
@@ -615,8 +616,8 @@
           <aside class="ike-design-preview-pane">
             <div class="ike-design-preview-head"><span>YOUR EXACT PLANK</span><strong id="ikeDesignPrice">$65</strong></div>
             <div class="preview-card ike-design-preview"><img class="preview-image" data-preview-img alt="Live sign preview" /><div class="preview-fallback"></div><div id="ikeDesignPreviewText" class="preview-text style-b"></div><div id="ikeStylePrompt" class="ike-style-prompt">Choose a lettering style to place your words on the plank.</div><div id="ikeTopMarker" class="ike-top-marker">TOP</div></div>
-            <div class="ike-design-summary-line"><span id="ikeDesignOrientation">Horizontal</span><span id="ikeDesignFill">Black</span><span id="ikeDesignFont">Choose style</span><span id="ikeDesignProtection">Detecting zone</span></div>
-            <button type="button" id="ikeDesignNextBtn" class="primary-btn">REVIEW MY DESIGN →</button>
+            <div class="ike-design-summary-line"><span id="ikeDesignOrientation">Horizontal</span><span id="ikeDesignFill">Black</span><span id="ikeDesignFont">Choose style</span><span id="ikeDesignSize">Balanced</span><span id="ikeDesignProtection">Detecting zone</span></div>
+            <button type="button" id="ikeDesignNextBtn" class="primary-btn" disabled>REVIEW MY DESIGN →</button>
             <p id="ikeDesignError" class="error-text" aria-live="polite"></p>
           </aside>
         </div>
@@ -627,7 +628,7 @@
           <div><div class="centered"><span class="eyebrow">DESIGN CHECKPOINT</span><h2>Approve the sign you want Ike to make.</h2></div>
             <div class="preview-card hero-preview ike-approve-preview"><img class="preview-image" data-preview-img alt="Approved plank preview"><div class="preview-fallback"></div><div class="preview-text style-b" data-preview-text>Smoke Hole</div><div class="ike-top-marker approval-marker">TOP</div></div>
           </div>
-          <div class="ike-approve-panel"><span>YOUR DESIGN</span><h3 id="ikeApproveWording">Smoke Hole</h3><div class="ike-approve-facts"><div><small>LETTERING</small><strong id="ikeApproveFont">Style B</strong></div><div><small>FINISH</small><strong id="ikeApproveFill">Black</strong></div><div><small>ORIENTATION</small><strong id="ikeApproveOrientation">Horizontal</strong></div><div><small>PRICE</small><strong id="ikeApprovePrice">$65</strong></div></div><button id="ikeApproveDesignBtn" type="button" class="primary-btn">APPROVE MY DESIGN →</button><button id="ikeEditDesignBtn" type="button" class="secondary-btn">EDIT DESIGN</button></div>
+          <div class="ike-approve-panel"><span>YOUR DESIGN</span><h3 id="ikeApproveWording">Smoke Hole</h3><div class="ike-approve-facts"><div><small>LETTERING</small><strong id="ikeApproveFont">Style B</strong></div><div><small>SIZE</small><strong id="ikeApproveSize">Balanced</strong></div><div><small>FINISH</small><strong id="ikeApproveFill">Black</strong></div><div><small>ORIENTATION</small><strong id="ikeApproveOrientation">Horizontal</strong></div><div><small>PRICE</small><strong id="ikeApprovePrice">$65</strong></div></div><button id="ikeApproveDesignBtn" type="button" class="primary-btn">APPROVE MY DESIGN →</button><button id="ikeEditDesignBtn" type="button" class="secondary-btn">EDIT DESIGN</button></div>
         </div>
       </section>
 
@@ -735,7 +736,7 @@
         <button type="button" id="reviewEditDesignBtn" class="secondary-btn ike-only">EDIT DESIGN</button>
         <div class="proofread-callout"><strong>Please check your wording carefully.</strong><span>Your sign will be made from the approved preview.</span></div>
         <label class="approval-row"><input id="approvalCheck" type="checkbox" /><span>I approve this exact design, wording, lettering, finish, orientation, and contact information. Ike's Wood Signs may refuse or cancel an order at its discretion.</span></label>
-        <button type="button" id="approveBtn" class="primary-btn">PLACE MY ORDER →</button>
+        <button type="button" id="approveBtn" class="primary-btn" disabled>PLACE MY ORDER →</button>
         <p id="approvalError" class="error-text" aria-live="polite"></p>
       </section>
 
@@ -1577,7 +1578,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.1.7', SEAL='fleet-judgment-817-root-keel-f17a62';
+    const EXPECTED='8.1.8', SEAL='craftlock-818-root-keel-c8f214';
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
@@ -1604,7 +1605,7 @@
       document.getElementById('darkSkyCleanReleaseRetry')?.addEventListener('click',cleanRetry,{once:true});
     }
     function step(text,state='working'){
-      const box=document.getElementById('darkSkyRecoveryProgress');if(!box)return;
+      const box=document.getElementById('darkSkyAutoRecoveryProgress')||document.getElementById('darkSkyRecoveryProgress');if(!box)return;
       const row=document.createElement('div');row.className=`ds-release-step ${state}`;row.textContent=`${state==='done'?'✓':state==='error'?'!':'…'} ${text}`;box.appendChild(row);
     }
     function isOurRegistration(reg){try{return String(reg?.scope||'').startsWith(APP_SCOPE);}catch(_){return false;}}
@@ -1639,7 +1640,7 @@
         step('Clearing Dark Sky application caches');
         if('caches' in window){for(const key of await caches.keys())if(APP_CACHE.test(key))await caches.delete(key);}
         step('Application caches cleared','done');
-        step('Verifying complete 8.1.7 runtime snapshot');
+        step('Verifying complete 8.1.8 runtime snapshot');
         await verifySnapshot(true);
         step('Complete runtime snapshot verified','done');
         step('Installing identity-only release sentinel');
@@ -1665,7 +1666,7 @@
       document.documentElement.classList.add('dark-sky-route-preflight');
       if(!shield)return;
       shield.setAttribute('aria-hidden','false');shield.style.display='flex';
-      shield.innerHTML=`<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-eyebrow">AUTOMATIC SAFE RECOVERY</div><h2>UPDATING VERIFIED RELEASE</h2><p>Dark Sky recognized a known stale-worker handoff and is replacing only application runtime state. Project data remains untouched.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>NEW BUILD</small><strong>${EXPECTED}</strong></div><div class="ds-release-cell"><small>RECOVERY MODE</small><strong>SAFE AUTO</strong></div></div><p>${safe(reason)}</p><div id="darkSkyRecoveryProgress" class="ds-release-progress" aria-live="polite"></div></div>`;
+      shield.innerHTML=`<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-eyebrow">AUTOMATIC SAFE RECOVERY</div><h2>UPDATING VERIFIED RELEASE</h2><p>Dark Sky recognized a known stale-worker handoff and is replacing only application runtime state. Project data remains untouched.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>NEW BUILD</small><strong>${EXPECTED}</strong></div><div class="ds-release-cell"><small>RECOVERY MODE</small><strong>SAFE AUTO</strong></div></div><p>${safe(reason)}</p><div id="darkSkyAutoRecoveryProgress" class="ds-release-progress" aria-live="polite"></div></div>`;
     }
     function completeReleaseHandoff({automatic=false}={}){
       window.__darkSkyReleaseGateState='clear';

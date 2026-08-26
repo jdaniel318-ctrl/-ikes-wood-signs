@@ -1,3 +1,7 @@
+# UPLOAD THIS ONE BUILD — 8.1.8 Craftlock
+
+Upload all 99 files from this folder to repository root. Do not upload the wrapper folder. Let Automatic Safe Recovery complete the prior-worker handoff.
+
 # Upload This One Build
 
 **Dark Sky 8.1.7 — Fleet Judgment**

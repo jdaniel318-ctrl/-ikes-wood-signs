@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.1.7';
+  const BUILD_VERSION='8.1.8';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -172,7 +172,7 @@
     'ikes-wood-signs':{
       businessName:"Ike's Wood Signs",subtitle:'Self-Serve Sign Ordering',
       kicker:'Pick your wood • Design • Preview • Order',orderPrefix:'IKE',
-      defaultPrice:65,prices:[45,55,65,90,135],wordingDefault:'Smoke Hole',
+      defaultPrice:65,prices:[45,55,65,90,135],wordingDefault:'',
       intro:'Pick the piece of wood you love. Ike will guide you through the rest.',
       ribbon:'YOUR WOOD • YOUR WORDS • YOUR SIGN',
       start:'START WITH MY PLANK →',
@@ -1180,8 +1180,9 @@
     photoOriginalData: '',
     orientation: 'Horizontal',
     topSide: 'Top of photo',
-    wording: 'Smoke Hole',
+    wording: '',
     font: 'B',
+    letteringSize: 'Balanced',
     fill: 'Black',
     contactPreference: 'Text',
     customerName: '',
@@ -3956,7 +3957,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.1.7',
+    build:'8.1.8',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4044,7 +4045,10 @@
     {id:'escalation-by-exception',class:'doctrine',origin:'shipyard',title:'Escalation by Exception',lesson:'The shipyard diagnoses and owns deterministic WATCH work. Human authority is requested only for judgment, irreversible action, ambiguous safety, or deliberate promotion.',risk:'high',applies:'all',missionAdapter:'Every vessel should distinguish shipyard-owned work from Captain/Admiral decisions.'},
     {id:'doctrine-inheritance',class:'doctrine',origin:'shipyard',title:'Doctrine Inheritance',lesson:'True fleet doctrine is inherited automatically by every admitted vessel and is proven centrally; it must not create repetitive per-vessel review chores.',risk:'critical',applies:'all',missionAdapter:'Fleet law applies automatically while vessel-specific implementation evidence remains isolated.'},
     {id:'recommendation-compression',class:'doctrine',origin:'shipyard',title:'Recommendation Compression',lesson:'Many raw project matches must be compressed into a small number of mission-aware Admiral decisions, with shared deficiencies grouped as fleet patterns.',risk:'high',applies:'all',missionAdapter:'Show the Admiral decisions, not the bookkeeping that produced them.'},
-    {id:'mission-fit-confidence',class:'doctrine',origin:'shipyard',title:'Mission-Fit Confidence',lesson:'Reusable capabilities must explain why they fit each vessel. Strong fits may be staged together; plausible fits require review; experimental fits are suppressed from bulk staging.',risk:'high',applies:'all',missionAdapter:'Never infer capability fit from a weak proxy such as photo availability alone.'}
+    {id:'mission-fit-confidence',class:'doctrine',origin:'shipyard',title:'Mission-Fit Confidence',lesson:'Reusable capabilities must explain why they fit each vessel. Strong fits may be staged together; plausible fits require review; experimental fits are suppressed from bulk staging.',risk:'high',applies:'all',missionAdapter:'Never infer capability fit from a weak proxy such as photo availability alone.'},
+    {id:'permission-gateway',class:'capability',origin:'IKE',title:'External Permission Gateway',lesson:'Browser and OS permissions are external gates: prepare the customer, request only on explicit action, reuse granted access, and recover cleanly after denial.',risk:'low',applies:'all',missionAdapter:'Use only when a vessel needs camera, location, microphone, or notification permission; never attempt to bypass the platform prompt.'},
+    {id:'manufacturable-customer-control',class:'capability',origin:'IKE',title:'Manufacturable Customer Control',lesson:'Customers may control appearance only inside dynamically calculated production-safe limits; the system owns manufacturability.',risk:'high',applies:['custom_wood_signs'],missionAdapter:'Translate friendly choices into verified machine-safe dimensions, clearances, and immutable production artifacts.'},
+    {id:'completion-boundary-voyage',class:'doctrine',origin:'shipyard',title:'Customer Completion Boundary Voyage',lesson:'A release is not customer-ready until the full order boundary is replayed through final approval, canonical payload creation, persistence, and confirmation without undefined dependencies.',risk:'critical',applies:'all',missionAdapter:'Automate the final commit boundary for each transactional vessel before asking the customer to prove it manually.'}
   ]);
   function fleetLearningStateRead(){try{return JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};}catch(_){return {};}}
   function fleetLearningStateWrite(v){try{localStorage.setItem('darkSkyFleetLearningState',JSON.stringify(v));}catch(_){} return v;}
@@ -4325,6 +4329,9 @@
     }
     add('session-boundary','Customer session boundary',sessionBoundaryOk?'pass':'fail',sessionBoundaryDetail);
 
+    const orderVoyage=runIkeCompleteOrderAutomatedVoyage();
+    add('ike-complete-order','Ike complete-order voyage',orderVoyage.ok?'pass':'fail',orderVoyage.detail);
+
     const storageEntryOk=!!document.getElementById('engineTelemetryLaunchBtn')&&!!document.getElementById('engineStorageTelemetryStation')&&typeof window.BlackFlagOpenStorageTelemetry==='function';
     const storageSafeOk=typeof window.DarkSkyV4?.storageStewardPreview==='function'&&typeof window.DarkSkyV4?.storageStewardClean==='function'&&String(window.DarkSkyV4.storageStewardClean).includes('oldCaches');
     const storageDiagOk=typeof showCompactStorageDiagnostics==='function'&&String(window.DarkSkyV4?.storageStewardPreview||'').includes('deepProbe');
@@ -4351,7 +4358,7 @@
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav'],'Captain main-room and subview return boundaries.'),
-      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto'],'Customer-approved visual artifacts stay immutable through review, confirmation, admin, and archive.'),
+      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order'],'Customer-approved visual artifacts stay immutable through review, confirmation, admin, and archive.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
@@ -9461,11 +9468,13 @@
       if($('ikeConfirmPlankBtn'))$('ikeConfirmPlankBtn').disabled=!(r.orientationResolved&&r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet);
       if($('ikeRecognitionConfidence'))$('ikeRecognitionConfidence').textContent=r.confidence==='geometry-clear'?'Geometry: High':(r.confidence==='geometry-probable'?'Geometry: Medium':'Visual geometry only');
       if($('ikeRecognitionSafeArea'))$('ikeRecognitionSafeArea').textContent=r.usableRegion?'Usable lettering zone detected':(r.usableArea==='safe-margin-preview'?'Basic margin active':'Not analyzed');
-      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleDetected?'Cutout/edge avoidance: Active Sea Trial':(r.obstacleAvoidance==='sea-trial-active'?'Edge avoidance: Active Sea Trial':'No interior obstacle detected');
+      if($('ikeRecognitionObstacle'))$('ikeRecognitionObstacle').textContent=r.obstacleDetected?'Lettering area checked around natural edges':(r.obstacleAvoidance==='sea-trial-active'?'Natural-edge clearance checked':'No interior obstacle detected');
       if($('ikeDesignPrice'))$('ikeDesignPrice').textContent=`$${Number(state.price||0)}`;
       if($('ikeDesignOrientation'))$('ikeDesignOrientation').textContent=state.orientation;
       if($('ikeDesignFill'))$('ikeDesignFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
       if($('ikeDesignFont'))$('ikeDesignFont').textContent=state.fontChosen?`Style ${state.font}`:'Choose style';
+      if($('ikeDesignSize'))$('ikeDesignSize').textContent=ikeLetteringSizeLabel();
+      $$('#ikeLetteringSizeChoices [data-ike-size]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeSize===ikeLetteringSizeLabel()));
       if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=(r.usableRegion?'Detected lettering zone':(r.usableArea==='safe-margin-preview'?'Basic margin':'Zone pending'));
       if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'Your Sign';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':'');if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
       scheduleIkeDetectedTextPlacement();
@@ -9474,6 +9483,7 @@
       const shape=$('ikeOrientationShape');if(shape)shape.classList.toggle('vertical',state.orientation==='Vertical');
       const pane=document.querySelector('.ike-design-preview');if(pane)pane.classList.toggle('vertical-board',state.orientation==='Vertical');
       if($('photoOrientationNote'))$('photoOrientationNote').classList.toggle('hidden',!state.photoData);
+      renderIkeRotationState();
       if($('ikeCustomColorPanel'))$('ikeCustomColorPanel').classList.toggle('hidden',state.fill!=='Other');
       if($('ikeCustomColor'))$('ikeCustomColor').value=state.customColor||'#1f6feb';
       if($('ikeCustomColorName'))$('ikeCustomColorName').textContent=String(state.customColor||'#1f6feb').toUpperCase();
@@ -9483,11 +9493,13 @@
       if($('ikeStyleReferenceName'))$('ikeStyleReferenceName').textContent=state.styleReferenceName||'Lettering reference';
       if($('ikeApproveWording'))$('ikeApproveWording').textContent=state.wording||'Your Sign';
       if($('ikeApproveFont'))$('ikeApproveFont').textContent=`Style ${state.font}`;
+      if($('ikeApproveSize'))$('ikeApproveSize').textContent=ikeLetteringSizeLabel();
       if($('ikeApproveFill'))$('ikeApproveFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
       if($('ikeApproveOrientation'))$('ikeApproveOrientation').textContent=state.orientation;
       if($('ikeApprovePrice'))$('ikeApprovePrice').textContent=`$${Number(state.price||0)}`;
       if($('ikeCustomerDesignName'))$('ikeCustomerDesignName').textContent=state.wording||'Your Sign';
-      if($('ikeCustomerDesignMeta'))$('ikeCustomerDesignMeta').textContent=`Style ${state.font} • ${state.fill==='Natural'?'Carved':state.fill} • $${Number(state.price||0)}`;
+      if($('ikeCustomerDesignMeta'))$('ikeCustomerDesignMeta').textContent=`Style ${state.font} • ${ikeLetteringSizeLabel()} • ${state.fill==='Natural'?'Carved':state.fill} • $${Number(state.price||0)}`;
+      if($('ikeDesignNextBtn'))$('ikeDesignNextBtn').disabled=!(state.wording.trim()&&state.fontChosen);
     }
     if(state.current==='review') renderSummary();
   }
@@ -9510,7 +9522,7 @@
     const build=(label,value,kind='detail')=>`<article class="review-summary-item ${kind}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></article>`;
     if(activeProjectId==='ikes-wood-signs'){
       const r=state.plankRecognition||{};
-      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Wood',r.speciesName||'Recognized from photo'],['Length',r.lengthFeet?`${r.lengthFeet} ft`:'—'],['Orientation',state.orientation],['Plank recognition',r.usableRegion?(r.obstacleDetected?'Usable zone • cutout avoidance Sea Trial':'Usable lettering zone detected'):(r.status==='detected'?'Geometry confirmed • basic margin':'Photo confirmed')]].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
+      $('orderSummary').innerHTML=`<section class="review-summary-head"><div><span>ORDER SUMMARY</span><strong>${escapeHtml(state.wording||'Your sign')}</strong></div><div class="review-summary-price"><span>PRICE</span><strong>$${escapeHtml(state.price)}</strong></div></section><section class="review-summary-group compact"><h3>Design</h3><div class="review-summary-grid">${[['Lettering',`Style ${state.font}`],['Lettering size',ikeLetteringSizeLabel()],['Finish',state.fill==='Natural'?'CNC Carved':state.fill],['Wood',r.speciesName||'Recognized from photo'],['Length',r.lengthFeet?`${r.lengthFeet} ft`:'—'],['Orientation',state.orientation],['Plank recognition',r.usableRegion?(r.obstacleDetected?'Usable lettering zone and natural-edge clearance checked':'Usable lettering zone detected'):(r.status==='detected'?'Geometry confirmed • basic margin':'Photo confirmed')]].map(r=>build(r[0],r[1])).join('')}</div></section><section class="review-summary-group compact"><h3>Contact & pickup</h3><div class="review-summary-grid contact">${[['Name',state.customerName],['Cell',state.customerPhone],['Email',state.customerEmail],['Preferred contact',state.contactPreference]].map(r=>build(r[0],r[1],'contact')).join('')}</div></section>`;
       return;
     }
     $('orderSummary').innerHTML=`
@@ -9535,7 +9547,7 @@
 
   function ikeDesignLockHashPayload(lock){
     if(!lock)return '';
-    return JSON.stringify({v:lock.version,wording:lock.wording,font:lock.font,fill:lock.fill,customColor:lock.customColor,orientation:lock.orientation,topSide:lock.topSide,price:lock.price,usableRegion:lock.usableRegion,obstacleDetected:lock.obstacleDetected,render:lock.render});
+    return JSON.stringify({v:lock.version,wording:lock.wording,font:lock.font,letteringSize:lock.letteringSize,fill:lock.fill,customColor:lock.customColor,orientation:lock.orientation,topSide:lock.topSide,price:lock.price,usableRegion:lock.usableRegion,obstacleDetected:lock.obstacleDetected,render:lock.render});
   }
 
   function ikeFastHash(input=''){
@@ -9547,11 +9559,13 @@
   function invalidateIkeApprovedDesignLock(){
     if(activeProjectId!=='ikes-wood-signs')return;
     state.approvedPreviewData='';state.approvedDesignLock=null;state.approvalCandidateData='';state.approvalCandidateHash='';state.approvalCandidateLock=null;
+    if($('approvalCheck'))$('approvalCheck').checked=false;
+    if($('approveBtn'))$('approveBtn').disabled=true;
   }
 
   const IKE_PRODUCTION_CONTRACT=Object.freeze({
     version:'ike-paper-contract-2026-08',source:'canonical-front-and-back-paper-order-form',
-    characterLimits:{'2ft':14,'4ft':24,'6ft':36},fonts:['A','B','C'],fills:['Black','White','None','Other'],
+    characterLimits:{'2ft':14,'4ft':24,'6ft':36},fonts:['A','B','C'],letteringSizes:['Small','Balanced','Large','Fill'],fills:['Black','White','None','Other'],
     contactPreferences:['Text','Call'],pickupWindowDays:'7-10',customerApprovalRequired:true,refusalRight:true,
     otherColorRule:'Customer-supplied spray paint may be required for Other; return at pickup.',
     orientationRule:'Exact side and top must remain attached to the approved production record.'
@@ -9587,7 +9601,7 @@
 
   function ikeCurrentRenderLock(){
     const r=state.plankRecognition||{},region=r.usableRegion||null;
-    return {version:'ike-approved-design-lock-v2',approvedAt:new Date().toISOString(),wording:String(state.wording||''),font:String(state.font||'B'),fill:String(state.fill||'Black'),customColor:String(state.customColor||'#1f6feb'),orientation:String(state.orientation||'Horizontal'),topSide:String(state.topSide||'Top of photo'),price:Number(state.price||0),usableRegion:region?{x:Number(region.x),y:Number(region.y),w:Number(region.w),h:Number(region.h),source:String(region.source||'')}:null,obstacleDetected:!!r.obstacleDetected,recognition:{method:r.method||'',confidence:r.confidence||'',referenceCandidate:!!r.referenceCandidate,measurementReadiness:r.measurementReadiness||''},productionContract:IKE_PRODUCTION_CONTRACT,render:ikeCaptureLiveRenderSpec()||{strategy:'usable-region-word-wrap-v1',singleLinePreferred:true,wrapOnlyWhenRequired:true}};
+    return {version:'ike-approved-design-lock-v2',approvedAt:new Date().toISOString(),wording:String(state.wording||''),font:String(state.font||'B'),letteringSize:String(state.letteringSize||'Balanced'),fill:String(state.fill||'Black'),customColor:String(state.customColor||'#1f6feb'),orientation:String(state.orientation||'Horizontal'),topSide:String(state.topSide||'Top of photo'),price:Number(state.price||0),usableRegion:region?{x:Number(region.x),y:Number(region.y),w:Number(region.w),h:Number(region.h),source:String(region.source||'')}:null,obstacleDetected:!!r.obstacleDetected,recognition:{method:r.method||'',confidence:r.confidence||'',referenceCandidate:!!r.referenceCandidate,measurementReadiness:r.measurementReadiness||''},productionContract:IKE_PRODUCTION_CONTRACT,render:ikeCaptureLiveRenderSpec()||{strategy:'usable-region-word-wrap-v1',singleLinePreferred:true,wrapOnlyWhenRequired:true}};
   }
 
   function wrapCanvasText(ctx,text,maxWidth){
@@ -9691,6 +9705,33 @@
     return hasConfirmedProjectPhoto();
   }
 
+  function ikeRecognitionForOrder(){
+    const r=state.plankRecognition||{};
+    return {
+      ...r,
+      status:r.status||'detected',
+      orientation:String(r.orientation||state.orientation||'Horizontal'),
+      orientationResolved:r.orientationResolved!==false,
+      speciesId:String(r.speciesId||''),speciesName:String(r.speciesName||''),speciesResolved:r.speciesResolved===true,
+      lengthFeet:Number(r.lengthFeet||0),lengthResolved:r.lengthResolved===true,
+      letteringSize:ikeLetteringSizeLabel(),
+      approvedArtifactId:String(state.approvedDesignLock?.artifactId||''),
+      source:'ike-order-canonical-recognition-v1'
+    };
+  }
+
+  function runIkeCompleteOrderAutomatedVoyage(){
+    try{
+      const helperOk=typeof ikeRecognitionForOrder==='function';
+      const recognition=helperOk?ikeRecognitionForOrder():null;
+      const saveSrc=String(saveOrder),actionSrc=String(bindCustomerActionCore);
+      const payloadOk=saveSrc.includes('ikeRecognitionForOrder()')&&saveSrc.includes('approvedPreviewData')&&saveSrc.includes('approvedArtifactHash')&&saveSrc.includes('projectId:activeProjectId');
+      const approvalGateOk=actionSrc.includes("approvalCheck")&&actionSrc.includes('saveOrder()');
+      const ok=helperOk&&!!recognition&&payloadOk&&approvalGateOk&&typeof state.letteringSize==='string';
+      return {ok,detail:ok?'Complete-order contract passed: canonical recognition snapshot, immutable approved artifact, project scope, approval gate, and manufacturable lettering size are all present before order creation.':'Complete-order contract found a missing final-submission dependency.'};
+    }catch(err){return {ok:false,detail:`Complete-order contract error: ${err?.message||err}`};}
+  }
+
   async function saveOrder(){
     if(!canCreateOrderNumber()){
       alert('A confirmed product photo is required before this order can be submitted.');
@@ -9716,7 +9757,7 @@
     const id=newOrderId();
     const experienceCtx=currentExperienceContext(activeProject());
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:'Top of photo',photoQuarterTurns:Number(state.photoQuarterTurns||0),wording:state.wording,font:state.font,fill:state.fill,customColor:state.customColor,plankRecognition:activeProjectId==='ikes-wood-signs'?ikeRecognitionForOrder():(state.plankRecognition||null),pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),aspectBand:String(state.plankRecognition?.primaryLengthEvidence?.aspectBand||''),boundaryDistance:Number(state.plankRecognition?.primaryLengthEvidence?.boundaryDistance||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:'Top of photo',photoQuarterTurns:Number(state.photoQuarterTurns||0),wording:state.wording,font:state.font,letteringSize:ikeLetteringSizeLabel(),fill:state.fill,customColor:state.customColor,plankRecognition:activeProjectId==='ikes-wood-signs'?ikeRecognitionForOrder():(state.plankRecognition||null),pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),aspectBand:String(state.plankRecognition?.primaryLengthEvidence?.aspectBand||''),boundaryDistance:Number(state.plankRecognition?.primaryLengthEvidence?.boundaryDistance||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
     if(experienceCtx?.state!=='preview'){
       backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
       try{await put(STORE_ORDERS,order);}catch(err){console.warn('IndexedDB save failed; local backup retained',err);}
@@ -9749,13 +9790,13 @@
     const x=customerExperienceForProject(p);
     Object.assign(state,{
       current:'welcome',price:Number(x.defaultPrice||0),photoData:'',orientation:'Horizontal',
-      topSide:'Top of photo',wording:x.wordingDefault||'Your Message',font:'B',fill:'Black',
+      topSide:'Top of photo',wording:(p?.id==='ikes-wood-signs'?'':(x.wordingDefault||'Your Message')),font:'B',letteringSize:'Balanced',fill:'Black',
       contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',
       currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''
     });
     if($('wordingInput')) $('wordingInput').value=state.wording;
     ['customerName','customerPhone','customerEmail'].forEach(id=>{if($(id))$(id).value='';});
-    if($('approvalCheck')) $('approvalCheck').checked=false;
+    if($('approvalCheck')) $('approvalCheck').checked=false;if($('approveBtn'))$('approveBtn').disabled=true;
     state.allowCustomColors=p?.customization?.allowCustomColors!==false;
     state.customerConfirmationEmail=!!p?.notifications?.customerConfirmationEmail;
   }
@@ -9873,8 +9914,8 @@
   function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&currentScreenOrder().includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
 
   function resetOrder(){
-    Object.assign(state,{current:'welcome',price:65,photoData:'',photoOriginalData:'',orientation:'Horizontal',topSide:'Top of photo',photoQuarterTurns:0,wording:'Smoke Hole',font:'B',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''});
-    ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;setScreen('welcome');
+    Object.assign(state,{current:'welcome',price:65,photoData:'',photoOriginalData:'',orientation:'Horizontal',topSide:'Top of photo',photoQuarterTurns:0,wording:'',font:'B',letteringSize:'Balanced',fill:'Black',contactPreference:'Text',customerName:'',customerPhone:'',customerEmail:'',currentOrderId:'',currentOrder:null,approvedPreviewData:'',approvedDesignLock:null,approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null,customColor:'#1f6feb',fontChosen:false,plankRecognition:null,styleReferenceData:'',styleReferenceName:''});
+    ['customerName','customerPhone','customerEmail'].forEach(id=>$(id).value='');$('approvalCheck').checked=false;if($('approveBtn'))$('approveBtn').disabled=true;setScreen('welcome');
   }
 
   async function dataUrlToBlob(dataUrl){
@@ -10516,12 +10557,20 @@ The full order and approved media remain stored with this project.`;
     return {x:(cw-w)/2,y:(ch-h)/2,w,h};
   }
 
+  function ikeLetteringSizeScale(size=state.letteringSize){
+    return ({Small:.72,Balanced:.86,Large:.94,Fill:1})[String(size||'Balanced')]||.86;
+  }
+  function ikeLetteringSizeLabel(size=state.letteringSize){
+    const v=String(size||'Balanced');return ['Small','Balanced','Large','Fill'].includes(v)?v:'Balanced';
+  }
+
   function ikeApplyDetectedTextPlacementTo(el){
     const r=state.plankRecognition||{},region=r.usableRegion,card=el.closest('.preview-card'),img=card?.querySelector('.preview-image');
     if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
     const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
     const chars=Math.max(1,String(state.wording||'Your Sign').length),factor=state.font==='B'?.58:(state.font==='C'?.52:.56);
-    const fs=Math.max(18,Math.min(64,w/(chars*factor),h/1.35));
+    const safeMax=Math.max(18,Math.min(64,w/(chars*factor),h/1.35));
+    const fs=Math.max(16,safeMax*ikeLetteringSizeScale());
     Object.assign(el.style,{left:`${x}px`,top:`${y}px`,width:`${w}px`,height:`${h}px`,transform:'none',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'4px 6px'});
   }
 
@@ -10862,6 +10911,7 @@ The full order and approved media remain stored with this project.`;
   async function startCamera(){
     $('photoError').textContent='';
     $('photoHelp').textContent='Starting camera…';
+    if($('cameraPermissionPrep'))$('cameraPermissionPrep').textContent='Safari controls camera permission. If it asks, choose Allow once to continue.';
     if(!cameraSupported()){
       $('photoError').textContent='Direct camera access is not available in this browser context. Open the site in Safari or use the saved-photo option for testing.';
       $('photoHelp').textContent='Direct camera access requires a browser environment that supports the iPad camera.';
@@ -10882,6 +10932,8 @@ The full order and approved media remain stored with this project.`;
       $('capturePhotoBtn').classList.remove('hidden');
       $('cancelCameraBtn').classList.remove('hidden');
       $('photoHelp').textContent='Center the entire wood blank in the frame, then tap TAKE PICTURE.';
+      if($('cameraPermissionPrep'))$('cameraPermissionPrep').textContent='Camera access is ready for this visit.';
+      try{localStorage.setItem('darkSkyCameraPermissionSeen','1');}catch(_){ }
     }catch(err){
       console.error('Camera start failed',err);
       stopCamera();
@@ -10928,6 +10980,18 @@ The full order and approved media remain stored with this project.`;
     }
   }
 
+  function ikeRotationStateCopy(){
+    const turns=((Number(state.photoQuarterTurns||0)%4)+4)%4;
+    const labels=['Original orientation','Rotated right 90°','Rotated 180°','Rotated left 90°'];
+    const r=state.plankRecognition||{};
+    const orientation=r.orientationResolved?(r.orientation||state.orientation):((turns%2)?'Vertical':'Horizontal');
+    return `${labels[turns]} • ${orientation} • Top of photo = top of finished sign`;
+  }
+  function renderIkeRotationState(){
+    const el=$('photoRotationState');if(el)el.textContent=ikeRotationStateCopy();
+    const marker=$('photoReviewTopMarker');if(marker)marker.classList.toggle('hidden',!state.photoData);
+  }
+
   function renderIkePhotoFromOriginal(turns=0){
     const source=state.photoOriginalData||state.photoData;
     if(activeProjectId!=='ikes-wood-signs'||!source)return Promise.resolve(false);
@@ -10936,7 +11000,7 @@ The full order and approved media remain stored with this project.`;
       state.photoData=source;
       state.photoQuarterTurns=0;
       state.topSide='Top of photo';state.plankRecognition={};
-      analyzeIkePlankPhoto();updateUi();
+      analyzeIkePlankPhoto();updateUi();renderIkeRotationState();
       return Promise.resolve(true);
     }
     return new Promise((resolve,reject)=>{
@@ -10954,7 +11018,7 @@ The full order and approved media remain stored with this project.`;
         state.photoData=canvas.toDataURL('image/jpeg',0.82);
         state.photoQuarterTurns=normalized;
         state.topSide='Top of photo';state.plankRecognition={};
-        analyzeIkePlankPhoto();updateUi();resolve(true);
+        analyzeIkePlankPhoto();updateUi();renderIkeRotationState();resolve(true);
       }catch(err){reject(err);}};img.onerror=reject;img.src=source;
     });
   }
@@ -13272,6 +13336,9 @@ The full order and approved media remain stored with this project.`;
       }
     });
 
+    const syncApprovalButton=()=>{const b=$('approveBtn');if(b)b.disabled=!$('approvalCheck')?.checked;};
+    $('approvalCheck')?.addEventListener('change',syncApprovalButton);syncApprovalButton();
+
     $('approveBtn')?.addEventListener('click',async()=>{
       if(!$('approvalCheck')?.checked){
         if($('approvalError')) $('approvalError').textContent='Please check the approval box first.';
@@ -13284,6 +13351,7 @@ The full order and approved media remain stored with this project.`;
       btn.textContent='PLACING YOUR ORDER…';
       try{
         const order=await saveOrder();
+        if(!order) throw new Error('The order did not pass final validation. Review the design and try again.');
         setScreen('done');
         await submitOrder(order);
       }catch(err){
@@ -13367,6 +13435,7 @@ The full order and approved media remain stored with this project.`;
       try{await analyzeIkeSecondLengthPhoto(file);}catch(err){console.error('Ike second length photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That angle did not give us enough scale evidence. Try one full-plank photo from straight on.';}finally{input.value='';}
     });
     $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;updateUi();});
+    $('ikeLetteringSizeChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-size]');if(!b)return;invalidateIkeApprovedDesignLock();state.letteringSize=ikeLetteringSizeLabel(b.dataset.ikeSize);updateUi();});
     $('ikeFillChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-fill]');if(!b)return;invalidateIkeApprovedDesignLock();state.fill=b.dataset.ikeFill;updateUi();});
     $('ikeCustomColor')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.customColor=e.target.value;state.fill='Other';updateUi();});
     $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));

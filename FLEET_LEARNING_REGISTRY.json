@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-learning-registry-v1",
-  "build": "8.1.7",
-  "name": "Fleet Judgment",
+  "build": "8.1.8",
+  "name": "Craftlock",
   "classes": {
     "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
     "capability": "Reusable primitive that must be adapted to mission/users/data/risk before adoption.",
@@ -92,6 +92,24 @@
       "risk": "high",
       "applies": "all",
       "missionAdapter": "Never infer capability fit from a weak proxy such as photo availability alone."
+    },
+    {
+      "id": "permission-gateway",
+      "class": "capability",
+      "origin": "IKE",
+      "title": "External Permission Gateway"
+    },
+    {
+      "id": "manufacturable-customer-control",
+      "class": "capability",
+      "origin": "IKE",
+      "title": "Manufacturable Customer Control"
+    },
+    {
+      "id": "completion-boundary-voyage",
+      "class": "doctrine",
+      "origin": "shipyard",
+      "title": "Customer Completion Boundary Voyage"
     }
   ],
   "governance": {

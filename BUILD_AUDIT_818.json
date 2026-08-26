@@ -1,0 +1,20 @@
+{
+  "schema": "dark-sky-build-audit-v1",
+  "build": "8.1.8",
+  "name": "Craftlock",
+  "uploadFileCount": 99,
+  "maxWebUploadFiles": 99,
+  "checks": {
+    "finalOrderReferenceRepair": true,
+    "completeOrderVoyage": true,
+    "machineSafeLetteringSize": true,
+    "blankNewOrderWording": true,
+    "rotationStateFeedback": true,
+    "customerSeaTrialCopyRemoved": true,
+    "permissionGateway": true,
+    "reviewButtonGating": true,
+    "finalApprovalButtonGating": true,
+    "manualKnownGoodPromotion": true
+  },
+  "at": "2026-08-26T13:45:00-04:00"
+}

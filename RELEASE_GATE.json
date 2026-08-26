@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.1.7",
-  "release": "8.1.7",
+  "build": "8.1.8",
+  "release": "8.1.8",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -115,14 +115,23 @@
     "release_recovery_history_retained": true,
     "automatic_safe_release_recovery": true,
     "nonblocking_watch_semantics": true,
-    "escalation_by_exception": true
+    "escalation_by_exception": true,
+    "ikes_final_order_reference_repaired": true,
+    "ikes_complete_order_voyage": true,
+    "ikes_machine_safe_lettering_size": true,
+    "ikes_new_order_blank_wording": true,
+    "ikes_rotation_state_feedback": true,
+    "ikes_customer_sea_trial_copy_removed": true,
+    "permission_gateway": true,
+    "review_button_gating": true,
+    "final_approval_button_gating": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.1.7 Fleet Judgment: same-tab recovery completion, automatic fleet doctrine inheritance, recommendation compression, and shared deficiency grouping; Known Good promotion remains manual.",
-  "candidate": "8.1.7",
+  "note": "8.1.8 Craftlock: final-order repair + automated completion boundary, machine-safe lettering sizing, clean new-order state, rotation feedback, permission gateway, customer-language cleanup, and explicit action gating; Known Good promotion remains manual.",
+  "candidate": "8.1.8",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,0 +1,37 @@
+{
+  "schema": "dark-sky-admiral-preflight-v1",
+  "build": "8.1.8",
+  "name": "Craftlock",
+  "checks": [
+    {
+      "id": "final-order-boundary",
+      "ok": true,
+      "detail": "Ike complete-order voyage verifies canonical recognition, immutable approved artifact, project scope, approval gate, and manufacturable lettering size."
+    },
+    {
+      "id": "machine-safe-size",
+      "ok": true,
+      "detail": "Lettering size presets only reduce from the computed safe maximum; Fill equals the largest existing safe fit."
+    },
+    {
+      "id": "customer-language",
+      "ok": true,
+      "detail": "Customer surfaces no longer expose Sea Trial obstacle-avoidance wording."
+    },
+    {
+      "id": "new-order-state",
+      "ok": true,
+      "detail": "A new Ike order starts with blank wording; draft restoration remains separate."
+    },
+    {
+      "id": "permission-gateway",
+      "ok": true,
+      "detail": "Camera permission is requested only after explicit customer action and remains controlled by Safari/iPadOS."
+    },
+    {
+      "id": "manual-promotion",
+      "ok": true,
+      "detail": "Known Good promotion remains deliberate."
+    }
+  ]
+}

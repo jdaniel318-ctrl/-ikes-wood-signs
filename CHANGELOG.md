@@ -1,3 +1,7 @@
+# Dark Sky 8.1.8 — Craftlock
+
+Craftlock hardens Ike’s customer completion boundary and design CX: final order creation is repaired and automatically proven; lettering size is selected beside style within machine-safe limits; new orders start blank; rotation communicates state; customer copy is free of internal Sea Trial language; camera permission is prepared without attempting to bypass Safari/iPadOS; and Review/Place Order actions are visibly gated.
+
 # 8.1.7 — Fleet Judgment
 
 - Adds mission-fit confidence to Fleet Learning Registry.
