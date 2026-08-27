@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.3.0';
+  const BUILD_VERSION='8.3.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.3.0',
+    build:'8.3.1',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4306,6 +4306,9 @@
     const captainSubviewExit=!!document.querySelector('[data-captain-return], #captainCommandReturn, #captainObjectClose, #captainSpyglassClose, #captainFleetChartClose, #captainBlueprintClose');
     add('captain-nav','Captain navigation contract',captainExit&&captainSubviewExit?'pass':'warn',captainExit&&captainSubviewExit?'Main-room Engine exit and Captain subview return controls are both present.':'One Captain navigation layer could not be verified from the current DOM.');
 
+    const fleetDockBoundedPaint=String(renderFleetCommissioning).includes('LOCAL ROSTER • VERIFYING')&&String(renderFleetCommissioning).includes('commandDeadline(convergence')&&String(renderFleetCommissioning).includes('skipConvergence:true');
+    add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');
+
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{
       const r=await fetch(`DEPLOYMENT_MANIFEST.json?readiness=${Date.now()}`,{cache:'no-store'});
@@ -4379,7 +4382,7 @@
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
-      combine('navigation','Command Navigation Voyage',['captain-nav'],'Captain main-room and subview return boundaries.'),
+      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
@@ -4790,13 +4793,26 @@
     return true;
   }
 
-  async function renderFleetCommissioning(){
-    await convergeCanonicalFleetForPresentation({source:'fleet-dock'});
+  async function renderFleetCommissioning({skipConvergence=false}={}){
     const summary=$('fleetCommissioningSummary');
     const fleet=$('fleetCommissioningFleet');
     const reference=$('fleetCommissioningReference');
     const state=$('fleetCommissioningState');
     if(!summary||!reference)return;
+
+    // 8.3.1 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
+    // convergence before painting a usable vessel roster. Paint from the already
+    // loaded canonical/local fleet within a bounded window, then reconcile and
+    // refresh in the background. Navigation remains available during verification.
+    let canonicalSettled=true;
+    if(!skipConvergence){
+      const convergence=convergeCanonicalFleetForPresentation({source:'fleet-dock'});
+      canonicalSettled=await commandDeadline(convergence.then(()=>true).catch(err=>{console.warn('fleet dock convergence warning',err);return false;}),650,false);
+      if(!canonicalSettled){
+        if(state){state.textContent='LOCAL ROSTER • VERIFYING';state.className='fleet-commissioning-state ready';}
+        convergence.then(()=>renderFleetCommissioning({skipConvergence:true})).catch(err=>console.warn('fleet dock background reconciliation warning',err));
+      }
+    }
 
     const list=projects();
     const snaps=list.map(p=>({p,s:commissioningSnapshot(p)}));
@@ -4807,7 +4823,7 @@
     const gatesTotal=snaps.reduce((n,x)=>n+x.s.total,0);
 
     if(state){
-      state.textContent=commissioned===list.length&&list.length?'FLEET COMMISSIONED':work?'WORK IN DOCK':ready?'CAPTAIN ACTION':'NO VESSELS';
+      state.textContent=(commissioned===list.length&&list.length?'FLEET COMMISSIONED':work?'WORK IN DOCK':ready?'CAPTAIN ACTION':'NO VESSELS')+(!canonicalSettled?' • VERIFYING':'');
       state.className=`fleet-commissioning-state ${work?'watch':ready?'ready':'clear'}`;
     }
 
@@ -4871,8 +4887,8 @@
     const canonicalState=window.__darkSkyCanonicalFleet||{};
     const identityState=Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
     reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the watch.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>`;
-    const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning();};}
-    $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning();};});
+    const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning({skipConvergence:true});};}
+    $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning({skipConvergence:true});};});
   }
 
   async function renderProjectCommand(){

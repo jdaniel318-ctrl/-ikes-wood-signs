@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.3.0 \u2014 True Cut",
-  "short_name": "Dark Sky 8.3.0",
-  "start_url": "./index.html?_darkSkyRelease=8.3.0&_darkSkySeal=truecut-830-ike-production-integrity-4b73c2",
+  "name": "Dark Sky 8.3.1 \u2014 Dock Lock",
+  "short_name": "Dark Sky 8.3.1",
+  "start_url": "./index.html?_darkSkyRelease=8.3.1&_darkSkySeal=docklock-831-bounded-fleet-fit-6c91de",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.3.0"
+  "version": "8.3.1"
 }

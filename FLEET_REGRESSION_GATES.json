@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.3.0",
-  "release": "True Cut",
+  "build": "8.3.1",
+  "release": "Dock Lock",
   "excluded_sources": [
     "The situation"
   ],
@@ -26,7 +26,8 @@
       "browser_back_not_required",
       "refresh_recovery_only",
       "deterministic_returns",
-      "interactive_affordance"
+      "interactive_affordance",
+      "fleet_dock_bounded_first_paint"
     ],
     "mobile_watch": [
       "iphone_first_class",

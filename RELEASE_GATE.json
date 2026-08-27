@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.3.0",
-  "release": "8.3.0",
+  "build": "8.3.1",
+  "release": "8.3.1",
   "generatedAt": "2026-08-26",
   "checks": {
     "build_version": true,
@@ -147,14 +147,17 @@
     "ikes_production_truth_regression_gate": true,
     "foundry_service_boundary_regression_gate": true,
     "ledger_ai_boundary_regression_gate": true,
-    "release_packaging_regression_gate": true
+    "release_packaging_regression_gate": true,
+    "fleet_dock_bounded_first_paint": true,
+    "fleet_dock_background_reconciliation": true,
+    "ikes_finished_sign_proof_note": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.3.0 True Cut: focused Ike production-integrity pass; 8.2.9 atomic release identity retained, canonical white-teeth Ike branding preserved, geometry/storage/idempotency gates strengthened.",
-  "candidate": "8.3.0",
+  "note": "8.3.1 Dock Lock: bounded Fleet Dock first paint/reconciliation recovery plus Ike face-grid finished-sign proof; True Cut artifact integrity, detector independence, isolation, and authority contracts preserved.",
+  "candidate": "8.3.1",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,10 +1,13 @@
-# Dark Sky 8.3.0 — True Cut
+# Dark Sky 8.3.1 — Dock Lock
 
-Focused Ike Production Integrity pass built on the proven 8.2.9 release-identity repair. This release keeps the lean fleet hull and strengthens production truth, immutable design geometry, storage resilience, and order idempotency before Dry Dock Batch 2.
+Focused recovery pass built directly on 8.3.0 True Cut. Dock Lock preserves the immutable production-artifact path and protected Ike detectors while ensuring Fleet Dock paints a usable local roster within a bounded window and reconciles canonical fleet state in the background.
 
 
-## 8.3.0 Ike Production Integrity
-- Adds a safer Ike Fit production inset so visible glyphs scale down before approaching live edges, bark edges, voids, or cutouts.
+## 8.3.1 Dock Lock Repair
+- Fleet Dock no longer waits indefinitely on canonical convergence before showing the vessel roster.
+- Adds a proving-ground regression gate for bounded Fleet Dock first paint.
+- Restores the missing finished-sign proof note required by the Ike face-grid fit contract.
+- Preserves the safer Ike Fit production inset so visible glyphs scale down before approaching live edges, bark edges, voids, or cutouts.
 - Locks one approved geometry/artifact across Design Review, customer review, final order, owner/admin, and future production outputs.
 - Removes canvas `maxWidth` recompression from locked artifacts so later screens do not silently squeeze approved lettering.
 - Stores the immutable approved artifact as high-quality JPEG instead of photo-heavy PNG to reduce durable storage pressure without changing its design hash contract.
@@ -13,7 +16,7 @@ Focused Ike Production Integrity pass built on the proven 8.2.9 release-identity
 - Adds order idempotency so repeated taps cannot create a second order for the same locked artifact.
 - Preserves the approved design after a storage failure and replaces raw quota text with a recoverable customer-safe message.
 
-## 8.3.0 release identity repair
+## 8.3.1 release identity
 
 - One canonical page identity now drives first light and the atomic loader; the loader no longer carries its own duplicated build/seal literal.
 - If an old HTML shell sees a newer deployment manifest, Dark Sky makes one cache-busted document promotion attempt before showing HOLD. It cannot loop.

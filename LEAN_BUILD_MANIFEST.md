@@ -1,4 +1,4 @@
-# Dark Sky 8.3.0 — True Cut Manifest
+# Dark Sky 8.3.1 — Dock Lock Manifest
 
 ## Mission
 Keep the live fleet build compact enough for the iPad/GitHub upload path while retaining the accumulated fleet lessons as consolidated AI-readable reference material.

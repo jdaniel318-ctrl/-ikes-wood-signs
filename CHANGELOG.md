@@ -1,3 +1,15 @@
+# 8.3.1 — Dock Lock
+
+## Fleet Dock Recovery
+- Added a 650 ms bounded canonical-convergence window before Fleet Dock paints the already-loaded vessel roster.
+- Canonical reconciliation continues in the background and refreshes the Dock without blocking Customer / Owner / Captain navigation.
+- Search and filter changes use the current roster directly instead of restarting registry convergence.
+- Added a Proving Ground regression gate for bounded Fleet Dock first paint.
+
+## Ike Face-Grid Proof
+- Restored the customer-visible finished-sign proof note anchoring Style A to RAMJET and Style B to SMOKE HOLE!.
+- Preserved robust live-edge face-grid placement, visible-glyph measurement, single Ike Fit sizing, immutable artifact reuse, detector independence, and the existing length WATCH.
+
 # 8.3.0 — True Cut
 
 ## Ike Production Integrity

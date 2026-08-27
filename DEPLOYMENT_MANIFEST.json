@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.3.0",
-  "version": "8.3.0",
-  "release_name": "True Cut",
-  "releaseName": "True Cut",
-  "release_seal": "truecut-830-ike-production-integrity-4b73c2",
+  "build": "8.3.1",
+  "version": "8.3.1",
+  "release_name": "Dock Lock",
+  "releaseName": "Dock Lock",
+  "release_seal": "docklock-831-bounded-fleet-fit-6c91de",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -53,8 +53,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Ike production integrity + immutable geometry + storage resilience + idempotent submit",
-  "release_note": "8.3.0 True Cut preserves the 8.2.9 release-identity repair while making Ike Fit safer, locking one approved geometry across every downstream surface, compacting media/storage mirrors, and recovering order persistence safely under Safari quota pressure.",
+  "release_focus": "bounded Fleet Dock first paint + Ike face-grid finished-sign proof + preserved True Cut production integrity",
+  "release_note": "8.3.1 Dock Lock preserves True Cut production-artifact integrity, adds a bounded Fleet Dock first paint with background canonical reconciliation, and closes the Ike finished-sign face-grid proof gate without changing protected orientation/species detector behavior.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",
