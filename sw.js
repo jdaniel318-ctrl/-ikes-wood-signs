@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.2.2';
-const RELEASE_SEAL='ikefit-822-root-keel-7b2e91';
+const RELEASE_BUILD='8.2.3';
+const RELEASE_SEAL='ikefit-823-shop-anchors-9f4c2a';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

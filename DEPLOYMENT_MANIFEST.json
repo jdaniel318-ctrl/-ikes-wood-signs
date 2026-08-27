@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.2.2",
-  "version": "8.2.2",
-  "release_name": "Ike Fit — Root Keel",
-  "releaseName": "Ike Fit — Root Keel",
-  "release_seal": "ikefit-822-root-keel-7b2e91",
+  "build": "8.2.3",
+  "version": "8.2.3",
+  "release_name": "Ike Fit \u2014 Shop Anchors",
+  "releaseName": "Ike Fit \u2014 Shop Anchors",
+  "release_seal": "ikefit-823-shop-anchors-9f4c2a",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -51,8 +51,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "ikes-single-automatic-shop-fit-full-face-layout",
-  "release_note": "8.2.2 Ike Fit removes generic customer size presets and uses one automatic live-edge face-grid fit calibrated to finished RAMJET and SMOKE HOLE! signs. Size, optical placement, and face occupancy are solved together while the exact plank photo remains unchanged.",
+  "release_focus": "ikes-canonical-style-anchors-a-ramjet-b-smoke-hole",
+  "release_note": "8.2.3 Shop Anchors makes Ike\u2019s finished RAMJET sign the canonical Style A reference and finished SMOKE HOLE! the canonical Style B reference, with stronger face occupancy, corrected font mapping, and routed paint depth. Style C is withheld until a real Ike example exists.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

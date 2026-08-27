@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.2.2 — Ike Fit",
-  "short_name": "Dark Sky 8.2.2",
-  "start_url": "./index.html?release=ikefit-822-root-keel-7b2e91",
+  "name": "Dark Sky 8.2.3 — Ike Fit",
+  "short_name": "Dark Sky 8.2.3",
+  "start_url": "./index.html?release=ikefit-823-shop-anchors-9f4c2a",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.2.2"
+  "version": "8.2.3"
 }

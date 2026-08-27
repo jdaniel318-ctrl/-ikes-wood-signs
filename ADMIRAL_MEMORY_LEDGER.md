@@ -1,5 +1,5 @@
 
-## 8.2.2 Ike Fit
+## 8.2.3 Ike Fit
 - Known stale-worker handoffs self-recover only after the incoming runtime snapshot and release identity fully verify.
 - Automatic cleanup is constrained to Dark Sky service-worker registrations and application caches; project/customer/order/owner/configuration data is never touched.
 - WATCH is now explicitly non-blocking when protected release contracts are clear.

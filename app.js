@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.2.2';
+  const BUILD_VERSION='8.2.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.2.2',
+    build:'8.2.3',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -9512,7 +9512,7 @@
       $$('#ikeLetterSizeChoices [data-ike-size]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeSize===(state.letterSize||'Ike Fit')));
       if($('ikeDesignNextBtn')){const ready=!!(state.wording.trim()&&state.fontChosen);$('ikeDesignNextBtn').disabled=!ready;$('ikeDesignNextBtn').setAttribute('aria-disabled',ready?'false':'true');}
       if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=(r.usableRegion?'Detected lettering zone':(r.usableArea==='safe-margin-preview'?'Basic margin':'Zone pending'));
-      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'Your Sign';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':''));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
+      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'Your Sign';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':(state.fill==='White'?' ike-routed-white':'')));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
       scheduleIkeDetectedTextPlacement();
       if($('ikeStylePrompt'))$('ikeStylePrompt').classList.toggle('hidden',!!state.fontChosen);
       $$('.ike-top-marker').forEach(el=>el.textContent='TOP');
@@ -10394,7 +10394,7 @@ The full order and approved media remain stored with this project.`;
     }
     const obstacleDetected=fill<.86;
 
-    // 8.2.2 IKE FIT: map the live-edge face, then choose one robust shop-style
+    // 8.2.3 IKE FIT: map the live-edge face, then choose one robust shop-style
     // lettering band. The band intentionally uses almost the whole board width.
     // It is based on robust grid quantiles instead of the single smallest vertical
     // intersection, so one knot/notch or the blue BACK stamp cannot shrink the
@@ -10419,8 +10419,8 @@ The full order and approved media remain stored with this project.`;
       let top=q(tops,.68),bottom=q(bottoms,.32);
       const contourTop=minY/h,contourBottom=(maxY+1)/h;
       // Preserve a strong vertical field even when a few grid columns have an odd dip.
-      top=Math.max(contourTop+bw*0,Math.min(top,contourTop+(contourBottom-contourTop)*.26));
-      bottom=Math.min(contourBottom,Math.max(bottom,contourTop+(contourBottom-contourTop)*.76));
+      top=Math.max(contourTop,Math.min(top,contourTop+(contourBottom-contourTop)*.18));
+      bottom=Math.min(contourBottom,Math.max(bottom,contourTop+(contourBottom-contourTop)*.84));
       const x0=Math.max(minX/w,leftCol.x0),x1=Math.min((maxX+1)/w,rightCol.x1);
       if(bottom-top>.08&&x1-x0>.45)bestBand={x:x0,y:top,w:x1-x0,h:bottom-top,score:1,columns:[leftCol.c,rightCol.c],source:'ike-fit-robust-face-grid'};
     }
@@ -10606,13 +10606,13 @@ The full order and approved media remain stored with this project.`;
     if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
     const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
     const wording=String(state.wording||'Your Sign').trim()||'Your Sign';
-    // 8.2.2 IKE FIT: one shop fit, not a generic size selector. Measure the
+    // 8.2.3 IKE FIT: one shop fit, not a generic size selector. Measure the
     // VISIBLE glyphs and deliberately claim the usable face like Ike's finished
     // RAMJET / SMOKE HOLE! signs. Customer intent is the wording + style; the
     // layout engine owns size and optical placement inside the carve-safe band.
     state.letterSize='Ike Fit';
     const mode='Ike Fit';
-    const targets={w:.945,h:.76};
+    const targets=state.font==='A'?{w:.975,h:.88}:(state.font==='B'?{w:.972,h:.90}:{w:.945,h:.80});
     const css=getComputedStyle(el);
     const probe=100;
     const cv=document.createElement('canvas'),cx=cv.getContext('2d');
@@ -10621,11 +10621,11 @@ The full order and approved media remain stored with this project.`;
     const fontStyle=css.fontStyle||'normal';
     cx.font=`${fontStyle} ${fontWeight} ${probe}px ${fontFamily}`;
     const m=cx.measureText(wording);
-    const spacingEm=state.font==='A'?.055:(state.font==='B'?.01:0);
+    const spacingEm=state.font==='A'?-.025:(state.font==='B'?-.035:0);
     const spacingPx=Math.max(0,wording.length-1)*probe*spacingEm;
     const glyphW=Math.max(1,(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width||1)+spacingPx);
     const glyphH=Math.max(1,(m.actualBoundingBoxAscent||probe*.76)+(m.actualBoundingBoxDescent||probe*.20));
-    const styleWidthBoost=state.font==='A'?1.04:(state.font==='B'?1.02:.99);
+    const styleWidthBoost=state.font==='A'?1.015:(state.font==='B'?1.01:.99);
     const byWidth=(w*targets.w)/(glyphW/probe);
     const byHeight=(h*targets.h)/(glyphH/probe);
     let fs=Math.min(byWidth,byHeight)*styleWidthBoost;
@@ -10635,9 +10635,14 @@ The full order and approved media remain stored with this project.`;
     // the mapped band. This is calibrated to the real RAMJET proof, not a font-size
     // preset.
     if(state.font==='A'&&compactWord){
-      const widthFit=(w*.965)/(glyphW/probe);
-      const heightFit=(h*.82)/(glyphH/probe);
-      fs=Math.min(widthFit,heightFit)*1.02;
+      const widthFit=(w*.988)/(glyphW/probe);
+      const heightFit=(h*.92)/(glyphH/probe);
+      fs=Math.min(widthFit,heightFit)*1.01;
+    }
+    if(state.font==='B'&&wording.replace(/\s+/g,'').length<=12){
+      const widthFit=(w*.985)/(glyphW/probe);
+      const heightFit=(h*.93)/(glyphH/probe);
+      fs=Math.min(widthFit,heightFit)*1.01;
     }
     fs=Math.max(20,Math.min(340,fs));
     // Optical correction uses the visible glyph bounds so the ink, not invisible

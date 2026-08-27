@@ -1,11 +1,11 @@
-# Dark Sky 8.2.2 — Ike Fit
+# Dark Sky 8.2.3 — Ike Fit
 
-Focused Ike’s Wood Signs pass from the exact 8.2.2 iPad-safe build.
+Focused Ike’s Wood Signs pass from the exact 8.2.3 iPad-safe build.
 
 ## Mission
-Use one automatic **Ike Fit** for the sign preview. The customer chooses wording, lettering style, and finish; the ship handles size and placement together using a hidden live-edge face grid calibrated against Ike’s real finished RAMJET and SMOKE HOLE! signs. The exact plank photo is never replaced or redrawn. The blue Ike stamp seen during back-of-plank testing is ignored for lettering layout.
+Use one automatic **Ike Fit** for the sign preview. Canonical shop anchors are now **Style A = RAMJET** and **Style B = SMOKE HOLE!**; Style C is withheld until a real finished Ike example is approved. The customer chooses wording, lettering style, and finish; the ship handles size and placement together using a hidden live-edge face grid calibrated against Ike’s real finished RAMJET and SMOKE HOLE! signs. The exact plank photo is never replaced or redrawn. The blue Ike stamp seen during back-of-plank testing is ignored for lettering layout.
 
-## 8.2.2 changes
+## 8.2.3 changes
 - Removed More Room / Full Face size choices from Ike’s CX.
 - Replaced the conservative grid intersection with a robust broad-face grid band.
 - Removed the old 72% preview max-width cap that could make lettering look artificially small.

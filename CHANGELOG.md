@@ -1,4 +1,10 @@
-## 8.2.2 — Ike Fit
+## 8.2.3 — Ike Fit — Shop Anchors
+
+- Set RAMJET as the canonical Style A anchor.
+- Set SMOKE HOLE! as the canonical Style B anchor.
+- Removed provisional Style C from the customer choice surface.
+- Corrected Style A away from serif rendering; strengthened Style B western/condensed character.
+- Increased lettering face occupancy and added routed depth to white previews.
 
 - Focused the Ike customer design surface on one automatic shop fit.
 - Removed generic size presets from Ike’s customer experience.

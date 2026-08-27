@@ -14,13 +14,13 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.2.2 IKE FIT — atomic release seal.
-    const DARK_SKY_EXPECTED_BUILD = '8.2.2';
-    const DARK_SKY_RELEASE_SEAL = 'ikefit-822-root-keel-7b2e91';
+    // Dark Sky 8.2.3 IKE FIT — atomic release seal.
+    const DARK_SKY_EXPECTED_BUILD = '8.2.3';
+    const DARK_SKY_RELEASE_SEAL = 'ikefit-823-shop-anchors-9f4c2a';
     window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
-    // Dark Sky 8.2.2 IKE FIT — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.2.3 IKE FIT — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -592,10 +592,10 @@
                 <div id="ikeFontChoices" class="ike-lettering-grid">
                   <button type="button" class="ike-lettering-choice" data-ike-font="A"><small>STYLE A · BOLD BLOCK</small><span class="style-a"><b data-ike-font-sample>RAMJET</b></span><em>Big, clean routed letters</em></button>
                   <button type="button" class="ike-lettering-choice" data-ike-font="B"><small>STYLE B · TALL WESTERN</small><span class="style-b"><b data-ike-font-sample>SMOKE HOLE!</b></span><em>Tall decorative sign lettering</em></button>
-                  <button type="button" class="ike-lettering-choice" data-ike-font="C"><small>STYLE C · CLASSIC SERIF</small><span class="style-c"><b data-ike-font-sample>Your Sign</b></span><em>Traditional readable serif</em></button>
+                  
                 </div>
                 <div class="ike-letter-size-panel ike-fit-only-panel"><div class="ike-design-label compact"><strong>Ike Fit</strong><span>AUTOMATIC SHOP FIT</span></div><div class="ike-fit-only-state"><b>We size and place it for this exact plank.</b><small>The hidden face grid finds the broad usable wood face, centers the visible letters, and fills the board the way Ike’s finished signs do. No size choice needed.</small></div><small class="ike-size-safety-note">The preview keeps the customer’s exact plank photo unchanged. The blue Ike stamp on the back is ignored for lettering layout. Ike verifies final carve clearance before production.</small></div>
-                <div class="ike-style-proof-note"><strong>Ike Fit learned from finished signs</strong><small>RAMJET and SMOKE HOLE! are shop-style proof for scale, position, and face occupancy — not just font size.</small></div>
+                <div class="ike-style-proof-note"><strong>Ike Fit learned from finished signs</strong><small>Style A is anchored to Ike’s finished RAMJET sign. Style B is anchored to Ike’s finished SMOKE HOLE! sign. Style C stays withheld until Ike provides a real finished example.</small></div>
               </div>
             </section>
             <section class="ike-design-block">
@@ -1576,7 +1576,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.2.2', SEAL='ikefit-822-root-keel-7b2e91';
+    const EXPECTED='8.2.3', SEAL='ikefit-823-shop-anchors-9f4c2a';
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
@@ -1638,7 +1638,7 @@
         step('Clearing Dark Sky application caches');
         if('caches' in window){for(const key of await caches.keys())if(APP_CACHE.test(key))await caches.delete(key);}
         step('Application caches cleared','done');
-        step('Verifying complete 8.2.2 runtime snapshot');
+        step('Verifying complete 8.2.3 runtime snapshot');
         await verifySnapshot(true);
         step('Complete runtime snapshot verified','done');
         step('Installing identity-only release sentinel');

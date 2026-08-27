@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-build-audit-v1",
-  "build": "8.2.2",
-  "name": "Ike Fit",
+  "build": "8.2.3",
+  "name": "Ike Fit \u2014 Shop Anchors",
   "uploadFileCount": 99,
   "maxWebUploadFiles": 99,
   "checks": {
@@ -18,8 +18,13 @@
     "newOrderBlank": true,
     "customerLanguageClean": true,
     "reviewGating": true,
-    "manualKnownGoodPromotion": true
+    "manualKnownGoodPromotion": true,
+    "styleAEqualsRamjetAnchor": true,
+    "styleBEqualsSmokeHoleAnchor": true,
+    "provisionalStyleCHidden": true,
+    "strongerFaceOccupancy": true,
+    "routedWhitePreview": true
   },
   "at": "2026-08-26T10:20:00-04:00",
-  "note": "Focused single-fit composition pass; historical audit filename retained to keep the iPad-safe 99-file package flat."
+  "note": "8.2.3 grounds customer-visible Style A and B in the two real finished Ike signs currently approved by the Captain; Style C is intentionally withheld."
 }

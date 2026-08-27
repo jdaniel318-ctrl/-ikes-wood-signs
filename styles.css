@@ -14723,3 +14723,11 @@ html.dark-sky-route-preflight body #app,html.dark-sky-route-preflight body #engi
 .ikes-project .preview-text.ike-routed-black{color:#090807!important;text-shadow:0 -1px 0 rgba(0,0,0,.68),0 1px 0 rgba(255,255,255,.16),0 2px 2px rgba(0,0,0,.12)!important;-webkit-text-stroke:.25px rgba(0,0,0,.55)}
 .ikes-project .style-a,.ikes-project .ike-lettering-choice .style-a{font-family:Georgia,"Times New Roman",serif!important;font-weight:900!important;font-style:normal!important;letter-spacing:.025em!important}
 @media(max-width:650px){.ike-fit-only-state{flex-direction:column;gap:4px}.ike-fit-only-state b{white-space:normal}}
+
+
+/* 8.2.3 IKE FIT — canonical shop anchors: A=RAMJET, B=SMOKE HOLE!. */
+.ikes-project .style-a,.ikes-project .ike-lettering-choice .style-a{font-family:"Arial Black","Helvetica Neue",Arial,sans-serif!important;font-weight:900!important;font-style:normal!important;letter-spacing:-.025em!important;font-stretch:condensed!important}
+.ikes-project .style-b,.ikes-project .ike-lettering-choice .style-b{font-family:"American Typewriter Condensed","American Typewriter","Rockwell Extra Bold",Rockwell,"Courier New",serif!important;font-weight:900!important;font-style:normal!important;letter-spacing:-.035em!important;transform:none!important}
+.ikes-project .preview-text.ike-routed-white{color:#f5f1e7!important;text-shadow:0 -1px 0 rgba(255,255,255,.82),1px 1px 0 rgba(87,64,43,.50),2px 2px 1px rgba(46,31,20,.36)!important;-webkit-text-stroke:.35px rgba(82,61,42,.58)}
+.ikes-project .preview-text.ike-routed-black{text-shadow:0 -1px 0 rgba(0,0,0,.82),1px 1px 0 rgba(255,255,255,.18),2px 2px 1px rgba(0,0,0,.22)!important;-webkit-text-stroke:.35px rgba(0,0,0,.62)}
+.ikes-project .ike-lettering-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}

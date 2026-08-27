@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-runtime-inventory-v2",
-  "build": "8.2.2",
+  "build": "8.2.3",
   "release": "Ike Fit \u2014 Root Keel",
-  "seal": "ikefit-822-root-keel-7b2e91",
+  "seal": "ikefit-823-shop-anchors-9f4c2a",
   "required_snapshot_files": [
     "styles.css",
     "platform_core.js",
