@@ -14749,10 +14749,25 @@ html.dark-sky-route-preflight body #app,html.dark-sky-route-preflight body #engi
 .foundry-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px;border-top:1px solid rgba(214,176,87,.2);background:#05151a}.foundry-foot span{color:#8ba0a2;font-size:8px;letter-spacing:.1em}.foundry-notice{padding:7px 18px;background:#031015;color:#9eb0b2;font-size:9px;text-align:center}
 @media(max-width:900px){.foundry-tiers{grid-template-columns:repeat(2,1fr)}.foundry-domain-grid{grid-template-columns:repeat(2,1fr)}.foundry-shell{height:96dvh}.foundry-head h2{font-size:26px}}
 
-/* 8.3.5 TRUECASE — customer wording is literal production intent. */
+/* 8.3.6 TRUECASE — customer wording is literal production intent. */
 body.ikes-project #ikeWordingInput{
   text-transform:none!important;
   font-variant:normal!important;
   font-variant-caps:normal!important;
   letter-spacing:normal!important;
+}
+
+/* 8.3.6 STYLE B TRUTH — geometry-only pass; TrueCase input path is untouched. */
+.ikes-project .preview-text.style-b{
+  transform-origin:center center!important;
+}
+.ikes-project .ike-lettering-choice .style-b{
+  transform:scaleX(.78) scaleY(1.06)!important;
+  transform-origin:left center!important;
+  display:block;
+}
+/* Final Style B preview transform overrides the older 8.2.3 transform:none lock. */
+.ikes-project .preview-text.style-b{
+  transform:scaleX(.72) scaleY(1.10)!important;
+  transform-origin:center center!important;
 }

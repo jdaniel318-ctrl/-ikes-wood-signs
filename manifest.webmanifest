@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.3.5 \u2014 TrueCase",
-  "short_name": "Dark Sky 8.3.5",
-  "start_url": "./index.html?_darkSkyRelease=8.3.5&_darkSkySeal=truecase-835-real-input-roundtrip-b8e4a2",
+  "name": "Dark Sky 8.3.6 \u2014 StyleBTruth",
+  "short_name": "Dark Sky 8.3.6",
+  "start_url": "./index.html?_darkSkyRelease=8.3.6&_darkSkySeal=stylebtruth-836-case-locked-b7c19e",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.3.5"
+  "version": "8.3.6"
 }

@@ -1,15 +1,15 @@
-# Dark Sky 8.3.5 — TrueCase
+# Dark Sky 8.3.6 — StyleBTruth
 
-Narrow recovery release branched directly from 8.3.1 Dock Lock. This pass fixes only Ike’s customer wording case path. Style B geometry is intentionally left at the 8.3.1 baseline for a later isolated release.
+Narrow geometry release branched from the proven 8.3.5 TrueCase build. Customer wording case is frozen as a protected contract; this pass changes only Style B shape and Ike Fit calibration.
 
-## 8.3.5 TrueCase
-- Customer wording is preserved exactly as typed: mixed case, lowercase, or uppercase.
-- The real `#ikeWordingInput` disables browser autocapitalization and autocorrection.
-- CSS explicitly forbids uppercase/small-caps transformation on the customer wording control.
-- The actual DOM input → application state → live preview round trip is now exercised by Proving Ground using `Smoke Hole!`, `smoke hole!`, and `SMOKE HOLE!`.
-- Dock Lock bounded Fleet Dock first paint is preserved from 8.3.1.
-- No Style B geometry changes are included in this release.
-- Approved-artifact, order idempotency, orientation, species, and project-isolation contracts remain unchanged.
+## 8.3.6 StyleBTruth
+- Preserves `Smoke Hole!`, `smoke hole!`, and `SMOKE HOLE!` exactly as typed.
+- Keeps the working TrueCase DOM → state → preview round trip untouched.
+- Recalibrates Style B toward the real finished SMOKE HOLE! sign: taller, narrower, tighter spacing, and stronger face occupancy.
+- Style B effective width/height are measured using the same visual condensation/stretch that the customer sees, so Ike Fit sizes against visible ink rather than an unscaled font box.
+- Adds an `ike-style-b-truth` Proving Ground gate and requires the TrueCase gate to remain green.
+- Preserves Dock Lock, Style A/RAMJET, orientation/species detectors, approved-artifact immutability, duplicate-order protection, and project isolation.
+- Length remains experimental and isolated.
 
 
 ## 8.2.8 changes

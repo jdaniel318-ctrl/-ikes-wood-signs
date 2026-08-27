@@ -1,13 +1,13 @@
-# 8.3.5 — TrueCase
+# 8.3.6 — StyleBTruth
 
-## Ike Customer Case Recovery
-- Branched directly from 8.3.1 Dock Lock rather than stacking the failed case patches.
-- Disabled browser autocapitalization/autocorrection on the real Ike wording field.
-- Added an exact-case input ownership guard and explicit no-uppercase CSS contract.
-- Added a real DOM → state → preview regression test for mixed, lower, and upper case.
-- Preserved Dock Lock and intentionally deferred Style B geometry changes.
+- Branched from 8.3.5 TrueCase.
+- Protected exact customer case as a no-touch contract.
+- Reworked only Style B geometry toward the tall/narrow finished SMOKE HOLE! reference.
+- Added geometry-aware effective glyph measurement and matching visual scale inside Ike Fit.
+- Added a Style B truth regression gate tied to the existing real-input case gate.
+- Preserved Dock Lock, Style A, detectors, artifact immutability, and order idempotency.
 
-# 8.3.5 — TrueCase
+# 8.3.6 — StyleBTruth
 
 ## Fleet Dock Recovery
 - Added a 650 ms bounded canonical-convergence window before Fleet Dock paints the already-loaded vessel roster.

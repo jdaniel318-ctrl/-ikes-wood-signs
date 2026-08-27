@@ -1,6 +1,6 @@
 {
-  "release": "8.3.5",
-  "name": "TrueCase",
+  "release": "8.3.6",
+  "name": "StyleBTruth",
   "file_count": 45,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -49,7 +49,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.3.5",
-  "seal": "truecase-835-real-input-roundtrip-b8e4a2",
-  "release_name": "TrueCase"
+  "build": "8.3.6",
+  "seal": "stylebtruth-836-case-locked-b7c19e",
+  "release_name": "StyleBTruth"
 }
