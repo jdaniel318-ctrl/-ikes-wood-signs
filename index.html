@@ -14,8 +14,8 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.3.1 DOCK LOCK — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.3.1',seal:'docklock-831-bounded-fleet-fit-6c91de'});
+    // Dark Sky 8.3.2 SMOKE TRUTH — canonical release identity.
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.3.2',seal:'smoketruth-832-style-b-truth-9f42a1'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     window.__darkSkyExpectedRelease = DARK_SKY_RELEASE;
@@ -586,7 +586,7 @@
         <div class="ike-design-workspace">
           <div class="ike-design-controls">
             <section class="ike-design-block">
-              <div class="ike-design-number">1</div><div class="ike-design-block-body"><label for="ikeWordingInput"><strong>Your wording</strong></label><input id="ikeWordingInput" class="text-input big" maxlength="60" autocomplete="off" autocapitalize="none" spellcheck="false" /><div class="input-meta"><span>Type it exactly as you want it made.</span><strong id="ikeCharCount">0 characters</strong></div></div>
+              <div class="ike-design-number">1</div><div class="ike-design-block-body"><label for="ikeWordingInput"><strong>Your wording</strong></label><input id="ikeWordingInput" class="text-input big" maxlength="60" autocomplete="off" autocapitalize="characters" spellcheck="false" /><div class="input-meta"><span>Type it exactly as you want it made.</span><strong id="ikeCharCount">0 characters</strong></div></div>
             </section>
             <section class="ike-design-block">
               <div class="ike-design-number">2</div><div class="ike-design-block-body"><div class="ike-design-label"><strong>Choose lettering style</strong><span>BASED ON IKE'S REAL SIGN STYLES</span></div>
@@ -595,7 +595,7 @@
                   <button type="button" class="ike-lettering-choice" data-ike-font="B"><small>STYLE B · TALL WESTERN</small><span class="style-b"><b data-ike-font-sample>SMOKE HOLE!</b></span><em>Tall decorative sign lettering</em></button>
                   
                 </div>
-                <div class="ike-style-proof-note compact" role="note"><strong>IKE’S APPROVED SHOP STYLES</strong><small>Style A is anchored to the RAMJET production example. Style B is anchored to the finished SMOKE HOLE! example. Ike Fit owns size and placement inside the detected usable wood face; the customer does not get a substitute Style C or a free-form fallback style.</small></div>
+                <div class="ike-style-proof-note compact" role="note"><strong>IKE’S APPROVED SHOP STYLES</strong><small>Style A is anchored to the RAMJET production example. Style B is anchored to the finished SMOKE HOLE! example. Ike Fit owns size and placement inside the detected usable wood face; the customer does not get a substitute Style C or a free-form fallback style.</small></div><div id="ikeStyleTruthStatus" class="ike-style-truth-status hidden" role="status" aria-live="polite"></div>
               </div>
             </section>
             <section class="ike-design-block">

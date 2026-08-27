@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.3.1",
-  "release": "Dock Lock",
-  "seal": "docklock-831-bounded-fleet-fit-6c91de",
+  "build": "8.3.2",
+  "release": "SmokeTruth",
+  "seal": "smoketruth-832-style-b-truth-9f42a1",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Dock Lock"
+  "release_name": "SmokeTruth"
 }

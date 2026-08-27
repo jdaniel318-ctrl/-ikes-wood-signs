@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.3.1';
+  const BUILD_VERSION='8.3.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.3.1',
+    build:'8.3.2',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4341,6 +4341,17 @@
     const faceGridContract=String(ikeAnalyzePlankPixelsProven).includes('ike-fit-robust-face-grid')&&String(ikeApplyDetectedTextPlacementTo).includes('r.fitBand||r.usableRegion')&&String(ikeApplyDetectedTextPlacementTo).includes('actualBoundingBox')&&!!document.querySelector('.ike-style-proof-note')&&!document.querySelector('label[for=\"ikeStyleReferenceInput\"]');
     add('ike-face-grid-fit','Ike face-grid fit contract',faceGridContract?'pass':'fail',faceGridContract?'Live-edge face grid, visible-glyph measurement, finished-sign proof, and single automatic Ike Fit are installed.':'Ike Fit face-grid placement or finished-sign calibration contract is incomplete.');
 
+    const smokeTruthContract=typeof ikeStyleTruthWording==='function'
+      && ikeStyleTruthWording('Smoke Hole!','B').text==='SMOKE HOLE!'
+      && ikeStyleTruthWording('SMOKE HOLE!','B').unsupported.length===0
+      && ikeStyleTruthWording('SMOKE HOLE?','B').unsupported.includes('?')
+      && Number(ikeFontBlueprint('B').scaleX)<.8
+      && Number(ikeFontBlueprint('B').scaleY)>1
+      && String(ikeApplyDetectedTextPlacementTo).includes('ikeFitScaleX')
+      && String(ikeCaptureLiveRenderSpec).includes('scaleX')
+      && String(renderIkeApprovedArtifact).includes('liveScaleX');
+    add('ike-style-b-smoke-truth','Ike Style B SMOKE HOLE! truth',smokeTruthContract?'pass':'fail',smokeTruthContract?'Style B normalizes lowercase to the approved uppercase shop alphabet, rejects unsupported punctuation, and preserves the same tall/narrow calibration into the immutable artifact.':'Style B uppercase/glyph guard or tall/narrow production calibration is incomplete.');
+
     const artifactAuto=await safe(()=>runIkeApprovedArtifactAutomatedVoyage(),err=>({ok:false,detail:`Automated artifact voyage failed: ${err?.message||err}`}));
     add('approved-artifact-auto','Automated approved-artifact voyage',artifactAuto?.ok?'pass':'fail',artifactAuto?.detail||'Automated approved-artifact voyage did not return evidence.');
 
@@ -4383,7 +4394,7 @@
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
-      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
+      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-style-b-smoke-truth'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
@@ -4800,7 +4811,7 @@
     const state=$('fleetCommissioningState');
     if(!summary||!reference)return;
 
-    // 8.3.1 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
+    // 8.3.2 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
     // convergence before painting a usable vessel roster. Paint from the already
     // loaded canonical/local fleet within a bounded window, then reconcile and
     // refresh in the background. Navigation remains available during verification.
@@ -9528,7 +9539,15 @@
       $$('#ikeLetterSizeChoices [data-ike-size]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeSize===(state.letterSize||'Ike Fit')));
       if($('ikeDesignNextBtn')){const ready=!!(state.wording.trim()&&state.fontChosen);$('ikeDesignNextBtn').disabled=!ready;$('ikeDesignNextBtn').setAttribute('aria-disabled',ready?'false':'true');}
       if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=(r.usableRegion?'Detected lettering zone':(r.usableArea==='safe-margin-preview'?'Basic margin':'Zone pending'));
-      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':(state.fill==='White'?' ike-routed-white':'')));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
+      const ikeTruth=ikeStyleTruthWording(state.wording,state.font);
+      if($('ikeStyleTruthStatus')){
+        const status=$('ikeStyleTruthStatus');
+        if(!state.fontChosen||state.font!=='B'){status.textContent='';status.classList.add('hidden');}
+        else if(ikeTruth.unsupported.length){status.textContent=`Style B cannot cut: ${ikeTruth.unsupported.join(' ')}. Use approved letters, numbers, spaces, !, &, apostrophe, or hyphen.`;status.classList.remove('hidden');}
+        else if(ikeTruth.normalized){status.textContent=`Style B uses Ike’s approved uppercase shop alphabet. Previewing: ${ikeTruth.text}`;status.classList.remove('hidden');}
+        else{status.textContent='Style B uses Ike’s approved uppercase shop alphabet.';status.classList.remove('hidden');}
+      }
+      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=ikeTruth.unsupported.length?'':ikeTruth.text;el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':(state.fill==='White'?' ike-routed-white':'')));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
       scheduleIkeDetectedTextPlacement();
       if($('ikeStylePrompt'))$('ikeStylePrompt').classList.toggle('hidden',!!state.fontChosen);
       $$('.ike-top-marker').forEach(el=>el.textContent='TOP');
@@ -9645,7 +9664,7 @@
     return {
       strategy:'approved-live-layout-v2',singleLinePreferred:true,wrapOnlyWhenRequired:true,
       box:{x:(left-ir.x)/ir.w,y:(top-ir.y)/ir.h,w:er.width/ir.w,h:er.height/ir.h},
-      font:{sizeN:fontSize/ir.h,lineHeightN:lineHeight/ir.h,letterSpacingN:(parseFloat(cs.letterSpacing)||0)/ir.h,family:cs.fontFamily||'Georgia',style:cs.fontStyle||'normal',weight:cs.fontWeight||'700'},
+      font:{sizeN:fontSize/ir.h,lineHeightN:lineHeight/ir.h,letterSpacingN:(parseFloat(cs.letterSpacing)||0)/ir.h,family:cs.fontFamily||'Georgia',style:cs.fontStyle||'normal',weight:cs.fontWeight||'700',scaleX:Number(el.dataset.ikeFitScaleX||1),scaleY:Number(el.dataset.ikeFitScaleY||1)},
       lines:ikeRenderedTextLines(el)
     };
   }
@@ -9730,13 +9749,18 @@
         const live=lock.render?.strategy==='approved-live-layout-v2'?lock.render:null,ur=lock.usableRegion;
         const box=live?.box||null;
         const rx=box?Math.round(box.x*w):(ur?Math.round(ur.x*w):Math.round(w*.14)),ry=box?Math.round(box.y*h):(ur?Math.round(ur.y*h):Math.round(h*.28)),rw=box?Math.round(box.w*w):(ur?Math.round(ur.w*w):Math.round(w*.72)),rh=box?Math.round(box.h*h):(ur?Math.round(ur.h*h):Math.round(h*.44));
-        const text=String(lock.wording||''),factor=lock.font==='B'?.58:(lock.font==='C'?.52:.56);let drawSize=live?.font?.sizeN?Math.max(12,live.font.sizeN*h):Math.max(20,Math.min(96,rw/(Math.max(1,text.length)*factor),rh/1.35));
+        const truth=ikeStyleTruthWording(lock.wording,lock.font),text=truth.unsupported.length?'':truth.text,factor=lock.font==='B'?.58:(lock.font==='C'?.52:.56);let drawSize=live?.font?.sizeN?Math.max(12,live.font.sizeN*h):Math.max(20,Math.min(96,rw/(Math.max(1,text.length)*factor),rh/1.35));
         let lines=Array.isArray(live?.lines)&&live.lines.length?[...live.lines]:[];
         if(live?.font){ctx.font=`${live.font.style||style} ${live.font.weight||weight} ${drawSize}px ${live.font.family||family}`;}
         if(!lines.length){while(drawSize>=18){ctx.font=`${style}${weight} ${drawSize}px ${family}`;lines=wrapCanvasText(ctx,text,rw*.94);const lh=drawSize*1.03;if(lines.length*lh<=rh*.9&&lines.every(line=>ctx.measureText(line).width<=rw*.94))break;drawSize-=2;}}
         if(!lines.length)lines=[text];const lineHeight=live?.font?.lineHeightN?live.font.lineHeightN*h:drawSize*1.03,totalH=lines.length*lineHeight,cx=rx+rw/2,startY=ry+(rh-totalH)/2+lineHeight/2;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
         const lockedLive=!!live,spacingPx=lockedLive&&live?.font?.letterSpacingN?live.font.letterSpacingN*h:0;
-        lines.forEach((line,idx)=>{const y=startY+idx*lineHeight;if(lock.fill==='Natural'){ctx.save();ctx.lineWidth=Math.max(2,drawSize*.055);ctx.strokeStyle='rgba(255,235,202,.48)';lockedLive?ikeCanvasTextOperation(ctx,'stroke',line,cx-2,y-2,spacingPx):ctx.strokeText(line,cx-2,y-2,rw*.94);ctx.strokeStyle='rgba(58,28,13,.72)';lockedLive?ikeCanvasTextOperation(ctx,'stroke',line,cx+2,y+3,spacingPx):ctx.strokeText(line,cx+2,y+3,rw*.94);ctx.fillStyle='rgba(92,54,30,.58)';lockedLive?ikeCanvasTextOperation(ctx,'fill',line,cx,y,spacingPx):ctx.fillText(line,cx,y,rw*.94);ctx.restore();}else{ctx.lineWidth=Math.max(2,drawSize*.045);ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';lockedLive?ikeCanvasTextOperation(ctx,'stroke',line,cx,y,spacingPx):ctx.strokeText(line,cx,y,rw*.94);ctx.fillStyle=color;lockedLive?ikeCanvasTextOperation(ctx,'fill',line,cx,y,spacingPx):ctx.fillText(line,cx,y,rw*.94);}});
+        const liveScaleX=Number(live?.font?.scaleX||spec.scaleX||1),liveScaleY=Number(live?.font?.scaleY||spec.scaleY||1);
+        const drawLocked=(mode,line,x,y,offsetX=0,offsetY=0)=>{
+          if(!lockedLive){if(mode==='stroke')ctx.strokeText(line,x+offsetX,y+offsetY,rw*.94);else ctx.fillText(line,x+offsetX,y+offsetY,rw*.94);return;}
+          ctx.save();ctx.translate(x+offsetX,y+offsetY);ctx.scale(liveScaleX,liveScaleY);ikeCanvasTextOperation(ctx,mode,line,0,0,spacingPx);ctx.restore();
+        };
+        lines.forEach((line,idx)=>{const y=startY+idx*lineHeight;if(lock.fill==='Natural'){ctx.save();ctx.lineWidth=Math.max(2,drawSize*.055);ctx.strokeStyle='rgba(255,235,202,.48)';drawLocked('stroke',line,cx,y,-2,-2);ctx.strokeStyle='rgba(58,28,13,.72)';drawLocked('stroke',line,cx,y,2,3);ctx.fillStyle='rgba(92,54,30,.58)';drawLocked('fill',line,cx,y);ctx.restore();}else{ctx.lineWidth=Math.max(2,drawSize*.045);ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';drawLocked('stroke',line,cx,y);ctx.fillStyle=color;drawLocked('fill',line,cx,y);}});
         lock.render={...(lock.render||{}),region:{x:rx/w,y:ry/h,w:rw/w,h:rh/h},fontSizePx:drawSize,lines:[...lines],outputMime:'image/jpeg',outputQuality:.90};
         resolve(canvas.toDataURL('image/jpeg',0.90));
       }catch(err){console.error('Approved preview flatten failed',err);resolve('');}};img.onerror=()=>resolve('');img.src=source;
@@ -9748,7 +9772,7 @@
       const c=document.createElement('canvas');c.width=420;c.height=180;const x=c.getContext('2d',{alpha:false});if(!x)return {ok:false,detail:'Canvas unavailable for automated artifact voyage.'};
       x.fillStyle='#c79b62';x.fillRect(0,0,c.width,c.height);x.fillStyle='#8b5a2b';x.fillRect(40,35,300,110);x.fillStyle='#f4e7ce';x.beginPath();x.ellipse(315,90,18,28,0,0,Math.PI*2);x.fill();
       const source=c.toDataURL('image/png');
-      const lock={version:'ike-approved-artifact-selftest-v1',wording:'Smoke Hole',font:'B',fill:'Black',customColor:'#1f6feb',orientation:'Horizontal',topSide:'Top of photo',price:65,usableRegion:{x:.12,y:.22,w:.62,h:.58,source:'self-test'},obstacleDetected:true,recognition:{method:'synthetic',confidence:'high'},render:{strategy:'approved-live-layout-v2',box:{x:.18,y:.28,w:.48,h:.44},font:{sizeN:.16,lineHeightN:.18,family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',style:'normal',weight:'900'},lines:['Smoke','Hole']}};
+      const lock={version:'ike-approved-artifact-selftest-v1',wording:'SMOKE HOLE!',font:'B',fill:'Black',customColor:'#1f6feb',orientation:'Horizontal',topSide:'Top of photo',price:65,usableRegion:{x:.12,y:.22,w:.62,h:.58,source:'self-test'},obstacleDetected:true,recognition:{method:'synthetic',confidence:'high'},render:{strategy:'approved-live-layout-v2',box:{x:.18,y:.28,w:.48,h:.44},font:{sizeN:.16,lineHeightN:.18,family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',style:'normal',weight:'900',scaleX:.72,scaleY:1.12},lines:['SMOKE HOLE!']}};
       const artifact=await renderIkeApprovedArtifact(source,lock);if(!artifact||!artifact.startsWith('data:image/jpeg'))return {ok:false,detail:'Automated voyage could not produce the immutable production artifact.'};
       const hash=ikeFastHash(artifact),record={artifactId:`IKE-ART-${hash.toUpperCase()}`,artifactHash:hash,approvedPreviewData:artifact};
       const stageHashes=['approval','review','confirmation','admin','archive'].map(()=>ikeFastHash(record.approvedPreviewData));
@@ -10693,19 +10717,42 @@ The full order and approved media remain stored with this project.`;
     return {x:(cw-w)/2,y:(ch-h)/2,w,h};
   }
 
+  function ikeStyleTruthWording(text,font){
+    const raw=String(text||'');
+    if(String(font||'B')!=='B')return {text:raw,normalized:false,unsupported:[]};
+    // 8.3.2 SMOKE TRUTH: Style B is an approved uppercase shop alphabet.
+    // Never invent lowercase geometry. Normalize alphabetic input to uppercase,
+    // and reject characters outside the currently approved customer-safe set.
+    const upper=raw.toUpperCase();
+    const unsupported=Array.from(new Set(Array.from(upper).filter(ch=>!/[A-Z0-9 !&'\-]/.test(ch))));
+    return {text:upper,normalized:upper!==raw,unsupported};
+  }
+
   function ikeFontBlueprint(font){
     const key=String(font||'B');
-    if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1.00,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01};
-    if(key==='B')return {family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',weight:'900',style:'normal',spacingEm:-0.035,widthTarget:0.88,heightTarget:0.82,widthBoost:1.00,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0};
-    return {family:'Georgia, "Times New Roman", serif',weight:'500',style:'normal',spacingEm:0,widthTarget:0.86,heightTarget:0.78,widthBoost:0.99,compactWidthTarget:0.88,compactHeightTarget:0.82,opticalYBias:0};
+    if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1.00,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01,scaleX:1,scaleY:1};
+    if(key==='B')return {
+      family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',
+      weight:'900',style:'normal',
+      spacingEm:-0.055,
+      widthTarget:0.91,heightTarget:0.92,widthBoost:1.00,
+      compactWidthTarget:0.93,compactHeightTarget:0.94,
+      opticalYBias:-0.005,
+      // Finished SMOKE HOLE! calibration: materially taller and narrower than
+      // the browser's raw condensed face while preserving the approved style.
+      scaleX:0.72,scaleY:1.12
+    };
+    return {family:'Georgia, "Times New Roman", serif',weight:'500',style:'normal',spacingEm:0,widthTarget:0.86,heightTarget:0.78,widthBoost:0.99,compactWidthTarget:0.88,compactHeightTarget:0.82,opticalYBias:0,scaleX:1,scaleY:1};
   }
 
   function ikeApplyDetectedTextPlacementTo(el){
     const r=state.plankRecognition||{},region=r.fitBand||r.usableRegion,card=el.closest('.preview-card'),img=card?.querySelector('.preview-image');
     if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
     const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
-    const wording=String(state.wording||'').trim();
+    const truth=ikeStyleTruthWording(state.wording,state.font);
+    const wording=String(truth.text||'').trim();
     if(!wording){el.textContent='';return;}
+    if(truth.unsupported.length){el.textContent='';return;}
     // 8.2.8 IKE FIT: one shop fit, not a generic size selector. Measure the
     // VISIBLE glyphs and deliberately claim the usable face like Ike's finished
     // RAMJET / SMOKE HOLE! signs. Customer intent is the wording + style; the
@@ -10714,6 +10761,7 @@ The full order and approved media remain stored with this project.`;
     const mode='Ike Fit';
     const spec=ikeFontBlueprint(state.font);
     const targets={w:spec.widthTarget,h:spec.heightTarget};
+    const scaleX=Number(spec.scaleX||1),scaleY=Number(spec.scaleY||1);
     const probe=100;
     const cv=document.createElement('canvas'),cx=cv.getContext('2d');
     const fontFamily=spec.family;
@@ -10725,16 +10773,16 @@ The full order and approved media remain stored with this project.`;
     const spacingPx=Math.max(0,wording.length-1)*probe*spacingEm;
     const glyphW=Math.max(1,(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width||1)+spacingPx);
     const glyphH=Math.max(1,(m.actualBoundingBoxAscent||probe*.76)+(m.actualBoundingBoxDescent||probe*.20));
-    const byWidth=(w*targets.w)/(glyphW/probe);
-    const byHeight=(h*targets.h)/(glyphH/probe);
+    const byWidth=(w*targets.w)/((glyphW/probe)*scaleX);
+    const byHeight=(h*targets.h)/((glyphH/probe)*scaleY);
     let fs=Math.min(byWidth,byHeight)*spec.widthBoost;
     const compactWord=wording.replace(/\s+/g,'').length<=12;
     // 8.2.8 FONT LOCK: each style stays locked to its approved shop example.
     // The customer can change wording, but the font behavior should not drift away
     // from the canonical RAMJET / SMOKE HOLE! samples shown in the UI.
     if(compactWord){
-      const widthFit=(w*spec.compactWidthTarget)/(glyphW/probe);
-      const heightFit=(h*spec.compactHeightTarget)/(glyphH/probe);
+      const widthFit=(w*spec.compactWidthTarget)/((glyphW/probe)*scaleX);
+      const heightFit=(h*spec.compactHeightTarget)/((glyphH/probe)*scaleY);
       fs=Math.min(widthFit,heightFit)*spec.widthBoost;
     }
     fs=Math.max(20,Math.min(340,fs));
@@ -10743,7 +10791,11 @@ The full order and approved media remain stored with this project.`;
     const leftBearing=(m.actualBoundingBoxLeft||0),rightBearing=Math.max(0,(m.width||glyphW)-(m.actualBoundingBoxRight||m.width||glyphW));
     const opticalShiftX=Math.max(-w*.035,Math.min(w*.035,(rightBearing-leftBearing)*(fs/probe)*.50));
     const opticalShiftY=spec.opticalYBias?Math.min(h*spec.opticalYBias,5):0;
-    Object.assign(el.style,{left:`${x+opticalShiftX}px`,top:`${y+opticalShiftY}px`,width:`${Math.max(1,w-Math.abs(opticalShiftX))}px`,height:`${Math.max(1,h-opticalShiftY)}px`,transform:'none',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'0',lineHeight:'.94',whiteSpace:'nowrap'});
+    const targetW=Math.max(1,w-Math.abs(opticalShiftX)),targetH=Math.max(1,h-opticalShiftY);
+    const rawW=targetW/scaleX,rawH=targetH/scaleY;
+    const targetCx=x+opticalShiftX+targetW/2,targetCy=y+opticalShiftY+targetH/2;
+    Object.assign(el.style,{left:`${targetCx-rawW/2}px`,top:`${targetCy-rawH/2}px`,width:`${rawW}px`,height:`${rawH}px`,transform:`scale(${scaleX},${scaleY})`,transformOrigin:'center center',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'0',lineHeight:'.94',whiteSpace:'nowrap'});
+    el.dataset.ikeFitScaleX=String(scaleX);el.dataset.ikeFitScaleY=String(scaleY);
     el.dataset.ikeFitMode=mode;
     el.dataset.ikeFitFontPx=String(Math.round(fs));
     el.dataset.ikeFitTarget=`${Math.round(targets.w*100)}x${Math.round(targets.h*100)}`;el.dataset.ikeFitRegion=String(region.source||'');el.dataset.ikeFitGrid=String(r.faceGrid?.length||0);
@@ -13694,7 +13746,7 @@ The full order and approved media remain stored with this project.`;
     $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));
     $('rotatePhotoRightBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(1));
     $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthResolved||!r.lengthFeet){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick length check first so we never guess on size.';return;}if(!r.speciesResolved){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick wood check first so we price the right species.';return;}if(!(ikeSpeciesRate(r.speciesId)>0)){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='This species does not have an active owner price yet. Please ask Ike before continuing.';return;}recalcIkePrice();setScreen('ike-design');});
-    $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
+    $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}const truth=ikeStyleTruthWording(state.wording,state.font);if(truth.unsupported.length){if($('ikeDesignError'))$('ikeDesignError').textContent=`Style ${state.font} cannot cut: ${truth.unsupported.join(' ')}. Remove unsupported characters before review.`;return;}if(state.font==='B'&&truth.normalized){state.wording=truth.text;const iw=$('ikeWordingInput');if(iw)iw.value=state.wording;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
     $('ikeApproveDesignBtn')?.addEventListener('click',()=>{const ok=lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
     $('ikeEditDesignBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();setScreen('ike-design');});
     $('reviewEditDesignBtn')?.addEventListener('click',()=>setScreen(activeProjectId==='ikes-wood-signs'?'ike-design':'wording'));

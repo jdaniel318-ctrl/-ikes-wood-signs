@@ -97,13 +97,13 @@ A release can add new behavior only after it proves the inherited watch stations
 A release is HOLD for Ike if: (1) a glyph approaches/crosses the detected usable plank face, (2) the approved artifact/hash differs between Design Review, final customer summary, owner/admin or production export, (3) repeated Place Order creates duplicate IDs, or (4) normal accumulated test state can surface a raw quota exception instead of preserving the approved design and attempting safe storage recovery.
 
 
-## Fleet Dock bounded first-paint gate — 8.3.1
+## Fleet Dock bounded first-paint gate — 8.3.2
 - Fleet Dock may reconcile canonical registry state, but that work may not block a usable roster indefinitely.
 - After a bounded window, paint the already-loaded project roster and mark it as verifying; reconcile in the background and refresh when complete.
 - Search/filter interactions must not restart expensive canonical convergence.
 - A persistent `READING FLEET` state with existing project data is release-blocking.
 
-## Ike finished-sign face-grid proof — 8.3.1
+## Ike finished-sign face-grid proof — 8.3.2
 - Keep the existing robust face-grid / fit-band placement and visible-glyph measurement intact.
 - Style A remains anchored to RAMJET; Style B remains anchored to SMOKE HOLE!.
 - Customer-facing proof must make the approved shop anchors explicit; no Style C or free-form fallback may be silently introduced.

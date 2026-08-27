@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.3.1';
-const RELEASE_SEAL='docklock-831-bounded-fleet-fit-6c91de';
+const RELEASE_BUILD='8.3.2';
+const RELEASE_SEAL='smoketruth-832-style-b-truth-9f42a1';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.
