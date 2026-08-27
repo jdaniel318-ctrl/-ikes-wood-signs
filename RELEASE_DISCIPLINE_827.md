@@ -23,7 +23,7 @@ Make prior fleet learning executable as release discipline. The 8.2.7 pass does 
 ## Regression evidence rule
 Older project/chat/build evidence is not copied wholesale into runtime. It is distilled into contracts, tests and release gates. This preserves learning without coupling the live fleet to old implementations.
 
-## True Wake 8.2.9 — release identity law
+## True Cut 8.3.0 — release identity law
 - `index.html` first-light `DARK_SKY_RELEASE` is the canonical document identity.
 - The atomic loader must derive build/seal from that object; duplicate release literals inside the loader are a release blocker.
 - `DEPLOYMENT_MANIFEST.json`, `RELEASE_SEAL.json`, `RELEASE_INVENTORY.json`, `app.js` runtime build, and `sw.js` identity must agree before Engine paint.

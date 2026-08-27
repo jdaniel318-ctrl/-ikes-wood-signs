@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.2.9",
-  "release": "Lean Keel",
+  "build": "8.3.0",
+  "release": "True Cut",
   "excluded_sources": [
     "The situation"
   ],
@@ -78,6 +78,15 @@
       "no_missing_local_refs",
       "release_identity_agreement",
       "checksums_final"
+    ],
+    "ike_production_integrity": [
+      "glyphs_inside_detected_face_with_safety_inset",
+      "approved_geometry_hash_stable_across_customer_owner_production",
+      "no_locked_artifact_width_recompression",
+      "place_order_idempotent",
+      "quota_pressure_preserves_approved_design",
+      "raw_quota_exception_not_customer_surface",
+      "localstorage_media_mirrors_compact"
     ]
   },
   "promotion": "manual-captain-known-good"

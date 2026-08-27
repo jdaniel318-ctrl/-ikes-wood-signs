@@ -304,3 +304,10 @@ Overlap zones are intentionally conservative.
 
 ## Acceptance test
 With the known 2 ft cedar test plank, a normal full-plank photo should resolve Horizontal + Cedar + 2 ft + the owner-configured Cedar price when the board is fully framed. If visual geometry lands near a band boundary, the system must ask rather than guess.
+
+## 8.3.0 True Cut — production integrity law
+- **Fit safety:** every visible glyph must remain fully inside the detected usable plank face with a production inset. Scale down before any edge/void/cutout violation.
+- **Fit once / lock once:** after Review My Design builds the approval artifact, all later screens reuse that immutable artifact/hash. No later responsive refit is allowed.
+- **Manufacturing truth:** customer review, order record, owner view, CNC geometry and future inlay output must derive from the same approved design lock.
+- **Storage law:** localStorage is only a compact secondary mirror. Original/raw media must not be duplicated there. Durable order media belongs in IndexedDB and must survive quota pressure by retaining the immutable approved production artifact first.
+- **Idempotency:** one approved artifact hash can create at most one in-memory customer order during a submission attempt. Retries return the same order rather than minting another ID.

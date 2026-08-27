@@ -92,3 +92,6 @@ For every structural release:
 
 ## Promotion rule
 A release can add new behavior only after it proves the inherited watch stations remain intact. New capability does not excuse regression in an older contract.
+
+## Ike production integrity gate — 8.3.0
+A release is HOLD for Ike if: (1) a glyph approaches/crosses the detected usable plank face, (2) the approved artifact/hash differs between Design Review, final customer summary, owner/admin or production export, (3) repeated Place Order creates duplicate IDs, or (4) normal accumulated test state can surface a raw quota exception instead of preserving the approved design and attempting safe storage recovery.

@@ -1,6 +1,6 @@
 {
-  "release": "8.2.9",
-  "name": "True Wake",
+  "release": "8.3.0",
+  "name": "True Cut",
   "file_count": 45,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -49,6 +49,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.2.9",
-  "seal": "truewake-829-release-identity-7f29a1"
+  "build": "8.3.0",
+  "seal": "truecut-830-ike-production-integrity-4b73c2",
+  "release_name": "True Cut"
 }

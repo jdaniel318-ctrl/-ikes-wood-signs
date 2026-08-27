@@ -541,5 +541,5 @@ The Visual Command Forge is a shared high-authority creation capability availabl
 ## Current execution boundary
 6.2.0 performs local reference intake, blueprint generation, persistence and export. Managed AI execution that directly generates production code/assets remains a future backend capability and must not be simulated as complete.
 
-## True Wake — stale document / fresh manifest handoff
-Observed during 8.2.8 dry dock: Safari displayed an older 8.2.4 HTML shell while the deployment manifest was already 8.2.8. Worker registrations and application caches cleared correctly, but the old document continued verifying against its embedded 8.2.4 identity. True Wake makes the page identity single-source and permits one cache-busted document promotion when the deployment manifest proves a different complete release is present. Repeated promotion is forbidden; unresolved disagreement remains a release HOLD.
+## True Cut — stale document / fresh manifest handoff
+Observed during 8.2.8 dry dock: Safari displayed an older 8.2.4 HTML shell while the deployment manifest was already 8.2.8. Worker registrations and application caches cleared correctly, but the old document continued verifying against its embedded 8.2.4 identity. True Cut makes the page identity single-source and permits one cache-busted document promotion when the deployment manifest proves a different complete release is present. Repeated promotion is forbidden; unresolved disagreement remains a release HOLD.

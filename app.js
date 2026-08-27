@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.2.9';
+  const BUILD_VERSION='8.3.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.2.9',
+    build:'8.3.0',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4323,7 +4323,7 @@
     add('runtime-tree','Canonical runtime tree','pass',`${requiredFiles.length} required runtime contracts are represented by the 6.1 release manifest; assets remain media-only by release policy.`);
 
     const lockContract=typeof stageIkeApprovalArtifact==='function' && typeof lockIkeApprovedDesign==='function' && typeof verifyIkeApprovedArtifact==='function' && String(stageIkeApprovalArtifact).includes('renderIkeApprovedArtifact') && String(lockIkeApprovedDesign).includes('approvalCandidateData') && String(saveOrder).includes('verifyIkeApprovedArtifact') && String(saveOrder).includes('approvedArtifactHash');
-    add('approved-design-lock','Approved artifact integrity',lockContract?'pass':'fail',lockContract?'Approval screen is built from the exact frozen PNG candidate; approval adopts those same bytes, fingerprints them, and later stages reuse the artifact without reconstruction.':'Approved artifact freeze / candidate-adoption contract is missing or incomplete.');
+    add('approved-design-lock','Approved artifact integrity',lockContract?'pass':'fail',lockContract?'Approval screen is built from the exact frozen production-artifact candidate; approval adopts those same bytes, fingerprints them, and later stages reuse the artifact without reconstruction.':'Approved artifact freeze / candidate-adoption contract is missing or incomplete.');
     const orderBoundaryAuto=(()=>{
       try{
         const prior=state.plankRecognition;
@@ -9596,12 +9596,13 @@
   }
 
   const IKE_PRODUCTION_CONTRACT=Object.freeze({
-    version:'ike-paper-contract-2026-08',source:'canonical-front-and-back-paper-order-form',
+    version:'ike-production-truth-2026-08-v2',source:'canonical-front-and-back-paper-order-form',
     characterLimits:{'2ft':14,'4ft':24,'6ft':36},fonts:['A','B','C'],fills:['Black','White','None','Other'],
     contactPreferences:['Text','Call'],pickupWindowDays:'7-10',customerApprovalRequired:true,refusalRight:true,
     otherColorRule:'Customer-supplied spray paint may be required for Other; return at pickup.',
     orientationRule:'Exact side and top must remain attached to the approved production record.',
-    letteringSizeRule:'Ike uses a mission-specific fit control: customer intent adjusts breathing room while the layout engine maximizes the chosen lettering style inside the detected usable face and preserves carving clearance.',
+    letteringSizeRule:'Ike Fit must keep every visible glyph fully inside the detected usable wood face with a production safety inset. The layout engine scales down before allowing any glyph to approach or cross a live edge, bark edge, void, or cutout.',
+    geometryTruthRule:'Fit once, lock once, render everywhere from the same immutable approved geometry. Preview, review, order record, owner view, CNC export and future inlay output must share one design hash.',
     letteringSizePresets:['Ike Fit']
   });
 
@@ -9628,7 +9629,7 @@
     return {
       strategy:'approved-live-layout-v2',singleLinePreferred:true,wrapOnlyWhenRequired:true,
       box:{x:(left-ir.x)/ir.w,y:(top-ir.y)/ir.h,w:er.width/ir.w,h:er.height/ir.h},
-      font:{sizeN:fontSize/ir.h,lineHeightN:lineHeight/ir.h,family:cs.fontFamily||'Georgia',style:cs.fontStyle||'normal',weight:cs.fontWeight||'700'},
+      font:{sizeN:fontSize/ir.h,lineHeightN:lineHeight/ir.h,letterSpacingN:(parseFloat(cs.letterSpacing)||0)/ir.h,family:cs.fontFamily||'Georgia',style:cs.fontStyle||'normal',weight:cs.fontWeight||'700'},
       lines:ikeRenderedTextLines(el)
     };
   }
@@ -9685,6 +9686,20 @@
     return renderIkeApprovedArtifact(source,lock);
   }
 
+  function ikeCanvasLineWidth(ctx,text,spacingPx=0){
+    const chars=Array.from(String(text||''));
+    return chars.reduce((sum,ch)=>sum+ctx.measureText(ch).width,0)+Math.max(0,chars.length-1)*spacingPx;
+  }
+
+  function ikeCanvasTextOperation(ctx,mode,text,cx,y,spacingPx=0){
+    const chars=Array.from(String(text||''));
+    if(!chars.length)return;
+    const total=ikeCanvasLineWidth(ctx,text,spacingPx);let x=cx-total/2;
+    const priorAlign=ctx.textAlign;ctx.textAlign='left';
+    for(const ch of chars){const w=ctx.measureText(ch).width;if(mode==='stroke')ctx.strokeText(ch,x,y);else ctx.fillText(ch,x,y);x+=w+spacingPx;}
+    ctx.textAlign=priorAlign;
+  }
+
   async function renderIkeApprovedArtifact(source,lock){
     if(!source||!lock)return '';
     return new Promise(resolve=>{
@@ -9704,9 +9719,10 @@
         if(live?.font){ctx.font=`${live.font.style||style} ${live.font.weight||weight} ${drawSize}px ${live.font.family||family}`;}
         if(!lines.length){while(drawSize>=18){ctx.font=`${style}${weight} ${drawSize}px ${family}`;lines=wrapCanvasText(ctx,text,rw*.94);const lh=drawSize*1.03;if(lines.length*lh<=rh*.9&&lines.every(line=>ctx.measureText(line).width<=rw*.94))break;drawSize-=2;}}
         if(!lines.length)lines=[text];const lineHeight=live?.font?.lineHeightN?live.font.lineHeightN*h:drawSize*1.03,totalH=lines.length*lineHeight,cx=rx+rw/2,startY=ry+(rh-totalH)/2+lineHeight/2;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
-        lines.forEach((line,idx)=>{const y=startY+idx*lineHeight;if(lock.fill==='Natural'){ctx.save();ctx.lineWidth=Math.max(2,drawSize*.055);ctx.strokeStyle='rgba(255,235,202,.48)';ctx.strokeText(line,cx-2,y-2,rw*.94);ctx.strokeStyle='rgba(58,28,13,.72)';ctx.strokeText(line,cx+2,y+3,rw*.94);ctx.fillStyle='rgba(92,54,30,.58)';ctx.fillText(line,cx,y,rw*.94);ctx.restore();}else{ctx.lineWidth=Math.max(2,drawSize*.045);ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';ctx.strokeText(line,cx,y,rw*.94);ctx.fillStyle=color;ctx.fillText(line,cx,y,rw*.94);}});
-        lock.render={...(lock.render||{}),region:{x:rx/w,y:ry/h,w:rw/w,h:rh/h},fontSizePx:drawSize,lines:[...lines]};
-        resolve(canvas.toDataURL('image/png'));
+        const lockedLive=!!live,spacingPx=lockedLive&&live?.font?.letterSpacingN?live.font.letterSpacingN*h:0;
+        lines.forEach((line,idx)=>{const y=startY+idx*lineHeight;if(lock.fill==='Natural'){ctx.save();ctx.lineWidth=Math.max(2,drawSize*.055);ctx.strokeStyle='rgba(255,235,202,.48)';lockedLive?ikeCanvasTextOperation(ctx,'stroke',line,cx-2,y-2,spacingPx):ctx.strokeText(line,cx-2,y-2,rw*.94);ctx.strokeStyle='rgba(58,28,13,.72)';lockedLive?ikeCanvasTextOperation(ctx,'stroke',line,cx+2,y+3,spacingPx):ctx.strokeText(line,cx+2,y+3,rw*.94);ctx.fillStyle='rgba(92,54,30,.58)';lockedLive?ikeCanvasTextOperation(ctx,'fill',line,cx,y,spacingPx):ctx.fillText(line,cx,y,rw*.94);ctx.restore();}else{ctx.lineWidth=Math.max(2,drawSize*.045);ctx.strokeStyle=color==='#ffffff'?'rgba(0,0,0,.55)':'rgba(255,255,255,.55)';lockedLive?ikeCanvasTextOperation(ctx,'stroke',line,cx,y,spacingPx):ctx.strokeText(line,cx,y,rw*.94);ctx.fillStyle=color;lockedLive?ikeCanvasTextOperation(ctx,'fill',line,cx,y,spacingPx):ctx.fillText(line,cx,y,rw*.94);}});
+        lock.render={...(lock.render||{}),region:{x:rx/w,y:ry/h,w:rw/w,h:rh/h},fontSizePx:drawSize,lines:[...lines],outputMime:'image/jpeg',outputQuality:.90};
+        resolve(canvas.toDataURL('image/jpeg',0.90));
       }catch(err){console.error('Approved preview flatten failed',err);resolve('');}};img.onerror=()=>resolve('');img.src=source;
     });
   }
@@ -9716,13 +9732,13 @@
       const c=document.createElement('canvas');c.width=420;c.height=180;const x=c.getContext('2d',{alpha:false});if(!x)return {ok:false,detail:'Canvas unavailable for automated artifact voyage.'};
       x.fillStyle='#c79b62';x.fillRect(0,0,c.width,c.height);x.fillStyle='#8b5a2b';x.fillRect(40,35,300,110);x.fillStyle='#f4e7ce';x.beginPath();x.ellipse(315,90,18,28,0,0,Math.PI*2);x.fill();
       const source=c.toDataURL('image/png');
-      const lock={version:'ike-approved-artifact-selftest-v1',wording:'Smoke Hole',font:'B',fill:'Black',customColor:'#1f6feb',orientation:'Horizontal',topSide:'Top of photo',price:65,usableRegion:{x:.12,y:.22,w:.62,h:.58,source:'self-test'},obstacleDetected:true,recognition:{method:'synthetic',confidence:'high'},render:{strategy:'approved-live-layout-v2',box:{x:.18,y:.28,w:.48,h:.44},font:{sizeN:.16,lineHeightN:.18,family:'"Times New Roman", Georgia, serif',style:'normal',weight:'900'},lines:['Smoke','Hole']}};
-      const artifact=await renderIkeApprovedArtifact(source,lock);if(!artifact||!artifact.startsWith('data:image/png'))return {ok:false,detail:'Automated voyage could not produce the immutable PNG artifact.'};
+      const lock={version:'ike-approved-artifact-selftest-v1',wording:'Smoke Hole',font:'B',fill:'Black',customColor:'#1f6feb',orientation:'Horizontal',topSide:'Top of photo',price:65,usableRegion:{x:.12,y:.22,w:.62,h:.58,source:'self-test'},obstacleDetected:true,recognition:{method:'synthetic',confidence:'high'},render:{strategy:'approved-live-layout-v2',box:{x:.18,y:.28,w:.48,h:.44},font:{sizeN:.16,lineHeightN:.18,family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',style:'normal',weight:'900'},lines:['Smoke','Hole']}};
+      const artifact=await renderIkeApprovedArtifact(source,lock);if(!artifact||!artifact.startsWith('data:image/jpeg'))return {ok:false,detail:'Automated voyage could not produce the immutable production artifact.'};
       const hash=ikeFastHash(artifact),record={artifactId:`IKE-ART-${hash.toUpperCase()}`,artifactHash:hash,approvedPreviewData:artifact};
       const stageHashes=['approval','review','confirmation','admin','archive'].map(()=>ikeFastHash(record.approvedPreviewData));
       const reused=stageHashes.every(h=>h===hash);
       const contracts=String(updateUi).includes('state.approvedPreviewData')&&String(saveOrder).includes('approvedPreviewData=state.approvedPreviewData')&&String(renderAdmin).includes('approvedPreviewData')&&String(projectOrderCard).includes('approvedPreviewData');
-      return {ok:reused&&contracts,detail:reused&&contracts?`Automated immutable-artifact voyage passed. PNG ${record.artifactId} retained one fingerprint through approval, review, confirmation, admin and archive contracts.`:'Automated artifact voyage found a stage-reuse contract gap.'};
+      return {ok:reused&&contracts,detail:reused&&contracts?`Automated immutable-artifact voyage passed. Production artifact ${record.artifactId} retained one fingerprint through approval, review, confirmation, admin and archive contracts.`:'Automated artifact voyage found a stage-reuse contract gap.'};
     }catch(err){return {ok:false,detail:`Automated artifact voyage error: ${err?.message||err}`};}
   }
 
@@ -9738,6 +9754,32 @@
   function canCreateOrderNumber(){
     if(!projectRequiresPhoto()) return true;
     return hasConfirmedProjectPhoto();
+  }
+
+  function isQuotaError(err){return String(err?.name||'')==='QuotaExceededError'||/quota|storage.*full|disk.*full/i.test(String(err?.message||err||''));}
+
+  async function compactDataUrlForOrder(dataUrl,maxSide=1280,quality=.76){
+    if(!dataUrl||!String(dataUrl).startsWith('data:image/'))return dataUrl||'';
+    return new Promise(resolve=>{const img=new Image();img.onload=()=>{try{const iw=img.naturalWidth||img.width||1,ih=img.naturalHeight||img.height||1,sc=Math.min(1,maxSide/Math.max(iw,ih));const w=Math.max(1,Math.round(iw*sc)),h=Math.max(1,Math.round(ih*sc));const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d',{alpha:false});if(!x)return resolve(dataUrl);x.drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',quality));}catch(_){resolve(dataUrl)}};img.onerror=()=>resolve(dataUrl);img.src=dataUrl;});
+  }
+
+  async function putOrderWithQuotaRecovery(order){
+    try{await put(STORE_ORDERS,order);return {ok:true,degraded:false};}
+    catch(err){
+      if(!isQuotaError(err))throw err;
+      console.warn('Primary order store hit quota; compacting safe secondary storage and retrying with production-safe media.',err);
+      relieveSecondaryStoragePressure();repairLocalOrderBackupFootprint();repairProjectDraftFootprint();
+      const compact={...order,photoData:await compactDataUrlForOrder(order.photoData,1100,.70)};
+      try{await put(STORE_ORDERS,compact);Object.assign(order,compact);return {ok:true,degraded:false,recovered:true};}
+      catch(second){
+        if(!isQuotaError(second))throw second;
+        // Last-resort safe degradation: the immutable approved artifact already contains
+        // the customer's plank photo plus exact approved lettering geometry. Keep it,
+        // and omit only the redundant raw-photo copy so the order itself is not lost.
+        const essential={...compact,photoData:'',photoStorageDegraded:true,photoStorageNote:'Raw source photo omitted after local quota pressure; immutable approved production artifact retained.'};
+        await put(STORE_ORDERS,essential);Object.assign(order,essential);return {ok:true,degraded:true,recovered:true};
+      }
+    }
   }
 
   async function saveOrder(){
@@ -9762,13 +9804,21 @@
       return null;
     }
 
+    const lockedHash=state.approvedDesignLock?.artifactHash||'';
+    if(state.currentOrder?.id && state.currentOrder?.approvedArtifactHash && state.currentOrder.approvedArtifactHash===lockedHash){
+      return state.currentOrder;
+    }
     const id=newOrderId();
     const experienceCtx=currentExperienceContext(activeProject());
     state.approvedPreviewData=approvedPreviewData;
-    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:state.photoData,approvedPreviewData,orientation:state.orientation,topSide:'Top of photo',photoQuarterTurns:Number(state.photoQuarterTurns||0),wording:state.wording,font:state.font,letterSize:state.letterSize||'Ike Fit',fill:state.fill,customColor:state.customColor,plankRecognition:activeProjectId==='ikes-wood-signs'?ikeRecognitionForOrder():(state.plankRecognition||null),pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),aspectBand:String(state.plankRecognition?.primaryLengthEvidence?.aspectBand||''),boundaryDistance:Number(state.plankRecognition?.primaryLengthEvidence?.boundaryDistance||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
+    const durablePhotoData=activeProjectId==='ikes-wood-signs'?await compactDataUrlForOrder(state.photoData,1280,.76):state.photoData;
+    const order={projectId:activeProjectId,namespace:window.BlackFlagV3Core?.namespaceFor?.(activeProjectId)||`bf.project.${activeProjectId}`,isolation:{projectId:activeProjectId,crossProjectAccess:'deny'},schemaVersion:Number(engineConfig.schemaVersion||3),business:{name:businessConfig.businessName,orderPrefix:businessConfig.orderPrefix},id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),status:'New',price:state.price,photoData:durablePhotoData,approvedPreviewData,orientation:state.orientation,topSide:'Top of photo',photoQuarterTurns:Number(state.photoQuarterTurns||0),wording:state.wording,font:state.font,letterSize:state.letterSize||'Ike Fit',fill:state.fill,customColor:state.customColor,plankRecognition:activeProjectId==='ikes-wood-signs'?ikeRecognitionForOrder():(state.plankRecognition||null),pricingProof:activeProjectId==='ikes-wood-signs'?{speciesId:state.plankRecognition?.speciesId||'',speciesName:state.plankRecognition?.speciesName||'',lengthFeet:Number(state.plankRecognition?.lengthFeet||0),ratePerFoot:ikeSpeciesRate(state.plankRecognition?.speciesId),price:Number(state.price||0),source:'owner-species-rate',lengthResolutionMethod:state.plankRecognition?.lengthResolutionMethod||state.plankRecognition?.lengthReason||'',ownerVisualVerificationRequired:!!state.plankRecognition?.lengthReviewRequired,lengthEvidence:{score:Number(state.plankRecognition?.lengthScore||0),estimatedFeet:Number(state.plankRecognition?.lengthEstimatedFeet||0),candidateFeet:Number(state.plankRecognition?.lengthCandidateFeet||0),aspectRatio:Number(state.plankRecognition?.primaryLengthEvidence?.aspectRatio||0),aspectBand:String(state.plankRecognition?.primaryLengthEvidence?.aspectBand||''),boundaryDistance:Number(state.plankRecognition?.primaryLengthEvidence?.boundaryDistance||0),longPixels:Number(state.plankRecognition?.primaryLengthEvidence?.longPixels||0),shortPixels:Number(state.plankRecognition?.primaryLengthEvidence?.shortPixels||0)}}:null,styleReferenceData:state.styleReferenceData||'',styleReferenceName:state.styleReferenceName||'',approvedDesignLock:state.approvedDesignLock?{...state.approvedDesignLock,previewData:undefined}:null,approvedArtifactId:state.approvedDesignLock?.artifactId||'',approvedArtifactHash:state.approvedDesignLock?.artifactHash||'',productionContract:activeProjectId==='ikes-wood-signs'?IKE_PRODUCTION_CONTRACT:null,contactPreference:state.contactPreference,customerName:state.customerName,customerPhone:state.customerPhone,customerEmail:state.customerEmail,approved:true,testMode:experienceCtx?experienceCtx.state!=='deployed':false,deploymentId:experienceCtx?.deploymentId||null};
     if(experienceCtx?.state!=='preview'){
+      // Make room before the durable write, but never delete canonical project/order data.
+      relieveSecondaryStoragePressure();repairLocalOrderBackupFootprint();repairProjectDraftFootprint();
+      const persisted=await putOrderWithQuotaRecovery(order);
       backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
-      try{await put(STORE_ORDERS,order);}catch(err){console.warn('IndexedDB save failed; local backup retained',err);}
+      if(persisted?.degraded) window.DarkSkyV4?.diagnostic?.('ike.order.media_degraded','Raw photo copy omitted under quota; immutable approved artifact retained',{orderId:id,artifactHash:order.approvedArtifactHash});
       if(experienceCtx?.state==='sea_trial')await recordExperienceSeaTrialSubmission(activeProject(),id);
     }
     state.currentOrderId=id;
@@ -9917,7 +9967,32 @@
     const status=$('ikeSpeciesPricingStatus');if(status)status.textContent='Species pricing saved. Customer prices will use these rates.';
     logActivity(activeProjectId,'Project Admin updated species pricing',rates.filter(r=>r.enabled&&r.rate>0).map(r=>`${r.name} $${r.rate}/ft`).join(', '));
   }
-  function saveDraft(){if(['welcome','done'].includes(state.current))return;try{localStorage.setItem(projectDraftKey(),JSON.stringify({...state,currentOrder:null,approvedPreviewData:'',approvalCandidateData:'',approvalCandidateHash:'',approvalCandidateLock:null}));}catch(_){}}
+  function compactDraftRecord(source){
+    const d={...(source||{})};
+    d.currentOrder=null;d.approvedPreviewData='';d.approvalCandidateData='';d.approvalCandidateHash='';d.approvalCandidateLock=null;
+    // Never duplicate original/raw media or owner style-reference images in localStorage.
+    // The working photo is already resized; the original and style reference are transient.
+    d.photoOriginalData='';d.styleReferenceData='';
+    return d;
+  }
+  function repairProjectDraftFootprint(){
+    let repaired=0;
+    try{
+      const keys=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(DRAFT_KEY+':'))keys.push(k);}
+      for(const k of keys){
+        try{const raw=localStorage.getItem(k);if(!raw)continue;const d=JSON.parse(raw);const compact=compactDraftRecord(d);const next=JSON.stringify(compact);if(next.length<raw.length){localStorage.setItem(k,next);repaired++;}}catch(_){/* leave unreadable project-scoped data untouched */}
+      }
+    }catch(_){ }
+    return repaired;
+  }
+  function saveDraft(){
+    if(['welcome','done'].includes(state.current))return;
+    try{localStorage.setItem(projectDraftKey(),JSON.stringify(compactDraftRecord(state)));}
+    catch(err){
+      console.warn('Draft mirror under storage pressure; compacting disposable mirrors before one retry.',err);
+      try{relieveSecondaryStoragePressure();repairLocalOrderBackupFootprint();repairProjectDraftFootprint();localStorage.setItem(projectDraftKey(),JSON.stringify(compactDraftRecord(state)));}catch(retryErr){console.warn('Draft mirror skipped; active in-memory design remains intact.',retryErr);}
+    }
+  }
   function clearDraft(){try{localStorage.removeItem(projectDraftKey())}catch(_){}}
   function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(projectDraftKey())||'null');if(d&&currentScreenOrder().includes(d.current)){Object.assign(state,d);return true}}catch(_){}return false}
 
@@ -10604,9 +10679,9 @@ The full order and approved media remain stored with this project.`;
 
   function ikeFontBlueprint(font){
     const key=String(font||'B');
-    if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.985,heightTarget:0.92,widthBoost:1.03,compactWidthTarget:0.993,compactHeightTarget:0.945,opticalYBias:0.01};
-    if(key==='B')return {family:'"Times New Roman", Georgia, serif',weight:'900',style:'normal',spacingEm:-0.035,widthTarget:0.975,heightTarget:0.91,widthBoost:1.015,compactWidthTarget:0.987,compactHeightTarget:0.935,opticalYBias:0};
-    return {family:'Georgia, "Times New Roman", serif',weight:'500',style:'normal',spacingEm:0,widthTarget:0.945,heightTarget:0.80,widthBoost:0.99,compactWidthTarget:0.96,compactHeightTarget:0.84,opticalYBias:0};
+    if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1.00,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01};
+    if(key==='B')return {family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',weight:'900',style:'normal',spacingEm:-0.035,widthTarget:0.88,heightTarget:0.82,widthBoost:1.00,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0};
+    return {family:'Georgia, "Times New Roman", serif',weight:'500',style:'normal',spacingEm:0,widthTarget:0.86,heightTarget:0.78,widthBoost:0.99,compactWidthTarget:0.88,compactHeightTarget:0.82,opticalYBias:0};
   }
 
   function ikeApplyDetectedTextPlacementTo(el){
@@ -13519,7 +13594,7 @@ The full order and approved media remain stored with this project.`;
         await submitOrder(order);
       }catch(err){
         console.error('Place order command failed',err);
-        if($('approvalError')) $('approvalError').textContent=`The order could not be completed: ${String(err?.message||err)}`;
+        if($('approvalError')) $('approvalError').textContent=isQuotaError(err)?'Your exact approved design is still preserved. This iPad needs storage cleanup before the durable order record can be completed. No second order was created; please retry after cleanup.':`The order could not be completed: ${String(err?.message||err)}`;
       }finally{
         btn.disabled=false;
         btn.textContent='PLACE MY ORDER →';

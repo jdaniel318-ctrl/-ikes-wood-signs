@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.2.9",
-  "release": "True Wake",
-  "seal": "truewake-829-release-identity-7f29a1",
+  "build": "8.3.0",
+  "release": "True Cut",
+  "seal": "truecut-830-ike-production-integrity-4b73c2",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "True Wake"
+  "release_name": "True Cut"
 }

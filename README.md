@@ -1,7 +1,19 @@
-# Dark Sky 8.2.9 — True Wake
+# Dark Sky 8.3.0 — True Cut
+
+Focused Ike Production Integrity pass built on the proven 8.2.9 release-identity repair. This release keeps the lean fleet hull and strengthens production truth, immutable design geometry, storage resilience, and order idempotency before Dry Dock Batch 2.
 
 
-## 8.2.9 release identity repair
+## 8.3.0 Ike Production Integrity
+- Adds a safer Ike Fit production inset so visible glyphs scale down before approaching live edges, bark edges, voids, or cutouts.
+- Locks one approved geometry/artifact across Design Review, customer review, final order, owner/admin, and future production outputs.
+- Removes canvas `maxWidth` recompression from locked artifacts so later screens do not silently squeeze approved lettering.
+- Stores the immutable approved artifact as high-quality JPEG instead of photo-heavy PNG to reduce durable storage pressure without changing its design hash contract.
+- Compacts draft/local mirrors and removes redundant raw/original media from localStorage.
+- Adds quota-aware durable-order recovery: compact safe mirrors, retry with reduced raw photo, and only as a last resort omit the redundant raw photo while retaining the exact approved production artifact.
+- Adds order idempotency so repeated taps cannot create a second order for the same locked artifact.
+- Preserves the approved design after a storage failure and replaces raw quota text with a recoverable customer-safe message.
+
+## 8.3.0 release identity repair
 
 - One canonical page identity now drives first light and the atomic loader; the loader no longer carries its own duplicated build/seal literal.
 - If an old HTML shell sees a newer deployment manifest, Dark Sky makes one cache-busted document promotion attempt before showing HOLD. It cannot loop.

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.2.9",
-  "release": "8.2.9",
+  "build": "8.3.0",
+  "release": "8.3.0",
   "generatedAt": "2026-08-26",
   "checks": {
     "build_version": true,
@@ -153,8 +153,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.2.9 True Wake: compact deployment, canonical white-teeth Ike branding, and inherited regression gates preserved.",
-  "candidate": "8.2.9",
+  "note": "8.3.0 True Cut: focused Ike production-integrity pass; 8.2.9 atomic release identity retained, canonical white-teeth Ike branding preserved, geometry/storage/idempotency gates strengthened.",
+  "candidate": "8.3.0",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.2.9';
-const RELEASE_SEAL='truewake-829-release-identity-7f29a1';
+const RELEASE_BUILD='8.3.0';
+const RELEASE_SEAL='truecut-830-ike-production-integrity-4b73c2';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.
