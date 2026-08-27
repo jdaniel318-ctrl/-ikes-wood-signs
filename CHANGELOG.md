@@ -1,4 +1,11 @@
-# 8.4.1 — StyleDock
+# 8.4.2 — GlyphBench
+
+- Added graphic-to-style draft creation.
+- Added full glyph coverage grid and evidence cards per style.
+- Added explicit geometry certification before CX publication.
+- Preserved case exactly as typed and protected existing A/B production anchors.
+
+# 8.4.2 — GlyphBench
 
 - Extensible Style Registry for Style C and beyond.
 - Permanent A/B anchor cards with visible glyph coverage.
@@ -7,7 +14,7 @@
 - Exact wording required for measurable evidence coverage.
 - Preserves TrueCase, Dock Lock, detectors, artifact lock, and order contracts.
 
-# 8.4.1 — StyleDock
+# 8.4.2 — GlyphBench
 
 - Branched from 8.3.5 TrueCase.
 - Protected exact customer case as a no-touch contract.
@@ -16,7 +23,7 @@
 - Added a Style B truth regression gate tied to the existing real-input case gate.
 - Preserved Dock Lock, Style A, detectors, artifact immutability, and order idempotency.
 
-# 8.4.1 — StyleDock
+# 8.4.2 — GlyphBench
 
 ## Fleet Dock Recovery
 - Added a 650 ms bounded canonical-convergence window before Fleet Dock paints the already-loaded vessel roster.
@@ -42,7 +49,7 @@
 - Preserved 8.2.9 True Wake release-identity recovery and the lean active hull discipline.
 
 
-## 8.4.1 — StyleDock
+## 8.4.2 — GlyphBench
 - Added governed Style A / Style B production pack registry.
 - Bundled real RAMJET and SMOKE HOLE! anchor photographs as first-class release evidence.
 - Upgraded Design References into Style Foundry for both Owner and Engine surfaces.

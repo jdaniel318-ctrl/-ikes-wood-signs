@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-admiral-calibration-cases-v1",
-  "build": "8.4.1",
+  "build": "8.4.2",
   "cases": [
     {
       "id": "ike-2ft-cedar-reference",
@@ -24,5 +24,5 @@
     }
   ],
   "name": "Gridwright",
-  "seal": "styledock-841-scalable-registry-7b9d31"
+  "seal": "glyphbench-842-graphic-style-cert-4c2f91"
 }

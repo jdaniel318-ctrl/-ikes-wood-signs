@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.4.1",
-  "release": "StyleDock",
+  "build": "8.4.2",
+  "release": "GlyphBench",
   "generatedAt": "2026-08-26",
   "checks": {
     "build_version": true,
@@ -157,8 +157,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.4.1 StyleDock: bounded Fleet Dock first paint/reconciliation recovery plus Ike face-grid finished-sign proof; True Cut artifact integrity, detector independence, isolation, and authority contracts preserved.",
-  "candidate": "8.4.1",
+  "note": "8.4.2 GlyphBench: bounded Fleet Dock first paint/reconciliation recovery plus Ike face-grid finished-sign proof; True Cut artifact integrity, detector independence, isolation, and authority contracts preserved.",
+  "candidate": "8.4.2",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.4.1",
-  "release": "StyleDock",
+  "build": "8.4.2",
+  "release": "GlyphBench",
   "excluded_sources": [
     "The situation"
   ],

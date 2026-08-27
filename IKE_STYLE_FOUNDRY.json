@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-ike-style-foundry-v2",
-  "build": "8.4.1",
-  "release": "StyleDock",
+  "build": "8.4.2",
+  "release": "GlyphBench",
   "purpose": "Govern an extensible registry of Ike production alphabets from approved real-sign evidence; styles are data-driven and not limited to A/B.",
   "governance": {
     "draft_upload_changes_customer_output": false,

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.4.1';
-const RELEASE_SEAL='styledock-841-scalable-registry-7b9d31';
+const RELEASE_BUILD='8.4.2';
+const RELEASE_SEAL='glyphbench-842-graphic-style-cert-4c2f91';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

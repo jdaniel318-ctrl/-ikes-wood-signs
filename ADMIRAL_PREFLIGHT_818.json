@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-admiral-preflight-v1",
-  "build": "8.4.1",
+  "build": "8.4.2",
   "name": "Ike Fit",
   "checks": [
     {

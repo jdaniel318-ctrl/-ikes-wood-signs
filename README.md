@@ -1,8 +1,24 @@
-# Dark Sky 8.4.1 — StyleDock
+# Dark Sky 8.4.2 — GlyphBench
+
+GlyphBench hardens Ike Style Foundry around scalable evidence, glyph coverage, geometry certification, and safe creation of new production styles from uploaded graphics.
+
+## What changed
+- Adds per-style glyph coverage grids for uppercase, lowercase, numbers, and punctuation.
+- Adds visible evidence cards inside each style pack.
+- Adds a geometry-certification stage between compile and CX publication.
+- Adds Create Style from Graphic: one graphic plus exact visible wording creates a draft style and draft evidence record in one step.
+- Graphic import never claims a full font from one image: only the characters visibly evidenced by the graphic count as proven.
+- New styles remain project-scoped, draft, and hidden from CX until evidence is approved, compiled, geometry-certified, and deliberately published.
+- Preserves TrueCase, Dock Lock, A/B anchors, detector isolation, immutable approved artifacts, and order safeguards.
+
+## Graphic-to-style rule
+A graphic may seed a style pack, but it does not magically prove missing letters. Add further graphics/sign photos to build coverage, approve them, compile, then certify geometry before publishing.
+
+# Dark Sky 8.4.2 — GlyphBench
 
 Narrow geometry release branched from the proven 8.3.5 TrueCase build. Customer wording case is frozen as a protected contract; this pass changes only Style B shape and Ike Fit calibration.
 
-## 8.4.1 StyleDock
+## 8.4.2 GlyphBench
 - Preserves `Smoke Hole!`, `smoke hole!`, and `SMOKE HOLE!` exactly as typed.
 - Keeps the working TrueCase DOM → state → preview round trip untouched.
 - Recalibrates Style B toward the real finished SMOKE HOLE! sign: taller, narrower, tighter spacing, and stronger face occupancy.
@@ -44,5 +60,5 @@ Fleet-structure pass built from the 8.2.5 Reference Library. This release audits
 - Removed customer-facing Ike Fit explanation cards; blank wording renders a blank plank.
 
 
-## 8.4.1 StyleDock
+## 8.4.2 GlyphBench
 Ike lettering is now governed through production style packs. Bundled RAMJET and SMOKE HOLE! finished-sign anchors are release assets. Owner and Engine may upload additional real examples, tag the exact wording shown, approve evidence deliberately, and compile project-scoped glyph coverage. Draft uploads never change customer output. TrueCase remains preserved.

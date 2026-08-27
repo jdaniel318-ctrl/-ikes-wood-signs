@@ -1,6 +1,6 @@
 {
-  "release": "8.4.1",
-  "name": "StyleDock",
+  "release": "8.4.2",
+  "name": "GlyphBench",
   "file_count": 49,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -53,7 +53,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.4.1",
-  "seal": "styledock-841-scalable-registry-7b9d31",
-  "release_name": "StyleDock"
+  "build": "8.4.2",
+  "seal": "glyphbench-842-graphic-style-cert-4c2f91",
+  "release_name": "GlyphBench"
 }
