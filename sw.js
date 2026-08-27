@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.2.4';
-const RELEASE_SEAL='ikefit-824-font-lock-cx-trim-4d81be';
+const RELEASE_BUILD='8.2.5';
+const RELEASE_SEAL='reference-library-825-governed-evidence-7c41a2';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

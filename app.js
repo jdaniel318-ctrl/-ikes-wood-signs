@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.2.4';
+  const BUILD_VERSION='8.2.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.2.4',
+    build:'8.2.5',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -5643,7 +5643,7 @@
       <label>Mode<select id="ptAI"><option value="off">Off</option><option value="assist">Assist</option><option value="automatic">Automatic</option></select></label>
       <label>Minimum confidence<input id="ptConfidence" class="text-input" type="number" min=".5" max=".99" step=".01" value="${Number(p.ai?.minConfidence||.9).toFixed(2)}"></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Require scale reference</strong><small>Recommended for physical measurements.</small></span><input id="ptScale" type="checkbox" ${p.ai?.requireScaleReference!==false?'checked':''}></label>
-      <button id="saveAITab" class="primary-btn small">SAVE AI POLICY</button></div>`;
+      <button id="saveAITab" class="primary-btn small">SAVE AI POLICY</button></div>${p.id==='ikes-wood-signs'?`<div class="pec-card"><div class="pec-title-row"><div><h4>Production Reference Library</h4><p class="helper">Owner and Engine may add evidence. Only approved references become production truth; prior versions remain traceable.</p></div></div>${projectReferenceLibraryMarkup(p,{engine:true})}</div>`:''}`;
     if(tab==='workflow'){const terms=activityTermsForProject(p),workflow=projectWorkflowFor(p),suggested=!Array.isArray(p.workflow)||p.workflow.length<2;return `${projectModuleHero(p,'OPERATE','Workflow',`Define how ${terms.lowerPlural} move through this business from first contact to completion.`, `<span>${escapeHtml(customerRelationshipForProject(p).label.toUpperCase())}</span>`)}<div class="pec-card operating-workflow-card"><div class="pec-title-row"><div><h4>${escapeHtml(terms.singular)} Stages</h4><p class="helper">One stage per line. Dark Sky supplies a reusable starting workflow from the Customer Relationship contract; this project can override it without changing another vessel.</p></div><span class="operating-source-badge ${suggested?'suggested':'custom'}">${suggested?'DARK SKY SUGGESTED':'PROJECT CUSTOM'}</span></div><textarea id="ptWorkflow" rows="8">${escapeHtml(workflow.join('\n'))}</textarea><div class="workflow-action-row"><button id="saveWorkflowTab" class="primary-btn small">SAVE PROJECT WORKFLOW</button>${!suggested?'<button id="resetWorkflowTab" class="secondary-btn small">USE SUGGESTED WORKFLOW</button>':''}</div></div>`;}
     if(tab==='publishing') return `${projectModuleHero(p,'SYSTEM','Publishing','Control whether this business remains private, enters test waters, or is available to customers.',`<span>${escapeHtml(projectLifecycleDisplay(p))}</span>`)}<div class="pec-card"><h4>Project Availability</h4><label>Project status<select id="ptPublish"><option value="development">Development — engine only</option><option value="test">Test</option><option value="live">Published / Live</option><option value="paused">Paused</option></select></label><p class="helper">Product-level publish controls are in Products.</p><button id="savePublishingTab" class="primary-btn small">SAVE PUBLISHING</button></div>`;
     if(tab==='orders'){const terms=activityTermsForProject(p);return `<div class="pec-orders-shell"><div class="pec-orders-heading"><div><small>${escapeHtml(terms.plural.toUpperCase())} COMMAND</small><h4>Project ${escapeHtml(terms.plural)}</h4><p>Current ${escapeHtml(terms.lowerPlural)}, customer contact, request details, and recorded value for this project.</p></div></div><div id="ptOrders">Loading…</div></div>`;}
@@ -5997,7 +5997,7 @@
         await renderProjectTab(p.id,'marketing');
       });
     }
-    if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{if(!requireEngineProjectMutation(p,'ai.policy.update'))return;p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await persistProjectMutation(p,{reason:'ai.policy.update'});logActivity(p.id,'AI policy changed',p.ai.mode);};}
+    if(tab==='ai'){ $('ptAI').value=p.ai?.mode||'off'; $('saveAITab').onclick=async()=>{if(!requireEngineProjectMutation(p,'ai.policy.update'))return;p.ai={mode:$('ptAI').value,minConfidence:Number($('ptConfidence').value)||.9,requireScaleReference:$('ptScale').checked};await persistProjectMutation(p,{reason:'ai.policy.update'});logActivity(p.id,'AI policy changed',p.ai.mode);}; if(p.id==='ikes-wood-signs')bindProjectReferenceLibrary(p,{engine:true,rerender:()=>renderProjectTab(p.id,'ai')});}
     if(tab==='capabilities'){
       $$('#projectCapabilityDeck [data-project-capability]').forEach(cb=>cb.addEventListener('change',()=>cb.closest('.project-capability-option')?.classList.toggle('selected',cb.checked)));
       $('useRecommendedCapabilities')?.addEventListener('click',()=>{
@@ -9512,7 +9512,7 @@
       $$('#ikeLetterSizeChoices [data-ike-size]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeSize===(state.letterSize||'Ike Fit')));
       if($('ikeDesignNextBtn')){const ready=!!(state.wording.trim()&&state.fontChosen);$('ikeDesignNextBtn').disabled=!ready;$('ikeDesignNextBtn').setAttribute('aria-disabled',ready?'false':'true');}
       if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=(r.usableRegion?'Detected lettering zone':(r.usableArea==='safe-margin-preview'?'Basic margin':'Zone pending'));
-      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'Your Sign';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':(state.fill==='White'?' ike-routed-white':'')));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
+      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':(state.fill==='White'?' ike-routed-white':'')));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
       scheduleIkeDetectedTextPlacement();
       if($('ikeStylePrompt'))$('ikeStylePrompt').classList.toggle('hidden',!!state.fontChosen);
       $$('.ike-top-marker').forEach(el=>el.textContent='TOP');
@@ -10395,7 +10395,7 @@ The full order and approved media remain stored with this project.`;
     }
     const obstacleDetected=fill<.86;
 
-    // 8.2.4 IKE FIT: map the live-edge face, then choose one robust shop-style
+    // 8.2.5 IKE FIT: map the live-edge face, then choose one robust shop-style
     // lettering band. The band intentionally uses almost the whole board width.
     // It is based on robust grid quantiles instead of the single smallest vertical
     // intersection, so one knot/notch or the blue BACK stamp cannot shrink the
@@ -10613,8 +10613,9 @@ The full order and approved media remain stored with this project.`;
     const r=state.plankRecognition||{},region=r.fitBand||r.usableRegion,card=el.closest('.preview-card'),img=card?.querySelector('.preview-image');
     if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
     const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
-    const wording=String(state.wording||'Your Sign').trim()||'Your Sign';
-    // 8.2.4 IKE FIT: one shop fit, not a generic size selector. Measure the
+    const wording=String(state.wording||'').trim();
+    if(!wording){el.textContent='';return;}
+    // 8.2.5 IKE FIT: one shop fit, not a generic size selector. Measure the
     // VISIBLE glyphs and deliberately claim the usable face like Ike's finished
     // RAMJET / SMOKE HOLE! signs. Customer intent is the wording + style; the
     // layout engine owns size and optical placement inside the carve-safe band.
@@ -10637,7 +10638,7 @@ The full order and approved media remain stored with this project.`;
     const byHeight=(h*targets.h)/(glyphH/probe);
     let fs=Math.min(byWidth,byHeight)*spec.widthBoost;
     const compactWord=wording.replace(/\s+/g,'').length<=12;
-    // 8.2.4 FONT LOCK: each style stays locked to its approved shop example.
+    // 8.2.5 FONT LOCK: each style stays locked to its approved shop example.
     // The customer can change wording, but the font behavior should not drift away
     // from the canonical RAMJET / SMOKE HOLE! samples shown in the UI.
     if(compactWord){
@@ -12199,6 +12200,92 @@ The full order and approved media remain stored with this project.`;
     return true;
   }
 
+  // 8.2.5 REFERENCE LIBRARY — project-scoped governed production evidence.
+  // Uploads are evidence until deliberately approved. Approved references may guide
+  // CX/OX behavior; superseded references stay attached to historical decisions.
+  function projectReferenceLibrary(p){
+    if(!p)return [];
+    if(!Array.isArray(p.referenceLibrary))p.referenceLibrary=[];
+    return p.referenceLibrary;
+  }
+  function referenceNextVersion(p,style,kind){
+    const rows=projectReferenceLibrary(p).filter(r=>String(r.style||'')===String(style||'')&&String(r.kind||'')===String(kind||''));
+    return rows.reduce((m,r)=>Math.max(m,Number(r.version||0)),0)+1;
+  }
+  function activeProjectReferences(p,{style='',kind=''}={}){
+    return projectReferenceLibrary(p).filter(r=>r.status==='approved'&&(!style||r.style===style)&&(!kind||r.kind===kind)).sort((a,b)=>Number(b.version||0)-Number(a.version||0));
+  }
+  function projectReferenceCardMarkup(r,{engine=false}={}){
+    const status=String(r.status||'draft').toUpperCase();
+    const role=String(r.role||'visual-example').replaceAll('-',' ');
+    return `<article class="project-reference-card ${escapeHtml(r.status||'draft')}">
+      <div class="project-reference-thumb">${r.dataUrl?`<img src="${r.dataUrl}" alt="${escapeHtml(r.title||'Production reference')}">`:'<span>NO IMAGE</span>'}</div>
+      <div class="project-reference-copy"><small>${escapeHtml(status)} • V${Number(r.version||1)}</small><h3>${escapeHtml(r.title||'Untitled reference')}</h3><p>Style ${escapeHtml(r.style||'—')} • ${escapeHtml(role.toUpperCase())}</p><span>${escapeHtml(r.note||'')}</span></div>
+      <div class="project-reference-actions">
+        ${r.status!=='approved'?`<button type="button" class="secondary-btn small" data-reference-action="approve" data-reference-id="${escapeHtml(r.id)}">APPROVE</button>`:''}
+        ${r.status==='approved'?`<button type="button" class="secondary-btn small" data-reference-action="supersede" data-reference-id="${escapeHtml(r.id)}">SUPERSEDE</button>`:''}
+        ${r.status==='draft'?`<button type="button" class="secondary-btn small danger-soft" data-reference-action="remove" data-reference-id="${escapeHtml(r.id)}">REMOVE</button>`:''}
+      </div>
+    </article>`;
+  }
+  function projectReferenceLibraryMarkup(p,{engine=false}={}){
+    const rows=projectReferenceLibrary(p).slice().sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));
+    const activeA=activeProjectReferences(p,{style:'A'})[0],activeB=activeProjectReferences(p,{style:'B'})[0];
+    return `<section class="project-reference-library">
+      <div class="project-reference-rule"><strong>Evidence → approval → production truth</strong><span>Uploads never change customer output automatically. An owner or Engine operator must approve them first.</span></div>
+      <div class="project-reference-active"><span>STYLE A <b>${activeA?`V${Number(activeA.version||1)} ACTIVE`:'NO APPROVED REFERENCE'}</b></span><span>STYLE B <b>${activeB?`V${Number(activeB.version||1)} ACTIVE`:'NO APPROVED REFERENCE'}</b></span></div>
+      <article class="owner-form-card project-reference-upload">
+        <div class="project-reference-upload-grid">
+          <label>Style<select data-reference-style><option value="A">Style A — RAMJET</option><option value="B">Style B — SMOKE HOLE!</option></select></label>
+          <label>Reference type<select data-reference-kind><option value="machine-geometry">Machine Geometry</option><option value="finished-sign">Finished Sign</option><option value="font-specimen">Font / Glyph Specimen</option><option value="blank-finished-pair">Blank → Finished Pair</option><option value="placement">Placement / Face Coverage</option><option value="finish">Finish / Color</option></select></label>
+          <label>Authority role<select data-reference-role><option value="visual-example">Visual Example</option><option value="production-geometry">Production Geometry</option><option value="secondary-evidence">Secondary Evidence</option></select></label>
+          <label>Title<input data-reference-title class="text-input" placeholder="Example: RAMJET production alphabet"></label>
+        </div>
+        <label class="project-reference-file">Upload example image<input data-reference-file type="file" accept="image/*"></label>
+        <label>Notes<input data-reference-note class="text-input" placeholder="What should Dark Sky learn from this example?"></label>
+        <button type="button" class="primary-btn small" data-reference-upload>ADD AS DRAFT REFERENCE</button>
+        <p class="owner-save-status" data-reference-status></p>
+      </article>
+      <div class="project-reference-list">${rows.length?rows.map(r=>projectReferenceCardMarkup(r,{engine})).join(''):'<div class="owner-module-empty"><h3>No references uploaded yet</h3><p>Add real production examples here. Drafts do not affect customer output.</p></div>'}</div>
+    </section>`;
+  }
+  function bindProjectReferenceLibrary(p,{engine=false,rerender}={}){
+    const root=engine?$('projectTabContent'):$('ownerPortalBody');if(!root)return;
+    const upload=root.querySelector('[data-reference-upload]');
+    upload?.addEventListener('click',async()=>{
+      const file=root.querySelector('[data-reference-file]')?.files?.[0];
+      const style=root.querySelector('[data-reference-style]')?.value||'A';
+      const kind=root.querySelector('[data-reference-kind]')?.value||'finished-sign';
+      const role=root.querySelector('[data-reference-role]')?.value||'visual-example';
+      const title=(root.querySelector('[data-reference-title]')?.value||'').trim()||`Style ${style} ${kind.replaceAll('-',' ')}`;
+      const note=(root.querySelector('[data-reference-note]')?.value||'').trim();
+      const status=root.querySelector('[data-reference-status]');
+      if(!file){if(status)status.textContent='Choose an example image first.';return;}
+      if(file.size>12*1024*1024){if(status)status.textContent='Use an image smaller than 12 MB.';return;}
+      if(status)status.textContent='Preparing reference…';
+      let dataUrl='';try{dataUrl=await resizePhoto(file);}catch(_){if(status)status.textContent='That image could not be prepared.';return;}
+      const now=new Date().toISOString(),version=referenceNextVersion(p,style,kind);
+      projectReferenceLibrary(p).push({id:`REF-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,projectId:p.id,style,kind,role,title,note,dataUrl,status:'draft',version,createdAt:now,updatedAt:now,source:engine?'engine':'owner'});
+      await persistProjectMutation(p,{reason:engine?'engine.reference.create':'owner.reference.create'});
+      logActivity(p.id,engine?'Engine added production reference':'Owner added production reference',`${title} • draft v${version}`);
+      if(rerender)await rerender();
+    });
+    root.querySelectorAll('[data-reference-action]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const r=projectReferenceLibrary(p).find(x=>x.id===btn.dataset.referenceId);if(!r)return;
+      const action=btn.dataset.referenceAction,now=new Date().toISOString();
+      if(action==='approve'){
+        // One approved production-geometry reference per style/kind remains current;
+        // prior approved entries are retained as superseded history.
+        if(r.role==='production-geometry'||r.kind==='machine-geometry')projectReferenceLibrary(p).forEach(x=>{if(x.id!==r.id&&x.style===r.style&&x.kind===r.kind&&x.status==='approved'){x.status='superseded';x.supersededAt=now;x.updatedAt=now;}});
+        r.status='approved';r.approvedAt=now;r.approvedBy=engine?'engine':'owner';r.updatedAt=now;
+      }else if(action==='supersede'){r.status='superseded';r.supersededAt=now;r.updatedAt=now;
+      }else if(action==='remove'){p.referenceLibrary=projectReferenceLibrary(p).filter(x=>x.id!==r.id);}
+      await persistProjectMutation(p,{reason:`${engine?'engine':'owner'}.reference.${action}`});
+      logActivity(p.id,`Reference ${action}`,r.title||r.id);
+      if(rerender)await rerender();
+    }));
+  }
+
   function ownerModuleShell(title,subtitle,content){
     return `<section class="owner-module-workspace">
       <header class="owner-module-head">
@@ -12248,6 +12335,8 @@ The full order and approved media remain stored with this project.`;
       body.innerHTML=ownerModuleShell('Products','Add products and choose which products are currently available.',
         `<div class="owner-module-toolbar"><button id="ownerAddProduct" class="primary-btn" type="button">+ ADD PRODUCT</button></div><div class="owner-product-list">${(p.products||[]).map(pr=>`
           <article class="owner-product-row"><div><small>PRODUCT</small><input data-owner-product-name="${escapeHtml(pr.id)}" value="${escapeHtml(pr.name)}"></div><label class="owner-switch"><input data-owner-product-published="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}><span>${pr.published?'AVAILABLE':'HIDDEN'}</span></label><button data-owner-product-save="${escapeHtml(pr.id)}" class="secondary-btn" type="button">SAVE</button></article>`).join('')||'<div class="owner-module-empty"><h3>No products yet</h3><p>Add your first product to begin.</p></div>'}`);
+    } else if(moduleKey==='references'){
+      body.innerHTML=ownerModuleShell('Design References','Teach Dark Sky from real production examples without allowing unapproved uploads to change the customer experience.',projectReferenceLibraryMarkup(p,{engine:false}));
     } else if(moduleKey==='pricing'){
       if(p.id==='ikes-wood-signs'){
         const rates=normalizeIkeSpeciesRates(config.ikeSpeciesRates);
@@ -12430,6 +12519,7 @@ The full order and approved media remain stored with this project.`;
       await persistProjectMutation(p,{reason:'owner.notifications.update'}); logActivity(p.id,'Owner updated notifications',p.notifications.customerConfirmationEmail?'enabled':'disabled');
       if($('ownerNotificationStatus'))$('ownerNotificationStatus').textContent='Notification settings saved.';
     });
+    if(moduleKey==='references')bindProjectReferenceLibrary(p,{engine:false,rerender:()=>renderOwnerModule(p,'references')});
     $('ownerChangePassword')?.addEventListener('click',async()=>{
       if(!requireOwnerProjectMutation(p,'','owner.credential.update'))return;
       const current=$('ownerCurrentPassword')?.value||'',next=$('ownerNewPassword')?.value||'',confirmNext=$('ownerConfirmPassword')?.value||'';
@@ -12483,6 +12573,7 @@ The full order and approved media remain stored with this project.`;
       ['reporting','Reporting','Review business activity'],
       ['notifications','Notifications','Manage customer notifications']
     ].filter(([key])=>caps.has(key));
+    if(p.id==='ikes-wood-signs')modules.push(['references','Design References',`${projectReferenceLibrary(p).filter(r=>r.status==='approved').length} approved production reference${projectReferenceLibrary(p).filter(r=>r.status==='approved').length===1?'':'s'}`]);
     // Features are owner-selectable only inside Black Flag-approved boundaries.
     modules.push(['features','Features','Turn approved project features on or off']);
     modules.push(['settings','Settings','Manage your login and password']);
@@ -13506,7 +13597,7 @@ The full order and approved media remain stored with this project.`;
       if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Checking the full plank with your first photo…';
       try{await analyzeIkeSecondLengthPhoto(file);}catch(err){console.error('Ike second length photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That angle did not give us enough scale evidence. Try one full-plank photo from straight on.';}finally{input.value='';}
     });
-    $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;updateUi();});
+    $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;const p=projectById('ikes-wood-signs'),ref=activeProjectReferences(p,{style:state.font})[0];state.styleReferenceData=ref?.dataUrl||'';state.styleReferenceName=ref?`${ref.title} • v${Number(ref.version||1)}`:'';updateUi();});
     $('ikeFillChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-fill]');if(!b)return;invalidateIkeApprovedDesignLock();state.fill=b.dataset.ikeFill;updateUi();});
     $('ikeCustomColor')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.customColor=e.target.value;state.fill='Other';updateUi();});
     $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));

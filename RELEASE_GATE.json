@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.2.4",
-  "release": "8.2.4",
+  "build": "8.2.5",
+  "release": "8.2.5",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -132,8 +132,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.2.4 Ike Fit: one automatic shop fit uses a robust live-edge face grid, visible-glyph bounds, broad face occupancy, and optical centering; customer size presets are removed.",
-  "candidate": "8.2.4",
+  "note": "8.2.5 Ike Fit: one automatic shop fit uses a robust live-edge face grid, visible-glyph bounds, broad face occupancy, and optical centering; customer size presets are removed.",
+  "candidate": "8.2.5",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

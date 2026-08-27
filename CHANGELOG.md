@@ -1,4 +1,4 @@
-## 8.2.4 — Ike Fit — Font Lock
+## 8.2.5 — Ike Fit — Reference Library
 
 - Set RAMJET as the canonical Style A anchor.
 - Set SMOKE HOLE! as the canonical Style B anchor.
@@ -15,7 +15,15 @@
 - Retained full release, authority, isolation, and Admiral proving contracts from 8.2.1.
 
 
-## 8.2.4 Font Lock
+## 8.2.5 Reference Library
 - Locked customer-facing style examples to canonical samples (A = RAMJET, B = SMOKE HOLE!).
 - Tuned Style A to stay closer to the RAMJET benchmark.
 - Simplified the customer-facing Ike Fit explanation block in the design step.
+
+
+## 8.2.5 Reference Library
+- Added owner + Engine project-scoped production reference uploads.
+- Draft → Approved → Superseded governance and version history.
+- Separates machine geometry from visual examples/secondary evidence.
+- Approved style references are attached to Ike design/order traceability; uploads never auto-change CX.
+- Removed customer-facing Ike Fit explanation cards; blank wording renders a blank plank.
