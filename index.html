@@ -14,10 +14,11 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.2.8 IKE FIT — atomic release seal.
-    const DARK_SKY_EXPECTED_BUILD = '8.2.8';
-    const DARK_SKY_RELEASE_SEAL = 'leankeel-828-compact-regression-9d41c2';
-    window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
+    // Dark Sky 8.2.9 TRUE WAKE — canonical release identity.
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.2.9',seal:'truewake-829-release-identity-7f29a1'});
+    const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
+    const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
+    window.__darkSkyExpectedRelease = DARK_SKY_RELEASE;
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
     // Dark Sky 8.2.8 IKE FIT — explicit authority route wins before any persisted marker.
@@ -1574,7 +1575,9 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.2.8', SEAL='leankeel-828-compact-regression-9d41c2';
+    // Derive from first-light identity; never maintain a second release literal here.
+    const RELEASE=window.__darkSkyExpectedRelease||{};
+    const EXPECTED=String(RELEASE.build||'unknown'), SEAL=String(RELEASE.seal||'unknown');
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
@@ -1591,6 +1594,28 @@
     }
     async function fetchText(path){return (await fetchResponse(path)).text();}
     async function fetchJson(path){return JSON.parse(await fetchText(path));}
+    function releaseDocumentUrl(build,seal){
+      const u=new URL(location.href);
+      u.searchParams.set('_darkSkyRelease',String(build||'unknown'));
+      u.searchParams.set('_darkSkySeal',String(seal||'unknown'));
+      u.searchParams.set('_darkSkyReload',Date.now().toString());
+      return u.toString();
+    }
+    function promoteStaleDocumentOnce(manifest){
+      const manifestBuild=String(manifest?.build||manifest?.version||'unknown');
+      const manifestSeal=String(manifest?.release_seal||manifest?.seal||'unknown');
+      if(manifestBuild===EXPECTED && manifestSeal===SEAL)return false;
+      const key=`darkSkyDocumentPromotion:${EXPECTED}:${SEAL}->${manifestBuild}:${manifestSeal}`;
+      try{
+        if(sessionStorage.getItem(key)==='attempted')return false;
+        sessionStorage.setItem(key,'attempted');
+      }catch(_){ }
+      if(manifestBuild==='unknown'||manifestSeal==='unknown')return false;
+      // A fresh manifest beside an older HTML shell can occur during CDN/browser handoff.
+      // Navigate once with release identity in the URL so the document itself is revalidated.
+      location.replace(releaseDocumentUrl(manifestBuild,manifestSeal));
+      return true;
+    }
     function renderHold(title,reason,details={}){
       window.__darkSkyReleaseGateState='hold';
       document.documentElement.classList.add('dark-sky-route-preflight');
@@ -1636,7 +1661,7 @@
         step('Clearing Dark Sky application caches');
         if('caches' in window){for(const key of await caches.keys())if(APP_CACHE.test(key))await caches.delete(key);}
         step('Application caches cleared','done');
-        step('Verifying complete 8.2.8 runtime snapshot');
+        step(`Verifying complete ${EXPECTED} runtime snapshot`);
         await verifySnapshot(true);
         step('Complete runtime snapshot verified','done');
         step('Installing identity-only release sentinel');
@@ -1705,8 +1730,11 @@
     async function verifySnapshot(forRecovery=false){
       const [manifest,sealDoc,inventory]=await Promise.all([fetchJson('DEPLOYMENT_MANIFEST.json'),fetchJson('RELEASE_SEAL.json'),fetchJson('RELEASE_INVENTORY.json')]);
       const manifestBuild=String(manifest?.build||manifest?.version||'unknown');
-      if(manifestBuild!==EXPECTED)throw Object.assign(new Error(`Manifest build ${manifestBuild} does not match ${EXPECTED}.`),{manifestBuild});
-      if(String(manifest?.release_seal||'')!==SEAL)throw Object.assign(new Error('Manifest release seal does not match this page.'),{manifestBuild});
+      const manifestSeal=String(manifest?.release_seal||manifest?.seal||'unknown');
+      if(manifestBuild!==EXPECTED||manifestSeal!==SEAL){
+        if(promoteStaleDocumentOnce(manifest))return new Promise(()=>{});
+        throw Object.assign(new Error(`Document release ${EXPECTED} / ${SEAL} does not match deployment ${manifestBuild} / ${manifestSeal}.`),{manifestBuild});
+      }
       if(String(sealDoc?.build||'')!==EXPECTED||String(sealDoc?.seal||'')!==SEAL)throw Object.assign(new Error('RELEASE_SEAL.json does not match this page.'),{manifestBuild});
       if(String(inventory?.build||'')!==EXPECTED||String(inventory?.seal||'')!==SEAL)throw Object.assign(new Error('RELEASE_INVENTORY.json does not match this page.'),{manifestBuild});
       const fetched={};

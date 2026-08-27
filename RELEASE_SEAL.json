@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.2.8",
-  "release": "Lean Keel",
-  "seal": "leankeel-828-compact-regression-9d41c2",
+  "build": "8.2.9",
+  "release": "True Wake",
+  "seal": "truewake-829-release-identity-7f29a1",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Lean Keel"
+  "release_name": "True Wake"
 }

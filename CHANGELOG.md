@@ -1,3 +1,11 @@
+# 8.2.9 — True Wake
+
+- Repaired release recovery after a stale 8.2.4 HTML shell detected the current 8.2.8 manifest.
+- Removed duplicated release identity literals inside `index.html`; the atomic loader derives from the first-light canonical identity.
+- Added one-shot cache-busted document promotion when deployment manifest identity differs from the loaded HTML shell.
+- Updated release worker, manifest, and seal to 8.2.9 / `truewake-829-release-identity-7f29a1`.
+- Added release checks that fail on duplicate/stale runtime identity or build/seal disagreement.
+
 ## 8.2.8 — Lean Keel
 - Added a fleet-wide regression library distilled from relevant Dark Sky project history.
 - Added explicit source isolation: **The situation** is excluded from fleet requirements and learning unless Captain-authorized.

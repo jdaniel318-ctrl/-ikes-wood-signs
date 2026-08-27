@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.2.8",
+  "build": "8.2.9",
   "release": "Lean Keel",
   "excluded_sources": [
     "The situation"

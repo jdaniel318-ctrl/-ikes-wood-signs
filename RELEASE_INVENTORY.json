@@ -1,6 +1,6 @@
 {
-  "release": "8.2.8",
-  "name": "Lean Keel",
+  "release": "8.2.9",
+  "name": "True Wake",
   "file_count": 45,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -9,6 +9,7 @@
     "ADMIRAL_RELEASE_DOCTRINE.json",
     "BUILD_AUDIT_818.json",
     "CHANGELOG.md",
+    "CHECKSUMS.sha256",
     "DEPLOYMENT_MANIFEST.json",
     "FLEET_LEARNING_RECOMMENDATIONS_814.json",
     "FLEET_LEARNING_REGISTRY.json",
@@ -24,6 +25,7 @@
     "RELEASE_DISCIPLINE_827.md",
     "RELEASE_GATE.json",
     "RELEASE_HARDENING_COMPENDIUM.md",
+    "RELEASE_INVENTORY.json",
     "RELEASE_SEAL.json",
     "admirals_deck_ceremonial_v640.png",
     "app.js",
@@ -45,8 +47,8 @@
     "platform_v4.js",
     "signal_restoration_logo.png",
     "styles.css",
-    "sw.js",
-    "RELEASE_INVENTORY.json",
-    "CHECKSUMS.sha256"
-  ]
+    "sw.js"
+  ],
+  "build": "8.2.9",
+  "seal": "truewake-829-release-identity-7f29a1"
 }

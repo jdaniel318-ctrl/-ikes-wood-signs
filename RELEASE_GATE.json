@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.2.8",
-  "release": "8.2.8",
+  "build": "8.2.9",
+  "release": "8.2.9",
   "generatedAt": "2026-08-26",
   "checks": {
     "build_version": true,
@@ -153,8 +153,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.2.8 Lean Keel: compact deployment, canonical white-teeth Ike branding, and inherited regression gates preserved.",
-  "candidate": "8.2.8",
+  "note": "8.2.9 True Wake: compact deployment, canonical white-teeth Ike branding, and inherited regression gates preserved.",
+  "candidate": "8.2.9",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -172,5 +172,23 @@
     "ikes_full_face_optical_placement": true,
     "relevant_project_history_as_regression_evidence": true,
     "the_situation_not_fleet_evidence": true
+  },
+  "release_identity_repair": {
+    "status": "PASS",
+    "canonical_page_identity": "required",
+    "atomic_loader_derives_from_page_identity": true,
+    "stale_document_promotion": "one-shot-cache-busted-navigation-before-hold",
+    "manifest_seal_worker_runtime_agreement": "required"
+  },
+  "true_wake_identity_audit": {
+    "page_canonical_identity": true,
+    "loader_derives_identity": true,
+    "one_shot_document_promotion": true,
+    "app_build": true,
+    "worker_build_seal": true,
+    "manifest_build_seal": true,
+    "seal_document": true,
+    "inventory": true,
+    "webmanifest": true
   }
 }

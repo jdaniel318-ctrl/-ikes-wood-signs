@@ -1,0 +1,32 @@
+{
+  "schema": "dark-sky-admiral-preflight-v1",
+  "build": "8.2.3",
+  "name": "Ike Fit",
+  "checks": [
+    {
+      "id": "ike-face-grid-fit",
+      "ok": true,
+      "detail": "Live-edge segmentation retains a 14-column carve-safe face grid and selects a width-biased corridor for real sign composition."
+    },
+    {
+      "id": "finished-sign-grounding",
+      "ok": true,
+      "detail": "RAMJET and SMOKE HOLE! physical examples remain the proof source for Ike-specific occupancy and placement."
+    },
+    {
+      "id": "style-a-broad-block",
+      "ok": true,
+      "detail": "Style A uses a broad heavy block face rather than condensed Impact geometry."
+    },
+    {
+      "id": "order-boundary",
+      "ok": true,
+      "detail": "Canonical order serialization and exact approved artifact continuity remain protected."
+    },
+    {
+      "id": "manual-promotion",
+      "ok": true,
+      "detail": "Known Good promotion remains deliberate."
+    }
+  ]
+}

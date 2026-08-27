@@ -1,11 +1,19 @@
-# Dark Sky 8.2.8 — Lean Keel
+# Dark Sky 8.2.9 — True Wake
+
+
+## 8.2.9 release identity repair
+
+- One canonical page identity now drives first light and the atomic loader; the loader no longer carries its own duplicated build/seal literal.
+- If an old HTML shell sees a newer deployment manifest, Dark Sky makes one cache-busted document promotion attempt before showing HOLD. It cannot loop.
+- Service-worker identity, deployment manifest, release seal, and page identity remain required to agree before Engine paint.
+- This repair changes application runtime state only; project/order data is never cleared by release recovery.
 
 Regression-memory pass built on 8.2.6 Foundry Foundation. This release turns the fleet's accumulated project lessons into explicit release gates and keeps the separate project **The situation** outside Dark Sky evidence unless the Captain explicitly authorizes a future transfer.
 
 ## 8.2.8 changes
 - Adds `FLEET_REGRESSION_LIBRARY.md` as the standing cross-project regression reference for relevant fleet work.
 - Adds machine-readable `FLEET_REGRESSION_GATES.json`.
-- Adds `RELEASE_DISCIPLINE_828.md` with BLOCK / HOLD / PASS semantics and inherited-contract rules.
+- Adds `RELEASE_DISCIPLINE_827.md` with BLOCK / HOLD / PASS semantics and inherited-contract rules.
 - Extends the release gate to require project-history regression discipline, explicit exclusion boundaries, mobile/navigation/customer-surface checks, production truth, service-contract isolation and final package verification.
 - Preserves the 8.2.6 Foundry foundation; this is a hardening pass, not a feature multiplication pass.
 
