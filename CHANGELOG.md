@@ -1,19 +1,33 @@
-# 8.3.4 — HarborExit
+# 8.3.5 — TrueCase
 
-## 8.3.2 — SmokeTruth (superseded)
-- Forced Style B lowercase to uppercase; sea trial proved this was the wrong CX contract.
-- Added a tall/narrow transform, but compensating font-size math made the rendered Style B too heavy/wide on iPad.
-- Preserved Dock Lock and artifact continuity; those contracts remain carried forward.
+## Ike Customer Case Recovery
+- Branched directly from 8.3.1 Dock Lock rather than stacking the failed case patches.
+- Disabled browser autocapitalization/autocorrection on the real Ike wording field.
+- Added an exact-case input ownership guard and explicit no-uppercase CSS contract.
+- Added a real DOM → state → preview regression test for mixed, lower, and upper case.
+- Preserved Dock Lock and intentionally deferred Style B geometry changes.
 
-## 8.3.4 — HarborExit correction
-- Reversed the 8.3.2 uppercase-only regression: Ike now preserves customer-entered uppercase and lowercase exactly.
-- Style B accepts the approved mixed-case customer alphabet and blocks unsupported glyphs without silent substitution.
-- Rebalanced Style B toward the tall/narrow SMOKE HOLE! silhouette without the horizontal compensation that made 8.3.2 too heavy and wide.
-- Added an automated HarborExit regression gate for uppercase, lowercase, mixed case, unsupported punctuation, and immutable-artifact continuity.
-- Preserved 8.3.1 Dock Lock, Style A behavior, orientation/species detectors, order idempotency, and approved-artifact locking.
+# 8.3.5 — TrueCase
 
-## 8.3.4 — HarborExit iPad case-input correction
-- Fixed the actual iPad wording control: removed `autocapitalize="characters"`, which was still forcing uppercase even though the case-preservation helper passed.
-- Added a CSS production-intent guard (`text-transform:none`) on Ike's wording input.
-- Strengthened the Proving Ground gate to inspect the real `#ikeWordingInput` control, not just the helper function, so this exact regression cannot falsely pass again.
-- Preserves Dock Lock, Style A, Style B tall/narrow calibration, protected detectors, duplicate-order protection, and immutable approved-artifact continuity.
+## Fleet Dock Recovery
+- Added a 650 ms bounded canonical-convergence window before Fleet Dock paints the already-loaded vessel roster.
+- Canonical reconciliation continues in the background and refreshes the Dock without blocking Customer / Owner / Captain navigation.
+- Search and filter changes use the current roster directly instead of restarting registry convergence.
+- Added a Proving Ground regression gate for bounded Fleet Dock first paint.
+
+## Ike Face-Grid Proof
+- Restored the customer-visible finished-sign proof note anchoring Style A to RAMJET and Style B to SMOKE HOLE!.
+- Preserved robust live-edge face-grid placement, visible-glyph measurement, single Ike Fit sizing, immutable artifact reuse, detector independence, and the existing length WATCH.
+
+# 8.3.0 — True Cut
+
+## Ike Production Integrity
+- Tightened Ike Fit safety margins so routed glyphs stay inside the detected usable plank face.
+- Preserved the exact approved geometry/artifact across all later customer and owner surfaces.
+- Removed locked-artifact width recompression that could make review/final geometry differ from the design step.
+- Changed approved visual artifacts to compact high-quality JPEG output to reduce storage load.
+- Hardened draft/order storage against Safari quota pressure without deleting canonical project/order records.
+- Added quota-aware IndexedDB retry with redundant-photo degradation only after the immutable approved artifact is secured.
+- Added submit idempotency to prevent duplicate orders from repeated taps/retries.
+- Kept white-teeth Ike as the canonical branding asset.
+- Preserved 8.2.9 True Wake release-identity recovery and the lean active hull discipline.

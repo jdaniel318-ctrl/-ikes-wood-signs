@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.3.4",
-  "release": "8.3.4",
+  "build": "8.3.5",
+  "release": "8.3.5",
   "generatedAt": "2026-08-26",
   "checks": {
     "build_version": true,
@@ -151,15 +151,14 @@
     "fleet_dock_bounded_first_paint": true,
     "fleet_dock_background_reconciliation": true,
     "ikes_finished_sign_proof_note": true,
-    "ike_style_b_smoke_truth": true,
-    "fleet_dock_bounded_paint": true
+    "ikes_true_case_real_input_roundtrip": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.3.4 HarborExit: bounded Fleet Dock first paint/reconciliation recovery plus Ike face-grid finished-sign proof; True Cut artifact integrity, detector independence, isolation, and authority contracts preserved.",
-  "candidate": "8.3.4",
+  "note": "8.3.5 TrueCase: bounded Fleet Dock first paint/reconciliation recovery plus Ike face-grid finished-sign proof; True Cut artifact integrity, detector independence, isolation, and authority contracts preserved.",
+  "candidate": "8.3.5",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

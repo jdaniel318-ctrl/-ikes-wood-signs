@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.3.4 \u2014 HarborExit",
-  "short_name": "Dark Sky 8.3.4",
-  "start_url": "./index.html?_darkSkyRelease=8.3.4&_darkSkySeal=harborexit-834-case-input-7f2d91",
+  "name": "Dark Sky 8.3.5 \u2014 TrueCase",
+  "short_name": "Dark Sky 8.3.5",
+  "start_url": "./index.html?_darkSkyRelease=8.3.5&_darkSkySeal=truecase-835-real-input-roundtrip-b8e4a2",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.3.4"
+  "version": "8.3.5"
 }
