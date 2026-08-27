@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.3.6",
-  "release": "StyleBTruth",
+  "build": "8.4.0",
+  "release": "StyleFoundry",
   "excluded_sources": [
     "The situation"
   ],

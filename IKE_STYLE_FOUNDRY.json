@@ -1,0 +1,45 @@
+{
+  "schema": "dark-sky-ike-style-foundry-v1",
+  "build": "8.4.0",
+  "release": "StyleFoundry",
+  "purpose": "Govern Ike production alphabets from real approved sign evidence rather than loose browser-font approximations.",
+  "governance": {
+    "draft_upload_changes_customer_output": false,
+    "approval_required": true,
+    "compile_required_after_approval": true,
+    "owner_may_upload": true,
+    "engine_may_upload": true,
+    "superseded_evidence_retained": true,
+    "customer_case_preserved": true,
+    "unsupported_style_c_fallback": false
+  },
+  "packs": {
+    "A": {
+      "name": "RAMJET",
+      "anchor": "ike_style_a_ramjet_reference.jpg",
+      "anchor_text": "RAMJET",
+      "status": "production-anchor",
+      "certified_from_anchor": "AEJMRT",
+      "case_state": "mixed-case companion provisional until approved lowercase examples expand coverage"
+    },
+    "B": {
+      "name": "SMOKE HOLE!",
+      "anchor": "ike_style_b_smoke_hole_reference.jpg",
+      "anchor_text": "SMOKE HOLE!",
+      "status": "production-anchor",
+      "certified_from_anchor": "!EHKLMOST",
+      "case_state": "mixed-case companion provisional until approved lowercase examples expand coverage"
+    }
+  },
+  "workflow": [
+    "upload real example",
+    "tag exact wording and style",
+    "save as draft",
+    "approve evidence",
+    "compile style packs",
+    "review coverage",
+    "sea-trial customer preview",
+    "promote only after Captain acceptance"
+  ],
+  "file_budget_note": "Release remains comfortably below the 75-file working ceiling; additional approved examples can be added deliberately."
+}

@@ -14,8 +14,8 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.3.6 TRUECASE — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.3.6',seal:'stylebtruth-836-case-locked-b7c19e'});
+    // Dark Sky 8.4.0 STYLE FOUNDRY — canonical release identity.
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.4.0',seal:'stylefoundry-840-production-packs-4f8c2a'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     window.__darkSkyExpectedRelease = DARK_SKY_RELEASE;
@@ -1584,8 +1584,8 @@
     const APP_SCOPE=new URL('./',location.href).href;
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
-    const snapshotPaths=['styles.css','platform_core.js','platform_v4.js','platform_identity.js','app.js','captain.js'];
-    const presencePaths=['owner.html','manifest.webmanifest','DEPLOYMENT_MANIFEST.json','RELEASE_SEAL.json','RELEASE_INVENTORY.json','sw.js'];
+    const snapshotPaths=['styles.css','platform_core.js','platform_v4.js','platform_identity.js','ike_style_registry.js','app.js','captain.js'];
+    const presencePaths=['owner.html','manifest.webmanifest','DEPLOYMENT_MANIFEST.json','RELEASE_SEAL.json','RELEASE_INVENTORY.json','IKE_STYLE_FOUNDRY.json','sw.js'];
     const assetPaths=[]; // Root Keel: visual/route assets never block Engine boot; route surfaces verify/fallback when opened.
     function releaseUrl(path){const u=new URL(path,location.href);u.searchParams.set('releaseSeal',SEAL);u.searchParams.set('_ds',Date.now().toString());return u.toString();}
     async function fetchResponse(path){
@@ -1751,7 +1751,7 @@
     }
     async function executeVerifiedSnapshot(fetched){
       const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['styles.css'];document.head.appendChild(css);
-      for(const path of ['platform_core.js','platform_v4.js','platform_identity.js','app.js','captain.js']){
+      for(const path of ['platform_core.js','platform_v4.js','platform_identity.js','ike_style_registry.js','app.js','captain.js']){
         await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);resolve();};el.onerror=()=>{URL.revokeObjectURL(url);reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
     }

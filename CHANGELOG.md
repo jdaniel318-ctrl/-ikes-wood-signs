@@ -1,4 +1,4 @@
-# 8.3.6 — StyleBTruth
+# 8.4.0 — StyleFoundry
 
 - Branched from 8.3.5 TrueCase.
 - Protected exact customer case as a no-touch contract.
@@ -7,7 +7,7 @@
 - Added a Style B truth regression gate tied to the existing real-input case gate.
 - Preserved Dock Lock, Style A, detectors, artifact immutability, and order idempotency.
 
-# 8.3.6 — StyleBTruth
+# 8.4.0 — StyleFoundry
 
 ## Fleet Dock Recovery
 - Added a 650 ms bounded canonical-convergence window before Fleet Dock paints the already-loaded vessel roster.
@@ -31,3 +31,13 @@
 - Added submit idempotency to prevent duplicate orders from repeated taps/retries.
 - Kept white-teeth Ike as the canonical branding asset.
 - Preserved 8.2.9 True Wake release-identity recovery and the lean active hull discipline.
+
+
+## 8.4.0 — StyleFoundry
+- Added governed Style A / Style B production pack registry.
+- Bundled real RAMJET and SMOKE HOLE! anchor photographs as first-class release evidence.
+- Upgraded Design References into Style Foundry for both Owner and Engine surfaces.
+- Added exact-wording tagging, explicit draft → approve → compile workflow, and glyph-evidence coverage.
+- Preserved mixed/lower/upper customer case exactly as typed.
+- Preserved Dock Lock, detector isolation, duplicate-order protection, and immutable approved artifacts.
+- Added Proving Ground gate for the Style Foundry governance contract.

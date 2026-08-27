@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.3.6",
-  "release": "StyleBTruth",
-  "seal": "stylebtruth-836-case-locked-b7c19e",
+  "build": "8.4.0",
+  "release": "StyleFoundry",
+  "seal": "stylefoundry-840-production-packs-4f8c2a",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "StyleBTruth"
+  "release_name": "StyleFoundry"
 }

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.3.6';
-const RELEASE_SEAL='stylebtruth-836-case-locked-b7c19e';
+const RELEASE_BUILD='8.4.0';
+const RELEASE_SEAL='stylefoundry-840-production-packs-4f8c2a';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

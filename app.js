@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.3.6';
+  const BUILD_VERSION='8.4.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.3.6',
+    build:'8.4.0',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4367,6 +4367,8 @@
       && String(ikeApplyDetectedTextPlacementTo).includes("state.font==='B'?'.88':'.94'")
       && trueCaseContract;
     add('ike-style-b-truth','Ike Style B finished-sign geometry',styleBTruthContract?'pass':'fail',styleBTruthContract?'Style B keeps the proven exact-case input path while applying a tall, narrow SMOKE HOLE!-anchored measurement and visual envelope inside Ike Fit.':'Style B geometry drifted from the tall/narrow finished-sign contract or disturbed the proven TrueCase path.');
+    const styleFoundryContract=!!window.IkeStyleFoundry?.pack?.('A')&&!!window.IkeStyleFoundry?.pack?.('B')&&String(projectReferenceLibraryMarkup).includes('data-style-foundry-compile')&&String(compileIkeStyleFoundry).includes('approvedExampleCount');
+    add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'Style A/B are governed packs with bundled real-sign anchors, owner/Engine evidence intake, explicit approval, coverage tracking, and deliberate compile.':'Style Foundry registry, evidence governance, or compile contract is incomplete.');
 
     const faceGridContract=String(ikeAnalyzePlankPixelsProven).includes('ike-fit-robust-face-grid')&&String(ikeApplyDetectedTextPlacementTo).includes('r.fitBand||r.usableRegion')&&String(ikeApplyDetectedTextPlacementTo).includes('actualBoundingBox')&&!!document.querySelector('.ike-style-proof-note')&&!document.querySelector('label[for=\"ikeStyleReferenceInput\"]');
     add('ike-face-grid-fit','Ike face-grid fit contract',faceGridContract?'pass':'fail',faceGridContract?'Live-edge face grid, visible-glyph measurement, finished-sign proof, and single automatic Ike Fit are installed.':'Ike Fit face-grid placement or finished-sign calibration contract is incomplete.');
@@ -4413,7 +4415,7 @@
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
-      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
+      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
@@ -5689,7 +5691,7 @@
       <label>Mode<select id="ptAI"><option value="off">Off</option><option value="assist">Assist</option><option value="automatic">Automatic</option></select></label>
       <label>Minimum confidence<input id="ptConfidence" class="text-input" type="number" min=".5" max=".99" step=".01" value="${Number(p.ai?.minConfidence||.9).toFixed(2)}"></label>
       <label class="admin-toggle-row compact-toggle"><span><strong>Require scale reference</strong><small>Recommended for physical measurements.</small></span><input id="ptScale" type="checkbox" ${p.ai?.requireScaleReference!==false?'checked':''}></label>
-      <button id="saveAITab" class="primary-btn small">SAVE AI POLICY</button></div>${p.id==='ikes-wood-signs'?`<div class="pec-card"><div class="pec-title-row"><div><h4>Production Reference Library</h4><p class="helper">Owner and Engine may add evidence. Only approved references become production truth; prior versions remain traceable.</p></div></div>${projectReferenceLibraryMarkup(p,{engine:true})}</div>`:''}`;
+      <button id="saveAITab" class="primary-btn small">SAVE AI POLICY</button></div>${p.id==='ikes-wood-signs'?`<div class="pec-card"><div class="pec-title-row"><div><h4>Ike Style Foundry</h4><p class="helper">Owner and Engine may add real production examples. Approved evidence compiles into governed style packs; drafts never change customer output.</p></div></div>${projectReferenceLibraryMarkup(p,{engine:true})}</div>`:''}`;
     if(tab==='workflow'){const terms=activityTermsForProject(p),workflow=projectWorkflowFor(p),suggested=!Array.isArray(p.workflow)||p.workflow.length<2;return `${projectModuleHero(p,'OPERATE','Workflow',`Define how ${terms.lowerPlural} move through this business from first contact to completion.`, `<span>${escapeHtml(customerRelationshipForProject(p).label.toUpperCase())}</span>`)}<div class="pec-card operating-workflow-card"><div class="pec-title-row"><div><h4>${escapeHtml(terms.singular)} Stages</h4><p class="helper">One stage per line. Dark Sky supplies a reusable starting workflow from the Customer Relationship contract; this project can override it without changing another vessel.</p></div><span class="operating-source-badge ${suggested?'suggested':'custom'}">${suggested?'DARK SKY SUGGESTED':'PROJECT CUSTOM'}</span></div><textarea id="ptWorkflow" rows="8">${escapeHtml(workflow.join('\n'))}</textarea><div class="workflow-action-row"><button id="saveWorkflowTab" class="primary-btn small">SAVE PROJECT WORKFLOW</button>${!suggested?'<button id="resetWorkflowTab" class="secondary-btn small">USE SUGGESTED WORKFLOW</button>':''}</div></div>`;}
     if(tab==='publishing') return `${projectModuleHero(p,'SYSTEM','Publishing','Control whether this business remains private, enters test waters, or is available to customers.',`<span>${escapeHtml(projectLifecycleDisplay(p))}</span>`)}<div class="pec-card"><h4>Project Availability</h4><label>Project status<select id="ptPublish"><option value="development">Development — engine only</option><option value="test">Test</option><option value="live">Published / Live</option><option value="paused">Paused</option></select></label><p class="helper">Product-level publish controls are in Products.</p><button id="savePublishingTab" class="primary-btn small">SAVE PUBLISHING</button></div>`;
     if(tab==='orders'){const terms=activityTermsForProject(p);return `<div class="pec-orders-shell"><div class="pec-orders-heading"><div><small>${escapeHtml(terms.plural.toUpperCase())} COMMAND</small><h4>Project ${escapeHtml(terms.plural)}</h4><p>Current ${escapeHtml(terms.lowerPlural)}, customer contact, request details, and recorded value for this project.</p></div></div><div id="ptOrders">Loading…</div></div>`;}
@@ -10725,13 +10727,13 @@ The full order and approved media remain stored with this project.`;
 
   function ikeFontBlueprint(font){
     const key=String(font||'B');
-    if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1.00,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01,metricWidthScale:1,metricHeightScale:1,visualScaleX:1,visualScaleY:1};
-    // 8.3.6 STYLE B TRUTH: preserve the proven TrueCase wording path and tune only
-    // the shop-style geometry. The finished SMOKE HOLE! reference is tall and
-    // narrow, so Ike Fit measures the effective condensed ink envelope and then
-    // fills more of the safe face vertically without changing customer letter case.
-    if(key==='B')return {family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',weight:'900',style:'normal',spacingEm:-0.045,widthTarget:0.93,heightTarget:0.88,widthBoost:1.00,compactWidthTarget:0.94,compactHeightTarget:0.90,opticalYBias:0,metricWidthScale:0.72,metricHeightScale:1.10,visualScaleX:0.72,visualScaleY:1.10};
-    return {family:'Georgia, "Times New Roman", serif',weight:'500',style:'normal',spacingEm:0,widthTarget:0.86,heightTarget:0.78,widthBoost:0.99,compactWidthTarget:0.88,compactHeightTarget:0.82,opticalYBias:0,metricWidthScale:1,metricHeightScale:1,visualScaleX:1,visualScaleY:1};
+    const governed=window.IkeStyleFoundry?.pack?.(key);
+    if(governed?.metrics)return {...governed.metrics,stylePackId:governed.id,stylePackName:governed.name,stylePackStatus:governed.status};
+    // Safe compatibility fallback. Style Foundry is a required runtime in 8.4.0,
+    // so reaching this path is evidence for diagnostics rather than a new style.
+    if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01,metricWidthScale:1,metricHeightScale:1,visualScaleX:1,visualScaleY:1,stylePackId:'A',stylePackStatus:'fallback'};
+    if(key==='B')return {family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',weight:'900',style:'normal',spacingEm:-0.045,widthTarget:0.93,heightTarget:0.88,widthBoost:1,compactWidthTarget:0.94,compactHeightTarget:0.90,opticalYBias:0,metricWidthScale:0.72,metricHeightScale:1.10,visualScaleX:0.72,visualScaleY:1.10,stylePackId:'B',stylePackStatus:'fallback'};
+    return {family:'Georgia, "Times New Roman", serif',weight:'500',style:'normal',spacingEm:0,widthTarget:0.86,heightTarget:0.78,widthBoost:0.99,compactWidthTarget:0.88,compactHeightTarget:0.82,opticalYBias:0,metricWidthScale:1,metricHeightScale:1,visualScaleX:1,visualScaleY:1,stylePackStatus:'unsupported'};
   }
 
   function ikeApplyDetectedTextPlacementTo(el){
@@ -12302,10 +12304,11 @@ The full order and approved media remain stored with this project.`;
         thankYouHeadline:value.thankYouHeadline||`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,
         prices:Array.isArray(value.prices)&&value.prices.length?value.prices:(Array.isArray(defaults.prices)?defaults.prices:[0]),
         orderStatuses:Array.isArray(value.orderStatuses)&&value.orderStatuses.length?value.orderStatuses:(Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow]),
-        ikeSpeciesRates:normalizeIkeSpeciesRates(value.ikeSpeciesRates)
+        ikeSpeciesRates:normalizeIkeSpeciesRates(value.ikeSpeciesRates),
+        ikeStyleFoundry:value.ikeStyleFoundry||null
       };
     }catch(_){
-      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow],ikeSpeciesRates:normalizeIkeSpeciesRates([])};
+      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow],ikeSpeciesRates:normalizeIkeSpeciesRates([]),ikeStyleFoundry:null};
     }
   }
 
@@ -12345,7 +12348,7 @@ The full order and approved media remain stored with this project.`;
     const role=String(r.role||'visual-example').replaceAll('-',' ');
     return `<article class="project-reference-card ${escapeHtml(r.status||'draft')}">
       <div class="project-reference-thumb">${r.dataUrl?`<img src="${r.dataUrl}" alt="${escapeHtml(r.title||'Production reference')}">`:'<span>NO IMAGE</span>'}</div>
-      <div class="project-reference-copy"><small>${escapeHtml(status)} • V${Number(r.version||1)}</small><h3>${escapeHtml(r.title||'Untitled reference')}</h3><p>Style ${escapeHtml(r.style||'—')} • ${escapeHtml(role.toUpperCase())}</p><span>${escapeHtml(r.note||'')}</span></div>
+      <div class="project-reference-copy"><small>${escapeHtml(status)} • V${Number(r.version||1)}</small><h3>${escapeHtml(r.title||'Untitled reference')}</h3><p>Style ${escapeHtml(r.style||'—')} • ${escapeHtml(role.toUpperCase())}</p>${r.sampleText?`<span><b>WORDING</b> ${escapeHtml(r.sampleText)}</span>`:''}<span>${escapeHtml(r.note||'')}</span></div>
       <div class="project-reference-actions">
         ${r.status!=='approved'?`<button type="button" class="secondary-btn small" data-reference-action="approve" data-reference-id="${escapeHtml(r.id)}">APPROVE</button>`:''}
         ${r.status==='approved'?`<button type="button" class="secondary-btn small" data-reference-action="supersede" data-reference-id="${escapeHtml(r.id)}">SUPERSEDE</button>`:''}
@@ -12353,10 +12356,35 @@ The full order and approved media remain stored with this project.`;
       </div>
     </article>`;
   }
+  function ikeStyleFoundryCoverageFor(p,style){
+    const base=window.IkeStyleFoundry?.pack?.(style)||{};
+    const approved=activeProjectReferences(p,{style}).filter(r=>r.sampleText);
+    const evidence=[base.anchorText||'',...approved.map(r=>r.sampleText||'')].join('');
+    const chars=window.IkeStyleFoundry?.chars?.(evidence)||[...new Set(evidence.replace(/\s/g,'').split(''))].sort().join('');
+    const upper=[...chars].filter(c=>/[A-Z]/.test(c)).join('');
+    const lower=[...chars].filter(c=>/[a-z]/.test(c)).join('');
+    const other=[...chars].filter(c=>!/[A-Za-z]/.test(c)).join('');
+    return {chars,upper,lower,other,approvedCount:approved.length,anchor:base.anchorText||'',asset:base.anchorImage||'',status:lower?'mixed-evidence':'uppercase-anchor'};
+  }
+  function ikeStyleFoundryStatusMarkup(p){
+    const cards=['A','B'].map(style=>{const pack=window.IkeStyleFoundry?.pack?.(style)||{},c=ikeStyleFoundryCoverageFor(p,style);return `<article class="style-foundry-pack"><div class="style-foundry-pack-head"><div><small>STYLE ${style} • ${escapeHtml(String(pack.status||'ANCHOR').toUpperCase())}</small><h3>${escapeHtml(pack.name||style)}</h3></div><strong>${c.approvedCount} APPROVED + BUNDLED ANCHOR</strong></div>${c.asset?`<img src="${escapeHtml(c.asset)}" alt="${escapeHtml(pack.name||style)} production anchor">`:''}<p>${escapeHtml(pack.notes||'')}</p><div class="style-foundry-coverage"><span><b>UPPER</b>${escapeHtml(c.upper||'—')}</span><span><b>lower</b>${escapeHtml(c.lower||'needs examples')}</span><span><b>OTHER</b>${escapeHtml(c.other||'—')}</span></div></article>`;}).join('');
+    const compiled=p.styleFoundry?.compiledAt?`Compiled ${escapeHtml(new Date(p.styleFoundry.compiledAt).toLocaleString())}`:'Not compiled from owner/Engine evidence yet';
+    return `<section class="style-foundry-status"><div class="project-reference-rule"><strong>REAL SIGNS → APPROVED EVIDENCE → STYLE PACK</strong><span>The customer preview reads governed pack metrics. New examples never change production behavior until they are approved and deliberately compiled.</span></div><div class="style-foundry-packs">${cards}</div><div class="style-foundry-compile"><button type="button" class="primary-btn small" data-style-foundry-compile>COMPILE APPROVED STYLE PACKS</button><p data-style-foundry-compile-status class="owner-save-status">${compiled}</p></div></section>`;
+  }
+  async function compileIkeStyleFoundry(p,{engine=false}={}){
+    if(!p||p.id!=='ikes-wood-signs')return false;
+    const now=new Date().toISOString();
+    const styles={};
+    for(const style of ['A','B']){const pack=window.IkeStyleFoundry?.pack?.(style)||{};const c=ikeStyleFoundryCoverageFor(p,style);styles[style]={id:style,name:pack.name||style,anchorText:pack.anchorText||'',anchorImage:pack.anchorImage||'',certifiedEvidenceChars:c.chars,upperEvidence:c.upper,lowerEvidence:c.lower,otherEvidence:c.other,approvedExampleCount:c.approvedCount,renderer:pack.renderer||'companion-profile',compiledAt:now,compiledBy:engine?'engine':'owner',caseState:c.lower?'mixed-evidence':'uppercase-anchor-lowercase-provisional'};}
+    p.styleFoundry={schema:'dark-sky-ike-style-foundry-project-v1',version:1,compiledAt:now,compiledBy:engine?'engine':'owner',styles};
+    await persistProjectMutation(p,{reason:`${engine?'engine':'owner'}.style_foundry.compile`});
+    logActivity(p.id,'Style Foundry compiled',`A ${styles.A.certifiedEvidenceChars.length} glyph evidence • B ${styles.B.certifiedEvidenceChars.length} glyph evidence`);
+    return true;
+  }
   function projectReferenceLibraryMarkup(p,{engine=false}={}){
     const rows=projectReferenceLibrary(p).slice().sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));
     const activeA=activeProjectReferences(p,{style:'A'})[0],activeB=activeProjectReferences(p,{style:'B'})[0];
-    return `<section class="project-reference-library">
+    return `<section class="project-reference-library">${ikeStyleFoundryStatusMarkup(p)}
       <div class="project-reference-rule"><strong>Evidence → approval → production truth</strong><span>Uploads never change customer output automatically. An owner or Engine operator must approve them first.</span></div>
       <div class="project-reference-active"><span>STYLE A <b>${activeA?`V${Number(activeA.version||1)} ACTIVE`:'NO APPROVED REFERENCE'}</b></span><span>STYLE B <b>${activeB?`V${Number(activeB.version||1)} ACTIVE`:'NO APPROVED REFERENCE'}</b></span></div>
       <article class="owner-form-card project-reference-upload">
@@ -12364,7 +12392,7 @@ The full order and approved media remain stored with this project.`;
           <label>Style<select data-reference-style><option value="A">Style A — RAMJET</option><option value="B">Style B — SMOKE HOLE!</option></select></label>
           <label>Reference type<select data-reference-kind><option value="machine-geometry">Machine Geometry</option><option value="finished-sign">Finished Sign</option><option value="font-specimen">Font / Glyph Specimen</option><option value="blank-finished-pair">Blank → Finished Pair</option><option value="placement">Placement / Face Coverage</option><option value="finish">Finish / Color</option></select></label>
           <label>Authority role<select data-reference-role><option value="visual-example">Visual Example</option><option value="production-geometry">Production Geometry</option><option value="secondary-evidence">Secondary Evidence</option></select></label>
-          <label>Title<input data-reference-title class="text-input" placeholder="Example: RAMJET production alphabet"></label>
+          <label>Title<input data-reference-title class="text-input" placeholder="Example: RAMJET production alphabet"></label><label>Exact wording shown<input data-reference-sample-text class="text-input" placeholder="Example: Smoke Hole!"></label>
         </div>
         <label class="project-reference-file">Upload example image<input data-reference-file type="file" accept="image/*"></label>
         <label>Notes<input data-reference-note class="text-input" placeholder="What should Dark Sky learn from this example?"></label>
@@ -12377,6 +12405,7 @@ The full order and approved media remain stored with this project.`;
   function bindProjectReferenceLibrary(p,{engine=false,rerender}={}){
     const root=engine?$('projectTabContent'):$('ownerPortalBody');if(!root)return;
     const upload=root.querySelector('[data-reference-upload]');
+    root.querySelector('[data-style-foundry-compile]')?.addEventListener('click',async()=>{const status=root.querySelector('[data-style-foundry-compile-status]');if(status)status.textContent='Compiling approved production evidence…';await compileIkeStyleFoundry(p,{engine});if(status)status.textContent='Style packs compiled. Customer case choice remains unchanged; provisional glyphs stay flagged until real examples certify them.';if(rerender)setTimeout(()=>rerender(),550);});
     upload?.addEventListener('click',async()=>{
       const file=root.querySelector('[data-reference-file]')?.files?.[0];
       const style=root.querySelector('[data-reference-style]')?.value||'A';
@@ -12384,13 +12413,14 @@ The full order and approved media remain stored with this project.`;
       const role=root.querySelector('[data-reference-role]')?.value||'visual-example';
       const title=(root.querySelector('[data-reference-title]')?.value||'').trim()||`Style ${style} ${kind.replaceAll('-',' ')}`;
       const note=(root.querySelector('[data-reference-note]')?.value||'').trim();
+      const sampleText=(root.querySelector('[data-reference-sample-text]')?.value||'').trim();
       const status=root.querySelector('[data-reference-status]');
       if(!file){if(status)status.textContent='Choose an example image first.';return;}
       if(file.size>12*1024*1024){if(status)status.textContent='Use an image smaller than 12 MB.';return;}
       if(status)status.textContent='Preparing reference…';
       let dataUrl='';try{dataUrl=await resizePhoto(file);}catch(_){if(status)status.textContent='That image could not be prepared.';return;}
       const now=new Date().toISOString(),version=referenceNextVersion(p,style,kind);
-      projectReferenceLibrary(p).push({id:`REF-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,projectId:p.id,style,kind,role,title,note,dataUrl,status:'draft',version,createdAt:now,updatedAt:now,source:engine?'engine':'owner'});
+      projectReferenceLibrary(p).push({id:`REF-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`,projectId:p.id,style,kind,role,title,note,sampleText,dataUrl,status:'draft',version,createdAt:now,updatedAt:now,source:engine?'engine':'owner'});
       await persistProjectMutation(p,{reason:engine?'engine.reference.create':'owner.reference.create'});
       logActivity(p.id,engine?'Engine added production reference':'Owner added production reference',`${title} • draft v${version}`);
       if(rerender)await rerender();
@@ -12461,7 +12491,7 @@ The full order and approved media remain stored with this project.`;
         `<div class="owner-module-toolbar"><button id="ownerAddProduct" class="primary-btn" type="button">+ ADD PRODUCT</button></div><div class="owner-product-list">${(p.products||[]).map(pr=>`
           <article class="owner-product-row"><div><small>PRODUCT</small><input data-owner-product-name="${escapeHtml(pr.id)}" value="${escapeHtml(pr.name)}"></div><label class="owner-switch"><input data-owner-product-published="${escapeHtml(pr.id)}" type="checkbox" ${pr.published?'checked':''}><span>${pr.published?'AVAILABLE':'HIDDEN'}</span></label><button data-owner-product-save="${escapeHtml(pr.id)}" class="secondary-btn" type="button">SAVE</button></article>`).join('')||'<div class="owner-module-empty"><h3>No products yet</h3><p>Add your first product to begin.</p></div>'}`);
     } else if(moduleKey==='references'){
-      body.innerHTML=ownerModuleShell('Design References','Teach Dark Sky from real production examples without allowing unapproved uploads to change the customer experience.',projectReferenceLibraryMarkup(p,{engine:false}));
+      body.innerHTML=ownerModuleShell('Style Foundry','Build and govern Ike’s production alphabets from real signs. Draft examples never change customer output.',projectReferenceLibraryMarkup(p,{engine:false}));
     } else if(moduleKey==='pricing'){
       if(p.id==='ikes-wood-signs'){
         const rates=normalizeIkeSpeciesRates(config.ikeSpeciesRates);
@@ -12698,7 +12728,7 @@ The full order and approved media remain stored with this project.`;
       ['reporting','Reporting','Review business activity'],
       ['notifications','Notifications','Manage customer notifications']
     ].filter(([key])=>caps.has(key));
-    if(p.id==='ikes-wood-signs')modules.push(['references','Design References',`${projectReferenceLibrary(p).filter(r=>r.status==='approved').length} approved production reference${projectReferenceLibrary(p).filter(r=>r.status==='approved').length===1?'':'s'}`]);
+    if(p.id==='ikes-wood-signs')modules.push(['references','Style Foundry',`${projectReferenceLibrary(p).filter(r=>r.status==='approved').length} approved production reference${projectReferenceLibrary(p).filter(r=>r.status==='approved').length===1?'':'s'}`]);
     // Features are owner-selectable only inside Black Flag-approved boundaries.
     modules.push(['features','Features','Turn approved project features on or off']);
     modules.push(['settings','Settings','Manage your login and password']);

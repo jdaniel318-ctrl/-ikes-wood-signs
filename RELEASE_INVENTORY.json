@@ -1,7 +1,7 @@
 {
-  "release": "8.3.6",
-  "name": "StyleBTruth",
-  "file_count": 45,
+  "release": "8.4.0",
+  "name": "StyleFoundry",
+  "file_count": 49,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -18,6 +18,7 @@
     "FLEET_REGRESSION_LIBRARY.md",
     "FOUNDRY_FLEET_SERVICES.md",
     "IKES_PRODUCTION_COMPENDIUM.md",
+    "IKE_STYLE_FOUNDRY.json",
     "KEEL_GAUGE_CALIBRATION_AUDIT.json",
     "LEAN_BUILD_MANIFEST.md",
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
@@ -38,6 +39,9 @@
     "engine_room_pirate_benchmark_v2978.png",
     "ike_calibration_2ft_cedar_reference.jpg",
     "ike_character.png",
+    "ike_style_a_ramjet_reference.jpg",
+    "ike_style_b_smoke_hole_reference.jpg",
+    "ike_style_registry.js",
     "ikes_real_sign_lettering_reference.jpg",
     "index.html",
     "manifest.webmanifest",
@@ -49,7 +53,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.3.6",
-  "seal": "stylebtruth-836-case-locked-b7c19e",
-  "release_name": "StyleBTruth"
+  "build": "8.4.0",
+  "seal": "stylefoundry-840-production-packs-4f8c2a",
+  "release_name": "StyleFoundry"
 }
