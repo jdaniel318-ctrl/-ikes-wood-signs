@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-runtime-inventory-v2",
-  "build": "8.2.2",
+  "build": "8.2.3",
   "release": "Signsmith AI — Ike Example Match",
   "seal": "signsmith-822-ike-ai-8f4c21",
   "required_snapshot_files": [

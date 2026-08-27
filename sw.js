@@ -1,4 +1,4 @@
-const RELEASE_BUILD='8.2.2';
+const RELEASE_BUILD='8.2.3';
 const RELEASE_SEAL='signsmith-822-ike-ai-8f4c21';
 
 self.addEventListener('install', event => {

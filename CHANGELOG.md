@@ -1,4 +1,11 @@
-## 8.2.2 — Signsmith AI
+
+## 8.2.3 — Fleet Dock Recovery
+- Fleet Dock canonical reconciliation now has a bounded startup deadline.
+- If canonical persistence is slow, the Dock renders the already-sealed in-memory fleet instead of remaining on “READING FLEET.”
+- A durable LOCAL ROSTER • RECOVERY state explains the fallback while project navigation remains usable.
+- Canonical reconciliation continues independently; browser Refresh is not required as a normal recovery step.
+
+## 8.2.3 — Signsmith AI
 
 - Added **Ike AI** lettering recommendations grounded in Ike’s bundled finished RAMJET and SMOKE HOLE! examples.
 - AI selects a starting lettering style and fit from wording shape while preserving customer manual override.

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-admiral-release-doctrine-v2",
   "doctrineVersion": 2,
-  "build": "8.2.2",
+  "build": "8.2.3",
   "name": "Gridwright",
   "principles": [
     "single-build release identity",

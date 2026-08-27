@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.2.2';
+  const BUILD_VERSION='8.2.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3973,7 +3973,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.2.2',
+    build:'8.2.3',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4794,7 +4794,19 @@
   }
 
   async function renderFleetCommissioning(){
-    await convergeCanonicalFleetForPresentation({source:'fleet-dock'});
+    // 8.2.3 Fleet Dock Recovery: the primary navigator must never remain on
+    // READING FLEET just because canonical persistence is slow or unavailable.
+    // Give reconciliation a bounded window, then render the already-sealed
+    // in-memory roster and keep a durable degraded-state indicator visible.
+    const canonicalResult=await commandDeadline(
+      convergeCanonicalFleetForPresentation({source:'fleet-dock'}),
+      1400,
+      null
+    );
+    const fleetDockUsingLocalRoster=!canonicalResult;
+    if(fleetDockUsingLocalRoster){
+      try{window.DarkSkyV4?.diagnostic?.('fleet.dock.local_roster_fallback','Canonical fleet read exceeded Fleet Dock deadline; rendered sealed in-memory roster instead.',{build:BUILD_VERSION,count:projects().length});}catch(_){ }
+    }
     const summary=$('fleetCommissioningSummary');
     const fleet=$('fleetCommissioningFleet');
     const reference=$('fleetCommissioningReference');
@@ -4810,8 +4822,13 @@
     const gatesTotal=snaps.reduce((n,x)=>n+x.s.total,0);
 
     if(state){
-      state.textContent=commissioned===list.length&&list.length?'FLEET COMMISSIONED':work?'WORK IN DOCK':ready?'CAPTAIN ACTION':'NO VESSELS';
-      state.className=`fleet-commissioning-state ${work?'watch':ready?'ready':'clear'}`;
+      if(fleetDockUsingLocalRoster){
+        state.textContent=list.length?'LOCAL ROSTER • RECOVERY':'ROSTER RECOVERY';
+        state.className='fleet-commissioning-state watch';
+      }else{
+        state.textContent=commissioned===list.length&&list.length?'FLEET COMMISSIONED':work?'WORK IN DOCK':ready?'CAPTAIN ACTION':'NO VESSELS';
+        state.className=`fleet-commissioning-state ${work?'watch':ready?'ready':'clear'}`;
+      }
     }
 
     summary.innerHTML=`
@@ -4872,8 +4889,11 @@
     }
 
     const canonicalState=window.__darkSkyCanonicalFleet||{};
-    const identityState=Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
-    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the watch.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>`;
+    const identityState=fleetDockUsingLocalRoster?'RECOVERY ROSTER':Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
+    const rosterCopy=fleetDockUsingLocalRoster
+      ? `${list.length} vessel${list.length===1?'':'s'} rendered from the sealed local roster because canonical reconciliation exceeded its startup deadline. Navigation remains available; the Engine will retry canonical convergence without requiring Refresh.`
+      : `${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.`;
+    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>${fleetDockUsingLocalRoster?'Fleet navigation recovered.':'Choose the vessel, then the watch.'}</strong><p>${escapeHtml(rosterCopy)}</p></div>`;
     const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning();};}
     $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning();};});
   }

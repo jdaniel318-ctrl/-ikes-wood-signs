@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.2.2",
-  "version": "8.2.2",
+  "build": "8.2.3",
+  "version": "8.2.3",
   "release_name": "Signsmith AI — Ike Example Match",
   "releaseName": "Signsmith AI — Ike Example Match",
   "release_seal": "signsmith-822-ike-ai-8f4c21",
@@ -52,7 +52,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "ikes-example-grounded-ai-lettering-and-render-parity",
-  "release_note": "8.2.2 Signsmith AI adds example-grounded lettering recommendations from Ike’s finished RAMJET and SMOKE HOLE! signs, preserves manual override, and locks approval rendering to the same font families used in the live preview.",
+  "release_note": "8.2.3 Signsmith AI adds example-grounded lettering recommendations from Ike’s finished RAMJET and SMOKE HOLE! signs, preserves manual override, and locks approval rendering to the same font families used in the live preview.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

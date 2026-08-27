@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-build-audit-v1",
-  "build": "8.2.2",
+  "build": "8.2.3",
   "name": "Gridwright",
   "uploadFileCount": 99,
   "maxWebUploadFiles": 99,
