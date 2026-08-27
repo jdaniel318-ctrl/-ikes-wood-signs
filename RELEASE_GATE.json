@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.2.3",
-  "release": "8.2.3",
+  "build": "8.2.2",
+  "release": "8.2.2",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -132,12 +132,17 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.2.3 Gridwright: live-edge face grid selects the broad carve-safe corridor; Style A uses a broad block face; finished-sign calibration drives width, height, and placement.",
-  "candidate": "8.2.3",
+  "note": "8.2.2 Ike Fit: one automatic shop fit uses a robust live-edge face grid, visible-glyph bounds, broad face occupancy, and optical centering; customer size presets are removed.",
+  "candidate": "8.2.2",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
     "admiral_recommendation_compression": true,
     "shared_fleet_pattern_detection": true
+  },
+  "contracts": {
+    "ikes_single_automatic_fit": true,
+    "ikes_back_stamp_ignored_for_layout": true,
+    "ikes_full_face_optical_placement": true
   }
 }

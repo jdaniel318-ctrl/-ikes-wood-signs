@@ -1,5 +1,7 @@
 # Upload This One Build
 
-**Dark Sky 8.2.3 — Gridwright**
+**Dark Sky 8.2.2 — Ike Fit**
 
-Upload all 99 files at the repository root. Do not upload the ZIP itself. Automatic Safe Recovery may replace only stale application runtime/cache state; project data remains preserved.
+Upload all 99 files from this folder to the repository root using the iPad GitHub uploader. Do not split the build or mix it with an older release.
+
+This pass is deliberately narrow: Ike’s sign preview composition only.

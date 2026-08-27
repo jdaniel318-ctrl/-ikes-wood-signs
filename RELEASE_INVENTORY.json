@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-runtime-inventory-v2",
-  "build": "8.2.3",
-  "release": "Signsmith AI — Ike Example Match",
-  "seal": "signsmith-822-ike-ai-8f4c21",
+  "build": "8.2.2",
+  "release": "Ike Fit \u2014 Root Keel",
+  "seal": "ikefit-822-root-keel-7b2e91",
   "required_snapshot_files": [
     "styles.css",
     "platform_core.js",

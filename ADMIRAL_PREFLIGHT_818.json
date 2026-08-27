@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-admiral-preflight-v1",
-  "build": "8.2.3",
-  "name": "Gridwright",
+  "build": "8.2.2",
+  "name": "Ike Fit",
   "checks": [
     {
       "id": "ike-face-grid-fit",

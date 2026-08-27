@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-learning-registry-v1",
-  "build": "8.2.3",
-  "name": "Gridwright",
+  "build": "8.2.2",
+  "name": "Ike Fit",
   "classes": {
     "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
     "capability": "Reusable primitive that must be adapted to mission/users/data/risk before adoption.",
@@ -98,6 +98,14 @@
       "class": "capability",
       "origin": "IKE",
       "title": "Manufacturability-Aware Face Fit"
+    },
+    {
+      "id": "manufacturability-aware-composition-fit",
+      "title": "Manufacturability-Aware Composition Fit",
+      "type": "reusable-capability",
+      "origin": "ikes-wood-signs",
+      "status": "retained",
+      "lesson": "Treat customer layout as usable-face geometry + scale + optical placement together; preserve the exact source image/material and let each vessel define its own mission-specific fit behavior."
     }
   ],
   "governance": {

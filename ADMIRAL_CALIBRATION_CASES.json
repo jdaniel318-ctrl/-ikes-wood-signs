@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-admiral-calibration-cases-v1",
-  "build": "8.2.3",
+  "build": "8.2.1",
   "cases": [
     {
       "id": "ike-2ft-cedar-reference",
@@ -24,5 +24,5 @@
     }
   ],
   "name": "Gridwright",
-  "seal": "signsmith-822-ike-ai-8f4c21"
+  "seal": "gridwright-821-root-keel-c4a7e2"
 }

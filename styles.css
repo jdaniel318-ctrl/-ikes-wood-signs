@@ -14711,10 +14711,15 @@ html.dark-sky-route-preflight body #app,html.dark-sky-route-preflight body #engi
 .ike-fit-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.ike-fit-grid button{min-height:76px;text-align:left}.ike-fit-grid button b,.ike-fit-grid button small{display:block}.ike-fit-grid button small{margin-top:4px;line-height:1.2;opacity:.72}
 
 
-/* 8.2.2 Gridwright — Ike-specific finished-sign calibration */
+/* 8.2.1 Gridwright — Ike-specific finished-sign calibration */
 .ikes-project .style-a,.ikes-project .ike-lettering-choice .style-a{font-family:"Arial Black",Arial,sans-serif!important;font-weight:900!important;font-style:normal!important;letter-spacing:.055em!important;font-stretch:normal}
 .ike-style-proof-note{margin-top:12px;padding:12px 14px;border:1px solid #cfdde3;border-radius:14px;background:#f7fafb;color:#173742}.ike-style-proof-note strong,.ike-style-proof-note small{display:block}.ike-style-proof-note small{margin-top:4px;color:#5b7079;line-height:1.35}
 
-/* 8.2.2 Signsmith AI — example-grounded Ike lettering assistance */
-.ike-ai-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch;margin:12px 0 4px}.ike-ai-recommendation{display:flex;flex-direction:column;justify-content:center;gap:3px;padding:11px 13px;border:1px solid #b9d7e8;border-radius:14px;background:linear-gradient(135deg,#f4fbff,#eef7fb);color:#173742}.ike-ai-recommendation>div{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}.ike-ai-recommendation strong{font-size:11px;font-weight:1000;letter-spacing:.08em;color:#08679c}.ike-ai-recommendation span{font-size:11px;font-weight:800}.ike-ai-recommendation small{display:block;color:#5a6f79;line-height:1.35}.ike-ai-pick-btn{min-height:48px;padding:0 14px;border:2px solid #0b76b8;border-radius:14px;background:#fff;color:#075d8e;font-size:10px;font-weight:1000;letter-spacing:.04em}.ike-ai-pick-btn:active{transform:translateY(1px);background:#eaf6fc}.ike-lettering-choice.selected{box-shadow:0 0 0 2px rgba(11,118,184,.13),0 8px 20px rgba(11,118,184,.10)}
-@media(max-width:760px){.ike-ai-panel{grid-template-columns:1fr}.ike-ai-pick-btn{width:100%}}
+/* 8.2.2 IKE FIT — single shop-fit preview calibrated to real finished signs. */
+.ikes-project .ike-design-preview .preview-text,.ikes-project .ike-approve-preview .preview-text,.ikes-project [data-screen="review"] .preview-text,.ikes-project .ike-customer-context .preview-text{max-width:none!important;overflow:visible!important}
+.ike-fit-only-panel{background:linear-gradient(180deg,#f7fbfd,#eef8fc);border-color:#bcd9e8}
+.ike-fit-only-state{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border-radius:12px;background:#fff;border:1px solid #cfe1e9;color:#173742}
+.ike-fit-only-state b{white-space:nowrap;color:#0b669f}.ike-fit-only-state small{line-height:1.35;color:#536d78}
+.ikes-project .preview-text.ike-routed-black{color:#090807!important;text-shadow:0 -1px 0 rgba(0,0,0,.68),0 1px 0 rgba(255,255,255,.16),0 2px 2px rgba(0,0,0,.12)!important;-webkit-text-stroke:.25px rgba(0,0,0,.55)}
+.ikes-project .style-a,.ikes-project .ike-lettering-choice .style-a{font-family:Georgia,"Times New Roman",serif!important;font-weight:900!important;font-style:normal!important;letter-spacing:.025em!important}
+@media(max-width:650px){.ike-fit-only-state{flex-direction:column;gap:4px}.ike-fit-only-state b{white-space:normal}}

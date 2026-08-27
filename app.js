@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.2.3';
+  const BUILD_VERSION='8.2.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1209,9 +1209,6 @@
     approvalCandidateLock: null,
     customColor: '#1f6feb',
     fontChosen: false,
-    ikeAiMode: true,
-    ikeAiRecommendation: null,
-    ikeAiUserOverride: false,
     letterSize: 'Ike Fit',
     plankRecognition: null,
     styleReferenceData: '',
@@ -3973,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.2.3',
+    build:'8.2.2',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4338,8 +4335,8 @@
     })();
     add('ike-complete-order-boundary','Ike complete-order boundary',orderBoundaryAuto.ok?'pass':'fail',orderBoundaryAuto.detail);
 
-    const faceGridContract=String(ikeAnalyzePlankPixelsProven).includes('face-grid-width-biased-corridor')&&String(ikeApplyDetectedTextPlacementTo).includes('r.fitBand||r.usableRegion')&&String(ikeApplyDetectedTextPlacementTo).includes('actualBoundingBox')&&!!document.querySelector('.ike-style-proof-note')&&!document.querySelector('label[for=\"ikeStyleReferenceInput\"]');
-    add('ike-face-grid-fit','Ike face-grid fit contract',faceGridContract?'pass':'fail',faceGridContract?'Live-edge face grid, visible-glyph measurement, finished-sign proof, and customer-safe fit controls are installed.':'Ike face-grid placement or finished-sign calibration contract is incomplete.');
+    const faceGridContract=String(ikeAnalyzePlankPixelsProven).includes('ike-fit-robust-face-grid')&&String(ikeApplyDetectedTextPlacementTo).includes('r.fitBand||r.usableRegion')&&String(ikeApplyDetectedTextPlacementTo).includes('actualBoundingBox')&&!!document.querySelector('.ike-style-proof-note')&&!document.querySelector('label[for=\"ikeStyleReferenceInput\"]');
+    add('ike-face-grid-fit','Ike face-grid fit contract',faceGridContract?'pass':'fail',faceGridContract?'Live-edge face grid, visible-glyph measurement, finished-sign proof, and single automatic Ike Fit are installed.':'Ike Fit face-grid placement or finished-sign calibration contract is incomplete.');
 
     const artifactAuto=await safe(()=>runIkeApprovedArtifactAutomatedVoyage(),err=>({ok:false,detail:`Automated artifact voyage failed: ${err?.message||err}`}));
     add('approved-artifact-auto','Automated approved-artifact voyage',artifactAuto?.ok?'pass':'fail',artifactAuto?.detail||'Automated approved-artifact voyage did not return evidence.');
@@ -4794,19 +4791,7 @@
   }
 
   async function renderFleetCommissioning(){
-    // 8.2.3 Fleet Dock Recovery: the primary navigator must never remain on
-    // READING FLEET just because canonical persistence is slow or unavailable.
-    // Give reconciliation a bounded window, then render the already-sealed
-    // in-memory roster and keep a durable degraded-state indicator visible.
-    const canonicalResult=await commandDeadline(
-      convergeCanonicalFleetForPresentation({source:'fleet-dock'}),
-      1400,
-      null
-    );
-    const fleetDockUsingLocalRoster=!canonicalResult;
-    if(fleetDockUsingLocalRoster){
-      try{window.DarkSkyV4?.diagnostic?.('fleet.dock.local_roster_fallback','Canonical fleet read exceeded Fleet Dock deadline; rendered sealed in-memory roster instead.',{build:BUILD_VERSION,count:projects().length});}catch(_){ }
-    }
+    await convergeCanonicalFleetForPresentation({source:'fleet-dock'});
     const summary=$('fleetCommissioningSummary');
     const fleet=$('fleetCommissioningFleet');
     const reference=$('fleetCommissioningReference');
@@ -4822,13 +4807,8 @@
     const gatesTotal=snaps.reduce((n,x)=>n+x.s.total,0);
 
     if(state){
-      if(fleetDockUsingLocalRoster){
-        state.textContent=list.length?'LOCAL ROSTER • RECOVERY':'ROSTER RECOVERY';
-        state.className='fleet-commissioning-state watch';
-      }else{
-        state.textContent=commissioned===list.length&&list.length?'FLEET COMMISSIONED':work?'WORK IN DOCK':ready?'CAPTAIN ACTION':'NO VESSELS';
-        state.className=`fleet-commissioning-state ${work?'watch':ready?'ready':'clear'}`;
-      }
+      state.textContent=commissioned===list.length&&list.length?'FLEET COMMISSIONED':work?'WORK IN DOCK':ready?'CAPTAIN ACTION':'NO VESSELS';
+      state.className=`fleet-commissioning-state ${work?'watch':ready?'ready':'clear'}`;
     }
 
     summary.innerHTML=`
@@ -4889,11 +4869,8 @@
     }
 
     const canonicalState=window.__darkSkyCanonicalFleet||{};
-    const identityState=fleetDockUsingLocalRoster?'RECOVERY ROSTER':Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
-    const rosterCopy=fleetDockUsingLocalRoster
-      ? `${list.length} vessel${list.length===1?'':'s'} rendered from the sealed local roster because canonical reconciliation exceeded its startup deadline. Navigation remains available; the Engine will retry canonical convergence without requiring Refresh.`
-      : `${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.`;
-    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>${fleetDockUsingLocalRoster?'Fleet navigation recovered.':'Choose the vessel, then the watch.'}</strong><p>${escapeHtml(rosterCopy)}</p></div>`;
+    const identityState=Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
+    reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the watch.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>`;
     const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning();};}
     $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning();};});
   }
@@ -9535,7 +9512,7 @@
       $$('#ikeLetterSizeChoices [data-ike-size]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeSize===(state.letterSize||'Ike Fit')));
       if($('ikeDesignNextBtn')){const ready=!!(state.wording.trim()&&state.fontChosen);$('ikeDesignNextBtn').disabled=!ready;$('ikeDesignNextBtn').setAttribute('aria-disabled',ready?'false':'true');}
       if($('ikeDesignProtection'))$('ikeDesignProtection').textContent=(r.usableRegion?'Detected lettering zone':(r.usableArea==='safe-margin-preview'?'Basic margin':'Zone pending'));
-      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'Your Sign';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':'');if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
+      if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=state.wording||'Your Sign';el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':''));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
       scheduleIkeDetectedTextPlacement();
       if($('ikeStylePrompt'))$('ikeStylePrompt').classList.toggle('hidden',!!state.fontChosen);
       $$('.ike-top-marker').forEach(el=>el.textContent='TOP');
@@ -9549,7 +9526,6 @@
       if($('ikeStyleReferenceStatus'))$('ikeStyleReferenceStatus').classList.toggle('hidden',!state.styleReferenceData);
       if(state.styleReferenceData&&$('ikeStyleReferencePreview'))$('ikeStyleReferencePreview').src=state.styleReferenceData;
       if($('ikeStyleReferenceName'))$('ikeStyleReferenceName').textContent=state.styleReferenceName||'Lettering reference';
-      updateIkeAiStatus();
       if($('ikeApproveWording'))$('ikeApproveWording').textContent=state.wording||'Your Sign';
       if($('ikeApproveFont'))$('ikeApproveFont').textContent=`Style ${state.font}`;if($('ikeApproveSize'))$('ikeApproveSize').textContent=state.letterSize||'Ike Fit';
       if($('ikeApproveFill'))$('ikeApproveFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
@@ -9626,7 +9602,7 @@
     otherColorRule:'Customer-supplied spray paint may be required for Other; return at pickup.',
     orientationRule:'Exact side and top must remain attached to the approved production record.',
     letteringSizeRule:'Ike uses a mission-specific fit control: customer intent adjusts breathing room while the layout engine maximizes the chosen lettering style inside the detected usable face and preserves carving clearance.',
-    letteringSizePresets:['More Room','Ike Fit','Full Face']
+    letteringSizePresets:['Ike Fit']
   });
 
   function ikeRenderedTextLines(el){
@@ -9659,7 +9635,7 @@
 
   function ikeCurrentRenderLock(){
     const r=state.plankRecognition||{},region=r.fitBand||r.usableRegion||null;
-    return {version:'ike-approved-design-lock-v5-ai',approvedAt:new Date().toISOString(),wording:String(state.wording||''),font:String(state.font||'B'),letterSize:String(state.letterSize||'Ike Fit'),aiDesign:state.ikeAiRecommendation?{font:state.ikeAiRecommendation.font,fit:state.ikeAiRecommendation.fit,confidence:state.ikeAiRecommendation.confidence,reason:state.ikeAiRecommendation.reason,exampleSource:state.ikeAiRecommendation.exampleSource,userOverride:!!state.ikeAiUserOverride}:null,fill:String(state.fill||'Black'),customColor:String(state.customColor||'#1f6feb'),orientation:String(state.orientation||'Horizontal'),topSide:String(state.topSide||'Top of photo'),price:Number(state.price||0),usableRegion:region?{x:Number(region.x),y:Number(region.y),w:Number(region.w),h:Number(region.h),source:String(region.source||'')}:null,obstacleDetected:!!r.obstacleDetected,recognition:{method:r.method||'',confidence:r.confidence||'',referenceCandidate:!!r.referenceCandidate,measurementReadiness:r.measurementReadiness||''},productionContract:IKE_PRODUCTION_CONTRACT,render:ikeCaptureLiveRenderSpec()||{strategy:'usable-region-word-wrap-v1',singleLinePreferred:true,wrapOnlyWhenRequired:true}};
+    return {version:'ike-approved-design-lock-v4',approvedAt:new Date().toISOString(),wording:String(state.wording||''),font:String(state.font||'B'),letterSize:String(state.letterSize||'Ike Fit'),fill:String(state.fill||'Black'),customColor:String(state.customColor||'#1f6feb'),orientation:String(state.orientation||'Horizontal'),topSide:String(state.topSide||'Top of photo'),price:Number(state.price||0),usableRegion:region?{x:Number(region.x),y:Number(region.y),w:Number(region.w),h:Number(region.h),source:String(region.source||'')}:null,obstacleDetected:!!r.obstacleDetected,recognition:{method:r.method||'',confidence:r.confidence||'',referenceCandidate:!!r.referenceCandidate,measurementReadiness:r.measurementReadiness||''},productionContract:IKE_PRODUCTION_CONTRACT,render:ikeCaptureLiveRenderSpec()||{strategy:'usable-region-word-wrap-v1',singleLinePreferred:true,wrapOnlyWhenRequired:true}};
   }
 
   function wrapCanvasText(ctx,text,maxWidth){
@@ -9717,7 +9693,7 @@
         const maxSide=1600,scale=Math.min(1,maxSide/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
         const w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale)),h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
         const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return resolve('');ctx.drawImage(img,0,0,w,h);
-        const family=lock.font==='A'?'Arial Black, Arial, sans-serif':lock.font==='B'?"Times New Roman, Georgia, serif":'Georgia, Times New Roman, serif',style='',weight=lock.font==='C'?'500':'900';
+        const family=lock.font==='A'?'Georgia':lock.font==='C'?"Times New Roman":'Georgia',style=lock.font==='B'?'italic ':'',weight=lock.font==='C'?'400':'700';
         let color='#111111';if(lock.fill==='White')color='#ffffff';else if(lock.fill==='Natural')color='#6b4429';else if(lock.fill==='Other')color=lock.customColor||'#1f6feb';
         const live=lock.render?.strategy==='approved-live-layout-v2'?lock.render:null,ur=lock.usableRegion;
         const box=live?.box||null;
@@ -10418,28 +10394,40 @@ The full order and approved media remain stored with this project.`;
     }
     const obstacleDetected=fill<.86;
 
-    // 8.2.2 Gridwright: retain the live-edge silhouette as a carve-safe face grid.
-    // A width-biased corridor lets short wording claim the board the way Ike's
-    // finished signs do instead of shrinking into one conservative rectangle.
-    const gridCols=14,grid=[];
+    // 8.2.2 IKE FIT: map the live-edge face, then choose one robust shop-style
+    // lettering band. The band intentionally uses almost the whole board width.
+    // It is based on robust grid quantiles instead of the single smallest vertical
+    // intersection, so one knot/notch or the blue BACK stamp cannot shrink the
+    // customer preview into a timid center rectangle. The stamp is not wood and is
+    // ignored for layout; Ike still verifies final carve clearance before production.
+    const gridCols=16,grid=[];
     const safeMask=eroded.some(v=>v)?eroded:cm;
     for(let c=0;c<gridCols;c++){
       const gx0=Math.round(minX+(bw*c/gridCols)),gx1=Math.max(gx0,Math.round(minX+(bw*(c+1)/gridCols))-1);
       let top=h,bottom=-1,count=0;
       for(let x=gx0;x<=gx1;x++)for(let y=minY;y<=maxY;y++){const i=y*w+x;if(safeMask[i]){top=Math.min(top,y);bottom=Math.max(bottom,y);count++;}}
-      if(bottom>=top){const pad=Math.max(1,Math.round((bottom-top+1)*.045));top=Math.min(bottom,top+pad);bottom=Math.max(top,bottom-pad);grid.push({c,x0:gx0/w,x1:(gx1+1)/w,top:top/h,bottom:(bottom+1)/h,coverage:count/Math.max(1,(gx1-gx0+1)*(maxY-minY+1))});}
+      if(bottom>=top){const pad=Math.max(1,Math.round((bottom-top+1)*.025));top=Math.min(bottom,top+pad);bottom=Math.max(top,bottom-pad);grid.push({c,x0:gx0/w,x1:(gx1+1)/w,top:top/h,bottom:(bottom+1)/h,coverage:count/Math.max(1,(gx1-gx0+1)*(maxY-minY+1))});}
       else grid.push({c,x0:gx0/w,x1:(gx1+1)/w,top:null,bottom:null,coverage:0});
     }
+    const valid=grid.filter(g=>g.top!=null&&g.bottom!=null&&g.coverage>.10);
+    const q=(vals,p)=>{const a=vals.slice().sort((x,y)=>x-y);if(!a.length)return 0;const i=Math.max(0,Math.min(a.length-1,Math.round((a.length-1)*p)));return a[i];};
     let bestBand=null;
-    for(let a=0;a<gridCols;a++)for(let b=a+Math.ceil(gridCols*.52)-1;b<gridCols;b++){
-      const cols=grid.slice(a,b+1);if(cols.some(g=>g.top==null))continue;
-      const top=Math.max(...cols.map(g=>g.top)),bottom=Math.min(...cols.map(g=>g.bottom));
-      const bandH=bottom-top,bandW=cols[cols.length-1].x1-cols[0].x0;if(bandH<=.03||bandW<=.15)continue;
-      const avgCov=cols.reduce((n,g)=>n+g.coverage,0)/cols.length;
-      const score=Math.pow(bandW,1.55)*bandH*(.82+.18*Math.min(1,avgCov*1.7));
-      if(!bestBand||score>bestBand.score)bestBand={x:cols[0].x0,y:top,w:bandW,h:bandH,score,columns:[a,b],source:'face-grid-width-biased-corridor'};
+    if(valid.length>=Math.ceil(gridCols*.62)){
+      // Trim only the far edge columns; finished Ike signs use the face broadly.
+      const leftCol=valid[Math.min(valid.length-1,1)],rightCol=valid[Math.max(0,valid.length-2)];
+      const tops=valid.map(g=>g.top),bottoms=valid.map(g=>g.bottom);
+      let top=q(tops,.68),bottom=q(bottoms,.32);
+      const contourTop=minY/h,contourBottom=(maxY+1)/h;
+      // Preserve a strong vertical field even when a few grid columns have an odd dip.
+      top=Math.max(contourTop+bw*0,Math.min(top,contourTop+(contourBottom-contourTop)*.26));
+      bottom=Math.min(contourBottom,Math.max(bottom,contourTop+(contourBottom-contourTop)*.76));
+      const x0=Math.max(minX/w,leftCol.x0),x1=Math.min((maxX+1)/w,rightCol.x1);
+      if(bottom-top>.08&&x1-x0>.45)bestBand={x:x0,y:top,w:x1-x0,h:bottom-top,score:1,columns:[leftCol.c,rightCol.c],source:'ike-fit-robust-face-grid'};
     }
-    if(!bestBand)bestBand={x:rect.x/w,y:rect.y/h,w:rect.w/w,h:rect.h/h,score:0,columns:null,source:'largest-safe-rectangle-fallback'};
+    if(!bestBand){
+      const insetX=bw*.055,insetY=bh*.16;
+      bestBand={x:(minX+insetX)/w,y:(minY+insetY)/h,w:Math.max(1,bw-insetX*2)/w,h:Math.max(1,bh-insetY*2)/h,score:0,columns:null,source:'ike-fit-contour-fallback'};
+    }
 
     let yellowCount=0,yellowMinX=w,yellowMaxX=0,yellowMinY=h,yellowMaxY=0;
     for(let i=0;i<yellow.length;i++)if(yellow[i]){yellowCount++;const x=i%w,y=(i/w)|0;yellowMinX=Math.min(yellowMinX,x);yellowMaxX=Math.max(yellowMaxX,x);yellowMinY=Math.min(yellowMinY,y);yellowMaxY=Math.max(yellowMaxY,y);}
@@ -10613,57 +10601,18 @@ The full order and approved media remain stored with this project.`;
     return {x:(cw-w)/2,y:(ch-h)/2,w,h};
   }
 
-  const IKE_SIGN_EXAMPLES=Object.freeze([
-    {id:'ramjet',wording:'RAMJET',font:'A',fit:'Ike Fit',finish:'White',profile:'short-bold-block',source:'Ike finished RAMJET sign'},
-    {id:'smoke-hole',wording:'SMOKE HOLE!',font:'B',fit:'Ike Fit',finish:'Black',profile:'wide-western-display',source:'Ike finished SMOKE HOLE! sign'}
-  ]);
-
-  function ikeAiRecommendDesign(wording){
-    const raw=String(wording||'').trim(),letters=raw.replace(/[^A-Za-z0-9]/g,''),words=raw.split(/\s+/).filter(Boolean);
-    if(!raw)return null;
-    const compact=letters.length<=8&&words.length<=1;
-    const widePhrase=words.length>=2||raw.length>=9||/[!&]/.test(raw);
-    let font='C',example=null,reason='Balanced traditional lettering for a longer or mixed phrase.';
-    if(compact){font='A';example=IKE_SIGN_EXAMPLES[0];reason='Short wording matches the bold, face-filling proportions of Ike’s RAMJET sign.';}
-    else if(widePhrase){font='B';example=IKE_SIGN_EXAMPLES[1];reason='This phrase matches the tall, narrow lettering rhythm Ike used on SMOKE HOLE!.';}
-    const fit=(letters.length>=18||words.length>=4)?'More Room':'Ike Fit';
-    const confidence=example?(compact?'high':'high'):'medium';
-    return {font,fit,confidence,reason,exampleId:example?.id||'',exampleSource:example?.source||'Ike lettering library',wording:raw,generatedAt:new Date().toISOString()};
-  }
-
-  function applyIkeAiRecommendation({force=false}={}){
-    if(activeProjectId!=='ikes-wood-signs'||state.ikeAiMode===false)return null;
-    const rec=ikeAiRecommendDesign(state.wording);state.ikeAiRecommendation=rec;
-    if(!rec)return null;
-    if(force||!state.ikeAiUserOverride||!state.fontChosen){
-      state.font=rec.font;state.fontChosen=true;state.letterSize=rec.fit;state.ikeAiUserOverride=false;
-    }
-    return rec;
-  }
-
-  function updateIkeAiStatus(){
-    const box=$('ikeAiRecommendation');if(!box)return;
-    const rec=state.ikeAiRecommendation||ikeAiRecommendDesign(state.wording);
-    if(!rec){box.innerHTML='<strong>IKE AI READY</strong><span>Type your wording and Ike AI will match it against the finished-sign examples.</span>';return;}
-    const styleName={A:'Bold Block',B:'Tall Western',C:'Classic Serif'}[rec.font]||`Style ${rec.font}`;
-    box.innerHTML=`<div><strong>IKE AI MATCH · STYLE ${escapeHtml(rec.font)}</strong><span>${escapeHtml(styleName)} · ${escapeHtml(rec.fit)} · ${escapeHtml(rec.confidence.toUpperCase())} confidence</span></div><small>${escapeHtml(rec.reason)} Reference: ${escapeHtml(rec.exampleSource)}.</small>`;
-  }
-
   function ikeApplyDetectedTextPlacementTo(el){
     const r=state.plankRecognition||{},region=r.fitBand||r.usableRegion,card=el.closest('.preview-card'),img=card?.querySelector('.preview-image');
     if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
     const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
     const wording=String(state.wording||'Your Sign').trim()||'Your Sign';
-    // 8.2.2 Gridwright: fit the VISIBLE GLYPHS through a live-edge face grid to Ike's usable wood face.
-    // Generic character-count math left too much dead space because font metrics
-    // include invisible side bearings/ascent. Measure the rendered lettering itself,
-    // then target real face occupancy while preserving carving clearance.
-    const mode=state.letterSize||'Ike Fit';
-    const targets={
-      'More Room':{w:.78,h:.58},
-      'Ike Fit':{w:.90,h:.68},
-      'Full Face':{w:.965,h:.76}
-    }[mode]||{w:.90,h:.68};
+    // 8.2.2 IKE FIT: one shop fit, not a generic size selector. Measure the
+    // VISIBLE glyphs and deliberately claim the usable face like Ike's finished
+    // RAMJET / SMOKE HOLE! signs. Customer intent is the wording + style; the
+    // layout engine owns size and optical placement inside the carve-safe band.
+    state.letterSize='Ike Fit';
+    const mode='Ike Fit';
+    const targets={w:.945,h:.76};
     const css=getComputedStyle(el);
     const probe=100;
     const cv=document.createElement('canvas'),cx=cv.getContext('2d');
@@ -10676,20 +10625,27 @@ The full order and approved media remain stored with this project.`;
     const spacingPx=Math.max(0,wording.length-1)*probe*spacingEm;
     const glyphW=Math.max(1,(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width||1)+spacingPx);
     const glyphH=Math.max(1,(m.actualBoundingBoxAscent||probe*.76)+(m.actualBoundingBoxDescent||probe*.20));
-    const styleWidthBoost=state.font==='B'?1.03:(state.font==='C'?.98:1);
+    const styleWidthBoost=state.font==='A'?1.04:(state.font==='B'?1.02:.99);
     const byWidth=(w*targets.w)/(glyphW/probe);
     const byHeight=(h*targets.h)/(glyphH/probe);
     let fs=Math.min(byWidth,byHeight)*styleWidthBoost;
-    // Short, bold routed words are the signature Ike look. Let them push harder
-    // vertically when width still has room, like the finished RAMJET reference.
-    if(state.font==='A' && wording.replace(/\s+/g,'').length<=8){
-      const aggressiveH=(h*(mode==='More Room'?.62:mode==='Full Face'?.80:.72))/(glyphH/probe);
-      const widthDriven=byWidth*(mode==='Full Face'?1.0:mode==='Ike Fit'?.985:.95);
-      fs=Math.min(widthDriven,Math.max(aggressiveH,byHeight));
+    const compactWord=wording.replace(/\s+/g,'').length<=9;
+    // Ike's routed block signs are not centered labels; short wording dominates the
+    // board. Bias Style A toward width while keeping the rendered glyph body inside
+    // the mapped band. This is calibrated to the real RAMJET proof, not a font-size
+    // preset.
+    if(state.font==='A'&&compactWord){
+      const widthFit=(w*.965)/(glyphW/probe);
+      const heightFit=(h*.82)/(glyphH/probe);
+      fs=Math.min(widthFit,heightFit)*1.02;
     }
-    fs=Math.max(18,Math.min(260,fs));
-    const opticalShiftY=(state.font==='A'&&wording.replace(/\s+/g,'').length<=8)?Math.min(h*.035,8):0;
-    Object.assign(el.style,{left:`${x}px`,top:`${y+opticalShiftY}px`,width:`${w}px`,height:`${Math.max(1,h-opticalShiftY)}px`,transform:'none',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'0',lineHeight:'1'});
+    fs=Math.max(20,Math.min(340,fs));
+    // Optical correction uses the visible glyph bounds so the ink, not invisible
+    // font side-bearings, is centered on the wood face.
+    const leftBearing=(m.actualBoundingBoxLeft||0),rightBearing=Math.max(0,(m.width||glyphW)-(m.actualBoundingBoxRight||m.width||glyphW));
+    const opticalShiftX=Math.max(-w*.035,Math.min(w*.035,(rightBearing-leftBearing)*(fs/probe)*.50));
+    const opticalShiftY=(state.font==='A'&&compactWord)?Math.min(h*.018,5):0;
+    Object.assign(el.style,{left:`${x+opticalShiftX}px`,top:`${y+opticalShiftY}px`,width:`${Math.max(1,w-Math.abs(opticalShiftX))}px`,height:`${Math.max(1,h-opticalShiftY)}px`,transform:'none',maxWidth:'none',fontSize:`${fs}px`,display:'flex',alignItems:'center',justifyContent:'center',padding:'0',lineHeight:'.94',whiteSpace:'nowrap'});
     el.dataset.ikeFitMode=mode;
     el.dataset.ikeFitFontPx=String(Math.round(fs));
     el.dataset.ikeFitTarget=`${Math.round(targets.w*100)}x${Math.round(targets.h*100)}`;el.dataset.ikeFitRegion=String(region.source||'');el.dataset.ikeFitGrid=String(r.faceGrid?.length||0);
@@ -13520,7 +13476,7 @@ The full order and approved media remain stored with this project.`;
       if($('charCount')) $('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;
       applyPreview();
     });
-    $('ikeWordingInput')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.wording=e.target.value;applyIkeAiRecommendation();updateUi();});
+    $('ikeWordingInput')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.wording=e.target.value;updateUi();});
     $('ikeSpeciesAssist')?.addEventListener('click',e=>{
       const choice=e.target.closest('[data-ike-species-choice]');
       if(choice){ikeResolveSpeciesChoice(choice.dataset.ikeSpeciesChoice);return;}
@@ -13544,9 +13500,7 @@ The full order and approved media remain stored with this project.`;
       if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Checking the full plank with your first photo…';
       try{await analyzeIkeSecondLengthPhoto(file);}catch(err){console.error('Ike second length photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That angle did not give us enough scale evidence. Try one full-plank photo from straight on.';}finally{input.value='';}
     });
-    $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;state.ikeAiUserOverride=true;updateUi();});
-    $('ikeAiPickBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();state.ikeAiMode=true;state.ikeAiUserOverride=false;applyIkeAiRecommendation({force:true});updateUi();scheduleIkeDetectedTextPlacement();});
-    $('ikeLetterSizeChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-size]');if(!b)return;invalidateIkeApprovedDesignLock();state.letterSize=b.dataset.ikeSize||'Ike Fit';state.ikeAiUserOverride=true;updateUi();scheduleIkeDetectedTextPlacement();});
+    $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;updateUi();});
     $('ikeFillChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-fill]');if(!b)return;invalidateIkeApprovedDesignLock();state.fill=b.dataset.ikeFill;updateUi();});
     $('ikeCustomColor')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.customColor=e.target.value;state.fill='Other';updateUi();});
     $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));

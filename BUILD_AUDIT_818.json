@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-build-audit-v1",
-  "build": "8.2.3",
-  "name": "Gridwright",
+  "build": "8.2.2",
+  "name": "Ike Fit",
   "uploadFileCount": 99,
   "maxWebUploadFiles": 99,
   "checks": {
@@ -20,5 +20,6 @@
     "reviewGating": true,
     "manualKnownGoodPromotion": true
   },
-  "at": "2026-08-26T10:20:00-04:00"
+  "at": "2026-08-26T10:20:00-04:00",
+  "note": "Focused single-fit composition pass; historical audit filename retained to keep the iPad-safe 99-file package flat."
 }

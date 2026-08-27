@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.2.2 \u2014 Gridwright",
+  "name": "Dark Sky 8.2.2 — Ike Fit",
   "short_name": "Dark Sky 8.2.2",
-  "start_url": "./index.html?release=signsmith-822-ike-ai-8f4c21",
+  "start_url": "./index.html?release=ikefit-822-root-keel-7b2e91",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",

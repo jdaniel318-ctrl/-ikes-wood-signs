@@ -1,15 +1,17 @@
-# Dark Sky 8.2.3 — Signsmith AI
+# Dark Sky 8.2.2 — Ike Fit
 
-Ike layout is grounded in the finished SMOKE HOLE! and RAMJET signs. Generic Small/Balanced/Large/Fill is replaced by More Room / Ike Fit / Full Face. Ike Fit is default; the old 64px text ceiling is removed. Start With My Plank hard-resets stale customer/order design state.
+Focused Ike’s Wood Signs pass from the exact 8.2.1 iPad-safe build.
 
-# Dark Sky 8.2.3 — Signsmith AI
+## Mission
+Use one automatic **Ike Fit** for the sign preview. The customer chooses wording, lettering style, and finish; the ship handles size and placement together using a hidden live-edge face grid calibrated against Ike’s real finished RAMJET and SMOKE HOLE! signs. The exact plank photo is never replaced or redrawn. The blue Ike stamp seen during back-of-plank testing is ignored for lettering layout.
 
-Real Face hardens Ike's customer voyage at the production boundary. It fixes final order serialization, adds an automated complete-order boundary voyage, adds bounded lettering-size presets beside lettering style, improves rotation state feedback, starts new Ike orders with blank wording, removes internal Sea Trial language from customer summaries, adds permission-aware camera guidance, and makes required review/order buttons visibly gated.
+## 8.2.2 changes
+- Removed More Room / Full Face size choices from Ike’s CX.
+- Replaced the conservative grid intersection with a robust broad-face grid band.
+- Removed the old 72% preview max-width cap that could make lettering look artificially small.
+- Centers the visible glyph body rather than invisible font side bearings.
+- Uses a broad heavy serif/block treatment for Style A to better match the physical RAMJET proof.
+- Black routed lettering uses a subtle recessed/painted treatment rather than a raised-looking outline.
+- Preserves final Ike verification before carving.
 
-Fleet Judgment and Admiral governance remain intact. Known Good promotion remains manual.
-
-## Ike Signsmith AI
-
-Ike’s design workspace now uses the bundled finished-sign references as explicit layout evidence. Short single words are matched toward the RAMJET bold-block proportions; wider phrases are matched toward the SMOKE HOLE! tall-western proportions. Customers can accept the AI recommendation or manually override style and fit. The approved PNG artifact now uses the same font-family contract as the live preview so the production handoff does not silently change styles.
-
-This remains an on-device, example-grounded layout system: it does not send customer plank photos to an external AI service.
+Manual Known Good promotion remains deliberate.
