@@ -1,0 +1,167 @@
+name: Dark Sky Dry Dock - Batch 1
+
+on:
+
+  workflow_dispatch:
+
+permissions:
+
+  contents: write
+
+jobs:
+
+  clean:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Check out current hull
+
+        uses: actions/checkout@v4
+
+        with:
+
+          fetch-depth: 0
+
+      - name: Verify protected current hull
+
+        shell: bash
+
+        run: |
+
+          set -euo pipefail
+
+          required=(
+
+            index.html
+
+            owner.html
+
+            app.js
+
+            captain.js
+
+            platform_core.js
+
+            platform_identity.js
+
+            platform_v4.js
+
+            styles.css
+
+            sw.js
+
+            manifest.webmanifest
+
+            ike_character.png
+
+            ADMIRAL_REFERENCE_COMPENDIUM.md
+
+            FLEET_OPERATING_CONTRACTS.md
+
+            FLEET_REGRESSION_LIBRARY.md
+
+            FOUNDRY_FLEET_SERVICES.md
+
+            IKES_PRODUCTION_COMPENDIUM.md
+
+            LEAN_BUILD_MANIFEST.md
+
+            RELEASE_HARDENING_COMPENDIUM.md
+
+          )
+
+          for f in "${required[@]}"; do
+
+            test -f "$f" || { echo "BLOCK: protected file missing: $f"; exit 1; }
+
+          done
+
+          test -s ike_character.png || { echo "BLOCK: ike_character.png is empty"; exit 1; }
+
+          for f in app.js captain.js platform_core.js platform_identity.js platform_v4.js; do
+
+            node --check "$f"
+
+          done
+
+      - name: Remove conservative legacy batch
+
+        shell: bash
+
+        run: |
+
+          set -euo pipefail
+
+          git rm --ignore-unmatch ADMIRAL_PREFLIGHT_*.json
+
+          git rm --ignore-unmatch BUILD_AUDIT_*.json
+
+          git rm --ignore-unmatch STORAGE_TELEMETRY_*.md
+
+          git rm --ignore-unmatch ike_character.jpg
+
+          git rm --ignore-unmatch ike_character_white_teeth.png
+
+          git rm --ignore-unmatch assets/ike_character.jpg
+
+      - name: Regression guard after cleanup
+
+        shell: bash
+
+        run: |
+
+          set -euo pipefail
+
+          if grep -RInE --exclude-dir=.git --exclude='drydock-batch1.yml' \
+
+            'ike_character_white_teeth\.png|assets/ike_character\.jpg|ike_character\.jpg' .; then
+
+            echo "BLOCK: a live reference still points at a retired Ike asset"
+
+            exit 1
+
+          fi
+
+          grep -RIl --exclude-dir=.git 'ike_character.png' index.html owner.html app.js captain.js platform_core.js platform_identity.js platform_v4.js styles.css >/dev/null || {
+
+            echo "BLOCK: canonical ike_character.png is not referenced by the active hull"
+
+            exit 1
+
+          }
+
+          for f in app.js captain.js platform_core.js platform_identity.js platform_v4.js; do
+
+            node --check "$f"
+
+          done
+
+          echo "Batch 1 regression guard passed."
+
+          echo "Files remaining: $(find . -type f -not -path './.git/*' | wc -l)"
+
+      - name: Commit dry-dock batch
+
+        shell: bash
+
+        run: |
+
+          set -euo pipefail
+
+          if git diff --cached --quiet; then
+
+            echo "No Batch 1 files remain to remove. Nothing to commit."
+
+            exit 0
+
+          fi
+
+          git config user.name "Dark Sky Dry Dock"
+
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git commit -m "Dry dock: retire legacy generated artifacts batch 1"
+
+          git push
