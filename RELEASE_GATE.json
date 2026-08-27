@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.4.2",
-  "release": "GlyphBench",
+  "build": "8.4.3",
+  "release": "GlyphForge",
   "generatedAt": "2026-08-26",
   "checks": {
     "build_version": true,
@@ -151,14 +151,25 @@
     "fleet_dock_bounded_first_paint": true,
     "fleet_dock_background_reconciliation": true,
     "ikes_finished_sign_proof_note": true,
-    "ikes_true_case_real_input_roundtrip": true
+    "ikes_true_case_real_input_roundtrip": true,
+    "glyphforge_editable_evidence_metadata": true,
+    "glyphforge_draft_observation_not_proven": true,
+    "glyphforge_segmentation_review": true,
+    "glyphforge_canonical_per_glyph_approval": true,
+    "glyphforge_provenance_retained": true,
+    "glyphforge_geometry_versioning": true,
+    "glyphforge_geometry_rollback": true,
+    "glyphforge_protected_benchmark_replay": true,
+    "glyphforge_anchor_certification_distinct": true,
+    "glyphforge_action_result_return": true,
+    "engine_style_foundry_v4_non_destructive_sync": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.4.2 GlyphBench: bounded Fleet Dock first paint/reconciliation recovery plus Ike face-grid finished-sign proof; True Cut artifact integrity, detector independence, isolation, and authority contracts preserved.",
-  "candidate": "8.4.2",
+  "note": "8.4.3 GlyphForge: editable evidence, draft/proven separation, per-glyph segmentation and provenance, canonical geometry review, versioned compile/rollback, protected benchmark replay, anchor-certification clarity, and action-result navigation; TrueCase, Dock Lock, artifact integrity, detector isolation, project isolation, and authority contracts preserved.",
+  "candidate": "8.4.3",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

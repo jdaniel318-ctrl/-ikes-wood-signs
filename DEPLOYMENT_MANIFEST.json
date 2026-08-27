@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.4.2",
-  "version": "8.4.2",
-  "release_name": "GlyphBench",
-  "releaseName": "GlyphBench",
-  "release_seal": "glyphbench-842-graphic-style-cert-4c2f91",
+  "build": "8.4.3",
+  "version": "8.4.3",
+  "release_name": "GlyphForge",
+  "releaseName": "GlyphForge",
+  "release_seal": "glyphforge-843-versioned-geometry-7a31c9",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -57,8 +57,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Scalable Ike Style Registry with visible evidence, coverage, lifecycle, and safe Style C+ onboarding",
-  "release_note": "8.4.2 GlyphBench makes Style Foundry extensible beyond A/B. New styles are project-scoped data, hidden from CX by default, require exact-wording evidence, approval, compilation, and explicit geometry certification before customer publication. Bundled A/B anchors remain visible and protected.",
+  "release_focus": "Versioned, reviewable Ike production geometry from real sign evidence with rollback and protected benchmark replay",
+  "release_note": "8.4.3 GlyphForge turns approved Style Foundry evidence into reviewable glyph segmentation candidates, canonical per-character geometry, versioned style-pack compiles, rollback, protected benchmark replay, and explicit certification. Draft observations are not proven geometry; A/B anchor certification is labeled separately; Engine evidence sync cannot downgrade Owner GlyphForge state.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

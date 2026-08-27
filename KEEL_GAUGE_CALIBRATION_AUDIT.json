@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-keel-gauge-calibration-audit-v1",
-  "build": "8.4.2",
+  "build": "8.4.3",
   "release": "Keel Gauge \u2014 Root Keel",
-  "seal": "glyphbench-842-graphic-style-cert-4c2f91",
+  "seal": "glyphforge-843-versioned-geometry-7a31c9",
   "status": "PASS",
   "ground_truth": {
     "species": "Cedar",

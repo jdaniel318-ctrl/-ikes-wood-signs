@@ -1,6 +1,6 @@
 {
-  "release": "8.4.2",
-  "name": "GlyphBench",
+  "release": "8.4.3",
+  "name": "GlyphForge",
   "file_count": 49,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -53,7 +53,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.4.2",
-  "seal": "glyphbench-842-graphic-style-cert-4c2f91",
-  "release_name": "GlyphBench"
+  "build": "8.4.3",
+  "seal": "glyphforge-843-versioned-geometry-7a31c9",
+  "release_name": "GlyphForge"
 }

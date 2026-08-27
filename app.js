@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.4.2';
+  const BUILD_VERSION='8.4.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.4.2',
+    build:'8.4.3',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4367,8 +4367,11 @@
       && String(ikeApplyDetectedTextPlacementTo).includes("state.font==='B'?'.88':'.94'")
       && trueCaseContract;
     add('ike-style-b-truth','Ike Style B finished-sign geometry',styleBTruthContract?'pass':'fail',styleBTruthContract?'Style B keeps the proven exact-case input path while applying a tall, narrow SMOKE HOLE!-anchored measurement and visual envelope inside Ike Fit.':'Style B geometry drifted from the tall/narrow finished-sign contract or disturbed the proven TrueCase path.');
-    const styleFoundryContract=!!window.IkeGlyphBench?.pack?.('A')&&!!window.IkeGlyphBench?.pack?.('B')&&String(projectReferenceLibraryMarkup).includes('data-style-foundry-compile')&&String(compileIkeGlyphBench).includes('approvedExampleCount');
-    add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'Style A/B are governed packs with bundled real-sign anchors, owner/Engine evidence intake, explicit approval, coverage tracking, and deliberate compile.':'Style Foundry registry, evidence governance, or compile contract is incomplete.');
+    const styleFoundryContract=!!window.IkeGlyphBench?.pack?.('A')&&!!window.IkeGlyphBench?.pack?.('B')&&String(projectReferenceLibraryMarkup).includes('data-style-foundry-compile')&&String(compileIkeGlyphBench).includes('dark-sky-ike-style-foundry-project-v4');
+    add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'Style evidence remains project-scoped and Engine synchronization preserves the v4 GlyphForge geometry authority instead of downgrading it.':'Style Foundry v4 registry or non-destructive Engine evidence synchronization is incomplete.');
+    const glyphForgeSource=await safe(async()=>{const r=await fetch(`owner.html?glyphForgeCheck=${Date.now()}`,{cache:'no-store',credentials:'same-origin'});return r.ok?await r.text():'';},()=> '');
+    const glyphForgeContract=String(glyphForgeSource).includes('data-sf-segment')&&String(glyphForgeSource).includes('data-cand-canonical')&&String(glyphForgeSource).includes('Protected benchmark replay')&&String(glyphForgeSource).includes('data-sf-rollback')&&String(glyphForgeSource).includes('Evidence wording corrected')&&String(glyphForgeSource).includes('ANCHOR GEOMETRY CERTIFIED');
+    add('ike-glyphforge','Ike GlyphForge geometry governance',glyphForgeContract?'pass':'fail',glyphForgeContract?'Owner GlyphForge includes editable evidence, segmentation candidates, canonical glyph approval, protected benchmark replay, version rollback, anchor-certification clarity, and action-result return.':'GlyphForge geometry governance is incomplete on the actual Owner surface.');
 
     const faceGridContract=String(ikeAnalyzePlankPixelsProven).includes('ike-fit-robust-face-grid')&&String(ikeApplyDetectedTextPlacementTo).includes('r.fitBand||r.usableRegion')&&String(ikeApplyDetectedTextPlacementTo).includes('actualBoundingBox')&&!!document.querySelector('.ike-style-proof-note')&&!document.querySelector('label[for=\"ikeStyleReferenceInput\"]');
     add('ike-face-grid-fit','Ike face-grid fit contract',faceGridContract?'pass':'fail',faceGridContract?'Live-edge face grid, visible-glyph measurement, finished-sign proof, and single automatic Ike Fit are installed.':'Ike Fit face-grid placement or finished-sign calibration contract is incomplete.');
@@ -4415,7 +4418,7 @@
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
-      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
+      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
@@ -10729,7 +10732,7 @@ The full order and approved media remain stored with this project.`;
     const key=String(font||'B');
     const governed=window.IkeGlyphBench?.pack?.(key);
     if(governed?.metrics)return {...governed.metrics,stylePackId:governed.id,stylePackName:governed.name,stylePackStatus:governed.status};
-    // Safe compatibility fallback. Style Foundry is a required runtime in 8.4.2,
+    // Safe compatibility fallback. Style Foundry is a required runtime in 8.4.3,
     // so reaching this path is evidence for diagnostics rather than a new style.
     if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01,metricWidthScale:1,metricHeightScale:1,visualScaleX:1,visualScaleY:1,stylePackId:'A',stylePackStatus:'fallback'};
     if(key==='B')return {family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',weight:'900',style:'normal',spacingEm:-0.045,widthTarget:0.93,heightTarget:0.88,widthBoost:1,compactWidthTarget:0.94,compactHeightTarget:0.90,opticalYBias:0,metricWidthScale:0.72,metricHeightScale:1.10,visualScaleX:0.72,visualScaleY:1.10,stylePackId:'B',stylePackStatus:'fallback'};
@@ -12357,29 +12360,30 @@ The full order and approved media remain stored with this project.`;
     </article>`;
   }
   function ikeGlyphBenchCoverageFor(p,style){
-    const base=window.IkeGlyphBench?.pack?.(style)||{};
+    const runtime=window.IkeGlyphBench?.pack?.(style)||{},projectPack=p?.styleFoundry?.styles?.[style]||{},base={...runtime,...projectPack};
     const approved=activeProjectReferences(p,{style}).filter(r=>r.sampleText);
-    const evidence=[base.anchorText||'',...approved.map(r=>r.sampleText||'')].join('');
+    const trustedAnchor=(base.anchorSource==='bundled-production'||['A','B'].includes(style))?(base.anchorText||runtime.anchorText||''):'';
+    const evidence=[trustedAnchor,...approved.map(r=>r.sampleText||'')].join('');
     const chars=window.IkeGlyphBench?.chars?.(evidence)||[...new Set(evidence.replace(/\s/g,'').split(''))].sort().join('');
     const upper=[...chars].filter(c=>/[A-Z]/.test(c)).join('');
     const lower=[...chars].filter(c=>/[a-z]/.test(c)).join('');
-    const other=[...chars].filter(c=>!/[A-Za-z]/.test(c)).join('');
-    return {chars,upper,lower,other,approvedCount:approved.length,anchor:base.anchorText||'',asset:base.anchorImage||'',status:lower?'mixed-evidence':'uppercase-anchor'};
+    const other=[...chars].filter(c=>!/[A-Za-z\s]/.test(c)).join('');
+    return {chars,upper,lower,other,approvedCount:approved.length,anchor:trustedAnchor,asset:base.anchorImage||runtime.anchorImage||'',status:lower?'mixed-evidence':'approved-evidence-only'};
   }
   function ikeGlyphBenchStyleIds(p){const ids=new Set(['A','B']);Object.keys(p?.styleFoundry?.styles||{}).forEach(id=>ids.add(id));return [...ids];}
   function ikeGlyphBenchPackFor(p,style){return p?.styleFoundry?.styles?.[style]||window.IkeGlyphBench?.pack?.(style)||{};}
   function ikeGlyphBenchStatusMarkup(p){
     const cards=ikeGlyphBenchStyleIds(p).map(style=>{const pack=ikeGlyphBenchPackFor(p,style),c=ikeGlyphBenchCoverageFor(p,style),anchorNote=['A','B'].includes(style)?'BUNDLED ANCHOR':'PROJECT STYLE';return `<article class="style-foundry-pack"><div class="style-foundry-pack-head"><div><small>STYLE ${escapeHtml(style)} • ${escapeHtml(String(pack.status||'DRAFT').toUpperCase())}</small><h3>${escapeHtml(pack.name||style)}</h3></div><strong>${c.approvedCount} APPROVED • ${anchorNote}</strong></div>${c.asset?`<img src="${escapeHtml(c.asset)}" alt="${escapeHtml(pack.name||style)} production anchor">`:''}<p>${escapeHtml(pack.notes||(!pack.geometryCertified?'Evidence may be gathered now. CX publication stays blocked until geometry is explicitly certified.':''))}</p><div class="style-foundry-coverage"><span><b>UPPER</b>${escapeHtml(c.upper||'—')}</span><span><b>lower</b>${escapeHtml(c.lower||'needs examples')}</span><span><b>OTHER</b>${escapeHtml(c.other||'—')}</span></div></article>`;}).join('');
     const compiled=p.styleFoundry?.compiledAt?`Compiled ${escapeHtml(new Date(p.styleFoundry.compiledAt).toLocaleString())}`:'Not compiled from owner/Engine evidence yet';
-    return `<section class="style-foundry-status"><div class="project-reference-rule"><strong>REAL SIGNS → APPROVED EVIDENCE → STYLE PACK</strong><span>Style C and beyond are project data, not hard-coded UI. Evidence can grow safely while CX publication remains separately gated by geometry certification.</span></div><div class="style-foundry-packs">${cards}</div><div class="style-foundry-compile"><button type="button" class="primary-btn small" data-style-foundry-compile>COMPILE APPROVED STYLE PACKS</button><p data-style-foundry-compile-status class="owner-save-status">${compiled}</p></div></section>`;
+    return `<section class="style-foundry-status"><div class="project-reference-rule"><strong>REAL SIGNS → APPROVED EVIDENCE → STYLE PACK</strong><span>Style C and beyond are project data, not hard-coded UI. Evidence can grow safely while CX publication remains separately gated by geometry certification.</span></div><div class="style-foundry-packs">${cards}</div><div class="style-foundry-compile"><button type="button" class="primary-btn small" data-style-foundry-compile>SYNC APPROVED EVIDENCE</button><p data-style-foundry-compile-status class="owner-save-status">${compiled}</p></div></section>`;
   }
   async function compileIkeGlyphBench(p,{engine=false}={}){
     if(!p||p.id!=='ikes-wood-signs')return false;
     const now=new Date().toISOString(),existing=p.styleFoundry?.styles||{},styles={};
-    for(const style of ikeGlyphBenchStyleIds(p)){const runtime=window.IkeGlyphBench?.pack?.(style)||{},pack={...runtime,...(existing[style]||{})},c=ikeGlyphBenchCoverageFor(p,style);styles[style]={...pack,id:style,name:pack.name||style,anchorText:pack.anchorText||'',anchorImage:pack.anchorImage||'',certifiedEvidenceChars:c.chars,upperEvidence:c.upper,lowerEvidence:c.lower,otherEvidence:c.other,approvedExampleCount:c.approvedCount,compiledAt:now,compiledBy:engine?'engine':'owner',caseState:c.lower?'mixed-evidence':'uppercase-anchor-lowercase-provisional'};if(styles[style].status==='approved'||styles[style].status==='production-anchor')styles[style].status='compiled';}
-    p.styleFoundry={...(p.styleFoundry||{}),schema:'dark-sky-ike-style-foundry-project-v2',version:2,compiledAt:now,compiledBy:engine?'engine':'owner',styles};
-    await persistProjectMutation(p,{reason:`${engine?'engine':'owner'}.style_foundry.compile`});
-    logActivity(p.id,'Style Foundry compiled',`${Object.keys(styles).length} governed style pack(s) compiled`);
+    for(const style of ikeGlyphBenchStyleIds(p)){const runtime=window.IkeGlyphBench?.pack?.(style)||{},pack={...runtime,...(existing[style]||{})},c=ikeGlyphBenchCoverageFor(p,style);styles[style]={...pack,id:style,name:pack.name||style,anchorText:pack.anchorText||'',anchorImage:pack.anchorImage||'',certifiedEvidenceChars:c.chars,upperEvidence:c.upper,lowerEvidence:c.lower,otherEvidence:c.other,approvedExampleCount:c.approvedCount,evidenceSyncedAt:now,evidenceSyncedBy:engine?'engine':'owner',caseState:c.lower?'mixed-evidence':'approved-evidence-only'};if(styles[style].status==='approved'&&Object.keys(styles[style].canonicalGlyphs||{}).length)styles[style].status='compiled';}
+    p.styleFoundry={...(p.styleFoundry||{}),schema:'dark-sky-ike-style-foundry-project-v4',version:4,evidenceSyncedAt:now,evidenceSyncedBy:engine?'engine':'owner',styles,glyphCandidates:Array.isArray(p.styleFoundry?.glyphCandidates)?p.styleFoundry.glyphCandidates:[]};
+    await persistProjectMutation(p,{reason:`${engine?'engine':'owner'}.style_foundry.evidence_sync`});
+    logActivity(p.id,'Style Foundry evidence synchronized',`${Object.keys(styles).length} governed style pack(s); owner GlyphForge remains geometry authority`);
     return true;
   }
   function projectReferenceLibraryMarkup(p,{engine=false}={}){
@@ -12406,7 +12410,7 @@ The full order and approved media remain stored with this project.`;
   function bindProjectReferenceLibrary(p,{engine=false,rerender}={}){
     const root=engine?$('projectTabContent'):$('ownerPortalBody');if(!root)return;
     const upload=root.querySelector('[data-reference-upload]');
-    root.querySelector('[data-style-foundry-compile]')?.addEventListener('click',async()=>{const status=root.querySelector('[data-style-foundry-compile-status]');if(status)status.textContent='Compiling approved production evidence…';await compileIkeGlyphBench(p,{engine});if(status)status.textContent='Style packs compiled. Customer case choice remains unchanged; provisional glyphs stay flagged until real examples certify them.';if(rerender)setTimeout(()=>rerender(),550);});
+    root.querySelector('[data-style-foundry-compile]')?.addEventListener('click',async()=>{const status=root.querySelector('[data-style-foundry-compile-status]');if(status)status.textContent='Synchronizing approved evidence without changing certified geometry…';await compileIkeGlyphBench(p,{engine});if(status)status.textContent='Approved evidence synchronized. Geometry extraction, canonical glyph selection, versioning, and certification remain in Owner GlyphForge.';if(rerender)setTimeout(()=>rerender(),550);});
     upload?.addEventListener('click',async()=>{
       const file=root.querySelector('[data-reference-file]')?.files?.[0];
       const style=root.querySelector('[data-reference-style]')?.value||'A';

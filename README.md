@@ -1,4 +1,25 @@
-# Dark Sky 8.4.2 — GlyphBench
+# Dark Sky 8.4.3 — GlyphForge
+
+GlyphForge hardens Ike Style Foundry between evidence coverage and production preview geometry. It does not publish new customer geometry merely because a character was seen in a photo. Evidence must be corrected, approved, segmented, reviewed per glyph, compiled into a versioned style pack, benchmark-replayed, certified, and only then deliberately published.
+
+## What changed
+- Draft graphic characters are now **observations**, not proven glyphs. Approval is required before coverage becomes proven.
+- Evidence title and exact wording can be corrected in place. Changing wording on approved evidence automatically resets approval and any canonical glyph geometry sourced from that evidence.
+- Approved/draft evidence can be segmented into per-character candidate regions with source provenance.
+- Owners can review crop boundaries and explicitly choose the canonical candidate for each character. Multiple candidates remain available as alternates instead of being silently averaged away.
+- Compiles create retained **geometry versions** with canonical glyph maps and benchmark state; older versions can be rolled back.
+- Protected benchmark replay checks bundled anchors and approved examples for missing canonical geometry before new-style certification.
+- Bundled RAMJET / SMOKE HOLE! geometry is labeled **Anchor Geometry Certified**, distinct from evidence-earned certification on new styles.
+- Approve, edit, segment, canonicalize, compile, certify, publish, unpublish, and rollback actions return to the changed style/evidence and leave a durable status message.
+- Engine Style Foundry now performs non-destructive **approved-evidence synchronization** and preserves Owner GlyphForge v4 candidate/version state instead of downgrading the schema.
+- TrueCase, Dock Lock, project isolation, detector isolation, immutable approved artifacts, duplicate-order protection, and existing A/B customer behavior remain protected.
+
+## Next architectural handoff
+GlyphForge creates the governed geometry source. A later PreviewForge pass should make the customer renderer consume only certified compiled geometry, so the customer preview and production artifact converge on the same style-pack geometry.
+
+---
+
+# Dark Sky 8.4.3 — GlyphBench
 
 GlyphBench hardens Ike Style Foundry around scalable evidence, glyph coverage, geometry certification, and safe creation of new production styles from uploaded graphics.
 
@@ -14,11 +35,11 @@ GlyphBench hardens Ike Style Foundry around scalable evidence, glyph coverage, g
 ## Graphic-to-style rule
 A graphic may seed a style pack, but it does not magically prove missing letters. Add further graphics/sign photos to build coverage, approve them, compile, then certify geometry before publishing.
 
-# Dark Sky 8.4.2 — GlyphBench
+# Dark Sky 8.4.3 — GlyphBench
 
 Narrow geometry release branched from the proven 8.3.5 TrueCase build. Customer wording case is frozen as a protected contract; this pass changes only Style B shape and Ike Fit calibration.
 
-## 8.4.2 GlyphBench
+## 8.4.3 GlyphBench
 - Preserves `Smoke Hole!`, `smoke hole!`, and `SMOKE HOLE!` exactly as typed.
 - Keeps the working TrueCase DOM → state → preview round trip untouched.
 - Recalibrates Style B toward the real finished SMOKE HOLE! sign: taller, narrower, tighter spacing, and stronger face occupancy.
@@ -60,5 +81,5 @@ Fleet-structure pass built from the 8.2.5 Reference Library. This release audits
 - Removed customer-facing Ike Fit explanation cards; blank wording renders a blank plank.
 
 
-## 8.4.2 GlyphBench
+## 8.4.3 GlyphBench
 Ike lettering is now governed through production style packs. Bundled RAMJET and SMOKE HOLE! finished-sign anchors are release assets. Owner and Engine may upload additional real examples, tag the exact wording shown, approve evidence deliberately, and compile project-scoped glyph coverage. Draft uploads never change customer output. TrueCase remains preserved.

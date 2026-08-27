@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.4.2",
-  "release": "GlyphBench",
+  "build": "8.4.3",
+  "release": "GlyphForge",
   "excluded_sources": [
     "The situation"
   ],
@@ -62,7 +62,16 @@
       "style_evidence_lifecycle_draft_approved_compiled_published",
       "new_styles_hidden_from_cx_by_default",
       "new_style_geometry_certification_required_before_publish",
-      "style_anchor_and_glyph_coverage_visible"
+      "style_anchor_and_glyph_coverage_visible",
+      "draft_style_observations_not_proven_until_approval",
+      "editable_evidence_metadata_recalculates_coverage",
+      "glyph_segmentation_review_before_geometry_compile",
+      "canonical_glyph_per_character_with_provenance",
+      "style_geometry_versioned_and_rollback_safe",
+      "protected_style_benchmark_replay_before_certification",
+      "anchor_geometry_certification_visibly_distinct",
+      "style_action_returns_to_changed_item",
+      "engine_evidence_sync_never_downgrades_owner_geometry_state"
     ],
     "foundry_watch": [
       "capability_vessel_service_instance_separation",

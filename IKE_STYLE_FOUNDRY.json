@@ -1,8 +1,8 @@
 {
-  "schema": "dark-sky-ike-style-foundry-v2",
-  "build": "8.4.2",
-  "release": "GlyphBench",
-  "purpose": "Govern an extensible registry of Ike production alphabets from approved real-sign evidence; styles are data-driven and not limited to A/B.",
+  "schema": "dark-sky-ike-style-foundry-v4",
+  "build": "8.4.3",
+  "release": "GlyphForge",
+  "purpose": "Govern extensible Ike production alphabets from real-sign evidence and promote only reviewed, provenance-retained, versioned glyph geometry into certified style packs.",
   "governance": {
     "draft_upload_changes_customer_output": false,
     "approval_required": true,
@@ -18,7 +18,19 @@
     "style_count_hardcoded": false,
     "geometry_certification_required_before_customer_publish": true,
     "bundled_anchor_cards_visible": true,
-    "glyph_coverage_visible": true
+    "glyph_coverage_visible": true,
+    "draft_characters_are_observations_not_proven": true,
+    "evidence_metadata_editable_with_reapproval_on_wording_change": true,
+    "segmentation_review_required_for_new_geometry": true,
+    "canonical_glyph_choice_per_character": true,
+    "multiple_candidates_per_character_retained": true,
+    "glyph_provenance_required": true,
+    "geometry_versions_retained": true,
+    "rollback_supported": true,
+    "protected_benchmark_replay_required_before_new_style_certification": true,
+    "anchor_certification_labeled_distinctly": true,
+    "action_result_returns_to_changed_style_or_evidence": true,
+    "engine_sync_must_preserve_owner_geometry_state": true
   },
   "packs": {
     "A": {
@@ -39,16 +51,26 @@
     }
   },
   "workflow": [
-    "create draft style pack",
+    "create or select style pack",
     "upload real example",
     "tag exact wording and style",
-    "review draft evidence",
+    "correct evidence metadata if needed",
     "approve evidence",
-    "compile approved evidence into coverage",
-    "review visible glyph coverage",
+    "segment glyph candidates from source evidence",
+    "review crop boundaries and provenance",
+    "choose canonical glyph geometry per character",
+    "compile a new versioned geometry candidate",
+    "replay protected benchmark signs",
+    "certify geometry deliberately",
     "publish style to CX deliberately",
-    "sea-trial customer preview",
-    "retain superseded evidence"
+    "retain prior geometry versions for rollback"
   ],
-  "file_budget_note": "Release remains comfortably below the 75-file working ceiling; additional approved examples can be added deliberately."
+  "file_budget_note": "Release remains comfortably below the 75-file working ceiling; additional approved examples can be added deliberately.",
+  "geometry_artifact_contract": {
+    "candidate": "source-linked crop/geometry candidate; not machine-ready merely because detected",
+    "canonical": "owner-approved per-character geometry candidate with source provenance",
+    "compiled_style_version": "immutable snapshot of canonical glyph map plus evidence/benchmark state",
+    "publication": "only geometry-certified benchmark-clear version may publish",
+    "future_previewforge": "customer renderer must consume certified compiled geometry rather than generic-font fallback"
+  }
 }
