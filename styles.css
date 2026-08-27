@@ -14749,6 +14749,6 @@ html.dark-sky-route-preflight body #app,html.dark-sky-route-preflight body #engi
 .foundry-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px;border-top:1px solid rgba(214,176,87,.2);background:#05151a}.foundry-foot span{color:#8ba0a2;font-size:8px;letter-spacing:.1em}.foundry-notice{padding:7px 18px;background:#031015;color:#9eb0b2;font-size:9px;text-align:center}
 @media(max-width:900px){.foundry-tiers{grid-template-columns:repeat(2,1fr)}.foundry-domain-grid{grid-template-columns:repeat(2,1fr)}.foundry-shell{height:96dvh}.foundry-head h2{font-size:26px}}
 
-/* 8.3.2 SmokeTruth — explicit Style B production-truth feedback. */
+/* 8.3.3 CaseTrue — explicit Style B production-truth feedback. */
 .ike-style-truth-status{margin-top:9px;padding:9px 11px;border:1px solid #d2b54b;border-radius:10px;background:#fff8d8;color:#493b12;font-size:12px;font-weight:800;line-height:1.35}
 .ike-style-truth-status.hidden{display:none}

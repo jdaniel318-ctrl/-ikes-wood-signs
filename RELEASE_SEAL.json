@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.3.2",
-  "release": "SmokeTruth",
-  "seal": "smoketruth-832-style-b-truth-9f42a1",
+  "build": "8.3.3",
+  "release": "CaseTrue",
+  "seal": "casetrue-833-mixed-case-fit-4c17b2",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "SmokeTruth"
+  "release_name": "CaseTrue"
 }

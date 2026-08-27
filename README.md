@@ -1,27 +1,20 @@
-# Dark Sky 8.3.2 — SmokeTruth
+# Dark Sky 8.3.3 — CaseTrue
 
-Focused production-truth pass built directly on 8.3.1 Dock Lock. SmokeTruth preserves the bounded Fleet Dock paint, immutable production-artifact path, protected Ike detectors, and Style A RAMJET behavior while correcting Style B against the finished SMOKE HOLE! benchmark.
+Focused correction built from 8.3.2 after the iPad sea trial exposed two regressions: forced uppercase and an overly heavy/wide Style B. CaseTrue preserves Dock Lock, Style A, protected plank detectors, duplicate-order protection, and immutable approved-artifact continuity.
 
+## CaseTrue correction
+- Preserves customer-entered uppercase and lowercase exactly for Ike Style A and Style B.
+- Never force-normalizes `Smoke Hole!` to `SMOKE HOLE!`.
+- Explicitly blocks unsupported glyphs rather than silently substituting unrelated geometry.
+- Rebalances Style B toward the tall/narrow finished SMOKE HOLE! silhouette and removes the 8.3.2 horizontal compensation that caused the fat-letter regression.
+- Adds the `ike-style-b-case-truth` Proving Ground gate for uppercase, lowercase, mixed case, unsupported punctuation, scale calibration, and immutable-artifact continuity.
 
-## 8.3.2 SmokeTruth Repair
-- Fleet Dock no longer waits indefinitely on canonical convergence before showing the vessel roster.
-- Adds a proving-ground regression gate for bounded Fleet Dock first paint.
-- Restores the missing finished-sign proof note required by the Ike face-grid fit contract.
-- Preserves the safer Ike Fit production inset so visible glyphs scale down before approaching live edges, bark edges, voids, or cutouts.
-- Locks one approved geometry/artifact across Design Review, customer review, final order, owner/admin, and future production outputs.
-- Removes canvas `maxWidth` recompression from locked artifacts so later screens do not silently squeeze approved lettering.
-- Stores the immutable approved artifact as high-quality JPEG instead of photo-heavy PNG to reduce durable storage pressure without changing its design hash contract.
-- Compacts draft/local mirrors and removes redundant raw/original media from localStorage.
-- Adds quota-aware durable-order recovery: compact safe mirrors, retry with reduced raw photo, and only as a last resort omit the redundant raw photo while retaining the exact approved production artifact.
-- Adds order idempotency so repeated taps cannot create a second order for the same locked artifact.
-- Preserves the approved design after a storage failure and replaces raw quota text with a recoverable customer-safe message.
-
-## 8.3.2 release identity
-
-- One canonical page identity now drives first light and the atomic loader; the loader no longer carries its own duplicated build/seal literal.
-- If an old HTML shell sees a newer deployment manifest, Dark Sky makes one cache-busted document promotion attempt before showing HOLD. It cannot loop.
-- Service-worker identity, deployment manifest, release seal, and page identity remain required to agree before Engine paint.
-- This repair changes application runtime state only; project/order data is never cleared by release recovery.
+## 8.3.3 sea trial
+1. Fleet Dock must paint without an indefinite `READING FLEET` state.
+2. In Ike Style B, type `Smoke Hole!`; both field and preview must remain `Smoke Hole!`.
+3. Test `SMOKE HOLE!` and `smoke hole!`; case must remain exactly what was typed.
+4. Compare Style B with the finished sign: it should be visibly taller/narrower than 8.3.2 and remain inside the detected usable face.
+5. Try `Smoke Hole?`; the unsupported `?` must be explicitly blocked, never replaced by a fallback glyph.
 
 Regression-memory pass built on 8.2.6 Foundry Foundation. This release turns the fleet's accumulated project lessons into explicit release gates and keeps the separate project **The situation** outside Dark Sky evidence unless the Captain explicitly authorizes a future transfer.
 
@@ -57,10 +50,17 @@ Fleet-structure pass built from the 8.2.5 Reference Library. This release audits
 - Removed customer-facing Ike Fit explanation cards; blank wording renders a blank plank.
 
 
-## 8.3.2 SmokeTruth
+## 8.3.3 CaseTrue
 - Style B normalizes lowercase customer input to the approved uppercase shop alphabet instead of inventing lowercase geometry.
 - Unsupported Style B punctuation is blocked before approval; no generic fallback style is substituted.
 - Style B is calibrated taller and narrower against the finished SMOKE HOLE! reference, with stronger face occupancy while remaining inside Ike Fit.
 - The exact Style B scale calibration is captured into the immutable approved artifact so customer preview and owner/order output remain aligned.
 - Adds an `ike-style-b-smoke-truth` Proving Ground gate.
 - Preserves Dock Lock bounded Fleet Dock paint, Style A RAMJET behavior, orientation/species detectors, and immutable artifact/order contracts.
+
+### 8.3.3 CaseTrue sea trial
+1. Fleet Dock must paint without an indefinite READING FLEET state.
+2. In Ike's Style B, type `Smoke Hole!`; the field and preview must remain `Smoke Hole!`.
+3. Test `SMOKE HOLE!` and `smoke hole!`; case must be preserved exactly.
+4. Style B should read taller/narrower than 8.3.2 while remaining inside the detected face.
+5. Unsupported punctuation such as `?` must be explicitly blocked, never substituted.

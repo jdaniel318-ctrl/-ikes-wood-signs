@@ -1,12 +1,13 @@
-# 8.3.2 — SmokeTruth
+# 8.3.3 — CaseTrue
 
-## Style B Production Truth
-- Normalizes lowercase Style B wording to Ike’s approved uppercase shop alphabet.
-- Blocks unsupported punctuation before approval rather than rendering a fallback glyph/font.
-- Calibrates Style B to a taller, narrower SMOKE HOLE! silhouette with stronger vertical face occupancy.
-- Carries Style B scale factors into the frozen approval artifact so preview and production record use the same geometry.
-- Adds a Proving Ground `ike-style-b-smoke-truth` release gate.
+## 8.3.2 — SmokeTruth (superseded)
+- Forced Style B lowercase to uppercase; sea trial proved this was the wrong CX contract.
+- Added a tall/narrow transform, but compensating font-size math made the rendered Style B too heavy/wide on iPad.
+- Preserved Dock Lock and artifact continuity; those contracts remain carried forward.
 
-## Preserved Contracts
-- 8.3.1 Dock Lock bounded Fleet Dock first paint remains intact.
-- Style A RAMJET, protected orientation/species detectors, duplicate-order protection, and immutable artifact reuse remain unchanged.
+## 8.3.3 — CaseTrue correction
+- Reversed the 8.3.2 uppercase-only regression: Ike now preserves customer-entered uppercase and lowercase exactly.
+- Style B accepts the approved mixed-case customer alphabet and blocks unsupported glyphs without silent substitution.
+- Rebalanced Style B toward the tall/narrow SMOKE HOLE! silhouette without the horizontal compensation that made 8.3.2 too heavy and wide.
+- Added an automated CaseTrue regression gate for uppercase, lowercase, mixed case, unsupported punctuation, and immutable-artifact continuity.
+- Preserved 8.3.1 Dock Lock, Style A behavior, orientation/species detectors, order idempotency, and approved-artifact locking.

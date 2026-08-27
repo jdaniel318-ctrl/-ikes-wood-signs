@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.3.2';
+  const BUILD_VERSION='8.3.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.3.2',
+    build:'8.3.3',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4341,16 +4341,19 @@
     const faceGridContract=String(ikeAnalyzePlankPixelsProven).includes('ike-fit-robust-face-grid')&&String(ikeApplyDetectedTextPlacementTo).includes('r.fitBand||r.usableRegion')&&String(ikeApplyDetectedTextPlacementTo).includes('actualBoundingBox')&&!!document.querySelector('.ike-style-proof-note')&&!document.querySelector('label[for=\"ikeStyleReferenceInput\"]');
     add('ike-face-grid-fit','Ike face-grid fit contract',faceGridContract?'pass':'fail',faceGridContract?'Live-edge face grid, visible-glyph measurement, finished-sign proof, and single automatic Ike Fit are installed.':'Ike Fit face-grid placement or finished-sign calibration contract is incomplete.');
 
-    const smokeTruthContract=typeof ikeStyleTruthWording==='function'
-      && ikeStyleTruthWording('Smoke Hole!','B').text==='SMOKE HOLE!'
-      && ikeStyleTruthWording('SMOKE HOLE!','B').unsupported.length===0
+    const caseTrueContract=typeof ikeStyleTruthWording==='function'
+      && ikeStyleTruthWording('Smoke Hole!','B').text==='Smoke Hole!'
+      && ikeStyleTruthWording('smoke hole!','B').text==='smoke hole!'
+      && ikeStyleTruthWording('SMOKE HOLE!','B').text==='SMOKE HOLE!'
+      && ikeStyleTruthWording('Smoke Hole!','B').casePreserved===true
       && ikeStyleTruthWording('SMOKE HOLE?','B').unsupported.includes('?')
-      && Number(ikeFontBlueprint('B').scaleX)<.8
+      && Number(ikeFontBlueprint('B').scaleX)>.8
+      && Number(ikeFontBlueprint('B').scaleX)<.9
       && Number(ikeFontBlueprint('B').scaleY)>1
       && String(ikeApplyDetectedTextPlacementTo).includes('ikeFitScaleX')
       && String(ikeCaptureLiveRenderSpec).includes('scaleX')
       && String(renderIkeApprovedArtifact).includes('liveScaleX');
-    add('ike-style-b-smoke-truth','Ike Style B SMOKE HOLE! truth',smokeTruthContract?'pass':'fail',smokeTruthContract?'Style B normalizes lowercase to the approved uppercase shop alphabet, rejects unsupported punctuation, and preserves the same tall/narrow calibration into the immutable artifact.':'Style B uppercase/glyph guard or tall/narrow production calibration is incomplete.');
+    add('ike-style-b-case-truth','Ike Style B case + fit truth',caseTrueContract?'pass':'fail',caseTrueContract?'Style B preserves customer uppercase/lowercase exactly, rejects unsupported glyphs, and carries the corrected tall/narrow calibration into the immutable artifact.':'Style B case preservation, glyph guard, or tall/narrow calibration is incomplete.');
 
     const artifactAuto=await safe(()=>runIkeApprovedArtifactAutomatedVoyage(),err=>({ok:false,detail:`Automated artifact voyage failed: ${err?.message||err}`}));
     add('approved-artifact-auto','Automated approved-artifact voyage',artifactAuto?.ok?'pass':'fail',artifactAuto?.detail||'Automated approved-artifact voyage did not return evidence.');
@@ -4394,7 +4397,7 @@
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
-      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-style-b-smoke-truth'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
+      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-style-b-case-truth'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
@@ -4811,7 +4814,7 @@
     const state=$('fleetCommissioningState');
     if(!summary||!reference)return;
 
-    // 8.3.2 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
+    // 8.3.3 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
     // convergence before painting a usable vessel roster. Paint from the already
     // loaded canonical/local fleet within a bounded window, then reconcile and
     // refresh in the background. Navigation remains available during verification.
@@ -9544,8 +9547,7 @@
         const status=$('ikeStyleTruthStatus');
         if(!state.fontChosen||state.font!=='B'){status.textContent='';status.classList.add('hidden');}
         else if(ikeTruth.unsupported.length){status.textContent=`Style B cannot cut: ${ikeTruth.unsupported.join(' ')}. Use approved letters, numbers, spaces, !, &, apostrophe, or hyphen.`;status.classList.remove('hidden');}
-        else if(ikeTruth.normalized){status.textContent=`Style B uses Ike’s approved uppercase shop alphabet. Previewing: ${ikeTruth.text}`;status.classList.remove('hidden');}
-        else{status.textContent='Style B uses Ike’s approved uppercase shop alphabet.';status.classList.remove('hidden');}
+        else{status.textContent='Style B preserves your uppercase and lowercase exactly as entered.';status.classList.remove('hidden');}
       }
       if($('ikeDesignPreviewText')){const el=$('ikeDesignPreviewText');const base=ikeTruth.unsupported.length?'':ikeTruth.text;el.textContent=state.fontChosen?(state.orientation==='Vertical'?base.trim().split(/\s+/).join('\n'):base):'';el.className=`preview-text style-${String(state.font||'B').toLowerCase()}`+(state.fill==='Natural'?' cnc-carved':(state.fill==='Black'?' ike-routed-black':(state.fill==='White'?' ike-routed-white':'')));if(state.fill!=='Natural')el.style.color=fillColor();else el.style.removeProperty('color');}
       scheduleIkeDetectedTextPlacement();
@@ -10719,28 +10721,27 @@ The full order and approved media remain stored with this project.`;
 
   function ikeStyleTruthWording(text,font){
     const raw=String(text||'');
-    if(String(font||'B')!=='B')return {text:raw,normalized:false,unsupported:[]};
-    // 8.3.2 SMOKE TRUTH: Style B is an approved uppercase shop alphabet.
-    // Never invent lowercase geometry. Normalize alphabetic input to uppercase,
-    // and reject characters outside the currently approved customer-safe set.
-    const upper=raw.toUpperCase();
-    const unsupported=Array.from(new Set(Array.from(upper).filter(ch=>!/[A-Z0-9 !&'\-]/.test(ch))));
-    return {text:upper,normalized:upper!==raw,unsupported};
+    // 8.3.3 CASE TRUE: customer case is production intent. Preserve exactly what
+    // the customer typed for both approved shop styles; never force uppercase.
+    // The supported shop alphabet includes upper + lower case letters, digits,
+    // spaces and the punctuation Ike has approved for this production path.
+    const unsupported=Array.from(new Set(Array.from(raw).filter(ch=>!/[A-Za-z0-9 !&'\-]/.test(ch))));
+    return {text:raw,normalized:false,casePreserved:true,unsupported};
   }
 
   function ikeFontBlueprint(font){
     const key=String(font||'B');
     if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1.00,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01,scaleX:1,scaleY:1};
     if(key==='B')return {
-      family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',
-      weight:'900',style:'normal',
-      spacingEm:-0.055,
-      widthTarget:0.91,heightTarget:0.92,widthBoost:1.00,
-      compactWidthTarget:0.93,compactHeightTarget:0.94,
+      // CASE TRUE: preserve mixed-case shop wording and keep the Style B silhouette
+      // tall/narrow without compensating the horizontal squeeze back to a fat slab.
+      family:'"American Typewriter Condensed", "American Typewriter", serif',
+      weight:'700',style:'normal',
+      spacingEm:-0.04,
+      widthTarget:1.08,heightTarget:0.80,widthBoost:1.00,
+      compactWidthTarget:1.10,compactHeightTarget:0.82,
       opticalYBias:-0.005,
-      // Finished SMOKE HOLE! calibration: materially taller and narrower than
-      // the browser's raw condensed face while preserving the approved style.
-      scaleX:0.72,scaleY:1.12
+      scaleX:0.83,scaleY:1.10
     };
     return {family:'Georgia, "Times New Roman", serif',weight:'500',style:'normal',spacingEm:0,widthTarget:0.86,heightTarget:0.78,widthBoost:0.99,compactWidthTarget:0.88,compactHeightTarget:0.82,opticalYBias:0,scaleX:1,scaleY:1};
   }
@@ -10773,16 +10774,16 @@ The full order and approved media remain stored with this project.`;
     const spacingPx=Math.max(0,wording.length-1)*probe*spacingEm;
     const glyphW=Math.max(1,(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width||1)+spacingPx);
     const glyphH=Math.max(1,(m.actualBoundingBoxAscent||probe*.76)+(m.actualBoundingBoxDescent||probe*.20));
-    const byWidth=(w*targets.w)/((glyphW/probe)*scaleX);
-    const byHeight=(h*targets.h)/((glyphH/probe)*scaleY);
+    const byWidth=(w*targets.w)/(glyphW/probe);
+    const byHeight=(h*targets.h)/(glyphH/probe);
     let fs=Math.min(byWidth,byHeight)*spec.widthBoost;
     const compactWord=wording.replace(/\s+/g,'').length<=12;
     // 8.2.8 FONT LOCK: each style stays locked to its approved shop example.
     // The customer can change wording, but the font behavior should not drift away
     // from the canonical RAMJET / SMOKE HOLE! samples shown in the UI.
     if(compactWord){
-      const widthFit=(w*spec.compactWidthTarget)/((glyphW/probe)*scaleX);
-      const heightFit=(h*spec.compactHeightTarget)/((glyphH/probe)*scaleY);
+      const widthFit=(w*spec.compactWidthTarget)/(glyphW/probe);
+      const heightFit=(h*spec.compactHeightTarget)/(glyphH/probe);
       fs=Math.min(widthFit,heightFit)*spec.widthBoost;
     }
     fs=Math.max(20,Math.min(340,fs));
@@ -13746,7 +13747,7 @@ The full order and approved media remain stored with this project.`;
     $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));
     $('rotatePhotoRightBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(1));
     $('ikeConfirmPlankBtn')?.addEventListener('click',()=>{const r=state.plankRecognition||{};if(!r.lengthResolved||!r.lengthFeet){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick length check first so we never guess on size.';return;}if(!r.speciesResolved){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Finish the quick wood check first so we price the right species.';return;}if(!(ikeSpeciesRate(r.speciesId)>0)){if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='This species does not have an active owner price yet. Please ask Ike before continuing.';return;}recalcIkePrice();setScreen('ike-design');});
-    $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}const truth=ikeStyleTruthWording(state.wording,state.font);if(truth.unsupported.length){if($('ikeDesignError'))$('ikeDesignError').textContent=`Style ${state.font} cannot cut: ${truth.unsupported.join(' ')}. Remove unsupported characters before review.`;return;}if(state.font==='B'&&truth.normalized){state.wording=truth.text;const iw=$('ikeWordingInput');if(iw)iw.value=state.wording;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
+    $('ikeDesignNextBtn')?.addEventListener('click',async()=>{if(!state.wording.trim()){if($('ikeDesignError'))$('ikeDesignError').textContent='Type the wording for your sign first.';return;}if(!state.fontChosen){if($('ikeDesignError'))$('ikeDesignError').textContent='Choose a lettering style before placing the words on your plank.';return;}const truth=ikeStyleTruthWording(state.wording,state.font);if(truth.unsupported.length){if($('ikeDesignError'))$('ikeDesignError').textContent=`Style ${state.font} cannot cut: ${truth.unsupported.join(' ')}. Remove unsupported characters before review.`;return;}if($('ikeDesignError'))$('ikeDesignError').textContent='';const btn=$('ikeDesignNextBtn');if(btn){btn.disabled=true;btn.textContent='BUILDING APPROVAL ARTIFACT…';}const ok=await stageIkeApprovalArtifact();if(btn){btn.disabled=false;btn.textContent='REVIEW MY DESIGN →';}if(!ok){alert('The approval artifact could not be created. Please review the plank photo and try again.');return;}setScreen('ike-approve');});
     $('ikeApproveDesignBtn')?.addEventListener('click',()=>{const ok=lockIkeApprovedDesign();if(!ok){alert('The approved artifact fingerprint changed. Return to Design and build the approval artifact again.');return;}setScreen('customer');});
     $('ikeEditDesignBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();setScreen('ike-design');});
     $('reviewEditDesignBtn')?.addEventListener('click',()=>setScreen(activeProjectId==='ikes-wood-signs'?'ike-design':'wording'));
