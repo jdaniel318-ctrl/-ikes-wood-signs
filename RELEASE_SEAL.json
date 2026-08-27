@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.2.3",
-  "release": "Ike Fit \u2014 Root Keel",
-  "seal": "ikefit-823-shop-anchors-9f4c2a",
+  "build": "8.2.4",
+  "release": "Ike Fit \u2014 Font Lock",
+  "seal": "ikefit-824-font-lock-cx-trim-4d81be",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Ike Fit \u2014 Root Keel"
+  "release_name": "Ike Fit \u2014 Font Lock"
 }

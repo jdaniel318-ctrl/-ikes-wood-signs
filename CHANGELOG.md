@@ -1,4 +1,4 @@
-## 8.2.3 — Ike Fit — Shop Anchors
+## 8.2.4 — Ike Fit — Font Lock
 
 - Set RAMJET as the canonical Style A anchor.
 - Set SMOKE HOLE! as the canonical Style B anchor.
@@ -13,3 +13,9 @@
 - Calibrated Style A / RAMJET behavior toward broad, dominant finished-sign occupancy.
 - Exact customer plank pixels remain unchanged; back-side Ike stamp is ignored for layout inference.
 - Retained full release, authority, isolation, and Admiral proving contracts from 8.2.1.
+
+
+## 8.2.4 Font Lock
+- Locked customer-facing style examples to canonical samples (A = RAMJET, B = SMOKE HOLE!).
+- Tuned Style A to stay closer to the RAMJET benchmark.
+- Simplified the customer-facing Ike Fit explanation block in the design step.
