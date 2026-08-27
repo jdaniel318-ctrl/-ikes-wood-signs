@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.3.3';
+  const BUILD_VERSION='8.3.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.3.3',
+    build:'8.3.4',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4341,7 +4341,9 @@
     const faceGridContract=String(ikeAnalyzePlankPixelsProven).includes('ike-fit-robust-face-grid')&&String(ikeApplyDetectedTextPlacementTo).includes('r.fitBand||r.usableRegion')&&String(ikeApplyDetectedTextPlacementTo).includes('actualBoundingBox')&&!!document.querySelector('.ike-style-proof-note')&&!document.querySelector('label[for=\"ikeStyleReferenceInput\"]');
     add('ike-face-grid-fit','Ike face-grid fit contract',faceGridContract?'pass':'fail',faceGridContract?'Live-edge face grid, visible-glyph measurement, finished-sign proof, and single automatic Ike Fit are installed.':'Ike Fit face-grid placement or finished-sign calibration contract is incomplete.');
 
-    const caseTrueContract=typeof ikeStyleTruthWording==='function'
+    const harborExitContract=typeof ikeStyleTruthWording==='function'
+      && document.getElementById('ikeWordingInput')?.getAttribute('autocapitalize')==='none'
+      && document.getElementById('ikeWordingInput')?.style.textTransform!=='uppercase'
       && ikeStyleTruthWording('Smoke Hole!','B').text==='Smoke Hole!'
       && ikeStyleTruthWording('smoke hole!','B').text==='smoke hole!'
       && ikeStyleTruthWording('SMOKE HOLE!','B').text==='SMOKE HOLE!'
@@ -4353,7 +4355,7 @@
       && String(ikeApplyDetectedTextPlacementTo).includes('ikeFitScaleX')
       && String(ikeCaptureLiveRenderSpec).includes('scaleX')
       && String(renderIkeApprovedArtifact).includes('liveScaleX');
-    add('ike-style-b-case-truth','Ike Style B case + fit truth',caseTrueContract?'pass':'fail',caseTrueContract?'Style B preserves customer uppercase/lowercase exactly, rejects unsupported glyphs, and carries the corrected tall/narrow calibration into the immutable artifact.':'Style B case preservation, glyph guard, or tall/narrow calibration is incomplete.');
+    add('ike-style-b-case-truth','Ike Style B case + fit truth',harborExitContract?'pass':'fail',harborExitContract?'The real Ike wording input permits customer-selected uppercase/lowercase on iPad, Style B preserves that case exactly, rejects unsupported glyphs, and carries the tall/narrow calibration into the immutable artifact.':'The real wording input is forcing capitalization, or Style B case preservation/glyph guard/tall-narrow calibration is incomplete.');
 
     const artifactAuto=await safe(()=>runIkeApprovedArtifactAutomatedVoyage(),err=>({ok:false,detail:`Automated artifact voyage failed: ${err?.message||err}`}));
     add('approved-artifact-auto','Automated approved-artifact voyage',artifactAuto?.ok?'pass':'fail',artifactAuto?.detail||'Automated approved-artifact voyage did not return evidence.');
@@ -4814,7 +4816,7 @@
     const state=$('fleetCommissioningState');
     if(!summary||!reference)return;
 
-    // 8.3.3 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
+    // 8.3.4 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
     // convergence before painting a usable vessel roster. Paint from the already
     // loaded canonical/local fleet within a bounded window, then reconcile and
     // refresh in the background. Navigation remains available during verification.
@@ -10721,7 +10723,7 @@ The full order and approved media remain stored with this project.`;
 
   function ikeStyleTruthWording(text,font){
     const raw=String(text||'');
-    // 8.3.3 CASE TRUE: customer case is production intent. Preserve exactly what
+    // 8.3.4 HARBOR EXIT: customer case is production intent. Preserve exactly what
     // the customer typed for both approved shop styles; never force uppercase.
     // The supported shop alphabet includes upper + lower case letters, digits,
     // spaces and the punctuation Ike has approved for this production path.
@@ -10733,7 +10735,7 @@ The full order and approved media remain stored with this project.`;
     const key=String(font||'B');
     if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1.00,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01,scaleX:1,scaleY:1};
     if(key==='B')return {
-      // CASE TRUE: preserve mixed-case shop wording and keep the Style B silhouette
+      // HARBOR EXIT: preserve mixed-case shop wording and keep the Style B silhouette
       // tall/narrow without compensating the horizontal squeeze back to a fat slab.
       family:'"American Typewriter Condensed", "American Typewriter", serif',
       weight:'700',style:'normal',

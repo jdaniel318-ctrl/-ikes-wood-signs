@@ -1,6 +1,6 @@
 {
-  "release": "8.3.3",
-  "name": "CaseTrue",
+  "release": "8.3.4",
+  "name": "HarborExit",
   "file_count": 45,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -49,7 +49,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.3.3",
-  "seal": "casetrue-833-mixed-case-fit-4c17b2",
-  "release_name": "CaseTrue"
+  "build": "8.3.4",
+  "seal": "harborexit-834-case-input-7f2d91",
+  "release_name": "HarborExit"
 }

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.3.3",
-  "release": "CaseTrue",
+  "build": "8.3.4",
+  "release": "HarborExit",
   "excluded_sources": [
     "The situation"
   ],

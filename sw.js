@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.3.3';
-const RELEASE_SEAL='casetrue-833-mixed-case-fit-4c17b2';
+const RELEASE_BUILD='8.3.4';
+const RELEASE_SEAL='harborexit-834-case-input-7f2d91';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

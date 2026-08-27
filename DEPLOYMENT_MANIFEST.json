@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.3.3",
-  "version": "8.3.3",
-  "release_name": "CaseTrue",
-  "releaseName": "CaseTrue",
-  "release_seal": "casetrue-833-mixed-case-fit-4c17b2",
+  "build": "8.3.4",
+  "version": "8.3.4",
+  "release_name": "HarborExit",
+  "releaseName": "HarborExit",
+  "release_seal": "harborexit-834-case-input-7f2d91",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -54,7 +54,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "Ike Style B SMOKE HOLE! production truth + preserved Dock Lock bounded Fleet Dock paint + immutable artifact integrity",
-  "release_note": "8.3.3 CaseTrue restores customer-selected uppercase/lowercase exactly as entered, rebalances Ike Style B away from the 8.3.2 heavy/wide regression toward the tall/narrow finished-sign silhouette, rejects unsupported glyphs explicitly, and preserves Dock Lock plus protected detector/artifact contracts.",
+  "release_note": "8.3.4 HarborExit restores customer-selected uppercase/lowercase exactly as entered, rebalances Ike Style B away from the 8.3.2 heavy/wide regression toward the tall/narrow finished-sign silhouette, rejects unsupported glyphs explicitly, and preserves Dock Lock plus protected detector/artifact contracts.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

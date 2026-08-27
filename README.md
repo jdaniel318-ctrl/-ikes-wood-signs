@@ -1,15 +1,15 @@
-# Dark Sky 8.3.3 — CaseTrue
+# Dark Sky 8.3.4 — HarborExit
 
-Focused correction built from 8.3.2 after the iPad sea trial exposed two regressions: forced uppercase and an overly heavy/wide Style B. CaseTrue preserves Dock Lock, Style A, protected plank detectors, duplicate-order protection, and immutable approved-artifact continuity.
+Focused correction built from 8.3.2 after the iPad sea trial exposed two regressions: forced uppercase and an overly heavy/wide Style B. HarborExit preserves Dock Lock, Style A, protected plank detectors, duplicate-order protection, and immutable approved-artifact continuity.
 
-## CaseTrue correction
+## HarborExit correction
 - Preserves customer-entered uppercase and lowercase exactly for Ike Style A and Style B.
 - Never force-normalizes `Smoke Hole!` to `SMOKE HOLE!`.
 - Explicitly blocks unsupported glyphs rather than silently substituting unrelated geometry.
 - Rebalances Style B toward the tall/narrow finished SMOKE HOLE! silhouette and removes the 8.3.2 horizontal compensation that caused the fat-letter regression.
 - Adds the `ike-style-b-case-truth` Proving Ground gate for uppercase, lowercase, mixed case, unsupported punctuation, scale calibration, and immutable-artifact continuity.
 
-## 8.3.3 sea trial
+## 8.3.4 sea trial
 1. Fleet Dock must paint without an indefinite `READING FLEET` state.
 2. In Ike Style B, type `Smoke Hole!`; both field and preview must remain `Smoke Hole!`.
 3. Test `SMOKE HOLE!` and `smoke hole!`; case must remain exactly what was typed.
@@ -50,7 +50,7 @@ Fleet-structure pass built from the 8.2.5 Reference Library. This release audits
 - Removed customer-facing Ike Fit explanation cards; blank wording renders a blank plank.
 
 
-## 8.3.3 CaseTrue
+## 8.3.4 HarborExit
 - Style B normalizes lowercase customer input to the approved uppercase shop alphabet instead of inventing lowercase geometry.
 - Unsupported Style B punctuation is blocked before approval; no generic fallback style is substituted.
 - Style B is calibrated taller and narrower against the finished SMOKE HOLE! reference, with stronger face occupancy while remaining inside Ike Fit.
@@ -58,9 +58,14 @@ Fleet-structure pass built from the 8.2.5 Reference Library. This release audits
 - Adds an `ike-style-b-smoke-truth` Proving Ground gate.
 - Preserves Dock Lock bounded Fleet Dock paint, Style A RAMJET behavior, orientation/species detectors, and immutable artifact/order contracts.
 
-### 8.3.3 CaseTrue sea trial
+### 8.3.4 HarborExit sea trial
 1. Fleet Dock must paint without an indefinite READING FLEET state.
 2. In Ike's Style B, type `Smoke Hole!`; the field and preview must remain `Smoke Hole!`.
 3. Test `SMOKE HOLE!` and `smoke hole!`; case must be preserved exactly.
 4. Style B should read taller/narrower than 8.3.2 while remaining inside the detected face.
 5. Unsupported punctuation such as `?` must be explicitly blocked, never substituted.
+
+## 8.3.4 HarborExit — iPad case-input fix
+The 8.3.3 helper preserved case correctly, but the actual Ike customer input still declared `autocapitalize="characters"`. On iPadOS that contradicted the customer case-choice contract and made the sea trial appear uppercase-only. HarborExit removes that input-level forcing, explicitly protects the field from CSS uppercase transforms, and makes Proving Ground inspect the actual input contract.
+
+First sea trial: type `Smoke Hole!` exactly. The field and preview must preserve that exact case. Then type `smoke hole!` and `SMOKE HOLE!` to verify all three case choices remain distinct.

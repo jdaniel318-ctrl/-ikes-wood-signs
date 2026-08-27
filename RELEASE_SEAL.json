@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.3.3",
-  "release": "CaseTrue",
-  "seal": "casetrue-833-mixed-case-fit-4c17b2",
+  "build": "8.3.4",
+  "release": "HarborExit",
+  "seal": "harborexit-834-case-input-7f2d91",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "CaseTrue"
+  "release_name": "HarborExit"
 }

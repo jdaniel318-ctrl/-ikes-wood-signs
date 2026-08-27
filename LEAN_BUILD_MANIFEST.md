@@ -1,4 +1,4 @@
-# Dark Sky 8.3.3 — CaseTrue Manifest
+# Dark Sky 8.3.4 — HarborExit Manifest
 
 ## Mission
 Keep the live fleet build compact enough for the iPad/GitHub upload path while retaining the accumulated fleet lessons as consolidated AI-readable reference material.
