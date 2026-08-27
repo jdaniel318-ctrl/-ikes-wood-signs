@@ -1,29 +1,32 @@
-# Dark Sky 8.2.5 — Ike Fit
+# Dark Sky 8.2.8 — Lean Keel
 
-Focused Ike’s Wood Signs pass from the exact 8.2.5 iPad-safe build.
+Regression-memory pass built on 8.2.6 Foundry Foundation. This release turns the fleet's accumulated project lessons into explicit release gates and keeps the separate project **The situation** outside Dark Sky evidence unless the Captain explicitly authorizes a future transfer.
 
-## Mission
-Use one automatic **Ike Fit** for the sign preview. Canonical shop anchors are now **Style A = RAMJET** and **Style B = SMOKE HOLE!**; Style C is withheld until a real finished Ike example is approved. The customer chooses wording, lettering style, and finish; the ship handles size and placement together using a hidden live-edge face grid calibrated against Ike’s real finished RAMJET and SMOKE HOLE! signs. The exact plank photo is never replaced or redrawn. The blue Ike stamp seen during back-of-plank testing is ignored for lettering layout.
+## 8.2.8 changes
+- Adds `FLEET_REGRESSION_LIBRARY.md` as the standing cross-project regression reference for relevant fleet work.
+- Adds machine-readable `FLEET_REGRESSION_GATES.json`.
+- Adds `RELEASE_DISCIPLINE_828.md` with BLOCK / HOLD / PASS semantics and inherited-contract rules.
+- Extends the release gate to require project-history regression discipline, explicit exclusion boundaries, mobile/navigation/customer-surface checks, production truth, service-contract isolation and final package verification.
+- Preserves the 8.2.6 Foundry foundation; this is a hardening pass, not a feature multiplication pass.
 
-## 8.2.5 changes
-- Removed More Room / Full Face size choices from Ike’s CX.
-- Replaced the conservative grid intersection with a robust broad-face grid band.
-- Removed the old 72% preview max-width cap that could make lettering look artificially small.
-- Centers the visible glyph body rather than invisible font side bearings.
-- Uses a broad heavy serif/block treatment for Style A to better match the physical RAMJET proof.
-- Black routed lettering uses a subtle recessed/painted treatment rather than a raised-looking outline.
-- Preserves final Ike verification before carving.
+## Preserved 8.2.6 foundation
+Fleet-structure pass built from the 8.2.5 Reference Library. This release audits future-facing features already present before adding new Admiral services, and establishes The Foundry as the Admiral proving vessel for reusable fleet capabilities.
 
-Manual Known Good promotion remains deliberate.
+## 8.2.6 changes
+- Adds a machine-readable four-tier operating model: Owner / Operator, Full-Service Operator, Captain Fleet, Admiral Fleet.
+- Adds Foundry service domains and a first capability registry without granting new cross-project authority.
+- Classifies existing Custom Colors, Payments, Ledger, Customer/Order Insight, Fleet Learning, AI recommendations, and vendor/capacity routing as foundations instead of duplicating them.
+- Adds a real Admiral **The Foundry** workspace showing the operating model, domains, classified capabilities, and boundary law.
+- Preserves Ike's as the primary sign manufacturer; inlay production begins as vendor facilitation and can grow into fleet-owned capacity only when justified.
+- Adds `FOUNDATION_AUDIT_826.md` and `FLEET_SERVICES_CONTRACT.md`.
 
-
-## 8.2.5 Reference Library
+## 8.2.6 Reference Library
 - Locked customer-facing style examples to canonical samples (A = RAMJET, B = SMOKE HOLE!).
 - Tuned Style A to stay closer to the RAMJET benchmark.
 - Simplified the customer-facing Ike Fit explanation block in the design step.
 
 
-## 8.2.5 Reference Library
+## 8.2.6 Reference Library
 - Added owner + Engine project-scoped production reference uploads.
 - Draft → Approved → Superseded governance and version history.
 - Separates machine geometry from visual examples/secondary evidence.

@@ -12,6 +12,33 @@ const FLEET_FOUNDATION=Object.freeze({
 });
 
 
+const FLEET_OPERATING_TIERS=Object.freeze({
+ owner_operator:Object.freeze({label:'Owner / Operator',authority:'project',summary:'Independent business owner operates the vessel and selectively consumes approved fleet services.'}),
+ full_service_operator:Object.freeze({label:'Operator / Full Service',authority:'project+contracted-operations',summary:'The owner retains the business while contracted fleet operations perform explicitly authorized work for a fee.'}),
+ captain_fleet:Object.freeze({label:'Captain Fleet',authority:'operational-fleet',summary:'Shared operational support, deployment, diagnostics, fulfillment coordination and approved supply-chain services.'}),
+ admiral_fleet:Object.freeze({label:'Admiral Fleet',authority:'strategic-fleet',summary:'Fleet creation, governance, commercialization, cross-vessel intelligence, strategic supply chain and capacity.'})
+});
+const FLEET_CAPABILITY_LIFECYCLE=Object.freeze(['idea','foundation','experiment','sea_trial','proven','available','commercial','dedicated_vessel','retired']);
+const FLEET_SERVICE_DOMAINS=Object.freeze({
+ forge:Object.freeze({label:'Forge',level:'admiral',mission:'Product upgrades, production translation, CNC/decal geometry, artwork inlays and future manufacturing capacity.'}),
+ quartermaster:Object.freeze({label:'Quartermaster',level:'captain/admiral',mission:'Payments, pricing mechanics, deposits, fees, fulfillment resources and owner-selectable commercial options.'}),
+ ledger_house:Object.freeze({label:'Ledger House',level:'engine/captain/admiral',mission:'Standard business-event language for orders, payments, costs, vendors, materials, taxes and financial exports.'}),
+ lookout:Object.freeze({label:'Lookout',level:'admiral',mission:'Permission-aware analytics and AI recommendations from vessel and aggregated fleet signals.'}),
+ chart_room:Object.freeze({label:'Chart Room',level:'admiral',mission:'Human review of AI recommendations, economics, investment cases and strategic fleet decisions.'}),
+ armory:Object.freeze({label:'Armory',level:'admiral',mission:'Versioned registry of reusable capabilities proven safe enough to offer to vessels.'}),
+ dockmaster:Object.freeze({label:'Dockmaster',level:'captain/admiral',mission:'Explicit service contracts defining which vessel may use which capability and what information may cross the boundary.'}),
+ exchange:Object.freeze({label:"Admiral's Exchange",level:'admiral',mission:'Commercial terms for fleet capabilities: included, free, trial, flat fee, per transaction, monthly or custom.'}),
+ shipyard:Object.freeze({label:'Shipyard',level:'admiral',mission:'Promote mature shared capabilities into dedicated fleet vessels without breaking existing consumers.'})
+});
+const FLEET_CAPABILITY_REGISTRY=Object.freeze([
+ Object.freeze({id:'ikes.custom-colors',name:'Custom Colors',origin:'ikes-wood-signs',domain:'forge',lifecycle:'foundation',scope:'project-option',data:['projectId','approved-color-options'],commercial:'owner-configurable'}),
+ Object.freeze({id:'fleet.artwork-inlays',name:'Artwork / Inlay Production',origin:'ikes-wood-signs',domain:'forge',lifecycle:'foundation',scope:'shared-production-service',data:['projectId','orderId','canonical-geometry','artwork','material-profile'],commercial:'future'}),
+ Object.freeze({id:'fleet.payments',name:'Customer Payments',origin:'black-flag-engine',domain:'quartermaster',lifecycle:'foundation',scope:'shared-provider-contract',data:['projectId','orderId','amount','payment-state'],commercial:'future'}),
+ Object.freeze({id:'fleet.business-ledger',name:'Business Event Ledger',origin:'black-flag-engine',domain:'ledger_house',lifecycle:'foundation',scope:'shared-schema-not-shared-database',data:['projectId','business-event'],commercial:'included-foundation'}),
+ Object.freeze({id:'fleet.customer-insight',name:'Customer / Order Insight',origin:'black-flag-engine',domain:'lookout',lifecycle:'foundation',scope:'permission-aware-analytics',data:['projectId','authorized-aggregates'],commercial:'future'}),
+ Object.freeze({id:'fleet.ai-recommendations',name:'AI Recommendation Registry',origin:'fleet-learning',domain:'chart_room',lifecycle:'foundation',scope:'advisory-no-silent-mutation',data:['recommendation','evidence','confidence','authority','status'],commercial:'future'}),
+ Object.freeze({id:'fleet.vendor-routing',name:'Vendor / Capacity Routing',origin:'admiral-foundry',domain:'dockmaster',lifecycle:'foundation',scope:'shared-supply-chain',data:['capability','resource','cost','lead-time','capacity'],commercial:'future'})
+]);
 const BUSINESS_MODEL_MODES=Object.freeze(['custom-product','retail','food-service','service','request-quote','mixed','other']);
 const BUSINESS_BRIEF_MAX=12000;
 
@@ -345,5 +372,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'4.1.3-orphan-watch-core',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,customerRelationshipTypes:CUSTOMER_RELATIONSHIP_TYPES,customerWorkflowProfiles:CUSTOMER_WORKFLOW_PROFILES,customerActivityTerms:CUSTOMER_ACTIVITY_TERMS,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,deriveCustomerRelationship,resolveCustomerRelationship,activityTermsForProject,defaultWorkflowForRelationship,resolveProjectWorkflow,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'4.1.4-foundry-foundation-core',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,fleetOperatingTiers:FLEET_OPERATING_TIERS,fleetCapabilityLifecycle:FLEET_CAPABILITY_LIFECYCLE,fleetServiceDomains:FLEET_SERVICE_DOMAINS,fleetCapabilityRegistry:FLEET_CAPABILITY_REGISTRY,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,customerRelationshipTypes:CUSTOMER_RELATIONSHIP_TYPES,customerWorkflowProfiles:CUSTOMER_WORKFLOW_PROFILES,customerActivityTerms:CUSTOMER_ACTIVITY_TERMS,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,deriveCustomerRelationship,resolveCustomerRelationship,activityTermsForProject,defaultWorkflowForRelationship,resolveProjectWorkflow,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);

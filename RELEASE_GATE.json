@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.2.5",
-  "release": "8.2.5",
-  "generatedAt": "2026-08-25",
+  "build": "8.2.8",
+  "release": "8.2.8",
+  "generatedAt": "2026-08-26",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -126,23 +126,51 @@
     "ikes_finished_sign_calibration": true,
     "ikes_broad_block_style_a": true,
     "ikes_customer_reference_upload_removed": true,
-    "ikes_mission_fit_controls": true
+    "ikes_mission_fit_controls": true,
+    "foundry_workspace_foundation": true,
+    "four_tier_operating_model": true,
+    "fleet_capability_registry": true,
+    "capability_vessel_service_instance_separation": true,
+    "business_event_ledger_foundation": true,
+    "ai_recommendation_registry_foundation": true,
+    "ikes_primary_manufacturer_preserved": true,
+    "no_new_cross_project_authority": true,
+    "fleet_regression_library": true,
+    "cross_project_regression_discipline": true,
+    "the_situation_explicitly_excluded": true,
+    "startup_route_regression_gate": true,
+    "authority_isolation_regression_gate": true,
+    "navigation_regression_gate": true,
+    "mobile_viewport_regression_gate": true,
+    "customer_surface_regression_gate": true,
+    "owner_control_regression_gate": true,
+    "ikes_production_truth_regression_gate": true,
+    "foundry_service_boundary_regression_gate": true,
+    "ledger_ai_boundary_regression_gate": true,
+    "release_packaging_regression_gate": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.2.5 Ike Fit: one automatic shop fit uses a robust live-edge face grid, visible-glyph bounds, broad face occupancy, and optical centering; customer size presets are removed.",
-  "candidate": "8.2.5",
+  "note": "8.2.8 Lean Keel: compact deployment, canonical white-teeth Ike branding, and inherited regression gates preserved.",
+  "candidate": "8.2.8",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
     "admiral_recommendation_compression": true,
-    "shared_fleet_pattern_detection": true
+    "shared_fleet_pattern_detection": true,
+    "admiral_foundry_foundation": true,
+    "service_contract_foundation": true,
+    "vendor_capacity_routing_foundation": true,
+    "keelbook_regression_library": true,
+    "explicit_source_exclusion": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
     "ikes_back_stamp_ignored_for_layout": true,
-    "ikes_full_face_optical_placement": true
+    "ikes_full_face_optical_placement": true,
+    "relevant_project_history_as_regression_evidence": true,
+    "the_situation_not_fleet_evidence": true
   }
 }

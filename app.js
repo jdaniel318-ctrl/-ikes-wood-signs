@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.2.5';
+  const BUILD_VERSION='8.2.8';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3482,7 +3482,7 @@
     // that established identity as a project-specific compatibility fallback until
     // a dedicated Project Logo / Mark is assigned in the Engine.
     if(!logo && canonicalProjectId(p?.id)==='ikes-wood-signs'){
-      logo='ike_character.jpg';
+      logo='ike_character.png';
       source='ikeCompatibilityMark';
     }
     return {code,logo,source};
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.2.5',
+    build:'8.2.8',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -10395,7 +10395,7 @@ The full order and approved media remain stored with this project.`;
     }
     const obstacleDetected=fill<.86;
 
-    // 8.2.5 IKE FIT: map the live-edge face, then choose one robust shop-style
+    // 8.2.8 IKE FIT: map the live-edge face, then choose one robust shop-style
     // lettering band. The band intentionally uses almost the whole board width.
     // It is based on robust grid quantiles instead of the single smallest vertical
     // intersection, so one knot/notch or the blue BACK stamp cannot shrink the
@@ -10615,7 +10615,7 @@ The full order and approved media remain stored with this project.`;
     const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
     const wording=String(state.wording||'').trim();
     if(!wording){el.textContent='';return;}
-    // 8.2.5 IKE FIT: one shop fit, not a generic size selector. Measure the
+    // 8.2.8 IKE FIT: one shop fit, not a generic size selector. Measure the
     // VISIBLE glyphs and deliberately claim the usable face like Ike's finished
     // RAMJET / SMOKE HOLE! signs. Customer intent is the wording + style; the
     // layout engine owns size and optical placement inside the carve-safe band.
@@ -10638,7 +10638,7 @@ The full order and approved media remain stored with this project.`;
     const byHeight=(h*targets.h)/(glyphH/probe);
     let fs=Math.min(byWidth,byHeight)*spec.widthBoost;
     const compactWord=wording.replace(/\s+/g,'').length<=12;
-    // 8.2.5 FONT LOCK: each style stays locked to its approved shop example.
+    // 8.2.8 FONT LOCK: each style stays locked to its approved shop example.
     // The customer can change wording, but the font behavior should not drift away
     // from the canonical RAMJET / SMOKE HOLE! samples shown in the UI.
     if(compactWord){
@@ -11506,7 +11506,7 @@ The full order and approved media remain stored with this project.`;
     if(logo){
       let src=assets.projectLogo||'';
       if(!src && code==='SIG') src='signal_restoration_logo.png';
-      if(!src && code==='IKE') src='ike_character.jpg';
+      if(!src && code==='IKE') src='ike_character.png';
       if(src){
         logo.src=src;
         logo.alt=`${name} admin mark`;
@@ -12200,7 +12200,7 @@ The full order and approved media remain stored with this project.`;
     return true;
   }
 
-  // 8.2.5 REFERENCE LIBRARY — project-scoped governed production evidence.
+  // 8.2.8 REFERENCE LIBRARY — project-scoped governed production evidence.
   // Uploads are evidence until deliberately approved. Approved references may guide
   // CX/OX behavior; superseded references stay attached to historical decisions.
   function projectReferenceLibrary(p){

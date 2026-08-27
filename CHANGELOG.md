@@ -1,4 +1,19 @@
-## 8.2.5 — Ike Fit — Reference Library
+## 8.2.8 — Lean Keel
+- Added a fleet-wide regression library distilled from relevant Dark Sky project history.
+- Added explicit source isolation: **The situation** is excluded from fleet requirements and learning unless Captain-authorized.
+- Added machine-readable regression gates for boot, authority, isolation, navigation, mobile, customer cleanliness, owner continuity, Ike production truth, Foundry boundaries, ledgers/AI and packaging.
+- Added release failure semantics and inherited-contract discipline.
+- Preserved the 8.2.6 Foundry structure without multiplying unfinished screens.
+
+## 8.2.6 — Foundry Foundation
+- Audited existing future-facing capabilities before adding new Admiral services.
+- Added four-tier fleet operating model and service-domain registry to platform core.
+- Added The Foundry Admiral workspace as a read-only foundation surface.
+- Classified existing Custom Colors, Payments, Ledger, Insight, Fleet Learning and future inlay/vendor routing into reusable capability ownership.
+- Added explicit Capability ≠ Vessel ≠ Service Instance boundary contract.
+- Preserved project isolation and Ike's primary manufacturing authority.
+
+## 8.2.6 — Foundry Foundation
 
 - Set RAMJET as the canonical Style A anchor.
 - Set SMOKE HOLE! as the canonical Style B anchor.
@@ -15,13 +30,13 @@
 - Retained full release, authority, isolation, and Admiral proving contracts from 8.2.1.
 
 
-## 8.2.5 Reference Library
+## 8.2.6 Reference Library
 - Locked customer-facing style examples to canonical samples (A = RAMJET, B = SMOKE HOLE!).
 - Tuned Style A to stay closer to the RAMJET benchmark.
 - Simplified the customer-facing Ike Fit explanation block in the design step.
 
 
-## 8.2.5 Reference Library
+## 8.2.6 Reference Library
 - Added owner + Engine project-scoped production reference uploads.
 - Draft → Approved → Superseded governance and version history.
 - Separates machine geometry from visual examples/secondary evidence.

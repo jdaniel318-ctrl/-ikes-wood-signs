@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.2.5",
-  "version": "8.2.5",
-  "release_name": "Ike Fit \u2014 Reference Library",
-  "releaseName": "Ike Fit \u2014 Reference Library",
-  "release_seal": "reference-library-825-governed-evidence-7c41a2",
+  "build": "8.2.8",
+  "version": "8.2.8",
+  "release_name": "Lean Keel",
+  "releaseName": "Lean Keel",
+  "release_seal": "leankeel-828-compact-regression-9d41c2",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -51,11 +51,19 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "ikes-canonical-style-anchors-a-ramjet-b-smoke-hole",
-  "release_note": "8.2.5 adds a governed, project-scoped Production Reference Library for owner and Engine use. Uploads enter as Draft evidence, may be Approved or Superseded with version history, and only approved references are attached to Ike CX style selections. The customer design page also removes internal Ike Fit explanation cards and keeps blank wording visually blank.",
+  "release_focus": "lean file discipline + canonical Ike branding + inherited regression library",
+  "release_note": "8.2.8 compacts historical fleet contracts into AI-readable compendia, preserves inherited regression gates, and makes the approved white-teeth Ike asset canonical while keeping the deployable build comfortably below the iPad/GitHub file ceiling.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",
     "final_promotion": "manual-captain-known-good"
+  },
+  "regression_memory": {
+    "library": "FLEET_REGRESSION_LIBRARY.md",
+    "gates": "FLEET_REGRESSION_GATES.json",
+    "discipline": "RELEASE_DISCIPLINE_827.md",
+    "excluded_sources": [
+      "The situation"
+    ]
   }
 }

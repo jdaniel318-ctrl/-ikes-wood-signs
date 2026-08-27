@@ -471,7 +471,7 @@
             <button id="admiralCeremonialForge" type="button"><b>Visual Forge</b><small>Shape upper command</small><em>READY</em></button>
             <button type="button" data-admiral-future="Delegation"><b>Delegation</b><small>Grant governed authority</small><em>FUTURE</em></button>
             <button type="button" data-admiral-future="Fleet Standards"><b>Fleet Standards</b><small>Set fleet-wide rules</small><em>FUTURE</em></button>
-            <button type="button" data-admiral-future="Expansion"><b>Expansion</b><small>Chart fleet growth</small><em>FUTURE</em></button>
+            <button id="admiralCeremonialFoundry" type="button"><b>The Foundry</b><small>Forge fleet capabilities</small><em>FOUNDATION</em></button>
           </nav>
           <section class="admiral-command-center" aria-label="Admiral command state">
             <div class="admiral-command-center-badge"><small>ADMIRAL'S DECK</small><strong>Fleet Governance</strong><span>Rank not yet commissioned</span></div>
@@ -499,7 +499,7 @@
         <main class="admiral-deck-grid">
           <section class="admiral-deck-hero"><small>THE HIGHER WATCH</small><h3>Govern the platform. Protect the fleet.</h3><p>The Captain commands the mission. The Admiral sets the standards that Dark Sky, Black Flag and every vessel must obey.</p><div class="admiral-scope"><span>DARK SKY</span><span>BLACK FLAG</span><span>FLEET</span></div></section>
           <aside class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></aside>
-          <section class="admiral-governance-card"><h4>Governance</h4><div><button id="admiralDeckForge" type="button">Visual Forge <em>READY</em></button><button type="button" data-admiral-future="Delegation">Delegation <em>FUTURE</em></button><button type="button" data-admiral-future="Fleet Standards">Fleet Standards <em>FUTURE</em></button><button type="button" data-admiral-future="Expansion">Expansion <em>FUTURE</em></button></div></section>
+          <section class="admiral-governance-card"><h4>Governance</h4><div><button id="admiralDeckForge" type="button">Visual Forge <em>READY</em></button><button type="button" data-admiral-future="Delegation">Delegation <em>FUTURE</em></button><button type="button" data-admiral-future="Fleet Standards">Fleet Standards <em>FUTURE</em></button><button id="admiralDeckFoundry" type="button">The Foundry <em>FOUNDATION</em></button></div></section>
           <section class="admiral-governance-card"><h4>Continuity</h4><div><button id="admiralDeckRecovery" type="button">Recovery Snapshot <em>READY</em></button><button id="admiralDeckReport" type="button">Readiness Report <em>READY</em></button><button type="button" data-admiral-future="Admiral Log">Admiral Log <em>FUTURE</em></button></div></section>
           <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Professional Mode active. Rank is not implied by access.</section>
         </main>
@@ -545,8 +545,45 @@
     byId('admiralCeremonialForge').onclick=()=>openVisualForge('admiral');
     byId('admiralDeckReport').onclick=exportAdmiralReadinessReport;
     byId('admiralCeremonialReport').onclick=exportAdmiralReadinessReport;
+    byId('admiralDeckFoundry').onclick=()=>openFoundryWorkspace();
+    byId('admiralCeremonialFoundry').onclick=()=>openFoundryWorkspace();
     deck.querySelectorAll('[data-admiral-future]').forEach(btn=>btn.onclick=()=>{byId('admiralDeckNotice').textContent=`${btn.dataset.admiralFuture} is charted for a future Admiral voyage.`;});
     return gate;
+  }
+
+  function ensureFoundryWorkspace(){
+    let overlay=byId('foundryWorkspace');
+    if(overlay)return overlay;
+    const core=window.BlackFlagV3Core||{};
+    const domains=core.fleetServiceDomains||{};
+    const registry=Array.isArray(core.fleetCapabilityRegistry)?core.fleetCapabilityRegistry:[];
+    const tiers=core.fleetOperatingTiers||{};
+    const domainCards=Object.entries(domains).map(([id,d])=>`<article class="foundry-domain-card"><small>${String(d.level||'fleet').toUpperCase()}</small><h3>${d.label||id}</h3><p>${d.mission||''}</p><strong>${registry.filter(c=>c.domain===id).length} CAPABILITY${registry.filter(c=>c.domain===id).length===1?'':'IES'}</strong></article>`).join('');
+    const capabilityRows=registry.map(c=>`<article class="foundry-capability-row"><div><small>${String(c.lifecycle||'foundation').replaceAll('_',' ').toUpperCase()} • ${String(c.scope||'').replaceAll('-',' ').toUpperCase()}</small><strong>${c.name}</strong><span>${c.id}</span></div><div><b>${(domains[c.domain]?.label||c.domain||'Fleet')}</b><em>${String(c.commercial||'future').replaceAll('-',' ')}</em></div></article>`).join('');
+    const tierRows=Object.values(tiers).map(t=>`<div class="foundry-tier"><strong>${t.label}</strong><span>${t.summary}</span></div>`).join('');
+    overlay=document.createElement('div');
+    overlay.id='foundryWorkspace';
+    overlay.className='foundry-workspace hidden';
+    overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','foundryTitle');
+    overlay.innerHTML=`<div class="foundry-shell">
+      <header class="foundry-head"><div><small>ADMIRAL • FLEET SERVICES FOUNDATION</small><h2 id="foundryTitle">The Foundry</h2><p>Forge reusable services without absorbing the vessels that use them.</p></div><button id="foundryClose" type="button">RETURN TO ADMIRAL'S DECK</button></header>
+      <section class="foundry-law"><strong>VESSELS STAY INDEPENDENT.</strong><span>Shared capabilities cross boundaries only through explicit, versioned service contracts. A shared schema never grants shared authority.</span></section>
+      <main class="foundry-body">
+        <section class="foundry-section"><header><small>OPERATING MODEL</small><h3>Four fleet tiers</h3></header><div class="foundry-tiers">${tierRows}</div></section>
+        <section class="foundry-section"><header><small>CAPABILITY WORKS</small><h3>Foundry domains</h3></header><div class="foundry-domain-grid">${domainCards}</div></section>
+        <section class="foundry-section"><header><small>FOUNDATION AUDIT</small><h3>Existing pieces promoted into the registry</h3><p>These are foundations or candidates, not promises of live production behavior.</p></header><div class="foundry-capability-list">${capabilityRows}</div></section>
+        <section class="foundry-section foundry-boundary"><header><small>BOUNDARY CONTRACT</small><h3>Capability ≠ Vessel ≠ Service Instance</h3></header><p><b>Capability:</b> reusable function. <b>Vessel:</b> independent business or major fleet operation. <b>Service instance:</b> the explicit agreement that lets one vessel consume one capability.</p><p>Ike's remains the sign manufacturer. The Foundry may first prepare vendor-ready inlay files, later manufacture inlays, and only later provide optional overflow capacity when economics justify it.</p></section>
+      </main>
+      <footer class="foundry-foot"><span>FOUNDATION ONLY • NO CROSS-PROJECT DATA GRANT</span><button id="foundryAudit" type="button">SHOW FOUNDATION STATUS</button></footer>
+      <div id="foundryNotice" class="foundry-notice" role="status" aria-live="polite">Existing future features have been classified before new fleet services are built.</div>
+    </div>`;
+    document.body.appendChild(overlay);
+    byId('foundryClose').onclick=()=>{hide('foundryWorkspace');show('admiralDeck');};
+    byId('foundryAudit').onclick=()=>{const n=byId('foundryNotice');if(n)n.textContent=`${registry.length} capability foundations classified across ${Object.keys(domains).length} Foundry domains. No owner/operator authority was broadened.`;};
+    return overlay;
+  }
+  function openFoundryWorkspace(){
+    ensureFoundryWorkspace();hide('admiralDeck');show('foundryWorkspace');
   }
 
   function openAdmiralGate(){

@@ -1,0 +1,84 @@
+{
+  "schema": "dark-sky-keelbook-regression-gates-v1",
+  "build": "8.2.8",
+  "release": "Lean Keel",
+  "excluded_sources": [
+    "The situation"
+  ],
+  "source_policy": "relevant-fleet-history-only-explicit-exclusion-preserved",
+  "gates": {
+    "harbor_light": [
+      "neutral_first_paint",
+      "no_cross_project_flash",
+      "bounded_route_resolution",
+      "explicit_safe_fallback",
+      "mixed_build_block"
+    ],
+    "watertight": [
+      "authority_separation",
+      "project_admin_4353",
+      "project_id_isolation",
+      "owner_not_engine_auth",
+      "preview_does_not_widen_authority"
+    ],
+    "true_helm": [
+      "explicit_in_app_navigation",
+      "browser_back_not_required",
+      "refresh_recovery_only",
+      "deterministic_returns",
+      "interactive_affordance"
+    ],
+    "mobile_watch": [
+      "iphone_first_class",
+      "ipad_first_class",
+      "no_scroll_lock",
+      "critical_controls_visible",
+      "readable_transient_confirmation",
+      "durable_result_state"
+    ],
+    "clean_wake": [
+      "no_platform_chrome_on_customer",
+      "test_contact_guard",
+      "top_of_landing_start",
+      "standalone_vessel_capability"
+    ],
+    "owner_bridge": [
+      "project_scoped_owner_control",
+      "owner_feature_choice",
+      "shared_service_safe_failure",
+      "owner_information_architecture_preserved"
+    ],
+    "grain_guard": [
+      "production_truth_geometry",
+      "fixed_production_alphabets",
+      "no_unsupported_glyph_invention",
+      "blank_wording_blank_plank",
+      "canonical_geometry_shared_outputs"
+    ],
+    "foundry_watch": [
+      "capability_vessel_service_instance_separation",
+      "minimum_required_data_exchange",
+      "versioned_service_contracts",
+      "lowest_appropriate_supply_chain_level",
+      "ikes_primary_manufacturer"
+    ],
+    "ledger_house": [
+      "shared_schema_not_shared_database",
+      "standard_business_events",
+      "auditable_ai_recommendations",
+      "aggregated_intelligence_privacy",
+      "commercial_metadata_foundation"
+    ],
+    "quarterdeck": [
+      "single_top_level_folder",
+      "root_upload_safe",
+      "js_syntax",
+      "json_valid",
+      "no_duplicate_ids",
+      "no_missing_local_refs",
+      "release_identity_agreement",
+      "checksums_final"
+    ]
+  },
+  "promotion": "manual-captain-known-good"
+}

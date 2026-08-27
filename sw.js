@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.2.5';
-const RELEASE_SEAL='reference-library-825-governed-evidence-7c41a2';
+const RELEASE_BUILD='8.2.8';
+const RELEASE_SEAL='leankeel-828-compact-regression-9d41c2';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.
