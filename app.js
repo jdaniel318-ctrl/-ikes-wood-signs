@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.2.1';
+  const BUILD_VERSION='8.2.2';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -1209,6 +1209,9 @@
     approvalCandidateLock: null,
     customColor: '#1f6feb',
     fontChosen: false,
+    ikeAiMode: true,
+    ikeAiRecommendation: null,
+    ikeAiUserOverride: false,
     letterSize: 'Ike Fit',
     plankRecognition: null,
     styleReferenceData: '',
@@ -3970,7 +3973,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.2.1',
+    build:'8.2.2',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -9526,6 +9529,7 @@
       if($('ikeStyleReferenceStatus'))$('ikeStyleReferenceStatus').classList.toggle('hidden',!state.styleReferenceData);
       if(state.styleReferenceData&&$('ikeStyleReferencePreview'))$('ikeStyleReferencePreview').src=state.styleReferenceData;
       if($('ikeStyleReferenceName'))$('ikeStyleReferenceName').textContent=state.styleReferenceName||'Lettering reference';
+      updateIkeAiStatus();
       if($('ikeApproveWording'))$('ikeApproveWording').textContent=state.wording||'Your Sign';
       if($('ikeApproveFont'))$('ikeApproveFont').textContent=`Style ${state.font}`;if($('ikeApproveSize'))$('ikeApproveSize').textContent=state.letterSize||'Ike Fit';
       if($('ikeApproveFill'))$('ikeApproveFill').textContent=state.fill==='Natural'?'CNC Carved':state.fill;
@@ -9635,7 +9639,7 @@
 
   function ikeCurrentRenderLock(){
     const r=state.plankRecognition||{},region=r.fitBand||r.usableRegion||null;
-    return {version:'ike-approved-design-lock-v4',approvedAt:new Date().toISOString(),wording:String(state.wording||''),font:String(state.font||'B'),letterSize:String(state.letterSize||'Ike Fit'),fill:String(state.fill||'Black'),customColor:String(state.customColor||'#1f6feb'),orientation:String(state.orientation||'Horizontal'),topSide:String(state.topSide||'Top of photo'),price:Number(state.price||0),usableRegion:region?{x:Number(region.x),y:Number(region.y),w:Number(region.w),h:Number(region.h),source:String(region.source||'')}:null,obstacleDetected:!!r.obstacleDetected,recognition:{method:r.method||'',confidence:r.confidence||'',referenceCandidate:!!r.referenceCandidate,measurementReadiness:r.measurementReadiness||''},productionContract:IKE_PRODUCTION_CONTRACT,render:ikeCaptureLiveRenderSpec()||{strategy:'usable-region-word-wrap-v1',singleLinePreferred:true,wrapOnlyWhenRequired:true}};
+    return {version:'ike-approved-design-lock-v5-ai',approvedAt:new Date().toISOString(),wording:String(state.wording||''),font:String(state.font||'B'),letterSize:String(state.letterSize||'Ike Fit'),aiDesign:state.ikeAiRecommendation?{font:state.ikeAiRecommendation.font,fit:state.ikeAiRecommendation.fit,confidence:state.ikeAiRecommendation.confidence,reason:state.ikeAiRecommendation.reason,exampleSource:state.ikeAiRecommendation.exampleSource,userOverride:!!state.ikeAiUserOverride}:null,fill:String(state.fill||'Black'),customColor:String(state.customColor||'#1f6feb'),orientation:String(state.orientation||'Horizontal'),topSide:String(state.topSide||'Top of photo'),price:Number(state.price||0),usableRegion:region?{x:Number(region.x),y:Number(region.y),w:Number(region.w),h:Number(region.h),source:String(region.source||'')}:null,obstacleDetected:!!r.obstacleDetected,recognition:{method:r.method||'',confidence:r.confidence||'',referenceCandidate:!!r.referenceCandidate,measurementReadiness:r.measurementReadiness||''},productionContract:IKE_PRODUCTION_CONTRACT,render:ikeCaptureLiveRenderSpec()||{strategy:'usable-region-word-wrap-v1',singleLinePreferred:true,wrapOnlyWhenRequired:true}};
   }
 
   function wrapCanvasText(ctx,text,maxWidth){
@@ -9693,7 +9697,7 @@
         const maxSide=1600,scale=Math.min(1,maxSide/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
         const w=Math.max(1,Math.round((img.naturalWidth||img.width)*scale)),h=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
         const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)return resolve('');ctx.drawImage(img,0,0,w,h);
-        const family=lock.font==='A'?'Georgia':lock.font==='C'?"Times New Roman":'Georgia',style=lock.font==='B'?'italic ':'',weight=lock.font==='C'?'400':'700';
+        const family=lock.font==='A'?'Arial Black, Arial, sans-serif':lock.font==='B'?"Times New Roman, Georgia, serif":'Georgia, Times New Roman, serif',style='',weight=lock.font==='C'?'500':'900';
         let color='#111111';if(lock.fill==='White')color='#ffffff';else if(lock.fill==='Natural')color='#6b4429';else if(lock.fill==='Other')color=lock.customColor||'#1f6feb';
         const live=lock.render?.strategy==='approved-live-layout-v2'?lock.render:null,ur=lock.usableRegion;
         const box=live?.box||null;
@@ -10394,7 +10398,7 @@ The full order and approved media remain stored with this project.`;
     }
     const obstacleDetected=fill<.86;
 
-    // 8.2.1 Gridwright: retain the live-edge silhouette as a carve-safe face grid.
+    // 8.2.2 Gridwright: retain the live-edge silhouette as a carve-safe face grid.
     // A width-biased corridor lets short wording claim the board the way Ike's
     // finished signs do instead of shrinking into one conservative rectangle.
     const gridCols=14,grid=[];
@@ -10589,12 +10593,48 @@ The full order and approved media remain stored with this project.`;
     return {x:(cw-w)/2,y:(ch-h)/2,w,h};
   }
 
+  const IKE_SIGN_EXAMPLES=Object.freeze([
+    {id:'ramjet',wording:'RAMJET',font:'A',fit:'Ike Fit',finish:'White',profile:'short-bold-block',source:'Ike finished RAMJET sign'},
+    {id:'smoke-hole',wording:'SMOKE HOLE!',font:'B',fit:'Ike Fit',finish:'Black',profile:'wide-western-display',source:'Ike finished SMOKE HOLE! sign'}
+  ]);
+
+  function ikeAiRecommendDesign(wording){
+    const raw=String(wording||'').trim(),letters=raw.replace(/[^A-Za-z0-9]/g,''),words=raw.split(/\s+/).filter(Boolean);
+    if(!raw)return null;
+    const compact=letters.length<=8&&words.length<=1;
+    const widePhrase=words.length>=2||raw.length>=9||/[!&]/.test(raw);
+    let font='C',example=null,reason='Balanced traditional lettering for a longer or mixed phrase.';
+    if(compact){font='A';example=IKE_SIGN_EXAMPLES[0];reason='Short wording matches the bold, face-filling proportions of Ike’s RAMJET sign.';}
+    else if(widePhrase){font='B';example=IKE_SIGN_EXAMPLES[1];reason='This phrase matches the tall, narrow lettering rhythm Ike used on SMOKE HOLE!.';}
+    const fit=(letters.length>=18||words.length>=4)?'More Room':'Ike Fit';
+    const confidence=example?(compact?'high':'high'):'medium';
+    return {font,fit,confidence,reason,exampleId:example?.id||'',exampleSource:example?.source||'Ike lettering library',wording:raw,generatedAt:new Date().toISOString()};
+  }
+
+  function applyIkeAiRecommendation({force=false}={}){
+    if(activeProjectId!=='ikes-wood-signs'||state.ikeAiMode===false)return null;
+    const rec=ikeAiRecommendDesign(state.wording);state.ikeAiRecommendation=rec;
+    if(!rec)return null;
+    if(force||!state.ikeAiUserOverride||!state.fontChosen){
+      state.font=rec.font;state.fontChosen=true;state.letterSize=rec.fit;state.ikeAiUserOverride=false;
+    }
+    return rec;
+  }
+
+  function updateIkeAiStatus(){
+    const box=$('ikeAiRecommendation');if(!box)return;
+    const rec=state.ikeAiRecommendation||ikeAiRecommendDesign(state.wording);
+    if(!rec){box.innerHTML='<strong>IKE AI READY</strong><span>Type your wording and Ike AI will match it against the finished-sign examples.</span>';return;}
+    const styleName={A:'Bold Block',B:'Tall Western',C:'Classic Serif'}[rec.font]||`Style ${rec.font}`;
+    box.innerHTML=`<div><strong>IKE AI MATCH · STYLE ${escapeHtml(rec.font)}</strong><span>${escapeHtml(styleName)} · ${escapeHtml(rec.fit)} · ${escapeHtml(rec.confidence.toUpperCase())} confidence</span></div><small>${escapeHtml(rec.reason)} Reference: ${escapeHtml(rec.exampleSource)}.</small>`;
+  }
+
   function ikeApplyDetectedTextPlacementTo(el){
     const r=state.plankRecognition||{},region=r.fitBand||r.usableRegion,card=el.closest('.preview-card'),img=card?.querySelector('.preview-image');
     if(!card||!img||!img.complete||!img.naturalWidth||!region){el.style.removeProperty('left');el.style.removeProperty('top');el.style.removeProperty('width');el.style.removeProperty('height');el.style.removeProperty('transform');el.style.removeProperty('max-width');el.style.removeProperty('font-size');el.style.removeProperty('display');el.style.removeProperty('align-items');el.style.removeProperty('justify-content');return;}
     const ir=ikeImageContentRect(card,img),x=ir.x+region.x*ir.w,y=ir.y+region.y*ir.h,w=region.w*ir.w,h=region.h*ir.h;
     const wording=String(state.wording||'Your Sign').trim()||'Your Sign';
-    // 8.2.1 Gridwright: fit the VISIBLE GLYPHS through a live-edge face grid to Ike's usable wood face.
+    // 8.2.2 Gridwright: fit the VISIBLE GLYPHS through a live-edge face grid to Ike's usable wood face.
     // Generic character-count math left too much dead space because font metrics
     // include invisible side bearings/ascent. Measure the rendered lettering itself,
     // then target real face occupancy while preserving carving clearance.
@@ -13460,7 +13500,7 @@ The full order and approved media remain stored with this project.`;
       if($('charCount')) $('charCount').textContent=`${state.wording.length} character${state.wording.length===1?'':'s'}`;
       applyPreview();
     });
-    $('ikeWordingInput')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.wording=e.target.value;updateUi();});
+    $('ikeWordingInput')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.wording=e.target.value;applyIkeAiRecommendation();updateUi();});
     $('ikeSpeciesAssist')?.addEventListener('click',e=>{
       const choice=e.target.closest('[data-ike-species-choice]');
       if(choice){ikeResolveSpeciesChoice(choice.dataset.ikeSpeciesChoice);return;}
@@ -13484,8 +13524,9 @@ The full order and approved media remain stored with this project.`;
       if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Checking the full plank with your first photo…';
       try{await analyzeIkeSecondLengthPhoto(file);}catch(err){console.error('Ike second length photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That angle did not give us enough scale evidence. Try one full-plank photo from straight on.';}finally{input.value='';}
     });
-    $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;updateUi();});
-    $('ikeLetterSizeChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-size]');if(!b)return;invalidateIkeApprovedDesignLock();state.letterSize=b.dataset.ikeSize||'Ike Fit';updateUi();scheduleIkeDetectedTextPlacement();});
+    $('ikeFontChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-font]');if(!b)return;invalidateIkeApprovedDesignLock();state.font=b.dataset.ikeFont;state.fontChosen=true;state.ikeAiUserOverride=true;updateUi();});
+    $('ikeAiPickBtn')?.addEventListener('click',()=>{invalidateIkeApprovedDesignLock();state.ikeAiMode=true;state.ikeAiUserOverride=false;applyIkeAiRecommendation({force:true});updateUi();scheduleIkeDetectedTextPlacement();});
+    $('ikeLetterSizeChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-size]');if(!b)return;invalidateIkeApprovedDesignLock();state.letterSize=b.dataset.ikeSize||'Ike Fit';state.ikeAiUserOverride=true;updateUi();scheduleIkeDetectedTextPlacement();});
     $('ikeFillChoices')?.addEventListener('click',e=>{const b=e.target.closest('[data-ike-fill]');if(!b)return;invalidateIkeApprovedDesignLock();state.fill=b.dataset.ikeFill;updateUi();});
     $('ikeCustomColor')?.addEventListener('input',e=>{invalidateIkeApprovedDesignLock();state.customColor=e.target.value;state.fill='Other';updateUi();});
     $('rotatePhotoLeftBtn')?.addEventListener('click',()=>queueIkePhotoQuarterTurn(-1));

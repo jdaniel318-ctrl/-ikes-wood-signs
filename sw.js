@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.2.1';
-const RELEASE_SEAL='gridwright-821-root-keel-c4a7e2';
+const RELEASE_BUILD='8.2.2';
+const RELEASE_SEAL='signsmith-822-ike-ai-8f4c21';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

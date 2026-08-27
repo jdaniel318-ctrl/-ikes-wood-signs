@@ -1,3 +1,12 @@
+## 8.2.2 — Signsmith AI
+
+- Added **Ike AI** lettering recommendations grounded in Ike’s bundled finished RAMJET and SMOKE HOLE! examples.
+- AI selects a starting lettering style and fit from wording shape while preserving customer manual override.
+- Added a visible AI match/explanation panel and **LET IKE AI PICK THE LETTERING** recovery action.
+- Fixed approval-artifact font parity so Style A/B/C flatten with the same family/weight contract as the live customer preview.
+- Stores the AI recommendation, confidence, reference source, and override state in the approved design lock for production traceability.
+- Kept the existing live-edge face-grid, plank geometry, species/length checks, owner pricing, and project isolation contracts intact.
+
 ## 8.2.1 — Gridwright
 - Replaces rectangle-only Ike text placement with a 14-column live-edge face grid.
 - Selects a width-biased carve-safe corridor so short words can claim the usable face.

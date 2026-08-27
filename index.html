@@ -14,13 +14,13 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.2.1 GRIDWRIGHT — atomic release seal.
-    const DARK_SKY_EXPECTED_BUILD = '8.2.1';
-    const DARK_SKY_RELEASE_SEAL = 'gridwright-821-root-keel-c4a7e2';
+    // Dark Sky 8.2.2 GRIDWRIGHT — atomic release seal.
+    const DARK_SKY_EXPECTED_BUILD = '8.2.2';
+    const DARK_SKY_RELEASE_SEAL = 'signsmith-822-ike-ai-8f4c21';
     window.__darkSkyExpectedRelease = Object.freeze({build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL});
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
-    // Dark Sky 8.2.1 GRIDWRIGHT — explicit authority route wins before any persisted marker.
+    // Dark Sky 8.2.2 GRIDWRIGHT — explicit authority route wins before any persisted marker.
     // Public Engine route is deterministic; protected routes require an explicit route token.
     window.$ = window.$ || function(id){ return document.getElementById(id); };
     window.$$ = window.$$ || function(sel){ return Array.from(document.querySelectorAll(sel)); };
@@ -594,6 +594,7 @@
                   <button type="button" class="ike-lettering-choice" data-ike-font="B"><small>STYLE B · TALL WESTERN</small><span class="style-b"><b data-ike-font-sample>SMOKE HOLE!</b></span><em>Tall decorative sign lettering</em></button>
                   <button type="button" class="ike-lettering-choice" data-ike-font="C"><small>STYLE C · CLASSIC SERIF</small><span class="style-c"><b data-ike-font-sample>Your Sign</b></span><em>Traditional readable serif</em></button>
                 </div>
+                <div class="ike-ai-panel"><div id="ikeAiRecommendation" class="ike-ai-recommendation" aria-live="polite"><strong>IKE AI READY</strong><span>Type your wording and Ike AI will match it against the finished-sign examples.</span></div><button type="button" id="ikeAiPickBtn" class="ike-ai-pick-btn">LET IKE AI PICK THE LETTERING</button></div>
                 <div class="ike-letter-size-panel"><div class="ike-design-label compact"><strong>Letter size</strong><span>FITS THIS PLANK</span></div><div id="ikeLetterSizeChoices" class="ike-letter-size-grid ike-fit-grid" role="group" aria-label="Choose lettering fit"><button type="button" data-ike-size="More Room"><b>More room</b><small>A little more wood around the words</small></button><button type="button" data-ike-size="Ike Fit" class="selected"><b>Ike Fit</b><small>Fill the usable face like Ike's finished signs</small></button><button type="button" data-ike-size="Full Face"><b>Full face</b><small>Largest safe fit for this exact style</small></button></div><small class="ike-size-safety-note">Ike Fit is the default. The app maximizes the chosen lettering style inside the usable wood face; every option remains carving-safe and Ike verifies final clearance before production.</small></div>
                 <div class="ike-style-proof-note"><strong>Fit learned from Ike’s finished signs</strong><small>The layout engine uses the real RAMJET and SMOKE HOLE! examples as shop-style proof. Customers choose the look; the app handles safe fit and placement.</small></div>
                 <input id="ikeStyleReferenceInput" type="file" accept="image/*" hidden />
@@ -1578,7 +1579,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    const EXPECTED='8.2.1', SEAL='gridwright-821-root-keel-c4a7e2';
+    const EXPECTED='8.2.2', SEAL='signsmith-822-ike-ai-8f4c21';
     const shield=document.getElementById('darkSkyFirstPaintShield');
     const safe=v=>String(v==null?'unknown':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const APP_SCOPE=new URL('./',location.href).href;
@@ -1640,7 +1641,7 @@
         step('Clearing Dark Sky application caches');
         if('caches' in window){for(const key of await caches.keys())if(APP_CACHE.test(key))await caches.delete(key);}
         step('Application caches cleared','done');
-        step('Verifying complete 8.2.1 runtime snapshot');
+        step('Verifying complete 8.2.2 runtime snapshot');
         await verifySnapshot(true);
         step('Complete runtime snapshot verified','done');
         step('Installing identity-only release sentinel');

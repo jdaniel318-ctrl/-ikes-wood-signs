@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.2.1",
-  "release": "8.2.1",
+  "build": "8.2.2",
+  "release": "8.2.2",
   "generatedAt": "2026-08-25",
   "checks": {
     "build_version": true,
@@ -132,8 +132,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.2.1 Gridwright: live-edge face grid selects the broad carve-safe corridor; Style A uses a broad block face; finished-sign calibration drives width, height, and placement.",
-  "candidate": "8.2.1",
+  "note": "8.2.2 Gridwright: live-edge face grid selects the broad carve-safe corridor; Style A uses a broad block face; finished-sign calibration drives width, height, and placement.",
+  "candidate": "8.2.2",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

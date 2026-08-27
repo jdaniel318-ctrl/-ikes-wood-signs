@@ -2,7 +2,7 @@
 
 Constrained customer sizing is reusable, but control vocabulary/defaults must match the vessel mission. Ike uses aggressive safe face-fit grounded in finished signs; other vessels may use S/M/L, sliders, or other controls.
 
-# Fleet Learning Registry — 8.2.1 Gridwright
+# Fleet Learning Registry — 8.2.2 Gridwright
 
 Real Face adds mission-fit confidence to recommendation compression.
 

@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.2.1",
-  "release": "Gridwright — Root Keel",
-  "seal": "gridwright-821-root-keel-c4a7e2",
+  "build": "8.2.2",
+  "release": "Signsmith AI — Ike Example Match",
+  "seal": "signsmith-822-ike-ai-8f4c21",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Gridwright — Root Keel"
+  "release_name": "Signsmith AI — Ike Example Match"
 }
