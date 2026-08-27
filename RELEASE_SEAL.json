@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.4.0",
-  "release": "StyleFoundry",
-  "seal": "stylefoundry-840-production-packs-4f8c2a",
+  "build": "8.4.1",
+  "release": "StyleDock",
+  "seal": "styledock-841-scalable-registry-7b9d31",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "StyleFoundry"
+  "release_name": "StyleDock"
 }

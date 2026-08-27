@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-keel-gauge-calibration-audit-v1",
-  "build": "8.4.0",
+  "build": "8.4.1",
   "release": "Keel Gauge \u2014 Root Keel",
-  "seal": "stylefoundry-840-production-packs-4f8c2a",
+  "seal": "styledock-841-scalable-registry-7b9d31",
   "status": "PASS",
   "ground_truth": {
     "species": "Cedar",

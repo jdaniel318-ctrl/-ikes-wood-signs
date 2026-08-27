@@ -1,4 +1,4 @@
-/* Dark Sky 8.4.0 — Ike Style Foundry
+/* Dark Sky 8.4.1 — Ike Style Foundry
    Production style packs are governed assets. Browser font families are only
    provisional companion renderers until a glyph has certified shop geometry. */
 (()=>{
@@ -24,5 +24,5 @@
   function chars(text){return [...new Set(String(text||'').replace(/\s/g,'').split(''))].sort().join('');}
   function pack(id){return packs[String(id||'B')]||packs.B;}
   function coverage(id,text){const p=pack(id),wanted=chars(text),cert=new Set(String(p.certifiedGlyphs||'').split(''));const covered=[...wanted].filter(c=>cert.has(c)),missing=[...wanted].filter(c=>!cert.has(c));return {wanted,covered:covered.join(''),missing:missing.join(''),certified:missing.length===0};}
-  window.IkeStyleFoundry={schema:'dark-sky-ike-style-foundry-v1',build:'8.4.0',packs,pack,coverage,chars};
+  window.IkeStyleDock={schema:'dark-sky-ike-style-foundry-v2',build:'8.4.1',packs,pack,coverage,chars};
 })();

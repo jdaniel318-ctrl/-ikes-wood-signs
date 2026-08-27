@@ -1,8 +1,8 @@
-# Dark Sky 8.4.0 — StyleFoundry
+# Dark Sky 8.4.1 — StyleDock
 
 Narrow geometry release branched from the proven 8.3.5 TrueCase build. Customer wording case is frozen as a protected contract; this pass changes only Style B shape and Ike Fit calibration.
 
-## 8.4.0 StyleFoundry
+## 8.4.1 StyleDock
 - Preserves `Smoke Hole!`, `smoke hole!`, and `SMOKE HOLE!` exactly as typed.
 - Keeps the working TrueCase DOM → state → preview round trip untouched.
 - Recalibrates Style B toward the real finished SMOKE HOLE! sign: taller, narrower, tighter spacing, and stronger face occupancy.
@@ -44,5 +44,5 @@ Fleet-structure pass built from the 8.2.5 Reference Library. This release audits
 - Removed customer-facing Ike Fit explanation cards; blank wording renders a blank plank.
 
 
-## 8.4.0 StyleFoundry
+## 8.4.1 StyleDock
 Ike lettering is now governed through production style packs. Bundled RAMJET and SMOKE HOLE! finished-sign anchors are release assets. Owner and Engine may upload additional real examples, tag the exact wording shown, approve evidence deliberately, and compile project-scoped glyph coverage. Draft uploads never change customer output. TrueCase remains preserved.

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.4.0';
+  const BUILD_VERSION='8.4.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.4.0',
+    build:'8.4.1',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4367,7 +4367,7 @@
       && String(ikeApplyDetectedTextPlacementTo).includes("state.font==='B'?'.88':'.94'")
       && trueCaseContract;
     add('ike-style-b-truth','Ike Style B finished-sign geometry',styleBTruthContract?'pass':'fail',styleBTruthContract?'Style B keeps the proven exact-case input path while applying a tall, narrow SMOKE HOLE!-anchored measurement and visual envelope inside Ike Fit.':'Style B geometry drifted from the tall/narrow finished-sign contract or disturbed the proven TrueCase path.');
-    const styleFoundryContract=!!window.IkeStyleFoundry?.pack?.('A')&&!!window.IkeStyleFoundry?.pack?.('B')&&String(projectReferenceLibraryMarkup).includes('data-style-foundry-compile')&&String(compileIkeStyleFoundry).includes('approvedExampleCount');
+    const styleFoundryContract=!!window.IkeStyleDock?.pack?.('A')&&!!window.IkeStyleDock?.pack?.('B')&&String(projectReferenceLibraryMarkup).includes('data-style-foundry-compile')&&String(compileIkeStyleDock).includes('approvedExampleCount');
     add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'Style A/B are governed packs with bundled real-sign anchors, owner/Engine evidence intake, explicit approval, coverage tracking, and deliberate compile.':'Style Foundry registry, evidence governance, or compile contract is incomplete.');
 
     const faceGridContract=String(ikeAnalyzePlankPixelsProven).includes('ike-fit-robust-face-grid')&&String(ikeApplyDetectedTextPlacementTo).includes('r.fitBand||r.usableRegion')&&String(ikeApplyDetectedTextPlacementTo).includes('actualBoundingBox')&&!!document.querySelector('.ike-style-proof-note')&&!document.querySelector('label[for=\"ikeStyleReferenceInput\"]');
@@ -10727,9 +10727,9 @@ The full order and approved media remain stored with this project.`;
 
   function ikeFontBlueprint(font){
     const key=String(font||'B');
-    const governed=window.IkeStyleFoundry?.pack?.(key);
+    const governed=window.IkeStyleDock?.pack?.(key);
     if(governed?.metrics)return {...governed.metrics,stylePackId:governed.id,stylePackName:governed.name,stylePackStatus:governed.status};
-    // Safe compatibility fallback. Style Foundry is a required runtime in 8.4.0,
+    // Safe compatibility fallback. Style Foundry is a required runtime in 8.4.1,
     // so reaching this path is evidence for diagnostics rather than a new style.
     if(key==='A')return {family:'"Arial Black", Impact, sans-serif',weight:'900',style:'normal',spacingEm:-0.03,widthTarget:0.88,heightTarget:0.82,widthBoost:1,compactWidthTarget:0.90,compactHeightTarget:0.84,opticalYBias:0.01,metricWidthScale:1,metricHeightScale:1,visualScaleX:1,visualScaleY:1,stylePackId:'A',stylePackStatus:'fallback'};
     if(key==='B')return {family:'"American Typewriter Condensed", "American Typewriter", "Rockwell Extra Bold", Rockwell, "Courier New", serif',weight:'900',style:'normal',spacingEm:-0.045,widthTarget:0.93,heightTarget:0.88,widthBoost:1,compactWidthTarget:0.94,compactHeightTarget:0.90,opticalYBias:0,metricWidthScale:0.72,metricHeightScale:1.10,visualScaleX:0.72,visualScaleY:1.10,stylePackId:'B',stylePackStatus:'fallback'};
@@ -12305,10 +12305,10 @@ The full order and approved media remain stored with this project.`;
         prices:Array.isArray(value.prices)&&value.prices.length?value.prices:(Array.isArray(defaults.prices)?defaults.prices:[0]),
         orderStatuses:Array.isArray(value.orderStatuses)&&value.orderStatuses.length?value.orderStatuses:(Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow]),
         ikeSpeciesRates:normalizeIkeSpeciesRates(value.ikeSpeciesRates),
-        ikeStyleFoundry:value.ikeStyleFoundry||null
+        ikeStyleDock:value.ikeStyleDock||null
       };
     }catch(_){
-      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow],ikeSpeciesRates:normalizeIkeSpeciesRates([]),ikeStyleFoundry:null};
+      return {businessName:p.name,orderPrefix:p.orderPrefix||'PRJ',thankYouHeadline:`THANK YOU FOR CHOOSING ${String(p.name).toUpperCase()}!`,prices:Array.isArray(defaults.prices)?defaults.prices:[0],orderStatuses:Array.isArray(p.workflow)?p.workflow:[...platformDefaultWorkflow],ikeSpeciesRates:normalizeIkeSpeciesRates([]),ikeStyleDock:null};
     }
   }
 
@@ -12356,40 +12356,41 @@ The full order and approved media remain stored with this project.`;
       </div>
     </article>`;
   }
-  function ikeStyleFoundryCoverageFor(p,style){
-    const base=window.IkeStyleFoundry?.pack?.(style)||{};
+  function ikeStyleDockCoverageFor(p,style){
+    const base=window.IkeStyleDock?.pack?.(style)||{};
     const approved=activeProjectReferences(p,{style}).filter(r=>r.sampleText);
     const evidence=[base.anchorText||'',...approved.map(r=>r.sampleText||'')].join('');
-    const chars=window.IkeStyleFoundry?.chars?.(evidence)||[...new Set(evidence.replace(/\s/g,'').split(''))].sort().join('');
+    const chars=window.IkeStyleDock?.chars?.(evidence)||[...new Set(evidence.replace(/\s/g,'').split(''))].sort().join('');
     const upper=[...chars].filter(c=>/[A-Z]/.test(c)).join('');
     const lower=[...chars].filter(c=>/[a-z]/.test(c)).join('');
     const other=[...chars].filter(c=>!/[A-Za-z]/.test(c)).join('');
     return {chars,upper,lower,other,approvedCount:approved.length,anchor:base.anchorText||'',asset:base.anchorImage||'',status:lower?'mixed-evidence':'uppercase-anchor'};
   }
-  function ikeStyleFoundryStatusMarkup(p){
-    const cards=['A','B'].map(style=>{const pack=window.IkeStyleFoundry?.pack?.(style)||{},c=ikeStyleFoundryCoverageFor(p,style);return `<article class="style-foundry-pack"><div class="style-foundry-pack-head"><div><small>STYLE ${style} • ${escapeHtml(String(pack.status||'ANCHOR').toUpperCase())}</small><h3>${escapeHtml(pack.name||style)}</h3></div><strong>${c.approvedCount} APPROVED + BUNDLED ANCHOR</strong></div>${c.asset?`<img src="${escapeHtml(c.asset)}" alt="${escapeHtml(pack.name||style)} production anchor">`:''}<p>${escapeHtml(pack.notes||'')}</p><div class="style-foundry-coverage"><span><b>UPPER</b>${escapeHtml(c.upper||'—')}</span><span><b>lower</b>${escapeHtml(c.lower||'needs examples')}</span><span><b>OTHER</b>${escapeHtml(c.other||'—')}</span></div></article>`;}).join('');
+  function ikeStyleDockStyleIds(p){const ids=new Set(['A','B']);Object.keys(p?.styleFoundry?.styles||{}).forEach(id=>ids.add(id));return [...ids];}
+  function ikeStyleDockPackFor(p,style){return p?.styleFoundry?.styles?.[style]||window.IkeStyleDock?.pack?.(style)||{};}
+  function ikeStyleDockStatusMarkup(p){
+    const cards=ikeStyleDockStyleIds(p).map(style=>{const pack=ikeStyleDockPackFor(p,style),c=ikeStyleDockCoverageFor(p,style),anchorNote=['A','B'].includes(style)?'BUNDLED ANCHOR':'PROJECT STYLE';return `<article class="style-foundry-pack"><div class="style-foundry-pack-head"><div><small>STYLE ${escapeHtml(style)} • ${escapeHtml(String(pack.status||'DRAFT').toUpperCase())}</small><h3>${escapeHtml(pack.name||style)}</h3></div><strong>${c.approvedCount} APPROVED • ${anchorNote}</strong></div>${c.asset?`<img src="${escapeHtml(c.asset)}" alt="${escapeHtml(pack.name||style)} production anchor">`:''}<p>${escapeHtml(pack.notes||(!pack.geometryCertified?'Evidence may be gathered now. CX publication stays blocked until geometry is explicitly certified.':''))}</p><div class="style-foundry-coverage"><span><b>UPPER</b>${escapeHtml(c.upper||'—')}</span><span><b>lower</b>${escapeHtml(c.lower||'needs examples')}</span><span><b>OTHER</b>${escapeHtml(c.other||'—')}</span></div></article>`;}).join('');
     const compiled=p.styleFoundry?.compiledAt?`Compiled ${escapeHtml(new Date(p.styleFoundry.compiledAt).toLocaleString())}`:'Not compiled from owner/Engine evidence yet';
-    return `<section class="style-foundry-status"><div class="project-reference-rule"><strong>REAL SIGNS → APPROVED EVIDENCE → STYLE PACK</strong><span>The customer preview reads governed pack metrics. New examples never change production behavior until they are approved and deliberately compiled.</span></div><div class="style-foundry-packs">${cards}</div><div class="style-foundry-compile"><button type="button" class="primary-btn small" data-style-foundry-compile>COMPILE APPROVED STYLE PACKS</button><p data-style-foundry-compile-status class="owner-save-status">${compiled}</p></div></section>`;
+    return `<section class="style-foundry-status"><div class="project-reference-rule"><strong>REAL SIGNS → APPROVED EVIDENCE → STYLE PACK</strong><span>Style C and beyond are project data, not hard-coded UI. Evidence can grow safely while CX publication remains separately gated by geometry certification.</span></div><div class="style-foundry-packs">${cards}</div><div class="style-foundry-compile"><button type="button" class="primary-btn small" data-style-foundry-compile>COMPILE APPROVED STYLE PACKS</button><p data-style-foundry-compile-status class="owner-save-status">${compiled}</p></div></section>`;
   }
-  async function compileIkeStyleFoundry(p,{engine=false}={}){
+  async function compileIkeStyleDock(p,{engine=false}={}){
     if(!p||p.id!=='ikes-wood-signs')return false;
-    const now=new Date().toISOString();
-    const styles={};
-    for(const style of ['A','B']){const pack=window.IkeStyleFoundry?.pack?.(style)||{};const c=ikeStyleFoundryCoverageFor(p,style);styles[style]={id:style,name:pack.name||style,anchorText:pack.anchorText||'',anchorImage:pack.anchorImage||'',certifiedEvidenceChars:c.chars,upperEvidence:c.upper,lowerEvidence:c.lower,otherEvidence:c.other,approvedExampleCount:c.approvedCount,renderer:pack.renderer||'companion-profile',compiledAt:now,compiledBy:engine?'engine':'owner',caseState:c.lower?'mixed-evidence':'uppercase-anchor-lowercase-provisional'};}
-    p.styleFoundry={schema:'dark-sky-ike-style-foundry-project-v1',version:1,compiledAt:now,compiledBy:engine?'engine':'owner',styles};
+    const now=new Date().toISOString(),existing=p.styleFoundry?.styles||{},styles={};
+    for(const style of ikeStyleDockStyleIds(p)){const runtime=window.IkeStyleDock?.pack?.(style)||{},pack={...runtime,...(existing[style]||{})},c=ikeStyleDockCoverageFor(p,style);styles[style]={...pack,id:style,name:pack.name||style,anchorText:pack.anchorText||'',anchorImage:pack.anchorImage||'',certifiedEvidenceChars:c.chars,upperEvidence:c.upper,lowerEvidence:c.lower,otherEvidence:c.other,approvedExampleCount:c.approvedCount,compiledAt:now,compiledBy:engine?'engine':'owner',caseState:c.lower?'mixed-evidence':'uppercase-anchor-lowercase-provisional'};if(styles[style].status==='approved'||styles[style].status==='production-anchor')styles[style].status='compiled';}
+    p.styleFoundry={...(p.styleFoundry||{}),schema:'dark-sky-ike-style-foundry-project-v2',version:2,compiledAt:now,compiledBy:engine?'engine':'owner',styles};
     await persistProjectMutation(p,{reason:`${engine?'engine':'owner'}.style_foundry.compile`});
-    logActivity(p.id,'Style Foundry compiled',`A ${styles.A.certifiedEvidenceChars.length} glyph evidence • B ${styles.B.certifiedEvidenceChars.length} glyph evidence`);
+    logActivity(p.id,'Style Foundry compiled',`${Object.keys(styles).length} governed style pack(s) compiled`);
     return true;
   }
   function projectReferenceLibraryMarkup(p,{engine=false}={}){
     const rows=projectReferenceLibrary(p).slice().sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));
-    const activeA=activeProjectReferences(p,{style:'A'})[0],activeB=activeProjectReferences(p,{style:'B'})[0];
-    return `<section class="project-reference-library">${ikeStyleFoundryStatusMarkup(p)}
+    const styleIds=ikeStyleDockStyleIds(p);const activeSummary=styleIds.map(style=>{const r=activeProjectReferences(p,{style})[0];return `<span>STYLE ${escapeHtml(style)} <b>${r?`V${Number(r.version||1)} ACTIVE`:'NO APPROVED REFERENCE'}</b></span>`;}).join('');
+    return `<section class="project-reference-library">${ikeStyleDockStatusMarkup(p)}
       <div class="project-reference-rule"><strong>Evidence → approval → production truth</strong><span>Uploads never change customer output automatically. An owner or Engine operator must approve them first.</span></div>
-      <div class="project-reference-active"><span>STYLE A <b>${activeA?`V${Number(activeA.version||1)} ACTIVE`:'NO APPROVED REFERENCE'}</b></span><span>STYLE B <b>${activeB?`V${Number(activeB.version||1)} ACTIVE`:'NO APPROVED REFERENCE'}</b></span></div>
+      <div class="project-reference-active">${activeSummary}</div>
       <article class="owner-form-card project-reference-upload">
         <div class="project-reference-upload-grid">
-          <label>Style<select data-reference-style><option value="A">Style A — RAMJET</option><option value="B">Style B — SMOKE HOLE!</option></select></label>
+          <label>Style<select data-reference-style>${styleIds.map(style=>{const pack=ikeStyleDockPackFor(p,style);return `<option value="${escapeHtml(style)}">Style ${escapeHtml(style)} — ${escapeHtml(pack.name||style)}</option>`;}).join('')}</select></label>
           <label>Reference type<select data-reference-kind><option value="machine-geometry">Machine Geometry</option><option value="finished-sign">Finished Sign</option><option value="font-specimen">Font / Glyph Specimen</option><option value="blank-finished-pair">Blank → Finished Pair</option><option value="placement">Placement / Face Coverage</option><option value="finish">Finish / Color</option></select></label>
           <label>Authority role<select data-reference-role><option value="visual-example">Visual Example</option><option value="production-geometry">Production Geometry</option><option value="secondary-evidence">Secondary Evidence</option></select></label>
           <label>Title<input data-reference-title class="text-input" placeholder="Example: RAMJET production alphabet"></label><label>Exact wording shown<input data-reference-sample-text class="text-input" placeholder="Example: Smoke Hole!"></label>
@@ -12405,7 +12406,7 @@ The full order and approved media remain stored with this project.`;
   function bindProjectReferenceLibrary(p,{engine=false,rerender}={}){
     const root=engine?$('projectTabContent'):$('ownerPortalBody');if(!root)return;
     const upload=root.querySelector('[data-reference-upload]');
-    root.querySelector('[data-style-foundry-compile]')?.addEventListener('click',async()=>{const status=root.querySelector('[data-style-foundry-compile-status]');if(status)status.textContent='Compiling approved production evidence…';await compileIkeStyleFoundry(p,{engine});if(status)status.textContent='Style packs compiled. Customer case choice remains unchanged; provisional glyphs stay flagged until real examples certify them.';if(rerender)setTimeout(()=>rerender(),550);});
+    root.querySelector('[data-style-foundry-compile]')?.addEventListener('click',async()=>{const status=root.querySelector('[data-style-foundry-compile-status]');if(status)status.textContent='Compiling approved production evidence…';await compileIkeStyleDock(p,{engine});if(status)status.textContent='Style packs compiled. Customer case choice remains unchanged; provisional glyphs stay flagged until real examples certify them.';if(rerender)setTimeout(()=>rerender(),550);});
     upload?.addEventListener('click',async()=>{
       const file=root.querySelector('[data-reference-file]')?.files?.[0];
       const style=root.querySelector('[data-reference-style]')?.value||'A';

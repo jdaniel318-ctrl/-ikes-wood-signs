@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.4.0 \u2014 StyleFoundry",
-  "short_name": "Dark Sky 8.4.0",
-  "start_url": "./index.html?_darkSkyRelease=8.4.0&_darkSkySeal=stylefoundry-840-production-packs-4f8c2a",
+  "name": "Dark Sky 8.4.1 \u2014 StyleDock",
+  "short_name": "Dark Sky 8.4.1",
+  "start_url": "./index.html?_darkSkyRelease=8.4.1&_darkSkySeal=styledock-841-scalable-registry-7b9d31",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.4.0"
+  "version": "8.4.1"
 }

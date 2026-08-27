@@ -1,8 +1,8 @@
 {
-  "schema": "dark-sky-ike-style-foundry-v1",
-  "build": "8.4.0",
-  "release": "StyleFoundry",
-  "purpose": "Govern Ike production alphabets from real approved sign evidence rather than loose browser-font approximations.",
+  "schema": "dark-sky-ike-style-foundry-v2",
+  "build": "8.4.1",
+  "release": "StyleDock",
+  "purpose": "Govern an extensible registry of Ike production alphabets from approved real-sign evidence; styles are data-driven and not limited to A/B.",
   "governance": {
     "draft_upload_changes_customer_output": false,
     "approval_required": true,
@@ -11,7 +11,14 @@
     "engine_may_upload": true,
     "superseded_evidence_retained": true,
     "customer_case_preserved": true,
-    "unsupported_style_c_fallback": false
+    "unsupported_style_c_fallback": false,
+    "dynamic_style_registry": true,
+    "new_style_defaults_customer_visible": false,
+    "publish_requires_compile": true,
+    "style_count_hardcoded": false,
+    "geometry_certification_required_before_customer_publish": true,
+    "bundled_anchor_cards_visible": true,
+    "glyph_coverage_visible": true
   },
   "packs": {
     "A": {
@@ -32,14 +39,16 @@
     }
   },
   "workflow": [
+    "create draft style pack",
     "upload real example",
     "tag exact wording and style",
-    "save as draft",
+    "review draft evidence",
     "approve evidence",
-    "compile style packs",
-    "review coverage",
+    "compile approved evidence into coverage",
+    "review visible glyph coverage",
+    "publish style to CX deliberately",
     "sea-trial customer preview",
-    "promote only after Captain acceptance"
+    "retain superseded evidence"
   ],
   "file_budget_note": "Release remains comfortably below the 75-file working ceiling; additional approved examples can be added deliberately."
 }

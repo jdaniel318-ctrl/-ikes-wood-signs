@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.4.0",
-  "release": "StyleFoundry",
+  "build": "8.4.1",
+  "release": "StyleDock",
   "excluded_sources": [
     "The situation"
   ],
@@ -57,7 +57,12 @@
       "canonical_geometry_shared_outputs",
       "customer_case_preserved_exactly",
       "style_b_tall_narrow_finished_sign_fit",
-      "style_b_mixed_case_no_generic_case_rewrite"
+      "style_b_mixed_case_no_generic_case_rewrite",
+      "extensible_style_registry_not_ab_hardcoded",
+      "style_evidence_lifecycle_draft_approved_compiled_published",
+      "new_styles_hidden_from_cx_by_default",
+      "new_style_geometry_certification_required_before_publish",
+      "style_anchor_and_glyph_coverage_visible"
     ],
     "foundry_watch": [
       "capability_vessel_service_instance_separation",
