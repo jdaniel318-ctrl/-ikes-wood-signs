@@ -1,6 +1,6 @@
 # Dark Sky 8.2.2 — Ike Fit
 
-Focused Ike’s Wood Signs pass from the exact 8.2.1 iPad-safe build.
+Focused Ike’s Wood Signs pass from the exact 8.2.2 iPad-safe build.
 
 ## Mission
 Use one automatic **Ike Fit** for the sign preview. The customer chooses wording, lettering style, and finish; the ship handles size and placement together using a hidden live-edge face grid calibrated against Ike’s real finished RAMJET and SMOKE HOLE! signs. The exact plank photo is never replaced or redrawn. The blue Ike stamp seen during back-of-plank testing is ignored for lettering layout.
