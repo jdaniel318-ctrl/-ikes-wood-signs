@@ -389,22 +389,48 @@
     const attention=rows.reduce((n,v)=>n+(Number(v.attentionOutposts)||0),0);const changed=byId('admiralWhatChanged');if(changed)changed.textContent=attention?`${attention} fleet signal${attention===1?'':'s'} require governance awareness.`:(trials?`${trials} sea trial${trials===1?'':'s'} active; no open fleet signals.`:'No open fleet signals.');
   }
 
+  const READINESS_TRUTH_KEY='bf.command.readiness.truth.v1';
+  const CAPTAIN_OUTCOME_KEY='bf.command.captain.outcomes.v1';
+  function readJsonLocal(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback;}catch(_){return fallback;}}
+  function writeJsonLocal(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(_){ }}
+  function reconcileReadinessTruth(report){
+    const prior=readJsonLocal(READINESS_TRUTH_KEY,{findings:{},history:[]}),now=new Date().toISOString(),findings={...prior.findings},cleared=[];
+    (report.checks||[]).forEach(c=>{
+      const prev=findings[c.id]||null,isOpen=c.state!=='pass';
+      const item={id:c.id,label:c.label,state:c.state,detail:c.detail,level:c.level||'core',firstDetected:prev?.firstDetected||(isOpen?now:null),latestChecked:now,lastBuild:'8.5.3',lifecycle:isOpen?'open':(prev&&prev.state&&prev.state!=='pass'?'verified-fix':'clear')};
+      if(!isOpen&&prev&&prev.state!=='pass'){item.clearedAt=now;item.clearedFrom=prev.state;cleared.push(item);prior.history.unshift({...item,event:'cleared'});}
+      if(isOpen&&!prev)prior.history.unshift({...item,event:'detected'});
+      findings[c.id]=item;
+    });
+    const truth={schema:'dark-sky-readiness-truth-v1',build:'8.5.3',updatedAt:now,findings,history:(prior.history||[]).slice(0,120)};writeJsonLocal(READINESS_TRUTH_KEY,truth);report.readinessTruth=truth;report.recentlyCleared=cleared;return truth;
+  }
+  function findingAction(id){
+    if(['ike-style-b-truth','ike-style-foundry','ike-glyphforge','known-calibration-replay'].includes(id))return ['foundry','OPEN FOUNDRY'];
+    if(['storage-growth','storage-telemetry'].includes(id))return ['storage','INSPECT STORAGE'];
+    if(['fleet-doctrine-registry','command-layer-placement','professional-first-command'].includes(id))return ['standards','VIEW DOCTRINE'];
+    return ['evidence','VIEW EVIDENCE'];
+  }
+  function recordCaptainOutcome(kind,label,detail=''){
+    const rows=readJsonLocal(CAPTAIN_OUTCOME_KEY,[]);rows.unshift({at:new Date().toISOString(),kind,label,detail,build:'8.5.3'});writeJsonLocal(CAPTAIN_OUTCOME_KEY,rows.slice(0,25));
+  }
+
   function syncAdmiralReadiness(report){
     if(!report)return;
-    const label=report.pass?(report.warnings?'WATCH':'CLEAR'):'HOLD';
-    const copy=report.pass?`${report.checks.length-report.warnings} checks clear${report.warnings?` • ${report.warnings} watch`:''}.`:`${report.criticalFailures} critical hold${report.criticalFailures===1?'':'s'} remain.`;
+    const truth=reconcileReadinessTruth(report);
+    const current=(report.checks||[]).filter(c=>c.state!=='pass');
+    const holds=current.filter(c=>c.state==='fail').length,watches=current.filter(c=>c.state==='warn').length;
+    const label=holds?'HOLD':watches?'WATCH':'CLEAR';
+    const copy=holds?`${holds} current critical hold${holds===1?'':'s'} remain.`:watches?`${watches} current watch item${watches===1?'':'s'} remain; no critical holds.`:'Current fleet posture is clear.';
     for(const id of ['admiralDeckReadinessState','admiralCeremonialReadinessState']){const el=byId(id);if(el){el.textContent=label;el.dataset.state=label.toLowerCase();}}
     for(const id of ['admiralDeckReadinessCopy','admiralCeremonialReadinessCopy']){const el=byId(id);if(el)el.textContent=copy;}
-    const domains=byId('admiralCeremonialDomains');
-    if(domains){
-      domains.innerHTML=(report.checks||[]).slice(0,8).map(c=>`<span data-state="${c.state}"><i>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</i><b>${c.label}</b><em>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</em></span>`).join('')||'<span>No readiness domains returned.</span>';
-    }
+    const domains=byId('admiralCeremonialDomains');if(domains)domains.innerHTML=(report.checks||[]).slice(0,8).map(c=>`<span data-state="${c.state}"><i>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</i><b>${c.label}</b><em>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</em></span>`).join('')||'<span>No readiness domains returned.</span>';
     const findings=byId('admiralReadinessFindings');
     if(findings){
-      const actionable=(report.checks||[]).filter(c=>c.state!=='pass');
-      findings.innerHTML=actionable.length?actionable.map((c,i)=>`<button type="button" class="admiral-finding ${c.state}" data-finding-index="${i}"><b>${c.state==='warn'?'WATCH':'HOLD'} · ${c.label}</b><span>${c.detail}</span><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</em></button>`).join(''):`<span class="clear">No active holds. Fleet readiness is clear.</span>`;
+      const open=current.map(c=>{const meta=truth.findings[c.id]||{},a=findingAction(c.id);return `<article class="admiral-finding ${c.state}" data-finding-id="${c.id}"><b>${c.state==='warn'?'WATCH':'HOLD'} · ${c.label}</b><span>${c.detail}</span><small>FIRST DETECTED ${meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK'} • LATEST 8.5.3</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${c.id}">${a[1]}</button></article>`;}).join('');
+      const cleared=(report.recentlyCleared||[]).slice(0,3).map(c=>`<article class="admiral-finding cleared"><b>CLEARED · ${c.label}</b><span>Verified current on 8.5.3. Historical failure retained in readiness history.</span><small>CLEARED ${new Date(c.clearedAt).toLocaleString()}</small></article>`).join('');
+      findings.innerHTML=(open||'<span class="clear">No current holds. Fleet readiness is clear.</span>')+cleared;
     }
-    const notice=byId('admiralDeckNotice');if(notice)notice.textContent=report.pass?(report.warnings?`Readiness complete: ${report.warnings} watch item(s) remain.`:'Readiness complete: fleet clear.'):`Readiness complete: ${report.criticalFailures} critical hold${report.criticalFailures===1?'':'s'} listed under GOVERN.`;
+    const notice=byId('admiralDeckNotice');if(notice)notice.textContent=holds?`Readiness complete: ${holds} current hold${holds===1?'':'s'} listed under GOVERN.`:watches?`Readiness complete: no critical holds; ${watches} watch item${watches===1?'':'s'} remain.`:'Readiness complete: current fleet posture clear.';
     window.__lastAdmiralReadinessReport=report;
   }
 
@@ -568,6 +594,14 @@
     byId('admiralDeckFoundry').onclick=()=>openFoundryWorkspace();
     byId('admiralDeckStandards').onclick=()=>{const n=byId('admiralDeckNotice');if(n)n.textContent='Fleet Doctrine Registry is active. Full standards management is the next governed expansion.';};
     byId('admiralCeremonialFoundry').onclick=()=>openFoundryWorkspace();
+    byId('admiralReadinessFindings')?.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-readiness-action]');if(!btn)return;
+      const action=btn.dataset.readinessAction,id=btn.dataset.readinessFinding;
+      if(action==='foundry'){openFoundryWorkspace();return;}
+      if(action==='standards'){const n=byId('admiralDeckNotice');if(n)n.textContent='Fleet Doctrine Registry is the retained history; current posture comes only from the latest readiness run.';return;}
+      if(action==='storage'){returnToCaptain();window.setTimeout(()=>{byId('captainGlobalExit')?.click();window.setTimeout(()=>window.BlackFlagOpenStorageTelemetry?.({inspect:true}),220);},80);return;}
+      const n=byId('admiralDeckNotice');if(n)n.textContent=`${id||'Finding'} evidence is retained in the current readiness report. Use Readiness Report to export the full evidence bundle.`;
+    });
     deck.querySelectorAll('[data-admiral-future]').forEach(btn=>btn.onclick=()=>{byId('admiralDeckNotice').textContent=`${btn.dataset.admiralFuture} is charted for a future Admiral voyage.`;});
     return gate;
   }
@@ -833,7 +867,7 @@
     const act=byId('captainProActItems');
     if(act) act.innerHTML=signalRows.length?signalRows.slice(0,3).map(({v})=>`<article><b>${v.name}</b><p>Route to the live signal report, then open the affected vessel in Engine if action is required.</p><button type="button" data-captain-pro-vessel="${v.projectId}">OPEN SIGNAL REPORT</button></article>`).join(''):`<article><b>Fleet steady</b><p>No attention route is required right now.</p><button type="button" data-captain-pro-route="fleet">OPEN FLEET MAP</button></article>`;
     const record=byId('captainProRecordItems');
-    if(record) record.innerHTML=`<article><b>Captain's Log</b><p>Keep orders, decisions, outcomes and lessons in the durable command record.</p><button type="button" data-captain-pro-route="log">OPEN CAPTAIN'S LOG</button></article><article><b>Current command picture</b><p>${attention?`${attention} attention signal${attention===1?'':'s'} remain open.`:'No open attention signals.'} ${trials?`${trials} sea trial${trials===1?'':'s'} active.`:''}</p></article>`;
+    if(record){const outcomes=readJsonLocal(CAPTAIN_OUTCOME_KEY,[]).slice(0,3);record.innerHTML=`<article><b>Captain's Log</b><p>Keep orders, decisions, outcomes and lessons in the durable command record.</p><button type="button" data-captain-pro-route="log">OPEN CAPTAIN'S LOG</button></article>${outcomes.map(o=>`<article class="captain-outcome"><b>${o.label}</b><p>${o.detail||'Durable command action recorded.'}</p><small>${new Date(o.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} • ${o.build}</small></article>`).join('')}<article><b>Current command picture</b><p>${attention?`${attention} attention signal${attention===1?'':'s'} remain open.`:'No open attention signals.'} ${trials?`${trials} sea trial${trials===1?'':'s'} active.`:''}</p></article>`;}
     const readiness=byId('captainProReadiness');if(readiness)readiness.textContent=window.__lastAdmiralReadinessReport?(window.__lastAdmiralReadinessReport.pass?(window.__lastAdmiralReadinessReport.warnings?'WATCH':'CLEAR'):'HOLD'):'NOT RUN';
   }
 
@@ -843,7 +877,7 @@
     let bar=byId('captainCommandModeBar');
     if(!bar){
       bar=document.createElement('div');bar.id='captainCommandModeBar';bar.className='captain-command-mode-bar';
-      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.2</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
+      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.3</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
       room.appendChild(bar);
     }
     let surface=byId('captainProfessionalSurface');
@@ -866,8 +900,8 @@
         <div id="captainProfessionalStatus" class="captain-professional-status">Professional command is the operational truth. Cinematic View uses the same command model.</div>`;
       room.appendChild(surface);
       surface.addEventListener('click',e=>{
-        const vesselBtn=e.target.closest('[data-captain-pro-vessel]');if(vesselBtn){const desk=ensureCaptainDeskIndex();const fleetBtn=desk?.querySelector('[data-cq-desk-route="fleet"]');if(fleetBtn)fleetBtn.click();requestAnimationFrame(()=>openSignalReport(vesselBtn.dataset.captainProVessel));return;}
-        const btn=e.target.closest('[data-captain-pro-route]');if(!btn)return;
+        const vesselBtn=e.target.closest('[data-captain-pro-vessel]');if(vesselBtn){recordCaptainOutcome('route','Signal route opened',vesselBtn.dataset.captainProVessel);const desk=ensureCaptainDeskIndex();const fleetBtn=desk?.querySelector('[data-cq-desk-route="fleet"]');if(fleetBtn)fleetBtn.click();requestAnimationFrame(()=>openSignalReport(vesselBtn.dataset.captainProVessel));return;}
+        const btn=e.target.closest('[data-captain-pro-route]');if(!btn)return;recordCaptainOutcome('command',`Captain command: ${btn.dataset.captainProRoute}`,btn.textContent.trim().slice(0,80));
         const desk=ensureCaptainDeskIndex();
         const target=desk?.querySelector(`[data-cq-desk-route="${btn.dataset.captainProRoute}"]`);
         if(target)target.click();else{const status=byId('captainProfessionalStatus');if(status)status.textContent='That command station is not available on this hull.';}

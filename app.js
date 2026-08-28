@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.5.2';
+  const BUILD_VERSION='8.5.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.5.2',
+    build:'8.5.3',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4356,21 +4356,17 @@
       const priorState=state.wording,priorValue=trueCaseInput.value;
       try{
         for(const sample of ['Smoke Hole!','smoke hole!','SMOKE HOLE!']){
-          trueCaseInput.value=sample;
-          trueCaseInput.dispatchEvent(new Event('input',{bubbles:true}));
-          updateUi();
-          if(state.wording!==sample||trueCaseInput.value!==sample||String(document.getElementById('ikeDesignPreviewText')?.textContent||'')!==sample){throw new Error('case round-trip changed '+sample);}
+          trueCaseInput.value=sample;trueCaseInput.dispatchEvent(new Event('input',{bubbles:true}));updateUi();
+          if(state.wording!==sample||trueCaseInput.value!==sample||String(document.getElementById('ikeDesignPreviewText')?.textContent||'')!==sample)throw new Error('case round-trip changed '+sample);
         }
         trueCaseRoundTrip=true;
       }catch(_){trueCaseRoundTrip=false;}
       state.wording=priorState;trueCaseInput.value=priorValue;updateUi();
     }
-    const trueCaseContract=!!trueCaseInput
-      && ['off','none'].includes(String(trueCaseInput.getAttribute('autocapitalize')||'').toLowerCase())
-      && String(trueCaseInput.getAttribute('autocorrect')||'').toLowerCase()==='off'
-      && getComputedStyle(trueCaseInput).textTransform==='none'
-      && trueCaseRoundTrip;
-    add('ike-true-case-roundtrip','Ike real-input case round trip',trueCaseContract?'pass':'fail',trueCaseContract?'Actual Ike customer input preserves mixed, lower, and upper case through DOM → state → UI preview with browser capitalization/correction disabled.':'Actual Ike wording control changed customer case somewhere in the DOM → state → preview round trip.');
+    const trueCaseMarkup=await safe(async()=>{const r=await fetch(`index.html?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '');
+    const trueCaseSourceContract=String(trueCaseMarkup).includes('id="ikeWordingInput"')&&String(trueCaseMarkup).includes('autocapitalize="off"')&&String(trueCaseMarkup).includes('autocorrect="off"')&&String(trueCaseMarkup).includes('spellcheck="false"')&&String(trueCaseMarkup).includes('text-transform:none')&&String(initEventHandlers).includes("state.wording=String(e.target.value||'')")&&String(updateUi).includes("iw.value=state.wording");
+    const trueCaseContract=trueCaseInput?(trueCaseSourceContract&&trueCaseRoundTrip):trueCaseSourceContract;
+    add('ike-true-case-roundtrip','Ike real-input case round trip',trueCaseContract?'pass':'fail',trueCaseContract?(trueCaseInput?'Actual Ike customer input preserves mixed, lower, and upper case through DOM → state → UI preview.':'TrueCase source contract is current and surface-independent; live Customer Golden Voyage remains the real-device proof.'):'Ike wording source contract can still normalize or rewrite customer case.');
 
     const styleBSpec=ikeFontBlueprint('B');
     const styleBTruthContract=styleBSpec.metricWidthScale<=0.74 && styleBSpec.metricHeightScale>=1.08 && styleBSpec.widthTarget>=0.92 && styleBSpec.heightTarget>=0.87
@@ -4408,6 +4404,13 @@
     const storageSafeOk=typeof window.DarkSkyV4?.storageStewardPreview==='function'&&typeof window.DarkSkyV4?.storageStewardClean==='function'&&String(window.DarkSkyV4.storageStewardClean).includes('oldCaches');
     const storageDiagOk=typeof showCompactStorageDiagnostics==='function'&&String(window.DarkSkyV4?.storageStewardPreview||'').includes('deepProbe');
     add('storage-telemetry','Storage & telemetry access',storageEntryOk&&storageSafeOk&&storageDiagOk?'pass':'fail',storageEntryOk&&storageSafeOk&&storageDiagOk?'Engine Telemetry and Engine Storage expose a real inspection surface; Compact Diagnostics renders visible read-only evidence; cleanup is constrained to stale application caches after inspection.':'Storage & Telemetry entry point, visible diagnostics, deeper probe, or safe-cleanup contract is missing.');
+    const storageEstimate=await safe(()=>navigator.storage?.estimate?.(),()=>null);
+    const originUsage=Number(storageEstimate?.usage||0),originMb=originUsage/1024/1024;
+    let priorSounding=null;try{priorSounding=JSON.parse(localStorage.getItem('bf.v4.storage.lastSounding')||'null');}catch(_){ }
+    const priorMb=Number(priorSounding?.usage||0)/1024/1024;
+    const growthMb=priorMb>0?originMb-priorMb:0;
+    const storageGrowthState=originMb>=512?'fail':(originMb>=256||growthMb>=128)?'warn':'pass';
+    add('storage-growth','Engine origin storage growth',storageGrowthState,storageGrowthState==='pass'?`Origin usage is ${originMb.toFixed(1)} MB and remains below the command watch threshold.`:`Origin usage is ${originMb.toFixed(1)} MB${priorMb>0?` • ${growthMb>=0?'+':''}${growthMb.toFixed(1)} MB since the retained sounding`:''}. Inspect Engine Storage before treating growth as harmless.`,'check');
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;

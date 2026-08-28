@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.5.2';
-const RELEASE_SEAL='command-decks-852-organized-command-7c31a9';
+const RELEASE_BUILD='8.5.3';
+const RELEASE_SEAL='readiness-truth-853-trust-signal-a8c42e';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

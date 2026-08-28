@@ -1,18 +1,22 @@
-# Dark Sky 8.5.2 — Command Decks
+# Dark Sky 8.5.3 — Readiness Truth
+
+Trust the signal. Act on the truth. Current fleet posture is separated from retained historical incidents. Findings move through Detected → Open → Verified Fix → Cleared, expose evidence and routes, origin storage growth becomes inspectable readiness evidence, and Captain command actions leave durable outcomes.
+
+# Dark Sky 8.5.3 — Readiness Truth
 
 Professional command is organized first; cinematic presentation remains aboard as a second view. Captain uses Watch → Decide → Act → Record. Admiral uses Govern → Standardize → Delegate → Promote. Live intelligence is integrated into the command layout, not floated over it. Tools sit below command lanes. View changes preserve state and authority.
 
-# Dark Sky 8.5.2 — Command Decks
+# Dark Sky 8.5.3 — Readiness Truth
 
 Professional command opens first. Cinematic transitions remain preserved as a secondary presentation over the same command model. Captain uses Watch → Decide → Act → Record. Admiral uses Govern → Standardize → Delegate → Promote. Readiness HOLD/WATCH results persist as visible findings. View switching preserves context.
 
-# Dark Sky 8.5.2 — Command Decks
+# Dark Sky 8.5.3 — Readiness Truth
 
 Professional first. Cinematic second. One fleet memory. One command hierarchy.
 
 This release hardens the platform command layers without adding vessel-specific feature sprawl. Black Flag remains the operating machinery; Captain's Quarters now defaults to a clear Watch → Decide → Act → Record command view; Admiral's Deck trial now defaults to Professional Mode; cinematic environments remain deliberate second views. Machine-readable Fleet Doctrine, Golden UI Voyages, and a canonical Fleet Learning promotion path preserve lessons across the fleet. GlyphForge and all 8.4.x production-style work remain aboard unchanged.
 
-## 8.5.2 additions
+## 8.5.3 additions
 - `FLEET_DOCTRINE_REGISTRY.json` — ten active fleet principles with origins and scopes.
 - `FLEET_COMMAND_MODEL.json` — Engine operates, Captain commands, Admiral governs.
 - `GOLDEN_VOYAGES.json` — six real-UI release assurance journeys.

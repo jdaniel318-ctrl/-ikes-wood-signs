@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.5.2",
+  "build": "8.5.3",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Command Decks",
+  "release": "Readiness Truth",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -78,5 +78,17 @@
       "Tools",
       "Presentation"
     ]
+  },
+  "readiness_truth": {
+    "lifecycle": [
+      "Detected",
+      "Open",
+      "Verified Fix",
+      "Cleared"
+    ],
+    "current_posture_separate_from_history": true,
+    "direct_actions": true,
+    "storage_growth_watch": true,
+    "captain_outcomes_durable": true
   }
 }
