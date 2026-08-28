@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-intelligence-model-v1",
-  "build": "8.6.2",
-  "release": "Intelligence Dock",
+  "build": "8.6.3",
+  "release": "Registry Ledger",
   "principles": [
     "Signals are normalized without crossing project data boundaries.",
     "Comparison uses fleet-safe posture metadata, never another vessel's private business records.",

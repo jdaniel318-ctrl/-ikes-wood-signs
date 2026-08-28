@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.6.2",
+  "build": "8.6.3",
   "policy": "real-ui-path-release-assurance",
   "voyages": [
     {
@@ -10,7 +10,8 @@
         "Fleet Dock",
         "Vessel roster paints"
       ],
-      "release_blocker": true
+      "release_blocker": true,
+      "registry_ledger_contract": "Live fleet count must remain six and Fleet Intelligence must leave READING FLEET inside the bounded window."
     },
     {
       "id": "customer",
@@ -30,7 +31,8 @@
         "State retained",
         "Explicit Engine return"
       ],
-      "release_blocker": true
+      "release_blocker": true,
+      "staging_ledger_contract": "When a live staging action occurs, persisted staged records must equal targeted vessels after re-render while adoption remains separate."
     },
     {
       "id": "captain",
@@ -41,7 +43,8 @@
         "Durable result",
         "Deterministic return"
       ],
-      "release_blocker": true
+      "release_blocker": true,
+      "registry_ledger_contract": "Live fleet count must remain six and Fleet Intelligence must leave READING FLEET inside the bounded window."
     },
     {
       "id": "admiral",
@@ -51,7 +54,8 @@
         "Readiness/Foundry",
         "Deterministic return"
       ],
-      "release_blocker": true
+      "release_blocker": true,
+      "staging_ledger_contract": "When a live staging action occurs, persisted staged records must equal targeted vessels after re-render while adoption remains separate."
     },
     {
       "id": "ike-production",
@@ -63,7 +67,8 @@
         "Order",
         "Owner sees exact artifact"
       ],
-      "release_blocker": true
+      "release_blocker": true,
+      "staging_ledger_contract": "When a live staging action occurs, persisted staged records must equal targeted vessels after re-render while adoption remains separate."
     }
   ]
 }

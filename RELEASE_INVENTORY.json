@@ -1,6 +1,6 @@
 {
-  "release": "8.6.2",
-  "name": "Staging Ledger",
+  "release": "8.6.3",
+  "name": "Registry Ledger",
   "file_count": 55,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -9,7 +9,6 @@
     "ADMIRAL_RELEASE_DOCTRINE.json",
     "BUILD_AUDIT_818.json",
     "CAPABILITY_ADOPTION_MAP.json",
-    "CAPABILITY_STAGING_LEDGER.json",
     "CHANGELOG.md",
     "CHECKSUMS.sha256",
     "DEPLOYMENT_MANIFEST.json",
@@ -29,6 +28,7 @@
     "LEAN_BUILD_MANIFEST.md",
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
     "README.md",
+    "REGISTRY_LEDGER_MODEL.json",
     "RELEASE_DISCIPLINE_827.md",
     "RELEASE_GATE.json",
     "RELEASE_HARDENING_COMPENDIUM.md",
@@ -59,7 +59,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.2",
-  "seal": "staging-ledger-862-durable-review-4d9a31",
-  "release_name": "Staging Ledger"
+  "build": "8.6.3",
+  "seal": "registry-ledger-863-golden-ui-41d7c2",
+  "release_name": "Registry Ledger"
 }

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.2';
+  const BUILD_VERSION='8.6.3';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -235,6 +235,44 @@
       hideIke:true
     };
   }
+
+
+  // 8.6.3 Registry Ledger — release-pinned canonical vessel repair.
+  // Existing rows always win. This Known-Good vessel definition is materialized
+  // only if its immutable Project ID disappeared from the reconciled registry.
+  const RELEASE_PINNED_VESSELS_863 = Object.freeze([
+    {
+      id:'bf-p-f92f87e8ec44', projectCode:'LP', orderPrefix:'LP', name:'Legacy Plumbing',
+      description:'Fast, reliable plumbing with clear options, quality workmanship, and straightforward service.',
+      tagline:'Fast, reliable plumbing—done right.', type:'service', businessType:'plumbing',
+      visibility:'private', status:'development', projectTheme:'universal',
+      branding:{businessName:'Legacy Plumbing',adminLabel:'LEGACY PLUMBING',primary:'#4f3191',accent:'#2f94c7',subtitle:'Professional Plumbing Services'},
+      contact:{phone:'804-955-7865',email:'info@legacyplumbinginc.com'},
+      workflow:['New Request','Contacted','Scheduled','In Progress','Completed'],
+      customerExperience:{mode:'guided_service',relationshipType:'service_request',photoRequired:true,contactCapture:true,emailRequired:true,previewApproval:false},
+      publish:{status:'development'},
+      ownerAccess:{enabled:true,status:'not_claimed',ownerName:'',ownerEmail:'',capabilities:['orders','customers','products','pricing','branding','kiosks','deployments','staff','reporting','notifications'],staff:[],invitation:null,credential:null},
+      payments:{enabled:false,mode:'payment_link',provider:'not_configured',customerVisible:false},
+      permissions:{projectScoped:true,defaultDeny:true,policyVersion:'4.0',ordersView:true,ordersUpdate:true,ledgerView:false,costEntry:false,profitView:false,projectOptionsView:false},
+      customerHistory:{adminVisible:true}, notifications:{customerConfirmationEmail:false},
+      capabilityControl:{enabled:['job_intake','job_status','customer_records','field_photos','scheduling','estimates_authorizations','project_notes','operational_reporting','customer_notifications','property_records','crew_assignment'],source:'business_intake_compiler'},
+      products:[
+        {id:'intake-plumbing-service-repairs',name:'Service & Repairs',published:true,active:true,customerReady:true},
+        {id:'intake-plumbing-water-heater',name:'Water Heater Change-Outs',published:true,active:true,customerReady:true},
+        {id:'intake-plumbing-remodel-addition',name:'Remodels & Additions',published:true,active:true,customerReady:true},
+        {id:'intake-plumbing-new-construction',name:'New Construction',published:true,active:true,customerReady:true},
+        {id:'intake-plumbing-gas-piping',name:'Gas Piping',published:true,active:true,customerReady:true},
+        {id:'intake-plumbing-water-sewer',name:'Water & Sewer Repair',published:true,active:true,customerReady:true},
+        {id:'intake-plumbing-something-else',name:'Something Else',published:true,active:true,customerReady:true}
+      ],
+      deployments:[], schemaVersion:8,
+      identity:{projectId:'bf-p-f92f87e8ec44',displayName:'Legacy Plumbing',normalizedName:'legacy plumbing',projectCode:'LP',identityVersion:3,immutableProjectId:true,previousNames:[]},
+      namespace:'bf.project.bf-p-f92f87e8ec44',permanentNamespace:'bf.project.bf-p-f92f87e8ec44',
+      isolation:{projectId:'bf-p-f92f87e8ec44',namespace:'bf.project.bf-p-f92f87e8ec44',crossProjectAccess:'deny',policyVersion:'4.0'},
+      lifecycle:{state:'configured',version:2}, governance:{platformStatus:'approved',history:[]}, audit:{enabled:true,policyVersion:'4.0'}
+    }
+  ]);
+  const RELEASE_CANONICAL_FLEET_IDS_863 = Object.freeze(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
 
   let companies=structuredClone(DEFAULT_COMPANIES);
   let activeProjectId = null;
@@ -3215,6 +3253,16 @@
     if(!companies.length)companies=structuredClone(DEFAULT_COMPANIES);
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
 
+    // 8.6.3 Registry Ledger: recover a vessel that was part of the 8.5.7 Known Good
+    // canonical fleet but vanished from a later incomplete mirror. Never overwrite an existing row.
+    const rosterIds863=new Set(companies.map(p=>String(p?.id||'')));
+    for(const pinned of RELEASE_PINNED_VESSELS_863){
+      if(rosterIds863.has(pinned.id))continue;
+      companies.push(ensureProjectGovernance(normalizeProjectCode(structuredClone(pinned))));
+      rosterIds863.add(pinned.id);
+      window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:pinned.id,category:'recovery',action:'registry-ledger.known-good-vessel-restored',detail:`${pinned.name} restored from 8.5.7 Known Good fleet contract • ${BUILD_VERSION}`});
+    }
+
     // 4.8.4 — Release Vessel Materialization. Existing browsers correctly treat the
     // canonical registry as authority, which means a newly bundled project definition
     // is not automatically present in `companies`. Deliberately approved release
@@ -3970,7 +4018,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.6.2',
+    build:'8.6.1',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4061,25 +4109,23 @@
     {id:'mission-fit-confidence',class:'doctrine',origin:'shipyard',title:'Mission-Fit Confidence',lesson:'Reusable capabilities must explain why they fit each vessel. Strong fits may be staged together; plausible fits require review; experimental fits are suppressed from bulk staging.',risk:'high',applies:'all',missionAdapter:'Never infer capability fit from a weak proxy such as photo availability alone.'},
     {id:'manufacturable-face-fit',class:'capability',origin:'IKE',title:'Manufacturability-Aware Face Fit',lesson:'For irregular physical products, derive a shape-aware usable face, fit visible design geometry to it, and let the customer adjust intent without creating an unmanufacturable result.',risk:'medium',applies:['custom_wood_signs','custom_mugs','custom_flowers'],missionAdapter:'Ike uses aggressive live-edge occupancy calibrated to finished shop signs; other vessels must define their own fit vocabulary, geometry, and production limits.'}
   ]);
-  const FLEET_STAGING_LEDGER_KEY='darkSkyCapabilityStagingLedgerV1';
-  const FLEET_STAGING_NOTICE_KEY='darkSkyCapabilityStagingNoticeV1';
+  const FLEET_STAGING_LEDGER_KEY='darkSkyCapabilityStagingLedgerV2';
+  const FLEET_STAGING_NOTICE_KEY='darkSkyCapabilityStagingNoticeV2';
+  const FLEET_STAGING_VERIFIED_KEY='darkSkyCapabilityStagingVerifiedV2';
   function fleetLearningStateRead(){try{return JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};}catch(_){return {};}}
-  function fleetLearningStateWrite(v){
-    try{
-      localStorage.setItem('darkSkyFleetLearningState',JSON.stringify(v));
-      const verify=JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};
-      return {ok:true,value:verify};
-    }catch(err){return {ok:false,error:String(err?.message||err),value:v};}
-  }
+  function fleetLearningStateWrite(v){try{localStorage.setItem('darkSkyFleetLearningState',JSON.stringify(v));const verify=JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};return {ok:true,value:verify};}catch(err){return {ok:false,error:String(err?.message||err),value:v};}}
   function fleetStagingLedgerRead(){try{return JSON.parse(localStorage.getItem(FLEET_STAGING_LEDGER_KEY)||'[]')||[];}catch(_){return [];}}
-  function fleetStagingLedgerWrite(rows){try{localStorage.setItem(FLEET_STAGING_LEDGER_KEY,JSON.stringify(rows.slice(-250)));return true;}catch(_){return false;}}
-  function fleetStagingLedgerRecord(learningId,projectId,status,source='manual'){
-    const rows=fleetStagingLedgerRead();
-    rows.push({id:`SL-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`,build:BUILD_VERSION,at:new Date().toISOString(),learningId,projectId,status,source});
-    fleetStagingLedgerWrite(rows);return rows[rows.length-1];
-  }
+  function fleetStagingLedgerWrite(rows){try{localStorage.setItem(FLEET_STAGING_LEDGER_KEY,JSON.stringify((rows||[]).slice(-300)));const verify=JSON.parse(localStorage.getItem(FLEET_STAGING_LEDGER_KEY)||'[]')||[];return {ok:true,value:verify};}catch(err){return {ok:false,error:String(err?.message||err),value:rows||[]};}}
+  function fleetStagingLedgerLatest(projectId,learningId){const rows=fleetStagingLedgerRead().filter(x=>String(x.projectId)===String(projectId)&&x.learningId===learningId);return rows.length?rows[rows.length-1]:null;}
   function fleetStagingNoticeSet(payload){try{localStorage.setItem(FLEET_STAGING_NOTICE_KEY,JSON.stringify({...payload,build:BUILD_VERSION,at:new Date().toISOString()}));}catch(_){}}
   function fleetStagingNoticeRead(){try{return JSON.parse(localStorage.getItem(FLEET_STAGING_NOTICE_KEY)||'null');}catch(_){return null;}}
+  function fleetStagingCommit(rows,status,source='manual'){
+    const now=new Date().toISOString(),ledger=fleetStagingLedgerRead();
+    for(const r of rows)ledger.push({id:`SL-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`,build:BUILD_VERSION,at:now,learningId:r.learningId,projectId:r.projectId,status,source});
+    const write=fleetStagingLedgerWrite(ledger);if(!write.ok)return {ok:false,error:write.error,persisted:[]};
+    const persisted=rows.filter(r=>{const x=fleetStagingLedgerLatest(r.projectId,r.learningId);return x?.status===status&&x?.build===BUILD_VERSION;});
+    return {ok:persisted.length===rows.length,persisted,error:persisted.length===rows.length?'':`Only ${persisted.length}/${rows.length} ledger records verified.`};
+  }
   function fleetLearningProjectType(p){return String(p?.businessType||p?.type||'').toLowerCase();}
   function fleetLearningApplicability(learning,p){
     if(learning.applies==='all')return {eligible:true,fit:'fleet',reason:'Fleet-wide capability candidate; vessel-specific authority and mission boundaries still apply.'};
@@ -4122,14 +4168,13 @@
     if(learning.risk==='high'&&level==='strong'&&score<.9){level='plausible';}
     return {level,score:Number(score.toFixed(2)),reason};
   }
-  function fleetLearningAdoptionStatus(projectId,learningId){const st=fleetLearningStateRead();return st?.[projectId]?.[learningId]||'unreviewed';}
+  function fleetLearningAdoptionStatus(projectId,learningId){const latest=fleetStagingLedgerLatest(projectId,learningId);if(latest?.status)return latest.status;const st=fleetLearningStateRead();return st?.[projectId]?.[learningId]||'unreviewed';}
   function fleetLearningSetStatus(projectId,learningId,status){
-    const st=fleetLearningStateRead();st[projectId]=st[projectId]||{};st[projectId][learningId]=status;
-    const write=fleetLearningStateWrite(st);
-    if(!write.ok){fleetStagingNoticeSet({kind:'error',message:`Could not persist ${status} state for ${learningId}.`,learningId,projects:[projectId]});renderFleetLearningRegistry();return false;}
-    fleetStagingLedgerRecord(learningId,projectId,status,'single-review');
+    const row={projectId,learningId},commit=fleetStagingCommit([row],status,'single-review');
+    if(!commit.ok){fleetStagingNoticeSet({kind:'error',message:`Ledger write failed: ${commit.error}`,learningId,projects:[],status});renderFleetLearningRegistry();return false;}
+    const st=fleetLearningStateRead();st[projectId]=st[projectId]||{};st[projectId][learningId]=status;fleetLearningStateWrite(st);
     admiralLedgerRecord('fleet-learning-review',{projectId,learningId,status});
-    fleetStagingNoticeSet({kind:'success',message:`${status==='staged'?'Staged for review':status==='adopted'?'Adopted deliberately':status==='unreviewed'?'Returned to review':'Updated'} • 1 vessel`,learningId,projects:[projectId],status});
+    fleetStagingNoticeSet({kind:'success',message:`${status==='staged'?'STAGED FOR REVIEW':status==='adopted'?'ADOPTED DELIBERATELY':status==='unreviewed'?'RETURNED TO REVIEW':'UPDATED'} • 1 vessel`,learningId,projects:[projectId],status});
     renderFleetLearningRegistry();return true;
   }
   function fleetLearningRecommendations(){
@@ -4165,15 +4210,11 @@
   }
   function fleetLearningBulkStatus(learningId,status,confidenceFilter='all'){
     const rows=fleetLearningRecommendations().filter(r=>r.learningId===learningId&&r.class!=='doctrine'&&r.status==='unreviewed'&&(confidenceFilter==='all'||r.confidence===confidenceFilter));
-    if(!rows.length){fleetStagingNoticeSet({kind:'watch',message:`No unreviewed ${confidenceFilter} fits were available to stage.`,learningId,projects:[],status});renderFleetLearningRegistry();return false;}
-    const st=fleetLearningStateRead();
-    for(const r of rows){st[r.projectId]=st[r.projectId]||{};st[r.projectId][learningId]=status;}
-    const write=fleetLearningStateWrite(st);
-    if(!write.ok){fleetStagingNoticeSet({kind:'error',message:`Staging write failed; no vessel adoption occurred.`,learningId,projects:rows.map(r=>r.projectId),status});renderFleetLearningRegistry();return false;}
-    const verify=fleetLearningStateRead();
-    const persisted=rows.filter(r=>verify?.[r.projectId]?.[learningId]===status);
-    if(persisted.length!==rows.length){fleetStagingNoticeSet({kind:'error',message:`Only ${persisted.length}/${rows.length} staging records persisted. No adoption occurred.`,learningId,projects:persisted.map(r=>r.projectId),status});renderFleetLearningRegistry();return false;}
-    for(const r of rows)fleetStagingLedgerRecord(learningId,r.projectId,status,`bulk-${confidenceFilter}`);
+    if(!rows.length){fleetStagingNoticeSet({kind:'watch',message:`No unreviewed ${confidenceFilter} fits were available.`,learningId,projects:[],status});renderFleetLearningRegistry();return false;}
+    const commit=fleetStagingCommit(rows,status,`bulk-${confidenceFilter}`);
+    if(!commit.ok){fleetStagingNoticeSet({kind:'error',message:`STAGING FAILED • ${commit.error} • adoption remains unchanged`,learningId,projects:commit.persisted.map(r=>r.projectId),status});renderFleetLearningRegistry();return false;}
+    const st=fleetLearningStateRead();for(const r of rows){st[r.projectId]=st[r.projectId]||{};st[r.projectId][learningId]=status;}fleetLearningStateWrite(st);
+    try{localStorage.setItem(FLEET_STAGING_VERIFIED_KEY,JSON.stringify({build:BUILD_VERSION,at:new Date().toISOString(),learningId,status,count:rows.length,projects:rows.map(r=>r.projectId)}));}catch(_){ }
     admiralLedgerRecord('fleet-learning-bulk-review',{learningId,status,confidenceFilter,projects:rows.map(r=>r.projectId)});
     fleetStagingNoticeSet({kind:'success',message:`STAGED ${rows.length} FOR REVIEW • adoption remains 0 until deliberate vessel approval`,learningId,projects:rows.map(r=>r.projectId),status});
     renderFleetLearningRegistry();return true;
@@ -4198,11 +4239,9 @@
     const decisionHtml=decisions.length?`<section class="fleet-learning-compressed"><header><small>ADMIRAL DECISION QUEUE</small><strong>${decisions.length} compressed decision${decisions.length===1?'':'s'} • strongest evidence first</strong></header>${decisions.map(g=>{const stageable=g.strong||[],review=(g.plausible||[]),exp=(g.experimental||[]),stagedRows=g.rows.filter(r=>r.status==='staged');return `<article class="fleet-decision-card ${stagedRows.length?'has-staged':''}"><div><small>${escapeHtml(g.class.toUpperCase())} • ORIGIN ${escapeHtml(g.origin)} • ${escapeHtml(g.risk.toUpperCase())} RISK</small><strong>${escapeHtml(g.title)}</strong><p>${escapeHtml(g.missionAdapter)}</p><div class="fleet-fit-summary">${stageable.length?`<span class="strong">${stageable.length} strong</span>`:''}${stagedRows.length?`<span class="plausible">${stagedRows.length} STAGED FOR REVIEW</span>`:''}${review.length?`<span class="plausible">${review.length} plausible</span>`:''}${exp.length?`<span class="experimental">${exp.length} experimental suppressed</span>`:''}</div>${g.rows.slice(0,6).map(r=>`<div class="fleet-fit-row ${escapeHtml(r.status)}">${fitBadge(r)}<b>${escapeHtml(r.projectName)}</b><span>${escapeHtml(r.status==='staged'?'STAGED FOR REVIEW • '+r.confidenceReason:r.confidenceReason)}</span></div>`).join('')}</div><div class="fleet-learning-actions">${stageable.length?`<button type="button" data-learning-stage-strong="${escapeHtml(g.learningId)}">STAGE ${stageable.length} STRONG</button>`:''}${stagedRows.length?`<button type="button" data-learning-review-staged="${escapeHtml(g.learningId)}">REVIEW ${stagedRows.length} STAGED</button>`:''}${review.length?`<button type="button" data-learning-review-plausible="${escapeHtml(g.learningId)}">REVIEW ${review.length} PLAUSIBLE</button>`:''}<button type="button" data-learning-dismiss-group="${escapeHtml(g.learningId)}">DEFER</button></div></article>`}).join('')}</section>`:`<section class="fleet-learning-compressed aligned"><strong>Fleet learning aligned.</strong><p>No capability transfer currently needs Admiral review.</p></section>`;
     const stagingNotice=fleetStagingNoticeRead();
     const noticeHtml=stagingNotice?`<section class="fleet-staging-notice ${escapeHtml(stagingNotice.kind||'success')}"><strong>${escapeHtml(stagingNotice.message||'Staging state updated.')}</strong><span>${Array.isArray(stagingNotice.projects)&&stagingNotice.projects.length?`${stagingNotice.projects.length} vessel review record${stagingNotice.projects.length===1?'':'s'} • ${escapeHtml(stagingNotice.status||'review')}`:'No vessel adoption occurred.'}</span></section>`:'';
-    const ledgerRows=fleetStagingLedgerRead().filter(x=>x.status==='staged').slice(-12).reverse();
-    const ledgerHtml=ledgerRows.length?`<section class="fleet-staging-ledger"><header><small>STAGING LEDGER</small><strong>${ledgerRows.length} recent durable review record${ledgerRows.length===1?'':'s'}</strong></header>${ledgerRows.map(x=>{const p=projects().find(p=>String(p.id)===String(x.projectId));const l=FLEET_LEARNING_REGISTRY.find(l=>l.id===x.learningId);return `<div class="fleet-staging-ledger-row"><span>STAGED</span><b>${escapeHtml(l?.title||x.learningId)}</b><em>${escapeHtml(p?.name||x.projectId)}</em><small>${escapeHtml(new Date(x.at).toLocaleString())}</small></div>`}).join('')}</section>`:'';
+    const ledgerRows=fleetStagingLedgerRead().filter(x=>x.status==='staged').slice(-18).reverse();
+    const ledgerHtml=ledgerRows.length?`<section class="fleet-staging-ledger"><header><small>STAGING LEDGER</small><strong>${ledgerRows.length} durable review record${ledgerRows.length===1?'':'s'}</strong></header>${ledgerRows.map(x=>{const p=projects().find(p=>String(p.id)===String(x.projectId));const l=FLEET_LEARNING_REGISTRY.find(l=>l.id===x.learningId);return `<div class="fleet-staging-ledger-row"><span>STAGED</span><b>${escapeHtml(l?.title||x.learningId)}</b><em>${escapeHtml(p?.name||x.projectId)}</em><small>${escapeHtml(new Date(x.at).toLocaleString())}</small></div>`}).join('')}</section>`:'';
     host.innerHTML=noticeHtml+patternHtml+doctrineHtml+decisionHtml+ledgerHtml+`<details class="fleet-learning-raw"><summary>VIEW PROJECT-LEVEL LEARNING DETAILS</summary>${projects().map(p=>{const pr=rows.filter(r=>r.projectId===p.id&&r.class!=='doctrine');if(!pr.length)return'';return `<article class="fleet-learning-vessel"><header><div><small>${escapeHtml(fleetStableCallsign(p))} • ${escapeHtml(fleetLearningProjectType(p)||'project')}</small><strong>${escapeHtml(p.name)}</strong></div><span>${pr.filter(r=>r.status==='staged').length} staged</span></header><div class="fleet-learning-row-list">${pr.map(r=>`<div class="fleet-learning-row ${escapeHtml(r.status)}"><div><small>${escapeHtml(r.class.toUpperCase())} • ${escapeHtml(r.risk.toUpperCase())} RISK • ${escapeHtml(r.confidence.toUpperCase())} ${Math.round((r.confidenceScore||0)*100)}%</small><strong>${escapeHtml(r.title)}</strong><p>${escapeHtml(r.confidenceReason)}</p></div><div class="fleet-learning-actions"><span>${escapeHtml(r.status.replace('_',' ').toUpperCase())}</span>${r.status==='unreviewed'?`<button type="button" data-learning-stage="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">STAGE REVIEW</button><button type="button" data-learning-na="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">NOT FOR THIS VESSEL</button>`:r.status==='staged'?`<button type="button" data-learning-adopt="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">ADOPT PATTERN</button><button type="button" data-learning-reset="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">UNSTAGE</button>`:`<button type="button" data-learning-reset="${escapeHtml(r.learningId)}" data-project-id="${escapeHtml(r.projectId)}">REVIEW AGAIN</button>`}</div></div>`).join('')}</div></article>`}).join('')}</details>`;
-    host.querySelectorAll('[data-learning-stage-strong]').forEach(b=>b.onclick=()=>fleetLearningBulkStatus(b.dataset.learningStageStrong,'staged','strong'));
-    host.querySelectorAll('[data-learning-review-staged]').forEach(b=>b.onclick=()=>{const id=b.dataset.learningReviewStaged;const detail=host.querySelector('.fleet-learning-raw');if(detail)detail.open=true;const first=[...host.querySelectorAll('[data-learning-adopt]')].find(x=>x.dataset.learningAdopt===id);first?.scrollIntoView({behavior:'smooth',block:'center'});});
     host.querySelectorAll('[data-learning-review-plausible]').forEach(b=>b.onclick=()=>{const id=b.dataset.learningReviewPlausible;const detail=host.querySelector('.fleet-learning-raw');if(detail)detail.open=true;const first=host.querySelector(`[data-learning-stage="${CSS.escape(id)}"]`);first?.scrollIntoView({behavior:'smooth',block:'center'});});
     host.querySelectorAll('[data-learning-dismiss-group]').forEach(b=>b.onclick=()=>fleetLearningBulkStatus(b.dataset.learningDismissGroup,'not_applicable','experimental'));
     host.querySelectorAll('[data-learning-stage]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningStage,'staged'));
@@ -4211,7 +4250,8 @@
     host.querySelectorAll('[data-learning-reset]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningReset,'unreviewed'));
   }
   window.DarkSkyFleetLearning={registry:()=>persistFleetLearningRegistry(),recommendations:fleetLearningRecommendations,render:renderFleetLearningRegistry,stagingLedger:fleetStagingLedgerRead};
-  // 8.6.2 Intelligence Dock — normalized cross-vessel posture without crossing project boundaries.
+  if(!window.__darkSkyFleetLearningDelegated863){window.__darkSkyFleetLearningDelegated863=true;document.addEventListener('click',ev=>{const b=ev.target?.closest?.('[data-learning-stage-strong]');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();fleetLearningBulkStatus(b.dataset.learningStageStrong,'staged','strong');},{capture:true});}
+  // 8.6.3 Registry Ledger — 8.6.1 bounded intelligence preserved; durable staging and canonical roster guards added.
   const FLEET_INTELLIGENCE_STATE_KEY='darkSkyFleetIntelligenceViewV1';
   function fleetIntelLifecycle(p){try{return window.BlackFlagV3Core?.lifecycle?.(p)||String(p?.status||'draft');}catch(_){return String(p?.status||'draft');}}
   function fleetIntelOwner(p){return String(p?.ownerAccess?.status||'not_claimed');}
@@ -4250,7 +4290,7 @@
     const decisions=(()=>{try{return fleetLearningCompressedDecisions(learning)||[];}catch(_){return[];}})();
     const strategy=decisions.slice(0,4).map(d=>({kind:'CAPABILITY PROMOTION',title:d.title,detail:`${d.strong?.length||0} strong fit • ${d.plausible?.length||0} plausible • origin ${d.origin}.`,action:'learning',learningId:d.learningId}));
     if(!strategy.length)strategy.push({kind:'LOCAL FLEET POSTURE',title:'Roster available while live intelligence verifies',detail:'Canonical vessel posture is usable now; signal reconciliation continues in the background.',action:'none'});
-    return {schema:'dark-sky-fleet-intelligence-local-v1',build:BUILD_VERSION,at:new Date().toISOString(),signals:[],health,capabilities,strategy,summary:{vessels:health.length,openSignals:0,attentionVessels:0,strongFits:learning.filter(r=>r.class!=='doctrine'&&r.status==='unreviewed'&&r.confidence==='strong').length,adopted:learning.filter(r=>r.class!=='doctrine'&&r.status==='adopted').length},localFallback:true};
+    return {schema:'dark-sky-fleet-intelligence-local-v1',build:BUILD_VERSION,at:new Date().toISOString(),signals:[],health,capabilities,strategy,summary:{vessels:health.length,openSignals:0,attentionVessels:0,strongFits:learning.filter(r=>r.class!=='doctrine'&&r.status==='unreviewed'&&r.confidence==='strong').length,staged:learning.filter(r=>r.class!=='doctrine'&&r.status==='staged').length,adopted:learning.filter(r=>r.class!=='doctrine'&&r.status==='adopted').length},localFallback:true};
   }
   async function renderFleetIntelligenceDeck(view='',providedSnap=null){
     const deck=$('fleetIntelligenceDeck'),body=$('fleetIntelligenceBody'),summary=$('fleetIntelligenceSummary'),state=$('fleetIntelligenceState');if(!deck||!body||!summary)return;
@@ -4271,7 +4311,7 @@
     const sm=snap.summary;
     summary.innerHTML=`<article><small>VESSELS</small><strong>${sm.vessels}</strong><span>Canonical fleet registry</span></article><article><small>OPEN SIGNALS</small><strong>${sm.openSignals}</strong><span>Normalized attention queue</span></article><article><small>ATTENTION VESSELS</small><strong>${sm.attentionVessels}</strong><span>At least one current signal</span></article><article><small>STRONG FITS</small><strong>${sm.strongFits}</strong><span>Capability review candidates</span></article><article><small>STAGED</small><strong>${sm.staged||0}</strong><span>Durable vessel review records</span></article><article><small>ADOPTED</small><strong>${sm.adopted}</strong><span>Explicit vessel adoptions</span></article>`;
     const signalRows=snap.signals.length?snap.signals.map(s=>`<div class="fleet-intel-row"><div><strong>${escapeHtml(s.projectName?`${s.projectName} — ${s.title}`:s.title)}</strong><small>${escapeHtml(s.detail)} • OWNER ${escapeHtml(s.owner)}</small></div>${fleetIntelBadge(s.severity.toUpperCase(),s.severity)}</div>`).join(''):'<div class="empty">No active fleet attention signals.</div>';
-    const healthRows=snap.health.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.lifecycle.toUpperCase())}</td><td>${escapeHtml(r.owner.replace('_',' ').toUpperCase())}</td><td>${escapeHtml(r.publish.toUpperCase())}</td><td>${r.signals}</td><td>${r.staged} staged • ${r.adopted}/${r.eligible} adopted</td></tr>`).join('');
+    const healthRows=snap.health.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.lifecycle.toUpperCase())}</td><td>${escapeHtml(r.owner.replace('_',' ').toUpperCase())}</td><td>${escapeHtml(r.publish.toUpperCase())}</td><td>${r.signals}</td><td>${r.adopted}/${r.eligible}</td></tr>`).join('');
     const capRows=snap.capabilities.map(c=>`<article class="fleet-capability-card"><div><h4>${escapeHtml(c.title)}</h4><p>Origin ${escapeHtml(c.origin)} • ${escapeHtml(c.risk.toUpperCase())} risk • ${c.eligible} eligible vessel${c.eligible===1?'':'s'}</p></div><div class="fleet-capability-counts">${fleetIntelBadge(`${c.strong} strong`,'clear')}${fleetIntelBadge(`${c.staged} staged`,'watch')}${fleetIntelBadge(`${c.adopted} adopted`,'clear')}</div></article>`).join('')||'<div class="empty">No reusable capabilities registered.</div>';
     const strategyRows=snap.strategy.map(x=>`<article class="fleet-strategy-card"><small>${escapeHtml(x.kind)}</small><h4>${escapeHtml(x.title)}</h4><p>${escapeHtml(x.detail)}</p>${x.action==='watch'?'<button type="button" data-intel-action="watch">OPEN FIRST MATE WATCH</button>':x.action==='learning'?'<button type="button" data-intel-action="learning">OPEN FLEET LEARNING</button>':''}</article>`).join('');
     body.innerHTML=`<section data-intel-section="overview"><div class="fleet-intel-grid"><article class="fleet-intel-panel"><header><small>NORMALIZED SIGNALS</small><strong>One attention vocabulary across the fleet</strong></header>${signalRows}</article><article class="fleet-intel-panel"><header><small>ADMIRAL OPPORTUNITY</small><strong>Patterns worth promoting</strong></header>${strategyRows}</article></div></section><section data-intel-section="health"><article class="fleet-intel-panel"><header><small>FLEET HEALTH MATRIX</small><strong>Compare posture without opening every vessel</strong></header><div style="overflow:auto"><table class="fleet-health-table"><thead><tr><th>VESSEL</th><th>LIFECYCLE</th><th>OWNER</th><th>PUBLISH</th><th>SIGNALS</th><th>ADOPTION</th></tr></thead><tbody>${healthRows}</tbody></table></div></article></section><section data-intel-section="capabilities"><div class="fleet-capability-map">${capRows}</div></section><section data-intel-section="strategy">${strategyRows}</section>`;
@@ -4373,11 +4413,6 @@
     const learningRecommendations=fleetLearning.recommendations||[];
     const dangerousAutoApply=learningRecommendations.some(r=>r.status==='adopted'&&r.risk==='critical'&&r.class!=='doctrine');
     add('fleet-learning-registry','Fleet Learning Registry',dangerousAutoApply?'fail':'pass',dangerousAutoApply?'A critical reusable capability was adopted without a doctrine-only boundary.':`${FLEET_LEARNING_REGISTRY.filter(x=>x.class==='doctrine').length} fleet doctrines inherited automatically; ${fleetLearning.compressedDecisions?.length||0} compressed capability decision(s) remain; adoption stays explicit and project-scoped.`);
-    const stagingRows=(fleetLearning.recommendations||[]).filter(r=>r.status==='staged');
-    const stagingLedger=fleetStagingLedgerRead();
-    const stagingCoverage=stagingRows.every(r=>stagingLedger.some(x=>x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)&&x.status==='staged'));
-    const stagingMachinery=typeof fleetLearningBulkStatus==='function'&&typeof fleetStagingLedgerRecord==='function'&&String(fleetLearningBulkStatus).includes('adoption remains 0')&&String(renderFleetLearningRegistry).includes('STAGING LEDGER');
-    add('capability-staging-ledger','Capability staging ledger',stagingMachinery&&stagingCoverage?'pass':'fail',stagingMachinery&&stagingCoverage?`${stagingRows.length} staged vessel review record(s) are durable, visible, and separate from adoption.`:'Capability staging can still fail to persist per-vessel review state or can blur staging with adoption.');
 
     // Authority contracts: read-only verification only; no failure counters are incremented.
     const engine=await safe(()=>verifyEnginePin(DEFAULT_ENGINE_PIN,{recordFailure:false}),()=>({ok:false}));
@@ -4434,6 +4469,27 @@
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');
     const fleetIntelligenceBoundedPaint=String(renderFleetIntelligenceDeck).includes('LOCAL FLEET • VERIFYING')&&String(renderFleetIntelligenceDeck).includes('commandDeadline(fullPromise,650,null)')&&String(renderFleetIntelligenceDeck).includes('fleetIntelligenceLocalSnapshot()');
     add('fleet-intelligence-bounded-paint','Fleet Intelligence bounded first paint',fleetIntelligenceBoundedPaint?'pass':'fail',fleetIntelligenceBoundedPaint?'Fleet Intelligence paints a usable roster-backed local picture within a bounded window and reconciles live cross-vessel intelligence in the background.':'Fleet Intelligence can still remain indefinitely on READING FLEET before presenting a usable fleet picture.');
+
+    const canonicalRosterIds863=RELEASE_CANONICAL_FLEET_IDS_863;
+    const currentRosterIds863=[...new Set(projects().map(p=>String(canonicalProjectId(p?.id||''))))];
+    const canonicalRosterOk863=canonicalRosterIds863.length===6&&canonicalRosterIds863.every(id=>currentRosterIds863.includes(id))&&currentRosterIds863.length===6;
+    const dockCards863=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card')];
+    const dockLiveOk863=!dockCards863.length||dockCards863.length===6;
+    add('canonical-roster-live','Canonical six-vessel roster',canonicalRosterOk863&&dockLiveOk863?'pass':'fail',canonicalRosterOk863&&dockLiveOk863?`Six canonical vessels are present${dockCards863.length?' and rendered in Fleet Dock':''}.`:`Live roster disagreement: expected 6 canonical vessels; registry=${currentRosterIds863.length}, rendered=${dockCards863.length||'not painted'}.`);
+
+    const intelState863=document.getElementById('fleetIntelligenceState');
+    const intelBody863=document.getElementById('fleetIntelligenceBody');
+    const intelMounted863=!!intelState863&&!!intelBody863;
+    const intelUsable863=!intelMounted863||(!/READING FLEET/i.test(String(intelState863.textContent||''))&&String(intelBody863.textContent||'').trim()&&!/Building the fleet intelligence picture/i.test(String(intelBody863.textContent||'')));
+    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',intelUsable863?'pass':'fail',intelUsable863?'Fleet Intelligence is usable in the live Engine DOM and is not stranded on READING FLEET.':'Fleet Intelligence live DOM is still unresolved after the bounded first-paint window.');
+
+    let stagingVerified863=null;try{stagingVerified863=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
+    const stagingLedger863=fleetStagingLedgerRead();
+    const stagedRows863=fleetLearningRecommendations().filter(r=>r.status==='staged');
+    const stagingPersistOk863=stagedRows863.every(r=>stagingLedger863.some(x=>x.status==='staged'&&x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)));
+    const stagingActionExpected863=stagingVerified863?.build===BUILD_VERSION&&stagingVerified863?.status==='staged';
+    const stagingActionOk863=!stagingActionExpected863||(stagedRows863.length===Number(stagingVerified863.count||0)&&stagingPersistOk863&&stagedRows863.every(r=>r.status!=='adopted'));
+    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk863?(stagingActionExpected863?'pass':'warn'):'fail',stagingActionOk863?(stagingActionExpected863?`${stagedRows863.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.3 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
 
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{
@@ -4563,7 +4619,7 @@
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
-      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','fleet-intelligence-bounded-paint','command-wiring'],'Captain navigation plus bounded Fleet Dock and Fleet Intelligence first-paint behavior.'),
+      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','fleet-intelligence-bounded-paint','canonical-roster-live','fleet-intelligence-live-voyage','staging-ledger-live-voyage','command-wiring'],'Captain navigation plus bounded Fleet Dock and Fleet Intelligence first-paint behavior.'),
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary'],'Customer-approved production artifacts remain byte-stable and fingerprinted through approval, order serialization, admin, and archive.'),
       combine('ike-production-truth','Ike Production Truth Voyage',['ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Ike customer wording, finished-sign geometry, face fit, and governed style evidence remain production-truthful without fallback or destructive synchronization.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
@@ -14519,7 +14575,7 @@ The full order and approved media remain stored with this project.`;
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
-  // 8.6.2 Voyage Truth: arm one canonical telemetry route before storage/migrations.
+  // 8.6.1 Voyage Truth: arm one canonical telemetry route before storage/migrations.
   bindEngineTelemetryCore();
   commandWiringSelfCheck();
   // Engine appearance is also armed here because the selector lives on the pre-login gate

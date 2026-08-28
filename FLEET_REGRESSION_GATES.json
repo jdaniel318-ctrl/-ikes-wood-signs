@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.2",
-  "release": "Intelligence Dock",
+  "build": "8.6.3",
+  "release": "Registry Ledger",
   "excluded_sources": [
     "The situation"
   ],
@@ -31,7 +31,10 @@
       "fleet_intelligence_bounded_first_paint",
       "canonical_command_initializer",
       "engine_telemetry_one_tap_route",
-      "admiral_readiness_no_missing_initializer"
+      "admiral_readiness_no_missing_initializer",
+      "canonical_six_vessel_roster_live",
+      "fleet_intelligence_live_first_paint",
+      "staging_ledger_live_round_trip"
     ],
     "mobile_watch": [
       "iphone_first_class",
@@ -89,7 +92,10 @@
       "standard_business_events",
       "auditable_ai_recommendations",
       "aggregated_intelligence_privacy",
-      "commercial_metadata_foundation"
+      "commercial_metadata_foundation",
+      "staging_is_not_adoption",
+      "staging_readback_verification",
+      "staging_refresh_persistence"
     ],
     "quarterdeck": [
       "single_top_level_folder",

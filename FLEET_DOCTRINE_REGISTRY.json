@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.6.2",
-  "release": "Verified Command",
+  "build": "8.6.3",
+  "release": "Registry Ledger",
   "status": "active",
   "principles": [
     {
