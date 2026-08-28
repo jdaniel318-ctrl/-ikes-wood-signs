@@ -1,6 +1,6 @@
 {
-  "release": "Fleet Muster",
-  "name": "Fleet Muster",
+  "release": "Muster Trace",
+  "name": "Muster Trace",
   "file_count": 56,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -10,7 +10,6 @@
     "BUILD_AUDIT_818.json",
     "CAPABILITY_ADOPTION_MAP.json",
     "CHANGELOG.md",
-    "CHECKSUMS.sha256",
     "DEPLOYMENT_MANIFEST.json",
     "FLEET_COMMAND_MODEL.json",
     "FLEET_DOCTRINE_REGISTRY.json",
@@ -27,6 +26,7 @@
     "IKE_STYLE_FOUNDRY.json",
     "KEEL_GAUGE_CALIBRATION_AUDIT.json",
     "LEAN_BUILD_MANIFEST.md",
+    "MUSTER_TRACE_MODEL.json",
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
     "README.md",
     "REGISTRY_LEDGER_MODEL.json",
@@ -60,7 +60,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.6",
-  "seal": "fleet-muster-866-protected-six-3f8d72",
-  "release_name": "Fleet Muster"
+  "build": "8.6.7",
+  "seal": "muster-trace-867-six-stage-proof-5c81e4",
+  "release_name": "Muster Trace"
 }

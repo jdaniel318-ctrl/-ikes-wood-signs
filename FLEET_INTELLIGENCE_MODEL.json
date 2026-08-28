@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-intelligence-model-v1",
-  "build": "8.6.6",
+  "build": "8.6.7",
   "release": "Canonical Six",
   "principles": [
     "Signals are normalized without crossing project data boundaries.",

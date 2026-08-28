@@ -1,0 +1,23 @@
+{
+  "schema": "dark-sky-muster-trace-v1",
+  "build": "8.6.7",
+  "release": "Muster Trace",
+  "mission": "Six enter. Six must reach the Dock.",
+  "stages": [
+    "Protected muster seed",
+    "Canonical project registry",
+    "Fleet admission ledger",
+    "Active fleet manifest",
+    "In-memory fleet",
+    "Rendered Fleet Dock"
+  ],
+  "protected_ids": [
+    "beccas-bloom-shop",
+    "bf-p-f92f87e8ec44",
+    "bor-north-richmond",
+    "grizzly-bear",
+    "ikes-wood-signs",
+    "mugshot-after-dark"
+  ],
+  "policy": "Fleet Dock fails closed at the first stage that loses any protected vessel. No five-vessel roster may paint silently."
+}
