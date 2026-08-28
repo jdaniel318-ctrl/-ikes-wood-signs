@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.4.3';
-const RELEASE_SEAL='glyphforge-843-versioned-geometry-7a31c9';
+const RELEASE_BUILD='8.5.0';
+const RELEASE_SEAL='command-hardening-850-professional-first-6f3b21';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

@@ -1,3 +1,13 @@
+# 8.5.0 Command Hardening Addendum
+
+Protected lessons added by the command audit:
+- A helper-level PASS is insufficient when the real iPad/iPhone UI journey can still fail; Golden Voyages represent the real touched path.
+- Professional command is the operating truth; theatrical presentation is secondary.
+- Fleet doctrine must be visible and machine-readable so solved problems are retained across vessels.
+- Upper-command tools must form a command loop rather than accumulate as unrelated rooms.
+
+---
+
 # Dark Sky 8.2.7 — Keelbook Fleet Regression Library
 
 The Keelbook is the fleet's standing regression memory. A new build inherits lessons from the current working hull **and** the relevant project history; it does not get permission to rediscover solved failures.

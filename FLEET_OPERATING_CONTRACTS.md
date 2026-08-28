@@ -1,3 +1,14 @@
+# 8.5.0 Command Hardening Contract
+
+- **Engine operates. Captain commands. Admiral governs.**
+- Professional operational views must be complete without cinematic presentation.
+- Cinematic/Ceremonial views are optional second views and cannot hide or replace required controls.
+- Captain command follows **Watch → Decide → Act → Record**.
+- Fleet Doctrine and Golden UI Voyages are governed machine-readable release artifacts.
+- Fleet Learning follows one promotion path: Observation → Lesson → Capability Candidate → Foundry → Sea Trial → Proven Capability → Fleet Standard / Shared Service / New Vessel.
+
+---
+
 # Fleet Operating Contracts
 > Consolidated in Dark Sky 8.2.8 to keep the deployment lean while retaining the full historical contracts as an AI-readable regression reference.
 

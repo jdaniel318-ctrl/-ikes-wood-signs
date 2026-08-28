@@ -14,8 +14,8 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.4.3 STYLE FOUNDRY — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.4.3',seal:'glyphforge-843-versioned-geometry-7a31c9'});
+    // Dark Sky 8.5.0 COMMAND HARDENING — canonical release identity.
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.5.0',seal:'command-hardening-850-professional-first-6f3b21'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     window.__darkSkyExpectedRelease = DARK_SKY_RELEASE;
@@ -1086,6 +1086,23 @@
         <div id="v3ArchitectureStatus" class="v3-architecture-status"></div>
       </section>
 
+      <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Command Hardening">
+        <header class="command-hardening-head">
+          <div><div class="engine-kicker">8.5.0 • COMMAND HARDENING</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <strong>COMMAND HULL • ACTIVE</strong>
+        </header>
+        <div class="command-hardening-grid">
+          <article><small>BLACK FLAG ENGINE</small><h4>Operate</h4><p>Fleet Dock, routing, diagnostics, recovery, commissioning and project health stay here.</p><button type="button" data-command-jump="fleetCommissioningDock">OPEN FLEET DOCK</button></article>
+          <article><small>CAPTAIN'S QUARTERS</small><h4>Command Loop</h4><p>Watch → Decide → Act → Record. Professional command is now the default; the cabin remains a second view.</p><button type="button" data-command-open="captain">OPEN CAPTAIN COMMAND</button></article>
+          <article><small>ADMIRAL'S DECK</small><h4>Govern</h4><p>Fleet posture, doctrine, Foundry, readiness and future standards live above mission command. Professional is the default trial view.</p><button type="button" data-command-open="admiral">OPEN ADMIRAL TRIAL</button></article>
+        </div>
+        <div class="command-hardening-memory">
+          <div><small>FLEET DOCTRINE</small><strong>10 ACTIVE PRINCIPLES</strong><span>Rules retain origin, scope, evidence and exception status.</span></div>
+          <div><small>GOLDEN VOYAGES</small><strong>6 REAL UI PATHS</strong><span>Release assurance must prove the journey the Captain actually touches.</span></div>
+          <div><small>FLEET LEARNING</small><strong>ONE CANONICAL PIPELINE</strong><span>Observation → Lesson → Candidate → Foundry → Sea Trial → Proven → Promote.</span></div>
+        </div>
+      </section>
+
       <section id="fullSailCommandDeck" class="full-sail-command-deck" aria-label="Full Sail Command Deck">
         <header class="full-sail-head">
           <div><div class="black-flag-section-cue"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>CLEAR HORIZON</span></div><h3>Command Deck</h3><p>Daily operating posture, release readiness, and the next useful moves across the fleet.</p></div>
@@ -1167,7 +1184,7 @@
           <div><div class="engine-kicker">ADMIRAL • FLEET LEARNING</div><h3>FLEET LEARNING REGISTRY</h3><p>Retain what the fleet learns, separate doctrine from reusable capability from mission-specific behavior, and stage transfer to each vessel without cross-project bleed.</p></div>
           <span id="fleetLearningState" class="fleet-learning-state">READING LESSONS</span>
         </header>
-        <div class="fleet-learning-law"><strong>LEARN → CLASSIFY → ADAPT → REVIEW → ADOPT</strong><span>Nothing business-specific crosses decks automatically. Captain review remains deliberate.</span></div>
+        <div class="fleet-learning-law"><strong>OBSERVE → LESSON → CANDIDATE → FOUNDRY → SEA TRIAL → PROVEN → PROMOTE</strong><span>Fleet learning is retained centrally, but promotion remains deliberate, versioned, scoped, and authority-bound.</span></div>
         <div id="fleetLearningSummary" class="fleet-learning-summary"></div>
         <div id="fleetLearningBody" class="fleet-learning-body"><p class="helper">Mapping retained fleet lessons to vessel missions…</p></div>
       </section>

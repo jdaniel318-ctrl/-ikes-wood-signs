@@ -1,7 +1,7 @@
 {
-  "release": "8.4.3",
-  "name": "GlyphForge",
-  "file_count": 49,
+  "release": "8.5.0",
+  "name": "Command Hardening",
+  "file_count": 52,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -11,12 +11,15 @@
     "CHANGELOG.md",
     "CHECKSUMS.sha256",
     "DEPLOYMENT_MANIFEST.json",
+    "FLEET_COMMAND_MODEL.json",
+    "FLEET_DOCTRINE_REGISTRY.json",
     "FLEET_LEARNING_RECOMMENDATIONS_814.json",
     "FLEET_LEARNING_REGISTRY.json",
     "FLEET_OPERATING_CONTRACTS.md",
     "FLEET_REGRESSION_GATES.json",
     "FLEET_REGRESSION_LIBRARY.md",
     "FOUNDRY_FLEET_SERVICES.md",
+    "GOLDEN_VOYAGES.json",
     "IKES_PRODUCTION_COMPENDIUM.md",
     "IKE_STYLE_FOUNDRY.json",
     "KEEL_GAUGE_CALIBRATION_AUDIT.json",
@@ -53,7 +56,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.4.3",
-  "seal": "glyphforge-843-versioned-geometry-7a31c9",
-  "release_name": "GlyphForge"
+  "build": "8.5.0",
+  "seal": "command-hardening-850-professional-first-6f3b21",
+  "release_name": "Command Hardening"
 }

@@ -1,0 +1,69 @@
+{
+  "schema": "dark-sky-golden-voyages-v1",
+  "build": "8.5.0",
+  "policy": "real-ui-path-release-assurance",
+  "voyages": [
+    {
+      "id": "fleet-entry",
+      "path": [
+        "Engine Login",
+        "Fleet Dock",
+        "Vessel roster paints"
+      ],
+      "release_blocker": true
+    },
+    {
+      "id": "customer",
+      "path": [
+        "Fleet Dock",
+        "Customer Experience",
+        "Correct project/branding/session"
+      ],
+      "release_blocker": true
+    },
+    {
+      "id": "owner",
+      "path": [
+        "Fleet Dock",
+        "Owner Control Center",
+        "Refresh",
+        "State retained",
+        "Explicit Engine return"
+      ],
+      "release_blocker": true
+    },
+    {
+      "id": "captain",
+      "path": [
+        "Engine",
+        "Captain Professional Command",
+        "Command action",
+        "Durable result",
+        "Deterministic return"
+      ],
+      "release_blocker": true
+    },
+    {
+      "id": "admiral",
+      "path": [
+        "Captain",
+        "Admiral Professional Trial",
+        "Readiness/Foundry",
+        "Deterministic return"
+      ],
+      "release_blocker": true
+    },
+    {
+      "id": "ike-production",
+      "path": [
+        "Photo",
+        "Wording/Style",
+        "Preview",
+        "Approval",
+        "Order",
+        "Owner sees exact artifact"
+      ],
+      "release_blocker": true
+    }
+  ]
+}

@@ -1,3 +1,16 @@
+# 8.5.0 — Command Hardening
+
+- Promotes **Professional View** to the default operational surface for Captain command and Admiral trial governance.
+- Keeps cinematic/ceremonial presentation as a deliberate second view, never an operating dependency.
+- Adds a Captain command loop: **Watch → Decide → Act → Record**.
+- Adds Engine Command Hardening posture with explicit Engine / Captain / Admiral placement.
+- Adds machine-readable Fleet Doctrine Registry with ten active fleet rules.
+- Unifies fleet learning into **Observation → Lesson → Capability Candidate → Foundry → Sea Trial → Proven Capability → Fleet Standard / Shared Service / New Vessel**.
+- Adds six Golden UI Voyages to close the gap between helper-level PASS and what the Captain actually touches on iPad/iPhone.
+- Preserves GlyphForge, Style Foundry evidence, TrueCase, Dock Lock, project isolation, owner self-service, detector isolation, immutable approved artifacts, and order boundaries.
+
+---
+
 # 8.4.3 — GlyphForge
 
 - Added editable evidence metadata with automatic reapproval/resegmentation safeguards when exact wording changes.

@@ -1,0 +1,68 @@
+{
+  "schema": "dark-sky-fleet-doctrine-registry-v1",
+  "build": "8.5.0",
+  "release": "Command Hardening",
+  "status": "active",
+  "principles": [
+    {
+      "id": "project-isolation",
+      "rule": "No project branding, data, media, settings, orders, or authority may bleed across vessel boundaries.",
+      "scope": "fleet",
+      "origin": "cross-project flash and wrong-project admin regressions"
+    },
+    {
+      "id": "bounded-startup",
+      "rule": "Every startup and route-resolution shield must resolve within a bounded interval or transition to explicit safe recovery.",
+      "scope": "fleet",
+      "origin": "Securing Route indefinite hang"
+    },
+    {
+      "id": "explicit-navigation",
+      "rule": "Operational navigation uses deterministic in-app routes; browser Back is not an operating control.",
+      "scope": "fleet",
+      "origin": "return-route regressions"
+    },
+    {
+      "id": "owner-self-service",
+      "rule": "Every vessel must preserve a durable owner/partner control path independent of Black Flag.",
+      "scope": "fleet",
+      "origin": "three-surface architecture"
+    },
+    {
+      "id": "test-contact-safety",
+      "rule": "Test, Sea Trial and Private Preview cannot trigger live phone, mail or SMS actions.",
+      "scope": "fleet",
+      "origin": "preview safety contract"
+    },
+    {
+      "id": "production-truth",
+      "rule": "Customer production previews must represent the geometry the production process will use; no unsupported fallback geometry.",
+      "scope": "production-capability",
+      "origin": "Ike Fit / Style Foundry"
+    },
+    {
+      "id": "immutable-approval",
+      "rule": "A customer-approved production artifact remains immutable through review, confirmation, owner/admin and archive.",
+      "scope": "production-capability",
+      "origin": "approved-artifact voyage"
+    },
+    {
+      "id": "refresh-continuity",
+      "rule": "Refresh preserves the correct authority, project and route when safe; refresh is recovery, not navigation.",
+      "scope": "fleet",
+      "origin": "owner/engine refresh regressions"
+    },
+    {
+      "id": "durable-feedback",
+      "rule": "Consequential actions leave readable transient feedback plus a durable visible result.",
+      "scope": "fleet",
+      "origin": "toast/readability regressions"
+    },
+    {
+      "id": "professional-first",
+      "rule": "Operational command surfaces are complete in Professional View; Cinematic View is optional presentation and cannot be an operating dependency.",
+      "scope": "upper-command",
+      "origin": "8.5.0 command audit"
+    }
+  ]
+}

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.4.3';
+  const BUILD_VERSION='8.5.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.4.3',
+    build:'8.5.0',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4305,6 +4305,18 @@
     const captainExit=!!document.getElementById('captainGlobalExit');
     const captainSubviewExit=!!document.querySelector('[data-captain-return], #captainCommandReturn, #captainObjectClose, #captainSpyglassClose, #captainFleetChartClose, #captainBlueprintClose');
     add('captain-nav','Captain navigation contract',captainExit&&captainSubviewExit?'pass':'warn',captainExit&&captainSubviewExit?'Main-room Engine exit and Captain subview return controls are both present.':'One Captain navigation layer could not be verified from the current DOM.');
+
+    const professionalCaptain=!!document.getElementById('captainProfessionalSurface') && document.getElementById('captainQuarters')?.dataset?.commandMode==='professional';
+    add('professional-first-command','Professional-first Captain command',professionalCaptain?'pass':'warn',professionalCaptain?'Captain Professional Command is the default operational surface; Cinematic View remains a deliberate second view.':'Captain professional surface was not confirmed as the active default in the current DOM.');
+    const doctrineRegistry=await safe(async()=>{const r=await fetch(`FLEET_DOCTRINE_REGISTRY.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    const doctrineOk=doctrineRegistry?.build===BUILD_VERSION && Array.isArray(doctrineRegistry?.principles) && doctrineRegistry.principles.length>=10;
+    add('fleet-doctrine-registry','Fleet Doctrine Registry',doctrineOk?'pass':'fail',doctrineOk?`${doctrineRegistry.principles.length} active fleet principles retain origin and scope in a machine-readable registry.`:'Fleet Doctrine Registry is missing, stale, or incomplete.');
+    const goldenVoyages=await safe(async()=>{const r=await fetch(`GOLDEN_VOYAGES.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    const goldenOk=goldenVoyages?.build===BUILD_VERSION && Array.isArray(goldenVoyages?.voyages) && goldenVoyages.voyages.length===6 && goldenVoyages.voyages.every(v=>v.release_blocker===true);
+    add('golden-voyage-contract','Golden UI Voyage framework',goldenOk?'pass':'fail',goldenOk?'Six real-UI journeys are registered as release-blocking assurance paths.':'Golden Voyage registry is missing, stale, or not release-blocking.');
+    const commandModel=await safe(async()=>{const r=await fetch(`FLEET_COMMAND_MODEL.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    const commandOk=commandModel?.build===BUILD_VERSION && commandModel?.views?.operational==='professional-default' && commandModel?.views?.presentation==='cinematic-secondary' && Array.isArray(commandModel?.layers)&&commandModel.layers.length===3;
+    add('command-layer-placement','Engine → Captain → Admiral command model',commandOk?'pass':'fail',commandOk?'Engine operates, Captain commands, Admiral governs; professional operation is complete without cinematic presentation.':'Command layer placement or professional/cinematic contract is incomplete.');
 
     const fleetDockBoundedPaint=String(renderFleetCommissioning).includes('LOCAL ROSTER • VERIFYING')&&String(renderFleetCommissioning).includes('commandDeadline(convergence')&&String(renderFleetCommissioning).includes('skipConvergence:true');
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');

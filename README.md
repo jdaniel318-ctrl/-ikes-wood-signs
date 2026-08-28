@@ -1,3 +1,19 @@
+# Dark Sky 8.5.0 — Command Hardening
+
+Professional first. Cinematic second. One fleet memory. One command hierarchy.
+
+This release hardens the platform command layers without adding vessel-specific feature sprawl. Black Flag remains the operating machinery; Captain's Quarters now defaults to a clear Watch → Decide → Act → Record command view; Admiral's Deck trial now defaults to Professional Mode; cinematic environments remain deliberate second views. Machine-readable Fleet Doctrine, Golden UI Voyages, and a canonical Fleet Learning promotion path preserve lessons across the fleet. GlyphForge and all 8.4.x production-style work remain aboard unchanged.
+
+## 8.5.0 additions
+- `FLEET_DOCTRINE_REGISTRY.json` — ten active fleet principles with origins and scopes.
+- `FLEET_COMMAND_MODEL.json` — Engine operates, Captain commands, Admiral governs.
+- `GOLDEN_VOYAGES.json` — six real-UI release assurance journeys.
+- Professional Captain command is the default; Cinematic View is optional.
+- Professional Admiral trial is the default; ceremonial view is optional.
+- Fleet Learning displays one canonical promotion lifecycle.
+
+---
+
 # Dark Sky 8.4.3 — GlyphForge
 
 GlyphForge hardens Ike Style Foundry between evidence coverage and production preview geometry. It does not publish new customer geometry merely because a character was seen in a photo. Evidence must be corrected, approved, segmented, reviewed per glyph, compiled into a versioned style pack, benchmark-replayed, certified, and only then deliberately published.

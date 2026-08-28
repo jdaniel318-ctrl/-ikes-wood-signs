@@ -1,3 +1,13 @@
+# Dark Sky 8.5.0 — Command Hardening Manifest
+
+**Release goal:** harden Black Flag Engine, Captain's Quarters, and Admiral's Deck around professional-first operations, one fleet memory, and real-UI release assurance.
+
+**New governed artifacts:** `FLEET_DOCTRINE_REGISTRY.json`, `FLEET_COMMAND_MODEL.json`, `GOLDEN_VOYAGES.json`.
+
+**Protected carry-forward:** all 8.4.3 GlyphForge runtime, evidence, style, isolation, authority, and approved-artifact contracts.
+
+---
+
 # Dark Sky 8.4.3 — GlyphForge Manifest
 
 ## Mission

@@ -140,6 +140,11 @@
   function playEntrance() {
     const quarters = byId('captainQuarters');
     const entry = byId('captainEntrySequence');
+    if(quarters?.dataset.commandMode==='professional'){
+      quarters.classList.add('captain-entry-complete');
+      entry?.classList.remove('captain-entry-play','captain-entry-repeat');
+      return;
+    }
     let seen = false;
     try { seen = sessionStorage.getItem('darkSkyCaptainEntrySeen') === '1'; } catch (_) {}
 
@@ -516,22 +521,23 @@
       deck.dataset.mode=professional?'ceremonial':'professional';
       const btn=byId('admiralDeckModeBtn');
       if(btn){btn.setAttribute('aria-pressed',String(!professional));btn.textContent=professional?'PROFESSIONAL MODE':'CEREMONIAL MODE';}
-      try{localStorage.setItem('darkSkyAdmiralDeckMode',deck.dataset.mode);}catch(_){ }
+      try{localStorage.setItem('darkSkyAdmiralDeckMode850',deck.dataset.mode);}catch(_){ }
       refreshAdmiralCeremonialSurface();
     };
     byId('admiralUnlockBtn').onclick=async()=>{
       const input=byId('admiralPinInput'),error=byId('admiralPinError');
       if(String(input?.value||'').trim()!==ADMIRAL_PIN){if(error)error.textContent='Admiral access denied.';if(input){input.value='';input.focus();}return;}
       if(error)error.textContent='';hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');show('admiralDeck');
-      let savedMode='ceremonial';try{savedMode=localStorage.getItem('darkSkyAdmiralDeckMode')||'ceremonial';}catch(_){ }
+      let savedMode='professional';try{savedMode=localStorage.getItem('darkSkyAdmiralDeckMode850')||'professional';}catch(_){ }
       deck.dataset.mode=savedMode==='professional'?'professional':'ceremonial';
       const modeBtn=byId('admiralDeckModeBtn');if(modeBtn){const pro=deck.dataset.mode==='professional';modeBtn.setAttribute('aria-pressed',String(pro));modeBtn.textContent=pro?'CEREMONIAL MODE':'PROFESSIONAL MODE';}
-      deck.classList.remove('admiral-deck-enter','admiral-deck-enter-repeat','admiral-deck-ascent-first','admiral-deck-ascent-repeat');void deck.offsetWidth;
-      let seenDeck=false;try{seenDeck=sessionStorage.getItem('darkSkyAdmiralTrialSeen')==='1';}catch(_){ }
-      deck.classList.add(seenDeck?'admiral-deck-enter-repeat':'admiral-deck-enter');
-      deck.classList.add(seenDeck?'admiral-deck-ascent-repeat':'admiral-deck-ascent-first');
-      const ascentMs=seenDeck?2500:3900;
-      window.setTimeout(()=>deck.classList.remove('admiral-deck-ascent-first','admiral-deck-ascent-repeat'),ascentMs+120);
+      deck.classList.remove('admiral-deck-enter','admiral-deck-enter-repeat','admiral-deck-ascent-first','admiral-deck-ascent-repeat');
+      if(deck.dataset.mode==='ceremonial'){
+        void deck.offsetWidth;let seenDeck=false;try{seenDeck=sessionStorage.getItem('darkSkyAdmiralTrialSeen')==='1';}catch(_){ }
+        deck.classList.add(seenDeck?'admiral-deck-enter-repeat':'admiral-deck-enter');
+        deck.classList.add(seenDeck?'admiral-deck-ascent-repeat':'admiral-deck-ascent-first');
+        const ascentMs=seenDeck?2500:3900;window.setTimeout(()=>deck.classList.remove('admiral-deck-ascent-first','admiral-deck-ascent-repeat'),ascentMs+120);
+      }
       refreshAdmiralCeremonialSurface();
       if(window.__lastAdmiralReadinessReport)syncAdmiralReadiness(window.__lastAdmiralReadinessReport);
       try{sessionStorage.setItem('darkSkyAdmiralTrialSeen','1');}catch(_){ }
@@ -802,6 +808,44 @@
     layer.classList.toggle('attention',attention>0);
   }
 
+  function ensureCaptainCommandMode(){
+    const room=byId('captainQuarters');
+    if(!room)return;
+    let bar=byId('captainCommandModeBar');
+    if(!bar){
+      bar=document.createElement('div');bar.id='captainCommandModeBar';bar.className='captain-command-mode-bar';
+      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.0</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
+      room.appendChild(bar);
+    }
+    let surface=byId('captainProfessionalSurface');
+    if(!surface){
+      surface=document.createElement('main');surface.id='captainProfessionalSurface';surface.className='captain-professional-surface';surface.setAttribute('aria-label','Captain professional command view');
+      surface.innerHTML=`
+        <header><div><small>PROFESSIONAL COMMAND</small><h2>Captain's Quarters</h2><p>Signal first. Decision second. Action third. Durable history last.</p></div><span>CAPTAIN AUTHORIZED</span></header>
+        <section class="captain-command-loop">
+          <button type="button" data-captain-pro-route="watch"><b>01 • WATCH</b><strong>What needs my attention?</strong><small>Fleet signals and First Mate intelligence.</small></button>
+          <button type="button" data-captain-pro-route="spyglass"><b>02 • DECIDE</b><strong>Why does it matter?</strong><small>Inspect fleet intelligence before choosing a course.</small></button>
+          <button type="button" data-captain-pro-route="fleet"><b>03 • ACT</b><strong>Take the right route.</strong><small>Open the fleet map and route deliberately.</small></button>
+          <button type="button" data-captain-pro-route="log"><b>04 • RECORD</b><strong>Keep the decision.</strong><small>Orders, notes, history and retained lessons.</small></button>
+        </section>
+        <section class="captain-pro-tools"><button type="button" data-captain-pro-route="readiness">FLEET READINESS</button><button type="button" data-captain-pro-route="workshop">WORKSHOP</button><button type="button" data-captain-pro-route="forge">VISUAL FORGE</button><button type="button" data-captain-pro-route="blueprint">BLUEPRINT</button><button type="button" data-captain-pro-route="admiral">ADMIRAL'S GATE</button></section>
+        <div id="captainProfessionalStatus" class="captain-professional-status">Professional command is the operational truth. Cinematic View is presentation only.</div>`;
+      room.appendChild(surface);
+      surface.addEventListener('click',e=>{
+        const btn=e.target.closest('[data-captain-pro-route]');if(!btn)return;
+        const desk=ensureCaptainDeskIndex();
+        const target=desk?.querySelector(`[data-cq-desk-route="${btn.dataset.captainProRoute}"]`);
+        if(target)target.click();else{const status=byId('captainProfessionalStatus');if(status)status.textContent='That command station is not available on this hull.';}
+      });
+    }
+    let saved='professional';try{saved=localStorage.getItem('darkSkyCaptainCommandMode')||'professional';}catch(_){ }
+    room.dataset.commandMode=saved==='cinematic'?'cinematic':'professional';
+    const toggle=byId('captainCommandModeToggle');
+    const sync=()=>{const pro=room.dataset.commandMode==='professional'; if(toggle){toggle.textContent=pro?'CINEMATIC VIEW':'PROFESSIONAL VIEW';toggle.setAttribute('aria-pressed',String(!pro));} if(pro)room.classList.add('captain-entry-complete');};
+    if(toggle&&!toggle.dataset.bound){toggle.dataset.bound='1';toggle.onclick=()=>{room.dataset.commandMode=room.dataset.commandMode==='professional'?'cinematic':'professional';try{localStorage.setItem('darkSkyCaptainCommandMode',room.dataset.commandMode);}catch(_){ }sync(); if(room.dataset.commandMode==='cinematic')playEntrance();};}
+    sync();
+  }
+
   function prepareCinematicCabin(){
     const room=document.getElementById('captainQuarters');
     if(!room)return;
@@ -811,12 +855,15 @@
       room.classList.remove('cinematic-cabin-failed');
       ensureChartroomLiveLayer();
       ensureCaptainDeskIndex();
+      ensureCaptainCommandMode();
       refreshChartroomLive();
     };
     image.onerror=()=>{
       // Deliberate fallback: keep the known-good v2.9.51 cabin fully usable.
       room.classList.remove('cinematic-cabin-ready');
       room.classList.add('cinematic-cabin-failed');
+      ensureCaptainDeskIndex();
+      ensureCaptainCommandMode();
     };
     image.src='captains_quarters_command_center_v578.png';
   }
@@ -825,6 +872,9 @@
     document.documentElement.classList.add('captain-controller-ready');
     prepareCinematicCabin();
     hydrateUpperCommandVisuals();
+    document.querySelectorAll('[data-command-jump]').forEach(btn=>btn.addEventListener('click',()=>{const el=byId(btn.dataset.commandJump);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}));
+    document.querySelectorAll('[data-command-open="captain"]').forEach(btn=>btn.addEventListener('click',openGate));
+    document.querySelectorAll('[data-command-open="admiral"]').forEach(btn=>btn.addEventListener('click',()=>openGate()));
 
     // Direct listeners are safe here because this file loads at the very end of BODY.
     byId('captainModeAccessBtn')?.addEventListener('click', (event) => {

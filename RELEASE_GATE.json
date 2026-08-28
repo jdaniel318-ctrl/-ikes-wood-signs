@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.4.3",
-  "release": "GlyphForge",
-  "generatedAt": "2026-08-26",
+  "build": "8.5.0",
+  "release": "Command Hardening",
+  "generatedAt": "2026-08-28T02:38:53.558804+00:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -168,8 +168,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.4.3 GlyphForge: editable evidence, draft/proven separation, per-glyph segmentation and provenance, canonical geometry review, versioned compile/rollback, protected benchmark replay, anchor-certification clarity, and action-result navigation; TrueCase, Dock Lock, artifact integrity, detector isolation, project isolation, and authority contracts preserved.",
-  "candidate": "8.4.3",
+  "note": "8.5.0 Command Hardening: Professional View is the operational default for Captain and Admiral trial command; Cinematic View remains optional presentation. Adds Fleet Doctrine Registry, one canonical learning pipeline, six Golden UI Voyages, and explicit Engine \u2192 Captain \u2192 Admiral placement while preserving GlyphForge, TrueCase, Dock Lock, artifact integrity, detector isolation, project isolation, and authority contracts.",
+  "candidate": "8.5.0",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -205,5 +205,12 @@
     "seal_document": true,
     "inventory": true,
     "webmanifest": true
+  },
+  "command_hardening": {
+    "professional_first": true,
+    "cinematic_secondary": true,
+    "doctrine_registry": "FLEET_DOCTRINE_REGISTRY.json",
+    "golden_voyages": "GOLDEN_VOYAGES.json",
+    "command_model": "FLEET_COMMAND_MODEL.json"
   }
 }
