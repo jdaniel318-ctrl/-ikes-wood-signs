@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.6.1 \u2014 Intelligence Dock",
-  "short_name": "Dark Sky 8.6.1",
-  "start_url": "./index.html?_darkSkyRelease=8.6.1&_darkSkySeal=intelligence-dock-861-bounded-first-paint-6f42c9",
+  "name": "Dark Sky 8.6.2 \u2014 Staging Ledger",
+  "short_name": "Dark Sky 8.6.2",
+  "start_url": "./index.html?_darkSkyRelease=8.6.2&_darkSkySeal=staging-ledger-862-durable-review-4d9a31",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.1"
+  "version": "8.6.2"
 }

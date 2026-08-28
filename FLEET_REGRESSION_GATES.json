@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.1",
+  "build": "8.6.2",
   "release": "Intelligence Dock",
   "excluded_sources": [
     "The situation"

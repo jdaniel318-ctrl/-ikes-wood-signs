@@ -1,7 +1,7 @@
 {
-  "release": "8.6.1",
-  "name": "Intelligence Dock",
-  "file_count": 54,
+  "release": "8.6.2",
+  "name": "Staging Ledger",
+  "file_count": 55,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -9,6 +9,7 @@
     "ADMIRAL_RELEASE_DOCTRINE.json",
     "BUILD_AUDIT_818.json",
     "CAPABILITY_ADOPTION_MAP.json",
+    "CAPABILITY_STAGING_LEDGER.json",
     "CHANGELOG.md",
     "CHECKSUMS.sha256",
     "DEPLOYMENT_MANIFEST.json",
@@ -58,7 +59,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.1",
-  "seal": "intelligence-dock-861-bounded-first-paint-6f42c9",
-  "release_name": "Intelligence Dock"
+  "build": "8.6.2",
+  "seal": "staging-ledger-862-durable-review-4d9a31",
+  "release_name": "Staging Ledger"
 }

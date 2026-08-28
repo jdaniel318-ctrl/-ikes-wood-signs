@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.1",
-  "release": "Intelligence Dock",
-  "seal": "intelligence-dock-861-bounded-first-paint-6f42c9",
+  "build": "8.6.2",
+  "release": "Staging Ledger",
+  "seal": "staging-ledger-862-durable-review-4d9a31",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Intelligence Dock"
+  "release_name": "Staging Ledger"
 }

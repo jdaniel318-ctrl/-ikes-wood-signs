@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.1';
-const RELEASE_SEAL='intelligence-dock-861-bounded-first-paint-6f42c9';
+const RELEASE_BUILD='8.6.2';
+const RELEASE_SEAL='staging-ledger-862-durable-review-4d9a31';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

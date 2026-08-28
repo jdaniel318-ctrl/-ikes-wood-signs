@@ -1,0 +1,20 @@
+{
+  "schema": "dark-sky-capability-staging-ledger-v1",
+  "build": "8.6.2",
+  "release": "Staging Ledger",
+  "state_machine": [
+    "unreviewed",
+    "staged",
+    "adopted",
+    "not_applicable"
+  ],
+  "contracts": {
+    "staging_is_not_adoption": true,
+    "per_vessel_records_required": true,
+    "durable_refresh_persistence_required": true,
+    "bulk_stage_readback_verification_required": true,
+    "visible_staged_state_required": true,
+    "adoption_requires_separate_deliberate_action": true,
+    "project_scoped": true
+  }
+}
