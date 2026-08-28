@@ -193,6 +193,8 @@
     refreshCaptainWatch();
     clearHash();
     document.body.classList.add('captain-modal-open', 'captain-authorized');
+    const cq=byId('captainQuarters'); if(cq){cq.dataset.commandMode='professional';}
+    const cqToggle=byId('captainCommandModeToggle'); if(cqToggle){cqToggle.textContent='CINEMATIC VIEW';cqToggle.setAttribute('aria-pressed','false');}
     playEntrance();
   }
 
@@ -396,6 +398,12 @@
     if(domains){
       domains.innerHTML=(report.checks||[]).slice(0,8).map(c=>`<span data-state="${c.state}"><i>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</i><b>${c.label}</b><em>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</em></span>`).join('')||'<span>No readiness domains returned.</span>';
     }
+    const findings=byId('admiralReadinessFindings');
+    if(findings){
+      const actionable=(report.checks||[]).filter(c=>c.state!=='pass');
+      findings.innerHTML=actionable.length?actionable.map((c,i)=>`<button type="button" class="admiral-finding ${c.state}" data-finding-index="${i}"><b>${c.state==='warn'?'WATCH':'HOLD'} · ${c.label}</b><span>${c.detail}</span><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</em></button>`).join(''):`<span class="clear">No active holds. Fleet readiness is clear.</span>`;
+    }
+    const notice=byId('admiralDeckNotice');if(notice)notice.textContent=report.pass?(report.warnings?`Readiness complete: ${report.warnings} watch item(s) remain.`:'Readiness complete: fleet clear.'):`Readiness complete: ${report.criticalFailures} critical hold${report.criticalFailures===1?'':'s'} listed under GOVERN.`;
     window.__lastAdmiralReadinessReport=report;
   }
 
@@ -470,7 +478,7 @@
           <div><small>TRIAL COMMAND • FLEET GOVERNANCE</small><h2 id="admiralDeckTitle">Admiral's Deck</h2><p>Above Captain command. Governs Dark Sky, Black Flag and fleet standards.</p></div>
           <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckModeBtn" type="button" aria-pressed="false">PROFESSIONAL MODE</button><button id="admiralDeckReturnBtn" type="button">← RETURN TO CAPTAIN'S QUARTERS</button></div>
         </header>
-        <main class="admiral-command-surface" aria-label="Admiral ceremonial command surface">
+        <main class="admiral-command-surface" aria-label="Admiral cinematic command view">
           <nav class="admiral-command-rail" aria-label="Admiral governance controls">
             <div class="admiral-command-rail-title"><small>ADMIRAL COMMAND</small><strong>Govern the platform</strong><span>PROVISIONAL • TRIAL</span></div>
             <button id="admiralCeremonialForge" type="button"><b>Visual Forge</b><small>Shape upper command</small><em>READY</em></button>
@@ -504,8 +512,13 @@
         <main class="admiral-deck-grid">
           <section class="admiral-deck-hero"><small>THE HIGHER WATCH</small><h3>Govern the platform. Protect the fleet.</h3><p>The Captain commands the mission. The Admiral sets the standards that Dark Sky, Black Flag and every vessel must obey.</p><div class="admiral-scope"><span>DARK SKY</span><span>BLACK FLAG</span><span>FLEET</span></div></section>
           <aside class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></aside>
-          <section class="admiral-governance-card"><h4>Governance</h4><div><button id="admiralDeckForge" type="button">Visual Forge <em>READY</em></button><button type="button" data-admiral-future="Delegation">Delegation <em>FUTURE</em></button><button type="button" data-admiral-future="Fleet Standards">Fleet Standards <em>FUTURE</em></button><button id="admiralDeckFoundry" type="button">The Foundry <em>FOUNDATION</em></button></div></section>
-          <section class="admiral-governance-card"><h4>Continuity</h4><div><button id="admiralDeckRecovery" type="button">Recovery Snapshot <em>READY</em></button><button id="admiralDeckReport" type="button">Readiness Report <em>READY</em></button><button type="button" data-admiral-future="Admiral Log">Admiral Log <em>FUTURE</em></button></div></section>
+          <section class="admiral-command-lanes" aria-label="Admiral command model">
+            <article id="admiralGovernLane"><small>01 · GOVERN</small><h4>Fleet posture & readiness</h4><p>Critical holds, release health, incidents and fleet posture.</p><div id="admiralReadinessFindings" class="admiral-readiness-findings"><span>Run Fleet Readiness to populate actionable findings.</span></div></article>
+            <article><small>02 · STANDARDIZE</small><h4>Doctrine & standards</h4><p>Fleet doctrine, compliance, exceptions and policy versions.</p><button id="admiralDeckStandards" type="button">FLEET STANDARDS <em>FOUNDATION</em></button></article>
+            <article><small>03 · DELEGATE</small><h4>Bounded authority</h4><p>Scope, duration, stewardship and delegation history.</p><button type="button" data-admiral-future="Delegation">DELEGATION <em>FUTURE</em></button></article>
+            <article><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><button id="admiralDeckFoundry" type="button">THE FOUNDRY <em>FOUNDATION</em></button></article>
+          </section>
+          <section class="admiral-governance-card admiral-continuity-card"><h4>Continuity</h4><div><button id="admiralDeckRecovery" type="button">Recovery Snapshot <em>READY</em></button><button id="admiralDeckReport" type="button">Readiness Report <em>READY</em></button><button type="button" data-admiral-future="Admiral Log">Admiral Log <em>FUTURE</em></button><button id="admiralDeckForge" type="button">Visual Forge <em>READY</em></button></div></section>
           <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Professional Mode active. Rank is not implied by access.</section>
         </main>
       </div>`;
@@ -521,15 +534,16 @@
       deck.dataset.mode=professional?'ceremonial':'professional';
       const btn=byId('admiralDeckModeBtn');
       if(btn){btn.setAttribute('aria-pressed',String(!professional));btn.textContent=professional?'PROFESSIONAL MODE':'CEREMONIAL MODE';}
-      try{localStorage.setItem('darkSkyAdmiralDeckMode850',deck.dataset.mode);}catch(_){ }
+      try{const view=professional?'professional':'ceremonial';deck.dataset[view+'Scroll']=String(deck.querySelector(view==='professional'?'.admiral-deck-grid':'.admiral-command-surface')?.scrollTop||0);}catch(_){ }
+      if(deck.dataset.mode==='ceremonial'){deck.classList.remove('admiral-deck-enter-repeat','admiral-deck-ascent-repeat');void deck.offsetWidth;deck.classList.add('admiral-deck-enter-repeat','admiral-deck-ascent-repeat');window.setTimeout(()=>deck.classList.remove('admiral-deck-ascent-repeat'),2620);}
+      requestAnimationFrame(()=>{const view=deck.dataset.mode;const target=deck.querySelector(view==='professional'?'.admiral-deck-grid':'.admiral-command-surface');if(target)target.scrollTop=Number(deck.dataset[view+'Scroll']||0);});
       refreshAdmiralCeremonialSurface();
     };
     byId('admiralUnlockBtn').onclick=async()=>{
       const input=byId('admiralPinInput'),error=byId('admiralPinError');
       if(String(input?.value||'').trim()!==ADMIRAL_PIN){if(error)error.textContent='Admiral access denied.';if(input){input.value='';input.focus();}return;}
       if(error)error.textContent='';hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');show('admiralDeck');
-      let savedMode='professional';try{savedMode=localStorage.getItem('darkSkyAdmiralDeckMode850')||'professional';}catch(_){ }
-      deck.dataset.mode=savedMode==='professional'?'professional':'ceremonial';
+      deck.dataset.mode='professional';
       const modeBtn=byId('admiralDeckModeBtn');if(modeBtn){const pro=deck.dataset.mode==='professional';modeBtn.setAttribute('aria-pressed',String(pro));modeBtn.textContent=pro?'CEREMONIAL MODE':'PROFESSIONAL MODE';}
       deck.classList.remove('admiral-deck-enter','admiral-deck-enter-repeat','admiral-deck-ascent-first','admiral-deck-ascent-repeat');
       if(deck.dataset.mode==='ceremonial'){
@@ -552,6 +566,7 @@
     byId('admiralDeckReport').onclick=exportAdmiralReadinessReport;
     byId('admiralCeremonialReport').onclick=exportAdmiralReadinessReport;
     byId('admiralDeckFoundry').onclick=()=>openFoundryWorkspace();
+    byId('admiralDeckStandards').onclick=()=>{const n=byId('admiralDeckNotice');if(n)n.textContent='Fleet Doctrine Registry is active. Full standards management is the next governed expansion.';};
     byId('admiralCeremonialFoundry').onclick=()=>openFoundryWorkspace();
     deck.querySelectorAll('[data-admiral-future]').forEach(btn=>btn.onclick=()=>{byId('admiralDeckNotice').textContent=`${btn.dataset.admiralFuture} is charted for a future Admiral voyage.`;});
     return gate;
@@ -803,6 +818,10 @@
     set('cqLiveSailing',active);
     set('cqLiveTrials',trials);
     set('cqLiveSignals',attention);
+    set('captainProVessels',fleet.length);
+    set('captainProTrials',trials);
+    set('captainProSignals',attention);
+    const changed=byId('captainProChanged'); if(changed)changed.textContent=attention?`${attention} signal${attention===1?'':'s'} need Captain review.`:(trials?`${trials} sea trial${trials===1?'':'s'} active; no attention signals.`:'No new attention signals.');
     const state=byId('cqLiveState');
     if(state)state.textContent=attention?`${attention} signal${attention===1?'':'s'} require your eye`:(fleet.length?'Waters are steady':'Fleet data standing by');
     layer.classList.toggle('attention',attention>0);
@@ -814,7 +833,7 @@
     let bar=byId('captainCommandModeBar');
     if(!bar){
       bar=document.createElement('div');bar.id='captainCommandModeBar';bar.className='captain-command-mode-bar';
-      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.0</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
+      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.1</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
       room.appendChild(bar);
     }
     let surface=byId('captainProfessionalSurface');
@@ -822,6 +841,7 @@
       surface=document.createElement('main');surface.id='captainProfessionalSurface';surface.className='captain-professional-surface';surface.setAttribute('aria-label','Captain professional command view');
       surface.innerHTML=`
         <header><div><small>PROFESSIONAL COMMAND</small><h2>Captain's Quarters</h2><p>Signal first. Decision second. Action third. Durable history last.</p></div><span>CAPTAIN AUTHORIZED</span></header>
+        <section class="captain-pro-intelligence" aria-label="Live Captain intelligence"><article><small>VESSELS</small><strong id="captainProVessels">0</strong></article><article><small>SEA TRIAL</small><strong id="captainProTrials">0</strong></article><article><small>SIGNALS</small><strong id="captainProSignals">0</strong></article><article class="captain-pro-changed"><small>WHAT CHANGED</small><strong id="captainProChanged">Command picture refreshed.</strong></article></section>
         <section class="captain-command-loop">
           <button type="button" data-captain-pro-route="watch"><b>01 • WATCH</b><strong>What needs my attention?</strong><small>Fleet signals and First Mate intelligence.</small></button>
           <button type="button" data-captain-pro-route="spyglass"><b>02 • DECIDE</b><strong>Why does it matter?</strong><small>Inspect fleet intelligence before choosing a course.</small></button>
@@ -838,11 +858,10 @@
         if(target)target.click();else{const status=byId('captainProfessionalStatus');if(status)status.textContent='That command station is not available on this hull.';}
       });
     }
-    let saved='professional';try{saved=localStorage.getItem('darkSkyCaptainCommandMode')||'professional';}catch(_){ }
-    room.dataset.commandMode=saved==='cinematic'?'cinematic':'professional';
+    room.dataset.commandMode='professional';
     const toggle=byId('captainCommandModeToggle');
     const sync=()=>{const pro=room.dataset.commandMode==='professional'; if(toggle){toggle.textContent=pro?'CINEMATIC VIEW':'PROFESSIONAL VIEW';toggle.setAttribute('aria-pressed',String(!pro));} if(pro)room.classList.add('captain-entry-complete');};
-    if(toggle&&!toggle.dataset.bound){toggle.dataset.bound='1';toggle.onclick=()=>{room.dataset.commandMode=room.dataset.commandMode==='professional'?'cinematic':'professional';try{localStorage.setItem('darkSkyCaptainCommandMode',room.dataset.commandMode);}catch(_){ }sync(); if(room.dataset.commandMode==='cinematic')playEntrance();};}
+    if(toggle&&!toggle.dataset.bound){toggle.dataset.bound='1';toggle.onclick=()=>{const from=room.dataset.commandMode||'professional';const scroller=from==='professional'?byId('captainProfessionalSurface'):room;try{room.dataset[from+'Scroll']=String(scroller?.scrollTop||0);}catch(_){ }room.dataset.commandMode=from==='professional'?'cinematic':'professional';sync();requestAnimationFrame(()=>{const to=room.dataset.commandMode;const target=to==='professional'?byId('captainProfessionalSurface'):room;const pos=Number(room.dataset[to+'Scroll']||0);if(target)target.scrollTop=pos;});if(room.dataset.commandMode==='cinematic')playEntrance();};}
     sync();
   }
 

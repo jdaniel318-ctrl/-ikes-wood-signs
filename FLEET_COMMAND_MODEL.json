@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.5.0",
+  "build": "8.5.1",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -30,5 +30,28 @@
     "Sea Trial",
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
-  ]
+  ],
+  "release": "Command Views",
+  "viewContract": {
+    "default": "professional",
+    "cinematic": "secondary presentation over same command model",
+    "statePreserved": true,
+    "captain": [
+      "Watch",
+      "Decide",
+      "Act",
+      "Record"
+    ],
+    "admiral": [
+      "Govern",
+      "Standardize",
+      "Delegate",
+      "Promote"
+    ]
+  },
+  "outcomeContract": {
+    "readinessFindings": "durable actionable findings",
+    "actionResults": "remain at affected command context",
+    "whatChanged": "visible on professional command"
+  }
 }

@@ -1,4 +1,4 @@
-# 8.5.0 Command Hardening Addendum
+# 8.5.1 Command Views Addendum
 
 Protected lessons added by the command audit:
 - A helper-level PASS is insufficient when the real iPad/iPhone UI journey can still fail; Golden Voyages represent the real touched path.

@@ -1,4 +1,4 @@
-const RELEASE_BUILD='8.5.0';
+const RELEASE_BUILD='8.5.1';
 const RELEASE_SEAL='command-hardening-850-professional-first-6f3b21';
 
 self.addEventListener('install', event => {

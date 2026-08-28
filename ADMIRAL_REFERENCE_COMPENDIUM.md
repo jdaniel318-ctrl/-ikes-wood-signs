@@ -1,4 +1,4 @@
-# 8.5.0 Admiral Command Hardening
+# 8.5.1 Admiral Command Views
 
 Admiral's Deck trial now defaults to Professional Mode. The ceremonial deck remains a second view. Admiral-level responsibility is fleet governance: posture, doctrine, standards, Foundry, delegation, cross-vessel intelligence, continuity, and creation/promotion of new fleet capabilities and vessels. Captain remains mission command; Engine remains operational machinery.
 

@@ -1,9 +1,19 @@
-# 8.5.0 — Command Hardening
+# 8.5.1 — Command Views
+
+- Professional-first entry for Captain and Admiral on every authority entry.
+- Preserved cinematic transitions as secondary views over the same command model.
+- Captain live intelligence integrated into Professional View; overlapping rail removed there.
+- Admiral reorganized into Govern → Standardize → Delegate → Promote.
+- Fleet Readiness now leaves durable HOLD/WATCH findings under Govern.
+- Added What Changed summary and state-preserving view switching.
+- Preserved 8.5.0 command hierarchy, doctrine, Golden Voyages, isolation, owner, GlyphForge, and artifact contracts.
+
+# 8.5.1 — Command Views
 
 - Promotes **Professional View** to the default operational surface for Captain command and Admiral trial governance.
 - Keeps cinematic/ceremonial presentation as a deliberate second view, never an operating dependency.
 - Adds a Captain command loop: **Watch → Decide → Act → Record**.
-- Adds Engine Command Hardening posture with explicit Engine / Captain / Admiral placement.
+- Adds Engine Command Views posture with explicit Engine / Captain / Admiral placement.
 - Adds machine-readable Fleet Doctrine Registry with ten active fleet rules.
 - Unifies fleet learning into **Observation → Lesson → Capability Candidate → Foundry → Sea Trial → Proven Capability → Fleet Standard / Shared Service / New Vessel**.
 - Adds six Golden UI Voyages to close the gap between helper-level PASS and what the Captain actually touches on iPad/iPhone.

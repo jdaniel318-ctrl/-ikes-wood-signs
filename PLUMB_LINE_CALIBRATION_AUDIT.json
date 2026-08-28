@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-plumb-line-calibration-audit-v1",
-  "build": "8.5.0",
+  "build": "8.5.1",
   "release": "Plumb Line \u2014 Root Keel",
   "seal": "glyphforge-843-versioned-geometry-7a31c9",
   "status": "PASS",

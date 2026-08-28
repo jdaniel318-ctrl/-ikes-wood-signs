@@ -1,4 +1,4 @@
-# Dark Sky 8.5.0 — Command Hardening Manifest
+# Dark Sky 8.5.1 — Command Views Manifest
 
 **Release goal:** harden Black Flag Engine, Captain's Quarters, and Admiral's Deck around professional-first operations, one fleet memory, and real-UI release assurance.
 
