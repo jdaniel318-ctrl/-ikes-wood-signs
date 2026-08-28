@@ -1,7 +1,7 @@
 {
   "name": "Dark Sky 8.6.1 \u2014 Intelligence Dock",
   "short_name": "Dark Sky 8.6.1",
-  "start_url": "./index.html?_darkSkyRelease=8.6.1&_darkSkySeal=fleet-intelligence-860-cross-vessel-7c42a1",
+  "start_url": "./index.html?_darkSkyRelease=8.6.1&_darkSkySeal=intelligence-dock-861-bounded-first-paint-6f42c9",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",

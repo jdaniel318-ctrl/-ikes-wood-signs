@@ -1,5 +1,5 @@
 const RELEASE_BUILD='8.6.1';
-const RELEASE_SEAL='fleet-intelligence-860-cross-vessel-7c42a1';
+const RELEASE_SEAL='intelligence-dock-861-bounded-first-paint-6f42c9';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.
