@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.5.7",
-  "release": "Voyage Truth",
-  "generatedAt": "2026-08-28T13:08:49.189263+00:00",
+  "build": "8.6.0",
+  "release": "Fleet Intelligence",
+  "generatedAt": "2026-08-28T15:25:58.590592+00:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -165,14 +165,20 @@
     "engine_style_foundry_v4_non_destructive_sync": true,
     "command_wiring_self_check": true,
     "engine_telemetry_canonical_binder": true,
-    "admiral_readiness_no_legacy_initializer": true
+    "admiral_readiness_no_legacy_initializer": true,
+    "fleet_intelligence_surface": true,
+    "normalized_fleet_signals": true,
+    "fleet_health_matrix": true,
+    "capability_adoption_map": true,
+    "admiral_strategy_surface": true,
+    "project_isolation_preserved": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.5.7 Voyage Truth separates immutable artifact integrity from production-style readiness, repairs surface-independent TrueCase/Foundry verification, and makes voyage cards actionable evidence controls.",
-  "candidate": "8.5.7",
+  "note": "8.6.0 Fleet Intelligence separates immutable artifact integrity from production-style readiness, repairs surface-independent TrueCase/Foundry verification, and makes voyage cards actionable evidence controls.",
+  "candidate": "8.6.0",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

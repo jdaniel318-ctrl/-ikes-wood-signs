@@ -1,3 +1,3 @@
-# Dark Sky 8.5.7 — Voyage Truth
+# Dark Sky 8.6.0 — Fleet Intelligence
 
-Current truth wins. Approved Artifact Voyage now proves immutable artifact continuity only; Ike Production Truth is governed separately. TrueCase and Foundry checks are surface-independent, and voyage cards navigate directly to their underlying evidence.
+Protected baseline: 8.5.7 Voyage Truth. Adds normalized fleet signals, cross-vessel health comparison, capability adoption mapping, and Admiral strategy summaries without weakening project isolation or explicit adoption.

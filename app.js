@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.5.7';
+  const BUILD_VERSION='8.6.0';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.5.7',
+    build:'8.6.0',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4176,6 +4176,54 @@
     host.querySelectorAll('[data-learning-reset]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningReset,'unreviewed'));
   }
   window.DarkSkyFleetLearning={registry:()=>persistFleetLearningRegistry(),recommendations:fleetLearningRecommendations,render:renderFleetLearningRegistry};
+  // 8.6.0 Fleet Intelligence — normalized cross-vessel posture without crossing project boundaries.
+  const FLEET_INTELLIGENCE_STATE_KEY='darkSkyFleetIntelligenceViewV1';
+  function fleetIntelLifecycle(p){try{return window.BlackFlagV3Core?.lifecycle?.(p)||String(p?.status||'draft');}catch(_){return String(p?.status||'draft');}}
+  function fleetIntelOwner(p){return String(p?.ownerAccess?.status||'not_claimed');}
+  function fleetIntelPublish(p){return String(p?.publish?.status||p?.visibility||'development');}
+  function fleetIntelSeverity(item){return item?.level==='captain'?'hold':item?.level==='attention'?'watch':item?.level==='recommendation'?'watch':'clear';}
+  function fleetIntelOwnerLayer(item){
+    if(item?.action==='economics'||item?.action==='integrity'||item?.action==='results')return'ENGINE';
+    if(item?.action==='project-owner'||item?.action==='project-deployment'||item?.action==='project-launch')return'CAPTAIN';
+    return item?.level==='captain'?'CAPTAIN':'ENGINE';
+  }
+  async function fleetIntelligenceSnapshot(){
+    const signals=(await firstMateWatchItems()).filter(x=>x.level!=='clear').map((x,i)=>({id:`SIG-${i+1}`,title:x.title,detail:x.detail,recommendation:x.recommendation||'',severity:fleetIntelSeverity(x),owner:fleetIntelOwnerLayer(x),action:x.action||'',projectId:x.projectId||'',projectName:x.projectId?(projectById(x.projectId)?.name||''):''}));
+    const learning=fleetLearningRecommendations();
+    const byProject=new Map();
+    for(const p of projects())byProject.set(p.id,{project:p,signals:signals.filter(s=>s.projectId===p.id),learning:learning.filter(r=>r.projectId===p.id&&r.class!=='doctrine')});
+    const health=Array.from(byProject.values()).map(({project:p,signals:sigs,learning:lr})=>({id:p.id,name:p.name,callsign:fleetStableCallsign(p),lifecycle:fleetIntelLifecycle(p),owner:fleetIntelOwner(p),publish:fleetIntelPublish(p),signals:sigs.length,adopted:lr.filter(r=>r.status==='adopted').length,staged:lr.filter(r=>r.status==='staged').length,eligible:lr.length}));
+    const capabilities=FLEET_LEARNING_REGISTRY.filter(x=>x.class!=='doctrine').map(cap=>{const rows=learning.filter(r=>r.learningId===cap.id);return{id:cap.id,title:cap.title,origin:cap.origin,risk:cap.risk,eligible:rows.length,strong:rows.filter(r=>r.confidence==='strong').length,staged:rows.filter(r=>r.status==='staged').length,adopted:rows.filter(r=>r.status==='adopted').length,unreviewed:rows.filter(r=>r.status==='unreviewed').length};});
+    const repeated=new Map();for(const s of signals){const key=String(s.title||'').replace(/^[^—]+—\s*/,'').trim()||s.title;const row=repeated.get(key)||{key,count:0,signals:[]};row.count++;row.signals.push(s);repeated.set(key,row);}
+    const decisions=fleetLearningCompressedDecisions(learning);
+    const strategy=[];
+    for(const row of Array.from(repeated.values()).filter(x=>x.count>=2))strategy.push({kind:'REPEATED SIGNAL',title:row.key,detail:`${row.count} fleet signals share this pattern. Review whether one shipyard fix or fleet doctrine should replace repeated vessel work.`,action:'watch'});
+    for(const d of decisions.slice(0,4))strategy.push({kind:'CAPABILITY PROMOTION',title:d.title,detail:`${d.strong?.length||0} strong fit • ${d.plausible?.length||0} plausible • origin ${d.origin}.`,action:'learning',learningId:d.learningId});
+    if(!strategy.length)strategy.push({kind:'FLEET POSTURE',title:'No cross-vessel promotion pressure',detail:'Current signal and capability evidence does not require an Admiral promotion decision.',action:'none'});
+    const snapshot={schema:'dark-sky-fleet-intelligence-v1',build:BUILD_VERSION,at:new Date().toISOString(),signals,health,capabilities,strategy,summary:{vessels:health.length,openSignals:signals.length,attentionVessels:health.filter(x=>x.signals).length,strongFits:learning.filter(r=>r.class!=='doctrine'&&r.status==='unreviewed'&&r.confidence==='strong').length,adopted:learning.filter(r=>r.class!=='doctrine'&&r.status==='adopted').length}};
+    window.__darkSkyFleetIntelligence=snapshot;try{localStorage.setItem('darkSkyFleetIntelligenceSnapshotV1',JSON.stringify(snapshot));}catch(_){}return snapshot;
+  }
+  function fleetIntelBadge(value,tone=''){return `<span class="fleet-intel-badge ${escapeHtml(tone)}">${escapeHtml(String(value))}</span>`;}
+  async function renderFleetIntelligenceDeck(view=''){
+    const deck=$('fleetIntelligenceDeck'),body=$('fleetIntelligenceBody'),summary=$('fleetIntelligenceSummary'),state=$('fleetIntelligenceState');if(!deck||!body||!summary)return;
+    const stored=view||(()=>{try{return sessionStorage.getItem(FLEET_INTELLIGENCE_STATE_KEY)||'overview';}catch(_){return'overview';}})();
+    const active=['overview','health','capabilities','strategy'].includes(stored)?stored:'overview';deck.dataset.view=active;deck.querySelectorAll('[data-intel-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.intelView===active)));
+    if(state)state.textContent='READING FLEET';
+    const snap=await fleetIntelligenceSnapshot();const sm=snap.summary;
+    summary.innerHTML=`<article><small>VESSELS</small><strong>${sm.vessels}</strong><span>Canonical fleet registry</span></article><article><small>OPEN SIGNALS</small><strong>${sm.openSignals}</strong><span>Normalized attention queue</span></article><article><small>ATTENTION VESSELS</small><strong>${sm.attentionVessels}</strong><span>At least one current signal</span></article><article><small>STRONG FITS</small><strong>${sm.strongFits}</strong><span>Capability review candidates</span></article><article><small>ADOPTED</small><strong>${sm.adopted}</strong><span>Explicit vessel adoptions</span></article>`;
+    const signalRows=snap.signals.length?snap.signals.map(s=>`<div class="fleet-intel-row"><div><strong>${escapeHtml(s.projectName?`${s.projectName} — ${s.title}`:s.title)}</strong><small>${escapeHtml(s.detail)} • OWNER ${escapeHtml(s.owner)}</small></div>${fleetIntelBadge(s.severity.toUpperCase(),s.severity)}</div>`).join(''):'<div class="empty">No active fleet attention signals.</div>';
+    const healthRows=snap.health.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.lifecycle.toUpperCase())}</td><td>${escapeHtml(r.owner.replace('_',' ').toUpperCase())}</td><td>${escapeHtml(r.publish.toUpperCase())}</td><td>${r.signals}</td><td>${r.adopted}/${r.eligible}</td></tr>`).join('');
+    const capRows=snap.capabilities.map(c=>`<article class="fleet-capability-card"><div><h4>${escapeHtml(c.title)}</h4><p>Origin ${escapeHtml(c.origin)} • ${escapeHtml(c.risk.toUpperCase())} risk • ${c.eligible} eligible vessel${c.eligible===1?'':'s'}</p></div><div class="fleet-capability-counts">${fleetIntelBadge(`${c.strong} strong`,'clear')}${fleetIntelBadge(`${c.staged} staged`,'watch')}${fleetIntelBadge(`${c.adopted} adopted`,'clear')}</div></article>`).join('')||'<div class="empty">No reusable capabilities registered.</div>';
+    const strategyRows=snap.strategy.map(x=>`<article class="fleet-strategy-card"><small>${escapeHtml(x.kind)}</small><h4>${escapeHtml(x.title)}</h4><p>${escapeHtml(x.detail)}</p>${x.action==='watch'?'<button type="button" data-intel-action="watch">OPEN FIRST MATE WATCH</button>':x.action==='learning'?'<button type="button" data-intel-action="learning">OPEN FLEET LEARNING</button>':''}</article>`).join('');
+    body.innerHTML=`<section data-intel-section="overview"><div class="fleet-intel-grid"><article class="fleet-intel-panel"><header><small>NORMALIZED SIGNALS</small><strong>One attention vocabulary across the fleet</strong></header>${signalRows}</article><article class="fleet-intel-panel"><header><small>ADMIRAL OPPORTUNITY</small><strong>Patterns worth promoting</strong></header>${strategyRows}</article></div></section><section data-intel-section="health"><article class="fleet-intel-panel"><header><small>FLEET HEALTH MATRIX</small><strong>Compare posture without opening every vessel</strong></header><div style="overflow:auto"><table class="fleet-health-table"><thead><tr><th>VESSEL</th><th>LIFECYCLE</th><th>OWNER</th><th>PUBLISH</th><th>SIGNALS</th><th>ADOPTION</th></tr></thead><tbody>${healthRows}</tbody></table></div></article></section><section data-intel-section="capabilities"><div class="fleet-capability-map">${capRows}</div></section><section data-intel-section="strategy">${strategyRows}</section>`;
+    body.querySelectorAll('[data-intel-action="watch"]').forEach(b=>b.onclick=async()=>{await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});});
+    body.querySelectorAll('[data-intel-action="learning"]').forEach(b=>b.onclick=()=>{$('fleetLearningRegistry')?.scrollIntoView({behavior:'smooth',block:'start'});});
+    if(state)state.textContent=snap.signals.length?'SIGNALS NORMALIZED':'FLEET STEADY';
+    try{sessionStorage.setItem(FLEET_INTELLIGENCE_STATE_KEY,active);}catch(_){}
+    return snap;
+  }
+  function bindFleetIntelligenceDeck(){const deck=$('fleetIntelligenceDeck');if(!deck||deck.dataset.bound==='1')return;deck.dataset.bound='1';$('fleetIntelligenceTabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-intel-view]');if(b)renderFleetIntelligenceDeck(b.dataset.intelView);});}
+  window.DarkSkyFleetIntelligence={snapshot:fleetIntelligenceSnapshot,render:renderFleetIntelligenceDeck};
   function admiralLoadImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error(`Calibration image could not load: ${src}`));img.src=`${src}?build=${encodeURIComponent(BUILD_VERSION)}`;});}
   function admiralFramedVariant(img,scale=.72){
     const c=document.createElement('canvas'),w=Math.max(320,img.naturalWidth||img.width),h=Math.max(240,img.naturalHeight||img.height);c.width=w;c.height=h;
@@ -12127,6 +12175,7 @@ The full order and approved media remain stored with this project.`;
     try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
     try{ await commandDeadline(renderFleetCommissioning(),1800,true); }catch(err){ console.warn('fleet dock warning',err); }
     try{ renderFleetLearningRegistry(); }catch(err){ console.warn('fleet learning warning',err); }
+    try{ bindFleetIntelligenceDeck(); await renderFleetIntelligenceDeck(); }catch(err){ console.warn('fleet intelligence warning',err); }
     try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }
     try{ await commandDeadline(renderV3ArchitectureStatus(),2200,true); }catch(err){ console.warn('broadside status warning',err); }
   };
@@ -14404,7 +14453,7 @@ The full order and approved media remain stored with this project.`;
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
-  // 8.5.7 Voyage Truth: arm one canonical telemetry route before storage/migrations.
+  // 8.6.0 Voyage Truth: arm one canonical telemetry route before storage/migrations.
   bindEngineTelemetryCore();
   commandWiringSelfCheck();
   // Engine appearance is also armed here because the selector lives on the pre-login gate

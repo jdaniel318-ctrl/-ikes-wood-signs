@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.5.7",
-  "release": "Voyage Truth",
+  "build": "8.6.0",
+  "release": "Fleet Intelligence",
   "excluded_sources": [
     "The situation"
   ],

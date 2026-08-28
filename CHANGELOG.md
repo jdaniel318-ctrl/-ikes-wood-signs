@@ -1,7 +1,7 @@
-# 8.5.7 — Voyage Truth
+# 8.6.0 — Fleet Intelligence
 
-- Split Approved Artifact Voyage from Ike Production Truth Voyage so immutable bytes/fingerprints can remain CLEAR while style readiness stays honestly HOLD.
-- Hardened TrueCase verification so hidden/non-active Ike DOM cannot false-fail a valid current source contract; active customer design still runs the literal case round-trip.
-- Hardened Style Foundry verification against current app/Owner/registry source artifacts and v4 non-destructive synchronization contracts.
-- Made Proving Ground voyage cards keyboard/tap actionable; selecting a voyage opens and focuses its exact engineering checks.
-- Preserved real Style B geometry HOLD until GlyphForge/PreviewForge earns a clear.
+- Added normalized fleet signal vocabulary and attention ownership.
+- Added Fleet Health Matrix across canonical vessel posture.
+- Added Capability Adoption Map driven by the governed Fleet Learning Registry.
+- Added Admiral Strategy surface for repeated patterns and promotion candidates.
+- Preserved project isolation, explicit capability adoption, Known Good 8.5.7 baseline, Captain/Admiral professional-first command, Voyage Truth, GlyphForge and telemetry contracts.

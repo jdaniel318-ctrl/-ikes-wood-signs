@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.5.7';
-const RELEASE_SEAL='voyage-truth-857-evidence-nav-4f29c1';
+const RELEASE_BUILD='8.6.0';
+const RELEASE_SEAL='fleet-intelligence-860-cross-vessel-7c42a1';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

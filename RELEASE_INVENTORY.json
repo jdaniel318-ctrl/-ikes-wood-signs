@@ -1,18 +1,20 @@
 {
-  "release": "8.5.7",
-  "name": "Voyage Truth",
-  "file_count": 52,
+  "release": "8.6.0",
+  "name": "Fleet Intelligence",
+  "file_count": 54,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
     "ADMIRAL_REFERENCE_COMPENDIUM.md",
     "ADMIRAL_RELEASE_DOCTRINE.json",
     "BUILD_AUDIT_818.json",
+    "CAPABILITY_ADOPTION_MAP.json",
     "CHANGELOG.md",
     "CHECKSUMS.sha256",
     "DEPLOYMENT_MANIFEST.json",
     "FLEET_COMMAND_MODEL.json",
     "FLEET_DOCTRINE_REGISTRY.json",
+    "FLEET_INTELLIGENCE_MODEL.json",
     "FLEET_LEARNING_RECOMMENDATIONS_814.json",
     "FLEET_LEARNING_REGISTRY.json",
     "FLEET_OPERATING_CONTRACTS.md",
@@ -56,7 +58,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.5.7",
-  "seal": "voyage-truth-857-evidence-nav-4f29c1",
-  "release_name": "Voyage Truth"
+  "build": "8.6.0",
+  "seal": "fleet-intelligence-860-cross-vessel-7c42a1",
+  "release_name": "Fleet Intelligence"
 }
