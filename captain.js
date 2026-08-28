@@ -389,20 +389,28 @@
     const attention=rows.reduce((n,v)=>n+(Number(v.attentionOutposts)||0),0);const changed=byId('admiralWhatChanged');if(changed)changed.textContent=attention?`${attention} fleet signal${attention===1?'':'s'} require governance awareness.`:(trials?`${trials} sea trial${trials===1?'':'s'} active; no open fleet signals.`:'No open fleet signals.');
   }
 
-  const READINESS_TRUTH_KEY='bf.command.readiness.truth.v1';
+  const READINESS_TRUTH_KEY='bf.command.readiness.truth.v2';
   const CAPTAIN_OUTCOME_KEY='bf.command.captain.outcomes.v1';
   function readJsonLocal(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback;}catch(_){return fallback;}}
   function writeJsonLocal(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(_){ }}
+  function verificationProvenance(check){
+    if(check.id==='ike-true-case-roundtrip')return check.state==='pass'?'CURRENT BUILD • SOURCE CONTRACT + LIVE DOM WHEN PRESENT':'CURRENT BUILD • TRUECASE CONTRACT';
+    if(check.id==='ike-style-foundry'||check.id==='ike-glyphforge')return 'CURRENT BUILD • OWNER/ENGINE SOURCE CONTRACT';
+    if(check.id==='storage-growth')return 'CURRENT BUILD • BROWSER STORAGE ESTIMATE';
+    if(check.id==='known-calibration-replay')return 'CURRENT BUILD • PROTECTED CALIBRATION REPLAY';
+    return 'CURRENT BUILD • FLEET READINESS';
+  }
   function reconcileReadinessTruth(report){
     const prior=readJsonLocal(READINESS_TRUTH_KEY,{findings:{},history:[]}),now=new Date().toISOString(),findings={...prior.findings},cleared=[];
     (report.checks||[]).forEach(c=>{
       const prev=findings[c.id]||null,isOpen=c.state!=='pass';
-      const item={id:c.id,label:c.label,state:c.state,detail:c.detail,level:c.level||'core',firstDetected:prev?.firstDetected||(isOpen?now:null),latestChecked:now,lastBuild:'8.5.3',lifecycle:isOpen?'open':(prev&&prev.state&&prev.state!=='pass'?'verified-fix':'clear')};
+      const item={id:c.id,label:c.label,state:c.state,detail:c.detail,level:c.level||'core',firstDetected:prev?.firstDetected||(isOpen?now:null),latestChecked:now,lastBuild:'8.5.4',provenance:verificationProvenance(c),lifecycle:isOpen?'open':(prev&&prev.state&&prev.state!=='pass'?'verified-fix':'clear')};
       if(!isOpen&&prev&&prev.state!=='pass'){item.clearedAt=now;item.clearedFrom=prev.state;cleared.push(item);prior.history.unshift({...item,event:'cleared'});}
       if(isOpen&&!prev)prior.history.unshift({...item,event:'detected'});
+      if(isOpen&&prev&&prev.state!==c.state)prior.history.unshift({...item,event:'state-change',from:prev.state,to:c.state});
       findings[c.id]=item;
     });
-    const truth={schema:'dark-sky-readiness-truth-v1',build:'8.5.3',updatedAt:now,findings,history:(prior.history||[]).slice(0,120)};writeJsonLocal(READINESS_TRUTH_KEY,truth);report.readinessTruth=truth;report.recentlyCleared=cleared;return truth;
+    const truth={schema:'dark-sky-readiness-truth-v2',build:'8.5.4',updatedAt:now,findings,history:(prior.history||[]).slice(0,160)};writeJsonLocal(READINESS_TRUTH_KEY,truth);report.readinessTruth=truth;report.recentlyCleared=cleared;return truth;
   }
   function findingAction(id){
     if(['ike-style-b-truth','ike-style-foundry','ike-glyphforge','known-calibration-replay'].includes(id))return ['foundry','OPEN FOUNDRY'];
@@ -411,7 +419,18 @@
     return ['evidence','VIEW EVIDENCE'];
   }
   function recordCaptainOutcome(kind,label,detail=''){
-    const rows=readJsonLocal(CAPTAIN_OUTCOME_KEY,[]);rows.unshift({at:new Date().toISOString(),kind,label,detail,build:'8.5.3'});writeJsonLocal(CAPTAIN_OUTCOME_KEY,rows.slice(0,25));
+    const rows=readJsonLocal(CAPTAIN_OUTCOME_KEY,[]);rows.unshift({at:new Date().toISOString(),kind,label,detail,build:'8.5.4'});writeJsonLocal(CAPTAIN_OUTCOME_KEY,rows.slice(0,25));
+  }
+  function renderAdmiralFindings(report,mode='current'){
+    const truth=report?.readinessTruth||readJsonLocal(READINESS_TRUTH_KEY,{findings:{},history:[]});
+    const findings=byId('admiralReadinessFindings');if(!findings)return;
+    if(mode==='history'){
+      const history=(truth.history||[]).filter(x=>x.event==='cleared').slice(0,18);
+      findings.innerHTML=history.length?history.map(c=>`<article class="admiral-finding cleared"><b>CLEARED · ${c.label}</b><span>${c.detail||'Previously failed; latest applicable verification passed.'}</span><small>VERIFIED FIX ${c.clearedAt?new Date(c.clearedAt).toLocaleString():'RETAINED'} • ${c.provenance||'VERIFIED EVIDENCE'}</small><em>HISTORY • NOT CURRENT POSTURE</em></article>`).join(''):'<span class="clear">No cleared finding history retained yet.</span>';
+      return;
+    }
+    const current=(report?.checks||[]).filter(c=>c.state!=='pass');
+    findings.innerHTML=current.length?current.map(c=>{const meta=truth.findings[c.id]||{},a=findingAction(c.id);return `<article class="admiral-finding ${c.state}" data-finding-id="${c.id}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${c.label}</b><span>${c.detail}</span><small>FIRST DETECTED ${meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK'}<br>LATEST CHECK 8.5.4 • ${meta.provenance||verificationProvenance(c)}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${c.id}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds. Fleet readiness is clear.</span>';
   }
 
   function syncAdmiralReadiness(report){
@@ -424,13 +443,9 @@
     for(const id of ['admiralDeckReadinessState','admiralCeremonialReadinessState']){const el=byId(id);if(el){el.textContent=label;el.dataset.state=label.toLowerCase();}}
     for(const id of ['admiralDeckReadinessCopy','admiralCeremonialReadinessCopy']){const el=byId(id);if(el)el.textContent=copy;}
     const domains=byId('admiralCeremonialDomains');if(domains)domains.innerHTML=(report.checks||[]).slice(0,8).map(c=>`<span data-state="${c.state}"><i>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</i><b>${c.label}</b><em>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</em></span>`).join('')||'<span>No readiness domains returned.</span>';
-    const findings=byId('admiralReadinessFindings');
-    if(findings){
-      const open=current.map(c=>{const meta=truth.findings[c.id]||{},a=findingAction(c.id);return `<article class="admiral-finding ${c.state}" data-finding-id="${c.id}"><b>${c.state==='warn'?'WATCH':'HOLD'} · ${c.label}</b><span>${c.detail}</span><small>FIRST DETECTED ${meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK'} • LATEST 8.5.3</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${c.id}">${a[1]}</button></article>`;}).join('');
-      const cleared=(report.recentlyCleared||[]).slice(0,3).map(c=>`<article class="admiral-finding cleared"><b>CLEARED · ${c.label}</b><span>Verified current on 8.5.3. Historical failure retained in readiness history.</span><small>CLEARED ${new Date(c.clearedAt).toLocaleString()}</small></article>`).join('');
-      findings.innerHTML=(open||'<span class="clear">No current holds. Fleet readiness is clear.</span>')+cleared;
-    }
-    const notice=byId('admiralDeckNotice');if(notice)notice.textContent=holds?`Readiness complete: ${holds} current hold${holds===1?'':'s'} listed under GOVERN.`:watches?`Readiness complete: no critical holds; ${watches} watch item${watches===1?'':'s'} remain.`:'Readiness complete: current fleet posture clear.';
+    renderAdmiralFindings(report,'current');
+    const tabs=byId('admiralFindingTabs');if(tabs){tabs.dataset.mode='current';tabs.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.findingView==='current')));}
+    const notice=byId('admiralDeckNotice');if(notice)notice.textContent=holds?`Verified Command: ${holds} current hold${holds===1?'':'s'} remain. Cleared history is retained separately.`:watches?`Verified Command: no critical holds; ${watches} current watch item${watches===1?'':'s'} remain.`:'Verified Command: current fleet posture clear. Historical findings remain retained.';
     window.__lastAdmiralReadinessReport=report;
   }
 
@@ -539,7 +554,7 @@
         <main class="admiral-deck-grid" aria-label="Admiral professional command view">
           <section class="admiral-pro-topline"><article><small>WHAT CHANGED ACROSS THE FLEET</small><strong id="admiralWhatChanged">Fleet posture ready for review.</strong></article><article class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></article></section>
           <section class="admiral-command-lanes" aria-label="Admiral command model">
-            <article id="admiralGovernLane"><small>01 · GOVERN</small><h4>Fleet posture & readiness</h4><p>Critical holds, release health, incidents and fleet posture.</p><div id="admiralReadinessFindings" class="admiral-readiness-findings"><span>Run Fleet Readiness to populate actionable findings.</span></div></article>
+            <article id="admiralGovernLane"><small>01 · GOVERN</small><h4>Fleet posture & readiness</h4><p>Current verified posture first. Cleared incidents remain retained history.</p><div id="admiralFindingTabs" class="admiral-finding-tabs" data-mode="current"><button type="button" data-finding-view="current" aria-pressed="true">CURRENT FINDINGS</button><button type="button" data-finding-view="history" aria-pressed="false">CLEARED HISTORY</button></div><div id="admiralReadinessFindings" class="admiral-readiness-findings"><span>Run Fleet Readiness to populate verified findings.</span></div></article>
             <article><small>02 · STANDARDIZE</small><h4>Doctrine & standards</h4><p>Fleet doctrine, compliance, exceptions and policy versions.</p><div class="admiral-lane-summary"><b>Fleet Doctrine Registry</b><span>Active fleet rules remain versioned and traceable.</span></div><button id="admiralDeckStandards" type="button">OPEN FLEET STANDARDS <em>FOUNDATION</em></button></article>
             <article><small>03 · DELEGATE</small><h4>Bounded authority</h4><p>Scope, duration, stewardship and delegation history.</p><div class="admiral-lane-summary"><b>Delegation</b><span>Authority must remain explicit, bounded and auditable.</span></div><button type="button" data-admiral-future="Delegation">DELEGATION <em>FUTURE</em></button></article>
             <article><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><div class="admiral-lane-summary"><b>One learning pipeline</b><span>Observation → Lesson → Candidate → Foundry → Sea Trial → Proven.</span></div><button id="admiralDeckFoundry" type="button">OPEN THE FOUNDRY <em>FOUNDATION</em></button></article>
@@ -601,6 +616,12 @@
       if(action==='standards'){const n=byId('admiralDeckNotice');if(n)n.textContent='Fleet Doctrine Registry is the retained history; current posture comes only from the latest readiness run.';return;}
       if(action==='storage'){returnToCaptain();window.setTimeout(()=>{byId('captainGlobalExit')?.click();window.setTimeout(()=>window.BlackFlagOpenStorageTelemetry?.({inspect:true}),220);},80);return;}
       const n=byId('admiralDeckNotice');if(n)n.textContent=`${id||'Finding'} evidence is retained in the current readiness report. Use Readiness Report to export the full evidence bundle.`;
+    });
+    byId('admiralFindingTabs')?.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-finding-view]');if(!btn)return;
+      const mode=btn.dataset.findingView==='history'?'history':'current',tabs=byId('admiralFindingTabs');
+      if(tabs){tabs.dataset.mode=mode;tabs.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));}
+      renderAdmiralFindings(window.__lastAdmiralReadinessReport||null,mode);
     });
     deck.querySelectorAll('[data-admiral-future]').forEach(btn=>btn.onclick=()=>{byId('admiralDeckNotice').textContent=`${btn.dataset.admiralFuture} is charted for a future Admiral voyage.`;});
     return gate;
@@ -877,7 +898,7 @@
     let bar=byId('captainCommandModeBar');
     if(!bar){
       bar=document.createElement('div');bar.id='captainCommandModeBar';bar.className='captain-command-mode-bar';
-      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.3</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
+      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.4</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
       room.appendChild(bar);
     }
     let surface=byId('captainProfessionalSurface');

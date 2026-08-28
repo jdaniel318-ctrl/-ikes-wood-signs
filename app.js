@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.5.3';
+  const BUILD_VERSION='8.5.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.5.3',
+    build:'8.5.4',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4363,10 +4363,13 @@
       }catch(_){trueCaseRoundTrip=false;}
       state.wording=priorState;trueCaseInput.value=priorValue;updateUi();
     }
-    const trueCaseMarkup=await safe(async()=>{const r=await fetch(`index.html?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '');
-    const trueCaseSourceContract=String(trueCaseMarkup).includes('id="ikeWordingInput"')&&String(trueCaseMarkup).includes('autocapitalize="off"')&&String(trueCaseMarkup).includes('autocorrect="off"')&&String(trueCaseMarkup).includes('spellcheck="false"')&&String(trueCaseMarkup).includes('text-transform:none')&&String(initEventHandlers).includes("state.wording=String(e.target.value||'')")&&String(updateUi).includes("iw.value=state.wording");
+    const [trueCaseMarkup,trueCaseCss]=await Promise.all([
+      safe(async()=>{const r=await fetch(`index.html?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> ''),
+      safe(async()=>{const r=await fetch(`styles.css?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '')
+    ]);
+    const trueCaseSourceContract=String(trueCaseMarkup).includes('id="ikeWordingInput"')&&String(trueCaseMarkup).includes('autocapitalize="off"')&&String(trueCaseMarkup).includes('autocorrect="off"')&&String(trueCaseMarkup).includes('spellcheck="false"')&&/ikeWordingInput[^}]*text-transform\s*:\s*none|#ikeWordingInput[^}]*text-transform\s*:\s*none/i.test(String(trueCaseCss))&&String(initEventHandlers).includes("state.wording=String(e.target.value||'')")&&String(updateUi).includes("iw.value=state.wording");
     const trueCaseContract=trueCaseInput?(trueCaseSourceContract&&trueCaseRoundTrip):trueCaseSourceContract;
-    add('ike-true-case-roundtrip','Ike real-input case round trip',trueCaseContract?'pass':'fail',trueCaseContract?(trueCaseInput?'Actual Ike customer input preserves mixed, lower, and upper case through DOM → state → UI preview.':'TrueCase source contract is current and surface-independent; live Customer Golden Voyage remains the real-device proof.'):'Ike wording source contract can still normalize or rewrite customer case.');
+    add('ike-true-case-roundtrip','Ike real-input case round trip',trueCaseContract?'pass':'fail',trueCaseContract?(trueCaseInput?'CURRENT BUILD VERIFIED • Actual Ike customer input preserves mixed, lower, and upper case through DOM → state → UI preview.':'CURRENT BUILD VERIFIED • TrueCase source contract is surface-independent; the protected Customer Golden Voyage remains the real-device proof.'):'CURRENT BUILD FAILURE • Ike wording source contract can still normalize or rewrite customer case.');
 
     const styleBSpec=ikeFontBlueprint('B');
     const styleBTruthContract=styleBSpec.metricWidthScale<=0.74 && styleBSpec.metricHeightScale>=1.08 && styleBSpec.widthTarget>=0.92 && styleBSpec.heightTarget>=0.87
@@ -4375,8 +4378,12 @@
       && String(ikeApplyDetectedTextPlacementTo).includes("state.font==='B'?'.88':'.94'")
       && trueCaseContract;
     add('ike-style-b-truth','Ike Style B finished-sign geometry',styleBTruthContract?'pass':'fail',styleBTruthContract?'Style B keeps the proven exact-case input path while applying a tall, narrow SMOKE HOLE!-anchored measurement and visual envelope inside Ike Fit.':'Style B geometry drifted from the tall/narrow finished-sign contract or disturbed the proven TrueCase path.');
-    const styleFoundryContract=!!window.IkeGlyphBench?.pack?.('A')&&!!window.IkeGlyphBench?.pack?.('B')&&String(projectReferenceLibraryMarkup).includes('data-style-foundry-compile')&&String(compileIkeGlyphBench).includes('dark-sky-ike-style-foundry-project-v4');
-    add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'Style evidence remains project-scoped and Engine synchronization preserves the v4 GlyphForge geometry authority instead of downgrading it.':'Style Foundry v4 registry or non-destructive Engine evidence synchronization is incomplete.');
+    const [styleRegistrySource,ownerFoundrySource]=await Promise.all([
+      safe(async()=>{const r=await fetch(`ike_style_registry.js?foundryContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> ''),
+      safe(async()=>{const r=await fetch(`owner.html?foundryContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '')
+    ]);
+    const styleFoundryContract=String(projectReferenceLibraryMarkup).includes('data-style-foundry-compile')&&String(compileIkeGlyphBench).includes('dark-sky-ike-style-foundry-project-v4')&&String(styleRegistrySource).includes('IkeGlyphBench')&&String(ownerFoundrySource).includes('data-sf-segment')&&String(ownerFoundrySource).includes('data-cand-canonical');
+    add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'CURRENT BUILD VERIFIED • Style evidence remains project-scoped and Engine synchronization preserves the v4 GlyphForge geometry authority instead of downgrading it.':'CURRENT BUILD FAILURE • Style Foundry v4 registry or non-destructive Engine evidence synchronization is incomplete.');
     const glyphForgeSource=await safe(async()=>{const r=await fetch(`owner.html?glyphForgeCheck=${Date.now()}`,{cache:'no-store',credentials:'same-origin'});return r.ok?await r.text():'';},()=> '');
     const glyphForgeContract=String(glyphForgeSource).includes('data-sf-segment')&&String(glyphForgeSource).includes('data-cand-canonical')&&String(glyphForgeSource).includes('Protected benchmark replay')&&String(glyphForgeSource).includes('data-sf-rollback')&&String(glyphForgeSource).includes('Evidence wording corrected')&&String(glyphForgeSource).includes('ANCHOR GEOMETRY CERTIFIED');
     add('ike-glyphforge','Ike GlyphForge geometry governance',glyphForgeContract?'pass':'fail',glyphForgeContract?'Owner GlyphForge includes editable evidence, segmentation candidates, canonical glyph approval, protected benchmark replay, version rollback, anchor-certification clarity, and action-result return.':'GlyphForge geometry governance is incomplete on the actual Owner surface.');

@@ -1,4 +1,4 @@
-# 8.5.3 — Readiness Truth
+# 8.5.4 — Verified Command
 
 - Separates current readiness posture from retained historical incidents.
 - Adds Detected → Open → Verified Fix → Cleared readiness lifecycle.
@@ -8,7 +8,7 @@
 - Adds durable Captain command outcomes to Record.
 - Preserves Professional/Cinematic shared state and all 8.5.2 command-deck organization.
 
-# 8.5.3 — Readiness Truth
+# 8.5.4 — Verified Command
 
 - Rebuilds Captain Professional Command into four operational lanes with live, truthful fleet signal content.
 - Integrates fleet intelligence into the layout and removes professional-mode overlay conflicts.
@@ -17,7 +17,7 @@
 - Preserves cinematic/ceremonial views as optional presentation over the same command model and state.
 - Keeps all 8.5.1 command, doctrine, Golden Voyage, GlyphForge, isolation, authority and recovery contracts.
 
-# 8.5.3 — Readiness Truth
+# 8.5.4 — Verified Command
 
 - Professional-first entry for Captain and Admiral on every authority entry.
 - Preserved cinematic transitions as secondary views over the same command model.
@@ -27,12 +27,12 @@
 - Added What Changed summary and state-preserving view switching.
 - Preserved 8.5.0 command hierarchy, doctrine, Golden Voyages, isolation, owner, GlyphForge, and artifact contracts.
 
-# 8.5.3 — Readiness Truth
+# 8.5.4 — Verified Command
 
 - Promotes **Professional View** to the default operational surface for Captain command and Admiral trial governance.
 - Keeps cinematic/ceremonial presentation as a deliberate second view, never an operating dependency.
 - Adds a Captain command loop: **Watch → Decide → Act → Record**.
-- Adds Engine Readiness Truth posture with explicit Engine / Captain / Admiral placement.
+- Adds Engine Verified Command posture with explicit Engine / Captain / Admiral placement.
 - Adds machine-readable Fleet Doctrine Registry with ten active fleet rules.
 - Unifies fleet learning into **Observation → Lesson → Capability Candidate → Foundry → Sea Trial → Proven Capability → Fleet Standard / Shared Service / New Vessel**.
 - Adds six Golden UI Voyages to close the gap between helper-level PASS and what the Captain actually touches on iPad/iPhone.

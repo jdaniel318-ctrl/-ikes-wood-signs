@@ -1,4 +1,4 @@
-const RELEASE_BUILD='8.5.3';
+const RELEASE_BUILD='8.5.4';
 const RELEASE_SEAL='readiness-truth-853-trust-signal-a8c42e';
 
 self.addEventListener('install', event => {

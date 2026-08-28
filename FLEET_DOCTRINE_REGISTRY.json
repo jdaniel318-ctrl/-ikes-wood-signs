@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.5.3",
-  "release": "Readiness Truth",
+  "build": "8.5.4",
+  "release": "Verified Command",
   "status": "active",
   "principles": [
     {
@@ -62,7 +62,7 @@
       "id": "professional-first",
       "rule": "Operational command surfaces are complete in Professional View; Cinematic View is optional presentation and cannot be an operating dependency.",
       "scope": "upper-command",
-      "origin": "8.5.3 command audit"
+      "origin": "8.5.4 command audit"
     }
   ]
 }

@@ -1,6 +1,6 @@
-# Dark Sky 8.5.3 — Readiness Truth Manifest
+# Dark Sky 8.5.4 — Verified Command Manifest
 
-# Dark Sky 8.5.3 — Readiness Truth Manifest
+# Dark Sky 8.5.4 — Verified Command Manifest
 
 **Release goal:** harden Black Flag Engine, Captain's Quarters, and Admiral's Deck around professional-first operations, one fleet memory, and real-UI release assurance.
 

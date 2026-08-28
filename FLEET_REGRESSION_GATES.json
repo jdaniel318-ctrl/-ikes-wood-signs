@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.5.3",
+  "build": "8.5.4",
   "release": "GlyphForge",
   "excluded_sources": [
     "The situation"

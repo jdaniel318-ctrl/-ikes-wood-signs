@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.5.3",
-  "release": "Readiness Truth",
+  "build": "8.5.4",
+  "release": "Verified Command",
   "seal": "readiness-truth-853-trust-signal-a8c42e",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Readiness Truth"
+  "release_name": "Verified Command"
 }

@@ -1,6 +1,6 @@
 {
-  "release": "8.5.3",
-  "name": "Readiness Truth",
+  "release": "8.5.4",
+  "name": "Verified Command",
   "file_count": 52,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -56,7 +56,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.5.3",
+  "build": "8.5.4",
   "seal": "readiness-truth-853-trust-signal-a8c42e",
-  "release_name": "Readiness Truth"
+  "release_name": "Verified Command"
 }

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.5.3",
-  "release": "Readiness Truth",
+  "build": "8.5.4",
+  "release": "Verified Command",
   "generatedAt": "2026-08-28T02:38:53.558804+00:00",
   "checks": {
     "build_version": true,
@@ -168,8 +168,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.5.3 Readiness Truth separates current posture from historical incidents, adds Detected/Open/Verified Fix/Cleared lifecycle evidence, actionable Admiral findings, origin-storage growth watch, and durable Captain command outcomes.",
-  "candidate": "8.5.3",
+  "note": "8.5.4 Verified Command separates current posture from historical incidents, adds Detected/Open/Verified Fix/Cleared lifecycle evidence, actionable Admiral findings, origin-storage growth watch, and durable Captain command outcomes.",
+  "candidate": "8.5.4",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,4 +1,4 @@
-# 8.5.3 Readiness Truth Contract
+# 8.5.4 Verified Command Contract
 
 - **Engine operates. Captain commands. Admiral governs.**
 - Professional operational views must be complete without cinematic presentation.
