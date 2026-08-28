@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.5';
-const RELEASE_SEAL='identity-anchor-865-protected-survivor-9b73d1';
+const RELEASE_BUILD='8.6.6';
+const RELEASE_SEAL='fleet-muster-866-protected-six-3f8d72';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

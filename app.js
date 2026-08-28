@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.5';
+  const BUILD_VERSION='8.6.6';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -237,7 +237,7 @@
   }
 
 
-  // 8.6.5 Canonical Six — release-pinned canonical vessel repair.
+  // 8.6.6 Canonical Six — release-pinned canonical vessel repair.
   // Existing rows always win. This Known-Good vessel definition is materialized
   // only if its immutable Project ID disappeared from the reconciled registry.
   const RELEASE_PINNED_VESSELS_864 = Object.freeze([
@@ -273,11 +273,16 @@
     }
   ]);
   const RELEASE_CANONICAL_FLEET_IDS_864 = Object.freeze(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
-  // 8.6.5 Identity Anchor — protected Known Good business identities always
+  // 8.6.6 Fleet Muster — protected Known Good business identities always
   // survive duplicate reconciliation on their immutable Project IDs. Stale
   // duplicates may contribute evidence/data, but never replace these anchors.
   const PROTECTED_CANONICAL_BUSINESS_SURVIVORS_865 = Object.freeze({
-    'legacy plumbing':'bf-p-f92f87e8ec44'
+    "becca's bloom shop":'beccas-bloom-shop',
+    'legacy plumbing':'bf-p-f92f87e8ec44',
+    'signal restoration':'bor-north-richmond',
+    'grizzly bear':'grizzly-bear',
+    "ike's wood signs":'ikes-wood-signs',
+    'mugs after dark':'mugshot-after-dark'
   });
 
   let companies=structuredClone(DEFAULT_COMPANIES);
@@ -2086,6 +2091,48 @@
   }
 
 
+
+  // 8.6.6 Fleet Muster — protected fleet identity is release-seeded, not inferred
+  // from whatever runtime registry happens to survive a prior candidate. The six
+  // Known Good vessels and their admissions are restored before fleet surfaces paint.
+  function releaseMusterDefinition866(id){
+    const all=[...DEFAULT_COMPANIES,...RELEASE_PINNED_VESSELS_864];
+    return all.find(p=>String(canonicalProjectId(p?.id||''))===String(id||''))||null;
+  }
+  async function ensureProtectedFleetMuster866({stage='boot'}={}){
+    let rows=await readCanonicalProjectRegistry();
+    const byId=new Map(rows.map(p=>[String(canonicalProjectId(p?.id||'')),p]));
+    const restored=[];
+    for(const id of RELEASE_CANONICAL_FLEET_IDS_864){
+      if(byId.has(id))continue;
+      const seed=releaseMusterDefinition866(id);
+      if(!seed)throw new Error(`Fleet Muster seed definition missing: ${id}`);
+      const candidate=ensureProjectGovernance(normalizeProjectCode(structuredClone(seed)));
+      candidate.id=id;
+      candidate.identity={...(candidate.identity||{}),projectId:id,immutableProjectId:true};
+      candidate.registryIdentity={...(candidate.registryIdentity||{}),musterSeed:'8.5.7-known-good',musterRestoredAt:new Date().toISOString(),musterBuild:BUILD_VERSION};
+      rows.push(candidate);byId.set(id,candidate);restored.push(id);
+    }
+    if(restored.length)rows=await persistProjectRegistry(rows);
+    const ledger=await ensureV4AdmissionLedger(rows);
+    const now=new Date().toISOString();let admissionChanged=false;
+    for(const id of RELEASE_CANONICAL_FLEET_IDS_864){
+      if(validV4Admission(ledger[id],id))continue;
+      ledger[id]={projectId:id,admitted:true,source:'protected-fleet-muster',transactionId:`muster:8.5.7:${id}`,admittedAt:now,build:BUILD_VERSION,detail:'Protected six-vessel muster admission restored before fleet paint.'};
+      admissionChanged=true;
+    }
+    if(admissionChanged)await persistV4AdmissionLedger(ledger);
+    const verified=await readCanonicalProjectRegistry();
+    const verifiedIds=new Set(verified.map(p=>String(canonicalProjectId(p?.id||''))));
+    const finalLedger=await ensureV4AdmissionLedger(verified);
+    const missingRows=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!verifiedIds.has(id));
+    const missingAdmissions=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!validV4Admission(finalLedger[id],id));
+    if(missingRows.length||missingAdmissions.length)throw new Error(`Fleet Muster incomplete at ${stage}: rows=${missingRows.join(',')||'clear'} admissions=${missingAdmissions.join(',')||'clear'}`);
+    window.__darkSkyFleetMuster={build:BUILD_VERSION,stage,count:6,ids:[...RELEASE_CANONICAL_FLEET_IDS_864],restored,verifiedAt:new Date().toISOString()};
+    if(restored.length)window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'fleet-muster.restored',detail:`${restored.length} protected vessel row(s) restored before fleet paint: ${restored.join(' • ')}`});
+    return {rows:verified,ledger:finalLedger,restored};
+  }
+
   const SIGNAL_BRAND_SCHEMA_KEY='signalRestorationBrandSchema';
   const SIGNAL_BRAND_SCHEMA_VERSION=1;
   async function ensureSignalRestorationBranding(){
@@ -2950,7 +2997,7 @@
       if(!canonicalById.has(id))continue;
       if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.9.2`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
     }
-    // 8.6.5 Canonical Six — restore fleet citizenship for the six immutable
+    // 8.6.6 Canonical Six — restore fleet citizenship for the six immutable
     // vessels proven in the 8.5.7 Known Good fleet. This is admission-only:
     // existing canonical rows win and no vessel business data is rewritten.
     for(const id of RELEASE_CANONICAL_FLEET_IDS_864){
@@ -3275,6 +3322,8 @@
     let canonicalRows=[];
     let savedRows=null;
     try{ canonicalRows=await readCanonicalProjectRegistry(); }catch(_){ canonicalRows=[]; }
+    try{ const muster=await ensureProtectedFleetMuster866({stage:'pre-load'}); canonicalRows=muster.rows; }
+    catch(err){ window.__darkSkyShowRecovery?.('fleet-muster-incomplete'); throw err; }
     try{
       const saved=await getSetting('companies');
       savedRows=Array.isArray(saved?.value)&&saved.value.length?saved.value:null;
@@ -3289,7 +3338,7 @@
     if(!companies.length)companies=structuredClone(DEFAULT_COMPANIES);
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
 
-    // 8.6.5 Canonical Six: recover a vessel that was part of the 8.5.7 Known Good
+    // 8.6.6 Canonical Six: recover a vessel that was part of the 8.5.7 Known Good
     // canonical fleet but vanished from a later incomplete mirror. Never overwrite an existing row.
     const rosterIds863=new Set(companies.map(p=>String(p?.id||'')));
     for(const pinned of RELEASE_PINNED_VESSELS_864){
@@ -3338,7 +3387,7 @@
     const aliasCanonicalized=canonicalizeRegistryAliasRows(companies);
     companies=aliasCanonicalized.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
     if(registrySchema<FLEET_REGISTRY_SCHEMA_VERSION) await migrateGrizzlyProjectAliasData();
-    // 8.6.5 Identity Anchor: fold strict duplicate identities while preserving
+    // 8.6.6 Fleet Muster: fold strict duplicate identities while preserving
     // protected Known Good immutable IDs as canonical survivors and migrating
     // stale duplicate project-scoped references into those anchors.
     const duplicatePlan=strictDuplicateBusinessPlan(companies);
@@ -3356,6 +3405,9 @@
       window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.4.1.fleet.registry.reconciled',detail:`${companies.length} projects • schema ${FLEET_REGISTRY_SCHEMA_VERSION}`});
     }
 
+    // 8.6.6: prove the protected muster again after aliases/duplicate folding.
+    { const muster=await ensureProtectedFleetMuster866({stage:'post-reconcile'}); companies=muster.rows.map(normalizeProjectCode).map(ensureProjectGovernance); }
+
     // v3.9.9 — reconcile commissioning artifacts against the canonical Project ID.
     // A verified canonical project wins and stale journal/draft artifacts are removed.
     // If the Project ID is missing, one idempotent recovery attempt uses the preserved
@@ -3366,6 +3418,8 @@
     try{ await ensureV4BaselineRegistrySeal(); }catch(err){ console.warn('V4 baseline registry seal warning',err); window.DarkSkyV4?.diagnostic?.('fleet_baseline.seal.failed',String(err?.message||err)); }
     try{ window.DarkSkyV4?.bootstrap?.(companies); }catch(err){ console.warn('V4 migration gate warning',err); window.DarkSkyV4?.diagnostic?.('migration.warning',String(err?.message||err)); }
     try{ await repairLegacyProjectReferences(); }catch(err){ console.warn('V4 legacy project-reference repair warning',err); window.DarkSkyV4?.diagnostic?.('commissioning.legacy_references.failed',String(err?.message||err)); }
+    try{ const muster=await ensureProtectedFleetMuster866({stage:'pre-envelope'}); companies=muster.rows.map(normalizeProjectCode).map(ensureProjectGovernance); await ensureCanonicalFleetManifest({repairRegistry:false}); }
+    catch(err){ window.__darkSkyShowRecovery?.('fleet-muster-incomplete'); throw err; }
     try{ await ensureV4EnvelopeConvergence({persistRegistry:true,record:true}); }catch(err){ console.warn('V4 envelope convergence warning',err); }
     try{ await ensureV4BaselineRegistrySeal(); }catch(err){ console.warn('V4 post-convergence baseline seal warning',err); }
     writeProjectRegistryBackup(companies,`load-${registrySource}`);
@@ -4288,7 +4342,7 @@
   }
   window.DarkSkyFleetLearning={registry:()=>persistFleetLearningRegistry(),recommendations:fleetLearningRecommendations,render:renderFleetLearningRegistry,stagingLedger:fleetStagingLedgerRead};
   if(!window.__darkSkyFleetLearningDelegated863){window.__darkSkyFleetLearningDelegated863=true;document.addEventListener('click',ev=>{const b=ev.target?.closest?.('[data-learning-stage-strong]');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();fleetLearningBulkStatus(b.dataset.learningStageStrong,'staged','strong');},{capture:true});}
-  // 8.6.5 Identity Anchor — protected survivor semantics added on top of Canonical Six.
+  // 8.6.6 Fleet Muster — protected survivor semantics added on top of Canonical Six.
   const FLEET_INTELLIGENCE_STATE_KEY='darkSkyFleetIntelligenceViewV1';
   function fleetIntelLifecycle(p){try{return window.BlackFlagV3Core?.lifecycle?.(p)||String(p?.status||'draft');}catch(_){return String(p?.status||'draft');}}
   function fleetIntelOwner(p){return String(p?.ownerAccess?.status||'not_claimed');}
@@ -4513,6 +4567,11 @@
     const dockCards864=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card')];
     const dockLiveOk864=!dockCards864.length||dockCards864.length===6;
     add('canonical-roster-live','Canonical six-vessel roster',canonicalRosterOk864&&dockLiveOk864?'pass':'fail',canonicalRosterOk864&&dockLiveOk864?`Six canonical vessels are present${dockCards864.length?' and rendered in Fleet Dock':''}.`:`Live roster disagreement: expected 6 canonical vessels; registry=${currentRosterIds864.length}, rendered=${dockCards864.length||'not painted'}.`);
+    const musterState866=window.__darkSkyFleetMuster||null;
+    const musterSeed866=await safe(async()=>{const r=await fetch(`FLEET_MUSTER_SEED.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    const musterSeedOk866=musterSeed866?.build===BUILD_VERSION&&Array.isArray(musterSeed866?.vessels)&&musterSeed866.vessels.length===6&&musterSeed866.vessels.every(v=>RELEASE_CANONICAL_FLEET_IDS_864.includes(String(v.projectId||'')));
+    const musterRuntimeOk866=!!musterState866&&Number(musterState866.count)===6&&RELEASE_CANONICAL_FLEET_IDS_864.every(id=>(musterState866.ids||[]).includes(id));
+    add('fleet-muster-protected-six','Protected Fleet Muster',musterSeedOk866&&musterRuntimeOk866?'pass':'fail',musterSeedOk866&&musterRuntimeOk866?'Protected six-vessel muster seed and runtime reconciliation agree before fleet paint.':'Protected Fleet Muster seed/runtime agreement is incomplete.');
     const canonicalAdmissionIds864=await safe(async()=>{const rows=await readCanonicalProjectRegistry();const ledger=await ensureV4AdmissionLedger(rows);return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger[id],id));},()=>[]);
     const canonicalAdmissionsOk864=canonicalAdmissionIds864.length===6;
     add('canonical-six-admissions','Canonical six fleet citizenship',canonicalAdmissionsOk864?'pass':'fail',canonicalAdmissionsOk864?'All six immutable Known Good vessels hold valid active fleet admissions.':`Fleet citizenship incomplete: ${canonicalAdmissionIds864.length}/6 canonical admissions valid.`);
@@ -4534,7 +4593,7 @@
     const stagingPersistOk864=stagedRows864.every(r=>stagingLedger864.some(x=>x.status==='staged'&&x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)));
     const stagingActionExpected864=stagingVerified864?.build===BUILD_VERSION&&stagingVerified864?.status==='staged';
     const stagingActionOk864=!stagingActionExpected864||(stagedRows864.length===Number(stagingVerified864.count||0)&&stagingPersistOk864&&stagedRows864.every(r=>r.status!=='adopted'));
-    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.5 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
+    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.6 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
 
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{

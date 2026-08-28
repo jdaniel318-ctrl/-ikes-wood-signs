@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.6.5",
-  "version": "8.6.5",
-  "release_name": "Identity Anchor",
-  "releaseName": "Identity Anchor",
-  "release_seal": "identity-anchor-865-protected-survivor-9b73d1",
+  "build": "8.6.6",
+  "version": "8.6.6",
+  "release_name": "Fleet Muster",
+  "releaseName": "Fleet Muster",
+  "release_seal": "fleet-muster-866-protected-six-3f8d72",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -30,7 +30,8 @@
     "GOLDEN_VOYAGES.json",
     "FLEET_INTELLIGENCE_MODEL.json",
     "CAPABILITY_ADOPTION_MAP.json",
-    "REGISTRY_LEDGER_MODEL.json"
+    "REGISTRY_LEDGER_MODEL.json",
+    "FLEET_MUSTER_SEED.json"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",

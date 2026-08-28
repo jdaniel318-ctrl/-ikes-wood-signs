@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.5",
-  "release": "Identity Anchor",
-  "seal": "identity-anchor-865-protected-survivor-9b73d1",
+  "build": "8.6.6",
+  "release": "Fleet Muster",
+  "seal": "fleet-muster-866-protected-six-3f8d72",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Identity Anchor"
+  "release_name": "Fleet Muster"
 }

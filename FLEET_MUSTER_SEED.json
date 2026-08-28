@@ -1,0 +1,39 @@
+{
+  "schema": "dark-sky-fleet-muster-v1",
+  "build": "8.6.6",
+  "release": "Fleet Muster",
+  "source_known_good": "8.5.7",
+  "policy": "protected identities and admissions are restored before fleet surfaces paint; runtime state cannot redefine fleet identity",
+  "vessels": [
+    {
+      "projectId": "beccas-bloom-shop",
+      "projectCode": "BBS",
+      "name": "Becca's Bloom Shop"
+    },
+    {
+      "projectId": "bf-p-f92f87e8ec44",
+      "projectCode": "LP",
+      "name": "Legacy Plumbing"
+    },
+    {
+      "projectId": "bor-north-richmond",
+      "projectCode": "SIG",
+      "name": "Signal Restoration"
+    },
+    {
+      "projectId": "grizzly-bear",
+      "projectCode": "GRZ",
+      "name": "Grizzly Bear"
+    },
+    {
+      "projectId": "ikes-wood-signs",
+      "projectCode": "IKE",
+      "name": "Ike's Wood Signs"
+    },
+    {
+      "projectId": "mugshot-after-dark",
+      "projectCode": "MUG",
+      "name": "Mugs After Dark"
+    }
+  ]
+}

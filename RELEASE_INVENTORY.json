@@ -1,7 +1,7 @@
 {
-  "release": "Identity Anchor",
-  "name": "Canonical Six",
-  "file_count": 55,
+  "release": "Fleet Muster",
+  "name": "Fleet Muster",
+  "file_count": 56,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -17,6 +17,7 @@
     "FLEET_INTELLIGENCE_MODEL.json",
     "FLEET_LEARNING_RECOMMENDATIONS_814.json",
     "FLEET_LEARNING_REGISTRY.json",
+    "FLEET_MUSTER_SEED.json",
     "FLEET_OPERATING_CONTRACTS.md",
     "FLEET_REGRESSION_GATES.json",
     "FLEET_REGRESSION_LIBRARY.md",
@@ -59,7 +60,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.5",
-  "seal": "identity-anchor-865-protected-survivor-9b73d1",
-  "release_name": "Identity Anchor"
+  "build": "8.6.6",
+  "seal": "fleet-muster-866-protected-six-3f8d72",
+  "release_name": "Fleet Muster"
 }
