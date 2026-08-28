@@ -1,4 +1,4 @@
-# Lean Build Manifest — 8.5.5 Command Wiring
+# Lean Build Manifest — 8.5.6 Command Focus
 
 Command wiring is a release-blocking runtime contract.
 

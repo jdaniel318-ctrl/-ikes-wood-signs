@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.5.5",
-  "release": "Command Wiring",
-  "seal": "command-wiring-855-canonical-init-4f9c21",
+  "build": "8.5.6",
+  "release": "Command Focus",
+  "seal": "command-focus-856-admiral-nav-7c31e4",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Command Wiring"
+  "release_name": "Command Focus"
 }

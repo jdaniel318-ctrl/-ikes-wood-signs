@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.5.5",
-  "release": "Command Wiring",
+  "build": "8.5.6",
+  "release": "Command Focus",
   "generatedAt": "2026-08-28T13:08:49.189263+00:00",
   "checks": {
     "build_version": true,
@@ -171,8 +171,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.5.5 Command Wiring restores one canonical command initialization path, fixes stale readiness handler references, and makes Engine Telemetry plus Admiral Readiness startup wiring release-blocking.",
-  "candidate": "8.5.5",
+  "note": "8.5.6 Command Focus restores one canonical command initialization path, fixes stale readiness handler references, and makes Engine Telemetry plus Admiral Readiness startup wiring release-blocking.",
+  "candidate": "8.5.6",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.5.5';
-const RELEASE_SEAL='command-wiring-855-canonical-init-4f9c21';
+const RELEASE_BUILD='8.5.6';
+const RELEASE_SEAL='command-focus-856-admiral-nav-7c31e4';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

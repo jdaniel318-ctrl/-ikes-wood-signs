@@ -1,6 +1,6 @@
 {
-  "release": "8.5.5",
-  "name": "Command Wiring",
+  "release": "8.5.6",
+  "name": "Command Focus",
   "file_count": 52,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -56,7 +56,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.5.5",
-  "seal": "command-wiring-855-canonical-init-4f9c21",
-  "release_name": "Command Wiring"
+  "build": "8.5.6",
+  "seal": "command-focus-856-admiral-nav-7c31e4",
+  "release_name": "Command Focus"
 }
