@@ -1,4 +1,4 @@
-const RELEASE_BUILD='8.6.0';
+const RELEASE_BUILD='8.6.1';
 const RELEASE_SEAL='fleet-intelligence-860-cross-vessel-7c42a1';
 
 self.addEventListener('install', event => {

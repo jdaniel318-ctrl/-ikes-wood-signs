@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-intelligence-model-v1",
-  "build": "8.6.0",
-  "release": "Fleet Intelligence",
+  "build": "8.6.1",
+  "release": "Intelligence Dock",
   "principles": [
     "Signals are normalized without crossing project data boundaries.",
     "Comparison uses fleet-safe posture metadata, never another vessel's private business records.",
@@ -30,5 +30,11 @@
     "Sea Trial",
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
-  ]
+  ],
+  "first_paint_contract": {
+    "timeout_ms": 650,
+    "fallback": "canonical/local roster snapshot",
+    "state": "LOCAL FLEET \u2022 VERIFYING",
+    "reconcile": "background"
+  }
 }

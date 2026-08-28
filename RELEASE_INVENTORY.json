@@ -1,6 +1,6 @@
 {
-  "release": "8.6.0",
-  "name": "Fleet Intelligence",
+  "release": "8.6.1",
+  "name": "Intelligence Dock",
   "file_count": 54,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -58,7 +58,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.0",
-  "seal": "fleet-intelligence-860-cross-vessel-7c42a1",
-  "release_name": "Fleet Intelligence"
+  "build": "8.6.1",
+  "seal": "intelligence-dock-861-bounded-first-paint-6f42c9",
+  "release_name": "Intelligence Dock"
 }

@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.0",
-  "release": "Fleet Intelligence",
-  "seal": "fleet-intelligence-860-cross-vessel-7c42a1",
+  "build": "8.6.1",
+  "release": "Intelligence Dock",
+  "seal": "intelligence-dock-861-bounded-first-paint-6f42c9",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Fleet Intelligence"
+  "release_name": "Intelligence Dock"
 }

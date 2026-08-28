@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.0",
-  "release": "Fleet Intelligence",
+  "build": "8.6.1",
+  "release": "Intelligence Dock",
   "excluded_sources": [
     "The situation"
   ],
@@ -28,6 +28,7 @@
       "deterministic_returns",
       "interactive_affordance",
       "fleet_dock_bounded_first_paint",
+      "fleet_intelligence_bounded_first_paint",
       "canonical_command_initializer",
       "engine_telemetry_one_tap_route",
       "admiral_readiness_no_missing_initializer"

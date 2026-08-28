@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.0';
+  const BUILD_VERSION='8.6.1';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.6.0',
+    build:'8.6.1',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4176,7 +4176,7 @@
     host.querySelectorAll('[data-learning-reset]').forEach(b=>b.onclick=()=>fleetLearningSetStatus(b.dataset.projectId,b.dataset.learningReset,'unreviewed'));
   }
   window.DarkSkyFleetLearning={registry:()=>persistFleetLearningRegistry(),recommendations:fleetLearningRecommendations,render:renderFleetLearningRegistry};
-  // 8.6.0 Fleet Intelligence — normalized cross-vessel posture without crossing project boundaries.
+  // 8.6.1 Intelligence Dock — normalized cross-vessel posture without crossing project boundaries.
   const FLEET_INTELLIGENCE_STATE_KEY='darkSkyFleetIntelligenceViewV1';
   function fleetIntelLifecycle(p){try{return window.BlackFlagV3Core?.lifecycle?.(p)||String(p?.status||'draft');}catch(_){return String(p?.status||'draft');}}
   function fleetIntelOwner(p){return String(p?.ownerAccess?.status||'not_claimed');}
@@ -4204,12 +4204,36 @@
     window.__darkSkyFleetIntelligence=snapshot;try{localStorage.setItem('darkSkyFleetIntelligenceSnapshotV1',JSON.stringify(snapshot));}catch(_){}return snapshot;
   }
   function fleetIntelBadge(value,tone=''){return `<span class="fleet-intel-badge ${escapeHtml(tone)}">${escapeHtml(String(value))}</span>`;}
-  async function renderFleetIntelligenceDeck(view=''){
+  function fleetIntelligenceLocalSnapshot(){
+    const learning=(()=>{try{return fleetLearningRecommendations()||[];}catch(_){return[];}})();
+    const list=(()=>{try{return projects()||[];}catch(_){return[];}})();
+    const health=list.map(p=>{
+      const lr=learning.filter(r=>r.projectId===p.id&&r.class!=='doctrine');
+      return {id:p.id,name:p.name,callsign:fleetStableCallsign(p),lifecycle:fleetIntelLifecycle(p),owner:fleetIntelOwner(p),publish:fleetIntelPublish(p),signals:0,adopted:lr.filter(r=>r.status==='adopted').length,staged:lr.filter(r=>r.status==='staged').length,eligible:lr.length};
+    });
+    const capabilities=FLEET_LEARNING_REGISTRY.filter(x=>x.class!=='doctrine').map(cap=>{const rows=learning.filter(r=>r.learningId===cap.id);return{id:cap.id,title:cap.title,origin:cap.origin,risk:cap.risk,eligible:rows.length,strong:rows.filter(r=>r.confidence==='strong').length,staged:rows.filter(r=>r.status==='staged').length,adopted:rows.filter(r=>r.status==='adopted').length,unreviewed:rows.filter(r=>r.status==='unreviewed').length};});
+    const decisions=(()=>{try{return fleetLearningCompressedDecisions(learning)||[];}catch(_){return[];}})();
+    const strategy=decisions.slice(0,4).map(d=>({kind:'CAPABILITY PROMOTION',title:d.title,detail:`${d.strong?.length||0} strong fit • ${d.plausible?.length||0} plausible • origin ${d.origin}.`,action:'learning',learningId:d.learningId}));
+    if(!strategy.length)strategy.push({kind:'LOCAL FLEET POSTURE',title:'Roster available while live intelligence verifies',detail:'Canonical vessel posture is usable now; signal reconciliation continues in the background.',action:'none'});
+    return {schema:'dark-sky-fleet-intelligence-local-v1',build:BUILD_VERSION,at:new Date().toISOString(),signals:[],health,capabilities,strategy,summary:{vessels:health.length,openSignals:0,attentionVessels:0,strongFits:learning.filter(r=>r.class!=='doctrine'&&r.status==='unreviewed'&&r.confidence==='strong').length,adopted:learning.filter(r=>r.class!=='doctrine'&&r.status==='adopted').length},localFallback:true};
+  }
+  async function renderFleetIntelligenceDeck(view='',providedSnap=null){
     const deck=$('fleetIntelligenceDeck'),body=$('fleetIntelligenceBody'),summary=$('fleetIntelligenceSummary'),state=$('fleetIntelligenceState');if(!deck||!body||!summary)return;
     const stored=view||(()=>{try{return sessionStorage.getItem(FLEET_INTELLIGENCE_STATE_KEY)||'overview';}catch(_){return'overview';}})();
     const active=['overview','health','capabilities','strategy'].includes(stored)?stored:'overview';deck.dataset.view=active;deck.querySelectorAll('[data-intel-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.intelView===active)));
     if(state)state.textContent='READING FLEET';
-    const snap=await fleetIntelligenceSnapshot();const sm=snap.summary;
+    let snap=providedSnap,verifying=false,fullPromise=null;
+    if(!snap){
+      fullPromise=fleetIntelligenceSnapshot();
+      snap=await commandDeadline(fullPromise,650,null);
+      if(!snap){
+        verifying=true;
+        snap=fleetIntelligenceLocalSnapshot();
+        if(state)state.textContent='LOCAL FLEET • VERIFYING';
+        fullPromise.then(full=>{if(full)renderFleetIntelligenceDeck(active,full).catch(err=>console.warn('fleet intelligence background render warning',err));}).catch(err=>console.warn('fleet intelligence background reconciliation warning',err));
+      }
+    }
+    const sm=snap.summary;
     summary.innerHTML=`<article><small>VESSELS</small><strong>${sm.vessels}</strong><span>Canonical fleet registry</span></article><article><small>OPEN SIGNALS</small><strong>${sm.openSignals}</strong><span>Normalized attention queue</span></article><article><small>ATTENTION VESSELS</small><strong>${sm.attentionVessels}</strong><span>At least one current signal</span></article><article><small>STRONG FITS</small><strong>${sm.strongFits}</strong><span>Capability review candidates</span></article><article><small>ADOPTED</small><strong>${sm.adopted}</strong><span>Explicit vessel adoptions</span></article>`;
     const signalRows=snap.signals.length?snap.signals.map(s=>`<div class="fleet-intel-row"><div><strong>${escapeHtml(s.projectName?`${s.projectName} — ${s.title}`:s.title)}</strong><small>${escapeHtml(s.detail)} • OWNER ${escapeHtml(s.owner)}</small></div>${fleetIntelBadge(s.severity.toUpperCase(),s.severity)}</div>`).join(''):'<div class="empty">No active fleet attention signals.</div>';
     const healthRows=snap.health.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.lifecycle.toUpperCase())}</td><td>${escapeHtml(r.owner.replace('_',' ').toUpperCase())}</td><td>${escapeHtml(r.publish.toUpperCase())}</td><td>${r.signals}</td><td>${r.adopted}/${r.eligible}</td></tr>`).join('');
@@ -4218,7 +4242,7 @@
     body.innerHTML=`<section data-intel-section="overview"><div class="fleet-intel-grid"><article class="fleet-intel-panel"><header><small>NORMALIZED SIGNALS</small><strong>One attention vocabulary across the fleet</strong></header>${signalRows}</article><article class="fleet-intel-panel"><header><small>ADMIRAL OPPORTUNITY</small><strong>Patterns worth promoting</strong></header>${strategyRows}</article></div></section><section data-intel-section="health"><article class="fleet-intel-panel"><header><small>FLEET HEALTH MATRIX</small><strong>Compare posture without opening every vessel</strong></header><div style="overflow:auto"><table class="fleet-health-table"><thead><tr><th>VESSEL</th><th>LIFECYCLE</th><th>OWNER</th><th>PUBLISH</th><th>SIGNALS</th><th>ADOPTION</th></tr></thead><tbody>${healthRows}</tbody></table></div></article></section><section data-intel-section="capabilities"><div class="fleet-capability-map">${capRows}</div></section><section data-intel-section="strategy">${strategyRows}</section>`;
     body.querySelectorAll('[data-intel-action="watch"]').forEach(b=>b.onclick=async()=>{await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});});
     body.querySelectorAll('[data-intel-action="learning"]').forEach(b=>b.onclick=()=>{$('fleetLearningRegistry')?.scrollIntoView({behavior:'smooth',block:'start'});});
-    if(state)state.textContent=snap.signals.length?'SIGNALS NORMALIZED':'FLEET STEADY';
+    if(state)state.textContent=verifying?'LOCAL FLEET • VERIFYING':(snap.signals.length?'SIGNALS NORMALIZED':'FLEET STEADY');
     try{sessionStorage.setItem(FLEET_INTELLIGENCE_STATE_KEY,active);}catch(_){}
     return snap;
   }
@@ -4368,6 +4392,8 @@
 
     const fleetDockBoundedPaint=String(renderFleetCommissioning).includes('LOCAL ROSTER • VERIFYING')&&String(renderFleetCommissioning).includes('commandDeadline(convergence')&&String(renderFleetCommissioning).includes('skipConvergence:true');
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');
+    const fleetIntelligenceBoundedPaint=String(renderFleetIntelligenceDeck).includes('LOCAL FLEET • VERIFYING')&&String(renderFleetIntelligenceDeck).includes('commandDeadline(fullPromise,650,null)')&&String(renderFleetIntelligenceDeck).includes('fleetIntelligenceLocalSnapshot()');
+    add('fleet-intelligence-bounded-paint','Fleet Intelligence bounded first paint',fleetIntelligenceBoundedPaint?'pass':'fail',fleetIntelligenceBoundedPaint?'Fleet Intelligence paints a usable roster-backed local picture within a bounded window and reconciles live cross-vessel intelligence in the background.':'Fleet Intelligence can still remain indefinitely on READING FLEET before presenting a usable fleet picture.');
 
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{
@@ -4497,7 +4523,7 @@
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
-      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','command-wiring'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
+      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','fleet-intelligence-bounded-paint','command-wiring'],'Captain navigation plus bounded Fleet Dock and Fleet Intelligence first-paint behavior.'),
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary'],'Customer-approved production artifacts remain byte-stable and fingerprinted through approval, order serialization, admin, and archive.'),
       combine('ike-production-truth','Ike Production Truth Voyage',['ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Ike customer wording, finished-sign geometry, face fit, and governed style evidence remain production-truthful without fallback or destructive synchronization.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
@@ -14453,7 +14479,7 @@ The full order and approved media remain stored with this project.`;
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
-  // 8.6.0 Voyage Truth: arm one canonical telemetry route before storage/migrations.
+  // 8.6.1 Voyage Truth: arm one canonical telemetry route before storage/migrations.
   bindEngineTelemetryCore();
   commandWiringSelfCheck();
   // Engine appearance is also armed here because the selector lives on the pre-login gate
