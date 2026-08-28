@@ -1,0 +1,20 @@
+{
+  "schema": "dark-sky-dock-source-trace-v1",
+  "build": "8.6.8",
+  "release": "Dock Source Trace",
+  "mission": "Trace the exact final Fleet Dock source array and identify the first stage that loses Legacy Plumbing.",
+  "legacy_protected_id": "bf-p-f92f87e8ec44",
+  "stages": [
+    "Protected muster seed",
+    "IndexedDB project rows",
+    "Settings mirror rows",
+    "Valid fleet admissions",
+    "Active fleet manifest",
+    "In-memory companies",
+    "Fleet Dock input array",
+    "Fleet Dock visible array",
+    "Rendered Fleet Dock cards"
+  ],
+  "policy": "The Fleet Dock renderer itself refuses to paint if the final input or rendered card set loses any protected Known Good vessel.",
+  "destructive_controls": false
+}

@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.7';
+  const BUILD_VERSION='8.6.8';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -237,7 +237,7 @@
   }
 
 
-  // 8.6.7 Canonical Six — release-pinned canonical vessel repair.
+  // 8.6.8 Canonical Six — release-pinned canonical vessel repair.
   // Existing rows always win. This Known-Good vessel definition is materialized
   // only if its immutable Project ID disappeared from the reconciled registry.
   const RELEASE_PINNED_VESSELS_864 = Object.freeze([
@@ -273,7 +273,7 @@
     }
   ]);
   const RELEASE_CANONICAL_FLEET_IDS_864 = Object.freeze(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
-  // 8.6.7 Muster Trace — protected Known Good business identities always
+  // 8.6.8 Dock Source Trace — protected Known Good business identities always
   // survive duplicate reconciliation on their immutable Project IDs. Stale
   // duplicates may contribute evidence/data, but never replace these anchors.
   const PROTECTED_CANONICAL_BUSINESS_SURVIVORS_865 = Object.freeze({
@@ -1628,6 +1628,7 @@
     if(opfs.supported&&Number(opfs.bytes||0)===0)findings.push('Origin Private File System is available but contains no measured files.');
     if(!Object.keys(usageDetails||{}).length)findings.push('Safari is not exposing a class-by-class storage estimate, so the remaining gap cannot be safely assigned to orders, caches, or files from page JavaScript alone.');
     if((p.indexedDbCatalog||[]).length>1)findings.push(`Safari reports ${(p.indexedDbCatalog||[]).length} IndexedDB databases for this origin; only Dark Sky-owned stores are measured deeply.`);
+    const dockTrace868=window.__darkSkyDockSourceTrace868||null;
     return `<section class="storage-compact-diagnostics" id="storageCompactDiagnosticsPanel">
       <div class="storage-report-head"><strong>COMPACT DIAGNOSTICS</strong><span>Read-only • ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</span></div>
       <div class="storage-report-grid">
@@ -1640,6 +1641,8 @@
       <details class="storage-report-details" open><summary>Safari usage details</summary><table><tbody>${usageRows}</tbody></table></details>
       <details class="storage-report-details"><summary>IndexedDB catalog</summary><table><thead><tr><th>Database</th><th>Version</th></tr></thead><tbody>${dbRows}</tbody></table></details>
       <details class="storage-report-details"><summary>Service workers</summary><table><thead><tr><th>Scope</th><th>Script</th></tr></thead><tbody>${workerRows}</tbody></table></details>
+      <div class="diagnostics-section-label"><span>FLEET REGISTRY TRACE</span><strong>Legacy life-raft path</strong></div>
+      ${dockSourceTraceHtml868(dockTrace868,{compact:true})}
       <p class="helper"><strong>Boundary:</strong> Diagnostics do not delete anything. A browser-managed/unattributed figure is intentionally not classified as safe cleanup unless Dark Sky can enumerate and prove ownership of it.</p>
     </section>`;
   }
@@ -1700,6 +1703,7 @@
     if(btn?.dataset.opening==='1')return false;
     if(btn){btn.dataset.opening='1';btn.disabled=true;btn.textContent='OPENING…'}
     let last=window.__blackFlagLastStorageSounding;
+    try{await collectDockSourceTrace868({includeRendered:true});}catch(err){console.warn('dock source trace warning',err)}
     if(last){
       try{return showCompactStorageDiagnostics(last)}finally{if(btn){delete btn.dataset.opening;btn.disabled=false;btn.textContent='COMPACT DIAGNOSTICS'}}
     }
@@ -2092,7 +2096,7 @@
 
 
 
-  // 8.6.7 Muster Trace — protected fleet identity is release-seeded, not inferred
+  // 8.6.8 Dock Source Trace — protected fleet identity is release-seeded, not inferred
   // from whatever runtime registry happens to survive a prior candidate. The six
   // Known Good vessels and their admissions are restored before fleet surfaces paint.
   function releaseMusterDefinition866(id){
@@ -2106,7 +2110,7 @@
     for(const id of RELEASE_CANONICAL_FLEET_IDS_864){
       if(byId.has(id))continue;
       const seed=releaseMusterDefinition866(id);
-      if(!seed)throw new Error(`Muster Trace seed definition missing: ${id}`);
+      if(!seed)throw new Error(`Dock Source Trace seed definition missing: ${id}`);
       const candidate=ensureProjectGovernance(normalizeProjectCode(structuredClone(seed)));
       candidate.id=id;
       candidate.identity={...(candidate.identity||{}),projectId:id,immutableProjectId:true};
@@ -2127,14 +2131,14 @@
     const finalLedger=await ensureV4AdmissionLedger(verified);
     const missingRows=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!verifiedIds.has(id));
     const missingAdmissions=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!validV4Admission(finalLedger[id],id));
-    if(missingRows.length||missingAdmissions.length)throw new Error(`Muster Trace incomplete at ${stage}: rows=${missingRows.join(',')||'clear'} admissions=${missingAdmissions.join(',')||'clear'}`);
+    if(missingRows.length||missingAdmissions.length)throw new Error(`Dock Source Trace incomplete at ${stage}: rows=${missingRows.join(',')||'clear'} admissions=${missingAdmissions.join(',')||'clear'}`);
     window.__darkSkyFleetMuster={build:BUILD_VERSION,stage,count:6,ids:[...RELEASE_CANONICAL_FLEET_IDS_864],restored,verifiedAt:new Date().toISOString()};
     if(restored.length)window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'recovery',action:'fleet-muster.restored',detail:`${restored.length} protected vessel row(s) restored before fleet paint: ${restored.join(' • ')}`});
     return {rows:verified,ledger:finalLedger,restored};
   }
 
 
-  // 8.6.7 Muster Trace — make every roster stage observable. A protected vessel
+  // 8.6.8 Dock Source Trace — make every roster stage observable. A protected vessel
   // may not disappear silently between release seed and rendered Fleet Dock.
   function orderedProtectedIds867(values=[]){
     const have=new Set((values||[]).map(v=>String(v||'')));
@@ -2170,10 +2174,70 @@
   function musterTraceHtml867(trace){
     if(!trace)return '';
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
-    return `<section class="muster-trace-panel ${trace.firstDrop?'hold':'clear'}" aria-label="Muster Trace Trace">
-      <header><div><small>8.6.7 • MUSTER TRACE</small><strong>${trace.firstDrop?'MUSTER HOLD':'SIX ABOARD'}</strong></div><span>${trace.firstDrop?`FIRST DROP • ${escapeHtml(trace.firstDrop)}`:'6 / 6 CONSISTENT'}</span></header>
+    return `<section class="muster-trace-panel ${trace.firstDrop?'hold':'clear'}" aria-label="Dock Source Trace Trace">
+      <header><div><small>8.6.8 • MUSTER TRACE</small><strong>${trace.firstDrop?'MUSTER HOLD':'SIX ABOARD'}</strong></div><span>${trace.firstDrop?`FIRST DROP • ${escapeHtml(trace.firstDrop)}`:'6 / 6 CONSISTENT'}</span></header>
       <p>Six enter. Six must reach the Dock. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="muster-trace-grid">${trace.stages.map((st,i)=>`<article class="${st.ok?'ok':'bad'}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${st.count}/6</strong><span>${st.ids.map(label).join(' • ')||'none'}</span>${st.missing.length?`<em>Missing: ${st.missing.map(label).join(' • ')}</em>`:'<em>All protected IDs present</em>'}</article>`).join('')}</div>
+    </section>`;
+  }
+
+  // 8.6.8 Dock Source Trace — last-mile read-only instrumentation.
+  // The renderer itself owns the truth test. No upstream reconciliation promise can
+  // justify a five-vessel Fleet Dock. We capture the exact arrays and IDs that feed
+  // the Dock and expose the first stage that loses a protected Known Good vessel.
+  function dockTraceProtectedIds868(values=[]){
+    const have=new Set((values||[]).map(v=>String(canonicalProjectId(v||''))).filter(Boolean));
+    return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));
+  }
+  function dockTraceStage868(name,values,{kind='ids',note=''}={}){
+    const ids=kind==='rows'?(values||[]).map(v=>String(canonicalProjectId(v?.id||''))).filter(Boolean):(values||[]).map(v=>String(canonicalProjectId(v||''))).filter(Boolean);
+    const protectedIds=dockTraceProtectedIds868(ids);
+    const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!protectedIds.includes(id));
+    return {name,count:protectedIds.length,totalIds:ids.length,ids:[...new Set(ids)],protectedIds,missing,ok:missing.length===0,note};
+  }
+  async function collectDockSourceTrace868({includeRendered=true}={}){
+    const seed=[...RELEASE_CANONICAL_FLEET_IDS_864];
+    const rawProjects=await safe(()=>getAll(STORE_PROJECTS),()=>[]);
+    const mirrorSetting=await safe(()=>getSetting('companies'),()=>null);
+    const mirrorRows=Array.isArray(mirrorSetting?.value)?mirrorSetting.value:[];
+    const localAdmissions=readV4AdmissionLedger();
+    let storedAdmissions={};
+    try{const row=(await getSetting(V4_ADMISSION_LEDGER_SETTING))?.value;if(row&&typeof row==='object'&&!Array.isArray(row))storedAdmissions=row;}catch(_){ }
+    const admissionLedger={...storedAdmissions,...localAdmissions};
+    const admissionIds=Object.entries(admissionLedger).filter(([id,row])=>validV4Admission(row,id)).map(([id])=>id);
+    const manifestIds=readV4FleetManifest();
+    const memoryRows=Array.isArray(companies)?companies:[];
+    const dockRows=projects();
+    const visibleRows=(dockRows||[]).filter(p=>{try{return fleetDockMatches(p,commissioningSnapshot(p));}catch(_){return true;}});
+    const renderedIds=includeRendered?[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||'')):[];
+    const stages=[
+      dockTraceStage868('Protected muster seed',seed),
+      dockTraceStage868('IndexedDB project rows',rawProjects,{kind:'rows',note:`${rawProjects.length} raw project row${rawProjects.length===1?'':'s'}`}),
+      dockTraceStage868('Settings mirror rows',mirrorRows,{kind:'rows',note:`${mirrorRows.length} mirrored project row${mirrorRows.length===1?'':'s'}`}),
+      dockTraceStage868('Valid fleet admissions',admissionIds,{note:`${admissionIds.length} valid admission record${admissionIds.length===1?'':'s'}`}),
+      dockTraceStage868('Active fleet manifest',manifestIds,{note:`${manifestIds.length} manifest ID${manifestIds.length===1?'':'s'}`}),
+      dockTraceStage868('In-memory companies',memoryRows,{kind:'rows',note:`${memoryRows.length} in-memory row${memoryRows.length===1?'':'s'}`}),
+      dockTraceStage868('Fleet Dock input array',dockRows,{kind:'rows',note:`${dockRows.length} row${dockRows.length===1?'':'s'} handed to Fleet Dock`}),
+      dockTraceStage868('Fleet Dock visible array',visibleRows,{kind:'rows',note:`Filter ${fleetDockFilter||'all'} • search ${fleetDockSearch?`“${fleetDockSearch}”`:'none'}`})
+    ];
+    if(includeRendered)stages.push(dockTraceStage868('Rendered Fleet Dock cards',renderedIds,{note:`${renderedIds.length} rendered card${renderedIds.length===1?'':'s'}`}));
+    const firstDrop=stages.slice(1).find(st=>!st.ok)||null;
+    const trace={schema:'dark-sky-dock-source-trace-v1',build:BUILD_VERSION,expected:6,legacyId:'bf-p-f92f87e8ec44',capturedAt:new Date().toISOString(),stages,firstDrop:firstDrop?.name||'',firstDropMissing:firstDrop?.missing||[],legacyByStage:stages.map(st=>({stage:st.name,present:st.ids.includes('bf-p-f92f87e8ec44')}))};
+    window.__darkSkyDockSourceTrace868=trace;
+    return trace;
+  }
+  function dockTraceShortId868(id){
+    const map={'beccas-bloom-shop':'BBS','bf-p-f92f87e8ec44':'LP','bor-north-richmond':'SIG','grizzly-bear':'GRZ','ikes-wood-signs':'IKE','mugshot-after-dark':'MUG'};
+    return map[id]||id;
+  }
+  function dockSourceTraceHtml868(trace,{compact=false}={}){
+    if(!trace)return '<section class="dock-source-trace hold"><p>Fleet Registry Trace is not available yet.</p></section>';
+    const first=trace.firstDrop;
+    return `<section class="dock-source-trace ${first?'hold':'clear'}" aria-label="Fleet Registry Trace">
+      <div class="dock-trace-head"><div><small>8.6.8 • FLEET REGISTRY TRACE</small><strong>${first?'FIRST DROP FOUND':'SIX ABOARD'}</strong><p>${first?`Legacy first disappears at <b>${escapeHtml(first)}</b>.`:'All protected vessel identities survive the Dock source pipeline.'}</p></div><span class="dock-trace-state">${first?'HOLD':'6 / 6'}</span></div>
+      <div class="dock-trace-life"><span>LEGACY ANCHOR</span><b>bf-p-f92f87e8ec44</b><em>${trace.legacyByStage.every(x=>x.present)?'Present at every traced stage':`Missing beginning at ${escapeHtml(first||'unknown stage')}`}</em></div>
+      <div class="dock-trace-stages">${trace.stages.map((st,i)=>`<article class="${st.ok?'ok':'bad'}"><div><small>${String(i+1).padStart(2,'0')}</small><strong>${escapeHtml(st.name)}</strong></div><b>${st.count}/6</b><p>${st.protectedIds.map(dockTraceShortId868).join(' • ')||'No protected IDs'}</p>${st.missing.length?`<em>Missing: ${st.missing.map(dockTraceShortId868).join(' • ')}</em>`:'<em>Protected six intact</em>'}${st.note?`<span>${escapeHtml(st.note)}</span>`:''}</article>`).join('')}</div>
+      ${compact?'':`<p class="dock-trace-foot">Read-only trace. No project, admission, order, evidence, or customer record is changed by this panel.</p>`}
     </section>`;
   }
   const SIGNAL_BRAND_SCHEMA_KEY='signalRestorationBrandSchema';
@@ -3040,7 +3104,7 @@
       if(!canonicalById.has(id))continue;
       if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.9.2`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
     }
-    // 8.6.7 Canonical Six — restore fleet citizenship for the six immutable
+    // 8.6.8 Canonical Six — restore fleet citizenship for the six immutable
     // vessels proven in the 8.5.7 Known Good fleet. This is admission-only:
     // existing canonical rows win and no vessel business data is rewritten.
     for(const id of RELEASE_CANONICAL_FLEET_IDS_864){
@@ -3381,7 +3445,7 @@
     if(!companies.length)companies=structuredClone(DEFAULT_COMPANIES);
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
 
-    // 8.6.7 Canonical Six: recover a vessel that was part of the 8.5.7 Known Good
+    // 8.6.8 Canonical Six: recover a vessel that was part of the 8.5.7 Known Good
     // canonical fleet but vanished from a later incomplete mirror. Never overwrite an existing row.
     const rosterIds863=new Set(companies.map(p=>String(p?.id||'')));
     for(const pinned of RELEASE_PINNED_VESSELS_864){
@@ -3430,7 +3494,7 @@
     const aliasCanonicalized=canonicalizeRegistryAliasRows(companies);
     companies=aliasCanonicalized.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
     if(registrySchema<FLEET_REGISTRY_SCHEMA_VERSION) await migrateGrizzlyProjectAliasData();
-    // 8.6.7 Muster Trace: fold strict duplicate identities while preserving
+    // 8.6.8 Dock Source Trace: fold strict duplicate identities while preserving
     // protected Known Good immutable IDs as canonical survivors and migrating
     // stale duplicate project-scoped references into those anchors.
     const duplicatePlan=strictDuplicateBusinessPlan(companies);
@@ -3448,7 +3512,7 @@
       window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'v4.4.1.fleet.registry.reconciled',detail:`${companies.length} projects • schema ${FLEET_REGISTRY_SCHEMA_VERSION}`});
     }
 
-    // 8.6.7: prove the protected muster again after aliases/duplicate folding.
+    // 8.6.8: prove the protected muster again after aliases/duplicate folding.
     { const muster=await ensureProtectedFleetMuster866({stage:'post-reconcile'}); companies=muster.rows.map(normalizeProjectCode).map(ensureProjectGovernance); }
 
     // v3.9.9 — reconcile commissioning artifacts against the canonical Project ID.
@@ -4385,7 +4449,7 @@
   }
   window.DarkSkyFleetLearning={registry:()=>persistFleetLearningRegistry(),recommendations:fleetLearningRecommendations,render:renderFleetLearningRegistry,stagingLedger:fleetStagingLedgerRead};
   if(!window.__darkSkyFleetLearningDelegated863){window.__darkSkyFleetLearningDelegated863=true;document.addEventListener('click',ev=>{const b=ev.target?.closest?.('[data-learning-stage-strong]');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();fleetLearningBulkStatus(b.dataset.learningStageStrong,'staged','strong');},{capture:true});}
-  // 8.6.7 Muster Trace — protected survivor semantics added on top of Canonical Six.
+  // 8.6.8 Dock Source Trace — protected survivor semantics added on top of Canonical Six.
   const FLEET_INTELLIGENCE_STATE_KEY='darkSkyFleetIntelligenceViewV1';
   function fleetIntelLifecycle(p){try{return window.BlackFlagV3Core?.lifecycle?.(p)||String(p?.status||'draft');}catch(_){return String(p?.status||'draft');}}
   function fleetIntelOwner(p){return String(p?.ownerAccess?.status||'not_claimed');}
@@ -4614,10 +4678,13 @@
     const musterSeed866=await safe(async()=>{const r=await fetch(`FLEET_MUSTER_SEED.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
     const musterSeedOk866=musterSeed866?.build===BUILD_VERSION&&Array.isArray(musterSeed866?.vessels)&&musterSeed866.vessels.length===6&&musterSeed866.vessels.every(v=>RELEASE_CANONICAL_FLEET_IDS_864.includes(String(v.projectId||'')));
     const musterRuntimeOk866=!!musterState866&&Number(musterState866.count)===6&&RELEASE_CANONICAL_FLEET_IDS_864.every(id=>(musterState866.ids||[]).includes(id));
-    add('fleet-muster-protected-six','Protected Muster Trace',musterSeedOk866&&musterRuntimeOk866?'pass':'fail',musterSeedOk866&&musterRuntimeOk866?'Protected six-vessel muster seed and runtime reconciliation agree before fleet paint.':'Protected Muster Trace seed/runtime agreement is incomplete.');
+    add('fleet-muster-protected-six','Protected Dock Source Trace',musterSeedOk866&&musterRuntimeOk866?'pass':'fail',musterSeedOk866&&musterRuntimeOk866?'Protected six-vessel muster seed and runtime reconciliation agree before fleet paint.':'Protected Dock Source Trace seed/runtime agreement is incomplete.');
     const musterTrace867=await safe(()=>collectMusterTrace867({includeRendered:!!document.querySelector('#fleetCommissioningFleet')}),()=>null);
     const musterTraceOk867=!!musterTrace867&&Array.isArray(musterTrace867.stages)&&musterTrace867.stages.every(st=>st.ok);
-    add('fleet-muster-stage-trace','Muster Trace six-stage proof',musterTraceOk867?'pass':'fail',musterTraceOk867?'Muster Seed → Registry → Admission → Manifest → Memory → rendered Fleet Dock all retain the protected six.':`Muster Trace first drops at ${musterTrace867?.firstDrop||'trace unavailable'}.`);
+    add('fleet-muster-stage-trace','Dock Source Trace six-stage proof',musterTraceOk867?'pass':'fail',musterTraceOk867?'Muster Seed → Registry → Admission → Manifest → Memory → rendered Fleet Dock all retain the protected six.':`Dock Source Trace first drops at ${musterTrace867?.firstDrop||'trace unavailable'}.`);
+    const dockSourceTrace868=await safe(()=>collectDockSourceTrace868({includeRendered:!!document.querySelector('#fleetCommissioningFleet')}),()=>null);
+    const dockSourceOk868=!!dockSourceTrace868&&Array.isArray(dockSourceTrace868.stages)&&dockSourceTrace868.stages.slice(1).every(st=>st.ok);
+    add('fleet-dock-source-trace','Fleet Dock last-mile source trace',dockSourceOk868?'pass':'fail',dockSourceOk868?'IndexedDB → mirror → admissions → manifest → memory → Dock input → visible rows → rendered cards retain the protected six.':`Dock source first drops at ${dockSourceTrace868?.firstDrop||'trace unavailable'}.`);
     const canonicalAdmissionIds864=await safe(async()=>{const rows=await readCanonicalProjectRegistry();const ledger=await ensureV4AdmissionLedger(rows);return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger[id],id));},()=>[]);
     const canonicalAdmissionsOk864=canonicalAdmissionIds864.length===6;
     add('canonical-six-admissions','Canonical six fleet citizenship',canonicalAdmissionsOk864?'pass':'fail',canonicalAdmissionsOk864?'All six immutable Known Good vessels hold valid active fleet admissions.':`Fleet citizenship incomplete: ${canonicalAdmissionIds864.length}/6 canonical admissions valid.`);
@@ -4639,7 +4706,7 @@
     const stagingPersistOk864=stagedRows864.every(r=>stagingLedger864.some(x=>x.status==='staged'&&x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)));
     const stagingActionExpected864=stagingVerified864?.build===BUILD_VERSION&&stagingVerified864?.status==='staged';
     const stagingActionOk864=!stagingActionExpected864||(stagedRows864.length===Number(stagingVerified864.count||0)&&stagingPersistOk864&&stagedRows864.every(r=>r.status!=='adopted'));
-    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.7 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
+    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.8 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
 
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{
@@ -4769,7 +4836,7 @@
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
-      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','fleet-intelligence-bounded-paint','canonical-roster-live','fleet-muster-stage-trace','fleet-intelligence-live-voyage','staging-ledger-live-voyage','command-wiring'],'Captain navigation plus bounded Fleet Dock and Fleet Intelligence first-paint behavior.'),
+      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','fleet-intelligence-bounded-paint','canonical-roster-live','fleet-muster-stage-trace','fleet-dock-source-trace','fleet-intelligence-live-voyage','staging-ledger-live-voyage','command-wiring'],'Captain navigation plus bounded Fleet Dock and Fleet Intelligence first-paint behavior.'),
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary'],'Customer-approved production artifacts remain byte-stable and fingerprinted through approval, order serialization, admin, and archive.'),
       combine('ike-production-truth','Ike Production Truth Voyage',['ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Ike customer wording, finished-sign geometry, face fit, and governed style evidence remain production-truthful without fallback or destructive synchronization.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
@@ -5216,12 +5283,15 @@
     }
 
     const list=projects();
-    const preTrace867=await collectMusterTrace867({includeRendered:false});
-    const preDrop867=preTrace867.stages.find(st=>!st.ok);
-    if(preDrop867){
-      if(state){state.textContent=`MUSTER HOLD • ${preDrop867.name.toUpperCase()}`;state.className='fleet-commissioning-state hold';}
-      if(fleet)fleet.innerHTML=musterTraceHtml867(preTrace867);
-      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • MUSTER HOLD</span><strong>Six enter. Six must reach the Dock.</strong><p>Fleet Dock is intentionally withheld because the protected six-vessel muster first dropped at ${escapeHtml(preDrop867.name)}. No five-vessel roster will paint silently.</p></div>`;
+    const sourceTrace868=await collectDockSourceTrace868({includeRendered:false});
+    const dockInputStage868=sourceTrace868.stages.find(st=>st.name==='Fleet Dock input array');
+    const firstDrop868=sourceTrace868.stages.slice(1).find(st=>!st.ok);
+    // LAST-MILE GUARD: the exact array handed to Fleet Dock must carry all six.
+    // If it does not, no incomplete vessel cards are allowed to paint.
+    if(!dockInputStage868?.ok || firstDrop868){
+      if(state){state.textContent=`DOCK SOURCE HOLD • ${(firstDrop868?.name||'DOCK INPUT').toUpperCase()}`;state.className='fleet-commissioning-state hold';}
+      if(fleet)fleet.innerHTML=dockSourceTraceHtml868(sourceTrace868);
+      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • DOCK SOURCE HOLD</span><strong>Six enter. Six must reach the Dock.</strong><p>The renderer withheld the incomplete roster. First drop: ${escapeHtml(firstDrop868?.name||'Fleet Dock input array')}.</p></div>`;
       return;
     }
     const snaps=list.map(p=>({p,s:commissioningSnapshot(p)}));
@@ -5295,14 +5365,14 @@
 
     const canonicalState=window.__darkSkyCanonicalFleet||{};
     const identityState=Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
-    const finalTrace867=await collectMusterTrace867({includeRendered:true});
-    const renderedDrop867=finalTrace867.stages.find(st=>!st.ok);
-    if(renderedDrop867){
-      if(state){state.textContent=`MUSTER HOLD • ${renderedDrop867.name.toUpperCase()}`;state.className='fleet-commissioning-state hold';}
-      if(fleet)fleet.innerHTML=musterTraceHtml867(finalTrace867);
-      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • MUSTER HOLD</span><strong>Six enter. Six must reach the Dock.</strong><p>Protected fleet identity failed at ${escapeHtml(renderedDrop867.name)}. The incomplete roster is withheld.</p></div>${musterTraceHtml867(finalTrace867)}`;
+    const finalTrace868=await collectDockSourceTrace868({includeRendered:true});
+    const renderedStage868=finalTrace868.stages.find(st=>st.name==='Rendered Fleet Dock cards');
+    if(!renderedStage868?.ok){
+      if(state){state.textContent='DOCK SOURCE HOLD • RENDERED CARDS';state.className='fleet-commissioning-state hold';}
+      if(fleet)fleet.innerHTML=dockSourceTraceHtml868(finalTrace868);
+      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • RENDER HOLD</span><strong>Five cards can never masquerade as the fleet.</strong><p>The rendered Fleet Dock lost a protected vessel. The cards were withheld and the source trace is shown instead.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;
     }else{
-      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the watch.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>${musterTraceHtml867(finalTrace867)}`;
+      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the watch.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;
     }
     const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning({skipConvergence:true});};}
     $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning({skipConvergence:true});};});

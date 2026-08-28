@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.7';
-const RELEASE_SEAL='muster-trace-867-six-stage-proof-5c81e4';
+const RELEASE_BUILD='8.6.8';
+const RELEASE_SEAL='dock-source-trace-868-last-mile-proof-91a7d3';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

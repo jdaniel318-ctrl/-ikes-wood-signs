@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.7",
-  "release": "Muster Trace",
-  "seal": "muster-trace-867-six-stage-proof-5c81e4",
+  "build": "8.6.8",
+  "release": "Dock Source Trace",
+  "seal": "dock-source-trace-868-last-mile-proof-91a7d3",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Muster Trace"
+  "release_name": "Dock Source Trace"
 }

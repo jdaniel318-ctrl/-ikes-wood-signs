@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.6.7 \u2014 Muster Trace",
-  "short_name": "Dark Sky 8.6.7",
-  "start_url": "./index.html?_darkSkyRelease=8.6.7&_darkSkySeal=muster-trace-867-six-stage-proof-5c81e4",
+  "name": "Dark Sky 8.6.8 \u2014 Dock Source Trace",
+  "short_name": "Dark Sky 8.6.8",
+  "start_url": "./index.html?_darkSkyRelease=8.6.8&_darkSkySeal=dock-source-trace-868-last-mile-proof-91a7d3",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.7"
+  "version": "8.6.8"
 }
