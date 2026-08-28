@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.6.3",
-  "release": "Registry Ledger",
+  "build": "8.6.4",
+  "release": "Canonical Six",
   "status": "active",
   "principles": [
     {

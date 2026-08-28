@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.3",
-  "release": "Registry Ledger",
-  "seal": "registry-ledger-863-golden-ui-41d7c2",
+  "build": "8.6.4",
+  "release": "Canonical Six",
+  "seal": "canonical-six-864-roster-proof-6c1a42",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Registry Ledger"
+  "release_name": "Canonical Six"
 }

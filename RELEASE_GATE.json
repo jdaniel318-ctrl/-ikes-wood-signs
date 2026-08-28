@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.3",
-  "release": "Registry Ledger",
+  "build": "8.6.4",
+  "release": "Canonical Six",
   "generatedAt": "2026-08-28T15:25:58.590592+00:00",
   "checks": {
     "build_version": true,
@@ -178,7 +178,7 @@
   "nonMediaAssets": [],
   "pass": true,
   "note": "8.6.1 Intelligence Dock prevents Fleet Intelligence from remaining indefinitely on READING FLEET by painting a roster-backed local snapshot within a bounded window and reconciling live intelligence in the background.",
-  "candidate": "8.6.3",
+  "candidate": "8.6.4",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,7 +1,7 @@
 {
-  "schema": "dark-sky-registry-ledger-v1",
-  "build": "8.6.3",
-  "release": "Registry Ledger",
+  "schema": "dark-sky-canonical-six-v1",
+  "build": "8.6.4",
+  "release": "Canonical Six",
   "protected_baseline": "8.5.7",
   "branch_base": "8.6.1 Intelligence Dock",
   "canonical_vessel_ids": [
@@ -13,9 +13,10 @@
     "mugshot-after-dark"
   ],
   "contracts": {
-    "roster": "Existing canonical rows win; pinned Known Good vessel materializes only if immutable ID is absent; never overwrite an existing row.",
+    "roster": "Existing canonical rows win; Legacy Plumbing may materialize only if immutable ID bf-p-f92f87e8ec44 is absent; no existing vessel row is overwritten.",
     "intelligence_first_paint": "Preserve 8.6.1 bounded roster-backed paint and reconcile live intelligence in background.",
     "staging": "Strong-fit staging writes durable per-vessel review records, verifies read-back, renders staged state, survives re-render, and never implies adoption.",
-    "assurance": "Proving Ground reads live registry/DOM/ledger state and cannot clear when the Golden UI state disagrees."
+    "assurance": "Proving Ground reads live registry/DOM/ledger state and cannot clear when the Golden UI state disagrees.",
+    "admission": "All six protected Known Good immutable Project IDs must hold valid admission records before fleet presentation; registry presence without fleet citizenship is a release blocker."
   }
 }

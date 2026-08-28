@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.3",
-  "release": "Registry Ledger",
+  "build": "8.6.4",
+  "release": "Canonical Six",
   "excluded_sources": [
     "The situation"
   ],
@@ -34,7 +34,8 @@
       "admiral_readiness_no_missing_initializer",
       "canonical_six_vessel_roster_live",
       "fleet_intelligence_live_first_paint",
-      "staging_ledger_live_round_trip"
+      "staging_ledger_live_round_trip",
+      "canonical_six_admission_ledger"
     ],
     "mobile_watch": [
       "iphone_first_class",

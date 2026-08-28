@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.3';
+  const BUILD_VERSION='8.6.4';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -237,10 +237,10 @@
   }
 
 
-  // 8.6.3 Registry Ledger — release-pinned canonical vessel repair.
+  // 8.6.4 Canonical Six — release-pinned canonical vessel repair.
   // Existing rows always win. This Known-Good vessel definition is materialized
   // only if its immutable Project ID disappeared from the reconciled registry.
-  const RELEASE_PINNED_VESSELS_863 = Object.freeze([
+  const RELEASE_PINNED_VESSELS_864 = Object.freeze([
     {
       id:'bf-p-f92f87e8ec44', projectCode:'LP', orderPrefix:'LP', name:'Legacy Plumbing',
       description:'Fast, reliable plumbing with clear options, quality workmanship, and straightforward service.',
@@ -272,7 +272,7 @@
       lifecycle:{state:'configured',version:2}, governance:{platformStatus:'approved',history:[]}, audit:{enabled:true,policyVersion:'4.0'}
     }
   ]);
-  const RELEASE_CANONICAL_FLEET_IDS_863 = Object.freeze(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
+  const RELEASE_CANONICAL_FLEET_IDS_864 = Object.freeze(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
 
   let companies=structuredClone(DEFAULT_COMPANIES);
   let activeProjectId = null;
@@ -2928,6 +2928,20 @@
       if(!canonicalById.has(id))continue;
       if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.9.2`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
     }
+    // 8.6.4 Canonical Six — restore fleet citizenship for the six immutable
+    // vessels proven in the 8.5.7 Known Good fleet. This is admission-only:
+    // existing canonical rows win and no vessel business data is rewritten.
+    for(const id of RELEASE_CANONICAL_FLEET_IDS_864){
+      if(!canonicalById.has(id))continue;
+      if(!validV4Admission(ledger[id],id)){
+        ledger[id]={
+          projectId:id,admitted:true,source:'known-good-canonical-six',
+          transactionId:`known-good:8.5.7:${id}`,admittedAt:now,build:BUILD_VERSION,
+          detail:'Restored fleet citizenship from the protected 8.5.7 six-vessel canonical fleet.'
+        };
+        window.BlackFlagV3Core?.audit?.({actorRole:'system',projectId:id,category:'recovery',action:'canonical-six.admission-restored',detail:`Known Good 8.5.7 fleet citizenship restored • ${BUILD_VERSION}`});
+      }
+    }
     // Drop malformed admission rows. Valid rows for projects no longer present are
     // retained as historical evidence, but they cannot enter the active manifest.
     for(const [id,row] of Object.entries({...ledger}))if(!validV4Admission(row,id))delete ledger[id];
@@ -3253,10 +3267,10 @@
     if(!companies.length)companies=structuredClone(DEFAULT_COMPANIES);
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
 
-    // 8.6.3 Registry Ledger: recover a vessel that was part of the 8.5.7 Known Good
+    // 8.6.4 Canonical Six: recover a vessel that was part of the 8.5.7 Known Good
     // canonical fleet but vanished from a later incomplete mirror. Never overwrite an existing row.
     const rosterIds863=new Set(companies.map(p=>String(p?.id||'')));
-    for(const pinned of RELEASE_PINNED_VESSELS_863){
+    for(const pinned of RELEASE_PINNED_VESSELS_864){
       if(rosterIds863.has(pinned.id))continue;
       companies.push(ensureProjectGovernance(normalizeProjectCode(structuredClone(pinned))));
       rosterIds863.add(pinned.id);
@@ -4251,7 +4265,7 @@
   }
   window.DarkSkyFleetLearning={registry:()=>persistFleetLearningRegistry(),recommendations:fleetLearningRecommendations,render:renderFleetLearningRegistry,stagingLedger:fleetStagingLedgerRead};
   if(!window.__darkSkyFleetLearningDelegated863){window.__darkSkyFleetLearningDelegated863=true;document.addEventListener('click',ev=>{const b=ev.target?.closest?.('[data-learning-stage-strong]');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();fleetLearningBulkStatus(b.dataset.learningStageStrong,'staged','strong');},{capture:true});}
-  // 8.6.3 Registry Ledger — 8.6.1 bounded intelligence preserved; durable staging and canonical roster guards added.
+  // 8.6.4 Canonical Six — 8.6.1 bounded intelligence preserved; durable staging and canonical roster guards added.
   const FLEET_INTELLIGENCE_STATE_KEY='darkSkyFleetIntelligenceViewV1';
   function fleetIntelLifecycle(p){try{return window.BlackFlagV3Core?.lifecycle?.(p)||String(p?.status||'draft');}catch(_){return String(p?.status||'draft');}}
   function fleetIntelOwner(p){return String(p?.ownerAccess?.status||'not_claimed');}
@@ -4470,26 +4484,29 @@
     const fleetIntelligenceBoundedPaint=String(renderFleetIntelligenceDeck).includes('LOCAL FLEET • VERIFYING')&&String(renderFleetIntelligenceDeck).includes('commandDeadline(fullPromise,650,null)')&&String(renderFleetIntelligenceDeck).includes('fleetIntelligenceLocalSnapshot()');
     add('fleet-intelligence-bounded-paint','Fleet Intelligence bounded first paint',fleetIntelligenceBoundedPaint?'pass':'fail',fleetIntelligenceBoundedPaint?'Fleet Intelligence paints a usable roster-backed local picture within a bounded window and reconciles live cross-vessel intelligence in the background.':'Fleet Intelligence can still remain indefinitely on READING FLEET before presenting a usable fleet picture.');
 
-    const canonicalRosterIds863=RELEASE_CANONICAL_FLEET_IDS_863;
-    const currentRosterIds863=[...new Set(projects().map(p=>String(canonicalProjectId(p?.id||''))))];
-    const canonicalRosterOk863=canonicalRosterIds863.length===6&&canonicalRosterIds863.every(id=>currentRosterIds863.includes(id))&&currentRosterIds863.length===6;
-    const dockCards863=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card')];
-    const dockLiveOk863=!dockCards863.length||dockCards863.length===6;
-    add('canonical-roster-live','Canonical six-vessel roster',canonicalRosterOk863&&dockLiveOk863?'pass':'fail',canonicalRosterOk863&&dockLiveOk863?`Six canonical vessels are present${dockCards863.length?' and rendered in Fleet Dock':''}.`:`Live roster disagreement: expected 6 canonical vessels; registry=${currentRosterIds863.length}, rendered=${dockCards863.length||'not painted'}.`);
+    const canonicalRosterIds864=RELEASE_CANONICAL_FLEET_IDS_864;
+    const currentRosterIds864=[...new Set(projects().map(p=>String(canonicalProjectId(p?.id||''))))];
+    const canonicalRosterOk864=canonicalRosterIds864.length===6&&canonicalRosterIds864.every(id=>currentRosterIds864.includes(id))&&currentRosterIds864.length===6;
+    const dockCards864=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card')];
+    const dockLiveOk864=!dockCards864.length||dockCards864.length===6;
+    add('canonical-roster-live','Canonical six-vessel roster',canonicalRosterOk864&&dockLiveOk864?'pass':'fail',canonicalRosterOk864&&dockLiveOk864?`Six canonical vessels are present${dockCards864.length?' and rendered in Fleet Dock':''}.`:`Live roster disagreement: expected 6 canonical vessels; registry=${currentRosterIds864.length}, rendered=${dockCards864.length||'not painted'}.`);
+    const canonicalAdmissionIds864=await safe(async()=>{const rows=await readCanonicalProjectRegistry();const ledger=await ensureV4AdmissionLedger(rows);return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger[id],id));},()=>[]);
+    const canonicalAdmissionsOk864=canonicalAdmissionIds864.length===6;
+    add('canonical-six-admissions','Canonical six fleet citizenship',canonicalAdmissionsOk864?'pass':'fail',canonicalAdmissionsOk864?'All six immutable Known Good vessels hold valid active fleet admissions.':`Fleet citizenship incomplete: ${canonicalAdmissionIds864.length}/6 canonical admissions valid.`);
 
-    const intelState863=document.getElementById('fleetIntelligenceState');
-    const intelBody863=document.getElementById('fleetIntelligenceBody');
-    const intelMounted863=!!intelState863&&!!intelBody863;
-    const intelUsable863=!intelMounted863||(!/READING FLEET/i.test(String(intelState863.textContent||''))&&String(intelBody863.textContent||'').trim()&&!/Building the fleet intelligence picture/i.test(String(intelBody863.textContent||'')));
-    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',intelUsable863?'pass':'fail',intelUsable863?'Fleet Intelligence is usable in the live Engine DOM and is not stranded on READING FLEET.':'Fleet Intelligence live DOM is still unresolved after the bounded first-paint window.');
+    const intelState864=document.getElementById('fleetIntelligenceState');
+    const intelBody864=document.getElementById('fleetIntelligenceBody');
+    const intelMounted864=!!intelState864&&!!intelBody864;
+    const intelUsable864=!intelMounted864||(!/READING FLEET/i.test(String(intelState864.textContent||''))&&String(intelBody864.textContent||'').trim()&&!/Building the fleet intelligence picture/i.test(String(intelBody864.textContent||'')));
+    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',intelUsable864?'pass':'fail',intelUsable864?'Fleet Intelligence is usable in the live Engine DOM and is not stranded on READING FLEET.':'Fleet Intelligence live DOM is still unresolved after the bounded first-paint window.');
 
-    let stagingVerified863=null;try{stagingVerified863=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
-    const stagingLedger863=fleetStagingLedgerRead();
-    const stagedRows863=fleetLearningRecommendations().filter(r=>r.status==='staged');
-    const stagingPersistOk863=stagedRows863.every(r=>stagingLedger863.some(x=>x.status==='staged'&&x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)));
-    const stagingActionExpected863=stagingVerified863?.build===BUILD_VERSION&&stagingVerified863?.status==='staged';
-    const stagingActionOk863=!stagingActionExpected863||(stagedRows863.length===Number(stagingVerified863.count||0)&&stagingPersistOk863&&stagedRows863.every(r=>r.status!=='adopted'));
-    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk863?(stagingActionExpected863?'pass':'warn'):'fail',stagingActionOk863?(stagingActionExpected863?`${stagedRows863.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.3 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
+    let stagingVerified864=null;try{stagingVerified864=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
+    const stagingLedger864=fleetStagingLedgerRead();
+    const stagedRows864=fleetLearningRecommendations().filter(r=>r.status==='staged');
+    const stagingPersistOk864=stagedRows864.every(r=>stagingLedger864.some(x=>x.status==='staged'&&x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)));
+    const stagingActionExpected864=stagingVerified864?.build===BUILD_VERSION&&stagingVerified864?.status==='staged';
+    const stagingActionOk864=!stagingActionExpected864||(stagedRows864.length===Number(stagingVerified864.count||0)&&stagingPersistOk864&&stagedRows864.every(r=>r.status!=='adopted'));
+    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.4 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
 
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{
