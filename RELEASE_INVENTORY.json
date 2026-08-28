@@ -1,6 +1,6 @@
 {
-  "release": "8.5.1",
-  "name": "Command Views",
+  "release": "8.5.2",
+  "name": "Command Decks",
   "file_count": 52,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -56,7 +56,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.5.1",
-  "seal": "command-hardening-850-professional-first-6f3b21",
-  "release_name": "Command Views"
+  "build": "8.5.2",
+  "seal": "command-decks-852-organized-command-7c31a9",
+  "release_name": "Command Decks"
 }

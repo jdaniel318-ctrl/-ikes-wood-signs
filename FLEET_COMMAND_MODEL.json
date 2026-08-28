@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.5.1",
+  "build": "8.5.2",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Command Views",
+  "release": "Command Decks",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -53,5 +53,30 @@
     "readinessFindings": "durable actionable findings",
     "actionResults": "remain at affected command context",
     "whatChanged": "visible on professional command"
+  },
+  "presentation_contract": {
+    "professional_default": true,
+    "cinematic_secondary": true,
+    "same_command_model": true,
+    "preserve_state_across_views": true,
+    "no_operational_overlays": true,
+    "captain_lanes": [
+      "Watch",
+      "Decide",
+      "Act",
+      "Record"
+    ],
+    "admiral_lanes": [
+      "Govern",
+      "Standardize",
+      "Delegate",
+      "Promote"
+    ],
+    "layout_order": [
+      "Command lanes",
+      "Status",
+      "Tools",
+      "Presentation"
+    ]
   }
 }

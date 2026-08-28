@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.5.1",
-  "release": "Command Views",
-  "seal": "command-hardening-850-professional-first-6f3b21",
+  "build": "8.5.2",
+  "release": "Command Decks",
+  "seal": "command-decks-852-organized-command-7c31a9",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Command Views"
+  "release_name": "Command Decks"
 }

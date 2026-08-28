@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.5.1",
-  "release": "Command Views",
+  "build": "8.5.2",
+  "release": "Command Decks",
   "generatedAt": "2026-08-28T02:38:53.558804+00:00",
   "checks": {
     "build_version": true,
@@ -168,8 +168,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.5.1 Command Views: Professional View is the operational default for Captain and Admiral trial command; Cinematic View remains optional presentation. Adds Fleet Doctrine Registry, one canonical learning pipeline, six Golden UI Voyages, and explicit Engine \u2192 Captain \u2192 Admiral placement while preserving GlyphForge, TrueCase, Dock Lock, artifact integrity, detector isolation, project isolation, and authority contracts.",
-  "candidate": "8.5.1",
+  "note": "8.5.2 Command Decks: professional command is organized into stable Captain Watch/Decide/Act/Record and Admiral Govern/Standardize/Delegate/Promote lanes; live status and tools no longer cover command content; Cinematic/Ceremonial remains optional presentation over the same state and authority model.",
+  "candidate": "8.5.2",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

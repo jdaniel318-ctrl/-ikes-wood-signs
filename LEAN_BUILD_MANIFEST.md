@@ -1,4 +1,6 @@
-# Dark Sky 8.5.1 — Command Views Manifest
+# Dark Sky 8.5.2 — Command Decks Manifest
+
+# Dark Sky 8.5.2 — Command Decks Manifest
 
 **Release goal:** harden Black Flag Engine, Captain's Quarters, and Admiral's Deck around professional-first operations, one fleet memory, and real-UI release assurance.
 

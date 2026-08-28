@@ -386,6 +386,7 @@
     if(byId('admiralCeremonialVessels'))byId('admiralCeremonialVessels').textContent=String(rows.length);
     if(byId('admiralCeremonialSailing'))byId('admiralCeremonialSailing').textContent=String(sailing);
     if(byId('admiralCeremonialTrials'))byId('admiralCeremonialTrials').textContent=String(trials);
+    const attention=rows.reduce((n,v)=>n+(Number(v.attentionOutposts)||0),0);const changed=byId('admiralWhatChanged');if(changed)changed.textContent=attention?`${attention} fleet signal${attention===1?'':'s'} require governance awareness.`:(trials?`${trials} sea trial${trials===1?'':'s'} active; no open fleet signals.`:'No open fleet signals.');
   }
 
   function syncAdmiralReadiness(report){
@@ -509,16 +510,15 @@
           </div>
           <section class="admiral-command-notice" id="admiralCeremonialNotice" role="status" aria-live="polite">Ceremonial command surface active. Live controls remain separate from the artwork.</section>
         </main>
-        <main class="admiral-deck-grid">
-          <section class="admiral-deck-hero"><small>THE HIGHER WATCH</small><h3>Govern the platform. Protect the fleet.</h3><p>The Captain commands the mission. The Admiral sets the standards that Dark Sky, Black Flag and every vessel must obey.</p><div class="admiral-scope"><span>DARK SKY</span><span>BLACK FLAG</span><span>FLEET</span></div></section>
-          <aside class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></aside>
+        <main class="admiral-deck-grid" aria-label="Admiral professional command view">
+          <section class="admiral-pro-topline"><article><small>WHAT CHANGED ACROSS THE FLEET</small><strong id="admiralWhatChanged">Fleet posture ready for review.</strong></article><article class="admiral-readiness-card"><small>FLEET READINESS</small><strong id="admiralDeckReadinessState">NOT RUN</strong><p id="admiralDeckReadinessCopy">Run the fleet checks before treating this deck as proven.</p><button id="admiralDeckRunReadiness" type="button">RUN FLEET READINESS</button></article></section>
           <section class="admiral-command-lanes" aria-label="Admiral command model">
             <article id="admiralGovernLane"><small>01 · GOVERN</small><h4>Fleet posture & readiness</h4><p>Critical holds, release health, incidents and fleet posture.</p><div id="admiralReadinessFindings" class="admiral-readiness-findings"><span>Run Fleet Readiness to populate actionable findings.</span></div></article>
-            <article><small>02 · STANDARDIZE</small><h4>Doctrine & standards</h4><p>Fleet doctrine, compliance, exceptions and policy versions.</p><button id="admiralDeckStandards" type="button">FLEET STANDARDS <em>FOUNDATION</em></button></article>
-            <article><small>03 · DELEGATE</small><h4>Bounded authority</h4><p>Scope, duration, stewardship and delegation history.</p><button type="button" data-admiral-future="Delegation">DELEGATION <em>FUTURE</em></button></article>
-            <article><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><button id="admiralDeckFoundry" type="button">THE FOUNDRY <em>FOUNDATION</em></button></article>
+            <article><small>02 · STANDARDIZE</small><h4>Doctrine & standards</h4><p>Fleet doctrine, compliance, exceptions and policy versions.</p><div class="admiral-lane-summary"><b>Fleet Doctrine Registry</b><span>Active fleet rules remain versioned and traceable.</span></div><button id="admiralDeckStandards" type="button">OPEN FLEET STANDARDS <em>FOUNDATION</em></button></article>
+            <article><small>03 · DELEGATE</small><h4>Bounded authority</h4><p>Scope, duration, stewardship and delegation history.</p><div class="admiral-lane-summary"><b>Delegation</b><span>Authority must remain explicit, bounded and auditable.</span></div><button type="button" data-admiral-future="Delegation">DELEGATION <em>FUTURE</em></button></article>
+            <article><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><div class="admiral-lane-summary"><b>One learning pipeline</b><span>Observation → Lesson → Candidate → Foundry → Sea Trial → Proven.</span></div><button id="admiralDeckFoundry" type="button">OPEN THE FOUNDRY <em>FOUNDATION</em></button></article>
           </section>
-          <section class="admiral-governance-card admiral-continuity-card"><h4>Continuity</h4><div><button id="admiralDeckRecovery" type="button">Recovery Snapshot <em>READY</em></button><button id="admiralDeckReport" type="button">Readiness Report <em>READY</em></button><button type="button" data-admiral-future="Admiral Log">Admiral Log <em>FUTURE</em></button><button id="admiralDeckForge" type="button">Visual Forge <em>READY</em></button></div></section>
+          <section class="admiral-continuity-card"><div><h4>CONTINUITY</h4><p>Protect fleet memory and recovery without mixing it into the command lanes.</p></div><div class="admiral-continuity-actions"><button id="admiralDeckRecovery" type="button"><b>Recovery Snapshot</b><small>Protect the fleet</small></button><button id="admiralDeckReport" type="button"><b>Readiness Report</b><small>Download evidence</small></button><button type="button" data-admiral-future="Admiral Log"><b>Admiral Log</b><small>Governance history</small></button><button id="admiralDeckForge" type="button"><b>Visual Forge</b><small>Presentation layer</small></button></div></section>
           <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Professional Mode active. Rank is not implied by access.</section>
         </main>
       </div>`;
@@ -808,23 +808,33 @@
 
   function refreshChartroomLive(){
     const layer=ensureChartroomLiveLayer();
-    if(!layer)return;
     const fleet=fleetSnapshot();
     const active=fleet.reduce((n,v)=>n+(Number(v.activeOutposts)||0),0);
     const attention=fleet.reduce((n,v)=>n+(Number(v.attentionOutposts)||0),0);
     const trials=fleet.reduce((n,v)=>n+(v.outposts||[]).filter(o=>o.state==='sea_trial').length,0);
     const set=(id,value)=>{ const el=byId(id); if(el)el.textContent=String(value); };
-    set('cqLiveVessels',fleet.length);
-    set('cqLiveSailing',active);
-    set('cqLiveTrials',trials);
-    set('cqLiveSignals',attention);
-    set('captainProVessels',fleet.length);
-    set('captainProTrials',trials);
-    set('captainProSignals',attention);
-    const changed=byId('captainProChanged'); if(changed)changed.textContent=attention?`${attention} signal${attention===1?'':'s'} need Captain review.`:(trials?`${trials} sea trial${trials===1?'':'s'} active; no attention signals.`:'No new attention signals.');
-    const state=byId('cqLiveState');
-    if(state)state.textContent=attention?`${attention} signal${attention===1?'':'s'} require your eye`:(fleet.length?'Waters are steady':'Fleet data standing by');
-    layer.classList.toggle('attention',attention>0);
+    set('cqLiveVessels',fleet.length);set('cqLiveSailing',active);set('cqLiveTrials',trials);set('cqLiveSignals',attention);
+    set('captainProVessels',fleet.length);set('captainProSailing',active);set('captainProTrials',trials);set('captainProSignals',attention);set('captainGlanceVessels',fleet.length);set('captainGlanceSailing',active);set('captainGlanceTrials',trials);set('captainGlanceSignals',attention);
+    const changed=byId('captainProChanged');
+    if(changed)changed.textContent=attention?`${attention} signal${attention===1?'':'s'} need Captain review.`:(trials?`${trials} sea trial${trials===1?'':'s'} active; no attention signals.`:'No new attention signals.');
+    const state=byId('cqLiveState');if(state)state.textContent=attention?`${attention} signal${attention===1?'':'s'} require your eye`:(fleet.length?'Waters are steady':'Fleet data standing by');
+    if(layer)layer.classList.toggle('attention',attention>0);
+
+    const signalRows=[];
+    fleet.forEach(v=>{
+      const reasons=[];
+      (v.outposts||[]).forEach(o=>(o.attentionReasons||[]).forEach(r=>{if(r && !reasons.includes(r))reasons.push(r);}));
+      if(Number(v.attentionOutposts)>0 || reasons.length) signalRows.push({v,reasons});
+    });
+    const watch=byId('captainProWatchItems');
+    if(watch) watch.innerHTML=signalRows.length?signalRows.slice(0,4).map(({v,reasons})=>`<button type="button" class="captain-pro-signal" data-captain-pro-vessel="${v.projectId}"><span><b>${v.name}</b><small>${reasons[0]||`${v.attentionOutposts} deployment signal${v.attentionOutposts===1?'':'s'} need review.`}</small></span><em>REVIEW →</em></button>`).join(''):`<div class="captain-pro-empty">No active attention signals.</div>`;
+    const decide=byId('captainProDecideItems');
+    if(decide) decide.innerHTML=signalRows.length?signalRows.slice(0,3).map(({v,reasons})=>`<article><b>${v.name}</b><p>${reasons.length?reasons.join(' • '):'A deployment signal requires Captain review.'}</p><small>FIRST MATE: inspect the signal before routing.</small></article>`).join(''):`<div class="captain-pro-empty">No decision analysis is waiting.</div>`;
+    const act=byId('captainProActItems');
+    if(act) act.innerHTML=signalRows.length?signalRows.slice(0,3).map(({v})=>`<article><b>${v.name}</b><p>Route to the live signal report, then open the affected vessel in Engine if action is required.</p><button type="button" data-captain-pro-vessel="${v.projectId}">OPEN SIGNAL REPORT</button></article>`).join(''):`<article><b>Fleet steady</b><p>No attention route is required right now.</p><button type="button" data-captain-pro-route="fleet">OPEN FLEET MAP</button></article>`;
+    const record=byId('captainProRecordItems');
+    if(record) record.innerHTML=`<article><b>Captain's Log</b><p>Keep orders, decisions, outcomes and lessons in the durable command record.</p><button type="button" data-captain-pro-route="log">OPEN CAPTAIN'S LOG</button></article><article><b>Current command picture</b><p>${attention?`${attention} attention signal${attention===1?'':'s'} remain open.`:'No open attention signals.'} ${trials?`${trials} sea trial${trials===1?'':'s'} active.`:''}</p></article>`;
+    const readiness=byId('captainProReadiness');if(readiness)readiness.textContent=window.__lastAdmiralReadinessReport?(window.__lastAdmiralReadinessReport.pass?(window.__lastAdmiralReadinessReport.warnings?'WATCH':'CLEAR'):'HOLD'):'NOT RUN';
   }
 
   function ensureCaptainCommandMode(){
@@ -833,25 +843,30 @@
     let bar=byId('captainCommandModeBar');
     if(!bar){
       bar=document.createElement('div');bar.id='captainCommandModeBar';bar.className='captain-command-mode-bar';
-      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.1</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
+      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.5.2</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
       room.appendChild(bar);
     }
     let surface=byId('captainProfessionalSurface');
     if(!surface){
       surface=document.createElement('main');surface.id='captainProfessionalSurface';surface.className='captain-professional-surface';surface.setAttribute('aria-label','Captain professional command view');
       surface.innerHTML=`
-        <header><div><small>PROFESSIONAL COMMAND</small><h2>Captain's Quarters</h2><p>Signal first. Decision second. Action third. Durable history last.</p></div><span>CAPTAIN AUTHORIZED</span></header>
-        <section class="captain-pro-intelligence" aria-label="Live Captain intelligence"><article><small>VESSELS</small><strong id="captainProVessels">0</strong></article><article><small>SEA TRIAL</small><strong id="captainProTrials">0</strong></article><article><small>SIGNALS</small><strong id="captainProSignals">0</strong></article><article class="captain-pro-changed"><small>WHAT CHANGED</small><strong id="captainProChanged">Command picture refreshed.</strong></article></section>
-        <section class="captain-command-loop">
-          <button type="button" data-captain-pro-route="watch"><b>01 • WATCH</b><strong>What needs my attention?</strong><small>Fleet signals and First Mate intelligence.</small></button>
-          <button type="button" data-captain-pro-route="spyglass"><b>02 • DECIDE</b><strong>Why does it matter?</strong><small>Inspect fleet intelligence before choosing a course.</small></button>
-          <button type="button" data-captain-pro-route="fleet"><b>03 • ACT</b><strong>Take the right route.</strong><small>Open the fleet map and route deliberately.</small></button>
-          <button type="button" data-captain-pro-route="log"><b>04 • RECORD</b><strong>Keep the decision.</strong><small>Orders, notes, history and retained lessons.</small></button>
+        <header class="captain-pro-head"><div><small>PROFESSIONAL COMMAND</small><h2>Captain's Quarters</h2><p>Signal first. Decision second. Action third. Durable history last.</p></div><span>CAPTAIN AUTHORIZED</span></header>
+        <section class="captain-pro-topline">
+          <article class="captain-pro-changes"><small>WHAT CHANGED SINCE YOUR LAST VISIT</small><strong id="captainProChanged">Command picture refreshed.</strong><button type="button" data-captain-pro-route="watch">VIEW SIGNALS</button></article>
+          <article class="captain-pro-live"><small>LIVE FLEET INTELLIGENCE</small><div><span><b id="captainProVessels">0</b><em>VESSELS</em></span><span><b id="captainProSailing">0</b><em>SAILING</em></span><span><b id="captainProTrials">0</b><em>SEA TRIAL</em></span><span><b id="captainProSignals">0</b><em>SIGNALS</em></span></div></article>
         </section>
-        <section class="captain-pro-tools"><button type="button" data-captain-pro-route="readiness">FLEET READINESS</button><button type="button" data-captain-pro-route="workshop">WORKSHOP</button><button type="button" data-captain-pro-route="forge">VISUAL FORGE</button><button type="button" data-captain-pro-route="blueprint">BLUEPRINT</button><button type="button" data-captain-pro-route="admiral">ADMIRAL'S GATE</button></section>
-        <div id="captainProfessionalStatus" class="captain-professional-status">Professional command is the operational truth. Cinematic View is presentation only.</div>`;
+        <section class="captain-command-decks" aria-label="Captain command loop">
+          <article class="captain-command-lane"><header><small>01 · WATCH</small><h3>What needs my attention?</h3><p>Fleet signals and First Mate intelligence.</p></header><div id="captainProWatchItems" class="captain-lane-body"></div><button type="button" class="captain-lane-footer" data-captain-pro-route="watch">VIEW ALL SIGNALS →</button></article>
+          <article class="captain-command-lane"><header><small>02 · DECIDE</small><h3>Why does it matter?</h3><p>Understand the signal before choosing a course.</p></header><div id="captainProDecideItems" class="captain-lane-body"></div><button type="button" class="captain-lane-footer" data-captain-pro-route="spyglass">OPEN FIRST MATE ANALYSIS →</button></article>
+          <article class="captain-command-lane"><header><small>03 · ACT</small><h3>Take the right route.</h3><p>Route deliberately without breaking project boundaries.</p></header><div id="captainProActItems" class="captain-lane-body"></div><button type="button" class="captain-lane-footer" data-captain-pro-route="fleet">VIEW FLEET MAP →</button></article>
+          <article class="captain-command-lane"><header><small>04 · RECORD</small><h3>Keep the decision.</h3><p>Orders, notes, history, outcomes and retained lessons.</p></header><div id="captainProRecordItems" class="captain-lane-body"></div><button type="button" class="captain-lane-footer" data-captain-pro-route="log">VIEW HISTORY →</button></article>
+        </section>
+        <section class="captain-fleet-glance" aria-label="Fleet status at a glance"><h3>FLEET STATUS AT A GLANCE</h3><div><article><small>VESSELS</small><strong id="captainGlanceVessels">6</strong><span>Known to Dark Sky</span></article><article><small>SAILING</small><strong id="captainGlanceSailing">0</strong><span>Active outposts</span></article><article><small>SEA TRIAL</small><strong id="captainGlanceTrials">0</strong><span>Testing now</span></article><article><small>FLEET READINESS</small><strong id="captainProReadiness">NOT RUN</strong><span>Current command gate</span></article><article><small>SIGNALS</small><strong id="captainGlanceSignals">0</strong><span>Need your eye</span></article></div></section>
+        <section class="captain-tools-deck"><h3>CAPTAIN'S TOOLS</h3><div><button type="button" data-captain-pro-route="readiness"><b>Fleet Readiness</b><small>Check fleet health</small></button><button type="button" data-captain-pro-route="workshop"><b>Workshop</b><small>Build & configure</small></button><button type="button" data-captain-pro-route="forge"><b>Visual Forge</b><small>Brand & experience</small></button><button type="button" data-captain-pro-route="blueprint"><b>Blueprint</b><small>Layouts & architecture</small></button><button type="button" data-captain-pro-route="admiral"><b>Admiral's Gate</b><small>Trial higher command</small></button></div></section>
+        <div id="captainProfessionalStatus" class="captain-professional-status">Professional command is the operational truth. Cinematic View uses the same command model.</div>`;
       room.appendChild(surface);
       surface.addEventListener('click',e=>{
+        const vesselBtn=e.target.closest('[data-captain-pro-vessel]');if(vesselBtn){const desk=ensureCaptainDeskIndex();const fleetBtn=desk?.querySelector('[data-cq-desk-route="fleet"]');if(fleetBtn)fleetBtn.click();requestAnimationFrame(()=>openSignalReport(vesselBtn.dataset.captainProVessel));return;}
         const btn=e.target.closest('[data-captain-pro-route]');if(!btn)return;
         const desk=ensureCaptainDeskIndex();
         const target=desk?.querySelector(`[data-cq-desk-route="${btn.dataset.captainProRoute}"]`);

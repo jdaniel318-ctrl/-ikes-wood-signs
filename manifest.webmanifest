@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.5.1 \u2014 Command Views",
-  "short_name": "Dark Sky 8.5.1",
-  "start_url": "./index.html?_darkSkyRelease=8.5.1&_darkSkySeal=command-hardening-850-professional-first-6f3b21",
+  "name": "Dark Sky 8.5.2 \u2014 Command Decks",
+  "short_name": "Dark Sky 8.5.2",
+  "start_url": "./index.html?_darkSkyRelease=8.5.2&_darkSkySeal=command-decks-852-organized-command-7c31a9",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.5.1"
+  "version": "8.5.2"
 }

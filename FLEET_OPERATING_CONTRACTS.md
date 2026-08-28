@@ -1,4 +1,4 @@
-# 8.5.1 Command Views Contract
+# 8.5.2 Command Decks Contract
 
 - **Engine operates. Captain commands. Admiral governs.**
 - Professional operational views must be complete without cinematic presentation.
