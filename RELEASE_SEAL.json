@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.5.4",
-  "release": "Verified Command",
-  "seal": "readiness-truth-853-trust-signal-a8c42e",
+  "build": "8.5.5",
+  "release": "Command Wiring",
+  "seal": "command-wiring-855-canonical-init-4f9c21",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Verified Command"
+  "release_name": "Command Wiring"
 }

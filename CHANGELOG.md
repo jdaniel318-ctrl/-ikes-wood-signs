@@ -1,3 +1,9 @@
+# 8.5.5 — Command Wiring
+- Removed stale `initEventHandlers` readiness dependency and bound TrueCase verification to the canonical customer choice handler.
+- Added idempotent Engine Telemetry core binding armed before late storage/migration initialization.
+- Added startup and Proving Ground command-wiring self-checks.
+- Preserved 8.5.4 Verified Command current-vs-history readiness truth.
+
 # 8.5.4 — Verified Command
 
 - Separates current readiness posture from retained historical incidents.

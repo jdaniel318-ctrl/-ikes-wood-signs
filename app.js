@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.5.4';
+  const BUILD_VERSION='8.5.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.5.4',
+    build:'8.5.5',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4367,7 +4367,7 @@
       safe(async()=>{const r=await fetch(`index.html?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> ''),
       safe(async()=>{const r=await fetch(`styles.css?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '')
     ]);
-    const trueCaseSourceContract=String(trueCaseMarkup).includes('id="ikeWordingInput"')&&String(trueCaseMarkup).includes('autocapitalize="off"')&&String(trueCaseMarkup).includes('autocorrect="off"')&&String(trueCaseMarkup).includes('spellcheck="false"')&&/ikeWordingInput[^}]*text-transform\s*:\s*none|#ikeWordingInput[^}]*text-transform\s*:\s*none/i.test(String(trueCaseCss))&&String(initEventHandlers).includes("state.wording=String(e.target.value||'')")&&String(updateUi).includes("iw.value=state.wording");
+    const trueCaseSourceContract=String(trueCaseMarkup).includes('id="ikeWordingInput"')&&String(trueCaseMarkup).includes('autocapitalize="off"')&&String(trueCaseMarkup).includes('autocorrect="off"')&&String(trueCaseMarkup).includes('spellcheck="false"')&&/ikeWordingInput[^}]*text-transform\s*:\s*none|#ikeWordingInput[^}]*text-transform\s*:\s*none/i.test(String(trueCaseCss))&&String(bindCustomerChoiceCore).includes("state.wording=String(e.target.value||'')")&&String(updateUi).includes("iw.value=state.wording");
     const trueCaseContract=trueCaseInput?(trueCaseSourceContract&&trueCaseRoundTrip):trueCaseSourceContract;
     add('ike-true-case-roundtrip','Ike real-input case round trip',trueCaseContract?'pass':'fail',trueCaseContract?(trueCaseInput?'CURRENT BUILD VERIFIED • Actual Ike customer input preserves mixed, lower, and upper case through DOM → state → UI preview.':'CURRENT BUILD VERIFIED • TrueCase source contract is surface-independent; the protected Customer Golden Voyage remains the real-device proof.'):'CURRENT BUILD FAILURE • Ike wording source contract can still normalize or rewrite customer case.');
 
@@ -4411,6 +4411,10 @@
     const storageSafeOk=typeof window.DarkSkyV4?.storageStewardPreview==='function'&&typeof window.DarkSkyV4?.storageStewardClean==='function'&&String(window.DarkSkyV4.storageStewardClean).includes('oldCaches');
     const storageDiagOk=typeof showCompactStorageDiagnostics==='function'&&String(window.DarkSkyV4?.storageStewardPreview||'').includes('deepProbe');
     add('storage-telemetry','Storage & telemetry access',storageEntryOk&&storageSafeOk&&storageDiagOk?'pass':'fail',storageEntryOk&&storageSafeOk&&storageDiagOk?'Engine Telemetry and Engine Storage expose a real inspection surface; Compact Diagnostics renders visible read-only evidence; cleanup is constrained to stale application caches after inspection.':'Storage & Telemetry entry point, visible diagnostics, deeper probe, or safe-cleanup contract is missing.');
+    const wiring=commandWiringSelfCheck();
+    const telemetryBound=!!window.__darkSkyEngineTelemetryBound || !!document.getElementById('engineTelemetryLaunchBtn');
+    const wiringOk=wiring.ok&&telemetryBound&&String(bindCustomerChoiceCore).includes("state.wording=String(e.target.value||'')")&&String(bindEngineTelemetryCore).includes('openStorageTelemetry');
+    add('command-wiring','Command wiring integrity',wiringOk?'pass':'fail',wiringOk?'Canonical customer, telemetry, and late command binders are present and the Engine Telemetry route is armed.':`Missing or unarmed command wiring: ${(wiring.missing||[]).join(', ')||'telemetry activation'}.`);
     const storageEstimate=await safe(()=>navigator.storage?.estimate?.(),()=>null);
     const originUsage=Number(storageEstimate?.usage||0),originMb=originUsage/1024/1024;
     let priorSounding=null;try{priorSounding=JSON.parse(localStorage.getItem('bf.v4.storage.lastSounding')||'null');}catch(_){ }
@@ -4439,7 +4443,7 @@
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
-      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
+      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','command-wiring'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
@@ -14007,6 +14011,34 @@ The full order and approved media remain stored with this project.`;
     $('backBtn')?.addEventListener('click',()=>{const order=currentScreenOrder();const i=order.indexOf(state.current);if(i>0)setScreen(order[i-1]);});
   }
 
+  function bindEngineTelemetryCore(){
+    if(window.__darkSkyEngineTelemetryBound)return true;
+    const launch=$('engineTelemetryLaunchBtn');
+    const kpi=$('engineStorageKpi');
+    const inspect=$('storageTelemetryInspectBtn');
+    const handler=()=>openStorageTelemetry({inspect:true});
+    if(launch)launch.addEventListener('click',handler);
+    if(kpi)kpi.addEventListener('click',handler);
+    if(inspect)inspect.addEventListener('click',handler);
+    window.__darkSkyEngineTelemetryBound=!!(launch||kpi||inspect);
+    return window.__darkSkyEngineTelemetryBound;
+  }
+
+  function commandWiringSelfCheck(){
+    const required={
+      customerChoice:typeof bindCustomerChoiceCore==='function',
+      telemetryBinder:typeof bindEngineTelemetryCore==='function',
+      telemetryOpen:typeof openStorageTelemetry==='function',
+      storageExport:typeof window.BlackFlagOpenStorageTelemetry==='function',
+      lateBinder:typeof bindEvents==='function'
+    };
+    const missing=Object.entries(required).filter(([,ok])=>!ok).map(([name])=>name);
+    const result={build:BUILD_VERSION,ok:missing.length===0,missing,at:new Date().toISOString()};
+    window.DarkSkyCommandWiring=result;
+    if(!result.ok)console.error('Dark Sky command wiring self-check failed',result);
+    return result;
+  }
+
   function bindEvents(){
     // Bind the ship's primary escape routes first. If a later optional control
     // ever throws during setup, the Captain can still navigate safely.
@@ -14045,9 +14077,7 @@ The full order and approved media remain stored with this project.`;
     }));
 
     $('engineConfigureBtn')?.addEventListener('click',()=>openEngineConfiguration('top'));
-    $('engineTelemetryLaunchBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
-    $('engineStorageKpi')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
-    $('storageTelemetryInspectBtn')?.addEventListener('click',()=>openStorageTelemetry({inspect:true}));
+    bindEngineTelemetryCore();
     $('engineConfigurationCloseBtn')?.addEventListener('click',()=>closeEngineWorkspace($('engineConfigurationDock')));
     $('saveEngineEconomicsBtn')?.addEventListener('click',saveEngineEconomics);
     bindEngineAppearanceControls();
@@ -14340,6 +14370,7 @@ The full order and approved media remain stored with this project.`;
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
     bindEvents();
+    commandWiringSelfCheck();
     // Client Preview routes before storage/migrations at the top of init().
     window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'boot',action:'platform.v4.5.0.ready',detail:`${companies.length} projects • Trust Release • preserved canonical project identity • project-local mutations • launch-state filters • non-destructive admission review • canonical Test Deck resolver`});
     const recovered=recoverDraft();
@@ -14353,6 +14384,9 @@ The full order and approved media remain stored with this project.`;
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
+  // 8.5.5 Command Wiring: arm one canonical telemetry route before storage/migrations.
+  bindEngineTelemetryCore();
+  commandWiringSelfCheck();
   // Engine appearance is also armed here because the selector lives on the pre-login gate
   // and must never wait for IndexedDB, migrations, or the late bindEvents() sequence.
   bindEngineAppearanceControls();

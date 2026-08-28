@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.5.4 \u2014 Verified Command",
-  "short_name": "Dark Sky 8.5.4",
-  "start_url": "./index.html?_darkSkyRelease=8.5.4&_darkSkySeal=readiness-truth-853-trust-signal-a8c42e",
+  "name": "Dark Sky 8.5.5 \u2014 Command Wiring",
+  "short_name": "Dark Sky 8.5.5",
+  "start_url": "./index.html?_darkSkyRelease=8.5.5&_darkSkySeal=command-wiring-855-canonical-init-4f9c21",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.5.4"
+  "version": "8.5.5"
 }

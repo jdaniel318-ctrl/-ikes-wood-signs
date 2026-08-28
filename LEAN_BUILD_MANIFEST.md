@@ -1,3 +1,7 @@
+# Lean Build Manifest — 8.5.5 Command Wiring
+
+Command wiring is a release-blocking runtime contract.
+
 # Dark Sky 8.5.4 — Verified Command Manifest
 
 # Dark Sky 8.5.4 — Verified Command Manifest

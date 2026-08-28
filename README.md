@@ -1,3 +1,7 @@
+# Dark Sky 8.5.5 — Command Wiring
+
+Canonical command initialization repair: Engine Telemetry and Admiral Readiness share verified wiring; missing-handler startup checks are release-blocking.
+
 # Dark Sky 8.5.4 — Verified Command
 
 Trust the signal. Act on the truth. Current fleet posture is separated from retained historical incidents. Findings move through Detected → Open → Verified Fix → Cleared, expose evidence and routes, origin storage growth becomes inspectable readiness evidence, and Captain command actions leave durable outcomes.

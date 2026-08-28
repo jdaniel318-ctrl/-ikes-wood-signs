@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.5.4",
-  "release": "Verified Command",
-  "generatedAt": "2026-08-28T02:38:53.558804+00:00",
+  "build": "8.5.5",
+  "release": "Command Wiring",
+  "generatedAt": "2026-08-28T13:08:49.189263+00:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -162,14 +162,17 @@
     "glyphforge_protected_benchmark_replay": true,
     "glyphforge_anchor_certification_distinct": true,
     "glyphforge_action_result_return": true,
-    "engine_style_foundry_v4_non_destructive_sync": true
+    "engine_style_foundry_v4_non_destructive_sync": true,
+    "command_wiring_self_check": true,
+    "engine_telemetry_canonical_binder": true,
+    "admiral_readiness_no_legacy_initializer": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.5.4 Verified Command separates current posture from historical incidents, adds Detected/Open/Verified Fix/Cleared lifecycle evidence, actionable Admiral findings, origin-storage growth watch, and durable Captain command outcomes.",
-  "candidate": "8.5.4",
+  "note": "8.5.5 Command Wiring restores one canonical command initialization path, fixes stale readiness handler references, and makes Engine Telemetry plus Admiral Readiness startup wiring release-blocking.",
+  "candidate": "8.5.5",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

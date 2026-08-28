@@ -1,6 +1,6 @@
 {
-  "release": "8.5.4",
-  "name": "Verified Command",
+  "release": "8.5.5",
+  "name": "Command Wiring",
   "file_count": 52,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -56,7 +56,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.5.4",
-  "seal": "readiness-truth-853-trust-signal-a8c42e",
-  "release_name": "Verified Command"
+  "build": "8.5.5",
+  "seal": "command-wiring-855-canonical-init-4f9c21",
+  "release_name": "Command Wiring"
 }
