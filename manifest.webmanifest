@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.6.4 \u2014 Canonical Six",
-  "short_name": "Dark Sky 8.6.4",
-  "start_url": "./index.html?_darkSkyRelease=8.6.4&_darkSkySeal=canonical-six-864-roster-proof-6c1a42",
+  "name": "Dark Sky 8.6.5 \u2014 Identity Anchor",
+  "short_name": "Dark Sky 8.6.5",
+  "start_url": "./index.html?_darkSkyRelease=8.6.5&_darkSkySeal=identity-anchor-865-protected-survivor-9b73d1",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.4"
+  "version": "8.6.5"
 }

@@ -1,5 +1,5 @@
 {
-  "release": "8.6.4",
+  "release": "Identity Anchor",
   "name": "Canonical Six",
   "file_count": 55,
   "files": [
@@ -59,7 +59,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.4",
-  "seal": "canonical-six-864-roster-proof-6c1a42",
-  "release_name": "Canonical Six"
+  "build": "8.6.5",
+  "seal": "identity-anchor-865-protected-survivor-9b73d1",
+  "release_name": "Identity Anchor"
 }

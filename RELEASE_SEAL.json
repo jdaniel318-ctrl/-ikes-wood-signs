@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.4",
-  "release": "Canonical Six",
-  "seal": "canonical-six-864-roster-proof-6c1a42",
+  "build": "8.6.5",
+  "release": "Identity Anchor",
+  "seal": "identity-anchor-865-protected-survivor-9b73d1",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Canonical Six"
+  "release_name": "Identity Anchor"
 }

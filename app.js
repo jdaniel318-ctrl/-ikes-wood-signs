@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.4';
+  const BUILD_VERSION='8.6.5';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -237,7 +237,7 @@
   }
 
 
-  // 8.6.4 Canonical Six — release-pinned canonical vessel repair.
+  // 8.6.5 Canonical Six — release-pinned canonical vessel repair.
   // Existing rows always win. This Known-Good vessel definition is materialized
   // only if its immutable Project ID disappeared from the reconciled registry.
   const RELEASE_PINNED_VESSELS_864 = Object.freeze([
@@ -273,6 +273,12 @@
     }
   ]);
   const RELEASE_CANONICAL_FLEET_IDS_864 = Object.freeze(['beccas-bloom-shop','bf-p-f92f87e8ec44','bor-north-richmond','grizzly-bear','ikes-wood-signs','mugshot-after-dark']);
+  // 8.6.5 Identity Anchor — protected Known Good business identities always
+  // survive duplicate reconciliation on their immutable Project IDs. Stale
+  // duplicates may contribute evidence/data, but never replace these anchors.
+  const PROTECTED_CANONICAL_BUSINESS_SURVIVORS_865 = Object.freeze({
+    'legacy plumbing':'bf-p-f92f87e8ec44'
+  });
 
   let companies=structuredClone(DEFAULT_COMPANIES);
   let activeProjectId = null;
@@ -2667,8 +2673,16 @@
     const survivors=[],aliases=[];
     for(const group of groups.values()){
       if(group.length===1){survivors.push(group[0]);continue;}
-      // Only fold exact business identities. If contact/type signals differ, the key differs and no fold occurs.
-      const ranked=[...group].sort((a,b)=>projectMaturityScore(b)-projectMaturityScore(a)||String(a.id).localeCompare(String(b.id)));
+      // Only fold exact business identities. Protected Known Good identities
+      // override maturity scoring: their immutable Project ID is the canonical
+      // survivor and stale duplicates merge into it, never the reverse.
+      const protectedName=normalizeBusinessIdentityText(group[0]?.name||group[0]?.identity?.displayName||group[0]?.branding?.businessName);
+      const protectedId=PROTECTED_CANONICAL_BUSINESS_SURVIVORS_865[protectedName]||'';
+      const ranked=[...group].sort((a,b)=>{
+        const aProtected=String(a?.id||'')===protectedId?1:0,bProtected=String(b?.id||'')===protectedId?1:0;
+        if(aProtected!==bProtected)return bProtected-aProtected;
+        return projectMaturityScore(b)-projectMaturityScore(a)||String(a.id).localeCompare(String(b.id));
+      });
       let survivor=ranked[0];
       for(const duplicate of ranked.slice(1)){
         if(duplicateContactConflict(survivor,duplicate) && !forceCanonicalBusinessFold(survivor,duplicate)){survivors.push(duplicate);continue;}
@@ -2676,6 +2690,14 @@
         aliases.push({fromId:String(duplicate.id),toId:String(survivor.id),name:String(survivor.name||'Project')});
       }
       survivors.push(survivor);
+    }
+    // Fail closed if a protected business was present in the input group but the
+    // canonical immutable ID did not survive reconciliation.
+    for(const [businessName,protectedId] of Object.entries(PROTECTED_CANONICAL_BUSINESS_SURVIVORS_865)){
+      const related=(Array.isArray(rows)?rows:[]).filter(r=>normalizeBusinessIdentityText(r?.name||r?.identity?.displayName||r?.branding?.businessName)===businessName);
+      if(related.length && !survivors.some(r=>String(r?.id||'')===protectedId)){
+        throw new Error(`Protected canonical identity did not survive duplicate reconciliation: ${businessName} → ${protectedId}`);
+      }
     }
     return {rows:survivors,aliases};
   }
@@ -2928,7 +2950,7 @@
       if(!canonicalById.has(id))continue;
       if(!validV4Admission(ledger[id],id))ledger[id]={projectId:id,admitted:true,source:'release-bundled',transactionId:`release:${id}:4.9.2`,admittedAt:now,build:BUILD_VERSION,detail:'Captain-approved bundled vessel admission'};
     }
-    // 8.6.4 Canonical Six — restore fleet citizenship for the six immutable
+    // 8.6.5 Canonical Six — restore fleet citizenship for the six immutable
     // vessels proven in the 8.5.7 Known Good fleet. This is admission-only:
     // existing canonical rows win and no vessel business data is rewritten.
     for(const id of RELEASE_CANONICAL_FLEET_IDS_864){
@@ -3267,7 +3289,7 @@
     if(!companies.length)companies=structuredClone(DEFAULT_COMPANIES);
     companies=companies.map(normalizeProjectCode).map(ensureProjectGovernance);
 
-    // 8.6.4 Canonical Six: recover a vessel that was part of the 8.5.7 Known Good
+    // 8.6.5 Canonical Six: recover a vessel that was part of the 8.5.7 Known Good
     // canonical fleet but vanished from a later incomplete mirror. Never overwrite an existing row.
     const rosterIds863=new Set(companies.map(p=>String(p?.id||'')));
     for(const pinned of RELEASE_PINNED_VESSELS_864){
@@ -3316,8 +3338,9 @@
     const aliasCanonicalized=canonicalizeRegistryAliasRows(companies);
     companies=aliasCanonicalized.rows.map(normalizeProjectCode).map(ensureProjectGovernance);
     if(registrySchema<FLEET_REGISTRY_SCHEMA_VERSION) await migrateGrizzlyProjectAliasData();
-    // 7.9.2 Watertight: fold strict duplicate identities and the known Legacy Plumbing duplicate even when stale contact mirrors diverge, preserving
-    // the most mature vessel as canonical and migrating project-scoped references.
+    // 8.6.5 Identity Anchor: fold strict duplicate identities while preserving
+    // protected Known Good immutable IDs as canonical survivors and migrating
+    // stale duplicate project-scoped references into those anchors.
     const duplicatePlan=strictDuplicateBusinessPlan(companies);
     if(duplicatePlan.aliases.length){
       for(const alias of duplicatePlan.aliases)await migrateProjectIdAliasData(alias.fromId,alias.toId,alias.name);
@@ -4265,7 +4288,7 @@
   }
   window.DarkSkyFleetLearning={registry:()=>persistFleetLearningRegistry(),recommendations:fleetLearningRecommendations,render:renderFleetLearningRegistry,stagingLedger:fleetStagingLedgerRead};
   if(!window.__darkSkyFleetLearningDelegated863){window.__darkSkyFleetLearningDelegated863=true;document.addEventListener('click',ev=>{const b=ev.target?.closest?.('[data-learning-stage-strong]');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();fleetLearningBulkStatus(b.dataset.learningStageStrong,'staged','strong');},{capture:true});}
-  // 8.6.4 Canonical Six — 8.6.1 bounded intelligence preserved; durable staging and canonical roster guards added.
+  // 8.6.5 Identity Anchor — protected survivor semantics added on top of Canonical Six.
   const FLEET_INTELLIGENCE_STATE_KEY='darkSkyFleetIntelligenceViewV1';
   function fleetIntelLifecycle(p){try{return window.BlackFlagV3Core?.lifecycle?.(p)||String(p?.status||'draft');}catch(_){return String(p?.status||'draft');}}
   function fleetIntelOwner(p){return String(p?.ownerAccess?.status||'not_claimed');}
@@ -4493,6 +4516,11 @@
     const canonicalAdmissionIds864=await safe(async()=>{const rows=await readCanonicalProjectRegistry();const ledger=await ensureV4AdmissionLedger(rows);return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger[id],id));},()=>[]);
     const canonicalAdmissionsOk864=canonicalAdmissionIds864.length===6;
     add('canonical-six-admissions','Canonical six fleet citizenship',canonicalAdmissionsOk864?'pass':'fail',canonicalAdmissionsOk864?'All six immutable Known Good vessels hold valid active fleet admissions.':`Fleet citizenship incomplete: ${canonicalAdmissionIds864.length}/6 canonical admissions valid.`);
+    const legacyAnchorId865='bf-p-f92f87e8ec44';
+    const legacyRows865=(await safe(()=>readCanonicalProjectRegistry(),()=>[])).filter(p=>normalizeBusinessIdentityText(p?.name||p?.identity?.displayName||p?.branding?.businessName)==='legacy plumbing');
+    const legacyAnchorSurvives865=legacyRows865.length===1&&String(legacyRows865[0]?.id||'')===legacyAnchorId865;
+    const legacyRendered865=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card')].some(card=>String(card?.textContent||'').includes('Legacy Plumbing'));
+    add('legacy-identity-anchor','Legacy Plumbing immutable identity anchor',legacyAnchorSurvives865&&(!document.querySelector('#fleetCommissioningFleet .fleet-dock-card')||legacyRendered865)?'pass':'fail',legacyAnchorSurvives865?`Legacy Plumbing survives duplicate reconciliation on immutable Project ID ${legacyAnchorId865}${legacyRendered865?' and is rendered in Fleet Dock':''}.`:`Legacy identity disagreement: ${legacyRows865.map(r=>String(r?.id||'missing')).join(', ')||'no canonical Legacy row'}.`);
 
     const intelState864=document.getElementById('fleetIntelligenceState');
     const intelBody864=document.getElementById('fleetIntelligenceBody');
@@ -4506,7 +4534,7 @@
     const stagingPersistOk864=stagedRows864.every(r=>stagingLedger864.some(x=>x.status==='staged'&&x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)));
     const stagingActionExpected864=stagingVerified864?.build===BUILD_VERSION&&stagingVerified864?.status==='staged';
     const stagingActionOk864=!stagingActionExpected864||(stagedRows864.length===Number(stagingVerified864.count||0)&&stagingPersistOk864&&stagedRows864.every(r=>r.status!=='adopted'));
-    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.4 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
+    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.5 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
 
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{
