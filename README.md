@@ -1,3 +1,3 @@
-# Dark Sky 8.5.6 — Command Focus
+# Dark Sky 8.5.7 — Voyage Truth
 
-Professional Admiral command now uses posture → lane navigation → focused workspace → continuity. Captain and Admiral surfaces fully contain their active viewport. Cinematic mode remains available over the same command state.
+Current truth wins. Approved Artifact Voyage now proves immutable artifact continuity only; Ike Production Truth is governed separately. TrueCase and Foundry checks are surface-independent, and voyage cards navigate directly to their underlying evidence.

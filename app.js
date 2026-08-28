@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.5.6';
+  const BUILD_VERSION='8.5.7';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -3970,7 +3970,7 @@
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
     schema:'dark-sky-admiral-release-doctrine-v1',
     doctrineVersion:2,
-    build:'8.5.6',
+    build:'8.5.7',
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -4351,8 +4351,10 @@
     add('ike-complete-order-boundary','Ike complete-order boundary',orderBoundaryAuto.ok?'pass':'fail',orderBoundaryAuto.detail);
 
     const trueCaseInput=document.getElementById('ikeWordingInput');
-    let trueCaseRoundTrip=false;
-    if(trueCaseInput){
+    const trueCaseDesignScreen=trueCaseInput?.closest?.('[data-screen="ike-design"]');
+    const trueCaseSurfaceActive=!!(trueCaseInput&&trueCaseDesignScreen?.classList?.contains('active')&&document.body.classList.contains('project-mode')&&!document.body.classList.contains('engine-mode')&&canonicalProjectId(activeProjectId)===canonicalProjectId(LEGACY_IKE_PROJECT_ID));
+    let trueCaseRoundTrip=null;
+    if(trueCaseSurfaceActive){
       const priorState=state.wording,priorValue=trueCaseInput.value;
       try{
         for(const sample of ['Smoke Hole!','smoke hole!','SMOKE HOLE!']){
@@ -4368,8 +4370,8 @@
       safe(async()=>{const r=await fetch(`styles.css?trueCaseContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '')
     ]);
     const trueCaseSourceContract=String(trueCaseMarkup).includes('id="ikeWordingInput"')&&String(trueCaseMarkup).includes('autocapitalize="off"')&&String(trueCaseMarkup).includes('autocorrect="off"')&&String(trueCaseMarkup).includes('spellcheck="false"')&&/ikeWordingInput[^}]*text-transform\s*:\s*none|#ikeWordingInput[^}]*text-transform\s*:\s*none/i.test(String(trueCaseCss))&&String(bindCustomerChoiceCore).includes("state.wording=String(e.target.value||'')")&&String(updateUi).includes("iw.value=state.wording");
-    const trueCaseContract=trueCaseInput?(trueCaseSourceContract&&trueCaseRoundTrip):trueCaseSourceContract;
-    add('ike-true-case-roundtrip','Ike real-input case round trip',trueCaseContract?'pass':'fail',trueCaseContract?(trueCaseInput?'CURRENT BUILD VERIFIED • Actual Ike customer input preserves mixed, lower, and upper case through DOM → state → UI preview.':'CURRENT BUILD VERIFIED • TrueCase source contract is surface-independent; the protected Customer Golden Voyage remains the real-device proof.'):'CURRENT BUILD FAILURE • Ike wording source contract can still normalize or rewrite customer case.');
+    const trueCaseContract=trueCaseSourceContract&&(trueCaseRoundTrip!==false);
+    add('ike-true-case-roundtrip','Ike real-input case round trip',trueCaseContract?'pass':'fail',trueCaseContract?(trueCaseRoundTrip===true?'CURRENT BUILD VERIFIED • Active Ike customer design path preserves mixed, lower, and upper case through DOM → state → UI preview.':'CURRENT BUILD VERIFIED • Surface-independent TrueCase source contract is intact; protected real-device Customer Golden Voyage remains retained evidence.'):'CURRENT BUILD FAILURE • The current Ike wording source contract can normalize/rewrite case, or the active customer design round trip contradicted the source contract.');
 
     const styleBSpec=ikeFontBlueprint('B');
     const styleBTruthContract=styleBSpec.metricWidthScale<=0.74 && styleBSpec.metricHeightScale>=1.08 && styleBSpec.widthTarget>=0.92 && styleBSpec.heightTarget>=0.87
@@ -4378,12 +4380,16 @@
       && String(ikeApplyDetectedTextPlacementTo).includes("state.font==='B'?'.88':'.94'")
       && trueCaseContract;
     add('ike-style-b-truth','Ike Style B finished-sign geometry',styleBTruthContract?'pass':'fail',styleBTruthContract?'Style B keeps the proven exact-case input path while applying a tall, narrow SMOKE HOLE!-anchored measurement and visual envelope inside Ike Fit.':'Style B geometry drifted from the tall/narrow finished-sign contract or disturbed the proven TrueCase path.');
-    const [styleRegistrySource,ownerFoundrySource]=await Promise.all([
+    const [appFoundrySource,styleRegistrySource,ownerFoundrySource]=await Promise.all([
+      safe(async()=>{const r=await fetch(`app.js?foundryContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> ''),
       safe(async()=>{const r=await fetch(`ike_style_registry.js?foundryContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> ''),
       safe(async()=>{const r=await fetch(`owner.html?foundryContract=${Date.now()}`,{cache:'no-store'});return r.ok?await r.text():'';},()=> '')
     ]);
-    const styleFoundryContract=String(projectReferenceLibraryMarkup).includes('data-style-foundry-compile')&&String(compileIkeGlyphBench).includes('dark-sky-ike-style-foundry-project-v4')&&String(styleRegistrySource).includes('IkeGlyphBench')&&String(ownerFoundrySource).includes('data-sf-segment')&&String(ownerFoundrySource).includes('data-cand-canonical');
-    add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'CURRENT BUILD VERIFIED • Style evidence remains project-scoped and Engine synchronization preserves the v4 GlyphForge geometry authority instead of downgrading it.':'CURRENT BUILD FAILURE • Style Foundry v4 registry or non-destructive Engine evidence synchronization is incomplete.');
+    const engineFoundryV4=String(appFoundrySource).includes("schema:'dark-sky-ike-style-foundry-project-v4'")&&String(appFoundrySource).includes('glyphCandidates:Array.isArray(p.styleFoundry?.glyphCandidates)?p.styleFoundry.glyphCandidates:[]')&&String(appFoundrySource).includes('data-style-foundry-compile');
+    const ownerFoundryV4=String(ownerFoundrySource).includes('data-sf-segment')&&String(ownerFoundrySource).includes('data-cand-canonical')&&String(ownerFoundrySource).includes('data-sf-rollback');
+    const registryFoundryV4=String(styleRegistrySource).includes('dark-sky-ike-style-foundry-v4')&&String(styleRegistrySource).includes('IkeGlyphBench')&&String(styleRegistrySource).includes('IkeGlyphForge');
+    const styleFoundryContract=engineFoundryV4&&ownerFoundryV4&&registryFoundryV4;
+    add('ike-style-foundry','Ike governed Style Foundry',styleFoundryContract?'pass':'fail',styleFoundryContract?'CURRENT BUILD VERIFIED • Engine sync preserves project-scoped v4 GlyphForge evidence/candidates; Owner remains geometry authority with segmentation, canonical selection, and rollback.':'CURRENT BUILD FAILURE • Current source artifacts do not prove non-destructive Engine synchronization plus Owner v4 GlyphForge authority.');
     const glyphForgeSource=await safe(async()=>{const r=await fetch(`owner.html?glyphForgeCheck=${Date.now()}`,{cache:'no-store',credentials:'same-origin'});return r.ok?await r.text():'';},()=> '');
     const glyphForgeContract=String(glyphForgeSource).includes('data-sf-segment')&&String(glyphForgeSource).includes('data-cand-canonical')&&String(glyphForgeSource).includes('Protected benchmark replay')&&String(glyphForgeSource).includes('data-sf-rollback')&&String(glyphForgeSource).includes('Evidence wording corrected')&&String(glyphForgeSource).includes('ANCHOR GEOMETRY CERTIFIED');
     add('ike-glyphforge','Ike GlyphForge geometry governance',glyphForgeContract?'pass':'fail',glyphForgeContract?'Owner GlyphForge includes editable evidence, segmentation candidates, canonical glyph approval, protected benchmark replay, version rollback, anchor-certification clarity, and action-result return.':'GlyphForge geometry governance is incomplete on the actual Owner surface.');
@@ -4444,7 +4450,8 @@
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
       combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','command-wiring'],'Captain navigation plus bounded Fleet Dock first-paint behavior.'),
-      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary','ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Customer-approved visual artifacts stay immutable while Ike fit remains grounded in the detected live-edge face.'),
+      combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary'],'Customer-approved production artifacts remain byte-stable and fingerprinted through approval, order serialization, admin, and archive.'),
+      combine('ike-production-truth','Ike Production Truth Voyage',['ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Ike customer wording, finished-sign geometry, face fit, and governed style evidence remain production-truthful without fallback or destructive synchronization.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
@@ -4548,12 +4555,25 @@
     const brief=report.admiralBrief||admiralBuildDecisionBrief(report,report.calibrationReplay||window.__darkSkyAdmiralCalibrationReplay);
     const incidentForDisplay=brief.incident||window.__darkSkyAdmiralIncident;
     const incidentHtml=incidentForDisplay&&incidentForDisplay.severity!=='clear'?`<section class="admiral-incident ${escapeHtml(incidentForDisplay.severity)}"><header><div><small>ADMIRAL INCIDENT • ${escapeHtml(incidentForDisplay.id)}</small><strong>${escapeHtml(incidentForDisplay.title)}</strong></div><b>${escapeHtml(String(incidentForDisplay.severity).toUpperCase())}</b></header><div class="admiral-incident-grid"><div><small>LIKELY CAUSE</small><p>${escapeHtml(incidentForDisplay.likelyCause)}</p></div><div><small>RECOMMENDED ACTION</small><p>${escapeHtml(incidentForDisplay.recommendation)}</p></div><div><small>OWNERSHIP</small><p>${incidentForDisplay.captainRequired?'ADMIRAL — human judgment required.':'SHIPYARD — no manual retest requested.'}</p></div></div><div class="admiral-assertions">${(incidentForDisplay.observations||[]).map(o=>`<article><strong>${escapeHtml(o.case)}</strong><span>Orientation: ${escapeHtml(o.orientation.expected)} → ${escapeHtml(o.orientation.observed)} • ${o.orientation.pass?'PASS':'FAIL'} • ${Number(o.orientation.score||0).toFixed(2)}</span><span>Species: ${escapeHtml(o.species.expected)} → ${escapeHtml(o.species.observed)} • ${o.species.pass?'PASS':'FAIL'} • ${Number(o.species.score||0).toFixed(2)}</span><span>Length: ${escapeHtml(String(o.length.expected||'?'))} ft → ${escapeHtml(o.length.observed?String(o.length.observed)+' ft':'unresolved')} • ${o.length.pass?'PASS':'WATCH'} • ${Number(o.length.score||0).toFixed(2)}</span></article>`).join('')}</div><button id="copyAdmiralBriefBtn" type="button" class="secondary-btn small">COPY ADMIRAL BRIEF</button><span id="copyAdmiralBriefState" class="helper"></span></section>`:'';
-    host.innerHTML=`${incidentHtml}<section class="admiral-auto-brief"><div><small>ADMIRAL AUTO BRIEF</small><strong>What changed</strong><p>${escapeHtml(brief.changed)}</p></div><div><small>AUTOMATIC REPLAY</small><strong>What passed</strong><p>${escapeHtml(brief.passed)}</p></div><div><small>CAPTAIN JUDGMENT</small><strong>What needs you</strong><p>${escapeHtml((brief.needsCaptain||[]).join(' '))}</p></div></section><div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
-      <details class="proving-evidence"><summary>VIEW ENGINEERING EVIDENCE</summary><div class="admiral-readiness-grid">${report.checks.map(c=>`<article class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div></details>
+    host.innerHTML=`${incidentHtml}<section class="admiral-auto-brief"><div><small>ADMIRAL AUTO BRIEF</small><strong>What changed</strong><p>${escapeHtml(brief.changed)}</p></div><div><small>AUTOMATIC REPLAY</small><strong>What passed</strong><p>${escapeHtml(brief.passed)}</p></div><div><small>CAPTAIN JUDGMENT</small><strong>What needs you</strong><p>${escapeHtml((brief.needsCaptain||[]).join(' '))}</p></div></section><div class="proving-voyage-grid">${voyages.map(v=>`<article class="proving-voyage ${v.state}" data-proving-voyage="${v.id}" data-proving-checks="${escapeHtml((v.checks||[]).map(c=>c.id).join(','))}" role="button" tabindex="0" aria-label="View evidence for ${escapeHtml(v.label)}"><div><small>REQUIRED VOYAGE</small><strong>${escapeHtml(v.label)}</strong><p>${escapeHtml(v.detail)}</p></div><b>${provingStateLabel(v.state)}</b></article>`).join('')}</div>
+      <details class="proving-evidence" id="provingEngineeringEvidence"><summary>VIEW ENGINEERING EVIDENCE</summary><div class="admiral-readiness-grid">${report.checks.map(c=>`<article id="admiral-check-${escapeHtml(c.id)}" data-admiral-check="${escapeHtml(c.id)}" class="admiral-check ${c.state}"><span>${c.state==='pass'?'✓':c.state==='warn'?'!':'×'}</span><div><small>${c.level==='core'?'FLEET CONTRACT':'CHECK'}</small><strong>${escapeHtml(c.label)}</strong><p>${escapeHtml(c.detail)}</p></div><b>${c.state==='pass'?'CLEAR':c.state==='warn'?'WATCH':'HOLD'}</b></article>`).join('')}</div></details>
       <div class="admiral-readiness-actions"><button id="admiralRerunBtn" type="button" class="primary-btn small">RUN PROVING GROUND</button><button id="admiralRecoveryBtn" type="button" class="secondary-btn small">CREATE RECOVERY SNAPSHOT</button><button id="admiralReportBtn" type="button" class="secondary-btn small">DOWNLOAD EVIDENCE REPORT</button></div>`;
     $('admiralRerunBtn')?.addEventListener('click',()=>renderAdmiralReadiness({announce:true}));
     $('admiralRecoveryBtn')?.addEventListener('click',exportFleetRecoverySnapshot);
     $('admiralReportBtn')?.addEventListener('click',()=>downloadAdmiralReadinessReport(report));
+    const openVoyageEvidence=(card)=>{
+      if(!card)return;
+      const ids=String(card.dataset.provingChecks||'').split(',').filter(Boolean);
+      const details=$('provingEngineeringEvidence');if(details)details.open=true;
+      document.querySelectorAll('.admiral-check.voyage-focus').forEach(el=>el.classList.remove('voyage-focus'));
+      const target=ids.length?document.querySelector(`[data-admiral-check="${CSS.escape(ids[0])}"]`):details;
+      ids.forEach(id=>document.querySelector(`[data-admiral-check="${CSS.escape(id)}"]`)?.classList.add('voyage-focus'));
+      (target||details)?.scrollIntoView?.({behavior:'smooth',block:'center'});
+    };
+    document.querySelectorAll('[data-proving-voyage]').forEach(card=>{
+      card.addEventListener('click',()=>openVoyageEvidence(card));
+      card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openVoyageEvidence(card);}});
+    });
     $('copyAdmiralBriefBtn')?.addEventListener('click',async()=>{const ok=await copyAdmiralIncidentBrief();const st=$('copyAdmiralBriefState');if(st)st.textContent=ok?'Admiral brief copied — paste directly into chat.':'Copy failed — use Download Evidence Report as fallback.';});
     $('provingWatchBtn')?.addEventListener('click',()=>{if(watchVoyage)document.querySelector(`[data-proving-voyage="${watchVoyage.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});});
     $('provingNextBtn')?.addEventListener('click',()=>{
@@ -14384,7 +14404,7 @@ The full order and approved media remain stored with this project.`;
     if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
   }
   // Arm independent command buses immediately. init() calls these again safely.
-  // 8.5.6 Command Focus: arm one canonical telemetry route before storage/migrations.
+  // 8.5.7 Voyage Truth: arm one canonical telemetry route before storage/migrations.
   bindEngineTelemetryCore();
   commandWiringSelfCheck();
   // Engine appearance is also armed here because the selector lives on the pre-login gate

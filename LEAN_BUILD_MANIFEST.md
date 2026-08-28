@@ -1,4 +1,4 @@
-# Lean Build Manifest — 8.5.6 Command Focus
+# Lean Build Manifest — 8.5.7 Voyage Truth
 
 Command wiring is a release-blocking runtime contract.
 

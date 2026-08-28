@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.5.6 \u2014 Command Focus",
-  "short_name": "Dark Sky 8.5.6",
-  "start_url": "./index.html?_darkSkyRelease=8.5.6&_darkSkySeal=command-focus-856-admiral-nav-7c31e4",
+  "name": "Dark Sky 8.5.7 \u2014 Voyage Truth",
+  "short_name": "Dark Sky 8.5.7",
+  "start_url": "./index.html?_darkSkyRelease=8.5.7&_darkSkySeal=voyage-truth-857-evidence-nav-4f29c1",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.5.6"
+  "version": "8.5.7"
 }

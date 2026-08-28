@@ -14818,7 +14818,7 @@ body.ikes-project #ikeWordingInput{
 .admiral-finding.cleared em{color:#7fc493}
 
 
-/* 8.5.6 Command Focus — focused Admiral navigation + command surface containment */
+/* 8.5.7 Voyage Truth — focused Admiral navigation + command surface containment */
 body.captain-modal-open #captainQuarters:not(.hidden){position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;z-index:2147482000!important;overflow:hidden!important;background:#031015!important;}
 .admiral-deck-overlay{position:fixed!important;inset:0!important;min-height:100dvh!important;background:#031015;}
 .admiral-lane-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
@@ -14826,3 +14826,9 @@ body.captain-modal-open #captainQuarters:not(.hidden){position:fixed!important;i
 .admiral-lane-nav button small,.admiral-lane-nav button b,.admiral-lane-nav button span{display:block}.admiral-lane-nav button small{color:#b89a57;font-size:.64rem;letter-spacing:.12em}.admiral-lane-nav button b{margin:4px 0;color:#f0ddb0}.admiral-lane-nav button span{color:#99abad;font-size:.68rem}.admiral-lane-nav button[aria-selected="true"]{border-color:#d5b15b;background:#0d3138;box-shadow:inset 0 0 0 1px rgba(213,177,91,.18)}
 .admiral-lane-workspace{border:1px solid rgba(212,175,91,.2);border-radius:12px;background:#071d23;padding:18px;min-height:260px}.admiral-lane-workspace>article{max-width:960px}.admiral-lane-workspace>article>small{color:#d4af5b;font-weight:900;letter-spacing:.12em}.admiral-lane-workspace h4{margin:8px 0 6px;color:#f0ddb0;font:700 1.2rem Georgia,serif}.admiral-lane-workspace p{color:#a7b6b7}.admiral-lane-workspace button{min-height:44px;border:1px solid rgba(212,175,91,.32);border-radius:8px;background:#0b292f;color:#ecdeba;font-weight:800;padding:0 14px}.admiral-lane-workspace .admiral-readiness-findings{max-width:760px}
 @media(max-width:900px){.admiral-lane-nav{grid-template-columns:1fr 1fr}}@media(max-width:560px){.admiral-lane-nav{grid-template-columns:1fr}}
+
+
+/* 8.5.7 Voyage Truth — voyage cards are real evidence navigation controls. */
+.proving-voyage[role="button"]{cursor:pointer;}
+.proving-voyage[role="button"]:focus-visible{outline:2px solid #75bfe8;outline-offset:3px;}
+.admiral-check.voyage-focus{outline:2px solid rgba(117,191,232,.9);outline-offset:2px;box-shadow:0 0 0 4px rgba(117,191,232,.10);}

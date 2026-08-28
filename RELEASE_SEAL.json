@@ -1,9 +1,9 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.5.6",
-  "release": "Command Focus",
-  "seal": "command-focus-856-admiral-nav-7c31e4",
+  "build": "8.5.7",
+  "release": "Voyage Truth",
+  "seal": "voyage-truth-857-evidence-nav-4f29c1",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Command Focus"
+  "release_name": "Voyage Truth"
 }

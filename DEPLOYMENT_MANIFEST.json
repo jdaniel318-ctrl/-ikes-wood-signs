@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.5.6",
-  "version": "8.5.6",
-  "release_name": "Command Focus",
-  "releaseName": "Command Focus",
-  "release_seal": "command-focus-856-admiral-nav-7c31e4",
+  "build": "8.5.7",
+  "version": "8.5.7",
+  "release_name": "Voyage Truth",
+  "releaseName": "Voyage Truth",
+  "release_seal": "voyage-truth-857-evidence-nav-4f29c1",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -60,8 +60,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Professional-first command hierarchy, visible fleet doctrine, canonical learning pipeline, Golden Voyage assurance, and cinematic presentation as an optional second view",
-  "release_note": "Current readiness findings are reconciled against retained history; cleared defects leave current posture while remaining in history. Findings include evidence metadata and direct actions. Engine origin storage growth is inspected as a readiness signal. Captain actions leave durable outcomes.",
+  "release_focus": "Voyage truth: immutable artifact integrity separated from Ike production-style readiness; actionable voyage evidence; surface-independent TrueCase and Foundry verification.",
+  "release_note": "Approved Artifact Voyage now proves only byte/fingerprint continuity. Ike Production Truth Voyage separately governs case, face fit, Style B geometry, GlyphForge and non-destructive Foundry sync. Voyage cards open their underlying engineering evidence.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",
