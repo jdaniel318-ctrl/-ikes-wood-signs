@@ -1,0 +1,26 @@
+{
+  "schema": "dark-sky-proof-signer-trace-model-v1",
+  "build": "8.6.16",
+  "release": "Proof Signer Trace",
+  "mode": "read-only-diagnostic",
+  "purpose": "Trace the exact lifecycle from bootstrap invocation through generation-bound surface attachments, finalizer invocation, current-proof write, and read-back without changing fleet behavior.",
+  "stages": [
+    "bootstrap-invoked",
+    "bootstrap-core-committed",
+    "dock-proof-recorded",
+    "intelligence-proof-recorded",
+    "finalizer-invoked",
+    "finalizer-committed",
+    "proof-store-readback"
+  ],
+  "required_fields": [
+    "memoryGeneration",
+    "bootstrapGeneration",
+    "dockGeneration",
+    "intelligenceGeneration",
+    "finalizerResult",
+    "proofStoreKey",
+    "readbackGeneration"
+  ],
+  "mutation_policy": "diagnostic-only; no admissions, registry, fleet memory, or current proof is manufactured by this trace"
+}

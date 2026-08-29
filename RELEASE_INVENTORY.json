@@ -1,7 +1,7 @@
 {
-  "release": "Bootstrap Commit",
-  "name": "Bootstrap Commit",
-  "file_count": 64,
+  "release": "Proof Signer Trace",
+  "name": "Proof Signer Trace",
+  "file_count": 65,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -35,6 +35,7 @@
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
     "PROOF_BARRIER_MODEL.json",
     "PROOF_BOOTSTRAP_MODEL.json",
+    "PROOF_SIGNER_TRACE_MODEL.json",
     "README.md",
     "REGISTRY_LEDGER_MODEL.json",
     "RELEASE_DISCIPLINE_827.md",
@@ -68,7 +69,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.15",
-  "seal": "bootstrap-commit-8615-idempotent-7b3e21",
-  "release_name": "Bootstrap Commit"
+  "build": "8.6.16",
+  "seal": "proof-signer-trace-8616-readonly-9c41d2",
+  "release_name": "Proof Signer Trace"
 }

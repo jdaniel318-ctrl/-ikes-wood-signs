@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.15';
+  const BUILD_VERSION='8.6.16';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2138,6 +2138,34 @@
   }
 
 
+  // 8.6.16 Proof Signer Trace — read-only instrumentation of the proof signing lifecycle.
+  // This does not repair fleet state, mutate admissions, or manufacture proof. It only records
+  // who invoked bootstrap/finalizer, which generation each surface attached, and what store read-back sees.
+  const PROOF_SIGNER_TRACE_KEY_8616='darkSkyProofSignerTraceV8616';
+  function proofSignerTraceRead8616(){try{const v=JSON.parse(localStorage.getItem(PROOF_SIGNER_TRACE_KEY_8616)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
+  function proofSignerTraceWrite8616(patch={}){
+    const prior=proofSignerTraceRead8616()||{schema:'dark-sky-proof-signer-trace-v1',build:BUILD_VERSION,history:[],counters:{}};
+    const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};
+    try{localStorage.setItem(PROOF_SIGNER_TRACE_KEY_8616,JSON.stringify(next));}catch(_){}
+    window.__darkSkyProofSignerTrace8616=next;return next;
+  }
+  function proofSignerTraceEvent8616(event,detail={}){
+    const prior=proofSignerTraceRead8616()||{schema:'dark-sky-proof-signer-trace-v1',build:BUILD_VERSION,history:[],counters:{}};
+    const counters={...(prior.counters||{})}; counters[event]=Number(counters[event]||0)+1;
+    const row={event,at:new Date().toISOString(),...detail};
+    return proofSignerTraceWrite8616({counters,history:[...(prior.history||[]),row].slice(-120),lastEvent:row});
+  }
+  function proofSignerTraceSnapshot8616(label='snapshot'){
+    const trace=proofSignerTraceRead8616()||{history:[],counters:{}};
+    const memory=typeof memoryMusterRead8612==='function'?memoryMusterRead8612():null;
+    const boot=typeof proofBootstrapRead8614==='function'?proofBootstrapRead8614():null;
+    const evidence=typeof evidenceReconciliationRead8610==='function'?evidenceReconciliationRead8610():null;
+    const barrier=typeof proofBarrierRead8611==='function'?proofBarrierRead8611():null;
+    const snap={label,at:new Date().toISOString(),memory:{status:memory?.status||'none',generation:Number(memory?.generation||0),protectedCount:Number(memory?.protectedCount||0)},bootstrap:{status:boot?.status||'none',stage:boot?.stage||'none',generation:Number(boot?.generation||0)},dock:{ok:!!evidence?.dock?.ok,count:Number(evidence?.dock?.count||0),generation:Number(evidence?.dock?.generation||0)},intelligence:{ok:!!evidence?.intelligence?.ok,count:Number(evidence?.intelligence?.count||0),generation:Number(evidence?.intelligence?.generation||0)},barrier:{phase:barrier?.phase||'none',phaseIndex:Number(barrier?.phaseIndex||0),hasCurrentProof:!!barrier?.currentProof?.ok,currentGeneration:Number(barrier?.currentProof?.generation||0)},counters:{...(trace.counters||{})},lastEvent:trace.lastEvent||null};
+    proofSignerTraceEvent8616('snapshot',snap); return snap;
+  }
+  proofSignerTraceEvent8616('trace-installed',{detail:'Proof Signer Trace instrumentation evaluated.'});
+
   // 8.6.15 Bootstrap Commit — one current proof record shared by live surfaces
   // and Proving Ground. Successful newer render evidence supersedes older failed attempts;
   // failures remain in historical diagnostics but do not poison current release posture.
@@ -2153,17 +2181,19 @@
   }
   function recordDockProof8610(trace){
     const rendered=trace?.stages?.find(st=>st.name==='Rendered Fleet Dock cards');
-    if(!rendered?.ok)return null;
+    if(!rendered?.ok){proofSignerTraceEvent8616('dock-proof-skipped',{reason:'rendered-stage-not-ok',count:Number(rendered?.count||0)});return null;}
     const generation=Number(memoryMusterRead8612()?.generation||0);
     const out=evidenceReconciliationWrite8610({dock:{ok:true,count:rendered.count,ids:[...(rendered.protectedIds||rendered.ids||[])],trace,generation,capturedAt:new Date().toISOString(),source:'rendered-fleet-dock'}});
-    queueMicrotask(()=>tryFinalizeProofBootstrap8615('fleet-dock-render').catch(()=>{}));
+    proofSignerTraceEvent8616('dock-proof-recorded',{generation,count:Number(rendered.count||0),ids:[...(rendered.protectedIds||rendered.ids||[])]});
+    queueMicrotask(()=>tryFinalizeProofBootstrap8615('fleet-dock-render').catch(err=>proofSignerTraceEvent8616('finalizer-error',{source:'fleet-dock-render',message:String(err?.message||err)})));
     return out;
   }
   function recordIntelligenceProof8610({count=0,state='',source='fleet-intelligence-overview'}={}){
-    if(Number(count)!==6)return null;
+    if(Number(count)!==6){proofSignerTraceEvent8616('intelligence-proof-skipped',{reason:'count-not-six',count:Number(count||0),state:String(state||'')});return null;}
     const generation=Number(memoryMusterRead8612()?.generation||0);
     const out=evidenceReconciliationWrite8610({intelligence:{ok:true,count:Number(count),state:String(state||'usable'),generation,capturedAt:new Date().toISOString(),source}});
-    queueMicrotask(()=>tryFinalizeProofBootstrap8615('fleet-intelligence-render').catch(()=>{}));
+    proofSignerTraceEvent8616('intelligence-proof-recorded',{generation,count:Number(count),state:String(state||'usable'),source});
+    queueMicrotask(()=>tryFinalizeProofBootstrap8615('fleet-intelligence-render').catch(err=>proofSignerTraceEvent8616('finalizer-error',{source:'fleet-intelligence-render',message:String(err?.message||err)})));
     return out;
   }
 
@@ -2246,37 +2276,42 @@
   function proofBootstrapStage8614(name,ids=[]){return protectedStage8611(name,ids);}
   async function runProofBootstrap8614({source='engine-init',timeoutMs=3200,force=false}={}){
     const existing=proofBootstrapRead8614(); const memNow=memoryMusterRead8612();
-    if(!force&&existing?.generation===memNow?.generation&&['core-committed','complete'].includes(String(existing?.status||'')))return existing.currentProof||existing;
-    if(proofBootstrapPromise8614&&!force)return proofBootstrapPromise8614;
+    proofSignerTraceEvent8616('bootstrap-invoked',{source,force,existingStatus:existing?.status||'none',existingGeneration:Number(existing?.generation||0),memoryStatus:memNow?.status||'none',memoryGeneration:Number(memNow?.generation||0)});
+    if(!force&&existing?.generation===memNow?.generation&&['core-committed','complete'].includes(String(existing?.status||''))){proofSignerTraceEvent8616('bootstrap-reused',{source,status:existing.status,generation:Number(existing.generation||0)});return existing.currentProof||existing;}
+    if(proofBootstrapPromise8614&&!force){proofSignerTraceEvent8616('bootstrap-shared-promise',{source});return proofBootstrapPromise8614;}
     const work=(async()=>{
       proofBootstrapWrite8614({status:'waiting-memory',stage:'memory',detail:`Waiting for committed memory roster • ${source}`});
+      proofSignerTraceEvent8616('bootstrap-waiting-memory',{source});
       const memory=await awaitMemoryRosterReady8612({timeoutMs:1800,source:`bootstrap-core:${source}`});
-      if(!memory||memory.protectedCount!==6){proofBootstrapWrite8614({status:'failed',stage:'memory',detail:'No committed six-vessel memory generation available.'});return null;}
+      proofSignerTraceEvent8616('bootstrap-memory-result',{source,ok:!!memory,protectedCount:Number(memory?.protectedCount||0),generation:Number(memory?.generation||0),status:memory?.status||'none'});
+      if(!memory||memory.protectedCount!==6){proofBootstrapWrite8614({status:'failed',stage:'memory',detail:'No committed six-vessel memory generation available.'});proofSignerTraceEvent8616('bootstrap-failed',{source,stage:'memory'});return null;}
       const generation=Number(memory.generation||0);
       const core=[proofBootstrapStage8614('Registry',memory.registryIds||[]),proofBootstrapStage8614('Admissions',memory.admissionIds||[]),proofBootstrapStage8614('Manifest',memory.manifestIds||[]),proofBootstrapStage8614('Memory',memory.ids||[])];
-      if(core.some(x=>!x.ok)){proofBootstrapWrite8614({status:'failed',stage:'core',generation,core,detail:'Committed memory generation did not contain complete core proof.'});return null;}
+      if(core.some(x=>!x.ok)){proofBootstrapWrite8614({status:'failed',stage:'core',generation,core,detail:'Committed memory generation did not contain complete core proof.'});proofSignerTraceEvent8616('bootstrap-failed',{source,stage:'core',generation,core});return null;}
       proofBarrierAdvance8611('ROSTER_READY',`Bootstrap Commit core generation ${generation} committed`);
       proofBootstrapWrite8614({status:'core-committed',stage:'core',generation,core,detail:'CORE PROOF COMMITTED • Registry 6 · Admissions 6 · Manifest 6 · Memory 6'});
+      proofSignerTraceEvent8616('bootstrap-core-committed',{source,generation,core});
       proofBarrierWrite8611({pendingProof:{schema:'dark-sky-current-fleet-proof-v3',build:BUILD_VERSION,generation,ok:false,stage:'core',registryIds:core[0].ids,admissionIds:core[1].ids,manifestIds:core[2].ids,memoryIds:core[3].ids},source:`bootstrap-core:${source}`});
       // Surface proof is appended by the normal Dock and Intelligence render paths.
       await tryFinalizeProofBootstrap8615(`core:${source}`);
       return proofBootstrapRead8614();
     })();
-    proofBootstrapPromise8614=commandDeadline(work,timeoutMs,null).then(v=>{if(!v&&proofBootstrapRead8614()?.status!=='failed')proofBootstrapWrite8614({status:'timeout',stage:'core-bootstrap',detail:`Bootstrap core exceeded ${timeoutMs} ms`});return v;}).finally(()=>{proofBootstrapPromise8614=null;});
+    proofBootstrapPromise8614=commandDeadline(work,timeoutMs,null).then(v=>{if(!v&&proofBootstrapRead8614()?.status!=='failed'){proofBootstrapWrite8614({status:'timeout',stage:'core-bootstrap',detail:`Bootstrap core exceeded ${timeoutMs} ms`});proofSignerTraceEvent8616('bootstrap-timeout',{source,timeoutMs});}else proofSignerTraceEvent8616('bootstrap-settled',{source,status:proofBootstrapRead8614()?.status||'none',generation:Number(proofBootstrapRead8614()?.generation||0)});return v;}).finally(()=>{proofBootstrapPromise8614=null;});
     return proofBootstrapPromise8614;
   }
 
   let proofFinalizePromise8615=null;
   async function tryFinalizeProofBootstrap8615(source='surface-render'){
-    if(proofFinalizePromise8615)return proofFinalizePromise8615;
+    proofSignerTraceEvent8616('finalizer-invoked',{source});
+    if(proofFinalizePromise8615){proofSignerTraceEvent8616('finalizer-shared-promise',{source});return proofFinalizePromise8615;}
     proofFinalizePromise8615=(async()=>{
       const boot=proofBootstrapRead8614();
       const memory=memoryMusterRead8612();
       const evidence=evidenceReconciliationRead8610();
-      if(!boot||boot.status==='failed'||boot.status==='timeout'||!memory)return null;
+      if(!boot||boot.status==='failed'||boot.status==='timeout'||!memory){proofSignerTraceEvent8616('finalizer-blocked',{source,reason:'bootstrap-or-memory-unavailable',bootStatus:boot?.status||'none',memoryStatus:memory?.status||'none'});return null;}
       const generation=Number(memory.generation||0);
-      if(Number(boot.generation||0)!==generation||!['core-committed','complete'].includes(String(boot.status||'')))return null;
-      if(boot.status==='complete'&&boot.currentProof?.ok)return boot.currentProof;
+      if(Number(boot.generation||0)!==generation||!['core-committed','complete'].includes(String(boot.status||''))){proofSignerTraceEvent8616('finalizer-blocked',{source,reason:'bootstrap-generation-or-status',bootGeneration:Number(boot.generation||0),memoryGeneration:generation,bootStatus:boot.status});return null;}
+      if(boot.status==='complete'&&boot.currentProof?.ok){proofSignerTraceEvent8616('finalizer-reused-proof',{source,generation});return boot.currentProof;}
       const dock=evidence?.dock;
       const intel=evidence?.intelligence;
       const dockIds=Array.isArray(dock?.ids)?dock.ids:[];
@@ -2285,21 +2320,25 @@
       const dockGeneration=Number(dock?.generation||0), intelGeneration=Number(intel?.generation||0);
       if(dockGeneration!==generation||!dockStage.ok){
         proofBootstrapWrite8614({status:'core-committed',stage:'awaiting-dock',generation,core:boot.core,detail:`CORE PROOF COMMITTED • waiting for Dock generation ${generation}`});
+        proofSignerTraceEvent8616('finalizer-blocked',{source,reason:'dock-not-ready',memoryGeneration:generation,dockGeneration,dockCount:Number(dock?.count||0),dockOk:!!dock?.ok});
         return null;
       }
       proofBarrierAdvance8611('DOCK_PAINTED',`Bootstrap Commit Dock generation ${generation} verified`);
       if(intelGeneration!==generation||!intelligence.ok){
         proofBootstrapWrite8614({status:'dock-verified',stage:'awaiting-intelligence',generation,core:boot.core,dock:dockStage,detail:`Dock 6 verified • waiting for Intelligence generation ${generation}`});
+        proofSignerTraceEvent8616('finalizer-blocked',{source,reason:'intelligence-not-ready',memoryGeneration:generation,intelligenceGeneration:intelGeneration,intelligenceCount:Number(intel?.count||0),intelligenceOk:!!intel?.ok,state:String(intel?.state||'')});
         return null;
       }
       proofBarrierAdvance8611('INTELLIGENCE_PAINTED',`Bootstrap Commit Intelligence generation ${generation} verified`);
       const core=boot.core||[];
       const stages=[...core,dockStage,intelligence];
       const proof={schema:'dark-sky-current-fleet-proof-v3',build:BUILD_VERSION,generation,ok:true,stages,registryIds:core[0]?.ids||[],admissionIds:core[1]?.ids||[],manifestIds:core[2]?.ids||[],memoryIds:core[3]?.ids||[],dockIds:dockStage.ids,intelligence:{ok:true,count:6,state:intelligence.state},capturedAt:new Date().toISOString(),source};
-      if([proof.registryIds,proof.admissionIds,proof.manifestIds,proof.memoryIds,proof.dockIds].some(ids=>ids.length!==6))return null;
+      if([proof.registryIds,proof.admissionIds,proof.manifestIds,proof.memoryIds,proof.dockIds].some(ids=>ids.length!==6)){proofSignerTraceEvent8616('finalizer-blocked',{source,reason:'proof-array-not-six',generation,lengths:{registry:proof.registryIds.length,admissions:proof.admissionIds.length,manifest:proof.manifestIds.length,memory:proof.memoryIds.length,dock:proof.dockIds.length}});return null;}
       proofBarrierAdvance8611('PROOF_COMMITTED',`Bootstrap Commit generation ${generation} complete`);
       proofBarrierWrite8611({currentProof:proof,pendingProof:null,proofCommittedAt:proof.capturedAt,source:`bootstrap-finalize:${source}`});
       proofBootstrapWrite8614({status:'complete',stage:'complete',generation,core,dock:dockStage,intelligence,currentProof:proof,detail:'CURRENT PROOF COMPLETE'});
+      const readback=proofBarrierRead8611()?.currentProof||null;
+      proofSignerTraceEvent8616('finalizer-committed',{source,generation,storeKey:PROOF_BARRIER_KEY_8611,readbackOk:!!readback?.ok,readbackGeneration:Number(readback?.generation||0)});
       return proof;
     })().finally(()=>{proofFinalizePromise8615=null;});
     return proofFinalizePromise8615;
@@ -2610,7 +2649,7 @@
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
     return `<section class="resolver-lifeline-panel ${status}" aria-label="Bootstrap Commit">
-      <header><div><small>8.6.15 • MEMORY MUSTER</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+      <header><div><small>8.6.16 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -4998,6 +5037,17 @@
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');
     const fleetIntelligenceBoundedPaint=String(renderFleetIntelligenceDeck).includes('LOCAL FLEET • VERIFYING')&&String(renderFleetIntelligenceDeck).includes('commandDeadline(fullPromise,650,null)')&&String(renderFleetIntelligenceDeck).includes('fleetIntelligenceLocalSnapshot()');
     add('fleet-intelligence-bounded-paint','Fleet Intelligence bounded first paint',fleetIntelligenceBoundedPaint?'pass':'fail',fleetIntelligenceBoundedPaint?'Fleet Intelligence paints a usable roster-backed local picture within a bounded window and reconciles live cross-vessel intelligence in the background.':'Fleet Intelligence can still remain indefinitely on READING FLEET before presenting a usable fleet picture.');
+
+    const signer8616=proofSignerTraceSnapshot8616('engineering-evidence');
+    const sc8616=signer8616.counters||{};
+    const last8616=signer8616.lastEvent||{};
+    const signerDetail8616=`Bootstrap calls ${Number(sc8616['bootstrap-invoked']||0)} • core commits ${Number(sc8616['bootstrap-core-committed']||0)} • Dock proofs ${Number(sc8616['dock-proof-recorded']||0)} • Intelligence proofs ${Number(sc8616['intelligence-proof-recorded']||0)} • finalizer calls ${Number(sc8616['finalizer-invoked']||0)} • final commits ${Number(sc8616['finalizer-committed']||0)} • memory gen ${signer8616.memory.generation} • bootstrap ${signer8616.bootstrap.status}@${signer8616.bootstrap.generation} • Dock gen ${signer8616.dock.generation}/${signer8616.dock.count} • Intelligence gen ${signer8616.intelligence.generation}/${signer8616.intelligence.count} • current proof ${signer8616.barrier.hasCurrentProof?'YES':'NO'}@${signer8616.barrier.currentGeneration} • last ${String(last8616.event||'none')}${last8616.reason?` (${last8616.reason})`:''}.`;
+    add('proof-signer-trace-summary','Proof Signer Trace',signer8616.barrier.hasCurrentProof?'pass':'warn',signerDetail8616);
+    add('proof-signer-bootstrap-call','Proof Signer — bootstrap invocation',Number(sc8616['bootstrap-invoked']||0)>0?'pass':'fail',Number(sc8616['bootstrap-invoked']||0)>0?`Bootstrap runner invoked ${Number(sc8616['bootstrap-invoked']||0)} time(s); latest state ${signer8616.bootstrap.status}, generation ${signer8616.bootstrap.generation}.`:'Bootstrap runner has not been invoked in this build/session.');
+    const attachmentMatch8616=signer8616.memory.generation>0&&signer8616.dock.ok&&signer8616.intelligence.ok&&signer8616.dock.generation===signer8616.memory.generation&&signer8616.intelligence.generation===signer8616.memory.generation;
+    add('proof-signer-generation-match','Proof Signer — generation attachments',attachmentMatch8616?'pass':'fail',attachmentMatch8616?`Memory, Dock, and Intelligence all attach to generation ${signer8616.memory.generation}.`:`Generation mismatch/incomplete: memory ${signer8616.memory.generation}, Dock ${signer8616.dock.generation}/${signer8616.dock.count}, Intelligence ${signer8616.intelligence.generation}/${signer8616.intelligence.count}.`);
+    const finalizerCalls8616=Number(sc8616['finalizer-invoked']||0), finalCommits8616=Number(sc8616['finalizer-committed']||0);
+    add('proof-signer-finalizer','Proof Signer — finalizer/read-back',signer8616.barrier.hasCurrentProof?'pass':'fail',signer8616.barrier.hasCurrentProof?`Finalizer committed and read back generation ${signer8616.barrier.currentGeneration} from ${PROOF_BARRIER_KEY_8611}.`:`Finalizer calls ${finalizerCalls8616}, commits ${finalCommits8616}; last signer event ${String(last8616.event||'none')}${last8616.reason?` • ${last8616.reason}`:''}.`);
 
     const canonicalRosterIds864=RELEASE_CANONICAL_FLEET_IDS_864;
     const proofStages8611=Object.fromEntries((currentProof8611?.stages||[]).map(st=>[st.name,st]));
@@ -12857,18 +12907,19 @@ The full order and approved media remain stored with this project.`;
   };
 
   window.renderBlackFlagHome = async function(){
-    try{ await convergeCanonicalFleetForPresentation({source:'home-memory-muster'}); }catch(err){ console.warn('Bootstrap Commit home convergence warning',err); }
-    try{ await runProofBootstrap8614({source:'engine-home-init',timeoutMs:5200}); }catch(err){ console.warn('Bootstrap Commit initialization warning',err); }
+    proofSignerTraceEvent8616('engine-home-start',{detail:'renderBlackFlagHome entered'});
+    try{ await convergeCanonicalFleetForPresentation({source:'home-memory-muster'}); proofSignerTraceEvent8616('engine-home-memory-settled',{generation:Number(memoryMusterRead8612()?.generation||0),status:memoryMusterRead8612()?.status||'none'}); }catch(err){ proofSignerTraceEvent8616('engine-home-memory-error',{message:String(err?.message||err)}); console.warn('Bootstrap Commit home convergence warning',err); }
+    try{ const bootResult=await runProofBootstrap8614({source:'engine-home-init',timeoutMs:5200}); proofSignerTraceEvent8616('engine-home-bootstrap-return',{status:proofBootstrapRead8614()?.status||'none',generation:Number(proofBootstrapRead8614()?.generation||0),result:!!bootResult}); }catch(err){ proofSignerTraceEvent8616('engine-home-bootstrap-error',{message:String(err?.message||err)}); console.warn('Bootstrap Commit initialization warning',err); }
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
     try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
     try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command systems warning',err); }
-    try{ await commandDeadline(renderFleetCommissioning(),1800,true); }catch(err){ console.warn('fleet dock warning',err); }
+    try{ await commandDeadline(renderFleetCommissioning(),1800,true); proofSignerTraceSnapshot8616('after-fleet-dock'); }catch(err){ proofSignerTraceEvent8616('engine-home-dock-error',{message:String(err?.message||err)}); console.warn('fleet dock warning',err); }
     try{ renderFleetLearningRegistry(); }catch(err){ console.warn('fleet learning warning',err); }
-    try{ bindFleetIntelligenceDeck(); await renderFleetIntelligenceDeck(); }catch(err){ console.warn('fleet intelligence warning',err); }
-    try{ await tryFinalizeProofBootstrap8615('engine-home-surfaces'); }catch(err){ console.warn('bootstrap finalizer warning',err); }
+    try{ bindFleetIntelligenceDeck(); await renderFleetIntelligenceDeck(); proofSignerTraceSnapshot8616('after-fleet-intelligence'); }catch(err){ proofSignerTraceEvent8616('engine-home-intelligence-error',{message:String(err?.message||err)}); console.warn('fleet intelligence warning',err); }
+    try{ await tryFinalizeProofBootstrap8615('engine-home-surfaces'); proofSignerTraceSnapshot8616('after-engine-home-finalizer'); }catch(err){ proofSignerTraceEvent8616('engine-home-finalizer-error',{message:String(err?.message||err)}); console.warn('bootstrap finalizer warning',err); }
     // 8.6.15 Proving Ground remains read-only; normal Engine surfaces complete current proof.
     try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
     try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }

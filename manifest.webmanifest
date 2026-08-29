@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.6.15 \u2014 Bootstrap Commit",
-  "short_name": "Dark Sky 8.6.15",
-  "start_url": "./index.html?_darkSkyRelease=8.6.15&_darkSkySeal=bootstrap-commit-8615-idempotent-7b3e21",
+  "name": "Dark Sky 8.6.16 \u2014 Proof Signer Trace",
+  "short_name": "Dark Sky 8.6.16",
+  "start_url": "./index.html?_darkSkyRelease=8.6.16&_darkSkySeal=proof-signer-trace-8616-readonly-9c41d2",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.15"
+  "version": "8.6.16"
 }

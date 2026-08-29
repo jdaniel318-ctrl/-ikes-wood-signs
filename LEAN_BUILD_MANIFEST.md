@@ -1,4 +1,4 @@
-# Dark Sky 8.6.15 — Bootstrap Commit
+# Dark Sky 8.6.16 — Proof Signer Trace
 
 - Payload files: 64
 - One canonical proof generation

@@ -1,18 +1,18 @@
-# Dark Sky 8.6.15 — Bootstrap Commit
+# Dark Sky 8.6.16 — Proof Signer Trace
 
 Atomic roster rule: reconcile → validate protected six → commit memory → render → prove. Proving Ground is inspection-only.
 
-# Dark Sky 8.6.15 — Bootstrap Commit
+# Dark Sky 8.6.16 — Proof Signer Trace
 
 Current readiness truth is committed only after initialize → reconcile → render → prove. The canonical six-vessel rescue remains frozen; this release changes assurance timing and proof consumption only.
 
-# Dark Sky 8.6.15 — Bootstrap Commit
+# Dark Sky 8.6.16 — Proof Signer Trace
 
 Current successful live evidence is now the canonical current truth for Proving Ground. The six-vessel rescue logic is preserved unchanged.
 
-# Dark Sky 8.6.15 — Bootstrap Commit
+# Dark Sky 8.6.16 — Proof Signer Trace
 
-Bootstrap Commit moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
+Proof Signer Trace moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
 
 ## 8.6.8 — Dock Source Trace
 
@@ -53,5 +53,5 @@ The release preserves normalized fleet signals, Fleet Health Matrix, Capability 
 ## 8.6.8 — Dock Source Trace
 Protected six-vessel muster seed restores exact Known Good identities and admissions before fleet surfaces paint. Runtime registry drift cannot redefine fleet membership.
 
-### 8.6.15 Bootstrap Commit
+### 8.6.16 Proof Signer Trace
 Core proof is created during Engine initialization; Fleet Dock and Fleet Intelligence naturally append their proof for the same memory generation. One idempotent finalizer signs the current proof.
