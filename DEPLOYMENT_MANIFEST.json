@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.6.10",
-  "version": "8.6.10",
-  "release_name": "Evidence Reconciliation",
-  "releaseName": "Evidence Reconciliation",
-  "release_seal": "evidence-reconciliation-8610-current-proof-7d31af",
+  "build": "8.6.11",
+  "version": "8.6.11",
+  "release_name": "Proof Barrier",
+  "releaseName": "Proof Barrier",
+  "release_seal": "proof-barrier-8611-commit-after-paint-42b7d1",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
@@ -68,8 +68,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Evidence Reconciliation: one canonical current proof for rendered Fleet Dock and Fleet Intelligence, with stale failures retained as history rather than current HOLD state.",
-  "release_note": "8.6.10 reconciles Proving Ground with current live UI proof after the canonical six-vessel recovery succeeded.",
+  "release_focus": "Proof Barrier: one canonical current proof for rendered Fleet Dock and Fleet Intelligence, with stale failures retained as history rather than current HOLD state.",
+  "release_note": "8.6.11 introduces a proof barrier: initialize \u2192 reconcile \u2192 render \u2192 prove. Current readiness consumes one committed six-vessel live proof.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",
@@ -82,5 +82,8 @@
     "excluded_sources": [
       "The situation"
     ]
-  }
+  },
+  "required_runtime_contracts": [
+    "PROOF_BARRIER_MODEL.json"
+  ]
 }

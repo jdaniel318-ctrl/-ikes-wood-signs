@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.10",
+  "build": "8.6.11",
   "release": "Canonical Six",
   "excluded_sources": [
     "The situation"

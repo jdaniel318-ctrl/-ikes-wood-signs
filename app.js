@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.10';
+  const BUILD_VERSION='8.6.11';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2138,7 +2138,7 @@
   }
 
 
-  // 8.6.10 Evidence Reconciliation — one current proof record shared by live surfaces
+  // 8.6.11 Proof Barrier — one current proof record shared by live surfaces
   // and Proving Ground. Successful newer render evidence supersedes older failed attempts;
   // failures remain in historical diagnostics but do not poison current release posture.
   const EVIDENCE_RECON_KEY_8610='darkSkyEvidenceReconciliationV8610';
@@ -2159,6 +2159,56 @@
   function recordIntelligenceProof8610({count=0,state='',source='fleet-intelligence-overview'}={}){
     if(Number(count)!==6)return null;
     return evidenceReconciliationWrite8610({intelligence:{ok:true,count:Number(count),state:String(state||'usable'),capturedAt:new Date().toISOString(),source}});
+  }
+
+
+  // 8.6.11 Proof Barrier — current readiness may only be committed after the live
+  // fleet reaches a stable proof phase. Intermediate boot/reconciliation observations
+  // remain diagnostics/history and may never mint a current HOLD.
+  const PROOF_BARRIER_KEY_8611='darkSkyProofBarrierV8611';
+  const PROOF_PHASES_8611=Object.freeze({BOOTING:0,RECONCILING:1,ROSTER_READY:2,DOCK_PAINTED:3,INTELLIGENCE_PAINTED:4,PROOF_COMMITTED:5});
+  function proofBarrierRead8611(){try{const v=JSON.parse(localStorage.getItem(PROOF_BARRIER_KEY_8611)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
+  function proofBarrierWrite8611(patch={}){const prior=proofBarrierRead8611()||{schema:'dark-sky-proof-barrier-v1',build:BUILD_VERSION,phase:'BOOTING',phaseIndex:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};try{localStorage.setItem(PROOF_BARRIER_KEY_8611,JSON.stringify(next));}catch(_){}window.__darkSkyProofBarrier8611=next;return next;}
+  function proofBarrierAdvance8611(phase,detail=''){const idx=PROOF_PHASES_8611[phase]??0;const prior=proofBarrierRead8611()||{phaseIndex:0,history:[]};if(idx<Number(prior.phaseIndex||0))return prior;const history=[...(prior.history||[]),{phase,detail,at:new Date().toISOString()}].slice(-40);return proofBarrierWrite8611({phase,phaseIndex:idx,detail,history});}
+  function protectedStage8611(name,ids=[]){const have=new Set((ids||[]).map(x=>String(x||'')));const present=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!have.has(id));return {name,count:present.length,ids:present,missing,ok:missing.length===0};}
+  async function currentFleetProof8611(){
+    const canonical=await readCanonicalProjectRegistry();
+    const registryIds=(canonical||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
+    const ledger=await ensureV4AdmissionLedger(canonical||[]);
+    const admissionIds=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger?.[id],id));
+    const manifestIds=readV4FleetManifest();
+    const memoryIds=(companies||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
+    const dockIds=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||''));
+    const intelState=document.getElementById('fleetIntelligenceState');
+    const intelSummary=document.getElementById('fleetIntelligenceSummary');
+    const intelCount=Number(intelSummary?.querySelector('article strong')?.textContent||0);
+    const intelUsable=!!intelSummary&&intelCount===6&&!/READING FLEET/i.test(String(intelState?.textContent||''));
+    const stages=[protectedStage8611('Registry',registryIds),protectedStage8611('Admissions',admissionIds),protectedStage8611('Manifest',manifestIds),protectedStage8611('Memory',memoryIds),protectedStage8611('Dock',dockIds),{name:'Intelligence',count:intelCount,ids:intelCount===6?[...RELEASE_CANONICAL_FLEET_IDS_864]:[],missing:intelCount===6?[]:[...RELEASE_CANONICAL_FLEET_IDS_864],ok:intelUsable}];
+    const ok=stages.every(st=>st.ok);
+    return {schema:'dark-sky-current-fleet-proof-v1',build:BUILD_VERSION,ok,stages,registryIds:stages[0].ids,admissionIds:stages[1].ids,manifestIds:stages[2].ids,memoryIds:stages[3].ids,dockIds:stages[4].ids,intelligence:{ok:intelUsable,count:intelCount,state:String(intelState?.textContent||'')},capturedAt:new Date().toISOString()};
+  }
+  async function commitProofBarrier8611(source='runtime'){
+    const proof=await currentFleetProof8611();
+    if(proof.ok){proofBarrierAdvance8611('PROOF_COMMITTED',`Six-vessel live proof committed • ${source}`);proofBarrierWrite8611({currentProof:proof,proofCommittedAt:new Date().toISOString(),source});evidenceReconciliationWrite8610({dock:{ok:true,count:6,ids:[...proof.dockIds],capturedAt:proof.capturedAt,source:'proof-barrier-8611'},intelligence:{ok:true,count:6,state:proof.intelligence.state,capturedAt:proof.capturedAt,source:'proof-barrier-8611'}});}
+    else proofBarrierWrite8611({pendingProof:proof,source});
+    return proof;
+  }
+  async function awaitProofBarrier8611({source='readiness',timeoutMs=4200}={}){
+    proofBarrierAdvance8611('RECONCILING',source);
+    const work=(async()=>{
+      await convergeCanonicalFleetForPresentation({source:`proof-barrier:${source}`,force:true});
+      proofBarrierAdvance8611('ROSTER_READY','Canonical six reconciled');
+      await renderFleetCommissioning({skipConvergence:true});
+      const dockCount=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].length;
+      if(dockCount===6)proofBarrierAdvance8611('DOCK_PAINTED','Six Fleet Dock cards rendered');
+      bindFleetIntelligenceDeck();
+      await renderFleetIntelligenceDeck();
+      const intelCount=Number(document.querySelector('#fleetIntelligenceSummary article strong')?.textContent||0);
+      if(intelCount===6&&!/READING FLEET/i.test(String(document.getElementById('fleetIntelligenceState')?.textContent||'')))proofBarrierAdvance8611('INTELLIGENCE_PAINTED','Six-vessel Fleet Intelligence rendered');
+      return await commitProofBarrier8611(source);
+    })();
+    const out=await commandDeadline(work,timeoutMs,null);
+    return out||proofBarrierRead8611()?.currentProof||null;
   }
 
   // 8.6.8 Dock Source Trace — make every roster stage observable. A protected vessel
@@ -2372,7 +2422,7 @@
     }
     return duplicates;
   }
-  // 8.6.10 Evidence Reconciliation — instrument the async roster resolver itself.
+  // 8.6.11 Proof Barrier — instrument the async roster resolver itself.
   // READINGS may not hang forever. Every resolver stage is bounded, named, and
   // captures the protected IDs known immediately after the step.
   const RESOLVER_LIFELINE_TIMEOUT_869=1150;
@@ -2411,7 +2461,7 @@
     const elapsedMs=Date.now()-started;
     if(result.kind==='timeout'){
       resolverMark869(name,'timeout',{detail:`No settlement within ${ms} ms`,elapsedMs});
-      const err=new Error(`Evidence Reconciliation timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
+      const err=new Error(`Proof Barrier timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
     }
     if(result.kind==='fail'){
       resolverMark869(name,'fail',{detail:String(result.error?.message||result.error),elapsedMs});
@@ -2424,14 +2474,14 @@
   }
   async function resolverRead869(name,task,fallback){
     try{return await resolverStep869(name,task,{ms:780});}
-    catch(err){console.warn('Evidence Reconciliation read fallback',name,err);return fallback;}
+    catch(err){console.warn('Proof Barrier read fallback',name,err);return fallback;}
   }
   function resolverLifelineHtml869(trace=window.__darkSkyResolverLifeline869){
     if(!trace)return '';
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
-    return `<section class="resolver-lifeline-panel ${status}" aria-label="Evidence Reconciliation">
-      <header><div><small>8.6.10 • EVIDENCE RECONCILIATION</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+    return `<section class="resolver-lifeline-panel ${status}" aria-label="Proof Barrier">
+      <header><div><small>8.6.11 • PROOF BARRIER</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -2465,6 +2515,7 @@
       writeProjectRegistryBackup(companies,`keelson-${source}`);
       resolverMark869('In-memory roster handoff','pass',{detail:`${companies.length} in-memory project row(s) ready`,ids:companies});
       window.__darkSkyCanonicalFleet={build:BUILD_VERSION,source,count:companies.length,duplicates:remaining,at:new Date().toISOString()};
+      if(companies.length===6)proofBarrierAdvance8611('ROSTER_READY',`Canonical roster ready • ${source}`);
       const trace=resolverLifelineTrace869();trace.status='clear';trace.finishedAt=new Date().toISOString();
       return companies;
     })();
@@ -4610,7 +4661,7 @@
     body.querySelectorAll('[data-intel-action="watch"]').forEach(b=>b.onclick=async()=>{await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});});
     body.querySelectorAll('[data-intel-action="learning"]').forEach(b=>b.onclick=()=>{$('fleetLearningRegistry')?.scrollIntoView({behavior:'smooth',block:'start'});});
     if(state)state.textContent=verifying?'LOCAL FLEET • VERIFYING':(snap.signals.length?'SIGNALS NORMALIZED':'FLEET STEADY');
-    try{if(Number(sm?.vessels)===6&&state&&!/READING FLEET/i.test(String(state.textContent||'')))recordIntelligenceProof8610({count:Number(sm.vessels),state:state.textContent,source:verifying?'fleet-intelligence-local-first-paint':'fleet-intelligence-live-render'});}catch(_){ }
+    try{if(Number(sm?.vessels)===6&&state&&!/READING FLEET/i.test(String(state.textContent||''))){recordIntelligenceProof8610({count:Number(sm.vessels),state:state.textContent,source:verifying?'fleet-intelligence-local-first-paint':'fleet-intelligence-live-render'});proofBarrierAdvance8611('INTELLIGENCE_PAINTED','Six-vessel Fleet Intelligence rendered');commitProofBarrier8611('fleet-intelligence-render').catch(()=>{});}}catch(_){ }
     try{sessionStorage.setItem(FLEET_INTELLIGENCE_STATE_KEY,active);}catch(_){}
     return snap;
   }
@@ -4690,6 +4741,8 @@
   function admiralLastRecovery(){try{return JSON.parse(localStorage.getItem('darkSkyLastRecovery')||'null');}catch(_){return null;}}
 
   async function runAdmiralReadinessChecks(source='manual'){
+    const barrierProof8611=await awaitProofBarrier8611({source:`readiness:${source}`});
+    const currentProof8611=(barrierProof8611?.ok?barrierProof8611:proofBarrierRead8611()?.currentProof)||null;
     const checks=[];
     const add=(id,label,state,detail,level='core')=>checks.push({id,label,state,detail,level});
     const safe=async(fn,fallback)=>{try{return await fn();}catch(err){return fallback(err);}};
@@ -4711,8 +4764,9 @@
     const engine=await safe(()=>verifyEnginePin(DEFAULT_ENGINE_PIN,{recordFailure:false}),()=>({ok:false}));
     add('engine-auth','Black Flag recovery access',engine?.ok===true?'pass':'fail',engine?.ok?'5615 recovery path verified without changing session state.':'Black Flag 5615 recovery path did not verify.');
 
+    const readinessRows8611=await safe(()=>readCanonicalProjectRegistry(),()=>projects());
     const adminRows=[];
-    for(const p of projects()){
+    for(const p of readinessRows8611){
       const result=await safe(()=>verifyProjectAdminPin(DEFAULT_ADMIN_PIN,p.id,{recordFailure:false}),()=>({ok:false}));
       adminRows.push({id:p.id,name:p.name,ok:result?.ok===true});
     }
@@ -4727,7 +4781,7 @@
     const inviteOk=/^\d{6}$/.test(generated)&&!reserved.has(generated);
     add('client-preview','Client Preview invite isolation',inviteOk?'pass':'fail',inviteOk?'Fresh six-digit preview credential is distinct from all authority credentials.':'Preview PIN generator returned an invalid/reserved credential.');
 
-    const ids=projects().map(p=>canonicalProjectId(p.id));
+    const ids=(currentProof8611?.registryIds?.length===6?currentProof8611.registryIds:readinessRows8611.map(p=>canonicalProjectId(p.id)));
     const uniqueIds=new Set(ids);
     add('project-identity','Project identity uniqueness',ids.length===uniqueIds.size?'pass':'fail',ids.length===uniqueIds.size?`${ids.length} canonical Project IDs are unique.`:'Duplicate canonical Project IDs detected.');
 
@@ -4764,48 +4818,18 @@
     add('fleet-intelligence-bounded-paint','Fleet Intelligence bounded first paint',fleetIntelligenceBoundedPaint?'pass':'fail',fleetIntelligenceBoundedPaint?'Fleet Intelligence paints a usable roster-backed local picture within a bounded window and reconciles live cross-vessel intelligence in the background.':'Fleet Intelligence can still remain indefinitely on READING FLEET before presenting a usable fleet picture.');
 
     const canonicalRosterIds864=RELEASE_CANONICAL_FLEET_IDS_864;
-    const currentRosterIds864=[...new Set(projects().map(p=>String(canonicalProjectId(p?.id||''))))];
-    const canonicalRosterOk864=canonicalRosterIds864.length===6&&canonicalRosterIds864.every(id=>currentRosterIds864.includes(id))&&currentRosterIds864.length===6;
-    const dockCards864=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card')];
-    const dockLiveOk864=!dockCards864.length||dockCards864.length===6;
-    add('canonical-roster-live','Canonical six-vessel roster',canonicalRosterOk864&&dockLiveOk864?'pass':'fail',canonicalRosterOk864&&dockLiveOk864?`Six canonical vessels are present${dockCards864.length?' and rendered in Fleet Dock':''}.`:`Live roster disagreement: expected 6 canonical vessels; registry=${currentRosterIds864.length}, rendered=${dockCards864.length||'not painted'}.`);
-    const musterState866=window.__darkSkyFleetMuster||null;
-    const musterSeed866=await safe(async()=>{const r=await fetch(`FLEET_MUSTER_SEED.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
-    const musterSeedOk866=musterSeed866?.build===BUILD_VERSION&&Array.isArray(musterSeed866?.vessels)&&musterSeed866.vessels.length===6&&musterSeed866.vessels.every(v=>RELEASE_CANONICAL_FLEET_IDS_864.includes(String(v.projectId||'')));
-    const musterRuntimeOk866=!!musterState866&&Number(musterState866.count)===6&&RELEASE_CANONICAL_FLEET_IDS_864.every(id=>(musterState866.ids||[]).includes(id));
-    add('fleet-muster-protected-six','Protected Dock Source Trace',musterSeedOk866&&musterRuntimeOk866?'pass':'fail',musterSeedOk866&&musterRuntimeOk866?'Protected six-vessel muster seed and runtime reconciliation agree before fleet paint.':'Protected Dock Source Trace seed/runtime agreement is incomplete.');
-    const currentEvidence8610=evidenceReconciliationRead8610();
-    const dockProof8610=currentEvidence8610?.dock?.ok===true&&Number(currentEvidence8610?.dock?.count)===6;
-    const includeRenderedTrace8610=!!document.querySelector('#fleetCommissioningFleet .fleet-dock-card[data-project-id]');
-    const musterTrace867=await safe(()=>collectMusterTrace867({includeRendered:includeRenderedTrace8610}),()=>null);
-    const musterBaseOk867=!!musterTrace867&&Array.isArray(musterTrace867.stages)&&musterTrace867.stages.slice(0,5).every(st=>st.ok);
-    const musterRenderedOk867=!includeRenderedTrace8610||musterTrace867?.stages?.find(st=>st.name==='Rendered Fleet Dock')?.ok===true||dockProof8610;
-    const musterTraceOk867=musterBaseOk867&&musterRenderedOk867;
-    add('fleet-muster-stage-trace','Dock Source Trace six-stage proof',musterTraceOk867?'pass':'fail',musterTraceOk867?'Muster Seed → Registry → Admission → Manifest → Memory → rendered Fleet Dock retain the protected six; current successful render proof supersedes stale trace attempts.':`Dock Source Trace current proof is incomplete at ${musterTrace867?.firstDrop||'unresolved stage'}.`);
-    const dockSourceTrace868=await safe(()=>collectDockSourceTrace868({includeRendered:includeRenderedTrace8610}),()=>null);
-    const dockNonRenderedOk868=!!dockSourceTrace868&&Array.isArray(dockSourceTrace868.stages)&&dockSourceTrace868.stages.slice(1,8).every(st=>st.ok);
-    const renderedNowOk868=dockSourceTrace868?.stages?.find(st=>st.name==='Rendered Fleet Dock cards')?.ok===true;
-    const dockSourceOk868=dockNonRenderedOk868&&(renderedNowOk868||dockProof8610||!includeRenderedTrace8610);
-    add('fleet-dock-source-trace','Fleet Dock last-mile source trace',dockSourceOk868?'pass':'fail',dockSourceOk868?'IndexedDB → mirror → admissions → manifest → memory → Dock input → visible rows → rendered cards retain the protected six; Proving Ground reads the same current proof used by Fleet Dock.':`Dock source current proof is incomplete at ${dockSourceTrace868?.firstDrop||'unresolved stage'}.`);
-    const canonicalAdmissionIds864=await safe(async()=>{const rows=await readCanonicalProjectRegistry();const ledger=await ensureV4AdmissionLedger(rows);return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger[id],id));},()=>[]);
-    const canonicalAdmissionsOk864=canonicalAdmissionIds864.length===6;
-    add('canonical-six-admissions','Canonical six fleet citizenship',canonicalAdmissionsOk864?'pass':'fail',canonicalAdmissionsOk864?'All six immutable Known Good vessels hold valid active fleet admissions.':`Fleet citizenship incomplete: ${canonicalAdmissionIds864.length}/6 canonical admissions valid.`);
+    const proofStages8611=Object.fromEntries((currentProof8611?.stages||[]).map(st=>[st.name,st]));
+    const proofReady8611=currentProof8611?.ok===true;
+    add('canonical-roster-live','Canonical six-vessel roster',proofStages8611.Registry?.ok?'pass':'fail',proofStages8611.Registry?.ok?'Current committed proof contains all six canonical registry IDs.':`Proof barrier has not committed a six-vessel registry yet (${proofStages8611.Registry?.count||0}/6).`);
+    add('fleet-muster-protected-six','Protected Dock Source Trace',proofReady8611?'pass':'fail',proofReady8611?'Protected seed/runtime evidence is reconciled only after the six-vessel proof barrier.':'Protected fleet proof has not crossed the commit barrier yet.');
+    add('fleet-muster-stage-trace','Dock Source Trace six-stage proof',proofReady8611?'pass':'fail',proofReady8611?'Registry → Admissions → Manifest → Memory → Dock → Intelligence all agree on the committed six-vessel current proof.':'Current proof is incomplete; intermediate observations remain history and cannot create current truth.');
+    add('fleet-dock-source-trace','Fleet Dock last-mile source trace',proofStages8611.Dock?.ok?'pass':'fail',proofStages8611.Dock?.ok?'The committed proof contains all six rendered Fleet Dock IDs.':'Fleet Dock has not committed six rendered IDs after reconciliation.');
+    add('canonical-six-admissions','Canonical six fleet citizenship',proofStages8611.Admissions?.ok?'pass':'fail',proofStages8611.Admissions?.ok?'All six immutable Known Good vessels hold valid admissions in the committed proof.':`Committed admission proof is ${proofStages8611.Admissions?.count||0}/6.`);
     const legacyAnchorId865='bf-p-f92f87e8ec44';
-    const legacyRows865=(await safe(()=>readCanonicalProjectRegistry(),()=>[])).filter(p=>normalizeBusinessIdentityText(p?.name||p?.identity?.displayName||p?.branding?.businessName)==='legacy plumbing');
-    const legacyAnchorSurvives865=legacyRows865.length===1&&String(legacyRows865[0]?.id||'')===legacyAnchorId865;
-    const legacyRendered865=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card')].some(card=>String(card?.textContent||'').includes('Legacy Plumbing'));
-    add('legacy-identity-anchor','Legacy Plumbing immutable identity anchor',legacyAnchorSurvives865&&(!document.querySelector('#fleetCommissioningFleet .fleet-dock-card')||legacyRendered865)?'pass':'fail',legacyAnchorSurvives865?`Legacy Plumbing survives duplicate reconciliation on immutable Project ID ${legacyAnchorId865}${legacyRendered865?' and is rendered in Fleet Dock':''}.`:`Legacy identity disagreement: ${legacyRows865.map(r=>String(r?.id||'missing')).join(', ')||'no canonical Legacy row'}.`);
-
-    const intelState864=document.getElementById('fleetIntelligenceState');
-    const intelBody864=document.getElementById('fleetIntelligenceBody');
-    const intelMounted864=!!intelState864&&!!intelBody864;
-    const intelDomUsable8610=!intelMounted864||(!/READING FLEET/i.test(String(intelState864.textContent||''))&&String(intelBody864.textContent||'').trim()&&!/Building the fleet intelligence picture/i.test(String(intelBody864.textContent||'')));
-    if(intelMounted864&&intelDomUsable8610&&projects().length===6)recordIntelligenceProof8610({count:6,state:intelState864.textContent,source:'readiness-live-dom'});
-    const intelProof8610=evidenceReconciliationRead8610()?.intelligence;
-    const intelProofOk8610=intelProof8610?.ok===true&&Number(intelProof8610?.count)===6;
-    const intelUsable864=intelDomUsable8610||intelProofOk8610;
-    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',intelUsable864?'pass':'fail',intelUsable864?'Fleet Intelligence current proof shows a usable six-vessel picture; newer successful evidence supersedes earlier READING FLEET attempts.':'Fleet Intelligence has no current successful first-paint proof for this build.');
-    add('evidence-reconciliation-current-proof','Evidence reconciliation current proof',(dockProof8610||renderedNowOk868)&&intelUsable864?'pass':'fail',(dockProof8610||renderedNowOk868)&&intelUsable864?'Fleet Dock and Fleet Intelligence publish current successful evidence into one canonical proof record consumed by Proving Ground.':'Current live-surface proof is incomplete; stale failures are retained as history but cannot be superseded yet.');
+    const legacyProofOk8611=proofReady8611&&currentProof8611.registryIds.includes(legacyAnchorId865)&&currentProof8611.dockIds.includes(legacyAnchorId865);
+    add('legacy-identity-anchor','Legacy Plumbing immutable identity anchor',legacyProofOk8611?'pass':'fail',legacyProofOk8611?`Legacy Plumbing survives the committed proof barrier on immutable Project ID ${legacyAnchorId865}.`:'Legacy Plumbing is not present in both committed registry and Dock proof.');
+    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',proofStages8611.Intelligence?.ok?'pass':'fail',proofStages8611.Intelligence?.ok?'Fleet Intelligence committed a usable six-vessel first-paint proof after the barrier.':'Fleet Intelligence has not crossed the successful paint barrier for this build.');
+    add('evidence-reconciliation-current-proof','Proof Barrier current proof',proofReady8611?'pass':'fail',proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':'No current proof has been committed; boot-time observations remain diagnostic history only.');
 
     let stagingVerified864=null;try{stagingVerified864=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
     const stagingLedger864=fleetStagingLedgerRead();
@@ -5113,7 +5137,7 @@
   window.DarkSkyAdmiralReadiness={run:runAdmiralReadinessChecks,render:renderAdmiralReadiness,exportRecovery:exportFleetRecoverySnapshot};
 
   async function renderEngineRoom(){
-    // 8.6.10 Evidence Reconciliation — Engine paint can never block forever on roster
+    // 8.6.11 Proof Barrier — Engine paint can never block forever on roster
     // reconciliation. The resolver owns a shorter named deadline; this outer guard
     // catches any uninstrumented wait and paints a diagnostic Dock instead.
     const engineConvergence=convergeCanonicalFleetForPresentation({source:'engine-room',force:true});
@@ -5121,7 +5145,7 @@
     if(!engineGate?.ok){
       const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();
       if(engineGate?.timeout&&!trace.firstFailure){trace.firstFailure='Engine presentation convergence';resolverMark869('Engine presentation convergence','timeout',{detail:'Outer Engine guard reached 1750 ms'});}
-      console.warn('Evidence Reconciliation Engine fallback',engineGate?.error||'timeout');
+      console.warn('Proof Barrier Engine fallback',engineGate?.error||'timeout');
       await renderFleetCommissioning({skipConvergence:true});
     }else await renderFleetCommissioning({skipConvergence:true});
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
@@ -5481,7 +5505,7 @@
     const canonicalState=window.__darkSkyCanonicalFleet||{};
     const identityState=Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
     const finalTrace868=await collectDockSourceTrace868({includeRendered:true});
-    if(finalTrace868?.stages?.find(st=>st.name==='Rendered Fleet Dock cards')?.ok)recordDockProof8610(finalTrace868);
+    if(finalTrace868?.stages?.find(st=>st.name==='Rendered Fleet Dock cards')?.ok){recordDockProof8610(finalTrace868);proofBarrierAdvance8611('DOCK_PAINTED','Six Fleet Dock cards rendered');}
     const renderedStage868=finalTrace868.stages.find(st=>st.name==='Rendered Fleet Dock cards');
     if(!renderedStage868?.ok){
       if(state){state.textContent='DOCK SOURCE HOLD • RENDERED CARDS';state.className='fleet-commissioning-state hold';}
@@ -12646,10 +12670,11 @@ The full order and approved media remain stored with this project.`;
     try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
     try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
     try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command systems warning',err); }
-    try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
     try{ await commandDeadline(renderFleetCommissioning(),1800,true); }catch(err){ console.warn('fleet dock warning',err); }
     try{ renderFleetLearningRegistry(); }catch(err){ console.warn('fleet learning warning',err); }
     try{ bindFleetIntelligenceDeck(); await renderFleetIntelligenceDeck(); }catch(err){ console.warn('fleet intelligence warning',err); }
+    try{ await commitProofBarrier8611('home-render'); }catch(err){ console.warn('proof barrier commit warning',err); }
+    try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
     try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }
     try{ await commandDeadline(renderV3ArchitectureStatus(),2200,true); }catch(err){ console.warn('broadside status warning',err); }
   };

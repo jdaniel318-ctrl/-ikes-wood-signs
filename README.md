@@ -1,10 +1,14 @@
-# Dark Sky 8.6.10 — Evidence Reconciliation
+# Dark Sky 8.6.11 — Proof Barrier
+
+Current readiness truth is committed only after initialize → reconcile → render → prove. The canonical six-vessel rescue remains frozen; this release changes assurance timing and proof consumption only.
+
+# Dark Sky 8.6.11 — Proof Barrier
 
 Current successful live evidence is now the canonical current truth for Proving Ground. The six-vessel rescue logic is preserved unchanged.
 
-# Dark Sky 8.6.10 — Evidence Reconciliation
+# Dark Sky 8.6.11 — Proof Barrier
 
-Evidence Reconciliation moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
+Proof Barrier moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
 
 ## 8.6.8 — Dock Source Trace
 

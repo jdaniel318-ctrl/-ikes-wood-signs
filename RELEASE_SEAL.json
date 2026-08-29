@@ -1,9 +1,10 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.10",
-  "release": "Evidence Reconciliation",
-  "seal": "evidence-reconciliation-8610-current-proof-7d31af",
+  "build": "8.6.11",
+  "release": "Proof Barrier",
+  "seal": "proof-barrier-8611-commit-after-paint-42b7d1",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Evidence Reconciliation"
+  "release_name": "Proof Barrier",
+  "name": "Proof Barrier"
 }

@@ -1,6 +1,6 @@
 {
-  "release": "Evidence Reconciliation",
-  "name": "Evidence Reconciliation",
+  "release": "Proof Barrier",
+  "name": "Proof Barrier",
   "file_count": 59,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -61,9 +61,10 @@
     "platform_v4.js",
     "signal_restoration_logo.png",
     "styles.css",
-    "sw.js"
+    "sw.js",
+    "PROOF_BARRIER_MODEL.json"
   ],
-  "build": "8.6.10",
-  "seal": "evidence-reconciliation-8610-current-proof-7d31af",
-  "release_name": "Evidence Reconciliation"
+  "build": "8.6.11",
+  "seal": "proof-barrier-8611-commit-after-paint-42b7d1",
+  "release_name": "Proof Barrier"
 }

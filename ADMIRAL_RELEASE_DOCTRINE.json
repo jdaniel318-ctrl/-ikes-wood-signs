@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-admiral-release-doctrine-v2",
   "doctrineVersion": 2,
-  "build": "8.6.10",
+  "build": "8.6.11",
   "name": "Ike Fit",
   "principles": [
     "single-build release identity",

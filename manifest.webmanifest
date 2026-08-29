@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.6.10 \u2014 Evidence Reconciliation",
-  "short_name": "Dark Sky 8.6.10",
-  "start_url": "./index.html?_darkSkyRelease=8.6.10&_darkSkySeal=evidence-reconciliation-8610-current-proof-7d31af",
+  "name": "Dark Sky 8.6.11 \u2014 Proof Barrier",
+  "short_name": "Dark Sky 8.6.11",
+  "start_url": "./index.html?_darkSkyRelease=8.6.11&_darkSkySeal=proof-barrier-8611-commit-after-paint-42b7d1",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.10"
+  "version": "8.6.11"
 }

@@ -1,0 +1,23 @@
+{
+  "schema": "dark-sky-proof-barrier-model-v1",
+  "build": "8.6.11",
+  "status": "required-runtime-contract",
+  "phases": [
+    "BOOTING",
+    "RECONCILING",
+    "ROSTER_READY",
+    "DOCK_PAINTED",
+    "INTELLIGENCE_PAINTED",
+    "PROOF_COMMITTED"
+  ],
+  "rule": "Current readiness proof may only be committed after reconciliation and successful live surface paints.",
+  "current_proof_fields": [
+    "registryIds",
+    "admissionIds",
+    "manifestIds",
+    "memoryIds",
+    "dockIds",
+    "intelligence"
+  ],
+  "supersession": "Earlier failures remain historical evidence; only a later committed proof can define current readiness."
+}
