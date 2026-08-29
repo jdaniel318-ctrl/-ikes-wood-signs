@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.19';
-const RELEASE_SEAL='runtime-entry-bridge-8619-verified-loader-4d7a2c';
+const RELEASE_BUILD='8.6.20';
+const RELEASE_SEAL='witness-truth-8620-evidence-hold-7c3a91';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

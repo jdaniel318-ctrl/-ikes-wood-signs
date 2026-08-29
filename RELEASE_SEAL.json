@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.19",
-  "release": "Runtime Entry Bridge",
-  "seal": "runtime-entry-bridge-8619-verified-loader-4d7a2c",
-  "execution_model": "verified-loader-runtime-entry-bridge",
+  "build": "8.6.20",
+  "release": "Witness Truth Test",
+  "seal": "witness-truth-8620-evidence-hold-7c3a91",
+  "execution_model": "verified-loader-witness-truth-test",
   "service_worker": "identity-only",
-  "release_name": "Runtime Entry Bridge",
-  "name": "Runtime Entry Bridge",
-  "releaseName": "Runtime Entry Bridge"
+  "release_name": "Witness Truth Test",
+  "name": "Witness Truth Test",
+  "releaseName": "Witness Truth Test"
 }

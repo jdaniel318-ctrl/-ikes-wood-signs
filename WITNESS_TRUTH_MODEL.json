@@ -1,0 +1,20 @@
+{
+  "schema": "dark-sky-witness-truth-v1",
+  "build": "8.6.20",
+  "release_seal": "witness-truth-8620-evidence-hold-7c3a91",
+  "purpose": "Prove which same-session diagnostic channels survive Safari startup and recovery without changing fleet behavior.",
+  "channels": [
+    "window-memory",
+    "sessionStorage",
+    "localStorage"
+  ],
+  "requirements": [
+    "Window-memory witness is authoritative for current page execution and cannot silently fail.",
+    "sessionStorage and localStorage probes must expose exact success or exception text.",
+    "Automatic safe recovery pauses briefly for evidence capture with Continue Now.",
+    "Settled Engine login shows a temporary post-login evidence hold with channel state and recovery identity.",
+    "Engineering Evidence reads window-memory truth first and uses storage only as corroboration."
+  ],
+  "diagnostic_only": true,
+  "fleet_behavior_changes": false
+}

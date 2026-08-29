@@ -14,27 +14,61 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.6.19 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.19',seal:'runtime-entry-bridge-8619-verified-loader-4d7a2c'});
+    // Dark Sky 8.6.20 MEMORY MUSTER — canonical release identity.
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.20',seal:'witness-truth-8620-evidence-hold-7c3a91'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
-    // 8.6.19 Runtime Entry Bridge — durable witness in the unavoidable document shell.
-    const DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY='darkSkyRuntimeEntryWitnessV8619';
-    window.__darkSkyRuntimeEntryWitness8619=function(event,detail={}){
+    // 8.6.20 Witness Truth Test — three independent channels, no silent storage failures.
+    const DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY='darkSkyRuntimeEntryWitnessV8620';
+    const DARK_SKY_RUNTIME_ENTRY_SESSION_KEY='darkSkyRuntimeEntryWitnessSessionV8620';
+    const DARK_SKY_WITNESS_TRUTH_KEY='darkSkyWitnessTruthV8620';
+    const __dsWitnessTruthBase=()=>({schema:'dark-sky-witness-truth-v1',build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL,history:[],counters:{},channels:{window:{ok:true,error:''},sessionStorage:{ok:null,error:''},localStorage:{ok:null,error:''}},updatedAt:new Date().toISOString()});
+    window.__darkSkyWitnessTruthState8620=__dsWitnessTruthBase();
+    function __dsStorageProbe8620(kind){
+      const channel={ok:false,error:'',name:kind};
+      const key=`__darkSkyWitnessTruthProbe_${kind}_8620`;
       try{
-        const raw=localStorage.getItem(DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY);
-        const prior=raw?JSON.parse(raw):null;
-        const base=prior&&prior.build===DARK_SKY_EXPECTED_BUILD?prior:{schema:'dark-sky-runtime-entry-witness-v1',build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL,history:[],counters:{}};
-        const at=new Date().toISOString();
-        const counters={...(base.counters||{}),[event]:Number(base.counters?.[event]||0)+1};
-        const row={event,at,href:String(location.href||''),hash:String(location.hash||''),...detail};
-        const next={...base,build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL,counters,lastEvent:row,history:[...(base.history||[]),row].slice(-120),updatedAt:at};
-        localStorage.setItem(DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY,JSON.stringify(next));
-        window.__darkSkyRuntimeEntryWitnessState8619=next;
-        return next;
-      }catch(_){return null;}
+        const storage=kind==='sessionStorage'?window.sessionStorage:window.localStorage;
+        const value=`${DARK_SKY_EXPECTED_BUILD}:${Date.now()}`;
+        storage.setItem(key,value);
+        const got=storage.getItem(key);
+        storage.removeItem(key);
+        channel.ok=got===value;
+        if(!channel.ok)channel.error='read-back mismatch';
+      }catch(err){channel.ok=false;channel.error=`${String(err?.name||'Error')}: ${String(err?.message||err)}`;}
+      return channel;
+    }
+    function __dsWriteWitnessStorage8620(kind,next){
+      const key=kind==='sessionStorage'?DARK_SKY_RUNTIME_ENTRY_SESSION_KEY:DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY;
+      try{const storage=kind==='sessionStorage'?window.sessionStorage:window.localStorage;storage.setItem(key,JSON.stringify(next));return {ok:true,error:''};}
+      catch(err){return {ok:false,error:`${String(err?.name||'Error')}: ${String(err?.message||err)}`};}
+    }
+    window.__darkSkyRuntimeEntryWitness8620=function(event,detail={}){
+      const base=window.__darkSkyWitnessTruthState8620&&window.__darkSkyWitnessTruthState8620.build===DARK_SKY_EXPECTED_BUILD?window.__darkSkyWitnessTruthState8620:__dsWitnessTruthBase();
+      const at=new Date().toISOString();
+      const counters={...(base.counters||{}),[event]:Number(base.counters?.[event]||0)+1};
+      const row={event,at,href:String(location.href||''),hash:String(location.hash||''),readyState:document.readyState,...detail};
+      const next={...base,build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL,counters,lastEvent:row,history:[...(base.history||[]),row].slice(-160),updatedAt:at};
+      next.channels={...(next.channels||{}),window:{ok:true,error:''}};
+      const sessionWrite=__dsWriteWitnessStorage8620('sessionStorage',next);
+      const localWrite=__dsWriteWitnessStorage8620('localStorage',next);
+      next.channels.sessionStorage={...(__dsStorageProbe8620('sessionStorage')),writeOk:sessionWrite.ok,writeError:sessionWrite.error};
+      next.channels.localStorage={...(__dsStorageProbe8620('localStorage')),writeOk:localWrite.ok,writeError:localWrite.error};
+      // Best-effort second write includes the probe result itself; failure remains visible in window memory.
+      const sessionFinal=__dsWriteWitnessStorage8620('sessionStorage',next); if(!sessionFinal.ok)next.channels.sessionStorage.finalWriteError=sessionFinal.error;
+      const localFinal=__dsWriteWitnessStorage8620('localStorage',next); if(!localFinal.ok)next.channels.localStorage.finalWriteError=localFinal.error;
+      window.__darkSkyWitnessTruthState8620=next;
+      window.__darkSkyRuntimeEntryWitnessState8620=next;
+      return next;
     };
-    window.__darkSkyRuntimeEntryWitness8619('document-first-light',{readyState:document.readyState});
+    window.__darkSkyWitnessTruthSnapshot8620=function(){
+      const memory=window.__darkSkyWitnessTruthState8620||__dsWitnessTruthBase();
+      const out={memory,session:null,local:null,sessionError:'',localError:''};
+      try{const raw=sessionStorage.getItem(DARK_SKY_RUNTIME_ENTRY_SESSION_KEY);out.session=raw?JSON.parse(raw):null;}catch(err){out.sessionError=`${String(err?.name||'Error')}: ${String(err?.message||err)}`;}
+      try{const raw=localStorage.getItem(DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY);out.local=raw?JSON.parse(raw):null;}catch(err){out.localError=`${String(err?.name||'Error')}: ${String(err?.message||err)}`;}
+      return out;
+    };
+    window.__darkSkyRuntimeEntryWitness8620('document-first-light',{readyState:document.readyState});
     window.__darkSkyExpectedRelease = DARK_SKY_RELEASE;
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
@@ -104,7 +138,7 @@
     };
 
     document.addEventListener('DOMContentLoaded',()=>{
-      window.__darkSkyRuntimeEntryWitness8619?.('document-dom-ready',{routeIntent:window.__darkSkyRouteIntent||'unknown'});
+      window.__darkSkyRuntimeEntryWitness8620?.('document-dom-ready',{routeIntent:window.__darkSkyRouteIntent||'unknown'});
       if(window.__darkSkyRouteIntent==='engine'){
         // Engine intent is final. Quarantine stale owner markers before anything else paints.
         if(__dsLegacyOwnerHash || __dsSurface==='owner' || __dsSurface==='preview'){
@@ -1106,7 +1140,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.19 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.20 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1123,7 +1157,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.19 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.20 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1626,7 +1660,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
-    window.__darkSkyRuntimeEntryWitness8619?.('verified-loader-entered',{readyState:document.readyState});
+    window.__darkSkyRuntimeEntryWitness8620?.('verified-loader-entered',{readyState:document.readyState});
     // Derive from first-light identity; never maintain a second release literal here.
     const RELEASE=window.__darkSkyExpectedRelease||{};
     const EXPECTED=String(RELEASE.build||'unknown'), SEAL=String(RELEASE.seal||'unknown');
@@ -1741,6 +1775,48 @@
       shield.setAttribute('aria-hidden','false');shield.style.display='flex';
       shield.innerHTML=`<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-eyebrow">AUTOMATIC SAFE RECOVERY</div><h2>UPDATING VERIFIED RELEASE</h2><p>Dark Sky recognized a known stale-worker handoff and is replacing only application runtime state. Project data remains untouched.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>NEW BUILD</small><strong>${EXPECTED}</strong></div><div class="ds-release-cell"><small>RECOVERY MODE</small><strong>SAFE AUTO</strong></div></div><p>${safe(reason)}</p><div id="darkSkyAutoRecoveryProgress" class="ds-release-progress" aria-live="polite"></div></div>`;
     }
+    async function recoveryEvidenceHold8620(ms=3200){
+      if(!shield||window.__darkSkyReleaseGateState!=='recovering')return;
+      window.__darkSkyRuntimeEntryWitness8620?.('recovery-evidence-hold-shown',{durationMs:ms});
+      const card=shield.querySelector('.ds-route-recovery');
+      if(!card){await delay(ms);return;}
+      const wrap=document.createElement('div');
+      wrap.className='ds-release-progress';
+      wrap.style.cssText='width:min(540px,86vw);margin-top:8px;padding:12px 14px;border:1px solid rgba(208,168,77,.38);border-radius:14px;background:rgba(7,20,25,.78);text-align:left;';
+      const truth=window.__darkSkyWitnessTruthSnapshot8620?.();
+      const local=truth?.memory?.channels?.localStorage||{};
+      const session=truth?.memory?.channels?.sessionStorage||{};
+      wrap.innerHTML=`<div style="font-size:9px;letter-spacing:.18em;font-weight:900;color:#d0a84d;margin-bottom:7px">DIAGNOSTIC EVIDENCE HOLD</div><div style="font-size:13px;line-height:1.45;color:#edf5f4">Build <strong>${EXPECTED}</strong> • worker handoff verified • project data preserved</div><div style="font-size:11px;line-height:1.45;color:#9fb3b8;margin-top:6px">sessionStorage ${session.ok&&session.writeOk?'PASS':'CHECK'}${session.writeError?` • ${safe(session.writeError)}`:''}<br>localStorage ${local.ok&&local.writeOk?'PASS':'CHECK'}${local.writeError?` • ${safe(local.writeError)}`:''}</div><button id="darkSkyRecoveryEvidenceContinue8620" type="button" style="margin-top:10px;width:100%;padding:11px;border-radius:11px;border:1px solid rgba(208,168,77,.52);background:#12313b;color:#eef5f4;font-weight:900;letter-spacing:.08em">CONTINUE NOW</button><div id="darkSkyRecoveryEvidenceCountdown8620" style="margin-top:7px;font-size:10px;color:#9fb3b8;text-align:center">Continuing automatically…</div>`;
+      card.appendChild(wrap);
+      await new Promise(resolve=>{
+        let done=false;
+        const finish=(why)=>{if(done)return;done=true;clearInterval(tick);clearTimeout(timer);window.__darkSkyRuntimeEntryWitness8620?.('recovery-evidence-hold-dismissed',{reason:why});resolve();};
+        const started=Date.now();
+        const countdown=()=>{const left=Math.max(0,ms-(Date.now()-started));const el=document.getElementById('darkSkyRecoveryEvidenceCountdown8620');if(el)el.textContent=`Continuing automatically in ${(left/1000).toFixed(1)}s`;};
+        const tick=setInterval(countdown,100);const timer=setTimeout(()=>finish('timeout'),ms);countdown();
+        document.getElementById('darkSkyRecoveryEvidenceContinue8620')?.addEventListener('click',()=>finish('continue-now'),{once:true});
+      });
+      wrap.remove();
+    }
+    function showPostLoginEvidenceHold8620(){
+      if(window.__darkSkyPostLoginEvidenceHoldShown8620)return;
+      window.__darkSkyPostLoginEvidenceHoldShown8620=true;
+      window.__darkSkyRuntimeEntryWitness8620?.('post-login-evidence-hold-shown',{});
+      const truth=window.__darkSkyWitnessTruthSnapshot8620?.();
+      let recovery=null,recoveryError='';
+      try{const raw=localStorage.getItem('darkSkyLastRecovery');recovery=raw?JSON.parse(raw):null;}catch(err){recoveryError=`${String(err?.name||'Error')}: ${String(err?.message||err)}`;}
+      const channels=truth?.memory?.channels||{};
+      const overlay=document.createElement('div');overlay.id='darkSkyPostLoginEvidenceHold8620';
+      overlay.style.cssText='position:fixed;inset:0;z-index:2147483646;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(3,13,17,.78);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;';
+      const channelLine=(name,c)=>`${name}: ${c?.ok&&c?.writeOk!==false?'PASS':'CHECK'}${c?.error?` • ${c.error}`:''}${c?.writeError?` • ${c.writeError}`:''}`;
+      overlay.innerHTML=`<div style="width:min(760px,92vw);border:1px solid rgba(80,157,179,.46);border-radius:24px;background:linear-gradient(180deg,#0b2730,#081c23);box-shadow:0 30px 90px rgba(0,0,0,.48);padding:24px 26px;color:#edf5f4"><div style="font-size:10px;letter-spacing:.22em;font-weight:900;color:#d0a84d">POST-LOGIN DIAGNOSTIC • EVIDENCE HOLD</div><h2 style="margin:8px 0 4px;font-size:28px">Verified Engine handoff</h2><p style="margin:0 0 16px;color:#9fb3b8;line-height:1.45">Temporary diagnostic pause so the Captain can capture the full startup evidence. Fleet logic continues underneath; this overlay closes automatically.</p><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px"><div style="padding:12px;border:1px solid rgba(80,157,179,.25);border-radius:12px"><small style="color:#7eb4c4;letter-spacing:.12em">BUILD</small><strong style="display:block;margin-top:5px">${EXPECTED}</strong></div><div style="padding:12px;border:1px solid rgba(80,157,179,.25);border-radius:12px"><small style="color:#7eb4c4;letter-spacing:.12em">RELEASE SEAL</small><strong style="display:block;margin-top:5px;font-size:12px;word-break:break-word">${SEAL}</strong></div></div><div style="padding:12px 14px;border-radius:12px;background:rgba(3,13,17,.42);font-size:12px;line-height:1.6;color:#c6d5d8"><strong style="color:#eef5f4">Witness truth</strong><br>Window memory: PASS<br>${safe(channelLine('sessionStorage',channels.sessionStorage))}<br>${safe(channelLine('localStorage',channels.localStorage))}<br>Last event: ${safe(truth?.memory?.lastEvent?.event||'none')}</div><div style="padding:12px 14px;margin-top:10px;border-radius:12px;background:rgba(3,13,17,.42);font-size:12px;line-height:1.55;color:#c6d5d8"><strong style="color:#eef5f4">Last safe recovery</strong><br>${recovery?`${safe(recovery.build||'')} • ${safe(recovery.automatic?'automatic':'manual')} • ${safe(recovery.at||'')}`:(recoveryError?safe(recoveryError):'No retained recovery record for this session.')}</div><button id="darkSkyPostLoginContinue8620" type="button" style="margin-top:16px;width:100%;padding:13px;border-radius:12px;border:1px solid rgba(208,168,77,.52);background:#163b47;color:#fff;font-weight:900;letter-spacing:.09em">CONTINUE NOW</button><div id="darkSkyPostLoginCountdown8620" style="margin-top:8px;text-align:center;font-size:11px;color:#9fb3b8">Continuing automatically…</div></div>`;
+      document.body.appendChild(overlay);
+      const ms=5000,started=Date.now();let done=false;
+      const finish=(why)=>{if(done)return;done=true;clearInterval(tick);clearTimeout(timer);window.__darkSkyRuntimeEntryWitness8620?.('post-login-evidence-hold-dismissed',{reason:why});overlay.remove();};
+      const countdown=()=>{const left=Math.max(0,ms-(Date.now()-started));const el=document.getElementById('darkSkyPostLoginCountdown8620');if(el)el.textContent=`Continuing automatically in ${(left/1000).toFixed(1)}s`;};
+      const tick=setInterval(countdown,100),timer=setTimeout(()=>finish('timeout'),ms);countdown();
+      document.getElementById('darkSkyPostLoginContinue8620')?.addEventListener('click',()=>finish('continue-now'),{once:true});
+    }
     function completeReleaseHandoff({automatic=false}={}){
       window.__darkSkyReleaseGateState='clear';
       document.documentElement.classList.remove('dark-sky-release-preflight','dark-sky-route-preflight');
@@ -1776,7 +1852,7 @@
       await registerAndVerifyWorker();
       step('Fresh release sentinel verified','done');
       try{localStorage.setItem('darkSkyLastRecovery',JSON.stringify({ok:true,automatic:true,build:EXPECTED,seal:SEAL,at:new Date().toISOString(),reason:String(reason||''),steps:['new-release-preverified','worker-replaced','app-caches-cleared','runtime-reverified','sentinel-verified']}));}catch(_){ }
-      await delay(850);
+      await recoveryEvidenceHold8620(3200);
       return verified;
     }
     async function verifySnapshot(forRecovery=false){
@@ -1802,15 +1878,15 @@
     }
     async function executeVerifiedSnapshot(fetched){
       const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['styles.css'];document.head.appendChild(css);
-      window.__darkSkyRuntimeEntryWitness8619?.('verified-styles-installed',{seal:SEAL});
+      window.__darkSkyRuntimeEntryWitness8620?.('verified-styles-installed',{seal:SEAL});
       for(const path of ['platform_core.js','platform_v4.js','platform_identity.js','ike_style_registry.js','app.js','captain.js']){
-        await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8619?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8619?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
+        await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
     }
-    function installRuntimeEntryBridge8619(){
-      if(window.__darkSkyRuntimeEntryBridgeInstalled8619)return;
-      window.__darkSkyRuntimeEntryBridgeInstalled8619=true;
-      const witness=(event,detail={})=>window.__darkSkyRuntimeEntryWitness8619?.(event,detail);
+    function installRuntimeEntryBridge8620(){
+      if(window.__darkSkyRuntimeEntryBridgeInstalled8620)return;
+      window.__darkSkyRuntimeEntryBridgeInstalled8620=true;
+      const witness=(event,detail={})=>window.__darkSkyRuntimeEntryWitness8620?.(event,detail);
       let visibleGeneration=0;
       const engineVisible=()=>{
         const panel=document.getElementById('enginePanel');
@@ -1822,6 +1898,7 @@
         if(!engineVisible())return;
         const gen=++visibleGeneration;
         witness('engine-visible-observed',{gen,bodyClass:document.body.className});
+        showPostLoginEvidenceHold8620();
         Promise.resolve().then(async()=>{
           const fn=window.igniteProofBootstrap8617;
           witness('loader-ignition-dispatch',{gen,available:typeof fn==='function'});
@@ -1839,7 +1916,7 @@
       const observer=new MutationObserver(()=>igniteFromVisible());
       observer.observe(document.body,{attributes:true,attributeFilter:['class'],subtree:false});
       const panel=document.getElementById('enginePanel');if(panel)observer.observe(panel,{attributes:true,attributeFilter:['class','style']});
-      witness('runtime-entry-bridge-installed',{igniteAvailable:typeof window.igniteProofBootstrap8617==='function'});
+      witness('witness-truth-test-installed',{igniteAvailable:typeof window.igniteProofBootstrap8617==='function'});
       igniteFromVisible();
     }
     try{
@@ -1852,10 +1929,10 @@
         }
       }
       await executeVerifiedSnapshot(verified.fetched);
-      window.__darkSkyRuntimeEntryWitness8619?.('verified-runtime-executed',{igniteAvailable:typeof window.igniteProofBootstrap8617==='function'});
-      installRuntimeEntryBridge8619();
+      window.__darkSkyRuntimeEntryWitness8620?.('verified-runtime-executed',{igniteAvailable:typeof window.igniteProofBootstrap8617==='function'});
+      installRuntimeEntryBridge8620();
       completeReleaseHandoff({automatic:window.__darkSkyReleaseGateState==='recovering'});
-      window.__darkSkyRuntimeEntryWitness8619?.('release-seal-cleared',{build:EXPECTED,seal:SEAL});
+      window.__darkSkyRuntimeEntryWitness8620?.('release-seal-cleared',{build:EXPECTED,seal:SEAL});
       window.dispatchEvent(new CustomEvent('darksky:release-seal-clear',{detail:{build:EXPECTED,seal:SEAL}}));
       // Bounded completion contract: the verified release must restore same-tab interaction.
       setTimeout(()=>{

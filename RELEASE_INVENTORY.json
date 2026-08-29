@@ -1,7 +1,7 @@
 {
-  "release": "Runtime Entry Bridge",
-  "name": "Runtime Entry Bridge",
-  "file_count": 68,
+  "release": "Witness Truth Test",
+  "name": "Witness Truth Test",
+  "file_count": 69,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -47,6 +47,7 @@
     "RELEASE_SEAL.json",
     "RESOLVER_LIFELINE_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
+    "WITNESS_TRUTH_MODEL.json",
     "admirals_deck_ceremonial_v640.png",
     "app.js",
     "black_flag_platform_icon.png",
@@ -72,7 +73,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.19",
-  "seal": "runtime-entry-bridge-8619-verified-loader-4d7a2c",
-  "release_name": "Runtime Entry Bridge"
+  "build": "8.6.20",
+  "seal": "witness-truth-8620-evidence-hold-7c3a91",
+  "release_name": "Witness Truth Test"
 }

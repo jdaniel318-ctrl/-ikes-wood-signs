@@ -1,30 +1,34 @@
-# Dark Sky 8.6.19 — Runtime Entry Bridge
+# Dark Sky 8.6.20 — Witness Truth Test
+
+Diagnostic-only hardening pass. Window memory is the authoritative current-session witness; sessionStorage and localStorage are independently probed with explicit read/write error reporting. Automatic recovery receives a brief evidence hold, and the settled Engine receives a five-second post-login evidence hold with Continue Now. Fleet, Legacy, bootstrap, Memory Muster, and staging behavior are otherwise frozen.
+
+# Dark Sky 8.6.20 — Witness Truth Test
 
 Verified-loader diagnostic and ignition bridge. The atomic loader records unavoidable runtime milestones and dispatches the existing bootstrap runner only after the Engine panel is actually visible.
 
-# Dark Sky 8.6.19 — Runtime Entry Bridge
+# Dark Sky 8.6.20 — Witness Truth Test
 
 Read-only durable lifecycle witness separating Engine startup hook execution from Proof Signer module-state observation.
 
-# Dark Sky 8.6.19 — Runtime Entry Bridge
+# Dark Sky 8.6.20 — Witness Truth Test
 
-Runtime Entry Bridge wires the already-built proof bootstrap runner into normal platform initialization and Engine entry. The 8.6.16 Proof Signer Trace established that bootstrap calls were zero; this release fixes only that missing ignition wire and retains the signer diagnostics.
+Witness Truth Test wires the already-built proof bootstrap runner into normal platform initialization and Engine entry. The 8.6.16 Proof Signer Trace established that bootstrap calls were zero; this release fixes only that missing ignition wire and retains the signer diagnostics.
 
-# Dark Sky 8.6.19 — Runtime Entry Bridge
+# Dark Sky 8.6.20 — Witness Truth Test
 
 Atomic roster rule: reconcile → validate protected six → commit memory → render → prove. Proving Ground is inspection-only.
 
-# Dark Sky 8.6.19 — Runtime Entry Bridge
+# Dark Sky 8.6.20 — Witness Truth Test
 
 Current readiness truth is committed only after initialize → reconcile → render → prove. The canonical six-vessel rescue remains frozen; this release changes assurance timing and proof consumption only.
 
-# Dark Sky 8.6.19 — Runtime Entry Bridge
+# Dark Sky 8.6.20 — Witness Truth Test
 
 Current successful live evidence is now the canonical current truth for Proving Ground. The six-vessel rescue logic is preserved unchanged.
 
-# Dark Sky 8.6.19 — Runtime Entry Bridge
+# Dark Sky 8.6.20 — Witness Truth Test
 
-Runtime Entry Bridge moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
+Witness Truth Test moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
 
 ## 8.6.8 — Dock Source Trace
 
@@ -65,5 +69,5 @@ The release preserves normalized fleet signals, Fleet Health Matrix, Capability 
 ## 8.6.8 — Dock Source Trace
 Protected six-vessel muster seed restores exact Known Good identities and admissions before fleet surfaces paint. Runtime registry drift cannot redefine fleet membership.
 
-### 8.6.19 Runtime Entry Bridge
+### 8.6.20 Witness Truth Test
 Core proof is created during Engine initialization; Fleet Dock and Fleet Intelligence naturally append their proof for the same memory generation. One idempotent finalizer signs the current proof.

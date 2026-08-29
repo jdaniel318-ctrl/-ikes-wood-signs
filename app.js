@@ -4,7 +4,7 @@
   window.$ = $;
   window.$$ = $$;
   window.__darkSkyBootStage = 'app-module-entered';
-  window.__darkSkyRuntimeEntryWitness8619?.('app-module-evaluated',{module:'app.js'});
+  window.__darkSkyRuntimeEntryWitness8620?.('app-module-evaluated',{module:'app.js'});
   const DB_NAME = 'blackFlagPlatformV1';
   const DB_VERSION = 5;
   const STORE_ORDERS = 'orders';
@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.19';
+  const BUILD_VERSION='8.6.20';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2139,10 +2139,10 @@
   }
 
 
-  // 8.6.19 Bootstrap Ignition — read-only instrumentation of the proof signing lifecycle.
+  // 8.6.20 Bootstrap Ignition — read-only instrumentation of the proof signing lifecycle.
   // This does not repair fleet state, mutate admissions, or manufacture proof. It only records
   // who invoked bootstrap/finalizer, which generation each surface attached, and what store read-back sees.
-  // 8.6.19 Ignition Witness — durable, module-independent lifecycle breadcrumbs.
+  // 8.6.20 Ignition Witness — durable, module-independent lifecycle breadcrumbs.
   // This deliberately uses its own localStorage key so we can distinguish
   // "ignition never ran" from "signer trace observed a different module state".
   const IGNITION_WITNESS_KEY_8618='darkSkyIgnitionWitnessV8618';
@@ -2319,7 +2319,7 @@
     return proofBootstrapPromise8614;
   }
 
-  // 8.6.19 Bootstrap Ignition — connect the existing proof bootstrap runner to the
+  // 8.6.20 Bootstrap Ignition — connect the existing proof bootstrap runner to the
   // real platform/Engine startup lifecycle. One shared ignition promise owns each
   // current memory generation; repeated callers reuse the settled core proof.
   let bootstrapIgnitionPromise8617=null;
@@ -2706,7 +2706,7 @@
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
     return `<section class="resolver-lifeline-panel ${status}" aria-label="Bootstrap Commit">
-      <header><div><small>8.6.19 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+      <header><div><small>8.6.20 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -5095,13 +5095,19 @@
     const fleetIntelligenceBoundedPaint=String(renderFleetIntelligenceDeck).includes('LOCAL FLEET • VERIFYING')&&String(renderFleetIntelligenceDeck).includes('commandDeadline(fullPromise,650,null)')&&String(renderFleetIntelligenceDeck).includes('fleetIntelligenceLocalSnapshot()');
     add('fleet-intelligence-bounded-paint','Fleet Intelligence bounded first paint',fleetIntelligenceBoundedPaint?'pass':'fail',fleetIntelligenceBoundedPaint?'Fleet Intelligence paints a usable roster-backed local picture within a bounded window and reconciles live cross-vessel intelligence in the background.':'Fleet Intelligence can still remain indefinitely on READING FLEET before presenting a usable fleet picture.');
 
-    let runtimeEntry8619=null;
-    try{runtimeEntry8619=JSON.parse(localStorage.getItem('darkSkyRuntimeEntryWitnessV8619')||'null');if(runtimeEntry8619?.build!==BUILD_VERSION)runtimeEntry8619=null;}catch(_){runtimeEntry8619=null;}
-    const rc8619=runtimeEntry8619?.counters||{}, rl8619=runtimeEntry8619?.lastEvent||{};
-    const runtimeDetail8619=`first-light ${Number(rc8619['document-first-light']||0)} • loader ${Number(rc8619['verified-loader-entered']||0)} • app ${Number(rc8619['app-module-evaluated']||0)} • runtime ${Number(rc8619['verified-runtime-executed']||0)} • entry click ${Number(rc8619['engine-entry-control-clicked']||0)} • Engine visible ${Number(rc8619['engine-visible-observed']||0)} • ignition dispatch ${Number(rc8619['loader-ignition-dispatch']||0)} • ignition settled ${Number(rc8619['loader-ignition-settled']||0)} • last ${String(rl8619.event||'none')}.`;
-    add('runtime-entry-trace','Runtime Entry Trace',Number(rc8619['verified-loader-entered']||0)>0&&Number(rc8619['app-module-evaluated']||0)>0?'pass':'fail',runtimeDetail8619);
-    add('runtime-entry-engine-visible','Runtime Entry Trace — live Engine path',Number(rc8619['engine-visible-observed']||0)>0?'pass':'fail',Number(rc8619['engine-visible-observed']||0)>0?`Live Engine visibility observed ${Number(rc8619['engine-visible-observed']||0)} time(s); entry controls observed ${Number(rc8619['engine-entry-control-clicked']||0)}.`:`No live Engine visibility transition was observed. Entry control clicks ${Number(rc8619['engine-entry-control-clicked']||0)}.`);
-    add('runtime-entry-loader-ignition','Runtime Entry Bridge — loader ignition',Number(rc8619['loader-ignition-dispatch']||0)>0?(Number(rc8619['loader-ignition-settled']||0)>0?'pass':'warn'):'fail',Number(rc8619['loader-ignition-dispatch']||0)>0?`Verified loader dispatched ignition ${Number(rc8619['loader-ignition-dispatch']||0)} time(s); settled ${Number(rc8619['loader-ignition-settled']||0)} time(s).`:'Verified loader has not dispatched ignition from an observed live Engine state.');
+    const truth8620=window.__darkSkyWitnessTruthSnapshot8620?.()||{memory:window.__darkSkyWitnessTruthState8620||null,session:null,local:null,sessionError:'snapshot unavailable',localError:'snapshot unavailable'};
+    const runtimeEntry8620=truth8620.memory||truth8620.session||truth8620.local||null;
+    const rc8620=runtimeEntry8620?.counters||{}, rl8620=runtimeEntry8620?.lastEvent||{};
+    const ch8620=runtimeEntry8620?.channels||{};
+    const channelText8620=(name,c,outerErr='')=>{const ok=!!c?.ok&&c?.writeOk!==false;const err=[c?.error,c?.writeError,outerErr].filter(Boolean).join(' • ');return `${name} ${ok?'PASS':'FAIL'}${err?` • ${err}`:''}`;};
+    const runtimeDetail8620=`WINDOW-AUTHORITATIVE • first-light ${Number(rc8620['document-first-light']||0)} • loader ${Number(rc8620['verified-loader-entered']||0)} • app ${Number(rc8620['app-module-evaluated']||0)} • runtime ${Number(rc8620['verified-runtime-executed']||0)} • entry click ${Number(rc8620['engine-entry-control-clicked']||0)} • Engine visible ${Number(rc8620['engine-visible-observed']||0)} • ignition dispatch ${Number(rc8620['loader-ignition-dispatch']||0)} • ignition settled ${Number(rc8620['loader-ignition-settled']||0)} • last ${String(rl8620.event||'none')}.`;
+    add('witness-truth-window','Witness Truth — window memory',runtimeEntry8620&&Number(rc8620['document-first-light']||0)>0?'pass':'fail',runtimeEntry8620?`Current page memory witness is live. ${runtimeDetail8620}`:'No window-memory witness exists in the current page instance.');
+    add('witness-truth-session','Witness Truth — sessionStorage',ch8620.sessionStorage?.ok&&ch8620.sessionStorage?.writeOk!==false?'pass':'fail',channelText8620('sessionStorage',ch8620.sessionStorage,truth8620.sessionError));
+    add('witness-truth-local','Witness Truth — localStorage',ch8620.localStorage?.ok&&ch8620.localStorage?.writeOk!==false?'pass':'fail',channelText8620('localStorage',ch8620.localStorage,truth8620.localError));
+    add('post-login-evidence-hold','Post-login evidence hold',Number(rc8620['post-login-evidence-hold-shown']||0)>0?'pass':'warn',Number(rc8620['post-login-evidence-hold-shown']||0)>0?`Evidence hold shown ${Number(rc8620['post-login-evidence-hold-shown']||0)} time(s), dismissed ${Number(rc8620['post-login-evidence-hold-dismissed']||0)} time(s).`:'No settled Engine login evidence hold has been observed yet.');
+    add('runtime-entry-trace','Runtime Entry Trace',Number(rc8620['verified-loader-entered']||0)>0&&Number(rc8620['app-module-evaluated']||0)>0?'pass':'fail',runtimeDetail8620);
+    add('runtime-entry-engine-visible','Runtime Entry Trace — live Engine path',Number(rc8620['engine-visible-observed']||0)>0?'pass':'fail',Number(rc8620['engine-visible-observed']||0)>0?`Live Engine visibility observed ${Number(rc8620['engine-visible-observed']||0)} time(s); entry controls observed ${Number(rc8620['engine-entry-control-clicked']||0)}.`:`No live Engine visibility transition was observed. Entry control clicks ${Number(rc8620['engine-entry-control-clicked']||0)}.`);
+    add('runtime-entry-loader-ignition','Witness Truth Test — loader ignition',Number(rc8620['loader-ignition-dispatch']||0)>0?(Number(rc8620['loader-ignition-settled']||0)>0?'pass':'warn'):'fail',Number(rc8620['loader-ignition-dispatch']||0)>0?`Verified loader dispatched ignition ${Number(rc8620['loader-ignition-dispatch']||0)} time(s); settled ${Number(rc8620['loader-ignition-settled']||0)} time(s).`:'Verified loader has not dispatched ignition from an observed live Engine state.');
 
     const witness8618=ignitionWitnessRead8618()||{history:[],counters:{}};
     const wc8618=witness8618.counters||{};
@@ -15258,7 +15264,7 @@ The full order and approved media remain stored with this project.`;
     await enforceFleetProjectAdminBaseline();
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
-    // 8.6.19 ignition is part of normal platform initialization, before any Engine
+    // 8.6.20 ignition is part of normal platform initialization, before any Engine
     // assurance consumer can observe an unsigned current build.
     try{ await igniteProofBootstrap8617('platform-init'); }catch(err){ console.warn('Bootstrap Ignition platform-init warning',err); }
     bindEvents();
@@ -15427,7 +15433,7 @@ document.addEventListener('click', (event) => {
     // Render through the normal Engine routines when available. A rendering warning
     // must not relock a correctly authenticated Engine session.
     try{
-      // 8.6.19 entry fallback: if a restored/authenticated session reached the Engine
+      // 8.6.20 entry fallback: if a restored/authenticated session reached the Engine
       // without the platform-init ignition, fire the same shared ignition before home render.
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
@@ -15469,7 +15475,7 @@ document.addEventListener('click', (event) => {
   }
 
   function bindBlackFlagPortal(){
-    window.__darkSkyRuntimeEntryWitness8619?.('blackflag-portal-bind-called',{alreadyBound:!!window.__blackFlagPortalBound});
+    window.__darkSkyRuntimeEntryWitness8620?.('blackflag-portal-bind-called',{alreadyBound:!!window.__blackFlagPortalBound});
     if(window.__blackFlagPortalBound) return;
     window.__blackFlagPortalBound=true;
     const startupHash=String(location.hash||'');
