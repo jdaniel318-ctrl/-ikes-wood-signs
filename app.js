@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.14';
+  const BUILD_VERSION='8.6.15';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2138,7 +2138,7 @@
   }
 
 
-  // 8.6.14 Proof Bootstrap — one current proof record shared by live surfaces
+  // 8.6.15 Bootstrap Commit — one current proof record shared by live surfaces
   // and Proving Ground. Successful newer render evidence supersedes older failed attempts;
   // failures remain in historical diagnostics but do not poison current release posture.
   const EVIDENCE_RECON_KEY_8610='darkSkyEvidenceReconciliationV8610';
@@ -2154,15 +2154,21 @@
   function recordDockProof8610(trace){
     const rendered=trace?.stages?.find(st=>st.name==='Rendered Fleet Dock cards');
     if(!rendered?.ok)return null;
-    return evidenceReconciliationWrite8610({dock:{ok:true,count:rendered.count,ids:[...(rendered.protectedIds||rendered.ids||[])],trace,capturedAt:new Date().toISOString(),source:'rendered-fleet-dock'}});
+    const generation=Number(memoryMusterRead8612()?.generation||0);
+    const out=evidenceReconciliationWrite8610({dock:{ok:true,count:rendered.count,ids:[...(rendered.protectedIds||rendered.ids||[])],trace,generation,capturedAt:new Date().toISOString(),source:'rendered-fleet-dock'}});
+    queueMicrotask(()=>tryFinalizeProofBootstrap8615('fleet-dock-render').catch(()=>{}));
+    return out;
   }
   function recordIntelligenceProof8610({count=0,state='',source='fleet-intelligence-overview'}={}){
     if(Number(count)!==6)return null;
-    return evidenceReconciliationWrite8610({intelligence:{ok:true,count:Number(count),state:String(state||'usable'),capturedAt:new Date().toISOString(),source}});
+    const generation=Number(memoryMusterRead8612()?.generation||0);
+    const out=evidenceReconciliationWrite8610({intelligence:{ok:true,count:Number(count),state:String(state||'usable'),generation,capturedAt:new Date().toISOString(),source}});
+    queueMicrotask(()=>tryFinalizeProofBootstrap8615('fleet-intelligence-render').catch(()=>{}));
+    return out;
   }
 
 
-  // 8.6.14 Proof Bootstrap — current readiness may only be committed after the live
+  // 8.6.15 Bootstrap Commit — current readiness may only be committed after the live
   // fleet reaches a stable proof phase. Intermediate boot/reconciliation observations
   // remain diagnostics/history and may never mint a current HOLD.
   const PROOF_BARRIER_KEY_8611='darkSkyProofBarrierV8611';
@@ -2172,14 +2178,14 @@
   function proofBarrierAdvance8611(phase,detail=''){const idx=PROOF_PHASES_8611[phase]??0;const prior=proofBarrierRead8611()||{phaseIndex:0,history:[]};if(idx<Number(prior.phaseIndex||0))return prior;const history=[...(prior.history||[]),{phase,detail,at:new Date().toISOString()}].slice(-40);return proofBarrierWrite8611({phase,phaseIndex:idx,detail,history});}
   function protectedStage8611(name,ids=[]){const have=new Set((ids||[]).map(x=>String(x||'')));const present=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!have.has(id));return {name,count:present.length,ids:present,missing,ok:missing.length===0};}
 
-  // 8.6.14 Proof Bootstrap — atomic in-memory fleet handoff. A partial registry read
+  // 8.6.15 Bootstrap Commit — atomic in-memory fleet handoff. A partial registry read
   // may be inspected as a candidate, but it can never replace the last verified
   // runtime roster. Fleet Dock, Fleet Intelligence and Proving Ground all consume
   // the same committed memory generation.
   const MEMORY_MUSTER_KEY_8612='darkSkyMemoryMusterV8612';
   let memoryRosterReadyPromise8612=null;
   let memoryMusterGeneration8612=0;
-  // 8.6.14 Proof Bootstrap — one settle-once lifecycle for the shared
+  // 8.6.15 Bootstrap Commit — one settle-once lifecycle for the shared
   // memory roster barrier. Consumers can never wait on a rejected or orphaned promise.
   const MEMORY_COMMIT_WATCHDOG_KEY_8613='darkSkyMemoryCommitWatchdogV8613';
   let memoryCommitWatchdogRun8613=0;
@@ -2193,11 +2199,11 @@
   function memoryMusterWrite8612(patch={}){const prior=memoryMusterRead8612()||{schema:'dark-sky-memory-muster-v1',build:BUILD_VERSION,generation:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};try{localStorage.setItem(MEMORY_MUSTER_KEY_8612,JSON.stringify(next));}catch(_){}window.__darkSkyMemoryMuster8612=next;return next;}
   async function readAdmissionLedgerSnapshot8612(){let stored={};try{const v=(await getSetting(V4_ADMISSION_LEDGER_SETTING))?.value;if(v&&typeof v==='object'&&!Array.isArray(v))stored=v;}catch(_){}const local=readV4AdmissionLedger();return {...stored,...local};}
   function memoryMusterCommit8612(candidateRows,{source='runtime',registryIds=[],admissionIds=[],manifestIds=[],run=0}={}){
-    if(run&&run!==memoryCommitActiveRun8613)throw new Error(`Proof Bootstrap rejected stale run ${run}; active run is ${memoryCommitActiveRun8613||'none'}.`);
+    if(run&&run!==memoryCommitActiveRun8613)throw new Error(`Bootstrap Commit rejected stale run ${run}; active run is ${memoryCommitActiveRun8613||'none'}.`);
     const candidate=(candidateRows||[]).map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(normalizeProjectCode(structuredClone(p))))||ensureProjectGovernance(normalizeProjectCode(structuredClone(p))));
     const protectedIds=protectedIdsFromRows8612(candidate);
     const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!protectedIds.includes(id));
-    if(missing.length)throw new Error(`Proof Bootstrap candidate incomplete: missing ${missing.join(', ')}`);
+    if(missing.length)throw new Error(`Bootstrap Commit candidate incomplete: missing ${missing.join(', ')}`);
     const priorGood=memoryRosterHasProtectedSix8612(companies)?structuredClone(companies):null;
     try{
       // Atomic commit point: this is the only assignment that can replace the live
@@ -2205,7 +2211,7 @@
       companies=candidate;
       memoryMusterGeneration8612=Math.max(memoryMusterGeneration8612,Number(memoryMusterRead8612()?.generation||0))+1;
       const snapshot=memoryMusterWrite8612({status:'committed',generation:memoryMusterGeneration8612,source,total:companies.length,protectedCount:protectedIds.length,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...protectedIds],registryIds:[...registryIds],admissionIds:[...admissionIds],manifestIds:[...manifestIds],committedAt:new Date().toISOString(),lastFailure:null});
-      proofBarrierAdvance8611('ROSTER_READY',`Proof Bootstrap generation ${snapshot.generation} committed • ${source}`);
+      proofBarrierAdvance8611('ROSTER_READY',`Bootstrap Commit generation ${snapshot.generation} committed • ${source}`);
       return snapshot;
     }catch(err){
       if(priorGood)companies=priorGood;
@@ -2231,50 +2237,74 @@
     return null;
   }
 
-  // 8.6.14 Proof Bootstrap — one generation-bound proof object is created during
+  // 8.6.15 Bootstrap Commit — one generation-bound proof object is created during
   // normal Engine initialization. Proving Ground reads it but never builds or repairs it.
   const PROOF_BOOTSTRAP_KEY_8614='darkSkyProofBootstrapV8614';
   let proofBootstrapPromise8614=null;
   function proofBootstrapRead8614(){try{const v=JSON.parse(localStorage.getItem(PROOF_BOOTSTRAP_KEY_8614)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
   function proofBootstrapWrite8614(patch={}){const prior=proofBootstrapRead8614()||{schema:'dark-sky-proof-bootstrap-v1',build:BUILD_VERSION,status:'waiting-memory',history:[]};const ev={status:patch.status||prior.status,stage:patch.stage||prior.stage||'',at:new Date().toISOString(),detail:patch.detail||''};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:ev.at,history:[...(prior.history||[]),ev].slice(-50)};try{localStorage.setItem(PROOF_BOOTSTRAP_KEY_8614,JSON.stringify(next));}catch(_){}window.__darkSkyProofBootstrap8614=next;return next;}
   function proofBootstrapStage8614(name,ids=[]){return protectedStage8611(name,ids);}
-  async function runProofBootstrap8614({source='engine-init',timeoutMs=5200,force=false}={}){
+  async function runProofBootstrap8614({source='engine-init',timeoutMs=3200,force=false}={}){
     const existing=proofBootstrapRead8614(); const memNow=memoryMusterRead8612();
-    if(!force&&existing?.status==='complete'&&existing?.generation===memNow?.generation&&existing?.currentProof?.ok)return existing.currentProof;
+    if(!force&&existing?.generation===memNow?.generation&&['core-committed','complete'].includes(String(existing?.status||'')))return existing.currentProof||existing;
     if(proofBootstrapPromise8614&&!force)return proofBootstrapPromise8614;
     const work=(async()=>{
       proofBootstrapWrite8614({status:'waiting-memory',stage:'memory',detail:`Waiting for committed memory roster • ${source}`});
-      const memory=await awaitMemoryRosterReady8612({timeoutMs:1800,source:`proof-bootstrap:${source}`});
+      const memory=await awaitMemoryRosterReady8612({timeoutMs:1800,source:`bootstrap-core:${source}`});
       if(!memory||memory.protectedCount!==6){proofBootstrapWrite8614({status:'failed',stage:'memory',detail:'No committed six-vessel memory generation available.'});return null;}
       const generation=Number(memory.generation||0);
       const core=[proofBootstrapStage8614('Registry',memory.registryIds||[]),proofBootstrapStage8614('Admissions',memory.admissionIds||[]),proofBootstrapStage8614('Manifest',memory.manifestIds||[]),proofBootstrapStage8614('Memory',memory.ids||[])];
       if(core.some(x=>!x.ok)){proofBootstrapWrite8614({status:'failed',stage:'core',generation,core,detail:'Committed memory generation did not contain complete core proof.'});return null;}
-      proofBarrierAdvance8611('ROSTER_READY',`Proof Bootstrap core generation ${generation} committed`);
-      proofBootstrapWrite8614({status:'core-committed',stage:'core',generation,core,detail:'Registry 6 · Admissions 6 · Manifest 6 · Memory 6'});
-      const dockOk=await commandDeadline(Promise.resolve(renderFleetCommissioning({skipConvergence:true})).then(()=>true).catch(()=>false),1800,false);
-      const dockIds=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||''));
-      const dock=proofBootstrapStage8614('Dock',dockIds);
-      if(!dockOk||!dock.ok){proofBootstrapWrite8614({status:'failed',stage:'dock',generation,core,dock,detail:'Fleet Dock did not render six generation-bound vessel IDs.'});return null;}
-      proofBarrierAdvance8611('DOCK_PAINTED',`Proof Bootstrap Dock generation ${generation} verified`);
-      proofBootstrapWrite8614({status:'dock-verified',stage:'dock',generation,core,dock,detail:'Dock 6'});
-      bindFleetIntelligenceDeck();
-      const intelOk=await commandDeadline(Promise.resolve(renderFleetIntelligenceDeck()).then(()=>true).catch(()=>false),1800,false);
-      const intelState=document.getElementById('fleetIntelligenceState'); const intelSummary=document.getElementById('fleetIntelligenceSummary');
-      const intelCount=Number(intelSummary?.querySelector('article strong')?.textContent||0);
-      const intelligence={name:'Intelligence',count:intelCount,ids:intelCount===6?[...RELEASE_CANONICAL_FLEET_IDS_864]:[],missing:intelCount===6?[]:[...RELEASE_CANONICAL_FLEET_IDS_864],ok:!!intelOk&&intelCount===6&&!/READING FLEET/i.test(String(intelState?.textContent||'')),state:String(intelState?.textContent||'')};
-      if(!intelligence.ok){proofBootstrapWrite8614({status:'failed',stage:'intelligence',generation,core,dock,intelligence,detail:'Fleet Intelligence did not render a six-vessel usable view.'});return null;}
-      proofBarrierAdvance8611('INTELLIGENCE_PAINTED',`Proof Bootstrap Intelligence generation ${generation} verified`);
-      const stages=[...core,dock,intelligence];
-      const proof={schema:'dark-sky-current-fleet-proof-v2',build:BUILD_VERSION,generation,ok:true,stages,registryIds:core[0].ids,admissionIds:core[1].ids,manifestIds:core[2].ids,memoryIds:core[3].ids,dockIds:dock.ids,intelligence:{ok:true,count:6,state:intelligence.state},capturedAt:new Date().toISOString(),source};
-      proofBarrierAdvance8611('PROOF_COMMITTED',`Proof Bootstrap generation ${generation} complete`);
-      proofBarrierWrite8611({currentProof:proof,pendingProof:null,proofCommittedAt:proof.capturedAt,source:`proof-bootstrap:${source}`});
-      evidenceReconciliationWrite8610({dock:{ok:true,count:6,ids:[...dock.ids],capturedAt:proof.capturedAt,source:'proof-bootstrap-8614'},intelligence:{ok:true,count:6,state:intelligence.state,capturedAt:proof.capturedAt,source:'proof-bootstrap-8614'}});
-      proofBootstrapWrite8614({status:'complete',stage:'complete',generation,core,dock,intelligence,currentProof:proof,detail:'CURRENT PROOF COMPLETE'});
-      return proof;
+      proofBarrierAdvance8611('ROSTER_READY',`Bootstrap Commit core generation ${generation} committed`);
+      proofBootstrapWrite8614({status:'core-committed',stage:'core',generation,core,detail:'CORE PROOF COMMITTED • Registry 6 · Admissions 6 · Manifest 6 · Memory 6'});
+      proofBarrierWrite8611({pendingProof:{schema:'dark-sky-current-fleet-proof-v3',build:BUILD_VERSION,generation,ok:false,stage:'core',registryIds:core[0].ids,admissionIds:core[1].ids,manifestIds:core[2].ids,memoryIds:core[3].ids},source:`bootstrap-core:${source}`});
+      // Surface proof is appended by the normal Dock and Intelligence render paths.
+      await tryFinalizeProofBootstrap8615(`core:${source}`);
+      return proofBootstrapRead8614();
     })();
-    proofBootstrapPromise8614=commandDeadline(work,timeoutMs,null).then(v=>{if(!v&&proofBootstrapRead8614()?.status!=='failed')proofBootstrapWrite8614({status:'timeout',stage:'bootstrap',detail:`Proof Bootstrap exceeded ${timeoutMs} ms`});return v;}).finally(()=>{proofBootstrapPromise8614=null;});
+    proofBootstrapPromise8614=commandDeadline(work,timeoutMs,null).then(v=>{if(!v&&proofBootstrapRead8614()?.status!=='failed')proofBootstrapWrite8614({status:'timeout',stage:'core-bootstrap',detail:`Bootstrap core exceeded ${timeoutMs} ms`});return v;}).finally(()=>{proofBootstrapPromise8614=null;});
     return proofBootstrapPromise8614;
   }
+
+  let proofFinalizePromise8615=null;
+  async function tryFinalizeProofBootstrap8615(source='surface-render'){
+    if(proofFinalizePromise8615)return proofFinalizePromise8615;
+    proofFinalizePromise8615=(async()=>{
+      const boot=proofBootstrapRead8614();
+      const memory=memoryMusterRead8612();
+      const evidence=evidenceReconciliationRead8610();
+      if(!boot||boot.status==='failed'||boot.status==='timeout'||!memory)return null;
+      const generation=Number(memory.generation||0);
+      if(Number(boot.generation||0)!==generation||!['core-committed','complete'].includes(String(boot.status||'')))return null;
+      if(boot.status==='complete'&&boot.currentProof?.ok)return boot.currentProof;
+      const dock=evidence?.dock;
+      const intel=evidence?.intelligence;
+      const dockIds=Array.isArray(dock?.ids)?dock.ids:[];
+      const dockStage=proofBootstrapStage8614('Dock',dockIds);
+      const intelligence={name:'Intelligence',count:Number(intel?.count||0),ids:Number(intel?.count||0)===6?[...RELEASE_CANONICAL_FLEET_IDS_864]:[],missing:Number(intel?.count||0)===6?[]:[...RELEASE_CANONICAL_FLEET_IDS_864],ok:!!intel?.ok&&Number(intel?.count||0)===6,state:String(intel?.state||'')};
+      const dockGeneration=Number(dock?.generation||0), intelGeneration=Number(intel?.generation||0);
+      if(dockGeneration!==generation||!dockStage.ok){
+        proofBootstrapWrite8614({status:'core-committed',stage:'awaiting-dock',generation,core:boot.core,detail:`CORE PROOF COMMITTED • waiting for Dock generation ${generation}`});
+        return null;
+      }
+      proofBarrierAdvance8611('DOCK_PAINTED',`Bootstrap Commit Dock generation ${generation} verified`);
+      if(intelGeneration!==generation||!intelligence.ok){
+        proofBootstrapWrite8614({status:'dock-verified',stage:'awaiting-intelligence',generation,core:boot.core,dock:dockStage,detail:`Dock 6 verified • waiting for Intelligence generation ${generation}`});
+        return null;
+      }
+      proofBarrierAdvance8611('INTELLIGENCE_PAINTED',`Bootstrap Commit Intelligence generation ${generation} verified`);
+      const core=boot.core||[];
+      const stages=[...core,dockStage,intelligence];
+      const proof={schema:'dark-sky-current-fleet-proof-v3',build:BUILD_VERSION,generation,ok:true,stages,registryIds:core[0]?.ids||[],admissionIds:core[1]?.ids||[],manifestIds:core[2]?.ids||[],memoryIds:core[3]?.ids||[],dockIds:dockStage.ids,intelligence:{ok:true,count:6,state:intelligence.state},capturedAt:new Date().toISOString(),source};
+      if([proof.registryIds,proof.admissionIds,proof.manifestIds,proof.memoryIds,proof.dockIds].some(ids=>ids.length!==6))return null;
+      proofBarrierAdvance8611('PROOF_COMMITTED',`Bootstrap Commit generation ${generation} complete`);
+      proofBarrierWrite8611({currentProof:proof,pendingProof:null,proofCommittedAt:proof.capturedAt,source:`bootstrap-finalize:${source}`});
+      proofBootstrapWrite8614({status:'complete',stage:'complete',generation,core,dock:dockStage,intelligence,currentProof:proof,detail:'CURRENT PROOF COMPLETE'});
+      return proof;
+    })().finally(()=>{proofFinalizePromise8615=null;});
+    return proofFinalizePromise8615;
+  }
+
   async function currentFleetProof8611(){
     const canonical=await readCanonicalProjectRegistry();
     const registryIds=(canonical||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
@@ -2521,7 +2551,7 @@
     }
     return duplicates;
   }
-  // 8.6.14 Proof Bootstrap — instrument the async roster resolver itself.
+  // 8.6.15 Bootstrap Commit — instrument the async roster resolver itself.
   // READINGS may not hang forever. Every resolver stage is bounded, named, and
   // captures the protected IDs known immediately after the step.
   const RESOLVER_LIFELINE_TIMEOUT_869=1150;
@@ -2560,7 +2590,7 @@
     const elapsedMs=Date.now()-started;
     if(result.kind==='timeout'){
       resolverMark869(name,'timeout',{detail:`No settlement within ${ms} ms`,elapsedMs});
-      const err=new Error(`Proof Bootstrap timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
+      const err=new Error(`Bootstrap Commit timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
     }
     if(result.kind==='fail'){
       resolverMark869(name,'fail',{detail:String(result.error?.message||result.error),elapsedMs});
@@ -2573,14 +2603,14 @@
   }
   async function resolverRead869(name,task,fallback){
     try{return await resolverStep869(name,task,{ms:780});}
-    catch(err){console.warn('Proof Bootstrap read fallback',name,err);return fallback;}
+    catch(err){console.warn('Bootstrap Commit read fallback',name,err);return fallback;}
   }
   function resolverLifelineHtml869(trace=window.__darkSkyResolverLifeline869){
     if(!trace)return '';
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
-    return `<section class="resolver-lifeline-panel ${status}" aria-label="Proof Bootstrap">
-      <header><div><small>8.6.14 • MEMORY MUSTER</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+    return `<section class="resolver-lifeline-panel ${status}" aria-label="Bootstrap Commit">
+      <header><div><small>8.6.15 • MEMORY MUSTER</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -2615,7 +2645,7 @@
         window.DarkSkyV4?.diagnostic?.('fleet.identity_hold','Canonical fleet still contains duplicate business identities',{duplicates:remaining,build:BUILD_VERSION,source});
       }
 
-      // Proof Bootstrap repair/reconciliation occurs before any live roster assignment.
+      // Bootstrap Commit repair/reconciliation occurs before any live roster assignment.
       const muster=await resolverStep869('Protected muster reconciliation',()=>ensureProtectedFleetMuster866({stage:`memory-muster:${source}`}),{idsFrom:value=>value?.rows||[]});
       memoryCommitWatchdogStage8613('building','protected-muster','Protected muster reconciliation settled',{run:watchdogRun,source});
       canonical=(muster?.rows||canonical).map(canonicalizeProjectDisplayIdentity).map(normalizeProjectCode).map(ensureProjectGovernance);
@@ -2627,7 +2657,7 @@
       const canonicalById=new Map(canonical.map(p=>[String(canonicalProjectId(p?.id||'')),p]));
       const candidate=manifestIds.map(id=>canonicalById.get(String(id))).filter(Boolean);
       const candidateProtected=protectedIdsFromRows8612(candidate);
-      if(candidateProtected.length!==6)throw new Error(`Proof Bootstrap candidate blocked before commit (${candidateProtected.length}/6 protected vessels).`);
+      if(candidateProtected.length!==6)throw new Error(`Bootstrap Commit candidate blocked before commit (${candidateProtected.length}/6 protected vessels).`);
       const registryIds=canonical.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
       memoryCommitWatchdogStage8613('validating','candidate-six',`Candidate contains ${candidateProtected.length}/6 protected vessels`,{run:watchdogRun,source,candidateIds:candidate.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean)});
       const commit=memoryMusterCommit8612(candidate,{source,registryIds,admissionIds,manifestIds,run:watchdogRun});
@@ -2647,18 +2677,18 @@
       if(priorGood)companies=priorGood;
       memoryMusterRetainFailure8612(err,{source,candidateIds});
       memoryCommitWatchdogStage8613(err?.code==='RESOLVER_LIFELINE_TIMEOUT'?'timeout':'failed',err?.stage||'memory-candidate',String(err?.message||err),{run:watchdogRun,source,candidateIds});
-      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure=err?.stage||'Proof Bootstrap';
+      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure=err?.stage||'Bootstrap Commit';
       return null;
     });
     const watchdogMs=3200;
     const watchdogResult=await commandDeadline(memoryRosterReadyPromise8612,watchdogMs,'__MEMORY_WATCHDOG_TIMEOUT__');
     if(watchdogResult==='__MEMORY_WATCHDOG_TIMEOUT__'){
-      const err=new Error(`Proof Bootstrap timed out after ${watchdogMs} ms`);err.code='MEMORY_COMMIT_WATCHDOG_TIMEOUT';err.stage='memoryRosterReady';
+      const err=new Error(`Bootstrap Commit timed out after ${watchdogMs} ms`);err.code='MEMORY_COMMIT_WATCHDOG_TIMEOUT';err.stage='memoryRosterReady';
       if(memoryCommitActiveRun8613===watchdogRun)memoryCommitActiveRun8613=0;
       if(priorGood)companies=priorGood;
       memoryMusterRetainFailure8612(err,{source,candidateIds:protectedIdsFromRows8612(companies)});
       memoryCommitWatchdogStage8613('timeout','memoryRosterReady',err.message,{run:watchdogRun,source,retainedPriorSix:!!priorGood});
-      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure='Proof Bootstrap';
+      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure='Bootstrap Commit';
       canonicalPresentationConvergence=null;
       return priorGood||companies;
     }
@@ -3478,9 +3508,9 @@
       merged.v4AdmissionReviewRequired=!allowed.has(id);
       return merged;
     }).filter(Boolean).map(normalizeProjectCode).map(ensureProjectGovernance);
-    // 8.6.14 Proof Bootstrap: candidate construction is read/repair-only.
+    // 8.6.15 Bootstrap Commit: candidate construction is read/repair-only.
     // A manifest projection may NEVER replace the live companies[] roster before
-    // Proof Bootstrap validates all six and reaches its single atomic commit point.
+    // Bootstrap Commit validates all six and reaches its single atomic commit point.
     if(mutateMemory)companies=projectedRows;
     return {ids,rows:projectedRows,orphans,admissions};
   }
@@ -4813,7 +4843,7 @@
     body.querySelectorAll('[data-intel-action="watch"]').forEach(b=>b.onclick=async()=>{await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});});
     body.querySelectorAll('[data-intel-action="learning"]').forEach(b=>b.onclick=()=>{$('fleetLearningRegistry')?.scrollIntoView({behavior:'smooth',block:'start'});});
     if(state)state.textContent=verifying?'LOCAL FLEET • VERIFYING':(snap.signals.length?'SIGNALS NORMALIZED':'FLEET STEADY');
-    try{if(Number(sm?.vessels)===6&&state&&!/READING FLEET/i.test(String(state.textContent||''))){recordIntelligenceProof8610({count:Number(sm.vessels),state:state.textContent,source:verifying?'fleet-intelligence-local-first-paint':'fleet-intelligence-live-render'});proofBarrierAdvance8611('INTELLIGENCE_PAINTED','Six-vessel Fleet Intelligence rendered');commitProofBarrier8611('fleet-intelligence-render').catch(()=>{});}}catch(_){ }
+    try{if(Number(sm?.vessels)===6&&state&&!/READING FLEET/i.test(String(state.textContent||''))){recordIntelligenceProof8610({count:Number(sm.vessels),state:state.textContent,source:verifying?'fleet-intelligence-local-first-paint':'fleet-intelligence-live-render'});proofBarrierAdvance8611('INTELLIGENCE_PAINTED','Six-vessel Fleet Intelligence rendered');}}catch(_){ }
     try{sessionStorage.setItem(FLEET_INTELLIGENCE_STATE_KEY,active);}catch(_){}
     return snap;
   }
@@ -4981,7 +5011,7 @@
     const legacyProofOk8611=proofReady8611&&currentProof8611.registryIds.includes(legacyAnchorId865)&&currentProof8611.dockIds.includes(legacyAnchorId865);
     add('legacy-identity-anchor','Legacy Plumbing immutable identity anchor',legacyProofOk8611?'pass':'fail',legacyProofOk8611?`Legacy Plumbing survives the committed proof barrier on immutable Project ID ${legacyAnchorId865}.`:'Legacy Plumbing is not present in both committed registry and Dock proof.');
     add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',proofStages8611.Intelligence?.ok?'pass':'fail',proofStages8611.Intelligence?.ok?'Fleet Intelligence committed a usable six-vessel first-paint proof after the barrier.':'Fleet Intelligence has not crossed the successful paint barrier for this build.');
-    add('evidence-reconciliation-current-proof','Proof Bootstrap current proof',proofReady8611?'pass':'fail',proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':'No current proof has been committed; boot-time observations remain diagnostic history only.');
+    add('evidence-reconciliation-current-proof','Bootstrap Commit current proof',proofReady8611?'pass':'fail',proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':'No current proof has been committed; boot-time observations remain diagnostic history only.');
 
     let stagingVerified864=null;try{stagingVerified864=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
     const stagingLedger864=fleetStagingLedgerRead();
@@ -5166,8 +5196,8 @@
   }
   async function runAutomaticProvingGround(){
     try{
-      // 8.6.14: automatic assurance never races memory initialization. If the
-      // Proof Bootstrap has not committed yet, leave proving untouched and let the
+      // 8.6.15: automatic assurance never races memory initialization. If the
+      // Bootstrap Commit has not committed yet, leave proving untouched and let the
       // next scheduled/manual run inspect the settled fleet.
       const proof=await awaitProofBarrier8611({source:'automatic-proving',timeoutMs:2200});
       if(!proof?.ok)return null;
@@ -5294,7 +5324,7 @@
   window.DarkSkyAdmiralReadiness={run:runAdmiralReadinessChecks,render:renderAdmiralReadiness,exportRecovery:exportFleetRecoverySnapshot};
 
   async function renderEngineRoom(){
-    // 8.6.14 Proof Bootstrap — Engine paint can never block forever on roster
+    // 8.6.15 Bootstrap Commit — Engine paint can never block forever on roster
     // reconciliation. The resolver owns a shorter named deadline; this outer guard
     // catches any uninstrumented wait and paints a diagnostic Dock instead.
     const engineConvergence=convergeCanonicalFleetForPresentation({source:'engine-room',force:true});
@@ -5302,7 +5332,7 @@
     if(!engineGate?.ok){
       const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();
       if(engineGate?.timeout&&!trace.firstFailure){trace.firstFailure='Engine presentation convergence';resolverMark869('Engine presentation convergence','timeout',{detail:'Outer Engine guard reached 1750 ms'});}
-      console.warn('Proof Bootstrap Engine fallback',engineGate?.error||'timeout');
+      console.warn('Bootstrap Commit Engine fallback',engineGate?.error||'timeout');
       await renderFleetCommissioning({skipConvergence:true});
     }else await renderFleetCommissioning({skipConvergence:true});
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
@@ -5571,7 +5601,7 @@
     // refresh in the background. Navigation remains available during verification.
     let canonicalSettled=true;
     if(!skipConvergence){
-      // 8.6.14: reuse the committed memory generation when available. Fleet Dock
+      // 8.6.15: reuse the committed memory generation when available. Fleet Dock
       // must not start a second reconciliation after the Engine already committed six.
       const ready=await awaitMemoryRosterReady8612({timeoutMs:120,source:'fleet-dock-entry'});
       if(!ready){
@@ -12827,8 +12857,8 @@ The full order and approved media remain stored with this project.`;
   };
 
   window.renderBlackFlagHome = async function(){
-    try{ await convergeCanonicalFleetForPresentation({source:'home-memory-muster'}); }catch(err){ console.warn('Proof Bootstrap home convergence warning',err); }
-    try{ await runProofBootstrap8614({source:'engine-home-init',timeoutMs:5200}); }catch(err){ console.warn('Proof Bootstrap initialization warning',err); }
+    try{ await convergeCanonicalFleetForPresentation({source:'home-memory-muster'}); }catch(err){ console.warn('Bootstrap Commit home convergence warning',err); }
+    try{ await runProofBootstrap8614({source:'engine-home-init',timeoutMs:5200}); }catch(err){ console.warn('Bootstrap Commit initialization warning',err); }
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
@@ -12838,7 +12868,8 @@ The full order and approved media remain stored with this project.`;
     try{ await commandDeadline(renderFleetCommissioning(),1800,true); }catch(err){ console.warn('fleet dock warning',err); }
     try{ renderFleetLearningRegistry(); }catch(err){ console.warn('fleet learning warning',err); }
     try{ bindFleetIntelligenceDeck(); await renderFleetIntelligenceDeck(); }catch(err){ console.warn('fleet intelligence warning',err); }
-    // 8.6.14 current proof is committed only by Proof Bootstrap during Engine initialization.
+    try{ await tryFinalizeProofBootstrap8615('engine-home-surfaces'); }catch(err){ console.warn('bootstrap finalizer warning',err); }
+    // 8.6.15 Proving Ground remains read-only; normal Engine surfaces complete current proof.
     try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
     try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }
     try{ await commandDeadline(renderV3ArchitectureStatus(),2200,true); }catch(err){ console.warn('broadside status warning',err); }

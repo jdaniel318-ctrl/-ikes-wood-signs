@@ -1,3 +1,8 @@
-# Dark Sky 8.6.14 — Proof Bootstrap
+# Dark Sky 8.6.15 — Bootstrap Commit
 
-Lean release package. Protected Known Good anchor remains 8.5.7 until promotion.
+- Payload files: 64
+- One canonical proof generation
+- Bootstrap: core-only
+- Dock/Intelligence: natural surface proof
+- Finalizer: idempotent and generation-bound
+- Proving Ground: read-only

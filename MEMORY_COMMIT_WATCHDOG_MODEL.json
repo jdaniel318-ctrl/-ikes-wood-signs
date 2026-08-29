@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-memory-commit-watchdog-model-v1",
-  "build": "8.6.14",
-  "release": "Proof Bootstrap",
+  "build": "8.6.15",
+  "release": "Bootstrap Commit",
   "status": "required-runtime-contract",
   "rule": "The shared memory roster readiness lifecycle must settle exactly once: COMMITTED with six protected vessels, or FAILED/TIMEOUT with the last verified six retained.",
   "lifecycle": [

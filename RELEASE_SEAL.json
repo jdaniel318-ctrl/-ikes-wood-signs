@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.14",
-  "release": "Proof Bootstrap",
-  "seal": "proof-bootstrap-8614-generation-bound-4d91c2",
-  "execution_model": "generation-bound-proof-bootstrap",
+  "build": "8.6.15",
+  "release": "Bootstrap Commit",
+  "seal": "bootstrap-commit-8615-idempotent-7b3e21",
+  "execution_model": "idempotent-core-plus-surface-proof",
   "service_worker": "identity-only",
-  "release_name": "Proof Bootstrap",
-  "name": "Proof Bootstrap",
+  "release_name": "Bootstrap Commit",
+  "name": "Bootstrap Commit",
   "releaseName": null
 }

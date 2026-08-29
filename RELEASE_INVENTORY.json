@@ -1,12 +1,13 @@
 {
-  "release": "Proof Bootstrap",
-  "name": "Proof Bootstrap",
-  "file_count": 63,
+  "release": "Bootstrap Commit",
+  "name": "Bootstrap Commit",
+  "file_count": 64,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
     "ADMIRAL_REFERENCE_COMPENDIUM.md",
     "ADMIRAL_RELEASE_DOCTRINE.json",
+    "BOOTSTRAP_COMMIT_MODEL.json",
     "BUILD_AUDIT_818.json",
     "CAPABILITY_ADOPTION_MAP.json",
     "CHANGELOG.md",
@@ -67,7 +68,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.14",
-  "seal": "proof-bootstrap-8614-generation-bound-4d91c2",
-  "release_name": "Proof Bootstrap"
+  "build": "8.6.15",
+  "seal": "bootstrap-commit-8615-idempotent-7b3e21",
+  "release_name": "Bootstrap Commit"
 }

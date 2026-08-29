@@ -1,0 +1,21 @@
+{
+  "schema": "dark-sky-bootstrap-commit-v1",
+  "build": "8.6.15",
+  "release": "Bootstrap Commit",
+  "contract": "Memory commits core proof; normal Dock and Intelligence renders append generation-bound surface proof; one idempotent finalizer commits current proof.",
+  "proving_ground_read_only": true,
+  "bootstrap_renders_surfaces": false,
+  "idempotent_finalizer": true,
+  "generation_bound": true,
+  "states": [
+    "waiting-memory",
+    "core-committed",
+    "awaiting-dock",
+    "dock-verified",
+    "awaiting-intelligence",
+    "complete",
+    "failed",
+    "timeout"
+  ],
+  "invariant": "No proof consumer may require bootstrap to render the surface it is proving."
+}

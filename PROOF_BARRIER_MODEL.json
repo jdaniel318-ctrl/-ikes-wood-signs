@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-proof-barrier-model-v1",
-  "build": "8.6.14",
+  "build": "8.6.15",
   "status": "required-runtime-contract",
   "phases": [
     "BOOTING",
@@ -10,7 +10,7 @@
     "INTELLIGENCE_PAINTED",
     "PROOF_COMMITTED"
   ],
-  "rule": "Current readiness may only read a committed Proof Bootstrap generation after Dock and Intelligence paint; Proving Ground is non-mutating.",
+  "rule": "Current readiness may only read a committed Bootstrap Commit generation after Dock and Intelligence paint; Proving Ground is non-mutating.",
   "current_proof_fields": [
     "memoryGeneration",
     "registryIds",
@@ -21,5 +21,5 @@
     "intelligence"
   ],
   "supersession": "Failed candidate memory generations remain diagnostic history. A committed six-vessel generation remains active until a newer complete generation atomically replaces it.",
-  "release": "Proof Bootstrap"
+  "release": "Bootstrap Commit"
 }
