@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-muster-v1",
-  "build": "8.6.8",
+  "build": "8.6.9",
   "release": "Dock Source Trace",
   "source_known_good": "8.5.7",
   "policy": "protected identities and admissions are restored before fleet surfaces paint; runtime state cannot redefine fleet identity",

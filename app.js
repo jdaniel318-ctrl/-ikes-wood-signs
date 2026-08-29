@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.8';
+  const BUILD_VERSION='8.6.9';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2197,12 +2197,12 @@
   }
   async function collectDockSourceTrace868({includeRendered=true}={}){
     const seed=[...RELEASE_CANONICAL_FLEET_IDS_864];
-    const rawProjects=await safe(()=>getAll(STORE_PROJECTS),()=>[]);
-    const mirrorSetting=await safe(()=>getSetting('companies'),()=>null);
+    const rawProjects=await resolverRead869('Trace read • IndexedDB projects',()=>getAll(STORE_PROJECTS),[]);
+    const mirrorSetting=await resolverRead869('Trace read • settings mirror',()=>getSetting('companies'),null);
     const mirrorRows=Array.isArray(mirrorSetting?.value)?mirrorSetting.value:[];
     const localAdmissions=readV4AdmissionLedger();
     let storedAdmissions={};
-    try{const row=(await getSetting(V4_ADMISSION_LEDGER_SETTING))?.value;if(row&&typeof row==='object'&&!Array.isArray(row))storedAdmissions=row;}catch(_){ }
+    try{const row=(await resolverRead869('Trace read • admission mirror',()=>getSetting(V4_ADMISSION_LEDGER_SETTING),null))?.value;if(row&&typeof row==='object'&&!Array.isArray(row))storedAdmissions=row;}catch(_){ }
     const admissionLedger={...storedAdmissions,...localAdmissions};
     const admissionIds=Object.entries(admissionLedger).filter(([id,row])=>validV4Admission(row,id)).map(([id])=>id);
     const manifestIds=readV4FleetManifest();
@@ -2349,20 +2349,88 @@
     }
     return duplicates;
   }
+  // 8.6.9 Resolver Lifeline — instrument the async roster resolver itself.
+  // READINGS may not hang forever. Every resolver stage is bounded, named, and
+  // captures the protected IDs known immediately after the step.
+  const RESOLVER_LIFELINE_TIMEOUT_869=1150;
+  let resolverLifelineRun869=0;
+  function resolverProtectedIds869(value){
+    let ids=[];
+    if(Array.isArray(value)) ids=value.map(v=>typeof v==='string'?v:v?.id);
+    else if(value&&Array.isArray(value.rows)) ids=value.rows.map(v=>v?.id);
+    else if(value&&Array.isArray(value.ids)) ids=value.ids;
+    const have=new Set(ids.map(v=>String(canonicalProjectId(v||''))).filter(Boolean));
+    return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));
+  }
+  function beginResolverLifeline869(source='fleet-resolver'){
+    const trace={build:BUILD_VERSION,run:++resolverLifelineRun869,source,startedAt:new Date().toISOString(),finishedAt:null,status:'running',stages:[],firstFailure:'',protectedExpected:[...RELEASE_CANONICAL_FLEET_IDS_864]};
+    window.__darkSkyResolverLifeline869=trace;
+    return trace;
+  }
+  function resolverLifelineTrace869(){
+    return window.__darkSkyResolverLifeline869||beginResolverLifeline869('on-demand');
+  }
+  function resolverMark869(name,status,{detail='',ids=[],elapsedMs=0}={}){
+    const trace=resolverLifelineTrace869();
+    const protectedIds=resolverProtectedIds869(ids);
+    const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!protectedIds.includes(id));
+    const row={name,status,detail,elapsedMs,protectedIds,missing,at:new Date().toISOString()};
+    trace.stages.push(row);
+    if((status==='timeout'||status==='fail')&&!trace.firstFailure)trace.firstFailure=name;
+    return row;
+  }
+  async function resolverStep869(name,task,{ms=RESOLVER_LIFELINE_TIMEOUT_869,idsFrom=null}={}){
+    const started=Date.now();let timer=null;
+    const timeout=new Promise(resolve=>{timer=setTimeout(()=>resolve({kind:'timeout'}),ms);});
+    const work=Promise.resolve().then(task).then(value=>({kind:'pass',value})).catch(error=>({kind:'fail',error}));
+    const result=await Promise.race([work,timeout]);
+    if(timer)clearTimeout(timer);
+    const elapsedMs=Date.now()-started;
+    if(result.kind==='timeout'){
+      resolverMark869(name,'timeout',{detail:`No settlement within ${ms} ms`,elapsedMs});
+      const err=new Error(`Resolver Lifeline timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
+    }
+    if(result.kind==='fail'){
+      resolverMark869(name,'fail',{detail:String(result.error?.message||result.error),elapsedMs});
+      const err=result.error instanceof Error?result.error:new Error(String(result.error));err.stage=err.stage||name;throw err;
+    }
+    let ids=[];
+    try{ids=typeof idsFrom==='function'?idsFrom(result.value):result.value;}catch(_){ids=[];}
+    resolverMark869(name,'pass',{detail:`Settled in ${elapsedMs} ms`,ids,elapsedMs});
+    return result.value;
+  }
+  async function resolverRead869(name,task,fallback){
+    try{return await resolverStep869(name,task,{ms:780});}
+    catch(err){console.warn('Resolver Lifeline read fallback',name,err);return fallback;}
+  }
+  function resolverLifelineHtml869(trace=window.__darkSkyResolverLifeline869){
+    if(!trace)return '';
+    const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
+    const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
+    return `<section class="resolver-lifeline-panel ${status}" aria-label="Resolver Lifeline">
+      <header><div><small>8.6.9 • RESOLVER LIFELINE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+      <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
+      <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
+    </section>`;
+  }
+
   async function convergeCanonicalFleetForPresentation({source='engine-presentation',force=false}={}){
     if(canonicalPresentationConvergence&&!force)return canonicalPresentationConvergence;
+    beginResolverLifeline869(source);
     canonicalPresentationConvergence=(async()=>{
-      await sealOperationalFleetForCommand();
-      let canonical=await readCanonicalProjectRegistryStrict();
+      await resolverStep869('Operational fleet seal',()=>sealOperationalFleetForCommand(),{idsFrom:()=>companies||[]});
+      let canonical=await resolverStep869('Canonical registry read',()=>readCanonicalProjectRegistryStrict());
       canonical=canonical.map(canonicalizeProjectDisplayIdentity).map(normalizeProjectCode).map(ensureProjectGovernance);
       const plan=strictDuplicateBusinessPlan(canonical);
       if(plan.aliases.length){
-        for(const alias of plan.aliases)await migrateProjectIdAliasData(alias.fromId,alias.toId,alias.name);
-        canonical=await persistProjectRegistry(plan.rows.map(normalizeProjectCode).map(ensureProjectGovernance),{allowRemovalIds:plan.aliases.map(x=>x.fromId)});
-        window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'fleet.keelson.duplicate_reconciliation',detail:`${plan.aliases.length} duplicate vessel identity${plan.aliases.length===1?'':'ies'} folded at canonical source • ${source} • ${BUILD_VERSION}`});
-      }
-      // Re-read after any fold. This read-back is the authoritative presentation roster.
-      canonical=await readCanonicalProjectRegistryStrict();
+        canonical=await resolverStep869('Duplicate identity reconciliation',async()=>{
+          for(const alias of plan.aliases)await migrateProjectIdAliasData(alias.fromId,alias.toId,alias.name);
+          const persisted=await persistProjectRegistry(plan.rows.map(normalizeProjectCode).map(ensureProjectGovernance),{allowRemovalIds:plan.aliases.map(x=>x.fromId)});
+          window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'migration',action:'fleet.keelson.duplicate_reconciliation',detail:`${plan.aliases.length} duplicate vessel identity${plan.aliases.length===1?'':'ies'} folded at canonical source • ${source} • ${BUILD_VERSION}`});
+          return persisted;
+        });
+      }else resolverMark869('Duplicate identity reconciliation','pass',{detail:'No duplicate fold required',ids:canonical});
+      canonical=await resolverStep869('Canonical registry read-back',()=>readCanonicalProjectRegistryStrict());
       canonical=canonical.map(canonicalizeProjectDisplayIdentity).map(normalizeProjectCode).map(ensureProjectGovernance);
       const remaining=canonicalBusinessDuplicateAudit(canonical);
       if(remaining.length){
@@ -2370,12 +2438,15 @@
         window.DarkSkyV4?.diagnostic?.('fleet.identity_hold','Canonical fleet still contains duplicate business identities',{duplicates:remaining,build:BUILD_VERSION,source});
       }
       companies=canonical;
-      try{await ensureCanonicalFleetManifest({repairRegistry:false});}catch(err){console.warn('Breakwater manifest projection warning',err);}
+      await resolverStep869('Fleet manifest projection',()=>ensureCanonicalFleetManifest({repairRegistry:false}),{idsFrom:value=>value?.ids||readV4FleetManifest()});
       writeProjectRegistryBackup(companies,`keelson-${source}`);
+      resolverMark869('In-memory roster handoff','pass',{detail:`${companies.length} in-memory project row(s) ready`,ids:companies});
       window.__darkSkyCanonicalFleet={build:BUILD_VERSION,source,count:companies.length,duplicates:remaining,at:new Date().toISOString()};
+      const trace=resolverLifelineTrace869();trace.status='clear';trace.finishedAt=new Date().toISOString();
       return companies;
     })();
     try{return await canonicalPresentationConvergence;}
+    catch(err){const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure=err?.stage||'Unknown resolver stage';throw err;}
     finally{canonicalPresentationConvergence=null;}
   }
 
@@ -5006,10 +5077,17 @@
   window.DarkSkyAdmiralReadiness={run:runAdmiralReadinessChecks,render:renderAdmiralReadiness,exportRecovery:exportFleetRecoverySnapshot};
 
   async function renderEngineRoom(){
-    // V4.4.7 — reseal the admitted fleet before any Engine repaint. A failed
-    // project-local mutation may never collapse Project Command to the active vessel.
-    await convergeCanonicalFleetForPresentation({source:'engine-room',force:true});
-    await renderFleetCommissioning();
+    // 8.6.9 Resolver Lifeline — Engine paint can never block forever on roster
+    // reconciliation. The resolver owns a shorter named deadline; this outer guard
+    // catches any uninstrumented wait and paints a diagnostic Dock instead.
+    const engineConvergence=convergeCanonicalFleetForPresentation({source:'engine-room',force:true});
+    const engineGate=await commandDeadline(engineConvergence.then(()=>({ok:true})).catch(error=>({ok:false,error})),1750,{ok:false,timeout:true});
+    if(!engineGate?.ok){
+      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();
+      if(engineGate?.timeout&&!trace.firstFailure){trace.firstFailure='Engine presentation convergence';resolverMark869('Engine presentation convergence','timeout',{detail:'Outer Engine guard reached 1750 ms'});}
+      console.warn('Resolver Lifeline Engine fallback',engineGate?.error||'timeout');
+      await renderFleetCommissioning({skipConvergence:true});
+    }else await renderFleetCommissioning({skipConvergence:true});
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
     // paths called a non-existent helper after a successful registry commit, which
     // left the Engine DOM stale and made a durable project look as if it vanished.
@@ -5267,6 +5345,7 @@
     const reference=$('fleetCommissioningReference');
     const state=$('fleetCommissioningState');
     if(!summary||!reference)return;
+    const lifeline869=window.__darkSkyResolverLifeline869||null;
 
     // 8.3.1 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
     // convergence before painting a usable vessel roster. Paint from the already
@@ -5290,7 +5369,7 @@
     // If it does not, no incomplete vessel cards are allowed to paint.
     if(!dockInputStage868?.ok || firstDrop868){
       if(state){state.textContent=`DOCK SOURCE HOLD • ${(firstDrop868?.name||'DOCK INPUT').toUpperCase()}`;state.className='fleet-commissioning-state hold';}
-      if(fleet)fleet.innerHTML=dockSourceTraceHtml868(sourceTrace868);
+      if(fleet)fleet.innerHTML=`${resolverLifelineHtml869(window.__darkSkyResolverLifeline869)}${dockSourceTraceHtml868(sourceTrace868)}`;
       reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • DOCK SOURCE HOLD</span><strong>Six enter. Six must reach the Dock.</strong><p>The renderer withheld the incomplete roster. First drop: ${escapeHtml(firstDrop868?.name||'Fleet Dock input array')}.</p></div>`;
       return;
     }
@@ -5369,7 +5448,7 @@
     const renderedStage868=finalTrace868.stages.find(st=>st.name==='Rendered Fleet Dock cards');
     if(!renderedStage868?.ok){
       if(state){state.textContent='DOCK SOURCE HOLD • RENDERED CARDS';state.className='fleet-commissioning-state hold';}
-      if(fleet)fleet.innerHTML=dockSourceTraceHtml868(finalTrace868);
+      if(fleet)fleet.innerHTML=`${resolverLifelineHtml869(window.__darkSkyResolverLifeline869)}${dockSourceTraceHtml868(finalTrace868)}`;
       reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • RENDER HOLD</span><strong>Five cards can never masquerade as the fleet.</strong><p>The rendered Fleet Dock lost a protected vessel. The cards were withheld and the source trace is shown instead.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;
     }else{
       reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the watch.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;

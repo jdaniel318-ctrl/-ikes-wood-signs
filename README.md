@@ -1,3 +1,7 @@
+# Dark Sky 8.6.9 — Resolver Lifeline
+
+Resolver Lifeline moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
+
 ## 8.6.8 — Dock Source Trace
 
 - Adds a professional, read-only Fleet Registry Trace to Engine diagnostics and Fleet Dock.

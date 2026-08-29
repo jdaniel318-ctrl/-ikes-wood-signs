@@ -1,3 +1,11 @@
+## 8.6.9 — Resolver Lifeline
+
+- Moves roster diagnostics inside the async resolver itself.
+- Bounds every named resolver stage and records PASS / FAIL / TIMEOUT with protected vessel IDs.
+- Adds an outer Engine command convergence guard so Fleet Dock cannot remain on READING FLEET indefinitely.
+- Keeps Dock Source Trace and protected-six guards aboard.
+- Preserves 8.5.7 as Last Known Good until this candidate earns promotion.
+
 ## 8.6.8 — Dock Source Trace
 
 - Adds a professional, read-only Fleet Registry Trace to Engine diagnostics and Fleet Dock.

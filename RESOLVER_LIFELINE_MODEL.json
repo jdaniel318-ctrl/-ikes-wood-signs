@@ -1,0 +1,21 @@
+{
+  "schema": "dark-sky-resolver-lifeline-v1",
+  "build": "8.6.9",
+  "release": "Resolver Lifeline",
+  "mission": "Six enter. Every asynchronous roster handoff must settle, fail, or time out visibly before Fleet Dock can remain unresolved.",
+  "protected_vessel_id": "bf-p-f92f87e8ec44",
+  "stages": [
+    "Operational fleet seal",
+    "Canonical registry read",
+    "Duplicate identity reconciliation",
+    "Canonical registry read-back",
+    "Fleet manifest projection",
+    "In-memory roster handoff"
+  ],
+  "timeouts_ms": {
+    "stage_default": 1150,
+    "trace_read": 780,
+    "engine_outer_guard": 1750
+  },
+  "failure_contract": "READING FLEET may not survive beyond the bounded resolver window; Fleet Dock must paint either a usable roster or a named diagnostic HOLD."
+}

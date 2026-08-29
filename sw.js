@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.8';
-const RELEASE_SEAL='dock-source-trace-868-last-mile-proof-91a7d3';
+const RELEASE_BUILD='8.6.9';
+const RELEASE_SEAL='resolver-lifeline-869-bounded-async-roster-5c19e4';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.
