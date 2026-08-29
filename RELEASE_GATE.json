@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.12",
-  "release": "Memory Muster",
+  "build": "8.6.13",
+  "release": "Memory Commit Watchdog",
   "generatedAt": "2026-08-29T18:04:16.116394+00:00",
   "checks": {
     "build_version": true,
@@ -184,7 +184,7 @@
   "nonMediaAssets": [],
   "pass": true,
   "note": "8.6.1 Intelligence Dock prevents Fleet Intelligence from remaining indefinitely on READING FLEET by painting a roster-backed local snapshot within a bounded window and reconciling live intelligence in the background.",
-  "candidate": "8.6.12",
+  "candidate": "8.6.13",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -227,5 +227,13 @@
     "doctrine_registry": "FLEET_DOCTRINE_REGISTRY.json",
     "golden_voyages": "GOLDEN_VOYAGES.json",
     "command_model": "FLEET_COMMAND_MODEL.json"
+  },
+  "memory_commit_watchdog": {
+    "required": true,
+    "watchdog_ms": 3200,
+    "candidate_manifest_mutates_live_memory": false,
+    "late_run_commit_guard": true,
+    "shared_promise_rejection_safe": true,
+    "last_verified_six_retained_on_failure": true
   }
 }

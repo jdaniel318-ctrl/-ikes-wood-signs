@@ -1,0 +1,19 @@
+{
+  "schema": "dark-sky-memory-commit-watchdog-model-v1",
+  "build": "8.6.13",
+  "release": "Memory Commit Watchdog",
+  "status": "required-runtime-contract",
+  "rule": "The shared memory roster readiness lifecycle must settle exactly once: COMMITTED with six protected vessels, or FAILED/TIMEOUT with the last verified six retained.",
+  "lifecycle": [
+    "CREATED",
+    "BUILDING",
+    "VALIDATING",
+    "COMMITTED|FAILED|TIMEOUT"
+  ],
+  "single_writer": "Only memoryMusterCommit8612 may replace live companies[] during presentation convergence.",
+  "candidate_rule": "Manifest projection and candidate construction are forbidden from mutating live companies[].",
+  "consumer_rule": "Fleet Dock, Fleet Intelligence, Fleet Health, Command Deck, and Proving Ground consume a rejection-safe bounded shared promise.",
+  "watchdog_ms": 3200,
+  "fail_safe": "On failure/timeout retain the last verified six-company roster and render a named diagnostic hold.",
+  "late_completion_guard": "Every candidate build carries a run token. A timed-out or superseded run is invalidated and cannot later commit to live companies[]."
+}

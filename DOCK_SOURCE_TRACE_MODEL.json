@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-dock-source-trace-v1",
-  "build": "8.6.12",
+  "build": "8.6.13",
   "release": "Dock Source Trace",
   "mission": "Trace the exact final Fleet Dock source array and identify the first stage that loses Legacy Plumbing.",
   "legacy_protected_id": "bf-p-f92f87e8ec44",

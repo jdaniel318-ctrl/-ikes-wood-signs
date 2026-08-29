@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.6.12",
-  "version": "8.6.12",
-  "release_name": "Memory Muster",
-  "releaseName": "Memory Muster",
-  "release_seal": "memory-muster-8612-atomic-six-5d91c4",
+  "build": "8.6.13",
+  "version": "8.6.13",
+  "release_name": "Memory Commit Watchdog",
+  "releaseName": "Memory Commit Watchdog",
+  "release_seal": "memory-commit-watchdog-8613-settle-once-7a3e11",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-safe-atomic-memory-muster",
@@ -69,8 +69,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Memory Muster: one canonical current proof for rendered Fleet Dock and Fleet Intelligence, with stale failures retained as history rather than current HOLD state.",
-  "release_note": "8.6.12 makes the six-vessel in-memory handoff atomic and makes Proving Ground read-only: reconcile \u2192 validate \u2192 memory commit \u2192 render \u2192 prove.",
+  "release_focus": "Memory Commit Watchdog: settle-once atomic six-vessel memory readiness, no pre-commit companies[] mutation, bounded failure with last verified six retained.",
+  "release_note": "8.6.13 makes the six-vessel in-memory handoff atomic and makes Proving Ground read-only: reconcile \u2192 validate \u2192 memory commit \u2192 render \u2192 prove.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

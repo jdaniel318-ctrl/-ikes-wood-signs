@@ -1,6 +1,6 @@
 {
-  "release": "Memory Muster",
-  "name": "Memory Muster",
+  "release": "Memory Commit Watchdog",
+  "name": "Memory Commit Watchdog",
   "file_count": 61,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -65,7 +65,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.12",
-  "seal": "memory-muster-8612-atomic-six-5d91c4",
-  "release_name": "Memory Muster"
+  "build": "8.6.13",
+  "seal": "memory-commit-watchdog-8613-settle-once-7a3e11",
+  "release_name": "Memory Commit Watchdog"
 }

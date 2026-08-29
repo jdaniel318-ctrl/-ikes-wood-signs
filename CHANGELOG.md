@@ -1,11 +1,11 @@
-# 8.6.12 — Memory Muster
+# 8.6.13 — Memory Commit Watchdog
 
 - Atomic six-vessel in-memory commit; partial candidates never replace a verified runtime roster.
 - Fleet Dock, Fleet Intelligence, Fleet Health, Command Deck, and Proving Ground share one memory roster generation.
 - Proving Ground is read-only and cannot repair admissions or rebuild the fleet while inspecting it.
 - Failed candidate rebuilds retain the last verified six-company runtime state.
 
-# 8.6.12 — Memory Muster
+# 8.6.13 — Memory Commit Watchdog
 
 - Added explicit BOOTING → RECONCILING → ROSTER READY → DOCK PAINTED → INTELLIGENCE PAINTED → PROOF COMMITTED lifecycle.
 - Proving Ground now waits for the proof barrier and reads one canonical current six-vessel proof.
@@ -13,7 +13,7 @@
 - Fleet Dock and Fleet Intelligence successful paints commit the same current proof used by readiness.
 - Six-vessel rescue and Legacy immutable identity logic remain unchanged.
 
-# 8.6.12 — Memory Muster
+# 8.6.13 — Memory Commit Watchdog
 
 - Proving Ground now consumes the same current successful Fleet Dock trace that renders **SIX ABOARD**.
 - Successful six-card Fleet Dock renders write a canonical current proof record for this build.
@@ -22,7 +22,7 @@
 - Fixed the Muster Trace readiness helper so it no longer collapses to `trace unavailable` from an out-of-scope safe wrapper.
 - Canonical-six recovery logic is frozen; staging remains a non-blocking WATCH until deliberately exercised.
 
-## 8.6.12 — Memory Muster
+## 8.6.13 — Memory Commit Watchdog
 
 - Moves roster diagnostics inside the async resolver itself.
 - Bounds every named resolver stage and records PASS / FAIL / TIMEOUT with protected vessel IDs.

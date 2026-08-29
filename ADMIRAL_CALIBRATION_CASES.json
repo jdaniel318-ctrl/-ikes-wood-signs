@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-admiral-calibration-cases-v1",
-  "build": "8.6.12",
+  "build": "8.6.13",
   "cases": [
     {
       "id": "ike-2ft-cedar-reference",

@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.6.12 \u2014 Memory Muster",
-  "short_name": "Dark Sky 8.6.12",
-  "start_url": "./index.html?_darkSkyRelease=8.6.12&_darkSkySeal=memory-muster-8612-atomic-six-5d91c4",
+  "name": "Dark Sky 8.6.13 \u2014 Memory Commit Watchdog",
+  "short_name": "Dark Sky 8.6.13",
+  "start_url": "./index.html?_darkSkyRelease=8.6.13&_darkSkySeal=memory-commit-watchdog-8613-settle-once-7a3e11",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.12"
+  "version": "8.6.13"
 }

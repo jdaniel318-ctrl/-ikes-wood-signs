@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.12';
+  const BUILD_VERSION='8.6.13';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2138,7 +2138,7 @@
   }
 
 
-  // 8.6.12 Memory Muster — one current proof record shared by live surfaces
+  // 8.6.13 Memory Commit Watchdog — one current proof record shared by live surfaces
   // and Proving Ground. Successful newer render evidence supersedes older failed attempts;
   // failures remain in historical diagnostics but do not poison current release posture.
   const EVIDENCE_RECON_KEY_8610='darkSkyEvidenceReconciliationV8610';
@@ -2162,7 +2162,7 @@
   }
 
 
-  // 8.6.12 Memory Muster — current readiness may only be committed after the live
+  // 8.6.13 Memory Commit Watchdog — current readiness may only be committed after the live
   // fleet reaches a stable proof phase. Intermediate boot/reconciliation observations
   // remain diagnostics/history and may never mint a current HOLD.
   const PROOF_BARRIER_KEY_8611='darkSkyProofBarrierV8611';
@@ -2172,23 +2172,32 @@
   function proofBarrierAdvance8611(phase,detail=''){const idx=PROOF_PHASES_8611[phase]??0;const prior=proofBarrierRead8611()||{phaseIndex:0,history:[]};if(idx<Number(prior.phaseIndex||0))return prior;const history=[...(prior.history||[]),{phase,detail,at:new Date().toISOString()}].slice(-40);return proofBarrierWrite8611({phase,phaseIndex:idx,detail,history});}
   function protectedStage8611(name,ids=[]){const have=new Set((ids||[]).map(x=>String(x||'')));const present=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!have.has(id));return {name,count:present.length,ids:present,missing,ok:missing.length===0};}
 
-  // 8.6.12 Memory Muster — atomic in-memory fleet handoff. A partial registry read
+  // 8.6.13 Memory Commit Watchdog — atomic in-memory fleet handoff. A partial registry read
   // may be inspected as a candidate, but it can never replace the last verified
   // runtime roster. Fleet Dock, Fleet Intelligence and Proving Ground all consume
   // the same committed memory generation.
   const MEMORY_MUSTER_KEY_8612='darkSkyMemoryMusterV8612';
   let memoryRosterReadyPromise8612=null;
   let memoryMusterGeneration8612=0;
+  // 8.6.13 Memory Commit Watchdog — one settle-once lifecycle for the shared
+  // memory roster barrier. Consumers can never wait on a rejected or orphaned promise.
+  const MEMORY_COMMIT_WATCHDOG_KEY_8613='darkSkyMemoryCommitWatchdogV8613';
+  let memoryCommitWatchdogRun8613=0;
+  let memoryCommitActiveRun8613=0;
+  function memoryCommitWatchdogRead8613(){try{const v=JSON.parse(localStorage.getItem(MEMORY_COMMIT_WATCHDOG_KEY_8613)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
+  function memoryCommitWatchdogWrite8613(patch={}){const prior=memoryCommitWatchdogRead8613()||{schema:'dark-sky-memory-commit-watchdog-v1',build:BUILD_VERSION,status:'created',history:[]};const event={status:patch.status||prior.status,stage:patch.stage||prior.stage||'',detail:patch.detail||'',at:new Date().toISOString()};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:event.at,history:[...(prior.history||[]),event].slice(-60)};try{localStorage.setItem(MEMORY_COMMIT_WATCHDOG_KEY_8613,JSON.stringify(next));}catch(_){}window.__darkSkyMemoryCommitWatchdog8613=next;return next;}
+  function memoryCommitWatchdogStage8613(status,stage,detail='',extra={}){return memoryCommitWatchdogWrite8613({status,stage,detail,...extra});}
   function protectedIdsFromRows8612(rows=[]){const have=new Set((rows||[]).map(p=>String(canonicalProjectId(p?.id||p||''))).filter(Boolean));return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));}
   function memoryRosterHasProtectedSix8612(rows=companies){return protectedIdsFromRows8612(rows).length===RELEASE_CANONICAL_FLEET_IDS_864.length;}
   function memoryMusterRead8612(){try{const v=JSON.parse(localStorage.getItem(MEMORY_MUSTER_KEY_8612)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
   function memoryMusterWrite8612(patch={}){const prior=memoryMusterRead8612()||{schema:'dark-sky-memory-muster-v1',build:BUILD_VERSION,generation:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};try{localStorage.setItem(MEMORY_MUSTER_KEY_8612,JSON.stringify(next));}catch(_){}window.__darkSkyMemoryMuster8612=next;return next;}
   async function readAdmissionLedgerSnapshot8612(){let stored={};try{const v=(await getSetting(V4_ADMISSION_LEDGER_SETTING))?.value;if(v&&typeof v==='object'&&!Array.isArray(v))stored=v;}catch(_){}const local=readV4AdmissionLedger();return {...stored,...local};}
-  function memoryMusterCommit8612(candidateRows,{source='runtime',registryIds=[],admissionIds=[],manifestIds=[]}={}){
+  function memoryMusterCommit8612(candidateRows,{source='runtime',registryIds=[],admissionIds=[],manifestIds=[],run=0}={}){
+    if(run&&run!==memoryCommitActiveRun8613)throw new Error(`Memory Commit Watchdog rejected stale run ${run}; active run is ${memoryCommitActiveRun8613||'none'}.`);
     const candidate=(candidateRows||[]).map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(normalizeProjectCode(structuredClone(p))))||ensureProjectGovernance(normalizeProjectCode(structuredClone(p))));
     const protectedIds=protectedIdsFromRows8612(candidate);
     const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!protectedIds.includes(id));
-    if(missing.length)throw new Error(`Memory Muster candidate incomplete: missing ${missing.join(', ')}`);
+    if(missing.length)throw new Error(`Memory Commit Watchdog candidate incomplete: missing ${missing.join(', ')}`);
     const priorGood=memoryRosterHasProtectedSix8612(companies)?structuredClone(companies):null;
     try{
       // Atomic commit point: this is the only assignment that can replace the live
@@ -2196,7 +2205,7 @@
       companies=candidate;
       memoryMusterGeneration8612=Math.max(memoryMusterGeneration8612,Number(memoryMusterRead8612()?.generation||0))+1;
       const snapshot=memoryMusterWrite8612({status:'committed',generation:memoryMusterGeneration8612,source,total:companies.length,protectedCount:protectedIds.length,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...protectedIds],registryIds:[...registryIds],admissionIds:[...admissionIds],manifestIds:[...manifestIds],committedAt:new Date().toISOString(),lastFailure:null});
-      proofBarrierAdvance8611('ROSTER_READY',`Memory Muster generation ${snapshot.generation} committed • ${source}`);
+      proofBarrierAdvance8611('ROSTER_READY',`Memory Commit Watchdog generation ${snapshot.generation} committed • ${source}`);
       return snapshot;
     }catch(err){
       if(priorGood)companies=priorGood;
@@ -2207,10 +2216,18 @@
   async function awaitMemoryRosterReady8612({timeoutMs=1200,source='consumer'}={}){
     const snap=memoryMusterRead8612();
     if(snap?.status==='committed'&&snap.protectedCount===6&&memoryRosterHasProtectedSix8612(companies))return snap;
-    if(memoryRosterReadyPromise8612){const settled=await commandDeadline(memoryRosterReadyPromise8612,timeoutMs,null);if(settled?.protectedCount===6)return settled;}
-    // Read-only consumers never initiate mutation. They may use the current verified
-    // runtime roster if already complete, otherwise they report a bounded hold.
-    if(memoryRosterHasProtectedSix8612(companies)){return memoryMusterWrite8612({status:'committed',generation:Math.max(1,Number(snap?.generation||0)),source:`observed:${source}`,total:companies.length,protectedCount:6,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...RELEASE_CANONICAL_FLEET_IDS_864],committedAt:new Date().toISOString()});}
+    if(memoryRosterReadyPromise8612){
+      // The shared promise is deliberately normalized to resolve(null) on failure.
+      // Even if an older caller handed us a rejecting promise, consume it safely.
+      const settled=await commandDeadline(Promise.resolve(memoryRosterReadyPromise8612).catch(err=>{memoryCommitWatchdogStage8613('failed','shared-memory-promise',String(err?.message||err),{source});return null;}),timeoutMs,null);
+      if(settled?.protectedCount===6)return settled;
+    }
+    if(memoryRosterHasProtectedSix8612(companies)){
+      const observed=memoryMusterWrite8612({status:'committed',generation:Math.max(1,Number(snap?.generation||0)),source:`observed:${source}`,total:companies.length,protectedCount:6,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...RELEASE_CANONICAL_FLEET_IDS_864],committedAt:new Date().toISOString()});
+      memoryCommitWatchdogStage8613('committed','observed-six',`Existing six-company roster accepted by ${source}`,{generation:observed.generation,source});
+      return observed;
+    }
+    memoryCommitWatchdogStage8613('timeout','consumer-wait',`No six-company memory commit within ${timeoutMs} ms`,{source});
     return null;
   }
 
@@ -2237,11 +2254,11 @@
     return proof;
   }
   async function awaitProofBarrier8611({source='readiness',timeoutMs=4200}={}){
-    // 8.6.12: Proving Ground is an observer. It never triggers registry repair,
+    // 8.6.13: Proving Ground is an observer. It never triggers registry repair,
     // admission writes, duplicate reconciliation or a companies[] rebuild.
     const memory=await awaitMemoryRosterReady8612({timeoutMs:Math.min(timeoutMs,1500),source});
     if(!memory)return proofBarrierRead8611()?.currentProof||null;
-    proofBarrierAdvance8611('ROSTER_READY',`Memory Muster generation ${memory.generation||0} ready for ${source}`);
+    proofBarrierAdvance8611('ROSTER_READY',`Memory Commit Watchdog generation ${memory.generation||0} ready for ${source}`);
     const work=(async()=>{
       await renderFleetCommissioning({skipConvergence:true});
       const dockIds=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||''));
@@ -2467,7 +2484,7 @@
     }
     return duplicates;
   }
-  // 8.6.12 Memory Muster — instrument the async roster resolver itself.
+  // 8.6.13 Memory Commit Watchdog — instrument the async roster resolver itself.
   // READINGS may not hang forever. Every resolver stage is bounded, named, and
   // captures the protected IDs known immediately after the step.
   const RESOLVER_LIFELINE_TIMEOUT_869=1150;
@@ -2506,7 +2523,7 @@
     const elapsedMs=Date.now()-started;
     if(result.kind==='timeout'){
       resolverMark869(name,'timeout',{detail:`No settlement within ${ms} ms`,elapsedMs});
-      const err=new Error(`Memory Muster timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
+      const err=new Error(`Memory Commit Watchdog timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
     }
     if(result.kind==='fail'){
       resolverMark869(name,'fail',{detail:String(result.error?.message||result.error),elapsedMs});
@@ -2519,14 +2536,14 @@
   }
   async function resolverRead869(name,task,fallback){
     try{return await resolverStep869(name,task,{ms:780});}
-    catch(err){console.warn('Memory Muster read fallback',name,err);return fallback;}
+    catch(err){console.warn('Memory Commit Watchdog read fallback',name,err);return fallback;}
   }
   function resolverLifelineHtml869(trace=window.__darkSkyResolverLifeline869){
     if(!trace)return '';
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
-    return `<section class="resolver-lifeline-panel ${status}" aria-label="Memory Muster">
-      <header><div><small>8.6.12 • MEMORY MUSTER</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+    return `<section class="resolver-lifeline-panel ${status}" aria-label="Memory Commit Watchdog">
+      <header><div><small>8.6.13 • MEMORY MUSTER</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -2535,9 +2552,13 @@
   async function convergeCanonicalFleetForPresentation({source='engine-presentation',force=false}={}){
     if(canonicalPresentationConvergence&&!force)return canonicalPresentationConvergence;
     beginResolverLifeline869(source);
+    const watchdogRun=++memoryCommitWatchdogRun8613;
+    memoryCommitActiveRun8613=watchdogRun;
+    memoryCommitWatchdogStage8613('building','resolver-start',`Memory candidate build started • ${source}`,{run:watchdogRun,source});
     const priorGood=memoryRosterHasProtectedSix8612(companies)?structuredClone(companies):null;
     canonicalPresentationConvergence=(async()=>{
       await resolverStep869('Operational fleet seal',()=>sealOperationalFleetForCommand(),{idsFrom:()=>companies||[]});
+      memoryCommitWatchdogStage8613('building','operational-seal','Operational fleet seal settled',{run:watchdogRun,source});
       let canonical=await resolverStep869('Canonical registry read',()=>readCanonicalProjectRegistryStrict());
       canonical=canonical.map(canonicalizeProjectDisplayIdentity).map(normalizeProjectCode).map(ensureProjectGovernance);
       const plan=strictDuplicateBusinessPlan(canonical);
@@ -2557,32 +2578,58 @@
         window.DarkSkyV4?.diagnostic?.('fleet.identity_hold','Canonical fleet still contains duplicate business identities',{duplicates:remaining,build:BUILD_VERSION,source});
       }
 
-      // Memory Muster repair/reconciliation occurs before any live roster assignment.
+      // Memory Commit Watchdog repair/reconciliation occurs before any live roster assignment.
       const muster=await resolverStep869('Protected muster reconciliation',()=>ensureProtectedFleetMuster866({stage:`memory-muster:${source}`}),{idsFrom:value=>value?.rows||[]});
+      memoryCommitWatchdogStage8613('building','protected-muster','Protected muster reconciliation settled',{run:watchdogRun,source});
       canonical=(muster?.rows||canonical).map(canonicalizeProjectDisplayIdentity).map(normalizeProjectCode).map(ensureProjectGovernance);
       const ledger=muster?.ledger||await ensureV4AdmissionLedger(canonical);
       const admissionIds=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger?.[id],id));
-      const manifestState=await resolverStep869('Fleet manifest projection',()=>ensureCanonicalFleetManifest({repairRegistry:false}),{idsFrom:value=>value?.ids||readV4FleetManifest()});
+      const manifestState=await resolverStep869('Fleet manifest projection',()=>ensureCanonicalFleetManifest({repairRegistry:false,mutateMemory:false}),{idsFrom:value=>value?.ids||readV4FleetManifest()});
+      memoryCommitWatchdogStage8613('validating','manifest-projection',`Manifest projected without mutating live memory`,{run:watchdogRun,source});
       const manifestIds=manifestState?.ids||readV4FleetManifest();
       const canonicalById=new Map(canonical.map(p=>[String(canonicalProjectId(p?.id||'')),p]));
       const candidate=manifestIds.map(id=>canonicalById.get(String(id))).filter(Boolean);
       const candidateProtected=protectedIdsFromRows8612(candidate);
-      if(candidateProtected.length!==6)throw new Error(`Memory Muster candidate blocked before commit (${candidateProtected.length}/6 protected vessels).`);
+      if(candidateProtected.length!==6)throw new Error(`Memory Commit Watchdog candidate blocked before commit (${candidateProtected.length}/6 protected vessels).`);
       const registryIds=canonical.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
-      const commit=memoryMusterCommit8612(candidate,{source,registryIds,admissionIds,manifestIds});
+      memoryCommitWatchdogStage8613('validating','candidate-six',`Candidate contains ${candidateProtected.length}/6 protected vessels`,{run:watchdogRun,source,candidateIds:candidate.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean)});
+      const commit=memoryMusterCommit8612(candidate,{source,registryIds,admissionIds,manifestIds,run:watchdogRun});
+      memoryCommitWatchdogStage8613('committed','atomic-memory-commit',`Generation ${commit.generation} committed with six protected vessels`,{run:watchdogRun,source,generation:commit.generation,ids:[...(commit.protectedIds||[])]});
+      if(memoryCommitActiveRun8613===watchdogRun)memoryCommitActiveRun8613=0;
       writeProjectRegistryBackup(companies,`memory-muster-${source}`);
       resolverMark869('In-memory roster handoff','pass',{detail:`Atomic generation ${commit.generation} committed • ${companies.length} row(s)`,ids:companies});
       window.__darkSkyCanonicalFleet={build:BUILD_VERSION,source,count:companies.length,duplicates:remaining,memoryGeneration:commit.generation,at:new Date().toISOString()};
       const trace=resolverLifelineTrace869();trace.status='clear';trace.finishedAt=new Date().toISOString();
       return companies;
     })();
-    memoryRosterReadyPromise8612=canonicalPresentationConvergence.then(()=>memoryMusterRead8612());
-    try{return await canonicalPresentationConvergence;}
-    catch(err){
+    // One normalized, settle-once shared readiness promise. It resolves with a
+    // committed snapshot or null; it never remains pending and never rejects into UI consumers.
+    memoryRosterReadyPromise8612=Promise.resolve(canonicalPresentationConvergence).then(()=>memoryMusterRead8612()).catch(err=>{
       const candidateIds=(()=>{try{return (companies||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);}catch(_){return[];}})();
+      if(memoryCommitActiveRun8613===watchdogRun)memoryCommitActiveRun8613=0;
       if(priorGood)companies=priorGood;
       memoryMusterRetainFailure8612(err,{source,candidateIds});
-      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure=err?.stage||'Memory Muster';throw err;
+      memoryCommitWatchdogStage8613(err?.code==='RESOLVER_LIFELINE_TIMEOUT'?'timeout':'failed',err?.stage||'memory-candidate',String(err?.message||err),{run:watchdogRun,source,candidateIds});
+      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure=err?.stage||'Memory Commit Watchdog';
+      return null;
+    });
+    const watchdogMs=3200;
+    const watchdogResult=await commandDeadline(memoryRosterReadyPromise8612,watchdogMs,'__MEMORY_WATCHDOG_TIMEOUT__');
+    if(watchdogResult==='__MEMORY_WATCHDOG_TIMEOUT__'){
+      const err=new Error(`Memory Commit Watchdog timed out after ${watchdogMs} ms`);err.code='MEMORY_COMMIT_WATCHDOG_TIMEOUT';err.stage='memoryRosterReady';
+      if(memoryCommitActiveRun8613===watchdogRun)memoryCommitActiveRun8613=0;
+      if(priorGood)companies=priorGood;
+      memoryMusterRetainFailure8612(err,{source,candidateIds:protectedIdsFromRows8612(companies)});
+      memoryCommitWatchdogStage8613('timeout','memoryRosterReady',err.message,{run:watchdogRun,source,retainedPriorSix:!!priorGood});
+      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure='Memory Commit Watchdog';
+      canonicalPresentationConvergence=null;
+      return priorGood||companies;
+    }
+    try{return await canonicalPresentationConvergence;}
+    catch(err){
+      // The shared readiness promise has already retained/recorded the failure.
+      if(priorGood)companies=priorGood;
+      return priorGood||companies;
     }
     finally{canonicalPresentationConvergence=null;}
   }
@@ -3353,7 +3400,7 @@
     const state=await ensureCanonicalFleetManifest({repairRegistry:false});
     return state.ids;
   }
-  async function ensureCanonicalFleetManifest({repairRegistry=true}={}){
+  async function ensureCanonicalFleetManifest({repairRegistry=true,mutateMemory=true}={}){
     let canonical=await readCanonicalProjectRegistry();
     const canonicalById=new Map(canonical.map(p=>[String(p?.id||''),p]).filter(([id])=>id));
     const admissions=await ensureV4AdmissionLedger(canonical);
@@ -3387,14 +3434,18 @@
     }catch(_){ }
 
     const memoryById=new Map((companies||[]).map(p=>[String(p?.id||''),p]));
-    companies=canonical.map(row=>{
+    const projectedRows=canonical.map(row=>{
       const id=String(row?.id||'');
       const mem=memoryById.get(id);
       const merged=mem?{...mem,...row,id:row.id}:row;
       merged.v4AdmissionReviewRequired=!allowed.has(id);
       return merged;
     }).filter(Boolean).map(normalizeProjectCode).map(ensureProjectGovernance);
-    return {ids,rows:companies,orphans,admissions};
+    // 8.6.13 Memory Commit Watchdog: candidate construction is read/repair-only.
+    // A manifest projection may NEVER replace the live companies[] roster before
+    // Memory Commit Watchdog validates all six and reaches its single atomic commit point.
+    if(mutateMemory)companies=projectedRows;
+    return {ids,rows:projectedRows,orphans,admissions};
   }
 
   const V4_ENVELOPE_LEDGER_KEY='darkSkyV4ProjectEnvelopesV1';
@@ -4893,7 +4944,7 @@
     const legacyProofOk8611=proofReady8611&&currentProof8611.registryIds.includes(legacyAnchorId865)&&currentProof8611.dockIds.includes(legacyAnchorId865);
     add('legacy-identity-anchor','Legacy Plumbing immutable identity anchor',legacyProofOk8611?'pass':'fail',legacyProofOk8611?`Legacy Plumbing survives the committed proof barrier on immutable Project ID ${legacyAnchorId865}.`:'Legacy Plumbing is not present in both committed registry and Dock proof.');
     add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',proofStages8611.Intelligence?.ok?'pass':'fail',proofStages8611.Intelligence?.ok?'Fleet Intelligence committed a usable six-vessel first-paint proof after the barrier.':'Fleet Intelligence has not crossed the successful paint barrier for this build.');
-    add('evidence-reconciliation-current-proof','Memory Muster current proof',proofReady8611?'pass':'fail',proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':'No current proof has been committed; boot-time observations remain diagnostic history only.');
+    add('evidence-reconciliation-current-proof','Memory Commit Watchdog current proof',proofReady8611?'pass':'fail',proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':'No current proof has been committed; boot-time observations remain diagnostic history only.');
 
     let stagingVerified864=null;try{stagingVerified864=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
     const stagingLedger864=fleetStagingLedgerRead();
@@ -5078,8 +5129,8 @@
   }
   async function runAutomaticProvingGround(){
     try{
-      // 8.6.12: automatic assurance never races memory initialization. If the
-      // Memory Muster has not committed yet, leave proving untouched and let the
+      // 8.6.13: automatic assurance never races memory initialization. If the
+      // Memory Commit Watchdog has not committed yet, leave proving untouched and let the
       // next scheduled/manual run inspect the settled fleet.
       const memory=await awaitMemoryRosterReady8612({timeoutMs:1800,source:'automatic-proving'});
       if(!memory)return null;
@@ -5206,7 +5257,7 @@
   window.DarkSkyAdmiralReadiness={run:runAdmiralReadinessChecks,render:renderAdmiralReadiness,exportRecovery:exportFleetRecoverySnapshot};
 
   async function renderEngineRoom(){
-    // 8.6.12 Memory Muster — Engine paint can never block forever on roster
+    // 8.6.13 Memory Commit Watchdog — Engine paint can never block forever on roster
     // reconciliation. The resolver owns a shorter named deadline; this outer guard
     // catches any uninstrumented wait and paints a diagnostic Dock instead.
     const engineConvergence=convergeCanonicalFleetForPresentation({source:'engine-room',force:true});
@@ -5214,7 +5265,7 @@
     if(!engineGate?.ok){
       const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();
       if(engineGate?.timeout&&!trace.firstFailure){trace.firstFailure='Engine presentation convergence';resolverMark869('Engine presentation convergence','timeout',{detail:'Outer Engine guard reached 1750 ms'});}
-      console.warn('Memory Muster Engine fallback',engineGate?.error||'timeout');
+      console.warn('Memory Commit Watchdog Engine fallback',engineGate?.error||'timeout');
       await renderFleetCommissioning({skipConvergence:true});
     }else await renderFleetCommissioning({skipConvergence:true});
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
@@ -5483,7 +5534,7 @@
     // refresh in the background. Navigation remains available during verification.
     let canonicalSettled=true;
     if(!skipConvergence){
-      // 8.6.12: reuse the committed memory generation when available. Fleet Dock
+      // 8.6.13: reuse the committed memory generation when available. Fleet Dock
       // must not start a second reconciliation after the Engine already committed six.
       const ready=await awaitMemoryRosterReady8612({timeoutMs:120,source:'fleet-dock-entry'});
       if(!ready){
@@ -12739,7 +12790,7 @@ The full order and approved media remain stored with this project.`;
   };
 
   window.renderBlackFlagHome = async function(){
-    try{ await convergeCanonicalFleetForPresentation({source:'home-memory-muster'}); }catch(err){ console.warn('Memory Muster home convergence warning',err); }
+    try{ await convergeCanonicalFleetForPresentation({source:'home-memory-muster'}); }catch(err){ console.warn('Memory Commit Watchdog home convergence warning',err); }
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }

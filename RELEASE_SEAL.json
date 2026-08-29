@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.12",
-  "release": "Memory Muster",
-  "seal": "memory-muster-8612-atomic-six-5d91c4",
-  "execution_model": "verified-in-memory-atomic-snapshot",
+  "build": "8.6.13",
+  "release": "Memory Commit Watchdog",
+  "seal": "memory-commit-watchdog-8613-settle-once-7a3e11",
+  "execution_model": "settle-once-memory-commit-watchdog",
   "service_worker": "identity-only",
-  "release_name": "Memory Muster",
-  "name": "Memory Muster"
+  "release_name": "Memory Commit Watchdog",
+  "name": "Memory Commit Watchdog"
 }

@@ -1,18 +1,18 @@
-# Dark Sky 8.6.12 — Memory Muster
+# Dark Sky 8.6.13 — Memory Commit Watchdog
 
 Atomic roster rule: reconcile → validate protected six → commit memory → render → prove. Proving Ground is inspection-only.
 
-# Dark Sky 8.6.12 — Memory Muster
+# Dark Sky 8.6.13 — Memory Commit Watchdog
 
 Current readiness truth is committed only after initialize → reconcile → render → prove. The canonical six-vessel rescue remains frozen; this release changes assurance timing and proof consumption only.
 
-# Dark Sky 8.6.12 — Memory Muster
+# Dark Sky 8.6.13 — Memory Commit Watchdog
 
 Current successful live evidence is now the canonical current truth for Proving Ground. The six-vessel rescue logic is preserved unchanged.
 
-# Dark Sky 8.6.12 — Memory Muster
+# Dark Sky 8.6.13 — Memory Commit Watchdog
 
-Memory Muster moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
+Memory Commit Watchdog moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
 
 ## 8.6.8 — Dock Source Trace
 
