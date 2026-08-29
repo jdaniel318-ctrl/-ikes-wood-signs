@@ -1,7 +1,7 @@
 {
-  "release": "Memory Commit Watchdog",
-  "name": "Memory Commit Watchdog",
-  "file_count": 61,
+  "release": "Proof Bootstrap",
+  "name": "Proof Bootstrap",
+  "file_count": 63,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -28,10 +28,12 @@
     "IKE_STYLE_FOUNDRY.json",
     "KEEL_GAUGE_CALIBRATION_AUDIT.json",
     "LEAN_BUILD_MANIFEST.md",
+    "MEMORY_COMMIT_WATCHDOG_MODEL.json",
     "MEMORY_MUSTER_MODEL.json",
     "MUSTER_TRACE_MODEL.json",
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
     "PROOF_BARRIER_MODEL.json",
+    "PROOF_BOOTSTRAP_MODEL.json",
     "README.md",
     "REGISTRY_LEDGER_MODEL.json",
     "RELEASE_DISCIPLINE_827.md",
@@ -65,7 +67,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.13",
-  "seal": "memory-commit-watchdog-8613-settle-once-7a3e11",
-  "release_name": "Memory Commit Watchdog"
+  "build": "8.6.14",
+  "seal": "proof-bootstrap-8614-generation-bound-4d91c2",
+  "release_name": "Proof Bootstrap"
 }

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-capability-adoption-map-v1",
-  "build": "8.6.13",
+  "build": "8.6.14",
   "policy": "Runtime-generated from Fleet Learning Registry; this file defines the adoption vocabulary only.",
   "states": [
     "unreviewed",

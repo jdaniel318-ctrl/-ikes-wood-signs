@@ -1,0 +1,27 @@
+{
+  "schema": "dark-sky-proof-bootstrap-v1",
+  "build": "8.6.14",
+  "release": "Proof Bootstrap",
+  "contract": "Memory commit -> core proof -> Dock proof -> Intelligence proof -> current proof complete",
+  "generation_bound": true,
+  "proving_ground_read_only": true,
+  "core": [
+    "registry",
+    "admissions",
+    "manifest",
+    "memory"
+  ],
+  "surfaces": [
+    "dock",
+    "intelligence"
+  ],
+  "states": [
+    "waiting-memory",
+    "core-committed",
+    "dock-verified",
+    "intelligence-verified",
+    "complete",
+    "failed",
+    "timeout"
+  ]
+}
