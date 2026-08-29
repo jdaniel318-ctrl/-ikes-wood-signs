@@ -1,0 +1,28 @@
+{
+  "schema": "dark-sky-memory-muster-model-v1",
+  "build": "8.6.12",
+  "status": "required-runtime-contract",
+  "rule": "A candidate roster may not replace the live companies array until all protected six identities, admissions and manifest membership verify. Proving Ground is read-only.",
+  "protected_count": 6,
+  "handoff": [
+    "registry-read",
+    "duplicate-reconciliation",
+    "protected-muster-reconciliation",
+    "admissions-verified",
+    "manifest-projected",
+    "candidate-memory-roster",
+    "atomic-memory-commit",
+    "dock-paint",
+    "intelligence-paint",
+    "proof-commit"
+  ],
+  "fail_safe": "If a candidate rebuild is incomplete, retain the last verified six-company runtime roster and record the failed candidate separately.",
+  "consumers": [
+    "Fleet Dock",
+    "Fleet Intelligence",
+    "Fleet Health",
+    "Command Deck",
+    "Fleet Proving Ground"
+  ],
+  "proof_rule": "Proving Ground never invokes registry/admission repair; it reads the committed memory generation and subsequent rendered proof."
+}

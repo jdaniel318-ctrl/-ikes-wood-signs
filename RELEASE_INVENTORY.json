@@ -1,7 +1,7 @@
 {
-  "release": "Proof Barrier",
-  "name": "Proof Barrier",
-  "file_count": 59,
+  "release": "Memory Muster",
+  "name": "Memory Muster",
+  "file_count": 61,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -28,8 +28,10 @@
     "IKE_STYLE_FOUNDRY.json",
     "KEEL_GAUGE_CALIBRATION_AUDIT.json",
     "LEAN_BUILD_MANIFEST.md",
+    "MEMORY_MUSTER_MODEL.json",
     "MUSTER_TRACE_MODEL.json",
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
+    "PROOF_BARRIER_MODEL.json",
     "README.md",
     "REGISTRY_LEDGER_MODEL.json",
     "RELEASE_DISCIPLINE_827.md",
@@ -61,10 +63,9 @@
     "platform_v4.js",
     "signal_restoration_logo.png",
     "styles.css",
-    "sw.js",
-    "PROOF_BARRIER_MODEL.json"
+    "sw.js"
   ],
-  "build": "8.6.11",
-  "seal": "proof-barrier-8611-commit-after-paint-42b7d1",
-  "release_name": "Proof Barrier"
+  "build": "8.6.12",
+  "seal": "memory-muster-8612-atomic-six-5d91c4",
+  "release_name": "Memory Muster"
 }

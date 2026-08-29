@@ -1,13 +1,13 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.6.11",
-  "version": "8.6.11",
-  "release_name": "Proof Barrier",
-  "releaseName": "Proof Barrier",
-  "release_seal": "proof-barrier-8611-commit-after-paint-42b7d1",
+  "build": "8.6.12",
+  "version": "8.6.12",
+  "release_name": "Memory Muster",
+  "releaseName": "Memory Muster",
+  "release_seal": "memory-muster-8612-atomic-six-5d91c4",
   "entrypoint": "index.html",
   "runtime": "static-web",
-  "deployment_mode": "root-upload-safe-atomic-memory-snapshot",
+  "deployment_mode": "root-upload-safe-atomic-memory-muster",
   "required_runtime_files": [
     "index.html",
     "owner.html",
@@ -35,7 +35,8 @@
     "MUSTER_TRACE_MODEL.json",
     "DOCK_SOURCE_TRACE_MODEL.json",
     "RESOLVER_LIFELINE_MODEL.json",
-    "EVIDENCE_RECONCILIATION_MODEL.json"
+    "EVIDENCE_RECONCILIATION_MODEL.json",
+    "MEMORY_MUSTER_MODEL.json"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -68,8 +69,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Proof Barrier: one canonical current proof for rendered Fleet Dock and Fleet Intelligence, with stale failures retained as history rather than current HOLD state.",
-  "release_note": "8.6.11 introduces a proof barrier: initialize \u2192 reconcile \u2192 render \u2192 prove. Current readiness consumes one committed six-vessel live proof.",
+  "release_focus": "Memory Muster: one canonical current proof for rendered Fleet Dock and Fleet Intelligence, with stale failures retained as history rather than current HOLD state.",
+  "release_note": "8.6.12 makes the six-vessel in-memory handoff atomic and makes Proving Ground read-only: reconcile \u2192 validate \u2192 memory commit \u2192 render \u2192 prove.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

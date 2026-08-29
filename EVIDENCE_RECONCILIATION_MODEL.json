@@ -1,13 +1,20 @@
 {
   "schema": "dark-sky-evidence-reconciliation-v1",
-  "build": "8.6.11",
-  "release": "Proof Barrier",
+  "build": "8.6.12",
+  "release": "Memory Muster",
   "mission": "Current successful live-surface evidence supersedes stale failed attempts without erasing history.",
   "proofs": {
     "fleet_dock": {
       "source": "Rendered Fleet Dock cards",
       "required_count": 6,
-      "required_ids": ["beccas-bloom-shop","bf-p-f92f87e8ec44","bor-north-richmond","grizzly-bear","ikes-wood-signs","mugshot-after-dark"]
+      "required_ids": [
+        "beccas-bloom-shop",
+        "bf-p-f92f87e8ec44",
+        "bor-north-richmond",
+        "grizzly-bear",
+        "ikes-wood-signs",
+        "mugshot-after-dark"
+      ]
     },
     "fleet_intelligence": {
       "source": "Fleet Intelligence usable render",

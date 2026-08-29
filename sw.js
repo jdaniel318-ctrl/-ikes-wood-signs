@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.11';
-const RELEASE_SEAL='proof-barrier-8611-commit-after-paint-42b7d1';
+const RELEASE_BUILD='8.6.12';
+const RELEASE_SEAL='memory-muster-8612-atomic-six-5d91c4';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

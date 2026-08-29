@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.11';
+  const BUILD_VERSION='8.6.12';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2138,7 +2138,7 @@
   }
 
 
-  // 8.6.11 Proof Barrier — one current proof record shared by live surfaces
+  // 8.6.12 Memory Muster — one current proof record shared by live surfaces
   // and Proving Ground. Successful newer render evidence supersedes older failed attempts;
   // failures remain in historical diagnostics but do not poison current release posture.
   const EVIDENCE_RECON_KEY_8610='darkSkyEvidenceReconciliationV8610';
@@ -2162,7 +2162,7 @@
   }
 
 
-  // 8.6.11 Proof Barrier — current readiness may only be committed after the live
+  // 8.6.12 Memory Muster — current readiness may only be committed after the live
   // fleet reaches a stable proof phase. Intermediate boot/reconciliation observations
   // remain diagnostics/history and may never mint a current HOLD.
   const PROOF_BARRIER_KEY_8611='darkSkyProofBarrierV8611';
@@ -2171,10 +2171,53 @@
   function proofBarrierWrite8611(patch={}){const prior=proofBarrierRead8611()||{schema:'dark-sky-proof-barrier-v1',build:BUILD_VERSION,phase:'BOOTING',phaseIndex:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};try{localStorage.setItem(PROOF_BARRIER_KEY_8611,JSON.stringify(next));}catch(_){}window.__darkSkyProofBarrier8611=next;return next;}
   function proofBarrierAdvance8611(phase,detail=''){const idx=PROOF_PHASES_8611[phase]??0;const prior=proofBarrierRead8611()||{phaseIndex:0,history:[]};if(idx<Number(prior.phaseIndex||0))return prior;const history=[...(prior.history||[]),{phase,detail,at:new Date().toISOString()}].slice(-40);return proofBarrierWrite8611({phase,phaseIndex:idx,detail,history});}
   function protectedStage8611(name,ids=[]){const have=new Set((ids||[]).map(x=>String(x||'')));const present=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!have.has(id));return {name,count:present.length,ids:present,missing,ok:missing.length===0};}
+
+  // 8.6.12 Memory Muster — atomic in-memory fleet handoff. A partial registry read
+  // may be inspected as a candidate, but it can never replace the last verified
+  // runtime roster. Fleet Dock, Fleet Intelligence and Proving Ground all consume
+  // the same committed memory generation.
+  const MEMORY_MUSTER_KEY_8612='darkSkyMemoryMusterV8612';
+  let memoryRosterReadyPromise8612=null;
+  let memoryMusterGeneration8612=0;
+  function protectedIdsFromRows8612(rows=[]){const have=new Set((rows||[]).map(p=>String(canonicalProjectId(p?.id||p||''))).filter(Boolean));return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));}
+  function memoryRosterHasProtectedSix8612(rows=companies){return protectedIdsFromRows8612(rows).length===RELEASE_CANONICAL_FLEET_IDS_864.length;}
+  function memoryMusterRead8612(){try{const v=JSON.parse(localStorage.getItem(MEMORY_MUSTER_KEY_8612)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
+  function memoryMusterWrite8612(patch={}){const prior=memoryMusterRead8612()||{schema:'dark-sky-memory-muster-v1',build:BUILD_VERSION,generation:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};try{localStorage.setItem(MEMORY_MUSTER_KEY_8612,JSON.stringify(next));}catch(_){}window.__darkSkyMemoryMuster8612=next;return next;}
+  async function readAdmissionLedgerSnapshot8612(){let stored={};try{const v=(await getSetting(V4_ADMISSION_LEDGER_SETTING))?.value;if(v&&typeof v==='object'&&!Array.isArray(v))stored=v;}catch(_){}const local=readV4AdmissionLedger();return {...stored,...local};}
+  function memoryMusterCommit8612(candidateRows,{source='runtime',registryIds=[],admissionIds=[],manifestIds=[]}={}){
+    const candidate=(candidateRows||[]).map(p=>window.BlackFlagV3Core?.ensure?.(ensureProjectGovernance(normalizeProjectCode(structuredClone(p))))||ensureProjectGovernance(normalizeProjectCode(structuredClone(p))));
+    const protectedIds=protectedIdsFromRows8612(candidate);
+    const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!protectedIds.includes(id));
+    if(missing.length)throw new Error(`Memory Muster candidate incomplete: missing ${missing.join(', ')}`);
+    const priorGood=memoryRosterHasProtectedSix8612(companies)?structuredClone(companies):null;
+    try{
+      // Atomic commit point: this is the only assignment that can replace the live
+      // company roster during presentation convergence.
+      companies=candidate;
+      memoryMusterGeneration8612=Math.max(memoryMusterGeneration8612,Number(memoryMusterRead8612()?.generation||0))+1;
+      const snapshot=memoryMusterWrite8612({status:'committed',generation:memoryMusterGeneration8612,source,total:companies.length,protectedCount:protectedIds.length,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...protectedIds],registryIds:[...registryIds],admissionIds:[...admissionIds],manifestIds:[...manifestIds],committedAt:new Date().toISOString(),lastFailure:null});
+      proofBarrierAdvance8611('ROSTER_READY',`Memory Muster generation ${snapshot.generation} committed • ${source}`);
+      return snapshot;
+    }catch(err){
+      if(priorGood)companies=priorGood;
+      throw err;
+    }
+  }
+  function memoryMusterRetainFailure8612(error,{source='runtime',candidateIds=[]}={}){const prior=memoryMusterRead8612();return memoryMusterWrite8612({status:prior?.status==='committed'?'committed':'hold',source,lastFailure:{message:String(error?.message||error),candidateIds:[...candidateIds],at:new Date().toISOString()},history:[...(prior?.history||[]),{type:'candidate-failure',source,message:String(error?.message||error),candidateIds:[...candidateIds],at:new Date().toISOString()}].slice(-40)});}
+  async function awaitMemoryRosterReady8612({timeoutMs=1200,source='consumer'}={}){
+    const snap=memoryMusterRead8612();
+    if(snap?.status==='committed'&&snap.protectedCount===6&&memoryRosterHasProtectedSix8612(companies))return snap;
+    if(memoryRosterReadyPromise8612){const settled=await commandDeadline(memoryRosterReadyPromise8612,timeoutMs,null);if(settled?.protectedCount===6)return settled;}
+    // Read-only consumers never initiate mutation. They may use the current verified
+    // runtime roster if already complete, otherwise they report a bounded hold.
+    if(memoryRosterHasProtectedSix8612(companies)){return memoryMusterWrite8612({status:'committed',generation:Math.max(1,Number(snap?.generation||0)),source:`observed:${source}`,total:companies.length,protectedCount:6,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...RELEASE_CANONICAL_FLEET_IDS_864],committedAt:new Date().toISOString()});}
+    return null;
+  }
+
   async function currentFleetProof8611(){
     const canonical=await readCanonicalProjectRegistry();
     const registryIds=(canonical||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
-    const ledger=await ensureV4AdmissionLedger(canonical||[]);
+    const ledger=await readAdmissionLedgerSnapshot8612();
     const admissionIds=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger?.[id],id));
     const manifestIds=readV4FleetManifest();
     const memoryIds=(companies||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
@@ -2189,22 +2232,24 @@
   }
   async function commitProofBarrier8611(source='runtime'){
     const proof=await currentFleetProof8611();
-    if(proof.ok){proofBarrierAdvance8611('PROOF_COMMITTED',`Six-vessel live proof committed • ${source}`);proofBarrierWrite8611({currentProof:proof,proofCommittedAt:new Date().toISOString(),source});evidenceReconciliationWrite8610({dock:{ok:true,count:6,ids:[...proof.dockIds],capturedAt:proof.capturedAt,source:'proof-barrier-8611'},intelligence:{ok:true,count:6,state:proof.intelligence.state,capturedAt:proof.capturedAt,source:'proof-barrier-8611'}});}
+    if(proof.ok){proofBarrierAdvance8611('PROOF_COMMITTED',`Six-vessel live proof committed • ${source}`);proofBarrierWrite8611({currentProof:proof,proofCommittedAt:new Date().toISOString(),source});evidenceReconciliationWrite8610({dock:{ok:true,count:6,ids:[...proof.dockIds],capturedAt:proof.capturedAt,source:'memory-muster-8612'},intelligence:{ok:true,count:6,state:proof.intelligence.state,capturedAt:proof.capturedAt,source:'memory-muster-8612'}});}
     else proofBarrierWrite8611({pendingProof:proof,source});
     return proof;
   }
   async function awaitProofBarrier8611({source='readiness',timeoutMs=4200}={}){
-    proofBarrierAdvance8611('RECONCILING',source);
+    // 8.6.12: Proving Ground is an observer. It never triggers registry repair,
+    // admission writes, duplicate reconciliation or a companies[] rebuild.
+    const memory=await awaitMemoryRosterReady8612({timeoutMs:Math.min(timeoutMs,1500),source});
+    if(!memory)return proofBarrierRead8611()?.currentProof||null;
+    proofBarrierAdvance8611('ROSTER_READY',`Memory Muster generation ${memory.generation||0} ready for ${source}`);
     const work=(async()=>{
-      await convergeCanonicalFleetForPresentation({source:`proof-barrier:${source}`,force:true});
-      proofBarrierAdvance8611('ROSTER_READY','Canonical six reconciled');
       await renderFleetCommissioning({skipConvergence:true});
-      const dockCount=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].length;
-      if(dockCount===6)proofBarrierAdvance8611('DOCK_PAINTED','Six Fleet Dock cards rendered');
+      const dockIds=[...document.querySelectorAll('#fleetCommissioningFleet .fleet-dock-card[data-project-id]')].map(el=>String(el.dataset.projectId||''));
+      if(protectedStage8611('Dock',dockIds).ok)proofBarrierAdvance8611('DOCK_PAINTED','Six Fleet Dock cards rendered from committed memory');
       bindFleetIntelligenceDeck();
       await renderFleetIntelligenceDeck();
       const intelCount=Number(document.querySelector('#fleetIntelligenceSummary article strong')?.textContent||0);
-      if(intelCount===6&&!/READING FLEET/i.test(String(document.getElementById('fleetIntelligenceState')?.textContent||'')))proofBarrierAdvance8611('INTELLIGENCE_PAINTED','Six-vessel Fleet Intelligence rendered');
+      if(intelCount===6&&!/READING FLEET/i.test(String(document.getElementById('fleetIntelligenceState')?.textContent||'')))proofBarrierAdvance8611('INTELLIGENCE_PAINTED','Six-vessel Fleet Intelligence rendered from committed memory');
       return await commitProofBarrier8611(source);
     })();
     const out=await commandDeadline(work,timeoutMs,null);
@@ -2226,7 +2271,7 @@
     const seedIds=[...RELEASE_CANONICAL_FLEET_IDS_864];
     let canonical=[];try{canonical=await readCanonicalProjectRegistry();}catch(_){canonical=[];}
     const canonicalIds=(canonical||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
-    let ledger={};try{ledger=await ensureV4AdmissionLedger(canonical||[]);}catch(_){ledger={};}
+    let ledger={};try{ledger=await readAdmissionLedgerSnapshot8612();}catch(_){ledger={};}
     const admissionIds=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger?.[id],id));
     const manifestIds=readV4FleetManifest();
     const memoryIds=(companies||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
@@ -2422,7 +2467,7 @@
     }
     return duplicates;
   }
-  // 8.6.11 Proof Barrier — instrument the async roster resolver itself.
+  // 8.6.12 Memory Muster — instrument the async roster resolver itself.
   // READINGS may not hang forever. Every resolver stage is bounded, named, and
   // captures the protected IDs known immediately after the step.
   const RESOLVER_LIFELINE_TIMEOUT_869=1150;
@@ -2461,7 +2506,7 @@
     const elapsedMs=Date.now()-started;
     if(result.kind==='timeout'){
       resolverMark869(name,'timeout',{detail:`No settlement within ${ms} ms`,elapsedMs});
-      const err=new Error(`Proof Barrier timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
+      const err=new Error(`Memory Muster timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
     }
     if(result.kind==='fail'){
       resolverMark869(name,'fail',{detail:String(result.error?.message||result.error),elapsedMs});
@@ -2474,14 +2519,14 @@
   }
   async function resolverRead869(name,task,fallback){
     try{return await resolverStep869(name,task,{ms:780});}
-    catch(err){console.warn('Proof Barrier read fallback',name,err);return fallback;}
+    catch(err){console.warn('Memory Muster read fallback',name,err);return fallback;}
   }
   function resolverLifelineHtml869(trace=window.__darkSkyResolverLifeline869){
     if(!trace)return '';
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
-    return `<section class="resolver-lifeline-panel ${status}" aria-label="Proof Barrier">
-      <header><div><small>8.6.11 • PROOF BARRIER</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+    return `<section class="resolver-lifeline-panel ${status}" aria-label="Memory Muster">
+      <header><div><small>8.6.12 • MEMORY MUSTER</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -2490,6 +2535,7 @@
   async function convergeCanonicalFleetForPresentation({source='engine-presentation',force=false}={}){
     if(canonicalPresentationConvergence&&!force)return canonicalPresentationConvergence;
     beginResolverLifeline869(source);
+    const priorGood=memoryRosterHasProtectedSix8612(companies)?structuredClone(companies):null;
     canonicalPresentationConvergence=(async()=>{
       await resolverStep869('Operational fleet seal',()=>sealOperationalFleetForCommand(),{idsFrom:()=>companies||[]});
       let canonical=await resolverStep869('Canonical registry read',()=>readCanonicalProjectRegistryStrict());
@@ -2510,17 +2556,34 @@
         window.BlackFlagV3Core?.audit?.({actorRole:'system',category:'integrity',action:'fleet.keelson.identity_hold',detail:remaining.map(x=>`${x.name}:${x.firstId}/${x.duplicateId}`).join(' • ')});
         window.DarkSkyV4?.diagnostic?.('fleet.identity_hold','Canonical fleet still contains duplicate business identities',{duplicates:remaining,build:BUILD_VERSION,source});
       }
-      companies=canonical;
-      await resolverStep869('Fleet manifest projection',()=>ensureCanonicalFleetManifest({repairRegistry:false}),{idsFrom:value=>value?.ids||readV4FleetManifest()});
-      writeProjectRegistryBackup(companies,`keelson-${source}`);
-      resolverMark869('In-memory roster handoff','pass',{detail:`${companies.length} in-memory project row(s) ready`,ids:companies});
-      window.__darkSkyCanonicalFleet={build:BUILD_VERSION,source,count:companies.length,duplicates:remaining,at:new Date().toISOString()};
-      if(companies.length===6)proofBarrierAdvance8611('ROSTER_READY',`Canonical roster ready • ${source}`);
+
+      // Memory Muster repair/reconciliation occurs before any live roster assignment.
+      const muster=await resolverStep869('Protected muster reconciliation',()=>ensureProtectedFleetMuster866({stage:`memory-muster:${source}`}),{idsFrom:value=>value?.rows||[]});
+      canonical=(muster?.rows||canonical).map(canonicalizeProjectDisplayIdentity).map(normalizeProjectCode).map(ensureProjectGovernance);
+      const ledger=muster?.ledger||await ensureV4AdmissionLedger(canonical);
+      const admissionIds=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger?.[id],id));
+      const manifestState=await resolverStep869('Fleet manifest projection',()=>ensureCanonicalFleetManifest({repairRegistry:false}),{idsFrom:value=>value?.ids||readV4FleetManifest()});
+      const manifestIds=manifestState?.ids||readV4FleetManifest();
+      const canonicalById=new Map(canonical.map(p=>[String(canonicalProjectId(p?.id||'')),p]));
+      const candidate=manifestIds.map(id=>canonicalById.get(String(id))).filter(Boolean);
+      const candidateProtected=protectedIdsFromRows8612(candidate);
+      if(candidateProtected.length!==6)throw new Error(`Memory Muster candidate blocked before commit (${candidateProtected.length}/6 protected vessels).`);
+      const registryIds=canonical.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
+      const commit=memoryMusterCommit8612(candidate,{source,registryIds,admissionIds,manifestIds});
+      writeProjectRegistryBackup(companies,`memory-muster-${source}`);
+      resolverMark869('In-memory roster handoff','pass',{detail:`Atomic generation ${commit.generation} committed • ${companies.length} row(s)`,ids:companies});
+      window.__darkSkyCanonicalFleet={build:BUILD_VERSION,source,count:companies.length,duplicates:remaining,memoryGeneration:commit.generation,at:new Date().toISOString()};
       const trace=resolverLifelineTrace869();trace.status='clear';trace.finishedAt=new Date().toISOString();
       return companies;
     })();
+    memoryRosterReadyPromise8612=canonicalPresentationConvergence.then(()=>memoryMusterRead8612());
     try{return await canonicalPresentationConvergence;}
-    catch(err){const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure=err?.stage||'Unknown resolver stage';throw err;}
+    catch(err){
+      const candidateIds=(()=>{try{return (companies||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);}catch(_){return[];}})();
+      if(priorGood)companies=priorGood;
+      memoryMusterRetainFailure8612(err,{source,candidateIds});
+      const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();if(!trace.firstFailure)trace.firstFailure=err?.stage||'Memory Muster';throw err;
+    }
     finally{canonicalPresentationConvergence=null;}
   }
 
@@ -4637,6 +4700,7 @@
   }
   async function renderFleetIntelligenceDeck(view='',providedSnap=null){
     const deck=$('fleetIntelligenceDeck'),body=$('fleetIntelligenceBody'),summary=$('fleetIntelligenceSummary'),state=$('fleetIntelligenceState');if(!deck||!body||!summary)return;
+    await awaitMemoryRosterReady8612({timeoutMs:900,source:'fleet-intelligence'});
     const stored=view||(()=>{try{return sessionStorage.getItem(FLEET_INTELLIGENCE_STATE_KEY)||'overview';}catch(_){return'overview';}})();
     const active=['overview','health','capabilities','strategy'].includes(stored)?stored:'overview';deck.dataset.view=active;deck.querySelectorAll('[data-intel-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.intelView===active)));
     if(state)state.textContent='READING FLEET';
@@ -4764,7 +4828,7 @@
     const engine=await safe(()=>verifyEnginePin(DEFAULT_ENGINE_PIN,{recordFailure:false}),()=>({ok:false}));
     add('engine-auth','Black Flag recovery access',engine?.ok===true?'pass':'fail',engine?.ok?'5615 recovery path verified without changing session state.':'Black Flag 5615 recovery path did not verify.');
 
-    const readinessRows8611=await safe(()=>readCanonicalProjectRegistry(),()=>projects());
+    const readinessRows8611=currentProof8611?.ok===true?projects():await safe(()=>readCanonicalProjectRegistry(),()=>projects());
     const adminRows=[];
     for(const p of readinessRows8611){
       const result=await safe(()=>verifyProjectAdminPin(DEFAULT_ADMIN_PIN,p.id,{recordFailure:false}),()=>({ok:false}));
@@ -4829,7 +4893,7 @@
     const legacyProofOk8611=proofReady8611&&currentProof8611.registryIds.includes(legacyAnchorId865)&&currentProof8611.dockIds.includes(legacyAnchorId865);
     add('legacy-identity-anchor','Legacy Plumbing immutable identity anchor',legacyProofOk8611?'pass':'fail',legacyProofOk8611?`Legacy Plumbing survives the committed proof barrier on immutable Project ID ${legacyAnchorId865}.`:'Legacy Plumbing is not present in both committed registry and Dock proof.');
     add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',proofStages8611.Intelligence?.ok?'pass':'fail',proofStages8611.Intelligence?.ok?'Fleet Intelligence committed a usable six-vessel first-paint proof after the barrier.':'Fleet Intelligence has not crossed the successful paint barrier for this build.');
-    add('evidence-reconciliation-current-proof','Proof Barrier current proof',proofReady8611?'pass':'fail',proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':'No current proof has been committed; boot-time observations remain diagnostic history only.');
+    add('evidence-reconciliation-current-proof','Memory Muster current proof',proofReady8611?'pass':'fail',proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':'No current proof has been committed; boot-time observations remain diagnostic history only.');
 
     let stagingVerified864=null;try{stagingVerified864=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
     const stagingLedger864=fleetStagingLedgerRead();
@@ -5014,6 +5078,11 @@
   }
   async function runAutomaticProvingGround(){
     try{
+      // 8.6.12: automatic assurance never races memory initialization. If the
+      // Memory Muster has not committed yet, leave proving untouched and let the
+      // next scheduled/manual run inspect the settled fleet.
+      const memory=await awaitMemoryRosterReady8612({timeoutMs:1800,source:'automatic-proving'});
+      if(!memory)return null;
       const sessionKey=`darkSkyAutoProving:${BUILD_VERSION}`;
       if(sessionStorage.getItem(sessionKey)==='done')return loadFreshProvingEvidence();
       sessionStorage.setItem(sessionKey,'running');
@@ -5137,7 +5206,7 @@
   window.DarkSkyAdmiralReadiness={run:runAdmiralReadinessChecks,render:renderAdmiralReadiness,exportRecovery:exportFleetRecoverySnapshot};
 
   async function renderEngineRoom(){
-    // 8.6.11 Proof Barrier — Engine paint can never block forever on roster
+    // 8.6.12 Memory Muster — Engine paint can never block forever on roster
     // reconciliation. The resolver owns a shorter named deadline; this outer guard
     // catches any uninstrumented wait and paints a diagnostic Dock instead.
     const engineConvergence=convergeCanonicalFleetForPresentation({source:'engine-room',force:true});
@@ -5145,7 +5214,7 @@
     if(!engineGate?.ok){
       const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();
       if(engineGate?.timeout&&!trace.firstFailure){trace.firstFailure='Engine presentation convergence';resolverMark869('Engine presentation convergence','timeout',{detail:'Outer Engine guard reached 1750 ms'});}
-      console.warn('Proof Barrier Engine fallback',engineGate?.error||'timeout');
+      console.warn('Memory Muster Engine fallback',engineGate?.error||'timeout');
       await renderFleetCommissioning({skipConvergence:true});
     }else await renderFleetCommissioning({skipConvergence:true});
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
@@ -5405,6 +5474,7 @@
     const reference=$('fleetCommissioningReference');
     const state=$('fleetCommissioningState');
     if(!summary||!reference)return;
+    if(skipConvergence)await awaitMemoryRosterReady8612({timeoutMs:900,source:'fleet-dock'});
     const lifeline869=window.__darkSkyResolverLifeline869||null;
 
     // 8.3.1 DOCK LOCK: Fleet Dock must never wait indefinitely for registry
@@ -5413,11 +5483,16 @@
     // refresh in the background. Navigation remains available during verification.
     let canonicalSettled=true;
     if(!skipConvergence){
-      const convergence=convergeCanonicalFleetForPresentation({source:'fleet-dock'});
-      canonicalSettled=await commandDeadline(convergence.then(()=>true).catch(err=>{console.warn('fleet dock convergence warning',err);return false;}),650,false);
-      if(!canonicalSettled){
-        if(state){state.textContent='LOCAL ROSTER • VERIFYING';state.className='fleet-commissioning-state ready';}
-        convergence.then(()=>renderFleetCommissioning({skipConvergence:true})).catch(err=>console.warn('fleet dock background reconciliation warning',err));
+      // 8.6.12: reuse the committed memory generation when available. Fleet Dock
+      // must not start a second reconciliation after the Engine already committed six.
+      const ready=await awaitMemoryRosterReady8612({timeoutMs:120,source:'fleet-dock-entry'});
+      if(!ready){
+        const convergence=convergeCanonicalFleetForPresentation({source:'fleet-dock'});
+        canonicalSettled=await commandDeadline(convergence.then(()=>true).catch(err=>{console.warn('fleet dock convergence warning',err);return false;}),650,false);
+        if(!canonicalSettled){
+          if(state){state.textContent='LOCAL ROSTER • VERIFYING';state.className='fleet-commissioning-state ready';}
+          convergence.then(()=>renderFleetCommissioning({skipConvergence:true})).catch(err=>console.warn('fleet dock background reconciliation warning',err));
+        }
       }
     }
 
@@ -12664,6 +12739,7 @@ The full order and approved media remain stored with this project.`;
   };
 
   window.renderBlackFlagHome = async function(){
+    try{ await convergeCanonicalFleetForPresentation({source:'home-memory-muster'}); }catch(err){ console.warn('Memory Muster home convergence warning',err); }
     try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
     try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
     try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }

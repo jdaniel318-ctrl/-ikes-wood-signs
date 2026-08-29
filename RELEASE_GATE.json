@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.11",
-  "release": "Proof Barrier",
-  "generatedAt": "2026-08-28T15:25:58.590592+00:00",
+  "build": "8.6.12",
+  "release": "Memory Muster",
+  "generatedAt": "2026-08-29T18:04:16.116394+00:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -172,14 +172,19 @@
     "capability_adoption_map": true,
     "admiral_strategy_surface": true,
     "project_isolation_preserved": true,
-    "resolver_lifeline_bounded_async_trace": true
+    "resolver_lifeline_bounded_async_trace": true,
+    "memory_muster_atomic_commit": true,
+    "proving_ground_read_only": true,
+    "shared_memory_roster_barrier": true,
+    "partial_memory_commit_forbidden": true,
+    "last_verified_six_retained_on_candidate_failure": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
   "note": "8.6.1 Intelligence Dock prevents Fleet Intelligence from remaining indefinitely on READING FLEET by painting a roster-backed local snapshot within a bounded window and reconciling live intelligence in the background.",
-  "candidate": "8.6.11",
+  "candidate": "8.6.12",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

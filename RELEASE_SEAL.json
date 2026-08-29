@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.11",
-  "release": "Proof Barrier",
-  "seal": "proof-barrier-8611-commit-after-paint-42b7d1",
+  "build": "8.6.12",
+  "release": "Memory Muster",
+  "seal": "memory-muster-8612-atomic-six-5d91c4",
   "execution_model": "verified-in-memory-atomic-snapshot",
   "service_worker": "identity-only",
-  "release_name": "Proof Barrier",
-  "name": "Proof Barrier"
+  "release_name": "Memory Muster",
+  "name": "Memory Muster"
 }
