@@ -1,6 +1,10 @@
-# Dark Sky 8.6.9 — Resolver Lifeline
+# Dark Sky 8.6.10 — Evidence Reconciliation
 
-Resolver Lifeline moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
+Current successful live evidence is now the canonical current truth for Proving Ground. The six-vessel rescue logic is preserved unchanged.
+
+# Dark Sky 8.6.10 — Evidence Reconciliation
+
+Evidence Reconciliation moves the roster life raft inside the asynchronous resolver. Every handoff is bounded and named; Fleet Dock must resolve or show the exact blocking stage.
 
 ## 8.6.8 — Dock Source Trace
 

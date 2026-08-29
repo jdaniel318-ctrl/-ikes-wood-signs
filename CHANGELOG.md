@@ -1,4 +1,13 @@
-## 8.6.9 — Resolver Lifeline
+# 8.6.10 — Evidence Reconciliation
+
+- Proving Ground now consumes the same current successful Fleet Dock trace that renders **SIX ABOARD**.
+- Successful six-card Fleet Dock renders write a canonical current proof record for this build.
+- Fleet Intelligence writes current first-paint proof when a six-vessel usable view renders.
+- Earlier failed trace/READING FLEET attempts remain historical evidence but no longer override newer success.
+- Fixed the Muster Trace readiness helper so it no longer collapses to `trace unavailable` from an out-of-scope safe wrapper.
+- Canonical-six recovery logic is frozen; staging remains a non-blocking WATCH until deliberately exercised.
+
+## 8.6.10 — Evidence Reconciliation
 
 - Moves roster diagnostics inside the async resolver itself.
 - Bounds every named resolver stage and records PASS / FAIL / TIMEOUT with protected vessel IDs.

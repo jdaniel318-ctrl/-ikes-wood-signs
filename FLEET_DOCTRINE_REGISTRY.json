@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.6.9",
+  "build": "8.6.10",
   "release": "Canonical Six",
   "status": "active",
   "principles": [

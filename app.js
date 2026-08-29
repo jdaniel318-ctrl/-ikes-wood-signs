@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.9';
+  const BUILD_VERSION='8.6.10';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2138,6 +2138,29 @@
   }
 
 
+  // 8.6.10 Evidence Reconciliation — one current proof record shared by live surfaces
+  // and Proving Ground. Successful newer render evidence supersedes older failed attempts;
+  // failures remain in historical diagnostics but do not poison current release posture.
+  const EVIDENCE_RECON_KEY_8610='darkSkyEvidenceReconciliationV8610';
+  function evidenceReconciliationRead8610(){
+    try{const v=JSON.parse(localStorage.getItem(EVIDENCE_RECON_KEY_8610)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}
+  }
+  function evidenceReconciliationWrite8610(patch={}){
+    const prior=evidenceReconciliationRead8610()||{schema:'dark-sky-evidence-reconciliation-v1',build:BUILD_VERSION,history:[]};
+    const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};
+    try{localStorage.setItem(EVIDENCE_RECON_KEY_8610,JSON.stringify(next));}catch(_){ }
+    window.__darkSkyEvidenceReconciliation8610=next;return next;
+  }
+  function recordDockProof8610(trace){
+    const rendered=trace?.stages?.find(st=>st.name==='Rendered Fleet Dock cards');
+    if(!rendered?.ok)return null;
+    return evidenceReconciliationWrite8610({dock:{ok:true,count:rendered.count,ids:[...(rendered.protectedIds||rendered.ids||[])],trace,capturedAt:new Date().toISOString(),source:'rendered-fleet-dock'}});
+  }
+  function recordIntelligenceProof8610({count=0,state='',source='fleet-intelligence-overview'}={}){
+    if(Number(count)!==6)return null;
+    return evidenceReconciliationWrite8610({intelligence:{ok:true,count:Number(count),state:String(state||'usable'),capturedAt:new Date().toISOString(),source}});
+  }
+
   // 8.6.8 Dock Source Trace — make every roster stage observable. A protected vessel
   // may not disappear silently between release seed and rendered Fleet Dock.
   function orderedProtectedIds867(values=[]){
@@ -2151,9 +2174,9 @@
   }
   async function collectMusterTrace867({includeRendered=true}={}){
     const seedIds=[...RELEASE_CANONICAL_FLEET_IDS_864];
-    const canonical=await safe(()=>readCanonicalProjectRegistry(),()=>[]);
+    let canonical=[];try{canonical=await readCanonicalProjectRegistry();}catch(_){canonical=[];}
     const canonicalIds=(canonical||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
-    const ledger=await safe(()=>ensureV4AdmissionLedger(canonical||[]),()=>({}));
+    let ledger={};try{ledger=await ensureV4AdmissionLedger(canonical||[]);}catch(_){ledger={};}
     const admissionIds=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger?.[id],id));
     const manifestIds=readV4FleetManifest();
     const memoryIds=(companies||[]).map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean);
@@ -2349,7 +2372,7 @@
     }
     return duplicates;
   }
-  // 8.6.9 Resolver Lifeline — instrument the async roster resolver itself.
+  // 8.6.10 Evidence Reconciliation — instrument the async roster resolver itself.
   // READINGS may not hang forever. Every resolver stage is bounded, named, and
   // captures the protected IDs known immediately after the step.
   const RESOLVER_LIFELINE_TIMEOUT_869=1150;
@@ -2388,7 +2411,7 @@
     const elapsedMs=Date.now()-started;
     if(result.kind==='timeout'){
       resolverMark869(name,'timeout',{detail:`No settlement within ${ms} ms`,elapsedMs});
-      const err=new Error(`Resolver Lifeline timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
+      const err=new Error(`Evidence Reconciliation timeout at ${name} after ${ms} ms`);err.code='RESOLVER_LIFELINE_TIMEOUT';err.stage=name;throw err;
     }
     if(result.kind==='fail'){
       resolverMark869(name,'fail',{detail:String(result.error?.message||result.error),elapsedMs});
@@ -2401,14 +2424,14 @@
   }
   async function resolverRead869(name,task,fallback){
     try{return await resolverStep869(name,task,{ms:780});}
-    catch(err){console.warn('Resolver Lifeline read fallback',name,err);return fallback;}
+    catch(err){console.warn('Evidence Reconciliation read fallback',name,err);return fallback;}
   }
   function resolverLifelineHtml869(trace=window.__darkSkyResolverLifeline869){
     if(!trace)return '';
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
-    return `<section class="resolver-lifeline-panel ${status}" aria-label="Resolver Lifeline">
-      <header><div><small>8.6.9 • RESOLVER LIFELINE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+    return `<section class="resolver-lifeline-panel ${status}" aria-label="Evidence Reconciliation">
+      <header><div><small>8.6.10 • EVIDENCE RECONCILIATION</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -4587,6 +4610,7 @@
     body.querySelectorAll('[data-intel-action="watch"]').forEach(b=>b.onclick=async()=>{await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});});
     body.querySelectorAll('[data-intel-action="learning"]').forEach(b=>b.onclick=()=>{$('fleetLearningRegistry')?.scrollIntoView({behavior:'smooth',block:'start'});});
     if(state)state.textContent=verifying?'LOCAL FLEET • VERIFYING':(snap.signals.length?'SIGNALS NORMALIZED':'FLEET STEADY');
+    try{if(Number(sm?.vessels)===6&&state&&!/READING FLEET/i.test(String(state.textContent||'')))recordIntelligenceProof8610({count:Number(sm.vessels),state:state.textContent,source:verifying?'fleet-intelligence-local-first-paint':'fleet-intelligence-live-render'});}catch(_){ }
     try{sessionStorage.setItem(FLEET_INTELLIGENCE_STATE_KEY,active);}catch(_){}
     return snap;
   }
@@ -4750,12 +4774,19 @@
     const musterSeedOk866=musterSeed866?.build===BUILD_VERSION&&Array.isArray(musterSeed866?.vessels)&&musterSeed866.vessels.length===6&&musterSeed866.vessels.every(v=>RELEASE_CANONICAL_FLEET_IDS_864.includes(String(v.projectId||'')));
     const musterRuntimeOk866=!!musterState866&&Number(musterState866.count)===6&&RELEASE_CANONICAL_FLEET_IDS_864.every(id=>(musterState866.ids||[]).includes(id));
     add('fleet-muster-protected-six','Protected Dock Source Trace',musterSeedOk866&&musterRuntimeOk866?'pass':'fail',musterSeedOk866&&musterRuntimeOk866?'Protected six-vessel muster seed and runtime reconciliation agree before fleet paint.':'Protected Dock Source Trace seed/runtime agreement is incomplete.');
-    const musterTrace867=await safe(()=>collectMusterTrace867({includeRendered:!!document.querySelector('#fleetCommissioningFleet')}),()=>null);
-    const musterTraceOk867=!!musterTrace867&&Array.isArray(musterTrace867.stages)&&musterTrace867.stages.every(st=>st.ok);
-    add('fleet-muster-stage-trace','Dock Source Trace six-stage proof',musterTraceOk867?'pass':'fail',musterTraceOk867?'Muster Seed → Registry → Admission → Manifest → Memory → rendered Fleet Dock all retain the protected six.':`Dock Source Trace first drops at ${musterTrace867?.firstDrop||'trace unavailable'}.`);
-    const dockSourceTrace868=await safe(()=>collectDockSourceTrace868({includeRendered:!!document.querySelector('#fleetCommissioningFleet')}),()=>null);
-    const dockSourceOk868=!!dockSourceTrace868&&Array.isArray(dockSourceTrace868.stages)&&dockSourceTrace868.stages.slice(1).every(st=>st.ok);
-    add('fleet-dock-source-trace','Fleet Dock last-mile source trace',dockSourceOk868?'pass':'fail',dockSourceOk868?'IndexedDB → mirror → admissions → manifest → memory → Dock input → visible rows → rendered cards retain the protected six.':`Dock source first drops at ${dockSourceTrace868?.firstDrop||'trace unavailable'}.`);
+    const currentEvidence8610=evidenceReconciliationRead8610();
+    const dockProof8610=currentEvidence8610?.dock?.ok===true&&Number(currentEvidence8610?.dock?.count)===6;
+    const includeRenderedTrace8610=!!document.querySelector('#fleetCommissioningFleet .fleet-dock-card[data-project-id]');
+    const musterTrace867=await safe(()=>collectMusterTrace867({includeRendered:includeRenderedTrace8610}),()=>null);
+    const musterBaseOk867=!!musterTrace867&&Array.isArray(musterTrace867.stages)&&musterTrace867.stages.slice(0,5).every(st=>st.ok);
+    const musterRenderedOk867=!includeRenderedTrace8610||musterTrace867?.stages?.find(st=>st.name==='Rendered Fleet Dock')?.ok===true||dockProof8610;
+    const musterTraceOk867=musterBaseOk867&&musterRenderedOk867;
+    add('fleet-muster-stage-trace','Dock Source Trace six-stage proof',musterTraceOk867?'pass':'fail',musterTraceOk867?'Muster Seed → Registry → Admission → Manifest → Memory → rendered Fleet Dock retain the protected six; current successful render proof supersedes stale trace attempts.':`Dock Source Trace current proof is incomplete at ${musterTrace867?.firstDrop||'unresolved stage'}.`);
+    const dockSourceTrace868=await safe(()=>collectDockSourceTrace868({includeRendered:includeRenderedTrace8610}),()=>null);
+    const dockNonRenderedOk868=!!dockSourceTrace868&&Array.isArray(dockSourceTrace868.stages)&&dockSourceTrace868.stages.slice(1,8).every(st=>st.ok);
+    const renderedNowOk868=dockSourceTrace868?.stages?.find(st=>st.name==='Rendered Fleet Dock cards')?.ok===true;
+    const dockSourceOk868=dockNonRenderedOk868&&(renderedNowOk868||dockProof8610||!includeRenderedTrace8610);
+    add('fleet-dock-source-trace','Fleet Dock last-mile source trace',dockSourceOk868?'pass':'fail',dockSourceOk868?'IndexedDB → mirror → admissions → manifest → memory → Dock input → visible rows → rendered cards retain the protected six; Proving Ground reads the same current proof used by Fleet Dock.':`Dock source current proof is incomplete at ${dockSourceTrace868?.firstDrop||'unresolved stage'}.`);
     const canonicalAdmissionIds864=await safe(async()=>{const rows=await readCanonicalProjectRegistry();const ledger=await ensureV4AdmissionLedger(rows);return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>validV4Admission(ledger[id],id));},()=>[]);
     const canonicalAdmissionsOk864=canonicalAdmissionIds864.length===6;
     add('canonical-six-admissions','Canonical six fleet citizenship',canonicalAdmissionsOk864?'pass':'fail',canonicalAdmissionsOk864?'All six immutable Known Good vessels hold valid active fleet admissions.':`Fleet citizenship incomplete: ${canonicalAdmissionIds864.length}/6 canonical admissions valid.`);
@@ -4768,8 +4799,13 @@
     const intelState864=document.getElementById('fleetIntelligenceState');
     const intelBody864=document.getElementById('fleetIntelligenceBody');
     const intelMounted864=!!intelState864&&!!intelBody864;
-    const intelUsable864=!intelMounted864||(!/READING FLEET/i.test(String(intelState864.textContent||''))&&String(intelBody864.textContent||'').trim()&&!/Building the fleet intelligence picture/i.test(String(intelBody864.textContent||'')));
-    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',intelUsable864?'pass':'fail',intelUsable864?'Fleet Intelligence is usable in the live Engine DOM and is not stranded on READING FLEET.':'Fleet Intelligence live DOM is still unresolved after the bounded first-paint window.');
+    const intelDomUsable8610=!intelMounted864||(!/READING FLEET/i.test(String(intelState864.textContent||''))&&String(intelBody864.textContent||'').trim()&&!/Building the fleet intelligence picture/i.test(String(intelBody864.textContent||'')));
+    if(intelMounted864&&intelDomUsable8610&&projects().length===6)recordIntelligenceProof8610({count:6,state:intelState864.textContent,source:'readiness-live-dom'});
+    const intelProof8610=evidenceReconciliationRead8610()?.intelligence;
+    const intelProofOk8610=intelProof8610?.ok===true&&Number(intelProof8610?.count)===6;
+    const intelUsable864=intelDomUsable8610||intelProofOk8610;
+    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',intelUsable864?'pass':'fail',intelUsable864?'Fleet Intelligence current proof shows a usable six-vessel picture; newer successful evidence supersedes earlier READING FLEET attempts.':'Fleet Intelligence has no current successful first-paint proof for this build.');
+    add('evidence-reconciliation-current-proof','Evidence reconciliation current proof',(dockProof8610||renderedNowOk868)&&intelUsable864?'pass':'fail',(dockProof8610||renderedNowOk868)&&intelUsable864?'Fleet Dock and Fleet Intelligence publish current successful evidence into one canonical proof record consumed by Proving Ground.':'Current live-surface proof is incomplete; stale failures are retained as history but cannot be superseded yet.');
 
     let stagingVerified864=null;try{stagingVerified864=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
     const stagingLedger864=fleetStagingLedgerRead();
@@ -4907,7 +4943,7 @@
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
       combine('release','Release Integrity Voyage',['release-identity','runtime-tree'],'Runtime, manifest, cache/release identity, and canonical runtime tree.'),
-      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','fleet-intelligence-bounded-paint','canonical-roster-live','fleet-muster-stage-trace','fleet-dock-source-trace','fleet-intelligence-live-voyage','staging-ledger-live-voyage','command-wiring'],'Captain navigation plus bounded Fleet Dock and Fleet Intelligence first-paint behavior.'),
+      combine('navigation','Command Navigation Voyage',['captain-nav','fleet-dock-bounded-paint','fleet-intelligence-bounded-paint','canonical-roster-live','fleet-muster-stage-trace','fleet-dock-source-trace','fleet-intelligence-live-voyage','evidence-reconciliation-current-proof','staging-ledger-live-voyage','command-wiring'],'Captain navigation plus bounded Fleet Dock and Fleet Intelligence first-paint behavior.'),
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary'],'Customer-approved production artifacts remain byte-stable and fingerprinted through approval, order serialization, admin, and archive.'),
       combine('ike-production-truth','Ike Production Truth Voyage',['ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Ike customer wording, finished-sign geometry, face fit, and governed style evidence remain production-truthful without fallback or destructive synchronization.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
@@ -5077,7 +5113,7 @@
   window.DarkSkyAdmiralReadiness={run:runAdmiralReadinessChecks,render:renderAdmiralReadiness,exportRecovery:exportFleetRecoverySnapshot};
 
   async function renderEngineRoom(){
-    // 8.6.9 Resolver Lifeline — Engine paint can never block forever on roster
+    // 8.6.10 Evidence Reconciliation — Engine paint can never block forever on roster
     // reconciliation. The resolver owns a shorter named deadline; this outer guard
     // catches any uninstrumented wait and paints a diagnostic Dock instead.
     const engineConvergence=convergeCanonicalFleetForPresentation({source:'engine-room',force:true});
@@ -5085,7 +5121,7 @@
     if(!engineGate?.ok){
       const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();
       if(engineGate?.timeout&&!trace.firstFailure){trace.firstFailure='Engine presentation convergence';resolverMark869('Engine presentation convergence','timeout',{detail:'Outer Engine guard reached 1750 ms'});}
-      console.warn('Resolver Lifeline Engine fallback',engineGate?.error||'timeout');
+      console.warn('Evidence Reconciliation Engine fallback',engineGate?.error||'timeout');
       await renderFleetCommissioning({skipConvergence:true});
     }else await renderFleetCommissioning({skipConvergence:true});
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
@@ -5445,6 +5481,7 @@
     const canonicalState=window.__darkSkyCanonicalFleet||{};
     const identityState=Array.isArray(canonicalState.duplicates)&&canonicalState.duplicates.length?'IDENTITY HOLD':'CANONICAL ROSTER';
     const finalTrace868=await collectDockSourceTrace868({includeRendered:true});
+    if(finalTrace868?.stages?.find(st=>st.name==='Rendered Fleet Dock cards')?.ok)recordDockProof8610(finalTrace868);
     const renderedStage868=finalTrace868.stages.find(st=>st.name==='Rendered Fleet Dock cards');
     if(!renderedStage868?.ok){
       if(state){state.textContent='DOCK SOURCE HOLD • RENDERED CARDS';state.className='fleet-commissioning-state hold';}

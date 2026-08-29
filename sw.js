@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.9';
-const RELEASE_SEAL='resolver-lifeline-869-bounded-async-roster-5c19e4';
+const RELEASE_BUILD='8.6.10';
+const RELEASE_SEAL='evidence-reconciliation-8610-current-proof-7d31af';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

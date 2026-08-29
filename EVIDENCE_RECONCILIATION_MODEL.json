@@ -1,0 +1,20 @@
+{
+  "schema": "dark-sky-evidence-reconciliation-v1",
+  "build": "8.6.10",
+  "release": "Evidence Reconciliation",
+  "mission": "Current successful live-surface evidence supersedes stale failed attempts without erasing history.",
+  "proofs": {
+    "fleet_dock": {
+      "source": "Rendered Fleet Dock cards",
+      "required_count": 6,
+      "required_ids": ["beccas-bloom-shop","bf-p-f92f87e8ec44","bor-north-richmond","grizzly-bear","ikes-wood-signs","mugshot-after-dark"]
+    },
+    "fleet_intelligence": {
+      "source": "Fleet Intelligence usable render",
+      "required_count": 6,
+      "forbidden_current_state": "READING FLEET"
+    }
+  },
+  "supersession": "newer successful evidence for the same build becomes current truth; earlier failures remain historical evidence only",
+  "staging": "staging ledger remains non-blocking WATCH until a live round trip is deliberately executed"
+}
