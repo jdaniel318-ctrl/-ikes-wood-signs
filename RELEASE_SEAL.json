@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.17",
-  "release": "Bootstrap Ignition",
-  "seal": "bootstrap-ignition-8617-engine-start-4b7e21",
-  "execution_model": "startup-bootstrap-ignition",
+  "build": "8.6.18",
+  "release": "Ignition Witness",
+  "seal": "ignition-witness-8618-durable-lifecycle-7c19e4",
+  "execution_model": "read-only-ignition-witness",
   "service_worker": "identity-only",
-  "release_name": "Bootstrap Ignition",
-  "name": "Bootstrap Ignition",
+  "release_name": "Ignition Witness",
+  "name": "Ignition Witness",
   "releaseName": null
 }

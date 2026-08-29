@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.17';
-const RELEASE_SEAL='bootstrap-ignition-8617-engine-start-4b7e21';
+const RELEASE_BUILD='8.6.18';
+const RELEASE_SEAL='ignition-witness-8618-durable-lifecycle-7c19e4';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

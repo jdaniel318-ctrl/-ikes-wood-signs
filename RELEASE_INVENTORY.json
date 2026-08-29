@@ -1,6 +1,6 @@
 {
-  "release": "Bootstrap Ignition",
-  "name": "Bootstrap Ignition",
+  "release": "Ignition Witness",
+  "name": "Ignition Witness",
   "file_count": 66,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -26,6 +26,7 @@
     "FLEET_REGRESSION_LIBRARY.md",
     "FOUNDRY_FLEET_SERVICES.md",
     "GOLDEN_VOYAGES.json",
+    "IGNITION_WITNESS_MODEL.json",
     "IKES_PRODUCTION_COMPENDIUM.md",
     "IKE_STYLE_FOUNDRY.json",
     "KEEL_GAUGE_CALIBRATION_AUDIT.json",
@@ -70,7 +71,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.17",
-  "seal": "bootstrap-ignition-8617-engine-start-4b7e21",
-  "release_name": "Bootstrap Ignition"
+  "build": "8.6.18",
+  "seal": "ignition-witness-8618-durable-lifecycle-7c19e4",
+  "release_name": "Ignition Witness"
 }

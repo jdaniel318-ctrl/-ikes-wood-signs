@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.17';
+  const BUILD_VERSION='8.6.18';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2138,9 +2138,27 @@
   }
 
 
-  // 8.6.17 Bootstrap Ignition — read-only instrumentation of the proof signing lifecycle.
+  // 8.6.18 Bootstrap Ignition — read-only instrumentation of the proof signing lifecycle.
   // This does not repair fleet state, mutate admissions, or manufacture proof. It only records
   // who invoked bootstrap/finalizer, which generation each surface attached, and what store read-back sees.
+  // 8.6.18 Ignition Witness — durable, module-independent lifecycle breadcrumbs.
+  // This deliberately uses its own localStorage key so we can distinguish
+  // "ignition never ran" from "signer trace observed a different module state".
+  const IGNITION_WITNESS_KEY_8618='darkSkyIgnitionWitnessV8618';
+  function ignitionWitnessRead8618(){
+    try{const v=JSON.parse(localStorage.getItem(IGNITION_WITNESS_KEY_8618)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}
+  }
+  function ignitionWitnessEvent8618(event,detail={}){
+    let prior=ignitionWitnessRead8618()||{schema:'dark-sky-ignition-witness-v1',build:BUILD_VERSION,history:[],counters:{}};
+    const at=new Date().toISOString();
+    const counters={...(prior.counters||{}),[event]:Number(prior.counters?.[event]||0)+1};
+    const row={event,at,route:String(location.hash||''),href:String(location.href||''),...detail};
+    const next={...prior,build:BUILD_VERSION,lastEvent:row,counters,history:[...(prior.history||[]),row].slice(-80),updatedAt:at};
+    try{localStorage.setItem(IGNITION_WITNESS_KEY_8618,JSON.stringify(next));}catch(_){}
+    window.__darkSkyIgnitionWitness8618=next;
+    return next;
+  }
+  ignitionWitnessEvent8618('witness-installed',{detail:'Ignition Witness instrumentation evaluated.'});
   const PROOF_SIGNER_TRACE_KEY_8616='darkSkyProofSignerTraceV8616';
   function proofSignerTraceRead8616(){try{const v=JSON.parse(localStorage.getItem(PROOF_SIGNER_TRACE_KEY_8616)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
   function proofSignerTraceWrite8616(patch={}){
@@ -2300,11 +2318,12 @@
     return proofBootstrapPromise8614;
   }
 
-  // 8.6.17 Bootstrap Ignition — connect the existing proof bootstrap runner to the
+  // 8.6.18 Bootstrap Ignition — connect the existing proof bootstrap runner to the
   // real platform/Engine startup lifecycle. One shared ignition promise owns each
   // current memory generation; repeated callers reuse the settled core proof.
   let bootstrapIgnitionPromise8617=null;
   async function igniteProofBootstrap8617(source='platform-init'){
+    ignitionWitnessEvent8618('ignition-function-entered',{source,signerTraceVisible:!!window.__darkSkyProofSignerTrace8616});
     proofSignerTraceEvent8616('bootstrap-ignition-invoked',{source,memoryStatus:memoryMusterRead8612()?.status||'none',memoryGeneration:Number(memoryMusterRead8612()?.generation||0)});
     if(bootstrapIgnitionPromise8617){
       proofSignerTraceEvent8616('bootstrap-ignition-shared',{source});
@@ -2314,14 +2333,19 @@
       let memory=memoryMusterRead8612();
       if(!(memory?.status==='committed'&&Number(memory?.protectedCount||0)===6&&memoryRosterHasProtectedSix8612(companies))){
         proofSignerTraceEvent8616('bootstrap-ignition-memory-build',{source});
+        ignitionWitnessEvent8618('memory-muster-requested',{source,reason:'no-committed-six'});
         await convergeCanonicalFleetForPresentation({source:`bootstrap-ignition:${source}`});
         memory=memoryMusterRead8612();
+        ignitionWitnessEvent8618('memory-generation-returned',{source,status:memory?.status||'none',generation:Number(memory?.generation||0),protectedCount:Number(memory?.protectedCount||0)});
       }
       if(!(memory?.status==='committed'&&Number(memory?.protectedCount||0)===6)){
+        ignitionWitnessEvent8618('ignition-stopped-before-bootstrap',{source,reason:'memory-not-committed',memoryStatus:memory?.status||'none',memoryGeneration:Number(memory?.generation||0)});
         proofSignerTraceEvent8616('bootstrap-ignition-failed',{source,reason:'memory-not-committed',memoryStatus:memory?.status||'none',memoryGeneration:Number(memory?.generation||0)});
         return null;
       }
+      ignitionWitnessEvent8618('bootstrap-runner-called',{source,memoryGeneration:Number(memory?.generation||0)});
       const result=await runProofBootstrap8614({source:`bootstrap-ignition:${source}`,timeoutMs:5200});
+      ignitionWitnessEvent8618('bootstrap-runner-returned',{source,ok:!!result,status:proofBootstrapRead8614()?.status||'none',generation:Number(proofBootstrapRead8614()?.generation||0)});
       proofSignerTraceEvent8616(result?'bootstrap-ignition-complete':'bootstrap-ignition-failed',{source,reason:result?'':'runner-returned-null',bootstrapStatus:proofBootstrapRead8614()?.status||'none',bootstrapGeneration:Number(proofBootstrapRead8614()?.generation||0),memoryGeneration:Number(memory?.generation||0)});
       return result;
     })().catch(err=>{
@@ -2681,7 +2705,7 @@
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
     return `<section class="resolver-lifeline-panel ${status}" aria-label="Bootstrap Commit">
-      <header><div><small>8.6.17 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+      <header><div><small>8.6.18 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -5069,6 +5093,15 @@
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');
     const fleetIntelligenceBoundedPaint=String(renderFleetIntelligenceDeck).includes('LOCAL FLEET • VERIFYING')&&String(renderFleetIntelligenceDeck).includes('commandDeadline(fullPromise,650,null)')&&String(renderFleetIntelligenceDeck).includes('fleetIntelligenceLocalSnapshot()');
     add('fleet-intelligence-bounded-paint','Fleet Intelligence bounded first paint',fleetIntelligenceBoundedPaint?'pass':'fail',fleetIntelligenceBoundedPaint?'Fleet Intelligence paints a usable roster-backed local picture within a bounded window and reconciles live cross-vessel intelligence in the background.':'Fleet Intelligence can still remain indefinitely on READING FLEET before presenting a usable fleet picture.');
+
+    const witness8618=ignitionWitnessRead8618()||{history:[],counters:{}};
+    const wc8618=witness8618.counters||{};
+    const wl8618=witness8618.lastEvent||{};
+    const witnessDetail8618=`entered ${Number(wc8618['ignition-function-entered']||0)} • platform hook ${Number(wc8618['platform-init-hook-reached']||0)} • Engine entry hook ${Number(wc8618['engine-entry-hook-reached']||0)} • shortcut hook ${Number(wc8618['engine-shortcut-hook-reached']||0)} • memory requested ${Number(wc8618['memory-muster-requested']||0)} • memory returned ${Number(wc8618['memory-generation-returned']||0)} • bootstrap called ${Number(wc8618['bootstrap-runner-called']||0)} • bootstrap returned ${Number(wc8618['bootstrap-runner-returned']||0)} • last ${String(wl8618.event||'none')}.`;
+    add('ignition-witness','Ignition Witness',Number(wc8618['ignition-function-entered']||0)>0?'pass':'fail',witnessDetail8618);
+    add('ignition-witness-lifecycle-hook','Ignition Witness — lifecycle hook',Number(wc8618['platform-init-hook-reached']||0)+Number(wc8618['engine-entry-hook-reached']||0)+Number(wc8618['engine-shortcut-hook-reached']||0)>0?'pass':'fail',`Platform ${Number(wc8618['platform-init-hook-reached']||0)} • Engine entry ${Number(wc8618['engine-entry-hook-reached']||0)} • shortcut ${Number(wc8618['engine-shortcut-hook-reached']||0)}.`);
+    add('ignition-witness-memory','Ignition Witness — Memory Muster handoff',Number(wc8618['memory-generation-returned']||0)>0?'pass':Number(wc8618['memory-muster-requested']||0)>0?'warn':'fail',Number(wc8618['memory-generation-returned']||0)>0?`Memory generation returned ${Number(wc8618['memory-generation-returned']||0)} time(s).`:`Memory requested ${Number(wc8618['memory-muster-requested']||0)} time(s); no returned generation witnessed.`);
+    add('ignition-witness-bootstrap','Ignition Witness — bootstrap call boundary',Number(wc8618['bootstrap-runner-called']||0)>0?'pass':'fail',Number(wc8618['bootstrap-runner-called']||0)>0?`Bootstrap runner called ${Number(wc8618['bootstrap-runner-called']||0)} time(s), returned ${Number(wc8618['bootstrap-runner-returned']||0)} time(s).`:`Bootstrap runner call boundary was never crossed. Last witness ${String(wl8618.event||'none')}.`);
 
     const signer8616=proofSignerTraceSnapshot8616('engineering-evidence');
     const sc8616=signer8616.counters||{};
@@ -15216,7 +15249,7 @@ The full order and approved media remain stored with this project.`;
     await enforceFleetProjectAdminBaseline();
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
-    // 8.6.17 ignition is part of normal platform initialization, before any Engine
+    // 8.6.18 ignition is part of normal platform initialization, before any Engine
     // assurance consumer can observe an unsigned current build.
     try{ await igniteProofBootstrap8617('platform-init'); }catch(err){ console.warn('Bootstrap Ignition platform-init warning',err); }
     bindEvents();
@@ -15385,7 +15418,7 @@ document.addEventListener('click', (event) => {
     // Render through the normal Engine routines when available. A rendering warning
     // must not relock a correctly authenticated Engine session.
     try{
-      // 8.6.17 entry fallback: if a restored/authenticated session reached the Engine
+      // 8.6.18 entry fallback: if a restored/authenticated session reached the Engine
       // without the platform-init ignition, fire the same shared ignition before home render.
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
@@ -15407,7 +15440,8 @@ document.addEventListener('click', (event) => {
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
     const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
-    Promise.resolve(window.igniteProofBootstrap8617?.('engine-open-shortcut')).then(()=>window.renderBlackFlagHome?.()).then(()=>scheduleIronHullFortification()).catch(()=>{});
+    ignitionWitnessEvent8618('engine-shortcut-hook-reached',{});
+    Promise.resolve(window.igniteProofBootstrap8617?.('engine-open-shortcut')).then(v=>{ignitionWitnessEvent8618('engine-shortcut-hook-returned',{ok:!!v});return window.renderBlackFlagHome?.();}).then(()=>scheduleIronHullFortification()).catch(err=>{ignitionWitnessEvent8618('engine-shortcut-hook-error',{message:String(err?.message||err)});});
   }
 
   function openCompanyAdminGate(){

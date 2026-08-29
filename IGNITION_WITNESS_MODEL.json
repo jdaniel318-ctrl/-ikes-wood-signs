@@ -1,0 +1,25 @@
+{
+  "schema": "dark-sky-ignition-witness-v1",
+  "build": "8.6.18",
+  "release": "Ignition Witness",
+  "mission": "Prove independently whether the live Engine lifecycle reaches bootstrap ignition and where execution stops before the proof bootstrap runner.",
+  "storage_key": "darkSkyIgnitionWitnessV8618",
+  "events": [
+    "witness-installed",
+    "platform-init-hook-reached",
+    "engine-entry-hook-reached",
+    "engine-shortcut-hook-reached",
+    "ignition-function-entered",
+    "memory-muster-requested",
+    "memory-generation-returned",
+    "ignition-stopped-before-bootstrap",
+    "bootstrap-runner-called",
+    "bootstrap-runner-returned"
+  ],
+  "constraints": {
+    "read_only_diagnostics": true,
+    "no_fleet_mutation_changes": true,
+    "independent_of_proof_signer_state": true,
+    "legacy_recovery_changes": "none"
+  }
+}

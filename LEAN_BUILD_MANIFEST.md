@@ -1,5 +1,6 @@
-BOOTSTRAP_IGNITION_MODEL.json — required runtime contract for 8.6.17.
-# Dark Sky 8.6.17 — Bootstrap Ignition
+IGNITION_WITNESS_MODEL.json — required read-only diagnostic contract for 8.6.18.
+BOOTSTRAP_IGNITION_MODEL.json — required runtime contract for 8.6.18.
+# Dark Sky 8.6.18 — Ignition Witness
 
 - Payload files: 64
 - One canonical proof generation
