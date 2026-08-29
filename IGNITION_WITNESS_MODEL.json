@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-ignition-witness-v1",
-  "build": "8.6.23",
+  "build": "8.6.24",
   "release": "Generation Relay",
   "mission": "Prove independently whether the live Engine lifecycle reaches bootstrap ignition and where execution stops before the proof bootstrap runner.",
   "storage_key": "darkSkyIgnitionWitnessV8618",

@@ -1,13 +1,13 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.6.23",
-  "version": "8.6.23",
-  "release_name": "Generation Relay",
-  "releaseName": "Generation Relay",
-  "release_seal": "generation-relay-8623-5f3c2d",
+  "build": "8.6.24",
+  "version": "8.6.24",
+  "release_name": "Fleet Steward",
+  "releaseName": "Fleet Steward",
+  "release_seal": "fleet-steward-8624-7c41ae",
   "entrypoint": "index.html",
   "runtime": "static-web",
-  "deployment_mode": "root-upload-safe-storage-safe-harbor",
+  "deployment_mode": "root-upload-safe-fleet-steward",
   "required_runtime_files": [
     "index.html",
     "owner.html",
@@ -42,7 +42,8 @@
     "IGNITION_WITNESS_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
     "WITNESS_TRUTH_MODEL.json",
-    "GENERATION_RELAY_MODEL.json"
+    "GENERATION_RELAY_MODEL.json",
+    "FLEET_STEWARD_MODEL.json"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -75,8 +76,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Generation-stable six-vessel proof: retain generation on identical fleet refresh and relay CORE proof on genuine generation advance.",
-  "release_note": "Generation Relay prevents Core/Memory/Dock/Intelligence drift while preserving the Storage-Safe Proof Bus and canonical-six recovery.",
+  "release_focus": "Fleet maintenance station, optional diagnostic hold, and read-only storage ownership inventory.",
+  "release_note": "Fleet Steward centralizes recurring maintenance access without arming cleanup or changing vessel behavior.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",
@@ -96,6 +97,7 @@
     "PROOF_SIGNER_TRACE_MODEL.json",
     "BOOTSTRAP_IGNITION_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
-    "GENERATION_RELAY_MODEL.json"
+    "GENERATION_RELAY_MODEL.json",
+    "FLEET_STEWARD_MODEL.json"
   ]
 }

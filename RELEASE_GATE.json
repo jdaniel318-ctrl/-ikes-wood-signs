@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.23",
-  "release": "Bootstrap Commit",
-  "generatedAt": "2026-08-29T18:04:16.116394+00:00",
+  "build": "8.6.24",
+  "release": "Fleet Steward",
+  "generatedAt": "2026-08-29T22:32:09.114039+00:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -179,14 +179,17 @@
     "partial_memory_commit_forbidden": true,
     "last_verified_six_retained_on_candidate_failure": true,
     "bootstrap_core_surface_separation": true,
-    "idempotent_generation_bound_finalizer": true
+    "idempotent_generation_bound_finalizer": true,
+    "fleet_steward_station": true,
+    "fleet_steward_read_only_inventory": true,
+    "diagnostic_hold_session_only": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.1 Intelligence Dock prevents Fleet Intelligence from remaining indefinitely on READING FLEET by painting a roster-backed local snapshot within a bounded window and reconciling live intelligence in the background.",
-  "candidate": "8.6.23",
+  "note": "8.6.24 Fleet Steward centralizes recurring maintenance access, makes Diagnostic Hold deliberate/session-only, and adds read-only storage ownership inventory without arming cleanup.",
+  "candidate": "8.6.24",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.23';
+  const BUILD_VERSION='8.6.24';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5351,6 +5351,8 @@
     const storageSafeOk=typeof window.DarkSkyV4?.storageStewardPreview==='function'&&typeof window.DarkSkyV4?.storageStewardClean==='function'&&String(window.DarkSkyV4.storageStewardClean).includes('oldCaches');
     const storageDiagOk=typeof showCompactStorageDiagnostics==='function'&&String(window.DarkSkyV4?.storageStewardPreview||'').includes('deepProbe');
     add('storage-telemetry','Storage & telemetry access',storageEntryOk&&storageSafeOk&&storageDiagOk?'pass':'fail',storageEntryOk&&storageSafeOk&&storageDiagOk?'Engine Telemetry and Engine Storage expose a real inspection surface; Compact Diagnostics renders visible read-only evidence; cleanup is constrained to stale application caches after inspection.':'Storage & Telemetry entry point, visible diagnostics, deeper probe, or safe-cleanup contract is missing.');
+    const fleetStewardOk=!!document.getElementById('fleetMaintenanceStation')&&typeof bindFleetSteward8624==='function'&&typeof fleetStewardInventory8624==='function'&&String(fleetStewardInventory8624).includes('storageStewardPreview')&&!String(fleetStewardInventory8624).includes('storageStewardClean');
+    add('fleet-steward','Fleet Steward maintenance station',fleetStewardOk?'pass':'fail',fleetStewardOk?'Recurring maintenance tools are centralized and Storage Steward inventory is read-only by contract.':'Fleet Steward station or its read-only storage inventory contract is incomplete.');
     const wiring=commandWiringSelfCheck();
     const telemetryBound=!!window.__darkSkyEngineTelemetryBound || !!document.getElementById('engineTelemetryLaunchBtn');
     const wiringOk=wiring.ok&&telemetryBound&&String(bindCustomerChoiceCore).includes("state.wording=String(e.target.value||'')")&&String(bindEngineTelemetryCore).includes('openStorageTelemetry');
@@ -5387,7 +5389,7 @@
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary'],'Customer-approved production artifacts remain byte-stable and fingerprinted through approval, order serialization, admin, and archive.'),
       combine('ike-production-truth','Ike Production Truth Voyage',['ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Ike customer wording, finished-sign geometry, face fit, and governed style evidence remain production-truthful without fallback or destructive synchronization.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
-      combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
+      combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry','fleet-steward'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
     ];
   }
@@ -15019,6 +15021,64 @@ The full order and approved media remain stored with this project.`;
     $('backBtn')?.addEventListener('click',()=>{const order=currentScreenOrder();const i=order.indexOf(state.current);if(i>0)setScreen(order[i-1]);});
   }
 
+
+  // 8.6.24 Fleet Steward — recurring maintenance belongs in one obvious, read-only-first station.
+  const FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY='darkSkyDiagnosticHoldEnabled8624';
+  function fleetStewardStatus8624(message,state='ready'){
+    const el=$('fleetMaintenanceStatus');if(!el)return;el.textContent=message;el.dataset.state=state;
+  }
+  function classifyStorageKey8624(key=''){
+    const k=String(key||'');
+    if(/^ikesWoodSignsOrdersBackupV15$/i.test(k))return {className:'recovery',label:'RECOVERY MIRROR',note:'Legacy Ike order backup; verify IndexedDB authority before retirement.'};
+    if(/^ikesOrderDraftV2/i.test(k))return {className:'recovery',label:'DRAFT / RECOVERY',note:'Customer/order draft continuity; review retention before migration.'};
+    if(/BlackBox|Recovery|KnownGood|Evidence|Proof|Witness|Trace/i.test(k))return {className:'evidence',label:'EVIDENCE / HISTORY',note:'Fleet diagnostic or recovery evidence; durable history belongs in IndexedDB.'};
+    return {className:'review',label:'REVIEW',note:'Legacy/optional key; no cleanup action is authorized here.'};
+  }
+  function renderFleetStorageInventory8624(r){
+    const host=$('fleetStorageInventory');if(!host)return;
+    const b=r?.breakdown||{}, stores=b.indexedDb?.stores||{};
+    const origin=Number(r?.usage||0),known=Number(b.knownBytes||0),gap=Math.max(0,origin-known);
+    const top=(b.localStorage?.topKeys||[]).slice(0,8);
+    const rows=top.map(x=>{const c=classifyStorageKey8624(x.key);return `<article class="fleet-storage-key ${c.className}"><div><small>${escapeHtml(c.label)}</small><strong>${escapeHtml(x.key||'key')}</strong><span>${escapeHtml(c.note)}</span></div><b>${formatStorageMb(x.bytes)} MB</b></article>`}).join('');
+    host.innerHTML=`<div class="fleet-storage-inventory-head"><div><small>READ-ONLY STORAGE STEWARD</small><strong>Ownership before cleanup</strong></div><span>${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</span></div>
+      <div class="fleet-storage-class-grid">
+        <article><small>AUTHORITATIVE</small><strong>${formatStorageMb(b.indexedDb?.bytes)} MB</strong><span>IndexedDB • Orders ${stores.orders?.rows??'?'} • Projects ${stores.projects?.rows??'?'} • Settings ${stores.settings?.rows??'?'}</span></article>
+        <article><small>RECOVERY / LEGACY</small><strong>${formatStorageMb(b.localStorage?.bytes)} MB</strong><span>LocalStorage mirrors and drafts. Full quota is not a live-readiness failure.</span></article>
+        <article><small>TEMPORARY</small><strong>${formatStorageMb(b.cacheStorage?.bytes)} MB</strong><span>Cache Storage. Safe cleanup remains controlled by the existing Telemetry workflow.</span></article>
+        <article><small>BROWSER MANAGED / UNKNOWN</small><strong>${formatStorageMb(gap)} MB</strong><span>Safari estimate gap. Never delete protected fleet data to chase an unattributed number.</span></article>
+      </div>
+      <div class="fleet-storage-key-list">${rows||'<p class="helper">No LocalStorage keys were enumerated.</p>'}</div>
+      <p class="fleet-maintenance-boundary"><strong>Boundary:</strong> Fleet Steward is inspection-only. No storage deletion or migration occurs from this station.</p>`;
+  }
+  async function fleetStewardOpenEvidence8624(){
+    const section=$('admiralReadiness');section?.scrollIntoView?.({behavior:'smooth',block:'start'});
+    let details=$('provingEngineeringEvidence');
+    if(!details){try{await renderAdmiralReadiness({announce:false});}catch(_){}details=$('provingEngineeringEvidence');}
+    if(details){details.open=true;setTimeout(()=>details.scrollIntoView?.({behavior:'smooth',block:'start'}),50);fleetStewardStatus8624('Engineering Evidence opened.','clear');}
+    else fleetStewardStatus8624('Engineering Evidence is not available yet. Open Proving Ground first.','watch');
+  }
+  async function fleetStewardInventory8624(){
+    fleetStewardStatus8624('Reading storage ownership…','working');
+    const host=$('fleetStorageInventory');if(host)host.innerHTML='<p class="helper">Reading storage without changing anything…</p>';
+    try{
+      const r=await window.DarkSkyV4?.storageStewardPreview?.();if(!r)throw new Error('Storage Steward unavailable');
+      window.__darkSkyFleetStewardStorage8624=r;renderFleetStorageInventory8624(r);fleetStewardStatus8624('Storage inventory complete. No cleanup performed.','clear');
+    }catch(err){fleetStewardStatus8624(`Storage inventory interrupted: ${String(err?.message||err)}`,'hold');if(host)host.innerHTML='';}
+  }
+  function bindFleetSteward8624(){
+    if(window.__darkSkyFleetStewardBound8624)return;window.__darkSkyFleetStewardBound8624=true;
+    const toggle=$('fleetDiagnosticHoldToggle');if(toggle){try{toggle.checked=sessionStorage.getItem(FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY)==='1';}catch(_){}toggle.addEventListener('change',()=>{try{toggle.checked?sessionStorage.setItem(FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY,'1'):sessionStorage.removeItem(FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY);}catch(_){}fleetStewardStatus8624(toggle.checked?'Diagnostic Hold armed for this session.':'Diagnostic Hold off. Normal transitions remain fast.',toggle.checked?'watch':'clear');});}
+    document.querySelectorAll('[data-fleet-maintenance]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const action=btn.dataset.fleetMaintenance;
+      if(action==='telemetry'){fleetStewardStatus8624('Opening Engine Telemetry…','working');await openStorageTelemetry({inspect:true});}
+      else if(action==='proving'){$('admiralReadiness')?.scrollIntoView?.({behavior:'smooth',block:'start'});fleetStewardStatus8624('Proving Ground located.','clear');}
+      else if(action==='evidence')await fleetStewardOpenEvidence8624();
+      else if(action==='recovery'){fleetStewardStatus8624('Preparing recovery snapshot…','working');try{await window.DarkSkyAdmiralReadiness?.exportRecovery?.();fleetStewardStatus8624('Recovery snapshot prepared.','clear');}catch(err){fleetStewardStatus8624(`Recovery snapshot failed: ${String(err?.message||err)}`,'hold');}}
+      else if(action==='watch'){fleetStewardStatus8624('Running Fleet Watch…','working');try{await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView?.({behavior:'smooth',block:'start'});fleetStewardStatus8624('Fleet Watch updated.','clear');}catch(err){fleetStewardStatus8624(`Fleet Watch interrupted: ${String(err?.message||err)}`,'hold');}}
+      else if(action==='inventory')await fleetStewardInventory8624();
+    }));
+  }
+
   function bindEngineTelemetryCore(){
     if(window.__darkSkyEngineTelemetryBound)return true;
     const launch=$('engineTelemetryLaunchBtn');
@@ -15053,6 +15113,7 @@ The full order and approved media remain stored with this project.`;
     bindSeaworthinessCommandSpine();
     bindMissionCriticalNavigation();
     bindEngineFleetCommand();
+    bindFleetSteward8624();
 
     // v3.9.3 Watch / integrity / Sea Trial buttons are owned by bindWatchCommandBus().
 

@@ -1,3 +1,10 @@
+# 8.6.24 — Fleet Steward
+
+- Added one professional Fleet Maintenance station with direct routes to Engine Telemetry, Proving Ground, Engineering Evidence, Recovery Snapshot, Fleet Watch, and Storage Inventory.
+- Added a session-only Diagnostic Hold toggle; recovery/post-login evidence pauses are off by default and can be deliberately armed for capture.
+- Added read-only Storage Steward inventory classifying authoritative IndexedDB, recovery/legacy LocalStorage, temporary caches, and browser-managed/unattributed usage.
+- Fleet Steward does not delete, migrate, compact, or rewrite storage. 8.6.23 remains the protected Known Good anchor until this candidate is proven.
+
 # Dark Sky 8.6.23 — Generation Relay
 
 - Stabilizes Memory Muster generation across identical six-vessel refreshes.

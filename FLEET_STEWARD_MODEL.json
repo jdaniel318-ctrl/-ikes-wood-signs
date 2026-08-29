@@ -1,0 +1,40 @@
+{
+  "schema": "dark-sky-fleet-steward-v1",
+  "build": "8.6.24",
+  "release": "Fleet Steward",
+  "mission": "Make recurring fleet maintenance easy to find, professional to inspect, and non-destructive by default.",
+  "station": {
+    "id": "fleetMaintenanceStation",
+    "tools": [
+      "engine-telemetry",
+      "proving-ground",
+      "engineering-evidence",
+      "recovery-snapshot",
+      "fleet-watch",
+      "storage-inventory"
+    ]
+  },
+  "diagnostic_hold": {
+    "default": "off",
+    "scope": "session-only",
+    "recovery_hold": "optional",
+    "post_login_hold": "optional"
+  },
+  "storage_inventory": {
+    "mode": "read-only",
+    "classes": [
+      "authoritative",
+      "recovery-legacy",
+      "temporary",
+      "browser-managed-unknown"
+    ],
+    "cleanup": "not-authorized-from-fleet-steward"
+  },
+  "protected_baseline": "8.6.23 Generation Relay",
+  "non_goals": [
+    "storage cleanup",
+    "fleet behavior changes",
+    "vessel feature changes",
+    "staging remediation"
+  ]
+}

@@ -1,3 +1,7 @@
+# Dark Sky 8.6.24 — Fleet Steward
+
+Phase 1 fleet stewardship release built from the protected 8.6.23 Generation Relay anchor. Adds one visible Fleet Maintenance station, session-only Diagnostic Hold control, and a read-only Storage Steward inventory. No storage cleanup or vessel behavior changes are authorized in this release.
+
 # Dark Sky 8.6.23 — Generation Relay
 
 Prevents proof-generation drift: identical canonical-six refreshes retain their Memory Muster generation, and every genuine generation advance serially relays CORE bootstrap proof to the new generation before finalization. LocalStorage quota failure and legacy app-level lifecycle hooks remain non-authoritative diagnostics.

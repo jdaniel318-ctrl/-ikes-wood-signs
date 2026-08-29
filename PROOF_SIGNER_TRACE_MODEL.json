@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-bootstrap-ignition-model-v1",
-  "build": "8.6.23",
+  "build": "8.6.24",
   "release": "Generation Relay",
   "mode": "read-only-diagnostic",
   "purpose": "Trace the exact lifecycle from bootstrap invocation through generation-bound surface attachments, finalizer invocation, current-proof write, and read-back without changing fleet behavior.",

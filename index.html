@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.23',seal:'generation-relay-8623-5f3c2d'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.24',seal:'fleet-steward-8624-7c41ae'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1130,6 +1130,31 @@
       </section>
 
       
+
+      <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
+        <header class="fleet-maintenance-head">
+          <div>
+            <div class="engine-kicker">8.6.24 • FLEET STEWARD</div>
+            <h3>FLEET MAINTENANCE</h3>
+            <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
+          </div>
+          <span class="fleet-maintenance-badge">STEWARD • READ-ONLY FIRST</span>
+        </header>
+        <div class="fleet-maintenance-grid" role="group" aria-label="Fleet maintenance tools">
+          <button type="button" data-fleet-maintenance="telemetry"><small>STORAGE &amp; HEALTH</small><strong>Engine Telemetry</strong><span>Inspect measurable storage and browser-managed growth.</span></button>
+          <button type="button" data-fleet-maintenance="proving"><small>RELEASE ASSURANCE</small><strong>Proving Ground</strong><span>Run and review the protected fleet voyages.</span></button>
+          <button type="button" data-fleet-maintenance="evidence"><small>ENGINEERING</small><strong>Engineering Evidence</strong><span>Jump directly to the current release evidence.</span></button>
+          <button type="button" data-fleet-maintenance="recovery"><small>CONTINUITY</small><strong>Recovery Snapshot</strong><span>Export a protected browser recovery record.</span></button>
+          <button type="button" data-fleet-maintenance="watch"><small>ATTENTION</small><strong>Fleet Watch</strong><span>Surface current signals without changing vessel state.</span></button>
+          <button type="button" data-fleet-maintenance="inventory"><small>STORAGE STEWARD</small><strong>Storage Inventory</strong><span>Classify protected, authoritative, recovery, temporary and unknown storage.</span></button>
+        </div>
+        <div class="fleet-maintenance-controls">
+          <label class="fleet-maintenance-toggle"><span><strong>Diagnostic Hold</strong><small>Temporarily pause recovery/login evidence screens for capture. Session only.</small></span><input id="fleetDiagnosticHoldToggle" type="checkbox" role="switch" aria-label="Diagnostic evidence hold"></label>
+          <div id="fleetMaintenanceStatus" class="fleet-maintenance-status" role="status" aria-live="polite">Fleet Steward ready. No cleanup is armed.</div>
+        </div>
+        <div id="fleetStorageInventory" class="fleet-storage-inventory" aria-live="polite"></div>
+      </section>
+
       <section id="v3ArchitectureDeck" class="v3-architecture-deck" aria-label="Dark Sky v4 Broadside structural status">
         <header class="v3-architecture-head">
           <div><div class="black-flag-section-cue"><img src="black_flag_platform_icon.png" alt="" aria-hidden="true"><span>BLACK FLAG PLATFORM</span></div><div class="bf-section-brand"><span class="bf-platform-icon" aria-hidden="true"></span><span>SYSTEM STATUS</span></div><h3>V4 BROADSIDE STATUS</h3><p>Platform contract, recovery, diagnostics, release discipline, and sealed project boundaries.</p></div>
@@ -1140,7 +1165,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.23 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.24 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1157,7 +1182,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.23 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.24 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1776,7 +1801,8 @@
       shield.innerHTML=`<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-eyebrow">AUTOMATIC SAFE RECOVERY</div><h2>UPDATING VERIFIED RELEASE</h2><p>Dark Sky recognized a known stale-worker handoff and is replacing only application runtime state. Project data remains untouched.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>NEW BUILD</small><strong>${EXPECTED}</strong></div><div class="ds-release-cell"><small>RECOVERY MODE</small><strong>SAFE AUTO</strong></div></div><p>${safe(reason)}</p><div id="darkSkyAutoRecoveryProgress" class="ds-release-progress" aria-live="polite"></div></div>`;
     }
     async function recoveryEvidenceHold8620(ms=3200){
-      if(!shield||window.__darkSkyReleaseGateState!=='recovering')return;
+      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8624')==='1';}catch(_){}
+      if(!enabled||!shield||window.__darkSkyReleaseGateState!=='recovering')return;
       window.__darkSkyRuntimeEntryWitness8620?.('recovery-evidence-hold-shown',{durationMs:ms});
       const card=shield.querySelector('.ds-route-recovery');
       if(!card){await delay(ms);return;}
@@ -1799,6 +1825,8 @@
       wrap.remove();
     }
     function showPostLoginEvidenceHold8620(){
+      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8624')==='1';}catch(_){}
+      if(!enabled)return;
       if(window.__darkSkyPostLoginEvidenceHoldShown8620)return;
       window.__darkSkyPostLoginEvidenceHoldShown8620=true;
       window.__darkSkyRuntimeEntryWitness8620?.('post-login-evidence-hold-shown',{});

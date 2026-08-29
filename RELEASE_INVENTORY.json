@@ -1,7 +1,7 @@
 {
-  "release": "Generation Relay",
-  "name": "Generation Relay",
-  "file_count": 71,
+  "release": "Fleet Steward",
+  "name": "Fleet Steward",
+  "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -24,6 +24,7 @@
     "FLEET_OPERATING_CONTRACTS.md",
     "FLEET_REGRESSION_GATES.json",
     "FLEET_REGRESSION_LIBRARY.md",
+    "FLEET_STEWARD_MODEL.json",
     "FOUNDRY_FLEET_SERVICES.md",
     "GENERATION_RELAY_MODEL.json",
     "GOLDEN_VOYAGES.json",
@@ -75,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.23",
-  "seal": "generation-relay-8623-5f3c2d"
+  "build": "8.6.24",
+  "seal": "fleet-steward-8624-7c41ae"
 }

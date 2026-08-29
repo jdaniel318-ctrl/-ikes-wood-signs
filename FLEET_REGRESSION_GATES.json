@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.23",
+  "build": "8.6.24",
   "release": "Generation Relay",
   "excluded_sources": [
     "The situation"
