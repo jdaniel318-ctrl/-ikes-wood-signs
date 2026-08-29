@@ -1,3 +1,7 @@
+# Dark Sky 8.6.23 — Generation Relay
+
+Prevents proof-generation drift: identical canonical-six refreshes retain their Memory Muster generation, and every genuine generation advance serially relays CORE bootstrap proof to the new generation before finalization. LocalStorage quota failure and legacy app-level lifecycle hooks remain non-authoritative diagnostics.
+
 # Dark Sky 8.6.22 — Storage Safe Harbor
 
 Live readiness and proof coordination no longer depend on localStorage. Window memory + sessionStorage own current-session truth; completed proof is mirrored to IndexedDB settings; localStorage is best-effort only. The 8.6.20 evidence hold proved Safari was throwing QuotaExceededError, so 8.6.22 removes that failure mode without changing canonical-six, Legacy, Memory Muster, or staging behavior.

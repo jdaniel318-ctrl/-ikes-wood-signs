@@ -1,7 +1,7 @@
 {
-  "release": "Storage Safe Harbor",
-  "name": "Storage Safe Harbor",
-  "file_count": 70,
+  "release": "Generation Relay",
+  "name": "Generation Relay",
+  "file_count": 71,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -25,6 +25,7 @@
     "FLEET_REGRESSION_GATES.json",
     "FLEET_REGRESSION_LIBRARY.md",
     "FOUNDRY_FLEET_SERVICES.md",
+    "GENERATION_RELAY_MODEL.json",
     "GOLDEN_VOYAGES.json",
     "IGNITION_WITNESS_MODEL.json",
     "IKES_PRODUCTION_COMPENDIUM.md",
@@ -74,6 +75,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.22",
-  "seal": "storage-safe-harbor-8622-91c7af"
+  "build": "8.6.23",
+  "seal": "generation-relay-8623-5f3c2d"
 }

@@ -1,3 +1,11 @@
+# Dark Sky 8.6.23 — Generation Relay
+
+- Stabilizes Memory Muster generation across identical six-vessel refreshes.
+- Adds serialized CORE proof relay for genuine generation advances.
+- Keeps finalizer strict: Core = Memory = Dock = Intelligence.
+- Demotes full localStorage and obsolete app lifecycle hooks from false release HOLDs when authoritative paths are healthy.
+- Preserves Storage-Safe Proof Bus, Legacy rescue, Memory Muster, Dock, Intelligence, staging, and project data boundaries.
+
 # Dark Sky 8.6.22 — Storage Safe Harbor
 
 - Removed localStorage from live proof writes after real iPad evidence proved Safari QuotaExceededError.

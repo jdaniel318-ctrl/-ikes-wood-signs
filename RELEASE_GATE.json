@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.22",
+  "build": "8.6.23",
   "release": "Bootstrap Commit",
   "generatedAt": "2026-08-29T18:04:16.116394+00:00",
   "checks": {
@@ -186,7 +186,7 @@
   "nonMediaAssets": [],
   "pass": true,
   "note": "8.6.1 Intelligence Dock prevents Fleet Intelligence from remaining indefinitely on READING FLEET by painting a roster-backed local snapshot within a bounded window and reconciling live intelligence in the background.",
-  "candidate": "8.6.22",
+  "candidate": "8.6.23",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -237,5 +237,9 @@
     "late_run_commit_guard": true,
     "shared_promise_rejection_safe": true,
     "last_verified_six_retained_on_failure": true
+  },
+  "generation_relay_gate": {
+    "required": true,
+    "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   }
 }

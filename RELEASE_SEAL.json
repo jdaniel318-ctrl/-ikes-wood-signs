@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.22",
-  "release": "Storage Safe Harbor",
-  "seal": "storage-safe-harbor-8622-91c7af",
-  "execution_model": "verified-loader-storage-safe-harbor",
+  "build": "8.6.23",
+  "release": "Generation Relay",
+  "seal": "generation-relay-8623-5f3c2d",
+  "execution_model": "verified-loader-generation-relay",
   "service_worker": "identity-only",
-  "release_name": "Storage Safe Harbor",
-  "name": "Storage Safe Harbor",
-  "releaseName": "Storage Safe Harbor"
+  "release_name": "Generation Relay",
+  "name": "Generation Relay",
+  "releaseName": "Generation Relay"
 }

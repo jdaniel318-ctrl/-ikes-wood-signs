@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.22",
-  "release": "Storage Safe Harbor",
+  "build": "8.6.23",
+  "release": "Generation Relay",
   "excluded_sources": [
     "The situation"
   ],

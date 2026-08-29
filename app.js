@@ -15,8 +15,8 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.22';
-  // 8.6.22 Storage-Safe Harbor — live readiness may never depend on localStorage.
+  const BUILD_VERSION='8.6.23';
+  // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
   const LIVE_PROOF_SESSION_PREFIX_8621='darkSkyLiveProofBus8621:';
@@ -2170,7 +2170,7 @@
   }
 
 
-  // 8.6.22 Bootstrap Ignition — read-only instrumentation of the proof signing lifecycle.
+  // 8.6.23 Generation Relay — read-only instrumentation of the proof signing lifecycle.
   // This does not repair fleet state, mutate admissions, or manufacture proof. It only records
   // who invoked bootstrap/finalizer, which generation each surface attached, and what store read-back sees.
   // 8.6.22 Ignition Witness — durable, module-independent lifecycle breadcrumbs.
@@ -2281,9 +2281,16 @@
       // Atomic commit point: this is the only assignment that can replace the live
       // company roster during presentation convergence.
       companies=candidate;
-      memoryMusterGeneration8612=Math.max(memoryMusterGeneration8612,Number(memoryMusterRead8612()?.generation||0))+1;
-      const snapshot=memoryMusterWrite8612({status:'committed',generation:memoryMusterGeneration8612,source,total:companies.length,protectedCount:protectedIds.length,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...protectedIds],registryIds:[...registryIds],admissionIds:[...admissionIds],manifestIds:[...manifestIds],committedAt:new Date().toISOString(),lastFailure:null});
-      proofBarrierAdvance8611('ROSTER_READY',`Bootstrap Commit generation ${snapshot.generation} committed • ${source}`);
+      const priorSnapshot=memoryMusterRead8612();
+      const normalizeIds8623=ids=>[...new Set((ids||[]).map(x=>String(x||'')).filter(Boolean))].sort();
+      const sameIds8623=(a,b)=>JSON.stringify(normalizeIds8623(a))===JSON.stringify(normalizeIds8623(b));
+      const proofIdentityUnchanged8623=!!(priorSnapshot?.status==='committed'&&Number(priorSnapshot?.protectedCount||0)===6&&
+        sameIds8623(priorSnapshot?.protectedIds,protectedIds)&&sameIds8623(priorSnapshot?.registryIds,registryIds)&&
+        sameIds8623(priorSnapshot?.admissionIds,admissionIds)&&sameIds8623(priorSnapshot?.manifestIds,manifestIds));
+      memoryMusterGeneration8612=proofIdentityUnchanged8623?Math.max(1,Number(priorSnapshot?.generation||memoryMusterGeneration8612||0)):Math.max(memoryMusterGeneration8612,Number(priorSnapshot?.generation||0))+1;
+      const snapshot=memoryMusterWrite8612({status:'committed',generation:memoryMusterGeneration8612,source,total:companies.length,protectedCount:protectedIds.length,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...protectedIds],registryIds:[...registryIds],admissionIds:[...admissionIds],manifestIds:[...manifestIds],committedAt:new Date().toISOString(),generationReason:proofIdentityUnchanged8623?'stable-six-refresh':'fleet-proof-identity-change',lastFailure:null});
+      proofBarrierAdvance8611('ROSTER_READY',`Generation Relay ${proofIdentityUnchanged8623?'retained':'committed'} generation ${snapshot.generation} • ${source}`);
+      queueMicrotask(()=>scheduleGenerationRelay8623(`memory-commit:${source}`,snapshot.generation));
       return snapshot;
     }catch(err){
       if(priorGood)companies=priorGood;
@@ -2303,6 +2310,7 @@
     if(memoryRosterHasProtectedSix8612(companies)){
       const observed=memoryMusterWrite8612({status:'committed',generation:Math.max(1,Number(snap?.generation||0)),source:`observed:${source}`,total:companies.length,protectedCount:6,ids:companies.map(p=>String(canonicalProjectId(p?.id||''))).filter(Boolean),protectedIds:[...RELEASE_CANONICAL_FLEET_IDS_864],committedAt:new Date().toISOString()});
       memoryCommitWatchdogStage8613('committed','observed-six',`Existing six-company roster accepted by ${source}`,{generation:observed.generation,source});
+      queueMicrotask(()=>scheduleGenerationRelay8623(`observed-six:${source}`,observed.generation));
       return observed;
     }
     memoryCommitWatchdogStage8613('timeout','consumer-wait',`No six-company memory commit within ${timeoutMs} ms`,{source});
@@ -2319,7 +2327,7 @@
   async function runProofBootstrap8614({source='engine-init',timeoutMs=3200,force=false}={}){
     const existing=proofBootstrapRead8614(); const memNow=memoryMusterRead8612();
     proofSignerTraceEvent8616('bootstrap-invoked',{source,force,existingStatus:existing?.status||'none',existingGeneration:Number(existing?.generation||0),memoryStatus:memNow?.status||'none',memoryGeneration:Number(memNow?.generation||0)});
-    if(!force&&existing?.generation===memNow?.generation&&['core-committed','complete'].includes(String(existing?.status||''))){proofSignerTraceEvent8616('bootstrap-reused',{source,status:existing.status,generation:Number(existing.generation||0)});return existing.currentProof||existing;}
+    if(!force&&existing?.generation===memNow?.generation&&['core-committed','dock-verified','complete'].includes(String(existing?.status||''))){proofSignerTraceEvent8616('bootstrap-reused',{source,status:existing.status,generation:Number(existing.generation||0)});return existing.currentProof||existing;}
     if(proofBootstrapPromise8614&&!force){proofSignerTraceEvent8616('bootstrap-shared-promise',{source});return proofBootstrapPromise8614;}
     const work=(async()=>{
       proofBootstrapWrite8614({status:'waiting-memory',stage:'memory',detail:`Waiting for committed memory roster • ${source}`});
@@ -2342,7 +2350,40 @@
     return proofBootstrapPromise8614;
   }
 
-  // 8.6.22 Bootstrap Ignition — connect the existing proof bootstrap runner to the
+  // 8.6.23 Generation Relay — CORE proof follows the committed Memory Muster generation.
+  // Identical six-vessel refreshes retain their generation; genuine generation advances
+  // serialize through this relay so stale CORE proof can never strand newer surfaces.
+  const GENERATION_RELAY_KEY_8623='darkSkyGenerationRelayV8623';
+  let generationRelayChain8623=Promise.resolve(null);
+  function generationRelayRead8623(){return liveProofRead8621(GENERATION_RELAY_KEY_8623,'__darkSkyGenerationRelay8623');}
+  function generationRelayWrite8623(patch={}){const prior=generationRelayRead8623()||{schema:'dark-sky-generation-relay-v1',build:BUILD_VERSION,status:'idle',history:[]};const ev={status:patch.status||prior.status,at:new Date().toISOString(),detail:patch.detail||''};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:ev.at,history:[...(prior.history||[]),ev].slice(-60)};return liveProofWrite8621(GENERATION_RELAY_KEY_8623,'__darkSkyGenerationRelay8623',next,{durable:next.status==='aligned'});}
+  async function relayBootstrapCoreToMemoryGeneration8623(source='memory-generation'){
+    const memory=memoryMusterRead8612();
+    if(!(memory?.status==='committed'&&Number(memory?.protectedCount||0)===6)){generationRelayWrite8623({status:'waiting-memory',source,detail:'No committed six-vessel memory generation available.'});return null;}
+    const targetGeneration=Number(memory.generation||0);
+    let boot=proofBootstrapRead8614();
+    if(Number(boot?.generation||0)===targetGeneration&&['core-committed','dock-verified','complete'].includes(String(boot?.status||''))){generationRelayWrite8623({status:'aligned',source,generation:targetGeneration,bootstrapGeneration:targetGeneration,detail:`CORE already aligned to memory generation ${targetGeneration}`});return boot;}
+    generationRelayWrite8623({status:'relaying',source,generation:targetGeneration,fromGeneration:Number(boot?.generation||0),detail:`Relaying CORE ${Number(boot?.generation||0)||'none'} → ${targetGeneration}`});
+    if(proofBootstrapPromise8614){await commandDeadline(Promise.resolve(proofBootstrapPromise8614).catch(()=>null),1400,null);}
+    const latestMemory=memoryMusterRead8612();
+    if(Number(latestMemory?.generation||0)!==targetGeneration){generationRelayWrite8623({status:'superseded',source,generation:targetGeneration,nextGeneration:Number(latestMemory?.generation||0),detail:`Generation ${targetGeneration} superseded before CORE relay.`});return null;}
+    boot=proofBootstrapRead8614();
+    if(Number(boot?.generation||0)!==targetGeneration||!['core-committed','dock-verified','complete'].includes(String(boot?.status||''))){await runProofBootstrap8614({source:`generation-relay:${source}`,timeoutMs:5200,force:true});}
+    boot=proofBootstrapRead8614();
+    const currentMemory=memoryMusterRead8612();
+    const aligned=Number(currentMemory?.generation||0)===targetGeneration&&Number(boot?.generation||0)===targetGeneration&&['core-committed','dock-verified','complete'].includes(String(boot?.status||''));
+    generationRelayWrite8623({status:aligned?'aligned':'hold',source,generation:targetGeneration,bootstrapGeneration:Number(boot?.generation||0),memoryGeneration:Number(currentMemory?.generation||0),detail:aligned?`CORE aligned to memory generation ${targetGeneration}`:`CORE relay failed: memory ${Number(currentMemory?.generation||0)}, bootstrap ${Number(boot?.generation||0)} (${boot?.status||'none'})`});
+    proofSignerTraceEvent8616(aligned?'generation-relay-aligned':'generation-relay-hold',{source,targetGeneration,bootstrapGeneration:Number(boot?.generation||0),memoryGeneration:Number(currentMemory?.generation||0),bootstrapStatus:boot?.status||'none'});
+    if(aligned)queueMicrotask(()=>tryFinalizeProofBootstrap8615(`generation-relay:${source}`).catch(err=>proofSignerTraceEvent8616('finalizer-error',{source:'generation-relay',message:String(err?.message||err)})));
+    return aligned?boot:null;
+  }
+  function scheduleGenerationRelay8623(source='memory-generation',generation=0){
+    generationRelayWrite8623({status:'queued',source,generation:Number(generation||0),detail:`Generation ${Number(generation||0)} queued for CORE alignment`});
+    generationRelayChain8623=generationRelayChain8623.catch(()=>null).then(()=>relayBootstrapCoreToMemoryGeneration8623(source));
+    return generationRelayChain8623;
+  }
+
+  // 8.6.23 Generation Relay — connect the existing proof bootstrap runner to the
   // real platform/Engine startup lifecycle. One shared ignition promise owns each
   // current memory generation; repeated callers reuse the settled core proof.
   let bootstrapIgnitionPromise8617=null;
@@ -2390,7 +2431,7 @@
       const evidence=evidenceReconciliationRead8610();
       if(!boot||boot.status==='failed'||boot.status==='timeout'||!memory){proofSignerTraceEvent8616('finalizer-blocked',{source,reason:'bootstrap-or-memory-unavailable',bootStatus:boot?.status||'none',memoryStatus:memory?.status||'none'});return null;}
       const generation=Number(memory.generation||0);
-      if(Number(boot.generation||0)!==generation||!['core-committed','complete'].includes(String(boot.status||''))){proofSignerTraceEvent8616('finalizer-blocked',{source,reason:'bootstrap-generation-or-status',bootGeneration:Number(boot.generation||0),memoryGeneration:generation,bootStatus:boot.status});return null;}
+      if(Number(boot.generation||0)!==generation||!['core-committed','dock-verified','complete'].includes(String(boot.status||''))){proofSignerTraceEvent8616('finalizer-blocked',{source,reason:'bootstrap-generation-or-status',bootGeneration:Number(boot.generation||0),memoryGeneration:generation,bootStatus:boot.status});queueMicrotask(()=>scheduleGenerationRelay8623(`finalizer-mismatch:${source}`,generation));return null;}
       if(boot.status==='complete'&&boot.currentProof?.ok){proofSignerTraceEvent8616('finalizer-reused-proof',{source,generation});return boot.currentProof;}
       const dock=evidence?.dock;
       const intel=evidence?.intelligence;
@@ -2729,7 +2770,7 @@
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
     return `<section class="resolver-lifeline-panel ${status}" aria-label="Bootstrap Commit">
-      <header><div><small>8.6.22 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+      <header><div><small>8.6.23 • GENERATION RELAY</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -5159,11 +5200,11 @@
     const ch8620=runtimeEntry8620?.channels||{};
     const channelText8620=(name,c,outerErr='')=>{const ok=!!c?.ok&&c?.writeOk!==false;const err=[c?.error,c?.writeError,outerErr].filter(Boolean).join(' • ');return `${name} ${ok?'PASS':'FAIL'}${err?` • ${err}`:''}`;};
     const runtimeDetail8620=`WINDOW-AUTHORITATIVE • first-light ${Number(rc8620['document-first-light']||0)} • loader ${Number(rc8620['verified-loader-entered']||0)} • app ${Number(rc8620['app-module-evaluated']||0)} • runtime ${Number(rc8620['verified-runtime-executed']||0)} • entry click ${Number(rc8620['engine-entry-control-clicked']||0)} • Engine visible ${Number(rc8620['engine-visible-observed']||0)} • ignition dispatch ${Number(rc8620['loader-ignition-dispatch']||0)} • ignition settled ${Number(rc8620['loader-ignition-settled']||0)} • last ${String(rl8620.event||'none')}.`;
-    add('witness-truth-window','Witness Truth — window memory',runtimeEntry8620&&Number(rc8620['document-first-light']||0)>0?'pass':'fail',runtimeEntry8620?`Current page memory witness is live. ${runtimeDetail8620}`:'No window-memory witness exists in the current page instance.');
-    add('witness-truth-session','Witness Truth — sessionStorage',ch8620.sessionStorage?.ok&&ch8620.sessionStorage?.writeOk!==false?'pass':'fail',channelText8620('sessionStorage',ch8620.sessionStorage,truth8620.sessionError));
-    add('witness-truth-local','Witness Truth — localStorage',ch8620.localStorage?.ok&&ch8620.localStorage?.writeOk!==false?'pass':'fail',channelText8620('localStorage',ch8620.localStorage,truth8620.localError));
     const liveProofSessionOk8621=window.__darkSkyLiveProofSessionOk8621!==false;
     const liveProofLocalErr8621=String(window.__darkSkyLiveProofLocalError8621||'');
+    add('witness-truth-window','Witness Truth — window memory',runtimeEntry8620&&Number(rc8620['document-first-light']||0)>0?'pass':'fail',runtimeEntry8620?`Current page memory witness is live. ${runtimeDetail8620}`:'No window-memory witness exists in the current page instance.');
+    add('witness-truth-session','Witness Truth — sessionStorage',ch8620.sessionStorage?.ok&&ch8620.sessionStorage?.writeOk!==false?'pass':'fail',channelText8620('sessionStorage',ch8620.sessionStorage,truth8620.sessionError));
+    add('witness-truth-local','Witness Truth — localStorage',ch8620.localStorage?.ok&&ch8620.localStorage?.writeOk!==false?'pass':(liveProofSessionOk8621?'warn':'fail'),channelText8620('localStorage',ch8620.localStorage,truth8620.localError));
     add('storage-safe-proof-bus','Storage-Safe Proof Bus',liveProofSessionOk8621?'pass':'fail',liveProofSessionOk8621?`Live proof bus uses window memory + sessionStorage. localStorage is best-effort only${liveProofLocalErr8621?` • localStorage: ${liveProofLocalErr8621}`:''}.`:`sessionStorage live proof mirror failed: ${String(window.__darkSkyLiveProofSessionError8621||'unknown')}`);
     add('post-login-evidence-hold','Post-login evidence hold',Number(rc8620['post-login-evidence-hold-shown']||0)>0?'pass':'warn',Number(rc8620['post-login-evidence-hold-shown']||0)>0?`Evidence hold shown ${Number(rc8620['post-login-evidence-hold-shown']||0)} time(s), dismissed ${Number(rc8620['post-login-evidence-hold-dismissed']||0)} time(s).`:'No settled Engine login evidence hold has been observed yet.');
     add('runtime-entry-trace','Runtime Entry Trace',Number(rc8620['verified-loader-entered']||0)>0&&Number(rc8620['app-module-evaluated']||0)>0?'pass':'fail',runtimeDetail8620);
@@ -5175,7 +5216,7 @@
     const wl8618=witness8618.lastEvent||{};
     const witnessDetail8618=`entered ${Number(wc8618['ignition-function-entered']||0)} • platform hook ${Number(wc8618['platform-init-hook-reached']||0)} • Engine entry hook ${Number(wc8618['engine-entry-hook-reached']||0)} • shortcut hook ${Number(wc8618['engine-shortcut-hook-reached']||0)} • memory requested ${Number(wc8618['memory-muster-requested']||0)} • memory returned ${Number(wc8618['memory-generation-returned']||0)} • bootstrap called ${Number(wc8618['bootstrap-runner-called']||0)} • bootstrap returned ${Number(wc8618['bootstrap-runner-returned']||0)} • last ${String(wl8618.event||'none')}.`;
     add('ignition-witness','Ignition Witness',Number(wc8618['ignition-function-entered']||0)>0?'pass':'fail',witnessDetail8618);
-    add('ignition-witness-lifecycle-hook','Ignition Witness — lifecycle hook',Number(wc8618['platform-init-hook-reached']||0)+Number(wc8618['engine-entry-hook-reached']||0)+Number(wc8618['engine-shortcut-hook-reached']||0)>0?'pass':'fail',`Platform ${Number(wc8618['platform-init-hook-reached']||0)} • Engine entry ${Number(wc8618['engine-entry-hook-reached']||0)} • shortcut ${Number(wc8618['engine-shortcut-hook-reached']||0)}.`);
+    add('ignition-witness-lifecycle-hook','Ignition Witness — legacy lifecycle hooks',Number(wc8618['platform-init-hook-reached']||0)+Number(wc8618['engine-entry-hook-reached']||0)+Number(wc8618['engine-shortcut-hook-reached']||0)>0?'pass':'warn',`Platform ${Number(wc8618['platform-init-hook-reached']||0)} • Engine entry ${Number(wc8618['engine-entry-hook-reached']||0)} • shortcut ${Number(wc8618['engine-shortcut-hook-reached']||0)}.`);
     add('ignition-witness-memory','Ignition Witness — Memory Muster handoff',Number(wc8618['memory-generation-returned']||0)>0?'pass':Number(wc8618['memory-muster-requested']||0)>0?'warn':'fail',Number(wc8618['memory-generation-returned']||0)>0?`Memory generation returned ${Number(wc8618['memory-generation-returned']||0)} time(s).`:`Memory requested ${Number(wc8618['memory-muster-requested']||0)} time(s); no returned generation witnessed.`);
     add('ignition-witness-bootstrap','Ignition Witness — bootstrap call boundary',Number(wc8618['bootstrap-runner-called']||0)>0?'pass':'fail',Number(wc8618['bootstrap-runner-called']||0)>0?`Bootstrap runner called ${Number(wc8618['bootstrap-runner-called']||0)} time(s), returned ${Number(wc8618['bootstrap-runner-returned']||0)} time(s).`:`Bootstrap runner call boundary was never crossed. Last witness ${String(wl8618.event||'none')}.`);
 
@@ -5184,6 +5225,8 @@
     const last8616=signer8616.lastEvent||{};
     const signerDetail8616=`Bootstrap calls ${Number(sc8616['bootstrap-invoked']||0)} • core commits ${Number(sc8616['bootstrap-core-committed']||0)} • Dock proofs ${Number(sc8616['dock-proof-recorded']||0)} • Intelligence proofs ${Number(sc8616['intelligence-proof-recorded']||0)} • finalizer calls ${Number(sc8616['finalizer-invoked']||0)} • final commits ${Number(sc8616['finalizer-committed']||0)} • memory gen ${signer8616.memory.generation} • bootstrap ${signer8616.bootstrap.status}@${signer8616.bootstrap.generation} • Dock gen ${signer8616.dock.generation}/${signer8616.dock.count} • Intelligence gen ${signer8616.intelligence.generation}/${signer8616.intelligence.count} • current proof ${signer8616.barrier.hasCurrentProof?'YES':'NO'}@${signer8616.barrier.currentGeneration} • last ${String(last8616.event||'none')}${last8616.reason?` (${last8616.reason})`:''}.`;
     add('bootstrap-ignition-summary','Bootstrap Ignition',signer8616.barrier.hasCurrentProof?'pass':'warn',signerDetail8616);
+    const relay8623=generationRelayRead8623()||{}; const memRelay8623=Number(memoryMusterRead8612()?.generation||0); const bootRelay8623=Number(proofBootstrapRead8614()?.generation||0);
+    add('generation-relay','Generation Relay',relay8623.status==='aligned'&&memRelay8623===bootRelay8623?'pass':(relay8623.status==='hold'?'fail':'warn'),`Memory generation ${memRelay8623} • CORE generation ${bootRelay8623} • relay ${relay8623.status||'idle'}${relay8623.detail?` • ${relay8623.detail}`:''}.`);
     add('proof-signer-bootstrap-call','Proof Signer — bootstrap invocation',Number(sc8616['bootstrap-invoked']||0)>0?'pass':'fail',Number(sc8616['bootstrap-invoked']||0)>0?`Bootstrap runner invoked ${Number(sc8616['bootstrap-invoked']||0)} time(s); latest state ${signer8616.bootstrap.status}, generation ${signer8616.bootstrap.generation}.`:'Bootstrap runner has not been invoked in this build/session.');
     const attachmentMatch8616=signer8616.memory.generation>0&&signer8616.dock.ok&&signer8616.intelligence.ok&&signer8616.dock.generation===signer8616.memory.generation&&signer8616.intelligence.generation===signer8616.memory.generation;
     add('proof-signer-generation-match','Proof Signer — generation attachments',attachmentMatch8616?'pass':'fail',attachmentMatch8616?`Memory, Dock, and Intelligence all attach to generation ${signer8616.memory.generation}.`:`Generation mismatch/incomplete: memory ${signer8616.memory.generation}, Dock ${signer8616.dock.generation}/${signer8616.dock.count}, Intelligence ${signer8616.intelligence.generation}/${signer8616.intelligence.count}.`);

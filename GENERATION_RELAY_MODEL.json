@@ -1,0 +1,15 @@
+{
+  "schema": "dark-sky-generation-relay-v1",
+  "build": "8.6.23",
+  "release": "Generation Relay",
+  "release_seal": "generation-relay-8623-5f3c2d",
+  "purpose": "Keep CORE bootstrap proof generation aligned with the committed Memory Muster generation without unnecessary generation churn.",
+  "contracts": [
+    "Identical protected six-vessel registry/admission/manifest refreshes retain the current Memory Muster generation.",
+    "Every genuine Memory Muster generation advance queues exactly one serialized CORE proof relay.",
+    "A stale or superseded generation may never overwrite or satisfy a newer generation.",
+    "Final proof may commit only when Core = Memory = Dock = Intelligence generation and all six protected IDs are present.",
+    "Legacy lifecycle hooks and localStorage quota state are diagnostic only when the verified loader and Storage-Safe Proof Bus are healthy."
+  ],
+  "release_gate": "Current Memory and CORE generation must align before Command Navigation can be treated as proven."
+}

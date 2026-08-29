@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-evidence-reconciliation-v1",
-  "build": "8.6.22",
+  "build": "8.6.23",
   "release": "Bootstrap Commit",
   "mission": "Current successful live-surface evidence supersedes stale failed attempts without erasing history.",
   "proofs": {

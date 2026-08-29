@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-bootstrap-commit-v1",
-  "build": "8.6.22",
+  "build": "8.6.23",
   "release": "Bootstrap Commit",
   "contract": "Memory commits core proof; normal Dock and Intelligence renders append generation-bound surface proof; one idempotent finalizer commits current proof.",
   "proving_ground_read_only": true,

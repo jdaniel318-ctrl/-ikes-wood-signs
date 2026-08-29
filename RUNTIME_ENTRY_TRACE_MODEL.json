@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-runtime-entry-trace-v1",
-  "build": "8.6.22",
-  "name": "Storage Safe Harbor",
-  "release_seal": "storage-safe-harbor-8622-91c7af",
+  "build": "8.6.23",
+  "name": "Generation Relay",
+  "release_seal": "generation-relay-8623-5f3c2d",
   "purpose": "Trace and bridge the unavoidable verified document/runtime path to bootstrap ignition without relying on guessed application lifecycle hooks.",
   "witness_key": "darkSkyRuntimeEntryWitnessV8620",
   "unavoidable_stages": [
