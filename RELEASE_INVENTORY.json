@@ -1,6 +1,6 @@
 {
-  "release": "Fleet Steward",
-  "name": "Fleet Steward",
+  "release": "Auto Sounding",
+  "name": "Auto Sounding",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.24",
-  "seal": "fleet-steward-8624-7c41ae"
+  "build": "8.6.25",
+  "seal": "auto-sounding-8625-a51d7c"
 }

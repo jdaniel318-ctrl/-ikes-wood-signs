@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky \u2014 Generation Relay",
+  "name": "Dark Sky \u2014 Auto Sounding",
   "short_name": "Dark Sky",
-  "start_url": "./index.html?_darkSkyRelease=8.6.24&_darkSkySeal=fleet-steward-8624-7c41ae",
+  "start_url": "./index.html?_darkSkyRelease=8.6.25&_darkSkySeal=auto-sounding-8625-a51d7c",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.24"
+  "version": "8.6.25"
 }

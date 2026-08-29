@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.24",
-  "release": "Fleet Steward",
+  "build": "8.6.25",
+  "release": "Auto Sounding",
   "generatedAt": "2026-08-29T22:32:09.114039+00:00",
   "checks": {
     "build_version": true,
@@ -188,8 +188,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.24 Fleet Steward centralizes recurring maintenance access, makes Diagnostic Hold deliberate/session-only, and adds read-only storage ownership inventory without arming cleanup.",
-  "candidate": "8.6.24",
+  "note": "8.6.25 Fleet Steward centralizes recurring maintenance access, makes Diagnostic Hold deliberate/session-only, and adds read-only storage ownership inventory without arming cleanup.",
+  "candidate": "8.6.25",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

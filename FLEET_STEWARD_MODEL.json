@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-steward-v1",
-  "build": "8.6.24",
-  "release": "Fleet Steward",
+  "build": "8.6.25",
+  "release": "Auto Sounding",
   "mission": "Make recurring fleet maintenance easy to find, professional to inspect, and non-destructive by default.",
   "station": {
     "id": "fleetMaintenanceStation",
@@ -28,7 +28,10 @@
       "temporary",
       "browser-managed-unknown"
     ],
-    "cleanup": "not-authorized-from-fleet-steward"
+    "cleanup": "not-authorized-from-fleet-steward",
+    "automatic_on_maintenance_bind": true,
+    "summary_position": "above-maintenance-tools",
+    "details_action": "VIEW STORAGE DETAILS"
   },
   "protected_baseline": "8.6.23 Generation Relay",
   "non_goals": [

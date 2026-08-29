@@ -1,3 +1,10 @@
+## 8.6.25 — Auto Sounding
+- Phase 1 usability correction: Fleet Maintenance automatically performs the read-only Storage Steward sounding after startup.
+- Storage condition is surfaced above the maintenance tool grid so the Captain does not need to hunt for Storage Inventory.
+- Added one obvious `VIEW STORAGE DETAILS` action; removed the buried duplicate Storage Inventory card.
+- Auto sounding is deferred and non-blocking; it cannot delete, migrate, compact, or clean storage.
+- Fleet, vessel, Generation Relay, proof, and recovery behavior remain unchanged.
+
 # 8.6.24 — Fleet Steward
 
 - Added one professional Fleet Maintenance station with direct routes to Engine Telemetry, Proving Ground, Engineering Evidence, Recovery Snapshot, Fleet Watch, and Storage Inventory.

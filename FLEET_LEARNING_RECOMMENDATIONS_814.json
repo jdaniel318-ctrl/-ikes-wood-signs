@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-learning-recommendations-v1",
-  "build": "8.6.24",
+  "build": "8.6.25",
   "generatedAt": "2026-08-25T23:45:00-04:00",
   "rule": "Recommendations are review targets, not automatic changes.",
   "vessels": {

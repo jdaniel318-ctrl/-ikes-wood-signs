@@ -1,3 +1,7 @@
+# Dark Sky 8.6.25 — Auto Sounding
+
+Phase 1 correction to Fleet Steward. Fleet Maintenance now runs a deferred read-only storage sounding automatically, surfaces the storage condition above the maintenance tools, and keeps detailed inventory one explicit action away. No cleanup, deletion, migration, or vessel behavior changes are authorized. 8.6.24 remains the prior Phase 1 hull.
+
 # Dark Sky 8.6.24 — Fleet Steward
 
 Phase 1 fleet stewardship release built from the protected 8.6.23 Generation Relay anchor. Adds one visible Fleet Maintenance station, session-only Diagnostic Hold control, and a read-only Storage Steward inventory. No storage cleanup or vessel behavior changes are authorized in this release.

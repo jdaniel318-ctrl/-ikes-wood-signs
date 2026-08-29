@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-bootstrap-ignition-v1",
-  "build": "8.6.24",
+  "build": "8.6.25",
   "release": "Generation Relay",
   "mission": "Invoke the existing proof bootstrap runner from the real platform and Engine startup lifecycle exactly once per active memory generation.",
   "ignition_points": [
