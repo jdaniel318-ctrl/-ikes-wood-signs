@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-proof-bootstrap-v1",
-  "build": "8.6.16",
+  "build": "8.6.17",
   "release": "Bootstrap Commit",
   "contract": "Core proof only during Engine initialization; normal Dock and Intelligence renders append generation-bound proof; idempotent finalizer commits current proof.",
   "generation_bound": true,

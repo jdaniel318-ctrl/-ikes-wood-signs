@@ -14,7 +14,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.16';
+  const BUILD_VERSION='8.6.17';
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2138,19 +2138,19 @@
   }
 
 
-  // 8.6.16 Proof Signer Trace — read-only instrumentation of the proof signing lifecycle.
+  // 8.6.17 Bootstrap Ignition — read-only instrumentation of the proof signing lifecycle.
   // This does not repair fleet state, mutate admissions, or manufacture proof. It only records
   // who invoked bootstrap/finalizer, which generation each surface attached, and what store read-back sees.
   const PROOF_SIGNER_TRACE_KEY_8616='darkSkyProofSignerTraceV8616';
   function proofSignerTraceRead8616(){try{const v=JSON.parse(localStorage.getItem(PROOF_SIGNER_TRACE_KEY_8616)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
   function proofSignerTraceWrite8616(patch={}){
-    const prior=proofSignerTraceRead8616()||{schema:'dark-sky-proof-signer-trace-v1',build:BUILD_VERSION,history:[],counters:{}};
+    const prior=proofSignerTraceRead8616()||{schema:'dark-sky-bootstrap-ignition-v1',build:BUILD_VERSION,history:[],counters:{}};
     const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};
     try{localStorage.setItem(PROOF_SIGNER_TRACE_KEY_8616,JSON.stringify(next));}catch(_){}
     window.__darkSkyProofSignerTrace8616=next;return next;
   }
   function proofSignerTraceEvent8616(event,detail={}){
-    const prior=proofSignerTraceRead8616()||{schema:'dark-sky-proof-signer-trace-v1',build:BUILD_VERSION,history:[],counters:{}};
+    const prior=proofSignerTraceRead8616()||{schema:'dark-sky-bootstrap-ignition-v1',build:BUILD_VERSION,history:[],counters:{}};
     const counters={...(prior.counters||{})}; counters[event]=Number(counters[event]||0)+1;
     const row={event,at:new Date().toISOString(),...detail};
     return proofSignerTraceWrite8616({counters,history:[...(prior.history||[]),row].slice(-120),lastEvent:row});
@@ -2164,7 +2164,7 @@
     const snap={label,at:new Date().toISOString(),memory:{status:memory?.status||'none',generation:Number(memory?.generation||0),protectedCount:Number(memory?.protectedCount||0)},bootstrap:{status:boot?.status||'none',stage:boot?.stage||'none',generation:Number(boot?.generation||0)},dock:{ok:!!evidence?.dock?.ok,count:Number(evidence?.dock?.count||0),generation:Number(evidence?.dock?.generation||0)},intelligence:{ok:!!evidence?.intelligence?.ok,count:Number(evidence?.intelligence?.count||0),generation:Number(evidence?.intelligence?.generation||0)},barrier:{phase:barrier?.phase||'none',phaseIndex:Number(barrier?.phaseIndex||0),hasCurrentProof:!!barrier?.currentProof?.ok,currentGeneration:Number(barrier?.currentProof?.generation||0)},counters:{...(trace.counters||{})},lastEvent:trace.lastEvent||null};
     proofSignerTraceEvent8616('snapshot',snap); return snap;
   }
-  proofSignerTraceEvent8616('trace-installed',{detail:'Proof Signer Trace instrumentation evaluated.'});
+  proofSignerTraceEvent8616('trace-installed',{detail:'Bootstrap Ignition instrumentation evaluated.'});
 
   // 8.6.15 Bootstrap Commit — one current proof record shared by live surfaces
   // and Proving Ground. Successful newer render evidence supersedes older failed attempts;
@@ -2299,6 +2299,38 @@
     proofBootstrapPromise8614=commandDeadline(work,timeoutMs,null).then(v=>{if(!v&&proofBootstrapRead8614()?.status!=='failed'){proofBootstrapWrite8614({status:'timeout',stage:'core-bootstrap',detail:`Bootstrap core exceeded ${timeoutMs} ms`});proofSignerTraceEvent8616('bootstrap-timeout',{source,timeoutMs});}else proofSignerTraceEvent8616('bootstrap-settled',{source,status:proofBootstrapRead8614()?.status||'none',generation:Number(proofBootstrapRead8614()?.generation||0)});return v;}).finally(()=>{proofBootstrapPromise8614=null;});
     return proofBootstrapPromise8614;
   }
+
+  // 8.6.17 Bootstrap Ignition — connect the existing proof bootstrap runner to the
+  // real platform/Engine startup lifecycle. One shared ignition promise owns each
+  // current memory generation; repeated callers reuse the settled core proof.
+  let bootstrapIgnitionPromise8617=null;
+  async function igniteProofBootstrap8617(source='platform-init'){
+    proofSignerTraceEvent8616('bootstrap-ignition-invoked',{source,memoryStatus:memoryMusterRead8612()?.status||'none',memoryGeneration:Number(memoryMusterRead8612()?.generation||0)});
+    if(bootstrapIgnitionPromise8617){
+      proofSignerTraceEvent8616('bootstrap-ignition-shared',{source});
+      return bootstrapIgnitionPromise8617;
+    }
+    bootstrapIgnitionPromise8617=(async()=>{
+      let memory=memoryMusterRead8612();
+      if(!(memory?.status==='committed'&&Number(memory?.protectedCount||0)===6&&memoryRosterHasProtectedSix8612(companies))){
+        proofSignerTraceEvent8616('bootstrap-ignition-memory-build',{source});
+        await convergeCanonicalFleetForPresentation({source:`bootstrap-ignition:${source}`});
+        memory=memoryMusterRead8612();
+      }
+      if(!(memory?.status==='committed'&&Number(memory?.protectedCount||0)===6)){
+        proofSignerTraceEvent8616('bootstrap-ignition-failed',{source,reason:'memory-not-committed',memoryStatus:memory?.status||'none',memoryGeneration:Number(memory?.generation||0)});
+        return null;
+      }
+      const result=await runProofBootstrap8614({source:`bootstrap-ignition:${source}`,timeoutMs:5200});
+      proofSignerTraceEvent8616(result?'bootstrap-ignition-complete':'bootstrap-ignition-failed',{source,reason:result?'':'runner-returned-null',bootstrapStatus:proofBootstrapRead8614()?.status||'none',bootstrapGeneration:Number(proofBootstrapRead8614()?.generation||0),memoryGeneration:Number(memory?.generation||0)});
+      return result;
+    })().catch(err=>{
+      proofSignerTraceEvent8616('bootstrap-ignition-error',{source,message:String(err?.message||err)});
+      return null;
+    }).finally(()=>{bootstrapIgnitionPromise8617=null;});
+    return bootstrapIgnitionPromise8617;
+  }
+  window.igniteProofBootstrap8617=igniteProofBootstrap8617;
 
   let proofFinalizePromise8615=null;
   async function tryFinalizeProofBootstrap8615(source='surface-render'){
@@ -2649,7 +2681,7 @@
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
     return `<section class="resolver-lifeline-panel ${status}" aria-label="Bootstrap Commit">
-      <header><div><small>8.6.16 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+      <header><div><small>8.6.17 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -5042,7 +5074,7 @@
     const sc8616=signer8616.counters||{};
     const last8616=signer8616.lastEvent||{};
     const signerDetail8616=`Bootstrap calls ${Number(sc8616['bootstrap-invoked']||0)} • core commits ${Number(sc8616['bootstrap-core-committed']||0)} • Dock proofs ${Number(sc8616['dock-proof-recorded']||0)} • Intelligence proofs ${Number(sc8616['intelligence-proof-recorded']||0)} • finalizer calls ${Number(sc8616['finalizer-invoked']||0)} • final commits ${Number(sc8616['finalizer-committed']||0)} • memory gen ${signer8616.memory.generation} • bootstrap ${signer8616.bootstrap.status}@${signer8616.bootstrap.generation} • Dock gen ${signer8616.dock.generation}/${signer8616.dock.count} • Intelligence gen ${signer8616.intelligence.generation}/${signer8616.intelligence.count} • current proof ${signer8616.barrier.hasCurrentProof?'YES':'NO'}@${signer8616.barrier.currentGeneration} • last ${String(last8616.event||'none')}${last8616.reason?` (${last8616.reason})`:''}.`;
-    add('proof-signer-trace-summary','Proof Signer Trace',signer8616.barrier.hasCurrentProof?'pass':'warn',signerDetail8616);
+    add('bootstrap-ignition-summary','Bootstrap Ignition',signer8616.barrier.hasCurrentProof?'pass':'warn',signerDetail8616);
     add('proof-signer-bootstrap-call','Proof Signer — bootstrap invocation',Number(sc8616['bootstrap-invoked']||0)>0?'pass':'fail',Number(sc8616['bootstrap-invoked']||0)>0?`Bootstrap runner invoked ${Number(sc8616['bootstrap-invoked']||0)} time(s); latest state ${signer8616.bootstrap.status}, generation ${signer8616.bootstrap.generation}.`:'Bootstrap runner has not been invoked in this build/session.');
     const attachmentMatch8616=signer8616.memory.generation>0&&signer8616.dock.ok&&signer8616.intelligence.ok&&signer8616.dock.generation===signer8616.memory.generation&&signer8616.intelligence.generation===signer8616.memory.generation;
     add('proof-signer-generation-match','Proof Signer — generation attachments',attachmentMatch8616?'pass':'fail',attachmentMatch8616?`Memory, Dock, and Intelligence all attach to generation ${signer8616.memory.generation}.`:`Generation mismatch/incomplete: memory ${signer8616.memory.generation}, Dock ${signer8616.dock.generation}/${signer8616.dock.count}, Intelligence ${signer8616.intelligence.generation}/${signer8616.intelligence.count}.`);
@@ -15184,6 +15216,9 @@ The full order and approved media remain stored with this project.`;
     await enforceFleetProjectAdminBaseline();
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
+    // 8.6.17 ignition is part of normal platform initialization, before any Engine
+    // assurance consumer can observe an unsigned current build.
+    try{ await igniteProofBootstrap8617('platform-init'); }catch(err){ console.warn('Bootstrap Ignition platform-init warning',err); }
     bindEvents();
     commandWiringSelfCheck();
     // Client Preview routes before storage/migrations at the top of init().
@@ -15350,6 +15385,9 @@ document.addEventListener('click', (event) => {
     // Render through the normal Engine routines when available. A rendering warning
     // must not relock a correctly authenticated Engine session.
     try{
+      // 8.6.17 entry fallback: if a restored/authenticated session reached the Engine
+      // without the platform-init ignition, fire the same shared ignition before home render.
+      try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
       scheduleIronHullFortification();
     }catch(err){
@@ -15369,7 +15407,7 @@ document.addEventListener('click', (event) => {
     document.body.classList.remove('boot-locked','project-mode');
     document.body.classList.add('engine-mode');
     const engine=byId('enginePanel'); if(engine) engine.classList.remove('hidden');
-    Promise.resolve(window.renderBlackFlagHome?.()).then(()=>scheduleIronHullFortification()).catch(()=>{});
+    Promise.resolve(window.igniteProofBootstrap8617?.('engine-open-shortcut')).then(()=>window.renderBlackFlagHome?.()).then(()=>scheduleIronHullFortification()).catch(()=>{});
   }
 
   function openCompanyAdminGate(){

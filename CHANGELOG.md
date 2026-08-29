@@ -1,11 +1,17 @@
-# 8.6.16 — Proof Signer Trace
+## 8.6.17 — Bootstrap Ignition
+- Wire proof bootstrap into platform init after Engine configuration.
+- Add Engine-entry and shortcut fallback ignition through one shared promise.
+- Preserve read-only Proving Ground and all six-vessel recovery behavior.
+- Retain Proof Signer Trace to verify bootstrap calls become non-zero.
+
+# 8.6.17 — Bootstrap Ignition
 
 - Atomic six-vessel in-memory commit; partial candidates never replace a verified runtime roster.
 - Fleet Dock, Fleet Intelligence, Fleet Health, Command Deck, and Proving Ground share one memory roster generation.
 - Proving Ground is read-only and cannot repair admissions or rebuild the fleet while inspecting it.
 - Failed candidate rebuilds retain the last verified six-company runtime state.
 
-# 8.6.16 — Proof Signer Trace
+# 8.6.17 — Bootstrap Ignition
 
 - Added explicit BOOTING → RECONCILING → ROSTER READY → DOCK PAINTED → INTELLIGENCE PAINTED → PROOF COMMITTED lifecycle.
 - Proving Ground now waits for the proof barrier and reads one canonical current six-vessel proof.
@@ -13,7 +19,7 @@
 - Fleet Dock and Fleet Intelligence successful paints commit the same current proof used by readiness.
 - Six-vessel rescue and Legacy immutable identity logic remain unchanged.
 
-# 8.6.16 — Proof Signer Trace
+# 8.6.17 — Bootstrap Ignition
 
 - Proving Ground now consumes the same current successful Fleet Dock trace that renders **SIX ABOARD**.
 - Successful six-card Fleet Dock renders write a canonical current proof record for this build.
@@ -22,7 +28,7 @@
 - Fixed the Muster Trace readiness helper so it no longer collapses to `trace unavailable` from an out-of-scope safe wrapper.
 - Canonical-six recovery logic is frozen; staging remains a non-blocking WATCH until deliberately exercised.
 
-## 8.6.16 — Proof Signer Trace
+## 8.6.17 — Bootstrap Ignition
 
 - Moves roster diagnostics inside the async resolver itself.
 - Bounds every named resolver stage and records PASS / FAIL / TIMEOUT with protected vessel IDs.
@@ -73,7 +79,7 @@
 ## 8.6.8 — Dock Source Trace
 Protected six-vessel muster seed restores exact Known Good identities and admissions before fleet surfaces paint. Runtime registry drift cannot redefine fleet membership.
 
-## 8.6.16 — Proof Signer Trace
+## 8.6.17 — Bootstrap Ignition
 - Removed circular bootstrap-owned Dock/Intelligence rendering.
 - Bootstrap now commits core proof only; normal surface renders attach generation-bound proof.
 - Added one idempotent finalizer that commits current proof when core + Dock + Intelligence agree.

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-resolver-lifeline-v1",
-  "build": "8.6.16",
+  "build": "8.6.17",
   "release": "Bootstrap Commit",
   "mission": "Six enter. Every asynchronous roster handoff must settle, fail, or time out visibly before Fleet Dock can remain unresolved.",
   "protected_vessel_id": "bf-p-f92f87e8ec44",

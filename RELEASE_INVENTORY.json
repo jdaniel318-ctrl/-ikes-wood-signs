@@ -1,13 +1,14 @@
 {
-  "release": "Proof Signer Trace",
-  "name": "Proof Signer Trace",
-  "file_count": 65,
+  "release": "Bootstrap Ignition",
+  "name": "Bootstrap Ignition",
+  "file_count": 66,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
     "ADMIRAL_REFERENCE_COMPENDIUM.md",
     "ADMIRAL_RELEASE_DOCTRINE.json",
     "BOOTSTRAP_COMMIT_MODEL.json",
+    "BOOTSTRAP_IGNITION_MODEL.json",
     "BUILD_AUDIT_818.json",
     "CAPABILITY_ADOPTION_MAP.json",
     "CHANGELOG.md",
@@ -69,7 +70,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.16",
-  "seal": "proof-signer-trace-8616-readonly-9c41d2",
-  "release_name": "Proof Signer Trace"
+  "build": "8.6.17",
+  "seal": "bootstrap-ignition-8617-engine-start-4b7e21",
+  "release_name": "Bootstrap Ignition"
 }

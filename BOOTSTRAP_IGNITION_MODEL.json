@@ -1,0 +1,24 @@
+{
+  "schema": "dark-sky-bootstrap-ignition-v1",
+  "build": "8.6.17",
+  "release": "Bootstrap Ignition",
+  "mission": "Invoke the existing proof bootstrap runner from the real platform and Engine startup lifecycle exactly once per active memory generation.",
+  "ignition_points": [
+    "platform-init-after-engine-config",
+    "engine-entry-before-home-render",
+    "engine-open-shortcut-fallback"
+  ],
+  "contracts": {
+    "shared_ignition_promise": true,
+    "requires_committed_six_memory_generation": true,
+    "bootstrap_runner": "runProofBootstrap8614",
+    "proving_ground_remains_read_only": true,
+    "fleet_behavior_changes": "none-beyond-startup-wiring",
+    "legacy_recovery_changes": "none"
+  },
+  "expected_trace": [
+    "bootstrap-ignition-invoked",
+    "bootstrap-invoked",
+    "bootstrap-core-committed"
+  ]
+}

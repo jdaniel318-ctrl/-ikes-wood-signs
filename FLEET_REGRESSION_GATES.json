@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.16",
-  "release": "Canonical Six",
+  "build": "8.6.17",
+  "release": "Bootstrap Ignition",
   "excluded_sources": [
     "The situation"
   ],
@@ -35,7 +35,9 @@
       "canonical_six_vessel_roster_live",
       "fleet_intelligence_live_first_paint",
       "staging_ledger_live_round_trip",
-      "canonical_six_admission_ledger"
+      "canonical_six_admission_ledger",
+      "proof_bootstrap_invoked_in_live_engine_startup",
+      "proof_bootstrap_once_per_memory_generation"
     ],
     "mobile_watch": [
       "iphone_first_class",
