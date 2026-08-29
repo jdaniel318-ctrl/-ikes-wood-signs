@@ -14,10 +14,27 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.6.18 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.18',seal:'ignition-witness-8618-durable-lifecycle-7c19e4'});
+    // Dark Sky 8.6.19 MEMORY MUSTER — canonical release identity.
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.19',seal:'runtime-entry-bridge-8619-verified-loader-4d7a2c'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
+    // 8.6.19 Runtime Entry Bridge — durable witness in the unavoidable document shell.
+    const DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY='darkSkyRuntimeEntryWitnessV8619';
+    window.__darkSkyRuntimeEntryWitness8619=function(event,detail={}){
+      try{
+        const raw=localStorage.getItem(DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY);
+        const prior=raw?JSON.parse(raw):null;
+        const base=prior&&prior.build===DARK_SKY_EXPECTED_BUILD?prior:{schema:'dark-sky-runtime-entry-witness-v1',build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL,history:[],counters:{}};
+        const at=new Date().toISOString();
+        const counters={...(base.counters||{}),[event]:Number(base.counters?.[event]||0)+1};
+        const row={event,at,href:String(location.href||''),hash:String(location.hash||''),...detail};
+        const next={...base,build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL,counters,lastEvent:row,history:[...(base.history||[]),row].slice(-120),updatedAt:at};
+        localStorage.setItem(DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY,JSON.stringify(next));
+        window.__darkSkyRuntimeEntryWitnessState8619=next;
+        return next;
+      }catch(_){return null;}
+    };
+    window.__darkSkyRuntimeEntryWitness8619('document-first-light',{readyState:document.readyState});
     window.__darkSkyExpectedRelease = DARK_SKY_RELEASE;
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
@@ -87,6 +104,7 @@
     };
 
     document.addEventListener('DOMContentLoaded',()=>{
+      window.__darkSkyRuntimeEntryWitness8619?.('document-dom-ready',{routeIntent:window.__darkSkyRouteIntent||'unknown'});
       if(window.__darkSkyRouteIntent==='engine'){
         // Engine intent is final. Quarantine stale owner markers before anything else paints.
         if(__dsLegacyOwnerHash || __dsSurface==='owner' || __dsSurface==='preview'){
@@ -1088,7 +1106,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.18 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.19 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1105,7 +1123,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.18 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.19 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1608,6 +1626,7 @@
 
   <script id="darkSkyAtomicReleaseLoader">
   (async()=>{
+    window.__darkSkyRuntimeEntryWitness8619?.('verified-loader-entered',{readyState:document.readyState});
     // Derive from first-light identity; never maintain a second release literal here.
     const RELEASE=window.__darkSkyExpectedRelease||{};
     const EXPECTED=String(RELEASE.build||'unknown'), SEAL=String(RELEASE.seal||'unknown');
@@ -1783,9 +1802,45 @@
     }
     async function executeVerifiedSnapshot(fetched){
       const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['styles.css'];document.head.appendChild(css);
+      window.__darkSkyRuntimeEntryWitness8619?.('verified-styles-installed',{seal:SEAL});
       for(const path of ['platform_core.js','platform_v4.js','platform_identity.js','ike_style_registry.js','app.js','captain.js']){
-        await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);resolve();};el.onerror=()=>{URL.revokeObjectURL(url);reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
+        await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8619?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8619?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
+    }
+    function installRuntimeEntryBridge8619(){
+      if(window.__darkSkyRuntimeEntryBridgeInstalled8619)return;
+      window.__darkSkyRuntimeEntryBridgeInstalled8619=true;
+      const witness=(event,detail={})=>window.__darkSkyRuntimeEntryWitness8619?.(event,detail);
+      let visibleGeneration=0;
+      const engineVisible=()=>{
+        const panel=document.getElementById('enginePanel');
+        if(!panel)return false;
+        const hidden=panel.classList.contains('hidden')||getComputedStyle(panel).display==='none'||getComputedStyle(panel).visibility==='hidden';
+        return !hidden && document.body.classList.contains('engine-mode');
+      };
+      const igniteFromVisible=()=>{
+        if(!engineVisible())return;
+        const gen=++visibleGeneration;
+        witness('engine-visible-observed',{gen,bodyClass:document.body.className});
+        Promise.resolve().then(async()=>{
+          const fn=window.igniteProofBootstrap8617;
+          witness('loader-ignition-dispatch',{gen,available:typeof fn==='function'});
+          if(typeof fn!=='function')return null;
+          try{const result=await fn('verified-loader-engine-visible');witness('loader-ignition-settled',{gen,ok:!!result});return result;}
+          catch(err){witness('loader-ignition-error',{gen,message:String(err?.message||err)});return null;}
+        });
+      };
+      document.addEventListener('click',event=>{
+        const t=event.target?.closest?.('#blackFlagEntryUnlock,#unlockEngineBtn,#engineRoomBtn,#openCompanyAppBtn,#engineCompanyAppBtn');
+        if(!t)return;
+        witness('engine-entry-control-clicked',{id:t.id||'',text:String(t.textContent||'').trim().slice(0,80)});
+        setTimeout(igniteFromVisible,0);setTimeout(igniteFromVisible,120);setTimeout(igniteFromVisible,450);
+      },true);
+      const observer=new MutationObserver(()=>igniteFromVisible());
+      observer.observe(document.body,{attributes:true,attributeFilter:['class'],subtree:false});
+      const panel=document.getElementById('enginePanel');if(panel)observer.observe(panel,{attributes:true,attributeFilter:['class','style']});
+      witness('runtime-entry-bridge-installed',{igniteAvailable:typeof window.igniteProofBootstrap8617==='function'});
+      igniteFromVisible();
     }
     try{
       let verified=await verifySnapshot(false);
@@ -1797,7 +1852,10 @@
         }
       }
       await executeVerifiedSnapshot(verified.fetched);
+      window.__darkSkyRuntimeEntryWitness8619?.('verified-runtime-executed',{igniteAvailable:typeof window.igniteProofBootstrap8617==='function'});
+      installRuntimeEntryBridge8619();
       completeReleaseHandoff({automatic:window.__darkSkyReleaseGateState==='recovering'});
+      window.__darkSkyRuntimeEntryWitness8619?.('release-seal-cleared',{build:EXPECTED,seal:SEAL});
       window.dispatchEvent(new CustomEvent('darksky:release-seal-clear',{detail:{build:EXPECTED,seal:SEAL}}));
       // Bounded completion contract: the verified release must restore same-tab interaction.
       setTimeout(()=>{

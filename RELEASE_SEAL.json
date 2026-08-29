@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.18",
-  "release": "Ignition Witness",
-  "seal": "ignition-witness-8618-durable-lifecycle-7c19e4",
-  "execution_model": "read-only-ignition-witness",
+  "build": "8.6.19",
+  "release": "Runtime Entry Bridge",
+  "seal": "runtime-entry-bridge-8619-verified-loader-4d7a2c",
+  "execution_model": "verified-loader-runtime-entry-bridge",
   "service_worker": "identity-only",
-  "release_name": "Ignition Witness",
-  "name": "Ignition Witness",
-  "releaseName": null
+  "release_name": "Runtime Entry Bridge",
+  "name": "Runtime Entry Bridge",
+  "releaseName": "Runtime Entry Bridge"
 }

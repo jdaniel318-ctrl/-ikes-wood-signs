@@ -1,0 +1,31 @@
+{
+  "schema": "dark-sky-runtime-entry-trace-v1",
+  "build": "8.6.19",
+  "name": "Runtime Entry Bridge",
+  "release_seal": "runtime-entry-bridge-8619-verified-loader-4d7a2c",
+  "purpose": "Trace and bridge the unavoidable verified document/runtime path to bootstrap ignition without relying on guessed application lifecycle hooks.",
+  "witness_key": "darkSkyRuntimeEntryWitnessV8619",
+  "unavoidable_stages": [
+    "document-first-light",
+    "verified-loader-entered",
+    "runtime-script-executed:app.js",
+    "verified-runtime-executed",
+    "release-seal-cleared"
+  ],
+  "engine_observation": [
+    "engine-entry-control-clicked",
+    "engine-visible-observed",
+    "loader-ignition-dispatch",
+    "loader-ignition-settled"
+  ],
+  "engine_visible_contract": "body.engine-mode AND #enginePanel visible",
+  "ignition_contract": "Verified loader dispatches existing igniteProofBootstrap8617 only after actual Engine visibility is observed; existing ignition promise remains idempotent.",
+  "safety": [
+    "read-only durable witness",
+    "no project mutation",
+    "no admission mutation",
+    "no new fleet reconciliation logic",
+    "existing Memory Muster and bootstrap runner remain authoritative"
+  ],
+  "release_gate": "A live Engine session must be observable by the verified loader and must dispatch bootstrap ignition from that proven state."
+}

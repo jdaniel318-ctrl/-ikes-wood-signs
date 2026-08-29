@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-muster-trace-v1",
-  "build": "8.6.18",
+  "build": "8.6.19",
   "release": "Dock Source Trace",
   "mission": "Six enter. Six must reach the Dock.",
   "stages": [

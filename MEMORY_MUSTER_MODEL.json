@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-memory-muster-model-v1",
-  "build": "8.6.18",
+  "build": "8.6.19",
   "status": "required-runtime-contract",
   "rule": "A candidate roster may not replace the live companies array until all protected six identities, admissions and manifest membership verify. Proving Ground is read-only.",
   "protected_count": 6,

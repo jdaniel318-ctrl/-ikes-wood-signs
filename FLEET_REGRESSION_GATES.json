@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.18",
-  "release": "Ignition Witness",
+  "build": "8.6.19",
+  "release": "Runtime Entry Bridge",
   "excluded_sources": [
     "The situation"
   ],

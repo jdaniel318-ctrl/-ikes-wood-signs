@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky 8.6.18 \u2014 Ignition Witness",
-  "short_name": "Dark Sky 8.6.18",
-  "start_url": "./index.html?_darkSkyRelease=8.6.18&_darkSkySeal=ignition-witness-8618-durable-lifecycle-7c19e4",
+  "name": "Dark Sky \u2014 Runtime Entry Bridge",
+  "short_name": "Dark Sky",
+  "start_url": "./index.html?_darkSkyRelease=8.6.19&_darkSkySeal=runtime-entry-bridge-8619-verified-loader-4d7a2c",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.18"
+  "version": "8.6.19"
 }
