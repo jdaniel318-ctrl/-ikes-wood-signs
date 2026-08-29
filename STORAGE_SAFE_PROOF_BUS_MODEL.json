@@ -1,0 +1,22 @@
+{
+  "schema": "dark-sky-storage-safe-proof-bus-v1",
+  "build": "8.6.22",
+  "release_seal": "storage-safe-harbor-8622-91c7af",
+  "title": "Storage Safe Harbor",
+  "purpose": "Keep live fleet readiness, Proving Ground evidence, Known Good anchoring, commissioning, and capability staging independent of exhausted localStorage while preserving durable completed evidence through IndexedDB settings.",
+  "live_authority": [
+    "window memory",
+    "sessionStorage"
+  ],
+  "durable_history": "IndexedDB settings / Black Box evidence",
+  "localStorage_policy": "best-effort legacy compatibility only; QuotaExceededError must never block or falsify live readiness",
+  "protected_rules": [
+    "No project/order/customer/asset/recovery records are removed by proof-bus cleanup.",
+    "Only obsolete live proof/diagnostic localStorage mirrors may be retired.",
+    "Fleet manifest/admission current-session mirrors prefer sessionStorage; IndexedDB settings remain durable authority.",
+    "Proving Ground current evidence is memory/session-authoritative and durably mirrored to IndexedDB.",
+    "Capability staging and fleet learning state verify through memory/session and persist to IndexedDB; localStorage is legacy read-only fallback.",
+    "Known Good release and Fleet Commissioning state are session-safe and durably mirrored to IndexedDB.",
+    "Completed current proof may be mirrored durably after successful commit."
+  ]
+}

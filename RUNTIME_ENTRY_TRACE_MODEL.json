@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-runtime-entry-trace-v1",
-  "build": "8.6.20",
-  "name": "Witness Truth Test",
-  "release_seal": "witness-truth-8620-evidence-hold-7c3a91",
+  "build": "8.6.22",
+  "name": "Storage Safe Harbor",
+  "release_seal": "storage-safe-harbor-8622-91c7af",
   "purpose": "Trace and bridge the unavoidable verified document/runtime path to bootstrap ignition without relying on guessed application lifecycle hooks.",
   "witness_key": "darkSkyRuntimeEntryWitnessV8620",
   "unavoidable_stages": [

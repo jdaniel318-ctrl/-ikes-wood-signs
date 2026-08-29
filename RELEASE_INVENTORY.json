@@ -1,7 +1,7 @@
 {
-  "release": "Witness Truth Test",
-  "name": "Witness Truth Test",
-  "file_count": 69,
+  "release": "Storage Safe Harbor",
+  "name": "Storage Safe Harbor",
+  "file_count": 70,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -47,6 +47,7 @@
     "RELEASE_SEAL.json",
     "RESOLVER_LIFELINE_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
+    "STORAGE_SAFE_PROOF_BUS_MODEL.json",
     "WITNESS_TRUTH_MODEL.json",
     "admirals_deck_ceremonial_v640.png",
     "app.js",
@@ -73,7 +74,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.20",
-  "seal": "witness-truth-8620-evidence-hold-7c3a91",
-  "release_name": "Witness Truth Test"
+  "build": "8.6.22",
+  "seal": "storage-safe-harbor-8622-91c7af"
 }

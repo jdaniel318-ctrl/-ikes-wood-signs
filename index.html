@@ -14,11 +14,11 @@
     html.dark-sky-release-preflight #darkSkyFirstPaintShield,html.dark-sky-route-preflight #darkSkyFirstPaintShield{visibility:visible!important;}
   </style>
   <script id="darkSkyFirstLightBootstrap">
-    // Dark Sky 8.6.20 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.20',seal:'witness-truth-8620-evidence-hold-7c3a91'});
+    // Dark Sky 8.6.22 MEMORY MUSTER — canonical release identity.
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.22',seal:'storage-safe-harbor-8622-91c7af'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
-    // 8.6.20 Witness Truth Test — three independent channels, no silent storage failures.
+    // 8.6.22 Storage Safe Harbor — three independent channels, no silent storage failures.
     const DARK_SKY_RUNTIME_ENTRY_WITNESS_KEY='darkSkyRuntimeEntryWitnessV8620';
     const DARK_SKY_RUNTIME_ENTRY_SESSION_KEY='darkSkyRuntimeEntryWitnessSessionV8620';
     const DARK_SKY_WITNESS_TRUTH_KEY='darkSkyWitnessTruthV8620';
@@ -1140,7 +1140,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.20 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.22 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1157,7 +1157,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.20 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.22 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1754,7 +1754,7 @@
         await registerAndVerifyWorker();
         step('Release sentinel verified','done');
         step('Restarting Engine on one verified build','done');
-        try{localStorage.setItem('darkSkyLastRecovery',JSON.stringify({ok:true,build:EXPECTED,seal:SEAL,at:new Date().toISOString(),steps:['worker-unregistered','app-caches-cleared','runtime-verified','sentinel-verified']}));}catch(_){ }
+        try{const rec=JSON.stringify({ok:true,build:EXPECTED,seal:SEAL,at:new Date().toISOString(),steps:['worker-unregistered','app-caches-cleared','runtime-verified','sentinel-verified']});sessionStorage.setItem('darkSkyLastRecovery',rec);try{localStorage.setItem('darkSkyLastRecovery',rec);}catch(_){}}catch(_){ }
         await delay(900); location.reload();
       }catch(err){step(String(err?.message||err),'error');if(clean){clean.disabled=false;clean.textContent='TRY CLEAN RELEASE AGAIN';}if(retry)retry.disabled=false;}
     }
@@ -1804,7 +1804,7 @@
       window.__darkSkyRuntimeEntryWitness8620?.('post-login-evidence-hold-shown',{});
       const truth=window.__darkSkyWitnessTruthSnapshot8620?.();
       let recovery=null,recoveryError='';
-      try{const raw=localStorage.getItem('darkSkyLastRecovery');recovery=raw?JSON.parse(raw):null;}catch(err){recoveryError=`${String(err?.name||'Error')}: ${String(err?.message||err)}`;}
+      try{const raw=sessionStorage.getItem('darkSkyLastRecovery')||localStorage.getItem('darkSkyLastRecovery');recovery=raw?JSON.parse(raw):null;}catch(err){recoveryError=`${String(err?.name||'Error')}: ${String(err?.message||err)}`;}
       const channels=truth?.memory?.channels||{};
       const overlay=document.createElement('div');overlay.id='darkSkyPostLoginEvidenceHold8620';
       overlay.style.cssText='position:fixed;inset:0;z-index:2147483646;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(3,13,17,.78);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;';
@@ -1851,7 +1851,7 @@
       step('Installing fresh identity sentinel');
       await registerAndVerifyWorker();
       step('Fresh release sentinel verified','done');
-      try{localStorage.setItem('darkSkyLastRecovery',JSON.stringify({ok:true,automatic:true,build:EXPECTED,seal:SEAL,at:new Date().toISOString(),reason:String(reason||''),steps:['new-release-preverified','worker-replaced','app-caches-cleared','runtime-reverified','sentinel-verified']}));}catch(_){ }
+      try{const rec=JSON.stringify({ok:true,automatic:true,build:EXPECTED,seal:SEAL,at:new Date().toISOString(),reason:String(reason||''),steps:['new-release-preverified','worker-replaced','app-caches-cleared','runtime-reverified','sentinel-verified']});sessionStorage.setItem('darkSkyLastRecovery',rec);try{localStorage.setItem('darkSkyLastRecovery',rec);}catch(_){}}catch(_){ }
       await recoveryEvidenceHold8620(3200);
       return verified;
     }

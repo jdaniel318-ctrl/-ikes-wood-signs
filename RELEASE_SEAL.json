@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.20",
-  "release": "Witness Truth Test",
-  "seal": "witness-truth-8620-evidence-hold-7c3a91",
-  "execution_model": "verified-loader-witness-truth-test",
+  "build": "8.6.22",
+  "release": "Storage Safe Harbor",
+  "seal": "storage-safe-harbor-8622-91c7af",
+  "execution_model": "verified-loader-storage-safe-harbor",
   "service_worker": "identity-only",
-  "release_name": "Witness Truth Test",
-  "name": "Witness Truth Test",
-  "releaseName": "Witness Truth Test"
+  "release_name": "Storage Safe Harbor",
+  "name": "Storage Safe Harbor",
+  "releaseName": "Storage Safe Harbor"
 }

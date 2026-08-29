@@ -15,7 +15,38 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.20';
+  const BUILD_VERSION='8.6.22';
+  // 8.6.22 Storage-Safe Harbor — live readiness may never depend on localStorage.
+  // Window memory is authoritative for the current page; sessionStorage mirrors the
+  // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
+  const LIVE_PROOF_SESSION_PREFIX_8621='darkSkyLiveProofBus8621:';
+  const LIVE_PROOF_DURABLE_PREFIX_8621='darkSkyLiveProofHistory8621:';
+  function liveProofRead8621(key,windowProp){
+    const mem=window[windowProp];
+    if(mem&&mem.build===BUILD_VERSION)return mem;
+    try{const raw=sessionStorage.getItem(LIVE_PROOF_SESSION_PREFIX_8621+key);const v=raw?JSON.parse(raw):null;if(v&&v.build===BUILD_VERSION){window[windowProp]=v;return v;}}catch(err){window.__darkSkyLiveProofSessionError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
+    // Legacy fallback only. A quota/storage error here must never define live truth.
+    try{const raw=localStorage.getItem(key);const v=raw?JSON.parse(raw):null;if(v&&v.build===BUILD_VERSION){window[windowProp]=v;return v;}}catch(err){window.__darkSkyLiveProofLocalError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
+    return null;
+  }
+  const RETIRED_LOCAL_PROOF_KEYS_8621=Object.freeze([
+    'darkSkyIgnitionWitnessV8618','darkSkyProofSignerTraceV8616','darkSkyEvidenceReconciliationV8610',
+    'darkSkyProofBarrierV8611','darkSkyMemoryCommitWatchdogV8613','darkSkyMemoryMusterV8612',
+    'darkSkyProofBootstrapV8614','darkSkyRuntimeEntryWitnessV8620','darkSkyWitnessTruthV8620'
+  ]);
+  function retireLocalProofMirrors8621(){
+    for(const key of RETIRED_LOCAL_PROOF_KEYS_8621){try{localStorage.removeItem(key);}catch(_){}}
+    window.__darkSkyLocalProofMirrorsRetired8621=true;
+  }
+  retireLocalProofMirrors8621();
+  function liveProofWrite8621(key,windowProp,value,{durable=false}={}){
+    window[windowProp]=value;
+    try{sessionStorage.setItem(LIVE_PROOF_SESSION_PREFIX_8621+key,JSON.stringify(value));window.__darkSkyLiveProofSessionOk8621=true;}catch(err){window.__darkSkyLiveProofSessionOk8621=false;window.__darkSkyLiveProofSessionError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
+    // 8.6.22: live proof never writes to localStorage. Legacy reads remain only for migration;
+    // Safari quota exhaustion must not consume time or falsify current-session truth.
+    if(durable){try{setSetting(LIVE_PROOF_DURABLE_PREFIX_8621+key,value).catch(()=>{});}catch(_){}}
+    return value;
+  }
   // Helm Link: global DOM helpers are bootstrapped in <head>; lexical aliases are bound before all app declarations.
   const FLEET_REGISTRY_SCHEMA_VERSION = 11;
   const FLEET_REGISTRY_SCHEMA_KEY = 'fleetRegistrySchemaVersion';
@@ -2139,34 +2170,29 @@
   }
 
 
-  // 8.6.20 Bootstrap Ignition — read-only instrumentation of the proof signing lifecycle.
+  // 8.6.22 Bootstrap Ignition — read-only instrumentation of the proof signing lifecycle.
   // This does not repair fleet state, mutate admissions, or manufacture proof. It only records
   // who invoked bootstrap/finalizer, which generation each surface attached, and what store read-back sees.
-  // 8.6.20 Ignition Witness — durable, module-independent lifecycle breadcrumbs.
+  // 8.6.22 Ignition Witness — durable, module-independent lifecycle breadcrumbs.
   // This deliberately uses its own localStorage key so we can distinguish
   // "ignition never ran" from "signer trace observed a different module state".
   const IGNITION_WITNESS_KEY_8618='darkSkyIgnitionWitnessV8618';
-  function ignitionWitnessRead8618(){
-    try{const v=JSON.parse(localStorage.getItem(IGNITION_WITNESS_KEY_8618)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}
-  }
+  function ignitionWitnessRead8618(){return liveProofRead8621(IGNITION_WITNESS_KEY_8618,'__darkSkyIgnitionWitness8618');}
   function ignitionWitnessEvent8618(event,detail={}){
     let prior=ignitionWitnessRead8618()||{schema:'dark-sky-ignition-witness-v1',build:BUILD_VERSION,history:[],counters:{}};
     const at=new Date().toISOString();
     const counters={...(prior.counters||{}),[event]:Number(prior.counters?.[event]||0)+1};
     const row={event,at,route:String(location.hash||''),href:String(location.href||''),...detail};
     const next={...prior,build:BUILD_VERSION,lastEvent:row,counters,history:[...(prior.history||[]),row].slice(-80),updatedAt:at};
-    try{localStorage.setItem(IGNITION_WITNESS_KEY_8618,JSON.stringify(next));}catch(_){}
-    window.__darkSkyIgnitionWitness8618=next;
-    return next;
+    return liveProofWrite8621(IGNITION_WITNESS_KEY_8618,'__darkSkyIgnitionWitness8618',next);
   }
   ignitionWitnessEvent8618('witness-installed',{detail:'Ignition Witness instrumentation evaluated.'});
   const PROOF_SIGNER_TRACE_KEY_8616='darkSkyProofSignerTraceV8616';
-  function proofSignerTraceRead8616(){try{const v=JSON.parse(localStorage.getItem(PROOF_SIGNER_TRACE_KEY_8616)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
+  function proofSignerTraceRead8616(){return liveProofRead8621(PROOF_SIGNER_TRACE_KEY_8616,'__darkSkyProofSignerTrace8616');}
   function proofSignerTraceWrite8616(patch={}){
     const prior=proofSignerTraceRead8616()||{schema:'dark-sky-bootstrap-ignition-v1',build:BUILD_VERSION,history:[],counters:{}};
     const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};
-    try{localStorage.setItem(PROOF_SIGNER_TRACE_KEY_8616,JSON.stringify(next));}catch(_){}
-    window.__darkSkyProofSignerTrace8616=next;return next;
+    return liveProofWrite8621(PROOF_SIGNER_TRACE_KEY_8616,'__darkSkyProofSignerTrace8616',next);
   }
   function proofSignerTraceEvent8616(event,detail={}){
     const prior=proofSignerTraceRead8616()||{schema:'dark-sky-bootstrap-ignition-v1',build:BUILD_VERSION,history:[],counters:{}};
@@ -2189,14 +2215,11 @@
   // and Proving Ground. Successful newer render evidence supersedes older failed attempts;
   // failures remain in historical diagnostics but do not poison current release posture.
   const EVIDENCE_RECON_KEY_8610='darkSkyEvidenceReconciliationV8610';
-  function evidenceReconciliationRead8610(){
-    try{const v=JSON.parse(localStorage.getItem(EVIDENCE_RECON_KEY_8610)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}
-  }
+  function evidenceReconciliationRead8610(){return liveProofRead8621(EVIDENCE_RECON_KEY_8610,'__darkSkyEvidenceReconciliation8610');}
   function evidenceReconciliationWrite8610(patch={}){
     const prior=evidenceReconciliationRead8610()||{schema:'dark-sky-evidence-reconciliation-v1',build:BUILD_VERSION,history:[]};
     const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};
-    try{localStorage.setItem(EVIDENCE_RECON_KEY_8610,JSON.stringify(next));}catch(_){ }
-    window.__darkSkyEvidenceReconciliation8610=next;return next;
+    return liveProofWrite8621(EVIDENCE_RECON_KEY_8610,'__darkSkyEvidenceReconciliation8610',next);
   }
   function recordDockProof8610(trace){
     const rendered=trace?.stages?.find(st=>st.name==='Rendered Fleet Dock cards');
@@ -2222,8 +2245,8 @@
   // remain diagnostics/history and may never mint a current HOLD.
   const PROOF_BARRIER_KEY_8611='darkSkyProofBarrierV8611';
   const PROOF_PHASES_8611=Object.freeze({BOOTING:0,RECONCILING:1,ROSTER_READY:2,DOCK_PAINTED:3,INTELLIGENCE_PAINTED:4,PROOF_COMMITTED:5});
-  function proofBarrierRead8611(){try{const v=JSON.parse(localStorage.getItem(PROOF_BARRIER_KEY_8611)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
-  function proofBarrierWrite8611(patch={}){const prior=proofBarrierRead8611()||{schema:'dark-sky-proof-barrier-v1',build:BUILD_VERSION,phase:'BOOTING',phaseIndex:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};try{localStorage.setItem(PROOF_BARRIER_KEY_8611,JSON.stringify(next));}catch(_){}window.__darkSkyProofBarrier8611=next;return next;}
+  function proofBarrierRead8611(){return liveProofRead8621(PROOF_BARRIER_KEY_8611,'__darkSkyProofBarrier8611');}
+  function proofBarrierWrite8611(patch={}){const prior=proofBarrierRead8611()||{schema:'dark-sky-proof-barrier-v1',build:BUILD_VERSION,phase:'BOOTING',phaseIndex:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};return liveProofWrite8621(PROOF_BARRIER_KEY_8611,'__darkSkyProofBarrier8611',next,{durable:!!next.currentProof?.ok});}
   function proofBarrierAdvance8611(phase,detail=''){const idx=PROOF_PHASES_8611[phase]??0;const prior=proofBarrierRead8611()||{phaseIndex:0,history:[]};if(idx<Number(prior.phaseIndex||0))return prior;const history=[...(prior.history||[]),{phase,detail,at:new Date().toISOString()}].slice(-40);return proofBarrierWrite8611({phase,phaseIndex:idx,detail,history});}
   function protectedStage8611(name,ids=[]){const have=new Set((ids||[]).map(x=>String(x||'')));const present=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));const missing=RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>!have.has(id));return {name,count:present.length,ids:present,missing,ok:missing.length===0};}
 
@@ -2239,13 +2262,13 @@
   const MEMORY_COMMIT_WATCHDOG_KEY_8613='darkSkyMemoryCommitWatchdogV8613';
   let memoryCommitWatchdogRun8613=0;
   let memoryCommitActiveRun8613=0;
-  function memoryCommitWatchdogRead8613(){try{const v=JSON.parse(localStorage.getItem(MEMORY_COMMIT_WATCHDOG_KEY_8613)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
-  function memoryCommitWatchdogWrite8613(patch={}){const prior=memoryCommitWatchdogRead8613()||{schema:'dark-sky-memory-commit-watchdog-v1',build:BUILD_VERSION,status:'created',history:[]};const event={status:patch.status||prior.status,stage:patch.stage||prior.stage||'',detail:patch.detail||'',at:new Date().toISOString()};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:event.at,history:[...(prior.history||[]),event].slice(-60)};try{localStorage.setItem(MEMORY_COMMIT_WATCHDOG_KEY_8613,JSON.stringify(next));}catch(_){}window.__darkSkyMemoryCommitWatchdog8613=next;return next;}
+  function memoryCommitWatchdogRead8613(){return liveProofRead8621(MEMORY_COMMIT_WATCHDOG_KEY_8613,'__darkSkyMemoryCommitWatchdog8613');}
+  function memoryCommitWatchdogWrite8613(patch={}){const prior=memoryCommitWatchdogRead8613()||{schema:'dark-sky-memory-commit-watchdog-v1',build:BUILD_VERSION,status:'created',history:[]};const event={status:patch.status||prior.status,stage:patch.stage||prior.stage||'',detail:patch.detail||'',at:new Date().toISOString()};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:event.at,history:[...(prior.history||[]),event].slice(-60)};return liveProofWrite8621(MEMORY_COMMIT_WATCHDOG_KEY_8613,'__darkSkyMemoryCommitWatchdog8613',next);}
   function memoryCommitWatchdogStage8613(status,stage,detail='',extra={}){return memoryCommitWatchdogWrite8613({status,stage,detail,...extra});}
   function protectedIdsFromRows8612(rows=[]){const have=new Set((rows||[]).map(p=>String(canonicalProjectId(p?.id||p||''))).filter(Boolean));return RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>have.has(id));}
   function memoryRosterHasProtectedSix8612(rows=companies){return protectedIdsFromRows8612(rows).length===RELEASE_CANONICAL_FLEET_IDS_864.length;}
-  function memoryMusterRead8612(){try{const v=JSON.parse(localStorage.getItem(MEMORY_MUSTER_KEY_8612)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
-  function memoryMusterWrite8612(patch={}){const prior=memoryMusterRead8612()||{schema:'dark-sky-memory-muster-v1',build:BUILD_VERSION,generation:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};try{localStorage.setItem(MEMORY_MUSTER_KEY_8612,JSON.stringify(next));}catch(_){}window.__darkSkyMemoryMuster8612=next;return next;}
+  function memoryMusterRead8612(){return liveProofRead8621(MEMORY_MUSTER_KEY_8612,'__darkSkyMemoryMuster8612');}
+  function memoryMusterWrite8612(patch={}){const prior=memoryMusterRead8612()||{schema:'dark-sky-memory-muster-v1',build:BUILD_VERSION,generation:0,history:[]};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:new Date().toISOString()};return liveProofWrite8621(MEMORY_MUSTER_KEY_8612,'__darkSkyMemoryMuster8612',next,{durable:next.status==='committed'});}
   async function readAdmissionLedgerSnapshot8612(){let stored={};try{const v=(await getSetting(V4_ADMISSION_LEDGER_SETTING))?.value;if(v&&typeof v==='object'&&!Array.isArray(v))stored=v;}catch(_){}const local=readV4AdmissionLedger();return {...stored,...local};}
   function memoryMusterCommit8612(candidateRows,{source='runtime',registryIds=[],admissionIds=[],manifestIds=[],run=0}={}){
     if(run&&run!==memoryCommitActiveRun8613)throw new Error(`Bootstrap Commit rejected stale run ${run}; active run is ${memoryCommitActiveRun8613||'none'}.`);
@@ -2290,8 +2313,8 @@
   // normal Engine initialization. Proving Ground reads it but never builds or repairs it.
   const PROOF_BOOTSTRAP_KEY_8614='darkSkyProofBootstrapV8614';
   let proofBootstrapPromise8614=null;
-  function proofBootstrapRead8614(){try{const v=JSON.parse(localStorage.getItem(PROOF_BOOTSTRAP_KEY_8614)||'null');return v&&v.build===BUILD_VERSION?v:null;}catch(_){return null;}}
-  function proofBootstrapWrite8614(patch={}){const prior=proofBootstrapRead8614()||{schema:'dark-sky-proof-bootstrap-v1',build:BUILD_VERSION,status:'waiting-memory',history:[]};const ev={status:patch.status||prior.status,stage:patch.stage||prior.stage||'',at:new Date().toISOString(),detail:patch.detail||''};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:ev.at,history:[...(prior.history||[]),ev].slice(-50)};try{localStorage.setItem(PROOF_BOOTSTRAP_KEY_8614,JSON.stringify(next));}catch(_){}window.__darkSkyProofBootstrap8614=next;return next;}
+  function proofBootstrapRead8614(){return liveProofRead8621(PROOF_BOOTSTRAP_KEY_8614,'__darkSkyProofBootstrap8614');}
+  function proofBootstrapWrite8614(patch={}){const prior=proofBootstrapRead8614()||{schema:'dark-sky-proof-bootstrap-v1',build:BUILD_VERSION,status:'waiting-memory',history:[]};const ev={status:patch.status||prior.status,stage:patch.stage||prior.stage||'',at:new Date().toISOString(),detail:patch.detail||''};const next={...prior,...patch,build:BUILD_VERSION,updatedAt:ev.at,history:[...(prior.history||[]),ev].slice(-50)};return liveProofWrite8621(PROOF_BOOTSTRAP_KEY_8614,'__darkSkyProofBootstrap8614',next,{durable:next.status==='complete'});}
   function proofBootstrapStage8614(name,ids=[]){return protectedStage8611(name,ids);}
   async function runProofBootstrap8614({source='engine-init',timeoutMs=3200,force=false}={}){
     const existing=proofBootstrapRead8614(); const memNow=memoryMusterRead8612();
@@ -2319,7 +2342,7 @@
     return proofBootstrapPromise8614;
   }
 
-  // 8.6.20 Bootstrap Ignition — connect the existing proof bootstrap runner to the
+  // 8.6.22 Bootstrap Ignition — connect the existing proof bootstrap runner to the
   // real platform/Engine startup lifecycle. One shared ignition promise owns each
   // current memory generation; repeated callers reuse the settled core proof.
   let bootstrapIgnitionPromise8617=null;
@@ -2706,7 +2729,7 @@
     const label=id=>id==='bf-p-f92f87e8ec44'?'LP':id==='beccas-bloom-shop'?'BBS':id==='bor-north-richmond'?'SIG':id==='grizzly-bear'?'GRZ':id==='ikes-wood-signs'?'IKE':id==='mugshot-after-dark'?'MUG':id;
     const status=trace.firstFailure?'hold':trace.status==='clear'?'clear':'watch';
     return `<section class="resolver-lifeline-panel ${status}" aria-label="Bootstrap Commit">
-      <header><div><small>8.6.20 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
+      <header><div><small>8.6.22 • PROOF SIGNER TRACE</small><strong>${trace.firstFailure?'ROSTER RESOLUTION HOLD':trace.status==='clear'?'ROSTER RESOLVED':'ROSTER RESOLVING'}</strong></div><span>${trace.firstFailure?`BLOCKED AT • ${escapeHtml(trace.firstFailure)}`:'BOUNDED ASYNC TRACE'}</span></header>
       <p>Six enter. Every async handoff must settle. Legacy Plumbing anchor: <b>bf-p-f92f87e8ec44</b>.</p>
       <div class="resolver-lifeline-grid">${trace.stages.map((st,i)=>`<article class="${st.status}"><small>${String(i+1).padStart(2,'0')} • ${escapeHtml(st.name)}</small><strong>${escapeHtml(st.status.toUpperCase())}</strong><span>${st.protectedIds?.length?st.protectedIds.map(label).join(' • '):'no protected IDs captured'}</span><em>${escapeHtml(st.detail||'')}</em></article>`).join('')}</div>
     </section>`;
@@ -3479,19 +3502,23 @@
   const V4_BASELINE_FLEET_IDS=V4_LEGACY_MIGRATION_SEED_IDS; // compatibility alias; migration seed only in 4.5+
 
   function readV4FleetManifest(){
+    try{const v=JSON.parse(sessionStorage.getItem(V4_FLEET_MANIFEST_KEY)||'null');if(Array.isArray(v))return [...new Set(v.map(String).filter(Boolean))];}catch(_){}
     try{const v=JSON.parse(localStorage.getItem(V4_FLEET_MANIFEST_KEY)||'null');return Array.isArray(v)?[...new Set(v.map(String).filter(Boolean))]:[]}catch(_){return[]}
   }
   function writeV4FleetManifest(ids){
     const clean=[...new Set((ids||[]).map(String).filter(Boolean))];
-    localStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));
+    try{sessionStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));}catch(_){}
+    try{localStorage.setItem(V4_FLEET_MANIFEST_KEY,JSON.stringify(clean));}catch(err){window.__darkSkyLiveProofLocalError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
     return clean;
   }
   function readV4AdmissionLedger(){
+    try{const v=JSON.parse(sessionStorage.getItem(V4_ADMISSION_LEDGER_KEY)||'{}');if(v&&typeof v==='object'&&!Array.isArray(v)&&Object.keys(v).length)return v;}catch(_){}
     try{const v=JSON.parse(localStorage.getItem(V4_ADMISSION_LEDGER_KEY)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}catch(_){return{}}
   }
   function writeV4AdmissionLedger(value){
     const clean=value&&typeof value==='object'&&!Array.isArray(value)?value:{};
-    localStorage.setItem(V4_ADMISSION_LEDGER_KEY,JSON.stringify(clean));
+    try{sessionStorage.setItem(V4_ADMISSION_LEDGER_KEY,JSON.stringify(clean));}catch(_){}
+    try{localStorage.setItem(V4_ADMISSION_LEDGER_KEY,JSON.stringify(clean));}catch(err){window.__darkSkyLiveProofLocalError8621=String(err?.name||'Error')+': '+String(err?.message||err);}
     return clean;
   }
   async function persistV4AdmissionLedger(value){
@@ -4732,13 +4759,44 @@
   const FLEET_STAGING_LEDGER_KEY='darkSkyCapabilityStagingLedgerV2';
   const FLEET_STAGING_NOTICE_KEY='darkSkyCapabilityStagingNoticeV2';
   const FLEET_STAGING_VERIFIED_KEY='darkSkyCapabilityStagingVerifiedV2';
-  function fleetLearningStateRead(){try{return JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};}catch(_){return {};}}
-  function fleetLearningStateWrite(v){try{localStorage.setItem('darkSkyFleetLearningState',JSON.stringify(v));const verify=JSON.parse(localStorage.getItem('darkSkyFleetLearningState')||'{}')||{};return {ok:true,value:verify};}catch(err){return {ok:false,error:String(err?.message||err),value:v};}}
-  function fleetStagingLedgerRead(){try{return JSON.parse(localStorage.getItem(FLEET_STAGING_LEDGER_KEY)||'[]')||[];}catch(_){return [];}}
-  function fleetStagingLedgerWrite(rows){try{localStorage.setItem(FLEET_STAGING_LEDGER_KEY,JSON.stringify((rows||[]).slice(-300)));const verify=JSON.parse(localStorage.getItem(FLEET_STAGING_LEDGER_KEY)||'[]')||[];return {ok:true,value:verify};}catch(err){return {ok:false,error:String(err?.message||err),value:rows||[]};}}
+  const FLEET_LEARNING_STATE_KEY_8622='darkSkyFleetLearningState';
+  const FLEET_CMD_SESSION_PREFIX_8622='darkSkyFleetCommand8622:';
+  function fleetCmdRead8622(key,prop,fallback){
+    if(window[prop]!=null)return window[prop];
+    try{const raw=sessionStorage.getItem(FLEET_CMD_SESSION_PREFIX_8622+key);if(raw!=null){const v=JSON.parse(raw);window[prop]=v;return v;}}catch(_){}
+    // Legacy read-only migration path. Writes never depend on localStorage.
+    try{const raw=localStorage.getItem(key);if(raw!=null){const v=JSON.parse(raw);window[prop]=v;return v;}}catch(_){}
+    return fallback;
+  }
+  function fleetCmdWrite8622(key,prop,value){
+    window[prop]=value;
+    try{sessionStorage.setItem(FLEET_CMD_SESSION_PREFIX_8622+key,JSON.stringify(value));}catch(err){return {ok:false,error:`sessionStorage: ${String(err?.name||'Error')}: ${String(err?.message||err)}`,value};}
+    try{setSetting(`fleet-command:${key}`,value).catch(()=>{});}catch(_){}
+    return {ok:true,value};
+  }
+  function fleetLearningStateRead(){return fleetCmdRead8622(FLEET_LEARNING_STATE_KEY_8622,'__darkSkyFleetLearningState8622',{});}
+  function fleetLearningStateWrite(v){return fleetCmdWrite8622(FLEET_LEARNING_STATE_KEY_8622,'__darkSkyFleetLearningState8622',v||{});}
+  function fleetStagingLedgerRead(){return fleetCmdRead8622(FLEET_STAGING_LEDGER_KEY,'__darkSkyFleetStagingLedger8622',[]);}
+  function fleetStagingLedgerWrite(rows){return fleetCmdWrite8622(FLEET_STAGING_LEDGER_KEY,'__darkSkyFleetStagingLedger8622',(rows||[]).slice(-300));}
   function fleetStagingLedgerLatest(projectId,learningId){const rows=fleetStagingLedgerRead().filter(x=>String(x.projectId)===String(projectId)&&x.learningId===learningId);return rows.length?rows[rows.length-1]:null;}
-  function fleetStagingNoticeSet(payload){try{localStorage.setItem(FLEET_STAGING_NOTICE_KEY,JSON.stringify({...payload,build:BUILD_VERSION,at:new Date().toISOString()}));}catch(_){}}
-  function fleetStagingNoticeRead(){try{return JSON.parse(localStorage.getItem(FLEET_STAGING_NOTICE_KEY)||'null');}catch(_){return null;}}
+  function fleetStagingNoticeSet(payload){fleetCmdWrite8622(FLEET_STAGING_NOTICE_KEY,'__darkSkyFleetStagingNotice8622',{...payload,build:BUILD_VERSION,at:new Date().toISOString()});}
+  function fleetStagingNoticeRead(){return fleetCmdRead8622(FLEET_STAGING_NOTICE_KEY,'__darkSkyFleetStagingNotice8622',null);}
+  async function hydrateFleetCommandDurables8622(){
+    const specs=[
+      [FLEET_LEARNING_STATE_KEY_8622,'__darkSkyFleetLearningState8622',{}],
+      [FLEET_STAGING_LEDGER_KEY,'__darkSkyFleetStagingLedger8622',[]],
+      [FLEET_STAGING_NOTICE_KEY,'__darkSkyFleetStagingNotice8622',null],
+      [FLEET_STAGING_VERIFIED_KEY,'__darkSkyFleetStagingVerified8622',null]
+    ];
+    for(const [key,prop,fallback] of specs){
+      if(window[prop]!=null)continue;
+      try{const row=await getSetting(`fleet-command:${key}`);const v=row?.value;if(v!=null){window[prop]=v;try{sessionStorage.setItem(FLEET_CMD_SESSION_PREFIX_8622+key,JSON.stringify(v));}catch(_){}}else if(fallback!=null)window[prop]=fallback;}catch(_){}
+    }
+    if(!window.__darkSkyProvingEvidence8622){
+      try{const row=await getSetting(`proving-evidence:${BUILD_VERSION}`);const v=row?.value;if(v&&String(v.build)===String(BUILD_VERSION)){window.__darkSkyProvingEvidence8622=v;try{sessionStorage.setItem(PROVING_EVIDENCE_SESSION_KEY_8622,JSON.stringify(v));}catch(_){}}}catch(_){}
+    }
+    try{if(!sessionStorage.getItem('darkSkyKnownGoodRelease')){const row=await getSetting('darkSkyKnownGoodRelease');if(row?.value)sessionStorage.setItem('darkSkyKnownGoodRelease',String(row.value));}}catch(_){}
+  }
   function fleetStagingCommit(rows,status,source='manual'){
     const now=new Date().toISOString(),ledger=fleetStagingLedgerRead();
     for(const r of rows)ledger.push({id:`SL-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2,7).toUpperCase()}`,build:BUILD_VERSION,at:now,learningId:r.learningId,projectId:r.projectId,status,source});
@@ -4834,7 +4892,7 @@
     const commit=fleetStagingCommit(rows,status,`bulk-${confidenceFilter}`);
     if(!commit.ok){fleetStagingNoticeSet({kind:'error',message:`STAGING FAILED • ${commit.error} • adoption remains unchanged`,learningId,projects:commit.persisted.map(r=>r.projectId),status});renderFleetLearningRegistry();return false;}
     const st=fleetLearningStateRead();for(const r of rows){st[r.projectId]=st[r.projectId]||{};st[r.projectId][learningId]=status;}fleetLearningStateWrite(st);
-    try{localStorage.setItem(FLEET_STAGING_VERIFIED_KEY,JSON.stringify({build:BUILD_VERSION,at:new Date().toISOString(),learningId,status,count:rows.length,projects:rows.map(r=>r.projectId)}));}catch(_){ }
+    fleetCmdWrite8622(FLEET_STAGING_VERIFIED_KEY,'__darkSkyFleetStagingVerified8622',{build:BUILD_VERSION,at:new Date().toISOString(),learningId,status,count:rows.length,projects:rows.map(r=>r.projectId)});
     admiralLedgerRecord('fleet-learning-bulk-review',{learningId,status,confidenceFilter,projects:rows.map(r=>r.projectId)});
     fleetStagingNoticeSet({kind:'success',message:`STAGED ${rows.length} FOR REVIEW • adoption remains 0 until deliberate vessel approval`,learningId,projects:rows.map(r=>r.projectId),status});
     renderFleetLearningRegistry();return true;
@@ -5104,10 +5162,13 @@
     add('witness-truth-window','Witness Truth — window memory',runtimeEntry8620&&Number(rc8620['document-first-light']||0)>0?'pass':'fail',runtimeEntry8620?`Current page memory witness is live. ${runtimeDetail8620}`:'No window-memory witness exists in the current page instance.');
     add('witness-truth-session','Witness Truth — sessionStorage',ch8620.sessionStorage?.ok&&ch8620.sessionStorage?.writeOk!==false?'pass':'fail',channelText8620('sessionStorage',ch8620.sessionStorage,truth8620.sessionError));
     add('witness-truth-local','Witness Truth — localStorage',ch8620.localStorage?.ok&&ch8620.localStorage?.writeOk!==false?'pass':'fail',channelText8620('localStorage',ch8620.localStorage,truth8620.localError));
+    const liveProofSessionOk8621=window.__darkSkyLiveProofSessionOk8621!==false;
+    const liveProofLocalErr8621=String(window.__darkSkyLiveProofLocalError8621||'');
+    add('storage-safe-proof-bus','Storage-Safe Proof Bus',liveProofSessionOk8621?'pass':'fail',liveProofSessionOk8621?`Live proof bus uses window memory + sessionStorage. localStorage is best-effort only${liveProofLocalErr8621?` • localStorage: ${liveProofLocalErr8621}`:''}.`:`sessionStorage live proof mirror failed: ${String(window.__darkSkyLiveProofSessionError8621||'unknown')}`);
     add('post-login-evidence-hold','Post-login evidence hold',Number(rc8620['post-login-evidence-hold-shown']||0)>0?'pass':'warn',Number(rc8620['post-login-evidence-hold-shown']||0)>0?`Evidence hold shown ${Number(rc8620['post-login-evidence-hold-shown']||0)} time(s), dismissed ${Number(rc8620['post-login-evidence-hold-dismissed']||0)} time(s).`:'No settled Engine login evidence hold has been observed yet.');
     add('runtime-entry-trace','Runtime Entry Trace',Number(rc8620['verified-loader-entered']||0)>0&&Number(rc8620['app-module-evaluated']||0)>0?'pass':'fail',runtimeDetail8620);
     add('runtime-entry-engine-visible','Runtime Entry Trace — live Engine path',Number(rc8620['engine-visible-observed']||0)>0?'pass':'fail',Number(rc8620['engine-visible-observed']||0)>0?`Live Engine visibility observed ${Number(rc8620['engine-visible-observed']||0)} time(s); entry controls observed ${Number(rc8620['engine-entry-control-clicked']||0)}.`:`No live Engine visibility transition was observed. Entry control clicks ${Number(rc8620['engine-entry-control-clicked']||0)}.`);
-    add('runtime-entry-loader-ignition','Witness Truth Test — loader ignition',Number(rc8620['loader-ignition-dispatch']||0)>0?(Number(rc8620['loader-ignition-settled']||0)>0?'pass':'warn'):'fail',Number(rc8620['loader-ignition-dispatch']||0)>0?`Verified loader dispatched ignition ${Number(rc8620['loader-ignition-dispatch']||0)} time(s); settled ${Number(rc8620['loader-ignition-settled']||0)} time(s).`:'Verified loader has not dispatched ignition from an observed live Engine state.');
+    add('runtime-entry-loader-ignition','Runtime Entry Bridge — loader ignition',Number(rc8620['loader-ignition-dispatch']||0)>0?(Number(rc8620['loader-ignition-settled']||0)>0?'pass':'warn'):'fail',Number(rc8620['loader-ignition-dispatch']||0)>0?`Verified loader dispatched ignition ${Number(rc8620['loader-ignition-dispatch']||0)} time(s); settled ${Number(rc8620['loader-ignition-settled']||0)} time(s).`:'Verified loader has not dispatched ignition from an observed live Engine state.');
 
     const witness8618=ignitionWitnessRead8618()||{history:[],counters:{}};
     const wc8618=witness8618.counters||{};
@@ -5289,23 +5350,26 @@
   }
 
   const PROVING_EVIDENCE_KEY='darkSkyProvingEvidenceV2';
+  const PROVING_EVIDENCE_SESSION_KEY_8622='darkSkyProvingEvidence8622';
   const FORTIFIED_CACHE='dark-sky-v7-9-4-clean-wake';
   function saveFreshProvingEvidence(report){
-    try{
-      const voyages=report?.voyages||provingVoyagesFromReport(report);
-      const evidence={schema:'dark-sky-proving-evidence-v2',build:BUILD_VERSION,at:report?.at||new Date().toISOString(),runId:report?.runId||'',source:report?.source||'manual',pass:report?.pass===true,criticalFailures:Number(report?.criticalFailures||0),warnings:Number(report?.warnings||0),voyages:voyages.map(v=>({id:v.id,label:v.label,state:v.state}))};
-      localStorage.setItem(PROVING_EVIDENCE_KEY,JSON.stringify(evidence));
-      return evidence;
-    }catch(_){return null;}
+    const voyages=report?.voyages||provingVoyagesFromReport(report);
+    const evidence={schema:'dark-sky-proving-evidence-v2',build:BUILD_VERSION,at:report?.at||new Date().toISOString(),runId:report?.runId||'',source:report?.source||'manual',pass:report?.pass===true,criticalFailures:Number(report?.criticalFailures||0),warnings:Number(report?.warnings||0),voyages:voyages.map(v=>({id:v.id,label:v.label,state:v.state}))};
+    window.__darkSkyProvingEvidence8622=evidence;
+    try{sessionStorage.setItem(PROVING_EVIDENCE_SESSION_KEY_8622,JSON.stringify(evidence));}catch(err){window.__darkSkyProvingEvidenceSessionError8622=`${String(err?.name||'Error')}: ${String(err?.message||err)}`;}
+    try{setSetting(`proving-evidence:${BUILD_VERSION}`,evidence).catch(()=>{});}catch(_){}
+    return evidence;
   }
   function loadFreshProvingEvidence(maxAgeMs=6*60*60*1000){
-    try{
-      const e=JSON.parse(localStorage.getItem(PROVING_EVIDENCE_KEY)||'null');
-      if(!e||String(e.build)!==String(BUILD_VERSION))return null;
-      const age=Date.now()-Date.parse(e.at||0);
-      if(!Number.isFinite(age)||age<0||age>maxAgeMs)return null;
-      return e;
-    }catch(_){return null;}
+    let e=window.__darkSkyProvingEvidence8622||null;
+    if(!e){try{const raw=sessionStorage.getItem(PROVING_EVIDENCE_SESSION_KEY_8622);e=raw?JSON.parse(raw):null;}catch(_){}}
+    // Legacy read-only fallback for an already-present current-build record.
+    if(!e){try{const raw=localStorage.getItem(PROVING_EVIDENCE_KEY);e=raw?JSON.parse(raw):null;}catch(_){}}
+    if(!e||String(e.build)!==String(BUILD_VERSION))return null;
+    const age=Date.now()-Date.parse(e.at||0);
+    if(!Number.isFinite(age)||age<0||age>maxAgeMs)return null;
+    window.__darkSkyProvingEvidence8622=e;
+    return e;
   }
   async function runFortificationHygiene(){
     const result={build:BUILD_VERSION,at:new Date().toISOString(),oldCachesRemoved:0,staleEvidenceRemoved:0};
@@ -5352,9 +5416,11 @@
   }
   function provingStateLabel(v){return v==='clear'?'CLEAR':v==='watch'?'WATCH':'HOLD';}
   function currentKnownGoodRelease(){
-    try{return localStorage.getItem('darkSkyKnownGoodRelease')||'6.8.0';}catch(_){return '6.8.0';}
+    try{const v=sessionStorage.getItem('darkSkyKnownGoodRelease');if(v)return v;}catch(_){}
+    try{const v=localStorage.getItem('darkSkyKnownGoodRelease');if(v){try{sessionStorage.setItem('darkSkyKnownGoodRelease',v);}catch(_){}return v;}}catch(_){}
+    return '8.5.7';
   }
-  function setKnownGoodRelease(version){try{localStorage.setItem('darkSkyKnownGoodRelease',String(version));}catch(_){}}
+  function setKnownGoodRelease(version){const v=String(version);try{sessionStorage.setItem('darkSkyKnownGoodRelease',v);}catch(_){}try{setSetting('darkSkyKnownGoodRelease',v).catch(()=>{});}catch(_){}try{localStorage.setItem('darkSkyKnownGoodRelease',v);}catch(_){}return v;}
 
   async function renderAdmiralReadiness({announce=false}={}){
     const host=$('admiralReadinessBody'),state=$('admiralReadinessState'),stamp=$('admiralReadinessStamp'),summary=$('provingGroundSummary');
@@ -5573,8 +5639,12 @@
 
 
   const FLEET_COMMISSIONING_KEY='darkSkyFleetCommissioningV1';
-  function commissioningLedger(){try{return JSON.parse(localStorage.getItem(FLEET_COMMISSIONING_KEY)||'{}')||{};}catch(_){return {};}}
-  function saveCommissioningLedger(rows){localStorage.setItem(FLEET_COMMISSIONING_KEY,JSON.stringify(rows||{}));}
+  function commissioningLedger(){
+    if(window.__darkSkyFleetCommissioning8622)return window.__darkSkyFleetCommissioning8622;
+    try{const raw=sessionStorage.getItem(FLEET_COMMISSIONING_KEY);if(raw){const v=JSON.parse(raw)||{};window.__darkSkyFleetCommissioning8622=v;return v;}}catch(_){}
+    try{const v=JSON.parse(localStorage.getItem(FLEET_COMMISSIONING_KEY)||'{}')||{};window.__darkSkyFleetCommissioning8622=v;return v;}catch(_){return {};}
+  }
+  function saveCommissioningLedger(rows){const v=rows||{};window.__darkSkyFleetCommissioning8622=v;try{sessionStorage.setItem(FLEET_COMMISSIONING_KEY,JSON.stringify(v));}catch(_){}try{setSetting(`fleet-command:${FLEET_COMMISSIONING_KEY}`,v).catch(()=>{});}catch(_){}return v;}
   function commissioningApproval(p){const row=commissioningLedger()[canonicalProjectId(p?.id)];return row&&row.approved===true?row:null;}
   function setCommissioningApproval(p,approved){if(!p?.id)return;const rows=commissioningLedger(),id=canonicalProjectId(p.id);if(approved){rows[id]={approved:true,approvedAt:new Date().toISOString(),build:BUILD_VERSION,projectName:p.name||id};}else delete rows[id];saveCommissioningLedger(rows);}
   function commissioningGateRows(p){
@@ -15260,11 +15330,13 @@ The full order and approved media remain stored with this project.`;
     await loadFeatureSettings();
     await loadBusinessConfig();
     await loadCompanies();
+    await hydrateFleetCommandDurables8622();
+    try{const row=await getSetting(`fleet-command:${FLEET_COMMISSIONING_KEY}`);if(row?.value&&!window.__darkSkyFleetCommissioning8622){window.__darkSkyFleetCommissioning8622=row.value;try{sessionStorage.setItem(FLEET_COMMISSIONING_KEY,JSON.stringify(row.value));}catch(_){}}}catch(_){}
     await migrateLegacyProjectSettings();
     await enforceFleetProjectAdminBaseline();
     await purgeAllExpiredOwnerInvitations();
     await loadEngineConfig();
-    // 8.6.20 ignition is part of normal platform initialization, before any Engine
+    // 8.6.22 ignition is part of normal platform initialization, before any Engine
     // assurance consumer can observe an unsigned current build.
     try{ await igniteProofBootstrap8617('platform-init'); }catch(err){ console.warn('Bootstrap Ignition platform-init warning',err); }
     bindEvents();
@@ -15433,7 +15505,7 @@ document.addEventListener('click', (event) => {
     // Render through the normal Engine routines when available. A rendering warning
     // must not relock a correctly authenticated Engine session.
     try{
-      // 8.6.20 entry fallback: if a restored/authenticated session reached the Engine
+      // 8.6.22 entry fallback: if a restored/authenticated session reached the Engine
       // without the platform-init ignition, fire the same shared ignition before home render.
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();

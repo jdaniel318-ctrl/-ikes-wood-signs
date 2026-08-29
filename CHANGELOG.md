@@ -1,4 +1,22 @@
-## 8.6.20 — Witness Truth Test
+# Dark Sky 8.6.22 — Storage Safe Harbor
+
+- Removed localStorage from live proof writes after real iPad evidence proved Safari QuotaExceededError.
+- Moved Proving Ground current evidence to window/session authority with IndexedDB durability.
+- Moved Fleet Learning / Staging Ledger live state to window/session authority with IndexedDB durability and refresh hydration.
+- Moved Known Good and Fleet Commissioning mirrors onto session + IndexedDB-safe paths.
+- Safe recovery evidence now prefers sessionStorage so quota pressure cannot erase the diagnostic handoff.
+- localStorage remains read-only legacy fallback / best-effort compatibility only for these fleet-command channels.
+
+## 8.6.22 — Storage Safe Harbor
+
+- Replaced localStorage as the authority for live proof, Memory Muster, bootstrap, signer, barrier, and evidence-reconciliation state.
+- Window memory is authoritative; sessionStorage is the current-session mirror.
+- Completed proof/memory milestones are best-effort mirrored to IndexedDB settings.
+- localStorage writes are compatibility-only and may fail with QuotaExceededError without changing live readiness.
+- Retires only obsolete live proof/diagnostic localStorage mirrors; project/business data is untouched.
+- Fleet manifest/admission mirrors now prefer sessionStorage while durable settings remain authoritative.
+
+## 8.6.22 — Storage Safe Harbor
 
 - Added three-channel witness truth: window memory, sessionStorage, and localStorage.
 - Window memory is authoritative for the live page; storage channels corroborate and expose exact exceptions instead of failing silently.
@@ -6,7 +24,7 @@
 - Engineering Evidence now reports each witness channel independently and reads in-memory truth first.
 - No fleet behavior, Legacy recovery, Memory Muster, bootstrap/finalizer, or staging behavior changed.
 
-## 8.6.20 — Witness Truth Test
+## 8.6.22 — Storage Safe Harbor
 
 - Added durable runtime-entry witness in the first-light/atomic loader.
 - Added verified-loader Engine visibility observer.
@@ -14,25 +32,25 @@
 - Added Engineering Evidence cards for loader, Engine visibility, and ignition settlement.
 - No changes to Legacy recovery, Memory Muster, admissions, staging, or proof finalizer behavior.
 
-## 8.6.20 — Witness Truth Test
+## 8.6.22 — Storage Safe Harbor
 - Add independent durable ignition witness breadcrumbs at lifecycle hook and ignition function boundaries.
 - Trace Memory Muster request/return and proof bootstrap call/return without changing fleet behavior.
 - Surface witness events in Engineering Evidence.
 
-## 8.6.20 — Witness Truth Test
+## 8.6.22 — Storage Safe Harbor
 - Wire proof bootstrap into platform init after Engine configuration.
 - Add Engine-entry and shortcut fallback ignition through one shared promise.
 - Preserve read-only Proving Ground and all six-vessel recovery behavior.
 - Retain Proof Signer Trace to verify bootstrap calls become non-zero.
 
-# 8.6.20 — Witness Truth Test
+# 8.6.22 — Storage Safe Harbor
 
 - Atomic six-vessel in-memory commit; partial candidates never replace a verified runtime roster.
 - Fleet Dock, Fleet Intelligence, Fleet Health, Command Deck, and Proving Ground share one memory roster generation.
 - Proving Ground is read-only and cannot repair admissions or rebuild the fleet while inspecting it.
 - Failed candidate rebuilds retain the last verified six-company runtime state.
 
-# 8.6.20 — Witness Truth Test
+# 8.6.22 — Storage Safe Harbor
 
 - Added explicit BOOTING → RECONCILING → ROSTER READY → DOCK PAINTED → INTELLIGENCE PAINTED → PROOF COMMITTED lifecycle.
 - Proving Ground now waits for the proof barrier and reads one canonical current six-vessel proof.
@@ -40,7 +58,7 @@
 - Fleet Dock and Fleet Intelligence successful paints commit the same current proof used by readiness.
 - Six-vessel rescue and Legacy immutable identity logic remain unchanged.
 
-# 8.6.20 — Witness Truth Test
+# 8.6.22 — Storage Safe Harbor
 
 - Proving Ground now consumes the same current successful Fleet Dock trace that renders **SIX ABOARD**.
 - Successful six-card Fleet Dock renders write a canonical current proof record for this build.
@@ -49,7 +67,7 @@
 - Fixed the Muster Trace readiness helper so it no longer collapses to `trace unavailable` from an out-of-scope safe wrapper.
 - Canonical-six recovery logic is frozen; staging remains a non-blocking WATCH until deliberately exercised.
 
-## 8.6.20 — Witness Truth Test
+## 8.6.22 — Storage Safe Harbor
 
 - Moves roster diagnostics inside the async resolver itself.
 - Bounds every named resolver stage and records PASS / FAIL / TIMEOUT with protected vessel IDs.
@@ -100,7 +118,7 @@
 ## 8.6.8 — Dock Source Trace
 Protected six-vessel muster seed restores exact Known Good identities and admissions before fleet surfaces paint. Runtime registry drift cannot redefine fleet membership.
 
-## 8.6.20 — Witness Truth Test
+## 8.6.22 — Storage Safe Harbor
 - Removed circular bootstrap-owned Dock/Intelligence rendering.
 - Bootstrap now commits core proof only; normal surface renders attach generation-bound proof.
 - Added one idempotent finalizer that commits current proof when core + Dock + Intelligence agree.

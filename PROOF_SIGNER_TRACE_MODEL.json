@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-bootstrap-ignition-model-v1",
-  "build": "8.6.20",
-  "release": "Witness Truth Test",
+  "build": "8.6.22",
+  "release": "Storage Safe Harbor",
   "mode": "read-only-diagnostic",
   "purpose": "Trace the exact lifecycle from bootstrap invocation through generation-bound surface attachments, finalizer invocation, current-proof write, and read-back without changing fleet behavior.",
   "stages": [
