@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.50",
-  "release": "Direct Login Relay",
+  "build": "8.6.51",
+  "release": "Owner Bridge",
   "generatedAt": "2026-08-30T12:02:00-04:00",
   "checks": {
     "build_version": true,
@@ -208,8 +208,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.50 Direct Login Relay adds mandatory first-owner password establishment, email+password daily sign-in, Supabase recovery, and a neutral owner auth-state gate while preserving exact-vessel RLS and the 8.6.42 recovery anchor.",
-  "candidate": "8.6.50",
+  "note": "8.6.51 Owner Bridge strengthens owner screen transitions, vessel identity, and owner-facing language while freezing successful authentication and exact-vessel authority boundaries.",
+  "candidate": "8.6.51",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,0 +1,30 @@
+{
+  "schema": "dark-sky-owner-bridge-v1",
+  "build": "8.6.51",
+  "release": "Owner Bridge",
+  "principles": [
+    "one authenticated owner shell",
+    "screen-to-screen internal owner views",
+    "vessel identity without bespoke navigation",
+    "owner language over fleet implementation language",
+    "exact-vessel RLS remains authoritative"
+  ],
+  "frozen_boundaries": [
+    "Supabase password auth",
+    "first-time setup",
+    "password recovery",
+    "RLS policies",
+    "ownership membership",
+    "local recovery",
+    "project admin",
+    "Captain",
+    "Admiral",
+    "direct login relay"
+  ],
+  "ike_proof": {
+    "identity": "Ike's Wood Signs",
+    "visual": "ike_character.png",
+    "owner_home": "business bridge",
+    "navigation": "deterministic internal views"
+  }
+}

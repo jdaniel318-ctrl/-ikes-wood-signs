@@ -1,7 +1,9 @@
 {
-  "release": "Direct Login Relay",
-  "name": "Direct Login Relay",
-  "file_count": 80,
+  "release": "Owner Bridge",
+  "name": "Owner Bridge",
+  "build": "8.6.51",
+  "seal": "owner-bridge-8651-9d6f42",
+  "file_count": 81,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -40,6 +42,7 @@
     "MUSTER_TRACE_MODEL.json",
     "OWNER_AUTHORITY_MODEL.json",
     "OWNER_AUTH_STATE_GATE_MODEL.json",
+    "OWNER_BRIDGE_MODEL.json",
     "OWNER_PASSWORD_MODEL.json",
     "OWNER_RECOVERY_MODEL.json",
     "OWNER_SIGNIN_BRIDGE_MODEL.json",
@@ -52,7 +55,6 @@
     "RELEASE_DISCIPLINE_827.md",
     "RELEASE_GATE.json",
     "RELEASE_HARDENING_COMPENDIUM.md",
-    "RELEASE_INVENTORY.json",
     "RELEASE_SEAL.json",
     "RESOLVER_LIFELINE_MODEL.json",
     "RLS_READ_BOUNDARY_MODEL.json",
@@ -82,11 +84,7 @@
     "platform_v4.js",
     "signal_restoration_logo.png",
     "styles.css",
-    "sw.js"
-  ],
-  "build": "8.6.50",
-  "seal": "direct-login-relay-8650-71c4a9",
-  "top_level_folder": "DarkSky8650-DirectLoginRelay",
-  "known_good_anchor": "8.6.42",
-  "mission": "Direct email/password owner login relay with explicit auth mode; first-login password setup and exact-vessel RLS remain unchanged."
+    "sw.js",
+    "RELEASE_INVENTORY.json"
+  ]
 }

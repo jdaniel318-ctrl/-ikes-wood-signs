@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.50",
-  "release": "Direct Login Relay",
-  "seal": "direct-login-relay-8650-71c4a9",
+  "build": "8.6.51",
+  "release": "Owner Bridge",
+  "seal": "owner-bridge-8651-9d6f42",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Direct Login Relay",
-  "name": "Direct Login Relay",
-  "releaseName": "Direct Login Relay"
+  "release_name": "Owner Bridge",
+  "name": "Owner Bridge",
+  "releaseName": "Owner Bridge"
 }
