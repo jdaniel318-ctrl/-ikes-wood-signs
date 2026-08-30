@@ -1,6 +1,6 @@
 {
-  "release": "Inventory Seal",
-  "name": "Inventory Seal",
+  "release": "Runtime Seal",
+  "name": "Runtime Seal",
   "file_count": 75,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -79,8 +79,8 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.44",
-  "seal": "inventory-seal-8644-7b19c4",
+  "build": "8.6.45",
+  "seal": "runtime-seal-8645-2c8f71",
   "top_level_folder": "DarkSky8644-InventorySeal",
   "known_good_anchor": "8.6.42",
   "mission": "Bootstrap-only inventory identity repair over 8.6.43 Live Identity Staging; Supabase staging adapter and identity architecture unchanged."

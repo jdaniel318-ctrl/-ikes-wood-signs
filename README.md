@@ -1,6 +1,6 @@
-# Dark Sky 8.6.44 — Inventory Seal
+# Dark Sky 8.6.45 — Runtime Seal
 
-Inventory-only bootstrap repair over Live Identity Staging. RELEASE_INVENTORY.json now agrees atomically with the page, deployment manifest, release seal, web manifest, and service worker. The Supabase staging adapter and server-side Identity Keel foundation are unchanged. 8.6.42 remains the protected Known Good recovery anchor until this candidate earns promotion.
+Runtime-only bootstrap repair over Inventory Seal. The application runtime marker now agrees atomically with the page, deployment manifest, release inventory, release seal, web manifest, service worker, and current-build proof models. The Supabase staging adapter and server-side Identity Keel foundation are unchanged. 8.6.42 remains the protected Known Good recovery anchor until this candidate earns promotion.
 
 # Dark Sky 8.6.41 — Generation Settlement
 

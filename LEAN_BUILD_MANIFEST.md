@@ -1,4 +1,4 @@
-# Dark Sky 8.6.42 — Atomic Seal Package Manifest
+# Dark Sky 8.6.45 — Runtime Seal Package Manifest
 
 - Full package: **75 files including `CHECKSUMS.sha256`**.
 - Protected on-device Known Good anchor: **8.6.38** until Registry Commit earns promotion.

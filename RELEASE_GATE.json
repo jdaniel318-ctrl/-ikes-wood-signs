@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.44",
-  "release": "Live Identity Staging",
+  "build": "8.6.45",
+  "release": "Runtime Seal",
   "generatedAt": "2026-08-30T12:02:00-04:00",
   "checks": {
     "build_version": true,
@@ -208,8 +208,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.44 Live Identity Staging connects the real Supabase staging backend with publishable-key-only browser access. Production owner access remains blocked until authenticated revocation, exact-vessel denial, expiry, and rollback tests pass.",
-  "candidate": "8.6.44",
+  "note": "8.6.45 Runtime Seal repairs the stale application runtime marker while preserving the live Supabase staging adapter. Production owner access remains blocked until authenticated revocation, exact-vessel denial, expiry, and rollback tests pass.",
+  "candidate": "8.6.45",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

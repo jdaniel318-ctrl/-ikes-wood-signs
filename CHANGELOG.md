@@ -1,3 +1,10 @@
+# 8.6.45 — Runtime Seal
+
+- Repairs stale `app.js` / inline runtime build markers that were still declaring 8.6.42.
+- Makes page, runtime, deployment manifest, inventory, release seal, web manifest, service worker, identity adapter, and current-build proof models agree on `8.6.45` / `runtime-seal-8645-2c8f71`.
+- Leaves Black Flag Fleet Core Supabase staging schema and adapter behavior unchanged.
+- Keeps 8.6.42 as Last Known Good until promotion.
+
 ## 8.6.44 — Live Identity Staging
 
 Black Flag Fleet Core staging is now connected through a Supabase publishable browser key. The backend has canonical vessel, membership, global authority, and durable audit tables with default-deny RLS. Outside-owner production remains blocked until authenticated cross-vessel denial, revocation, expiry, and rollback tests pass. 8.6.42 remains the protected Known Good recovery anchor during this staging push.

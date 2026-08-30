@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.44",
-  "release": "Inventory Seal",
-  "seal": "inventory-seal-8644-7b19c4",
+  "build": "8.6.45",
+  "release": "Runtime Seal",
+  "seal": "runtime-seal-8645-2c8f71",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Inventory Seal",
-  "name": "Inventory Seal",
-  "releaseName": "Inventory Seal"
+  "release_name": "Runtime Seal",
+  "name": "Runtime Seal",
+  "releaseName": "Runtime Seal"
 }
