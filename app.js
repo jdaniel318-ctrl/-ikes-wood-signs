@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.38';
+  const BUILD_VERSION='8.6.39';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5197,8 +5197,20 @@
     add('owner-session-proof','Owner session lifecycle proof',ownerSessionContract?'pass':'fail',ownerSessionContract?'Owner session carries explicit project_owner authority, vessel scope, expiry, durable witness start/end events, and deterministic logout.':'Owner session scope, expiry, witness, or logout contract is incomplete.');
     const ownerCredSeparated=OWNER_TEST_LOGIN.password!==DEFAULT_ADMIN_PIN&&OWNER_TEST_LOGIN.password!==DEFAULT_ENGINE_PIN&&OWNER_TEST_LOGIN.password!=='19613';
     add('owner-credential-separation','Owner credential separation',ownerCredSeparated?'pass':'fail',ownerCredSeparated?'Private owner-test credential is distinct from Project Admin, Black Flag, Captain, and Client Preview authority credentials.':'Owner-test credential overlaps another authority credential.');
-    const productionOwnerBackend=false;
-    add('owner-production-backend','Production owner identity backend',productionOwnerBackend?'pass':'warn','Static GitHub deployment intentionally remains private/test-only for owner authority. Real outside-owner production requires server-backed authentication, authorization, session invalidation, and secret storage.','check');
+    const productionAuthStatus=window.BlackFlagV3Identity?.productionAuth?.status?.()||{provider:'supabase',ready:false,configured:false,secretSafe:true,rlsDeclared:false};
+    const providerContract=window.BlackFlagV3Identity?.productionAuth?.provider==='supabase';
+    add('identity-provider-contract','Production identity provider contract',providerContract?'pass':'fail',providerContract?'Supabase is the production identity adapter; identity proves the human while Dark Sky retains fleet membership, role, vessel scope, and capability authority.':'Production identity provider contract is missing or changed.');
+    add('identity-client-secret-boundary','Browser secret boundary',productionAuthStatus.secretSafe?'pass':'fail',productionAuthStatus.secretSafe?'Browser configuration accepts only a Supabase publishable/legacy anon key. Secret and service-role keys are explicitly forbidden.':'A forbidden elevated Supabase key appears in browser configuration. Remove it immediately.');
+    const commissioningRoles=window.BlackFlagV3Identity?.commissioningAuthority?.allowedRoles||[];
+    const commissioningRoleContract=['admiral','captain','engine_admin'].every(r=>commissioningRoles.includes(r))&&!commissioningRoles.includes('project_owner');
+    add('vessel-commissioning-authority','Vessel commissioning authority',commissioningRoleContract?'pass':'fail',commissioningRoleContract?'Admiral, Captain, and Engine Admin may commission a sealed vessel; Project Owner cannot self-create fleet authority and the commissioner does not automatically become owner.':'Commissioning authority contract is incomplete or owner authority can self-escalate.');
+    const membershipContract=String(window.BlackFlagV3Identity?.productionAuth?.require||'').includes('membership_authorization');
+    add('identity-membership-contract','Server membership authority model',membershipContract?'pass':'fail',membershipContract?'Production authority requires server-side user → active membership → exact Project ID → role/capability resolution.':'Server membership authority contract is missing.');
+    const rlsContract=String(window.BlackFlagV3Identity?.productionAuth?.require||'').includes('row_level_security');
+    add('identity-rls-contract','Row-level vessel isolation contract',rlsContract?'pass':'fail',rlsContract?'Every exposed production table must be default-deny with RLS enforcing exact vessel membership independently of browser state.':'Production RLS contract is missing.');
+    add('owner-production-backend','Production owner identity backend',productionAuthStatus.ready?'pass':'warn',productionAuthStatus.ready?'Supabase production adapter is configured with publishable-key-only browser access and the Identity Keel RLS contract declared.':'Identity Keel is installed, but the real Supabase backend is not yet commissioned. Outside-owner production remains blocked; the 8.6.38 recovery bridge stays aboard.','check');
+    add('identity-revocation-proof','Server revocation proof',productionAuthStatus.ready?'warn':'warn',productionAuthStatus.ready?'Backend is configured; real membership revocation still requires a live negative test before this voyage can clear.':'No live backend exists yet, so server-side revocation cannot be proven.','check');
+    add('identity-rollback-bridge','No-man-left-behind rollback bridge','pass','8.6.38 remains the protected Known Good recovery anchor and the private owner path is retained as test/recovery-only until production sign-in, vessel scope, revocation, rollback, and multi-device behavior are proven.','check');
 
     const generated=String(randomClientPreviewPin());
     const reserved=new Set([DEFAULT_ADMIN_PIN,DEFAULT_ENGINE_PIN,'19613']);
@@ -5434,6 +5446,7 @@
     return [
       combine('authority','Authority Voyage',['engine-auth','project-admin','captain-auth'],'Black Flag → Project Admin → Captain authority contracts.'),
       combine('owner-authority','Owner Authority Voyage',['owner-project-scope','owner-session-proof','owner-credential-separation'],'Owner identity → canonical vessel scope → expiring project_owner session → deterministic logout/recovery.'),
+      combine('production-identity','Production Identity Voyage',['identity-provider-contract','identity-client-secret-boundary','vessel-commissioning-authority','identity-membership-contract','identity-rls-contract','owner-production-backend','identity-revocation-proof','identity-rollback-bridge'],'Identity provider → server membership → exact vessel RLS → revocation → rollback bridge. This voyage remains WATCH until a real backend proves the live negative tests.'),
       combine('isolation','Isolation Voyage',['project-identity','order-boundary'],'Canonical Project IDs and project-scoped operational records.'),
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
@@ -7665,7 +7678,7 @@
       customerMode:'guided',relationshipType:'auto',photoRequired:false,contactCapture:true,visualProfile:'none',
       ownerPortal:true,customerRetention:false,notifications:false,
       namespace:'',projectCode:'',orderPrefix:'',
-      status:'development',visibility:'private',deploymentState:'sea_trial'
+      status:'development',visibility:'private',deploymentState:'sea_trial',commissionerRole:'engine_admin'
     };
   }
   function readCommissionDraft(){
@@ -7680,9 +7693,17 @@
     localStorage.removeItem('blackFlagCommissionDraft');
   }
 
-  function openProjectCommissioning(){
+  function openProjectCommissioning(actorRole='engine_admin'){
+    const requestedRole=String(actorRole||'engine_admin');
+    const authority=window.BlackFlagV3Identity?.commissioningAuthority;
+    if(authority && !authority.canCommission(requestedRole)){
+      window.BlackFlagV3Core?.audit?.({actorRole:requestedRole,category:'authorization',action:'commissioning.open.blocked',detail:'Role is not authorized to create fleet vessels.'});
+      alert('This authority cannot commission a fleet vessel. Captain, Admiral, or Engine Admin authority is required.');
+      return;
+    }
     const recovered=readCommissionDraft();
     commissionDraft=recovered||freshCommissionDraft();
+    if(!recovered)commissionDraft.commissionerRole=requestedRole;
     commissionStep=Math.max(1,Math.min(6,Number(commissionDraft._step||1)));
     commissionDraft._maxStepReached=Math.max(1,Math.min(6,Number(commissionDraft._maxStepReached||commissionStep||1)));
     const w=$('projectCommissioningWorkspace');
@@ -7690,8 +7711,16 @@
     document.body.classList.add('engine-workspace-open');
     renderCommissioning();
     bindCommissioningControls();
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'project',action:recovered?'commissioning.resumed':'commissioning.opened',detail:commissionDraft.draftId});
+    window.BlackFlagV3Core?.audit?.({actorRole:commissionDraft.commissionerRole||requestedRole,category:'project',action:recovered?'commissioning.resumed':'commissioning.opened',detail:`${commissionDraft.draftId} • authority ${(commissionDraft.commissionerRole||requestedRole)}`});
   }
+
+
+  window.DarkSkyVesselCommissioning={
+    openAsEngine:()=>openProjectCommissioning('engine_admin'),
+    openAsCaptain:()=>openProjectCommissioning('captain'),
+    openAsAdmiral:()=>openProjectCommissioning('admiral'),
+    allowedRoles:()=>[...(window.BlackFlagV3Identity?.commissioningAuthority?.allowedRoles||[])]
+  };
 
   function closeProjectCommissioning(){
     const w=$('projectCommissioningWorkspace');
@@ -8132,6 +8161,8 @@
           <div><small>OFFER</small><b>${escapeHtml(d.primaryOffer||'Configure later')}</b></div>
           <div><small>OWNER HANDOFF</small><b>${d.ownerPortal&&d.ownerName&&d.ownerEmail?'READY TO INVITE':'CONFIGURE LATER'}</b></div>
           <div><small>LAUNCH STATE</small><b>PRIVATE • SEA TRIAL</b></div>
+          <div><small>COMMISSIONING AUTHORITY</small><b>${escapeHtml(String(d.commissionerRole||'engine_admin').replaceAll('_',' ').toUpperCase())}</b></div>
+          <div><small>OWNER STATE</small><b>${d.ownerName&&d.ownerEmail?'ASSIGNMENT PREPARED':'FLEET UNASSIGNED'}</b></div>
         </div>
         ${(()=>{const m=commissioningOperatingPreview();return `<div class="commission-understanding-preview"><small>DARK SKY UNDERSTANDING</small><strong>${escapeHtml(String(m.mode||'other').replaceAll('-',' ').toUpperCase())}</strong><span>${escapeHtml(m.summary||'')}</span><span>Fulfillment: ${escapeHtml((m.fulfillment||[]).join(', ')||'project-defined')} • Scheduling: ${m.schedulingNeeded?'needed':'not currently indicated'}</span></div>`})()}
         ${d.businessIntake?`<div class="commission-understanding-preview intake-review"><small>BUSINESS INTAKE</small><strong>${escapeHtml(d.businessIntake.businessName||d.name||'Imported business')}</strong><span>${escapeHtml((d.businessIntake.opportunities||[]).slice(0,3).join(' • '))}</span><span>Visual directions: ${escapeHtml((d.businessIntake.visualDirections||[]).map(x=>x.name).join(' • '))}</span></div>`:''}
@@ -8301,6 +8332,9 @@
   async function commissionProject(){
     captureCommissionFields();
     if(!validateCommissionDraftFinal())return;
+    const commissionerRole=String(commissionDraft.commissionerRole||'engine_admin');
+    const commissionAuthority=window.BlackFlagV3Identity?.commissioningAuthority;
+    if(commissionAuthority && !commissionAuthority.canCommission(commissionerRole))return commissionError('Commissioning authority is no longer valid. Captain, Admiral, or Engine Admin authority is required.');
     const code=(commissionDraft.projectCode||commissionCode(commissionDraft.name)).toUpperCase();
     const core=window.BlackFlagV3Core;
     const id=core?.createProjectId?.(commissionDraft.name,companies)||('bf-p-'+Date.now().toString(36)+Math.random().toString(36).slice(2,8));
@@ -8351,6 +8385,7 @@
       createdAt:new Date().toISOString(),
       updatedAt:new Date().toISOString(),
       commissionedAt:new Date().toISOString(),
+      commissioningAuthority:{role:commissionerRole,identitySource:'dark-sky-authority',ownerAutomaticallyGranted:false,ownerState:(commissionDraft.ownerName&&commissionDraft.ownerEmail)?'assignment_prepared':'fleet_unassigned',build:BUILD_VERSION},
       lifecycle:{state:'draft',version:3,updatedAt:new Date().toISOString()},
       registry:{version:1,source:'commissioning',displayNameUnique:false},
       commissioningVersion:'4.5.0'
@@ -8392,7 +8427,7 @@
       throw err;
     }
 
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • canonical registry verified`});
+    window.BlackFlagV3Core?.audit?.({actorRole:commissionerRole,projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • canonical registry verified`});
     // Record durable success BEFORE any presentation work. A UI refresh is allowed
     // to fail without changing the truth that the vessel is already in the registry.
     localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:false,build:BUILD_VERSION}));
@@ -8406,7 +8441,7 @@
     clearCommissionDraft();
     clearCommissionJournal(id);
     localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:true,build:BUILD_VERSION}));
-    window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',projectId:id,category:'project',action:'commissioning.presentation.verified',detail:`${p.name} rendered in Project Command on build ${BUILD_VERSION}`});
+    window.BlackFlagV3Core?.audit?.({actorRole:commissionerRole,projectId:id,category:'project',action:'commissioning.presentation.verified',detail:`${p.name} rendered in Project Command on build ${BUILD_VERSION}`});
     setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},120);
   }
 

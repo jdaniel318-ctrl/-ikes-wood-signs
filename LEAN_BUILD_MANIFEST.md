@@ -1,3 +1,12 @@
+# Dark Sky 8.6.39 — Identity Keel Atomic Package Manifest
+
+- Full package: **75 files including `CHECKSUMS.sha256`**.
+- Protected on-device Known Good anchor: **8.6.38** until Identity Keel earns promotion.
+- Production identity backend: **NOT CLAIMED LIVE** in this package.
+- Supabase browser boundary: publishable/legacy anon only; secret/service-role keys forbidden.
+- Vessel commissioning authority: Admiral / Captain / Engine Admin. Commissioner does not automatically become owner.
+- Private owner bridge remains aboard as test/recovery-only until production sign-in, RLS isolation, revocation, rollback, and multi-device behavior are proven.
+
 # Dark Sky 8.6.38 — Owner Authority Atomic Package Manifest
 
 This is intentionally a full atomic package, not a lean patch. Diagnostic Hold uses a dedicated session-scoped same-origin relay plus an explicit authentication-complete hook so login/session reinitialization cannot erase the pending evidence hold. Do not trim deployment identity, runtime scripts, service worker, manifests, proof contracts, or release models from the upload set.

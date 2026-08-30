@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-owner-authority-model-v1",
-  "build": "8.6.38",
-  "release": "Owner Authority",
+  "build": "8.6.39",
+  "release": "Owner Authority \u2014 carried aboard Identity Keel",
   "authority": "project_owner",
   "scope": "exact-canonical-project-and-namespace",
   "session": {
@@ -24,7 +24,7 @@
   "production_boundary": {
     "server_backed_identity_required": true,
     "static_github_pages_is_not_production_auth": true,
-    "outside_owner_rollout": "blocked-until-backend"
+    "outside_owner_rollout": "blocked-until-identity-keel-backend-clears"
   },
   "proof_chain": [
     "credential",

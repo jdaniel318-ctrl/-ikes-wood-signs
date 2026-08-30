@@ -1,7 +1,7 @@
 {
-  "release": "Detail Relay",
-  "name": "Detail Relay",
-  "file_count": 72,
+  "release": "Identity Keel",
+  "name": "Identity Keel",
+  "file_count": 75,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -12,6 +12,7 @@
     "BUILD_AUDIT_818.json",
     "CAPABILITY_ADOPTION_MAP.json",
     "CHANGELOG.md",
+    "CHECKSUMS.sha256",
     "DEPLOYMENT_MANIFEST.json",
     "DOCK_SOURCE_TRACE_MODEL.json",
     "EVIDENCE_RECONCILIATION_MODEL.json",
@@ -28,6 +29,7 @@
     "FOUNDRY_FLEET_SERVICES.md",
     "GENERATION_RELAY_MODEL.json",
     "GOLDEN_VOYAGES.json",
+    "IDENTITY_KEEL_MODEL.json",
     "IGNITION_WITNESS_MODEL.json",
     "IKES_PRODUCTION_COMPENDIUM.md",
     "IKE_STYLE_FOUNDRY.json",
@@ -46,6 +48,7 @@
     "RELEASE_DISCIPLINE_827.md",
     "RELEASE_GATE.json",
     "RELEASE_HARDENING_COMPENDIUM.md",
+    "RELEASE_INVENTORY.json",
     "RELEASE_SEAL.json",
     "RESOLVER_LIFELINE_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
@@ -76,6 +79,9 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.38",
-  "seal": "detail-relay-8638-7b31c4"
+  "build": "8.6.39",
+  "seal": "identity-keel-8639-4d91a2",
+  "top_level_folder": "DarkSky8639-IdentityKeel",
+  "known_good_anchor": "8.6.38",
+  "mission": "Production identity keel + server membership/RLS + vessel commissioning authority + no-man-left-behind migration bridge."
 }

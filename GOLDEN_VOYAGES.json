@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.6.38",
+  "build": "8.6.39",
   "policy": "real-ui-path-release-assurance",
   "voyages": [
     {
@@ -21,6 +21,23 @@
         "Correct project/branding/session"
       ],
       "release_blocker": true
+    },
+    {
+      "id": "production-identity",
+      "label": "Production Identity Voyage",
+      "class": "development-watch",
+      "release_blocker": false,
+      "proof": [
+        "supabase-provider-contract",
+        "publishable-key-only-browser-boundary",
+        "server-membership-authority",
+        "exact-project-rls",
+        "captain-admiral-engine-commissioning",
+        "server-revocation",
+        "rollback-bridge"
+      ],
+      "clear_condition": "A real backend is connected and live negative tests prove cross-vessel denial, membership revocation, session expiry, and rollback.",
+      "known_good_anchor": "8.6.38"
     },
     {
       "id": "owner",

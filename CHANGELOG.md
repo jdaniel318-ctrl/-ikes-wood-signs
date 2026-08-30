@@ -1,3 +1,12 @@
+# Dark Sky 8.6.39 — Identity Keel
+
+- Added Supabase-ready production identity adapter; browser accepts only publishable/legacy anon keys and explicitly rejects elevated secret/service-role credentials.
+- Added server membership and exact-vessel RLS contracts without claiming a live backend.
+- Added Production Identity Voyage; backend/revocation remain truthful WATCH items until live Supabase tests clear.
+- Added Admiral, Captain, and Engine Admin commissioning authority with durable provenance; Project Owner cannot create fleet authority.
+- New vessels may start Fleet Unassigned and the commissioner never becomes owner automatically.
+- Preserved 8.6.38 as Known Good rollback anchor and kept the private owner path as test/recovery-only during migration.
+
 # Dark Sky 8.6.38 — Detail Relay
 
 - Restores the Fleet Maintenance **View Storage Details** parent action with a direct, iPad-safe binding.

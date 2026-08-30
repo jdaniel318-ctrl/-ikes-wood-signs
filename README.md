@@ -1,3 +1,18 @@
+# Dark Sky 8.6.39 — Identity Keel
+
+Hard production-identity foundation branched from certified 8.6.38. This release does **not** claim that production authentication is live yet; it installs the contracts, adapter, commissioning provenance, rollback bridge, and Proving Ground evidence required before outside-owner rollout.
+
+## 8.6.39 Identity Keel
+
+- Supabase-ready production identity adapter with a strict browser boundary: publishable/legacy anon key only; `sb_secret_` and service-role credentials are forbidden in browser configuration.
+- Identity and authority are separated: Supabase may prove the human, while Dark Sky retains canonical vessel membership, role, capability, and commissioning authority.
+- Adds a server membership + Row Level Security contract: user → active membership → exact immutable Project ID → role/capability. Browser state alone is never authority.
+- Adds **Production Identity Voyage** to Proving Ground. It intentionally remains WATCH until a real Supabase project proves cross-vessel denial, session expiry, server-side membership revocation, and rollback.
+- Establishes Captain / Admiral / Engine Admin vessel commissioning authority. Project owners cannot self-escalate into fleet creation, and the commissioner does not automatically become the owner.
+- New vessels record commissioning provenance and can begin **Fleet Unassigned** until an owner is deliberately attached. Commissioning never publishes a customer experience by itself.
+- Preserves the private owner bridge as test/recovery-only. 8.6.38 remains the protected Known Good anchor throughout migration — no man left behind.
+- Keeps Owner Authority, Witness Truth, Detail Relay, protected six-vessel registry, and all existing project data unchanged.
+
 # Dark Sky 8.6.38 — Detail Relay
 
 Narrow repair over 8.6.37 Owner Authority. Restores the durable parent Storage Details relay without changing Owner Authority or protected fleet data.

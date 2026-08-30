@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.38",
-  "release": "Detail Relay",
-  "seal": "detail-relay-8638-7b31c4",
+  "build": "8.6.39",
+  "release": "Identity Keel",
+  "seal": "identity-keel-8639-4d91a2",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Detail Relay",
-  "name": "Detail Relay",
-  "releaseName": "Detail Relay"
+  "release_name": "Identity Keel",
+  "name": "Identity Keel",
+  "releaseName": "Identity Keel"
 }

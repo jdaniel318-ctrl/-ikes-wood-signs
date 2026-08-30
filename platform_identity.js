@@ -1,27 +1,22 @@
-/* Black Flag v3 Stage 1 — Identity & Permission Policy */
+/* Dark Sky 8.6.39 — Identity Keel: identity proves the human; Dark Sky grants fleet authority. */
 (function(g){
 'use strict';
-const ROLE={CAPTAIN:'captain',ENGINE_ADMIN:'engine_admin',PROJECT_OWNER:'project_owner',PROJECT_STAFF:'project_staff',DEVICE:'device',CUSTOMER:'customer'};
-const ACTION={PLATFORM_GOVERN:'platform.govern',PROJECT_CONFIGURE:'project.configure',PROJECT_PUBLISH:'project.publish',PROJECT_VIEW:'project.view',OWNER_MANAGE:'owner.manage',ORDERS_READ:'orders.read',ORDERS_WRITE:'orders.write',CUSTOMERS_READ:'customers.read',PRODUCTS_WRITE:'products.write',PRICING_WRITE:'pricing.write',BRANDING_WRITE:'branding.write',DEPLOYMENTS_WRITE:'deployments.write',STAFF_WRITE:'staff.write',REPORTING_READ:'reporting.read',NOTIFICATIONS_WRITE:'notifications.write',CUSTOMER_ORDER_CREATE:'customer.order.create'};
+const BUILD='8.6.39';
+const ROLE={ADMIRAL:'admiral',CAPTAIN:'captain',ENGINE_ADMIN:'engine_admin',PROJECT_OWNER:'project_owner',PROJECT_STAFF:'project_staff',DEVICE:'device',CUSTOMER:'customer',CLIENT_PREVIEW:'client_preview'};
+const ACTION={PLATFORM_GOVERN:'platform.govern',VESSEL_COMMISSION:'vessel.commission',PROJECT_CONFIGURE:'project.configure',PROJECT_PUBLISH:'project.publish',PROJECT_VIEW:'project.view',OWNER_MANAGE:'owner.manage',ORDERS_READ:'orders.read',ORDERS_WRITE:'orders.write',CUSTOMERS_READ:'customers.read',PRODUCTS_WRITE:'products.write',PRICING_WRITE:'pricing.write',BRANDING_WRITE:'branding.write',DEPLOYMENTS_WRITE:'deployments.write',STAFF_WRITE:'staff.write',REPORTING_READ:'reporting.read',NOTIFICATIONS_WRITE:'notifications.write',CUSTOMER_ORDER_CREATE:'customer.order.create'};
 const grants={
- captain:['*'],
+ admiral:['*'],captain:['*'],
  engine_admin:Object.values(ACTION).filter(x=>x!=='platform.govern'&&x!=='customer.order.create'),
  project_owner:[ACTION.PROJECT_VIEW,ACTION.ORDERS_READ,ACTION.ORDERS_WRITE,ACTION.CUSTOMERS_READ,ACTION.PRODUCTS_WRITE,ACTION.PRICING_WRITE,ACTION.BRANDING_WRITE,ACTION.DEPLOYMENTS_WRITE,ACTION.STAFF_WRITE,ACTION.REPORTING_READ,ACTION.NOTIFICATIONS_WRITE],
  project_staff:[ACTION.PROJECT_VIEW,ACTION.ORDERS_READ,ACTION.ORDERS_WRITE,ACTION.CUSTOMERS_READ],
- device:[ACTION.CUSTOMER_ORDER_CREATE],customer:[ACTION.CUSTOMER_ORDER_CREATE]
+ device:[ACTION.CUSTOMER_ORDER_CREATE],customer:[ACTION.CUSTOMER_ORDER_CREATE],client_preview:[]
 };
 function authorize({role=ROLE.CUSTOMER,action,projectId=null,sessionProjectId=null}={}){
  const list=grants[role]||[]; if(list.includes('*'))return{ok:true};
  if([ROLE.PROJECT_OWNER,ROLE.PROJECT_STAFF,ROLE.DEVICE].includes(role)&&String(projectId||'')!==String(sessionProjectId||''))return{ok:false,reason:'project_boundary'};
  return list.includes(action)?{ok:true}:{ok:false,reason:'role_denied'};
 }
-
-const OWNER_MODULE_ACTION={
- orders:ACTION.ORDERS_READ,customers:ACTION.CUSTOMERS_READ,products:ACTION.PRODUCTS_WRITE,
- pricing:ACTION.PRICING_WRITE,branding:ACTION.BRANDING_WRITE,kiosks:ACTION.DEPLOYMENTS_WRITE,
- deployments:ACTION.DEPLOYMENTS_WRITE,staff:ACTION.STAFF_WRITE,reporting:ACTION.REPORTING_READ,
- notifications:ACTION.NOTIFICATIONS_WRITE
-};
+const OWNER_MODULE_ACTION={orders:ACTION.ORDERS_READ,customers:ACTION.CUSTOMERS_READ,products:ACTION.PRODUCTS_WRITE,pricing:ACTION.PRICING_WRITE,branding:ACTION.BRANDING_WRITE,kiosks:ACTION.DEPLOYMENTS_WRITE,deployments:ACTION.DEPLOYMENTS_WRITE,staff:ACTION.STAFF_WRITE,reporting:ACTION.REPORTING_READ,notifications:ACTION.NOTIFICATIONS_WRITE};
 function ownerCan(project,moduleKey,sessionProjectId){
  if(moduleKey==='settings')return String(project?.id||'')===String(sessionProjectId||'');
  const action=OWNER_MODULE_ACTION[moduleKey];if(!action)return false;
@@ -29,6 +24,21 @@ function ownerCan(project,moduleKey,sessionProjectId){
  if(!base.ok)return false;
  return (project?.ownerAccess?.capabilities||[]).includes(moduleKey);
 }
-
-g.BlackFlagV3Identity={version:'3.8.21-immutable-project-identity',ROLE,ACTION,authorize,ownerCan,productionAuth:{ready:false,require:['server_side_identity','password_hashing','secure_sessions','server_side_authorization','recovery','revocation']}};
+const CONFIG_KEY='darkSkyProductionIdentityConfigV1';
+function readConfig(){try{const c=JSON.parse(localStorage.getItem(CONFIG_KEY)||'null');return c&&typeof c==='object'?c:null;}catch(_){return null;}}
+function safeClientConfig(config){const c=config||readConfig();if(!c)return null;return {provider:'supabase',url:String(c.url||'').replace(/\/+$/,''),publishableKey:String(c.publishableKey||''),rlsContractVersion:String(c.rlsContractVersion||''),configuredAt:c.configuredAt||''};}
+function hasForbiddenSecret(config){const raw=JSON.stringify(config||readConfig()||{});return /service[_-]?role|sb_secret_|secretKey|serviceRole/i.test(raw);}
+function productionStatus(){const c=safeClientConfig();const configured=!!(c?.url&&/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(c.url)&&c?.publishableKey&&/^(sb_publishable_|eyJ)/.test(c.publishableKey));const secretSafe=!hasForbiddenSecret(c);const rlsDeclared=c?.rlsContractVersion==='identity-keel-v1';return {provider:'supabase',configured,secretSafe,rlsDeclared,ready:configured&&secretSafe&&rlsDeclared,mode:configured?'production-adapter-configured':'bridge-only',build:BUILD};}
+function configureProductionAuth({url,publishableKey,rlsContractVersion='identity-keel-v1'}={}){
+ const clean={provider:'supabase',url:String(url||'').trim().replace(/\/+$/,''),publishableKey:String(publishableKey||'').trim(),rlsContractVersion:String(rlsContractVersion||''),configuredAt:new Date().toISOString(),build:BUILD};
+ if(hasForbiddenSecret(clean))throw new Error('Secret/service-role keys are forbidden in browser configuration. Use only a Supabase publishable key.');
+ if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(clean.url))throw new Error('Enter the Supabase project URL.');
+ if(!/^(sb_publishable_|eyJ)/.test(clean.publishableKey))throw new Error('Use a Supabase publishable key (legacy anon is accepted only during migration).');
+ localStorage.setItem(CONFIG_KEY,JSON.stringify(clean));return productionStatus();
+}
+function clearProductionAuth(){localStorage.removeItem(CONFIG_KEY);return productionStatus();}
+async function probeProductionAuth(){const c=safeClientConfig();if(!c?.url||!c?.publishableKey)return {ok:false,error:'not_configured',status:productionStatus()};const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),6000);try{const r=await fetch(c.url+'/auth/v1/settings',{headers:{apikey:c.publishableKey},cache:'no-store',signal:ctl.signal});return {ok:r.ok,http:r.status,status:productionStatus()};}catch(err){return {ok:false,error:String(err?.name==='AbortError'?'timeout':err?.message||err),status:productionStatus()};}finally{clearTimeout(timer);}}
+const commissioningAuthority={allowedRoles:[ROLE.ADMIRAL,ROLE.CAPTAIN,ROLE.ENGINE_ADMIN],deniedRoles:[ROLE.PROJECT_OWNER,ROLE.PROJECT_STAFF,ROLE.DEVICE,ROLE.CUSTOMER,ROLE.CLIENT_PREVIEW],canCommission(role){return this.allowedRoles.includes(String(role||''));},contract:'commissioner creates sealed vessel; commissioner does not become owner automatically'};
+const productionAuth={provider:'supabase',required:true,get ready(){return productionStatus().ready;},status:productionStatus,configure:configureProductionAuth,clear:clearProductionAuth,probe:probeProductionAuth,readClientConfig:safeClientConfig,require:['server_side_identity','publishable_browser_key_only','row_level_security','membership_authorization','secure_sessions','recovery','revocation','rollback_bridge']};
+g.BlackFlagV3Identity={version:'8.6.39-identity-keel',build:BUILD,ROLE,ACTION,authorize,ownerCan,productionAuth,commissioningAuthority};
 })(window);

@@ -1,0 +1,216 @@
+{
+  "schema": "dark-sky-identity-keel-model-v1",
+  "build": "8.6.39",
+  "release": "Identity Keel",
+  "mission": "Introduce production identity architecture and vessel commissioning authority without removing the 8.6.38 recovery bridge.",
+  "provider": {
+    "preferred": "supabase",
+    "browser_key": "publishable",
+    "browser_secret_forbidden": true,
+    "server_secret_required_for_privileged_admin": true,
+    "static_github_pages_is_not_authority": true
+  },
+  "authority_separation": {
+    "identity_provider_proves": "human_identity",
+    "dark_sky_decides": [
+      "fleet_membership",
+      "canonical_project_scope",
+      "role",
+      "capability",
+      "commissioning_authority"
+    ],
+    "owner_never_inherits": [
+      "engine_admin",
+      "captain",
+      "admiral"
+    ],
+    "client_preview_never_inherits": [
+      "project_owner",
+      "engine_admin",
+      "captain",
+      "admiral"
+    ]
+  },
+  "tables": {
+    "fleet_vessels": {
+      "key": "project_id",
+      "immutable": true,
+      "fields": [
+        "project_id",
+        "namespace",
+        "display_name",
+        "lifecycle_state",
+        "created_by_user_id",
+        "created_by_role",
+        "created_at"
+      ]
+    },
+    "fleet_memberships": {
+      "key": "membership_id",
+      "fields": [
+        "user_id",
+        "project_id",
+        "role",
+        "status",
+        "invited_by_user_id",
+        "accepted_at",
+        "revoked_at"
+      ]
+    },
+    "fleet_authority_events": {
+      "append_only": true,
+      "fields": [
+        "event_id",
+        "actor_user_id",
+        "actor_role",
+        "project_id",
+        "action",
+        "result",
+        "created_at"
+      ]
+    },
+    "fleet_owner_migrations": {
+      "fields": [
+        "project_id",
+        "legacy_owner_ref",
+        "production_user_id",
+        "status",
+        "started_at",
+        "verified_at",
+        "rollback_available"
+      ]
+    },
+    "fleet_platform_roles": {
+      "key": "platform_role_id",
+      "fields": [
+        "user_id",
+        "role",
+        "status",
+        "granted_by_user_id",
+        "created_at",
+        "revoked_at"
+      ],
+      "allowed_roles": [
+        "admiral",
+        "captain",
+        "engine_admin"
+      ]
+    }
+  },
+  "rls_contract": {
+    "required_on_every_exposed_table": true,
+    "default_deny": true,
+    "membership_lookup": "auth.uid() -> active fleet_memberships -> exact project_id",
+    "owner_scope": "project_owner may touch rows only when an active membership exists for auth.uid() and the row project_id equals that membership project_id",
+    "staff_scope": "project_staff may touch only explicitly granted operations within an active membership project_id",
+    "cross_vessel_negative_tests": [
+      "tampered_project_id",
+      "owner_a_reads_vessel_b",
+      "owner_a_writes_vessel_b",
+      "revoked_membership",
+      "expired_session",
+      "preview_credential_as_owner"
+    ],
+    "indexes_required": [
+      "fleet_memberships(user_id)",
+      "fleet_memberships(project_id)",
+      "fleet_authority_events(project_id)",
+      "fleet_authority_events(actor_user_id)"
+    ]
+  },
+  "commissioning": {
+    "allowed_roles": [
+      "admiral",
+      "captain",
+      "engine_admin"
+    ],
+    "denied_roles": [
+      "project_owner",
+      "project_staff",
+      "device",
+      "customer",
+      "client_preview"
+    ],
+    "creation_state": "commissioning",
+    "owner_assignment": "optional",
+    "owner_unassigned_state": "fleet_unassigned",
+    "required_evidence": [
+      "canonical_project_id",
+      "namespace",
+      "created_by_identity",
+      "created_by_role",
+      "commissioning_timestamp",
+      "template_or_origin",
+      "owner_state",
+      "services_enabled"
+    ],
+    "publication": "separate_deliberate_action",
+    "commissioner_does_not_become_owner_automatically": true
+  },
+  "migration_bridge": {
+    "known_good_anchor": "8.6.38",
+    "legacy_owner_path": "private_test_recovery_only",
+    "remove_only_after": [
+      "production_identity_signin_pass",
+      "exact_vessel_scope_pass",
+      "logout_pass",
+      "server_revocation_pass",
+      "rollback_pass",
+      "multi_device_pass"
+    ],
+    "rollback": "production membership may be disabled while private recovery bridge remains available to Captain for controlled recovery"
+  },
+  "session_contract": {
+    "production_token_source": "supabase_auth",
+    "dark_sky_session_mirror": "non_authoritative_display_only",
+    "must_handle": [
+      "expiry",
+      "refresh",
+      "logout",
+      "password_change",
+      "membership_revoke",
+      "ownership_transfer",
+      "device_loss",
+      "stale_tab"
+    ],
+    "server_revocation_required": true
+  },
+  "proving_ground": {
+    "voyage": "Production Identity Voyage",
+    "status_until_backend_connected": "watch",
+    "required_checks": [
+      "provider_contract",
+      "browser_secret_boundary",
+      "commissioning_authority",
+      "membership_model",
+      "rls_contract",
+      "production_backend_connection",
+      "revocation_proof",
+      "rollback_bridge"
+    ]
+  },
+  "edge_functions": {
+    "commission-vessel": {
+      "caller": "authenticated",
+      "server_secret": "required-server-only",
+      "authorize": "active fleet_platform_roles row in admiral|captain|engine_admin",
+      "result": "sealed fleet_vessels row + append-only authority event; no owner membership automatically"
+    },
+    "invite-owner": {
+      "caller": "authenticated",
+      "authorize": "platform role or project owner with owner.manage capability per Dark Sky policy",
+      "result": "project-scoped pending membership/invite"
+    },
+    "revoke-membership": {
+      "caller": "authenticated",
+      "authorize": "platform role or authorized project owner; cannot revoke last recovery authority without explicit break-glass path",
+      "result": "membership revoked + authority event + active session denial on next server check"
+    },
+    "transfer-ownership": {
+      "caller": "authenticated",
+      "authorize": "admiral/captain or verified current owner plus recovery confirmation",
+      "result": "atomic membership transition with old owner revoked only after new owner accepted"
+    }
+  },
+  "supabase_bootstrap_sql": "-- Identity Keel v1 \u2014 review in a dedicated Supabase development project before production.\ncreate schema if not exists private;\n\ncreate table if not exists public.fleet_vessels (\n  project_id text primary key, namespace text not null unique, display_name text not null,\n  lifecycle_state text not null default 'commissioning', created_by_user_id uuid, created_by_role text not null,\n  created_at timestamptz not null default now()\n);\ncreate table if not exists public.fleet_memberships (\n  membership_id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade,\n  project_id text not null references public.fleet_vessels(project_id) on delete cascade, role text not null, status text not null default 'active',\n  invited_by_user_id uuid, accepted_at timestamptz, revoked_at timestamptz, created_at timestamptz not null default now(),\n  unique(user_id, project_id, role)\n);\ncreate index if not exists fleet_memberships_user_id_idx on public.fleet_memberships(user_id);\ncreate index if not exists fleet_memberships_project_id_idx on public.fleet_memberships(project_id);\n\ncreate table if not exists public.fleet_platform_roles (\n  platform_role_id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade,\n  role text not null check (role in ('admiral','captain','engine_admin')), status text not null default 'active',\n  granted_by_user_id uuid, created_at timestamptz not null default now(), revoked_at timestamptz, unique(user_id, role)\n);\ncreate index if not exists fleet_platform_roles_user_id_idx on public.fleet_platform_roles(user_id);\n\ncreate table if not exists public.fleet_authority_events (\n  event_id uuid primary key default gen_random_uuid(), actor_user_id uuid, actor_role text not null, project_id text,\n  action text not null, result text not null, detail jsonb not null default '{}'::jsonb, created_at timestamptz not null default now()\n);\ncreate index if not exists fleet_authority_events_project_id_idx on public.fleet_authority_events(project_id);\ncreate index if not exists fleet_authority_events_actor_user_id_idx on public.fleet_authority_events(actor_user_id);\n\ncreate table if not exists public.fleet_owner_migrations (\n  project_id text primary key references public.fleet_vessels(project_id) on delete cascade, legacy_owner_ref text, production_user_id uuid references auth.users(id),\n  status text not null default 'not_started', started_at timestamptz, verified_at timestamptz, rollback_available boolean not null default true\n);\n\nalter table public.fleet_vessels enable row level security;\nalter table public.fleet_memberships enable row level security;\nalter table public.fleet_platform_roles enable row level security;\nalter table public.fleet_authority_events enable row level security;\nalter table public.fleet_owner_migrations enable row level security;\n\nrevoke all on table public.fleet_vessels, public.fleet_memberships, public.fleet_platform_roles, public.fleet_authority_events, public.fleet_owner_migrations from anon, authenticated;\ngrant select on public.fleet_vessels to authenticated;\ngrant select on public.fleet_memberships to authenticated;\ngrant select on public.fleet_platform_roles to authenticated;\ngrant select on public.fleet_authority_events to authenticated;\n\ncreate policy \"member reads exact vessel\" on public.fleet_vessels for select to authenticated\nusing (exists (select 1 from public.fleet_memberships m where m.user_id=(select auth.uid()) and m.project_id=fleet_vessels.project_id and m.status='active'));\ncreate policy \"member reads own memberships\" on public.fleet_memberships for select to authenticated\nusing (user_id=(select auth.uid()));\ncreate policy \"user reads own platform roles\" on public.fleet_platform_roles for select to authenticated\nusing (user_id=(select auth.uid()));\ncreate policy \"member reads vessel authority events\" on public.fleet_authority_events for select to authenticated\nusing (project_id is not null and exists (select 1 from public.fleet_memberships m where m.user_id=(select auth.uid()) and m.project_id=fleet_authority_events.project_id and m.status='active'));\n\n-- Writes that create vessels, grant/revoke platform roles, transfer ownership, or mutate membership are server-only Edge Function operations.\n-- The browser receives no insert/update/delete grants for these authority tables.\n"
+}
