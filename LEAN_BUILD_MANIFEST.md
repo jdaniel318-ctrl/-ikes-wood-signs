@@ -1,3 +1,7 @@
+# Dark Sky 8.6.47 — Sign-In Bridge
+
+75+ file ceiling remains 80. This release uses one additional explicit owner sign-in bridge model to reduce auth regression risk.
+
 # Dark Sky 8.6.46 — Fleet Ownership Charter Package Manifest
 
 - Full package: **75 files including `CHECKSUMS.sha256`**.

@@ -34,7 +34,7 @@
   "first_paint_contract": {
     "timeout_ms": 650,
     "fallback": "canonical/local roster snapshot",
-    "state": "LOCAL FLEET • VERIFYING",
+    "state": "LOCAL FLEET \u2022 VERIFYING",
     "reconcile": "background"
   }
 }

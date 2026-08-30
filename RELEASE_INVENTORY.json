@@ -1,7 +1,7 @@
 {
-  "release": "Fleet Ownership Charter",
-  "name": "Fleet Ownership Charter",
-  "file_count": 75,
+  "release": "Sign-In Bridge",
+  "name": "Sign-In Bridge",
+  "file_count": 76,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -39,6 +39,7 @@
     "MEMORY_MUSTER_MODEL.json",
     "MUSTER_TRACE_MODEL.json",
     "OWNER_AUTHORITY_MODEL.json",
+    "OWNER_SIGNIN_BRIDGE_MODEL.json",
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
     "PROOF_BARRIER_MODEL.json",
     "PROOF_BOOTSTRAP_MODEL.json",
@@ -79,9 +80,9 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.46",
-  "seal": "fleet-ownership-charter-8646-6a42d8",
-  "top_level_folder": "DarkSky8644-InventorySeal",
+  "build": "8.6.47",
+  "seal": "signin-bridge-8647-4e91b2",
+  "top_level_folder": "DarkSky8647-SignInBridge",
   "known_good_anchor": "8.6.42",
-  "mission": "Bootstrap-only inventory identity repair over 8.6.43 Live Identity Staging; Supabase staging adapter and identity architecture unchanged."
+  "mission": "Live Supabase owner sign-in bridge with exact-vessel RLS verification and recovery-only local fallback."
 }

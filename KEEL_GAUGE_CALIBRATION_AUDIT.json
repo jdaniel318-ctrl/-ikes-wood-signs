@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keel-gauge-calibration-audit-v1",
   "build": "8.6.28",
-  "release": "Keel Gauge — Root Keel",
+  "release": "Keel Gauge \u2014 Root Keel",
   "seal": "glyphforge-843-versioned-geometry-7a31c9",
   "status": "PASS",
   "ground_truth": {

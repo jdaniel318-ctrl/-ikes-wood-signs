@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.46",
+  "build": "8.6.47",
   "release": "Fleet Ownership Charter",
   "generatedAt": "2026-08-30T12:02:00-04:00",
   "checks": {
@@ -209,7 +209,7 @@
   "nonMediaAssets": [],
   "pass": true,
   "note": "8.6.46 Fleet Ownership Charter repairs the stale application runtime marker while preserving the live Supabase staging adapter. Production owner access remains blocked until authenticated revocation, exact-vessel denial, expiry, and rollback tests pass.",
-  "candidate": "8.6.46",
+  "candidate": "8.6.47",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

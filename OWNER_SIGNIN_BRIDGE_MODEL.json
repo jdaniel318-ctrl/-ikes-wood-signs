@@ -1,0 +1,24 @@
+{
+  "schema": "dark-sky-owner-signin-bridge-v1",
+  "build": "8.6.47",
+  "provider": "supabase",
+  "environment": "staging",
+  "site_url": "https://jdaniel318-ctrl.github.io/-ikes-wood-signs/",
+  "owner_route": "owner.html",
+  "flow": [
+    "confirmed_identity",
+    "fresh_magic_link",
+    "live_redirect",
+    "browser_session",
+    "exact_vessel_rls",
+    "project_owner_membership",
+    "portal_access"
+  ],
+  "negative_test_required": [
+    "all_other_vessels_denied",
+    "revocation_denies",
+    "expired_session_denies"
+  ],
+  "recovery_bridge": "explicit-local-recovery-only",
+  "production_enabled": false
+}

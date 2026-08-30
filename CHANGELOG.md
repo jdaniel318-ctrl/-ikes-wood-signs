@@ -1,3 +1,11 @@
+## 8.6.47 — Sign-In Bridge
+
+- Adds fresh Supabase magic-link owner sign-in.
+- Requires exact-vessel RLS membership before owner portal entry.
+- Handles Supabase implicit-flow session fragments in tab-scoped session storage.
+- Adds explicit local recovery fallback; it is no longer the normal owner sign-in path.
+- Keeps Production Identity on WATCH until cross-vessel denial, revocation, expiry, and rollback are proven.
+
 # Dark Sky 8.6.46 — Fleet Ownership Charter
 
 - Separates vessel entry path, ownership, operating authority, and commissioning authority fleet-wide.

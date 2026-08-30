@@ -1,3 +1,7 @@
+# Dark Sky 8.6.47 — Sign-In Bridge
+
+Supabase staging owner sign-in now uses a fresh one-time magic link, returns to the live `/-ikes-wood-signs/` owner route, and grants portal access only after exact-vessel RLS proves the authenticated `project_owner` membership. The local owner credential remains available only through an explicit recovery control.
+
 # Dark Sky 8.6.46 — Fleet Ownership Charter
 
 Fleet-wide ownership law: commissioning, ownership, and operation are separate authorities. Vessels may self-join through approval, be commissioned by Captain/Admiral/Engine, remain Admiral-owned or Fleet-owned, be Captain-operated, or transfer to an outside owner without changing canonical vessel identity or history.

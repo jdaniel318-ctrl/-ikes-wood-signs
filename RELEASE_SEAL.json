@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.46",
-  "release": "Fleet Ownership Charter",
-  "seal": "fleet-ownership-charter-8646-6a42d8",
+  "build": "8.6.47",
+  "release": "Sign-In Bridge",
+  "seal": "signin-bridge-8647-4e91b2",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fleet Ownership Charter",
-  "name": "Fleet Ownership Charter",
-  "releaseName": "Fleet Ownership Charter"
+  "release_name": "Sign-In Bridge",
+  "name": "Sign-In Bridge",
+  "releaseName": "Sign-In Bridge"
 }
