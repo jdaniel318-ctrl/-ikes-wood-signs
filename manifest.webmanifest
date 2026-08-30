@@ -1,7 +1,7 @@
 {
   "name": "Dark Sky — Hold Relay",
   "short_name": "Dark Sky",
-  "start_url": "./index.html?_darkSkyRelease=8.6.31&_darkSkySeal=hold-relay-8631-7b2e91",
+  "start_url": "./index.html?_darkSkyRelease=8.6.32&_darkSkySeal=relay-readback-8632-5d8a74",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.31"
+  "version": "8.6.32"
 }

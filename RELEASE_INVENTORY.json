@@ -1,6 +1,6 @@
 {
-  "release": "Hold Relay",
-  "name": "Hold Relay",
+  "release": "Relay Readback",
+  "name": "Relay Readback",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.31",
-  "seal": "hold-relay-8631-7b2e91"
+  "build": "8.6.32",
+  "seal": "relay-readback-8632-5d8a74"
 }

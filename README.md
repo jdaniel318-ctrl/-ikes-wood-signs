@@ -1,6 +1,6 @@
-# Dark Sky 8.6.31 — Hold Relay
+# Dark Sky 8.6.32 — Relay Readback
 
-Phase 1 final handoff candidate. Diagnostic Hold no longer depends on the Engine authentication session surviving a reload. Enabling the hold writes a dedicated same-origin browser-session relay scoped to the Dark Sky app. A full refresh can reinitialize normal auth state without losing that intent. After a successful Engine unlock, `app.js` sends an explicit authentication-complete signal; only then may the post-login evidence screen render. It remains visible until **Continue Now**, which clears the pending relay. Toggle-off clears both enabled and pending relay state.
+Phase 1 relay-verification correction. Diagnostic Hold now writes its temporary intent to a same-tab `window.name` relay and immediately reads that exact marker back before the UI can report COMPLETE. The relay is independent of Engine authentication state and localStorage. After a successful Engine unlock, `app.js` sends an explicit authentication-complete signal; only then may the post-login evidence screen render. It remains visible until **Continue Now**, which clears the pending relay. Toggle-off clears both enabled and pending relay state.
 
 The full 73-file atomic runtime is retained. No cleanup, deletion, migration, fleet mutation, or Phase 2 authority is added.
 

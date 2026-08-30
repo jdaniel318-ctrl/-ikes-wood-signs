@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.31",
-  "release": "Hold Relay",
-  "seal": "hold-relay-8631-7b2e91",
+  "build": "8.6.32",
+  "release": "Relay Readback",
+  "seal": "relay-readback-8632-5d8a74",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Hold Relay",
-  "name": "Hold Relay",
-  "releaseName": "Hold Relay"
+  "release_name": "Relay Readback",
+  "name": "Relay Readback",
+  "releaseName": "Relay Readback"
 }

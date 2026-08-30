@@ -1,5 +1,6 @@
-# Dark Sky 8.6.31 — Hold Relay
+# Dark Sky 8.6.32 — Relay Readback
 
+Diagnostic Hold now uses a same-tab `window.name` relay and must immediately read back the exact hold marker before reporting COMPLETE. This removes the unreliable cookie verification path while preserving the explicit post-auth handoff and manual Continue Now release.
 - Adds a dedicated pre-auth Diagnostic Hold relay that is independent of the normal Engine authentication session.
 - Stores enabled/pending hold intent in a same-origin session-scoped cookie with a sessionStorage mirror; no localStorage dependency is introduced.
 - Adds an explicit `app.js` authentication-complete signal immediately after the Engine gate closes and again after Engine home render.

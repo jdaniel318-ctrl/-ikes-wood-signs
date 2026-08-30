@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-steward-v1",
-  "build": "8.6.31",
-  "release": "Hold Relay",
+  "build": "8.6.32",
+  "release": "Relay Readback",
   "mission": "Make recurring fleet maintenance easy to find, professional to inspect, and non-destructive by default.",
   "station": {
     "id": "fleetMaintenanceStation",
@@ -16,10 +16,10 @@
   },
   "diagnostic_hold": {
     "default": "off",
-    "scope": "browser-session relay scoped to app path",
+    "scope": "same-tab browsing-context relay",
     "recovery_hold": "optional",
     "post_login_hold": "persistent until Continue Now",
-    "pre_auth_relay": "dedicated first-party session cookie + sessionStorage mirror",
+    "pre_auth_relay": "window.name same-tab relay + sessionStorage mirror",
     "auth_completion_signal": "explicit app.js Engine unlock hook",
     "auto_dismiss": "forbidden while relay is pending",
     "clear_pending_on": "Continue Now or toggle-off"
