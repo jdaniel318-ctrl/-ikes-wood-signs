@@ -1,4 +1,4 @@
-# Dark Sky 8.6.49 — Owner Password Setup
+# Dark Sky 8.6.50 — Direct Login Relay
 
 - Owner login is email + Supabase password after first identity acceptance.
 - First verified owner session requires password creation before portal access.
@@ -6,7 +6,7 @@
 - Owner auth first paint stays on Securing Owner Session until state is resolved.
 - Passwords are never stored in Fleet/GitHub/browser application data.
 
-## 8.6.49 — Owner Password Setup
+## 8.6.50 — Direct Login Relay
 
 - Grants authenticated SELECT on Fleet authority tables so RLS can evaluate live sessions.
 - Explicitly revokes browser write privileges on those authority tables.

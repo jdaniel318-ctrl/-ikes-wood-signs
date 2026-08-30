@@ -1,10 +1,14 @@
-# Dark Sky 8.6.49 — Owner Password Setup
+# Dark Sky 8.6.50 — Direct Login Relay
+
+Narrow repair: owner sign-out now restores the live Supabase email/password mode explicitly. The Sign In handler no longer infers authentication mode from hidden UI controls. Existing Supabase password, first-login setup, recovery, and exact-vessel RLS remain unchanged.
+
+# Dark Sky 8.6.50 — Direct Login Relay
 
 Narrow owner-account lifecycle release: verified first login requires password setup; normal access is email + password; recovery is Supabase-backed; exact-vessel RLS remains authoritative.
 
-# Dark Sky 8.6.49 — Owner Password Setup
+# Dark Sky 8.6.50 — Direct Login Relay
 
-Repairs the live owner-session landing boundary discovered after Supabase successfully authenticated the Ike staging identity. The browser had a valid session but PostgreSQL returned 403 before RLS evaluation because the authenticated role lacked table-level SELECT privilege. 8.6.49 grants read capability only; RLS still controls exact-vessel visibility and browser writes remain forbidden. 8.6.42 remains the protected Known Good anchor until live denial/revocation proof completes.
+Repairs the live owner-session landing boundary discovered after Supabase successfully authenticated the Ike staging identity. The browser had a valid session but PostgreSQL returned 403 before RLS evaluation because the authenticated role lacked table-level SELECT privilege. 8.6.50 grants read capability only; RLS still controls exact-vessel visibility and browser writes remain forbidden. 8.6.42 remains the protected Known Good anchor until live denial/revocation proof completes.
 
 # Dark Sky 8.6.47 — Sign-In Bridge
 

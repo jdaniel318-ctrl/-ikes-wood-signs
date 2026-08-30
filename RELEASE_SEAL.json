@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.49",
-  "release": "Owner Password Setup",
-  "seal": "owner-password-8649-4f7c2a",
+  "build": "8.6.50",
+  "release": "Direct Login Relay",
+  "seal": "direct-login-relay-8650-71c4a9",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Owner Password Setup",
-  "name": "Owner Password Setup",
-  "releaseName": "Owner Password Setup"
+  "release_name": "Direct Login Relay",
+  "name": "Direct Login Relay",
+  "releaseName": "Direct Login Relay"
 }

@@ -1,7 +1,7 @@
 {
-  "release": "Owner Password Setup",
-  "name": "Owner Password Setup",
-  "file_count": 77,
+  "release": "Direct Login Relay",
+  "name": "Direct Login Relay",
+  "file_count": 80,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -39,6 +39,9 @@
     "MEMORY_MUSTER_MODEL.json",
     "MUSTER_TRACE_MODEL.json",
     "OWNER_AUTHORITY_MODEL.json",
+    "OWNER_AUTH_STATE_GATE_MODEL.json",
+    "OWNER_PASSWORD_MODEL.json",
+    "OWNER_RECOVERY_MODEL.json",
     "OWNER_SIGNIN_BRIDGE_MODEL.json",
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
     "PROOF_BARRIER_MODEL.json",
@@ -81,9 +84,9 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.49",
-  "seal": "owner-password-8649-4f7c2a",
-  "top_level_folder": "DarkSky8648-SessionLanding",
+  "build": "8.6.50",
+  "seal": "direct-login-relay-8650-71c4a9",
+  "top_level_folder": "DarkSky8650-DirectLoginRelay",
   "known_good_anchor": "8.6.42",
-  "mission": "Live Supabase owner sign-in bridge with exact-vessel RLS verification and recovery-only local fallback."
+  "mission": "Direct email/password owner login relay with explicit auth mode; first-login password setup and exact-vessel RLS remain unchanged."
 }
