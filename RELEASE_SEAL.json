@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.43",
-  "release": "Live Identity Staging",
-  "seal": "live-identity-staging-8643-5e8c21",
+  "build": "8.6.44",
+  "release": "Inventory Seal",
+  "seal": "inventory-seal-8644-7b19c4",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Live Identity Staging",
-  "name": "Live Identity Staging",
-  "releaseName": "Live Identity Staging"
+  "release_name": "Inventory Seal",
+  "name": "Inventory Seal",
+  "releaseName": "Inventory Seal"
 }

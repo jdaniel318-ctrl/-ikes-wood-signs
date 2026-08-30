@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-identity-keel-model-v1",
-  "build": "8.6.43",
+  "build": "8.6.44",
   "release": "Live Identity Staging",
   "mission": "Connect the real Black Flag Fleet Core staging backend without enabling outside-owner production until negative authorization tests pass.",
   "provider": {

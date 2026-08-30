@@ -1,6 +1,6 @@
 {
-  "release": "Live Identity Staging",
-  "name": "Atomic Seal",
+  "release": "Inventory Seal",
+  "name": "Inventory Seal",
   "file_count": 75,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -79,9 +79,9 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.43",
-  "seal": "atomic-seal-8642-3d7a91",
-  "top_level_folder": "DarkSky8642-AtomicSeal",
-  "known_good_anchor": "8.6.38",
-  "mission": "Bootstrap-only atomic identity repair over 8.6.41 Generation Settlement; no generation logic changes."
+  "build": "8.6.44",
+  "seal": "inventory-seal-8644-7b19c4",
+  "top_level_folder": "DarkSky8644-InventorySeal",
+  "known_good_anchor": "8.6.42",
+  "mission": "Bootstrap-only inventory identity repair over 8.6.43 Live Identity Staging; Supabase staging adapter and identity architecture unchanged."
 }

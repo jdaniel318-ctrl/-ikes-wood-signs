@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.43';
-const RELEASE_SEAL='live-identity-staging-8643-5e8c21';
+const RELEASE_BUILD='8.6.44';
+const RELEASE_SEAL='inventory-seal-8644-7b19c4';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

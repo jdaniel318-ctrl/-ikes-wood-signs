@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.43",
+  "build": "8.6.44",
   "release": "Live Identity Staging",
   "generatedAt": "2026-08-30T12:02:00-04:00",
   "checks": {
@@ -208,8 +208,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.43 Live Identity Staging connects the real Supabase staging backend with publishable-key-only browser access. Production owner access remains blocked until authenticated revocation, exact-vessel denial, expiry, and rollback tests pass.",
-  "candidate": "8.6.43",
+  "note": "8.6.44 Live Identity Staging connects the real Supabase staging backend with publishable-key-only browser access. Production owner access remains blocked until authenticated revocation, exact-vessel denial, expiry, and rollback tests pass.",
+  "candidate": "8.6.44",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -266,8 +266,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.6.43",
-    "seal": "live-identity-staging-8643-5e8c21",
+    "build": "8.6.44",
+    "seal": "inventory-seal-8644-7b19c4",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

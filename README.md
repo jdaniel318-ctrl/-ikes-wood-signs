@@ -1,6 +1,6 @@
-# Dark Sky 8.6.43 — Live Identity Staging
+# Dark Sky 8.6.44 — Inventory Seal
 
-Black Flag Fleet Core staging is now connected through a Supabase publishable browser key. The backend has canonical vessel, membership, global authority, and durable audit tables with default-deny RLS. Outside-owner production remains blocked until authenticated cross-vessel denial, revocation, expiry, and rollback tests pass. 8.6.42 remains the protected Known Good recovery anchor during this staging push.
+Inventory-only bootstrap repair over Live Identity Staging. RELEASE_INVENTORY.json now agrees atomically with the page, deployment manifest, release seal, web manifest, and service worker. The Supabase staging adapter and server-side Identity Keel foundation are unchanged. 8.6.42 remains the protected Known Good recovery anchor until this candidate earns promotion.
 
 # Dark Sky 8.6.41 — Generation Settlement
 
