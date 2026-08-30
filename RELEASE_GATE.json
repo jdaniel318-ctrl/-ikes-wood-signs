@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.40",
-  "release": "Registry Commit",
+  "build": "8.6.41",
+  "release": "Generation Settlement",
   "generatedAt": "2026-08-30T15:09:00+00:00",
   "checks": {
     "build_version": true,
@@ -208,8 +208,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.40 Registry Commit repairs current proof settlement while preserving 8.6.39 Identity Keel architecture. Admiral Course Authority is explicit and versioned; Production Identity remains WATCH until a live backend proves it.",
-  "candidate": "8.6.40",
+  "note": "8.6.41 Generation Settlement commits only a complete common generation: committed memory, canonical six-vessel Dock input, and usable six-vessel Fleet Intelligence. Operator filters remain presentation-only. Identity Keel and Admiral Course Authority remain unchanged; Production Identity stays WATCH until a live backend proves it.",
+  "candidate": "8.6.41",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

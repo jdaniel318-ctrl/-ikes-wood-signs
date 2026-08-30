@@ -1,6 +1,6 @@
 {
-  "release": "Registry Commit",
-  "name": "Registry Commit",
+  "release": "Generation Settlement",
+  "name": "Generation Settlement",
   "file_count": 75,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -79,9 +79,9 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.40",
-  "seal": "registry-commit-8640-7c31b2",
-  "top_level_folder": "DarkSky8640-RegistryCommit",
+  "build": "8.6.41",
+  "seal": "generation-settlement-8641-9f42c1",
+  "top_level_folder": "DarkSky8641-GenerationSettlement",
   "known_good_anchor": "8.6.38",
-  "mission": "Restore committed six-vessel proof after Identity Keel and establish versioned Admiral Course Authority without weakening production identity or recovery boundaries."
+  "mission": "Commit one complete six-vessel current proof only after committed memory, canonical Dock input, and Fleet Intelligence agree on the same generation; preserve Identity Keel, Admiral Course Authority, and the 8.6.38 recovery anchor."
 }

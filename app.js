@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.40';
+  const BUILD_VERSION='8.6.41';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2458,10 +2458,53 @@
   }
   window.igniteProofBootstrap8617=igniteProofBootstrap8617;
 
-  // 8.6.40 Registry Commit — normal Engine surfaces own proof settlement. Proving Ground stays read-only.
-  // This bounded coordinator never manufactures vessel truth: it only gives Dock/Intelligence evidence
-  // from the already-rendered current memory generation a chance to attach, then invokes the signer.
-  async function settleCurrentFleetProof8640(source='engine-home',timeoutMs=1800){
+  // 8.6.41 Generation Settlement — operator filters are presentation state, never fleet truth.
+  // The signer may use the canonical Dock input only after the live Dock has painted a bounded, non-HOLD
+  // surface and all six protected IDs survive the source pipeline. Fleet Intelligence must likewise expose
+  // a usable six-vessel snapshot for the same committed memory generation. No partial observation is signed.
+  async function captureGenerationSettlement8641(source='engine-home'){
+    const memory=memoryMusterRead8612();
+    const generation=Number(memory?.generation||0);
+    if(!(memory?.status==='committed'&&Number(memory?.protectedCount||0)===6&&generation>0)) return {dock:false,intelligence:false,generation};
+
+    let dockAttached=false,intelligenceAttached=false;
+    try{
+      const trace=await collectDockSourceTrace868({includeRendered:false});
+      const input=trace?.stages?.find(st=>st.name==='Fleet Dock input array');
+      const firstDrop=trace?.stages?.slice(1).find(st=>!st.ok);
+      const dockState=document.getElementById('fleetCommissioningState');
+      const dockSurfaceHealthy=!!document.getElementById('fleetCommissioningFleet')&&!/HOLD|READING/i.test(String(dockState?.textContent||''));
+      if(input?.ok&&!firstDrop&&dockSurfaceHealthy){
+        evidenceReconciliationWrite8610({dock:{ok:true,count:6,ids:[...(input.protectedIds||[])],trace,generation,capturedAt:new Date().toISOString(),source:'generation-settlement-canonical-dock'}});
+        proofSignerTraceEvent8616('dock-proof-recorded',{generation,count:6,ids:[...(input.protectedIds||[])],source:'generation-settlement-canonical-dock',presentationFilter:String(fleetDockFilter||'all'),presentationSearch:String(fleetDockSearch||'')});
+        proofBarrierAdvance8611('DOCK_PAINTED',`Canonical six-vessel Dock generation ${generation} settled independent of presentation filter`);
+        dockAttached=true;
+      }
+    }catch(err){proofSignerTraceEvent8616('generation-settlement-dock-error',{source,message:String(err?.message||err)});}
+
+    try{
+      const intelState=document.getElementById('fleetIntelligenceState');
+      const intelSummary=document.getElementById('fleetIntelligenceSummary');
+      const firstMetric=intelSummary?.querySelector('article strong');
+      const domCount=Number(firstMetric?.textContent||0);
+      const snap=window.__darkSkyFleetIntelligence||null;
+      const snapCount=Number(snap?.summary?.vessels||0);
+      const count=snapCount===6?6:domCount;
+      const state=String(intelState?.textContent||'');
+      const intelligenceSurfaceHealthy=!!intelSummary&&count===6&&!/READING FLEET|HOLD/i.test(state);
+      if(intelligenceSurfaceHealthy){
+        evidenceReconciliationWrite8610({intelligence:{ok:true,count:6,state:state||'FLEET STEADY',generation,capturedAt:new Date().toISOString(),source:'generation-settlement-intelligence'}});
+        proofSignerTraceEvent8616('intelligence-proof-recorded',{generation,count:6,state:state||'FLEET STEADY',source:'generation-settlement-intelligence'});
+        proofBarrierAdvance8611('INTELLIGENCE_PAINTED',`Six-vessel Fleet Intelligence generation ${generation} settled`);
+        intelligenceAttached=true;
+      }
+    }catch(err){proofSignerTraceEvent8616('generation-settlement-intelligence-error',{source,message:String(err?.message||err)});}
+    return {dock:dockAttached,intelligence:intelligenceAttached,generation};
+  }
+  window.captureGenerationSettlement8641=captureGenerationSettlement8641;
+
+  // 8.6.41 Generation Settlement — normal Engine surfaces own proof settlement. Proving Ground stays read-only.
+  async function settleCurrentFleetProof8640(source='engine-home',timeoutMs=2600){
     const started=Date.now();
     let attempt=0;
     while(Date.now()-started<timeoutMs){
@@ -2476,11 +2519,12 @@
       const intelligenceReady=!!evidence?.intelligence?.ok&&Number(evidence?.intelligence?.count||0)===6&&Number(evidence?.intelligence?.generation||0)===generation;
       if(!dockReady){ try{ await commandDeadline(renderFleetCommissioning({skipConvergence:true}),650,true); }catch(_){ } }
       if(!intelligenceReady){ try{ await commandDeadline(renderFleetIntelligenceDeck('',null),650,true); }catch(_){ } }
-      const proof=await tryFinalizeProofBootstrap8615(`registry-commit:${source}:${attempt}`);
+      await captureGenerationSettlement8641(`${source}:${attempt}`);
+      const proof=await tryFinalizeProofBootstrap8615(`generation-settlement:${source}:${attempt}`);
       if(proof?.ok&&Number(proof?.generation||0)===generation) return proof;
       await new Promise(r=>setTimeout(r,120));
     }
-    proofSignerTraceEvent8616('registry-commit-timeout',{source,timeoutMs,memoryGeneration:Number(memoryMusterRead8612()?.generation||0)});
+    proofSignerTraceEvent8616('generation-settlement-timeout',{source,timeoutMs,memoryGeneration:Number(memoryMusterRead8612()?.generation||0)});
     return null;
   }
   window.settleCurrentFleetProof8640=settleCurrentFleetProof8640;
@@ -13250,7 +13294,7 @@ The full order and approved media remain stored with this project.`;
     try{ await commandDeadline(renderFleetCommissioning(),1800,true); proofSignerTraceSnapshot8616('after-fleet-dock'); }catch(err){ proofSignerTraceEvent8616('engine-home-dock-error',{message:String(err?.message||err)}); console.warn('fleet dock warning',err); }
     try{ renderFleetLearningRegistry(); }catch(err){ console.warn('fleet learning warning',err); }
     try{ bindFleetIntelligenceDeck(); await renderFleetIntelligenceDeck(); proofSignerTraceSnapshot8616('after-fleet-intelligence'); }catch(err){ proofSignerTraceEvent8616('engine-home-intelligence-error',{message:String(err?.message||err)}); console.warn('fleet intelligence warning',err); }
-    try{ await settleCurrentFleetProof8640('engine-home-surfaces',2200); proofSignerTraceSnapshot8616('after-engine-home-registry-commit'); }catch(err){ proofSignerTraceEvent8616('engine-home-finalizer-error',{message:String(err?.message||err)}); console.warn('Registry Commit finalizer warning',err); }
+    try{ await settleCurrentFleetProof8640('engine-home-surfaces',3200); proofSignerTraceSnapshot8616('after-engine-home-registry-commit'); }catch(err){ proofSignerTraceEvent8616('engine-home-finalizer-error',{message:String(err?.message||err)}); console.warn('Generation Settlement finalizer warning',err); }
     // Proving Ground remains read-only; normal Engine surfaces complete current proof before readiness reads it.
     try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
     try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }

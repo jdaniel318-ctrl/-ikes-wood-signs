@@ -1,14 +1,14 @@
-# Dark Sky 8.6.40 — Registry Commit
+# Dark Sky 8.6.41 — Generation Settlement
 
 This candidate repairs the current Fleet proof chain introduced around the Identity Keel push and establishes explicit Admiral Course Authority. The current heading is strong, but Fleet doctrine is not frozen forever: the Admiral may deliberately promote a new course when conditions require it, with versioned history and rollback.
 
 **Recovery anchor remains 8.6.38 until this candidate earns Known Good.**
 
-# Dark Sky 8.6.40 — Registry Commit
+# Dark Sky 8.6.41 — Generation Settlement
 
 Hard production-identity foundation branched from certified 8.6.38. This release does **not** claim that production authentication is live yet; it installs the contracts, adapter, commissioning provenance, rollback bridge, and Proving Ground evidence required before outside-owner rollout.
 
-## 8.6.40 Registry Commit
+## 8.6.41 Generation Settlement
 
 - Supabase-ready production identity adapter with a strict browser boundary: publishable/legacy anon key only; `sb_secret_` and service-role credentials are forbidden in browser configuration.
 - Identity and authority are separated: Supabase may prove the human, while Dark Sky retains canonical vessel membership, role, capability, and commissioning authority.

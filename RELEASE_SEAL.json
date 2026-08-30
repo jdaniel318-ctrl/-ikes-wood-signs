@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.40",
-  "release": "Registry Commit",
-  "seal": "registry-commit-8640-7c31b2",
+  "build": "8.6.41",
+  "release": "Generation Settlement",
+  "seal": "generation-settlement-8641-9f42c1",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Registry Commit",
-  "name": "Registry Commit",
-  "releaseName": "Registry Commit"
+  "release_name": "Generation Settlement",
+  "name": "Generation Settlement",
+  "releaseName": "Generation Settlement"
 }

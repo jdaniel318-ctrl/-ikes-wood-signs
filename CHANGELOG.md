@@ -1,3 +1,12 @@
+# 8.6.41 — Generation Settlement
+
+- Keeps 8.6.40 Registry Commit and Identity Keel architecture intact.
+- Separates operator Fleet Dock filters/search from canonical six-vessel proof truth.
+- Requires a healthy bounded Dock surface plus six protected canonical Dock input IDs before attaching Dock proof to the committed memory generation.
+- Requires a usable six-vessel Fleet Intelligence surface for that same generation.
+- Refuses partial Dock/Intelligence observations; intermediate state remains diagnostic history only.
+- Finalizer commits once only after Memory → Dock → Intelligence agree on one complete generation.
+
 # 8.6.40 — Registry Commit
 
 - Repairs current proof settlement after 8.6.39 Identity Keel by bringing Fleet Doctrine Registry, Golden UI voyage governance, and Engine → Captain → Admiral command model onto the current release identity.
