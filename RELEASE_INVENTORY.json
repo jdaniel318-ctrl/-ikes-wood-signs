@@ -1,6 +1,6 @@
 {
-  "release": "Witness Truth",
-  "name": "Witness Truth",
+  "release": "Owner Authority",
+  "name": "Owner Authority",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -36,6 +36,7 @@
     "MEMORY_COMMIT_WATCHDOG_MODEL.json",
     "MEMORY_MUSTER_MODEL.json",
     "MUSTER_TRACE_MODEL.json",
+    "OWNER_AUTHORITY_MODEL.json",
     "PLUMB_LINE_CALIBRATION_AUDIT.json",
     "PROOF_BARRIER_MODEL.json",
     "PROOF_BOOTSTRAP_MODEL.json",
@@ -45,7 +46,6 @@
     "RELEASE_DISCIPLINE_827.md",
     "RELEASE_GATE.json",
     "RELEASE_HARDENING_COMPENDIUM.md",
-    "RELEASE_INVENTORY.json",
     "RELEASE_SEAL.json",
     "RESOLVER_LIFELINE_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.36",
-  "seal": "witness-truth-8636-9d6f42"
+  "build": "8.6.37",
+  "seal": "owner-authority-8637-4ac91e"
 }

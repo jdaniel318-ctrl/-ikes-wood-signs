@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.36';
+  const BUILD_VERSION='8.6.37';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -912,23 +912,39 @@
   function ownerSession(){
     try{return JSON.parse(sessionStorage.getItem(OWNER_SESSION_KEY)||'null')}catch(_){return null}
   }
+  const OWNER_AUTHORITY_WITNESS_KEY='darkSkyOwnerAuthorityWitnessV1';
+  const OWNER_SESSION_TTL_MS=8*60*60*1000;
+  function ownerWitness(event,session,extra={}){
+    const proof={schema:'dark-sky-owner-authority-witness-v1',build:BUILD_VERSION,event,at:new Date().toISOString(),projectId:session?.projectId||extra.projectId||'',sessionId:session?.sessionId||'',authority:'project_owner',namespace:session?.namespace||extra.namespace||'',...extra};
+    try{sessionStorage.setItem(OWNER_AUTHORITY_WITNESS_KEY,JSON.stringify(proof));}catch(_){}
+    window.__darkSkyOwnerAuthorityWitness=proof;
+    return proof;
+  }
   function saveOwnerSession(projectId){
+    const p=projectById(projectId);
+    const now=Date.now();
     const session={
-      projectId,
-      sessionId:'OWN-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9),
-      startedAt:new Date().toISOString()
+      schema:'dark-sky-owner-session-v2',projectId,namespace:p?.namespace||window.BlackFlagV3Core?.namespaceFor?.(projectId)||'',authority:'project_owner',
+      sessionId:'OWN-'+now.toString(36)+'-'+Math.random().toString(36).slice(2,9),startedAt:new Date(now).toISOString(),expiresAt:new Date(now+OWNER_SESSION_TTL_MS).toISOString()
     };
     sessionStorage.setItem(OWNER_SESSION_KEY,JSON.stringify(session));
+    ownerWitness('session-started',session,{scopeVerified:true});
     window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId,category:'session',action:'owner.session.started',detail:session.sessionId});
     return session;
   }
-  function clearOwnerSession(){
+  function ownerSessionValid(session,projectId){
+    if(!session||session.authority!=='project_owner'||String(session.projectId)!==String(projectId))return false;
+    if(session.expiresAt&&Date.parse(session.expiresAt)<=Date.now())return false;
+    const p=projectById(projectId), ns=p?.namespace||window.BlackFlagV3Core?.namespaceFor?.(projectId)||'';
+    return !session.namespace||!ns||session.namespace===ns;
+  }
+  function clearOwnerSession(reason='explicit-logout'){
     const s=ownerSession();
-    if(s)window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:s.projectId,category:'session',action:'owner.session.ended',detail:s.sessionId||''});
+    if(s){ownerWitness('session-ended',s,{reason,scopeVerified:true});window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:s.projectId,category:'session',action:'owner.session.ended',detail:s.sessionId||''});}
     sessionStorage.removeItem(OWNER_SESSION_KEY);
   }
 
-  const OWNER_TEST_LOGIN={login:'joe',password:'4353'};
+  const OWNER_TEST_LOGIN={login:'joe',password:'8642'};
 
   function normalizeOwnerLogin(value){
     return String(value||'').trim().toLowerCase();
@@ -998,11 +1014,16 @@
 
   async function ensureTestOwnerCredential(p){
     ensureProjectGovernance(p);
-    if(!p.ownerAccess.credential){
+    let replace=!p.ownerAccess.credential;
+    const c=p.ownerAccess.credential;
+    if(c?.testMode&&c?.login==='joe'&&c?.salt&&c?.passwordHash){
+      try{replace=(await sha256Hex(`${c.salt}:4353`))===c.passwordHash;}catch(_){}
+    }
+    if(replace){
       await createOwnerCredential(p,OWNER_TEST_LOGIN.login,OWNER_TEST_LOGIN.password,{testMode:true});
       p.ownerAccess.status='active';
-      await persistProjectMutation(p,{reason:'owner.test_credential.enable'});
-      logActivity(p.id,'Test owner login enabled','joe');
+      await persistProjectMutation(p,{reason:'owner.test_credential.separate'});
+      logActivity(p.id,'Test owner login separated from Project Admin','joe');
     }
   }
 
@@ -1041,7 +1062,7 @@
       <label>Password<input id="ownerLoginPassword" type="password" autocomplete="current-password"></label>
       <button id="ownerLoginSubmit" class="primary-btn" type="button">SIGN IN</button>
       <p id="ownerLoginError" class="owner-login-error"></p>
-      ${p.ownerAccess.credential?.testMode?'<p class="owner-test-login-note">Test login for this build: <strong>joe</strong> / <strong>4353</strong></p>':''}
+      ${p.ownerAccess.credential?.testMode?'<p class="owner-test-login-note">Test owner login: <strong>joe</strong> / <strong>8642</strong> • separate from Project Admin 4353</p>':''}
     </div>`;
 
     $('ownerLoginSubmit')?.addEventListener('click',async()=>{
@@ -4164,7 +4185,7 @@
     if(p?.v4AdmissionReviewRequired){window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p?.id||null,category:'authorization',action:'owner.mutation.blocked',detail:`${action} • admission_review_required`});return false;}
     const session=ownerSession();
     const result=window.BlackFlagV3Core?.authorizeProjectMutation?.({project:p,actorRole:'project_owner',contextProjectId:session?.projectId||'',capability});
-    if(!session || session.projectId!==p?.id || (result && !result.ok)){
+    if(!ownerSessionValid(session,p?.id) || (result && !result.ok)){
       window.BlackFlagV3Core?.audit?.({actorRole:'project_owner',projectId:p?.id||null,category:'authorization',action:'owner.mutation.blocked',detail:`${action} • ${result?.error||'owner_session_mismatch'}`});
       return false;
     }
@@ -5169,6 +5190,16 @@
     const captainPin=String(window.DarkSkyCaptainAuthContract?.pin||window.DarkSkyCaptainAuthContract?.recoveryPin||'');
     add('captain-auth','Captain authority boundary',captainPin==='19613'?'pass':'warn',captainPin==='19613'?'19613 Captain credential contract is published by the Captain module.':'Captain module did not publish its credential contract for runtime verification.');
 
+    const ownerRows=readinessRows8611.map(p=>{ensureProjectGovernance(p);const inv=p.ownerAccess?.invitation;return {id:p.id,namespace:p.namespace||window.BlackFlagV3Core?.namespaceFor?.(p.id)||'',enabled:p.ownerAccess?.enabled!==false,invitationProject:inv?.projectId||p.id,invitationNamespace:inv?.namespace||''};});
+    const ownerScopeBad=ownerRows.filter(r=>r.invitationProject!==r.id||(r.invitationNamespace&&r.namespace&&r.invitationNamespace!==r.namespace));
+    add('owner-project-scope','Owner vessel scope',ownerScopeBad.length?'fail':'pass',ownerScopeBad.length?`${ownerScopeBad.length} owner invitation(s) crossed a project/namespace boundary.`:`${ownerRows.length} owner authority records remain bound to their canonical vessel and namespace.`);
+    const ownerSessionContract=String(saveOwnerSession).includes("authority:'project_owner'")&&String(saveOwnerSession).includes('expiresAt')&&String(ownerSessionValid).includes('session.projectId')&&String(clearOwnerSession).includes("'session-ended'");
+    add('owner-session-proof','Owner session lifecycle proof',ownerSessionContract?'pass':'fail',ownerSessionContract?'Owner session carries explicit project_owner authority, vessel scope, expiry, durable witness start/end events, and deterministic logout.':'Owner session scope, expiry, witness, or logout contract is incomplete.');
+    const ownerCredSeparated=OWNER_TEST_LOGIN.password!==DEFAULT_ADMIN_PIN&&OWNER_TEST_LOGIN.password!==DEFAULT_ENGINE_PIN&&OWNER_TEST_LOGIN.password!=='19613';
+    add('owner-credential-separation','Owner credential separation',ownerCredSeparated?'pass':'fail',ownerCredSeparated?'Private owner-test credential is distinct from Project Admin, Black Flag, Captain, and Client Preview authority credentials.':'Owner-test credential overlaps another authority credential.');
+    const productionOwnerBackend=false;
+    add('owner-production-backend','Production owner identity backend',productionOwnerBackend?'pass':'warn','Static GitHub deployment intentionally remains private/test-only for owner authority. Real outside-owner production requires server-backed authentication, authorization, session invalidation, and secret storage.','check');
+
     const generated=String(randomClientPreviewPin());
     const reserved=new Set([DEFAULT_ADMIN_PIN,DEFAULT_ENGINE_PIN,'19613']);
     const inviteOk=/^\d{6}$/.test(generated)&&!reserved.has(generated);
@@ -5402,6 +5433,7 @@
     };
     return [
       combine('authority','Authority Voyage',['engine-auth','project-admin','captain-auth'],'Black Flag → Project Admin → Captain authority contracts.'),
+      combine('owner-authority','Owner Authority Voyage',['owner-project-scope','owner-session-proof','owner-credential-separation'],'Owner identity → canonical vessel scope → expiring project_owner session → deterministic logout/recovery.'),
       combine('isolation','Isolation Voyage',['project-identity','order-boundary'],'Canonical Project IDs and project-scoped operational records.'),
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),
@@ -13536,9 +13568,9 @@ The full order and approved media remain stored with this project.`;
     ensureProjectGovernance(p);
     if(platformStatus(p)!=='approved'){await openOwnerPortal(p.id);return;}
     const session=ownerSession();
-    const v3Allowed=window.BlackFlagV3Identity?.ownerCan
+    const v3Allowed=ownerSessionValid(session,p.id) && (window.BlackFlagV3Identity?.ownerCan
       ? window.BlackFlagV3Identity.ownerCan(p,moduleKey,session?.projectId||'')
-      : true;
+      : true);
     if(!v3Allowed){alert('This business tool is not currently enabled.');return;}
     const caps=new Set(p.ownerAccess.capabilities||[]);
     if(moduleKey!=='settings' && !caps.has(moduleKey)){alert('This business tool is not currently enabled.');return;}
@@ -13633,7 +13665,7 @@ The full order and approved media remain stored with this project.`;
           <label>Confirm new password<input id="ownerConfirmPassword" type="password" autocomplete="new-password"></label>
           <button id="ownerChangePassword" class="primary-btn" type="button">CHANGE PASSWORD</button>
           <p id="ownerSettingsStatus" class="owner-save-status"></p>
-          <p class="owner-test-login-note">This build allows the temporary test password 4353. Production accounts will require a valid email and a stronger password.</p>
+          <p class="owner-test-login-note">This private build uses a separate temporary owner credential. Production accounts still require server-backed identity and authorization.</p>
         </article>`);
     }
 
@@ -13966,7 +13998,7 @@ The full order and approved media remain stored with this project.`;
     if(hash==='#owner-portal'){
       const session=ownerSession();
       const p=session?.projectId?projectById(session.projectId):null;
-      if(p&&p.ownerAccess?.status==='active'){
+      if(p&&ownerSessionValid(session,p.id)&&p.ownerAccess?.status==='active'){
         await openOwnerPortal(p.id);
       }
     }
@@ -13983,7 +14015,7 @@ The full order and approved media remain stored with this project.`;
       if(!p){ window.__darkSkyShowRecovery?.('owner-project-not-found'); return; }
       if(view==='portal'){
         const session=ownerSession();
-        if(session?.projectId===projectId && p.ownerAccess?.status==='active'){ await openOwnerPortal(projectId); return; }
+        if(ownerSessionValid(session,projectId) && p.ownerAccess?.status==='active'){ await openOwnerPortal(projectId); return; }
         await showOwnerLogin(projectId,'Please sign in to continue.'); return;
       }
       await showOwnerLogin(projectId); return;

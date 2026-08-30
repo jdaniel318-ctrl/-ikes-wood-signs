@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.6.35",
+  "build": "8.6.37",
   "policy": "real-ui-path-release-assurance",
   "voyages": [
     {
@@ -69,6 +69,20 @@
       ],
       "release_blocker": true,
       "staging_ledger_contract": "When a live staging action occurs, persisted staged records must equal targeted vessels after re-render while adoption remains separate."
+    },
+    {
+      "id": "owner-authority",
+      "label": "Owner Authority Voyage",
+      "class": "required",
+      "proof": [
+        "credential-separation",
+        "canonical-vessel-scope",
+        "namespace-scope",
+        "expiring-project_owner-session",
+        "logout-witness",
+        "safe-return"
+      ],
+      "production_backend": "required-before-outside-owner-rollout"
     }
   ]
 }

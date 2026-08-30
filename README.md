@@ -1,4 +1,13 @@
-# Dark Sky 8.6.36 — Witness Truth
+# Dark Sky 8.6.37 — Owner Authority
+
+## 8.6.37 Owner authority hardening
+
+- Branches from certified 8.6.36 Witness Truth.
+- Gives owner sessions an explicit `project_owner` authority, exact canonical Project ID/namespace scope, eight-hour expiry, and deterministic logout witness.
+- Separates the private Ike owner-test credential (`joe / 8642`) from Project Admin 4353, Engine 5615, Captain 19613, and Client Preview credentials; an existing local `joe / 4353` test credential is migrated on boot.
+- Adds an Owner Authority Proving Ground voyage for scope, session lifecycle, and credential separation.
+- Keeps production truth honest: static GitHub Pages does **not** become server-backed identity. Outside-owner production rollout remains blocked until a real authentication/authorization/session backend exists.
+- Preserves the 8.6.36 Known Good anchor until this candidate earns promotion on-device.
 
 ## 8.6.36 Witness hardening
 

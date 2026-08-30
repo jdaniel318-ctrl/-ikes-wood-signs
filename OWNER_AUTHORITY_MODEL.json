@@ -1,0 +1,38 @@
+{
+  "schema": "dark-sky-owner-authority-model-v1",
+  "build": "8.6.37",
+  "release": "Owner Authority",
+  "authority": "project_owner",
+  "scope": "exact-canonical-project-and-namespace",
+  "session": {
+    "storage": "sessionStorage",
+    "ttl_hours": 8,
+    "expiry_required": true,
+    "logout_witness_required": true
+  },
+  "test_credential": {
+    "login": "joe",
+    "password": "8642",
+    "project": "ikes-wood-signs",
+    "separate_from": [
+      "project_admin_4353",
+      "engine_5615",
+      "captain_19613",
+      "client_preview"
+    ]
+  },
+  "production_boundary": {
+    "server_backed_identity_required": true,
+    "static_github_pages_is_not_production_auth": true,
+    "outside_owner_rollout": "blocked-until-backend"
+  },
+  "proof_chain": [
+    "credential",
+    "canonical-project",
+    "namespace",
+    "project_owner-session",
+    "expiry",
+    "logout-witness",
+    "safe-return"
+  ]
+}

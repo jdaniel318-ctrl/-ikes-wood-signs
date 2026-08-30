@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.36",
+  "build": "8.6.37",
   "release": "Storage Truth",
   "generatedAt": "2026-08-30T04:30:00+00:00",
   "checks": {
@@ -193,8 +193,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.36 Witness Truth preserves the 8.6.35 storage/relay pass while making modern authenticated witness settlement authoritative, treating localStorage quota exhaustion as degraded legacy telemetry, retiring false legacy-hook watches, and separating capability staging evidence from Command Navigation. Experimental Ike length remains WATCH.",
-  "candidate": "8.6.36",
+  "note": "8.6.37 Owner Authority branches from certified 8.6.36 and hardens exact-vessel owner scope, expiring project_owner sessions, durable login/logout witness evidence, and credential separation. Static GitHub owner access remains private/test-only; server-backed production identity is explicitly not claimed.",
+  "candidate": "8.6.37",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,3 +1,10 @@
+# 8.6.37 — Owner Authority
+- Branched from certified 8.6.36 Witness Truth.
+- Added exact-vessel owner scope, namespace scope, expiring project_owner sessions, login/logout witness evidence, and deterministic logout.
+- Separated Ike private owner-test credential from Project Admin 4353; old local joe/4353 test credential migrates to joe/8642.
+- Added Owner Authority Voyage to Proving Ground.
+- Production Owner Identity remains an explicit operational ATTENTION until server-backed identity exists; no static-site security claim is made.
+
 # 8.6.36 — Seal Truth
 ## 8.6.36 — Witness Truth
 - Preserves 8.6.35 Storage Truth and 6/6 Fleet Registry proof.
