@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.39",
-  "release": "Identity Keel",
-  "seal": "identity-keel-8639-4d91a2",
+  "build": "8.6.40",
+  "release": "Registry Commit",
+  "seal": "registry-commit-8640-7c31b2",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Identity Keel",
-  "name": "Identity Keel",
-  "releaseName": "Identity Keel"
+  "release_name": "Registry Commit",
+  "name": "Registry Commit",
+  "releaseName": "Registry Commit"
 }

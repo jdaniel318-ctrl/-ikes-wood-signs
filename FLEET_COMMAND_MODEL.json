@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.6.35",
+  "build": "8.6.40",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Canonical Six",
+  "release": "Registry Commit",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -90,5 +90,15 @@
     "direct_actions": true,
     "storage_growth_watch": true,
     "captain_outcomes_durable": true
+  },
+  "admiralCourseAuthority": {
+    "enabled": true,
+    "authority": "admiral",
+    "captainRole": "recommend-and-execute-delegated-course",
+    "engineRole": "implement-current-promoted-course",
+    "promotionRequired": true,
+    "historyRetained": true,
+    "rollbackSupported": true,
+    "invariant": "Changing Fleet course must not silently rewrite prior proof, vessel identity, owner authority, or release history."
   }
 }

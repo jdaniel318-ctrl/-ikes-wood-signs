@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.6.39",
-  "policy": "real-ui-path-release-assurance",
+  "build": "8.6.40",
+  "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
       "id": "fleet-entry",
@@ -99,7 +99,12 @@
         "logout-witness",
         "safe-return"
       ],
-      "production_backend": "required-before-outside-owner-rollout"
+      "production_backend": "required-before-outside-owner-rollout",
+      "release_blocker": true
     }
-  ]
+  ],
+  "governance": {
+    "admiralMayChangeCourse": true,
+    "rule": "Golden voyages may evolve when Admiral deliberately promotes a new Fleet course. A course change must explicitly version the voyage set; it may add or supersede assurance paths but may not silently weaken active release blockers."
+  }
 }

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-owner-authority-model-v1",
-  "build": "8.6.39",
-  "release": "Owner Authority \u2014 carried aboard Identity Keel",
+  "build": "8.6.40",
+  "release": "Owner Authority \u2014 carried aboard Registry Commit",
   "authority": "project_owner",
   "scope": "exact-canonical-project-and-namespace",
   "session": {

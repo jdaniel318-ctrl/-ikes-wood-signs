@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.6.35",
-  "release": "Canonical Six",
+  "build": "8.6.40",
+  "release": "Registry Commit",
   "status": "active",
   "principles": [
     {
@@ -63,6 +63,41 @@
       "rule": "Operational command surfaces are complete in Professional View; Cinematic View is optional presentation and cannot be an operating dependency.",
       "scope": "upper-command",
       "origin": "8.5.4 command audit"
+    },
+    {
+      "id": "admiral-course-authority",
+      "rule": "The Admiral may deliberately change Fleet course. Course changes are versioned, promoted explicitly, preserve prior doctrine as history, and remain rollback-capable.",
+      "scope": "fleet-governance",
+      "origin": "8.6.40 Registry Commit hardening"
     }
-  ]
+  ],
+  "governance": {
+    "courseAuthority": {
+      "holder": "admiral",
+      "admiralMayChangeCourse": true,
+      "requiresDeliberatePromotion": true,
+      "captainMayRecommend": true,
+      "engineMayImplementApprovedCourse": true,
+      "ownerMayNotAlterFleetDoctrine": true,
+      "historyIsAppendOnly": true,
+      "rollbackSupported": true,
+      "rule": "Current doctrine governs the Fleet until the Admiral deliberately promotes a successor course. A new course may supersede prior doctrine without erasing why the prior course existed or which releases operated under it."
+    },
+    "courseLifecycle": [
+      "proposed",
+      "reviewed",
+      "promoted",
+      "active",
+      "superseded",
+      "rolled-back"
+    ],
+    "currentCourse": {
+      "id": "identity-keel-and-registry-truth",
+      "version": 1,
+      "status": "active",
+      "effectiveBuild": "8.6.40",
+      "heading": "Production identity with recoverable Fleet authority and committed proof truth"
+    },
+    "historyPolicy": "append-only; superseded course records remain evidence and rollback references"
+  }
 }

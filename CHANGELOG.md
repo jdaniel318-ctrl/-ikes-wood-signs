@@ -1,4 +1,13 @@
-# Dark Sky 8.6.39 — Identity Keel
+# 8.6.40 — Registry Commit
+
+- Repairs current proof settlement after 8.6.39 Identity Keel by bringing Fleet Doctrine Registry, Golden UI voyage governance, and Engine → Captain → Admiral command model onto the current release identity.
+- Adds bounded normal-Engine proof settlement so Dock and Fleet Intelligence attach to the same committed memory generation before readiness consumes current proof; Proving Ground remains read-only.
+- Adds Admiral Course Authority: the Admiral may deliberately change Fleet course, version and promote successor doctrine, preserve superseded doctrine as append-only history, and roll back without rewriting prior vessel/release truth.
+- Golden voyages are no longer hard-coded to exactly six forever; six or more active release blockers may exist, and future Admiral-promoted course changes may evolve the voyage set without silently weakening current blockers.
+- Production Identity remains a deliberate WATCH until a real backend proves server membership, exact-vessel RLS, revocation, expiry, negative cross-vessel tests, and rollback.
+- 8.6.38 remains the protected Known Good anchor during this candidate push.
+
+# Dark Sky 8.6.40 — Registry Commit
 
 - Added Supabase-ready production identity adapter; browser accepts only publishable/legacy anon keys and explicitly rejects elevated secret/service-role credentials.
 - Added server membership and exact-vessel RLS contracts without claiming a live backend.

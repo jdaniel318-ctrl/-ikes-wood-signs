@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.39';
+  const BUILD_VERSION='8.6.40';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2457,6 +2457,33 @@
     return bootstrapIgnitionPromise8617;
   }
   window.igniteProofBootstrap8617=igniteProofBootstrap8617;
+
+  // 8.6.40 Registry Commit — normal Engine surfaces own proof settlement. Proving Ground stays read-only.
+  // This bounded coordinator never manufactures vessel truth: it only gives Dock/Intelligence evidence
+  // from the already-rendered current memory generation a chance to attach, then invokes the signer.
+  async function settleCurrentFleetProof8640(source='engine-home',timeoutMs=1800){
+    const started=Date.now();
+    let attempt=0;
+    while(Date.now()-started<timeoutMs){
+      attempt+=1;
+      const memory=memoryMusterRead8612();
+      const generation=Number(memory?.generation||0);
+      if(!(memory?.status==='committed'&&Number(memory?.protectedCount||0)===6&&generation>0)) return null;
+      const existing=proofBarrierRead8611()?.currentProof||null;
+      if(existing?.ok&&Number(existing?.generation||0)===generation) return existing;
+      const evidence=evidenceReconciliationRead8610();
+      const dockReady=!!evidence?.dock?.ok&&Number(evidence?.dock?.count||0)===6&&Number(evidence?.dock?.generation||0)===generation;
+      const intelligenceReady=!!evidence?.intelligence?.ok&&Number(evidence?.intelligence?.count||0)===6&&Number(evidence?.intelligence?.generation||0)===generation;
+      if(!dockReady){ try{ await commandDeadline(renderFleetCommissioning({skipConvergence:true}),650,true); }catch(_){ } }
+      if(!intelligenceReady){ try{ await commandDeadline(renderFleetIntelligenceDeck('',null),650,true); }catch(_){ } }
+      const proof=await tryFinalizeProofBootstrap8615(`registry-commit:${source}:${attempt}`);
+      if(proof?.ok&&Number(proof?.generation||0)===generation) return proof;
+      await new Promise(r=>setTimeout(r,120));
+    }
+    proofSignerTraceEvent8616('registry-commit-timeout',{source,timeoutMs,memoryGeneration:Number(memoryMusterRead8612()?.generation||0)});
+    return null;
+  }
+  window.settleCurrentFleetProof8640=settleCurrentFleetProof8640;
 
   let proofFinalizePromise8615=null;
   async function tryFinalizeProofBootstrap8615(source='surface-render'){
@@ -5208,7 +5235,7 @@
     add('identity-membership-contract','Server membership authority model',membershipContract?'pass':'fail',membershipContract?'Production authority requires server-side user → active membership → exact Project ID → role/capability resolution.':'Server membership authority contract is missing.');
     const rlsContract=String(window.BlackFlagV3Identity?.productionAuth?.require||'').includes('row_level_security');
     add('identity-rls-contract','Row-level vessel isolation contract',rlsContract?'pass':'fail',rlsContract?'Every exposed production table must be default-deny with RLS enforcing exact vessel membership independently of browser state.':'Production RLS contract is missing.');
-    add('owner-production-backend','Production owner identity backend',productionAuthStatus.ready?'pass':'warn',productionAuthStatus.ready?'Supabase production adapter is configured with publishable-key-only browser access and the Identity Keel RLS contract declared.':'Identity Keel is installed, but the real Supabase backend is not yet commissioned. Outside-owner production remains blocked; the 8.6.38 recovery bridge stays aboard.','check');
+    add('owner-production-backend','Production owner identity backend',productionAuthStatus.ready?'pass':'warn',productionAuthStatus.ready?'Supabase production adapter is configured with publishable-key-only browser access and the Registry Commit RLS contract declared.':'Registry Commit is installed, but the real Supabase backend is not yet commissioned. Outside-owner production remains blocked; the 8.6.38 recovery bridge stays aboard.','check');
     add('identity-revocation-proof','Server revocation proof',productionAuthStatus.ready?'warn':'warn',productionAuthStatus.ready?'Backend is configured; real membership revocation still requires a live negative test before this voyage can clear.':'No live backend exists yet, so server-side revocation cannot be proven.','check');
     add('identity-rollback-bridge','No-man-left-behind rollback bridge','pass','8.6.38 remains the protected Known Good recovery anchor and the private owner path is retained as test/recovery-only until production sign-in, vessel scope, revocation, rollback, and multi-device behavior are proven.','check');
 
@@ -5239,14 +5266,16 @@
     const professionalCaptain=!!document.getElementById('captainProfessionalSurface') && document.getElementById('captainQuarters')?.dataset?.commandMode==='professional';
     add('professional-first-command','Professional-first Captain command',professionalCaptain?'pass':'warn',professionalCaptain?'Captain Professional Command is the default operational surface; Cinematic View remains a deliberate second view.':'Captain professional surface was not confirmed as the active default in the current DOM.');
     const doctrineRegistry=await safe(async()=>{const r=await fetch(`FLEET_DOCTRINE_REGISTRY.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
-    const doctrineOk=doctrineRegistry?.build===BUILD_VERSION && Array.isArray(doctrineRegistry?.principles) && doctrineRegistry.principles.length>=10;
-    add('fleet-doctrine-registry','Fleet Doctrine Registry',doctrineOk?'pass':'fail',doctrineOk?`${doctrineRegistry.principles.length} active fleet principles retain origin and scope in a machine-readable registry.`:'Fleet Doctrine Registry is missing, stale, or incomplete.');
+    const courseAuthorityOk=doctrineRegistry?.governance?.courseAuthority?.holder==='admiral' && doctrineRegistry?.governance?.courseAuthority?.admiralMayChangeCourse===true && doctrineRegistry?.governance?.courseAuthority?.historyIsAppendOnly===true && doctrineRegistry?.governance?.courseAuthority?.rollbackSupported===true;
+    const doctrineOk=doctrineRegistry?.build===BUILD_VERSION && Array.isArray(doctrineRegistry?.principles) && doctrineRegistry.principles.length>=10 && courseAuthorityOk;
+    add('fleet-doctrine-registry','Fleet Doctrine Registry',doctrineOk?'pass':'fail',doctrineOk?`${doctrineRegistry.principles.length} active fleet principles are current; Admiral Course Authority is versioned, deliberate, history-retaining, and rollback-capable.`:'Fleet Doctrine Registry is missing, stale, incomplete, or lacks current Admiral Course Authority.');
     const goldenVoyages=await safe(async()=>{const r=await fetch(`GOLDEN_VOYAGES.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
-    const goldenOk=goldenVoyages?.build===BUILD_VERSION && Array.isArray(goldenVoyages?.voyages) && goldenVoyages.voyages.length===6 && goldenVoyages.voyages.every(v=>v.release_blocker===true);
-    add('golden-voyage-contract','Golden UI Voyage framework',goldenOk?'pass':'fail',goldenOk?'Six real-UI journeys are registered as release-blocking assurance paths.':'Golden Voyage registry is missing, stale, or not release-blocking.');
+    const releaseBlockingVoyages=Array.isArray(goldenVoyages?.voyages)?goldenVoyages.voyages.filter(v=>v?.release_blocker===true):[];
+    const goldenOk=goldenVoyages?.build===BUILD_VERSION && releaseBlockingVoyages.length>=6 && goldenVoyages?.governance?.admiralMayChangeCourse===true;
+    add('golden-voyage-contract','Golden UI Voyage framework',goldenOk?'pass':'fail',goldenOk?`${releaseBlockingVoyages.length} real-UI journeys are registered as release-blocking assurance paths; Admiral may deliberately version the voyage set without silently weakening active blockers.`:'Golden Voyage registry is missing, stale, lacks six or more release-blocking journeys, or lacks governed course-change authority.');
     const commandModel=await safe(async()=>{const r=await fetch(`FLEET_COMMAND_MODEL.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
-    const commandOk=commandModel?.build===BUILD_VERSION && commandModel?.views?.operational==='professional-default' && commandModel?.views?.presentation==='cinematic-secondary' && Array.isArray(commandModel?.layers)&&commandModel.layers.length===3;
-    add('command-layer-placement','Engine → Captain → Admiral command model',commandOk?'pass':'fail',commandOk?'Engine operates, Captain commands, Admiral governs; professional operation is complete without cinematic presentation.':'Command layer placement or professional/cinematic contract is incomplete.');
+    const commandOk=commandModel?.build===BUILD_VERSION && commandModel?.views?.operational==='professional-default' && commandModel?.views?.presentation==='cinematic-secondary' && Array.isArray(commandModel?.layers)&&commandModel.layers.length===3 && commandModel?.admiralCourseAuthority?.enabled===true && commandModel?.admiralCourseAuthority?.authority==='admiral';
+    add('command-layer-placement','Engine → Captain → Admiral command model',commandOk?'pass':'fail',commandOk?'Engine operates, Captain commands, Admiral governs and may deliberately change Fleet course; professional operation remains complete without cinematic presentation.':'Command layer placement, professional/cinematic contract, or Admiral Course Authority is incomplete.');
 
     const fleetDockBoundedPaint=String(renderFleetCommissioning).includes('LOCAL ROSTER • VERIFYING')&&String(renderFleetCommissioning).includes('commandDeadline(convergence')&&String(renderFleetCommissioning).includes('skipConvergence:true');
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');
@@ -13221,8 +13250,8 @@ The full order and approved media remain stored with this project.`;
     try{ await commandDeadline(renderFleetCommissioning(),1800,true); proofSignerTraceSnapshot8616('after-fleet-dock'); }catch(err){ proofSignerTraceEvent8616('engine-home-dock-error',{message:String(err?.message||err)}); console.warn('fleet dock warning',err); }
     try{ renderFleetLearningRegistry(); }catch(err){ console.warn('fleet learning warning',err); }
     try{ bindFleetIntelligenceDeck(); await renderFleetIntelligenceDeck(); proofSignerTraceSnapshot8616('after-fleet-intelligence'); }catch(err){ proofSignerTraceEvent8616('engine-home-intelligence-error',{message:String(err?.message||err)}); console.warn('fleet intelligence warning',err); }
-    try{ await tryFinalizeProofBootstrap8615('engine-home-surfaces'); proofSignerTraceSnapshot8616('after-engine-home-finalizer'); }catch(err){ proofSignerTraceEvent8616('engine-home-finalizer-error',{message:String(err?.message||err)}); console.warn('bootstrap finalizer warning',err); }
-    // 8.6.15 Proving Ground remains read-only; normal Engine surfaces complete current proof.
+    try{ await settleCurrentFleetProof8640('engine-home-surfaces',2200); proofSignerTraceSnapshot8616('after-engine-home-registry-commit'); }catch(err){ proofSignerTraceEvent8616('engine-home-finalizer-error',{message:String(err?.message||err)}); console.warn('Registry Commit finalizer warning',err); }
+    // Proving Ground remains read-only; normal Engine surfaces complete current proof before readiness reads it.
     try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
     try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }
     try{ await commandDeadline(renderV3ArchitectureStatus(),2200,true); }catch(err){ console.warn('broadside status warning',err); }

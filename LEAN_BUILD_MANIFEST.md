@@ -1,7 +1,7 @@
-# Dark Sky 8.6.39 — Identity Keel Atomic Package Manifest
+# Dark Sky 8.6.40 — Registry Commit Atomic Package Manifest
 
 - Full package: **75 files including `CHECKSUMS.sha256`**.
-- Protected on-device Known Good anchor: **8.6.38** until Identity Keel earns promotion.
+- Protected on-device Known Good anchor: **8.6.38** until Registry Commit earns promotion.
 - Production identity backend: **NOT CLAIMED LIVE** in this package.
 - Supabase browser boundary: publishable/legacy anon only; secret/service-role keys forbidden.
 - Vessel commissioning authority: Admiral / Captain / Engine Admin. Commissioner does not automatically become owner.

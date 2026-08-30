@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.39",
-  "release": "Identity Keel",
+  "build": "8.6.40",
+  "release": "Registry Commit",
   "generatedAt": "2026-08-30T15:09:00+00:00",
   "checks": {
     "build_version": true,
@@ -198,14 +198,18 @@
     "fleet_unassigned_vessel_state": true,
     "production_identity_live_backend": false,
     "server_revocation_live_proof": false,
-    "known_good_8638_rollback_bridge": true
+    "known_good_8638_rollback_bridge": true,
+    "fleet_doctrine_registry_current": true,
+    "golden_voyage_governance_current": true,
+    "admiral_course_authority": true,
+    "registry_commit_bounded_settlement": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.39 Identity Keel branches from certified 8.6.38. Architecture gates are installed; live production backend and revocation proof intentionally remain WATCH until a real Supabase development project is connected and negative tests pass.",
-  "candidate": "8.6.39",
+  "note": "8.6.40 Registry Commit repairs current proof settlement while preserving 8.6.39 Identity Keel architecture. Admiral Course Authority is explicit and versioned; Production Identity remains WATCH until a live backend proves it.",
+  "candidate": "8.6.40",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

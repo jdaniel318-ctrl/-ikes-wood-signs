@@ -1,6 +1,6 @@
 {
-  "release": "Identity Keel",
-  "name": "Identity Keel",
+  "release": "Registry Commit",
+  "name": "Registry Commit",
   "file_count": 75,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -79,9 +79,9 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.39",
-  "seal": "identity-keel-8639-4d91a2",
-  "top_level_folder": "DarkSky8639-IdentityKeel",
+  "build": "8.6.40",
+  "seal": "registry-commit-8640-7c31b2",
+  "top_level_folder": "DarkSky8640-RegistryCommit",
   "known_good_anchor": "8.6.38",
-  "mission": "Production identity keel + server membership/RLS + vessel commissioning authority + no-man-left-behind migration bridge."
+  "mission": "Restore committed six-vessel proof after Identity Keel and establish versioned Admiral Course Authority without weakening production identity or recovery boundaries."
 }
