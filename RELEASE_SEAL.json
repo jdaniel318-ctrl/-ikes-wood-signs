@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.45",
-  "release": "Runtime Seal",
-  "seal": "runtime-seal-8645-2c8f71",
+  "build": "8.6.46",
+  "release": "Fleet Ownership Charter",
+  "seal": "fleet-ownership-charter-8646-6a42d8",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Runtime Seal",
-  "name": "Runtime Seal",
-  "releaseName": "Runtime Seal"
+  "release_name": "Fleet Ownership Charter",
+  "name": "Fleet Ownership Charter",
+  "releaseName": "Fleet Ownership Charter"
 }

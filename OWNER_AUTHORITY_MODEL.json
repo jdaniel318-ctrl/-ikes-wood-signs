@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-owner-authority-model-v1",
-  "build": "8.6.45",
-  "release": "Owner Authority \u2014 carried aboard Registry Commit",
+  "build": "8.6.46",
+  "release": "Fleet Ownership Charter \u2014 owner authority carried aboard",
   "authority": "project_owner",
   "scope": "exact-canonical-project-and-namespace",
   "session": {
@@ -19,7 +19,8 @@
       "engine_5615",
       "captain_19613",
       "client_preview"
-    ]
+    ],
+    "purpose": "commissioning/test authority only; never implies permanent ownership of Ike\u2019s or any vessel"
   },
   "production_boundary": {
     "server_backed_identity_required": true,
@@ -34,5 +35,14 @@
     "expiry",
     "logout-witness",
     "safe-return"
-  ]
+  ],
+  "ownership_transfer": {
+    "fleet_wide": true,
+    "transferable": true,
+    "invite_accept_required": true,
+    "old_owner_reduced_after_acceptance": true,
+    "project_id_unchanged": true,
+    "history_unchanged": true,
+    "admiral_captain_recovery": true
+  }
 }

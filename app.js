@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.45';
+  const BUILD_VERSION='8.6.46';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5282,6 +5282,16 @@
     add('owner-production-backend','Staging owner identity backend',productionAuthStatus.ready?'pass':'warn',productionAuthStatus.ready?'Black Flag Fleet Core staging is configured with publishable-key-only browser access and the Identity Keel RLS contract declared. Outside-owner production remains blocked until live negative tests pass.':'Identity Keel is installed, but the staging backend is not configured. Outside-owner production remains blocked; the 8.6.42 recovery bridge stays aboard.','check');
     add('identity-revocation-proof','Server revocation proof',productionAuthStatus.ready?'warn':'warn',productionAuthStatus.ready?'Backend is configured; real membership revocation still requires a live negative test before this voyage can clear.':'Staging backend is connected, but server-side revocation has not yet been proven with a real authenticated staging identity.','check');
     add('identity-rollback-bridge','No-man-left-behind rollback bridge','pass','8.6.42 remains the protected Known Good recovery anchor and the private owner path is retained as test/recovery-only until production sign-in, vessel scope, revocation, rollback, and multi-device behavior are proven.','check');
+    const ownershipCharter=window.BlackFlagV3Identity?.ownershipCharter||{};
+    const entryPaths=ownershipCharter.entryPaths||[], ownershipModels=ownershipCharter.ownershipModels||[], operatingModels=ownershipCharter.operatingModels||[];
+    const ownershipSeparation=['self_join','captain_commissioned','admiral_commissioned'].every(x=>entryPaths.includes(x))&&['admiral_owned','outside_owner_assigned','fleet_unassigned'].every(x=>ownershipModels.includes(x))&&['owner_operated','captain_operated','fleet_operated'].every(x=>operatingModels.includes(x));
+    add('ownership-charter-separation','Fleet ownership authority separation',ownershipSeparation?'pass':'fail',ownershipSeparation?'Commissioning authority, vessel ownership, and operating authority are distinct contracts; Admiral-owned, Captain-operated, owner-operated, and Fleet-unassigned vessels are all supported.':'Fleet ownership charter does not preserve the required separation of commissioning, ownership, and operation.');
+    const selfJoinOk=ownershipCharter.selfJoin?.allowed===true&&ownershipCharter.selfJoin?.authorityGrantedOnlyAfterApproval===true;
+    add('ownership-self-join','Controlled vessel self-join',selfJoinOk?'pass':'fail',selfJoinOk?'Outside businesses may request Fleet entry, but no vessel authority is granted until the request is deliberately approved.':'Self-join can bypass Fleet approval or is not declared.');
+    const transferOk=ownershipCharter.transfer?.atomic===true&&ownershipCharter.transfer?.newOwnerMustAccept===true&&ownershipCharter.transfer?.priorOwnerReducedAfterAcceptance===true;
+    add('ownership-transfer','Fleet-wide ownership transfer',transferOk?'pass':'fail',transferOk?'Every vessel can transfer canonical ownership through invite → acceptance → prior-owner reduction while preserving vessel identity, history, and recovery authority.':'Ownership transfer is not atomic, accepted, or recoverable.');
+    const admiralOwnedOk=ownershipCharter.admiralOwned?.allowed===true&&ownershipCharter.admiralOwned?.captainMayOperate===true;
+    add('ownership-admiral-vessels','Admiral-owned / Captain-operated vessels',admiralOwnedOk?'pass':'fail',admiralOwnedOk?'Admiral-owned vessels may remain Admiral-owned while Captain operates them; transfer to an outside owner is optional.':'Admiral-owned vessel operation contract is incomplete.');
 
     const generated=String(randomClientPreviewPin());
     const reserved=new Set([DEFAULT_ADMIN_PIN,DEFAULT_ENGINE_PIN,'19613']);
@@ -5520,6 +5530,7 @@
       combine('authority','Authority Voyage',['engine-auth','project-admin','captain-auth'],'Black Flag → Project Admin → Captain authority contracts.'),
       combine('owner-authority','Owner Authority Voyage',['owner-project-scope','owner-session-proof','owner-credential-separation'],'Owner identity → canonical vessel scope → expiring project_owner session → deterministic logout/recovery.'),
       combine('production-identity','Production Identity Voyage',['identity-provider-contract','identity-client-secret-boundary','vessel-commissioning-authority','identity-membership-contract','identity-rls-contract','owner-production-backend','identity-revocation-proof','identity-rollback-bridge'],'Identity provider → server membership → exact vessel RLS → revocation → rollback bridge. This voyage remains WATCH until a real backend proves the live negative tests.'),
+      combine('fleet-ownership-charter','Fleet Ownership Charter Voyage',['ownership-charter-separation','ownership-self-join','ownership-transfer','ownership-admiral-vessels'],'Vessel entry → ownership → operating authority stay separate. Self-join is controlled; Admiral-owned and Captain-operated vessels are valid; transfer preserves canonical vessel identity.'),
       combine('isolation','Isolation Voyage',['project-identity','order-boundary'],'Canonical Project IDs and project-scoped operational records.'),
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
       combine('safety','Staging Safety Voyage',['contact-safety'],'Test / Private Preview external-contact containment.'),

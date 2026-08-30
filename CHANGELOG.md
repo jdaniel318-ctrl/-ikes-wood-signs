@@ -1,7 +1,16 @@
-# 8.6.45 — Runtime Seal
+# Dark Sky 8.6.46 — Fleet Ownership Charter
+
+- Separates vessel entry path, ownership, operating authority, and commissioning authority fleet-wide.
+- Supports controlled self-join, Captain commission, Admiral commission, Admiral-owned vessels, Fleet operation, and later ownership transfer.
+- Ownership transfer is invite/accept/audit based and preserves immutable vessel identity/history.
+- Adds Fleet Ownership Charter Voyage while Production Identity remains WATCH until live authenticated negative tests clear.
+- Supabase staging schema now includes ownership model, operating model, self-join requests, and ownership transfer ledger.
+- 8.6.42 remains the protected Known Good recovery anchor during this staging push.
+
+# 8.6.46 — Fleet Ownership Charter
 
 - Repairs stale `app.js` / inline runtime build markers that were still declaring 8.6.42.
-- Makes page, runtime, deployment manifest, inventory, release seal, web manifest, service worker, identity adapter, and current-build proof models agree on `8.6.45` / `runtime-seal-8645-2c8f71`.
+- Makes page, runtime, deployment manifest, inventory, release seal, web manifest, service worker, identity adapter, and current-build proof models agree on `8.6.46` / `fleet-ownership-charter-8646-6a42d8`.
 - Leaves Black Flag Fleet Core Supabase staging schema and adapter behavior unchanged.
 - Keeps 8.6.42 as Last Known Good until promotion.
 

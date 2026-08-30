@@ -1,4 +1,8 @@
-# Dark Sky 8.6.45 — Runtime Seal
+# Dark Sky 8.6.46 — Fleet Ownership Charter
+
+Fleet-wide ownership law: commissioning, ownership, and operation are separate authorities. Vessels may self-join through approval, be commissioned by Captain/Admiral/Engine, remain Admiral-owned or Fleet-owned, be Captain-operated, or transfer to an outside owner without changing canonical vessel identity or history.
+
+# Dark Sky 8.6.46 — Fleet Ownership Charter
 
 Runtime-only bootstrap repair over Inventory Seal. The application runtime marker now agrees atomically with the page, deployment manifest, release inventory, release seal, web manifest, service worker, and current-build proof models. The Supabase staging adapter and server-side Identity Keel foundation are unchanged. 8.6.42 remains the protected Known Good recovery anchor until this candidate earns promotion.
 

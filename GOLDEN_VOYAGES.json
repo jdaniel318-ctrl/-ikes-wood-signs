@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.6.45",
+  "build": "8.6.46",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -38,6 +38,22 @@
       ],
       "clear_condition": "A real backend is connected and live negative tests prove cross-vessel denial, membership revocation, session expiry, and rollback.",
       "known_good_anchor": "8.6.38"
+    },
+    {
+      "id": "fleet-ownership-charter",
+      "label": "Fleet Ownership Charter Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "proof": [
+        "entry-path-separation",
+        "commissioning-not-ownership",
+        "ownership-not-operation",
+        "self-join-controlled",
+        "admiral-owned-supported",
+        "transfer-preserves-vessel-id",
+        "transfer-audited-recoverable"
+      ],
+      "summary": "Vessel entry \u2192 ownership \u2192 operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
     },
     {
       "id": "owner",
