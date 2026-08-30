@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.48",
-  "release": "RLS Landing",
-  "seal": "rls-landing-8648-9d31f6",
+  "build": "8.6.49",
+  "release": "Owner Password Setup",
+  "seal": "owner-password-8649-4f7c2a",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "RLS Landing",
-  "name": "RLS Landing",
-  "releaseName": "RLS Landing"
+  "release_name": "Owner Password Setup",
+  "name": "Owner Password Setup",
+  "releaseName": "Owner Password Setup"
 }

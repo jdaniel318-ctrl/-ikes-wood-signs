@@ -1,6 +1,6 @@
 {
-  "release": "RLS Landing",
-  "name": "RLS Landing",
+  "release": "Owner Password Setup",
+  "name": "Owner Password Setup",
   "file_count": 77,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -81,8 +81,8 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.48",
-  "seal": "rls-landing-8648-9d31f6",
+  "build": "8.6.49",
+  "seal": "owner-password-8649-4f7c2a",
   "top_level_folder": "DarkSky8648-SessionLanding",
   "known_good_anchor": "8.6.42",
   "mission": "Live Supabase owner sign-in bridge with exact-vessel RLS verification and recovery-only local fallback."

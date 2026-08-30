@@ -1,0 +1,14 @@
+{
+  "schema": "dark-sky-owner-auth-state-gate-v1",
+  "build": "8.6.49",
+  "first_paint": "securing-owner-session",
+  "login_form_before_resolution": false,
+  "states": [
+    "signed_out",
+    "password_setup",
+    "ready",
+    "denied"
+  ],
+  "authorization_source": "supabase-rls",
+  "deny_is_safe": true
+}

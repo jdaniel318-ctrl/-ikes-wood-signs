@@ -1,4 +1,12 @@
-## 8.6.48 — RLS Landing
+# Dark Sky 8.6.49 — Owner Password Setup
+
+- Owner login is email + Supabase password after first identity acceptance.
+- First verified owner session requires password creation before portal access.
+- Forgot-password recovery returns through Supabase and re-verifies exact-vessel RLS.
+- Owner auth first paint stays on Securing Owner Session until state is resolved.
+- Passwords are never stored in Fleet/GitHub/browser application data.
+
+## 8.6.49 — Owner Password Setup
 
 - Grants authenticated SELECT on Fleet authority tables so RLS can evaluate live sessions.
 - Explicitly revokes browser write privileges on those authority tables.

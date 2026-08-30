@@ -1,7 +1,7 @@
 {
-  "name": "Dark Sky \u2014 Fleet Ownership Charter",
+  "name": "Dark Sky \u2014 Owner Password Setup",
   "short_name": "Dark Sky",
-  "start_url": "./index.html?_darkSkyRelease=8.6.48&_darkSkySeal=rls-landing-8648-9d31f6",
+  "start_url": "./index.html?_darkSkyRelease=8.6.49&_darkSkySeal=owner-password-8649-4f7c2a",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.48"
+  "version": "8.6.49"
 }

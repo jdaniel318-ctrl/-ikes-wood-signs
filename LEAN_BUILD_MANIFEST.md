@@ -1,4 +1,4 @@
-# Dark Sky 8.6.48 — RLS Landing
+# Dark Sky 8.6.49 — Owner Password Setup
 
 80-file ceiling remains in force. This release uses 77 files, including explicit sign-in bridge and RLS read-boundary evidence models.
 
