@@ -1,3 +1,12 @@
+## 8.6.29 — Post-Login Latch
+
+- Replaces the pre-auth visibility-triggered Diagnostic Hold with an authenticated post-login latch.
+- Arms the hold while the Engine login gate is visible and verifies that authentication has cleared before rendering evidence.
+- Diagnostic Hold remains on screen indefinitely until **Continue Now** is pressed; no automatic timeout is permitted while armed.
+- Uses a stable session key with compatibility migration from the 8.6.28 key.
+- Preserves all proven 8.6.28 Fleet Maintenance command rails and bounded storage checks.
+- No cleanup, deletion, migration, fleet mutation, or Phase 2 authority added.
+
 ## 8.6.28 — Maintenance Rails
 
 - Fixes Fleet Maintenance Engineering Evidence routing by targeting and opening `#provingEngineeringEvidence` directly.
