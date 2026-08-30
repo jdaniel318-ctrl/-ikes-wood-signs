@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-proof-barrier-model-v1",
-  "build": "8.6.27",
+  "build": "8.6.28",
   "status": "required-runtime-contract",
   "phases": [
     "BOOTING",

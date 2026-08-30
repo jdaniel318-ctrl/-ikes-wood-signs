@@ -1,6 +1,6 @@
 {
-  "release": "Command Watchdog",
-  "name": "Command Watchdog",
+  "release": "Maintenance Rails",
+  "name": "Maintenance Rails",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.27",
-  "seal": "command-watchdog-8627-4d8c71"
+  "build": "8.6.28",
+  "seal": "maintenance-rails-8628-7a41e9"
 }

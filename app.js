@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.27';
+  const BUILD_VERSION='8.6.28';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -15022,8 +15022,8 @@ The full order and approved media remain stored with this project.`;
   }
 
 
-  // 8.6.27 Fleet Steward — bounded, read-only maintenance instrumentation.
-  const FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY='darkSkyDiagnosticHoldEnabled8627';
+  // 8.6.28 Maintenance Rails — bounded, read-only maintenance instrumentation.
+  const FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY='darkSkyDiagnosticHoldEnabled8628';
   const FLEET_STEWARD_FAST_TIMEOUT_MS=2500;
   const FLEET_STEWARD_DETAIL_TIMEOUT_MS=9000;
   function fleetStewardStatus8626(message,state='ready'){
@@ -15105,10 +15105,10 @@ The full order and approved media remain stored with this project.`;
     }
   }
   function bindFleetSteward8626(){
-    // 8.6.27 Command Watchdog owns Fleet Maintenance binding from index.html.
+    // 8.6.28 Maintenance Rails owns Fleet Maintenance binding from index.html.
     // Keep this compatibility binder intentionally inert so older async storage
     // promises cannot overwrite the watchdog's terminal UI state.
-    window.__darkSkyFleetStewardCompatibility8627=true;
+    window.__darkSkyFleetStewardCompatibility8628=true;
     return true;
   }
 

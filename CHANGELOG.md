@@ -1,3 +1,12 @@
+## 8.6.28 — Maintenance Rails
+
+- Fixes Fleet Maintenance Engineering Evidence routing by targeting and opening `#provingEngineeringEvidence` directly.
+- Recovery Snapshot now succeeds only when a new visible recovery confirmation is produced.
+- Fleet Watch now succeeds only when its live summary is rendered and visible.
+- Diagnostic Hold verifies the session key and runtime flag together.
+- Telemetry, Proving Ground, automatic sounding, and Storage Details retain bounded terminal-state contracts.
+- No cleanup, deletion, migration, or Phase 2 authority added.
+
 ## 8.6.27 — Command Watchdog
 - Independent UI watchdog owns automatic storage terminal state.
 - Automatic storage health must resolve to COMPLETE or WATCH within 2.5 seconds.

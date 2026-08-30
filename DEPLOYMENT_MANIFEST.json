@@ -1,13 +1,13 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.6.27",
-  "version": "8.6.27",
-  "release_name": "Command Watchdog",
-  "releaseName": "Command Watchdog",
-  "release_seal": "command-watchdog-8627-4d8c71",
+  "build": "8.6.28",
+  "version": "8.6.28",
+  "release_name": "Maintenance Rails",
+  "releaseName": "Maintenance Rails",
+  "release_seal": "maintenance-rails-8628-7a41e9",
   "entrypoint": "index.html",
   "runtime": "static-web",
-  "deployment_mode": "root-upload-command-watchdog",
+  "deployment_mode": "root-upload-maintenance-rails",
   "required_runtime_files": [
     "index.html",
     "owner.html",
@@ -76,8 +76,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Fleet maintenance station, optional diagnostic hold, and read-only storage ownership inventory.",
-  "release_note": "Fleet Steward centralizes recurring maintenance access without arming cleanup or changing vessel behavior.",
+  "release_focus": "Phase 1 certification rails: deterministic Engineering Evidence, Recovery Snapshot, Fleet Watch, Diagnostic Hold, telemetry, proving, and bounded storage inspection.",
+  "release_note": "Maintenance Rails requires every Fleet Maintenance command to prove its intended terminal state; no cleanup or Phase 2 behavior is armed.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

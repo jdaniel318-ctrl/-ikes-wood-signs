@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.27',seal:'command-watchdog-8627-4d8c71'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.28',seal:'maintenance-rails-8628-7a41e9'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1134,7 +1134,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.27 • FLEET STEWARD · COMMAND WATCHDOG</div>
+            <div class="engine-kicker">8.6.28 • FLEET STEWARD · COMMAND WATCHDOG</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1168,7 +1168,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.27 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.28 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1185,7 +1185,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.27 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.28 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1804,7 +1804,7 @@
       shield.innerHTML=`<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-eyebrow">AUTOMATIC SAFE RECOVERY</div><h2>UPDATING VERIFIED RELEASE</h2><p>Dark Sky recognized a known stale-worker handoff and is replacing only application runtime state. Project data remains untouched.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>NEW BUILD</small><strong>${EXPECTED}</strong></div><div class="ds-release-cell"><small>RECOVERY MODE</small><strong>SAFE AUTO</strong></div></div><p>${safe(reason)}</p><div id="darkSkyAutoRecoveryProgress" class="ds-release-progress" aria-live="polite"></div></div>`;
     }
     async function recoveryEvidenceHold8620(ms=3200){
-      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8627')==='1';}catch(_){}
+      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8628')==='1';}catch(_){}
       if(!enabled||!shield||window.__darkSkyReleaseGateState!=='recovering')return;
       window.__darkSkyRuntimeEntryWitness8620?.('recovery-evidence-hold-shown',{durationMs:ms});
       const card=shield.querySelector('.ds-route-recovery');
@@ -1828,7 +1828,7 @@
       wrap.remove();
     }
     function showPostLoginEvidenceHold8620(){
-      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8627')==='1';}catch(_){}
+      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8628')==='1';}catch(_){}
       if(!enabled)return;
       if(window.__darkSkyPostLoginEvidenceHoldShown8620)return;
       window.__darkSkyPostLoginEvidenceHoldShown8620=true;
@@ -1975,16 +1975,16 @@
   })();
   </script>
 
-<script id="fleetCommandWatchdog8627">
+<script id="fleetCommandWatchdog8628">
 
   (()=>{
     'use strict';
-    const BUILD='8.6.27';
+    const BUILD='8.6.28';
     const AUTO_TIMEOUT=2500;
-    const COMMAND_TIMEOUT=1800;
+    const COMMAND_TIMEOUT=2600;
+    const RECOVERY_TIMEOUT=5200;
     const DETAIL_TIMEOUT=7000;
     const q=(sel,root=document)=>root.querySelector(sel);
-    const qa=(sel,root=document)=>Array.from(root.querySelectorAll(sel));
     const fmtMB=(n)=>Number.isFinite(n)?`${(n/1048576).toFixed(n>=104857600?1:2)} MB`:'—';
     const visible=(el)=>!!el && !el.classList.contains('hidden') && getComputedStyle(el).display!=='none' && getComputedStyle(el).visibility!=='hidden';
     const station=()=>q('#fleetMaintenanceStation');
@@ -2000,123 +2000,108 @@
       box.dataset.state=state;
       box.dataset.terminal='true';
     };
-    const commandResult=(label,ok,detail='')=>{
-      setStatus(`${ok?'COMPLETE':'WATCH'} · ${label}${detail?` · ${detail}`:''}`,ok?'complete':'watch');
-    };
-    const scrollTo=(el)=>{ if(!el)return false; try{el.scrollIntoView({behavior:'smooth',block:'start'});}catch(_){el.scrollIntoView();} return true; };
+    const commandResult=(label,ok,detail='')=>setStatus(`${ok?'COMPLETE':'WATCH'} · ${label}${detail?` · ${detail}`:''}`,ok?'complete':'watch');
+    const scrollTo=(el)=>{if(!el)return false;try{el.scrollIntoView({behavior:'smooth',block:'start'});}catch(_){el.scrollIntoView();}return true;};
 
     function runAutoSounding(){
       let terminal=false;
-      const finish=(headline,detail,state)=>{ if(terminal)return; terminal=true; paintSummary(headline,detail,state); };
+      const finish=(headline,detail,state)=>{if(terminal)return;terminal=true;paintSummary(headline,detail,state);};
       const watchdog=setTimeout(()=>finish('WATCH · Storage reading unavailable','Safari did not return the fast origin estimate in time. Fleet remains operational; use View Storage Details for a bounded inspection.','watch'),AUTO_TIMEOUT);
       try{
         if(!navigator.storage || typeof navigator.storage.estimate!=='function'){
-          clearTimeout(watchdog); finish('WATCH · Storage estimate unsupported','This Safari session does not expose navigator.storage.estimate(). Fleet remains operational.','watch'); return;
+          clearTimeout(watchdog);finish('WATCH · Storage estimate unsupported','This Safari session does not expose navigator.storage.estimate(). Fleet remains operational.','watch');return;
         }
         const p=navigator.storage.estimate();
         if(!p || typeof p.then!=='function'){
-          clearTimeout(watchdog); finish('WATCH · Storage estimate unavailable','Safari did not provide an asynchronous origin estimate. Fleet remains operational.','watch'); return;
+          clearTimeout(watchdog);finish('WATCH · Storage estimate unavailable','Safari did not provide an asynchronous origin estimate. Fleet remains operational.','watch');return;
         }
         p.then(r=>{
-          if(terminal)return;
-          clearTimeout(watchdog);
-          const usage=Number(r?.usage||0), quota=Number(r?.quota||0);
+          if(terminal)return;clearTimeout(watchdog);
+          const usage=Number(r?.usage||0),quota=Number(r?.quota||0);
           finish(`COMPLETE · ${fmtMB(usage)} origin usage`,quota?`${((usage/quota)*100).toFixed(2)}% of ${fmtMB(quota)} quota · read-only sounding complete.`:'Read-only origin sounding complete.','complete');
         }).catch(err=>{
-          if(terminal)return;
-          clearTimeout(watchdog);
-          finish('WATCH · Storage reading unavailable',String(err?.message||err||'Storage estimate failed.')+' Fleet remains operational.','watch');
+          if(terminal)return;clearTimeout(watchdog);finish('WATCH · Storage reading unavailable',String(err?.message||err||'Storage estimate failed.')+' Fleet remains operational.','watch');
         });
-      }catch(err){
-        clearTimeout(watchdog); finish('WATCH · Storage reading unavailable',String(err?.message||err||'Storage estimate failed.')+' Fleet remains operational.','watch');
-      }
+      }catch(err){clearTimeout(watchdog);finish('WATCH · Storage reading unavailable',String(err?.message||err||'Storage estimate failed.')+' Fleet remains operational.','watch');}
     }
 
     function showInventory(){
-      const out=inventory(); if(!out)return commandResult('Storage Details',false,'Inventory surface missing');
+      const out=inventory();if(!out)return commandResult('Storage Details',false,'inventory surface missing');
       out.innerHTML='<div class="fleet-watchdog-panel"><strong>STORAGE DETAILS · CHECKING</strong><span>Bounded read-only inspection. This panel resolves even if Safari does not.</span></div>';
       scrollTo(out);
       let terminal=false;
       const finish=(html,ok=true)=>{if(terminal)return;terminal=true;out.innerHTML=html;commandResult('Storage Details',ok,ok?'bounded inspection finished':'bounded inspection returned WATCH');};
       const timer=setTimeout(()=>finish('<div class="fleet-watchdog-panel watch"><strong>WATCH · DETAILED STORAGE UNAVAILABLE</strong><span>Safari did not finish the detailed reading within 7 seconds. No cleanup ran and Fleet Maintenance remains usable.</span></div>',false),DETAIL_TIMEOUT);
       try{
-        const values={
-          origin:q('#storageTelemetryOrigin')?.textContent?.trim(),
-          measured:q('#storageTelemetryMeasured')?.textContent?.trim(),
-          unknown:q('#storageTelemetryUnattributed')?.textContent?.trim(),
-          cleanup:q('#storageTelemetryCleanup')?.textContent?.trim()
-        };
+        const values={origin:q('#storageTelemetryOrigin')?.textContent?.trim(),measured:q('#storageTelemetryMeasured')?.textContent?.trim(),unknown:q('#storageTelemetryUnattributed')?.textContent?.trim(),cleanup:q('#storageTelemetryCleanup')?.textContent?.trim()};
         const usable=[values.origin,values.measured,values.unknown].some(v=>v&&v!=='—');
-        if(usable){
-          clearTimeout(timer);
-          finish(`<div class="fleet-watchdog-panel complete"><strong>COMPLETE · READ-ONLY STORAGE INVENTORY</strong><span>Origin ${values.origin||'—'} · Measured Dark Sky ${values.measured||'—'} · Browser-managed ${values.unknown||'—'} · Safe cleanup ${values.cleanup||'—'}</span><small>Source: current Engine Telemetry state. No cleanup or migration authority is present here.</small></div>`,true);
-          return;
-        }
-        if(navigator.storage?.estimate){
-          navigator.storage.estimate().then(r=>{
-            if(terminal)return; clearTimeout(timer);
-            finish(`<div class="fleet-watchdog-panel complete"><strong>COMPLETE · ORIGIN STORAGE INVENTORY</strong><span>Origin usage ${fmtMB(Number(r?.usage||0))} · quota ${fmtMB(Number(r?.quota||0))}</span><small>Safari did not expose the deeper class breakdown in the bounded interval. Open Engine Telemetry for deeper diagnostics.</small></div>`,true);
-          }).catch(()=>{});
-        }
-      }catch(_){/* independent timeout owns terminal state */}
+        if(usable){clearTimeout(timer);finish(`<div class="fleet-watchdog-panel complete"><strong>COMPLETE · READ-ONLY STORAGE INVENTORY</strong><span>Origin ${values.origin||'—'} · Measured Dark Sky ${values.measured||'—'} · Browser-managed ${values.unknown||'—'} · Safe cleanup ${values.cleanup||'—'}</span><small>Source: current Engine Telemetry state. No cleanup or migration authority is present here.</small></div>`,true);return;}
+        if(navigator.storage?.estimate){navigator.storage.estimate().then(r=>{if(terminal)return;clearTimeout(timer);finish(`<div class="fleet-watchdog-panel complete"><strong>COMPLETE · ORIGIN STORAGE INVENTORY</strong><span>Origin usage ${fmtMB(Number(r?.usage||0))} · quota ${fmtMB(Number(r?.quota||0))}</span><small>Safari did not expose the deeper class breakdown in the bounded interval. Open Engine Telemetry for deeper diagnostics.</small></div>`,true);}).catch(()=>{});}
+      }catch(_){/* timeout owns terminal state */}
     }
 
-    function verifyDestination(label,target,action){
-      let resolved=false;
-      const done=(ok,detail)=>{if(resolved)return;resolved=true;commandResult(label,ok,detail);};
-      const timer=setTimeout(()=>done(false,'command did not reach a visible destination'),COMMAND_TIMEOUT);
+    function verifyCommand(label,{action,verify,timeout=COMMAND_TIMEOUT,onSuccess}={}){
+      let terminal=false;
+      let poll=null;
+      const finish=(ok,detail)=>{
+        if(terminal)return;terminal=true;
+        if(poll)clearInterval(poll);clearTimeout(timer);
+        if(ok&&typeof onSuccess==='function'){try{onSuccess();}catch(_){}}
+        commandResult(label,ok,detail);
+      };
+      const timer=setTimeout(()=>finish(false,'command did not reach its required terminal state'),timeout);
+      const test=()=>{if(terminal)return;try{const result=verify?.();if(result){finish(true,'destination verified');}}catch(err){finish(false,String(err?.message||err));}};
       try{
         const result=action?.();
-        setTimeout(()=>{
-          if(resolved)return;
-          const el=typeof target==='function'?target():q(target);
-          if(el && visible(el)){clearTimeout(timer);scrollTo(el);done(true,'destination visible');}
-        },180);
-        setTimeout(()=>{
-          if(resolved)return;
-          const el=typeof target==='function'?target():q(target);
-          if(el){clearTimeout(timer);scrollTo(el);done(true,'destination reached');}
-        },650);
-        return result;
-      }catch(err){clearTimeout(timer);done(false,String(err?.message||err));}
+        if(result&&typeof result.then==='function')result.catch(err=>finish(false,String(err?.message||err)));
+        test();
+        poll=setInterval(test,120);
+      }catch(err){finish(false,String(err?.message||err));}
+    }
+
+    function openEngineeringEvidence(){
+      const details=q('#provingEngineeringEvidence');
+      if(details){details.open=true;scrollTo(details);return true;}
+      const proving=q('#admiralReadiness');if(proving)scrollTo(proving);
+      return false;
     }
 
     function executeCommand(name){
       setStatus(`RUNNING · ${name}`,'running');
       switch(name){
         case 'inventory': return showInventory();
-        case 'telemetry': return verifyDestination('Engine Telemetry','#engineStorageTelemetryStation',()=>q('#engineTelemetryLaunchBtn')?.click());
-        case 'proving': return verifyDestination('Proving Ground','#admiralReadiness',()=>scrollTo(q('#admiralReadiness')));
-        case 'watch': return verifyDestination('Fleet Watch','#firstMateWatch',()=>scrollTo(q('#firstMateWatch')));
-        case 'recovery': return verifyDestination('Recovery Snapshot','#createRecoverySnapshotBtn',()=>{const el=q('#createRecoverySnapshotBtn');scrollTo(el); if(el)el.click();});
-        case 'evidence': {
-          const evidenceButton=qa('button').find(b=>/engineering evidence|view evidence/i.test(String(b.textContent||'')) && !b.closest('#fleetMaintenanceStation'));
-          if(evidenceButton) return verifyDestination('Engineering Evidence',()=>q('#admiralReadiness'),()=>evidenceButton.click());
-          return verifyDestination('Engineering Evidence','#admiralReadiness',()=>scrollTo(q('#admiralReadiness')));
+        case 'telemetry':
+          return verifyCommand('Engine Telemetry',{action:()=>q('#engineTelemetryLaunchBtn')?.click(),verify:()=>visible(q('#engineStorageTelemetryStation')),onSuccess:()=>scrollTo(q('#engineStorageTelemetryStation'))});
+        case 'proving':
+          return verifyCommand('Proving Ground',{action:()=>scrollTo(q('#admiralReadiness')),verify:()=>visible(q('#admiralReadiness'))});
+        case 'evidence':
+          return verifyCommand('Engineering Evidence',{action:openEngineeringEvidence,verify:()=>{const d=q('#provingEngineeringEvidence');return !!d&&d.open&&visible(d);},onSuccess:()=>scrollTo(q('#provingEngineeringEvidence'))});
+        case 'watch':
+          return verifyCommand('Fleet Watch',{action:()=>{const refresh=window.blackFlagV3?.refresh?.();scrollTo(q('#firstMateWatch'));return refresh;},verify:()=>{const el=q('#firstMateWatch');const summary=q('#firstMateWatchSummary');return visible(el)&&!!String(summary?.textContent||'').trim();},timeout:4200,onSuccess:()=>scrollTo(q('#firstMateWatch'))});
+        case 'recovery': {
+          q('#shipIntegritySummary .v3-recovery-confirm')?.remove();
+          return verifyCommand('Recovery Snapshot',{action:()=>window.blackFlagV3?.createSnapshot?.(),verify:()=>visible(q('#shipIntegritySummary .v3-recovery-confirm')),timeout:RECOVERY_TIMEOUT,onSuccess:()=>scrollTo(q('#shipIntegritySummary .v3-recovery-confirm'))});
         }
-        default: return commandResult('Unknown command',false,name);
+        default:return commandResult('Unknown command',false,name);
       }
     }
 
     function bind(){
-      const root=station(); if(!root || root.dataset.watchdogBound==='true')return;
+      const root=station();if(!root||root.dataset.watchdogBound==='true')return;
       root.dataset.watchdogBound='true';
-      root.addEventListener('click',e=>{
-        const btn=e.target.closest('[data-fleet-maintenance]'); if(!btn)return;
-        e.preventDefault(); e.stopPropagation();
-        executeCommand(btn.dataset.fleetMaintenance||'');
-      },true);
+      root.addEventListener('click',e=>{const btn=e.target.closest('[data-fleet-maintenance]');if(!btn)return;e.preventDefault();e.stopPropagation();executeCommand(btn.dataset.fleetMaintenance||'');},true);
       const toggle=q('#fleetDiagnosticHoldToggle');
       if(toggle){
-        try{toggle.checked=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8627')==='1';}catch(_){}
+        try{toggle.checked=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8628')==='1';}catch(_){}
         toggle.addEventListener('change',()=>{
-          try{sessionStorage.setItem('darkSkyDiagnosticHoldEnabled8627',toggle.checked?'1':'0');}catch(_){}
+          let stored=false;
+          try{sessionStorage.setItem('darkSkyDiagnosticHoldEnabled8628',toggle.checked?'1':'0');stored=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8628')===(toggle.checked?'1':'0');}catch(_){}
           window.__darkSkyDiagnosticHoldEnabled=!!toggle.checked;
-          commandResult('Diagnostic Hold',true,toggle.checked?'enabled for this session':'disabled');
+          commandResult('Diagnostic Hold',stored&&window.__darkSkyDiagnosticHoldEnabled===!!toggle.checked,stored?(toggle.checked?'enabled for this session':'disabled'):'session state could not be verified');
         });
         window.__darkSkyDiagnosticHoldEnabled=!!toggle.checked;
       }
-      setStatus('Fleet Command Watchdog armed · read-only maintenance station ready.','complete');
+      setStatus('Fleet Maintenance Rails armed · every command must prove its destination.','complete');
       runAutoSounding();
     }
 
@@ -2134,11 +2119,8 @@
       .fleet-watchdog-panel span,.fleet-watchdog-panel small{color:#a9bcc0;line-height:1.45}
     `;
     document.head.appendChild(style);
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true}); else bind();
-    window.addEventListener('darksky:release-seal-clear',()=>setTimeout(bind,0));
-    window.__fleetCommandWatchdog8627={runAutoSounding,executeCommand,version:BUILD};
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
   })();
-  
 </script>
 </body>
 </html>

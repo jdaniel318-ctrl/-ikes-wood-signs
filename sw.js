@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.27';
-const RELEASE_SEAL='command-watchdog-8627-4d8c71';
+const RELEASE_BUILD='8.6.28';
+const RELEASE_SEAL='maintenance-rails-8628-7a41e9';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

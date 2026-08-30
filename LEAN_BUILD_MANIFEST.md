@@ -1,3 +1,7 @@
+# 8.6.28 Maintenance Rails — Lean Build Manifest
+
+Phase 1 certification candidate. Maintenance commands are verified against their intended destination/result, not generic card activity. Protected six-vessel muster and 8.6.23 Known Good recovery anchor remain unchanged.
+
 GENERATION_RELAY_MODEL.json — required generation-alignment contract for 8.6.23.
 # Dark Sky 8.6.23 — Generation Relay
 STORAGE_SAFE_PROOF_BUS_MODEL.json — required live-proof storage authority contract for 8.6.22.

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.27",
-  "release": "Command Watchdog",
-  "seal": "command-watchdog-8627-4d8c71",
-  "execution_model": "verified-loader-command-watchdog",
+  "build": "8.6.28",
+  "release": "Maintenance Rails",
+  "seal": "maintenance-rails-8628-7a41e9",
+  "execution_model": "verified-loader-maintenance-rails",
   "service_worker": "identity-only",
-  "release_name": "Command Watchdog",
-  "name": "Command Watchdog",
-  "releaseName": "Command Watchdog"
+  "release_name": "Maintenance Rails",
+  "name": "Maintenance Rails",
+  "releaseName": "Maintenance Rails"
 }

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-runtime-entry-trace-v1",
-  "build": "8.6.27",
+  "build": "8.6.28",
   "name": "Generation Relay",
-  "release_seal": "command-watchdog-8627-4d8c71",
+  "release_seal": "maintenance-rails-8628-7a41e9",
   "purpose": "Trace and bridge the unavoidable verified document/runtime path to bootstrap ignition without relying on guessed application lifecycle hooks.",
   "witness_key": "darkSkyRuntimeEntryWitnessV8620",
   "unavoidable_stages": [

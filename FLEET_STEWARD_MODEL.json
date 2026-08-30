@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-steward-v1",
-  "build": "8.6.27",
-  "release": "Command Watchdog",
+  "build": "8.6.28",
+  "release": "Maintenance Rails",
   "mission": "Make recurring fleet maintenance easy to find, professional to inspect, and non-destructive by default.",
   "station": {
     "id": "fleetMaintenanceStation",

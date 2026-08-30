@@ -1,4 +1,6 @@
-# Dark Sky 8.6.27 — Command Watchdog
+# Dark Sky 8.6.28 — Maintenance Rails
+
+**Phase 1 certification candidate.** Fleet Maintenance commands now use destination-specific verification: Engineering Evidence must open its evidence details, Recovery Snapshot must create a visible recovery confirmation, Fleet Watch must render its live summary, and Diagnostic Hold must verify session state. Automatic storage sounding and Storage Details remain bounded and read-only. No cleanup, migration, or Phase 2 authority is added.
 
 Phase 1 hardening release. Fleet Maintenance now owns an independent UI watchdog: automatic storage sounding must resolve to COMPLETE or WATCH without waiting on Safari storage promises, maintenance commands must reach a visible destination or report a durable WATCH, and the station remains read-only with no cleanup or migration authority.
 
