@@ -1,7 +1,7 @@
 {
   "name": "Dark Sky \u2014 Owner Authority",
   "short_name": "Dark Sky",
-  "start_url": "./index.html?_darkSkyRelease=8.6.37&_darkSkySeal=owner-authority-8637-4ac91e",
+  "start_url": "./index.html?_darkSkyRelease=8.6.38&_darkSkySeal=detail-relay-8638-7b31c4",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.37"
+  "version": "8.6.38"
 }

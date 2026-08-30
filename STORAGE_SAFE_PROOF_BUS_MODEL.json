@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-storage-safe-proof-bus-v1",
-  "build": "8.6.37",
-  "release_seal": "owner-authority-8637-4ac91e",
+  "build": "8.6.38",
+  "release_seal": "detail-relay-8638-7b31c4",
   "title": "Generation Relay",
   "purpose": "Keep live fleet readiness, Proving Ground evidence, Known Good anchoring, commissioning, and capability staging independent of exhausted localStorage while preserving durable completed evidence through IndexedDB settings.",
   "live_authority": [

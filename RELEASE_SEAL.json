@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.37",
-  "release": "Owner Authority",
-  "seal": "owner-authority-8637-4ac91e",
+  "build": "8.6.38",
+  "release": "Detail Relay",
+  "seal": "detail-relay-8638-7b31c4",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Owner Authority",
-  "name": "Owner Authority",
-  "releaseName": "Owner Authority"
+  "release_name": "Detail Relay",
+  "name": "Detail Relay",
+  "releaseName": "Detail Relay"
 }

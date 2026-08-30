@@ -1,4 +1,11 @@
-# 8.6.37 — Owner Authority
+# Dark Sky 8.6.38 — Detail Relay
+
+- Restores the Fleet Maintenance **View Storage Details** parent action with a direct, iPad-safe binding.
+- Paints an immediate CHECKING state and a durable COMPLETE/WATCH readback on the parent storage sounding panel.
+- Preserves 8.6.37 Owner Authority, project scoping, session expiry, logout/recovery, and all 8.6.36 Witness Truth protections unchanged.
+- Browser-managed/unattributed storage remains read-only evidence and is never classified as Dark Sky-owned cleanup.
+
+# 8.6.38 — Owner Authority
 - Branched from certified 8.6.36 Witness Truth.
 - Added exact-vessel owner scope, namespace scope, expiring project_owner sessions, login/logout witness evidence, and deterministic logout.
 - Separated Ike private owner-test credential from Project Admin 4353; old local joe/4353 test credential migrates to joe/8642.

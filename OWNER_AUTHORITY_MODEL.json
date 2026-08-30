@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-owner-authority-model-v1",
-  "build": "8.6.37",
+  "build": "8.6.38",
   "release": "Owner Authority",
   "authority": "project_owner",
   "scope": "exact-canonical-project-and-namespace",

@@ -1,6 +1,10 @@
-# Dark Sky 8.6.37 — Owner Authority
+# Dark Sky 8.6.38 — Detail Relay
 
-## 8.6.37 Owner authority hardening
+Narrow repair over 8.6.37 Owner Authority. Restores the durable parent Storage Details relay without changing Owner Authority or protected fleet data.
+
+# Dark Sky 8.6.38 — Owner Authority
+
+## 8.6.38 Owner authority hardening
 
 - Branches from certified 8.6.36 Witness Truth.
 - Gives owner sessions an explicit `project_owner` authority, exact canonical Project ID/namespace scope, eight-hour expiry, and deterministic logout witness.

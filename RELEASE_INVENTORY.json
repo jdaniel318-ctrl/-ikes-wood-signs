@@ -1,6 +1,6 @@
 {
-  "release": "Owner Authority",
-  "name": "Owner Authority",
+  "release": "Detail Relay",
+  "name": "Detail Relay",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.37",
-  "seal": "owner-authority-8637-4ac91e"
+  "build": "8.6.38",
+  "seal": "detail-relay-8638-7b31c4"
 }

@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.37',seal:'owner-authority-8637-4ac91e'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.38',seal:'detail-relay-8638-7b31c4'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -52,7 +52,7 @@
       next.channels={...(next.channels||{}),window:{ok:true,error:''}};
       const sessionWrite=__dsWriteWitnessStorage8620('sessionStorage',next);
       next.channels.sessionStorage={...(__dsStorageProbe8620('sessionStorage')),writeOk:sessionWrite.ok,writeError:sessionWrite.error};
-      // 8.6.37: localStorage is a compatibility probe only. Current-session witness truth never writes there.
+      // 8.6.38: localStorage is a compatibility probe only. Current-session witness truth never writes there.
       const localProbe=__dsStorageProbe8620('localStorage');
       next.channels.localStorage={...localProbe,writeOk:null,writeError:localProbe.ok?'legacy channel available; current witness write intentionally skipped':localProbe.error,degraded:!localProbe.ok,authoritative:false};
       // Best-effort second session write includes the probe result itself; window memory remains authoritative.
@@ -1134,7 +1134,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.37 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.6.38 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1142,7 +1142,7 @@
         </header>
         <div id="fleetStorageAutoSummary" class="fleet-storage-auto-summary" aria-live="polite">
           <div><small>AUTOMATIC STORAGE SOUNDING</small><strong>Checking storage health…</strong><span>Read-only. No cleanup or migration can run from this check.</span></div>
-          <button type="button" data-fleet-maintenance="inventory">VIEW STORAGE DETAILS</button>
+          <button type="button" id="fleetStorageDetailsButton8638">VIEW STORAGE DETAILS</button>
         </div>
         <div class="fleet-maintenance-grid" role="group" aria-label="Fleet maintenance tools">
           <button type="button" data-fleet-maintenance="telemetry"><small>STORAGE &amp; HEALTH</small><strong>Engine Telemetry</strong><span>Inspect measurable storage and browser-managed growth.</span></button>
@@ -1168,7 +1168,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.37 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.38 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1185,7 +1185,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.37 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.38 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -2047,7 +2047,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.6.37';
+    const BUILD='8.6.38';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;
@@ -2101,7 +2101,14 @@
       try{
         if(typeof window.BlackFlagFleetStorageInventory==='function'){
           const ok=await window.BlackFlagFleetStorageInventory();
-          if(ok){scrollTo(out);return commandResult('Storage Details',true,'deep ownership inventory finished');}
+          if(ok){
+            try{
+              const b=typeof window.blackFlagStorageBreakdown==='function'?await window.blackFlagStorageBreakdown():null;
+              if(b)paintSummary(`DETAILED STORAGE SOUNDING · COMPLETE`,`${fmtMB(Number(b?.knownBytes||0))} Dark Sky measured · browser-managed remainder remains unattributed. Read-only detail completed; protected data was not changed.`,'complete');
+              else paintSummary('DETAILED STORAGE SOUNDING · COMPLETE','Read-only detail completed. Protected data was not changed.','complete');
+            }catch(_){paintSummary('DETAILED STORAGE SOUNDING · COMPLETE','Read-only detail completed. Protected data was not changed.','complete');}
+            scrollTo(out);return commandResult('Storage Details',true,'deep ownership inventory finished');
+          }
         }
         if(typeof window.blackFlagStorageBreakdown==='function'){
           const b=await window.blackFlagStorageBreakdown();
@@ -2109,6 +2116,7 @@
           const top=(orders.topRecords||[]).slice(0,8);
           const rows=top.map((x,i)=>`<tr><td>${i+1}</td><td>${String(x.id||'order').replace(/[<>&]/g,'')}</td><td>${fmtMB(Number(x.bytes||0))}</td></tr>`).join('');
           out.innerHTML=`<div class="fleet-watchdog-panel complete"><strong>COMPLETE · DARK SKY STORAGE OWNERSHIP</strong><span>Measured ${fmtMB(Number(b?.knownBytes||0))} · IndexedDB ${fmtMB(Number(b?.indexedDb?.bytes||0))} · LocalStorage ${fmtMB(Number(b?.localStorage?.bytes||0))}</span><small>Orders: ${orders.rows??'?'} rows / ${fmtMB(Number(orders.bytes||0))}. Read-only.</small></div>${rows?`<table><thead><tr><th>#</th><th>Largest order records</th><th>Size</th></tr></thead><tbody>${rows}</tbody></table>`:''}`;
+          paintSummary('DETAILED STORAGE SOUNDING · COMPLETE',`${fmtMB(Number(b?.knownBytes||0))} Dark Sky measured · browser-managed remainder remains unattributed. Read-only detail completed; protected data was not changed.`,'complete');
           scrollTo(out);return commandResult('Storage Details',true,'deep ownership inventory finished');
         }
         throw new Error('Deep storage inventory is not available in this session.');
@@ -2168,6 +2176,19 @@
       const root=station();if(!root||root.dataset.watchdogBound==='true')return;
       root.dataset.watchdogBound='true';
       root.addEventListener('click',e=>{const btn=e.target.closest('[data-fleet-maintenance]');if(!btn)return;e.preventDefault();e.stopPropagation();executeCommand(btn.dataset.fleetMaintenance||'');},true);
+      const storageDetailButton=q('#fleetStorageDetailsButton8638');
+      if(storageDetailButton && storageDetailButton.dataset.detailRelayBound!=='true'){
+        storageDetailButton.dataset.detailRelayBound='true';
+        storageDetailButton.addEventListener('click',e=>{
+          e.preventDefault();e.stopPropagation();
+          setStatus('RUNNING · Storage Details · opening bounded read-only inventory','running');
+          paintSummary('DETAIL STORAGE SOUNDING · CHECKING','Reading Dark Sky-owned storage. Protected data will not be changed.','running');
+          Promise.resolve(showInventory()).catch(err=>{
+            paintSummary('WATCH · DETAILED STORAGE UNAVAILABLE',String(err?.message||err||'Storage detail failed.'),'watch');
+            commandResult('Storage Details',false,'bounded inspection returned WATCH');
+          });
+        },false);
+      }
       const toggle=q('#fleetDiagnosticHoldToggle');
       if(toggle){
         try{toggle.checked=diagnosticHoldEnabled8629();}catch(_){}

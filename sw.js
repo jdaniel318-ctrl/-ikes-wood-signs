@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.37';
-const RELEASE_SEAL='owner-authority-8637-4ac91e';
+const RELEASE_BUILD='8.6.38';
+const RELEASE_SEAL='detail-relay-8638-7b31c4';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.
