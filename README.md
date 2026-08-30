@@ -1,3 +1,7 @@
+# Dark Sky 8.6.48 — RLS Landing
+
+Repairs the live owner-session landing boundary discovered after Supabase successfully authenticated the Ike staging identity. The browser had a valid session but PostgreSQL returned 403 before RLS evaluation because the authenticated role lacked table-level SELECT privilege. 8.6.48 grants read capability only; RLS still controls exact-vessel visibility and browser writes remain forbidden. 8.6.42 remains the protected Known Good anchor until live denial/revocation proof completes.
+
 # Dark Sky 8.6.47 — Sign-In Bridge
 
 Supabase staging owner sign-in now uses a fresh one-time magic link, returns to the live `/-ikes-wood-signs/` owner route, and grants portal access only after exact-vessel RLS proves the authenticated `project_owner` membership. The local owner credential remains available only through an explicit recovery control.

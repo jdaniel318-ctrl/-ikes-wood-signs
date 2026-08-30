@@ -1,6 +1,6 @@
-# Dark Sky 8.6.47 — Sign-In Bridge
+# Dark Sky 8.6.48 — RLS Landing
 
-75+ file ceiling remains 80. This release uses one additional explicit owner sign-in bridge model to reduce auth regression risk.
+80-file ceiling remains in force. This release uses 77 files, including explicit sign-in bridge and RLS read-boundary evidence models.
 
 # Dark Sky 8.6.46 — Fleet Ownership Charter Package Manifest
 

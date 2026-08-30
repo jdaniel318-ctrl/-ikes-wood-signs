@@ -1,0 +1,17 @@
+{
+  "schema": "dark-sky-rls-read-boundary-v1",
+  "build": "8.6.48",
+  "release": "RLS Landing",
+  "purpose": "Authenticated browser identities receive table SELECT capability only; PostgreSQL RLS remains the row authority for exact-vessel access.",
+  "contracts": [
+    "authenticated may SELECT fleet_vessels, fleet_memberships, fleet_global_authorities, and fleet_authority_audit",
+    "authenticated receives no browser INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, or TRIGGER authority on Fleet authority tables",
+    "fleet_vessels visibility requires active exact-vessel membership or Fleet global authority",
+    "fleet_memberships visibility is self-only",
+    "owner portal opens only after an authenticated project_owner membership resolves for the requested canonical vessel",
+    "all other vessel rows remain invisible under RLS"
+  ],
+  "migration": "authenticated_fleet_read_boundary",
+  "known_good_anchor": "8.6.42",
+  "status": "staging-proof-required"
+}

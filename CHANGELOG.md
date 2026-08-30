@@ -1,3 +1,10 @@
+## 8.6.48 — RLS Landing
+
+- Grants authenticated SELECT on Fleet authority tables so RLS can evaluate live sessions.
+- Explicitly revokes browser write privileges on those authority tables.
+- Adds `RLS_READ_BOUNDARY_MODEL.json` as release evidence.
+- Preserves Supabase sign-in bridge, Fleet Ownership Charter, and 8.6.42 recovery anchor.
+
 ## 8.6.47 — Sign-In Bridge
 
 - Adds fresh Supabase magic-link owner sign-in.

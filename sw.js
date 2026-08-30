@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.47';
-const RELEASE_SEAL='signin-bridge-8647-4e91b2';
+const RELEASE_BUILD='8.6.48';
+const RELEASE_SEAL='rls-landing-8648-9d31f6';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

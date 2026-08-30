@@ -1,7 +1,7 @@
 {
-  "release": "Sign-In Bridge",
-  "name": "Sign-In Bridge",
-  "file_count": 76,
+  "release": "RLS Landing",
+  "name": "RLS Landing",
+  "file_count": 77,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_PREFLIGHT_818.json",
@@ -52,6 +52,7 @@
     "RELEASE_INVENTORY.json",
     "RELEASE_SEAL.json",
     "RESOLVER_LIFELINE_MODEL.json",
+    "RLS_READ_BOUNDARY_MODEL.json",
     "RUNTIME_ENTRY_TRACE_MODEL.json",
     "STORAGE_SAFE_PROOF_BUS_MODEL.json",
     "WITNESS_TRUTH_MODEL.json",
@@ -80,9 +81,9 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.47",
-  "seal": "signin-bridge-8647-4e91b2",
-  "top_level_folder": "DarkSky8647-SignInBridge",
+  "build": "8.6.48",
+  "seal": "rls-landing-8648-9d31f6",
+  "top_level_folder": "DarkSky8648-SessionLanding",
   "known_good_anchor": "8.6.42",
   "mission": "Live Supabase owner sign-in bridge with exact-vessel RLS verification and recovery-only local fallback."
 }
