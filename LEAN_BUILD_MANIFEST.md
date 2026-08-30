@@ -1,4 +1,4 @@
-# Dark Sky 8.6.35 — Storage Truth Atomic Package Manifest
+# Dark Sky 8.6.36 — Witness Truth Atomic Package Manifest
 
 This is intentionally a full atomic package, not a lean patch. Diagnostic Hold uses a dedicated session-scoped same-origin relay plus an explicit authentication-complete hook so login/session reinitialization cannot erase the pending evidence hold. Do not trim deployment identity, runtime scripts, service worker, manifests, proof contracts, or release models from the upload set.
 

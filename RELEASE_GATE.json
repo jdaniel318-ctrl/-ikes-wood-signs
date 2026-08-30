@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.35",
+  "build": "8.6.36",
   "release": "Storage Truth",
   "generatedAt": "2026-08-30T04:30:00+00:00",
   "checks": {
@@ -193,8 +193,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.35 Storage Truth hardens Stage Two storage diagnostics: durable control results, deep read-only ownership inspection, per-order record sizing, iPad-safe backup handoff, and explicit point-in-time Safari estimate labeling. No protected data deletion or migration is authorized.",
-  "candidate": "8.6.35",
+  "note": "8.6.36 Witness Truth preserves the 8.6.35 storage/relay pass while making modern authenticated witness settlement authoritative, treating localStorage quota exhaustion as degraded legacy telemetry, retiring false legacy-hook watches, and separating capability staging evidence from Command Navigation. Experimental Ike length remains WATCH.",
+  "candidate": "8.6.36",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

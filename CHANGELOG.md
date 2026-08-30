@@ -1,7 +1,14 @@
-# 8.6.35 — Seal Truth
+# 8.6.36 — Seal Truth
+## 8.6.36 — Witness Truth
+- Preserves 8.6.35 Storage Truth and 6/6 Fleet Registry proof.
+- Authenticated Engine relay now proves post-login settlement even when optional Diagnostic Hold is not enabled.
+- localStorage quota exhaustion degrades only the legacy channel when window memory + sessionStorage are healthy.
+- Legacy lifecycle hooks are non-authoritative when the modern ignition/memory/bootstrap chain is verified.
+- Command Navigation Voyage no longer inherits unrelated capability-staging WATCH state.
+- Experimental Ike length calibration remains WATCH by design.
 
 - Repairs the atomic release identity contract that blocked 8.6.34 before Engine paint.
-- RELEASE_INVENTORY.json now agrees with the page, deployment manifest, release seal, web manifest, and service worker on build 8.6.35 / seal seal-truth-8635-7c4e21.
+- RELEASE_INVENTORY.json now agrees with the page, deployment manifest, release seal, web manifest, and service worker on build 8.6.36 / seal witness-truth-8636-9d6f42.
 - Preserves the 8.6.34 Stage Two Storage Truth diagnostics unchanged.
 - No project, order, customer, graphics, admissions, quarantine, or recovery data is altered.
 

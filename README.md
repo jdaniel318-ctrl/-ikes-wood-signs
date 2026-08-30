@@ -1,5 +1,12 @@
-# Dark Sky 8.6.35 — Storage Truth
+# Dark Sky 8.6.36 — Witness Truth
 
+## 8.6.36 Witness hardening
+
+- Post-login evidence is considered settled when the authenticated Engine relay is observed, even when Diagnostic Hold is not intentionally enabled. The optional hold remains available as a visible manual diagnostic.
+- Safari localStorage quota exhaustion is now reported as a degraded legacy channel, not a Fleet readiness failure, whenever window memory + sessionStorage proof are healthy.
+- Retired legacy lifecycle hooks no longer create an ambiguous WATCH when the modern loader, memory-muster, bootstrap, and proof-signer witnesses are all verified.
+- Capability staging evidence is no longer folded into Command Navigation Voyage; staging remains independently visible in Engineering Evidence.
+- Experimental Ike length calibration remains a truthful non-blocking WATCH. Orientation, species, approved-artifact, and production-geometry protections are unchanged.
 Stage Two storage hardening from the Relay Readback baseline. Fleet Maintenance **View Storage Details** now performs a real read-only ownership scan instead of appearing inert. Storage & Telemetry exposes the largest IndexedDB order records by size so the 30-row order footprint can be diagnosed without deleting anything. **Inspect Storage** is renamed **Rescan Storage** where it reruns measurement, while the protected Storage & Recovery action is renamed **Open Storage Breakdown**.
 
 **Check the Hull** now leaves a durable timestamped integrity result. **Export Captain's Backup** now prepares the full backup asynchronously and then presents a durable **Download Captain's Backup** link, preserving a fresh iPad/Safari user gesture instead of silently attempting a download after awaited storage reads. Fast Fleet Maintenance storage values are explicitly labeled as point-in-time Safari estimates, while deep telemetry is labeled as the latest estimate to prevent the two readings from being mistaken for one immutable measurement. Safe cleanup remains cache-only and protected project/order/customer/graphic/evidence records remain outside cleanup authority.

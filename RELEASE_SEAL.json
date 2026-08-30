@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.35",
-  "release": "Storage Truth",
-  "seal": "seal-truth-8635-7c4e21",
+  "build": "8.6.36",
+  "release": "Witness Truth",
+  "seal": "witness-truth-8636-9d6f42",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Storage Truth",
-  "name": "Storage Truth",
-  "releaseName": "Storage Truth"
+  "release_name": "Witness Truth",
+  "name": "Witness Truth",
+  "releaseName": "Witness Truth"
 }

@@ -1,6 +1,6 @@
 {
-  "release": "Storage Truth",
-  "name": "Storage Truth",
+  "release": "Witness Truth",
+  "name": "Witness Truth",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.35",
-  "seal": "seal-truth-8635-7c4e21"
+  "build": "8.6.36",
+  "seal": "witness-truth-8636-9d6f42"
 }

@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.35',seal:'seal-truth-8635-7c4e21'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.36',seal:'witness-truth-8636-9d6f42'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -51,12 +51,12 @@
       const next={...base,build:DARK_SKY_EXPECTED_BUILD,seal:DARK_SKY_RELEASE_SEAL,counters,lastEvent:row,history:[...(base.history||[]),row].slice(-160),updatedAt:at};
       next.channels={...(next.channels||{}),window:{ok:true,error:''}};
       const sessionWrite=__dsWriteWitnessStorage8620('sessionStorage',next);
-      const localWrite=__dsWriteWitnessStorage8620('localStorage',next);
       next.channels.sessionStorage={...(__dsStorageProbe8620('sessionStorage')),writeOk:sessionWrite.ok,writeError:sessionWrite.error};
-      next.channels.localStorage={...(__dsStorageProbe8620('localStorage')),writeOk:localWrite.ok,writeError:localWrite.error};
-      // Best-effort second write includes the probe result itself; failure remains visible in window memory.
+      // 8.6.36: localStorage is a compatibility probe only. Current-session witness truth never writes there.
+      const localProbe=__dsStorageProbe8620('localStorage');
+      next.channels.localStorage={...localProbe,writeOk:null,writeError:localProbe.ok?'legacy channel available; current witness write intentionally skipped':localProbe.error,degraded:!localProbe.ok,authoritative:false};
+      // Best-effort second session write includes the probe result itself; window memory remains authoritative.
       const sessionFinal=__dsWriteWitnessStorage8620('sessionStorage',next); if(!sessionFinal.ok)next.channels.sessionStorage.finalWriteError=sessionFinal.error;
-      const localFinal=__dsWriteWitnessStorage8620('localStorage',next); if(!localFinal.ok)next.channels.localStorage.finalWriteError=localFinal.error;
       window.__darkSkyWitnessTruthState8620=next;
       window.__darkSkyRuntimeEntryWitnessState8620=next;
       return next;
@@ -1134,7 +1134,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.35 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.6.36 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1168,7 +1168,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.35 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.36 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1185,7 +1185,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.35 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.36 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1892,7 +1892,7 @@
       const channels=truth?.memory?.channels||{};
       const overlay=document.createElement('div');overlay.id='darkSkyPostLoginEvidenceHold8629';
       overlay.style.cssText='position:fixed;inset:0;z-index:2147483646;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(3,13,17,.82);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;';
-      const channelLine=(name,c)=>`${name}: ${c?.ok&&c?.writeOk!==false?'PASS':'CHECK'}${c?.error?` • ${c.error}`:''}${c?.writeError?` • ${c.writeError}`:''}`;
+      const channelLine=(name,c)=>`${name}: ${c?.ok&&(c?.writeOk!==false||c?.authoritative===false)?(c?.authoritative===false?'AVAILABLE · LEGACY':'PASS'):(c?.authoritative===false?'DEGRADED · LEGACY':'CHECK')}${c?.error?` • ${c.error}`:''}${c?.writeError?` • ${c.writeError}`:''}`;
       overlay.innerHTML=`<div style="width:min(760px,92vw);border:1px solid rgba(80,157,179,.46);border-radius:24px;background:linear-gradient(180deg,#0b2730,#081c23);box-shadow:0 30px 90px rgba(0,0,0,.48);padding:24px 26px;color:#edf5f4"><div style="font-size:10px;letter-spacing:.22em;font-weight:900;color:#d0a84d">POST-LOGIN DIAGNOSTIC • HOLD ACTIVE</div><h2 style="margin:8px 0 4px;font-size:28px">Verified Engine handoff</h2><p style="margin:0 0 16px;color:#9fb3b8;line-height:1.45">Diagnostic Hold is active for this session. Startup evidence will remain on screen until you release it manually.</p><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px"><div style="padding:12px;border:1px solid rgba(80,157,179,.25);border-radius:12px"><small style="color:#7eb4c4;letter-spacing:.12em">BUILD</small><strong style="display:block;margin-top:5px">${EXPECTED}</strong></div><div style="padding:12px;border:1px solid rgba(80,157,179,.25);border-radius:12px"><small style="color:#7eb4c4;letter-spacing:.12em">RELEASE SEAL</small><strong style="display:block;margin-top:5px;font-size:12px;word-break:break-word">${SEAL}</strong></div></div><div style="padding:12px 14px;border-radius:12px;background:rgba(3,13,17,.42);font-size:12px;line-height:1.6;color:#c6d5d8"><strong style="color:#eef5f4">Witness truth</strong><br>Window memory: PASS<br>${safe(channelLine('sessionStorage',channels.sessionStorage))}<br>${safe(channelLine('localStorage',channels.localStorage))}<br>Last event: ${safe(truth?.memory?.lastEvent?.event||'none')}</div><div style="padding:12px 14px;margin-top:10px;border-radius:12px;background:rgba(3,13,17,.42);font-size:12px;line-height:1.55;color:#c6d5d8"><strong style="color:#eef5f4">Last safe recovery</strong><br>${recovery?`${safe(recovery.build||'')} • ${safe(recovery.automatic?'automatic':'manual')} • ${safe(recovery.at||'')}`:(recoveryError?safe(recoveryError):'No retained recovery record for this session.')}</div><button id="darkSkyPostLoginContinue8629" type="button" style="margin-top:16px;width:100%;padding:13px;border-radius:12px;border:1px solid rgba(208,168,77,.52);background:#163b47;color:#fff;font-weight:900;letter-spacing:.09em">CONTINUE NOW</button><div style="margin-top:8px;text-align:center;font-size:11px;color:#9fb3b8">HOLD ACTIVE · waiting for manual release</div></div>`;
       document.body.appendChild(overlay);
       document.getElementById('darkSkyPostLoginContinue8629')?.addEventListener('click',()=>{
@@ -2047,7 +2047,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.6.35';
+    const BUILD='8.6.36';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;
