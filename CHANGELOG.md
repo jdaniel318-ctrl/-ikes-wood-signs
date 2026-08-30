@@ -1,3 +1,10 @@
+# Dark Sky 8.6.30 — Atomic Latch
+
+- Restores full atomic release packaging after the 8.6.29 mixed-deployment hold correctly blocked Engine paint.
+- Carries forward the Post-Login Latch: Diagnostic Hold waits for authentication to clear and has no auto-dismiss timer.
+- Advances document, deployment manifest, runtime BUILD_VERSION, worker sentinel, release seal, inventory, and required readiness models together.
+- No cleanup, deletion, migration, or Phase 2 authority added.
+
 ## 8.6.29 — Post-Login Latch
 
 - Replaces the pre-auth visibility-triggered Diagnostic Hold with an authenticated post-login latch.

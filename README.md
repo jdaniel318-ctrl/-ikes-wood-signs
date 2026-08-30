@@ -1,3 +1,7 @@
+# Dark Sky 8.6.30 — Atomic Latch
+
+Phase 1 atomic repair and final post-login latch candidate. Ships the complete verified runtime set so document, manifest, app runtime, service-worker sentinel, release seal, and inventory advance together. Diagnostic Hold arms before authentication, waits for the login gate to clear, remains visible until Continue Now, and adds no cleanup, deletion, migration, or Phase 2 authority.
+
 # Dark Sky 8.6.29 — Post-Login Latch
 
 **Phase 1 final handoff correction.** Diagnostic Hold now arms before authentication, waits for the Engine login gate to clear, then presents a persistent post-login evidence screen that can only be released with **Continue Now**. The hold no longer auto-dismisses and cannot be consumed by pre-auth Engine visibility. All other Phase 1 Maintenance Rails behavior remains frozen. No cleanup, deletion, migration, or Phase 2 authority is added.

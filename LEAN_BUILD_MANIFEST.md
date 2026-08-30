@@ -1,3 +1,7 @@
+# Dark Sky 8.6.30 — Atomic Latch Atomic Package Manifest
+
+This release intentionally restores the complete atomic runtime/package set. Do not trim release identity, verified-loader runtime, service worker, manifests, release models, or required proof contracts from deployment ZIPs. The release barrier must be able to verify one coherent build before Engine paint.
+
 # 8.6.29 Post-Login Latch — Lean Build Manifest
 
 Phase 1 final handoff correction. Diagnostic Hold is now authenticated-gate-bound and persists until manual Continue Now release. Maintenance commands retain destination-specific verification. Protected six-vessel muster and 8.6.23 Known Good recovery anchor remain unchanged.

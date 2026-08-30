@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.6.28",
+  "build": "8.6.30",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -14,7 +14,7 @@
     {
       "id": "captain",
       "verb": "command",
-      "mission": "Watch → Decide → Act → Record across vessels"
+      "mission": "Watch \u2192 Decide \u2192 Act \u2192 Record across vessels"
     },
     {
       "id": "admiral",

@@ -1,6 +1,6 @@
 {
-  "release": "Maintenance Rails",
-  "name": "Maintenance Rails",
+  "release": "Atomic Latch",
+  "name": "Atomic Latch",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.28",
-  "seal": "maintenance-rails-8628-7a41e9"
+  "build": "8.6.30",
+  "seal": "atomic-latch-8630-4f8c2d"
 }
