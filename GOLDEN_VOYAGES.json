@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.6.40",
+  "build": "8.6.42",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {

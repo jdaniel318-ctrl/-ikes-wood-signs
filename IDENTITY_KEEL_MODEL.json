@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-identity-keel-model-v1",
-  "build": "8.6.40",
+  "build": "8.6.42",
   "release": "Registry Commit",
   "mission": "Introduce production identity architecture and vessel commissioning authority without removing the 8.6.38 recovery bridge.",
   "provider": {

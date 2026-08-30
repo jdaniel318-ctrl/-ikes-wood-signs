@@ -1,6 +1,6 @@
 {
-  "release": "Generation Settlement",
-  "name": "Generation Settlement",
+  "release": "Atomic Seal",
+  "name": "Atomic Seal",
   "file_count": 75,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -79,9 +79,9 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.41",
-  "seal": "generation-settlement-8641-9f42c1",
-  "top_level_folder": "DarkSky8641-GenerationSettlement",
+  "build": "8.6.42",
+  "seal": "atomic-seal-8642-3d7a91",
+  "top_level_folder": "DarkSky8642-AtomicSeal",
   "known_good_anchor": "8.6.38",
-  "mission": "Commit one complete six-vessel current proof only after committed memory, canonical Dock input, and Fleet Intelligence agree on the same generation; preserve Identity Keel, Admiral Course Authority, and the 8.6.38 recovery anchor."
+  "mission": "Bootstrap-only atomic identity repair over 8.6.41 Generation Settlement; no generation logic changes."
 }

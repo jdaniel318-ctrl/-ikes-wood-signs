@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.41",
-  "release": "Generation Settlement",
-  "seal": "generation-settlement-8641-9f42c1",
+  "build": "8.6.42",
+  "release": "Atomic Seal",
+  "seal": "atomic-seal-8642-3d7a91",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Generation Settlement",
-  "name": "Generation Settlement",
-  "releaseName": "Generation Settlement"
+  "release_name": "Atomic Seal",
+  "name": "Atomic Seal",
+  "releaseName": "Atomic Seal"
 }

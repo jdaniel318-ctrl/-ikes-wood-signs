@@ -1,3 +1,10 @@
+# 8.6.42 — Atomic Seal
+
+- Bootstrap-only repair; Generation Settlement logic is unchanged.
+- Aligns index document, deployment manifest, web app manifest, service worker, runtime build marker, and release seal to `8.6.42` / `atomic-seal-8642-3d7a91`.
+- Adds a release-blocking package rule: no prior authoritative release seal may survive handoff.
+- Keeps 8.6.38 as Known Good recovery anchor until this candidate earns promotion.
+
 # 8.6.41 — Generation Settlement
 
 - Keeps 8.6.40 Registry Commit and Identity Keel architecture intact.

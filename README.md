@@ -8,7 +8,7 @@ This candidate repairs the current Fleet proof chain introduced around the Ident
 
 Hard production-identity foundation branched from certified 8.6.38. This release does **not** claim that production authentication is live yet; it installs the contracts, adapter, commissioning provenance, rollback bridge, and Proving Ground evidence required before outside-owner rollout.
 
-## 8.6.41 Generation Settlement
+## 8.6.42 Atomic Seal
 
 - Supabase-ready production identity adapter with a strict browser boundary: publishable/legacy anon key only; `sb_secret_` and service-role credentials are forbidden in browser configuration.
 - Identity and authority are separated: Supabase may prove the human, while Dark Sky retains canonical vessel membership, role, capability, and commissioning authority.

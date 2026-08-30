@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.41",
-  "release": "Generation Settlement",
-  "generatedAt": "2026-08-30T15:09:00+00:00",
+  "build": "8.6.42",
+  "release": "Atomic Seal",
+  "generatedAt": "2026-08-30T12:02:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -208,8 +208,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.41 Generation Settlement commits only a complete common generation: committed memory, canonical six-vessel Dock input, and usable six-vessel Fleet Intelligence. Operator filters remain presentation-only. Identity Keel and Admiral Course Authority remain unchanged; Production Identity stays WATCH until a live backend proves it.",
-  "candidate": "8.6.41",
+  "note": "8.6.42 Atomic Seal changes no Generation Settlement logic. It enforces exact agreement across document, deployment manifest, web app manifest, service worker, runtime, and release seal; any prior release seal surviving the package is release-blocking.",
+  "candidate": "8.6.42",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -264,5 +264,17 @@
   "generation_relay_gate": {
     "required": true,
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
+  },
+  "atomic_seal_gate": {
+    "build": "8.6.42",
+    "seal": "atomic-seal-8642-3d7a91",
+    "authoritative_files": [
+      "index.html",
+      "DEPLOYMENT_MANIFEST.json",
+      "RELEASE_SEAL.json",
+      "manifest.webmanifest",
+      "sw.js"
+    ],
+    "rule": "all authoritative identities must agree exactly; any prior release seal in an authoritative file fails packaging"
   }
 }

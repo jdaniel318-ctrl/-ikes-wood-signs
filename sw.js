@@ -1,8 +1,8 @@
-const RELEASE_BUILD='8.6.40';
-const RELEASE_SEAL='registry-commit-8640-7c31b2';
+const RELEASE_BUILD='8.6.42';
+const RELEASE_SEAL='atomic-seal-8642-3d7a91';
 
 self.addEventListener('install', event => {
-  // Admiral Seal: service worker is an identity/control-plane sentinel only.
+  // Atomic Seal: service worker is an identity/control-plane sentinel only.
   // Executable runtime files are never precached here; boot verifies and executes one in-memory snapshot.
   self.skipWaiting();
 });
