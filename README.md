@@ -1,3 +1,7 @@
+# Dark Sky 8.6.43 — Live Identity Staging
+
+Black Flag Fleet Core staging is now connected through a Supabase publishable browser key. The backend has canonical vessel, membership, global authority, and durable audit tables with default-deny RLS. Outside-owner production remains blocked until authenticated cross-vessel denial, revocation, expiry, and rollback tests pass. 8.6.42 remains the protected Known Good recovery anchor during this staging push.
+
 # Dark Sky 8.6.41 — Generation Settlement
 
 This candidate repairs the current Fleet proof chain introduced around the Identity Keel push and establishes explicit Admiral Course Authority. The current heading is strong, but Fleet doctrine is not frozen forever: the Admiral may deliberately promote a new course when conditions require it, with versioned history and rollback.

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.42",
-  "release": "Atomic Seal",
+  "build": "8.6.43",
+  "release": "Live Identity Staging",
   "generatedAt": "2026-08-30T12:02:00-04:00",
   "checks": {
     "build_version": true,
@@ -208,8 +208,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.42 Atomic Seal changes no Generation Settlement logic. It enforces exact agreement across document, deployment manifest, web app manifest, service worker, runtime, and release seal; any prior release seal surviving the package is release-blocking.",
-  "candidate": "8.6.42",
+  "note": "8.6.43 Live Identity Staging connects the real Supabase staging backend with publishable-key-only browser access. Production owner access remains blocked until authenticated revocation, exact-vessel denial, expiry, and rollback tests pass.",
+  "candidate": "8.6.43",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -266,8 +266,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.6.42",
-    "seal": "atomic-seal-8642-3d7a91",
+    "build": "8.6.43",
+    "seal": "live-identity-staging-8643-5e8c21",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

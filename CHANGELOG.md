@@ -1,3 +1,7 @@
+## 8.6.43 — Live Identity Staging
+
+Black Flag Fleet Core staging is now connected through a Supabase publishable browser key. The backend has canonical vessel, membership, global authority, and durable audit tables with default-deny RLS. Outside-owner production remains blocked until authenticated cross-vessel denial, revocation, expiry, and rollback tests pass. 8.6.42 remains the protected Known Good recovery anchor during this staging push.
+
 # 8.6.42 — Atomic Seal
 
 - Bootstrap-only repair; Generation Settlement logic is unchanged.

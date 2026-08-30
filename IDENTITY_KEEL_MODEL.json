@@ -1,14 +1,17 @@
 {
   "schema": "dark-sky-identity-keel-model-v1",
-  "build": "8.6.42",
-  "release": "Registry Commit",
-  "mission": "Introduce production identity architecture and vessel commissioning authority without removing the 8.6.38 recovery bridge.",
+  "build": "8.6.43",
+  "release": "Live Identity Staging",
+  "mission": "Connect the real Black Flag Fleet Core staging backend without enabling outside-owner production until negative authorization tests pass.",
   "provider": {
     "preferred": "supabase",
     "browser_key": "publishable",
     "browser_secret_forbidden": true,
     "server_secret_required_for_privileged_admin": true,
-    "static_github_pages_is_not_authority": true
+    "static_github_pages_is_not_authority": true,
+    "staging_project_connected": true,
+    "staging_project_ref": "sjgqqtnuttnkwsoebbqf",
+    "browser_key_class": "publishable_only"
   },
   "authority_separation": {
     "identity_provider_proves": "human_identity",

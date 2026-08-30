@@ -1,5 +1,5 @@
 {
-  "release": "Atomic Seal",
+  "release": "Live Identity Staging",
   "name": "Atomic Seal",
   "file_count": 75,
   "files": [
@@ -79,7 +79,7 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.42",
+  "build": "8.6.43",
   "seal": "atomic-seal-8642-3d7a91",
   "top_level_folder": "DarkSky8642-AtomicSeal",
   "known_good_anchor": "8.6.38",

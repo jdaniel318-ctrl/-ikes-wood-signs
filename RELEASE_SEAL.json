@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.42",
-  "release": "Atomic Seal",
-  "seal": "atomic-seal-8642-3d7a91",
+  "build": "8.6.43",
+  "release": "Live Identity Staging",
+  "seal": "live-identity-staging-8643-5e8c21",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Atomic Seal",
-  "name": "Atomic Seal",
-  "releaseName": "Atomic Seal"
+  "release_name": "Live Identity Staging",
+  "name": "Live Identity Staging",
+  "releaseName": "Live Identity Staging"
 }

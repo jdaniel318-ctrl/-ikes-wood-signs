@@ -1,7 +1,7 @@
 {
   "name": "Dark Sky \u2014 Atomic Seal",
   "short_name": "Dark Sky",
-  "start_url": "./index.html?_darkSkyRelease=8.6.42&_darkSkySeal=atomic-seal-8642-3d7a91",
+  "start_url": "./index.html?_darkSkyRelease=8.6.43&_darkSkySeal=live-identity-staging-8643-5e8c21",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.42"
+  "version": "8.6.43"
 }
