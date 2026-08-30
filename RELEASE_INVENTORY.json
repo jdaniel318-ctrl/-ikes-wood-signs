@@ -1,6 +1,6 @@
 {
-  "release": "Stage Two Bridge",
-  "name": "Stage Two Bridge",
+  "release": "Storage Truth",
+  "name": "Storage Truth",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.33",
-  "seal": "stage-two-bridge-8633-7c4e21"
+  "build": "8.6.34",
+  "seal": "relay-readback-8632-5d8a74"
 }

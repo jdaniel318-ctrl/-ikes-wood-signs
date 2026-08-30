@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.33',seal:'stage-two-bridge-8633-7c4e21'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.34',seal:'storage-truth-8634-2f91c7'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1134,7 +1134,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.33 • FLEET STEWARD · STAGE TWO BRIDGE</div>
+            <div class="engine-kicker">8.6.34 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1168,7 +1168,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.33 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.34 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1185,7 +1185,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.33 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.34 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1491,7 +1491,7 @@
           <article><span>SAFE CLEANUP</span><strong id="storageTelemetryCleanup">—</strong><small>Stale application cache only</small></article>
         </div>
         <div class="storage-telemetry-actions">
-          <button id="storageTelemetryInspectBtn" class="primary-btn" type="button">INSPECT STORAGE</button>
+          <button id="storageTelemetryInspectBtn" class="primary-btn" type="button">RESCAN STORAGE</button>
           <button id="storageTelemetryDiagnosticsBtn" class="secondary-btn" type="button" onclick="window.BlackFlagCompactStorageDiagnostics && window.BlackFlagCompactStorageDiagnostics()">COMPACT DIAGNOSTICS</button>
           <button id="storageTelemetryCleanBtn" class="secondary-btn" type="button" disabled onclick="return window.BlackFlagTelemetrySafeClean ? window.BlackFlagTelemetrySafeClean(event) : false">SAFE CLEANUP</button>
           <button id="storageTelemetryBackBtn" class="secondary-btn" type="button" onclick="return window.BlackFlagCloseStorageTelemetry ? window.BlackFlagCloseStorageTelemetry(event) : false">CLOSE STORAGE &amp; TELEMETRY</button>
@@ -1540,7 +1540,7 @@
             <button type="button" id="engineExportBtn" class="secondary-btn">EXPORT CAPTAIN'S BACKUP</button>
             <div class="storage-steward">
               <div><strong>Storage Steward</strong><small>Safe housekeeping only. Never deletes projects, orders, customers, graphics, admissions, or quarantine evidence.</small></div>
-              <div class="storage-steward-actions"><button id="engineStorageStewardPreviewBtn" class="secondary-btn small" type="button" onclick="return window.BlackFlagStorageStewardInspect?.()">INSPECT STORAGE</button><button id="engineStorageStewardCleanBtn" class="secondary-btn small" type="button" disabled onclick="return window.BlackFlagStorageStewardClean?.()">CLEAN TEMPORARY DEBRIS</button></div>
+              <div class="storage-steward-actions"><button id="engineStorageStewardPreviewBtn" class="secondary-btn small" type="button" onclick="return window.BlackFlagStorageStewardInspect?.()">OPEN STORAGE BREAKDOWN</button><button id="engineStorageStewardCleanBtn" class="secondary-btn small" type="button" disabled onclick="return window.BlackFlagStorageStewardClean?.()">CLEAN TEMPORARY DEBRIS</button></div>
               <div id="engineStorageStewardStatus" class="storage-steward-status" role="status" aria-live="polite"></div>
             </div>
             <p id="engineStorageDetail" class="helper"></p>
@@ -1841,32 +1841,19 @@
         return diagnosticWindowRelayRead8632(marker)===!!enabled;
       }catch(_){return false;}
     }
-    function diagnosticSessionRelayWrite8633(key,enabled){
-      try{
-        sessionStorage.setItem(key,enabled?'1':'0');
-        return sessionStorage.getItem(key)===(enabled?'1':'0');
-      }catch(_){return false;}
-    }
-    function diagnosticHoldRelayWrite8633(enabled){
-      const sessionOk=diagnosticSessionRelayWrite8633('darkSkyDiagnosticHoldEnabledV1',!!enabled);
-      try{sessionStorage.setItem('darkSkyDiagnosticHoldEnabled8628',enabled?'1':'0');}catch(_){}
-      const windowOk=diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER,!!enabled);
-      window.__darkSkyDiagnosticHoldRelayMemory=!!enabled;
-      return {ok:sessionOk||windowOk,sessionOk,windowOk,memoryOk:window.__darkSkyDiagnosticHoldRelayMemory===!!enabled};
-    }
     function diagnosticHoldEnabled8629(){
       if(diagnosticWindowRelayRead8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER))return true;
       try{
         const stable=sessionStorage.getItem('darkSkyDiagnosticHoldEnabledV1');
         if(stable==='1')return true;
-        if(stable==='0')return false;
         const legacy=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8628');
         if(legacy==='1'){
-          diagnosticHoldRelayWrite8633(true);
+          sessionStorage.setItem('darkSkyDiagnosticHoldEnabledV1','1');
+          diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER,true);
           return true;
         }
       }catch(_){}
-      return window.__darkSkyDiagnosticHoldRelayMemory===true;
+      return false;
     }
     function armPostLoginEvidenceHold8629(reason='login-gate-visible'){
       if(!diagnosticHoldEnabled8629())return false;
@@ -2060,7 +2047,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.6.33';
+    const BUILD='8.6.34';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;
@@ -2099,26 +2086,36 @@
         p.then(r=>{
           if(terminal)return;clearTimeout(watchdog);
           const usage=Number(r?.usage||0),quota=Number(r?.quota||0);
-          finish(`COMPLETE · ${fmtMB(usage)} origin usage`,quota?`${((usage/quota)*100).toFixed(2)}% of ${fmtMB(quota)} quota · read-only sounding complete.`:'Read-only origin sounding complete.','complete');
+          finish(`COMPLETE · ${fmtMB(usage)} fast Safari estimate`,quota?`${((usage/quota)*100).toFixed(2)}% of ${fmtMB(quota)} quota · point-in-time read at ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}.`:'Point-in-time Safari estimate complete.','complete');
         }).catch(err=>{
           if(terminal)return;clearTimeout(watchdog);finish('WATCH · Storage reading unavailable',String(err?.message||err||'Storage estimate failed.')+' Fleet remains operational.','watch');
         });
       }catch(err){clearTimeout(watchdog);finish('WATCH · Storage reading unavailable',String(err?.message||err||'Storage estimate failed.')+' Fleet remains operational.','watch');}
     }
 
-    function showInventory(){
+    async function showInventory(){
       const out=inventory();if(!out)return commandResult('Storage Details',false,'inventory surface missing');
-      out.innerHTML='<div class="fleet-watchdog-panel"><strong>STORAGE DETAILS · CHECKING</strong><span>Bounded read-only inspection. This panel resolves even if Safari does not.</span></div>';
+      out.innerHTML='<div class="fleet-watchdog-panel"><strong>STORAGE DETAILS · CHECKING</strong><span>Bounded read-only ownership scan. No cleanup or migration authority exists here.</span></div>';
       scrollTo(out);
-      let terminal=false;
-      const finish=(html,ok=true)=>{if(terminal)return;terminal=true;out.innerHTML=html;commandResult('Storage Details',ok,ok?'bounded inspection finished':'bounded inspection returned WATCH');};
-      const timer=setTimeout(()=>finish('<div class="fleet-watchdog-panel watch"><strong>WATCH · DETAILED STORAGE UNAVAILABLE</strong><span>Safari did not finish the detailed reading within 7 seconds. No cleanup ran and Fleet Maintenance remains usable.</span></div>',false),DETAIL_TIMEOUT);
+      setStatus('RUNNING · Storage Details · reading Dark Sky-owned stores','running');
       try{
-        const values={origin:q('#storageTelemetryOrigin')?.textContent?.trim(),measured:q('#storageTelemetryMeasured')?.textContent?.trim(),unknown:q('#storageTelemetryUnattributed')?.textContent?.trim(),cleanup:q('#storageTelemetryCleanup')?.textContent?.trim()};
-        const usable=[values.origin,values.measured,values.unknown].some(v=>v&&v!=='—');
-        if(usable){clearTimeout(timer);finish(`<div class="fleet-watchdog-panel complete"><strong>COMPLETE · READ-ONLY STORAGE INVENTORY</strong><span>Origin ${values.origin||'—'} · Measured Dark Sky ${values.measured||'—'} · Browser-managed ${values.unknown||'—'} · Safe cleanup ${values.cleanup||'—'}</span><small>Source: current Engine Telemetry state. No cleanup or migration authority is present here.</small></div>`,true);return;}
-        if(navigator.storage?.estimate){navigator.storage.estimate().then(r=>{if(terminal)return;clearTimeout(timer);finish(`<div class="fleet-watchdog-panel complete"><strong>COMPLETE · ORIGIN STORAGE INVENTORY</strong><span>Origin usage ${fmtMB(Number(r?.usage||0))} · quota ${fmtMB(Number(r?.quota||0))}</span><small>Safari did not expose the deeper class breakdown in the bounded interval. Open Engine Telemetry for deeper diagnostics.</small></div>`,true);}).catch(()=>{});}
-      }catch(_){/* timeout owns terminal state */}
+        if(typeof window.BlackFlagFleetStorageInventory==='function'){
+          const ok=await window.BlackFlagFleetStorageInventory();
+          if(ok){scrollTo(out);return commandResult('Storage Details',true,'deep ownership inventory finished');}
+        }
+        if(typeof window.blackFlagStorageBreakdown==='function'){
+          const b=await window.blackFlagStorageBreakdown();
+          const orders=b?.indexedDb?.stores?.orders||{};
+          const top=(orders.topRecords||[]).slice(0,8);
+          const rows=top.map((x,i)=>`<tr><td>${i+1}</td><td>${String(x.id||'order').replace(/[<>&]/g,'')}</td><td>${fmtMB(Number(x.bytes||0))}</td></tr>`).join('');
+          out.innerHTML=`<div class="fleet-watchdog-panel complete"><strong>COMPLETE · DARK SKY STORAGE OWNERSHIP</strong><span>Measured ${fmtMB(Number(b?.knownBytes||0))} · IndexedDB ${fmtMB(Number(b?.indexedDb?.bytes||0))} · LocalStorage ${fmtMB(Number(b?.localStorage?.bytes||0))}</span><small>Orders: ${orders.rows??'?'} rows / ${fmtMB(Number(orders.bytes||0))}. Read-only.</small></div>${rows?`<table><thead><tr><th>#</th><th>Largest order records</th><th>Size</th></tr></thead><tbody>${rows}</tbody></table>`:''}`;
+          scrollTo(out);return commandResult('Storage Details',true,'deep ownership inventory finished');
+        }
+        throw new Error('Deep storage inventory is not available in this session.');
+      }catch(err){
+        out.innerHTML=`<div class="fleet-watchdog-panel watch"><strong>WATCH · DETAILED STORAGE UNAVAILABLE</strong><span>${String(err?.message||err||'Storage detail failed.').replace(/[<>&]/g,'')}</span><small>No cleanup ran and Fleet Maintenance remains usable.</small></div>`;
+        return commandResult('Storage Details',false,'bounded inspection returned WATCH');
+      }
     }
 
     function verifyCommand(label,{action,verify,timeout=COMMAND_TIMEOUT,onSuccess}={}){
@@ -2175,18 +2172,21 @@
       if(toggle){
         try{toggle.checked=diagnosticHoldEnabled8629();}catch(_){}
         toggle.addEventListener('change',()=>{
-          const desired=!!toggle.checked;
-          const proof=diagnosticHoldRelayWrite8633(desired);
-          if(!desired){diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_PENDING_WINDOW_MARKER,false);clearPostLoginEvidenceHold8629('toggle-off');}
-          window.__darkSkyDiagnosticHoldEnabled=desired;
-          const readBack=diagnosticHoldEnabled8629()===desired;
-          const verified=proof.ok&&proof.memoryOk&&readBack&&window.__darkSkyDiagnosticHoldEnabled===desired;
-          const channel=proof.sessionOk&&proof.windowOk?'session + window relay':proof.sessionOk?'session relay':proof.windowOk?'window relay':'memory fallback';
-          commandResult('Diagnostic Hold',verified,verified?(desired?`enabled for this session · ${channel}`:`disabled · ${channel}`):'session state could not be verified');
+          let stored=false;
+          try{
+            sessionStorage.setItem('darkSkyDiagnosticHoldEnabledV1',toggle.checked?'1':'0');
+            sessionStorage.setItem('darkSkyDiagnosticHoldEnabled8628',toggle.checked?'1':'0');
+            const relayStored=diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER,!!toggle.checked);
+            const relayReadBack=diagnosticWindowRelayRead8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER)===!!toggle.checked;
+            stored=relayStored&&relayReadBack;
+            if(!toggle.checked){diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_PENDING_WINDOW_MARKER,false);clearPostLoginEvidenceHold8629('toggle-off');}
+          }catch(_){}
+          window.__darkSkyDiagnosticHoldEnabled=!!toggle.checked;
+          commandResult('Diagnostic Hold',stored&&window.__darkSkyDiagnosticHoldEnabled===!!toggle.checked,stored?(toggle.checked?'enabled for this session':'disabled'):'session state could not be verified');
         });
         window.__darkSkyDiagnosticHoldEnabled=!!toggle.checked;
       }
-      setStatus('Stage 2+ bridge armed · Diagnostic Hold now verifies session truth with a dual-channel relay.','complete');
+      setStatus('Relay Readback armed · Diagnostic Hold must prove its relay before login testing.','complete');
       runAutoSounding();
     }
 

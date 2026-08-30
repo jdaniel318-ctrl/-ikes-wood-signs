@@ -1,11 +1,11 @@
-# Dark Sky 8.6.33 — Stage Two Bridge Atomic Package Manifest
+# Dark Sky 8.6.34 — Storage Truth Atomic Package Manifest
 
-This remains a full atomic package. The iPad relay defect is repaired without trimming runtime identity, service worker, manifests, proof contracts, or release models. Stage 2+ is entered as a guarded bridge: explicit safe housekeeping may follow after device certification, but this candidate itself adds no automatic destructive storage authority.
+This is intentionally a full atomic package, not a lean patch. Diagnostic Hold uses a dedicated session-scoped same-origin relay plus an explicit authentication-complete hook so login/session reinitialization cannot erase the pending evidence hold. Do not trim deployment identity, runtime scripts, service worker, manifests, proof contracts, or release models from the upload set.
 
-- Full package remains atomic
+- Full package: 73 files including `CHECKSUMS.sha256`
+- Release inventory payload: 72 files
 - Protected Known Good anchor remains 8.6.23
-- Diagnostic Hold proof: sessionStorage primary + window.name independent relay
-- Project/customer/order mutation from Fleet Steward remains forbidden
+- No Phase 2 storage mutation authority
 
 # 8.6.29 Hold Relay — Lean Build Manifest
 

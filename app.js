@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.33';
+  const BUILD_VERSION='8.6.34';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -1606,7 +1606,20 @@
     progress('indexeddb','Reading IndexedDB stores');
     const stores={};let indexedDbBytes=0;
     for(const store of [STORE_ORDERS,STORE_SETTINGS,STORE_PROJECTS]){
-      try{const rows=await getAll(store);const bytes=roughBytes(rows);stores[store]={rows:rows.length,bytes};indexedDbBytes+=bytes}catch(err){stores[store]={rows:null,bytes:null,error:String(err?.message||err)}}
+      try{
+        const rows=await getAll(store);
+        const bytes=roughBytes(rows);
+        const entrySizes=rows.map((row,index)=>({
+          index,
+          id:String(row?.id||row?.key||`row-${index+1}`),
+          projectId:String(row?.projectId||''),
+          customerName:String(row?.customerName||row?.name||''),
+          status:String(row?.status||''),
+          bytes:roughBytes(row)
+        })).sort((a,b)=>b.bytes-a.bytes);
+        stores[store]={rows:rows.length,bytes,topRecords:entrySizes.slice(0,12)};
+        indexedDbBytes+=bytes;
+      }catch(err){stores[store]={rows:null,bytes:null,error:String(err?.message||err),topRecords:[]}}
     }
     progress('caches','Reading Cache Storage');
     const cacheRows=[];let cacheBytes=0;
@@ -1634,7 +1647,9 @@
     const localTop=(b.localStorage?.topKeys||[]).slice(0,6);
     const cacheRows=cachesTop.length?cachesTop.map(x=>`<tr><td>${escapeHtml(x.name||'cache')}</td><td>${Number(x.entries||0)}</td><td>${formatStorageMb(x.bytes)} MB</td></tr>`).join(''):'<tr><td colspan="3">No cache entries measured.</td></tr>';
     const localRows=localTop.length?localTop.map(x=>`<tr><td>${escapeHtml(x.key||'key')}</td><td colspan="2">${formatStorageMb(x.bytes)} MB</td></tr>`).join(''):'<tr><td colspan="3">No LocalStorage entries measured.</td></tr>';
-    return `<div class="storage-report-head"><strong>STORAGE SOUNDING COMPLETE</strong><span>${r.usage!=null?formatStorageMb(r.usage)+' MB origin usage':'Origin usage unavailable'}</span></div>
+    const orderTop=(stores.orders?.topRecords||[]).slice(0,12);
+    const orderRows=orderTop.length?orderTop.map((x,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(x.id||'order')}</td><td>${escapeHtml(x.projectId||'—')}</td><td>${formatStorageMb(x.bytes)} MB</td></tr>`).join(''):'<tr><td colspan="4">No order records were measured.</td></tr>';
+    return `<div class="storage-report-head"><strong>STORAGE SOUNDING COMPLETE</strong><span>${r.usage!=null?formatStorageMb(r.usage)+' MB latest Safari estimate':'Origin usage unavailable'}</span></div>
       <div class="storage-report-grid">
         <div><b>${formatStorageMb(b.knownBytes)} MB</b><small>Measured Dark Sky data</small></div>
         <div><b>${formatStorageMb(b.cacheStorage?.bytes)} MB</b><small>Cache Storage</small></div>
@@ -1644,6 +1659,7 @@
       <p class="helper">Orders: ${stores.orders?.rows??'?'} rows / ${formatStorageMb(stores.orders?.bytes)} MB • Projects: ${stores.projects?.rows??'?'} rows / ${formatStorageMb(stores.projects?.bytes)} MB • Settings: ${stores.settings?.rows??'?'} rows / ${formatStorageMb(stores.settings?.bytes)} MB.</p>
       <p class="helper"><strong>Browser-managed / unattributed:</strong> ${formatStorageMb(unattributed)} MB. This is the gap between Safari's origin estimate and storage Dark Sky can enumerate; it is not treated as project data.</p>
       <p class="helper"><strong>Safe cache trim:</strong> ${r.oldCaches?.length||0} stale application cache${(r.oldCaches?.length||0)===1?'':'s'} / about ${formatStorageMb(staleBytes)} MB eligible. Cleanup does not touch projects, orders, customers, graphics, admissions, quarantine evidence, or active V4 data.</p>
+      <details class="storage-report-details" open><summary>Largest IndexedDB order records</summary><table><thead><tr><th>#</th><th>Order</th><th>Project</th><th>Size</th></tr></thead><tbody>${orderRows}</tbody></table><p class="helper">Read-only sizing. No order content is changed or removed.</p></details>
       <details class="storage-report-details"><summary>Largest caches</summary><table><thead><tr><th>Cache</th><th>Entries</th><th>Size</th></tr></thead><tbody>${cacheRows}</tbody></table></details>
       <details class="storage-report-details"><summary>Largest LocalStorage keys</summary><table><tbody>${localRows}</tbody></table></details>`;
   }
@@ -1822,7 +1838,7 @@
         storageTelemetryApply(r);
         try{localStorage.setItem('bf.v4.storage.lastSounding',JSON.stringify({at:r.at,usage:r.usage,knownBytes:r.breakdown?.knownBytes||0,unattributedBytes:Math.max(0,Number(r.usage||0)-Number(r.breakdown?.knownBytes||0)),oldCaches:r.oldCaches||[],oldCacheBytes:r.oldCacheBytes||0}))}catch(_){}
       }catch(err){if(box)box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err||'Unknown inspection failure'))}</span>`;}
-      finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE';}}
+      finally{if(btn){btn.disabled=false;btn.textContent='RESCAN STORAGE';}}
     }
     return true;
   }
@@ -1864,7 +1880,7 @@
     }catch(err){
       const message=String(err?.message||err||'Unknown inspection failure');box.innerHTML=`<strong>INSPECTION INTERRUPTED</strong><br><span>${escapeHtml(message)}</span>`;
       window.DarkSkyV4?.diagnostic?.('storage.inspect.ui_failed',message,{build:'4.3.6'});return false;
-    }finally{if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}}
+    }finally{if(btn){btn.disabled=false;btn.textContent='RESCAN STORAGE'}}
   };
 
   window.BlackFlagStorageStewardClean=async function(){
@@ -1904,7 +1920,7 @@
         storageTelemetryApply(fresh);
         if(btn){btn.disabled=false;btn.textContent=(fresh.oldCaches?.length||0)?`CLEAN ${fresh.oldCaches.length} STALE CACHE${fresh.oldCaches.length===1?'':'S'}`:'NO STALE CACHES';btn.disabled=!(fresh.oldCaches?.length||0)}
       }else{
-        if(btn){btn.disabled=false;btn.textContent='INSPECT STORAGE'}
+        if(btn){btn.disabled=false;btn.textContent='RESCAN STORAGE'}
       }
       try{await refreshEngineDiagnostics()}catch(_){}
       try{await renderFullSailCommandDeck()}catch(_){}
@@ -10210,6 +10226,9 @@
     if($('engineStorageStatus')) $('engineStorageStatus').textContent=storageText;
     if($('engineEmailStatus')) $('engineEmailStatus').textContent=LEGACY_IKE_WEB3FORMS_ACCESS_KEY && !LEGACY_IKE_WEB3FORMS_ACCESS_KEY.includes('PASTE_')?'Configured':'Needs Setup';
     if($('engineStorageDetail')) $('engineStorageDetail').textContent=`IndexedDB: ${indexedCount} order(s) • Local backup: ${localCount} order(s) • Merged view: ${merged.length} order(s).`;
+    const hull=$('engineStorageStewardStatus');
+    if(hull){hull.classList.add('is-active');hull.innerHTML=`<strong>HULL CHECK COMPLETE · ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</strong><br><span>${indexedCount}/${indexedCount} IndexedDB order rows readable • ${merged.length} merged orders visible • draft ${hasDraft?'recoverable':'clear'} • storage ${escapeHtml(storageText)}. No data changed.</span>`;}
+    window.DarkSkyV4?.diagnostic?.('storage.hull_check.complete','Captain hull check completed',{build:BUILD_VERSION,indexedCount,localCount,mergedCount:merged.length,hasDraft,storageText});
     await renderEnginePerformance();
   }
 
@@ -11440,8 +11459,24 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function exportBackup(){
-    const data={version:2,platform:'Dark Sky / Black Flag',schemaVersion:3,exportedAt:new Date().toISOString(),orders:await getMergedOrders(),settings:await getAll(STORE_SETTINGS)};
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`dark-sky-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    const status=$('engineStorageStewardStatus');
+    if(status){status.classList.add('is-active');status.innerHTML='<strong>PREPARING CAPTAIN\'S BACKUP…</strong><br><span>Read-only export preparation. Nothing is removed or changed.</span>';}
+    try{
+      const orders=await getMergedOrders();
+      const settings=await getAll(STORE_SETTINGS);
+      const data={version:3,platform:'Dark Sky / Black Flag',build:BUILD_VERSION,schemaVersion:3,exportedAt:new Date().toISOString(),orders,settings};
+      const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const filename=`dark-sky-captains-backup-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`;
+      if(window.__darkSkyCaptainBackupUrl)try{URL.revokeObjectURL(window.__darkSkyCaptainBackupUrl)}catch(_){}
+      window.__darkSkyCaptainBackupUrl=url;
+      if(status){status.innerHTML=`<strong>CAPTAIN'S BACKUP READY · ${formatStorageMb(blob.size)} MB</strong><br><span>${orders.length} merged orders + ${settings.length} settings rows prepared. On iPad, tap the durable download link below so Safari receives a fresh user gesture.</span><br><a class="secondary-btn small" href="${url}" download="${filename}">DOWNLOAD CAPTAIN'S BACKUP</a>`;}
+      window.DarkSkyV4?.diagnostic?.('storage.backup.ready','Captain backup prepared',{build:BUILD_VERSION,bytes:blob.size,orders:orders.length,settings:settings.length});
+      return true;
+    }catch(err){
+      if(status)status.innerHTML=`<strong>BACKUP PREPARATION INTERRUPTED</strong><br><span>${escapeHtml(String(err?.message||err))}. No data changed.</span>`;
+      return false;
+    }
   }
 
   async function restoreBackup(file){
@@ -15104,6 +15139,7 @@ The full order and approved media remain stored with this project.`;
       return false;
     }
   }
+  window.BlackFlagFleetStorageInventory=fleetStewardInventory8626;
   function bindFleetSteward8626(){
     // 8.6.28 Maintenance Rails owns Fleet Maintenance binding from index.html.
     // Keep this compatibility binder intentionally inert so older async storage
