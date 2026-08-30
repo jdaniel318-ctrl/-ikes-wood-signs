@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-steward-v1",
-  "build": "8.6.25",
-  "release": "Auto Sounding",
+  "build": "8.6.26",
+  "release": "Bounded Sounding",
   "mission": "Make recurring fleet maintenance easy to find, professional to inspect, and non-destructive by default.",
   "station": {
     "id": "fleetMaintenanceStation",

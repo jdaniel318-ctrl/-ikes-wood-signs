@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-canonical-six-v1",
-  "build": "8.6.25",
+  "build": "8.6.26",
   "release": "Canonical Six",
   "protected_baseline": "8.5.7",
   "branch_base": "8.6.1 Intelligence Dock",

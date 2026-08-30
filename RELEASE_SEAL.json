@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.25",
-  "release": "Auto Sounding",
-  "seal": "auto-sounding-8625-a51d7c",
-  "execution_model": "verified-loader-auto-sounding",
+  "build": "8.6.26",
+  "release": "Bounded Sounding",
+  "seal": "bounded-sounding-8626-b7d9e2",
+  "execution_model": "verified-loader-bounded-sounding",
   "service_worker": "identity-only",
-  "release_name": "Auto Sounding",
-  "name": "Auto Sounding",
-  "releaseName": "Auto Sounding"
+  "release_name": "Bounded Sounding",
+  "name": "Bounded Sounding",
+  "releaseName": "Bounded Sounding"
 }

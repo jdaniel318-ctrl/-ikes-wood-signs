@@ -1,9 +1,10 @@
-## 8.6.25 — Auto Sounding
-- Phase 1 usability correction: Fleet Maintenance automatically performs the read-only Storage Steward sounding after startup.
-- Storage condition is surfaced above the maintenance tool grid so the Captain does not need to hunt for Storage Inventory.
-- Added one obvious `VIEW STORAGE DETAILS` action; removed the buried duplicate Storage Inventory card.
-- Auto sounding is deferred and non-blocking; it cannot delete, migrate, compact, or clean storage.
-- Fleet, vessel, Generation Relay, proof, and recovery behavior remain unchanged.
+## 8.6.26 — Bounded Sounding
+- Replaced the hanging automatic deep storage scan with a fast read-only `navigator.storage.estimate()` health signal bounded to 2.5 seconds.
+- Automatic sounding now reports either COMPLETE or WATCH; `Checking storage health…` cannot persist indefinitely.
+- Deep ownership enumeration only runs after `VIEW STORAGE DETAILS` and is bounded to 9 seconds with a safe WATCH fallback.
+- Fleet Maintenance remains usable even if Safari does not answer a storage probe.
+- No cleanup, deletion, migration, compaction, fleet mutation, or vessel behavior changes are authorized.
+- Generation Relay, protected muster, proof signing, recovery, and project isolation remain frozen from the 8.6.23 Known Good anchor.
 
 # 8.6.24 — Fleet Steward
 

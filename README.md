@@ -1,6 +1,6 @@
-# Dark Sky 8.6.25 — Auto Sounding
+# Dark Sky 8.6.26 — Bounded Sounding
 
-Phase 1 correction to Fleet Steward. Fleet Maintenance now runs a deferred read-only storage sounding automatically, surfaces the storage condition above the maintenance tools, and keeps detailed inventory one explicit action away. No cleanup, deletion, migration, or vessel behavior changes are authorized. 8.6.24 remains the prior Phase 1 hull.
+Phase 1 hardening correction to Fleet Steward. The automatic maintenance signal is now a fast, bounded read-only health check with a 2.5-second ceiling; it never launches the deep storage enumerator automatically. Detailed ownership inspection remains explicit and is itself bounded to 9 seconds with a safe WATCH fallback. No cleanup, deletion, migration, or vessel behavior changes are authorized. 8.6.23 remains the protected Known Good anchor until this candidate is proven.
 
 # Dark Sky 8.6.24 — Fleet Steward
 

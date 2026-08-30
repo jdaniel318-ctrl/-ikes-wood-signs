@@ -1,6 +1,6 @@
 {
-  "release": "Auto Sounding",
-  "name": "Auto Sounding",
+  "release": "Bounded Sounding",
+  "name": "Bounded Sounding",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.25",
-  "seal": "auto-sounding-8625-a51d7c"
+  "build": "8.6.26",
+  "seal": "bounded-sounding-8626-b7d9e2"
 }

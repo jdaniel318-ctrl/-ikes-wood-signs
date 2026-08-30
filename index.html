@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.25',seal:'auto-sounding-8625-a51d7c'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.26',seal:'bounded-sounding-8626-b7d9e2'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1134,7 +1134,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.25 • FLEET STEWARD · AUTO SOUNDING</div>
+            <div class="engine-kicker">8.6.26 • FLEET STEWARD · BOUNDED SOUNDING</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1168,7 +1168,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.25 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.26 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1185,7 +1185,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.25 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.26 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1804,7 +1804,7 @@
       shield.innerHTML=`<div class="ds-first-light ds-route-recovery"><div class="ds-first-light-eyebrow">AUTOMATIC SAFE RECOVERY</div><h2>UPDATING VERIFIED RELEASE</h2><p>Dark Sky recognized a known stale-worker handoff and is replacing only application runtime state. Project data remains untouched.</p><div class="ds-release-grid"><div class="ds-release-cell"><small>NEW BUILD</small><strong>${EXPECTED}</strong></div><div class="ds-release-cell"><small>RECOVERY MODE</small><strong>SAFE AUTO</strong></div></div><p>${safe(reason)}</p><div id="darkSkyAutoRecoveryProgress" class="ds-release-progress" aria-live="polite"></div></div>`;
     }
     async function recoveryEvidenceHold8620(ms=3200){
-      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8625')==='1';}catch(_){}
+      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8626')==='1';}catch(_){}
       if(!enabled||!shield||window.__darkSkyReleaseGateState!=='recovering')return;
       window.__darkSkyRuntimeEntryWitness8620?.('recovery-evidence-hold-shown',{durationMs:ms});
       const card=shield.querySelector('.ds-route-recovery');
@@ -1828,7 +1828,7 @@
       wrap.remove();
     }
     function showPostLoginEvidenceHold8620(){
-      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8625')==='1';}catch(_){}
+      let enabled=false;try{enabled=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8626')==='1';}catch(_){}
       if(!enabled)return;
       if(window.__darkSkyPostLoginEvidenceHoldShown8620)return;
       window.__darkSkyPostLoginEvidenceHoldShown8620=true;

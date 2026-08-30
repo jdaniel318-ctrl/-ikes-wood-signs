@@ -14864,7 +14864,7 @@ body.captain-modal-open #captainQuarters:not(.hidden){position:fixed!important;i
 @media(max-width:960px){.resolver-lifeline-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.resolver-lifeline-grid{grid-template-columns:1fr}}
 
 
-/* 8.6.25 Auto Sounding — Phase 1 correction */
+/* 8.6.26 Bounded Sounding — Phase 1 correction */
 .fleet-maintenance-station{margin:16px 0;border:1px solid rgba(91,174,196,.28);border-radius:16px;background:linear-gradient(180deg,#08232a,#071b21);overflow:hidden}
 .fleet-maintenance-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:20px 22px;border-bottom:1px solid rgba(125,164,177,.16)}
 .fleet-maintenance-head h3{margin:4px 0 6px;color:#edf4f3;font-size:1.25rem}.fleet-maintenance-head p{margin:0;color:#94a8ad;max-width:760px;line-height:1.5}
