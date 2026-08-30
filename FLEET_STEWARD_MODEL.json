@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-steward-v1",
-  "build": "8.6.32",
-  "release": "Relay Readback",
+  "build": "8.6.33",
+  "release": "Stage Two Bridge",
   "mission": "Make recurring fleet maintenance easy to find, professional to inspect, and non-destructive by default.",
   "station": {
     "id": "fleetMaintenanceStation",

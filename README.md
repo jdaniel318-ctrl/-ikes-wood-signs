@@ -1,8 +1,8 @@
-# Dark Sky 8.6.32 — Relay Readback
+# Dark Sky 8.6.33 — Stage Two Bridge
 
-Phase 1 relay-verification correction. Diagnostic Hold now writes its temporary intent to a same-tab `window.name` relay and immediately reads that exact marker back before the UI can report COMPLETE. The relay is independent of Engine authentication state and localStorage. After a successful Engine unlock, `app.js` sends an explicit authentication-complete signal; only then may the post-login evidence screen render. It remains visible until **Continue Now**, which clears the pending relay. Toggle-off clears both enabled and pending relay state.
+Stage 2+ bridge release. The Diagnostic Hold verification defect found on iPad is corrected by making sessionStorage read-back the primary same-session proof channel, with `window.name` retained as an independent same-tab relay and window memory as a non-authoritative continuity fallback. A toggle transition is COMPLETE only when the requested state is written, read back, and agrees with the live control state. This avoids the 8.6.32 false WATCH when Safari declines or rewrites the `window.name` relay.
 
-The full 73-file atomic runtime is retained. No cleanup, deletion, migration, fleet mutation, or Phase 2 authority is added.
+Stage 2+ begins here without automatic destructive behavior: fleet maintenance remains inspection-first and no project/customer/order data can be deleted by this bridge release. The next stage may add explicitly confirmed safe housekeeping only after this relay earns a device pass.
 
 # Dark Sky 8.6.29 — Hold Relay
 

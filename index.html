@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.32',seal:'relay-readback-8632-5d8a74'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.33',seal:'stage-two-bridge-8633-7c4e21'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1134,7 +1134,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.32 • FLEET STEWARD · RELAY READBACK</div>
+            <div class="engine-kicker">8.6.33 • FLEET STEWARD · STAGE TWO BRIDGE</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1168,7 +1168,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.32 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.33 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1185,7 +1185,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.32 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.33 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1841,19 +1841,32 @@
         return diagnosticWindowRelayRead8632(marker)===!!enabled;
       }catch(_){return false;}
     }
+    function diagnosticSessionRelayWrite8633(key,enabled){
+      try{
+        sessionStorage.setItem(key,enabled?'1':'0');
+        return sessionStorage.getItem(key)===(enabled?'1':'0');
+      }catch(_){return false;}
+    }
+    function diagnosticHoldRelayWrite8633(enabled){
+      const sessionOk=diagnosticSessionRelayWrite8633('darkSkyDiagnosticHoldEnabledV1',!!enabled);
+      try{sessionStorage.setItem('darkSkyDiagnosticHoldEnabled8628',enabled?'1':'0');}catch(_){}
+      const windowOk=diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER,!!enabled);
+      window.__darkSkyDiagnosticHoldRelayMemory=!!enabled;
+      return {ok:sessionOk||windowOk,sessionOk,windowOk,memoryOk:window.__darkSkyDiagnosticHoldRelayMemory===!!enabled};
+    }
     function diagnosticHoldEnabled8629(){
       if(diagnosticWindowRelayRead8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER))return true;
       try{
         const stable=sessionStorage.getItem('darkSkyDiagnosticHoldEnabledV1');
         if(stable==='1')return true;
+        if(stable==='0')return false;
         const legacy=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8628');
         if(legacy==='1'){
-          sessionStorage.setItem('darkSkyDiagnosticHoldEnabledV1','1');
-          diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER,true);
+          diagnosticHoldRelayWrite8633(true);
           return true;
         }
       }catch(_){}
-      return false;
+      return window.__darkSkyDiagnosticHoldRelayMemory===true;
     }
     function armPostLoginEvidenceHold8629(reason='login-gate-visible'){
       if(!diagnosticHoldEnabled8629())return false;
@@ -2047,7 +2060,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.6.32';
+    const BUILD='8.6.33';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;
@@ -2162,21 +2175,18 @@
       if(toggle){
         try{toggle.checked=diagnosticHoldEnabled8629();}catch(_){}
         toggle.addEventListener('change',()=>{
-          let stored=false;
-          try{
-            sessionStorage.setItem('darkSkyDiagnosticHoldEnabledV1',toggle.checked?'1':'0');
-            sessionStorage.setItem('darkSkyDiagnosticHoldEnabled8628',toggle.checked?'1':'0');
-            const relayStored=diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER,!!toggle.checked);
-            const relayReadBack=diagnosticWindowRelayRead8632(DARK_SKY_DIAGNOSTIC_HOLD_WINDOW_MARKER)===!!toggle.checked;
-            stored=relayStored&&relayReadBack;
-            if(!toggle.checked){diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_PENDING_WINDOW_MARKER,false);clearPostLoginEvidenceHold8629('toggle-off');}
-          }catch(_){}
-          window.__darkSkyDiagnosticHoldEnabled=!!toggle.checked;
-          commandResult('Diagnostic Hold',stored&&window.__darkSkyDiagnosticHoldEnabled===!!toggle.checked,stored?(toggle.checked?'enabled for this session':'disabled'):'session state could not be verified');
+          const desired=!!toggle.checked;
+          const proof=diagnosticHoldRelayWrite8633(desired);
+          if(!desired){diagnosticWindowRelayWrite8632(DARK_SKY_DIAGNOSTIC_PENDING_WINDOW_MARKER,false);clearPostLoginEvidenceHold8629('toggle-off');}
+          window.__darkSkyDiagnosticHoldEnabled=desired;
+          const readBack=diagnosticHoldEnabled8629()===desired;
+          const verified=proof.ok&&proof.memoryOk&&readBack&&window.__darkSkyDiagnosticHoldEnabled===desired;
+          const channel=proof.sessionOk&&proof.windowOk?'session + window relay':proof.sessionOk?'session relay':proof.windowOk?'window relay':'memory fallback';
+          commandResult('Diagnostic Hold',verified,verified?(desired?`enabled for this session · ${channel}`:`disabled · ${channel}`):'session state could not be verified');
         });
         window.__darkSkyDiagnosticHoldEnabled=!!toggle.checked;
       }
-      setStatus('Relay Readback armed · Diagnostic Hold must prove its relay before login testing.','complete');
+      setStatus('Stage 2+ bridge armed · Diagnostic Hold now verifies session truth with a dual-channel relay.','complete');
       runAutoSounding();
     }
 

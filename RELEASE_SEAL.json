@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.32",
-  "release": "Relay Readback",
-  "seal": "relay-readback-8632-5d8a74",
+  "build": "8.6.33",
+  "release": "Stage Two Bridge",
+  "seal": "stage-two-bridge-8633-7c4e21",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Relay Readback",
-  "name": "Relay Readback",
-  "releaseName": "Relay Readback"
+  "release_name": "Stage Two Bridge",
+  "name": "Stage Two Bridge",
+  "releaseName": "Stage Two Bridge"
 }

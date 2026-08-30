@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.32",
+  "build": "8.6.33",
   "release": "Maintenance Rails",
-  "generatedAt": "2026-08-30T00:18:00+00:00",
+  "generatedAt": "2026-08-30T04:05:00+00:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -193,8 +193,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.32 Relay Readback verifies the Diagnostic Hold relay immediately in the active tab before any refresh/login test; no cleanup or Phase 2 authority is added.",
-  "candidate": "8.6.32",
+  "note": "8.6.33 Stage Two Bridge verifies Diagnostic Hold through direct session read-back plus an independent same-tab relay. Stage 2+ is opened as a guarded bridge; automatic destructive cleanup remains disabled pending device certification.",
+  "candidate": "8.6.33",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
