@@ -1,11 +1,14 @@
-# Dark Sky 8.6.30 — Atomic Latch
+# Dark Sky 8.6.31 — Hold Relay
 
-- Restores full atomic release packaging after the 8.6.29 mixed-deployment hold correctly blocked Engine paint.
-- Carries forward the Post-Login Latch: Diagnostic Hold waits for authentication to clear and has no auto-dismiss timer.
-- Advances document, deployment manifest, runtime BUILD_VERSION, worker sentinel, release seal, inventory, and required readiness models together.
-- No cleanup, deletion, migration, or Phase 2 authority added.
+- Adds a dedicated pre-auth Diagnostic Hold relay that is independent of the normal Engine authentication session.
+- Stores enabled/pending hold intent in a same-origin session-scoped cookie with a sessionStorage mirror; no localStorage dependency is introduced.
+- Adds an explicit `app.js` authentication-complete signal immediately after the Engine gate closes and again after Engine home render.
+- Post-login evidence requires both a pending relay token and a verified cleared Engine auth gate.
+- **Continue Now** clears the pending relay; toggling Diagnostic Hold off clears both enabled and pending relay state.
+- Keeps the complete 73-file atomic runtime and all proven 8.6.28/8.6.30 maintenance rails.
+- No cleanup, deletion, migration, fleet mutation, or Phase 2 authority added.
 
-## 8.6.29 — Post-Login Latch
+## 8.6.29 — Hold Relay
 
 - Replaces the pre-auth visibility-triggered Diagnostic Hold with an authenticated post-login latch.
 - Arms the hold while the Engine login gate is visible and verifies that authentication has cleared before rendering evidence.

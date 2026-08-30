@@ -1,6 +1,6 @@
 {
-  "release": "Atomic Latch",
-  "name": "Atomic Latch",
+  "release": "Hold Relay",
+  "name": "Hold Relay",
   "file_count": 72,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.30",
-  "seal": "atomic-latch-8630-4f8c2d"
+  "build": "8.6.31",
+  "seal": "hold-relay-8631-7b2e91"
 }

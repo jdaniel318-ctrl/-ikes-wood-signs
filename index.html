@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.30',seal:'atomic-latch-8630-4f8c2d'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.31',seal:'hold-relay-8631-7b2e91'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1134,7 +1134,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.30 • FLEET STEWARD · POST-LOGIN LATCH</div>
+            <div class="engine-kicker">8.6.31 • FLEET STEWARD · HOLD RELAY</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1168,7 +1168,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.30 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.31 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1185,7 +1185,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.30 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.31 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1827,29 +1827,52 @@
       });
       wrap.remove();
     }
+    const DARK_SKY_DIAGNOSTIC_HOLD_COOKIE='darkSkyDiagnosticHoldRelayV1';
+    const DARK_SKY_DIAGNOSTIC_PENDING_COOKIE='darkSkyDiagnosticHoldPendingRelayV1';
+    function diagnosticRelayCookiePath8631(){
+      try{const path=String(location.pathname||'/');return path.endsWith('/')?path:path.slice(0,path.lastIndexOf('/')+1)||'/';}catch(_){return '/';}
+    }
+    function diagnosticRelayCookieRead8631(name){
+      try{return document.cookie.split(';').map(v=>v.trim()).some(v=>v===`${name}=1`);}catch(_){return false;}
+    }
+    function diagnosticRelayCookieWrite8631(name,enabled){
+      try{
+        const path=diagnosticRelayCookiePath8631();
+        document.cookie=enabled?`${name}=1; Path=${path}; SameSite=Lax; Secure`:`${name}=; Path=${path}; Max-Age=0; SameSite=Lax; Secure`;
+        return diagnosticRelayCookieRead8631(name)===!!enabled;
+      }catch(_){return false;}
+    }
     function diagnosticHoldEnabled8629(){
+      if(diagnosticRelayCookieRead8631(DARK_SKY_DIAGNOSTIC_HOLD_COOKIE))return true;
       try{
         const stable=sessionStorage.getItem('darkSkyDiagnosticHoldEnabledV1');
-        if(stable==='1'||stable==='0')return stable==='1';
+        if(stable==='1')return true;
         const legacy=sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8628');
-        if(legacy==='1'){sessionStorage.setItem('darkSkyDiagnosticHoldEnabledV1','1');return true;}
+        if(legacy==='1'){
+          sessionStorage.setItem('darkSkyDiagnosticHoldEnabledV1','1');
+          diagnosticRelayCookieWrite8631(DARK_SKY_DIAGNOSTIC_HOLD_COOKIE,true);
+          return true;
+        }
       }catch(_){}
       return false;
     }
     function armPostLoginEvidenceHold8629(reason='login-gate-visible'){
       if(!diagnosticHoldEnabled8629())return false;
+      diagnosticRelayCookieWrite8631(DARK_SKY_DIAGNOSTIC_PENDING_COOKIE,true);
       try{sessionStorage.setItem('darkSkyDiagnosticHoldPendingV1','1');sessionStorage.setItem('darkSkyDiagnosticHoldPendingReasonV1',reason);}catch(_){}
       window.__darkSkyDiagnosticHoldPending=true;
-      window.__darkSkyRuntimeEntryWitness8620?.('post-login-evidence-hold-armed',{reason});
+      window.__darkSkyRuntimeEntryWitness8620?.('post-login-evidence-hold-armed',{reason,relay:'cookie+session'});
       return true;
     }
     function clearPostLoginEvidenceHold8629(reason='continue-now'){
+      diagnosticRelayCookieWrite8631(DARK_SKY_DIAGNOSTIC_PENDING_COOKIE,false);
       try{sessionStorage.removeItem('darkSkyDiagnosticHoldPendingV1');sessionStorage.removeItem('darkSkyDiagnosticHoldPendingReasonV1');}catch(_){}
       window.__darkSkyDiagnosticHoldPending=false;
       window.__darkSkyRuntimeEntryWitness8620?.('post-login-evidence-hold-released',{reason});
     }
     function postLoginHoldPending8629(){
       if(!diagnosticHoldEnabled8629())return false;
+      if(diagnosticRelayCookieRead8631(DARK_SKY_DIAGNOSTIC_PENDING_COOKIE))return true;
       try{return sessionStorage.getItem('darkSkyDiagnosticHoldPendingV1')==='1';}catch(_){return !!window.__darkSkyDiagnosticHoldPending;}
     }
     function engineAuthCleared8629(){
@@ -1880,6 +1903,14 @@
       },{once:true});
       return true;
     }
+    window.__darkSkyPostLoginHoldRelay8631=function(reason='auth-cleared'){
+      window.__darkSkyRuntimeEntryWitness8620?.('post-login-hold-relay-signal',{reason,pending:postLoginHoldPending8629(),authCleared:engineAuthCleared8629()});
+      if(showPostLoginEvidenceHold8629())return true;
+      setTimeout(()=>showPostLoginEvidenceHold8629(),0);
+      setTimeout(()=>showPostLoginEvidenceHold8629(),80);
+      setTimeout(()=>showPostLoginEvidenceHold8629(),220);
+      return false;
+    };
     function completeReleaseHandoff({automatic=false}={}){
       window.__darkSkyReleaseGateState='clear';
       document.documentElement.classList.remove('dark-sky-release-preflight','dark-sky-route-preflight');
@@ -2017,7 +2048,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.6.30';
+    const BUILD='8.6.31';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;
@@ -2130,16 +2161,22 @@
       root.addEventListener('click',e=>{const btn=e.target.closest('[data-fleet-maintenance]');if(!btn)return;e.preventDefault();e.stopPropagation();executeCommand(btn.dataset.fleetMaintenance||'');},true);
       const toggle=q('#fleetDiagnosticHoldToggle');
       if(toggle){
-        try{toggle.checked=sessionStorage.getItem('darkSkyDiagnosticHoldEnabledV1')==='1'||sessionStorage.getItem('darkSkyDiagnosticHoldEnabled8628')==='1';}catch(_){}
+        try{toggle.checked=diagnosticHoldEnabled8629();}catch(_){}
         toggle.addEventListener('change',()=>{
           let stored=false;
-          try{sessionStorage.setItem('darkSkyDiagnosticHoldEnabledV1',toggle.checked?'1':'0');sessionStorage.setItem('darkSkyDiagnosticHoldEnabled8628',toggle.checked?'1':'0');stored=sessionStorage.getItem('darkSkyDiagnosticHoldEnabledV1')===(toggle.checked?'1':'0');if(!toggle.checked)clearPostLoginEvidenceHold8629('toggle-off');}catch(_){}
+          try{
+            sessionStorage.setItem('darkSkyDiagnosticHoldEnabledV1',toggle.checked?'1':'0');
+            sessionStorage.setItem('darkSkyDiagnosticHoldEnabled8628',toggle.checked?'1':'0');
+            const relayStored=diagnosticRelayCookieWrite8631(DARK_SKY_DIAGNOSTIC_HOLD_COOKIE,!!toggle.checked);
+            stored=sessionStorage.getItem('darkSkyDiagnosticHoldEnabledV1')===(toggle.checked?'1':'0')&&relayStored;
+            if(!toggle.checked){diagnosticRelayCookieWrite8631(DARK_SKY_DIAGNOSTIC_PENDING_COOKIE,false);clearPostLoginEvidenceHold8629('toggle-off');}
+          }catch(_){}
           window.__darkSkyDiagnosticHoldEnabled=!!toggle.checked;
           commandResult('Diagnostic Hold',stored&&window.__darkSkyDiagnosticHoldEnabled===!!toggle.checked,stored?(toggle.checked?'enabled for this session':'disabled'):'session state could not be verified');
         });
         window.__darkSkyDiagnosticHoldEnabled=!!toggle.checked;
       }
-      setStatus('Atomic Latch armed · every maintenance command must prove its terminal state.','complete');
+      setStatus('Hold Relay armed · every maintenance command must prove its terminal state.','complete');
       runAutoSounding();
     }
 

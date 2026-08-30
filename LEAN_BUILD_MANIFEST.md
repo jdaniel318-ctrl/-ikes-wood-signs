@@ -1,8 +1,13 @@
-# Dark Sky 8.6.30 — Atomic Latch Atomic Package Manifest
+# Dark Sky 8.6.31 — Hold Relay Atomic Package Manifest
 
-This release intentionally restores the complete atomic runtime/package set. Do not trim release identity, verified-loader runtime, service worker, manifests, release models, or required proof contracts from deployment ZIPs. The release barrier must be able to verify one coherent build before Engine paint.
+This is intentionally a full atomic package, not a lean patch. Diagnostic Hold uses a dedicated session-scoped same-origin relay plus an explicit authentication-complete hook so login/session reinitialization cannot erase the pending evidence hold. Do not trim deployment identity, runtime scripts, service worker, manifests, proof contracts, or release models from the upload set.
 
-# 8.6.29 Post-Login Latch — Lean Build Manifest
+- Full package: 73 files including `CHECKSUMS.sha256`
+- Release inventory payload: 72 files
+- Protected Known Good anchor remains 8.6.23
+- No Phase 2 storage mutation authority
+
+# 8.6.29 Hold Relay — Lean Build Manifest
 
 Phase 1 final handoff correction. Diagnostic Hold is now authenticated-gate-bound and persists until manual Continue Now release. Maintenance commands retain destination-specific verification. Protected six-vessel muster and 8.6.23 Known Good recovery anchor remain unchanged.
 

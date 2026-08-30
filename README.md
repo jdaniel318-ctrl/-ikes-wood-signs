@@ -1,8 +1,10 @@
-# Dark Sky 8.6.30 — Atomic Latch
+# Dark Sky 8.6.31 — Hold Relay
 
-Phase 1 atomic repair and final post-login latch candidate. Ships the complete verified runtime set so document, manifest, app runtime, service-worker sentinel, release seal, and inventory advance together. Diagnostic Hold arms before authentication, waits for the login gate to clear, remains visible until Continue Now, and adds no cleanup, deletion, migration, or Phase 2 authority.
+Phase 1 final handoff candidate. Diagnostic Hold no longer depends on the Engine authentication session surviving a reload. Enabling the hold writes a dedicated same-origin browser-session relay scoped to the Dark Sky app. A full refresh can reinitialize normal auth state without losing that intent. After a successful Engine unlock, `app.js` sends an explicit authentication-complete signal; only then may the post-login evidence screen render. It remains visible until **Continue Now**, which clears the pending relay. Toggle-off clears both enabled and pending relay state.
 
-# Dark Sky 8.6.29 — Post-Login Latch
+The full 73-file atomic runtime is retained. No cleanup, deletion, migration, fleet mutation, or Phase 2 authority is added.
+
+# Dark Sky 8.6.29 — Hold Relay
 
 **Phase 1 final handoff correction.** Diagnostic Hold now arms before authentication, waits for the Engine login gate to clear, then presents a persistent post-login evidence screen that can only be released with **Continue Now**. The hold no longer auto-dismisses and cannot be consumed by pre-auth Engine visibility. All other Phase 1 Maintenance Rails behavior remains frozen. No cleanup, deletion, migration, or Phase 2 authority is added.
 

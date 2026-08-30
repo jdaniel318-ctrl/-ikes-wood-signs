@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.30",
-  "release": "Atomic Latch",
-  "seal": "atomic-latch-8630-4f8c2d",
+  "build": "8.6.31",
+  "release": "Hold Relay",
+  "seal": "hold-relay-8631-7b2e91",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Atomic Latch",
-  "name": "Atomic Latch",
-  "releaseName": "Atomic Latch"
+  "release_name": "Hold Relay",
+  "name": "Hold Relay",
+  "releaseName": "Hold Relay"
 }

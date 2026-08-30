@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.30",
+  "build": "8.6.31",
   "release": "Maintenance Rails",
   "generatedAt": "2026-08-30T00:18:00+00:00",
   "checks": {
@@ -193,8 +193,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.30 Atomic Latch restores full atomic release delivery and proves the final Phase 1 post-login Diagnostic Hold contract without adding cleanup or Phase 2 authority.",
-  "candidate": "8.6.30",
+  "note": "8.6.31 Hold Relay restores full atomic release delivery and proves the final Phase 1 post-login Diagnostic Hold contract without adding cleanup or Phase 2 authority.",
+  "candidate": "8.6.31",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

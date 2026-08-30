@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.30';
+  const BUILD_VERSION='8.6.31';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -15631,6 +15631,7 @@ document.addEventListener('click', (event) => {
       if(!engine) throw new Error('Engine panel unavailable');
       engine.classList.remove('hidden');
       leaveEntry();
+      try{window.__darkSkyPostLoginHoldRelay8631?.('engine-unlock-auth-cleared');}catch(_){ }
       window.releaseDarkSkyFirstPaint?.('engine-room-ready');
     }catch(err){
       console.error('Black Flag boundary transition failed',err);
@@ -15647,6 +15648,7 @@ document.addEventListener('click', (event) => {
       // without the platform-init ignition, fire the same shared ignition before home render.
       try{ await window.igniteProofBootstrap8617?.('engine-entry'); }catch(err){ console.warn('Bootstrap Ignition engine-entry warning',err); }
       if(typeof window.renderBlackFlagHome==='function') await window.renderBlackFlagHome();
+      try{window.__darkSkyPostLoginHoldRelay8631?.('engine-home-rendered');}catch(_){ }
       scheduleIronHullFortification();
     }catch(err){
       console.warn('Engine home render warning',err);
