@@ -1,3 +1,7 @@
+# Dark Sky 8.6.27 — Command Watchdog
+
+Phase 1 hardening release. Fleet Maintenance now owns an independent UI watchdog: automatic storage sounding must resolve to COMPLETE or WATCH without waiting on Safari storage promises, maintenance commands must reach a visible destination or report a durable WATCH, and the station remains read-only with no cleanup or migration authority.
+
 # Dark Sky 8.6.26 — Bounded Sounding
 
 Phase 1 hardening correction to Fleet Steward. The automatic maintenance signal is now a fast, bounded read-only health check with a 2.5-second ceiling; it never launches the deep storage enumerator automatically. Detailed ownership inspection remains explicit and is itself bounded to 9 seconds with a safe WATCH fallback. No cleanup, deletion, migration, or vessel behavior changes are authorized. 8.6.23 remains the protected Known Good anchor until this candidate is proven.

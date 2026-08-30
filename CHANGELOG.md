@@ -1,3 +1,11 @@
+## 8.6.27 — Command Watchdog
+- Independent UI watchdog owns automatic storage terminal state.
+- Automatic storage health must resolve to COMPLETE or WATCH within 2.5 seconds.
+- Maintenance commands now verify their visible destination and leave durable COMPLETE/WATCH status.
+- Storage Details has a 7-second bounded terminal state.
+- Diagnostic Hold remains session-only.
+- No cleanup, deletion, compaction, or migration authority added.
+
 ## 8.6.26 — Bounded Sounding
 - Replaced the hanging automatic deep storage scan with a fast read-only `navigator.storage.estimate()` health signal bounded to 2.5 seconds.
 - Automatic sounding now reports either COMPLETE or WATCH; `Checking storage health…` cannot persist indefinitely.

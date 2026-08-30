@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.26';
+  const BUILD_VERSION='8.6.27';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -15022,8 +15022,8 @@ The full order and approved media remain stored with this project.`;
   }
 
 
-  // 8.6.26 Fleet Steward — bounded, read-only maintenance instrumentation.
-  const FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY='darkSkyDiagnosticHoldEnabled8626';
+  // 8.6.27 Fleet Steward — bounded, read-only maintenance instrumentation.
+  const FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY='darkSkyDiagnosticHoldEnabled8627';
   const FLEET_STEWARD_FAST_TIMEOUT_MS=2500;
   const FLEET_STEWARD_DETAIL_TIMEOUT_MS=9000;
   function fleetStewardStatus8626(message,state='ready'){
@@ -15105,24 +15105,13 @@ The full order and approved media remain stored with this project.`;
     }
   }
   function bindFleetSteward8626(){
-    if(window.__darkSkyFleetStewardBound8626)return;window.__darkSkyFleetStewardBound8626=true;
-    const toggle=$('fleetDiagnosticHoldToggle');if(toggle){try{toggle.checked=sessionStorage.getItem(FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY)==='1';}catch(_){}toggle.addEventListener('change',()=>{try{toggle.checked?sessionStorage.setItem(FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY,'1'):sessionStorage.removeItem(FLEET_STEWARD_DIAGNOSTIC_HOLD_KEY);}catch(_){}fleetStewardStatus8626(toggle.checked?'Diagnostic Hold armed for this session.':'Diagnostic Hold off. Normal transitions remain fast.',toggle.checked?'watch':'clear');});}
-    document.querySelectorAll('[data-fleet-maintenance]').forEach(btn=>btn.addEventListener('click',async()=>{
-      const action=btn.dataset.fleetMaintenance;
-      if(action==='telemetry'){fleetStewardStatus8626('Opening Engine Telemetry…','working');await openStorageTelemetry({inspect:true});}
-      else if(action==='proving'){$('admiralReadiness')?.scrollIntoView?.({behavior:'smooth',block:'start'});fleetStewardStatus8626('Proving Ground located.','clear');}
-      else if(action==='evidence')await fleetStewardOpenEvidence8626();
-      else if(action==='recovery'){fleetStewardStatus8626('Preparing recovery snapshot…','working');try{await window.DarkSkyAdmiralReadiness?.exportRecovery?.();fleetStewardStatus8626('Recovery snapshot prepared.','clear');}catch(err){fleetStewardStatus8626(`Recovery snapshot failed: ${String(err?.message||err)}`,'hold');}}
-      else if(action==='watch'){fleetStewardStatus8626('Running Fleet Watch…','working');try{await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView?.({behavior:'smooth',block:'start'});fleetStewardStatus8626('Fleet Watch updated.','clear');}catch(err){fleetStewardStatus8626(`Fleet Watch interrupted: ${String(err?.message||err)}`,'hold');}}
-      else if(action==='inventory'){
-        const inventoryHost=$('fleetStorageInventory');if(inventoryHost)inventoryHost.dataset.open='true';
-        if(!window.__darkSkyFleetStewardStorage8626)await fleetStewardInventory8626();
-        inventoryHost?.scrollIntoView?.({behavior:'smooth',block:'start'});
-      }
-    }));
-    // Fast automatic health signal only. Deep enumeration belongs behind View Storage Details.
-    setTimeout(()=>fleetStewardQuickSounding8626(),120);
+    // 8.6.27 Command Watchdog owns Fleet Maintenance binding from index.html.
+    // Keep this compatibility binder intentionally inert so older async storage
+    // promises cannot overwrite the watchdog's terminal UI state.
+    window.__darkSkyFleetStewardCompatibility8627=true;
+    return true;
   }
+
 
   function bindEngineTelemetryCore(){
     if(window.__darkSkyEngineTelemetryBound)return true;

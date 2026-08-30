@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-steward-v1",
-  "build": "8.6.26",
-  "release": "Bounded Sounding",
+  "build": "8.6.27",
+  "release": "Command Watchdog",
   "mission": "Make recurring fleet maintenance easy to find, professional to inspect, and non-destructive by default.",
   "station": {
     "id": "fleetMaintenanceStation",
@@ -39,5 +39,17 @@
     "fleet behavior changes",
     "vessel feature changes",
     "staging remediation"
-  ]
+  ],
+  "command_watchdog": {
+    "ui_terminal_state_owner": "fleet-maintenance-index-watchdog",
+    "automatic_storage_deadline_ms": 2500,
+    "command_destination_deadline_ms": 1800,
+    "storage_details_deadline_ms": 7000,
+    "terminal_states": [
+      "COMPLETE",
+      "WATCH"
+    ],
+    "silent_failure": "forbidden",
+    "independent_of_storage_promise": true
+  }
 }

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-learning-registry-v1",
-  "build": "8.6.26",
+  "build": "8.6.27",
   "name": "Ike Fit",
   "classes": {
     "doctrine": "Fleet-wide rule inherited by every vessel unless explicitly superseded by Admiral governance.",
