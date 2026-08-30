@@ -1,3 +1,10 @@
+# 8.6.35 — Seal Truth
+
+- Repairs the atomic release identity contract that blocked 8.6.34 before Engine paint.
+- RELEASE_INVENTORY.json now agrees with the page, deployment manifest, release seal, web manifest, and service worker on build 8.6.35 / seal seal-truth-8635-7c4e21.
+- Preserves the 8.6.34 Stage Two Storage Truth diagnostics unchanged.
+- No project, order, customer, graphics, admissions, quarantine, or recovery data is altered.
+
 # Dark Sky 8.6.34 — Storage Truth
 
 Stage Two storage hardening from the Relay Readback baseline. Fleet Maintenance **View Storage Details** now performs a real read-only ownership scan instead of appearing inert. Storage & Telemetry exposes the largest IndexedDB order records by size so the 30-row order footprint can be diagnosed without deleting anything. **Inspect Storage** is renamed **Rescan Storage** where it reruns measurement, while the protected Storage & Recovery action is renamed **Open Storage Breakdown**.

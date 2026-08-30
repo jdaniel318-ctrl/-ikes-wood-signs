@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.34';
-const RELEASE_SEAL='storage-truth-8634-2f91c7';
+const RELEASE_BUILD='8.6.35';
+const RELEASE_SEAL='seal-truth-8635-7c4e21';
 
 self.addEventListener('install', event => {
   // Admiral Seal: service worker is an identity/control-plane sentinel only.

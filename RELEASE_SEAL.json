@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.34",
+  "build": "8.6.35",
   "release": "Storage Truth",
-  "seal": "storage-truth-8634-2f91c7",
+  "seal": "seal-truth-8635-7c4e21",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
   "release_name": "Storage Truth",

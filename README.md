@@ -1,4 +1,4 @@
-# Dark Sky 8.6.34 — Storage Truth
+# Dark Sky 8.6.35 — Storage Truth
 
 Stage Two storage hardening from the Relay Readback baseline. Fleet Maintenance **View Storage Details** now performs a real read-only ownership scan instead of appearing inert. Storage & Telemetry exposes the largest IndexedDB order records by size so the 30-row order footprint can be diagnosed without deleting anything. **Inspect Storage** is renamed **Rescan Storage** where it reruns measurement, while the protected Storage & Recovery action is renamed **Open Storage Breakdown**.
 

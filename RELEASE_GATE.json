@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.34",
+  "build": "8.6.35",
   "release": "Storage Truth",
   "generatedAt": "2026-08-30T04:30:00+00:00",
   "checks": {
@@ -193,8 +193,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.34 Storage Truth hardens Stage Two storage diagnostics: durable control results, deep read-only ownership inspection, per-order record sizing, iPad-safe backup handoff, and explicit point-in-time Safari estimate labeling. No protected data deletion or migration is authorized.",
-  "candidate": "8.6.34",
+  "note": "8.6.35 Storage Truth hardens Stage Two storage diagnostics: durable control results, deep read-only ownership inspection, per-order record sizing, iPad-safe backup handoff, and explicit point-in-time Safari estimate labeling. No protected data deletion or migration is authorized.",
+  "candidate": "8.6.35",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

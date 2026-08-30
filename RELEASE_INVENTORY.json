@@ -76,6 +76,6 @@
     "styles.css",
     "sw.js"
   ],
-  "build": "8.6.34",
-  "seal": "relay-readback-8632-5d8a74"
+  "build": "8.6.35",
+  "seal": "seal-truth-8635-7c4e21"
 }
