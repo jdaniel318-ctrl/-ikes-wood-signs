@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.53",
-  "release": "Fleet Services Framework",
-  "seal": "fleet-services-framework-8653-73ad51",
+  "build": "8.6.54",
+  "release": "Admiral Entitlement States",
+  "seal": "admiral-entitlement-states-8654-8f4c21",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fleet Services Framework",
-  "name": "Fleet Services Framework",
-  "releaseName": "Fleet Services Framework"
+  "release_name": "Admiral Entitlement States",
+  "name": "Admiral Entitlement States",
+  "releaseName": "Admiral Entitlement States"
 }

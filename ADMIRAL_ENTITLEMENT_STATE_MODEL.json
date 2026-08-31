@@ -1,0 +1,26 @@
+{
+  "release": "8.6.54",
+  "name": "Admiral Entitlement States",
+  "purpose": "Define authoritative service-state precedence and the Admiral governance seam for Standard vs Paid Fleet capabilities.",
+  "owner_state_precedence": [
+    "enabled",
+    "entitled",
+    "requested",
+    "available"
+  ],
+  "owner_labels": {
+    "enabled": "Active",
+    "entitled_standard": "Included with Fleet",
+    "entitled_paid": "Approved Upgrade",
+    "requested": "Requested",
+    "available_paid": "Available for Upgrade"
+  },
+  "authority_contract": {
+    "owner": "may view and request eligible paid upgrades",
+    "captain": "may operationalize an already valid entitlement when delegated",
+    "admiral": "defines Standard vs Paid policy and grants entitlement",
+    "browser": "never grants entitlement from local UI state"
+  },
+  "security": "No service-role or secret credential is present in browser code. Server-side entitlement writes remain protected.",
+  "expansion": "The same state model is reusable across all Fleet vessels."
+}

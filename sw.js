@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.53';
-const RELEASE_SEAL='fleet-services-framework-8653-73ad51';
+const RELEASE_BUILD='8.6.54';
+const RELEASE_SEAL='admiral-entitlement-states-8654-8f4c21';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

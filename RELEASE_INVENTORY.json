@@ -1,11 +1,12 @@
 {
-  "release": "Fleet Services Framework",
-  "name": "Fleet Services Framework",
-  "build": "8.6.53",
-  "seal": "fleet-services-framework-8653-73ad51",
-  "file_count": 82,
+  "release": "Admiral Entitlement States",
+  "name": "Admiral Entitlement States",
+  "build": "8.6.54",
+  "seal": "admiral-entitlement-states-8654-8f4c21",
+  "file_count": 83,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
+    "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "ADMIRAL_PREFLIGHT_818.json",
     "ADMIRAL_REFERENCE_COMPENDIUM.md",
     "ADMIRAL_RELEASE_DOCTRINE.json",
