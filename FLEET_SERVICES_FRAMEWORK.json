@@ -1,0 +1,42 @@
+{
+  "schema": "dark-sky-fleet-services-framework-v1",
+  "build": "8.6.53",
+  "release": "Fleet Services Framework",
+  "principles": [
+    "Admiral defines whether a Fleet capability is Standard or Paid.",
+    "Owners may request eligible paid services but cannot self-grant or self-activate them.",
+    "Standard capability status does not broaden vessel data scope.",
+    "Every service remains vessel-entitled and RLS-scoped.",
+    "Captain operationalizes only capabilities the Fleet has entitled for the vessel."
+  ],
+  "objects": {
+    "capability": "versioned reusable Fleet function",
+    "entitlement": "commercial and authority grant connecting one vessel to one capability",
+    "request": "owner expression of interest; never authority by itself"
+  },
+  "commercial_modes": [
+    "standard",
+    "paid"
+  ],
+  "entitlement_states": [
+    "available",
+    "requested",
+    "pending_payment",
+    "entitled",
+    "enabled",
+    "suspended",
+    "revoked"
+  ],
+  "owner_labels": {
+    "standard": "Included with Fleet",
+    "paid": "Available for Upgrade"
+  },
+  "prototype_capabilities": [
+    "fleet.customer-payments",
+    "fleet.enhanced-ledger",
+    "fleet.artwork-inlays",
+    "fleet.customer-insight",
+    "fleet.ai-recommendations",
+    "fleet.vendor-routing"
+  ]
+}

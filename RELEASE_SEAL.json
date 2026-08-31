@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.52",
-  "release": "Owner Bridge Core",
-  "seal": "owner-bridge-core-8652-31c7e4",
+  "build": "8.6.53",
+  "release": "Fleet Services Framework",
+  "seal": "fleet-services-framework-8653-73ad51",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Owner Bridge Core",
-  "name": "Owner Bridge Core",
-  "releaseName": "Owner Bridge Core"
+  "release_name": "Fleet Services Framework",
+  "name": "Fleet Services Framework",
+  "releaseName": "Fleet Services Framework"
 }

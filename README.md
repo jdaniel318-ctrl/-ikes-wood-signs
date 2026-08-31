@@ -1,7 +1,5 @@
-# Dark Sky 8.6.52 — Owner Bridge Core
+# Dark Sky 8.6.53 — Fleet Services Framework
 
-Owner-experience hardening release. The real Owner Bridge home is now the only Overview destination; every owner sub-screen returns there deterministically at the top. Owner-facing copy uses business language instead of Fleet implementation vocabulary, Branding shows the current approved vessel identity, and the home shell is tighter without losing Ike's presence.
+Admiral-governed Standard vs Paid Fleet capability entitlements, owner-visible service availability, persistent vessel identity across Owner Bridge working screens, and owner request groundwork. Auth, ownership and existing RLS vessel boundaries remain unchanged.
 
-Supabase email/password authentication, first-time password setup, recovery, exact-vessel RLS, ownership, Local Recovery, Project Admin, Captain, Admiral, and GlyphForge production geometry/certification logic are intentionally unchanged.
-
-8.6.42 remains the protected Known Good recovery anchor until live denial/revocation proof completes.
+8.6.52 Owner Bridge Core remains the immediate UI baseline beneath this framework.

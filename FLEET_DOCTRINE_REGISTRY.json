@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.6.52",
+  "build": "8.6.53",
   "release": "Registry Commit",
   "status": "active",
   "principles": [
