@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.55",
-  "release": "Admiral Command Rail",
+  "build": "8.6.56",
+  "release": "Doctrine Authority Repair",
   "generatedAt": "2026-08-31T00:25:00-04:00",
   "checks": {
     "build_version": true,
@@ -211,8 +211,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.55 Fleet Services Framework fixes the true Overview return anchor, cleans owner-facing language, strengthens approved vessel identity, and tightens the home shell while freezing authentication, RLS, ownership, and GlyphForge production logic.",
-  "candidate": "8.6.55",
+  "note": "8.6.56 Doctrine Authority Repair restores current Admiral Course Authority proof, opens doctrine evidence on-screen, and separates measured Dark Sky storage from Safari browser-managed origin estimates.",
+  "candidate": "8.6.56",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,0 +1,15 @@
+{
+  "schema": "dark-sky-doctrine-authority-repair-v1",
+  "build": "8.6.56",
+  "release": "Doctrine Authority Repair",
+  "contracts": {
+    "visibleDoctrineAction": "VIEW DOCTRINE opens current registry in Standardize and never reports success only through an off-screen notice.",
+    "courseAuthority": "Current course holder is Admiral; changes remain deliberate, versioned, append-only in history, and rollback-capable.",
+    "readinessFreshness": "Fleet Doctrine Registry build must match the running build and course-authority fields must be complete.",
+    "storageTruth": "Browser origin estimate alone may raise WATCH; HOLD requires measured Dark Sky ownership to prove dangerous size."
+  },
+  "storageSafety": {
+    "destructiveCleanupFromReadiness": false,
+    "browserManagedGap": "never treated as protected Fleet data by inference"
+  }
+}

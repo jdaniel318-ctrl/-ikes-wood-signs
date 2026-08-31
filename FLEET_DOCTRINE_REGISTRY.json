@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.6.54",
-  "release": "Registry Commit",
+  "build": "8.6.56",
+  "release": "Doctrine Authority Repair",
   "status": "active",
   "principles": [
     {
@@ -92,12 +92,21 @@
       "rolled-back"
     ],
     "currentCourse": {
-      "id": "identity-keel-and-registry-truth",
-      "version": 1,
+      "id": "doctrine-authority-repair",
+      "version": 2,
       "status": "active",
-      "effectiveBuild": "8.6.40",
-      "heading": "Production identity with recoverable Fleet authority and committed proof truth"
+      "effectiveBuild": "8.6.56",
+      "heading": "Current Admiral course authority, visible doctrine evidence, and measured-storage truth"
     },
-    "historyPolicy": "append-only; superseded course records remain evidence and rollback references"
+    "historyPolicy": "append-only; superseded course records remain evidence and rollback references",
+    "courseHistory": [
+      {
+        "id": "identity-keel-and-registry-truth",
+        "version": 1,
+        "status": "active",
+        "effectiveBuild": "8.6.40",
+        "heading": "Production identity with recoverable Fleet authority and committed proof truth"
+      }
+    ]
   }
 }

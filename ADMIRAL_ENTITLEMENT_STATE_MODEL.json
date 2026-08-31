@@ -1,6 +1,6 @@
 {
-  "release": "8.6.55",
-  "name": "Admiral Command Rail",
+  "release": "8.6.56",
+  "name": "Doctrine Authority Repair",
   "purpose": "Define authoritative service-state precedence and the Admiral governance seam for Standard vs Paid Fleet capabilities.",
   "owner_state_precedence": [
     "enabled",

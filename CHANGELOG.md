@@ -1,3 +1,9 @@
+## 8.6.56 — Doctrine Authority Repair
+- VIEW DOCTRINE opens a real current-course detail panel.
+- Fleet Doctrine Registry is current to 8.6.56 with append-only prior-course history.
+- Readiness storage classification separates measured Dark Sky bytes from browser-managed origin estimates.
+- Upper-command readiness evidence reports the actual current build instead of stale 8.6.1 labels.
+
 # 8.6.55 — Admiral Command Rail
 
 - Widens and restructures Govern / Standardize / Delegate / Promote for iPad readability.

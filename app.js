@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.55';
+  const BUILD_VERSION='8.6.56';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4812,9 +4812,9 @@
 
 
   const ADMIRAL_RELEASE_DOCTRINE=Object.freeze({
-    schema:'dark-sky-admiral-release-doctrine-v1',
+    schema:'dark-sky-admiral-release-doctrine-v2',
     doctrineVersion:2,
-    build:'8.6.1',
+    build:BUILD_VERSION,
     principles:[
       {id:'single-build',level:'critical',rule:'Manifest, runtime, release seal, worker identity, and canonical runtime tree must agree before Engine paint.'},
       {id:'zero-first-paint',level:'critical',rule:'Unverified customer, project, owner, Engine, Captain, or Admiral DOM must never paint before its route/release checks clear.'},
@@ -5508,9 +5508,12 @@
     const originUsage=Number(storageEstimate?.usage||0),originMb=originUsage/1024/1024;
     let priorSounding=null;try{priorSounding=JSON.parse(localStorage.getItem('bf.v4.storage.lastSounding')||'null');}catch(_){ }
     const priorMb=Number(priorSounding?.usage||0)/1024/1024;
+    const priorKnownMb=Number(priorSounding?.knownBytes||0)/1024/1024;
     const growthMb=priorMb>0?originMb-priorMb:0;
-    const storageGrowthState=originMb>=512?'fail':(originMb>=256||growthMb>=128)?'warn':'pass';
-    add('storage-growth','Engine origin storage growth',storageGrowthState,storageGrowthState==='pass'?`Origin usage is ${originMb.toFixed(1)} MB and remains below the command watch threshold.`:`Origin usage is ${originMb.toFixed(1)} MB${priorMb>0?` • ${growthMb>=0?'+':''}${growthMb.toFixed(1)} MB since the retained sounding`:''}. Inspect Engine Storage before treating growth as harmless.`,'check');
+    const browserGapMb=Math.max(0,originMb-priorKnownMb);
+    const measuredDanger=priorKnownMb>=256;
+    const storageGrowthState=measuredDanger?'fail':(originMb>=256||growthMb>=128)?'warn':'pass';
+    add('storage-growth','Engine origin storage growth',storageGrowthState,storageGrowthState==='pass'?`Origin usage is ${originMb.toFixed(1)} MB and remains below the command watch threshold.`:measuredDanger?`Measured Dark Sky data is ${priorKnownMb.toFixed(1)} MB inside a ${originMb.toFixed(1)} MB origin. Inspect Engine Storage before proceeding.`:`Safari origin estimate is ${originMb.toFixed(1)} MB${priorMb>0?` • ${growthMb>=0?'+':''}${growthMb.toFixed(1)} MB since the retained sounding`:''}; last detailed sounding measured ${priorKnownMb.toFixed(1)} MB Dark Sky data and ${browserGapMb.toFixed(1)} MB is browser-managed/unattributed. WATCH until a fresh detail scan proves ownership.`,'check');
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;

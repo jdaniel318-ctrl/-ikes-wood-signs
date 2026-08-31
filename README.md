@@ -1,3 +1,7 @@
+# Dark Sky 8.6.56 — Doctrine Authority Repair
+
+Repairs current Admiral doctrine authority proof, gives readiness findings a real on-screen doctrine detail surface, and prevents Safari browser-managed storage estimates from becoming a critical HOLD without measured Dark Sky ownership evidence.
+
 # Dark Sky 8.6.55 — Admiral Command Rail
 
 Admiral professional hardening: readable four-lane command rail plus a real server-governed Fleet Service Entitlements station. Entitlement writes require a dedicated authenticated Supabase identity with active Admiral global authority. Future Basic/Mid/Super-style packages are reserved as bundles of the same capabilities; no package UI is live yet.

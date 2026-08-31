@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.55';
-const RELEASE_SEAL='admiral-command-rail-8655-3c91e7';
+const RELEASE_BUILD='8.6.56';
+const RELEASE_SEAL='doctrine-authority-repair-8656-71c4d2';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

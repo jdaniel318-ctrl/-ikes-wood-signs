@@ -5,6 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
+  const UPPER_COMMAND_BUILD='8.6.56';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -404,13 +405,13 @@
     const prior=readJsonLocal(READINESS_TRUTH_KEY,{findings:{},history:[]}),now=new Date().toISOString(),findings={...prior.findings},cleared=[];
     (report.checks||[]).forEach(c=>{
       const prev=findings[c.id]||null,isOpen=c.state!=='pass';
-      const item={id:c.id,label:c.label,state:c.state,detail:c.detail,level:c.level||'core',firstDetected:prev?.firstDetected||(isOpen?now:null),latestChecked:now,lastBuild:'8.6.1',provenance:verificationProvenance(c),lifecycle:isOpen?'open':(prev&&prev.state&&prev.state!=='pass'?'verified-fix':'clear')};
+      const item={id:c.id,label:c.label,state:c.state,detail:c.detail,level:c.level||'core',firstDetected:prev?.firstDetected||(isOpen?now:null),latestChecked:now,lastBuild:UPPER_COMMAND_BUILD,provenance:verificationProvenance(c),lifecycle:isOpen?'open':(prev&&prev.state&&prev.state!=='pass'?'verified-fix':'clear')};
       if(!isOpen&&prev&&prev.state!=='pass'){item.clearedAt=now;item.clearedFrom=prev.state;cleared.push(item);prior.history.unshift({...item,event:'cleared'});}
       if(isOpen&&!prev)prior.history.unshift({...item,event:'detected'});
       if(isOpen&&prev&&prev.state!==c.state)prior.history.unshift({...item,event:'state-change',from:prev.state,to:c.state});
       findings[c.id]=item;
     });
-    const truth={schema:'dark-sky-readiness-truth-v2',build:'8.6.1',updatedAt:now,findings,history:(prior.history||[]).slice(0,160)};writeJsonLocal(READINESS_TRUTH_KEY,truth);report.readinessTruth=truth;report.recentlyCleared=cleared;return truth;
+    const truth={schema:'dark-sky-readiness-truth-v2',build:UPPER_COMMAND_BUILD,updatedAt:now,findings,history:(prior.history||[]).slice(0,160)};writeJsonLocal(READINESS_TRUTH_KEY,truth);report.readinessTruth=truth;report.recentlyCleared=cleared;return truth;
   }
   function findingAction(id){
     if(['ike-style-b-truth','ike-style-foundry','ike-glyphforge','known-calibration-replay'].includes(id))return ['foundry','OPEN FOUNDRY'];
@@ -419,7 +420,7 @@
     return ['evidence','VIEW EVIDENCE'];
   }
   function recordCaptainOutcome(kind,label,detail=''){
-    const rows=readJsonLocal(CAPTAIN_OUTCOME_KEY,[]);rows.unshift({at:new Date().toISOString(),kind,label,detail,build:'8.6.1'});writeJsonLocal(CAPTAIN_OUTCOME_KEY,rows.slice(0,25));
+    const rows=readJsonLocal(CAPTAIN_OUTCOME_KEY,[]);rows.unshift({at:new Date().toISOString(),kind,label,detail,build:UPPER_COMMAND_BUILD});writeJsonLocal(CAPTAIN_OUTCOME_KEY,rows.slice(0,25));
   }
   function renderAdmiralFindings(report,mode='current'){
     const truth=report?.readinessTruth||readJsonLocal(READINESS_TRUTH_KEY,{findings:{},history:[]});
@@ -430,7 +431,7 @@
       return;
     }
     const current=(report?.checks||[]).filter(c=>c.state!=='pass');
-    findings.innerHTML=current.length?current.map(c=>{const meta=truth.findings[c.id]||{},a=findingAction(c.id);return `<article class="admiral-finding ${c.state}" data-finding-id="${c.id}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${c.label}</b><span>${c.detail}</span><small>FIRST DETECTED ${meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK'}<br>LATEST CHECK 8.6.1 • ${meta.provenance||verificationProvenance(c)}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${c.id}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds. Fleet readiness is clear.</span>';
+    findings.innerHTML=current.length?current.map(c=>{const meta=truth.findings[c.id]||{},a=findingAction(c.id);return `<article class="admiral-finding ${c.state}" data-finding-id="${c.id}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${c.label}</b><span>${c.detail}</span><small>FIRST DETECTED ${meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK'}<br>LATEST CHECK ${UPPER_COMMAND_BUILD} • ${meta.provenance||verificationProvenance(c)}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${c.id}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds. Fleet readiness is clear.</span>';
   }
 
   function syncAdmiralReadiness(report){
@@ -472,6 +473,35 @@
     }
     const blob=new Blob([JSON.stringify({schema:'dark-sky-fleet-readiness-v1',...report},null,2)],{type:'application/json'});
     const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`dark-sky-fleet-readiness-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);
+  }
+
+  async function openAdmiralDoctrineDetail(){
+    const deck=byId('admiralDeck');
+    if(deck){
+      deck.dataset.admiralLane='standardize';
+      deck.querySelectorAll('[data-admiral-lane]').forEach(btn=>btn.setAttribute('aria-selected',String(btn.dataset.admiralLane==='standardize')));
+      deck.querySelectorAll('[data-admiral-panel]').forEach(panel=>panel.hidden=panel.dataset.admiralPanel!=='standardize');
+    }
+    const panel=byId('admiralDoctrineDetail'); if(!panel)return;
+    panel.classList.remove('hidden');
+    const status=byId('admiralDoctrineStatus'); if(status)status.innerHTML='<span>REGISTRY</span><b>VERIFYING</b>';
+    try{
+      const r=await fetch(`FLEET_DOCTRINE_REGISTRY.json?doctrine=${Date.now()}`,{cache:'no-store'});
+      if(!r.ok)throw new Error(`Doctrine registry ${r.status}`);
+      const d=await r.json(),course=d?.governance?.currentCourse||{},authority=d?.governance?.courseAuthority||{};
+      const current=String(d?.build||'')===UPPER_COMMAND_BUILD && d?.status==='active' && authority?.holder==='admiral' && authority?.admiralMayChangeCourse===true && authority?.historyIsAppendOnly===true && authority?.rollbackSupported===true;
+      if(byId('admiralDoctrineHeading'))byId('admiralDoctrineHeading').textContent=course.heading||'Fleet Doctrine Registry';
+      if(byId('admiralDoctrineSummary'))byId('admiralDoctrineSummary').textContent=current?'Current Fleet course is active and matches this running build.':'Doctrine exists, but the running build or authority contract does not match the current registry.';
+      if(byId('admiralDoctrineCourse'))byId('admiralDoctrineCourse').textContent=`${course.id||'UNSET'} · v${course.version||'?'}`;
+      if(byId('admiralDoctrineBuild'))byId('admiralDoctrineBuild').textContent=`Effective ${course.effectiveBuild||'—'} · Registry ${d.build||'—'}`;
+      if(status){status.dataset.state=current?'clear':'hold';status.innerHTML=`<span>REGISTRY</span><b>${current?'CURRENT':'HOLD'}</b>`;}
+      const host=byId('admiralDoctrinePrinciples');
+      if(host)host.innerHTML=(d.principles||[]).map(x=>`<article><small>${String(x.scope||'fleet').toUpperCase()}</small><strong>${x.id}</strong><span>${x.rule}</span></article>`).join('')||'<p>No doctrine principles were returned.</p>';
+    }catch(err){
+      if(status){status.dataset.state='hold';status.innerHTML='<span>REGISTRY</span><b>UNAVAILABLE</b>';}
+      if(byId('admiralDoctrineSummary'))byId('admiralDoctrineSummary').textContent=String(err?.message||err);
+    }
+    panel.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
   function ensureAdmiralDeck(){
@@ -561,7 +591,18 @@
           </nav>
           <section class="admiral-lane-workspace" aria-live="polite">
             <article id="admiralGovernLane" data-admiral-panel="govern"><small>01 · GOVERN</small><h4>Fleet posture & readiness</h4><p>Current verified posture first. Cleared incidents remain retained history.</p><div id="admiralFindingTabs" class="admiral-finding-tabs" data-mode="current"><button type="button" data-finding-view="current" aria-pressed="true">CURRENT FINDINGS</button><button type="button" data-finding-view="history" aria-pressed="false">CLEARED HISTORY</button></div><div id="admiralReadinessFindings" class="admiral-readiness-findings"><span>Run Fleet Readiness to populate verified findings.</span></div></article>
-            <article data-admiral-panel="standardize" hidden><small>02 · STANDARDIZE</small><h4>Doctrine & standards</h4><p>Fleet doctrine, service standards, commercial policy and governed exceptions.</p><div class="admiral-lane-summary"><b>Fleet Doctrine Registry</b><span>Active fleet rules remain versioned, traceable and separated from current incident posture.</span></div><button id="admiralDeckStandards" type="button">OPEN FLEET STANDARDS <em>FOUNDATION</em></button><div class="admiral-lane-summary admiral-service-governance"><b>Fleet Service Entitlements</b><span>Admiral can make a service Standard or grant it as a Paid upgrade to one vessel. Owners may request upgrades, but cannot grant them.</span></div><button id="admiralServiceEntitlements" type="button">OPEN SERVICE ENTITLEMENTS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station hidden" aria-label="Admiral Fleet Service Entitlements"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Fleet Service Entitlements</h5><p>Authenticated Admiral authority is required for every change.</p></div><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong></header><div class="admiral-identity-row"><label>Admiral email<input id="admiralIdentityEmail" type="email" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralIdentityPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentitySignOut" type="button" class="hidden">SIGN OUT IDENTITY</button></div><div class="admiral-entitlement-controls"><label>Vessel<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label><label>Service<select id="admiralEntitlementCapability"><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label><div class="admiral-entitlement-actions"><button id="admiralMakeStandard" type="button" disabled>MAKE STANDARD</button><button id="admiralGrantPaid" type="button" disabled>GRANT PAID UPGRADE</button></div></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate a dedicated Admiral identity to enable server-governed actions.</div><div class="admiral-package-note"><b>Future service packages</b><span>Basic / Mid / Super-style packages are reserved as governed bundles of these same capabilities. Individual overrides remain possible.</span></div></section></article>
+            <article data-admiral-panel="standardize" hidden><small>02 · STANDARDIZE</small><h4>Doctrine & standards</h4><p>Fleet doctrine, service standards, commercial policy and governed exceptions.</p><div class="admiral-lane-summary"><b>Fleet Doctrine Registry</b><span>Active fleet rules remain versioned, traceable and separated from current incident posture.</span></div><button id="admiralDeckStandards" type="button">OPEN FLEET STANDARDS <em>FOUNDATION</em></button><section id="admiralDoctrineDetail" class="admiral-doctrine-detail hidden" aria-label="Fleet Doctrine Registry detail">
+  <header><div><small>CURRENT ADMIRAL COURSE</small><h5 id="admiralDoctrineHeading">Fleet Doctrine Registry</h5><p id="admiralDoctrineSummary">Loading current doctrine…</p></div><button id="admiralDoctrineClose" type="button">CLOSE</button></header>
+  <div class="admiral-doctrine-status" id="admiralDoctrineStatus"><span>REGISTRY</span><b>VERIFYING</b></div>
+  <div class="admiral-doctrine-grid">
+    <article><small>COURSE</small><strong id="admiralDoctrineCourse">—</strong><span id="admiralDoctrineBuild">—</span></article>
+    <article><small>AUTHORITY</small><strong>ADMIRAL</strong><span>Deliberate promotion required</span></article>
+    <article><small>HISTORY</small><strong>APPEND-ONLY</strong><span>Prior course retained</span></article>
+    <article><small>ROLLBACK</small><strong>SUPPORTED</strong><span>Prior doctrine remains recoverable</span></article>
+  </div>
+  <div id="admiralDoctrinePrinciples" class="admiral-doctrine-principles"></div>
+  <p class="admiral-doctrine-note">This is the current governed course, not a transient readiness notice. Readiness verifies this registry against the running build.</p>
+</section><div class="admiral-lane-summary admiral-service-governance"><b>Fleet Service Entitlements</b><span>Admiral can make a service Standard or grant it as a Paid upgrade to one vessel. Owners may request upgrades, but cannot grant them.</span></div><button id="admiralServiceEntitlements" type="button">OPEN SERVICE ENTITLEMENTS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station hidden" aria-label="Admiral Fleet Service Entitlements"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Fleet Service Entitlements</h5><p>Authenticated Admiral authority is required for every change.</p></div><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong></header><div class="admiral-identity-row"><label>Admiral email<input id="admiralIdentityEmail" type="email" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralIdentityPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentitySignOut" type="button" class="hidden">SIGN OUT IDENTITY</button></div><div class="admiral-entitlement-controls"><label>Vessel<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label><label>Service<select id="admiralEntitlementCapability"><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label><div class="admiral-entitlement-actions"><button id="admiralMakeStandard" type="button" disabled>MAKE STANDARD</button><button id="admiralGrantPaid" type="button" disabled>GRANT PAID UPGRADE</button></div></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate a dedicated Admiral identity to enable server-governed actions.</div><div class="admiral-package-note"><b>Future service packages</b><span>Basic / Mid / Super-style packages are reserved as governed bundles of these same capabilities. Individual overrides remain possible.</span></div></section></article>
             <article data-admiral-panel="delegate" hidden><small>03 · DELEGATE</small><h4>Bounded authority</h4><p>Scope, duration, stewardship and delegation history.</p><div class="admiral-lane-summary"><b>Delegation</b><span>Authority must remain explicit, bounded and auditable.</span></div><button type="button" data-admiral-future="Delegation">DELEGATION <em>FUTURE</em></button></article>
             <article data-admiral-panel="promote" hidden><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><div class="admiral-lane-summary"><b>Intelligence Dock + one learning pipeline</b><span>Cross-vessel patterns surface here before Observation → Lesson → Candidate → Foundry → Sea Trial → Proven.</span></div><button id="admiralDeckFoundry" type="button">OPEN THE FOUNDRY <em>FOUNDATION</em></button></article>
           </section>
@@ -623,13 +664,14 @@
     byId('admiralDeckReport').onclick=exportAdmiralReadinessReport;
     byId('admiralCeremonialReport').onclick=exportAdmiralReadinessReport;
     byId('admiralDeckFoundry').onclick=()=>openFoundryWorkspace();
-    byId('admiralDeckStandards').onclick=()=>{const n=byId('admiralDeckNotice');if(n)n.textContent='Fleet Doctrine Registry is active. Full standards management is the next governed expansion.';};
+    byId('admiralDeckStandards').onclick=()=>openAdmiralDoctrineDetail();
+    byId('admiralDoctrineClose').onclick=()=>byId('admiralDoctrineDetail')?.classList.add('hidden');
     byId('admiralCeremonialFoundry').onclick=()=>openFoundryWorkspace();
     byId('admiralReadinessFindings')?.addEventListener('click',e=>{
       const btn=e.target.closest('[data-readiness-action]');if(!btn)return;
       const action=btn.dataset.readinessAction,id=btn.dataset.readinessFinding;
       if(action==='foundry'){openFoundryWorkspace();return;}
-      if(action==='standards'){const n=byId('admiralDeckNotice');if(n)n.textContent='Fleet Doctrine Registry is the retained history; current posture comes only from the latest readiness run.';return;}
+      if(action==='standards'){openAdmiralDoctrineDetail();return;}
       if(action==='storage'){returnToCaptain();window.setTimeout(()=>{byId('captainGlobalExit')?.click();window.setTimeout(()=>window.BlackFlagOpenStorageTelemetry?.({inspect:true}),220);},80);return;}
       const n=byId('admiralDeckNotice');if(n)n.textContent=`${id||'Finding'} evidence is retained in the current readiness report. Use Readiness Report to export the full evidence bundle.`;
     });
@@ -914,7 +956,7 @@
     let bar=byId('captainCommandModeBar');
     if(!bar){
       bar=document.createElement('div');bar.id='captainCommandModeBar';bar.className='captain-command-mode-bar';
-      bar.innerHTML=`<div><small>CAPTAIN COMMAND • 8.6.1</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
+      bar.innerHTML=`<div><small>CAPTAIN COMMAND • ${UPPER_COMMAND_BUILD}</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
       room.appendChild(bar);
     }
     let surface=byId('captainProfessionalSurface');

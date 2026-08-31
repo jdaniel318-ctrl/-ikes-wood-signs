@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-admiral-release-doctrine-v2",
   "doctrineVersion": 2,
-  "build": "8.6.28",
-  "name": "Ike Fit",
+  "build": "8.6.56",
+  "name": "Doctrine Authority Repair",
   "principles": [
     "single-build release identity",
     "zero unverified first paint",

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-service-package-model-v1",
-  "build": "8.6.55",
+  "build": "8.6.56",
   "status": "reserved_framework_not_exposed",
   "purpose": "Allow future Basic/Mid/Super-style bundles to resolve into the same governed capability entitlements without replacing individual service controls.",
   "package_model": {
@@ -15,5 +15,5 @@
     "Mid",
     "Super"
   ],
-  "note": "Labels are placeholders only; no package pricing or activation UI is live in 8.6.55."
+  "note": "Labels are placeholders only; no package pricing or activation UI is live in 8.6.56."
 }

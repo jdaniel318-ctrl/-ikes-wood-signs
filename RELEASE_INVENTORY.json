@@ -1,8 +1,8 @@
 {
-  "release": "Admiral Command Rail",
-  "name": "Admiral Command Rail",
-  "build": "8.6.55",
-  "seal": "admiral-command-rail-8655-3c91e7",
+  "release": "Doctrine Authority Repair",
+  "name": "Doctrine Authority Repair",
+  "build": "8.6.56",
+  "seal": "doctrine-authority-repair-8656-71c4d2",
   "file_count": 84,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -18,6 +18,7 @@
     "CHECKSUMS.sha256",
     "DEPLOYMENT_MANIFEST.json",
     "DOCK_SOURCE_TRACE_MODEL.json",
+    "DOCTRINE_AUTHORITY_REPAIR_MODEL.json",
     "EVIDENCE_RECONCILIATION_MODEL.json",
     "FLEET_COMMAND_MODEL.json",
     "FLEET_DOCTRINE_REGISTRY.json",
