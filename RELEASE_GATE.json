@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.51",
-  "release": "Owner Bridge",
-  "generatedAt": "2026-08-30T12:02:00-04:00",
+  "build": "8.6.52",
+  "release": "Owner Bridge Core",
+  "generatedAt": "2026-08-30T19:47:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -208,8 +208,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.51 Owner Bridge strengthens owner screen transitions, vessel identity, and owner-facing language while freezing successful authentication and exact-vessel authority boundaries.",
-  "candidate": "8.6.51",
+  "note": "8.6.52 Owner Bridge Core fixes the true Overview return anchor, cleans owner-facing language, strengthens approved vessel identity, and tightens the home shell while freezing authentication, RLS, ownership, and GlyphForge production logic.",
+  "candidate": "8.6.52",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.51",
-  "release": "Owner Bridge",
-  "seal": "owner-bridge-8651-9d6f42",
+  "build": "8.6.52",
+  "release": "Owner Bridge Core",
+  "seal": "owner-bridge-core-8652-31c7e4",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Owner Bridge",
-  "name": "Owner Bridge",
-  "releaseName": "Owner Bridge"
+  "release_name": "Owner Bridge Core",
+  "name": "Owner Bridge Core",
+  "releaseName": "Owner Bridge Core"
 }

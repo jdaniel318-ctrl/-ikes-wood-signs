@@ -1,8 +1,8 @@
 {
-  "release": "Owner Bridge",
-  "name": "Owner Bridge",
-  "build": "8.6.51",
-  "seal": "owner-bridge-8651-9d6f42",
+  "release": "Owner Bridge Core",
+  "name": "Owner Bridge Core",
+  "build": "8.6.52",
+  "seal": "owner-bridge-core-8652-31c7e4",
   "file_count": 81,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
@@ -55,6 +55,7 @@
     "RELEASE_DISCIPLINE_827.md",
     "RELEASE_GATE.json",
     "RELEASE_HARDENING_COMPENDIUM.md",
+    "RELEASE_INVENTORY.json",
     "RELEASE_SEAL.json",
     "RESOLVER_LIFELINE_MODEL.json",
     "RLS_READ_BOUNDARY_MODEL.json",
@@ -84,7 +85,6 @@
     "platform_v4.js",
     "signal_restoration_logo.png",
     "styles.css",
-    "sw.js",
-    "RELEASE_INVENTORY.json"
+    "sw.js"
   ]
 }

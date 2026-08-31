@@ -1,3 +1,3 @@
-# Dark Sky 8.6.51 — Owner Bridge
+# Dark Sky 8.6.52 — Owner Bridge Core
 
-Narrow structural owner-experience pass. One authenticated owner shell; internal screen views; reusable vessel identity slot; no authentication or authority boundary redesign.
+Efficient owner-experience pass: deterministic bridge-home return, owner-first language, approved vessel identity in Branding, and a tighter home shell. No authentication, RLS, ownership, or GlyphForge production-logic redesign.

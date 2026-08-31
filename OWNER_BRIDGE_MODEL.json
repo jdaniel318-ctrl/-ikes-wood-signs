@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-owner-bridge-v1",
-  "build": "8.6.51",
-  "release": "Owner Bridge",
+  "build": "8.6.52",
+  "release": "Owner Bridge Core",
   "principles": [
     "one authenticated owner shell",
     "screen-to-screen internal owner views",
@@ -10,21 +10,31 @@
     "exact-vessel RLS remains authoritative"
   ],
   "frozen_boundaries": [
-    "Supabase password auth",
-    "first-time setup",
+    "Supabase email/password authentication",
+    "first-time password setup",
     "password recovery",
-    "RLS policies",
-    "ownership membership",
-    "local recovery",
-    "project admin",
+    "direct login relay",
+    "exact-vessel RLS",
+    "ownership and transfer authority",
+    "Local Recovery",
+    "Project Admin",
     "Captain",
     "Admiral",
-    "direct login relay"
+    "GlyphForge production geometry and certification logic"
   ],
   "ike_proof": {
     "identity": "Ike's Wood Signs",
     "visual": "ike_character.png",
     "owner_home": "business bridge",
     "navigation": "deterministic internal views"
-  }
+  },
+  "release_name": "Owner Bridge Core",
+  "mission": "Make the owner bridge return deterministically to the real business home, speak owner language, and carry approved vessel identity without changing authority or production logic.",
+  "owner_bridge_rules": [
+    "The bridge home is the only Overview; do not create a second Overview workspace.",
+    "Every sub-screen Overview action restores the full bridge home at the top.",
+    "Owner-facing copy uses business language; Fleet implementation vocabulary stays below the owner surface.",
+    "Approved vessel identity may personalize the bridge while layout, navigation, authority, and safety remain Fleet-standard.",
+    "Pricing remains the reference pattern for clear edit/save/durable-state behavior."
+  ]
 }
