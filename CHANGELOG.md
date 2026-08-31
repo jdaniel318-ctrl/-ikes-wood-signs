@@ -1,3 +1,10 @@
+## 8.6.58 — Admiral First-Paint Recovery
+- Restores Professional / Govern / top-of-deck as the deterministic Admiral first paint.
+- Separates background readiness posture from manual Current Findings.
+- Background proof timeout remains VERIFYING / pending rather than minting first-paint HOLDs.
+- Manual Run Fleet Readiness remains the only path that renders the full findings wall.
+- Preserves 8.6.57 proof-chain settlement, 8.6.55 command rail, and Fleet Services entitlement controls.
+
 ## 8.6.57 — Proof Chain Settlement
 - Reuses the existing bootstrap, generation relay and finalizer lifecycle in one bounded settlement attempt before Admiral readiness.
 - Preserves a single critical root at Proof Signer finalizer/read-back when proof cannot commit.

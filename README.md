@@ -1,3 +1,7 @@
+# Dark Sky 8.6.58 — Admiral First-Paint Recovery
+
+Restores command-first Admiral entry after the 8.6.57 proof-chain regression. Background proof verification may update only the compact readiness posture; it cannot populate Current Findings, choose the active diagnostic view, or move scroll position. Every Admiral entry opens Professional → Govern at the top. Full findings appear only after an explicit Run Fleet Readiness action.
+
 # Dark Sky 8.6.57 — Proof Chain Settlement
 
 Readiness now settles the existing bootstrap/signer lifecycle before judging dependent proof. If current proof still cannot commit, the Proof Signer finalizer/read-back remains the single root HOLD; roster, Dock, Intelligence, admission and source-trace checks report blocked-upstream WATCH instead of cascading false-independent HOLDs.

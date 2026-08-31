@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-services-framework-v1",
-  "build": "8.6.57",
+  "build": "8.6.58",
   "release": "Fleet Services Framework",
   "principles": [
     "Admiral defines whether a Fleet capability is Standard or Paid.",

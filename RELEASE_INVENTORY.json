@@ -1,8 +1,8 @@
 {
-  "release": "Proof Chain Settlement",
-  "name": "Proof Chain Settlement",
-  "build": "8.6.57",
-  "seal": "proof-chain-settlement-8657-6f2a91",
+  "release": "Admiral First-Paint Recovery",
+  "name": "Admiral First-Paint Recovery",
+  "build": "8.6.58",
+  "seal": "admiral-first-paint-recovery-8658-2c7f41",
   "file_count": 85,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

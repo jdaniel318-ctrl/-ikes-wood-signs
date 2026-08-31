@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.6.57",
+  "build": "8.6.58",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -100,5 +100,13 @@
     "historyRetained": true,
     "rollbackSupported": true,
     "invariant": "Changing Fleet course must not silently rewrite prior proof, vessel identity, owner authority, or release history."
+  },
+  "admiralFirstPaint": {
+    "defaultView": "professional",
+    "defaultLane": "govern",
+    "scrollPosition": "top",
+    "backgroundReadiness": "compact-posture-only",
+    "currentFindingsPublisher": "manual-fleet-readiness-only",
+    "incompleteProofState": "verifying-not-hold"
   }
 }

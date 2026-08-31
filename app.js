@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.57';
+  const BUILD_VERSION='8.6.58';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2608,7 +2608,7 @@
     return out||proofBarrierRead8611()?.currentProof||null;
   }
 
-  // 8.6.57 Proof Chain Settlement — readiness may ask the existing proof lifecycle
+  // 8.6.58 Proof Chain Settlement — readiness may ask the existing proof lifecycle
   // to finish settling before judging it, but it may not manufacture Dock, Intelligence,
   // roster, admission, or current-proof evidence. One bounded attempt owns the chain.
   let proofChainSettlementPromise8657=null;
@@ -5627,24 +5627,33 @@
     return result;
   }
   async function runAutomaticProvingGround(){
+    const publish=(detail)=>{try{window.dispatchEvent(new CustomEvent('darksky-admiral-background-readiness',{detail}));}catch(_){}};
     try{
-      // 8.6.15: automatic assurance never races memory initialization. If the
-      // Bootstrap Commit has not committed yet, leave proving untouched and let the
-      // next scheduled/manual run inspect the settled fleet.
+      publish({state:'pending',build:BUILD_VERSION,message:'Proof verification pending — fleet surfaces are still settling.'});
+      // Background assurance may observe only a fully committed six-vessel proof.
+      // It never publishes Current Findings and never controls Admiral first paint.
       const proof=await awaitProofBarrier8611({source:'automatic-proving',timeoutMs:2200});
-      if(!proof?.ok)return null;
+      if(!proof?.ok){publish({state:'pending',build:BUILD_VERSION,message:'Proof verification pending — run Fleet Readiness when you want a manual diagnosis.'});return null;}
       const sessionKey=`darkSkyAutoProving:${BUILD_VERSION}`;
-      if(sessionStorage.getItem(sessionKey)==='done')return loadFreshProvingEvidence();
+      if(sessionStorage.getItem(sessionKey)==='done'){
+        const evidence=loadFreshProvingEvidence();
+        const prior=window.__lastAdmiralBackgroundReadinessReport||null;
+        publish({state:'verified',build:BUILD_VERSION,report:prior,evidence});
+        return evidence;
+      }
       sessionStorage.setItem(sessionKey,'running');
       const report=await runAdmiralReadinessChecks('auto');
       report.voyages=provingVoyagesFromReport(report);
       const evidence=saveFreshProvingEvidence(report);
-      window.__lastAdmiralReadinessReport=report;
+      window.__lastAdmiralBackgroundReadinessReport=report;
       sessionStorage.setItem(sessionKey,'done');
-      const stamp=$('admiralReadinessStamp');
-      if(stamp&&evidence){const clear=evidence.voyages.filter(v=>v.state==='clear').length;stamp.textContent=`${clear}/${evidence.voyages.length} voyages clear • candidate ${BUILD_VERSION} • auto-verified ${new Date(evidence.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;}
+      publish({state:'verified',build:BUILD_VERSION,report,evidence});
       return evidence;
-    }catch(err){try{sessionStorage.setItem(`darkSkyAutoProving:${BUILD_VERSION}`,'failed')}catch(_){ }return null;}
+    }catch(err){
+      try{sessionStorage.setItem(`darkSkyAutoProving:${BUILD_VERSION}`,'failed')}catch(_){}
+      publish({state:'pending',build:BUILD_VERSION,message:'Background proof verification is unavailable. Manual Fleet Readiness remains available.'});
+      return null;
+    }
   }
   function scheduleIronHullFortification(){
     if(window.__ironHullFortificationScheduled)return;

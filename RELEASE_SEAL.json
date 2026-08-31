@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.57",
-  "release": "Proof Chain Settlement",
-  "seal": "proof-chain-settlement-8657-6f2a91",
+  "build": "8.6.58",
+  "release": "Admiral First-Paint Recovery",
+  "seal": "admiral-first-paint-recovery-8658-2c7f41",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Proof Chain Settlement",
-  "name": "Proof Chain Settlement",
-  "releaseName": "Proof Chain Settlement"
+  "release_name": "Admiral First-Paint Recovery",
+  "name": "Admiral First-Paint Recovery",
+  "releaseName": "Admiral First-Paint Recovery"
 }

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.57",
-  "release": "Proof Chain Settlement",
-  "generatedAt": "2026-08-31T09:10:00-04:00",
+  "build": "8.6.58",
+  "release": "Admiral First-Paint Recovery",
+  "generatedAt": "2026-08-31T13:08:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -207,14 +207,17 @@
     "owner_fleet_services_plain_language": true,
     "browser_cannot_grant_entitlement": true,
     "proof_chain_settlement": true,
-    "downstream_proof_cascade_suppression": true
+    "downstream_proof_cascade_suppression": true,
+    "admiral_command_first_paint": true,
+    "background_readiness_cannot_publish_findings": true,
+    "admiral_entry_resets_govern_top": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.57 Proof Chain Settlement settles the existing signer lifecycle before readiness and collapses dependent proof failures behind one honest upstream root without manufacturing evidence.",
-  "candidate": "8.6.57",
+  "note": "8.6.58 restores Admiral command-first paint: background proof may update compact posture only; manual Fleet Readiness exclusively populates Current Findings.",
+  "candidate": "8.6.58",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

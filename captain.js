@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.6.57';
+  const UPPER_COMMAND_BUILD='8.6.58';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -434,6 +434,45 @@
     findings.innerHTML=current.length?current.map(c=>{const meta=truth.findings[c.id]||{},a=findingAction(c.id);return `<article class="admiral-finding ${c.state}" data-finding-id="${c.id}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${c.label}</b><span>${c.detail}</span><small>FIRST DETECTED ${meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK'}<br>LATEST CHECK ${UPPER_COMMAND_BUILD} • ${meta.provenance||verificationProvenance(c)}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${c.id}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds. Fleet readiness is clear.</span>';
   }
 
+  function readinessSummaryOnly8658(report){
+    if(!report)return false;
+    const current=(report.checks||[]).filter(c=>c.state!=='pass');
+    const holds=current.filter(c=>c.state==='fail').length,watches=current.filter(c=>c.state==='warn').length;
+    const label=holds?'HOLD':watches?'WATCH':'CLEAR';
+    const copy=holds?`${holds} verified hold${holds===1?'':'s'} detected in background. Run Fleet Readiness to inspect.`:watches?`${watches} background watch item${watches===1?'':'s'} detected; no critical holds.`:'Background verification is clear.';
+    for(const id of ['admiralDeckReadinessState','admiralCeremonialReadinessState']){const el=byId(id);if(el){el.textContent=label;el.dataset.state=label.toLowerCase();}}
+    for(const id of ['admiralDeckReadinessCopy','admiralCeremonialReadinessCopy']){const el=byId(id);if(el)el.textContent=copy;}
+    return true;
+  }
+  function primeAdmiralFirstPaint8658(){
+    const deck=byId('admiralDeck');if(!deck)return;
+    // Admiral entry always begins at the professional command deck, Govern lane, top.
+    deck.dataset.mode='professional';
+    deck.dataset.admiralLane='govern';
+    deck.querySelectorAll('[data-admiral-lane]').forEach(btn=>btn.setAttribute('aria-selected',String(btn.dataset.admiralLane==='govern')));
+    deck.querySelectorAll('[data-admiral-panel]').forEach(panel=>panel.hidden=panel.dataset.admiralPanel!=='govern');
+    const findings=byId('admiralReadinessFindings');if(findings)findings.innerHTML='<span>Run Fleet Readiness to populate verified findings.</span>';
+    const tabs=byId('admiralFindingTabs');if(tabs){tabs.dataset.mode='current';tabs.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.findingView==='current')));}
+    const bg=window.__lastAdmiralBackgroundReadinessReport||null;
+    if(!readinessSummaryOnly8658(bg)){
+      for(const id of ['admiralDeckReadinessState','admiralCeremonialReadinessState']){const el=byId(id);if(el){el.textContent='VERIFYING';el.dataset.state='verifying';}}
+      for(const id of ['admiralDeckReadinessCopy','admiralCeremonialReadinessCopy']){const el=byId(id);if(el)el.textContent='Proof verification is running in the background. Run Fleet Readiness for a manual diagnosis.';}
+    }
+    const notice=byId('admiralDeckNotice');if(notice)notice.textContent='Admiral command ready. Background proof verification cannot replace manual findings.';
+    requestAnimationFrame(()=>{
+      for(const el of [deck,deck.querySelector('.admiral-deck-grid'),deck.querySelector('.admiral-command-surface')]){try{if(el)el.scrollTop=0;}catch(_){}}
+      try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){window.scrollTo(0,0);}
+    });
+  }
+  window.addEventListener('darksky-admiral-background-readiness',e=>{
+    const d=e?.detail||{};
+    if(d.state==='verified'&&d.report){window.__lastAdmiralBackgroundReadinessReport=d.report;readinessSummaryOnly8658(d.report);return;}
+    if(d.state==='pending'){
+      for(const id of ['admiralDeckReadinessState','admiralCeremonialReadinessState']){const el=byId(id);if(el&&el.textContent!=='HOLD'&&el.textContent!=='WATCH'&&el.textContent!=='CLEAR')el.textContent='VERIFYING';}
+      for(const id of ['admiralDeckReadinessCopy','admiralCeremonialReadinessCopy']){const el=byId(id);if(el&&d.message)el.textContent=d.message;}
+    }
+  });
+
   function syncAdmiralReadiness(report){
     if(!report)return;
     const truth=reconcileReadinessTruth(report);
@@ -455,6 +494,7 @@
     try{
       const report=await window.DarkSkyAdmiralReadiness?.run?.();
       if(!report)throw new Error('Fleet Readiness service unavailable');
+      report.presentationSource='manual-admiral-readiness';
       syncAdmiralReadiness(report);
       return report;
     }catch(err){
@@ -641,7 +681,7 @@
         const ascentMs=seenDeck?2500:3900;window.setTimeout(()=>deck.classList.remove('admiral-deck-ascent-first','admiral-deck-ascent-repeat'),ascentMs+120);
       }
       refreshAdmiralCeremonialSurface();
-      if(window.__lastAdmiralReadinessReport)syncAdmiralReadiness(window.__lastAdmiralReadinessReport);
+      primeAdmiralFirstPaint8658();
       try{sessionStorage.setItem('darkSkyAdmiralTrialSeen','1');}catch(_){ }
     };
     byId('admiralPinInput').addEventListener('keydown',e=>{if(e.key==='Enter')byId('admiralUnlockBtn').click();});
