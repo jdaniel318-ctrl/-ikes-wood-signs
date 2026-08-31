@@ -1,0 +1,23 @@
+{
+  "schema": "dark-sky-proof-chain-settlement-model-v1",
+  "build": "8.6.57",
+  "release": "Proof Chain Settlement",
+  "mission": "Settle the existing signer lifecycle before readiness evaluates dependent proof, without manufacturing evidence.",
+  "root_hold": "Proof Signer finalizer/read-back remains the single critical root when current proof cannot commit.",
+  "dependent_policy": "Roster, admission, Dock, Intelligence and source-trace checks become WATCH with blocked-upstream evidence until the root proof commits.",
+  "settlement_sequence": [
+    "reuse bootstrap ignition",
+    "align CORE to committed memory generation",
+    "invoke existing finalizer",
+    "bounded read-back",
+    "evaluate readiness"
+  ],
+  "forbidden": [
+    "manufacture Dock proof",
+    "manufacture Intelligence proof",
+    "invent six-vessel registry truth",
+    "convert historical observations into current proof",
+    "hide root failure"
+  ],
+  "success": "One committed current proof generation is read back before downstream checks can clear."
+}

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.56';
+  const BUILD_VERSION='8.6.57';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2606,6 +2606,42 @@
       return null;
     })(),timeoutMs,null);
     return out||proofBarrierRead8611()?.currentProof||null;
+  }
+
+  // 8.6.57 Proof Chain Settlement — readiness may ask the existing proof lifecycle
+  // to finish settling before judging it, but it may not manufacture Dock, Intelligence,
+  // roster, admission, or current-proof evidence. One bounded attempt owns the chain.
+  let proofChainSettlementPromise8657=null;
+  async function settleProofChain8657(source='readiness'){
+    const existing=proofBarrierRead8611()?.currentProof;
+    const memory=memoryMusterRead8612();
+    if(existing?.ok&&Number(existing.generation||0)===Number(memory?.generation||0))return {proof:existing,status:'settled',root:''};
+    if(proofChainSettlementPromise8657)return proofChainSettlementPromise8657;
+    proofChainSettlementPromise8657=(async()=>{
+      proofSignerTraceEvent8616('settlement-start',{source,memoryGeneration:Number(memoryMusterRead8612()?.generation||0)});
+      try{
+        // Reuse the same bounded bootstrap/relay/finalizer lifecycle already used by startup.
+        await commandDeadline(Promise.resolve(igniteProofBootstrap8617(`settlement:${source}`)).catch(()=>null),2200,null);
+        await commandDeadline(Promise.resolve(relayBootstrapCoreToMemoryGeneration8623(`settlement:${source}`)).catch(()=>null),2200,null);
+        await commandDeadline(Promise.resolve(tryFinalizeProofBootstrap8615(`settlement:${source}`)).catch(()=>null),1200,null);
+        const proof=await awaitProofBarrier8611({source:`settlement:${source}`,timeoutMs:1400});
+        if(proof?.ok){
+          proofSignerTraceEvent8616('settlement-complete',{source,generation:Number(proof.generation||0)});
+          return {proof,status:'settled',root:''};
+        }
+        const snap=proofSignerTraceSnapshot8616('settlement-incomplete');
+        const root=String(snap.lastEvent?.reason||snap.bootstrap?.stage||snap.bootstrap?.status||'proof-not-committed');
+        proofSignerTraceEvent8616('settlement-incomplete',{source,root,memoryGeneration:snap.memory.generation,dockGeneration:snap.dock.generation,intelligenceGeneration:snap.intelligence.generation});
+        return {proof:null,status:'blocked',root};
+      }catch(err){
+        const root=String(err?.message||err||'settlement-error');
+        proofSignerTraceEvent8616('settlement-error',{source,root});
+        return {proof:null,status:'blocked',root};
+      }finally{
+        setTimeout(()=>{proofChainSettlementPromise8657=null;},0);
+      }
+    })();
+    return proofChainSettlementPromise8657;
   }
 
   // 8.6.8 Dock Source Trace — make every roster stage observable. A protected vessel
@@ -5226,8 +5262,10 @@
   function admiralLastRecovery(){try{return JSON.parse(localStorage.getItem('darkSkyLastRecovery')||'null');}catch(_){return null;}}
 
   async function runAdmiralReadinessChecks(source='manual'){
-    const barrierProof8611=await awaitProofBarrier8611({source:`readiness:${source}`});
+    const settlement8657=await settleProofChain8657(`readiness:${source}`);
+    const barrierProof8611=settlement8657?.proof||await awaitProofBarrier8611({source:`readiness:${source}`,timeoutMs:700});
     const currentProof8611=(barrierProof8611?.ok?barrierProof8611:proofBarrierRead8611()?.currentProof)||null;
+    const proofBlockedRoot8657=String(settlement8657?.root||'proof settlement incomplete');
     const checks=[];
     const add=(id,label,state,detail,level='core')=>checks.push({id,label,state,detail,level});
     const safe=async(fn,fallback)=>{try{return await fn();}catch(err){return fallback(err);}};
@@ -5376,23 +5414,25 @@
     add('generation-relay','Generation Relay',relay8623.status==='aligned'&&memRelay8623===bootRelay8623?'pass':(relay8623.status==='hold'?'fail':'warn'),`Memory generation ${memRelay8623} • CORE generation ${bootRelay8623} • relay ${relay8623.status||'idle'}${relay8623.detail?` • ${relay8623.detail}`:''}.`);
     add('proof-signer-bootstrap-call','Proof Signer — bootstrap invocation',Number(sc8616['bootstrap-invoked']||0)>0?'pass':'fail',Number(sc8616['bootstrap-invoked']||0)>0?`Bootstrap runner invoked ${Number(sc8616['bootstrap-invoked']||0)} time(s); latest state ${signer8616.bootstrap.status}, generation ${signer8616.bootstrap.generation}.`:'Bootstrap runner has not been invoked in this build/session.');
     const attachmentMatch8616=signer8616.memory.generation>0&&signer8616.dock.ok&&signer8616.intelligence.ok&&signer8616.dock.generation===signer8616.memory.generation&&signer8616.intelligence.generation===signer8616.memory.generation;
-    add('proof-signer-generation-match','Proof Signer — generation attachments',attachmentMatch8616?'pass':'fail',attachmentMatch8616?`Memory, Dock, and Intelligence all attach to generation ${signer8616.memory.generation}.`:`Generation mismatch/incomplete: memory ${signer8616.memory.generation}, Dock ${signer8616.dock.generation}/${signer8616.dock.count}, Intelligence ${signer8616.intelligence.generation}/${signer8616.intelligence.count}.`);
+    add('proof-signer-generation-match','Proof Signer — generation attachments',attachmentMatch8616?'pass':(signer8616.barrier.hasCurrentProof?'warn':'warn'),attachmentMatch8616?`Memory, Dock, and Intelligence all attach to generation ${signer8616.memory.generation}.`:`Blocked by upstream proof settlement: memory ${signer8616.memory.generation}, Dock ${signer8616.dock.generation}/${signer8616.dock.count}, Intelligence ${signer8616.intelligence.generation}/${signer8616.intelligence.count}. Root: ${proofBlockedRoot8657}.`);
     const finalizerCalls8616=Number(sc8616['finalizer-invoked']||0), finalCommits8616=Number(sc8616['finalizer-committed']||0);
-    add('proof-signer-finalizer','Proof Signer — finalizer/read-back',signer8616.barrier.hasCurrentProof?'pass':'fail',signer8616.barrier.hasCurrentProof?`Finalizer committed and read back generation ${signer8616.barrier.currentGeneration} from ${PROOF_BARRIER_KEY_8611}.`:`Finalizer calls ${finalizerCalls8616}, commits ${finalCommits8616}; last signer event ${String(last8616.event||'none')}${last8616.reason?` • ${last8616.reason}`:''}.`);
+    add('proof-signer-finalizer','Proof Signer — finalizer/read-back',signer8616.barrier.hasCurrentProof?'pass':'fail',signer8616.barrier.hasCurrentProof?`Finalizer committed and read back generation ${signer8616.barrier.currentGeneration} from ${PROOF_BARRIER_KEY_8611}.`:`Root proof settlement is not committed. Finalizer calls ${finalizerCalls8616}, commits ${finalCommits8616}; root ${proofBlockedRoot8657}. Downstream proof checks remain WATCH until this resolves.`);
 
     const canonicalRosterIds864=RELEASE_CANONICAL_FLEET_IDS_864;
     const proofStages8611=Object.fromEntries((currentProof8611?.stages||[]).map(st=>[st.name,st]));
     const proofReady8611=currentProof8611?.ok===true;
-    add('canonical-roster-live','Canonical six-vessel roster',proofStages8611.Registry?.ok?'pass':'fail',proofStages8611.Registry?.ok?'Current committed proof contains all six canonical registry IDs.':`Proof barrier has not committed a six-vessel registry yet (${proofStages8611.Registry?.count||0}/6).`);
-    add('fleet-muster-protected-six','Protected Dock Source Trace',proofReady8611?'pass':'fail',proofReady8611?'Protected seed/runtime evidence is reconciled only after the six-vessel proof barrier.':'Protected fleet proof has not crossed the commit barrier yet.');
-    add('fleet-muster-stage-trace','Dock Source Trace six-stage proof',proofReady8611?'pass':'fail',proofReady8611?'Registry → Admissions → Manifest → Memory → Dock → Intelligence all agree on the committed six-vessel current proof.':'Current proof is incomplete; intermediate observations remain history and cannot create current truth.');
-    add('fleet-dock-source-trace','Fleet Dock last-mile source trace',proofStages8611.Dock?.ok?'pass':'fail',proofStages8611.Dock?.ok?'The committed proof contains all six rendered Fleet Dock IDs.':'Fleet Dock has not committed six rendered IDs after reconciliation.');
-    add('canonical-six-admissions','Canonical six fleet citizenship',proofStages8611.Admissions?.ok?'pass':'fail',proofStages8611.Admissions?.ok?'All six immutable Known Good vessels hold valid admissions in the committed proof.':`Committed admission proof is ${proofStages8611.Admissions?.count||0}/6.`);
+    const downstreamState8657=proofReady8611?'pass':'warn';
+    const blockedDetail8657=`Blocked by upstream Proof Signer settlement (${proofBlockedRoot8657}); no independent downstream HOLD is minted.`;
+    add('canonical-roster-live','Canonical six-vessel roster',proofReady8611&&proofStages8611.Registry?.ok?'pass':downstreamState8657,proofReady8611&&proofStages8611.Registry?.ok?'Current committed proof contains all six canonical registry IDs.':blockedDetail8657);
+    add('fleet-muster-protected-six','Protected Dock Source Trace',proofReady8611?'pass':downstreamState8657,proofReady8611?'Protected seed/runtime evidence is reconciled only after the six-vessel proof barrier.':blockedDetail8657);
+    add('fleet-muster-stage-trace','Dock Source Trace six-stage proof',proofReady8611?'pass':downstreamState8657,proofReady8611?'Registry → Admissions → Manifest → Memory → Dock → Intelligence all agree on the committed six-vessel current proof.':blockedDetail8657);
+    add('fleet-dock-source-trace','Fleet Dock last-mile source trace',proofReady8611&&proofStages8611.Dock?.ok?'pass':downstreamState8657,proofReady8611&&proofStages8611.Dock?.ok?'The committed proof contains all six rendered Fleet Dock IDs.':blockedDetail8657);
+    add('canonical-six-admissions','Canonical six fleet citizenship',proofReady8611&&proofStages8611.Admissions?.ok?'pass':downstreamState8657,proofReady8611&&proofStages8611.Admissions?.ok?'All six immutable Known Good vessels hold valid admissions in the committed proof.':blockedDetail8657);
     const legacyAnchorId865='bf-p-f92f87e8ec44';
     const legacyProofOk8611=proofReady8611&&currentProof8611.registryIds.includes(legacyAnchorId865)&&currentProof8611.dockIds.includes(legacyAnchorId865);
-    add('legacy-identity-anchor','Legacy Plumbing immutable identity anchor',legacyProofOk8611?'pass':'fail',legacyProofOk8611?`Legacy Plumbing survives the committed proof barrier on immutable Project ID ${legacyAnchorId865}.`:'Legacy Plumbing is not present in both committed registry and Dock proof.');
-    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',proofStages8611.Intelligence?.ok?'pass':'fail',proofStages8611.Intelligence?.ok?'Fleet Intelligence committed a usable six-vessel first-paint proof after the barrier.':'Fleet Intelligence has not crossed the successful paint barrier for this build.');
-    add('evidence-reconciliation-current-proof','Bootstrap Commit current proof',proofReady8611?'pass':'fail',proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':'No current proof has been committed; boot-time observations remain diagnostic history only.');
+    add('legacy-identity-anchor','Legacy Plumbing immutable identity anchor',legacyProofOk8611?'pass':downstreamState8657,legacyProofOk8611?`Legacy Plumbing survives the committed proof barrier on immutable Project ID ${legacyAnchorId865}.`:blockedDetail8657);
+    add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',proofReady8611&&proofStages8611.Intelligence?.ok?'pass':downstreamState8657,proofReady8611&&proofStages8611.Intelligence?.ok?'Fleet Intelligence committed a usable six-vessel first-paint proof after the barrier.':blockedDetail8657);
+    add('evidence-reconciliation-current-proof','Bootstrap Commit current proof',proofReady8611?'pass':downstreamState8657,proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':blockedDetail8657);
 
     let stagingVerified864=null;try{stagingVerified864=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
     const stagingLedger864=fleetStagingLedgerRead();

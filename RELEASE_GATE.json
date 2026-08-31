@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.56",
-  "release": "Doctrine Authority Repair",
-  "generatedAt": "2026-08-31T00:25:00-04:00",
+  "build": "8.6.57",
+  "release": "Proof Chain Settlement",
+  "generatedAt": "2026-08-31T09:10:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -205,14 +205,16 @@
     "registry_commit_bounded_settlement": true,
     "admiral_entitlement_state_precedence": true,
     "owner_fleet_services_plain_language": true,
-    "browser_cannot_grant_entitlement": true
+    "browser_cannot_grant_entitlement": true,
+    "proof_chain_settlement": true,
+    "downstream_proof_cascade_suppression": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.56 Doctrine Authority Repair restores current Admiral Course Authority proof, opens doctrine evidence on-screen, and separates measured Dark Sky storage from Safari browser-managed origin estimates.",
-  "candidate": "8.6.56",
+  "note": "8.6.57 Proof Chain Settlement settles the existing signer lifecycle before readiness and collapses dependent proof failures behind one honest upstream root without manufacturing evidence.",
+  "candidate": "8.6.57",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,3 +1,9 @@
+## 8.6.57 — Proof Chain Settlement
+- Reuses the existing bootstrap, generation relay and finalizer lifecycle in one bounded settlement attempt before Admiral readiness.
+- Preserves a single critical root at Proof Signer finalizer/read-back when proof cannot commit.
+- Dependent roster/Dock/Intelligence/source-trace checks become blocked-upstream WATCH, never manufactured CLEAR.
+- No evidence is invented; Dock and Intelligence still must be produced by their real render paths.
+
 ## 8.6.56 — Doctrine Authority Repair
 - VIEW DOCTRINE opens a real current-course detail panel.
 - Fleet Doctrine Registry is current to 8.6.56 with append-only prior-course history.

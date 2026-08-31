@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-identity-keel-model-v1",
-  "build": "8.6.56",
+  "build": "8.6.57",
   "release": "Fleet Ownership Charter",
   "mission": "Make Fleet vessel entry, ownership, operation, and transfer first-class server-backed contracts while preserving the staging identity bridge.",
   "provider": {

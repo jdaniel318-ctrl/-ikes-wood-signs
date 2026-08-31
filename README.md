@@ -1,3 +1,7 @@
+# Dark Sky 8.6.57 — Proof Chain Settlement
+
+Readiness now settles the existing bootstrap/signer lifecycle before judging dependent proof. If current proof still cannot commit, the Proof Signer finalizer/read-back remains the single root HOLD; roster, Dock, Intelligence, admission and source-trace checks report blocked-upstream WATCH instead of cascading false-independent HOLDs.
+
 # Dark Sky 8.6.56 — Doctrine Authority Repair
 
 Repairs current Admiral doctrine authority proof, gives readiness findings a real on-screen doctrine detail surface, and prevents Safari browser-managed storage estimates from becoming a critical HOLD without measured Dark Sky ownership evidence.

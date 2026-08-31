@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.56",
-  "release": "Doctrine Authority Repair",
-  "seal": "doctrine-authority-repair-8656-71c4d2",
+  "build": "8.6.57",
+  "release": "Proof Chain Settlement",
+  "seal": "proof-chain-settlement-8657-6f2a91",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Admiral Command Rail",
-  "name": "Doctrine Authority Repair",
-  "releaseName": "Admiral Command Rail"
+  "release_name": "Proof Chain Settlement",
+  "name": "Proof Chain Settlement",
+  "releaseName": "Proof Chain Settlement"
 }
