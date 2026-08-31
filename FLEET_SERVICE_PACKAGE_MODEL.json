@@ -1,0 +1,19 @@
+{
+  "schema": "dark-sky-fleet-service-package-model-v1",
+  "build": "8.6.55",
+  "status": "reserved_framework_not_exposed",
+  "purpose": "Allow future Basic/Mid/Super-style bundles to resolve into the same governed capability entitlements without replacing individual service controls.",
+  "package_model": {
+    "package_has_capabilities": true,
+    "admiral_sets_package_standard_or_paid": true,
+    "vessel_package_entitlement_resolves_capability_entitlements": true,
+    "individual_admiral_override_remains_possible": true,
+    "owner_cannot_self_grant_package": true
+  },
+  "future_labels": [
+    "Basic",
+    "Mid",
+    "Super"
+  ],
+  "note": "Labels are placeholders only; no package pricing or activation UI is live in 8.6.55."
+}

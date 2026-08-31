@@ -1,9 +1,9 @@
 {
-  "release": "Admiral Entitlement States",
-  "name": "Admiral Entitlement States",
-  "build": "8.6.54",
-  "seal": "admiral-entitlement-states-8654-8f4c21",
-  "file_count": 83,
+  "release": "Admiral Command Rail",
+  "name": "Admiral Command Rail",
+  "build": "8.6.55",
+  "seal": "admiral-command-rail-8655-3c91e7",
+  "file_count": 84,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -29,6 +29,7 @@
     "FLEET_REGRESSION_GATES.json",
     "FLEET_REGRESSION_LIBRARY.md",
     "FLEET_SERVICES_FRAMEWORK.json",
+    "FLEET_SERVICE_PACKAGE_MODEL.json",
     "FLEET_STEWARD_MODEL.json",
     "FOUNDRY_FLEET_SERVICES.md",
     "GENERATION_RELAY_MODEL.json",

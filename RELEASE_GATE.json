@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.54",
-  "release": "Admiral Entitlement States",
-  "generatedAt": "2026-08-30T23:22:00-04:00",
+  "build": "8.6.55",
+  "release": "Admiral Command Rail",
+  "generatedAt": "2026-08-31T00:25:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -211,8 +211,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.54 Fleet Services Framework fixes the true Overview return anchor, cleans owner-facing language, strengthens approved vessel identity, and tightens the home shell while freezing authentication, RLS, ownership, and GlyphForge production logic.",
-  "candidate": "8.6.54",
+  "note": "8.6.55 Fleet Services Framework fixes the true Overview return anchor, cleans owner-facing language, strengthens approved vessel identity, and tightens the home shell while freezing authentication, RLS, ownership, and GlyphForge production logic.",
+  "candidate": "8.6.55",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

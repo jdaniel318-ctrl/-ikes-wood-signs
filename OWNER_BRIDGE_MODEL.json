@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-owner-bridge-v1",
-  "build": "8.6.54",
+  "build": "8.6.55",
   "release": "Fleet Services Framework",
   "principles": [
     "one authenticated owner shell",

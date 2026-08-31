@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.54",
-  "release": "Admiral Entitlement States",
-  "seal": "admiral-entitlement-states-8654-8f4c21",
+  "build": "8.6.55",
+  "release": "Admiral Command Rail",
+  "seal": "admiral-command-rail-8655-3c91e7",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Admiral Entitlement States",
-  "name": "Admiral Entitlement States",
-  "releaseName": "Admiral Entitlement States"
+  "release_name": "Admiral Command Rail",
+  "name": "Admiral Command Rail",
+  "releaseName": "Admiral Command Rail"
 }
