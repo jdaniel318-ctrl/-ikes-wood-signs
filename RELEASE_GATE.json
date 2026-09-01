@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.64",
-  "release": "Recovery Identity Landing",
+  "build": "8.7.0",
+  "release": "Feature Freedom",
   "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
     "build_version": true,
@@ -204,6 +204,11 @@
     "admiral_course_authority": true,
     "registry_commit_bounded_settlement": true,
     "admiral_entitlement_state_precedence": true,
+    "every_vessel_supports_off_free_paid": true,
+    "every_capability_is_individually_entitled": true,
+    "free_to_paid_preserves_entitlement_identity": true,
+    "one_vessel_entitlement_never_mutates_another": true,
+    "commercial_state_does_not_execute_billing": true,
     "owner_fleet_services_plain_language": true,
     "browser_cannot_grant_entitlement": true,
     "proof_chain_settlement": true,
@@ -223,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.64 top-anchors the fixed Admiral Professional overlay and provides an explicit iPad momentum-scroll rail so expanded entitlement content cannot make the Deck header unreachable.",
-  "candidate": "8.6.64",
+  "note": "8.7.0 preserves the Admiral iPad scroll rail while adding Fleet-wide, feature-level Off, Free and Paid entitlement control through the authenticated Admiral server seam.",
+  "candidate": "8.7.0",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -281,8 +286,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.6.44",
-    "seal": "inventory-seal-8644-7b19c4",
+    "build": "8.7.0",
+    "seal": "feature-freedom-870-7d14c2",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

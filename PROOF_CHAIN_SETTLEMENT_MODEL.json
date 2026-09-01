@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-proof-chain-settlement-model-v1",
-  "build": "8.6.64",
-  "release": "Recovery Identity Landing",
+  "build": "8.7.0",
+  "release": "Feature Freedom",
   "mission": "Settle the existing signer lifecycle before readiness evaluates dependent proof, without manufacturing evidence.",
   "root_hold": "Proof Signer finalizer/read-back remains the single critical root when current proof cannot commit.",
   "dependent_policy": "Roster, admission, Dock, Intelligence and source-trace checks become WATCH with blocked-upstream evidence until the root proof commits.",

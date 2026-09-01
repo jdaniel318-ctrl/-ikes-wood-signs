@@ -1,3 +1,9 @@
+# Dark Sky 8.7.0 — Feature Freedom
+
+Every Fleet feature can now be independently Off, Free or Paid for every vessel. Off controls access; Free/Paid controls commercial terms; Sea Trial/Live remains a separate safety state. The server-governed Admiral seam and exact-vessel isolation remain intact.
+
+This first 8.7 foundation is Fleet-wide. Ike's can use features free during testing and later move to Paid without rebuilding the feature, losing its records or changing another vessel.
+
 # Dark Sky 8.6.64 — Admiral Scroll Rail
 
 Professional Admiral command is now top-anchored inside its own iPad-safe vertical scroll container. Expanded Standardize content can no longer create unreachable negative overflow above Safari's scroll origin. The fixed command overlay retains authority isolation while allowing the Captain to return to the Admiral header without refresh or browser Back.

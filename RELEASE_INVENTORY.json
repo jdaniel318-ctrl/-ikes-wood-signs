@@ -1,9 +1,9 @@
 {
-  "release": "Recovery Identity Landing",
-  "name": "Recovery Identity Landing",
-  "build": "8.6.64",
-  "seal": "admiral-scroll-rail-8664-5bc291",
-  "file_count": 85,
+  "release": "Feature Freedom",
+  "name": "Feature Freedom",
+  "build": "8.7.0",
+  "seal": "feature-freedom-870-7d14c2",
+  "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -19,6 +19,7 @@
     "DEPLOYMENT_MANIFEST.json",
     "DOCK_SOURCE_TRACE_MODEL.json",
     "EVIDENCE_RECONCILIATION_MODEL.json",
+    "FEATURE_ENTITLEMENT_MODEL_870.json",
     "FLEET_COMMAND_MODEL.json",
     "FLEET_DOCTRINE_REGISTRY.json",
     "FLEET_INTELLIGENCE_MODEL.json",

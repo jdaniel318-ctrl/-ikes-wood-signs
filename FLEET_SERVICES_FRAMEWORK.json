@@ -1,21 +1,25 @@
 {
-  "schema": "dark-sky-fleet-services-framework-v1",
-  "build": "8.6.64",
-  "release": "Fleet Services Framework",
+  "schema": "dark-sky-fleet-services-framework-v2",
+  "build": "8.7.0",
+  "release": "Feature Freedom",
   "principles": [
-    "Admiral defines whether a Fleet capability is Standard or Paid.",
+    "Admiral can set every Fleet feature Off, Free or Paid for every vessel.",
     "Owners may request eligible paid services but cannot self-grant or self-activate them.",
-    "Standard capability status does not broaden vessel data scope.",
+    "Free capability status does not broaden vessel data scope.",
     "Every service remains vessel-entitled and RLS-scoped.",
     "Captain operationalizes only capabilities the Fleet has entitled for the vessel."
   ],
   "objects": {
-    "capability": "versioned reusable Fleet function",
+    "capability": "versioned reusable Fleet feature; services may group capabilities without removing individual control",
     "entitlement": "commercial and authority grant connecting one vessel to one capability",
     "request": "owner expression of interest; never authority by itself"
   },
+  "access_states": [
+    "off",
+    "on"
+  ],
   "commercial_modes": [
-    "standard",
+    "free",
     "paid"
   ],
   "entitlement_states": [
@@ -28,7 +32,7 @@
     "revoked"
   ],
   "owner_labels": {
-    "standard": "Included with Fleet",
+    "free": "Free • $0",
     "paid": "Available for Upgrade"
   },
   "prototype_capabilities": [

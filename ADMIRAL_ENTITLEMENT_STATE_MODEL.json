@@ -1,7 +1,7 @@
 {
-  "release": "8.6.56",
-  "name": "Doctrine Authority Repair",
-  "purpose": "Define authoritative service-state precedence and the Admiral governance seam for Standard vs Paid Fleet capabilities.",
+  "release": "8.7.0",
+  "name": "Feature Freedom",
+  "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
     "enabled",
     "entitled",
@@ -10,7 +10,7 @@
   ],
   "owner_labels": {
     "enabled": "Active",
-    "entitled_standard": "Included with Fleet",
+    "entitled_free": "Free • $0",
     "entitled_paid": "Approved Upgrade",
     "requested": "Requested",
     "available_paid": "Available for Upgrade"
@@ -18,9 +18,14 @@
   "authority_contract": {
     "owner": "may view and request eligible paid upgrades",
     "captain": "may operationalize an already valid entitlement when delegated",
-    "admiral": "defines Standard vs Paid policy and grants entitlement",
+    "admiral": "sets each vessel feature Off, Free or Paid",
     "browser": "never grants entitlement from local UI state"
   },
   "security": "No service-role or secret credential is present in browser code. Server-side entitlement writes remain protected.",
-  "expansion": "The same state model is reusable across all Fleet vessels."
+  "state_separation": {
+    "access": "Off is stored as revoked; active access remains entitled or enabled.",
+    "commercial": "Active features are independently Free or Paid.",
+    "environment": "Sea Trial or Live is separate from access and price."
+  },
+  "expansion": "The same feature-level state model applies to every Fleet vessel without vessel-specific code."
 }

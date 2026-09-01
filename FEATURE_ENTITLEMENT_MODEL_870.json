@@ -1,0 +1,20 @@
+{
+  "schema": "dark-sky-feature-entitlement-v1",
+  "build": "8.7.0",
+  "scope": "every feature for every vessel",
+  "identity": ["vessel_id", "capability_id"],
+  "states": {
+    "access": {"off": "status = revoked", "on": "status = entitled or enabled"},
+    "commercial": ["free", "paid"],
+    "environment": ["sea_trial", "live"]
+  },
+  "contracts": [
+    "No vessel-specific commercial code.",
+    "Services may group features, but each feature retains an individual entitlement.",
+    "Changing Free to Paid preserves the vessel-feature identity and records.",
+    "Changing one vessel never changes another vessel.",
+    "A commercial state change does not itself execute billing.",
+    "The browser cannot grant an entitlement without authenticated Admiral authority."
+  ],
+  "legacy_translation": {"standard": "free", "accepted_until": "8.6.64 clients are retired"}
+}

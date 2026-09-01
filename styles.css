@@ -14899,7 +14899,7 @@ body.captain-modal-open #captainQuarters:not(.hidden){position:fixed!important;i
 .admiral-deck-overlay[data-mode="professional"] .admiral-continuity-card{opacity:.9!important;padding:14px 16px!important;}
 @media(max-width:1000px){.admiral-deck-overlay[data-mode="professional"] .admiral-lane-nav{grid-template-columns:repeat(4,minmax(170px,1fr))!important}.admiral-deck-overlay[data-mode="professional"] .admiral-pro-topline{grid-template-columns:1fr!important}}
 
-/* 8.6.64 Admiral Scroll Rail — iPad Professional Mode must scroll from a
+/* 8.7.0 Admiral Scroll Rail — iPad Professional Mode must scroll from a
    reachable top origin. A centered fixed grid can create negative overflow in
    Safari when Standardize expands, making the Deck header unreachable. */
 .admiral-deck-overlay[data-mode="professional"]{

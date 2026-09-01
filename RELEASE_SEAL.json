@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.64",
-  "release": "Recovery Identity Landing",
-  "seal": "admiral-scroll-rail-8664-5bc291",
+  "build": "8.7.0",
+  "release": "Feature Freedom",
+  "seal": "feature-freedom-870-7d14c2",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Recovery Identity Landing",
-  "name": "Recovery Identity Landing",
-  "releaseName": "Recovery Identity Landing"
+  "release_name": "Feature Freedom",
+  "name": "Feature Freedom",
+  "releaseName": "Feature Freedom"
 }

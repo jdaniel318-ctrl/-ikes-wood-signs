@@ -1,3 +1,12 @@
+## 8.7.0 — Feature Freedom
+- Makes every Fleet capability an individually governed feature for every vessel.
+- Replaces Standard with the plain commercial state Free and preserves all existing entitlements.
+- Adds Admiral controls for Off, Free and Paid without hard-coding Ike or any other vessel.
+- Keeps access state, commercial state and Sea Trial/Live environment separate.
+- Records each Admiral feature-state change in the existing authority audit.
+- Preserves backward compatibility with the 8.6.64 Standard command during deployment.
+- Preserves the 8.6.64 top-anchored iPad Admiral scroll rail.
+
 ## 8.6.64 — Admiral Scroll Rail
 - Replaces centered Professional Mode overlay scrolling with a top-anchored scroll origin.
 - Enables explicit iPad vertical pan and momentum scrolling on the Admiral overlay.

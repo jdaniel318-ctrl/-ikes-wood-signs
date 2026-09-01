@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.64",
-  "release": "Admiral Scroll Rail",
+  "build": "8.7.0",
+  "release": "Feature Freedom",
   "excluded_sources": [
     "The situation"
   ],
@@ -101,6 +101,11 @@
       "auditable_ai_recommendations",
       "aggregated_intelligence_privacy",
       "commercial_metadata_foundation",
+      "every_vessel_supports_off_free_paid",
+      "every_capability_is_individually_entitled",
+      "free_to_paid_preserves_entitlement_identity",
+      "one_vessel_entitlement_never_mutates_another",
+      "commercial_state_does_not_execute_billing",
       "staging_is_not_adoption",
       "staging_readback_verification",
       "staging_refresh_persistence"
