@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-rls-read-boundary-v1",
-  "build": "8.6.58",
+  "build": "8.6.59",
   "release": "RLS Landing",
   "purpose": "Authenticated browser identities receive table SELECT capability only; PostgreSQL RLS remains the row authority for exact-vessel access.",
   "contracts": [

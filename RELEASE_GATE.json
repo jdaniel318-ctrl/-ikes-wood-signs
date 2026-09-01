@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.58",
-  "release": "Admiral First-Paint Recovery",
-  "generatedAt": "2026-08-31T13:08:00-04:00",
+  "build": "8.6.59",
+  "release": "Admiral Recovery Landing",
+  "generatedAt": "2026-09-01T00:20:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -210,14 +210,17 @@
     "downstream_proof_cascade_suppression": true,
     "admiral_command_first_paint": true,
     "background_readiness_cannot_publish_findings": true,
-    "admiral_entry_resets_govern_top": true
+    "admiral_entry_resets_govern_top": true,
+    "admiral_recovery_precedes_engine_route": true,
+    "recovery_token_not_persisted": true,
+    "recovery_password_stays_supabase_auth": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.58 restores Admiral command-first paint: background proof may update compact posture only; manual Fleet Readiness exclusively populates Current Findings.",
-  "candidate": "8.6.58",
+  "note": "8.6.59 catches a valid Supabase recovery session before Engine routing, provides a dedicated Admiral password-reset landing, scrubs recovery tokens after success, and preserves Engine/Captain/Owner authority separation.",
+  "candidate": "8.6.59",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

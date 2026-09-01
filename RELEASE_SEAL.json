@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.58",
-  "release": "Admiral First-Paint Recovery",
-  "seal": "admiral-first-paint-recovery-8658-2c7f41",
+  "build": "8.6.59",
+  "release": "Admiral Recovery Landing",
+  "seal": "admiral-recovery-landing-8659-9c41e7",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Admiral First-Paint Recovery",
-  "name": "Admiral First-Paint Recovery",
-  "releaseName": "Admiral First-Paint Recovery"
+  "release_name": "Admiral Recovery Landing",
+  "name": "Admiral Recovery Landing",
+  "releaseName": "Admiral Recovery Landing"
 }

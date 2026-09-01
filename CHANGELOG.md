@@ -1,3 +1,10 @@
+## 8.6.59 — Admiral Recovery Landing
+- Detects Supabase recovery hash before Engine routing and prevents Engine first paint during recovery.
+- Adds dedicated Set New Admiral Password / Confirm Password landing.
+- Password update goes directly to Supabase Auth; no Fleet table or browser storage contains the password.
+- Scrubs recovery hash and best-effort revokes the recovery session after password change.
+- Preserves 8.6.58 Admiral first-paint recovery and 8.6.55 Fleet Service Entitlement governance.
+
 ## 8.6.58 — Admiral First-Paint Recovery
 - Restores Professional / Govern / top-of-deck as the deterministic Admiral first paint.
 - Separates background readiness posture from manual Current Findings.

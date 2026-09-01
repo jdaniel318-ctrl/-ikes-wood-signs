@@ -1,3 +1,7 @@
+# Dark Sky 8.6.59 — Admiral Recovery Landing
+
+A valid Supabase `type=recovery` session now outranks Engine routing at first light. Dark Sky renders a dedicated Admiral password-reset surface, updates the password only through Supabase Auth, scrubs the recovery token from the URL, and revokes the recovery session after success. Engine, Captain, project-owner, and Fleet authority boundaries remain separate.
+
 # Dark Sky 8.6.58 — Admiral First-Paint Recovery
 
 Restores command-first Admiral entry after the 8.6.57 proof-chain regression. Background proof verification may update only the compact readiness posture; it cannot populate Current Findings, choose the active diagnostic view, or move scroll position. Every Admiral entry opens Professional → Govern at the top. Full findings appear only after an explicit Run Fleet Readiness action.

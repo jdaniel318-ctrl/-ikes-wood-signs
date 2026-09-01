@@ -1,8 +1,8 @@
 {
-  "release": "Admiral First-Paint Recovery",
-  "name": "Admiral First-Paint Recovery",
-  "build": "8.6.58",
-  "seal": "admiral-first-paint-recovery-8658-2c7f41",
+  "release": "Admiral Recovery Landing",
+  "name": "Admiral Recovery Landing",
+  "build": "8.6.59",
+  "seal": "admiral-recovery-landing-8659-9c41e7",
   "file_count": 85,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

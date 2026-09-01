@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.58',seal:'admiral-first-paint-recovery-8658-2c7f41'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.59',seal:'admiral-recovery-landing-8659-9c41e7'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -82,6 +82,11 @@
 
     const __dsUrl = new URL(location.href);
     const __dsHash = String(__dsUrl.hash||'');
+    const __dsHashParams = new URLSearchParams(__dsHash.replace(/^#/,''));
+    const __dsRecoveryAccessToken = String(__dsHashParams.get('access_token')||'');
+    const __dsRecoveryRefreshToken = String(__dsHashParams.get('refresh_token')||'');
+    const __dsRecoveryType = String(__dsHashParams.get('type')||'').toLowerCase();
+    const __dsAdmiralRecoveryIntent = __dsRecoveryType==='recovery' && !!__dsRecoveryAccessToken;
     const __dsSurface = String(__dsUrl.searchParams.get('surface')||'').toLowerCase();
     const __dsProject = String(__dsUrl.searchParams.get('project')||'');
     const __dsView = String(__dsUrl.searchParams.get('view')||'').toLowerCase();
@@ -96,11 +101,12 @@
     }catch(_){ }
 
     // Authority precedence:
-    // 1) explicit ?surface=owner with project or signed owner claim, 2) explicit client-preview invite,
-    // 3) same-session armed legacy owner login/portal route, 4) otherwise Engine.
+    // 1) authenticated Supabase password-recovery return, 2) explicit owner route,
+    // 3) explicit client-preview invite, 4) same-session armed legacy owner route,
+    // 5) otherwise Engine. Recovery must win before Engine can paint.
     const __dsOwnerIntent = (__dsSurface==='owner' && !!__dsProject) || __dsOwnerClaimIntent || (__dsLegacyOwnerHash && __dsOwnerArmed);
     const __dsPreviewIntent = __dsSurface==='preview' || __dsPreviewHash;
-    window.__darkSkyRouteIntent = __dsOwnerIntent ? 'owner' : (__dsPreviewIntent ? 'client-preview' : 'engine');
+    window.__darkSkyRouteIntent = __dsAdmiralRecoveryIntent ? 'admiral-recovery' : (__dsOwnerIntent ? 'owner' : (__dsPreviewIntent ? 'client-preview' : 'engine'));
     window.__darkSkyExplicitProject = __dsProject;
     window.__darkSkyExplicitOwnerView = __dsView;
 
@@ -137,8 +143,73 @@
       shield.style.display='flex';
     };
 
+    function __dsRenderAdmiralRecoveryLanding(){
+      const shield=document.getElementById('darkSkyFirstPaintShield');
+      if(!shield)return;
+      window.__darkSkyBootStage='admiral-recovery-landing';
+      shield.setAttribute('aria-hidden','false');
+      shield.style.display='flex';
+      shield.innerHTML=`<div class="ds-first-light ds-admiral-recovery">
+        <div class="ds-first-light-eyebrow">SECURE ADMIRAL RECOVERY</div>
+        <div class="ds-first-light-mark">⚑</div>
+        <strong>BLACK FLAG</strong>
+        <span>SET NEW ADMIRAL PASSWORD</span>
+        <p class="ds-recovery-copy">Supabase verified this recovery link. Choose a new password for the dedicated Admiral identity. This does not change the Engine PIN, Captain PIN, Ike owner password, or Fleet authority records.</p>
+        <label class="ds-recovery-field">New password<input id="darkSkyAdmiralRecoveryPassword" type="password" autocomplete="new-password" minlength="10" /></label>
+        <label class="ds-recovery-field">Confirm password<input id="darkSkyAdmiralRecoveryConfirm" type="password" autocomplete="new-password" minlength="10" /></label>
+        <button type="button" id="darkSkyAdmiralRecoverySave">SAVE NEW PASSWORD</button>
+        <p id="darkSkyAdmiralRecoveryStatus" class="ds-recovery-status" role="status" aria-live="polite">Use at least 10 characters. Your password stays with Supabase Auth.</p>
+      </div>`;
+      const save=document.getElementById('darkSkyAdmiralRecoverySave');
+      const status=document.getElementById('darkSkyAdmiralRecoveryStatus');
+      save?.addEventListener('click',async()=>{
+        const password=String(document.getElementById('darkSkyAdmiralRecoveryPassword')?.value||'');
+        const confirm=String(document.getElementById('darkSkyAdmiralRecoveryConfirm')?.value||'');
+        if(password.length<10){status.textContent='Use at least 10 characters.';return;}
+        if(password!==confirm){status.textContent='The two passwords do not match.';return;}
+        save.disabled=true;save.textContent='SECURING…';status.textContent='Saving the new Admiral password with Supabase Auth…';
+        try{
+          const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co';
+          const SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy';
+          const r=await fetch(SUPABASE_URL+'/auth/v1/user',{
+            method:'PUT',
+            headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+__dsRecoveryAccessToken,'Content-Type':'application/json'},
+            body:JSON.stringify({password})
+          });
+          if(!r.ok){
+            let message='Password could not be saved.';
+            try{const e=await r.json();message=e?.msg||e?.message||message;}catch(_){}
+            throw new Error(message);
+          }
+          // Best-effort revoke the recovery session after the password is changed.
+          try{await fetch(SUPABASE_URL+'/auth/v1/logout',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+__dsRecoveryAccessToken}});}catch(_){}
+          const clean=new URL(location.href);clean.hash='';clean.search='';
+          history.replaceState({darkSkyRoute:'admiral-recovery-complete'},'',clean.pathname);
+          try{localStorage.setItem('darkSkyAdmiralRecoveryCompleteV1',JSON.stringify({at:new Date().toISOString(),build:DARK_SKY_EXPECTED_BUILD}));}catch(_){}
+          shield.innerHTML=`<div class="ds-first-light ds-admiral-recovery ds-recovery-complete">
+            <div class="ds-first-light-eyebrow">ADMIRAL RECOVERY COMPLETE</div>
+            <div class="ds-first-light-mark">✓</div>
+            <strong>BLACK FLAG</strong>
+            <span>PASSWORD SECURED</span>
+            <p class="ds-recovery-copy">The dedicated Admiral password is now set. Return to your existing Admiral tab, open Standardize → Fleet Service Entitlements, and authenticate with the new password.</p>
+            <button type="button" id="darkSkyAdmiralRecoveryEngine">RETURN TO ENGINE ACCESS</button>
+          </div>`;
+          document.getElementById('darkSkyAdmiralRecoveryEngine')?.addEventListener('click',()=>{location.replace('./index.html');});
+        }catch(err){
+          status.textContent=String(err?.message||err||'Password recovery failed.');
+          save.disabled=false;save.textContent='SAVE NEW PASSWORD';
+        }
+      });
+      window.releaseDarkSkyFirstPaint('admiral-recovery-ready');
+      shield.style.display='flex';
+    }
+
     document.addEventListener('DOMContentLoaded',()=>{
       window.__darkSkyRuntimeEntryWitness8620?.('document-dom-ready',{routeIntent:window.__darkSkyRouteIntent||'unknown'});
+      if(window.__darkSkyRouteIntent==='admiral-recovery'){
+        __dsRenderAdmiralRecoveryLanding();
+        return;
+      }
       if(window.__darkSkyRouteIntent==='engine'){
         // Engine intent is final. Quarantine stale owner markers before anything else paints.
         if(__dsLegacyOwnerHash || __dsSurface==='owner' || __dsSurface==='preview'){
@@ -153,6 +224,10 @@
     },{once:true});
 
     window.__darkSkyRouteWatchdog=setTimeout(()=>window.__darkSkyShowRecovery('hard-timeout'),12000);
+    if(__dsAdmiralRecoveryIntent){
+      document.documentElement.classList.add('admiral-recovery-preflight');
+      window.__darkSkyBootStage='admiral-recovery-preflight';
+    }
     if(__dsPreviewIntent){
       document.documentElement.classList.add('client-preview-preflight');
       window.__darkSkyClientPreviewPreflight = true;
@@ -189,6 +264,14 @@
     #darkSkyFirstPaintShield .ds-release-step.done{border-color:rgba(102,211,143,.34);color:#b9efcb;}
     #darkSkyFirstPaintShield .ds-release-step.error{border-color:rgba(255,132,108,.4);color:#ffd0c7;}
     #darkSkyFirstPaintShield .ds-release-actions button:disabled{opacity:.58;cursor:wait;}
+    #darkSkyFirstPaintShield .ds-admiral-recovery{width:min(520px,calc(100vw - 34px));align-items:stretch;text-align:left;padding:30px;}
+    #darkSkyFirstPaintShield .ds-admiral-recovery .ds-first-light-mark{align-self:center;}
+    #darkSkyFirstPaintShield .ds-admiral-recovery>strong,#darkSkyFirstPaintShield .ds-admiral-recovery>span,#darkSkyFirstPaintShield .ds-admiral-recovery>.ds-first-light-eyebrow{text-align:center;}
+    #darkSkyFirstPaintShield .ds-recovery-copy{margin:8px 0 10px;color:#b5c9ce;font-size:14px;line-height:1.5;}
+    #darkSkyFirstPaintShield .ds-recovery-field{display:grid;gap:6px;color:#d7e3e5;font-size:12px;font-weight:800;letter-spacing:.04em;margin-top:8px;}
+    #darkSkyFirstPaintShield .ds-recovery-field input{min-height:50px;border-radius:12px;border:1px solid rgba(125,190,207,.4);background:#061a21;color:#f4f8f7;padding:0 14px;font-size:17px;}
+    #darkSkyFirstPaintShield .ds-recovery-status{margin:8px 0 0;color:#9db8bf;font-size:12px;line-height:1.4;}
+    #darkSkyFirstPaintShield .ds-recovery-complete{text-align:center;align-items:center;}
     @media(max-width:560px){#darkSkyFirstPaintShield .ds-release-hold .ds-release-grid{grid-template-columns:1fr;}}
   </style>
   <link rel="manifest" href="manifest.webmanifest" />
@@ -1134,7 +1217,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.58 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.6.59 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1168,7 +1251,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.58 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.59 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1185,7 +1268,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.58 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.59 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -2047,7 +2130,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.6.58';
+    const BUILD='8.6.59';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;

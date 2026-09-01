@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.6.58",
+  "build": "8.6.59",
   "release": "Doctrine Authority Repair",
   "status": "active",
   "principles": [
