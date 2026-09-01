@@ -1,3 +1,11 @@
+## 8.6.60 — Recovery Identity Landing
+- Resolves valid Supabase callback identity before Engine routing, even when the `type=recovery` marker is absent.
+- Verifies active, non-revoked Admiral authority through RLS-scoped `fleet_global_authorities`.
+- Adds RECOVER PASSWORD to the Admiral Fleet Service Entitlements station.
+- Dark Sky recovery requests use an explicit root `?surface=admiral-recovery` callback.
+- Unknown or non-Admiral callback identities enter a safe hold; Engine is never assumed.
+- Password and access tokens remain outside Fleet/browser persistence.
+
 ## 8.6.59 — Admiral Recovery Landing
 - Detects Supabase recovery hash before Engine routing and prevents Engine first paint during recovery.
 - Adds dedicated Set New Admiral Password / Confirm Password landing.

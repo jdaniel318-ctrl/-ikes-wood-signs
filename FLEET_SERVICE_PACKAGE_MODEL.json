@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-service-package-model-v1",
-  "build": "8.6.59",
+  "build": "8.6.60",
   "status": "reserved_framework_not_exposed",
   "purpose": "Allow future Basic/Mid/Super-style bundles to resolve into the same governed capability entitlements without replacing individual service controls.",
   "package_model": {

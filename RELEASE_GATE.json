@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.59",
-  "release": "Admiral Recovery Landing",
-  "generatedAt": "2026-09-01T00:20:00-04:00",
+  "build": "8.6.60",
+  "release": "Recovery Identity Landing",
+  "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -213,14 +213,18 @@
     "admiral_entry_resets_govern_top": true,
     "admiral_recovery_precedes_engine_route": true,
     "recovery_token_not_persisted": true,
-    "recovery_password_stays_supabase_auth": true
+    "recovery_password_stays_supabase_auth": true,
+    "auth_callback_precedes_engine": true,
+    "admiral_identity_resolved_from_supabase_user": true,
+    "admiral_authority_verified_server_side": true,
+    "dark_sky_originated_recovery_redirect": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.59 catches a valid Supabase recovery session before Engine routing, provides a dedicated Admiral password-reset landing, scrubs recovery tokens after success, and preserves Engine/Captain/Owner authority separation.",
-  "candidate": "8.6.59",
+  "note": "8.6.60 resolves any valid Supabase auth callback before Engine paint, verifies active Admiral authority server-side, and originates future Admiral recovery emails from an explicit Dark Sky recovery callback.",
+  "candidate": "8.6.60",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

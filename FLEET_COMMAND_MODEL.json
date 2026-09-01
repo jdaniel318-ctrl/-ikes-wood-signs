@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.6.59",
+  "build": "8.6.60",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -111,13 +111,17 @@
   },
   "admiralRecovery": {
     "provider": "supabase-auth",
-    "routePrecedence": "before-engine-owner-preview",
-    "recoveryType": "type=recovery hash session",
-    "landing": "dedicated-set-new-password",
+    "requestOrigin": "dark-sky-admiral-entitlement-station",
+    "explicitRedirect": "root-index?surface=admiral-recovery",
+    "callbackPrecedence": "before-engine-owner-preview",
+    "identityResolution": [
+      "auth-v1-user",
+      "fleet_global_authorities-self"
+    ],
+    "requiredAuthority": "admiral-active-not-revoked",
+    "typeMarkerRequired": false,
     "passwordStorage": "supabase-auth-only",
     "tokenPersistence": "forbidden",
-    "postSuccess": "scrub-url-and-revoke-recovery-session",
-    "enginePinBypass": "forbidden",
-    "captainPinBypass": "forbidden"
+    "failureMode": "safe-hold-no-authority"
   }
 }

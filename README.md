@@ -1,3 +1,7 @@
+# Dark Sky 8.6.60 — Recovery Identity Landing
+
+Supabase auth callbacks are now resolved before Engine first paint. Dark Sky asks Supabase who the callback belongs to, then verifies the caller's active server-side Admiral authority before showing password recovery. The Admiral entitlement station now originates its own recovery emails with an explicit root recovery callback, avoiding generic Site URL routing.
+
 # Dark Sky 8.6.59 — Admiral Recovery Landing
 
 A valid Supabase `type=recovery` session now outranks Engine routing at first light. Dark Sky renders a dedicated Admiral password-reset surface, updates the password only through Supabase Auth, scrubs the recovery token from the URL, and revokes the recovery session after success. Engine, Captain, project-owner, and Fleet authority boundaries remain separate.
