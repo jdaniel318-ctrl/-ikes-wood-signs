@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-owner-recovery-model-v1",
-  "build": "8.6.62",
+  "build": "8.6.63",
   "forgot_password": [
     "email-entered",
     "supabase-recovery-email",

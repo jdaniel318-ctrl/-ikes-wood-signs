@@ -1,3 +1,7 @@
+# Dark Sky 8.6.63 — Recovery Sovereign Route
+
+Admiral recovery is now a sovereign first-light route. Both recovery-request and callback URLs are classified before any runtime loading, the full Engine/customer application snapshot is not executed behind recovery, and CSS keeps every non-recovery body surface sealed for the route's lifetime. This removes the observed Recovery → pre-login check → Ike → Engine flash chain.
+
 # Dark Sky 8.6.62 — Recovery Route Lock
 
 The main Black Flag portal now treats Admiral recovery as a protected head-owned route. Its late DOM-ready binder, general route resolver, and `requireEngineEntry` function are all barred from opening Engine Access while a recovery request or recovery callback is active. This closes the observed flash-then-Engine regression in 8.6.61.

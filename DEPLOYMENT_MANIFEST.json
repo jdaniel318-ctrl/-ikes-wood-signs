@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.6.62",
-  "version": "8.6.62",
+  "build": "8.6.63",
+  "version": "8.6.63",
   "release_name": "Recovery Identity Landing",
   "releaseName": "Recovery Identity Landing",
-  "release_seal": "recovery-route-lock-8662-2f6c8a",
+  "release_seal": "recovery-sovereign-route-8663-a41e7c",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",

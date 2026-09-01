@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.62",
+  "build": "8.6.63",
   "release": "Recovery Identity Landing",
   "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
@@ -223,8 +223,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.62 locks Admiral recovery across both head bootstrap and late main-app binding so Engine Access cannot replace the protected recovery surface after first paint.",
-  "candidate": "8.6.62",
+  "note": "8.6.63 makes recovery a sovereign head-owned route, bypasses full Engine/customer runtime execution, and seals every non-recovery surface for the route lifetime.",
+  "candidate": "8.6.63",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

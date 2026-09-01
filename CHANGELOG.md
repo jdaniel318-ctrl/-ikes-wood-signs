@@ -1,3 +1,9 @@
+## 8.6.63 — Recovery Sovereign Route
+- Classifies the recovery-request URL as protected recovery at first light.
+- Does not load or execute the full Engine/customer runtime on recovery routes.
+- Keeps all non-recovery body surfaces sealed until recovery completes or safely fails.
+- Eliminates the recovery, pre-login, Ike, and Engine multi-surface flash chain.
+
 ## 8.6.62 — Recovery Route Lock
 - Prevents the late Black Flag portal binder from replacing Admiral Recovery with Engine Access.
 - Makes `requireEngineEntry` fail closed during recovery request and callback routes.

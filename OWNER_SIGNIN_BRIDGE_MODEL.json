@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-owner-signin-bridge-v1",
-  "build": "8.6.62",
+  "build": "8.6.63",
   "provider": "supabase",
   "environment": "staging",
   "site_url": "https://jdaniel318-ctrl.github.io/-ikes-wood-signs/",

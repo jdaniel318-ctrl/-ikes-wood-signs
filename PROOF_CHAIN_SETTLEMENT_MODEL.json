@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-proof-chain-settlement-model-v1",
-  "build": "8.6.62",
+  "build": "8.6.63",
   "release": "Recovery Identity Landing",
   "mission": "Settle the existing signer lifecycle before readiness evaluates dependent proof, without manufacturing evidence.",
   "root_hold": "Proof Signer finalizer/read-back remains the single critical root when current proof cannot commit.",
