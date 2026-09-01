@@ -1,3 +1,9 @@
+## 8.6.61 — Recovery Callback Bulkhead
+- Recognizes Supabase recovery evidence in both URL query and hash forms before Engine first paint.
+- Exchanges `token_hash` recovery callbacks for an authenticated session before authority verification.
+- Quarantines PKCE-code, expired, and malformed recovery callbacks in a safe recovery hold instead of Engine Access.
+- Adds the permanent `supabase_recovery_precedes_engine` and `recovery_callback_shape_coverage` regression gates.
+
 ## 8.6.60 — Recovery Identity Landing
 - Resolves valid Supabase callback identity before Engine routing, even when the `type=recovery` marker is absent.
 - Verifies active, non-revoked Admiral authority through RLS-scoped `fleet_global_authorities`.

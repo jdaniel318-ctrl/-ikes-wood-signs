@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-admiral-release-doctrine-v2",
   "doctrineVersion": 2,
-  "build": "8.6.60",
+  "build": "8.6.61",
   "name": "Doctrine Authority Repair",
   "principles": [
     "single-build release identity",

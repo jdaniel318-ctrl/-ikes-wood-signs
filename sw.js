@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.6.60';
-const RELEASE_SEAL='recovery-identity-landing-8660-5a7c3e';
+const RELEASE_BUILD='8.6.61';
+const RELEASE_SEAL='recovery-callback-bulkhead-8661-7d91b4';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-witness-truth-v1",
-  "build": "8.6.60",
+  "build": "8.6.61",
   "release_seal": "identity-keel-8639-4d91a2",
   "purpose": "Prove which same-session diagnostic channels survive Safari startup and recovery without changing fleet behavior.",
   "channels": [

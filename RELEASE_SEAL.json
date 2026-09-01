@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.6.60",
+  "build": "8.6.61",
   "release": "Recovery Identity Landing",
-  "seal": "recovery-identity-landing-8660-5a7c3e",
+  "seal": "recovery-callback-bulkhead-8661-7d91b4",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
   "release_name": "Recovery Identity Landing",

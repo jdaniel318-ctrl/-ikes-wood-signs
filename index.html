@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.60',seal:'recovery-identity-landing-8660-5a7c3e'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.6.61',seal:'recovery-callback-bulkhead-8661-7d91b4'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -83,12 +83,18 @@
     const __dsUrl = new URL(location.href);
     const __dsHash = String(__dsUrl.hash||'');
     const __dsHashParams = new URLSearchParams(__dsHash.replace(/^#/,''));
-    const __dsRecoveryAccessToken = String(__dsHashParams.get('access_token')||'');
-    const __dsRecoveryRefreshToken = String(__dsHashParams.get('refresh_token')||'');
-    const __dsRecoveryType = String(__dsHashParams.get('type')||'').toLowerCase();
+    let __dsRecoveryAccessToken = String(__dsHashParams.get('access_token')||__dsUrl.searchParams.get('access_token')||'');
+    let __dsRecoveryRefreshToken = String(__dsHashParams.get('refresh_token')||__dsUrl.searchParams.get('refresh_token')||'');
+    const __dsRecoveryType = String(__dsHashParams.get('type')||__dsUrl.searchParams.get('type')||'').toLowerCase();
+    const __dsRecoveryTokenHash = String(__dsUrl.searchParams.get('token_hash')||__dsHashParams.get('token_hash')||'');
+    const __dsRecoveryCode = String(__dsUrl.searchParams.get('code')||'');
+    const __dsRecoveryError = String(__dsUrl.searchParams.get('error')||__dsHashParams.get('error')||'');
     const __dsAdmiralRecoverySurface = String(__dsUrl.searchParams.get('surface')||'').toLowerCase()==='admiral-recovery';
-    const __dsAuthCallbackIntent = !!__dsRecoveryAccessToken;
-    const __dsAdmiralRecoveryIntent = __dsAdmiralRecoverySurface || (__dsRecoveryType==='recovery' && __dsAuthCallbackIntent);
+    const __dsAuthCallbackIntent = !!(__dsRecoveryAccessToken||__dsRecoveryTokenHash||__dsRecoveryCode||__dsRecoveryError);
+    // Recovery evidence always outranks Engine first paint. Supabase can return an
+    // implicit hash session, a token_hash verification callback, or a PKCE code.
+    // Unsupported/expired callbacks enter a safe hold instead of falling into Engine.
+    const __dsAdmiralRecoveryIntent = __dsAdmiralRecoverySurface || __dsRecoveryType==='recovery' || __dsAuthCallbackIntent;
     const __dsSurface = String(__dsUrl.searchParams.get('surface')||'').toLowerCase();
     const __dsProject = String(__dsUrl.searchParams.get('project')||'');
     const __dsView = String(__dsUrl.searchParams.get('view')||'').toLowerCase();
@@ -146,11 +152,23 @@
     };
 
     async function __dsResolveAdmiralRecoveryIdentity(){
-      if(!__dsRecoveryAccessToken)return {ok:false,reason:'missing_recovery_token'};
       const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co';
       const SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy';
-      const headers={apikey:SUPABASE_KEY,Authorization:'Bearer '+__dsRecoveryAccessToken,'Content-Type':'application/json'};
       try{
+        if(!__dsRecoveryAccessToken&&__dsRecoveryTokenHash){
+          const verifyRes=await fetch(SUPABASE_URL+'/auth/v1/verify',{
+            method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},cache:'no-store',
+            body:JSON.stringify({token_hash:__dsRecoveryTokenHash,type:'recovery'})
+          });
+          if(!verifyRes.ok)return {ok:false,reason:'recovery_verify_'+verifyRes.status};
+          const verified=await verifyRes.json();
+          __dsRecoveryAccessToken=String(verified?.access_token||'');
+          __dsRecoveryRefreshToken=String(verified?.refresh_token||'');
+        }
+        if(!__dsRecoveryAccessToken&&__dsRecoveryCode)return {ok:false,reason:'recovery_code_requires_fresh_dark_sky_link'};
+        if(!__dsRecoveryAccessToken&&__dsRecoveryError)return {ok:false,reason:'supabase_'+__dsRecoveryError};
+        if(!__dsRecoveryAccessToken)return {ok:false,reason:'missing_recovery_session'};
+        const headers={apikey:SUPABASE_KEY,Authorization:'Bearer '+__dsRecoveryAccessToken,'Content-Type':'application/json'};
         const userRes=await fetch(SUPABASE_URL+'/auth/v1/user',{headers,cache:'no-store'});
         if(!userRes.ok)return {ok:false,reason:'user_'+userRes.status};
         const user=await userRes.json();
@@ -1286,7 +1304,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.6.60 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.6.61 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1320,7 +1338,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.6.60 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.6.61 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1337,7 +1355,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.6.60 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.6.61 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -2199,7 +2217,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.6.60';
+    const BUILD='8.6.61';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;

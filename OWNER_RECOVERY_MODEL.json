@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-owner-recovery-model-v1",
-  "build": "8.6.60",
+  "build": "8.6.61",
   "forgot_password": [
     "email-entered",
     "supabase-recovery-email",
@@ -11,5 +11,10 @@
   ],
   "ownership_unchanged": true,
   "project_id_unchanged": true,
-  "local_recovery": "testing-only-separate"
+  "local_recovery": "testing-only-separate",
+  "callback_contract": {
+    "precedence": "before-engine-first-paint",
+    "accepted": ["hash-access-token", "query-access-token", "token-hash", "pkce-code-safe-hold", "callback-error-safe-hold"],
+    "failure_surface": "recovery-safe-hold-never-engine"
+  }
 }

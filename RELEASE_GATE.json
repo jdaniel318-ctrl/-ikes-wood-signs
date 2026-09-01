@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.60",
+  "build": "8.6.61",
   "release": "Recovery Identity Landing",
   "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
@@ -223,8 +223,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.60 resolves any valid Supabase auth callback before Engine paint, verifies active Admiral authority server-side, and originates future Admiral recovery emails from an explicit Dark Sky recovery callback.",
-  "candidate": "8.6.60",
+  "note": "8.6.61 recognizes Supabase recovery query and hash callback shapes before Engine paint, exchanges token-hash callbacks, and safe-holds incomplete or expired recovery returns without exposing Engine authority.",
+  "candidate": "8.6.61",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-owner-auth-state-gate-v1",
-  "build": "8.6.60",
+  "build": "8.6.61",
   "first_paint": "securing-owner-session",
   "login_form_before_resolution": false,
   "states": [

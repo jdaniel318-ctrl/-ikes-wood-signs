@@ -1,8 +1,8 @@
 {
   "release": "Recovery Identity Landing",
   "name": "Recovery Identity Landing",
-  "build": "8.6.60",
-  "seal": "recovery-identity-landing-8660-5a7c3e",
+  "build": "8.6.61",
+  "seal": "recovery-callback-bulkhead-8661-7d91b4",
   "file_count": 85,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

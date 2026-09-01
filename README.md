@@ -1,3 +1,7 @@
+# Dark Sky 8.6.61 — Recovery Callback Bulkhead
+
+Password recovery now wins first-paint routing for every Supabase callback form Dark Sky can receive: implicit hash sessions, `token_hash` verification callbacks, query access tokens, PKCE codes, and callback errors. Token-hash callbacks are exchanged for a session before Admiral authority is checked. Incomplete, expired, or unsupported callbacks enter a dedicated recovery safe hold and can never fall through to Engine Access.
+
 # Dark Sky 8.6.60 — Recovery Identity Landing
 
 Supabase auth callbacks are now resolved before Engine first paint. Dark Sky asks Supabase who the callback belongs to, then verifies the caller's active server-side Admiral authority before showing password recovery. The Admiral entitlement station now originates its own recovery emails with an explicit root recovery callback, avoiding generic Site URL routing.

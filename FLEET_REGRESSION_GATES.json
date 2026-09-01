@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.28",
-  "release": "Generation Relay",
+  "build": "8.6.61",
+  "release": "Recovery Callback Bulkhead",
   "excluded_sources": [
     "The situation"
   ],
@@ -13,6 +13,8 @@
       "bounded_route_resolution",
       "explicit_safe_fallback",
       "mixed_build_block"
+      ,"supabase_recovery_precedes_engine"
+      ,"recovery_callback_shape_coverage"
     ],
     "watertight": [
       "authority_separation",
