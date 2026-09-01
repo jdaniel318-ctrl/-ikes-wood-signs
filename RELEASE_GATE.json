@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.6.63",
+  "build": "8.6.64",
   "release": "Recovery Identity Landing",
   "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
@@ -223,8 +223,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.6.63 makes recovery a sovereign head-owned route, bypasses full Engine/customer runtime execution, and seals every non-recovery surface for the route lifetime.",
-  "candidate": "8.6.63",
+  "note": "8.6.64 top-anchors the fixed Admiral Professional overlay and provides an explicit iPad momentum-scroll rail so expanded entitlement content cannot make the Deck header unreachable.",
+  "candidate": "8.6.64",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,

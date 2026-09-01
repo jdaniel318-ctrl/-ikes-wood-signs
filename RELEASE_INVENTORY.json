@@ -1,8 +1,8 @@
 {
   "release": "Recovery Identity Landing",
   "name": "Recovery Identity Landing",
-  "build": "8.6.63",
-  "seal": "recovery-sovereign-route-8663-a41e7c",
+  "build": "8.6.64",
+  "seal": "admiral-scroll-rail-8664-5bc291",
   "file_count": 85,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

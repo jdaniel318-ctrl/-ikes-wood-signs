@@ -1,3 +1,7 @@
+# Dark Sky 8.6.64 — Admiral Scroll Rail
+
+Professional Admiral command is now top-anchored inside its own iPad-safe vertical scroll container. Expanded Standardize content can no longer create unreachable negative overflow above Safari's scroll origin. The fixed command overlay retains authority isolation while allowing the Captain to return to the Admiral header without refresh or browser Back.
+
 # Dark Sky 8.6.63 — Recovery Sovereign Route
 
 Admiral recovery is now a sovereign first-light route. Both recovery-request and callback URLs are classified before any runtime loading, the full Engine/customer application snapshot is not executed behind recovery, and CSS keeps every non-recovery body surface sealed for the route's lifetime. This removes the observed Recovery → pre-login check → Ike → Engine flash chain.

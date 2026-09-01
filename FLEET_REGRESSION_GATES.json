@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.63",
-  "release": "Recovery Sovereign Route",
+  "build": "8.6.64",
+  "release": "Admiral Scroll Rail",
   "excluded_sources": [
     "The situation"
   ],
@@ -17,6 +17,7 @@
       ,"recovery_callback_shape_coverage"
       ,"recovery_surface_survives_late_app_bind"
       ,"recovery_route_executes_no_engine_or_customer_runtime"
+      ,"admiral_professional_top_reachable_after_entitlement_auth"
     ],
     "watertight": [
       "authority_separation",

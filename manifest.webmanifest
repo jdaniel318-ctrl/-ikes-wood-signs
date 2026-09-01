@@ -1,7 +1,7 @@
 {
   "name": "Dark Sky \u2014 Owner Bridge",
   "short_name": "Dark Sky",
-  "start_url": "./index.html?_darkSkyRelease=8.6.63&_darkSkySeal=recovery-sovereign-route-8663-a41e7c",
+  "start_url": "./index.html?_darkSkyRelease=8.6.64&_darkSkySeal=admiral-scroll-rail-8664-5bc291",
   "display": "standalone",
   "background_color": "#071419",
   "theme_color": "#071419",
@@ -14,5 +14,5 @@
     }
   ],
   "description": "Dark Sky: the Black Flag multi-project business platform with isolated project operations, owner access, deployment control, telemetry, and Captain command.",
-  "version": "8.6.63"
+  "version": "8.6.64"
 }

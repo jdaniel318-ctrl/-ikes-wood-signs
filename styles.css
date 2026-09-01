@@ -14899,6 +14899,27 @@ body.captain-modal-open #captainQuarters:not(.hidden){position:fixed!important;i
 .admiral-deck-overlay[data-mode="professional"] .admiral-continuity-card{opacity:.9!important;padding:14px 16px!important;}
 @media(max-width:1000px){.admiral-deck-overlay[data-mode="professional"] .admiral-lane-nav{grid-template-columns:repeat(4,minmax(170px,1fr))!important}.admiral-deck-overlay[data-mode="professional"] .admiral-pro-topline{grid-template-columns:1fr!important}}
 
+/* 8.6.64 Admiral Scroll Rail — iPad Professional Mode must scroll from a
+   reachable top origin. A centered fixed grid can create negative overflow in
+   Safari when Standardize expands, making the Deck header unreachable. */
+.admiral-deck-overlay[data-mode="professional"]{
+  display:block!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))!important;
+}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-shell{
+  margin:0 auto!important;
+  overflow:visible!important;
+}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-grid{
+  overflow:visible!important;
+  touch-action:pan-y!important;
+}
+
 .admiral-entitlement-station{margin-top:14px;padding:16px;border:1px solid rgba(212,175,91,.30);border-radius:12px;background:linear-gradient(180deg,rgba(13,48,55,.86),rgba(7,29,35,.96));}
 .admiral-entitlement-station header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.admiral-entitlement-station header small{color:#d4af5b;font-size:.62rem;letter-spacing:.12em;font-weight:900}.admiral-entitlement-station h5{margin:4px 0 5px;color:#f0ddb0;font:700 1.05rem Georgia,serif}.admiral-entitlement-station header p{margin:0;color:#9fb0b1;font-size:.72rem}.admiral-entitlement-station header>strong{padding:7px 9px;border:1px solid rgba(212,175,91,.35);border-radius:999px;color:#e7d39a;font-size:.62rem;letter-spacing:.08em;white-space:nowrap}
 .admiral-identity-row,.admiral-entitlement-controls{display:grid;grid-template-columns:minmax(170px,1fr) minmax(170px,1fr) auto auto;gap:10px;align-items:end}.admiral-entitlement-controls{grid-template-columns:minmax(180px,1fr) minmax(220px,1fr) minmax(300px,auto);margin-top:12px}.admiral-entitlement-station label{display:grid;gap:5px;color:#ccb779;font-size:.62rem;font-weight:900;letter-spacing:.07em}.admiral-entitlement-station input,.admiral-entitlement-station select{min-height:42px;border:1px solid rgba(112,166,175,.35);border-radius:8px;background:#061a20;color:#e9efec;padding:0 10px}.admiral-entitlement-station button{min-height:42px!important}.admiral-entitlement-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.admiral-entitlement-actions button:disabled{opacity:.42;cursor:not-allowed}.admiral-entitlement-result{margin-top:12px;padding:10px 12px;border-left:3px solid #d4af5b;background:rgba(255,255,255,.025);color:#b8c8c8;font-size:.72rem}.admiral-package-note{margin-top:12px;padding:10px 12px;border:1px dashed rgba(212,175,91,.25);border-radius:8px}.admiral-package-note b,.admiral-package-note span{display:block}.admiral-package-note b{color:#e6d39f;font-size:.72rem}.admiral-package-note span{margin-top:4px;color:#91a6a8;font-size:.68rem;line-height:1.4}

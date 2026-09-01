@@ -1,3 +1,9 @@
+## 8.6.64 — Admiral Scroll Rail
+- Replaces centered Professional Mode overlay scrolling with a top-anchored scroll origin.
+- Enables explicit iPad vertical pan and momentum scrolling on the Admiral overlay.
+- Keeps expanded Standardize and Fleet Service Entitlements content reachable in both directions.
+- Adds the permanent `admiral_professional_top_reachable_after_entitlement_auth` regression gate.
+
 ## 8.6.63 — Recovery Sovereign Route
 - Classifies the recovery-request URL as protected recovery at first light.
 - Does not load or execute the full Engine/customer runtime on recovery routes.
