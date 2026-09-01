@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-generation-relay-v1",
-  "build": "8.6.61",
+  "build": "8.6.62",
   "release": "Generation Settlement",
   "release_seal": "maintenance-rails-8628-7a41e9",
   "purpose": "Keep CORE bootstrap proof generation aligned with the committed Memory Muster generation without unnecessary generation churn.",

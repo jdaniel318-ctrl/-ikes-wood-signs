@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.6.61",
-  "release": "Recovery Callback Bulkhead",
+  "build": "8.6.62",
+  "release": "Recovery Route Lock",
   "excluded_sources": [
     "The situation"
   ],
@@ -15,6 +15,7 @@
       "mixed_build_block"
       ,"supabase_recovery_precedes_engine"
       ,"recovery_callback_shape_coverage"
+      ,"recovery_surface_survives_late_app_bind"
     ],
     "watertight": [
       "authority_separation",

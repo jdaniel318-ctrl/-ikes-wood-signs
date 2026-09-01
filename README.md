@@ -1,3 +1,7 @@
+# Dark Sky 8.6.62 — Recovery Route Lock
+
+The main Black Flag portal now treats Admiral recovery as a protected head-owned route. Its late DOM-ready binder, general route resolver, and `requireEngineEntry` function are all barred from opening Engine Access while a recovery request or recovery callback is active. This closes the observed flash-then-Engine regression in 8.6.61.
+
 # Dark Sky 8.6.61 — Recovery Callback Bulkhead
 
 Password recovery now wins first-paint routing for every Supabase callback form Dark Sky can receive: implicit hash sessions, `token_hash` verification callbacks, query access tokens, PKCE codes, and callback errors. Token-hash callbacks are exchanged for a session before Admiral authority is checked. Incomplete, expired, or unsupported callbacks enter a dedicated recovery safe hold and can never fall through to Engine Access.

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.6.61';
+  const BUILD_VERSION='8.6.62';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2608,7 +2608,7 @@
     return out||proofBarrierRead8611()?.currentProof||null;
   }
 
-  // 8.6.61 Proof Chain Settlement — readiness may ask the existing proof lifecycle
+  // 8.6.62 Proof Chain Settlement — readiness may ask the existing proof lifecycle
   // to finish settling before judging it, but it may not manufacture Dock, Intelligence,
   // roster, admission, or current-proof evidence. One bounded attempt owns the chain.
   let proofChainSettlementPromise8657=null;
@@ -14198,6 +14198,13 @@ The full order and approved media remain stored with this project.`;
   // independent and non-recursive: if this resolver cannot complete, recovery paints safely.
   window.DarkSkyResolveRouteIntent=async function(intent){
     const kind=String(intent||window.__darkSkyRouteIntent||'engine');
+    if(kind==='admiral-recovery'){
+      // The head bootstrap owns this protected surface. Main-app routing must
+      // never reinterpret it as an Engine request after first paint.
+      $('blackFlagEntryGate')?.classList.add('hidden');
+      document.body.classList.remove('boot-locked','bf-entry-open','engine-mode');
+      return true;
+    }
     if(kind==='client-preview') return routeClientPreviewFromHash();
     if(kind==='owner') return routeOwnerAccessFromHash();
     if(typeof window.requireEngineEntry==='function') return window.requireEngineEntry();
@@ -15793,6 +15800,12 @@ document.addEventListener('click', (event) => {
 
   async function requireEngineEntry(){
     try{
+      const surface=String(new URL(location.href).searchParams.get('surface')||'').toLowerCase();
+      if(window.__darkSkyRouteIntent==='admiral-recovery'||surface==='admiral-recovery'||surface==='admiral-recovery-request'){
+        const protectedGate=byId('blackFlagEntryGate');if(protectedGate)protectedGate.classList.add('hidden');
+        document.body.classList.remove('boot-locked','bf-entry-open','engine-mode');
+        return false;
+      }
       if(!String(location.hash||'').startsWith('#owner-')&&!String(location.hash||'').startsWith('#client-preview=')){
         window.__darkSkyRouteIntent='engine';
       }
@@ -15939,6 +15952,14 @@ document.addEventListener('click', (event) => {
     const startupSurface=String(startupUrl.searchParams.get('surface')||'').toLowerCase();
     const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
     const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
+    const startupRecovery=(window.__darkSkyRouteIntent==='admiral-recovery') || startupSurface==='admiral-recovery' || startupSurface==='admiral-recovery-request';
+    if(startupRecovery){
+      // Recovery is a head-owned authority surface. Bind no Engine-entry
+      // handlers and leave the recovery shield as the sole visible route.
+      const gate=byId('blackFlagEntryGate');if(gate)gate.classList.add('hidden');
+      document.body.classList.remove('boot-locked','bf-entry-open','engine-mode','project-mode');
+      return;
+    }
     if(startupOwner){
       // 8.0.7 Rangefinder: query-based Owner/Partner routes are first-class authority
       // routes. They must never traverse, paint, or fall through the Black Flag

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-owner-authority-model-v1",
-  "build": "8.6.61",
+  "build": "8.6.62",
   "release": "Fleet Ownership Charter \u2014 owner authority carried aboard",
   "authority": "project_owner",
   "scope": "exact-canonical-project-and-namespace",

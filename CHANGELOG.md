@@ -1,3 +1,8 @@
+## 8.6.62 — Recovery Route Lock
+- Prevents the late Black Flag portal binder from replacing Admiral Recovery with Engine Access.
+- Makes `requireEngineEntry` fail closed during recovery request and callback routes.
+- Keeps the recovery shield authoritative through the complete startup lifecycle.
+
 ## 8.6.61 — Recovery Callback Bulkhead
 - Recognizes Supabase recovery evidence in both URL query and hash forms before Engine first paint.
 - Exchanges `token_hash` recovery callbacks for an authenticated session before authority verification.
