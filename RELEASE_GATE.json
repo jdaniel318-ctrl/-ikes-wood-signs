@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.0",
-  "release": "Feature Freedom",
+  "build": "8.7.1",
+  "release": "Clear Helm",
   "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
     "build_version": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.0 preserves the Admiral iPad scroll rail while adding Fleet-wide, feature-level Off, Free and Paid entitlement control through the authenticated Admiral server seam.",
-  "candidate": "8.7.0",
+  "note": "8.7.1 preserves the Admiral iPad scroll rail while adding Fleet-wide, feature-level Off, Free and Paid entitlement control through the authenticated Admiral server seam.",
+  "candidate": "8.7.1",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -286,8 +286,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.0",
-    "seal": "feature-freedom-870-7d14c2",
+    "build": "8.7.1",
+    "seal": "clear-helm-871-c8e21a",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

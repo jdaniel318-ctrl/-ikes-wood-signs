@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.0",
-  "release": "Feature Freedom",
-  "seal": "feature-freedom-870-7d14c2",
+  "build": "8.7.1",
+  "release": "Clear Helm",
+  "seal": "clear-helm-871-c8e21a",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Feature Freedom",
-  "name": "Feature Freedom",
-  "releaseName": "Feature Freedom"
+  "release_name": "Clear Helm",
+  "name": "Clear Helm",
+  "releaseName": "Clear Helm"
 }

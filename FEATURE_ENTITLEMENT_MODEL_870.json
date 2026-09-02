@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-feature-entitlement-v1",
-  "build": "8.7.0",
+  "build": "8.7.1",
   "scope": "every feature for every vessel",
   "identity": ["vessel_id", "capability_id"],
   "states": {
@@ -15,6 +15,7 @@
     "Changing one vessel never changes another vessel.",
     "A commercial state change does not itself execute billing.",
     "The browser cannot grant an entitlement without authenticated Admiral authority."
+    ,"The Admiral reads the current server state before choosing a replacement state."
   ],
   "legacy_translation": {"standard": "free", "accepted_until": "8.6.64 clients are retired"}
 }

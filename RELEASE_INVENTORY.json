@@ -1,8 +1,8 @@
 {
-  "release": "Feature Freedom",
-  "name": "Feature Freedom",
-  "build": "8.7.0",
-  "seal": "feature-freedom-870-7d14c2",
+  "release": "Clear Helm",
+  "name": "Clear Helm",
+  "build": "8.7.1",
+  "seal": "clear-helm-871-c8e21a",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

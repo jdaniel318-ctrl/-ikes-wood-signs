@@ -1,3 +1,11 @@
+## 8.7.1 — Clear Helm
+- Shows the server-authoritative current state before the Admiral makes a change.
+- Presents a numbered Vessel → Feature → Setting workflow with a clearly marked current choice.
+- Replaces internal project and capability identifiers with plain-language confirmation.
+- Collapses credential controls after Admiral verification and clears the password field.
+- Keeps every feature independently Off, Free or Paid for every vessel.
+- Makes clear that Paid selects commercial terms but does not itself start billing.
+
 ## 8.7.0 — Feature Freedom
 - Makes every Fleet capability an individually governed feature for every vessel.
 - Replaces Standard with the plain commercial state Free and preserves all existing entitlements.

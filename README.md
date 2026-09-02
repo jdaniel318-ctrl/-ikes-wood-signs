@@ -1,3 +1,7 @@
+# Dark Sky 8.7.1 — Clear Helm
+
+The Admiral feature station now reads the selected vessel-feature state before any change, presents one numbered Vessel → Feature → Setting flow, marks the current Off/Free/Paid choice, and confirms changes in plain language. Verified identity controls collapse after authentication, and choosing Paid still does not itself start billing.
+
 # Dark Sky 8.7.0 — Feature Freedom
 
 Every Fleet feature can now be independently Off, Free or Paid for every vessel. Off controls access; Free/Paid controls commercial terms; Sea Trial/Live remains a separate safety state. The server-governed Admiral seam and exact-vessel isolation remain intact.
