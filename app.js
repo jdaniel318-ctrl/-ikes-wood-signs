@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.7.4';
+  const BUILD_VERSION='8.7.5';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2608,7 +2608,7 @@
     return out||proofBarrierRead8611()?.currentProof||null;
   }
 
-  // 8.7.4 Proof Chain Settlement — readiness may ask the existing proof lifecycle
+  // 8.7.5 Proof Chain Settlement — readiness may ask the existing proof lifecycle
   // to finish settling before judging it, but it may not manufacture Dock, Intelligence,
   // roster, admission, or current-proof evidence. One bounded attempt owns the chain.
   let proofChainSettlementPromise8657=null;
@@ -6113,9 +6113,10 @@
           </div>
           <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel routes">
             <div class="fleet-dock-watch-actions">
+              <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="primary-btn small fleet-watch-btn project-control-watch"><span>PROJECT</span><strong>CONTROL</strong></button>
               <button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small fleet-watch-btn customer-watch"><span>CUSTOMER</span><strong>EXPERIENCE</strong></button>
               <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small owner-access-action fleet-watch-btn owner-watch"><span>OWNER / PARTNER</span><strong>${ownerEnabled?(p.ownerAccess?.status==='active'?'CONTROL CENTER':'OWNER ENTRANCE'):'SET UP ACCESS'}</strong></button>
-              <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="${s.commissioned?'secondary-btn':'primary-btn'} small fleet-watch-btn captain-watch"><span>CAPTAIN</span><strong>DOCK</strong></button>
+              <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn small fleet-watch-btn captain-watch"><span>READINESS</span><strong>COMMISSIONING</strong></button>
             </div>
             <div class="fleet-dock-test-route"><span>TEST MODE</span><button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN TEST / PREVIEW</button></div>
           </div>
@@ -10382,14 +10383,15 @@
     if($('engineProfitDelta')) $('engineProfitDelta').textContent=configured?'Revenue less configured costs':'Configure operating costs';
     if($('engineCostDelta')) $('engineCostDelta').textContent=configured?'Configured operating model':'Configure cost model';
 
-    let usageMB=0,quotaMB=0;
+    let originUsageMB=0,quotaMB=0,usageMB=0,managedMeasured=false;
     try{
       const est=await navigator.storage?.estimate?.();
-      usageMB=Number(est?.usage||0)/1024/1024;
+      originUsageMB=Number(est?.usage||0)/1024/1024;
       quotaMB=Number(est?.quota||0)/1024/1024;
     }catch(_){}
-    if($('engineUsageNow')) $('engineUsageNow').textContent=usageMB?`${usageMB.toFixed(1)} MB`:'—';
-    if($('engineUsageDelta')) $('engineUsageDelta').textContent=quotaMB?`${((usageMB/quotaMB)*100).toFixed(2)}% of ${quotaMB.toFixed(0)} MB available`:'Storage used';
+    try{const sounding=JSON.parse(localStorage.getItem('bf.v4.storage.lastSounding')||'null');if(Number.isFinite(Number(sounding?.knownBytes))){usageMB=Number(sounding.knownBytes)/1024/1024;managedMeasured=true;}}catch(_){}
+    if($('engineUsageNow')) $('engineUsageNow').textContent=managedMeasured?`${usageMB.toFixed(1)} MB`:'MEASURE';
+    if($('engineUsageDelta')) $('engineUsageDelta').textContent=managedMeasured?`Dark Sky measured • ${originUsageMB.toFixed(1)} MB Safari origin`:`${originUsageMB.toFixed(1)} MB Safari origin • measure in More Systems`;
 
     const history=readEngineTelemetryHistory();
     const now=Date.now();
@@ -10416,6 +10418,7 @@
       cost30:Number(totalCost.toFixed(2)),
       profit30:Number(totalProfit.toFixed(2)),
       usageMB:Number(usageMB.toFixed(3)),
+      originUsageMB:Number(originUsageMB.toFixed(3)),
       orders30:orderCounts.reduce((a,b)=>a+b,0)
     });
   }
@@ -10664,9 +10667,12 @@
     prepareEngineBoundary();
     window.pendingEngineReturnProjectId=null;
     document.body.classList.remove('boot-locked','project-mode');
+    document.body.classList.remove('engine-systems-expanded','engine-dock-open');
     document.body.classList.add('engine-mode');
     $('blackFlagEntryGate')?.classList.add('hidden');
     $('enginePanel').classList.remove('hidden');
+    const systemsToggle=$('clearDeckSystemsToggle');if(systemsToggle){systemsToggle.textContent='MORE SYSTEMS';systemsToggle.setAttribute('aria-expanded','false');}
+    const clearDeckStatus=$('clearDeckStatus');if(clearDeckStatus)clearDeckStatus.textContent='Clear Deck ready. Choose one command.';
     requestAnimationFrame(()=>verifyLayerIsolation('engine'));
     populateEngineSettings();
     await refreshEngineDiagnostics();
@@ -14282,8 +14288,9 @@ The full order and approved media remain stored with this project.`;
     const stillOpen=document.querySelector('#projectEngineControl:not(.hidden),#engineConfigurationDock:not(.hidden)');
     if(!stillOpen){
       document.body.classList.remove('engine-workspace-open');
-      const restoreY=engineWorkspaceReturnScrollY||0;
-      requestAnimationFrame(()=>window.scrollTo({top:restoreY,left:0,behavior:'instant'}));
+      document.body.classList.remove('engine-dock-open');
+      const status=$('clearDeckStatus');if(status)status.textContent='Returned to Clear Deck. Choose one command.';
+      requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
     }
   }
   function openEngineConfiguration(target='top'){
@@ -14586,10 +14593,11 @@ The full order and approved media remain stored with this project.`;
         if(!target)throw new Error('The project could not be resolved from the fleet registry.');
         await continueProjectLaunch(target);
       }else if(action==='projects'){
+        document.body.classList.add('engine-dock-open');
         const section=$('fleetCommissioningDock');
         section?.scrollIntoView({behavior:'smooth',block:'start'});
         pulseCommandTarget(section);
-        setFirstMateActionStatus('Fleet Dock is highlighted. Choose the vessel, then Customer, Owner / Partner, Test / Preview, or Captain Dock.','success');
+        setFirstMateActionStatus('Fleet Dock is highlighted. Choose Project Control for daily work or Commissioning for readiness proof.','success');
       }else{
         throw new Error('This recommendation does not have a valid command route.');
       }
@@ -14714,6 +14722,8 @@ The full order and approved media remain stored with this project.`;
 
         if(target.id==='closeFleetCommissioning'){
           document.getElementById('fleetCommissioningModal')?.classList.add('hidden');
+          document.body.classList.remove('engine-dock-open');
+          requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
           return;
         }
 
@@ -14773,8 +14783,18 @@ The full order and approved media remain stored with this project.`;
     // Navigation that must survive every project/template/control-center refit.
     // Capture phase intentionally owns these routes before feature-level handlers.
     document.addEventListener('click',event=>{
-      const target=event.target?.closest?.('#projectTabs [data-project-tab],#projectTabs [data-project-group],#closeProjectEngineControl,#returnToEngineBtn,#engineConfigureBtn,#engineConfigurationCloseBtn,[data-full-sail="configure"]');
+      const target=event.target?.closest?.('#projectTabs [data-project-tab],#projectTabs [data-project-group],#closeProjectEngineControl,#returnToEngineBtn,#engineConfigureBtn,#engineConfigurationCloseBtn,[data-full-sail="configure"],[data-clear-deck-command]');
       if(!target)return;
+
+      if(target.matches('[data-clear-deck-command]')){
+        event.preventDefault();event.stopPropagation();const command=target.dataset.clearDeckCommand;const status=$('clearDeckStatus');
+        const reveal=(id,message)=>{const section=$(id);if(!section)return;requestAnimationFrame(()=>{section.scrollIntoView({behavior:'smooth',block:'start'});section.classList.add('command-target-pulse');setTimeout(()=>section.classList.remove('command-target-pulse'),1800);});if(status)status.textContent=message;};
+        if(command==='projects'){document.body.classList.add('engine-dock-open');reveal('fleetCommissioningDock','Fleet Dock opened. Project Control is the daily operating route; Commissioning is readiness proof.');return;}
+        if(command==='fleet'){reveal('engineFleetHealth','Fleet picture opened. Choose a vessel to go directly to Project Control.');return;}
+        if(command==='watch'){Promise.resolve(renderFirstMateWatch()).finally(()=>reveal('firstMateWatch','Fleet Watch refreshed. No vessel state was changed.'));return;}
+        if(command==='configure'){openEngineConfiguration('top');return;}
+        if(command==='systems'){const opening=!document.body.classList.contains('engine-systems-expanded');document.body.classList.toggle('engine-systems-expanded',opening);target.setAttribute('aria-expanded',opening?'true':'false');target.textContent=opening?'HIDE MORE SYSTEMS':'MORE SYSTEMS';if(status)status.textContent=opening?'More Systems opened: maintenance, release proof, Fleet Intelligence, learning, and engineering evidence are available below.':'More Systems closed. Daily command remains forward.';if(!opening)requestAnimationFrame(()=>$('clearDeckLaunchpad')?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
+      }
 
       if(target.matches('#projectTabs [data-project-group]')){
         event.preventDefault();

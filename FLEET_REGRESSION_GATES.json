@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.4",
-  "release": "Command Light",
+  "build": "8.7.5",
+  "release": "Clear Deck",
   "excluded_sources": [
     "The situation"
   ],
@@ -112,6 +112,16 @@
       "staging_is_not_adoption",
       "staging_readback_verification",
       "staging_refresh_persistence"
+    ],
+    "clear_deck": [
+      "daily_engine_commands_visible_before_deep_systems",
+      "more_systems_progressive_disclosure",
+      "fleet_dock_direct_project_control_per_vessel",
+      "commissioning_distinct_from_project_control",
+      "workspace_return_restores_engine_top",
+      "commissioning_return_restores_engine_top",
+      "dark_sky_bytes_distinct_from_browser_origin",
+      "admiral_sticky_header_has_no_top_showthrough"
     ],
     "quarterdeck": [
       "single_top_level_folder",

@@ -1,13 +1,11 @@
-## 8.7.4 — Command Light
-- Rebuilds Professional Admiral Mode around a clear Command Brief and See → Decide → Record operating map.
-- Uses a large left-side command rail on landscape iPad and collapses safely on narrower screens.
-- Enlarges labels, controls, current-state readback and durable confirmation language.
-- Clears every stale CURRENT highlight immediately when the Admiral signs out.
-- Adds a scoped, authenticated vessel feature-state reader protected by existing exact-vessel RLS.
-- Makes Customer & Order Insight obey Off, Free or Paid for the selected vessel.
-- Shows Free at $0 and Paid active terms inside the vessel view without treating either as a billing event.
-- Fails closed when feature authority cannot be verified and never opens another vessel's data.
-- Preserves 8.7.3 parallel verified startup and exact-seal cache reuse.
+## 8.7.5 — Clear Deck
+- Adds a first-class Engine command launchpad with Operate Projects, Review Fleet, and Fleet Watch as the three primary paths.
+- Moves maintenance, release proof, Fleet Intelligence, Fleet Learning, and advanced engineering behind an explicit More Systems control.
+- Gives every Fleet Dock vessel a direct Project Control button for daily operating work.
+- Renames the former Captain Dock route to Commissioning so readiness proof cannot be confused with Project Control.
+- Returns Project Control and Commissioning to a deterministic Engine top origin instead of a preserved deep scroll position.
+- Separates measured Dark Sky data from Safari's whole-origin storage estimate in the Engine performance card.
+- Compacts the performance deck, seals the Admiral header edge, and preserves authenticated exact-vessel entitlements.
 
 ## 8.7.0 — Feature Freedom
 - Makes every Fleet capability an individually governed feature for every vessel.

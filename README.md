@@ -1,6 +1,6 @@
-# Dark Sky 8.7.4 — Command Light
+# Dark Sky 8.7.5 — Clear Deck
 
-Command Light turns the Admiral's professional area into a clearer operating deck: a command brief, a See → Decide → Record map, a large landscape command rail, and more legible vessel feature controls. Customer & Order Insight now obeys the selected vessel's server-governed Off, Free or Paid setting. Exact-vessel RLS remains authoritative, unverified access fails closed, and the faster sealed-runtime startup from 8.7.3 remains intact.
+Clear Deck refits the Engine around the work a Captain actually performs. A new command launchpad puts Operate Projects, Review Fleet, and Fleet Watch first; deeper maintenance, release evidence, Fleet Intelligence, learning, and engineering systems open deliberately through More Systems. Every Fleet Dock vessel now has a direct Project Control route, while readiness proof is plainly named Commissioning. Returning from a workstation or commissioning restores the Engine at a deterministic top origin. Storage telemetry now distinguishes measured Dark Sky data from Safari's whole-origin estimate, and the Admiral's sticky command header no longer exposes scrolled content above it. The authenticated exact-vessel entitlement seam and all 8.7.4 authority boundaries remain intact.
 
 # Dark Sky 8.7.0 — Feature Freedom
 

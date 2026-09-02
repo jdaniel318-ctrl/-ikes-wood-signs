@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.4",
-  "release": "Command Light",
-  "seal": "command-light-874-c17a9e",
+  "build": "8.7.5",
+  "release": "Clear Deck",
+  "seal": "clear-deck-875-b64f2c",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Command Light",
-  "name": "Command Light",
-  "releaseName": "Command Light"
+  "release_name": "Clear Deck",
+  "name": "Clear Deck",
+  "releaseName": "Clear Deck"
 }

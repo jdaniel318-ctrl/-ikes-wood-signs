@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.4",
-  "release": "Command Light",
+  "build": "8.7.5",
+  "release": "Clear Deck",
   "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
     "build_version": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.4 rebuilds the professional Admiral command surface for iPad readability and enforces Customer & Order Insight through an authenticated exact-vessel entitlement read. Unverified access fails closed while 8.7.3 fast startup remains intact.",
-  "candidate": "8.7.4",
+  "note": "8.7.5 refits the Engine around a clear daily command launchpad, direct per-vessel Project Control, explicit Commissioning, deliberate More Systems disclosure, deterministic returns, truthful storage labeling, and a sealed Admiral sticky header. The authenticated exact-vessel entitlement read remains intact.",
+  "candidate": "8.7.5",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -241,6 +241,13 @@
     "keelbook_regression_library": true,
     "explicit_source_exclusion": true,
     "admiral_command_light_layout": true,
+    "engine_clear_deck_launchpad": true,
+    "engine_more_systems_progressive_disclosure": true,
+    "fleet_dock_direct_project_control": true,
+    "commissioning_route_named_explicitly": true,
+    "engine_return_top_deterministic": true,
+    "dark_sky_storage_separated_from_browser_origin": true,
+    "admiral_sticky_header_top_sealed": true,
     "signed_out_current_state_cleared": true,
     "customer_insight_entitlement_enforced": true
   },
@@ -292,8 +299,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.4",
-    "seal": "command-light-874-c17a9e",
+    "build": "8.7.5",
+    "seal": "clear-deck-875-b64f2c",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

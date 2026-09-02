@@ -1,8 +1,8 @@
 {
-  "release": "Command Light",
-  "name": "Command Light",
-  "build": "8.7.4",
-  "seal": "command-light-874-c17a9e",
+  "release": "Clear Deck",
+  "name": "Clear Deck",
+  "build": "8.7.5",
+  "seal": "clear-deck-875-b64f2c",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
