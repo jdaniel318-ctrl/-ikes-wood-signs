@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.3",
-  "release": "Fair Wind",
+  "build": "8.7.4",
+  "release": "Command Light",
   "excluded_sources": [
     "The situation"
   ],
@@ -18,6 +18,7 @@
       ,"recovery_surface_survives_late_app_bind"
       ,"recovery_route_executes_no_engine_or_customer_runtime"
       ,"admiral_professional_top_reachable_after_entitlement_auth"
+      ,"admiral_signed_out_clears_current_entitlement_highlight"
     ],
     "watertight": [
       "authority_separation",
@@ -25,6 +26,8 @@
       "project_id_isolation",
       "owner_not_engine_auth",
       "preview_does_not_widen_authority"
+      ,"vessel_feature_read_requires_exact_authenticated_scope"
+      ,"unverified_feature_state_fails_closed"
     ],
     "true_helm": [
       "explicit_in_app_navigation",

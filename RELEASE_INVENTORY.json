@@ -1,8 +1,8 @@
 {
-  "release": "Fair Wind",
-  "name": "Fair Wind",
-  "build": "8.7.3",
-  "seal": "fair-wind-873-f43b7d",
+  "release": "Command Light",
+  "name": "Command Light",
+  "build": "8.7.4",
+  "seal": "command-light-874-c17a9e",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

@@ -1,14 +1,13 @@
-## 8.7.3 — Fair Wind
-- Replaces fourteen sequential startup requests with one parallel verified-release fetch group.
-- Allows repeat entry to reuse files carrying the exact immutable 8.7.3 release seal.
-- Keeps clean-retry and automatic recovery on forced fresh network verification.
-- Preserves ordered runtime execution after all required release files pass identity checks.
-- Shows the server-authoritative current state before the Admiral makes a change.
-- Presents a numbered Vessel → Feature → Setting workflow with a clearly marked current choice.
-- Replaces internal project and capability identifiers with plain-language confirmation.
-- Collapses credential controls after Admiral verification and clears the password field.
-- Keeps every feature independently Off, Free or Paid for every vessel.
-- Makes clear that Paid selects commercial terms but does not itself start billing.
+## 8.7.4 — Command Light
+- Rebuilds Professional Admiral Mode around a clear Command Brief and See → Decide → Record operating map.
+- Uses a large left-side command rail on landscape iPad and collapses safely on narrower screens.
+- Enlarges labels, controls, current-state readback and durable confirmation language.
+- Clears every stale CURRENT highlight immediately when the Admiral signs out.
+- Adds a scoped, authenticated vessel feature-state reader protected by existing exact-vessel RLS.
+- Makes Customer & Order Insight obey Off, Free or Paid for the selected vessel.
+- Shows Free at $0 and Paid active terms inside the vessel view without treating either as a billing event.
+- Fails closed when feature authority cannot be verified and never opens another vessel's data.
+- Preserves 8.7.3 parallel verified startup and exact-seal cache reuse.
 
 ## 8.7.0 — Feature Freedom
 - Makes every Fleet capability an individually governed feature for every vessel.

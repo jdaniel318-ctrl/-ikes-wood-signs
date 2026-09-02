@@ -1,6 +1,6 @@
-# Dark Sky 8.7.3 — Fair Wind
+# Dark Sky 8.7.4 — Command Light
 
-Fair Wind cuts sealed-runtime startup latency by fetching all required release files in parallel and reusing only bytes addressed by the exact immutable release seal. A recovery verification still forces fresh network reads. It preserves the Clear Helm Admiral workflow: live current-state readback, numbered Vessel → Feature → Setting controls, plain-language results, and independent Off/Free/Paid authority.
+Command Light turns the Admiral's professional area into a clearer operating deck: a command brief, a See → Decide → Record map, a large landscape command rail, and more legible vessel feature controls. Customer & Order Insight now obeys the selected vessel's server-governed Off, Free or Paid setting. Exact-vessel RLS remains authoritative, unverified access fails closed, and the faster sealed-runtime startup from 8.7.3 remains intact.
 
 # Dark Sky 8.7.0 — Feature Freedom
 

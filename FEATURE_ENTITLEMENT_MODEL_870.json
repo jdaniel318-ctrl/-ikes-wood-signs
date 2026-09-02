@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-feature-entitlement-v1",
-  "build": "8.7.3",
+  "build": "8.7.4",
   "scope": "every feature for every vessel",
   "identity": ["vessel_id", "capability_id"],
   "states": {
@@ -14,8 +14,11 @@
     "Changing Free to Paid preserves the vessel-feature identity and records.",
     "Changing one vessel never changes another vessel.",
     "A commercial state change does not itself execute billing.",
-    "The browser cannot grant an entitlement without authenticated Admiral authority."
-    ,"The Admiral reads the current server state before choosing a replacement state."
+    "The browser cannot grant an entitlement without authenticated Admiral authority.",
+    "The Admiral reads the current server state before choosing a replacement state.",
+    "Vessel feature delivery reads through authenticated exact-vessel RLS authority.",
+    "An unverified vessel feature state fails closed.",
+    "Off, Free and Paid change delivery and commercial display without starting billing."
   ],
   "legacy_translation": {"standard": "free", "accepted_until": "8.6.64 clients are retired"}
 }

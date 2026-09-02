@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.7.3';
+  const BUILD_VERSION='8.7.4';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2608,7 +2608,7 @@
     return out||proofBarrierRead8611()?.currentProof||null;
   }
 
-  // 8.7.3 Proof Chain Settlement — readiness may ask the existing proof lifecycle
+  // 8.7.4 Proof Chain Settlement — readiness may ask the existing proof lifecycle
   // to finish settling before judging it, but it may not manufacture Dock, Intelligence,
   // roster, admission, or current-proof evidence. One bounded attempt owns the chain.
   let proofChainSettlementPromise8657=null;
@@ -6658,6 +6658,17 @@
   async function renderProjectAnalytics(p){
     const box=$('projectAnalyticsLive');
     if(!box || engineActiveProjectId!==p.id)return;
+    const entitlement=await readProjectFeatureState(p.id,'fleet.customer-insight');
+    if(engineActiveProjectId!==p.id)return;
+    if(!entitlement.verified || !entitlement.enabled){
+      const title=entitlement.verified?'Customer & Order Insight is Off':'Identity required';
+      const copy=entitlement.verified
+        ?`The Admiral has not enabled Customer & Order Insight for ${p.name}. No project analytics were opened.`
+        :`Dark Sky could not verify this vessel's feature setting. Authenticate the Admiral in the Command Deck, then return here.`;
+      box.innerHTML=`<section class="pc-feature-gate" data-state="${entitlement.verified?'off':'unverified'}"><div><span>FLEET FEATURE • CUSTOMER & ORDER INSIGHT</span><h4>${escapeHtml(title)}</h4><p>${escapeHtml(copy)}</p></div><button data-project-jump="overview" type="button">RETURN TO OVERVIEW</button></section>`;
+      bindProjectControlJumpLinks(p);
+      return;
+    }
     const s=await projectControlSnapshot(p);
     if(engineActiveProjectId!==p.id)return;
     const buckets=monthlyProjectBuckets(s.orders,6);
@@ -6665,6 +6676,7 @@
     const statusCounts={};
     s.orders.forEach(o=>{const st=canonicalOrderStatus(o.status);statusCounts[st]=(statusCounts[st]||0)+1;});
     box.innerHTML=`
+      <section class="pc-feature-state" data-state="${escapeHtml(entitlement.current_state)}"><span>FLEET FEATURE</span><strong>CUSTOMER & ORDER INSIGHT</strong><b>${entitlement.current_state==='paid'?'PAID • ACTIVE TERMS':'FREE • ACTIVE AT $0'}</b><small>Applies only to ${escapeHtml(p.name)}.</small></section>
       <section class="pc-analytics-head"><div><span>PROJECT ANALYTICS</span><h4>Operational signals we can prove.</h4><p>These numbers come from project-scoped orders, customers, ledgers and deployments already stored by Dark Sky. Visitor and conversion telemetry are intentionally not invented.</p></div><button data-project-jump="overview" type="button">← OVERVIEW</button></section>
       <section class="pc-kpi-grid">
         ${projectControlKpi('Orders · all time',s.orders.length,`${s.completed.length} completed`)}
@@ -6681,6 +6693,19 @@
         <article class="pc-command-panel"><header><div><span>TELEMETRY BOUNDARY</span><h4>What Dark Sky does not claim yet</h4></div></header><div class="pc-telemetry-boundary"><p><b>Visitors:</b> not instrumented</p><p><b>Conversion rate:</b> not instrumented</p><p><b>Time on page:</b> not instrumented</p><p><b>Campaign attribution:</b> not instrumented</p><small>These become available only after real deployment telemetry is installed.</small></div></article>
       </section>`;
     bindProjectControlJumpLinks(p);
+  }
+
+  async function readProjectFeatureState(projectId,capabilityKey){
+    const fallback={verified:false,enabled:false,current_state:'off'};
+    try{
+      const cfg=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
+      const session=JSON.parse(sessionStorage.getItem('darkSkySupabaseAdmiralSessionV1')||'null');
+      if(!cfg?.url||!cfg?.publishableKey||!session?.access_token)return fallback;
+      const response=await fetch(cfg.url+'/rest/v1/rpc/get_vessel_feature_state',{method:'POST',headers:{apikey:cfg.publishableKey,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({p_project_id:projectId,p_capability_key:capabilityKey})});
+      if(!response.ok)return fallback;
+      const data=await response.json();
+      return {verified:true,enabled:data?.enabled===true,current_state:['free','paid'].includes(data?.current_state)?data.current_state:'off'};
+    }catch(_){return fallback;}
   }
 
   function bindProjectControlJumpLinks(p){

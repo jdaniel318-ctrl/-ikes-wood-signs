@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.3",
-  "release": "Fair Wind",
-  "seal": "fair-wind-873-f43b7d",
+  "build": "8.7.4",
+  "release": "Command Light",
+  "seal": "command-light-874-c17a9e",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fair Wind",
-  "name": "Fair Wind",
-  "releaseName": "Fair Wind"
+  "release_name": "Command Light",
+  "name": "Command Light",
+  "releaseName": "Command Light"
 }

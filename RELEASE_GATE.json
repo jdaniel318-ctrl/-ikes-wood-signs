@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.3",
-  "release": "Fair Wind",
+  "build": "8.7.4",
+  "release": "Command Light",
   "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
     "build_version": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.3 parallelizes release downloads and safely reuses only exact-seal bytes, targeting at least 50% faster entry while preserving the Admiral iPad scroll rail and authenticated feature authority.",
-  "candidate": "8.7.3",
+  "note": "8.7.4 rebuilds the professional Admiral command surface for iPad readability and enforces Customer & Order Insight through an authenticated exact-vessel entitlement read. Unverified access fails closed while 8.7.3 fast startup remains intact.",
+  "candidate": "8.7.4",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -239,14 +239,20 @@
     "service_contract_foundation": true,
     "vendor_capacity_routing_foundation": true,
     "keelbook_regression_library": true,
-    "explicit_source_exclusion": true
+    "explicit_source_exclusion": true,
+    "admiral_command_light_layout": true,
+    "signed_out_current_state_cleared": true,
+    "customer_insight_entitlement_enforced": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
     "ikes_back_stamp_ignored_for_layout": true,
     "ikes_full_face_optical_placement": true,
     "relevant_project_history_as_regression_evidence": true,
-    "the_situation_not_fleet_evidence": true
+    "the_situation_not_fleet_evidence": true,
+    "exact_vessel_feature_read_uses_rls": true,
+    "anonymous_entitlement_read_forbidden": true,
+    "unverified_feature_delivery_fails_closed": true
   },
   "release_identity_repair": {
     "status": "PASS",
@@ -286,8 +292,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.3",
-    "seal": "fair-wind-873-f43b7d",
+    "build": "8.7.4",
+    "seal": "command-light-874-c17a9e",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
