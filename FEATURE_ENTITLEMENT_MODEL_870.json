@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-feature-entitlement-v1",
-  "build": "8.7.8",
+  "build": "8.7.9",
   "scope": "every feature for every vessel",
   "identity": ["vessel_id", "capability_id"],
   "states": {

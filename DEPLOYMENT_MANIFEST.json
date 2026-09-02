@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.7.8",
-  "version": "8.7.8",
-  "release_name": "True Touch",
-  "releaseName": "True Touch",
-  "release_seal": "true-touch-878-f3b6d2",
+  "build": "8.7.9",
+  "version": "8.7.9",
+  "release_name": "Clean Signal",
+  "releaseName": "Clean Signal",
+  "release_seal": "clean-signal-879-c8a41e",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -84,8 +84,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "ipad-steady-command-and-admiral-touch-stability",
-  "release_note": "Stable Project Control hierarchy, single-path Admiral entitlement controls, deterministic close behavior, and direct no-flash Admiral routing while exact-vessel Supabase authority remains enforced.",
+  "release_focus": "admiral-hidden-state-and-ipad-touch-stability",
+  "release_note": "Signed-out Admiral actions remain semantically hidden until server verification succeeds while True Touch geometry, deterministic routing, and exact-vessel Supabase authority remain enforced.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

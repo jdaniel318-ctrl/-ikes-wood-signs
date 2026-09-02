@@ -1,6 +1,6 @@
-# Dark Sky 8.7.8 — True Touch
+# Dark Sky 8.7.9 — Clean Signal
 
-True Touch repairs the two release blockers found during live iPad use. Admiral Professional Mode now uses one untransformed scroll plane, keeps fields and buttons at their visible touch coordinates, and never auto-scrolls a command target during a tap. Deployment migration now quarantines foreign project identities before normalization, so a Becca record cannot be relabeled or rendered inside Ike. Supabase password authentication and exact-vessel authority remain server governed.
+Clean Signal preserves True Touch's iPad geometry and vessel-isolation repairs while restoring the identity station's exact signed-out presentation. The Sign Out action stays absent until server verification succeeds; hidden state now outranks the shared touch-button display rule. Supabase password authentication and exact-vessel authority remain unchanged.
 
 # Dark Sky 8.7.0 — Feature Freedom
 

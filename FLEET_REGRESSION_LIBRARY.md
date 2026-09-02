@@ -1,4 +1,4 @@
-# 8.7.8 True Touch Addendum
+# 8.7.9 Clean Signal Addendum
 
 Protected lessons from live iPad operation:
 - One visible control owns one touch handler. Delegated and direct handlers may not compete for the same action.
@@ -11,6 +11,7 @@ Protected lessons from live iPad operation:
 - The visible bounds of every credential field and submit button must be the actual hit-test bounds.
 - Deployment migration validates original ownership before normalization; it never rewrites a foreign identity into the active vessel.
 - Foreign deployment evidence is quarantined and excluded from operating views without deleting the source vessel's records.
+- Shared touch-control display rules may not override semantic hidden state; identity exit actions appear only after verified identity exists.
 
 ---
 

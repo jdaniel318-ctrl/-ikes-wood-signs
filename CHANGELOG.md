@@ -1,3 +1,8 @@
+## 8.7.9 — Clean Signal
+- Keeps Sign Out Identity hidden until the server verifies active Admiral authority.
+- Makes semantic hidden state outrank the shared 56px iPad touch-button display rule.
+- Preserves the True Touch single-scroll-plane, exact hit geometry and foreign-deployment quarantine repairs.
+
 ## 8.7.8 — True Touch
 - Replaces the layered Professional Admiral scroll geometry with one iPad-safe scroll plane.
 - Removes automatic lane and entitlement-panel scrolling that could displace Safari hit targets during a tap.

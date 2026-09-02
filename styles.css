@@ -15051,6 +15051,8 @@ body.engine-workspace-open #projectEngineControl .project-engine-head{position:r
 .admiral-identity-row button{z-index:4!important;display:flex!important;align-items:center!important;justify-content:center!important;min-height:56px!important}
 #admiralIdentitySignIn{background:#123b47!important;border-color:#d8b65c!important;color:#f1dc9c!important}
 #admiralIdentitySignIn:active{background:#195267!important}
+/* 8.7.9 Clean Signal — semantic identity state outranks shared touch presentation. */
+.admiral-identity-row button.hidden{display:none!important;pointer-events:none!important}
 .admiral-entitlement-station{scroll-margin-top:0!important}
 @media(min-width:821px) and (max-width:1180px){
   .admiral-deck-overlay[data-mode="professional"]{padding:0 18px 24px!important}

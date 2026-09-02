@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.8",
-  "release": "True Touch",
+  "build": "8.7.9",
+  "release": "Clean Signal",
   "excluded_sources": [
     "The situation"
   ],
@@ -62,6 +62,7 @@
       ,"admiral_professional_single_scroll_plane"
       ,"admiral_identity_visible_bounds_equal_hit_bounds"
       ,"admiral_identity_submit_one_tap_feedback"
+      ,"admiral_sign_out_hidden_until_identity_verified"
     ],
     "clean_wake": [
       "no_platform_chrome_on_customer",

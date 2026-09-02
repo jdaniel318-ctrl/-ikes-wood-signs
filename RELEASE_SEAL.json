@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.8",
-  "release": "True Touch",
-  "seal": "true-touch-878-f3b6d2",
+  "build": "8.7.9",
+  "release": "Clean Signal",
+  "seal": "clean-signal-879-c8a41e",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "True Touch",
-  "name": "True Touch",
-  "releaseName": "True Touch"
+  "release_name": "Clean Signal",
+  "name": "Clean Signal",
+  "releaseName": "Clean Signal"
 }

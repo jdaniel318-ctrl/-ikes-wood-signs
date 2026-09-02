@@ -1,7 +1,7 @@
-/* Dark Sky 8.7.8 — True Touch: professional contrast and direct authenticated authority routes. */
+/* Dark Sky 8.7.9 — Clean Signal: verified identity state and direct authenticated authority routes. */
 (function(g){
 'use strict';
-const BUILD='8.7.8';
+const BUILD='8.7.9';
 const ROLE={ADMIRAL:'admiral',CAPTAIN:'captain',ENGINE_ADMIN:'engine_admin',PROJECT_OWNER:'project_owner',PROJECT_STAFF:'project_staff',DEVICE:'device',CUSTOMER:'customer',CLIENT_PREVIEW:'client_preview'};
 const ACTION={PLATFORM_GOVERN:'platform.govern',VESSEL_COMMISSION:'vessel.commission',PROJECT_CONFIGURE:'project.configure',PROJECT_PUBLISH:'project.publish',PROJECT_VIEW:'project.view',OWNER_MANAGE:'owner.manage',ORDERS_READ:'orders.read',ORDERS_WRITE:'orders.write',CUSTOMERS_READ:'customers.read',PRODUCTS_WRITE:'products.write',PRICING_WRITE:'pricing.write',BRANDING_WRITE:'branding.write',DEPLOYMENTS_WRITE:'deployments.write',STAFF_WRITE:'staff.write',REPORTING_READ:'reporting.read',NOTIFICATIONS_WRITE:'notifications.write',CUSTOMER_ORDER_CREATE:'customer.order.create'};
 const grants={
@@ -51,5 +51,5 @@ const ownershipCharter=Object.freeze({
  admiralOwned:{allowed:true,captainMayOperate:true,ownerTransferOptional:true}
 });
 const productionAuth={provider:'supabase',required:true,get ready(){return productionStatus().ready;},status:productionStatus,configure:configureProductionAuth,clear:clearProductionAuth,probe:probeProductionAuth,readClientConfig:safeClientConfig,require:['server_side_identity','publishable_browser_key_only','row_level_security','membership_authorization','secure_sessions','recovery','revocation','rollback_bridge']};
-g.BlackFlagV3Identity={version:'8.7.8-steady-command',build:BUILD,ROLE,ACTION,authorize,ownerCan,productionAuth,commissioningAuthority,ownershipCharter};
+g.BlackFlagV3Identity={version:'8.7.9-clean-signal',build:BUILD,ROLE,ACTION,authorize,ownerCan,productionAuth,commissioningAuthority,ownershipCharter};
 })(window);

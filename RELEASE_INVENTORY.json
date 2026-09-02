@@ -1,8 +1,8 @@
 {
-  "release": "True Touch",
-  "name": "True Touch",
-  "build": "8.7.8",
-  "seal": "true-touch-878-f3b6d2",
+  "release": "Clean Signal",
+  "name": "Clean Signal",
+  "build": "8.7.9",
+  "seal": "clean-signal-879-c8a41e",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.8",
-  "release": "True Touch",
-  "generatedAt": "2026-09-02T08:44:00-04:00",
+  "build": "8.7.9",
+  "release": "Clean Signal",
+  "generatedAt": "2026-09-02T10:05:02-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.8 gives Admiral Professional Mode one untransformed iPad scroll plane, preserves exact visible hit targets for identity authentication, and quarantines foreign deployment identities before normalization so Becca cannot render inside Ike. Supabase authority remains server governed.",
-  "candidate": "8.7.8",
+  "note": "8.7.9 restores the exact signed-out presentation by keeping Sign Out Identity hidden until server verification succeeds. It preserves True Touch hit geometry, one iPad scroll plane, foreign-deployment quarantine, and the existing server-governed Supabase authentication and data contracts.",
+  "candidate": "8.7.9",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -255,6 +255,8 @@
     "entitlement_open_does_not_auto_scroll": true,
     "deployment_identity_checked_before_normalization": true,
     "foreign_deployment_quarantine": true
+    ,"admiral_sign_out_hidden_until_verified": true
+    ,"hidden_state_outranks_touch_display_rule": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -306,8 +308,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.8",
-    "seal": "true-touch-878-f3b6d2",
+    "build": "8.7.9",
+    "seal": "clean-signal-879-c8a41e",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
