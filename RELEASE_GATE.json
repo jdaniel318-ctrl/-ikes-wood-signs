@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.7",
-  "release": "Steady Command",
-  "generatedAt": "2026-09-01T23:50:00-04:00",
+  "build": "8.7.8",
+  "release": "True Touch",
+  "generatedAt": "2026-09-02T08:44:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.7 strengthens professional contrast, separates project status meanings, routes Engine Admiral Command directly to Admiral's Gate, and makes Feature Entitlements plus Project Insight authentication recovery deterministic. Exact-vessel entitlement reads remain server governed.",
-  "candidate": "8.7.7",
+  "note": "8.7.8 gives Admiral Professional Mode one untransformed iPad scroll plane, preserves exact visible hit targets for identity authentication, and quarantines foreign deployment identities before normalization so Becca cannot render inside Ike. Supabase authority remains server governed.",
+  "candidate": "8.7.8",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -249,7 +249,12 @@
     "dark_sky_storage_separated_from_browser_origin": true,
     "admiral_sticky_header_top_sealed": true,
     "signed_out_current_state_cleared": true,
-    "customer_insight_entitlement_enforced": true
+    "customer_insight_entitlement_enforced": true,
+    "admiral_professional_single_scroll_plane": true,
+    "admiral_identity_exact_hit_geometry": true,
+    "entitlement_open_does_not_auto_scroll": true,
+    "deployment_identity_checked_before_normalization": true,
+    "foreign_deployment_quarantine": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -259,7 +264,9 @@
     "the_situation_not_fleet_evidence": true,
     "exact_vessel_feature_read_uses_rls": true,
     "anonymous_entitlement_read_forbidden": true,
-    "unverified_feature_delivery_fails_closed": true
+    "unverified_feature_delivery_fails_closed": true,
+    "foreign_deployment_never_relabels_to_active_project": true,
+    "quarantine_preserves_foreign_deployment_evidence": true
   },
   "release_identity_repair": {
     "status": "PASS",
@@ -299,8 +306,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.7",
-    "seal": "steady-command-877-a41e6c",
+    "build": "8.7.8",
+    "seal": "true-touch-878-f3b6d2",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

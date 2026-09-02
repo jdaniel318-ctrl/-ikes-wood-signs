@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.7",
-  "release": "Steady Command",
-  "seal": "steady-command-877-a41e6c",
+  "build": "8.7.8",
+  "release": "True Touch",
+  "seal": "true-touch-878-f3b6d2",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Steady Command",
-  "name": "Steady Command",
-  "releaseName": "Steady Command"
+  "release_name": "True Touch",
+  "name": "True Touch",
+  "releaseName": "True Touch"
 }

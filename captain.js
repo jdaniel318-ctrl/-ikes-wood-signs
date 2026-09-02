@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.7.7';
+  const UPPER_COMMAND_BUILD='8.7.8';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -698,7 +698,10 @@
       deck.querySelectorAll('[data-admiral-lane]').forEach(btn=>btn.setAttribute('aria-selected',String(btn.dataset.admiralLane===lane)));
       deck.querySelectorAll('[data-admiral-panel]').forEach(panel=>panel.hidden=panel.dataset.admiralPanel!==lane);
       try{sessionStorage.setItem('darkSkyAdmiralLane',lane);}catch(_){}
-      if(focus)deck.querySelector(`[data-admiral-panel="${lane}"]`)?.scrollIntoView({behavior:'smooth',block:'start'});
+      // Keep the professional deck on one stable scroll plane. Moving a nested
+      // target during an iPad tap can leave Safari's visual and hit-test geometry
+      // out of sync until the next frame.
+      if(focus)deck.querySelector(`[data-admiral-panel="${lane}"]`)?.focus?.({preventScroll:true});
     };
     byId('admiralLaneNav')?.addEventListener('click',e=>{const btn=e.target.closest('[data-admiral-lane]');if(btn)setAdmiralLane(btn.dataset.admiralLane,true);});
     try{setAdmiralLane(sessionStorage.getItem('darkSkyAdmiralLane')||'govern');}catch(_){setAdmiralLane('govern');}
@@ -730,7 +733,6 @@
         entitlementButton.setAttribute('aria-expanded','true');
         entitlementButton.textContent='FEATURE ENTITLEMENTS OPEN';
         await window.DarkSkySyncAdmiralIdentity?.();
-        requestAnimationFrame(()=>station.scrollIntoView({behavior:'auto',block:'start'}));
       };
     }
     const entitlementClose=byId('admiralEntitlementClose');

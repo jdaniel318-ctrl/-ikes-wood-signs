@@ -14961,7 +14961,7 @@ body.engine-mode:not(.engine-dock-open) #fleetCommissioningDock{min-height:0!imp
 .fleet-dock-watch-actions{grid-template-columns:repeat(4,minmax(0,1fr))!important}.fleet-dock-watch-actions .project-control-watch{background:linear-gradient(180deg,#196d8c,#0e526d)!important;border-color:#2b9cca!important;color:#f4fbfd!important}.fleet-dock-watch-actions .captain-watch{border-color:rgba(213,180,89,.5)!important;color:#ead392!important}.fleet-dock-watch-actions button span,.fleet-dock-watch-actions button strong{display:block}.fleet-dock-watch-actions button span{font-size:.56rem!important;letter-spacing:.11em}.fleet-dock-watch-actions button strong{margin-top:3px;font-size:.7rem!important}.admiral-deck-overlay[data-mode="professional"] .admiral-deck-head{isolation:isolate!important;box-shadow:0 -48px 0 #051b23,0 18px 32px rgba(0,0,0,.24)!important}.admiral-deck-overlay[data-mode="professional"] .admiral-deck-head:before{content:'';position:absolute;left:0;right:0;bottom:100%;height:48px;background:#051b23;z-index:-1}
 @media(max-width:1050px){.clear-deck-primary-actions{grid-template-columns:1fr 1fr}.clear-deck-action.primary{grid-column:1/-1}.clear-deck-secondary-actions{grid-template-columns:1fr 1fr}.fleet-dock-watch-actions{grid-template-columns:1fr 1fr!important}}@media(max-width:680px){.clear-deck-launchpad{margin:0 10px 12px;padding:16px}.clear-deck-primary-actions,.clear-deck-secondary-actions{grid-template-columns:1fr}.clear-deck-action.primary{grid-column:auto}.clear-deck-action{min-height:90px!important}.fleet-dock-watch-actions{grid-template-columns:1fr!important}}
 
-/* 8.7.7 Steady Command — professional contrast and unmistakable authority routes. */
+/* 8.7.8 True Touch — professional contrast and unmistakable authority routes. */
 body.engine-mode #fleetCommissioningDock{background:linear-gradient(180deg,rgba(5,28,35,.98),rgba(3,19,25,.99))!important;border-color:rgba(97,166,184,.42)!important}
 body.engine-mode #fleetCommissioningDock .fleet-commissioning-head h3,
 body.engine-mode #fleetCommissioningDock .fleet-proof-card strong{color:#f3f6f4!important}
@@ -14994,7 +14994,7 @@ body.engine-mode #fleetCommissioningDock .fleet-proof-card span{color:#b3c1c4!im
 .captain-tools-deck [data-captain-pro-route="admiral"]{background:#292719!important;border-color:rgba(222,184,79,.62)!important;color:#f3d980!important}.captain-tools-deck [data-captain-pro-route="admiral"] small{color:#d4c18d!important}
 @media(max-width:680px){.pc-feature-gate-actions{min-width:0;width:100%}}
 
-/* 8.7.7 Steady Command — stable iPad touch geometry and action-first project control. */
+/* 8.7.8 True Touch — stable iPad touch geometry and action-first project control. */
 html{scroll-behavior:auto!important}
 body.engine-workspace-open #projectEngineControl .project-engine-head{position:relative!important;top:auto!important;z-index:2!important;margin:0 0 10px!important;min-height:112px!important;padding:16px 18px!important}
 #projectEngineControl .project-engine-identity{width:100%;padding-right:62px;box-sizing:border-box}
@@ -15030,3 +15030,31 @@ body.engine-workspace-open #projectEngineControl .project-engine-head{position:r
 #admiralIdentitySignIn[aria-busy="true"]{cursor:wait;opacity:.72}
 @media(min-width:821px) and (max-width:1180px){#projectEngineControl .project-command-primary>button{min-height:54px!important;padding:9px 11px!important}.pc-state-matrix article{padding:9px 11px!important}.pc-priority-command{grid-template-columns:240px 1fr}.admiral-identity-row{grid-template-columns:1fr 1fr!important}.admiral-identity-row button{width:100%!important}}
 @media(max-width:820px){#projectEngineControl .project-command-primary{grid-template-columns:repeat(2,minmax(0,1fr))!important;display:grid!important;overflow:visible!important}.pc-state-matrix{display:grid!important;grid-template-columns:1fr 1fr!important}.pc-state-matrix article{border-right:0!important;border-bottom:1px solid rgba(101,164,179,.2)!important}.pc-state-matrix article:nth-last-child(-n+2){border-bottom:0!important}.pc-priority-command{grid-template-columns:1fr}.admiral-entitlement-station>header{display:flex!important}.admiral-entitlement-head-actions{width:100%;justify-content:space-between}.admiral-identity-row{grid-template-columns:1fr!important}}
+
+/* 8.7.8 True Touch — one iPad scroll plane and exact Admiral hit geometry. */
+.admiral-deck-overlay[data-mode="professional"]{place-items:start center!important;overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;padding:18px!important}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-shell{margin:0 auto!important;height:auto!important;max-height:none!important;overflow:visible!important}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-head,
+.admiral-deck-overlay[data-mode="professional"] .admiral-lane-nav{position:relative!important;top:auto!important}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-shell,
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-head,
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-grid,
+.admiral-deck-overlay[data-mode="professional"] .admiral-lane-workspace,
+.admiral-deck-overlay[data-mode="professional"] .admiral-entitlement-station{
+  transform:none!important;translate:none!important;scale:none!important;perspective:none!important;
+  filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  contain:none!important;will-change:auto!important;animation:none!important
+}
+.admiral-identity-row{position:relative!important;z-index:2!important;isolation:isolate!important}
+.admiral-identity-row label,.admiral-identity-row input,.admiral-identity-row button{position:relative!important;pointer-events:auto!important}
+.admiral-identity-row label{z-index:2!important}.admiral-identity-row input{z-index:3!important;box-sizing:border-box!important;min-height:56px!important;line-height:normal!important}
+.admiral-identity-row button{z-index:4!important;display:flex!important;align-items:center!important;justify-content:center!important;min-height:56px!important}
+#admiralIdentitySignIn{background:#123b47!important;border-color:#d8b65c!important;color:#f1dc9c!important}
+#admiralIdentitySignIn:active{background:#195267!important}
+.admiral-entitlement-station{scroll-margin-top:0!important}
+@media(min-width:821px) and (max-width:1180px){
+  .admiral-deck-overlay[data-mode="professional"]{padding:0 18px 24px!important}
+  .admiral-deck-overlay[data-mode="professional"] .admiral-deck-shell{width:min(1120px,100%)!important}
+  .admiral-deck-overlay[data-mode="professional"] .admiral-identity-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+  .admiral-deck-overlay[data-mode="professional"] .admiral-identity-row button{width:100%!important}
+}

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.7.7';
+  const BUILD_VERSION='8.7.8';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2608,7 +2608,7 @@
     return out||proofBarrierRead8611()?.currentProof||null;
   }
 
-  // 8.7.7 Proof Chain Settlement — readiness may ask the existing proof lifecycle
+  // 8.7.8 Proof Chain Settlement — readiness may ask the existing proof lifecycle
   // to finish settling before judging it, but it may not manufacture Dock, Intelligence,
   // roster, admission, or current-proof evidence. One bounded attempt owns the chain.
   let proofChainSettlementPromise8657=null;
@@ -6263,6 +6263,46 @@
     return `${code}-outpost-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
   }
 
+  const RESERVED_VESSEL_DEPLOYMENT_NAMES_878=Object.freeze({
+    'becca':'beccas-bloom-shop',
+    "becca's bloom shop":'beccas-bloom-shop',
+    'beccas bloom shop':'beccas-bloom-shop'
+  });
+
+  function deploymentClaimedProjectIds878(d){
+    const claims=[d?.projectId,d?.authorization?.projectId,d?.deviceIdentity?.projectId];
+    for(const namespace of [d?.namespace,d?.authorization?.namespace,d?.deviceIdentity?.namespace]){
+      const match=String(namespace||'').match(/^bf\.project\.(.+)$/i);
+      if(match?.[1])claims.push(match[1]);
+    }
+    return [...new Set(claims.map(canonicalProjectId).filter(Boolean))];
+  }
+
+  function foreignDeploymentClaim878(p,d){
+    const projectId=canonicalProjectId(p?.id);
+    const explicit=deploymentClaimedProjectIds878(d).find(id=>id!==projectId);
+    if(explicit)return {projectId:explicit,reason:'explicit-project-identity-mismatch'};
+    const label=String(d?.name||'').trim().toLowerCase().replace(/[’]/g,"'").replace(/\s+/g,' ');
+    const reserved=RESERVED_VESSEL_DEPLOYMENT_NAMES_878[label];
+    if(reserved&&reserved!==projectId)return {projectId:reserved,reason:'reserved-vessel-name-mismatch'};
+    return null;
+  }
+
+  function quarantineForeignDeployments878(p,rows){
+    const accepted=[],quarantine=Array.isArray(p.deploymentIsolationQuarantine)?p.deploymentIsolationQuarantine:[];
+    for(const d of rows){
+      const foreign=foreignDeploymentClaim878(p,d);
+      if(!foreign){accepted.push(d);continue;}
+      const key=String(d?.id||`${foreign.projectId}:${d?.name||'deployment'}`);
+      if(!quarantine.some(x=>String(x?.deployment?.id||x?.key)===key))quarantine.push({
+        key,detectedAt:new Date().toISOString(),hostProjectId:p.id,claimedProjectId:foreign.projectId,
+        reason:foreign.reason,deployment:{...d}
+      });
+    }
+    p.deploymentIsolationQuarantine=quarantine.slice(-50);
+    return accepted;
+  }
+
   function migrateLegacyDeployment(p){
     p.deployments=Array.isArray(p.deployments)?p.deployments:[];
     const legacy=p.deployment?.kiosk;
@@ -6287,7 +6327,9 @@
         source:'migrated_v2_9_46'
       });
     }
-    p.deployments=p.deployments.map(d=>normalizeDeploymentIdentity(p,d));
+    // Never repair a foreign manifest by relabeling it as the current vessel.
+    // Quarantine first, then normalize only manifests that belong here.
+    p.deployments=quarantineForeignDeployments878(p,p.deployments).map(d=>normalizeDeploymentIdentity(p,d));
     return p.deployments;
   }
 

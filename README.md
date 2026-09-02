@@ -1,6 +1,6 @@
-# Dark Sky 8.7.7 — Steady Command
+# Dark Sky 8.7.8 — True Touch
 
-Steady Command hardens the iPad operating path proven during live use. Project Control now opens at a deterministic top origin, presents a compact command bar, and moves current priorities ahead of secondary telemetry. Fleet Standards and Feature Entitlements are mutually exclusive work panels with reliable close controls, one touch handler per action, and no smooth-scroll target movement under the user's finger. Project Insight opens Admiral's Gate directly without exposing an intermediate Engine login surface. Supabase identity and exact-vessel authority remain server governed.
+True Touch repairs the two release blockers found during live iPad use. Admiral Professional Mode now uses one untransformed scroll plane, keeps fields and buttons at their visible touch coordinates, and never auto-scrolls a command target during a tap. Deployment migration now quarantines foreign project identities before normalization, so a Becca record cannot be relabeled or rendered inside Ike. Supabase password authentication and exact-vessel authority remain server governed.
 
 # Dark Sky 8.7.0 — Feature Freedom
 

@@ -1,8 +1,8 @@
 {
-  "release": "Steady Command",
-  "name": "Steady Command",
-  "build": "8.7.7",
-  "seal": "steady-command-877-a41e6c",
+  "release": "True Touch",
+  "name": "True Touch",
+  "build": "8.7.8",
+  "seal": "true-touch-878-f3b6d2",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

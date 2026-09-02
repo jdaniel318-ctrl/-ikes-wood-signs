@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.7",
-  "release": "Steady Command",
+  "build": "8.7.8",
+  "release": "True Touch",
   "excluded_sources": [
     "The situation"
   ],
@@ -59,6 +59,9 @@
       "admiral_panels_are_mutually_exclusive",
       "admiral_panel_close_is_reliable",
       "identity_inputs_do_not_move_under_touch"
+      ,"admiral_professional_single_scroll_plane"
+      ,"admiral_identity_visible_bounds_equal_hit_bounds"
+      ,"admiral_identity_submit_one_tap_feedback"
     ],
     "clean_wake": [
       "no_platform_chrome_on_customer",
@@ -129,6 +132,9 @@
       "admiral_sticky_header_has_no_top_showthrough",
       "project_control_opens_at_top",
       "project_priority_precedes_secondary_telemetry"
+      ,"deployment_identity_validated_before_normalization"
+      ,"foreign_deployment_reference_never_renders"
+      ,"foreign_deployment_evidence_is_quarantined"
     ],
     "quarterdeck": [
       "single_top_level_folder",

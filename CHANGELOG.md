@@ -1,10 +1,10 @@
-## 8.7.7 — Steady Command
-- Opens Project Control at a deterministic top origin and compacts its navigation for iPad use.
-- Moves rule-based next actions ahead of telemetry and collapses repeated project-state cards into a readable status strip.
-- Routes gated Project Insight directly to Admiral's Gate without flashing the Engine login surface.
-- Removes the duplicate Feature Entitlements click path that caused touch target drift and wrong-panel openings.
-- Makes Fleet Standards and Feature Entitlements mutually exclusive, with reliable 52px close controls.
-- Stabilizes Admiral account authentication, prevents repeated sign-in submissions, and preserves server-governed exact-vessel authority.
+## 8.7.8 — True Touch
+- Replaces the layered Professional Admiral scroll geometry with one iPad-safe scroll plane.
+- Removes automatic lane and entitlement-panel scrolling that could displace Safari hit targets during a tap.
+- Forces Admiral email, password and authentication controls onto exact, untransformed 56px touch surfaces.
+- Quarantines any deployment carrying a foreign project ID, namespace or reserved vessel identity before normalization.
+- Prevents a Becca deployment reference from rendering in Ike while retaining the quarantined evidence and Becca's own records.
+- Preserves the 8.7.7 direct Admiral route, mutually exclusive work panels and server-governed Supabase authority.
 
 ## 8.7.5 — Clear Deck
 - Adds a first-class Engine command launchpad with Operate Projects, Review Fleet, and Fleet Watch as the three primary paths.
