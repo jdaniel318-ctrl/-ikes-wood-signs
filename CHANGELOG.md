@@ -1,4 +1,8 @@
-## 8.7.2 — True Bearing
+## 8.7.3 — Fair Wind
+- Replaces fourteen sequential startup requests with one parallel verified-release fetch group.
+- Allows repeat entry to reuse files carrying the exact immutable 8.7.3 release seal.
+- Keeps clean-retry and automatic recovery on forced fresh network verification.
+- Preserves ordered runtime execution after all required release files pass identity checks.
 - Shows the server-authoritative current state before the Admiral makes a change.
 - Presents a numbered Vessel → Feature → Setting workflow with a clearly marked current choice.
 - Replaces internal project and capability identifiers with plain-language confirmation.

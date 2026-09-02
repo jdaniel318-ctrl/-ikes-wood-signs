@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.7.2',seal:'true-bearing-872-a91f6c'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.7.3',seal:'fair-wind-873-f43b7d'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1305,7 +1305,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.7.2 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.7.3 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1339,7 +1339,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.7.2 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.7.3 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1356,7 +1356,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.7.2 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.7.3 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1877,16 +1877,20 @@
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
     const snapshotPaths=['styles.css','platform_core.js','platform_v4.js','platform_identity.js','ike_style_registry.js','app.js','captain.js'];
-    const presencePaths=['owner.html','manifest.webmanifest','DEPLOYMENT_MANIFEST.json','RELEASE_SEAL.json','RELEASE_INVENTORY.json','IKE_STYLE_FOUNDRY.json','sw.js'];
+    // Manifest, seal and inventory are fetched and verified as the first group;
+    // do not download those same documents again in the presence group.
+    const presencePaths=['owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js'];
     const assetPaths=[]; // Root Keel: visual/route assets never block Engine boot; route surfaces verify/fallback when opened.
-    function releaseUrl(path){const u=new URL(path,location.href);u.searchParams.set('releaseSeal',SEAL);u.searchParams.set('_ds',Date.now().toString());return u.toString();}
-    async function fetchResponse(path){
-      const r=await fetch(releaseUrl(path),{cache:'no-store',credentials:'same-origin',redirect:'follow'});
+    // The seal makes every release URL immutable. Normal entry may safely reuse
+    // bytes from this exact seal; recovery explicitly reloads them from network.
+    function releaseUrl(path){const u=new URL(path,location.href);u.searchParams.set('releaseSeal',SEAL);return u.toString();}
+    async function fetchResponse(path,{fresh=false}={}){
+      const r=await fetch(releaseUrl(path),{cache:fresh?'reload':'default',credentials:'same-origin',redirect:'follow'});
       if(!r.ok)throw new Error(`${path} returned HTTP ${r.status}`);
       return r;
     }
-    async function fetchText(path){return (await fetchResponse(path)).text();}
-    async function fetchJson(path){return JSON.parse(await fetchText(path));}
+    async function fetchText(path,options){return (await fetchResponse(path,options)).text();}
+    async function fetchJson(path,options){return JSON.parse(await fetchText(path,options));}
     function releaseDocumentUrl(build,seal){
       const u=new URL(location.href);
       u.searchParams.set('_darkSkyRelease',String(build||'unknown'));
@@ -2128,7 +2132,8 @@
       return verified;
     }
     async function verifySnapshot(forRecovery=false){
-      const [manifest,sealDoc,inventory]=await Promise.all([fetchJson('DEPLOYMENT_MANIFEST.json'),fetchJson('RELEASE_SEAL.json'),fetchJson('RELEASE_INVENTORY.json')]);
+      const requestOptions={fresh:forRecovery};
+      const [manifest,sealDoc,inventory]=await Promise.all([fetchJson('DEPLOYMENT_MANIFEST.json',requestOptions),fetchJson('RELEASE_SEAL.json',requestOptions),fetchJson('RELEASE_INVENTORY.json',requestOptions)]);
       const manifestBuild=String(manifest?.build||manifest?.version||'unknown');
       const manifestSeal=String(manifest?.release_seal||manifest?.seal||'unknown');
       if(manifestBuild!==EXPECTED||manifestSeal!==SEAL){
@@ -2138,8 +2143,10 @@
       if(String(sealDoc?.build||'')!==EXPECTED||String(sealDoc?.seal||'')!==SEAL)throw Object.assign(new Error('RELEASE_SEAL.json does not match this page.'),{manifestBuild});
       if(String(inventory?.build||'')!==EXPECTED||String(inventory?.seal||'')!==SEAL)throw Object.assign(new Error('RELEASE_INVENTORY.json does not match this page.'),{manifestBuild});
       const fetched={};
-      for(const path of [...snapshotPaths,...presencePaths]) fetched[path]=await fetchText(path);
-      for(const path of assetPaths){try{await fetchResponse(path);}catch(err){console.warn('[Dark Sky] optional visual unavailable',path,err);}}
+      const requiredPaths=[...snapshotPaths,...presencePaths];
+      const requiredBodies=await Promise.all(requiredPaths.map(path=>fetchText(path,requestOptions)));
+      requiredPaths.forEach((path,index)=>{fetched[path]=requiredBodies[index];});
+      await Promise.all(assetPaths.map(async path=>{try{await fetchResponse(path,requestOptions);}catch(err){console.warn('[Dark Sky] optional visual unavailable',path,err);}}));
       const runtimeMatch=fetched['app.js'].match(/const\s+BUILD_VERSION\s*=\s*['"]([^'"]+)['"]/);
       const runtimeBuild=runtimeMatch?.[1]||'unknown';
       if(runtimeBuild!==EXPECTED)throw Object.assign(new Error(`App runtime ${runtimeBuild} does not match ${EXPECTED}.`),{manifestBuild,runtimeBuild});
@@ -2226,7 +2233,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.7.2';
+    const BUILD='8.7.3';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;

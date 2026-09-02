@@ -1,8 +1,8 @@
 {
-  "release": "True Bearing",
-  "name": "True Bearing",
-  "build": "8.7.2",
-  "seal": "true-bearing-872-a91f6c",
+  "release": "Fair Wind",
+  "name": "Fair Wind",
+  "build": "8.7.3",
+  "seal": "fair-wind-873-f43b7d",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

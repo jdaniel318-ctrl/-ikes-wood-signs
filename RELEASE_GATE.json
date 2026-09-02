@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.2",
-  "release": "True Bearing",
+  "build": "8.7.3",
+  "release": "Fair Wind",
   "generatedAt": "2026-09-01T00:36:00-04:00",
   "checks": {
     "build_version": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.2 preserves the Admiral iPad scroll rail while adding Fleet-wide, feature-level Off, Free and Paid entitlement control through the authenticated Admiral server seam.",
-  "candidate": "8.7.2",
+  "note": "8.7.3 parallelizes release downloads and safely reuses only exact-seal bytes, targeting at least 50% faster entry while preserving the Admiral iPad scroll rail and authenticated feature authority.",
+  "candidate": "8.7.3",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -286,8 +286,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.2",
-    "seal": "true-bearing-872-a91f6c",
+    "build": "8.7.3",
+    "seal": "fair-wind-873-f43b7d",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

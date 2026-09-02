@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.2",
-  "release": "True Bearing",
+  "build": "8.7.3",
+  "release": "Fair Wind",
   "excluded_sources": [
     "The situation"
   ],

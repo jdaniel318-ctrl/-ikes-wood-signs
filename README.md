@@ -1,6 +1,6 @@
-# Dark Sky 8.7.2 — True Bearing
+# Dark Sky 8.7.3 — Fair Wind
 
-The Admiral feature station now reads the selected vessel-feature state before any change, presents one numbered Vessel → Feature → Setting flow, marks the current Off/Free/Paid choice, and confirms changes in plain language. Verified identity controls collapse after authentication, and choosing Paid still does not itself start billing.
+Fair Wind cuts sealed-runtime startup latency by fetching all required release files in parallel and reusing only bytes addressed by the exact immutable release seal. A recovery verification still forces fresh network reads. It preserves the Clear Helm Admiral workflow: live current-state readback, numbered Vessel → Feature → Setting controls, plain-language results, and independent Off/Free/Paid authority.
 
 # Dark Sky 8.7.0 — Feature Freedom
 
