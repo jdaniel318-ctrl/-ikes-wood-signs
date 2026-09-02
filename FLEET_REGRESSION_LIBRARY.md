@@ -1,3 +1,15 @@
+# 8.7.7 Steady Command Addendum
+
+Protected lessons from live iPad operation:
+- One visible control owns one touch handler. Delegated and direct handlers may not compete for the same action.
+- Expanding one Admiral work panel closes its peer before layout changes; Standards and Entitlements never overlap.
+- A close control must change visible state synchronously, preserve the user's place, and remain at least 52px tall.
+- Automatic smooth scrolling may not move an input or command target underneath an active touch.
+- Project Control starts at the top, shows the current priority before secondary telemetry, and keeps status summaries compact.
+- A protected route may not expose an intermediate login or unrelated authority surface, even briefly.
+
+---
+
 # 8.5.4 Verified Command Addendum
 
 Protected lessons added by the command audit:

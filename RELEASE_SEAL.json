@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.6",
-  "release": "Command Clarity",
-  "seal": "command-clarity-876-d91c7a",
+  "build": "8.7.7",
+  "release": "Steady Command",
+  "seal": "steady-command-877-a41e6c",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Command Clarity",
-  "name": "Command Clarity",
-  "releaseName": "Command Clarity"
+  "release_name": "Steady Command",
+  "name": "Steady Command",
+  "releaseName": "Steady Command"
 }

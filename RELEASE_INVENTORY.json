@@ -1,8 +1,8 @@
 {
-  "release": "Command Clarity",
-  "name": "Command Clarity",
-  "build": "8.7.6",
-  "seal": "command-clarity-876-d91c7a",
+  "release": "Steady Command",
+  "name": "Steady Command",
+  "build": "8.7.7",
+  "seal": "steady-command-877-a41e6c",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

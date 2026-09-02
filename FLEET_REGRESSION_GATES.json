@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.6",
-  "release": "Command Clarity",
+  "build": "8.7.7",
+  "release": "Steady Command",
   "excluded_sources": [
     "The situation"
   ],
@@ -19,6 +19,7 @@
       ,"recovery_route_executes_no_engine_or_customer_runtime"
       ,"admiral_professional_top_reachable_after_entitlement_auth"
       ,"admiral_signed_out_clears_current_entitlement_highlight"
+      ,"project_feature_auth_opens_admiral_without_engine_login_flash"
     ],
     "watertight": [
       "authority_separation",
@@ -53,7 +54,11 @@
       "no_scroll_lock",
       "critical_controls_visible",
       "readable_transient_confirmation",
-      "durable_result_state"
+      "durable_result_state",
+      "single_touch_handler_per_admiral_panel",
+      "admiral_panels_are_mutually_exclusive",
+      "admiral_panel_close_is_reliable",
+      "identity_inputs_do_not_move_under_touch"
     ],
     "clean_wake": [
       "no_platform_chrome_on_customer",
@@ -121,7 +126,9 @@
       "workspace_return_restores_engine_top",
       "commissioning_return_restores_engine_top",
       "dark_sky_bytes_distinct_from_browser_origin",
-      "admiral_sticky_header_has_no_top_showthrough"
+      "admiral_sticky_header_has_no_top_showthrough",
+      "project_control_opens_at_top",
+      "project_priority_precedes_secondary_telemetry"
     ],
     "quarterdeck": [
       "single_top_level_folder",

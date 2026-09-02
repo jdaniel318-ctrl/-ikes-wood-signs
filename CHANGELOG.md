@@ -1,8 +1,10 @@
-## 8.7.6 — Command Clarity
-- Rebalances Fleet Dock contrast with professional dark secondary actions, blue Project Control, and gold readiness authority.
-- Separates publication, operating health, customer-experience approval, and session authority in Project Control.
-- Routes Engine Admiral Command directly to Admiral's Gate and returns directly to Engine when that was the entry source.
-- Makes Feature Entitlements open deterministically and adds direct Admiral authentication from a gated Project Insight view.
+## 8.7.7 — Steady Command
+- Opens Project Control at a deterministic top origin and compacts its navigation for iPad use.
+- Moves rule-based next actions ahead of telemetry and collapses repeated project-state cards into a readable status strip.
+- Routes gated Project Insight directly to Admiral's Gate without flashing the Engine login surface.
+- Removes the duplicate Feature Entitlements click path that caused touch target drift and wrong-panel openings.
+- Makes Fleet Standards and Feature Entitlements mutually exclusive, with reliable 52px close controls.
+- Stabilizes Admiral account authentication, prevents repeated sign-in submissions, and preserves server-governed exact-vessel authority.
 
 ## 8.7.5 — Clear Deck
 - Adds a first-class Engine command launchpad with Operate Projects, Review Fleet, and Fleet Watch as the three primary paths.

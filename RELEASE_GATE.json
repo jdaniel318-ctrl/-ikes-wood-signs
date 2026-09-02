@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.6",
-  "release": "Command Clarity",
+  "build": "8.7.7",
+  "release": "Steady Command",
   "generatedAt": "2026-09-01T23:50:00-04:00",
   "checks": {
     "build_version": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.6 strengthens professional contrast, separates project status meanings, routes Engine Admiral Command directly to Admiral's Gate, and makes Feature Entitlements plus Project Insight authentication recovery deterministic. Exact-vessel entitlement reads remain server governed.",
-  "candidate": "8.7.6",
+  "note": "8.7.7 strengthens professional contrast, separates project status meanings, routes Engine Admiral Command directly to Admiral's Gate, and makes Feature Entitlements plus Project Insight authentication recovery deterministic. Exact-vessel entitlement reads remain server governed.",
+  "candidate": "8.7.7",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -299,8 +299,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.6",
-    "seal": "command-clarity-876-d91c7a",
+    "build": "8.7.7",
+    "seal": "steady-command-877-a41e6c",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

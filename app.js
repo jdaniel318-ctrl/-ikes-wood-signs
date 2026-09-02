@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.7.6';
+  const BUILD_VERSION='8.7.7';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2608,7 +2608,7 @@
     return out||proofBarrierRead8611()?.currentProof||null;
   }
 
-  // 8.7.6 Proof Chain Settlement — readiness may ask the existing proof lifecycle
+  // 8.7.7 Proof Chain Settlement — readiness may ask the existing proof lifecycle
   // to finish settling before judging it, but it may not manufacture Dock, Intelligence,
   // roster, admission, or current-proof evidence. One bounded attempt owns the chain.
   let proofChainSettlementPromise8657=null;
@@ -6584,6 +6584,11 @@
 
       ${(()=>{const launch=projectFleetLaunchState(p);const approval=experienceApproved(p)?'APPROVED':'ACTION NEEDED';const deployment=launch.key==='live'?'LIVE':launch.key==='sea_trial'?'SEA TRIAL':launch.key==='fleet_ready'?'FLEET READY':launch.key==='preparing'?'PREPARING':'DRAFT';return `<section class="pc-state-matrix" aria-label="Project state clarity"><article><small>PUBLICATION</small><strong>${deployment}</strong><span>Customer-facing state</span></article><article><small>OPERATING HEALTH</small><strong>${s.status}</strong><span>${s.attention.length?`${s.attention.length} items to review`:'No immediate flags'}</span></article><article><small>CUSTOMER EXPERIENCE</small><strong>${approval}</strong><span>${approval==='APPROVED'?'Current experience approved':'Approval is missing or stale'}</span></article><article><small>YOUR SESSION</small><strong>ADMIN CONTROL</strong><span>Project-scoped authority</span></article></section>`})()}
 
+      <section class="pc-priority-command" aria-label="Recommended next action">
+        <div><span>START HERE</span><h4>${s.attention.length?'Review what needs attention':'Project operating normally'}</h4><p>${s.attention.length?`${s.attention.length} clear next ${s.attention.length===1?'step':'steps'} based on current project data.`:'No immediate operating flags were found.'}</p></div>
+        <div class="pc-priority-list">${attention}</div>
+      </section>
+
       ${(()=>{const launch=projectFleetLaunchState(p);return `<section class="pc-fleet-launch-lane ${launch.key}">
         <div class="pc-fleet-launch-copy"><span>FLEET COMMISSIONING LANE</span><h4>${escapeHtml(launch.label)}</h4><p>${escapeHtml(launch.detail)}</p></div>
         <div class="pc-fleet-launch-progress" aria-label="Fleet launch progress">${['Create','Prepare','Sea Trial','Fleet Ready','Live'].map((label,i)=>`<span class="${launch.step>i+1?'done':''} ${launch.step===i+1?'current':''}"><b>${i+1}</b>${label}</span>`).join('')}</div>
@@ -6600,10 +6605,6 @@
       </section>
 
       <section class="pc-command-grid">
-        <article class="pc-command-panel pc-attention-panel">
-          <header><div><span>NEEDS ATTENTION</span><h4>What should I look at?</h4></div><b>${s.attention.length}</b></header>
-          <div>${attention}</div>
-        </article>
         <article class="pc-command-panel">
           <header><div><span>${escapeHtml(activityTermsForProject(p).plural.toUpperCase())} PULSE</span><h4>Latest business activity</h4></div><button data-project-jump="orders" type="button">ALL ${escapeHtml(activityTermsForProject(p).plural.toUpperCase())}</button></header>
           <div>${newestOrders}</div>
@@ -6716,8 +6717,7 @@
     $('projectTabContent')?.querySelectorAll('[data-feature-auth-route="admiral"]').forEach(btn=>{
       btn.addEventListener('click',()=>{
         try{sessionStorage.setItem('darkSkyAdmiralReturnRouteV1',JSON.stringify({projectId:p.id,tab:'analytics',at:new Date().toISOString()}));}catch(_){}
-        requestEngineFromProject();
-        window.setTimeout(()=>document.querySelector('[data-command-open="admiral"]')?.click(),180);
+        window.DarkSkyOpenAdmiralGate?.('engine');
       });
     });
   }
@@ -8628,6 +8628,10 @@
     syncProjectOperatingLanguage(p);
     openEngineWorkspace($('projectEngineControl'));
     await renderProjectTab(id,'overview');
+    const control=$('projectEngineControl');
+    if(control)control.scrollTop=0;
+    $('projectTabs')?.scrollTo?.({top:0,left:0,behavior:'instant'});
+    requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));
   }
 
   async function openCaptainDeploymentRoute(route){

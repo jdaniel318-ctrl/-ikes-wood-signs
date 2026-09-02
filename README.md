@@ -1,6 +1,6 @@
-# Dark Sky 8.7.6 — Command Clarity
+# Dark Sky 8.7.7 — Steady Command
 
-Command Clarity keeps the Clear Deck operating model and finishes the professional pass proven on iPad. Fleet Dock actions now use deliberate dark, blue, and gold hierarchy instead of harsh white controls; project status separates publication, operating health, customer-experience approval, and current authority; Admiral Command opens the Admiral gate directly from the Engine; and Feature Entitlements has a durable opening path plus direct authentication recovery from Project Insight. Exact-vessel Supabase authority remains server governed.
+Steady Command hardens the iPad operating path proven during live use. Project Control now opens at a deterministic top origin, presents a compact command bar, and moves current priorities ahead of secondary telemetry. Fleet Standards and Feature Entitlements are mutually exclusive work panels with reliable close controls, one touch handler per action, and no smooth-scroll target movement under the user's finger. Project Insight opens Admiral's Gate directly without exposing an intermediate Engine login surface. Supabase identity and exact-vessel authority remain server governed.
 
 # Dark Sky 8.7.0 — Feature Freedom
 
