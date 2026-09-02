@@ -1,3 +1,9 @@
+## 8.7.6 — Command Clarity
+- Rebalances Fleet Dock contrast with professional dark secondary actions, blue Project Control, and gold readiness authority.
+- Separates publication, operating health, customer-experience approval, and session authority in Project Control.
+- Routes Engine Admiral Command directly to Admiral's Gate and returns directly to Engine when that was the entry source.
+- Makes Feature Entitlements open deterministically and adds direct Admiral authentication from a gated Project Insight view.
+
 ## 8.7.5 — Clear Deck
 - Adds a first-class Engine command launchpad with Operate Projects, Review Fleet, and Fleet Watch as the three primary paths.
 - Moves maintenance, release proof, Fleet Intelligence, Fleet Learning, and advanced engineering behind an explicit More Systems control.

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.5",
-  "release": "Clear Deck",
-  "generatedAt": "2026-09-01T00:36:00-04:00",
+  "build": "8.7.6",
+  "release": "Command Clarity",
+  "generatedAt": "2026-09-01T23:50:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.5 refits the Engine around a clear daily command launchpad, direct per-vessel Project Control, explicit Commissioning, deliberate More Systems disclosure, deterministic returns, truthful storage labeling, and a sealed Admiral sticky header. The authenticated exact-vessel entitlement read remains intact.",
-  "candidate": "8.7.5",
+  "note": "8.7.6 strengthens professional contrast, separates project status meanings, routes Engine Admiral Command directly to Admiral's Gate, and makes Feature Entitlements plus Project Insight authentication recovery deterministic. Exact-vessel entitlement reads remain server governed.",
+  "candidate": "8.7.6",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -299,8 +299,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.5",
-    "seal": "clear-deck-875-b64f2c",
+    "build": "8.7.6",
+    "seal": "command-clarity-876-d91c7a",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

@@ -14960,3 +14960,36 @@ body.engine-mode:not(.engine-systems-expanded) #fleetMaintenanceStation,body.eng
 body.engine-mode:not(.engine-dock-open) #fleetCommissioningDock{min-height:0!important}.fleet-commissioning-head{position:relative}.fleet-commissioning-head:after{content:'Open Operate Projects above to choose a vessel and workstation.';display:block;margin-top:9px;color:#79b9c9;font-size:.72rem}.engine-dock-open .fleet-commissioning-head:after{content:'Project Control is daily work. Commissioning is readiness proof.';color:#d7b861}body.engine-mode #enginePanel .engine-performance-deck{margin:0 20px 14px!important;gap:9px!important}.engine-performance-card{min-height:148px!important}.engine-performance-card canvas{height:64px!important;max-height:64px!important;opacity:.56}.engine-performance-card-head strong{font-size:1.3rem!important}.engine-performance-card-head small{font-size:.7rem!important;line-height:1.3!important}body.engine-mode #enginePanel .modern-system-operations{margin:0 20px 14px!important;min-height:72px!important;padding:14px 18px!important}.modern-system-capabilities{opacity:.72}body.engine-mode #engineFleetHealth,body.engine-mode #firstMateWatch,body.engine-mode #fleetCommissioningDock{scroll-margin-top:18px}
 .fleet-dock-watch-actions{grid-template-columns:repeat(4,minmax(0,1fr))!important}.fleet-dock-watch-actions .project-control-watch{background:linear-gradient(180deg,#196d8c,#0e526d)!important;border-color:#2b9cca!important;color:#f4fbfd!important}.fleet-dock-watch-actions .captain-watch{border-color:rgba(213,180,89,.5)!important;color:#ead392!important}.fleet-dock-watch-actions button span,.fleet-dock-watch-actions button strong{display:block}.fleet-dock-watch-actions button span{font-size:.56rem!important;letter-spacing:.11em}.fleet-dock-watch-actions button strong{margin-top:3px;font-size:.7rem!important}.admiral-deck-overlay[data-mode="professional"] .admiral-deck-head{isolation:isolate!important;box-shadow:0 -48px 0 #051b23,0 18px 32px rgba(0,0,0,.24)!important}.admiral-deck-overlay[data-mode="professional"] .admiral-deck-head:before{content:'';position:absolute;left:0;right:0;bottom:100%;height:48px;background:#051b23;z-index:-1}
 @media(max-width:1050px){.clear-deck-primary-actions{grid-template-columns:1fr 1fr}.clear-deck-action.primary{grid-column:1/-1}.clear-deck-secondary-actions{grid-template-columns:1fr 1fr}.fleet-dock-watch-actions{grid-template-columns:1fr 1fr!important}}@media(max-width:680px){.clear-deck-launchpad{margin:0 10px 12px;padding:16px}.clear-deck-primary-actions,.clear-deck-secondary-actions{grid-template-columns:1fr}.clear-deck-action.primary{grid-column:auto}.clear-deck-action{min-height:90px!important}.fleet-dock-watch-actions{grid-template-columns:1fr!important}}
+
+/* 8.7.6 Command Clarity — professional contrast and unmistakable authority routes. */
+body.engine-mode #fleetCommissioningDock{background:linear-gradient(180deg,rgba(5,28,35,.98),rgba(3,19,25,.99))!important;border-color:rgba(97,166,184,.42)!important}
+body.engine-mode #fleetCommissioningDock .fleet-commissioning-head h3,
+body.engine-mode #fleetCommissioningDock .fleet-proof-card strong{color:#f3f6f4!important}
+body.engine-mode #fleetCommissioningDock .fleet-commissioning-head p,
+body.engine-mode #fleetCommissioningDock .fleet-proof-card p,
+body.engine-mode #fleetCommissioningDock .fleet-proof-card span{color:#b3c1c4!important}
+.fleet-proof-card.fleet-dock-card{background:linear-gradient(180deg,#081b23 0,#06171e 100%)!important;border-color:rgba(105,153,165,.38)!important;box-shadow:0 12px 28px rgba(0,0,0,.18)!important}
+.fleet-proof-card.fleet-dock-card:hover{border-color:rgba(104,190,211,.58)!important}
+.fleet-dock-watch-actions{gap:10px!important}
+.fleet-dock-watch-actions .fleet-watch-btn{min-height:64px!important;border-width:1px!important;border-style:solid!important;border-radius:10px!important;box-shadow:none!important}
+.fleet-dock-watch-actions .project-control-watch{background:linear-gradient(180deg,#147899,#0b536e)!important;border-color:#3db5dc!important;color:#fff!important;box-shadow:inset 0 -3px 0 rgba(0,93,190,.8)!important}
+.fleet-dock-watch-actions .customer-watch{background:#102b36!important;border-color:rgba(119,178,194,.48)!important;color:#eaf1f2!important}
+.fleet-dock-watch-actions .owner-watch{background:#252719!important;border-color:rgba(217,181,85,.55)!important;color:#f2d77e!important}
+.fleet-dock-watch-actions .captain-watch{background:#1f2526!important;border-color:rgba(218,184,92,.62)!important;color:#f0d990!important}
+.fleet-dock-watch-actions .fleet-watch-btn span{color:inherit!important;opacity:.82!important}
+.fleet-dock-watch-actions .fleet-watch-btn strong{color:inherit!important;font-size:.73rem!important}
+.fleet-dock-test-route button{background:#101f27!important;border:1px solid rgba(116,151,161,.34)!important;color:#dbe5e6!important}
+.fleet-dock-test-route>span{color:#9eb0b4!important}
+.fleet-dock-toolbar input{background:#07171d!important;border-color:rgba(119,171,183,.42)!important;color:#f0f4f3!important}
+.fleet-dock-toolbar input::placeholder{color:#82969b!important}
+.fleet-dock-toolbar button{background:#0c252e!important;border-color:rgba(116,171,184,.4)!important;color:#d8e3e4!important}
+.fleet-dock-toolbar button.active{background:#176e8d!important;border-color:#4bb4d7!important;color:#fff!important}
+.pc-state-matrix article{background:#081b22!important;border-color:rgba(109,166,180,.32)!important}
+.pc-state-matrix article small{color:#9fb7bc!important}.pc-state-matrix article strong{color:#f0f4f2!important}.pc-state-matrix article span{display:block;margin-top:6px;color:#99aaae;font-size:.68rem;line-height:1.35}
+.pc-operational-state{background:#071b22!important}.pc-operational-state small{color:#aebdc0!important}
+.pc-feature-gate-actions{display:grid;gap:10px;min-width:220px}.pc-feature-gate-actions button{width:100%!important}.pc-feature-gate-actions .primary-btn{background:linear-gradient(180deg,#177ca0,#0b5874)!important;color:#fff!important;border:1px solid #4bb8dc!important}
+#admiralServiceEntitlements{background:#12333b!important;border-color:rgba(219,183,89,.62)!important;color:#f1d982!important}
+.admiral-entitlement-station{border-color:rgba(219,183,89,.5)!important;background:linear-gradient(180deg,#092d34,#061f27)!important;box-shadow:0 18px 40px rgba(0,0,0,.22)!important}
+.captain-tools-deck button{background:#0c2a3a!important;border-color:rgba(126,190,235,.4)!important;color:#f1f6f7!important}.captain-tools-deck button small{color:#acc0ca!important}
+.captain-tools-deck [data-captain-pro-route="admiral"]{background:#292719!important;border-color:rgba(222,184,79,.62)!important;color:#f3d980!important}.captain-tools-deck [data-captain-pro-route="admiral"] small{color:#d4c18d!important}
+@media(max-width:680px){.pc-feature-gate-actions{min-width:0;width:100%}}

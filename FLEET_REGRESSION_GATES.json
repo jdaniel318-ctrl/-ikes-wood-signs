@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.5",
-  "release": "Clear Deck",
+  "build": "8.7.6",
+  "release": "Command Clarity",
   "excluded_sources": [
     "The situation"
   ],

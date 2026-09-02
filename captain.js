@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.7.5';
+  const UPPER_COMMAND_BUILD='8.7.6';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -654,8 +654,9 @@
     document.body.appendChild(deck);
     loadUpperCommandVisual('admiral');
 
-    const closeGate=()=>{hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';};
-    const returnToCaptain=()=>{hide('admiralDeck');closeGate();show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
+    const returnToEngine=()=>{hide('admiralDeck');hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');document.body.classList.remove('captain-modal-open','captain-authorized');requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));};
+    const closeGate=()=>{const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';if(direct)returnToEngine();};
+    const returnToCaptain=()=>{if(deck.dataset.entrySource==='engine'){returnToEngine();return;}hide('admiralDeck');closeGate();show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
     byId('admiralGateReturnBtn').onclick=closeGate;
     byId('admiralDeckReturnBtn').onclick=returnToCaptain;
     byId('admiralDeckModeBtn').onclick=()=>{
@@ -707,6 +708,17 @@
     byId('admiralDeckFoundry').onclick=()=>openFoundryWorkspace();
     byId('admiralDeckStandards').onclick=()=>openAdmiralDoctrineDetail();
     byId('admiralDoctrineClose').onclick=()=>byId('admiralDoctrineDetail')?.classList.add('hidden');
+    const entitlementButton=byId('admiralServiceEntitlements');
+    if(entitlementButton){
+      entitlementButton.setAttribute('aria-expanded','false');
+      entitlementButton.onclick=()=>{
+        const station=byId('admiralEntitlementStation');if(!station)return;
+        station.classList.remove('hidden');
+        entitlementButton.setAttribute('aria-expanded','true');
+        entitlementButton.textContent='FEATURE ENTITLEMENTS OPEN';
+        requestAnimationFrame(()=>station.scrollIntoView({behavior:'smooth',block:'start'}));
+      };
+    }
     byId('admiralCeremonialFoundry').onclick=()=>openFoundryWorkspace();
     byId('admiralReadinessFindings')?.addEventListener('click',e=>{
       const btn=e.target.closest('[data-readiness-action]');if(!btn)return;
@@ -761,11 +773,19 @@
     ensureFoundryWorkspace();hide('admiralDeck');show('foundryWorkspace');
   }
 
-  function openAdmiralGate(){
+  function openAdmiralGate(source='captain'){
     ensureAdmiralDeck();
     hide('captainGlobalExit');
     const gate=byId('admiralGateOverlay');
+    const deck=byId('admiralDeck');
     const input=byId('admiralPinInput');
+    const fromEngine=source==='engine';
+    if(gate)gate.dataset.entrySource=fromEngine?'engine':'captain';
+    if(deck)deck.dataset.entrySource=fromEngine?'engine':'captain';
+    const gateReturn=byId('admiralGateReturnBtn');
+    const deckReturn=byId('admiralDeckReturnBtn');
+    if(gateReturn)gateReturn.textContent=fromEngine?'← RETURN TO ENGINE':'← RETURN TO CAPTAIN\'S QUARTERS';
+    if(deckReturn)deckReturn.textContent=fromEngine?'← RETURN TO ENGINE':'← RETURN TO CAPTAIN\'S QUARTERS';
     gate?.classList.remove('hidden');
     gate?.classList.remove('admiral-gate-enter','admiral-gate-repeat');void gate?.offsetWidth;
     let seen=false;try{seen=sessionStorage.getItem('darkSkyAdmiralGateSeen')==='1';}catch(_){ }
@@ -1062,7 +1082,7 @@
     hydrateUpperCommandVisuals();
     document.querySelectorAll('[data-command-jump]').forEach(btn=>btn.addEventListener('click',()=>{const el=byId(btn.dataset.commandJump);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}));
     document.querySelectorAll('[data-command-open="captain"]').forEach(btn=>btn.addEventListener('click',openGate));
-    document.querySelectorAll('[data-command-open="admiral"]').forEach(btn=>btn.addEventListener('click',()=>openGate()));
+    document.querySelectorAll('[data-command-open="admiral"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();openAdmiralGate('engine');}));
 
     // Direct listeners are safe here because this file loads at the very end of BODY.
     byId('captainModeAccessBtn')?.addEventListener('click', (event) => {
@@ -1884,7 +1904,7 @@ if(document.readyState==='loading'){
   async function loadEntitlement(){const c=cfg(),s=await currentSession();if(!c||!s?.access_token)return null;const vessel=selected('admiralEntitlementVessel'),feature=selected('admiralEntitlementCapability');setBusy(true);if(currentSetting())currentSetting().textContent='CHECKING…';const r=await fetch(c.url+'/rest/v1/rpc/admiral_get_service_entitlement',{method:'POST',headers:{...headers(s.access_token),Accept:'application/json'},body:JSON.stringify({p_project_id:vessel.value,p_capability_key:feature.value})});if(!r.ok){setBusy(false);throw new Error('The current setting could not be loaded. No change was made.');}const data=await r.json();paintState(data?.current_state||'off');setBusy(false);if(result())result().textContent=feature.label+' is currently '+(data?.current_state||'off').toUpperCase()+' for '+vessel.label+'.';return data;}
   async function setEntitlement(mode){const c=cfg(),s=await currentSession();if(!c||!s?.access_token)throw new Error('Authenticate the Admiral identity first.');const vessel=selected('admiralEntitlementVessel'),feature=selected('admiralEntitlementCapability');setBusy(true);const r=await fetch(c.url+'/rest/v1/rpc/admiral_set_service_entitlement',{method:'POST',headers:{...headers(s.access_token),Accept:'application/json'},body:JSON.stringify({p_project_id:vessel.value,p_capability_key:feature.value,p_commercial_mode:mode,p_status:'entitled'})});if(!r.ok){setBusy(false);let text='Admiral entitlement change was refused.';try{const e=await r.json();text=e?.message||e?.hint||text}catch(_){}throw new Error(text);}const data=await r.json();paintState(mode);setBusy(false);const sentence=mode==='off'?feature.label+' is now Off for '+vessel.label+'.':mode==='free'?feature.label+' is now Free for '+vessel.label+'. No charge.':feature.label+' is now Paid for '+vessel.label+'. Billing is not started by this setting.';if(result())result().textContent=sentence;const n=document.getElementById('admiralDeckNotice');if(n)n.textContent='Feature entitlement updated for the selected vessel only.';return data;}
   document.addEventListener('click',async e=>{
-    const open=e.target.closest('#admiralServiceEntitlements');if(open){document.getElementById('admiralEntitlementStation')?.classList.toggle('hidden');await syncIdentityUi();return;}
+    const open=e.target.closest('#admiralServiceEntitlements');if(open){const panel=document.getElementById('admiralEntitlementStation');panel?.classList.remove('hidden');open.setAttribute('aria-expanded','true');open.textContent='FEATURE ENTITLEMENTS OPEN';await syncIdentityUi();requestAnimationFrame(()=>panel?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
     if(e.target.closest('#admiralIdentitySignIn')){try{if(result())result().textContent='Authenticating Admiral identity…';await signIn();}catch(err){if(result())result().textContent=String(err?.message||err);}return;}
     if(e.target.closest('#admiralIdentityRecover')){location.href='./index.html?surface=admiral-recovery-request';return;}
     if(e.target.closest('#admiralIdentitySignOut')){clearSession();await syncIdentityUi();if(result())result().textContent='Admiral identity signed out. No setting was changed.';return;}

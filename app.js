@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.7.5';
+  const BUILD_VERSION='8.7.6';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -2608,7 +2608,7 @@
     return out||proofBarrierRead8611()?.currentProof||null;
   }
 
-  // 8.7.5 Proof Chain Settlement — readiness may ask the existing proof lifecycle
+  // 8.7.6 Proof Chain Settlement — readiness may ask the existing proof lifecycle
   // to finish settling before judging it, but it may not manufacture Dock, Intelligence,
   // roster, admission, or current-proof evidence. One bounded attempt owns the chain.
   let proofChainSettlementPromise8657=null;
@@ -6579,10 +6579,10 @@
           <h4>${escapeHtml(p.name)}</h4>
           <p>${escapeHtml(p.description||'Project operating overview.')}</p>
         </div>
-        <div class="pc-operational-state ${s.status.toLowerCase()}"><span>READINESS</span><strong>${s.status}</strong><small>${escapeHtml(platformStatusLabel(p))}</small></div>
+        <div class="pc-operational-state ${s.status.toLowerCase()}"><span>PROJECT HEALTH</span><strong>${s.status}</strong><small>${s.attention.length?`${s.attention.length} item${s.attention.length===1?'':'s'} need review`:'No immediate flags'}</small></div>
       </section>
 
-      ${(()=>{const launch=projectFleetLaunchState(p);const approval=experienceApproved(p)?'APPROVED':'NOT APPROVED';const deployment=launch.key==='live'?'LIVE':launch.key==='sea_trial'?'SEA TRIAL':launch.key==='fleet_ready'?'FLEET READY':launch.key==='preparing'?'PREPARING':'DRAFT';return `<section class="pc-state-matrix" aria-label="Project state clarity"><article><small>DEPLOYMENT</small><strong>${deployment}</strong></article><article><small>READINESS</small><strong>${s.status}</strong></article><article><small>APPROVAL</small><strong>${approval}</strong></article><article><small>CURRENT SESSION</small><strong>ADMIN CONTROL</strong></article></section>`})()}
+      ${(()=>{const launch=projectFleetLaunchState(p);const approval=experienceApproved(p)?'APPROVED':'ACTION NEEDED';const deployment=launch.key==='live'?'LIVE':launch.key==='sea_trial'?'SEA TRIAL':launch.key==='fleet_ready'?'FLEET READY':launch.key==='preparing'?'PREPARING':'DRAFT';return `<section class="pc-state-matrix" aria-label="Project state clarity"><article><small>PUBLICATION</small><strong>${deployment}</strong><span>Customer-facing state</span></article><article><small>OPERATING HEALTH</small><strong>${s.status}</strong><span>${s.attention.length?`${s.attention.length} items to review`:'No immediate flags'}</span></article><article><small>CUSTOMER EXPERIENCE</small><strong>${approval}</strong><span>${approval==='APPROVED'?'Current experience approved':'Approval is missing or stale'}</span></article><article><small>YOUR SESSION</small><strong>ADMIN CONTROL</strong><span>Project-scoped authority</span></article></section>`})()}
 
       ${(()=>{const launch=projectFleetLaunchState(p);return `<section class="pc-fleet-launch-lane ${launch.key}">
         <div class="pc-fleet-launch-copy"><span>FLEET COMMISSIONING LANE</span><h4>${escapeHtml(launch.label)}</h4><p>${escapeHtml(launch.detail)}</p></div>
@@ -6666,7 +6666,7 @@
       const copy=entitlement.verified
         ?`The Admiral has not enabled Customer & Order Insight for ${p.name}. No project analytics were opened.`
         :`Dark Sky could not verify this vessel's feature setting. Authenticate the Admiral in the Command Deck, then return here.`;
-      box.innerHTML=`<section class="pc-feature-gate" data-state="${entitlement.verified?'off':'unverified'}"><div><span>FLEET FEATURE • CUSTOMER & ORDER INSIGHT</span><h4>${escapeHtml(title)}</h4><p>${escapeHtml(copy)}</p></div><button data-project-jump="overview" type="button">RETURN TO OVERVIEW</button></section>`;
+      box.innerHTML=`<section class="pc-feature-gate" data-state="${entitlement.verified?'off':'unverified'}"><div><span>FLEET FEATURE • CUSTOMER & ORDER INSIGHT</span><h4>${escapeHtml(title)}</h4><p>${escapeHtml(copy)}</p></div><div class="pc-feature-gate-actions">${entitlement.verified?'':'<button data-feature-auth-route="admiral" type="button" class="primary-btn">AUTHENTICATE ADMIRAL</button>'}<button data-project-jump="overview" type="button">RETURN TO OVERVIEW</button></div></section>`;
       bindProjectControlJumpLinks(p);
       return;
     }
@@ -6712,6 +6712,13 @@
   function bindProjectControlJumpLinks(p){
     $('projectTabContent')?.querySelectorAll('[data-project-jump]').forEach(btn=>{
       btn.addEventListener('click',()=>renderProjectTab(p.id,btn.dataset.projectJump));
+    });
+    $('projectTabContent')?.querySelectorAll('[data-feature-auth-route="admiral"]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        try{sessionStorage.setItem('darkSkyAdmiralReturnRouteV1',JSON.stringify({projectId:p.id,tab:'analytics',at:new Date().toISOString()}));}catch(_){}
+        requestEngineFromProject();
+        window.setTimeout(()=>document.querySelector('[data-command-open="admiral"]')?.click(),180);
+      });
     });
   }
 

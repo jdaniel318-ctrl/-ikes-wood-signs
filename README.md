@@ -1,6 +1,6 @@
-# Dark Sky 8.7.5 — Clear Deck
+# Dark Sky 8.7.6 — Command Clarity
 
-Clear Deck refits the Engine around the work a Captain actually performs. A new command launchpad puts Operate Projects, Review Fleet, and Fleet Watch first; deeper maintenance, release evidence, Fleet Intelligence, learning, and engineering systems open deliberately through More Systems. Every Fleet Dock vessel now has a direct Project Control route, while readiness proof is plainly named Commissioning. Returning from a workstation or commissioning restores the Engine at a deterministic top origin. Storage telemetry now distinguishes measured Dark Sky data from Safari's whole-origin estimate, and the Admiral's sticky command header no longer exposes scrolled content above it. The authenticated exact-vessel entitlement seam and all 8.7.4 authority boundaries remain intact.
+Command Clarity keeps the Clear Deck operating model and finishes the professional pass proven on iPad. Fleet Dock actions now use deliberate dark, blue, and gold hierarchy instead of harsh white controls; project status separates publication, operating health, customer-experience approval, and current authority; Admiral Command opens the Admiral gate directly from the Engine; and Feature Entitlements has a durable opening path plus direct authentication recovery from Project Insight. Exact-vessel Supabase authority remains server governed.
 
 # Dark Sky 8.7.0 — Feature Freedom
 

@@ -1,8 +1,8 @@
 {
-  "release": "Clear Deck",
-  "name": "Clear Deck",
-  "build": "8.7.5",
-  "seal": "clear-deck-875-b64f2c",
+  "release": "Command Clarity",
+  "name": "Command Clarity",
+  "build": "8.7.6",
+  "seal": "command-clarity-876-d91c7a",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

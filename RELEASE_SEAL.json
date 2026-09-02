@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.5",
-  "release": "Clear Deck",
-  "seal": "clear-deck-875-b64f2c",
+  "build": "8.7.6",
+  "release": "Command Clarity",
+  "seal": "command-clarity-876-d91c7a",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clear Deck",
-  "name": "Clear Deck",
-  "releaseName": "Clear Deck"
+  "release_name": "Command Clarity",
+  "name": "Command Clarity",
+  "releaseName": "Command Clarity"
 }
