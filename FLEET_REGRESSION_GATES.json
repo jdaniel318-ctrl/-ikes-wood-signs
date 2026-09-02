@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.1",
-  "release": "Clear Helm",
+  "build": "8.7.2",
+  "release": "True Bearing",
   "excluded_sources": [
     "The situation"
   ],

@@ -1,4 +1,4 @@
-## 8.7.1 — Clear Helm
+## 8.7.2 — True Bearing
 - Shows the server-authoritative current state before the Admiral makes a change.
 - Presents a numbered Vessel → Feature → Setting workflow with a clearly marked current choice.
 - Replaces internal project and capability identifiers with plain-language confirmation.

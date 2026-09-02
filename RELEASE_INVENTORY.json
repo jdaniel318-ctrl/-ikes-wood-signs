@@ -1,8 +1,8 @@
 {
-  "release": "Clear Helm",
-  "name": "Clear Helm",
-  "build": "8.7.1",
-  "seal": "clear-helm-871-c8e21a",
+  "release": "True Bearing",
+  "name": "True Bearing",
+  "build": "8.7.2",
+  "seal": "true-bearing-872-a91f6c",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

@@ -1,4 +1,4 @@
-# Dark Sky 8.7.1 — Clear Helm
+# Dark Sky 8.7.2 — True Bearing
 
 The Admiral feature station now reads the selected vessel-feature state before any change, presents one numbered Vessel → Feature → Setting flow, marks the current Off/Free/Paid choice, and confirms changes in plain language. Verified identity controls collapse after authentication, and choosing Paid still does not itself start billing.
 

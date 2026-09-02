@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.1",
-  "release": "Clear Helm",
-  "seal": "clear-helm-871-c8e21a",
+  "build": "8.7.2",
+  "release": "True Bearing",
+  "seal": "true-bearing-872-a91f6c",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clear Helm",
-  "name": "Clear Helm",
-  "releaseName": "Clear Helm"
+  "release_name": "True Bearing",
+  "name": "True Bearing",
+  "releaseName": "True Bearing"
 }
