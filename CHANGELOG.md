@@ -1,3 +1,9 @@
+## 8.7.11 — Fixed Bearing
+- Detects the screenshot-time upward reset on the actual professional Admiral scroll plane.
+- Restores the saved entitlement position while an identity field remains focused, with delayed settlement passes for Safari.
+- Lets deliberate touch or pointer scrolling take precedence over automatic repair.
+- Preserves the confirmed authentication, in-deck sign-out, and exact-vessel Supabase behavior.
+
 ## 8.7.10 — Held Course
 - Retains the professional Admiral deck's scroll position while an identity field owns the iPad keyboard.
 - Restores that anchor after Safari's visual viewport expands, including screenshot-triggered keyboard dismissal.

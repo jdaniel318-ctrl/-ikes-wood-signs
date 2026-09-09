@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.10",
-  "release": "Held Course",
-  "seal": "held-course-8710-b74e2c",
+  "build": "8.7.11",
+  "release": "Fixed Bearing",
+  "seal": "fixed-bearing-8711-d09f3a",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Held Course",
-  "name": "Held Course",
-  "releaseName": "Held Course"
+  "release_name": "Fixed Bearing",
+  "name": "Fixed Bearing",
+  "releaseName": "Fixed Bearing"
 }

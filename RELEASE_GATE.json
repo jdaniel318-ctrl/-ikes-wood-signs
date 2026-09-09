@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.10",
-  "release": "Held Course",
-  "generatedAt": "2026-09-09T01:04:59Z",
+  "build": "8.7.11",
+  "release": "Fixed Bearing",
+  "generatedAt": "2026-09-09T01:28:13Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.10 preserves the open Fleet Feature Entitlements position when iPad Safari expands or dismisses its keyboard, including screenshot-triggered viewport changes. Authentication and sign-out behavior, True Touch hit geometry, foreign-deployment quarantine, and server-governed Supabase contracts remain unchanged.",
-  "candidate": "8.7.10",
+  "note": "8.7.11 corrects Safari's screenshot-time upward scroll reset while an Admiral identity field remains focused. It listens to the actual professional-deck scroll plane as well as visual viewport settlement, respects deliberate touch scrolling, and preserves authentication, sign-out, and server-governed Supabase contracts.",
+  "candidate": "8.7.11",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -259,6 +259,8 @@
     ,"hidden_state_outranks_touch_display_rule": true
     ,"admiral_identity_keyboard_scroll_anchor": true
     ,"visual_viewport_keyboard_settlement": true
+    ,"focused_identity_abrupt_scroll_reset_guard": true
+    ,"deliberate_touch_scroll_outranks_scroll_repair": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -310,8 +312,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.10",
-    "seal": "held-course-8710-b74e2c",
+    "build": "8.7.11",
+    "seal": "fixed-bearing-8711-d09f3a",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

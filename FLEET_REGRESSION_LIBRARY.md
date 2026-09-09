@@ -1,3 +1,12 @@
+# 8.7.11 Fixed Bearing Addendum
+
+Protected lessons from live iPad operation:
+- Screenshot transitions may reset a fixed overlay's scroll position without producing a useful visual-viewport resize signal.
+- While an Admiral identity field remains focused, a large unsolicited upward reset must return to the saved entitlement position.
+- Captured scroll correction must wait for Safari to settle and must yield to deliberate touch or pointer scrolling.
+
+---
+
 # 8.7.10 Held Course Addendum
 
 Protected lessons from live iPad operation:

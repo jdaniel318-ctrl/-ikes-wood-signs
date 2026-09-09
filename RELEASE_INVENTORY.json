@@ -1,8 +1,8 @@
 {
-  "release": "Held Course",
-  "name": "Held Course",
-  "build": "8.7.10",
-  "seal": "held-course-8710-b74e2c",
+  "release": "Fixed Bearing",
+  "name": "Fixed Bearing",
+  "build": "8.7.11",
+  "seal": "fixed-bearing-8711-d09f3a",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

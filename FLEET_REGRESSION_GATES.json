@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.10",
-  "release": "Held Course",
+  "build": "8.7.11",
+  "release": "Fixed Bearing",
   "excluded_sources": [
     "The situation"
   ],
@@ -21,6 +21,7 @@
       ,"admiral_signed_out_clears_current_entitlement_highlight"
       ,"project_feature_auth_opens_admiral_without_engine_login_flash"
       ,"admiral_identity_keyboard_dismiss_preserves_entitlement_scroll_anchor"
+      ,"admiral_identity_screenshot_scroll_reset_is_corrected_while_focused"
     ],
     "watertight": [
       "authority_separation",

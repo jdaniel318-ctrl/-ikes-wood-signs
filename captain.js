@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.7.10';
+  const UPPER_COMMAND_BUILD='8.7.11';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -1910,35 +1910,56 @@ if(document.readyState==='loading'){
   const actionButtons=()=>[document.getElementById('admiralTurnOff'),document.getElementById('admiralMakeFree'),document.getElementById('admiralGrantPaid')].filter(Boolean);
   const station=()=>document.getElementById('admiralEntitlementStation');
   const identityInputSelector='#admiralIdentityEmail,#admiralIdentityPassword';
-  let identityScrollAnchor=null,identityAnchorClearTimer=0,identityRestoreTimer=0;
+  let identityScrollAnchor=null,identityAnchorClearTimer=0,identityRestoreTimers=[],identityScrollRepairing=false,lastIdentityDeckGesture=0;
   const professionalDeck=()=>{const deck=document.getElementById('admiralDeck');return deck?.dataset.mode==='professional'&&!deck.classList.contains('hidden')?deck:null;};
   function captureIdentityScrollAnchor(){
     const deck=professionalDeck(),panel=station();if(!deck||!panel||panel.classList.contains('hidden'))return;
     window.clearTimeout(identityAnchorClearTimer);
-    identityScrollAnchor={top:deck.scrollTop,left:deck.scrollLeft,windowTop:window.scrollY,viewportHeight:window.visualViewport?.height||window.innerHeight,minViewportHeight:window.visualViewport?.height||window.innerHeight};
+    identityScrollAnchor={top:deck.scrollTop,left:deck.scrollLeft,windowTop:window.scrollY,minViewportHeight:window.visualViewport?.height||window.innerHeight,protectUntil:Number.POSITIVE_INFINITY};
   }
   function restoreIdentityScrollAnchor(){
     const anchor=identityScrollAnchor,deck=professionalDeck(),panel=station();
     if(!anchor||!deck||!panel||panel.classList.contains('hidden'))return;
     const maxTop=Math.max(0,deck.scrollHeight-deck.clientHeight);
+    identityScrollRepairing=true;
     deck.scrollTo({top:Math.min(anchor.top,maxTop),left:anchor.left,behavior:'auto'});
     if(Math.abs(window.scrollY-anchor.windowTop)>1)window.scrollTo({top:anchor.windowTop,left:window.scrollX,behavior:'auto'});
+    requestAnimationFrame(()=>{identityScrollRepairing=false;});
   }
   function settleIdentityScroll(){
-    window.clearTimeout(identityRestoreTimer);
+    identityRestoreTimers.forEach(id=>window.clearTimeout(id));identityRestoreTimers=[];
     requestAnimationFrame(()=>requestAnimationFrame(restoreIdentityScrollAnchor));
-    identityRestoreTimer=window.setTimeout(restoreIdentityScrollAnchor,180);
+    [80,260,620,1100].forEach(delay=>identityRestoreTimers.push(window.setTimeout(restoreIdentityScrollAnchor,delay)));
   }
   // iPad Safari can reset a fixed overlay's scrollTop while its keyboard viewport
   // expands (including after a screenshot). Keep the open entitlement station on
   // the same professional-deck course through that resize.
-  document.addEventListener('pointerdown',event=>{if(event.target.matches(identityInputSelector))captureIdentityScrollAnchor();},{passive:true});
+  function noteIdentityDeckGesture(event){
+    if(event.target.matches(identityInputSelector)){captureIdentityScrollAnchor();return;}
+    if(event.target.closest?.('#admiralDeck'))lastIdentityDeckGesture=Date.now();
+  }
+  document.addEventListener('pointerdown',noteIdentityDeckGesture,{passive:true});
+  document.addEventListener('touchstart',noteIdentityDeckGesture,{passive:true});
   document.addEventListener('focusin',event=>{if(event.target.matches(identityInputSelector)&&!identityScrollAnchor)captureIdentityScrollAnchor();});
   document.addEventListener('focusout',event=>{
     if(!event.target.matches(identityInputSelector))return;
+    if(identityScrollAnchor)identityScrollAnchor.protectUntil=Date.now()+1600;
     settleIdentityScroll();
-    identityAnchorClearTimer=window.setTimeout(()=>{identityScrollAnchor=null;},1200);
+    identityAnchorClearTimer=window.setTimeout(()=>{identityScrollAnchor=null;},1800);
   });
+  // Safari's screenshot transition can reset scrollTop without changing the
+  // visual viewport. A captured scroll event is the reliable signal in that
+  // path. Only correct a large upward reset while identity focus is protected;
+  // a real touch/pointer gesture always wins.
+  document.addEventListener('scroll',event=>{
+    const anchor=identityScrollAnchor,deck=professionalDeck();if(!anchor||!deck||identityScrollRepairing)return;
+    const identityFocused=document.activeElement?.matches?.(identityInputSelector);
+    if(!identityFocused&&Date.now()>anchor.protectUntil)return;
+    if(Date.now()-lastIdentityDeckGesture<900)return;
+    const deckReset=event.target===deck&&deck.scrollTop<anchor.top-96;
+    const windowReset=(event.target===document||event.target===document.documentElement||event.target===document.body)&&Math.abs(window.scrollY-anchor.windowTop)>1;
+    if(deckReset||windowReset)settleIdentityScroll();
+  },true);
   window.visualViewport?.addEventListener('resize',()=>{
     if(!identityScrollAnchor)return;
     const height=window.visualViewport.height;

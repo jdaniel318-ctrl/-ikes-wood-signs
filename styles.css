@@ -15054,6 +15054,7 @@ body.engine-workspace-open #projectEngineControl .project-engine-head{position:r
 /* 8.7.9 Clean Signal — semantic identity state outranks shared touch presentation. */
 .admiral-identity-row button.hidden{display:none!important;pointer-events:none!important}
 /* 8.7.10 Held Course — JavaScript retains this sole professional scroll plane through iPad keyboard viewport settlement. */
+/* 8.7.11 Fixed Bearing — captured scroll resets are corrected while an Admiral identity field remains focused. */
 .admiral-entitlement-station{scroll-margin-top:0!important}
 @media(min-width:821px) and (max-width:1180px){
   .admiral-deck-overlay[data-mode="professional"]{padding:0 18px 24px!important}

@@ -1,3 +1,7 @@
+# Dark Sky 8.7.11 — Fixed Bearing
+
+Fixed Bearing guards the professional Admiral scroll plane against the abrupt reset observed when an iPad screenshot leaves the email field focused. It reacts to the actual scroll reset, restores the open entitlement station after Safari settles, and yields to deliberate touch scrolling. Supabase authentication, sign-out, and exact-vessel entitlement authority remain unchanged.
+
 # Dark Sky 8.7.10 — Held Course
 
 Held Course keeps the open Fleet Feature Entitlements panel in place while iPad Safari expands or dismisses its on-screen keyboard, including the viewport change observed after taking a screenshot. The repair anchors the single professional-deck scroll plane around Admiral identity input without changing Supabase authentication, sign-out, or exact-vessel entitlement authority.
