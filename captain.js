@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.7.13';
+  const UPPER_COMMAND_BUILD='8.7.14';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -210,6 +210,7 @@
     clearHash();
     requestAnimationFrame(() => { try { window.scrollTo({top:0,left:0,behavior:'auto'}); } catch (_) { window.scrollTo(0,0); } });
   }
+  window.DarkSkySecureUpperCommand=secure;
 
   function fleetSnapshot(){
     return typeof window.blackFlagDeploymentFleetSnapshot==='function'
@@ -660,6 +661,7 @@
     loadUpperCommandVisual('admiral');
 
     const returnToEngine=()=>{
+      if(typeof window.DarkSkyReturnToEngine==='function'){window.DarkSkyReturnToEngine();return;}
       // Clear every Upper Command surface first, then restore the canonical
       // Engine state. The prior path only hid Admiral and could leave Safari
       // with no positive Engine transition to complete.

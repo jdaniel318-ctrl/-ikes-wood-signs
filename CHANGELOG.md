@@ -1,3 +1,9 @@
+## 8.7.14 — Hard Return
+- Captures Return to Engine at the document touch boundary before Admiral deck handlers can interfere.
+- Closes all Captain and Admiral surfaces synchronously through an independent global route.
+- Restores Engine mode and the Engine panel before asynchronous refresh work begins.
+- Preserves movement protection so scrolling cannot trigger the return.
+
 ## 8.7.13 — True Return
 - Executes Return to Engine on a protected pointer release instead of depending on Safari's dropped synthesized click.
 - Rejects pointer movement beyond the tap threshold so scrolling cannot trigger navigation.

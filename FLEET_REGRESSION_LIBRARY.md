@@ -1,3 +1,10 @@
+# 8.7.14 Hard Return Addendum
+
+Protected lesson from live iPad operation:
+- When a critical control visibly presses but both click and element-level pointer release fail, capture touch completion above the nested interaction layer and restore the destination synchronously before refresh work.
+
+---
+
 # 8.7.13 True Return Addendum
 
 Protected lesson from live iPad operation:

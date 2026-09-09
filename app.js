@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.7.13';
+  const BUILD_VERSION='8.7.14';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -10737,6 +10737,36 @@
   // Upper Command returns through the same complete Engine restoration used by
   // the rest of the application instead of assuming the covered deck is intact.
   window.DarkSkyOpenEnginePanel=openEnginePanel;
+  let upperCommandReturnInFlight=false;
+  window.DarkSkyReturnToEngine=()=>{
+    if(upperCommandReturnInFlight)return;
+    upperCommandReturnInFlight=true;
+    try{window.DarkSkySecureUpperCommand?.();}catch(err){console.warn('Upper Command secure warning',err);}
+    for(const id of ['admiralDeck','admiralGateOverlay','captainQuarters','captainQuartersGate','captainGlobalExit'])$(id)?.classList.add('hidden');
+    document.body.classList.remove('boot-locked','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','engine-workspace-open','captain-modal-open','captain-authorized','captain-command-open');
+    document.body.classList.add('engine-mode');
+    $('blackFlagEntryGate')?.classList.add('hidden');
+    $('enginePanel')?.classList.remove('hidden');
+    Promise.resolve(openEnginePanel()).catch(err=>console.warn('Hard Return Engine refresh warning',err)).finally(()=>{upperCommandReturnInFlight=false;});
+  };
+  if(!window.__darkSkyAdmiralHardReturnBound){
+    window.__darkSkyAdmiralHardReturnBound=true;
+    let returnTouch=null;
+    document.addEventListener('touchstart',event=>{
+      const button=event.target?.closest?.('#admiralDeckReturnBtn');
+      const touch=event.changedTouches?.[0];
+      returnTouch=button&&touch?{id:touch.identifier,x:touch.clientX,y:touch.clientY}:null;
+    },{capture:true,passive:true});
+    document.addEventListener('touchcancel',()=>{returnTouch=null;},{capture:true,passive:true});
+    document.addEventListener('touchend',event=>{
+      const start=returnTouch;returnTouch=null;
+      if(!start)return;
+      const touch=[...(event.changedTouches||[])].find(item=>item.identifier===start.id);
+      if(!touch||Math.hypot(touch.clientX-start.x,touch.clientY-start.y)>18)return;
+      event.preventDefault();event.stopImmediatePropagation();
+      window.DarkSkyReturnToEngine();
+    },{capture:true,passive:false});
+  }
 
   async function loadFeatureSettings(){
     const p=activeProject();

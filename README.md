@@ -1,3 +1,7 @@
+# Dark Sky 8.7.14 — Hard Return
+
+Hard Return moves the iPad route outside the Admiral interaction layer. A capture-phase touch listener recognizes the Return to Engine control before nested deck behavior can cancel the event, closes every Upper Command surface synchronously, and restores the canonical Engine Room.
+
 # Dark Sky 8.7.13 — True Return
 
 True Return commits Admiral-to-Engine navigation on the iPad pointer release itself. It no longer depends on Safari producing a later synthesized click after visibly pressing the button; movement protection prevents a scroll gesture from activating the route.

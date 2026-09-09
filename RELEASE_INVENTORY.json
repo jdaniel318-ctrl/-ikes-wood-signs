@@ -1,8 +1,8 @@
 {
-  "release": "True Return",
-  "name": "True Return",
-  "build": "8.7.13",
-  "seal": "true-return-8713-b47c2e",
+  "release": "Hard Return",
+  "name": "Hard Return",
+  "build": "8.7.14",
+  "seal": "hard-return-8714-c82f6d",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

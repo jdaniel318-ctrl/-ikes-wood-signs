@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.13",
-  "release": "True Return",
-  "seal": "true-return-8713-b47c2e",
+  "build": "8.7.14",
+  "release": "Hard Return",
+  "seal": "hard-return-8714-c82f6d",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "True Return",
-  "name": "True Return",
-  "releaseName": "True Return"
+  "release_name": "Hard Return",
+  "name": "Hard Return",
+  "releaseName": "Hard Return"
 }

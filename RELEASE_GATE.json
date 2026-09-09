@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.13",
-  "release": "True Return",
+  "build": "8.7.14",
+  "release": "Hard Return",
   "generatedAt": "2026-09-09T01:28:13Z",
   "checks": {
     "build_version": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.13 commits Return to Engine on a movement-guarded pointer release because live iPad Safari showed the pressed state but dropped the synthesized click. The canonical Engine restoration remains the destination.",
-  "candidate": "8.7.13",
+  "note": "8.7.14 captures the live iPad touch above the Admiral interaction layer, closes every Upper Command surface synchronously, and restores the canonical Engine before asynchronous refresh work.",
+  "candidate": "8.7.14",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -312,8 +312,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.13",
-    "seal": "true-return-8713-b47c2e",
+    "build": "8.7.14",
+    "seal": "hard-return-8714-c82f6d",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
