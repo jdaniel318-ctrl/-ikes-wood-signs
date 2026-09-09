@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.7.11';
+  const UPPER_COMMAND_BUILD='8.7.12';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -659,11 +659,23 @@
     document.body.appendChild(deck);
     loadUpperCommandVisual('admiral');
 
-    const returnToEngine=()=>{hide('admiralDeck');hide('admiralGateOverlay');hide('captainQuarters');hide('captainGlobalExit');document.body.classList.remove('captain-modal-open','captain-authorized');requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'instant'}));};
+    const returnToEngine=()=>{
+      // Clear every Upper Command surface first, then restore the canonical
+      // Engine state. The prior path only hid Admiral and could leave Safari
+      // with no positive Engine transition to complete.
+      secure();
+      document.body.classList.remove('boot-locked','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','engine-workspace-open');
+      document.body.classList.add('engine-mode');
+      byId('blackFlagEntryGate')?.classList.add('hidden');
+      byId('enginePanel')?.classList.remove('hidden');
+      const openEngine=window.DarkSkyOpenEnginePanel;
+      if(typeof openEngine==='function')Promise.resolve(openEngine()).catch(err=>console.warn('Admiral return to Engine refresh warning',err));
+      requestAnimationFrame(()=>{try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){window.scrollTo(0,0);}});
+    };
     const closeGate=()=>{const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';if(direct)returnToEngine();};
     const returnToCaptain=()=>{if(deck.dataset.entrySource==='engine'){returnToEngine();return;}hide('admiralDeck');closeGate();show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
     byId('admiralGateReturnBtn').onclick=closeGate;
-    byId('admiralDeckReturnBtn').onclick=returnToCaptain;
+    byId('admiralDeckReturnBtn').onclick=event=>{event.preventDefault();event.stopPropagation();event.currentTarget?.blur();returnToCaptain();};
     byId('admiralDeckModeBtn').onclick=()=>{
       const professional=deck.dataset.mode==='professional';
       deck.dataset.mode=professional?'ceremonial':'professional';
@@ -1975,7 +1987,7 @@ if(document.readyState==='loading'){
   async function refreshSession(s){const c=cfg();if(!c||!s?.refresh_token)return null;const r=await fetch(c.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:headers(),body:JSON.stringify({refresh_token:s.refresh_token})});return r.ok?saveSession(await r.json()):null;}
   async function currentSession(){let s=readSession();if(s&&s.expires_at>Date.now()+30000)return s;if(s?.refresh_token)s=await refreshSession(s);return s;}
   async function verifyAdmiral(){const c=cfg(),s=await currentSession();if(!c||!s?.access_token)return false;const r=await fetch(c.url+'/rest/v1/fleet_global_authorities?select=user_id,authority_role,active&authority_role=eq.admiral&active=eq.true',{headers:{...headers(s.access_token),Accept:'application/json'}});if(!r.ok)return false;const rows=await r.json();return Array.isArray(rows)&&rows.length===1;}
-  async function syncIdentityUi(){const ok=await verifyAdmiral();if(state())state().textContent=ok?'ADMIRAL IDENTITY VERIFIED':'ADMIRAL IDENTITY REQUIRED';station()?.classList.toggle('identity-verified',ok);setBusy(!ok);document.getElementById('admiralIdentitySignOut')?.classList.toggle('hidden',!ok);if(ok){await loadEntitlement();}else{clearPaintedState();if(currentSetting())currentSetting().textContent='SIGN IN TO VIEW';if(currentDetail())currentDetail().textContent='The current setting appears here before you make a change.';}return ok;}
+  async function syncIdentityUi(){const ok=await verifyAdmiral();if(state())state().textContent=ok?'ADMIRAL IDENTITY VERIFIED':'ADMIRAL IDENTITY REQUIRED';station()?.classList.toggle('identity-verified',ok);setBusy(!ok);for(const id of ['admiralIdentitySignIn','admiralIdentityRecover'])document.getElementById(id)?.classList.toggle('hidden',ok);for(const id of ['admiralIdentityEmail','admiralIdentityPassword'])document.getElementById(id)?.closest('label')?.classList.toggle('hidden',ok);document.getElementById('admiralIdentitySignOut')?.classList.toggle('hidden',!ok);if(ok){await loadEntitlement();}else{clearPaintedState();if(currentSetting())currentSetting().textContent='SIGN IN TO VIEW';if(currentDetail())currentDetail().textContent='The current setting appears here before you make a change.';}return ok;}
   window.DarkSkySyncAdmiralIdentity=syncIdentityUi;
   async function signIn(){const c=cfg(),email=document.getElementById('admiralIdentityEmail')?.value?.trim().toLowerCase(),password=document.getElementById('admiralIdentityPassword')?.value||'';if(!c?.url||!c?.publishableKey)throw new Error('Supabase identity is not configured.');if(!email||!password)throw new Error('Enter the Admiral email and password.');const r=await fetch(c.url+'/auth/v1/token?grant_type=password',{method:'POST',headers:headers(),body:JSON.stringify({email,password})});if(!r.ok)throw new Error('Admiral sign-in failed.');saveSession(await r.json());if(!(await verifyAdmiral())){clearSession();throw new Error('This account is authenticated but does not hold active Admiral authority.');}const passwordInput=document.getElementById('admiralIdentityPassword');if(passwordInput)passwordInput.value='';await syncIdentityUi();}
   async function loadEntitlement(){const c=cfg(),s=await currentSession();if(!c||!s?.access_token)return null;const vessel=selected('admiralEntitlementVessel'),feature=selected('admiralEntitlementCapability');setBusy(true);if(currentSetting())currentSetting().textContent='CHECKING…';const r=await fetch(c.url+'/rest/v1/rpc/admiral_get_service_entitlement',{method:'POST',headers:{...headers(s.access_token),Accept:'application/json'},body:JSON.stringify({p_project_id:vessel.value,p_capability_key:feature.value})});if(!r.ok){setBusy(false);throw new Error('The current setting could not be loaded. No change was made.');}const data=await r.json();paintState(data?.current_state||'off');setBusy(false);if(result())result().textContent=feature.label+' is currently '+(data?.current_state||'off').toUpperCase()+' for '+vessel.label+'.';return data;}
@@ -1988,5 +2000,8 @@ if(document.readyState==='loading'){
     if(e.target.closest('#admiralMakeFree')){try{if(result())result().textContent='Making feature free…';await setEntitlement('free');}catch(err){if(result())result().textContent=String(err?.message||err);}return;}
     if(e.target.closest('#admiralGrantPaid')){try{if(result())result().textContent='Granting paid upgrade…';await setEntitlement('paid');}catch(err){if(result())result().textContent=String(err?.message||err);}return;}
   });
-  document.addEventListener('change',async e=>{if(!e.target.matches('#admiralEntitlementVessel,#admiralEntitlementCapability')||!station()?.classList.contains('identity-verified'))return;try{await loadEntitlement();}catch(err){if(result())result().textContent=String(err?.message||err);}});
+  document.addEventListener('change',async e=>{if(!e.target.matches('#admiralEntitlementVessel,#admiralEntitlementCapability'))return;const control=e.target;control.blur();if(!station()?.classList.contains('identity-verified'))return;try{await loadEntitlement();}catch(err){if(result())result().textContent=String(err?.message||err);}});
+  const releaseEntitlementPicker=()=>{const active=document.activeElement;if(active?.matches?.('#admiralEntitlementVessel,#admiralEntitlementCapability'))active.blur();};
+  window.addEventListener('pageshow',releaseEntitlementPicker);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')releaseEntitlementPicker();});
 })();

@@ -1,3 +1,7 @@
+# Dark Sky 8.7.12 — Clear Passage
+
+Clear Passage makes Return to Engine a positive, canonical transition instead of merely uncovering an assumed Engine state. It also gives the iPad control explicit touch geometry, removes redundant sign-in actions after Admiral verification, and releases entitlement pickers after a choice so Safari cannot reopen them when the app resumes.
+
 # Dark Sky 8.7.11 — Fixed Bearing
 
 Fixed Bearing guards the professional Admiral scroll plane against the abrupt reset observed when an iPad screenshot leaves the email field focused. It reacts to the actual scroll reset, restores the open entitlement station after Safari settles, and yields to deliberate touch scrolling. Supabase authentication, sign-out, and exact-vessel entitlement authority remain unchanged.

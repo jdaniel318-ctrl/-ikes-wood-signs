@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.7.11';
+  const BUILD_VERSION='8.7.12';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -10734,6 +10734,9 @@
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'session',action:'engine.opened',detail:'v3 command deck'});
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
+  // Upper Command returns through the same complete Engine restoration used by
+  // the rest of the application instead of assuming the covered deck is intact.
+  window.DarkSkyOpenEnginePanel=openEnginePanel;
 
   async function loadFeatureSettings(){
     const p=activeProject();

@@ -1,3 +1,13 @@
+# 8.7.12 Clear Passage Addendum
+
+Protected lessons from live iPad operation:
+- Return to Engine must positively restore canonical Engine state; hiding an overlay is not navigation proof.
+- A header return control must own its exact iPad hit geometry and one activation handler.
+- Verified identity must remove redundant authentication actions from the working surface.
+- A native entitlement picker must release focus after selection and when Safari resumes.
+
+---
+
 # 8.7.11 Fixed Bearing Addendum
 
 Protected lessons from live iPad operation:

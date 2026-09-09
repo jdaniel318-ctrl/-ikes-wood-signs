@@ -1,8 +1,8 @@
 {
-  "release": "Fixed Bearing",
-  "name": "Fixed Bearing",
-  "build": "8.7.11",
-  "seal": "fixed-bearing-8711-d09f3a",
+  "release": "Clear Passage",
+  "name": "Clear Passage",
+  "build": "8.7.12",
+  "seal": "clear-passage-8712-e61a4b",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

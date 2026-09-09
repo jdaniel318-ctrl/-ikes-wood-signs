@@ -1,3 +1,9 @@
+## 8.7.12 — Clear Passage
+- Routes Return to Engine through the canonical Engine restoration routine and restores a valid Engine surface synchronously.
+- Gives the Admiral header return control explicit iPad touch ownership and one click handler.
+- Hides redundant Authenticate and Recover controls while Admiral identity is verified.
+- Releases entitlement selector focus after each choice and when Safari resumes.
+
 ## 8.7.11 — Fixed Bearing
 - Detects the screenshot-time upward reset on the actual professional Admiral scroll plane.
 - Restores the saved entitlement position while an identity field remains focused, with delayed settlement passes for Safari.

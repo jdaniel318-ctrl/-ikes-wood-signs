@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.11",
-  "release": "Fixed Bearing",
-  "seal": "fixed-bearing-8711-d09f3a",
+  "build": "8.7.12",
+  "release": "Clear Passage",
+  "seal": "clear-passage-8712-e61a4b",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fixed Bearing",
-  "name": "Fixed Bearing",
-  "releaseName": "Fixed Bearing"
+  "release_name": "Clear Passage",
+  "name": "Clear Passage",
+  "releaseName": "Clear Passage"
 }
