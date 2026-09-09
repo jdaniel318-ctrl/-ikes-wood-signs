@@ -1,3 +1,10 @@
+## 8.8.2 — Navigation Bulkhead
+- Moves upper-command Engine escape authority into the verified document shell so it exists before Captain or Admiral runtime modules execute.
+- Commits on pointerdown—the boundary the live iPad visibly proves—without waiting for Safari's unreliable synthesized click.
+- Makes Engine, Captain and Admiral mutually exclusive through a body-level command-surface state enforced by CSS.
+- Hides every upper-command layer and reveals canonical Engine synchronously before navigator refresh work begins.
+- Keeps controller routing and a genuine Engine URL as secondary fallbacks without changing authentication, project data or entitlements.
+
 ## 8.8.1 — Open Channel
 - Makes the Admiral-to-Engine crossing visible synchronously in the Admiral controller before any Engine refresh begins.
 - Closes every Admiral and Captain layer, restores Engine mode, and reveals the canonical Engine panel from the acknowledged tap.

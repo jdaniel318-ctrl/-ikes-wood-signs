@@ -1,6 +1,6 @@
-# Dark Sky 8.8.1 — Open Channel
+# Dark Sky 8.8.2 — Navigation Bulkhead
 
-Open Channel makes Admiral-to-Engine return a visible, synchronous command crossing. The local controller closes every upper-command layer and reveals Engine before the shared navigator refreshes diagnostics; the genuine Engine link remains available if the runtime is absent. A tap can no longer remain stranded in a persistent pressed state. Project data, vessel identity, and Admiral-controlled commercial entitlements remain untouched.
+Navigation Bulkhead moves every upper-command Engine escape into the verified page shell, ahead of Captain and Admiral runtime modules. The shell commits on the iPad's proven pointer boundary, closes all upper-command layers, applies one exclusive Engine surface state, and only then asks the shared navigator to refresh data. Controller handlers and a genuine Engine URL remain secondary fallbacks. Project data, vessel identity, authentication records, and Admiral-controlled commercial entitlements remain untouched.
 
 # Dark Sky 8.7.13 — True Return
 

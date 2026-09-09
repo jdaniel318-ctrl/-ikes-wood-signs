@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.1",
-  "release": "Open Channel",
+  "build": "8.8.2",
+  "release": "Navigation Bulkhead",
   "excluded_sources": [
     "The situation"
   ],
@@ -151,6 +151,9 @@
       ,"single_command_navigator_owns_cross_command_routes"
       ,"admiral_return_has_native_engine_fallback"
       ,"admiral_return_commits_local_engine_surface_before_refresh"
+      ,"verified_shell_owns_upper_command_engine_escape"
+      ,"pointerdown_escape_precedes_synthesized_click"
+      ,"command_surfaces_are_css_mutually_exclusive"
       ,"engine_visible_before_diagnostics_refresh"
       ,"command_route_state_is_recorded"
     ],

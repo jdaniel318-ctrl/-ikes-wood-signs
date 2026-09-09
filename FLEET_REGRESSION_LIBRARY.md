@@ -1,6 +1,8 @@
-# 8.8.1 Open Channel Addendum
+# 8.8.2 Navigation Bulkhead Addendum
 
-- Engine, Captain and Admiral cross-command transitions must use one navigator.
+- An upper-command Engine escape belongs to the verified document shell and must exist before feature controllers load.
+- The live iPad's proven pointer boundary may commit the escape without waiting for a synthesized click.
+- Engine, Captain and Admiral are mutually exclusive command surfaces; CSS must reject competing visible states.
 - Admiral return must remain a real link to the Engine route when JavaScript does not handle the tap.
 - An acknowledged Admiral-to-Engine tap must close upper-command layers and reveal Engine synchronously before shared refresh work.
 - Press feedback must end with the physical press; a persistent pressed state is not navigation proof.
@@ -8,6 +10,12 @@
 - The active command surface and transition generation must be recorded for runtime inspection.
 - Cross-command navigation must not alter project identity, project data or feature entitlements.
 - Professional surfaces remain primary; cinematic surfaces may decorate entry but never own routing.
+
+# 8.8.1 Open Channel Addendum
+
+- Engine, Captain and Admiral cross-command transitions use one shared navigator after local visibility is secured.
+- Engine visibility commits before diagnostics, fleet statistics or proof refresh begins.
+- Press feedback ends with the physical press; a persistent pressed state is not navigation proof.
 
 # 8.7.13 True Return Addendum
 

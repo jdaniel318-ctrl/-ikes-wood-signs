@@ -1,8 +1,8 @@
 {
-  "release": "Open Channel",
-  "name": "Open Channel",
-  "build": "8.8.1",
-  "seal": "open-channel-881-c7e4b2",
+  "release": "Navigation Bulkhead",
+  "name": "Navigation Bulkhead",
+  "build": "8.8.2",
+  "seal": "navigation-bulkhead-882-f31a6c",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

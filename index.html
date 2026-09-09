@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.1',seal:'open-channel-881-c7e4b2'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.2',seal:'navigation-bulkhead-882-f31a6c'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -70,6 +70,56 @@
     };
     window.__darkSkyRuntimeEntryWitness8620('document-first-light',{readyState:document.readyState});
     window.__darkSkyExpectedRelease = DARK_SKY_RELEASE;
+    // Upper Command Navigation Bulkhead — this escape is owned by the verified
+    // document shell, not by Captain or Admiral modules. It is installed before
+    // runtime loading so a stale, delayed, or failed module cannot trap the user.
+    (()=>{
+      const upperCommandIds=['admiralDeck','admiralGateOverlay','captainQuarters','captainQuartersGate','captainGlobalExit','captainCommandWorkspace','foundryWorkspace','visualForgeOverlay'];
+      let lastCommitAt=0;
+      function commitEngineEscape(source='upper-command'){
+        const body=document.body,panel=document.getElementById('enginePanel');
+        if(!body||!panel)return false;
+        const now=Date.now();
+        if(now-lastCommitAt<700&&body.dataset.commandSurface==='engine'&&!panel.classList.contains('hidden'))return true;
+        upperCommandIds.forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+        body.classList.remove('boot-locked','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','engine-workspace-open','captain-modal-open','captain-authorized','captain-command-open');
+        body.classList.add('engine-mode');
+        body.dataset.commandSurface='engine';
+        document.getElementById('blackFlagEntryGate')?.classList.add('hidden');
+        panel.classList.remove('hidden');
+        window.__darkSkyRuntimeEntryWitness8620?.('upper-command-engine-escape-visible',{source,elapsedSincePrior:Math.max(0,now-lastCommitAt)});
+        lastCommitAt=now;
+        requestAnimationFrame(()=>{try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){window.scrollTo(0,0);}});
+        Promise.resolve().then(()=>{
+          const navigator=window.DarkSkyFleetNavigator;
+          if(typeof navigator?.navigate==='function')return navigator.navigate('engine',{source:`shell-bulkhead:${source}`});
+          if(typeof window.DarkSkyOpenEnginePanel==='function')return window.DarkSkyOpenEnginePanel();
+          return null;
+        }).catch(err=>window.__darkSkyRuntimeEntryWitness8620?.('upper-command-engine-refresh-warning',{source,message:String(err?.message||err)}));
+        return true;
+      }
+      function isEngineEscapeControl(target){
+        const control=target?.closest?.('#admiralDeckReturnBtn,#admiralGateReturnBtn,#captainCommandReturnBtn,#captainQuartersCloseBtn,#captainExitBtn,#captainGlobalExit,#captainGateCloseBtn');
+        if(!control)return null;
+        if(control.id==='admiralDeckReturnBtn'&&control.dataset.routeTarget==='captain')return null;
+        if(control.id==='admiralGateReturnBtn'&&document.getElementById('admiralGateOverlay')?.dataset.entrySource!=='engine')return null;
+        return control;
+      }
+      function interceptEngineEscape(event){
+        const control=isEngineEscapeControl(event.target);if(!control)return;
+        event.preventDefault();event.stopImmediatePropagation();
+        const committed=commitEngineEscape(event.type);
+        if(!committed){const href=control.href||'./index.html?surface=engine';window.location.assign(href);}
+      }
+      window.DarkSkyUpperCommandEscape=commitEngineEscape;
+      // The iPad visibly acknowledges the initial contact even when it later
+      // drops the synthesized click. Pointer and touch are both captured and
+      // the command is idempotent; click remains the keyboard/assistive fallback.
+      document.addEventListener('pointerdown',interceptEngineEscape,{capture:true,passive:false});
+      document.addEventListener('touchstart',interceptEngineEscape,{capture:true,passive:false});
+      document.addEventListener('click',interceptEngineEscape,true);
+    })();
+    // End Upper Command Navigation Bulkhead.
     window.__darkSkyReleaseGateState = 'preflight';
     document.documentElement.classList.add('dark-sky-release-preflight');
     // Dark Sky 8.2.8 IKE FIT — explicit authority route wins before any persisted marker.
@@ -1239,7 +1289,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small>8.8.1 • OPEN CHANNEL</small><h3>What do you want to do?</h3><p>Daily work is forward. Engineering evidence, release proof, and fleet learning stay available in More Systems.</p></div>
+        <div class="clear-deck-brief"><small>8.8.2 • NAVIGATION BULKHEAD</small><h3>What do you want to do?</h3><p>Daily work is forward. Engineering evidence, release proof, and fleet learning stay available in More Systems.</p></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE PROJECTS</strong><small>Open a vessel's Project Control, customer experience, owner access, or commissioning.</small></span></button>
           <button type="button" class="clear-deck-action" data-clear-deck-command="fleet"><span class="clear-deck-action-number">02</span><span><strong>REVIEW FLEET</strong><small>See workload, readiness, and the vessels that need attention.</small></span></button>
@@ -1323,7 +1373,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.8.1 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.8.2 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1357,7 +1407,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.8.1 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.8.2 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1374,7 +1424,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.8.1 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.8.2 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -2251,7 +2301,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.8.1';
+    const BUILD='8.8.2';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;

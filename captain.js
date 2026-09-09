@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.1';
+  const UPPER_COMMAND_BUILD='8.8.2';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -674,6 +674,9 @@
       return byId('admiralDeck')?.classList.contains('hidden')&&byId('enginePanel')&&!byId('enginePanel').classList.contains('hidden');
     };
     const returnToEngine=(fallbackHref='./index.html?surface=engine')=>{
+      if(typeof window.DarkSkyUpperCommandEscape==='function'){
+        if(window.DarkSkyUpperCommandEscape('admiral-controller'))return;
+      }
       const committed=commitEngineSurface();
       const navigate=window.DarkSkyFleetNavigator?.navigate;
       if(typeof navigate==='function'){
@@ -696,9 +699,8 @@
     if(admiralReturnButton)admiralReturnButton.addEventListener('click',event=>{
       const target=admiralReturnButton.dataset.routeTarget||'engine';
       if(target==='engine'){
-        // The href remains a genuine no-script fallback. In the normal runtime,
-        // commit the Engine surface first and then refresh through Open Channel.
-        if(!window.DarkSkyFleetNavigator?.navigate&&!window.DarkSkyReturnToEngine)return;
+        // Keyboard and assistive activation reach the same shell-owned bulkhead.
+        // Pointer activation was already committed at the document boundary.
         event.preventDefault();
         event.stopPropagation();
         returnToEngine(admiralReturnButton.href);
