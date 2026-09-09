@@ -1,3 +1,8 @@
+## 8.7.10 — Held Course
+- Retains the professional Admiral deck's scroll position while an identity field owns the iPad keyboard.
+- Restores that anchor after Safari's visual viewport expands, including screenshot-triggered keyboard dismissal.
+- Leaves the confirmed one-tap authentication, in-deck sign-out, and server-governed Supabase contracts unchanged.
+
 ## 8.7.9 — Clean Signal
 - Keeps Sign Out Identity hidden until the server verifies active Admiral authority.
 - Makes semantic hidden state outrank the shared 56px iPad touch-button display rule.

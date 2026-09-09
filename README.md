@@ -1,3 +1,7 @@
+# Dark Sky 8.7.10 — Held Course
+
+Held Course keeps the open Fleet Feature Entitlements panel in place while iPad Safari expands or dismisses its on-screen keyboard, including the viewport change observed after taking a screenshot. The repair anchors the single professional-deck scroll plane around Admiral identity input without changing Supabase authentication, sign-out, or exact-vessel entitlement authority.
+
 # Dark Sky 8.7.9 — Clean Signal
 
 Clean Signal preserves True Touch's iPad geometry and vessel-isolation repairs while restoring the identity station's exact signed-out presentation. The Sign Out action stays absent until server verification succeeds; hidden state now outranks the shared touch-button display rule. Supabase password authentication and exact-vessel authority remain unchanged.

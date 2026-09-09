@@ -1,8 +1,8 @@
 {
-  "release": "Clean Signal",
-  "name": "Clean Signal",
-  "build": "8.7.9",
-  "seal": "clean-signal-879-c8a41e",
+  "release": "Held Course",
+  "name": "Held Course",
+  "build": "8.7.10",
+  "seal": "held-course-8710-b74e2c",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

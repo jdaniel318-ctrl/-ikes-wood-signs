@@ -1,3 +1,13 @@
+# 8.7.10 Held Course Addendum
+
+Protected lessons from live iPad operation:
+- The professional Admiral overlay remains the sole scroll owner through software-keyboard viewport changes.
+- Focusing or dismissing an Admiral identity input must not move an already-open entitlement station to the top of the deck.
+- Screenshot-triggered keyboard dismissal is treated as a visual-viewport settlement event, not navigation.
+- Scroll continuity repairs may not alter authentication, sign-out, or entitlement authority state.
+
+---
+
 # 8.7.9 Clean Signal Addendum
 
 Protected lessons from live iPad operation:

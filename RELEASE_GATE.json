@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.7.9",
-  "release": "Clean Signal",
-  "generatedAt": "2026-09-02T10:05:02-04:00",
+  "build": "8.7.10",
+  "release": "Held Course",
+  "generatedAt": "2026-09-09T01:04:59Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -228,8 +228,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.7.9 restores the exact signed-out presentation by keeping Sign Out Identity hidden until server verification succeeds. It preserves True Touch hit geometry, one iPad scroll plane, foreign-deployment quarantine, and the existing server-governed Supabase authentication and data contracts.",
-  "candidate": "8.7.9",
+  "note": "8.7.10 preserves the open Fleet Feature Entitlements position when iPad Safari expands or dismisses its keyboard, including screenshot-triggered viewport changes. Authentication and sign-out behavior, True Touch hit geometry, foreign-deployment quarantine, and server-governed Supabase contracts remain unchanged.",
+  "candidate": "8.7.10",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -257,6 +257,8 @@
     "foreign_deployment_quarantine": true
     ,"admiral_sign_out_hidden_until_verified": true
     ,"hidden_state_outranks_touch_display_rule": true
+    ,"admiral_identity_keyboard_scroll_anchor": true
+    ,"visual_viewport_keyboard_settlement": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -308,8 +310,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.7.9",
-    "seal": "clean-signal-879-c8a41e",
+    "build": "8.7.10",
+    "seal": "held-course-8710-b74e2c",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
