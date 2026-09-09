@@ -1,3 +1,7 @@
+# Dark Sky 8.7.13 — True Return
+
+True Return commits Admiral-to-Engine navigation on the iPad pointer release itself. It no longer depends on Safari producing a later synthesized click after visibly pressing the button; movement protection prevents a scroll gesture from activating the route.
+
 # Dark Sky 8.7.12 — Clear Passage
 
 Clear Passage makes Return to Engine a positive, canonical transition instead of merely uncovering an assumed Engine state. It also gives the iPad control explicit touch geometry, removes redundant sign-in actions after Admiral verification, and releases entitlement pickers after a choice so Safari cannot reopen them when the app resumes.

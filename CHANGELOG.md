@@ -1,3 +1,8 @@
+## 8.7.13 — True Return
+- Executes Return to Engine on a protected pointer release instead of depending on Safari's dropped synthesized click.
+- Rejects pointer movement beyond the tap threshold so scrolling cannot trigger navigation.
+- Preserves keyboard and assistive activation through a non-touch click fallback.
+
 ## 8.7.12 — Clear Passage
 - Routes Return to Engine through the canonical Engine restoration routine and restores a valid Engine surface synchronously.
 - Gives the Admiral header return control explicit iPad touch ownership and one click handler.

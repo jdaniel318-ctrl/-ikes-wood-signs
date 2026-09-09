@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.12",
-  "release": "Clear Passage",
-  "seal": "clear-passage-8712-e61a4b",
+  "build": "8.7.13",
+  "release": "True Return",
+  "seal": "true-return-8713-b47c2e",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clear Passage",
-  "name": "Clear Passage",
-  "releaseName": "Clear Passage"
+  "release_name": "True Return",
+  "name": "True Return",
+  "releaseName": "True Return"
 }

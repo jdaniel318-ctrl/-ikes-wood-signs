@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.7.12';
+  const UPPER_COMMAND_BUILD='8.7.13';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -675,7 +675,31 @@
     const closeGate=()=>{const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';if(direct)returnToEngine();};
     const returnToCaptain=()=>{if(deck.dataset.entrySource==='engine'){returnToEngine();return;}hide('admiralDeck');closeGate();show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
     byId('admiralGateReturnBtn').onclick=closeGate;
-    byId('admiralDeckReturnBtn').onclick=event=>{event.preventDefault();event.stopPropagation();event.currentTarget?.blur();returnToCaptain();};
+    const admiralReturnButton=byId('admiralDeckReturnBtn');
+    if(admiralReturnButton){
+      let returnPointer=null,returnActivatedAt=0;
+      const activateReturn=event=>{
+        if(Date.now()-returnActivatedAt<650)return;
+        returnActivatedAt=Date.now();
+        event?.preventDefault?.();event?.stopPropagation?.();
+        admiralReturnButton.blur();
+        returnToCaptain();
+      };
+      admiralReturnButton.addEventListener('pointerdown',event=>{
+        if(event.isPrimary===false)return;
+        returnPointer={id:event.pointerId,x:event.clientX,y:event.clientY};
+      });
+      admiralReturnButton.addEventListener('pointercancel',()=>{returnPointer=null;});
+      admiralReturnButton.addEventListener('pointerup',event=>{
+        const start=returnPointer;returnPointer=null;
+        if(!start||start.id!==event.pointerId)return;
+        if(Math.hypot(event.clientX-start.x,event.clientY-start.y)>16)return;
+        activateReturn(event);
+      });
+      // Preserve keyboard and assistive activation without waiting on Safari's
+      // synthesized touch click, which is the event the live iPad dropped.
+      admiralReturnButton.addEventListener('click',event=>{if(event.detail===0)activateReturn(event);});
+    }
     byId('admiralDeckModeBtn').onclick=()=>{
       const professional=deck.dataset.mode==='professional';
       deck.dataset.mode=professional?'ceremonial':'professional';

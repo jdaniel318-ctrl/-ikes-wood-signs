@@ -1,3 +1,10 @@
+# 8.7.13 True Return Addendum
+
+Protected lesson from live iPad operation:
+- A visible pressed state does not prove Safari emitted the synthesized click. Critical navigation commits on a movement-guarded pointer release while retaining keyboard and assistive activation.
+
+---
+
 # 8.7.12 Clear Passage Addendum
 
 Protected lessons from live iPad operation:

@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.7.12",
-  "version": "8.7.12",
-  "release_name": "Clear Passage",
-  "releaseName": "Clear Passage",
-  "release_seal": "clear-passage-8712-e61a4b",
+  "build": "8.7.13",
+  "version": "8.7.13",
+  "release_name": "True Return",
+  "releaseName": "True Return",
+  "release_seal": "true-return-8713-b47c2e",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -84,8 +84,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "admiral-canonical-engine-return-and-ipad-control-cleanup",
-  "release_note": "Return to Engine now performs a canonical Engine restoration through one explicit iPad-safe control. Verified identity removes redundant auth actions, and entitlement selectors release focus after selection and Safari resume.",
+  "release_focus": "admiral-ipad-pointer-release-engine-return",
+  "release_note": "Return to Engine now commits on a movement-guarded iPad pointer release instead of depending on Safari's synthesized click, then performs the canonical Engine restoration.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

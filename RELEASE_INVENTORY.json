@@ -1,8 +1,8 @@
 {
-  "release": "Clear Passage",
-  "name": "Clear Passage",
-  "build": "8.7.12",
-  "seal": "clear-passage-8712-e61a4b",
+  "release": "True Return",
+  "name": "True Return",
+  "build": "8.7.13",
+  "seal": "true-return-8713-b47c2e",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

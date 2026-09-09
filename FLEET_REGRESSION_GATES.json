@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.7.12",
-  "release": "Clear Passage",
+  "build": "8.7.13",
+  "release": "True Return",
   "excluded_sources": [
     "The situation"
   ],
@@ -50,7 +50,8 @@
       "proof_bootstrap_invoked_in_live_engine_startup",
       "proof_bootstrap_once_per_memory_generation",
       "admiral_direct_engine_return_one_tap",
-      "admiral_return_restores_canonical_engine_state"
+      "admiral_return_restores_canonical_engine_state",
+      "admiral_return_commits_on_guarded_pointer_release"
     ],
     "mobile_watch": [
       "iphone_first_class",

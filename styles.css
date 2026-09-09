@@ -15057,7 +15057,8 @@ body.engine-workspace-open #projectEngineControl .project-engine-head{position:r
 /* 8.7.11 Fixed Bearing — captured scroll resets are corrected while an Admiral identity field remains focused. */
 .admiral-identity-row label.hidden{display:none!important;pointer-events:none!important}
 #admiralDeckReturnBtn{position:relative!important;z-index:12!important;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(216,183,94,.18)}
-/* 8.7.12 Clear Passage — canonical one-tap Engine return and released iPad pickers. */
+/* 8.7.12 Clear Passage — canonical Engine return and released iPad pickers. */
+/* 8.7.13 True Return — navigation commits on protected pointer release because iPad Safari may drop its synthesized click. */
 .admiral-entitlement-station{scroll-margin-top:0!important}
 @media(min-width:821px) and (max-width:1180px){
   .admiral-deck-overlay[data-mode="professional"]{padding:0 18px 24px!important}
