@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.7.14',seal:'hard-return-8714-c82f6d'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.0',seal:'command-spine-880-a91d7e'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1231,8 +1231,15 @@
         </div>
       </header>
 
+      <nav class="command-spine-map" aria-label="Black Flag command hierarchy">
+        <div class="is-current"><small>01 · OPERATE</small><strong>Engine Room</strong><span>Platform and vessel operations</span></div>
+        <button type="button" data-command-open="captain"><small>02 · COMMAND</small><strong>Captain's Quarters</strong><span>Fleet missions and readiness</span></button>
+        <button type="button" data-command-open="admiral"><small>03 · GOVERN</small><strong>Admiral Command</strong><span>Doctrine and bounded authority</span></button>
+        <div><small>04 · SERVE</small><strong>Independent Vessels</strong><span>Owner, staff and customer work</span></div>
+      </nav>
+
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small>8.7.14 • HARD RETURN</small><h3>What do you want to do?</h3><p>Daily work is forward. Engineering evidence, release proof, and fleet learning stay available in More Systems.</p></div>
+        <div class="clear-deck-brief"><small>8.8.0 • COMMAND SPINE</small><h3>What do you want to do?</h3><p>Daily work is forward. Engineering evidence, release proof, and fleet learning stay available in More Systems.</p></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE PROJECTS</strong><small>Open a vessel's Project Control, customer experience, owner access, or commissioning.</small></span></button>
           <button type="button" class="clear-deck-action" data-clear-deck-command="fleet"><span class="clear-deck-action-number">02</span><span><strong>REVIEW FLEET</strong><small>See workload, readiness, and the vessels that need attention.</small></span></button>
@@ -1316,7 +1323,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.7.14 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.8.0 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1350,7 +1357,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.7.14 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.8.0 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1367,7 +1374,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.7.14 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.8.0 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -2244,7 +2251,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.7.14';
+    const BUILD='8.8.0';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;

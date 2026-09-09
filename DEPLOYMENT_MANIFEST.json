@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.7.14",
-  "version": "8.7.14",
-  "release_name": "Hard Return",
-  "releaseName": "Hard Return",
-  "release_seal": "hard-return-8714-c82f6d",
+  "build": "8.8.0",
+  "version": "8.8.0",
+  "release_name": "Command Spine",
+  "releaseName": "Command Spine",
+  "release_seal": "command-spine-880-a91d7e",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -84,8 +84,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "admiral-document-capture-hard-return",
-  "release_note": "Return to Engine is captured at the document touch boundary, bypasses nested Admiral interaction cancellation, closes Upper Command synchronously, and restores the canonical Engine before refresh work.",
+  "release_focus": "unified-engine-captain-admiral-command-navigation",
+  "release_note": "One command navigator owns Engine, Captain and Admiral transitions. Admiral return uses a native link fallback, commits Engine visibility synchronously, and refreshes diagnostics only after the route is visible.",
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
     "automated_preflight": "runAdmiralReadinessChecks + runAutomaticProvingGround",

@@ -1,8 +1,8 @@
 {
-  "release": "Hard Return",
-  "name": "Hard Return",
-  "build": "8.7.14",
-  "seal": "hard-return-8714-c82f6d",
+  "release": "Command Spine",
+  "name": "Command Spine",
+  "build": "8.8.0",
+  "seal": "command-spine-880-a91d7e",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

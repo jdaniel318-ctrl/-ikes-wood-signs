@@ -1,3 +1,12 @@
+## 8.8.0 — Command Spine
+- Replaces the layered Admiral exit patches with one navigator for Engine, Captain and Admiral transitions.
+- Makes the Admiral exit a genuine link, so iPad Safari retains a native Engine route even if runtime event handling fails.
+- Commits Engine visibility synchronously before diagnostics refresh and records the active command surface.
+- Routes Captain and direct Admiral entry through the same authority without changing vessel data or entitlements.
+- Restores visible pressed feedback and removes the document-level touch interception that suppressed it.
+- Defines Admiral commercial orders at feature, vessel and fleet scope; testing and launch cannot infer entitlement state.
+- Keeps bulk scope controls gated until the server can commit, verify and roll back the whole order atomically.
+
 ## 8.7.14 — Hard Return
 - Captures Return to Engine at the document touch boundary before Admiral deck handlers can interfere.
 - Closes all Captain and Admiral surfaces synchronously through an independent global route.

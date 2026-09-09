@@ -1,9 +1,18 @@
-# 8.7.14 Hard Return Addendum
+# 8.8.0 Command Spine Addendum
 
 Protected lesson from live iPad operation:
 - When a critical control visibly presses but both click and element-level pointer release fail, capture touch completion above the nested interaction layer and restore the destination synchronously before refresh work.
 
 ---
+
+# 8.8.0 Command Spine Addendum
+
+- Engine, Captain and Admiral cross-command transitions must use one navigator.
+- Admiral return must remain a real link to the Engine route when JavaScript does not handle the tap.
+- Engine visibility must commit before diagnostics, fleet statistics or proof refresh begins.
+- The active command surface and transition generation must be recorded for runtime inspection.
+- Cross-command navigation must not alter project identity, project data or feature entitlements.
+- Professional surfaces remain primary; cinematic surfaces may decorate entry but never own routing.
 
 # 8.7.13 True Return Addendum
 

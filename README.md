@@ -1,6 +1,6 @@
-# Dark Sky 8.7.14 — Hard Return
+# Dark Sky 8.8.0 — Command Spine
 
-Hard Return moves the iPad route outside the Admiral interaction layer. A capture-phase touch listener recognizes the Return to Engine control before nested deck behavior can cancel the event, closes every Upper Command surface synchronously, and restores the canonical Engine Room.
+Command Spine replaces the patched Upper Command exit chain with one authoritative navigator for Engine, Captain, and Admiral transitions. The Admiral exit is now a real link with a native Engine fallback, while the verified runtime performs the same move without reloading. Route state is recorded visibly and durably before diagnostics refresh, and project data remains untouched.
 
 # Dark Sky 8.7.13 — True Return
 

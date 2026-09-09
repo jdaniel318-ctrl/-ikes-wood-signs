@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.7.14",
-  "release": "Hard Return",
-  "seal": "hard-return-8714-c82f6d",
+  "build": "8.8.0",
+  "release": "Command Spine",
+  "seal": "command-spine-880-a91d7e",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Hard Return",
-  "name": "Hard Return",
-  "releaseName": "Hard Return"
+  "release_name": "Command Spine",
+  "name": "Command Spine",
+  "releaseName": "Command Spine"
 }

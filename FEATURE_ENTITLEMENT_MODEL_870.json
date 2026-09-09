@@ -1,12 +1,21 @@
 {
   "schema": "dark-sky-feature-entitlement-v1",
-  "build": "8.7.14",
+  "build": "8.8.0",
   "scope": "every feature for every vessel",
   "identity": ["vessel_id", "capability_id"],
   "states": {
     "access": {"off": "status = revoked", "on": "status = entitled or enabled"},
     "commercial": ["free", "paid"],
     "environment": ["sea_trial", "live"]
+  },
+  "commercial_orders": {
+    "authority": "authenticated active Admiral only",
+    "scopes": ["one feature on one vessel", "all features on one vessel", "all features across the fleet"],
+    "modes": ["off", "free", "paid"],
+    "rule": "A state changes only because the Admiral issued a commercial order. Readiness, testing, launch and billing never infer or rewrite it.",
+    "replacement": "A later Admiral order may replace the affected state at any scope.",
+    "fleet_default": "A whole-fleet order also becomes the explicit default for future admitted features until the Admiral replaces it.",
+    "bulk_safety": "Whole-vessel and whole-fleet orders require a server-side atomic transaction, impact preview, readback verification and reversible audit record before their controls may be enabled."
   },
   "contracts": [
     "No vessel-specific commercial code.",
@@ -19,6 +28,8 @@
     "Vessel feature delivery reads through authenticated exact-vessel RLS authority.",
     "An unverified vessel feature state fails closed.",
     "Off, Free and Paid change delivery and commercial display without starting billing."
+    ,"A Sea Trial or Live transition never changes a commercial entitlement."
+    ,"A bulk commercial order must either commit completely or leave every affected entitlement unchanged."
   ],
   "legacy_translation": {"standard": "free", "accepted_until": "8.6.64 clients are retired"}
 }

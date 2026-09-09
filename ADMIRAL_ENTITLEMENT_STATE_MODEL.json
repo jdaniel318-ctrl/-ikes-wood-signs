@@ -18,8 +18,16 @@
   "authority_contract": {
     "owner": "may view and request eligible paid upgrades",
     "captain": "may operationalize an already valid entitlement when delegated",
-    "admiral": "sets each vessel feature Off, Free or Paid",
+    "admiral": "issues explicit feature, vessel-wide or fleet-wide commercial orders for Off, Free or Paid",
     "browser": "never grants entitlement from local UI state"
+  },
+  "command_contract": {
+    "source_of_truth": "append-only server-governed Admiral commercial orders",
+    "current_live_scope": "one selected vessel and one selected feature",
+    "next_scopes": ["all features on the selected vessel", "all features across the fleet"],
+    "bulk_enablement_gate": "atomic server transaction plus impact preview, readback verification and rollback record",
+    "forbidden_automation": ["readiness", "sea_trial", "launch", "billing", "feature discovery"],
+    "meaning": "If the Admiral orders all Free at a scope, every entitlement in that scope is Free until a later Admiral order changes it."
   },
   "security": "No service-role or secret credential is present in browser code. Server-side entitlement writes remain protected.",
   "state_separation": {

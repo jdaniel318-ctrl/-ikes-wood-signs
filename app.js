@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.7.14';
+  const BUILD_VERSION='8.8.0';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -10734,39 +10734,58 @@
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'session',action:'engine.opened',detail:'v3 command deck'});
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
-  // Upper Command returns through the same complete Engine restoration used by
-  // the rest of the application instead of assuming the covered deck is intact.
+  // 8.8.0 Command Spine — one route authority owns every cross-command move.
+  // Upper-command modules register their own adapters after app.js executes;
+  // Engine restoration remains synchronous before diagnostics refresh.
   window.DarkSkyOpenEnginePanel=openEnginePanel;
-  let upperCommandReturnInFlight=false;
-  window.DarkSkyReturnToEngine=()=>{
-    if(upperCommandReturnInFlight)return;
-    upperCommandReturnInFlight=true;
+  const commandRouteAdapters=new Map();
+  let commandRouteGeneration=0;
+  let activeCommandRoute='engine';
+  const commandSurfaceIds=['admiralDeck','admiralGateOverlay','captainQuarters','captainQuartersGate','captainGlobalExit','captainCommandWorkspace','foundryWorkspace','visualForgeOverlay'];
+  function recordCommandRoute(target,source,generation,status='committed'){
+    activeCommandRoute=target;
+    document.body.dataset.commandSurface=target;
+    const detail={target,source,generation,status,build:BUILD_VERSION,at:new Date().toISOString()};
+    try{sessionStorage.setItem('darkSkyCommandRouteV1',JSON.stringify(detail));}catch(_){ }
+    window.dispatchEvent(new CustomEvent('darksky:command-route',{detail}));
+    return detail;
+  }
+  function restoreEngineSurface(source,generation){
     try{window.DarkSkySecureUpperCommand?.();}catch(err){console.warn('Upper Command secure warning',err);}
-    for(const id of ['admiralDeck','admiralGateOverlay','captainQuarters','captainQuartersGate','captainGlobalExit'])$(id)?.classList.add('hidden');
+    for(const id of commandSurfaceIds)$(id)?.classList.add('hidden');
     document.body.classList.remove('boot-locked','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','engine-workspace-open','captain-modal-open','captain-authorized','captain-command-open');
     document.body.classList.add('engine-mode');
     $('blackFlagEntryGate')?.classList.add('hidden');
     $('enginePanel')?.classList.remove('hidden');
-    Promise.resolve(openEnginePanel()).catch(err=>console.warn('Hard Return Engine refresh warning',err)).finally(()=>{upperCommandReturnInFlight=false;});
-  };
-  if(!window.__darkSkyAdmiralHardReturnBound){
-    window.__darkSkyAdmiralHardReturnBound=true;
-    let returnTouch=null;
-    document.addEventListener('touchstart',event=>{
-      const button=event.target?.closest?.('#admiralDeckReturnBtn');
-      const touch=event.changedTouches?.[0];
-      returnTouch=button&&touch?{id:touch.identifier,x:touch.clientX,y:touch.clientY}:null;
-    },{capture:true,passive:true});
-    document.addEventListener('touchcancel',()=>{returnTouch=null;},{capture:true,passive:true});
-    document.addEventListener('touchend',event=>{
-      const start=returnTouch;returnTouch=null;
-      if(!start)return;
-      const touch=[...(event.changedTouches||[])].find(item=>item.identifier===start.id);
-      if(!touch||Math.hypot(touch.clientX-start.x,touch.clientY-start.y)>18)return;
-      event.preventDefault();event.stopImmediatePropagation();
-      window.DarkSkyReturnToEngine();
-    },{capture:true,passive:false});
+    recordCommandRoute('engine',source,generation,'visible');
+    try{
+      const url=new URL(location.href);
+      if(url.searchParams.get('surface')==='engine'){url.searchParams.delete('surface');history.replaceState({darkSkyRoute:'engine'},'',url.pathname+(url.searchParams.size?'?'+url.searchParams.toString():'')+url.hash);}
+    }catch(_){ }
+    requestAnimationFrame(()=>{
+      try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){window.scrollTo(0,0);}
+      $('enginePanel')?.focus?.({preventScroll:true});
+    });
   }
+  window.DarkSkyFleetNavigator={
+    register(target,handler){if(typeof handler==='function')commandRouteAdapters.set(String(target),handler);return this;},
+    state(){return {target:activeCommandRoute,generation:commandRouteGeneration,registered:[...commandRouteAdapters.keys()],build:BUILD_VERSION};},
+    navigate(target,{source='unknown'}={}){
+      target=String(target||'engine');
+      const generation=++commandRouteGeneration;
+      if(target==='engine'){
+        restoreEngineSurface(source,generation);
+        return Promise.resolve(openEnginePanel()).then(()=>recordCommandRoute('engine',source,generation)).catch(err=>{
+          console.warn('Engine refresh warning after route commit',err);
+          return recordCommandRoute('engine',source,generation,'visible-refresh-warning');
+        });
+      }
+      const adapter=commandRouteAdapters.get(target);
+      if(!adapter)return Promise.reject(new Error(`Command route is unavailable: ${target}`));
+      return Promise.resolve(adapter({target,source,generation})).then(()=>recordCommandRoute(target,source,generation));
+    }
+  };
+  window.DarkSkyReturnToEngine=()=>window.DarkSkyFleetNavigator.navigate('engine',{source:document.body.dataset.commandSurface||'upper-command'});
 
   async function loadFeatureSettings(){
     const p=activeProject();

@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.7.14';
+  const UPPER_COMMAND_BUILD='8.8.0';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -594,7 +594,7 @@
         </div>
         <header class="admiral-deck-head">
           <div><small>PROFESSIONAL COMMAND • FLEET GOVERNANCE</small><h2 id="admiralDeckTitle">Admiral Command Deck</h2><p>See the fleet clearly, set the course once, and preserve each vessel's independence.</p></div>
-          <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckModeBtn" type="button" aria-pressed="false">PROFESSIONAL MODE</button><button id="admiralDeckReturnBtn" type="button">← RETURN TO CAPTAIN'S QUARTERS</button></div>
+          <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckModeBtn" type="button" aria-pressed="false">PROFESSIONAL MODE</button><a id="admiralDeckReturnBtn" class="admiral-command-return" href="./index.html?surface=engine" role="button">← ENGINE ROOM</a></div>
         </header>
         <main class="admiral-command-surface" aria-label="Admiral cinematic command view">
           <nav class="admiral-command-rail" aria-label="Admiral governance controls">
@@ -649,7 +649,7 @@
   </div>
   <div id="admiralDoctrinePrinciples" class="admiral-doctrine-principles"></div>
   <p class="admiral-doctrine-note">This is the current governed course, not a transient readiness notice. Readiness verifies this registry against the running build.</p>
-</section><div class="admiral-lane-summary admiral-service-governance"><b>Fleet Feature Entitlements</b><span>Every feature can be Off, Free or Paid for every vessel. The choice applies only to the selected vessel and feature.</span></div><button id="admiralServiceEntitlements" type="button">OPEN FEATURE ENTITLEMENTS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station hidden" aria-label="Admiral Fleet Feature Entitlements"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Fleet Feature Entitlements</h5><p>Choose a vessel and feature, see its current setting, then make one clear choice.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralEntitlementClose" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer">Your Admiral Gate PIN opens this deck. Account sign-in separately authorizes server-governed changes.</p><div class="admiral-identity-row"><label>Admiral email<input id="admiralIdentityEmail" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralIdentityPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentityRecover" type="button">RECOVER PASSWORD</button><button id="admiralIdentitySignOut" type="button" class="hidden">SIGN OUT IDENTITY</button></div><div class="admiral-entitlement-controls"><label>1. Choose vessel<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label><label>2. Choose feature<select id="admiralEntitlementCapability"><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label></div><div class="admiral-entitlement-command"><div class="admiral-current-setting"><small>CURRENT SETTING</small><strong id="admiralEntitlementCurrent">SIGN IN TO VIEW</strong><span id="admiralEntitlementCurrentDetail">The current setting appears here before you make a change.</span></div><div class="admiral-choice-setting"><small>3. Choose setting</small><div class="admiral-entitlement-actions" role="group" aria-label="Feature commercial state"><button id="admiralTurnOff" type="button" disabled>OFF<span>Unavailable</span></button><button id="admiralMakeFree" type="button" disabled>FREE<span>Active at $0</span></button><button id="admiralGrantPaid" type="button" disabled>PAID<span>Paid terms</span></button></div></div></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to view and change this setting.</div><div class="admiral-package-note"><b>Feature freedom</b><span>Services may group features for convenience, but each feature keeps its own Off, Free or Paid choice for each vessel.</span></div></section></article>
+</section><div class="admiral-lane-summary admiral-service-governance"><b>Fleet Feature Entitlements</b><span>Every feature can be Off, Free or Paid for every vessel. Only an explicit Admiral command changes that state.</span></div><button id="admiralServiceEntitlements" type="button">OPEN FEATURE ENTITLEMENTS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station hidden" aria-label="Admiral Fleet Feature Entitlements"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Fleet Feature Entitlements</h5><p>Choose a vessel and feature, read its current setting, then issue one clear Admiral command.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralEntitlementClose" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer">Your Admiral Gate PIN opens this deck. Account sign-in separately authorizes server-governed changes. Readiness, testing and launch never choose Free or Paid.</p><div class="admiral-identity-row"><label>Admiral email<input id="admiralIdentityEmail" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralIdentityPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentityRecover" type="button">RECOVER PASSWORD</button><button id="admiralIdentitySignOut" type="button" class="hidden">SIGN OUT IDENTITY</button></div><div class="admiral-entitlement-controls"><label>1. Choose vessel<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label><label>2. Choose feature<select id="admiralEntitlementCapability"><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label></div><div class="admiral-entitlement-command"><div class="admiral-current-setting"><small>CURRENT SETTING</small><strong id="admiralEntitlementCurrent">SIGN IN TO VIEW</strong><span id="admiralEntitlementCurrentDetail">The current setting appears here before you make a change.</span></div><div class="admiral-choice-setting"><small>3. Choose setting</small><div class="admiral-entitlement-actions" role="group" aria-label="Feature commercial state"><button id="admiralTurnOff" type="button" disabled>OFF<span>Unavailable</span></button><button id="admiralMakeFree" type="button" disabled>FREE<span>Active at $0</span></button><button id="admiralGrantPaid" type="button" disabled>PAID<span>Paid terms</span></button></div></div></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to view and change this setting.</div><div class="admiral-package-note"><b>Feature freedom</b><span>Services may group features for convenience, but each feature keeps its own Off, Free or Paid choice for each vessel.</span></div></section></article>
             <article data-admiral-panel="delegate" hidden><small>03 · DELEGATE</small><h4>Bounded authority</h4><p>Scope, duration, stewardship and delegation history.</p><div class="admiral-lane-summary"><b>Delegation</b><span>Authority must remain explicit, bounded and auditable.</span></div><button type="button" data-admiral-future="Delegation">DELEGATION <em>FUTURE</em></button></article>
             <article data-admiral-panel="promote" hidden><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><div class="admiral-lane-summary"><b>Intelligence Dock + one learning pipeline</b><span>Cross-vessel patterns surface here before Observation → Lesson → Candidate → Foundry → Sea Trial → Proven.</span></div><button id="admiralDeckFoundry" type="button">OPEN THE FOUNDRY <em>FOUNDATION</em></button></article>
           </section>
@@ -661,6 +661,7 @@
     loadUpperCommandVisual('admiral');
 
     const returnToEngine=()=>{
+      if(typeof window.DarkSkyFleetNavigator?.navigate==='function'){window.DarkSkyFleetNavigator.navigate('engine',{source:'admiral'});return;}
       if(typeof window.DarkSkyReturnToEngine==='function'){window.DarkSkyReturnToEngine();return;}
       // Clear every Upper Command surface first, then restore the canonical
       // Engine state. The prior path only hid Admiral and could leave Safari
@@ -674,34 +675,18 @@
       if(typeof openEngine==='function')Promise.resolve(openEngine()).catch(err=>console.warn('Admiral return to Engine refresh warning',err));
       requestAnimationFrame(()=>{try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){window.scrollTo(0,0);}});
     };
-    const closeGate=()=>{const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';if(direct)returnToEngine();};
-    const returnToCaptain=()=>{if(deck.dataset.entrySource==='engine'){returnToEngine();return;}hide('admiralDeck');closeGate();show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
+    const closeGate=()=>{const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';if(direct){returnToEngine();return;}if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral-gate'});return;}show('captainQuarters');show('captainGlobalExit');};
+    const returnToCaptain=()=>{if(deck.dataset.entrySource==='engine'){returnToEngine();return;}hide('admiralDeck');if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral'});return;}show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
     byId('admiralGateReturnBtn').onclick=closeGate;
     const admiralReturnButton=byId('admiralDeckReturnBtn');
-    if(admiralReturnButton){
-      let returnPointer=null,returnActivatedAt=0;
-      const activateReturn=event=>{
-        if(Date.now()-returnActivatedAt<650)return;
-        returnActivatedAt=Date.now();
-        event?.preventDefault?.();event?.stopPropagation?.();
-        admiralReturnButton.blur();
-        returnToCaptain();
-      };
-      admiralReturnButton.addEventListener('pointerdown',event=>{
-        if(event.isPrimary===false)return;
-        returnPointer={id:event.pointerId,x:event.clientX,y:event.clientY};
-      });
-      admiralReturnButton.addEventListener('pointercancel',()=>{returnPointer=null;});
-      admiralReturnButton.addEventListener('pointerup',event=>{
-        const start=returnPointer;returnPointer=null;
-        if(!start||start.id!==event.pointerId)return;
-        if(Math.hypot(event.clientX-start.x,event.clientY-start.y)>16)return;
-        activateReturn(event);
-      });
-      // Preserve keyboard and assistive activation without waiting on Safari's
-      // synthesized touch click, which is the event the live iPad dropped.
-      admiralReturnButton.addEventListener('click',event=>{if(event.detail===0)activateReturn(event);});
-    }
+    if(admiralReturnButton)admiralReturnButton.addEventListener('click',event=>{
+      // A real anchor is the no-script safety route. When the verified runtime is
+      // healthy, the same tap commits through the Command Spine without reload.
+      if(!window.DarkSkyFleetNavigator?.navigate)return;
+      event.preventDefault();
+      admiralReturnButton.dataset.routeState='committing';
+      returnToCaptain();
+    });
     byId('admiralDeckModeBtn').onclick=()=>{
       const professional=deck.dataset.mode==='professional';
       deck.dataset.mode=professional?'ceremonial':'professional';
@@ -841,7 +826,7 @@
     const gateReturn=byId('admiralGateReturnBtn');
     const deckReturn=byId('admiralDeckReturnBtn');
     if(gateReturn)gateReturn.textContent=fromEngine?'← RETURN TO ENGINE':'← RETURN TO CAPTAIN\'S QUARTERS';
-    if(deckReturn)deckReturn.textContent=fromEngine?'← RETURN TO ENGINE':'← RETURN TO CAPTAIN\'S QUARTERS';
+    if(deckReturn){deckReturn.textContent=fromEngine?'← ENGINE ROOM':'← CAPTAIN\'S QUARTERS';deckReturn.href=fromEngine?'./index.html?surface=engine':'#captainQuartersGate';deckReturn.dataset.routeTarget=fromEngine?'engine':'captain';deckReturn.dataset.routeState='ready';}
     gate?.classList.remove('hidden');
     gate?.classList.remove('admiral-gate-enter','admiral-gate-repeat');void gate?.offsetWidth;
     let seen=false;try{seen=sessionStorage.getItem('darkSkyAdmiralGateSeen')==='1';}catch(_){ }
@@ -1074,7 +1059,7 @@
     let bar=byId('captainCommandModeBar');
     if(!bar){
       bar=document.createElement('div');bar.id='captainCommandModeBar';bar.className='captain-command-mode-bar';
-      bar.innerHTML=`<div><small>CAPTAIN COMMAND • ${UPPER_COMMAND_BUILD}</small><strong>Watch → Decide → Act → Record</strong></div><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button>`;
+      bar.innerHTML=`<div><small>ENGINE ROOM / CAPTAIN'S QUARTERS • ${UPPER_COMMAND_BUILD}</small><strong>Watch → Decide → Act → Record</strong></div><div class="captain-command-mode-actions"><button id="captainCommandReturnBtn" type="button">← ENGINE ROOM</button><button id="captainCommandModeToggle" type="button">CINEMATIC VIEW</button></div>`;
       room.appendChild(bar);
     }
     let surface=byId('captainProfessionalSurface');
@@ -1106,6 +1091,8 @@
     }
     room.dataset.commandMode='professional';
     const toggle=byId('captainCommandModeToggle');
+    const commandReturn=byId('captainCommandReturnBtn');
+    if(commandReturn&&!commandReturn.dataset.bound){commandReturn.dataset.bound='1';commandReturn.onclick=()=>window.DarkSkyFleetNavigator?.navigate('engine',{source:'captain'})||secure();}
     const sync=()=>{const pro=room.dataset.commandMode==='professional'; if(toggle){toggle.textContent=pro?'CINEMATIC VIEW':'PROFESSIONAL VIEW';toggle.setAttribute('aria-pressed',String(!pro));} if(pro)room.classList.add('captain-entry-complete');};
     if(toggle&&!toggle.dataset.bound){toggle.dataset.bound='1';toggle.onclick=()=>{const from=room.dataset.commandMode||'professional';const scroller=from==='professional'?byId('captainProfessionalSurface'):room;try{room.dataset[from+'Scroll']=String(scroller?.scrollTop||0);}catch(_){ }room.dataset.commandMode=from==='professional'?'cinematic':'professional';sync();requestAnimationFrame(()=>{const to=room.dataset.commandMode;const target=to==='professional'?byId('captainProfessionalSurface'):room;const pos=Number(room.dataset[to+'Scroll']||0);if(target)target.scrollTop=pos;});if(room.dataset.commandMode==='cinematic')playEntrance();};}
     sync();
@@ -1138,25 +1125,24 @@
     prepareCinematicCabin();
     hydrateUpperCommandVisuals();
     document.querySelectorAll('[data-command-jump]').forEach(btn=>btn.addEventListener('click',()=>{const el=byId(btn.dataset.commandJump);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}));
-    document.querySelectorAll('[data-command-open="captain"]').forEach(btn=>btn.addEventListener('click',openGate));
-    document.querySelectorAll('[data-command-open="admiral"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();openAdmiralGate('engine');}));
+    window.DarkSkyFleetNavigator?.register('captain',()=>{if(authorized){hide('admiralDeck');hide('admiralGateOverlay');show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');}else openGate();});
+    window.DarkSkyFleetNavigator?.register('admiral',()=>openAdmiralGate('engine'));
+    document.querySelectorAll('[data-command-open="captain"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();window.DarkSkyFleetNavigator?.navigate('captain',{source:'engine'})||openGate();}));
+    document.querySelectorAll('[data-command-open="admiral"]').forEach(btn=>btn.addEventListener('click',event=>{event.preventDefault();window.DarkSkyFleetNavigator?.navigate('admiral',{source:'engine'})||openAdmiralGate('engine');}));
 
     // Direct listeners are safe here because this file loads at the very end of BODY.
     byId('captainModeAccessBtn')?.addEventListener('click', (event) => {
       event.preventDefault();
-      openGate();
+      window.DarkSkyFleetNavigator?.navigate('captain',{source:'engine'})||openGate();
     });
-    byId('captainGateCloseBtn')?.addEventListener('click', (event) => {
-      event.preventDefault();
-      closeGate();
-    });
+    byId('captainGateCloseBtn')?.addEventListener('click', (event) => {event.preventDefault();window.DarkSkyFleetNavigator?.navigate('engine',{source:'captain-gate'})||closeGate();});
     byId('captainUnlockBtn')?.addEventListener('click', (event) => {
       event.preventDefault();
       unlock();
     });
-    byId('captainQuartersCloseBtn')?.addEventListener('click', secure);
-    byId('captainExitBtn')?.addEventListener('click', secure);
-    byId('captainGlobalExit')?.addEventListener('click', secure);
+    byId('captainQuartersCloseBtn')?.addEventListener('click',()=>window.DarkSkyFleetNavigator?.navigate('engine',{source:'captain'})||secure());
+    byId('captainExitBtn')?.addEventListener('click',()=>window.DarkSkyFleetNavigator?.navigate('engine',{source:'captain'})||secure());
+    byId('captainGlobalExit')?.addEventListener('click',()=>window.DarkSkyFleetNavigator?.navigate('engine',{source:'captain'})||secure());
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape' || !authorized) return;
       event.preventDefault();
