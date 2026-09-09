@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.2';
+  const BUILD_VERSION='8.8.3';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -1325,7 +1325,10 @@
   let ikePhotoRotationTask = Promise.resolve();
 
   // Engine security is intentionally session-only. Leaving Black Flag locks it again.
-  let engineSessionUnlocked = false;
+  // A one-use, same-tab Admiral return handoff is resolved by the verified
+  // document head before this runtime loads. It restores only the Engine session
+  // that opened Admiral; copied or expired URLs cannot unlock the Engine.
+  let engineSessionUnlocked = window.__darkSkyEngineReturnAuthorized===true;
   let pendingCaptainDeploymentRoute = null;
   let pendingCaptainCommandRoute = null;
   window.__darkSkyBootStage = 'app-declarations';
@@ -10734,7 +10737,7 @@
     window.BlackFlagV3Core?.audit?.({actorRole:'engine_admin',category:'session',action:'engine.opened',detail:'v3 command deck'});
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
-  // 8.8.2 Navigation Bulkhead — one route authority owns every cross-command move.
+  // 8.8.3 Native Passage — one route authority owns every cross-command move.
   // Upper-command modules register their own adapters after app.js executes;
   // Engine restoration remains synchronous before diagnostics refresh.
   window.DarkSkyOpenEnginePanel=openEnginePanel;
@@ -10760,7 +10763,12 @@
     recordCommandRoute('engine',source,generation,'visible');
     try{
       const url=new URL(location.href);
-      if(url.searchParams.get('surface')==='engine'){url.searchParams.delete('surface');history.replaceState({darkSkyRoute:'engine'},'',url.pathname+(url.searchParams.size?'?'+url.searchParams.toString():'')+url.hash);}
+      if(url.searchParams.get('surface')==='engine'||url.searchParams.get('surface')==='engine-return'){
+        url.searchParams.delete('surface');
+        url.searchParams.delete('handoff');
+        url.searchParams.delete('_darkSkyRelease');
+        history.replaceState({darkSkyRoute:'engine'},'',url.pathname+(url.searchParams.size?'?'+url.searchParams.toString():'')+url.hash);
+      }
     }catch(_){ }
     requestAnimationFrame(()=>{
       try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){window.scrollTo(0,0);}
@@ -15911,7 +15919,12 @@ The full order and approved media remain stored with this project.`;
   bindEngineProjectCommandBus();
   bindExperienceTestDeckBus();
   bindMissionCriticalNavigation();
-  init().then(()=>{
+  init().then(async()=>{
+    if(window.__darkSkyEngineReturnAuthorized===true){
+      window.BlackFlagAuth?.unlock?.();
+      await window.DarkSkyFleetNavigator?.navigate?.('engine',{source:'native-admiral-return'});
+      window.__darkSkyRuntimeEntryWitness8620?.('native-engine-return-settled',{build:BUILD_VERSION});
+    }
     window.DarkSkyBootState={ready:true,error:null,at:Date.now(),build:BUILD_VERSION};
   }).catch(err=>{
     console.error('Secondary app initialization warning',err);
@@ -16103,6 +16116,7 @@ document.addEventListener('click', (event) => {
     const startupOwner=(window.__darkSkyRouteIntent==='owner') || startupSurface==='owner' || startupHash.startsWith('#owner-');
     const startupPreview=(window.__darkSkyRouteIntent==='client-preview') || startupSurface==='preview' || startupHash.startsWith('#client-preview=');
     const startupRecovery=(window.__darkSkyRouteIntent==='admiral-recovery') || startupSurface==='admiral-recovery' || startupSurface==='admiral-recovery-request';
+    const startupEngineReturn=window.__darkSkyEngineReturnAuthorized===true;
     if(startupRecovery){
       // Recovery is a head-owned authority surface. Bind no Engine-entry
       // handlers and leave the recovery shield as the sole visible route.
@@ -16156,8 +16170,18 @@ document.addEventListener('click', (event) => {
     if(engineCompany) engineCompany.addEventListener('click',openCompanyApp);
     if(logout) logout.addEventListener('click',lockAndReturnToEntry);
 
-    // Engine portal is always the first screen after a fresh page load.
-    requireEngineEntry();
+    // A verified native Admiral handoff returns to the already-authorized Engine
+    // session. Every other fresh Engine document still requires the normal gate.
+    if(startupEngineReturn){
+      window.BlackFlagAuth?.unlock?.();
+      byId('blackFlagEntryGate')?.classList.add('hidden');
+      document.body.classList.remove('boot-locked','bf-entry-open','project-mode');
+      document.body.classList.add('engine-mode');
+      document.body.dataset.commandSurface='engine';
+      byId('enginePanel')?.classList.remove('hidden');
+      window.DarkSkyFleetNavigator?.navigate?.('engine',{source:'native-admiral-return-first-paint'}).catch?.(()=>{});
+      window.releaseDarkSkyFirstPaint?.('native-admiral-return-first-paint');
+    }else requireEngineEntry();
     if(!window.BlackFlagAuth || !window.DarkSkyBoundaryBridge){
       const err=byId('blackFlagEntryError');
       if(err)err.textContent='Black Flag startup is incomplete. Reload this page before entering a PIN.';

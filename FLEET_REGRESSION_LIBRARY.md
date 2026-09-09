@@ -1,9 +1,12 @@
-# 8.8.2 Navigation Bulkhead Addendum
+# 8.8.3 Native Passage Addendum
 
-- An upper-command Engine escape belongs to the verified document shell and must exist before feature controllers load.
-- The live iPad's proven pointer boundary may commit the escape without waiting for a synthesized click.
+- Admiral's primary Engine exit is a native document link; application controllers may not cancel it.
+- The native destination uses a random, short-lived, one-use same-tab handoff created only from an authorized Engine session.
+- Missing, copied, expired and wrong-build handoffs fail to the normal Engine gate.
+- The destination resolves Engine before upper-command modules paint and settles Engine again after application initialization.
+- The Admiral header carries the current build so field evidence can distinguish deployed code from a stale document.
 - Engine, Captain and Admiral are mutually exclusive command surfaces; CSS must reject competing visible states.
-- Admiral return must remain a real link to the Engine route when JavaScript does not handle the tap.
+- A visible pressed state is contact evidence only; successful native document arrival is navigation proof.
 - An acknowledged Admiral-to-Engine tap must close upper-command layers and reveal Engine synchronously before shared refresh work.
 - Press feedback must end with the physical press; a persistent pressed state is not navigation proof.
 - Engine visibility must commit before diagnostics, fleet statistics or proof refresh begins.

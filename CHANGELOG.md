@@ -1,3 +1,11 @@
+## 8.8.3 — Native Passage
+- Stops cancelling the Admiral header link and gives the actual document navigation to Safari.
+- Preserves the authorized Engine crossing with a random, short-lived, one-use same-tab handoff.
+- Sends invalid, expired, copied or wrong-build handoffs to the normal Engine gate.
+- Resolves Engine at first paint and settles it again after asynchronous application initialization.
+- Prints build 8.8.3 in the Admiral header so a field screenshot proves the deployed controller.
+- Leaves project isolation, authority records and Admiral-controlled Off/Free/Paid entitlements unchanged.
+
 ## 8.8.2 — Navigation Bulkhead
 - Moves upper-command Engine escape authority into the verified document shell so it exists before Captain or Admiral runtime modules execute.
 - Commits on pointerdown—the boundary the live iPad visibly proves—without waiting for Safari's unreliable synthesized click.

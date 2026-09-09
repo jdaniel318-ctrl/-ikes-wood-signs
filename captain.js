@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.2';
+  const UPPER_COMMAND_BUILD='8.8.3';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -593,7 +593,7 @@
           <div class="admiral-ascent-copy"><small>ABOVE CAPTAIN COMMAND</small><strong>ADMIRAL'S DECK</strong><span>Fleet Governance • Provisional Command</span></div>
         </div>
         <header class="admiral-deck-head">
-          <div><small>PROFESSIONAL COMMAND • FLEET GOVERNANCE</small><h2 id="admiralDeckTitle">Admiral Command Deck</h2><p>See the fleet clearly, set the course once, and preserve each vessel's independence.</p></div>
+          <div><small>PROFESSIONAL COMMAND • FLEET GOVERNANCE • ${UPPER_COMMAND_BUILD}</small><h2 id="admiralDeckTitle">Admiral Command Deck</h2><p>See the fleet clearly, set the course once, and preserve each vessel's independence.</p></div>
           <div class="admiral-deck-head-actions"><span>PROVISIONAL</span><button id="admiralDeckModeBtn" type="button" aria-pressed="false">PROFESSIONAL MODE</button><a id="admiralDeckReturnBtn" class="admiral-command-return" href="./index.html?surface=engine" role="button">← ENGINE ROOM</a></div>
         </header>
         <main class="admiral-command-surface" aria-label="Admiral cinematic command view">
@@ -699,11 +699,10 @@
     if(admiralReturnButton)admiralReturnButton.addEventListener('click',event=>{
       const target=admiralReturnButton.dataset.routeTarget||'engine';
       if(target==='engine'){
-        // Keyboard and assistive activation reach the same shell-owned bulkhead.
-        // Pointer activation was already committed at the document boundary.
-        event.preventDefault();
-        event.stopPropagation();
-        returnToEngine(admiralReturnButton.href);
+        // Native Passage: do not prevent, stop, or replace this click. Safari owns
+        // the document navigation and the destination consumes a one-use Engine
+        // handoff before any upper-command controller can paint.
+        window.__darkSkyRuntimeEntryWitness8620?.('native-engine-return-departing',{build:UPPER_COMMAND_BUILD});
         return;
       }
       event.preventDefault();
@@ -848,7 +847,24 @@
     const gateReturn=byId('admiralGateReturnBtn');
     const deckReturn=byId('admiralDeckReturnBtn');
     if(gateReturn)gateReturn.textContent=fromEngine?'← RETURN TO ENGINE':'← RETURN TO CAPTAIN\'S QUARTERS';
-    if(deckReturn){deckReturn.textContent=fromEngine?'← ENGINE ROOM':'← CAPTAIN\'S QUARTERS';deckReturn.href=fromEngine?'./index.html?surface=engine':'#captainQuartersGate';deckReturn.dataset.routeTarget=fromEngine?'engine':'captain';}
+    if(deckReturn){
+      deckReturn.textContent=fromEngine?'← ENGINE ROOM':'← CAPTAIN\'S QUARTERS';
+      deckReturn.dataset.routeTarget=fromEngine?'engine':'captain';
+      if(fromEngine){
+        let href='./index.html?surface=engine';
+        try{
+          const engineAuthorized=window.BlackFlagAuth?.isUnlocked?.()===true||window.DarkSkyTestAccess?.isActive?.()===true;
+          if(engineAuthorized){
+            const words=new Uint32Array(4);crypto.getRandomValues(words);
+            const token=Array.from(words,n=>n.toString(36)).join('');
+            const handoff={schema:'dark-sky-engine-return-handoff-v1',build:UPPER_COMMAND_BUILD,source:'admiral',token,createdAt:Date.now(),expiresAt:Date.now()+30*60*1000};
+            sessionStorage.setItem('darkSkyEngineReturnHandoffV1',JSON.stringify(handoff));
+            href=`./index.html?surface=engine-return&handoff=${encodeURIComponent(token)}&_darkSkyRelease=${encodeURIComponent(UPPER_COMMAND_BUILD)}`;
+          }
+        }catch(_){ }
+        deckReturn.href=href;
+      }else deckReturn.href='#captainQuartersGate';
+    }
     gate?.classList.remove('hidden');
     gate?.classList.remove('admiral-gate-enter','admiral-gate-repeat');void gate?.offsetWidth;
     let seen=false;try{seen=sessionStorage.getItem('darkSkyAdmiralGateSeen')==='1';}catch(_){ }

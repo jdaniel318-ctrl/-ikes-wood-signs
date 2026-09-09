@@ -1,8 +1,8 @@
 {
-  "release": "Navigation Bulkhead",
-  "name": "Navigation Bulkhead",
-  "build": "8.8.2",
-  "seal": "navigation-bulkhead-882-f31a6c",
+  "release": "Native Passage",
+  "name": "Native Passage",
+  "build": "8.8.3",
+  "seal": "native-passage-883-b1f65e",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

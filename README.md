@@ -1,6 +1,6 @@
-# Dark Sky 8.8.2 — Navigation Bulkhead
+# Dark Sky 8.8.3 — Native Passage
 
-Navigation Bulkhead moves every upper-command Engine escape into the verified page shell, ahead of Captain and Admiral runtime modules. The shell commits on the iPad's proven pointer boundary, closes all upper-command layers, applies one exclusive Engine surface state, and only then asks the shared navigator to refresh data. Controller handlers and a genuine Engine URL remain secondary fallbacks. Project data, vessel identity, authentication records, and Admiral-controlled commercial entitlements remain untouched.
+Native Passage makes the Admiral header exit a true Safari-owned document crossing. No touch, pointer, click, Captain, or Admiral controller is allowed to cancel that link. A short-lived, one-use same-tab handoff preserves the Engine session that opened Admiral; an absent, copied, expired, or wrong-build handoff returns to the normal Engine gate. The destination resolves Engine before upper-command modules paint, and the runtime settles Engine again after initialization. The Admiral header visibly carries build 8.8.3 so field screenshots prove which controller is running. Project data, vessel identity, authority records, and Admiral-controlled Off/Free/Paid entitlements remain untouched.
 
 # Dark Sky 8.7.13 — True Return
 

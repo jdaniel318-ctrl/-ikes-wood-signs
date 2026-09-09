@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.2",
-  "release": "Navigation Bulkhead",
+  "build": "8.8.3",
+  "release": "Native Passage",
   "generatedAt": "2026-09-09T04:18:36Z",
   "checks": {
     "build_version": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.2 gives the verified shell first authority over upper-command Engine escapes, commits on the iPad's proven pointer boundary, enforces mutually exclusive command surfaces, and never derives commercial entitlement from testing or launch.",
-  "candidate": "8.8.2",
+  "note": "8.8.3 leaves Safari's native Admiral-to-Engine document link uncancelled, consumes a short-lived one-use same-tab Engine handoff at first light, settles Engine again after runtime initialization, and never derives commercial entitlement from testing or launch.",
+  "candidate": "8.8.3",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -272,6 +272,11 @@
     ,"pointerdown_escape_precedes_runtime_handlers": true
     ,"engine_visible_before_refresh": true
     ,"command_route_witness": true
+    ,"admiral_return_native_document_primary": true
+    ,"engine_return_handoff_one_use": true
+    ,"engine_return_handoff_wrong_build_fails_closed": true
+    ,"native_engine_return_post_init_settlement": true
+    ,"admiral_header_build_witness": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -323,8 +328,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.2",
-    "seal": "navigation-bulkhead-882-f31a6c",
+    "build": "8.8.3",
+    "seal": "native-passage-883-b1f65e",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

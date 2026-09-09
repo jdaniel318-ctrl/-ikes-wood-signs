@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.2",
-  "release": "Navigation Bulkhead",
+  "build": "8.8.3",
+  "release": "Native Passage",
   "excluded_sources": [
     "The situation"
   ],
@@ -53,7 +53,11 @@
       "admiral_return_restores_canonical_engine_state",
       "admiral_return_commits_on_guarded_pointer_release",
       "admiral_return_capture_bypasses_nested_interaction_layer",
-      "engine_surface_restored_before_async_refresh"
+      "engine_surface_restored_before_async_refresh",
+      "admiral_return_uses_uncancelled_native_document_navigation",
+      "engine_return_handoff_is_same_tab_short_lived_and_one_use",
+      "invalid_engine_return_handoff_falls_to_normal_gate",
+      "native_engine_return_settles_after_app_initialization"
     ],
     "mobile_watch": [
       "iphone_first_class",
@@ -156,6 +160,7 @@
       ,"command_surfaces_are_css_mutually_exclusive"
       ,"engine_visible_before_diagnostics_refresh"
       ,"command_route_state_is_recorded"
+      ,"admiral_header_exposes_current_build_for_field_proof"
     ],
     "quarterdeck": [
       "single_top_level_folder",

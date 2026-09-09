@@ -15079,7 +15079,7 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
 @media(max-width:900px){.command-spine-map{grid-template-columns:repeat(2,minmax(0,1fr));margin-inline:14px}.captain-command-mode-actions{flex-wrap:wrap;justify-content:flex-end}}
 /* 8.7.12 Clear Passage — canonical Engine return and released iPad pickers. */
 /* 8.7.13 True Return — navigation commits on protected pointer release because iPad Safari may drop its synthesized click. */
-/* 8.8.2 Navigation Bulkhead — shell-owned escape plus one authoritative command navigator. */
+/* 8.8.3 Native Passage — shell-owned escape plus one authoritative command navigator. */
 .admiral-entitlement-station{scroll-margin-top:0!important}
 @media(min-width:821px) and (max-width:1180px){
   .admiral-deck-overlay[data-mode="professional"]{padding:0 18px 24px!important}
