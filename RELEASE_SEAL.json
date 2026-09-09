@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.0",
-  "release": "Command Spine",
-  "seal": "command-spine-880-a91d7e",
+  "build": "8.8.1",
+  "release": "Open Channel",
+  "seal": "open-channel-881-c7e4b2",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Command Spine",
-  "name": "Command Spine",
-  "releaseName": "Command Spine"
+  "release_name": "Open Channel",
+  "name": "Open Channel",
+  "releaseName": "Open Channel"
 }

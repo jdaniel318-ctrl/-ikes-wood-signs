@@ -1,14 +1,9 @@
-# 8.8.0 Command Spine Addendum
-
-Protected lesson from live iPad operation:
-- When a critical control visibly presses but both click and element-level pointer release fail, capture touch completion above the nested interaction layer and restore the destination synchronously before refresh work.
-
----
-
-# 8.8.0 Command Spine Addendum
+# 8.8.1 Open Channel Addendum
 
 - Engine, Captain and Admiral cross-command transitions must use one navigator.
 - Admiral return must remain a real link to the Engine route when JavaScript does not handle the tap.
+- An acknowledged Admiral-to-Engine tap must close upper-command layers and reveal Engine synchronously before shared refresh work.
+- Press feedback must end with the physical press; a persistent pressed state is not navigation proof.
 - Engine visibility must commit before diagnostics, fleet statistics or proof refresh begins.
 - The active command surface and transition generation must be recorded for runtime inspection.
 - Cross-command navigation must not alter project identity, project data or feature entitlements.

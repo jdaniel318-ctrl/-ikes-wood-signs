@@ -1,8 +1,8 @@
 {
-  "release": "Command Spine",
-  "name": "Command Spine",
-  "build": "8.8.0",
-  "seal": "command-spine-880-a91d7e",
+  "release": "Open Channel",
+  "name": "Open Channel",
+  "build": "8.8.1",
+  "seal": "open-channel-881-c7e4b2",
   "file_count": 86,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",

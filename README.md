@@ -1,6 +1,6 @@
-# Dark Sky 8.8.0 — Command Spine
+# Dark Sky 8.8.1 — Open Channel
 
-Command Spine replaces the patched Upper Command exit chain with one authoritative navigator for Engine, Captain, and Admiral transitions. The Admiral exit is now a real link with a native Engine fallback, while the verified runtime performs the same move without reloading. Route state is recorded visibly and durably before diagnostics refresh, and project data remains untouched.
+Open Channel makes Admiral-to-Engine return a visible, synchronous command crossing. The local controller closes every upper-command layer and reveals Engine before the shared navigator refreshes diagnostics; the genuine Engine link remains available if the runtime is absent. A tap can no longer remain stranded in a persistent pressed state. Project data, vessel identity, and Admiral-controlled commercial entitlements remain untouched.
 
 # Dark Sky 8.7.13 — True Return
 

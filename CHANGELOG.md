@@ -1,3 +1,10 @@
+## 8.8.1 — Open Channel
+- Makes the Admiral-to-Engine crossing visible synchronously in the Admiral controller before any Engine refresh begins.
+- Closes every Admiral and Captain layer, restores Engine mode, and reveals the canonical Engine panel from the acknowledged tap.
+- Keeps the shared Command Spine responsible for route recording and data refresh after the screen has safely crossed.
+- Retains a genuine Engine link as the no-runtime fallback and removes the persistent committing visual state.
+- Preserves exact-vessel isolation and explicit Admiral authority over Off, Free, and Paid commercial orders.
+
 ## 8.8.0 — Command Spine
 - Replaces the layered Admiral exit patches with one navigator for Engine, Captain and Admiral transitions.
 - Makes the Admiral exit a genuine link, so iPad Safari retains a native Engine route even if runtime event handling fails.

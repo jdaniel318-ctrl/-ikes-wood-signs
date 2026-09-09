@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.0';
+  const UPPER_COMMAND_BUILD='8.8.1';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -660,31 +660,51 @@
     document.body.appendChild(deck);
     loadUpperCommandVisual('admiral');
 
-    const returnToEngine=()=>{
-      if(typeof window.DarkSkyFleetNavigator?.navigate==='function'){window.DarkSkyFleetNavigator.navigate('engine',{source:'admiral'});return;}
-      if(typeof window.DarkSkyReturnToEngine==='function'){window.DarkSkyReturnToEngine();return;}
-      // Clear every Upper Command surface first, then restore the canonical
-      // Engine state. The prior path only hid Admiral and could leave Safari
-      // with no positive Engine transition to complete.
+    const commitEngineSurface=()=>{
+      // Make the crossing visible in this controller before asking the shared
+      // navigator to refresh Engine data. This is intentionally synchronous:
+      // iPad Safari must never be left displaying Admiral after acknowledging
+      // the tap, even if a later diagnostic refresh rejects.
       secure();
       document.body.classList.remove('boot-locked','project-mode','project-admin-mode','project-orders-mode','project-ledger-mode','engine-workspace-open');
       document.body.classList.add('engine-mode');
       byId('blackFlagEntryGate')?.classList.add('hidden');
       byId('enginePanel')?.classList.remove('hidden');
-      const openEngine=window.DarkSkyOpenEnginePanel;
-      if(typeof openEngine==='function')Promise.resolve(openEngine()).catch(err=>console.warn('Admiral return to Engine refresh warning',err));
       requestAnimationFrame(()=>{try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){window.scrollTo(0,0);}});
+      return byId('admiralDeck')?.classList.contains('hidden')&&byId('enginePanel')&&!byId('enginePanel').classList.contains('hidden');
+    };
+    const returnToEngine=(fallbackHref='./index.html?surface=engine')=>{
+      const committed=commitEngineSurface();
+      const navigate=window.DarkSkyFleetNavigator?.navigate;
+      if(typeof navigate==='function'){
+        Promise.resolve(navigate.call(window.DarkSkyFleetNavigator,'engine',{source:'admiral'})).catch(err=>{
+          console.warn('Admiral return route warning',err);
+          if(!committed)window.location.assign(fallbackHref);
+        });
+        return;
+      }
+      if(typeof window.DarkSkyReturnToEngine==='function'){
+        Promise.resolve(window.DarkSkyReturnToEngine()).catch(()=>{if(!committed)window.location.assign(fallbackHref);});
+        return;
+      }
+      if(!committed)window.location.assign(fallbackHref);
     };
     const closeGate=()=>{const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';if(direct){returnToEngine();return;}if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral-gate'});return;}show('captainQuarters');show('captainGlobalExit');};
     const returnToCaptain=()=>{if(deck.dataset.entrySource==='engine'){returnToEngine();return;}hide('admiralDeck');if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral'});return;}show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
     byId('admiralGateReturnBtn').onclick=closeGate;
     const admiralReturnButton=byId('admiralDeckReturnBtn');
     if(admiralReturnButton)admiralReturnButton.addEventListener('click',event=>{
-      // A real anchor is the no-script safety route. When the verified runtime is
-      // healthy, the same tap commits through the Command Spine without reload.
-      if(!window.DarkSkyFleetNavigator?.navigate)return;
+      const target=admiralReturnButton.dataset.routeTarget||'engine';
+      if(target==='engine'){
+        // The href remains a genuine no-script fallback. In the normal runtime,
+        // commit the Engine surface first and then refresh through Open Channel.
+        if(!window.DarkSkyFleetNavigator?.navigate&&!window.DarkSkyReturnToEngine)return;
+        event.preventDefault();
+        event.stopPropagation();
+        returnToEngine(admiralReturnButton.href);
+        return;
+      }
       event.preventDefault();
-      admiralReturnButton.dataset.routeState='committing';
       returnToCaptain();
     });
     byId('admiralDeckModeBtn').onclick=()=>{
@@ -826,7 +846,7 @@
     const gateReturn=byId('admiralGateReturnBtn');
     const deckReturn=byId('admiralDeckReturnBtn');
     if(gateReturn)gateReturn.textContent=fromEngine?'← RETURN TO ENGINE':'← RETURN TO CAPTAIN\'S QUARTERS';
-    if(deckReturn){deckReturn.textContent=fromEngine?'← ENGINE ROOM':'← CAPTAIN\'S QUARTERS';deckReturn.href=fromEngine?'./index.html?surface=engine':'#captainQuartersGate';deckReturn.dataset.routeTarget=fromEngine?'engine':'captain';deckReturn.dataset.routeState='ready';}
+    if(deckReturn){deckReturn.textContent=fromEngine?'← ENGINE ROOM':'← CAPTAIN\'S QUARTERS';deckReturn.href=fromEngine?'./index.html?surface=engine':'#captainQuartersGate';deckReturn.dataset.routeTarget=fromEngine?'engine':'captain';}
     gate?.classList.remove('hidden');
     gate?.classList.remove('admiral-gate-enter','admiral-gate-repeat');void gate?.offsetWidth;
     let seen=false;try{seen=sessionStorage.getItem('darkSkyAdmiralGateSeen')==='1';}catch(_){ }

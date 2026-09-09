@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.0",
-  "release": "Command Spine",
-  "generatedAt": "2026-09-09T01:28:13Z",
+  "build": "8.8.1",
+  "release": "Open Channel",
+  "generatedAt": "2026-09-09T03:49:28Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.0 gives Engine, Captain and Admiral one command navigator, uses a native-link fallback for the Admiral exit, and restores the canonical Engine before asynchronous refresh work.",
-  "candidate": "8.8.0",
+  "note": "8.8.1 commits Admiral-to-Engine visibility locally before the shared navigator refreshes Engine, retains a native-link fallback, and never derives a vessel's commercial entitlement from testing or launch.",
+  "candidate": "8.8.1",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -266,6 +266,7 @@
     ,"deliberate_touch_scroll_outranks_scroll_repair": true
     ,"single_command_navigator": true
     ,"admiral_native_engine_fallback": true
+    ,"admiral_return_local_visible_commit": true
     ,"engine_visible_before_refresh": true
     ,"command_route_witness": true
   },
@@ -319,8 +320,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.0",
-    "seal": "command-spine-880-a91d7e",
+    "build": "8.8.1",
+    "seal": "open-channel-881-c7e4b2",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

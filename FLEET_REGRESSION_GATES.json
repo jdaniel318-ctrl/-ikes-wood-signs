@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.0",
-  "release": "Command Spine",
+  "build": "8.8.1",
+  "release": "Open Channel",
   "excluded_sources": [
     "The situation"
   ],
@@ -150,6 +150,7 @@
       ,"foreign_deployment_evidence_is_quarantined"
       ,"single_command_navigator_owns_cross_command_routes"
       ,"admiral_return_has_native_engine_fallback"
+      ,"admiral_return_commits_local_engine_surface_before_refresh"
       ,"engine_visible_before_diagnostics_refresh"
       ,"command_route_state_is_recorded"
     ],
