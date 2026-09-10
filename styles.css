@@ -8949,7 +8949,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .commissioning-footer .commission-actions button{width:100%;min-height:44px}
 }
 
-/* 8.8.10 Fleet Door Repair — readable shipyard controls on iPad and iPhone. */
+/* 8.8.11 Fleet Door Repair — readable shipyard controls on iPad and iPhone. */
 .admiral-commissioning-station{margin-top:18px}
 .admiral-commissioning-station .field-rule{float:right;color:#79d7aa;font-size:.58rem;font-weight:900;letter-spacing:.09em}
 .admiral-commissioning-boundary{display:grid;grid-template-columns:1fr;gap:8px}
@@ -8963,7 +8963,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 @media (min-width:700px) and (max-width:1180px) and (orientation:portrait){.admiral-commissioning-rename{grid-template-columns:1fr 1fr}.admiral-commissioning-rename>div{grid-column:1/-1}}
 @media (max-width:760px){.admiral-commissioning-boundary,.admiral-commissioning-rename{grid-template-columns:1fr}.admiral-commissioning-boundary span{grid-template-columns:1fr}.admiral-commissioning-boundary small{text-align:left}.admiral-commissioning-station .field-rule{display:block;float:none;margin-top:3px}.admiral-commissioning-rename button{width:100%}}
 
-/* 8.8.10 Fleet Door Repair — one compact commissioning flow, no dead column. */
+/* 8.8.11 Fleet Door Repair — one compact commissioning flow, no dead column. */
 .admiral-commissioning-station{padding:20px!important}
 .admiral-commissioning-station.identity-verified #admiralCommissioningAuth{display:flex!important;justify-content:flex-end!important;margin:8px 0 4px!important}
 .admiral-commissioning-station.identity-verified #admiralCommissioningSignOut{min-width:190px}
@@ -9529,7 +9529,7 @@ body.business-engine-mode #enginePanel .marketing-identity-heading .secondary-bt
   }
 }
 
-/* 8.8.10 Fleet Door Repair — vessel branding stays clear on iPad and iPhone. */
+/* 8.8.11 Fleet Door Repair — vessel branding stays clear on iPad and iPhone. */
 .admiral-brand-summary{margin-top:16px!important}
 .admiral-brand-station{margin-top:16px!important}
 .admiral-brand-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(340px,1.08fr);gap:16px;margin-top:18px}
@@ -9597,6 +9597,23 @@ body.bootstrap-fleet-open{overflow:hidden!important}
   .admiral-commissioning-brand-kit figure{grid-template-columns:1fr}
   .admiral-commissioning-brand-kit img{height:110px}
 }
+
+/* 8.8.11 Bootstrap Build Schedule — dense multi-week construction calendar. */
+.bootstrap-build-schedule .bootstrap-schedule-shell{width:min(1740px,100%)}
+.bootstrap-build-schedule .bootstrap-schedule-toolbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;position:sticky;top:-18px;z-index:40;padding:12px 0;background:linear-gradient(#05252d 82%,rgba(5,37,45,0))}
+.bootstrap-build-schedule .bootstrap-schedule-toolbar>div{display:flex;align-items:center;gap:8px}.bootstrap-build-schedule .bootstrap-schedule-toolbar>div:nth-child(2){justify-content:center;flex-wrap:wrap}
+.bootstrap-schedule-legend span{padding:7px 9px;border:1px solid #45666c;border-radius:999px;color:#d9e4e2;font-size:.68rem;font-weight:900;letter-spacing:.06em}.bootstrap-schedule-legend span[data-kind="work"]{border-color:#169ec2}.bootstrap-schedule-legend span[data-kind="site"]{border-color:#91c32d}.bootstrap-schedule-legend span[data-kind="inspection"]{border-color:#d4aa43}.bootstrap-schedule-legend span[data-kind="delivery"]{border-color:#507ab7}.bootstrap-schedule-legend span[data-kind="milestone"]{border-color:#e8c862;color:#f0d678}
+.bootstrap-ground-form{grid-template-columns:2fr 1fr 1fr 1.2fr .55fr auto auto}.bootstrap-ground-form input[type="number"]{min-width:72px}
+.bootstrap-ground-board{display:grid;gap:14px;overflow-x:auto;padding:2px 0 12px;scrollbar-color:#55747b #04181f}
+.bootstrap-ground-week{min-width:850px;overflow:hidden;border:1px solid #365b63;border-radius:13px;background:#051b22;box-shadow:0 8px 22px rgba(0,0,0,.22)}
+.bootstrap-ground-week>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 13px;border-bottom:1px solid #42636a;background:#26363a;color:#eef1ec}.bootstrap-ground-week>header small{color:#e0bd60;font-size:.72rem;font-weight:900;letter-spacing:.12em}.bootstrap-ground-week>header b{font-size:.78rem}
+.bootstrap-ground-week-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:54px repeat(var(--task-lanes),64px);position:relative;gap:0;background:#071e25}
+.bootstrap-ground-day-head{position:relative;z-index:6;display:flex;align-items:center;justify-content:space-between;min-height:54px!important;padding:8px 11px!important;border:0!important;border-right:1px solid #52666b!important;border-radius:0!important;background:#303b3e!important;color:#e9eeeb!important;text-align:left}.bootstrap-ground-day-head:last-of-type{border-right:0!important}.bootstrap-ground-day-head small{color:#9fb1b5;font-size:.72rem;font-weight:800}.bootstrap-ground-day-head b{font-size:.8rem}.bootstrap-ground-day-head.is-over{background:#145063!important;box-shadow:inset 0 -4px 0 #5dd4ef}
+.bootstrap-ground-day-cell{z-index:0;border-right:1px solid #41555a;background:#f5f7f4}.bootstrap-ground-day-cell:nth-of-type(5){border-right:0}.bootstrap-ground-day-cell.is-over{background:#dff4f6;box-shadow:inset 0 0 0 3px #48bad5}
+.bootstrap-ground-task{z-index:5;align-self:center;min-width:0;height:54px;margin:5px 6px;padding:5px 10px;box-sizing:border-box;border:1px solid rgba(0,0,0,.36);border-radius:7px;background:#1188aa;color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.28);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}.bootstrap-ground-task:active{cursor:grabbing}.bootstrap-ground-task small,.bootstrap-ground-task b,.bootstrap-ground-task span,.bootstrap-ground-task .bootstrap-task-vendor{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bootstrap-ground-task small{font-size:.55rem;font-weight:900;letter-spacing:.05em;opacity:.78}.bootstrap-ground-task b{font-size:.72rem;line-height:1.2}.bootstrap-ground-task span{font-size:.55rem;opacity:.76}.bootstrap-ground-task .bootstrap-task-vendor{margin:1px 0 0;font-size:.54rem;font-style:normal;font-weight:800;opacity:.9}.bootstrap-ground-task.vendor-hidden{display:none}.bootstrap-ground-task.kind-site{background:#8fbd2b;color:#17320e}.bootstrap-ground-task.kind-inspection{background:#d2a53c;color:#2c2208}.bootstrap-ground-task.kind-delivery{background:#244f87}.bootstrap-ground-task.kind-milestone{background:#e1c458;color:#23200e}.bootstrap-ground-task.is-selected{outline:4px solid #f5e19a;outline-offset:-2px;box-shadow:0 0 0 3px #102b32,0 4px 12px rgba(0,0,0,.4)}.bootstrap-ground-task.is-dragging{opacity:.62;transform:scale(.985)}
+.bootstrap-vendor-tools{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px;padding:12px;border:1px solid #496a70;border-radius:12px;background:#08232a}.bootstrap-vendor-tools>div{display:flex;align-items:end;gap:10px;min-width:0}.bootstrap-vendor-tools label{display:grid;gap:5px;flex:1;color:#dabb60;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.bootstrap-vendor-tools select{width:100%;min-height:44px;padding:8px 10px;border:1px solid #58767c;border-radius:8px;background:#061d24;color:#eef3f0;font:800 .82rem/1.2 inherit}.bootstrap-vendor-tools span{max-width:340px;color:#aebfc2;font-size:.78rem;line-height:1.35}.bootstrap-vendor-tools button{min-height:44px}.bootstrap-vendor-activity{margin:0 0 14px;border:1px solid #4e686d;border-radius:12px;background:#071d24;overflow:hidden}.bootstrap-vendor-activity>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #35565d;background:#0b2930}.bootstrap-vendor-activity>header div{display:grid;gap:2px}.bootstrap-vendor-activity>header small{color:#dabc62;font-size:.66rem;font-weight:900;letter-spacing:.1em}.bootstrap-vendor-activity>header b{color:#eef1ec;font-size:.88rem}.bootstrap-vendor-activity>header>span{color:#89a2a7;font-size:.66rem;font-weight:900;letter-spacing:.08em}.bootstrap-vendor-activity>div{display:grid;gap:1px;max-height:180px;overflow:auto}.bootstrap-vendor-activity article{display:grid;grid-template-columns:minmax(150px,.45fr) 1fr auto;gap:10px;padding:9px 12px;background:#092129;color:#c9d5d6;font-size:.76rem}.bootstrap-vendor-activity article b{color:#f0d77e}.bootstrap-vendor-activity article small{color:#80999e}.bootstrap-vendor-activity p{margin:0;padding:12px;color:#9fb2b5;font-size:.8rem}
+@media (max-width:1100px){.bootstrap-build-schedule .bootstrap-schedule-toolbar{grid-template-columns:1fr auto}.bootstrap-build-schedule .bootstrap-schedule-toolbar>div:nth-child(2){grid-column:1/-1;grid-row:2}.bootstrap-ground-form{grid-template-columns:2fr 1fr 1fr}.bootstrap-ground-form button{width:100%}.bootstrap-vendor-tools{grid-template-columns:1fr}.bootstrap-vendor-activity article{grid-template-columns:1fr}.bootstrap-vendor-activity article small{justify-self:start}}
+@media (max-width:700px){.bootstrap-build-schedule .bootstrap-schedule-toolbar{top:-12px;grid-template-columns:1fr}.bootstrap-build-schedule .bootstrap-schedule-toolbar>div,.bootstrap-build-schedule .bootstrap-schedule-toolbar>div:nth-child(2){grid-column:1;justify-content:center}.bootstrap-build-schedule .bootstrap-schedule-toolbar>div:last-child{display:grid;grid-template-columns:1fr 1fr}.bootstrap-vendor-tools>div{align-items:stretch;flex-direction:column}.bootstrap-ground-week{min-width:790px}.bootstrap-ground-week-grid{grid-template-rows:58px repeat(var(--task-lanes),68px)}.bootstrap-ground-task{height:58px}.bootstrap-ground-task b{font-size:.76rem}}
 
 /* v3.8.8 — Fleet Health Repair (retains v3.8.7 Operational Coherence styles) */
 #projectEngineControl .pc-module-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 16px;padding:18px 20px;border:1px solid var(--pc-line,#2b4b57);border-radius:18px;background:linear-gradient(145deg,#10252d,#0b1a20);color:#e8f0ef}

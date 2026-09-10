@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.10",
-  "release": "Fleet Structure",
-  "seal": "fleet-structure-8810-bf7c42",
+  "build": "8.8.11",
+  "release": "Bootstrap Build Schedule",
+  "seal": "bootstrap-build-schedule-8811-c4a6d2",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fleet Structure",
-  "name": "Fleet Structure",
-  "releaseName": "Fleet Structure"
+  "release_name": "Bootstrap Build Schedule",
+  "name": "Bootstrap Build Schedule",
+  "releaseName": "Bootstrap Build Schedule"
 }

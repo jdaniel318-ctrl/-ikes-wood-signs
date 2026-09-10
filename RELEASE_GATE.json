@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.10",
-  "release": "Fleet Structure",
-  "generatedAt": "2026-09-10T22:12:38Z",
+  "build": "8.8.11",
+  "release": "Bootstrap Build Schedule",
+  "generatedAt": "2026-09-10T22:52:26Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -225,14 +225,26 @@
     "auth_callback_precedes_engine": true,
     "admiral_identity_resolved_from_supabase_user": true,
     "admiral_authority_verified_server_side": true,
-    "dark_sky_originated_recovery_redirect": true
+    "dark_sky_originated_recovery_redirect": true,
+    "bootstrap_twelve_week_workday_calendar": true,
+    "bootstrap_start_to_settlement_seed": true,
+    "bootstrap_multi_day_task_bars": true,
+    "bootstrap_duration_preserved_on_move": true,
+    "bootstrap_schedule_touch_drag": true,
+    "bootstrap_schedule_keyboard_move": true,
+    "bootstrap_schedule_local_only": true,
+    "commissioning_verified_preview_copy": true
+    ,"bootstrap_task_vendor_assignment": true
+    ,"bootstrap_vendor_schedule_view": true
+    ,"bootstrap_vendor_move_communication_log": true
+    ,"bootstrap_vendor_messages_local_only": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.10 makes Black Flag the owner of a lateral read-only Fleet Registry, keeps Bootstrap Build a separate uncommissioned Admiral-level program, exposes authoritative mission and operating classifications, and permits explicit capability adoption without crossing vessel ownership, authority, branding, namespace, or data boundaries.",
-  "candidate": "8.8.10",
+  "note": "8.8.11 gives Bootstrap Build a twelve-week Monday-through-Friday sample schedule from clearing through settlement. Multi-day duration survives mouse, touch, and keyboard moves; all test hierarchy and schedule data remain browser-local, and no Fleet Core or commissioning state is changed.",
+  "candidate": "8.8.11",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -331,6 +343,18 @@
     ,"capability_sharing_preserves_vessel_isolation": true
     ,"fleet_registry_returns_authoritative_mission_class": true
     ,"no_commissioning_order_issued_by_structure_repair": true
+    ,"bootstrap_twelve_week_workday_calendar": true
+    ,"bootstrap_start_to_settlement_seed": true
+    ,"bootstrap_multi_day_task_bars": true
+    ,"bootstrap_duration_preserved_on_move": true
+    ,"bootstrap_schedule_touch_drag": true
+    ,"bootstrap_schedule_keyboard_move": true
+    ,"bootstrap_schedule_local_only": true
+    ,"commissioning_verified_preview_copy": true
+    ,"bootstrap_task_vendor_assignment": true
+    ,"bootstrap_vendor_schedule_view": true
+    ,"bootstrap_vendor_move_communication_log": true
+    ,"bootstrap_vendor_messages_local_only": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -385,8 +409,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.10",
-    "seal": "fleet-structure-8810-bf7c42",
+    "build": "8.8.11",
+    "seal": "bootstrap-build-schedule-8811-c4a6d2",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

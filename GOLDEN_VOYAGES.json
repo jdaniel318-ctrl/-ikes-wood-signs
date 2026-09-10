@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.10",
+  "build": "8.8.11",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -69,6 +69,32 @@
         "ownership-authority-branding-namespace-data-remain-isolated"
       ],
       "summary": "The registry sees every member without containing it; a governed capability may travel only through explicit adoption."
+    },
+    {
+      "id": "bootstrap-build-schedule",
+      "label": "Bootstrap Build Bootstrap Build Schedule",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Admiral Promote",
+        "Commissioning Orders",
+        "Open Bootstrap Build Schedule",
+        "Move multi-day task",
+        "Duration remains intact",
+        "Vendor sees assigned task and move notice",
+        "Settlement remains visible"
+      ],
+      "proof": [
+        "twelve-week-monday-friday-calendar",
+        "realistic-clearing-to-settlement-seed",
+        "single-and-multi-day-bars",
+        "mouse-touch-keyboard-movement",
+        "task-vendor-assignment-and-filtered-view",
+        "vendor-visible-schedule-change-log",
+        "browser-local-only",
+        "no-commissioning-or-fleet-core-write"
+      ],
+      "summary": "Bootstrap Build can test flexible scheduling and vendor visibility without becoming live fleet, customer, or messaging data."
     },
     {
       "id": "owner",

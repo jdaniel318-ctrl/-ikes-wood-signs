@@ -1,3 +1,15 @@
+## 8.8.11 — Bootstrap Build Schedule
+
+- Replaces the one-week prototype with a multi-week Monday-through-Friday construction calendar; the included sample spans twelve weeks without defining a fixed project length.
+- Seeds a realistic clearing-to-settlement schedule with work, site, inspection, delivery, and milestone categories.
+- Renders single-day and spanning multi-day bars across weekly boundaries.
+- Preserves task duration when work moves by desktop drag, iPad touch, day-heading tap, or keyboard arrow.
+- Assigns a test vendor to every task, adds a vendor-only schedule view, permits vendor reassignment, and records moved dates in a visible local communication log.
+- Labels vendor communication as a test simulation; no email, text, or push message is sent.
+- Keeps Region `ABC` → Division `CBA` → Community `AB` → Lot `1234` → Unit `A` as resettable browser-local test data.
+- Renames the doorway `OPEN BOOTSTRAP BUILD SCHEDULE` and corrects the verified Admiral preview instruction.
+- Creates no commissioning order, Fleet Core write, owner assignment, customer commitment, or live schedule record.
+
 ## 8.8.10 — Fleet Structure
 
 - Moves fleet identity from Bootstrap Build to the Black Flag Fleet Registry.

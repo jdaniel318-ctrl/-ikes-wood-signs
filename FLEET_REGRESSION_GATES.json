@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.10",
-  "release": "Fleet Structure",
+  "build": "8.8.11",
+  "release": "Bootstrap Build Schedule",
   "excluded_sources": [
     "The situation"
   ],
@@ -76,6 +76,8 @@
       ,"admiral_sign_out_hidden_until_identity_verified"
       ,"verified_identity_hides_redundant_auth_actions"
       ,"entitlement_selector_releases_focus_after_choice"
+      ,"bootstrap_schedule_touch_drag"
+      ,"bootstrap_schedule_ipad_horizontal_workweek"
     ],
     "clean_wake": [
       "no_platform_chrome_on_customer",
@@ -175,6 +177,16 @@
       ,"mission_level_never_creates_project_parentage"
       ,"shared_capability_adoption_preserves_vessel_boundaries"
       ,"fleet_registry_reads_authoritative_mission_and_operating_models"
+      ,"bootstrap_twelve_week_schedule_vertical_run"
+      ,"bootstrap_weekday_only_calendar"
+      ,"bootstrap_multi_day_duration_preserved"
+      ,"bootstrap_schedule_browser_local_no_fleet_write"
+      ,"bootstrap_schedule_doorway_reachable"
+      ,"commissioning_verified_preview_copy_matches_state"
+      ,"each_bootstrap_task_has_vendor"
+      ,"vendor_view_shows_only_assigned_work"
+      ,"schedule_move_creates_vendor_visible_notice"
+      ,"vendor_communication_remains_local_in_test_build"
     ],
     "quarterdeck": [
       "single_top_level_folder",

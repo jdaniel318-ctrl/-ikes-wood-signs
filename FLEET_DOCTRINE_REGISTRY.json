@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.10",
-  "release": "Fleet Structure",
+  "build": "8.8.11",
+  "release": "Bootstrap Build Schedule",
   "status": "active",
   "principles": [
     {
@@ -74,13 +74,13 @@
       "id": "mission-level-is-not-parentage",
       "rule": "Admiral, Captain, Engine, and vessel mission levels describe responsibility and authority; they never make one project the owner or container of another.",
       "scope": "fleet-structure",
-      "origin": "8.8.10 Fleet Structure repair"
+      "origin": "8.8.11 Bootstrap Build Schedule repair"
     },
     {
       "id": "shared-capability-passage",
       "rule": "Any fleet member may explicitly adopt an approved capability while its ownership, authority, branding, namespace, and project data remain isolated.",
       "scope": "fleet-learning",
-      "origin": "8.8.10 Fleet Structure repair"
+      "origin": "8.8.11 Bootstrap Build Schedule repair"
     }
   ],
   "governance": {

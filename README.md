@@ -1,3 +1,11 @@
+# Dark Sky 8.8.11 — Bootstrap Build Schedule
+
+Bootstrap Build Schedule gives Bootstrap Build a focused construction-scheduling proving ground. The included sample uses twelve vertical Monday-through-Friday weeks and familiar work from clearing through settlement, while the product name and structure do not impose a fixed project length. Single-day and multi-day bars can move with mouse drag, iPad touch, day-heading taps, or keyboard arrows while each task's duration remains intact.
+
+The test hierarchy remains Region `ABC` → Division `CBA` → Community `AB` → Lot `1234` → Unit `A`. The calendar is browser-local and resettable. It creates no commissioning order, Fleet Core vessel, owner assignment, customer commitment, or live construction record.
+
+Every seeded task has a test vendor. The schedule can be filtered to one vendor, a selected task can be reassigned, and every move is written to a local communication log showing the vendor its previous and new date. This release deliberately does not send email, text, or push notifications.
+
 # Dark Sky 8.8.10 — Fleet Structure
 
 Fleet Structure restores the intended lateral fleet model. Black Flag owns the authenticated, read-only Fleet Registry; the six existing businesses remain independent Fleet Core members; and Bootstrap Build remains a separate, uncommissioned Admiral-level program rather than a parent or container.

@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.10",
-  "version": "8.8.10",
-  "release_name": "Fleet Structure",
-  "releaseName": "Fleet Structure",
-  "release_seal": "fleet-structure-8810-bf7c42",
+  "build": "8.8.11",
+  "version": "8.8.11",
+  "release_name": "Bootstrap Build Schedule",
+  "releaseName": "Bootstrap Build Schedule",
+  "release_seal": "bootstrap-build-schedule-8811-c4a6d2",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -87,8 +87,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "lateral-fleet-registry-and-independent-admiral-program-structure",
-  "release_note": "Black Flag now owns the read-only Fleet Registry. Bootstrap Build is presented as one separate Admiral-level program, never as the parent of the six existing independent vessels. Governed capabilities may be adopted across levels without moving ownership, authority, branding, or project data. No commissioning order is created.",
+  "release_focus": "bootstrap-build-construction-schedule",
+  "release_note": "Bootstrap Build now opens a flexible Monday-through-Friday construction schedule with a twelve-week clearing-to-settlement sample. Single-day and multi-day work can move by mouse, touch, or keyboard while duration remains intact. Every task carries a vendor; a local vendor view and communication log show assigned work and schedule moves without sending real messages. The ABC/CBA/AB/1234/A test hierarchy remains browser-local; no commissioning order or Fleet Core write occurs.",
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",

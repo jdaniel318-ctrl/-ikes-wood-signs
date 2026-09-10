@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Structure",
-  "name": "Fleet Structure",
-  "build": "8.8.10",
-  "seal": "fleet-structure-8810-bf7c42",
+  "release": "Bootstrap Build Schedule",
+  "name": "Bootstrap Build Schedule",
+  "build": "8.8.11",
+  "seal": "bootstrap-build-schedule-8811-c4a6d2",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
