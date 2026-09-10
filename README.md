@@ -1,3 +1,7 @@
+# Dark Sky 8.8.6 — Commissioning Orders
+
+Commissioning Orders adds a server-governed Admiral shipyard for creating one durable Fleet Core vessel identity after an explicit preview. **Bootstrap Build** replaces ScheduleJoe as the construction-scheduling vessel's working name. The name stays editable, while the UUID, project key, namespace, lineage, and records remain stable. New vessels begin in `commissioning`, with no owner membership, no entitlements, and no live publication. The supplied `SUPABASE_ADMIRAL_COMMISSIONING_886.sql` migration is prepared but is not applied by the static release.
+
 # Dark Sky 8.8.5 — Command Acknowledgment
 
 Command Acknowledgment keeps the field-proven 8.8.4 Course Orders and Native Passage intact while making completed command results durable on screen. Verified issue and rollback receipts now remain visible after server readback, completed intent is cleared, and a post-rollback preview is explicitly identified as a new proposal rather than the restored state. No Supabase migration is required.

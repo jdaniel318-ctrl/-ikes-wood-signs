@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.5",
-  "release": "Command Acknowledgment",
-  "generatedAt": "2026-09-10T02:04:58Z",
+  "build": "8.8.6",
+  "release": "Commissioning Orders",
+  "generatedAt": "2026-09-10T02:57:30Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.5 preserves field-proven Course Orders while keeping verified issue and rollback acknowledgments visible after readback, clearing completed intent, and distinguishing restored state from a new proposal.",
-  "candidate": "8.8.5",
+  "note": "8.8.6 preserves field-proven Course Orders and Native Passage while adding preview-bound Admiral commissioning, a durable not-live vessel keel, and a separately audited editable working name.",
+  "candidate": "8.8.6",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -288,6 +288,14 @@
     ,"durable_near_command_acknowledgment": true
     ,"completed_command_intent_cleared": true
     ,"rollback_proposal_distinguished": true
+    ,"admiral_commissioning_preview_required": true
+    ,"commissioned_vessel_starts_not_live": true
+    ,"commissioner_does_not_become_owner": true
+    ,"commissioning_creates_no_entitlements": true
+    ,"working_name_is_editable": true
+    ,"vessel_uuid_project_key_namespace_are_immutable": true
+    ,"ipad_portrait_commissioning_layout": true
+    ,"iphone_commissioning_layout": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -342,8 +350,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.5",
-    "seal": "command-acknowledgment-885-7d31b6",
+    "build": "8.8.6",
+    "seal": "commissioning-orders-886-b4c2e7",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

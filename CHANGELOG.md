@@ -1,3 +1,12 @@
+## 8.8.6 — Commissioning Orders
+
+- Renames the construction-scheduling concept vessel from ScheduleJoe to Bootstrap Build without discarding the Captain's locally retained shipyard notes.
+- Adds a professional Admiral Commissioning Orders station with explicit preview, permanent-versus-editable identity labels, verified issue acknowledgment, and a durable commissioning log.
+- Adds a separate audited rename command that changes only the working display name while preserving vessel UUID, project key, namespace, and lineage.
+- New vessels enter Fleet Core as `commissioning` and `fleet_unassigned`; commissioning creates no owner membership, feature entitlement, or live publication.
+- Includes the prepared `admiral_vessel_commissioning_886` migration; deployment remains a separate deliberate step.
+- Preserves the field-proven 8.8.5 Course Orders acknowledgments, rollback behavior, and Native Passage.
+
 ## 8.8.5 — Command Acknowledgment
 - Preserves verified issue and rollback acknowledgments after automatic server readback.
 - Clears completed command intent after a successful issue or rollback.

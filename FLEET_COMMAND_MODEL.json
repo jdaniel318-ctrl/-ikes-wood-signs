@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.7.0",
+  "build": "8.8.6",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Registry Commit",
+  "release": "Commissioning Orders",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -100,6 +100,17 @@
     "historyRetained": true,
     "rollbackSupported": true,
     "invariant": "Changing Fleet course must not silently rewrite prior proof, vessel identity, owner authority, or release history."
+  },
+  "admiralCommissioningAuthority": {
+    "enabled": true,
+    "authority": "admiral",
+    "previewRequired": true,
+    "defaultLifecycle": "commissioning",
+    "commissionerBecomesOwner": false,
+    "createsMembership": false,
+    "createsEntitlements": false,
+    "workingNameEditable": true,
+    "immutableIdentity": ["id", "project_id", "namespace"]
   },
   "admiralFirstPaint": {
     "defaultView": "professional",

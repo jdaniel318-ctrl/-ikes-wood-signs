@@ -88,7 +88,7 @@ Protected lessons added by the command audit:
 The Keelbook is the fleet's standing regression memory. A new build inherits lessons from the current working hull **and** the relevant project history; it does not get permission to rediscover solved failures.
 
 ## Sources in scope
-Regression evidence may be drawn from relevant Dark Sky fleet work: Dark Sky / Black Flag Engine, Captain's Quarters, Admiral's Deck, Ike's / Ike Fit, Sign Stickers, Legacy Plumbing, Signal Restoration, Mugs After Dark, ScheduleJoe and other explicitly fleet-related vessels and hardening passes.
+Regression evidence may be drawn from relevant Dark Sky fleet work: Dark Sky / Black Flag Engine, Captain's Quarters, Admiral's Deck, Ike's / Ike Fit, Sign Stickers, Legacy Plumbing, Signal Restoration, Mugs After Dark, Bootstrap Build and other explicitly fleet-related vessels and hardening passes.
 
 **Explicit exclusion:** the separate project/chat named **The situation** is not a Dark Sky source. Nothing from it may be imported, inferred, copied, learned, referenced, or used as a release requirement unless the Captain explicitly orders that transfer in a later mission.
 

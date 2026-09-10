@@ -8949,6 +8949,19 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .commissioning-footer .commission-actions button{width:100%;min-height:44px}
 }
 
+/* 8.8.6 Commissioning Orders — readable shipyard controls on iPad and iPhone. */
+.admiral-commissioning-station{margin-top:18px}
+.admiral-commissioning-station .field-rule{float:right;color:#79d7aa;font-size:.58rem;font-weight:900;letter-spacing:.09em}
+.admiral-commissioning-boundary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.admiral-commissioning-boundary span{display:grid;place-items:center;min-height:70px;padding:9px;border:2px solid #9f8748;border-radius:10px;background:#08242c;text-align:center}
+.admiral-commissioning-boundary b{color:#f6e7b8;font-size:.72rem;letter-spacing:.05em}
+.admiral-commissioning-boundary small{margin-top:4px;color:#afc0c2;font-size:.55rem;letter-spacing:.08em}
+.admiral-commissioning-rename{display:grid;grid-template-columns:minmax(240px,1fr) minmax(220px,.8fr) auto;gap:14px;align-items:end;margin-top:16px;padding:18px;border:2px solid #4f7379;border-radius:14px;background:#08262d}
+.admiral-commissioning-rename>div{display:grid;gap:5px}.admiral-commissioning-rename small{color:#e3bd59;font-size:.65rem;font-weight:900;letter-spacing:.14em}.admiral-commissioning-rename strong{color:#f5e4b5;font-size:1rem}.admiral-commissioning-rename span{color:#aebfc1;font-size:.72rem;line-height:1.4}
+.admiral-commissioning-rename label{color:#e3bd59!important;font-size:.7rem!important;font-weight:900!important}.admiral-commissioning-rename input{margin-top:7px;border:2px solid #52727a!important;background:#04181f!important;color:#f0f5f2!important;font-size:16px!important}
+@media (min-width:700px) and (max-width:1180px) and (orientation:portrait){.admiral-commissioning-rename{grid-template-columns:1fr 1fr}.admiral-commissioning-rename>div{grid-column:1/-1}}
+@media (max-width:760px){.admiral-commissioning-boundary,.admiral-commissioning-rename{grid-template-columns:1fr}.admiral-commissioning-station .field-rule{display:block;float:none;margin-top:3px}.admiral-commissioning-rename button{width:100%}}
+
 /* v3.7.6 commissioning guardrails + readiness */
 .commission-progress button:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.55)}
 .commission-progress button.complete:not(.active){border-color:#31515c;background:#0d1f25;color:#a9c1c8}
@@ -11569,7 +11582,7 @@ body.engine-mode #enginePanel .modern-project-command .project-governance-strip{
   }
 }
 
-/* v4.5.4 — Captain's Shipyard / ScheduleJoe concept vessel */
+/* v4.5.4 — Captain's Shipyard / Bootstrap Build concept vessel */
 .captain-shipyard-launch{
   width:min(920px,94%);
   margin:10px auto 16px;
@@ -11733,7 +11746,7 @@ body.engine-mode #enginePanel .modern-project-command .project-governance-strip{
   #captainQuarters.cinematic-cabin-ready .captain-shipyard-project small{display:none!important}
 }
 
-/* 4.5.6 — ScheduleJoe architecture-first hull design */
+/* 4.5.6 — Bootstrap Build architecture-first hull design */
 .schedulejoe-hull-status{display:grid;grid-template-columns:minmax(210px,.75fr) minmax(0,2.2fr);gap:16px;align-items:center;margin:0 0 12px;padding:13px 15px;border:1px solid #4b5c61;border-radius:10px;background:linear-gradient(110deg,#111a1e,#132025)}
 .schedulejoe-hull-status>div{display:grid;gap:3px}.schedulejoe-hull-status small{font-size:8px;font-weight:900;letter-spacing:.13em;color:#b99757}.schedulejoe-hull-status strong{font:800 16px Georgia,serif;color:#efe9d9}.schedulejoe-hull-status span{font-size:9px;color:#9eaaa6}
 .schedulejoe-hull-status ol{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:0;padding:0}.schedulejoe-hull-status li{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px;min-height:38px;padding:7px 8px;border:1px solid #37484e;border-radius:7px;background:#0e171b}.schedulejoe-hull-status li b{font-size:8px;color:#d4b36c}.schedulejoe-hull-status li span{font-size:8px;font-weight:800;letter-spacing:.04em;color:#c5ceca}
@@ -11744,7 +11757,7 @@ body.engine-mode #enginePanel .modern-project-command .project-governance-strip{
 .schedulejoe-dock-hold{display:grid;gap:5px;margin:0 0 10px;padding:14px 16px;border:1px solid #806536;border-radius:10px;background:linear-gradient(110deg,#241c0f,#11191c)}.schedulejoe-dock-hold small{font-size:8px;font-weight:900;letter-spacing:.13em;color:#d1ad61}.schedulejoe-dock-hold strong{font:800 15px Georgia,serif;color:#f0e5cc}.schedulejoe-dock-hold p{margin:0;max-width:900px;color:#b9b29f;line-height:1.45}
 @media(max-width:900px){.schedulejoe-hull-status{grid-template-columns:1fr}.schedulejoe-hull-status ol{grid-template-columns:repeat(5,minmax(95px,1fr));overflow-x:auto}.schedulejoe-first-mate-table{grid-template-columns:1fr}.schedulejoe-first-mate-table span{grid-column:auto}.schedulejoe-architecture-tabs{grid-template-columns:repeat(2,1fr)}}
 
-/* Dark Sky 4.5.7 — ScheduleJoe keel architecture */
+/* Dark Sky 4.5.7 — Bootstrap Build keel architecture */
 .schedulejoe-hull-status ol.schedulejoe-keel-three{grid-template-columns:repeat(3,1fr)}
 .schedulejoe-foundation-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
 .schedulejoe-foundation-grid article,.schedulejoe-template-lineage,.schedulejoe-authority-matrix{border:1px solid #42545a;border-radius:10px;background:linear-gradient(110deg,#10191d,#121f22);padding:14px 16px}
@@ -15088,7 +15101,7 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
   .admiral-deck-overlay[data-mode="professional"] .admiral-identity-row button{width:100%!important}
 }
 
-/* 8.8.5 Course Orders — professional clarity, deliberate command, one scroll plane. */
+/* 8.8.6 Course Orders — professional clarity, deliberate command, one scroll plane. */
 .admiral-deck-overlay[data-mode="professional"]{
   height:100dvh!important;max-height:100dvh!important;box-sizing:border-box!important;
   overscroll-behavior-y:contain!important;scrollbar-gutter:stable both-edges;

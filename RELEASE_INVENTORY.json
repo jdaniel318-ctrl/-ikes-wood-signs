@@ -1,13 +1,13 @@
 {
-  "release": "Command Acknowledgment",
-  "name": "Command Acknowledgment",
-  "build": "8.8.5",
-  "seal": "command-acknowledgment-885-7d31b6",
+  "release": "Commissioning Orders",
+  "name": "Commissioning Orders",
+  "build": "8.8.6",
+  "seal": "commissioning-orders-886-b4c2e7",
   "file_count": 85,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
-    "ADMIRAL_PREFLIGHT_818.json",
+    "SUPABASE_ADMIRAL_COMMISSIONING_886.sql",
     "ADMIRAL_REFERENCE_COMPENDIUM.md",
     "ADMIRAL_RELEASE_DOCTRINE.json",
     "BOOTSTRAP_COMMIT_MODEL.json",

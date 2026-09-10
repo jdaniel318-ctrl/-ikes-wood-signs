@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.5",
-  "release": "Command Acknowledgment",
-  "seal": "command-acknowledgment-885-7d31b6",
+  "build": "8.8.6",
+  "release": "Commissioning Orders",
+  "seal": "commissioning-orders-886-b4c2e7",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Command Acknowledgment",
-  "name": "Command Acknowledgment",
-  "releaseName": "Command Acknowledgment"
+  "release_name": "Commissioning Orders",
+  "name": "Commissioning Orders",
+  "releaseName": "Commissioning Orders"
 }

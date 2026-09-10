@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.5",
-  "release": "Command Acknowledgment",
+  "build": "8.8.6",
+  "release": "Commissioning Orders",
   "excluded_sources": [
     "The situation"
   ],
@@ -164,6 +164,10 @@
       ,"verified_issue_acknowledgment_survives_readback"
       ,"verified_rollback_acknowledgment_survives_readback"
       ,"completed_intent_clears_and_rollback_preview_is_new_proposal"
+      ,"commissioning_requires_explicit_preview_fingerprint"
+      ,"commissioning_creates_no_owner_membership_or_entitlement"
+      ,"bootstrap_build_name_does_not_define_permanent_identity"
+      ,"working_name_change_preserves_uuid_project_key_namespace"
     ],
     "quarterdeck": [
       "single_top_level_folder",
