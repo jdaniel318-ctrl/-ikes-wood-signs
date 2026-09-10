@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.7",
-  "release": "Bootstrap Build Helm",
-  "seal": "bootstrap-build-helm-887-b74c2e",
+  "build": "8.8.8",
+  "release": "Bootstrap Admiral Fleet",
+  "seal": "bootstrap-admiral-fleet-888-a31d6c",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Bootstrap Build Helm",
-  "name": "Bootstrap Build Helm",
-  "releaseName": "Bootstrap Build Helm"
+  "release_name": "Bootstrap Admiral Fleet",
+  "name": "Bootstrap Admiral Fleet",
+  "releaseName": "Bootstrap Admiral Fleet"
 }

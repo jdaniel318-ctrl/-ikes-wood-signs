@@ -1,8 +1,8 @@
 {
-  "release": "Bootstrap Build Helm",
-  "name": "Bootstrap Build Helm",
-  "build": "8.8.7",
-  "seal": "bootstrap-build-helm-887-b74c2e",
+  "release": "Bootstrap Admiral Fleet",
+  "name": "Bootstrap Admiral Fleet",
+  "build": "8.8.8",
+  "seal": "bootstrap-admiral-fleet-888-a31d6c",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

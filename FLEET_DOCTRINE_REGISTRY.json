@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.7",
-  "release": "Bootstrap Build Helm",
+  "build": "8.8.8",
+  "release": "Bootstrap Admiral Fleet",
   "status": "active",
   "principles": [
     {

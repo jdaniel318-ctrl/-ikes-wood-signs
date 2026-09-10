@@ -1,7 +1,15 @@
+## 8.8.8 — Bootstrap Admiral Fleet
+
+- Adds a prominent `OPEN ADMIRAL FLEET` door directly to Bootstrap Build's approved identity kit.
+- Repeats the fleet door in the construction-schedule header so it remains easy to find during daily work.
+- Presents Fleet Core vessels, current marks, permanent project keys, and lifecycle states in a read-only surface.
+- Highlights Bootstrap Build without giving the schedule authority over any other vessel.
+- Reframes ABC/CBA/AB/1234/A as test data rather than a fake organizational boundary.
+
 ## 8.8.7 — Bootstrap Build Helm
 
 - Separates the approved Bootstrap Build identity into primary, horizontal, and compact production assets.
-- Adds a resettable drag-and-drop weekly construction calendar for the fake Region `ABC`, Division `CBA`, Community `AB`, Lot `1234`, Unit `A` test hierarchy.
+- Adds a resettable drag-and-drop weekly construction calendar for the Region `ABC`, Division `CBA`, Community `AB`, Lot `1234`, Unit `A` test hierarchy.
 - Includes ten normal construction tasks plus desktop drag/drop, iPad/iPhone touch movement, keyboard movement, week navigation, and local task creation.
 - Keeps prototype schedule data browser-local and explicitly outside Fleet Core and customer commitments.
 - Adds an iPad/iPhone-responsive Vessel Logo Helm to the professional Admiral deck.

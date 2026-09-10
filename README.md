@@ -1,4 +1,10 @@
-# Dark Sky 8.8.7 — Bootstrap Build Helm
+# Dark Sky 8.8.8 — Bootstrap Admiral Fleet
+
+Bootstrap Build now has an unmistakable **OPEN ADMIRAL FLEET** door beside its approved identity kit and a second **ADMIRAL FLEET** door inside the construction schedule. The resulting surface is read-only: it shows every authenticated Fleet Core vessel, lifecycle state, permanent project key, and current vessel mark without exposing a fleet mutation control.
+
+The ABC → CBA → AB → 1234 → A hierarchy remains ordinary test data for exercising the scheduler. It is not treated as a fake product or disposable vessel identity.
+
+## 8.8.7 — Bootstrap Build Helm
 
 Bootstrap Build Helm installs the founding construction-scheduling identity as three separate production assets: primary vessel badge, horizontal dashboard lockup, and compact fleet icon. The professional Admiral deck adds a Vessel Logo Helm where an active Admiral can inspect a Fleet Core vessel, preview a PNG/JPEG/WebP replacement, save its canonical Storage path, or restore the approved default. Logo commands are audited and never rename the vessel, alter its permanent project key or namespace, grant authority, or change feature entitlements.
 

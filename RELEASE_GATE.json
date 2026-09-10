@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.7",
-  "release": "Bootstrap Build Helm",
+  "build": "8.8.8",
+  "release": "Bootstrap Admiral Fleet",
   "generatedAt": "2026-09-10T04:24:43Z",
   "checks": {
     "build_version": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.7 installs the separated Bootstrap Build identity kit and an Admiral-only Vessel Logo Helm while preserving the permanent keel, Course Orders, Native Passage and the 85-file release boundary.",
-  "candidate": "8.8.7",
+  "note": "8.8.8 makes the authenticated Admiral Fleet easy to find from Bootstrap Build and its schedule while preserving the permanent keel, read-only fleet boundary, Course Orders, Native Passage and the 85-file release boundary.",
+  "candidate": "8.8.8",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -241,7 +241,11 @@
     "admiral_logo_storage_write_boundary": true,
     "admiral_logo_restore_default": true,
     "bootstrap_build_schedule_prototype": true,
-    "bootstrap_build_fake_region_abc": true,
+    "bootstrap_build_test_region_abc": true,
+    "bootstrap_admiral_fleet_primary_door": true,
+    "bootstrap_admiral_fleet_schedule_door": true,
+    "bootstrap_admiral_fleet_read_only": true,
+    "bootstrap_admiral_fleet_live_identity_marks": true,
     "bootstrap_build_drag_drop_calendar": true,
     "bootstrap_build_touch_move_fallback": true,
     "bootstrap_build_schedule_local_only": true,
@@ -365,8 +369,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.7",
-    "seal": "bootstrap-build-helm-887-b74c2e",
+    "build": "8.8.8",
+    "seal": "bootstrap-admiral-fleet-888-a31d6c",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
