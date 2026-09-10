@@ -1,3 +1,12 @@
+## 8.8.4 — Course Orders
+- Replaces the single-feature entitlement control with explicit vessel, service-group, and feature scopes.
+- Requires a read-only impact preview before one atomic Admiral order can change server state.
+- Records the authenticated actor, intent, scope, before state, command, timestamp, and verified readback.
+- Adds an operational Admiral Log with conflict-safe rollback of Course Orders.
+- Strengthens Professional Mode button contrast and touch targets across iPad and iPhone orientations.
+- Retains Native Passage as the unchanged Safari-owned Admiral-to-Engine crossing.
+- Keeps readiness, testing, refresh, and launch unable to choose Off, Free, or Paid.
+
 ## 8.8.3 — Native Passage
 - Stops cancelling the Admiral header link and gives the actual document navigation to Safari.
 - Preserves the authorized Engine crossing with a random, short-lived, one-use same-tab handoff.

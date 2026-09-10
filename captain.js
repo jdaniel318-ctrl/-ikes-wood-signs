@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.3';
+  const UPPER_COMMAND_BUILD='8.8.4';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -649,11 +649,11 @@
   </div>
   <div id="admiralDoctrinePrinciples" class="admiral-doctrine-principles"></div>
   <p class="admiral-doctrine-note">This is the current governed course, not a transient readiness notice. Readiness verifies this registry against the running build.</p>
-</section><div class="admiral-lane-summary admiral-service-governance"><b>Fleet Feature Entitlements</b><span>Every feature can be Off, Free or Paid for every vessel. Only an explicit Admiral command changes that state.</span></div><button id="admiralServiceEntitlements" type="button">OPEN FEATURE ENTITLEMENTS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station hidden" aria-label="Admiral Fleet Feature Entitlements"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Fleet Feature Entitlements</h5><p>Choose a vessel and feature, read its current setting, then issue one clear Admiral command.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralEntitlementClose" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer">Your Admiral Gate PIN opens this deck. Account sign-in separately authorizes server-governed changes. Readiness, testing and launch never choose Free or Paid.</p><div class="admiral-identity-row"><label>Admiral email<input id="admiralIdentityEmail" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralIdentityPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentityRecover" type="button">RECOVER PASSWORD</button><button id="admiralIdentitySignOut" type="button" class="hidden">SIGN OUT IDENTITY</button></div><div class="admiral-entitlement-controls"><label>1. Choose vessel<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label><label>2. Choose feature<select id="admiralEntitlementCapability"><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label></div><div class="admiral-entitlement-command"><div class="admiral-current-setting"><small>CURRENT SETTING</small><strong id="admiralEntitlementCurrent">SIGN IN TO VIEW</strong><span id="admiralEntitlementCurrentDetail">The current setting appears here before you make a change.</span></div><div class="admiral-choice-setting"><small>3. Choose setting</small><div class="admiral-entitlement-actions" role="group" aria-label="Feature commercial state"><button id="admiralTurnOff" type="button" disabled>OFF<span>Unavailable</span></button><button id="admiralMakeFree" type="button" disabled>FREE<span>Active at $0</span></button><button id="admiralGrantPaid" type="button" disabled>PAID<span>Paid terms</span></button></div></div></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to view and change this setting.</div><div class="admiral-package-note"><b>Feature freedom</b><span>Services may group features for convenience, but each feature keeps its own Off, Free or Paid choice for each vessel.</span></div></section></article>
+</section><div class="admiral-lane-summary admiral-service-governance"><b>Admiral Course Orders</b><span>Set one feature, a service group, or an entire vessel to Off, Free, or Paid. Every change requires an explicit Admiral preview and order.</span></div><button id="admiralServiceEntitlements" class="admiral-pro-button" type="button">OPEN COURSE ORDERS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station admiral-course-station hidden" aria-label="Admiral Course Orders"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Course Orders</h5><p>Choose the scope, preview the impact, then issue one deliberate and reversible command.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralEntitlementClose" class="admiral-pro-button" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer">The Admiral Gate opens this deck. Account sign-in separately authorizes server-governed changes. Readiness, testing, refresh and launch never choose Off, Free or Paid.</p><div class="admiral-identity-row"><label>Admiral email<input id="admiralIdentityEmail" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralIdentityPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" class="admiral-pro-button is-primary" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentityRecover" class="admiral-pro-button" type="button">RECOVER PASSWORD</button><button id="admiralIdentitySignOut" class="admiral-pro-button hidden" type="button">SIGN OUT IDENTITY</button></div><div class="admiral-course-grid"><section class="admiral-course-brief"><small>FLEET BRIEF</small><strong id="admiralCourseBrief">Sign in to inspect the selected vessel.</strong><span>Reading fleet state does not change it.</span></section><section class="admiral-course-compose"><div class="admiral-course-step"><small>1 · VESSEL</small><label>Command destination<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label></div><div class="admiral-course-step"><small>2 · SCOPE</small><div class="admiral-scope-actions" role="group" aria-label="Course order scope"><button class="admiral-pro-button is-selected" type="button" data-course-scope="vessel" aria-pressed="true">ENTIRE VESSEL</button><button class="admiral-pro-button" type="button" data-course-scope="group" aria-pressed="false">SERVICE GROUP</button><button class="admiral-pro-button" type="button" data-course-scope="feature" aria-pressed="false">ONE FEATURE</button></div><label id="admiralCourseGroupLabel" class="hidden">Service group<select id="admiralCourseGroup"><option value="operations">Operations & Commerce</option><option value="production">Production & Capacity</option><option value="intelligence">Intelligence</option></select></label><label id="admiralCourseFeatureLabel" class="hidden">Feature<select id="admiralEntitlementCapability"><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label></div><div class="admiral-course-step"><small>3 · COMMAND</small><div class="admiral-entitlement-actions" role="group" aria-label="Commercial state"><button id="admiralTurnOff" class="admiral-pro-button" type="button" disabled>OFF<span>Unavailable</span></button><button id="admiralMakeFree" class="admiral-pro-button is-selected" type="button" disabled>FREE<span>Active at $0</span></button><button id="admiralGrantPaid" class="admiral-pro-button" type="button" disabled>PAID<span>Paid terms</span></button></div><label>Command intent<input id="admiralCourseIntent" type="text" maxlength="500" placeholder="Optional reason for the record"></label><button id="admiralPreviewCourse" class="admiral-pro-button" type="button" disabled>PREVIEW ORDER</button></div></section><section id="admiralCoursePreview" class="admiral-course-preview" aria-live="polite"><header><div><small>IMPACT PREVIEW</small><strong id="admiralEntitlementCurrent">AWAITING PREVIEW</strong><span id="admiralEntitlementCurrentDetail">No fleet state will change until the order is issued.</span></div></header><div class="admiral-impact-counts"><span><b id="admiralCourseTargetCount">0</b><small>TARGETS</small></span><span><b id="admiralCourseChangeCount">0</b><small>CHANGES</small></span><span><b id="admiralCourseUnchangedCount">0</b><small>UNCHANGED</small></span></div><div id="admiralCoursePreviewItems" class="admiral-course-preview-items"><p>Authenticate the Admiral identity, then preview an order.</p></div><button id="admiralIssueCourse" class="admiral-pro-button is-primary" type="button" disabled>ISSUE ADMIRAL ORDER</button></section></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to inspect and command entitlements.</div><section class="admiral-course-log"><header><div><small>DURABLE COMMAND RECORD</small><strong>Recent Admiral orders</strong></div><button id="admiralOpenFullLog" class="admiral-pro-button" type="button" disabled>OPEN FULL LOG</button></header><div id="admiralCourseLogRows" class="admiral-course-log-rows"><p>Authenticate to read the command record.</p></div></section><div class="admiral-package-note"><b>Authority boundary</b><span>Each order is scoped to one vessel. Preview fingerprints prevent stale changes; rollback refuses to overwrite a newer command.</span></div></section></article>
             <article data-admiral-panel="delegate" hidden><small>03 · DELEGATE</small><h4>Bounded authority</h4><p>Scope, duration, stewardship and delegation history.</p><div class="admiral-lane-summary"><b>Delegation</b><span>Authority must remain explicit, bounded and auditable.</span></div><button type="button" data-admiral-future="Delegation">DELEGATION <em>FUTURE</em></button></article>
             <article data-admiral-panel="promote" hidden><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><div class="admiral-lane-summary"><b>Intelligence Dock + one learning pipeline</b><span>Cross-vessel patterns surface here before Observation → Lesson → Candidate → Foundry → Sea Trial → Proven.</span></div><button id="admiralDeckFoundry" type="button">OPEN THE FOUNDRY <em>FOUNDATION</em></button></article>
           </section>
-          <section class="admiral-continuity-card"><div><h4>CONTINUITY</h4><p>Protect fleet memory and recovery without mixing it into the command lanes.</p></div><div class="admiral-continuity-actions"><button id="admiralDeckRecovery" type="button"><b>Recovery Snapshot</b><small>Protect the fleet</small></button><button id="admiralDeckReport" type="button"><b>Readiness Report</b><small>Download evidence</small></button><button type="button" data-admiral-future="Admiral Log"><b>Admiral Log</b><small>Governance history</small></button><button id="admiralDeckForge" type="button"><b>Visual Forge</b><small>Presentation layer</small></button></div></section>
+          <section class="admiral-continuity-card"><div><h4>CONTINUITY</h4><p>Protect fleet memory and recovery without mixing it into the command lanes.</p></div><div class="admiral-continuity-actions"><button id="admiralDeckRecovery" type="button"><b>Recovery Snapshot</b><small>Protect the fleet</small></button><button id="admiralDeckReport" type="button"><b>Readiness Report</b><small>Download evidence</small></button><button id="admiralDeckLog" type="button"><b>Admiral Log</b><small>Governance history</small></button><button id="admiralDeckForge" type="button"><b>Visual Forge</b><small>Presentation layer</small></button></div></section>
           <section class="admiral-deck-note" id="admiralDeckNotice" role="status" aria-live="polite">Professional Mode active. Rank is not implied by access.</section>
         </main>
       </div>`;
@@ -775,12 +775,12 @@
         standardsButton?.setAttribute('aria-expanded','false');
         station.classList.remove('hidden');
         entitlementButton.setAttribute('aria-expanded','true');
-        entitlementButton.textContent='FEATURE ENTITLEMENTS OPEN';
+        entitlementButton.textContent='COURSE ORDERS OPEN';
         await window.DarkSkySyncAdmiralIdentity?.();
       };
     }
     const entitlementClose=byId('admiralEntitlementClose');
-    if(entitlementClose)entitlementClose.onclick=event=>{event.preventDefault();event.stopPropagation();byId('admiralEntitlementStation')?.classList.add('hidden');entitlementButton?.setAttribute('aria-expanded','false');if(entitlementButton){entitlementButton.textContent='OPEN FEATURE ENTITLEMENTS';entitlementButton.focus({preventScroll:true});}};
+    if(entitlementClose)entitlementClose.onclick=event=>{event.preventDefault();event.stopPropagation();byId('admiralEntitlementStation')?.classList.add('hidden');entitlementButton?.setAttribute('aria-expanded','false');if(entitlementButton){entitlementButton.textContent='OPEN COURSE ORDERS';entitlementButton.focus({preventScroll:true});}};
     byId('admiralCeremonialFoundry').onclick=()=>openFoundryWorkspace();
     byId('admiralReadinessFindings')?.addEventListener('click',e=>{
       const btn=e.target.closest('[data-readiness-action]');if(!btn)return;
@@ -1962,6 +1962,8 @@ if(document.readyState==='loading'){
 })();
 
 ;(()=>{
+  // Replaced by the 8.8.4 atomic Course Orders controller below.
+  return;
   const SUPA_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   const cfg=()=>window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.()||null;
   const headers=(token='')=>{const c=cfg();const h={apikey:c?.publishableKey||'','Content-Type':'application/json'};if(token)h.Authorization='Bearer '+token;return h;};
@@ -2054,4 +2056,194 @@ if(document.readyState==='loading'){
   const releaseEntitlementPicker=()=>{const active=document.activeElement;if(active?.matches?.('#admiralEntitlementVessel,#admiralEntitlementCapability'))active.blur();};
   window.addEventListener('pageshow',releaseEntitlementPicker);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')releaseEntitlementPicker();});
+})();
+
+/* 8.8.4 Course Orders — explicit preview, atomic issue, durable readback and safe rollback. */
+;(()=>{
+  const SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
+  const GROUPS={
+    operations:['fleet.customer-payments','fleet.customer-insight','fleet.enhanced-ledger'],
+    production:['fleet.artwork-inlays','fleet.vendor-routing'],
+    intelligence:['fleet.ai-recommendations']
+  };
+  let scope='vessel',command='free',preview=null,previewConfirmed=false,fullLog=false,busy=false;
+  const el=id=>document.getElementById(id);
+  const station=()=>el('admiralEntitlementStation');
+  const result=()=>el('admiralEntitlementResult');
+  const cfg=()=>window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.()||null;
+  const readSession=()=>{try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null')}catch(_){return null}};
+  const saveSession=data=>{if(!data?.access_token)return null;const session={access_token:data.access_token,refresh_token:data.refresh_token||'',expires_at:Date.now()+Math.max(60,Number(data.expires_in||3600))*1000,user:data.user||null};sessionStorage.setItem(SESSION_KEY,JSON.stringify(session));return session;};
+  const clearSession=()=>sessionStorage.removeItem(SESSION_KEY);
+  const headers=(token='')=>{const c=cfg();const value={apikey:c?.publishableKey||'','Content-Type':'application/json'};if(token)value.Authorization='Bearer '+token;return value;};
+  const selected=id=>{const control=el(id);return {value:control?.value||'',label:control?.selectedOptions?.[0]?.textContent?.trim()||''};};
+  const setResult=message=>{if(result())result().textContent=message;};
+  const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const formatTime=value=>{try{return new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(new Date(value));}catch(_){return String(value||'');}};
+  async function refreshSession(session){
+    const c=cfg();if(!c||!session?.refresh_token)return null;
+    const response=await fetch(c.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:headers(),body:JSON.stringify({refresh_token:session.refresh_token})});
+    return response.ok?saveSession(await response.json()):null;
+  }
+  async function currentSession(){let session=readSession();if(session&&session.expires_at>Date.now()+30000)return session;if(session?.refresh_token)session=await refreshSession(session);return session;}
+  async function rpc(name,body){
+    const c=cfg(),session=await currentSession();
+    if(!c?.url||!session?.access_token)throw new Error('Authenticate the Admiral identity first.');
+    const response=await fetch(c.url+'/rest/v1/rpc/'+name,{method:'POST',headers:{...headers(session.access_token),Accept:'application/json'},body:JSON.stringify(body)});
+    if(!response.ok){let message='The Admiral command was refused. No change was made.';try{const problem=await response.json();message=problem?.message||problem?.hint||message;}catch(_){}throw new Error(message.replaceAll('_',' '));}
+    return response.json();
+  }
+  async function verifyAdmiral(){
+    const c=cfg(),session=await currentSession();if(!c||!session?.access_token)return false;
+    const response=await fetch(c.url+'/rest/v1/fleet_global_authorities?select=user_id&authority_role=eq.admiral&active=eq.true',{headers:{...headers(session.access_token),Accept:'application/json'}});
+    if(!response.ok)return false;const rows=await response.json();return Array.isArray(rows)&&rows.length===1;
+  }
+  function capabilityKeys(){
+    if(scope==='vessel')return null;
+    if(scope==='group')return GROUPS[selected('admiralCourseGroup').value]||[];
+    return [selected('admiralEntitlementCapability').value].filter(Boolean);
+  }
+  function setBusy(next){
+    busy=next;
+    const verified=station()?.classList.contains('identity-verified');
+    ['admiralTurnOff','admiralMakeFree','admiralGrantPaid','admiralPreviewCourse'].forEach(id=>{if(el(id))el(id).disabled=next||!verified;});
+    if(el('admiralIssueCourse'))el('admiralIssueCourse').disabled=next||!verified||!preview||!previewConfirmed||preview.changes_count<1;
+    if(el('admiralOpenFullLog'))el('admiralOpenFullLog').disabled=next||!verified;
+  }
+  function invalidatePreview(message='Preview the order to see its exact impact.'){
+    preview=null;previewConfirmed=false;
+    if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent='AWAITING PREVIEW';
+    if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent=message;
+    ['admiralCourseTargetCount','admiralCourseChangeCount','admiralCourseUnchangedCount'].forEach(id=>{if(el(id))el(id).textContent='0';});
+    if(el('admiralCoursePreviewItems'))el('admiralCoursePreviewItems').innerHTML='<p>No fleet state will change until the order is issued.</p>';
+    if(el('admiralIssueCourse'))el('admiralIssueCourse').disabled=true;
+  }
+  function paintScope(){
+    document.querySelectorAll('[data-course-scope]').forEach(button=>{const active=button.dataset.courseScope===scope;button.classList.toggle('is-selected',active);button.setAttribute('aria-pressed',String(active));});
+    el('admiralCourseGroupLabel')?.classList.toggle('hidden',scope!=='group');
+    el('admiralCourseFeatureLabel')?.classList.toggle('hidden',scope!=='feature');
+  }
+  function paintCommand(){
+    const ids={off:'admiralTurnOff',free:'admiralMakeFree',paid:'admiralGrantPaid'};
+    Object.entries(ids).forEach(([mode,id])=>{const button=el(id),active=mode===command;if(button){button.classList.toggle('is-selected',active);button.setAttribute('aria-pressed',String(active));}});
+  }
+  async function signIn(){
+    const c=cfg(),email=el('admiralIdentityEmail')?.value?.trim().toLowerCase(),password=el('admiralIdentityPassword')?.value||'';
+    if(!c?.url||!c?.publishableKey)throw new Error('Supabase identity is not configured.');
+    if(!email||!password)throw new Error('Enter the Admiral email and password.');
+    const response=await fetch(c.url+'/auth/v1/token?grant_type=password',{method:'POST',headers:headers(),body:JSON.stringify({email,password})});
+    if(!response.ok)throw new Error('Admiral sign-in failed.');
+    saveSession(await response.json());
+    if(!(await verifyAdmiral())){clearSession();throw new Error('This account does not hold active Admiral authority.');}
+    if(el('admiralIdentityPassword'))el('admiralIdentityPassword').value='';
+  }
+  async function syncIdentity(){
+    const verified=await verifyAdmiral();
+    if(el('admiralIdentityState'))el('admiralIdentityState').textContent=verified?'ADMIRAL IDENTITY VERIFIED':'ADMIRAL IDENTITY REQUIRED';
+    station()?.classList.toggle('identity-verified',verified);
+    ['admiralIdentitySignIn','admiralIdentityRecover'].forEach(id=>el(id)?.classList.toggle('hidden',verified));
+    ['admiralIdentityEmail','admiralIdentityPassword'].forEach(id=>el(id)?.closest('label')?.classList.toggle('hidden',verified));
+    el('admiralIdentitySignOut')?.classList.toggle('hidden',!verified);
+    if(verified){
+      if(el('admiralCourseBrief'))el('admiralCourseBrief').textContent=selected('admiralEntitlementVessel').label+' is ready for a read-only preview.';
+      setBusy(false);await Promise.all([previewCourse(),loadLog()]);
+    }else{
+      invalidatePreview('Authenticate to inspect current settings.');
+      if(el('admiralCourseBrief'))el('admiralCourseBrief').textContent='Sign in to inspect the selected vessel.';
+      if(el('admiralCourseLogRows'))el('admiralCourseLogRows').innerHTML='<p>Authenticate to read the command record.</p>';
+      setBusy(false);
+    }
+    return verified;
+  }
+  window.DarkSkySyncAdmiralIdentity=syncIdentity;
+  async function previewCourse(confirmIssue=false){
+    setBusy(true);setResult('Reading current fleet state. No change is being made…');
+    try{
+      const vessel=selected('admiralEntitlementVessel');
+      const data=await rpc('admiral_preview_service_course',{p_project_id:vessel.value,p_scope:scope,p_capability_keys:capabilityKeys(),p_commercial_mode:command});
+      preview=data;previewConfirmed=confirmIssue;
+      if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent=command.toUpperCase()+' COURSE';
+      if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent=data.changes_count?data.changes_count+' of '+data.feature_count+' selected features will change.':'All selected features already match this course.';
+      if(el('admiralCourseTargetCount'))el('admiralCourseTargetCount').textContent=String(data.feature_count);
+      if(el('admiralCourseChangeCount'))el('admiralCourseChangeCount').textContent=String(data.changes_count);
+      if(el('admiralCourseUnchangedCount'))el('admiralCourseUnchangedCount').textContent=String(data.unchanged_count);
+      if(el('admiralCoursePreviewItems'))el('admiralCoursePreviewItems').innerHTML=(data.items||[]).map(item=>'<article class="'+(item.changes?'will-change':'unchanged')+'"><b>'+escapeHtml(item.feature_name)+'</b><span>'+escapeHtml(String(item.before_state).toUpperCase())+' → '+escapeHtml(String(item.after_state).toUpperCase())+'</span></article>').join('');
+      setResult(data.changes_count?(confirmIssue?'Preview confirmed. Review every target, then issue the order.':'Current impact shown. Tap Preview Order to authorize the issue step.'):'Preview complete. No order is needed because the selected state already matches.');
+      return data;
+    }finally{setBusy(false);}
+  }
+  async function issueCourse(){
+    if(!preview||!previewConfirmed)throw new Error('Tap Preview Order and review the impact before issuing it.');
+    const vessel=selected('admiralEntitlementVessel'),intent=el('admiralCourseIntent')?.value?.trim()||'';
+    setBusy(true);setResult('Issuing one atomic Admiral order…');
+    try{
+      const data=await rpc('admiral_issue_service_course',{p_project_id:vessel.value,p_scope:scope,p_capability_keys:capabilityKeys(),p_commercial_mode:command,p_expected_fingerprint:preview.fingerprint,p_intent:intent});
+      setResult('ORDER #'+data.command_id+' VERIFIED · '+data.changes_count+' feature'+(data.changes_count===1?'':'s')+' now '+command.toUpperCase()+' for '+vessel.label+'.');
+      const notice=el('admiralDeckNotice');if(notice)notice.textContent='Admiral order #'+data.command_id+' was written, read back and verified.';
+      preview=null;previewConfirmed=false;await Promise.all([previewCourse(),loadLog()]);
+      return data;
+    }finally{setBusy(false);}
+  }
+  function describeRecord(record){
+    const detail=record.detail||{};
+    if(record.action==='service_course_order_issued')return (detail.command||'course').toUpperCase()+' · '+(detail.changes_count||0)+' change'+(detail.changes_count===1?'':'s')+' · '+(detail.scope||'vessel');
+    if(record.action==='service_course_order_rolled_back')return 'ROLLBACK · order #'+(detail.source_command_id||'—');
+    return String(detail.capability_key||'Single feature order')+' · '+String(detail.commercial_mode||detail.current_state||'changed').toUpperCase();
+  }
+  async function loadLog(){
+    const vessel=selected('admiralEntitlementVessel');
+    const data=await rpc('admiral_list_service_course_log',{p_project_id:vessel.value,p_limit:fullLog?100:5});
+    const records=data.records||[],container=el('admiralCourseLogRows');if(!container)return records;
+    container.innerHTML=records.length?records.map(record=>'<article class="admiral-course-log-row"><div><small>ORDER #'+escapeHtml(record.id)+' · '+escapeHtml(formatTime(record.created_at))+'</small><b>'+escapeHtml(record.vessel_name||vessel.label)+'</b><span>'+escapeHtml(describeRecord(record))+'</span><em>By '+escapeHtml(record.actor||'Admiral')+'</em></div>'+(record.rollback_available?'<button class="admiral-pro-button" type="button" data-course-rollback="'+escapeHtml(record.id)+'" data-course-description="'+escapeHtml(describeRecord(record))+'">ROLL BACK</button>':'')+'</article>').join(''):'<p>No entitlement commands are recorded for this vessel.</p>';
+    if(el('admiralOpenFullLog'))el('admiralOpenFullLog').textContent=fullLog?'SHOW RECENT':'OPEN FULL LOG';
+    return records;
+  }
+  async function rollbackCourse(button){
+    const id=Number(button.dataset.courseRollback),description=button.dataset.courseDescription||'this order';
+    if(!Number.isFinite(id))return;
+    if(!window.confirm('Roll back Admiral order #'+id+'?\n\n'+description+'\n\nRollback will stop if any newer command conflicts.'))return;
+    setBusy(true);setResult('Checking for newer commands before rollback…');
+    try{
+      const data=await rpc('admiral_rollback_service_course',{p_command_id:id});
+      setResult('ROLLBACK VERIFIED · order #'+id+' restored '+data.restored_count+' feature'+(data.restored_count===1?'':'s')+'.');
+      await Promise.all([previewCourse(),loadLog()]);
+    }finally{setBusy(false);}
+  }
+  function preserveScroll(){
+    const deck=el('admiralDeck');if(!deck||deck.dataset.mode!=='professional'||deck.classList.contains('hidden'))return;
+    try{sessionStorage.setItem('darkSkyAdmiralProfessionalScroll884',String(deck.scrollTop));}catch(_){}
+  }
+  function releasePicker(){
+    const active=document.activeElement;
+    if(active?.matches?.('#admiralEntitlementVessel,#admiralCourseGroup,#admiralEntitlementCapability'))active.blur();
+  }
+  function restoreScroll(){
+    const deck=el('admiralDeck');if(!deck||deck.dataset.mode!=='professional'||deck.classList.contains('hidden'))return;
+    let top=0;try{top=Number(sessionStorage.getItem('darkSkyAdmiralProfessionalScroll884')||0);}catch(_){}
+    requestAnimationFrame(()=>requestAnimationFrame(()=>deck.scrollTo({top:Math.min(top,Math.max(0,deck.scrollHeight-deck.clientHeight)),left:0,behavior:'auto'})));
+  }
+  document.addEventListener('scroll',event=>{if(event.target===el('admiralDeck')&&document.visibilityState==='visible')preserveScroll();},true);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')preserveScroll();else{releasePicker();restoreScroll();}});
+  window.addEventListener('pageshow',()=>{releasePicker();restoreScroll();});
+  document.addEventListener('click',async event=>{
+    const target=event.target;
+    if(target.closest('[data-course-scope]')){scope=target.closest('[data-course-scope]').dataset.courseScope;paintScope();invalidatePreview();if(station()?.classList.contains('identity-verified'))try{await previewCourse();}catch(error){setResult(error.message);}return;}
+    const modeButton=target.closest('#admiralTurnOff,#admiralMakeFree,#admiralGrantPaid');
+    if(modeButton){command={admiralTurnOff:'off',admiralMakeFree:'free',admiralGrantPaid:'paid'}[modeButton.id];paintCommand();invalidatePreview();return;}
+    if(target.closest('#admiralPreviewCourse')){try{await previewCourse(true);}catch(error){setResult(error.message);}return;}
+    if(target.closest('#admiralIssueCourse')){try{await issueCourse();}catch(error){setResult(error.message);}return;}
+    if(target.closest('#admiralIdentitySignIn')){const button=el('admiralIdentitySignIn');if(button?.disabled)return;try{button.disabled=true;button.textContent='AUTHENTICATING…';setResult('Authenticating Admiral identity…');await signIn();await syncIdentity();}catch(error){setResult(error.message);}finally{button.disabled=false;button.textContent='AUTHENTICATE ADMIRAL';}return;}
+    if(target.closest('#admiralIdentityRecover')){location.href='./index.html?surface=admiral-recovery-request';return;}
+    if(target.closest('#admiralIdentitySignOut')){clearSession();await syncIdentity();setResult('Admiral identity signed out. No setting was changed.');return;}
+    if(target.closest('#admiralOpenFullLog')){fullLog=!fullLog;try{await loadLog();}catch(error){setResult(error.message);}return;}
+    if(target.closest('#admiralDeckLog')){document.querySelector('[data-admiral-lane="standardize"]')?.click();el('admiralServiceEntitlements')?.click();fullLog=true;try{await loadLog();el('admiralCourseLogRows')?.scrollIntoView({block:'start',behavior:'smooth'});}catch(error){setResult(error.message);}return;}
+    const rollback=target.closest('[data-course-rollback]');if(rollback){try{await rollbackCourse(rollback);}catch(error){setResult(error.message);}return;}
+  });
+  document.addEventListener('change',async event=>{
+    if(!event.target.matches('#admiralEntitlementVessel,#admiralCourseGroup,#admiralEntitlementCapability'))return;
+    event.target.blur();invalidatePreview();
+    if(el('admiralCourseBrief'))el('admiralCourseBrief').textContent=selected('admiralEntitlementVessel').label+' is ready for a read-only preview.';
+    if(station()?.classList.contains('identity-verified'))try{await Promise.all([previewCourse(),loadLog()]);}catch(error){setResult(error.message);}
+  });
+  document.addEventListener('input',event=>{if(event.target.matches('#admiralCourseIntent')&&preview)invalidatePreview('Intent changed. Preview again before issuing.');});
+  paintScope();paintCommand();
 })();

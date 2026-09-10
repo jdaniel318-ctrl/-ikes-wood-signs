@@ -1,9 +1,9 @@
 {
-  "release": "Native Passage",
-  "name": "Native Passage",
-  "build": "8.8.3",
-  "seal": "native-passage-883-b1f65e",
-  "file_count": 86,
+  "release": "Course Orders",
+  "name": "Course Orders",
+  "build": "8.8.4",
+  "seal": "course-orders-884-c1a04f",
+  "file_count": 85,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -12,7 +12,6 @@
     "ADMIRAL_RELEASE_DOCTRINE.json",
     "BOOTSTRAP_COMMIT_MODEL.json",
     "BOOTSTRAP_IGNITION_MODEL.json",
-    "BUILD_AUDIT_818.json",
     "CAPABILITY_ADOPTION_MAP.json",
     "CHANGELOG.md",
     "CHECKSUMS.sha256",

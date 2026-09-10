@@ -15087,3 +15087,107 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
   .admiral-deck-overlay[data-mode="professional"] .admiral-identity-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
   .admiral-deck-overlay[data-mode="professional"] .admiral-identity-row button{width:100%!important}
 }
+
+/* 8.8.4 Course Orders — professional clarity, deliberate command, one scroll plane. */
+.admiral-deck-overlay[data-mode="professional"]{
+  height:100dvh!important;max-height:100dvh!important;box-sizing:border-box!important;
+  overscroll-behavior-y:contain!important;scrollbar-gutter:stable both-edges;
+  padding-bottom:max(22px,env(safe-area-inset-bottom))!important
+}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-shell,
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-grid,
+.admiral-deck-overlay[data-mode="professional"] .admiral-lane-workspace{
+  min-height:0!important
+}
+.admiral-deck-overlay[data-mode="professional"] .admiral-deck-shell{margin-bottom:0!important}
+.admiral-deck-overlay[data-mode="professional"] button,
+.admiral-deck-overlay[data-mode="professional"] .admiral-command-return{
+  border-width:2px!important;border-color:#9f8748!important;color:#f5e8bf!important;
+  background:#08242c!important;opacity:1!important;box-shadow:none!important
+}
+.admiral-deck-overlay[data-mode="professional"] button:hover,
+.admiral-deck-overlay[data-mode="professional"] button:focus-visible,
+.admiral-deck-overlay[data-mode="professional"] .admiral-command-return:focus-visible{
+  border-color:#efd06f!important;outline:3px solid rgba(239,208,111,.24)!important;outline-offset:2px!important
+}
+.admiral-deck-overlay[data-mode="professional"] button:active,
+.admiral-deck-overlay[data-mode="professional"] .admiral-command-return:active{
+  background:#d9b95f!important;color:#061920!important;transform:translateY(1px)!important
+}
+.admiral-deck-overlay[data-mode="professional"] button:disabled{
+  border-color:#58666a!important;color:#879497!important;background:#0a2026!important;opacity:.58!important
+}
+.admiral-deck-overlay[data-mode="professional"] .admiral-pro-button{
+  min-height:50px!important;padding:0 17px!important;border:2px solid #b89a4b!important;
+  border-radius:10px!important;background:#08242c!important;color:#f6e7b8!important;
+  font-size:.72rem!important;font-weight:900!important;letter-spacing:.035em!important;
+  touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(230,197,105,.3)!important
+}
+.admiral-deck-overlay[data-mode="professional"] .admiral-pro-button.is-selected{
+  border-color:#f2d173!important;background:#453f28!important;color:#fff5d2!important;
+  box-shadow:inset 0 0 0 1px rgba(255,235,166,.22)!important
+}
+.admiral-deck-overlay[data-mode="professional"] .admiral-pro-button.is-primary:not(:disabled){
+  border-color:#f3d479!important;background:#d5b45d!important;color:#071a20!important
+}
+.admiral-course-station{padding:24px!important;background:linear-gradient(145deg,#09343c 0,#06242c 55%,#061d24 100%)!important}
+.admiral-course-station>header h5{font-size:1.75rem!important;line-height:1.1!important}
+.admiral-course-station>header p{max-width:680px!important;font-size:.9rem!important;line-height:1.45!important}
+.admiral-course-station .admiral-identity-explainer{border-left-width:4px!important;padding:14px 16px!important;background:#12393c!important;color:#c7d4d3!important;font-size:.82rem!important}
+.admiral-course-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(330px,.92fr);gap:16px;margin-top:18px}
+.admiral-course-brief{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:16px 18px;border:1px solid #47727a;border-radius:12px;background:#092831}
+.admiral-course-brief small,.admiral-course-step>small,.admiral-course-preview header small,.admiral-course-log header small{color:#e3bd59;font-size:.68rem;font-weight:900;letter-spacing:.15em}
+.admiral-course-brief strong{color:#f6efda;font-size:1rem}.admiral-course-brief span{color:#afc0c2;font-size:.76rem}
+.admiral-course-compose,.admiral-course-preview{padding:18px;border:1px solid #41646b;border-radius:14px;background:rgba(3,22,28,.68)}
+.admiral-course-compose{display:grid;gap:18px}
+.admiral-course-step{display:grid;gap:9px}
+.admiral-course-step label{font-size:.72rem!important}
+.admiral-course-step input,.admiral-course-step select{border-width:2px!important;border-color:#52727a!important;background:#04181f!important;color:#f0f5f2!important;font-size:16px!important}
+.admiral-scope-actions,.admiral-entitlement-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.admiral-course-station .admiral-entitlement-actions{margin-top:0!important}
+.admiral-course-station .admiral-entitlement-actions button{min-width:0;padding:7px!important}
+.admiral-course-station .admiral-entitlement-actions button span{display:block;color:inherit!important;opacity:.82!important}
+.admiral-course-preview{display:flex;flex-direction:column;gap:14px}
+.admiral-course-preview>header{display:block!important;margin:0!important}
+.admiral-course-preview>header strong,.admiral-course-preview>header span{display:block}
+.admiral-course-preview>header strong{margin:7px 0 4px;color:#f5e3ae;font-size:1.25rem}
+.admiral-course-preview>header span{color:#adc0c1;font-size:.78rem;line-height:1.4}
+.admiral-impact-counts{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #3e5f66;border-radius:10px;overflow:hidden;background:#061c23}
+.admiral-impact-counts span{display:grid;place-items:center;padding:12px 8px;border-right:1px solid #3e5f66}.admiral-impact-counts span:last-child{border-right:0}
+.admiral-impact-counts b{color:#f7e3a4;font-size:1.25rem}.admiral-impact-counts small{color:#9eb1b3;font-size:.58rem;font-weight:900;letter-spacing:.1em}
+.admiral-course-preview-items{display:grid;gap:7px}
+.admiral-course-preview-items>p,.admiral-course-log-rows>p{margin:0;padding:13px;border:1px dashed #466067;border-radius:9px;color:#aebdbf}
+.admiral-course-preview-items article{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #38545b;border-radius:9px;background:#08252c}
+.admiral-course-preview-items article.will-change{border-color:#b89a4b;background:#272a20}
+.admiral-course-preview-items b{color:#eef3ef;font-size:.76rem}.admiral-course-preview-items span{color:#e9c96d;font-size:.7rem;font-weight:900;white-space:nowrap}
+.admiral-course-preview #admiralIssueCourse{width:100%;margin-top:auto}
+.admiral-course-station .admiral-entitlement-result{margin-top:16px!important;padding:14px 16px!important;border-left:4px solid #e4c25f!important;background:#102f34!important;color:#f1f3ea!important;font-size:.82rem!important;font-weight:700}
+.admiral-course-log{margin-top:16px;padding:18px;border:1px solid #41646b;border-radius:14px;background:#061d24}
+.admiral-course-log>header{display:flex!important;align-items:center!important;margin:0 0 12px!important}
+.admiral-course-log>header strong{display:block;margin-top:5px;color:#f5e4b5;font-size:1rem}
+.admiral-course-log-rows{display:grid;gap:8px}
+.admiral-course-log-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;border:1px solid #3a575e;border-radius:10px;background:#08262d}
+.admiral-course-log-row small,.admiral-course-log-row b,.admiral-course-log-row span,.admiral-course-log-row em{display:block}
+.admiral-course-log-row small{color:#d1ae55;font-size:.58rem;font-weight:900;letter-spacing:.08em}.admiral-course-log-row b{margin:4px 0;color:#eef3ef;font-size:.8rem}.admiral-course-log-row span{color:#c2cecd;font-size:.72rem}.admiral-course-log-row em{margin-top:3px;color:#879a9d;font-size:.64rem;font-style:normal}
+.admiral-course-log-row button{flex:0 0 auto;min-width:118px}
+
+@media (min-width:700px) and (max-width:1180px) and (orientation:portrait){
+  .admiral-deck-overlay[data-mode="professional"] .admiral-deck-grid{padding:16px!important}
+  .admiral-course-grid{grid-template-columns:1fr}
+  .admiral-course-brief{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .admiral-deck-overlay[data-mode="professional"]{padding:0 8px max(14px,env(safe-area-inset-bottom))!important}
+  .admiral-deck-overlay[data-mode="professional"] .admiral-deck-head{padding:17px 15px!important}
+  .admiral-deck-overlay[data-mode="professional"] .admiral-deck-head-actions{width:100%!important}
+  .admiral-deck-overlay[data-mode="professional"] .admiral-deck-grid{padding:12px!important;gap:12px!important}
+  .admiral-course-station{padding:15px!important}
+  .admiral-course-station>header,.admiral-course-log>header{flex-direction:column!important;align-items:stretch!important}
+  .admiral-entitlement-head-actions{justify-content:space-between!important;width:100%!important}
+  .admiral-course-grid{grid-template-columns:1fr}
+  .admiral-course-brief{grid-template-columns:1fr;gap:5px}
+  .admiral-scope-actions,.admiral-entitlement-actions{grid-template-columns:1fr}
+  .admiral-course-preview-items article,.admiral-course-log-row{align-items:flex-start;flex-direction:column}
+  .admiral-course-log-row button,#admiralOpenFullLog{width:100%}
+  .admiral-continuity-actions{grid-template-columns:1fr!important}
+}

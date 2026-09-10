@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.3",
-  "release": "Native Passage",
-  "generatedAt": "2026-09-09T04:18:36Z",
+  "build": "8.8.4",
+  "release": "Course Orders",
+  "generatedAt": "2026-09-10T00:37:37Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.3 leaves Safari's native Admiral-to-Engine document link uncancelled, consumes a short-lived one-use same-tab Engine handoff at first light, settles Engine again after runtime initialization, and never derives commercial entitlement from testing or launch.",
-  "candidate": "8.8.3",
+  "note": "8.8.4 adds explicit preview-first atomic Course Orders, durable readback, Admiral Log and conflict-safe rollback while preserving Safari's native Admiral-to-Engine passage. Readiness, testing, refresh and launch cannot derive or change commercial entitlement.",
+  "candidate": "8.8.4",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -277,6 +277,14 @@
     ,"engine_return_handoff_wrong_build_fails_closed": true
     ,"native_engine_return_post_init_settlement": true
     ,"admiral_header_build_witness": true
+    ,"admiral_course_preview_required": true
+    ,"admiral_course_atomic_issue": true
+    ,"admiral_course_durable_readback": true
+    ,"admiral_course_conflict_safe_rollback": true
+    ,"admiral_course_log_operational": true
+    ,"professional_action_contrast_hardened": true
+    ,"ipad_portrait_landscape_responsive": true
+    ,"iphone_portrait_responsive": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -286,6 +294,9 @@
     "the_situation_not_fleet_evidence": true,
     "exact_vessel_feature_read_uses_rls": true,
     "anonymous_entitlement_read_forbidden": true,
+    "readiness_never_mutates_entitlements": true,
+    "refresh_never_mutates_entitlements": true,
+    "course_order_scoped_to_exact_vessel": true,
     "unverified_feature_delivery_fails_closed": true,
     "foreign_deployment_never_relabels_to_active_project": true,
     "quarantine_preserves_foreign_deployment_evidence": true
@@ -328,8 +339,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.3",
-    "seal": "native-passage-883-b1f65e",
+    "build": "8.8.4",
+    "seal": "course-orders-884-c1a04f",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

@@ -1,3 +1,7 @@
+# Dark Sky 8.8.4 — Course Orders
+
+Course Orders gives the Admiral one deliberate commercial command surface. The Admiral chooses a vessel, then one feature, a named service group, or the entire vessel; chooses Off, Free, or Paid; reviews the exact before/after impact; and issues one atomic server-governed order. Each successful order is read back, written to the durable Admiral Log, and can be rolled back only when no newer command conflicts. Professional Mode now uses strong outlined controls and responsive iPad/iPhone layouts. Readiness, testing, refresh, and launch remain unable to change entitlements. The field-proven 8.8.3 Native Passage back to Engine Room is preserved.
+
 # Dark Sky 8.8.3 — Native Passage
 
 Native Passage makes the Admiral header exit a true Safari-owned document crossing. No touch, pointer, click, Captain, or Admiral controller is allowed to cancel that link. A short-lived, one-use same-tab handoff preserves the Engine session that opened Admiral; an absent, copied, expired, or wrong-build handoff returns to the normal Engine gate. The destination resolves Engine before upper-command modules paint, and the runtime settles Engine again after initialization. The Admiral header visibly carries build 8.8.3 so field screenshots prove which controller is running. Project data, vessel identity, authority records, and Admiral-controlled Off/Free/Paid entitlements remain untouched.

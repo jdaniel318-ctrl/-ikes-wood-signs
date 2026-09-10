@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.3",
-  "release": "Native Passage",
+  "build": "8.8.4",
+  "release": "Course Orders",
   "excluded_sources": [
     "The situation"
   ],

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.3",
-  "release": "Native Passage",
-  "seal": "native-passage-883-b1f65e",
+  "build": "8.8.4",
+  "release": "Course Orders",
+  "seal": "course-orders-884-c1a04f",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Native Passage",
-  "name": "Native Passage",
-  "releaseName": "Native Passage"
+  "release_name": "Course Orders",
+  "name": "Course Orders",
+  "releaseName": "Course Orders"
 }
