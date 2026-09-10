@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.6",
-  "release": "Commissioning Orders",
-  "generatedAt": "2026-09-10T02:57:30Z",
+  "build": "8.8.7",
+  "release": "Bootstrap Build Helm",
+  "generatedAt": "2026-09-10T04:24:43Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -231,9 +231,20 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.6 preserves field-proven Course Orders and Native Passage while adding preview-bound Admiral commissioning, a durable not-live vessel keel, and a separately audited editable working name.",
-  "candidate": "8.8.6",
+  "note": "8.8.7 installs the separated Bootstrap Build identity kit and an Admiral-only Vessel Logo Helm while preserving the permanent keel, Course Orders, Native Passage and the 85-file release boundary.",
+  "candidate": "8.8.7",
   "features": {
+    "bootstrap_build_primary_logo": true,
+    "bootstrap_build_horizontal_logo": true,
+    "bootstrap_build_compact_icon": true,
+    "admiral_vessel_logo_helm": true,
+    "admiral_logo_storage_write_boundary": true,
+    "admiral_logo_restore_default": true,
+    "bootstrap_build_schedule_prototype": true,
+    "bootstrap_build_fake_region_abc": true,
+    "bootstrap_build_drag_drop_calendar": true,
+    "bootstrap_build_touch_move_fallback": true,
+    "bootstrap_build_schedule_local_only": true,
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
     "admiral_recommendation_compression": true,
@@ -296,6 +307,10 @@
     ,"vessel_uuid_project_key_namespace_are_immutable": true
     ,"ipad_portrait_commissioning_layout": true
     ,"iphone_commissioning_layout": true
+    ,"commissioning_preview_column_does_not_stretch": true
+    ,"commissioning_command_band_is_compact": true
+    ,"verified_identity_controls_are_compressed": true
+    ,"missing_rpc_error_is_human_readable": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -350,8 +365,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.6",
-    "seal": "commissioning-orders-886-b4c2e7",
+    "build": "8.8.7",
+    "seal": "bootstrap-build-helm-887-b74c2e",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

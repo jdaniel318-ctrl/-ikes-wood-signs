@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.6",
-  "release": "Commissioning Orders",
+  "build": "8.8.7",
+  "release": "Bootstrap Build Helm",
   "excluded_sources": [
     "The situation"
   ],
@@ -168,6 +168,8 @@
       ,"commissioning_creates_no_owner_membership_or_entitlement"
       ,"bootstrap_build_name_does_not_define_permanent_identity"
       ,"working_name_change_preserves_uuid_project_key_namespace"
+      ,"commissioning_preview_has_no_dead_stretched_column"
+      ,"missing_commissioning_rpc_fails_closed_with_plain_language"
     ],
     "quarterdeck": [
       "single_top_level_folder",

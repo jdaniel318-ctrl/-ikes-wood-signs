@@ -8949,7 +8949,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .commissioning-footer .commission-actions button{width:100%;min-height:44px}
 }
 
-/* 8.8.6 Commissioning Orders — readable shipyard controls on iPad and iPhone. */
+/* 8.8.7 Bootstrap Build Helm — readable shipyard controls on iPad and iPhone. */
 .admiral-commissioning-station{margin-top:18px}
 .admiral-commissioning-station .field-rule{float:right;color:#79d7aa;font-size:.58rem;font-weight:900;letter-spacing:.09em}
 .admiral-commissioning-boundary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -8961,6 +8961,40 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 .admiral-commissioning-rename label{color:#e3bd59!important;font-size:.7rem!important;font-weight:900!important}.admiral-commissioning-rename input{margin-top:7px;border:2px solid #52727a!important;background:#04181f!important;color:#f0f5f2!important;font-size:16px!important}
 @media (min-width:700px) and (max-width:1180px) and (orientation:portrait){.admiral-commissioning-rename{grid-template-columns:1fr 1fr}.admiral-commissioning-rename>div{grid-column:1/-1}}
 @media (max-width:760px){.admiral-commissioning-boundary,.admiral-commissioning-rename{grid-template-columns:1fr}.admiral-commissioning-station .field-rule{display:block;float:none;margin-top:3px}.admiral-commissioning-rename button{width:100%}}
+
+/* 8.8.7 Bootstrap Build Helm — one compact commissioning flow, no dead column. */
+.admiral-commissioning-station{padding:20px!important}
+.admiral-commissioning-station.identity-verified #admiralCommissioningAuth{display:flex!important;justify-content:flex-end!important;margin:8px 0 4px!important}
+.admiral-commissioning-station.identity-verified #admiralCommissioningSignOut{min-width:190px}
+.admiral-commissioning-grid{grid-template-columns:1fr!important;gap:12px!important;margin-top:12px!important;align-items:start!important}
+.admiral-commissioning-grid>.admiral-course-compose{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:16px!important;align-items:start}
+.admiral-commissioning-grid>.admiral-course-compose>.admiral-course-step{align-content:start;min-width:0;padding-right:14px;border-right:1px solid #315259}
+.admiral-commissioning-grid>.admiral-course-compose>.admiral-course-step:last-child{padding-right:0;border-right:0}
+.admiral-commissioning-station .admiral-course-step>small,.admiral-commissioning-station .admiral-course-step label{font-size:.78rem!important;line-height:1.35!important}
+.admiral-commissioning-station .admiral-course-step input,.admiral-commissioning-station .admiral-course-step select{min-height:52px!important;margin-top:6px!important}
+.admiral-commissioning-grid>.admiral-course-preview{display:grid!important;grid-template-columns:minmax(210px,.7fr) minmax(0,1.5fr) minmax(230px,.65fr);gap:14px;align-items:center;padding:16px!important;min-height:0!important}
+.admiral-commissioning-grid>.admiral-course-preview>header{align-self:center}
+.admiral-commissioning-grid>.admiral-course-preview .admiral-course-preview-items{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.admiral-commissioning-grid>.admiral-course-preview #admiralCommissioningIssue{margin:0!important;min-height:58px!important}
+.admiral-commissioning-station .admiral-entitlement-result{margin-top:12px!important}
+.admiral-commissioning-station .admiral-course-log{margin-top:12px;padding:15px!important}
+.admiral-commissioning-station .admiral-course-log-rows>p{padding:10px 12px}
+@media (max-width:1100px){
+  .admiral-commissioning-grid>.admiral-course-compose{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .admiral-commissioning-grid>.admiral-course-compose>.admiral-course-step:nth-child(2){padding-right:0;border-right:0}
+  .admiral-commissioning-grid>.admiral-course-compose>.admiral-course-step:last-child{grid-column:1/-1;padding-top:13px;border-top:1px solid #315259}
+  .admiral-commissioning-grid>.admiral-course-preview{grid-template-columns:1fr 1.5fr}
+  .admiral-commissioning-grid>.admiral-course-preview #admiralCommissioningIssue{grid-column:1/-1}
+}
+@media (max-width:700px){
+  .admiral-commissioning-station{padding:14px!important}
+  .admiral-commissioning-grid>.admiral-course-compose{grid-template-columns:1fr}
+  .admiral-commissioning-grid>.admiral-course-compose>.admiral-course-step,.admiral-commissioning-grid>.admiral-course-compose>.admiral-course-step:nth-child(2){padding:0 0 13px;border:0;border-bottom:1px solid #315259}
+  .admiral-commissioning-grid>.admiral-course-compose>.admiral-course-step:last-child{grid-column:auto;padding-top:0;border-top:0;border-bottom:0}
+  .admiral-commissioning-grid>.admiral-course-preview{grid-template-columns:1fr}
+  .admiral-commissioning-grid>.admiral-course-preview .admiral-course-preview-items{grid-template-columns:1fr}
+  .admiral-commissioning-grid>.admiral-course-preview #admiralCommissioningIssue{grid-column:auto}
+}
 
 /* v3.7.6 commissioning guardrails + readiness */
 .commission-progress button:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.55)}
@@ -9492,6 +9526,66 @@ body.business-engine-mode #enginePanel .marketing-identity-heading .secondary-bt
   #projectEngineControl .project-subnav-group button{
     min-height:52px!important;
   }
+}
+
+/* 8.8.7 Bootstrap Build Helm — vessel branding stays clear on iPad and iPhone. */
+.admiral-brand-summary{margin-top:16px!important}
+.admiral-brand-station{margin-top:16px!important}
+.admiral-brand-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(340px,1.08fr);gap:16px;margin-top:18px}
+.admiral-brand-controls,.admiral-brand-preview{min-width:0;padding:18px;border:1px solid #41646b;border-radius:14px;background:rgba(3,22,28,.72)}
+.admiral-brand-controls{display:grid;gap:12px;align-content:start}
+.admiral-brand-controls>small,.admiral-brand-preview small{color:#e3bd59;font-size:.68rem;font-weight:900;letter-spacing:.15em}
+.admiral-brand-controls label{display:grid;gap:7px;color:#d9bd6e;font-size:.72rem;font-weight:800}
+.admiral-brand-controls select,.admiral-brand-controls input{width:100%;min-height:52px;box-sizing:border-box;border:2px solid #52727a;border-radius:9px;background:#04181f;color:#f0f5f2;font-size:16px;padding:10px 12px}
+.admiral-brand-file{padding:14px;border:2px dashed #8f7a43;border-radius:10px;background:#08252c}
+.admiral-brand-file input{padding:9px;background:#061d24;color:#f4e7bd}
+.admiral-brand-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.admiral-brand-actions button{width:100%}
+.admiral-brand-preview{display:grid;grid-template-rows:auto minmax(220px,1fr) auto;gap:12px}
+.admiral-brand-preview strong,.admiral-brand-preview span{display:block}
+.admiral-brand-preview strong{margin:7px 0 4px;color:#f5e3ae;font-size:1.15rem}
+.admiral-brand-preview span,.admiral-brand-preview p{color:#afc0c2;font-size:.76rem;line-height:1.4}
+.admiral-brand-preview figure{min-height:220px;margin:0;display:grid;place-items:center;overflow:hidden;border:1px solid #42636a;border-radius:12px;background:#003b4a}
+.admiral-brand-preview img{display:block;width:100%;height:100%;max-height:430px;object-fit:contain}
+.admiral-brand-preview p{margin:0;padding:10px 12px;border-left:3px solid #d3af55;background:#0c3035}
+.admiral-commissioning-brand-kit{display:grid;gap:9px;padding:12px;border:1px solid #8f7a43;border-radius:10px;background:#08252c}
+.admiral-commissioning-brand-kit small,.admiral-commissioning-brand-kit strong,.admiral-commissioning-brand-kit span{display:block}
+.admiral-commissioning-brand-kit small{color:#e3bd59;font-size:.58rem;font-weight:900;letter-spacing:.12em}
+.admiral-commissioning-brand-kit strong{margin:4px 0;color:#f4ead0;font-size:.84rem}
+.admiral-commissioning-brand-kit span{color:#aebfc0;font-size:.68rem}
+.admiral-commissioning-brand-kit figure{display:grid;grid-template-columns:1fr 1.8fr 1fr;gap:7px;margin:0}
+.admiral-commissioning-brand-kit img{width:100%;height:76px;object-fit:contain;border:1px solid #365a62;border-radius:8px;background:#003b4a}
+.bootstrap-schedule{position:fixed;inset:0;z-index:180000;overflow:auto;padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));box-sizing:border-box;background:rgba(1,12,17,.97);color:#edf4f2;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.bootstrap-schedule-shell{width:min(1540px,100%);min-height:calc(100dvh - 32px);margin:auto;padding:18px;box-sizing:border-box;border:1px solid #8d7840;border-radius:20px;background:linear-gradient(145deg,#07323b,#041c23 64%,#03171d);box-shadow:0 22px 70px rgba(0,0,0,.5)}
+.bootstrap-schedule button{min-height:48px;padding:9px 14px;border:2px solid #b89a4b;border-radius:9px;background:#08242c;color:#f5e8bf;font-weight:900;letter-spacing:.04em;touch-action:manipulation}
+.bootstrap-schedule button:hover,.bootstrap-schedule button:focus-visible{border-color:#f1d16f;outline:3px solid rgba(239,208,111,.23);outline-offset:2px}
+.bootstrap-schedule button:disabled{border-color:#506267;color:#718388;background:#091d23;opacity:.62}
+.bootstrap-schedule-head{display:grid;grid-template-columns:minmax(220px,380px) 1fr auto;gap:20px;align-items:center;padding:14px;border:1px solid #355d65;border-radius:14px;background:#06242c}
+.bootstrap-schedule-head img{width:100%;max-height:104px;object-fit:contain}
+.bootstrap-schedule-head small{color:#67c3dc;font-size:.62rem;font-weight:900;letter-spacing:.14em}.bootstrap-schedule-head h2{margin:5px 0;color:#f4ead1;font-size:clamp(1.55rem,3vw,2.4rem)}.bootstrap-schedule-head p{margin:0;color:#a9bec0}
+.bootstrap-schedule-crumbs{display:flex;align-items:stretch;gap:8px;overflow-x:auto;margin:14px 0;padding:4px 2px 10px}
+.bootstrap-schedule-crumbs span{flex:1 0 130px;display:grid;gap:4px;padding:10px 13px;border:1px solid #45666c;border-radius:10px;background:#08262d}.bootstrap-schedule-crumbs small{color:#d2af55;font-size:.58rem;font-weight:900;letter-spacing:.12em}.bootstrap-schedule-crumbs b{font-size:.9rem}.bootstrap-schedule-crumbs i{align-self:center;color:#5eb9d4;font-style:normal;font-size:1.4rem}
+.bootstrap-schedule-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.bootstrap-schedule-toolbar>div{display:flex;align-items:center;gap:8px}.bootstrap-schedule-toolbar strong{min-width:190px;text-align:center;color:#f2dfa4}
+.bootstrap-schedule-form{display:grid;grid-template-columns:2fr 1fr 1fr auto auto;gap:10px;align-items:end;margin-bottom:12px;padding:14px;border:1px solid #55737a;border-radius:12px;background:#092831}.bootstrap-schedule-form label{display:grid;gap:6px;color:#d7bb69;font-size:.72rem;font-weight:800}.bootstrap-schedule-form input,.bootstrap-schedule-form select{min-height:48px;box-sizing:border-box;border:2px solid #55737a;border-radius:8px;background:#04181f;color:#f0f5f2;font-size:16px;padding:9px 11px}
+.bootstrap-schedule-status{margin:0 0 12px;padding:12px 14px;border-left:4px solid #5fc7e3;background:#0c3036;color:#e8f1ef;font-size:.8rem;font-weight:700}
+.bootstrap-schedule-board{display:grid;grid-template-columns:repeat(7,minmax(145px,1fr));gap:9px;overflow-x:auto;padding-bottom:10px}
+.bootstrap-schedule-day{min-width:0;min-height:430px;padding:9px;border:2px solid #355861;border-radius:12px;background:#061c23;transition:border-color .15s,background .15s}.bootstrap-schedule-day.is-over{border-color:#63d7f0;background:#0b3640;box-shadow:inset 0 0 0 2px rgba(99,215,240,.15)}
+.bootstrap-schedule-day>header{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-bottom:9px;border-bottom:1px solid #34545b}.bootstrap-schedule-day>header small,.bootstrap-schedule-day>header b{display:block}.bootstrap-schedule-day>header small{color:#d7b657;font-size:.62rem;font-weight:900;letter-spacing:.1em}.bootstrap-schedule-day>header b{margin-top:3px;color:#f1efe4;font-size:.82rem}.bootstrap-schedule-day>header button{min-height:38px;padding:5px 7px;font-size:.54rem}
+.bootstrap-schedule-list{display:grid;align-content:start;gap:8px;padding-top:9px}.bootstrap-schedule-list>p{margin:0;padding:18px 8px;border:1px dashed #3c5960;border-radius:8px;color:#74898d;text-align:center;font-size:.72rem}
+.bootstrap-schedule-card{padding:11px;border:2px solid #3b6068;border-radius:10px;background:#0a2b33;box-shadow:0 5px 12px rgba(0,0,0,.2);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}.bootstrap-schedule-card:active{cursor:grabbing}.bootstrap-schedule-card.is-selected{border-color:#e5c45f;background:#263126}.bootstrap-schedule-card.is-dragging{opacity:.7;transform:scale(.98)}.bootstrap-schedule-card small,.bootstrap-schedule-card b,.bootstrap-schedule-card span,.bootstrap-schedule-card em{display:block}.bootstrap-schedule-card small{color:#62c5df;font-size:.56rem;font-weight:900;letter-spacing:.09em}.bootstrap-schedule-card b{margin:5px 0;color:#f3f1e8;font-size:.78rem;line-height:1.3}.bootstrap-schedule-card span{color:#a9bcbe;font-size:.64rem}.bootstrap-schedule-card em{margin-top:8px;color:#d9b958;font-size:.5rem;font-style:normal;font-weight:900;letter-spacing:.08em}
+.bootstrap-schedule footer{display:grid;gap:4px;margin-top:10px;padding:12px 14px;border:1px dashed #6c623b;border-radius:10px;color:#a9babc;font-size:.72rem}.bootstrap-schedule footer b{color:#e1c66f}
+@media (max-width:1050px){.bootstrap-schedule-head{grid-template-columns:220px 1fr auto}.bootstrap-schedule-board{grid-template-columns:repeat(7,minmax(190px,1fr))}.bootstrap-schedule-form{grid-template-columns:1fr 1fr 1fr}.bootstrap-schedule-form button{width:100%}}
+@media (max-width:700px){.bootstrap-schedule{padding:0}.bootstrap-schedule-shell{min-height:100dvh;padding:12px;border-radius:0}.bootstrap-schedule-head{grid-template-columns:1fr auto;gap:10px}.bootstrap-schedule-head img{grid-column:1/-1;max-height:86px}.bootstrap-schedule-head h2{font-size:1.45rem}.bootstrap-schedule-toolbar{align-items:stretch;flex-direction:column}.bootstrap-schedule-toolbar>div{display:grid;grid-template-columns:1fr 1fr}.bootstrap-schedule-toolbar>div:first-child{grid-template-columns:1fr 1.2fr 1fr}.bootstrap-schedule-toolbar strong{min-width:0}.bootstrap-schedule-form{grid-template-columns:1fr}.bootstrap-schedule-board{grid-template-columns:repeat(7,minmax(250px,1fr))}.bootstrap-schedule-day{min-height:390px}}
+@media (max-width:900px){
+  .admiral-brand-grid{grid-template-columns:1fr}
+  .admiral-brand-preview{grid-template-rows:auto minmax(200px,52vw) auto}
+}
+@media (max-width:560px){
+  .admiral-brand-station{padding:16px!important}
+  .admiral-brand-actions{grid-template-columns:1fr}
+  .admiral-brand-preview figure{min-height:240px}
+  .admiral-commissioning-brand-kit figure{grid-template-columns:1fr}
+  .admiral-commissioning-brand-kit img{height:110px}
 }
 
 /* v3.8.8 — Fleet Health Repair (retains v3.8.7 Operational Coherence styles) */
@@ -15101,7 +15195,7 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
   .admiral-deck-overlay[data-mode="professional"] .admiral-identity-row button{width:100%!important}
 }
 
-/* 8.8.6 Course Orders — professional clarity, deliberate command, one scroll plane. */
+/* 8.8.5 Course Orders — professional clarity, deliberate command, one scroll plane. */
 .admiral-deck-overlay[data-mode="professional"]{
   height:100dvh!important;max-height:100dvh!important;box-sizing:border-box!important;
   overscroll-behavior-y:contain!important;scrollbar-gutter:stable both-edges;

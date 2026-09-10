@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.7.0",
-  "release": "Doctrine Authority Repair",
+  "build": "8.8.7",
+  "release": "Bootstrap Build Helm",
   "status": "active",
   "principles": [
     {

@@ -1,3 +1,24 @@
+## 8.8.7 — Bootstrap Build Helm
+
+- Separates the approved Bootstrap Build identity into primary, horizontal, and compact production assets.
+- Adds a resettable drag-and-drop weekly construction calendar for the fake Region `ABC`, Division `CBA`, Community `AB`, Lot `1234`, Unit `A` test hierarchy.
+- Includes ten normal construction tasks plus desktop drag/drop, iPad/iPhone touch movement, keyboard movement, week navigation, and local task creation.
+- Keeps prototype schedule data browser-local and explicitly outside Fleet Core and customer commitments.
+- Adds an iPad/iPhone-responsive Vessel Logo Helm to the professional Admiral deck.
+- Restricts canonical logo writes to an authenticated active Admiral and a 2 MB PNG/JPEG/WebP Storage boundary.
+- Stores only the verified Storage path in Fleet Core; public presentation derives the bucket URL.
+- Adds durable `vessel_logo_changed` audit records and an explicit approved-default restore command.
+- Preserves vessel UUID, project key, namespace, ownership, authority, entitlements, Course Orders, and Native Passage.
+- Extends the prepared `admiral_vessel_commissioning_886` migration; no live Fleet Core data is changed by the static package.
+
+## 8.8.6.1 — Command Deck Refit
+
+- Replaces the tall two-column commissioning station with a compact full-width command band and short impact rail.
+- Removes the empty stretched preview column visible on iPad.
+- Collapses verified identity controls and keeps primary actions near their consequences.
+- Converts missing commissioning RPC errors into a clear Fleet Core upgrade hold and confirms that no data changed.
+- Keeps Bootstrap Build, the purpose-based permanent keel, Course Orders, and Native Passage unchanged.
+
 ## 8.8.6 — Commissioning Orders
 
 - Renames the construction-scheduling concept vessel from ScheduleJoe to Bootstrap Build without discarding the Captain's locally retained shipyard notes.

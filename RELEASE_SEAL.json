@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.6",
-  "release": "Commissioning Orders",
-  "seal": "commissioning-orders-886-b4c2e7",
+  "build": "8.8.7",
+  "release": "Bootstrap Build Helm",
+  "seal": "bootstrap-build-helm-887-b74c2e",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Commissioning Orders",
-  "name": "Commissioning Orders",
-  "releaseName": "Commissioning Orders"
+  "release_name": "Bootstrap Build Helm",
+  "name": "Bootstrap Build Helm",
+  "releaseName": "Bootstrap Build Helm"
 }

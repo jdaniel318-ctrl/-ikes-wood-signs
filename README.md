@@ -1,3 +1,15 @@
+# Dark Sky 8.8.7 — Bootstrap Build Helm
+
+Bootstrap Build Helm installs the founding construction-scheduling identity as three separate production assets: primary vessel badge, horizontal dashboard lockup, and compact fleet icon. The professional Admiral deck adds a Vessel Logo Helm where an active Admiral can inspect a Fleet Core vessel, preview a PNG/JPEG/WebP replacement, save its canonical Storage path, or restore the approved default. Logo commands are audited and never rename the vessel, alter its permanent project key or namespace, grant authority, or change feature entitlements.
+
+A local-first Construction Schedule proving ground launches from the Bootstrap Build commissioning identity. Its resettable sample hierarchy is Region `ABC` → Division `CBA` → Community `AB` → Lot `1234` → Unit `A`. Ten familiar construction tasks can be dragged between a seven-day calendar, moved by tap controls on iPad/iPhone, or moved with arrow keys. This prototype writes only to browser-local test storage and does not create Fleet Core, owner, customer, or live schedule records.
+
+The supplied `SUPABASE_ADMIRAL_COMMISSIONING_886.sql` is now the combined 8.8.6 + 8.8.7 Fleet Core migration. It remains prepared but unapplied by the static release.
+
+# Dark Sky 8.8.6.1 — Command Deck Refit
+
+Command Deck Refit keeps Bootstrap Build and the 8.8.6 commissioning contract intact while replacing the tall split station with one compact command flow. Working identity, permanent keel, and authority boundary share one readable band; the impact preview sits directly beneath the order; verified identity collapses to a small status action; and an unavailable Fleet Core migration is explained in plain language without exposing a raw schema-cache error.
+
 # Dark Sky 8.8.6 — Commissioning Orders
 
 Commissioning Orders adds a server-governed Admiral shipyard for creating one durable Fleet Core vessel identity after an explicit preview. **Bootstrap Build** replaces ScheduleJoe as the construction-scheduling vessel's working name. The name stays editable, while the UUID, project key, namespace, lineage, and records remain stable. New vessels begin in `commissioning`, with no owner membership, no entitlements, and no live publication. The supplied `SUPABASE_ADMIRAL_COMMISSIONING_886.sql` migration is prepared but is not applied by the static release.
