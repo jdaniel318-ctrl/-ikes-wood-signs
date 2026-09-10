@@ -1,3 +1,10 @@
+## 8.8.11.2 — Fresh Admiral Gate
+
+- Clears the browser-held Admiral command session before any Admiral controller initializes on a full page load.
+- Clears the same command session when the document exits, including navigation and back-forward cache transitions.
+- Returns Commissioning Orders, Course Orders, Vessel Logo Helm, Admiral Fleet, and Bootstrap Build Schedule to `ADMIRAL IDENTITY REQUIRED` after refresh.
+- Keeps the Engine PIN, Captain authority, project data, Fleet Core records, and browser-local schedule data separate and unchanged.
+
 ## 8.8.11.1 — Bootstrap Build Schedule
 
 - Installs `OPEN BOOTSTRAP BUILD SCHEDULE` when the dynamically rendered Bootstrap identity panel becomes available.

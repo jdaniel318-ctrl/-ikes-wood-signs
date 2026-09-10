@@ -1,3 +1,19 @@
+/* 8.8.11.2 Fresh Admiral Gate — a full document load must never inherit
+   upper-command identity from the prior page. The session remains shared
+   between Admiral stations only for this document's lifetime. */
+;(() => {
+  'use strict';
+  const SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
+  const DOCUMENT_GUARD='__darkSkyAdmiralFreshGate88112';
+  if(window[DOCUMENT_GUARD])return;
+  window[DOCUMENT_GUARD]=true;
+  const clearAdmiralIdentity=()=>{try{sessionStorage.removeItem(SESSION_KEY);}catch(_){}};
+  clearAdmiralIdentity();
+  window.addEventListener('pagehide',clearAdmiralIdentity);
+  window.addEventListener('pageshow',event=>{if(event.persisted){clearAdmiralIdentity();location.reload();}});
+  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.2',requiredPerDocument:true,engineAuthoritySeparate:true});
+})();
+
 (() => {
   'use strict';
 
@@ -5,7 +21,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.11.1';
+  const UPPER_COMMAND_BUILD='8.8.11.2';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);

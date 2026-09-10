@@ -1,8 +1,8 @@
 {
-  "release": "Bootstrap Build Schedule",
-  "name": "Bootstrap Build Schedule",
-  "build": "8.8.11.1",
-  "seal": "bootstrap-build-schedule-88111-doorway",
+  "release": "Fresh Admiral Gate",
+  "name": "Fresh Admiral Gate",
+  "build": "8.8.11.2",
+  "seal": "admiral-fresh-gate-88112",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

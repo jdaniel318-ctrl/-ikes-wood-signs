@@ -1,3 +1,9 @@
+# Dark Sky 8.8.11.2 — Fresh Admiral Gate
+
+Fresh Admiral Gate requires a new Admiral sign-in after every full page load. Before any Admiral station initializes, the release removes only the shared Admiral command token from browser tab storage. Commissioning Orders, Course Orders, Vessel Logo Helm, Admiral Fleet, and the Bootstrap Build Schedule therefore return locked after refresh.
+
+The Engine PIN and Captain authority remain separate. This repair changes no Fleet Core record, vessel identity, entitlement, owner assignment, or Bootstrap Build schedule data.
+
 # Dark Sky 8.8.11.1 — Bootstrap Build Schedule
 
 This patch repairs the missing **Open Bootstrap Build Schedule** doorway. The Bootstrap identity panel is created dynamically after Admiral authentication; the doorway now attaches as soon as that panel appears and remains separate from commissioning.

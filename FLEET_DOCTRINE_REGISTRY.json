@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.11.1",
+  "build": "8.8.11.2",
   "release": "Bootstrap Build Schedule",
   "status": "active",
   "principles": [

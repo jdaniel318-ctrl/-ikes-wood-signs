@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.11.1",
-  "release": "Bootstrap Build Schedule",
-  "generatedAt": "2026-09-10T23:11:36Z",
+  "build": "8.8.11.2",
+  "release": "Fresh Admiral Gate",
+  "generatedAt": "2026-09-10T23:53:28Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -239,13 +239,16 @@
     ,"bootstrap_vendor_move_communication_log": true
     ,"bootstrap_vendor_messages_local_only": true
     ,"bootstrap_schedule_late_load_doorway": true
+    ,"admiral_session_cleared_on_document_load": true
+    ,"admiral_session_cleared_on_page_exit": true
+    ,"admiral_gate_separate_from_engine_authority": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.11.1 repairs the missing Bootstrap Build Schedule doorway by attaching it when the dynamic identity panel appears. The flexible sample schedule, vendor view, duration-preserving movement, and local-only data boundary remain unchanged.",
-  "candidate": "8.8.11.1",
+  "note": "8.8.11.2 requires a fresh Admiral sign-in after every full page load. It clears only the shared Admiral browser session before Admiral controllers initialize and again when the document exits; Engine and Captain authority remain separate. Fleet Core and Bootstrap Build schedule data are unchanged.",
+  "candidate": "8.8.11.2",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -411,8 +414,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.11.1",
-    "seal": "bootstrap-build-schedule-88111-doorway",
+    "build": "8.8.11.2",
+    "seal": "admiral-fresh-gate-88112",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

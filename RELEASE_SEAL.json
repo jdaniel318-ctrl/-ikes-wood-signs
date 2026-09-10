@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.11.1",
-  "release": "Bootstrap Build Schedule",
-  "seal": "bootstrap-build-schedule-88111-doorway",
+  "build": "8.8.11.2",
+  "release": "Fresh Admiral Gate",
+  "seal": "admiral-fresh-gate-88112",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Bootstrap Build Schedule",
-  "name": "Bootstrap Build Schedule",
-  "releaseName": "Bootstrap Build Schedule"
+  "release_name": "Fresh Admiral Gate",
+  "name": "Fresh Admiral Gate",
+  "releaseName": "Fresh Admiral Gate"
 }
