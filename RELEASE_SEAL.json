@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.4",
-  "release": "Course Orders",
-  "seal": "course-orders-884-c1a04f",
+  "build": "8.8.5",
+  "release": "Command Acknowledgment",
+  "seal": "command-acknowledgment-885-7d31b6",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Course Orders",
-  "name": "Course Orders",
-  "releaseName": "Course Orders"
+  "release_name": "Command Acknowledgment",
+  "name": "Command Acknowledgment",
+  "releaseName": "Command Acknowledgment"
 }

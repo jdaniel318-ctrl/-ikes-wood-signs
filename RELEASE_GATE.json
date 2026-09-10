@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.4",
-  "release": "Course Orders",
-  "generatedAt": "2026-09-10T00:37:37Z",
+  "build": "8.8.5",
+  "release": "Command Acknowledgment",
+  "generatedAt": "2026-09-10T02:04:58Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.4 adds explicit preview-first atomic Course Orders, durable readback, Admiral Log and conflict-safe rollback while preserving Safari's native Admiral-to-Engine passage. Readiness, testing, refresh and launch cannot derive or change commercial entitlement.",
-  "candidate": "8.8.4",
+  "note": "8.8.5 preserves field-proven Course Orders while keeping verified issue and rollback acknowledgments visible after readback, clearing completed intent, and distinguishing restored state from a new proposal.",
+  "candidate": "8.8.5",
   "features": {
     "same_tab_recovery_completion": true,
     "fleet_doctrine_inheritance": true,
@@ -285,6 +285,9 @@
     ,"professional_action_contrast_hardened": true
     ,"ipad_portrait_landscape_responsive": true
     ,"iphone_portrait_responsive": true
+    ,"durable_near_command_acknowledgment": true
+    ,"completed_command_intent_cleared": true
+    ,"rollback_proposal_distinguished": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -339,8 +342,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.4",
-    "seal": "course-orders-884-c1a04f",
+    "build": "8.8.5",
+    "seal": "command-acknowledgment-885-7d31b6",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.4';
+  const UPPER_COMMAND_BUILD='8.8.5';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -1962,7 +1962,7 @@ if(document.readyState==='loading'){
 })();
 
 ;(()=>{
-  // Replaced by the 8.8.4 atomic Course Orders controller below.
+  // Replaced by the 8.8.5 atomic Course Orders controller below.
   return;
   const SUPA_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   const cfg=()=>window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.()||null;
@@ -2058,7 +2058,7 @@ if(document.readyState==='loading'){
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')releaseEntitlementPicker();});
 })();
 
-/* 8.8.4 Course Orders — explicit preview, atomic issue, durable readback and safe rollback. */
+/* 8.8.5 Command Acknowledgment — durable results over the field-proven Course Orders controller. */
 ;(()=>{
   const SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   const GROUPS={
@@ -2076,7 +2076,7 @@ if(document.readyState==='loading'){
   const clearSession=()=>sessionStorage.removeItem(SESSION_KEY);
   const headers=(token='')=>{const c=cfg();const value={apikey:c?.publishableKey||'','Content-Type':'application/json'};if(token)value.Authorization='Bearer '+token;return value;};
   const selected=id=>{const control=el(id);return {value:control?.value||'',label:control?.selectedOptions?.[0]?.textContent?.trim()||''};};
-  const setResult=message=>{if(result())result().textContent=message;};
+  const setResult=(message,kind='status')=>{const node=result();if(!node)return;node.textContent=message;node.classList.toggle('is-verified',kind==='verified');};
   const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const formatTime=value=>{try{return new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(new Date(value));}catch(_){return String(value||'');}};
   async function refreshSession(session){
@@ -2111,6 +2111,7 @@ if(document.readyState==='loading'){
   }
   function invalidatePreview(message='Preview the order to see its exact impact.'){
     preview=null;previewConfirmed=false;
+    result()?.classList.remove('is-verified');
     if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent='AWAITING PREVIEW';
     if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent=message;
     ['admiralCourseTargetCount','admiralCourseChangeCount','admiralCourseUnchangedCount'].forEach(id=>{if(el(id))el(id).textContent='0';});
@@ -2155,8 +2156,8 @@ if(document.readyState==='loading'){
     return verified;
   }
   window.DarkSkySyncAdmiralIdentity=syncIdentity;
-  async function previewCourse(confirmIssue=false){
-    setBusy(true);setResult('Reading current fleet state. No change is being made…');
+  async function previewCourse(confirmIssue=false,{announce=true}={}){
+    setBusy(true);if(announce)setResult('Reading current fleet state. No change is being made…');
     try{
       const vessel=selected('admiralEntitlementVessel');
       const data=await rpc('admiral_preview_service_course',{p_project_id:vessel.value,p_scope:scope,p_capability_keys:capabilityKeys(),p_commercial_mode:command});
@@ -2167,7 +2168,7 @@ if(document.readyState==='loading'){
       if(el('admiralCourseChangeCount'))el('admiralCourseChangeCount').textContent=String(data.changes_count);
       if(el('admiralCourseUnchangedCount'))el('admiralCourseUnchangedCount').textContent=String(data.unchanged_count);
       if(el('admiralCoursePreviewItems'))el('admiralCoursePreviewItems').innerHTML=(data.items||[]).map(item=>'<article class="'+(item.changes?'will-change':'unchanged')+'"><b>'+escapeHtml(item.feature_name)+'</b><span>'+escapeHtml(String(item.before_state).toUpperCase())+' → '+escapeHtml(String(item.after_state).toUpperCase())+'</span></article>').join('');
-      setResult(data.changes_count?(confirmIssue?'Preview confirmed. Review every target, then issue the order.':'Current impact shown. Tap Preview Order to authorize the issue step.'):'Preview complete. No order is needed because the selected state already matches.');
+      if(announce)setResult(data.changes_count?(confirmIssue?'Preview confirmed. Review every target, then issue the order.':'Current impact shown. Tap Preview Order to authorize the issue step.'):'Preview complete. No order is needed because the selected state already matches.');
       return data;
     }finally{setBusy(false);}
   }
@@ -2177,9 +2178,13 @@ if(document.readyState==='loading'){
     setBusy(true);setResult('Issuing one atomic Admiral order…');
     try{
       const data=await rpc('admiral_issue_service_course',{p_project_id:vessel.value,p_scope:scope,p_capability_keys:capabilityKeys(),p_commercial_mode:command,p_expected_fingerprint:preview.fingerprint,p_intent:intent});
-      setResult('ORDER #'+data.command_id+' VERIFIED · '+data.changes_count+' feature'+(data.changes_count===1?'':'s')+' now '+command.toUpperCase()+' for '+vessel.label+'.');
+      const acknowledgment='ORDER #'+data.command_id+' VERIFIED · '+data.changes_count+' feature'+(data.changes_count===1?'':'s')+' now '+command.toUpperCase()+' for '+vessel.label+'.';
       const notice=el('admiralDeckNotice');if(notice)notice.textContent='Admiral order #'+data.command_id+' was written, read back and verified.';
-      preview=null;previewConfirmed=false;await Promise.all([previewCourse(),loadLog()]);
+      if(el('admiralCourseIntent'))el('admiralCourseIntent').value='';
+      preview=null;previewConfirmed=false;await Promise.all([previewCourse(false,{announce:false}),loadLog()]);
+      if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent=command.toUpperCase()+' COURSE · APPLIED';
+      if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent='Verified readback: every selected feature now matches this course.';
+      setResult(acknowledgment,'verified');
       return data;
     }finally{setBusy(false);}
   }
@@ -2204,13 +2209,18 @@ if(document.readyState==='loading'){
     setBusy(true);setResult('Checking for newer commands before rollback…');
     try{
       const data=await rpc('admiral_rollback_service_course',{p_command_id:id});
-      setResult('ROLLBACK VERIFIED · order #'+id+' restored '+data.restored_count+' feature'+(data.restored_count===1?'':'s')+'.');
-      await Promise.all([previewCourse(),loadLog()]);
+      const acknowledgment='ROLLBACK #'+data.rollback_id+' VERIFIED · order #'+id+' restored '+data.restored_count+' feature'+(data.restored_count===1?'':'s')+'. The course shown above is now a new proposal only.';
+      if(el('admiralCourseIntent'))el('admiralCourseIntent').value='';
+      preview=null;previewConfirmed=false;await Promise.all([previewCourse(false,{announce:false}),loadLog()]);
+      if(el('admiralEntitlementCurrent'))el('admiralEntitlementCurrent').textContent='NEW '+command.toUpperCase()+' PROPOSAL';
+      if(el('admiralEntitlementCurrentDetail'))el('admiralEntitlementCurrentDetail').textContent='Rollback restored the prior settings. This preview is a new proposal and has not been issued.';
+      const notice=el('admiralDeckNotice');if(notice)notice.textContent='Rollback #'+data.rollback_id+' restored Admiral order #'+id+' and was verified.';
+      setResult(acknowledgment,'verified');
     }finally{setBusy(false);}
   }
   function preserveScroll(){
     const deck=el('admiralDeck');if(!deck||deck.dataset.mode!=='professional'||deck.classList.contains('hidden'))return;
-    try{sessionStorage.setItem('darkSkyAdmiralProfessionalScroll884',String(deck.scrollTop));}catch(_){}
+    try{sessionStorage.setItem('darkSkyAdmiralProfessionalScroll885',String(deck.scrollTop));}catch(_){}
   }
   function releasePicker(){
     const active=document.activeElement;
@@ -2218,7 +2228,7 @@ if(document.readyState==='loading'){
   }
   function restoreScroll(){
     const deck=el('admiralDeck');if(!deck||deck.dataset.mode!=='professional'||deck.classList.contains('hidden'))return;
-    let top=0;try{top=Number(sessionStorage.getItem('darkSkyAdmiralProfessionalScroll884')||0);}catch(_){}
+    let top=0;try{top=Number(sessionStorage.getItem('darkSkyAdmiralProfessionalScroll885')||0);}catch(_){}
     requestAnimationFrame(()=>requestAnimationFrame(()=>deck.scrollTo({top:Math.min(top,Math.max(0,deck.scrollHeight-deck.clientHeight)),left:0,behavior:'auto'})));
   }
   document.addEventListener('scroll',event=>{if(event.target===el('admiralDeck')&&document.visibilityState==='visible')preserveScroll();},true);

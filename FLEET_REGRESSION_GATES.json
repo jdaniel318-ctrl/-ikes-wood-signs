@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.4",
-  "release": "Course Orders",
+  "build": "8.8.5",
+  "release": "Command Acknowledgment",
   "excluded_sources": [
     "The situation"
   ],
@@ -161,6 +161,9 @@
       ,"engine_visible_before_diagnostics_refresh"
       ,"command_route_state_is_recorded"
       ,"admiral_header_exposes_current_build_for_field_proof"
+      ,"verified_issue_acknowledgment_survives_readback"
+      ,"verified_rollback_acknowledgment_survives_readback"
+      ,"completed_intent_clears_and_rollback_preview_is_new_proposal"
     ],
     "quarterdeck": [
       "single_top_level_folder",

@@ -1,3 +1,7 @@
+# Dark Sky 8.8.5 — Command Acknowledgment
+
+Command Acknowledgment keeps the field-proven 8.8.4 Course Orders and Native Passage intact while making completed command results durable on screen. Verified issue and rollback receipts now remain visible after server readback, completed intent is cleared, and a post-rollback preview is explicitly identified as a new proposal rather than the restored state. No Supabase migration is required.
+
 # Dark Sky 8.8.4 — Course Orders
 
 Course Orders gives the Admiral one deliberate commercial command surface. The Admiral chooses a vessel, then one feature, a named service group, or the entire vessel; chooses Off, Free, or Paid; reviews the exact before/after impact; and issues one atomic server-governed order. Each successful order is read back, written to the durable Admiral Log, and can be rolled back only when no newer command conflicts. Professional Mode now uses strong outlined controls and responsive iPad/iPhone layouts. Readiness, testing, refresh, and launch remain unable to change entitlements. The field-proven 8.8.3 Native Passage back to Engine Room is preserved.

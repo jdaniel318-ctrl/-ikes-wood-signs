@@ -1,3 +1,10 @@
+## 8.8.5 — Command Acknowledgment
+- Preserves verified issue and rollback acknowledgments after automatic server readback.
+- Clears completed command intent after a successful issue or rollback.
+- Labels post-issue state as applied and post-rollback impact as a new, unissued proposal.
+- Gives verified acknowledgments a high-contrast professional treatment on iPad and iPhone.
+- Retains the field-proven Course Orders RPCs, authorization boundary, rollback protection, and Native Passage without a database migration.
+
 ## 8.8.4 — Course Orders
 - Replaces the single-feature entitlement control with explicit vessel, service-group, and feature scopes.
 - Requires a read-only impact preview before one atomic Admiral order can change server state.

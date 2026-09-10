@@ -15088,7 +15088,7 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
   .admiral-deck-overlay[data-mode="professional"] .admiral-identity-row button{width:100%!important}
 }
 
-/* 8.8.4 Course Orders — professional clarity, deliberate command, one scroll plane. */
+/* 8.8.5 Course Orders — professional clarity, deliberate command, one scroll plane. */
 .admiral-deck-overlay[data-mode="professional"]{
   height:100dvh!important;max-height:100dvh!important;box-sizing:border-box!important;
   overscroll-behavior-y:contain!important;scrollbar-gutter:stable both-edges;
@@ -15162,6 +15162,7 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
 .admiral-course-preview-items b{color:#eef3ef;font-size:.76rem}.admiral-course-preview-items span{color:#e9c96d;font-size:.7rem;font-weight:900;white-space:nowrap}
 .admiral-course-preview #admiralIssueCourse{width:100%;margin-top:auto}
 .admiral-course-station .admiral-entitlement-result{margin-top:16px!important;padding:14px 16px!important;border-left:4px solid #e4c25f!important;background:#102f34!important;color:#f1f3ea!important;font-size:.82rem!important;font-weight:700}
+.admiral-course-station .admiral-entitlement-result.is-verified{border:2px solid #79d7aa!important;border-left-width:6px!important;border-radius:10px!important;background:#103c37!important;color:#f3fff9!important;box-shadow:0 0 0 3px rgba(121,215,170,.1)!important}
 .admiral-course-log{margin-top:16px;padding:18px;border:1px solid #41646b;border-radius:14px;background:#061d24}
 .admiral-course-log>header{display:flex!important;align-items:center!important;margin:0 0 12px!important}
 .admiral-course-log>header strong{display:block;margin-top:5px;color:#f5e4b5;font-size:1rem}

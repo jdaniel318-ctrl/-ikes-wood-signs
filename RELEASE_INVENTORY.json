@@ -1,8 +1,8 @@
 {
-  "release": "Course Orders",
-  "name": "Course Orders",
-  "build": "8.8.4",
-  "seal": "course-orders-884-c1a04f",
+  "release": "Command Acknowledgment",
+  "name": "Command Acknowledgment",
+  "build": "8.8.5",
+  "seal": "command-acknowledgment-885-7d31b6",
   "file_count": 85,
   "files": [
     "ADMIRAL_CALIBRATION_CASES.json",
