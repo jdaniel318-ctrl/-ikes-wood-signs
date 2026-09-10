@@ -1,8 +1,8 @@
 {
-  "release": "Bootstrap Admiral Fleet",
-  "name": "Bootstrap Admiral Fleet",
-  "build": "8.8.8",
-  "seal": "bootstrap-admiral-fleet-888-a31d6c",
+  "release": "Fleet Door Repair",
+  "name": "Fleet Door Repair",
+  "build": "8.8.9",
+  "seal": "fleet-door-repair-889-c42e7a",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

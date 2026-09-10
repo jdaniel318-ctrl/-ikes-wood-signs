@@ -8949,20 +8949,21 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .commissioning-footer .commission-actions button{width:100%;min-height:44px}
 }
 
-/* 8.8.8 Bootstrap Admiral Fleet — readable shipyard controls on iPad and iPhone. */
+/* 8.8.9 Fleet Door Repair — readable shipyard controls on iPad and iPhone. */
 .admiral-commissioning-station{margin-top:18px}
 .admiral-commissioning-station .field-rule{float:right;color:#79d7aa;font-size:.58rem;font-weight:900;letter-spacing:.09em}
-.admiral-commissioning-boundary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.admiral-commissioning-boundary span{display:grid;place-items:center;min-height:70px;padding:9px;border:2px solid #9f8748;border-radius:10px;background:#08242c;text-align:center}
-.admiral-commissioning-boundary b{color:#f6e7b8;font-size:.72rem;letter-spacing:.05em}
-.admiral-commissioning-boundary small{margin-top:4px;color:#afc0c2;font-size:.55rem;letter-spacing:.08em}
+.admiral-commissioning-boundary{display:grid;grid-template-columns:1fr;gap:8px}
+.admiral-commissioning-boundary span{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-height:52px;padding:10px 12px;border:2px solid #9f8748;border-radius:10px;background:#08242c;text-align:left}
+.admiral-commissioning-boundary b{min-width:0;color:#f6e7b8;font-size:.76rem;line-height:1.25;letter-spacing:.04em;overflow-wrap:anywhere}
+.admiral-commissioning-boundary small{margin:0;color:#afc0c2;font-size:.62rem;line-height:1.3;letter-spacing:.06em;text-align:right}
+.bootstrap-fleet-door-summary{margin-top:16px!important;border-color:#4e8491!important;background:linear-gradient(135deg,#0d353e,#08242c)!important}.bootstrap-fleet-primary-door{width:100%;min-height:58px!important;margin-top:8px;background:#d8b757!important;border-color:#f1d171!important;color:#071a20!important;box-shadow:0 0 0 3px rgba(216,183,87,.12)}
 .admiral-commissioning-rename{display:grid;grid-template-columns:minmax(240px,1fr) minmax(220px,.8fr) auto;gap:14px;align-items:end;margin-top:16px;padding:18px;border:2px solid #4f7379;border-radius:14px;background:#08262d}
 .admiral-commissioning-rename>div{display:grid;gap:5px}.admiral-commissioning-rename small{color:#e3bd59;font-size:.65rem;font-weight:900;letter-spacing:.14em}.admiral-commissioning-rename strong{color:#f5e4b5;font-size:1rem}.admiral-commissioning-rename span{color:#aebfc1;font-size:.72rem;line-height:1.4}
 .admiral-commissioning-rename label{color:#e3bd59!important;font-size:.7rem!important;font-weight:900!important}.admiral-commissioning-rename input{margin-top:7px;border:2px solid #52727a!important;background:#04181f!important;color:#f0f5f2!important;font-size:16px!important}
 @media (min-width:700px) and (max-width:1180px) and (orientation:portrait){.admiral-commissioning-rename{grid-template-columns:1fr 1fr}.admiral-commissioning-rename>div{grid-column:1/-1}}
-@media (max-width:760px){.admiral-commissioning-boundary,.admiral-commissioning-rename{grid-template-columns:1fr}.admiral-commissioning-station .field-rule{display:block;float:none;margin-top:3px}.admiral-commissioning-rename button{width:100%}}
+@media (max-width:760px){.admiral-commissioning-boundary,.admiral-commissioning-rename{grid-template-columns:1fr}.admiral-commissioning-boundary span{grid-template-columns:1fr}.admiral-commissioning-boundary small{text-align:left}.admiral-commissioning-station .field-rule{display:block;float:none;margin-top:3px}.admiral-commissioning-rename button{width:100%}}
 
-/* 8.8.8 Bootstrap Admiral Fleet — one compact commissioning flow, no dead column. */
+/* 8.8.9 Fleet Door Repair — one compact commissioning flow, no dead column. */
 .admiral-commissioning-station{padding:20px!important}
 .admiral-commissioning-station.identity-verified #admiralCommissioningAuth{display:flex!important;justify-content:flex-end!important;margin:8px 0 4px!important}
 .admiral-commissioning-station.identity-verified #admiralCommissioningSignOut{min-width:190px}
@@ -9528,7 +9529,7 @@ body.business-engine-mode #enginePanel .marketing-identity-heading .secondary-bt
   }
 }
 
-/* 8.8.8 Bootstrap Admiral Fleet — vessel branding stays clear on iPad and iPhone. */
+/* 8.8.9 Fleet Door Repair — vessel branding stays clear on iPad and iPhone. */
 .admiral-brand-summary{margin-top:16px!important}
 .admiral-brand-station{margin-top:16px!important}
 .admiral-brand-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(340px,1.08fr);gap:16px;margin-top:18px}

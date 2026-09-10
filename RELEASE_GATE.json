@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.8",
-  "release": "Bootstrap Admiral Fleet",
-  "generatedAt": "2026-09-10T04:24:43Z",
+  "build": "8.8.9",
+  "release": "Fleet Door Repair",
+  "generatedAt": "2026-09-10T21:29:24Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.8 makes the authenticated Admiral Fleet easy to find from Bootstrap Build and its schedule while preserving the permanent keel, read-only fleet boundary, Course Orders, Native Passage and the 85-file release boundary.",
-  "candidate": "8.8.8",
+  "note": "8.8.9 repairs the missing Promote-level Admiral Fleet door and the iPad Boundary collision while preserving the permanent keel, read-only fleet boundary, Course Orders, Native Passage and the 85-file release boundary.",
+  "candidate": "8.8.9",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -246,6 +246,9 @@
     "bootstrap_admiral_fleet_schedule_door": true,
     "bootstrap_admiral_fleet_read_only": true,
     "bootstrap_admiral_fleet_live_identity_marks": true,
+    "bootstrap_admiral_fleet_promote_door": true,
+    "bootstrap_dynamic_panel_install_recovery": true,
+    "commissioning_boundary_ipad_collision_repaired": true,
     "bootstrap_build_drag_drop_calendar": true,
     "bootstrap_build_touch_move_fallback": true,
     "bootstrap_build_schedule_local_only": true,
@@ -315,6 +318,10 @@
     ,"commissioning_command_band_is_compact": true
     ,"verified_identity_controls_are_compressed": true
     ,"missing_rpc_error_is_human_readable": true
+    ,"fleet_core_migration_applied_and_verified": true
+    ,"fleet_core_six_vessels_preserved": true
+    ,"fleet_core_anonymous_function_execution_denied": true
+    ,"no_commissioning_order_issued_by_release": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -369,8 +376,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.8",
-    "seal": "bootstrap-admiral-fleet-888-a31d6c",
+    "build": "8.8.9",
+    "seal": "fleet-door-repair-889-c42e7a",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

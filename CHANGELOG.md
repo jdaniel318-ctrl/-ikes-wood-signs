@@ -1,3 +1,13 @@
+## 8.8.9 — Fleet Door Repair
+
+- Places `OPEN ADMIRAL FLEET` directly on Promote, before Commissioning Orders.
+- Reinstalls Bootstrap controls when the dynamically rendered Admiral panel becomes available.
+- Stacks commissioning Boundary cards so labels cannot clip or overlap on iPad.
+- Keeps the authenticated fleet view read-only and separate from commissioning actions.
+- Applies and verifies the Fleet Core commissioning/branding migration while preserving all six existing vessels and creating no new vessel.
+- Denies public and anonymous execution of the new fleet functions and removes inherited client execution from the internal RLS event-trigger helper.
+- Preserves the shared Admiral session and exact 85-file release boundary.
+
 ## 8.8.8 — Bootstrap Admiral Fleet
 
 - Adds a prominent `OPEN ADMIRAL FLEET` door directly to Bootstrap Build's approved identity kit.

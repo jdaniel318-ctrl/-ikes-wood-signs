@@ -1,4 +1,12 @@
-# Dark Sky 8.8.8 — Bootstrap Admiral Fleet
+# Dark Sky 8.8.9 — Fleet Door Repair
+
+Fleet Door Repair places **OPEN ADMIRAL FLEET** directly on the Promote lane, ahead of Commissioning Orders. Bootstrap controls now install when the Admiral panel actually becomes available instead of relying on first-load timing. The commissioning Boundary cards stack cleanly at iPad widths, and the Admiral Fleet remains a read-only view of authenticated Fleet Core records.
+
+The shared Admiral session remains intact across Commissioning Orders, Vessel Logo Helm, and Admiral Fleet. The database upgrade is separately governed and does not authorize a commissioning order.
+
+The Black Flag Fleet Core upgrade was applied and verified on September 10, 2026. All six existing vessels were preserved, the authority-gated commissioning and branding functions are available, and no Bootstrap Build vessel or commissioning order was created by this repair.
+
+## 8.8.8 — Bootstrap Admiral Fleet
 
 Bootstrap Build now has an unmistakable **OPEN ADMIRAL FLEET** door beside its approved identity kit and a second **ADMIRAL FLEET** door inside the construction schedule. The resulting surface is read-only: it shows every authenticated Fleet Core vessel, lifecycle state, permanent project key, and current vessel mark without exposing a fleet mutation control.
 
@@ -10,7 +18,7 @@ Bootstrap Build Helm installs the founding construction-scheduling identity as t
 
 A local-first Construction Schedule proving ground launches from the Bootstrap Build commissioning identity. Its resettable sample hierarchy is Region `ABC` → Division `CBA` → Community `AB` → Lot `1234` → Unit `A`. Ten familiar construction tasks can be dragged between a seven-day calendar, moved by tap controls on iPad/iPhone, or moved with arrow keys. This prototype writes only to browser-local test storage and does not create Fleet Core, owner, customer, or live schedule records.
 
-The supplied `SUPABASE_ADMIRAL_COMMISSIONING_886.sql` is now the combined 8.8.6 + 8.8.7 Fleet Core migration. It remains prepared but unapplied by the static release.
+The supplied `SUPABASE_ADMIRAL_COMMISSIONING_886.sql` is the combined Fleet Core migration used by the authenticated Admiral Fleet and Vessel Logo Helm.
 
 # Dark Sky 8.8.6.1 — Command Deck Refit
 
