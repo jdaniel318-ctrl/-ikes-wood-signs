@@ -8949,7 +8949,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
   .commissioning-footer .commission-actions button{width:100%;min-height:44px}
 }
 
-/* 8.8.11 Fleet Door Repair — readable shipyard controls on iPad and iPhone. */
+/* 8.8.11.1 Fleet Door Repair — readable shipyard controls on iPad and iPhone. */
 .admiral-commissioning-station{margin-top:18px}
 .admiral-commissioning-station .field-rule{float:right;color:#79d7aa;font-size:.58rem;font-weight:900;letter-spacing:.09em}
 .admiral-commissioning-boundary{display:grid;grid-template-columns:1fr;gap:8px}
@@ -8963,7 +8963,7 @@ body.dark-flag-pirate-mode.engine-workspace-open #engineConfigurationDock .engin
 @media (min-width:700px) and (max-width:1180px) and (orientation:portrait){.admiral-commissioning-rename{grid-template-columns:1fr 1fr}.admiral-commissioning-rename>div{grid-column:1/-1}}
 @media (max-width:760px){.admiral-commissioning-boundary,.admiral-commissioning-rename{grid-template-columns:1fr}.admiral-commissioning-boundary span{grid-template-columns:1fr}.admiral-commissioning-boundary small{text-align:left}.admiral-commissioning-station .field-rule{display:block;float:none;margin-top:3px}.admiral-commissioning-rename button{width:100%}}
 
-/* 8.8.11 Fleet Door Repair — one compact commissioning flow, no dead column. */
+/* 8.8.11.1 Fleet Door Repair — one compact commissioning flow, no dead column. */
 .admiral-commissioning-station{padding:20px!important}
 .admiral-commissioning-station.identity-verified #admiralCommissioningAuth{display:flex!important;justify-content:flex-end!important;margin:8px 0 4px!important}
 .admiral-commissioning-station.identity-verified #admiralCommissioningSignOut{min-width:190px}
@@ -9529,7 +9529,7 @@ body.business-engine-mode #enginePanel .marketing-identity-heading .secondary-bt
   }
 }
 
-/* 8.8.11 Fleet Door Repair — vessel branding stays clear on iPad and iPhone. */
+/* 8.8.11.1 Fleet Door Repair — vessel branding stays clear on iPad and iPhone. */
 .admiral-brand-summary{margin-top:16px!important}
 .admiral-brand-station{margin-top:16px!important}
 .admiral-brand-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(340px,1.08fr);gap:16px;margin-top:18px}
@@ -9598,7 +9598,7 @@ body.bootstrap-fleet-open{overflow:hidden!important}
   .admiral-commissioning-brand-kit img{height:110px}
 }
 
-/* 8.8.11 Bootstrap Build Schedule — dense multi-week construction calendar. */
+/* 8.8.11.1 Bootstrap Build Schedule — dense multi-week construction calendar. */
 .bootstrap-build-schedule .bootstrap-schedule-shell{width:min(1740px,100%)}
 .bootstrap-build-schedule .bootstrap-schedule-toolbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;position:sticky;top:-18px;z-index:40;padding:12px 0;background:linear-gradient(#05252d 82%,rgba(5,37,45,0))}
 .bootstrap-build-schedule .bootstrap-schedule-toolbar>div{display:flex;align-items:center;gap:8px}.bootstrap-build-schedule .bootstrap-schedule-toolbar>div:nth-child(2){justify-content:center;flex-wrap:wrap}

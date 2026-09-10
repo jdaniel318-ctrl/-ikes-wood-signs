@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.11",
+  "build": "8.8.11.1",
   "release": "Bootstrap Build Schedule",
   "excluded_sources": [
     "The situation"
@@ -182,6 +182,7 @@
       ,"bootstrap_multi_day_duration_preserved"
       ,"bootstrap_schedule_browser_local_no_fleet_write"
       ,"bootstrap_schedule_doorway_reachable"
+      ,"bootstrap_schedule_doorway_installs_after_dynamic_brand_panel"
       ,"commissioning_verified_preview_copy_matches_state"
       ,"each_bootstrap_task_has_vendor"
       ,"vendor_view_shows_only_assigned_work"

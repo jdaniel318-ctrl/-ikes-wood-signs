@@ -5,7 +5,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.11';
+  const UPPER_COMMAND_BUILD='8.8.11.1';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -1320,7 +1320,7 @@
   window.addEventListener('pagehide', () => { authorized = false; });
 })();
 
-/* 8.8.11 Fleet Door Repair — canonical vessel identity, Admiral-controlled. */
+/* 8.8.11.1 Fleet Door Repair — canonical vessel identity, Admiral-controlled. */
 ;(()=>{
   const SESSION_KEY='darkSkySupabaseAdmiralSessionV1',MAX_BYTES=2*1024*1024;
   let vessels=[],draftFile=null,draftUrl='',busy=false;
@@ -1333,7 +1333,7 @@
   const apiHeaders=(token='',json=true)=>{const c=cfg(),value={apikey:c?.publishableKey||''};if(token)value.Authorization='Bearer '+token;if(json)value['Content-Type']='application/json';return value;};
   async function refreshSession(session){const c=cfg();if(!c||!session?.refresh_token)return null;const response=await fetch(c.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:apiHeaders(),body:JSON.stringify({refresh_token:session.refresh_token})});return response.ok?saveSession(await response.json()):null;}
   async function currentSession(){let session=readSession();if(session&&session.expires_at>Date.now()+30000)return session;if(session?.refresh_token)session=await refreshSession(session);return session;}
-  async function rpc(name,body={}){const c=cfg(),session=await currentSession();if(!c?.url||!session?.access_token)throw new Error('Authenticate the Admiral identity first.');const response=await fetch(c.url+'/rest/v1/rpc/'+name,{method:'POST',headers:{...apiHeaders(session.access_token),Accept:'application/json'},body:JSON.stringify(body)});if(!response.ok){let message='The logo command was refused. No vessel identity changed.';try{const problem=await response.json();message=problem?.message||problem?.hint||message;}catch(_){}if(/could not find the function|schema cache/i.test(message))throw new Error('Fleet Core upgrade 8.8.11 is required before Vessel Logo Helm can operate. No data changed.');throw new Error(message.replaceAll('_',' '));}return response.json();}
+  async function rpc(name,body={}){const c=cfg(),session=await currentSession();if(!c?.url||!session?.access_token)throw new Error('Authenticate the Admiral identity first.');const response=await fetch(c.url+'/rest/v1/rpc/'+name,{method:'POST',headers:{...apiHeaders(session.access_token),Accept:'application/json'},body:JSON.stringify(body)});if(!response.ok){let message='The logo command was refused. No vessel identity changed.';try{const problem=await response.json();message=problem?.message||problem?.hint||message;}catch(_){}if(/could not find the function|schema cache/i.test(message))throw new Error('Fleet Core upgrade 8.8.11.1 is required before Vessel Logo Helm can operate. No data changed.');throw new Error(message.replaceAll('_',' '));}return response.json();}
   async function verifyAdmiral(){const c=cfg(),session=await currentSession();if(!c||!session?.access_token)return false;const response=await fetch(c.url+'/rest/v1/fleet_global_authorities?select=user_id&authority_role=eq.admiral&active=eq.true',{headers:{...apiHeaders(session.access_token),Accept:'application/json'}});if(!response.ok)return false;const rows=await response.json();return Array.isArray(rows)&&rows.length===1;}
   function install(){if(el('admiralBrandOpen'))return;const panel=document.querySelector('[data-admiral-panel="promote"]');if(!panel)return;panel.insertAdjacentHTML('beforeend',`<div class="admiral-lane-summary admiral-brand-summary"><b>Vessel Logo Helm</b><span>Replace a vessel's public mark without changing its permanent keel, records, or authority.</span></div><button id="admiralBrandOpen" class="admiral-pro-button" type="button">OPEN VESSEL LOGO HELM</button><section id="admiralBrandStation" class="admiral-entitlement-station admiral-course-station admiral-brand-station hidden" aria-label="Vessel Logo Helm"><header><div><small>SERVER-GOVERNED ADMIRAL BRANDING</small><h5>Vessel Logo Helm</h5><p>Choose one vessel, inspect its canonical mark, then replace it or restore the approved default.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralBrandIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralBrandClose" class="admiral-pro-button" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer"><b>The logo is editable; the keel is not.</b> A logo change never renames the vessel, changes its project key, grants authority, or changes feature entitlements.</p><div id="admiralBrandAuth" class="admiral-identity-row"><label>Admiral email<input id="admiralBrandEmail" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralBrandPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralBrandSignIn" class="admiral-pro-button is-primary" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralBrandRecover" class="admiral-pro-button" type="button">RECOVER PASSWORD</button><button id="admiralBrandSignOut" class="admiral-pro-button hidden" type="button">SIGN OUT IDENTITY</button></div><div class="admiral-brand-grid"><section class="admiral-brand-controls"><small>1 · COMMAND DESTINATION</small><label>Vessel<select id="admiralBrandVessel" disabled><option>Authenticate to read Fleet Core</option></select></label><small>2 · REPLACEMENT MARK</small><label class="admiral-brand-file">Choose PNG, JPEG, or WebP<input id="admiralBrandFile" type="file" accept="image/png,image/jpeg,image/webp" disabled></label><label>Order intent<input id="admiralBrandIntent" type="text" maxlength="500" placeholder="Optional reason for the record" disabled></label><div class="admiral-brand-actions"><button id="admiralBrandSave" class="admiral-pro-button is-primary" type="button" disabled>SAVE AS CANONICAL LOGO</button><button id="admiralBrandRestore" class="admiral-pro-button" type="button" disabled>RESTORE APPROVED DEFAULT</button></div></section><section class="admiral-brand-preview" aria-live="polite"><div><small>CANONICAL VESSEL MARK</small><strong id="admiralBrandName">Awaiting identity</strong><span id="admiralBrandState">No public mark changes until an Admiral command is verified.</span></div><figure><img id="admiralBrandImage" src="bootstrap_build_logo.png" alt="Vessel logo preview"></figure><p id="admiralBrandSource">Approved Bootstrap Build mark</p></section></div><div id="admiralBrandResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to manage vessel logos.</div><div class="admiral-package-note"><b>Authority boundary</b><span>Only an active Admiral may save the canonical path. Public customers can read the published mark; they cannot replace it.</span></div></section>`);}
   function installFleetDoor(){if(el('bootstrapFleetOpenPromote'))return;const commissioning=el('admiralCommissioningOpen');if(!commissioning)return;commissioning.insertAdjacentHTML('afterend','<div class="admiral-lane-summary bootstrap-fleet-door-summary"><b>Black Flag Fleet Registry</b><span>See every independent Fleet Core member, mission level, permanent key, operating model, and current mark in one read-only view.</span></div><button id="bootstrapFleetOpenPromote" class="admiral-pro-button bootstrap-fleet-primary-door" type="button">OPEN FLEET REGISTRY</button>');}
@@ -1356,7 +1356,7 @@
   document.addEventListener('change',event=>{if(event.target.matches('#admiralBrandVessel')){draftFile=null;if(draftUrl)URL.revokeObjectURL(draftUrl);draftUrl='';paint();return;}if(event.target.matches('#admiralBrandFile')){const file=event.target.files?.[0]||null;if(!file)return;if(!['image/png','image/jpeg','image/webp'].includes(file.type)){event.target.value='';setResult('Choose a PNG, JPEG, or WebP logo.');return;}if(file.size>MAX_BYTES){event.target.value='';setResult('The logo must be 2 MB or smaller.');return;}draftFile=file;if(draftUrl)URL.revokeObjectURL(draftUrl);draftUrl=URL.createObjectURL(file);paint();setResult('Local preview ready. Nothing changes until SAVE AS CANONICAL LOGO is verified.');}});
 })();
 
-/* 8.8.11 Bootstrap Build — local-first construction schedule proving ground. */
+/* 8.8.11.1 Bootstrap Build — local-first construction schedule proving ground. */
 ;(()=>{
   const STORE='bootstrapBuildSchedulePrototypeV1';
   const hierarchy={region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'A'};
@@ -1402,7 +1402,7 @@
   document.addEventListener('keydown',event=>{const card=event.target.closest?.('[data-task-id]');if(!card||!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();const task=state.tasks.find(item=>item.id===card.dataset.taskId);if(task)move(task.id,task.day+(event.key==='ArrowRight'?1:-1));});
 })();
 
-/* 8.8.11 Bootstrap Build Schedule — twelve-week, workday construction schedule proving ground. */
+/* 8.8.11.1 Bootstrap Build Schedule — twelve-week, workday construction schedule proving ground. */
 ;(()=>{
   const STORE='bootstrapBuildGroundRunV2',WEEKS=12,DAYS=WEEKS*5;
   const hierarchy={region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'A'};
@@ -1441,6 +1441,8 @@
     const activity=el('bootstrapVendorActivity');if(activity)activity.innerHTML=state.activity.length?state.activity.slice(0,12).map(item=>'<article><b>'+esc(item.vendor)+'</b><span>'+esc(item.task)+(item.assignment?' reassigned from '+esc(item.from)+' to '+esc(item.to):' moved from '+esc(item.from)+' to '+esc(item.to))+'.</span><small>'+esc(new Date(item.at).toLocaleString())+'</small></article>').join(''):'<p>Move a task and its vendor schedule change will appear here.</p>';
   }
   function syncCommissioningCopy(){
+    const kit=el('admiralCommissioningBrandKit');
+    if(kit&&!el('bootstrapScheduleOpen'))kit.insertAdjacentHTML('beforeend','<button id="bootstrapScheduleOpen" class="admiral-pro-button" type="button">OPEN BOOTSTRAP BUILD SCHEDULE</button>');
     const doorway=el('bootstrapScheduleOpen');
     if(doorway&&doorway.textContent!=='OPEN BOOTSTRAP BUILD SCHEDULE')doorway.textContent='OPEN BOOTSTRAP BUILD SCHEDULE';
     const identity=el('admiralCommissioningIdentityState');
@@ -2426,7 +2428,7 @@ if(document.readyState==='loading'){
   paintScope();paintCommand();
 })();
 
-/* 8.8.11 Fleet Door Repair — permanent keel, editable working name. */
+/* 8.8.11.1 Fleet Door Repair — permanent keel, editable working name. */
 ;(()=>{
   const SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let preview=null,confirmed=false,busy=false,fullLog=false,commissionedProject='',backendReady=false;

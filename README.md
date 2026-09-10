@@ -1,3 +1,7 @@
+# Dark Sky 8.8.11.1 — Bootstrap Build Schedule
+
+This patch repairs the missing **Open Bootstrap Build Schedule** doorway. The Bootstrap identity panel is created dynamically after Admiral authentication; the doorway now attaches as soon as that panel appears and remains separate from commissioning.
+
 # Dark Sky 8.8.11 — Bootstrap Build Schedule
 
 Bootstrap Build Schedule gives Bootstrap Build a focused construction-scheduling proving ground. The included sample uses twelve vertical Monday-through-Friday weeks and familiar work from clearing through settlement, while the product name and structure do not impose a fixed project length. Single-day and multi-day bars can move with mouse drag, iPad touch, day-heading taps, or keyboard arrows while each task's duration remains intact.

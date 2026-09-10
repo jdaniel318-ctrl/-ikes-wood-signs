@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.11",
+  "build": "8.8.11.1",
   "release": "Bootstrap Build Schedule",
-  "generatedAt": "2026-09-10T22:52:26Z",
+  "generatedAt": "2026-09-10T23:11:36Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -238,13 +238,14 @@
     ,"bootstrap_vendor_schedule_view": true
     ,"bootstrap_vendor_move_communication_log": true
     ,"bootstrap_vendor_messages_local_only": true
+    ,"bootstrap_schedule_late_load_doorway": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.11 gives Bootstrap Build a twelve-week Monday-through-Friday sample schedule from clearing through settlement. Multi-day duration survives mouse, touch, and keyboard moves; all test hierarchy and schedule data remain browser-local, and no Fleet Core or commissioning state is changed.",
-  "candidate": "8.8.11",
+  "note": "8.8.11.1 repairs the missing Bootstrap Build Schedule doorway by attaching it when the dynamic identity panel appears. The flexible sample schedule, vendor view, duration-preserving movement, and local-only data boundary remain unchanged.",
+  "candidate": "8.8.11.1",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -355,6 +356,7 @@
     ,"bootstrap_vendor_schedule_view": true
     ,"bootstrap_vendor_move_communication_log": true
     ,"bootstrap_vendor_messages_local_only": true
+    ,"bootstrap_schedule_late_load_doorway": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -409,8 +411,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.11",
-    "seal": "bootstrap-build-schedule-8811-c4a6d2",
+    "build": "8.8.11.1",
+    "seal": "bootstrap-build-schedule-88111-doorway",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

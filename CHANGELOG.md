@@ -1,3 +1,9 @@
+## 8.8.11.1 — Bootstrap Build Schedule
+
+- Installs `OPEN BOOTSTRAP BUILD SCHEDULE` when the dynamically rendered Bootstrap identity panel becomes available.
+- Keeps the schedule doorway independent of Preview and Issue Commissioning Order.
+- Preserves all local schedule, vendor, fleet, and commissioning boundaries.
+
 ## 8.8.11 — Bootstrap Build Schedule
 
 - Replaces the one-week prototype with a multi-week Monday-through-Friday construction calendar; the included sample spans twelve weeks without defining a fixed project length.

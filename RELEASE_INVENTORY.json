@@ -1,8 +1,8 @@
 {
   "release": "Bootstrap Build Schedule",
   "name": "Bootstrap Build Schedule",
-  "build": "8.8.11",
-  "seal": "bootstrap-build-schedule-8811-c4a6d2",
+  "build": "8.8.11.1",
+  "seal": "bootstrap-build-schedule-88111-doorway",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

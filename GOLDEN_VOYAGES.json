@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.11",
+  "build": "8.8.11.1",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -78,6 +78,7 @@
       "path": [
         "Admiral Promote",
         "Commissioning Orders",
+        "Late-loaded Bootstrap identity panel",
         "Open Bootstrap Build Schedule",
         "Move multi-day task",
         "Duration remains intact",
@@ -86,6 +87,7 @@
       ],
       "proof": [
         "twelve-week-monday-friday-calendar",
+        "schedule-doorway-installs-after-brand-panel",
         "realistic-clearing-to-settlement-seed",
         "single-and-multi-day-bars",
         "mouse-touch-keyboard-movement",
