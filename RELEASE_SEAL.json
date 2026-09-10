@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.9",
-  "release": "Fleet Door Repair",
-  "seal": "fleet-door-repair-889-c42e7a",
+  "build": "8.8.9.1",
+  "release": "Admiral Fleet Surface",
+  "seal": "fleet-surface-repair-8891-e51c6d",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fleet Door Repair",
-  "name": "Fleet Door Repair",
-  "releaseName": "Fleet Door Repair"
+  "release_name": "Admiral Fleet Surface",
+  "name": "Admiral Fleet Surface",
+  "releaseName": "Admiral Fleet Surface"
 }

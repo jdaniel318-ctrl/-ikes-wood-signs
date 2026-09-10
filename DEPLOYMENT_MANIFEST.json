@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.9",
-  "version": "8.8.9",
-  "release_name": "Fleet Door Repair",
-  "releaseName": "Fleet Door Repair",
-  "release_seal": "fleet-door-repair-889-c42e7a",
+  "build": "8.8.9.1",
+  "version": "8.8.9.1",
+  "release_name": "Admiral Fleet Surface",
+  "releaseName": "Admiral Fleet Surface",
+  "release_seal": "fleet-surface-repair-8891-e51c6d",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -87,8 +87,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "promote-level-admiral-fleet-door-and-ipad-boundary-repair",
-  "release_note": "The read-only Admiral Fleet door now appears directly on Promote and installs reliably with the dynamic Admiral panel. Commissioning Boundary cards stack without overlap on iPad. The Fleet Core migration was applied and verified with all six existing vessels preserved and no Bootstrap vessel created. The ABC/CBA/AB/1234/A hierarchy remains test data only, and no schedule operation changes Fleet Core or live customer records.",
+  "release_focus": "admiral-fleet-surface-stacking-and-captured-tap-repair",
+  "release_note": "The Admiral Fleet now opens above the Admiral deck instead of underneath it, and its three entry buttons use a capture-phase route that cannot be swallowed by a competing deck handler. The view remains read-only, all six Fleet Core vessels are preserved, and no commissioning order is created.",
   "fleet_core_upgrade": {
     "migration": "admiral_vessel_commissioning_886",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",

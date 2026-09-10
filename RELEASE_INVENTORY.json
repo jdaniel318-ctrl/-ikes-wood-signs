@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Door Repair",
-  "name": "Fleet Door Repair",
-  "build": "8.8.9",
-  "seal": "fleet-door-repair-889-c42e7a",
+  "release": "Admiral Fleet Surface",
+  "name": "Admiral Fleet Surface",
+  "build": "8.8.9.1",
+  "seal": "fleet-surface-repair-8891-e51c6d",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

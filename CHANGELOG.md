@@ -1,3 +1,11 @@
+## 8.8.9.1 — Admiral Fleet Surface
+
+- Raises Admiral Fleet above the Admiral deck instead of invisibly opening underneath it.
+- Captures Promote, Commissioning, and Schedule fleet-door taps before competing deck handlers.
+- Adds an immediate opening status, correct modal semantics, scroll reset, and visible Close-button focus.
+- Raises the Bootstrap test schedule above the Admiral deck for the same navigation boundary.
+- Preserves all six Fleet Core vessels and performs no commissioning or mutation.
+
 ## 8.8.9 — Fleet Door Repair
 
 - Places `OPEN ADMIRAL FLEET` directly on Promote, before Commissioning Orders.

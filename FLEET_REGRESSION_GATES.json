@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.9",
-  "release": "Fleet Door Repair",
+  "build": "8.8.9.1",
+  "release": "Admiral Fleet Surface",
   "excluded_sources": [
     "The situation"
   ],

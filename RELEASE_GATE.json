@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.9",
-  "release": "Fleet Door Repair",
-  "generatedAt": "2026-09-10T21:29:24Z",
+  "build": "8.8.9.1",
+  "release": "Admiral Fleet Surface",
+  "generatedAt": "2026-09-10T21:41:07Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.9 repairs the missing Promote-level Admiral Fleet door and the iPad Boundary collision while preserving the permanent keel, read-only fleet boundary, Course Orders, Native Passage and the 85-file release boundary.",
-  "candidate": "8.8.9",
+  "note": "8.8.9.1 raises the Admiral Fleet above the Admiral deck and captures each fleet-door tap before competing handlers while preserving the six-vessel roster, permanent keel, read-only boundary, Course Orders, Native Passage and 85-file release boundary.",
+  "candidate": "8.8.9.1",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -322,6 +322,9 @@
     ,"fleet_core_six_vessels_preserved": true
     ,"fleet_core_anonymous_function_execution_denied": true
     ,"no_commissioning_order_issued_by_release": true
+    ,"admiral_fleet_surface_above_admiral_deck": true
+    ,"admiral_fleet_tap_capture_route": true
+    ,"admiral_fleet_visible_open_state": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -376,8 +379,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.9",
-    "seal": "fleet-door-repair-889-c42e7a",
+    "build": "8.8.9.1",
+    "seal": "fleet-surface-repair-8891-e51c6d",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

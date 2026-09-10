@@ -1,4 +1,10 @@
-# Dark Sky 8.8.9 — Fleet Door Repair
+# Dark Sky 8.8.9.1 — Admiral Fleet Surface
+
+Admiral Fleet Surface repairs the confirmed iPad opening failure. The fleet view was opening beneath the higher Admiral deck; it now owns a higher presentation layer, captures the tap before competing deck handlers, announces its opening immediately, and places keyboard focus on its visible Close control.
+
+The repair changes presentation and navigation only. Fleet Core remains read-only in this view, all six vessels are preserved, and no commissioning order is issued.
+
+## 8.8.9 — Fleet Door Repair
 
 Fleet Door Repair places **OPEN ADMIRAL FLEET** directly on the Promote lane, ahead of Commissioning Orders. Bootstrap controls now install when the Admiral panel actually becomes available instead of relying on first-load timing. The commissioning Boundary cards stack cleanly at iPad widths, and the Admiral Fleet remains a read-only view of authenticated Fleet Core records.
 
