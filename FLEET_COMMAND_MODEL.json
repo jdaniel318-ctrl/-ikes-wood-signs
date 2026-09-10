@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.9.1",
+  "build": "8.8.10",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Admiral Fleet Surface",
+  "release": "Fleet Structure",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -111,6 +111,32 @@
     "createsEntitlements": false,
     "workingNameEditable": true,
     "immutableIdentity": ["id", "project_id", "namespace"]
+  },
+  "fleetStructureContract": {
+    "registryOwner": "black_flag",
+    "topology": "lateral_independent_members",
+    "roles": {
+      "admiral": "govern standards, capability passage, and fleet-wide posture without absorbing vessels",
+      "captain": "operate and distribute only delegated, vessel-scoped capability",
+      "firstMate": "build, test, repair, and report without granting authority or crossing data boundaries"
+    },
+    "bootstrapBuild": {
+      "missionClass": "admiral_program",
+      "relationshipToOtherVessels": "peer_not_parent",
+      "commissionedByThisRelease": false
+    },
+    "existingFleet": {
+      "count": 6,
+      "missionClass": "independent_business",
+      "identityAndDataIsolation": true
+    },
+    "sharedCapabilityPassage": {
+      "availableAcrossLevels": true,
+      "explicitAdoptionRequired": true,
+      "movesOwnership": false,
+      "movesAuthority": false,
+      "movesProjectData": false
+    }
   },
   "admiralFirstPaint": {
     "defaultView": "professional",

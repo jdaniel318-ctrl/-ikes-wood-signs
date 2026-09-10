@@ -223,6 +223,8 @@ begin
   ) then raise exception 'active_admiral_authority_required'; end if;
   select coalesce(jsonb_agg(jsonb_build_object(
     'id',v.id,'project_id',v.project_id,'display_name',v.display_name,
+    'mission_class',v.mission_class,'ownership_model',v.ownership_model,
+    'operating_model',v.operating_model,
     'lifecycle_state',v.lifecycle_state,'logo_storage_path',v.logo_storage_path,
     'logo_updated_at',v.logo_updated_at
   ) order by v.display_name,v.project_id),'[]'::jsonb) into v_records

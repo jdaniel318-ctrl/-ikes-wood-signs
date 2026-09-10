@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.9.1",
-  "release": "Admiral Fleet Surface",
+  "build": "8.8.10",
+  "release": "Fleet Structure",
   "excluded_sources": [
     "The situation"
   ],
@@ -170,6 +170,11 @@
       ,"working_name_change_preserves_uuid_project_key_namespace"
       ,"commissioning_preview_has_no_dead_stretched_column"
       ,"missing_commissioning_rpc_fails_closed_with_plain_language"
+      ,"black_flag_owns_lateral_fleet_registry"
+      ,"bootstrap_build_is_admiral_program_not_parent"
+      ,"mission_level_never_creates_project_parentage"
+      ,"shared_capability_adoption_preserves_vessel_boundaries"
+      ,"fleet_registry_reads_authoritative_mission_and_operating_models"
     ],
     "quarterdeck": [
       "single_top_level_folder",

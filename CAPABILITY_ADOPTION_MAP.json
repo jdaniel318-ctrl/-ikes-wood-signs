@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-capability-adoption-map-v1",
-  "build": "8.6.28",
+  "build": "8.8.10",
   "policy": "Runtime-generated from Fleet Learning Registry; this file defines the adoption vocabulary only.",
   "states": [
     "unreviewed",
@@ -16,6 +16,8 @@
   "rules": {
     "doctrine": "inherited only when classified as fleet doctrine",
     "capability": "requires explicit vessel review/adoption",
-    "cross_project_business_data": "forbidden"
+    "cross_project_business_data": "forbidden",
+    "mission_level_parentage": "forbidden",
+    "shared_capability_passage": "explicit adoption only; capability contract may move, ownership, authority, branding, namespace and project data do not"
   }
 }

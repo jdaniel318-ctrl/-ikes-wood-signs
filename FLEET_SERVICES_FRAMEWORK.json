@@ -1,13 +1,15 @@
 {
   "schema": "dark-sky-fleet-services-framework-v2",
-  "build": "8.7.0",
-  "release": "Feature Freedom",
+  "build": "8.8.10",
+  "release": "Fleet Structure",
   "principles": [
     "Admiral can set every Fleet feature Off, Free or Paid for every vessel.",
     "Owners may request eligible paid services but cannot self-grant or self-activate them.",
     "Free capability status does not broaden vessel data scope.",
     "Every service remains vessel-entitled and RLS-scoped.",
-    "Captain operationalizes only capabilities the Fleet has entitled for the vessel."
+    "Captain operationalizes only capabilities the Fleet has entitled for the vessel.",
+    "Capability passage is available across mission levels but never transfers vessel ownership, authority, branding, namespace, or project data.",
+    "Bootstrap Build is an independent Admiral-level program and is not a parent of operational vessels."
   ],
   "objects": {
     "capability": "versioned reusable Fleet feature; services may group capabilities without removing individual control",

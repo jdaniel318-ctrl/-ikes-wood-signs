@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.9.1",
+  "build": "8.8.10",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -54,6 +54,21 @@
         "transfer-audited-recoverable"
       ],
       "summary": "Vessel entry \u2192 ownership \u2192 operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
+    },
+    {
+      "id": "lateral-fleet-structure",
+      "label": "Lateral Fleet Structure Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "proof": [
+        "black-flag-registry-identity",
+        "six-independent-businesses-retained",
+        "bootstrap-admiral-program-not-commissioned",
+        "no-project-parentage",
+        "explicit-capability-adoption",
+        "ownership-authority-branding-namespace-data-remain-isolated"
+      ],
+      "summary": "The registry sees every member without containing it; a governed capability may travel only through explicit adoption."
     },
     {
       "id": "owner",

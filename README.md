@@ -1,3 +1,9 @@
+# Dark Sky 8.8.10 — Fleet Structure
+
+Fleet Structure restores the intended lateral fleet model. Black Flag owns the authenticated, read-only Fleet Registry; the six existing businesses remain independent Fleet Core members; and Bootstrap Build remains a separate, uncommissioned Admiral-level program rather than a parent or container.
+
+The registry now reads each member's authoritative mission class, ownership model, operating model, lifecycle, permanent key, and canonical mark. Shared capabilities can pass through explicit adoption at any mission level, but ownership, authority, branding, namespace, and project data never travel with them. This release issues no commissioning order and changes no existing vessel record.
+
 # Dark Sky 8.8.9.1 — Admiral Fleet Surface
 
 Admiral Fleet Surface repairs the confirmed iPad opening failure. The fleet view was opening beneath the higher Admiral deck; it now owns a higher presentation layer, captures the tap before competing deck handlers, announces its opening immediately, and places keyboard focus on its visible Close control.

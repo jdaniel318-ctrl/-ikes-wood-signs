@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.9.1",
-  "release": "Admiral Fleet Surface",
+  "build": "8.8.10",
+  "release": "Fleet Structure",
   "status": "active",
   "principles": [
     {
@@ -69,6 +69,18 @@
       "rule": "The Admiral may deliberately change Fleet course. Course changes are versioned, promoted explicitly, preserve prior doctrine as history, and remain rollback-capable.",
       "scope": "fleet-governance",
       "origin": "8.6.40 Registry Commit hardening"
+    },
+    {
+      "id": "mission-level-is-not-parentage",
+      "rule": "Admiral, Captain, Engine, and vessel mission levels describe responsibility and authority; they never make one project the owner or container of another.",
+      "scope": "fleet-structure",
+      "origin": "8.8.10 Fleet Structure repair"
+    },
+    {
+      "id": "shared-capability-passage",
+      "rule": "Any fleet member may explicitly adopt an approved capability while its ownership, authority, branding, namespace, and project data remain isolated.",
+      "scope": "fleet-learning",
+      "origin": "8.8.10 Fleet Structure repair"
     }
   ],
   "governance": {

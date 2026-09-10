@@ -1,3 +1,13 @@
+## 8.8.10 — Fleet Structure
+
+- Moves fleet identity from Bootstrap Build to the Black Flag Fleet Registry.
+- Defines all Fleet Core members as lateral and independent; mission level never creates parentage.
+- Keeps Bootstrap Build separate and defaults its commissioning proposal to `admiral_program` with a plain-language Admiral-level label.
+- Adds authoritative mission class, ownership model, and operating model to the active-Admiral registry read.
+- Adds Shared Capability Passage: explicit adoption may cross mission levels while ownership, authority, branding, namespace, and project data remain isolated.
+- Removes the Fleet Registry button from Bootstrap Build's identity kit and keeps the registry available from the Admiral Promote lane and schedule header.
+- Preserves all six existing vessels and issues no Bootstrap commissioning order.
+
 ## 8.8.9.1 — Admiral Fleet Surface
 
 - Raises Admiral Fleet above the Admiral deck instead of invisibly opening underneath it.

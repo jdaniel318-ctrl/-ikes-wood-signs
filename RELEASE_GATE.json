@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.9.1",
-  "release": "Admiral Fleet Surface",
-  "generatedAt": "2026-09-10T21:41:07Z",
+  "build": "8.8.10",
+  "release": "Fleet Structure",
+  "generatedAt": "2026-09-10T22:12:38Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -231,8 +231,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.9.1 raises the Admiral Fleet above the Admiral deck and captures each fleet-door tap before competing handlers while preserving the six-vessel roster, permanent keel, read-only boundary, Course Orders, Native Passage and 85-file release boundary.",
-  "candidate": "8.8.9.1",
+  "note": "8.8.10 makes Black Flag the owner of a lateral read-only Fleet Registry, keeps Bootstrap Build a separate uncommissioned Admiral-level program, exposes authoritative mission and operating classifications, and permits explicit capability adoption without crossing vessel ownership, authority, branding, namespace, or data boundaries.",
+  "candidate": "8.8.10",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -242,11 +242,11 @@
     "admiral_logo_restore_default": true,
     "bootstrap_build_schedule_prototype": true,
     "bootstrap_build_test_region_abc": true,
-    "bootstrap_admiral_fleet_primary_door": true,
-    "bootstrap_admiral_fleet_schedule_door": true,
-    "bootstrap_admiral_fleet_read_only": true,
-    "bootstrap_admiral_fleet_live_identity_marks": true,
-    "bootstrap_admiral_fleet_promote_door": true,
+    "black_flag_fleet_registry_primary_door": true,
+    "bootstrap_schedule_registry_passage": true,
+    "black_flag_fleet_registry_read_only": true,
+    "black_flag_fleet_registry_live_identity_marks": true,
+    "black_flag_fleet_registry_promote_door": true,
     "bootstrap_dynamic_panel_install_recovery": true,
     "commissioning_boundary_ipad_collision_repaired": true,
     "bootstrap_build_drag_drop_calendar": true,
@@ -325,6 +325,12 @@
     ,"admiral_fleet_surface_above_admiral_deck": true
     ,"admiral_fleet_tap_capture_route": true
     ,"admiral_fleet_visible_open_state": true
+    ,"fleet_registry_black_flag_owned": true
+    ,"bootstrap_build_lateral_admiral_program": true
+    ,"mission_level_does_not_create_parentage": true
+    ,"capability_sharing_preserves_vessel_isolation": true
+    ,"fleet_registry_returns_authoritative_mission_class": true
+    ,"no_commissioning_order_issued_by_structure_repair": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -379,8 +385,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.9.1",
-    "seal": "fleet-surface-repair-8891-e51c6d",
+    "build": "8.8.10",
+    "seal": "fleet-structure-8810-bf7c42",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

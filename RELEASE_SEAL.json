@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.9.1",
-  "release": "Admiral Fleet Surface",
-  "seal": "fleet-surface-repair-8891-e51c6d",
+  "build": "8.8.10",
+  "release": "Fleet Structure",
+  "seal": "fleet-structure-8810-bf7c42",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Admiral Fleet Surface",
-  "name": "Admiral Fleet Surface",
-  "releaseName": "Admiral Fleet Surface"
+  "release_name": "Fleet Structure",
+  "name": "Fleet Structure",
+  "releaseName": "Fleet Structure"
 }
