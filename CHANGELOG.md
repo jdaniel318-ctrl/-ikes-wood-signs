@@ -1,8 +1,9 @@
-## 8.8.11.6 — Roster Wake
+## 8.8.11.7 — Mirror Harbor
 
-- Stops the Bootstrap Build doorway watcher from rewriting an already-correct button label.
-- Removes the resulting self-triggering mutation loop that could leave Safari on a blank page before first paint.
-- Preserves the Project Roster, three isolated project schedules, saved records, vendor assignments, and fresh Admiral gate.
+- Accepts either independent browser store as a successful durable save, preventing Safari from reporting failure when its local mirror has already preserved the project.
+- Upgrades the schedule database safely so an older database missing the project-record store can repair itself.
+- Removes a duplicate iPad pointer-down listener that could create delayed or doubled drag feedback.
+- Preserves the Project Roster, three isolated project schedules, vendor history, and fresh Admiral gate.
 
 ## 8.8.11.5 — Project Roster
 

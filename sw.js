@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.11.6';
-const RELEASE_SEAL='roster-wake-88116';
+const RELEASE_BUILD='8.8.11.7';
+const RELEASE_SEAL='mirror-harbor-88117';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

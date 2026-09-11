@@ -9615,11 +9615,11 @@ body.bootstrap-fleet-open{overflow:hidden!important}
 @media (max-width:1100px){.bootstrap-build-schedule .bootstrap-schedule-toolbar{grid-template-columns:1fr auto}.bootstrap-build-schedule .bootstrap-schedule-toolbar>div:nth-child(2){grid-column:1/-1;grid-row:2}.bootstrap-ground-form{grid-template-columns:2fr 1fr 1fr}.bootstrap-ground-form button{width:100%}.bootstrap-vendor-tools{grid-template-columns:1fr}.bootstrap-vendor-activity article{grid-template-columns:1fr}.bootstrap-vendor-activity article small{justify-self:start}}
 @media (max-width:700px){.bootstrap-build-schedule .bootstrap-schedule-toolbar{top:-12px;grid-template-columns:1fr}.bootstrap-build-schedule .bootstrap-schedule-toolbar>div,.bootstrap-build-schedule .bootstrap-schedule-toolbar>div:nth-child(2){grid-column:1;justify-content:center}.bootstrap-build-schedule .bootstrap-schedule-toolbar>div:last-child{display:grid;grid-template-columns:1fr 1fr}.bootstrap-vendor-tools>div{align-items:stretch;flex-direction:column}.bootstrap-ground-week{min-width:790px}.bootstrap-ground-week-grid{grid-template-rows:58px repeat(var(--task-lanes),68px)}.bootstrap-ground-task{height:58px}.bootstrap-ground-task b{font-size:.76rem}}
 
-/* 8.8.11.6 Project Roster Touch — direct manipulation feedback. */
+/* 8.8.11.7 Project Roster Touch — direct manipulation feedback. */
 .bootstrap-ground-task.is-dragging{opacity:.28;transform:none}
 .bootstrap-ground-task.is-settling{animation:bootstrap-task-settle .16s ease-out}
 
-/* 8.8.11.6 Project Roster — the program opens on projects, not inside one unit. */
+/* 8.8.11.7 Project Roster — the program opens on projects, not inside one unit. */
 .bootstrap-project-landing{display:grid;gap:18px;margin-top:18px}
 .bootstrap-roster-summary{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 20px;border:1px solid #42636a;border-left:5px solid #d6b456;border-radius:12px;background:linear-gradient(110deg,#0a3942,#082b33);color:#edf2ee}
 .bootstrap-roster-summary>div{display:grid;gap:4px}.bootstrap-roster-summary small{color:#78cce0;font-size:.72rem;font-weight:900;letter-spacing:.14em}.bootstrap-roster-summary strong{font-size:1.15rem}.bootstrap-roster-summary span:not(.bootstrap-roster-badge){color:#b9c8ca;font-size:.9rem}

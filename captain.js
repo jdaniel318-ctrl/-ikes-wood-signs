@@ -1,4 +1,4 @@
-/* 8.8.11.6 Project Roster — a full document load must never inherit
+/* 8.8.11.7 Project Roster — a full document load must never inherit
    upper-command identity from the prior page. The session remains shared
    between Admiral stations only for this document's lifetime. */
 ;(() => {
@@ -11,7 +11,7 @@
   clearAdmiralIdentity();
   window.addEventListener('pagehide',clearAdmiralIdentity);
   window.addEventListener('pageshow',event=>{if(event.persisted){clearAdmiralIdentity();location.reload();}});
-  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.6',requiredPerDocument:true,engineAuthoritySeparate:true});
+  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.7',requiredPerDocument:true,engineAuthoritySeparate:true});
 })();
 
 (() => {
@@ -21,7 +21,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.11.6';
+  const UPPER_COMMAND_BUILD='8.8.11.7';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -1497,9 +1497,9 @@
   document.addEventListener('click',event=>{if(!event.target.closest?.('#bootstrapVendorAssignButton'))return;event.preventDefault();event.stopImmediatePropagation();const task=state.tasks.find(item=>item.id===selectedId),vendor=el('bootstrapVendorAssign')?.value;if(!task||!vendor)return;const prior=task.vendor;task.vendor=vendor;state.activity.unshift({id:'assign-'+Date.now(),at:new Date().toISOString(),task:task.title,vendor,from:prior,to:vendor,assignment:true});state.activity=state.activity.slice(0,100);selectedId='';save();render();status(task.title+' assigned to '+vendor+'. Its vendor schedule now includes this task.');},{capture:true});
 })();
 
-/* 8.8.11.6 Project Roster — three isolated schedules with durable local records. */
+/* 8.8.11.7 Mirror Harbor — three isolated schedules with resilient Safari persistence. */
 ;(()=>{
-  const WEEKS=12,DAYS=WEEKS*5,DB_NAME='bootstrapBuildScheduleDB',DB_STORE='projects';
+  const WEEKS=12,DAYS=WEEKS*5,DB_NAME='bootstrapBuildScheduleDB',DB_VERSION=2,DB_STORE='projects';
   const LEGACY_STORE='bootstrapBuildGroundRunV2',STORE_PREFIX='bootstrapBuildProjectScheduleV1:';
   const projects=[
     {id:'1234-A',region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'A',startWeek:0},
@@ -1516,14 +1516,14 @@
   ].map(([id,title,trade,start,duration,type])=>({id,title,trade,start,duration,type,vendor:vendorFor(trade)}));}
   function fresh(meta){return {version:4,projectId:meta.id,hierarchy:{region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit},tasks:seedTasks(),activity:[],updatedAt:null,revision:0};}
   function normalize(value,meta){if(!value||!Array.isArray(value.tasks))return null;value.version=4;value.projectId=meta.id;value.hierarchy={region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit};value.activity=Array.isArray(value.activity)?value.activity:[];value.revision=Number(value.revision||0);value.tasks.forEach(task=>task.vendor=task.vendor||vendorFor(task.trade));return value;}
-  function openDb(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error('IndexedDB unavailable'));return;}const request=indexedDB.open(DB_NAME,1);request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'projectId'});};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error||new Error('Schedule database unavailable'));});return dbPromise;}
+  function openDb(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error('IndexedDB unavailable'));return;}const request=indexedDB.open(DB_NAME,DB_VERSION);request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'projectId'});};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error||new Error('Schedule database unavailable'));request.onblocked=()=>reject(new Error('Schedule database upgrade blocked'));});return dbPromise;}
   async function dbRead(id){const db=await openDb();return new Promise((resolve,reject)=>{const request=db.transaction(DB_STORE,'readonly').objectStore(DB_STORE).get(id);request.onsuccess=()=>resolve(request.result||null);request.onerror=()=>reject(request.error);});}
   async function dbWrite(value){const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(value);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}
   function localRead(key){try{return JSON.parse(localStorage.getItem(key)||'null');}catch(_){return null;}}
   function localWrite(value){localStorage.setItem(STORE_PREFIX+value.projectId,JSON.stringify(value));}
   async function loadProject(meta){let value=null,source='new';try{value=normalize(await dbRead(meta.id),meta);if(value)source='database';}catch(_){}if(!value){value=normalize(localRead(STORE_PREFIX+meta.id),meta);if(value)source='local mirror';}if(!value&&meta.id==='1234-A'){value=normalize(localRead(LEGACY_STORE),meta);if(value)source='recovered prior schedule';}if(!value)value=fresh(meta);cache.set(meta.id,value);try{localWrite(value);await dbWrite(value);}catch(_){}value._source=source;return value;}
   async function hydrate(){await Promise.all(projects.map(async meta=>{if(!cache.has(meta.id))await loadProject(meta);}));}
-  async function persist(message){if(!state)return false;state.updatedAt=new Date().toISOString();state.revision=Number(state.revision||0)+1;cache.set(state.projectId,state);let localOk=true,dbOk=true;try{localWrite(state);}catch(_){localOk=false;}try{await dbWrite(state);}catch(_){dbOk=false;}renderLanding();if(localOk&&dbOk){status((message?message+' ':'')+'Saved '+new Date(state.updatedAt).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'})+'.');return true;}status('This change is visible, but its durable save failed. Do not refresh; try again.');return false;}
+  async function persist(message){if(!state)return false;state.updatedAt=new Date().toISOString();state.revision=Number(state.revision||0)+1;cache.set(state.projectId,state);let localOk=true,dbOk=true;try{localWrite(state);}catch(_){localOk=false;}try{await dbWrite(state);}catch(_){dbOk=false;}renderLanding();if(localOk||dbOk){status((message?message+' ':'')+'Saved '+new Date(state.updatedAt).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'})+'.');return true;}status('This change is visible, but this device could not save it. Do not refresh; try again.');return false;}
   function anchor(meta){const date=new Date(),day=(date.getDay()+6)%7;date.setHours(12,0,0,0);date.setDate(date.getDate()-day+meta.startWeek*7);return date;}
   function workDate(index,meta=project(activeId)){const date=anchor(meta),weeks=Math.floor(index/5),weekday=index%5;date.setDate(date.getDate()+weeks*7+weekday);return date;}
   function labelDate(index,weekday=false,meta=project(activeId)){return workDate(index,meta).toLocaleDateString(undefined,weekday?{weekday:'short',month:'short',day:'numeric'}:{month:'short',day:'numeric'});}

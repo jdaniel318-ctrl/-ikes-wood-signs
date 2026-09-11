@@ -1,10 +1,12 @@
-# Dark Sky 8.8.11.6 — Roster Wake
+# Dark Sky 8.8.11.7 — Mirror Harbor
 
-Roster Wake repairs the blank Safari start introduced by 8.8.11.5. The schedule-door watcher now changes its label only when the displayed label is actually wrong, so its own DOM update cannot trigger an endless rewrite loop before first paint.
+Mirror Harbor repairs Safari schedule persistence without changing the three-project roster or calendar design. A project now counts as durably saved when either of its independent on-device stores succeeds, so one unavailable Safari storage service cannot falsely report that a successful local mirror write failed.
+
+The schedule database advances through a safe schema upgrade that recreates the project-record store when an older browser database lacks it. The iPad drag path also has one pointer-down listener instead of two, removing duplicated pickup work and making touch movement feel more immediate.
 
 Project Roster opens Bootstrap Build on an organized project list instead of dropping directly into one house. The test roster contains three isolated schedules: Lot 1234 · Unit A, Lot 1234 · Unit B, and Lot 1235 · Unit A. Each row shows its start, projected completion, current task, issue count, schedule status, and last saved time, then opens only that project's calendar.
 
-The schedule controller now keeps a separate IndexedDB record plus a local mirror for every lot/unit. The prior Lot 1234 · Unit A record is migrated when available; moves, vendor assignments, reset actions, and change history cannot bleed into the other two projects. A successful save is visibly timestamped, and a storage failure is reported instead of silently presenting a fresh seed as saved work.
+The schedule controller keeps a separate database record plus a local mirror for every lot/unit. The prior Lot 1234 · Unit A record is migrated when available; moves, vendor assignments, reset actions, and change history cannot bleed into the other two projects. A successful save is visibly timestamped, and a failure is shown only if neither on-device store can preserve the change.
 
 The restrained construction palette remains: blue for general work, green for sitework, amber for inspections, purple for deliveries, and red for milestones. Selection and drop-target cyan remain interaction signals rather than task categories.
 

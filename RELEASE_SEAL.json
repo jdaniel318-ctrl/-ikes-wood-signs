@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.11.6",
-  "release": "Roster Wake",
-  "seal": "roster-wake-88116",
+  "build": "8.8.11.7",
+  "release": "Mirror Harbor",
+  "seal": "mirror-harbor-88117",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Roster Wake",
-  "name": "Roster Wake",
-  "releaseName": "Roster Wake"
+  "release_name": "Mirror Harbor",
+  "name": "Mirror Harbor",
+  "releaseName": "Mirror Harbor"
 }

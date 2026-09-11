@@ -1,8 +1,8 @@
 {
-  "release": "Roster Wake",
-  "name": "Roster Wake",
-  "build": "8.8.11.6",
-  "seal": "roster-wake-88116",
+  "release": "Mirror Harbor",
+  "name": "Mirror Harbor",
+  "build": "8.8.11.7",
+  "seal": "mirror-harbor-88117",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
