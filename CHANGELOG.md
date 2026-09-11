@@ -1,3 +1,12 @@
+## 8.8.11.5 — Project Roster
+
+- Opens Bootstrap Build on a project roster instead of directly inside one unit's calendar.
+- Adds three isolated test projects: Lot 1234 · Unit A, Lot 1234 · Unit B, and Lot 1235 · Unit A.
+- Adds organized project columns for start, projected completion, current task, open issues, schedule status, and last update.
+- Stores every project's tasks, assignments, and change history in its own IndexedDB record with a separate local mirror.
+- Migrates the prior Lot 1234 · Unit A schedule when it is available and visibly confirms successful saves.
+- Removes the remaining competing schedule controller from runtime, preventing reseeds and cross-project input handling.
+
 ## 8.8.11.4 — Natural Schedule
 
 - Adds an iPad drag copy that follows the finger while the original task remains anchored and visibly lifted.

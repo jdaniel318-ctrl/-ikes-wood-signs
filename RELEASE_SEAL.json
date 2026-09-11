@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.11.4",
-  "release": "Natural Schedule",
-  "seal": "natural-schedule-88114",
+  "build": "8.8.11.5",
+  "release": "Project Roster",
+  "seal": "project-roster-88115",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Natural Schedule",
-  "name": "Natural Schedule",
-  "releaseName": "Natural Schedule"
+  "release_name": "Project Roster",
+  "name": "Project Roster",
+  "releaseName": "Project Roster"
 }

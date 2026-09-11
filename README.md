@@ -1,12 +1,14 @@
-# Dark Sky 8.8.11.4 — Natural Schedule
+# Dark Sky 8.8.11.5 — Project Roster
 
-Natural Schedule keeps the twelve-week Bootstrap Build calendar as the only active schedule controller and improves its direct-touch behavior. A lightweight copy of the task now follows the Captain's finger, destination geometry is measured once at pickup, and only the newly entered day is highlighted while moving. On release, the task snaps into place before the vendor activity and browser-local persistence finish, removing the delayed feel without sacrificing the record.
+Project Roster opens Bootstrap Build on an organized project list instead of dropping directly into one house. The test roster contains three isolated schedules: Lot 1234 · Unit A, Lot 1234 · Unit B, and Lot 1235 · Unit A. Each row shows its start, projected completion, current task, issue count, schedule status, and last saved time, then opens only that project's calendar.
+
+The schedule controller now keeps a separate IndexedDB record plus a local mirror for every lot/unit. The prior Lot 1234 · Unit A record is migrated when available; moves, vendor assignments, reset actions, and change history cannot bleed into the other two projects. A successful save is visibly timestamped, and a storage failure is reported instead of silently presenting a fresh seed as saved work.
 
 The restrained construction palette remains: blue for general work, green for sitework, amber for inspections, purple for deliveries, and red for milestones. Selection and drop-target cyan remain interaction signals rather than task categories.
 
 The release continues to require a new Admiral sign-in after every full page load. Before any Admiral station initializes, it removes only the shared Admiral command token from browser tab storage. Commissioning Orders, Course Orders, Vessel Logo Helm, Admiral Fleet, and the Bootstrap Build Schedule therefore return locked after refresh.
 
-The Engine PIN and Captain authority remain separate. This repair changes no Fleet Core record, vessel identity, entitlement, owner assignment, or existing Bootstrap Build schedule data.
+The Engine PIN and Captain authority remain separate. This repair changes no Fleet Core record, vessel identity, entitlement, owner assignment, or commissioning state. Vendor notices remain a local test simulation; live multi-device vendor access will require the governed server-backed schedule phase.
 
 # Dark Sky 8.8.11.1 — Bootstrap Build Schedule
 

@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.11.4';
-const RELEASE_SEAL='natural-schedule-88114';
+const RELEASE_BUILD='8.8.11.5';
+const RELEASE_SEAL='project-roster-88115';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

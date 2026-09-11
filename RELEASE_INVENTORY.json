@@ -1,8 +1,8 @@
 {
-  "release": "Natural Schedule",
-  "name": "Natural Schedule",
-  "build": "8.8.11.4",
-  "seal": "natural-schedule-88114",
+  "release": "Project Roster",
+  "name": "Project Roster",
+  "build": "8.8.11.5",
+  "seal": "project-roster-88115",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

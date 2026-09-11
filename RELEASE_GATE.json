@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.11.4",
-  "release": "Natural Schedule",
+  "build": "8.8.11.5",
+  "release": "Project Roster",
   "generatedAt": "2026-09-10T23:53:28Z",
   "checks": {
     "build_version": true,
@@ -248,13 +248,17 @@
     ,"bootstrap_touch_drag_follows_finger": true
     ,"bootstrap_touch_geometry_cached_per_drag": true
     ,"bootstrap_move_snaps_before_vendor_persistence": true
+    ,"bootstrap_project_roster_first": true
+    ,"bootstrap_three_isolated_test_projects": true
+    ,"bootstrap_project_records_indexeddb": true
+    ,"bootstrap_save_confirmation_visible": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.11.4 makes schedule movement direct on iPad: a drag copy follows the finger, destination geometry is cached once, only changed targets repaint, and the task snaps into place before vendor-history persistence completes. Duration, assignment, history, the distinct task palette, and fresh Admiral sign-in are preserved. Fleet Core and existing Bootstrap Build schedule data are unchanged.",
-  "candidate": "8.8.11.4",
+  "note": "8.8.11.5 opens on a three-project roster for Lot 1234 Units A and B and Lot 1235 Unit A. Each project has an isolated IndexedDB record and local mirror, prior Lot 1234-A data is migrated when available, and every successful change receives a visible save timestamp. The obsolete schedule controllers remain disabled. Fleet Core, commissioning, authority, and fresh Admiral sign-in are unchanged.",
+  "candidate": "8.8.11.5",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -420,8 +424,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.11.4",
-    "seal": "natural-schedule-88114",
+    "build": "8.8.11.5",
+    "seal": "project-roster-88115",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
