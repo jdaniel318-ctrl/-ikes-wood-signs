@@ -1,8 +1,12 @@
-# Dark Sky 8.8.11.2 — Fresh Admiral Gate
+# Dark Sky 8.8.11.3 — Steady Schedule
 
-Fresh Admiral Gate requires a new Admiral sign-in after every full page load. Before any Admiral station initializes, the release removes only the shared Admiral command token from browser tab storage. Commissioning Orders, Course Orders, Vessel Logo Helm, Admiral Fleet, and the Bootstrap Build Schedule therefore return locked after refresh.
+Steady Schedule makes the twelve-week Bootstrap Build calendar the only active schedule controller. The retired seven-day prototype can no longer repaint the panel or intercept an iPad pointer release, so a highlighted destination workday commits the task move and its vendor-visible activity record.
 
-The Engine PIN and Captain authority remain separate. This repair changes no Fleet Core record, vessel identity, entitlement, owner assignment, or Bootstrap Build schedule data.
+The schedule now uses a restrained construction palette: blue for general work, green for sitework, amber for inspections, purple for deliveries, and red for milestones. Selection and drop-target cyan remain interaction signals rather than task categories.
+
+The release continues to require a new Admiral sign-in after every full page load. Before any Admiral station initializes, it removes only the shared Admiral command token from browser tab storage. Commissioning Orders, Course Orders, Vessel Logo Helm, Admiral Fleet, and the Bootstrap Build Schedule therefore return locked after refresh.
+
+The Engine PIN and Captain authority remain separate. This repair changes no Fleet Core record, vessel identity, entitlement, owner assignment, or existing Bootstrap Build schedule data.
 
 # Dark Sky 8.8.11.1 — Bootstrap Build Schedule
 

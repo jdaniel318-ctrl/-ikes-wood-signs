@@ -1,3 +1,11 @@
+## 8.8.11.3 — Steady Schedule
+
+- Retires the obsolete seven-day schedule controller so only the twelve-week Bootstrap Build schedule can render or handle input.
+- Commits an iPad drag to the highlighted workday instead of allowing the old controller to intercept pointer release.
+- Preserves task duration, vendor assignment, schedule history, and existing browser-local test data.
+- Replaces the bright lime/mustard task palette with distinct blue work, green sitework, amber inspection, purple delivery, and red milestone colors.
+- Preserves the fresh Admiral sign-in requirement introduced in 8.8.11.2.
+
 ## 8.8.11.2 — Fresh Admiral Gate
 
 - Clears the browser-held Admiral command session before any Admiral controller initializes on a full page load.

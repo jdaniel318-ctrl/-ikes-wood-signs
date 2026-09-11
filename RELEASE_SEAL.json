@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.11.2",
-  "release": "Fresh Admiral Gate",
-  "seal": "admiral-fresh-gate-88112",
+  "build": "8.8.11.3",
+  "release": "Steady Schedule",
+  "seal": "steady-schedule-88113",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fresh Admiral Gate",
-  "name": "Fresh Admiral Gate",
-  "releaseName": "Fresh Admiral Gate"
+  "release_name": "Steady Schedule",
+  "name": "Steady Schedule",
+  "releaseName": "Steady Schedule"
 }

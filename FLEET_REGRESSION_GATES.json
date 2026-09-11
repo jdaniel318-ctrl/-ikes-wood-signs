@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.11.2",
+  "build": "8.8.11.3",
   "release": "Bootstrap Build Schedule",
   "excluded_sources": [
     "The situation"

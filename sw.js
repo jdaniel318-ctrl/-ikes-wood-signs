@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.11.2';
-const RELEASE_SEAL='admiral-fresh-gate-88112';
+const RELEASE_BUILD='8.8.11.3';
+const RELEASE_SEAL='steady-schedule-88113';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

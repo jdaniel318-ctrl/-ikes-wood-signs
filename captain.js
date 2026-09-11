@@ -1,4 +1,4 @@
-/* 8.8.11.2 Fresh Admiral Gate — a full document load must never inherit
+/* 8.8.11.3 Steady Schedule — a full document load must never inherit
    upper-command identity from the prior page. The session remains shared
    between Admiral stations only for this document's lifetime. */
 ;(() => {
@@ -11,7 +11,7 @@
   clearAdmiralIdentity();
   window.addEventListener('pagehide',clearAdmiralIdentity);
   window.addEventListener('pageshow',event=>{if(event.persisted){clearAdmiralIdentity();location.reload();}});
-  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.2',requiredPerDocument:true,engineAuthoritySeparate:true});
+  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.3',requiredPerDocument:true,engineAuthoritySeparate:true});
 })();
 
 (() => {
@@ -21,7 +21,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.11.2';
+  const UPPER_COMMAND_BUILD='8.8.11.3';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -1374,6 +1374,10 @@
 
 /* 8.8.11.1 Bootstrap Build — local-first construction schedule proving ground. */
 ;(()=>{
+  // Retired in 8.8.11.3. The twelve-week controller below is the sole schedule
+  // helm; running both controllers against #bootstrapSchedule caused iPad
+  // pointer release and rendering contention.
+  return;
   const STORE='bootstrapBuildSchedulePrototypeV1';
   const hierarchy={region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'A'};
   const seed=()=>[
