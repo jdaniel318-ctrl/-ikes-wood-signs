@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.11.5",
-  "release": "Project Roster",
-  "seal": "project-roster-88115",
+  "build": "8.8.11.6",
+  "release": "Roster Wake",
+  "seal": "roster-wake-88116",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Project Roster",
-  "name": "Project Roster",
-  "releaseName": "Project Roster"
+  "release_name": "Roster Wake",
+  "name": "Roster Wake",
+  "releaseName": "Roster Wake"
 }

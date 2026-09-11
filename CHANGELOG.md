@@ -1,3 +1,9 @@
+## 8.8.11.6 — Roster Wake
+
+- Stops the Bootstrap Build doorway watcher from rewriting an already-correct button label.
+- Removes the resulting self-triggering mutation loop that could leave Safari on a blank page before first paint.
+- Preserves the Project Roster, three isolated project schedules, saved records, vendor assignments, and fresh Admiral gate.
+
 ## 8.8.11.5 — Project Roster
 
 - Opens Bootstrap Build on a project roster instead of directly inside one unit's calendar.

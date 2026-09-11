@@ -1,4 +1,4 @@
-/* 8.8.11.5 Project Roster — a full document load must never inherit
+/* 8.8.11.6 Project Roster — a full document load must never inherit
    upper-command identity from the prior page. The session remains shared
    between Admiral stations only for this document's lifetime. */
 ;(() => {
@@ -11,7 +11,7 @@
   clearAdmiralIdentity();
   window.addEventListener('pagehide',clearAdmiralIdentity);
   window.addEventListener('pageshow',event=>{if(event.persisted){clearAdmiralIdentity();location.reload();}});
-  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.5',requiredPerDocument:true,engineAuthoritySeparate:true});
+  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.6',requiredPerDocument:true,engineAuthoritySeparate:true});
 })();
 
 (() => {
@@ -21,7 +21,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.11.5';
+  const UPPER_COMMAND_BUILD='8.8.11.6';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -1497,7 +1497,7 @@
   document.addEventListener('click',event=>{if(!event.target.closest?.('#bootstrapVendorAssignButton'))return;event.preventDefault();event.stopImmediatePropagation();const task=state.tasks.find(item=>item.id===selectedId),vendor=el('bootstrapVendorAssign')?.value;if(!task||!vendor)return;const prior=task.vendor;task.vendor=vendor;state.activity.unshift({id:'assign-'+Date.now(),at:new Date().toISOString(),task:task.title,vendor,from:prior,to:vendor,assignment:true});state.activity=state.activity.slice(0,100);selectedId='';save();render();status(task.title+' assigned to '+vendor+'. Its vendor schedule now includes this task.');},{capture:true});
 })();
 
-/* 8.8.11.5 Project Roster — three isolated schedules with durable local records. */
+/* 8.8.11.6 Project Roster — three isolated schedules with durable local records. */
 ;(()=>{
   const WEEKS=12,DAYS=WEEKS*5,DB_NAME='bootstrapBuildScheduleDB',DB_STORE='projects';
   const LEGACY_STORE='bootstrapBuildGroundRunV2',STORE_PREFIX='bootstrapBuildProjectScheduleV1:';
@@ -1544,7 +1544,7 @@
   function moveDragGhost(drag,event){if(!drag?.ghost)return;drag.ghost.node.style.transform='translate3d('+(event.clientX-drag.ghost.offsetX-parseFloat(drag.ghost.node.style.left))+'px,'+(event.clientY-drag.ghost.offsetY-parseFloat(drag.ghost.node.style.top))+'px,0)';}
   function clearTouchDrag(){touchDrag?.ghost?.node?.remove();touchDrag=null;}
   async function open(){const panel=el('bootstrapSchedule');if(!panel)return;panel.classList.remove('hidden');panel.setAttribute('aria-hidden','false');panel.scrollTop=0;if(el('bootstrapProjectRows'))el('bootstrapProjectRows').innerHTML='<tr><td colspan="10" class="bootstrap-roster-loading">Opening project records…</td></tr>';showLanding();await hydrate();showLanding();requestAnimationFrame(()=>el('bootstrapScheduleClose')?.focus({preventScroll:true}));}
-  function syncDoor(){const kit=el('admiralCommissioningBrandKit');if(kit&&!el('bootstrapScheduleOpen'))kit.insertAdjacentHTML('beforeend','<button id="bootstrapScheduleOpen" class="admiral-pro-button" type="button">OPEN BOOTSTRAP BUILD SCHEDULE</button>');const doorway=el('bootstrapScheduleOpen');if(doorway)doorway.textContent='OPEN BOOTSTRAP BUILD SCHEDULE';}
+  function syncDoor(){const kit=el('admiralCommissioningBrandKit');if(kit&&!el('bootstrapScheduleOpen'))kit.insertAdjacentHTML('beforeend','<button id="bootstrapScheduleOpen" class="admiral-pro-button" type="button">OPEN BOOTSTRAP BUILD SCHEDULE</button>');const doorway=el('bootstrapScheduleOpen');if(doorway&&doorway.textContent!=='OPEN BOOTSTRAP BUILD SCHEDULE')doorway.textContent='OPEN BOOTSTRAP BUILD SCHEDULE';}
   install();syncDoor();new MutationObserver(syncDoor).observe(document.body,{subtree:true,childList:true});window.DarkSkyOpenBootstrapSchedule=open;
   document.addEventListener('click',async event=>{const target=event.target;if(target.closest('#bootstrapScheduleOpen')){event.preventDefault();event.stopImmediatePropagation();open();return;}if(!target.closest('#bootstrapSchedule'))return;if(target.closest('#bootstrapFleetOpenFromSchedule'))return;if(target.closest('#bootstrapScheduleClose')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapSchedule').classList.add('hidden');el('bootstrapSchedule').setAttribute('aria-hidden','true');return;}if(target.closest('#bootstrapProjectsHome')){event.preventDefault();event.stopImmediatePropagation();showLanding();el('bootstrapSchedule').scrollTop=0;return;}const rowButton=target.closest('[data-open-project]');if(rowButton){event.preventDefault();event.stopImmediatePropagation();await openProject(rowButton.dataset.openProject);return;}if(!state)return;if(target.closest('#bootstrapScheduleAdd')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.remove('hidden');el('bootstrapScheduleTaskTitle').focus();return;}if(target.closest('#bootstrapScheduleCancel')){event.preventDefault();event.stopImmediatePropagation();el('bootstrapScheduleForm').classList.add('hidden');return;}if(target.closest('#bootstrapScheduleReset')){event.preventDefault();event.stopImmediatePropagation();const meta=project(activeId);if(window.confirm('Reset only Lot '+meta.lot+' · Unit '+meta.unit+' to its original plan?')){state=fresh(meta);cache.set(activeId,state);selectedId='';renderSchedule();await persist('This project was reset.');}return;}const moveButton=target.closest('[data-schedule-move]');if(moveButton&&selectedId){event.preventDefault();event.stopImmediatePropagation();move(selectedId,Number(moveButton.dataset.scheduleMove));return;}const card=target.closest('[data-task-id]');if(card){event.preventDefault();event.stopImmediatePropagation();if(Date.now()<suppressClickUntil)return;selectedId=selectedId===card.dataset.taskId?'':card.dataset.taskId;renderSchedule();status(selectedId?'Task selected. Tap a workday heading or drag it to reschedule.':'Task selection cleared.');}},{capture:true});
   document.addEventListener('submit',async event=>{if(event.target.id!=='bootstrapScheduleForm'||!state)return;event.preventDefault();event.stopImmediatePropagation();const title=el('bootstrapScheduleTaskTitle')?.value?.trim(),trade=el('bootstrapScheduleTrade')?.value?.trim(),start=Number(el('bootstrapScheduleDay')?.value||0),duration=Math.max(1,Math.min(15,Number(el('bootstrapScheduleDuration')?.value||1))),type=el('bootstrapScheduleType')?.value||'work';if(!title||!trade)return;state.tasks.push({id:'task-'+Date.now(),title,trade,start:Math.min(start,DAYS-duration),duration,type,vendor:vendorFor(trade)});event.target.reset();el('bootstrapScheduleDuration').value='1';event.target.classList.add('hidden');renderSchedule();await persist(title+' added to Lot '+project(activeId).lot+' · Unit '+project(activeId).unit+'.');},{capture:true});

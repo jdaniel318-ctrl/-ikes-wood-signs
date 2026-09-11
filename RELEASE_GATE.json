@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.11.5",
-  "release": "Project Roster",
+  "build": "8.8.11.6",
+  "release": "Roster Wake",
   "generatedAt": "2026-09-10T23:53:28Z",
   "checks": {
     "build_version": true,
@@ -257,8 +257,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.11.5 opens on a three-project roster for Lot 1234 Units A and B and Lot 1235 Unit A. Each project has an isolated IndexedDB record and local mirror, prior Lot 1234-A data is migrated when available, and every successful change receives a visible save timestamp. The obsolete schedule controllers remain disabled. Fleet Core, commissioning, authority, and fresh Admiral sign-in are unchanged.",
-  "candidate": "8.8.11.5",
+  "note": "8.8.11.6 stops the Project Roster doorway observer from rewriting an already-correct label. That removes the self-triggering mutation loop that could hold Safari on a blank page before first paint. The three isolated schedules, durable local records, fresh Admiral sign-in, Fleet Core, commissioning, and authority boundaries are otherwise unchanged.",
+  "candidate": "8.8.11.6",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -424,8 +424,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.11.5",
-    "seal": "project-roster-88115",
+    "build": "8.8.11.6",
+    "seal": "roster-wake-88116",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

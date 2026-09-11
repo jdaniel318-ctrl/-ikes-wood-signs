@@ -1,4 +1,6 @@
-# Dark Sky 8.8.11.5 — Project Roster
+# Dark Sky 8.8.11.6 — Roster Wake
+
+Roster Wake repairs the blank Safari start introduced by 8.8.11.5. The schedule-door watcher now changes its label only when the displayed label is actually wrong, so its own DOM update cannot trigger an endless rewrite loop before first paint.
 
 Project Roster opens Bootstrap Build on an organized project list instead of dropping directly into one house. The test roster contains three isolated schedules: Lot 1234 · Unit A, Lot 1234 · Unit B, and Lot 1235 · Unit A. Each row shows its start, projected completion, current task, issue count, schedule status, and last saved time, then opens only that project's calendar.
 

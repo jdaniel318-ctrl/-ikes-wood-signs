@@ -1,8 +1,8 @@
 {
-  "release": "Project Roster",
-  "name": "Project Roster",
-  "build": "8.8.11.5",
-  "seal": "project-roster-88115",
+  "release": "Roster Wake",
+  "name": "Roster Wake",
+  "build": "8.8.11.6",
+  "seal": "roster-wake-88116",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
