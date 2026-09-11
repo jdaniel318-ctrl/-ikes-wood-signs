@@ -1,9 +1,9 @@
-## 8.8.11.7 — Mirror Harbor
+## 8.8.11.8 — Registry Passage
 
-- Accepts either independent browser store as a successful durable save, preventing Safari from reporting failure when its local mirror has already preserved the project.
-- Upgrades the schedule database safely so an older database missing the project-record store can repair itself.
-- Removes a duplicate iPad pointer-down listener that could create delayed or doubled drag feedback.
-- Preserves the Project Roster, three isolated project schedules, vendor history, and fresh Admiral gate.
+- Restores the Fleet Registry button inside each Bootstrap Build project.
+- Isolates the read-only registry overlay from both retired schedule controllers, preventing the old controller conflict from returning.
+- Captures the registry tap before project-schedule input handling and supports direct refresh and close.
+- Preserves All Projects navigation, the three isolated project schedules, saved revisions, vendor assignments, and the fresh Admiral gate.
 
 ## 8.8.11.5 — Project Roster
 

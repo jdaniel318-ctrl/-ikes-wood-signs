@@ -1,4 +1,4 @@
-/* 8.8.11.7 Project Roster — a full document load must never inherit
+/* 8.8.11.8 Project Roster — a full document load must never inherit
    upper-command identity from the prior page. The session remains shared
    between Admiral stations only for this document's lifetime. */
 ;(() => {
@@ -11,7 +11,7 @@
   clearAdmiralIdentity();
   window.addEventListener('pagehide',clearAdmiralIdentity);
   window.addEventListener('pageshow',event=>{if(event.persisted){clearAdmiralIdentity();location.reload();}});
-  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.7',requiredPerDocument:true,engineAuthoritySeparate:true});
+  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.11.8',requiredPerDocument:true,engineAuthoritySeparate:true});
 })();
 
 (() => {
@@ -21,7 +21,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.11.7';
+  const UPPER_COMMAND_BUILD='8.8.11.8';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -1422,6 +1422,59 @@
   document.addEventListener('keydown',event=>{const card=event.target.closest?.('[data-task-id]');if(!card||!['ArrowLeft','ArrowRight'].includes(event.key))return;event.preventDefault();const task=state.tasks.find(item=>item.id===card.dataset.taskId);if(task)move(task.id,task.day+(event.key==='ArrowRight'?1:-1));});
 })();
 
+/* 8.8.11.8 Registry Passage — fleet registry isolated from retired schedules. */
+;(()=>{
+  const el=id=>document.getElementById(id);
+  const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  function install(){
+    if(el('bootstrapFleet'))return;
+    document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Admiral Fleet Registry"><div class="bootstrap-fleet-shell"><header><img src="black_flag_primary_lockup.png" alt="Black Flag Business Command Platform"><div><small>BLACK FLAG · ADMIRAL FLEET REGISTRY</small><h2>Independent Fleet</h2><p>One registry. Independent vessels. Governed capabilities can travel; authority and data do not.</p></div><div><button id="bootstrapFleetRefresh" type="button">REFRESH REGISTRY</button><button id="bootstrapFleetClose" type="button">CLOSE</button></div></header><p id="bootstrapFleetStatus" class="bootstrap-fleet-status" role="status">Reading the Fleet Registry…</p><div id="bootstrapFleetRows" class="bootstrap-fleet-rows"></div><aside class="bootstrap-fleet-passage"><b>Shared Capability Passage</b><span>Any fleet member may adopt an approved capability at its own level. Adoption never transfers ownership, authority, branding, or project data.</span></aside><footer><b>Read-only registry boundary</b><span>This view cannot rename, commission, publish, entitle, or otherwise change a vessel.</span></footer></div></section>`);
+  }
+  function render(records=[]){
+    const rows=el('bootstrapFleetRows'),statusNode=el('bootstrapFleetStatus');
+    if(!rows)return;
+    if(!records.length){
+      rows.innerHTML='<article class="bootstrap-fleet-empty"><img src="black_flag_platform_icon.png" alt="Black Flag fleet registry"><div><b>Fleet Registry is awaiting an authenticated read</b><span>Authenticate the Admiral identity, then tap REFRESH REGISTRY. No vessel or fleet state will change.</span></div></article>';
+      if(statusNode)statusNode.textContent='No Fleet Core vessels are visible in this authenticated read yet.';
+      return;
+    }
+    rows.innerHTML=records.map(vessel=>{const mission=String(vessel.mission_class||'independent_business').replaceAll('_',' ').toUpperCase(),ownership=String(vessel.ownership_model||'fleet_unassigned').replaceAll('_',' ').toUpperCase(),operating=String(vessel.operating_model||'fleet_operated').replaceAll('_',' ').toUpperCase(),isAdmiral=vessel.mission_class==='admiral_program';return '<article class="bootstrap-fleet-card'+(isAdmiral?' is-admiral-program':'')+'"><img src="'+esc(vessel.logo_url||'black_flag_primary_lockup.png')+'" alt="'+esc(vessel.display_name)+' vessel mark"><div><small>'+esc(mission)+'</small><b>'+esc(vessel.display_name)+'</b><span>'+esc(vessel.project_id)+'</span><span class="bootstrap-fleet-command">'+esc(operating)+' · '+esc(ownership)+'</span></div><em>'+esc(String(vessel.lifecycle_state||'fleet').replaceAll('_',' ').toUpperCase())+'</em></article>';}).join('');
+    if(statusNode)statusNode.textContent=records.length+' independent Fleet Core member'+(records.length===1?'':'s')+' visible · read only.';
+  }
+  async function load(){
+    const statusNode=el('bootstrapFleetStatus');
+    if(statusNode)statusNode.textContent='Reading the authenticated Admiral Fleet…';
+    try{await window.DarkSkySyncVesselBrandIdentity?.();render(window.DarkSkyReadAdmiralFleet?.()||[]);}
+    catch(error){render([]);if(statusNode)statusNode.textContent=error?.message||'The Admiral Fleet could not be read. No data changed.';}
+  }
+  function open(){
+    install();
+    const fleet=el('bootstrapFleet');
+    fleet.classList.remove('hidden');
+    fleet.setAttribute('aria-hidden','false');
+    document.body.classList.add('bootstrap-fleet-open');
+    fleet.scrollTop=0;
+    el('bootstrapFleetStatus').textContent='Admiral Fleet opened. Reading Fleet Core…';
+    requestAnimationFrame(()=>el('bootstrapFleetClose')?.focus({preventScroll:true}));
+    load();
+  }
+  function close(){
+    const fleet=el('bootstrapFleet');
+    fleet?.classList.add('hidden');
+    fleet?.setAttribute('aria-hidden','true');
+    document.body.classList.remove('bootstrap-fleet-open');
+  }
+  install();
+  window.DarkSkyOpenAdmiralFleet=open;
+  window.addEventListener('darksky:admiral-fleet-updated',event=>render(event.detail?.records||[]));
+  document.addEventListener('click',event=>{
+    const target=event.target;
+    if(target.closest?.('#bootstrapFleetOpen,#bootstrapFleetOpenPromote,#bootstrapFleetOpenFromSchedule')){event.preventDefault();event.stopImmediatePropagation();open();return;}
+    if(target.closest?.('#bootstrapFleetClose')){event.preventDefault();event.stopImmediatePropagation();close();return;}
+    if(target.closest?.('#bootstrapFleetRefresh')){event.preventDefault();event.stopImmediatePropagation();load();}
+  },{capture:true});
+})();
+
 /* 8.8.11.1 Bootstrap Build Schedule — twelve-week, workday construction schedule proving ground. */
 ;(()=>{
   const STORE='bootstrapBuildGroundRunV2',WEEKS=12,DAYS=WEEKS*5;
@@ -1497,9 +1550,9 @@
   document.addEventListener('click',event=>{if(!event.target.closest?.('#bootstrapVendorAssignButton'))return;event.preventDefault();event.stopImmediatePropagation();const task=state.tasks.find(item=>item.id===selectedId),vendor=el('bootstrapVendorAssign')?.value;if(!task||!vendor)return;const prior=task.vendor;task.vendor=vendor;state.activity.unshift({id:'assign-'+Date.now(),at:new Date().toISOString(),task:task.title,vendor,from:prior,to:vendor,assignment:true});state.activity=state.activity.slice(0,100);selectedId='';save();render();status(task.title+' assigned to '+vendor+'. Its vendor schedule now includes this task.');},{capture:true});
 })();
 
-/* 8.8.11.7 Mirror Harbor — three isolated schedules with resilient Safari persistence. */
+/* 8.8.11.8 Project Roster — three isolated schedules with durable local records. */
 ;(()=>{
-  const WEEKS=12,DAYS=WEEKS*5,DB_NAME='bootstrapBuildScheduleDB',DB_VERSION=2,DB_STORE='projects';
+  const WEEKS=12,DAYS=WEEKS*5,DB_NAME='bootstrapBuildScheduleDB',DB_STORE='projects';
   const LEGACY_STORE='bootstrapBuildGroundRunV2',STORE_PREFIX='bootstrapBuildProjectScheduleV1:';
   const projects=[
     {id:'1234-A',region:'ABC',division:'CBA',community:'AB',lot:'1234',unit:'A',startWeek:0},
@@ -1516,14 +1569,14 @@
   ].map(([id,title,trade,start,duration,type])=>({id,title,trade,start,duration,type,vendor:vendorFor(trade)}));}
   function fresh(meta){return {version:4,projectId:meta.id,hierarchy:{region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit},tasks:seedTasks(),activity:[],updatedAt:null,revision:0};}
   function normalize(value,meta){if(!value||!Array.isArray(value.tasks))return null;value.version=4;value.projectId=meta.id;value.hierarchy={region:meta.region,division:meta.division,community:meta.community,lot:meta.lot,unit:meta.unit};value.activity=Array.isArray(value.activity)?value.activity:[];value.revision=Number(value.revision||0);value.tasks.forEach(task=>task.vendor=task.vendor||vendorFor(task.trade));return value;}
-  function openDb(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error('IndexedDB unavailable'));return;}const request=indexedDB.open(DB_NAME,DB_VERSION);request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'projectId'});};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error||new Error('Schedule database unavailable'));request.onblocked=()=>reject(new Error('Schedule database upgrade blocked'));});return dbPromise;}
+  function openDb(){if(dbPromise)return dbPromise;dbPromise=new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error('IndexedDB unavailable'));return;}const request=indexedDB.open(DB_NAME,1);request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(DB_STORE))db.createObjectStore(DB_STORE,{keyPath:'projectId'});};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error||new Error('Schedule database unavailable'));});return dbPromise;}
   async function dbRead(id){const db=await openDb();return new Promise((resolve,reject)=>{const request=db.transaction(DB_STORE,'readonly').objectStore(DB_STORE).get(id);request.onsuccess=()=>resolve(request.result||null);request.onerror=()=>reject(request.error);});}
   async function dbWrite(value){const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(value);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}
   function localRead(key){try{return JSON.parse(localStorage.getItem(key)||'null');}catch(_){return null;}}
   function localWrite(value){localStorage.setItem(STORE_PREFIX+value.projectId,JSON.stringify(value));}
   async function loadProject(meta){let value=null,source='new';try{value=normalize(await dbRead(meta.id),meta);if(value)source='database';}catch(_){}if(!value){value=normalize(localRead(STORE_PREFIX+meta.id),meta);if(value)source='local mirror';}if(!value&&meta.id==='1234-A'){value=normalize(localRead(LEGACY_STORE),meta);if(value)source='recovered prior schedule';}if(!value)value=fresh(meta);cache.set(meta.id,value);try{localWrite(value);await dbWrite(value);}catch(_){}value._source=source;return value;}
   async function hydrate(){await Promise.all(projects.map(async meta=>{if(!cache.has(meta.id))await loadProject(meta);}));}
-  async function persist(message){if(!state)return false;state.updatedAt=new Date().toISOString();state.revision=Number(state.revision||0)+1;cache.set(state.projectId,state);let localOk=true,dbOk=true;try{localWrite(state);}catch(_){localOk=false;}try{await dbWrite(state);}catch(_){dbOk=false;}renderLanding();if(localOk||dbOk){status((message?message+' ':'')+'Saved '+new Date(state.updatedAt).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'})+'.');return true;}status('This change is visible, but this device could not save it. Do not refresh; try again.');return false;}
+  async function persist(message){if(!state)return false;state.updatedAt=new Date().toISOString();state.revision=Number(state.revision||0)+1;cache.set(state.projectId,state);let localOk=true,dbOk=true;try{localWrite(state);}catch(_){localOk=false;}try{await dbWrite(state);}catch(_){dbOk=false;}renderLanding();if(localOk&&dbOk){status((message?message+' ':'')+'Saved '+new Date(state.updatedAt).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'})+'.');return true;}status('This change is visible, but its durable save failed. Do not refresh; try again.');return false;}
   function anchor(meta){const date=new Date(),day=(date.getDay()+6)%7;date.setHours(12,0,0,0);date.setDate(date.getDate()-day+meta.startWeek*7);return date;}
   function workDate(index,meta=project(activeId)){const date=anchor(meta),weeks=Math.floor(index/5),weekday=index%5;date.setDate(date.getDate()+weeks*7+weekday);return date;}
   function labelDate(index,weekday=false,meta=project(activeId)){return workDate(index,meta).toLocaleDateString(undefined,weekday?{weekday:'short',month:'short',day:'numeric'}:{month:'short',day:'numeric'});}

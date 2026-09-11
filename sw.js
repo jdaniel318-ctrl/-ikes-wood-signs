@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.11.7';
-const RELEASE_SEAL='mirror-harbor-88117';
+const RELEASE_BUILD='8.8.11.8';
+const RELEASE_SEAL='registry-passage-88118';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.11.7",
-  "release": "Mirror Harbor",
-  "seal": "mirror-harbor-88117",
+  "build": "8.8.11.8",
+  "release": "Registry Passage",
+  "seal": "registry-passage-88118",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Mirror Harbor",
-  "name": "Mirror Harbor",
-  "releaseName": "Mirror Harbor"
+  "release_name": "Registry Passage",
+  "name": "Registry Passage",
+  "releaseName": "Registry Passage"
 }

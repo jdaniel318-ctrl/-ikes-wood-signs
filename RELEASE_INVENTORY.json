@@ -1,8 +1,8 @@
 {
-  "release": "Mirror Harbor",
-  "name": "Mirror Harbor",
-  "build": "8.8.11.7",
-  "seal": "mirror-harbor-88117",
+  "release": "Registry Passage",
+  "name": "Registry Passage",
+  "build": "8.8.11.8",
+  "seal": "registry-passage-88118",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
