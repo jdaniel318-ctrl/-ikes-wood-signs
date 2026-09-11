@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.11.3",
-  "release": "Steady Schedule",
+  "build": "8.8.11.4",
+  "release": "Natural Schedule",
   "generatedAt": "2026-09-10T23:53:28Z",
   "checks": {
     "build_version": true,
@@ -245,13 +245,16 @@
     ,"bootstrap_schedule_single_controller": true
     ,"bootstrap_ipad_drop_commits_highlighted_day": true
     ,"bootstrap_task_palette_distinct_by_type": true
+    ,"bootstrap_touch_drag_follows_finger": true
+    ,"bootstrap_touch_geometry_cached_per_drag": true
+    ,"bootstrap_move_snaps_before_vendor_persistence": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.11.3 retires the obsolete seven-day controller so the twelve-week schedule alone owns rendering and iPad pointer release. Highlighted workday drops now commit with duration, vendor assignment, and history intact; the task palette is distinct by type. Fresh Admiral sign-in remains required after every full page load. Fleet Core and existing Bootstrap Build schedule data are unchanged.",
-  "candidate": "8.8.11.3",
+  "note": "8.8.11.4 makes schedule movement direct on iPad: a drag copy follows the finger, destination geometry is cached once, only changed targets repaint, and the task snaps into place before vendor-history persistence completes. Duration, assignment, history, the distinct task palette, and fresh Admiral sign-in are preserved. Fleet Core and existing Bootstrap Build schedule data are unchanged.",
+  "candidate": "8.8.11.4",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -417,8 +420,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.11.3",
-    "seal": "steady-schedule-88113",
+    "build": "8.8.11.4",
+    "seal": "natural-schedule-88114",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

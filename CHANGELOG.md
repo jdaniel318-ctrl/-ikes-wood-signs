@@ -1,3 +1,10 @@
+## 8.8.11.4 — Natural Schedule
+
+- Adds an iPad drag copy that follows the finger while the original task remains anchored and visibly lifted.
+- Measures the twelve-week calendar once at pickup and updates only the prior and current destination cells during movement.
+- Snaps the task into its new workday before completing browser-local persistence and vendor-history rendering.
+- Adds a short settle response after the move while preserving task duration, vendor assignment, history, and the 8.8.11.3 task palette.
+
 ## 8.8.11.3 — Steady Schedule
 
 - Retires the obsolete seven-day schedule controller so only the twelve-week Bootstrap Build schedule can render or handle input.

@@ -1,8 +1,8 @@
-# Dark Sky 8.8.11.3 — Steady Schedule
+# Dark Sky 8.8.11.4 — Natural Schedule
 
-Steady Schedule makes the twelve-week Bootstrap Build calendar the only active schedule controller. The retired seven-day prototype can no longer repaint the panel or intercept an iPad pointer release, so a highlighted destination workday commits the task move and its vendor-visible activity record.
+Natural Schedule keeps the twelve-week Bootstrap Build calendar as the only active schedule controller and improves its direct-touch behavior. A lightweight copy of the task now follows the Captain's finger, destination geometry is measured once at pickup, and only the newly entered day is highlighted while moving. On release, the task snaps into place before the vendor activity and browser-local persistence finish, removing the delayed feel without sacrificing the record.
 
-The schedule now uses a restrained construction palette: blue for general work, green for sitework, amber for inspections, purple for deliveries, and red for milestones. Selection and drop-target cyan remain interaction signals rather than task categories.
+The restrained construction palette remains: blue for general work, green for sitework, amber for inspections, purple for deliveries, and red for milestones. Selection and drop-target cyan remain interaction signals rather than task categories.
 
 The release continues to require a new Admiral sign-in after every full page load. Before any Admiral station initializes, it removes only the shared Admiral command token from browser tab storage. Commissioning Orders, Course Orders, Vessel Logo Helm, Admiral Fleet, and the Bootstrap Build Schedule therefore return locked after refresh.
 

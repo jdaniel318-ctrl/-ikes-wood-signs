@@ -1,8 +1,8 @@
 {
-  "release": "Steady Schedule",
-  "name": "Steady Schedule",
-  "build": "8.8.11.3",
-  "seal": "steady-schedule-88113",
+  "release": "Natural Schedule",
+  "name": "Natural Schedule",
+  "build": "8.8.11.4",
+  "seal": "natural-schedule-88114",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
