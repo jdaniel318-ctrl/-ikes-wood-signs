@@ -1,14 +1,16 @@
-# Dark Sky 8.8.11.8 — Registry Passage
+# Dark Sky 8.8.11.9 — Quick Passage
 
-Registry Passage restores the Fleet Registry doorway inside every Bootstrap Build project. The registry now has its own active controller and read-only overlay instead of depending on the retired schedule controller that was disabled to stop iPad screen flashing.
+Quick Passage makes the daily routes shorter and the construction schedule more tactile without weakening the security boundary. The Engine Room now has a direct **Open My Fleet** command: Admiral PIN verification leads immediately to the Fleet Registry, where the active Admiral account still completes the separate authenticated read. The full Admiral Command Deck remains available for governance work.
 
-The Fleet Registry tap is captured before schedule input handling, opens immediately above the current project, supports refresh and close, and returns to the same schedule without changing its selected project or saved revision. The All Projects doorway is unchanged.
+Schedule cards now have dedicated left and right edge grips. Dragging the card body moves the task; dragging an edge changes its start or finish and therefore its duration. Shortened plans and same-vendor overlap remain permitted, but a calculated-risk warning is attached to the task and recorded in the local communication history.
 
 Project Roster opens Bootstrap Build on an organized project list instead of dropping directly into one house. The test roster contains three isolated schedules: Lot 1234 · Unit A, Lot 1234 · Unit B, and Lot 1235 · Unit A. Each row shows its start, projected completion, current task, issue count, schedule status, and last saved time, then opens only that project's calendar.
 
 The schedule controller now keeps a separate IndexedDB record plus a local mirror for every lot/unit. The prior Lot 1234 · Unit A record is migrated when available; moves, vendor assignments, reset actions, and change history cannot bleed into the other two projects. A successful save is visibly timestamped, and a storage failure is reported instead of silently presenting a fresh seed as saved work.
 
-The restrained construction palette remains: blue for general work, green for sitework, amber for inspections, purple for deliveries, and red for milestones. Selection and drop-target cyan remain interaction signals rather than task categories.
+Monday through Friday remains the standard calendar. A construction manager can activate one specific Saturday or Sunday as an AM, PM, or full-day accelerated exception, mark it proposed or vendor-confirmed, and attach the selected task. The date is visible beneath its week and in the vendor log; removing it returns that weekend to off without shifting the weekday plan.
+
+The restrained construction palette is retained and refined: blue for general work, green for sitework, amber for inspections, purple for deliveries, and red for milestones. Selection, edge grips, warning badges, and accelerated lanes are distinct interaction signals rather than task categories.
 
 The release continues to require a new Admiral sign-in after every full page load. Before any Admiral station initializes, it removes only the shared Admiral command token from browser tab storage. Commissioning Orders, Course Orders, Vessel Logo Helm, Admiral Fleet, and the Bootstrap Build Schedule therefore return locked after refresh.
 

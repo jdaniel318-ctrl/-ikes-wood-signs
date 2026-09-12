@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.11.8",
-  "release": "Registry Passage",
-  "seal": "registry-passage-88118",
+  "build": "8.8.11.9",
+  "release": "Quick Passage",
+  "seal": "quick-passage-88119",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Registry Passage",
-  "name": "Registry Passage",
-  "releaseName": "Registry Passage"
+  "release_name": "Quick Passage",
+  "name": "Quick Passage",
+  "releaseName": "Quick Passage"
 }

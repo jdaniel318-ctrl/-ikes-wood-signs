@@ -1,8 +1,8 @@
 {
-  "release": "Registry Passage",
-  "name": "Registry Passage",
-  "build": "8.8.11.8",
-  "seal": "registry-passage-88118",
+  "release": "Quick Passage",
+  "name": "Quick Passage",
+  "build": "8.8.11.9",
+  "seal": "quick-passage-88119",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.11.8",
-  "release": "Registry Passage",
+  "build": "8.8.11.9",
+  "release": "Quick Passage",
   "generatedAt": "2026-09-11T23:15:00Z",
   "checks": {
     "build_version": true,
@@ -260,8 +260,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.11.8 restores the Fleet Registry doorway with a dedicated active controller that is independent of both retired schedule controllers. The tap opens the read-only registry above the current project and returns without changing the selected project or saved revision. All Projects, the three isolated schedules, Fleet Core, commissioning, and authority boundaries remain unchanged.",
-  "candidate": "8.8.11.8",
+  "note": "8.8.11.9 adds a direct security-preserving My Fleet passage, tactile task-edge duration changes, calculated-risk warnings, and manager-controlled accelerated weekend exceptions. Monday through Friday remains standard. All Projects, the three isolated project records, Fleet Core, commissioning, and authority boundaries remain unchanged.",
+  "candidate": "8.8.11.9",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -273,6 +273,12 @@
     "bootstrap_build_test_region_abc": true,
     "black_flag_fleet_registry_primary_door": true,
     "bootstrap_schedule_registry_passage": true,
+    "engine_direct_my_fleet_passage": true,
+    "admiral_pin_and_account_checks_preserved": true,
+    "bootstrap_task_edge_duration_resize": true,
+    "bootstrap_calculated_risk_warning": true,
+    "bootstrap_manager_controlled_weekend_exceptions": true,
+    "bootstrap_monday_friday_standard": true,
     "black_flag_fleet_registry_read_only": true,
     "black_flag_fleet_registry_live_identity_marks": true,
     "black_flag_fleet_registry_promote_door": true,
@@ -427,8 +433,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.11.8",
-    "seal": "registry-passage-88118",
+    "build": "8.8.11.9",
+    "seal": "quick-passage-88119",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

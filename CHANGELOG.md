@@ -1,9 +1,17 @@
+## 8.8.11.9 — Quick Passage
+
+- Adds a direct Engine Room → Admiral PIN → My Fleet route while preserving the separate authenticated Admiral account check.
+- Places the Admiral email/password form inside the read-only Fleet Registry so fleet access no longer requires navigating the full command deck.
+- Adds left/right task grips for natural duration changes while card-body dragging continues to move tasks.
+- Records soft calculated-risk warnings for compressed durations and same-vendor overlap without blocking an authorized manager.
+- Keeps Monday–Friday as standard and adds manager-controlled Saturday/Sunday AM, PM, or full-day accelerated exceptions with proposed/vendor-confirmed status.
+- Preserves All Projects navigation, the three isolated project records, saved revisions, vendor assignments, Fleet Core boundaries, and the fresh Admiral gate.
+
 ## 8.8.11.8 — Registry Passage
 
-- Restores the Fleet Registry button inside each Bootstrap Build project.
-- Isolates the read-only registry overlay from both retired schedule controllers, preventing the old controller conflict from returning.
-- Captures the registry tap before project-schedule input handling and supports direct refresh and close.
-- Preserves All Projects navigation, the three isolated project schedules, saved revisions, vendor assignments, and the fresh Admiral gate.
+- Restored the Fleet Registry button inside each Bootstrap Build project.
+- Isolated the read-only registry overlay from both retired schedule controllers.
+- Preserved All Projects navigation, isolated schedule records, and fresh Admiral access.
 
 ## 8.8.11.5 — Project Roster
 
