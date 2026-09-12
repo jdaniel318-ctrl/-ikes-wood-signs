@@ -1,3 +1,12 @@
+# Dark Sky 8.8.13.4 — Constellation
+
+- Removed the duplicate legacy Return to Engine control from Captain Watch.
+- Made the genuine attention vessel the automatic cinematic opening focus while preserving later Captain selection.
+- Expanded vessel-name space and added bearings, animated route lines, chart stars, atmospheric light, and state-specific visual treatment.
+- Added a restrained signal-acquisition transition and reduced-motion fallbacks.
+- Marked Engine and Captain PIN entry as one-time security-code input for Safari without changing authentication or lockouts.
+- Preserved Professional View, six-vessel Fleet Core, Bootstrap Build, isolation, commissioning, evidence, entitlements, and schedules.
+
 ## 8.8.13 — Fleet Rigging
 
 - Establishes four primary operating lanes: Operate Vessels, Captain Watch, Admiral My Fleet, and Build & Govern.

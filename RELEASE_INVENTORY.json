@@ -1,8 +1,8 @@
 {
-  "release": "Living Chart",
-  "name": "Living Chart",
-  "build": "8.8.13.3",
-  "seal": "living-chart-88133",
+  "release": "Constellation",
+  "name": "Constellation",
+  "build": "8.8.13.4",
+  "seal": "constellation-88134",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

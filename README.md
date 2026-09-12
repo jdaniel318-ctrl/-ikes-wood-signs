@@ -1,3 +1,13 @@
+# Dark Sky 8.8.13.4 — Constellation
+
+Constellation is the field-hardening and cinematic-depth pass for the Captain's Living Chart. Captain Watch now exposes one shell-owned **Return to Engine** control instead of allowing the legacy global escape to overlap **Professional View**. When fleet truth arrives, the first genuine attention signal automatically becomes the opening focus; after the Captain deliberately selects another vessel, that bearing remains under Captain control.
+
+The six vessels retain stable, non-overlapping positions with more room for full names. Illuminated routes, constellation points, bearings, chart depth, ambient light, selected-vessel focus, Sea Trial distinction, and signal-acquisition motion make the chart feel alive without turning decoration into false operational state. **Watch → Decide → Act → Record** and **More Systems** remain the sole command structure.
+
+Engine and Captain PIN inputs now advertise one-time security-code semantics to Safari rather than ordinary account-password semantics. PINs remain masked, uncached by Dark Sky, required at their established boundaries, and governed by the existing lockout contracts.
+
+No Fleet Core record, Bootstrap Build program or schedule, authentication secret, authority boundary, vessel route, commissioning record, evidence chain, entitlement, owner state, canonical brand, or growth capability is changed.
+
 # Dark Sky 8.8.13.3 — Living Chart
 
 Living Chart turns the Captain's Cinematic View into a working command chamber. The fleet map now occupies the center of the room with six stable, non-overlapping vessel positions. A genuine attention signal is illuminated without making quiet vessels compete for the Captain's eye. Selecting a vessel updates one integrated First Mate panel through **Watch → Decide → Act → Record**, and the scoped report remains read-only until the Captain deliberately routes into the exact vessel.
