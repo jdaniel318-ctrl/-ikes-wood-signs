@@ -1,3 +1,11 @@
+# Dark Sky 8.8.13.6 — True North
+
+True North repairs the fleet-readiness truth model exposed during iPad field testing. The Fleet Doctrine, Golden Voyage, and Engine → Captain → Admiral command registries were structurally verified against their existing release-blocking predicates, then aligned to the current build. No check is suppressed: stale proof identity no longer creates three false critical holds, while unresolved field evidence remains visible as WATCH.
+
+Professional-first readiness now verifies the configured default and deliberate view switch instead of treating the Captain's currently open Cinematic View as a contract failure. Cinematic Fleet Readiness also gains a prominent **View Current Findings** route. It still crosses the strict Admiral PIN gate, then lands directly in Govern → Current Findings without changing vessel state.
+
+The expected current posture is zero registry holds with the legitimate watches retained: Ike calibration replay, live server revocation proof, Staging Ledger round trip, and Engine-origin storage growth. Fleet Core membership, scalable roster rendering, exact-vessel isolation, owner independence, commissioning, evidence, authority, authentication, entitlements, Bootstrap Build schedules, weekday norms, weekend exceptions, recovery, and future growth contracts remain unchanged.
+
 # Dark Sky 8.8.13.5 — Proof Lantern
 
 Proof Lantern repairs the field-confirmed Fleet Readiness dead-button appearance inside Captain Cinematic View. The check now becomes a first-class chart state: the First Mate panel immediately reports **CHECKING**, then retains the authoritative **CLEAR**, **WATCH**, **HOLD**, or **UNAVAILABLE** result with completed-check, watch-item, and critical-hold counts. The Captain can deliberately run the proof again from the same visible panel.

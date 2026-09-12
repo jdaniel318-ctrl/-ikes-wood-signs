@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.5",
-  "release": "Proof Lantern",
-  "seal": "proof-lantern-88135",
+  "build": "8.8.13.6",
+  "release": "True North",
+  "seal": "true-north-88136",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Proof Lantern",
-  "name": "Proof Lantern",
-  "releaseName": "Proof Lantern"
+  "release_name": "True North",
+  "name": "True North",
+  "releaseName": "True North"
 }

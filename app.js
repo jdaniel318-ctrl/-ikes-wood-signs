@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.13.5';
+  const BUILD_VERSION='8.8.13.6';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5358,8 +5358,9 @@
     const captainSubviewExit=!!document.querySelector('[data-captain-return], #captainCommandReturn, #captainObjectClose, #captainSpyglassClose, #captainFleetChartClose, #captainBlueprintClose');
     add('captain-nav','Captain navigation contract',captainExit&&captainSubviewExit?'pass':'warn',captainExit&&captainSubviewExit?'Main-room Engine exit and Captain subview return controls are both present.':'One Captain navigation layer could not be verified from the current DOM.');
 
-    const professionalCaptain=!!document.getElementById('captainProfessionalSurface') && document.getElementById('captainQuarters')?.dataset?.commandMode==='professional';
-    add('professional-first-command','Professional-first Captain command',professionalCaptain?'pass':'warn',professionalCaptain?'Captain Professional Command is the default operational surface; Cinematic View remains a deliberate second view.':'Captain professional surface was not confirmed as the active default in the current DOM.');
+    const captainRoom=document.getElementById('captainQuarters');
+    const professionalCaptain=!!document.getElementById('captainProfessionalSurface') && captainRoom?.dataset?.defaultCommandMode==='professional' && !!document.getElementById('captainCommandModeToggle');
+    add('professional-first-command','Professional-first Captain command',professionalCaptain?'pass':'warn',professionalCaptain?'Captain Professional Command is configured as the default operational surface; the currently selected view does not alter that contract.':'Captain professional default contract or its deliberate view switch could not be verified.');
     const doctrineRegistry=await safe(async()=>{const r=await fetch(`FLEET_DOCTRINE_REGISTRY.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
     const courseAuthorityOk=doctrineRegistry?.governance?.courseAuthority?.holder==='admiral' && doctrineRegistry?.governance?.courseAuthority?.admiralMayChangeCourse===true && doctrineRegistry?.governance?.courseAuthority?.historyIsAppendOnly===true && doctrineRegistry?.governance?.courseAuthority?.rollbackSupported===true;
     const doctrineOk=doctrineRegistry?.build===BUILD_VERSION && Array.isArray(doctrineRegistry?.principles) && doctrineRegistry.principles.length>=10 && courseAuthorityOk;

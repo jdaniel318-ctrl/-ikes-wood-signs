@@ -1,3 +1,10 @@
+# Dark Sky 8.8.13.6 — True North
+
+- Verified and current-stamped the Fleet Doctrine, Golden Voyage, and three-layer command-model proof registries, clearing three stale-build false holds without weakening their predicates.
+- Corrected Professional-first readiness to validate the configured default and deliberate mode switch regardless of which Captain view is currently open.
+- Added **View Current Findings** to Cinematic Fleet Readiness, protected by the existing Admiral PIN and routed directly to Govern → Current Findings.
+- Preserved the four legitimate field watches and all fleet, vessel, authority, authentication, schedule, isolation, recovery, and growth contracts.
+
 # Dark Sky 8.8.13.5 — Proof Lantern
 
 - Repaired the Cinematic **More Systems → Fleet Readiness** route after field testing showed no visible response.
