@@ -321,3 +321,10 @@ Paid/Standard entitlement-state precedence, owner-facing Fleet Services language
 - Adds Fleet Services to the Owner Bridge with prototype capability groundwork.
 - Carries compact vessel identity through Owner Bridge working screens.
 - Keeps Supabase owner auth, exact-vessel RLS, ownership, Captain and Admiral boundaries intact.
+# Dark Sky 8.8.13.1 — Deck Clearance
+
+- Removed the duplicate Waters Ahead presentation from the Engine's first view while preserving it in Engineering Systems.
+- Reduced Operate Vessels cards to Customer Experience, Owner / Partner, Black Flag Project Control, and separate Test / Preview routes.
+- Consolidated Captain intelligence and readiness, moved secondary stations into a progressive drawer, and repaired iPad command-bar clipping.
+- Made the pre-auth Admiral gate neutral and reserved saved Presentation Forge imagery for the authenticated Admiral deck.
+- Preserved Fleet Core membership, Bootstrap Build program status, owner independence, commissioning, entitlements, release evidence, and isolated construction schedules.

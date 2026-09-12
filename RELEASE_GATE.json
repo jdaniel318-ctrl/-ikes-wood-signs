@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13",
-  "release": "Fleet Rigging",
-  "generatedAt": "2026-09-12T02:21:30Z",
+  "build": "8.8.13.1",
+  "release": "Deck Clearance",
+  "generatedAt": "2026-09-12T16:09:31Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -260,10 +260,18 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13 Fleet Rigging consolidates daily command into four explicit levels, retains growth and engineering capability behind clear support routes, and preserves every proven authority, project-isolation, branding, scheduling, recovery, and release boundary.",
-  "candidate": "8.8.13",
+  "note": "8.8.13.1 Deck Clearance removes duplicated presentation, restores clean iPad command geometry, and conceals authenticated imagery before Admiral authorization while retaining every proven growth, authority, project-isolation, branding, scheduling, recovery, and release boundary.",
+  "candidate": "8.8.13.1",
   "features": {
     "fleet_rigging_four_primary_levels": true,
+    "deck_clearance_engine_watch_progressive": true,
+    "operate_vessels_three_surfaces": true,
+    "captain_readiness_consolidated": true,
+    "captain_support_progressive_disclosure": true,
+    "captain_ipad_header_clear": true,
+    "admiral_gate_neutral_pre_auth": true,
+    "admiral_governance_signal_boundary": true,
+    "no_capability_controller_removed": true,
     "one_primary_doorway_per_job": true,
     "vessel_workstations_runtime_roster": true,
     "engineering_systems_progressive_disclosure": true,
@@ -443,8 +451,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13",
-    "seal": "fleet-rigging-8813",
+    "build": "8.8.13.1",
+    "seal": "deck-clearance-88131",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

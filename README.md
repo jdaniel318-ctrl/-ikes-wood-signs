@@ -1,3 +1,23 @@
+# Dark Sky 8.8.13.1 — Deck Clearance
+
+Deck Clearance tightens the Fleet Rigging structure after iPad field review. The Engine's first view now stays focused on its four operating levels; **Waters Ahead** remains intact inside Engineering Systems instead of duplicating Captain Watch. **Operate Vessels** is now a clean exact-vessel doorway to Customer Experience, Owner / Partner, and Black Flag Project Control, with Test / Preview kept visibly separate. Commissioning and readiness evidence remain available through Captain and governed support routes.
+
+Captain Watch now has one Fleet Intelligence summary, one **Watch → Decide → Act → Record** loop, and one progressive Support Stations drawer. The duplicate change summary and oversized route footers no longer compete for the deck. The command bar is constrained to the iPad viewport so **Return to Engine** and **Cinematic View** remain distinct, readable, and tappable.
+
+The Admiral gate now paints a neutral authority shield before authentication. A saved Presentation Forge image can still style the authenticated Admiral deck, but it cannot appear behind the PIN gate or reveal fleet-like content before authority is established. The Admiral command brief reports verified governance/readiness posture; routine operational signals remain Captain-level work.
+
+No controller, capability contract, evidence ledger, recovery route, commissioning path, Fleet Learning record, owner state, entitlement, vessel identity, canonical mark, or saved schedule is removed. The six Fleet Core vessels remain independent, Bootstrap Build remains a separate uncommissioned Admiral Program, and all three Bootstrap test projects retain movement, edge resizing, weekday norms, weekend exceptions, calculated-risk warnings, local vendor logs, and project-isolated storage.
+
+## Deck Clearance disposition
+
+| Disposition | 8.8.13.1 decision |
+| --- | --- |
+| Keep | Four operating levels, three vessel surfaces, My Fleet, commissioning, Build & Govern, Admiral Programs, evidence, recovery, Fleet Learning, and Bootstrap scheduling. |
+| Move | Engine Watch presentation appears through Engineering Systems; Captain support stations open only when requested. |
+| Combine | Captain intelligence, readiness, and the primary decision loop share one operational surface. |
+| Conceal | Saved Admiral presentation imagery is withheld until after Admiral authorization. |
+| Remove | Duplicate presentation only. No durable data or capability controller is deleted. |
+
 # Dark Sky 8.8.13 — Fleet Rigging
 
 Fleet Rigging organizes the existing platform around four clear operating levels: **Operate Vessels**, **Captain Watch**, **Admiral My Fleet**, and **Build & Govern**. Each job now has one primary doorway, while commissioning, Engine configuration, performance, maintenance, recovery, release proof, Fleet Intelligence, learning, and engineering evidence remain available through explicit support and Engineering Systems routes.

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.13';
+  const BUILD_VERSION='8.8.13.1';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -6028,11 +6028,9 @@
   function fleetDockMatches(p,s){
     const q=normalizeBusinessIdentityText(fleetDockSearch);
     if(q && !normalizeBusinessIdentityText([p.name,p.projectCode,p.type,p.businessType,p.tagline].filter(Boolean).join(' ')).includes(q))return false;
-    const owner=ensureProjectGovernance(p).ownerAccess;
     if(fleetDockFilter==='attention')return !s.commissioned && !s.ready;
-    if(fleetDockFilter==='owner')return !owner?.enabled || owner.status!=='active';
-    if(fleetDockFilter==='sea')return migrateLegacyDeployment(p).some(d=>d.state==='sea_trial');
-    if(fleetDockFilter==='ready')return s.ready||s.commissioned||p?.publish?.status==='live';
+    if(fleetDockFilter==='staging')return p?.publish?.status!=='live';
+    if(fleetDockFilter==='live')return p?.publish?.status==='live';
     return true;
   }
 
@@ -6080,12 +6078,14 @@
     const commissioned=snaps.filter(x=>x.s.commissioned).length;
     const ready=snaps.filter(x=>x.s.ready&&!x.s.commissioned).length;
     const work=snaps.length-commissioned-ready;
+    const live=list.filter(p=>p?.publish?.status==='live').length;
+    const trials=list.filter(p=>migrateLegacyDeployment(p).some(d=>d.state==='sea_trial')).length;
     const gatesPassed=snaps.reduce((n,x)=>n+x.s.passed,0);
     const gatesTotal=snaps.reduce((n,x)=>n+x.s.total,0);
 
     if(state){
-      state.textContent=(commissioned===list.length&&list.length?'FLEET COMMISSIONED':work?'WORK IN DOCK':ready?'CAPTAIN ACTION':'NO VESSELS')+(!canonicalSettled?' • VERIFYING':'');
-      state.className=`fleet-commissioning-state ${work?'watch':ready?'ready':'clear'}`;
+      state.textContent=(list.length?`${list.length} VESSELS • ${live} LIVE • ${trials} SEA TRIAL`:'NO VESSELS')+(!canonicalSettled?' • VERIFYING':'');
+      state.className=`fleet-commissioning-state ${list.length?'ready':'watch'}`;
     }
 
     summary.innerHTML=`
@@ -6097,38 +6097,27 @@
     if(fleet){
       const visibleSnaps=snaps.filter(({p,s})=>fleetDockMatches(p,s)).sort((a,b)=>fleetDockPriority(b.p,b.s)-fleetDockPriority(a.p,a.s)||String(a.p.name).localeCompare(String(b.p.name)));
       fleet.innerHTML=visibleSnaps.length?visibleSnaps.map(({p,s},idx)=>{
-        const next=commissioningNextMove(s);
-        const status=s.commissioned?'COMMISSIONED':s.ready?'READY FOR CAPTAIN':'IN DOCK';
-        const cls=s.commissioned?'commissioned':s.ready?'ready':'work';
-        const percent=Math.round((s.passed/Math.max(1,s.total))*100);
+        const deployments=migrateLegacyDeployment(p);
+        const inSeaTrial=deployments.some(d=>d.state==='sea_trial');
+        const status=p?.publish?.status==='live'?'LIVE':inSeaTrial?'SEA TRIAL':'STAGING';
+        const cls=p?.publish?.status==='live'?'commissioned':inSeaTrial?'ready':'work';
         const ownerEnabled=!!ensureProjectGovernance(p).ownerAccess?.enabled;
         return `<article class="fleet-proof-card fleet-dock-card ${cls}" data-project-id="${escapeHtml(p.id)}">
           <header>
             <div><small>VESSEL • ${escapeHtml(fleetStableCallsign(p))}</small><strong>${escapeHtml(p.name)}</strong></div>
             <span>${status}</span>
           </header>
-          <div class="fleet-proof-meter"><i style="width:${percent}%"></i></div>
-          <div class="fleet-proof-numbers"><b>${s.passed}/${s.total}</b><span>gates clear</span></div>
-          <div class="fleet-proof-next">
-            <small>NEXT PROVABLE MOVE</small>
-            <strong>${escapeHtml(next.label)}</strong>
-            <p>${escapeHtml(next.detail)}</p>
-          </div>
           <div class="fleet-dock-actions" aria-label="${escapeHtml(p.name)} vessel routes">
             <div class="fleet-dock-watch-actions">
               <button type="button" data-open-project-control="${escapeHtml(p.id)}" class="primary-btn small fleet-watch-btn project-control-watch"><span>PROJECT</span><strong>CONTROL</strong></button>
               <button type="button" data-fleet-dock-action="customer" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small fleet-watch-btn customer-watch"><span>CUSTOMER</span><strong>EXPERIENCE</strong></button>
               <button type="button" data-fleet-dock-action="owner" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small owner-access-action fleet-watch-btn owner-watch"><span>OWNER / PARTNER</span><strong>${ownerEnabled?(p.ownerAccess?.status==='active'?'CONTROL CENTER':'OWNER ENTRANCE'):'SET UP ACCESS'}</strong></button>
-              <button type="button" data-open-fleet-commissioning="${escapeHtml(p.id)}" class="secondary-btn small fleet-watch-btn captain-watch"><span>READINESS</span><strong>COMMISSIONING</strong></button>
             </div>
             <div class="fleet-dock-test-route"><span>TEST MODE</span><button type="button" data-fleet-dock-action="preview" data-project-id="${escapeHtml(p.id)}" class="secondary-btn small">OPEN TEST / PREVIEW</button></div>
           </div>
         </article>`;
       }).join(''):'<div class="fleet-proof-empty">No vessels match the current Fleet Dock view.</div>';
 
-      fleet.querySelectorAll('[data-open-fleet-commissioning]').forEach(btn=>{
-        btn.addEventListener('click',()=>openFleetCommissioning(btn.dataset.openFleetCommissioning));
-      });
       fleet.querySelectorAll('[data-fleet-dock-action]').forEach(btn=>btn.addEventListener('click',async()=>{
         const projectId=btn.dataset.projectId;const action=btn.dataset.fleetDockAction;const project=projectById(projectId);if(!project)return;
         if(action==='customer'){await continueProjectLaunch(project);return;}
@@ -6156,7 +6145,7 @@
       if(fleet)fleet.innerHTML=`${resolverLifelineHtml869(window.__darkSkyResolverLifeline869)}${dockSourceTraceHtml868(finalTrace868)}`;
       reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • RENDER HOLD</span><strong>Five cards can never masquerade as the fleet.</strong><p>The rendered Fleet Dock lost a protected vessel. The cards were withheld and the source trace is shown instead.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;
     }else{
-      reference.innerHTML=`<div class="fleet-reference-copy"><span>FLEET DOCK CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the watch.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer, Owner / Partner, and Captain are the three authority routes. Test / Preview is a separate safe mode that uses the same project boundary.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;
+      reference.innerHTML=`<div class="fleet-reference-copy"><span>VESSEL WORKSTATION CONTRACT • ${escapeHtml(identityState)}</span><strong>Choose the vessel, then the exact surface.</strong><p>${list.length} unique vessel${list.length===1?'':'s'} from one canonical registry. Customer Experience, Owner / Partner, and Black Flag Project Control are separate routes. Test / Preview is a safe mode inside the same exact project boundary.</p></div>${dockSourceTraceHtml868(finalTrace868,{compact:true})}`;
     }
     const search=$('fleetDockSearch'); if(search){search.value=fleetDockSearch;search.oninput=()=>{fleetDockSearch=search.value;renderFleetCommissioning({skipConvergence:true});};}
     $$('#fleetDockFilters [data-fleet-dock-filter]').forEach(btn=>{btn.classList.toggle('active',btn.dataset.fleetDockFilter===fleetDockFilter);btn.onclick=()=>{fleetDockFilter=btn.dataset.fleetDockFilter||'all';renderFleetCommissioning({skipConvergence:true});};});

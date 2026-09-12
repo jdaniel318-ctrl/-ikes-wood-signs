@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13",
-  "release": "Fleet Rigging",
-  "seal": "fleet-rigging-8813",
+  "build": "8.8.13.1",
+  "release": "Deck Clearance",
+  "seal": "deck-clearance-88131",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Fleet Rigging",
-  "name": "Fleet Rigging",
-  "releaseName": "Fleet Rigging"
+  "release_name": "Deck Clearance",
+  "name": "Deck Clearance",
+  "releaseName": "Deck Clearance"
 }

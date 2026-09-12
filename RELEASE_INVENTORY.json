@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Rigging",
-  "name": "Fleet Rigging",
-  "build": "8.8.13",
-  "seal": "fleet-rigging-8813",
+  "release": "Deck Clearance",
+  "name": "Deck Clearance",
+  "build": "8.8.13.1",
+  "seal": "deck-clearance-88131",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
