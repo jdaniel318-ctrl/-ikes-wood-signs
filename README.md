@@ -1,3 +1,9 @@
+# Dark Sky 8.8.13.2 — Clear Helm
+
+Clear Helm repairs the field-confirmed iPad obstruction in the Captain Watch action strip. Professional mode now suppresses the cinematic room masks that were still sitting above the operational surface. The Captain command bar and professional surface are isolated on explicit top layers, while **Return to Engine** and **Cinematic View** receive solid backgrounds, full opacity, clear borders, 48-pixel touch targets, and visible pressed and keyboard-focus states.
+
+This is a presentation-only repair. It changes no fleet data, authority, authentication contract, vessel route, commissioning path, evidence ledger, owner state, entitlement, canonical brand, or Bootstrap schedule. Cinematic presentation remains available when deliberately selected; it simply cannot obscure Professional Command.
+
 # Dark Sky 8.8.13.1 — Deck Clearance
 
 Deck Clearance tightens the Fleet Rigging structure after iPad field review. The Engine's first view now stays focused on its four operating levels; **Waters Ahead** remains intact inside Engineering Systems instead of duplicating Captain Watch. **Operate Vessels** is now a clean exact-vessel doorway to Customer Experience, Owner / Partner, and Black Flag Project Control, with Test / Preview kept visibly separate. Commissioning and readiness evidence remain available through Captain and governed support routes.

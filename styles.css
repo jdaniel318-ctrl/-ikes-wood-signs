@@ -15445,3 +15445,21 @@ body.engine-mode.engine-dock-open #fleetCommissioningSummary{display:none!import
   .fleet-dock-watch-actions{grid-template-columns:1fr!important}
 }
 @media(max-width:520px){.captain-support-drawer>div{grid-template-columns:1fr}.captain-command-mode-actions{grid-template-columns:1fr!important}.captain-professional-surface{inset:182px 12px 16px!important}}
+
+/* 8.8.13.2 Clear Helm — professional controls outrank every cinematic mask. */
+#captainQuarters[data-command-mode="professional"]::before,
+#captainQuarters[data-command-mode="professional"]::after{content:none!important;display:none!important;background:none!important}
+#captainQuarters[data-command-mode="professional"] .cq-chartroom-live,
+#captainQuarters[data-command-mode="professional"] .cq-desk-index,
+#captainQuarters[data-command-mode="professional"] .captain-command-door-rail{visibility:hidden!important;pointer-events:none!important}
+#captainQuarters[data-command-mode="professional"] .captain-professional-surface{z-index:20000!important}
+#captainQuarters[data-command-mode="professional"] .captain-command-mode-bar{z-index:20050!important;isolation:isolate!important;opacity:1!important;visibility:visible!important;filter:none!important;background:#061722!important;box-shadow:0 8px 24px rgba(0,0,0,.42)!important}
+#captainQuarters[data-command-mode="professional"] .captain-command-mode-actions{position:relative!important;z-index:2!important;opacity:1!important;visibility:visible!important;filter:none!important}
+#captainQuarters[data-command-mode="professional"] #captainCommandReturnBtn,
+#captainQuarters[data-command-mode="professional"] #captainCommandModeToggle{display:grid!important;place-items:center!important;min-height:48px!important;opacity:1!important;visibility:visible!important;filter:none!important;pointer-events:auto!important;text-shadow:none!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),0 4px 12px rgba(0,0,0,.32)!important}
+#captainQuarters[data-command-mode="professional"] #captainCommandReturnBtn{border:2px solid #c9a64e!important;background:#172924!important;color:#f5d97e!important}
+#captainQuarters[data-command-mode="professional"] #captainCommandModeToggle{border:2px solid #64a9d4!important;background:#16476a!important;color:#fff!important}
+#captainQuarters[data-command-mode="professional"] #captainCommandReturnBtn:active,
+#captainQuarters[data-command-mode="professional"] #captainCommandModeToggle:active{transform:translateY(1px)!important;filter:brightness(1.16)!important}
+#captainQuarters[data-command-mode="professional"] #captainCommandReturnBtn:focus-visible,
+#captainQuarters[data-command-mode="professional"] #captainCommandModeToggle:focus-visible{outline:3px solid #fff!important;outline-offset:2px!important}

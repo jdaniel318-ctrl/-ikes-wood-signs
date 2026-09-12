@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.1",
-  "release": "Deck Clearance",
-  "seal": "deck-clearance-88131",
+  "build": "8.8.13.2",
+  "release": "Clear Helm",
+  "seal": "clear-helm-88132",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Deck Clearance",
-  "name": "Deck Clearance",
-  "releaseName": "Deck Clearance"
+  "release_name": "Clear Helm",
+  "name": "Clear Helm",
+  "releaseName": "Clear Helm"
 }
