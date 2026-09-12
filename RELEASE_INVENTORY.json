@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Watchtower",
-  "name": "Fleet Watchtower",
-  "build": "8.8.12",
-  "seal": "fleet-watchtower-8812",
+  "release": "Clear Watch",
+  "name": "Clear Watch",
+  "build": "8.8.12.1",
+  "seal": "clear-watch-88121",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

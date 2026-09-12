@@ -1,3 +1,9 @@
+# Dark Sky 8.8.12.1 — Clear Watch
+
+Clear Watch repairs the iPad field findings from Fleet Watchtower. Fleet Core cards now render one full-width row at iPad landscape sizes so lifecycle, freshness, operational fields, and **Open Vessel** remain readable and fully tappable without horizontal clipping.
+
+The Watchtower no longer substitutes the Black Flag platform mark for every vessel. It uses the project-owned canonical asset when one is available, preserves uploaded Fleet Branding marks, and uses a clearly project-scoped code mark when no approved image artifact exists. No replacement logo is invented and no branding record is mutated.
+
 # Dark Sky 8.8.12 — Fleet Watchtower
 
 Fleet Watchtower turns the direct **Engine Room → My Fleet** passage into the Admiral's fast daily read without weakening its two-step security. After the Admiral PIN and separate account authentication, the six independent Fleet Core vessels appear as operational cards with canonical identity, lifecycle, current-work and issue fields, truthful freshness, search, attention filters, and a deterministic **Open Vessel** action.

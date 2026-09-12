@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.12';
-const RELEASE_SEAL='fleet-watchtower-8812';
+const RELEASE_BUILD='8.8.12.1';
+const RELEASE_SEAL='clear-watch-88121';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
