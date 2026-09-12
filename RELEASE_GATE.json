@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.2",
-  "release": "Clear Helm",
+  "build": "8.8.13.3",
+  "release": "Living Chart",
   "generatedAt": "2026-09-12T16:26:23Z",
   "checks": {
     "build_version": true,
@@ -260,8 +260,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.2 Clear Helm repairs the field-confirmed iPad Captain action-strip obstruction by placing professional controls above every cinematic mask and enforcing solid full-opacity button states. All Deck Clearance structure and permanent fleet boundaries remain intact.",
-  "candidate": "8.8.13.2",
+  "note": "8.8.13.3 Living Chart replaces the empty Captain cinematic room with a working six-vessel chart table, scoped First Mate intelligence, Watch-Decide-Act-Record controls, and a compact support drawer. Professional Command, Clear Helm controls, Fleet Core boundaries, Bootstrap schedules, and permanent authority contracts remain intact.",
+  "candidate": "8.8.13.3",
   "features": {
     "fleet_rigging_four_primary_levels": true,
     "deck_clearance_engine_watch_progressive": true,
@@ -455,8 +455,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.2",
-    "seal": "clear-helm-88132",
+    "build": "8.8.13.3",
+    "seal": "living-chart-88133",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.2",
-  "release": "Clear Helm",
-  "seal": "clear-helm-88132",
+  "build": "8.8.13.3",
+  "release": "Living Chart",
+  "seal": "living-chart-88133",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clear Helm",
-  "name": "Clear Helm",
-  "releaseName": "Clear Helm"
+  "release_name": "Living Chart",
+  "name": "Living Chart",
+  "releaseName": "Living Chart"
 }

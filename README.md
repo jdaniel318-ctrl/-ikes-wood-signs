@@ -1,3 +1,11 @@
+# Dark Sky 8.8.13.3 — Living Chart
+
+Living Chart turns the Captain's Cinematic View into a working command chamber. The fleet map now occupies the center of the room with six stable, non-overlapping vessel positions. A genuine attention signal is illuminated without making quiet vessels compete for the Captain's eye. Selecting a vessel updates one integrated First Mate panel through **Watch → Decide → Act → Record**, and the scoped report remains read-only until the Captain deliberately routes into the exact vessel.
+
+The crowded station rail is replaced by those four command stages plus **More Systems**. Fleet Readiness, Workshop, Visual Forge, Shipyard, Blueprint, Test Access, and the provisional Admiral's Gate remain available there; no capability is removed. Professional View remains the efficient daily operating surface and retains the field-proven Clear Helm controls.
+
+Motion is restrained to chart light, signal beacons, and selection transitions, with a reduced-motion fallback. This build changes presentation and Captain-side read/route composition only. It does not change Fleet Core membership, Bootstrap Build, authentication, authority, vessel isolation, canonical branding, entitlements, commissioning, evidence, or saved schedules.
+
 # Dark Sky 8.8.13.2 — Clear Helm
 
 Clear Helm repairs the field-confirmed iPad obstruction in the Captain Watch action strip. Professional mode now suppresses the cinematic room masks that were still sitting above the operational surface. The Captain command bar and professional surface are isolated on explicit top layers, while **Return to Engine** and **Cinematic View** receive solid backgrounds, full opacity, clear borders, 48-pixel touch targets, and visible pressed and keyboard-focus states.
