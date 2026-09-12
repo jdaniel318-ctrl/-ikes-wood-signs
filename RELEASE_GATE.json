@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.11.9",
-  "release": "Quick Passage",
-  "generatedAt": "2026-09-11T23:15:00Z",
+  "build": "8.8.12",
+  "release": "Fleet Watchtower",
+  "generatedAt": "2026-09-12T00:57:08Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -260,8 +260,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.11.9 adds a direct security-preserving My Fleet passage, tactile task-edge duration changes, calculated-risk warnings, and manager-controlled accelerated weekend exceptions. Monday through Friday remains standard. All Projects, the three isolated project records, Fleet Core, commissioning, and authority boundaries remain unchanged.",
-  "candidate": "8.8.11.9",
+  "note": "8.8.12 turns My Fleet into Fleet Watchtower: a readable, authenticated, read-only operational view with truthful stale states, filters, separate Admiral Programs, and exact vessel observation contexts. The six-vessel Fleet Core, three isolated schedules, commissioning, entitlements, owner independence, and authority boundaries remain unchanged.",
+  "candidate": "8.8.12",
   "features": {
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
@@ -433,8 +433,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.11.9",
-    "seal": "quick-passage-88119",
+    "build": "8.8.12",
+    "seal": "fleet-watchtower-8812",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

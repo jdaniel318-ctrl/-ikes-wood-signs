@@ -1,3 +1,11 @@
+# Dark Sky 8.8.12 — Fleet Watchtower
+
+Fleet Watchtower turns the direct **Engine Room → My Fleet** passage into the Admiral's fast daily read without weakening its two-step security. After the Admiral PIN and separate account authentication, the six independent Fleet Core vessels appear as operational cards with canonical identity, lifecycle, current-work and issue fields, truthful freshness, search, attention filters, and a deterministic **Open Vessel** action.
+
+Every opened vessel establishes one exact read-only project context and exposes no modifying control. Missing operating data is labeled **Not reported** and records without a trustworthy activity timestamp are marked **Stale / Unverified** rather than presented as healthy. Bootstrap Build remains outside Fleet Core in a separate **Admiral Programs** section and is not commissioned by this release.
+
+The Watchtower enlarges iPad authentication fields, metadata, touch targets, and operational hierarchy while retaining the restrained deep-teal, gold, and blue-radiation visual language. Commissioning, entitlements, branding commands, owner independence, and all three isolated Bootstrap schedules remain unchanged.
+
 # Dark Sky 8.8.11.9 — Quick Passage
 
 Quick Passage makes the daily routes shorter and the construction schedule more tactile without weakening the security boundary. The Engine Room now has a direct **Open My Fleet** command: Admiral PIN verification leads immediately to the Fleet Registry, where the active Admiral account still completes the separate authenticated read. The full Admiral Command Deck remains available for governance work.

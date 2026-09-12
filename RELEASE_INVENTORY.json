@@ -1,8 +1,8 @@
 {
-  "release": "Quick Passage",
-  "name": "Quick Passage",
-  "build": "8.8.11.9",
-  "seal": "quick-passage-88119",
+  "release": "Fleet Watchtower",
+  "name": "Fleet Watchtower",
+  "build": "8.8.12",
+  "seal": "fleet-watchtower-8812",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
