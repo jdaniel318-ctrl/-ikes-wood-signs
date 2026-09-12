@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.13.8';
+  const BUILD_VERSION='8.8.13.9';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -318,6 +318,30 @@
   });
 
   let companies=structuredClone(DEFAULT_COMPANIES);
+  // 8.8.13.9 Keelbound — the protected fleet has a complete local chart before
+  // slower registry/storage reconciliation begins. Existing rows always win;
+  // this only supplies a missing protected presentation row and never persists,
+  // admits, adopts, promotes, or rewrites vessel evidence.
+  function retainLocalProtectedFleetPicture88139(source='local-first'){
+    const current=Array.isArray(companies)?companies:[];
+    const byId=new Map(current.map(p=>[String(canonicalProjectId(p?.id||'')),p]));
+    const seeds=[...DEFAULT_COMPANIES,...RELEASE_PINNED_VESSELS_864];
+    const added=[];
+    for(const id of RELEASE_CANONICAL_FLEET_IDS_864){
+      if(byId.has(id))continue;
+      const seed=seeds.find(p=>String(canonicalProjectId(p?.id||''))===id);
+      if(!seed)continue;
+      const row=structuredClone(seed);
+      row.id=id;
+      current.push(row);
+      byId.set(id,row);
+      added.push(id);
+    }
+    companies=current;
+    window.__darkSkyLocalFleetPicture88139={build:BUILD_VERSION,source,count:RELEASE_CANONICAL_FLEET_IDS_864.filter(id=>byId.has(id)).length,added,at:new Date().toISOString()};
+    return companies;
+  }
+  retainLocalProtectedFleetPicture88139('module-seed');
   let activeProjectId = null;
   let engineActiveProjectId = null;
   let marketingActiveGraphicSlot = null;
@@ -4445,6 +4469,47 @@
     return Promise.race([Promise.resolve(promise),new Promise(resolve=>setTimeout(()=>resolve(fallback),ms))]);
   }
 
+  function lastStorageSounding88139(){
+    try{return JSON.parse(localStorage.getItem('bf.v4.storage.lastSounding')||'null');}catch(_){return null;}
+  }
+
+  function paintEnginePerformanceLocal88139(){
+    const last=lastStorageSounding88139();
+    const known=Number(last?.knownBytes);
+    if($('engineUsageNow'))$('engineUsageNow').textContent=Number.isFinite(known)?`${(known/1024/1024).toFixed(1)} MB`:'MEASURE';
+    if($('engineUsageDelta'))$('engineUsageDelta').textContent=Number.isFinite(known)?'Last completed Dark Sky sounding':'Open Engine Telemetry to measure application data';
+  }
+
+  function renderFleetHealthLocalFirst88139(){
+    const box=$('engineFleetHealth');if(!box)return;
+    const list=projects();
+    box.innerHTML=`<section class="fleet-health-head"><div><span>FLEET HEALTH</span><h3>Local operational picture</h3><p>The protected roster is available now while live workload and deployment reads verify.</p></div><strong class="fleet-health-state watch">VERIFYING</strong></section>
+      <div class="fleet-health-kpis"><article><span>Projects</span><strong>${list.length}</strong><small>Protected local roster</small></article><article><span>Open workload</span><strong>—</strong><small>Live order read verifying</small></article><article><span>Active deployments</span><strong>—</strong><small>Deployment read verifying</small></article><article><span>Owner invites</span><strong>—</strong><small>Authority read verifying</small></article></div>`;
+  }
+
+  function bindFullSailActions88139(host){
+    host?.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
+      const a=btn.dataset.fullSail;
+      if(a==='commission')openProjectCommissioning();
+      else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}
+      else if(a==='projects')$('fleetCommissioningDock')?.scrollIntoView({behavior:'smooth',block:'start'});
+      else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}
+      else if(a==='configure')openEngineConfiguration('top');
+      else if(a==='storage')await openStorageTelemetry({inspect:true});
+      else if(a==='captain')$('captainModeAccessBtn')?.click();
+    });
+  }
+
+  function renderFullSailLocalFirst88139(){
+    const host=$('fullSailCommandBody'),state=$('fullSailState');if(!host)return;
+    const list=projects();let fleetReady=0,draft=0,customerReady=0,activeDeployments=0;
+    for(const p of list){const launch=projectFleetLaunchState(p);if(launch.key==='fleet_ready')fleetReady++;if(launch.key==='draft')draft++;customerReady+=launch.offers?.length||0;activeDeployments+=(Array.isArray(p.deployments)?p.deployments:[]).filter(d=>d.state==='deployed').length;}
+    const last=lastStorageSounding88139(),known=Number(last?.knownBytes),usage=Number.isFinite(known)?`${(known/1024/1024).toFixed(1)} MB`:'MEASURE';
+    if(state){state.textContent='LOCAL FLEET • VERIFYING';state.className='full-sail-state watch';}
+    host.innerHTML=`<div class="full-sail-kpis"><article><span>OPEN WORKLOAD</span><strong>—</strong><small>Live order read verifying</small></article><article><span>FLEET READY</span><strong>${fleetReady}</strong><small>${activeDeployments} local active deployment${activeDeployments===1?'':'s'}</small></article><article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article><article data-full-sail="storage" tabindex="0" role="button" aria-label="Inspect Engine storage and telemetry"><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${Number.isFinite(known)?'Last completed Dark Sky sounding':'Measure Dark Sky application data'}</small></article></div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4><article class="full-sail-priority watch"><span>VERIFYING</span><strong>Live fleet signals are settling</strong><small>The six-vessel local roster is available; live workload remains unclaimed until its read completes.</small></article></div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="admiral">RUN FLEET READINESS</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
+    bindFullSailActions88139(host);
+  }
+
   async function renderFullSailCommandDeck(){
     const host=$('fullSailCommandBody'),state=$('fullSailState');if(!host)return;
     try{
@@ -4468,9 +4533,7 @@
         <article><span>CUSTOMER-READY OFFERS</span><strong>${customerReady}</strong><small>${draft} draft vessel${draft===1?'':'s'}</small></article>
         <article data-full-sail="storage" tabindex="0" role="button" aria-label="Inspect Engine storage and telemetry"><span>ENGINE STORAGE</span><strong>${usage}</strong><small>${escapeHtml(storageNote)}</small></article>
       </div><div class="full-sail-lower"><div class="full-sail-priorities"><h4>What needs attention?</h4>${priorities}</div><div class="full-sail-actions"><h4>What do you want to do next?</h4><button type="button" data-full-sail="commission" class="command-primary">COMMISSION NEW PROJECT</button><button type="button" data-full-sail="projects">OPERATE PROJECTS</button><button type="button" data-full-sail="watch">RUN FLEET WATCH</button><button type="button" data-full-sail="admiral">RUN FLEET READINESS</button><button type="button" data-full-sail="configure">CONFIGURE ENGINE</button><button type="button" data-full-sail="captain">CAPTAIN'S QUARTERS</button></div></div>`;
-      host.querySelectorAll('[data-full-sail]').forEach(btn=>btn.onclick=async()=>{
-        const a=btn.dataset.fullSail;if(a==='commission'){openProjectCommissioning();}else if(a==='watch'){await renderFirstMateWatch();$('firstMateWatch')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='projects'){$('fleetCommissioningDock')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='admiral'){await renderAdmiralReadiness({announce:true});$('admiralReadiness')?.scrollIntoView({behavior:'smooth',block:'start'});}else if(a==='configure'){openEngineConfiguration('top');}else if(a==='storage'){await openStorageTelemetry({inspect:true});}else if(a==='captain'){$('captainModeAccessBtn')?.click();}
-      });
+      bindFullSailActions88139(host);
     }catch(err){console.warn('Full Sail command deck warning',err);if(state){state.textContent='CHECK';state.className='full-sail-state watch';}host.innerHTML='<p class="helper">Command Deck could not finish its live read. Fleet controls below remain available.</p>';}
   }
 
@@ -5170,7 +5233,7 @@
   }
   async function renderFleetIntelligenceDeck(view='',providedSnap=null){
     const deck=$('fleetIntelligenceDeck'),body=$('fleetIntelligenceBody'),summary=$('fleetIntelligenceSummary'),state=$('fleetIntelligenceState');if(!deck||!body||!summary)return;
-    await awaitMemoryRosterReady8612({timeoutMs:900,source:'fleet-intelligence'});
+    if(!providedSnap)await awaitMemoryRosterReady8612({timeoutMs:900,source:'fleet-intelligence'});
     const stored=view||(()=>{try{return sessionStorage.getItem(FLEET_INTELLIGENCE_STATE_KEY)||'overview';}catch(_){return'overview';}})();
     const active=['overview','health','capabilities','strategy'].includes(stored)?stored:'overview';deck.dataset.view=active;deck.querySelectorAll('[data-intel-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.intelView===active)));
     if(state)state.textContent='READING FLEET';
@@ -5275,7 +5338,7 @@
   function admiralLastRecovery(){try{return JSON.parse(localStorage.getItem('darkSkyLastRecovery')||'null');}catch(_){return null;}}
 
   async function runAdmiralReadinessChecks(source='manual'){
-    // Fleet Circuit: readiness must hydrate the durable command ledger before
+    // Keelbound: readiness must hydrate the durable command ledger before
     // evaluating it. A render-time fallback may already exist in memory, but it
     // must never mask a later IndexedDB read after a reload or authority gate.
     await hydrateFleetCommandDurables8622();
@@ -5686,6 +5749,17 @@
   }
   function setKnownGoodRelease(version){const v=String(version);try{sessionStorage.setItem('darkSkyKnownGoodRelease',v);}catch(_){}try{setSetting('darkSkyKnownGoodRelease',v).catch(()=>{});}catch(_){}try{localStorage.setItem('darkSkyKnownGoodRelease',v);}catch(_){}return v;}
 
+  function renderAdmiralReadinessLocalFirst88139(message='Six-vessel local roster available; live proof verification continues.'){
+    const host=$('admiralReadinessBody'),state=$('admiralReadinessState'),stamp=$('admiralReadinessStamp'),summary=$('provingGroundSummary');
+    if(!host)return;
+    if(state){state.textContent='READY TO RUN';state.className='admiral-readiness-state checking';}
+    if(stamp)stamp.textContent=message;
+    const knownGood=currentKnownGoodRelease();
+    if(summary)summary.innerHTML=`<article class="proving-status-card watch"><small>FLEET STATUS</small><strong>VERIFYING</strong><p>No proof result is claimed until the Proving Ground completes.</p></article><article class="proving-next-card"><small>NEXT BEST MOVE</small><strong>Run Fleet Readiness</strong><p>Start a bounded, non-destructive verification when you are ready.</p></article><article class="proving-release-card"><small>RELEASE ANCHOR</small><strong>${escapeHtml(knownGood)}</strong><p>The Last Known Good anchor remains unchanged while this candidate verifies.</p><span>Candidate <b>${escapeHtml(BUILD_VERSION)}</b></span></article>`;
+    host.innerHTML='<div class="admiral-readiness-actions"><button id="admiralRerunBtn" type="button" class="primary-btn small">RUN PROVING GROUND</button></div>';
+    $('admiralRerunBtn')?.addEventListener('click',()=>renderAdmiralReadiness({announce:true}));
+  }
+
   async function renderAdmiralReadiness({announce=false}={}){
     const host=$('admiralReadinessBody'),state=$('admiralReadinessState'),stamp=$('admiralReadinessStamp'),summary=$('provingGroundSummary');
     if(!host)return null;
@@ -5784,6 +5858,7 @@
   window.DarkSkyAdmiralReadiness={run:runAdmiralReadinessChecks,render:renderAdmiralReadiness,exportRecovery:exportFleetRecoverySnapshot};
 
   async function renderEngineRoom(){
+    paintEngineHomeLocalFirst88139('engine-room-entry');
     // 8.6.15 Bootstrap Commit — Engine paint can never block forever on roster
     // reconciliation. The resolver owns a shorter named deadline; this outer guard
     // catches any uninstrumented wait and paints a diagnostic Dock instead.
@@ -5793,8 +5868,8 @@
       const trace=resolverLifelineTrace869();trace.status='hold';trace.finishedAt=new Date().toISOString();
       if(engineGate?.timeout&&!trace.firstFailure){trace.firstFailure='Engine presentation convergence';resolverMark869('Engine presentation convergence','timeout',{detail:'Outer Engine guard reached 1750 ms'});}
       console.warn('Bootstrap Commit Engine fallback',engineGate?.error||'timeout');
-      await renderFleetCommissioning({skipConvergence:true});
-    }else await renderFleetCommissioning({skipConvergence:true});
+      await commandDeadline(renderFleetCommissioning({skipConvergence:true}),1400,false);
+    }else await commandDeadline(renderFleetCommissioning({skipConvergence:true}),1400,false);
     // v3.9.8 — one canonical Engine refresh route. Earlier commissioning/join-fleet
     // paths called a non-existent helper after a successful registry commit, which
     // left the Engine DOM stale and made a durable project look as if it vanished.
@@ -13491,24 +13566,57 @@ The full order and approved media remain stored with this project.`;
     return [...p.governance.history];
   };
 
+  function paintEngineHomeLocalFirst88139(source='engine-home'){
+    retainLocalProtectedFleetPicture88139(source);
+    const list=projects(),live=list.filter(p=>p.publish?.status==='live').length;
+    const badge=$('projectSummaryBadge');
+    if(badge)badge.textContent=`${list.length} PROJECTS • ${live} LIVE • ${list.length-live} PRIVATE/TEST • BUILD ${BUILD_VERSION} • LOCAL FLEET READY • LIVE READS VERIFYING`;
+    paintEnginePerformanceLocal88139();
+    renderFleetHealthLocalFirst88139();
+    renderFullSailLocalFirst88139();
+    renderAdmiralReadinessLocalFirst88139();
+    try{renderFleetLearningRegistry();}catch(err){console.warn('fleet learning local paint warning',err);}
+    try{bindFleetIntelligenceDeck();renderFleetIntelligenceDeck('',fleetIntelligenceLocalSnapshot()).catch(err=>console.warn('fleet intelligence local paint warning',err));}catch(err){console.warn('fleet intelligence local paint warning',err);}
+  }
+
+  async function engineHomeStage88139(label,task,ms=2200){
+    const work=Promise.resolve().then(task).then(()=>true).catch(err=>{console.warn(`${label} warning`,err);proofSignerTraceEvent8616('engine-home-stage-error',{stage:label,message:String(err?.message||err)});return false;});
+    const completed=await commandDeadline(work,ms,false);
+    if(!completed)proofSignerTraceEvent8616('engine-home-stage-deferred',{stage:label,detail:`Local fleet remains usable after ${ms} ms`});
+    return completed;
+  }
+
   window.renderBlackFlagHome = async function(){
     proofSignerTraceEvent8616('engine-home-start',{detail:'renderBlackFlagHome entered'});
-    try{ await convergeCanonicalFleetForPresentation({source:'home-memory-muster'}); proofSignerTraceEvent8616('engine-home-memory-settled',{generation:Number(memoryMusterRead8612()?.generation||0),status:memoryMusterRead8612()?.status||'none'}); }catch(err){ proofSignerTraceEvent8616('engine-home-memory-error',{message:String(err?.message||err)}); console.warn('Bootstrap Commit home convergence warning',err); }
-    try{ const bootResult=await runProofBootstrap8614({source:'engine-home-init',timeoutMs:5200}); proofSignerTraceEvent8616('engine-home-bootstrap-return',{status:proofBootstrapRead8614()?.status||'none',generation:Number(proofBootstrapRead8614()?.generation||0),result:!!bootResult}); }catch(err){ proofSignerTraceEvent8616('engine-home-bootstrap-error',{message:String(err?.message||err)}); console.warn('Bootstrap Commit initialization warning',err); }
-    try{ populateEngineSettings(); }catch(err){ console.warn('populateEngineSettings warning',err); }
-    try{ await renderProjectCommand(); }catch(err){ console.warn('renderProjectCommand warning',err); }
-    try{ await refreshEngineDiagnostics(); }catch(err){ console.warn('diagnostics warning',err); }
-    try{ await renderFleetStats(); }catch(err){ console.warn('fleet stats warning',err); }
-    try{ await renderCaptainsLog(); }catch(err){ console.warn("Captain's Log warning",err); }
-    try{ await refreshV3CommandSystems(); }catch(err){ console.warn('v3 command systems warning',err); }
-    try{ await commandDeadline(renderFleetCommissioning(),1800,true); proofSignerTraceSnapshot8616('after-fleet-dock'); }catch(err){ proofSignerTraceEvent8616('engine-home-dock-error',{message:String(err?.message||err)}); console.warn('fleet dock warning',err); }
-    try{ renderFleetLearningRegistry(); }catch(err){ console.warn('fleet learning warning',err); }
-    try{ bindFleetIntelligenceDeck(); await renderFleetIntelligenceDeck(); proofSignerTraceSnapshot8616('after-fleet-intelligence'); }catch(err){ proofSignerTraceEvent8616('engine-home-intelligence-error',{message:String(err?.message||err)}); console.warn('fleet intelligence warning',err); }
-    try{ await settleCurrentFleetProof8640('engine-home-surfaces',3200); proofSignerTraceSnapshot8616('after-engine-home-registry-commit'); }catch(err){ proofSignerTraceEvent8616('engine-home-finalizer-error',{message:String(err?.message||err)}); console.warn('Generation Settlement finalizer warning',err); }
-    // Proving Ground remains read-only; normal Engine surfaces complete current proof before readiness reads it.
-    try{ await renderAdmiralReadiness(); }catch(err){ console.warn('admiral readiness warning',err); }
-    try{ await commandDeadline(renderFullSailCommandDeck(),2200,true); }catch(err){ console.warn('command deck warning',err); }
-    try{ await commandDeadline(renderV3ArchitectureStatus(),2200,true); }catch(err){ console.warn('broadside status warning',err); }
+    paintEngineHomeLocalFirst88139('engine-home-immediate');
+    try{populateEngineSettings();}catch(err){console.warn('populateEngineSettings warning',err);}
+    setTimeout(()=>{
+      (async()=>{
+        const converged=await engineHomeStage88139('fleet convergence',()=>convergeCanonicalFleetForPresentation({source:'home-memory-muster'}),3200);
+        if(converged)proofSignerTraceEvent8616('engine-home-memory-settled',{generation:Number(memoryMusterRead8612()?.generation||0),status:memoryMusterRead8612()?.status||'none'});
+        await engineHomeStage88139('proof bootstrap',()=>runProofBootstrap8614({source:'engine-home-init',timeoutMs:3600}),3800);
+        await Promise.all([
+          engineHomeStage88139('project command',renderProjectCommand,2600),
+          engineHomeStage88139('fleet dock',()=>renderFleetCommissioning(),2200),
+          engineHomeStage88139('fleet intelligence',()=>renderFleetIntelligenceDeck(),1900)
+        ]);
+        proofSignerTraceSnapshot8616('after-primary-engine-surfaces');
+        await Promise.all([
+          engineHomeStage88139('engine diagnostics',refreshEngineDiagnostics,1900),
+          engineHomeStage88139('fleet stats',renderFleetStats,1900),
+          engineHomeStage88139("Captain's Log",renderCaptainsLog,1700),
+          engineHomeStage88139('command systems',refreshV3CommandSystems,2200),
+          engineHomeStage88139('broadside status',renderV3ArchitectureStatus,1800)
+        ]);
+        await engineHomeStage88139('fleet proof settlement',()=>settleCurrentFleetProof8640('engine-home-surfaces',2600),2800);
+        const readiness=await engineHomeStage88139('fleet readiness',()=>renderAdmiralReadiness(),3000);
+        if(!readiness)renderAdmiralReadinessLocalFirst88139('Local fleet ready; live proof read deferred. Run Fleet Readiness when ready.');
+        const command=await engineHomeStage88139('command deck',renderFullSailCommandDeck,2400);
+        if(!command)renderFullSailLocalFirst88139();
+        proofSignerTraceSnapshot8616('after-engine-home-background-settlement');
+      })().catch(err=>{console.warn('Keelbound Engine background settlement warning',err);paintEngineHomeLocalFirst88139('engine-home-background-fallback');});
+    },0);
+    return true;
   };
 
   function bindFlowersShell(){if(window.__flowersShellBound)return;window.__flowersShellBound=true;$('flowersCustomerShell')?.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});$('flowersMessage')?.addEventListener('input',e=>{flowersState.message=e.target.value;$('flowersCharCount').textContent=String(flowersState.message.length);});$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone||!flowersState.customerEmail){alert('Name, phone, and email are required.');return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(flowersState.customerEmail)){alert('Enter a valid email address.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});}

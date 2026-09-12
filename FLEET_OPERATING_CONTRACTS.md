@@ -432,7 +432,7 @@ Owner / Partner authority is a standalone project-scoped surface.
 
 ## Source: `SESSION_BOUNDARY_760.md`
 
-# Dark Sky 7.6.0 — Fleet Circuit — Session Boundary Contract
+# Dark Sky 7.6.0 — Keelbound — Session Boundary Contract
 
 Deployment state and customer-session state are separate facts.
 
@@ -456,7 +456,7 @@ The Session Boundary Voyage is HOLD-worthy. It verifies the live route establish
 
 # Dark Sky 7.8.0 — Sounding Glass — Session Clarity Contract
 
-Fleet Circuit separated deployment state from customer-session state. Sounding Glass makes every customer-facing confirmation say exactly which non-live boundary is active.
+Keelbound separated deployment state from customer-session state. Sounding Glass makes every customer-facing confirmation say exactly which non-live boundary is active.
 
 ## Required labels
 
@@ -498,7 +498,7 @@ The pattern is reusable across future projects only when the mission needs it; p
 
 ## Source: `TRUE_BEARING_FLEET_CONTRACT.md`
 
-# Fleet Circuit Fleet Contract — 7.9.1
+# Keelbound Fleet Contract — 7.9.1
 
 ## Primary navigation
 Fleet Dock is the normal fleet navigator. The Captain chooses a vessel first, then the authority route. Advanced Project Command remains available for deeper administration but is not the navigation backbone.

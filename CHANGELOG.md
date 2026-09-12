@@ -1,3 +1,11 @@
+# Dark Sky 8.8.13.9 — Keelbound
+
+- Seeds the complete protected six-vessel picture in memory before asynchronous reconciliation, while preserving every existing row and future fleet member.
+- Paints Fleet Intelligence, Command Deck, Fleet Health, Proving Ground, Fleet Learning, Project Tools, and the Dark Sky storage KPI from bounded local truth before live reads settle.
+- Isolates Engine background stages behind deadlines so one stalled storage or project read cannot hold every later surface on placeholders.
+- Uses explicit **VERIFYING** fallbacks and never claims live workload, proof, deployment, owner, or storage facts before their corresponding reads complete.
+- Preserves Professional/Cinematic command parity, staged/adopted separation, authentication timing, Known Good promotion, authority, isolation, recovery, and all six vessel identities.
+
 # Dark Sky 8.8.13.8 — Fleet Circuit
 
 - Added direct Fleet Readiness and Current Findings controls to Captain Professional View while preserving the same Cinematic commands.

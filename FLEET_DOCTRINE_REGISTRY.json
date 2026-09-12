@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.13.8",
-  "release": "Fleet Circuit",
+  "build": "8.8.13.9",
+  "release": "Keelbound",
   "status": "active",
   "principles": [
     {

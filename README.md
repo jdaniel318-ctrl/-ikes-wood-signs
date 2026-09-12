@@ -1,3 +1,19 @@
+# Dark Sky 8.8.13.9 — Keelbound
+
+Keelbound is the narrow repair for the field-observed Engine stall. The protected six-vessel roster now paints from its complete local chart before slower registry, storage, proof, and project reads begin. Existing vessel rows remain authoritative; the local guard only supplies a missing protected presentation row and does not persist, admit, adopt, promote, or rewrite evidence.
+
+Fleet Intelligence, Command Deck, Fleet Health, Proving Ground, Fleet Learning, Project Tools, and the Dark Sky storage KPI now show a usable local result or an honest **VERIFYING** state immediately. Independent background stages have bounded handoffs, so one slow browser read cannot strand every downstream station on **READING**. Completed Dark Sky soundings remain distinct from Safari's total origin estimate.
+
+This release preserves Fleet Circuit's Captain Professional/Cinematic parity, durable staging proof, storage attribution language, and Engineering Systems discoverability. Authentication timing, authority gates, Known Good promotion, staged/adopted separation, project records, and exact-vessel boundaries are unchanged.
+
+## Quick Keelbound circuit
+
+1. Enter Engine Room and confirm Project Tools immediately reports all six projects.
+2. Open Engineering Systems and confirm Fleet Intelligence, Command Deck, Fleet Health, Proving Ground, and Fleet Learning leave their initial placeholders or show **VERIFYING** without becoming blank.
+3. Open two different vessels in sequence and confirm identity, brand, Project ID, and records remain exact.
+4. Open Captain Watch in Professional and Cinematic views and confirm the same readiness and findings functions remain available.
+5. Return to Engine and run Fleet Readiness once. Do not promote the candidate unless the resulting evidence supports that separate decision.
+
 # Dark Sky 8.8.13.8 — Fleet Circuit
 
 Fleet Circuit is a focused field-validation release. Captain Professional View now exposes **Run Fleet Readiness** and **View Current Findings** directly, while Cinematic View retains the same functions. Presentation may differ; command capability does not.
