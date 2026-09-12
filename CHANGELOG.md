@@ -1,3 +1,10 @@
+# Dark Sky 8.8.13.7 — True Bearing
+
+- Carries the Captain's completed Fleet Readiness report through the authenticated Admiral gate and immediately renders Current Findings.
+- Replaces the false indefinite VERIFYING state with NOT RUN when no check or completed report exists.
+- Keeps genuine background-pending events and deliberate manual reruns distinct.
+- Preserves all four genuine watches and every fleet, vessel, authority, authentication, schedule, isolation, recovery, and growth contract.
+
 # Dark Sky 8.8.13.6 — True North
 
 - Verified and current-stamped the Fleet Doctrine, Golden Voyage, and three-layer command-model proof registries, clearing three stale-build false holds without weakening their predicates.

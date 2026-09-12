@@ -1,8 +1,8 @@
 {
-  "release": "True North",
-  "name": "True North",
-  "build": "8.8.13.6",
-  "seal": "true-north-88136",
+  "release": "True Bearing",
+  "name": "True Bearing",
+  "build": "8.8.13.7",
+  "seal": "true-bearing-88137",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

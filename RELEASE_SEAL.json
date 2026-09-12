@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.6",
-  "release": "True North",
-  "seal": "true-north-88136",
+  "build": "8.8.13.7",
+  "release": "True Bearing",
+  "seal": "true-bearing-88137",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "True North",
-  "name": "True North",
-  "releaseName": "True North"
+  "release_name": "True Bearing",
+  "name": "True Bearing",
+  "releaseName": "True Bearing"
 }

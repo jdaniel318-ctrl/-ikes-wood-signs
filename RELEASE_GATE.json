@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.6",
-  "release": "True North",
+  "build": "8.8.13.7",
+  "release": "True Bearing",
   "generatedAt": "2026-09-12T16:26:23Z",
   "checks": {
     "build_version": true,
@@ -260,8 +260,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.6 True North aligns structurally verified proof registries to the current build, tests the configured Professional-first contract independently of the open view, and routes Cinematic Fleet Readiness through strict Admiral authentication directly to Current Findings. Genuine watches remain active; Fleet Core, Bootstrap schedules, isolation, growth, and permanent authority contracts remain intact.",
-  "candidate": "8.8.13.6",
+  "note": "8.8.13.7 True Bearing preserves the Captain's completed readiness report through strict Admiral authentication, renders governed Current Findings immediately, and replaces false indefinite VERIFYING with truthful NOT RUN when no check exists. Genuine watches and all protected fleet contracts remain intact.",
+  "candidate": "8.8.13.7",
   "features": {
     "fleet_rigging_four_primary_levels": true,
     "deck_clearance_engine_watch_progressive": true,
@@ -274,6 +274,8 @@
     "captain_controls_full_opacity": true,
     "captain_controls_ipad_touch_targets": true,
     "captain_readiness_direct_current_findings": true,
+    "captain_admiral_readiness_report_handoff": true,
+    "admiral_not_run_truth_state": true,
     "captain_professional_default_truth_check": true,
     "current_proof_registry_build_alignment": true,
     "admiral_gate_neutral_pre_auth": true,
@@ -458,8 +460,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.6",
-    "seal": "true-north-88136",
+    "build": "8.8.13.7",
+    "seal": "true-bearing-88137",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

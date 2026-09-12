@@ -1,3 +1,11 @@
+# Dark Sky 8.8.13.7 — True Bearing
+
+True Bearing repairs the verified-readiness handoff between Captain Cinematic View and the Admiral Command Deck. After the Captain completes Fleet Readiness and deliberately chooses **View Current Findings**, the authenticated Admiral deck now carries that exact completed report forward, renders its current findings immediately, and preserves its WATCH, HOLD, or CLEAR posture without requiring a duplicate run.
+
+When no completed report exists, the Admiral deck now states **NOT RUN** and offers a deliberate manual check instead of claiming indefinitely that verification is underway. A genuine background-pending event may still show VERIFYING, and **Run Fleet Readiness** remains available as an optional fresh diagnosis.
+
+This is a state-handoff repair only. The four genuine True North watches remain intact, and no readiness predicate, Fleet Core record, vessel boundary, authentication or authority gate, commissioning evidence, entitlement, owner state, canonical brand, Bootstrap schedule, weekday norm, weekend exception, recovery path, or growth contract is weakened or removed.
+
 # Dark Sky 8.8.13.6 — True North
 
 True North repairs the fleet-readiness truth model exposed during iPad field testing. The Fleet Doctrine, Golden Voyage, and Engine → Captain → Admiral command registries were structurally verified against their existing release-blocking predicates, then aligned to the current build. No check is suppressed: stale proof identity no longer creates three false critical holds, while unresolved field evidence remains visible as WATCH.
