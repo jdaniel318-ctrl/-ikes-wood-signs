@@ -1,3 +1,11 @@
+# Dark Sky 8.8.13.5 — Proof Lantern
+
+Proof Lantern repairs the field-confirmed Fleet Readiness dead-button appearance inside Captain Cinematic View. The check now becomes a first-class chart state: the First Mate panel immediately reports **CHECKING**, then retains the authoritative **CLEAR**, **WATCH**, **HOLD**, or **UNAVAILABLE** result with completed-check, watch-item, and critical-hold counts. The Captain can deliberately run the proof again from the same visible panel.
+
+Support-station failures now produce a visible, readable status notice instead of disappearing into an unstyled element outside the cinematic viewport. Important notices remain long enough to read on iPad. Other support routes continue through the shared Captain command rail, and missing stations fail visibly.
+
+Constellation's signal-first chart, selected-vessel context, Watch → Decide → Act → Record loop, Professional View, exact-vessel routing, and cinematic motion remain intact. No Fleet Core membership, Bootstrap schedule, weekend exception, authentication rule, authority boundary, commissioning evidence, entitlement, owner state, canonical brand, recovery path, or growth capability is changed.
+
 # Dark Sky 8.8.13.4 — Constellation
 
 Constellation is the field-hardening and cinematic-depth pass for the Captain's Living Chart. Captain Watch now exposes one shell-owned **Return to Engine** control instead of allowing the legacy global escape to overlap **Professional View**. When fleet truth arrives, the first genuine attention signal automatically becomes the opening focus; after the Captain deliberately selects another vessel, that bearing remains under Captain control.

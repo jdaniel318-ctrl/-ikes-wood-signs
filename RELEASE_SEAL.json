@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.4",
-  "release": "Constellation",
-  "seal": "constellation-88134",
+  "build": "8.8.13.5",
+  "release": "Proof Lantern",
+  "seal": "proof-lantern-88135",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Constellation",
-  "name": "Constellation",
-  "releaseName": "Constellation"
+  "release_name": "Proof Lantern",
+  "name": "Proof Lantern",
+  "releaseName": "Proof Lantern"
 }

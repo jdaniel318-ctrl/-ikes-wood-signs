@@ -1,8 +1,8 @@
 {
-  "release": "Constellation",
-  "name": "Constellation",
-  "build": "8.8.13.4",
-  "seal": "constellation-88134",
+  "release": "Proof Lantern",
+  "name": "Proof Lantern",
+  "build": "8.8.13.5",
+  "seal": "proof-lantern-88135",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

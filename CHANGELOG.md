@@ -1,3 +1,11 @@
+# Dark Sky 8.8.13.5 — Proof Lantern
+
+- Repaired the Cinematic **More Systems → Fleet Readiness** route after field testing showed no visible response.
+- Added immediate CHECKING feedback and durable CLEAR, WATCH, HOLD, or UNAVAILABLE results inside the First Mate panel.
+- Added fleet-proof counts and a visible **Run Readiness Again** control.
+- Made shared support-station failures visible and extended consequential status notices for iPad readability.
+- Preserved Constellation, Professional Command, fleet isolation, authority, commissioning, evidence, Bootstrap schedules, weekend exceptions, and expansion contracts.
+
 # Dark Sky 8.8.13.4 — Constellation
 
 - Removed the duplicate legacy Return to Engine control from Captain Watch.

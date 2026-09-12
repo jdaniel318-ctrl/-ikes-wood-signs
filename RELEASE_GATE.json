@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.4",
-  "release": "Constellation",
+  "build": "8.8.13.5",
+  "release": "Proof Lantern",
   "generatedAt": "2026-09-12T16:26:23Z",
   "checks": {
     "build_version": true,
@@ -260,8 +260,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.4 Constellation field-hardens the Living Chart: one visible Engine return, automatic opening focus on the genuine attention vessel, deliberate vessel selection preserved thereafter, expanded names, animated route bearings, stronger signal acquisition, and Safari security-code semantics. Professional Command, Fleet Core, Bootstrap schedules, and permanent authority contracts remain intact.",
-  "candidate": "8.8.13.4",
+  "note": "8.8.13.5 Proof Lantern repairs the field-reported Fleet Readiness dead-button appearance in Cinematic View. The route now paints CHECKING immediately and retains CLEAR, WATCH, HOLD, or UNAVAILABLE with proof counts and a run-again control. Constellation's command chart, Professional Command, Fleet Core, Bootstrap schedules, and permanent authority contracts remain intact.",
+  "candidate": "8.8.13.5",
   "features": {
     "fleet_rigging_four_primary_levels": true,
     "deck_clearance_engine_watch_progressive": true,
@@ -455,8 +455,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.4",
-    "seal": "constellation-88134",
+    "build": "8.8.13.5",
+    "seal": "proof-lantern-88135",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
