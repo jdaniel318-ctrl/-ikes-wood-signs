@@ -1,3 +1,14 @@
+## 8.8.13 — Fleet Rigging
+
+- Establishes four primary operating lanes: Operate Vessels, Captain Watch, Admiral My Fleet, and Build & Govern.
+- Keeps fleet growth explicit through Commission New Vessel and a runtime-driven Vessel Workstations roster that is not hard-coded to six members.
+- Moves performance, storage, maintenance, release proof, Fleet Intelligence, learning, recovery, and engineering evidence behind one Engineering Systems control.
+- Removes the closed Fleet Dock placeholder and incomplete performance cards from the default daily command view without deleting their capability.
+- Converts Captain command into one prioritized Watch → Decide → Act → Record flow and filters routine navigation noise from visible recent work.
+- Suppresses the duplicate Captain Return to Engine control on the professional iPad view.
+- Compacts Admiral command around the active Govern, Standardize, Delegate, or Promote lane while preserving readiness, continuity, audit, rollback, commissioning, entitlements, branding, and Foundry controls.
+- Preserves strict two-step Admiral authentication, read-only Fleet Watchtower observation, exact-vessel context, six-member Fleet Core, separate Bootstrap Build Admiral Program, owner independence, and isolated construction schedules.
+
 ## 8.8.11.9 — Quick Passage
 
 - Adds a direct Engine Room → Admiral PIN → My Fleet route while preserving the separate authenticated Admiral account check.

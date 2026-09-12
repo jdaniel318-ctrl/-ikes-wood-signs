@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.12.1';
+  const BUILD_VERSION='8.8.13';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -10727,7 +10727,7 @@
     document.body.classList.add('engine-mode');
     $('blackFlagEntryGate')?.classList.add('hidden');
     $('enginePanel').classList.remove('hidden');
-    const systemsToggle=$('clearDeckSystemsToggle');if(systemsToggle){systemsToggle.textContent='MORE SYSTEMS';systemsToggle.setAttribute('aria-expanded','false');}
+    const systemsToggle=$('clearDeckSystemsToggle');if(systemsToggle){systemsToggle.textContent='ENGINEERING SYSTEMS';systemsToggle.setAttribute('aria-expanded','false');}
     const clearDeckStatus=$('clearDeckStatus');if(clearDeckStatus)clearDeckStatus.textContent='Clear Deck ready. Choose one command.';
     requestAnimationFrame(()=>verifyLayerIsolation('engine'));
     populateEngineSettings();
@@ -14902,11 +14902,12 @@ The full order and approved media remain stored with this project.`;
       if(target.matches('[data-clear-deck-command]')){
         event.preventDefault();event.stopPropagation();const command=target.dataset.clearDeckCommand;const status=$('clearDeckStatus');
         const reveal=(id,message)=>{const section=$(id);if(!section)return;requestAnimationFrame(()=>{section.scrollIntoView({behavior:'smooth',block:'start'});section.classList.add('command-target-pulse');setTimeout(()=>section.classList.remove('command-target-pulse'),1800);});if(status)status.textContent=message;};
-        if(command==='projects'){document.body.classList.add('engine-dock-open');reveal('fleetCommissioningDock','Fleet Dock opened. Project Control is the daily operating route; Commissioning is readiness proof.');return;}
+        if(command==='projects'){document.body.classList.add('engine-dock-open');reveal('fleetCommissioningDock','Vessel Workstations opened. Choose one vessel, then one exact surface.');return;}
         if(command==='fleet'){reveal('engineFleetHealth','Fleet picture opened. Choose a vessel to go directly to Project Control.');return;}
         if(command==='watch'){Promise.resolve(renderFirstMateWatch()).finally(()=>reveal('firstMateWatch','Fleet Watch refreshed. No vessel state was changed.'));return;}
+        if(command==='commission'){$('commissionNewProjectBtn')?.click();return;}
         if(command==='configure'){openEngineConfiguration('top');return;}
-        if(command==='systems'){const opening=!document.body.classList.contains('engine-systems-expanded');document.body.classList.toggle('engine-systems-expanded',opening);target.setAttribute('aria-expanded',opening?'true':'false');target.textContent=opening?'HIDE MORE SYSTEMS':'MORE SYSTEMS';if(status)status.textContent=opening?'More Systems opened: maintenance, release proof, Fleet Intelligence, learning, and engineering evidence are available below.':'More Systems closed. Daily command remains forward.';if(!opening)requestAnimationFrame(()=>$('clearDeckLaunchpad')?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
+        if(command==='systems'){const opening=!document.body.classList.contains('engine-systems-expanded');document.body.classList.toggle('engine-systems-expanded',opening);target.setAttribute('aria-expanded',opening?'true':'false');target.textContent=opening?'HIDE ENGINEERING SYSTEMS':'ENGINEERING SYSTEMS';if(status)status.textContent=opening?'Engineering Systems opened: performance, maintenance, release proof, Fleet Intelligence, learning, recovery, and evidence are available below.':'Engineering Systems closed. Daily command remains forward.';if(!opening)requestAnimationFrame(()=>$('clearDeckLaunchpad')?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
       }
 
       if(target.matches('#projectTabs [data-project-group]')){

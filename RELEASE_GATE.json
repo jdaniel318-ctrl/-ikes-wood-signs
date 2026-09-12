@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.12.1",
-  "release": "Clear Watch",
-  "generatedAt": "2026-09-12T01:29:11Z",
+  "build": "8.8.13",
+  "release": "Fleet Rigging",
+  "generatedAt": "2026-09-12T02:21:30Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -260,9 +260,19 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.12.1 Clear Watch repairs the field-tested iPad Watchtower: one full-width card per vessel, unclipped actions, project-specific marks without invented logos, and the same truthful read-only observation boundary. Fleet Core, Bootstrap schedules, commissioning, entitlements, owner independence, and authority remain unchanged.",
-  "candidate": "8.8.12.1",
+  "note": "8.8.13 Fleet Rigging consolidates daily command into four explicit levels, retains growth and engineering capability behind clear support routes, and preserves every proven authority, project-isolation, branding, scheduling, recovery, and release boundary.",
+  "candidate": "8.8.13",
   "features": {
+    "fleet_rigging_four_primary_levels": true,
+    "one_primary_doorway_per_job": true,
+    "vessel_workstations_runtime_roster": true,
+    "engineering_systems_progressive_disclosure": true,
+    "closed_dock_placeholder_removed": true,
+    "captain_single_priority_signal_flow": true,
+    "captain_navigation_noise_filtered": true,
+    "captain_duplicate_engine_return_suppressed": true,
+    "admiral_active_lane_compaction": true,
+    "fleet_growth_routes_preserved": true,
     "bootstrap_build_primary_logo": true,
     "bootstrap_build_horizontal_logo": true,
     "bootstrap_build_compact_icon": true,
@@ -433,8 +443,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.12.1",
-    "seal": "clear-watch-88121",
+    "build": "8.8.13",
+    "seal": "fleet-rigging-8813",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

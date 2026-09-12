@@ -1,3 +1,23 @@
+# Dark Sky 8.8.13 — Fleet Rigging
+
+Fleet Rigging organizes the existing platform around four clear operating levels: **Operate Vessels**, **Captain Watch**, **Admiral My Fleet**, and **Build & Govern**. Each job now has one primary doorway, while commissioning, Engine configuration, performance, maintenance, recovery, release proof, Fleet Intelligence, learning, and engineering evidence remain available through explicit support and Engineering Systems routes.
+
+The daily Engine view no longer presents an empty Fleet Dock placeholder or incomplete cost/storage panels as primary command. **Vessel Workstations** opens only when requested and continues to consume the scalable runtime roster rather than a hard-coded six-vessel layout. Every vessel retains its Project Control, customer experience, owner/partner access, commissioning, and test/preview paths.
+
+Captain Watch now puts one highest-priority signal through a readable **Watch → Decide → Act → Record** flow. Routine navigation is filtered from visible recent work without deleting durable command records, and the duplicate iPad Return to Engine control is suppressed. Admiral command keeps Govern, Standardize, Delegate, and Promote, but removes the redundant explanatory layer and compacts readiness and continuity around the active lane.
+
+This release changes organization and presentation, not fleet authority. The six Fleet Core vessels remain independent; Bootstrap Build remains a separate uncommissioned Admiral Program; Admiral My Fleet remains read-only after strict two-step authentication; and all mutations remain exact-vessel, previewed, authenticated, reasoned, and audited. Existing schedules, entitlements, owner state, canonical marks, recovery contracts, and Fleet Learning records are preserved.
+
+## Fleet Rigging dead-weight ledger
+
+| Disposition | Current decision |
+| --- | --- |
+| Keep | Vessel Workstations, all three vessel surfaces, commissioning, Admiral Programs, entitlements, canonical branding, recovery, audit/rollback, Fleet Learning, release proof, and Bootstrap scheduling. |
+| Move | Performance, browser storage, maintenance, diagnostics, Proving Ground, Fleet Intelligence, and engineering evidence move behind Engineering Systems. |
+| Combine | Captain signal/analysis/route/history becomes one priority flow; Admiral orientation and readiness tighten around the selected governance lane. |
+| Hide | The closed Fleet Dock placeholder, incomplete cost/storage cards on the daily deck, the duplicate Captain header exit, and the extra Engine Captain shortcut no longer compete with primary command. |
+| Remove | No durable data, migration, recovery path, capability contract, or retired controller is deleted in this release. Permanent removal requires dependency and regression proof in a later cleanup release. |
+
 # Dark Sky 8.8.12.1 — Clear Watch
 
 Clear Watch repairs the iPad field findings from Fleet Watchtower. Fleet Core cards now render one full-width row at iPad landscape sizes so lifecycle, freshness, operational fields, and **Open Vessel** remain readable and fully tappable without horizontal clipping.

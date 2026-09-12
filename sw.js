@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.12.1';
-const RELEASE_SEAL='clear-watch-88121';
+const RELEASE_BUILD='8.8.13';
+const RELEASE_SEAL='fleet-rigging-8813';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

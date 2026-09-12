@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.12.1",
-  "release": "Clear Watch",
-  "seal": "clear-watch-88121",
+  "build": "8.8.13",
+  "release": "Fleet Rigging",
+  "seal": "fleet-rigging-8813",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clear Watch",
-  "name": "Clear Watch",
-  "releaseName": "Clear Watch"
+  "release_name": "Fleet Rigging",
+  "name": "Fleet Rigging",
+  "releaseName": "Fleet Rigging"
 }
