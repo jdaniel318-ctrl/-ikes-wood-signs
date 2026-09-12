@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.13.7';
+  const BUILD_VERSION='8.8.13.8';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -1844,12 +1844,16 @@
     if(!r)return;
     window.__blackFlagLastStorageSounding=r;
     const b=r.breakdown||{};const origin=Number(r.usage||0),known=Number(b.knownBytes||0),gap=Math.max(0,origin-known),cleanup=Number(r.oldCacheBytes||0);
+    try{localStorage.setItem('bf.v4.storage.lastSounding',JSON.stringify({at:r.at,usage:r.usage,knownBytes:known,unattributedBytes:gap,oldCaches:r.oldCaches||[],oldCacheBytes:r.oldCacheBytes||0}))}catch(_){}
     if($('storageTelemetryOrigin')) $('storageTelemetryOrigin').textContent=r.usage!=null?`${formatStorageMb(origin)} MB`:'Unavailable';
     if($('storageTelemetryMeasured')) $('storageTelemetryMeasured').textContent=`${formatStorageMb(known)} MB`;
     if($('storageTelemetryUnattributed')) $('storageTelemetryUnattributed').textContent=`${formatStorageMb(gap)} MB`;
     if($('storageTelemetryCleanup')) $('storageTelemetryCleanup').textContent=`${formatStorageMb(cleanup)} MB`;
     const box=$('storageTelemetryStatus');if(box){box.classList.add('is-active');box.innerHTML=renderStorageStewardReport(r);box.dataset.inspectOk='1';}
     const diag=$('storageTelemetryDiagnosticsBtn');if(diag){diag.disabled=false;diag.textContent='COMPACT DIAGNOSTICS';} const clean=$('storageTelemetryCleanBtn');if(clean){const stale=(r.oldCaches?.length||0);clean.disabled=!stale;clean.dataset.mode='cleanup';clean.textContent=stale?`CLEAN ${stale} STALE CACHE${stale===1?'':'S'}`:'SAFE CLEANUP • NONE';}
+    // Keep the Engine summary on the same completed sounding instead of
+    // waiting for another Engine render or showing a stale measured value.
+    Promise.resolve(renderEnginePerformance()).catch(()=>{});
   }
   async function openStorageTelemetry({inspect=true}={}){
     openEngineConfiguration('storage');
@@ -4977,8 +4981,14 @@
       [FLEET_STAGING_VERIFIED_KEY,'__darkSkyFleetStagingVerified8622',null]
     ];
     for(const [key,prop,fallback] of specs){
-      if(window[prop]!=null)continue;
-      try{const row=await getSetting(`fleet-command:${key}`);const v=row?.value;if(v!=null){window[prop]=v;try{sessionStorage.setItem(FLEET_CMD_SESSION_PREFIX_8622+key,JSON.stringify(v));}catch(_){}}else if(fallback!=null)window[prop]=fallback;}catch(_){}
+      let sessionHasValue=false;
+      try{sessionHasValue=sessionStorage.getItem(FLEET_CMD_SESSION_PREFIX_8622+key)!=null;}catch(_){}
+      if(window[prop]!=null&&sessionHasValue)continue;
+      try{
+        const row=await getSetting(`fleet-command:${key}`),v=row?.value;
+        if(v!=null){window[prop]=v;try{sessionStorage.setItem(FLEET_CMD_SESSION_PREFIX_8622+key,JSON.stringify(v));}catch(_){}}
+        else if(window[prop]==null&&fallback!=null)window[prop]=fallback;
+      }catch(_){if(window[prop]==null&&fallback!=null)window[prop]=fallback;}
     }
     if(!window.__darkSkyProvingEvidence8622){
       try{const row=await getSetting(`proving-evidence:${BUILD_VERSION}`);const v=row?.value;if(v&&String(v.build)===String(BUILD_VERSION)){window.__darkSkyProvingEvidence8622=v;try{sessionStorage.setItem(PROVING_EVIDENCE_SESSION_KEY_8622,JSON.stringify(v));}catch(_){}}}catch(_){}
@@ -5265,6 +5275,10 @@
   function admiralLastRecovery(){try{return JSON.parse(localStorage.getItem('darkSkyLastRecovery')||'null');}catch(_){return null;}}
 
   async function runAdmiralReadinessChecks(source='manual'){
+    // Fleet Circuit: readiness must hydrate the durable command ledger before
+    // evaluating it. A render-time fallback may already exist in memory, but it
+    // must never mask a later IndexedDB read after a reload or authority gate.
+    await hydrateFleetCommandDurables8622();
     const settlement8657=await settleProofChain8657(`readiness:${source}`);
     const barrierProof8611=settlement8657?.proof||await awaitProofBarrier8611({source:`readiness:${source}`,timeoutMs:700});
     const currentProof8611=(barrierProof8611?.ok?barrierProof8611:proofBarrierRead8611()?.currentProof)||null;
@@ -5438,13 +5452,13 @@
     add('fleet-intelligence-live-voyage','Fleet Intelligence live first paint',proofReady8611&&proofStages8611.Intelligence?.ok?'pass':downstreamState8657,proofReady8611&&proofStages8611.Intelligence?.ok?'Fleet Intelligence committed a usable six-vessel first-paint proof after the barrier.':blockedDetail8657);
     add('evidence-reconciliation-current-proof','Bootstrap Commit current proof',proofReady8611?'pass':downstreamState8657,proofReady8611?'Initialize → reconcile → render → prove completed; all current readiness consumers share one committed six-vessel proof.':blockedDetail8657);
 
-    let stagingVerified864=null;try{stagingVerified864=JSON.parse(localStorage.getItem(FLEET_STAGING_VERIFIED_KEY)||'null');}catch(_){}
+    const stagingVerified864=fleetCmdRead8622(FLEET_STAGING_VERIFIED_KEY,'__darkSkyFleetStagingVerified8622',null);
     const stagingLedger864=fleetStagingLedgerRead();
     const stagedRows864=fleetLearningRecommendations().filter(r=>r.status==='staged');
-    const stagingPersistOk864=stagedRows864.every(r=>stagingLedger864.some(x=>x.status==='staged'&&x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)));
-    const stagingActionExpected864=stagingVerified864?.build===BUILD_VERSION&&stagingVerified864?.status==='staged';
+    const stagingPersistOk864=stagedRows864.every(r=>stagingLedger864.some(x=>x.status==='staged'&&x.learningId===r.learningId&&String(x.projectId)===String(r.projectId)&&String(x.build)===String(stagingVerified864?.build)));
+    const stagingActionExpected864=stagingVerified864?.status==='staged'&&Number(stagingVerified864?.count||0)>0&&!!stagingVerified864?.learningId;
     const stagingActionOk864=!stagingActionExpected864||(stagedRows864.length===Number(stagingVerified864.count||0)&&stagingPersistOk864&&stagedRows864.every(r=>r.status!=='adopted'));
-    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) survived write/read/render with adoption separate.`:'No 8.6.8 live staging action has been recorded yet; staging machinery is armed for the Golden UI voyage.'):'A live staging action was recorded but persisted/rendered ledger state disagrees.');
+    add('staging-ledger-live-voyage','Staging Ledger live round trip',stagingActionOk864?(stagingActionExpected864?'pass':'warn'):'fail',stagingActionOk864?(stagingActionExpected864?`${stagedRows864.length} staged vessel record(s) from ${String(stagingVerified864.build||'a prior build')} survived write/read/render with adoption separate.`:'No live staging action has been recorded yet; staging machinery is armed for a deliberate Fleet Learning review.'):'A live staging action was recorded but its verified record, staged rows, and durable ledger do not agree.');
 
     let manifestState='warn',manifestDetail='Deployment manifest could not be read; runtime checks remain valid.';
     try{
@@ -5553,11 +5567,10 @@
     let priorSounding=null;try{priorSounding=JSON.parse(localStorage.getItem('bf.v4.storage.lastSounding')||'null');}catch(_){ }
     const priorMb=Number(priorSounding?.usage||0)/1024/1024;
     const priorKnownMb=Number(priorSounding?.knownBytes||0)/1024/1024;
-    const growthMb=priorMb>0?originMb-priorMb:0;
     const browserGapMb=Math.max(0,originMb-priorKnownMb);
     const measuredDanger=priorKnownMb>=256;
-    const storageGrowthState=measuredDanger?'fail':(originMb>=256||growthMb>=128)?'warn':'pass';
-    add('storage-growth','Engine origin storage growth',storageGrowthState,storageGrowthState==='pass'?`Origin usage is ${originMb.toFixed(1)} MB and remains below the command watch threshold.`:measuredDanger?`Measured Dark Sky data is ${priorKnownMb.toFixed(1)} MB inside a ${originMb.toFixed(1)} MB origin. Inspect Engine Storage before proceeding.`:`Safari origin estimate is ${originMb.toFixed(1)} MB${priorMb>0?` • ${growthMb>=0?'+':''}${growthMb.toFixed(1)} MB since the retained sounding`:''}; last detailed sounding measured ${priorKnownMb.toFixed(1)} MB Dark Sky data and ${browserGapMb.toFixed(1)} MB is browser-managed/unattributed. WATCH until a fresh detail scan proves ownership.`,'check');
+    const storageGrowthState=measuredDanger?'fail':browserGapMb>=128?'warn':'pass';
+    add('storage-growth','Safari storage-attribution gap',storageGrowthState,storageGrowthState==='pass'?`Safari reports ${originMb.toFixed(1)} MB for this origin; ${priorKnownMb.toFixed(1)} MB is measured Dark Sky data and the remaining ${browserGapMb.toFixed(1)} MB attribution gap is below the watch threshold.`:measuredDanger?`Measured Dark Sky data is ${priorKnownMb.toFixed(1)} MB inside Safari's ${originMb.toFixed(1)} MB origin estimate. Inspect Engine Storage before proceeding.`:`The latest detailed sounding measured ${priorKnownMb.toFixed(1)} MB of Dark Sky data inside Safari's ${originMb.toFixed(1)} MB origin estimate. The remaining ${browserGapMb.toFixed(1)} MB is browser-managed or unattributed and is not classified as Dark Sky growth.`,'check');
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
@@ -10717,7 +10730,7 @@
     document.body.classList.add('engine-mode');
     $('blackFlagEntryGate')?.classList.add('hidden');
     $('enginePanel').classList.remove('hidden');
-    const systemsToggle=$('clearDeckSystemsToggle');if(systemsToggle){systemsToggle.textContent='ENGINEERING SYSTEMS';systemsToggle.setAttribute('aria-expanded','false');}
+    const systemsToggle=$('clearDeckSystemsToggle');if(systemsToggle){systemsToggle.innerHTML='<i aria-hidden="true"></i><span><strong>ENGINEERING SYSTEMS</strong><small>Diagnostics, proof, learning &amp; recovery</small></span><em>OPEN</em>';systemsToggle.setAttribute('aria-expanded','false');}
     const clearDeckStatus=$('clearDeckStatus');if(clearDeckStatus)clearDeckStatus.textContent='Clear Deck ready. Choose one command.';
     requestAnimationFrame(()=>verifyLayerIsolation('engine'));
     populateEngineSettings();
@@ -14897,7 +14910,7 @@ The full order and approved media remain stored with this project.`;
         if(command==='watch'){Promise.resolve(renderFirstMateWatch()).finally(()=>reveal('firstMateWatch','Fleet Watch refreshed. No vessel state was changed.'));return;}
         if(command==='commission'){$('commissionNewProjectBtn')?.click();return;}
         if(command==='configure'){openEngineConfiguration('top');return;}
-        if(command==='systems'){const opening=!document.body.classList.contains('engine-systems-expanded');document.body.classList.toggle('engine-systems-expanded',opening);target.setAttribute('aria-expanded',opening?'true':'false');target.textContent=opening?'HIDE ENGINEERING SYSTEMS':'ENGINEERING SYSTEMS';if(status)status.textContent=opening?'Engineering Systems opened: performance, maintenance, release proof, Fleet Intelligence, learning, recovery, and evidence are available below.':'Engineering Systems closed. Daily command remains forward.';if(!opening)requestAnimationFrame(()=>$('clearDeckLaunchpad')?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
+        if(command==='systems'){const opening=!document.body.classList.contains('engine-systems-expanded');document.body.classList.toggle('engine-systems-expanded',opening);target.setAttribute('aria-expanded',opening?'true':'false');target.innerHTML=`<i aria-hidden="true"></i><span><strong>${opening?'HIDE ENGINEERING SYSTEMS':'ENGINEERING SYSTEMS'}</strong><small>Diagnostics, proof, learning &amp; recovery</small></span><em>${opening?'OPENED':'OPEN'}</em>`;if(status)status.textContent=opening?'Engineering Systems opened: performance, maintenance, release proof, Fleet Intelligence, learning, recovery, and evidence are available below.':'Engineering Systems closed. Daily command remains forward.';if(!opening)requestAnimationFrame(()=>$('clearDeckLaunchpad')?.scrollIntoView({behavior:'smooth',block:'start'}));return;}
       }
 
       if(target.matches('#projectTabs [data-project-group]')){

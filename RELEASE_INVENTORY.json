@@ -1,8 +1,8 @@
 {
-  "release": "True Bearing",
-  "name": "True Bearing",
-  "build": "8.8.13.7",
-  "seal": "true-bearing-88137",
+  "release": "Fleet Circuit",
+  "name": "Fleet Circuit",
+  "build": "8.8.13.8",
+  "seal": "fleet-circuit-88138",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

@@ -1,3 +1,24 @@
+# Dark Sky 8.8.13.8 — Fleet Circuit
+
+Fleet Circuit is a focused field-validation release. Captain Professional View now exposes **Run Fleet Readiness** and **View Current Findings** directly, while Cinematic View retains the same functions. Presentation may differ; command capability does not.
+
+Fleet Readiness now hydrates the durable Fleet Learning command record before evaluating the Staging Ledger. A verified staged action remains valid across a compatible release transition when its staged rows, project IDs, learning ID, recorded build, and ledger entries agree. Staged review remains separate from adoption: the six field-staged review records do not change any vessel capability.
+
+Completed storage soundings immediately refresh the Engine's measured Dark Sky summary. The readiness finding is now **Safari storage-attribution gap** and explicitly separates measured Dark Sky data from Safari's browser-managed remainder; a falling or unattributed origin estimate is never called Dark Sky growth.
+
+The Engine's **Engineering Systems** control now has a restrained systems mark, clearer edge, descriptive subtitle, and durable OPEN/OPENED state. Authentication timing is deliberately unchanged because the single idle-login observation was not enough to prove a defect.
+
+## Quick Fleet Circuit
+
+1. Engine: confirm **Engineering Systems** is recognizable, opens once, and reports **OPENED**.
+2. Captain Professional: run Fleet Readiness directly and confirm the prior six-record staging action passes with adoption still zero.
+3. Captain Cinematic: confirm Fleet Readiness and Current Findings remain available.
+4. Operate Vessels: open two different vessels in sequence and confirm name, brand, Project ID, and records never bleed across the boundary.
+5. Admiral My Fleet: authenticate, confirm six independent vessels, open one read-only overview, and return.
+6. Storage: rescan once and confirm the Engine summary matches the completed measured Dark Sky value; perform no cleanup.
+
+Expected posture is no critical holds. Known experimental calibration, live server revocation, and a material Safari attribution gap may remain WATCH; the previously completed Staging Ledger round trip should pass.
+
 # Dark Sky 8.8.13.7 — True Bearing
 
 True Bearing repairs the verified-readiness handoff between Captain Cinematic View and the Admiral Command Deck. After the Captain completes Fleet Readiness and deliberately chooses **View Current Findings**, the authenticated Admiral deck now carries that exact completed report forward, renders its current findings immediately, and preserves its WATCH, HOLD, or CLEAR posture without requiring a duplicate run.

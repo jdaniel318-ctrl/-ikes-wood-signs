@@ -1,4 +1,4 @@
-/* 8.8.13.7 True Bearing — a full document load must never inherit
+/* 8.8.13.8 Fleet Circuit — a full document load must never inherit
    upper-command identity from the prior page. The session remains shared
    between Admiral stations only for this document's lifetime. */
 ;(() => {
@@ -11,16 +11,16 @@
   clearAdmiralIdentity();
   window.addEventListener('pagehide',clearAdmiralIdentity);
   window.addEventListener('pageshow',event=>{if(event.persisted){clearAdmiralIdentity();location.reload();}});
-  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.13.7',requiredPerDocument:true,engineAuthoritySeparate:true});
+  window.DarkSkyAdmiralFreshGate=Object.freeze({build:'8.8.13.8',requiredPerDocument:true,engineAuthoritySeparate:true});
 })();
-/* Dark Sky 8.8.13.7 True Bearing — read-only Admiral observability. */
+/* Dark Sky 8.8.13.8 Fleet Circuit — read-only Admiral observability. */
 ;(()=>{
   const $=id=>document.getElementById(id),safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),PROGRAM={project_id:'bootstrap-build',display_name:'Bootstrap Build',mission_class:'admiral_program',operating_model:'fleet_operated',ownership_model:'fleet_unassigned',lifecycle_state:'commissioning',logo_url:'bootstrap_build_icon.png'};
   let records=[],query='',filter='all',lastSync='';
   const words=v=>String(v||'not_reported').replaceAll('_',' '),BUNDLED_MARKS={'ikes-wood-signs':'ike_character.png','bor-north-richmond':'signal_restoration_logo.png','bf-p-f92f87e8ec44':'https://legacyplumbingrva.com/wp-content/uploads/2026/04/LOGO.png'};
   function mark(v){const src=v.logo_url&&!/black_flag_(primary_lockup|platform_icon)/.test(v.logo_url)?v.logo_url:BUNDLED_MARKS[v.project_id]||'',code=({'beccas-bloom-shop':'BBS','grizzly-bear':'GRZ','mugshot-after-dark':'MUG'}[v.project_id]||String(v.display_name||'V').split(/\s+/).map(x=>x[0]).join('').slice(0,3)).toUpperCase();return src?`<img src="${safe(src)}" alt="${safe(v.display_name)} canonical vessel mark">`:`<div class="fleet-watch-code-mark" aria-label="${safe(v.display_name)} project mark"><b>${safe(code)}</b><span>${safe(v.display_name)}</span></div>`;}
   function facts(v){const life=String(v.lifecycle_state||'unknown').toLowerCase(),activity=v.last_activity_at||v.updated_at||v.logo_updated_at||'',age=activity?Date.now()-Date.parse(activity):Infinity,stale=!Number.isFinite(age)||age>604800000;return {life,activity,stale,attention:stale||['hold','blocked'].includes(life),ready:life==='live'?'LIVE':life==='staging'?'STAGING':life==='commissioning'?'COMMISSIONING':'NOT REPORTED',work:v.current_work||'Not reported',issues:Number.isFinite(Number(v.unresolved_issues))?Number(v.unresolved_issues):null};}
-  function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Fleet Watchtower"><div class="bootstrap-fleet-shell"><header><img src="black_flag_primary_lockup.png" alt="Black Flag Business Command Platform"><div><small>8.8.13.7 · TRUE BEARING</small><h2>My Fleet</h2><p>Authenticated, read-only operational truth across independent vessels.</p></div><div><button id="watchRefresh">REFRESH WATCH</button><button id="watchClose">CLOSE</button></div></header><section id="watchIdentity" class="bootstrap-fleet-identity"><div><small>ADMIRAL ACCOUNT</small><b>Complete the second security check</b><span>The PIN opened this passage. Your active Admiral account authorizes only this fleet read.</span></div><label>Email<input id="watchEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Admiral email"></label><label>Password<input id="watchPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="watchSignIn">AUTHENTICATE & OPEN</button><button id="watchSignOut" class="hidden">SIGN OUT</button></section><p id="watchStatus" class="bootstrap-fleet-status" role="status">Reading Fleet Watch…</p><section id="watchTools" class="fleet-watch-tools hidden"><label>Search the fleet<input id="watchSearch" type="search" placeholder="Vessel name, key, or operating model"></label><div>${[['all','ALL'],['attention','NEEDS ATTENTION'],['stale','STALE'],['commissioning','COMMISSIONING'],['staging','STAGING'],['live','LIVE'],['owner','OWNER-OPERATED'],['fleet','FLEET-OPERATED']].map(([v,l],i)=>`<button data-watch-filter="${v}" class="${i?'':'is-selected'}" aria-pressed="${i?'false':'true'}">${l}</button>`).join('')}</div></section><section class="fleet-watch-section"><header><div><small>FLEET CORE</small><h3>Independent vessels</h3></div><span id="watchCount">0 VESSELS</span></header><div id="watchRows" class="bootstrap-fleet-rows"></div></section><section class="fleet-watch-section fleet-watch-programs"><header><div><small>ADMIRAL PROGRAMS</small><h3>Programs outside Fleet Core</h3></div><span>SEPARATE COMMAND CLASS</span></header><div id="watchPrograms" class="bootstrap-fleet-rows"></div></section><aside class="bootstrap-fleet-passage"><b>Admiral Observability</b><span>Observation is read-only and never becomes ownership. Any modifying command remains exact-vessel, previewed, authenticated, reasoned, and audited.</span></aside><footer><b>Read-only Watchtower boundary</b><span>No control here can rename, commission, publish, entitle, schedule, or otherwise change a vessel.</span></footer></div><section id="watchOverview" class="fleet-vessel-overview hidden" role="dialog" aria-modal="true" aria-hidden="true"><div class="fleet-vessel-overview-shell"><button id="watchOverviewClose">← BACK TO MY FLEET</button><div id="watchOverviewBody"></div></div></section></section>`);}
+  function install(){$('bootstrapFleet')?.remove();document.body.insertAdjacentHTML('beforeend',`<section id="bootstrapFleet" class="bootstrap-fleet fleet-watchtower hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Black Flag Fleet Watchtower"><div class="bootstrap-fleet-shell"><header><img src="black_flag_primary_lockup.png" alt="Black Flag Business Command Platform"><div><small>8.8.13.8 · FLEET CIRCUIT</small><h2>My Fleet</h2><p>Authenticated, read-only operational truth across independent vessels.</p></div><div><button id="watchRefresh">REFRESH WATCH</button><button id="watchClose">CLOSE</button></div></header><section id="watchIdentity" class="bootstrap-fleet-identity"><div><small>ADMIRAL ACCOUNT</small><b>Complete the second security check</b><span>The PIN opened this passage. Your active Admiral account authorizes only this fleet read.</span></div><label>Email<input id="watchEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Admiral email"></label><label>Password<input id="watchPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="watchSignIn">AUTHENTICATE & OPEN</button><button id="watchSignOut" class="hidden">SIGN OUT</button></section><p id="watchStatus" class="bootstrap-fleet-status" role="status">Reading Fleet Watch…</p><section id="watchTools" class="fleet-watch-tools hidden"><label>Search the fleet<input id="watchSearch" type="search" placeholder="Vessel name, key, or operating model"></label><div>${[['all','ALL'],['attention','NEEDS ATTENTION'],['stale','STALE'],['commissioning','COMMISSIONING'],['staging','STAGING'],['live','LIVE'],['owner','OWNER-OPERATED'],['fleet','FLEET-OPERATED']].map(([v,l],i)=>`<button data-watch-filter="${v}" class="${i?'':'is-selected'}" aria-pressed="${i?'false':'true'}">${l}</button>`).join('')}</div></section><section class="fleet-watch-section"><header><div><small>FLEET CORE</small><h3>Independent vessels</h3></div><span id="watchCount">0 VESSELS</span></header><div id="watchRows" class="bootstrap-fleet-rows"></div></section><section class="fleet-watch-section fleet-watch-programs"><header><div><small>ADMIRAL PROGRAMS</small><h3>Programs outside Fleet Core</h3></div><span>SEPARATE COMMAND CLASS</span></header><div id="watchPrograms" class="bootstrap-fleet-rows"></div></section><aside class="bootstrap-fleet-passage"><b>Admiral Observability</b><span>Observation is read-only and never becomes ownership. Any modifying command remains exact-vessel, previewed, authenticated, reasoned, and audited.</span></aside><footer><b>Read-only Watchtower boundary</b><span>No control here can rename, commission, publish, entitle, schedule, or otherwise change a vessel.</span></footer></div><section id="watchOverview" class="fleet-vessel-overview hidden" role="dialog" aria-modal="true" aria-hidden="true"><div class="fleet-vessel-overview-shell"><button id="watchOverviewClose">← BACK TO MY FLEET</button><div id="watchOverviewBody"></div></div></section></section>`);}
   function card(v,program=false){const f=facts(v),stamp=f.activity?new Date(f.activity).toLocaleString():'Not reported';return `<article class="bootstrap-fleet-card fleet-watch-card ${program?'is-admiral-program':''}">${mark(v)}<div class="fleet-watch-card-main"><small>${safe(program?'ADMIRAL PROGRAM':words(v.mission_class).toUpperCase())}</small><b>${safe(v.display_name)}</b><span>${safe(v.project_id)}</span><span class="bootstrap-fleet-command">${safe(words(v.operating_model).toUpperCase())} · ${safe(words(v.ownership_model).toUpperCase())}</span></div><div class="fleet-watch-condition"><span><small>CURRENT WORK</small><b>${safe(f.work)}</b></span><span><small>ISSUES</small><b>${f.issues===null?'Not reported':f.issues}</b></span><span><small>LAST ACTIVITY</small><b>${safe(stamp)}</b></span></div><div class="fleet-watch-actions"><em class="${f.stale?'is-stale':''}">${safe(f.stale?'STALE / UNVERIFIED':f.ready)}</em><button data-watch-vessel="${safe(v.project_id)}">OPEN VESSEL</button></div></article>`;}
   function matches(v){const f=facts(v),hay=[v.display_name,v.project_id,v.operating_model,v.ownership_model,v.lifecycle_state].join(' ').toLowerCase();if(query&&!hay.includes(query.toLowerCase()))return false;if(filter==='all')return true;if(filter==='attention')return f.attention;if(filter==='stale')return f.stale;if(filter==='owner')return String(v.operating_model).includes('owner');if(filter==='fleet')return String(v.operating_model).includes('fleet');return f.life===filter;}
   function render(next=records){records=next.filter(v=>v.mission_class!=='admiral_program');const shown=records.filter(matches);$('watchRows').innerHTML=shown.length?shown.map(v=>card(v)).join(''):'<article class="bootstrap-fleet-empty"><div><b>No vessels match this watch</b><span>Clear the search or choose another filter. Fleet state was not changed.</span></div></article>';$('watchPrograms').innerHTML=card(PROGRAM,true);$('watchCount').textContent=shown.length+' OF '+records.length+' VESSELS';$('watchStatus').textContent='READ-ONLY WATCH · '+records.length+' Fleet Core vessels · synchronized '+(lastSync?new Date(lastSync).toLocaleString():'not yet')+'. Missing fields are marked stale or not reported.';}
@@ -41,7 +41,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.13.7';
+  const UPPER_COMMAND_BUILD='8.8.13.8';
   let authorized = false;
 
   const byId = (id) => document.getElementById(id);
@@ -576,7 +576,7 @@
   function verificationProvenance(check){
     if(check.id==='ike-true-case-roundtrip')return check.state==='pass'?'CURRENT BUILD • SOURCE CONTRACT + LIVE DOM WHEN PRESENT':'CURRENT BUILD • TRUECASE CONTRACT';
     if(check.id==='ike-style-foundry'||check.id==='ike-glyphforge')return 'CURRENT BUILD • OWNER/ENGINE SOURCE CONTRACT';
-    if(check.id==='storage-growth')return 'CURRENT BUILD • BROWSER STORAGE ESTIMATE';
+    if(check.id==='storage-growth'||check.id==='storage-attribution-gap')return 'CURRENT BUILD • BROWSER STORAGE ESTIMATE';
     if(check.id==='known-calibration-replay')return 'CURRENT BUILD • PROTECTED CALIBRATION REPLAY';
     return 'CURRENT BUILD • FLEET READINESS';
   }
@@ -594,7 +594,7 @@
   }
   function findingAction(id){
     if(['ike-style-b-truth','ike-style-foundry','ike-glyphforge','known-calibration-replay'].includes(id))return ['foundry','OPEN FOUNDRY'];
-    if(['storage-growth','storage-telemetry'].includes(id))return ['storage','INSPECT STORAGE'];
+    if(['storage-growth','storage-attribution-gap','storage-telemetry'].includes(id))return ['storage','INSPECT STORAGE'];
     if(['fleet-doctrine-registry','command-layer-placement','professional-first-command'].includes(id))return ['standards','VIEW DOCTRINE'];
     return ['evidence','VIEW EVIDENCE'];
   }
@@ -1312,8 +1312,33 @@
     if(act) act.innerHTML=signalRows.length?signalRows.slice(0,1).map(({v})=>`<article><b>${v.name}</b><p>Open the scoped signal report. Enter the vessel only if deliberate action is required.</p><button type="button" data-captain-pro-vessel="${v.projectId}">OPEN SIGNAL REPORT</button></article>`).join(''):`<article><b>Fleet steady</b><p>No attention route is required right now.</p><button type="button" data-captain-pro-route="fleet">OPEN FLEET MAP</button></article>`;
     const record=byId('captainProRecordItems');
     if(record){const outcomes=readJsonLocal(CAPTAIN_OUTCOME_KEY,[]).filter(o=>!String(o?.label||'').startsWith('Captain command:')).slice(0,3);record.innerHTML=`<article><b>Recent consequential work</b><p>Orders, decisions, outcomes and lessons remain in the durable command record. Routine navigation is not promoted as fleet history.</p><button type="button" data-captain-pro-route="log">OPEN CAPTAIN'S LOG</button></article>${outcomes.map(o=>`<article class="captain-outcome"><b>${o.label}</b><p>${o.detail||'Durable command action recorded.'}</p><small>${new Date(o.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} • ${o.build}</small></article>`).join('')}<article><b>Current command picture</b><p>${attention?`${attention} attention signal${attention===1?'':'s'} remain open.`:'No open attention signals.'} ${trials?`${trials} sea trial${trials===1?'':'s'} active.`:''}</p></article>`;}
-    const readiness=byId('captainProReadiness');if(readiness)readiness.textContent=window.__lastAdmiralReadinessReport?(window.__lastAdmiralReadinessReport.pass?(window.__lastAdmiralReadinessReport.warnings?'WATCH':'CLEAR'):'HOLD'):'NOT RUN';
+    const professionalReport=window.__lastAdmiralReadinessReport||null;
+    const professionalLabel=professionalReport?(professionalReport.pass?(professionalReport.warnings?'WATCH':'CLEAR'):'HOLD'):'NOT RUN';
+    const readiness=byId('captainProReadiness');if(readiness)readiness.textContent=professionalLabel;
+    const readinessState=byId('captainProReadinessState');if(readinessState){readinessState.textContent=professionalLabel;readinessState.dataset.state=professionalLabel.toLowerCase().replace(/\s+/g,'-');}
+    const readinessCopy=byId('captainProReadinessCopy');if(readinessCopy)readinessCopy.textContent=professionalReport?`${Number(professionalReport.checks?.length)||0} checks completed · ${Number(professionalReport.warnings)||0} watch · ${Number(professionalReport.criticalFailures)||0} holds.`:'Run the same protected Fleet Readiness check available in Cinematic View.';
+    const readinessRun=byId('captainProRunReadiness');if(readinessRun){readinessRun.disabled=false;readinessRun.textContent=professionalReport?'RUN READINESS AGAIN':'RUN FLEET READINESS';}
+    const readinessFindings=byId('captainProViewFindings');if(readinessFindings)readinessFindings.hidden=!professionalReport;
     refreshCinematicHelm();
+  }
+
+  function runProfessionalFleetReadiness(){
+    const run=byId('captainProRunReadiness'),state=byId('captainProReadinessState'),status=byId('captainProfessionalStatus');
+    if(run){run.disabled=true;run.textContent='CHECKING FLEET…';}
+    if(state){state.textContent='CHECKING';state.dataset.state='checking';}
+    if(status)status.textContent='Fleet Readiness is checking isolation, authority, release identity, and operational contracts.';
+    Promise.resolve(window.DarkSkyAdmiralReadiness?.run?.('captain-professional')).then(report=>{
+      if(!report)throw new Error('Fleet Readiness service unavailable');
+      window.__lastAdmiralReadinessReport=report;
+      refreshCaptainProfessional();
+      if(status)status.textContent=report.pass?(report.warnings?`Fleet Readiness completed with ${report.warnings} watch item(s) and no critical holds.`:'Fleet Readiness completed. Hull proven for this check.'):`Fleet Readiness found ${report.criticalFailures} critical hold(s).`;
+      showCaptainDeskNotice(status?.textContent||'Fleet Readiness complete.',report.pass?(report.warnings?'future':'ready'):'unavailable');
+    }).catch(error=>{
+      if(run){run.disabled=false;run.textContent='RUN FLEET READINESS';}
+      if(state){state.textContent='UNAVAILABLE';state.dataset.state='unavailable';}
+      if(status)status.textContent=String(error?.message||error);
+      showCaptainDeskNotice(String(error?.message||error),'unavailable');
+    });
   }
 
   function ensureCaptainCommandMode(){
@@ -1332,6 +1357,7 @@
         <header class="captain-pro-head"><div><small>PROFESSIONAL COMMAND</small><h2>Captain's Quarters</h2><p>Signal first. Decision second. Action third. Durable history last.</p></div><span>CAPTAIN AUTHORIZED</span></header>
         <section class="captain-pro-topline">
           <article class="captain-pro-live"><small>LIVE FLEET INTELLIGENCE</small><div><span><b id="captainProVessels">0</b><em>VESSELS</em></span><span><b id="captainProSailing">0</b><em>SAILING</em></span><span><b id="captainProTrials">0</b><em>SEA TRIAL</em></span><span><b id="captainProSignals">0</b><em>SIGNALS</em></span><span><b id="captainProReadiness">NOT RUN</b><em>READINESS</em></span></div></article>
+          <article class="captain-pro-readiness-card"><div><small>FLEET READINESS</small><strong id="captainProReadinessState">NOT RUN</strong><p id="captainProReadinessCopy">Run the same protected Fleet Readiness check available in Cinematic View.</p></div><div><button id="captainProRunReadiness" type="button">RUN FLEET READINESS</button><button id="captainProViewFindings" type="button" hidden>VIEW CURRENT FINDINGS</button></div></article>
         </section>
         <section class="captain-command-decks" aria-label="Captain command loop">
           <article class="captain-command-lane"><header><small>01 · WATCH</small><h3>What needs my attention?</h3><p>Fleet signals and First Mate intelligence.</p></header><div id="captainProWatchItems" class="captain-lane-body"></div></article>
@@ -1343,8 +1369,11 @@
         <div id="captainProfessionalStatus" class="captain-professional-status">Professional command is the operational truth. Cinematic View uses the same command model.</div>`;
       room.appendChild(surface);
       surface.addEventListener('click',e=>{
+        if(e.target.closest('#captainProRunReadiness')){runProfessionalFleetReadiness();return;}
+        if(e.target.closest('#captainProViewFindings')){openAdmiralGate('captain','findings');return;}
         const vesselBtn=e.target.closest('[data-captain-pro-vessel]');if(vesselBtn){recordCaptainOutcome('route','Signal route opened',vesselBtn.dataset.captainProVessel);const desk=ensureCaptainDeskIndex();const fleetBtn=desk?.querySelector('[data-cq-desk-route="fleet"]');if(fleetBtn)fleetBtn.click();requestAnimationFrame(()=>openSignalReport(vesselBtn.dataset.captainProVessel));return;}
         const btn=e.target.closest('[data-captain-pro-route]');if(!btn)return;
+        if(btn.dataset.captainProRoute==='readiness'){runProfessionalFleetReadiness();return;}
         const desk=ensureCaptainDeskIndex();
         const target=desk?.querySelector(`[data-cq-desk-route="${btn.dataset.captainProRoute}"]`);
         if(target)target.click();else{const status=byId('captainProfessionalStatus');if(status)status.textContent='That command station is not available on this hull.';}

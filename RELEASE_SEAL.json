@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.7",
-  "release": "True Bearing",
-  "seal": "true-bearing-88137",
+  "build": "8.8.13.8",
+  "release": "Fleet Circuit",
+  "seal": "fleet-circuit-88138",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "True Bearing",
-  "name": "True Bearing",
-  "releaseName": "True Bearing"
+  "release_name": "Fleet Circuit",
+  "name": "Fleet Circuit",
+  "releaseName": "Fleet Circuit"
 }

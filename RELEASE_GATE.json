@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.7",
-  "release": "True Bearing",
-  "generatedAt": "2026-09-12T16:26:23Z",
+  "build": "8.8.13.8",
+  "release": "Fleet Circuit",
+  "generatedAt": "2026-09-12T23:10:03Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -260,8 +260,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.7 True Bearing preserves the Captain's completed readiness report through strict Admiral authentication, renders governed Current Findings immediately, and replaces false indefinite VERIFYING with truthful NOT RUN when no check exists. Genuine watches and all protected fleet contracts remain intact.",
-  "candidate": "8.8.13.7",
+  "note": "8.8.13.8 Fleet Circuit restores a durable Staging Ledger read across reload and release transition, gives Captain Professional and Cinematic views the same Fleet Readiness command, refreshes storage truth after completed soundings, and makes Engineering Systems easier to recognize. Authentication timing is unchanged; staged capability adoption remains zero.",
+  "candidate": "8.8.13.8",
   "features": {
     "fleet_rigging_four_primary_levels": true,
     "deck_clearance_engine_watch_progressive": true,
@@ -275,6 +275,12 @@
     "captain_controls_ipad_touch_targets": true,
     "captain_readiness_direct_current_findings": true,
     "captain_admiral_readiness_report_handoff": true,
+    "captain_professional_cinematic_function_parity": true,
+    "fleet_staging_durable_hydration_before_readiness": true,
+    "fleet_staging_adoption_separation_preserved": true,
+    "storage_summary_completed_sounding_handoff": true,
+    "storage_attribution_gap_truthful_label": true,
+    "engineering_systems_discoverable_state": true,
     "admiral_not_run_truth_state": true,
     "captain_professional_default_truth_check": true,
     "current_proof_registry_build_alignment": true,
@@ -460,8 +466,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.7",
-    "seal": "true-bearing-88137",
+    "build": "8.8.13.8",
+    "seal": "fleet-circuit-88138",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

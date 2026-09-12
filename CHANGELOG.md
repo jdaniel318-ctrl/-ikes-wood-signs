@@ -1,3 +1,14 @@
+# Dark Sky 8.8.13.8 — Fleet Circuit
+
+- Added direct Fleet Readiness and Current Findings controls to Captain Professional View while preserving the same Cinematic commands.
+- Repaired the readiness reader to hydrate Fleet Learning state, the staging ledger, and its verified action from durable storage before evaluation.
+- Validates a staged action across a compatible build transition only when the verified record, staged rows, exact project IDs, learning ID, recorded build, and durable ledger agree; adoption remains separate and unchanged.
+- Reframed the misleading Engine-origin growth watch as a Safari storage-attribution gap and removed negative/unattributed origin movement from Dark Sky growth claims.
+- Refreshes the Engine storage KPI from every completed detailed sounding.
+- Made Engineering Systems recognizable with restrained visual depth, a systems mark, a descriptive subtitle, and explicit OPEN/OPENED state.
+- Left authentication and idle-session timing unchanged pending a controlled reproduction.
+- Preserved six-vessel Fleet Core membership, exact-project isolation, owner independence, authority gates, recovery, commissioning, schedules, weekday norms, weekend exceptions, evidence, entitlements, and future fleet growth.
+
 # Dark Sky 8.8.13.7 — True Bearing
 
 - Carries the Captain's completed Fleet Readiness report through the authenticated Admiral gate and immediately renders Current Findings.
