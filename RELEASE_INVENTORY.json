@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Ready",
-  "name": "Fleet Ready",
-  "build": "8.8.14.0",
-  "seal": "fleet-ready-88140",
+  "release": "True Course",
+  "name": "True Course",
+  "build": "8.8.14.1",
+  "seal": "true-course-88141",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

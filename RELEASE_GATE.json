@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.0",
-  "release": "Fleet Ready",
+  "build": "8.8.14.1",
+  "release": "True Course",
   "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
@@ -274,9 +274,12 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.0 Fleet Ready converts the Captain’s read-only fleet picture into an exact operating course with lifecycle, owner posture, test evidence, experience approval, Before Live requirements, next-step guidance, and visible routing acknowledgement. Activation, approval, invitations, promotion, authentication, authority, evidence, and vessel state remain unchanged until an authorized human acts in exact-vessel Project Control.",
-  "candidate": "8.8.14.0",
+  "note": "8.8.14.1 True Course repairs the field-confirmed htmlSafe scope interruption in Captain Professional and Signal Report rendering with one module-wide encoder. Fleet Ready guidance, Night Watch modal behavior, readiness truth, authentication, lifecycle state, deployment data, and exact-vessel isolation remain unchanged.",
+  "candidate": "8.8.14.1",
   "features": {
+    "captain_module_safe_encoder": true,
+    "captain_professional_scope_fault_repaired": true,
+    "captain_signal_scope_fault_repaired": true,
     "fleet_ready_exact_course": true,
     "fleet_ready_launch_stage_visible": true,
     "fleet_ready_owner_posture_visible": true,
@@ -495,8 +498,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.0",
-    "seal": "fleet-ready-88140",
+    "build": "8.8.14.1",
+    "seal": "true-course-88141",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

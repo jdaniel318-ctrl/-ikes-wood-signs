@@ -1,3 +1,16 @@
+# Dark Sky 8.8.14.1 — True Course
+
+True Course repairs the field-confirmed Fleet Ready Captain rendering fault. The new Professional and Signal Report markup referenced a helper that existed only inside the Cinematic renderer, causing `Can't find variable: htmlSafe`, interrupting the Act lane, and making Readiness appear unavailable.
+
+A module-wide Captain encoder now serves Professional View and the scoped Signal Report. The Cinematic helper remains local and unchanged. Fleet Ready guidance, Night Watch visibility, exact-vessel routing, readiness evidence, authentication, lifecycle state, and deployment data are preserved.
+
+## Quick True Course check
+
+1. Open Captain Watch.
+2. Confirm the Act lane shows **Open Exact Course** without an error notice.
+3. Run Fleet Readiness and open Legacy Plumbing’s course.
+4. Stop before activation.
+
 # Dark Sky 8.8.14.0 — Fleet Ready
 
 Fleet Ready turns the Captain’s verified fleet picture into an exact operating course. The scoped Signal Report now separates vessel lifecycle, owner posture, current outpost evidence, the next required step, and the authorized Engine route.

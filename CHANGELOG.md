@@ -1,3 +1,10 @@
+# Dark Sky 8.8.14.1 — True Course
+
+- Added a module-wide encoder for Captain Professional and Signal Report rendering.
+- Removed their accidental dependency on the Cinematic renderer’s private helper scope.
+- Restored the Act lane and Fleet Readiness controls after the field-confirmed `htmlSafe` interruption.
+- Preserved all Fleet Ready guidance and every exact-vessel, authority, evidence, and lifecycle boundary.
+
 # Dark Sky 8.8.14.0 — Fleet Ready
 
 - Added launch stage, owner posture, test evidence, experience approval, and exact next-step guidance to the read-only fleet snapshot.
