@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.14.7';
+  const BUILD_VERSION='8.8.14.8';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -6921,6 +6921,7 @@
     const products=p.products||[];
     if(tab==='overview') return `<div id="projectOverviewLive" class="pc-command-shell"><div class="pc-loading-state"><strong>Reading project signals…</strong><span>Orders, customers, deployments, ledger and activity stay scoped to ${escapeHtml(p.name)}.</span></div></div>`;
     if(tab==='analytics') return `<div id="projectAnalyticsLive" class="pc-command-shell"><div class="pc-loading-state"><strong>Building project analytics…</strong><span>Only project-scoped data that Dark Sky can verify will be shown.</span></div></div>`;
+    if(tab==='fleetwatch') return `${projectModuleHero(p,'OPERATE','Fleet Watch Helm','Publish bounded operational truth from this exact vessel. Admiral can observe the report but cannot modify this vessel.',`<span>EXACT VESSEL</span><span>READ BY ADMIRAL</span>`)}<section class="pec-card fleet-watch-helm-route"><div class="pec-title-row"><div><small>AUTHENTICATED VESSEL REPORTING</small><h4>${escapeHtml(p.name)}</h4><p class="helper">Reporting requires the vessel owner/partner identity. Engine authority cannot impersonate the vessel, and Admiral remains read-only.</p></div><span class="project-status-badge">BOUNDARY ENFORCED</span></div><div class="visual-cap-note"><strong>What crosses the bulkhead</strong><span>Current work, unresolved issue count, optional issue summary, source label, and report time. No customer data, orders, pricing, or modifying authority is exposed.</span></div><button id="openVesselWatchHelm" class="primary-btn" type="button">OPEN AUTHENTICATED VESSEL HELM</button><p id="fleetWatchHelmRouteStatus" class="helper">You will sign in as this vessel before anything can be published.</p></section>`;
 
     if(tab==='owner'){
       ensureProjectGovernance(p);
@@ -7424,7 +7425,7 @@
   }
 
   const PROJECT_COMMAND_GROUPS={
-    products:'operate',workflow:'operate',capabilities:'operate',deployment:'operate',
+    products:'operate',workflow:'operate',capabilities:'operate',deployment:'operate',fleetwatch:'operate',
     analytics:'insight',ledger:'insight',
     marketing:'experience',experience:'experience',
     owner:'access',permissions:'access',
@@ -7468,6 +7469,7 @@
     }
     bindProjectControlJumpLinks(p);
     if(tab==='overview'){await renderProjectControlOverview(p);return;}
+    if(tab==='fleetwatch'){ $('openVesselWatchHelm')?.addEventListener('click',()=>{const url=new URL('./owner.html',location.href.split('#')[0]);url.searchParams.set('project',p.id);url.searchParams.set('view','watch');url.searchParams.set('source','engine');location.href=url.toString();});return;}
     if(tab==='analytics'){await renderProjectAnalytics(p);return;}
     if(tab==='marketing'){
       if(engineActiveProjectId!==p.id)return;

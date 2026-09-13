@@ -1,10 +1,14 @@
-# Dark Sky 8.8.14.7 — True Watch
+# Dark Sky 8.8.14.8 — Watch Helm
 
-True Watch turns Admiral My Fleet from a registry-only shell into a source-aware operational watchtower. Fleet Core now has a protected observability-report channel: an authenticated exact-vessel member may publish current work, unresolved-issue count/summary, source label, and report time; the Admiral receives those fields through a separate read-only Fleet Watch RPC.
+Authenticated exact-vessel Fleet Watch publishing. Project Control routes through the vessel owner/partner identity; the Owner Control Center can read and publish only its own bounded report. Admiral remains read-only.
+
+# Dark Sky 8.8.14.8 — Watch Helm
+
+Watch Helm turns Admiral My Fleet from a registry-only shell into a source-aware operational watchtower. Fleet Core now has a protected observability-report channel: an authenticated exact-vessel member may publish current work, unresolved-issue count/summary, source label, and report time; the Admiral receives those fields through a separate read-only Fleet Watch RPC.
 
 The Watchtower explicitly distinguishes **FRESH**, **AGING**, **STALE**, and **NOT REPORTING**. Registry timestamps are retained as registry context only and are never presented as vessel telemetry. Missing reports remain visibly missing rather than being guessed. Bootstrap Build remains a separate Admiral Program outside the six-member Fleet Core.
 
-## Quick True Watch check
+## Quick Watch Helm check
 
 1. Open **Admiral My Fleet** and complete the second Admiral security check.
 2. Confirm all six Fleet Core vessels remain present and Bootstrap Build remains below them as an Admiral Program.

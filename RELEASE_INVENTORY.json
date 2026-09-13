@@ -1,8 +1,8 @@
 {
-  "release": "True Watch",
-  "name": "True Watch",
-  "build": "8.8.14.7",
-  "seal": "true-watch-88147",
+  "release": "Watch Helm",
+  "name": "Watch Helm",
+  "build": "8.8.14.8",
+  "seal": "watch-helm-88148",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

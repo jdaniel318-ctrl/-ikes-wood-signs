@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.14.7';
-const RELEASE_SEAL='true-watch-88147';
+const RELEASE_BUILD='8.8.14.8';
+const RELEASE_SEAL='watch-helm-88148';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

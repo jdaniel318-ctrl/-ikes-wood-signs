@@ -1,4 +1,8 @@
-# Dark Sky 8.8.14.7 — True Watch
+# Dark Sky 8.8.14.8 — Watch Helm
+
+Authenticated exact-vessel Fleet Watch publishing. Project Control routes through the vessel owner/partner identity; the Owner Control Center can read and publish only its own bounded report. Admiral remains read-only.
+
+# Dark Sky 8.8.14.8 — Watch Helm
 
 - Added `fleet_observability_reports` as an append-only operational truth stream separate from vessel identity/branding records.
 - Added `admiral_read_fleet_watch()` with active-Admiral enforcement and no write capability.
