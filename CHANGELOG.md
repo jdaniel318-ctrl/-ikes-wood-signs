@@ -1,3 +1,12 @@
+# Dark Sky 8.8.14.7 — True Watch
+
+- Added `fleet_observability_reports` as an append-only operational truth stream separate from vessel identity/branding records.
+- Added `admiral_read_fleet_watch()` with active-Admiral enforcement and no write capability.
+- Added `vessel_publish_watch_report()` gated to authenticated exact-vessel membership.
+- Fleet Watch now distinguishes FRESH, AGING, STALE, and NOT REPORTING instead of treating registry metadata as operational activity.
+- Added Truth Source and reported-at context to exact-vessel Admiral observation.
+- Preserved six-member Fleet Core, Bootstrap Build as an Admiral Program, strict vessel isolation, and read-only Admiral observability.
+
 # Dark Sky 8.8.14.6 — Full Frame
 
 - Replaced timestamp-sensitive experience hashes with stable semantic revision signatures.

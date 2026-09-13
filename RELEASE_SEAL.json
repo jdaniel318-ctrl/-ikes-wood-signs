@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.6",
-  "release": "Full Frame",
-  "seal": "full-frame-88146",
+  "build": "8.8.14.7",
+  "release": "True Watch",
+  "seal": "true-watch-88147",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Full Frame",
-  "name": "Full Frame",
-  "releaseName": "Full Frame"
+  "release_name": "True Watch",
+  "name": "True Watch",
+  "releaseName": "True Watch"
 }

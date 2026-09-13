@@ -1,3 +1,17 @@
+# Dark Sky 8.8.14.7 — True Watch
+
+True Watch turns Admiral My Fleet from a registry-only shell into a source-aware operational watchtower. Fleet Core now has a protected observability-report channel: an authenticated exact-vessel member may publish current work, unresolved-issue count/summary, source label, and report time; the Admiral receives those fields through a separate read-only Fleet Watch RPC.
+
+The Watchtower explicitly distinguishes **FRESH**, **AGING**, **STALE**, and **NOT REPORTING**. Registry timestamps are retained as registry context only and are never presented as vessel telemetry. Missing reports remain visibly missing rather than being guessed. Bootstrap Build remains a separate Admiral Program outside the six-member Fleet Core.
+
+## Quick True Watch check
+
+1. Open **Admiral My Fleet** and complete the second Admiral security check.
+2. Confirm all six Fleet Core vessels remain present and Bootstrap Build remains below them as an Admiral Program.
+3. Before any vessel report exists, confirm Fleet Core members read **NOT REPORTING** rather than fabricated activity.
+4. Open Ike's Wood Signs and confirm **READ ONLY**, exact-project scope, Watch Freshness, Truth Source, and no modifying controls.
+5. After a vessel publishes an authenticated exact-vessel report, refresh Watch and confirm only that vessel's operational fields and freshness change.
+
 # Dark Sky 8.8.14.6 — Full Frame
 
 Full Frame repairs the two field-confirmed defects in Legacy Plumbing's private review: the preview could invalidate its own evidence because derived timestamps changed the revision hash, and the iPad opening composition clipped the header while its fixed controls covered page content.
