@@ -1,8 +1,8 @@
 {
-  "release": "Centerline",
-  "name": "Centerline",
-  "build": "8.8.14.2",
-  "seal": "centerline-88142",
+  "release": "Exact Arrival",
+  "name": "Exact Arrival",
+  "build": "8.8.14.3",
+  "seal": "exact-arrival-88143",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

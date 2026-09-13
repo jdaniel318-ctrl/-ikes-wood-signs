@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.2",
-  "release": "Centerline",
+  "build": "8.8.14.3",
+  "release": "Exact Arrival",
   "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
@@ -274,9 +274,12 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.2 Centerline repairs the field-confirmed iPad Signal Report overflow by preserving horizontal centering throughout the Night Watch entrance animation and enforcing a container-safe maximum width. Fleet Ready guidance, readiness truth, authentication, lifecycle state, deployment data, and exact-vessel isolation remain unchanged.",
-  "candidate": "8.8.14.2",
+  "note": "8.8.14.3 Exact Arrival repairs the field-confirmed hidden Captain deployment handoff by closing Captain surfaces, restoring the unlocked Engine, and opening the exact Project Control deployment workspace with its selected outpost. Centerline containment, Fleet Ready guidance, readiness truth, authentication, lifecycle state, deployment data, and exact-vessel isolation remain unchanged.",
+  "candidate": "8.8.14.3",
   "features": {
+    "captain_deployment_surface_handoff": true,
+    "captain_deployment_selected_outpost_preserved": true,
+    "captain_deployment_route_failure_visible": true,
     "captain_signal_ipad_centerline_preserved": true,
     "captain_signal_container_width_bounded": true,
     "captain_module_safe_encoder": true,
@@ -500,8 +503,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.2",
-    "seal": "centerline-88142",
+    "build": "8.8.14.3",
+    "seal": "exact-arrival-88143",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

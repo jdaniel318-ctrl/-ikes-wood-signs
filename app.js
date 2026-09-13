@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.14.2';
+  const BUILD_VERSION='8.8.14.3';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -8810,19 +8810,29 @@
   }
 
   async function openCaptainDeploymentRoute(route){
-    const p=projectById(route?.projectId); if(!p)return;
+    const requestedProjectId=canonicalProjectId(route?.projectId||'');
+    const p=projectById(requestedProjectId);
+    if(!p)throw new Error(`Deployment route could not resolve project ${requestedProjectId||'(missing)'}.`);
     deploymentSelectionByProject.set(p.id,route.outpostId||'');
     if(!engineSessionUnlocked){
-      pendingCaptainDeploymentRoute=route;
-      document.getElementById('captainFleetChart')?.classList.add('hidden');
-      document.getElementById('captainQuarters')?.classList.add('hidden');
-      $('engineRoomBtn')?.click();
-      return;
+      pendingCaptainDeploymentRoute={...route,projectId:p.id};
+      closeCaptainSurfacesForEngineRoute();
+      const gate=$('engineRoomBtn');
+      if(!gate)throw new Error('Engine authorization gate is unavailable.');
+      gate.click();
+      return {ok:true,pendingAuthorization:true,projectId:p.id,outpostId:route.outpostId||''};
     }
+    closeCaptainSurfacesForEngineRoute();
+    await openEnginePanel();
     await openProjectEngineControl(p.id);
     await renderProjectTab(p.id,'deployment');
+    window.BlackFlagV3Core?.audit?.({actorRole:'captain',projectId:p.id,category:'navigation',action:'deployment.course.opened',detail:`outpost ${route.outpostId||'(default)'}`});
+    return {ok:true,projectId:p.id,outpostId:route.outpostId||''};
   }
-  window.addEventListener('blackflag:open-deployment',e=>openCaptainDeploymentRoute(e.detail||{}));
+  window.addEventListener('blackflag:open-deployment',e=>{openCaptainDeploymentRoute(e.detail||{}).catch(err=>{
+    window.DarkSkyV4?.diagnostic?.('deployment.course.route_failed',String(err?.message||err),{route:e.detail||{},build:BUILD_VERSION});
+    seaworthyCommandFailure('Exact deployment course',err);
+  })});
 
   let commandSelectedOrderTarget=null;
 

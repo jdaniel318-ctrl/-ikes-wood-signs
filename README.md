@@ -1,15 +1,15 @@
-# Dark Sky 8.8.14.2 — Centerline
+# Dark Sky 8.8.14.3 — Exact Arrival
 
-Centerline repairs the field-confirmed iPad Signal Report containment fault. Night Watch's entrance animation replaced the report's horizontal centering transform after it opened, leaving the report anchored at the chart midpoint and pushing its right side beyond the viewport.
+Exact Arrival repairs the field-confirmed Captain-to-Project-Control handoff. The route correctly selected Sadie and displayed **Routing…**, but when the Engine was already unlocked it opened Project Control underneath the still-visible Captain surfaces.
 
-The entrance animation now preserves centering from its first frame through its durable resting state, and the report has an explicit container-safe maximum width. Fleet Ready guidance, exact-vessel routing, readiness evidence, authentication, lifecycle state, and deployment data are preserved.
+The deployment route now uses the same protected Captain-to-Engine surface handoff already proven by other command routes: close Captain surfaces, restore the unlocked Engine, open the exact project, open Deployments, and preserve the selected outpost. A failed handoff now leaves a visible command fault instead of appearing inert. Centerline containment, Fleet Ready guidance, readiness evidence, authentication, lifecycle state, and deployment data are preserved.
 
-## Quick Centerline check
+## Quick Exact Arrival check
 
 1. Open Captain Watch.
-2. Confirm the Act lane shows **Open Exact Course** without an error notice.
-3. Open Legacy Plumbing's exact course and confirm the full Signal Report is centered inside The Dark Sky.
-4. Confirm the close control, evidence, and exact-route action are all visible; stop before activation.
+2. Open Legacy Plumbing's exact course and tap **Review & Activate** once.
+3. Confirm Captain closes and Project Control opens at Legacy Plumbing → Operate → Deployments with Sadie selected.
+4. Stop before activation.
 
 # Dark Sky 8.8.14.0 — Fleet Ready
 

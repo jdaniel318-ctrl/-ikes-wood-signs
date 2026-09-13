@@ -1,8 +1,9 @@
-# Dark Sky 8.8.14.2 — Centerline
+# Dark Sky 8.8.14.3 — Exact Arrival
 
-- Preserved the Signal Report's horizontal centering transform throughout its Night Watch entrance animation.
-- Added an explicit container-safe maximum width for the scoped report.
-- Keeps the complete close control, evidence, and exact-route action visible on iPad.
+- Routed the Captain's deployment course through the protected Captain-to-Engine surface handoff.
+- Closes Captain surfaces before opening the exact Project Control deployment workspace.
+- Preserves the selected outpost so Legacy Plumbing opens with Sadie selected.
+- Added a visible command fault if the exact deployment handoff cannot complete.
 - Preserved all Fleet Ready guidance and every exact-vessel, authority, evidence, and lifecycle boundary.
 
 # Dark Sky 8.8.14.0 — Fleet Ready

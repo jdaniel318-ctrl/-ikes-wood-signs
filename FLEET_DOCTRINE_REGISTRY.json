@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.14.2",
-  "release": "Centerline",
+  "build": "8.8.14.3",
+  "release": "Exact Arrival",
   "status": "active",
   "principles": [
     {

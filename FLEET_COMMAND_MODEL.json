@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.14.2",
+  "build": "8.8.14.3",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Centerline",
+  "release": "Exact Arrival",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
