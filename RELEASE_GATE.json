@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.8",
-  "release": "Watch Helm",
+  "build": "8.8.14.9",
+  "release": "Signal Watch",
   "generatedAt": "2026-09-13T15:20:00Z",
   "checks": {
     "build_version": true,
@@ -274,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.8 Watch Helm adds source-aware Admiral observability without expanding Admiral write authority. Exact-vessel members may publish bounded operational reports; Admiral may only read them. Missing telemetry is labeled NOT REPORTING rather than inferred from registry metadata.",
-  "candidate": "8.8.14.8",
+  "note": "8.8.14.9 Signal Watch polishes the proven exact-vessel Watch Helm and adds a conservative Ike\u2019s Auto Signal pilot. Automatic reports require real exact-vessel owner authentication, trigger only from newer bounded owner-side order activity, preserve existing issue truth, expose no customer/order/pricing details, and do not expand Admiral write authority. Manual publish and FRESH / AGING / STALE / NOT REPORTING truth remain intact.",
+  "candidate": "8.8.14.9",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -506,8 +506,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.8",
-    "seal": "watch-helm-88148",
+    "build": "8.8.14.9",
+    "seal": "signal-watch-88149",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

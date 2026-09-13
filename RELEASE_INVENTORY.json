@@ -1,8 +1,8 @@
 {
-  "release": "Watch Helm",
-  "name": "Watch Helm",
-  "build": "8.8.14.8",
-  "seal": "watch-helm-88148",
+  "release": "Signal Watch",
+  "name": "Signal Watch",
+  "build": "8.8.14.9",
+  "seal": "signal-watch-88149",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

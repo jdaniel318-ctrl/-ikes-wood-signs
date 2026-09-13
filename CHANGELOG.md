@@ -1,15 +1,19 @@
+# Dark Sky 8.8.14.9 — Signal Watch
+
+- Rebuilt the Owner Fleet Watch form into a full-width iPad console with grouped fields, stronger hierarchy, larger inputs, persistent report state, source/last-published cards, and a clearer publish action.
+- Added **AUTO SIGNAL · ARMED** for Ike’s pilot: after exact-vessel owner authentication, newer owner-side order activity may publish one bounded operational signal automatically.
+- Auto Signal preserves the prior unresolved-issue count and blocker summary, sends no customer names, order details, pricing, photos, or modifying authority, and marks its source as `AUTO SIGNAL · OWNER ACTIVITY`.
+- Manual publish remains available for deliberate vessel status updates.
+- Preserved exact-vessel membership enforcement, Admiral read-only observability, six-member Fleet Core, Bootstrap Build as a separate Admiral Program, and source-aware FRESH / AGING / STALE / NOT REPORTING states.
+- Maintained the 85-file release budget and iPad-safe full-frame composition.
+
 # Dark Sky 8.8.14.8 — Watch Helm
 
-Authenticated exact-vessel Fleet Watch publishing. Project Control routes through the vessel owner/partner identity; the Owner Control Center can read and publish only its own bounded report. Admiral remains read-only.
-
-# Dark Sky 8.8.14.8 — Watch Helm
-
-- Added `fleet_observability_reports` as an append-only operational truth stream separate from vessel identity/branding records.
-- Added `admiral_read_fleet_watch()` with active-Admiral enforcement and no write capability.
+- Added authenticated exact-vessel Fleet Watch publishing from Project Control through the Owner/Partner Control Center.
+- Added `vessel_read_own_watch_report()` so a vessel can read only its own latest bounded report.
 - Added `vessel_publish_watch_report()` gated to authenticated exact-vessel membership.
-- Fleet Watch now distinguishes FRESH, AGING, STALE, and NOT REPORTING instead of treating registry metadata as operational activity.
-- Added Truth Source and reported-at context to exact-vessel Admiral observation.
-- Preserved six-member Fleet Core, Bootstrap Build as an Admiral Program, strict vessel isolation, and read-only Admiral observability.
+- Admiral remains read-only and receives current work, unresolved issue count/summary, source label, and report time only.
+- Proved the end-to-end path with Ike’s: owner publish → Fleet Core → Admiral Watchtower → safe manual refresh.
 
 # Dark Sky 8.8.14.6 — Full Frame
 

@@ -1,14 +1,22 @@
-# Dark Sky 8.8.14.8 — Watch Helm
+# Dark Sky 8.8.14.9 — Signal Watch
 
-Authenticated exact-vessel Fleet Watch publishing. Project Control routes through the vessel owner/partner identity; the Owner Control Center can read and publish only its own bounded report. Admiral remains read-only.
+Signal Watch polishes the proven 8.8.14.8 Watch Helm path and adds a conservative automatic signal pilot without weakening authority boundaries.
 
-# Dark Sky 8.8.14.8 — Watch Helm
+The Owner/Partner Control Center now presents Fleet Watch as a deliberate vessel console rather than a raw form: larger grouped fields, persistent report state, explicit source and last-published context, durable publish confirmation, and an Auto Signal status rail.
 
-Watch Helm turns Admiral My Fleet from a registry-only shell into a source-aware operational watchtower. Fleet Core now has a protected observability-report channel: an authenticated exact-vessel member may publish current work, unresolved-issue count/summary, source label, and report time; the Admiral receives those fields through a separate read-only Fleet Watch RPC.
+For Ike’s pilot, Auto Signal runs only after the real exact-vessel owner session is authenticated. It compares bounded owner-side activity with the latest vessel report and publishes only when newer order activity exists. It does **not** send customer names, order wording/details, pricing, photos, or control authority. Existing unresolved-issue count and blocker summary are preserved instead of being silently cleared. The Admiral remains read-only.
 
-The Watchtower explicitly distinguishes **FRESH**, **AGING**, **STALE**, and **NOT REPORTING**. Registry timestamps are retained as registry context only and are never presented as vessel telemetry. Missing reports remain visibly missing rather than being guessed. Bootstrap Build remains a separate Admiral Program outside the six-member Fleet Core.
+The Watchtower continues to distinguish **FRESH**, **AGING**, **STALE**, and **NOT REPORTING** and keeps registry metadata separate from operational telemetry. Bootstrap Build remains an Admiral Program outside the six-member Fleet Core.
 
-## Quick Watch Helm check
+## Quick Signal Watch check
+
+1. Open Ike’s Owner/Partner Control Center with the real exact-vessel owner identity.
+2. Open **Fleet Watch** and confirm the polished console loads with **AUTO SIGNAL · ARMED**.
+3. Manual proof: publish a deliberate current-work report and verify durable confirmation.
+4. Admiral proof: open **My Fleet** and verify Ike’s remains the only FRESH vessel unless another vessel reports.
+5. Refresh Watch once and verify the report timestamp/source remain truthful and no authority boundary changes.
+
+
 
 1. Open **Admiral My Fleet** and complete the second Admiral security check.
 2. Confirm all six Fleet Core vessels remain present and Bootstrap Build remains below them as an Admiral Program.
