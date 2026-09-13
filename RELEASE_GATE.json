@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.9",
-  "release": "Signal Watch",
-  "generatedAt": "2026-09-13T15:20:00Z",
+  "build": "8.8.14.10",
+  "release": "Owner Current",
+  "generatedAt": "2026-09-13T17:03:00Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -274,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.9 Signal Watch polishes the proven exact-vessel Watch Helm and adds a conservative Ike\u2019s Auto Signal pilot. Automatic reports require real exact-vessel owner authentication, trigger only from newer bounded owner-side order activity, preserve existing issue truth, expose no customer/order/pricing details, and do not expand Admiral write authority. Manual publish and FRESH / AGING / STALE / NOT REPORTING truth remain intact.",
-  "candidate": "8.8.14.9",
+  "note": "8.8.14.10 Owner Current closes the Owner Orders operating gap. Engine remains a navigation/support surface; an authenticated exact-vessel Owner/Partner session is the only authority allowed to change Ike\u2019s business order status. Owner status changes persist to the exact vessel and immediately publish only bounded queue posture to Fleet Watch. Customer identity, wording, pricing, photos, and order details remain vessel-private. Admiral remains read-only; six-member Fleet Core isolation and Bootstrap Build program separation are preserved.",
+  "candidate": "8.8.14.10",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -451,7 +451,8 @@
     "bootstrap_vendor_schedule_view": true,
     "bootstrap_vendor_move_communication_log": true,
     "bootstrap_vendor_messages_local_only": true,
-    "bootstrap_schedule_late_load_doorway": true
+    "bootstrap_schedule_late_load_doorway": true,
+    "owner_current": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -466,7 +467,10 @@
     "course_order_scoped_to_exact_vessel": true,
     "unverified_feature_delivery_fails_closed": true,
     "foreign_deployment_never_relabels_to_active_project": true,
-    "quarantine_preserves_foreign_deployment_evidence": true
+    "quarantine_preserves_foreign_deployment_evidence": true,
+    "engine_route_not_owner_authority": true,
+    "exact_vessel_owner_order_status": true,
+    "bounded_auto_signal_after_owner_change": true
   },
   "release_identity_repair": {
     "status": "PASS",
@@ -506,8 +510,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.9",
-    "seal": "signal-watch-88149",
+    "build": "8.8.14.10",
+    "seal": "owner-current-881410",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

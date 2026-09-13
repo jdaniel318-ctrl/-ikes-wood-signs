@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.9",
-  "release": "Signal Watch",
-  "seal": "signal-watch-88149",
+  "build": "8.8.14.10",
+  "release": "Owner Current",
+  "seal": "owner-current-881410",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Signal Watch",
-  "name": "Signal Watch",
-  "releaseName": "Signal Watch"
+  "release_name": "Owner Current",
+  "name": "Owner Current",
+  "releaseName": "Owner Current"
 }

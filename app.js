@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.14.9';
+  const BUILD_VERSION='8.8.14.10';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -7374,7 +7374,7 @@
                     <div class="deployment-readiness-summary"><strong>${readiness.score}%</strong><span>ENGINE READY</span><b class="${d.deviceLockVerified?'ready':'warn'}">${d.deviceLockVerified?'DEVICE VERIFIED':'DEVICE CHECK'}</b></div>
                     ${readiness.checks.map(c=>`<div class="readiness-row ${c.pass?'pass':c.warning?'warn':'fail'}"><span>${escapeHtml(c.label)}</span><strong>${escapeHtml(c.detail)}</strong></div>`).join('')}
                   </article>
-                  <article class="pec-card deployment-signal-watch">
+                  <article class="pec-card deployment-owner-current">
                     <div class="deployment-card-heading"><small>OUTPOST HEALTH</small><h4>${escapeHtml(voyage.label)}</h4></div>
                     <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'ACTIVE • SERVING CUSTOMERS':d.state==='sea_trial'?(d.lastTestedAt?'SEA TRIAL • TEST RECORDED':'SEA TRIAL • NOT ACTIVE'):d.state==='paused'?'PAUSED':'IN HARBOR'}</strong></div>
                     <p><b>Last check-in:</b> ${d.lastCheckIn?escapeHtml(new Date(d.lastCheckIn).toLocaleString()):'Telemetry not installed yet'}</p>
