@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.14",
-  "release": "Release Current",
+  "build": "8.8.14.16",
+  "release": "Authority Current",
   "generatedAt": "2026-09-13T21:36:00Z",
   "checks": {
     "build_version": true,
@@ -274,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.14 Release Current makes Owner/Partner subview navigation deterministic on iPad: async views render fully before the previous surface is removed, and stale transitions cannot overwrite the newest route. Fleet Owner Spine authority, durable records, exact-vessel owner control, audited support separation, Fleet Watch, and Admiral read-only observability are preserved.",
-  "candidate": "8.8.14.14",
+  "note": "8.8.14.16 Authority Current makes owner authentication deterministic: one exact-vessel authority RPC, bounded verification, immediate owner portal paint, and non-blocking durable business sync. Bootstrap Witness surfaces passage health without expanding Engine authority.",
+  "candidate": "8.8.14.16",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -510,8 +510,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.14",
-    "seal": "release-current-881414",
+    "build": "8.8.14.16",
+    "seal": "authority-current-881416",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

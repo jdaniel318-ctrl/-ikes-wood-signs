@@ -1,8 +1,8 @@
 {
-  "release": "Release Current",
-  "name": "Release Current",
-  "build": "8.8.14.14",
-  "seal": "release-current-881414",
+  "release": "Authority Current",
+  "name": "Authority Current",
+  "build": "8.8.14.16",
+  "seal": "authority-current-881416",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

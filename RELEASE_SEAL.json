@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.14",
-  "release": "Release Current",
-  "seal": "release-current-881414",
+  "build": "8.8.14.16",
+  "release": "Authority Current",
+  "seal": "authority-current-881416",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Release Current",
-  "name": "Release Current",
-  "releaseName": "Release Current"
+  "release_name": "Authority Current",
+  "name": "Authority Current",
+  "releaseName": "Authority Current"
 }
