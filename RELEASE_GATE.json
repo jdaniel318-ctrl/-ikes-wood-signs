@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.10",
-  "release": "Owner Current",
+  "build": "8.8.14.11",
+  "release": "Session Current",
   "generatedAt": "2026-09-13T17:03:00Z",
   "checks": {
     "build_version": true,
@@ -274,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.10 Owner Current closes the Owner Orders operating gap. Engine remains a navigation/support surface; an authenticated exact-vessel Owner/Partner session is the only authority allowed to change Ike\u2019s business order status. Owner status changes persist to the exact vessel and immediately publish only bounded queue posture to Fleet Watch. Customer identity, wording, pricing, photos, and order details remain vessel-private. Admiral remains read-only; six-member Fleet Core isolation and Bootstrap Build program separation are preserved.",
-  "candidate": "8.8.14.10",
+  "note": "8.8.14.11 Session Current closes the Owner Orders operating gap. Engine remains a navigation/support surface; an authenticated exact-vessel Owner/Partner session is the only authority allowed to change Ike\u2019s business order status. Owner status changes persist to the exact vessel and immediately publish only bounded queue posture to Fleet Watch. Customer identity, wording, pricing, photos, and order details remain vessel-private. Admiral remains read-only; six-member Fleet Core isolation and Bootstrap Build program separation are preserved.",
+  "candidate": "8.8.14.11",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -510,8 +510,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.10",
-    "seal": "owner-current-881410",
+    "build": "8.8.14.11",
+    "seal": "owner-current-881411",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

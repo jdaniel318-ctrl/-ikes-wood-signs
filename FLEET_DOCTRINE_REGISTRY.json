@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.14.10",
+  "build": "8.8.14.11",
   "release": "Watch Helm",
   "status": "active",
   "principles": [
