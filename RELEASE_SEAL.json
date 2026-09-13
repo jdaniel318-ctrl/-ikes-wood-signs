@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.13",
-  "release": "Signal Lift",
-  "seal": "signal-lift-881313",
+  "build": "8.8.13.14",
+  "release": "Night Watch",
+  "seal": "night-watch-881314",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Signal Lift",
-  "name": "Signal Lift",
-  "releaseName": "Signal Lift"
+  "release_name": "Night Watch",
+  "name": "Night Watch",
+  "releaseName": "Night Watch"
 }

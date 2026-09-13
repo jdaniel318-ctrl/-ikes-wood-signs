@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.13",
-  "release": "Signal Lift",
+  "build": "8.8.13.14",
+  "release": "Night Watch",
   "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
@@ -274,9 +274,16 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.13 Signal Lift raises the existing exact-vessel Fleet Signal Report above Captain Professional View on iPad. The report remains read-only, shares the Cinematic evidence source, and closes back to the same Professional command position without changing readiness, outcomes, projects, deployments, authentication, or vessel isolation.",
-  "candidate": "8.8.13.13",
+  "note": "8.8.13.14 Night Watch preserves the complete field-proven iPad route circuit and hardens visible acknowledgement, focus entry and restoration, touch feedback, overscroll containment, and reduced-motion support. It does not change evidence, readiness, outcomes, projects, deployments, authentication, owner authority, or vessel isolation.",
+  "candidate": "8.8.13.14",
   "features": {
+    "field_proven_route_circuit_preserved": true,
+    "captain_subview_focus_handoff": true,
+    "captain_subview_focus_restoration": true,
+    "captain_signal_visible_acknowledgement": true,
+    "captain_chart_overscroll_contained": true,
+    "ipad_touch_feedback_explicit": true,
+    "reduced_motion_supported": true,
     "fleet_rigging_four_primary_levels": true,
     "deck_clearance_engine_watch_progressive": true,
     "operate_vessels_three_surfaces": true,
@@ -480,8 +487,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.13",
-    "seal": "signal-lift-881313",
+    "build": "8.8.13.14",
+    "seal": "night-watch-881314",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

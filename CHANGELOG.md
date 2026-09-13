@@ -1,3 +1,12 @@
+# Dark Sky 8.8.13.14 — Night Watch
+
+- Preserved all field-proven True Passage, Homeward Bearing, Shared Bearing, and Signal Lift routes.
+- Added unmistakable exact-vessel acknowledgement when a Captain Signal Report opens.
+- Added focus handoff into Captain subviews and restoration to the originating control when they close.
+- Contained Fleet Chart overscroll, strengthened iPad tap feedback, and honored reduced-motion preferences.
+- Added a five-part field-learning proof circuit covering the exact routes exercised tonight.
+- Changed no evidence, readiness, lifecycle, deployment, authentication, owner, authority, or isolation rule.
+
 # Dark Sky 8.8.13.13 — Signal Lift
 
 - Lifted the protected Fleet Chart and scoped signal report above Captain Professional View on iPad.

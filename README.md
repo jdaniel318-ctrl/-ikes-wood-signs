@@ -1,3 +1,19 @@
+# Dark Sky 8.8.13.14 — Night Watch
+
+Night Watch is the field-learning release. It preserves every route proven on iPad tonight—exact Customer Experience passage, storage-independent return to the order, Captain Fleet Readiness, and the lifted exact-vessel Signal Report—then hardens the feedback and return seams around them.
+
+Captain subviews now remember the control that opened them, move focus into the visible command surface, and return focus to the originating control when closed. The Signal Report announces that exact-vessel scope is confirmed and provides an immediate visual acknowledgement instead of relying on a background state change. Touch feedback is explicit, overscroll is contained inside the chart, and reduced-motion preferences are honored.
+
+These are navigation, presentation, and accessibility safeguards only. Night Watch does not alter fleet evidence, readiness predicates, watch counts, project records, deployment state, authentication, owner identity, authority, or vessel isolation.
+
+## Night Watch proof circuit
+
+1. From Operate Vessels, open Customer Experience for Signal Restoration, Ike's Wood Signs, and Legacy Plumbing; confirm each exact brand and correct live/private posture.
+2. On a customer surface, open Project Admin and choose **Return to My Order**; confirm the exact customer page returns.
+3. In Captain Professional View, run Fleet Readiness and open Legacy Plumbing's signal report; confirm the green **Signal Report Open** acknowledgement.
+4. Close the inner report and then the Fleet Chart; confirm focus and scroll return to the same Professional command position.
+5. Return to Engine and confirm no project, owner, deployment, readiness, or watch state changed.
+
 # Dark Sky 8.8.13.13 — Signal Lift
 
 Signal Lift repairs the field-confirmed Captain Professional **Open Signal Report** visibility failure. The command already opened the correct scoped Fleet Signal Report, but iPad rendered it behind the higher Professional surface.
