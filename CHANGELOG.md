@@ -1,9 +1,9 @@
-# Dark Sky 8.8.14.3 — Exact Arrival
+# Dark Sky 8.8.14.4 — Visible Arrival
 
-- Routed the Captain's deployment course through the protected Captain-to-Engine surface handoff.
-- Closes Captain surfaces before opening the exact Project Control deployment workspace.
-- Preserves the selected outpost so Legacy Plumbing opens with Sadie selected.
-- Added a visible command fault if the exact deployment handoff cannot complete.
+- Routed the Captain deployment course through Dark Sky's native Engine navigator.
+- Clears body-level Captain authorization and modal visibility state before painting the Engine.
+- Opens the exact Project Control deployment workspace only after the Engine is visibly restored.
+- Preserves Exact Arrival's selected-outpost handoff and visible route-failure reporting.
 - Preserved all Fleet Ready guidance and every exact-vessel, authority, evidence, and lifecycle boundary.
 
 # Dark Sky 8.8.14.0 — Fleet Ready

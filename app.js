@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.14.3';
+  const BUILD_VERSION='8.8.14.4';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -8823,7 +8823,12 @@
       return {ok:true,pendingAuthorization:true,projectId:p.id,outpostId:route.outpostId||''};
     }
     closeCaptainSurfacesForEngineRoute();
-    await openEnginePanel();
+    if(window.DarkSkyFleetNavigator?.navigate){
+      await window.DarkSkyFleetNavigator.navigate('engine',{source:'captain-deployment-course'});
+    }else{
+      restoreEngineSurface('captain-deployment-course',++commandRouteGeneration);
+      await openEnginePanel();
+    }
     await openProjectEngineControl(p.id);
     await renderProjectTab(p.id,'deployment');
     window.BlackFlagV3Core?.audit?.({actorRole:'captain',projectId:p.id,category:'navigation',action:'deployment.course.opened',detail:`outpost ${route.outpostId||'(default)'}`});

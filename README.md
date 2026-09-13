@@ -1,14 +1,14 @@
-# Dark Sky 8.8.14.3 — Exact Arrival
+# Dark Sky 8.8.14.4 — Visible Arrival
 
-Exact Arrival repairs the field-confirmed Captain-to-Project-Control handoff. The route correctly selected Sadie and displayed **Routing…**, but when the Engine was already unlocked it opened Project Control underneath the still-visible Captain surfaces.
+Visible Arrival repairs the field-confirmed blank screen after the Captain-to-Project-Control handoff. Exact Arrival closed the visible Captain panels, but body-level Captain authorization and modal classes still suppressed the restored Engine surface.
 
-The deployment route now uses the same protected Captain-to-Engine surface handoff already proven by other command routes: close Captain surfaces, restore the unlocked Engine, open the exact project, open Deployments, and preserve the selected outpost. A failed handoff now leaves a visible command fault instead of appearing inert. Centerline containment, Fleet Ready guidance, readiness evidence, authentication, lifecycle state, and deployment data are preserved.
+The deployment route now passes through Dark Sky's native Engine navigator. That authority clears every Captain layer and body-level visibility state, paints the Engine, then opens the exact project, Deployments tab, and selected outpost. Exact Arrival's selection and fault reporting, Centerline containment, Fleet Ready guidance, readiness evidence, authentication, lifecycle state, and deployment data are preserved.
 
-## Quick Exact Arrival check
+## Quick Visible Arrival check
 
 1. Open Captain Watch.
 2. Open Legacy Plumbing's exact course and tap **Review & Activate** once.
-3. Confirm Captain closes and Project Control opens at Legacy Plumbing → Operate → Deployments with Sadie selected.
+3. Confirm the Engine paints without a blank interval and Project Control opens at Legacy Plumbing → Operate → Deployments with Sadie selected.
 4. Stop before activation.
 
 # Dark Sky 8.8.14.0 — Fleet Ready

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.3",
-  "release": "Exact Arrival",
-  "seal": "exact-arrival-88143",
+  "build": "8.8.14.4",
+  "release": "Visible Arrival",
+  "seal": "visible-arrival-88144",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Exact Arrival",
-  "name": "Exact Arrival",
-  "releaseName": "Exact Arrival"
+  "release_name": "Visible Arrival",
+  "name": "Visible Arrival",
+  "releaseName": "Visible Arrival"
 }

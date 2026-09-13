@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.3",
-  "release": "Exact Arrival",
+  "build": "8.8.14.4",
+  "release": "Visible Arrival",
   "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
@@ -274,9 +274,12 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.3 Exact Arrival repairs the field-confirmed hidden Captain deployment handoff by closing Captain surfaces, restoring the unlocked Engine, and opening the exact Project Control deployment workspace with its selected outpost. Centerline containment, Fleet Ready guidance, readiness truth, authentication, lifecycle state, deployment data, and exact-vessel isolation remain unchanged.",
-  "candidate": "8.8.14.3",
+  "note": "8.8.14.4 Visible Arrival repairs the field-confirmed blank Captain deployment handoff by using Dark Sky's native Engine navigator to clear every Captain visibility state before opening the exact Project Control deployment workspace with its selected outpost. Exact Arrival selection and fault reporting, Centerline containment, Fleet Ready guidance, readiness truth, authentication, lifecycle state, deployment data, and exact-vessel isolation remain unchanged.",
+  "candidate": "8.8.14.4",
   "features": {
+    "captain_deployment_native_engine_navigator": true,
+    "captain_body_visibility_state_cleared": true,
+    "captain_deployment_blank_surface_repaired": true,
     "captain_deployment_surface_handoff": true,
     "captain_deployment_selected_outpost_preserved": true,
     "captain_deployment_route_failure_visible": true,
@@ -503,8 +506,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.3",
-    "seal": "exact-arrival-88143",
+    "build": "8.8.14.4",
+    "seal": "visible-arrival-88144",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
