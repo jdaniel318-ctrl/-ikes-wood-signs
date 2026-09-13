@@ -1,10 +1,10 @@
-# Dark Sky 8.8.14.4 — Visible Arrival
+# Dark Sky 8.8.14.5 — Proof Path
 
-- Routed the Captain deployment course through Dark Sky's native Engine navigator.
-- Clears body-level Captain authorization and modal visibility state before painting the Engine.
-- Opens the exact Project Control deployment workspace only after the Engine is visibly restored.
-- Preserves Exact Arrival's selected-outpost handoff and visible route-failure reporting.
-- Preserved all Fleet Ready guidance and every exact-vessel, authority, evidence, and lifecycle boundary.
+- Added a prominent revision-aware **Preview & Review** course to Customer Experience.
+- Routes that command to the existing private Test Deck and its separate approval control.
+- Reframed service-vessel rules as request photo and request review instead of product language.
+- Collapsed the product-placement catalog into an optional visual-tools section for service businesses.
+- Preserved Sea Trial state, exact-project isolation, deliberate approval, and deliberate activation.
 
 # Dark Sky 8.8.14.0 — Fleet Ready
 

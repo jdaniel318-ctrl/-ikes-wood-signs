@@ -1,8 +1,8 @@
 {
-  "release": "Visible Arrival",
-  "name": "Visible Arrival",
-  "build": "8.8.14.4",
-  "seal": "visible-arrival-88144",
+  "release": "Proof Path",
+  "name": "Proof Path",
+  "build": "8.8.14.5",
+  "seal": "proof-path-88145",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

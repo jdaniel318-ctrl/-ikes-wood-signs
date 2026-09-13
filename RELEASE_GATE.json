@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.4",
-  "release": "Visible Arrival",
+  "build": "8.8.14.5",
+  "release": "Proof Path",
   "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
@@ -274,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.4 Visible Arrival repairs the field-confirmed blank Captain deployment handoff by using Dark Sky's native Engine navigator to clear every Captain visibility state before opening the exact Project Control deployment workspace with its selected outpost. Exact Arrival selection and fault reporting, Centerline containment, Fleet Ready guidance, readiness truth, authentication, lifecycle state, deployment data, and exact-vessel isolation remain unchanged.",
-  "candidate": "8.8.14.4",
+  "note": "8.8.14.5 Proof Path repairs the field-confirmed Customer Experience review dead end. It adds a visible current-revision preview and approval course, uses service-request language for service vessels, and keeps product-placement capabilities closed as optional tools. Preview, approval, Sea Trial, and activation remain separate exact-vessel actions.",
+  "candidate": "8.8.14.5",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -506,8 +506,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.4",
-    "seal": "visible-arrival-88144",
+    "build": "8.8.14.5",
+    "seal": "proof-path-88145",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

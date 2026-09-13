@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.4",
-  "release": "Visible Arrival",
-  "seal": "visible-arrival-88144",
+  "build": "8.8.14.5",
+  "release": "Proof Path",
+  "seal": "proof-path-88145",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Visible Arrival",
-  "name": "Visible Arrival",
-  "releaseName": "Visible Arrival"
+  "release_name": "Proof Path",
+  "name": "Proof Path",
+  "releaseName": "Proof Path"
 }

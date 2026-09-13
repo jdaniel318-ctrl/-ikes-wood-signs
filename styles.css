@@ -12652,6 +12652,10 @@ body.boot-locked #returnToEngineBtn.dark-sky-return-control{
 
 /* 5.0.6 — Engine-only reversible commissioning lifecycle */
 .experience-lifecycle-card{margin:0 0 14px;padding:17px;border:1px solid #38545d;border-radius:12px;background:linear-gradient(135deg,#0b1a20,#081419)}
+.experience-review-course{display:flex;align-items:center;justify-content:space-between;gap:24px;border-color:#3b7180!important;background:linear-gradient(135deg,#0b2831,#0a171c)!important}
+.experience-review-course.reviewed{border-color:#9b7a38!important;background:linear-gradient(135deg,#28200e,#0a171c)!important}.experience-review-course.approved{border-color:#3f7955!important;background:linear-gradient(135deg,#102d1d,#0a171c)!important}
+.experience-review-course small{color:#80becb;font:900 9px Arial,sans-serif;letter-spacing:.14em}.experience-review-course h4{margin:7px 0 5px;font-size:22px}.experience-review-course p{max-width:760px;margin:0;color:#a7b8ba;line-height:1.5}.experience-review-course button{width:auto!important;min-width:210px;white-space:nowrap}
+@media(max-width:760px){.experience-review-course{align-items:stretch;flex-direction:column}.experience-review-course button{width:100%!important;min-width:0}}
 .experience-lifecycle-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
 .experience-lifecycle-head span{color:#75a6ad;font:900 8px Arial,sans-serif;letter-spacing:.16em}
 .experience-lifecycle-head h3{margin:5px 0;color:#edf4f1;font:900 20px Arial,sans-serif}
@@ -15508,7 +15512,7 @@ button,[role="button"]{-webkit-tap-highlight-color:rgba(91,190,239,.22);touch-ac
 @keyframes nightWatchSignalIn{from{opacity:.35;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
 @media(prefers-reduced-motion:reduce){#captainFleetSignalReport:not(.hidden){animation:none!important}html{scroll-behavior:auto!important}}
 
-/* 8.8.14.4 Visible Arrival — preserve centering throughout the Signal Report's
+/* 8.8.14.5 Proof Path — preserve centering throughout the Signal Report's
    entrance and keep the complete report contained on iPad. */
 #captainFleetSignalReport{max-width:calc(100% - 32px);box-sizing:border-box}
 

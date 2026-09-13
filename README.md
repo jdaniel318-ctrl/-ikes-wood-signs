@@ -1,15 +1,15 @@
-# Dark Sky 8.8.14.4 — Visible Arrival
+# Dark Sky 8.8.14.5 — Proof Path
 
-Visible Arrival repairs the field-confirmed blank screen after the Captain-to-Project-Control handoff. Exact Arrival closed the visible Captain panels, but body-level Captain authorization and modal classes still suppressed the restored Engine surface.
+Proof Path repairs the field-confirmed dead end between Legacy Plumbing's Customer Experience configuration and its required Experience Review. The exact Customer Experience page now leads with a revision-aware review course instead of leaving the operator at a generic save button.
 
-The deployment route now passes through Dark Sky's native Engine navigator. That authority clears every Captain layer and body-level visibility state, paints the Engine, then opens the exact project, Deployments tab, and selected outpost. Exact Arrival's selection and fault reporting, Centerline containment, Fleet Ready guidance, readiness evidence, authentication, lifecycle state, and deployment data are preserved.
+Service vessels now describe request photos and request review in service language, while product-placement capabilities remain available but closed as optional tools. The course opens the existing private Test Deck, records preview evidence only when the exact customer renderer opens, and requires a separate deliberate approval. It never activates Sadie or changes deployment state.
 
-## Quick Visible Arrival check
+## Quick Proof Path check
 
-1. Open Captain Watch.
-2. Open Legacy Plumbing's exact course and tap **Review & Activate** once.
-3. Confirm the Engine paints without a blank interval and Project Control opens at Legacy Plumbing → Operate → Deployments with Sadie selected.
-4. Stop before activation.
+1. Open Legacy Plumbing → Experience → Customer Experience.
+2. Confirm **Preview & Review** (or **Review & Approve** when current preview evidence exists) is visible near the top.
+3. Open the review course, preview the exact service-request experience, then return to the Test Deck.
+4. Confirm **Approve Experience** is available as a separate action and Sadie remains in Sea Trial.
 
 # Dark Sky 8.8.14.0 — Fleet Ready
 
