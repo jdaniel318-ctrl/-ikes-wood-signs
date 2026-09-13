@@ -1,8 +1,8 @@
 {
-  "release": "Authority Current",
-  "name": "Authority Current",
-  "build": "8.8.14.16",
-  "seal": "authority-current-881416",
+  "release": "Fleet Velocity",
+  "name": "Fleet Velocity",
+  "build": "8.8.14.17",
+  "seal": "fleet-velocity-881417",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

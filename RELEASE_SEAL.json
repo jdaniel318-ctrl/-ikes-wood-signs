@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.16",
-  "release": "Authority Current",
-  "seal": "authority-current-881416",
+  "build": "8.8.14.17",
+  "release": "Fleet Velocity",
+  "seal": "fleet-velocity-881417",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Authority Current",
-  "name": "Authority Current",
-  "releaseName": "Authority Current"
+  "release_name": "Fleet Velocity",
+  "name": "Fleet Velocity",
+  "releaseName": "Fleet Velocity"
 }
