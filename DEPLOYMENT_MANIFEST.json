@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.13.9",
-  "version": "8.8.13.9",
-  "release_name": "Keelbound",
-  "releaseName": "Keelbound",
-  "release_seal": "keelbound-88139",
+  "build": "8.8.13.10",
+  "version": "8.8.13.10",
+  "release_name": "Shared Bearing",
+  "releaseName": "Shared Bearing",
+  "release_seal": "shared-bearing-881310",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -87,8 +87,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "six-vessel-local-first-paint-and-bounded-background-settlement",
-  "release_note": "Keelbound repairs the field-observed Engine stall with a complete six-vessel local command picture before slower storage, registry, proof, and project reads settle independently behind bounded stages. Fleet Intelligence, Command Deck, Fleet Health, Proving Ground, Fleet Learning, Project Tools, and the storage KPI remain usable or truthfully marked VERIFYING instead of freezing on READING. It preserves the Fleet Circuit view parity, durable staging, storage attribution, and Engineering Systems repairs without changing authentication timing, adopting staged capability, weakening authority, or crossing vessel boundaries.",
+  "release_focus": "captain-professional-readiness-parity-and-shared-engineering-language",
+  "release_note": "Shared Bearing repairs the field-confirmed Captain Professional Fleet Readiness completion fault by refreshing the existing shared command picture instead of calling an undefined presentation function. Captain Professional and Cinematic views keep the same protected readiness service. The secondary Captain station is now clearly named Engineering Systems with a durable SYSTEMS AVAILABLE affordance, matching the Engine without changing data, authority, authentication, readiness predicates, or vessel boundaries.",
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",

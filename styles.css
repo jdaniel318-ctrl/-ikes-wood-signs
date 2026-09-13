@@ -15441,9 +15441,9 @@ body.engine-mode.engine-dock-open #fleetCommissioningSummary{display:none!import
 .captain-support-drawer>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:58px;padding:10px 14px;cursor:pointer;list-style:none}
 .captain-support-drawer>summary::-webkit-details-marker{display:none}
 .captain-support-drawer>summary span,.captain-support-drawer>summary b,.captain-support-drawer>summary small{display:block}
-.captain-support-drawer>summary b{font-size:.76rem;letter-spacing:.1em;color:#83bde5}
+.captain-support-drawer>summary b{font-size:.8rem;letter-spacing:.1em;color:#9ddcf0}
 .captain-support-drawer>summary small{margin-top:3px;color:#a8bac8;font-size:.68rem}
-.captain-support-drawer>summary em{font-style:normal;color:#e2c36c;font-size:.66rem;font-weight:900;letter-spacing:.08em;white-space:nowrap}
+.captain-support-drawer>summary em{padding:7px 10px;border:1px solid rgba(226,195,108,.5);border-radius:999px;background:rgba(226,195,108,.08);font-style:normal;color:#f0d37e;font-size:.68rem;font-weight:900;letter-spacing:.08em;white-space:nowrap}
 .captain-support-drawer[open]>summary{border-bottom:1px solid rgba(255,255,255,.08)}
 .captain-support-drawer>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:10px}
 .captain-support-drawer button{display:grid;gap:3px;min-height:58px;padding:10px 12px;text-align:left;border:1px solid rgba(126,190,235,.24);border-radius:8px;background:#102b40;color:#fff}

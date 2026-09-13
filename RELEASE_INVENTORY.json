@@ -1,8 +1,8 @@
 {
-  "release": "Keelbound",
-  "name": "Keelbound",
-  "build": "8.8.13.9",
-  "seal": "keelbound-88139",
+  "release": "Shared Bearing",
+  "name": "Shared Bearing",
+  "build": "8.8.13.10",
+  "seal": "shared-bearing-881310",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

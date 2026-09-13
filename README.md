@@ -1,3 +1,17 @@
+# Dark Sky 8.8.13.10 — Shared Bearing
+
+Shared Bearing is the narrow repair for the field-confirmed Captain Professional Fleet Readiness fault. The completed report now refreshes the existing shared Captain command picture instead of calling the missing `refreshCaptainProfessional` symbol. Professional and Cinematic views continue to run the same protected readiness service and retain the same report.
+
+The secondary Captain panel is now named **Engineering Systems**, matching the Engine Room, and its former faint **OPEN WHEN NEEDED** caption is replaced by a restrained but recognizable **SYSTEMS AVAILABLE** state. No readiness predicate, authentication boundary, authority gate, fleet record, vessel route, staged/adopted state, or release evidence is changed.
+
+## Quick Shared Bearing check
+
+1. Open Captain Watch in Professional View.
+2. Open Engineering Systems and tap Fleet Readiness once.
+3. Confirm the completed report remains visible and no missing-variable notice appears.
+4. Switch to Cinematic View and confirm the same readiness result and findings functions remain available.
+5. Return to Engine and open two different vessels, confirming exact identity and records in both.
+
 # Dark Sky 8.8.13.9 — Keelbound
 
 Keelbound is the narrow repair for the field-observed Engine stall. The protected six-vessel roster now paints from its complete local chart before slower registry, storage, proof, and project reads begin. Existing vessel rows remain authoritative; the local guard only supplies a missing protected presentation row and does not persist, admit, adopt, promote, or rewrite evidence.

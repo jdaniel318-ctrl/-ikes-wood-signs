@@ -1,3 +1,10 @@
+# Dark Sky 8.8.13.10 — Shared Bearing
+
+- Replaced the undefined Captain Professional readiness refresh call with the existing shared command refresh.
+- Renamed Captain Support Stations to Engineering Systems.
+- Replaced the faint OPEN WHEN NEEDED label with a durable SYSTEMS AVAILABLE affordance.
+- Preserved Captain Cinematic parity, readiness truth, authentication, authority, staging, and vessel isolation.
+
 # Dark Sky 8.8.13.9 — Keelbound
 
 - Seeds the complete protected six-vessel picture in memory before asynchronous reconciliation, while preserving every existing row and future fleet member.
