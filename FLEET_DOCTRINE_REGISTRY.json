@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.13.14",
-  "release": "Night Watch",
+  "build": "8.8.14.0",
+  "release": "Fleet Ready",
   "status": "active",
   "principles": [
     {

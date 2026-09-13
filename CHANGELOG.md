@@ -1,3 +1,12 @@
+# Dark Sky 8.8.14.0 — Fleet Ready
+
+- Added launch stage, owner posture, test evidence, experience approval, and exact next-step guidance to the read-only fleet snapshot.
+- Reframed unverified kiosk lock during Sea Trial as a clear **Before Live** requirement.
+- Replaced generic **Take Me There** copy with lifecycle-aware exact-route labels.
+- Added a durable Fleet Ready course block to the scoped Captain Signal Report.
+- Added immediate **Routing…** feedback before opening the selected Project Control outpost.
+- Preserved deliberate activation, Project Control authorization, owner independence, readiness truth, and strict vessel isolation.
+
 # Dark Sky 8.8.13.14 — Night Watch
 
 - Preserved all field-proven True Passage, Homeward Bearing, Shared Bearing, and Signal Lift routes.

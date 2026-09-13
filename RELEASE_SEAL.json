@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.14",
-  "release": "Night Watch",
-  "seal": "night-watch-881314",
+  "build": "8.8.14.0",
+  "release": "Fleet Ready",
+  "seal": "fleet-ready-88140",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Night Watch",
-  "name": "Night Watch",
-  "releaseName": "Night Watch"
+  "release_name": "Fleet Ready",
+  "name": "Fleet Ready",
+  "releaseName": "Fleet Ready"
 }

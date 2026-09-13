@@ -1,3 +1,19 @@
+# Dark Sky 8.8.14.0 — Fleet Ready
+
+Fleet Ready turns the Captain’s verified fleet picture into an exact operating course. The scoped Signal Report now separates vessel lifecycle, owner posture, current outpost evidence, the next required step, and the authorized Engine route.
+
+For a Sea Trial such as Legacy Plumbing’s Sadie outpost, the Captain can now see whether the customer test is recorded, whether experience approval is current, what remains before Live, and a route labeled for the actual task. Device lock is described as a **Before Live** requirement during Sea Trial instead of appearing as an unexplained current fault. Opening the route visibly changes to **Routing…** before Project Control opens the exact selected outpost.
+
+Fleet Ready never promotes or activates automatically. It does not claim owner access, generate invitations, change deployment state, approve an experience, or weaken authentication. All consequential actions remain inside the existing exact-vessel Project Control boundary.
+
+## Fleet Ready proof circuit
+
+1. Open Captain Watch and run Fleet Readiness.
+2. Open Legacy Plumbing’s exact course and confirm the report shows lifecycle, owner posture, Sadie, the next step, and the Before Live device requirement.
+3. Tap the exact route once and confirm its visible **Routing…** acknowledgement.
+4. Confirm Project Control opens Legacy Plumbing → Deployments with Sadie selected.
+5. Stop before activation unless the Captain deliberately chooses to complete that separate operation.
+
 # Dark Sky 8.8.13.14 — Night Watch
 
 Night Watch is the field-learning release. It preserves every route proven on iPad tonight—exact Customer Experience passage, storage-independent return to the order, Captain Fleet Readiness, and the lifted exact-vessel Signal Report—then hardens the feedback and return seams around them.

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.13.14';
+  const BUILD_VERSION='8.8.14.0';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -6608,25 +6608,37 @@
       const deployments=migrateLegacyDeployment(p);
       const active=deployments.filter(d=>d.state==='deployed');
       const attention=deployments.filter(d=>d.state==='sea_trial'||d.state==='paused'||(d.state==='deployed'&&deploymentReadiness(d).score<100));
+      const launch=projectFleetLaunchState(p);
+      const ownerState=p.ownerAccess?.status==='active'?'claimed':p.ownerAccess?.invitation?'invited':'not_claimed';
       return {
         projectId:p.id,
         code:p.projectCode||p.orderPrefix||'PRJ',
         name:p.name,
+        launchKey:launch.key,
+        launchLabel:launch.label,
+        launchStep:launch.step,
+        launchDetail:launch.detail,
+        ownerState,
         totalOutposts:deployments.filter(d=>d.state!=='retired').length,
         activeOutposts:active.length,
         attentionOutposts:attention.length,
         outposts:deployments.map(d=>{
           const ready=deploymentReadiness(d);
+          const voyage=deploymentVoyageState(p,d);
           const reasons=[];
           if(d.state==='paused') reasons.push('Returned to harbor / paused');
           if(d.state==='sea_trial') reasons.push('Sea Trial in progress');
           if(d.state==='deployed'&&ready.score<100) reasons.push('Engine readiness needs attention');
-          if(!d.deviceLockVerified && d.profile==='kiosk_self_service') reasons.push('Device-level kiosk lock not verified');
+          if(!d.deviceLockVerified && d.profile==='kiosk_self_service') reasons.push(d.state==='deployed'?'Device-level kiosk lock not verified':'Before Live: verify device-level kiosk lock');
           return {
             id:d.id,name:d.name,profile:d.profile,state:d.state,
             manifestVersion:Number(d.manifestVersion||1),
             readiness:ready.score,
             deviceLockVerified:!!d.deviceLockVerified,
+            customerTestRecorded:!!d.lastTestedAt,
+            customerExperienceApproved:experienceApproved(p),
+            nextStep:voyage.detail,
+            routeLabel:voyage.nextAction==='deployed'?'REVIEW & ACTIVATE':voyage.nextAction==='test'?'CONTINUE SEA TRIAL':voyage.nextAction==='offer'?'ADD CUSTOMER OFFER':voyage.nextAction==='sea_trial'?'BEGIN SEA TRIAL':voyage.nextAction==='save'?'FINISH SETUP':voyage.nextAction==='none'?'VIEW HISTORY':'OPEN OUTPOST',
             authorizationState:deviceAuthorizationState(d),
             deviceId:d.deviceIdentity?.deviceId||null,
             attentionReasons:reasons,

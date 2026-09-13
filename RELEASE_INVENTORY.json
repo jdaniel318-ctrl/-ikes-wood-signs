@@ -1,8 +1,8 @@
 {
-  "release": "Night Watch",
-  "name": "Night Watch",
-  "build": "8.8.13.14",
-  "seal": "night-watch-881314",
+  "release": "Fleet Ready",
+  "name": "Fleet Ready",
+  "build": "8.8.14.0",
+  "seal": "fleet-ready-88140",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

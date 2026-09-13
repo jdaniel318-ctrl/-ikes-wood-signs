@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.14",
-  "release": "Night Watch",
+  "build": "8.8.14.0",
+  "release": "Fleet Ready",
   "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
@@ -274,9 +274,17 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.14 Night Watch preserves the complete field-proven iPad route circuit and hardens visible acknowledgement, focus entry and restoration, touch feedback, overscroll containment, and reduced-motion support. It does not change evidence, readiness, outcomes, projects, deployments, authentication, owner authority, or vessel isolation.",
-  "candidate": "8.8.13.14",
+  "note": "8.8.14.0 Fleet Ready converts the Captain’s read-only fleet picture into an exact operating course with lifecycle, owner posture, test evidence, experience approval, Before Live requirements, next-step guidance, and visible routing acknowledgement. Activation, approval, invitations, promotion, authentication, authority, evidence, and vessel state remain unchanged until an authorized human acts in exact-vessel Project Control.",
+  "candidate": "8.8.14.0",
   "features": {
+    "fleet_ready_exact_course": true,
+    "fleet_ready_launch_stage_visible": true,
+    "fleet_ready_owner_posture_visible": true,
+    "fleet_ready_test_evidence_visible": true,
+    "fleet_ready_experience_approval_visible": true,
+    "fleet_ready_before_live_requirements": true,
+    "fleet_ready_lifecycle_route_labels": true,
+    "fleet_ready_no_automatic_activation": true,
     "field_proven_route_circuit_preserved": true,
     "captain_subview_focus_handoff": true,
     "captain_subview_focus_restoration": true,
@@ -487,8 +495,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.14",
-    "seal": "night-watch-881314",
+    "build": "8.8.14.0",
+    "seal": "fleet-ready-88140",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
