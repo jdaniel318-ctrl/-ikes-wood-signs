@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.5",
-  "release": "Proof Path",
+  "build": "8.8.14.6",
+  "release": "Full Frame",
   "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
@@ -274,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.5 Proof Path repairs the field-confirmed Customer Experience review dead end. It adds a visible current-revision preview and approval course, uses service-request language for service vessels, and keeps product-placement capabilities closed as optional tools. Preview, approval, Sea Trial, and activation remain separate exact-vessel actions.",
-  "candidate": "8.8.14.5",
+  "note": "8.8.14.6 Full Frame repairs the field-confirmed preview evidence drift and iPad review framing defects. Stable customer-facing values—not derived timestamps—govern the revision signature, while the initial Legacy Plumbing private preview shows its complete header and non-overlapping return/safety controls. Sea Trial and activation remain unchanged.",
+  "candidate": "8.8.14.6",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -506,8 +506,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.5",
-    "seal": "proof-path-88145",
+    "build": "8.8.14.6",
+    "seal": "full-frame-88146",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

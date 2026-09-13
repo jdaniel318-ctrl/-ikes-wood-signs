@@ -14607,6 +14607,24 @@ body.ikes-project.ikes-flow-active .main-panel{padding-top:10px}
 .customer-session-indicator{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:9994;display:flex;gap:8px;align-items:center;padding:7px 11px;border-radius:999px;background:rgba(5,26,34,.88);border:1px solid rgba(203,177,96,.62);box-shadow:0 8px 24px rgba(0,0,0,.2);font-size:10px;letter-spacing:.08em;pointer-events:none;backdrop-filter:blur(10px)}
 .customer-session-indicator span{color:#b5c5c9}.customer-session-indicator strong{color:#f5e5a6}.customer-session-indicator.live{border-color:rgba(76,180,112,.65)}.customer-session-indicator.live strong{color:#9be0ad}.customer-session-indicator.test strong{color:#f4cf76}
 
+/* 8.8.14.6 Full Frame — iPad private review opens as a complete composition.
+   Header and safety/return controls remain visible without covering the hero. */
+@media (min-width:768px) and (max-width:1366px) and (orientation:landscape){
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-brand-header{position:sticky!important;top:0!important;min-height:88px!important;padding:10px 24px!important;overflow:visible!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-brand-header .legacy-real-logo{width:108px!important;height:64px!important;flex-basis:108px!important;padding:6px 10px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-main{padding:12px 20px 92px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-main>.premium-preview-banner,
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .fleet-test-contact-safety{min-height:42px!important;margin:0 0 10px!important;padding:9px 14px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-hero,
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-hero-visual{min-height:500px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-hero-copy{padding:42px 46px 38px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-hero-copy h2{font-size:clamp(54px,5.2vw,72px)!important;margin-bottom:16px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-hero-copy>p{font-size:17px!important;margin-bottom:22px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .contractor-availability{margin-top:20px!important;padding-top:16px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .experience-mode-banner{bottom:12px!important;left:12px!important;max-width:360px!important}
+  body[data-customer-session="private_preview"].legacy-plumbing-customer .customer-session-indicator{right:12px!important;bottom:12px!important}
+}
+
 
 /* Dark Sky 7.7.0 — Deep Sounding: real, obvious storage + telemetry entry points */
 .telemetry-launch-btn{appearance:none;border:0;background:transparent;cursor:pointer;padding:10px 0;min-width:150px}
@@ -15512,7 +15530,7 @@ button,[role="button"]{-webkit-tap-highlight-color:rgba(91,190,239,.22);touch-ac
 @keyframes nightWatchSignalIn{from{opacity:.35;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
 @media(prefers-reduced-motion:reduce){#captainFleetSignalReport:not(.hidden){animation:none!important}html{scroll-behavior:auto!important}}
 
-/* 8.8.14.5 Proof Path — preserve centering throughout the Signal Report's
+/* 8.8.14.6 Full Frame — preserve centering throughout the Signal Report's
    entrance and keep the complete report contained on iPad. */
 #captainFleetSignalReport{max-width:calc(100% - 32px);box-sizing:border-box}
 

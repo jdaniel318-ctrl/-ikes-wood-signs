@@ -1,10 +1,10 @@
-# Dark Sky 8.8.14.5 — Proof Path
+# Dark Sky 8.8.14.6 — Full Frame
 
-- Added a prominent revision-aware **Preview & Review** course to Customer Experience.
-- Routes that command to the existing private Test Deck and its separate approval control.
-- Reframed service-vessel rules as request photo and request review instead of product language.
-- Collapsed the product-placement catalog into an optional visual-tools section for service businesses.
-- Preserved Sea Trial state, exact-project isolation, deliberate approval, and deliberate activation.
+- Replaced timestamp-sensitive experience hashes with stable semantic revision signatures.
+- Prevented private preview normalization from invalidating its own review evidence.
+- Added an iPad landscape review composition with the full header visible on entry.
+- Reserved bottom space and separated fixed return and safety controls from customer content.
+- Preserved exact-project isolation, private-preview no-record safety, Sea Trial state, and deliberate approval.
 
 # Dark Sky 8.8.14.0 — Fleet Ready
 

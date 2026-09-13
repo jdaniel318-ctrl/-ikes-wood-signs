@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.14.5",
-  "release": "Proof Path",
+  "build": "8.8.14.6",
+  "release": "Full Frame",
   "status": "active",
   "principles": [
     {

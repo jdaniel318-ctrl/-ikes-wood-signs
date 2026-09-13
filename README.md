@@ -1,15 +1,15 @@
-# Dark Sky 8.8.14.5 — Proof Path
+# Dark Sky 8.8.14.6 — Full Frame
 
-Proof Path repairs the field-confirmed dead end between Legacy Plumbing's Customer Experience configuration and its required Experience Review. The exact Customer Experience page now leads with a revision-aware review course instead of leaving the operator at a generic save button.
+Full Frame repairs the two field-confirmed defects in Legacy Plumbing's private review: the preview could invalidate its own evidence because derived timestamps changed the revision hash, and the iPad opening composition clipped the header while its fixed controls covered page content.
 
-Service vessels now describe request photos and request review in service language, while product-placement capabilities remain available but closed as optional tools. The course opens the existing private Test Deck, records preview evidence only when the exact customer renderer opens, and requires a separate deliberate approval. It never activates Sadie or changes deployment state.
+Revision evidence now hashes stable customer-facing values rather than normalization timestamps. The iPad landscape preview uses a compact, top-reset composition with a complete header, reduced hero, reserved bottom space, and separated return/safety controls. Approval remains deliberate and Sadie remains in Sea Trial.
 
-## Quick Proof Path check
+## Quick Full Frame check
 
-1. Open Legacy Plumbing → Experience → Customer Experience.
-2. Confirm **Preview & Review** (or **Review & Approve** when current preview evidence exists) is visible near the top.
-3. Open the review course, preview the exact service-request experience, then return to the Test Deck.
-4. Confirm **Approve Experience** is available as a separate action and Sadie remains in Sea Trial.
+1. Open Legacy Plumbing → Experience → Customer Experience → **Preview & Review**.
+2. Tap **Open Private Preview** and confirm the full header plus bottom return/safety controls are visible together without overlap.
+3. Tap **Return to Test Deck** without submitting a request.
+4. Confirm the current revision is unchanged and **Approve Experience** is enabled. Stop before approval; Sadie must remain in Sea Trial.
 
 # Dark Sky 8.8.14.0 — Fleet Ready
 

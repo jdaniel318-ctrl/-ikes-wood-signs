@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.14.5';
+  const BUILD_VERSION='8.8.14.6';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4545,11 +4545,21 @@
 
 
   function experienceConfigurationSignature(p){
+    const stableValue=(value)=>{
+      if(Array.isArray(value))return value.map(stableValue);
+      if(!value||typeof value!=='object')return value;
+      return Object.keys(value).sort().reduce((out,key)=>{
+        if(key==='derived'||/(?:At|Timestamp)$/.test(key))return out;
+        out[key]=stableValue(value[key]);return out;
+      },{});
+    };
+    const operating=operatingModelForProject(p);
     const payload={
-      name:p?.name||'',description:p?.description||'',businessBrief:p?.businessBrief||null,
-      branding:p?.branding||null,products:(p?.products||[]).map(x=>({id:x.id,name:x.name,price:x.price,basePrice:x.basePrice,active:x.active,published:x.published,customerReady:x.customerReady,description:x.description})),
-      customerExperience:p?.customerExperience||null,customerRelationship:p?.customerRelationship||null,
-      operatingModel:p?.operatingModel||null,workflow:p?.workflow||null,visualPresentation:p?.visualPresentation||null
+      name:p?.name||'',description:p?.description||'',businessBrief:String(p?.businessBrief?.text||''),
+      branding:stableValue(p?.branding||null),products:(p?.products||[]).map(x=>stableValue({id:x.id,name:x.name,price:x.price,basePrice:x.basePrice,active:x.active,published:x.published,customerReady:x.customerReady,description:x.description})),
+      customerExperience:stableValue(p?.customerExperience||null),customerRelationship:stableValue(p?.customerRelationship||null),customization:stableValue(p?.customization||null),
+      operatingModel:stableValue({mode:operating.mode,customerFlow:operating.customerFlow,relationshipType:operating.relationshipType,fulfillment:operating.fulfillment,schedulingNeeded:operating.schedulingNeeded,requiredInputs:operating.requiredInputs,visualProfile:operating.visualProfile}),
+      workflow:stableValue(p?.workflow||null),visualPresentation:stableValue(visualPresentationFor(p))
     };
     const text=JSON.stringify(payload);let hash=2166136261;
     for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619);}
