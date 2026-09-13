@@ -1,11 +1,17 @@
-# Dark Sky 8.8.14.13 — Owner Steady
+# Dark Sky 8.8.14.14 — Release Current
+
+- Repairs the atomic release identity mismatch that correctly triggered RELEASE RECOVERY REQUIRED in 8.8.14.13.
+- Aligns document, deployment manifest, service worker, release gate, inventory, PWA manifest, and runtime seal to one canonical identity: 8.8.14.14 / release-current-881414.
+- Preserves Owner Steady navigation, Owner Spine durability, exact-vessel owner authority, Fleet Watch, and Admiral read-only observability.
+
+# Dark Sky 8.8.14.14 — Release Current
 
 - Removed the 120 ms owner-subview blanking window that could expose an empty panel while Settings or other async views were still loading.
 - Owner subviews now finish rendering off-screen, then commit in one deterministic swap on the next paint.
 - Added a transition token so an older async view cannot overwrite or bounce back over the newest owner navigation.
 - Preserved the Fleet Owner Spine: standalone owner operation, durable vessel records, exact-vessel authority, audited support separation, Fleet Watch, and Admiral read-only observability.
 
-# Dark Sky 8.8.14.13 — Session Current
+# Dark Sky 8.8.14.14 — Session Current
 
 - Turned Ike’s Owner Orders from read-only cards into a clear authenticated operating surface.
 - Added deliberate `MANAGE` → status workflow: New → In Production → Ready for Pickup → Completed.
@@ -15,14 +21,14 @@
 - Preserved Admiral read-only observability, six-member Fleet Core isolation, Bootstrap Build separation, full-frame viewport behavior, and manual Watch publishing.
 
 
-## 8.8.14.13 — Session Current
+## 8.8.14.14 — Session Current
 - Unified live Ike owner authentication across same-origin Black Flag tabs so Fleet Watch reuses the freshest Supabase owner session instead of drifting from the Owner Bridge.
 - Added refresh-token handoff/retry against the shared current session to survive token rotation in another open tab.
 - Auto Signal now reports bounded queue posture (New / In Production / Ready / Completed) instead of only total open orders.
 - Preserved exact-vessel owner authority, Admiral read-only observability, and no customer/order-detail leakage.
 
 
-## 8.8.14.13 — Owner Spine
+## 8.8.14.14 — Owner Spine
 - Fleet-wide Owner/Partner operating contract: each vessel is designed to run directly from its own Owner Control Center without entering Engine.
 - Added vessel-scoped durable business record synchronization to Fleet Core for owner orders and owner settings.
 - Added direct owner-entry visibility in Settings and explicit separation between owner authority and Black Flag support access.

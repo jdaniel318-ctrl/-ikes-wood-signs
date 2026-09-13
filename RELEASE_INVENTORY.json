@@ -1,8 +1,8 @@
 {
-  "release": "Owner Steady",
-  "name": "Owner Steady",
-  "build": "8.8.14.13",
-  "seal": "owner-steady-881413",
+  "release": "Release Current",
+  "name": "Release Current",
+  "build": "8.8.14.14",
+  "seal": "release-current-881414",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
