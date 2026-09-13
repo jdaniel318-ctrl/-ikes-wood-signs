@@ -1,4 +1,4 @@
-const RELEASE_BUILD='8.8.14.11';
+const RELEASE_BUILD='8.8.14.12';
 const RELEASE_SEAL='owner-current-881411';
 
 self.addEventListener('install', event => {
