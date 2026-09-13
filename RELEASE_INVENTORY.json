@@ -1,8 +1,8 @@
 {
-  "release": "True Passage",
-  "name": "True Passage",
-  "build": "8.8.13.11",
-  "seal": "true-passage-881311",
+  "release": "Homeward Bearing",
+  "name": "Homeward Bearing",
+  "build": "8.8.13.12",
+  "seal": "homeward-bearing-881312",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.13.11';
+  const BUILD_VERSION='8.8.13.12';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -15538,7 +15538,7 @@ The full order and approved media remain stored with this project.`;
     },true);
   }
 
-  // 4.8.0 project-shell contract: every current and future project-admin surface
+  // 8.8.13.12 Homeward Bearing: every current and future project-admin surface
   // returns through one storage-independent route. This is deliberately armed
   // before IndexedDB/migrations so a visible Back to Ordering control can never
   // be left dead by a secondary startup failure.
@@ -15546,7 +15546,10 @@ The full order and approved media remain stored with this project.`;
     if(window.__darkSkyProjectReturnToCustomerBound)return;
     window.__darkSkyProjectReturnToCustomerBound=true;
     document.addEventListener('click',e=>{
-      const trigger=e.target?.closest?.('[data-project-return-customer],#closeAdminBtn,#closeProjectOrdersBtn,#closeProjectLedgerBtn');
+      // The visible gate cancel button belongs on this early rail too. Its former
+      // late bind depended on storage/migrations completing and could press without
+      // returning on Safari. Capture it here while preserving the customer session.
+      const trigger=e.target?.closest?.('[data-project-return-customer],#cancelAdminPinBtn,#closeAdminBtn,#closeProjectOrdersBtn,#closeProjectLedgerBtn');
       if(!trigger)return;
       e.preventDefault();
       e.stopPropagation();
@@ -15690,6 +15693,8 @@ The full order and approved media remain stored with this project.`;
   function commandWiringSelfCheck(){
     const required={
       customerChoice:typeof bindCustomerChoiceCore==='function',
+      projectReturnBinder:typeof bindProjectReturnToCustomerCore==='function',
+      projectAdminGateCancel:!!$('cancelAdminPinBtn'),
       telemetryBinder:typeof bindEngineTelemetryCore==='function',
       telemetryOpen:typeof openStorageTelemetry==='function',
       storageExport:typeof window.BlackFlagOpenStorageTelemetry==='function',

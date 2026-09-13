@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.13.11",
-  "release": "True Passage",
+  "build": "8.8.13.12",
+  "release": "Homeward Bearing",
   "status": "active",
   "principles": [
     {

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.11",
-  "release": "True Passage",
-  "generatedAt": "2026-09-13T02:34:23Z",
+  "build": "8.8.13.12",
+  "release": "Homeward Bearing",
+  "generatedAt": "2026-09-13T03:11:45Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -66,6 +66,9 @@
     "fleet_dock_customer_route_business_surface": true,
     "fleet_dock_customer_route_never_commissioning": true,
     "fleet_dock_non_live_customer_private_preview": true,
+    "project_admin_gate_return_early_bound": true,
+    "project_admin_gate_return_storage_independent": true,
+    "project_admin_gate_return_preserves_customer_session": true,
     "canonical_ikes_asset_path": true,
     "command_read_deadlines": true,
     "private_preview_explicit_return": true,
@@ -268,8 +271,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.11 True Passage separates the Fleet Dock Customer Experience destination from lifecycle and Shipwright commands. Live vessels open their published customer session; non-live vessels open a no-record, contact-blocked Private Preview. Test / Preview, Project Control, owner authority, deployment records, Captain/Admiral behavior, authentication, and exact-vessel isolation remain unchanged.",
-  "candidate": "8.8.13.11",
+  "note": "8.8.13.12 Homeward Bearing binds Return to My Order to the early, storage-independent project customer-return rail. The PIN gate closes immediately and restores the exact vessel's existing live or Private Preview customer shell without changing authentication, records, deployments, lifecycle state, or vessel isolation.",
+  "candidate": "8.8.13.12",
   "features": {
     "fleet_rigging_four_primary_levels": true,
     "deck_clearance_engine_watch_progressive": true,
@@ -474,8 +477,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.11",
-    "seal": "true-passage-881311",
+    "build": "8.8.13.12",
+    "seal": "homeward-bearing-881312",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

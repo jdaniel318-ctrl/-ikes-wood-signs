@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.13.11",
-  "release": "True Passage",
-  "seal": "true-passage-881311",
+  "build": "8.8.13.12",
+  "release": "Homeward Bearing",
+  "seal": "homeward-bearing-881312",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "True Passage",
-  "name": "True Passage",
-  "releaseName": "True Passage"
+  "release_name": "Homeward Bearing",
+  "name": "Homeward Bearing",
+  "releaseName": "Homeward Bearing"
 }

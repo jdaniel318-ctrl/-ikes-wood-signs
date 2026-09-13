@@ -1,17 +1,17 @@
-# Dark Sky 8.8.13.11 — True Passage
+# Dark Sky 8.8.13.12 — Homeward Bearing
 
-True Passage repairs the field-confirmed Fleet Dock route collision. **Customer Experience** now opens the selected vessel's business-facing customer journey instead of invoking the vessel launch routine and landing in Project Control → Deployment Shipwright.
+Homeward Bearing repairs the field-confirmed **Return to My Order** dead control on the project-admin PIN gate. The visible cancel button now joins the early, storage-independent customer-return rail before IndexedDB, migrations, or secondary systems can delay the command.
 
-Live vessels enter their published customer session. Sea Trial, Preparing, and Staging vessels enter a clearly identified, no-record Private Preview with outbound calls, messages, email, requests, payments, and notifications blocked. **Open Test / Preview** remains the separate doorway for deliberate Preview and Sea Trial work, while Project Control retains commissioning and Shipwright authority.
+The repair closes the PIN gate, clears protected-mode presentation, and restores the exact vessel's existing customer shell without reloading or creating a new customer session. Private Preview stays private and no-record; live customer state remains live.
 
-The repair changes one shared Fleet Dock route and adds an explicit route contract. It does not create an outpost, advance a lifecycle, approve a preview, begin a Sea Trial, change publication, alter authentication, or modify project records. Exact Project ID, brand, data, and return-route isolation remain enforced.
+The repair changes one shared delegated selector. It does not authenticate Admin, alter a PIN, create an order, mutate a project, change lifecycle state, or cross vessel boundaries. True Passage customer routing remains intact.
 
-## Quick True Passage check
+## Quick Homeward Bearing check
 
-1. Open Operate Vessels and choose Signal Restoration → Customer Experience. Confirm its branded customer journey opens in Private Preview, not Deployment Shipwright.
-2. Return with the in-app Black Flag control and choose Legacy Plumbing → Customer Experience. Confirm Legacy opens its own branded Private Preview and retains the Sadie deployment record only inside Project Control.
-3. Return and choose Ike's Wood Signs → Customer Experience. Confirm the live Ike customer experience opens with no Legacy or Signal identity or records.
-4. Open **Open Test / Preview** for a non-live vessel and confirm the Experience Test Deck remains separate and available.
+1. Open Legacy Plumbing → Customer Experience and tap the top-right project settings button.
+2. On Legacy Plumbing Admin Access, tap **Return to My Order** once.
+3. Confirm the gate closes immediately and the same Legacy Private Preview returns at the top of the customer page.
+4. Repeat on Signal Restoration, then confirm Ike's live customer surface follows the same return contract.
 
 # Dark Sky 8.8.13.10 — Shared Bearing
 
