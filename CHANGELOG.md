@@ -1,9 +1,19 @@
+# Dark Sky 8.8.13.13 — Signal Lift
+
+- Lifted the protected Fleet Chart and scoped signal report above Captain Professional View on iPad.
+- Keeps Professional View mounted underneath so closing the report restores the same command position.
+- Preserves the shared Professional/Cinematic report source, readiness truth, watch evidence, Captain outcomes, and exact-vessel isolation.
+
 # Dark Sky 8.8.13.12 — Homeward Bearing
 
 - Added **Return to My Order** to the early, storage-independent project return rail.
-- Removes the Safari timing gap where the button could show a pressed state but perform no navigation before late initialization completed.
-- Restores the exact vessel's existing customer shell without replacing its live/private-preview session.
-- Preserves all six vessel identities, customer-route behavior, records, deployments, authentication boundaries, and Captain/Admiral command behavior.
+- Removed the Safari timing gap where the button could press without returning before late initialization completed.
+- Preserved the exact vessel's existing live/private-preview customer session.
+
+# Dark Sky 8.8.13.11 — True Passage
+
+- Routed Fleet Dock **Customer Experience** to the selected vessel's business-facing journey.
+- Kept live and no-record Private Preview sessions separate from commissioning and Deployment Shipwright.
 
 # Dark Sky 8.8.13.10 — Shared Bearing
 

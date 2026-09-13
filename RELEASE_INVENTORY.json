@@ -1,8 +1,8 @@
 {
-  "release": "Homeward Bearing",
-  "name": "Homeward Bearing",
-  "build": "8.8.13.12",
-  "seal": "homeward-bearing-881312",
+  "release": "Signal Lift",
+  "name": "Signal Lift",
+  "build": "8.8.13.13",
+  "seal": "signal-lift-881313",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

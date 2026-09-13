@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.13.12",
-  "version": "8.8.13.12",
-  "release_name": "Homeward Bearing",
-  "releaseName": "Homeward Bearing",
-  "release_seal": "homeward-bearing-881312",
+  "build": "8.8.13.13",
+  "version": "8.8.13.13",
+  "release_name": "Signal Lift",
+  "releaseName": "Signal Lift",
+  "release_seal": "signal-lift-881313",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -87,8 +87,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "project-admin-gate-early-customer-return",
-  "release_note": "Homeward Bearing repairs the field-confirmed Return to My Order dead control on the project-admin PIN gate. The visible cancel button now joins the early, storage-independent customer-return rail, closes the gate immediately, and restores the exact vessel's existing customer shell without changing authentication, customer session mode, records, deployment, or lifecycle state.",
+  "release_focus": "captain-professional-signal-report-top-layer",
+  "release_note": "Signal Lift repairs the field-confirmed Captain Professional Open Signal Report visibility failure on iPad. The existing exact-vessel Fleet Chart report now renders above Professional View as a protected modal and returns to the same command position when closed. Readiness results, watch evidence, Captain outcomes, project state, authentication, and vessel isolation remain unchanged.",
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",

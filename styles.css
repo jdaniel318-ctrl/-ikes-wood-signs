@@ -15486,6 +15486,16 @@ body.engine-mode.engine-dock-open #fleetCommissioningSummary{display:none!import
 #captainQuarters[data-command-mode="professional"] #captainCommandReturnBtn:focus-visible,
 #captainQuarters[data-command-mode="professional"] #captainCommandModeToggle:focus-visible{outline:3px solid #fff!important;outline-offset:2px!important}
 
+/* 8.8.13.13 Signal Lift — Professional signal actions reuse the protected Fleet
+   Chart report. Lift that dialog above the Professional command surface so iPad
+   never renders a successful route invisibly behind the deck. */
+#captainQuarters[data-command-mode="professional"] .cq-fleet-chart:not(.hidden){
+  z-index:22100!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+
 /* 8.8.13.3 Living Chart — the cinematic room is a working visual command surface. */
 #captainQuarters[data-command-mode="cinematic"]::before,
 #captainQuarters[data-command-mode="cinematic"]::after{content:none!important;display:none!important}

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.12",
-  "release": "Homeward Bearing",
-  "generatedAt": "2026-09-13T03:11:45Z",
+  "build": "8.8.13.13",
+  "release": "Signal Lift",
+  "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -69,6 +69,9 @@
     "project_admin_gate_return_early_bound": true,
     "project_admin_gate_return_storage_independent": true,
     "project_admin_gate_return_preserves_customer_session": true,
+    "captain_professional_signal_report_top_layer": true,
+    "captain_professional_signal_report_exact_vessel": true,
+    "captain_professional_signal_report_close_restores_position": true,
     "canonical_ikes_asset_path": true,
     "command_read_deadlines": true,
     "private_preview_explicit_return": true,
@@ -271,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.12 Homeward Bearing binds Return to My Order to the early, storage-independent project customer-return rail. The PIN gate closes immediately and restores the exact vessel's existing live or Private Preview customer shell without changing authentication, records, deployments, lifecycle state, or vessel isolation.",
-  "candidate": "8.8.13.12",
+  "note": "8.8.13.13 Signal Lift raises the existing exact-vessel Fleet Signal Report above Captain Professional View on iPad. The report remains read-only, shares the Cinematic evidence source, and closes back to the same Professional command position without changing readiness, outcomes, projects, deployments, authentication, or vessel isolation.",
+  "candidate": "8.8.13.13",
   "features": {
     "fleet_rigging_four_primary_levels": true,
     "deck_clearance_engine_watch_progressive": true,
@@ -477,8 +480,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.12",
-    "seal": "homeward-bearing-881312",
+    "build": "8.8.13.13",
+    "seal": "signal-lift-881313",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

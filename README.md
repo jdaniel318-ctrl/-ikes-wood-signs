@@ -1,17 +1,25 @@
+# Dark Sky 8.8.13.13 — Signal Lift
+
+Signal Lift repairs the field-confirmed Captain Professional **Open Signal Report** visibility failure. The command already opened the correct scoped Fleet Signal Report, but iPad rendered it behind the higher Professional surface.
+
+The protected Fleet Chart report now lifts above Professional View as a true modal. Closing it returns to the same Professional command position; Cinematic View continues to use the same report and evidence source.
+
+The repair is presentation-only. It does not alter readiness results, watch items, signal evidence, Captain outcomes, project state, deployments, authentication, or vessel boundaries. True Passage and Homeward Bearing remain intact.
+
+## Quick Signal Lift check
+
+1. Open Captain Watch in Professional View and run Fleet Readiness.
+2. Under Act, tap **Open Signal Report** for Legacy Plumbing once.
+3. Confirm the Fleet Chart and Legacy's scoped signal report appear above Professional View.
+4. Close the report and confirm Professional View returns at the same position.
+
 # Dark Sky 8.8.13.12 — Homeward Bearing
 
-Homeward Bearing repairs the field-confirmed **Return to My Order** dead control on the project-admin PIN gate. The visible cancel button now joins the early, storage-independent customer-return rail before IndexedDB, migrations, or secondary systems can delay the command.
+Homeward Bearing binds **Return to My Order** on every project-admin PIN gate to the early, storage-independent customer-return rail. It closes the gate and restores the exact vessel's existing live or Private Preview customer shell without changing authentication or project state.
 
-The repair closes the PIN gate, clears protected-mode presentation, and restores the exact vessel's existing customer shell without reloading or creating a new customer session. Private Preview stays private and no-record; live customer state remains live.
+# Dark Sky 8.8.13.11 — True Passage
 
-The repair changes one shared delegated selector. It does not authenticate Admin, alter a PIN, create an order, mutate a project, change lifecycle state, or cross vessel boundaries. True Passage customer routing remains intact.
-
-## Quick Homeward Bearing check
-
-1. Open Legacy Plumbing → Customer Experience and tap the top-right project settings button.
-2. On Legacy Plumbing Admin Access, tap **Return to My Order** once.
-3. Confirm the gate closes immediately and the same Legacy Private Preview returns at the top of the customer page.
-4. Repeat on Signal Restoration, then confirm Ike's live customer surface follows the same return contract.
+True Passage separates Fleet Dock **Customer Experience** from lifecycle and Shipwright commands. Live vessels open their published customer experience; non-live vessels open a no-record, contact-blocked Private Preview.
 
 # Dark Sky 8.8.13.10 — Shared Bearing
 
