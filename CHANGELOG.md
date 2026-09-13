@@ -1,8 +1,8 @@
-# Dark Sky 8.8.14.1 — True Course
+# Dark Sky 8.8.14.2 — Centerline
 
-- Added a module-wide encoder for Captain Professional and Signal Report rendering.
-- Removed their accidental dependency on the Cinematic renderer’s private helper scope.
-- Restored the Act lane and Fleet Readiness controls after the field-confirmed `htmlSafe` interruption.
+- Preserved the Signal Report's horizontal centering transform throughout its Night Watch entrance animation.
+- Added an explicit container-safe maximum width for the scoped report.
+- Keeps the complete close control, evidence, and exact-route action visible on iPad.
 - Preserved all Fleet Ready guidance and every exact-vessel, authority, evidence, and lifecycle boundary.
 
 # Dark Sky 8.8.14.0 — Fleet Ready

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.1",
-  "release": "True Course",
+  "build": "8.8.14.2",
+  "release": "Centerline",
   "generatedAt": "2026-09-13T03:39:00Z",
   "checks": {
     "build_version": true,
@@ -274,9 +274,11 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.1 True Course repairs the field-confirmed htmlSafe scope interruption in Captain Professional and Signal Report rendering with one module-wide encoder. Fleet Ready guidance, Night Watch modal behavior, readiness truth, authentication, lifecycle state, deployment data, and exact-vessel isolation remain unchanged.",
-  "candidate": "8.8.14.1",
+  "note": "8.8.14.2 Centerline repairs the field-confirmed iPad Signal Report overflow by preserving horizontal centering throughout the Night Watch entrance animation and enforcing a container-safe maximum width. Fleet Ready guidance, readiness truth, authentication, lifecycle state, deployment data, and exact-vessel isolation remain unchanged.",
+  "candidate": "8.8.14.2",
   "features": {
+    "captain_signal_ipad_centerline_preserved": true,
+    "captain_signal_container_width_bounded": true,
     "captain_module_safe_encoder": true,
     "captain_professional_scope_fault_repaired": true,
     "captain_signal_scope_fault_repaired": true,
@@ -498,8 +500,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.1",
-    "seal": "true-course-88141",
+    "build": "8.8.14.2",
+    "seal": "centerline-88142",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

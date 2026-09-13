@@ -1,8 +1,8 @@
 {
-  "release": "True Course",
-  "name": "True Course",
-  "build": "8.8.14.1",
-  "seal": "true-course-88141",
+  "release": "Centerline",
+  "name": "Centerline",
+  "build": "8.8.14.2",
+  "seal": "centerline-88142",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

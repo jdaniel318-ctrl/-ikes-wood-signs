@@ -15505,8 +15505,12 @@ button,[role="button"]{-webkit-tap-highlight-color:rgba(91,190,239,.22);touch-ac
 .cq-signal-opened i{width:9px;height:9px;flex:0 0 auto;border-radius:50%;background:#67cf8d;box-shadow:0 0 12px rgba(103,207,141,.7)}
 .cq-signal-opened span,.cq-signal-opened b,.cq-signal-opened small{display:block}.cq-signal-opened b{font-size:.62rem;letter-spacing:.13em}.cq-signal-opened small{margin-top:2px;color:#a9c8b4;font-size:.56rem;letter-spacing:.05em}
 #captainFleetSignalReport:not(.hidden){animation:nightWatchSignalIn .18s ease-out both}
-@keyframes nightWatchSignalIn{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes nightWatchSignalIn{from{opacity:.35;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
 @media(prefers-reduced-motion:reduce){#captainFleetSignalReport:not(.hidden){animation:none!important}html{scroll-behavior:auto!important}}
+
+/* 8.8.14.2 Centerline — preserve centering throughout the Signal Report's
+   entrance and keep the complete report contained on iPad. */
+#captainFleetSignalReport{max-width:calc(100% - 32px);box-sizing:border-box}
 
 /* 8.8.14.0 Fleet Ready — separate current posture, next action, and the existing
    authorized Engine route. This is guidance only; activation remains deliberate. */

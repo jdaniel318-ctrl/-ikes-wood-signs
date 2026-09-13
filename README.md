@@ -1,15 +1,15 @@
-# Dark Sky 8.8.14.1 — True Course
+# Dark Sky 8.8.14.2 — Centerline
 
-True Course repairs the field-confirmed Fleet Ready Captain rendering fault. The new Professional and Signal Report markup referenced a helper that existed only inside the Cinematic renderer, causing `Can't find variable: htmlSafe`, interrupting the Act lane, and making Readiness appear unavailable.
+Centerline repairs the field-confirmed iPad Signal Report containment fault. Night Watch's entrance animation replaced the report's horizontal centering transform after it opened, leaving the report anchored at the chart midpoint and pushing its right side beyond the viewport.
 
-A module-wide Captain encoder now serves Professional View and the scoped Signal Report. The Cinematic helper remains local and unchanged. Fleet Ready guidance, Night Watch visibility, exact-vessel routing, readiness evidence, authentication, lifecycle state, and deployment data are preserved.
+The entrance animation now preserves centering from its first frame through its durable resting state, and the report has an explicit container-safe maximum width. Fleet Ready guidance, exact-vessel routing, readiness evidence, authentication, lifecycle state, and deployment data are preserved.
 
-## Quick True Course check
+## Quick Centerline check
 
 1. Open Captain Watch.
 2. Confirm the Act lane shows **Open Exact Course** without an error notice.
-3. Run Fleet Readiness and open Legacy Plumbing’s course.
-4. Stop before activation.
+3. Open Legacy Plumbing's exact course and confirm the full Signal Report is centered inside The Dark Sky.
+4. Confirm the close control, evidence, and exact-route action are all visible; stop before activation.
 
 # Dark Sky 8.8.14.0 — Fleet Ready
 

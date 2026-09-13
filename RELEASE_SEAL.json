@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.1",
-  "release": "True Course",
-  "seal": "true-course-88141",
+  "build": "8.8.14.2",
+  "release": "Centerline",
+  "seal": "centerline-88142",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "True Course",
-  "name": "True Course",
-  "releaseName": "True Course"
+  "release_name": "Centerline",
+  "name": "Centerline",
+  "releaseName": "Centerline"
 }

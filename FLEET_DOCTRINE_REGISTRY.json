@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.14.1",
-  "release": "True Course",
+  "build": "8.8.14.2",
+  "release": "Centerline",
   "status": "active",
   "principles": [
     {
