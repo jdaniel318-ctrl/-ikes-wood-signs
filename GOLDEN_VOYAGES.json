@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.13.10",
+  "build": "8.8.13.11",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -18,6 +18,9 @@
       "path": [
         "Fleet Dock",
         "Customer Experience",
+        "Exact business-facing vessel shell",
+        "Live session or no-record Private Preview",
+        "Never Project Control or Deployment Shipwright",
         "Correct project/branding/session"
       ],
       "release_blocker": true

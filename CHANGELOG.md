@@ -1,3 +1,11 @@
+# Dark Sky 8.8.13.11 — True Passage
+
+- Rewired Fleet Dock **Customer Experience** away from the lifecycle/commissioning command that opened Deployment Shipwright.
+- Opens live vessels in their published customer session and non-live vessels in a no-record, contact-blocked Private Preview.
+- Keeps **Open Test / Preview** as the separate deliberate test doorway and leaves Shipwright under Project Control.
+- Adds the Fleet Dock customer route to operator-entry and durable session-label contracts.
+- Preserves all six vessel identities, records, deployments, owner routes, authentication boundaries, and Captain/Admiral command behavior.
+
 # Dark Sky 8.8.13.10 — Shared Bearing
 
 - Replaced the undefined Captain Professional readiness refresh call with the existing shared command refresh.

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.13.10';
+  const BUILD_VERSION='8.8.13.11';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -318,7 +318,7 @@
   });
 
   let companies=structuredClone(DEFAULT_COMPANIES);
-  // 8.8.13.10 Keelbound — the protected fleet has a complete local chart before
+  // 8.8.13.9 Keelbound — the protected fleet has a complete local chart before
   // slower registry/storage reconciliation begins. Existing rows always win;
   // this only supplies a missing protected presentation row and never persists,
   // admits, adopts, promotes, or rewrites vessel evidence.
@@ -4639,7 +4639,7 @@
     ctx.establishedAt=new Date().toISOString();
     window.__deploymentCustomerContext=ctx;
     document.body.dataset.customerSession=ctx.sessionKind;
-    const operatorSources=new Set(['project_card_open_project','legacy_published_showroom','engine_operational_picture','engine_ikes_dock']);
+    const operatorSources=new Set(['project_card_open_project','legacy_published_showroom','engine_operational_picture','engine_ikes_dock','engine_fleet_dock_customer']);
     if(operatorSources.has(String(source||'')))document.body.dataset.operatorEntry='true';
     else document.body.removeAttribute('data-operator-entry');
     return ctx;
@@ -4654,7 +4654,7 @@
     document.getElementById('customerSessionIndicator')?.remove();
     const ctx=currentExperienceContext(p);
     if(!ctx||ctx.clientPreview||ctx.sessionKind==='live_customer'||ctx.state==='deployed')return;
-    const internalSources=new Set(['project_card_open_project','legacy_published_showroom','experience_test_deck','deployment_test_dock']);
+    const internalSources=new Set(['project_card_open_project','legacy_published_showroom','experience_test_deck','deployment_test_dock','engine_fleet_dock_customer']);
     if(!internalSources.has(String(ctx.sessionSource||'')))return;
     const badge=document.createElement('div');badge.id='customerSessionIndicator';badge.className=`customer-session-indicator ${ctx.state==='deployed'?'live':'test'}`;
     badge.innerHTML=`<span>DEPLOYMENT ${p?.publish?.status==='live'?'LIVE':'PRIVATE'}</span><strong>SESSION ${customerSessionLabel(ctx)}</strong>`;
@@ -5967,6 +5967,33 @@
     }
   }
 
+  // 8.8.13.11 True Passage — Fleet Dock authority routes are destinations, not
+  // lifecycle commands. Customer Experience must open the selected vessel's
+  // business-facing journey; commissioning and Shipwright remain Project Control
+  // work. Non-live vessels enter a no-record Private Preview, while a genuinely
+  // live vessel enters its published customer session.
+  async function openFleetDockCustomerExperience(p){
+    if(!p)return false;
+    const project=projectById(p.id)||p;
+    if(!projectCustomerOperatingModelReady(project)){
+      showFleetActionStatus(`${project.name} does not yet have a customer-ready experience. Open Project Control → Experience to configure it.`,{tone:'watch',duration:7000});
+      return false;
+    }
+    const live=projectFleetLaunchState(project).key==='live';
+    showFleetActionStatus(`Opening ${project.name} Customer Experience${live?'…':' in Private Preview…'}`,{tone:'clear',duration:5200});
+    if(live)return enterLiveCustomerProject(project,'engine_fleet_dock_customer');
+
+    // A Fleet Dock customer doorway is safe inspection, not a Sea Trial and not
+    // proof of preview approval. Establish only the session boundary required to
+    // suppress persistence and external contact, then enter the exact project shell.
+    experienceTestReturnState=null;
+    document.getElementById('experienceModeBanner')?.classList.add('hidden');
+    setCustomerSessionContext(project,'preview',null,{source:'engine_fleet_dock_customer'});
+    if(projectShellFor(project)==='universal')clearUniversalReceipt(project);
+    await enterProject(project.id);
+    return true;
+  }
+
   function projectActivityMetricLabel(p){
     // Project Command's first KPI is backed by projectStats().orders. Keep the label
     // aligned with the value being rendered for the Grizzly Bear retail vessel even
@@ -6209,7 +6236,20 @@
 
       fleet.querySelectorAll('[data-fleet-dock-action]').forEach(btn=>btn.addEventListener('click',async()=>{
         const projectId=btn.dataset.projectId;const action=btn.dataset.fleetDockAction;const project=projectById(projectId);if(!project)return;
-        if(action==='customer'){await continueProjectLaunch(project);return;}
+        if(action==='customer'){
+          if(btn.dataset.commandBusy==='1')return;
+          btn.dataset.commandBusy='1';btn.disabled=true;btn.setAttribute('aria-busy','true');
+          try{
+            await openFleetDockCustomerExperience(project);
+          }catch(err){
+            console.error('Fleet Dock Customer Experience route failed',err);
+            showFleetActionStatus(`${project.name} Customer Experience could not open. The vessel was not changed.`,{tone:'watch',duration:8000});
+            alert(`Customer Experience could not open: ${String(err?.message||err)}`);
+          }finally{
+            if(document.body.contains(btn)){delete btn.dataset.commandBusy;btn.disabled=false;btn.removeAttribute('aria-busy');}
+          }
+          return;
+        }
         if(action==='owner'){
           const owner=ensureProjectGovernance(project).ownerAccess;
           if(!owner?.enabled){await openProjectEngineControl(projectId);await renderProjectTab(projectId,'owner');return;}

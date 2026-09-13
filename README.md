@@ -1,3 +1,18 @@
+# Dark Sky 8.8.13.11 — True Passage
+
+True Passage repairs the field-confirmed Fleet Dock route collision. **Customer Experience** now opens the selected vessel's business-facing customer journey instead of invoking the vessel launch routine and landing in Project Control → Deployment Shipwright.
+
+Live vessels enter their published customer session. Sea Trial, Preparing, and Staging vessels enter a clearly identified, no-record Private Preview with outbound calls, messages, email, requests, payments, and notifications blocked. **Open Test / Preview** remains the separate doorway for deliberate Preview and Sea Trial work, while Project Control retains commissioning and Shipwright authority.
+
+The repair changes one shared Fleet Dock route and adds an explicit route contract. It does not create an outpost, advance a lifecycle, approve a preview, begin a Sea Trial, change publication, alter authentication, or modify project records. Exact Project ID, brand, data, and return-route isolation remain enforced.
+
+## Quick True Passage check
+
+1. Open Operate Vessels and choose Signal Restoration → Customer Experience. Confirm its branded customer journey opens in Private Preview, not Deployment Shipwright.
+2. Return with the in-app Black Flag control and choose Legacy Plumbing → Customer Experience. Confirm Legacy opens its own branded Private Preview and retains the Sadie deployment record only inside Project Control.
+3. Return and choose Ike's Wood Signs → Customer Experience. Confirm the live Ike customer experience opens with no Legacy or Signal identity or records.
+4. Open **Open Test / Preview** for a non-live vessel and confirm the Experience Test Deck remains separate and available.
+
 # Dark Sky 8.8.13.10 — Shared Bearing
 
 Shared Bearing is the narrow repair for the field-confirmed Captain Professional Fleet Readiness fault. The completed report now refreshes the existing shared Captain command picture instead of calling the missing `refreshCaptainProfessional` symbol. Professional and Cinematic views continue to run the same protected readiness service and retain the same report.

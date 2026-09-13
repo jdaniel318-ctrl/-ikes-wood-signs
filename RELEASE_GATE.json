@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.13.10",
-  "release": "Shared Bearing",
-  "generatedAt": "2026-09-12T23:38:11Z",
+  "build": "8.8.13.11",
+  "release": "True Passage",
+  "generatedAt": "2026-09-13T02:34:23Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -63,6 +63,9 @@
     "explicit_in_app_navigation": true,
     "dynamic_fleet_dock": true,
     "three_watch_routes_explicit": true,
+    "fleet_dock_customer_route_business_surface": true,
+    "fleet_dock_customer_route_never_commissioning": true,
+    "fleet_dock_non_live_customer_private_preview": true,
     "canonical_ikes_asset_path": true,
     "command_read_deadlines": true,
     "private_preview_explicit_return": true,
@@ -265,8 +268,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.13.10 Shared Bearing repairs the field-confirmed Captain Professional Fleet Readiness completion fault and aligns the secondary Captain panel with the Engine's Engineering Systems language. Cinematic parity, durable staging, storage truth, authentication, authority, and vessel isolation remain unchanged.",
-  "candidate": "8.8.13.10",
+  "note": "8.8.13.11 True Passage separates the Fleet Dock Customer Experience destination from lifecycle and Shipwright commands. Live vessels open their published customer session; non-live vessels open a no-record, contact-blocked Private Preview. Test / Preview, Project Control, owner authority, deployment records, Captain/Admiral behavior, authentication, and exact-vessel isolation remain unchanged.",
+  "candidate": "8.8.13.11",
   "features": {
     "fleet_rigging_four_primary_levels": true,
     "deck_clearance_engine_watch_progressive": true,
@@ -471,8 +474,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.13.10",
-    "seal": "shared-bearing-881310",
+    "build": "8.8.13.11",
+    "seal": "true-passage-881311",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
