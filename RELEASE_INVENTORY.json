@@ -1,8 +1,8 @@
 {
-  "release": "Kiosk Watch",
-  "name": "Kiosk Watch",
-  "build": "8.8.14.21",
-  "seal": "kiosk-watch-881421",
+  "release": "Route Safe",
+  "name": "Route Safe",
+  "build": "8.8.14.22",
+  "seal": "route-safe-881422",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

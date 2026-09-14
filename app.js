@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.14.21';
+  const BUILD_VERSION='8.8.14.22';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4687,7 +4687,7 @@
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
 
-  // 8.8.14.21 Kiosk Watch — persistent customer stations are a customer-surface
+  // 8.8.14.22 Route Safe — persistent customer stations are a customer-surface
   // contract, never an authority contract. Kiosk inactivity resets customer cargo
   // to the vessel's safe home; it must never route to Engine, Owner, Captain or Admiral.
   const KIOSK_ROUTE_KEY_881421='darkSkyKioskRoute881421';

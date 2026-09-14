@@ -15624,7 +15624,7 @@ body.captain-modal-open #captainGlobalExit{display:none!important}
 .fleet-vessel-context article span{display:block;margin-top:7px;color:#88aeb2;font-size:.8rem;line-height:1.35}
 
 
-/* 8.8.14.21 Kiosk Watch — customer-safe persistent station status */
+/* 8.8.14.22 Route Safe — customer-safe persistent station status */
 .customer-kiosk-status{position:fixed;left:max(14px,env(safe-area-inset-left));bottom:max(14px,env(safe-area-inset-bottom));z-index:9300;display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:999px;background:rgba(7,28,35,.92);border:1px solid rgba(134,196,165,.42);box-shadow:0 10px 28px rgba(0,0,0,.2);color:#e9f4ee;font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:0;transform:translateY(7px);pointer-events:none;transition:opacity .18s ease,transform .18s ease;backdrop-filter:blur(9px)}
 .customer-kiosk-status.show{opacity:1;transform:none}.customer-kiosk-beacon{width:8px;height:8px;border-radius:50%;background:#69d29c;box-shadow:0 0 0 4px rgba(105,210,156,.12),0 0 18px rgba(105,210,156,.55)}.customer-kiosk-status[data-tone="recover"] .customer-kiosk-beacon{background:#e8c45a;box-shadow:0 0 0 4px rgba(232,196,90,.12),0 0 18px rgba(232,196,90,.5)}.customer-kiosk-status[data-tone="reset"] .customer-kiosk-beacon{background:#7bbbe8;box-shadow:0 0 0 4px rgba(123,187,232,.12),0 0 18px rgba(123,187,232,.45)}
 body[data-customer-session="live_customer"] .customer-kiosk-status strong{font-weight:800}
