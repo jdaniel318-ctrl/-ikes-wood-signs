@@ -15615,7 +15615,7 @@ body.captain-modal-open #captainGlobalExit{display:none!important}
 @keyframes proofLanternPulse{to{box-shadow:0 0 18px rgba(80,192,210,.28);filter:brightness(1.16)}}
 @media(prefers-reduced-motion:reduce){.cq-intel-heading>span.checking{animation:none!important}.cq-desk-notice{transition:none!important}}
 
-/* Dark Sky 8.8.14.17 Fleet Velocity — source-aware Admiral observability. */
+/* Dark Sky 8.8.14.18 Fleet Velocity — source-aware Admiral observability. */
 .fleet-watch-condition i{display:block;margin-top:5px;color:#7fa8ae;font-size:.68rem;font-style:normal;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
 .fleet-watch-actions .watch-freshness{border:1px solid #4f7780;border-radius:999px;padding:7px 9px;color:#b8d4d4;font-style:normal;font-weight:900;letter-spacing:.06em;text-align:center}
 .fleet-watch-actions .watch-freshness.is-fresh{border-color:#4f8d72;color:#9ed2af}
