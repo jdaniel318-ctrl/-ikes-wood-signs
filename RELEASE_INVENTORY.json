@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Velocity",
-  "name": "Fleet Velocity",
-  "build": "8.8.14.18",
-  "seal": "scale-current-881418",
+  "release": "Hull Current",
+  "name": "Hull Current",
+  "build": "8.8.14.19",
+  "seal": "hull-current-881419",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
