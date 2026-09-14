@@ -571,12 +571,22 @@ Fleet Dock must remain searchable, filterable, status-aware, and priority-sorted
 Do not promote this build to Known Good until Owner Entrance reaches the owner login without Engine authentication and the Fleet Dock shows only one Legacy Plumbing vessel.
 
 
-## Fleet Owner Spine — 8.8.14.20
+## Fleet Owner Spine — 8.8.14.21
 Every independent vessel must be capable of day-to-day owner operation without entering Black Flag Engine. The Owner/Partner Control Center is the vessel's primary business workspace. Orders, business settings, pricing, customer-facing feature choices, and owner records are vessel-scoped. When a live Fleet identity is established, owner business records synchronize to Fleet Core durable storage under exact-vessel membership. Engine/Captain/Admiral support access is separate from owner authority and must never be implied by navigation. Admiral Watch remains observation-only. Fleet support access to private business records must be authenticated and auditable and is not exposed through Admiral My Fleet.
 
 
-## Fleet Velocity — 8.8.14.20
+## Fleet Velocity — 8.8.14.17
 - Owner login must not repeat identity work already proven by the password grant.
 - Exact-vessel authority resolves through one bounded server-side proof before business controls open.
 - Owner order and settings durability synchronize in a batched background passage; sync may never block day-to-day owner operation.
 - Server-authorized owner RPCs enforce exact-vessel membership internally; clients must not add redundant authority round-trips that slow the fleet.
+
+
+## 8.8.14.21 — Kiosk Watch contract
+- Every customer deployment declares WEB, KIOSK, or HYBRID operating mode.
+- WEB may use normal browser/session expiry behavior.
+- KIOSK customer surfaces do not close on inactivity; inactivity purges customer cargo and returns to the vessel's safe customer home.
+- HYBRID supports normal web entry plus explicit kiosk entry (`?kiosk=1` or `?mode=kiosk`).
+- Kiosk recovery may restore only the customer surface for the exact vessel/outpost; Engine, Owner, Captain and Admiral authority are never restored through kiosk recovery.
+- Privileged sessions continue to expire normally.
+- Browser/OS termination cannot be prevented by page JavaScript; deployed kiosks should use iPad Guided Access / managed Single App Mode or installed standalone PWA for device-level persistence.

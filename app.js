@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.14.20';
+  const BUILD_VERSION='8.8.14.21';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4655,6 +4655,7 @@
     return ctx;
   }
   function clearCustomerSessionContext(){
+    try{clearKioskRoute881421();}catch(_){}
     window.__deploymentCustomerContext=null;
     document.body.removeAttribute('data-customer-session');
     document.body.removeAttribute('data-operator-entry');
@@ -4685,6 +4686,84 @@
     const ctx=window.__deploymentCustomerContext;
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
+
+  // 8.8.14.21 Kiosk Watch — persistent customer stations are a customer-surface
+  // contract, never an authority contract. Kiosk inactivity resets customer cargo
+  // to the vessel's safe home; it must never route to Engine, Owner, Captain or Admiral.
+  const KIOSK_ROUTE_KEY_881421='darkSkyKioskRoute881421';
+  let kioskIdleTimer881421=null,kioskActivityBound881421=false,kioskRecovering881421=false;
+  function deploymentOperatingMode881421(d){const mode=String(d?.operatingMode||'web').toLowerCase();return ['web','kiosk','hybrid'].includes(mode)?mode:'web';}
+  function kioskDeploymentForContext881421(p=activeProject()){
+    const ctx=currentExperienceContext(p);if(!ctx)return null;
+    const rows=migrateLegacyDeployment(p);return rows.find(d=>d.id===ctx.deploymentId)||rows.find(d=>d.state==='deployed')||null;
+  }
+  function kioskChannelRequested881421(ctx){
+    try{const q=new URLSearchParams(location.search);if(q.get('kiosk')==='1'||q.get('mode')==='kiosk')return true;}catch(_){}
+    return ['deployment_test_dock','kiosk_restore','outpost_kiosk','kiosk_direct'].includes(String(ctx?.sessionSource||''));
+  }
+  function kioskPersistenceActive881421(p=activeProject()){
+    const ctx=currentExperienceContext(p),d=kioskDeploymentForContext881421(p);if(!ctx||!d)return false;
+    const mode=deploymentOperatingMode881421(d);
+    return mode==='kiosk'||(mode==='hybrid'&&kioskChannelRequested881421(ctx));
+  }
+  function kioskStatus881421(text='STATION READY',tone='ready'){
+    let el=document.getElementById('customerKioskStatus881421');
+    if(!el){el=document.createElement('div');el.id='customerKioskStatus881421';el.className='customer-kiosk-status';document.body.appendChild(el);}
+    el.dataset.tone=tone;el.innerHTML=`<span class="customer-kiosk-beacon" aria-hidden="true"></span><strong>${escapeHtml(text)}</strong>`;
+    el.classList.add('show');
+    clearTimeout(el._hideTimer);if(tone!=='ready')el._hideTimer=setTimeout(()=>el?.classList.remove('show'),3200);
+  }
+  function clearKioskStatus881421(){const el=document.getElementById('customerKioskStatus881421');if(el){clearTimeout(el._hideTimer);el.remove();}}
+  function persistKioskRoute881421(p,d){
+    try{localStorage.setItem(KIOSK_ROUTE_KEY_881421,JSON.stringify({projectId:p.id,deploymentId:d.id,operatingMode:deploymentOperatingMode881421(d),savedAt:new Date().toISOString()}));}catch(_){}
+  }
+  function clearKioskRoute881421(){try{localStorage.removeItem(KIOSK_ROUTE_KEY_881421);}catch(_){};clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;clearKioskStatus881421();}
+  function resetCustomerToSafeHome881421(p,{reason='idle'}={}){
+    if(!p)return;
+    const shell=projectShellFor(p);
+    try{
+      if(shell==='ikes'){resetRuntimeStateForProject(p);clearDraft();if(typeof setScreen==='function')setScreen('welcome');}
+      else if(shell==='mugs'){resetMugsShell();showMugsScreen('welcome');}
+      else if(shell==='flowers'){resetFlowersShell();showFlowersScreen('welcome');}
+      else if(shell==='bor'){resetBorCustomerState();renderBorCustomerShell(p);}
+      else if(shell==='universal'){resetUniversalCustomerState(p);renderUniversalCustomerShell(p);}
+      showCustomerShellForProject(p);resetCustomerEntryViewport();
+      kioskStatus881421(reason==='recovery'?'STATION RESTORED · READY':'SESSION RESET · READY',reason==='recovery'?'recover':'reset');
+    }catch(err){console.warn('Kiosk safe-home reset failed',err);}
+  }
+  function scheduleKioskIdle881421(p=activeProject()){
+    clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;
+    if(!kioskPersistenceActive881421(p))return;
+    const d=kioskDeploymentForContext881421(p),minutes=Math.max(1,Number(d?.idleMinutes||3));
+    kioskIdleTimer881421=setTimeout(()=>{resetCustomerToSafeHome881421(p,{reason:'idle'});scheduleKioskIdle881421(p);},minutes*60*1000);
+  }
+  function armKioskWatch881421(p=activeProject()){
+    if(!kioskPersistenceActive881421(p)){clearKioskRoute881421();return false;}
+    const d=kioskDeploymentForContext881421(p);persistKioskRoute881421(p,d);kioskStatus881421('STATION READY','ready');scheduleKioskIdle881421(p);
+    if(!kioskActivityBound881421){kioskActivityBound881421=true;['pointerdown','keydown','touchstart','input'].forEach(evt=>document.addEventListener(evt,()=>{const live=activeProject();if(kioskPersistenceActive881421(live))scheduleKioskIdle881421(live);},{passive:true,capture:true}));}
+    return true;
+  }
+  async function recoverKioskRoute881421(reason='resume',attempt=0){
+    if(kioskRecovering881421)return false;
+    let saved=null;try{saved=JSON.parse(localStorage.getItem(KIOSK_ROUTE_KEY_881421)||'null');}catch(_){}
+    if(!saved?.projectId)return false;
+    const p=projectById(saved.projectId);
+    if(!p){if(attempt<18)setTimeout(()=>recoverKioskRoute881421(reason,attempt+1),420);return false;}
+    const d=migrateLegacyDeployment(p).find(x=>x.id===saved.deploymentId);if(!d||!['deployed','sea_trial'].includes(d.state)||!['kiosk','hybrid'].includes(deploymentOperatingMode881421(d))){clearKioskRoute881421();return false;}
+    kioskRecovering881421=true;
+    try{
+      kioskStatus881421('RESTORING CUSTOMER STATION…','recover');
+      if(!activeProject()||activeProject().id!==p.id||!document.body.classList.contains('project-mode')){
+        setCustomerSessionContext(p,d.state==='deployed'?'live':'sea_trial',d,{source:'kiosk_restore'});await enterProject(p.id);
+      }
+      resetCustomerToSafeHome881421(p,{reason:'recovery'});armKioskWatch881421(p);return true;
+    }finally{kioskRecovering881421=false;}
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(()=>recoverKioskRoute881421('visible'),120);});
+  window.addEventListener('pageshow',()=>{[220,900,2200].forEach(ms=>setTimeout(()=>recoverKioskRoute881421('pageshow'),ms));});
+  window.addEventListener('online',()=>setTimeout(()=>recoverKioskRoute881421('online'),120));
+  window.addEventListener('focus',()=>setTimeout(()=>recoverKioskRoute881421('focus'),180));
+  window.DarkSkyKioskWatch={arm:armKioskWatch881421,recover:recoverKioskRoute881421,reset:()=>resetCustomerToSafeHome881421(activeProject(),{reason:'manual'}),active:kioskPersistenceActive881421};
 
   // Fleet safety contract: no real-world contact may leave a project while its
   // customer experience is in Private Preview, Sea Trial, or another non-live state.
@@ -6455,7 +6534,8 @@
         createdAt:legacy.updatedAt||new Date().toISOString(),
         updatedAt:legacy.updatedAt||new Date().toISOString(),
         lastCheckIn:null,
-        source:'migrated_v2_9_46'
+        source:'migrated_v2_9_46',
+        operatingMode:legacy.operatingMode||'hybrid'
       });
     }
     // Never repair a foreign manifest by relabeling it as the current vessel.
@@ -6467,7 +6547,7 @@
   function newProjectDeployment(p,name,profile='kiosk_self_service'){
     const id=deploymentIdFor(p), namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
     return normalizeDeploymentIdentity(p,{
-      id,name:name||'New Customer Device',profile,state:'draft',manifestVersion:1,idleMinutes:3,
+      id,name:name||'New Customer Device',profile,state:'draft',manifestVersion:1,idleMinutes:3,operatingMode:profile==='kiosk_self_service'?'hybrid':'web',
       resetAfterComplete:true,purgeSession:true,showStartOver:true,resumeAfterReload:false,
       deviceLockVerified:false,capabilityScope:'project_default',attractTitle:'Ready when you are.',
       projectId:p.id,namespace,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),lastCheckIn:null
@@ -6531,6 +6611,8 @@
 
   function normalizeDeploymentIdentity(p,d){
     const namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
+    const allowedModes=new Set(['web','kiosk','hybrid']);
+    d.operatingMode=allowedModes.has(String(d.operatingMode||'').toLowerCase())?String(d.operatingMode).toLowerCase():(d.profile==='kiosk_self_service'?'hybrid':'web');
     d.projectId=p.id;
     d.namespace=namespace;
     d.authorization={...(d.authorization||{}),role:'device',projectId:p.id,namespace,scope:'customer_session',crossProjectAccess:'deny',policyVersion:'3.3',engineAccess:false,ownerAccess:false};
@@ -6555,7 +6637,8 @@
       {label:'Project isolation',pass:true,detail:'Project-owned manifest'},
       {label:'Customer-session purge',pass:d.purgeSession!==false,detail:d.purgeSession!==false?'Ready':'Turn purge on'},
       {label:'Admin separation',pass:true,detail:'Project admin remains protected'},
-      {label:'Idle reset',pass:Number(d.idleMinutes)>0,detail:`${Number(d.idleMinutes||0)} min`},
+      {label:'Operating mode',pass:['web','kiosk','hybrid'].includes(String(d.operatingMode||'')),detail:String(d.operatingMode||'web').toUpperCase()},
+      {label:'Idle reset',pass:String(d.operatingMode||'web')==='web'||Number(d.idleMinutes)>0,detail:String(d.operatingMode||'web')==='web'?'Website session policy':`${Number(d.idleMinutes||0)} min safe-home reset`},
       {label:'Device-level lock',pass:!!d.deviceLockVerified,warning:!d.deviceLockVerified,detail:d.deviceLockVerified?'Verified':'Not verified'}
     ];
     const required=checks.filter(x=>!x.warning);
@@ -7307,11 +7390,18 @@
                   <label>Deployment profile
                     <select id="deployProfile">${Object.entries(DEPLOYMENT_PROFILES).map(([value,x])=>`<option value="${value}" ${d.profile===value?'selected':''}>${escapeHtml(x.label)}</option>`).join('')}</select>
                   </label>
+                  <label>Operating mode
+                    <select id="deployOperatingMode">
+                      <option value="web" ${d.operatingMode==='web'?'selected':''}>WEB · normal browser session</option>
+                      <option value="kiosk" ${d.operatingMode==='kiosk'?'selected':''}>KIOSK · persistent customer station</option>
+                      <option value="hybrid" ${d.operatingMode==='hybrid'?'selected':''}>HYBRID · web + kiosk capable</option>
+                    </select>
+                  </label>
                   <label class="deployment-attract-input">Customer welcome message<input id="deployAttractTitle" class="text-input" value="${escapeHtml(d.attractTitle||'Ready when you are.')}" /></label>
                 </div>
 
                 <details class="deployment-advanced-settings">
-                  <summary><span>ADVANCED</span><strong>Outpost behavior & session safety</strong><small>Idle reset, capabilities, customer reset and device settings</small></summary>
+                  <summary><span>ADVANCED</span><strong>Outpost behavior & session safety</strong><small>Safe-home reset, capabilities, customer reset and device settings</small></summary>
                   <div class="deployment-advanced-settings-body">
                     <div class="deployment-setup-fields">
                       <label>Idle-session reset
@@ -7326,10 +7416,10 @@
                     </div>
                     <div class="deployment-toggle-stack deployment-session-card">
                       <div class="deployment-subheading"><small>CUSTOMER SESSION</small><strong>Safe reset behavior</strong></div>
-                      <label class="admin-toggle-row compact-toggle"><span><strong>Reset after completed order</strong><small>Return to this outpost's attract screen.</small></span><input id="deployReset" type="checkbox" ${d.resetAfterComplete!==false?'checked':''}></label>
+                      <label class="admin-toggle-row compact-toggle"><span><strong>Reset after completed order</strong><small>Return to this outpost's safe customer home.</small></span><input id="deployReset" type="checkbox" ${d.resetAfterComplete!==false?'checked':''}></label>
                       <label class="admin-toggle-row compact-toggle"><span><strong>Purge customer session cargo</strong><small>Clear photos, uploads, previews, drafts and temporary customer data between sessions.</small></span><input id="deployPurge" type="checkbox" ${d.purgeSession!==false?'checked':''}></label>
                       <label class="admin-toggle-row compact-toggle"><span><strong>Show Start Over</strong><small>Customer-safe reset; project admin remains hidden.</small></span><input id="deployStartOver" type="checkbox" ${d.showStartOver!==false?'checked':''}></label>
-                      <label class="admin-toggle-row compact-toggle"><span><strong>Resume deployment after reload</strong><small>Restore the outpost, never the previous customer's session.</small></span><input id="deployResume" type="checkbox" ${d.resumeAfterReload?'checked':''}></label>
+                      <label class="admin-toggle-row compact-toggle"><span><strong>Resume deployment after reload</strong><small>Kiosk/Hybrid recovery restores the customer station, never the previous customer's session.</small></span><input id="deployResume" type="checkbox" ${d.resumeAfterReload?'checked':''}></label>
                       <label class="admin-toggle-row compact-toggle"><span><strong>Device-level kiosk lock verified</strong><small>Mark only after iPad Guided Access / managed Single App Mode is configured.</small></span><input id="deployDeviceLock" type="checkbox" ${d.deviceLockVerified?'checked':''}></label>
                     </div>
                   </div>
@@ -7341,6 +7431,7 @@
                 <article class="pec-card deployment-attract-card deployment-preview-card">
                   <div class="deployment-card-heading"><small>CUSTOMER PREVIEW</small><h4>Attract screen</h4></div>
                   <div class="deployment-preview-badge">${d.state==='deployed'?'LIVE CUSTOMER VIEW':d.state==='sea_trial'?'SEA TRIAL PREVIEW':'PREVIEW ONLY • NOT LIVE'}</div>
+                  <div class="deployment-station-watch ${escapeHtml(d.operatingMode||'web')}"><small>STATION WATCH</small><strong>${d.operatingMode==='kiosk'?'KIOSK · STANDING WATCH':d.operatingMode==='hybrid'?'HYBRID · DUAL ROUTE':'WEB · STANDARD SESSION'}</strong><span>${d.operatingMode==='kiosk'?'Inactivity returns customers to this vessel’s safe home; the station remains on duty.':d.operatingMode==='hybrid'?'Normal web behavior by default; explicit kiosk entry can remain on duty and self-recover.':'Normal browser/session lifecycle. Privileged sessions remain separate.'}</span></div>
                   <div class="deployment-attract-preview">
                     <div class="deployment-attract-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
                     <strong>${escapeHtml(d.attractTitle||'Ready when you are.')}</strong>
@@ -7805,6 +7896,7 @@
         if(!requireDeploymentBoundary(p,d,'deployment.manifest.update'))return;
         d.name=$('deployName').value.trim()||d.name;
         d.profile=$('deployProfile').value;
+        d.operatingMode=$('deployOperatingMode')?.value||d.operatingMode||'web';
         d.idleMinutes=Number($('deployIdle').value)||3;
         d.capabilityScope=$('deployCapabilityScope').value;
         d.resetAfterComplete=$('deployReset').checked;
@@ -10177,6 +10269,7 @@
     }
     renderCustomerSessionIndicator(p);
     resetCustomerEntryViewport();
+    if(kioskPersistenceActive881421(p))armKioskWatch881421(p);
     requestAnimationFrame(()=>verifyLayerIsolation('project',p.id));
   }
 

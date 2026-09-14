@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.14.20';
-const RELEASE_SEAL='settings-keel-881420';
+const RELEASE_BUILD='8.8.14.21';
+const RELEASE_SEAL='kiosk-watch-881421';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

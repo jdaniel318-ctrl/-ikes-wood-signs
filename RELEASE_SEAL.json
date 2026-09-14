@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.20",
-  "release": "Hull Current",
-  "seal": "settings-keel-881420",
+  "build": "8.8.14.21",
+  "release": "Kiosk Watch",
+  "seal": "kiosk-watch-881421",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Hull Current",
-  "name": "Hull Current",
-  "releaseName": "Hull Current"
+  "release_name": "Kiosk Watch",
+  "name": "Kiosk Watch",
+  "releaseName": "Kiosk Watch"
 }
