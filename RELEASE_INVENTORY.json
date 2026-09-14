@@ -1,8 +1,8 @@
 {
   "release": "Hull Current",
   "name": "Hull Current",
-  "build": "8.8.14.19",
-  "seal": "hull-current-881419",
+  "build": "8.8.14.20",
+  "seal": "settings-keel-881420",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

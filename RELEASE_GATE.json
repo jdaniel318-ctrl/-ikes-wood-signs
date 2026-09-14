@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.19",
+  "build": "8.8.14.20",
   "release": "Hull Current",
   "generatedAt": "2026-09-14T20:22:00Z",
   "checks": {
@@ -274,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.19 Hull Current makes owner authentication deterministic: one exact-vessel authority RPC, bounded verification, immediate owner portal paint, and non-blocking durable business sync. Bootstrap Witness surfaces passage health without expanding Engine authority.",
-  "candidate": "8.8.14.19",
+  "note": "8.8.14.20 Settings Keel guarantees a durable owner-settings record after exact-vessel authority proof, self-heals Settings from pending when possible, and preserves non-blocking durable order reconciliation. Bootstrap Witness surfaces each phase without expanding Engine authority.",
+  "candidate": "8.8.14.20",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -510,8 +510,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.19",
-    "seal": "hull-current-881419",
+    "build": "8.8.14.20",
+    "seal": "settings-keel-881420",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
