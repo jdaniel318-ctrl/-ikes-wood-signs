@@ -1,8 +1,8 @@
 {
-  "release": "Route Safe",
-  "name": "Route Safe",
-  "build": "8.8.14.22",
-  "seal": "route-safe-881422",
+  "release": "Deck Signal",
+  "name": "Deck Signal",
+  "build": "8.8.14.23",
+  "seal": "deck-signal-881423",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

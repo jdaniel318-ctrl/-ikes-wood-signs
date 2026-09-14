@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.22",
+  "build": "8.8.14.23",
   "release": "Route Safe",
   "generatedAt": "2026-09-14T20:22:00Z",
   "checks": {
@@ -274,8 +274,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.22 Route Safe adds fleet-wide WEB/KIOSK/HYBRID deployment modes, customer-safe idle reset, same-vessel kiosk self-recovery, and keeps privileged authority independently expiring.",
-  "candidate": "8.8.14.22",
+  "note": "8.8.14.23 Route Safe adds fleet-wide WEB/KIOSK/HYBRID deployment modes, customer-safe idle reset, same-vessel kiosk self-recovery, and keeps privileged authority independently expiring.",
+  "candidate": "8.8.14.23",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -510,8 +510,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.22",
-    "seal": "route-safe-881422",
+    "build": "8.8.14.23",
+    "seal": "deck-signal-881423",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

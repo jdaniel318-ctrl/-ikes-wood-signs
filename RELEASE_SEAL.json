@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.14.22",
-  "release": "Route Safe",
-  "seal": "route-safe-881422",
+  "build": "8.8.14.23",
+  "release": "Deck Signal",
+  "seal": "deck-signal-881423",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Route Safe",
-  "name": "Route Safe",
-  "releaseName": "Route Safe"
+  "release_name": "Deck Signal",
+  "name": "Deck Signal",
+  "releaseName": "Deck Signal"
 }
