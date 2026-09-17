@@ -1,4 +1,4 @@
-# 8.8.15.3 Fleet Spine Contract
+# 8.8.15.4 Spine Surface Contract
 
 - **Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**
 - A route into a surface never silently widens authority. Engine support and Owner authority remain distinct even when they share navigation.
@@ -634,7 +634,7 @@ Any surface that expands, saves, advances, or changes state must look and respon
 8. Sea Trial may show bounded diagnostic timing. Live customer surfaces remain clean.
 
 
-## Fleet Spine Contract — 8.8.15.3
+## Fleet Spine Contract — 8.8.15.4
 - Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.
 - Control Plane owns shared coordination truth: vessel identity, authority, release assignment, station identity, capability/entitlement posture and health. Private business records remain Vessel Data Plane.
 - Shared operational facts are recorded once in an append-only Activity Spine. Projections such as Watchtower, recovery summaries and future Captain/Admiral logs read that truth rather than invent parallel histories.

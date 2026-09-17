@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Spine",
-  "name": "Fleet Spine",
-  "build": "8.8.15.3",
-  "seal": "fleet-spine-88153",
+  "release": "Spine Surface",
+  "name": "Spine Surface",
+  "build": "8.8.15.4",
+  "seal": "spine-surface-88154",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

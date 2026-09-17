@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.3",
-  "release": "Fleet Spine",
+  "build": "8.8.15.4",
+  "release": "Spine Surface",
   "status": "active",
   "principles": [
     {

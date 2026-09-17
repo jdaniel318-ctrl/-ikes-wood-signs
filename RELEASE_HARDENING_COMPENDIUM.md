@@ -1,4 +1,4 @@
-# 8.8.15.3 Fleet Spine Hardening
+# 8.8.15.4 Spine Surface Hardening
 
 Fleet Runtime centralizes customer-session lifecycle. Intentional system handoffs (camera/photo/file picker and future payment/system sheets) enter `SYSTEM_HANDOFF`, pause kiosk idle abandonment, preserve the exact customer place, and return to `CUSTOMER_ACTIVE`. `visibilitychange` alone cannot reset a customer. Fresh process recovery remains safe-home only and never restores privileged authority or prior customer cargo.
 
@@ -563,7 +563,7 @@ Foundry commercialization is blocked unless the candidate record carries explici
 The proving vessel exposed three unacceptable contradictions: READY while length was unresolved, customer length guessing after failed vision, and a 2 ft commissioned plank that failed to converge despite correct Cedar/candidate evidence. Recognition Truth adds a gate-derived state label, removes customer length entry, adds an owner-verification stop condition, and lets the commissioned 2 ft Cedar family use its calibration as the governing evidence instead of requiring every generic segmentation heuristic to be perfect. Fleet Runtime also persists an idle deadline and adds a visible Sea Trial witness so timeout failures are measurable rather than guessed.
 
 
-## 8.8.15.3 Fleet Spine hardening
+## 8.8.15.4 Spine Surface hardening
 The fleet no longer relies on one proving vessel to surface every shared weakness. Control Plane state, Activity Spine identity, server-persisted Foundry clearance, release rings, first-class station identity, and unified authority resolution now have explicit shared contracts. Release course changes are protected by preview fingerprints, explicit Admiral intent and idempotent activity retention. Private vessel business payloads are excluded from Control Plane event design.
 
 ## Fleet Spine scale pass

@@ -1,4 +1,10 @@
-# Dark Sky 8.8.15.3 — Fleet Spine
+# Dark Sky 8.8.15.4 — Spine Surface
+
+- Fixed the Fleet Spine doorway opening behind the Admiral Command Deck; Control Plane now owns a higher modal layer while open.
+- Added explicit Fleet Spine open/close accessibility state, focus placement, focus restoration, and body scroll containment.
+- Added regression gates for nested Admiral → Fleet Spine visibility and deterministic return to Govern.
+- Preserved Fleet Spine Control Plane, Activity Spine, Foundry persistence, release rings, Station foundation, Authority Gateway foundation, and all vessel boundaries.
+
 
 - Added **Fleet Spine** Admiral Control Plane surface with vessel/release/station/membership posture and bounded Activity Spine readback.
 - Added Fleet Core `fleet_activity_events`, `foundry_candidates`, `fleet_release_assignments`, and `fleet_stations` foundations.
@@ -10,4 +16,4 @@
 - Added server authority resolver foundation for global authority plus exact-vessel membership.
 - Added Station identity foundation for future persistent WEB / KIOSK / HYBRID outpost health.
 - Preserved Fleet Runtime, Recognition Truth, Owner Spine, durable orders/settings, Admiral Watchtower read-only doctrine, project isolation and 85-file handoff ceiling.
-- Canonical identity: `8.8.15.3 / fleet-spine-88153`.
+- Canonical identity: `8.8.15.4 / spine-surface-88154`.

@@ -1,6 +1,6 @@
-# Dark Sky 8.8.15.3 — Fleet Spine
+# Dark Sky 8.8.15.4 — Spine Surface
 
-Fleet Spine shifts the proving effort from one vessel to the shared fleet hull. Ike’s remains active, but repeated proving loops no longer dominate the roadmap. This release makes the Control Plane, Activity Spine, server-persisted Foundry Gate, and per-vessel release rings tangible Admiral infrastructure.
+Spine Surface is a focused Fleet Spine hardening release. It fixes the Control Plane presentation boundary discovered in live Admiral testing while preserving the shared-hull architecture. Fleet Spine shifts the proving effort from one vessel to the shared fleet hull. Ike’s remains active, but repeated proving loops no longer dominate the roadmap. This release makes the Control Plane, Activity Spine, server-persisted Foundry Gate, and per-vessel release rings tangible Admiral infrastructure.
 
 ## What is live in this pass
 - **Fleet Spine Control Plane** — authenticated Admiral read of vessel identity, membership counts, station registry posture, Foundry candidate count, release assignments and bounded recent Activity Spine events.

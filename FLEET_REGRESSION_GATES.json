@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.3",
-  "release": "Fleet Spine",
+  "build": "8.8.15.4",
+  "release": "Spine Surface",
   "excluded_sources": [
     "The situation"
   ],
@@ -57,7 +57,10 @@
       "admiral_return_uses_uncancelled_native_document_navigation",
       "engine_return_handoff_is_same_tab_short_lived_and_one_use",
       "invalid_engine_return_handoff_falls_to_normal_gate",
-      "native_engine_return_settles_after_app_initialization"
+      "native_engine_return_settles_after_app_initialization",
+      "fleet_spine_opens_above_admiral_deck",
+      "fleet_spine_close_restores_admiral_govern_lane",
+      "fleet_spine_open_has_visible_modal_focus"
     ],
     "mobile_watch": [
       "iphone_first_class",

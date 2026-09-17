@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.3",
-  "release": "Fleet Spine",
-  "generatedAt": "2026-09-16T22:37:32-04:00",
+  "build": "8.8.15.4",
+  "release": "Spine Surface",
+  "generatedAt": "2026-09-16T23:00:27-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -290,14 +290,16 @@
     "fleet_spine_control_plane": true,
     "activity_spine_idempotency": true,
     "foundry_server_persistence": true,
-    "release_course_preview_issue": true
+    "release_course_preview_issue": true,
+    "fleet_spine_overlay_above_admiral_deck": true,
+    "fleet_spine_modal_focus_restore": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.3 Fleet Spine moves shared fleet governance into durable Control Plane infrastructure: server-persisted Foundry candidates, append-only Activity Spine identity, release rings with preview-before-issue course orders, first-class Station registry foundation, and a unified authority resolver. Recognition Truth remains a proving-vessel contract but is no longer the release heading.",
-  "candidate": "8.8.15.3",
+  "note": "8.8.15.4 Spine Surface fixes the Fleet Spine Control Plane stacking boundary so it visibly opens above the Admiral Command Deck and closes back to Govern without losing state. Fleet Spine shared-hull architecture remains intact.",
+  "candidate": "8.8.15.4",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -544,8 +546,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.3",
-    "seal": "fleet-spine-88153",
+    "build": "8.8.15.4",
+    "seal": "spine-surface-88154",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
@@ -555,7 +557,7 @@
     ],
     "rule": "all authoritative identities must agree exactly; any prior release seal in an authoritative file fails packaging"
   },
-  "name": "Fleet Spine",
+  "name": "Spine Surface",
   "releaseBlockers": {
     "ike_recognition_truth_state_machine": true,
     "ike_customer_length_entry_removed": true,

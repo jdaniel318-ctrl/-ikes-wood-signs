@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.3",
+  "build": "8.8.15.4",
   "policy": "real-ui-path-release-assurance-with-fleet-runtime-and-admiral-course-authority",
   "voyages": [
     {
@@ -56,7 +56,7 @@
         "transfer-preserves-vessel-id",
         "transfer-audited-recoverable"
       ],
-      "summary": "Vessel entry → ownership → operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
+      "summary": "Vessel entry \u2192 ownership \u2192 operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
     },
     {
       "id": "lateral-fleet-structure",
@@ -281,6 +281,10 @@
         "idempotent-activity-event",
         "no-cross-vessel-write",
         "previous-release-retained"
+      ],
+      "steps": [
+        "Open Fleet Spine from Admiral Govern and verify the Control Plane renders above the Admiral deck",
+        "Close Fleet Spine and verify focus returns to the Govern doorway without losing Admiral deck state"
       ]
     }
   ],

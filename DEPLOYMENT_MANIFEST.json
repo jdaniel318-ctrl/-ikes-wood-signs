@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.15.3",
-  "version": "8.8.15.3",
-  "release_name": "Fleet Spine",
-  "releaseName": "Fleet Spine",
-  "release_seal": "fleet-spine-88153",
+  "build": "8.8.15.4",
+  "version": "8.8.15.4",
+  "release_name": "Spine Surface",
+  "releaseName": "Spine Surface",
+  "release_seal": "spine-surface-88154",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -88,7 +88,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "foundry-scout-clearance-and-proving-vessel-hardening",
-  "release_note": "Fleet Spine hardens the shared fleet hull: durable Control Plane posture, append-only Activity Spine identity, server-persisted Foundry candidates, first-class station registry foundation, unified authority resolution, and per-vessel release rings with preview-before-issue Admiral course orders. Recognition Truth remains preserved as a proving-vessel contract.",
+  "release_note": "Spine Surface repairs the Admiral-to-Control-Plane presentation boundary: Fleet Spine now opens visibly above the Admiral deck, traps work in its own modal surface, and returns deterministically to Govern. Fleet Spine shared-hull architecture remains preserved.",
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",
