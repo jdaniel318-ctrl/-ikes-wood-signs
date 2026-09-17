@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.14.23",
-  "release": "Watch Helm",
+  "build": "8.8.15.0",
+  "release": "Fleet Runtime",
   "status": "active",
   "principles": [
     {
@@ -81,6 +81,36 @@
       "rule": "Any fleet member may explicitly adopt an approved capability while its ownership, authority, branding, namespace, and project data remain isolated.",
       "scope": "fleet-learning",
       "origin": "8.8.11.1 Bootstrap Build Schedule repair"
+    },
+    {
+      "id": "authority-grammar",
+      "rule": "Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet. Route origin never silently widens authority.",
+      "scope": "fleet",
+      "origin": "Owner Spine + 8.8.15 architecture challenge"
+    },
+    {
+      "id": "fleet-runtime-kernel",
+      "rule": "Customer readiness, intentional system handoff, abandonment, safe reset and recovery are owned by one deterministic fleet runtime contract rather than individual screens.",
+      "scope": "fleet-runtime",
+      "origin": "Ike kiosk camera handoff regression"
+    },
+    {
+      "id": "system-handoff-not-abandonment",
+      "rule": "Camera, photo/file picker, payment sheet and other intentional OS/browser handoffs preserve the active customer place; visibility change alone is never proof of abandonment.",
+      "scope": "customer-runtime",
+      "origin": "Ike second-photo Sea Trial"
+    },
+    {
+      "id": "one-fact-one-event",
+      "rule": "A meaningful fleet fact is recorded once as a vessel-scoped event and upper-command views are projections of that fact, not competing sources of truth.",
+      "scope": "fleet-observability",
+      "origin": "8.8.15 architecture challenge"
+    },
+    {
+      "id": "proving-vessel-graduation",
+      "rule": "A vessel-specific repair graduates into shared fleet runtime only when the underlying behavior can be named generically and proven without moving vessel ownership, authority or data.",
+      "scope": "fleet-learning",
+      "origin": "Ike proving-vessel doctrine"
     }
   ],
   "governance": {
@@ -104,11 +134,11 @@
       "rolled-back"
     ],
     "currentCourse": {
-      "id": "doctrine-authority-repair",
-      "version": 2,
+      "id": "fleet-runtime-foundation",
+      "version": 3,
       "status": "active",
-      "effectiveBuild": "8.6.56",
-      "heading": "Current Admiral course authority, visible doctrine evidence, and measured-storage truth"
+      "effectiveBuild": "8.8.15.0",
+      "heading": "Deterministic Fleet Runtime, explicit authority grammar, event-compatible truth and proving-vessel graduation"
     },
     "historyPolicy": "append-only; superseded course records remain evidence and rollback references",
     "courseHistory": [

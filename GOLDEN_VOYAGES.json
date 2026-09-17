@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.14.6",
-  "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
+  "build": "8.8.15.0",
+  "policy": "real-ui-path-release-assurance-with-fleet-runtime-and-admiral-course-authority",
   "voyages": [
     {
       "id": "fleet-entry",
@@ -163,6 +163,52 @@
       ],
       "production_backend": "required-before-outside-owner-rollout",
       "release_blocker": true
+    },
+    {
+      "id": "fleet-runtime-system-handoff",
+      "label": "Fleet Runtime System Handoff Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Kiosk STATION READY",
+        "Begin customer workflow",
+        "Open camera/photo picker",
+        "Page backgrounds intentionally",
+        "Return from system handoff",
+        "Same customer step and transient state remain",
+        "Remain active less than configured idle timeout",
+        "Configured idle timeout expires",
+        "Safe home STATION READY",
+        "Prior customer transient cargo absent"
+      ],
+      "proof": [
+        "visibilitychange-not-abandonment",
+        "system-handoff-pauses-idle-clock",
+        "same-step-return",
+        "no-engine-owner-captain-admiral-exposure",
+        "idle-reset-still-operates",
+        "customer-cargo-purged-on-safe-reset"
+      ]
+    },
+    {
+      "id": "fleet-runtime-recovery",
+      "label": "Fleet Runtime Recovery Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Kiosk route recorded",
+        "Fresh page/process recovery",
+        "Exact vessel resolved",
+        "Safe customer home only",
+        "No transient customer cargo restored",
+        "Privileged authority not restored"
+      ],
+      "proof": [
+        "exact-vessel-station-identity",
+        "safe-home-only-fresh-recovery",
+        "no-customer-cargo-after-process-restart",
+        "no-privileged-authority-persistence"
+      ]
     }
   ],
   "governance": {

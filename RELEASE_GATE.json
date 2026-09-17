@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.14.23",
-  "release": "Route Safe",
-  "generatedAt": "2026-09-14T20:22:00Z",
+  "build": "8.8.15.0",
+  "release": "Fleet Runtime",
+  "generatedAt": "2026-09-16T20:39:28.665618-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -268,14 +268,22 @@
     "bootstrap_save_confirmation_visible": true,
     "bootstrap_project_fleet_registry_controller_active": true,
     "bootstrap_project_fleet_registry_tap_capture": true,
-    "bootstrap_project_fleet_registry_read_only": true
+    "bootstrap_project_fleet_registry_read_only": true,
+    "fleet_runtime_kernel": true,
+    "system_handoff_passage_hold": true,
+    "camera_photo_picker_handoff_preserves_state": true,
+    "visibilitychange_not_abandonment": true,
+    "kiosk_idle_reset_true_abandonment_only": true,
+    "fresh_recovery_safe_home_only": true,
+    "runtime_event_journal_bounded_non_pii": true,
+    "station_identity_separate_from_customer_session": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.14.23 Route Safe adds fleet-wide WEB/KIOSK/HYBRID deployment modes, customer-safe idle reset, same-vessel kiosk self-recovery, and keeps privileged authority independently expiring.",
-  "candidate": "8.8.14.23",
+  "note": "8.8.15.0 Fleet Runtime establishes one deterministic customer-session kernel. Intentional camera/photo/file-picker handoffs preserve active customer state; visibility changes alone are not abandonment; configured idle abandonment and fresh recovery still purge to exact-vessel safe home.",
+  "candidate": "8.8.15.0",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -452,7 +460,10 @@
     "bootstrap_vendor_move_communication_log": true,
     "bootstrap_vendor_messages_local_only": true,
     "bootstrap_schedule_late_load_doorway": true,
-    "owner_current": true
+    "owner_current": true,
+    "fleet_runtime_v1": true,
+    "passage_hold": true,
+    "runtime_event_seed": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -470,7 +481,10 @@
     "quarantine_preserves_foreign_deployment_evidence": true,
     "engine_route_not_owner_authority": true,
     "exact_vessel_owner_order_status": true,
-    "bounded_auto_signal_after_owner_change": true
+    "bounded_auto_signal_after_owner_change": true,
+    "owner_operates_business_engine_operates_platform_captain_commands_admiral_governs": true,
+    "system_handoff_preserves_customer_place": true,
+    "one_fact_one_event_direction": true
   },
   "release_identity_repair": {
     "status": "PASS",
@@ -510,8 +524,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.14.23",
-    "seal": "deck-signal-881423",
+    "build": "8.8.15.0",
+    "seal": "fleet-runtime-88150",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

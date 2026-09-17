@@ -1,6 +1,8 @@
-# Dark Sky 8.6.58 — Doctrine Authority Repair
+# Dark Sky 8.8.15.0 — Fleet Runtime
 
-Focused Admiral governance pass: readable four-lane command rail, dedicated authenticated Admiral identity boundary, and a server-governed Fleet Service Entitlements control surface. Owner auth, exact-vessel RLS, ownership, and owner service-request behavior remain unchanged. Future Basic / Mid / Super-style service packages are reserved as bundles of the same capabilities; no package UI is live in this release.
+Fleet Runtime v1 proving pass. One deterministic customer-session kernel owns READY → CUSTOMER ACTIVE → SYSTEM HANDOFF → SAFE RESET / RECOVERING behavior. Ike’s Wood Signs is the proving vessel for intentional camera/photo-picker handoff preservation before fleet-wide graduation. Owner business authority, Engine platform authority, Captain command and Admiral governance remain separate.
+
+The 85-file ceiling is a release/handoff budget, not a source-architecture rule. Shared runtime behavior should remain modular in design even when packaged into a lean root-upload artifact.
 
 File ceiling: 85
-Release files: 84
+Release files: 85

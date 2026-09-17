@@ -1,3 +1,20 @@
+# 8.8.15.0 Fleet Runtime Contract
+
+- **Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**
+- A route into a surface never silently widens authority. Engine support and Owner authority remain distinct even when they share navigation.
+- One Fleet Runtime owns customer lifecycle states: **READY → CUSTOMER ACTIVE → SYSTEM HANDOFF → SAFE RESET / RECOVERING**. Individual screens do not invent competing abandonment or recovery rules.
+- Camera, photo picker, file picker, future payment sheets, and other intentional OS/browser passages are **SYSTEM HANDOFF**, not abandonment. The kiosk idle clock pauses, customer place is preserved, and the clock restarts only after return.
+- `visibilitychange`, focus loss, or brief backgrounding alone never proves abandonment. True abandonment is determined by the configured station idle policy.
+- Fresh process/page recovery does not attempt to resurrect private customer cargo. It resolves the exact station/vessel and returns to customer-safe home.
+- Customer station persistence never carries Owner, Engine, Captain, or Admiral authority. Privileged authority continues to expire under its own contract.
+- Fleet Core is treated as two security planes even while physically co-located: **Control Plane** (registry, membership, entitlements, deployments, releases, Watch/support) and **Vessel Data Plane** (orders, customers, settings, pricing, files, private business records).
+- Meaningful operational facts should become one vessel-scoped event. Watchtower, Captain Watch, and Recovery/Continuity are projections of that event truth, not independent competing stores.
+- Every future shared capability must declare authority, data scopes, events, operating modes, offline behavior, commercial mode, dependencies, and certification voyages before fleet adoption.
+- Ike’s Wood Signs is the proving vessel. A repair graduates into shared Fleet Runtime only when the behavior is generic, isolated, and proven without moving vessel ownership, authority, branding, namespace, or business data.
+- The 85-file ceiling is a deployable handoff budget, not a reason to make source architecture monolithic.
+
+---
+
 # 8.5.4 Verified Command Contract
 
 - **Engine operates. Captain commands. Admiral governs.**

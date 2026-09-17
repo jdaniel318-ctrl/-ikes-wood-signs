@@ -1,3 +1,11 @@
+# 8.8.15.0 Fleet Runtime Hardening
+
+Fleet Runtime centralizes customer-session lifecycle. Intentional system handoffs (camera/photo/file picker and future payment/system sheets) enter `SYSTEM_HANDOFF`, pause kiosk idle abandonment, preserve the exact customer place, and return to `CUSTOMER_ACTIVE`. `visibilitychange` alone cannot reset a customer. Fresh process recovery remains safe-home only and never restores privileged authority or prior customer cargo.
+
+Ike’s Wood Signs is the proving vessel. Shared graduation requires Golden Voyage proof before wider fleet promotion.
+
+---
+
 # Release Hardening Compendium
 > Consolidated in Dark Sky 8.2.8 to keep the deployment lean while retaining the full historical contracts as an AI-readable regression reference.
 

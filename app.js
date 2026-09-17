@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.14.23';
+  const BUILD_VERSION='8.8.15.0';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4687,11 +4687,18 @@
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
 
-  // 8.8.14.23 Deck Signal — persistent customer stations are a customer-surface
-  // contract, never an authority contract. Kiosk inactivity resets customer cargo
-  // to the vessel's safe home; it must never route to Engine, Owner, Captain or Admiral.
+  // 8.8.15.0 Fleet Runtime — one deterministic customer-session kernel owns
+  // kiosk readiness, intentional OS/browser handoffs, idle abandonment and safe recovery.
+  // Individual screens may request transitions; they may not independently decide that
+  // backgrounding means abandonment or widen any Owner / Engine / Captain / Admiral authority.
   const KIOSK_ROUTE_KEY_881421='darkSkyKioskRoute881421';
-  let kioskIdleTimer881421=null,kioskActivityBound881421=false,kioskRecovering881421=false;
+  const FLEET_RUNTIME_SNAPSHOT_KEY_88150='darkSkyFleetRuntimeSnapshot88150';
+  const FLEET_RUNTIME_EVENT_KEY_88150='darkSkyFleetRuntimeEvents88150';
+  const FLEET_RUNTIME_VERSION_88150='fleet-runtime-v1';
+  const SYSTEM_HANDOFF_MAX_MS_88150=15*60*1000;
+  let kioskIdleTimer881421=null,kioskCompletionTimer88150=null,kioskActivityBound881421=false,kioskRecovering881421=false;
+  let fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
+
   function deploymentOperatingMode881421(d){const mode=String(d?.operatingMode||'web').toLowerCase();return ['web','kiosk','hybrid'].includes(mode)?mode:'web';}
   function kioskDeploymentForContext881421(p=activeProject()){
     const ctx=currentExperienceContext(p);if(!ctx)return null;
@@ -4711,16 +4718,77 @@
     if(!el){el=document.createElement('div');el.id='customerKioskStatus881421';el.className='customer-kiosk-status';document.body.appendChild(el);}
     el.dataset.tone=tone;el.innerHTML=`<span class="customer-kiosk-beacon" aria-hidden="true"></span><strong>${escapeHtml(text)}</strong>`;
     el.classList.add('show');
-    clearTimeout(el._hideTimer);if(tone!=='ready')el._hideTimer=setTimeout(()=>el?.classList.remove('show'),3200);
+    clearTimeout(el._hideTimer);
+    if(!['ready','hold'].includes(tone))el._hideTimer=setTimeout(()=>el?.classList.remove('show'),3200);
   }
   function clearKioskStatus881421(){const el=document.getElementById('customerKioskStatus881421');if(el){clearTimeout(el._hideTimer);el.remove();}}
-  function persistKioskRoute881421(p,d){
-    try{localStorage.setItem(KIOSK_ROUTE_KEY_881421,JSON.stringify({projectId:p.id,deploymentId:d.id,operatingMode:deploymentOperatingMode881421(d),savedAt:new Date().toISOString()}));}catch(_){}
+  function runtimeCorrelationId88150(p=activeProject(),d=kioskDeploymentForContext881421(p)){
+    const ctx=currentExperienceContext(p);
+    return [p?.id||'vessel',d?.id||'outpost',ctx?.establishedAt||Date.now()].join(':');
   }
-  function clearKioskRoute881421(){try{localStorage.removeItem(KIOSK_ROUTE_KEY_881421);}catch(_){};clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;clearKioskStatus881421();}
+  function runtimeEvent88150(type,detail={}){
+    const p=activeProject(),d=kioskDeploymentForContext881421(p),ctx=currentExperienceContext(p);
+    const row={schema:'dark-sky-runtime-event-v1',eventId:`rt-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`,type:String(type||'runtime.event'),at:new Date().toISOString(),projectId:p?.id||fleetRuntime88150.projectId||'',deploymentId:d?.id||fleetRuntime88150.deploymentId||'',sessionId:ctx?.establishedAt||fleetRuntime88150.sessionId||'',correlationId:fleetRuntime88150.correlationId||runtimeCorrelationId88150(p,d),runtimeVersion:FLEET_RUNTIME_VERSION_88150,detail:{...detail}};
+    try{const prior=JSON.parse(localStorage.getItem(FLEET_RUNTIME_EVENT_KEY_88150)||'[]');const rows=Array.isArray(prior)?prior:[];rows.push(row);localStorage.setItem(FLEET_RUNTIME_EVENT_KEY_88150,JSON.stringify(rows.slice(-120)));}catch(_){}
+    window.__darkSkyLastRuntimeEvent88150=row;return row;
+  }
+  function persistFleetRuntimeSnapshot88150(){
+    const safe={schema:'dark-sky-fleet-runtime-snapshot-v1',runtimeVersion:FLEET_RUNTIME_VERSION_88150,state:fleetRuntime88150.state,projectId:fleetRuntime88150.projectId,deploymentId:fleetRuntime88150.deploymentId,sessionId:fleetRuntime88150.sessionId,lastActivityAt:fleetRuntime88150.lastActivityAt,backgroundedAt:fleetRuntime88150.backgroundedAt,handoff:fleetRuntime88150.handoff?{kind:fleetRuntime88150.handoff.kind,source:fleetRuntime88150.handoff.source,startedAt:fleetRuntime88150.handoff.startedAt,expiresAt:fleetRuntime88150.handoff.expiresAt}:null,sequence:fleetRuntime88150.sequence,correlationId:fleetRuntime88150.correlationId,updatedAt:new Date().toISOString()};
+    try{sessionStorage.setItem(FLEET_RUNTIME_SNAPSHOT_KEY_88150,JSON.stringify(safe));}catch(_){}
+    window.__darkSkyFleetRuntimeSnapshot88150=safe;return safe;
+  }
+  function runtimeTransition88150(next,reason='transition',detail={}){
+    const p=activeProject(),d=kioskDeploymentForContext881421(p),ctx=currentExperienceContext(p),prior=fleetRuntime88150.state;
+    fleetRuntime88150={...fleetRuntime88150,state:String(next||prior||'READY'),projectId:p?.id||fleetRuntime88150.projectId||'',deploymentId:d?.id||fleetRuntime88150.deploymentId||'',sessionId:ctx?.establishedAt||fleetRuntime88150.sessionId||'',sequence:Number(fleetRuntime88150.sequence||0)+1,correlationId:fleetRuntime88150.correlationId||runtimeCorrelationId88150(p,d)};
+    persistFleetRuntimeSnapshot88150();runtimeEvent88150('runtime.transition',{from:prior,to:fleetRuntime88150.state,reason,...detail});
+    return fleetRuntime88150.state;
+  }
+  function runtimeCustomerStepIsReady88150(){
+    const p=activeProject(),shell=projectShellFor(p);
+    if(shell==='ikes')return ['welcome','done'].includes(String(state?.current||'welcome'));
+    if(shell==='mugs')return ['welcome','done'].includes(String(mugsState?.screen||'welcome'));
+    if(shell==='flowers')return ['welcome','done'].includes(String(flowersState?.screen||'welcome'));
+    if(shell==='bor')return ['landing','done','receipt'].includes(String(borCustomerState?.step||'landing'));
+    if(shell==='universal')return ['landing','done','receipt'].includes(String(universalCustomerState?.stage||'landing'));
+    return false;
+  }
+  function runtimeCustomerActivity88150(source='customer'){
+    const p=activeProject();if(!kioskPersistenceActive881421(p))return false;
+    if(fleetRuntime88150.state==='SYSTEM_HANDOFF')return true;
+    fleetRuntime88150.lastActivityAt=Date.now();
+    if(!runtimeCustomerStepIsReady88150())runtimeTransition88150('CUSTOMER_ACTIVE','customer-activity',{source});
+    else runtimeTransition88150('READY','customer-home-activity',{source});
+    scheduleKioskIdle881421(p);return true;
+  }
+  function runtimeBeginSystemHandoff88150(kind='system-handoff',source='customer'){
+    const p=activeProject();if(!kioskPersistenceActive881421(p))return false;
+    clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;
+    const now=Date.now();fleetRuntime88150.handoff={kind:String(kind||'system-handoff'),source:String(source||'customer'),startedAt:now,expiresAt:now+SYSTEM_HANDOFF_MAX_MS_88150,returnState:runtimeCustomerStepIsReady88150()?'READY':'CUSTOMER_ACTIVE'};
+    runtimeTransition88150('SYSTEM_HANDOFF','intentional-system-handoff',{kind:fleetRuntime88150.handoff.kind,source:fleetRuntime88150.handoff.source});
+    kioskStatus881421('STATION HOLDING YOUR PLACE…','hold');return true;
+  }
+  function runtimeSystemHandoffActive88150(){return !!fleetRuntime88150.handoff&&fleetRuntime88150.state==='SYSTEM_HANDOFF';}
+  function runtimeResumeSystemHandoff88150(trigger='return'){
+    const p=activeProject();if(!kioskPersistenceActive881421(p)||!runtimeSystemHandoffActive88150())return false;
+    const h=fleetRuntime88150.handoff,now=Date.now();
+    if(now>Number(h.expiresAt||0)){fleetRuntime88150.handoff=null;persistFleetRuntimeSnapshot88150();runtimeEvent88150('runtime.handoff.expired',{kind:h.kind,trigger});return false;}
+    fleetRuntime88150.handoff=null;fleetRuntime88150.lastActivityAt=now;runtimeTransition88150(h.returnState||'CUSTOMER_ACTIVE','system-handoff-return',{kind:h.kind,trigger,heldMs:Math.max(0,now-Number(h.startedAt||now))});
+    kioskStatus881421('WELCOME BACK · PLACE HELD','resume');setTimeout(()=>{if(kioskPersistenceActive881421(activeProject())&&!runtimeSystemHandoffActive88150())kioskStatus881421('STATION READY','ready');},2500);
+    scheduleKioskIdle881421(p);return true;
+  }
+  function persistKioskRoute881421(p,d){
+    try{localStorage.setItem(KIOSK_ROUTE_KEY_881421,JSON.stringify({projectId:p.id,deploymentId:d.id,operatingMode:deploymentOperatingMode881421(d),runtimeVersion:FLEET_RUNTIME_VERSION_88150,savedAt:new Date().toISOString()}));}catch(_){}
+  }
+  function clearKioskRoute881421(){
+    try{localStorage.removeItem(KIOSK_ROUTE_KEY_881421);}catch(_){}
+    clearTimeout(kioskIdleTimer881421);clearTimeout(kioskCompletionTimer88150);kioskIdleTimer881421=null;kioskCompletionTimer88150=null;clearKioskStatus881421();
+    fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
+    try{sessionStorage.removeItem(FLEET_RUNTIME_SNAPSHOT_KEY_88150);}catch(_){}
+  }
   function resetCustomerToSafeHome881421(p,{reason='idle'}={}){
     if(!p)return;
-    const shell=projectShellFor(p);
+    clearTimeout(kioskIdleTimer881421);clearTimeout(kioskCompletionTimer88150);kioskIdleTimer881421=null;kioskCompletionTimer88150=null;
+    const shell=projectShellFor(p);runtimeTransition88150('SAFE_RESET','safe-home-reset',{reason});
     try{
       if(shell==='ikes'){resetRuntimeStateForProject(p);clearDraft();if(typeof setScreen==='function')setScreen('welcome');}
       else if(shell==='mugs'){resetMugsShell();showMugsScreen('welcome');}
@@ -4728,20 +4796,62 @@
       else if(shell==='bor'){resetBorCustomerState();renderBorCustomerShell(p);}
       else if(shell==='universal'){resetUniversalCustomerState(p);renderUniversalCustomerShell(p);}
       showCustomerShellForProject(p);resetCustomerEntryViewport();
+      fleetRuntime88150.handoff=null;fleetRuntime88150.lastActivityAt=0;runtimeTransition88150('READY','safe-home-ready',{reason});
       kioskStatus881421(reason==='recovery'?'STATION RESTORED · READY':'SESSION RESET · READY',reason==='recovery'?'recover':'reset');
-    }catch(err){console.warn('Kiosk safe-home reset failed',err);}
+      setTimeout(()=>{if(kioskPersistenceActive881421(activeProject()))kioskStatus881421('STATION READY','ready');},2600);
+    }catch(err){console.warn('Kiosk safe-home reset failed',err);runtimeEvent88150('runtime.safe_reset.failed',{reason,error:String(err?.message||err)});}
   }
-  function scheduleKioskIdle881421(p=activeProject()){
+  function scheduleKioskIdle881421(p=activeProject(),remainingOverride=null){
     clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;
-    if(!kioskPersistenceActive881421(p))return;
-    const d=kioskDeploymentForContext881421(p),minutes=Math.max(1,Number(d?.idleMinutes||3));
-    kioskIdleTimer881421=setTimeout(()=>{resetCustomerToSafeHome881421(p,{reason:'idle'});scheduleKioskIdle881421(p);},minutes*60*1000);
+    if(!kioskPersistenceActive881421(p)||runtimeSystemHandoffActive88150()||fleetRuntime88150.state==='READY')return;
+    const d=kioskDeploymentForContext881421(p),minutes=Math.max(1,Number(d?.idleMinutes||3)),fullMs=minutes*60*1000;
+    const elapsed=fleetRuntime88150.lastActivityAt?Math.max(0,Date.now()-fleetRuntime88150.lastActivityAt):0;
+    const remaining=remainingOverride==null?Math.max(250,fullMs-elapsed):Math.max(250,Number(remainingOverride)||fullMs);
+    kioskIdleTimer881421=setTimeout(()=>{if(runtimeSystemHandoffActive88150())return;resetCustomerToSafeHome881421(p,{reason:'idle'});},remaining);
+  }
+  function runtimeCustomerScreenChanged88150(name){
+    const p=activeProject();if(!kioskPersistenceActive881421(p))return;
+    const step=String(name||'');
+    if(step==='done'){
+      const d=kioskDeploymentForContext881421(p);clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;runtimeTransition88150('READY','customer-complete',{step});
+      if(d?.resetAfterComplete!==false){kioskStatus881421('ORDER COMPLETE · STATION RESETTING SOON','resume');clearTimeout(kioskCompletionTimer88150);kioskCompletionTimer88150=setTimeout(()=>resetCustomerToSafeHome881421(p,{reason:'completed-order'}),20000);}return;
+    }
+    if(step==='welcome'){clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;fleetRuntime88150.lastActivityAt=0;runtimeTransition88150('READY','customer-home',{step});return;}
+    fleetRuntime88150.lastActivityAt=Date.now();runtimeTransition88150('CUSTOMER_ACTIVE','customer-step',{step});scheduleKioskIdle881421(p);
   }
   function armKioskWatch881421(p=activeProject()){
     if(!kioskPersistenceActive881421(p)){clearKioskRoute881421();return false;}
-    const d=kioskDeploymentForContext881421(p);persistKioskRoute881421(p,d);kioskStatus881421('STATION READY','ready');scheduleKioskIdle881421(p);
-    if(!kioskActivityBound881421){kioskActivityBound881421=true;['pointerdown','keydown','touchstart','input'].forEach(evt=>document.addEventListener(evt,()=>{const live=activeProject();if(kioskPersistenceActive881421(live))scheduleKioskIdle881421(live);},{passive:true,capture:true}));}
+    const d=kioskDeploymentForContext881421(p),ctx=currentExperienceContext(p);persistKioskRoute881421(p,d);
+    fleetRuntime88150={...fleetRuntime88150,projectId:p.id,deploymentId:d.id,sessionId:ctx?.establishedAt||fleetRuntime88150.sessionId||new Date().toISOString(),correlationId:fleetRuntime88150.correlationId||runtimeCorrelationId88150(p,d)};
+    if(runtimeCustomerStepIsReady88150()){fleetRuntime88150.lastActivityAt=0;runtimeTransition88150('READY','station-armed');}
+    else if(!runtimeSystemHandoffActive88150()){fleetRuntime88150.lastActivityAt=fleetRuntime88150.lastActivityAt||Date.now();runtimeTransition88150('CUSTOMER_ACTIVE','station-armed-active');}
+    kioskStatus881421(runtimeSystemHandoffActive88150()?'STATION HOLDING YOUR PLACE…':'STATION READY',runtimeSystemHandoffActive88150()?'hold':'ready');scheduleKioskIdle881421(p);
+    if(!kioskActivityBound881421){
+      kioskActivityBound881421=true;
+      ['pointerdown','keydown','touchstart','input'].forEach(evt=>document.addEventListener(evt,e=>{
+        if(e?.target?.matches?.('input[type="file"]'))return;
+        const live=activeProject();if(kioskPersistenceActive881421(live))runtimeCustomerActivity88150(evt);
+      },{passive:true,capture:true}));
+      // Any customer file/camera picker is an intentional system handoff. Programmatic
+      // .click() calls on hidden inputs also pass this capture listener.
+      document.addEventListener('click',e=>{const input=e.target?.closest?.('input[type="file"]');if(input&&kioskPersistenceActive881421(activeProject()))runtimeBeginSystemHandoff88150('file-picker',input.id||'customer-file');},true);
+      document.addEventListener('change',e=>{if(e.target?.matches?.('input[type="file"]')&&runtimeSystemHandoffActive88150())setTimeout(()=>runtimeResumeSystemHandoff88150('file-selected'),900);},true);
+      document.addEventListener('cancel',e=>{if(e.target?.matches?.('input[type="file"]')&&runtimeSystemHandoffActive88150())setTimeout(()=>runtimeResumeSystemHandoff88150('file-cancelled'),120);},true);
+    }
     return true;
+  }
+  function runtimeResumeAfterBackground88150(reason='visible'){
+    const p=activeProject();if(!kioskPersistenceActive881421(p))return false;
+    if(runtimeSystemHandoffActive88150()){
+      if(runtimeResumeSystemHandoff88150(reason))return true;
+      resetCustomerToSafeHome881421(p,{reason:'handoff-expired'});return true;
+    }
+    if(fleetRuntime88150.state==='CUSTOMER_ACTIVE'&&fleetRuntime88150.lastActivityAt){
+      const d=kioskDeploymentForContext881421(p),idleMs=Math.max(1,Number(d?.idleMinutes||3))*60*1000,elapsed=Date.now()-fleetRuntime88150.lastActivityAt;
+      if(elapsed>=idleMs){resetCustomerToSafeHome881421(p,{reason:'idle-background'});return true;}
+      runtimeTransition88150('CUSTOMER_ACTIVE','background-return-preserved',{reason,backgroundMs:fleetRuntime88150.backgroundedAt?Date.now()-fleetRuntime88150.backgroundedAt:0});scheduleKioskIdle881421(p,idleMs-elapsed);kioskStatus881421('STATION READY','ready');return true;
+    }
+    kioskStatus881421('STATION READY','ready');return true;
   }
   async function recoverKioskRoute881421(reason='resume',attempt=0){
     if(kioskRecovering881421)return false;
@@ -4750,20 +4860,33 @@
     const p=projectById(saved.projectId);
     if(!p){if(attempt<18)setTimeout(()=>recoverKioskRoute881421(reason,attempt+1),420);return false;}
     const d=migrateLegacyDeployment(p).find(x=>x.id===saved.deploymentId);if(!d||!['deployed','sea_trial'].includes(d.state)||!['kiosk','hybrid'].includes(deploymentOperatingMode881421(d))){clearKioskRoute881421();return false;}
+    if(activeProject()?.id===p.id&&document.body.classList.contains('project-mode'))return runtimeResumeAfterBackground88150(reason);
     kioskRecovering881421=true;
     try{
-      kioskStatus881421('RESTORING CUSTOMER STATION…','recover');
-      if(!activeProject()||activeProject().id!==p.id||!document.body.classList.contains('project-mode')){
-        setCustomerSessionContext(p,d.state==='deployed'?'live':'sea_trial',d,{source:'kiosk_restore'});await enterProject(p.id);
-      }
+      runtimeTransition88150('RECOVERING','station-recovery',{reason});kioskStatus881421('RESTORING CUSTOMER STATION…','recover');
+      setCustomerSessionContext(p,d.state==='deployed'?'live':'sea_trial',d,{source:'kiosk_restore'});await enterProject(p.id);
       resetCustomerToSafeHome881421(p,{reason:'recovery'});armKioskWatch881421(p);return true;
     }finally{kioskRecovering881421=false;}
   }
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(()=>recoverKioskRoute881421('visible'),120);});
-  window.addEventListener('pageshow',()=>{[220,900,2200].forEach(ms=>setTimeout(()=>recoverKioskRoute881421('pageshow'),ms));});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden'){
+      fleetRuntime88150.backgroundedAt=Date.now();persistFleetRuntimeSnapshot88150();runtimeEvent88150('runtime.backgrounded',{handoff:runtimeSystemHandoffActive88150()});clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;return;
+    }
+    setTimeout(()=>recoverKioskRoute881421('visible'),120);
+  });
+  window.addEventListener('pagehide',()=>{persistFleetRuntimeSnapshot88150();runtimeEvent88150('runtime.pagehide',{state:fleetRuntime88150.state});});
+  window.addEventListener('pageshow',e=>{[220,900,2200].forEach(ms=>setTimeout(()=>recoverKioskRoute881421(e.persisted?'pageshow-bfcache':'pageshow'),ms));});
   window.addEventListener('online',()=>setTimeout(()=>recoverKioskRoute881421('online'),120));
   window.addEventListener('focus',()=>setTimeout(()=>recoverKioskRoute881421('focus'),180));
-  window.DarkSkyKioskWatch={arm:armKioskWatch881421,recover:recoverKioskRoute881421,reset:()=>resetCustomerToSafeHome881421(activeProject(),{reason:'manual'}),active:kioskPersistenceActive881421};
+  window.DarkSkyFleetRuntime={
+    version:FLEET_RUNTIME_VERSION_88150,
+    states:['READY','CUSTOMER_ACTIVE','SYSTEM_HANDOFF','SAFE_RESET','RECOVERING'],
+    snapshot:()=>({...fleetRuntime88150}),events:()=>{try{return JSON.parse(localStorage.getItem(FLEET_RUNTIME_EVENT_KEY_88150)||'[]');}catch(_){return[];}},
+    beginSystemHandoff:runtimeBeginSystemHandoff88150,resumeSystemHandoff:runtimeResumeSystemHandoff88150,
+    customerActivity:runtimeCustomerActivity88150,screenChanged:runtimeCustomerScreenChanged88150,
+    reset:()=>resetCustomerToSafeHome881421(activeProject(),{reason:'manual'})
+  };
+  window.DarkSkyKioskWatch={arm:armKioskWatch881421,recover:recoverKioskRoute881421,reset:()=>resetCustomerToSafeHome881421(activeProject(),{reason:'manual'}),active:kioskPersistenceActive881421,runtime:window.DarkSkyFleetRuntime};
 
   // Fleet safety contract: no real-world contact may leave a project while its
   // customer experience is in Private Preview, Sea Trial, or another non-live state.
@@ -6852,6 +6975,8 @@
 
       ${(()=>{const launch=projectFleetLaunchState(p);const approval=experienceApproved(p)?'APPROVED':'ACTION NEEDED';const deployment=launch.key==='live'?'LIVE':launch.key==='sea_trial'?'SEA TRIAL':launch.key==='fleet_ready'?'FLEET READY':launch.key==='preparing'?'PREPARING':'DRAFT';return `<section class="pc-state-matrix" aria-label="Project state clarity"><article><small>PUBLICATION</small><strong>${deployment}</strong><span>Customer-facing state</span></article><article><small>OPERATING HEALTH</small><strong>${s.status}</strong><span>${s.attention.length?`${s.attention.length} items to review`:'No immediate flags'}</span></article><article><small>CUSTOMER EXPERIENCE</small><strong>${approval}</strong><span>${approval==='APPROVED'?'Current experience approved':'Approval is missing or stale'}</span></article><article><small>YOUR SESSION</small><strong>ADMIN CONTROL</strong><span>Project-scoped authority</span></article></section>`})()}
 
+      ${(()=>{const runtimeStations=s.deployments.filter(d=>['kiosk','hybrid'].includes(String(d.operatingMode||'web')));const kioskCount=s.deployments.filter(d=>String(d.operatingMode||'web')==='kiosk').length;const seaTrial=s.deployments.filter(d=>d.state==='sea_trial').length;const label=runtimeStations.length?'PASSAGE HOLD · ARMED':'STANDARD WEB RUNTIME';const detail=runtimeStations.length?'Intentional camera/photo/file-picker handoffs preserve the active customer place; only verified abandonment triggers safe reset.':'No persistent kiosk station is active for this vessel.';return `<section class="pc-runtime-strip" aria-label="Fleet Runtime posture"><div><small>FLEET RUNTIME · V1</small><strong>${label}</strong><span>${detail}</span></div><div class="pc-runtime-facts"><b>${runtimeStations.length} PERSISTENT STATION${runtimeStations.length===1?'':'S'}</b><b>${kioskCount} KIOSK</b><b>${seaTrial} SEA TRIAL</b></div></section>`})()}
+
       <section class="pc-priority-command" aria-label="Recommended next action">
         <div><span>START HERE</span><h4>${s.attention.length?'Review what needs attention':'Project operating normally'}</h4><p>${s.attention.length?`${s.attention.length} clear next ${s.attention.length===1?'step':'steps'} based on current project data.`:'No immediate operating flags were found.'}</p></div>
         <div class="pc-priority-list">${attention}</div>
@@ -7432,6 +7557,7 @@
                   <div class="deployment-card-heading"><small>CUSTOMER PREVIEW</small><h4>Attract screen</h4></div>
                   <div class="deployment-preview-badge">${d.state==='deployed'?'LIVE CUSTOMER VIEW':d.state==='sea_trial'?'SEA TRIAL PREVIEW':'PREVIEW ONLY • NOT LIVE'}</div>
                   <div class="deployment-station-watch ${escapeHtml(d.operatingMode||'web')}"><small>STATION WATCH</small><strong>${d.operatingMode==='kiosk'?'KIOSK · STANDING WATCH':d.operatingMode==='hybrid'?'HYBRID · DUAL ROUTE':'WEB · STANDARD SESSION'}</strong><span>${d.operatingMode==='kiosk'?'Inactivity returns customers to this vessel’s safe home; the station remains on duty.':d.operatingMode==='hybrid'?'Normal web behavior by default; explicit kiosk entry can remain on duty and self-recover.':'Normal browser/session lifecycle. Privileged sessions remain separate.'}</span></div>
+                  <div class="deployment-runtime-watch"><small>FLEET RUNTIME</small><strong>${d.operatingMode==='web'?'STANDARD WEB PASSAGE':'PASSAGE HOLD · ARMED'}</strong><span>${d.operatingMode==='web'?'Normal browser lifecycle. Runtime recovery remains bounded and vessel-scoped.':'Camera, photo picker and other intentional system handoffs preserve the active customer place; only verified abandonment triggers safe reset.'}</span><b>RUNTIME V1</b></div>
                   <div class="deployment-attract-preview">
                     <div class="deployment-attract-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
                     <strong>${escapeHtml(d.attractTitle||'Ready when you are.')}</strong>
@@ -11068,6 +11194,7 @@
   function setScreen(name){
     if(state.current==='photo' && name!=='photo') stopCamera();
     state.current=name;
+    try{window.DarkSkyFleetRuntime?.screenChanged?.(name);}catch(err){console.warn('Fleet Runtime screen witness failed',err);}
     document.body.classList.toggle('ikes-flow-active',activeProjectId==='ikes-wood-signs'&&!['welcome','done'].includes(name));
     $$('.screen').forEach(s=>{
       const isCurrent=s.dataset.screen===name;

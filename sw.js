@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.14.23';
-const RELEASE_SEAL='deck-signal-881423';
+const RELEASE_BUILD='8.8.15.0';
+const RELEASE_SEAL='fleet-runtime-88150';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

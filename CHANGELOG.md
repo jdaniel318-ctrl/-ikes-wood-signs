@@ -1,3 +1,15 @@
+# Dark Sky 8.8.15.0 — Fleet Runtime
+
+- Adds the fleet-wide deterministic customer runtime state machine: `READY → CUSTOMER_ACTIVE → SYSTEM_HANDOFF → SAFE_RESET / RECOVERING`.
+- Fixes the Sea Trial camera regression at the architectural level: opening a camera/photo/file picker pauses abandonment logic and preserves the exact customer step on return.
+- Makes `visibilitychange` evidence only; it cannot independently reset a customer session.
+- Keeps the configured kiosk idle timeout authoritative for true abandonment and purges transient customer cargo before returning to exact-vessel safe home.
+- Adds a bounded, non-PII runtime event journal with vessel/outpost/session/correlation identity as the seed contract for the future Fleet Activity Spine.
+- Establishes the fleet authority grammar: Owner operates the vessel business; Engine operates the platform; Captain commands fleet operations; Admiral governs the fleet.
+- Defines Control Plane vs Vessel Data Plane, release rings, first-class station identity, executable capability-manifest requirements, and proving-vessel graduation rules without moving vessel data or authority.
+- Adds release-blocking Golden Voyages and regression gates for system-handoff preservation and fresh-process kiosk recovery.
+- Keeps the release at the 85-file handoff ceiling with canonical identity `8.8.15.0 / fleet-runtime-88150`.
+
 # Dark Sky 8.8.14.23 — Deck Signal
 
 - Makes every expandable Deployment Shipwright control unmistakably interactive with stronger button surfaces, OPEN/OPENED state pills, tap/pressed feedback, keyboard focus, and consistent styling across Outpost behavior, Operational Details, and Manifest Details.

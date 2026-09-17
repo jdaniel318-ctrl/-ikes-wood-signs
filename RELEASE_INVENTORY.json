@@ -1,8 +1,8 @@
 {
-  "release": "Deck Signal",
-  "name": "Deck Signal",
-  "build": "8.8.14.23",
-  "seal": "deck-signal-881423",
+  "release": "Fleet Runtime",
+  "name": "Fleet Runtime",
+  "build": "8.8.15.0",
+  "seal": "fleet-runtime-88150",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

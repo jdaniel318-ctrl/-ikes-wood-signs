@@ -1,3 +1,11 @@
+# 8.8.15.0 Fleet Runtime — Admiral Reference
+
+Fleet Runtime does not expand Admiral authority. It makes fleet behavior more deterministic beneath existing authority boundaries. Admiral consumes fleet-safe projections and governs capability/release course; it does not become the operator of vessel business data. Ike’s remains the proving vessel before shared runtime behavior graduates across the fleet.
+
+Control Plane truth, Vessel Data Plane privacy, event-compatible observability, release rings, first-class station identity, capability contracts, and per-vessel rollback are now explicit fleet architecture requirements.
+
+---
+
 # 8.5.4 Admiral Verified Command
 
 Admiral's Deck trial now defaults to Professional Mode. The ceremonial deck remains a second view. Admiral-level responsibility is fleet governance: posture, doctrine, standards, Foundry, delegation, cross-vessel intelligence, continuity, and creation/promotion of new fleet capabilities and vessels. Captain remains mission command; Engine remains operational machinery.

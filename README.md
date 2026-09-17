@@ -1,3 +1,13 @@
+# Dark Sky 8.8.15.0 — Fleet Runtime
+
+Fleet Runtime is the first major proving-vessel release after the 8.8.15 architecture challenge. One deterministic customer-session kernel now owns customer readiness, active work, intentional OS/browser handoffs, verified abandonment, safe reset, and recovery. Ike’s Wood Signs is the proving vessel.
+
+**Authority grammar:** Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet. Route origin never silently widens authority.
+
+**Passage Hold:** camera/photo/file-picker handoffs enter `SYSTEM_HANDOFF`, pause the kiosk idle reset, preserve the exact active customer place, and restart the idle clock only after return. `visibilitychange` alone is never abandonment. A fresh process recovery still returns to exact-vessel safe home and never restores privileged authority or prior customer cargo.
+
+**Scale direction:** Control Plane and Vessel Data Plane are separate security concepts; Watchtower and Recovery views are projections. Runtime events are recorded once in a bounded non-PII journal using correlation-ready fields for future Fleet Activity Spine promotion. Capability contracts, release rings, station identity and per-vessel rollback remain explicit architecture contracts.
+
 # Dark Sky 8.8.14.23 — Deck Signal
 
 Deployment controls now visibly behave like controls: obvious OPEN/OPENED affordances, pressed/focus states, and durable save confirmation, while Kiosk Watch and all fleet authority boundaries remain unchanged.
