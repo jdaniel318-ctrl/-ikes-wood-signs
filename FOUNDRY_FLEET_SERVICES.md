@@ -281,6 +281,6 @@ Status → Problem → Next Move. Engineering evidence is available, never force
 - Editing the design invalidates the lock and requires fresh customer approval.
 
 
-## Foundry Scout + Interface Forge (8.8.15.1)
+## Foundry Scout + Interface Forge (8.8.15.2)
 
 The Foundry may evaluate useful public-source software when a Fleet mission or customer friction suggests an existing capability could be reused. Scout records source identity and evidence. Clearance reviews legal/commercial use, attribution, security, dependency health, privacy/data flow, maintenance, and upstream truth. Interface Forge may then create a Fleet-standard usability layer for Sea Trial. No wrapper changes upstream authorship, and no clearance widens project authority.

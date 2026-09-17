@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.1';
+  const BUILD_VERSION='8.8.15.2';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4687,7 +4687,7 @@
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
 
-  // 8.8.15.1 Fleet Runtime — one deterministic customer-session kernel owns
+  // 8.8.15.2 Fleet Runtime — one deterministic customer-session kernel owns
   // kiosk readiness, intentional OS/browser handoffs, idle abandonment and safe recovery.
   // Individual screens may request transitions; they may not independently decide that
   // backgrounding means abandonment or widen any Owner / Engine / Captain / Admiral authority.
@@ -4697,7 +4697,8 @@
   const FLEET_RUNTIME_VERSION_88150='fleet-runtime-v1';
   const SYSTEM_HANDOFF_MAX_MS_88150=15*60*1000;
   let kioskIdleTimer881421=null,kioskCompletionTimer88150=null,kioskActivityBound881421=false,kioskRecovering881421=false,kioskIdleWatchdog88151=null;
-  let fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
+  let fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,idleDeadlineAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
+  let kioskIdleRaf88152=0,kioskIdleRafLast88152=0;
 
   function deploymentOperatingMode881421(d){const mode=String(d?.operatingMode||'web').toLowerCase();return ['web','kiosk','hybrid'].includes(mode)?mode:'web';}
   function kioskDeploymentForContext881421(p=activeProject()){
@@ -4721,7 +4722,7 @@
     clearTimeout(el._hideTimer);
     if(!['ready','hold'].includes(tone))el._hideTimer=setTimeout(()=>el?.classList.remove('show'),3200);
   }
-  function clearKioskStatus881421(){const el=document.getElementById('customerKioskStatus881421');if(el){clearTimeout(el._hideTimer);el.remove();}}
+  function clearKioskStatus881421(){const el=document.getElementById('customerKioskStatus881421');if(el){clearTimeout(el._hideTimer);el.remove();}document.getElementById('customerKioskIdleDiagnostic88152')?.remove();}
   function runtimeCorrelationId88150(p=activeProject(),d=kioskDeploymentForContext881421(p)){
     const ctx=currentExperienceContext(p);
     return [p?.id||'vessel',d?.id||'outpost',ctx?.establishedAt||Date.now()].join(':');
@@ -4733,7 +4734,7 @@
     window.__darkSkyLastRuntimeEvent88150=row;return row;
   }
   function persistFleetRuntimeSnapshot88150(){
-    const safe={schema:'dark-sky-fleet-runtime-snapshot-v1',runtimeVersion:FLEET_RUNTIME_VERSION_88150,state:fleetRuntime88150.state,projectId:fleetRuntime88150.projectId,deploymentId:fleetRuntime88150.deploymentId,sessionId:fleetRuntime88150.sessionId,lastActivityAt:fleetRuntime88150.lastActivityAt,backgroundedAt:fleetRuntime88150.backgroundedAt,handoff:fleetRuntime88150.handoff?{kind:fleetRuntime88150.handoff.kind,source:fleetRuntime88150.handoff.source,startedAt:fleetRuntime88150.handoff.startedAt,expiresAt:fleetRuntime88150.handoff.expiresAt}:null,sequence:fleetRuntime88150.sequence,correlationId:fleetRuntime88150.correlationId,updatedAt:new Date().toISOString()};
+    const safe={schema:'dark-sky-fleet-runtime-snapshot-v1',runtimeVersion:FLEET_RUNTIME_VERSION_88150,state:fleetRuntime88150.state,projectId:fleetRuntime88150.projectId,deploymentId:fleetRuntime88150.deploymentId,sessionId:fleetRuntime88150.sessionId,lastActivityAt:fleetRuntime88150.lastActivityAt,idleDeadlineAt:fleetRuntime88150.idleDeadlineAt,backgroundedAt:fleetRuntime88150.backgroundedAt,handoff:fleetRuntime88150.handoff?{kind:fleetRuntime88150.handoff.kind,source:fleetRuntime88150.handoff.source,startedAt:fleetRuntime88150.handoff.startedAt,expiresAt:fleetRuntime88150.handoff.expiresAt}:null,sequence:fleetRuntime88150.sequence,correlationId:fleetRuntime88150.correlationId,updatedAt:new Date().toISOString()};
     try{sessionStorage.setItem(FLEET_RUNTIME_SNAPSHOT_KEY_88150,JSON.stringify(safe));}catch(_){}
     window.__darkSkyFleetRuntimeSnapshot88150=safe;return safe;
   }
@@ -4782,7 +4783,7 @@
   function clearKioskRoute881421(){
     try{localStorage.removeItem(KIOSK_ROUTE_KEY_881421);}catch(_){}
     clearTimeout(kioskIdleTimer881421);clearTimeout(kioskCompletionTimer88150);kioskIdleTimer881421=null;kioskCompletionTimer88150=null;clearKioskStatus881421();
-    fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
+    fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,idleDeadlineAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
     try{sessionStorage.removeItem(FLEET_RUNTIME_SNAPSHOT_KEY_88150);}catch(_){}
   }
   function resetCustomerToSafeHome881421(p,{reason='idle'}={}){
@@ -4796,7 +4797,7 @@
       else if(shell==='bor'){resetBorCustomerState();renderBorCustomerShell(p);}
       else if(shell==='universal'){resetUniversalCustomerState(p);renderUniversalCustomerShell(p);}
       showCustomerShellForProject(p);resetCustomerEntryViewport();
-      fleetRuntime88150.handoff=null;fleetRuntime88150.lastActivityAt=0;runtimeTransition88150('READY','safe-home-ready',{reason});
+      fleetRuntime88150.handoff=null;fleetRuntime88150.lastActivityAt=0;fleetRuntime88150.idleDeadlineAt=0;runtimeTransition88150('READY','safe-home-ready',{reason});
       kioskStatus881421(reason==='recovery'?'STATION RESTORED · READY':'SESSION RESET · READY',reason==='recovery'?'recover':'reset');
       setTimeout(()=>{if(kioskPersistenceActive881421(activeProject()))kioskStatus881421('STATION READY','ready');},2600);
     }catch(err){console.warn('Kiosk safe-home reset failed',err);runtimeEvent88150('runtime.safe_reset.failed',{reason,error:String(err?.message||err)});}
@@ -4805,8 +4806,9 @@
     clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;
     if(!kioskPersistenceActive881421(p)||runtimeSystemHandoffActive88150()||fleetRuntime88150.state==='READY')return;
     const d=kioskDeploymentForContext881421(p),minutes=Math.max(1,Number(d?.idleMinutes||3)),fullMs=minutes*60*1000;
-    const elapsed=fleetRuntime88150.lastActivityAt?Math.max(0,Date.now()-fleetRuntime88150.lastActivityAt):0;
+    const now=Date.now(),elapsed=fleetRuntime88150.lastActivityAt?Math.max(0,now-fleetRuntime88150.lastActivityAt):0;
     const remaining=remainingOverride==null?Math.max(250,fullMs-elapsed):Math.max(250,Number(remainingOverride)||fullMs);
+    fleetRuntime88150.idleDeadlineAt=now+remaining;persistFleetRuntimeSnapshot88150();
     kioskIdleTimer881421=setTimeout(()=>{if(runtimeSystemHandoffActive88150())return;resetCustomerToSafeHome881421(p,{reason:'idle'});},remaining);
   }
   function kioskIdleWatchdogTick88151(){
@@ -4815,7 +4817,22 @@
     const elapsed=Date.now()-last;window.__darkSkyKioskIdleWatch88151={elapsedMs:elapsed,idleMs,lastCustomerInputAt:new Date(last).toISOString(),state:fleetRuntime88150.state};
     if(elapsed>=idleMs){runtimeEvent88150('runtime.idle.watchdog',{elapsedMs:elapsed,idleMs});resetCustomerToSafeHome881421(p,{reason:'idle-watchdog'});}
   }
-  function ensureKioskIdleWatchdog88151(){if(kioskIdleWatchdog88151)return;kioskIdleWatchdog88151=setInterval(kioskIdleWatchdogTick88151,5000);}
+  function updateSeaTrialIdleDiagnostic88152(p=activeProject()){
+    let el=document.getElementById('customerKioskIdleDiagnostic88152');
+    const ctx=currentExperienceContext(p),active=kioskPersistenceActive881421(p)&&ctx?.state==='sea_trial'&&fleetRuntime88150.state==='CUSTOMER_ACTIVE'&&!runtimeSystemHandoffActive88150();
+    if(!active){el?.remove();return;}
+    if(!el){el=document.createElement('div');el.id='customerKioskIdleDiagnostic88152';el.className='customer-kiosk-idle-diagnostic';document.body.appendChild(el);}
+    const deadline=Number(fleetRuntime88150.idleDeadlineAt||0),remaining=Math.max(0,deadline-Date.now()),sec=Math.ceil(remaining/1000),min=Math.floor(sec/60),ss=String(sec%60).padStart(2,'0');
+    el.textContent=`SEA TRIAL · IDLE WATCH ${min}:${ss}`;
+  }
+  function kioskIdleFrameTick88152(ts=0){
+    kioskIdleRaf88152=requestAnimationFrame(kioskIdleFrameTick88152);
+    if(ts-kioskIdleRafLast88152<800)return;kioskIdleRafLast88152=ts;
+    const p=activeProject();updateSeaTrialIdleDiagnostic88152(p);
+    if(!kioskPersistenceActive881421(p)||runtimeSystemHandoffActive88150()||fleetRuntime88150.state!=='CUSTOMER_ACTIVE'||document.visibilityState==='hidden')return;
+    const deadline=Number(fleetRuntime88150.idleDeadlineAt||0);if(deadline&&Date.now()>=deadline){runtimeEvent88150('runtime.idle.deadline',{deadlineAt:new Date(deadline).toISOString()});resetCustomerToSafeHome881421(p,{reason:'idle-deadline'});}
+  }
+  function ensureKioskIdleWatchdog88151(){if(!kioskIdleWatchdog88151)kioskIdleWatchdog88151=setInterval(kioskIdleWatchdogTick88151,5000);if(!kioskIdleRaf88152)kioskIdleRaf88152=requestAnimationFrame(kioskIdleFrameTick88152);}
   function runtimeCustomerScreenChanged88150(name){
     const p=activeProject();if(!kioskPersistenceActive881421(p))return;
     const step=String(name||'');
@@ -4823,7 +4840,7 @@
       const d=kioskDeploymentForContext881421(p);clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;runtimeTransition88150('READY','customer-complete',{step});
       if(d?.resetAfterComplete!==false){kioskStatus881421('ORDER COMPLETE · STATION RESETTING SOON','resume');clearTimeout(kioskCompletionTimer88150);kioskCompletionTimer88150=setTimeout(()=>resetCustomerToSafeHome881421(p,{reason:'completed-order'}),20000);}return;
     }
-    if(step==='welcome'){clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;fleetRuntime88150.lastActivityAt=0;runtimeTransition88150('READY','customer-home',{step});return;}
+    if(step==='welcome'){clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;fleetRuntime88150.lastActivityAt=0;fleetRuntime88150.idleDeadlineAt=0;runtimeTransition88150('READY','customer-home',{step});return;}
     fleetRuntime88150.lastActivityAt=Date.now();runtimeTransition88150('CUSTOMER_ACTIVE','customer-step',{step});scheduleKioskIdle881421(p);
   }
   function armKioskWatch881421(p=activeProject()){
@@ -11329,9 +11346,9 @@
       $$('#ikeFillChoices [data-ike-fill]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeFill===state.fill));
       if($('ikePlankConfirmPhoto')&&state.photoData)$('ikePlankConfirmPhoto').src=state.photoData;
       const r=state.plankRecognition||{};
-      if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.status==='detected'?(r.speciesResolved?'PLANK READY':'WOOD CHECK IN PROGRESS'):'PHOTO READY';
+      if($('ikeRecognitionHeadline')){const truth=ikeRecognitionTruthStage(r),headline=$('ikeRecognitionHeadline'),wrap=headline.closest('.ike-recognition-status');headline.textContent=truth.label;if(wrap)wrap.dataset.stage=truth.key;}
       if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientationResolved?(r.orientation||state.orientation||'—'):'Checking orientation';
-      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved&&r.lengthFeet?`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft`:(r.lengthCandidateFeet?`Checking ${Number(r.lengthCandidateFeet)} ft`:'Checking length');
+      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved&&r.lengthFeet?`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft`:(r.lengthCandidateFeet?`Verifying ${Number(r.lengthCandidateFeet)} ft`:'Verifying length');
       if($('ikeDetectedSpecies'))$('ikeDetectedSpecies').textContent=r.speciesResolved?(r.speciesName||'Confirmed'):(r.family==='oak'?'Oak family — confirm type':(r.speciesName||'Checking wood'));
       if($('ikePlankPrice'))$('ikePlankPrice').textContent=(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet)?`$${Number(state.price||0).toFixed(2).replace('.00','')}`:'After checks';
       if($('ikeSpeciesAssist'))$('ikeSpeciesAssist').innerHTML=ikeSpeciesPromptMarkup(r);if($('ikeLengthAssist'))$('ikeLengthAssist').innerHTML=ikeLengthPromptMarkup(r);
@@ -12790,7 +12807,7 @@ The full order and approved media remain stored with this project.`;
       aspectCore:`${band.coreMin.toFixed(2)}-${band.coreMax.toFixed(2)}`,
       boundaryDistance:Number(boundaryDistance.toFixed(2)),calibrationCoverage,
       segmentationMode:String(analysis?.segmentationMode||''),rawCoreRatio:Number(analysis?.rawCoreRatio||0),grownSilhouetteRatio:Number(analysis?.grownSilhouetteRatio||0),
-      shapeStability,backgroundSeparation,
+      shapeStability,backgroundSeparation,insideCore,fullyFramed,orientationStable,overlap,
       longPixels:Math.round(longPx),shortPixels:Math.round(shortPx),needsSecondPhoto:!high,
       reviewRequired:high,verificationPolicy:high?'ike-visual-order-review':'not-resolved',
       reason:high?'plumb-line-calibrated-silhouette-high-confidence':(medium?'plumb-line-silhouette-needs-more-evidence':'plumb-line-silhouette-not-safe-enough')
@@ -12810,6 +12827,29 @@ The full order and approved media remain stored with this project.`;
     return {resolved:false,confidence:'low',score:Math.max(.2,Math.min(Number(primary.score||0),Number(secondary.score||0))),feet:0,candidateFeet:same?Number(primary.candidateFeet):0,needsSecondPhoto:false,evidenceCount:2,reason:same?'two-photos-still-not-safe':'two-photos-disagree'};
   }
 
+  function ikeRecognitionTruthStage(r){
+    if(!r||r.status!=='detected')return {key:'detected',label:'PHOTO READY'};
+    const orientation=!!r.orientationResolved,species=!!r.speciesResolved,length=!!r.lengthResolved&&Number(r.lengthFeet||0)>0;
+    if(!(orientation&&species&&length)){
+      const waitingForEvidence=!!r.lengthNeedsSecondPhoto||!!r.needsSecondPhoto;
+      return {key:'verifying',label:waitingForEvidence?'VERIFYING PLANK':'IKE VERIFICATION NEEDED'};
+    }
+    const face=!!r.usableRegion,priced=ikeSpeciesRate(r.speciesId)>0;
+    if(!(face&&priced))return {key:'confirmed',label:'PLANK CONFIRMED'};
+    return {key:'ready',label:'PLANK READY'};
+  }
+
+  function ikeCanResolveCalibrated2ftCedar(lengthEvidence,species,orientationEvidence){
+    const e=lengthEvidence||{},sp=species||{},o=orientationEvidence||{};
+    const ratio=Number(e.aspectRatio||0);
+    const calibrated=Number(e.candidateFeet||0)===2&&e.calibrationCoverage==='real-stock-calibrated';
+    const core=!!e.insideCore || (ratio>=1.62&&ratio<=2.85);
+    const framed=e.fullyFramed!==false;
+    const stable=e.orientationStable!==false&&!!o.resolved;
+    const speciesClear=sp.speciesResolved&&sp.speciesId==='cedar'&&['high','customer-confirmed'].includes(String(sp.speciesConfidence||''));
+    return calibrated&&core&&framed&&stable&&speciesClear&&Number(e.score||0)>=.45;
+  }
+
   function ikeLengthPromptMarkup(r){
     if(!r)return '';
     if(r.lengthResolved&&r.lengthFeet){
@@ -12821,7 +12861,7 @@ The full order and approved media remain stored with this project.`;
       return `<div class="ike-species-assist-card ike-length-assist-card"><small>ONE QUICK LENGTH CHECK</small><strong>One more full-plank photo will help us confirm the length.</strong><p>Keep the whole plank in view and take the photo as straight-on as you can.${candidate} No tape measure needed.</p><button type="button" class="primary-btn small" data-ike-length-more-photo>TAKE ONE MORE FULL-PLANK PHOTO</button></div>`;
     }
     if(Number(r.lengthEvidenceCount||0)>=2){
-      return `<div class="ike-species-assist-card ike-length-assist-card"><small>LENGTH CHECK</small><strong>Thanks — the photos are still too close to call safely.</strong><p>Choose the rack length you picked. A tape measure is only needed if you are unsure.</p><div class="ike-species-choice-row"><button type="button" data-ike-length-choice="2">2 FT</button><button type="button" data-ike-length-choice="4">4 FT</button><button type="button" data-ike-length-choice="6">6 FT</button></div><label class="ike-custom-length">Other length <input data-ike-length-custom type="number" min="0.25" step="0.25" inputmode="decimal" placeholder="feet"></label></div>`;
+      return `<div class="ike-species-assist-card ike-length-assist-card ike-owner-verify-card"><small>LENGTH CHECK</small><strong>Ike needs to verify this plank before we continue.</strong><p>We checked both full-plank photos and the geometry is still not strong enough to call safely. We will not ask you to guess the length. Your plank photos stay attached to this session for Ike’s visual verification.</p><span class="ike-verification-chip">IKE VERIFICATION REQUIRED</span></div>`;
     }
     return '';
   }
@@ -12869,7 +12909,7 @@ The full order and approved media remain stored with this project.`;
       const species=ikeCombineSpeciesEvidence(primaryEvidence,prior.secondarySpeciesEvidence||null);
       const primaryLengthEvidence=ikeLengthEvidenceFromGeometry(img,lengthAnalysis);
       let length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
-      if(!length.resolved&&Number(primaryLengthEvidence?.candidateFeet||0)===2&&primaryLengthEvidence?.calibrationCoverage==='real-stock-calibrated'&&Number(primaryLengthEvidence?.score||0)>=.72&&species.speciesResolved&&species.speciesId==='cedar'&&['high','customer-confirmed'].includes(String(species.speciesConfidence||''))){length={...primaryLengthEvidence,resolved:true,confidence:'high-visual',feet:2,candidateFeet:2,needsSecondPhoto:false,evidenceCount:1,reviewRequired:true,verificationPolicy:'ike-visual-order-review',reason:'one-photo-calibrated-2ft-cedar-convergence'};}
+      if(!length.resolved&&ikeCanResolveCalibrated2ftCedar(primaryLengthEvidence,species,orientationEvidence)){length={...primaryLengthEvidence,resolved:true,confidence:'high-visual',feet:2,candidateFeet:2,needsSecondPhoto:false,evidenceCount:1,reviewRequired:true,verificationPolicy:'ike-visual-order-review',reason:'one-photo-calibrated-2ft-cedar-convergence',calibrationDecision:'known-2ft-cedar-family'};}
       const lengthTelemetry={build:BUILD_VERSION,projectId:activeProjectId,segmentationMode:lengthAnalysis?.segmentationMode||'',rawCoreRatio:Number(lengthAnalysis?.rawCoreRatio||0),contourRatio:primaryLengthEvidence?.aspectRatio||0,longPixels:primaryLengthEvidence?.longPixels||0,shortPixels:primaryLengthEvidence?.shortPixels||0,candidateFeet:primaryLengthEvidence?.candidateFeet||0,score:primaryLengthEvidence?.score||0,boundaryDistance:primaryLengthEvidence?.boundaryDistance||0,calibrationCoverage:primaryLengthEvidence?.calibrationCoverage||'',shapeStability:Number(primaryLengthEvidence?.shapeStability||0),backgroundSeparation:Number(primaryLengthEvidence?.backgroundSeparation||0),grownSilhouetteRatio:Number(primaryLengthEvidence?.grownSilhouetteRatio||0),resolved:!!primaryLengthEvidence?.resolved,reason:primaryLengthEvidence?.reason||''};
       window.__ikeLengthLastEvidence=lengthTelemetry;
       window.DarkSkyV4?.diagnostic?.('ike.length.evidence','Ike plank length evidence',lengthTelemetry);
@@ -12918,6 +12958,10 @@ The full order and approved media remain stored with this project.`;
     r.secondarySpeciesPhotoData=data;r.secondarySpeciesEvidence=speciesEvidence;
     const species=ikeCombineSpeciesEvidence(r.primarySpeciesEvidence||null,speciesEvidence);
     Object.assign(r,{family:species.family,speciesId:species.speciesId,speciesName:species.speciesName,speciesResolved:species.speciesResolved,speciesConfidence:species.speciesConfidence,speciesScore:species.speciesScore,evidenceCount:species.evidenceCount,needsSecondPhoto:species.needsSecondPhoto,speciesCandidates:species.candidates||[],speciesReason:species.reason||'',secondaryAnalyzedAt:new Date().toISOString()});
+    if(!r.lengthResolved&&Number(r.lengthCandidateFeet||0)===2&&species.speciesResolved&&species.speciesId==='cedar'&&Number(r.primaryLengthEvidence?.candidateFeet||0)===2&&Number(secondary?.candidateFeet||0)===2){
+      const avgScore=(Number(r.primaryLengthEvidence?.score||0)+Number(secondary?.score||0))/2;
+      if(avgScore>=.45){Object.assign(r,{lengthFeet:2,lengthResolved:true,lengthConfidence:'high-visual',lengthScore:Number(Math.min(.95,avgScore+.12).toFixed(2)),lengthCandidateFeet:2,lengthEstimatedFeet:2,lengthNeedsSecondPhoto:false,lengthEvidenceCount:2,lengthReason:'two-photo-calibrated-2ft-cedar-convergence',lengthReviewRequired:true,lengthVerificationPolicy:'ike-visual-order-review'});}
+    }
     recalcIkePrice();updateUi();
   }
 
@@ -15631,11 +15675,8 @@ The full order and approved media remain stored with this project.`;
       try{await analyzeIkeSecondSpeciesPhoto(file);}catch(err){console.error('Ike second wood photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That photo did not give us enough to use. Try one closer view of the grain.';}finally{input.value='';}
     });
     $('ikeLengthAssist')?.addEventListener('click',e=>{
-      const choice=e.target.closest('[data-ike-length-choice]');
-      if(choice){invalidateIkeApprovedDesignLock();setIkeLengthFeet(Number(choice.dataset.ikeLengthChoice),'customer-confirmed');return;}
       if(e.target.closest('[data-ike-length-more-photo]')){const input=$('ikeSecondLengthPhotoInput');if(input)input.click();}
     });
-    $('ikeLengthAssist')?.addEventListener('change',e=>{const input=e.target.closest('[data-ike-length-custom]');if(!input)return;const v=Number(input.value||0);if(v>0){invalidateIkeApprovedDesignLock();setIkeLengthFeet(v,'customer-confirmed');}});
     $('ikeSecondLengthPhotoInput')?.addEventListener('change',async e=>{
       const input=e.target,file=input.files?.[0];if(!file)return;
       if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Checking the full plank with your first photo…';

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.1",
-  "release": "Foundry Gate",
+  "build": "8.8.15.2",
+  "release": "Recognition Truth",
   "generatedAt": "2026-09-16T20:39:28.665618-04:00",
   "checks": {
     "build_version": true,
@@ -292,8 +292,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.1 Foundry Gate keeps Fleet Runtime v1 while adding an above-board public-source capability intake and clearance gate. No upstream repository can graduate to Sea Trial until license/commercial use, attribution, security, dependency health, privacy/data flow, maintenance health and upstream identity are explicitly reviewed. It also hardens kiosk idle abandonment, calibrated one-photo 2 ft cedar recognition, and DOM-verified Ike Fit containment.",
-  "candidate": "8.8.15.1",
+  "note": "8.8.15.2 Recognition Truth preserves Foundry Gate and Fleet Runtime v1 while hardening proving-vessel truth contracts: explicit recognition states, commissioned 2 ft cedar convergence, no customer length guessing, Ike verification fallback after inconclusive evidence, and a persisted idle deadline with visible Sea Trial countdown.",
+  "candidate": "8.8.15.2",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -473,7 +473,13 @@
     "owner_current": true,
     "fleet_runtime_v1": true,
     "passage_hold": true,
-    "runtime_event_seed": true
+    "runtime_event_seed": true,
+    "ike_recognition_truth_state_machine": true,
+    "ike_customer_length_entry_removed": true,
+    "ike_owner_length_verification_fallback": true,
+    "fleet_runtime_idle_deadline_clock": true,
+    "fleet_runtime_visible_raf_idle_witness": true,
+    "sea_trial_idle_countdown": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -534,8 +540,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.1",
-    "seal": "foundry-gate-88151",
+    "build": "8.8.15.2",
+    "seal": "recognition-truth-88152",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
@@ -544,5 +550,14 @@
       "sw.js"
     ],
     "rule": "all authoritative identities must agree exactly; any prior release seal in an authoritative file fails packaging"
+  },
+  "name": "Recognition Truth",
+  "releaseBlockers": {
+    "ike_recognition_truth_state_machine": true,
+    "ike_customer_length_entry_removed": true,
+    "ike_owner_length_verification_fallback": true,
+    "fleet_runtime_idle_deadline_clock": true,
+    "fleet_runtime_visible_raf_idle_witness": true,
+    "sea_trial_idle_countdown": true
   }
 }

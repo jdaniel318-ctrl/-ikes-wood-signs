@@ -1,13 +1,10 @@
-# Dark Sky 8.8.15.1 — Foundry Gate
+# Dark Sky 8.8.15.2 — Recognition Truth
 
-- Added Admiral **Foundry Scout** candidate intake inside The Foundry.
-- Added explicit clearance gates for commercial-use rights, attribution, upstream identity, security, dependency health, privacy/data flow and maintenance health.
-- Added **Interface Forge** and **Utility Dock** product-route foundation while prohibiting auto-scrape / auto-publish behavior.
-- Added fleet doctrine: upstream truth, clearance-before-commercialization, and reuse-before-rebuild.
-- Added Foundry Scout / Interface Forge / Utility Dock entries to the capability registry.
-- Added release-blocking Foundry Gate Golden Voyage and regression family.
-- Added redundant Fleet Runtime idle watchdog for visible active kiosk sessions.
-- Added DOM-verified Ike Fit containment shrink pass.
-- Added calibrated one-photo 2 ft cedar convergence when strong geometry and species evidence agree.
-- Preserved exact-vessel authority, six-vessel Fleet Core, Bootstrap Build separation, Owner Spine, Watchtower read-only doctrine, Settings Keel, Kiosk Watch and Fleet Runtime system-handoff behavior.
-- Canonical identity: `8.8.15.1 / foundry-gate-88151`.
+- Added explicit Ike recognition truth stages so `PLANK READY` cannot appear before orientation, species, length and active pricing are truly resolved.
+- Strengthened commissioned 2 ft cedar convergence around the real calibrated stock family without pretending 4 ft / 6 ft are calibrated.
+- Removed customer 2 / 4 / 6 ft buttons and custom length entry from unresolved recognition fallback.
+- After two inconclusive full-plank views, route to **Ike verification required** rather than customer guessing.
+- Added persisted Fleet Runtime idle deadline plus a visible Sea Trial countdown and requestAnimationFrame deadline witness.
+- Preserved system-handoff passage hold for camera/photo/file pickers.
+- Preserved Foundry Scout + Clearance, Interface Forge, Utility Dock foundation, exact-vessel authority, Owner Spine and Admiral read-only Watchtower.
+- Canonical identity: `8.8.15.2 / recognition-truth-88152`.

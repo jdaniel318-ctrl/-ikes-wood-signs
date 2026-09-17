@@ -1,6 +1,3 @@
-# Dark Sky 8.8.15.1 — Foundry Gate
+# Dark Sky 8.8.15.2 — Recognition Truth
 
-Admiral Foundry Scout + Clearance Gate foundation on top of Fleet Runtime v1. Public-source candidates remain drafts until explicit above-board clearance; clearance permits Sea Trial only. Proving-vessel hardening adds redundant kiosk idle detection, one-photo calibrated 2 ft cedar convergence, and DOM-verified Ike Fit containment.
-
-File ceiling: 85
-Release files: 85
+Fleet Runtime proving pass focused on physical-product truth. Recognition state language now follows evidence; commissioned 2 ft cedar calibration can converge without customer length entry; unresolved evidence routes to Ike verification after one guided second photo. Kiosk idle enforcement now includes a persisted deadline and visible Sea Trial countdown. Foundry Gate, Owner Spine, exact-vessel authority and existing Fleet Core durability remain unchanged.

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.1",
-  "release": "Foundry Gate",
+  "build": "8.8.15.2",
+  "release": "Recognition Truth",
   "status": "active",
   "principles": [
     {
@@ -122,7 +122,7 @@
       "id": "clearance-before-commercialization",
       "rule": "A public-source capability remains a candidate until commercial-use rights, attribution obligations, security, dependency health, privacy/data flow and maintenance health are explicitly reviewed. Clearance permits Sea Trial only; it does not auto-publish.",
       "scope": "foundry",
-      "origin": "Foundry Gate 8.8.15.1"
+      "origin": "Foundry Gate 8.8.15.2"
     },
     {
       "id": "reuse-before-rebuild",
@@ -155,7 +155,7 @@
       "id": "fleet-runtime-foundry-gate",
       "version": 4,
       "status": "active",
-      "effectiveBuild": "8.8.15.1",
+      "effectiveBuild": "8.8.15.2",
       "heading": "Deterministic runtime plus above-board capability discovery, clearance and proving-vessel graduation"
     },
     "historyPolicy": "append-only; superseded course records remain evidence and rollback references",

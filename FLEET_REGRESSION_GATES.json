@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.1",
-  "release": "Foundry Gate",
+  "build": "8.8.15.2",
+  "release": "Recognition Truth",
   "excluded_sources": [
     "The situation"
   ],
@@ -239,5 +239,16 @@
       "no_authority_broadening"
     ]
   },
-  "promotion": "manual-captain-known-good"
+  "promotion": "manual-captain-known-good",
+  "families": {
+    "recognition_truth": [
+      "plank_ready_requires_orientation_species_length_and_pricing",
+      "known_2ft_cedar_calibration_convergence",
+      "unresolved_length_requests_one_guided_photo",
+      "two_inconclusive_views_route_to_ike_verification",
+      "customer_never_selects_or_types_plank_length",
+      "sea_trial_idle_deadline_visible",
+      "visible_customer_active_deadline_forces_safe_reset"
+    ]
+  }
 }

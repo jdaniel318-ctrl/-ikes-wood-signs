@@ -1,4 +1,4 @@
-# 8.8.15.1 Fleet Runtime Contract
+# 8.8.15.2 Fleet Runtime Contract
 
 - **Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**
 - A route into a surface never silently widens authority. Engine support and Owner authority remain distinct even when they share navigation.
@@ -613,10 +613,22 @@ Every independent vessel must be capable of day-to-day owner operation without e
 Any surface that expands, saves, advances, or changes state must look and respond like an interactive control on iPad/iPhone/desktop. Expandable controls require a visible open/closed affordance, pressed/focus feedback, and a durable post-action state. Static-card styling is not sufficient for interactive deployment controls.
 
 
-## Foundry Gate — Public-source capability law (8.8.15.1)
+## Foundry Gate — Public-source capability law (8.8.15.2)
 
 - Start with a real mission or user friction. A repository is evidence of possible capability, not the mission itself.
 - Foundry Scout may nominate public-source software but may not auto-publish, auto-sell, auto-entitle, or claim upstream authorship.
 - Required clearance: commercial-use rights, attribution/notices, upstream identity, security, dependency health, privacy/data flow, and maintenance health.
 - Clearance means Sea Trial only. Admiral promotion is still required before a capability becomes a Fleet standard, shared service, Utility Dock module, standalone product, or vessel feature.
 - Fleet commercial value must be truthful: interface, workflow, hosting, integrations, support, safe defaults and original additions are ours; upstream code remains subject to its own ownership and license.
+
+
+## Recognition Truth Contract — 8.8.15.2
+
+1. Physical-product recognition must expose an evidence state, not a confidence theater label. `READY` is a consequence of cleared gates, never a cosmetic success state.
+2. Ike plank recognition gates are independent: orientation, species, length, usable face, and active owner pricing. `PLANK READY` requires all customer-blocking gates to be resolved.
+3. Customers do not select or type plank length as a normal fallback. Length is derived from commissioned evidence; one guided better full-plank photo may be requested when needed.
+4. If two full-plank views remain inconclusive, stop. Route to exact-vessel owner verification. Never convert uncertainty into customer input or an invented price.
+5. The known 2 ft cedar stock family is commissioned calibration. 4 ft and 6 ft remain provisional until real physical examples are deliberately commissioned.
+6. System handoff is not abandonment. Camera/photo/file picker passages pause the idle deadline and resume the same customer session on timely return.
+7. True kiosk abandonment is deadline-based on real customer input. Rendering, analysis, network work, telemetry, focus changes and internal timers do not refresh customer activity.
+8. Sea Trial may show bounded diagnostic timing. Live customer surfaces remain clean.

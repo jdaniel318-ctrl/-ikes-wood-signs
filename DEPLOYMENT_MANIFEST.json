@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.15.1",
-  "version": "8.8.15.1",
-  "release_name": "Foundry Gate",
-  "releaseName": "Foundry Gate",
-  "release_seal": "foundry-gate-88151",
+  "build": "8.8.15.2",
+  "version": "8.8.15.2",
+  "release_name": "Recognition Truth",
+  "releaseName": "Recognition Truth",
+  "release_seal": "recognition-truth-88152",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -88,7 +88,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "foundry-scout-clearance-and-proving-vessel-hardening",
-  "release_note": "Foundry Gate adds a manual, above-board Scout + Clearance intake for public-source capability candidates. Nothing auto-publishes or becomes a Fleet capability without explicit license/commercial, attribution, security, dependency, privacy, maintenance and upstream-identity review. Fleet Runtime v1 remains active with a redundant true-idle watchdog; Ike proving-vessel rules also tighten one-photo calibrated 2 ft cedar recognition and production-truth text containment.",
+  "release_note": "Recognition Truth preserves the above-board Foundry Gate and Fleet Runtime while making plank recognition stateful and truthful. Customers are never asked to guess rack length; the commissioned 2 ft cedar family may converge from calibrated evidence, otherwise Ike verification is required. Kiosk idle reset now carries a persisted deadline and visible Sea Trial witness.",
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",

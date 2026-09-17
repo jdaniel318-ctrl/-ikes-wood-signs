@@ -1,8 +1,8 @@
 {
-  "release": "Foundry Gate",
-  "name": "Foundry Gate",
-  "build": "8.8.15.1",
-  "seal": "foundry-gate-88151",
+  "release": "Recognition Truth",
+  "name": "Recognition Truth",
+  "build": "8.8.15.2",
+  "seal": "recognition-truth-88152",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

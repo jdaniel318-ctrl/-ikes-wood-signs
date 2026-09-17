@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.1",
+  "build": "8.8.15.2",
   "policy": "real-ui-path-release-assurance-with-fleet-runtime-and-admiral-course-authority",
   "voyages": [
     {
@@ -232,6 +232,30 @@
         "security-and-data-flow-reviewed",
         "clearance-does-not-publish",
         "project-authority-unchanged"
+      ]
+    },
+    {
+      "id": "ike-recognition-truth",
+      "label": "Ike Recognition Truth Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Ike proving-vessel kiosk",
+        "Known 2 ft cedar full-plank photo",
+        "Recognition enters VERIFYING only while a required gate is unresolved",
+        "Commissioned 2 ft cedar evidence resolves without customer length entry when calibration clears",
+        "If unresolved, one guided second full-plank photo is allowed",
+        "After two inconclusive views, customer is not asked to guess length",
+        "Ike verification is required",
+        "PLANK READY appears only after orientation, species, length and active pricing gates clear"
+      ],
+      "proof": [
+        "recognition-state-language-matches-truth",
+        "known-2ft-cedar-calibration-can-converge",
+        "no-customer-length-buttons",
+        "no-customer-custom-length-field",
+        "owner-verification-fallback",
+        "plank-ready-only-after-all-required-gates"
       ]
     }
   ],

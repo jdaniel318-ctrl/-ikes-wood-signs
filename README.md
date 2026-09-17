@@ -1,16 +1,22 @@
-# Dark Sky 8.8.15.1 — Foundry Gate
+# Dark Sky 8.8.15.2 — Recognition Truth
 
-Foundry Gate is the first commercial-capability proving pass built on Fleet Runtime. It turns the Captain's public-source software observation into an above-board Admiral Foundry workflow: **Mission Demand → Scout → Clearance → Interface Forge → Sea Trial → Proven → Utility Dock / Standalone / Vessel Capability**.
+Recognition Truth is the second Fleet Runtime proving pass. It converts the failures exposed by Ike's into shared contracts: recognition language must match actual evidence, customers never guess physical inventory length, commissioned calibration can resolve known stock when its evidence clears, and unresolved physical truth routes to the owner rather than being invented.
 
-The gate is deliberately conservative. This release does **not** scrape GitHub, clone repositories, publish applications, sell upstream code, grant vessel entitlements, or claim upstream authorship. Candidate records are Admiral working drafts stored locally until a later Activity Spine / Fleet Core implementation is explicitly promoted.
+## Recognition Contract
+- Recognition progresses through evidence states: PHOTO READY → VERIFYING PLANK / IKE VERIFICATION NEEDED → PLANK CONFIRMED → PLANK READY.
+- `PLANK READY` is reserved for orientation + species + length + active owner pricing gates that actually cleared.
+- The commissioned 2 ft cedar stock family may resolve from one strong full-plank image when the calibrated ratio core, framing, orientation, and high-confidence cedar evidence converge.
+- One guided second full-plank image is allowed when evidence remains incomplete.
+- After two inconclusive views, the customer is **not** asked to choose or type a length. The session routes to Ike verification.
+- 4 ft and 6 ft remain provisional until physical examples commission those calibration families.
 
-## Clearance contract
-A candidate cannot show `SEA TRIAL CLEARED` until the Admiral working record explicitly covers commercial-use rights, attribution/notice obligations, upstream identity, security, dependency health, privacy/data flow, maintenance health, a public source URL, a mission, and a license identifier. Clearance means **Sea Trial only**. It does not mean commercial launch.
+## Fleet Runtime idle truth
+The active kiosk now carries a persisted idle deadline in addition to the existing timeout and interval watchdogs. A visible Sea Trial gets a lightweight `IDLE WATCH` countdown. Customer input moves the deadline; rendering, image analysis, network traffic, heartbeat work and system-handoff bookkeeping do not. Camera/file handoff still pauses abandonment and resumes with a fresh window on return.
 
-## Interface Forge contract
-Fleet-added value may include interface, workflow, hosting, integrations, support, safe defaults and original additions. Upstream identity and license obligations remain visible. A wrapper never turns somebody else's code into Fleet-authored code.
+## Foundry Gate preserved
+The 8.8.15.1 above-board Foundry Scout + Clearance workflow remains intact: Mission Demand → Scout → Clearance → Interface Forge → Sea Trial → Proven → Utility Dock / Standalone / Vessel Capability. No repository auto-scrapes, auto-publishes, auto-sells, or gains Fleet entitlement merely because it is public.
 
-## Proving-vessel hardening carried with this release
-Fleet Runtime v1 remains active. This pass adds a redundant visible-state idle watchdog so a true kiosk abandonment cannot depend on one suspended iOS timer. Ike Fit now performs a DOM containment check after layout and shrinks until visible lettering stays inside the assigned region. The calibrated 2 ft cedar path may resolve from one strong full-plank image when calibrated geometry and high-confidence cedar evidence converge; otherwise the second-photo/manual confirmation path remains intact.
+## Production truth preserved
+Ike Fit retains post-render DOM containment checks so visible lettering must stay inside the assigned usable region before approval. Owner Spine, durable business records/settings, Watchtower read-only doctrine, Route Safe, Kiosk Watch, capability boundaries and the 85-file handoff ceiling remain protected.
 
 Release files: 85. The 85-file ceiling remains a handoff budget, not an architecture rule.
