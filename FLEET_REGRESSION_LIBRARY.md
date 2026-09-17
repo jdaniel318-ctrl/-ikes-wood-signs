@@ -193,3 +193,9 @@ A release is HOLD for Ike if: (1) a glyph approaches/crosses the detected usable
 - Style A remains anchored to RAMJET; Style B remains anchored to SMOKE HOLE!.
 - Customer-facing proof must make the approved shop anchors explicit; no Style C or free-form fallback may be silently introduced.
 - Do not alter protected orientation/species detectors while length remains a separate WATCH item.
+
+
+### Fleet Spine — shared hull before vessel retest
+- Do not make the Captain repeat a failing proving-vessel test without a materially different system hypothesis or fix.
+- Strengthen shared Fleet Runtime / Control Plane / Authority / Activity / Release systems first when the defect is generic.
+- Ike’s remains active and returns as a proving vessel after the shared hull changes enough to make the next test meaningful.

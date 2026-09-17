@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.2",
-  "release": "Recognition Truth",
-  "seal": "recognition-truth-88152",
+  "build": "8.8.15.3",
+  "release": "Fleet Spine",
+  "seal": "fleet-spine-88153",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Recognition Truth",
-  "name": "Recognition Truth",
-  "releaseName": "Recognition Truth"
+  "release_name": "Fleet Spine",
+  "name": "Fleet Spine",
+  "releaseName": "Fleet Spine"
 }

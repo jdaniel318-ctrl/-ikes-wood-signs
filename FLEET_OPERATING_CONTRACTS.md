@@ -1,4 +1,4 @@
-# 8.8.15.2 Fleet Runtime Contract
+# 8.8.15.3 Fleet Spine Contract
 
 - **Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**
 - A route into a surface never silently widens authority. Engine support and Owner authority remain distinct even when they share navigation.
@@ -632,3 +632,15 @@ Any surface that expands, saves, advances, or changes state must look and respon
 6. System handoff is not abandonment. Camera/photo/file picker passages pause the idle deadline and resume the same customer session on timely return.
 7. True kiosk abandonment is deadline-based on real customer input. Rendering, analysis, network work, telemetry, focus changes and internal timers do not refresh customer activity.
 8. Sea Trial may show bounded diagnostic timing. Live customer surfaces remain clean.
+
+
+## Fleet Spine Contract — 8.8.15.3
+- Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.
+- Control Plane owns shared coordination truth: vessel identity, authority, release assignment, station identity, capability/entitlement posture and health. Private business records remain Vessel Data Plane.
+- Shared operational facts are recorded once in an append-only Activity Spine. Projections such as Watchtower, recovery summaries and future Captain/Admiral logs read that truth rather than invent parallel histories.
+- Every retriable fleet mutation must have an idempotency identity. Correlation and causation identities connect multi-step missions without duplicating the underlying fact.
+- Release assignment is per vessel. A fleet release ring never implies simultaneous whole-fleet deployment.
+- Admiral release course changes require authenticated identity, exact target, preview fingerprint, explicit intent, durable activity record and retained previous release posture.
+- Station identity survives customer-session resets. Customer cargo never becomes station identity or Control Plane payload.
+- Foundry candidate clearance is durable governance state, but Sea Trial clearance never equals publication, commercialization, entitlement or upstream authorship.
+- A vessel-specific fix may graduate only after its generic fleet behavior can be named, certified and regression-gated.

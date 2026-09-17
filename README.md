@@ -1,22 +1,22 @@
-# Dark Sky 8.8.15.2 — Recognition Truth
+# Dark Sky 8.8.15.3 — Fleet Spine
 
-Recognition Truth is the second Fleet Runtime proving pass. It converts the failures exposed by Ike's into shared contracts: recognition language must match actual evidence, customers never guess physical inventory length, commissioned calibration can resolve known stock when its evidence clears, and unresolved physical truth routes to the owner rather than being invented.
+Fleet Spine shifts the proving effort from one vessel to the shared fleet hull. Ike’s remains active, but repeated proving loops no longer dominate the roadmap. This release makes the Control Plane, Activity Spine, server-persisted Foundry Gate, and per-vessel release rings tangible Admiral infrastructure.
 
-## Recognition Contract
-- Recognition progresses through evidence states: PHOTO READY → VERIFYING PLANK / IKE VERIFICATION NEEDED → PLANK CONFIRMED → PLANK READY.
-- `PLANK READY` is reserved for orientation + species + length + active owner pricing gates that actually cleared.
-- The commissioned 2 ft cedar stock family may resolve from one strong full-plank image when the calibrated ratio core, framing, orientation, and high-confidence cedar evidence converge.
-- One guided second full-plank image is allowed when evidence remains incomplete.
-- After two inconclusive views, the customer is **not** asked to choose or type a length. The session routes to Ike verification.
-- 4 ft and 6 ft remain provisional until physical examples commission those calibration families.
+## What is live in this pass
+- **Fleet Spine Control Plane** — authenticated Admiral read of vessel identity, membership counts, station registry posture, Foundry candidate count, release assignments and bounded recent Activity Spine events.
+- **Release rings** — each vessel may independently sit in `UNASSIGNED`, `CANARY`, `PROVING`, `LIMITED`, or `FLEET`; rollout state is also per vessel. No global all-at-once release is required.
+- **Preview-before-issue course orders** — a release assignment is read, previewed, fingerprinted, reasoned and then issued only if the preview still matches. Previous release identity is retained for rollback posture.
+- **Activity Spine** — append-only events carry actor authority, vessel when applicable, event type/version, correlation/causation identity, source and idempotency identity. Business/customer payloads do not belong in Control Plane events.
+- **Foundry candidates are durable** — Scout + Clearance now writes fleet-governed candidate records to Fleet Core, visible to active Admiral authority rather than trapped in one browser or one Admiral’s local draft store. Clearance still means Sea Trial only. It does not publish, sell, entitle or broaden authority.
+- **Station identity foundation** — Fleet Core now has first-class station records for future WEB / KIOSK / HYBRID outpost health and release assignment. Existing local outposts are not silently migrated in this pass.
+- **Unified authority resolver** — server-side identity can resolve global authority and exact-vessel membership through one contract. Existing working authority paths are preserved while the fleet migrates deliberately.
 
-## Fleet Runtime idle truth
-The active kiosk now carries a persisted idle deadline in addition to the existing timeout and interval watchdogs. A visible Sea Trial gets a lightweight `IDLE WATCH` countdown. Customer input moves the deadline; rendering, image analysis, network traffic, heartbeat work and system-handoff bookkeeping do not. Camera/file handoff still pauses abandonment and resumes with a fresh window on return.
+## Fleet doctrine
+**Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**
 
-## Foundry Gate preserved
-The 8.8.15.1 above-board Foundry Scout + Clearance workflow remains intact: Mission Demand → Scout → Clearance → Interface Forge → Sea Trial → Proven → Utility Dock / Standalone / Vessel Capability. No repository auto-scrapes, auto-publishes, auto-sells, or gains Fleet entitlement merely because it is public.
+Control Plane coordinates identity, authority, releases, deployments, capabilities and health. Private vessel business data remains vessel-scoped. A vessel-specific fix does not graduate to Fleet Core until the underlying lesson can be named generically and certified.
 
-## Production truth preserved
-Ike Fit retains post-render DOM containment checks so visible lettering must stay inside the assigned usable region before approval. Owner Spine, durable business records/settings, Watchtower read-only doctrine, Route Safe, Kiosk Watch, capability boundaries and the 85-file handoff ceiling remain protected.
+## What this does not pretend to finish
+This is the spine, not every organ. Existing outposts are not yet bulk-enrolled into `fleet_stations`; not every legacy audit source emits into Activity Spine yet; and release rings do not auto-deploy code. Those migrations remain deliberate proving work.
 
-Release files: 85. The 85-file ceiling remains a handoff budget, not an architecture rule.
+Recognition Truth, Fleet Runtime, Owner Spine, Watchtower read-only doctrine, Kiosk Watch and the 85-file handoff ceiling remain preserved.

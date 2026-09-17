@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-fleet-runtime-contract-v1",
-  "build": "8.8.15.2",
+  "build": "8.8.15.3",
   "release": "Fleet Runtime",
-  "release_seal": "recognition-truth-88152",
+  "release_seal": "fleet-spine-88153",
   "purpose": "One deterministic customer-session kernel owns kiosk readiness, intentional system handoffs, idle abandonment, safe reset, recovery and bounded runtime evidence across every vessel.",
   "states": [
     "READY",
@@ -23,8 +23,8 @@
     "pause_idle_during_handoff": true,
     "preserve_customer_place": true,
     "max_handoff_minutes": 15,
-    "customer_message": "STATION HOLDING YOUR PLACE\u2026",
-    "return_message": "WELCOME BACK \u00b7 PLACE HELD"
+    "customer_message": "STATION HOLDING YOUR PLACE…",
+    "return_message": "WELCOME BACK · PLACE HELD"
   },
   "kiosk_contract": {
     "ready_surface": "exact-vessel customer home",

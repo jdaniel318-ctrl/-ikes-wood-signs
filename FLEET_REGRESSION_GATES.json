@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.2",
-  "release": "Recognition Truth",
+  "build": "8.8.15.3",
+  "release": "Fleet Spine",
   "excluded_sources": [
     "The situation"
   ],
@@ -237,6 +237,18 @@
       "no_auto_publish",
       "clearance_only_allows_sea_trial",
       "no_authority_broadening"
+    ],
+    "fleet_spine": [
+      "single_server_authority_resolution_contract",
+      "activity_events_are_append_only_and_idempotent",
+      "control_plane_excludes_private_business_payloads",
+      "foundry_candidates_persist_in_fleet_core",
+      "foundry_clearance_never_auto_publishes",
+      "release_assignment_requires_preview_and_intent",
+      "release_ring_is_per_vessel_not_global",
+      "station_identity_is_first_class_control_plane_record",
+      "admiral_spine_read_is_authenticated_and_read_only_by_default",
+      "rollback_previous_release_is_retained"
     ]
   },
   "promotion": "manual-captain-known-good",
