@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.15.0';
-const RELEASE_SEAL='fleet-runtime-88150';
+const RELEASE_BUILD='8.8.15.1';
+const RELEASE_SEAL='foundry-gate-88151';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

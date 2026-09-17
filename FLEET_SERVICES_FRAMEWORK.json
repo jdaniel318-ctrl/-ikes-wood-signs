@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-services-framework-v2",
-  "build": "8.8.10",
-  "release": "Fleet Structure",
+  "build": "8.8.15.1",
+  "release": "Foundry Gate",
   "principles": [
     "Admiral can set every Fleet feature Off, Free or Paid for every vessel.",
     "Owners may request eligible paid services but cannot self-grant or self-activate them.",
@@ -9,7 +9,10 @@
     "Every service remains vessel-entitled and RLS-scoped.",
     "Captain operationalizes only capabilities the Fleet has entitled for the vessel.",
     "Capability passage is available across mission levels but never transfers vessel ownership, authority, branding, namespace, or project data.",
-    "Bootstrap Build is an independent Admiral-level program and is not a parent of operational vessels."
+    "Bootstrap Build is an independent Admiral-level program and is not a parent of operational vessels.",
+    "Public-source software is never treated as Fleet-owned merely because the Fleet adds an interface or hosting layer.",
+    "Foundry Scout may nominate upstream software, but clearance and Sea Trial remain deliberate human-governed gates.",
+    "Commercial packaging must preserve license obligations, upstream identity, required notices, privacy truth, and security boundaries."
   ],
   "objects": {
     "capability": "versioned reusable Fleet feature; services may group capabilities without removing individual control",
@@ -34,7 +37,7 @@
     "revoked"
   ],
   "owner_labels": {
-    "free": "Free • $0",
+    "free": "Free \u2022 $0",
     "paid": "Available for Upgrade"
   },
   "prototype_capabilities": [
@@ -43,6 +46,9 @@
     "fleet.artwork-inlays",
     "fleet.customer-insight",
     "fleet.ai-recommendations",
-    "fleet.vendor-routing"
+    "fleet.vendor-routing",
+    "fleet.foundry-scout",
+    "fleet.interface-forge",
+    "fleet.utility-dock"
   ]
 }

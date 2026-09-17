@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.0",
+  "build": "8.8.15.1",
   "policy": "real-ui-path-release-assurance-with-fleet-runtime-and-admiral-course-authority",
   "voyages": [
     {
@@ -208,6 +208,30 @@
         "safe-home-only-fresh-recovery",
         "no-customer-cargo-after-process-restart",
         "no-privileged-authority-persistence"
+      ]
+    },
+    {
+      "id": "foundry-gate-clearance",
+      "label": "Foundry Gate Clearance Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Admiral Foundry",
+        "Mission-led candidate intake",
+        "Public source URL recorded",
+        "License/commercial review",
+        "Attribution and upstream identity review",
+        "Security/dependency/privacy/maintenance review",
+        "Sea Trial clearance only",
+        "No auto-publish or entitlement"
+      ],
+      "proof": [
+        "candidate-remains-admiral-draft",
+        "upstream-truth-visible",
+        "commercial-rights-explicit",
+        "security-and-data-flow-reviewed",
+        "clearance-does-not-publish",
+        "project-authority-unchanged"
       ]
     }
   ],

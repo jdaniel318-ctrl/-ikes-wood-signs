@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.0",
-  "release": "Fleet Runtime",
+  "build": "8.8.15.1",
+  "release": "Foundry Gate",
   "status": "active",
   "principles": [
     {
@@ -111,6 +111,24 @@
       "rule": "A vessel-specific repair graduates into shared fleet runtime only when the underlying behavior can be named generically and proven without moving vessel ownership, authority or data.",
       "scope": "fleet-learning",
       "origin": "Ike proving-vessel doctrine"
+    },
+    {
+      "id": "upstream-truth",
+      "rule": "The Fleet never presents upstream open-source code as Fleet-authored. Upstream identity, license and required attribution remain visible through evaluation, productization and distribution.",
+      "scope": "foundry",
+      "origin": "Foundry Scout / Interface Forge commercial model"
+    },
+    {
+      "id": "clearance-before-commercialization",
+      "rule": "A public-source capability remains a candidate until commercial-use rights, attribution obligations, security, dependency health, privacy/data flow and maintenance health are explicitly reviewed. Clearance permits Sea Trial only; it does not auto-publish.",
+      "scope": "foundry",
+      "origin": "Foundry Gate 8.8.15.1"
+    },
+    {
+      "id": "reuse-before-rebuild",
+      "rule": "Before building a new reusable capability from scratch, Foundry may evaluate whether a safe, legally reusable upstream capability already solves the underlying problem. Reuse is optional and never bypasses clearance.",
+      "scope": "foundry",
+      "origin": "Captain Foundry strategy"
     }
   ],
   "governance": {
@@ -134,11 +152,11 @@
       "rolled-back"
     ],
     "currentCourse": {
-      "id": "fleet-runtime-foundation",
-      "version": 3,
+      "id": "fleet-runtime-foundry-gate",
+      "version": 4,
       "status": "active",
-      "effectiveBuild": "8.8.15.0",
-      "heading": "Deterministic Fleet Runtime, explicit authority grammar, event-compatible truth and proving-vessel graduation"
+      "effectiveBuild": "8.8.15.1",
+      "heading": "Deterministic runtime plus above-board capability discovery, clearance and proving-vessel graduation"
     },
     "historyPolicy": "append-only; superseded course records remain evidence and rollback references",
     "courseHistory": [

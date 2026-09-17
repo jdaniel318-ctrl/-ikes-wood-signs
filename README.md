@@ -1,43 +1,16 @@
-# Dark Sky 8.8.15.0 — Fleet Runtime
+# Dark Sky 8.8.15.1 — Foundry Gate
 
-Fleet Runtime is the first major proving-vessel release after the 8.8.15 architecture challenge. One deterministic customer-session kernel now owns customer readiness, active work, intentional OS/browser handoffs, verified abandonment, safe reset, and recovery. Ike’s Wood Signs is the proving vessel.
+Foundry Gate is the first commercial-capability proving pass built on Fleet Runtime. It turns the Captain's public-source software observation into an above-board Admiral Foundry workflow: **Mission Demand → Scout → Clearance → Interface Forge → Sea Trial → Proven → Utility Dock / Standalone / Vessel Capability**.
 
-**Authority grammar:** Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet. Route origin never silently widens authority.
+The gate is deliberately conservative. This release does **not** scrape GitHub, clone repositories, publish applications, sell upstream code, grant vessel entitlements, or claim upstream authorship. Candidate records are Admiral working drafts stored locally until a later Activity Spine / Fleet Core implementation is explicitly promoted.
 
-**Passage Hold:** camera/photo/file-picker handoffs enter `SYSTEM_HANDOFF`, pause the kiosk idle reset, preserve the exact active customer place, and restart the idle clock only after return. `visibilitychange` alone is never abandonment. A fresh process recovery still returns to exact-vessel safe home and never restores privileged authority or prior customer cargo.
+## Clearance contract
+A candidate cannot show `SEA TRIAL CLEARED` until the Admiral working record explicitly covers commercial-use rights, attribution/notice obligations, upstream identity, security, dependency health, privacy/data flow, maintenance health, a public source URL, a mission, and a license identifier. Clearance means **Sea Trial only**. It does not mean commercial launch.
 
-**Scale direction:** Control Plane and Vessel Data Plane are separate security concepts; Watchtower and Recovery views are projections. Runtime events are recorded once in a bounded non-PII journal using correlation-ready fields for future Fleet Activity Spine promotion. Capability contracts, release rings, station identity and per-vessel rollback remain explicit architecture contracts.
+## Interface Forge contract
+Fleet-added value may include interface, workflow, hosting, integrations, support, safe defaults and original additions. Upstream identity and license obligations remain visible. A wrapper never turns somebody else's code into Fleet-authored code.
 
-# Dark Sky 8.8.14.23 — Deck Signal
+## Proving-vessel hardening carried with this release
+Fleet Runtime v1 remains active. This pass adds a redundant visible-state idle watchdog so a true kiosk abandonment cannot depend on one suspended iOS timer. Ike Fit now performs a DOM containment check after layout and shrinks until visible lettering stays inside the assigned region. The calibrated 2 ft cedar path may resolve from one strong full-plank image when calibrated geometry and high-confidence cedar evidence converge; otherwise the second-photo/manual confirmation path remains intact.
 
-Deployment controls now visibly behave like controls: obvious OPEN/OPENED affordances, pressed/focus states, and durable save confirmation, while Kiosk Watch and all fleet authority boundaries remain unchanged.
-
-# Dark Sky 8.8.14.23 — Route Safe
-
-Owner-route telemetry is fail-safe: missing timing metadata can no longer prevent the authenticated owner surface from opening. Kiosk Watch remains intact.
-
-# Dark Sky 8.8.14.23 — Route Safe
-
-Route Safe hardens the fleet owner spine for scale: exact-vessel owner settings sync through a dedicated bounded write before slower order reconciliation, Bootstrap Witness reports authority/settings/order phases separately, and owner work never waits on durability reconciliation. Kiosk/customer persistence remains a separate fleet operating mode concern from privileged owner sessions.
-
-# Dark Sky 8.8.14.23 — Route Safe
-
-Owner entry is optimized for fleet scale: one exact-vessel authority proof opens the business, while durable orders and settings synchronize in a batched background passage.
-
-# Dark Sky 8.8.14.23 — Route Safe
-
-Post-login owner authority resolves in one exact-vessel check; the owner portal opens before durable business sync, which continues safely in the background. Bootstrap Witness makes that passage visible without granting Engine authority.
-
-# Dark Sky 8.8.14.23 — Route Safe
-
-Route Safe hardens Owner/Partner navigation after the Owner Spine rollout. Owner subviews now render completely before the previous surface is removed, preventing blank panes, scroll-triggered paint, and delayed rollback on iPad. A transition token prevents older asynchronous view loads from overwriting the newest owner navigation. The Fleet Owner Spine, durable vessel records, direct owner entry, exact-vessel authority, Fleet Watch, and Admiral read-only boundary remain unchanged.
-
-Engine remains a route and support surface. Opening Owner Bridge from Engine does not grant Engine owner authority; the live Supabase exact-vessel membership is the authority. Admiral remains read-only. The six-member Fleet Core and Bootstrap Build’s separate Admiral Program class are preserved.
-
-
-### 8.8.14.23 Session Current
-Owner Bridge and Fleet Watch now consume one synchronized live owner identity across Black Flag tabs; Auto Signal reports bounded queue posture only.
-
-
-### Route Safe
-Customer deployments now support WEB, KIOSK and HYBRID modes. Kiosk persistence is customer-surface-only: idle sessions purge/reset safely, and recovery restores the exact vessel home without exposing fleet authority. Device-level Guided Access / Single App Mode remains the correct protection against iPad/Safari process termination.
+Release files: 85. The 85-file ceiling remains a handoff budget, not an architecture rule.

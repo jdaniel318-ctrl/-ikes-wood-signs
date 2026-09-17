@@ -1,4 +1,4 @@
-# 8.8.15.0 Ike’s Proving-Vessel Runtime Note
+# 8.8.15.1 Ike’s Proving-Vessel Runtime Note
 
 The second-photo Sea Trial exposed a fleet-level runtime defect: iPad camera/photo-picker passage backgrounded Safari and the kiosk recovery logic incorrectly treated the intentional handoff as abandonment. Fleet Runtime v1 fixes the generic behavior rather than special-casing Ike’s. The first plank/photo state must survive an intentional second-photo handoff, and only the configured idle timeout may purge the session.
 

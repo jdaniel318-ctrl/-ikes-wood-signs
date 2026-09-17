@@ -279,3 +279,8 @@ Status → Problem → Next Move. Engineering evidence is available, never force
 ## 7.2.1 approved artifact integrity
 - **Approved Artifact Voyage** verifies that the customer-approved visual is locked before contact/review and stored as the production artifact rather than silently re-rendered later.
 - Editing the design invalidates the lock and requires fresh customer approval.
+
+
+## Foundry Scout + Interface Forge (8.8.15.1)
+
+The Foundry may evaluate useful public-source software when a Fleet mission or customer friction suggests an existing capability could be reused. Scout records source identity and evidence. Clearance reviews legal/commercial use, attribution, security, dependency health, privacy/data flow, maintenance, and upstream truth. Interface Forge may then create a Fleet-standard usability layer for Sea Trial. No wrapper changes upstream authorship, and no clearance widens project authority.

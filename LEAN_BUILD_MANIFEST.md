@@ -1,8 +1,6 @@
-# Dark Sky 8.8.15.0 — Fleet Runtime
+# Dark Sky 8.8.15.1 — Foundry Gate
 
-Fleet Runtime v1 proving pass. One deterministic customer-session kernel owns READY → CUSTOMER ACTIVE → SYSTEM HANDOFF → SAFE RESET / RECOVERING behavior. Ike’s Wood Signs is the proving vessel for intentional camera/photo-picker handoff preservation before fleet-wide graduation. Owner business authority, Engine platform authority, Captain command and Admiral governance remain separate.
-
-The 85-file ceiling is a release/handoff budget, not a source-architecture rule. Shared runtime behavior should remain modular in design even when packaged into a lean root-upload artifact.
+Admiral Foundry Scout + Clearance Gate foundation on top of Fleet Runtime v1. Public-source candidates remain drafts until explicit above-board clearance; clearance permits Sea Trial only. Proving-vessel hardening adds redundant kiosk idle detection, one-photo calibrated 2 ft cedar convergence, and DOM-verified Ike Fit containment.
 
 File ceiling: 85
 Release files: 85

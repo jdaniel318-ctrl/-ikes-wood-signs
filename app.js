@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.0';
+  const BUILD_VERSION='8.8.15.1';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4687,7 +4687,7 @@
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
 
-  // 8.8.15.0 Fleet Runtime — one deterministic customer-session kernel owns
+  // 8.8.15.1 Fleet Runtime — one deterministic customer-session kernel owns
   // kiosk readiness, intentional OS/browser handoffs, idle abandonment and safe recovery.
   // Individual screens may request transitions; they may not independently decide that
   // backgrounding means abandonment or widen any Owner / Engine / Captain / Admiral authority.
@@ -4696,7 +4696,7 @@
   const FLEET_RUNTIME_EVENT_KEY_88150='darkSkyFleetRuntimeEvents88150';
   const FLEET_RUNTIME_VERSION_88150='fleet-runtime-v1';
   const SYSTEM_HANDOFF_MAX_MS_88150=15*60*1000;
-  let kioskIdleTimer881421=null,kioskCompletionTimer88150=null,kioskActivityBound881421=false,kioskRecovering881421=false;
+  let kioskIdleTimer881421=null,kioskCompletionTimer88150=null,kioskActivityBound881421=false,kioskRecovering881421=false,kioskIdleWatchdog88151=null;
   let fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
 
   function deploymentOperatingMode881421(d){const mode=String(d?.operatingMode||'web').toLowerCase();return ['web','kiosk','hybrid'].includes(mode)?mode:'web';}
@@ -4809,6 +4809,13 @@
     const remaining=remainingOverride==null?Math.max(250,fullMs-elapsed):Math.max(250,Number(remainingOverride)||fullMs);
     kioskIdleTimer881421=setTimeout(()=>{if(runtimeSystemHandoffActive88150())return;resetCustomerToSafeHome881421(p,{reason:'idle'});},remaining);
   }
+  function kioskIdleWatchdogTick88151(){
+    const p=activeProject();if(!kioskPersistenceActive881421(p)||runtimeSystemHandoffActive88150()||fleetRuntime88150.state!=='CUSTOMER_ACTIVE'||document.visibilityState==='hidden')return;
+    const d=kioskDeploymentForContext881421(p),idleMs=Math.max(1,Number(d?.idleMinutes||3))*60*1000,last=Number(fleetRuntime88150.lastActivityAt||0);if(!last)return;
+    const elapsed=Date.now()-last;window.__darkSkyKioskIdleWatch88151={elapsedMs:elapsed,idleMs,lastCustomerInputAt:new Date(last).toISOString(),state:fleetRuntime88150.state};
+    if(elapsed>=idleMs){runtimeEvent88150('runtime.idle.watchdog',{elapsedMs:elapsed,idleMs});resetCustomerToSafeHome881421(p,{reason:'idle-watchdog'});}
+  }
+  function ensureKioskIdleWatchdog88151(){if(kioskIdleWatchdog88151)return;kioskIdleWatchdog88151=setInterval(kioskIdleWatchdogTick88151,5000);}
   function runtimeCustomerScreenChanged88150(name){
     const p=activeProject();if(!kioskPersistenceActive881421(p))return;
     const step=String(name||'');
@@ -4826,6 +4833,7 @@
     if(runtimeCustomerStepIsReady88150()){fleetRuntime88150.lastActivityAt=0;runtimeTransition88150('READY','station-armed');}
     else if(!runtimeSystemHandoffActive88150()){fleetRuntime88150.lastActivityAt=fleetRuntime88150.lastActivityAt||Date.now();runtimeTransition88150('CUSTOMER_ACTIVE','station-armed-active');}
     kioskStatus881421(runtimeSystemHandoffActive88150()?'STATION HOLDING YOUR PLACE…':'STATION READY',runtimeSystemHandoffActive88150()?'hold':'ready');scheduleKioskIdle881421(p);
+    ensureKioskIdleWatchdog88151();
     if(!kioskActivityBound881421){
       kioskActivityBound881421=true;
       ['pointerdown','keydown','touchstart','input'].forEach(evt=>document.addEventListener(evt,e=>{
@@ -12579,6 +12587,7 @@ The full order and approved media remain stored with this project.`;
     el.dataset.ikeFitMode=mode;
     el.dataset.ikeFitFontPx=String(Math.round(fs));
     el.dataset.ikeFitTarget=`${Math.round(targets.w*100)}x${Math.round(targets.h*100)}`;el.dataset.ikeFitRegion=String(region.source||'');el.dataset.ikeFitGrid=String(r.faceGrid?.length||0);
+    requestAnimationFrame(()=>{let px=parseFloat(getComputedStyle(el).fontSize)||fs,tries=0;while(tries<12&&(el.scrollWidth>el.clientWidth+1||el.scrollHeight>el.clientHeight+1)&&px>18){px*=.92;el.style.fontSize=`${px}px`;tries++;}const fits=el.scrollWidth<=el.clientWidth+1&&el.scrollHeight<=el.clientHeight+1;el.dataset.ikeFitContainment=fits?'pass':'hold';el.dataset.ikeFitFontPx=String(Math.round(px));if(!fits)runtimeEvent88150('ike.fit.containment-hold',{wordingLength:wording.length,font:state.font,clientWidth:el.clientWidth,scrollWidth:el.scrollWidth});});
   }
 
   function scheduleIkeDetectedTextPlacement(){
@@ -12859,7 +12868,8 @@ The full order and approved media remain stored with this project.`;
       const prior=state.plankRecognition||{};
       const species=ikeCombineSpeciesEvidence(primaryEvidence,prior.secondarySpeciesEvidence||null);
       const primaryLengthEvidence=ikeLengthEvidenceFromGeometry(img,lengthAnalysis);
-      const length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
+      let length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
+      if(!length.resolved&&Number(primaryLengthEvidence?.candidateFeet||0)===2&&primaryLengthEvidence?.calibrationCoverage==='real-stock-calibrated'&&Number(primaryLengthEvidence?.score||0)>=.72&&species.speciesResolved&&species.speciesId==='cedar'&&['high','customer-confirmed'].includes(String(species.speciesConfidence||''))){length={...primaryLengthEvidence,resolved:true,confidence:'high-visual',feet:2,candidateFeet:2,needsSecondPhoto:false,evidenceCount:1,reviewRequired:true,verificationPolicy:'ike-visual-order-review',reason:'one-photo-calibrated-2ft-cedar-convergence'};}
       const lengthTelemetry={build:BUILD_VERSION,projectId:activeProjectId,segmentationMode:lengthAnalysis?.segmentationMode||'',rawCoreRatio:Number(lengthAnalysis?.rawCoreRatio||0),contourRatio:primaryLengthEvidence?.aspectRatio||0,longPixels:primaryLengthEvidence?.longPixels||0,shortPixels:primaryLengthEvidence?.shortPixels||0,candidateFeet:primaryLengthEvidence?.candidateFeet||0,score:primaryLengthEvidence?.score||0,boundaryDistance:primaryLengthEvidence?.boundaryDistance||0,calibrationCoverage:primaryLengthEvidence?.calibrationCoverage||'',shapeStability:Number(primaryLengthEvidence?.shapeStability||0),backgroundSeparation:Number(primaryLengthEvidence?.backgroundSeparation||0),grownSilhouetteRatio:Number(primaryLengthEvidence?.grownSilhouetteRatio||0),resolved:!!primaryLengthEvidence?.resolved,reason:primaryLengthEvidence?.reason||''};
       window.__ikeLengthLastEvidence=lengthTelemetry;
       window.DarkSkyV4?.diagnostic?.('ike.length.evidence','Ike plank length evidence',lengthTelemetry);

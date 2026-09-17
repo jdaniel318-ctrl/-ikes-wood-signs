@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Runtime",
-  "name": "Fleet Runtime",
-  "build": "8.8.15.0",
-  "seal": "fleet-runtime-88150",
+  "release": "Foundry Gate",
+  "name": "Foundry Gate",
+  "build": "8.8.15.1",
+  "seal": "foundry-gate-88151",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

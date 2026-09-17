@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.0",
-  "release": "Fleet Runtime",
+  "build": "8.8.15.1",
+  "release": "Foundry Gate",
   "excluded_sources": [
     "The situation"
   ],
@@ -219,7 +219,24 @@
       "fresh_process_recovery_returns_exact_vessel_safe_home",
       "kiosk_recovery_never_restores_owner_engine_captain_admiral_authority",
       "runtime_event_journal_contains_no_customer_payload",
-      "station_identity_survives_customer_session_reset"
+      "station_identity_survives_customer_session_reset",
+      "redundant_visible_idle_watchdog",
+      "idle_based_on_customer_activity_clock",
+      "system_handoff_pauses_idle",
+      "safe_reset_purges_transient_cargo",
+      "ike_fit_dom_containment",
+      "ike_calibrated_2ft_cedar_one_photo_convergence"
+    ],
+    "foundry_gate": [
+      "mission_before_repository",
+      "public_source_url_required",
+      "commercial_license_review",
+      "attribution_and_upstream_identity",
+      "security_dependency_privacy_maintenance_review",
+      "no_auto_scrape",
+      "no_auto_publish",
+      "clearance_only_allows_sea_trial",
+      "no_authority_broadening"
     ]
   },
   "promotion": "manual-captain-known-good"

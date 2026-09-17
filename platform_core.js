@@ -37,7 +37,10 @@ const FLEET_CAPABILITY_REGISTRY=Object.freeze([
  Object.freeze({id:'fleet.business-ledger',name:'Business Event Ledger',origin:'black-flag-engine',domain:'ledger_house',lifecycle:'foundation',scope:'shared-schema-not-shared-database',data:['projectId','business-event'],commercial:'included-foundation'}),
  Object.freeze({id:'fleet.customer-insight',name:'Customer / Order Insight',origin:'black-flag-engine',domain:'lookout',lifecycle:'foundation',scope:'permission-aware-analytics',data:['projectId','authorized-aggregates'],commercial:'future'}),
  Object.freeze({id:'fleet.ai-recommendations',name:'AI Recommendation Registry',origin:'fleet-learning',domain:'chart_room',lifecycle:'foundation',scope:'advisory-no-silent-mutation',data:['recommendation','evidence','confidence','authority','status'],commercial:'future'}),
- Object.freeze({id:'fleet.vendor-routing',name:'Vendor / Capacity Routing',origin:'admiral-foundry',domain:'dockmaster',lifecycle:'foundation',scope:'shared-supply-chain',data:['capability','resource','cost','lead-time','capacity'],commercial:'future'})
+ Object.freeze({id:'fleet.vendor-routing',name:'Vendor / Capacity Routing',origin:'admiral-foundry',domain:'dockmaster',lifecycle:'foundation',scope:'shared-supply-chain',data:['capability','resource','cost','lead-time','capacity'],commercial:'future'}),
+ Object.freeze({id:'fleet.foundry-scout',name:'Foundry Scout',origin:'captain-observation',domain:'armory',lifecycle:'foundation',scope:'public-source-candidate-clearance',data:['public-source-metadata','license-evidence','security-evidence','maintenance-health','candidate-purpose'],commercial:'internal-admiral'}),
+ Object.freeze({id:'fleet.interface-forge',name:'Interface Forge',origin:'admiral-foundry',domain:'forge',lifecycle:'foundation',scope:'upstream-adapter-interface-layer',data:['candidate-id','capability-contract','ui-shell','integration-boundary','attribution'],commercial:'future'}),
+ Object.freeze({id:'fleet.utility-dock',name:'Utility Dock',origin:'admiral-foundry',domain:'exchange',lifecycle:'idea',scope:'portfolio-distribution-layer',data:['capability-id','commercial-route','entitlement','support-policy'],commercial:'future'})
 ]);
 const BUSINESS_MODEL_MODES=Object.freeze(['custom-product','retail','food-service','service','request-quote','mixed','other']);
 const BUSINESS_BRIEF_MAX=12000;

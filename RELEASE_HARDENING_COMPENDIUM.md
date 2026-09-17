@@ -1,4 +1,4 @@
-# 8.8.15.0 Fleet Runtime Hardening
+# 8.8.15.1 Fleet Runtime Hardening
 
 Fleet Runtime centralizes customer-session lifecycle. Intentional system handoffs (camera/photo/file picker and future payment/system sheets) enter `SYSTEM_HANDOFF`, pause kiosk idle abandonment, preserve the exact customer place, and return to `CUSTOMER_ACTIVE`. `visibilitychange` alone cannot reset a customer. Fresh process recovery remains safe-home only and never restores privileged authority or prior customer cargo.
 
@@ -551,3 +551,8 @@ The Visual Command Forge is a shared high-authority creation capability availabl
 
 ## True Cut — stale document / fresh manifest handoff
 Observed during 8.2.8 dry dock: Safari displayed an older 8.2.4 HTML shell while the deployment manifest was already 8.2.8. Worker registrations and application caches cleared correctly, but the old document continued verifying against its embedded 8.2.4 identity. True Cut makes the page identity single-source and permits one cache-busted document promotion when the deployment manifest proves a different complete release is present. Repeated promotion is forbidden; unresolved disagreement remains a release HOLD.
+
+
+## 8.8.15.1 Foundry Gate hardening
+
+Foundry commercialization is blocked unless the candidate record carries explicit above-board clearance. Runtime hardening also adds a redundant idle watchdog, post-layout Ike Fit containment verification, and calibrated one-photo 2 ft cedar convergence. These are release blockers on the proving vessel before wider graduation.

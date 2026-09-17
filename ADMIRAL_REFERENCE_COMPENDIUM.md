@@ -1,4 +1,4 @@
-# 8.8.15.0 Fleet Runtime — Admiral Reference
+# 8.8.15.1 Fleet Runtime — Admiral Reference
 
 Fleet Runtime does not expand Admiral authority. It makes fleet behavior more deterministic beneath existing authority boundaries. Admiral consumes fleet-safe projections and governs capability/release course; it does not become the operator of vessel business data. Ike’s remains the proving vessel before shared runtime behavior graduates across the fleet.
 
@@ -271,3 +271,8 @@ Theatrical visuals are a reusable capability, not a one-off skin.
 4. Captain command geometry remains benchmark-locked until a replacement visual is Sea-Trialed.
 5. Future production visuals move to managed object storage without changing the command contract.
 6. Reduced-motion and shorter repeat entry are permanent accessibility/performance requirements.
+
+
+## Foundry Gate (8.8.15.1)
+
+Admiral now has a working Scout + Clearance surface inside The Foundry. Candidate drafts are local working records in this pass. `SEA TRIAL CLEARED` means every visible clearance item has been checked and the basic candidate fields are complete; it does not publish, entitle, distribute, or commercialize anything. Upstream truth and vessel authority remain separate from the productization decision.

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.15.0",
+  "build": "8.8.15.1",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -36,7 +36,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Fleet Runtime",
+  "release": "Foundry Gate",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -209,7 +209,7 @@
       "causationId",
       "idempotencyKey"
     ],
-    "runtimeSeed": "8.8.15.0 bounded non-PII local runtime journal",
+    "runtimeSeed": "8.8.15.1 bounded non-PII local runtime journal",
     "watchtower": "projection, not source of truth",
     "recoveryLedger": "projection of the same event stream, not an independent truth store"
   },
@@ -237,5 +237,29 @@
       "last recovery"
     ],
     "customerSession": "temporary and never replaces station identity"
+  },
+  "foundryGate": {
+    "authority": "admiral-governed",
+    "candidateState": "draft-local-until-future-event-spine",
+    "pipeline": [
+      "Mission Demand",
+      "Scout",
+      "Clearance",
+      "Interface Forge",
+      "Sea Trial",
+      "Proven Capability",
+      "Utility Dock / Standalone / Vessel Service"
+    ],
+    "requiredClearance": [
+      "commercial-license-rights",
+      "attribution",
+      "upstream-identity",
+      "security",
+      "dependency-health",
+      "privacy-data-flow",
+      "maintenance-health"
+    ],
+    "autoPublish": false,
+    "truthRule": "Fleet sells its interface, workflow, hosting, integrations, support and original additions; upstream ownership and license obligations remain explicit."
   }
 }
