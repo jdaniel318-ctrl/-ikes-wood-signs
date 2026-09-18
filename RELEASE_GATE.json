@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.7",
-  "release": "Fleet Truth",
-  "generatedAt": "2026-09-18T15:00:23-04:00",
+  "build": "8.8.15.8",
+  "release": "Spine Continuity",
+  "generatedAt": "2026-09-18T17:45:52-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -310,8 +310,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.7 Fleet Truth hardens Admiral Control Plane truthfulness: Station Registry resolves zero-state immediately, active release counts exclude historical unassigned/hold rows, and history remains preserved without being presented as current posture.",
-  "candidate": "8.8.15.7",
+  "note": "8.8.15.8 Spine Continuity centralizes Admiral session refresh and Fleet Spine reads, fans one snapshot into Station Registry, and gives every remote read a bounded terminal state so long-session return cannot freeze the Control Plane.",
+  "candidate": "8.8.15.8",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -505,7 +505,12 @@
     "fleet_spine_human_activity_cards": true,
     "fleet_spine_technical_payload_progressive_disclosure": true,
     "fleet_spine_selected_vessel_high_contrast": true,
-    "fleet_spine_durable_status_messages": true
+    "fleet_spine_durable_status_messages": true,
+    "fleet_spine_single_flight_reads": true,
+    "admiral_session_single_refresh_broker": true,
+    "station_registry_snapshot_consumer": true,
+    "control_plane_bounded_deadline": true,
+    "upper_command_child_overlay_cleanup": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -566,8 +571,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.7",
-    "seal": "fleet-truth-88157",
+    "build": "8.8.15.8",
+    "seal": "spine-continuity-88158",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
@@ -577,7 +582,7 @@
     ],
     "rule": "all authoritative identities must agree exactly; any prior release seal in an authoritative file fails packaging"
   },
-  "name": "Fleet Truth",
+  "name": "Spine Continuity",
   "releaseBlockers": {
     "ike_recognition_truth_state_machine": true,
     "ike_customer_length_entry_removed": true,

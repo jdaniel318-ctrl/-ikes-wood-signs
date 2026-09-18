@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.7",
-  "release": "Station Registry",
+  "build": "8.8.15.8",
+  "release": "Spine Continuity",
   "excluded_sources": [
     "The situation"
   ],
@@ -259,7 +259,17 @@
       "server_only_station_is_read_only_without_local_manifest",
       "web_kiosk_hybrid_are_first_class_station_modes",
       "station_registration_activity_event_is_bounded_and_durable"
-    ]
+    ],
+    "fleet_spine_single_flight": {
+      "required": true,
+      "release_blocker": true,
+      "proof": [
+        "one_admiral_refresh_promise",
+        "one_control_plane_read_per_open_or_refresh",
+        "station_registry_consumes_snapshot",
+        "bounded_terminal_state"
+      ]
+    }
   },
   "promotion": "manual-captain-known-good",
   "families": {

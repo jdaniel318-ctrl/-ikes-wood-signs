@@ -1,3 +1,12 @@
+# 8.8.15.8 — Spine Continuity
+- Removed the duplicate Fleet Spine / Station Registry Admiral-session refresh race.
+- Station Registry no longer runs its own `admiral_read_fleet_spine` request; it consumes the Control Plane snapshot event.
+- Added single-flight Admiral token refresh and single-flight Fleet Spine reads.
+- Added a 9-second network deadline with durable timeout/authentication errors instead of frozen `READING…` states.
+- Added safe visible-return refresh for an open Fleet Spine without concurrent RPCs.
+- Upper-command secure/Engine restoration now closes Fleet Spine and clears its body lock explicitly.
+- No Fleet Core migration and no vessel/customer payload change.
+
 # Dark Sky 8.8.15.7 — Fleet Truth
 
 - Fixed Station Registry empty-state resolution: a successful zero-row read now displays `0 REGISTERED` and a durable no-stations message instead of appearing to load forever.

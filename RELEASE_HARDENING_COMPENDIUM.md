@@ -1,3 +1,7 @@
+# 8.8.15.8 Spine Continuity Hardening
+
+A Control Plane module may not independently refresh a rotating authority token when another module owns the same session. Fleet Spine is the read/session broker. Dependent Admiral panels consume its snapshot. Every remote read must terminate CURRENT, AUTH REQUIRED, TIMEOUT, or FAILED within a bounded interval. An upper-command secure transition must close all child overlays and remove scroll/body locks.
+
 # 8.8.15.7 Station Registry Hardening
 
 Fleet Runtime centralizes customer-session lifecycle. Intentional system handoffs (camera/photo/file picker and future payment/system sheets) enter `SYSTEM_HANDOFF`, pause kiosk idle abandonment, preserve the exact customer place, and return to `CUSTOMER_ACTIVE`. `visibilitychange` alone cannot reset a customer. Fresh process recovery remains safe-home only and never restores privileged authority or prior customer cargo.

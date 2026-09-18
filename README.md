@@ -1,3 +1,10 @@
+# Dark Sky 8.8.15.8 — Spine Continuity
+
+Spine Continuity hardens the Admiral Control Plane after a long-session freeze exposed two browser modules refreshing the same rotating Admiral session and reading Fleet Core independently. Fleet Spine now owns one bounded session refresh and one bounded Control Plane snapshot. Station Registry consumes that shared snapshot instead of launching a competing read. Long or stale reads terminate visibly; they never remain indefinite spinners. Upper-command securing closes Fleet Spine cleanly, and a visible Fleet Spine refreshes once on return rather than racing itself.
+
+## Proving voyage
+Open Admiral → Govern → Fleet Spine after the page has been sitting. The overlay must appear immediately, resolve one identity path, and either reach CURRENT or show a durable timeout/authentication result within 9 seconds. Station Registry must consume the same snapshot and finish at `0 REGISTERED` when Fleet Core returns zero stations. No duplicate session refresh is permitted.
+
 # Dark Sky 8.8.15.7 — Fleet Truth
 
 Fleet Truth keeps Station Registry and release-ring governance literal at the Admiral surface: zero means zero, local means local, active means active, and retained history never masquerades as current posture. The future Admiral can now see the difference between a local deployment manifest and a registered Fleet Core station, preview the exact identity before registration, and issue registration only with a fresh server fingerprint and recorded intent.

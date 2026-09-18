@@ -1,3 +1,7 @@
+# 8.8.15.8 Regression — Spine Continuity
+
+Release-blocking regressions: duplicate Admiral refresh-token requests from Fleet Spine children; concurrent `admiral_read_fleet_spine` reads from the same open action; Station Registry stuck in `READING`; session expiry without a visible re-authentication state; Engine/upper-command secure leaving Fleet Spine body-lock or overlay state behind.
+
 # 8.8.3 Native Passage Addendum
 
 - Admiral's primary Engine exit is a native document link; application controllers may not cancel it.

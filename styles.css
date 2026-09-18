@@ -15827,3 +15827,12 @@ body[data-customer-session="live_customer"] .customer-kiosk-status strong{font-w
 /* 8.8.15.7 Fleet Truth — completed reads and literal metric semantics. */
 .fleet-spine-counts article span{display:block;margin-top:4px;color:#789397;font-size:8px;line-height:1.3;letter-spacing:.02em}
 .fleet-spine-station-empty{min-height:78px;display:grid;align-content:center}
+
+
+/* 8.8.15.8 Spine Continuity — single-flight Admiral reads and explicit terminal states. */
+.fleet-spine-status[data-kind="working"]{border:1px solid rgba(96,190,214,.38);background:#0b2b33;color:#c6e8ef}
+.fleet-spine-status[data-kind="error"]{border:1px solid rgba(198,94,80,.55);background:#301816;color:#ffd4cc}
+.fleet-spine-status[data-kind="warning"]{border:1px solid rgba(213,174,87,.46);background:#2a2414;color:#f0d892}
+.fleet-spine-status[data-kind="current"],.fleet-spine-status[data-kind="success"]{border:1px solid rgba(85,178,118,.45);background:#0d2a1a;color:#b9ebc8}
+.fleet-spine-station-registry [id="fleetSpineStationSummary"]{min-width:150px;text-align:center}
+body:not(.fleet-spine-open) #fleetSpineWorkspace{pointer-events:none}

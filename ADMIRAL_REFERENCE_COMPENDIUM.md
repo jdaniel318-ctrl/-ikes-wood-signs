@@ -1,3 +1,7 @@
+# 8.8.15.8 — Spine Continuity
+
+The Fleet Spine is now the sole Admiral-session/read broker for its subordinate panels. Station Registry receives the verified snapshot rather than issuing a parallel Fleet Core read. This prevents rotated-refresh-token races after long idle/background periods and ensures the Admiral sees a terminal state instead of an indefinite spinner.
+
 # 8.8.15.7 Station Registry — Admiral Reference
 
 Fleet Runtime does not expand Admiral authority. It makes fleet behavior more deterministic beneath existing authority boundaries. Admiral consumes fleet-safe projections and governs capability/release course; it does not become the operator of vessel business data. Ike’s remains the proving vessel before shared runtime behavior graduates across the fleet.

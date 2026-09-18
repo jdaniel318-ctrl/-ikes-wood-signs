@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.7",
+  "build": "8.8.15.8",
   "policy": "real-ui-path-release-assurance-with-fleet-runtime-and-admiral-course-authority",
   "voyages": [
     {
@@ -318,6 +318,27 @@
         "station_activity_event_human_readable"
       ],
       "summary": "A real local outpost can become a durable Fleet Core station only through explicit previewed Admiral registration; registration never fabricates runtime health."
+    },
+    {
+      "id": "spine-continuity",
+      "label": "Fleet Spine Continuity Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Admiral Govern",
+        "Open Fleet Spine after idle/background",
+        "Single Admiral session refresh",
+        "Single Control Plane snapshot",
+        "Station Registry consumes snapshot"
+      ],
+      "proof": [
+        "no_duplicate_refresh_token_rotation",
+        "no_duplicate_admiral_read_fleet_spine",
+        "read_terminates_within_9_seconds",
+        "station_registry_never_spins_after_terminal_snapshot",
+        "upper_command_secure_closes_child_overlay_cleanly"
+      ],
+      "summary": "Long-session return must never freeze Fleet Spine: one session broker and one bounded snapshot feed all subordinate Admiral panels."
     }
   ],
   "governance": {

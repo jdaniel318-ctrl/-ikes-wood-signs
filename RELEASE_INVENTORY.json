@@ -1,8 +1,8 @@
 {
-  "release": "Fleet Truth",
-  "name": "Fleet Truth",
-  "build": "8.8.15.7",
-  "seal": "fleet-truth-88157",
+  "release": "Spine Continuity",
+  "name": "Spine Continuity",
+  "build": "8.8.15.8",
+  "seal": "spine-continuity-88158",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

@@ -1,3 +1,12 @@
+# 8.8.15.8 — Admiral Control Plane Continuity Contract
+
+- One document has one Admiral session-refresh broker.
+- One Fleet Spine refresh produces one Control Plane snapshot.
+- Station Registry and future subordinate Admiral panels consume that snapshot; they do not race a second refresh token or duplicate the spine read.
+- Every Control Plane read has a bounded 9-second terminal outcome.
+- Session expiry is explicit and never represented as a frozen surface.
+- Securing upper command closes Fleet Spine cleanly without changing fleet data.
+
 # 8.8.15.7 Station Registry Contract
 
 - **Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-services-framework-v2",
-  "build": "8.8.15.7",
-  "release": "Fleet Truth",
+  "build": "8.8.15.8",
+  "release": "Spine Continuity",
   "principles": [
     "Admiral can set every Fleet feature Off, Free or Paid for every vessel.",
     "Owners may request eligible paid services but cannot self-grant or self-activate them.",
