@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.4",
-  "release": "Spine Surface",
-  "generatedAt": "2026-09-16T23:00:27-04:00",
+  "build": "8.8.15.5",
+  "release": "Admiral Lens",
+  "generatedAt": "2026-09-18T13:45:00-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -298,8 +298,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.4 Spine Surface fixes the Fleet Spine Control Plane stacking boundary so it visibly opens above the Admiral Command Deck and closes back to Govern without losing state. Fleet Spine shared-hull architecture remains intact.",
-  "candidate": "8.8.15.4",
+  "note": "8.8.15.5 Admiral Lens makes Fleet Spine governance legible and durable: exact before/after release previews remain visibly present, issue stays locked behind a fresh fingerprint, changed inputs invalidate preview, Activity Spine defaults to human-readable event cards, and existing Fleet Core boundaries remain intact.",
+  "candidate": "8.8.15.5",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -485,7 +485,15 @@
     "ike_owner_length_verification_fallback": true,
     "fleet_runtime_idle_deadline_clock": true,
     "fleet_runtime_visible_raf_idle_witness": true,
-    "sea_trial_idle_countdown": true
+    "sea_trial_idle_countdown": true,
+    "fleet_spine_admiral_type_scale": true,
+    "fleet_spine_durable_preview_card": true,
+    "fleet_spine_issue_locked_until_visible_preview": true,
+    "fleet_spine_input_change_invalidates_preview": true,
+    "fleet_spine_human_activity_cards": true,
+    "fleet_spine_technical_payload_progressive_disclosure": true,
+    "fleet_spine_selected_vessel_high_contrast": true,
+    "fleet_spine_durable_status_messages": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -546,8 +554,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.4",
-    "seal": "spine-surface-88154",
+    "build": "8.8.15.5",
+    "seal": "admiral-lens-88155",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
@@ -557,7 +565,7 @@
     ],
     "rule": "all authoritative identities must agree exactly; any prior release seal in an authoritative file fails packaging"
   },
-  "name": "Spine Surface",
+  "name": "Admiral Lens",
   "releaseBlockers": {
     "ike_recognition_truth_state_machine": true,
     "ike_customer_length_entry_removed": true,

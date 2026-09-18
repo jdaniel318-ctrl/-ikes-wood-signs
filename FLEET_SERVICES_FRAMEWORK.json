@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-services-framework-v2",
-  "build": "8.8.15.4",
-  "release": "Spine Surface",
+  "build": "8.8.15.5",
+  "release": "Admiral Lens",
   "principles": [
     "Admiral can set every Fleet feature Off, Free or Paid for every vessel.",
     "Owners may request eligible paid services but cannot self-grant or self-activate them.",
@@ -38,7 +38,7 @@
     "revoked"
   ],
   "owner_labels": {
-    "free": "Free • $0",
+    "free": "Free \u2022 $0",
     "paid": "Available for Upgrade"
   },
   "prototype_capabilities": [

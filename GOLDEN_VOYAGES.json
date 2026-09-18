@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.4",
+  "build": "8.8.15.5",
   "policy": "real-ui-path-release-assurance-with-fleet-runtime-and-admiral-course-authority",
   "voyages": [
     {
@@ -265,13 +265,15 @@
       "release_blocker": true,
       "path": [
         "Admiral account authenticated",
-        "Fleet Spine opened",
+        "Fleet Spine opened above Admiral Command Deck",
         "Control Plane counts read",
-        "One vessel selected",
-        "Release course previewed",
-        "Intent recorded",
+        "One vessel selected with obvious selected state",
+        "Proposed release ring, rollout state, release identity and Admiral intent entered",
+        "PREVIEW COURSE returns durable visible before/after card",
+        "Issue stays locked unless preview reports a change",
+        "Any course field change invalidates the preview",
         "Course issued only after fingerprint still matches",
-        "Activity event retained",
+        "Activity event retained as human-readable history",
         "Other vessels unchanged"
       ],
       "proof": [
@@ -280,10 +282,17 @@
         "preview-before-issue",
         "idempotent-activity-event",
         "no-cross-vessel-write",
-        "previous-release-retained"
+        "previous-release-retained",
+        "visible-preview-before-issue",
+        "preview-invalidates-on-input-change",
+        "human-readable-activity-default",
+        "technical-payload-behind-details"
       ],
       "steps": [
         "Open Fleet Spine from Admiral Govern and verify the Control Plane renders above the Admiral deck",
+        "Select a vessel and verify selected state is unmistakable",
+        "Enter a proposed course and Admiral intent, then preview; verify a persistent PREVIEW READY card shows exact before and after state and ISSUE unlocks only afterward",
+        "Change one proposed field and verify preview becomes stale and ISSUE relocks",
         "Close Fleet Spine and verify focus returns to the Govern doorway without losing Admiral deck state"
       ]
     }

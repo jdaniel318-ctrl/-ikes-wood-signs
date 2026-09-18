@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.4",
-  "release": "Spine Surface",
-  "seal": "spine-surface-88154",
+  "build": "8.8.15.5",
+  "release": "Admiral Lens",
+  "seal": "admiral-lens-88155",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Spine Surface",
-  "name": "Spine Surface",
-  "releaseName": "Spine Surface"
+  "release_name": "Admiral Lens",
+  "name": "Admiral Lens",
+  "releaseName": "Admiral Lens"
 }

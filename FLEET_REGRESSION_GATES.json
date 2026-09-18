@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.4",
-  "release": "Spine Surface",
+  "build": "8.8.15.5",
+  "release": "Admiral Lens",
   "excluded_sources": [
     "The situation"
   ],
@@ -264,6 +264,18 @@
       "customer_never_selects_or_types_plank_length",
       "sea_trial_idle_deadline_visible",
       "visible_customer_active_deadline_forces_safe_reset"
+    ],
+    "admiral_lens": [
+      "release_preview_is_visibly_rendered_before_issue_unlocks",
+      "release_preview_shows_exact_before_and_after_course",
+      "release_preview_fingerprint_is_progressively_disclosed",
+      "course_field_change_invalidates_prior_preview",
+      "issue_course_disabled_without_fresh_visible_preview",
+      "preview_failure_is_durable_and_explicit",
+      "activity_spine_default_view_is_human_readable",
+      "raw_activity_payload_requires_details_expansion",
+      "selected_vessel_is_visually_unambiguous",
+      "admiral_control_plane_type_scale_is_ipad_readable"
     ]
   }
 }

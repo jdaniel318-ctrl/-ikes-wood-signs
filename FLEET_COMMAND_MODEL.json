@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.15.4",
+  "build": "8.8.15.5",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -19,7 +19,7 @@
     {
       "id": "captain",
       "verb": "command",
-      "mission": "Watch → Decide → Act → Record across vessels"
+      "mission": "Watch \u2192 Decide \u2192 Act \u2192 Record across vessels"
     },
     {
       "id": "admiral",
@@ -36,7 +36,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Spine Surface",
+  "release": "Admiral Lens",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",

@@ -1,4 +1,4 @@
-# 8.8.15.4 Spine Surface — Admiral Reference
+# 8.8.15.5 Admiral Lens — Admiral Reference
 
 Fleet Runtime does not expand Admiral authority. It makes fleet behavior more deterministic beneath existing authority boundaries. Admiral consumes fleet-safe projections and governs capability/release course; it does not become the operator of vessel business data. Ike’s remains the proving vessel before shared runtime behavior graduates across the fleet.
 
@@ -283,7 +283,11 @@ Admiral now has a working Scout + Clearance surface inside The Foundry. Candidat
 Ike remains the proving vessel for physical-product recognition. A successful recognition state must be explainable as cleared evidence gates. Customers are not used as a substitute measuring instrument when Fleet vision is uncertain. Unresolved physical truth escalates to the exact-vessel owner. Sea Trial exposes an idle countdown witness; live customer mode does not.
 
 
-## Fleet Spine — 8.8.15.4
+## Fleet Spine — 8.8.15.5
 Fleet governance now has a durable Control Plane surface. Admiral can read vessel identity, release-ring posture, station counts, membership counts, Foundry candidate count and recent bounded Activity Spine events. Release-course changes remain exact-vessel and are previewed before issue. The Fleet Spine does not expose private customer/order payloads and does not turn Admiral observation into vessel ownership.
 
 Foundry Scout candidates are now durable Fleet Core records instead of browser-local drafts. The legal/security/privacy clearance gate remains human-governed and only clears a candidate for Sea Trial.
+
+
+## 8.8.15.5 — Admiral Lens
+Fleet Spine course previews are command proof, not transient feedback. A modifying release course remains locked until an exact-vessel server preview is visibly rendered; any proposed-course mutation invalidates that preview. Default Activity Spine presentation is human-readable, with technical payload behind progressive disclosure. Admiral Control Plane typography must remain readable at normal iPad viewing distance.

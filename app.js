@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.4';
+  const BUILD_VERSION='8.8.15.5';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4687,7 +4687,7 @@
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
 
-  // 8.8.15.4 Fleet Runtime — one deterministic customer-session kernel owns
+  // 8.8.15.5 Fleet Runtime — one deterministic customer-session kernel owns
   // kiosk readiness, intentional OS/browser handoffs, idle abandonment and safe recovery.
   // Individual screens may request transitions; they may not independently decide that
   // backgrounding means abandonment or widen any Owner / Engine / Captain / Admiral authority.

@@ -1,4 +1,4 @@
-# 8.8.15.4 Spine Surface Contract
+# 8.8.15.5 Admiral Lens Contract
 
 - **Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**
 - A route into a surface never silently widens authority. Engine support and Owner authority remain distinct even when they share navigation.
@@ -634,7 +634,7 @@ Any surface that expands, saves, advances, or changes state must look and respon
 8. Sea Trial may show bounded diagnostic timing. Live customer surfaces remain clean.
 
 
-## Fleet Spine Contract — 8.8.15.4
+## Fleet Spine Contract — 8.8.15.5
 - Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.
 - Control Plane owns shared coordination truth: vessel identity, authority, release assignment, station identity, capability/entitlement posture and health. Private business records remain Vessel Data Plane.
 - Shared operational facts are recorded once in an append-only Activity Spine. Projections such as Watchtower, recovery summaries and future Captain/Admiral logs read that truth rather than invent parallel histories.
@@ -644,3 +644,7 @@ Any surface that expands, saves, advances, or changes state must look and respon
 - Station identity survives customer-session resets. Customer cargo never becomes station identity or Control Plane payload.
 - Foundry candidate clearance is durable governance state, but Sea Trial clearance never equals publication, commercialization, entitlement or upstream authorship.
 - A vessel-specific fix may graduate only after its generic fleet behavior can be named, certified and regression-gated.
+
+
+## 8.8.15.5 — Admiral Lens
+Fleet Spine course previews are command proof, not transient feedback. A modifying release course remains locked until an exact-vessel server preview is visibly rendered; any proposed-course mutation invalidates that preview. Default Activity Spine presentation is human-readable, with technical payload behind progressive disclosure. Admiral Control Plane typography must remain readable at normal iPad viewing distance.

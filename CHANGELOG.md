@@ -1,19 +1,12 @@
-# Dark Sky 8.8.15.4 — Spine Surface
+# Dark Sky 8.8.15.5 — Admiral Lens
 
-- Fixed the Fleet Spine doorway opening behind the Admiral Command Deck; Control Plane now owns a higher modal layer while open.
-- Added explicit Fleet Spine open/close accessibility state, focus placement, focus restoration, and body scroll containment.
-- Added regression gates for nested Admiral → Fleet Spine visibility and deterministic return to Govern.
-- Preserved Fleet Spine Control Plane, Activity Spine, Foundry persistence, release rings, Station foundation, Authority Gateway foundation, and all vessel boundaries.
-
-
-- Added **Fleet Spine** Admiral Control Plane surface with vessel/release/station/membership posture and bounded Activity Spine readback.
-- Added Fleet Core `fleet_activity_events`, `foundry_candidates`, `fleet_release_assignments`, and `fleet_stations` foundations.
-- Added idempotency, correlation and causation identity to shared activity events.
-- Moved Foundry Scout candidate persistence from browser-local drafts to Admiral-authenticated Fleet Core records.
-- Preserved the above-board Foundry rule: public source does not mean auto-scrape, auto-publish, auto-sell, auto-entitle, or ownership transfer.
-- Added per-vessel release rings: Unassigned → Canary → Proving → Limited → Fleet.
-- Added release-course preview fingerprint + explicit intent before issue, with previous release retained for rollback posture.
-- Added server authority resolver foundation for global authority plus exact-vessel membership.
-- Added Station identity foundation for future persistent WEB / KIOSK / HYBRID outpost health.
-- Preserved Fleet Runtime, Recognition Truth, Owner Spine, durable orders/settings, Admiral Watchtower read-only doctrine, project isolation and 85-file handoff ceiling.
-- Canonical identity: `8.8.15.4 / spine-surface-88154`.
+- Enlarged the Fleet Spine Control Plane type scale, spacing, labels, controls and vessel state hierarchy for iPad command use.
+- Rebuilt **PREVIEW COURSE** as a durable visible proof surface: exact BEFORE → AFTER course, selected vessel, server fingerprint and explicit “nothing issued” state.
+- Kept **ISSUE RELEASE COURSE** locked until the visible server preview is fresh and reports a real change.
+- Any change to release ring, rollout state, release identity or Admiral intent now invalidates the old preview and re-locks issue.
+- Preview failures now remain visible in both the course proof area and the Control Plane status band; no quick flash can hide a failed command.
+- Replaced raw Activity Spine JSON as the default view with human-readable event cards; correlation ID, event type and bounded payload live behind **TECHNICAL DETAILS**.
+- Strengthened selected-vessel state and changed Admiral intent to a readable multi-line field.
+- Preserved Fleet Spine server contracts, six-vessel isolation, read-only default posture, Foundry persistence, release rings, Station foundation, Authority Gateway foundation, Owner Spine and Watchtower boundaries.
+- No Fleet Core migration is required for this visual/interaction hardening pass.
+- Canonical identity: `8.8.15.5 / admiral-lens-88155`.
