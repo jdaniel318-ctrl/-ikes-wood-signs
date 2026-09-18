@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.5';
+  const BUILD_VERSION='8.8.15.6';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4687,7 +4687,7 @@
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
 
-  // 8.8.15.5 Fleet Runtime — one deterministic customer-session kernel owns
+  // 8.8.15.6 Fleet Runtime — one deterministic customer-session kernel owns
   // kiosk readiness, intentional OS/browser handoffs, idle abandonment and safe recovery.
   // Individual screens may request transitions; they may not independently decide that
   // backgrounding means abandonment or widen any Owner / Engine / Captain / Admiral authority.
@@ -6794,6 +6794,47 @@
     return {score,checks};
   }
 
+
+  function fleetStationStateFromDeployment88156(d){
+    const state=String(d?.state||'draft');
+    return ({draft:'commissioning',sea_trial:'sea_trial',deployed:'ready',paused:'hold',retired:'retired'})[state]||'commissioning';
+  }
+
+  function fleetStationCandidate88156(p,d){
+    if(!p||!d)return null;
+    const normalized=normalizeDeploymentIdentity(p,d);
+    return {
+      schema:'dark-sky-station-candidate-v1',
+      projectId:String(p.id||''),
+      vesselName:String(p.name||p.id||''),
+      stationKey:String(normalized.id||''),
+      displayName:String(normalized.name||'Customer Outpost'),
+      operatingMode:['web','kiosk','hybrid'].includes(String(normalized.operatingMode||''))?String(normalized.operatingMode):'web',
+      stationState:fleetStationStateFromDeployment88156(normalized),
+      runtimeRelease:BUILD_VERSION,
+      policyVersion:String(normalized.authorization?.policyVersion||'3.3'),
+      stationProfile:String(normalized.profile||''),
+      profileLabel:String(DEPLOYMENT_PROFILES[normalized.profile]?.label||normalized.profile||'Deployment'),
+      manifestVersion:Number(normalized.manifestVersion||1),
+      localUpdatedAt:normalized.updatedAt||normalized.createdAt||null,
+      source:'deployment-shipwright'
+    };
+  }
+
+  // Bounded Control Plane bridge. This exposes deployment identity only—never
+  // customer/order payloads—so Admiral can deliberately register a real local
+  // outpost into Fleet Core without inventing station records.
+  window.DarkSkyFleetStationCandidates=function(){
+    try{
+      return companies.flatMap(project=>migrateLegacyDeployment(project)
+        .filter(d=>d&&d.state!=='retired')
+        .map(d=>fleetStationCandidate88156(project,d))
+        .filter(Boolean));
+    }catch(err){
+      window.__darkSkyStationCandidateError88156=String(err?.message||err);
+      return [];
+    }
+  };
 
   function deploymentVoyageState(p,d){
     if(!d)return {step:1,label:'Configure',nextLabel:'Create Outpost',nextAction:'create',detail:'Create an outpost to begin.'};

@@ -1,8 +1,8 @@
 {
-  "release": "Admiral Lens",
-  "name": "Admiral Lens",
-  "build": "8.8.15.5",
-  "seal": "admiral-lens-88155",
+  "release": "Station Registry",
+  "name": "Station Registry",
+  "build": "8.8.15.6",
+  "seal": "station-registry-88156",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

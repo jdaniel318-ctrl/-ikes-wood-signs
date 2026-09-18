@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.5",
-  "release": "Admiral Lens",
+  "build": "8.8.15.6",
+  "release": "Station Registry",
   "excluded_sources": [
     "The situation"
   ],
@@ -251,7 +251,14 @@
       "release_ring_is_per_vessel_not_global",
       "station_identity_is_first_class_control_plane_record",
       "admiral_spine_read_is_authenticated_and_read_only_by_default",
-      "rollback_previous_release_is_retained"
+      "rollback_previous_release_is_retained",
+      "station_local_manifest_never_silently_promotes",
+      "station_registration_requires_preview_fingerprint_and_intent",
+      "station_registration_does_not_fabricate_heartbeat",
+      "station_registry_payload_excludes_customer_business_data",
+      "server_only_station_is_read_only_without_local_manifest",
+      "web_kiosk_hybrid_are_first_class_station_modes",
+      "station_registration_activity_event_is_bounded_and_durable"
     ]
   },
   "promotion": "manual-captain-known-good",
@@ -276,6 +283,15 @@
       "raw_activity_payload_requires_details_expansion",
       "selected_vessel_is_visually_unambiguous",
       "admiral_control_plane_type_scale_is_ipad_readable"
+    ],
+    "station_registry": [
+      "station_local_manifest_never_silently_promotes",
+      "station_registration_requires_preview_fingerprint_and_intent",
+      "station_registration_does_not_fabricate_heartbeat",
+      "station_registry_payload_excludes_customer_business_data",
+      "server_only_station_is_read_only_without_local_manifest",
+      "web_kiosk_hybrid_are_first_class_station_modes",
+      "station_registration_activity_event_is_bounded_and_durable"
     ]
   }
 }

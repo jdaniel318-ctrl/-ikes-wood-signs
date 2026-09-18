@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-capability-adoption-map-v1",
-  "build": "8.8.15.5",
+  "build": "8.8.15.6",
   "policy": "Runtime-generated from Fleet Learning Registry; this file defines the adoption vocabulary only.",
   "states": [
     "unreviewed",
@@ -19,7 +19,8 @@
     "cross_project_business_data": "forbidden",
     "mission_level_parentage": "forbidden",
     "shared_capability_passage": "explicit adoption only; capability contract may move, ownership, authority, branding, namespace and project data do not",
-    "fleet_spine": "shared Control Plane capabilities may coordinate identity, authority, releases, stations and bounded activity truth without importing vessel-private business records"
+    "fleet_spine": "shared Control Plane capabilities may coordinate identity, authority, releases, stations and bounded activity truth without importing vessel-private business records",
+    "station_registry": "local deployment manifests remain candidates until explicit previewed registration creates durable Fleet Core station identity; customer payloads never cross"
   },
   "manifest_contract": {
     "required": [

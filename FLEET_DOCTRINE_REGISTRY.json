@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.5",
-  "release": "Admiral Lens",
+  "build": "8.8.15.6",
+  "release": "Station Registry",
   "status": "active",
   "principles": [
     {
@@ -129,6 +129,12 @@
       "rule": "Before building a new reusable capability from scratch, Foundry may evaluate whether a safe, legally reusable upstream capability already solves the underlying problem. Reuse is optional and never bypasses clearance.",
       "scope": "foundry",
       "origin": "Captain Foundry strategy"
+    },
+    {
+      "id": "station-truth-before-health",
+      "rule": "A local outpost is not a durable Fleet Core station until explicit registration, and registration never implies heartbeat health. Endpoint identity, runtime health and customer session state remain separate facts.",
+      "scope": "fleet-control-plane",
+      "origin": "Station Registry 8.8.15.6"
     }
   ],
   "governance": {

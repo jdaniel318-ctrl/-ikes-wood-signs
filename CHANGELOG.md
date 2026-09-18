@@ -1,12 +1,14 @@
-# Dark Sky 8.8.15.5 — Admiral Lens
+# Dark Sky 8.8.15.6 — Station Registry
 
-- Enlarged the Fleet Spine Control Plane type scale, spacing, labels, controls and vessel state hierarchy for iPad command use.
-- Rebuilt **PREVIEW COURSE** as a durable visible proof surface: exact BEFORE → AFTER course, selected vessel, server fingerprint and explicit “nothing issued” state.
-- Kept **ISSUE RELEASE COURSE** locked until the visible server preview is fresh and reports a real change.
-- Any change to release ring, rollout state, release identity or Admiral intent now invalidates the old preview and re-locks issue.
-- Preview failures now remain visible in both the course proof area and the Control Plane status band; no quick flash can hide a failed command.
-- Replaced raw Activity Spine JSON as the default view with human-readable event cards; correlation ID, event type and bounded payload live behind **TECHNICAL DETAILS**.
-- Strengthened selected-vessel state and changed Admiral intent to a readable multi-line field.
-- Preserved Fleet Spine server contracts, six-vessel isolation, read-only default posture, Foundry persistence, release rings, Station foundation, Authority Gateway foundation, Owner Spine and Watchtower boundaries.
-- No Fleet Core migration is required for this visual/interaction hardening pass.
-- Canonical identity: `8.8.15.5 / admiral-lens-88155`.
+- Added durable Fleet Core station identity for WEB / KIOSK / HYBRID customer endpoints.
+- Added Station Registry metadata: exact vessel, station key, display name, mode, lifecycle state, runtime release, policy version, profile, heartbeat, recovery time/count and bounded metadata.
+- Added secure `fleet_upsert_station_identity`, `fleet_station_heartbeat`, and `fleet_station_record_recovery` server contracts with exact-vessel membership/global-authority checks.
+- Added Admiral-only **preview-before-register** RPCs with fingerprint and explicit intent enforcement.
+- Extended `admiral_read_fleet_spine` with durable station rows and WEB/KIOSK/HYBRID counts.
+- Registration no longer fabricates a heartbeat; new station identities truthfully remain **AWAITING HEARTBEAT** until runtime proof exists.
+- Added a bounded browser bridge from Deployment Shipwright to Fleet Spine that exposes station identity only—never customer/order/photo payloads.
+- Added a new Fleet Spine **Station Registry** section showing `LOCAL ONLY`, `REGISTERED · ALIGNED`, `SYNC NEEDED`, and `FLEET CORE ONLY` states.
+- Station registration/update/recovery now render as human-readable Activity Spine events.
+- Preserved Admiral Lens release-course governance, six-vessel isolation, Owner Spine, Watchtower and Foundry boundaries.
+- No station rows were auto-created or seeded.
+- Canonical identity: `8.8.15.6 / station-registry-88156`.

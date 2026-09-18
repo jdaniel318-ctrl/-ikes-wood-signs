@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.15.5';
-const RELEASE_SEAL='admiral-lens-88155';
+const RELEASE_BUILD='8.8.15.6';
+const RELEASE_SEAL='station-registry-88156';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

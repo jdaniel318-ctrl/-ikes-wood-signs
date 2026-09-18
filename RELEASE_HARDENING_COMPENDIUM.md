@@ -1,4 +1,4 @@
-# 8.8.15.5 Admiral Lens Hardening
+# 8.8.15.6 Station Registry Hardening
 
 Fleet Runtime centralizes customer-session lifecycle. Intentional system handoffs (camera/photo/file picker and future payment/system sheets) enter `SYSTEM_HANDOFF`, pause kiosk idle abandonment, preserve the exact customer place, and return to `CUSTOMER_ACTIVE`. `visibilitychange` alone cannot reset a customer. Fresh process recovery remains safe-home only and never restores privileged authority or prior customer cargo.
 
@@ -563,12 +563,15 @@ Foundry commercialization is blocked unless the candidate record carries explici
 The proving vessel exposed three unacceptable contradictions: READY while length was unresolved, customer length guessing after failed vision, and a 2 ft commissioned plank that failed to converge despite correct Cedar/candidate evidence. Recognition Truth adds a gate-derived state label, removes customer length entry, adds an owner-verification stop condition, and lets the commissioned 2 ft Cedar family use its calibration as the governing evidence instead of requiring every generic segmentation heuristic to be perfect. Fleet Runtime also persists an idle deadline and adds a visible Sea Trial witness so timeout failures are measurable rather than guessed.
 
 
-## 8.8.15.5 Admiral Lens hardening
+## 8.8.15.6 Station Registry hardening
 The fleet no longer relies on one proving vessel to surface every shared weakness. Control Plane state, Activity Spine identity, server-persisted Foundry clearance, release rings, first-class station identity, and unified authority resolution now have explicit shared contracts. Release course changes are protected by preview fingerprints, explicit Admiral intent and idempotent activity retention. Private vessel business payloads are excluded from Control Plane event design.
 
 ## Fleet Spine scale pass
 Fleet Core now carries covering indexes for the new Activity Spine and Station Control Plane paths plus previously unindexed fleet foreign keys identified by the database advisor. Existing self-service RLS policies were rewritten so `auth.uid()` is initialized once per statement rather than re-evaluated row-by-row. These changes preserve policy meaning while preparing the shared hull for materially larger vessel and event counts.
 
 
-## 8.8.15.5 — Admiral Lens
+## 8.8.15.6 — Station Registry
 Fleet Spine course previews are command proof, not transient feedback. A modifying release course remains locked until an exact-vessel server preview is visibly rendered; any proposed-course mutation invalidates that preview. Default Activity Spine presentation is human-readable, with technical payload behind progressive disclosure. Admiral Control Plane typography must remain readable at normal iPad viewing distance.
+
+## 8.8.15.6 — Station Registry
+The Fleet Spine station count is no longer just an empty foundation. Durable station identity now has a deliberate adoption path from real Deployment Shipwright manifests, but no outpost is auto-migrated. Admiral must preview the exact identity, retain the server fingerprint and record intent before registration can issue. Registration explicitly does not fabricate heartbeat health; new stations remain `AWAITING HEARTBEAT` until a real station runtime proves liveness. Station events are append-only and bounded, and private customer/business payloads remain outside the Control Plane.

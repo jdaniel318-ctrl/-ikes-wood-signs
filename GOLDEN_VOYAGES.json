@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.5",
+  "build": "8.8.15.6",
   "policy": "real-ui-path-release-assurance-with-fleet-runtime-and-admiral-course-authority",
   "voyages": [
     {
@@ -295,6 +295,29 @@
         "Change one proposed field and verify preview becomes stale and ISSUE relocks",
         "Close Fleet Spine and verify focus returns to the Govern doorway without losing Admiral deck state"
       ]
+    },
+    {
+      "id": "station-registry",
+      "label": "Station Registry Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Admiral Fleet Spine",
+        "Station Registry",
+        "Local-only outpost candidate",
+        "Preview station identity",
+        "Visible before/after proof",
+        "Register exact station"
+      ],
+      "proof": [
+        "local_manifest_is_not_auto_registered",
+        "preview_fingerprint_required",
+        "explicit_admiral_intent_required",
+        "no_customer_payload_crosses_control_plane",
+        "registration_yields_awaiting_heartbeat",
+        "station_activity_event_human_readable"
+      ],
+      "summary": "A real local outpost can become a durable Fleet Core station only through explicit previewed Admiral registration; registration never fabricates runtime health."
     }
   ],
   "governance": {

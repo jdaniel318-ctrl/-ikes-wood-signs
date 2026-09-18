@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-fleet-runtime-contract-v1",
-  "build": "8.8.15.5",
+  "build": "8.8.15.6",
   "release": "Fleet Runtime",
-  "release_seal": "admiral-lens-88155",
+  "release_seal": "station-registry-88156",
   "purpose": "One deterministic customer-session kernel owns kiosk readiness, intentional system handoffs, idle abandonment, safe reset, recovery and bounded runtime evidence across every vessel.",
   "states": [
     "READY",

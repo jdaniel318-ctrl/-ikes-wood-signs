@@ -199,3 +199,12 @@ A release is HOLD for Ike if: (1) a glyph approaches/crosses the detected usable
 - Do not make the Captain repeat a failing proving-vessel test without a materially different system hypothesis or fix.
 - Strengthen shared Fleet Runtime / Control Plane / Authority / Activity / Release systems first when the defect is generic.
 - Ike’s remains active and returns as a proving vessel after the shared hull changes enough to make the next test meaningful.
+
+### Station Registry — endpoint truth
+- Local outpost manifests do not count as durable Fleet Core stations until explicitly registered.
+- Station registration requires visible preview, fresh fingerprint and recorded Admiral intent.
+- Registering a station must not create a fake heartbeat or healthy status.
+- Customer/order/photo/pricing payloads never enter Station Registry or Activity Spine station events.
+- Station identity persists across customer-session resets; customer sessions never become station identity.
+- A server-only station with no local manifest is inspection-only on that device.
+- WEB/KIOSK/HYBRID mode and runtime/policy versions remain exact-station facts.

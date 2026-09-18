@@ -1,19 +1,21 @@
-# Dark Sky 8.8.15.5 — Admiral Lens
+# Dark Sky 8.8.15.6 — Station Registry
 
-Admiral Lens is a Fleet Spine command-surface hardening release. The server-side release preview already proved correct in Fleet Core; this pass makes that truth impossible to miss on the future Admiral’s iPad. Governance remains preview-before-issue, exact-vessel, reasoned and auditable.
+Station Registry makes customer endpoints first-class Fleet Core identities without pretending browser-local outposts are already durable stations. The future Admiral can now see the difference between a local deployment manifest and a registered Fleet Core station, preview the exact identity before registration, and issue registration only with a fresh server fingerprint and recorded intent.
 
 ## What changes
-- **Command-grade readability** — larger type, stronger selected states, larger controls, wider spacing and a clearer Control Plane hierarchy.
-- **Durable preview proof** — PREVIEW COURSE renders a persistent, server-returned BEFORE → AFTER course card and scrolls it into view.
-- **Issue remains locked** — ISSUE RELEASE COURSE cannot unlock until the current visible preview is fresh. Editing ring, rollout state, release identity or Admiral intent invalidates the fingerprint and locks issue again.
-- **Durable errors and confirmations** — preview/issue status remains visible instead of disappearing as a transient toast.
-- **Human Activity Spine** — ordinary Admiral view shows event title, time, authority and a plain-language summary. Correlation IDs and bounded JSON stay behind Technical Details.
-- **No data-model churn** — the Fleet Spine database contracts from 8.8.15.3 remain intact; this release changes presentation and command proof, not Fleet Core schema.
+- **Durable station identity** — Fleet Core stores station key, exact vessel, display name, WEB/KIOSK/HYBRID mode, lifecycle state, runtime release, policy version, profile, recovery count and heartbeat posture.
+- **No invented migration** — existing Deployment Shipwright outposts remain local until deliberately adopted. Fleet Spine shows them as **LOCAL ONLY** rather than silently creating records.
+- **Preview-before-register** — Admiral station registration uses the same visible proof discipline as release courses: exact before/after identity, fresh fingerprint, explicit intent, then issue.
+- **Heartbeat truth** — registration does not fabricate station health. A newly registered station remains **AWAITING HEARTBEAT** until a real runtime heartbeat arrives.
+- **Bounded Control Plane bridge** — the browser exposes only project ID, station/outpost identity, mode/state/profile/runtime metadata. No customer, order, photo, pricing or private business payload crosses into Fleet Spine.
+- **Activity Spine integration** — station registration/update/recovery events render as human-readable durable fleet events with technical detail behind disclosure.
+- **Fleet-level readability preserved** — Admiral Lens type scale, selected states, durable previews and readable Activity Spine remain intact.
+- **Fleet Core migration applied** — Station Registry schema/RPC contracts are installed in the connected Fleet Core. No fabricated station rows were seeded.
 
 ## Fleet doctrine
 **Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**
 
-The Control Plane coordinates identity, authority, releases, deployments, capabilities and health. Private vessel business data remains vessel-scoped. A vessel-specific fix does not graduate to Fleet Core until the underlying lesson can be named generically and certified.
+A station is a durable endpoint identity, not a customer session. Customer cargo is never Station Registry payload. A release ring is not a station heartbeat. A local outpost is not a Fleet Core station until registration is explicitly previewed and issued.
 
 ## Required proving voyage
-Authenticate Admiral → open Fleet Spine → select one vessel → enter proposed course + intent → PREVIEW COURSE → visibly inspect PREVIEW READY before/after proof → change one field and verify the preview becomes stale and ISSUE relocks. Only after that proof should a real issue command be considered.
+Authenticate Admiral → open Fleet Spine → inspect **Station Registry** → verify any browser-local outpost appears as **LOCAL ONLY** → select it → record station-registration intent → **PREVIEW STATION IDENTITY** → inspect exact proof → only then consider **REGISTER EXACT STATION**. After registration the station must show **AWAITING HEARTBEAT**, not a fabricated healthy state.

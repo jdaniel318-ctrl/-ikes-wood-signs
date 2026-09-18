@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.5",
-  "release": "Admiral Lens",
-  "generatedAt": "2026-09-18T13:45:00-04:00",
+  "build": "8.8.15.6",
+  "release": "Station Registry",
+  "generatedAt": "2026-09-18T14:45:34-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -292,14 +292,26 @@
     "foundry_server_persistence": true,
     "release_course_preview_issue": true,
     "fleet_spine_overlay_above_admiral_deck": true,
-    "fleet_spine_modal_focus_restore": true
+    "fleet_spine_modal_focus_restore": true,
+    "station_registry_durable_identity": true,
+    "station_registry_no_auto_migration": true,
+    "station_preview_before_register": true,
+    "station_registration_requires_admiral_intent": true,
+    "station_registration_no_fake_heartbeat": true,
+    "station_registry_excludes_private_business_payloads": true,
+    "station_activity_spine_human_readable": true,
+    "web_kiosk_hybrid_station_modes": true,
+    "station_server_only_read_only_without_local_manifest": true,
+    "station_registry_server_contract_transactionally_verified": true,
+    "station_registry_fake_test_row_rolled_back": true,
+    "station_registry_zero_seed_rows_preserved": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.5 Admiral Lens makes Fleet Spine governance legible and durable: exact before/after release previews remain visibly present, issue stays locked behind a fresh fingerprint, changed inputs invalidate preview, Activity Spine defaults to human-readable event cards, and existing Fleet Core boundaries remain intact.",
-  "candidate": "8.8.15.5",
+  "note": "8.8.15.6 Station Registry promotes customer endpoints into first-class Fleet Core identity without inventing state. Local Deployment Shipwright manifests remain local until an Admiral previews and registers the exact station. Registration is fingerprint-bound and intent-recorded, never fabricates heartbeat health, and excludes customer/order/photo payloads from the Control Plane.",
+  "candidate": "8.8.15.6",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -554,8 +566,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.5",
-    "seal": "admiral-lens-88155",
+    "build": "8.8.15.6",
+    "seal": "station-registry-88156",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
@@ -565,7 +577,7 @@
     ],
     "rule": "all authoritative identities must agree exactly; any prior release seal in an authoritative file fails packaging"
   },
-  "name": "Admiral Lens",
+  "name": "Station Registry",
   "releaseBlockers": {
     "ike_recognition_truth_state_machine": true,
     "ike_customer_length_entry_removed": true,
