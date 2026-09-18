@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.6",
-  "release": "Station Registry",
-  "generatedAt": "2026-09-18T14:45:34-04:00",
+  "build": "8.8.15.7",
+  "release": "Fleet Truth",
+  "generatedAt": "2026-09-18T15:00:23-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -310,8 +310,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.6 Station Registry promotes customer endpoints into first-class Fleet Core identity without inventing state. Local Deployment Shipwright manifests remain local until an Admiral previews and registers the exact station. Registration is fingerprint-bound and intent-recorded, never fabricates heartbeat health, and excludes customer/order/photo payloads from the Control Plane.",
-  "candidate": "8.8.15.6",
+  "note": "8.8.15.7 Fleet Truth hardens Admiral Control Plane truthfulness: Station Registry resolves zero-state immediately, active release counts exclude historical unassigned/hold rows, and history remains preserved without being presented as current posture.",
+  "candidate": "8.8.15.7",
   "features": {
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
@@ -566,8 +566,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.6",
-    "seal": "station-registry-88156",
+    "build": "8.8.15.7",
+    "seal": "fleet-truth-88157",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
@@ -577,7 +577,7 @@
     ],
     "rule": "all authoritative identities must agree exactly; any prior release seal in an authoritative file fails packaging"
   },
-  "name": "Station Registry",
+  "name": "Fleet Truth",
   "releaseBlockers": {
     "ike_recognition_truth_state_machine": true,
     "ike_customer_length_entry_removed": true,
@@ -589,6 +589,16 @@
     "activity_spine_idempotency": true,
     "foundry_fleet_core_persistence": true,
     "release_course_preview_fingerprint": true,
-    "per_vessel_release_ring": true
+    "per_vessel_release_ring": true,
+    "fleet_truth_station_empty_state": true,
+    "fleet_truth_active_release_count": true
+  },
+  "fleet_truth_evidence": {
+    "server_counts_verified": true,
+    "registered_stations": 0,
+    "active_release_assignments": 0,
+    "release_assignment_records": 1,
+    "station_empty_state_resolves": true,
+    "active_history_semantics": true
   }
 }

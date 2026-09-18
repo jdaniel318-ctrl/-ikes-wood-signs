@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.6",
-  "release": "Station Registry",
+  "build": "8.8.15.7",
+  "release": "Fleet Truth",
   "status": "active",
   "principles": [
     {
@@ -134,7 +134,7 @@
       "id": "station-truth-before-health",
       "rule": "A local outpost is not a durable Fleet Core station until explicit registration, and registration never implies heartbeat health. Endpoint identity, runtime health and customer session state remain separate facts.",
       "scope": "fleet-control-plane",
-      "origin": "Station Registry 8.8.15.6"
+      "origin": "Station Registry 8.8.15.7"
     }
   ],
   "governance": {

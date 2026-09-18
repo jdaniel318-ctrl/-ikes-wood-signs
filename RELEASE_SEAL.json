@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.6",
-  "release": "Station Registry",
-  "seal": "station-registry-88156",
+  "build": "8.8.15.7",
+  "release": "Fleet Truth",
+  "seal": "fleet-truth-88157",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Station Registry",
-  "name": "Station Registry",
-  "releaseName": "Station Registry"
+  "release_name": "Fleet Truth",
+  "name": "Fleet Truth",
+  "releaseName": "Fleet Truth"
 }

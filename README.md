@@ -1,6 +1,6 @@
-# Dark Sky 8.8.15.6 — Station Registry
+# Dark Sky 8.8.15.7 — Fleet Truth
 
-Station Registry makes customer endpoints first-class Fleet Core identities without pretending browser-local outposts are already durable stations. The future Admiral can now see the difference between a local deployment manifest and a registered Fleet Core station, preview the exact identity before registration, and issue registration only with a fresh server fingerprint and recorded intent.
+Fleet Truth keeps Station Registry and release-ring governance literal at the Admiral surface: zero means zero, local means local, active means active, and retained history never masquerades as current posture. The future Admiral can now see the difference between a local deployment manifest and a registered Fleet Core station, preview the exact identity before registration, and issue registration only with a fresh server fingerprint and recorded intent.
 
 ## What changes
 - **Durable station identity** — Fleet Core stores station key, exact vessel, display name, WEB/KIOSK/HYBRID mode, lifecycle state, runtime release, policy version, profile, recovery count and heartbeat posture.
@@ -19,3 +19,10 @@ A station is a durable endpoint identity, not a customer session. Customer cargo
 
 ## Required proving voyage
 Authenticate Admiral → open Fleet Spine → inspect **Station Registry** → verify any browser-local outpost appears as **LOCAL ONLY** → select it → record station-registration intent → **PREVIEW STATION IDENTITY** → inspect exact proof → only then consider **REGISTER EXACT STATION**. After registration the station must show **AWAITING HEARTBEAT**, not a fabricated healthy state.
+
+
+## 8.8.15.7 Fleet Truth
+- Zero registered stations resolve immediately to a durable empty state instead of remaining on “READING STATIONS…”.
+- The Control Plane summary now reports ACTIVE RELEASES, not historical release-assignment rows.
+- Historical release records remain retained for continuity and rollback context.
+- Station Registry continues to keep local manifests LOCAL ONLY until deliberate preview + registration.

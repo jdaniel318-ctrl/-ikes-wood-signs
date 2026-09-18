@@ -208,3 +208,9 @@ A release is HOLD for Ike if: (1) a glyph approaches/crosses the detected usable
 - Station identity persists across customer-session resets; customer sessions never become station identity.
 - A server-only station with no local manifest is inspection-only on that device.
 - WEB/KIOSK/HYBRID mode and runtime/policy versions remain exact-station facts.
+
+
+### Fleet Truth — Admiral metric semantics
+- Zero station rows resolve visibly and do not remain in a reading state.
+- Active release count excludes `UNASSIGNED + HOLD + no current release` historical rows.
+- History retention is tested separately from current-posture counts.

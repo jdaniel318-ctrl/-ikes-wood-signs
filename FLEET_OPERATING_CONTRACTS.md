@@ -1,4 +1,4 @@
-# 8.8.15.6 Station Registry Contract
+# 8.8.15.7 Station Registry Contract
 
 - **Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.**
 - A route into a surface never silently widens authority. Engine support and Owner authority remain distinct even when they share navigation.
@@ -634,7 +634,7 @@ Any surface that expands, saves, advances, or changes state must look and respon
 8. Sea Trial may show bounded diagnostic timing. Live customer surfaces remain clean.
 
 
-## Fleet Spine Contract — 8.8.15.6
+## Fleet Spine Contract — 8.8.15.7
 - Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet.
 - Control Plane owns shared coordination truth: vessel identity, authority, release assignment, station identity, capability/entitlement posture and health. Private business records remain Vessel Data Plane.
 - Shared operational facts are recorded once in an append-only Activity Spine. Projections such as Watchtower, recovery summaries and future Captain/Admiral logs read that truth rather than invent parallel histories.
@@ -646,10 +646,10 @@ Any surface that expands, saves, advances, or changes state must look and respon
 - A vessel-specific fix may graduate only after its generic fleet behavior can be named, certified and regression-gated.
 
 
-## 8.8.15.6 — Station Registry
+## 8.8.15.7 — Station Registry
 Fleet Spine course previews are command proof, not transient feedback. A modifying release course remains locked until an exact-vessel server preview is visibly rendered; any proposed-course mutation invalidates that preview. Default Activity Spine presentation is human-readable, with technical payload behind progressive disclosure. Admiral Control Plane typography must remain readable at normal iPad viewing distance.
 
-## Station Registry Contract — 8.8.15.6
+## Station Registry Contract — 8.8.15.7
 - A Deployment Shipwright outpost and a Fleet Core station are related but not identical. Browser-local manifests remain local until exact identity is deliberately registered.
 - Station registration is exact-vessel, preview-before-issue, fingerprint-bound, intent-recorded and auditable.
 - Durable station identity may contain endpoint metadata only: station key/name, vessel, mode, lifecycle, runtime release, policy/profile, heartbeat and recovery posture.
@@ -659,3 +659,10 @@ Fleet Spine course previews are command proof, not transient feedback. A modifyi
 - WEB, KIOSK and HYBRID are first-class station modes across the fleet.
 - Server-only station records with no local manifest on the current device are read-only; Fleet Spine must not invent a local configuration to match them.
 - Local-only manifests are visible as candidates, not silently promoted to Fleet Core.
+
+
+## 8.8.15.7 — Fleet Truth
+- A completed empty server read must resolve to an explicit zero state; loading language cannot persist after success.
+- Dashboard metrics must name exactly what they count. Historical rows may never masquerade as active posture.
+- `ACTIVE RELEASES` counts only vessels whose ring/state/current release represent an active course.
+- Release-assignment history remains durable for continuity and rollback context.
