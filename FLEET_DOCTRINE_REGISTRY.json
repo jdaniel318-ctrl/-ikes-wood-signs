@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.2",
-  "release": "Admiral Passage",
+  "build": "8.8.15.3",
+  "release": "Truth Signal",
   "status": "active",
   "principles": [
     {

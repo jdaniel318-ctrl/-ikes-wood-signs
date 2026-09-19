@@ -1,4 +1,14 @@
-# Dark Sky 8.8.15.2 — Admiral Passage
+# Dark Sky 8.8.15.3 — Truth Signal
+
+- Connected My Fleet to the authenticated `admiral_read_fleet_watch` server read model.
+- Added an exact-vessel Owner Control **Fleet Report** backed by `vessel_read_own_watch_report` and `vessel_publish_watch_report`.
+- Re-verifies active owner membership on every watch read and publish; local recovery cannot submit operational truth.
+- Hardened the live owner-report RPCs to require active `project_owner` membership, deny anonymous execution, and enforce server-side text, count, and JSON payload limits.
+- Separates **Never Reported**, **Stale Report**, and fresh verified states using only server `reported_at`.
+- Fails closed when operational truth is unavailable and never substitutes registry or logo activity.
+- Preserved read-only Admiral authority, project isolation, existing commissioning, Fleet Launch Service, branding, and publication gates.
+
+## Preserved from Admiral Passage
 
 - Made Owner Portal opt-in instead of silently selected for ownerless projects.
 - Migrates older blank-owner drafts from the inherited Owner Portal default to a safe **Prepare Later** state.

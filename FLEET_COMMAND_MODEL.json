@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.15.2",
+  "build": "8.8.15.3",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Admiral Passage",
+  "release": "Truth Signal",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -160,5 +160,17 @@
     "passwordStorage": "supabase-auth-only",
     "tokenPersistence": "forbidden",
     "failureMode": "safe-hold-no-authority"
+  },
+  "fleetWatchtower": {
+    "readAuthority": "active-server-side-admiral-only",
+    "readFunction": "admiral_read_fleet_watch",
+    "writeAuthority": "exact-vessel-active-owner-membership-only",
+    "writeFunction": "vessel_publish_watch_report",
+    "ownerReadFunction": "vessel_read_own_watch_report",
+    "admiralWriteControls": false,
+    "registryActivityIsOperationalTruth": false,
+    "states": ["never_reported", "fresh_verified", "stale_report"],
+    "reportFields": ["current_work", "unresolved_issues", "issue_summary", "reported_at", "truth_source"],
+    "failureMode": "explicit-unavailable-no-registry-substitution"
   }
 }

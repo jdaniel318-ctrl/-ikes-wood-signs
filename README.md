@@ -1,12 +1,22 @@
-# Dark Sky 8.8.15.2 — Admiral Passage
+# Dark Sky 8.8.15.3 — Truth Signal
 
-Admiral Passage closes the ownerless commissioning dead end while retaining Safe Draft's Safari storage repair. New projects defer Owner Portal until a confirmed owner exists. Older blank-owner drafts that inherited the former default are migrated safely, and the Step 5 choice is now a large, explicit **Prepare Now / Prepare Later** control that persists immediately.
+Truth Signal turns the authenticated **My Fleet** screen into a real operational watch. It reads `admiral_read_fleet_watch` after active Admiral verification and refuses to substitute branding or registry timestamps when Fleet Core cannot provide operational truth.
 
-The Admiral Passage is now a release-checked authority contract: clear Fleet proof, preserve outside-owner independence and approval, receive an active server-side Admiral authority record, then authenticate that identity. Browser state, a PIN, Captain access, and commissioning activity cannot self-promote an account. Fleet Core currently confirms one active Admiral identity; successful account authentication now changes the deck from **Provisional** to **Verified Admiral**, and sign-out restores the provisional display.
+Each Owner Control Center now includes **Fleet Report**. A live Supabase owner identity must pass exact-vessel membership verification before it can read or publish current work, unresolved issues, and an issue summary. Local recovery remains useful for safe portal access but cannot publish. Admiral receives no reporting or mutation control.
 
 The **Fleet Launch Service** introduced in Launch Harbor remains intact: Founder Preview → Owner Review → Prepare → Private Preview → Sea Trial → Owner Handoff → Launch. It remains advisory and free by default, grants no equity or credentials, retains the outside owner, and never publishes automatically.
 
-## Quick Admiral Passage check
+## Quick Truth Signal check
+
+1. Open an exact vessel Owner Control Center with its live owner account.
+2. Open **Fleet Report**, enter current work and an issue count, then publish once.
+3. Confirm a durable **VERIFIED REPORT SAVED** result and refresh the report.
+4. In a separate Admiral passage, authenticate **My Fleet** and press **Refresh Watch**.
+5. Confirm that vessel shows a server report timestamp and a verified lifecycle state.
+6. Confirm vessels with no report say **NEVER REPORTED**, not stale activity derived from branding.
+7. Open the vessel observation and confirm it contains no modifying control.
+
+## Preserved Admiral Passage check
 
 1. Open **Commission New Project**, enter **Crossroads Pizza**, and press **Continue** once.
 2. Confirm Step 2 **Import / Model** opens without a quota error.

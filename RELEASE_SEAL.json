@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.2",
-  "release": "Admiral Passage",
-  "seal": "admiral-passage-88152",
+  "build": "8.8.15.3",
+  "release": "Truth Signal",
+  "seal": "truth-signal-88153",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Admiral Passage",
-  "name": "Admiral Passage",
-  "releaseName": "Admiral Passage"
+  "release_name": "Truth Signal",
+  "name": "Truth Signal",
+  "releaseName": "Truth Signal"
 }

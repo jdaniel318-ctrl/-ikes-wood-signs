@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.2",
+  "build": "8.8.15.3",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -135,6 +135,29 @@
       ],
       "release_blocker": true,
       "staging_ledger_contract": "When a live staging action occurs, persisted staged records must equal targeted vessels after re-render while adoption remains separate."
+    },
+    {
+      "id": "fleet-truth-signal",
+      "label": "Fleet Truth Signal Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Exact vessel Owner Control",
+        "Live owner identity and membership verification",
+        "Publish current work and issue count",
+        "Admiral authenticates separately",
+        "Refresh read-only My Fleet",
+        "Open exact vessel observation"
+      ],
+      "proof": [
+        "no local recovery publication",
+        "no cross-vessel owner read or write",
+        "no Admiral watch mutation",
+        "never-reported distinct from stale",
+        "registry timestamps never become operational activity",
+        "server reported_at is the only freshness clock"
+      ],
+      "summary": "A vessel owns its operational report; an authenticated Admiral may observe the server-attested result without receiving control of that vessel."
     },
     {
       "id": "ike-production",

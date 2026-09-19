@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.11.9",
-  "release": "Bootstrap Build Schedule",
+  "build": "8.8.15.3",
+  "release": "Truth Signal",
   "excluded_sources": [
     "The situation"
   ],
@@ -31,6 +31,11 @@
       "preview_does_not_widen_authority"
       ,"vessel_feature_read_requires_exact_authenticated_scope"
       ,"unverified_feature_state_fails_closed"
+      ,"admiral_watch_requires_active_server_authority"
+      ,"owner_report_requires_exact_active_vessel_membership"
+      ,"local_recovery_cannot_publish_watch_report"
+      ,"admiral_observation_exposes_no_watch_write_control"
+      ,"watch_failure_never_substitutes_registry_activity"
     ],
     "true_helm": [
       "explicit_in_app_navigation",
@@ -89,7 +94,9 @@
       "project_scoped_owner_control",
       "owner_feature_choice",
       "shared_service_safe_failure",
-      "owner_information_architecture_preserved"
+      "owner_information_architecture_preserved",
+      "owner_can_read_only_own_latest_watch_report",
+      "owner_report_confirmation_is_durable"
     ],
     "grain_guard": [
       "production_truth_geometry",

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.2",
-  "release": "Admiral Passage",
-  "generatedAt": "2026-09-19T02:04:31Z",
+  "build": "8.8.15.3",
+  "release": "Truth Signal",
+  "generatedAt": "2026-09-19T03:04:56Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -276,13 +276,20 @@
     ,"bootstrap_project_fleet_registry_controller_active": true
     ,"bootstrap_project_fleet_registry_tap_capture": true
     ,"bootstrap_project_fleet_registry_read_only": true
+    ,"admiral_watch_server_read_model": true
+    ,"admiral_watch_has_no_mutation_control": true
+    ,"owner_watch_exact_membership_each_call": true
+    ,"owner_local_recovery_watch_publish_denied": true
+    ,"watch_freshness_uses_reported_at_only": true
+    ,"watch_registry_timestamp_substitution_forbidden": true
+    ,"watch_never_reported_distinct_from_stale": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.2 Admiral Passage removes the ownerless commissioning dead end with an explicit persisted Prepare Now / Prepare Later choice, retains quota-safe drafts, and defines a server-verified path from Captain proof to Admiral authority without weakening fleet boundaries.",
-  "candidate": "8.8.15.2",
+  "note": "8.8.15.3 Truth Signal connects exact-vessel owner reporting to the authenticated read-only Fleet Watchtower, distinguishes never-reported from stale, and forbids registry timestamps from impersonating operational truth.",
+  "candidate": "8.8.15.3",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -525,8 +532,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.2",
-    "seal": "admiral-passage-88152",
+    "build": "8.8.15.3",
+    "seal": "truth-signal-88153",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

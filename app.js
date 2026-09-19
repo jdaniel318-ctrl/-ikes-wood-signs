@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.2';
+  const BUILD_VERSION='8.8.15.3';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5457,7 +5457,10 @@
     const goldenOk=goldenVoyages?.build===BUILD_VERSION && releaseBlockingVoyages.length>=6 && goldenVoyages?.governance?.admiralMayChangeCourse===true;
     add('golden-voyage-contract','Golden UI Voyage framework',goldenOk?'pass':'fail',goldenOk?`${releaseBlockingVoyages.length} real-UI journeys are registered as release-blocking assurance paths; Admiral may deliberately version the voyage set without silently weakening active blockers.`:'Golden Voyage registry is missing, stale, lacks six or more release-blocking journeys, or lacks governed course-change authority.');
     const commandModel=await safe(async()=>{const r=await fetch(`FLEET_COMMAND_MODEL.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
-    const commandOk=commandModel?.build===BUILD_VERSION && commandModel?.views?.operational==='professional-default' && commandModel?.views?.presentation==='cinematic-secondary' && Array.isArray(commandModel?.layers)&&commandModel.layers.length===3 && commandModel?.admiralCourseAuthority?.enabled===true && commandModel?.admiralCourseAuthority?.authority==='admiral';
+    const watchtower=commandModel?.fleetWatchtower;
+    const watchtowerOk=watchtower?.readAuthority==='active-server-side-admiral-only'&&watchtower?.writeAuthority==='exact-vessel-active-owner-membership-only'&&watchtower?.readFunction==='admiral_read_fleet_watch'&&watchtower?.writeFunction==='vessel_publish_watch_report'&&watchtower?.ownerReadFunction==='vessel_read_own_watch_report'&&watchtower?.admiralWriteControls===false&&watchtower?.registryActivityIsOperationalTruth===false&&watchtower?.failureMode==='explicit-unavailable-no-registry-substitution';
+    add('fleet-truth-signal','Fleet Watchtower truth boundary',watchtowerOk?'pass':'fail',watchtowerOk?'Vessels publish only through exact active owner membership; Admiral reads the server-attested fleet view without write controls or registry-time substitution.':'Fleet Watchtower authority, freshness, or fail-closed contract is incomplete.');
+    const commandOk=commandModel?.build===BUILD_VERSION && commandModel?.views?.operational==='professional-default' && commandModel?.views?.presentation==='cinematic-secondary' && Array.isArray(commandModel?.layers)&&commandModel.layers.length===3 && commandModel?.admiralCourseAuthority?.enabled===true && commandModel?.admiralCourseAuthority?.authority==='admiral'&&watchtowerOk;
     add('command-layer-placement','Engine → Captain → Admiral command model',commandOk?'pass':'fail',commandOk?'Engine operates, Captain commands, Admiral governs and may deliberately change Fleet course; professional operation remains complete without cinematic presentation.':'Command layer placement, professional/cinematic contract, or Admiral Course Authority is incomplete.');
     const admiralPassageModel=await safe(async()=>{const r=await fetch(`ADMIRAL_ENTITLEMENT_STATE_MODEL.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
     const passage=admiralPassageModel?.admiral_passage;
@@ -5666,6 +5669,7 @@
     return [
       combine('authority','Authority Voyage',['engine-auth','project-admin','captain-auth'],'Black Flag → Project Admin → Captain authority contracts.'),
       combine('owner-authority','Owner Authority Voyage',['owner-project-scope','owner-session-proof','owner-credential-separation'],'Owner identity → canonical vessel scope → expiring project_owner session → deterministic logout/recovery.'),
+      combine('fleet-truth-signal','Fleet Truth Signal Voyage',['fleet-truth-signal','owner-project-scope','identity-membership-contract','identity-rls-contract'],'Exact-vessel owner report → server-attested Fleet Watch → authenticated read-only Admiral observation. Registry timestamps never impersonate operational truth.'),
       combine('production-identity','Production Identity Voyage',['identity-provider-contract','identity-client-secret-boundary','vessel-commissioning-authority','identity-membership-contract','identity-rls-contract','owner-production-backend','identity-revocation-proof','identity-rollback-bridge'],'Identity provider → server membership → exact vessel RLS → revocation → rollback bridge. This voyage remains WATCH until a real backend proves the live negative tests.'),
       combine('fleet-ownership-charter','Fleet Ownership Charter Voyage',['ownership-charter-separation','ownership-self-join','ownership-transfer','ownership-admiral-vessels'],'Vessel entry → ownership → operating authority stay separate. Self-join is controlled; Admiral-owned and Captain-operated vessels are valid; transfer preserves canonical vessel identity.'),
       combine('isolation','Isolation Voyage',['project-identity','order-boundary'],'Canonical Project IDs and project-scoped operational records.'),

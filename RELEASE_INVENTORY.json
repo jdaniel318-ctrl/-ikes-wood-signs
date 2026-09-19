@@ -1,8 +1,8 @@
 {
-  "release": "Admiral Passage",
-  "name": "Admiral Passage",
-  "build": "8.8.15.2",
-  "seal": "admiral-passage-88152",
+  "release": "Truth Signal",
+  "name": "Truth Signal",
+  "build": "8.8.15.3",
+  "seal": "truth-signal-88153",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
