@@ -1,12 +1,12 @@
-# Dark Sky 8.8.15.3 — Truth Signal
+# Dark Sky 8.8.15.4 — Recovery Helm
 
-- Connected My Fleet to the authenticated `admiral_read_fleet_watch` server read model.
-- Added an exact-vessel Owner Control **Fleet Report** backed by `vessel_read_own_watch_report` and `vessel_publish_watch_report`.
-- Re-verifies active owner membership on every watch read and publish; local recovery cannot submit operational truth.
-- Hardened the live owner-report RPCs to require active `project_owner` membership, deny anonymous execution, and enforce server-side text, count, and JSON payload limits.
-- Separates **Never Reported**, **Stale Report**, and fresh verified states using only server `reported_at`.
-- Fails closed when operational truth is unavailable and never substitutes registry or logo activity.
-- Preserved read-only Admiral authority, project isolation, existing commissioning, Fleet Launch Service, branding, and publication gates.
+- Added a visible **Forgot Password?** route to every Owner Entrance.
+- Keeps Supabase password recovery email-based and uses the same exact-vessel callback and membership re-verification.
+- Added an exact-vessel Project Admin recovery screen for provisional/local owner credentials.
+- Requires owner-login match, a minimum 10-character replacement password, confirmation, and the established Project Admin recovery PIN.
+- Locks local recovery for five minutes after five incorrect PIN attempts.
+- Returns to sign-in with a durable business-scoped success state; recovery never auto-signs in.
+- Preserved Truth Signal, read-only Admiral authority, project isolation, existing commissioning, Fleet Launch Service, branding, and publication gates.
 
 ## Preserved from Admiral Passage
 

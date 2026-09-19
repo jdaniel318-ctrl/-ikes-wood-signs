@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.3",
-  "release": "Truth Signal",
+  "build": "8.8.15.4",
+  "release": "Recovery Helm",
   "excluded_sources": [
     "The situation"
   ],
@@ -36,6 +36,12 @@
       ,"local_recovery_cannot_publish_watch_report"
       ,"admiral_observation_exposes_no_watch_write_control"
       ,"watch_failure_never_substitutes_registry_activity"
+      ,"forgot_password_visible_on_every_owner_entrance"
+      ,"local_owner_recovery_is_exact_vessel_only"
+      ,"local_owner_recovery_requires_project_admin_pin"
+      ,"local_owner_recovery_locks_after_five_failures"
+      ,"owner_recovery_never_auto_signs_in"
+      ,"owner_recovery_never_grants_fleet_watch_authority"
     ],
     "true_helm": [
       "explicit_in_app_navigation",
@@ -96,7 +102,8 @@
       "shared_service_safe_failure",
       "owner_information_architecture_preserved",
       "owner_can_read_only_own_latest_watch_report",
-      "owner_report_confirmation_is_durable"
+      "owner_report_confirmation_is_durable",
+      "owner_password_recovery_confirmation_is_durable"
     ],
     "grain_guard": [
       "production_truth_geometry",

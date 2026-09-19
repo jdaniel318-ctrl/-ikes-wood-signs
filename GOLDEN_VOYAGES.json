@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.3",
+  "build": "8.8.15.4",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -158,6 +158,30 @@
         "server reported_at is the only freshness clock"
       ],
       "summary": "A vessel owns its operational report; an authenticated Admiral may observe the server-attested result without receiving control of that vessel."
+    },
+    {
+      "id": "owner-recovery-helm",
+      "label": "Owner Recovery Helm Voyage",
+      "class": "required",
+      "release_blocker": true,
+      "path": [
+        "Exact vessel Owner Entrance",
+        "Forgot Password",
+        "Supabase email recovery or provisional Project Admin recovery",
+        "New password confirmation",
+        "Durable recovery result",
+        "Fresh owner sign-in"
+      ],
+      "proof": [
+        "forgot-password-visible-for-every-owner-entrance",
+        "recovery-never-crosses-project-id",
+        "local-recovery-lockout-after-five-failures",
+        "recovery-never-auto-signs-in",
+        "recovery-never-grants-engine-captain-or-admiral",
+        "local-recovery-cannot-publish-watch-report",
+        "supabase-recovery-reverifies-exact-vessel-membership"
+      ],
+      "summary": "A forgotten owner password can be replaced without changing vessel ownership, widening authority, or confusing provisional recovery with a live server identity."
     },
     {
       "id": "ike-production",

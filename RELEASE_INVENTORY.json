@@ -1,8 +1,8 @@
 {
-  "release": "Truth Signal",
-  "name": "Truth Signal",
-  "build": "8.8.15.3",
-  "seal": "truth-signal-88153",
+  "release": "Recovery Helm",
+  "name": "Recovery Helm",
+  "build": "8.8.15.4",
+  "seal": "recovery-helm-88154",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

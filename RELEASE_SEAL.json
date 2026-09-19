@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.3",
-  "release": "Truth Signal",
-  "seal": "truth-signal-88153",
+  "build": "8.8.15.4",
+  "release": "Recovery Helm",
+  "seal": "recovery-helm-88154",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Truth Signal",
-  "name": "Truth Signal",
-  "releaseName": "Truth Signal"
+  "release_name": "Recovery Helm",
+  "name": "Recovery Helm",
+  "releaseName": "Recovery Helm"
 }

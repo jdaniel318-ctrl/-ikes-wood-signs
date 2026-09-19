@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.3",
-  "release": "Truth Signal",
-  "generatedAt": "2026-09-19T03:04:56Z",
+  "build": "8.8.15.4",
+  "release": "Recovery Helm",
+  "generatedAt": "2026-09-19T16:21:09Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -283,13 +283,20 @@
     ,"watch_freshness_uses_reported_at_only": true
     ,"watch_registry_timestamp_substitution_forbidden": true
     ,"watch_never_reported_distinct_from_stale": true
+    ,"owner_forgot_password_visible_fleetwide": true
+    ,"owner_recovery_identity_modes_separate": true
+    ,"owner_local_recovery_exact_vessel": true
+    ,"owner_local_recovery_five_attempt_lockout": true
+    ,"owner_recovery_never_auto_signs_in": true
+    ,"owner_recovery_durable_confirmation": true
+    ,"owner_recovery_does_not_widen_authority": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.3 Truth Signal connects exact-vessel owner reporting to the authenticated read-only Fleet Watchtower, distinguishes never-reported from stale, and forbids registry timestamps from impersonating operational truth.",
-  "candidate": "8.8.15.3",
+  "note": "8.8.15.4 Recovery Helm adds identity-appropriate forgotten-password recovery to every Owner Entrance while preserving exact-vessel scope, fresh sign-in, retry lockout, and the existing Truth Signal authority boundary.",
+  "candidate": "8.8.15.4",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -532,8 +539,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.3",
-    "seal": "truth-signal-88153",
+    "build": "8.8.15.4",
+    "seal": "recovery-helm-88154",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

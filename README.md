@@ -1,20 +1,20 @@
-# Dark Sky 8.8.15.3 — Truth Signal
+# Dark Sky 8.8.15.4 — Recovery Helm
 
-Truth Signal turns the authenticated **My Fleet** screen into a real operational watch. It reads `admiral_read_fleet_watch` after active Admiral verification and refuses to substitute branding or registry timestamps when Fleet Core cannot provide operational truth.
+Recovery Helm closes the field-confirmed forgotten-password gap on every Owner Entrance. Supabase-backed owners receive a privacy-preserving recovery email; provisional/local owners receive an exact-vessel Project Admin recovery screen with retry lockout, password confirmation, and a durable success state.
 
-Each Owner Control Center now includes **Fleet Report**. A live Supabase owner identity must pass exact-vessel membership verification before it can read or publish current work, unresolved issues, and an issue summary. Local recovery remains useful for safe portal access but cannot publish. Admiral receives no reporting or mutation control.
+Recovery changes only the selected vessel's owner credential. It never grants Engine, Captain, Admiral, ownership, or Fleet Watch reporting authority. The Truth Signal contract remains intact: a live Supabase `project_owner` membership is still required before an Owner Control Center can publish operational truth.
 
 The **Fleet Launch Service** introduced in Launch Harbor remains intact: Founder Preview → Owner Review → Prepare → Private Preview → Sea Trial → Owner Handoff → Launch. It remains advisory and free by default, grants no equity or credentials, retains the outside owner, and never publishes automatically.
 
-## Quick Truth Signal check
+## Quick Recovery Helm check
 
-1. Open an exact vessel Owner Control Center with its live owner account.
-2. Open **Fleet Report**, enter current work and an issue count, then publish once.
-3. Confirm a durable **VERIFIED REPORT SAVED** result and refresh the report.
-4. In a separate Admiral passage, authenticate **My Fleet** and press **Refresh Watch**.
-5. Confirm that vessel shows a server report timestamp and a verified lifecycle state.
-6. Confirm vessels with no report say **NEVER REPORTED**, not stale activity derived from branding.
-7. Open the vessel observation and confirm it contains no modifying control.
+1. Open Legacy Plumbing → **Owner Entrance** and confirm **Forgot Password?** is visible.
+2. Tap it and confirm the exact-vessel recovery screen names Legacy Plumbing and explains the authority boundary.
+3. Enter the owner login, Project Admin recovery PIN, and a new password of at least 10 characters twice.
+4. Confirm the durable **Password reset complete for this business only** result.
+5. Sign in with the new password and confirm Legacy Plumbing opens without exposing Engine or Admiral controls.
+6. Open **Fleet Report** and confirm local recovery remains view-only until a Supabase owner membership is commissioned.
+7. Return to Engine, open Ike's live owner recovery, and confirm email recovery still uses the private non-enumerating message.
 
 ## Preserved Admiral Passage check
 

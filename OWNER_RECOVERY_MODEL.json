@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-owner-recovery-model-v1",
-  "build": "8.7.0",
+  "build": "8.8.15.4",
   "forgot_password": [
     "email-entered",
     "supabase-recovery-email",
@@ -11,7 +11,17 @@
   ],
   "ownership_unchanged": true,
   "project_id_unchanged": true,
-  "local_recovery": "testing-only-separate",
+  "local_recovery": {
+    "scope": "exact-vessel-provisional-owner-credential",
+    "proof": "project-admin-recovery-pin",
+    "password_minimum_characters": 10,
+    "failure_limit": 5,
+    "lockout_minutes": 5,
+    "automatic_sign_in": false,
+    "may_publish_watch_report": false,
+    "authority_change": false
+  },
+  "privacy_contract": "Recovery confirmation does not disclose whether a Supabase email account exists.",
   "callback_contract": {
     "precedence": "before-engine-first-paint",
     "accepted": ["hash-access-token", "query-access-token", "token-hash", "pkce-code-safe-hold", "callback-error-safe-hold"],

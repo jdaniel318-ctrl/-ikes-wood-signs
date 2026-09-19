@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.15.3",
+  "build": "8.8.15.4",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Truth Signal",
+  "release": "Recovery Helm",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -160,6 +160,18 @@
     "passwordStorage": "supabase-auth-only",
     "tokenPersistence": "forbidden",
     "failureMode": "safe-hold-no-authority"
+  },
+  "ownerRecovery": {
+    "entry": "forgot-password-visible-every-owner-entrance",
+    "supabaseIdentity": "email-recovery-and-exact-vessel-membership-reverification",
+    "provisionalIdentity": "exact-vessel-project-admin-recovery",
+    "provisionalFailureLimit": 5,
+    "provisionalLockoutMinutes": 5,
+    "minimumPasswordCharacters": 10,
+    "automaticSignIn": false,
+    "authorityChange": false,
+    "fleetWatchPublication": "supabase-project-owner-membership-only",
+    "confirmation": "durable-business-scoped-result"
   },
   "fleetWatchtower": {
     "readAuthority": "active-server-side-admiral-only",
