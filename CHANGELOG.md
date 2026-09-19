@@ -1,4 +1,14 @@
-# Dark Sky 8.8.15.4 — Recovery Helm
+# Dark Sky 8.8.15.5 — Supabase Keel
+
+- Seeded one neutral Supabase business-settings record for every canonical vessel without creating owners, invitations, credentials, memberships, or business claims.
+- Extended the authenticated, read-only Admiral Fleet Spine with per-vessel settings, owner identity, membership, order, report, and commissioning posture.
+- Added **Owner Ready**, **Fleet Seeded**, **Owner Attention**, and **Registry Only** states to My Fleet and its exact-vessel overview.
+- Added an iPad-responsive Supabase Keel summary showing registered, settings-seeded, owner-ready, fleet-seeded, and attention counts.
+- Added direct active-Admiral checks inside both release-assignment and vessel-commissioning mutation functions as defense in depth.
+- Revoked anonymous/public execution and retained authenticated execution on the three hardened Admiral RPCs.
+- Preserved Recovery Helm, Truth Signal, exact-vessel isolation, all six canonical identities, and the local fallback until each real owner passes cutover proof.
+
+## Preserved Recovery Helm
 
 - Added a visible **Forgot Password?** route to every Owner Entrance.
 - Keeps Supabase password recovery email-based and uses the same exact-vessel callback and membership re-verification.

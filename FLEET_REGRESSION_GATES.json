@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.4",
-  "release": "Recovery Helm",
+  "build": "8.8.15.5",
+  "release": "Supabase Keel",
   "excluded_sources": [
     "The situation"
   ],
@@ -42,6 +42,9 @@
       ,"local_owner_recovery_locks_after_five_failures"
       ,"owner_recovery_never_auto_signs_in"
       ,"owner_recovery_never_grants_fleet_watch_authority"
+      ,"fleet_spine_requires_active_admiral"
+      ,"fleet_seed_never_creates_owner_membership"
+      ,"commission_and_release_mutations_repeat_admiral_check"
     ],
     "true_helm": [
       "explicit_in_app_navigation",
@@ -104,6 +107,7 @@
       "owner_can_read_only_own_latest_watch_report",
       "owner_report_confirmation_is_durable",
       "owner_password_recovery_confirmation_is_durable"
+      ,"all_canonical_vessels_have_server_settings_posture"
     ],
     "grain_guard": [
       "production_truth_geometry",

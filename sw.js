@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.15.4';
-const RELEASE_SEAL='recovery-helm-88154';
+const RELEASE_BUILD='8.8.15.5';
+const RELEASE_SEAL='supabase-keel-88155';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

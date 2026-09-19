@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.4",
-  "release": "Recovery Helm",
+  "build": "8.8.15.5",
+  "release": "Supabase Keel",
   "status": "active",
   "principles": [
     {

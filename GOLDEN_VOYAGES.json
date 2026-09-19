@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.15.4",
+  "build": "8.8.15.5",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -35,6 +35,9 @@
         "publishable-key-only-browser-boundary",
         "server-membership-authority",
         "exact-project-rls",
+        "authenticated-fleet-spine-posture",
+        "six-of-six-neutral-settings-seed",
+        "fleet-seed-does-not-invent-owner",
         "captain-admiral-engine-commissioning",
         "server-revocation",
         "rollback-bridge"

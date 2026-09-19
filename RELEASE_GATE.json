@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.4",
-  "release": "Recovery Helm",
+  "build": "8.8.15.5",
+  "release": "Supabase Keel",
   "generatedAt": "2026-09-19T16:21:09Z",
   "checks": {
     "build_version": true,
@@ -295,8 +295,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.4 Recovery Helm adds identity-appropriate forgotten-password recovery to every Owner Entrance while preserving exact-vessel scope, fresh sign-in, retry lockout, and the existing Truth Signal authority boundary.",
-  "candidate": "8.8.15.4",
+  "note": "8.8.15.5 Supabase Keel gives all six vessels a neutral server settings posture, exposes authenticated read-only commissioning truth through the Admiral Fleet Spine, and repeats Admiral checks at both mutation boundaries without inventing owners or weakening Recovery Helm.",
+  "candidate": "8.8.15.5",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -498,6 +498,11 @@
     "refresh_never_mutates_entitlements": true,
     "course_order_scoped_to_exact_vessel": true,
     "unverified_feature_delivery_fails_closed": true,
+    "fleet_spine_requires_active_admiral": true,
+    "six_canonical_vessels_have_server_settings": true,
+    "fleet_seed_creates_no_owner_or_membership": true,
+    "admiral_mutations_repeat_authority_check": true,
+    "local_fallback_retained_until_owner_cutover_proof": true,
     "foreign_deployment_never_relabels_to_active_project": true,
     "quarantine_preserves_foreign_deployment_evidence": true
   },
@@ -539,8 +544,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.4",
-    "seal": "recovery-helm-88154",
+    "build": "8.8.15.5",
+    "seal": "supabase-keel-88155",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

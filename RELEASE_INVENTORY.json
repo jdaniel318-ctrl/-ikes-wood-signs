@@ -1,8 +1,8 @@
 {
-  "release": "Recovery Helm",
-  "name": "Recovery Helm",
-  "build": "8.8.15.4",
-  "seal": "recovery-helm-88154",
+  "release": "Supabase Keel",
+  "name": "Supabase Keel",
+  "build": "8.8.15.5",
+  "seal": "supabase-keel-88155",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

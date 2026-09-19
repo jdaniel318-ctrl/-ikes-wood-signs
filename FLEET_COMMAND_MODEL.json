@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.15.4",
+  "build": "8.8.15.5",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Recovery Helm",
+  "release": "Supabase Keel",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -172,6 +172,16 @@
     "authorityChange": false,
     "fleetWatchPublication": "supabase-project-owner-membership-only",
     "confirmation": "durable-business-scoped-result"
+  },
+  "supabaseKeel": {
+    "readAuthority": "active-server-side-admiral-only",
+    "readFunction": "admiral_read_fleet_spine",
+    "vesselStates": ["owner_ready", "owner_attention", "fleet_seeded", "registry_only"],
+    "ownerReadyRequires": ["owner_assigned", "one-active-project_owner-membership", "matching-auth-user", "business-settings-row"],
+    "fleetSeedCreatesOwnership": false,
+    "fleetSeedCreatesCredentials": false,
+    "fleetSeedPublishes": false,
+    "localFallbackRetainedUntilCutoverProof": true
   },
   "fleetWatchtower": {
     "readAuthority": "active-server-side-admiral-only",

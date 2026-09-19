@@ -1,4 +1,4 @@
--- Dark Sky 8.8.6 + 8.8.7 — Admiral Commissioning Orders and Vessel Logo Helm
+-- Dark Sky 8.8.6 through 8.8.15.5 — Admiral Commissioning Orders, Vessel Logo Helm, and Supabase Keel
 -- Prepared for Black Flag Fleet Core. Apply as migration: admiral_vessel_commissioning_886
 
 alter table public.fleet_vessels
@@ -84,6 +84,10 @@ declare
   v_preview jsonb;
   v_vessel public.fleet_vessels%rowtype;
 begin
+  if v_actor is null or not exists (
+    select 1 from public.fleet_global_authorities a
+    where a.user_id=v_actor and a.authority_role='admiral' and a.active=true and a.revoked_at is null
+  ) then raise exception 'admiral_authority_required'; end if;
   if char_length(coalesce(p_intent,'')) > 500 then raise exception 'intent_too_long'; end if;
   lock table public.fleet_vessels in share row exclusive mode;
   v_preview := public.admiral_preview_vessel_commission(p_project_id,p_namespace,p_display_name,p_mission_class,p_ownership_model,p_operating_model,p_mission_summary);
@@ -282,3 +286,28 @@ revoke all on function public.admiral_list_vessels_for_branding() from public, a
 revoke all on function public.admiral_set_vessel_logo(text,text,text) from public, anon;
 grant execute on function public.admiral_list_vessels_for_branding() to authenticated;
 grant execute on function public.admiral_set_vessel_logo(text,text,text) to authenticated;
+
+-- 8.8.15.5 Supabase Keel neutral settings seed. This is intentionally not an
+-- owner assignment: it creates no Auth user, membership, invitation, business
+-- claim, publication, or authority. The live migration also extends the
+-- existing authenticated admiral_read_fleet_spine RPC with commissioning
+-- posture, using fleet_business_orders and fleet_observability_reports as the
+-- canonical data tables, and repeats the active-Admiral check inside release assignment.
+insert into public.fleet_business_settings(vessel_id,settings,updated_at,updated_by)
+select v.id,
+  jsonb_build_object(
+    'schema','dark-sky-owner-business-settings-v1',
+    'projectId',v.project_id,
+    'businessConfig','{}'::jsonb,
+    'customization','{}'::jsonb,
+    'notifications','{}'::jsonb,
+    'syncedFrom','supabase-keel-seed',
+    'syncedAt',now(),
+    'migrationState','awaiting-identity-or-data-sync'
+  ),
+  now(),
+  null
+from public.fleet_vessels v
+where not exists (
+  select 1 from public.fleet_business_settings bs where bs.vessel_id=v.id
+);

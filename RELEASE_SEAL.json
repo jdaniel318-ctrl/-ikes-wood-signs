@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.4",
-  "release": "Recovery Helm",
-  "seal": "recovery-helm-88154",
+  "build": "8.8.15.5",
+  "release": "Supabase Keel",
+  "seal": "supabase-keel-88155",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Recovery Helm",
-  "name": "Recovery Helm",
-  "releaseName": "Recovery Helm"
+  "release_name": "Supabase Keel",
+  "name": "Supabase Keel",
+  "releaseName": "Supabase Keel"
 }

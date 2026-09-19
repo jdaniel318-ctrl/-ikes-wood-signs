@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.4';
+  const BUILD_VERSION='8.8.15.5';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5408,6 +5408,8 @@
     const rlsContract=String(window.BlackFlagV3Identity?.productionAuth?.require||'').includes('row_level_security');
     add('identity-rls-contract','Row-level vessel isolation contract',rlsContract?'pass':'fail',rlsContract?'Every exposed production table must be default-deny with RLS enforcing exact vessel membership independently of browser state.':'Production RLS contract is missing.');
     add('owner-production-backend','Staging owner identity backend',productionAuthStatus.ready?'pass':'warn',productionAuthStatus.ready?'Black Flag Fleet Core staging is configured with publishable-key-only browser access and the Identity Keel RLS contract declared. Outside-owner production remains blocked until live negative tests pass.':'Identity Keel is installed, but the staging backend is not configured. Outside-owner production remains blocked; the 8.6.42 recovery bridge stays aboard.','check');
+    const supabaseKeelContract=typeof window.DarkSkyReadFleetSpine==='function'&&String(window.DarkSkyReadFleetSpine).includes('admiral_read_fleet_spine');
+    add('fleet-supabase-keel','Fleet Supabase commissioning posture',supabaseKeelContract?'pass':'fail',supabaseKeelContract?'My Fleet reads registry, settings, owner identity, membership, order, and watch posture through the authenticated Admiral fleet spine. Fleet-seeded vessels do not acquire invented owners.':'The authenticated Fleet Spine reader or its commissioning-posture contract is missing.');
     add('identity-revocation-proof','Server revocation proof',productionAuthStatus.ready?'warn':'warn',productionAuthStatus.ready?'Backend is configured; real membership revocation still requires a live negative test before this voyage can clear.':'Staging backend is connected, but server-side revocation has not yet been proven with a real authenticated staging identity.','check');
     add('identity-rollback-bridge','No-man-left-behind rollback bridge','pass','8.6.42 remains the protected Known Good recovery anchor and the private owner path is retained as test/recovery-only until production sign-in, vessel scope, revocation, rollback, and multi-device behavior are proven.','check');
     const ownershipCharter=window.BlackFlagV3Identity?.ownershipCharter||{};
@@ -5674,7 +5676,7 @@
       combine('owner-authority','Owner Authority Voyage',['owner-project-scope','owner-session-proof','owner-credential-separation'],'Owner identity → canonical vessel scope → expiring project_owner session → deterministic logout/recovery.'),
       combine('fleet-truth-signal','Fleet Truth Signal Voyage',['fleet-truth-signal','owner-project-scope','identity-membership-contract','identity-rls-contract'],'Exact-vessel owner report → server-attested Fleet Watch → authenticated read-only Admiral observation. Registry timestamps never impersonate operational truth.'),
       combine('owner-recovery-helm','Owner Recovery Helm Voyage',['owner-recovery-helm','owner-project-scope','owner-credential-separation'],'Forgot Password → identity-appropriate recovery → exact-vessel credential replacement → fresh sign-in. No authority is widened.'),
-      combine('production-identity','Production Identity Voyage',['identity-provider-contract','identity-client-secret-boundary','vessel-commissioning-authority','identity-membership-contract','identity-rls-contract','owner-production-backend','identity-revocation-proof','identity-rollback-bridge'],'Identity provider → server membership → exact vessel RLS → revocation → rollback bridge. This voyage remains WATCH until a real backend proves the live negative tests.'),
+      combine('production-identity','Production Identity Voyage',['identity-provider-contract','identity-client-secret-boundary','vessel-commissioning-authority','identity-membership-contract','identity-rls-contract','owner-production-backend','fleet-supabase-keel','identity-revocation-proof','identity-rollback-bridge'],'Identity provider → server membership → exact vessel RLS → fleet commissioning posture → revocation → rollback bridge. This voyage remains WATCH until every outside-owner identity passes the live negative tests.'),
       combine('fleet-ownership-charter','Fleet Ownership Charter Voyage',['ownership-charter-separation','ownership-self-join','ownership-transfer','ownership-admiral-vessels'],'Vessel entry → ownership → operating authority stay separate. Self-join is controlled; Admiral-owned and Captain-operated vessels are valid; transfer preserves canonical vessel identity.'),
       combine('isolation','Isolation Voyage',['project-identity','order-boundary'],'Canonical Project IDs and project-scoped operational records.'),
       combine('client-preview','Client Preview Voyage',['client-preview','prepaint'],'Unique invite credential plus pre-paint platform isolation.'),
