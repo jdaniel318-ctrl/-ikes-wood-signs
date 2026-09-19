@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.8';
+  const BUILD_VERSION='8.8.15.0';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4655,7 +4655,6 @@
     return ctx;
   }
   function clearCustomerSessionContext(){
-    try{clearKioskRoute881421();}catch(_){}
     window.__deploymentCustomerContext=null;
     document.body.removeAttribute('data-customer-session');
     document.body.removeAttribute('data-operator-entry');
@@ -4686,232 +4685,6 @@
     const ctx=window.__deploymentCustomerContext;
     return ctx&&p&&ctx.projectId===p.id?ctx:null;
   }
-
-  // 8.8.15.8 Fleet Runtime — one deterministic customer-session kernel owns
-  // kiosk readiness, intentional OS/browser handoffs, idle abandonment and safe recovery.
-  // Individual screens may request transitions; they may not independently decide that
-  // backgrounding means abandonment or widen any Owner / Engine / Captain / Admiral authority.
-  const KIOSK_ROUTE_KEY_881421='darkSkyKioskRoute881421';
-  const FLEET_RUNTIME_SNAPSHOT_KEY_88150='darkSkyFleetRuntimeSnapshot88150';
-  const FLEET_RUNTIME_EVENT_KEY_88150='darkSkyFleetRuntimeEvents88150';
-  const FLEET_RUNTIME_VERSION_88150='fleet-runtime-v1';
-  const SYSTEM_HANDOFF_MAX_MS_88150=15*60*1000;
-  let kioskIdleTimer881421=null,kioskCompletionTimer88150=null,kioskActivityBound881421=false,kioskRecovering881421=false,kioskIdleWatchdog88151=null;
-  let fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,idleDeadlineAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
-  let kioskIdleRaf88152=0,kioskIdleRafLast88152=0;
-
-  function deploymentOperatingMode881421(d){const mode=String(d?.operatingMode||'web').toLowerCase();return ['web','kiosk','hybrid'].includes(mode)?mode:'web';}
-  function kioskDeploymentForContext881421(p=activeProject()){
-    const ctx=currentExperienceContext(p);if(!ctx)return null;
-    const rows=migrateLegacyDeployment(p);return rows.find(d=>d.id===ctx.deploymentId)||rows.find(d=>d.state==='deployed')||null;
-  }
-  function kioskChannelRequested881421(ctx){
-    try{const q=new URLSearchParams(location.search);if(q.get('kiosk')==='1'||q.get('mode')==='kiosk')return true;}catch(_){}
-    return ['deployment_test_dock','kiosk_restore','outpost_kiosk','kiosk_direct'].includes(String(ctx?.sessionSource||''));
-  }
-  function kioskPersistenceActive881421(p=activeProject()){
-    const ctx=currentExperienceContext(p),d=kioskDeploymentForContext881421(p);if(!ctx||!d)return false;
-    const mode=deploymentOperatingMode881421(d);
-    return mode==='kiosk'||(mode==='hybrid'&&kioskChannelRequested881421(ctx));
-  }
-  function kioskStatus881421(text='STATION READY',tone='ready'){
-    let el=document.getElementById('customerKioskStatus881421');
-    if(!el){el=document.createElement('div');el.id='customerKioskStatus881421';el.className='customer-kiosk-status';document.body.appendChild(el);}
-    el.dataset.tone=tone;el.innerHTML=`<span class="customer-kiosk-beacon" aria-hidden="true"></span><strong>${escapeHtml(text)}</strong>`;
-    el.classList.add('show');
-    clearTimeout(el._hideTimer);
-    if(!['ready','hold'].includes(tone))el._hideTimer=setTimeout(()=>el?.classList.remove('show'),3200);
-  }
-  function clearKioskStatus881421(){const el=document.getElementById('customerKioskStatus881421');if(el){clearTimeout(el._hideTimer);el.remove();}document.getElementById('customerKioskIdleDiagnostic88152')?.remove();}
-  function runtimeCorrelationId88150(p=activeProject(),d=kioskDeploymentForContext881421(p)){
-    const ctx=currentExperienceContext(p);
-    return [p?.id||'vessel',d?.id||'outpost',ctx?.establishedAt||Date.now()].join(':');
-  }
-  function runtimeEvent88150(type,detail={}){
-    const p=activeProject(),d=kioskDeploymentForContext881421(p),ctx=currentExperienceContext(p);
-    const row={schema:'dark-sky-runtime-event-v1',eventId:`rt-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`,type:String(type||'runtime.event'),at:new Date().toISOString(),projectId:p?.id||fleetRuntime88150.projectId||'',deploymentId:d?.id||fleetRuntime88150.deploymentId||'',sessionId:ctx?.establishedAt||fleetRuntime88150.sessionId||'',correlationId:fleetRuntime88150.correlationId||runtimeCorrelationId88150(p,d),runtimeVersion:FLEET_RUNTIME_VERSION_88150,detail:{...detail}};
-    try{const prior=JSON.parse(localStorage.getItem(FLEET_RUNTIME_EVENT_KEY_88150)||'[]');const rows=Array.isArray(prior)?prior:[];rows.push(row);localStorage.setItem(FLEET_RUNTIME_EVENT_KEY_88150,JSON.stringify(rows.slice(-120)));}catch(_){}
-    window.__darkSkyLastRuntimeEvent88150=row;return row;
-  }
-  function persistFleetRuntimeSnapshot88150(){
-    const safe={schema:'dark-sky-fleet-runtime-snapshot-v1',runtimeVersion:FLEET_RUNTIME_VERSION_88150,state:fleetRuntime88150.state,projectId:fleetRuntime88150.projectId,deploymentId:fleetRuntime88150.deploymentId,sessionId:fleetRuntime88150.sessionId,lastActivityAt:fleetRuntime88150.lastActivityAt,idleDeadlineAt:fleetRuntime88150.idleDeadlineAt,backgroundedAt:fleetRuntime88150.backgroundedAt,handoff:fleetRuntime88150.handoff?{kind:fleetRuntime88150.handoff.kind,source:fleetRuntime88150.handoff.source,startedAt:fleetRuntime88150.handoff.startedAt,expiresAt:fleetRuntime88150.handoff.expiresAt}:null,sequence:fleetRuntime88150.sequence,correlationId:fleetRuntime88150.correlationId,updatedAt:new Date().toISOString()};
-    try{sessionStorage.setItem(FLEET_RUNTIME_SNAPSHOT_KEY_88150,JSON.stringify(safe));}catch(_){}
-    window.__darkSkyFleetRuntimeSnapshot88150=safe;return safe;
-  }
-  function runtimeTransition88150(next,reason='transition',detail={}){
-    const p=activeProject(),d=kioskDeploymentForContext881421(p),ctx=currentExperienceContext(p),prior=fleetRuntime88150.state;
-    fleetRuntime88150={...fleetRuntime88150,state:String(next||prior||'READY'),projectId:p?.id||fleetRuntime88150.projectId||'',deploymentId:d?.id||fleetRuntime88150.deploymentId||'',sessionId:ctx?.establishedAt||fleetRuntime88150.sessionId||'',sequence:Number(fleetRuntime88150.sequence||0)+1,correlationId:fleetRuntime88150.correlationId||runtimeCorrelationId88150(p,d)};
-    persistFleetRuntimeSnapshot88150();runtimeEvent88150('runtime.transition',{from:prior,to:fleetRuntime88150.state,reason,...detail});
-    return fleetRuntime88150.state;
-  }
-  function runtimeCustomerStepIsReady88150(){
-    const p=activeProject(),shell=projectShellFor(p);
-    if(shell==='ikes')return ['welcome','done'].includes(String(state?.current||'welcome'));
-    if(shell==='mugs')return ['welcome','done'].includes(String(mugsState?.screen||'welcome'));
-    if(shell==='flowers')return ['welcome','done'].includes(String(flowersState?.screen||'welcome'));
-    if(shell==='bor')return ['landing','done','receipt'].includes(String(borCustomerState?.step||'landing'));
-    if(shell==='universal')return ['landing','done','receipt'].includes(String(universalCustomerState?.stage||'landing'));
-    return false;
-  }
-  function runtimeCustomerActivity88150(source='customer'){
-    const p=activeProject();if(!kioskPersistenceActive881421(p))return false;
-    if(fleetRuntime88150.state==='SYSTEM_HANDOFF')return true;
-    fleetRuntime88150.lastActivityAt=Date.now();
-    if(!runtimeCustomerStepIsReady88150())runtimeTransition88150('CUSTOMER_ACTIVE','customer-activity',{source});
-    else runtimeTransition88150('READY','customer-home-activity',{source});
-    scheduleKioskIdle881421(p);return true;
-  }
-  function runtimeBeginSystemHandoff88150(kind='system-handoff',source='customer'){
-    const p=activeProject();if(!kioskPersistenceActive881421(p))return false;
-    clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;
-    const now=Date.now();fleetRuntime88150.handoff={kind:String(kind||'system-handoff'),source:String(source||'customer'),startedAt:now,expiresAt:now+SYSTEM_HANDOFF_MAX_MS_88150,returnState:runtimeCustomerStepIsReady88150()?'READY':'CUSTOMER_ACTIVE'};
-    runtimeTransition88150('SYSTEM_HANDOFF','intentional-system-handoff',{kind:fleetRuntime88150.handoff.kind,source:fleetRuntime88150.handoff.source});
-    kioskStatus881421('STATION HOLDING YOUR PLACE…','hold');return true;
-  }
-  function runtimeSystemHandoffActive88150(){return !!fleetRuntime88150.handoff&&fleetRuntime88150.state==='SYSTEM_HANDOFF';}
-  function runtimeResumeSystemHandoff88150(trigger='return'){
-    const p=activeProject();if(!kioskPersistenceActive881421(p)||!runtimeSystemHandoffActive88150())return false;
-    const h=fleetRuntime88150.handoff,now=Date.now();
-    if(now>Number(h.expiresAt||0)){fleetRuntime88150.handoff=null;persistFleetRuntimeSnapshot88150();runtimeEvent88150('runtime.handoff.expired',{kind:h.kind,trigger});return false;}
-    fleetRuntime88150.handoff=null;fleetRuntime88150.lastActivityAt=now;runtimeTransition88150(h.returnState||'CUSTOMER_ACTIVE','system-handoff-return',{kind:h.kind,trigger,heldMs:Math.max(0,now-Number(h.startedAt||now))});
-    kioskStatus881421('WELCOME BACK · PLACE HELD','resume');setTimeout(()=>{if(kioskPersistenceActive881421(activeProject())&&!runtimeSystemHandoffActive88150())kioskStatus881421('STATION READY','ready');},2500);
-    scheduleKioskIdle881421(p);return true;
-  }
-  function persistKioskRoute881421(p,d){
-    try{localStorage.setItem(KIOSK_ROUTE_KEY_881421,JSON.stringify({projectId:p.id,deploymentId:d.id,operatingMode:deploymentOperatingMode881421(d),runtimeVersion:FLEET_RUNTIME_VERSION_88150,savedAt:new Date().toISOString()}));}catch(_){}
-  }
-  function clearKioskRoute881421(){
-    try{localStorage.removeItem(KIOSK_ROUTE_KEY_881421);}catch(_){}
-    clearTimeout(kioskIdleTimer881421);clearTimeout(kioskCompletionTimer88150);kioskIdleTimer881421=null;kioskCompletionTimer88150=null;clearKioskStatus881421();
-    fleetRuntime88150={state:'READY',projectId:'',deploymentId:'',sessionId:'',lastActivityAt:0,idleDeadlineAt:0,backgroundedAt:0,handoff:null,sequence:0,correlationId:''};
-    try{sessionStorage.removeItem(FLEET_RUNTIME_SNAPSHOT_KEY_88150);}catch(_){}
-  }
-  function resetCustomerToSafeHome881421(p,{reason='idle'}={}){
-    if(!p)return;
-    clearTimeout(kioskIdleTimer881421);clearTimeout(kioskCompletionTimer88150);kioskIdleTimer881421=null;kioskCompletionTimer88150=null;
-    const shell=projectShellFor(p);runtimeTransition88150('SAFE_RESET','safe-home-reset',{reason});
-    try{
-      if(shell==='ikes'){resetRuntimeStateForProject(p);clearDraft();if(typeof setScreen==='function')setScreen('welcome');}
-      else if(shell==='mugs'){resetMugsShell();showMugsScreen('welcome');}
-      else if(shell==='flowers'){resetFlowersShell();showFlowersScreen('welcome');}
-      else if(shell==='bor'){resetBorCustomerState();renderBorCustomerShell(p);}
-      else if(shell==='universal'){resetUniversalCustomerState(p);renderUniversalCustomerShell(p);}
-      showCustomerShellForProject(p);resetCustomerEntryViewport();
-      fleetRuntime88150.handoff=null;fleetRuntime88150.lastActivityAt=0;fleetRuntime88150.idleDeadlineAt=0;runtimeTransition88150('READY','safe-home-ready',{reason});
-      kioskStatus881421(reason==='recovery'?'STATION RESTORED · READY':'SESSION RESET · READY',reason==='recovery'?'recover':'reset');
-      setTimeout(()=>{if(kioskPersistenceActive881421(activeProject()))kioskStatus881421('STATION READY','ready');},2600);
-    }catch(err){console.warn('Kiosk safe-home reset failed',err);runtimeEvent88150('runtime.safe_reset.failed',{reason,error:String(err?.message||err)});}
-  }
-  function scheduleKioskIdle881421(p=activeProject(),remainingOverride=null){
-    clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;
-    if(!kioskPersistenceActive881421(p)||runtimeSystemHandoffActive88150()||fleetRuntime88150.state==='READY')return;
-    const d=kioskDeploymentForContext881421(p),minutes=Math.max(1,Number(d?.idleMinutes||3)),fullMs=minutes*60*1000;
-    const now=Date.now(),elapsed=fleetRuntime88150.lastActivityAt?Math.max(0,now-fleetRuntime88150.lastActivityAt):0;
-    const remaining=remainingOverride==null?Math.max(250,fullMs-elapsed):Math.max(250,Number(remainingOverride)||fullMs);
-    fleetRuntime88150.idleDeadlineAt=now+remaining;persistFleetRuntimeSnapshot88150();
-    kioskIdleTimer881421=setTimeout(()=>{if(runtimeSystemHandoffActive88150())return;resetCustomerToSafeHome881421(p,{reason:'idle'});},remaining);
-  }
-  function kioskIdleWatchdogTick88151(){
-    const p=activeProject();if(!kioskPersistenceActive881421(p)||runtimeSystemHandoffActive88150()||fleetRuntime88150.state!=='CUSTOMER_ACTIVE'||document.visibilityState==='hidden')return;
-    const d=kioskDeploymentForContext881421(p),idleMs=Math.max(1,Number(d?.idleMinutes||3))*60*1000,last=Number(fleetRuntime88150.lastActivityAt||0);if(!last)return;
-    const elapsed=Date.now()-last;window.__darkSkyKioskIdleWatch88151={elapsedMs:elapsed,idleMs,lastCustomerInputAt:new Date(last).toISOString(),state:fleetRuntime88150.state};
-    if(elapsed>=idleMs){runtimeEvent88150('runtime.idle.watchdog',{elapsedMs:elapsed,idleMs});resetCustomerToSafeHome881421(p,{reason:'idle-watchdog'});}
-  }
-  function updateSeaTrialIdleDiagnostic88152(p=activeProject()){
-    let el=document.getElementById('customerKioskIdleDiagnostic88152');
-    const ctx=currentExperienceContext(p),active=kioskPersistenceActive881421(p)&&ctx?.state==='sea_trial'&&fleetRuntime88150.state==='CUSTOMER_ACTIVE'&&!runtimeSystemHandoffActive88150();
-    if(!active){el?.remove();return;}
-    if(!el){el=document.createElement('div');el.id='customerKioskIdleDiagnostic88152';el.className='customer-kiosk-idle-diagnostic';document.body.appendChild(el);}
-    const deadline=Number(fleetRuntime88150.idleDeadlineAt||0),remaining=Math.max(0,deadline-Date.now()),sec=Math.ceil(remaining/1000),min=Math.floor(sec/60),ss=String(sec%60).padStart(2,'0');
-    el.textContent=`SEA TRIAL · IDLE WATCH ${min}:${ss}`;
-  }
-  function kioskIdleFrameTick88152(ts=0){
-    kioskIdleRaf88152=requestAnimationFrame(kioskIdleFrameTick88152);
-    if(ts-kioskIdleRafLast88152<800)return;kioskIdleRafLast88152=ts;
-    const p=activeProject();updateSeaTrialIdleDiagnostic88152(p);
-    if(!kioskPersistenceActive881421(p)||runtimeSystemHandoffActive88150()||fleetRuntime88150.state!=='CUSTOMER_ACTIVE'||document.visibilityState==='hidden')return;
-    const deadline=Number(fleetRuntime88150.idleDeadlineAt||0);if(deadline&&Date.now()>=deadline){runtimeEvent88150('runtime.idle.deadline',{deadlineAt:new Date(deadline).toISOString()});resetCustomerToSafeHome881421(p,{reason:'idle-deadline'});}
-  }
-  function ensureKioskIdleWatchdog88151(){if(!kioskIdleWatchdog88151)kioskIdleWatchdog88151=setInterval(kioskIdleWatchdogTick88151,5000);if(!kioskIdleRaf88152)kioskIdleRaf88152=requestAnimationFrame(kioskIdleFrameTick88152);}
-  function runtimeCustomerScreenChanged88150(name){
-    const p=activeProject();if(!kioskPersistenceActive881421(p))return;
-    const step=String(name||'');
-    if(step==='done'){
-      const d=kioskDeploymentForContext881421(p);clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;runtimeTransition88150('READY','customer-complete',{step});
-      if(d?.resetAfterComplete!==false){kioskStatus881421('ORDER COMPLETE · STATION RESETTING SOON','resume');clearTimeout(kioskCompletionTimer88150);kioskCompletionTimer88150=setTimeout(()=>resetCustomerToSafeHome881421(p,{reason:'completed-order'}),20000);}return;
-    }
-    if(step==='welcome'){clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;fleetRuntime88150.lastActivityAt=0;fleetRuntime88150.idleDeadlineAt=0;runtimeTransition88150('READY','customer-home',{step});return;}
-    fleetRuntime88150.lastActivityAt=Date.now();runtimeTransition88150('CUSTOMER_ACTIVE','customer-step',{step});scheduleKioskIdle881421(p);
-  }
-  function armKioskWatch881421(p=activeProject()){
-    if(!kioskPersistenceActive881421(p)){clearKioskRoute881421();return false;}
-    const d=kioskDeploymentForContext881421(p),ctx=currentExperienceContext(p);persistKioskRoute881421(p,d);
-    fleetRuntime88150={...fleetRuntime88150,projectId:p.id,deploymentId:d.id,sessionId:ctx?.establishedAt||fleetRuntime88150.sessionId||new Date().toISOString(),correlationId:fleetRuntime88150.correlationId||runtimeCorrelationId88150(p,d)};
-    if(runtimeCustomerStepIsReady88150()){fleetRuntime88150.lastActivityAt=0;runtimeTransition88150('READY','station-armed');}
-    else if(!runtimeSystemHandoffActive88150()){fleetRuntime88150.lastActivityAt=fleetRuntime88150.lastActivityAt||Date.now();runtimeTransition88150('CUSTOMER_ACTIVE','station-armed-active');}
-    kioskStatus881421(runtimeSystemHandoffActive88150()?'STATION HOLDING YOUR PLACE…':'STATION READY',runtimeSystemHandoffActive88150()?'hold':'ready');scheduleKioskIdle881421(p);
-    ensureKioskIdleWatchdog88151();
-    if(!kioskActivityBound881421){
-      kioskActivityBound881421=true;
-      ['pointerdown','keydown','touchstart','input'].forEach(evt=>document.addEventListener(evt,e=>{
-        if(e?.target?.matches?.('input[type="file"]'))return;
-        const live=activeProject();if(kioskPersistenceActive881421(live))runtimeCustomerActivity88150(evt);
-      },{passive:true,capture:true}));
-      // Any customer file/camera picker is an intentional system handoff. Programmatic
-      // .click() calls on hidden inputs also pass this capture listener.
-      document.addEventListener('click',e=>{const input=e.target?.closest?.('input[type="file"]');if(input&&kioskPersistenceActive881421(activeProject()))runtimeBeginSystemHandoff88150('file-picker',input.id||'customer-file');},true);
-      document.addEventListener('change',e=>{if(e.target?.matches?.('input[type="file"]')&&runtimeSystemHandoffActive88150())setTimeout(()=>runtimeResumeSystemHandoff88150('file-selected'),900);},true);
-      document.addEventListener('cancel',e=>{if(e.target?.matches?.('input[type="file"]')&&runtimeSystemHandoffActive88150())setTimeout(()=>runtimeResumeSystemHandoff88150('file-cancelled'),120);},true);
-    }
-    return true;
-  }
-  function runtimeResumeAfterBackground88150(reason='visible'){
-    const p=activeProject();if(!kioskPersistenceActive881421(p))return false;
-    if(runtimeSystemHandoffActive88150()){
-      if(runtimeResumeSystemHandoff88150(reason))return true;
-      resetCustomerToSafeHome881421(p,{reason:'handoff-expired'});return true;
-    }
-    if(fleetRuntime88150.state==='CUSTOMER_ACTIVE'&&fleetRuntime88150.lastActivityAt){
-      const d=kioskDeploymentForContext881421(p),idleMs=Math.max(1,Number(d?.idleMinutes||3))*60*1000,elapsed=Date.now()-fleetRuntime88150.lastActivityAt;
-      if(elapsed>=idleMs){resetCustomerToSafeHome881421(p,{reason:'idle-background'});return true;}
-      runtimeTransition88150('CUSTOMER_ACTIVE','background-return-preserved',{reason,backgroundMs:fleetRuntime88150.backgroundedAt?Date.now()-fleetRuntime88150.backgroundedAt:0});scheduleKioskIdle881421(p,idleMs-elapsed);kioskStatus881421('STATION READY','ready');return true;
-    }
-    kioskStatus881421('STATION READY','ready');return true;
-  }
-  async function recoverKioskRoute881421(reason='resume',attempt=0){
-    if(kioskRecovering881421)return false;
-    let saved=null;try{saved=JSON.parse(localStorage.getItem(KIOSK_ROUTE_KEY_881421)||'null');}catch(_){}
-    if(!saved?.projectId)return false;
-    const p=projectById(saved.projectId);
-    if(!p){if(attempt<18)setTimeout(()=>recoverKioskRoute881421(reason,attempt+1),420);return false;}
-    const d=migrateLegacyDeployment(p).find(x=>x.id===saved.deploymentId);if(!d||!['deployed','sea_trial'].includes(d.state)||!['kiosk','hybrid'].includes(deploymentOperatingMode881421(d))){clearKioskRoute881421();return false;}
-    if(activeProject()?.id===p.id&&document.body.classList.contains('project-mode'))return runtimeResumeAfterBackground88150(reason);
-    kioskRecovering881421=true;
-    try{
-      runtimeTransition88150('RECOVERING','station-recovery',{reason});kioskStatus881421('RESTORING CUSTOMER STATION…','recover');
-      setCustomerSessionContext(p,d.state==='deployed'?'live':'sea_trial',d,{source:'kiosk_restore'});await enterProject(p.id);
-      resetCustomerToSafeHome881421(p,{reason:'recovery'});armKioskWatch881421(p);return true;
-    }finally{kioskRecovering881421=false;}
-  }
-  document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='hidden'){
-      fleetRuntime88150.backgroundedAt=Date.now();persistFleetRuntimeSnapshot88150();runtimeEvent88150('runtime.backgrounded',{handoff:runtimeSystemHandoffActive88150()});clearTimeout(kioskIdleTimer881421);kioskIdleTimer881421=null;return;
-    }
-    setTimeout(()=>recoverKioskRoute881421('visible'),120);
-  });
-  window.addEventListener('pagehide',()=>{persistFleetRuntimeSnapshot88150();runtimeEvent88150('runtime.pagehide',{state:fleetRuntime88150.state});});
-  window.addEventListener('pageshow',e=>{[220,900,2200].forEach(ms=>setTimeout(()=>recoverKioskRoute881421(e.persisted?'pageshow-bfcache':'pageshow'),ms));});
-  window.addEventListener('online',()=>setTimeout(()=>recoverKioskRoute881421('online'),120));
-  window.addEventListener('focus',()=>setTimeout(()=>recoverKioskRoute881421('focus'),180));
-  window.DarkSkyFleetRuntime={
-    version:FLEET_RUNTIME_VERSION_88150,
-    states:['READY','CUSTOMER_ACTIVE','SYSTEM_HANDOFF','SAFE_RESET','RECOVERING'],
-    snapshot:()=>({...fleetRuntime88150}),events:()=>{try{return JSON.parse(localStorage.getItem(FLEET_RUNTIME_EVENT_KEY_88150)||'[]');}catch(_){return[];}},
-    beginSystemHandoff:runtimeBeginSystemHandoff88150,resumeSystemHandoff:runtimeResumeSystemHandoff88150,
-    customerActivity:runtimeCustomerActivity88150,screenChanged:runtimeCustomerScreenChanged88150,
-    reset:()=>resetCustomerToSafeHome881421(activeProject(),{reason:'manual'})
-  };
-  window.DarkSkyKioskWatch={arm:armKioskWatch881421,recover:recoverKioskRoute881421,reset:()=>resetCustomerToSafeHome881421(activeProject(),{reason:'manual'}),active:kioskPersistenceActive881421,runtime:window.DarkSkyFleetRuntime};
 
   // Fleet safety contract: no real-world contact may leave a project while its
   // customer experience is in Private Preview, Sea Trial, or another non-live state.
@@ -6682,8 +6455,7 @@
         createdAt:legacy.updatedAt||new Date().toISOString(),
         updatedAt:legacy.updatedAt||new Date().toISOString(),
         lastCheckIn:null,
-        source:'migrated_v2_9_46',
-        operatingMode:legacy.operatingMode||'hybrid'
+        source:'migrated_v2_9_46'
       });
     }
     // Never repair a foreign manifest by relabeling it as the current vessel.
@@ -6695,7 +6467,7 @@
   function newProjectDeployment(p,name,profile='kiosk_self_service'){
     const id=deploymentIdFor(p), namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
     return normalizeDeploymentIdentity(p,{
-      id,name:name||'New Customer Device',profile,state:'draft',manifestVersion:1,idleMinutes:3,operatingMode:profile==='kiosk_self_service'?'hybrid':'web',
+      id,name:name||'New Customer Device',profile,state:'draft',manifestVersion:1,idleMinutes:3,
       resetAfterComplete:true,purgeSession:true,showStartOver:true,resumeAfterReload:false,
       deviceLockVerified:false,capabilityScope:'project_default',attractTitle:'Ready when you are.',
       projectId:p.id,namespace,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),lastCheckIn:null
@@ -6759,8 +6531,6 @@
 
   function normalizeDeploymentIdentity(p,d){
     const namespace=window.BlackFlagV3Core?.namespaceFor?.(p.id)||`bf.project.${p.id}`;
-    const allowedModes=new Set(['web','kiosk','hybrid']);
-    d.operatingMode=allowedModes.has(String(d.operatingMode||'').toLowerCase())?String(d.operatingMode).toLowerCase():(d.profile==='kiosk_self_service'?'hybrid':'web');
     d.projectId=p.id;
     d.namespace=namespace;
     d.authorization={...(d.authorization||{}),role:'device',projectId:p.id,namespace,scope:'customer_session',crossProjectAccess:'deny',policyVersion:'3.3',engineAccess:false,ownerAccess:false};
@@ -6785,8 +6555,7 @@
       {label:'Project isolation',pass:true,detail:'Project-owned manifest'},
       {label:'Customer-session purge',pass:d.purgeSession!==false,detail:d.purgeSession!==false?'Ready':'Turn purge on'},
       {label:'Admin separation',pass:true,detail:'Project admin remains protected'},
-      {label:'Operating mode',pass:['web','kiosk','hybrid'].includes(String(d.operatingMode||'')),detail:String(d.operatingMode||'web').toUpperCase()},
-      {label:'Idle reset',pass:String(d.operatingMode||'web')==='web'||Number(d.idleMinutes)>0,detail:String(d.operatingMode||'web')==='web'?'Website session policy':`${Number(d.idleMinutes||0)} min safe-home reset`},
+      {label:'Idle reset',pass:Number(d.idleMinutes)>0,detail:`${Number(d.idleMinutes||0)} min`},
       {label:'Device-level lock',pass:!!d.deviceLockVerified,warning:!d.deviceLockVerified,detail:d.deviceLockVerified?'Verified':'Not verified'}
     ];
     const required=checks.filter(x=>!x.warning);
@@ -6794,47 +6563,6 @@
     return {score,checks};
   }
 
-
-  function fleetStationStateFromDeployment88156(d){
-    const state=String(d?.state||'draft');
-    return ({draft:'commissioning',sea_trial:'sea_trial',deployed:'ready',paused:'hold',retired:'retired'})[state]||'commissioning';
-  }
-
-  function fleetStationCandidate88156(p,d){
-    if(!p||!d)return null;
-    const normalized=normalizeDeploymentIdentity(p,d);
-    return {
-      schema:'dark-sky-station-candidate-v1',
-      projectId:String(p.id||''),
-      vesselName:String(p.name||p.id||''),
-      stationKey:String(normalized.id||''),
-      displayName:String(normalized.name||'Customer Outpost'),
-      operatingMode:['web','kiosk','hybrid'].includes(String(normalized.operatingMode||''))?String(normalized.operatingMode):'web',
-      stationState:fleetStationStateFromDeployment88156(normalized),
-      runtimeRelease:BUILD_VERSION,
-      policyVersion:String(normalized.authorization?.policyVersion||'3.3'),
-      stationProfile:String(normalized.profile||''),
-      profileLabel:String(DEPLOYMENT_PROFILES[normalized.profile]?.label||normalized.profile||'Deployment'),
-      manifestVersion:Number(normalized.manifestVersion||1),
-      localUpdatedAt:normalized.updatedAt||normalized.createdAt||null,
-      source:'deployment-shipwright'
-    };
-  }
-
-  // Bounded Control Plane bridge. This exposes deployment identity only—never
-  // customer/order payloads—so Admiral can deliberately register a real local
-  // outpost into Fleet Core without inventing station records.
-  window.DarkSkyFleetStationCandidates=function(){
-    try{
-      return companies.flatMap(project=>migrateLegacyDeployment(project)
-        .filter(d=>d&&d.state!=='retired')
-        .map(d=>fleetStationCandidate88156(project,d))
-        .filter(Boolean));
-    }catch(err){
-      window.__darkSkyStationCandidateError88156=String(err?.message||err);
-      return [];
-    }
-  };
 
   function deploymentVoyageState(p,d){
     if(!d)return {step:1,label:'Configure',nextLabel:'Create Outpost',nextAction:'create',detail:'Create an outpost to begin.'};
@@ -7041,8 +6769,6 @@
 
       ${(()=>{const launch=projectFleetLaunchState(p);const approval=experienceApproved(p)?'APPROVED':'ACTION NEEDED';const deployment=launch.key==='live'?'LIVE':launch.key==='sea_trial'?'SEA TRIAL':launch.key==='fleet_ready'?'FLEET READY':launch.key==='preparing'?'PREPARING':'DRAFT';return `<section class="pc-state-matrix" aria-label="Project state clarity"><article><small>PUBLICATION</small><strong>${deployment}</strong><span>Customer-facing state</span></article><article><small>OPERATING HEALTH</small><strong>${s.status}</strong><span>${s.attention.length?`${s.attention.length} items to review`:'No immediate flags'}</span></article><article><small>CUSTOMER EXPERIENCE</small><strong>${approval}</strong><span>${approval==='APPROVED'?'Current experience approved':'Approval is missing or stale'}</span></article><article><small>YOUR SESSION</small><strong>ADMIN CONTROL</strong><span>Project-scoped authority</span></article></section>`})()}
 
-      ${(()=>{const runtimeStations=s.deployments.filter(d=>['kiosk','hybrid'].includes(String(d.operatingMode||'web')));const kioskCount=s.deployments.filter(d=>String(d.operatingMode||'web')==='kiosk').length;const seaTrial=s.deployments.filter(d=>d.state==='sea_trial').length;const label=runtimeStations.length?'PASSAGE HOLD · ARMED':'STANDARD WEB RUNTIME';const detail=runtimeStations.length?'Intentional camera/photo/file-picker handoffs preserve the active customer place; only verified abandonment triggers safe reset.':'No persistent kiosk station is active for this vessel.';return `<section class="pc-runtime-strip" aria-label="Fleet Runtime posture"><div><small>FLEET RUNTIME · V1</small><strong>${label}</strong><span>${detail}</span></div><div class="pc-runtime-facts"><b>${runtimeStations.length} PERSISTENT STATION${runtimeStations.length===1?'':'S'}</b><b>${kioskCount} KIOSK</b><b>${seaTrial} SEA TRIAL</b></div></section>`})()}
-
       <section class="pc-priority-command" aria-label="Recommended next action">
         <div><span>START HERE</span><h4>${s.attention.length?'Review what needs attention':'Project operating normally'}</h4><p>${s.attention.length?`${s.attention.length} clear next ${s.attention.length===1?'step':'steps'} based on current project data.`:'No immediate operating flags were found.'}</p></div>
         <div class="pc-priority-list">${attention}</div>
@@ -7195,7 +6921,6 @@
     const products=p.products||[];
     if(tab==='overview') return `<div id="projectOverviewLive" class="pc-command-shell"><div class="pc-loading-state"><strong>Reading project signals…</strong><span>Orders, customers, deployments, ledger and activity stay scoped to ${escapeHtml(p.name)}.</span></div></div>`;
     if(tab==='analytics') return `<div id="projectAnalyticsLive" class="pc-command-shell"><div class="pc-loading-state"><strong>Building project analytics…</strong><span>Only project-scoped data that Dark Sky can verify will be shown.</span></div></div>`;
-    if(tab==='fleetwatch') return `${projectModuleHero(p,'OPERATE','Fleet Watch Helm','Publish bounded operational truth from this exact vessel. Admiral can observe the report but cannot modify this vessel.',`<span>EXACT VESSEL</span><span>READ BY ADMIRAL</span>`)}<section class="pec-card fleet-watch-helm-route"><div class="pec-title-row"><div><small>AUTHENTICATED VESSEL REPORTING</small><h4>${escapeHtml(p.name)}</h4><p class="helper">Reporting requires the vessel owner/partner identity. Engine authority cannot impersonate the vessel, and Admiral remains read-only.</p></div><span class="project-status-badge">BOUNDARY ENFORCED</span></div><div class="visual-cap-note"><strong>What crosses the bulkhead</strong><span>Current work, unresolved issue count, optional issue summary, source label, and report time. No customer data, orders, pricing, or modifying authority is exposed.</span></div><button id="openVesselWatchHelm" class="primary-btn" type="button">OPEN AUTHENTICATED VESSEL HELM</button><p id="fleetWatchHelmRouteStatus" class="helper">You will sign in as this vessel before anything can be published.</p></section>`;
 
     if(tab==='owner'){
       ensureProjectGovernance(p);
@@ -7581,18 +7306,11 @@
                   <label>Deployment profile
                     <select id="deployProfile">${Object.entries(DEPLOYMENT_PROFILES).map(([value,x])=>`<option value="${value}" ${d.profile===value?'selected':''}>${escapeHtml(x.label)}</option>`).join('')}</select>
                   </label>
-                  <label>Operating mode
-                    <select id="deployOperatingMode">
-                      <option value="web" ${d.operatingMode==='web'?'selected':''}>WEB · normal browser session</option>
-                      <option value="kiosk" ${d.operatingMode==='kiosk'?'selected':''}>KIOSK · persistent customer station</option>
-                      <option value="hybrid" ${d.operatingMode==='hybrid'?'selected':''}>HYBRID · web + kiosk capable</option>
-                    </select>
-                  </label>
                   <label class="deployment-attract-input">Customer welcome message<input id="deployAttractTitle" class="text-input" value="${escapeHtml(d.attractTitle||'Ready when you are.')}" /></label>
                 </div>
 
                 <details class="deployment-advanced-settings">
-                  <summary><span>ADVANCED</span><strong>Outpost behavior & session safety</strong><small>Safe-home reset, capabilities, customer reset and device settings</small></summary>
+                  <summary><span>ADVANCED</span><strong>Outpost behavior & session safety</strong><small>Idle reset, capabilities, customer reset and device settings</small></summary>
                   <div class="deployment-advanced-settings-body">
                     <div class="deployment-setup-fields">
                       <label>Idle-session reset
@@ -7607,10 +7325,10 @@
                     </div>
                     <div class="deployment-toggle-stack deployment-session-card">
                       <div class="deployment-subheading"><small>CUSTOMER SESSION</small><strong>Safe reset behavior</strong></div>
-                      <label class="admin-toggle-row compact-toggle"><span><strong>Reset after completed order</strong><small>Return to this outpost's safe customer home.</small></span><input id="deployReset" type="checkbox" ${d.resetAfterComplete!==false?'checked':''}></label>
+                      <label class="admin-toggle-row compact-toggle"><span><strong>Reset after completed order</strong><small>Return to this outpost's attract screen.</small></span><input id="deployReset" type="checkbox" ${d.resetAfterComplete!==false?'checked':''}></label>
                       <label class="admin-toggle-row compact-toggle"><span><strong>Purge customer session cargo</strong><small>Clear photos, uploads, previews, drafts and temporary customer data between sessions.</small></span><input id="deployPurge" type="checkbox" ${d.purgeSession!==false?'checked':''}></label>
                       <label class="admin-toggle-row compact-toggle"><span><strong>Show Start Over</strong><small>Customer-safe reset; project admin remains hidden.</small></span><input id="deployStartOver" type="checkbox" ${d.showStartOver!==false?'checked':''}></label>
-                      <label class="admin-toggle-row compact-toggle"><span><strong>Resume deployment after reload</strong><small>Kiosk/Hybrid recovery restores the customer station, never the previous customer's session.</small></span><input id="deployResume" type="checkbox" ${d.resumeAfterReload?'checked':''}></label>
+                      <label class="admin-toggle-row compact-toggle"><span><strong>Resume deployment after reload</strong><small>Restore the outpost, never the previous customer's session.</small></span><input id="deployResume" type="checkbox" ${d.resumeAfterReload?'checked':''}></label>
                       <label class="admin-toggle-row compact-toggle"><span><strong>Device-level kiosk lock verified</strong><small>Mark only after iPad Guided Access / managed Single App Mode is configured.</small></span><input id="deployDeviceLock" type="checkbox" ${d.deviceLockVerified?'checked':''}></label>
                     </div>
                   </div>
@@ -7622,8 +7340,6 @@
                 <article class="pec-card deployment-attract-card deployment-preview-card">
                   <div class="deployment-card-heading"><small>CUSTOMER PREVIEW</small><h4>Attract screen</h4></div>
                   <div class="deployment-preview-badge">${d.state==='deployed'?'LIVE CUSTOMER VIEW':d.state==='sea_trial'?'SEA TRIAL PREVIEW':'PREVIEW ONLY • NOT LIVE'}</div>
-                  <div class="deployment-station-watch ${escapeHtml(d.operatingMode||'web')}"><small>STATION WATCH</small><strong>${d.operatingMode==='kiosk'?'KIOSK · STANDING WATCH':d.operatingMode==='hybrid'?'HYBRID · DUAL ROUTE':'WEB · STANDARD SESSION'}</strong><span>${d.operatingMode==='kiosk'?'Inactivity returns customers to this vessel’s safe home; the station remains on duty.':d.operatingMode==='hybrid'?'Normal web behavior by default; explicit kiosk entry can remain on duty and self-recover.':'Normal browser/session lifecycle. Privileged sessions remain separate.'}</span></div>
-                  <div class="deployment-runtime-watch"><small>FLEET RUNTIME</small><strong>${d.operatingMode==='web'?'STANDARD WEB PASSAGE':'PASSAGE HOLD · ARMED'}</strong><span>${d.operatingMode==='web'?'Normal browser lifecycle. Runtime recovery remains bounded and vessel-scoped.':'Camera, photo picker and other intentional system handoffs preserve the active customer place; only verified abandonment triggers safe reset.'}</span><b>RUNTIME V1</b></div>
                   <div class="deployment-attract-preview">
                     <div class="deployment-attract-mark">${escapeHtml((p.projectCode||p.orderPrefix||'PRJ').slice(0,3))}</div>
                     <strong>${escapeHtml(d.attractTitle||'Ready when you are.')}</strong>
@@ -7657,7 +7373,7 @@
                     <div class="deployment-readiness-summary"><strong>${readiness.score}%</strong><span>ENGINE READY</span><b class="${d.deviceLockVerified?'ready':'warn'}">${d.deviceLockVerified?'DEVICE VERIFIED':'DEVICE CHECK'}</b></div>
                     ${readiness.checks.map(c=>`<div class="readiness-row ${c.pass?'pass':c.warning?'warn':'fail'}"><span>${escapeHtml(c.label)}</span><strong>${escapeHtml(c.detail)}</strong></div>`).join('')}
                   </article>
-                  <article class="pec-card deployment-owner-current">
+                  <article class="pec-card deployment-signal-watch">
                     <div class="deployment-card-heading"><small>OUTPOST HEALTH</small><h4>${escapeHtml(voyage.label)}</h4></div>
                     <div class="deployment-gauge"><i class="${d.state==='deployed'?'live':''}"></i><strong>${d.state==='deployed'?'ACTIVE • SERVING CUSTOMERS':d.state==='sea_trial'?(d.lastTestedAt?'SEA TRIAL • TEST RECORDED':'SEA TRIAL • NOT ACTIVE'):d.state==='paused'?'PAUSED':'IN HARBOR'}</strong></div>
                     <p><b>Last check-in:</b> ${d.lastCheckIn?escapeHtml(new Date(d.lastCheckIn).toLocaleString()):'Telemetry not installed yet'}</p>
@@ -7708,7 +7424,7 @@
   }
 
   const PROJECT_COMMAND_GROUPS={
-    products:'operate',workflow:'operate',capabilities:'operate',deployment:'operate',fleetwatch:'operate',
+    products:'operate',workflow:'operate',capabilities:'operate',deployment:'operate',
     analytics:'insight',ledger:'insight',
     marketing:'experience',experience:'experience',
     owner:'access',permissions:'access',
@@ -7752,7 +7468,6 @@
     }
     bindProjectControlJumpLinks(p);
     if(tab==='overview'){await renderProjectControlOverview(p);return;}
-    if(tab==='fleetwatch'){ $('openVesselWatchHelm')?.addEventListener('click',()=>{const url=new URL('./owner.html',location.href.split('#')[0]);url.searchParams.set('project',p.id);url.searchParams.set('view','watch');url.searchParams.set('source','engine');location.href=url.toString();});return;}
     if(tab==='analytics'){await renderProjectAnalytics(p);return;}
     if(tab==='marketing'){
       if(engineActiveProjectId!==p.id)return;
@@ -8088,7 +7803,6 @@
         if(!requireDeploymentBoundary(p,d,'deployment.manifest.update'))return;
         d.name=$('deployName').value.trim()||d.name;
         d.profile=$('deployProfile').value;
-        d.operatingMode=$('deployOperatingMode')?.value||d.operatingMode||'web';
         d.idleMinutes=Number($('deployIdle').value)||3;
         d.capabilityScope=$('deployCapabilityScope').value;
         d.resetAfterComplete=$('deployReset').checked;
@@ -8108,7 +7822,7 @@
           saveStatus.title=`Manifest v${d.manifestVersion} saved. Project bulkhead remains sealed.`;
           saveStatus.setAttribute('aria-live','polite');
         }
-        setTimeout(()=>renderProjectTab(p.id,'deployment'),2200);
+        setTimeout(()=>renderProjectTab(p.id,'deployment'),500);
       };
 
       if($('createDeploymentLaunchOfferBtn')) $('createDeploymentLaunchOfferBtn').onclick=async()=>{
@@ -8304,6 +8018,8 @@
   }
 
   const COMMISSION_DRAFT_KEY='blackFlagCommissionDraftV2';
+  const FLEET_LAUNCH_SERVICE_ID='fleet.business-launch';
+  const FLEET_LAUNCH_SERVICE_VERSION='1.0.0';
   function freshCommissionDraft(){
     return {
       draftId:'commission-'+Date.now(),
@@ -8316,6 +8032,8 @@
       primaryOffer:'',characterLimit:32,pricingMode:'manual',
       customerMode:'guided',relationshipType:'auto',photoRequired:false,contactCapture:true,visualProfile:'none',
       ownerPortal:true,customerRetention:false,notifications:false,
+      launchService:true,launchServiceFocus:'online_presence',commissioningPartnerName:'',
+      founderPreview:true,ownerApprovalRequired:true,
       namespace:'',projectCode:'',orderPrefix:'',
       status:'development',visibility:'private',deploymentState:'sea_trial',commissionerRole:'engine_admin'
     };
@@ -8373,6 +8091,7 @@
       const k=el.dataset.cfield;
       commissionDraft[k]=el.type==='checkbox'?!!el.checked:(el.type==='number'?Number(el.value||0):el.value);
     });
+    if(commissionDraft.launchService)commissionDraft.ownerApprovalRequired=true;
     if(commissionDraft.name){
       commissionDraft.projectCode=commissionDraft.projectCode||commissionCode(commissionDraft.name);
       commissionDraft.orderPrefix=commissionDraft.orderPrefix||commissionDraft.projectCode;
@@ -8717,6 +8436,43 @@
     return core?.deriveOperatingProfile?.(sample,commissionDraft?.businessBrief||commissionDraft?.description||'')||{mode:'other',customerFlow:commissionDraft?.customerMode||'guided',fulfillment:[],schedulingNeeded:false,requiredInputs:[],summary:'Operating model will be derived at commissioning.'};
   }
 
+  function fleetLaunchServiceContract(d,projectId){
+    if(!d?.launchService)return null;
+    const now=new Date().toISOString();
+    const commissioner=String(d.commissionerRole||'engine_admin');
+    return {
+      serviceInstanceId:`launch-${String(projectId||'draft')}`,
+      vesselProjectId:String(projectId||''),
+      capabilityId:FLEET_LAUNCH_SERVICE_ID,
+      capabilityVersion:FLEET_LAUNCH_SERVICE_VERSION,
+      status:'enabled',
+      serviceStage:'founder_preview',
+      purpose:String(d.launchServiceFocus||'online_presence'),
+      commissioningPartnerName:String(d.commissioningPartnerName||'').trim(),
+      operationMode:'advisory',
+      commercialMode:'free',
+      ownerApprovalRequired:true,
+      publishAuthority:'owner-and-captain',
+      businessOwnership:'outside-owner-retained',
+      equityOrInvestmentGranted:false,
+      founderPreview:d.founderPreview!==false,
+      permittedDataFields:['business_identity','business_brief','approved_brand_assets','offer_catalog','customer_experience_configuration','launch_evidence','owner_handoff_state'],
+      deniedDataFields:['owner_credentials','payment_credentials','unapproved_customer_records','unrelated_vessel_data'],
+      phases:[
+        {id:'founder-preview',label:'Founder Preview',state:'active'},
+        {id:'owner-review',label:'Owner Review',state:'pending'},
+        {id:'prepare',label:'Prepare',state:'pending'},
+        {id:'private-preview',label:'Private Preview',state:'pending'},
+        {id:'sea-trial',label:'Sea Trial',state:'pending'},
+        {id:'owner-handoff',label:'Owner Handoff',state:'pending'},
+        {id:'launch',label:'Public Launch',state:'blocked-until-approved'}
+      ],
+      enabledByAuthority:commissioner,
+      effectiveAt:now,
+      auditReference:`commissioning:${String(d.draftId||'draft')}`
+    };
+  }
+
   function commissioningStepMarkup(){
     const d=commissionDraft;
     if(commissionStep===1)return `
@@ -8778,7 +8534,29 @@
       </div>`;
     if(commissionStep===5)return `
       <div class="commission-panel">
-        <div class="eyebrow">05 • ACCESS & SERVICES</div><h2>Prepare the owner handoff</h2>
+        <div class="eyebrow">05 • ACCESS & SERVICES</div><h2>Choose how the Fleet helps</h2>
+        <section class="fleet-launch-service ${d.launchService?'selected':''}">
+          <div class="fleet-launch-service-head">
+            <span>CORE FLEET SERVICE</span>
+            <strong>Fleet Launch Service</strong>
+            <p>Build a private founder preview, shape the approved online presence, prove the customer journey, and hand control to the outside owner without taking ownership of the business.</p>
+          </div>
+          <label class="checkline fleet-launch-service-toggle"><input type="checkbox" data-cfield="launchService" ${d.launchService?'checked':''}> Include Fleet Launch Service</label>
+          <div class="commission-grid two fleet-launch-service-fields">
+            <label>Service focus<select data-cfield="launchServiceFocus">
+              <option value="online_presence" ${d.launchServiceFocus==='online_presence'?'selected':''}>ONLINE PRESENCE</option>
+              <option value="business_launch" ${d.launchServiceFocus==='business_launch'?'selected':''}>FULL BUSINESS LAUNCH</option>
+              <option value="customer_experience" ${d.launchServiceFocus==='customer_experience'?'selected':''}>CUSTOMER EXPERIENCE</option>
+            </select></label>
+            <label>Commissioning partner<input data-cfield="commissioningPartnerName" value="${escapeHtml(d.commissioningPartnerName||'')}" placeholder="Optional support contact"></label>
+            <label class="checkline"><input type="checkbox" data-cfield="founderPreview" ${d.founderPreview?'checked':''}> Begin with a private Founder Preview</label>
+            <label class="checkline"><input type="checkbox" data-cfield="ownerApprovalRequired" checked disabled> Owner approval required before publication</label>
+          </div>
+          <ol class="fleet-launch-phases" aria-label="Fleet Launch Service course">
+            <li><b>01</b><span>Founder Preview</span></li><li><b>02</b><span>Owner Review</span></li><li><b>03</b><span>Prepare</span></li><li><b>04</b><span>Private Preview</span></li><li><b>05</b><span>Sea Trial</span></li><li><b>06</b><span>Owner Handoff</span></li><li><b>07</b><span>Launch</span></li>
+          </ol>
+          <div class="commission-callout success"><b>THE OWNER KEEPS THE BUSINESS</b><span>This service grants no equity, investment interest, credentials, or ownership. Work stays private until the owner approves it, and publishing still requires the existing Captain gate.</span></div>
+        </section>
         <div class="commission-grid two">
           <label class="checkline"><input type="checkbox" data-cfield="ownerPortal" ${d.ownerPortal?'checked':''}> Prepare Owner Portal</label>
           <label class="checkline"><input type="checkbox" data-cfield="customerRetention" ${d.customerRetention?'checked':''}> Customer retention capability</label>
@@ -8802,9 +8580,12 @@
           <div><small>LAUNCH STATE</small><b>PRIVATE • SEA TRIAL</b></div>
           <div><small>COMMISSIONING AUTHORITY</small><b>${escapeHtml(String(d.commissionerRole||'engine_admin').replaceAll('_',' ').toUpperCase())}</b></div>
           <div><small>OWNER STATE</small><b>${d.ownerName&&d.ownerEmail?'ASSIGNMENT PREPARED':'FLEET UNASSIGNED'}</b></div>
+          <div><small>FLEET LAUNCH SERVICE</small><b>${d.launchService?'INCLUDED • PRIVATE':'NOT INCLUDED'}</b></div>
+          <div><small>BUSINESS OWNERSHIP</small><b>${d.launchService?'OUTSIDE OWNER RETAINED':'PROJECT DEFINED'}</b></div>
         </div>
         ${(()=>{const m=commissioningOperatingPreview();return `<div class="commission-understanding-preview"><small>DARK SKY UNDERSTANDING</small><strong>${escapeHtml(String(m.mode||'other').replaceAll('-',' ').toUpperCase())}</strong><span>${escapeHtml(m.summary||'')}</span><span>Fulfillment: ${escapeHtml((m.fulfillment||[]).join(', ')||'project-defined')} • Scheduling: ${m.schedulingNeeded?'needed':'not currently indicated'}</span></div>`})()}
         ${d.businessIntake?`<div class="commission-understanding-preview intake-review"><small>BUSINESS INTAKE</small><strong>${escapeHtml(d.businessIntake.businessName||d.name||'Imported business')}</strong><span>${escapeHtml((d.businessIntake.opportunities||[]).slice(0,3).join(' • '))}</span><span>Visual directions: ${escapeHtml((d.businessIntake.visualDirections||[]).map(x=>x.name).join(' • '))}</span></div>`:''}
+        ${d.launchService?`<div class="commission-understanding-preview fleet-launch-review"><small>FLEET LAUNCH COURSE</small><strong>FOUNDER PREVIEW → OWNER REVIEW → PREPARE → PRIVATE PREVIEW → SEA TRIAL → OWNER HANDOFF → LAUNCH</strong><span>${d.ownerApprovalRequired?'Owner approval is required before publication.':'Owner approval requirement must be reviewed before publication.'} The Fleet supports the launch without receiving business ownership or credentials.</span></div>`:''}
         <div class="commission-readiness" aria-label="Commissioning readiness">
           <div class="ready"><span>✓</span><b>IDENTITY SEALED</b><small>A unique immutable Project ID is generated at commission; names and branding can change later.</small></div>
           <div class="ready"><span>✓</span><b>PRIVATE BY DEFAULT</b><small>No customer deployment is published by commissioning alone.</small></div>
@@ -9018,8 +8799,10 @@
       },
       capabilities:{
         customerRetention:!!commissionDraft.customerRetention,
-        notifications:!!commissionDraft.notifications
+        notifications:!!commissionDraft.notifications,
+        fleetLaunchService:!!commissionDraft.launchService
       },
+      serviceInstances:[],
       orders:[],customers:[],deployments:[],ledger:[],
       createdAt:new Date().toISOString(),
       updatedAt:new Date().toISOString(),
@@ -9029,6 +8812,8 @@
       registry:{version:1,source:'commissioning',displayNameUnique:false},
       commissioningVersion:'4.5.0'
     };
+    const launchService=fleetLaunchServiceContract(commissionDraft,id);
+    if(launchService)p.serviceInstances.push(launchService);
 
     // Commissioning is a durable registry transaction, not a visual completion.
     // Seal the candidate, commit it to the canonical per-project store + legacy
@@ -10461,7 +10246,6 @@
     }
     renderCustomerSessionIndicator(p);
     resetCustomerEntryViewport();
-    if(kioskPersistenceActive881421(p))armKioskWatch881421(p);
     requestAnimationFrame(()=>verifyLayerIsolation('project',p.id));
   }
 
@@ -11185,7 +10969,7 @@
   const commandRouteAdapters=new Map();
   let commandRouteGeneration=0;
   let activeCommandRoute='engine';
-  const commandSurfaceIds=['fleetSpineWorkspace','admiralDeck','admiralGateOverlay','captainQuarters','captainQuartersGate','captainGlobalExit','captainCommandWorkspace','foundryWorkspace','visualForgeOverlay'];
+  const commandSurfaceIds=['admiralDeck','admiralGateOverlay','captainQuarters','captainQuartersGate','captainGlobalExit','captainCommandWorkspace','foundryWorkspace','visualForgeOverlay'];
   function recordCommandRoute(target,source,generation,status='committed'){
     activeCommandRoute=target;
     document.body.dataset.commandSurface=target;
@@ -11260,7 +11044,6 @@
   function setScreen(name){
     if(state.current==='photo' && name!=='photo') stopCamera();
     state.current=name;
-    try{window.DarkSkyFleetRuntime?.screenChanged?.(name);}catch(err){console.warn('Fleet Runtime screen witness failed',err);}
     document.body.classList.toggle('ikes-flow-active',activeProjectId==='ikes-wood-signs'&&!['welcome','done'].includes(name));
     $$('.screen').forEach(s=>{
       const isCurrent=s.dataset.screen===name;
@@ -11387,9 +11170,9 @@
       $$('#ikeFillChoices [data-ike-fill]').forEach(b=>b.classList.toggle('selected',b.dataset.ikeFill===state.fill));
       if($('ikePlankConfirmPhoto')&&state.photoData)$('ikePlankConfirmPhoto').src=state.photoData;
       const r=state.plankRecognition||{};
-      if($('ikeRecognitionHeadline')){const truth=ikeRecognitionTruthStage(r),headline=$('ikeRecognitionHeadline'),wrap=headline.closest('.ike-recognition-status');headline.textContent=truth.label;if(wrap)wrap.dataset.stage=truth.key;}
+      if($('ikeRecognitionHeadline'))$('ikeRecognitionHeadline').textContent=r.status==='detected'?(r.speciesResolved?'PLANK READY':'WOOD CHECK IN PROGRESS'):'PHOTO READY';
       if($('ikeDetectedOrientation'))$('ikeDetectedOrientation').textContent=r.orientationResolved?(r.orientation||state.orientation||'—'):'Checking orientation';
-      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved&&r.lengthFeet?`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft`:(r.lengthCandidateFeet?`Verifying ${Number(r.lengthCandidateFeet)} ft`:'Verifying length');
+      if($('ikeDetectedSize'))$('ikeDetectedSize').textContent=r.lengthResolved&&r.lengthFeet?`${Number(r.lengthFeet).toFixed(Number(r.lengthFeet)%1?1:0)} ft`:(r.lengthCandidateFeet?`Checking ${Number(r.lengthCandidateFeet)} ft`:'Checking length');
       if($('ikeDetectedSpecies'))$('ikeDetectedSpecies').textContent=r.speciesResolved?(r.speciesName||'Confirmed'):(r.family==='oak'?'Oak family — confirm type':(r.speciesName||'Checking wood'));
       if($('ikePlankPrice'))$('ikePlankPrice').textContent=(r.speciesResolved&&ikeSpeciesRate(r.speciesId)>0&&r.lengthResolved&&r.lengthFeet)?`$${Number(state.price||0).toFixed(2).replace('.00','')}`:'After checks';
       if($('ikeSpeciesAssist'))$('ikeSpeciesAssist').innerHTML=ikeSpeciesPromptMarkup(r);if($('ikeLengthAssist'))$('ikeLengthAssist').innerHTML=ikeLengthPromptMarkup(r);
@@ -12645,7 +12428,6 @@ The full order and approved media remain stored with this project.`;
     el.dataset.ikeFitMode=mode;
     el.dataset.ikeFitFontPx=String(Math.round(fs));
     el.dataset.ikeFitTarget=`${Math.round(targets.w*100)}x${Math.round(targets.h*100)}`;el.dataset.ikeFitRegion=String(region.source||'');el.dataset.ikeFitGrid=String(r.faceGrid?.length||0);
-    requestAnimationFrame(()=>{let px=parseFloat(getComputedStyle(el).fontSize)||fs,tries=0;while(tries<12&&(el.scrollWidth>el.clientWidth+1||el.scrollHeight>el.clientHeight+1)&&px>18){px*=.92;el.style.fontSize=`${px}px`;tries++;}const fits=el.scrollWidth<=el.clientWidth+1&&el.scrollHeight<=el.clientHeight+1;el.dataset.ikeFitContainment=fits?'pass':'hold';el.dataset.ikeFitFontPx=String(Math.round(px));if(!fits)runtimeEvent88150('ike.fit.containment-hold',{wordingLength:wording.length,font:state.font,clientWidth:el.clientWidth,scrollWidth:el.scrollWidth});});
   }
 
   function scheduleIkeDetectedTextPlacement(){
@@ -12848,7 +12630,7 @@ The full order and approved media remain stored with this project.`;
       aspectCore:`${band.coreMin.toFixed(2)}-${band.coreMax.toFixed(2)}`,
       boundaryDistance:Number(boundaryDistance.toFixed(2)),calibrationCoverage,
       segmentationMode:String(analysis?.segmentationMode||''),rawCoreRatio:Number(analysis?.rawCoreRatio||0),grownSilhouetteRatio:Number(analysis?.grownSilhouetteRatio||0),
-      shapeStability,backgroundSeparation,insideCore,fullyFramed,orientationStable,overlap,
+      shapeStability,backgroundSeparation,
       longPixels:Math.round(longPx),shortPixels:Math.round(shortPx),needsSecondPhoto:!high,
       reviewRequired:high,verificationPolicy:high?'ike-visual-order-review':'not-resolved',
       reason:high?'plumb-line-calibrated-silhouette-high-confidence':(medium?'plumb-line-silhouette-needs-more-evidence':'plumb-line-silhouette-not-safe-enough')
@@ -12868,29 +12650,6 @@ The full order and approved media remain stored with this project.`;
     return {resolved:false,confidence:'low',score:Math.max(.2,Math.min(Number(primary.score||0),Number(secondary.score||0))),feet:0,candidateFeet:same?Number(primary.candidateFeet):0,needsSecondPhoto:false,evidenceCount:2,reason:same?'two-photos-still-not-safe':'two-photos-disagree'};
   }
 
-  function ikeRecognitionTruthStage(r){
-    if(!r||r.status!=='detected')return {key:'detected',label:'PHOTO READY'};
-    const orientation=!!r.orientationResolved,species=!!r.speciesResolved,length=!!r.lengthResolved&&Number(r.lengthFeet||0)>0;
-    if(!(orientation&&species&&length)){
-      const waitingForEvidence=!!r.lengthNeedsSecondPhoto||!!r.needsSecondPhoto;
-      return {key:'verifying',label:waitingForEvidence?'VERIFYING PLANK':'IKE VERIFICATION NEEDED'};
-    }
-    const face=!!r.usableRegion,priced=ikeSpeciesRate(r.speciesId)>0;
-    if(!(face&&priced))return {key:'confirmed',label:'PLANK CONFIRMED'};
-    return {key:'ready',label:'PLANK READY'};
-  }
-
-  function ikeCanResolveCalibrated2ftCedar(lengthEvidence,species,orientationEvidence){
-    const e=lengthEvidence||{},sp=species||{},o=orientationEvidence||{};
-    const ratio=Number(e.aspectRatio||0);
-    const calibrated=Number(e.candidateFeet||0)===2&&e.calibrationCoverage==='real-stock-calibrated';
-    const core=!!e.insideCore || (ratio>=1.62&&ratio<=2.85);
-    const framed=e.fullyFramed!==false;
-    const stable=e.orientationStable!==false&&!!o.resolved;
-    const speciesClear=sp.speciesResolved&&sp.speciesId==='cedar'&&['high','customer-confirmed'].includes(String(sp.speciesConfidence||''));
-    return calibrated&&core&&framed&&stable&&speciesClear&&Number(e.score||0)>=.45;
-  }
-
   function ikeLengthPromptMarkup(r){
     if(!r)return '';
     if(r.lengthResolved&&r.lengthFeet){
@@ -12902,7 +12661,7 @@ The full order and approved media remain stored with this project.`;
       return `<div class="ike-species-assist-card ike-length-assist-card"><small>ONE QUICK LENGTH CHECK</small><strong>One more full-plank photo will help us confirm the length.</strong><p>Keep the whole plank in view and take the photo as straight-on as you can.${candidate} No tape measure needed.</p><button type="button" class="primary-btn small" data-ike-length-more-photo>TAKE ONE MORE FULL-PLANK PHOTO</button></div>`;
     }
     if(Number(r.lengthEvidenceCount||0)>=2){
-      return `<div class="ike-species-assist-card ike-length-assist-card ike-owner-verify-card"><small>LENGTH CHECK</small><strong>Ike needs to verify this plank before we continue.</strong><p>We checked both full-plank photos and the geometry is still not strong enough to call safely. We will not ask you to guess the length. Your plank photos stay attached to this session for Ike’s visual verification.</p><span class="ike-verification-chip">IKE VERIFICATION REQUIRED</span></div>`;
+      return `<div class="ike-species-assist-card ike-length-assist-card"><small>LENGTH CHECK</small><strong>Thanks — the photos are still too close to call safely.</strong><p>Choose the rack length you picked. A tape measure is only needed if you are unsure.</p><div class="ike-species-choice-row"><button type="button" data-ike-length-choice="2">2 FT</button><button type="button" data-ike-length-choice="4">4 FT</button><button type="button" data-ike-length-choice="6">6 FT</button></div><label class="ike-custom-length">Other length <input data-ike-length-custom type="number" min="0.25" step="0.25" inputmode="decimal" placeholder="feet"></label></div>`;
     }
     return '';
   }
@@ -12949,8 +12708,7 @@ The full order and approved media remain stored with this project.`;
       const prior=state.plankRecognition||{};
       const species=ikeCombineSpeciesEvidence(primaryEvidence,prior.secondarySpeciesEvidence||null);
       const primaryLengthEvidence=ikeLengthEvidenceFromGeometry(img,lengthAnalysis);
-      let length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
-      if(!length.resolved&&ikeCanResolveCalibrated2ftCedar(primaryLengthEvidence,species,orientationEvidence)){length={...primaryLengthEvidence,resolved:true,confidence:'high-visual',feet:2,candidateFeet:2,needsSecondPhoto:false,evidenceCount:1,reviewRequired:true,verificationPolicy:'ike-visual-order-review',reason:'one-photo-calibrated-2ft-cedar-convergence',calibrationDecision:'known-2ft-cedar-family'};}
+      const length=ikeCombineLengthEvidence(primaryLengthEvidence,prior.secondaryLengthEvidence||null);
       const lengthTelemetry={build:BUILD_VERSION,projectId:activeProjectId,segmentationMode:lengthAnalysis?.segmentationMode||'',rawCoreRatio:Number(lengthAnalysis?.rawCoreRatio||0),contourRatio:primaryLengthEvidence?.aspectRatio||0,longPixels:primaryLengthEvidence?.longPixels||0,shortPixels:primaryLengthEvidence?.shortPixels||0,candidateFeet:primaryLengthEvidence?.candidateFeet||0,score:primaryLengthEvidence?.score||0,boundaryDistance:primaryLengthEvidence?.boundaryDistance||0,calibrationCoverage:primaryLengthEvidence?.calibrationCoverage||'',shapeStability:Number(primaryLengthEvidence?.shapeStability||0),backgroundSeparation:Number(primaryLengthEvidence?.backgroundSeparation||0),grownSilhouetteRatio:Number(primaryLengthEvidence?.grownSilhouetteRatio||0),resolved:!!primaryLengthEvidence?.resolved,reason:primaryLengthEvidence?.reason||''};
       window.__ikeLengthLastEvidence=lengthTelemetry;
       window.DarkSkyV4?.diagnostic?.('ike.length.evidence','Ike plank length evidence',lengthTelemetry);
@@ -12999,10 +12757,6 @@ The full order and approved media remain stored with this project.`;
     r.secondarySpeciesPhotoData=data;r.secondarySpeciesEvidence=speciesEvidence;
     const species=ikeCombineSpeciesEvidence(r.primarySpeciesEvidence||null,speciesEvidence);
     Object.assign(r,{family:species.family,speciesId:species.speciesId,speciesName:species.speciesName,speciesResolved:species.speciesResolved,speciesConfidence:species.speciesConfidence,speciesScore:species.speciesScore,evidenceCount:species.evidenceCount,needsSecondPhoto:species.needsSecondPhoto,speciesCandidates:species.candidates||[],speciesReason:species.reason||'',secondaryAnalyzedAt:new Date().toISOString()});
-    if(!r.lengthResolved&&Number(r.lengthCandidateFeet||0)===2&&species.speciesResolved&&species.speciesId==='cedar'&&Number(r.primaryLengthEvidence?.candidateFeet||0)===2&&Number(secondary?.candidateFeet||0)===2){
-      const avgScore=(Number(r.primaryLengthEvidence?.score||0)+Number(secondary?.score||0))/2;
-      if(avgScore>=.45){Object.assign(r,{lengthFeet:2,lengthResolved:true,lengthConfidence:'high-visual',lengthScore:Number(Math.min(.95,avgScore+.12).toFixed(2)),lengthCandidateFeet:2,lengthEstimatedFeet:2,lengthNeedsSecondPhoto:false,lengthEvidenceCount:2,lengthReason:'two-photo-calibrated-2ft-cedar-convergence',lengthReviewRequired:true,lengthVerificationPolicy:'ike-visual-order-review'});}
-    }
     recalcIkePrice();updateUi();
   }
 
@@ -15716,8 +15470,11 @@ The full order and approved media remain stored with this project.`;
       try{await analyzeIkeSecondSpeciesPhoto(file);}catch(err){console.error('Ike second wood photo failed',err);if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='That photo did not give us enough to use. Try one closer view of the grain.';}finally{input.value='';}
     });
     $('ikeLengthAssist')?.addEventListener('click',e=>{
+      const choice=e.target.closest('[data-ike-length-choice]');
+      if(choice){invalidateIkeApprovedDesignLock();setIkeLengthFeet(Number(choice.dataset.ikeLengthChoice),'customer-confirmed');return;}
       if(e.target.closest('[data-ike-length-more-photo]')){const input=$('ikeSecondLengthPhotoInput');if(input)input.click();}
     });
+    $('ikeLengthAssist')?.addEventListener('change',e=>{const input=e.target.closest('[data-ike-length-custom]');if(!input)return;const v=Number(input.value||0);if(v>0){invalidateIkeApprovedDesignLock();setIkeLengthFeet(v,'customer-confirmed');}});
     $('ikeSecondLengthPhotoInput')?.addEventListener('change',async e=>{
       const input=e.target,file=input.files?.[0];if(!file)return;
       if($('ikeSpeciesResolutionStatus'))$('ikeSpeciesResolutionStatus').textContent='Checking the full plank with your first photo…';

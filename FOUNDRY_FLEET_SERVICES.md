@@ -1,6 +1,14 @@
 # Foundry Fleet Services
 > Consolidated in Dark Sky 8.2.8 to keep the deployment lean while retaining the full historical contracts as an AI-readable regression reference.
 
+## 8.8.15.0 — Fleet Launch Service
+
+`fleet.business-launch` is a governed core service for helping an independently owned business establish its online presence and customer journey without transferring ownership to the Fleet.
+
+The standard course is Founder Preview → Owner Review → Prepare → Private Preview → Sea Trial → Owner Handoff → Launch. A service instance begins in advisory mode and free commercial mode. Admiral may later govern its commercial mode through the existing entitlement structure, but the owner cannot self-grant fleet authority and the Fleet receives no equity, credentials, or automatic publication rights.
+
+Permitted scope is limited to business identity, the owner-approved brief and brand assets, offer catalog, customer-experience configuration, launch evidence, and handoff state. Owner credentials, payment credentials, unapproved customer records, and unrelated vessel data are denied.
+
 ---
 
 ## Source: `FLEET_CAPABILITY_CANDIDATES.md`
@@ -279,8 +287,3 @@ Status → Problem → Next Move. Engineering evidence is available, never force
 ## 7.2.1 approved artifact integrity
 - **Approved Artifact Voyage** verifies that the customer-approved visual is locked before contact/review and stored as the production artifact rather than silently re-rendered later.
 - Editing the design invalidates the lock and requires fresh customer approval.
-
-
-## Foundry Scout + Interface Forge (8.8.15.2)
-
-The Foundry may evaluate useful public-source software when a Fleet mission or customer friction suggests an existing capability could be reused. Scout records source identity and evidence. Clearance reviews legal/commercial use, attribution, security, dependency health, privacy/data flow, maintenance, and upstream truth. Interface Forge may then create a Fleet-standard usability layer for Sea Trial. No wrapper changes upstream authorship, and no clearance widens project authority.

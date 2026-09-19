@@ -1,11 +1,3 @@
-# 8.8.15.2 Ike’s Proving-Vessel Runtime Note
-
-The second-photo Sea Trial exposed a fleet-level runtime defect: iPad camera/photo-picker passage backgrounded Safari and the kiosk recovery logic incorrectly treated the intentional handoff as abandonment. Fleet Runtime v1 fixes the generic behavior rather than special-casing Ike’s. The first plank/photo state must survive an intentional second-photo handoff, and only the configured idle timeout may purge the session.
-
-This proof is a release blocker for Fleet Runtime graduation beyond Ike’s.
-
----
-
 # Ikes Production Compendium
 > Consolidated in Dark Sky 8.2.8 to keep the deployment lean while retaining the full historical contracts as an AI-readable regression reference.
 
@@ -319,16 +311,3 @@ With the known 2 ft cedar test plank, a normal full-plank photo should resolve H
 - **Manufacturing truth:** customer review, order record, owner view, CNC geometry and future inlay output must derive from the same approved design lock.
 - **Storage law:** localStorage is only a compact secondary mirror. Original/raw media must not be duplicated there. Durable order media belongs in IndexedDB and must survive quota pressure by retaining the immutable approved production artifact first.
 - **Idempotency:** one approved artifact hash can create at most one in-memory customer order during a submission attempt. Retries return the same order rather than minting another ID.
-
-
-## 8.8.15.2 Recognition Truth — current superseding rule
-
-This section supersedes older language in this compendium that asked the customer to confirm rack length after two inconclusive photos.
-
-- The customer does **not** choose 2 ft / 4 ft / 6 ft and does not type a custom length as the normal recognition fallback.
-- One guided second full-plank photo may be requested when the first image cannot safely resolve length.
-- If the second view remains inconclusive, the state becomes **Ike verification required**. No customer guess is accepted and no price is invented.
-- `PLANK READY` appears only when orientation, species, length and active pricing are resolved.
-- The known real 2 ft cedar test plank is a commissioned calibration family. When full framing, stable orientation, calibrated core ratio and high-confidence Cedar evidence converge, the system may resolve 2 ft even if generic background separation is not strong enough to satisfy an uncalibrated detector.
-- 4 ft and 6 ft remain provisional until known physical examples are deliberately commissioned.
-- Derived evidence and the original customer plank photo remain available to Ike for final visual verification before production.

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.8",
-  "release": "Spine Continuity",
+  "build": "8.8.11.9",
+  "release": "Bootstrap Build Schedule",
   "excluded_sources": [
     "The situation"
   ],
@@ -12,25 +12,25 @@
       "no_cross_project_flash",
       "bounded_route_resolution",
       "explicit_safe_fallback",
-      "mixed_build_block",
-      "supabase_recovery_precedes_engine",
-      "recovery_callback_shape_coverage",
-      "recovery_surface_survives_late_app_bind",
-      "recovery_route_executes_no_engine_or_customer_runtime",
-      "admiral_professional_top_reachable_after_entitlement_auth",
-      "admiral_signed_out_clears_current_entitlement_highlight",
-      "project_feature_auth_opens_admiral_without_engine_login_flash",
-      "admiral_identity_keyboard_dismiss_preserves_entitlement_scroll_anchor",
-      "admiral_identity_screenshot_scroll_reset_is_corrected_while_focused"
+      "mixed_build_block"
+      ,"supabase_recovery_precedes_engine"
+      ,"recovery_callback_shape_coverage"
+      ,"recovery_surface_survives_late_app_bind"
+      ,"recovery_route_executes_no_engine_or_customer_runtime"
+      ,"admiral_professional_top_reachable_after_entitlement_auth"
+      ,"admiral_signed_out_clears_current_entitlement_highlight"
+      ,"project_feature_auth_opens_admiral_without_engine_login_flash"
+      ,"admiral_identity_keyboard_dismiss_preserves_entitlement_scroll_anchor"
+      ,"admiral_identity_screenshot_scroll_reset_is_corrected_while_focused"
     ],
     "watertight": [
       "authority_separation",
       "project_admin_4353",
       "project_id_isolation",
       "owner_not_engine_auth",
-      "preview_does_not_widen_authority",
-      "vessel_feature_read_requires_exact_authenticated_scope",
-      "unverified_feature_state_fails_closed"
+      "preview_does_not_widen_authority"
+      ,"vessel_feature_read_requires_exact_authenticated_scope"
+      ,"unverified_feature_state_fails_closed"
     ],
     "true_helm": [
       "explicit_in_app_navigation",
@@ -57,10 +57,7 @@
       "admiral_return_uses_uncancelled_native_document_navigation",
       "engine_return_handoff_is_same_tab_short_lived_and_one_use",
       "invalid_engine_return_handoff_falls_to_normal_gate",
-      "native_engine_return_settles_after_app_initialization",
-      "fleet_spine_opens_above_admiral_deck",
-      "fleet_spine_close_restores_admiral_govern_lane",
-      "fleet_spine_open_has_visible_modal_focus"
+      "native_engine_return_settles_after_app_initialization"
     ],
     "mobile_watch": [
       "iphone_first_class",
@@ -72,15 +69,15 @@
       "single_touch_handler_per_admiral_panel",
       "admiral_panels_are_mutually_exclusive",
       "admiral_panel_close_is_reliable",
-      "identity_inputs_do_not_move_under_touch",
-      "admiral_professional_single_scroll_plane",
-      "admiral_identity_visible_bounds_equal_hit_bounds",
-      "admiral_identity_submit_one_tap_feedback",
-      "admiral_sign_out_hidden_until_identity_verified",
-      "verified_identity_hides_redundant_auth_actions",
-      "entitlement_selector_releases_focus_after_choice",
-      "bootstrap_schedule_touch_drag",
-      "bootstrap_schedule_ipad_horizontal_workweek"
+      "identity_inputs_do_not_move_under_touch"
+      ,"admiral_professional_single_scroll_plane"
+      ,"admiral_identity_visible_bounds_equal_hit_bounds"
+      ,"admiral_identity_submit_one_tap_feedback"
+      ,"admiral_sign_out_hidden_until_identity_verified"
+      ,"verified_identity_hides_redundant_auth_actions"
+      ,"entitlement_selector_releases_focus_after_choice"
+      ,"bootstrap_schedule_touch_drag"
+      ,"bootstrap_schedule_ipad_horizontal_workweek"
     ],
     "clean_wake": [
       "no_platform_chrome_on_customer",
@@ -153,44 +150,44 @@
       "dark_sky_bytes_distinct_from_browser_origin",
       "admiral_sticky_header_has_no_top_showthrough",
       "project_control_opens_at_top",
-      "project_priority_precedes_secondary_telemetry",
-      "deployment_identity_validated_before_normalization",
-      "foreign_deployment_reference_never_renders",
-      "foreign_deployment_evidence_is_quarantined",
-      "single_command_navigator_owns_cross_command_routes",
-      "admiral_return_has_native_engine_fallback",
-      "admiral_return_commits_local_engine_surface_before_refresh",
-      "verified_shell_owns_upper_command_engine_escape",
-      "pointerdown_escape_precedes_synthesized_click",
-      "command_surfaces_are_css_mutually_exclusive",
-      "engine_visible_before_diagnostics_refresh",
-      "command_route_state_is_recorded",
-      "admiral_header_exposes_current_build_for_field_proof",
-      "verified_issue_acknowledgment_survives_readback",
-      "verified_rollback_acknowledgment_survives_readback",
-      "completed_intent_clears_and_rollback_preview_is_new_proposal",
-      "commissioning_requires_explicit_preview_fingerprint",
-      "commissioning_creates_no_owner_membership_or_entitlement",
-      "bootstrap_build_name_does_not_define_permanent_identity",
-      "working_name_change_preserves_uuid_project_key_namespace",
-      "commissioning_preview_has_no_dead_stretched_column",
-      "missing_commissioning_rpc_fails_closed_with_plain_language",
-      "black_flag_owns_lateral_fleet_registry",
-      "bootstrap_build_is_admiral_program_not_parent",
-      "mission_level_never_creates_project_parentage",
-      "shared_capability_adoption_preserves_vessel_boundaries",
-      "fleet_registry_reads_authoritative_mission_and_operating_models",
-      "bootstrap_twelve_week_schedule_vertical_run",
-      "bootstrap_weekday_only_calendar",
-      "bootstrap_multi_day_duration_preserved",
-      "bootstrap_schedule_browser_local_no_fleet_write",
-      "bootstrap_schedule_doorway_reachable",
-      "bootstrap_schedule_doorway_installs_after_dynamic_brand_panel",
-      "commissioning_verified_preview_copy_matches_state",
-      "each_bootstrap_task_has_vendor",
-      "vendor_view_shows_only_assigned_work",
-      "schedule_move_creates_vendor_visible_notice",
-      "vendor_communication_remains_local_in_test_build"
+      "project_priority_precedes_secondary_telemetry"
+      ,"deployment_identity_validated_before_normalization"
+      ,"foreign_deployment_reference_never_renders"
+      ,"foreign_deployment_evidence_is_quarantined"
+      ,"single_command_navigator_owns_cross_command_routes"
+      ,"admiral_return_has_native_engine_fallback"
+      ,"admiral_return_commits_local_engine_surface_before_refresh"
+      ,"verified_shell_owns_upper_command_engine_escape"
+      ,"pointerdown_escape_precedes_synthesized_click"
+      ,"command_surfaces_are_css_mutually_exclusive"
+      ,"engine_visible_before_diagnostics_refresh"
+      ,"command_route_state_is_recorded"
+      ,"admiral_header_exposes_current_build_for_field_proof"
+      ,"verified_issue_acknowledgment_survives_readback"
+      ,"verified_rollback_acknowledgment_survives_readback"
+      ,"completed_intent_clears_and_rollback_preview_is_new_proposal"
+      ,"commissioning_requires_explicit_preview_fingerprint"
+      ,"commissioning_creates_no_owner_membership_or_entitlement"
+      ,"bootstrap_build_name_does_not_define_permanent_identity"
+      ,"working_name_change_preserves_uuid_project_key_namespace"
+      ,"commissioning_preview_has_no_dead_stretched_column"
+      ,"missing_commissioning_rpc_fails_closed_with_plain_language"
+      ,"black_flag_owns_lateral_fleet_registry"
+      ,"bootstrap_build_is_admiral_program_not_parent"
+      ,"mission_level_never_creates_project_parentage"
+      ,"shared_capability_adoption_preserves_vessel_boundaries"
+      ,"fleet_registry_reads_authoritative_mission_and_operating_models"
+      ,"bootstrap_twelve_week_schedule_vertical_run"
+      ,"bootstrap_weekday_only_calendar"
+      ,"bootstrap_multi_day_duration_preserved"
+      ,"bootstrap_schedule_browser_local_no_fleet_write"
+      ,"bootstrap_schedule_doorway_reachable"
+      ,"bootstrap_schedule_doorway_installs_after_dynamic_brand_panel"
+      ,"commissioning_verified_preview_copy_matches_state"
+      ,"each_bootstrap_task_has_vendor"
+      ,"vendor_view_shows_only_assigned_work"
+      ,"schedule_move_creates_vendor_visible_notice"
+      ,"vendor_communication_remains_local_in_test_build"
     ],
     "quarterdeck": [
       "single_top_level_folder",
@@ -210,98 +207,7 @@
       "quota_pressure_preserves_approved_design",
       "raw_quota_exception_not_customer_surface",
       "localstorage_media_mirrors_compact"
-    ],
-    "fleet_runtime": [
-      "single_runtime_state_machine_owns_customer_session_lifecycle",
-      "visibilitychange_alone_never_means_abandonment",
-      "file_picker_camera_handoff_preserves_active_customer_place",
-      "intentional_handoff_pauses_idle_reset",
-      "handoff_return_restarts_idle_clock",
-      "expired_handoff_fails_to_safe_customer_home",
-      "configured_idle_abandonment_purges_transient_customer_cargo",
-      "fresh_process_recovery_returns_exact_vessel_safe_home",
-      "kiosk_recovery_never_restores_owner_engine_captain_admiral_authority",
-      "runtime_event_journal_contains_no_customer_payload",
-      "station_identity_survives_customer_session_reset",
-      "redundant_visible_idle_watchdog",
-      "idle_based_on_customer_activity_clock",
-      "system_handoff_pauses_idle",
-      "safe_reset_purges_transient_cargo",
-      "ike_fit_dom_containment",
-      "ike_calibrated_2ft_cedar_one_photo_convergence"
-    ],
-    "foundry_gate": [
-      "mission_before_repository",
-      "public_source_url_required",
-      "commercial_license_review",
-      "attribution_and_upstream_identity",
-      "security_dependency_privacy_maintenance_review",
-      "no_auto_scrape",
-      "no_auto_publish",
-      "clearance_only_allows_sea_trial",
-      "no_authority_broadening"
-    ],
-    "fleet_spine": [
-      "single_server_authority_resolution_contract",
-      "activity_events_are_append_only_and_idempotent",
-      "control_plane_excludes_private_business_payloads",
-      "foundry_candidates_persist_in_fleet_core",
-      "foundry_clearance_never_auto_publishes",
-      "release_assignment_requires_preview_and_intent",
-      "release_ring_is_per_vessel_not_global",
-      "station_identity_is_first_class_control_plane_record",
-      "admiral_spine_read_is_authenticated_and_read_only_by_default",
-      "rollback_previous_release_is_retained",
-      "station_local_manifest_never_silently_promotes",
-      "station_registration_requires_preview_fingerprint_and_intent",
-      "station_registration_does_not_fabricate_heartbeat",
-      "station_registry_payload_excludes_customer_business_data",
-      "server_only_station_is_read_only_without_local_manifest",
-      "web_kiosk_hybrid_are_first_class_station_modes",
-      "station_registration_activity_event_is_bounded_and_durable"
-    ],
-    "fleet_spine_single_flight": {
-      "required": true,
-      "release_blocker": true,
-      "proof": [
-        "one_admiral_refresh_promise",
-        "one_control_plane_read_per_open_or_refresh",
-        "station_registry_consumes_snapshot",
-        "bounded_terminal_state"
-      ]
-    }
-  },
-  "promotion": "manual-captain-known-good",
-  "families": {
-    "recognition_truth": [
-      "plank_ready_requires_orientation_species_length_and_pricing",
-      "known_2ft_cedar_calibration_convergence",
-      "unresolved_length_requests_one_guided_photo",
-      "two_inconclusive_views_route_to_ike_verification",
-      "customer_never_selects_or_types_plank_length",
-      "sea_trial_idle_deadline_visible",
-      "visible_customer_active_deadline_forces_safe_reset"
-    ],
-    "admiral_lens": [
-      "release_preview_is_visibly_rendered_before_issue_unlocks",
-      "release_preview_shows_exact_before_and_after_course",
-      "release_preview_fingerprint_is_progressively_disclosed",
-      "course_field_change_invalidates_prior_preview",
-      "issue_course_disabled_without_fresh_visible_preview",
-      "preview_failure_is_durable_and_explicit",
-      "activity_spine_default_view_is_human_readable",
-      "raw_activity_payload_requires_details_expansion",
-      "selected_vessel_is_visually_unambiguous",
-      "admiral_control_plane_type_scale_is_ipad_readable"
-    ],
-    "station_registry": [
-      "station_local_manifest_never_silently_promotes",
-      "station_registration_requires_preview_fingerprint_and_intent",
-      "station_registration_does_not_fabricate_heartbeat",
-      "station_registry_payload_excludes_customer_business_data",
-      "server_only_station_is_read_only_without_local_manifest",
-      "web_kiosk_hybrid_are_first_class_station_modes",
-      "station_registration_activity_event_is_bounded_and_durable"
     ]
-  }
+  },
+  "promotion": "manual-captain-known-good"
 }

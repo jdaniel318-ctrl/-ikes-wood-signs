@@ -1,15 +1,3 @@
-# 8.8.15.8 — Spine Continuity
-
-The Fleet Spine is now the sole Admiral-session/read broker for its subordinate panels. Station Registry receives the verified snapshot rather than issuing a parallel Fleet Core read. This prevents rotated-refresh-token races after long idle/background periods and ensures the Admiral sees a terminal state instead of an indefinite spinner.
-
-# 8.8.15.7 Station Registry — Admiral Reference
-
-Fleet Runtime does not expand Admiral authority. It makes fleet behavior more deterministic beneath existing authority boundaries. Admiral consumes fleet-safe projections and governs capability/release course; it does not become the operator of vessel business data. Ike’s remains the proving vessel before shared runtime behavior graduates across the fleet.
-
-Control Plane truth, Vessel Data Plane privacy, event-compatible observability, release rings, first-class station identity, capability contracts, and per-vessel rollback are now explicit fleet architecture requirements.
-
----
-
 # 8.5.4 Admiral Verified Command
 
 Admiral's Deck trial now defaults to Professional Mode. The ceremonial deck remains a second view. Admiral-level responsibility is fleet governance: posture, doctrine, standards, Foundry, delegation, cross-vessel intelligence, continuity, and creation/promotion of new fleet capabilities and vessels. Captain remains mission command; Engine remains operational machinery.
@@ -275,30 +263,3 @@ Theatrical visuals are a reusable capability, not a one-off skin.
 4. Captain command geometry remains benchmark-locked until a replacement visual is Sea-Trialed.
 5. Future production visuals move to managed object storage without changing the command contract.
 6. Reduced-motion and shorter repeat entry are permanent accessibility/performance requirements.
-
-
-## Foundry Gate (8.8.15.2)
-
-Admiral now has a working Scout + Clearance surface inside The Foundry. Candidate drafts are local working records in this pass. `SEA TRIAL CLEARED` means every visible clearance item has been checked and the basic candidate fields are complete; it does not publish, entitle, distribute, or commercialize anything. Upstream truth and vessel authority remain separate from the productization decision.
-
-
-## Recognition Truth (8.8.15.2)
-
-Ike remains the proving vessel for physical-product recognition. A successful recognition state must be explainable as cleared evidence gates. Customers are not used as a substitute measuring instrument when Fleet vision is uncertain. Unresolved physical truth escalates to the exact-vessel owner. Sea Trial exposes an idle countdown witness; live customer mode does not.
-
-
-## Fleet Spine — 8.8.15.7
-Fleet governance now has a durable Control Plane surface. Admiral can read vessel identity, release-ring posture, station counts, membership counts, Foundry candidate count and recent bounded Activity Spine events. Release-course changes remain exact-vessel and are previewed before issue. The Fleet Spine does not expose private customer/order payloads and does not turn Admiral observation into vessel ownership.
-
-Foundry Scout candidates are now durable Fleet Core records instead of browser-local drafts. The legal/security/privacy clearance gate remains human-governed and only clears a candidate for Sea Trial.
-
-
-## 8.8.15.7 — Station Registry
-Fleet Spine course previews are command proof, not transient feedback. A modifying release course remains locked until an exact-vessel server preview is visibly rendered; any proposed-course mutation invalidates that preview. Default Activity Spine presentation is human-readable, with technical payload behind progressive disclosure. Admiral Control Plane typography must remain readable at normal iPad viewing distance.
-
-## 8.8.15.7 Station Registry
-Fleet Spine now distinguishes local deployment manifests from durable Fleet Core stations. Admiral can inspect local-only, server-only, aligned and drifted station identities. Adoption into Fleet Core is preview-before-register with explicit intent and a fresh server fingerprint. Registration does not imply station health; heartbeat is independent runtime evidence. No customer/order/photo/pricing payload belongs in Station Registry.
-
-
-## 8.8.15.7 — Fleet Truth
-The Admiral Control Plane distinguishes current posture from retained history. `ACTIVE RELEASES` excludes historical hold rows. `0 REGISTERED STATIONS` is a completed server truth, not a loading condition.

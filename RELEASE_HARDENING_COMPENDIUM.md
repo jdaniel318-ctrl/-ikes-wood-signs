@@ -1,15 +1,3 @@
-# 8.8.15.8 Spine Continuity Hardening
-
-A Control Plane module may not independently refresh a rotating authority token when another module owns the same session. Fleet Spine is the read/session broker. Dependent Admiral panels consume its snapshot. Every remote read must terminate CURRENT, AUTH REQUIRED, TIMEOUT, or FAILED within a bounded interval. An upper-command secure transition must close all child overlays and remove scroll/body locks.
-
-# 8.8.15.7 Station Registry Hardening
-
-Fleet Runtime centralizes customer-session lifecycle. Intentional system handoffs (camera/photo/file picker and future payment/system sheets) enter `SYSTEM_HANDOFF`, pause kiosk idle abandonment, preserve the exact customer place, and return to `CUSTOMER_ACTIVE`. `visibilitychange` alone cannot reset a customer. Fresh process recovery remains safe-home only and never restores privileged authority or prior customer cargo.
-
-Ike’s Wood Signs is the proving vessel. Shared graduation requires Golden Voyage proof before wider fleet promotion.
-
----
-
 # Release Hardening Compendium
 > Consolidated in Dark Sky 8.2.8 to keep the deployment lean while retaining the full historical contracts as an AI-readable regression reference.
 
@@ -555,31 +543,3 @@ The Visual Command Forge is a shared high-authority creation capability availabl
 
 ## True Cut — stale document / fresh manifest handoff
 Observed during 8.2.8 dry dock: Safari displayed an older 8.2.4 HTML shell while the deployment manifest was already 8.2.8. Worker registrations and application caches cleared correctly, but the old document continued verifying against its embedded 8.2.4 identity. True Cut makes the page identity single-source and permits one cache-busted document promotion when the deployment manifest proves a different complete release is present. Repeated promotion is forbidden; unresolved disagreement remains a release HOLD.
-
-
-## 8.8.15.2 Foundry Gate hardening
-
-Foundry commercialization is blocked unless the candidate record carries explicit above-board clearance. Runtime hardening also adds a redundant idle watchdog, post-layout Ike Fit containment verification, and calibrated one-photo 2 ft cedar convergence. These are release blockers on the proving vessel before wider graduation.
-
-
-## 8.8.15.2 Recognition Truth hardening
-
-The proving vessel exposed three unacceptable contradictions: READY while length was unresolved, customer length guessing after failed vision, and a 2 ft commissioned plank that failed to converge despite correct Cedar/candidate evidence. Recognition Truth adds a gate-derived state label, removes customer length entry, adds an owner-verification stop condition, and lets the commissioned 2 ft Cedar family use its calibration as the governing evidence instead of requiring every generic segmentation heuristic to be perfect. Fleet Runtime also persists an idle deadline and adds a visible Sea Trial witness so timeout failures are measurable rather than guessed.
-
-
-## 8.8.15.7 Station Registry hardening
-The fleet no longer relies on one proving vessel to surface every shared weakness. Control Plane state, Activity Spine identity, server-persisted Foundry clearance, release rings, first-class station identity, and unified authority resolution now have explicit shared contracts. Release course changes are protected by preview fingerprints, explicit Admiral intent and idempotent activity retention. Private vessel business payloads are excluded from Control Plane event design.
-
-## Fleet Spine scale pass
-Fleet Core now carries covering indexes for the new Activity Spine and Station Control Plane paths plus previously unindexed fleet foreign keys identified by the database advisor. Existing self-service RLS policies were rewritten so `auth.uid()` is initialized once per statement rather than re-evaluated row-by-row. These changes preserve policy meaning while preparing the shared hull for materially larger vessel and event counts.
-
-
-## 8.8.15.7 — Station Registry
-Fleet Spine course previews are command proof, not transient feedback. A modifying release course remains locked until an exact-vessel server preview is visibly rendered; any proposed-course mutation invalidates that preview. Default Activity Spine presentation is human-readable, with technical payload behind progressive disclosure. Admiral Control Plane typography must remain readable at normal iPad viewing distance.
-
-## 8.8.15.7 — Station Registry
-The Fleet Spine station count is no longer just an empty foundation. Durable station identity now has a deliberate adoption path from real Deployment Shipwright manifests, but no outpost is auto-migrated. Admiral must preview the exact identity, retain the server fingerprint and record intent before registration can issue. Registration explicitly does not fabricate heartbeat health; new stations remain `AWAITING HEARTBEAT` until a real station runtime proves liveness. Station events are append-only and bounded, and private customer/business payloads remain outside the Control Plane.
-
-
-## 8.8.15.7 — Fleet Truth hardening
-Station Registry load completion, empty-state resolution and active-vs-history release semantics are release gates. A successful empty read must never look like a hung request.

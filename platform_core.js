@@ -1,4 +1,4 @@
-/* Dark Sky / Black Flag v4.1.3 — Full Sail core compatibility layer */
+/* Dark Sky / Black Flag v4.1.4 — Launch Harbor core compatibility layer */
 (function(g){
 'use strict';
 const SCHEMA=8, POLICY='4.0', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
@@ -31,21 +31,14 @@ const FLEET_SERVICE_DOMAINS=Object.freeze({
  shipyard:Object.freeze({label:'Shipyard',level:'admiral',mission:'Promote mature shared capabilities into dedicated fleet vessels without breaking existing consumers.'})
 });
 const FLEET_CAPABILITY_REGISTRY=Object.freeze([
+ Object.freeze({id:'fleet.business-launch',name:'Fleet Launch Service',origin:'black-flag-engine',domain:'dockmaster',lifecycle:'available',scope:'outside-owner-launch-support',data:['projectId','business-identity','approved-business-brief','approved-brand-assets','offer-catalog','customer-experience-configuration','launch-evidence','owner-handoff-state'],commercial:'free-default-admiral-governed'}),
  Object.freeze({id:'ikes.custom-colors',name:'Custom Colors',origin:'ikes-wood-signs',domain:'forge',lifecycle:'foundation',scope:'project-option',data:['projectId','approved-color-options'],commercial:'owner-configurable'}),
  Object.freeze({id:'fleet.artwork-inlays',name:'Artwork / Inlay Production',origin:'ikes-wood-signs',domain:'forge',lifecycle:'foundation',scope:'shared-production-service',data:['projectId','orderId','canonical-geometry','artwork','material-profile'],commercial:'future'}),
  Object.freeze({id:'fleet.payments',name:'Customer Payments',origin:'black-flag-engine',domain:'quartermaster',lifecycle:'foundation',scope:'shared-provider-contract',data:['projectId','orderId','amount','payment-state'],commercial:'future'}),
  Object.freeze({id:'fleet.business-ledger',name:'Business Event Ledger',origin:'black-flag-engine',domain:'ledger_house',lifecycle:'foundation',scope:'shared-schema-not-shared-database',data:['projectId','business-event'],commercial:'included-foundation'}),
  Object.freeze({id:'fleet.customer-insight',name:'Customer / Order Insight',origin:'black-flag-engine',domain:'lookout',lifecycle:'foundation',scope:'permission-aware-analytics',data:['projectId','authorized-aggregates'],commercial:'future'}),
  Object.freeze({id:'fleet.ai-recommendations',name:'AI Recommendation Registry',origin:'fleet-learning',domain:'chart_room',lifecycle:'foundation',scope:'advisory-no-silent-mutation',data:['recommendation','evidence','confidence','authority','status'],commercial:'future'}),
- Object.freeze({id:'fleet.vendor-routing',name:'Vendor / Capacity Routing',origin:'admiral-foundry',domain:'dockmaster',lifecycle:'foundation',scope:'shared-supply-chain',data:['capability','resource','cost','lead-time','capacity'],commercial:'future'}),
- Object.freeze({id:'fleet.foundry-scout',name:'Foundry Scout',origin:'captain-observation',domain:'armory',lifecycle:'foundation',scope:'public-source-candidate-clearance',data:['public-source-metadata','license-evidence','security-evidence','maintenance-health','candidate-purpose'],commercial:'internal-admiral'}),
- Object.freeze({id:'fleet.interface-forge',name:'Interface Forge',origin:'admiral-foundry',domain:'forge',lifecycle:'foundation',scope:'upstream-adapter-interface-layer',data:['candidate-id','capability-contract','ui-shell','integration-boundary','attribution'],commercial:'future'}),
- Object.freeze({id:'fleet.utility-dock',name:'Utility Dock',origin:'admiral-foundry',domain:'exchange',lifecycle:'idea',scope:'portfolio-distribution-layer',data:['capability-id','commercial-route','entitlement','support-policy'],commercial:'future'}),
- Object.freeze({id:'fleet.control-plane',name:'Fleet Control Plane',origin:'fleet-spine',domain:'armory',lifecycle:'foundation',scope:'shared-governance-coordination',data:['vessel-identity','release-assignment','station-posture','capability-posture','health'],commercial:'included-foundation'}),
- Object.freeze({id:'fleet.activity-spine',name:'Activity Spine',origin:'fleet-spine',domain:'ledger_house',lifecycle:'foundation',scope:'append-only-operational-truth',data:['event-id','vessel-id','actor-authority','event-type','correlation-id','causation-id','idempotency-key','bounded-payload'],commercial:'included-foundation'}),
- Object.freeze({id:'fleet.authority-gateway',name:'Authority Gateway',origin:'fleet-spine',domain:'dockmaster',lifecycle:'foundation',scope:'server-enforced-authority-resolution',data:['actor-id','global-authority','vessel-membership','target-scope'],commercial:'included-foundation'}),
- Object.freeze({id:'fleet.release-rings',name:'Release Rings',origin:'fleet-spine',domain:'armory',lifecycle:'foundation',scope:'per-vessel-release-course',data:['vessel-id','ring','current-release','previous-release','rollout-state'],commercial:'included-foundation'}),
- Object.freeze({id:'fleet.station-identity',name:'Station Identity',origin:'fleet-spine',domain:'dockmaster',lifecycle:'foundation',scope:'persistent-outpost-identity',data:['station-id','vessel-id','mode','runtime-release','policy-version','health'],commercial:'included-foundation'})
+ Object.freeze({id:'fleet.vendor-routing',name:'Vendor / Capacity Routing',origin:'admiral-foundry',domain:'dockmaster',lifecycle:'foundation',scope:'shared-supply-chain',data:['capability','resource','cost','lead-time','capacity'],commercial:'future'})
 ]);
 const BUSINESS_MODEL_MODES=Object.freeze(['custom-product','retail','food-service','service','request-quote','mixed','other']);
 const BUSINESS_BRIEF_MAX=12000;

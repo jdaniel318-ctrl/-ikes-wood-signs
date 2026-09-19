@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-capability-adoption-map-v1",
-  "build": "8.8.15.8",
+  "build": "8.8.10",
   "policy": "Runtime-generated from Fleet Learning Registry; this file defines the adoption vocabulary only.",
   "states": [
     "unreviewed",
@@ -18,28 +18,6 @@
     "capability": "requires explicit vessel review/adoption",
     "cross_project_business_data": "forbidden",
     "mission_level_parentage": "forbidden",
-    "shared_capability_passage": "explicit adoption only; capability contract may move, ownership, authority, branding, namespace and project data do not",
-    "fleet_spine": "shared Control Plane capabilities may coordinate identity, authority, releases, stations and bounded activity truth without importing vessel-private business records",
-    "station_registry": "local deployment manifests remain candidates until explicit previewed registration creates durable Fleet Core station identity; customer payloads never cross"
-  },
-  "manifest_contract": {
-    "required": [
-      "capabilityKey",
-      "version",
-      "requiredAuthority",
-      "dataScopes",
-      "eventsEmitted",
-      "eventsConsumed",
-      "supportedOperatingModes",
-      "offlineBehavior",
-      "commercialMode",
-      "dependencies",
-      "certificationVoyages"
-    ],
-    "dataScopeDefault": "deny",
-    "authorityDefault": "deny",
-    "operatingModeDefault": "web-only-until-declared",
-    "adoption": "explicit-per-vessel",
-    "commercialization": "same capability identity may be free or paid without rewriting vessel data"
+    "shared_capability_passage": "explicit adoption only; capability contract may move, ownership, authority, branding, namespace and project data do not"
   }
 }

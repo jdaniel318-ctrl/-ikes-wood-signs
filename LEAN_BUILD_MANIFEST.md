@@ -1,7 +1,6 @@
-# Dark Sky 8.8.15.8 — Spine Continuity
+# Dark Sky 8.6.58 — Doctrine Authority Repair
 
-Fleet-wide Admiral continuity pass. One Admiral session refresh, one Control Plane read, bounded deadlines, explicit failure states, and snapshot fan-out to Station Registry. No database migration. No vessel mutation.
+Focused Admiral governance pass: readable four-lane command rail, dedicated authenticated Admiral identity boundary, and a server-governed Fleet Service Entitlements control surface. Owner auth, exact-vessel RLS, ownership, and owner service-request behavior remain unchanged. Future Basic / Mid / Super-style service packages are reserved as bundles of the same capabilities; no package UI is live in this release.
 
-# Dark Sky 8.8.15.7 — Station Registry
-
-Fleet-wide Station Identity pass. Adds deliberate local-manifest → durable Fleet Core station adoption, preview fingerprints, explicit Admiral intent, truthful heartbeat posture, recovery metadata, Activity Spine integration, and WEB/KIOSK/HYBRID Control Plane visibility. Existing outposts are never silently migrated. Private vessel business/customer payloads do not enter Station Registry.
+File ceiling: 85
+Release files: 84

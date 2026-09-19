@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.8",
-  "release": "Spine Continuity",
-  "seal": "spine-continuity-88158",
+  "build": "8.8.15.0",
+  "release": "Launch Harbor",
+  "seal": "launch-harbor-88150",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Spine Continuity",
-  "name": "Spine Continuity",
-  "releaseName": "Spine Continuity"
+  "release_name": "Launch Harbor",
+  "name": "Launch Harbor",
+  "releaseName": "Launch Harbor"
 }

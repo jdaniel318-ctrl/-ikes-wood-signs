@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.15.8",
-  "version": "8.8.15.8",
-  "release_name": "Spine Continuity",
-  "releaseName": "Spine Continuity",
-  "release_seal": "spine-continuity-88158",
+  "build": "8.8.15.0",
+  "version": "8.8.15.0",
+  "release_name": "Launch Harbor",
+  "releaseName": "Launch Harbor",
+  "release_seal": "launch-harbor-88150",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -47,10 +47,10 @@
     "OWNER_AUTHORITY_MODEL.json",
     "IDENTITY_KEEL_MODEL.json",
     "FLEET_SERVICES_FRAMEWORK.json",
-    "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
-    "bootstrap_build_logo.png",
-    "bootstrap_build_horizontal.png",
-    "bootstrap_build_icon.png"
+    "ADMIRAL_ENTITLEMENT_STATE_MODEL.json"
+    ,"bootstrap_build_logo.png"
+    ,"bootstrap_build_horizontal.png"
+    ,"bootstrap_build_icon.png"
   ],
   "atomic_release_contract": {
     "manifest_runtime_agreement": "required-before-execution",
@@ -87,30 +87,19 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "fleet-truth-empty-state-and-active-counts",
-  "release_note": "Spine Continuity makes Admiral Control Plane numbers and empty states literal: zero registered stations resolve as zero, active release assignments exclude historical hold rows, and release-history records remain available without masquerading as active posture.",
+  "release_focus": "governed-fleet-launch-service",
+  "release_note": "Launch Harbor makes online-presence and business-launch support a reusable Fleet service. Founder Preview, owner review, Prepare, Private Preview, Sea Trial, owner handoff, and public launch remain separate stages. The outside owner retains the business; the service grants no equity, credentials, or automatic publication authority.",
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",
     "project": "Black Flag Fleet Core",
     "applied": true,
-    "verified_at": "2026-09-18T15:00:23-04:00",
+    "verified_at": "2026-09-10T22:12:38Z",
     "vessels_before": 6,
     "vessels_after": 6,
     "active_admirals": 1,
     "anonymous_fleet_function_execution": false,
-    "commissioning_order_issued": false,
-    "fleet_truth_counts_migration": "fleet_truth_counts_88157",
-    "fleet_truth_counts_applied": true,
-    "fleet_truth_verified_counts": {
-      "vessels": 6,
-      "active_memberships": 1,
-      "registered_stations": 0,
-      "activity_events": 3,
-      "foundry_candidates": 0,
-      "active_release_assignments": 0,
-      "release_assignment_records": 1
-    }
+    "commissioning_order_issued": false
   },
   "admiral_doctrine": {
     "machine_readable": "ADMIRAL_RELEASE_DOCTRINE.json",
@@ -133,77 +122,5 @@
     "RUNTIME_ENTRY_TRACE_MODEL.json",
     "GENERATION_RELAY_MODEL.json",
     "FLEET_STEWARD_MODEL.json"
-  ],
-  "customer_operating_modes": {
-    "web": "normal browser/session lifecycle",
-    "kiosk": "persistent exact-vessel customer station; idle returns safe-home",
-    "hybrid": "web plus explicit kiosk channel"
-  },
-  "fleet_runtime": {
-    "version": "fleet-runtime-v1",
-    "states": [
-      "READY",
-      "CUSTOMER_ACTIVE",
-      "SYSTEM_HANDOFF",
-      "SAFE_RESET",
-      "RECOVERING"
-    ],
-    "proving_vessel": "ikes-wood-signs",
-    "system_handoff_max_minutes": 15,
-    "runtime_event_journal": "bounded-local-non-pii-seed",
-    "future_event_spine": "compatible"
-  },
-  "release_rings": {
-    "current": "proving-vessel",
-    "proving_vessel": "ikes-wood-signs",
-    "next": [
-      "small-ring",
-      "fleet-promotion"
-    ],
-    "manual_promotion": true,
-    "per_vessel_rollback_required": true
-  },
-  "station_identity_contract": {
-    "outpost_id": "immutable",
-    "vessel_id": "immutable",
-    "runtime_policy": "versioned",
-    "customer_session": "temporary",
-    "privileged_authority": "not_part_of_station_identity"
-  },
-  "foundry_gate": {
-    "status": "foundation-admiral-draft-only",
-    "auto_scrape": false,
-    "auto_publish": false,
-    "candidate_routes": [
-      "utility-dock",
-      "standalone",
-      "hosted-service",
-      "vessel-capability"
-    ],
-    "required_clearance": [
-      "license-commercial-use",
-      "attribution-obligations",
-      "upstream-identity",
-      "security-review",
-      "dependency-health",
-      "privacy-data-flow",
-      "maintenance-health"
-    ],
-    "graduation": "manual-admiral-sea-trial-only"
-  },
-  "station_registry_contract": {
-    "fleet_core_migration": "applied",
-    "auto_seed_station_rows": false,
-    "preview_before_register": true,
-    "registration_fabricates_heartbeat": false,
-    "private_business_payloads": "forbidden",
-    "transactional_server_contract_test": "passed-and-rolled-back"
-  },
-  "fleet_truth_contract": {
-    "station_empty_state": "zero resolves visibly; no indefinite loading",
-    "active_release_assignment_count": "excludes unassigned/hold/no-current-release history rows",
-    "release_history_retained": true,
-    "local_station_manifests": "remain LOCAL ONLY until previewed and registered",
-    "private_business_payloads": "forbidden"
-  }
+  ]
 }

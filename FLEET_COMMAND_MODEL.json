@@ -1,16 +1,11 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.15.8",
+  "build": "8.8.15.0",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
   },
   "layers": [
-    {
-      "id": "owner",
-      "verb": "operate-business",
-      "mission": "run the exact vessel business through standalone Owner / Partner Control without requiring Black Flag Engine"
-    },
     {
       "id": "engine",
       "verb": "operate",
@@ -36,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Spine Continuity",
+  "release": "Launch Harbor",
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -115,11 +110,7 @@
     "createsMembership": false,
     "createsEntitlements": false,
     "workingNameEditable": true,
-    "immutableIdentity": [
-      "id",
-      "project_id",
-      "namespace"
-    ]
+    "immutableIdentity": ["id", "project_id", "namespace"]
   },
   "fleetStructureContract": {
     "registryOwner": "black_flag",
@@ -169,103 +160,5 @@
     "passwordStorage": "supabase-auth-only",
     "tokenPersistence": "forbidden",
     "failureMode": "safe-hold-no-authority"
-  },
-  "authorityGrammar": {
-    "customer": "uses the vessel customer experience only",
-    "owner": "operates the exact vessel business",
-    "engine": "operates the platform, diagnostics, recovery and approved support tooling without silently becoming Owner",
-    "captain": "commands fleet operations within delegated and vessel-scoped authority",
-    "admiral": "governs fleet doctrine, capability passage, commissioning and cross-vessel posture without running vessel businesses"
-  },
-  "planes": {
-    "controlPlane": [
-      "vessel registry",
-      "membership and authority",
-      "capability entitlements",
-      "deployments and outposts",
-      "release assignments",
-      "Watch health",
-      "audited support leases"
-    ],
-    "vesselDataPlane": [
-      "orders",
-      "customers",
-      "settings",
-      "pricing",
-      "business files",
-      "private operating records"
-    ],
-    "projectionRule": "Upper command consumes safe vessel projections and events; it does not receive raw private business records by default."
-  },
-  "activitySpine": {
-    "model": "append-only vessel-scoped events",
-    "oneFactOneEvent": true,
-    "requiredIdentity": [
-      "vesselId",
-      "outpostId when applicable",
-      "actor/authority",
-      "eventType/version",
-      "correlationId",
-      "causationId",
-      "idempotencyKey"
-    ],
-    "runtimeSeed": "8.8.15.2 bounded non-PII local runtime journal",
-    "watchtower": "projection, not source of truth",
-    "recoveryLedger": "projection of the same event stream, not an independent truth store"
-  },
-  "releaseRings": {
-    "order": [
-      "proving-vessel",
-      "small-ring",
-      "fleet-promotion"
-    ],
-    "provingVessel": "ikes-wood-signs",
-    "automaticFleetWidePromotion": false,
-    "perVesselRollbackRequired": true
-  },
-  "stationIdentity": {
-    "immutable": [
-      "station key",
-      "vessel id"
-    ],
-    "mutable": [
-      "display name",
-      "WEB/KIOSK/HYBRID mode",
-      "lifecycle state",
-      "policy version",
-      "runtime release",
-      "profile",
-      "health metadata"
-    ],
-    "registration": "preview-before-register with fresh server fingerprint and explicit Admiral intent",
-    "localManifest": "candidate only until deliberately registered",
-    "heartbeat": "independent runtime proof; registration never fabricates liveness",
-    "recovery": "durable recovery count/time may update without importing customer-session cargo",
-    "customerSession": "temporary and never replaces station identity",
-    "privatePayloadBoundary": "orders, customers, photos, drafts, pricing and customer-session data are forbidden"
-  },
-  "foundryGate": {
-    "authority": "admiral-governed",
-    "candidateState": "draft-local-until-future-event-spine",
-    "pipeline": [
-      "Mission Demand",
-      "Scout",
-      "Clearance",
-      "Interface Forge",
-      "Sea Trial",
-      "Proven Capability",
-      "Utility Dock / Standalone / Vessel Service"
-    ],
-    "requiredClearance": [
-      "commercial-license-rights",
-      "attribution",
-      "upstream-identity",
-      "security",
-      "dependency-health",
-      "privacy-data-flow",
-      "maintenance-health"
-    ],
-    "autoPublish": false,
-    "truthRule": "Fleet sells its interface, workflow, hosting, integrations, support and original additions; upstream ownership and license obligations remain explicit."
   }
 }

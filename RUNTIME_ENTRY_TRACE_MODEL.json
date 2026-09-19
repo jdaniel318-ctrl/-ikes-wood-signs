@@ -1,54 +1,31 @@
 {
-  "schema": "dark-sky-fleet-runtime-contract-v1",
-  "build": "8.8.15.8",
-  "release": "Spine Continuity",
-  "release_seal": "spine-continuity-88158",
-  "purpose": "One deterministic customer-session kernel owns kiosk readiness, intentional system handoffs, idle abandonment, safe reset, recovery and bounded runtime evidence across every vessel.",
-  "states": [
-    "READY",
-    "CUSTOMER_ACTIVE",
-    "SYSTEM_HANDOFF",
-    "SAFE_RESET",
-    "RECOVERING"
+  "schema": "dark-sky-runtime-entry-trace-v1",
+  "build": "8.6.28",
+  "name": "Generation Relay",
+  "release_seal": "maintenance-rails-8628-7a41e9",
+  "purpose": "Trace and bridge the unavoidable verified document/runtime path to bootstrap ignition without relying on guessed application lifecycle hooks.",
+  "witness_key": "darkSkyRuntimeEntryWitnessV8620",
+  "unavoidable_stages": [
+    "document-first-light",
+    "verified-loader-entered",
+    "runtime-script-executed:app.js",
+    "verified-runtime-executed",
+    "release-seal-cleared"
   ],
-  "transitions": {
-    "ready_to_active": "Customer begins or resumes a vessel workflow.",
-    "active_to_handoff": "Intentional OS/browser passage such as camera, photo picker, file picker or future payment sheet.",
-    "handoff_to_active": "Return preserves the exact active customer place and restarts the idle clock.",
-    "active_to_safe_reset": "Only verified idle abandonment or expired handoff may purge transient customer cargo.",
-    "recovering_to_ready": "Fresh runtime recovery returns to exact-vessel safe home; it never restores privileged authority."
-  },
-  "handoff_contract": {
-    "visibilitychange_alone_is_abandonment": false,
-    "pause_idle_during_handoff": true,
-    "preserve_customer_place": true,
-    "max_handoff_minutes": 15,
-    "customer_message": "STATION HOLDING YOUR PLACE\u2026",
-    "return_message": "WELCOME BACK \u00b7 PLACE HELD"
-  },
-  "kiosk_contract": {
-    "ready_surface": "exact-vessel customer home",
-    "idle_policy": "configured outpost idle minutes",
-    "privileged_authority_persistent": false,
-    "cross_surface_recovery": "forbidden",
-    "customer_cargo_after_safe_reset": "purged",
-    "fresh_page_recovery": "safe-home only"
-  },
-  "runtime_event_contract": {
-    "bounded_local_journal": true,
-    "contains_customer_payloads": false,
-    "fields": [
-      "eventId",
-      "type",
-      "at",
-      "projectId",
-      "deploymentId",
-      "sessionId",
-      "correlationId",
-      "runtimeVersion",
-      "detail"
-    ],
-    "future_activity_spine_compatible": true
-  },
-  "release_gate": "Camera/photo-picker round trip must preserve active customer state; configured idle abandonment must still purge to exact-vessel safe home."
+  "engine_observation": [
+    "engine-entry-control-clicked",
+    "engine-visible-observed",
+    "loader-ignition-dispatch",
+    "loader-ignition-settled"
+  ],
+  "engine_visible_contract": "body.engine-mode AND #enginePanel visible",
+  "ignition_contract": "Verified loader dispatches existing igniteProofBootstrap8617 only after actual Engine visibility is observed; existing ignition promise remains idempotent.",
+  "safety": [
+    "read-only durable witness",
+    "no project mutation",
+    "no admission mutation",
+    "no new fleet reconciliation logic",
+    "existing Memory Muster and bootstrap runner remain authoritative"
+  ],
+  "release_gate": "A live Engine session must be observable by the verified loader and must dispatch bootstrap ignition from that proven state."
 }

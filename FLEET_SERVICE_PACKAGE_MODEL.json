@@ -1,6 +1,6 @@
 {
-  "schema": "dark-sky-fleet-service-package-model-v1",
-  "build": "8.7.0",
+  "schema": "dark-sky-fleet-service-package-model-v2",
+  "build": "8.8.15.0",
   "status": "reserved_framework_not_exposed",
   "purpose": "Allow future Basic/Mid/Super-style bundles to resolve into the same governed feature entitlements without replacing individual feature controls.",
   "package_model": {
@@ -15,5 +15,15 @@
     "Mid",
     "Super"
   ],
-  "note": "Labels are placeholders only; no package pricing or activation UI is live in 8.7.0."
+  "active_core_services": [
+    {
+      "id": "fleet.business-launch",
+      "label": "Fleet Launch Service",
+      "package_required": false,
+      "commercial_mode": "free",
+      "admiral_may_change_commercial_mode_later": true,
+      "owner_approval_required": true
+    }
+  ],
+  "note": "Basic/Mid/Super labels remain placeholders. Fleet Launch Service is available individually through the same governed entitlement structure and does not create business ownership."
 }

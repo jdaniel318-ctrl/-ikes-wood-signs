@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.7",
-  "release": "Fleet Truth",
+  "build": "8.8.15.0",
+  "release": "Launch Harbor",
   "status": "active",
   "principles": [
     {
@@ -81,60 +81,6 @@
       "rule": "Any fleet member may explicitly adopt an approved capability while its ownership, authority, branding, namespace, and project data remain isolated.",
       "scope": "fleet-learning",
       "origin": "8.8.11.1 Bootstrap Build Schedule repair"
-    },
-    {
-      "id": "authority-grammar",
-      "rule": "Owner operates the vessel business. Engine operates the platform. Captain commands fleet operations. Admiral governs the fleet. Route origin never silently widens authority.",
-      "scope": "fleet",
-      "origin": "Owner Spine + 8.8.15 architecture challenge"
-    },
-    {
-      "id": "fleet-runtime-kernel",
-      "rule": "Customer readiness, intentional system handoff, abandonment, safe reset and recovery are owned by one deterministic fleet runtime contract rather than individual screens.",
-      "scope": "fleet-runtime",
-      "origin": "Ike kiosk camera handoff regression"
-    },
-    {
-      "id": "system-handoff-not-abandonment",
-      "rule": "Camera, photo/file picker, payment sheet and other intentional OS/browser handoffs preserve the active customer place; visibility change alone is never proof of abandonment.",
-      "scope": "customer-runtime",
-      "origin": "Ike second-photo Sea Trial"
-    },
-    {
-      "id": "one-fact-one-event",
-      "rule": "A meaningful fleet fact is recorded once as a vessel-scoped event and upper-command views are projections of that fact, not competing sources of truth.",
-      "scope": "fleet-observability",
-      "origin": "8.8.15 architecture challenge"
-    },
-    {
-      "id": "proving-vessel-graduation",
-      "rule": "A vessel-specific repair graduates into shared fleet runtime only when the underlying behavior can be named generically and proven without moving vessel ownership, authority or data.",
-      "scope": "fleet-learning",
-      "origin": "Ike proving-vessel doctrine"
-    },
-    {
-      "id": "upstream-truth",
-      "rule": "The Fleet never presents upstream open-source code as Fleet-authored. Upstream identity, license and required attribution remain visible through evaluation, productization and distribution.",
-      "scope": "foundry",
-      "origin": "Foundry Scout / Interface Forge commercial model"
-    },
-    {
-      "id": "clearance-before-commercialization",
-      "rule": "A public-source capability remains a candidate until commercial-use rights, attribution obligations, security, dependency health, privacy/data flow and maintenance health are explicitly reviewed. Clearance permits Sea Trial only; it does not auto-publish.",
-      "scope": "foundry",
-      "origin": "Foundry Gate 8.8.15.2"
-    },
-    {
-      "id": "reuse-before-rebuild",
-      "rule": "Before building a new reusable capability from scratch, Foundry may evaluate whether a safe, legally reusable upstream capability already solves the underlying problem. Reuse is optional and never bypasses clearance.",
-      "scope": "foundry",
-      "origin": "Captain Foundry strategy"
-    },
-    {
-      "id": "station-truth-before-health",
-      "rule": "A local outpost is not a durable Fleet Core station until explicit registration, and registration never implies heartbeat health. Endpoint identity, runtime health and customer session state remain separate facts.",
-      "scope": "fleet-control-plane",
-      "origin": "Station Registry 8.8.15.7"
     }
   ],
   "governance": {
@@ -158,11 +104,11 @@
       "rolled-back"
     ],
     "currentCourse": {
-      "id": "fleet-runtime-foundry-gate",
-      "version": 4,
+      "id": "doctrine-authority-repair",
+      "version": 2,
       "status": "active",
-      "effectiveBuild": "8.8.15.2",
-      "heading": "Deterministic runtime plus above-board capability discovery, clearance and proving-vessel graduation"
+      "effectiveBuild": "8.6.56",
+      "heading": "Current Admiral course authority, visible doctrine evidence, and measured-storage truth"
     },
     "historyPolicy": "append-only; superseded course records remain evidence and rollback references",
     "courseHistory": [
