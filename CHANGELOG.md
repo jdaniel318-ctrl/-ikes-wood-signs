@@ -1,10 +1,12 @@
-# Dark Sky 8.8.15.1 — Safe Draft
+# Dark Sky 8.8.15.2 — Admiral Passage
 
-- Replaced mandatory commissioning `localStorage` writes with memory-first and session-safe draft persistence.
-- Made Safari quota exhaustion non-blocking for Continue, Back, step selection, business-intake application, manual draft saves, and commissioning failure recovery.
-- Added best-effort IndexedDB persistence and a visible **SESSION SAFE** / **HELD IN THIS SCREEN** save-state indicator.
-- Protected final registry verification evidence from the same quota failure after a vessel has already been commissioned.
-- Preserved the Fleet Launch Service, private-by-default commissioning, exact Project ID boundaries, owner protections, and publication gates.
+- Made Owner Portal opt-in instead of silently selected for ownerless projects.
+- Migrates older blank-owner drafts from the inherited Owner Portal default to a safe **Prepare Later** state.
+- Replaced the unreliable iPad-native Owner Portal checkbox with a large explicit state control that persists on every tap.
+- Keeps Step 5 and final Review valid when an owner has not yet been confirmed; **Prepare Now** still requires a valid owner name and email.
+- Added a visible four-step Admiral Passage and a release-blocking readiness contract without granting local self-promotion.
+- Binds the deck's rank presentation to the authenticated Fleet Core authority result: active Admiral identity displays **Verified Admiral**; sign-out returns to **Provisional**.
+- Retained Safe Draft's memory/session/IndexedDB persistence, Fleet Launch Service, private-by-default commissioning, exact Project ID boundaries, outside-owner protection, and publication gates.
 
 # Dark Sky 8.8.14.6 — Full Frame
 

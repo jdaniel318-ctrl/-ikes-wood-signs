@@ -8237,6 +8237,35 @@ body.dark-flag-pirate-mode #engineConfigurationDock .engine-configuration-head{
   border:1px solid #2c454e;border-radius:8px;background:#09171c;color:#d8e3e5
 }
 .commission-grid .checkline input{width:18px;min-height:18px}
+.commission-grid .commission-choice{
+  width:100%;min-height:76px;text-align:left;cursor:pointer;text-transform:none;
+  display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:12px;
+  padding:13px 14px;border:1px solid #35515a;border-radius:10px;
+  background:#09171c;color:#d8e3e5;font-family:Arial;touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(45,166,216,.22)
+}
+.commission-grid .commission-choice:hover,.commission-grid .commission-choice:focus-visible{border-color:#57b4d5;box-shadow:0 0 0 3px rgba(88,175,208,.15);outline:0}
+.commission-choice-box{display:grid;place-items:center;width:30px;height:30px;border:2px solid #657c83;border-radius:8px;color:#b4c5c9;font:900 17px Arial;background:#071419}
+.commission-choice-copy{display:grid;gap:5px;min-width:0}
+.commission-choice-copy strong{color:#edf4f4;font:800 12px/1.2 Arial;letter-spacing:.04em;text-transform:uppercase}
+.commission-choice-copy small{color:#849ba1;font:600 10px/1.35 Arial;letter-spacing:.01em;text-transform:none}
+.commission-choice em{color:#b8c7ca;font:800 9px/1 Arial;letter-spacing:.08em;font-style:normal;white-space:nowrap}
+.commission-choice.is-on{border-color:#2d9dcb;background:linear-gradient(135deg,#103a49,#0b2731)}
+.commission-choice.is-on .commission-choice-box{border-color:#25aaf0;background:#168bd0;color:#fff}
+.commission-choice.is-on em{color:#87d9f2}
+.commission-choice.is-later em{color:#d2b66a}
+@media (max-width:700px){.commission-grid .commission-choice{grid-template-columns:34px minmax(0,1fr)}.commission-choice em{grid-column:2}}
+.admiral-passage-card{margin:0 0 18px;padding:18px;border:1px solid #397b91;border-left:4px solid #58b7d9;border-radius:12px;background:linear-gradient(135deg,rgba(12,45,56,.96),rgba(8,24,30,.98));color:#dcebed}
+.admiral-passage-card>small{color:#7fd0ea;font:800 9px Arial;letter-spacing:.12em}
+.admiral-passage-card h5{margin:6px 0 13px;color:#f2f7f7;font:800 20px Arial}
+.admiral-passage-card ol{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0;padding:0}
+.admiral-passage-card li{display:flex;gap:9px;align-items:flex-start;padding:11px;border:1px solid #294953;border-radius:8px;background:#08181d}
+.admiral-passage-card li b{color:#d7b65f;font:900 10px Arial}.admiral-passage-card li span{font:600 10px/1.45 Arial;color:#b7c8cb}
+.admiral-passage-card p{margin:13px 0 0;color:#8fa5aa;font:600 11px/1.5 Arial}
+.admiral-passage-card.is-earned{border-color:#4da66a;border-left-color:#74d190;background:linear-gradient(135deg,rgba(14,54,40,.97),rgba(8,28,27,.98))}
+.admiral-passage-card.is-earned p{color:#8ee0a7;font-weight:800;letter-spacing:.04em}
+.admiral-authority-verified .admiral-deck-head-actions>span,.admiral-authority-verified .admiral-command-rail-title>span,.admiral-authority-verified .admiral-command-center-badge>span{color:#8fe0a6!important;border-color:#3f8f58!important}
+@media (max-width:900px){.admiral-passage-card ol{grid-template-columns:1fr 1fr}}
 .commission-callout{
   display:flex;gap:16px;align-items:flex-start;margin-top:24px;padding:14px 16px;
   border-left:3px solid #4b9ebd;background:#08171c;color:#8ea5ab

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.1';
+  const BUILD_VERSION='8.8.15.2';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5459,6 +5459,10 @@
     const commandModel=await safe(async()=>{const r=await fetch(`FLEET_COMMAND_MODEL.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
     const commandOk=commandModel?.build===BUILD_VERSION && commandModel?.views?.operational==='professional-default' && commandModel?.views?.presentation==='cinematic-secondary' && Array.isArray(commandModel?.layers)&&commandModel.layers.length===3 && commandModel?.admiralCourseAuthority?.enabled===true && commandModel?.admiralCourseAuthority?.authority==='admiral';
     add('command-layer-placement','Engine → Captain → Admiral command model',commandOk?'pass':'fail',commandOk?'Engine operates, Captain commands, Admiral governs and may deliberately change Fleet course; professional operation remains complete without cinematic presentation.':'Command layer placement, professional/cinematic contract, or Admiral Course Authority is incomplete.');
+    const admiralPassageModel=await safe(async()=>{const r=await fetch(`ADMIRAL_ENTITLEMENT_STATE_MODEL.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    const passage=admiralPassageModel?.admiral_passage;
+    const passageOk=admiralPassageModel?.build===BUILD_VERSION && passage?.local_self_promotion===false && Array.isArray(passage?.proof) && passage.proof.length>=4 && String(passage?.promotion||'').includes('fleet_global_authorities');
+    add('admiral-passage','Admiral Passage authority contract',passageOk?'pass':'fail',passageOk?'Captain proof, outside-owner protection, mandatory owner approval, and exact-vessel evidence form the passage; actual Admiral rank still requires an active server authority record and authenticated identity.':'Admiral qualification is stale, incomplete, or permits unsafe local self-promotion.');
 
     const fleetDockBoundedPaint=String(renderFleetCommissioning).includes('LOCAL ROSTER • VERIFYING')&&String(renderFleetCommissioning).includes('commandDeadline(convergence')&&String(renderFleetCommissioning).includes('skipConvergence:true');
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');
@@ -5674,6 +5678,7 @@
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
       combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry','fleet-steward'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
+      ,combine('admiral-passage','Admiral Passage Voyage',['admiral-passage','vessel-commissioning-authority','ownership-charter-separation','owner-production-backend'],'Captain proof → private outside-owner commissioning → server authority → authenticated Admiral command. No browser-only promotion exists.')
     ];
   }
 
@@ -8028,13 +8033,13 @@
       draftId:'commission-'+Date.now(),
       createdAt:new Date().toISOString(),
       updatedAt:new Date().toISOString(),
-      _step:1,_maxStepReached:1,_recovered:false,
+      _step:1,_maxStepReached:1,_recovered:false,_ownerPortalChoice:false,
       name:'',ownerName:'',ownerEmail:'',
       businessType:'other',description:'',businessBrief:'',
       sourceWebsite:'',businessIntake:null,intakeAppliedAt:'',
       primaryOffer:'',characterLimit:32,pricingMode:'manual',
       customerMode:'guided',relationshipType:'auto',photoRequired:false,contactCapture:true,visualProfile:'none',
-      ownerPortal:true,customerRetention:false,notifications:false,
+      ownerPortal:false,customerRetention:false,notifications:false,
       launchService:true,launchServiceFocus:'online_presence',commissioningPartnerName:'',
       founderPreview:true,ownerApprovalRequired:true,
       namespace:'',projectCode:'',orderPrefix:'',
@@ -8078,7 +8083,16 @@
     try{const raw=localStorage.getItem(COMMISSION_DRAFT_KEY)||localStorage.getItem('blackFlagCommissionDraft');if(raw)candidates.push(JSON.parse(raw));}catch(err){commissionDraftStorageState={channel:'memory',degraded:true,error:commissionStorageError(err)};}
     const saved=candidates.find(v=>v&&typeof v==='object');
     if(!saved)return null;
-    return {...freshCommissionDraft(),...saved,_recovered:true};
+    const recovered={...freshCommissionDraft(),...saved,_recovered:true};
+    // Admiral Passage migration: older drafts silently enabled Owner Portal even
+    // when no owner had been identified. Treat that inherited default as deferred;
+    // a deliberate choice made on the repaired control is always preserved.
+    if(recovered.ownerPortal===true && recovered._ownerPortalChoice!==true){
+      recovered.ownerPortal=false;
+      recovered._ownerPortalChoice=false;
+      recovered._ownerPortalMigrated=true;
+    }
+    return recovered;
   }
   function clearCommissionDraft(){
     window.__darkSkyCommissionDraftV3=null;
@@ -8595,7 +8609,11 @@
           <div class="commission-callout success"><b>THE OWNER KEEPS THE BUSINESS</b><span>This service grants no equity, investment interest, credentials, or ownership. Work stays private until the owner approves it, and publishing still requires the existing Captain gate.</span></div>
         </section>
         <div class="commission-grid two">
-          <label class="checkline"><input type="checkbox" data-cfield="ownerPortal" ${d.ownerPortal?'checked':''}> Prepare Owner Portal</label>
+          <button type="button" class="checkline commission-choice ${d.ownerPortal?'is-on':'is-later'}" data-commission-toggle="ownerPortal" aria-pressed="${d.ownerPortal?'true':'false'}">
+            <span class="commission-choice-box" aria-hidden="true">${d.ownerPortal?'✓':'—'}</span>
+            <span class="commission-choice-copy"><strong>Prepare Owner Portal</strong><small>${d.ownerPortal?'ON • confirmed owner details are required before commissioning':'LATER • commission privately and assign the owner when confirmed'}</small></span>
+            <em>${d.ownerPortal?'PREPARE NOW':'PREPARE LATER'}</em>
+          </button>
           <label class="checkline"><input type="checkbox" data-cfield="customerRetention" ${d.customerRetention?'checked':''}> Customer retention capability</label>
           <label class="checkline"><input type="checkbox" data-cfield="notifications" ${d.notifications?'checked':''}> Notifications capability</label>
         </div>
@@ -8669,7 +8687,7 @@
       el.scrollIntoView({block:'nearest',behavior:'smooth'});
     }else alert(message);
     if(fieldName){
-      const field=document.querySelector(`#commissioningBody [data-cfield="${fieldName}"]`);
+      const field=document.querySelector(`#commissioningBody [data-cfield="${fieldName}"], #commissioningBody [data-commission-toggle="${fieldName}"]`);
       if(field){
         field.classList.add('commission-field-error');
         field.setAttribute('aria-invalid','true');
@@ -8696,8 +8714,8 @@
       if(commissionDraft.ownerEmail && !validEmail(commissionDraft.ownerEmail))return commissionError('Enter a valid owner email address or leave it blank for later.','ownerEmail');
     }
     if(commissionStep===5 && commissionDraft.ownerPortal){
-      if(!String(commissionDraft.ownerName||'').trim())return commissionError('Owner Portal is selected. Add the owner name in Step 1 or turn Owner Portal off for now.','ownerName');
-      if(!validEmail(commissionDraft.ownerEmail))return commissionError('Owner Portal is selected. Add a valid owner email in Step 1.','ownerEmail');
+      if(!String(commissionDraft.ownerName||'').trim())return commissionError('Owner Portal is set to Prepare Now. Add the confirmed owner in Step 1, or choose Prepare Later below.','ownerPortal');
+      if(!validEmail(commissionDraft.ownerEmail))return commissionError('Owner Portal is set to Prepare Now. Add a valid owner email in Step 1, or choose Prepare Later below.','ownerPortal');
     }
     return true;
   }
@@ -8773,6 +8791,23 @@
     const close=$('closeProjectCommissioning');
     if(close)close.onclick=(event)=>{event.preventDefault();closeProjectCommissioning();};
     bindBusinessIntakeControls();
+    workspace.querySelectorAll('[data-commission-toggle]').forEach(btn=>{
+      btn.onclick=(event)=>{
+        event.preventDefault();
+        event.stopPropagation();
+        if(!commissionDraft)return;
+        captureCommissionFields();
+        const key=String(btn.dataset.commissionToggle||'');
+        if(key!=='ownerPortal')return;
+        commissionDraft.ownerPortal=!commissionDraft.ownerPortal;
+        commissionDraft._ownerPortalChoice=true;
+        commissionDraft.updatedAt=new Date().toISOString();
+        writeCommissionDraftSafe(commissionDraft);
+        renderCommissioning();
+        const next=document.querySelector('[data-commission-toggle="ownerPortal"]');
+        next?.focus({preventScroll:true});
+      };
+    });
     workspace.querySelectorAll('[data-commission-step]').forEach(btn=>{
       btn.onclick=(event)=>{
         event.preventDefault();

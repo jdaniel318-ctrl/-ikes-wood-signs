@@ -1,6 +1,7 @@
 {
-  "release": "8.7.0",
-  "name": "Feature Freedom",
+  "release": "8.8.15.2",
+  "build": "8.8.15.2",
+  "name": "Admiral Passage",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
     "enabled",
@@ -20,6 +21,18 @@
     "captain": "may operationalize an already valid entitlement when delegated",
     "admiral": "issues explicit feature, vessel-wide or fleet-wide commercial orders for Off, Free or Paid",
     "browser": "never grants entitlement from local UI state"
+  },
+  "admiral_passage": {
+    "candidate": "Captain may operate, commission private vessels, and collect readiness evidence without receiving Admiral authority.",
+    "proof": [
+      "fleet readiness has no release-blocking failure",
+      "outside-owner vessel can be commissioned privately without transferring ownership",
+      "owner publication approval remains mandatory",
+      "exact-vessel boundaries and durable command evidence remain intact"
+    ],
+    "promotion": "An active server-side fleet_global_authorities Admiral record plus authenticated identity is required.",
+    "result": "After server verification, the same identity may enter Admiral My Fleet and issue governed orders.",
+    "local_self_promotion": false
   },
   "command_contract": {
     "source_of_truth": "append-only server-governed Admiral commercial orders",

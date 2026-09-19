@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.1",
-  "release": "Safe Draft",
-  "generatedAt": "2026-09-19T00:00:00Z",
+  "build": "8.8.15.2",
+  "release": "Admiral Passage",
+  "generatedAt": "2026-09-19T02:04:31Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -242,7 +242,14 @@
     "bootstrap_schedule_touch_drag": true,
     "bootstrap_schedule_keyboard_move": true,
     "bootstrap_schedule_local_only": true,
-    "commissioning_verified_preview_copy": true
+    "commissioning_verified_preview_copy": true,
+    "commissioning_owner_portal_explicit_choice": true,
+    "commissioning_owner_portal_safe_default": true,
+    "commissioning_legacy_blank_owner_draft_migrated": true,
+    "commissioning_ownerless_review_allowed": true,
+    "admiral_passage_release_check": true,
+    "admiral_local_self_promotion_forbidden": true,
+    "admiral_verified_rank_bound_to_server_identity": true
     ,"bootstrap_task_vendor_assignment": true
     ,"bootstrap_vendor_schedule_view": true
     ,"bootstrap_vendor_move_communication_log": true
@@ -274,8 +281,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.1 Safe Draft makes Safari quota exhaustion non-blocking across the complete commissioning course while preserving Fleet Launch Service, owner protection, vessel isolation, and publication gates.",
-  "candidate": "8.8.15.1",
+  "note": "8.8.15.2 Admiral Passage removes the ownerless commissioning dead end with an explicit persisted Prepare Now / Prepare Later choice, retains quota-safe drafts, and defines a server-verified path from Captain proof to Admiral authority without weakening fleet boundaries.",
+  "candidate": "8.8.15.2",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -283,6 +290,12 @@
     "fleet_launch_outside_owner_retained": true,
     "fleet_launch_no_equity_or_credentials": true,
     "fleet_launch_project_scoped_service_instance": true,
+    "owner_portal_prepare_later_default": true,
+    "owner_portal_ipad_state_control": true,
+    "ownerless_private_commissioning_supported": true,
+    "admiral_passage_visible": true,
+    "admiral_rank_requires_server_authority": true,
+    "admiral_signout_restores_provisional_rank": true,
     "captain_deployment_native_engine_navigator": true,
     "captain_body_visibility_state_cleared": true,
     "captain_deployment_blank_surface_repaired": true,
@@ -512,8 +525,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.1",
-    "seal": "safe-draft-88151",
+    "build": "8.8.15.2",
+    "seal": "admiral-passage-88152",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

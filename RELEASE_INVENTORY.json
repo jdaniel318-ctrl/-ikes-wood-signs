@@ -1,8 +1,8 @@
 {
-  "release": "Safe Draft",
-  "name": "Safe Draft",
-  "build": "8.8.15.1",
-  "seal": "safe-draft-88151",
+  "release": "Admiral Passage",
+  "name": "Admiral Passage",
+  "build": "8.8.15.2",
+  "seal": "admiral-passage-88152",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

@@ -1,16 +1,20 @@
-# Dark Sky 8.8.15.1 — Safe Draft
+# Dark Sky 8.8.15.2 — Admiral Passage
 
-Safe Draft repairs commissioning on Safari when legacy browser storage has reached its quota. Project drafts now use current-page memory first, a session-safe mirror second, and durable IndexedDB best-effort persistence; a full `localStorage` can no longer stop **Continue**, Back, step navigation, intake application, or final commissioning evidence.
+Admiral Passage closes the ownerless commissioning dead end while retaining Safe Draft's Safari storage repair. New projects defer Owner Portal until a confirmed owner exists. Older blank-owner drafts that inherited the former default are migrated safely, and the Step 5 choice is now a large, explicit **Prepare Now / Prepare Later** control that persists immediately.
+
+The Admiral Passage is now a release-checked authority contract: clear Fleet proof, preserve outside-owner independence and approval, receive an active server-side Admiral authority record, then authenticate that identity. Browser state, a PIN, Captain access, and commissioning activity cannot self-promote an account. Fleet Core currently confirms one active Admiral identity; successful account authentication now changes the deck from **Provisional** to **Verified Admiral**, and sign-out restores the provisional display.
 
 The **Fleet Launch Service** introduced in Launch Harbor remains intact: Founder Preview → Owner Review → Prepare → Private Preview → Sea Trial → Owner Handoff → Launch. It remains advisory and free by default, grants no equity or credentials, retains the outside owner, and never publishes automatically.
 
-## Quick Safe Draft check
+## Quick Admiral Passage check
 
 1. Open **Commission New Project**, enter **Crossroads Pizza**, and press **Continue** once.
 2. Confirm Step 2 **Import / Model** opens without a quota error.
 3. Press **Save Draft** and confirm the status says **SESSION SAFE** if Safari's legacy storage is full.
 4. Move Back and Continue again; confirm the name remains and navigation still advances.
-5. Continue through Access & Services and verify the Fleet Launch Service course and outside-owner protections remain intact.
+5. Continue through Access & Services. Confirm Owner Portal starts at **Prepare Later**, tap it twice, and verify both states persist without a page jump.
+6. Leave it at **Prepare Later**, continue to Review, and confirm **OWNER HANDOFF — CONFIGURE LATER** with no validation error.
+7. Enter Admiral's Gate, open Promote, and confirm the four-step Admiral Passage is visible. Run Fleet Readiness; rank still requires authenticated server authority.
 
 # Dark Sky 8.8.14.6 — Full Frame
 
