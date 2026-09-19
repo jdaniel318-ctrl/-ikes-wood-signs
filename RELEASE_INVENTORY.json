@@ -1,8 +1,8 @@
 {
-  "release": "Launch Harbor",
-  "name": "Launch Harbor",
-  "build": "8.8.15.0",
-  "seal": "launch-harbor-88150",
+  "release": "Safe Draft",
+  "name": "Safe Draft",
+  "build": "8.8.15.1",
+  "seal": "safe-draft-88151",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

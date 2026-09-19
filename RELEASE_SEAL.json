@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.0",
-  "release": "Launch Harbor",
-  "seal": "launch-harbor-88150",
+  "build": "8.8.15.1",
+  "release": "Safe Draft",
+  "seal": "safe-draft-88151",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Launch Harbor",
-  "name": "Launch Harbor",
-  "releaseName": "Launch Harbor"
+  "release_name": "Safe Draft",
+  "name": "Safe Draft",
+  "releaseName": "Safe Draft"
 }

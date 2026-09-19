@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.0",
-  "release": "Launch Harbor",
+  "build": "8.8.15.1",
+  "release": "Safe Draft",
   "status": "active",
   "principles": [
     {

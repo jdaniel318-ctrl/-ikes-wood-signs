@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.15.0';
+  const BUILD_VERSION='8.8.15.1';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -8018,6 +8018,9 @@
   }
 
   const COMMISSION_DRAFT_KEY='blackFlagCommissionDraftV2';
+  const COMMISSION_DRAFT_SESSION_KEY='darkSkyCommissionDraftSessionV3';
+  const COMMISSION_DRAFT_DURABLE_KEY='commissioningDraftActiveV3';
+  let commissionDraftStorageState={channel:'memory',degraded:false,error:''};
   const FLEET_LAUNCH_SERVICE_ID='fleet.business-launch';
   const FLEET_LAUNCH_SERVICE_VERSION='1.0.0';
   function freshCommissionDraft(){
@@ -8038,16 +8041,50 @@
       status:'development',visibility:'private',deploymentState:'sea_trial',commissionerRole:'engine_admin'
     };
   }
-  function readCommissionDraft(){
+  function commissionDraftClone(value){
+    if(!value||typeof value!=='object')return null;
+    try{return typeof structuredClone==='function'?structuredClone(value):JSON.parse(JSON.stringify(value));}
+    catch(_){return {...value};}
+  }
+  function commissionStorageError(err){return `${String(err?.name||'StorageError')}: ${String(err?.message||err||'Browser storage unavailable')}`;}
+  function writeCommissionDraftSafe(value=commissionDraft,{durable=true}={}){
+    const snapshot=commissionDraftClone(value);
+    if(!snapshot)return {ok:false,channel:'memory',degraded:true,error:'No draft was available to save.'};
+    window.__darkSkyCommissionDraftV3=snapshot;
+    let channel='memory',error='';
+    try{sessionStorage.setItem(COMMISSION_DRAFT_SESSION_KEY,JSON.stringify(snapshot));channel='session';}
+    catch(err){error=commissionStorageError(err);}
+    // localStorage is a legacy convenience mirror only. Safari quota exhaustion must
+    // never block navigation, commissioning, or the current session's draft.
     try{
-      const saved=JSON.parse(localStorage.getItem(COMMISSION_DRAFT_KEY)||localStorage.getItem('blackFlagCommissionDraft')||'null');
-      if(!saved||typeof saved!=='object')return null;
-      return {...freshCommissionDraft(),...saved,_recovered:true};
-    }catch(_){return null;}
+      localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(snapshot));
+      try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
+      if(channel==='memory')channel='local';
+    }catch(err){error=commissionStorageError(err);}
+    if(durable){try{setSetting(COMMISSION_DRAFT_DURABLE_KEY,snapshot).catch(()=>{});}catch(_){} }
+    commissionDraftStorageState={channel,degraded:!!error,error};
+    window.__darkSkyCommissionDraftStorageState=commissionDraftStorageState;
+    return {ok:true,...commissionDraftStorageState};
+  }
+  function writeCommissionEvidenceSafe(key,value){
+    try{sessionStorage.setItem(key,JSON.stringify(value));}catch(_){}
+    try{localStorage.setItem(key,JSON.stringify(value));}catch(_){}
+    try{setSetting(`commissioningEvidence:${key}`,value).catch(()=>{});}catch(_){}
+  }
+  function readCommissionDraft(){
+    const candidates=[];
+    if(window.__darkSkyCommissionDraftV3)candidates.push(window.__darkSkyCommissionDraftV3);
+    try{const raw=sessionStorage.getItem(COMMISSION_DRAFT_SESSION_KEY);if(raw)candidates.push(JSON.parse(raw));}catch(err){commissionDraftStorageState={channel:'memory',degraded:true,error:commissionStorageError(err)};}
+    try{const raw=localStorage.getItem(COMMISSION_DRAFT_KEY)||localStorage.getItem('blackFlagCommissionDraft');if(raw)candidates.push(JSON.parse(raw));}catch(err){commissionDraftStorageState={channel:'memory',degraded:true,error:commissionStorageError(err)};}
+    const saved=candidates.find(v=>v&&typeof v==='object');
+    if(!saved)return null;
+    return {...freshCommissionDraft(),...saved,_recovered:true};
   }
   function clearCommissionDraft(){
-    localStorage.removeItem(COMMISSION_DRAFT_KEY);
-    localStorage.removeItem('blackFlagCommissionDraft');
+    window.__darkSkyCommissionDraftV3=null;
+    try{sessionStorage.removeItem(COMMISSION_DRAFT_SESSION_KEY);}catch(_){}
+    try{localStorage.removeItem(COMMISSION_DRAFT_KEY);}catch(_){}
+    try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
   }
 
   function openProjectCommissioning(actorRole='engine_admin'){
@@ -8363,7 +8400,7 @@
       commissionDraft.businessIntake=structuredAnalysis;
       commissionDraft.sourceWebsite=structuredAnalysis.sourceWebsite||commissionDraft.sourceWebsite||'';
       commissionDraft.updatedAt=new Date().toISOString();
-      localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+      writeCommissionDraftSafe(commissionDraft);
       renderCommissioning();
       return;
     }
@@ -8387,7 +8424,7 @@
     }
     commissionDraft.businessIntake=buildBusinessIntakeAnalysis(parts,{sourceWebsite:url,sourceNames});
     commissionDraft.updatedAt=new Date().toISOString();
-    localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+    writeCommissionDraftSafe(commissionDraft);
     renderCommissioning();
   }
 
@@ -8409,7 +8446,7 @@
     if(!commissionDraft.primaryOffer&&(a.headings||[])[0])commissionDraft.primaryOffer=a.headings[0];
     commissionDraft.intakeAppliedAt=new Date().toISOString();
     commissionDraft.updatedAt=new Date().toISOString();
-    localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+    writeCommissionDraftSafe(commissionDraft);
     renderCommissioning();
     const status=document.getElementById('businessIntakeStatus');if(status)status.textContent='Recommendations applied. Review and change anything before continuing.';
   }
@@ -8609,7 +8646,8 @@
     $('commissionPrev').disabled=commissionStep===1;
     $('commissionNext').textContent=commissionStep===6?'COMMISSION PROJECT':'CONTINUE';
     const recovered=commissionDraft._recovered?' • RECOVERED DRAFT':'';
-    $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/6${recovered} • NOT PUBLISHED`;
+    const storage=commissionDraftStorageState.degraded?' • SESSION SAFE':'';
+    $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/6${recovered}${storage} • NOT PUBLISHED`;
     clearCommissionValidation();
     bindCommissioningControls();
   }
@@ -8618,9 +8656,9 @@
     captureCommissionFields();
     commissionDraft._step=commissionStep;
     commissionDraft._recovered=false;
-    localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
-    localStorage.removeItem('blackFlagCommissionDraft');
-    $('commissionDraftStatus').textContent=`DRAFT SAVED • ${new Date().toLocaleTimeString()} • NOT PUBLISHED`;
+    const result=writeCommissionDraftSafe(commissionDraft);
+    const safety=result.channel==='session'?'SESSION SAFE':result.channel==='local'?'BROWSER SAVED':'HELD IN THIS SCREEN';
+    $('commissionDraftStatus').textContent=`DRAFT SAVED • ${safety} • ${new Date().toLocaleTimeString()} • NOT PUBLISHED`;
   }
 
   function commissionError(message,fieldName){
@@ -8682,7 +8720,7 @@
         captureCommissionFields();
         commissionStep=Math.max(1,commissionStep-1);
         commissionDraft._step=commissionStep;
-        localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+        writeCommissionDraftSafe(commissionDraft);
         renderCommissioning();
         return;
       }
@@ -8706,7 +8744,7 @@
           commissionStep++;
           commissionDraft._step=commissionStep;
           commissionDraft._maxStepReached=Math.max(Number(commissionDraft._maxStepReached||1),commissionStep);
-          localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+          writeCommissionDraftSafe(commissionDraft);
           renderCommissioning();
           document.querySelector('.commissioning-shell')?.scrollIntoView({block:'start'});
           return;
@@ -8743,7 +8781,7 @@
         captureCommissionFields();
         commissionStep=requested;
         commissionDraft._step=commissionStep;
-        localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+        writeCommissionDraftSafe(commissionDraft);
         renderCommissioning();
       };
     });
@@ -8846,7 +8884,7 @@
       commissionDraft._step=6;
       commissionDraft._maxStepReached=6;
       commissionDraft.updatedAt=new Date().toISOString();
-      localStorage.setItem(COMMISSION_DRAFT_KEY,JSON.stringify(commissionDraft));
+      writeCommissionDraftSafe(commissionDraft);
       writeCommissionJournal(p,'registry_failed',String(err?.message||err));
       throw err;
     }
@@ -8854,7 +8892,7 @@
     window.BlackFlagV3Core?.audit?.({actorRole:commissionerRole,projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • canonical registry verified`});
     // Record durable success BEFORE any presentation work. A UI refresh is allowed
     // to fail without changing the truth that the vessel is already in the registry.
-    localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:false,build:BUILD_VERSION}));
+    writeCommissionEvidenceSafe('blackFlagLastCommissionVerificationV1',{projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:false,build:BUILD_VERSION});
     closeProjectCommissioning();
     await renderEngineRoom();
     const rendered=document.querySelector(`[data-open-project-control="${CSS.escape(id)}"]`);
@@ -8864,7 +8902,7 @@
     }
     clearCommissionDraft();
     clearCommissionJournal(id);
-    localStorage.setItem('blackFlagLastCommissionVerificationV1',JSON.stringify({projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:true,build:BUILD_VERSION}));
+    writeCommissionEvidenceSafe('blackFlagLastCommissionVerificationV1',{projectId:id,name:p.name,at:new Date().toISOString(),registryVerified:true,renderVerified:true,build:BUILD_VERSION});
     window.BlackFlagV3Core?.audit?.({actorRole:commissionerRole,projectId:id,category:'project',action:'commissioning.presentation.verified',detail:`${p.name} rendered in Project Command on build ${BUILD_VERSION}`});
     setTimeout(async()=>{const created=projectById(id);if(created)await continueProjectLaunch(created);},120);
   }

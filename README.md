@@ -1,16 +1,16 @@
-# Dark Sky 8.8.15.0 — Launch Harbor
+# Dark Sky 8.8.15.1 — Safe Draft
 
-Launch Harbor makes **Fleet Launch Service** a governed core capability for every newly commissioned vessel. It gives the Fleet one reusable course for helping an outside owner establish an online presence: **Founder Preview → Owner Review → Prepare → Private Preview → Sea Trial → Owner Handoff → Launch**.
+Safe Draft repairs commissioning on Safari when legacy browser storage has reached its quota. Project drafts now use current-page memory first, a session-safe mirror second, and durable IndexedDB best-effort persistence; a full `localStorage` can no longer stop **Continue**, Back, step navigation, intake application, or final commissioning evidence.
 
-The service is advisory and free by default, while remaining compatible with the Admiral's existing Off/Free/Paid entitlement model. It never grants equity, investment interest, owner credentials, payment credentials, or automatic publication authority. The outside owner retains the business, owner approval is recorded before publication, and the Captain's existing launch gate remains deliberate.
+The **Fleet Launch Service** introduced in Launch Harbor remains intact: Founder Preview → Owner Review → Prepare → Private Preview → Sea Trial → Owner Handoff → Launch. It remains advisory and free by default, grants no equity or credentials, retains the outside owner, and never publishes automatically.
 
-## Quick Launch Harbor check
+## Quick Safe Draft check
 
-1. Open **Commission New Project** and confirm Fleet Launch Service appears under Access & Services.
-2. Confirm its full seven-stage course is visible, owner approval is selected, and the business-ownership statement is explicit.
-3. Continue to Review and confirm **Included • Private**, **Outside Owner Retained**, and the launch course are visible.
-4. Save the draft, leave commissioning, and resume it; confirm the service choice and partner details remain intact.
-5. Commission only a disposable test vessel. Confirm it begins private, contains one `fleet.business-launch` service instance, and does not publish, invite an owner, or create customer records automatically.
+1. Open **Commission New Project**, enter **Crossroads Pizza**, and press **Continue** once.
+2. Confirm Step 2 **Import / Model** opens without a quota error.
+3. Press **Save Draft** and confirm the status says **SESSION SAFE** if Safari's legacy storage is full.
+4. Move Back and Continue again; confirm the name remains and navigation still advances.
+5. Continue through Access & Services and verify the Fleet Launch Service course and outside-owner protections remain intact.
 
 # Dark Sky 8.8.14.6 — Full Frame
 

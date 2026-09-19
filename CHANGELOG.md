@@ -1,10 +1,10 @@
-# Dark Sky 8.8.15.0 — Launch Harbor
+# Dark Sky 8.8.15.1 — Safe Draft
 
-- Added **Fleet Launch Service** as a reusable governed capability available during project commissioning.
-- Added the evidence course: Founder Preview, Owner Review, Prepare, Private Preview, Sea Trial, Owner Handoff, and Launch.
-- Added explicit outside-owner retention, no-equity/no-investment language, owner approval before publication, and preserved Captain launch authority.
-- Added a project-scoped service instance with permitted and denied data fields; credentials, payment credentials, unapproved customer records, and unrelated vessel data remain denied.
-- Preserved private-by-default commissioning, exact Project ID boundaries, owner handoff, entitlement governance, and existing Fleet readiness gates.
+- Replaced mandatory commissioning `localStorage` writes with memory-first and session-safe draft persistence.
+- Made Safari quota exhaustion non-blocking for Continue, Back, step selection, business-intake application, manual draft saves, and commissioning failure recovery.
+- Added best-effort IndexedDB persistence and a visible **SESSION SAFE** / **HELD IN THIS SCREEN** save-state indicator.
+- Protected final registry verification evidence from the same quota failure after a vessel has already been commissioned.
+- Preserved the Fleet Launch Service, private-by-default commissioning, exact Project ID boundaries, owner protections, and publication gates.
 
 # Dark Sky 8.8.14.6 — Full Frame
 
