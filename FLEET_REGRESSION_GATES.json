@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.6",
-  "release": "Admiral Airlock",
+  "build": "8.8.15.8",
+  "release": "Release Helm",
   "excluded_sources": [
     "The situation"
   ],

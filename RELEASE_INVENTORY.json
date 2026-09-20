@@ -1,8 +1,8 @@
 {
-  "release": "Admiral Airlock",
-  "name": "Admiral Airlock",
-  "build": "8.8.15.6",
-  "seal": "admiral-airlock-88156",
+  "release": "Release Helm",
+  "name": "Release Helm",
+  "build": "8.8.15.8",
+  "seal": "release-helm-88158",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

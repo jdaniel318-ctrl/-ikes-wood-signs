@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.6",
-  "release": "Admiral Airlock",
-  "seal": "admiral-airlock-88156",
+  "build": "8.8.15.8",
+  "release": "Release Helm",
+  "seal": "release-helm-88158",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Admiral Airlock",
-  "name": "Admiral Airlock",
-  "releaseName": "Admiral Airlock"
+  "release_name": "Release Helm",
+  "name": "Release Helm",
+  "releaseName": "Release Helm"
 }
