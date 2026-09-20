@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.15.9",
-  "release": "Report Proof",
-  "seal": "report-proof-88159",
+  "build": "8.8.16",
+  "release": "Cleanup Keel",
+  "seal": "cleanup-keel-8816",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Report Proof",
-  "name": "Report Proof",
-  "releaseName": "Report Proof"
+  "release_name": "Cleanup Keel",
+  "name": "Cleanup Keel",
+  "releaseName": "Cleanup Keel"
 }

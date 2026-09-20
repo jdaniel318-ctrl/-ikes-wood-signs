@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.15.9",
-  "version": "8.8.15.9",
-  "release_name": "Report Proof",
-  "releaseName": "Report Proof",
-  "release_seal": "report-proof-88159",
+  "build": "8.8.16",
+  "version": "8.8.16",
+  "release_name": "Cleanup Keel",
+  "releaseName": "Cleanup Keel",
+  "release_seal": "cleanup-keel-8816",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -17,6 +17,7 @@
     "platform_core.js",
     "platform_identity.js",
     "platform_v4.js",
+    "fleet_supabase.js",
     "manifest.webmanifest",
     "sw.js",
     "RELEASE_SEAL.json",
@@ -87,8 +88,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "two-stage-admiral-airlock",
-  "release_note": "Report Proof makes Supabase Admiral authentication a distinct second layer after the passage PIN. The Fleet workspace and every read control remain hidden until active server authority is verified, and sign-out immediately restores the locked airlock without changing vessel state.",
+  "release_focus": "runtime-consolidation-and-truthful-fleet-posture",
+  "release_note": "Cleanup Keel preserves the proven Owner to Supabase to Admiral report path, centralizes the primary browser Auth session contract, reports an explicit Action Queue, clarifies Owner Unassigned state, and tightens iPad presentation without changing vessel data.",
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",
@@ -118,9 +119,9 @@
     "final_promotion": "manual-captain-known-good"
   },
   "regression_memory": {
-    "library": "FLEET_REGRESSION_LIBRARY.md",
+    "library": "CURRENT_ARCHITECTURE.md",
     "gates": "FLEET_REGRESSION_GATES.json",
-    "discipline": "RELEASE_DISCIPLINE_827.md",
+    "discipline": "RELEASE_ACCEPTANCE.md",
     "excluded_sources": [
       "The situation"
     ]

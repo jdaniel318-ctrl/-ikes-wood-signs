@@ -15470,6 +15470,23 @@ body[data-command-surface="admiral"] #enginePanel{display:none!important;pointer
 @media(max-width:1100px){.fleet-watchtower .fleet-watch-card{grid-template-columns:92px minmax(190px,.8fr) minmax(300px,1.3fr) minmax(170px,.65fr)}.fleet-watchtower .fleet-watch-card>img,.fleet-watchtower .fleet-watch-code-mark{width:92px;height:92px}}
 @media(max-width:820px){.fleet-watchtower .fleet-watch-card{grid-template-columns:82px minmax(0,1fr)}.fleet-watchtower .fleet-watch-card>img,.fleet-watchtower .fleet-watch-code-mark{width:82px;height:82px}.fleet-watchtower .fleet-watch-condition,.fleet-watchtower .fleet-watch-actions{grid-column:1/-1}.fleet-watchtower .fleet-watch-actions{grid-template-columns:1fr 1fr}}
 
+/* 8.8.16 Cleanup Keel — denser iPad Watchtower and truthful action posture. */
+.fleet-watchtower #watchWorkspace>header{position:sticky;top:0;z-index:20;padding:12px 16px;background:rgba(4,28,35,.97);box-shadow:0 12px 28px rgba(0,0,0,.28);backdrop-filter:blur(12px)}
+.fleet-watchtower #watchWorkspace>header>img{width:86px;max-height:86px;object-fit:contain}
+.fleet-watchtower #watchWorkspace>header h2{font-size:2rem;margin:.2rem 0}
+.fleet-watchtower #watchWorkspace>header p{margin:0}
+.fleet-watchtower #watchWorkspace>header>div:last-child{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.fleet-watchtower #watchWorkspace>header button{min-height:44px;padding:9px 12px}
+.fleet-watchtower .fleet-watch-tools{position:sticky;top:112px;z-index:16;margin:10px 0 14px;padding:12px;background:rgba(5,31,38,.97);box-shadow:0 10px 24px rgba(0,0,0,.22);backdrop-filter:blur(10px)}
+.fleet-watchtower .fleet-watch-tools label{gap:5px}
+.fleet-watchtower .fleet-watch-tools input{min-height:46px}
+.fleet-watchtower .fleet-watch-tools button{min-height:42px;padding:8px 12px;font-size:.72rem}
+.fleet-supabase-keel>div>span.is-action{border-color:rgba(214,167,78,.78);background:rgba(94,63,12,.24)}
+.fleet-supabase-keel>div>span.is-action b,.fleet-supabase-keel>div>span.is-action small{color:#f0cd73}
+.fleet-watchtower .fleet-watch-card{padding:12px}
+.fleet-watchtower .fleet-watch-actions button{min-height:44px}
+@media(max-width:820px){.fleet-watchtower #watchWorkspace>header{position:relative;grid-template-columns:76px 1fr}.fleet-watchtower #watchWorkspace>header>div:last-child{grid-column:1/-1}.fleet-watchtower .fleet-watch-tools{top:0}.fleet-watchtower #watchWorkspace>header h2{font-size:1.7rem}}
+
 /* 8.8.13 Fleet Rigging — one doorway per job, protected capability behind it. */
 .clear-deck-primary-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}.clear-deck-action.primary{grid-column:auto!important}.clear-deck-action.govern{border-color:rgba(211,176,86,.52)!important;background:linear-gradient(135deg,rgba(46,54,43,.96),rgba(8,38,44,.98))!important}.clear-deck-support{display:grid;grid-template-columns:minmax(250px,1.25fr) repeat(3,minmax(150px,.55fr));gap:8px;align-items:stretch;margin-top:10px}.clear-deck-support>span{display:flex;flex-direction:column;justify-content:center;padding:9px 12px;border-left:3px solid #4fb4d1;background:rgba(5,22,28,.58)}.clear-deck-support b,.clear-deck-support small{display:block}.clear-deck-support b{color:#d7ba68;font-size:.66rem;letter-spacing:.1em}.clear-deck-support small{margin-top:3px;color:#9fb3b7;font-size:.66rem;line-height:1.35}.clear-deck-support button{min-height:48px;padding:0 12px;border:1px solid rgba(104,162,176,.3);border-radius:10px;background:rgba(5,25,31,.76);color:#d2dddd;font-size:.68rem;font-weight:900;letter-spacing:.045em}.clear-deck-support button:active{transform:translateY(1px);background:#174959}.clear-deck-status{margin-top:8px}
 body.engine-mode:not(.engine-systems-expanded) #enginePerformanceDeck,body.engine-mode:not(.engine-systems-expanded) .modern-system-operations,body.engine-mode:not(.engine-systems-expanded) #engineFleetHealth{display:none!important}body.engine-mode:not(.engine-dock-open) #fleetCommissioningDock{display:none!important}body.engine-mode.engine-dock-open #fleetCommissioningDock{display:block!important}.fleet-commissioning-head:after{content:'Choose one vessel, then one exact surface.'!important}.engine-dock-open .fleet-commissioning-head:after{content:'Project Control is daily work. Commissioning is Captain-level readiness proof.'!important}

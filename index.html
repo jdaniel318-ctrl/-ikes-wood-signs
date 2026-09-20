@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.15.9',seal:'report-proof-88159'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.16',seal:'cleanup-keel-8816'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -329,7 +329,7 @@
             <div class="ds-first-light-mark">⚑</div>
             <strong>BLACK FLAG</strong><span>SEND SECURE RECOVERY LINK</span>
             <p class="ds-recovery-copy">Send a recovery link for the dedicated Admiral identity. The email will return to this exact recovery landing instead of the project or Engine route.</p>
-            <label class="ds-recovery-field">Admiral email<input id="darkSkyAdmiralRecoveryEmail" type="email" autocomplete="username" value="bootstrap.blackflag@gmail.com" /></label>
+            <label class="ds-recovery-field">Admiral email<input id="darkSkyAdmiralRecoveryEmail" type="email" autocomplete="username" placeholder="Dedicated Admiral email" /></label>
             <button type="button" id="darkSkyAdmiralRecoverySend">SEND ADMIRAL RECOVERY LINK</button>
             <p id="darkSkyAdmiralRecoveryRequestStatus" class="ds-recovery-status" role="status" aria-live="polite"></p>
           </div>`;
@@ -1180,7 +1180,7 @@
         <input id="confirmAdminPin" class="text-input" type="password" inputmode="numeric" maxlength="8" placeholder="Re-enter the new PIN" />
         <p id="pinSettingsError" class="error-text" aria-live="polite"></p>
         <button type="button" id="savePinBtn" class="primary-btn small">SAVE NEW PIN</button>
-        <p class="helper">Fleet default project PIN is 4353 unless this project is deliberately given its own PIN.</p>
+        <p class="helper">Enter this project's passage PIN. The PIN opens the local doorway; the named Supabase account still determines identity and authority.</p>
       </div>
       <section id="adminOverviewModule" class="admin-module-panel project-admin-command-center hidden" data-admin-panel="overview"></section>
       <section id="adminCustomerHistory" class="admin-customer-history admin-module-panel hidden" data-admin-panel="customers"></section>
@@ -1324,7 +1324,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small>8.8.15.9 • REPORT PROOF</small><h3>Choose the level of work</h3><p>One doorway per job. Vessel operations stay exact; Captain command and Admiral authority remain separate.</p></div>
+        <div class="clear-deck-brief"><small>8.8.16 • CLEANUP KEEL</small><h3>Choose the level of work</h3><p>One doorway per job. Vessel operations stay exact; Captain command and Admiral authority remain separate.</p></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1332,7 +1332,7 @@
           <button type="button" class="clear-deck-action govern" data-command-open="admiral"><span class="clear-deck-action-number">04</span><span><strong>BUILD &amp; GOVERN</strong><small>Commission vessels, govern features and branding, preserve doctrine, and manage Admiral programs.</small></span></button>
         </div>
         <div class="clear-deck-support" aria-label="Fleet support routes"><span><b>FLEET SUPPORT</b><small>Commission New Project and Configure Engine remain above. Proof, recovery, learning and diagnostics stay here.</small></span><button type="button" id="clearDeckSystemsToggle" data-clear-deck-command="systems" aria-expanded="false"><i aria-hidden="true"></i><span><strong>ENGINEERING SYSTEMS</strong><small>Diagnostics, proof, learning &amp; recovery</small></span><em>OPEN</em></button></div>
-        <div id="clearDeckStatus" class="clear-deck-status" role="status" aria-live="polite">Report Proof ready. Choose one operating level.</div>
+        <div id="clearDeckStatus" class="clear-deck-status" role="status" aria-live="polite">Cleanup Keel ready. Choose one operating level.</div>
       </section>
 
       <section id="enginePerformanceDeck" class="engine-performance-deck" aria-label="Engine performance">
@@ -1409,7 +1409,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.8.15.9 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.8.16 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1443,7 +1443,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.8.15.9 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.8.16 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1460,7 +1460,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.8.15.9 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.8.16 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -1979,7 +1979,7 @@
     const APP_SCOPE=new URL('./',location.href).href;
     const APP_CACHE=/^(ikes-wood-signs-|workshop-engine-|black-flag-|dark-sky-)/;
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
-    const snapshotPaths=['styles.css','platform_core.js','platform_v4.js','platform_identity.js','ike_style_registry.js','app.js','captain.js'];
+    const snapshotPaths=['styles.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js'];
     // Manifest, seal and inventory are fetched and verified as the first group;
     // do not download those same documents again in the presence group.
     const presencePaths=['owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js'];
@@ -2261,7 +2261,7 @@
     async function executeVerifiedSnapshot(fetched){
       const css=document.createElement('style');css.id='darkSkyVerifiedReleaseStyles';css.dataset.releaseSeal=SEAL;css.textContent=fetched['styles.css'];document.head.appendChild(css);
       window.__darkSkyRuntimeEntryWitness8620?.('verified-styles-installed',{seal:SEAL});
-      for(const path of ['platform_core.js','platform_v4.js','platform_identity.js','ike_style_registry.js','app.js','captain.js']){
+      for(const path of ['platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js']){
         await new Promise((resolve,reject)=>{const blob=new Blob([fetched[path]+`\n//# sourceURL=dark-sky-${SEAL}/${path}`],{type:'text/javascript'});const url=URL.createObjectURL(blob);const el=document.createElement('script');el.async=false;el.dataset.releaseSeal=SEAL;el.onload=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-executed',{path});resolve();};el.onerror=()=>{URL.revokeObjectURL(url);window.__darkSkyRuntimeEntryWitness8620?.('runtime-script-error',{path});reject(new Error(`Verified ${path} could not execute.`));};el.src=url;document.body.appendChild(el);});
       }
     }
@@ -2336,7 +2336,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.8.15.9';
+    const BUILD='8.8.16';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;
