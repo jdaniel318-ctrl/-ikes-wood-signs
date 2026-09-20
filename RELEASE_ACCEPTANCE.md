@@ -1,6 +1,6 @@
-# 8.8.16 Release Acceptance
+# 8.8.16.1 Release Acceptance
 
-Cleanup Keel is releasable only when every blocking check passes.
+Clear Watch is releasable only when every blocking check passes. This patch must also prove that My Fleet has only one sticky surface on iPad landscape.
 
 ## Release identity
 
@@ -33,6 +33,8 @@ Cleanup Keel is releasable only when every blocking check passes.
 - [ ] Active Admiral credentials open My Fleet.
 - [ ] My Fleet shows six Fleet Core vessels, two Owner Ready, and four Owner Unassigned until real owners are commissioned.
 - [ ] Action Queue includes all never-reported or stale vessels.
+- [ ] Search and filters scroll away in normal flow and never cover vessel cards.
+- [ ] The Fleet header remains the only sticky My Fleet surface.
 - [ ] Refresh Watch shows Legacy's latest verified report.
 - [ ] Open Vessel remains read-only and exact-project scoped.
 - [ ] Sign out immediately locks the fleet workspace.

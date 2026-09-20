@@ -1,8 +1,8 @@
 {
-  "release": "Cleanup Keel",
-  "name": "Cleanup Keel",
-  "build": "8.8.16",
-  "seal": "cleanup-keel-8816",
+  "release": "Clear Watch",
+  "name": "Clear Watch",
+  "build": "8.8.16.1",
+  "seal": "clear-watch-88161",
   "file_count": 80,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

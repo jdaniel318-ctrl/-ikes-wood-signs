@@ -1,4 +1,4 @@
--- Dark Sky 8.8.6 through 8.8.16 — Admiral Commissioning Orders, Vessel Logo Helm, and Supabase Keel
+-- Dark Sky 8.8.6 through 8.8.16.1 — Admiral Commissioning Orders, Vessel Logo Helm, and Supabase Keel
 -- Prepared for Black Flag Fleet Core. Apply as migration: admiral_vessel_commissioning_886
 
 alter table public.fleet_vessels
@@ -287,7 +287,7 @@ revoke all on function public.admiral_set_vessel_logo(text,text,text) from publi
 grant execute on function public.admiral_list_vessels_for_branding() to authenticated;
 grant execute on function public.admiral_set_vessel_logo(text,text,text) to authenticated;
 
--- 8.8.16 Supabase Keel neutral settings seed. This is intentionally not an
+-- 8.8.16.1 Supabase Keel neutral settings seed. This is intentionally not an
 -- owner assignment: it creates no Auth user, membership, invitation, business
 -- claim, publication, or authority. The live migration also extends the
 -- existing authenticated admiral_read_fleet_spine RPC with commissioning

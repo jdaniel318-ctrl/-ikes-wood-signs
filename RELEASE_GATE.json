@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.16",
-  "release": "Cleanup Keel",
+  "build": "8.8.16.1",
+  "release": "Clear Watch",
   "generatedAt": "2026-09-19T16:21:09Z",
   "checks": {
     "build_version": true,
@@ -295,8 +295,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.16 Cleanup Keel separates passage PIN verification from Supabase Admiral identity verification. My Fleet, governed findings, and the Admiral Deck remain concealed until both layers pass; sign-out immediately restores the locked airlock without weakening server checks, vessel isolation, or Recovery Helm.",
-  "candidate": "8.8.16",
+  "note": "8.8.16.1 Clear Watch separates passage PIN verification from Supabase Admiral identity verification. My Fleet, governed findings, and the Admiral Deck remain concealed until both layers pass; sign-out immediately restores the locked airlock without weakening server checks, vessel isolation, or Recovery Helm.",
+  "candidate": "8.8.16.1",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -544,8 +544,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.16",
-    "seal": "cleanup-keel-8816",
+    "build": "8.8.16.1",
+    "seal": "clear-watch-88161",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

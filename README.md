@@ -1,6 +1,6 @@
-# Dark Sky 8.8.16 — Cleanup Keel
+# Dark Sky 8.8.16.1 — Clear Watch
 
-Cleanup Keel is a stabilization release of the Dark Sky / Black Flag fleet platform. It preserves the proven Legacy Plumbing Owner → Supabase → Admiral reporting path while reducing browser-side authentication duplication, making fleet readiness truthful, tightening the iPad presentation, and consolidating the deployed documentation.
+Clear Watch is a focused iPad presentation patch for the Dark Sky / Black Flag fleet platform. It preserves the proven Legacy Plumbing Owner → Supabase → Admiral reporting path and the 8.8.16 authority model while correcting the My Fleet scroll layers.
 
 ## Surfaces
 
@@ -21,14 +21,21 @@ Cleanup Keel is a stabilization release of the Dark Sky / Black Flag fleet platf
 - Test and private-preview surfaces block real-world phone, email, and messaging actions.
 - Dark Sky first paint must resolve to a verified release or an explicit recovery screen; mixed runtime builds may not paint.
 
-## Cleanup Keel changes
+## Clear Watch changes
+
+- The My Fleet search and filter panel remains in normal document flow instead of sticking beneath the Fleet header.
+- Vessel cards can no longer slide underneath a second floating control layer on iPad landscape.
+- The authenticated Fleet header remains sticky so Refresh Watch, Sign Out, and Close stay available.
+- No Supabase schema, RPC, RLS, vessel record, membership, report, or authority behavior changed.
+
+## Preserved from 8.8.16
 
 - Added `fleet_supabase.js`, the shared browser-safe Supabase Auth/RPC transport.
 - Owner and primary Admiral identity flows now use one session-expiry and refresh contract.
 - My Fleet now shows an Action Queue including never-reported, stale, unresolved, held, and blocked vessels.
 - `fleet_seeded` is presented as **Owner Unassigned**, making the operational meaning clear without inventing an owner.
 - Filter buttons show live counts.
-- My Fleet and Owner Control Center are denser and more stable on iPad.
+- My Fleet and Owner Control Center retain the 8.8.16 density improvements.
 - Default PIN values are no longer displayed as credentials in the normal interface.
 - Historical release narratives were removed from the deployed payload. The 8.8.15.9 source package remains the historical archive.
 
@@ -45,6 +52,6 @@ Cleanup Keel is a stabilization release of the Dark Sky / Black Flag fleet platf
 
 Upload the contents of this single release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.16` and seal `cleanup-keel-8816`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.16.1` and seal `clear-watch-88161`.
 
 See `CURRENT_ARCHITECTURE.md` for authority and data contracts and `RELEASE_ACCEPTANCE.md` for the required release proof.

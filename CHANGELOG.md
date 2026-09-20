@@ -1,5 +1,18 @@
 # Dark Sky Changelog
 
+## 8.8.16.1 — Clear Watch
+
+### Corrected
+
+- Removed the second sticky layer from the My Fleet search and filter panel.
+- Prevented the filter panel from covering vessel cards while scrolling on iPad landscape.
+- Preserved the sticky authenticated Fleet header and all existing read-only controls.
+
+### Change boundary
+
+- CSS and release identity only.
+- No Supabase schema, RPC, RLS, membership, report, vessel data, or authority behavior changed.
+
 ## 8.8.16 — Cleanup Keel
 
 ### Preserved

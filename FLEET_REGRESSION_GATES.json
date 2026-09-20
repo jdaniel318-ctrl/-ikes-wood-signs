@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.16",
-  "release": "Cleanup Keel",
+  "build": "8.8.16.1",
+  "release": "Clear Watch",
   "excluded_sources": [
     "The situation"
   ],
