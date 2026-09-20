@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.16.1",
+  "build": "8.8.17",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,15 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Clear Watch",
+  "release": "Admiral Commission",
+  "dualOfficeCommission": {
+    "samePersonMayHoldCaptainAndAdmiral": true,
+    "officesRemainDistinct": true,
+    "activeOfficeRequiredPerAction": true,
+    "captainSessionSilentlyElevates": false,
+    "admiralServerVerificationRequired": true,
+    "ledger": "REGISTRY_LEDGER_MODEL.json"
+  },
   "viewContract": {
     "default": "professional",
     "cinematic": "secondary presentation over same command model",
@@ -106,7 +114,9 @@
     "authority": "admiral",
     "previewRequired": true,
     "defaultLifecycle": "commissioning",
-    "commissionerBecomesOwner": false,
+    "commissionerBecomesIndividualProjectOwner": false,
+    "admiralOwnedProgramsSupported": true,
+    "defaultProgramOwnershipModel": "admiral_owned",
     "createsMembership": false,
     "createsEntitlements": false,
     "workingNameEditable": true,
@@ -122,6 +132,8 @@
     },
     "bootstrapBuild": {
       "missionClass": "admiral_program",
+      "ownershipModel": "admiral_owned",
+      "operatingModel": "fleet_operated",
       "relationshipToOtherVessels": "peer_not_parent",
       "commissionedByThisRelease": false
     },

@@ -1,4 +1,4 @@
--- Dark Sky 8.8.6 through 8.8.16.1 — Admiral Commissioning Orders, Vessel Logo Helm, and Supabase Keel
+-- Dark Sky 8.8.6 through 8.8.17 — Admiral Commissioning Orders, Vessel Logo Helm, Authority Ledger, and Supabase Keel
 -- Prepared for Black Flag Fleet Core. Apply as migration: admiral_vessel_commissioning_886
 
 alter table public.fleet_vessels
@@ -42,7 +42,7 @@ declare
 begin
   if v_actor is null or not exists (
     select 1 from public.fleet_global_authorities
-    where user_id = v_actor and authority_role = 'admiral' and active = true
+    where user_id = v_actor and authority_role = 'admiral' and active = true and revoked_at is null
   ) then raise exception 'active_admiral_authority_required'; end if;
   if v_project_id !~ '^[a-z0-9][a-z0-9-]{2,62}$' then raise exception 'project_key_invalid'; end if;
   if v_namespace !~ '^[a-z0-9][a-z0-9-]{2,62}$' then raise exception 'namespace_invalid'; end if;
@@ -114,6 +114,7 @@ begin
   return jsonb_build_object('vessel_id',v_vessel.id,'project_id',v_vessel.project_id,'namespace',v_vessel.namespace,
     'display_name',v_vessel.display_name,'display_name_status',v_vessel.display_name_status,
     'lifecycle_state',v_vessel.lifecycle_state,'owner_state',v_vessel.owner_state,
+    'ownership_model',v_vessel.ownership_model,'operating_model',v_vessel.operating_model,
     'owner_membership_created',false,'entitlements_created',false,'verified',true);
 end $$;
 
@@ -132,7 +133,7 @@ declare
   v_vessel public.fleet_vessels%rowtype;
   v_old_name text;
 begin
-  if v_actor is null or not exists (select 1 from public.fleet_global_authorities where user_id=v_actor and authority_role='admiral' and active=true) then raise exception 'active_admiral_authority_required'; end if;
+  if v_actor is null or not exists (select 1 from public.fleet_global_authorities where user_id=v_actor and authority_role='admiral' and active=true and revoked_at is null) then raise exception 'active_admiral_authority_required'; end if;
   if char_length(v_name) < 2 or char_length(v_name) > 80 then raise exception 'working_name_invalid'; end if;
   if char_length(coalesce(p_intent,'')) > 500 then raise exception 'intent_too_long'; end if;
   select * into v_vessel from public.fleet_vessels where project_id=lower(trim(coalesce(p_project_id,''))) for update;
@@ -157,7 +158,7 @@ set search_path = ''
 as $$
 declare v_actor uuid := auth.uid(); v_records jsonb;
 begin
-  if v_actor is null or not exists (select 1 from public.fleet_global_authorities where user_id=v_actor and authority_role='admiral' and active=true) then raise exception 'active_admiral_authority_required'; end if;
+  if v_actor is null or not exists (select 1 from public.fleet_global_authorities where user_id=v_actor and authority_role='admiral' and active=true and revoked_at is null) then raise exception 'active_admiral_authority_required'; end if;
   select coalesce(jsonb_agg(jsonb_build_object(
     'id',a.id,'created_at',a.created_at,'action',a.action,'actor',coalesce(u.email,'Admiral'),
     'vessel_id',a.vessel_id,'detail',a.detail
@@ -167,14 +168,79 @@ begin
   return jsonb_build_object('records',v_records);
 end $$;
 
+-- 8.8.17 Dual-Office Authority Ledger. This reader never turns Captain evidence
+-- into Admiral authority: it exposes only server-retained audit rows after the
+-- authenticated identity's active global Admiral grant is verified.
+create or replace function public.admiral_read_authority_ledger(
+  p_limit integer default 100,
+  p_authority text default null,
+  p_project_id text default null
+) returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_actor uuid := auth.uid();
+  v_limit integer := greatest(1,least(coalesce(p_limit,100),200));
+  v_authority text := nullif(lower(trim(coalesce(p_authority,''))), '');
+  v_project text := nullif(lower(trim(coalesce(p_project_id,''))), '');
+  v_records jsonb;
+begin
+  if v_actor is null or not exists (
+    select 1 from public.fleet_global_authorities
+    where user_id=v_actor and authority_role='admiral' and active=true and revoked_at is null
+  ) then raise exception 'active_admiral_authority_required'; end if;
+  if v_authority is not null and v_authority not in ('admiral','captain','engine','system') then
+    raise exception 'authority_filter_invalid';
+  end if;
+  select coalesce(jsonb_agg(jsonb_build_object(
+    'id',a.id,
+    'created_at',a.created_at,
+    'actor_user_id',a.actor_user_id,
+    'acting_office',lower(coalesce(a.authority_used,'system')),
+    'authority_used',a.authority_used,
+    'action',a.action,
+    'vessel_id',a.vessel_id,
+    'project_id',v.project_id,
+    'display_name',v.display_name,
+    'target_type',coalesce(v.mission_class,'fleet_governance'),
+    'target_id',coalesce(v.project_id,a.detail->>'project_id','fleet'),
+    'mission_class',v.mission_class,
+    'detail',a.detail,
+    'correlation_id','authority-audit-' || a.id::text,
+    'rollback_reference',a.detail->>'rollback_of',
+    'source','fleet_authority_audit',
+    'result','verified'
+  ) order by a.id desc),'[]'::jsonb) into v_records
+  from (
+    select audit.* from public.fleet_authority_audit audit
+    left join public.fleet_vessels vessel on vessel.id=audit.vessel_id
+    where (v_authority is null or lower(coalesce(audit.authority_used,''))=v_authority)
+      and (v_project is null or vessel.project_id=v_project or audit.detail->>'project_id'=v_project)
+    order by audit.id desc
+    limit v_limit
+  ) a
+  left join public.fleet_vessels v on v.id=a.vessel_id;
+  return jsonb_build_object(
+    'schema','dark-sky-dual-office-authority-ledger-v1',
+    'read_at',now(),
+    'active_office','admiral',
+    'authority_source','fleet_global_authorities',
+    'records',v_records
+  );
+end $$;
+
 revoke all on function public.admiral_preview_vessel_commission(text,text,text,text,text,text,text) from public, anon;
 revoke all on function public.admiral_issue_vessel_commission(text,text,text,text,text,text,text,text,text) from public, anon;
 revoke all on function public.admiral_rename_vessel(text,text,text) from public, anon;
 revoke all on function public.admiral_list_vessel_commission_log(integer) from public, anon;
+revoke all on function public.admiral_read_authority_ledger(integer,text,text) from public, anon;
 grant execute on function public.admiral_preview_vessel_commission(text,text,text,text,text,text,text) to authenticated;
 grant execute on function public.admiral_issue_vessel_commission(text,text,text,text,text,text,text,text,text) to authenticated;
 grant execute on function public.admiral_rename_vessel(text,text,text) to authenticated;
 grant execute on function public.admiral_list_vessel_commission_log(integer) to authenticated;
+grant execute on function public.admiral_read_authority_ledger(integer,text,text) to authenticated;
 
 -- 8.8.7 Bootstrap Build Helm. Logos are public-facing brand assets; mutation stays Admiral-only.
 insert into storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
@@ -192,25 +258,25 @@ drop policy if exists "active admirals delete fleet branding" on storage.objects
 create policy "active admirals insert fleet branding" on storage.objects for insert to authenticated
 with check (bucket_id='fleet-branding' and exists (
   select 1 from public.fleet_global_authorities
-  where user_id=(select auth.uid()) and authority_role='admiral' and active=true
+  where user_id=(select auth.uid()) and authority_role='admiral' and active=true and revoked_at is null
 ));
 create policy "active admirals select fleet branding" on storage.objects for select to authenticated
 using (bucket_id='fleet-branding' and exists (
   select 1 from public.fleet_global_authorities
-  where user_id=(select auth.uid()) and authority_role='admiral' and active=true
+  where user_id=(select auth.uid()) and authority_role='admiral' and active=true and revoked_at is null
 ));
 create policy "active admirals update fleet branding" on storage.objects for update to authenticated
 using (bucket_id='fleet-branding' and exists (
   select 1 from public.fleet_global_authorities
-  where user_id=(select auth.uid()) and authority_role='admiral' and active=true
+  where user_id=(select auth.uid()) and authority_role='admiral' and active=true and revoked_at is null
 )) with check (bucket_id='fleet-branding' and exists (
   select 1 from public.fleet_global_authorities
-  where user_id=(select auth.uid()) and authority_role='admiral' and active=true
+  where user_id=(select auth.uid()) and authority_role='admiral' and active=true and revoked_at is null
 ));
 create policy "active admirals delete fleet branding" on storage.objects for delete to authenticated
 using (bucket_id='fleet-branding' and exists (
   select 1 from public.fleet_global_authorities
-  where user_id=(select auth.uid()) and authority_role='admiral' and active=true
+  where user_id=(select auth.uid()) and authority_role='admiral' and active=true and revoked_at is null
 ));
 
 create or replace function public.admiral_list_vessels_for_branding()
@@ -223,7 +289,7 @@ declare v_actor uuid := auth.uid(); v_records jsonb;
 begin
   if v_actor is null or not exists (
     select 1 from public.fleet_global_authorities
-    where user_id=v_actor and authority_role='admiral' and active=true
+    where user_id=v_actor and authority_role='admiral' and active=true and revoked_at is null
   ) then raise exception 'active_admiral_authority_required'; end if;
   select coalesce(jsonb_agg(jsonb_build_object(
     'id',v.id,'project_id',v.project_id,'display_name',v.display_name,
@@ -254,7 +320,7 @@ declare
 begin
   if v_actor is null or not exists (
     select 1 from public.fleet_global_authorities
-    where user_id=v_actor and authority_role='admiral' and active=true
+    where user_id=v_actor and authority_role='admiral' and active=true and revoked_at is null
   ) then raise exception 'active_admiral_authority_required'; end if;
   if char_length(coalesce(p_intent,'')) > 500 then raise exception 'intent_too_long'; end if;
   if v_path is not null and (
@@ -287,7 +353,7 @@ revoke all on function public.admiral_set_vessel_logo(text,text,text) from publi
 grant execute on function public.admiral_list_vessels_for_branding() to authenticated;
 grant execute on function public.admiral_set_vessel_logo(text,text,text) to authenticated;
 
--- 8.8.16.1 Supabase Keel neutral settings seed. This is intentionally not an
+-- 8.8.17 Supabase Keel neutral settings seed. This is intentionally not an
 -- owner assignment: it creates no Auth user, membership, invitation, business
 -- claim, publication, or authority. The live migration also extends the
 -- existing authenticated admiral_read_fleet_spine RPC with commissioning

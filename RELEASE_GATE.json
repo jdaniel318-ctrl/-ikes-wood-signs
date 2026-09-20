@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.16.1",
-  "release": "Clear Watch",
-  "generatedAt": "2026-09-19T16:21:09Z",
+  "build": "8.8.17",
+  "release": "Admiral Commission",
+  "generatedAt": "2026-09-20T22:47:17Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -290,13 +290,23 @@
     ,"owner_recovery_never_auto_signs_in": true
     ,"owner_recovery_durable_confirmation": true
     ,"owner_recovery_does_not_widen_authority": true
+    ,"dual_office_commission_explicit": true
+    ,"captain_session_never_silently_elevates": true
+    ,"authority_ledger_captain_entry": true
+    ,"authority_ledger_admiral_entry": true
+    ,"authority_ledger_evidence_classes_distinct": true
+    ,"authority_ledger_server_auth_required": true
+    ,"authority_ledger_exact_target_navigation": true
+    ,"admiral_owned_commissioning_option": true
+    ,"bootstrap_build_default_admiral_owned": true
+    ,"commissioning_creates_no_individual_owner": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.16.1 Clear Watch separates passage PIN verification from Supabase Admiral identity verification. My Fleet, governed findings, and the Admiral Deck remain concealed until both layers pass; sign-out immediately restores the locked airlock without weakening server checks, vessel isolation, or Recovery Helm.",
-  "candidate": "8.8.16.1",
+  "note": "8.8.17 Admiral Commission formalizes one person holding Captain and Admiral while preserving explicit office selection. Captain evidence remains browser-labeled; Admiral ledger rows require authenticated active server authority. Admiral-owned commissioning stays previewed, audited, not live, and creates no individual project-owner membership.",
+  "candidate": "8.8.17",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -544,8 +554,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.16.1",
-    "seal": "clear-watch-88161",
+    "build": "8.8.17",
+    "seal": "admiral-commission-8817",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

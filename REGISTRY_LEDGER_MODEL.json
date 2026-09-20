@@ -1,22 +1,50 @@
 {
-  "schema": "dark-sky-canonical-six-v1",
-  "build": "8.6.28",
-  "release": "Canonical Six",
-  "protected_baseline": "8.5.7",
-  "branch_base": "8.6.1 Intelligence Dock",
-  "canonical_vessel_ids": [
-    "beccas-bloom-shop",
-    "bf-p-f92f87e8ec44",
-    "bor-north-richmond",
-    "grizzly-bear",
-    "ikes-wood-signs",
-    "mugshot-after-dark"
-  ],
-  "contracts": {
-    "roster": "Existing canonical rows win; Legacy Plumbing may materialize only if immutable ID bf-p-f92f87e8ec44 is absent; no existing vessel row is overwritten.",
-    "intelligence_first_paint": "Preserve 8.6.1 bounded roster-backed paint and reconcile live intelligence in background.",
-    "staging": "Strong-fit staging writes durable per-vessel review records, verifies read-back, renders staged state, survives re-render, and never implies adoption.",
-    "assurance": "Proving Ground reads live registry/DOM/ledger state and cannot clear when the Golden UI state disagrees.",
-    "admission": "All six protected Known Good immutable Project IDs must hold valid admission records before fleet presentation; registry presence without fleet citizenship is a release blocker."
-  }
+  "schema": "dark-sky-dual-office-authority-ledger-v1",
+  "build": "8.8.17",
+  "release": "Admiral Commission",
+  "purpose": "A navigable retained record of Captain evidence and server-attested Admiral authority without blending the two offices.",
+  "office_contract": {
+    "same_person_may_hold_both": true,
+    "offices": ["captain", "admiral"],
+    "active_office_required_per_action": true,
+    "captain_session_never_silently_elevates": true,
+    "admiral_authority_source": "authenticated active fleet_global_authorities row",
+    "passage_pin_is_authority": false
+  },
+  "entry_contract": {
+    "required": ["id", "created_at", "acting_office", "authority_source", "action", "target_type", "target_id", "result"],
+    "when_applicable": ["actor_user_id", "project_id", "intent", "prior_fingerprint", "after_fingerprint", "correlation_id", "rollback_reference"],
+    "append_only": true,
+    "silent_rewrite": false,
+    "project_scope": "exact target project or fleet-level governance event",
+    "customer_or_owner_payloads": "excluded"
+  },
+  "evidence_classes": {
+    "browser_evidence": "Captain-side retained command evidence; clearly labeled and never represented as server truth.",
+    "server_attested": "Fleet Core fleet_authority_audit rows read only after dedicated Admiral identity and active global authority are verified."
+  },
+  "navigation": {
+    "entry_points": ["Captain Record lane", "Admiral Govern lane"],
+    "office_filters": ["Captain", "Admiral", "Both Offices"],
+    "search_fields": ["target", "project", "action", "intent", "detail"],
+    "default_from_captain": "captain",
+    "default_from_admiral": "admiral",
+    "server_result_limit": 200
+  },
+  "commissioning_contract": {
+    "authority": "admiral",
+    "preview_required": true,
+    "intent_retained": true,
+    "default_bootstrap_build": {
+      "working_name": "Bootstrap Build",
+      "mission_class": "admiral_program",
+      "ownership_model": "admiral_owned",
+      "operating_model": "fleet_operated",
+      "lifecycle": "commissioning",
+      "project_owner_membership_created": false,
+      "entitlements_created": false,
+      "live_publication": false
+    }
+  },
+  "protected_fleet_core_ids": ["beccas-bloom-shop", "bf-p-f92f87e8ec44", "bor-north-richmond", "grizzly-bear", "ikes-wood-signs", "mugshot-after-dark"]
 }

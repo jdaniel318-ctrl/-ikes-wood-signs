@@ -1,4 +1,4 @@
-/* Dark Sky 8.8.16.1 Clear Watch — shared browser-safe Supabase transport.
+/* Dark Sky 8.8.17 Admiral Commission — shared browser-safe Supabase transport.
    This module accepts publishable keys only. It never accepts or stores a
    service-role key, password, or cross-vessel authority assertion. */
 ;(() => {
@@ -29,7 +29,7 @@
     const url = String(options.url || '').replace(/\/$/, '');
     const publishableKey = String(options.publishableKey || options.key || '');
     const sessionKey = String(options.sessionKey || 'darkSkySupabaseSessionV1');
-    const build = String(options.build || '8.8.16.1');
+    const build = String(options.build || '8.8.17');
 
     if (!url || !publishableKey) throw new Error('Supabase publishable client configuration is incomplete.');
 

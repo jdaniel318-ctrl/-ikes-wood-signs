@@ -2,7 +2,16 @@
 
 ## Route hierarchy
 
-Dark Sky is the neutral release and route shield. Black Flag is the operating engine. Owner, Captain, and Admiral are separate authority surfaces; opening one surface never silently grants another.
+Dark Sky is the neutral release and route shield. Black Flag is the operating engine. Owner, Captain, and Admiral are separate authority surfaces; opening one surface never silently grants another. One human may hold Captain and Admiral simultaneously, but every retained action declares the active office and its authority source.
+
+## Dual-office commission
+
+- The Captain is officially permitted to hold the Admiral office at the same time.
+- Captain and Admiral are two offices, not one blended permission set.
+- Captain authority covers operational command and retained browser evidence.
+- Admiral authority covers fleet observation, governance, and commissioning after dedicated Supabase authentication and an active global Admiral grant.
+- Moving from Captain work to Admiral work requires an explicit surface and server verification; a Captain session never silently elevates.
+- The Authority Ledger is navigable from both offices and labels browser evidence separately from server-attested audit rows.
 
 ## Credential model
 
@@ -24,6 +33,13 @@ Passwords are handled only by Supabase Auth. The public application may use a Su
 - `fleet_observability_reports` stores the narrow owner-published operational heartbeat.
 - Owner reporting is performed through authenticated RPCs that verify `auth.uid()` and exact project membership.
 - Admiral observation is read-only and must not expose modifying controls.
+- Admiral commissioning is an explicit modifying workflow: preview, exact target, active server authority, retained intent, durable audit, and verified readback are required.
+
+## Admiral-owned programs
+
+The Admiral may commission an Admiral-owned program such as Bootstrap Build. The ownership model `admiral_owned` records fleet ownership of the program; it does not create an individual `project_owner` membership. A new commission begins in `commissioning`, creates no entitlements, and is not live.
+
+Bootstrap Build remains outside the six independent Fleet Core businesses until an authenticated commissioning order creates its durable registry identity. Its default commissioning posture is `admiral_program`, `admiral_owned`, and `fleet_operated`.
 
 RLS remains enabled for every public table. Tables intentionally accessible only through vetted functions require explicit documentation, least-privilege grants, fixed function search paths, and advisor review.
 

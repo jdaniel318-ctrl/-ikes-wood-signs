@@ -1,8 +1,8 @@
 {
-  "release": "Clear Watch",
-  "name": "Clear Watch",
-  "build": "8.8.16.1",
-  "seal": "clear-watch-88161",
+  "release": "Admiral Commission",
+  "name": "Admiral Commission",
+  "build": "8.8.17",
+  "seal": "admiral-commission-8817",
   "file_count": 80,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

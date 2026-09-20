@@ -1,6 +1,18 @@
-# 8.8.16.1 Release Acceptance
+# 8.8.17 Release Acceptance
 
-Clear Watch is releasable only when every blocking check passes. This patch must also prove that My Fleet has only one sticky surface on iPad landscape.
+Admiral Commission is releasable only when every blocking check passes. It must prove the same person can navigate Captain and Admiral records while the active office and authority source remain explicit.
+
+## Admiral Commission gates
+
+- Authority Ledger opens from Captain Record and defaults to Captain browser evidence.
+- Authority Ledger opens from Admiral Govern and requires active server Admiral authority before server rows are read.
+- Captain and Admiral evidence are labeled separately and can be filtered without silent merging.
+- Ledger search covers target, action, project, intent, and retained detail.
+- The packaged Admiral ledger RPC checks authenticated active, non-revoked global authority and exposes no owner/customer payload.
+- Commissioning Orders expose ownership and operating models.
+- Bootstrap Build defaults to `admiral_program`, `admiral_owned`, and `fleet_operated`.
+- Commissioning remains preview-first, audited, not live, and creates no individual owner membership or entitlements.
+- The six protected Fleet Core vessel IDs and their project isolation remain unchanged.
 
 ## Release identity
 

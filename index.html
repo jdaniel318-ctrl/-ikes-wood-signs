@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.16.1',seal:'clear-watch-88161'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.17',seal:'admiral-commission-8817'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -249,7 +249,7 @@
         if(!userRes.ok)return {ok:false,reason:'user_'+userRes.status};
         const user=await userRes.json();
         if(!user?.id)return {ok:false,reason:'user_missing'};
-        const authRes=await fetch(SUPABASE_URL+'/rest/v1/fleet_global_authorities?select=authority_role,active,revoked_at&user_id=eq.'+encodeURIComponent(user.id)+'&authority_role=eq.admiral&active=eq.true',{headers:{...headers,Accept:'application/json'},cache:'no-store'});
+        const authRes=await fetch(SUPABASE_URL+'/rest/v1/fleet_global_authorities?select=authority_role,active,revoked_at&user_id=eq.'+encodeURIComponent(user.id)+'&authority_role=eq.admiral&active=eq.true&revoked_at=is.null',{headers:{...headers,Accept:'application/json'},cache:'no-store'});
         if(!authRes.ok)return {ok:false,reason:'authority_'+authRes.status,user};
         const rows=await authRes.json();
         const active=Array.isArray(rows)&&rows.length===1&&rows[0]?.active===true&&!rows[0]?.revoked_at;
@@ -1324,7 +1324,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small>8.8.16.1 • CLEAR WATCH</small><h3>Choose the level of work</h3><p>One doorway per job. Vessel operations stay exact; Captain command and Admiral authority remain separate.</p></div>
+        <div class="clear-deck-brief"><small>8.8.17 • ADMIRAL COMMISSION</small><h3>Choose the active office</h3><p>One person may hold Captain and Admiral. Every action still declares its office, authority source, and exact scope.</p></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1332,7 +1332,7 @@
           <button type="button" class="clear-deck-action govern" data-command-open="admiral"><span class="clear-deck-action-number">04</span><span><strong>BUILD &amp; GOVERN</strong><small>Commission vessels, govern features and branding, preserve doctrine, and manage Admiral programs.</small></span></button>
         </div>
         <div class="clear-deck-support" aria-label="Fleet support routes"><span><b>FLEET SUPPORT</b><small>Commission New Project and Configure Engine remain above. Proof, recovery, learning and diagnostics stay here.</small></span><button type="button" id="clearDeckSystemsToggle" data-clear-deck-command="systems" aria-expanded="false"><i aria-hidden="true"></i><span><strong>ENGINEERING SYSTEMS</strong><small>Diagnostics, proof, learning &amp; recovery</small></span><em>OPEN</em></button></div>
-        <div id="clearDeckStatus" class="clear-deck-status" role="status" aria-live="polite">Clear Watch ready. Choose one operating level.</div>
+        <div id="clearDeckStatus" class="clear-deck-status" role="status" aria-live="polite">Admiral Commission ready. Choose one operating level.</div>
       </section>
 
       <section id="enginePerformanceDeck" class="engine-performance-deck" aria-label="Engine performance">
@@ -1409,7 +1409,7 @@
       <section id="fleetMaintenanceStation" class="fleet-maintenance-station" aria-label="Fleet Maintenance">
         <header class="fleet-maintenance-head">
           <div>
-            <div class="engine-kicker">8.8.16.1 • FLEET STEWARD · STORAGE TRUTH</div>
+            <div class="engine-kicker">8.8.17 • FLEET STEWARD · STORAGE TRUTH</div>
             <h3>FLEET MAINTENANCE</h3>
             <p>Recurring fleet care in one professional station. Inspect first, preserve evidence, and keep destructive cleanup outside this deck.</p>
           </div>
@@ -1443,7 +1443,7 @@
 
       <section id="commandHardeningDeck" class="command-hardening-deck" aria-label="Dark Sky Verified Command">
         <header class="command-hardening-head">
-          <div><div class="engine-kicker">8.8.16.1 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
+          <div><div class="engine-kicker">8.8.17 • FLEET INTELLIGENCE</div><h3>PROFESSIONAL FIRST. CINEMATIC SECOND.</h3><p>Operate the fleet from clear command surfaces. Presentation views remain available without becoming an operating dependency.</p></div>
           <strong>COMMAND HULL • ACTIVE</strong>
         </header>
         <div class="command-hardening-grid">
@@ -1460,7 +1460,7 @@
 
       <section id="fleetIntelligenceDeck" class="fleet-intelligence-deck" aria-label="Intelligence Dock">
         <header class="fleet-intelligence-head">
-          <div><div class="engine-kicker">8.8.16.1 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
+          <div><div class="engine-kicker">8.8.17 • FLEET INTELLIGENCE</div><h3>SEE THE FLEET. LEARN ACROSS IT.</h3><p>Normalize signals, compare vessel posture, map reusable capability adoption, and surface promotion opportunities without crossing project boundaries.</p></div>
           <strong id="fleetIntelligenceState">READING FLEET</strong>
         </header>
         <nav class="fleet-intelligence-tabs" id="fleetIntelligenceTabs" aria-label="Intelligence Dock views">
@@ -2336,7 +2336,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.8.16.1';
+    const BUILD='8.8.17';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;
