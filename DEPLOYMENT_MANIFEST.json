@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.15.8",
-  "version": "8.8.15.8",
-  "release_name": "Release Helm",
-  "releaseName": "Release Helm",
-  "release_seal": "release-helm-88158",
+  "build": "8.8.15.9",
+  "version": "8.8.15.9",
+  "release_name": "Report Proof",
+  "releaseName": "Report Proof",
+  "release_seal": "report-proof-88159",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -88,7 +88,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "two-stage-admiral-airlock",
-  "release_note": "Release Helm makes Supabase Admiral authentication a distinct second layer after the passage PIN. The Fleet workspace and every read control remain hidden until active server authority is verified, and sign-out immediately restores the locked airlock without changing vessel state.",
+  "release_note": "Report Proof makes Supabase Admiral authentication a distinct second layer after the passage PIN. The Fleet workspace and every read control remain hidden until active server authority is verified, and sign-out immediately restores the locked airlock without changing vessel state.",
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
     "permission_hardening": "harden_rls_auto_enable_rpc_889",

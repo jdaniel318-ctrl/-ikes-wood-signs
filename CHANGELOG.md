@@ -1,5 +1,9 @@
-# Dark Sky 8.8.15.8 — Release Helm
+# Dark Sky 8.8.15.9 — Report Proof
 
+- Requires a meaningful **Current work** statement before an owner report can be published.
+- Reads every accepted report back from Fleet Core and compares the saved value before declaring success.
+- Keeps the verified confirmation visible with the exact saved Current work instead of clearing it after a brief delay.
+- Pairs the client proof with a Supabase boundary rule that rejects blank Current work and returns the saved report fields.
 - Separated the Supabase Admiral credential check from the Fleet workspace into a dedicated full-screen second security layer.
 - Added an explicit three-state path: Passage PIN verified, Admiral account required, Fleet workspace locked.
 - Hides Refresh Watch, search, filters, counts, vessel cards, reports, and overview controls until active server-side Admiral authority is verified.
@@ -8,7 +12,7 @@
 - Seeded one neutral Supabase business-settings record for every canonical vessel without creating owners, invitations, credentials, memberships, or business claims.
 - Extended the authenticated, read-only Admiral Fleet Spine with per-vessel settings, owner identity, membership, order, report, and commissioning posture.
 - Added **Owner Ready**, **Fleet Seeded**, **Owner Attention**, and **Registry Only** states to My Fleet and its exact-vessel overview.
-- Added an iPad-responsive Release Helm summary showing registered, settings-seeded, owner-ready, fleet-seeded, and attention counts.
+- Added an iPad-responsive Report Proof summary showing registered, settings-seeded, owner-ready, fleet-seeded, and attention counts.
 - Added direct active-Admiral checks inside both release-assignment and vessel-commissioning mutation functions as defense in depth.
 - Revoked anonymous/public execution and retained authenticated execution on the three hardened Admiral RPCs.
 - Preserved Recovery Helm, Truth Signal, exact-vessel isolation, all six canonical identities, and the local fallback until each real owner passes cutover proof.

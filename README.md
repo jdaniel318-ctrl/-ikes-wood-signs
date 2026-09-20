@@ -1,6 +1,6 @@
-# Dark Sky 8.8.15.8 — Release Helm
+# Dark Sky 8.8.15.9 — Report Proof
 
-Release Helm makes the two-stage Admiral boundary unmistakable. The passage PIN completes layer one; a separate full-screen Supabase Admiral account gate completes layer two. Until both checks pass, My Fleet, Refresh Watch, vessel counts, reports, and all other Admiral work controls remain hidden.
+Report Proof makes the two-stage Admiral boundary unmistakable. The passage PIN completes layer one; a separate full-screen Supabase Admiral account gate completes layer two. Until both checks pass, My Fleet, Refresh Watch, vessel counts, reports, and all other Admiral work controls remain hidden.
 
 This is a presentation and fail-closed routing hardening. It does not weaken the existing server authority check or turn an owner identity into an Admiral. A failed, expired, signed-out, or project-owner-only session stays at the airlock and receives no fleet view.
 
@@ -10,7 +10,7 @@ The authenticated Admiral Fleet Spine now reports registry, settings, owner iden
 
 The two server mutation commands for commissioning and release assignment now repeat the active-Admiral check at their own boundary before preview or write. Existing exact-vessel RLS/RPC isolation, Recovery Helm, Truth Signal, and the local recovery bridge remain aboard.
 
-## Quick Release Helm check
+## Quick Report Proof check
 
 1. Enter the Admiral Passage PIN and open **Admiral My Fleet**.
 2. Confirm only **Admiral Security Layer** appears, with **01 Passage PIN — Verified**, **02 Admiral Account — Required**, and **03 Fleet Workspace — Locked**.

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.15.8",
-  "release": "Release Helm",
+  "build": "8.8.15.9",
+  "release": "Report Proof",
   "status": "active",
   "principles": [
     {
