@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17",
-  "release": "Admiral Commission",
-  "seal": "admiral-commission-8817",
+  "build": "8.8.17.1",
+  "release": "Ledger Integrity",
+  "seal": "ledger-integrity-88171",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Admiral Commission",
-  "name": "Admiral Commission",
-  "releaseName": "Admiral Commission"
+  "release_name": "Ledger Integrity",
+  "name": "Ledger Integrity",
+  "releaseName": "Ledger Integrity"
 }

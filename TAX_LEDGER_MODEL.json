@@ -1,0 +1,36 @@
+{
+  "schema": "dark-sky-fleet-tax-ledger-v1",
+  "build": "8.8.17.1",
+  "release": "Ledger Integrity",
+  "purpose": "Accountant-ready, entity-isolated bookkeeping records for every Fleet Core member and the Captain and Admiral offices.",
+  "boundaries": {
+    "recordkeeping_aid_only": true,
+    "files_tax_returns": false,
+    "determines_deductibility": false,
+    "stores_tax_identification_numbers_in_browser": false,
+    "browser_entries_are_server_attested": false,
+    "correction_model": "append-only reversal or adjustment; never silent replacement"
+  },
+  "entity_types": ["fleet_member", "captain_office", "admiral_office", "admiral_program"],
+  "entry_types": ["income", "expense", "transfer", "owner_contribution", "owner_draw", "adjustment"],
+  "review_states": ["unreviewed", "accountant_review", "ready", "approved"],
+  "evidence_states": ["missing", "referenced", "verified"],
+  "accounting_methods": ["cash", "accrual", "other"],
+  "minimum_export_columns": [
+    "entity_key", "entity_name", "entity_type", "tax_year", "accounting_method",
+    "transaction_date", "entry_type", "category_code", "category_label", "amount_usd",
+    "counterparty", "description", "evidence_reference", "review_status", "acting_office",
+    "source", "created_at", "entry_id", "correction_of"
+  ],
+  "authority_rules": {
+    "captain": "May record Captain-authorized fleet operating entries and the Captain office book.",
+    "admiral": "May record Admiral-authorized fleet governance and commissioning entries, including Admiral programs.",
+    "fleet_member": "May record entries only for an exact project membership.",
+    "system": "May import only through a separately authenticated server process; not by browser role assertion."
+  },
+  "retention": {
+    "transaction_history": "durable",
+    "supporting_documents": "retain outside this browser ledger under the accountant-approved retention policy",
+    "exports": "UTF-8 CSV with one row per retained entry"
+  }
+}

@@ -2990,8 +2990,8 @@ if(document.readyState==='loading'){
   document.addEventListener('change',event=>{if(event.target.matches('#admiralCommissioningClass,#admiralCommissioningOwnership,#admiralCommissioningOperating'))invalidate('Commissioning authority or operating boundary changed. Preview again before issuing.');});
 })();
 
-/* 8.8.17 Admiral Commission — dual-office Authority Ledger and Admiral-owned shipyard. */
-;(()=>{
+/* 8.8.17.1 legacy Authority Ledger retained for rollback; superseded by Ledger Integrity. */
+;false&&(()=>{
   const SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   const el=id=>document.getElementById(id);
   const safe=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));

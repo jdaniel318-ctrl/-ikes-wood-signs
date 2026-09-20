@@ -1,5 +1,13 @@
 # Dark Sky Changelog
 
+## 8.8.17.1 — Ledger Integrity
+
+- Added isolated, append-only tax books for every fleet member, Captain Operations, Admiral Operations, and Bootstrap Build.
+- Added tax-year and accounting-method controls, evidence and review status, summaries, and accountant CSV export.
+- Stopped unchanged commissioning from writing the same audit event on every boot.
+- Collapsed retained duplicate evidence and paginated the authority audit without deleting history.
+- Packaged an RLS-governed Supabase reference migration; the static release does not claim it is applied.
+
 ## 8.8.17 — Admiral Commission
 
 ### Added

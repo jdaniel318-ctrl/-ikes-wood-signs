@@ -168,8 +168,9 @@ function migrationState(){return read(KEYS.migration,null)}
 function completeCommissioning(projects=[],meta={}){
  const expected=Array.isArray(projects)?projects.length:0, sealed=Number(meta.sealedCount??expected);
  if(!expected||sealed!==expected)return markCommissioningFailed(projects,`Envelope invariant failed: ${sealed}/${expected} sealed.`);
- const prior=migrationState()||{};
- const row={...prior,from:prior.from||'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,failed:false,stage:'v4-project-envelopes',projectIds:projects.map(p=>p.id),commissionedProjectCount:sealed};
+ const prior=migrationState()||{},projectIds=projects.map(p=>String(p.id||'')).filter(Boolean).sort(),priorIds=(Array.isArray(prior.projectIds)?prior.projectIds:[]).map(String).sort();
+ if(prior.completed===true&&prior.failed!==true&&prior.stage==='v4-project-envelopes'&&Number(prior.commissionedProjectCount)===sealed&&projectIds.join('|')===priorIds.join('|'))return prior;
+ const row={...prior,from:prior.from||'3.10.2',to:VERSION,at:new Date().toISOString(),completed:true,failed:false,stage:'v4-project-envelopes',projectIds,commissionedProjectCount:sealed};
  write(KEYS.migration,row);write(KEYS.state,{version:VERSION,name:NAME,schema:SCHEMA,installedAt:read(KEYS.state,{})?.installedAt||row.at,commissionedAt:row.at,contract:CONTRACT});
  core()?.audit?.({actorRole:'system',category:'migration',action:'v4.1.1.commissioning.harbor_master_sealed',detail:`${sealed}/${expected} project envelopes read-back verified`});
  return row;

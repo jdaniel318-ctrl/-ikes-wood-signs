@@ -1,6 +1,6 @@
-# Dark Sky 8.8.17 — Admiral Commission
+# Dark Sky 8.8.17.1 — Ledger Integrity
 
-Admiral Commission makes the Captain + Admiral dual-office assignment official while preserving the authority boundary between the two offices. It adds a navigable Authority Ledger and expands Commissioning Orders so an authenticated Admiral can deliberately commission an Admiral-owned program such as Bootstrap Build.
+Ledger Integrity makes the fleet ledger practical for command review and accountant handoff while preserving explicit Captain and Admiral authority.
 
 ## What changed
 
@@ -30,6 +30,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17` and seal `admiral-commission-8817`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.1` and seal `ledger-integrity-88171`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.
