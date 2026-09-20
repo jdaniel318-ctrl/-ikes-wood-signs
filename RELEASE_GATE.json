@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.15.5",
-  "release": "Supabase Keel",
+  "build": "8.8.15.6",
+  "release": "Admiral Airlock",
   "generatedAt": "2026-09-19T16:21:09Z",
   "checks": {
     "build_version": true,
@@ -295,8 +295,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.15.5 Supabase Keel gives all six vessels a neutral server settings posture, exposes authenticated read-only commissioning truth through the Admiral Fleet Spine, and repeats Admiral checks at both mutation boundaries without inventing owners or weakening Recovery Helm.",
-  "candidate": "8.8.15.5",
+  "note": "8.8.15.6 Admiral Airlock separates passage PIN verification from Supabase Admiral identity verification. My Fleet, governed findings, and the Admiral Deck remain concealed until both layers pass; sign-out immediately restores the locked airlock without weakening server checks, vessel isolation, or Recovery Helm.",
+  "candidate": "8.8.15.6",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -544,8 +544,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.15.5",
-    "seal": "supabase-keel-88155",
+    "build": "8.8.15.6",
+    "seal": "admiral-airlock-88156",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

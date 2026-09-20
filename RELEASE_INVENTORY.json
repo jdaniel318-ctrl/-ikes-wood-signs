@@ -1,8 +1,8 @@
 {
-  "release": "Supabase Keel",
-  "name": "Supabase Keel",
-  "build": "8.8.15.5",
-  "seal": "supabase-keel-88155",
+  "release": "Admiral Airlock",
+  "name": "Admiral Airlock",
+  "build": "8.8.15.6",
+  "seal": "admiral-airlock-88156",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

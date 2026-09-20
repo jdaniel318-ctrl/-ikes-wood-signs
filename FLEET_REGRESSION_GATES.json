@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-keelbook-regression-gates-v1",
-  "build": "8.8.15.5",
-  "release": "Supabase Keel",
+  "build": "8.8.15.6",
+  "release": "Admiral Airlock",
   "excluded_sources": [
     "The situation"
   ],
@@ -45,6 +45,10 @@
       ,"fleet_spine_requires_active_admiral"
       ,"fleet_seed_never_creates_owner_membership"
       ,"commission_and_release_mutations_repeat_admiral_check"
+      ,"admiral_pin_opens_security_layer_not_workspace"
+      ,"admiral_workspace_hidden_until_supabase_identity_verified"
+      ,"owner_identity_cannot_open_admiral_workspace"
+      ,"admiral_sign_out_immediately_relocks_workspace"
     ],
     "true_helm": [
       "explicit_in_app_navigation",
@@ -92,6 +96,8 @@
       ,"entitlement_selector_releases_focus_after_choice"
       ,"bootstrap_schedule_touch_drag"
       ,"bootstrap_schedule_ipad_horizontal_workweek"
+      ,"admiral_airlock_ipad_full_screen"
+      ,"admiral_airlock_explains_both_security_layers"
     ],
     "clean_wake": [
       "no_platform_chrome_on_customer",

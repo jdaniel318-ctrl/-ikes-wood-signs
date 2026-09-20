@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-services-framework-v3",
-  "build": "8.8.15.5",
-  "release": "Supabase Keel",
+  "build": "8.8.15.6",
+  "release": "Admiral Airlock",
   "principles": [
     "Admiral can set every Fleet feature Off, Free or Paid for every vessel.",
     "Owners may request eligible paid services but cannot self-grant or self-activate them.",

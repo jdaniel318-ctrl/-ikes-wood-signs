@@ -1,6 +1,6 @@
 {
-  "release": "8.8.15.5",
-  "build": "8.8.15.5",
+  "release": "8.8.15.6",
+  "build": "8.8.15.6",
   "name": "Admiral Passage",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [

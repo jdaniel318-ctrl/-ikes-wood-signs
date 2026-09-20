@@ -1,9 +1,14 @@
-# Dark Sky 8.8.15.5 — Supabase Keel
+# Dark Sky 8.8.15.6 — Admiral Airlock
 
+- Separated the Supabase Admiral credential check from the Fleet workspace into a dedicated full-screen second security layer.
+- Added an explicit three-state path: Passage PIN verified, Admiral account required, Fleet workspace locked.
+- Hides Refresh Watch, search, filters, counts, vessel cards, reports, and overview controls until active server-side Admiral authority is verified.
+- Returns immediately to the locked security layer on sign-out or expired/invalid identity.
+- Keeps owner accounts project-scoped and unable to open Admiral fleet data.
 - Seeded one neutral Supabase business-settings record for every canonical vessel without creating owners, invitations, credentials, memberships, or business claims.
 - Extended the authenticated, read-only Admiral Fleet Spine with per-vessel settings, owner identity, membership, order, report, and commissioning posture.
 - Added **Owner Ready**, **Fleet Seeded**, **Owner Attention**, and **Registry Only** states to My Fleet and its exact-vessel overview.
-- Added an iPad-responsive Supabase Keel summary showing registered, settings-seeded, owner-ready, fleet-seeded, and attention counts.
+- Added an iPad-responsive Admiral Airlock summary showing registered, settings-seeded, owner-ready, fleet-seeded, and attention counts.
 - Added direct active-Admiral checks inside both release-assignment and vessel-commissioning mutation functions as defense in depth.
 - Revoked anonymous/public execution and retained authenticated execution on the three hardened Admiral RPCs.
 - Preserved Recovery Helm, Truth Signal, exact-vessel isolation, all six canonical identities, and the local fallback until each real owner passes cutover proof.

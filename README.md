@@ -1,19 +1,24 @@
-# Dark Sky 8.8.15.5 — Supabase Keel
+# Dark Sky 8.8.15.6 — Admiral Airlock
 
-Supabase Keel makes Fleet Core server posture visible and complete without inventing owners. All six canonical vessels now have a neutral `fleet_business_settings` record in Supabase; Ike's remains the only outside-owner-ready vessel because it is the only one with a real Auth identity and exact `project_owner` membership.
+Admiral Airlock makes the two-stage Admiral boundary unmistakable. The passage PIN completes layer one; a separate full-screen Supabase Admiral account gate completes layer two. Until both checks pass, My Fleet, Refresh Watch, vessel counts, reports, and all other Admiral work controls remain hidden.
+
+This is a presentation and fail-closed routing hardening. It does not weaken the existing server authority check or turn an owner identity into an Admiral. A failed, expired, signed-out, or project-owner-only session stays at the airlock and receives no fleet view.
+
+Fleet Core server posture remains complete without inventing owners. All six canonical vessels have a neutral `fleet_business_settings` record in Supabase; outside-owner authority still requires a real Auth identity and exact `project_owner` membership.
 
 The authenticated Admiral Fleet Spine now reports registry, settings, owner identity, membership, orders, and vessel-report posture together. My Fleet presents those facts read-only as **Owner Ready**, **Fleet Seeded**, **Owner Attention**, or **Registry Only**. Fleet Seeded is deliberately not ownership: no invitation, credential, membership, business fact, publication, or authority is created by the seed.
 
 The two server mutation commands for commissioning and release assignment now repeat the active-Admiral check at their own boundary before preview or write. Existing exact-vessel RLS/RPC isolation, Recovery Helm, Truth Signal, and the local recovery bridge remain aboard.
 
-## Quick Supabase Keel check
+## Quick Admiral Airlock check
 
-1. Enter **Admiral My Fleet** with the active Supabase Admiral identity.
-2. Confirm the **SUPABASE KEEL · SERVER POSTURE** strip shows 6 registered and 6 settings-seeded vessels.
-3. Confirm Ike's Wood Signs is **OWNER READY** and each unassigned vessel is **FLEET SEEDED**—not owner assigned.
-4. Open Legacy Plumbing and confirm its exact Project ID, server settings **PRESENT**, zero owner identities, and a read-only Fleet Seeded posture.
-5. Sign out and confirm Fleet Spine data closes; no vessel posture is exposed without active Admiral authority.
-6. Re-open Legacy through Owner Entrance and confirm the existing recovery and exact-vessel access behavior still works.
+1. Enter the Admiral Passage PIN and open **Admiral My Fleet**.
+2. Confirm only **Admiral Security Layer** appears, with **01 Passage PIN — Verified**, **02 Admiral Account — Required**, and **03 Fleet Workspace — Locked**.
+3. Confirm no Refresh Watch, vessel counts, reports, search, filters, or vessel cards are visible.
+4. Try an Owner account and confirm the airlock stays closed with no fleet data exposed.
+5. Sign in with the dedicated Supabase Admiral account and confirm the full My Fleet workspace appears only after server verification.
+6. Confirm the server-posture strip shows 6 registered and 6 settings-seeded vessels, then verify exact-vessel cards still match Supabase.
+7. Tap **Sign Out** and confirm the workspace disappears immediately and the second security layer returns.
 
 ## Preserved Recovery Helm
 
