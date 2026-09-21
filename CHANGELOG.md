@@ -1,5 +1,13 @@
 # Dark Sky Changelog
 
+## 8.8.17.2 — Simple Books
+
+- Replaced the accountant-first entry form with Money In, Money Out, and Move Money.
+- Reduced the normal record to five understandable inputs while retaining optional accountant detail.
+- Preserved isolated per-entity books, append-only corrections, Captain/Admiral authority labels, and CSV export.
+- Rebuilt the Captain and Admiral ledger launcher as a compact naval command card.
+- Kept all 8.8.17.1 records and storage compatible.
+
 ## 8.8.17.1 — Ledger Integrity
 
 - Added isolated, append-only tax books for every fleet member, Captain Operations, Admiral Operations, and Bootstrap Build.

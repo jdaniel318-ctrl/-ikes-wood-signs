@@ -1,12 +1,16 @@
-# Dark Sky 8.8.17.1 — Ledger Integrity
+# Dark Sky 8.8.17.2 — Simple Books
 
-Ledger Integrity makes the fleet ledger practical for command review and accountant handoff while preserving explicit Captain and Admiral authority.
+Simple Books makes daily fleet recordkeeping easier than traditional accounting software while preserving accountant-grade exports and explicit Captain and Admiral authority.
 
 ## What changed
 
 - Captain and Admiral may be held by the same person.
 - Every action still declares an active office; Captain access never silently elevates to Admiral authority.
-- The Authority Ledger opens from Captain **Record** and Admiral **Govern**.
+- The Fleet Ledger opens from Captain **Record** and Admiral **Govern** through a compact command card.
+- Daily recording begins with three plain choices: **Money In**, **Money Out**, or **Move Money**.
+- The normal path asks only for the book, amount, counterparty, purpose, and optional receipt or invoice reference.
+- Tax year, accounting method, category, acting office, and review status remain under **Accountant Tools** and **More Details**.
+- Existing Ledger Integrity browser records remain readable because the durable storage key and schema are unchanged.
 - Captain rows are labeled **Browser Evidence**; Admiral rows are labeled **Server Attested** only after Fleet Core verifies the dedicated Admiral identity.
 - The ledger supports office filters, cross-field search, refresh, exact targets, authority source, outcome, intent/detail, and up to 200 server rows.
 - Commissioning Orders now expose mission class, ownership model, and operating model instead of hard-coding every commission as fleet-unassigned.
@@ -30,6 +34,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.1` and seal `ledger-integrity-88171`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.2` and seal `simple-books-88172`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.

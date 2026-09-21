@@ -1,9 +1,9 @@
 {
-  "release": "Ledger Integrity",
-  "name": "Ledger Integrity",
-  "build": "8.8.17.1",
-  "seal": "ledger-integrity-88171",
-  "file_count": 83,
+  "release": "Simple Books",
+  "name": "Simple Books",
+  "build": "8.8.17.2",
+  "seal": "simple-books-88172",
+  "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
     "SUPABASE_ADMIRAL_COMMISSIONING_886.sql",
@@ -68,6 +68,7 @@
     "bootstrap_build_logo.png",
     "captain.js",
     "ledger_integrity.js",
+    "simple_books.js",
     "captains_quarters_cinematic_v2953.jpg",
     "captains_quarters_command_center_v578.png",
     "engine_room_modern_benchmark_v2976.png",
@@ -87,6 +88,7 @@
     "platform_v4.js",
     "signal_restoration_logo.png",
     "styles.css",
+    "simple_books.css",
     "sw.js"
   ]
 }
