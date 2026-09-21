@@ -1,8 +1,8 @@
 {
-  "release": "Ledger Truth",
-  "name": "Ledger Truth",
-  "build": "8.8.17.6",
-  "seal": "ledger-truth-88176",
+  "release": "Clear the Deck",
+  "name": "Clear the Deck",
+  "build": "8.8.17.7",
+  "seal": "clear-the-deck-88177",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

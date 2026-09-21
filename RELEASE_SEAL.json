@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.6",
-  "release": "Ledger Truth",
-  "seal": "ledger-truth-88176",
+  "build": "8.8.17.7",
+  "release": "Clear the Deck",
+  "seal": "clear-the-deck-88177",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Ledger Truth",
-  "name": "Ledger Truth",
-  "releaseName": "Ledger Truth"
+  "release_name": "Clear the Deck",
+  "name": "Clear the Deck",
+  "releaseName": "Clear the Deck"
 }

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.17.6",
-  "release": "Ledger Truth",
-  "generatedAt": "2026-09-21T21:12:32Z",
+  "build": "8.8.17.7",
+  "release": "Clear the Deck",
+  "generatedAt": "2026-09-21T22:44:10Z",
   "checks": {
     "build_version": true,
     "book_write_readback_verified": true,
@@ -13,6 +13,15 @@
     "ledger_submission_idempotent": true,
     "ledger_duplicate_ids_rejected": true,
     "ledger_exact_single_row_readback": true,
+    "ledger_attention_queue_actionable": true,
+    "ledger_resolution_append_only": true,
+    "ledger_original_record_preserved": true,
+    "ledger_latest_revision_counted_once": true,
+    "ledger_correction_lineage_exported": true,
+    "payment_method_check_default": true,
+    "payment_method_ach_ready": true,
+    "payment_credentials_forbidden": true,
+    "rapid_second_tap_durable_confirmation": true,
     "ipad_ledger_touch_realign": true,
     "ipad_stale_touch_target_rejected": true,
     "book_quota_failure_visible": true,
@@ -318,8 +327,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.17.6 Ledger Truth counts each transaction needing attention once, reports its reasons separately, makes repeated saves idempotent, verifies exactly one stored row, and realigns the iPad ledger touch layer after Safari viewport changes. Existing authority and storage protections remain intact.",
-  "candidate": "8.8.17.6",
+  "note": "8.8.17.7 Clear the Deck makes To Check actionable, keeps corrections append-only, counts only the current revision, adds Check-first future-ready payment rails including ACH, and confirms rapid repeat taps without duplicating a record.",
+  "candidate": "8.8.17.7",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -567,8 +576,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.17.6",
-    "seal": "ledger-truth-88176",
+    "build": "8.8.17.7",
+    "seal": "clear-the-deck-88177",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

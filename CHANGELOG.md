@@ -1,5 +1,15 @@
 # Dark Sky Changelog
 
+## 8.8.17.7 — Clear the Deck
+
+- Made **To Check** tappable and exposed each transaction's exact attention reasons.
+- Added append-only resolution and correction records; originals remain intact and totals count only the latest revision once.
+- Added Check-first payment classification with ACH, cards, digital wallets, cash, bank transfer, and other trackable methods.
+- Allowed safe check, receipt, and payment confirmation references while forbidding payment credentials.
+- Exported payment method and correction lineage in the accountant CSV.
+- Added a durable **Already saved once** result for rapid repeat taps.
+- Preserved all Ledger Truth, Clear Entry, Storage Bearing, authority, and iPad touch protections.
+
 ## 8.8.17.6 — Ledger Truth
 
 - Changed **To Check** from a sum of warning reasons to a count of distinct transactions needing attention.

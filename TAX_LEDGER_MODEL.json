@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-tax-ledger-v1",
-  "build": "8.8.17.6",
-  "release": "Ledger Truth",
+  "build": "8.8.17.7",
+  "release": "Clear the Deck",
   "purpose": "Accountant-ready, entity-isolated bookkeeping records for every Fleet Core member and the Captain and Admiral offices.",
   "boundaries": {
     "recordkeeping_aid_only": true,
@@ -16,11 +16,18 @@
   "review_states": ["unreviewed", "accountant_review", "ready", "approved"],
   "evidence_states": ["missing", "referenced", "verified"],
   "accounting_methods": ["cash", "accrual", "other"],
+  "payment_methods": ["check", "ach", "debit_card", "credit_card", "digital_wallet", "cash", "bank_transfer", "other_trackable", "unspecified"],
+  "payment_safety": {
+    "default": "check",
+    "trackable_reference_allowed": true,
+    "account_routing_card_and_login_credentials_forbidden": true,
+    "execution_provider_connected": false
+  },
   "minimum_export_columns": [
     "entity_key", "entity_name", "entity_type", "tax_year", "accounting_method",
     "transaction_date", "entry_type", "category_code", "category_label", "amount_usd",
-    "counterparty", "description", "evidence_reference", "review_status", "acting_office",
-    "authority_status", "authority_source", "authority_verified_at", "source", "created_at", "entry_id", "submission_id", "correction_of"
+    "counterparty", "description", "payment_method", "payment_reference", "review_status", "acting_office",
+    "authority_status", "authority_source", "authority_verified_at", "source", "created_at", "root_entry_id", "current_revision_id", "revision_count"
   ],
   "authority_rules": {
     "captain": "May record Captain-authorized fleet operating entries and the Captain office book.",
@@ -37,6 +44,8 @@
     "success_condition": "exact payload written and exactly one new entry read back by entry_id and submission_id",
     "duplicate_prevention": "one active submission token per completed form; repeated or delayed save events cannot create a second transaction",
     "attention_count": "one count per transaction needing review or a receipt; multiple reasons never count the same transaction twice",
+    "attention_resolution": "To Check opens the exact reasons and appends a resolution record.",
+    "current_value_rule": "Totals and exports use only the latest revision for each original transaction; earlier revisions remain preserved.",
     "quota_recovery": "compact duplicate derived authority-audit evidence, then retry once",
     "protected_from_automatic_cleanup": ["bookkeeping records", "projects", "customers", "orders", "identity and authority state"],
     "failure_behavior": "retain the completed form and state that no ledger record was created"

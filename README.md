@@ -1,8 +1,15 @@
-# Dark Sky 8.8.17.6 — Ledger Truth
+# Dark Sky 8.8.17.7 — Clear the Deck
 
-Ledger Truth makes every summary count correspond to a real transaction and makes each completed form safe against repeated taps, while retaining the clear iPad amount field and Storage Bearing protections.
+Clear the Deck turns **To Check** into an actionable queue, preserves corrections as append-only history, and adds Check-first payment tracking without limiting future ACH or other traceable digital methods.
 
 ## What changed
+
+- Tap **To Check** to see every flagged transaction and its exact reasons.
+- Resolve missing references and review state directly from the queue; corrections append and never overwrite the original.
+- Totals and exports use the latest revision once, while CSV lineage preserves the original and current revision IDs.
+- **Check** is the default payment method; ACH, debit card, credit card, digital wallet, cash, bank transfer, and another trackable method are ready to classify.
+- Store only safe confirmation references such as a check number or ACH trace; account, routing, card, login, and tax credentials remain forbidden.
+- A rapid second tap now leaves a durable **Already saved once** confirmation and cannot create a duplicate.
 
 - **To Check** counts each transaction once even when the same row is both unreviewed and missing a receipt.
 - The reason totals remain visible beneath the count so an operator can distinguish review work from missing evidence.
@@ -49,6 +56,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.6` and seal `ledger-truth-88176`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.7` and seal `clear-the-deck-88177`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.
