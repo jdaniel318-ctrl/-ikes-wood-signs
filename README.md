@@ -1,11 +1,14 @@
-# Dark Sky 8.8.17.2 — Simple Books
+# Dark Sky 8.8.17.3 — Clear Authority
 
-Simple Books makes daily fleet recordkeeping easier than traditional accounting software while preserving accountant-grade exports and explicit Captain and Admiral authority.
+Clear Authority keeps daily fleet recordkeeping simple while making every acting office explicit and preventing silent elevation to Admiral authority.
 
 ## What changed
 
 - Captain and Admiral may be held by the same person.
-- Every action still declares an active office; Captain access never silently elevates to Admiral authority.
+- Every action declares an active office; Captain access never silently elevates to Admiral authority.
+- Admiral book entries are saved only after Fleet Core verifies a dedicated Admiral identity.
+- Fleet member or owner actions are routed to the vessel owner portal instead of being mislabeled in the Engine Room.
+- Accountant CSV exports now include authority status, source, and verification time.
 - The Fleet Ledger opens from Captain **Record** and Admiral **Govern** through a compact command card.
 - Daily recording begins with three plain choices: **Money In**, **Money Out**, or **Move Money**.
 - The normal path asks only for the book, amount, counterparty, purpose, and optional receipt or invoice reference.
@@ -34,6 +37,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.2` and seal `simple-books-88172`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.3` and seal `clear-authority-88173`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.

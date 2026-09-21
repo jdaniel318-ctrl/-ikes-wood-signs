@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.17.2';
-const RELEASE_SEAL='simple-books-88172';
+const RELEASE_BUILD='8.8.17.3';
+const RELEASE_SEAL='clear-authority-88173';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

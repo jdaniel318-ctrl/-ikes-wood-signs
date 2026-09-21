@@ -1,8 +1,8 @@
 {
-  "release": "Simple Books",
-  "name": "Simple Books",
-  "build": "8.8.17.2",
-  "seal": "simple-books-88172",
+  "release": "Clear Authority",
+  "name": "Clear Authority",
+  "build": "8.8.17.3",
+  "seal": "clear-authority-88173",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.2",
-  "release": "Simple Books",
-  "seal": "simple-books-88172",
+  "build": "8.8.17.3",
+  "release": "Clear Authority",
+  "seal": "clear-authority-88173",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Simple Books",
-  "name": "Simple Books",
-  "releaseName": "Simple Books"
+  "release_name": "Clear Authority",
+  "name": "Clear Authority",
+  "releaseName": "Clear Authority"
 }

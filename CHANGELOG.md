@@ -1,5 +1,14 @@
 # Dark Sky Changelog
 
+## 8.8.17.3 — Clear Authority
+
+- Kept fleet bookkeeping to Money In, Money Out, and Move Money.
+- Blocked Admiral entries until Fleet Core verifies dedicated Admiral authority.
+- Prevented Engine Room users from silently labeling records as owner actions.
+- Added authority status, source, and verification time to retained records and accountant CSV exports.
+- Corrected local transaction dates so they follow the operator device instead of UTC.
+- Preserved the existing browser-book storage key and all prior records.
+
 ## 8.8.17.2 — Simple Books
 
 - Replaced the accountant-first entry form with Money In, Money Out, and Move Money.
