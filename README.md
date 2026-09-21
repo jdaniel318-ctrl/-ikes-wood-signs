@@ -1,12 +1,18 @@
-# Dark Sky 8.8.17.5 — Clear Entry
+# Dark Sky 8.8.17.6 — Ledger Truth
 
-Clear Entry makes the current release obvious at the Engine entrance and makes amount entry easier to read and correct on iPad.
+Ledger Truth makes every summary count correspond to a real transaction and makes each completed form safe against repeated taps, while retaining the clear iPad amount field and Storage Bearing protections.
 
 ## What changed
 
-- The Engine front page now displays the exact deployed build and release name from the application build constant.
-- The amount field uses a fixed currency gutter, larger high-contrast numerals, a single clear focus ring, and a visibly faint empty placeholder.
-- Existing amounts select on focus for quick correction and format to two decimal places after entry.
+- **To Check** counts each transaction once even when the same row is both unreviewed and missing a receipt.
+- The reason totals remain visible beneath the count so an operator can distinguish review work from missing evidence.
+- Every completed form receives an idempotent submission ID, and the write path rejects duplicate entry or submission IDs.
+- A save is successful only when exact read-back finds one matching entry ID and submission ID.
+- Repeated or delayed save events are blocked while the first save is in progress.
+- The iPad ledger now resynchronizes its composited touch layer after viewport, orientation, focus, and keyboard geometry changes.
+- A stale Safari touch target is rejected and realigned instead of activating the wrong ledger control.
+- The Engine front page still displays the exact deployed build and release name from the application build constant.
+- The amount field retains its fixed currency gutter, larger high-contrast numerals, unified focus ring, and two-decimal formatting.
 - Captain saves continue to survive duplicate-audit storage pressure by safely compacting duplicate browser audit evidence and retrying once.
 - The new ledger record must pass exact local read-back before the form clears or the totals change.
 - A failed save leaves every field intact and states plainly that no ledger record was created.
@@ -19,7 +25,7 @@ Clear Entry makes the current release obvious at the Engine entrance and makes a
 - Daily recording begins with three plain choices: **Money In**, **Money Out**, or **Move Money**.
 - The normal path asks only for the book, amount, counterparty, purpose, and optional receipt or invoice reference.
 - Tax year, accounting method, category, acting office, and review status remain under **Accountant Tools** and **More Details**.
-- Existing Ledger Integrity browser records remain readable because the durable storage key and schema are unchanged.
+- Existing Ledger Integrity browser records remain readable because the durable storage key is unchanged and v1 rows are accepted without destructive migration.
 - Captain rows are labeled **Browser Evidence**; Admiral rows are labeled **Server Attested** only after Fleet Core verifies the dedicated Admiral identity.
 - The ledger supports office filters, cross-field search, refresh, exact targets, authority source, outcome, intent/detail, and up to 200 server rows.
 - Commissioning Orders now expose mission class, ownership model, and operating model instead of hard-coding every commission as fleet-unassigned.
@@ -43,6 +49,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.5` and seal `clear-entry-88175`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.6` and seal `ledger-truth-88176`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.

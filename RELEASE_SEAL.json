@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.5",
-  "release": "Clear Entry",
-  "seal": "clear-entry-88175",
+  "build": "8.8.17.6",
+  "release": "Ledger Truth",
+  "seal": "ledger-truth-88176",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clear Entry",
-  "name": "Clear Entry",
-  "releaseName": "Clear Entry"
+  "release_name": "Ledger Truth",
+  "name": "Ledger Truth",
+  "releaseName": "Ledger Truth"
 }

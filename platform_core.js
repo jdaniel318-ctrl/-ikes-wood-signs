@@ -1,4 +1,4 @@
-/* Dark Sky / Black Flag v4.1.5 — Clear Entry core compatibility layer */
+/* Dark Sky / Black Flag v4.1.5 — Ledger Truth core compatibility layer */
 (function(g){
 'use strict';
 const SCHEMA=8, POLICY='4.0', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';

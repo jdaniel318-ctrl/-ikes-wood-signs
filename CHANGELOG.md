@@ -1,13 +1,14 @@
 # Dark Sky Changelog
 
-## 8.8.17.5 — Clear Entry
+## 8.8.17.6 — Ledger Truth
 
-- Made the Engine front-page release marker show the exact deployed build and release name.
-- Bound the visible marker to the application build constant to prevent future version drift.
-- Separated the dollar sign into a fixed currency gutter so the iPad caret cannot overlap it.
-- Increased entered-amount size and contrast while making the empty `0.00` placeholder visibly secondary.
-- Added a unified focus ring, two-decimal formatting on blur, and select-on-focus correction.
-- Preserved Storage Bearing quota recovery, read-back verification, authority boundaries, and all existing ledger records.
+- Changed **To Check** from a sum of warning reasons to a count of distinct transactions needing attention.
+- Kept the unreviewed and missing-receipt reason totals visible without double-counting a transaction.
+- Added per-form submission IDs, an in-flight save latch, duplicate-ID rejection, and exact single-row read-back verification.
+- Added explicit validation for book, positive amount, description, and transaction date before a write begins.
+- Resynchronized the iPad ledger compositor after viewport, orientation, focus, and keyboard geometry changes.
+- Rejects a stale Safari touch target and asks for one clean retry instead of activating the wrong control.
+- Preserved Clear Entry amount readability, Storage Bearing quota recovery, authority boundaries, and all existing ledger records.
 
 ## 8.8.17.4 — Storage Bearing
 

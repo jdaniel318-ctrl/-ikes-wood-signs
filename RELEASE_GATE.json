@@ -1,13 +1,20 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.17.5",
-  "release": "Clear Entry",
-  "generatedAt": "2026-09-21T18:16:54Z",
+  "build": "8.8.17.6",
+  "release": "Ledger Truth",
+  "generatedAt": "2026-09-21T21:12:32Z",
   "checks": {
     "build_version": true,
     "book_write_readback_verified": true,
     "engine_front_page_exact_build_visible": true,
     "ipad_amount_entry_clear": true,
+    "ledger_to_check_distinct_transactions": true,
+    "ledger_attention_reasons_separate": true,
+    "ledger_submission_idempotent": true,
+    "ledger_duplicate_ids_rejected": true,
+    "ledger_exact_single_row_readback": true,
+    "ipad_ledger_touch_realign": true,
+    "ipad_stale_touch_target_rejected": true,
     "book_quota_failure_visible": true,
     "duplicate_audit_compaction_only": true,
     "business_records_cleanup_forbidden": true,
@@ -311,8 +318,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.17 Admiral Commission formalizes one person holding Captain and Admiral while preserving explicit office selection. Captain evidence remains browser-labeled; Admiral ledger rows require authenticated active server authority. Admiral-owned commissioning stays previewed, audited, not live, and creates no individual project-owner membership.",
-  "candidate": "8.8.17.5",
+  "note": "8.8.17.6 Ledger Truth counts each transaction needing attention once, reports its reasons separately, makes repeated saves idempotent, verifies exactly one stored row, and realigns the iPad ledger touch layer after Safari viewport changes. Existing authority and storage protections remain intact.",
+  "candidate": "8.8.17.6",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -560,8 +567,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.17.5",
-    "seal": "clear-entry-88175",
+    "build": "8.8.17.6",
+    "seal": "ledger-truth-88176",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

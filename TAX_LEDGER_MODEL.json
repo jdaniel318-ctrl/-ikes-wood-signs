@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-tax-ledger-v1",
-  "build": "8.8.17.5",
-  "release": "Clear Entry",
+  "build": "8.8.17.6",
+  "release": "Ledger Truth",
   "purpose": "Accountant-ready, entity-isolated bookkeeping records for every Fleet Core member and the Captain and Admiral offices.",
   "boundaries": {
     "recordkeeping_aid_only": true,
@@ -20,7 +20,7 @@
     "entity_key", "entity_name", "entity_type", "tax_year", "accounting_method",
     "transaction_date", "entry_type", "category_code", "category_label", "amount_usd",
     "counterparty", "description", "evidence_reference", "review_status", "acting_office",
-    "authority_status", "authority_source", "authority_verified_at", "source", "created_at", "entry_id", "correction_of"
+    "authority_status", "authority_source", "authority_verified_at", "source", "created_at", "entry_id", "submission_id", "correction_of"
   ],
   "authority_rules": {
     "captain": "May record Captain-authorized fleet operating entries and the Captain office book.",
@@ -34,7 +34,9 @@
     "exports": "UTF-8 CSV with one row per retained entry"
   },
   "write_integrity": {
-    "success_condition": "exact payload written and new entry read back by entry_id",
+    "success_condition": "exact payload written and exactly one new entry read back by entry_id and submission_id",
+    "duplicate_prevention": "one active submission token per completed form; repeated or delayed save events cannot create a second transaction",
+    "attention_count": "one count per transaction needing review or a receipt; multiple reasons never count the same transaction twice",
     "quota_recovery": "compact duplicate derived authority-audit evidence, then retry once",
     "protected_from_automatic_cleanup": ["bookkeeping records", "projects", "customers", "orders", "identity and authority state"],
     "failure_behavior": "retain the completed form and state that no ledger record was created"

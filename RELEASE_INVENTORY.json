@@ -1,8 +1,8 @@
 {
-  "release": "Clear Entry",
-  "name": "Clear Entry",
-  "build": "8.8.17.5",
-  "seal": "clear-entry-88175",
+  "release": "Ledger Truth",
+  "name": "Ledger Truth",
+  "build": "8.8.17.6",
+  "seal": "ledger-truth-88176",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
