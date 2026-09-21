@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.17.4",
-  "version": "8.8.17.4",
-  "release_name": "Storage Bearing",
-  "releaseName": "Storage Bearing",
-  "release_seal": "storage-bearing-88174",
+  "build": "8.8.17.5",
+  "version": "8.8.17.5",
+  "release_name": "Clear Entry",
+  "releaseName": "Clear Entry",
+  "release_seal": "clear-entry-88175",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -90,8 +90,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "readback-verified-fleet-books-with-safe-audit-compaction",
-  "release_note": "Storage Bearing verifies every Simple Books write by read-back, safely compacts duplicate audit evidence under storage pressure, and never clears project or business records.",
+  "release_focus": "clear-ipad-money-entry-and-visible-release-identity",
+  "release_note": "Clear Entry displays the exact deployed build on the Engine front page and separates the currency marker from a larger, clearer iPad amount-entry field while preserving read-back-verified saves.",
   "tax_ledger_upgrade": {"schema":"dark-sky-fleet-tax-ledger-v1","model":"TAX_LEDGER_MODEL.json","migration":"SUPABASE_LEDGER_INTEGRITY_88171.sql","packaged":true,"applied_by_static_release":false,"server_correction_model":"append-only"},
   "authority_ledger_upgrade": {
     "schema": "dark-sky-dual-office-authority-ledger-v1",

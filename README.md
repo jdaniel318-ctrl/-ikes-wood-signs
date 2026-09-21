@@ -1,10 +1,13 @@
-# Dark Sky 8.8.17.4 — Storage Bearing
+# Dark Sky 8.8.17.5 — Clear Entry
 
-Storage Bearing makes daily fleet recordkeeping dependable under browser storage pressure. A save is reported only after the exact ledger payload is written and read back.
+Clear Entry makes the current release obvious at the Engine entrance and makes amount entry easier to read and correct on iPad.
 
 ## What changed
 
-- Captain saves now survive the proven duplicate-audit storage pressure by safely compacting duplicate browser audit evidence and retrying once.
+- The Engine front page now displays the exact deployed build and release name from the application build constant.
+- The amount field uses a fixed currency gutter, larger high-contrast numerals, a single clear focus ring, and a visibly faint empty placeholder.
+- Existing amounts select on focus for quick correction and format to two decimal places after entry.
+- Captain saves continue to survive duplicate-audit storage pressure by safely compacting duplicate browser audit evidence and retrying once.
 - The new ledger record must pass exact local read-back before the form clears or the totals change.
 - A failed save leaves every field intact and states plainly that no ledger record was created.
 - Automatic recovery touches only the derived authority-audit key; project, customer, order, identity, and book records are never cleared.
@@ -40,6 +43,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.4` and seal `storage-bearing-88174`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.5` and seal `clear-entry-88175`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.

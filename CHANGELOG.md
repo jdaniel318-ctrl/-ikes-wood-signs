@@ -1,5 +1,14 @@
 # Dark Sky Changelog
 
+## 8.8.17.5 — Clear Entry
+
+- Made the Engine front-page release marker show the exact deployed build and release name.
+- Bound the visible marker to the application build constant to prevent future version drift.
+- Separated the dollar sign into a fixed currency gutter so the iPad caret cannot overlap it.
+- Increased entered-amount size and contrast while making the empty `0.00` placeholder visibly secondary.
+- Added a unified focus ring, two-decimal formatting on blur, and select-on-focus correction.
+- Preserved Storage Bearing quota recovery, read-back verification, authority boundaries, and all existing ledger records.
+
 ## 8.8.17.4 — Storage Bearing
 
 - Made Simple Books writes explicit, synchronous, and read-back verified before success is shown.
