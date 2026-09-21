@@ -1,8 +1,8 @@
 {
-  "release": "Clear Authority",
-  "name": "Clear Authority",
-  "build": "8.8.17.3",
-  "seal": "clear-authority-88173",
+  "release": "Storage Bearing",
+  "name": "Storage Bearing",
+  "build": "8.8.17.4",
+  "seal": "storage-bearing-88174",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

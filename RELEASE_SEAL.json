@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.3",
-  "release": "Clear Authority",
-  "seal": "clear-authority-88173",
+  "build": "8.8.17.4",
+  "release": "Storage Bearing",
+  "seal": "storage-bearing-88174",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clear Authority",
-  "name": "Clear Authority",
-  "releaseName": "Clear Authority"
+  "release_name": "Storage Bearing",
+  "name": "Storage Bearing",
+  "releaseName": "Storage Bearing"
 }

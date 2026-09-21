@@ -1,4 +1,4 @@
-/* Dark Sky 8.8.17.3 Simple Books */
+/* Dark Sky 8.8.17.4 Simple Books */
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"],#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"]{width:100%;min-height:94px!important;padding:18px 20px!important;border:1px solid rgba(223,189,89,.72)!important;border-radius:16px!important;background:linear-gradient(135deg,rgba(20,72,82,.72),rgba(5,28,36,.96))!important;color:#f5e5b5!important;display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;gap:15px!important;text-align:left!important;box-shadow:inset 0 1px rgba(255,255,255,.05),0 12px 30px rgba(0,0,0,.2)!important}
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"] .ledger-launch-icon,#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"] .ledger-launch-icon{width:46px;height:46px;border:1px solid rgba(111,191,207,.58);border-radius:12px;background:rgba(12,70,83,.66);display:grid;place-items:center;font-size:1.45rem;color:#8fd2df}
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"]>span:nth-child(2),#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"]>span:nth-child(2){display:grid;gap:5px}

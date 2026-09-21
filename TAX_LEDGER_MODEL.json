@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-tax-ledger-v1",
-  "build": "8.8.17.3",
-  "release": "Clear Authority",
+  "build": "8.8.17.4",
+  "release": "Storage Bearing",
   "purpose": "Accountant-ready, entity-isolated bookkeeping records for every Fleet Core member and the Captain and Admiral offices.",
   "boundaries": {
     "recordkeeping_aid_only": true,
@@ -20,7 +20,7 @@
     "entity_key", "entity_name", "entity_type", "tax_year", "accounting_method",
     "transaction_date", "entry_type", "category_code", "category_label", "amount_usd",
     "counterparty", "description", "evidence_reference", "review_status", "acting_office",
-    "source", "created_at", "entry_id", "correction_of"
+    "authority_status", "authority_source", "authority_verified_at", "source", "created_at", "entry_id", "correction_of"
   ],
   "authority_rules": {
     "captain": "May record Captain-authorized fleet operating entries and the Captain office book.",
@@ -32,5 +32,11 @@
     "transaction_history": "durable",
     "supporting_documents": "retain outside this browser ledger under the accountant-approved retention policy",
     "exports": "UTF-8 CSV with one row per retained entry"
+  },
+  "write_integrity": {
+    "success_condition": "exact payload written and new entry read back by entry_id",
+    "quota_recovery": "compact duplicate derived authority-audit evidence, then retry once",
+    "protected_from_automatic_cleanup": ["bookkeeping records", "projects", "customers", "orders", "identity and authority state"],
+    "failure_behavior": "retain the completed form and state that no ledger record was created"
   }
 }

@@ -1,10 +1,14 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.17.3",
-  "release": "Clear Authority",
-  "generatedAt": "2026-09-20T22:47:17Z",
+  "build": "8.8.17.4",
+  "release": "Storage Bearing",
+  "generatedAt": "2026-09-21T16:30:00Z",
   "checks": {
     "build_version": true,
+    "book_write_readback_verified": true,
+    "book_quota_failure_visible": true,
+    "duplicate_audit_compaction_only": true,
+    "business_records_cleanup_forbidden": true,
     "engine_pin_5615": true,
     "admin_pin_4353": true,
     "captain_pin_19613": true,
@@ -306,7 +310,7 @@
   "nonMediaAssets": [],
   "pass": true,
   "note": "8.8.17 Admiral Commission formalizes one person holding Captain and Admiral while preserving explicit office selection. Captain evidence remains browser-labeled; Admiral ledger rows require authenticated active server authority. Admiral-owned commissioning stays previewed, audited, not live, and creates no individual project-owner membership.",
-  "candidate": "8.8.17.3",
+  "candidate": "8.8.17.4",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -554,8 +558,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.17.3",
-    "seal": "clear-authority-88173",
+    "build": "8.8.17.4",
+    "seal": "storage-bearing-88174",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

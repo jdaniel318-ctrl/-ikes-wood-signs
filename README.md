@@ -1,14 +1,17 @@
-# Dark Sky 8.8.17.3 — Clear Authority
+# Dark Sky 8.8.17.4 — Storage Bearing
 
-Clear Authority keeps daily fleet recordkeeping simple while making every acting office explicit and preventing silent elevation to Admiral authority.
+Storage Bearing makes daily fleet recordkeeping dependable under browser storage pressure. A save is reported only after the exact ledger payload is written and read back.
 
 ## What changed
 
-- Captain and Admiral may be held by the same person.
-- Every action declares an active office; Captain access never silently elevates to Admiral authority.
+- Captain saves now survive the proven duplicate-audit storage pressure by safely compacting duplicate browser audit evidence and retrying once.
+- The new ledger record must pass exact local read-back before the form clears or the totals change.
+- A failed save leaves every field intact and states plainly that no ledger record was created.
+- Automatic recovery touches only the derived authority-audit key; project, customer, order, identity, and book records are never cleared.
+- Collapsed audit rows retain their original occurrence count plus first and latest timestamps.
+- Captain and Admiral may be held by the same person, but every action still declares an active office.
 - Admiral book entries are saved only after Fleet Core verifies a dedicated Admiral identity.
-- Fleet member or owner actions are routed to the vessel owner portal instead of being mislabeled in the Engine Room.
-- Accountant CSV exports now include authority status, source, and verification time.
+- Accountant CSV exports include authority status, source, and verification time.
 - The Fleet Ledger opens from Captain **Record** and Admiral **Govern** through a compact command card.
 - Daily recording begins with three plain choices: **Money In**, **Money Out**, or **Move Money**.
 - The normal path asks only for the book, amount, counterparty, purpose, and optional receipt or invoice reference.
@@ -37,6 +40,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.3` and seal `clear-authority-88173`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.4` and seal `storage-bearing-88174`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.

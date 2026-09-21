@@ -1,5 +1,14 @@
 # Dark Sky Changelog
 
+## 8.8.17.4 — Storage Bearing
+
+- Made Simple Books writes explicit, synchronous, and read-back verified before success is shown.
+- Added one safe automatic retry after compacting duplicate authority-audit evidence.
+- Preserved duplicate occurrence counts and first/latest timestamps after compaction.
+- Kept project, customer, order, identity, and bookkeeping records outside automatic cleanup scope.
+- Kept form values intact and displayed a durable **Not saved** message when capacity recovery cannot complete the write.
+- Applied the same guarded write path to accounting-method changes.
+
 ## 8.8.17.3 — Clear Authority
 
 - Kept fleet bookkeeping to Money In, Money Out, and Move Money.
