@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.17.7",
-  "version": "8.8.17.7",
-  "release_name": "Clear the Deck",
-  "releaseName": "Clear the Deck",
-  "release_seal": "clear-the-deck-88177",
+  "build": "8.8.17.8",
+  "version": "8.8.17.8",
+  "release_name": "Deep Hold",
+  "releaseName": "Deep Hold",
+  "release_seal": "deep-hold-88178",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -90,8 +90,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "actionable-attention-queue-append-only-corrections-and-payment-method-rails",
-  "release_note": "Ledger Truth counts each transaction needing attention once, prevents repeated save events from creating duplicate records, verifies exactly one saved row, and realigns the iPad ledger touch layer when Safari changes its viewport.",
+  "release_focus": "verified-indexeddb-ledger-migration-clean-refresh-and-command-organization",
+  "release_note": "Deep Hold moves the browser ledger into verified IndexedDB without deleting fleet data, resets only transient refresh state, and organizes the To Check queue and professional Captain quarters for clearer iPad operation.",
   "tax_ledger_upgrade": {"schema":"dark-sky-fleet-tax-ledger-v1","model":"TAX_LEDGER_MODEL.json","migration":"SUPABASE_LEDGER_INTEGRITY_88171.sql","packaged":true,"applied_by_static_release":false,"server_correction_model":"append-only"},
   "authority_ledger_upgrade": {
     "schema": "dark-sky-dual-office-authority-ledger-v1",

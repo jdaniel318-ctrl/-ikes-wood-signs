@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-tax-ledger-v1",
-  "build": "8.8.17.7",
-  "release": "Clear the Deck",
+  "build": "8.8.17.8",
+  "release": "Deep Hold",
   "purpose": "Accountant-ready, entity-isolated bookkeeping records for every Fleet Core member and the Captain and Admiral offices.",
   "boundaries": {
     "recordkeeping_aid_only": true,
@@ -40,13 +40,20 @@
     "supporting_documents": "retain outside this browser ledger under the accountant-approved retention policy",
     "exports": "UTF-8 CSV with one row per retained entry"
   },
+  "browser_storage": {
+    "primary": "IndexedDB darkSkyDurableLedgerV1 / books",
+    "migration_source": "localStorage darkSkyAccountantBooksV1",
+    "migration_rule": "merge by entry_id, verify integrity, write, exact read-back, then remove only the migrated ledger source key",
+    "fallback": "localStorage with one audit-evidence compaction retry",
+    "never_automatically_deleted": ["ledger entries", "projects", "customers", "orders", "identity", "authority state"]
+  },
   "write_integrity": {
     "success_condition": "exact payload written and exactly one new entry read back by entry_id and submission_id",
     "duplicate_prevention": "one active submission token per completed form; repeated or delayed save events cannot create a second transaction",
     "attention_count": "one count per transaction needing review or a receipt; multiple reasons never count the same transaction twice",
     "attention_resolution": "To Check opens the exact reasons and appends a resolution record.",
     "current_value_rule": "Totals and exports use only the latest revision for each original transaction; earlier revisions remain preserved.",
-    "quota_recovery": "compact duplicate derived authority-audit evidence, then retry once",
+    "quota_recovery": "use IndexedDB primary storage; if unavailable, compact duplicate derived authority-audit evidence and retry localStorage once",
     "protected_from_automatic_cleanup": ["bookkeeping records", "projects", "customers", "orders", "identity and authority state"],
     "failure_behavior": "retain the completed form and state that no ledger record was created"
   }

@@ -15,8 +15,8 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.17.7';
-  const ENGINE_RELEASE_NAME='CLEAR THE DECK';
+  const BUILD_VERSION='8.8.17.8';
+  const ENGINE_RELEASE_NAME='DEEP HOLD';
   function syncVisibleReleaseLabel(){
     const label=document.getElementById('engineReleaseLabel');
     if(label)label.textContent=`${BUILD_VERSION} • ${ENGINE_RELEASE_NAME}`;

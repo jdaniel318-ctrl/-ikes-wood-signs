@@ -1,4 +1,4 @@
-/* Dark Sky 8.8.17.7 Clear the Deck */
+/* Dark Sky 8.8.17.8 Deep Hold */
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"],#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"]{width:100%;min-height:94px!important;padding:18px 20px!important;border:1px solid rgba(223,189,89,.72)!important;border-radius:16px!important;background:linear-gradient(135deg,rgba(20,72,82,.72),rgba(5,28,36,.96))!important;color:#f5e5b5!important;display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;gap:15px!important;text-align:left!important;box-shadow:inset 0 1px rgba(255,255,255,.05),0 12px 30px rgba(0,0,0,.2)!important}
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"] .ledger-launch-icon,#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"] .ledger-launch-icon{width:46px;height:46px;border:1px solid rgba(111,191,207,.58);border-radius:12px;background:rgba(12,70,83,.66);display:grid;place-items:center;font-size:1.45rem;color:#8fd2df}
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"]>span:nth-child(2),#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"]>span:nth-child(2){display:grid;gap:5px}
@@ -32,3 +32,21 @@
 .tax-resolve-form{display:grid;grid-template-columns:1.25fr repeat(3,minmax(145px,1fr)) auto;gap:12px;align-items:end;padding:15px;border:1px solid rgba(112,171,183,.35);border-radius:13px}.tax-resolve-form>div{display:grid;gap:5px}.tax-resolve-form em{color:#e5c968;font-style:normal}.tax-resolve-form label{display:grid;gap:6px}.tax-resolve-form input,.tax-resolve-form select{width:100%;min-height:48px;padding:10px 12px;border:1px solid rgba(111,165,176,.45);border-radius:9px;background:#041c24;color:#f3f1ea}.tax-resolve-form>details{grid-column:1/-1}.tax-resolve-form>details>div{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}.tax-resolve-form>button{min-height:48px;padding:10px 14px;border:0;border-radius:10px;background:#e0bd59;color:#07171c;font-weight:900}
 @media(max-width:900px){.tax-resolve-form{grid-template-columns:1fr 1fr}.tax-resolve-form>div,.tax-resolve-form>details{grid-column:1/-1}.tax-resolve-form>details>div{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.tax-resolve-form,.tax-resolve-form>details>div{grid-template-columns:1fr}}
+
+/* 8.8.17.8 Deep Hold — calm, explicit resolution cards for iPad. */
+.tax-check-queue>header div span{color:#94adb3;font-size:.78rem;line-height:1.4}
+.tax-resolve-form{grid-template-columns:minmax(230px,.72fr) minmax(0,1.55fr)!important;grid-template-areas:"identity fields" "details details" "action action";align-items:start!important;padding:0!important;overflow:hidden;background:linear-gradient(145deg,rgba(7,39,48,.96),rgba(3,24,31,.98));box-shadow:inset 0 1px rgba(255,255,255,.025)}
+.tax-resolution-identity{grid-area:identity;align-self:stretch;display:grid!important;align-content:start;gap:7px!important;padding:18px;border-right:1px solid rgba(112,171,183,.22);background:rgba(8,46,56,.45)}
+.tax-resolution-identity>small{color:#79c7d7;font-weight:900;letter-spacing:.13em}
+.tax-resolution-identity>b{font-size:1.03rem;color:#fff1c7}
+.tax-resolution-identity>span{color:#c1d0d3}
+.tax-resolution-identity>div{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.tax-resolution-identity em{padding:5px 8px;border:1px solid rgba(224,189,89,.38);border-radius:999px;background:rgba(224,189,89,.08);color:#ead278!important;font-size:.68rem}
+.tax-resolution-fields{grid-area:fields;min-width:0;margin:0;padding:14px 16px 18px;border:0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;align-items:end}
+.tax-resolution-fields legend{padding:0 3px;color:#79c7d7;font-size:.69rem;font-weight:900;letter-spacing:.14em}
+.tax-resolve-form>details{grid-area:details;margin:0 16px;border-top:1px solid rgba(112,171,183,.2);padding:12px 0}
+.tax-resolve-form>details>summary{color:#9ccbd4;font-size:.73rem;font-weight:850;letter-spacing:.08em;cursor:pointer}
+.tax-resolve-form>button{grid-area:action;display:grid!important;place-items:center;gap:2px;margin:0 16px 16px;min-height:56px!important}
+.tax-resolve-form>button span{font-size:.88rem;letter-spacing:.075em}.tax-resolve-form>button small{font-size:.64rem;opacity:.7;letter-spacing:.035em}
+@media(max-width:900px){.tax-resolve-form{grid-template-columns:1fr!important;grid-template-areas:"identity" "fields" "details" "action"}.tax-resolution-identity{border-right:0;border-bottom:1px solid rgba(112,171,183,.22)}.tax-resolution-fields{grid-template-columns:1fr 1fr}.tax-resolution-fields label:last-child{grid-column:1/-1}}
+@media(max-width:560px){.tax-resolution-fields{grid-template-columns:1fr}.tax-resolution-fields label:last-child{grid-column:auto}}

@@ -1,9 +1,15 @@
-# Dark Sky 8.8.17.7 — Clear the Deck
+# Dark Sky 8.8.17.8 — Deep Hold
 
-Clear the Deck turns **To Check** into an actionable queue, preserves corrections as append-only history, and adds Check-first payment tracking without limiting future ACH or other traceable digital methods.
+Deep Hold makes the ledger durable under browser-storage pressure, leaves saved fleet data intact, and presents a calmer To Check queue and Captain command surface on iPad.
 
 ## What changed
 
+- Migrates the existing browser book into IndexedDB, verifies an exact read-back, and only then removes the old ledger copy from constrained local storage.
+- Merges any existing durable and legacy ledger rows by entry ID and rejects broken correction lineage or duplicate submissions.
+- Falls back safely when IndexedDB is unavailable; automatic recovery never deletes project, customer, order, identity, authority, or bookkeeping records.
+- Refresh closes the transient To Check queue, collapses unsaved detail editors, and clears an unfinished form without changing any saved transaction.
+- Reorganized To Check into calm record identity, resolution, correction, and final-save regions with iPad-sized controls.
+- Reorganized Professional Captain's Quarters into a compact two-column command loop that collapses cleanly on smaller screens.
 - Tap **To Check** to see every flagged transaction and its exact reasons.
 - Resolve missing references and review state directly from the queue; corrections append and never overwrite the original.
 - Totals and exports use the latest revision once, while CSV lineage preserves the original and current revision IDs.
@@ -56,6 +62,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.7` and seal `clear-the-deck-88177`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.8` and seal `deep-hold-88178`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.

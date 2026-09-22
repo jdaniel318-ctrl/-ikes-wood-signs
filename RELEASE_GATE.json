@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.17.7",
-  "release": "Clear the Deck",
-  "generatedAt": "2026-09-21T22:44:10Z",
+  "build": "8.8.17.8",
+  "release": "Deep Hold",
+  "generatedAt": "2026-09-22T01:44:48Z",
   "checks": {
     "build_version": true,
     "book_write_readback_verified": true,
@@ -13,6 +13,12 @@
     "ledger_submission_idempotent": true,
     "ledger_duplicate_ids_rejected": true,
     "ledger_exact_single_row_readback": true,
+    "ledger_indexeddb_primary": true,
+    "ledger_localstorage_migration_verified": true,
+    "ledger_migration_source_removed_only_after_readback": true,
+    "ledger_storage_full_recovery_preserves_fleet_data": true,
+    "transient_queue_closed_on_pageshow": true,
+    "unsaved_resolution_not_restored": true,
     "ledger_attention_queue_actionable": true,
     "ledger_resolution_append_only": true,
     "ledger_original_record_preserved": true,
@@ -22,6 +28,7 @@
     "payment_method_ach_ready": true,
     "payment_credentials_forbidden": true,
     "rapid_second_tap_durable_confirmation": true,
+    "captain_professional_quarters_organized": true,
     "ipad_ledger_touch_realign": true,
     "ipad_stale_touch_target_rejected": true,
     "book_quota_failure_visible": true,
@@ -327,8 +334,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.17.7 Clear the Deck makes To Check actionable, keeps corrections append-only, counts only the current revision, adds Check-first future-ready payment rails including ACH, and confirms rapid repeat taps without duplicating a record.",
-  "candidate": "8.8.17.7",
+  "note": "8.8.17.8 Deep Hold migrates the browser ledger to verified IndexedDB, preserves fleet records, resets only transient refresh state, and organizes the To Check queue and Captain command surface.",
+  "candidate": "8.8.17.8",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -576,8 +583,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.17.7",
-    "seal": "clear-the-deck-88177",
+    "build": "8.8.17.8",
+    "seal": "deep-hold-88178",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

@@ -15585,6 +15585,27 @@ body.engine-mode.engine-dock-open #fleetCommissioningSummary{display:none!import
 #captainQuarters[data-command-mode="professional"] #captainCommandReturnBtn:focus-visible,
 #captainQuarters[data-command-mode="professional"] #captainCommandModeToggle:focus-visible{outline:3px solid #fff!important;outline-offset:2px!important}
 
+/* 8.8.17.8 Deep Hold — organized professional quarters. */
+#captainQuarters[data-command-mode="professional"] .captain-professional-surface{background:radial-gradient(circle at 84% 8%,rgba(38,104,139,.13),transparent 32%),linear-gradient(180deg,#071b29,#061722)!important}
+#captainQuarters[data-command-mode="professional"] .captain-pro-head{padding-bottom:14px!important}
+#captainQuarters[data-command-mode="professional"] .captain-pro-head h2{margin-top:7px!important;font-size:1.8rem!important;letter-spacing:-.02em}
+#captainQuarters[data-command-mode="professional"] .captain-pro-topline{display:grid!important;grid-template-columns:minmax(0,1.18fr) minmax(340px,.82fr)!important;gap:12px!important}
+#captainQuarters[data-command-mode="professional"] .captain-pro-live,
+#captainQuarters[data-command-mode="professional"] .captain-pro-readiness-card{border-color:rgba(121,190,222,.22)!important;background:linear-gradient(145deg,rgba(11,40,57,.94),rgba(7,29,43,.96))!important;box-shadow:inset 0 1px rgba(255,255,255,.03)}
+#captainQuarters[data-command-mode="professional"] .captain-command-decks{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;margin-top:12px}
+#captainQuarters[data-command-mode="professional"] .captain-command-lane{display:grid!important;grid-template-columns:minmax(145px,.42fr) minmax(0,1fr)!important;grid-template-rows:auto!important;min-height:176px!important;border-color:rgba(121,190,222,.22)!important;background:linear-gradient(145deg,rgba(10,36,52,.98),rgba(7,26,39,.98))!important;box-shadow:0 9px 24px rgba(0,0,0,.16)}
+#captainQuarters[data-command-mode="professional"] .captain-command-lane>header{padding:16px!important;border-right:1px solid rgba(121,190,222,.15)!important;border-bottom:0!important;background:rgba(9,42,59,.52)}
+#captainQuarters[data-command-mode="professional"] .captain-command-lane>header small{color:#84c9ec!important}
+#captainQuarters[data-command-mode="professional"] .captain-command-lane>header h3{margin-top:12px!important;font-size:1rem!important;line-height:1.25}
+#captainQuarters[data-command-mode="professional"] .captain-command-lane>header p{margin-top:7px!important;line-height:1.5}
+#captainQuarters[data-command-mode="professional"] .captain-lane-body{min-height:0!important;padding:12px!important;justify-content:start!important}
+#captainQuarters[data-command-mode="professional"] .captain-command-lane .captain-primary-action{grid-column:2;align-self:start;margin:12px 12px 0;min-height:64px!important;border-radius:11px!important}
+#captainQuarters[data-command-mode="professional"] .captain-command-lane:has(.captain-primary-action) .captain-lane-body{grid-column:2;padding-top:8px!important}
+#captainQuarters[data-command-mode="professional"] .captain-support-drawer{margin-top:12px!important}
+#captainQuarters[data-command-mode="professional"] .captain-professional-status{margin-top:12px!important}
+@media(max-width:1080px){#captainQuarters[data-command-mode="professional"] .captain-pro-topline{grid-template-columns:1fr!important}#captainQuarters[data-command-mode="professional"] .captain-command-decks{grid-template-columns:1fr!important}}
+@media(max-width:680px){#captainQuarters[data-command-mode="professional"] .captain-command-lane{grid-template-columns:1fr!important}#captainQuarters[data-command-mode="professional"] .captain-command-lane>header{border-right:0!important;border-bottom:1px solid rgba(121,190,222,.15)!important}#captainQuarters[data-command-mode="professional"] .captain-command-lane .captain-primary-action,#captainQuarters[data-command-mode="professional"] .captain-command-lane:has(.captain-primary-action) .captain-lane-body{grid-column:1}}
+
 /* 8.8.13.13 Signal Lift — Professional signal actions reuse the protected Fleet
    Chart report. Lift that dialog above the Professional command surface so iPad
    never renders a successful route invisibly behind the deck. */

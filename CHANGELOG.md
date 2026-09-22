@@ -1,5 +1,14 @@
 # Dark Sky Changelog
 
+## 8.8.17.8 — Deep Hold
+
+- Moved Fleet Ledger primary storage to IndexedDB with integrity checks and exact read-back verification.
+- Migrates the legacy local-storage ledger only after merging by entry ID; removes only the verified source ledger key afterward.
+- Preserves every project, customer, order, identity, authority, and bookkeeping record during storage recovery.
+- Resets only transient queue, detail, and unsaved form state on Safari page restore.
+- Reorganized the To Check queue and Professional Captain's Quarters for clearer iPad operation.
+- Preserved Check-first payment tracking with ACH and other traceable digital methods ready for fleet growth.
+
 ## 8.8.17.7 — Clear the Deck
 
 - Made **To Check** tappable and exposed each transaction's exact attention reasons.

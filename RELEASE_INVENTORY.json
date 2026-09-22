@@ -1,8 +1,8 @@
 {
-  "release": "Clear the Deck",
-  "name": "Clear the Deck",
-  "build": "8.8.17.7",
-  "seal": "clear-the-deck-88177",
+  "release": "Deep Hold",
+  "name": "Deep Hold",
+  "build": "8.8.17.8",
+  "seal": "deep-hold-88178",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
