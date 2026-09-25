@@ -15495,7 +15495,7 @@ body.captain-command-open #captainGlobalExit,#captainQuarters[data-command-mode=
 @media(max-width:980px){.clear-deck-support{grid-template-columns:1fr 1fr}.clear-deck-support>span{grid-column:1/-1}.captain-command-lane{grid-template-columns:1fr 1.45fr}.captain-lane-footer{grid-column:1/-1;min-height:46px!important;border-left:0!important;border-top:1px solid rgba(255,255,255,.07)!important}.admiral-deck-overlay[data-mode="professional"] .admiral-deck-grid{grid-template-areas:"brief" "nav" "work" "continuity" "notice"!important}}
 @media(max-width:680px){.clear-deck-primary-actions,.clear-deck-support{grid-template-columns:1fr!important}.clear-deck-support>span{grid-column:auto}.captain-command-lane{grid-template-columns:1fr}.captain-command-lane>header{border-right:0!important;border-bottom:1px solid rgba(255,255,255,.07)!important}.captain-lane-footer{grid-column:auto}.admiral-deck-overlay[data-mode="professional"] .admiral-continuity-card{grid-template-columns:1fr!important}}
 
-/* 8.8.17.9 Clear Orders — active command path with a dedicated record station. */
+/* 8.8.17.10 Ledger Recovery Keel — active command path with durable recovery proof. */
 #captainQuarters[data-command-mode="professional"] .captain-command-decks{display:grid!important;grid-template-columns:minmax(0,1.62fr) minmax(330px,.78fr)!important;gap:12px!important;align-items:stretch!important}
 #captainQuarters[data-command-mode="professional"] .captain-command-path{display:grid;gap:9px;min-width:0}
 #captainQuarters[data-command-mode="professional"] .captain-command-path .captain-command-lane{grid-template-columns:minmax(150px,.38fr) minmax(0,1fr)!important;min-height:0!important}

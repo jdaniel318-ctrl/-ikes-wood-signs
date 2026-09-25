@@ -1,39 +1,32 @@
-# Dark Sky 8.8.17.9 — Clear Orders Repair
+# Dark Sky 8.8.17.10 — Ledger Recovery Keel
 
-Clear Orders Repair makes daily fleet recordkeeping guided and durable while preserving accountant-grade exports, append-only history, and explicit Captain and Admiral authority.
+Ledger Recovery Keel hardens the Fleet Ledger migration after the first durable-storage cutover did not surface the two earlier $1 field-test records.
 
 ## What changed
 
-- Captain and Admiral may be held by the same person.
-- Every action still declares an active office; Captain access never silently elevates to Admiral authority.
-- The Fleet Ledger opens from Captain **Record** and Admiral **Govern** through a compact command card.
-- Daily recording begins with three plain choices: **Money In**, **Money Out**, or **Move Money**.
-- The normal path asks only for the book, amount, counterparty, purpose, and optional receipt or invoice reference.
-- Tax year, accounting method, category, acting office, and review status remain under **Accountant Tools** and **More Details**.
-- Existing Ledger Integrity browser records remain readable because the durable storage key and schema are unchanged.
-- Captain rows are labeled **Browser Evidence**; Admiral rows are labeled **Server Attested** only after Fleet Core verifies the dedicated Admiral identity.
-- The ledger supports office filters, cross-field search, refresh, exact targets, authority source, outcome, intent/detail, and up to 200 server rows.
-- Commissioning Orders now expose mission class, ownership model, and operating model instead of hard-coding every commission as fleet-unassigned.
-- Bootstrap Build defaults to `admiral_program`, `admiral_owned`, and `fleet_operated`.
-- An Admiral-owned commission creates no individual project-owner membership, no entitlement, and no live publication.
+- Runs a recovery sweep before declaring the browser ledger migrated.
+- Reads the current durable IndexedDB book plus every same-origin localStorage/sessionStorage key whose name indicates ledger, book, account, tax, transaction, money, or finance data.
+- Uses the IndexedDB database catalog when available to inspect earlier ledger-like databases without inventing or opening guessed databases.
+- Accepts only records that match the real ledger shape: entity, transaction date, entry type, positive amount, and description.
+- Requires the recovered entity to resolve to a current canonical fleet, office, or Admiral-program key so a foreign browser record cannot cross into this ledger.
+- Preserves distinct transactions by stable `entry_id`; two genuine $1 records remain two records even when their visible fields are similar.
+- Merges genuine legacy records into `darkSkyDurableLedgerV1`, writes the complete book, reads it back, and verifies a deterministic whole-ledger proof.
+- Writes the migration receipt only after the durable read-back passes.
+- Locks transaction and correction writes until durable recovery is verified; a failed migration cannot silently accept new bookkeeping.
+- Does **not** delete earlier ledger source storage during recovery.
+- Writes a separate verified recovery mirror when localStorage capacity permits.
+- If no earlier records can be found, the UI says so explicitly and creates no replacement or synthetic transaction.
 
-## Authority contract
+## Field-test target
 
-| Office | Authority source | Ledger evidence | Scope |
-|---|---|---|---|
-| Captain | Captain command surface | Browser evidence | Operational command and retained decisions |
-| Admiral | Supabase identity plus active global Admiral grant | Server-attested `fleet_authority_audit` | Fleet governance and explicit commissioning |
+The expected result on the test iPad is the recovery of the two earlier $1 Money In records, producing **$2.00 Money In**, if those genuine records still exist anywhere in same-origin browser storage. If the browser has already deleted every copy, this build will report that no recoverable source exists rather than fabricating $2.00.
 
-The passage PIN opens a local doorway; it grants no server authority. Passwords remain handled by Supabase Auth. Every modifying Admiral command remains previewed, authenticated, exact-scope, reasoned, audited, and verified by readback.
+## Authority and fleet boundaries
 
-## Bootstrap Build
-
-Bootstrap Build remains a separate Admiral program outside the six independent Fleet Core businesses until the Admiral issues a real commissioning order. The packaged SQL extends Fleet Core with `admiral_read_authority_ledger`; it is reference migration material and is not claimed as applied by this static release.
+Captain and Admiral remain explicit offices. Admiral server evidence still requires authenticated Fleet Core authority. Project isolation, owner boundaries, Bootstrap Build's separate Admiral-program status, preview safety, and the six Fleet Core vessel identities are unchanged.
 
 ## Deployment
 
-Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
+Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the release folder inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.9` and seal `clear-orders-repair-88179`.
-
-See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.10` and seal `ledger-recovery-keel-881710`.

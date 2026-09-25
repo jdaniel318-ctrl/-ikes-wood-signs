@@ -65,3 +65,5 @@ RLS remains enabled for every public table. Tables intentionally accessible only
 - `sessionStorage` may retain the active browser session; passwords are never stored there.
 - IndexedDB remains the durable browser-local application store where a server source has not yet replaced it.
 - Legacy localStorage mirrors are compatibility-only and may not override server truth.
+- Ledger migration is evidence-preserving: same-origin legacy sources are scanned, never deleted during recovery, and migration is complete only after the merged IndexedDB book and recovery receipt both read back successfully.
+- Recovered ledger rows must resolve to a canonical Fleet/office/program entity before merge; foreign entity keys fail closed instead of crossing a vessel boundary.

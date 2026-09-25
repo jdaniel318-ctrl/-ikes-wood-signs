@@ -1,5 +1,17 @@
 # Dark Sky Changelog
 
+## 8.8.17.10 — Ledger Recovery Keel
+
+- Added an exhaustive same-origin ledger recovery sweep before migration completion.
+- Preserves legacy ledger sources instead of deleting them after first merge.
+- Rejects ledger-shaped records unless their entity resolves to a current canonical Fleet member, Captain/Admiral office, or Admiral program boundary.
+- Merges by stable entry identity so two separate $1 test records remain two records.
+- Verifies the entire durable book by deterministic read-back proof, not only by checking that entry IDs exist.
+- Writes a recovery receipt only after durable verification succeeds.
+- Adds a verified local recovery mirror when browser capacity permits.
+- Refuses to fabricate missing transactions when no recoverable browser source exists.
+- Keeps the one-record-at-a-time To Check workflow, authority boundaries, project isolation, and prior fleet behavior intact.
+
 ## 8.8.17.9 — Clear Orders Repair
 
 - Guides one unresolved ledger record at a time through payment, safe reference, and review status.

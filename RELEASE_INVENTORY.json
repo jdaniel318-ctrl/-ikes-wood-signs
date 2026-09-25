@@ -1,8 +1,8 @@
 {
-  "release": "Clear Orders Repair",
-  "name": "Clear Orders Repair",
-  "build": "8.8.17.9",
-  "seal": "clear-orders-repair-88179",
+  "release": "Ledger Recovery Keel",
+  "name": "Ledger Recovery Keel",
+  "build": "8.8.17.10",
+  "seal": "ledger-recovery-keel-881710",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

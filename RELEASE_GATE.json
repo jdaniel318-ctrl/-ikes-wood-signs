@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.17.9",
-  "release": "Clear Orders Repair",
-  "generatedAt": "2026-09-22T17:36:29Z",
+  "build": "8.8.17.10",
+  "release": "Ledger Recovery Keel",
+  "generatedAt": "2026-09-25T22:33:00Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -249,64 +249,69 @@
     "commissioning_ownerless_review_allowed": true,
     "admiral_passage_release_check": true,
     "admiral_local_self_promotion_forbidden": true,
-    "admiral_verified_rank_bound_to_server_identity": true
-    ,"bootstrap_task_vendor_assignment": true
-    ,"bootstrap_vendor_schedule_view": true
-    ,"bootstrap_vendor_move_communication_log": true
-    ,"bootstrap_vendor_messages_local_only": true
-    ,"bootstrap_schedule_late_load_doorway": true
-    ,"protected_six_local_first_seed": true
-    ,"engine_home_bounded_stage_isolation": true
-    ,"fleet_intelligence_immediate_local_paint": true
-    ,"readiness_placeholder_bounded_fallback": true
-    ,"storage_kpi_local_sounding_first_paint": true
-    ,"admiral_session_cleared_on_document_load": true
-    ,"admiral_session_cleared_on_page_exit": true
-    ,"admiral_gate_separate_from_engine_authority": true
-    ,"bootstrap_schedule_single_controller": true
-    ,"bootstrap_ipad_drop_commits_highlighted_day": true
-    ,"bootstrap_task_palette_distinct_by_type": true
-    ,"bootstrap_touch_drag_follows_finger": true
-    ,"bootstrap_touch_geometry_cached_per_drag": true
-    ,"bootstrap_move_snaps_before_vendor_persistence": true
-    ,"bootstrap_project_roster_first": true
-    ,"bootstrap_three_isolated_test_projects": true
-    ,"bootstrap_project_records_indexeddb": true
-    ,"bootstrap_save_confirmation_visible": true
-    ,"bootstrap_project_fleet_registry_controller_active": true
-    ,"bootstrap_project_fleet_registry_tap_capture": true
-    ,"bootstrap_project_fleet_registry_read_only": true
-    ,"admiral_watch_server_read_model": true
-    ,"admiral_watch_has_no_mutation_control": true
-    ,"owner_watch_exact_membership_each_call": true
-    ,"owner_local_recovery_watch_publish_denied": true
-    ,"watch_freshness_uses_reported_at_only": true
-    ,"watch_registry_timestamp_substitution_forbidden": true
-    ,"watch_never_reported_distinct_from_stale": true
-    ,"owner_forgot_password_visible_fleetwide": true
-    ,"owner_recovery_identity_modes_separate": true
-    ,"owner_local_recovery_exact_vessel": true
-    ,"owner_local_recovery_five_attempt_lockout": true
-    ,"owner_recovery_never_auto_signs_in": true
-    ,"owner_recovery_durable_confirmation": true
-    ,"owner_recovery_does_not_widen_authority": true
-    ,"dual_office_commission_explicit": true
-    ,"captain_session_never_silently_elevates": true
-    ,"authority_ledger_captain_entry": true
-    ,"authority_ledger_admiral_entry": true
-    ,"authority_ledger_evidence_classes_distinct": true
-    ,"authority_ledger_server_auth_required": true
-    ,"authority_ledger_exact_target_navigation": true
-    ,"admiral_owned_commissioning_option": true
-    ,"bootstrap_build_default_admiral_owned": true
-    ,"commissioning_creates_no_individual_owner": true
+    "admiral_verified_rank_bound_to_server_identity": true,
+    "bootstrap_task_vendor_assignment": true,
+    "bootstrap_vendor_schedule_view": true,
+    "bootstrap_vendor_move_communication_log": true,
+    "bootstrap_vendor_messages_local_only": true,
+    "bootstrap_schedule_late_load_doorway": true,
+    "protected_six_local_first_seed": true,
+    "engine_home_bounded_stage_isolation": true,
+    "fleet_intelligence_immediate_local_paint": true,
+    "readiness_placeholder_bounded_fallback": true,
+    "storage_kpi_local_sounding_first_paint": true,
+    "admiral_session_cleared_on_document_load": true,
+    "admiral_session_cleared_on_page_exit": true,
+    "admiral_gate_separate_from_engine_authority": true,
+    "bootstrap_schedule_single_controller": true,
+    "bootstrap_ipad_drop_commits_highlighted_day": true,
+    "bootstrap_task_palette_distinct_by_type": true,
+    "bootstrap_touch_drag_follows_finger": true,
+    "bootstrap_touch_geometry_cached_per_drag": true,
+    "bootstrap_move_snaps_before_vendor_persistence": true,
+    "bootstrap_project_roster_first": true,
+    "bootstrap_three_isolated_test_projects": true,
+    "bootstrap_project_records_indexeddb": true,
+    "bootstrap_save_confirmation_visible": true,
+    "bootstrap_project_fleet_registry_controller_active": true,
+    "bootstrap_project_fleet_registry_tap_capture": true,
+    "bootstrap_project_fleet_registry_read_only": true,
+    "admiral_watch_server_read_model": true,
+    "admiral_watch_has_no_mutation_control": true,
+    "owner_watch_exact_membership_each_call": true,
+    "owner_local_recovery_watch_publish_denied": true,
+    "watch_freshness_uses_reported_at_only": true,
+    "watch_registry_timestamp_substitution_forbidden": true,
+    "watch_never_reported_distinct_from_stale": true,
+    "owner_forgot_password_visible_fleetwide": true,
+    "owner_recovery_identity_modes_separate": true,
+    "owner_local_recovery_exact_vessel": true,
+    "owner_local_recovery_five_attempt_lockout": true,
+    "owner_recovery_never_auto_signs_in": true,
+    "owner_recovery_durable_confirmation": true,
+    "owner_recovery_does_not_widen_authority": true,
+    "dual_office_commission_explicit": true,
+    "captain_session_never_silently_elevates": true,
+    "authority_ledger_captain_entry": true,
+    "authority_ledger_admiral_entry": true,
+    "authority_ledger_evidence_classes_distinct": true,
+    "authority_ledger_server_auth_required": true,
+    "authority_ledger_exact_target_navigation": true,
+    "admiral_owned_commissioning_option": true,
+    "bootstrap_build_default_admiral_owned": true,
+    "commissioning_creates_no_individual_owner": true,
+    "ledger_recovery_source_sweep": true,
+    "ledger_recovery_no_source_deletion": true,
+    "ledger_recovery_full_readback_proof": true,
+    "ledger_recovery_receipt_after_verification": true,
+    "ledger_recovery_no_fabricated_transactions": true
   },
   "duplicateIds": [],
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "8.8.17 Admiral Commission formalizes one person holding Captain and Admiral while preserving explicit office selection. Captain evidence remains browser-labeled; Admiral ledger rows require authenticated active server authority. Admiral-owned commissioning stays previewed, audited, not live, and creates no individual project-owner membership.",
-  "candidate": "8.8.17.9",
+  "note": "Ledger Recovery Keel performs an exhaustive same-origin ledger recovery sweep before migration is marked complete. Genuine legacy records are merged by stable entry identity, durable IndexedDB read-back must match the complete ledger proof, source storage is preserved, and no synthetic transaction is created when no record can be found.",
+  "candidate": "8.8.17.10",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -426,75 +431,76 @@
     "admiral_identity_exact_hit_geometry": true,
     "entitlement_open_does_not_auto_scroll": true,
     "deployment_identity_checked_before_normalization": true,
-    "foreign_deployment_quarantine": true
-    ,"admiral_sign_out_hidden_until_verified": true
-    ,"hidden_state_outranks_touch_display_rule": true
-    ,"admiral_identity_keyboard_scroll_anchor": true
-    ,"visual_viewport_keyboard_settlement": true
-    ,"focused_identity_abrupt_scroll_reset_guard": true
-    ,"deliberate_touch_scroll_outranks_scroll_repair": true
-    ,"single_command_navigator": true
-    ,"admiral_native_engine_fallback": true
-    ,"admiral_return_local_visible_commit": true
-    ,"shell_owned_upper_command_escape": true
-    ,"exclusive_command_surface_css": true
-    ,"pointerdown_escape_precedes_runtime_handlers": true
-    ,"engine_visible_before_refresh": true
-    ,"command_route_witness": true
-    ,"admiral_return_native_document_primary": true
-    ,"engine_return_handoff_one_use": true
-    ,"engine_return_handoff_wrong_build_fails_closed": true
-    ,"native_engine_return_post_init_settlement": true
-    ,"admiral_header_build_witness": true
-    ,"admiral_course_preview_required": true
-    ,"admiral_course_atomic_issue": true
-    ,"admiral_course_durable_readback": true
-    ,"admiral_course_conflict_safe_rollback": true
-    ,"admiral_course_log_operational": true
-    ,"professional_action_contrast_hardened": true
-    ,"ipad_portrait_landscape_responsive": true
-    ,"iphone_portrait_responsive": true
-    ,"durable_near_command_acknowledgment": true
-    ,"completed_command_intent_cleared": true
-    ,"rollback_proposal_distinguished": true
-    ,"admiral_commissioning_preview_required": true
-    ,"commissioned_vessel_starts_not_live": true
-    ,"commissioner_does_not_become_owner": true
-    ,"commissioning_creates_no_entitlements": true
-    ,"working_name_is_editable": true
-    ,"vessel_uuid_project_key_namespace_are_immutable": true
-    ,"ipad_portrait_commissioning_layout": true
-    ,"iphone_commissioning_layout": true
-    ,"commissioning_preview_column_does_not_stretch": true
-    ,"commissioning_command_band_is_compact": true
-    ,"verified_identity_controls_are_compressed": true
-    ,"missing_rpc_error_is_human_readable": true
-    ,"fleet_core_migration_applied_and_verified": true
-    ,"fleet_core_six_vessels_preserved": true
-    ,"fleet_core_anonymous_function_execution_denied": true
-    ,"no_commissioning_order_issued_by_release": true
-    ,"admiral_fleet_surface_above_admiral_deck": true
-    ,"admiral_fleet_tap_capture_route": true
-    ,"admiral_fleet_visible_open_state": true
-    ,"fleet_registry_black_flag_owned": true
-    ,"bootstrap_build_lateral_admiral_program": true
-    ,"mission_level_does_not_create_parentage": true
-    ,"capability_sharing_preserves_vessel_isolation": true
-    ,"fleet_registry_returns_authoritative_mission_class": true
-    ,"no_commissioning_order_issued_by_structure_repair": true
-    ,"bootstrap_twelve_week_workday_calendar": true
-    ,"bootstrap_start_to_settlement_seed": true
-    ,"bootstrap_multi_day_task_bars": true
-    ,"bootstrap_duration_preserved_on_move": true
-    ,"bootstrap_schedule_touch_drag": true
-    ,"bootstrap_schedule_keyboard_move": true
-    ,"bootstrap_schedule_local_only": true
-    ,"commissioning_verified_preview_copy": true
-    ,"bootstrap_task_vendor_assignment": true
-    ,"bootstrap_vendor_schedule_view": true
-    ,"bootstrap_vendor_move_communication_log": true
-    ,"bootstrap_vendor_messages_local_only": true
-    ,"bootstrap_schedule_late_load_doorway": true
+    "foreign_deployment_quarantine": true,
+    "admiral_sign_out_hidden_until_verified": true,
+    "hidden_state_outranks_touch_display_rule": true,
+    "admiral_identity_keyboard_scroll_anchor": true,
+    "visual_viewport_keyboard_settlement": true,
+    "focused_identity_abrupt_scroll_reset_guard": true,
+    "deliberate_touch_scroll_outranks_scroll_repair": true,
+    "single_command_navigator": true,
+    "admiral_native_engine_fallback": true,
+    "admiral_return_local_visible_commit": true,
+    "shell_owned_upper_command_escape": true,
+    "exclusive_command_surface_css": true,
+    "pointerdown_escape_precedes_runtime_handlers": true,
+    "engine_visible_before_refresh": true,
+    "command_route_witness": true,
+    "admiral_return_native_document_primary": true,
+    "engine_return_handoff_one_use": true,
+    "engine_return_handoff_wrong_build_fails_closed": true,
+    "native_engine_return_post_init_settlement": true,
+    "admiral_header_build_witness": true,
+    "admiral_course_preview_required": true,
+    "admiral_course_atomic_issue": true,
+    "admiral_course_durable_readback": true,
+    "admiral_course_conflict_safe_rollback": true,
+    "admiral_course_log_operational": true,
+    "professional_action_contrast_hardened": true,
+    "ipad_portrait_landscape_responsive": true,
+    "iphone_portrait_responsive": true,
+    "durable_near_command_acknowledgment": true,
+    "completed_command_intent_cleared": true,
+    "rollback_proposal_distinguished": true,
+    "admiral_commissioning_preview_required": true,
+    "commissioned_vessel_starts_not_live": true,
+    "commissioner_does_not_become_owner": true,
+    "commissioning_creates_no_entitlements": true,
+    "working_name_is_editable": true,
+    "vessel_uuid_project_key_namespace_are_immutable": true,
+    "ipad_portrait_commissioning_layout": true,
+    "iphone_commissioning_layout": true,
+    "commissioning_preview_column_does_not_stretch": true,
+    "commissioning_command_band_is_compact": true,
+    "verified_identity_controls_are_compressed": true,
+    "missing_rpc_error_is_human_readable": true,
+    "fleet_core_migration_applied_and_verified": true,
+    "fleet_core_six_vessels_preserved": true,
+    "fleet_core_anonymous_function_execution_denied": true,
+    "no_commissioning_order_issued_by_release": true,
+    "admiral_fleet_surface_above_admiral_deck": true,
+    "admiral_fleet_tap_capture_route": true,
+    "admiral_fleet_visible_open_state": true,
+    "fleet_registry_black_flag_owned": true,
+    "bootstrap_build_lateral_admiral_program": true,
+    "mission_level_does_not_create_parentage": true,
+    "capability_sharing_preserves_vessel_isolation": true,
+    "fleet_registry_returns_authoritative_mission_class": true,
+    "no_commissioning_order_issued_by_structure_repair": true,
+    "bootstrap_twelve_week_workday_calendar": true,
+    "bootstrap_start_to_settlement_seed": true,
+    "bootstrap_multi_day_task_bars": true,
+    "bootstrap_duration_preserved_on_move": true,
+    "bootstrap_schedule_touch_drag": true,
+    "bootstrap_schedule_keyboard_move": true,
+    "bootstrap_schedule_local_only": true,
+    "commissioning_verified_preview_copy": true,
+    "bootstrap_task_vendor_assignment": true,
+    "bootstrap_vendor_schedule_view": true,
+    "bootstrap_vendor_move_communication_log": true,
+    "bootstrap_vendor_messages_local_only": true,
+    "bootstrap_schedule_late_load_doorway": true,
+    "ledger_recovery_canonical_entity_boundary": true
   },
   "contracts": {
     "ikes_single_automatic_fit": true,
@@ -514,7 +520,8 @@
     "admiral_mutations_repeat_authority_check": true,
     "local_fallback_retained_until_owner_cutover_proof": true,
     "foreign_deployment_never_relabels_to_active_project": true,
-    "quarantine_preserves_foreign_deployment_evidence": true
+    "quarantine_preserves_foreign_deployment_evidence": true,
+    "ledger_recovery_rejects_foreign_entity_records": true
   },
   "release_identity_repair": {
     "status": "PASS",
@@ -554,8 +561,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.17.9",
-    "seal": "clear-orders-repair-88179",
+    "build": "8.8.17.10",
+    "seal": "ledger-recovery-keel-881710",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",

@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-tax-ledger-v1",
-  "build": "8.8.17.9",
-  "release": "Clear Orders Repair",
+  "build": "8.8.17.10",
+  "release": "Ledger Recovery Keel",
   "purpose": "Accountant-ready, entity-isolated bookkeeping records for every Fleet Core member and the Captain and Admiral offices.",
   "boundaries": {
     "recordkeeping_aid_only": true,
@@ -11,16 +11,56 @@
     "browser_entries_are_server_attested": false,
     "correction_model": "append-only reversal or adjustment; never silent replacement"
   },
-  "entity_types": ["fleet_member", "captain_office", "admiral_office", "admiral_program"],
-  "entry_types": ["income", "expense", "transfer", "owner_contribution", "owner_draw", "adjustment"],
-  "review_states": ["unreviewed", "accountant_review", "ready", "approved"],
-  "evidence_states": ["missing", "referenced", "verified"],
-  "accounting_methods": ["cash", "accrual", "other"],
+  "entity_types": [
+    "fleet_member",
+    "captain_office",
+    "admiral_office",
+    "admiral_program"
+  ],
+  "entry_types": [
+    "income",
+    "expense",
+    "transfer",
+    "owner_contribution",
+    "owner_draw",
+    "adjustment"
+  ],
+  "review_states": [
+    "unreviewed",
+    "accountant_review",
+    "ready",
+    "approved"
+  ],
+  "evidence_states": [
+    "missing",
+    "referenced",
+    "verified"
+  ],
+  "accounting_methods": [
+    "cash",
+    "accrual",
+    "other"
+  ],
   "minimum_export_columns": [
-    "entity_key", "entity_name", "entity_type", "tax_year", "accounting_method",
-    "transaction_date", "entry_type", "category_code", "category_label", "amount_usd",
-    "counterparty", "description", "evidence_reference", "review_status", "acting_office",
-    "source", "created_at", "entry_id", "correction_of"
+    "entity_key",
+    "entity_name",
+    "entity_type",
+    "tax_year",
+    "accounting_method",
+    "transaction_date",
+    "entry_type",
+    "category_code",
+    "category_label",
+    "amount_usd",
+    "counterparty",
+    "description",
+    "evidence_reference",
+    "review_status",
+    "acting_office",
+    "source",
+    "created_at",
+    "entry_id",
+    "correction_of"
   ],
   "authority_rules": {
     "captain": "May record Captain-authorized fleet operating entries and the Captain office book.",
@@ -31,6 +71,8 @@
   "retention": {
     "transaction_history": "durable",
     "supporting_documents": "retain outside this browser ledger under the accountant-approved retention policy",
-    "exports": "UTF-8 CSV with one row per retained entry"
+    "exports": "UTF-8 CSV with one row per retained entry",
+    "browser_recovery": "Legacy same-origin ledger sources are preserved until a durable merged ledger has been written and read-back verified; recovery never fabricates missing transactions.",
+    "browser_recovery_entity_boundary": "Recovered browser entries must resolve to a current canonical Fleet member, Captain/Admiral office, or Admiral program key before merge."
   }
 }

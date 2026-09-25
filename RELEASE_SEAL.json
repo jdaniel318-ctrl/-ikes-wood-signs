@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.9",
-  "release": "Clear Orders Repair",
-  "seal": "clear-orders-repair-88179",
+  "build": "8.8.17.10",
+  "release": "Ledger Recovery Keel",
+  "seal": "ledger-recovery-keel-881710",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Clear Orders Repair",
-  "name": "Clear Orders Repair",
-  "releaseName": "Clear Orders Repair"
+  "release_name": "Ledger Recovery Keel",
+  "name": "Ledger Recovery Keel",
+  "releaseName": "Ledger Recovery Keel"
 }

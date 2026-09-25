@@ -1,70 +1,43 @@
-# 8.8.17.9 Clear Orders Repair — Release Acceptance
+# 8.8.17.10 Ledger Recovery Keel — Release Acceptance
 
-Clear Orders Repair is releasable only when every blocking check passes. It must preserve explicit Captain and Admiral authority while making ledger completion durable, guided, and verifiable.
+This release is acceptable only when ledger recovery is evidence-preserving and fully verified.
 
-## Clear Orders gates
+## Recovery gates
 
-- The Engine front page visibly reports `8.8.17.9 · CLEAR ORDERS`.
-- Reload starts with the Fleet Ledger closed and transient queues collapsed.
-- To Check presents one record and three required resolution steps at a time.
-- A verified resolution automatically advances to the next record.
-- Payment methods include Check, ACH, cards, digital wallet, bank transfer, cash, and another trackable method.
-- Transactions and corrections are written once, read back, and preserved append-only in IndexedDB with a verified local-storage fallback.
-- The Captain's Quarters separates Watch, Decide, Act, and Record into a clear command path.
+- [ ] Engine front page visibly reports `8.8.17.10 • LEDGER RECOVERY`.
+- [ ] Fleet Ledger opens with a visible Ledger Recovery status row.
+- [ ] Recovery inspects the current durable book plus legacy same-origin web-storage keys and cataloged ledger-like IndexedDB databases.
+- [ ] Only ledger-shaped records are accepted; no transaction is fabricated from an expected total.
+- [ ] A ledger-shaped record is rejected unless its entity resolves to a current canonical Fleet/office/program boundary.
+- [ ] Distinct legacy `entry_id` values remain distinct transactions.
+- [ ] Durable IndexedDB is written and the complete ledger proof matches on read-back.
+- [ ] The migration receipt is written only after durable verification succeeds.
+- [ ] Legacy source storage is not deleted during recovery.
+- [ ] A recovery mirror is written and read back when localStorage has capacity; mirror failure does not erase a verified durable ledger.
+- [ ] If the two prior $1 test records remain in browser storage, Simple Books shows $2.00 Money In after recovery.
+- [ ] If they no longer exist in same-origin storage, the UI reports that no earlier records were found and creates no replacement entries.
 
-## Admiral Commission gates
+## Existing Clear Orders gates
 
-- Authority Ledger opens from Captain Record and defaults to Captain browser evidence.
-- Authority Ledger opens from Admiral Govern and requires active server Admiral authority before server rows are read.
-- Captain and Admiral evidence are labeled separately and can be filtered without silent merging.
-- Ledger search covers target, action, project, intent, and retained detail.
-- The packaged Admiral ledger RPC checks authenticated active, non-revoked global authority and exposes no owner/customer payload.
-- Commissioning Orders expose ownership and operating models.
-- Bootstrap Build defaults to `admiral_program`, `admiral_owned`, and `fleet_operated`.
-- Commissioning remains preview-first, audited, not live, and creates no individual owner membership or entitlements.
-- The six protected Fleet Core vessel IDs and their project isolation remain unchanged.
+- [ ] To Check presents one unresolved record and three required resolution steps at a time.
+- [ ] A verified append-only correction advances to the next record automatically.
+- [ ] Payment methods include Check, ACH, cards, digital wallet, bank transfer, cash, and another trackable method.
+- [ ] New transactions are written once and read back before success is shown.
+- [ ] Captain's Quarters keeps Watch, Decide, Act, and Record distinct.
+
+## Authority and isolation gates
+
+- [ ] Captain browser evidence and Admiral server-attested evidence remain visibly separate.
+- [ ] Admiral reads still require an active authenticated Fleet Core Admiral grant.
+- [ ] Passage PINs do not grant server authority.
+- [ ] Six Fleet Core project identities remain unchanged and exact-project isolation is preserved.
+- [ ] Bootstrap Build remains a separate Admiral program until explicitly commissioned.
+- [ ] Test/private-preview real-world phone, email, and messaging actions remain blocked.
 
 ## Release identity
 
-- [ ] `index.html`, `app.js`, `captain.js`, `owner.html`, `DEPLOYMENT_MANIFEST.json`, `RELEASE_SEAL.json`, `RELEASE_INVENTORY.json`, `manifest.webmanifest`, and `sw.js` agree on build and seal.
-- [ ] Every file in `RELEASE_INVENTORY.json` exists and every deployed file is inventoried.
+- [ ] `index.html`, `app.js`, `platform_identity.js`, `fleet_supabase.js`, `DEPLOYMENT_MANIFEST.json`, `RELEASE_SEAL.json`, `RELEASE_INVENTORY.json`, `manifest.webmanifest`, and `sw.js` agree on build and seal.
+- [ ] Every inventoried file exists and every deployed file is inventoried.
 - [ ] `CHECKSUMS.sha256` verifies without error.
-- [ ] ZIP filename and single top-level folder share the same unique release name.
-- [ ] File timestamps are normalized to the release build time.
-
-## Startup and recovery
-
-- [ ] Cold load resolves without an Ike's or other cross-project flash.
-- [ ] Reload does not inherit Admiral identity.
-- [ ] Stale worker/cache recovery reaches the current release or an explicit hold screen.
-- [ ] No runtime mismatch bypass exists.
-
-## Owner proof
-
-- [ ] Legacy owner signs in with the exact commissioned Supabase account.
-- [ ] Another authenticated account is denied Legacy membership.
-- [ ] Owner can publish a nonblank current-work report.
-- [ ] Saved report is read back and shown as verified.
-- [ ] Reload preserves only the intended secure session and project scope.
-- [ ] Sign out closes the Owner Control Center.
-
-## Admiral proof
-
-- [ ] Passage PIN alone cannot open fleet data.
-- [ ] Owner credentials cannot authenticate as Admiral.
-- [ ] Active Admiral credentials open My Fleet.
-- [ ] My Fleet shows six Fleet Core vessels, two Owner Ready, and four Owner Unassigned until real owners are commissioned.
-- [ ] Action Queue includes all never-reported or stale vessels.
-- [ ] Search and filters scroll away in normal flow and never cover vessel cards.
-- [ ] The Fleet header remains the only sticky My Fleet surface.
-- [ ] Refresh Watch shows Legacy's latest verified report.
-- [ ] Open Vessel remains read-only and exact-project scoped.
-- [ ] Sign out immediately locks the fleet workspace.
-
-## iPad and preview safety
-
-- [ ] Portrait and landscape layouts remain scrollable.
-- [ ] On-screen keyboard does not hide the active action.
-- [ ] Buttons show pressed, selected, busy, success, and failure states.
-- [ ] Important confirmations remain readable and leave a durable state.
-- [ ] Test/private-preview phone, email, and messaging actions remain blocked.
+- [ ] ZIP filename and its single top-level folder share the exact unique release name.
+- [ ] File timestamps are normalized tightly to the build time.
