@@ -1,4 +1,4 @@
-/* Dark Sky / Black Flag v4.1.5 — Ledger Truth core compatibility layer */
+/* Dark Sky / Black Flag v4.1.4 — Launch Harbor core compatibility layer */
 (function(g){
 'use strict';
 const SCHEMA=8, POLICY='4.0', AUDIT='blackFlagV3AuditV1', SNAP='blackFlagV3RecoverySnapshotsV1', MIG='blackFlagV3MigrationStateV1', TELEM='blackFlagV3TelemetryV1';
@@ -332,32 +332,10 @@ function canTransitionDeployment(from,to){
  const a=String(from||'draft').toLowerCase(),b=String(to||'').toLowerCase();
  return !!DEPLOYMENT_TRANSITIONS[a]?.has(b);
 }
-function compactAuditEvidence(sourceRows=null){
- const rows=Array.isArray(sourceRows)?sourceRows:read(AUDIT,[]),groups=new Map();
- rows.forEach(row=>{
-  if(!row||typeof row!=='object')return;
-  const key=[row.schemaVersion,row.actorRole,row.projectId,row.category,row.action,row.detail].map(value=>String(value??'')).join('\u241f');
-  const count=Math.max(1,Number(row.repeatCount)||1),firstAt=String(row.firstAt||row.at||''),lastAt=String(row.lastAt||row.at||'');
-  if(groups.has(key)){
-   const kept=groups.get(key);kept.repeatCount+=count;
-   if(firstAt&&(!kept.firstAt||firstAt<kept.firstAt))kept.firstAt=firstAt;
-   if(lastAt&&(!kept.lastAt||lastAt>kept.lastAt))kept.lastAt=lastAt;
-  }else groups.set(key,{...row,repeatCount:count,firstAt,lastAt});
- });
- const compacted=[...groups.values()].sort((a,b)=>String(b.at||'').localeCompare(String(a.at||''))).map(row=>{if(row.repeatCount<=1){delete row.repeatCount;delete row.firstAt;delete row.lastAt;}return row;});
- const previous=localStorage.getItem(AUDIT),payload=JSON.stringify(compacted);
- try{
-  localStorage.removeItem(AUDIT);localStorage.setItem(AUDIT,payload);
-  return {ok:true,before:rows.length,after:compacted.length,collapsed:Math.max(0,rows.length-compacted.length),bytesBefore:previous?.length||0,bytesAfter:payload.length};
- }catch(error){
-  try{if(previous!=null)localStorage.setItem(AUDIT,previous);}catch(_){/* Best-effort restoration of derived evidence. */}
-  return {ok:false,before:rows.length,after:rows.length,collapsed:0,error:String(error?.message||error)};
- }
-}
 function audit(event={}){
  const rows=read(AUDIT,[]); const row={id:'AUD-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),at:new Date().toISOString(),schemaVersion:SCHEMA,actorRole:event.actorRole||'engine',projectId:event.projectId||null,category:event.category||'operation',action:String(event.action||'activity'),detail:String(event.detail||'')};
  rows.unshift(row);
- if(!write(AUDIT,rows.slice(0,500)))compactAuditEvidence(rows.slice(0,500));
+ if(!write(AUDIT,rows.slice(0,500)))write(AUDIT,rows.slice(0,100));
  return row;
 }
 function telemetry(type,data={},projectId=null){
@@ -395,5 +373,5 @@ function integrity(projects=[],doc=document){
  });
  return{at:new Date().toISOString(),ok:!issues.some(x=>x.level==='critical'),critical:issues.filter(x=>x.level==='critical').length,warnings:issues.filter(x=>x.level==='warning').length,issues};
 }
-g.BlackFlagV3Core={version:'4.1.5-storage-bearing-core',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,fleetOperatingTiers:FLEET_OPERATING_TIERS,fleetCapabilityLifecycle:FLEET_CAPABILITY_LIFECYCLE,fleetServiceDomains:FLEET_SERVICE_DOMAINS,fleetCapabilityRegistry:FLEET_CAPABILITY_REGISTRY,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,customerRelationshipTypes:CUSTOMER_RELATIONSHIP_TYPES,customerWorkflowProfiles:CUSTOMER_WORKFLOW_PROFILES,customerActivityTerms:CUSTOMER_ACTIVITY_TERMS,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,deriveCustomerRelationship,resolveCustomerRelationship,activityTermsForProject,defaultWorkflowForRelationship,resolveProjectWorkflow,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),compactAuditEvidence,telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
+g.BlackFlagV3Core={version:'4.1.4-foundry-foundation-core',schemaVersion:SCHEMA,policyVersion:POLICY,states:STATES,fleetFoundation:FLEET_FOUNDATION,fleetOperatingTiers:FLEET_OPERATING_TIERS,fleetCapabilityLifecycle:FLEET_CAPABILITY_LIFECYCLE,fleetServiceDomains:FLEET_SERVICE_DOMAINS,fleetCapabilityRegistry:FLEET_CAPABILITY_REGISTRY,visualCapabilityCatalog:VISUAL_CAPABILITY_CATALOG,visualProfilePresets:VISUAL_PROFILE_PRESETS,businessModelModes:BUSINESS_MODEL_MODES,customerRelationshipTypes:CUSTOMER_RELATIONSHIP_TYPES,customerWorkflowProfiles:CUSTOMER_WORKFLOW_PROFILES,customerActivityTerms:CUSTOMER_ACTIVITY_TERMS,normalizeBusinessBrief,deriveOperatingProfile,resolveOperatingModel,deriveCustomerRelationship,resolveCustomerRelationship,activityTermsForProject,defaultWorkflowForRelationship,resolveProjectWorkflow,updateBusinessUnderstanding,normalizeVisualPresentation,clean,normalizeProjectName:normalizeName,createProjectId,registry,findProjectsByName:sameName,namespaceFor:ns,lifecycle,ensure,migrate,assertProjectScope:scope,authorizeProjectMutation:authorizeMutation,sealDeployment,validateDeployment,canTransitionDeployment,audit,readAudit:()=>read(AUDIT,[]),telemetry,readTelemetry,snapshot,readSnapshots:()=>read(SNAP,[]),integrity,migrationState:()=>read(MIG,null),markMigration:x=>write(MIG,{...x,at:new Date().toISOString()})};
 })(window);

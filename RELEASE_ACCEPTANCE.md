@@ -1,6 +1,16 @@
-# 8.8.17 Release Acceptance
+# 8.8.17.9 Clear Orders Repair — Release Acceptance
 
-Admiral Commission is releasable only when every blocking check passes. It must prove the same person can navigate Captain and Admiral records while the active office and authority source remain explicit.
+Clear Orders Repair is releasable only when every blocking check passes. It must preserve explicit Captain and Admiral authority while making ledger completion durable, guided, and verifiable.
+
+## Clear Orders gates
+
+- The Engine front page visibly reports `8.8.17.9 · CLEAR ORDERS`.
+- Reload starts with the Fleet Ledger closed and transient queues collapsed.
+- To Check presents one record and three required resolution steps at a time.
+- A verified resolution automatically advances to the next record.
+- Payment methods include Check, ACH, cards, digital wallet, bank transfer, cash, and another trackable method.
+- Transactions and corrections are written once, read back, and preserved append-only in IndexedDB with a verified local-storage fallback.
+- The Captain's Quarters separates Watch, Decide, Act, and Record into a clear command path.
 
 ## Admiral Commission gates
 

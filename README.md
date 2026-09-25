@@ -1,44 +1,16 @@
-# Dark Sky 8.8.17.8 — Deep Hold
+# Dark Sky 8.8.17.9 — Clear Orders Repair
 
-Deep Hold makes the ledger durable under browser-storage pressure, leaves saved fleet data intact, and presents a calmer To Check queue and Captain command surface on iPad.
+Clear Orders Repair makes daily fleet recordkeeping guided and durable while preserving accountant-grade exports, append-only history, and explicit Captain and Admiral authority.
 
 ## What changed
 
-- Migrates the existing browser book into IndexedDB, verifies an exact read-back, and only then removes the old ledger copy from constrained local storage.
-- Merges any existing durable and legacy ledger rows by entry ID and rejects broken correction lineage or duplicate submissions.
-- Falls back safely when IndexedDB is unavailable; automatic recovery never deletes project, customer, order, identity, authority, or bookkeeping records.
-- Refresh closes the transient To Check queue, collapses unsaved detail editors, and clears an unfinished form without changing any saved transaction.
-- Reorganized To Check into calm record identity, resolution, correction, and final-save regions with iPad-sized controls.
-- Reorganized Professional Captain's Quarters into a compact two-column command loop that collapses cleanly on smaller screens.
-- Tap **To Check** to see every flagged transaction and its exact reasons.
-- Resolve missing references and review state directly from the queue; corrections append and never overwrite the original.
-- Totals and exports use the latest revision once, while CSV lineage preserves the original and current revision IDs.
-- **Check** is the default payment method; ACH, debit card, credit card, digital wallet, cash, bank transfer, and another trackable method are ready to classify.
-- Store only safe confirmation references such as a check number or ACH trace; account, routing, card, login, and tax credentials remain forbidden.
-- A rapid second tap now leaves a durable **Already saved once** confirmation and cannot create a duplicate.
-
-- **To Check** counts each transaction once even when the same row is both unreviewed and missing a receipt.
-- The reason totals remain visible beneath the count so an operator can distinguish review work from missing evidence.
-- Every completed form receives an idempotent submission ID, and the write path rejects duplicate entry or submission IDs.
-- A save is successful only when exact read-back finds one matching entry ID and submission ID.
-- Repeated or delayed save events are blocked while the first save is in progress.
-- The iPad ledger now resynchronizes its composited touch layer after viewport, orientation, focus, and keyboard geometry changes.
-- A stale Safari touch target is rejected and realigned instead of activating the wrong ledger control.
-- The Engine front page still displays the exact deployed build and release name from the application build constant.
-- The amount field retains its fixed currency gutter, larger high-contrast numerals, unified focus ring, and two-decimal formatting.
-- Captain saves continue to survive duplicate-audit storage pressure by safely compacting duplicate browser audit evidence and retrying once.
-- The new ledger record must pass exact local read-back before the form clears or the totals change.
-- A failed save leaves every field intact and states plainly that no ledger record was created.
-- Automatic recovery touches only the derived authority-audit key; project, customer, order, identity, and book records are never cleared.
-- Collapsed audit rows retain their original occurrence count plus first and latest timestamps.
-- Captain and Admiral may be held by the same person, but every action still declares an active office.
-- Admiral book entries are saved only after Fleet Core verifies a dedicated Admiral identity.
-- Accountant CSV exports include authority status, source, and verification time.
+- Captain and Admiral may be held by the same person.
+- Every action still declares an active office; Captain access never silently elevates to Admiral authority.
 - The Fleet Ledger opens from Captain **Record** and Admiral **Govern** through a compact command card.
 - Daily recording begins with three plain choices: **Money In**, **Money Out**, or **Move Money**.
 - The normal path asks only for the book, amount, counterparty, purpose, and optional receipt or invoice reference.
 - Tax year, accounting method, category, acting office, and review status remain under **Accountant Tools** and **More Details**.
-- Existing Ledger Integrity browser records remain readable because the durable storage key is unchanged and v1 rows are accepted without destructive migration.
+- Existing Ledger Integrity browser records remain readable because the durable storage key and schema are unchanged.
 - Captain rows are labeled **Browser Evidence**; Admiral rows are labeled **Server Attested** only after Fleet Core verifies the dedicated Admiral identity.
 - The ledger supports office filters, cross-field search, refresh, exact targets, authority source, outcome, intent/detail, and up to 200 server rows.
 - Commissioning Orders now expose mission class, ownership model, and operating model instead of hard-coding every commission as fleet-unassigned.
@@ -62,6 +34,6 @@ Bootstrap Build remains a separate Admiral program outside the six independent F
 
 Upload the contents of the release folder to the GitHub Pages repository root. Do not nest the folder itself inside the deployed site.
 
-The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.8` and seal `deep-hold-88178`.
+The page, manifest, release seal, inventory, service worker, and application runtime must all report build `8.8.17.9` and seal `clear-orders-repair-88179`.
 
 See `CURRENT_ARCHITECTURE.md` for authority/data boundaries, `REGISTRY_LEDGER_MODEL.json` for the ledger contract, and `RELEASE_ACCEPTANCE.md` for release proof.

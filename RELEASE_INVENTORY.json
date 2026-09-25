@@ -1,8 +1,8 @@
 {
-  "release": "Deep Hold",
-  "name": "Deep Hold",
-  "build": "8.8.17.8",
-  "seal": "deep-hold-88178",
+  "release": "Clear Orders Repair",
+  "name": "Clear Orders Repair",
+  "build": "8.8.17.9",
+  "seal": "clear-orders-repair-88179",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

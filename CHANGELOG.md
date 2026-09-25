@@ -1,51 +1,13 @@
 # Dark Sky Changelog
 
-## 8.8.17.8 — Deep Hold
+## 8.8.17.9 — Clear Orders Repair
 
-- Moved Fleet Ledger primary storage to IndexedDB with integrity checks and exact read-back verification.
-- Migrates the legacy local-storage ledger only after merging by entry ID; removes only the verified source ledger key afterward.
-- Preserves every project, customer, order, identity, authority, and bookkeeping record during storage recovery.
-- Resets only transient queue, detail, and unsaved form state on Safari page restore.
-- Reorganized the To Check queue and Professional Captain's Quarters for clearer iPad operation.
-- Preserved Check-first payment tracking with ACH and other traceable digital methods ready for fleet growth.
-
-## 8.8.17.7 — Clear the Deck
-
-- Made **To Check** tappable and exposed each transaction's exact attention reasons.
-- Added append-only resolution and correction records; originals remain intact and totals count only the latest revision once.
-- Added Check-first payment classification with ACH, cards, digital wallets, cash, bank transfer, and other trackable methods.
-- Allowed safe check, receipt, and payment confirmation references while forbidding payment credentials.
-- Exported payment method and correction lineage in the accountant CSV.
-- Added a durable **Already saved once** result for rapid repeat taps.
-- Preserved all Ledger Truth, Clear Entry, Storage Bearing, authority, and iPad touch protections.
-
-## 8.8.17.6 — Ledger Truth
-
-- Changed **To Check** from a sum of warning reasons to a count of distinct transactions needing attention.
-- Kept the unreviewed and missing-receipt reason totals visible without double-counting a transaction.
-- Added per-form submission IDs, an in-flight save latch, duplicate-ID rejection, and exact single-row read-back verification.
-- Added explicit validation for book, positive amount, description, and transaction date before a write begins.
-- Resynchronized the iPad ledger compositor after viewport, orientation, focus, and keyboard geometry changes.
-- Rejects a stale Safari touch target and asks for one clean retry instead of activating the wrong control.
-- Preserved Clear Entry amount readability, Storage Bearing quota recovery, authority boundaries, and all existing ledger records.
-
-## 8.8.17.4 — Storage Bearing
-
-- Made Simple Books writes explicit, synchronous, and read-back verified before success is shown.
-- Added one safe automatic retry after compacting duplicate authority-audit evidence.
-- Preserved duplicate occurrence counts and first/latest timestamps after compaction.
-- Kept project, customer, order, identity, and bookkeeping records outside automatic cleanup scope.
-- Kept form values intact and displayed a durable **Not saved** message when capacity recovery cannot complete the write.
-- Applied the same guarded write path to accounting-method changes.
-
-## 8.8.17.3 — Clear Authority
-
-- Kept fleet bookkeeping to Money In, Money Out, and Move Money.
-- Blocked Admiral entries until Fleet Core verifies dedicated Admiral authority.
-- Prevented Engine Room users from silently labeling records as owner actions.
-- Added authority status, source, and verification time to retained records and accountant CSV exports.
-- Corrected local transaction dates so they follow the operator device instead of UTC.
-- Preserved the existing browser-book storage key and all prior records.
+- Guides one unresolved ledger record at a time through payment, safe reference, and review status.
+- Locks Save until the three required completion facts are ready.
+- Verifies every append-only correction before automatically opening the next record.
+- Preserves existing browser-book data while moving the primary ledger to IndexedDB.
+- Keeps Check first while supporting ACH, cards, digital wallets, bank transfers, cash, and other trackable methods.
+- Reorganizes Captain's Quarters into Watch → Decide → Act with a dedicated Record station.
 
 ## 8.8.17.2 — Simple Books
 

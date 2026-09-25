@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.8",
-  "release": "Deep Hold",
-  "seal": "deep-hold-88178",
+  "build": "8.8.17.9",
+  "release": "Clear Orders Repair",
+  "seal": "clear-orders-repair-88179",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Deep Hold",
-  "name": "Deep Hold",
-  "releaseName": "Deep Hold"
+  "release_name": "Clear Orders Repair",
+  "name": "Clear Orders Repair",
+  "releaseName": "Clear Orders Repair"
 }
