@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.17",
+  "build": "8.8.17.13",
   "release": "Admiral Commission",
   "status": "active",
   "principles": [
@@ -120,5 +120,12 @@
         "heading": "Production identity with recoverable Fleet authority and committed proof truth"
       }
     ]
+  },
+  "release_compatibility": {
+    "runtime_build": "8.8.17.13",
+    "basis": "same semantic contract; exact existing safety predicates retained and negative-tested",
+    "authored_build": "8.8.17",
+    "verified_by": "keelguard-package-validation",
+    "proves_live_operation": false
   }
 }

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.17",
+  "build": "8.8.17.13",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -59,7 +59,7 @@
         "transfer-preserves-vessel-id",
         "transfer-audited-recoverable"
       ],
-      "summary": "Vessel entry \u2192 ownership \u2192 operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
+      "summary": "Vessel entry → ownership → operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
     },
     {
       "id": "lateral-fleet-structure",
@@ -218,5 +218,12 @@
   "governance": {
     "admiralMayChangeCourse": true,
     "rule": "Golden voyages may evolve when Admiral deliberately promotes a new Fleet course. A course change must explicitly version the voyage set; it may add or supersede assurance paths but may not silently weaken active release blockers."
+  },
+  "release_compatibility": {
+    "runtime_build": "8.8.17.13",
+    "basis": "same semantic contract; exact existing safety predicates retained and negative-tested",
+    "authored_build": "8.8.17",
+    "verified_by": "keelguard-package-validation",
+    "proves_live_operation": false
   }
 }

@@ -1,3 +1,8 @@
+# 8.8.17.13 — KeelGuard
+
+Fix: four packaged governance model versions were stale relative to the runtime. Preserve their content and all exact safety checks; align only the reviewed current release metadata. Add body integrity verification, manifest model inventory, precise failure evidence, holds-first brief and findings, explicit storage degradation, and coherent readiness exports. Preserve Ledger TouchSafe and all 85 source files. No live server/database changes, no data cleanup, no production promotion. Fresh test evidence is separated from retained historical claims in RELEASE_GATE.json.
+
+---
 # 8.8.17.12 — Ledger TouchSafe
 
 - Remove simultaneous smooth scroll and input autofocus when opening corrections.

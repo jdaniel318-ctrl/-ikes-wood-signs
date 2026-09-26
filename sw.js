@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.17.12';
-const RELEASE_SEAL='ledger-touchsafe-881712';
+const RELEASE_BUILD='8.8.17.13';
+const RELEASE_SEAL='keelguard-881713';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

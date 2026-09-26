@@ -49,7 +49,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.17.12';
+  const UPPER_COMMAND_BUILD='8.8.17.13';
   let authorized = false;
   // Read-only session witness; this never grants Captain or server authority.
   window.DarkSkyCaptainSessionStatus = () => authorized;
@@ -550,7 +550,7 @@
       decide:{label:'WHY IT MATTERS',title:Number(chosen.attentionOutposts)>0?'Verification remains incomplete.':'No Captain decision is waiting.',copy:reasons.length?reasons.join(' · '):'The vessel remains observable without crossing its project boundary.'},
       act:{label:'RECOMMENDED ROUTE',title:Number(chosen.attentionOutposts)>0?'Inspect the scoped evidence first.':'Hold the present course.',copy:Number(chosen.attentionOutposts)>0?'Open the signal report. Enter the exact vessel only if deliberate action is required.':'No modifying command is recommended.'},
       record:{label:'DURABLE OUTCOME',title:'Keep consequential command.',copy:'Decisions, outcomes, and lessons belong in the Captain’s Log. Routine navigation is not promoted as history.'},
-      readiness:{label:'FLEET READINESS',title:readinessChecking?'Proving the fleet now…':readinessUnavailable?'Fleet Readiness is temporarily unavailable.':readinessReport?(readinessReport.pass?(readinessReport.warnings?'Hull proven with watch items.':'Hull proven. Fleet checks are clear.'):`Hold in harbor. ${Number(readinessReport.criticalFailures)||0} critical check${Number(readinessReport.criticalFailures)===1?'':'s'} failed.`):'Fleet proof has not been run.',copy:readinessChecking?'Checking isolation, authority, release identity, and operational contracts. This result will remain visible when complete.':readinessUnavailable?'The check did not return a valid report. No readiness claim has been recorded.':readinessReport?`${Number(readinessReport.checks?.length)||0} checks completed · ${Number(readinessReport.warnings)||0} watch item${Number(readinessReport.warnings)===1?'':'s'} · ${Number(readinessReport.criticalFailures)||0} critical hold${Number(readinessReport.criticalFailures)===1?'':'s'}.`:'Run Fleet Readiness to verify the present build against its protected contracts.'}
+      readiness:{label:'FLEET READINESS',title:readinessChecking?'Proving the fleet now…':readinessUnavailable?'Fleet Readiness is temporarily unavailable.':readinessReport?(readinessReport.pass?(readinessReport.warnings?'Runtime checks completed with unresolved watch items.':'Runtime checks are clear; working-ship handoff is not verified.'):`Hold in harbor. ${Number(readinessReport.criticalFailures)||0} critical check${Number(readinessReport.criticalFailures)===1?'':'s'} failed.`):'Fleet proof has not been run.',copy:readinessChecking?'Checking isolation, authority, release identity, and operational contracts. This result will remain visible when complete.':readinessUnavailable?'The check did not return a valid report. No readiness claim has been recorded.':readinessReport?`${Number(readinessReport.checks?.length)||0} checks completed · ${Number(readinessReport.warnings)||0} watch item${Number(readinessReport.warnings)===1?'':'s'} · ${Number(readinessReport.criticalFailures)||0} critical hold${Number(readinessReport.criticalFailures)===1?'':'s'}.`:'Run Fleet Readiness to verify the present build against its protected contracts.'}
     }[stage];
     const readinessTone=readinessChecking?'checking':readinessLabel.toLowerCase();
     intel.innerHTML=`<div class="cq-intel-heading"><small>FIRST MATE · ${htmlSafe(stageCopy.label)}</small><span class="${stage==='readiness'?readinessTone:(Number(chosen.attentionOutposts)>0?'attention':'clear')}">${stage==='readiness'?(readinessChecking?'CHECKING':readinessLabel):(Number(chosen.attentionOutposts)>0?'SIGNAL OPEN':'COURSE STEADY')}</span></div><h3>${stage==='readiness'?'Fleet Proof':htmlSafe(chosen.name)}</h3><p class="cq-intel-title">${htmlSafe(stageCopy.title)}</p><p>${htmlSafe(stageCopy.copy)}</p><div class="cq-intel-facts">${stage==='readiness'?`<span><b>${Number(readinessReport?.checks?.length)||0}</b> CHECKS</span><span><b>${Number(readinessReport?.warnings)||0}</b> WATCH</span><span><b>${Number(readinessReport?.criticalFailures)||0}</b> HOLDS</span>`:`<span><b>${Number(chosen.activeOutposts)||0}</b> SAILING</span><span><b>${trials.length}</b> SEA TRIAL</span><span><b>${Number(chosen.attentionOutposts)||0}</b> SIGNALS</span>`}</div><div class="cq-intel-actions">${stage==='readiness'?`<button type="button" data-cine-action="readiness" ${readinessChecking?'disabled':''}>${readinessChecking?'CHECKING FLEET…':readinessReport?'RUN READINESS AGAIN':'RUN FLEET READINESS'}</button>${readinessReport&&!readinessChecking?'<button type="button" data-cine-action="findings">VIEW CURRENT FINDINGS</button>':''}`:stage==='record'?'<button type="button" data-cine-action="record">OPEN CAPTAIN\'S LOG</button>':`<button type="button" data-cine-action="report">${Number(chosen.attentionOutposts)>0?'OPEN SCOPED REPORT':'VIEW VESSEL POSITION'}</button>`}${stage==='readiness'?'':'<button type="button" data-cine-action="firstmate">FULL FIRST MATE ANALYSIS</button>'}</div><small class="cq-intel-boundary">READ / ROUTE ONLY · VESSEL MACHINERY REMAINS ISOLATED</small>`;
@@ -572,7 +572,7 @@
       window.__lastAdmiralReadinessReport=report;
       helm.dataset.readinessState=report.pass?(report.warnings?'watch':'clear'):'hold';
       refreshCinematicHelm();
-      showCaptainDeskNotice(report.pass?(report.warnings?`Fleet readiness completed with ${report.warnings} watch item(s).`:'Fleet readiness complete. Hull proven for this check.'):`Fleet readiness found ${report.criticalFailures} critical hold(s).`,report.pass?(report.warnings?'future':'ready'):'unavailable');
+      showCaptainDeskNotice(report.pass?(report.warnings?`Fleet readiness completed with ${report.warnings} watch item(s).`:'Fleet readiness complete. Runtime checks completed; handoff remains separately unverified.'):`Fleet readiness found ${report.criticalFailures} critical hold(s).`,report.pass?(report.warnings?'future':'ready'):'unavailable');
     }).catch(error=>{
       helm.dataset.readinessState='unavailable';
       refreshCinematicHelm();
@@ -610,7 +610,7 @@
     if(byId('admiralCeremonialTrials'))byId('admiralCeremonialTrials').textContent=String(trials);
     const report=window.__lastAdmiralReadinessReport||null;
     const changed=byId('admiralWhatChanged');
-    if(changed)changed.textContent=report?(report.criticalFailures?`${report.criticalFailures} governance hold${report.criticalFailures===1?'':'s'} require Admiral awareness.`:report.warnings?`${report.warnings} verified governance watch item${report.warnings===1?'':'s'} remain.`:'Verified governance posture is clear.'):'Governance posture awaits verified Fleet Readiness.';
+    if(changed)changed.textContent=report?(report.criticalFailures?`${report.criticalFailures} governance hold${report.criticalFailures===1?'':'s'} require Admiral awareness.`:report.warnings?`${report.warnings} verified governance watch item${report.warnings===1?'':'s'} remain.`:'Runtime governance checks are clear; working-ship handoff remains unverified.'):'Governance posture awaits verified Fleet Readiness.';
   }
 
   const READINESS_TRUTH_KEY='bf.command.readiness.truth.v2';
@@ -618,14 +618,30 @@
   function readJsonLocal(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback;}catch(_){return fallback;}}
   function writeJsonLocal(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(_){ }}
   function verificationProvenance(check){
+    if(check.evidenceKind==='packaged-contract-not-live-operating-proof')return 'PACKAGED CONTRACT • NOT A LIVE HANDOFF TEST';
+    if(check.evidenceKind==='current-page-diagnostic-channel-observation')return 'BROWSER CHANNEL • NOT CLOUD BACKUP';
+    if(check.evidenceKind==='live-negative-test-outstanding')return 'LIVE ACCESS-DENIAL PROOF OUTSTANDING';
     if(check.id==='ike-true-case-roundtrip')return check.state==='pass'?'CURRENT BUILD • SOURCE CONTRACT + LIVE DOM WHEN PRESENT':'CURRENT BUILD • TRUECASE CONTRACT';
     if(check.id==='ike-style-foundry'||check.id==='ike-glyphforge')return 'CURRENT BUILD • OWNER/ENGINE SOURCE CONTRACT';
     if(check.id==='storage-growth'||check.id==='storage-attribution-gap')return 'CURRENT BUILD • BROWSER STORAGE ESTIMATE';
     if(check.id==='known-calibration-replay')return 'CURRENT BUILD • PROTECTED CALIBRATION REPLAY';
     return 'CURRENT BUILD • FLEET READINESS';
   }
+  function readReadinessTruthKeelGuard(){
+    const candidates=[window.__darkSkyReadinessTruthKeelGuard];
+    for(const kind of ['sessionStorage','localStorage'])try{const raw=window[kind].getItem(READINESS_TRUTH_KEY);if(raw)candidates.push(JSON.parse(raw));}catch(_){ }
+    return candidates.filter(x=>x?.schema==='dark-sky-readiness-truth-v2'&&x.findings&&Array.isArray(x.history)).sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')))[0]||{findings:{},history:[]};
+  }
+  function writeReadinessTruthKeelGuard(truth){
+    window.__darkSkyReadinessTruthKeelGuard=truth;
+    const status={memory:true,session:false,local:false,errors:[],durableStoreVerified:false};
+    const text=JSON.stringify(truth);
+    for(const kind of ['sessionStorage','localStorage'])try{window[kind].setItem(READINESS_TRUTH_KEY,text);status[kind==='sessionStorage'?'session':'local']=window[kind].getItem(READINESS_TRUTH_KEY)===text;}catch(e){status.errors.push(`${kind}: ${String(e?.name||'Error')}: ${String(e?.message||e)}`);}
+    return status;
+  }
   function reconcileReadinessTruth(report){
-    const prior=readJsonLocal(READINESS_TRUTH_KEY,{findings:{},history:[]}),now=new Date().toISOString(),findings={...prior.findings},cleared=[];
+    if(report.readinessTruth?.runId===report.runId&&report.readinessTruth?.updatedAt===report.at)return report.readinessTruth;
+    const prior=JSON.parse(JSON.stringify(readReadinessTruthKeelGuard())),now=report.at||new Date().toISOString(),findings={...prior.findings},cleared=[];
     (report.checks||[]).forEach(c=>{
       const prev=findings[c.id]||null,isOpen=c.state!=='pass';
       const item={id:c.id,label:c.label,state:c.state,detail:c.detail,level:c.level||'core',firstDetected:prev?.firstDetected||(isOpen?now:null),latestChecked:now,lastBuild:UPPER_COMMAND_BUILD,provenance:verificationProvenance(c),lifecycle:isOpen?'open':(prev&&prev.state&&prev.state!=='pass'?'verified-fix':'clear')};
@@ -634,11 +650,11 @@
       if(isOpen&&prev&&prev.state!==c.state)prior.history.unshift({...item,event:'state-change',from:prev.state,to:c.state});
       findings[c.id]=item;
     });
-    const truth={schema:'dark-sky-readiness-truth-v2',build:UPPER_COMMAND_BUILD,updatedAt:now,findings,history:(prior.history||[]).slice(0,160)};writeJsonLocal(READINESS_TRUTH_KEY,truth);report.readinessTruth=truth;report.recentlyCleared=cleared;return truth;
+    const truth={schema:'dark-sky-readiness-truth-v2',build:report.build,runId:report.runId,updatedAt:now,findings,history:prior.history||[]};report.readinessTruth=truth;report.recentlyCleared=cleared;report.findingHistoryStorage=writeReadinessTruthKeelGuard(truth);return truth;
   }
   function findingAction(id){
     if(['ike-style-b-truth','ike-style-foundry','ike-glyphforge','known-calibration-replay'].includes(id))return ['foundry','OPEN FOUNDRY'];
-    if(['storage-growth','storage-attribution-gap','storage-telemetry'].includes(id))return ['storage','INSPECT STORAGE'];
+    if(['storage-growth','storage-attribution-gap','storage-telemetry','witness-truth-local','storage-safe-proof-bus'].includes(id))return ['storage','INSPECT STORAGE'];
     if(['fleet-doctrine-registry','command-layer-placement','professional-first-command'].includes(id))return ['standards','VIEW DOCTRINE'];
     return ['evidence','VIEW EVIDENCE'];
   }
@@ -646,15 +662,18 @@
     const rows=readJsonLocal(CAPTAIN_OUTCOME_KEY,[]);rows.unshift({at:new Date().toISOString(),kind,label,detail,build:UPPER_COMMAND_BUILD});writeJsonLocal(CAPTAIN_OUTCOME_KEY,rows.slice(0,25));
   }
   function renderAdmiralFindings(report,mode='current'){
-    const truth=report?.readinessTruth||readJsonLocal(READINESS_TRUTH_KEY,{findings:{},history:[]});
+    const truth=report?.readinessTruth||readReadinessTruthKeelGuard();
     const findings=byId('admiralReadinessFindings');if(!findings)return;
+    const esc=htmlSafe;
     if(mode==='history'){
-      const history=(truth.history||[]).filter(x=>x.event==='cleared').slice(0,18);
-      findings.innerHTML=history.length?history.map(c=>`<article class="admiral-finding cleared"><b>CLEARED · ${c.label}</b><span>${c.detail||'Previously failed; latest applicable verification passed.'}</span><small>VERIFIED FIX ${c.clearedAt?new Date(c.clearedAt).toLocaleString():'RETAINED'} • ${c.provenance||'VERIFIED EVIDENCE'}</small><em>HISTORY • NOT CURRENT POSTURE</em></article>`).join(''):'<span class="clear">No cleared finding history retained yet.</span>';
+      const history=(truth.history||[]).filter(x=>x.event==='cleared');
+      findings.innerHTML=history.length?history.map(c=>`<article class="admiral-finding cleared"><b>CLEARED · ${esc(c.label)}</b><span>${esc(c.detail||'Previously failed; latest applicable verification passed.')}</span><small>VERIFIED FIX ${esc(c.clearedAt?new Date(c.clearedAt).toLocaleString():'RETAINED')} • ${esc(c.provenance||'VERIFIED EVIDENCE')}</small><em>HISTORY • NOT CURRENT POSTURE</em></article>`).join(''):'<span class="clear">No cleared finding history retained yet.</span>';
       return;
     }
-    const current=(report?.checks||[]).filter(c=>c.state!=='pass');
-    findings.innerHTML=current.length?current.map(c=>{const meta=truth.findings[c.id]||{},a=findingAction(c.id);return `<article class="admiral-finding ${c.state}" data-finding-id="${c.id}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${c.label}</b><span>${c.detail}</span><small>FIRST DETECTED ${meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK'}<br>LATEST CHECK ${UPPER_COMMAND_BUILD} • ${meta.provenance||verificationProvenance(c)}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${c.id}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds. Fleet readiness is clear.</span>';
+    const current=(report?.checks||[]).filter(c=>c.state!=='pass').sort((a,b)=>(a.state==='fail'?0:1)-(b.state==='fail'?0:1));
+    const summary=window.DarkSkyKeelGuard?.summarize(report),storage=report?.storageEvidence;
+    const boundary=report?`<section class="keelguard-readiness-boundary" role="status"><small>KEELGUARD · RUN ${esc(report.runId||'UNAVAILABLE')}</small><b>${summary?.holdCount?'REPAIR HOLDS FIRST':summary?.watchCount?'CHECKS COMPLETE · WATCH ITEMS REMAIN':'CHECKS COMPLETE'}</b><p>${esc(summary?.scopeNotice||'This report is not a production handoff.')}</p><p><strong>Working-ship handoff: NOT VERIFIED by this report.</strong> Commissioning, appointed-Captain access, restore and cross-device proof remain separate.</p>${storage?.local==='degraded'?'<p class="keelguard-storage-warning"><strong>Legacy browser storage is degraded.</strong> Diagnostic fallback is not a durable ledger or cloud backup. No records were deleted; do not clear website data.</p>':''}</section>`:'';
+    findings.innerHTML=boundary+(current.length?current.map(c=>{const meta=truth.findings[c.id]||{},a=findingAction(c.id);return `<article class="admiral-finding ${c.state==='fail'?'fail':'warn'}" data-finding-id="${esc(c.id)}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${esc(c.label)}</b><span>${esc(c.detail)}</span><small>FIRST DETECTED ${esc(meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK')}<br>LATEST CHECK ${esc(report.build||UPPER_COMMAND_BUILD)} • ${esc(meta.provenance||verificationProvenance(c))}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${esc(c.id)}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds in this run. Production handoff is separately unverified.</span>');
   }
 
   function readinessSummaryOnly8658(report){
@@ -736,13 +755,18 @@
 
   function exportAdmiralReadinessReport(){
     const report=window.__lastAdmiralReadinessReport;
-    if(!report){
-      const notice=byId('admiralDeckNotice')||byId('admiralCeremonialNotice');
-      if(notice)notice.textContent='Run Fleet Readiness first.';
-      return;
-    }
-    const blob=new Blob([JSON.stringify({schema:'dark-sky-fleet-readiness-v1',...report},null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`dark-sky-fleet-readiness-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),500);
+    const notice=byId('admiralDeckNotice')||byId('admiralCeremonialNotice');
+    if(!report){if(notice)notice.textContent='Run Fleet Readiness first.';return;}
+    let url=null;
+    try{
+      if(!window.DarkSkyKeelGuard)throw new Error('KeelGuard export verifier unavailable; reload the complete release.');
+      const snapshot=window.DarkSkyKeelGuard.exportSnapshot(report);
+      const filename=window.DarkSkyKeelGuard.reportFilename();
+      const blob=new Blob([JSON.stringify({schema:'dark-sky-fleet-readiness-v1',...snapshot},null,2)],{type:'application/json'});
+      url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+      if(notice)notice.textContent=`Readiness report prepared: ${filename}. Use Safari Download/Files to save it. This exports one run; it does not clear holds, change authority, or verify cloud backup.`;
+      setTimeout(()=>URL.revokeObjectURL(url),60000);
+    }catch(err){if(url)URL.revokeObjectURL(url);if(notice)notice.textContent=`Report not exported: ${String(err?.message||err)}`;}
   }
 
   async function openAdmiralDoctrineDetail(){
@@ -1348,7 +1372,7 @@
           const label=report.pass?(report.warnings?'WATCH':'CLEAR'):'HOLD';
           if(chip){chip.dataset.state=label.toLowerCase();chip.innerHTML=`<i></i> FLEET READINESS • ${label}`;}
           window.__lastAdmiralReadinessReport=report;
-          showCaptainDeskNotice(report.pass?(report.warnings?`Fleet readiness clear with ${report.warnings} watch item(s).`:'Fleet readiness clear. Hull proven for this check.'):`Hold in harbor: ${report.criticalFailures} critical readiness check(s).`,report.pass?(report.warnings?'future':'ready'):'unavailable');
+          showCaptainDeskNotice(report.pass?(report.warnings?`Fleet readiness clear with ${report.warnings} watch item(s).`:'Fleet readiness clear. Runtime checks completed; handoff remains separately unverified.'):`Hold in harbor: ${report.criticalFailures} critical readiness check(s).`,report.pass?(report.warnings?'future':'ready'):'unavailable');
         }).catch(err=>{if(chip){chip.dataset.state='hold';chip.innerHTML='<i></i> FLEET READINESS • UNAVAILABLE';}showCaptainDeskNotice(String(err?.message||err),'unavailable');});
         return;
       }
@@ -1415,7 +1439,7 @@
       if(!report)throw new Error('Fleet Readiness service unavailable');
       window.__lastAdmiralReadinessReport=report;
       refreshChartroomLive();
-      if(status)status.textContent=report.pass?(report.warnings?`Fleet Readiness completed with ${report.warnings} watch item(s) and no critical holds.`:'Fleet Readiness completed. Hull proven for this check.'):`Fleet Readiness found ${report.criticalFailures} critical hold(s).`;
+      if(status)status.textContent=report.pass?(report.warnings?`Fleet Readiness completed with ${report.warnings} watch item(s) and no critical holds.`:'Fleet Readiness completed. Runtime checks completed; handoff remains separately unverified.'):`Fleet Readiness found ${report.criticalFailures} critical hold(s).`;
       showCaptainDeskNotice(status?.textContent||'Fleet Readiness complete.',report.pass?(report.warnings?'future':'ready'):'unavailable');
     }).catch(error=>{
       if(run){run.disabled=false;run.textContent='RUN FLEET READINESS';}

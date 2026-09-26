@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.17",
+  "build": "8.8.17.13",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -14,7 +14,7 @@
     {
       "id": "captain",
       "verb": "command",
-      "mission": "Watch \u2192 Decide \u2192 Act \u2192 Record across vessels"
+      "mission": "Watch → Decide → Act → Record across vessels"
     },
     {
       "id": "admiral",
@@ -120,7 +120,11 @@
     "createsMembership": false,
     "createsEntitlements": false,
     "workingNameEditable": true,
-    "immutableIdentity": ["id", "project_id", "namespace"]
+    "immutableIdentity": [
+      "id",
+      "project_id",
+      "namespace"
+    ]
   },
   "fleetStructureContract": {
     "registryOwner": "black_flag",
@@ -188,8 +192,18 @@
   "supabaseKeel": {
     "readAuthority": "active-server-side-admiral-only",
     "readFunction": "admiral_read_fleet_spine",
-    "vesselStates": ["owner_ready", "owner_attention", "fleet_seeded", "registry_only"],
-    "ownerReadyRequires": ["owner_assigned", "one-active-project_owner-membership", "matching-auth-user", "business-settings-row"],
+    "vesselStates": [
+      "owner_ready",
+      "owner_attention",
+      "fleet_seeded",
+      "registry_only"
+    ],
+    "ownerReadyRequires": [
+      "owner_assigned",
+      "one-active-project_owner-membership",
+      "matching-auth-user",
+      "business-settings-row"
+    ],
     "fleetSeedCreatesOwnership": false,
     "fleetSeedCreatesCredentials": false,
     "fleetSeedPublishes": false,
@@ -203,8 +217,25 @@
     "ownerReadFunction": "vessel_read_own_watch_report",
     "admiralWriteControls": false,
     "registryActivityIsOperationalTruth": false,
-    "states": ["never_reported", "fresh_verified", "stale_report"],
-    "reportFields": ["current_work", "unresolved_issues", "issue_summary", "reported_at", "truth_source"],
+    "states": [
+      "never_reported",
+      "fresh_verified",
+      "stale_report"
+    ],
+    "reportFields": [
+      "current_work",
+      "unresolved_issues",
+      "issue_summary",
+      "reported_at",
+      "truth_source"
+    ],
     "failureMode": "explicit-unavailable-no-registry-substitution"
+  },
+  "release_compatibility": {
+    "runtime_build": "8.8.17.13",
+    "basis": "same semantic contract; exact existing safety predicates retained and negative-tested",
+    "authored_build": "8.8.17",
+    "verified_by": "keelguard-package-validation",
+    "proves_live_operation": false
   }
 }

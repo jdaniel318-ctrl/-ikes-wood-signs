@@ -1,6 +1,6 @@
 {
   "release": "8.8.17",
-  "build": "8.8.17",
+  "build": "8.8.17.13",
   "name": "Admiral Passage",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
@@ -37,9 +37,18 @@
   "command_contract": {
     "source_of_truth": "append-only server-governed Admiral commercial orders",
     "current_live_scope": "one selected vessel and one selected feature",
-    "next_scopes": ["all features on the selected vessel", "all features across the fleet"],
+    "next_scopes": [
+      "all features on the selected vessel",
+      "all features across the fleet"
+    ],
     "bulk_enablement_gate": "atomic server transaction plus impact preview, readback verification and rollback record",
-    "forbidden_automation": ["readiness", "sea_trial", "launch", "billing", "feature discovery"],
+    "forbidden_automation": [
+      "readiness",
+      "sea_trial",
+      "launch",
+      "billing",
+      "feature discovery"
+    ],
     "meaning": "If the Admiral orders all Free at a scope, every entitlement in that scope is Free until a later Admiral order changes it."
   },
   "security": "No service-role or secret credential is present in browser code. Server-side entitlement writes remain protected.",
@@ -48,5 +57,12 @@
     "commercial": "Active features are independently Free or Paid.",
     "environment": "Sea Trial or Live is separate from access and price."
   },
-  "expansion": "The same feature-level state model applies to every Fleet vessel without vessel-specific code."
+  "expansion": "The same feature-level state model applies to every Fleet vessel without vessel-specific code.",
+  "release_compatibility": {
+    "runtime_build": "8.8.17.13",
+    "basis": "same semantic contract; exact existing safety predicates retained and negative-tested",
+    "authored_build": "8.8.17",
+    "verified_by": "keelguard-package-validation",
+    "proves_live_operation": false
+  }
 }

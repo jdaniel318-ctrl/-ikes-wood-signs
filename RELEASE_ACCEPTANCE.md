@@ -1,3 +1,30 @@
+# KeelGuard 8.8.17.13 — acceptance
+
+## Package gates (automated locally)
+- Exact baseline CRC, checksums and all 85 original file paths retained.
+- Every JavaScript and inline script parses; every JSON/webmanifest parses.
+- Four current governance builds agree with page/runtime; their original conditions remain and deliberate unsafe mutations fail.
+- All inventoried data models and preflight runtime bodies match manifest hashes; missing/corrupt/stale files block.
+- Model fetch failures, malformed JSON and timeout cannot be promoted to passing evidence.
+- Brief never ignores a failure because calibration is only a warning; all warnings remain represented.
+- Unknown/missing session diagnostic proof is not reported healthy; legacy quota is surfaced, no record deletion.
+- Re-render is idempotent by run ID/time; export does not mutate or mix runs. Corrupt report counts block export.
+- Both read-only/previews and ledger persistence retain the previous implementation; authentication and project records remain untouched.
+
+## On-device field gate (PENDING; not inferred from static tests)
+- Complete upload resolves to 8.8.17.13 · KEELGUARD without a mixed-release loop.
+- Engine/Captain/Admiral boundaries retain normal authentication.
+- Fleet Readiness supplies precise new model evidence. No stale model holds when correct files load.
+- Quota degradation and unproven revocation remain visible when applicable.
+- Previously verified local book still has two payments, $2.00 and five history records; no additional payment/automatic correction.
+- The new timestamped Readiness Report contains one original run and truthful evidence boundaries.
+- iPad input/tap/scroll and customer/owner/kiosk paths remain regression tests, not assumptions.
+
+## Operational gates NOT completed by this build
+Separate-device authorized data retrieval; isolated restoration; live wrong-vessel/revoked-user denial; cloud-ledger migration; working-ship end-to-end workflow; Captain appointment and acceptance/replacement; Admiral downloads and recommendation acknowledgment. No Admiral promotion or Known Good promotion is automatic.
+
+## Preserved historical acceptance reference
+
 # 8.8.17.12 — Release Acceptance
 
 ## Evidence scope

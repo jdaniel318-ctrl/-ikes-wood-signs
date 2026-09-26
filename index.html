@@ -15,7 +15,7 @@
   </style>
   <script id="darkSkyFirstLightBootstrap">
     // Dark Sky 8.6.23 MEMORY MUSTER — canonical release identity.
-    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.17.12',seal:'ledger-touchsafe-881712'});
+    const DARK_SKY_RELEASE = Object.freeze({build:'8.8.17.13',seal:'keelguard-881713'});
     const DARK_SKY_EXPECTED_BUILD = DARK_SKY_RELEASE.build;
     const DARK_SKY_RELEASE_SEAL = DARK_SKY_RELEASE.seal;
     // 8.6.23 Storage Safe Harbor — three independent channels, no silent storage failures.
@@ -1308,7 +1308,7 @@
             <span><strong>CONFIGURE ENGINE</strong><small>Settings & system configuration</small></span>
           </button>
           <div class="modern-engine-secure">
-            <span aria-hidden="true">✓</span><div><strong>ENGINE SECURE</strong><small>All systems operational</small></div>
+            <span aria-hidden="true">✓</span><div><strong>ENGINE SECURE</strong><small>Readiness checked separately</small></div>
           </div>
           <a id="captainModeAccessBtn" class="modern-captain-access" href="#captainQuartersGate" role="button">
             <span><strong>CAPTAIN'S QUARTERS</strong><small>Private access</small></span>
@@ -1324,7 +1324,7 @@
       </nav>
 
       <section id="clearDeckLaunchpad" class="clear-deck-launchpad" aria-label="Engine command launchpad">
-        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.17.12 • LEDGER TOUCHSAFE</small><h3>Choose the active office</h3><p>One person may hold Captain and Admiral. Every action still declares its office, authority source, and exact scope.</p></div>
+        <div class="clear-deck-brief"><small id="engineReleaseLabel">8.8.17.13 • KEELGUARD</small><h3>Choose the active office</h3><p>One person may hold Captain and Admiral. Every action still declares its office, authority source, and exact scope.</p></div>
         <div class="clear-deck-primary-actions">
           <button type="button" class="clear-deck-action primary" data-clear-deck-command="projects"><span class="clear-deck-action-number">01</span><span><strong>OPERATE VESSELS</strong><small>Choose an independent vessel, then enter its exact Project Control or product surface.</small></span></button>
           <button type="button" class="clear-deck-action" data-command-open="captain"><span class="clear-deck-action-number">02</span><span><strong>CAPTAIN WATCH</strong><small>Review signals, decide a course, route deliberate action, and retain the outcome.</small></span></button>
@@ -1332,7 +1332,7 @@
           <button type="button" class="clear-deck-action govern" data-command-open="admiral"><span class="clear-deck-action-number">04</span><span><strong>BUILD &amp; GOVERN</strong><small>Commission vessels, govern features and branding, preserve doctrine, and manage Admiral programs.</small></span></button>
         </div>
         <div class="clear-deck-support" aria-label="Fleet support routes"><span><b>FLEET SUPPORT</b><small>Commission New Project and Configure Engine remain above. Proof, recovery, learning and diagnostics stay here.</small></span><button type="button" id="clearDeckSystemsToggle" data-clear-deck-command="systems" aria-expanded="false"><i aria-hidden="true"></i><span><strong>ENGINEERING SYSTEMS</strong><small>Diagnostics, proof, learning &amp; recovery</small></span><em>OPEN</em></button></div>
-        <div id="clearDeckStatus" class="clear-deck-status" role="status" aria-live="polite">Admiral Commission ready. Choose one operating level.</div>
+        <div id="clearDeckStatus" class="clear-deck-status" role="status" aria-live="polite">KeelGuard test baseline. Working-ship handoff remains unverified.</div>
       </section>
 
       <section id="enginePerformanceDeck" class="engine-performance-deck" aria-label="Engine performance">
@@ -1393,7 +1393,7 @@
       <section class="modern-system-operations">
         <div class="modern-system-operations-copy">
           <div class="system-shield" aria-hidden="true">✓</div>
-          <div><span>PLATFORM OPERATIONS</span><h3>SYSTEM OPERATIONS</h3><p><b></b> All systems operational</p></div>
+          <div><span>PLATFORM OPERATIONS</span><h3>SYSTEM OPERATIONS</h3><p><b></b> Readiness checked separately</p></div>
         </div>
         <div class="modern-system-capabilities" aria-label="Engine architecture">
           <span>Multi-project control</span>
@@ -1982,7 +1982,7 @@
     const snapshotPaths=['styles.css','simple_books.css','platform_core.js','platform_v4.js','platform_identity.js','fleet_supabase.js','ike_style_registry.js','app.js','captain.js','simple_books.js'];
     // Manifest, seal and inventory are fetched and verified as the first group;
     // do not download those same documents again in the presence group.
-    const presencePaths=['owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js'];
+    const presencePaths=['owner.html','manifest.webmanifest','IKE_STYLE_FOUNDRY.json','sw.js','FLEET_DOCTRINE_REGISTRY.json','GOLDEN_VOYAGES.json','FLEET_COMMAND_MODEL.json','ADMIRAL_ENTITLEMENT_STATE_MODEL.json'];
     const assetPaths=[]; // Root Keel: visual/route assets never block Engine boot; route surfaces verify/fallback when opened.
     // The seal makes every release URL immutable. Normal entry may safely reuse
     // bytes from this exact seal; recovery explicitly reloads them from network.
@@ -2249,6 +2249,20 @@
       const requiredPaths=[...snapshotPaths,...presencePaths];
       const requiredBodies=await Promise.all(requiredPaths.map(path=>fetchText(path,requestOptions)));
       requiredPaths.forEach((path,index)=>{fetched[path]=requiredBodies[index];});
+      // KeelGuard: compare the exact UTF-8 bodies that will be executed, not just version strings.
+      if(manifest.runtime_integrity?.algorithm!=='SHA-256'||!crypto?.subtle)throw new Error('Runtime integrity verification unavailable; the complete HTTPS release is required.');
+      await Promise.all(requiredPaths.map(async path=>{
+        const expectedHash=manifest.runtime_integrity.files?.[path];
+        if(!/^[a-f0-9]{64}$/.test(String(expectedHash||'')))throw new Error(`Missing runtime checksum: ${path}`);
+        const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(fetched[path]));
+        const actualHash=Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');
+        if(actualHash!==expectedHash)throw new Error(`Runtime checksum mismatch: ${path}. Re-upload the complete release; project data is unchanged.`);
+      }));
+      for(const path of ['FLEET_DOCTRINE_REGISTRY.json','GOLDEN_VOYAGES.json','FLEET_COMMAND_MODEL.json','ADMIRAL_ENTITLEMENT_STATE_MODEL.json']){
+        const model=JSON.parse(fetched[path]);
+        if(model.build!==EXPECTED)throw new Error(`Model build mismatch: ${path}; expected ${EXPECTED}, found ${model.build||'missing'}.`);
+      }
+      window.__darkSkyKeelGuardRuntimeIntegrity=Object.freeze({build:EXPECTED,seal:SEAL,files:requiredPaths.length,verifiedAt:new Date().toISOString(),scope:'body-integrity-not-a-server-signature'});
       await Promise.all(assetPaths.map(async path=>{try{await fetchResponse(path,requestOptions);}catch(err){console.warn('[Dark Sky] optional visual unavailable',path,err);}}));
       const runtimeMatch=fetched['app.js'].match(/const\s+BUILD_VERSION\s*=\s*['"]([^'"]+)['"]/);
       const runtimeBuild=runtimeMatch?.[1]||'unknown';
@@ -2336,7 +2350,7 @@
 
   (()=>{
     'use strict';
-    const BUILD='8.8.17.12';
+    const BUILD='8.8.17.13';
     const AUTO_TIMEOUT=2500;
     const COMMAND_TIMEOUT=2600;
     const RECOVERY_TIMEOUT=5200;

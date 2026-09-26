@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.17.12",
-  "version": "8.8.17.12",
-  "release_name": "Ledger TouchSafe",
-  "releaseName": "Ledger TouchSafe",
-  "release_seal": "ledger-touchsafe-881712",
+  "build": "8.8.17.13",
+  "version": "8.8.17.13",
+  "release_name": "KeelGuard",
+  "releaseName": "KeelGuard",
+  "release_seal": "keelguard-881713",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -70,14 +70,15 @@
     "bypass_mixed_build_gate": "forbidden",
     "service_worker_role": "identity-sentinel-only-no-fetch-handler",
     "atomic_execution_source": "verified-in-memory-snapshot",
-    "complete_runtime_preflight": "every required runtime URL must return 200 before any application script executes",
+    "complete_runtime_preflight": "hash-verify executable/style snapshots, entry dependencies and four current governance models before execution; additional versioned references validated in packaging",
     "visual_dependency_policy": "route/decorative media can degrade or hold only that route; never block Engine boot",
     "stale_document_handoff": "on page/manifest identity mismatch, attempt one cache-busted document navigation to deployment build+seal before HOLD; never loop",
     "page_identity_source": "single canonical DARK_SKY_RELEASE object in index first-light bootstrap; atomic loader derives from it",
     "diagnostic_hold_relay": "session-scoped same-origin relay independent of Engine authentication session; pending token consumed only by manual Continue Now or explicit toggle-off",
     "prior_release_seal_survival": "release-blocking-package-failure",
-    "release_identity_sources": "index.html + DEPLOYMENT_MANIFEST.json + RELEASE_SEAL.json + RELEASE_INVENTORY.json + manifest.webmanifest + sw.js must agree exactly",
-    "release_inventory_identity_verification": "RELEASE_INVENTORY build+seal+top-level release identity must match page before Engine paint"
+    "release_identity_sources": "page, app, Captain, identity adapter, Fleet Core adapter, ledger, manifest, seal, inventory, worker, webmanifest and four current governance models",
+    "release_inventory_identity_verification": "RELEASE_INVENTORY build+seal+top-level release identity must match page before Engine paint",
+    "integrity_boundary": "SHA-256 body agreement detects mixed/corrupt uploads; manifest is not independently signed and hashes are not authentication or authorization"
   },
   "authority_contracts": {
     "project_admin_default_recovery_pin": "4353",
@@ -90,15 +91,17 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "touch-and-focus-safe-local-ledger-corrections",
-  "release_note": "Ledger TouchSafe moves correction inputs out of the fixed scrolling overlay into a document-flow workspace. Removes smooth-scroll/autofocus overlap, exposes native review choices, and protects amount/customer/purpose until explicit unlock. No stored entry is automatically changed and no SQL migration is needed.",
+  "release_focus": "governance-model-integrity-truthful-readiness-and-storage-reporting",
+  "release_note": "KeelGuard aligns the four current governance models after predicate review, verifies runtime/model body hashes, preserves one-run readiness evidence, prioritizes actual holds, and exposes legacy-storage degradation without deleting data. No SQL, Captain appointment, live publication, cloud cutover or Admiral promotion is performed.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
     "migration": "SUPABASE_LEDGER_INTEGRITY_88171.sql",
     "packaged": true,
     "applied_by_static_release": false,
-    "server_correction_model": "append-only"
+    "server_correction_model": "append-only",
+    "execution_warning": "REFERENCE ONLY. Do not run bundled SUPABASE_LEDGER_INTEGRITY_88171.sql against the current schema: membership columns require a separately reviewed migration.",
+    "server_cutover_by_this_release": false
   },
   "authority_ledger_upgrade": {
     "schema": "dark-sky-dual-office-authority-ledger-v1",
@@ -106,7 +109,8 @@
     "packaged": true,
     "applied_by_static_release": false,
     "captain_evidence": "browser-labeled",
-    "admiral_evidence": "server-attested-after-active-global-authority"
+    "admiral_evidence": "server-attested-after-active-global-authority",
+    "verification_status": "rpc-deployment-not-verified-by-this-release; no fallback to claimed server authority"
   },
   "fleet_core_upgrade": {
     "migration": "fleet_registry_structure_8810",
@@ -183,7 +187,7 @@
     "server_migration_applied": false
   },
   "ledger_touchsafe_upgrade": {
-    "build": "8.8.17.12",
+    "build": "8.8.17.13",
     "baseline": "8.8.17.11",
     "editing_surface": "document_flow_no_fixed_input_ancestor",
     "automatic_text_input_focus": false,
@@ -193,5 +197,302 @@
     "native_ipad_safari": "field_verification_pending",
     "automatic_data_correction": false,
     "server_migration_applied": false
+  },
+  "keelguard_upgrade": {
+    "build": "8.8.17.13",
+    "changes_authority": false,
+    "deletes_records": false,
+    "changes_customer_workflows": false,
+    "working_ship_handoff_verified": false,
+    "field_testing": "required-on-iPad",
+    "model_pass_meaning": "packaged-declaration-not-live-operation"
+  },
+  "model_integrity": {
+    "algorithm": "SHA-256",
+    "files": {
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
+        "sha256": "cfe1e182de2b18c2f25cf7968e31d732826ba751577b4c96a7eb43e3e2aa7eb2",
+        "build": "8.8.17.13",
+        "policy": "current-runtime-build",
+        "semantic_scope": "existing exact predicates plus fail-closed body integrity"
+      },
+      "ADMIRAL_RELEASE_DOCTRINE.json": {
+        "sha256": "bc288db943075764f2080770553d2a1db1eb893b0520cf9e35ecac600e88c408",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "BOOTSTRAP_COMMIT_MODEL.json": {
+        "sha256": "fbe902aec010558634c9bd5f40d3b87b231f6f7e83db402baaf12c9f777a05ba",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "BOOTSTRAP_IGNITION_MODEL.json": {
+        "sha256": "9cb3c319dd1c511be99b46fb39816656b451c02478dc129df61d39fcd0eb4258",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "CAPABILITY_ADOPTION_MAP.json": {
+        "sha256": "5c036b4c126ce41ed3d2464195bbf0febbfff2b1be61a3851d224b1ffb2863cb",
+        "build": "8.8.10",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "DOCK_SOURCE_TRACE_MODEL.json": {
+        "sha256": "6cd53b3bb5ea12be70f70bb43e7f3b726c71b111960467ab60abbdebc075314f",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "EVIDENCE_RECONCILIATION_MODEL.json": {
+        "sha256": "1cb3bdeb5fa11deb3a3fc329872192b967e5ba1a20ace69476aebddebc0fbe39",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FEATURE_ENTITLEMENT_MODEL_870.json": {
+        "sha256": "8fe024b0e53d2a0e1205a126ad431b118e47698eabef079a47100072d86c3451",
+        "build": "8.8.11.9",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FLEET_COMMAND_MODEL.json": {
+        "sha256": "bb1db60445c0b9d1ae1d205664c42d115071445fb1c46d8d23f0ea2caca580ff",
+        "build": "8.8.17.13",
+        "policy": "current-runtime-build",
+        "semantic_scope": "existing exact predicates plus fail-closed body integrity"
+      },
+      "FLEET_DOCTRINE_REGISTRY.json": {
+        "sha256": "1661703e025f804a4e59f84b85fedc4b22714d4ddbb5a07cddd2f8f538f112a5",
+        "build": "8.8.17.13",
+        "policy": "current-runtime-build",
+        "semantic_scope": "existing exact predicates plus fail-closed body integrity"
+      },
+      "FLEET_INTELLIGENCE_MODEL.json": {
+        "sha256": "303f21ff1683636b5558ad35825047d19e982c80c9d872fd288a1984aa0c2a14",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FLEET_LEARNING_RECOMMENDATIONS_814.json": {
+        "sha256": "d364472c6c552119523c682d9fd28f00aeaccbac69c1fdd2d0282ac819bf33b7",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FLEET_LEARNING_REGISTRY.json": {
+        "sha256": "56272063199779e1d023636f857ded94500b003037c5e388a90d76ec366edbe0",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FLEET_MUSTER_SEED.json": {
+        "sha256": "1ec644aa2b77446814e15591890c3b6014d79a03799f3bcd46658826c215be2a",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FLEET_REGRESSION_GATES.json": {
+        "sha256": "359e654242712f1c013b5f6e087ec70b768c76ffbb6c3186616848f3b676dd4e",
+        "build": "8.8.17.13",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FLEET_SERVICES_FRAMEWORK.json": {
+        "sha256": "3d2107e3005a9fa8ef15278137ce45349d0baedd7173164d2ea4a9c649049ac4",
+        "build": "8.8.17",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FLEET_SERVICE_PACKAGE_MODEL.json": {
+        "sha256": "d5ee0b80aca50f2b751b60ff8b2099d1c4876b8968091e5548e694a59647905a",
+        "build": "8.8.17",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "FLEET_STEWARD_MODEL.json": {
+        "sha256": "cf08bb0cb43ff1bf3b796ce5bcc1680ca8b4deff49a42152b06d15a69bc3a198",
+        "build": "8.6.35",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "GENERATION_RELAY_MODEL.json": {
+        "sha256": "9cb05762348145d10b141de4a930d671ea928d90d541579a8eead79e11498fdb",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "GOLDEN_VOYAGES.json": {
+        "sha256": "a965328ed5afd1cba93f3827e2114ea23889d465381aae268ee22539295d16ac",
+        "build": "8.8.17.13",
+        "policy": "current-runtime-build",
+        "semantic_scope": "existing exact predicates plus fail-closed body integrity"
+      },
+      "IDENTITY_KEEL_MODEL.json": {
+        "sha256": "ced9516ccbe494008607017cf85b845c1a8f37b6a3432407a2b59e57e669566c",
+        "build": "8.8.6",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "IGNITION_WITNESS_MODEL.json": {
+        "sha256": "bd2fac149feea48f0be74e6deb4a500aca995b965118bf07962fcb161164d42f",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "IKE_STYLE_FOUNDRY.json": {
+        "sha256": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "MEMORY_COMMIT_WATCHDOG_MODEL.json": {
+        "sha256": "b35c977c0bc864447cfbf10ae529defc8d4a380f5cd6ee14d42890ae5f7767c6",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "MEMORY_MUSTER_MODEL.json": {
+        "sha256": "6bd9430827a73131bb944358f66d5545301b97424ee18462a57e3fa27497a605",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "MUSTER_TRACE_MODEL.json": {
+        "sha256": "65f8043db0b446378ed0dc95dd3ceb4fbfebfb33597e69980ab782537d477a4a",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "OWNER_AUTHORITY_MODEL.json": {
+        "sha256": "a62aaaba274919cad8794b096d2be3e19220274d61a665ecf574c86569128a98",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "OWNER_AUTH_STATE_GATE_MODEL.json": {
+        "sha256": "351aad0ee5e42961347b4a13e7850f7807ddc55b9e88669a9576550cfb42af10",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "OWNER_BRIDGE_MODEL.json": {
+        "sha256": "90e3759218d615cc5cb196e3e3ed5a8635bb62a8981e8d7987f941f09d5e558e",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "OWNER_PASSWORD_MODEL.json": {
+        "sha256": "fdca024e75efe690ea5bd2f9bf9176da009ac87038a89de3c9b0f941573b739a",
+        "build": "8.8.17",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "OWNER_RECOVERY_MODEL.json": {
+        "sha256": "32895b87c96415c74883dae00612de39ff060678358e52cd00677f7dfdcaffed",
+        "build": "8.8.17",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "OWNER_SIGNIN_BRIDGE_MODEL.json": {
+        "sha256": "0764043e941d3e858f54cbce6b4f24f69c20e5868766152babd749775856df71",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "PROOF_BARRIER_MODEL.json": {
+        "sha256": "b74cb9685ad59517df63745e74778316deec693f64679aad7ef27ab6df49692f",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "PROOF_BOOTSTRAP_MODEL.json": {
+        "sha256": "89e1c8a7951177b83d49ed07ed2491e55c474da932f0083606fa01a8d148cbc2",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "PROOF_CHAIN_SETTLEMENT_MODEL.json": {
+        "sha256": "46983f943adfd3337ce0384ce2594f65a44cdaa9de641cdcc2b6e6ec5d49960a",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "PROOF_SIGNER_TRACE_MODEL.json": {
+        "sha256": "6d0a6cf2c610e405af9ff3ffd1e7362c396a9339a60fb5843960198b35d5cb7e",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "REGISTRY_LEDGER_MODEL.json": {
+        "sha256": "7666458b9a3d8768f04bc16dd1cd00ca21bc0a53f302e7baec9bdf39174d6276",
+        "build": "8.8.17",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "RESOLVER_LIFELINE_MODEL.json": {
+        "sha256": "59e8e20ee2aab686d15f7436a83f6ec1d6f755fad36d650f7293d0b0e80b69d1",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "RLS_READ_BOUNDARY_MODEL.json": {
+        "sha256": "36e38e762437c697b09aefb578b84b62be0bb487b1fcead51e1749739cb00f3f",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "RUNTIME_ENTRY_TRACE_MODEL.json": {
+        "sha256": "7a54584fbfdce44c0c00942b28b8d41886fcf6c6e0bc3b721294e100ab543f34",
+        "build": "8.6.28",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "STORAGE_SAFE_PROOF_BUS_MODEL.json": {
+        "sha256": "d4911fae317d88248fe4f106276964c97dad885e3ba279f6b518b64c0ad0376d",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "TAX_LEDGER_MODEL.json": {
+        "sha256": "f6f190527df28b7b8f2553eb4ac8241a56c6f22798cc7500cfa5fda9b40302ee",
+        "build": "8.8.17.13",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      },
+      "WITNESS_TRUTH_MODEL.json": {
+        "sha256": "7cad06fff0014c09e2045178fb51cf88bbf2455058fea72af68af922c63a42df",
+        "build": "8.7.0",
+        "policy": "retained-versioned-reference",
+        "semantic_scope": "versioned bytes inventoried; not new live test evidence"
+      }
+    },
+    "historical_effective_builds_preserved": true
+  },
+  "runtime_integrity": {
+    "algorithm": "SHA-256",
+    "serialization": "UTF-8 response body, same text executed by atomic loader",
+    "files": {
+      "styles.css": "b66ce2ee9444b16a14934ffc9102128fc3ff027b875d31de5e62dd37d53ec534",
+      "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
+      "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
+      "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
+      "platform_identity.js": "46e6ce4735c950ae16e05745b385910c04bfbd72afc3c651280acbdf1e54c201",
+      "fleet_supabase.js": "7b99f2ef44a36aece69c4d54ae43b54f3f3ad11365a11d218b3362b3cc29b9b8",
+      "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
+      "app.js": "39600eb62621a447c4693e3b08cdada633fb973a8071b9ff5027f6556970f129",
+      "captain.js": "84b4e88ffce3378c961ce442cacea7838220312660f0adae8149fbfed865bc6a",
+      "simple_books.js": "06395c9de7aec3d6a46f03a8b6531ff5ba1683f6dec8bc498fa447059797baa5",
+      "owner.html": "14d844637d01ee209d42fccf6ef824a7997c1db1ab2e685d7bafa10f52311311",
+      "manifest.webmanifest": "465305afe3f23d2c75134136715a6fd927469354a04bd98c2ab8145b294fbec1",
+      "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
+      "sw.js": "8e7358f5afc4c8d7d28a35468f94b32f703b26d04eb670e94c8ce35ff1b06112",
+      "FLEET_DOCTRINE_REGISTRY.json": "1661703e025f804a4e59f84b85fedc4b22714d4ddbb5a07cddd2f8f538f112a5",
+      "GOLDEN_VOYAGES.json": "a965328ed5afd1cba93f3827e2114ea23889d465381aae268ee22539295d16ac",
+      "FLEET_COMMAND_MODEL.json": "bb1db60445c0b9d1ae1d205664c42d115071445fb1c46d8d23f0ea2caca580ff",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "cfe1e182de2b18c2f25cf7968e31d732826ba751577b4c96a7eb43e3e2aa7eb2"
+    }
   }
 }

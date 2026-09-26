@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.17.12';
+  const BUILD_VERSION='8.8.17.13';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4972,7 +4972,7 @@
     const orientationProven=source.includes('ikeOrientationEvidence(img,provenAnalysis)');
     const speciesProven=source.includes('ikeVisualSpeciesEvidence(img,provenAnalysis)');
     const lengthIsolated=source.includes('ikeLengthEvidenceFromGeometry(img,lengthAnalysis)');
-    const manualPromotion=String(renderAdmiralReadiness).includes('MARK CANDIDATE KNOWN GOOD');
+    const manualPromotion=String(renderAdmiralReadiness).includes('MARK DEVICE RECOVERY ANCHOR');
     const result={
       build:BUILD_VERSION,
       at:new Date().toISOString(),
@@ -5323,7 +5323,7 @@
     try{localStorage.setItem(`darkSkyAdmiralIncident:${BUILD_VERSION}`,JSON.stringify(incident));}catch(_){}
     window.__darkSkyAdmiralIncident=incident;admiralLedgerRecord('incident-diagnosis',{incident});return incident;
   }
-  function admiralIncidentClipboardText(incident=window.__darkSkyAdmiralIncident){
+  function admiralIncidentClipboardText(incident=window.__darkSkyAdmiralDecisionBrief?.incident||window.__darkSkyAdmiralIncident){
     if(!incident)return '';
     const lines=[`ADMIRAL INCIDENT ${incident.id}`,`Build: ${incident.build}`,`Severity: ${String(incident.severity).toUpperCase()}`,`Category: ${incident.category}`,`Diagnosis: ${incident.title}`,`Likely cause: ${incident.likelyCause}`,`Recommended action: ${incident.recommendation}`,`Captain required: ${incident.captainRequired?'YES':'NO'}`];
     for(const o of incident.observations||[]){lines.push('',`Case: ${o.case}`,`Orientation: ${o.orientation.expected} -> ${o.orientation.observed} | ${o.orientation.pass?'PASS':'FAIL'} | ${Number(o.orientation.score||0).toFixed(2)}`,`Species: ${o.species.expected} -> ${o.species.observed} | ${o.species.pass?'PASS':'FAIL'} | ${Number(o.species.score||0).toFixed(2)} | ${o.species.reason||'no reason'}`,`Length: ${o.length.expected||'?'} ft -> ${o.length.observed||'unresolved'} | ${o.length.pass?'PASS':'WATCH'} | ${Number(o.length.score||0).toFixed(2)} | ${o.length.reason||'no reason'}`);}
@@ -5335,15 +5335,128 @@
       const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(__){}ta.remove();return ok;
     }
   }
+  // KEELGUARD READINESS START — pure diagnostics; never grants authority or writes a book.
+  const KEELGUARD_MODELS=Object.freeze({
+    'FLEET_DOCTRINE_REGISTRY.json':'fleet-doctrine-registry',
+    'GOLDEN_VOYAGES.json':'golden-voyage-contract',
+    'FLEET_COMMAND_MODEL.json':'command-layer-placement',
+    'ADMIRAL_ENTITLEMENT_STATE_MODEL.json':'admiral-passage'
+  });
+  function keelGuardModelAssessment(file,model,expectedBuild=BUILD_VERSION){
+    const reasons=[];
+    if(!model||typeof model!=='object'||Array.isArray(model))return {ok:false,file,expectedBuild,actualBuild:null,reasons:['Model missing or not a JSON object.']};
+    const actualBuild=typeof model.build==='string'?model.build:null;
+    if(actualBuild!==expectedBuild)reasons.push(`Build mismatch: expected ${expectedBuild}; found ${actualBuild||'missing'}.`);
+    if(file==='FLEET_DOCTRINE_REGISTRY.json'){
+      const c=model.governance?.courseAuthority;
+      if(!Array.isArray(model.principles)||model.principles.length<10)reasons.push('At least 10 doctrine principles required.');
+      if(c?.holder!=='admiral'||c?.admiralMayChangeCourse!==true||c?.historyIsAppendOnly!==true||c?.rollbackSupported!==true)reasons.push('Admiral Course Authority must remain explicit, append-only and rollback-capable.');
+    }else if(file==='GOLDEN_VOYAGES.json'){
+      if(!Array.isArray(model.voyages)||model.voyages.filter(v=>v?.release_blocker===true).length<6)reasons.push('At least six release-blocking voyage definitions required.');
+      if(model.governance?.admiralMayChangeCourse!==true)reasons.push('Governed course-change authority missing.');
+    }else if(file==='FLEET_COMMAND_MODEL.json'){
+      const w=model.fleetWatchtower;
+      if(model.views?.operational!=='professional-default'||model.views?.presentation!=='cinematic-secondary'||!Array.isArray(model.layers)||model.layers.length!==3)reasons.push('Three command layers and Professional/Cinematic contract required.');
+      if(model.admiralCourseAuthority?.enabled!==true||model.admiralCourseAuthority?.authority!=='admiral')reasons.push('Admiral Course Authority missing.');
+      if(!(w?.readAuthority==='active-server-side-admiral-only'&&w?.writeAuthority==='exact-vessel-active-owner-membership-only'&&w?.readFunction==='admiral_read_fleet_watch'&&w?.writeFunction==='vessel_publish_watch_report'&&w?.ownerReadFunction==='vessel_read_own_watch_report'&&w?.admiralWriteControls===false&&w?.registryActivityIsOperationalTruth===false&&w?.failureMode==='explicit-unavailable-no-registry-substitution'))reasons.push('Read-only Admiral observation, exact-owner publication or fail-closed freshness contract changed.');
+    }else if(file==='ADMIRAL_ENTITLEMENT_STATE_MODEL.json'){
+      const p=model.admiral_passage;
+      if(p?.local_self_promotion!==false)reasons.push('Local self-promotion must remain forbidden.');
+      if(!Array.isArray(p?.proof)||p.proof.length<4)reasons.push('Four or more Admiral passage proof requirements required.');
+      if(!String(p?.promotion||'').includes('fleet_global_authorities'))reasons.push('Server-authorized Admiral passage required.');
+    }else reasons.push('Unrecognized release model.');
+    return {ok:reasons.length===0,file,expectedBuild,actualBuild,reasons,evidenceKind:'packaged-contract-not-live-operating-proof'};
+  }
+  async function keelGuardFetchText(path,timeoutMs=6000){
+    const controller=new AbortController();let timeout;
+    try{
+      return await Promise.race([
+        (async()=>{const r=await fetch(`${path}?keelguard=${encodeURIComponent(BUILD_VERSION)}&t=${Date.now()}`,{cache:'no-store',signal:controller.signal});if(!r.ok)throw new Error(`${path}: HTTP ${r.status}`);return await r.text();})(),
+        new Promise((_,reject)=>{timeout=setTimeout(()=>{controller.abort();reject(new Error(`${path}: verification timed out; no cached success used.`));},timeoutMs);})
+      ]);
+    }finally{clearTimeout(timeout);}
+  }
+  async function keelGuardDigest(text){
+    if(!globalThis.crypto?.subtle)throw new Error('SHA-256 verification unavailable; use the HTTPS site.');
+    const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  async function keelGuardLoadModels(){
+    const models={},evidence={};let manifest=null,manifestError='';
+    try{
+      manifest=JSON.parse(await keelGuardFetchText('DEPLOYMENT_MANIFEST.json'));
+      if(manifest.build!==BUILD_VERSION||manifest.release_seal!==window.__darkSkyExpectedRelease?.seal)throw new Error('Deployment manifest build or seal does not match this runtime.');
+      if(manifest.model_integrity?.algorithm!=='SHA-256')throw new Error('Release model integrity manifest missing.');
+    }catch(err){manifestError=String(err?.message||err);}
+    await Promise.all(Object.keys(KEELGUARD_MODELS).map(async file=>{
+      let parsed=null,actualSha256=null,expectedSha256=null,error=manifestError;
+      if(!error)try{
+        const expected=manifest.model_integrity.files?.[file];expectedSha256=expected?.sha256||null;
+        if(expected?.policy!=='current-runtime-build'||expected?.build!==BUILD_VERSION||!/^[a-f0-9]{64}$/.test(expectedSha256||''))throw new Error('Current-build model checksum declaration missing.');
+        const text=await keelGuardFetchText(file);actualSha256=await keelGuardDigest(text);parsed=JSON.parse(text);
+        if(actualSha256!==expectedSha256)throw new Error('Model checksum mismatch; file differs from the deployment manifest.');
+      }catch(err){error=String(err?.message||err);}
+      const assessed=keelGuardModelAssessment(file,parsed);
+      if(error){assessed.ok=false;assessed.reasons.unshift(error);}
+      evidence[file]={...assessed,expectedSha256,actualSha256,checkedAt:new Date().toISOString()};
+      models[file]=assessed.ok?parsed:null;
+    }));
+    return {models,evidence};
+  }
+  function keelGuardModelFailure(bundle,file){
+    const e=bundle?.evidence?.[file];
+    return `${file} — ${(e?.reasons?.length?e.reasons:['Required contract conditions failed.']).join(' ')} Expected build ${BUILD_VERSION}; found ${e?.actualBuild||'unavailable'}. No authority or production readiness granted.`;
+  }
+  function keelGuardStorageEvidence(witness,flags={}){
+    const memory=witness?.memory,channels=memory?.channels||{};
+    const memoryOk=!!memory&&Number(memory.counters?.['document-first-light']||0)>0;
+    const session=channels.sessionStorage;
+    const sessionOk=memoryOk&&session?.ok===true&&session?.writeOk!==false&&!session?.finalWriteError&&!witness?.sessionError&&flags.sessionOk===true;
+    const local=channels.localStorage;
+    const legacyOk=local?.ok===true&&local?.writeOk!==false&&!witness?.localError&&!flags.localError;
+    const errors=[local?.error,legacyOk?'':local?.writeError,witness?.localError,flags.localError].filter(Boolean);
+    return {scope:'diagnostic-witness-channels-only',memory:memoryOk?'available':'unavailable',session:sessionOk?'verified-session-mirror':'unverified-or-failed',local:legacyOk?'available-compatibility-only':'degraded',localErrors:[...new Set(errors)],proofBusOk:sessionOk,legacyState:legacyOk?'pass':sessionOk?'warn':'fail',ledgerStore:'not-assessed-by-this-witness-check',cloudBackupVerified:false,cleanupPerformed:false};
+  }
+  function keelGuardSummarize(report,calibrationIncident=null){
+    const checks=Array.isArray(report?.checks)?report.checks:[],failures=checks.filter(c=>c.state==='fail'),watches=checks.filter(c=>c.state==='warn');
+    const unknown=checks.filter(c=>!['pass','fail','warn'].includes(c.state));
+    const needs=[];
+    if(!checks.length||unknown.length)needs.push('Readiness evidence is incomplete. Do not promote or hand over a vessel.');
+    if(failures.length){needs.push(`HOLD — ${failures.length} failed check(s). Resolve and rerun before considering promotion.`);for(const c of failures)needs.push(`${c.label}: ${c.detail}`);}
+    if(watches.length){needs.push(`WATCH — ${watches.length} unresolved item(s). Passing model checks do not clear these.`);for(const c of watches)needs.push(`${c.label}: ${c.detail}`);}
+    if(!failures.length&&!watches.length&&checks.length&&!unknown.length)needs.push('This run has no failed or warning checks. It is not a working-ship handoff, cloud backup, or authorization to promote.');
+    needs.push('Before outside-Captain handoff: prove server scope/revocation, separate-device persistence and restore, the working vessel, accepted Captain appointment, and Admiral oversight. Testing remains with Captain and Bootstrap.');
+    const primary=failures.length?{severity:'hold',category:'readiness-holds',title:`${failures.length} readiness hold(s) require repair`,recommendation:'Resolve the named failures and rerun; do not change authority or delete evidence.',captainRequired:true,checkIds:failures.map(c=>c.id)}:watches.length?{severity:'watch',category:'readiness-watch',title:`${watches.length} unresolved readiness watch item(s)`,recommendation:'Review all watch items; outside handoff remains unverified.',captainRequired:true,checkIds:watches.map(c=>c.id)}:calibrationIncident;
+    if(primary&&primary!==calibrationIncident){primary.schema='dark-sky-admiral-incident-v1';primary.id=`KG-${report?.runId||'unverified'}`;primary.build=report?.build||BUILD_VERSION;primary.at=report?.at||null;primary.likelyCause='See the exact current check details; no live operational capability is inferred from a declaration.';primary.observations=[];}
+    return {passCount:checks.filter(c=>c.state==='pass').length,holdCount:failures.length,watchCount:watches.length,needs,incident:primary,calibrationIncident,scopeNotice:'Runtime checks and declared contracts; not verified working-ship commissioning or Captain handoff.',workingShipHandoffVerified:false,automaticPromotionAllowed:false};
+  }
+  function keelGuardExportSnapshot(report){
+    if(!report||!Array.isArray(report.checks)||!report.runId||!report.at)throw new Error('A complete readiness run is required before export.');
+    const snap=JSON.parse(JSON.stringify(report));
+    const fail=snap.checks.filter(c=>c.state==='fail').length,warn=snap.checks.filter(c=>c.state==='warn').length;
+    if(new Set(snap.checks.map(c=>c.id)).size!==snap.checks.length||snap.checks.some(c=>!['pass','warn','fail'].includes(c.state))||fail!==snap.criticalFailures||warn!==snap.warnings||snap.pass!==(fail===0))throw new Error('Readiness counts or check identities disagree; rerun before exporting.');
+    if(snap.readinessTruth&&(snap.readinessTruth.runId!==snap.runId||snap.readinessTruth.updatedAt!==snap.at))throw new Error('Readiness history belongs to a different run; rerun for one coherent snapshot.');
+    snap.exportedAt=new Date().toISOString();snap.snapshot={runId:snap.runId,runAt:snap.at,historyRunId:snap.readinessTruth?.runId||null,immutableCopy:true};
+    snap.evidenceBoundary='Browser-generated runtime/contract report, not a server signature, production handoff, or verified cloud backup.';
+    return snap;
+  }
+  function keelGuardReportFilename(prefix='dark-sky-fleet-readiness'){
+    return `${prefix}-${BUILD_VERSION}-${new Date().toISOString().replace(/[-:.]/g,'')}.json`;
+  }
+  window.DarkSkyKeelGuard=Object.freeze({assessModel:keelGuardModelAssessment,storageEvidence:keelGuardStorageEvidence,summarize:keelGuardSummarize,exportSnapshot:keelGuardExportSnapshot,reportFilename:keelGuardReportFilename});
+  // KEELGUARD READINESS END
+
   function admiralBuildDecisionBrief(report,calibration){
-    const prior=(()=>{try{return JSON.parse(localStorage.getItem('darkSkyAdmiralLastBrief')||'null');}catch(_){return null;}})();
-    const passCount=(report?.checks||[]).filter(c=>c.state==='pass').length,holdCount=(report?.checks||[]).filter(c=>c.state==='fail').length,watchCount=(report?.checks||[]).filter(c=>c.state==='warn').length;
+    const prior=window.__darkSkyAdmiralDecisionBrief||(()=>{try{return JSON.parse(localStorage.getItem('darkSkyAdmiralLastBrief')||'null');}catch(_){return null;}})();
     const changed=prior?.build&&prior.build!==BUILD_VERSION?`Candidate advanced from ${prior.build} to ${BUILD_VERSION}.`:`Candidate ${BUILD_VERSION} auto-preflighted.`;
-    const incident=admiralDiagnoseCalibrationReplay(calibration);
-    const needs=[];if(incident?.severity==='hold'&&!incident.captainRequired)needs.push(`Shipyard action: ${incident.recommendation}`);else if(incident?.captainRequired)needs.push(incident.recommendation);if(calibration?.lengthWatch&&incident?.category!=='length-watch')needs.push('Ike length remains experimental WATCH evidence only.');if(watchCount&&!calibration?.lengthWatch)needs.push(`${watchCount} check(s) are on WATCH.`);if(!needs.length)needs.push('Only deliberate Known Good promotion remains manual.');
-    const brief={schema:'dark-sky-admiral-decision-brief-v1',build:BUILD_VERSION,at:new Date().toISOString(),changed,passed:`${passCount} checks passed. ${incident?.title||'Protected replay assessed.'}`,needsCaptain:needs,incident};
+    const calibrationIncident=admiralDiagnoseCalibrationReplay(calibration);
+    const summary=keelGuardSummarize(report,calibrationIncident);
+    const brief={schema:'dark-sky-admiral-decision-brief-v1',build:BUILD_VERSION,at:report?.at||new Date().toISOString(),runId:report?.runId||null,changed,passed:`${summary.passCount} checks passed; ${summary.holdCount} hold(s); ${summary.watchCount} watch item(s). ${summary.scopeNotice}`,needsCaptain:summary.needs,incident:summary.incident,calibrationIncident,workingShipHandoffVerified:false,automaticPromotionAllowed:false};
+    // Existing historical records are retained. This is only a latest-brief mirror.
+    window.__darkSkyAdmiralDecisionBrief=brief;
+    try{sessionStorage.setItem('darkSkyKeelGuardLastBrief',JSON.stringify(brief));}catch(_){ }
     try{localStorage.setItem('darkSkyAdmiralLastBrief',JSON.stringify(brief));}catch(_){ }
-    const ledger=admiralLedgerRead();ledger.briefs=(Array.isArray(ledger.briefs)?ledger.briefs:[]).slice(-19);ledger.briefs.push(brief);admiralLedgerWrite(ledger);window.__darkSkyAdmiralDecisionBrief=brief;return brief;
+    const ledger=admiralLedgerRead();ledger.briefs=(Array.isArray(ledger.briefs)?ledger.briefs:[]).slice(-19);ledger.briefs.push(brief);admiralLedgerWrite(ledger);return brief;
   }
   function admiralLastRecovery(){try{return JSON.parse(localStorage.getItem('darkSkyLastRecovery')||'null');}catch(_){return null;}}
 
@@ -5450,15 +5563,16 @@
     const captainRoom=document.getElementById('captainQuarters');
     const professionalCaptain=!!document.getElementById('captainProfessionalSurface') && captainRoom?.dataset?.defaultCommandMode==='professional' && !!document.getElementById('captainCommandModeToggle');
     add('professional-first-command','Professional-first Captain command',professionalCaptain?'pass':'warn',professionalCaptain?'Captain Professional Command is configured as the default operational surface; the currently selected view does not alter that contract.':'Captain professional default contract or its deliberate view switch could not be verified.');
-    const doctrineRegistry=await safe(async()=>{const r=await fetch(`FLEET_DOCTRINE_REGISTRY.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    const keelGuardModels=await keelGuardLoadModels();
+    const doctrineRegistry=keelGuardModels.models['FLEET_DOCTRINE_REGISTRY.json'];
     const courseAuthorityOk=doctrineRegistry?.governance?.courseAuthority?.holder==='admiral' && doctrineRegistry?.governance?.courseAuthority?.admiralMayChangeCourse===true && doctrineRegistry?.governance?.courseAuthority?.historyIsAppendOnly===true && doctrineRegistry?.governance?.courseAuthority?.rollbackSupported===true;
     const doctrineOk=doctrineRegistry?.build===BUILD_VERSION && Array.isArray(doctrineRegistry?.principles) && doctrineRegistry.principles.length>=10 && courseAuthorityOk;
-    add('fleet-doctrine-registry','Fleet Doctrine Registry',doctrineOk?'pass':'fail',doctrineOk?`${doctrineRegistry.principles.length} active fleet principles are current; Admiral Course Authority is versioned, deliberate, history-retaining, and rollback-capable.`:'Fleet Doctrine Registry is missing, stale, incomplete, or lacks current Admiral Course Authority.');
-    const goldenVoyages=await safe(async()=>{const r=await fetch(`GOLDEN_VOYAGES.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    add('fleet-doctrine-registry','Fleet Doctrine Registry',doctrineOk?'pass':'fail',doctrineOk?`${doctrineRegistry.principles.length} active fleet principles are current; Admiral Course Authority is versioned, deliberate, history-retaining, and rollback-capable.`:keelGuardModelFailure(keelGuardModels,'FLEET_DOCTRINE_REGISTRY.json'));
+    const goldenVoyages=keelGuardModels.models['GOLDEN_VOYAGES.json'];
     const releaseBlockingVoyages=Array.isArray(goldenVoyages?.voyages)?goldenVoyages.voyages.filter(v=>v?.release_blocker===true):[];
     const goldenOk=goldenVoyages?.build===BUILD_VERSION && releaseBlockingVoyages.length>=6 && goldenVoyages?.governance?.admiralMayChangeCourse===true;
-    add('golden-voyage-contract','Golden UI Voyage framework',goldenOk?'pass':'fail',goldenOk?`${releaseBlockingVoyages.length} real-UI journeys are registered as release-blocking assurance paths; Admiral may deliberately version the voyage set without silently weakening active blockers.`:'Golden Voyage registry is missing, stale, lacks six or more release-blocking journeys, or lacks governed course-change authority.');
-    const commandModel=await safe(async()=>{const r=await fetch(`FLEET_COMMAND_MODEL.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    add('golden-voyage-contract','Golden UI Voyage framework',goldenOk?'pass':'fail',goldenOk?`${releaseBlockingVoyages.length} real-UI journeys are registered as release-blocking assurance paths; Admiral may deliberately version the voyage set without silently weakening active blockers.`:keelGuardModelFailure(keelGuardModels,'GOLDEN_VOYAGES.json'));
+    const commandModel=keelGuardModels.models['FLEET_COMMAND_MODEL.json'];
     const watchtower=commandModel?.fleetWatchtower;
     const watchtowerOk=watchtower?.readAuthority==='active-server-side-admiral-only'&&watchtower?.writeAuthority==='exact-vessel-active-owner-membership-only'&&watchtower?.readFunction==='admiral_read_fleet_watch'&&watchtower?.writeFunction==='vessel_publish_watch_report'&&watchtower?.ownerReadFunction==='vessel_read_own_watch_report'&&watchtower?.admiralWriteControls===false&&watchtower?.registryActivityIsOperationalTruth===false&&watchtower?.failureMode==='explicit-unavailable-no-registry-substitution';
     add('fleet-truth-signal','Fleet Watchtower truth boundary',watchtowerOk?'pass':'fail',watchtowerOk?'Vessels publish only through exact active owner membership; Admiral reads the server-attested fleet view without write controls or registry-time substitution.':'Fleet Watchtower authority, freshness, or fail-closed contract is incomplete.');
@@ -5466,11 +5580,11 @@
     const recoveryHelmOk=ownerRecoverySource.includes('id="forgotPassword"')&&ownerRecoverySource.includes('id="localRecovery"')&&ownerRecoverySource.includes('LOCAL_RECOVERY_MAX_FAILURES=5')&&ownerRecoverySource.includes("DEFAULT_PROJECT_ADMIN_RECOVERY_PIN='4353'")&&ownerRecoverySource.includes('usesSupabaseOwner()')&&ownerRecoverySource.includes('resetLocalOwnerCredential')&&ownerRecoverySource.includes('localRecoveryAttempt')&&ownerRecoverySource.includes('Local recovery cannot report to Fleet Watch');
     add('owner-recovery-helm','Owner password recovery boundary',recoveryHelmOk?'pass':'fail',recoveryHelmOk?'Every Owner Entrance exposes recovery; Supabase and provisional identities follow separate exact-vessel paths, local retry lockout is present, and local recovery still cannot publish Fleet Watch truth.':'Owner recovery is missing, stale, crosses identity modes, or weakens the Fleet Watch boundary.');
     const commandOk=commandModel?.build===BUILD_VERSION && commandModel?.views?.operational==='professional-default' && commandModel?.views?.presentation==='cinematic-secondary' && Array.isArray(commandModel?.layers)&&commandModel.layers.length===3 && commandModel?.admiralCourseAuthority?.enabled===true && commandModel?.admiralCourseAuthority?.authority==='admiral'&&watchtowerOk;
-    add('command-layer-placement','Engine → Captain → Admiral command model',commandOk?'pass':'fail',commandOk?'Engine operates, Captain commands, Admiral governs and may deliberately change Fleet course; professional operation remains complete without cinematic presentation.':'Command layer placement, professional/cinematic contract, or Admiral Course Authority is incomplete.');
-    const admiralPassageModel=await safe(async()=>{const r=await fetch(`ADMIRAL_ENTITLEMENT_STATE_MODEL.json?readiness=${Date.now()}`,{cache:'no-store'});return r.ok?await r.json():null;},()=>null);
+    add('command-layer-placement','Engine → Captain → Admiral command model',commandOk?'pass':'fail',commandOk?'Engine operates, Captain commands, Admiral governs and may deliberately change Fleet course; professional operation remains complete without cinematic presentation.':keelGuardModelFailure(keelGuardModels,'FLEET_COMMAND_MODEL.json'));
+    const admiralPassageModel=keelGuardModels.models['ADMIRAL_ENTITLEMENT_STATE_MODEL.json'];
     const passage=admiralPassageModel?.admiral_passage;
     const passageOk=admiralPassageModel?.build===BUILD_VERSION && passage?.local_self_promotion===false && Array.isArray(passage?.proof) && passage.proof.length>=4 && String(passage?.promotion||'').includes('fleet_global_authorities');
-    add('admiral-passage','Admiral Passage authority contract',passageOk?'pass':'fail',passageOk?'Captain proof, outside-owner protection, mandatory owner approval, and exact-vessel evidence form the passage; actual Admiral rank still requires an active server authority record and authenticated identity.':'Admiral qualification is stale, incomplete, or permits unsafe local self-promotion.');
+    add('admiral-passage','Admiral Passage authority contract',passageOk?'pass':'fail',passageOk?'The packaged passage contract forbids local self-promotion and declares required proof; this PASS does not verify working-ship commissioning, Captain appointment or live access denial. Authenticated server authority remains required.':keelGuardModelFailure(keelGuardModels,'ADMIRAL_ENTITLEMENT_STATE_MODEL.json'));
 
     const fleetDockBoundedPaint=String(renderFleetCommissioning).includes('LOCAL ROSTER • VERIFYING')&&String(renderFleetCommissioning).includes('commandDeadline(convergence')&&String(renderFleetCommissioning).includes('skipConvergence:true');
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');
@@ -5483,12 +5597,13 @@
     const ch8620=runtimeEntry8620?.channels||{};
     const channelText8620=(name,c,outerErr='')=>{const ok=!!c?.ok&&c?.writeOk!==false;const err=[c?.error,c?.writeError,outerErr].filter(Boolean).join(' • ');return `${name} ${ok?'PASS':'FAIL'}${err?` • ${err}`:''}`;};
     const runtimeDetail8620=`WINDOW-AUTHORITATIVE • first-light ${Number(rc8620['document-first-light']||0)} • loader ${Number(rc8620['verified-loader-entered']||0)} • app ${Number(rc8620['app-module-evaluated']||0)} • runtime ${Number(rc8620['verified-runtime-executed']||0)} • entry click ${Number(rc8620['engine-entry-control-clicked']||0)} • Engine visible ${Number(rc8620['engine-visible-observed']||0)} • ignition dispatch ${Number(rc8620['loader-ignition-dispatch']||0)} • ignition settled ${Number(rc8620['loader-ignition-settled']||0)} • last ${String(rl8620.event||'none')}.`;
-    const liveProofSessionOk8621=window.__darkSkyLiveProofSessionOk8621!==false;
+    const keelGuardStorage=keelGuardStorageEvidence(truth8620,{sessionOk:window.__darkSkyLiveProofSessionOk8621,localError:window.__darkSkyLiveProofLocalError8621});
+    const liveProofSessionOk8621=keelGuardStorage.proofBusOk;
     const liveProofLocalErr8621=String(window.__darkSkyLiveProofLocalError8621||'');
     add('witness-truth-window','Witness Truth — window memory',runtimeEntry8620&&Number(rc8620['document-first-light']||0)>0?'pass':'fail',runtimeEntry8620?`Current page memory witness is live. ${runtimeDetail8620}`:'No window-memory witness exists in the current page instance.');
     add('witness-truth-session','Witness Truth — sessionStorage',ch8620.sessionStorage?.ok&&ch8620.sessionStorage?.writeOk!==false?'pass':'fail',channelText8620('sessionStorage',ch8620.sessionStorage,truth8620.sessionError));
-    const localHealthy8620=ch8620.localStorage?.ok&&ch8620.localStorage?.writeOk!==false;
-    add('witness-truth-local','Witness Truth — localStorage',localHealthy8620?'pass':(liveProofSessionOk8621?'pass':'fail'),localHealthy8620?channelText8620('localStorage',ch8620.localStorage,truth8620.localError):liveProofSessionOk8621?`DEGRADED LEGACY CHANNEL • ${channelText8620('localStorage',ch8620.localStorage,truth8620.localError)} • live proof remains authoritative in window memory + sessionStorage.`:channelText8620('localStorage',ch8620.localStorage,truth8620.localError));
+    const localHealthy8620=keelGuardStorage.local==='available-compatibility-only';
+    add('witness-truth-local','Witness Truth — localStorage',keelGuardStorage.legacyState,localHealthy8620?channelText8620('localStorage',ch8620.localStorage,truth8620.localError):liveProofSessionOk8621?`DEGRADED LEGACY CHANNEL • ${channelText8620('localStorage',ch8620.localStorage,truth8620.localError)} • current diagnostic proof continues in memory + sessionStorage; this is NOT healthy persistent storage or a cloud backup. No records were deleted.`:channelText8620('localStorage',ch8620.localStorage,truth8620.localError));
     add('storage-safe-proof-bus','Storage-Safe Proof Bus',liveProofSessionOk8621?'pass':'fail',liveProofSessionOk8621?`Live proof bus uses window memory + sessionStorage. localStorage is best-effort only${liveProofLocalErr8621?` • localStorage: ${liveProofLocalErr8621}`:''}.`:`sessionStorage live proof mirror failed: ${String(window.__darkSkyLiveProofSessionError8621||'unknown')}`);
     const postLoginShown8636=Number(rc8620['post-login-evidence-hold-shown']||0)>0;
     const postLoginRelay8636=Number(rc8620['post-login-hold-relay-signal']||0)>0;
@@ -5659,7 +5774,13 @@
 
     const criticalFailures=checks.filter(x=>x.state==='fail').length;
     const warnings=checks.filter(x=>x.state==='warn').length;
-    const report={build:BUILD_VERSION,at:new Date().toISOString(),runId:`PG-${BUILD_VERSION}-${Date.now().toString(36).toUpperCase()}`,source,checks,criticalFailures,warnings,pass:criticalFailures===0,calibrationReplay};
+    for(const c of checks){
+      const file=Object.keys(KEELGUARD_MODELS).find(f=>KEELGUARD_MODELS[f]===c.id);
+      if(file){c.evidenceKind='packaged-contract-not-live-operating-proof';c.modelEvidence=keelGuardModels.evidence[file];}
+      else if(['witness-truth-window','witness-truth-session','witness-truth-local','storage-safe-proof-bus'].includes(c.id))c.evidenceKind='current-page-diagnostic-channel-observation';
+      else if(c.id==='identity-revocation-proof')c.evidenceKind='live-negative-test-outstanding';
+    }
+    const report={build:BUILD_VERSION,at:new Date().toISOString(),runId:`PG-${BUILD_VERSION}-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2,8)}`,source,checks,criticalFailures,warnings,pass:criticalFailures===0,calibrationReplay,modelEvidence:keelGuardModels.evidence,storageEvidence:keelGuardStorage,evidenceScope:'Runtime checks, source contracts and labeled observations; not a completed production handoff.',workingShipHandoffVerified:false,automaticPromotionAllowed:false};
     report.admiralBrief=admiralBuildDecisionBrief(report,calibrationReplay);
     return report;
   }
@@ -5686,7 +5807,7 @@
       combine('artifact-integrity','Approved Artifact Voyage',['approved-design-lock','approved-artifact-auto','ike-complete-order-boundary'],'Customer-approved production artifacts remain byte-stable and fingerprinted through approval, order serialization, admin, and archive.'),
       combine('ike-production-truth','Ike Production Truth Voyage',['ike-face-grid-fit','ike-true-case-roundtrip','ike-style-b-truth','ike-style-foundry','ike-glyphforge'],'Ike customer wording, finished-sign geometry, face fit, and governed style evidence remain production-truthful without fallback or destructive synchronization.'),
       combine('session-boundary','Session Boundary Voyage',['session-boundary'],'Published Open Project resolves to LIVE CUSTOMER; Test Experience and Client Preview remain safely simulated.'),
-      combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry','fleet-steward'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
+      combine('storage-telemetry','Storage Steward Voyage',['storage-telemetry','fleet-steward','witness-truth-local','storage-safe-proof-bus'],'Storage inspection is reachable from the Engine and safe cleanup is constrained to stale application caches.'),
       combine('admiral-doctrine','Admiral Doctrine Voyage',['admiral-doctrine','detector-independence','known-calibration-replay','release-recovery-history','fleet-learning-registry'],'Known doctrine, protected detector behavior, calibration replay, and release-recovery memory are retained automatically.')
       ,combine('admiral-passage','Admiral Passage Voyage',['admiral-passage','vessel-commissioning-authority','ownership-charter-separation','owner-production-backend'],'Captain proof → private outside-owner commissioning → server authority → authenticated Admiral command. No browser-only promotion exists.')
     ];
@@ -5796,21 +5917,21 @@
     report.voyages=voyages;
     window.__lastAdmiralReadinessReport=report;
     const holds=voyages.filter(v=>v.state==='hold').length,watches=voyages.filter(v=>v.state==='watch').length,clears=voyages.filter(v=>v.state==='clear').length;
-    const releaseBlocked=holds>0;
+    const releaseBlocked=holds>0||Number(report.criticalFailures)>0;
     const overall=releaseBlocked?'hold':watches?'clear-watch':'clear';
     const knownGood=currentKnownGoodRelease();
     const isKnownGood=String(knownGood)===String(BUILD_VERSION);
-    const holdVoyage=voyages.find(v=>v.state==='hold');
+    const holdVoyage=voyages.find(v=>v.state==='hold')||(releaseBlocked?{id:'',label:'all failed readiness checks',detail:'A failed check may be outside a grouped voyage. Every failed check blocks promotion; inspect the full engineering evidence.'}:null);
     const watchVoyage=voyages.find(v=>v.state==='watch');
     const incident=report.admiralBrief?.incident||window.__darkSkyAdmiralIncident;
     const watchOwnedByShipyard=!releaseBlocked&&watches>0&&incident&&!incident.captainRequired;
     if(state){state.textContent=releaseBlocked?'HOLD':watches?'CLEAR + WATCH':'CLEAR';state.className=`admiral-readiness-state ${releaseBlocked?'hold':watches?'watch':'ready'}`;}
     if(stamp)stamp.textContent=`${voyages.length}/${voyages.length} voyages assessed • ${clears} clear${watches?` • ${watches} watch`:''}${holds?` • ${holds} hold`:''} • candidate ${BUILD_VERSION} • known good ${knownGood} • fresh ${new Date(report.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
     if(summary){
-      const statusCopy=releaseBlocked?'A critical proving voyage failed. This release is not promotable.':watches?`All release-blocking protections are clear. ${watches} experimental WATCH item${watches===1?' is':'s are'} retained without blocking promotion.`:(isKnownGood?'All required proving voyages are clear. This release is already the current Known Good anchor.':'All required proving voyages are clear. This candidate can be considered for promotion.');
-      const nextTitle=releaseBlocked?`Run / inspect ${holdVoyage.label}`:isKnownGood?`Known Good — ${BUILD_VERSION}`:watchOwnedByShipyard?'Shipyard owns the watch — promotion is your decision':'Promote the cleared candidate';
-      const nextDetail=releaseBlocked?holdVoyage.detail:isKnownGood?`Dark Sky ${BUILD_VERSION} is already the current recovery anchor on this device.`:watchOwnedByShipyard?`${incident.title}. ${incident.recommendation} No manual retest is requested.`:`Candidate ${BUILD_VERSION} has no release-blocking voyages.`;
-      const nextButton=releaseBlocked?'VIEW VOYAGE EVIDENCE':(isKnownGood?'KNOWN GOOD':'MARK CANDIDATE KNOWN GOOD');
+      const statusCopy=releaseBlocked?'A critical runtime check failed. Preserve the current recovery anchor; promotion is blocked.':watches?`No critical failures in this run; ${watches} WATCH journey(s) remain. This is not verified working-ship commissioning or Captain handoff.`:(isKnownGood?'Runtime checks are clear for the recorded device recovery anchor. Working-ship handoff remains separately unverified.':'Runtime checks are clear. Device recovery-anchor selection is separate from production readiness and Captain handoff.');
+      const nextTitle=releaseBlocked?`Inspect ${holdVoyage.label}`:isKnownGood?`Device recovery anchor — ${BUILD_VERSION}`:'Review evidence before setting a recovery anchor';
+      const nextDetail=releaseBlocked?holdVoyage.detail:isKnownGood?`Dark Sky ${BUILD_VERSION} is the recovery anchor on this device, not proof of fleet production.`:'A local code recovery anchor does not verify cloud storage, a working ship, or a Captain appointment. Review the retained warnings and field evidence first.';
+      const nextButton=releaseBlocked?'VIEW VOYAGE EVIDENCE':(isKnownGood?'KNOWN GOOD':'MARK DEVICE RECOVERY ANCHOR');
       const releaseCopy=isKnownGood?'This release is the current Last Known Good anchor on this device. A future candidate must pass the Proving Ground before replacing it.':'Last Known Good stays separate from the current candidate until the Admiral deliberately promotes it. WATCH items remain visible after promotion.';
       summary.innerHTML=`<article class="proving-status-card ${releaseBlocked?'hold':watches?'watch':'clear'}"><small>FLEET STATUS</small><strong>${releaseBlocked?'HOLD':watches?'CLEAR + WATCH':'CLEAR'}</strong><p>${statusCopy}</p></article>
       <article class="proving-next-card ${isKnownGood&&!releaseBlocked?'known-good':''}"><small>NEXT BEST MOVE</small><strong>${escapeHtml(nextTitle)}</strong><p>${escapeHtml(nextDetail)}</p><button id="provingNextBtn" type="button" class="primary-btn small" ${isKnownGood&&!releaseBlocked?'disabled aria-disabled="true"':''}>${nextButton}</button>${watchVoyage&&!releaseBlocked?`<button id="provingWatchBtn" type="button" class="secondary-btn small">REVIEW WATCHLIST</button>`:''}</article>
@@ -5841,7 +5962,7 @@
     $('copyAdmiralBriefBtn')?.addEventListener('click',async()=>{const ok=await copyAdmiralIncidentBrief();const st=$('copyAdmiralBriefState');if(st)st.textContent=ok?'Admiral brief copied — paste directly into chat.':'Copy failed — use Download Evidence Report as fallback.';});
     $('provingWatchBtn')?.addEventListener('click',()=>{if(watchVoyage)document.querySelector(`[data-proving-voyage="${watchVoyage.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});});
     $('provingNextBtn')?.addEventListener('click',()=>{
-      if(releaseBlocked&&holdVoyage){document.querySelector(`[data-proving-voyage="${holdVoyage.id}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+      if(releaseBlocked){const evidence=$('provingEngineeringEvidence');if(evidence)evidence.open=true;(document.querySelector('.admiral-check.fail')||evidence)?.scrollIntoView?.({behavior:'auto',block:'center'});return;}
       if(isKnownGood)return;
       const disclosure=watches?` ${watches} non-blocking WATCH item${watches===1?' remains':'s remain'} visible in the Proving Ground.`:'';
       if(confirm(`Mark Dark Sky ${BUILD_VERSION} as the Last Known Good release on this device?${disclosure} This records promotion evidence only; it does not deploy or publish anything.`)){
@@ -5859,7 +5980,7 @@
 
   function downloadAdmiralReadinessReport(report=window.__lastAdmiralReadinessReport){
     if(!report)return;
-    downloadJsonArtifact(`dark-sky-proving-ground-${BUILD_VERSION}-${new Date().toISOString().slice(0,10)}.json`,{schema:'dark-sky-proving-ground-v1',...report});
+    downloadJsonArtifact(keelGuardReportFilename('dark-sky-proving-ground'),{schema:'dark-sky-proving-ground-v1',...keelGuardExportSnapshot(report)});
   }
 
   async function exportFleetRecoverySnapshot(){

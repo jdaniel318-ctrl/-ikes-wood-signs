@@ -1,8 +1,8 @@
 {
-  "release": "Ledger TouchSafe",
-  "name": "Ledger TouchSafe",
-  "build": "8.8.17.12",
-  "seal": "ledger-touchsafe-881712",
+  "release": "KeelGuard",
+  "name": "KeelGuard",
+  "build": "8.8.17.13",
+  "seal": "keelguard-881713",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
