@@ -90,3 +90,8 @@ Ledger corrections edit on a document-flow page outside the fixed scrolling ledg
 Runtime/model hash agreement protects deployment consistency; it is not independent signing or authorization. Retained authored model versions remain historical except the four exact-version current governance contracts. Readiness is a labeled mix of source contracts, local runtime observations and outstanding field tests. A source-contract PASS must never be interpreted as proven Captain appointment or production readiness. Test ownership remains with Captain and Bootstrap. The Captain's Admiral acceptance still requires working-ship commissioning, an accepted ship-scoped Captain appointment and continuing authenticated Admiral oversight/download/advice.
 
 LocalStorage is a degraded compatibility channel when probes fail. Verified session fallback can continue diagnostic work but is not a substitute for the separately verified book or cloud storage. Readiness history snapshots retain the original run time/identity; view changes do not create fresh verification. No cleanup, stored proof fabrication, role escalation or automatic live publication is authorized by these diagnostics.
+
+
+## WatchBeacon readiness-presentation contract — 8.8.17.14
+
+The readiness report remains the source of a single identified assessment. Its current cards, summary and downloadable snapshot must describe that same run. A failed display never means no findings and never clears a warning. Retry Display is read-only with respect to the report and business records; it is not a new readiness run. Renderer observations are separate from assessed facts. Authentication remains unchanged: passage PIN plus dedicated account/server-authority verification, no local self-promotion.

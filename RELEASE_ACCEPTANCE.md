@@ -1,3 +1,19 @@
+# WatchBeacon 8.8.17.14 — Acceptance
+
+Automated isolated/package results are in RELEASE_GATE.json. Native iPad acceptance remains pending. Do not mark the complete fleet or a Captain handoff ready based on these presentation tests.
+
+- [ ] Full candidate upload reports 8.8.17.14 / watchbeacon-881714.
+- [ ] Captain readiness completes and is carried through the separate Admiral PIN and dedicated account gates.
+- [ ] All current failed/warning card IDs, details and counts agree with the selected report and assessment time.
+- [ ] Current/Cleared History switching neither reruns readiness nor clears a current warning.
+- [ ] Report download contains the same run and separate findingsDisplay observation.
+- [ ] Quota failure does not suppress cards or erase history.
+- [ ] A renderer failure shows an explicit failure, with read-only retry and report-download actions.
+- [ ] Unrelated ledger/order/vessel/owner records remain unchanged.
+
+---
+## Retained prior release acceptance checklist (historical)
+
 # KeelGuard 8.8.17.13 — acceptance
 
 ## Package gates (automated locally)

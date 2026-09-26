@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.13",
-  "release": "KeelGuard",
-  "seal": "keelguard-881713",
+  "build": "8.8.17.14",
+  "release": "WatchBeacon",
+  "seal": "watchbeacon-881714",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "KeelGuard",
-  "name": "KeelGuard",
-  "releaseName": "KeelGuard"
+  "release_name": "WatchBeacon",
+  "name": "WatchBeacon",
+  "releaseName": "WatchBeacon"
 }

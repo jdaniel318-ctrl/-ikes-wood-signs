@@ -1,8 +1,8 @@
 {
-  "release": "KeelGuard",
-  "name": "KeelGuard",
-  "build": "8.8.17.13",
-  "seal": "keelguard-881713",
+  "release": "WatchBeacon",
+  "name": "WatchBeacon",
+  "build": "8.8.17.14",
+  "seal": "watchbeacon-881714",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

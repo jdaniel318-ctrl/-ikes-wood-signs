@@ -15721,7 +15721,7 @@ body.authority-ledger-open{overflow:hidden!important}
 /* 8.8.17.1 Ledger Integrity */
 .authority-ledger-view{display:flex;flex-wrap:wrap;gap:10px}.authority-ledger-more{justify-self:center}.authority-ledger-row em{color:#d7bd78;font-style:normal}.tax-books{display:grid;gap:16px}.tax-books.hidden,#authorityAuditPanel.hidden{display:none!important}.tax-books-controls{display:grid;grid-template-columns:2fr 1fr 1.5fr auto;gap:12px;align-items:end}.tax-books-controls label,.tax-entry-form label{display:grid;gap:7px;font-weight:800}.tax-books select,.tax-books input{min-height:50px;border:1px solid rgba(111,164,174,.48);border-radius:10px;background:#04161c;color:#f4f7f5;padding:10px 12px;font-size:16px}.tax-books-boundary{max-width:none!important;border-left:4px solid #dfbd59;background:rgba(16,61,67,.36);padding:13px 15px}.tax-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.tax-summary article{border:1px solid rgba(111,164,174,.3);border-radius:11px;padding:13px;display:grid;gap:6px}.tax-summary b,.tax-entry-form header b{color:#f1e0b3}.tax-entry-form{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;border:1px solid rgba(111,164,174,.3);border-radius:13px;padding:16px}.tax-entry-form header{grid-column:1/-1;display:flex;justify-content:space-between}.tax-entry-form .tax-wide{grid-column:span 2}.tax-entry-form button.tax-wide{grid-column:1/-1;background:#dfbd59;color:#07161b}.tax-rows{display:grid;gap:11px}.tax-row{display:grid;grid-template-columns:1.4fr auto 1fr;gap:16px;align-items:center;border:1px solid rgba(111,164,174,.3);border-radius:13px;padding:15px}.tax-row>div{display:grid;gap:5px}.tax-row>strong{color:#f1d27c}.tax-row dl{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:7px}.tax-row dl>div{border:1px solid rgba(111,164,174,.2);border-radius:8px;padding:8px}.tax-row dt{font-size:.62rem;color:#70bac8;font-weight:900}.tax-row dd{margin:3px 0 0;font-size:.75rem;overflow-wrap:anywhere}@media(max-width:900px){.tax-books-controls,.tax-entry-form{grid-template-columns:1fr 1fr}.tax-summary{grid-template-columns:repeat(3,1fr)}.tax-row{grid-template-columns:1fr}.tax-row dl{grid-template-columns:1fr 1fr}}@media(max-width:560px){.tax-books-controls,.tax-summary,.tax-entry-form{grid-template-columns:1fr}.tax-entry-form .tax-wide{grid-column:1}}
 
-/* 8.8.17.13 KeelGuard — diagnostic truth, in the existing scroll plane. */
+/* 8.8.17.14 KeelGuard — diagnostic truth, in the existing scroll plane. */
 .keelguard-readiness-boundary{display:grid;gap:10px;padding:18px;margin:12px 0 16px;border:1px solid #56818b;border-radius:12px;background:#092730;color:#e9f0ef;overflow-wrap:anywhere;}
 .keelguard-readiness-boundary small{font-size:12px;letter-spacing:.08em;color:#9fc7d0;}
 .keelguard-readiness-boundary>b{font-size:19px;color:#efce72;}
@@ -15734,3 +15734,15 @@ body.authority-ledger-open{overflow:hidden!important}
 #admiralReadinessFindings .admiral-finding small{font-size:12px;line-height:1.45;}
 #admiralReadinessFindings .admiral-finding>b{font-size:16px;}
 #admiralReadinessFindings .admiral-finding>span{font-size:15px;line-height:1.5;}
+
+/* WatchBeacon: explicit display failure, in the existing scroll plane. */
+.watchbeacon-render-error{display:grid;gap:12px;padding:18px;border:2px solid #edb098;border-radius:12px;background:#211d1c;color:#f7ece3;overflow-wrap:anywhere;}
+.watchbeacon-render-error p{margin:0;line-height:1.5;font-size:16px;}
+.watchbeacon-render-error>b{font-size:18px;}
+.watchbeacon-render-error button{min-height:48px!important;padding:12px!important;font-size:15px!important;cursor:pointer;}
+.watchbeacon-render-error button:active{filter:brightness(1.2);}
+.watchbeacon-render-error button:focus-visible{outline:3px solid #88d2e1;outline-offset:3px;}
+
+/* A view-mode display rule must never override a closed authority surface. */
+#admiralDeck.admiral-deck-overlay.hidden,
+#admiralGateOverlay.admiral-gate-overlay.hidden{display:none!important;pointer-events:none!important;}
