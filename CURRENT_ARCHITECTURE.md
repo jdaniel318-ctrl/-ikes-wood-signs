@@ -35,6 +35,17 @@ Passwords are handled only by Supabase Auth. The public application may use a Su
 - Admiral observation is read-only and must not expose modifying controls.
 - Admiral commissioning is an explicit modifying workflow: preview, exact target, active server authority, retained intent, durable audit, and verified readback are required.
 
+## Vessel Captain appointment and operating contract
+
+- A **Vessel Captain** is not the Fleet-wide `captain` authority role. The appointment is bound to one `fleet_vessels.id` and one authenticated person.
+- Admiral appointment is previewed first and remains `pending` until the named person accepts through their own Supabase account. The route alone grants no authority.
+- Acceptance creates or reactivates only an exact-vessel `operator` membership and records `vessel_captain` as the appointment role. Ownership remains unchanged.
+- The Vessel Captain station is intentionally narrower than Owner Control: server-backed order status and vessel Watch reporting are operating actions; branding, pricing, staff, entitlements, ownership and Fleet governance remain outside this appointment.
+- Revocation is audited. A membership created solely for the appointment is revoked with it; a membership that existed before the appointment is not silently deleted.
+- A vessel marked `captain_operated` still requires an accepted, active exact-vessel Captain appointment before Admiral departure preview can pass.
+- Depart Harbor also requires a retained working-ship proof reference; the reference is an audit pointer, not proof by itself.
+- `active` is a Fleet lifecycle state, not proof that the customer website is published or that a complete handoff voyage passed.
+
 ## Admiral-owned programs
 
 The Admiral may commission an Admiral-owned program such as Bootstrap Build. The ownership model `admiral_owned` records fleet ownership of the program; it does not create an individual `project_owner` membership. A new commission begins in `commissioning`, creates no entitlements, and is not live.
@@ -106,3 +117,16 @@ No credential input is automatically focused on initial entry or the change to t
 The separate My Fleet account surface is not redesigned by this scoped release. Optional ceremonial Command Deck presentation remains available. Reduced-motion preferences suppress the operational entrance fade.
 
 Implementation references: https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport and https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/length (accessed September 26, 2026).
+
+
+## WatchKeeper browser session boundary — 8.8.17.16
+
+The page-level Admiral window begins only after the shared client receives a full password sign-in response with a user identity. It becomes reusable only after authenticated user/active non-revoked Admiral role verification. Passage PIN validation remains a separate UI gate; a PIN never grants server authority.
+
+The document keeps private start/activity times, bound to the signed-in user. A 15-minute idle deadline and 60-minute absolute deadline use elapsed time and wall-clock checks; suspicious backward clock changes fail closed. Background polling, token refresh, focus, visibility changes and untrusted synthetic events do not extend the idle deadline. Expiration is checked before activity and before protected shared RPC dispatch. A short time away for guidance is not itself logout. A full document exit/reload ends the local window.
+
+The window is a **client-side protection, not backend session expiry**. Existing server authorization remains independent. Backend idle/absolute limits, comprehensive denial tests and immediate revocation of issued access tokens have not been implemented or verified by this release. Never describe a local countdown or successful model check as that proof. `admiral-session-window` remains WATCH until a separately reviewed server policy and live tests close this gap.
+
+Logout is scoped to the current Admiral token and local key. It does not clear unrelated owner keys, ledger records, localStorage, IndexedDB, or caches. Outstanding requests are cancelled locally; already committed remote commands are not undone and must not be automatically replayed. Authentication fields and diagnostics never retain the password.
+
+Admiral-facing operational UI and identity checks continue to be distinct from the user’s earned Admiral milestone: a working commissioned ship, a scoped accepted Captain appointment, independent operation, and ongoing Admiral visibility/downloads/advice are still required.

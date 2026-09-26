@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.15",
-  "release": "ClearPassage",
-  "seal": "clearpassage-881715",
+  "build": "8.8.17.17",
+  "release": "HarborMaster",
+  "seal": "harbormaster-881717",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "ClearPassage",
-  "name": "ClearPassage",
-  "releaseName": "ClearPassage"
+  "release_name": "HarborMaster",
+  "name": "HarborMaster",
+  "releaseName": "HarborMaster"
 }

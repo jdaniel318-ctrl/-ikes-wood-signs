@@ -1,30 +1,47 @@
-# 8.8.17.15 — ClearPassage acceptance
+# HarborMaster 8.8.17.17 — acceptance boundaries
 
-Status: test-site candidate; native Safari field checks pending. Do not infer promotion or production readiness from a layout result.
+## Native iPad / Fleet Core field checks (pending)
 
-## Entrance and security
-- [ ] Engine reports 8.8.17.15 · CLEARPASSAGE.
-- [ ] Passage PIN is empty, manual and required by the existing entry flow.
-- [ ] A wrong PIN cannot advance to the account screen.
-- [ ] Account step displays its correct current phase; the obsolete Layer 1 text is absent.
-- [ ] Heading, email, password, authenticate and return fit the normal landscape iPad viewport.
-- [ ] With keyboard/accessory bar or narrow screen, every control remains reachable by ordinary scroll.
-- [ ] Tapping a field types into that field; rotation/app switching does not cause a delayed focus jump.
-- [ ] Account denial and absent Admiral role keep the workspace closed.
-- [ ] Accepted credentials and active authority open the requested workspace through the original handler.
-- [ ] Cancel clears the password and returns without an invisible tap-blocking overlay.
-- [ ] User zoom, password manager, reduced motion and keyboard traversal remain usable.
+- [ ] Engine identifies 8.8.17.17 / HarborMaster after a completed deployment; no checksum bypass.
+- [ ] WatchKeeper start/resume/lock/end session behavior remains intact.
+- [ ] Admiral Delegate lane clearly states exact-vessel Captain scope and confirms the installed HarborMaster server contract without changing a vessel.
+- [ ] Admiral appointment preview changes nothing and issue creates only a pending appointment with no membership/ownership/live grant.
+- [ ] Candidate signs in with a separate account, sees only their matching appointment, and acceptance creates an active exact-vessel `operator` membership.
+- [ ] Candidate cannot access another vessel, owner-only settings, Fleet-wide Captain controls, or Admiral controls.
+- [ ] Vessel Captain station can read the intended server-backed order queue, change one order status with readback, and publish one Watch update.
+- [ ] Admiral sees the new Captain-operated state and Watch update without acquiring silent write control.
+- [ ] Revoking the appointment removes HarborMaster-created operator access and preserves ownership/history. A preexisting membership is not silently removed.
+- [ ] Departure preview blocks when operating authority or the working-ship proof reference is missing; DEPART HARBOR requires preview, active Admiral authority and exact target, and changes only Fleet lifecycle to `active`.
+- [ ] Customer publication remains unchanged by the departure command.
+- [ ] Working-ship handoff remains NOT VERIFIED until the complete customer/operator round trip, separate-device persistence, denial tests and isolated restore are completed.
 
-## Regression boundaries
-- [ ] Four current findings still render and match their report; no warning is silently cleared.
-- [ ] Returning from the Admiral deck leaves it truly hidden; re-entry follows the same gates.
-- [ ] Existing Captain Operations local ledger still shows the saved two payments and full correction history; do not add another test payment just to check this.
-- [ ] Six independent vessels and Bootstrap's separate program status remain unchanged.
-- [ ] No SQL, role/member edits, storage cleanup or live publication occurs during this test.
+## Server migration status
 
-## Packaging
-- [ ] Same 85 paths, 84 file checksums, 18 runtime body hashes and 43 model body hashes verify.
-- [ ] Four current runtime models match 8.8.17.15; other authored versions remain historical.
-- [ ] ZIP and enclosing folder both use DarkSky881715-ClearPassage with normalized local/UTC timestamps.
+The website ZIP does not execute SQL. The HarborMaster additive Captain appointment/operating/departure functions were applied to the connected Black Flag Fleet Core during this build, with zero Captain appointment rows immediately afterward and no vessel lifecycle departure issued. Native authenticated appointment/acceptance/revocation and departure tests are still pending. `SUPABASE_LEDGER_INTEGRITY_88171.sql` remains a warned historical reference and must not be run as-is.
 
-A passed model/layout check is not live revocation, independent-device restore, cloud backup, working-ship commissioning or Captain appointment proof.
+---
+
+## Prior WatchKeeper acceptance record — retained
+
+# WatchKeeper 8.8.17.16 — acceptance boundaries
+
+## Native iPad field checks (pending)
+
+- [ ] Engine identifies 8.8.17.16 / WatchKeeper after a completed deployment; no checksum bypass.
+- [ ] New document requires passage PIN followed by the dedicated account sign-in.
+- [ ] Recent same-document return says Resume Admiral session, account recheck pending, and does not promise another password.
+- [ ] Re-entering with the PIN rechecks account authority; successful reuse leaves a readable receipt.
+- [ ] Lock conceals the workspace and retains only eligible reuse. End immediately prevents reuse and gives truthful server sign-out feedback.
+- [ ] Short switch to ChatGPT and back fits within the remaining window without needless account entry.
+- [ ] At 15 minutes idle / 60 minutes maximum, the workspace is concealed and fresh sign-in is required. Background traffic does not keep it alive.
+- [ ] Both forms, session controls, keyboard targets and return controls fit and scroll on the actual iPad.
+- [ ] Findings/exports preserve the selected run and former warning identities. A fifth backend-session-enforcement warning is honest, not suppressed.
+- [ ] Existing ledger remains $2.00, two payments, five history records; no test transaction is added by authentication.
+
+## Isolated regression obligations
+
+Full source module closure, valid/invalid/revoked/changed account, cancelled/late/duplicate logins, offline/timeouts, both storage-failure channels, refresh coalescing, nonrenewing clocks, backwards clock change, owner transport parity, fresh-document isolation, responsive layouts, atomic loader, source-model semantics, historical identity preservation and exact final ZIP verification.
+
+## Not claimed by this release
+
+Server-enforced timeout/absolute session policy; immediate token revocation; native Safari behavior before field acceptance; cloud ledger backup/restore; production Captain handoff; automatic Admiral promotion. Existing dangerous historical SQL remains a warned reference, not a migration instruction. No feature/data removal is authorized by a passing readiness model.

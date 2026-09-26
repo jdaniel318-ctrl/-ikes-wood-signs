@@ -1,3 +1,27 @@
+# 8.8.17.17 — HarborMaster
+
+- Add exact-vessel Vessel Captain appointment preview/issue, candidate acceptance/decline, retained appointment history and audited revocation contract.
+- Preserve ownership and Fleet-wide authority separation: an accepted Vessel Captain receives only an exact-vessel `operator` membership, never a global Captain role or project ownership.
+- Add a dedicated Captain handoff/station route for server-backed order-status operation and Fleet Watch reporting.
+- Add deliberate Admiral Fleet lifecycle activation with operating-authority preflight; customer publication remains separate.
+- Fix Watchtower lifecycle mapping for `active`, `suspended` and `retired`, and render authenticated Admiral programs when available.
+- Package the additive Fleet Core HarborMaster migration inside the existing commissioning SQL reference; static upload does not apply it.
+- Retain WatchKeeper session controls, ClearPassage entrance geometry, WatchBeacon findings, Ledger TouchSafe history and all 85 application paths.
+
+## Prior release record (retained)
+
+# 8.8.17.16 — WatchKeeper
+
+- Add explicit start/resume/expired/verification-pending Admiral entrance states.
+- Add document-scoped 15-minute inactivity and 60-minute maximum workspace windows, without claiming backend expiry.
+- Reverify authenticated account and an exact active/non-revoked Admiral authority row before reuse and shared Admiral RPC calls.
+- Centralize active branding/commissioning station transport on the same bounded Admiral client.
+- Separate Lock from End Session; preserve unrelated owner/customer storage and records.
+- Reject late/cancelled sign-in responses, serialize refresh, bound verification transport, and never replay a timed-out command automatically.
+- Add an honest server-enforcement WATCH, retain former warnings and historical release evidence.
+
+## Prior release record (retained)
+
 # 8.8.17.15 — ClearPassage
 
 - Fit the Admiral Command Deck PIN/account entrance to tablet and small-screen viewports.
