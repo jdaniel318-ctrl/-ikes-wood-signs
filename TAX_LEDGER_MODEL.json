@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-tax-ledger-v1",
-  "build": "8.8.17.10",
-  "release": "Ledger Recovery Keel",
+  "build": "8.8.17.11",
+  "release": "Ledger Closeout",
   "purpose": "Accountant-ready, entity-isolated bookkeeping records for every Fleet Core member and the Captain and Admiral offices.",
   "boundaries": {
     "recordkeeping_aid_only": true,
@@ -41,7 +41,64 @@
     "accrual",
     "other"
   ],
-  "minimum_export_columns": [
+  "authority_rules": {
+    "captain": "May record Captain-authorized fleet operating entries and the Captain office book.",
+    "admiral": "May record Admiral-authorized fleet governance and commissioning entries, including Admiral programs.",
+    "fleet_member": "May record entries only for an exact project membership.",
+    "system": "May import only through a separately authenticated server process; not by browser role assertion."
+  },
+  "retention": {
+    "transaction_history": "durable",
+    "supporting_documents": "retain outside this browser ledger under the accountant-approved retention policy",
+    "exports": "Current-summary UTF-8 CSV: one current row per original transaction. Full-history JSON: originals plus all corrections for selected book/year, with raw values and lineage.",
+    "browser_recovery": "Legacy same-origin ledger sources are preserved until a durable merged ledger has been written and read-back verified; recovery never fabricates missing transactions.",
+    "browser_recovery_entity_boundary": "Recovered browser entries must resolve to a current canonical Fleet member, Captain/Admiral office, or Admiral program key before merge."
+  },
+  "ordinary_review_states": [
+    "unreviewed",
+    "accountant_review",
+    "ready"
+  ],
+  "approval_record_policy": {
+    "state": "approved",
+    "workflow": "separate_previewed_operator_attestation",
+    "required": [
+      "accountant_name",
+      "reviewed_on",
+      "evidence_ref",
+      "attested",
+      "approved_revision_id"
+    ],
+    "independently_verified": false,
+    "legacy_approval": "preserve historical value; label unverified and request review"
+  },
+  "current_export_columns": [
+    "entity_key",
+    "entity_name",
+    "entity_type",
+    "tax_year",
+    "accounting_method",
+    "transaction_date",
+    "entry_type",
+    "category_code",
+    "category_label",
+    "amount_usd",
+    "counterparty",
+    "description",
+    "payment_method",
+    "payment_reference",
+    "review_status",
+    "acting_office",
+    "source",
+    "created_at",
+    "root_entry_id",
+    "current_revision_id",
+    "revision_count",
+    "original_created_at",
+    "approval_basis",
+    "export_kind"
+  ],
+  "minimum_export_columns_legacy": [
     "entity_key",
     "entity_name",
     "entity_type",
@@ -62,17 +119,5 @@
     "entry_id",
     "correction_of"
   ],
-  "authority_rules": {
-    "captain": "May record Captain-authorized fleet operating entries and the Captain office book.",
-    "admiral": "May record Admiral-authorized fleet governance and commissioning entries, including Admiral programs.",
-    "fleet_member": "May record entries only for an exact project membership.",
-    "system": "May import only through a separately authenticated server process; not by browser role assertion."
-  },
-  "retention": {
-    "transaction_history": "durable",
-    "supporting_documents": "retain outside this browser ledger under the accountant-approved retention policy",
-    "exports": "UTF-8 CSV with one row per retained entry",
-    "browser_recovery": "Legacy same-origin ledger sources are preserved until a durable merged ledger has been written and read-back verified; recovery never fabricates missing transactions.",
-    "browser_recovery_entity_boundary": "Recovered browser entries must resolve to a current canonical Fleet member, Captain/Admiral office, or Admiral program key before merge."
-  }
+  "history_export_schema": "dark-sky-book-history-v1"
 }

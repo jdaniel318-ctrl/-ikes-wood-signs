@@ -67,3 +67,16 @@ RLS remains enabled for every public table. Tables intentionally accessible only
 - Legacy localStorage mirrors are compatibility-only and may not override server truth.
 - Ledger migration is evidence-preserving: same-origin legacy sources are scanned, never deleted during recovery, and migration is complete only after the merged IndexedDB book and recovery receipt both read back successfully.
 - Recovered ledger rows must resolve to a canonical Fleet/office/program entity before merge; foreign entity keys fail closed instead of crossing a vessel boundary.
+
+
+## 8.8.17.11 local correction/audit contract
+
+A correction retains `correction_of` as the original transaction ID and records `previous_revision_id` for the exact version previewed. Immutable stored rows may not be removed or overwritten. The save reads, checks, merges and writes within a single IndexedDB read/write transaction; it verifies that transaction's complete result and checks committed rows again. A conflict requires a new preview rather than silently overwriting another tab. Unrelated concurrent additions survive. Recovery unions new IDs into a freshly read durable book without altering existing IDs' payloads.
+
+The correction surface has no fixed first-twelve limitation. Record details are read-only; CORRECT RECORD is an explicit modifying action with reason, preview, fresh office checks and confirmation. Captain authorization is a read-only witness of the existing Captain closure, not a stored credential or a server grant. Any Admiral actor or Admiral/program book requires explicit Admiral context and active identity. All persisted local corrections remain BROWSER BOOK evidence.
+
+Ordinary review states are unreviewed, accountant_review and ready. The retained approved state is a historical value, not proof of approval. New approval records require the separate workflow, name/date/evidence and explicit operator attestation attached to the prior revision. Corrections do not carry that approval forward. Legacy approval selections remain preserved and visibly unverified.
+
+Current-summary CSVs resolve one row per original transaction; they never sum corrections as income. Full-history JSON exports include originals and every correction only for the selected book and original-transaction year. Recorded predecessor IDs are checked; older inferred links are separately labeled and never written back over old records. SHA-256 covers JSON.stringify(payload) in exported key order, encoded as UTF-8; this is an integrity checksum, not an authenticated signature. Export does not constitute a restore or a server backup.
+
+Primary implementation references: IndexedDB transaction scheduling and lifecycle, https://www.w3.org/TR/IndexedDB-3/ ; spreadsheet formula-injection precautions, https://owasp.org/www-community/attacks/CSV_Injection .

@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.17.10",
-  "release": "Ledger Recovery Keel",
-  "generatedAt": "2026-09-25T22:33:00Z",
+  "build": "8.8.17.11",
+  "release": "Ledger Closeout",
+  "generatedAt": "2026-09-25T23:36:19.297187Z",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -310,8 +310,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "Ledger Recovery Keel performs an exhaustive same-origin ledger recovery sweep before migration is marked complete. Genuine legacy records are merged by stable entry identity, durable IndexedDB read-back must match the complete ledger proof, source storage is preserved, and no synthetic transaction is created when no record can be found.",
-  "candidate": "8.8.17.10",
+  "note": "Packaging candidate only. Existing checks/features/contracts are inherited regression references, not a claim that every legacy behavior was rerun. Closeout isolated tests use simulated storage; native Safari and full-site field verification remain pending.",
+  "candidate": "8.8.17.11",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -561,8 +561,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.17.10",
-    "seal": "ledger-recovery-keel-881710",
+    "build": "8.8.17.11",
+    "seal": "ledger-closeout-881711",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
@@ -571,5 +571,172 @@
       "sw.js"
     ],
     "rule": "all authoritative identities must agree exactly; any prior release seal in an authoritative file fails packaging"
+  },
+  "closeout_verification": {
+    "isolated_cases_passed": 18,
+    "storage_adapter": "serialized_in_memory_test_only",
+    "renderer": "Chromium 144 at iPad/iPhone viewport sizes",
+    "native_indexeddb_tested": false,
+    "native_download_tested": false,
+    "full_site_authenticated_route_tested": false,
+    "server_changes": false,
+    "field_status": "PENDING",
+    "tests": [
+      {
+        "test": "Recovery and discoverable corrections",
+        "status": "PASS",
+        "detail": "Four recovered history records; two transaction buttons; legacy approval not promoted."
+      },
+      {
+        "test": "Preview and cancel are read-only",
+        "status": "PASS",
+        "detail": "Complete durable book unchanged."
+      },
+      {
+        "test": "No-op blocked",
+        "status": "PASS",
+        "detail": "No needless history record added."
+      },
+      {
+        "test": "Append-only correction and double-tap guard",
+        "status": "PASS",
+        "detail": "Exactly one new correction; initial four raw records byte-equivalent as objects; $2 unchanged; queue zero."
+      },
+      {
+        "test": "Fresh-document reconstruction and recovery idempotence",
+        "status": "PASS",
+        "detail": "Five records and corrected values persist; no re-import or original-history enrichment."
+      },
+      {
+        "test": "Both exports reconcile",
+        "status": "PASS",
+        "detail": "CSV two rows/$2/current ready statuses; full history five exact raw records including old mistake, lineage and valid SHA-256."
+      },
+      {
+        "test": "Separate approval requires evidence and attestation",
+        "status": "PASS",
+        "detail": "Unchecked form cannot stage approval; checked preview still does not save; cancellation leaves five records."
+      },
+      {
+        "test": "Authority rechecked at confirmation",
+        "status": "PASS",
+        "detail": "Locked Captain session creates no correction."
+      },
+      {
+        "test": "Stale preview across tabs rejected",
+        "status": "PASS",
+        "detail": "Newer correction retained; stale tab adds nothing."
+      },
+      {
+        "test": "Concurrent independent corrections",
+        "status": "PASS",
+        "detail": "Two parallel saves survive; no lost ledger write."
+      },
+      {
+        "test": "Write failure rollback and retry",
+        "status": "PASS",
+        "detail": "Forced storage failure adds no record; retry adds exactly one correction."
+      },
+      {
+        "test": "Queue preview and completion",
+        "status": "PASS",
+        "detail": "Legacy approval exits via explicit Ready selection; one previewed correction; totals unchanged."
+      },
+      {
+        "test": "Approval save and export labels",
+        "status": "PASS",
+        "detail": "Evidence, attestation and exact prior revision retained; CSV does not label approval independently verified."
+      },
+      {
+        "test": "All records reachable",
+        "status": "PASS",
+        "detail": "Pagination exposes all 32 transactions with a correction action."
+      },
+      {
+        "test": "Browser layout ipad-landscape",
+        "status": "PASS",
+        "detail": "Correction preview and export controls within viewport; vertical scrolling remains available."
+      },
+      {
+        "test": "Browser layout ipad-portrait",
+        "status": "PASS",
+        "detail": "Correction preview and export controls within viewport; vertical scrolling remains available."
+      },
+      {
+        "test": "Browser layout iphone",
+        "status": "PASS",
+        "detail": "Correction preview and export controls within viewport; vertical scrolling remains available."
+      },
+      {
+        "test": "Safe CSV and lossless scoped JSON",
+        "status": "PASS",
+        "detail": "Formula-like fields escaped only in CSV; exact multiline/raw text remains in JSON; other books excluded; foreign key rejected."
+      }
+    ],
+    "static_checks": [
+      {
+        "name": "File budget and production-only payload",
+        "status": "PASS",
+        "detail": "85 flat production files; no fixtures or harness"
+      },
+      {
+        "name": "Inventory",
+        "status": "PASS",
+        "detail": "85 files match inventory exactly"
+      },
+      {
+        "name": "JavaScript syntax",
+        "status": "PASS",
+        "detail": "10 external JavaScript files parse"
+      },
+      {
+        "name": "JSON syntax",
+        "status": "PASS",
+        "detail": "48 JSON / webmanifest files parse"
+      },
+      {
+        "name": "Inline script syntax",
+        "status": "PASS",
+        "detail": "5 inline JavaScript blocks parse"
+      },
+      {
+        "name": "Static HTML identities",
+        "status": "PASS",
+        "detail": "568 static IDs checked; no duplicates per page"
+      },
+      {
+        "name": "Static local references",
+        "status": "PASS",
+        "detail": "41 HTML / CSS local references exist"
+      },
+      {
+        "name": "Required runtime files",
+        "status": "PASS",
+        "detail": "45 deployment runtime dependencies present"
+      },
+      {
+        "name": "Release identity",
+        "status": "PASS",
+        "detail": "9 page/runtime/manifest sources agree on build; declared seals match; active ledger and Captain header match"
+      },
+      {
+        "name": "Active ledger wiring",
+        "status": "PASS",
+        "detail": "Verified loader points to simple_books.js and its stylesheet, not the dormant legacy module"
+      },
+      {
+        "name": "Service worker contract",
+        "status": "PASS",
+        "detail": "Identity sentinel only; no fetch handler added"
+      }
+    ],
+    "packaged_at": "2026-09-25T23:40:09+00:00",
+    "packaging": {
+      "file_count": 85,
+      "checksummed_file_count": 84,
+      "single_root": "DarkSky881711-LedgerCloseout",
+      "test_data_included": false,
+      "zip_extraction_checksums": "verified"
+    }
   }
 }

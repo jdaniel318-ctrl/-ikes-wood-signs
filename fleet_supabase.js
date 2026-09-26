@@ -29,7 +29,7 @@
     const url = String(options.url || '').replace(/\/$/, '');
     const publishableKey = String(options.publishableKey || options.key || '');
     const sessionKey = String(options.sessionKey || 'darkSkySupabaseSessionV1');
-    const build = String(options.build || '8.8.17.10');
+    const build = String(options.build || '8.8.17.11');
 
     if (!url || !publishableKey) throw new Error('Supabase publishable client configuration is incomplete.');
 

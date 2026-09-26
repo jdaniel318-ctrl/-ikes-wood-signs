@@ -49,8 +49,10 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.17';
+  const UPPER_COMMAND_BUILD='8.8.17.11';
   let authorized = false;
+  // Read-only session witness; this never grants Captain or server authority.
+  window.DarkSkyCaptainSessionStatus = () => authorized;
 
   const byId = (id) => document.getElementById(id);
   // Module-wide encoder for every Professional and Signal Report renderer.

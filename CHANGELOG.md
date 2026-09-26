@@ -1,3 +1,17 @@
+# 8.8.17.11 — Ledger Closeout
+
+- Always-visible correction actions and pagination for older transactions.
+- Before/after preview, mandatory reason, append-only correction, previous-revision link, and verified save.
+- Read-only previews/cancel, no-op rejection, repeat-tap protection, stale-preview conflict detection, exact-book scope, and current Captain/Admiral authority checks.
+- Read/write transaction merging preserves unrelated parallel additions; recovery no longer enriches/rewrites existing durable historical rows.
+- Accountant approval removed from ordinary entry/queue choices; separate evidence-backed operator attestation, explicitly not independently verified.
+- Unattested legacy approval selections get a review warning without changing old data.
+- Accountant current-summary CSV and scoped lossless full-history JSON with SHA-256; original/current IDs and legacy inferred links remain explicit.
+- More visible To Check control, cash-basis/payment-method label distinction, mobile correction previews, and release-witness alignment.
+- No production data corrected automatically; no SQL/server migration applied; Safari closeout pending.
+
+---
+
 # Dark Sky Changelog
 
 ## 8.8.17.10 — Ledger Recovery Keel

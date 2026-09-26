@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.10",
-  "release": "Ledger Recovery Keel",
-  "seal": "ledger-recovery-keel-881710",
+  "build": "8.8.17.11",
+  "release": "Ledger Closeout",
+  "seal": "ledger-closeout-881711",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Ledger Recovery Keel",
-  "name": "Ledger Recovery Keel",
-  "releaseName": "Ledger Recovery Keel"
+  "release_name": "Ledger Closeout",
+  "name": "Ledger Closeout",
+  "releaseName": "Ledger Closeout"
 }

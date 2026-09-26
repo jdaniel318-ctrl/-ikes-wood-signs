@@ -1,4 +1,4 @@
-/* Dark Sky 8.8.17.10 Ledger Recovery Keel */
+/* Dark Sky 8.8.17.11 Ledger Closeout */
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"],#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"]{width:100%;min-height:94px!important;padding:18px 20px!important;border:1px solid rgba(223,189,89,.72)!important;border-radius:16px!important;background:linear-gradient(135deg,rgba(20,72,82,.72),rgba(5,28,36,.96))!important;color:#f5e5b5!important;display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;gap:15px!important;text-align:left!important;box-shadow:inset 0 1px rgba(255,255,255,.05),0 12px 30px rgba(0,0,0,.2)!important}
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"] .ledger-launch-icon,#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"] .ledger-launch-icon{width:46px;height:46px;border:1px solid rgba(111,191,207,.58);border-radius:12px;background:rgba(12,70,83,.66);display:grid;place-items:center;font-size:1.45rem;color:#8fd2df}
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"]>span:nth-child(2),#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"]>span:nth-child(2){display:grid;gap:5px}
@@ -26,3 +26,60 @@
 .tax-queue-complete{display:grid;place-items:center;gap:8px;padding:34px 20px;text-align:center;border:1px solid rgba(83,197,132,.42);border-radius:13px;background:rgba(28,91,61,.12)}.tax-queue-complete small{color:#76cf9c;font-weight:900;letter-spacing:.14em}.tax-queue-complete b{font-size:1.55rem;color:#f5e9bd}.tax-queue-complete span{color:#abc0bd}.tax-queue-complete button{margin-top:8px;min-height:48px;padding:0 22px;border:1px solid rgba(224,189,89,.65);border-radius:9px;background:#e0bd59;color:#07171c;font-weight:900}
 button,[role="button"]{touch-action:manipulation;-webkit-tap-highlight-color:rgba(91,190,239,.22)}
 @media(max-width:900px){.tax-resolve-form{grid-template-columns:1fr;grid-template-areas:"identity" "fields" "details" "action"}.tax-resolution-identity{border-right:0;border-bottom:1px solid rgba(112,171,183,.22)}.tax-resolution-fields{grid-template-columns:1fr}.tax-resolve-form>details>div{grid-template-columns:1fr 1fr}}
+/* Ledger Closeout: deliberate correction workspace, readable touch targets, scoped exports. */
+#taxBooksPanel .hidden{display:none!important}
+#taxBooksPanel .simple-books-head{grid-template-columns:minmax(0,1fr) auto;align-items:start}
+#taxBooksPanel .tax-accountant-tools[open]{grid-column:1/-1}
+#taxBooksPanel .tax-accountant-tools>div{position:static;width:auto;max-width:100%;margin-top:10px;grid-template-columns:1fr 1fr;box-shadow:none}
+#taxBooksPanel .tax-accountant-tools>summary{min-height:48px;display:flex;align-items:center;justify-content:center}
+#taxBooksPanel .tax-accountant-tools button{min-height:52px;padding:12px;white-space:normal;font-size:14px;border:1px solid #bca358;border-radius:10px;background:#0b2831;color:#f1d889;font-weight:850}
+#taxBooksPanel .tax-export-help{grid-column:1/-1;margin:4px 0 0;color:#a9c0c6;font-size:14px;line-height:1.55}
+#taxBooksPanel #taxToCheck{border-color:#baa158;background:#123640}
+#taxBooksPanel #taxToCheck em{font-size:12px;font-weight:900;font-style:normal;color:#efcf70;margin-top:5px;letter-spacing:.035em}
+#taxBooksPanel .tax-row{grid-template-columns:minmax(0,1fr) auto minmax(180px,260px);gap:18px}
+#taxBooksPanel .tax-record-actions{display:grid;gap:12px;min-width:0;align-self:start}
+#taxBooksPanel .tax-record-actions button,#taxMoreRecords{min-height:48px;padding:10px 14px;border:1px solid #bda75e;background:#102e36;color:#f6df96;border-radius:9px;font-size:14px;font-weight:850;cursor:pointer}
+#taxBooksPanel .tax-record-actions>button{width:100%}
+#taxBooksPanel .tax-record-actions details>summary{font-size:13px;padding:12px 0;min-height:44px}
+#taxBooksPanel .tax-record-actions details p{font-size:13px;line-height:1.45;color:#a5bdc2;margin:8px 0}
+#taxBooksPanel .tax-record-actions dl{grid-template-columns:1fr}
+#taxBooksPanel .tax-record-actions dd{font-size:13px;overflow-wrap:anywhere}
+#taxMoreRecords{width:100%}
+.tax-correction-panel{margin:16px 0;padding:22px;border:1px solid #bca15c;border-radius:16px;background:linear-gradient(150deg,#0a303b,#061b23);display:grid;gap:18px;scroll-margin-top:16px;min-width:0}
+.tax-correction-panel>header{display:flex;align-items:start;justify-content:space-between;gap:16px}
+.tax-correction-panel h3{font-size:24px;line-height:1.2;margin:6px 0 0;color:#f4e7bc}
+.tax-correction-panel small{color:#91bac4;font-size:13px;line-height:1.4}
+.tax-correction-panel>header small{letter-spacing:.1em;color:#89c9d8;font-weight:900}
+.tax-correction-panel button{min-height:50px;border-radius:10px;border:1px solid #b69f5b;background:#0b2831;color:#f1d789;padding:12px 20px;font-size:15px;font-weight:900;cursor:pointer}
+.tax-correction-panel .tax-correction-primary{background:#e0bd59;color:#07171c;border-color:#e0bd59;letter-spacing:.04em}
+.tax-correction-panel button:active,#taxBooksPanel .tax-record-actions button:active,#taxToCheck:active{transform:translateY(1px);filter:brightness(1.12)}
+.tax-correction-panel button:disabled{opacity:.6;cursor:wait}
+.tax-correction-panel input,.tax-correction-panel select{width:100%;min-width:0;min-height:52px;font-size:17px;line-height:1.3}
+.tax-correction-panel label{display:grid;gap:8px;font-size:16px;font-weight:750;min-width:0;color:#e7f0ef}
+.tax-correction-panel input:focus-visible,.tax-correction-panel select:focus-visible,.tax-correction-panel button:focus-visible,#taxBooksPanel .tax-record-actions button:focus-visible{outline:3px solid #7accdf;outline-offset:3px}
+.tax-correction-identity{display:grid;gap:7px;padding:16px;border:1px solid #32525b;border-radius:12px;background:#07242d;min-width:0}
+.tax-correction-identity>b{font-size:20px;color:#f1e3b8}
+.tax-correction-identity>span{font-size:15px;color:#bcd0d4}
+.tax-correction-panel code{font-size:12px;color:#bddbe2;overflow-wrap:anywhere}
+.tax-correction-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.tax-correction-wide{grid-column:1/-1}
+.tax-correction-form .tax-attestation{display:flex;align-items:flex-start;gap:12px;line-height:1.5;font-size:15px;padding:16px;border:1px solid #937e41;border-radius:10px}
+.tax-attestation input[type=checkbox]{width:24px;height:24px;min-width:24px;min-height:24px;margin-top:1px;accent-color:#e0bd59}
+.tax-change-list{display:grid;gap:12px;min-width:0}
+.tax-change-row{display:grid;grid-template-columns:minmax(100px,.65fr) minmax(0,1fr) minmax(0,1fr);gap:14px;padding:16px;background:#07232c;border:1px solid #385862;border-radius:11px;align-items:start}
+.tax-change-row>b{font-size:15px;color:#f1e1b0}
+.tax-change-row>span{display:grid;gap:6px;font-size:17px;color:#f0f4ee;overflow-wrap:anywhere;white-space:pre-wrap}
+.tax-change-row>span:last-child{color:#b8edcf}
+.tax-change-row small{font-size:11px;letter-spacing:.08em;font-weight:900}
+.tax-correction-reason{margin:0;padding:14px;background:#0b2931;color:#c6d7d9;border-radius:10px;font-size:16px;line-height:1.5;overflow-wrap:anywhere}
+.tax-correction-reason b{display:block;margin-bottom:5px;color:#f4df97}
+.tax-correction-boundary{margin:0;font-size:14px;line-height:1.5;color:#a7bec4}
+.tax-correction-buttons{display:grid;grid-template-columns:1fr 2fr;gap:12px}
+.tax-approval-warning{margin:0;padding:16px;border:1px solid #9a8144;border-radius:11px;background:#2c2b21;color:#ead9af;font-size:15px;line-height:1.55;overflow-wrap:anywhere}
+.tax-approval-warning p{margin:8px 0}
+.tax-correction-panel .authority-ledger-status{max-width:none!important;margin:0;font-size:15px;line-height:1.5}
+@media(max-width:900px){#taxBooksPanel .tax-row{grid-template-columns:minmax(0,1fr) auto}#taxBooksPanel .tax-record-actions{grid-column:1/-1;grid-template-columns:1fr 1fr}#taxBooksPanel .simple-books-head{grid-template-columns:1fr}.tax-correction-panel{padding:18px}.tax-correction-panel h3{font-size:22px}}
+@media(max-width:560px){.tax-correction-panel{padding:14px;gap:14px}.tax-correction-panel>header{flex-direction:column}.tax-correction-panel>header button{align-self:stretch}.tax-correction-form,.tax-correction-buttons{grid-template-columns:1fr}.tax-change-row{grid-template-columns:1fr;gap:12px}.tax-correction-panel h3{font-size:22px}#taxBooksPanel .tax-record-actions,#taxBooksPanel .tax-accountant-tools>div{grid-template-columns:1fr}#taxBooksPanel .tax-row{grid-template-columns:1fr auto}#taxBooksPanel .tax-accountant-tools button{grid-column:1/-1}}
+
+.tax-correction-identity>small{font-weight:400;letter-spacing:0;text-transform:none;line-height:1.5}
+.tax-correction-panel .tax-correction-reason,.tax-correction-panel .tax-correction-boundary{max-width:none}
