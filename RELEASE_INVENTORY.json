@@ -1,8 +1,8 @@
 {
-  "release": "Ledger Closeout",
-  "name": "Ledger Closeout",
-  "build": "8.8.17.11",
-  "seal": "ledger-closeout-881711",
+  "release": "Ledger TouchSafe",
+  "name": "Ledger TouchSafe",
+  "build": "8.8.17.12",
+  "seal": "ledger-touchsafe-881712",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.11",
-  "release": "Ledger Closeout",
-  "seal": "ledger-closeout-881711",
+  "build": "8.8.17.12",
+  "release": "Ledger TouchSafe",
+  "seal": "ledger-touchsafe-881712",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Ledger Closeout",
-  "name": "Ledger Closeout",
-  "releaseName": "Ledger Closeout"
+  "release_name": "Ledger TouchSafe",
+  "name": "Ledger TouchSafe",
+  "releaseName": "Ledger TouchSafe"
 }

@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.17.11",
-  "version": "8.8.17.11",
-  "release_name": "Ledger Closeout",
-  "releaseName": "Ledger Closeout",
-  "release_seal": "ledger-closeout-881711",
+  "build": "8.8.17.12",
+  "version": "8.8.17.12",
+  "release_name": "Ledger TouchSafe",
+  "releaseName": "Ledger TouchSafe",
+  "release_seal": "ledger-touchsafe-881712",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -90,8 +90,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "previewed-append-only-corrections-and-lossless-local-history-export",
-  "release_note": "Ledger Closeout adds always-available correction actions, exact before/after preview, fresh local-office checks, serialized append-only saves, separate operator-recorded approval, and scoped current-summary/full-history exports. No production data or server schema is changed automatically.",
+  "release_focus": "touch-and-focus-safe-local-ledger-corrections",
+  "release_note": "Ledger TouchSafe moves correction inputs out of the fixed scrolling overlay into a document-flow workspace. Removes smooth-scroll/autofocus overlap, exposes native review choices, and protects amount/customer/purpose until explicit unlock. No stored entry is automatically changed and no SQL migration is needed.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -180,6 +180,18 @@
     "history_export": "JSON; original and all corrections for selected book/year; SHA-256",
     "automatic_data_correction": false,
     "native_safari_field_test": "pending",
+    "server_migration_applied": false
+  },
+  "ledger_touchsafe_upgrade": {
+    "build": "8.8.17.12",
+    "baseline": "8.8.17.11",
+    "editing_surface": "document_flow_no_fixed_input_ancestor",
+    "automatic_text_input_focus": false,
+    "review_choices": "visible_native_radio_controls",
+    "core_details": "disabled_until_deliberate_unlock",
+    "amount_parser": "positive_plain_decimal_no_exponent_or_letters",
+    "native_ipad_safari": "field_verification_pending",
+    "automatic_data_correction": false,
     "server_migration_applied": false
   }
 }

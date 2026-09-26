@@ -1,37 +1,31 @@
-# Dark Sky 8.8.17.11 — Ledger Closeout
+# Dark Sky 8.8.17.12 — Ledger TouchSafe
 
-Baseline: DarkSky881710-LedgerRecoveryKeel.zip. This is a local-ledger correction and audit-export release, not a cloud cutover.
+Baseline: DarkSky881711-LedgerCloseout.zip. This is a targeted correction-form touch/focus repair, not a cloud cutover. No stored ledger entry is automatically changed.
 
-## What changed
+## Field symptom and repair
 
-Every transaction now has a visible **CORRECT RECORD** button, including completed records. Older transactions are reachable through **SHOW 25 MORE RECORDS** rather than being permanently hidden after the first twelve rows.
+The iPad field test reported off-target taps/typing: the payment-reference focus ring was visible while unintended text appeared in the amount field. The precise native Safari failure was not reproduced in this runtime. Inspection found simultaneous smooth scrolling and programmatic text-input focus inside a fixed scrolling ledger overlay; this risky interaction has been removed rather than compensated with guessed screen offsets.
 
-Corrections require a reason, a before-and-after preview, and **CONFIRM CORRECTION**. A save appends one correction with the original transaction ID and previous revision ID. Originals and earlier corrections are not overwritten. No-op changes, stale previews, mismatched book scope, and repeated confirmation taps are blocked. Saves merge against the current durable book in a read/write transaction so parallel saves cannot replace one another's records. Recovery also merges against a fresh durable read; earlier source storage is not deleted.
+The correction form now opens on a single-column document-flow page. Its input ancestors are not fixed, transformed, animated, or nested scrollers. Only established background command surfaces are temporarily suspended; their display/inert state and scroll positions are restored on Cancel or completion. Authentication and recovery overlays are not hidden by that suspension. Opening the page focuses a non-editable container, never an input; the user chooses the input by a normal tap. No scrolling/focus timers run while typing. A visible Active field indicator reflects native focus.
 
-Ordinary entry and queue-completion controls no longer offer Accountant approved. Ready for accountant is the completion state. A separate **RECORD ACCOUNTANT APPROVAL** action in Record Details requires an actual accountant/firm name, date, safe evidence reference, an explicit operator attestation, and its own preview/confirmation. This does not independently verify an accountant or professional approval. Earlier approved selections without attestation are visibly labeled as unverified legacy selections and return to the attention queue; their saved history is not rewritten.
+Review status uses three visible native radio choices, including Ready for accountant. It does not carry forward an old approval selection. Payment-reference labels explicitly bind to the field. The amount, customer and purpose are disabled and hidden until CHANGE AMOUNT OR TRANSACTION DETAILS is deliberately chosen. Any unlocked amount must be a positive plain decimal; letters, scientific notation, signs and more than two decimal places are rejected before a preview. A deliberate amount change remains visible in the before/after preview.
 
-**ACCOUNTANT TOOLS** provides two distinct exports. The accountant CSV contains one current row per transaction, plus revision IDs/counts, the original creation time and explicit approval basis. The full-history JSON contains the selected book/year's originals, every correction, recorded or explicitly inferred legacy predecessor links, and a SHA-256 checksum of its payload. Historical correction amounts are replacement snapshots, not extra payments. Formula-like text is protected in the CSV presentation; the JSON retains exact stored text. A download request is described as prepared, not as proof the browser saved a file.
+The existing reason, preview, confirmation, append-only history, fresh-authority checks, stale-revision protection, double-confirm protection, recovery and both exports remain. The To Check review subcount now includes unverified legacy approvals.
 
-The Accounting basis label now distinguishes cash-basis accounting from a payment method such as Check. The review-queue card is visibly actionable. Editor fields and preview layouts adapt to iPad and iPhone widths.
+## First iPad check
 
-## Closeout on the existing iPad
+Do not save the currently misaligned form or clear website data. Upload every file INSIDE this release folder to the SAME GitHub Pages repository root. Use the same Safari browser and site. Normal reload discards the old unsaved form. No SQL migration is required.
 
-1. Upload every file inside this release folder to the existing GitHub Pages repository root. Do not upload it as an extra nested site folder. Keep the same browser and website address; do not clear website data. No SQL migration is required for this patch.
-2. Verify **8.8.17.11 · LEDGER CLOSEOUT**. Open Captain Watch → Open Fleet Ledger → Simple Books → Captain Operations, 2026.
-3. On the existing $1 ledger test whose reference starts with `Enter`, tap **CORRECT RECORD**. Set only Payment reference to `Test-Check-1002` and Review status to **Ready for accountant**. Keep amount, date, name/purpose, and original identity unchanged. Reason: `Correct test reference and remove unintended approval.`
-4. Tap **PREVIEW CORRECTION**, check the two before/after values and unchanged $1.00 amount, then tap **CONFIRM CORRECTION** once. The expected book still has two payments and $2.00 Money In, $0.00 Money Out, $2.00 remaining, and To Check 0. With the four preexisting history records from the field test, the new total is five history records, not five payments.
-5. Close, refresh normally, sign back in, and reopen that same book. Export both the accountant CSV and full-history JSON from Accountant Tools. Compare the saved values and original IDs. The CSV should have two current rows and the history JSON five original/correction records for this test state.
+Verify **8.8.17.12 · LEDGER TOUCHSAFE** in the Engine/Fleet Ledger. Open Captain Watch → Open Fleet Ledger → Simple Books → Captain Operations, 2026. Choose CORRECT RECORD on the existing $1 test whose reference starts with Enter. This now opens the document-flow editing page, not a floating form inside the ledger.
 
-Do not delete or recreate either payment. This release does not automatically repair, rename, approve, or fabricate any of your existing records.
+Tap Payment reference and replace it with `Test-Check-1002`. The focus outline and Active field indicator must both identify Payment reference; only that field should receive typing. Select Ready for accountant. Reason: `Correct test reference and remove unintended approval.` Keep the amount protected; do not unlock transaction details for this test.
 
-## Verification and limits
+Tap PREVIEW CORRECTION. Verify exactly two changes: the reference and review status. Amount must remain $1.00. Stop before confirming until the input alignment has been checked. Once verified, CONFIRM CORRECTION saves one new history record. Expected known field fixture: two payments, Money In $2.00, Money Out $0.00, remaining $2.00, To Check 0, five total history records. Those expectations are not synthetic records inserted into the real book.
 
-The release includes 18 passing isolated functional/layout cases described in RELEASE_ACCEPTANCE.md. Functional storage tests used a serialized in-memory IndexedDB test adapter; native browser navigation/storage/download testing was not available in this environment. Chromium rendered the correction and export controls at iPad landscape, iPad portrait, and iPhone dimensions. Native iPad Safari saves, actual refresh durability, download behavior, and the full-site authority route remain field checks. These tests are not a claim of production readiness or verified Supabase backup.
+Then normal Safari reload/sign-in and both actual exports remain the closeout checks. Full History JSON is an audit snapshot, not a tested restore feature, independently signed proof, or a Supabase backup.
 
-All code, JSON, HTML, local-reference, inventory, checksum, archive, and release-identity checks are recorded separately in the acceptance document. Test harnesses, fixtures, test downloads, and the user's uploaded CSV are not in the deployment ZIP.
+## Verification limits
 
-## Boundaries preserved
+21 isolated cases passed using the actual ledger module/styles in Chromium with synthetic fixtures and in-memory storage/authority adapters. Coordinate tapping, real browser text focus, keyboard input and layout were exercised. Viewport resizing is not the native iPad keyboard. Native Safari, native IndexedDB reload persistence, actual downloads and complete fleet integration were not tested here. This is a repair candidate for field verification, not a claim that the device-specific bug is already proven fixed.
 
-The Captain session remains browser-local and separate from Admiral authentication. The new read-only Captain session witness does not grant authority. Admiral corrections require explicit Admiral context and active identity; no old actor label is inherited as authority. Project/program keys remain canonical and corrections/exports use the exact selected book. Fleet Core identities, project assets, owner routes, scheduler behavior, test/private-preview guards, and the service worker's identity-only design are preserved. No server schema, owner record, entitlement, email, or payment service was changed by this build.
-
-This full-history JSON is a portable audit snapshot. It is not an automatic restore feature, a tested restore, an authenticated signature, or a cloud backup.
+Test adapters, fixtures and test exports are not in this ZIP. The original user CSV is not modified or included. Media/branding, SQL, owner page, core project runtime, style registry, project data and auth boundaries are preserved. The release folder/ZIP share one unique name and use normalized timestamps with both local ZIP time and Unix UTC metadata.

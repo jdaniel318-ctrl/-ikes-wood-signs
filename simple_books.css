@@ -1,4 +1,4 @@
-/* Dark Sky 8.8.17.11 Ledger Closeout */
+/* Dark Sky 8.8.17.12 Ledger TouchSafe */
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"],#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"]{width:100%;min-height:94px!important;padding:18px 20px!important;border:1px solid rgba(223,189,89,.72)!important;border-radius:16px!important;background:linear-gradient(135deg,rgba(20,72,82,.72),rgba(5,28,36,.96))!important;color:#f5e5b5!important;display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;gap:15px!important;text-align:left!important;box-shadow:inset 0 1px rgba(255,255,255,.05),0 12px 30px rgba(0,0,0,.2)!important}
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"] .ledger-launch-icon,#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"] .ledger-launch-icon{width:46px;height:46px;border:1px solid rgba(111,191,207,.58);border-radius:12px;background:rgba(12,70,83,.66);display:grid;place-items:center;font-size:1.45rem;color:#8fd2df}
 #captainAuthorityLedgerOpen[data-ledger-enhanced="true"]>span:nth-child(2),#admiralAuthorityLedgerOpen[data-ledger-enhanced="true"]>span:nth-child(2){display:grid;gap:5px}
@@ -83,3 +83,35 @@ button,[role="button"]{touch-action:manipulation;-webkit-tap-highlight-color:rgb
 
 .tax-correction-identity>small{font-weight:400;letter-spacing:0;text-transform:none;line-height:1.5}
 .tax-correction-panel .tax-correction-reason,.tax-correction-panel .tax-correction-boundary{max-width:none}
+
+/* Ledger TouchSafe — scoped, native document scrolling; no moving input ancestor. */
+body.ledger-touch-page{background:#061b23!important;min-height:100vh!important}
+#taxTouchWorkspace{position:relative!important;inset:auto!important;z-index:2147483600;width:100%;min-height:100vh;margin:0;padding:18px max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));overflow:visible!important;transform:none!important;filter:none!important;perspective:none!important;contain:none!important;animation:none!important;background:#061b23;color:#e7efed;outline:none}
+#taxTouchWorkspace .tax-correction-panel{display:block;position:static;max-width:880px;width:100%;margin:0 auto;padding:22px;overflow:visible;transform:none;animation:none}
+#taxTouchWorkspace .tax-correction-panel>*+*{margin-top:18px}
+#taxTouchWorkspace .tax-correction-panel [hidden]{display:none!important}
+#taxTouchWorkspace .tax-correction-panel input,#taxTouchWorkspace .tax-correction-panel select,#taxTouchWorkspace .tax-correction-panel button{box-sizing:border-box;transform:none!important;transition:none!important;animation:none!important;scroll-margin:24px;font-family:inherit}
+#taxTouchWorkspace .tax-correction-panel button:active{transform:none!important;filter:brightness(1.12)}
+#taxTouchWorkspace .tax-correction-form{display:flex;flex-direction:column;gap:22px;margin-top:18px}
+#taxTouchWorkspace .tax-touch-field{display:flex;flex-direction:column;gap:8px;min-width:0}
+#taxTouchWorkspace .tax-touch-field>label{display:block;font-size:17px;font-weight:800;line-height:1.4}
+#taxTouchWorkspace .tax-touch-field>input,#taxTouchWorkspace .tax-touch-field>select,#taxTouchWorkspace #taxApprovalForm input:not([type=checkbox]){display:block;position:static;width:100%;min-height:58px;padding:15px 14px;border:1px solid #7297a1;border-radius:10px;background:#041a22;color:#f2f6f5;font-size:18px;line-height:1.4;-webkit-user-select:text;user-select:text}
+#taxTouchWorkspace .tax-touch-field input:focus,#taxTouchWorkspace .tax-touch-field select:focus{outline:3px solid #7accdf;outline-offset:3px}
+#taxTouchWorkspace .tax-touch-field>p,#taxTouchWorkspace .tax-review-choices>p,#taxTouchWorkspace .tax-amount-protection>p{font-size:14px;color:#b1c8cf;line-height:1.5;letter-spacing:0;max-width:none;margin:0}
+#taxTouchWorkspace .tax-typing-target{min-height:48px;padding:12px;border:1px solid #487e8d;background:#113740;border-radius:9px;font-size:15px;color:#c2e7ef;line-height:1.5}
+#taxTouchWorkspace .tax-review-choices{min-width:0;margin:0;padding:14px;border:1px solid #44636d;border-radius:11px;display:flex;flex-direction:column;gap:10px}
+#taxTouchWorkspace .tax-review-choices legend{padding:0 7px;font-size:17px;font-weight:800;color:#e7efed}
+#taxTouchWorkspace .tax-review-choice{display:flex;position:relative;gap:14px;align-items:center;min-height:58px;padding:14px;border:1px solid #577e88;border-radius:10px;background:#082630;cursor:pointer;font-size:17px;line-height:1.4}
+#taxTouchWorkspace .tax-review-choice:has(input:checked){border-color:#e0bd59;background:#294641;color:#ffe5a0}
+#taxTouchWorkspace .tax-review-choice:focus-within{outline:3px solid #7accdf;outline-offset:2px}
+#taxTouchWorkspace .tax-review-choice input{width:24px;height:24px;min-height:24px;min-width:24px;margin:0;flex:0 0 24px;accent-color:#e0bd59}
+#taxTouchWorkspace .tax-review-choice span{display:block;color:inherit;pointer-events:none}
+#taxTouchWorkspace .tax-amount-protection{display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid #917d47;border-radius:11px;background:#102c32}
+#taxTouchWorkspace .tax-amount-protection>b{font-size:19px;color:#f1dfa3}
+#taxTouchWorkspace .tax-core-fields{display:flex;flex-direction:column;gap:18px}
+#taxTouchWorkspace .tax-amount-warning{font-size:15px;color:#edd1a0;padding:12px;border-left:3px solid #e0bd59;background:#2a2c23;line-height:1.5}
+#taxTouchWorkspace .tax-correction-form>button{min-height:58px}
+#taxTouchWorkspace .tax-correction-identity small{font-size:14px;color:#b2cbd1}
+#taxTouchWorkspace .tax-correction-identity{margin-top:18px}
+#taxTouchWorkspace .authority-ledger-status{padding:14px;font-size:16px;line-height:1.5}
+@media(max-width:560px){#taxTouchWorkspace{padding:12px}#taxTouchWorkspace .tax-correction-panel{padding:16px}#taxTouchWorkspace .tax-correction-panel>header{flex-direction:row;align-items:start}#taxTouchWorkspace .tax-correction-panel>header h3{font-size:22px}#taxTouchWorkspace .tax-correction-panel>header button{padding:12px;font-size:13px}#taxTouchWorkspace .tax-correction-buttons{display:flex;flex-direction:column}#taxTouchWorkspace .tax-change-row{display:flex;flex-direction:column}}

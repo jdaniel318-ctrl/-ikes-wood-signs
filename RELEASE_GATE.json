@@ -1,8 +1,8 @@
 {
   "schema": "dark-sky-static-release-gate-v1",
-  "build": "8.8.17.11",
-  "release": "Ledger Closeout",
-  "generatedAt": "2026-09-25T23:36:19.297187Z",
+  "build": "8.8.17.12",
+  "release": "Ledger TouchSafe",
+  "generatedAt": "2026-09-25T20:55:27-04:00",
   "checks": {
     "build_version": true,
     "engine_pin_5615": true,
@@ -310,8 +310,8 @@
   "missingLocalReferences": [],
   "nonMediaAssets": [],
   "pass": true,
-  "note": "Packaging candidate only. Existing checks/features/contracts are inherited regression references, not a claim that every legacy behavior was rerun. Closeout isolated tests use simulated storage; native Safari and full-site field verification remain pending.",
-  "candidate": "8.8.17.11",
+  "note": "Packaging candidate. Legacy checks/features/contracts and closeout_verification are inherited regression references, not rerun claims. Current TouchSafe checks used the actual ledger module/styles in Chromium about:blank with simulated storage, authority, WebCrypto adapter and intercepted download blobs. Native iPad Safari and full-site integration remain field checks.",
+  "candidate": "8.8.17.12",
   "features": {
     "fleet_launch_service_core_available": true,
     "fleet_launch_founder_preview_private": true,
@@ -561,8 +561,8 @@
     "contract": "Memory and CORE proof generation align; identical six-vessel refreshes do not churn generation."
   },
   "atomic_seal_gate": {
-    "build": "8.8.17.11",
-    "seal": "ledger-closeout-881711",
+    "build": "8.8.17.12",
+    "seal": "ledger-touchsafe-881712",
     "authoritative_files": [
       "index.html",
       "DEPLOYMENT_MANIFEST.json",
@@ -738,5 +738,17 @@
       "test_data_included": false,
       "zip_extraction_checksums": "verified"
     }
+  },
+  "touchsafe_verification": {
+    "isolated_checks_passed": 21,
+    "engine": "Chromium 144.0.7559.96",
+    "test_adapter": "in_memory_storage_and_authority; no adapter shipped",
+    "screen_coordinate_taps": true,
+    "viewport_resize_cases": 4,
+    "native_ipad_safari": false,
+    "native_storage_persistence_tested": false,
+    "native_browser_download_tested": false,
+    "tests_in_deployment": false,
+    "patch_scope": "ledger correction UI, validation, release metadata"
   }
 }

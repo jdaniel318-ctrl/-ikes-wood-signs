@@ -80,3 +80,7 @@ Ordinary review states are unreviewed, accountant_review and ready. The retained
 Current-summary CSVs resolve one row per original transaction; they never sum corrections as income. Full-history JSON exports include originals and every correction only for the selected book and original-transaction year. Recorded predecessor IDs are checked; older inferred links are separately labeled and never written back over old records. SHA-256 covers JSON.stringify(payload) in exported key order, encoded as UTF-8; this is an integrity checksum, not an authenticated signature. Export does not constitute a restore or a server backup.
 
 Primary implementation references: IndexedDB transaction scheduling and lifecycle, https://www.w3.org/TR/IndexedDB-3/ ; spreadsheet formula-injection precautions, https://owasp.org/www-community/attacks/CSV_Injection .
+
+## 8.8.17.12 correction touch/focus contract
+
+Ledger corrections edit on a document-flow page outside the fixed scrolling ledger. Do not add smooth-scroll plus input-autofocus, fixed/transform input ancestors, pointer-coordinate remapping, or resize-driven focus changes. Status uses explicit native radio choices. Core transaction fields are disabled until deliberately unlocked. Cancel/completion restores suspended command surfaces without changing authority or ledger data. The existing append-only storage and exact-book authority checks remain mandatory.
