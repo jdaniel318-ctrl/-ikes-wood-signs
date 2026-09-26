@@ -1,6 +1,6 @@
 {
   "release": "8.8.17",
-  "build": "8.8.17.14",
+  "build": "8.8.17.15",
   "name": "Admiral Passage",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
@@ -11,7 +11,7 @@
   ],
   "owner_labels": {
     "enabled": "Active",
-    "entitled_free": "Free • $0",
+    "entitled_free": "Free \u2022 $0",
     "entitled_paid": "Approved Upgrade",
     "requested": "Requested",
     "available_paid": "Available for Upgrade"

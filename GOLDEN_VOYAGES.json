@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.17.14",
+  "build": "8.8.17.15",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -59,7 +59,7 @@
         "transfer-preserves-vessel-id",
         "transfer-audited-recoverable"
       ],
-      "summary": "Vessel entry → ownership → operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
+      "summary": "Vessel entry \u2192 ownership \u2192 operating authority remain separate; self-join and deliberate transfer cannot silently escalate Fleet authority."
     },
     {
       "id": "lateral-fleet-structure",

@@ -1,8 +1,8 @@
 {
-  "release": "WatchBeacon",
-  "name": "WatchBeacon",
-  "build": "8.8.17.14",
-  "seal": "watchbeacon-881714",
+  "release": "ClearPassage",
+  "name": "ClearPassage",
+  "build": "8.8.17.15",
+  "seal": "clearpassage-881715",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

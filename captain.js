@@ -49,7 +49,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.17.14';
+  const UPPER_COMMAND_BUILD='8.8.17.15';
   let authorized = false;
   // Read-only session witness; this never grants Captain or server authority.
   window.DarkSkyCaptainSessionStatus = () => authorized;
@@ -706,7 +706,7 @@
         if(truth.runId!==report.runId||truth.updatedAt!==report.at||truth.build!==report.build||!truth.findings)throw new Error('Finding details and summary belong to different runs.');
         for(const c of checks){const meta=truth.findings[c.id];if(!meta||meta.id!==c.id||meta.state!==c.state||meta.label!==c.label||meta.detail!==c.detail)throw new Error('Finding detail does not match its report: '+c.id);}
         const storage=report.storageEvidence;
-        const boundary=`<section class="keelguard-readiness-boundary" role="status"><small>WATCHBEACON · RUN ${esc(report.runId)}</small><b>${holdCount?'REPAIR HOLDS FIRST':watchCount?'CHECKS COMPLETE · WATCH ITEMS REMAIN':'CHECKS COMPLETE'}</b><p>${checks.length} checks · ${holdCount} holds · ${watchCount} watch items. Assessed ${esc(new Date(report.at).toLocaleString())} · Build ${esc(report.build)}.</p><p>Runtime checks and declared contracts; not verified working-ship commissioning or Captain handoff.</p><p><strong>Working-ship handoff: NOT VERIFIED by this report.</strong> Commissioning, appointed-Captain access, restore and cross-device proof remain separate.</p>${storage?.local==='degraded'?'<p class="keelguard-storage-warning"><strong>Legacy browser storage is degraded.</strong> Diagnostic fallback is not a durable ledger or cloud backup. No records were deleted; do not clear website data.</p>':''}</section>`;
+        const boundary=`<section class="keelguard-readiness-boundary" role="status"><small>CLEARPASSAGE · RUN ${esc(report.runId)}</small><b>${holdCount?'REPAIR HOLDS FIRST':watchCount?'CHECKS COMPLETE · WATCH ITEMS REMAIN':'CHECKS COMPLETE'}</b><p>${checks.length} checks · ${holdCount} holds · ${watchCount} watch items. Assessed ${esc(new Date(report.at).toLocaleString())} · Build ${esc(report.build)}.</p><p>Runtime checks and declared contracts; not verified working-ship commissioning or Captain handoff.</p><p><strong>Working-ship handoff: NOT VERIFIED by this report.</strong> Commissioning, appointed-Captain access, restore and cross-device proof remain separate.</p>${storage?.local==='degraded'?'<p class="keelguard-storage-warning"><strong>Legacy browser storage is degraded.</strong> Diagnostic fallback is not a durable ledger or cloud backup. No records were deleted; do not clear website data.</p>':''}</section>`;
         findings.innerHTML=boundary+(current.length?current.map(c=>{const meta=truth.findings[c.id],a=findingAction(c.id);return `<article class="admiral-finding ${c.state==='fail'?'fail':'warn'}" data-finding-id="${esc(c.id)}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${esc(c.label)}</b><span>${esc(c.detail)}</span><small>FIRST DETECTED ${esc(meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK')}<br>LATEST CHECK ${esc(report.build)} • ${esc(meta.provenance||verificationProvenance(c))}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${esc(c.id)}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds or watch items in this run. Production handoff is separately unverified.</span>');
         const ids=Array.from(findings.querySelectorAll('[data-finding-id]'),node=>node.dataset.findingId);
         if(ids.length!==current.length||ids.some((id,i)=>id!==current[i].id))throw new Error('Rendered finding cards do not match the current report.');
@@ -852,6 +852,70 @@
     panel.scrollIntoView({behavior:'auto',block:'start'});
   }
 
+  // ClearPassage: presentation only. These attributes never grant a role,
+  // bypass a credential, or replace the existing server-authority predicate.
+  function setAdmiralEntranceStep(gate,step){
+    const account=step==='account',target=gate?.dataset.directTarget||'';
+    if(!gate)return;
+    gate.dataset.authStep=account?'account':'pin';
+    const text=(id,value)=>{const node=byId(id);if(node)node.textContent=value;};
+    text('admiralEntranceStep',account?'STEP 2 OF 2 · ACCOUNT SIGN-IN':'STEP 1 OF 2 · PASSAGE PIN');
+    text('admiralGateTitle',account?'Admiral sign-in':target==='findings'?'Secure findings':target==='fleet'?'Secure fleet access':'Admiral passage');
+    text('admiralGateDescription',account?'Your passage PIN is verified. Sign in with your dedicated Admiral account to verify active server authority.':'Verify your passage PIN, then authenticate your Admiral account. Both checks protect this workspace.');
+    text('admiralEntranceFormTitle',account?'Authenticate your account':'Verify your passage PIN');
+    text('admiralEntranceFormHint',account?'Your identity and active Admiral authority are checked together.':'This opens the account sign-in, not fleet authority.');
+    text('admiralEntrancePinState',account?'Verified':'Required');
+    text('admiralEntranceAccountState',account?'Required':'Next');
+    const pin=byId('admiralEntrancePinStep'),identity=byId('admiralEntranceAccountStep');
+    pin?.classList.toggle('is-complete',account);
+    if(account){pin?.removeAttribute('aria-current');identity?.setAttribute('aria-current','step');}
+    else{pin?.setAttribute('aria-current','step');identity?.removeAttribute('aria-current');}
+    gate.scrollTop=0;
+    // Keep the keyboard closed on entry; never use a delayed input-focus timer
+    // that can steal focus after a person switches apps or starts typing.
+    requestAnimationFrame(()=>{
+      if(!gate.classList.contains('hidden'))byId('admiralGateTitle')?.focus({preventScroll:true});
+    });
+  }
+
+  function installAdmiralEntranceViewport(gate){
+    if(!gate||gate.dataset.viewportBound==='1')return;
+    gate.dataset.viewportBound='1';
+    let queued=0;
+    const update=()=>{
+      queued=0;
+      if(gate.classList.contains('hidden')){
+        gate.style.removeProperty('--admiral-visible-height');
+        gate.style.removeProperty('--admiral-visible-top');
+        gate.removeAttribute('data-input-active');
+        // Credentials are not a resumable draft or a diagnostic record.
+        const pin=byId('admiralPinInput'),password=byId('admiralAirlockPassword');
+        if(pin)pin.value='';if(password)password.value='';
+        return;
+      }
+      const viewport=window.visualViewport;
+      // Let browser pinch zoom pan normally instead of resizing the form to a
+      // magnified viewport. Never disable zoom or scale the credential controls.
+      if(viewport&&Math.abs(Number(viewport.scale||1)-1)<0.03&&Number(viewport.height)>0){
+        gate.style.setProperty('--admiral-visible-height',Math.round(viewport.height)+'px');
+        gate.style.setProperty('--admiral-visible-top',Math.max(0,Math.round(viewport.offsetTop||0))+'px');
+      }else{
+        gate.style.removeProperty('--admiral-visible-height');
+        gate.style.removeProperty('--admiral-visible-top');
+      }
+      const active=document.activeElement;
+      gate.dataset.inputActive=String(!!active&&gate.contains(active)&&active.matches('input,textarea'));
+    };
+    const schedule=()=>{if(!queued)queued=requestAnimationFrame(update);};
+    window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+    window.visualViewport?.addEventListener('scroll',schedule,{passive:true});
+    window.addEventListener('resize',schedule,{passive:true});
+    gate.addEventListener('focusin',schedule);
+    gate.addEventListener('focusout',schedule);
+    new MutationObserver(()=>{if(gate.classList.contains('hidden'))update();else schedule();}).observe(gate,{attributes:true,attributeFilter:['class']});
+    schedule();
+  }
+
   function ensureAdmiralDeck(){
     let gate=byId('admiralGateOverlay');
     if(gate)return gate;
@@ -861,34 +925,44 @@
     gate.setAttribute('role','dialog');
     gate.setAttribute('aria-modal','true');
     gate.setAttribute('aria-labelledby','admiralGateTitle');
+    gate.dataset.entrance='clearpassage';
+    gate.dataset.authStep='pin';
+    gate.setAttribute('aria-describedby','admiralGateDescription');
     gate.innerHTML=`
       <div class="admiral-gate-shell">
         <div class="admiral-gate-scene" aria-hidden="true"><div class="admiral-door left"></div><div class="admiral-door right"></div><div class="admiral-seal">⚓</div></div>
         <section class="admiral-gate-card">
-          <small>ABOVE CAPTAIN COMMAND • PROVING ACCESS</small>
-          <h2 id="admiralGateTitle">Admiral's Gate</h2>
-          <p>The Admiral's Deck governs Dark Sky, Black Flag and the fleet. This trial entrance exists so the Captain can prove the machinery before the rank is earned.</p>
-          <div class="admiral-trial-badge">DUAL-OFFICE COMMISSION • SERVER VERIFICATION REQUIRED</div>
-          <div class="admiral-visual-status" id="admiralVisualStatus">NEUTRAL AUTHORITY SHIELD • FLEET DATA CONCEALED</div>
-          <label for="admiralPinInput">ADMIRAL ACCESS PIN</label>
-          <input id="admiralPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" />
-          <p id="admiralPinError" class="captain-error" aria-live="polite"></p>
-          <button id="admiralUnlockBtn" type="button" class="admiral-primary">ENTER ADMIRAL'S DECK →</button>
-          <section id="admiralAccountAirlock" class="admiral-account-airlock hidden" aria-label="Admiral account security layer">
-            <div class="admiral-airlock-progress"><span>01 · PIN VERIFIED</span><b>02 · ADMIRAL ACCOUNT REQUIRED</b><span>03 · WORKSPACE LOCKED</span></div>
-            <h3>Second security layer</h3>
-            <p>The PIN opened Admiral Passage. Sign in with the dedicated Supabase Admiral account before any Admiral workspace, fleet data, or work control can open.</p>
-            <label for="admiralAirlockEmail">ADMIRAL EMAIL</label>
-            <input id="admiralAirlockEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Dedicated Admiral email" />
-            <label for="admiralAirlockPassword">PASSWORD</label>
-            <input id="admiralAirlockPassword" type="password" autocomplete="current-password" placeholder="Admiral account password" />
-            <p id="admiralAirlockStatus" class="captain-error" role="status" aria-live="polite">Fleet and governance controls remain locked.</p>
-            <button id="admiralAirlockSignIn" type="button" class="admiral-primary">AUTHENTICATE ADMIRAL →</button>
-          </section>
-          <button id="admiralGateReturnBtn" type="button" class="admiral-secondary">← RETURN TO CAPTAIN'S QUARTERS</button>
+          <header class="admiral-entrance-intro">
+            <div class="admiral-entrance-brand"><img src="black_flag_platform_icon.png" alt="" width="64" height="64"><div><small>BLACK FLAG</small><span>Fleet command access</span></div></div>
+            <small id="admiralEntranceStep">STEP 1 OF 2 · PASSAGE PIN</small>
+            <h2 id="admiralGateTitle" tabindex="-1">Admiral passage</h2>
+            <p id="admiralGateDescription">Verify your passage PIN, then authenticate your Admiral account. Both checks protect this workspace.</p>
+            <ol class="admiral-entrance-progress" aria-label="Admiral access progress">
+              <li id="admiralEntrancePinStep" aria-current="step"><span aria-hidden="true">01</span><div><b>Passage PIN</b><small id="admiralEntrancePinState">Required</small></div></li>
+              <li id="admiralEntranceAccountStep"><span aria-hidden="true">02</span><div><b>Admiral account</b><small id="admiralEntranceAccountState">Next</small></div></li>
+            </ol>
+            <p class="admiral-entrance-boundary" id="admiralVisualStatus">Workspace locked until account authority is verified.</p>
+          </header>
+          <div class="admiral-entrance-form">
+            <div class="admiral-entrance-form-head"><b id="admiralEntranceFormTitle">Verify your passage PIN</b><span id="admiralEntranceFormHint">This opens the account sign-in, not fleet authority.</span></div>
+            <label for="admiralPinInput">Passage PIN</label>
+            <input id="admiralPinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" aria-describedby="admiralPinError" />
+            <p id="admiralPinError" class="captain-error" aria-live="polite"></p>
+            <button id="admiralUnlockBtn" type="button" class="admiral-primary">VERIFY PASSAGE PIN →</button>
+            <section id="admiralAccountAirlock" class="admiral-account-airlock hidden" aria-label="Admiral account security layer">
+              <label for="admiralAirlockEmail">Admiral email</label>
+              <input id="admiralAirlockEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Your Admiral account email" />
+              <label for="admiralAirlockPassword">Password</label>
+              <input id="admiralAirlockPassword" type="password" autocomplete="current-password" placeholder="Your account password" />
+              <p id="admiralAirlockStatus" class="captain-error" role="status" aria-live="polite">Fleet and governance controls remain locked.</p>
+              <button id="admiralAirlockSignIn" type="button" class="admiral-primary">AUTHENTICATE ADMIRAL →</button>
+            </section>
+            <button id="admiralGateReturnBtn" type="button" class="admiral-secondary">← RETURN TO CAPTAIN'S QUARTERS</button>
+          </div>
         </section>
       </div>`;
     document.body.appendChild(gate);
+    installAdmiralEntranceViewport(gate);
 
     const deck=document.createElement('div');
     deck.id='admiralDeck';
@@ -1007,7 +1081,7 @@
       }
       if(!committed)window.location.assign(fallbackHref);
     };
-    const closeGate=()=>{const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralPinError').textContent='';if(direct){returnToEngine();return;}if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral-gate'});return;}show('captainQuarters');show('captainGlobalExit');};
+    const closeGate=()=>{const direct=byId('admiralGateOverlay')?.dataset.entrySource==='engine';hide('admiralGateOverlay'); byId('admiralPinInput').value=''; byId('admiralAirlockPassword').value=''; byId('admiralPinError').textContent='';if(direct){returnToEngine();return;}if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral-gate'});return;}show('captainQuarters');show('captainGlobalExit');};
     const returnToCaptain=()=>{if(deck.dataset.entrySource==='engine'){returnToEngine();return;}hide('admiralDeck');if(window.DarkSkyFleetNavigator?.navigate){window.DarkSkyFleetNavigator.navigate('captain',{source:'admiral'});return;}show('captainQuarters');show('captainGlobalExit');document.body.classList.add('captain-modal-open','captain-authorized');};
     byId('admiralGateReturnBtn').onclick=closeGate;
     const admiralReturnButton=byId('admiralDeckReturnBtn');
@@ -1060,8 +1134,7 @@
     const showAccountAirlock=()=>{
       const input=byId('admiralPinInput'),unlock=byId('admiralUnlockBtn'),error=byId('admiralPinError'),layer=byId('admiralAccountAirlock');
       input?.classList.add('hidden');input?.previousElementSibling?.classList.add('hidden');unlock?.classList.add('hidden');error?.classList.add('hidden');layer?.classList.remove('hidden');
-      if(byId('admiralGateTitle'))byId('admiralGateTitle').textContent='Admiral Security Layer';
-      requestAnimationFrame(()=>byId('admiralAirlockEmail')?.focus({preventScroll:true}));
+      setAdmiralEntranceStep(gate,'account');
     };
     byId('admiralUnlockBtn').onclick=async()=>{
       const input=byId('admiralPinInput'),error=byId('admiralPinError');
@@ -1225,10 +1298,8 @@
     if(byId('admiralAirlockPassword'))byId('admiralAirlockPassword').value='';
     if(byId('admiralAirlockStatus'))byId('admiralAirlockStatus').textContent='Fleet and governance controls remain locked.';
     if(gateReturn)gateReturn.textContent=fromEngine?'← RETURN TO ENGINE':'← RETURN TO CAPTAIN\'S QUARTERS';
-    const title=byId('admiralGateTitle'),copy=title?.nextElementSibling,unlock=byId('admiralUnlockBtn');
-    if(title)title.textContent=directTarget==='fleet'?'Secure Fleet Access':directTarget==='findings'?'Secure Current Findings':"Admiral's Gate";
-    if(copy)copy.textContent=directTarget==='fleet'?'Layer 1 of 2: verify the passage PIN. A separate Supabase Admiral account check is still required before My Fleet can open.':directTarget==='findings'?'Layer 1 of 2: verify the passage PIN. The dedicated Admiral account must then be authenticated before governed findings can open.':"Layer 1 of 2: the PIN opens Admiral Passage only. A dedicated Supabase Admiral account must be authenticated before any Admiral work can begin.";
-    if(unlock)unlock.textContent=directTarget==='fleet'?'VERIFY PASSAGE PIN →':directTarget==='findings'?'VERIFY PASSAGE PIN →':"VERIFY PASSAGE PIN →";
+    const title=byId('admiralGateTitle');
+    if(byId('admiralUnlockBtn'))byId('admiralUnlockBtn').textContent='VERIFY PASSAGE PIN →';
     if(deckReturn){
       deckReturn.textContent=fromEngine?'← ENGINE ROOM':'← CAPTAIN\'S QUARTERS';
       deckReturn.dataset.routeTarget=fromEngine?'engine':'captain';
@@ -1252,7 +1323,8 @@
     let seen=false;try{seen=sessionStorage.getItem('darkSkyAdmiralGateSeen')==='1';}catch(_){ }
     gate?.classList.add(seen?'admiral-gate-repeat':'admiral-gate-enter');
     try{sessionStorage.setItem('darkSkyAdmiralGateSeen','1');}catch(_){ }
-    if(input){input.value='';window.setTimeout(()=>input.focus(),seen?2050:3150);}
+    if(input)input.value='';
+    setAdmiralEntranceStep(gate,'pin');
   }
   window.DarkSkyOpenAdmiralGate=openAdmiralGate;
   window.DarkSkyOpenMyFleet=()=>openAdmiralGate('engine','fleet');

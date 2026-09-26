@@ -1,3 +1,40 @@
+# Dark Sky 8.8.17.15 — ClearPassage
+
+Test-site presentation repair based on 8.8.17.14 WatchBeacon. The current work is the Admiral Command Deck entrance, not a new authority grant, working-ship handoff or cloud-storage migration.
+
+## What changed
+
+- A wider, balanced two-column sign-in card on landscape tablets replaces the tall nested account form. Narrow screens stack into one normally scrollable column. The heading, labels and return action remain reachable without scaling the controls.
+- One progress display identifies Passage PIN and Admiral account separately. The second step explains account/server-authority verification; it no longer repeats the first-step instructions above another heading.
+- A single gate scroll surface tracks the available visual viewport at ordinary zoom, with CSS fallback when that API is unavailable. Pinch zoom is not disabled. Keyboard-sized viewports can scroll; small text is not used to make the form fit.
+- No delayed text-input focus on entrance or phase change. A heading receives accessible focus without opening the keyboard. The person chooses the field. The former multi-second operational gate movement is replaced by a short opacity fade, respecting reduced motion. The optional ceremonial Command Deck remains unchanged.
+- Explicit cancel clears the password synchronously; hidden-gate cleanup clears PIN/password even when a return controller closes it. Values are not saved as a draft or diagnostic evidence.
+- Existing PIN and account authentication handlers, active-server-authority predicates, current findings, readonly observation and fresh-document identity rules remain. Field sizes are at least 18px; buttons at least 48px high.
+
+## Protected scope
+
+All 85 original file paths remain; no deployed test seed, fixture account, or private ledger export is added. Ledger business logic, order records, vessel identities, owner login, security handlers and SQL references are not redesigned. Both Admiral checks remain required by their existing route. A valid in-document Admiral session is handled by the existing policy, not a newly introduced bypass.
+
+The four outstanding warning conditions are not cleared by this release: experimental Ike length inference, live revocation proof, legacy storage quota, and Safari storage attribution. Browser witness fallback is not durable business storage or cloud backup. Working-ship commissioning and appointed-Captain handoff remain unverified.
+
+**Do not run SUPABASE_LEDGER_INTEGRITY_88171.sql as-is.** The known schema mismatch remains a separate migration task. No SQL is needed for this static website update. Do not clear website data.
+
+## First three deployment actions
+
+1. Download DarkSky881715-ClearPassage.zip.
+2. Extract and open its one matching folder, DarkSky881715-ClearPassage.
+3. Upload all 85 files inside it to the existing test repository root, not the ZIP or enclosing folder.
+
+Confirm **8.8.17.15 · CLEARPASSAGE** on the Engine. Next field check: the same PIN → dedicated account route, with the new tablet layout, then the preserved findings. Test in the user's normal Safari / ChatGPT back-and-forth workflow.
+
+## Verification boundary
+
+Automated tests use the entire shipped Captain module, original markup and styles in isolated Chromium pages. Account transport, storage and visual-viewport events are fixtures. They do not test live Supabase passwords/roles or reproduce a real iPad software keyboard. Ordinary full-site local navigation is blocked by the environment; no browser policy was changed. Native iPad Safari acceptance remains pending.
+
+
+---
+## Retained earlier documentation (historical evidence, not current tests)
+
 # Dark Sky 8.8.17.14 — WatchBeacon
 
 Test-site repair candidate based on 8.8.17.13 KeelGuard. No rank, Known Good, production publication, ownership, membership, or server permission is granted by this ZIP.

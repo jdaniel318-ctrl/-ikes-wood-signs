@@ -95,3 +95,14 @@ LocalStorage is a degraded compatibility channel when probes fail. Verified sess
 ## WatchBeacon readiness-presentation contract — 8.8.17.14
 
 The readiness report remains the source of a single identified assessment. Its current cards, summary and downloadable snapshot must describe that same run. A failed display never means no findings and never clears a warning. Retry Display is read-only with respect to the report and business records; it is not a new readiness run. Renderer observations are separate from assessed facts. Authentication remains unchanged: passage PIN plus dedicated account/server-authority verification, no local self-promotion.
+
+
+## ClearPassage entrance contract — 8.8.17.15
+
+The Command Deck entrance is a presentation layer over the existing passage PIN handler and dedicated-account/server-authority handler. `data-auth-step` describes visible progress only; it is not an authority token. The renderer, responsive classes, viewport events and progress indicators may not grant roles or open the workspace by themselves. Existing session policy and route dispatch remain unchanged.
+
+No credential input is automatically focused on initial entry or the change to the account step. No scale transform or coordinate remapping is applied. The modal has one scroll plane; viewport height/offset is observed at normal zoom without altering authentication state. At pinch zoom, the browser controls panning and the layout is not resized into the magnified visual viewport. Cancel clears credentials; rendering and resizing never persist them. Password-manager autocomplete remains enabled for the dedicated account only, with manual PIN entry retained.
+
+The separate My Fleet account surface is not redesigned by this scoped release. Optional ceremonial Command Deck presentation remains available. Reduced-motion preferences suppress the operational entrance fade.
+
+Implementation references: https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport and https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/length (accessed September 26, 2026).

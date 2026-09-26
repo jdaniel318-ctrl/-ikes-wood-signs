@@ -1,3 +1,15 @@
+# 8.8.17.15 — ClearPassage
+
+- Fit the Admiral Command Deck PIN/account entrance to tablet and small-screen viewports.
+- Replace nested/repeated authentication copy with a two-step progress display.
+- Keep credential targets stationary; remove deferred input focus, preserve zoom and normal scrolling.
+- Preserve both authentication handlers and server-authority checks; clear credentials on cancel/hidden exit.
+- Retain WatchBeacon findings/error/return fixes and all 85 deployment files.
+- No record deletion, storage purge, SQL, live role changes, handoff or promotion.
+
+---
+## Retained prior release log
+
 # Dark Sky 8.8.17.14 — WatchBeacon
 
 Test-site repair candidate based on 8.8.17.13 KeelGuard. No rank, Known Good, production publication, ownership, membership, or server permission is granted by this ZIP.

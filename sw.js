@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.17.14';
-const RELEASE_SEAL='watchbeacon-881714';
+const RELEASE_BUILD='8.8.17.15';
+const RELEASE_SEAL='clearpassage-881715';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
