@@ -1,4 +1,4 @@
-/* Dark Sky 8.8.17.21 HarborMaster — shared browser-safe Supabase transport.
+/* Dark Sky 8.8.17.22 HarborMaster — shared browser-safe Supabase transport.
    This module accepts publishable keys only. It never accepts or stores a
    service-role key, password, or cross-vessel authority assertion. */
 ;(() => {
@@ -113,8 +113,10 @@
     // Check the deadline before activity; a late click cannot revive a window.
     if (!windowState().reusable || !event.isTrusted || document.visibilityState !== 'visible') return;
     const target = event.target instanceof Element ? event.target : null;
-    const host = target?.closest('#admiralDeck, #bootstrapFleet, #foundryWorkspace, #authorityLedger');
-    if (!host || host.classList.contains('hidden') || host.getAttribute('aria-hidden') === 'true') return;
+    const host = target?.closest('#admiralDeck, #bootstrapFleet, #foundryWorkspace, #authorityLedger, #cgWorkspace');
+    if (!host || host.hidden || host.inert || host.classList.contains('hidden') || host.getAttribute('aria-hidden') === 'true') return;
+    // Contract editing uses the same idle policy, not a longer authority window.
+    if (host.id === 'cgWorkspace' && window.DarkSkyCharterGuard?.isWorkspaceOpen?.() !== true) return;
     if (host.id === 'authorityLedger' && document.getElementById('authorityLedgerOfficeLabel')?.textContent?.trim() !== 'ADMIRAL') return;
     if (host.id === 'bootstrapFleet' && !document.getElementById('watchSecurityLayer')?.classList.contains('hidden')) return;
     admiralWindow.lastActivityAt = windowNow();
@@ -134,7 +136,7 @@
     const url = String(options.url || '').replace(/\/$/, '');
     const publishableKey = String(options.publishableKey || options.key || '');
     const sessionKey = String(options.sessionKey || 'darkSkySupabaseSessionV1');
-    const build = String(options.build || '8.8.17.21');
+    const build = String(options.build || '8.8.17.22');
     const admiral = sessionKey === ADMIRAL_KEY;
     // Opt-in cancellation for the separate Vessel Captain route. Owner and
     // Admiral policies are untouched. Generation prevents late session writes.

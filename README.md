@@ -1,3 +1,9 @@
+# Dark Sky 8.8.17.22 — CharterBridge
+
+Focused client repair from CharterGuard. Contracts & Services now paints above the Admiral deck and below its security gate. Silent entry refusal/setup errors become visible notices; the deck is restored after setup failure. Trusted contract editing counts toward the existing 15-minute idle policy; the 60-minute maximum stays fixed. Current readiness receipts identify CharterBridge.
+
+The CG-1 contract text, signature/fee/commissioning holds, seven warning conditions, private draft storage keys, appointment and ledger logic remain. No SQL or site-data cleanup is needed. Upload only the 85 files in the matching folder. No legal document, private contract or test kit belongs in the public website.
+
 # Dark Sky 8.8.17.21 — CharterGuard
 
 Private commissioning-agreement preparation. Admiral-only client workspace: named legal parties and Captain acknowledgment, selected duties, per-vessel sales basis/percentage, counsel review log, private draft export/import, browser-local append-only draft saves with readback, printable legal-review copy, and externally executed PDF fingerprints.

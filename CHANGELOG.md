@@ -1,3 +1,11 @@
+# 8.8.17.22 — CharterBridge
+
+- Repair agreement/Admiral/security sibling stacking order.
+- Visible entry/session/setup-failure feedback instead of silent no-op.
+- Same Admiral activity policy includes the authenticated agreement workspace; no session-limit increase.
+- Correct readiness receipt release label.
+- Added rendered-layer and actual-button tests with full Captain/transport modules and synthetic service replies.
+
 # Dark Sky 8.8.17.21 — CharterGuard
 
 Private commissioning-agreement preparation. Admiral-only client workspace: named legal parties and Captain acknowledgment, selected duties, per-vessel sales basis/percentage, counsel review log, private draft export/import, browser-local append-only draft saves with readback, printable legal-review copy, and externally executed PDF fingerprints.

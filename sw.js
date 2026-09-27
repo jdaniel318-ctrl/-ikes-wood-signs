@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.17.21';
-const RELEASE_SEAL='charterguard-881721';
+const RELEASE_BUILD='8.8.17.22';
+const RELEASE_SEAL='charterbridge-881722';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

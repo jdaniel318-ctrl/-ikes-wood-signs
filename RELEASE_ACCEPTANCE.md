@@ -1,3 +1,7 @@
+# CharterBridge field checkpoint — 8.8.17.22
+
+After Pages deployment, confirm CharterBridge, authenticate Admiral, and tap Contracts & Services once. The agreement must visibly cover the deck, keep Back to Command reachable, and return focus/control when closed. Inspect the empty Parties form before entering any real terms. No fee, signature, commission, departure, permission or live-data change is part of this test.
+
 # Dark Sky 8.8.17.21 — CharterGuard
 
 Private commissioning-agreement preparation. Admiral-only client workspace: named legal parties and Captain acknowledgment, selected duties, per-vessel sales basis/percentage, counsel review log, private draft export/import, browser-local append-only draft saves with readback, printable legal-review copy, and externally executed PDF fingerprints.

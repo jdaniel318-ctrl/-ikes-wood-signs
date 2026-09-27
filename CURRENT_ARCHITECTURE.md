@@ -1,3 +1,7 @@
+# CharterBridge repair — 8.8.17.22
+
+Agreement, Admiral deck and security gate are sibling surfaces. The agreement is above the deck and below the security gate. Local eligibility and live-authority recheck remain required. Trusted drafting activity affects only the existing idle timer, not maximum age, grants or server session policy. CG-1 and all commercial activation holds remain unchanged.
+
 # Dark Sky 8.8.17.21 — CharterGuard
 
 Private commissioning-agreement preparation. Admiral-only client workspace: named legal parties and Captain acknowledgment, selected duties, per-vessel sales basis/percentage, counsel review log, private draft export/import, browser-local append-only draft saves with readback, printable legal-review copy, and externally executed PDF fingerprints.
