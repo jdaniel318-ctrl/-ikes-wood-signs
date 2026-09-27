@@ -49,7 +49,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.17.17';
+  const UPPER_COMMAND_BUILD='8.8.17.18';
   let authorized = false;
   // Read-only session witness; this never grants Captain or server authority.
   window.DarkSkyCaptainSessionStatus = () => authorized;
@@ -706,7 +706,7 @@
         if(truth.runId!==report.runId||truth.updatedAt!==report.at||truth.build!==report.build||!truth.findings)throw new Error('Finding details and summary belong to different runs.');
         for(const c of checks){const meta=truth.findings[c.id];if(!meta||meta.id!==c.id||meta.state!==c.state||meta.label!==c.label||meta.detail!==c.detail)throw new Error('Finding detail does not match its report: '+c.id);}
         const storage=report.storageEvidence;
-        const boundary=`<section class="keelguard-readiness-boundary" role="status"><small>HARBORMASTER · RUN ${esc(report.runId)}</small><b>${holdCount?'REPAIR HOLDS FIRST':watchCount?'CHECKS COMPLETE · WATCH ITEMS REMAIN':'CHECKS COMPLETE'}</b><p>${checks.length} checks · ${holdCount} holds · ${watchCount} watch items. Assessed ${esc(new Date(report.at).toLocaleString())} · Build ${esc(report.build)}.</p><p>Runtime checks and declared contracts; not verified working-ship commissioning or Captain handoff.</p><p><strong>Working-ship handoff: NOT VERIFIED by this report.</strong> Commissioning, appointed-Captain access, restore and cross-device proof remain separate.</p>${storage?.local==='degraded'?'<p class="keelguard-storage-warning"><strong>Legacy browser storage is degraded.</strong> Diagnostic fallback is not a durable ledger or cloud backup. No records were deleted; do not clear website data.</p>':''}</section>`;
+        const boundary=`<section class="keelguard-readiness-boundary" role="status"><small>QUARTERDECK · RUN ${esc(report.runId)}</small><b>${holdCount?'REPAIR HOLDS FIRST':watchCount?'CHECKS COMPLETE · WATCH ITEMS REMAIN':'CHECKS COMPLETE'}</b><p>${checks.length} checks · ${holdCount} holds · ${watchCount} watch items. Assessed ${esc(new Date(report.at).toLocaleString())} · Build ${esc(report.build)}.</p><p>Runtime checks and declared contracts; not verified working-ship commissioning or Captain handoff.</p><p><strong>Working-ship handoff: NOT VERIFIED by this report.</strong> Commissioning, appointed-Captain access, restore and cross-device proof remain separate.</p>${storage?.local==='degraded'?'<p class="keelguard-storage-warning"><strong>Legacy browser storage is degraded.</strong> Diagnostic fallback is not a durable ledger or cloud backup. No records were deleted; do not clear website data.</p>':''}</section>`;
         findings.innerHTML=boundary+(current.length?current.map(c=>{const meta=truth.findings[c.id],a=findingAction(c.id);return `<article class="admiral-finding ${c.state==='fail'?'fail':'warn'}" data-finding-id="${esc(c.id)}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${esc(c.label)}</b><span>${esc(c.detail)}</span><small>FIRST DETECTED ${esc(meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK')}<br>LATEST CHECK ${esc(report.build)} • ${esc(meta.provenance||verificationProvenance(c))}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${esc(c.id)}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds or watch items in this run. Production handoff is separately unverified.</span>');
         const ids=Array.from(findings.querySelectorAll('[data-finding-id]'),node=>node.dataset.findingId);
         if(ids.length!==current.length||ids.some((id,i)=>id!==current[i].id))throw new Error('Rendered finding cards do not match the current report.');
@@ -1031,7 +1031,7 @@
           <nav class="admiral-command-rail" aria-label="Admiral governance controls">
             <div class="admiral-command-rail-title"><small>ADMIRAL COMMAND</small><strong>Govern the platform</strong><span>DUAL OFFICE • SERVER-GATED</span></div>
             <button id="admiralCeremonialForge" type="button"><b>Visual Forge</b><small>Shape upper command</small><em>READY</em></button>
-            <button type="button" data-admiral-future="Delegation"><b>Delegation</b><small>Grant governed authority</small><em>FUTURE</em></button>
+            <button type="button" id="admiralCeremonialDelegation"><b>Delegation</b><small>Open exact-vessel appointments</small><em>OPEN</em></button>
             <button type="button" data-admiral-future="Fleet Standards"><b>Fleet Standards</b><small>Set fleet-wide rules</small><em>FUTURE</em></button>
             <button id="admiralCeremonialFoundry" type="button"><b>The Foundry</b><small>Forge fleet capabilities</small><em>FOUNDATION</em></button>
           </nav>
@@ -1081,7 +1081,7 @@
   <div id="admiralDoctrinePrinciples" class="admiral-doctrine-principles"></div>
   <p class="admiral-doctrine-note">This is the current governed course, not a transient readiness notice. Readiness verifies this registry against the running build.</p>
 </section><div class="admiral-lane-summary admiral-service-governance"><b>Admiral Course Orders</b><span>Set one feature, a service group, or an entire vessel to Off, Free, or Paid. Every change requires an explicit Admiral preview and order.</span></div><button id="admiralServiceEntitlements" class="admiral-pro-button" type="button">OPEN COURSE ORDERS</button><section id="admiralEntitlementStation" class="admiral-entitlement-station admiral-course-station hidden" aria-label="Admiral Course Orders"><header><div><small>SERVER-GOVERNED ADMIRAL CONTROL</small><h5>Course Orders</h5><p>Choose the scope, preview the impact, then issue one deliberate and reversible command.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralEntitlementClose" class="admiral-pro-button" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer">The Admiral Gate opens this deck. Account sign-in separately authorizes server-governed changes. Readiness, testing, refresh and launch never choose Off, Free or Paid.</p><div class="admiral-identity-row"><label>Admiral email<input id="admiralIdentityEmail" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralIdentityPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralIdentitySignIn" class="admiral-pro-button is-primary" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralIdentityRecover" class="admiral-pro-button" type="button">RECOVER PASSWORD</button><button id="admiralIdentitySignOut" class="admiral-pro-button hidden" type="button">SIGN OUT IDENTITY</button></div><div class="admiral-course-grid"><section class="admiral-course-brief"><small>FLEET BRIEF</small><strong id="admiralCourseBrief">Sign in to inspect the selected vessel.</strong><span>Reading fleet state does not change it.</span></section><section class="admiral-course-compose"><div class="admiral-course-step"><small>1 · VESSEL</small><label>Command destination<select id="admiralEntitlementVessel"><option value="ikes-wood-signs">Ike's Wood Signs</option><option value="beccas-bloom-shop">Becca's Bloom Shop</option><option value="bf-p-f92f87e8ec44">Legacy Plumbing</option><option value="bor-north-richmond">Signal Restoration</option><option value="grizzly-bear">Grizzly Bear</option><option value="mugshot-after-dark">Mugs After Dark</option></select></label></div><div class="admiral-course-step"><small>2 · SCOPE</small><div class="admiral-scope-actions" role="group" aria-label="Course order scope"><button class="admiral-pro-button is-selected" type="button" data-course-scope="vessel" aria-pressed="true">ENTIRE VESSEL</button><button class="admiral-pro-button" type="button" data-course-scope="group" aria-pressed="false">SERVICE GROUP</button><button class="admiral-pro-button" type="button" data-course-scope="feature" aria-pressed="false">ONE FEATURE</button></div><label id="admiralCourseGroupLabel" class="hidden">Service group<select id="admiralCourseGroup"><option value="operations">Operations & Commerce</option><option value="production">Production & Capacity</option><option value="intelligence">Intelligence</option></select></label><label id="admiralCourseFeatureLabel" class="hidden">Feature<select id="admiralEntitlementCapability"><option value="fleet.customer-payments">Customer Payments</option><option value="fleet.artwork-inlays">Artwork & Inlay Production</option><option value="fleet.customer-insight">Customer & Order Insight</option><option value="fleet.enhanced-ledger">Enhanced Business Ledger</option><option value="fleet.ai-recommendations">Fleet AI Recommendations</option><option value="fleet.vendor-routing">Vendor & Capacity Routing</option></select></label></div><div class="admiral-course-step"><small>3 · COMMAND</small><div class="admiral-entitlement-actions" role="group" aria-label="Commercial state"><button id="admiralTurnOff" class="admiral-pro-button" type="button" disabled>OFF<span>Unavailable</span></button><button id="admiralMakeFree" class="admiral-pro-button is-selected" type="button" disabled>FREE<span>Active at $0</span></button><button id="admiralGrantPaid" class="admiral-pro-button" type="button" disabled>PAID<span>Paid terms</span></button></div><label>Command intent<input id="admiralCourseIntent" type="text" maxlength="500" placeholder="Optional reason for the record"></label><button id="admiralPreviewCourse" class="admiral-pro-button" type="button" disabled>PREVIEW ORDER</button></div></section><section id="admiralCoursePreview" class="admiral-course-preview" aria-live="polite"><header><div><small>IMPACT PREVIEW</small><strong id="admiralEntitlementCurrent">AWAITING PREVIEW</strong><span id="admiralEntitlementCurrentDetail">No fleet state will change until the order is issued.</span></div></header><div class="admiral-impact-counts"><span><b id="admiralCourseTargetCount">0</b><small>TARGETS</small></span><span><b id="admiralCourseChangeCount">0</b><small>CHANGES</small></span><span><b id="admiralCourseUnchangedCount">0</b><small>UNCHANGED</small></span></div><div id="admiralCoursePreviewItems" class="admiral-course-preview-items"><p>Authenticate the Admiral identity, then preview an order.</p></div><button id="admiralIssueCourse" class="admiral-pro-button is-primary" type="button" disabled>ISSUE ADMIRAL ORDER</button></section></div><div id="admiralEntitlementResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to inspect and command entitlements.</div><section class="admiral-course-log"><header><div><small>DURABLE COMMAND RECORD</small><strong>Recent Admiral orders</strong></div><button id="admiralOpenFullLog" class="admiral-pro-button" type="button" disabled>OPEN FULL LOG</button></header><div id="admiralCourseLogRows" class="admiral-course-log-rows"><p>Authenticate to read the command record.</p></div></section><div class="admiral-package-note"><b>Authority boundary</b><span>Each order is scoped to one vessel. Preview fingerprints prevent stale changes; rollback refuses to overwrite a newer command.</span></div></section></article>
-            <article data-admiral-panel="delegate" hidden><small>03 · DELEGATE</small><h4>Bounded authority</h4><p>Scope, duration, stewardship and delegation history.</p><div class="admiral-lane-summary"><b>Delegation</b><span>Authority must remain explicit, bounded and auditable.</span></div><button type="button" data-admiral-future="Delegation">DELEGATION <em>FUTURE</em></button></article>
+            <article data-admiral-panel="delegate" hidden><small>03 · DELEGATE</small><h4>Captain appointments</h4><p role="status">Delegation controls are initializing. No command has been issued.</p><button id="quarterdeckMountRetry" type="button">RETRY DELEGATION DISPLAY</button></article>
             <article data-admiral-panel="promote" hidden><small>04 · PROMOTE</small><h4>Promote fleet learning</h4><p>Foundry candidates, proven capability, shared service or new vessel.</p><div class="admiral-lane-summary"><b>Intelligence Dock + one learning pipeline</b><span>Cross-vessel patterns surface here before Observation → Lesson → Candidate → Foundry → Sea Trial → Proven.</span></div><button id="admiralDeckFoundry" type="button">OPEN THE FOUNDRY <em>FOUNDATION</em></button><div class="admiral-lane-summary admiral-service-governance"><b>Admiral Commissioning Orders</b><span>Create one durable Fleet Core vessel identity. The working name stays editable; the vessel ID, project key, and namespace do not.</span></div><button id="admiralCommissioningOpen" class="admiral-pro-button" type="button">OPEN COMMISSIONING ORDERS</button><section id="admiralCommissioningStation" class="admiral-entitlement-station admiral-course-station admiral-commissioning-station hidden" aria-label="Admiral Commissioning Orders"><header><div><small>SERVER-GOVERNED ADMIRAL SHIPYARD</small><h5>Commissioning Orders</h5><p>Name the working vessel, define its permanent keel, preview the boundary, then issue one deliberate order.</p></div><div class="admiral-entitlement-head-actions"><strong id="admiralCommissioningIdentityState">ADMIRAL IDENTITY REQUIRED</strong><button id="admiralCommissioningClose" class="admiral-pro-button" type="button">CLOSE</button></div></header><p class="admiral-identity-explainer"><b>Bootstrap Build is a working name.</b> It can be renamed later without changing the vessel UUID, project key, namespace, records, or lineage.</p><div id="admiralCommissioningAuth" class="admiral-identity-row"><label>Admiral email<input id="admiralCommissioningEmail" type="email" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="Admiral email"></label><label>Password<input id="admiralCommissioningPassword" type="password" autocomplete="current-password" placeholder="Password"></label><button id="admiralCommissioningSignIn" class="admiral-pro-button is-primary" type="button">AUTHENTICATE ADMIRAL</button><button id="admiralCommissioningRecover" class="admiral-pro-button" type="button">RECOVER PASSWORD</button><button id="admiralCommissioningSignOut" class="admiral-pro-button hidden" type="button">SIGN OUT IDENTITY</button></div><div class="admiral-course-grid admiral-commissioning-grid"><section class="admiral-course-brief"><small>COMMISSIONING BRIEF</small><strong id="admiralCommissioningBrief">Authenticate to preview a new vessel.</strong><span>No vessel exists until the order is issued.</span></section><section class="admiral-course-compose"><div class="admiral-course-step"><small>1 · WORKING IDENTITY</small><label>Working name <span class="field-rule">EDITABLE AFTER COMMISSION</span><input id="admiralCommissioningName" type="text" maxlength="80" value="Bootstrap Build" placeholder="Working vessel name"></label><label>Mission summary<input id="admiralCommissioningSummary" type="text" maxlength="500" value="Construction scheduling and field coordination" placeholder="What this vessel is being built to do"></label></div><div class="admiral-course-step"><small>2 · PERMANENT KEEL</small><label>Project key <span class="field-rule">PERMANENT</span><input id="admiralCommissioningProject" type="text" maxlength="63" value="construction-scheduling-01" autocapitalize="none" spellcheck="false"></label><label>Namespace <span class="field-rule">PERMANENT</span><input id="admiralCommissioningNamespace" type="text" maxlength="63" value="construction-scheduling-01" autocapitalize="none" spellcheck="false"></label><label>Mission class<select id="admiralCommissioningClass"><option value="admiral_program">Admiral-level program</option><option value="fleet_service">Shared fleet service</option><option value="independent_business">Independent business</option></select></label></div><div class="admiral-course-step"><small>3 · BOUNDARY</small><div class="admiral-commissioning-boundary"><span><b>COMMISSIONING</b><small>NOT LIVE</small></span><span><b>UNASSIGNED</b><small>NO OWNER CREATED</small></span><span><b>NO FEATURES</b><small>COURSE ORDER LATER</small></span></div><label>Order intent<input id="admiralCommissioningIntent" type="text" maxlength="500" placeholder="Optional reason for the record"></label><button id="admiralCommissioningPreview" class="admiral-pro-button" type="button" disabled>PREVIEW COMMISSIONING ORDER</button></div></section><section class="admiral-course-preview" aria-live="polite"><header><div><small>IMPACT PREVIEW</small><strong id="admiralCommissioningPreviewState">AWAITING PREVIEW</strong><span id="admiralCommissioningPreviewDetail">No Fleet Core row will be written until the order is issued.</span></div></header><div id="admiralCommissioningPreviewItems" class="admiral-course-preview-items"><p>Authenticate the Admiral identity, then preview the permanent and editable fields.</p></div><button id="admiralCommissioningIssue" class="admiral-pro-button is-primary" type="button" disabled>ISSUE COMMISSIONING ORDER</button></section></div><div id="admiralCommissioningResult" class="admiral-entitlement-result" role="status" aria-live="polite">Authenticate the Admiral identity to begin.</div><section class="admiral-course-log"><header><div><small>DURABLE COMMISSIONING RECORD</small><strong>Recent vessel orders</strong></div><button id="admiralCommissioningLog" class="admiral-pro-button" type="button" disabled>OPEN FULL LOG</button></header><div id="admiralCommissioningLogRows" class="admiral-course-log-rows"><p>Authenticate to read the commissioning record.</p></div></section><div class="admiral-package-note"><b>Authority boundary</b><span>The commissioner does not become the owner. Commissioning creates no membership, no entitlement, and no live publication.</span></div></section></article>
           </section>
           <section class="admiral-continuity-card"><div><h4>CONTINUITY &amp; EVIDENCE</h4><p>Recovery, reports, governance history and presentation remain available without competing with active command.</p></div><div class="admiral-continuity-actions"><button id="admiralDeckRecovery" type="button"><b>Recovery Snapshot</b><small>Protect the fleet</small></button><button id="admiralDeckReport" type="button"><b>Readiness Report</b><small>Download evidence</small></button><button id="admiralDeckLog" type="button"><b>Admiral Log</b><small>Governance history</small></button><button id="admiralDeckForge" type="button"><b>Presentation Forge</b><small>Optional visual layer</small></button></div></section>
@@ -1238,8 +1238,10 @@
       // target during an iPad tap can leave Safari's visual and hit-test geometry
       // out of sync until the next frame.
       if(focus)deck.querySelector(`[data-admiral-panel="${lane}"]`)?.focus?.({preventScroll:true});
+      window.dispatchEvent(new CustomEvent('darksky:admiral-lane-changed'));
     };
     byId('admiralLaneNav')?.addEventListener('click',e=>{const btn=e.target.closest('[data-admiral-lane]');if(btn)setAdmiralLane(btn.dataset.admiralLane,true);});
+    byId('admiralCeremonialDelegation').onclick=()=>{deck.dataset.mode='professional';const button=byId('admiralDeckModeBtn');button.textContent='CEREMONIAL MODE';button.setAttribute('aria-pressed','true');setAdmiralLane('delegate',true);};
     try{setAdmiralLane(sessionStorage.getItem('darkSkyAdmiralLane')||'govern');}catch(_){setAdmiralLane('govern');}
     byId('admiralDeckRunReadiness').onclick=()=>runAdmiralDeckReadiness();
     byId('admiralCeremonialRunReadiness').onclick=()=>runAdmiralDeckReadiness();
@@ -1309,6 +1311,8 @@
       renderAdmiralFindings(window.__lastAdmiralReadinessReport||null,mode);
     });
     deck.querySelectorAll('[data-admiral-future]').forEach(btn=>btn.onclick=()=>{byId('admiralDeckNotice').textContent=`${btn.dataset.admiralFuture} is charted for a future Admiral voyage.`;});
+    byId('quarterdeckMountRetry')?.addEventListener('click',()=>{if(!window.DarkSkyQuarterdeck?.mount?.()){const note=deck.querySelector('[data-admiral-panel="delegate"] p');if(note)note.textContent='Delegation display unavailable. No authority has changed. Check the complete release before continuing.';}});
+    window.dispatchEvent(new CustomEvent('darksky:admiral-deck-ready'));
     return gate;
   }
 
@@ -2982,7 +2986,7 @@ if(document.readyState==='loading'){
   const station=()=>el('admiralEntitlementStation');
   const result=()=>el('admiralEntitlementResult');
   const cfg=()=>window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.()||null;
-  const client=()=>{const c=cfg();if(!c?.url||!c?.publishableKey)throw new Error('Supabase identity is not configured.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:SESSION_KEY,build:'8.8.17.17'});};
+  const client=()=>{const c=cfg();if(!c?.url||!c?.publishableKey)throw new Error('Supabase identity is not configured.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:SESSION_KEY,build:'8.8.17.18'});};
   const readSession=()=>client().readSession();
   const saveSession=data=>client().saveSession(data);
   const clearSession=()=>client().clearSession();
@@ -3246,7 +3250,7 @@ if(document.readyState==='loading'){
     if(!(await window.DarkSkyAdmiralIdentityStatus?.())){serverRows=[];serverMessage='Admiral office locked. Authenticate a dedicated Admiral account with active server authority to read server-attested entries.';return;}
     const config=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
     if(!config?.url||!config?.publishableKey)throw new Error('Supabase identity is not configured.');
-    const client=window.DarkSkySupabase.create({url:config.url,publishableKey:config.publishableKey,sessionKey:SESSION_KEY,build:'8.8.17.17'});
+    const client=window.DarkSkySupabase.create({url:config.url,publishableKey:config.publishableKey,sessionKey:SESSION_KEY,build:'8.8.17.18'});
     try{
       const data=await client.rpc('admiral_read_authority_ledger',{p_limit:200,p_authority:null,p_project_id:null},'The Admiral ledger could not be read.');
       serverRows=(data?.records||[]).map(normalizeServer);
@@ -3297,75 +3301,266 @@ if(document.readyState==='loading'){
 if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkSkyOpenFleetWatchtower;
 
 
-/* Dark Sky 8.8.17.17 HarborMaster — exact-vessel Captain appointment and departure control. */
-;(()=>{
+/* Dark Sky 8.8.17.18 Quarterdeck — lifecycle-mounted exact-vessel delegation.
+   Presentation/controller repair only. Existing authenticated RPC contracts remain authoritative.
+   No polling installer, no data deletion, no automatic issue/revoke/departure. */
+;(() => {
   'use strict';
-  const BUILD='8.8.17.17', SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
-  const el=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let vessels=[],appointments=[],preview=null,activationPreview=null,backendReady=false,busy=false;
-  function cfg(){return window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.()||null;}
-  function client(){const c=cfg();if(!c?.url||!c?.publishableKey)throw new Error('Supabase identity is not configured.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:SESSION_KEY,build:BUILD});}
-  async function rpc(name,body={}){return client().rpc(name,body,'Fleet Core refused the HarborMaster command.');}
-  function result(message,tone=''){const n=el('harborMasterResult');if(!n)return;n.textContent=message;n.dataset.tone=tone;}
-  function setBusy(next){busy=next;['harborPreviewCaptain','harborIssueCaptain','harborPreviewActivation','harborActivateVessel','harborRefresh'].forEach(id=>{const b=el(id);if(b)b.disabled=next;});}
-  function migrationMissing(error){return /could not find the function|schema cache|fleet_captain_appointments|captain appointment/i.test(String(error?.message||error));}
-  function selectedProject(){return el('harborVessel')?.value||'';}
-  function vesselByProject(id){return vessels.find(v=>v.project_id===id)||null;}
-  function handoffUrl(projectId){const u=new URL('./owner.html',location.href);u.searchParams.set('surface','vessel-captain');u.searchParams.set('project',projectId);return u.toString();}
-  function install(){
-    const panel=document.querySelector('[data-admiral-panel="delegate"]');
-    if(!panel||panel.dataset.harborMaster==='1')return;
-    panel.dataset.harborMaster='1';
-    panel.innerHTML=`<small>03 · DELEGATE</small><h4>HarborMaster</h4><p>Appoint one Captain to one vessel without granting Fleet-wide Captain authority or changing ownership.</p>
-      <section class="harbor-master" id="harborMasterStation">
-        <div class="harbor-master-head"><div><small>EXACT-VESSEL CAPTAIN HANDOFF</small><strong>Commission the person, not the whole Fleet</strong><span>Admiral appoints. The candidate accepts with their own account. Vessel authority stays exact-scope and auditable.</span></div><em id="harborMasterBackend">CHECKING FLEET CORE</em></div>
-        <div class="harbor-master-grid">
-          <label>Working vessel<select id="harborVessel"><option value="">Choose vessel</option></select></label>
-          <label>Captain account email<input id="harborCaptainEmail" type="email" inputmode="email" autocomplete="off" placeholder="captain@example.com"></label>
-          <label class="wide">Appointment intent<textarea id="harborCaptainIntent" maxlength="500" placeholder="Why this person should operate this vessel"></textarea></label>
-        </div>
-        <div class="harbor-master-actions"><button id="harborPreviewCaptain" type="button">PREVIEW APPOINTMENT</button><button id="harborIssueCaptain" type="button" disabled>ISSUE APPOINTMENT</button><button id="harborRefresh" type="button">REFRESH</button></div>
-        <div id="harborCaptainPreview" class="harbor-master-preview"><b>No appointment preview yet.</b><span>No authority has changed.</span></div>
-        <div class="harbor-master-route"><div><small>CAPTAIN HANDOFF ROUTE</small><code id="harborCaptainRoute">Choose a vessel first.</code></div><button id="harborCopyRoute" type="button">COPY ROUTE</button></div>
-        <section class="harbor-master-activation"><div><small>HARBOR DEPARTURE</small><strong>Fleet lifecycle activation</strong><span>Activation requires selected operating authority plus a retained working-ship proof reference. It does not publish a customer website or transfer ownership.</span></div><label class="harbor-proof-label">Working-ship proof reference<input id="harborEvidenceRef" maxlength="160" placeholder="Example: SEA-TRIAL-IKE-2026-09-26"></label><div class="harbor-master-actions"><button id="harborPreviewActivation" type="button">CHECK DEPARTURE</button><button id="harborActivateVessel" type="button" disabled>DEPART HARBOR</button></div><div id="harborActivationPreview" class="harbor-master-preview"><b>Departure not checked.</b><span>Working-ship field proof remains separate from this server lifecycle command.</span></div></section>
-        <p id="harborMasterResult" class="harbor-master-result" role="status">Authenticate Admiral authority, then HarborMaster will read the server contract.</p>
-        <section><div class="harbor-master-subhead"><b>CAPTAIN APPOINTMENTS</b><span>Pending, accepted, suspended and retained history</span></div><div id="harborAppointmentRows" class="harbor-appointment-rows"><p>No appointment record loaded.</p></div></section>
-      </section>`;
-    el('harborVessel')?.addEventListener('change',()=>{preview=null;activationPreview=null;paintRoute();paintPreview();paintActivation();});
-    el('harborCaptainEmail')?.addEventListener('input',()=>{preview=null;paintPreview();});
-    el('harborCaptainIntent')?.addEventListener('input',()=>{preview=null;paintPreview();});
-    el('harborEvidenceRef')?.addEventListener('input',()=>{activationPreview=null;paintActivation();});
-    el('harborPreviewCaptain')?.addEventListener('click',previewCaptain);
-    el('harborIssueCaptain')?.addEventListener('click',issueCaptain);
-    el('harborRefresh')?.addEventListener('click',load);
-    el('harborCopyRoute')?.addEventListener('click',copyRoute);
-    el('harborPreviewActivation')?.addEventListener('click',previewActivation);
-    el('harborActivateVessel')?.addEventListener('click',activateVessel);
-    panel.addEventListener('click',event=>{const b=event.target.closest('[data-harbor-revoke]');if(b)revokeAppointment(b.dataset.harborRevoke);});
-    load();
+  const BUILD='8.8.17.18', SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
+  const $=id=>document.getElementById(id);
+  const safe=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let deck=null,panel=null,observer=null,readinessObserver=null;
+  let vessels=[],appointments=[],appointmentPreview=null,departurePreview=null;
+  let ready=false,busy=false,operation=0,loadedSession='',attemptedSession='',wasVisible=false,currentTab='appoint',previousLane='';
+  const controls=['harborVessel','harborCaptainEmail','harborCaptainIntent','harborEvidenceRef','harborDepartureAcknowledgment'];
+  function client(){
+    const c=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
+    if(!c?.url||!c?.publishableKey||!window.DarkSkySupabase?.create)throw new Error('Fleet Core connection is not configured.');
+    return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:SESSION_KEY,build:BUILD});
   }
-  function paintRoute(){const project=selectedProject();el('harborCaptainRoute').textContent=project?handoffUrl(project):'Choose a vessel first.';}
-  function paintPreview(){const box=el('harborCaptainPreview'),button=el('harborIssueCaptain');if(button)button.disabled=!preview||busy;if(!box)return;if(!preview){box.innerHTML='<b>No appointment preview yet.</b><span>No authority has changed.</span>';return;}const open=preview.open_appointment;box.innerHTML=`<b>${esc(preview.vessel_name)} → ${esc(preview.candidate_email)}</b><span>${preview.candidate_account_exists?'Account exists':'Account not found yet'} · ${esc(preview.lifecycle_state||'unknown')} · ${esc(preview.operating_model||'unknown')}</span><span>${open?'OPEN APPOINTMENT: '+esc(open.status)+' for '+esc(open.candidate_email):'No open appointment. Issue creates a pending invitation only; authority remains OFF until acceptance.'}</span>`;}
-  function paintActivation(){const box=el('harborActivationPreview'),button=el('harborActivateVessel');if(button)button.disabled=!activationPreview||!activationPreview.operating_authority_ready||busy;if(!box)return;if(!activationPreview){box.innerHTML='<b>Departure not checked.</b><span>Working-ship field proof remains separate from this server lifecycle command.</span>';return;}box.innerHTML=`<b>${activationPreview.operating_authority_ready?'OPERATING AUTHORITY READY':'NOT READY TO ACTIVATE'}</b><span>${esc(activationPreview.vessel_name)} · ${esc(activationPreview.operating_model)} · current ${esc(activationPreview.lifecycle_state)}</span><span>${esc(activationPreview.operating_authority_detail)}. Proof: ${esc(activationPreview.working_ship_evidence_reference||'—')}. Activation changes Fleet lifecycle to ACTIVE; customer publication is unchanged.</span>`;}
-  function paintAppointments(){const host=el('harborAppointmentRows');if(!host)return;host.innerHTML=appointments.length?appointments.map(a=>`<article><div><small>${esc(String(a.status||'').toUpperCase())} · ${esc(a.project_id)}</small><b>${esc(a.vessel_name)}</b><span>${esc(a.candidate_email)} · appointed ${a.appointed_at?new Date(a.appointed_at).toLocaleString():'—'}</span><span>${a.accepted_at?'Accepted '+new Date(a.accepted_at).toLocaleString():'Expires '+(a.expires_at?new Date(a.expires_at).toLocaleString():'—')}</span></div>${['pending','accepted','suspended'].includes(a.status)?`<button type="button" data-harbor-revoke="${esc(a.appointment_id)}">REVOKE</button>`:''}</article>`).join(''):'<p>No Captain appointments are recorded.</p>';}
+  function sessionMark(){
+    const s=window.DarkSkyAdmiralSession?.status();
+    // Local eligibility is not authority. Every network call still uses the original server-checked transport.
+    if(!s?.reusable||!s.startedAt)return '';
+    try{return `${s.startedAt}:${client().readSession()?.user?.id||''}`;}catch(_){return '';}
+  }
+  function visible(){return !!deck?.isConnected&&!deck.classList.contains('hidden')&&deck.getAttribute('aria-hidden')!=='true';}
+  function active(){return visible()&&deck.dataset.admiralLane==='delegate'&&!!sessionMark();}
+  function selected(){return $('harborVessel')?.value||'';}
+  function message(text,tone='info'){const n=$('harborMasterResult');if(n){n.textContent=text;n.dataset.tone=tone;}}
+  function backend(text){const n=$('harborMasterBackend');if(n)n.textContent=text;}
+  function checked(){return ready&&!busy&&active();}
+  function appointmentMatches(){return !!appointmentPreview&&appointmentPreview.project_id===selected()&&appointmentPreview.candidate_email===($('harborCaptainEmail')?.value||'').trim().toLowerCase()&&!appointmentPreview.open_appointment;}
+  function departureMatches(){return !!departurePreview&&departurePreview.project_id===selected()&&departurePreview.working_ship_evidence_reference===($('harborEvidenceRef')?.value||'').trim()&&departurePreview.operating_authority_ready===true;}
+  function state(){
+    const enabled=checked();
+    for(const id of controls){const n=$(id);if(n)n.disabled=busy||!ready||!active();}
+    for(const id of ['harborPreviewCaptain','harborPreviewActivation','harborCopyRoute'])if($(id))$(id).disabled=!enabled||!selected();
+    if($('harborIssueCaptain'))$('harborIssueCaptain').disabled=!enabled||currentTab!=='appoint'||!appointmentMatches();
+    if($('harborActivateVessel'))$('harborActivateVessel').disabled=!enabled||currentTab!=='departure'||!departureMatches()||!$('harborDepartureAcknowledgment')?.checked;
+    if($('harborRefresh'))$('harborRefresh').disabled=busy||!active();
+    panel?.querySelectorAll('[data-harbor-revoke]').forEach(b=>b.disabled=!enabled);
+    if($('harborMasterStation'))$('harborMasterStation').setAttribute('aria-busy',String(busy));
+    for(const [id,label] of [['harborPreviewCaptain','PREVIEW APPOINTMENT'],['harborIssueCaptain','ISSUE APPOINTMENT'],['harborPreviewActivation','PREVIEW DEPARTURE'],['harborActivateVessel','DEPART HARBOR']])if($(id))$(id).textContent=label;
+  }
+  function validity(){if(!selected()){message('Choose one vessel first.','watch');$('harborVessel')?.focus();return false;}return true;}
+  function paintAppointment(){
+    const box=$('harborCaptainPreview');if(!box)return;
+    if(!appointmentPreview){box.innerHTML='<small>PREVIEW FIRST</small><h5>Nothing has been issued.</h5><p>Choose a vessel and an account email. Preview shows the exact scope before you decide.</p><p class="qd-muted">Acceptance grants vessel operations only—not ownership or fleet-wide Captain authority.</p>';}
+    else{const p=appointmentPreview;box.innerHTML=`<small>${p.open_appointment?'APPOINTMENT ALREADY OPEN':'REVIEW THE EXACT APPOINTMENT'}</small><h5>${safe(p.vessel_name)}</h5><p class="qd-email">${safe(p.candidate_email)}</p><p>${p.candidate_account_exists?'Account found':'Account not found yet'} · ${safe(p.lifecycle_state)} · ${safe(p.operating_model).replaceAll('_',' ')}</p><p>${p.open_appointment?`An appointment is ${safe(p.open_appointment.status)}. Review its history; a second issue is blocked.`:'Issue creates a pending appointment. The candidate must sign in and accept before vessel authority is granted.'}</p>`;}
+    state();
+  }
+  function paintDeparture(){
+    const box=$('harborActivationPreview');if(!box)return;
+    if(!departurePreview){box.innerHTML='<small>PREVIEW ONLY UNTIL YOU CONFIRM</small><h5>Departure not checked.</h5><p>A reference is only a pointer to evidence. It does not prove a working ship or publish its customer website.</p>';}
+    else{const p=departurePreview;box.innerHTML=`<small>${p.operating_authority_ready?'OPERATING AUTHORITY PRESENT':'DEPARTURE BLOCKED'}</small><h5>${safe(p.vessel_name)}</h5><p>${safe(p.operating_authority_detail)}</p><p>Current: ${safe(p.lifecycle_state)} · ${safe(p.operating_model).replaceAll('_',' ')}</p><p>Proof reference: ${safe(p.working_ship_evidence_reference)}</p><p>Only the Fleet lifecycle would change to ACTIVE. Ownership and customer publication stay unchanged.</p>`;}
+    state();
+  }
+  function paintRoute(){
+    const project=selected(),out=$('harborCaptainRoute');
+    if(!out)return;
+    if(!project){out.textContent='Choose a vessel to view its handoff route.';return;}
+    try{const u=new URL('./owner.html',location.href);u.searchParams.set('surface','vessel-captain');u.searchParams.set('project',project);out.textContent=u.toString();}
+    catch(_){out.textContent='Handoff link requires the deployed website address.';}
+  }
+  function date(v){if(!v)return 'Not recorded';const d=new Date(v);return Number.isFinite(d.getTime())?d.toLocaleString():'Invalid server date';}
+  function paintHistory(){
+    const rows=$('harborAppointmentRows');if(!rows)return;
+    const project=selected(),items=project?appointments.filter(a=>a.project_id===project):appointments;
+    if($('harborHistoryScope'))$('harborHistoryScope').textContent=project?`${items.length} appointment record(s) for the selected vessel`:`${items.length} appointment record(s) across authorized vessels`;
+    rows.innerHTML=!ready?'<p>Server records have not been loaded. Use Refresh after authentication.</p>':!items.length?'<p>No Captain appointments are recorded for this selection.</p>':items.map(a=>`<article class="qd-history-row"><div><small>${safe(a.status).toUpperCase()} · ${safe(a.project_id)}</small><h5>${safe(a.vessel_name)}</h5><p>${safe(a.candidate_email)}</p><span>Appointed ${safe(date(a.appointed_at))}${a.accepted_at?' · Accepted '+safe(date(a.accepted_at)):' · Expires '+safe(date(a.expires_at))}</span>${a.decision_note?'<p>'+safe(a.decision_note)+'</p>':''}</div>${['pending','accepted','suspended'].includes(a.status)?`<button type="button" data-harbor-revoke="${safe(a.appointment_id)}">REVIEW REVOCATION</button>`:''}</article>`).join('');
+    state();
+  }
+  function invalidate(){appointmentPreview=null;departurePreview=null;if($('harborDepartureAcknowledgment'))$('harborDepartureAcknowledgment').checked=false;paintAppointment();paintDeparture();}
+  function changeTab(name,focus=false){
+    currentTab=['appoint','history','departure'].includes(name)?name:'appoint';
+    panel?.querySelectorAll('[data-qd-tab]').forEach(b=>{const yes=b.dataset.qdTab===currentTab;b.setAttribute('aria-selected',String(yes));b.tabIndex=yes?0:-1;if(yes&&focus)b.focus({preventScroll:true});});
+    panel?.querySelectorAll('[data-qd-panel]').forEach(n=>n.hidden=n.dataset.qdPanel!==currentTab);
+    if(currentTab==='history')paintHistory();
+    state();
+  }
+  function conceal(){
+    operation++;busy=false;ready=false;loadedSession='';attemptedSession='';vessels=[];appointments=[];
+    for(const id of ['harborCaptainEmail','harborCaptainIntent','harborEvidenceRef'])if($(id))$(id).value='';
+    if($('harborVessel'))$('harborVessel').innerHTML='<option value="">Choose a vessel</option>';
+    invalidate();paintHistory();paintRoute();backend('ACCOUNT CHECK REQUIRED');message('Sign in before loading delegation records. No saved business records were changed.');
+  }
+  function token(){if(busy||!active())return null;busy=true;state();return {id:++operation,session:sessionMark()};}
+  function current(t){return !!t&&t.id===operation&&t.session===sessionMark()&&active();}
+  function finish(t){if(t?.id===operation){busy=false;state();}}
+  async function verified(t){const ok=await window.DarkSkyAdmiralIdentityStatus?.();if(!ok||!current(t))throw new Error('Admiral authority could not be verified. The operation was not continued.');}
+  async function rpc(name,body={}){return client().rpc(name,body,'Fleet Core could not complete this request.');}
+  function validateRecords(v,a){
+    if(!Array.isArray(v?.records)||!Array.isArray(a?.records))throw new Error('Fleet Core returned incomplete delegation records.');
+    const rows=v.records.filter(x=>x.mission_class!=='admiral_program');
+    if(rows.some(x=>!x.project_id||typeof x.display_name!=='string')||new Set(rows.map(x=>x.project_id)).size!==rows.length)throw new Error('Vessel identity records could not be reconciled.');
+    if(a.records.some(x=>!x.appointment_id||!x.project_id||typeof x.status!=='string'))throw new Error('Appointment records could not be reconciled.');
+    return {vessels:rows,appointments:a.records};
+  }
+  async function readRecords(t){
+    const [v,a]=await Promise.all([rpc('admiral_list_vessels_for_branding'),rpc('admiral_list_captain_appointments',{p_project_id:null})]);
+    if(!current(t))return false;
+    const data=validateRecords(v,a),old=selected();
+    vessels=data.vessels;appointments=data.appointments;ready=true;loadedSession=t.session;
+    const select=$('harborVessel');select.innerHTML='<option value="">Choose a vessel</option>'+vessels.map(x=>`<option value="${safe(x.project_id)}">${safe(x.display_name)} · ${safe(x.lifecycle_state)}</option>`).join('');
+    if(vessels.some(v=>v.project_id===old))select.value=old;
+    backend('SERVER RECORDS LOADED');paintHistory();paintRoute();return true;
+  }
   async function load(){
-    if(busy)return;setBusy(true);result('Reading HarborMaster Fleet Core contract…');
-    try{
-      if(!(await window.DarkSkyAdmiralIdentityStatus?.())){backendReady=false;throw new Error('Active Admiral account authority is required before delegation records can open.');}
-      const [v,a]=await Promise.all([rpc('admiral_list_vessels_for_branding',{}),rpc('admiral_list_captain_appointments',{p_project_id:null})]);
-      vessels=(v?.records||[]).filter(x=>x.mission_class!=='admiral_program');appointments=a?.records||[];backendReady=true;
-      const select=el('harborVessel'),current=select?.value||'';if(select){select.innerHTML='<option value="">Choose vessel</option>'+vessels.map(x=>`<option value="${esc(x.project_id)}">${esc(x.display_name)} · ${esc(x.lifecycle_state)}</option>`).join('');if(vessels.some(x=>x.project_id===current))select.value=current;}
-      el('harborMasterBackend').textContent='FLEET CORE READY';paintRoute();paintAppointments();result('HarborMaster server contract verified. No appointment or vessel state changed.','verified');
-    }catch(error){backendReady=false;appointments=[];paintAppointments();const message=migrationMissing(error)?'Fleet Core HarborMaster migration is not installed yet. Static upload alone cannot grant vessel-Captain authority.':String(error?.message||error);el('harborMasterBackend').textContent='SERVER CONTRACT REQUIRED';result(message,'watch');}
-    finally{setBusy(false);paintPreview();paintActivation();}
+    const t=token();if(!t)return;
+    attemptedSession=t.session;invalidate();backend('READING FLEET CORE');message('Reading vessel and appointment records. No authority changes.');
+    try{await verified(t);if(await readRecords(t))message('Server records loaded. Preview first; no appointment or vessel state changed.','verified');}
+    catch(e){if(current(t)){ready=false;backend('RECORDS UNAVAILABLE');paintHistory();message('Delegation records unavailable: '+e.message+' Use Refresh to retry; no command is replayed.','watch');}}
+    finally{finish(t);}
   }
-  async function previewCaptain(){if(!backendReady)return load();const project=selectedProject(),email=el('harborCaptainEmail')?.value?.trim()||'';if(!project||!email)return result('Choose one vessel and enter the Captain account email before previewing.','watch');setBusy(true);try{preview=await rpc('admiral_preview_captain_appointment',{p_project_id:project,p_captain_email:email});paintPreview();result('Preview verified. No authority changed. Review the candidate and open-appointment state before issuing.','verified');}catch(error){preview=null;paintPreview();result(String(error?.message||error),'watch');}finally{setBusy(false);paintPreview();}}
-  async function issueCaptain(){if(!preview)return;setBusy(true);try{const data=await rpc('admiral_issue_captain_appointment',{p_project_id:preview.project_id,p_captain_email:preview.candidate_email,p_expected_fingerprint:preview.fingerprint,p_intent:el('harborCaptainIntent')?.value?.trim()||''});preview=null;result(`APPOINTMENT #${data.appointment_id} ISSUED · ${data.candidate_email} must accept with their own account before any vessel authority exists.`,'verified');await load();}catch(error){result(String(error?.message||error),'watch');}finally{setBusy(false);paintPreview();}}
-  async function revokeAppointment(id){if(!id||busy)return;if(!window.confirm('Revoke this vessel-Captain appointment?\n\nIf HarborMaster created the operator membership, that exact-vessel membership will be revoked. Ownership and other vessels are not changed.'))return;setBusy(true);try{const data=await rpc('admiral_revoke_captain_appointment',{p_appointment_id:id,p_reason:'Revoked from HarborMaster'});result(`REVOCATION VERIFIED · ${data.project_id} appointment revoked. Membership revoked: ${data.membership_revoked?'YES':'NO / PREEXISTING'}.`,'verified');await load();}catch(error){result(String(error?.message||error),'watch');}finally{setBusy(false);}}
-  async function previewActivation(){if(!backendReady)return load();const project=selectedProject(),evidence=el('harborEvidenceRef')?.value?.trim()||'';if(!project)return result('Choose a vessel before checking departure.','watch');if(evidence.length<8)return result('Enter a working-ship proof reference before checking departure.','watch');setBusy(true);try{activationPreview=await rpc('admiral_preview_vessel_activation',{p_project_id:project,p_evidence_reference:evidence});paintActivation();result(activationPreview.operating_authority_ready?'Departure preview verified. Operating authority and proof reference are present; field evidence still must be inspected by the Captain before activation.':'Departure held: '+activationPreview.operating_authority_detail,activationPreview.operating_authority_ready?'verified':'watch');}catch(error){activationPreview=null;paintActivation();result(String(error?.message||error),'watch');}finally{setBusy(false);paintActivation();}}
-  async function activateVessel(){if(!activationPreview?.operating_authority_ready)return;setBusy(true);try{const data=await rpc('admiral_depart_vessel',{p_project_id:activationPreview.project_id,p_evidence_reference:activationPreview.working_ship_evidence_reference,p_expected_fingerprint:activationPreview.fingerprint,p_intent:'HarborMaster deliberate Fleet lifecycle activation'});activationPreview=null;result(`DEPARTURE VERIFIED · ${data.vessel_name} is ACTIVE in Fleet Core. Customer publication was not changed.`,'verified');await load();}catch(error){result(String(error?.message||error),'watch');}finally{setBusy(false);paintActivation();}}
-  async function copyRoute(){const value=el('harborCaptainRoute')?.textContent||'';if(!/^https?:/.test(value))return result('Choose a vessel before copying the handoff route.','watch');try{await navigator.clipboard.writeText(value);result('Captain handoff route copied. The route grants no authority by itself.','verified');}catch(_){result('Copy was unavailable. Select the route text and copy it manually.','watch');}}
-  const tryInstall=()=>{install();setTimeout(install,300);};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',tryInstall,{once:true});else tryInstall();
-  window.addEventListener('darksky:admiral-session-changed',()=>{if(document.querySelector('[data-admiral-panel="delegate"]')&&!busy)load();});
+  async function previewCaptain(){
+    if(!checked()||!validity())return;
+    const input=$('harborCaptainEmail');if(!input.reportValidity())return;
+    const project=selected(),email=input.value.trim().toLowerCase(),t=token();if(!t)return;
+    appointmentPreview=null;paintAppointment();message('Checking the exact-vessel appointment preview…');
+    try{await verified(t);const data=await rpc('admiral_preview_captain_appointment',{p_project_id:project,p_captain_email:email});if(!current(t))return;
+      if(data?.project_id!==project||data?.candidate_email!==email||typeof data.fingerprint!=='string'||!data.fingerprint)throw new Error('The preview did not match the requested vessel and account.');
+      appointmentPreview=Object.freeze({...data});paintAppointment();message(data.open_appointment?'An appointment is already open. Review Appointments & History before taking any action.':'Preview received. Nothing issued; candidate acceptance remains required.','verified');
+    }catch(e){if(current(t)){appointmentPreview=null;paintAppointment();message('Preview unavailable: '+e.message,'watch');}}finally{finish(t);}
+  }
+  async function issueCaptain(){
+    if(!checked()||currentTab!=='appoint'||!appointmentMatches())return;
+    const p=appointmentPreview,intent=$('harborCaptainIntent').value.trim(),t=token();if(!t)return;
+    appointmentPreview=null;paintAppointment();message('Issuing one pending appointment. Do not repeat this request.');
+    let responseReceived=false;
+    try{await verified(t);const data=await rpc('admiral_issue_captain_appointment',{p_project_id:p.project_id,p_captain_email:p.candidate_email,p_expected_fingerprint:p.fingerprint,p_intent:intent});responseReceived=true;if(!current(t))return;
+      if(!data?.appointment_id||data.project_id!==p.project_id||data.candidate_email!==p.candidate_email||data.status!=='pending'||data.authority_granted!==false)throw new Error('Appointment response could not be reconciled.');
+      if(!(await readRecords(t)))return;
+      const row=appointments.find(x=>x.appointment_id===data.appointment_id&&x.project_id===p.project_id&&x.candidate_email===p.candidate_email&&x.status==='pending');
+      if(!row)throw new Error('The issued appointment has not been confirmed by the independent list readback.');
+      message(`PENDING APPOINTMENT VERIFIED · ${p.vessel_name} → ${p.candidate_email}. The candidate must accept with their own account; no vessel authority is granted yet.`,'verified');
+      changeTab('history');
+    }catch(e){if(current(t))message(`${responseReceived?'Request returned; readback is incomplete.':'Issue result is unconfirmed.'} ${e.message} Refresh history before a new preview; do not resubmit blindly.`,'watch');}finally{finish(t);}
+  }
+  async function revoke(id){
+    if(!checked()||currentTab!=='history')return;
+    const row=appointments.find(a=>a.appointment_id===id);if(!row||!['pending','accepted','suspended'].includes(row.status))return;
+    if(!window.confirm(`Revoke the Captain appointment for ${row.vessel_name}?\n\nAccount: ${row.candidate_email}\n\nOnly membership created by this appointment is subject to revocation. Preexisting membership and ownership are not deleted.`))return;
+    const t=token();if(!t)return;invalidate();message('Revoking the selected appointment. Do not repeat this request.');
+    try{await verified(t);const data=await rpc('admiral_revoke_captain_appointment',{p_appointment_id:id,p_reason:'Revoked from Quarterdeck after explicit confirmation'});if(!current(t))return;
+      if(data?.appointment_id!==id||data.status!=='revoked')throw new Error('Revocation response did not match the selected appointment.');
+      if(!(await readRecords(t)))return;
+      if(!appointments.some(a=>a.appointment_id===id&&a.status==='revoked'))throw new Error('Revocation was not confirmed by the history readback.');
+      message(`REVOCATION RECORDED · ${row.vessel_name}. Appointment-created membership revoked: ${data.membership_revoked?'yes':'no / preexisting membership retained'}. A separate access-denial test is still required.`,'verified');
+    }catch(e){if(current(t))message('Revocation result requires review: '+e.message+' Refresh history before attempting another command.','watch');}finally{finish(t);}
+  }
+  async function previewDeparture(){
+    if(!checked()||!validity())return;
+    const input=$('harborEvidenceRef');if(!input.reportValidity())return;
+    const project=selected(),evidence=input.value.trim();if(evidence.length<8){message('Enter a proof reference of at least 8 characters.','watch');return;}
+    const t=token();if(!t)return;departurePreview=null;$('harborDepartureAcknowledgment').checked=false;paintDeparture();message('Checking operating authority and the departure reference. No lifecycle change.');
+    try{await verified(t);const data=await rpc('admiral_preview_vessel_activation',{p_project_id:project,p_evidence_reference:evidence});if(!current(t))return;
+      if(data?.project_id!==project||data.working_ship_evidence_reference!==evidence||typeof data.fingerprint!=='string'||!data.fingerprint||typeof data.operating_authority_ready!=='boolean')throw new Error('Departure preview did not match this vessel and reference.');
+      departurePreview=Object.freeze({...data});paintDeparture();message(data.operating_authority_ready?'Preview received. Inspect the actual field evidence; the reference alone is not proof. No vessel has departed.':'Departure blocked: '+data.operating_authority_detail,data.operating_authority_ready?'info':'watch');
+    }catch(e){if(current(t)){departurePreview=null;paintDeparture();message('Departure preview unavailable: '+e.message,'watch');}}finally{finish(t);}
+  }
+  async function depart(){
+    if(!checked()||currentTab!=='departure'||!departureMatches()||!$('harborDepartureAcknowledgment').checked)return;
+    const p=departurePreview;
+    if(!window.confirm(`Mark ${p.vessel_name} ACTIVE in Fleet Core?\n\nProof reference: ${p.working_ship_evidence_reference}\n\nThis does not publish the customer website or prove a completed handoff. Proceed only after inspecting the matching field evidence.`))return;
+    const t=token();if(!t)return;departurePreview=null;$('harborDepartureAcknowledgment').checked=false;paintDeparture();message('Submitting one deliberate lifecycle command. Do not repeat it.');
+    try{await verified(t);const data=await rpc('admiral_depart_vessel',{p_project_id:p.project_id,p_evidence_reference:p.working_ship_evidence_reference,p_expected_fingerprint:p.fingerprint,p_intent:'Quarterdeck deliberate Fleet lifecycle activation after evidence review'});if(!current(t))return;
+      if(data?.project_id!==p.project_id||data.lifecycle_state!=='active'||data.customer_publication_changed!==false)throw new Error('Departure response could not be reconciled.');
+      if(!(await readRecords(t)))return;
+      if(!vessels.some(v=>v.project_id===p.project_id&&v.lifecycle_state==='active'))throw new Error('ACTIVE lifecycle not confirmed by independent readback.');
+      message(`LIFECYCLE READBACK VERIFIED · ${p.vessel_name} is ACTIVE in Fleet Core. Customer publication and ownership were not changed; this is not automatic handoff certification.`,'verified');
+    }catch(e){if(current(t))message('Departure result requires review: '+e.message+' Refresh the server records before another preview.','watch');}finally{finish(t);}
+  }
+  async function copyRoute(){
+    if(!checked()||!validity())return;const value=$('harborCaptainRoute').textContent;
+    if(!/^https?:\/\//.test(value))return;
+    try{await navigator.clipboard.writeText(value);message('Handoff route copied. No email sent; the link alone grants no authority.','verified');}
+    catch(_){message('Clipboard unavailable. Select and copy the displayed route. No email was sent.','watch');}
+  }
+  function installError(error){
+    if(!panel)return;panel.dataset.quarterdeck='error';panel.replaceChildren();
+    const h=document.createElement('h4');h.textContent='DELEGATION DISPLAY UNAVAILABLE';
+    const p=document.createElement('p');p.textContent='The station did not initialize. No command was issued. Retry the display without reloading business data.';
+    const b=document.createElement('button');b.type='button';b.textContent='RETRY DELEGATION DISPLAY';b.onclick=()=>{panel.dataset.quarterdeck='';mount();};
+    panel.append(h,p,b);
+  }
+  function mount(){
+    const next=$('admiralDeck'),host=next?.querySelector('[data-admiral-panel="delegate"]');
+    if(!next||!host)return false;
+    if(host.dataset.quarterdeck==='ready'&&next===deck)return true;
+    if(host.dataset.quarterdeck==='error'&&next===deck)return false;
+    if(deck!==next){observer?.disconnect();readinessObserver?.disconnect();operation++;busy=false;ready=false;loadedSession='';attemptedSession='';vessels=[];appointments=[];wasVisible=false;previousLane='';}
+    deck=next;panel=host;
+    try{
+      panel.innerHTML=`<section class="qd-station" id="harborMasterStation" aria-label="Vessel Captain delegation" aria-busy="false">
+        <header class="qd-title"><div><small>03 · DELEGATE</small><h4>One Captain. One vessel.</h4></div><span id="harborMasterBackend" class="qd-backend">ACCOUNT CHECK REQUIRED</span></header>
+        <nav class="qd-tabs" role="tablist" aria-label="Delegation tasks">
+          <button type="button" role="tab" id="qdTab-appoint" data-qd-tab="appoint" aria-controls="qdPanel-appoint" aria-selected="true">Appoint Captain</button>
+          <button type="button" role="tab" id="qdTab-history" data-qd-tab="history" aria-controls="qdPanel-history" aria-selected="false" tabindex="-1">Appointments &amp; History</button>
+          <button type="button" role="tab" id="qdTab-departure" data-qd-tab="departure" aria-controls="qdPanel-departure" aria-selected="false" tabindex="-1">Departure Review</button>
+        </nav>
+        <div class="qd-vessel"><label for="harborVessel">Vessel <span>Exact scope for this task</span></label><select id="harborVessel" required disabled><option value="">Choose a vessel</option></select><button type="button" id="harborRefresh">REFRESH RECORDS</button></div>
+        <section id="qdPanel-appoint" role="tabpanel" data-qd-panel="appoint" aria-labelledby="qdTab-appoint" class="qd-content">
+          <div class="qd-form"><label for="harborCaptainEmail">Captain account email</label><input id="harborCaptainEmail" type="email" required maxlength="254" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Account you control for this test"><label for="harborCaptainIntent">Appointment intent <span>(optional)</span></label><textarea id="harborCaptainIntent" rows="1" maxlength="500" placeholder="Reason for this exact-vessel appointment"></textarea><button type="button" id="harborPreviewCaptain" class="qd-primary">PREVIEW APPOINTMENT</button></div>
+          <div class="qd-review"><div id="harborCaptainPreview" class="qd-preview"></div><button id="harborIssueCaptain" type="button" disabled>ISSUE APPOINTMENT</button></div>
+        </section>
+        <section id="qdPanel-history" role="tabpanel" data-qd-panel="history" aria-labelledby="qdTab-history" hidden>
+          <p id="harborHistoryScope" class="qd-muted">Server records not loaded.</p><div id="harborAppointmentRows"></div>
+          <details class="qd-link"><summary>Captain handoff route</summary><p>The candidate signs in and accepts. This route does not send an email or grant authority.</p><code id="harborCaptainRoute">Choose a vessel first.</code><button type="button" id="harborCopyRoute">COPY ROUTE</button></details>
+        </section>
+        <section id="qdPanel-departure" role="tabpanel" data-qd-panel="departure" aria-labelledby="qdTab-departure" class="qd-content" hidden>
+          <div class="qd-form"><label for="harborEvidenceRef">Working-ship proof reference</label><input id="harborEvidenceRef" required minlength="8" maxlength="160" placeholder="Reference to evidence you have inspected"><p class="qd-muted">Preview checks operating authority. It does not verify customer workflows, restore, or cross-device proof.</p><button type="button" id="harborPreviewActivation">PREVIEW DEPARTURE</button><label class="qd-ack"><input id="harborDepartureAcknowledgment" type="checkbox"><span>I inspected field evidence matching this vessel and release. The reference alone is not proof.</span></label></div>
+          <div class="qd-review"><div id="harborActivationPreview" class="qd-preview"></div><button id="harborActivateVessel" type="button" disabled>DEPART HARBOR</button></div>
+        </section>
+        <p id="harborMasterResult" class="qd-result" role="status" aria-live="polite">Sign in to load the server records. No appointment or lifecycle change occurs automatically.</p>
+      </section>`;
+      const required=['harborMasterStation','harborVessel','harborCaptainEmail','harborCaptainIntent','harborCaptainPreview','harborPreviewCaptain','harborIssueCaptain','harborAppointmentRows','harborActivationPreview','harborMasterResult'];
+      if(required.some(id=>!$(id)))throw new Error('Required delegation controls missing.');
+      $('harborVessel').onchange=()=>{invalidate();paintRoute();paintHistory();message('Scope changed. Request a new preview for this vessel.');};
+      for(const id of ['harborCaptainEmail','harborCaptainIntent'])$(id).oninput=()=>{appointmentPreview=null;paintAppointment();};
+      $('harborEvidenceRef').oninput=()=>{departurePreview=null;$('harborDepartureAcknowledgment').checked=false;paintDeparture();};
+      $('harborDepartureAcknowledgment').onchange=state;
+      for(const [id,fn] of [['harborRefresh',load],['harborPreviewCaptain',previewCaptain],['harborIssueCaptain',issueCaptain],['harborPreviewActivation',previewDeparture],['harborActivateVessel',depart],['harborCopyRoute',copyRoute]])$(id).onclick=fn;
+      panel.onclick=e=>{const tab=e.target.closest('[data-qd-tab]'),revokeBtn=e.target.closest('[data-harbor-revoke]');if(tab)changeTab(tab.dataset.qdTab);if(revokeBtn)revoke(revokeBtn.dataset.harborRevoke);};
+      panel.querySelector('.qd-tabs').addEventListener('keydown',e=>{const tabs=[...panel.querySelectorAll('[data-qd-tab]')],i=tabs.indexOf(e.target);if(i<0)return;let j=i;if(e.key==='ArrowRight')j=(i+1)%tabs.length;else if(e.key==='ArrowLeft')j=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')j=0;else if(e.key==='End')j=tabs.length-1;else return;e.preventDefault();changeTab(tabs[j].dataset.qdTab,true);});
+      panel.dataset.quarterdeck='ready';panel.dataset.harborMaster='1';deck.dataset.quarterdeck='ready';
+      compactChrome();invalidate();paintHistory();paintRoute();changeTab('appoint');
+      observer?.disconnect();observer=new MutationObserver(sync);observer.observe(deck,{attributes:true,attributeFilter:['class','aria-hidden','data-admiral-lane','data-mode']});
+      sync();return true;
+    }catch(e){installError(e);return false;}
+  }
+  function compactChrome(){
+    const actions=deck.querySelector('.admiral-deck-head-actions');
+    if(!$('quarterdeckReadiness')&&actions){const b=document.createElement('button');b.type='button';b.id='quarterdeckReadiness';b.title='View readiness in Govern';b.onclick=()=>deck.querySelector('[data-admiral-lane="govern"]')?.click();actions.prepend(b);}
+    const continuity=deck.querySelector('.admiral-continuity-card');
+    if(continuity&&!continuity.closest('details')){const d=document.createElement('details');d.id='quarterdeckContinuity';d.className='qd-continuity';const s=document.createElement('summary');s.textContent='Reports, recovery & tools';d.append(s);continuity.before(d);d.append(continuity);}
+    if(!$('quarterdeckSessionDetails')){
+      const strip=$('admiralSessionStrip'),timing=$('admiralSessionTiming'),notice=strip?.querySelector('small');
+      if(strip&&timing){const d=document.createElement('details');d.id='quarterdeckSessionDetails';d.className='qd-session-details';const s=document.createElement('summary'),receipt=$('admiralSessionReceipt');s.title='Show session times, limits and server-verification scope';d.append(s);timing.before(d);if(receipt)s.append(receipt);const label=document.createElement('span');label.className='qd-session-link';label.textContent='Session details';s.append(label);d.append(timing);if(notice)d.append(notice);}
+    }
+    const nav=deck.querySelector('#admiralLaneNav');if(nav&&!nav.dataset.qdKeyboard){nav.dataset.qdKeyboard='true';nav.addEventListener('keydown',e=>{const tabs=[...nav.querySelectorAll('[data-admiral-lane]')],i=tabs.indexOf(e.target);if(i<0)return;let j=i;if(e.key==='ArrowRight')j=(i+1)%4;else if(e.key==='ArrowLeft')j=(i+3)%4;else if(e.key==='Home')j=0;else if(e.key==='End')j=3;else return;e.preventDefault();tabs[j].click();tabs[j].focus({preventScroll:true});});}
+    readinessObserver?.disconnect();readinessObserver=new MutationObserver(paintReadiness);
+    for(const id of ['admiralDeckReadinessState','admiralDeckReadinessCopy'])if($(id))readinessObserver.observe($(id),{childList:true,subtree:true,characterData:true});
+    paintReadiness();
+  }
+  function paintReadiness(){
+    const stateText=$('admiralDeckReadinessState')?.textContent?.trim()||'NOT RUN',copy=$('admiralDeckReadinessCopy')?.textContent?.trim()||'';
+    const b=$('quarterdeckReadiness');if(b){const count=copy.match(/(\d+) current/),text='READINESS · '+stateText+(count?' · '+count[1]:'');if(b.textContent!==text)b.textContent=text;b.title=copy||'Open Govern to inspect readiness';b.setAttribute('aria-label','Readiness '+stateText+'. '+copy+' Open Govern.');b.dataset.state=stateText.toLowerCase();}
+  }
+  function sync(){
+    if(!deck?.isConnected)return;
+    const nowVisible=visible(),lane=deck.dataset.admiralLane||'govern';
+    deck.querySelectorAll('[data-admiral-lane]').forEach((b,i)=>{b.tabIndex=b.dataset.admiralLane===lane?0:-1;b.id=b.id||'qdLane-'+b.dataset.admiralLane;const p=deck.querySelector('[data-admiral-panel="'+b.dataset.admiralLane+'"]');if(p){p.id=p.id||'qdLanePanel-'+b.dataset.admiralLane;b.setAttribute('aria-controls',p.id);p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby',b.id);p.tabIndex=-1;}});
+    if(lane!==previousLane){if(previousLane==='delegate'&&busy){operation++;busy=false;ready=false;loadedSession='';attemptedSession='';invalidate();}previousLane=lane;const d=$('quarterdeckContinuity');if(d)d.open=lane==='govern';}
+    if(wasVisible&&!nowVisible)conceal();wasVisible=nowVisible;
+    if(active()&&attemptedSession!==sessionMark()&&!busy)load();
+    state();
+  }
+  window.DarkSkyQuarterdeck=Object.freeze({build:BUILD,mount,sync});
+  // Both entry points cover a late-created deck and a deck already present when this module executes.
+  window.addEventListener('darksky:admiral-deck-ready',mount);
+  window.addEventListener('darksky:admiral-lane-changed',sync);
+  window.addEventListener('darksky:admiral-session-changed',()=>{if(mount())sync();});
+  for(const event of ['darksky:admiral-session-ended','darksky:admiral-session-unavailable'])window.addEventListener(event,conceal);
+  mount();
 })();

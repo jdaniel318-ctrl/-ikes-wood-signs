@@ -1,8 +1,8 @@
 {
-  "release": "HarborMaster",
-  "name": "HarborMaster",
-  "build": "8.8.17.17",
-  "seal": "harbormaster-881717",
+  "release": "Quarterdeck",
+  "name": "Quarterdeck",
+  "build": "8.8.17.18",
+  "seal": "quarterdeck-881718",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

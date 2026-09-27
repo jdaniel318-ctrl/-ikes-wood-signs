@@ -1,64 +1,33 @@
-# Dark Sky 8.8.17.17 — HarborMaster
+# Dark Sky 8.8.17.18 — Quarterdeck
 
-HarborMaster is the next test-site command candidate built from WatchKeeper. It adds a real exact-vessel Captain appointment contract, a candidate acceptance route, a narrow vessel-Captain operating station, truthful Fleet lifecycle mapping, and deliberate Admiral activation of a vessel. It does **not** automatically promote the Captain to Admiral, publish a customer website, transfer ownership, or prove a working-ship handoff by static packaging alone.
+Test-site repair candidate based on HarborMaster. **Not a promotion, working-ship certification, live publication, or new server migration.**
 
-## What HarborMaster adds
+## What changed
 
-- Admiral Delegate lane can preview and issue one Captain appointment to one vessel. The candidate must accept with their own Supabase account before authority exists.
-- Accepted appointments use the existing exact-vessel `operator` membership; they do not create a global `captain` role and do not create or transfer `project_owner`.
-- `owner.html?surface=vessel-captain&project=<project_id>` becomes a dedicated vessel-Captain handoff/station route. It can accept/decline an appointment, read server-backed orders, change order status, and publish a narrow Fleet Watch report for that vessel only.
-- Admiral may preview and deliberately **Depart Harbor** to set Fleet lifecycle to `active` only when the selected operating-authority contract is satisfied and a working-ship proof reference is supplied. That lifecycle change does not publish the customer site or replace inspection of the underlying field evidence.
-- Fleet Watch maps server `active`, `suspended`, and `retired` lifecycle states truthfully and renders authenticated server Admiral programs when present; Bootstrap Build remains the fallback separate program until a durable server program exists.
-- Appointment issue, acceptance, revocation, order-status changes, and activation are designed to write the Fleet authority audit.
-
-## Server migration boundary
-
-The static ZIP **packages** the HarborMaster Fleet Core additions in `SUPABASE_ADMIRAL_COMMISSIONING_886.sql`; uploading the website does **not** apply SQL by itself. During this build, the additive HarborMaster appointment/acceptance, exact-vessel Captain operating RPCs, activation preview, and `admiral_depart_vessel` command were applied to the connected Black Flag Fleet Core through reviewed migrations. No Captain appointment or vessel departure was issued. The website still fails closed if those server contracts are absent on another deployment.
-
-The migration adds a dedicated appointment table/functions and does not delete existing vessels, memberships, owners, ledger records, entitlements, or customer records. The separate historical ledger SQL warning remains unchanged.
-
-## Admiral milestone remains earned
-
-HarborMaster creates the missing operating contract, but the Admiral milestone still requires field proof: commission a working ship, appoint and accept its Captain on a separate account, verify exact-vessel operation and denial outside scope, verify revocation, and retain Admiral observation/export/advisory visibility. `workingShipHandoffVerified` remains false until that voyage is actually completed.
-
-## Deployment
-
-Upload the 85 files inside `DarkSky881717-HarborMaster` to the existing test-site root. Keep website data untouched. Wait for GitHub Pages deployment to finish. Confirm **8.8.17.17 · HARBORMASTER** before any field test.
-
----
-
-## Prior release record — retained
-
-# Dark Sky 8.8.17.16 — WatchKeeper
-
-Test-site security/session-clarity candidate based on ClearPassage. This is not a production launch, Admiral appointment, working-ship commissioning, or Captain handoff.
-
-## Start versus resume
-
-A new document or expired workspace requires the passage PIN and a full Admiral account sign-in. A recent account sign-in in the same document is labeled **Resume Admiral session**. The passage PIN is still required and the authenticated account and its exact active, non-revoked Admiral role are checked again with the server. Reuse leaves a visible receipt explaining why no additional password was requested. Until the check completes, the display says verification is pending.
-
-The browser workspace closes after **15 minutes without activity in a visible Admiral workspace**, or **60 minutes from the full password sign-in**, whichever comes first. Token refresh, background requests, and switching back to the page do not reset those clocks. Brief trips to ChatGPT are allowed within the remaining window; time away counts as inactivity. Reloading or leaving this document ends the local reuse window.
-
-**These are browser-workspace controls, not a server-enforced session-lifetime policy.** The existing backend still verifies permissions on its endpoints, but this build does not deploy backend timeout enforcement or prove immediate token revocation. That remaining requirement appears as a separate readiness WATCH. A clock shown here is not a guarantee that an already-issued token is invalid everywhere.
-
-## Lock, end, and failure states
-
-- **LOCK ADMIRAL** hides the workspace and requires the passage PIN plus a fresh server recheck to resume. It does not extend the maximum session age.
-- **END SESSION** immediately removes this page's Admiral session, invalidates pending responses, and requests scoped sign-out from the server. The result distinguishes acknowledgment from an unconfirmed server sign-out. It does not sign out unrelated owner sessions or claim already-issued token invalidation.
-- Denied/revoked/changed identities and expired windows cannot reopen the workspace. Network errors leave access locked; no cached success substitutes for a failed recheck.
-- Cancelled or superseded sign-in responses cannot reinstate an old session. Password requests are not automatically retried. A timed-out command may already have reached the server; inspect its result before issuing it again.
-- Account passwords are cleared from fields on cancel/success and never written as a draft, report, or stored session value. Existing bearer tokens remain in the separate sessionStorage channel; this is not an HttpOnly-cookie design.
+- The delegation station mounts when the real Admiral deck is created, including a deck opened long after startup. Installation is idempotent and does not depend on a 300 ms timer.
+- The initial appointment form uses the available width. A compact header retains readiness, account receipt, session details, Lock, End Session and Return. Expanded readiness stays in Govern; reports, recovery and presentation tools remain available in a clearly labelled expandable section.
+- **Appoint Captain**, **Appointments & History**, and **Departure Review** are distinct task views with keyboard-operable tabs. Narrow screens and open keyboards keep normal scrolling; no CSS scaling or pinch-zoom disablement is used.
+- Explicit loading, unavailable and retry states replace the obsolete Delegation Future placeholder. Missing data is not represented as an empty successful history.
+- Changing a vessel, candidate, intent or proof reference invalidates the corresponding preview. Duplicate write taps are contained. Pending responses are discarded when the workspace is locked or its session ends.
+- Issue/revoke/departure results remain visible while independent list readback runs. An unconfirmed result is not announced as verified or automatically replayed.
+- Departure is separate from appointment and requires a preview, explicit evidence-review acknowledgment and a confirmation. A typed reference alone is not proof of a working ship, and a lifecycle change does not publish its customer site.
 
 ## Protected scope
 
-All 85 original application paths remain. Ledger business logic, vessel identities, owner entrance, test/live isolation, artwork, and optional ceremonial views remain. Both passage and account checks remain. No live permissions, roles, vessel states, ledger entries, or customer records were changed by this build. No storage deletion or migration was added.
+All 85 existing deployed paths are retained. The owner/Vessel Captain station, core code, ledger transaction/correction logic, artwork, session-transport enforcement and both SQL reference files are unchanged except current release labels where applicable. Both Admiral gates and the bounded recent-account reuse policy remain.
 
-The four earlier warning causes are not erased: experimental Ike length calibration, live membership-revocation proof, legacy localStorage quota, and unattributed browser storage. The additional Admiral lifetime-enforcement warning may make the count five. A new warning is not a lost feature; it identifies unverified server enforcement.
+**No live database, membership, appointment, order, ledger, entitlement or lifecycle command was executed for this build. No SQL is required for upload. Do not clear website data.** Existing server migrations are historical prerequisites, not newly verified operating proof. The warned historical ledger SQL must not be executed as a shortcut.
 
-**Do not run `SUPABASE_LEDGER_INTEGRITY_88171.sql` as-is.** It is retained historical reference with a known schema mismatch. No SQL is required for this upload.
+## Deployment — first three steps
 
-## Deployment
+1. Extract `DarkSky881718-Quarterdeck.zip`.
+2. Open its single matching `DarkSky881718-Quarterdeck` folder.
+3. Upload the **85 files inside** to the existing test repository root. Do not upload the enclosing folder or the ZIP.
 
-Upload the 85 files inside `DarkSky881716-WatchKeeper` to the existing test-site root, not the ZIP or enclosing folder. Keep the same site/browser. Do not clear website data. Wait for the GitHub Pages deployment to finish before opening its deployed link. A checksum hold during a partial/mixed upload must not be bypassed.
+Wait for the Pages deployment to succeed, open its deployment link, and verify **8.8.17.18 · QUARTERDECK**. Do not disable checksum checks to work around a mixed upload.
 
-Confirm **8.8.17.16 · WATCHKEEPER**. Native iPad Safari and live account acceptance are the next checks; isolated tests do not establish these outcomes.
+## First acceptance check
+
+Open Build & Govern, authenticate normally, then select Delegate. The initial **Appoint Captain** form should be visible without the old Future placeholder. On a landscape iPad, check that the vessel picker, email, intent and Preview Appointment action fit in the initial view. **Stop before issuing or departing.**
+
+Live account/server testing, actual iPad Safari keyboard geometry, independent-device persistence, isolated restore, live revocation denial and the completed working-ship handoff remain separate acceptance work. The five existing readiness warning conditions are not cleared by this UI repair.

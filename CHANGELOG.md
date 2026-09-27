@@ -1,3 +1,16 @@
+# 8.8.17.18 — Quarterdeck
+
+- Fixed the delayed Admiral-deck initialization race that left Delegate showing Future.
+- Reorganized Professional command into compact chrome and separate delegation tasks.
+- Fixed busy-state suppression of post-command list refresh; results persist through readback.
+- Added explicit unavailable/retry states, scope-invalidated previews, duplicate-tap containment and discarded late responses after lock.
+- Preserved both gates, underlying server contracts, 85 original paths, ledger logic, records and artwork. No live migrations or business commands were executed.
+- Test candidate only: actual iPad and complete working-ship acceptance remain pending.
+
+---
+
+## Retained release history
+
 # 8.8.17.17 — HarborMaster
 
 - Add exact-vessel Vessel Captain appointment preview/issue, candidate acceptance/decline, retained appointment history and audited revocation contract.

@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.17.17",
-  "version": "8.8.17.17",
-  "release_name": "HarborMaster",
-  "releaseName": "HarborMaster",
-  "release_seal": "harbormaster-881717",
+  "build": "8.8.17.18",
+  "version": "8.8.17.18",
+  "release_name": "Quarterdeck",
+  "releaseName": "Quarterdeck",
+  "release_seal": "quarterdeck-881718",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Exact-vessel Vessel Captain appointment, candidate acceptance, scoped operating station, truthful Fleet lifecycle mapping, and deliberate server activation without ownership transfer.",
-  "release_note": "HarborMaster packages an additive Fleet Core migration and a vessel-scoped Captain station. Static upload does not apply the server migration, grant authority, publish a customer site, or prove working-ship handoff.",
+  "release_focus": "Reliable lifecycle-mounted delegation and compact task-first Admiral Professional layout.",
+  "release_note": "Quarterdeck repairs the delayed Admiral deck initializer and separates Appoint Captain, Appointments & History, and Departure Review. No live database work, automatic appointments, lifecycle changes, storage purge or production-readiness claim is part of this release.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "86498861a412f2ff02e2f5ffdea44a85326f2ab1fc39764c1b12a37a0c8e1caf",
-        "build": "8.8.17.17",
+        "sha256": "5efa1d74977008cf0876612fb980c84a3c3c03270149918818d93481ad15b743",
+        "build": "8.8.17.18",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "cc7699c766d8ba5b6e5252794e51b4c8fea26506e9ef88488ba623e024311111",
-        "build": "8.8.17.17",
+        "sha256": "bb2bc6950ed0844b522a505c5029ccef8da7ed62a2fb017f1792c74fc83ff808",
+        "build": "8.8.17.18",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "318fcb15947296d59c20606e3b70caccd5f821152108ed2834c27c963d180bcc",
-        "build": "8.8.17.17",
+        "sha256": "655cefbcb1afd64d580f78a3b570fb202951e26bf935485fab0453ab659d33ed",
+        "build": "8.8.17.18",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "c9d5ec260b0c813ce4e19774d736463e37884532f3c6630c27da0ca7811b14d1",
-        "build": "8.8.17.17",
+        "sha256": "7e9fe60e91fd621e2949e02082af607bc62e2b23be8e718827270d392b076adc",
+        "build": "8.8.17.18",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "c0f264b9980e6c998c8e59dfef0a12c8e85ec83d17c7cc1228c46278fa65bdb0",
+      "styles.css": "37b8ebf0a298323c2efa24a35dea7714a2d9637d2e41b0cdd2b0d8180a9316b6",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "fbb5821bca79ae6a5c5c71b08de9861658ec46411eb1fe84db5538e149c1182f",
-      "fleet_supabase.js": "26f00c10bfa19b7f7b61942c3f3fdce5e7f66f0ceb58f4bb677e11a2fb87ef13",
+      "platform_identity.js": "b1cb298dcb0d0bd547e934cc34a28413ec4f9c2e2ad29dfc72c6cc200f5fad6f",
+      "fleet_supabase.js": "596ce39b83d1e221d985787dd5dbfbf05a30f55687a379bbe26f7077a3ab35ad",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "ebd211bf650cecacb7f78772ba8aa21987900067a915833a87a4c6eceacb5625",
-      "captain.js": "401ea5b5255a3b6a449a7a814e04b6fbfd23106375867013d25624958b0a0113",
-      "simple_books.js": "6c3906be7b30dd32e8dc99e413af8a8bc1d6bb065095badc05885e405322864f",
-      "owner.html": "1a4f85a7fc7422054ae95e0c0d05f8d7b161e4ab3e5a83e1d5c97f2311ddce4f",
-      "manifest.webmanifest": "d38923ad4a4337a3db3e1c5dbb4adcdbd40cddb60eafca851477d357ab07205b",
+      "app.js": "c70e1b4846ead515688b7897cd5261e8fca8a0fc8740913eec5d28bb9680166f",
+      "captain.js": "92b00d1927ea1d63e1ade6345c75e1c66993aafb01741029ebf2978bdbbbb6f0",
+      "simple_books.js": "e314f52f3f42aec0e7fe361d89da9d3049ee5d2b2e20f6283e721975b559c0ab",
+      "owner.html": "4bbf96f6d2a486c40c2baf95ece3ee75ee813b40fabf381c5ef9d60faf40d1e5",
+      "manifest.webmanifest": "f0a25e601edef627875627ee5151c6792599d6a1ff888da52ba12230edaea284",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "9a4765f134ec43955795cd4a866714dbc0860a8b7f0ad3ed73d7be51e853790d",
-      "FLEET_DOCTRINE_REGISTRY.json": "318fcb15947296d59c20606e3b70caccd5f821152108ed2834c27c963d180bcc",
-      "GOLDEN_VOYAGES.json": "c9d5ec260b0c813ce4e19774d736463e37884532f3c6630c27da0ca7811b14d1",
-      "FLEET_COMMAND_MODEL.json": "cc7699c766d8ba5b6e5252794e51b4c8fea26506e9ef88488ba623e024311111",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "86498861a412f2ff02e2f5ffdea44a85326f2ab1fc39764c1b12a37a0c8e1caf"
+      "sw.js": "6a7d19a5e16aa705933640b58eb2907c6c261afb499e83393626aeaaa35872b9",
+      "FLEET_DOCTRINE_REGISTRY.json": "655cefbcb1afd64d580f78a3b570fb202951e26bf935485fab0453ab659d33ed",
+      "GOLDEN_VOYAGES.json": "7e9fe60e91fd621e2949e02082af607bc62e2b23be8e718827270d392b076adc",
+      "FLEET_COMMAND_MODEL.json": "bb2bc6950ed0844b522a505c5029ccef8da7ed62a2fb017f1792c74fc83ff808",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "5efa1d74977008cf0876612fb980c84a3c3c03270149918818d93481ad15b743"
     }
   },
   "watchbeacon_upgrade": {
@@ -572,6 +572,26 @@
     "server_migration_applied_live": true,
     "captain_appointment_rows_after_install": 0,
     "departure_command": "admiral_depart_vessel",
-    "departure_command_applied_live": true
+    "departure_command_applied_live": true,
+    "historical_note": "Inherited HarborMaster migration record; Quarterdeck did not apply or revalidate server migrations."
+  },
+  "quarterdeck_upgrade": {
+    "build": "8.8.17.18",
+    "baseline": "8.8.17.17",
+    "scope": "Admiral presentation and delegation client orchestration only",
+    "mount": "actual Admiral deck creation plus idempotent existing-deck mount; no startup polling",
+    "separate_tasks": [
+      "Appoint Captain",
+      "Appointments & History",
+      "Departure Review"
+    ],
+    "preview_invalidation": "input change, scope change, workspace lock, session end, pending navigation",
+    "mutation_result": "independent server list readback; no automatic mutation replay",
+    "compact_readiness": "opens Govern without a readiness rerun",
+    "security_transport_changed": false,
+    "server_changes": false,
+    "browser_record_deletion": false,
+    "working_ship_handoff_verified": false,
+    "native_ipad_acceptance": "pending"
   }
 }

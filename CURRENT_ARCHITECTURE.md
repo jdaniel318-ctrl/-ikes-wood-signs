@@ -130,3 +130,8 @@ The window is a **client-side protection, not backend session expiry**. Existing
 Logout is scoped to the current Admiral token and local key. It does not clear unrelated owner keys, ledger records, localStorage, IndexedDB, or caches. Outstanding requests are cancelled locally; already committed remote commands are not undone and must not be automatically replayed. Authentication fields and diagnostics never retain the password.
 
 Admiral-facing operational UI and identity checks continue to be distinct from the user’s earned Admiral milestone: a working commissioned ship, a scoped accepted Captain appointment, independent operation, and ongoing Admiral visibility/downloads/advice are still required.
+
+
+## 8.8.17.18 Quarterdeck scoped repair
+
+The existing HarborMaster backend remains a prerequisite; no live SQL or authority change is made in this release. The Admiral deck emits a creation event after its real controls and gate handlers exist. The delegation controller mounts once for that deck, then loads server records only in an authenticated visible Delegate lane. Lock/session-end clears local delegation display/drafts; it does not delete business records. Task changes preserve normal page scrolling and readable input sizes. Account/transport authorization remains independent of the UI. Form changes invalidate previews; shared RPCs still verify the active account/role. A mutation is presented as read-back verified only after the independent vessel/appointment list agrees. Missing evidence remains unverified.

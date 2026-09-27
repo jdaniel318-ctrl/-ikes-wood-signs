@@ -15746,7 +15746,7 @@ body.authority-ledger-open{overflow:hidden!important}
 /* A view-mode display rule must never override a closed authority surface. */
 #admiralDeck.admiral-deck-overlay.hidden,
 #admiralGateOverlay.admiral-gate-overlay.hidden{display:none!important;pointer-events:none!important;}
-/* ClearPassage 8.8.17.17 — an operational entrance, not a moving credential form.
+/* ClearPassage 8.8.17.18 — an operational entrance, not a moving credential form.
    Scoped to this gate: preserve the Command Deck, WatchBeacon findings, project
    surfaces and optional ceremonial presentation. One scroll plane; no scaling. */
 #admiralGateOverlay[data-entrance="clearpassage"]{
@@ -15871,7 +15871,7 @@ body.authority-ledger-open{overflow:hidden!important}
 #admiralDeck[data-mode="ceremonial"] .admiral-session-strip{margin:0;border-radius:0;border-inline:0;z-index:9}
 @media(max-width:980px){#admiralDeck .admiral-session-strip{flex-direction:column;align-items:stretch;margin:12px 14px 0}#admiralDeck .admiral-session-actions button{flex:1}}
 
-/* 8.8.17.17 HarborMaster — exact-vessel Captain delegation and harbor departure */
+/* 8.8.17.18 HarborMaster — exact-vessel Captain delegation and harbor departure */
 .harbor-master{display:grid;gap:14px;margin-top:14px;padding:16px;border:1px solid rgba(213,173,81,.34);border-radius:18px;background:linear-gradient(180deg,rgba(8,29,36,.96),rgba(7,23,29,.96));box-shadow:inset 0 1px rgba(255,255,255,.025)}
 .harbor-master-head,.harbor-master-subhead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.harbor-master-head div{display:grid;gap:4px}.harbor-master-head small,.harbor-master-subhead b{font-size:11px;letter-spacing:.14em;color:#e1bd68}.harbor-master-head strong{font-size:20px;color:#f1e6c5}.harbor-master-head span,.harbor-master-subhead span{color:#9fb4b8;line-height:1.45}.harbor-master-head em{padding:7px 10px;border:1px solid #43606a;border-radius:999px;color:#a8c0c4;font-size:10px;font-style:normal;font-weight:900;letter-spacing:.1em;white-space:nowrap}
 .harbor-master-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.harbor-master-grid label{display:grid;gap:7px;color:#bfd0d2;font-weight:800}.harbor-master-grid label.wide{grid-column:1/-1}.harbor-master-grid input,.harbor-master-grid select,.harbor-master-grid textarea{width:100%;min-height:48px;padding:12px 13px;border:1px solid #3d5c66;border-radius:11px;background:#061820;color:#fff;font:inherit}.harbor-master-grid textarea{min-height:82px;resize:vertical}
@@ -15882,3 +15882,134 @@ body.authority-ledger-open{overflow:hidden!important}
 .harbor-master-result{min-height:44px;margin:0;padding:12px 13px;border-left:4px solid #56717b;border-radius:0 11px 11px 0;background:#0a2028;color:#c5d3d3;line-height:1.45}.harbor-master-result[data-tone="verified"]{border-left-color:#55c27c;background:#0e2819;color:#a7e7b8}.harbor-master-result[data-tone="watch"]{border-left-color:#d5ad51;background:#271f0c;color:#efd477}
 .harbor-appointment-rows{display:grid;gap:9px}.harbor-appointment-rows article{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 13px;border:1px solid #2f4d57;border-radius:12px;background:#081c23}.harbor-appointment-rows article div{display:grid;gap:3px}.harbor-appointment-rows small{color:#8db1b8;font-size:10px;font-weight:900;letter-spacing:.09em}.harbor-appointment-rows b{color:#f0e4c3}.harbor-appointment-rows span{color:#aebfc1;line-height:1.35}
 @media(max-width:760px){.harbor-master-grid{grid-template-columns:1fr}.harbor-master-grid label.wide{grid-column:auto}.harbor-master-head,.harbor-master-subhead{display:grid}.harbor-master-head em{width:max-content}.harbor-master-route,.harbor-appointment-rows article{grid-template-columns:1fr}.harbor-master-actions button,.harbor-master-route button,.harbor-appointment-rows button{width:100%}}
+/* 8.8.17.18 Quarterdeck — task-first Professional deck, one normal scroll plane.
+   Scoped to the Admiral workspace. No transforms, zoom, viewport locking or global form overrides. */
+#admiralDeck[data-mode="professional"]{padding:12px!important;overflow-y:auto!important;overflow-x:hidden!important;display:block!important;scrollbar-gutter:stable;}
+#admiralDeck.hidden{display:none!important;pointer-events:none!important;}
+#admiralDeck[data-mode="professional"] .admiral-deck-shell{width:100%!important;max-width:1360px!important;min-height:0!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:0 auto!important;border-radius:16px!important;}
+#admiralDeck[data-mode="professional"] .admiral-deck-head{padding:14px 20px!important;display:flex!important;align-items:center!important;gap:16px!important;min-height:0!important;position:relative!important;}
+#admiralDeck[data-mode="professional"] .admiral-deck-head>div:first-child{min-width:0;}
+#admiralDeck[data-mode="professional"] .admiral-deck-head h2{font:700 clamp(24px,2.35vw,32px)/1.15 Georgia,serif!important;margin:4px 0 0!important;}
+#admiralDeck[data-mode="professional"] .admiral-deck-head>div>small{font:750 11px/1.3 system-ui,sans-serif!important;letter-spacing:.13em!important;}
+#admiralDeck[data-mode="professional"] .admiral-deck-head>div>p{display:none!important;}
+#admiralDeck[data-mode="professional"] .admiral-deck-head-actions{display:flex!important;flex-direction:row!important;flex-wrap:wrap;align-items:center!important;justify-content:flex-end!important;gap:8px!important;margin-left:auto;}
+#admiralDeck[data-mode="professional"] .admiral-deck-head-actions>span{display:none!important;}
+#admiralDeck[data-mode="professional"] .admiral-deck-head-actions button,
+#admiralDeck[data-mode="professional"] .admiral-deck-head-actions a{min-height:46px!important;height:auto!important;min-width:46px;font:750 12px/1.25 system-ui,sans-serif!important;padding:10px 12px!important;white-space:normal!important;}
+#admiralDeck #quarterdeckReadiness{border:1px solid #b69b55!important;color:#efda9a!important;background:#113139!important;}
+#admiralDeck #quarterdeckReadiness[data-state="hold"]{color:#ffc1b4!important;border-color:#ce7a69!important;}
+#admiralDeck[data-mode="professional"] .admiral-session-strip{margin:0 20px!important;padding:9px 12px!important;gap:12px!important;display:flex!important;flex-direction:row!important;align-items:center!important;border-radius:10px!important;}
+#admiralDeck[data-mode="professional"] .admiral-session-strip b{font-size:14px!important;line-height:1.3!important;}
+#admiralDeck .qd-session-details{font:400 13px/1.4 system-ui,sans-serif;min-width:0;}
+#admiralDeck .qd-session-details>summary{color:#b8cdd3;cursor:pointer;padding:4px 0;min-height:28px;}
+#admiralDeck .qd-session-details[open]>span,#admiralDeck .qd-session-details[open]>small{display:block;margin:4px 0;}
+#admiralDeck[data-mode="professional"] .admiral-session-actions{display:flex!important;gap:8px;flex-shrink:0;}
+#admiralDeck[data-mode="professional"] .admiral-session-actions button{min-height:46px!important;padding:10px 12px!important;font:750 12px/1.3 system-ui,sans-serif!important;}
+#admiralDeck[data-mode="professional"] .admiral-deck-grid{display:flex!important;flex-direction:column!important;padding:12px 20px 14px!important;gap:10px!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;}
+#admiralDeck[data-mode="professional"] .admiral-lane-nav{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;order:0;}
+#admiralDeck[data-mode="professional"] .admiral-lane-nav button{display:flex!important;align-items:center;justify-content:center;gap:9px!important;min-height:48px!important;padding:8px 12px!important;text-align:center!important;font:750 14px/1.25 system-ui,sans-serif!important;}
+#admiralDeck[data-mode="professional"] .admiral-lane-nav button small{font-size:12px!important;}
+#admiralDeck[data-mode="professional"] .admiral-lane-nav button b{margin:0!important;}
+#admiralDeck[data-mode="professional"] .admiral-lane-nav button span{display:none!important;}
+#admiralDeck[data-mode="professional"] .admiral-pro-topline{order:1;}
+#admiralDeck[data-mode="professional"]:not([data-admiral-lane="govern"]) .admiral-pro-topline{display:none!important;}
+#admiralDeck[data-mode="professional"] .admiral-lane-workspace{order:2;min-height:0!important;max-height:none!important;overflow:visible!important;padding:14px!important;border-radius:12px;}
+#admiralDeck[data-mode="professional"] .admiral-lane-workspace>article{max-width:none!important;min-height:0!important;}
+#admiralDeck[data-mode="professional"] .admiral-lane-workspace>article[hidden]{display:none!important;}
+#admiralDeck[data-mode="professional"] .qd-continuity{order:3;border:1px solid #284d56;border-radius:9px;background:#06212a;}
+#admiralDeck .qd-continuity>summary{padding:12px 14px;min-height:44px;cursor:pointer;font:700 14px/1.3 system-ui,sans-serif;color:#d1dfe0;}
+#admiralDeck .qd-continuity .admiral-continuity-card{border:0!important;padding:12px!important;margin:0!important;}
+#admiralDeck[data-mode="professional"] #admiralDeckNotice{order:4;margin:0!important;}
+#admiralDeck[data-mode="professional"][data-admiral-lane="delegate"] #admiralDeckNotice{display:none!important;}
+#admiralDeck[data-mode="ceremonial"] #quarterdeckReadiness{display:none!important;}
+#admiralDeck .qd-station{display:grid;gap:12px;min-width:0;font-family:system-ui,-apple-system,sans-serif;color:#e8f0f1;}
+#admiralDeck .qd-station *{box-sizing:border-box;}
+#admiralDeck .qd-title{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;}
+#admiralDeck .qd-title small{color:#83bfcb;font-size:11px;font-weight:800;letter-spacing:.12em;}
+#admiralDeck .qd-title h4{font:700 24px/1.2 Georgia,serif;margin:3px 0 0!important;}
+#admiralDeck .qd-backend{font:750 11px/1.3 system-ui,sans-serif;letter-spacing:.04em;border:1px solid #3e6871;color:#bdd8de;padding:8px 10px;border-radius:20px;text-align:right;}
+#admiralDeck .qd-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+#admiralDeck .qd-station button{min-height:46px!important;min-width:46px;font:750 14px/1.25 system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none;padding:10px 14px!important;border:1px solid #67818a!important;border-radius:9px!important;background:#0b2b35!important;color:#e3edf0!important;white-space:normal;cursor:pointer;}
+#admiralDeck .qd-tabs button[aria-selected="true"]{background:#213e42!important;border-color:#dfbd63!important;box-shadow:inset 0 -3px #dfbd63;color:#ffe4a0!important;}
+#admiralDeck .qd-station button:active:not(:disabled){background:#245266!important;}
+#admiralDeck .qd-station button:disabled{opacity:.5!important;cursor:not-allowed;box-shadow:none!important;}
+#admiralDeck .qd-station button.qd-primary{background:#e3c262!important;color:#081c25!important;border-color:#e3c262!important;}
+#admiralDeck .qd-station button:focus-visible,#admiralDeck .qd-station input:focus-visible,#admiralDeck .qd-station select:focus-visible,#admiralDeck .qd-station textarea:focus-visible,#admiralDeck summary:focus-visible{outline:3px solid #8cd7e7!important;outline-offset:2px;}
+#admiralDeck .qd-vessel{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;border-block:1px solid #264852;padding-block:9px;}
+#admiralDeck .qd-station label{font:650 15px/1.3 system-ui,sans-serif!important;color:#d9e8eb!important;letter-spacing:0!important;display:block;margin:0;}
+#admiralDeck .qd-vessel label>span{display:block;font:400 12px/1.4 system-ui,sans-serif;color:#acc6cc;margin-top:2px;}
+#admiralDeck .qd-station input:not([type="checkbox"]),#admiralDeck .qd-station select,#admiralDeck .qd-station textarea{width:100%!important;max-width:100%;min-width:0;height:auto!important;min-height:48px!important;line-height:1.35!important;padding:10px 12px!important;border:1px solid #63808a!important;border-radius:9px!important;background:#031a24!important;color:#e5f0f2!important;font:400 18px/1.35 system-ui,sans-serif!important;box-shadow:none;}
+#admiralDeck .qd-station textarea{resize:vertical;min-height:64px!important;}
+#admiralDeck .qd-station input::placeholder,#admiralDeck .qd-station textarea::placeholder{color:#9fb7bf;opacity:1;}
+#admiralDeck .qd-content{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:18px;align-items:stretch;}
+#admiralDeck .qd-station [hidden]{display:none!important;}
+#admiralDeck .qd-form{display:grid;gap:6px;min-width:0;align-content:start;}
+#admiralDeck .qd-form label:not(:first-child){margin-top:4px;}
+#admiralDeck .qd-form>button{margin-top:5px;}
+#admiralDeck .qd-form label>span{font-weight:400;color:#acc3ca;}
+#admiralDeck .qd-review{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid #315862;border-radius:12px;background:#09252e;min-width:0;}
+#admiralDeck .qd-review>button{margin-top:auto;}
+#admiralDeck .qd-preview{min-width:0;overflow-wrap:anywhere;}
+#admiralDeck .qd-preview small{font-size:11px;color:#88c4d0;font-weight:800;letter-spacing:.08em;}
+#admiralDeck .qd-preview h5,#admiralDeck .qd-history-row h5{font:700 19px/1.25 system-ui,sans-serif;color:#f0ddb0;margin:8px 0!important;}
+#admiralDeck .qd-station p{font:400 14px/1.45 system-ui,sans-serif!important;color:#bdd2d7!important;letter-spacing:0!important;margin:6px 0;}
+#admiralDeck .qd-station .qd-email{font-weight:650!important;color:#ebf0e9!important;}
+#admiralDeck .qd-station .qd-muted{color:#a5bfc6!important;}
+#admiralDeck .qd-result{margin:0!important;padding:10px 12px;border-left:3px solid #78b5c6;background:#0c303b;min-height:42px;overflow-wrap:anywhere;}
+#admiralDeck .qd-result[data-tone="watch"]{border-color:#e5ba61;background:#332f24;}
+#admiralDeck .qd-result[data-tone="verified"]{border-color:#83cfad;}
+#admiralDeck .qd-history-row{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px;border:1px solid #355961;border-radius:10px;margin:8px 0;overflow-wrap:anywhere;}
+#admiralDeck .qd-history-row>div{min-width:0;}
+#admiralDeck .qd-history-row small{color:#9bcad2;font-weight:700;}
+#admiralDeck .qd-history-row span{font-size:13px;color:#a5c0c8;}
+#admiralDeck .qd-link{padding:8px 12px;border:1px solid #36535c;border-radius:8px;margin-top:10px;}
+#admiralDeck .qd-link summary{cursor:pointer;min-height:44px;display:list-item;align-content:center;font-weight:650;font-size:15px;}
+#admiralDeck .qd-link code{display:block;font-size:14px;line-height:1.4;word-break:break-all;user-select:text;margin-block:10px;}
+#admiralDeck .qd-station .qd-ack{display:flex!important;align-items:flex-start;gap:12px;padding:10px;border:1px solid #566266;border-radius:8px;font-size:14px!important;line-height:1.4!important;}
+#admiralDeck .qd-ack input{width:26px;height:26px;min-width:26px;margin:0;accent-color:#d9b654;}
+@media(max-width:1050px){
+ #admiralDeck[data-mode="professional"] .admiral-deck-head{padding:10px 14px!important;}
+ #admiralDeck[data-mode="professional"] .admiral-deck-head h2{font-size:25px!important;}
+ #admiralDeck[data-mode="professional"] .admiral-deck-head>div>small{font-size:10px!important;}
+ #admiralDeck[data-mode="professional"] .admiral-deck-grid{padding:10px 14px 12px!important;}
+ #admiralDeck[data-mode="professional"] .admiral-session-strip{margin:0 14px!important;}
+ #admiralDeck .qd-station{gap:9px;}
+ #admiralDeck .qd-title h4{font-size:23px;}
+ #admiralDeck .qd-content{gap:12px;}
+ #admiralDeck .qd-vessel{padding-block:7px;}
+ #admiralDeck .qd-vessel label>span{display:none;}
+ #admiralDeck .qd-review{padding:12px;}
+}
+@media(max-width:760px){
+ #admiralDeck[data-mode="professional"]{padding:8px!important;}
+ #admiralDeck[data-mode="professional"] .admiral-deck-head{display:block!important;padding:12px!important;}
+ #admiralDeck[data-mode="professional"] .admiral-deck-head-actions{margin:10px 0 0!important;justify-content:flex-start!important;}
+ #admiralDeck[data-mode="professional"] .admiral-session-strip{flex-direction:column!important;align-items:stretch!important;margin:0 12px!important;}
+ #admiralDeck[data-mode="professional"] .admiral-deck-grid{padding:10px 12px!important;}
+ #admiralDeck[data-mode="professional"] .admiral-lane-nav{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+ #admiralDeck .qd-content{grid-template-columns:1fr;}
+ #admiralDeck .qd-title{align-items:flex-start;flex-direction:column;gap:8px;}
+ #admiralDeck .qd-tabs{grid-template-columns:1fr;gap:6px;}
+ #admiralDeck .qd-tabs button{text-align:left;}
+ #admiralDeck .qd-vessel{grid-template-columns:1fr auto;}
+ #admiralDeck .qd-vessel label{grid-column:1/-1;}
+ #admiralDeck .qd-vessel select{grid-column:1/-1;}
+ #admiralDeck .qd-history-row{flex-direction:column;align-items:stretch;}
+ #admiralDeck .qd-review{min-height:0;}
+}
+@media(prefers-reduced-motion:reduce){#admiralDeck[data-mode="professional"] *{scroll-behavior:auto!important;}}
+
+/* Quarterdeck compact defaults remove inherited field margins, not input size. */
+#admiralDeck[data-mode="professional"] .admiral-deck-head{padding-block:10px!important;}
+#admiralDeck[data-mode="professional"] .admiral-session-strip{padding-block:6px!important;}
+#admiralDeck .qd-session-details>summary{display:flex;gap:12px;align-items:center;flex-wrap:wrap;min-height:44px;padding:2px 0;}
+#admiralDeck .qd-session-details>summary .qd-session-link{font:600 12px/1.4 system-ui,sans-serif;color:#9bcbd6;text-decoration:underline;}
+#admiralDeck .qd-session-details>summary .qd-session-link:after{content:" ▾";}
+#admiralDeck .qd-title>div{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+#admiralDeck .qd-title h4{margin:0!important;}
+#admiralDeck .qd-station{gap:8px;}
+#admiralDeck .qd-vessel{padding-block:6px;}
+#admiralDeck .qd-station select,#admiralDeck .qd-station textarea{margin:0!important;}
+#admiralDeck .qd-station textarea{min-height:48px!important;height:48px!important;}
+#admiralDeck .admiral-lane-workspace>article[role="tabpanel"]:focus{outline:none;}
+@media(max-width:760px){#admiralDeck .qd-title>div{display:block;}#admiralDeck .qd-title h4{margin-top:5px!important;}}

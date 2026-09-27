@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.17",
-  "release": "HarborMaster",
-  "seal": "harbormaster-881717",
+  "build": "8.8.17.18",
+  "release": "Quarterdeck",
+  "seal": "quarterdeck-881718",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "HarborMaster",
-  "name": "HarborMaster",
-  "releaseName": "HarborMaster"
+  "release_name": "Quarterdeck",
+  "name": "Quarterdeck",
+  "releaseName": "Quarterdeck"
 }
