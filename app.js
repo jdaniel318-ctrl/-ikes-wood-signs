@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.17.19';
+  const BUILD_VERSION='8.8.17.20';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5589,6 +5589,8 @@
     const admiralWindowPolicy=window.DarkSkyAdmiralSession?.status?.();
     const boundedAdmiralWindow=admiralWindowPolicy?.idleLimitMinutes===15 && admiralWindowPolicy?.maximumLimitMinutes===60 && admiralWindowPolicy?.enforcement==='browser-workspace-only';
     add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'HarborMaster limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
+
+    add('fleet-command-operating-backend','Fleet Captain operating service','warn','TrueBearing names the vessel entrance and preserves Admiral observation. The separate Fleet Command operating service is not activated: its live update was blocked. No Captain appointment or owner permission is bypassed.');
 
     const fleetDockBoundedPaint=String(renderFleetCommissioning).includes('LOCAL ROSTER • VERIFYING')&&String(renderFleetCommissioning).includes('commandDeadline(convergence')&&String(renderFleetCommissioning).includes('skipConvergence:true');
     add('fleet-dock-bounded-paint','Fleet Dock bounded first paint',fleetDockBoundedPaint?'pass':'fail',fleetDockBoundedPaint?'Fleet Dock paints the loaded roster after a bounded convergence window and refreshes canonical reconciliation in the background.':'Fleet Dock can still block its first usable roster on canonical convergence.');

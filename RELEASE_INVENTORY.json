@@ -1,8 +1,8 @@
 {
-  "release": "HelmDeck",
-  "name": "HelmDeck",
-  "build": "8.8.17.19",
-  "seal": "helmdeck-881719",
+  "release": "TrueBearing",
+  "name": "TrueBearing",
+  "build": "8.8.17.20",
+  "seal": "truebearing-881720",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

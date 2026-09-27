@@ -1,3 +1,9 @@
+# TrueBearing 8.8.17.20 — current release note
+
+Named vessel/account navigation; no new operating authority installed. Fleet Command operations remain disabled pending server activation. Existing Captain operations and read-only Admiral observation remain distinct. See README.md.
+
+---
+
 # Current release overlay — 8.8.17.19 HelmDeck
 
 The architecture below is retained from Quarterdeck. This update changes the Vessel Captain rendering and readback lifecycle only. The existing six-vessel/core, Admiral program, ownership, commissioning and Captain scope boundaries remain unchanged. Existing SQL, server authority checks and protected business modules are not edited by this update.

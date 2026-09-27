@@ -1,3 +1,9 @@
+# TrueBearing 8.8.17.20 — current release note
+
+Named vessel/account navigation; no new operating authority installed. Fleet Command operations remain disabled pending server activation. Existing Captain operations and read-only Admiral observation remain distinct. See README.md.
+
+---
+
 # 8.8.17.19 HelmDeck — acceptance
 
 This is a client test release, not a completed working-ship handoff.

@@ -1,4 +1,4 @@
-/* Dark Sky 8.8.17.19 HarborMaster — shared browser-safe Supabase transport.
+/* Dark Sky 8.8.17.20 HarborMaster — shared browser-safe Supabase transport.
    This module accepts publishable keys only. It never accepts or stores a
    service-role key, password, or cross-vessel authority assertion. */
 ;(() => {
@@ -134,8 +134,12 @@
     const url = String(options.url || '').replace(/\/$/, '');
     const publishableKey = String(options.publishableKey || options.key || '');
     const sessionKey = String(options.sessionKey || 'darkSkySupabaseSessionV1');
-    const build = String(options.build || '8.8.17.19');
+    const build = String(options.build || '8.8.17.20');
     const admiral = sessionKey === ADMIRAL_KEY;
+    // Opt-in cancellation for the separate Vessel Captain route. Owner and
+    // Admiral policies are untouched. Generation prevents late session writes.
+    const guarded = options.guardSession === true && !admiral;
+    let localGeneration=0;const localRequests=new Set();
     if (!url || !publishableKey) throw new Error('Supabase publishable client configuration is incomplete.');
     const headers = (token = '', json = true) => {
       const value = { apikey: publishableKey };
@@ -158,9 +162,18 @@
       if (!safeSessionWrite(sessionKey, session)) throw new Error('The secure browser session could not be retained.');
       return session;
     };
-    const clearSession = () => { if (admiral) endWindow('signed-out'); else safeSessionRemove(sessionKey); };
+    const clearSession = () => { if (admiral) endWindow('signed-out'); else {if(guarded){localGeneration++;for(const c of localRequests)c.abort();localRequests.clear();}safeSessionRemove(sessionKey);} };
     async function request(path, init = {}, fallback = 'Supabase refused the request.') {
       // Only Admiral transport is changed by HarborMaster. Owner transport keeps its policy.
+      if (guarded) {
+        const generation=localGeneration,controller=new AbortController();localRequests.add(controller);let timer;
+        try{return await Promise.race([(async()=>{
+          const response=await fetch(`${url}${path}`,{cache:'no-store',...init,signal:controller.signal});const body=await parseJson(response);
+          if(generation!==localGeneration)throw new Error('Captain request cancelled.');
+          if(!response.ok){const error=apiError(body,fallback);error.status=response.status;throw error;}return body;
+        })(),new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new Error('Captain request timed out. No automatic retry was made.'));},12000);})]);}
+        finally{clearTimeout(timer);localRequests.delete(controller);}
+      }
       if (!admiral) {
         const response = await fetch(`${url}${path}`, {cache:'no-store', ...init});
         const body = await parseJson(response);
@@ -187,16 +200,18 @@
       if (!session?.refresh_token || (admiral && !allowSession(session))) return null;
       if (admiral && refreshFlight) return refreshFlight;
       const work = async () => {
-        const generation=authGeneration;
+        const generation=authGeneration,local=localGeneration;
         try {
           const data = await request('/auth/v1/token?grant_type=refresh_token', {
             method:'POST',headers:headers(),body:JSON.stringify({refresh_token:session.refresh_token})
           }, 'The secure session expired. Sign in again.');
           if (admiral && !allowSession(session)) return null;
           if (admiral && data?.user?.id && data.user.id !== session.user?.id) {endWindow('account-changed');return null;}
+          if(guarded && local!==localGeneration)return null;
+          if(guarded && data?.user?.id && session.user?.id && data.user.id!==session.user.id){clearSession();return null;}
           // Refresh updates token material, never the workspace's sign-in/activity clocks.
           return saveSession(data);
-        } catch (_) {if(!admiral || generation===authGeneration)clearSession();return null;}
+        } catch (_) {if(guarded){if(local===localGeneration)clearSession();}else if(!admiral||generation===authGeneration)clearSession();return null;}
       };
       if (!admiral) return work();
       const flight=work();refreshFlight=flight;try{return await flight;}finally{if(refreshFlight===flight)refreshFlight=null;}
@@ -210,26 +225,27 @@
     async function signInWithPassword(email,password) {
       const normalized=cleanEmail(email);
       if(!normalized||!password)throw new Error('Enter the account email and password.');
-      if(admiral)endWindow('signing-in');
-      const generation=authGeneration;
+      if(admiral)endWindow('signing-in');if(guarded)clearSession();
+      const generation=authGeneration,local=localGeneration;
       try {
         const data=await request('/auth/v1/token?grant_type=password',{
           method:'POST',headers:headers(),body:JSON.stringify({email:normalized,password:String(password)})
         },'Email or password did not match.');
-        if(admiral && generation!==authGeneration)throw new Error('Sign-in was cancelled.');
-        if(admiral && !data?.user?.id)throw new Error('The server did not return a verified account identity.');
+        if((admiral&&generation!==authGeneration)||(guarded&&local!==localGeneration))throw new Error('Sign-in was cancelled.');
+        if((admiral||guarded) && !data?.user?.id)throw new Error('The server did not return a verified account identity.');
         const session=saveSession(data);
         if(admiral)startWindow(session,generation);
         return session;
       } catch(error) {if(admiral && generation===authGeneration)endWindow('sign-in-failed');throw error;}
     }
     async function user(session=null) {
-      session=session||await currentSession();if(!session?.access_token)return null;
+      session=session||await currentSession();if(!session?.access_token)return null;const local=localGeneration;
       try {
         const value=await request('/auth/v1/user',{headers:{...headers(session.access_token),Accept:'application/json'}},'The signed-in identity could not be verified.');
         if(admiral && (!allowSession(session)||value?.id!==session.user?.id)){endWindow('account-changed');return null;}
+        if(guarded&&(local!==localGeneration||!value?.id||(session.user?.id&&value.id!==session.user.id))){if(local===localGeneration)clearSession();return null;}
         session.user=value;safeSessionWrite(sessionKey,session);return value;
-      } catch(error) {if(!admiral||[401,403].includes(error.status))clearSession();return null;}
+      } catch(error) {if(guarded){if(local===localGeneration)clearSession();}else if(!admiral||[401,403].includes(error.status))clearSession();return null;}
     }
     async function verifyAdmiralAuthority() {
       if(!admiral)throw new Error('Admiral verification requires its separate session.');
@@ -253,6 +269,7 @@
     }
     async function signOut() {
       const session=safeSessionRead(sessionKey);
+      if(guarded){clearSession();let timer;const controller=new AbortController();try{if(session?.access_token){timer=setTimeout(()=>controller.abort(),12000);const r=await fetch(`${url}/auth/v1/logout?scope=local`,{method:'POST',headers:headers(session.access_token,false),cache:'no-store',signal:controller.signal});return {localEnded:true,serverAcknowledged:r.ok};}}catch(_){}finally{clearTimeout(timer);}return {localEnded:true,serverAcknowledged:false};}
       if(!admiral){try{if(session?.access_token)await fetch(`${url}/auth/v1/logout`,{method:'POST',headers:headers(session.access_token,false),cache:'no-store'});}finally{safeSessionRemove(sessionKey);}return;}
 
       clearSession(); // End local reuse synchronously, including in-flight response acceptance.

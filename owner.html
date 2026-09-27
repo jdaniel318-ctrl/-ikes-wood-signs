@@ -40,11 +40,11 @@
 @media(min-width:701px) and (max-width:1180px){.portal{padding:16px}.portal-head{top:6px}.portal-head h1{font-size:30px}.head-actions .btn{min-height:48px}.metrics{margin:12px 0}.workspace{padding:18px}}
 
 
-/* 8.8.17.19 HarborMaster — vessel Captain handoff station */
+/* 8.8.17.20 HarborMaster — vessel Captain handoff station */
 .captain-handoff{min-height:100vh;padding:24px;display:grid;place-items:start center}.captain-handoff-shell{width:min(1080px,96vw);display:grid;gap:14px}.captain-handoff-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:20px;border:1px solid #3b5660;border-radius:18px;background:#0b2028}.captain-handoff-head h1{font-size:34px;margin:5px 0}.captain-handoff-badge{display:inline-flex;padding:7px 10px;border:1px solid #8a7030;border-radius:999px;color:#ebcc70;background:#211b0c;font-size:10px;font-weight:900;letter-spacing:.1em}.captain-handoff-panel{padding:18px;border:1px solid #2f4e58;border-radius:16px;background:#0a1d24}.captain-handoff-panel h2{margin-bottom:6px}.captain-handoff-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.captain-handoff-grid label{display:grid;gap:7px;color:#c3d1d2;font-weight:800}.captain-handoff-grid input,.captain-handoff-grid textarea,.captain-handoff-grid select{width:100%;padding:13px;border:1px solid #3a5965;border-radius:11px;background:#06161c;color:#fff}.captain-handoff-grid textarea{min-height:92px;resize:vertical}.captain-handoff-status{padding:12px 14px;border-left:4px solid #d5ad51;border-radius:0 10px 10px 0;background:#211b0d;color:#e9d182;line-height:1.45}.captain-handoff-status.good{border-left-color:#55c27c;background:#0f2819;color:#a4e6b5}.captain-orders{display:grid;gap:9px}.captain-order{display:grid;grid-template-columns:1fr 210px auto;gap:10px;align-items:center;padding:12px;border:1px solid #2f4e58;border-radius:12px;background:#081b22}.captain-order div{display:grid;gap:3px}.captain-order small{color:#8ca8ae}.captain-order select{min-height:44px;padding:8px 10px;border-radius:9px;border:1px solid #3a5965;background:#06161c;color:#fff}.captain-watch-grid{display:grid;grid-template-columns:1fr 180px;gap:12px}.captain-watch-grid label{display:grid;gap:7px;color:#c3d1d2;font-weight:800}.captain-watch-grid input,.captain-watch-grid textarea{width:100%;padding:13px;border:1px solid #3a5965;border-radius:11px;background:#06161c;color:#fff}.captain-watch-grid .wide{grid-column:1/-1}.captain-watch-grid textarea{min-height:96px;resize:vertical}.captain-route-note{padding:12px;border:1px solid #2f4e58;border-radius:11px;background:#071a21;color:#aebfc1;line-height:1.45}.captain-route-note b{color:#f0dfaa}.captain-handoff-actions{display:flex;gap:10px;flex-wrap:wrap}.captain-handoff-actions .btn{min-width:170px}@media(max-width:760px){.captain-handoff{padding:12px}.captain-handoff-head{display:grid}.captain-handoff-grid,.captain-watch-grid,.captain-order{grid-template-columns:1fr}.captain-watch-grid .wide{grid-column:auto}.captain-handoff-actions .btn{width:100%}}
 
 
-/* HelmDeck: exact-vessel station only. No fixed height, transformed controls,
+/* TrueBearing: exact-vessel station only. No fixed height, transformed controls,
    or overflow locks; long records and keyboard-size viewports scroll normally. */
 .captain-handoff[data-view="station"]{padding:16px;align-content:start}
 .captain-handoff[data-view="station"] .captain-handoff-shell{width:min(1240px,100%);gap:12px;min-width:0}
@@ -106,6 +106,33 @@
 }
 @media(max-width:380px){.captain-station-columns .captain-watch-grid{grid-template-columns:minmax(0,1fr)}.captain-station-columns .captain-watch-grid .wide{grid-column:auto}}
 
+
+/* TrueBearing: destination, identity and operating role are always explicit. */
+.captain-handoff .tb-login input{font-size:18px}
+.tb-destination{display:flex;align-items:center;gap:14px;min-width:0}.tb-destination>div{min-width:0}
+.tb-vessel-mark{width:66px;height:66px;object-fit:contain;flex-shrink:0;border:1px solid #3f626e;border-radius:12px;background:#102c36;padding:6px}
+.tb-code{display:grid;place-items:center;font-size:22px;font-weight:800;color:var(--gold)}
+.tb-entry-head{flex-wrap:wrap;align-items:center}.tb-entry-head h1{font-size:30px;line-height:1.2;overflow-wrap:anywhere}
+.tb-destination-note{flex-basis:100%;margin:0!important;color:var(--muted);font-size:14px;line-height:1.45}
+.tb-identity{display:flex;flex-wrap:wrap;gap:6px 20px;padding:10px 14px;background:#102b34;border:1px solid #385560;border-radius:12px;color:#d2e2e6;font-size:15px;line-height:1.45;overflow-wrap:anywhere}
+.tb-login .captain-handoff-actions{margin-top:16px}.tb-entry-nav{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.tb-entry-nav a,.tb-command-note a{color:#a5e0ef;text-decoration:underline;text-underline-offset:3px}
+.tb-entry-nav a{min-height:44px;display:inline-flex;align-items:center;border:1px solid #3f626e;border-radius:10px;padding:8px 12px}
+.tb-command-note{color:var(--muted);font-size:15px;line-height:1.5;margin-top:14px;margin-bottom:0}
+.tb-roster{display:grid;gap:12px;margin:14px 0}.tb-roster article{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:16px;border:1px solid #3f626e;border-radius:12px}
+.tb-roster h3{margin:0 0 6px;font-size:21px}.tb-roster p{margin:0;color:var(--muted);overflow-wrap:anywhere}
+.tb-field-count{color:var(--muted);font-size:13px;font-weight:500}
+.captain-handoff .captain-watch-grid #captainWatchWork{height:66px;min-height:66px;resize:vertical}
+.captain-handoff .captain-station-head .captain-handoff-actions{flex-wrap:wrap}
+@media(max-width:700px){.tb-roster article{display:block}.tb-roster .btn{width:100%;margin-top:12px}.tb-entry-head h1{font-size:27px}.tb-vessel-mark{width:52px;height:52px}.tb-entry-head{display:block}.tb-entry-head .captain-handoff-badge{margin-top:12px}.tb-destination-note{margin-top:12px!important}.captain-station-head .captain-handoff-actions{grid-template-columns:1fr 1fr!important}}
+
+
+.captain-station-context .tb-identity{border:0;background:none;padding:2px 4px;gap:4px 14px;font-size:14px}
+.captain-station-context .tb-station-receipt{margin:0;padding:2px 4px;font-size:14px;line-height:1.4;color:#9bddac}
+.captain-station-context{align-items:center}
+.captain-station-columns .captain-watch-grid{align-items:start}
+.captain-station-columns .captain-watch-grid #captainWatchIssues{height:46px}
+@media(min-width:921px) and (max-height:700px){.captain-handoff[data-view="station"]{padding:12px}.captain-handoff[data-view="station"] .captain-handoff-shell{gap:10px}.captain-station-head{padding:10px 14px}.captain-station-columns>.captain-handoff-panel{padding:12px}.captain-station-context{padding:5px 8px}.captain-station-columns h2{margin-bottom:4px}.captain-station-help{margin-bottom:8px}.captain-station-columns .captain-handoff-actions{margin-top:8px}.captain-station-last-report{margin-top:6px}}
 </style>
 <script src="fleet_supabase.js"></script>
 </head>
@@ -193,26 +220,105 @@
   const q=new URLSearchParams(location.search);
   if(q.get('surface')!=='vessel-captain')return;
   window.__darkSkyVesselCaptainRouteActive=true;
-  const BUILD='8.8.17.19', projectId=String(q.get('project')||'').trim().toLowerCase();
+  const BUILD='8.8.17.20';
+  let projectId=String(q.get('project')||'').trim().toLowerCase();
+  const invalidRoute=q.getAll('project').length>1||q.getAll('surface').length!==1||(projectId&&!/^[a-z0-9][a-z0-9-]{0,95}$/.test(projectId));
   const SUPABASE_URL='https://sjgqqtnuttnkwsoebbqf.supabase.co', SUPABASE_KEY='sb_publishable_gvWfIBQg4ew2RvVr6CpJSg_8y02QmKy', SESSION_KEY='darkSkySupabaseVesselCaptainSessionV1';
   const root=document.getElementById('app'),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const client=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SESSION_KEY,build:BUILD});
-  let appointment=null,access=null,orders=[],watch=null,busy=false,stationEpoch=0;
+  const client=window.DarkSkySupabase.create({url:SUPABASE_URL,publishableKey:SUPABASE_KEY,sessionKey:SESSION_KEY,build:BUILD,guardSession:true});
+  let appointment=null,access=null,orders=[],watch=null,busy=false,stationEpoch=0,person=null,myAppointments=[];
+
+  // Names below come from the unchanged release muster. No server roster or
+  // business data is read before authentication. Names are not permissions.
+  const DIRECTORY={"beccas-bloom-shop": {"name": "Becca's Bloom Shop", "code": "BBS"}, "bf-p-f92f87e8ec44": {"name": "Legacy Plumbing", "code": "LP"}, "bor-north-richmond": {"name": "Signal Restoration", "code": "SIG", "mark": "signal_restoration_logo.png"}, "grizzly-bear": {"name": "Grizzly Bear", "code": "GRZ"}, "ikes-wood-signs": {"name": "Ike's Wood Signs", "code": "IKE", "mark": "ike_character.png"}, "mugshot-after-dark": {"name": "Mugs After Dark", "code": "MUG"}};
+  function destination(){return access?.project_id===projectId?access.display_name:appointment?.project_id===projectId?appointment.vessel_name:DIRECTORY[projectId]?.name|| (projectId?'Requested vessel':'My Assigned Vessels');}
+  function routeUrl(id=''){const u=new URL('owner.html',location.href);u.searchParams.set('surface','vessel-captain');if(id)u.searchParams.set('project',id);return u.toString();}
+  function commandUrl(){return new URL('index.html',location.href).toString();}
+  function projectMark(){const d=DIRECTORY[projectId];return d?.mark?`<img class="tb-vessel-mark" src="${esc(d.mark)}" alt="${esc(d.name)}">`:`<span class="tb-vessel-mark tb-code" aria-hidden="true">${esc(d?.code||'BF')}</span>`;}
+  function identityStrip(role='Vessel Captain access check'){
+    return person?`<div class="tb-identity" role="status"><span><b>Signed in:</b> ${esc(person.email)}</span><span><b>Acting as:</b> ${esc(role)}</span><span><b>Vessel:</b> ${esc(destination())}</span></div>`:'';
+  }
+  function bindIdentityActions(){
+    document.getElementById('captainMyVessels')?.addEventListener('click',showMyVessels);
+    document.getElementById('captainDeniedSignOut')?.addEventListener('click',signOut);
+  }
+  async function verifyPerson(){
+    const current=await stationRead(client.currentSession());
+    if(!current?.access_token)throw new Error('Captain sign-in is required.');
+    const p=await stationRead(client.user(current));
+    if(!p?.id||!p.email)throw new Error('The account identity could not be verified. Sign in again.');
+    if(person&&person.id!==p.id)throw new Error('The signed-in account changed. Sign in again for the intended vessel.');
+    return p;
+  }
+  function renderDenied(message){
+    access=null;orders=[];watch=null;
+    document.title=destination()+' · Access not granted';
+    shell(`${header(destination(),'Vessel Captain access not granted')}${identityStrip('No operating access to this vessel')}<section class="captain-handoff-panel"><h2>No appointment for ${esc(destination())}</h2><p id="captainStationStatus" class="captain-handoff-status" role="status">${esc(message)}</p><p class="muted">You are signed in. This is a permission decision, not a request to repeat your password. No orders or operating controls are displayed for this vessel.</p><div class="captain-handoff-actions"><button id="captainMyVessels" class="btn primary">MY ASSIGNED VESSELS</button><button id="captainDeniedSignOut" class="btn secondary">USE ANOTHER ACCOUNT</button></div><p class="tb-command-note">Need your Fleet Command workspace? <a href="${esc(commandUrl())}">Open the Engine for Fleet Command</a>. Your appointed-Captain account is not promoted by that link.</p></section>`);
+    bindIdentityActions();
+  }
+  function renderRoster(){
+    projectId='';appointment=null;access=null;orders=[];watch=null;
+    history.replaceState({},'',routeUrl());
+    document.title='My Assigned Vessels · Captain access';
+    shell(`${header('My Assigned Vessels','Choose your vessel — no hidden default')}${identityStrip('Appointed Captain — assigned vessels only')}<section class="captain-handoff-panel"><h2>Your Captain appointments</h2><p class="muted">Only appointments returned for your signed-in account are listed. Opening a vessel rechecks its current operating authority.</p><div class="tb-roster">${myAppointments.length?myAppointments.map((a,i)=>`<article><div><h3>${esc(a.vessel_name||a.project_id)}</h3><p>${esc(a.project_id)} · ${esc(a.status)}</p></div><button type="button" class="btn primary" data-tb-assignment="${i}" ${!['accepted','pending'].includes(a.status)?'disabled':''}>${a.status==='pending'?'REVIEW APPOINTMENT':a.status==='accepted'?'OPEN CAPTAIN STATION':'UNAVAILABLE'}</button></article>`).join(''):'<p class="captain-handoff-status">No current Captain appointments were returned for this account.</p>'}</div><div class="captain-handoff-actions"><button id="captainRosterRefresh" class="btn ghost">REFRESH MY VESSELS</button><button id="captainDeniedSignOut" class="btn secondary">SIGN OUT</button></div><p class="tb-command-note"><a href="${esc(commandUrl())}">Fleet Command uses the separate Engine entrance</a>. No assignment is created here.</p></section>`);
+    bindIdentityActions();
+    document.getElementById('captainRosterRefresh').onclick=showMyVessels;
+    document.querySelectorAll('[data-tb-assignment]').forEach(b=>b.onclick=async()=>{
+      if(busy)return;const a=myAppointments[Number(b.dataset.tbAssignment)];if(!a||!/^[a-z0-9][a-z0-9-]{0,95}$/.test(a.project_id))return;
+      projectId=a.project_id;history.replaceState({},'',routeUrl(projectId));++stationEpoch;busy=true;
+      try{await loadAppointment();}catch(e){renderStationRecovery(String(e.message||e));}finally{busy=false;}
+    });
+  }
+  async function showMyVessels(){
+    if(busy)return;busy=true;++stationEpoch;projectId='';appointment=null;
+    try{await loadAppointment();}catch(e){renderStationRecovery(String(e.message||e));}finally{busy=false;}
+  }
+
   function shell(content,view='handoff'){root.innerHTML=`<main class="captain-handoff" data-view="${esc(view)}"><div class="captain-handoff-shell">${content}</div></main>`;}
-  function header(title='Vessel Captain Handoff',sub='Exact-vessel operating authority'){return `<header class="captain-handoff-head"><div><div class="eyebrow gold">BLACK FLAG · HELMDECK · ${BUILD}</div><h1>${esc(title)}</h1><p class="muted">${esc(sub)}</p></div><span class="captain-handoff-badge">NO FLEET-WIDE CAPTAIN AUTHORITY</span></header>`;}
+  function header(title=destination(),sub='Vessel Captain sign-in'){
+    const verified=!!(access?.project_id===projectId||appointment?.project_id===projectId);
+    const note=projectId?(verified?'Vessel identity from your authenticated response.':DIRECTORY[projectId]?'Destination from the release directory. Account authority is checked after sign-in.':'Requested project: '+projectId+'. Identity must be resolved after sign-in.'):'Sign in to list only your assigned vessels.';
+    document.title=String(title)+' · '+sub;
+    return `<header class="captain-handoff-head tb-entry-head"><div class="tb-destination">${projectMark()}<div><div class="eyebrow gold">BLACK FLAG · TRUEBEARING · ${BUILD}</div><h1>${esc(title)}</h1><p class="muted">${esc(sub)}</p></div></div><span class="captain-handoff-badge">VESSEL ACCOUNT · NOT FLEET COMMAND</span><p class="tb-destination-note">${esc(note)}</p></header>`;
+  }
   function status(message,good=false){const n=document.getElementById('captainLoginStatus')||document.getElementById('captainPendingStatus')||document.getElementById('captainStationStatus');if(!n)return;n.textContent=message;n.classList.toggle('good',good);}
   async function rpc(name,body={}){return client.rpc(name,body,'HarborMaster refused the vessel-Captain request.');}
-  function missing(error){return /could not find the function|schema cache|captain appointment|HarborMaster/i.test(String(error?.message||error));}
-  function renderLogin(message='Sign in with the exact account named in the Captain appointment. The passage route itself grants no authority.'){
-    stationEpoch++;
-    shell(`${header()}<section class="captain-handoff-panel"><h2>Captain account sign-in</h2><p class="muted">${esc(message)}</p><div class="captain-handoff-grid"><label>Email<input id="captainLoginEmail" type="email" inputmode="email" autocomplete="username" placeholder="Captain account email"></label><label>Password<input id="captainLoginPassword" type="password" autocomplete="current-password" placeholder="Account password"></label></div><div class="captain-handoff-actions" style="margin-top:14px"><button id="captainLoginBtn" class="btn primary">SIGN IN & CHECK APPOINTMENT</button><button id="captainMagicBtn" class="btn ghost">SECURE SIGN-IN LINK</button></div><p id="captainLoginStatus" class="captain-handoff-status">${esc(message)}</p></section><div class="captain-route-note"><b>Authority rule:</b> appointment acceptance creates only an exact-vessel operator membership. Ownership, Fleet-wide Captain authority, and Admiral authority remain separate.</div>`);
-    document.getElementById('captainLoginBtn').onclick=signIn;
+  function missing(error){return /could not find the function|schema cache|PGRST202/i.test(String(error?.message||error));}
+  function renderLogin(message='Use the account named in your vessel appointment. This is not the Admiral sign-in.'){
+    ++stationEpoch;person=null;appointment=null;access=null;orders=[];watch=null;myAppointments=[];
+    shell(`${header()}<section class="captain-handoff-panel tb-login"><h2>${projectId?'Sign in for '+esc(destination()):'Sign in to your assigned vessels'}</h2><form id="captainLoginForm"><div class="captain-handoff-grid"><label>Email<input id="captainLoginEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Captain account email" required></label><label>Password<input id="captainLoginPassword" type="password" autocomplete="current-password" placeholder="Fleet account password" required></label></div><div class="captain-handoff-actions"><button id="captainLoginBtn" type="submit" class="btn primary">SIGN IN & CHECK ACCESS</button><button id="captainMagicBtn" type="button" class="btn ghost">EMAIL SIGN-IN LINK</button></div></form><p id="captainLoginStatus" class="captain-handoff-status" role="status">${esc(message)}</p><nav class="tb-entry-nav"><a href="${esc(routeUrl())}">My assigned vessels</a><a href="${esc(commandUrl())}">Fleet Captain / Admiral entrance</a></nav><p class="tb-command-note">Fleet Command can observe unassigned vessels through My Fleet. Its separate operating authorization is not granted by this Captain sign-in.</p></section>`);
+    document.getElementById('captainLoginForm').onsubmit=e=>{e.preventDefault();signIn();};
     document.getElementById('captainMagicBtn').onclick=magicLink;
   }
-  async function signIn(){if(busy)return;busy=true;const b=document.getElementById('captainLoginBtn');try{b.disabled=true;b.textContent='VERIFYING…';status('Authenticating account and reading Captain appointments…');await client.signInWithPassword(document.getElementById('captainLoginEmail').value,document.getElementById('captainLoginPassword').value);document.getElementById('captainLoginPassword').value='';await loadAppointment();}catch(error){client.clearSession();renderLogin(missing(error)?'Fleet Core HarborMaster migration is not installed yet. No appointment authority was opened.':String(error?.message||error));}finally{busy=false;}}
+  async function signIn(){
+    if(busy)return;busy=true;
+    const epoch=stationEpoch,b=document.getElementById('captainLoginBtn'),field=document.getElementById('captainLoginPassword');
+    try{
+      b.disabled=true;b.textContent='VERIFYING…';status('Authenticating account and checking the selected vessel…');
+      await stationRead(client.signInWithPassword(document.getElementById('captainLoginEmail').value,field.value));
+      field.value='';if(epoch!==stationEpoch){client.clearSession();return;}
+      await loadAppointment();
+    }catch(error){
+      if(epoch===stationEpoch){client.clearSession();renderLogin(missing(error)?'The Captain appointment service is unavailable. No vessel authority was opened.':String(error?.message||error));}
+    }finally{field.value='';busy=false;}
+  }
   async function magicLink(){const email=String(document.getElementById('captainLoginEmail').value||'').trim();if(!email)return status('Enter the appointed Captain email first.');status('Requesting a secure sign-in link…');try{const redirect=new URL(location.href);const r=await fetch(SUPABASE_URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(redirect.toString()),{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,create_user:false,gotrue_meta_security:{}})});if(!r.ok)throw new Error('Secure sign-in link could not be requested.');status('If this is an existing appointed account, the newest secure sign-in link is on its way.',true);}catch(error){status(String(error?.message||error));}}
-  async function loadAppointment(){const epoch=stationEpoch,data=await rpc('captain_read_my_appointments',{});if(epoch!==stationEpoch)return;const rows=data?.records||[];appointment=rows.find(r=>!projectId||r.project_id===projectId)||null;if(!appointment){client.clearSession();return renderLogin(projectId?'This account has no open Captain appointment for '+projectId+'.':'This account has no open vessel-Captain appointment.');}if(appointment.status==='pending')return renderPending();if(appointment.status==='accepted')return loadStation();renderLogin('This Captain appointment is '+String(appointment.status||'unavailable')+'. No vessel authority was opened.');}
-  function renderPending(){shell(`${header(appointment.vessel_name,'Captain appointment awaiting your decision')}<section class="captain-handoff-panel"><div class="captain-handoff-status"><b>APPOINTMENT PENDING</b><br>${esc(appointment.candidate_email)} · expires ${appointment.expires_at?new Date(appointment.expires_at).toLocaleString():'—'}</div><p class="muted" style="margin-top:14px">${esc(appointment.intent||'No appointment note was supplied.')}</p><div class="captain-handoff-actions"><button id="captainAccept" class="btn primary">ACCEPT THIS VESSEL</button><button id="captainDecline" class="btn ghost">DECLINE</button><button id="captainPendingSignOut" class="btn secondary">SIGN OUT</button></div><p id="captainPendingStatus" class="captain-handoff-status">Nothing changes until you accept. Acceptance does not transfer ownership or grant Fleet-wide Captain authority.</p></section>`);document.getElementById('captainAccept').onclick=accept;document.getElementById('captainDecline').onclick=decline;document.getElementById('captainPendingSignOut').onclick=signOut;}
+  async function loadAppointment(){
+    const epoch=stationEpoch,p=await verifyPerson();if(epoch!==stationEpoch)return;
+    person=p;
+    const data=await stationRead(rpc('captain_read_my_appointments',{}));if(epoch!==stationEpoch)return;
+    if(!Array.isArray(data?.records))throw new Error('The appointment list was not a valid server response.');
+    const email=String(person.email).toLowerCase();
+    if(data.records.some(a=>String(a.candidate_email||'').toLowerCase()!==email))throw new Error('The returned appointments did not match the signed-in account. No data was opened.');
+    myAppointments=data.records;
+    if(!projectId)return renderRoster();
+    appointment=myAppointments.find(r=>r.project_id===projectId)||null;
+    if(!appointment)return renderDenied('This account has no open Captain appointment for '+projectId+'.');
+    if(appointment.status==='pending')return renderPending();
+    if(appointment.status==='accepted')return loadStation();
+    renderDenied('This Captain appointment is '+String(appointment.status||'unavailable')+'. No vessel operations were opened.');
+  }
+  function renderPending(){shell(`${header(appointment.vessel_name,'Captain appointment awaiting your decision')}${identityStrip('Candidate — awaiting acceptance')}<section class="captain-handoff-panel"><div class="captain-handoff-status"><b>APPOINTMENT PENDING</b><br>${esc(appointment.candidate_email)} · expires ${appointment.expires_at?new Date(appointment.expires_at).toLocaleString():'—'}</div><p class="muted" style="margin-top:14px">${esc(appointment.intent||'No appointment note was supplied.')}</p><div class="captain-handoff-actions"><button id="captainAccept" class="btn primary">ACCEPT THIS VESSEL</button><button id="captainDecline" class="btn ghost">DECLINE</button><button id="captainPendingSignOut" class="btn secondary">SIGN OUT</button></div><p id="captainPendingStatus" class="captain-handoff-status">Nothing changes until you accept. Acceptance does not transfer ownership or grant Fleet-wide Captain authority.</p></section>`);document.getElementById('captainAccept').onclick=accept;document.getElementById('captainDecline').onclick=decline;document.getElementById('captainPendingSignOut').onclick=signOut;}
   async function accept(){
     if(busy)return;
     busy=true;
@@ -231,11 +337,11 @@
   }
   async function decline(){if(!window.confirm('Decline this vessel-Captain appointment? No vessel authority will be granted.'))return;try{await rpc('captain_decline_appointment',{p_appointment_id:appointment.appointment_id,p_reason:'Declined from Captain Handoff'});client.clearSession();renderLogin('Appointment declined. No vessel authority was granted.');}catch(error){status(String(error?.message||error));}}
   function renderStationLoading(){
-    shell(`${header(appointment?.vessel_name||'Vessel Captain Station','Accepted appointment · opening your station')}<section class="captain-handoff-panel captain-handoff-loading" aria-busy="true"><h2>Opening Captain Station…</h2><p id="captainStationStatus" class="captain-handoff-status" role="status">Checking current vessel authority, orders and Watch report. No new acceptance is being sent.</p><div class="captain-handoff-actions"><button id="captainLoadingSignOut" class="btn secondary">SIGN OUT</button></div></section>`);
+    shell(`${header(appointment?.vessel_name||'Vessel Captain Station','Accepted appointment · opening your station')}${identityStrip('Vessel Captain access check')}<section class="captain-handoff-panel captain-handoff-loading" aria-busy="true"><h2>Opening Captain Station…</h2><p id="captainStationStatus" class="captain-handoff-status" role="status">Checking current vessel authority, orders and Watch report. No new acceptance is being sent.</p><div class="captain-handoff-actions"><button id="captainLoadingSignOut" class="btn secondary">SIGN OUT</button></div></section>`);
     document.getElementById('captainLoadingSignOut').onclick=signOut;
   }
   function renderStationRecovery(message){
-    shell(`${header(appointment?.vessel_name||'Vessel Captain Station','Readback needs attention')}<section class="captain-handoff-panel captain-handoff-loading"><h2>Recheck the station</h2><p id="captainStationStatus" class="captain-handoff-status" role="status">${esc(message)}</p><p class="muted">Recheck reads the saved appointment and current access. It does not repeat acceptance, change an order, or publish a report.</p><div class="captain-handoff-actions"><button id="captainStationRecheck" class="btn primary">RECHECK STATION</button><button id="captainRecoverySignOut" class="btn secondary">SIGN OUT</button></div></section>`);
+    shell(`${header(appointment?.vessel_name||'Vessel Captain Station','Readback needs attention')}${identityStrip('Vessel Captain access check')}<section class="captain-handoff-panel captain-handoff-loading"><h2>Recheck the station</h2><p id="captainStationStatus" class="captain-handoff-status" role="status">${esc(message)}</p><p class="muted">Recheck reads the saved appointment and current access. It does not repeat acceptance, change an order, or publish a report.</p><div class="captain-handoff-actions"><button id="captainStationRecheck" class="btn primary">RECHECK STATION</button><button id="captainRecoverySignOut" class="btn secondary">SIGN OUT</button></div></section>`);
     document.getElementById('captainStationRecheck').onclick=async()=>{if(busy)return;busy=true;const b=document.getElementById('captainStationRecheck'),epoch=stationEpoch;b.disabled=true;try{await loadAppointment();}catch(error){if(epoch===stationEpoch)renderStationRecovery(String(error?.message||error));}finally{busy=false;}};
     document.getElementById('captainRecoverySignOut').onclick=signOut;
   }
@@ -249,9 +355,10 @@
     if(!scope||scope!==projectId)return renderLogin('Captain station scope does not match the requested vessel.');
     renderStationLoading();
     try{
+      const p=await verifyPerson();if(epoch!==stationEpoch)return;person=p;
       const verified=await stationRead(rpc('vessel_captain_verify_access',{p_project_id:scope}));
       if(epoch!==stationEpoch)return;
-      if(!verified?.ok||verified.project_id!==scope)throw new Error('Exact-vessel Captain access is not active for this route.');
+      if(verified?.ok!==true||verified.project_id!==scope)throw new Error('Exact-vessel Captain access is not active for this route.');
       const [o,w]=await stationRead(Promise.all([rpc('vessel_captain_list_business_orders',{p_project_id:scope}),rpc('vessel_captain_read_watch_report',{p_project_id:scope})]));
       if(epoch!==stationEpoch)return;
       if(o?.project_id!==scope||w?.project_id!==scope||!Array.isArray(o.records))throw new Error('Station readback did not match the requested vessel. No business data was displayed.');
@@ -269,14 +376,14 @@
     document.title=String(access.display_name||'Vessel')+' · Captain Station';
     shell(`
       <header class="captain-handoff-head captain-station-head">
-        <div><div class="eyebrow gold">BLACK FLAG · HELMDECK · ${BUILD}</div>
+        <div><div class="eyebrow gold">BLACK FLAG · TRUEBEARING · ${BUILD}</div>
           <h1>${esc(access.display_name)}</h1>
           <p class="captain-station-sub"><span>Vessel Captain Station</span><span class="captain-stage-tag">${esc(lifecycle.toUpperCase())}</span><span>${esc(operating)}</span></p>
         </div>
-        <div class="captain-handoff-actions"><button id="captainRefresh" class="btn ghost">REFRESH STATION</button><button id="captainStationSignOut" class="btn secondary">SIGN OUT</button></div>
+        <div class="captain-handoff-actions"><button id="captainMyVessels" class="btn ghost">MY VESSELS</button><button id="captainRefresh" class="btn ghost">REFRESH</button><button id="captainStationSignOut" class="btn secondary">SIGN OUT</button></div>
       </header>
       <section class="captain-station-context" aria-label="Vessel access and status">
-        <p id="captainStationStatus" class="captain-handoff-status good" role="status" aria-live="polite">${esc(receipt||'Exact-vessel Captain authority verified. No fleet-wide Captain authority.')}</p>
+        <div>${identityStrip('Vessel Captain — this vessel only')}<p id="captainStationStatus" class="tb-station-receipt" role="status" aria-live="polite">${esc(receipt||'Exact-vessel Captain authority verified.')}</p></div>
         <details class="captain-scope"><summary>Access &amp; scope</summary><div class="captain-scope-grid">
           <div><b>Vessel:</b> ${esc(access.display_name)}<br><b>Project:</b> ${esc(access.project_id)}</div>
           <div><b>Membership role:</b> operator<br><b>Appointment role:</b> vessel_captain</div>
@@ -294,7 +401,7 @@
           <h2 id="captainWatchTitle">Report to Admiral Watch</h2>
           <p class="captain-station-help">Current work and issues for read-only Admiral oversight.</p>
           <div class="captain-watch-grid">
-            <label>Current work<input id="captainWatchWork" maxlength="160" value="${esc(watch?.current_work||'')}"></label>
+            <label>Current work<textarea id="captainWatchWork" maxlength="160" rows="2">${esc(watch?.current_work||'')}</textarea><small id="captainWorkCount" class="tb-field-count"></small></label>
             <label>Open issues<input id="captainWatchIssues" type="number" min="0" max="100000" value="${esc(watch?.unresolved_issues??0)}"></label>
             <label class="wide">Issue summary<textarea id="captainWatchSummary" maxlength="500">${esc(watch?.issue_summary||'')}</textarea></label>
           </div>
@@ -302,15 +409,54 @@
           <p class="captain-station-last-report">${watch?.has_report?'Last report: '+new Date(watch.reported_at).toLocaleString()+' · '+esc(watch.source_label||'VESSEL CAPTAIN'):'No prior Captain watch report.'}</p>
         </section>
       </div>`, 'station');
-    document.getElementById('captainRefresh').onclick=()=>loadStation();
+    bindIdentityActions();
+    document.getElementById('captainRefresh').onclick=async()=>{if(busy)return;busy=true;try{await loadAppointment();}catch(e){renderStationRecovery(String(e.message||e));}finally{busy=false;}};
     document.getElementById('captainStationSignOut').onclick=signOut;
     document.querySelectorAll('[data-captain-save-order]').forEach(b=>b.onclick=()=>saveOrder(b.dataset.captainSaveOrder));
     document.getElementById('captainPublishWatch').onclick=publishWatch;
+    const work=document.getElementById('captainWatchWork'),count=document.getElementById('captainWorkCount');const showCount=()=>count.textContent=work.value.length+' / 160 characters';work.oninput=showCount;showCount();
   }
-  async function saveOrder(id){const select=document.querySelector(`[data-captain-order-status="${CSS.escape(id)}"]`);if(!select)return;status('Saving exact-vessel order status…');try{const data=await rpc('vessel_captain_update_order_status',{p_project_id:appointment.project_id,p_external_order_id:id,p_status:select.value});status(`ORDER ${data.id} · ${data.status} · server readback verified.`,true);await loadStation();}catch(error){status(String(error?.message||error));}}
-  async function publishWatch(){status('Publishing exact-vessel watch report…');try{const issues=Number(document.getElementById('captainWatchIssues').value||0),data=await rpc('vessel_captain_publish_watch_report',{p_project_id:appointment.project_id,p_current_work:document.getElementById('captainWatchWork').value,p_unresolved_issues:issues,p_issue_summary:document.getElementById('captainWatchSummary').value,p_detail:{source:'harbormaster-captain-station',build:BUILD}});status(`WATCH UPDATE VERIFIED · ${new Date(data.reported_at).toLocaleString()}.`,true);await loadStation();}catch(error){status(String(error?.message||error));}}
-  async function signOut(){stationEpoch++;appointment=null;access=null;orders=[];watch=null;try{await client.signOut();}catch(_){client.clearSession();}renderLogin('Captain session ended. Sign in again to reopen exact-vessel authority.');}
-  async function boot(){if(!projectId)return renderLogin('This Captain handoff route is missing its vessel project key.');const hash=new URLSearchParams(location.hash.replace(/^#/,''));if(hash.get('access_token')){try{client.saveSession({access_token:hash.get('access_token'),refresh_token:hash.get('refresh_token'),expires_in:hash.get('expires_in'),flow_type:hash.get('type')||'',user:null});history.replaceState({},'',location.pathname+location.search);}catch(_){}}const s=await client.currentSession();if(!s?.access_token)return renderLogin();try{await loadAppointment();}catch(error){client.clearSession();renderLogin(missing(error)?'Fleet Core HarborMaster migration is not installed yet. No business data was opened.':String(error?.message||error));}}
+  function disableActions(){root.querySelectorAll('button').forEach(b=>{if(!/SignOut/.test(b.id))b.disabled=true;});}
+  async function saveOrder(id){
+    if(busy)return;const select=document.querySelector(`[data-captain-order-status="${CSS.escape(id)}"]`);if(!select)return;
+    busy=true;const epoch=stationEpoch,scope=appointment.project_id,value=select.value;disableActions();
+    status('Saving order status for '+destination()+'…');
+    try{
+      const data=await stationRead(rpc('vessel_captain_update_order_status',{p_project_id:scope,p_external_order_id:id,p_status:value}));
+      if(epoch!==stationEpoch)return;
+      if(data?.project_id!==scope||data?.id!==id||data?.status!==value)throw new Error('Order reply did not match this command.');
+      await loadStation('Order '+id+' status saved. Station reloaded from the server.');
+    }catch(e){if(epoch===stationEpoch){++stationEpoch;renderStationRecovery('Order result unconfirmed. '+String(e.message||e)+' Recheck saved state before another change.');}}
+    finally{busy=false;}
+  }
+  async function publishWatch(){
+    if(busy)return;
+    const issues=Number(document.getElementById('captainWatchIssues').value),work=document.getElementById('captainWatchWork').value,summary=document.getElementById('captainWatchSummary').value;
+    if(!Number.isInteger(issues)||issues<0||issues>100000||work.trim().length<3||work.length>160||summary.length>500)return status('Enter 3–160 characters of current work, a whole issue count, and at most 500 characters of issue summary.');
+    busy=true;const epoch=stationEpoch,scope=appointment.project_id;disableActions();status('Publishing this vessel’s Watch report…');
+    try{
+      const data=await stationRead(rpc('vessel_captain_publish_watch_report',{p_project_id:scope,p_current_work:work,p_unresolved_issues:issues,p_issue_summary:summary,p_detail:{source:'vessel-captain-station',build:BUILD}}));
+      if(epoch!==stationEpoch)return;
+      if(data?.project_id!==scope||data?.current_work!==work||Number(data?.unresolved_issues)!==issues)throw new Error('Report reply did not match the submitted vessel or text.');
+      await loadStation('Watch report saved for '+destination()+'. Station reloaded from the server.');
+    }catch(e){if(epoch===stationEpoch){++stationEpoch;renderStationRecovery('Report result unconfirmed. '+String(e.message||e)+' Recheck the saved report; no automatic retry was sent.');}}
+    finally{busy=false;}
+  }
+  async function signOut(){
+    ++stationEpoch;appointment=null;access=null;orders=[];watch=null;person=null;myAppointments=[];
+    // Conceal first. A slow network sign-out must not leave vessel data painted.
+    const work=client.signOut();client.clearSession();renderLogin('Captain session ended in this tab. Sign in again to reopen a vessel.');
+    try{await stationRead(work);}catch(_){}busy=false;
+  }
+  async function boot(){
+    if(invalidRoute){shell(`${header('Vessel link needs correction','No account access attempted')}<section class="captain-handoff-panel"><p>Use a single valid vessel destination, or open your assigned-vessel list.</p><a class="btn ghost" href="${esc(routeUrl())}">MY ASSIGNED VESSELS</a></section>`);return;}
+    const hash=new URLSearchParams(location.hash.replace(/^#/,''));
+    if(hash.get('access_token')){try{client.saveSession({access_token:hash.get('access_token'),refresh_token:hash.get('refresh_token'),expires_in:hash.get('expires_in'),flow_type:hash.get('type')||'',user:null});history.replaceState({},'',location.pathname+location.search);}catch(_){}}
+    shell(`${header()}<section class="captain-handoff-panel"><p class="captain-handoff-status">Checking this tab’s account session…</p></section>`);
+    try{const s=await stationRead(client.currentSession());if(!s?.access_token)return renderLogin();await loadAppointment();}
+    catch(e){client.clearSession();renderLogin(String(e.message||e));}
+  }
+
   boot();
 })();
 </script>
