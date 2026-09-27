@@ -1,3 +1,22 @@
+# 8.8.17.19 HelmDeck — acceptance
+
+This is a client test release, not a completed working-ship handoff.
+
+## Native iPad acceptance still required
+
+1. Confirm Engine reports 8.8.17.19 · HELMDECK after the complete upload finishes.
+2. Reopen the existing accepted Captain Station route and sign in with the appointed test account if asked. Do not repeat acceptance for an accepted appointment.
+3. Verify the empty Orders state, Watch fields and Publish button fit together in landscape, while Access & scope expands and collapses normally.
+4. Verify readable input targeting with the keyboard open, rotation, and longer content. Normal scrolling is expected at reduced height and with many records.
+5. Before any order change or publication, confirm the exact project and staging state. The layout test itself requires no business mutation.
+6. Continue the previously planned live Watch, order, cross-vessel-denial, revocation and isolated-restore tests separately.
+
+## Failure handling
+
+Do not clear website data. Do not repeatedly press Accept or Publish after an unconfirmed result. Recheck Station reads the saved appointment only. Report a recovery screen without issuing new authority or departing a vessel.
+
+## Retained prior acceptance reference
+
 # 8.8.17.18 Quarterdeck acceptance
 
 ## Automated evidence

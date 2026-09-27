@@ -49,7 +49,7 @@
   const ADMIRAL_PIN = '19613'; // Temporary shared credential; separate contract so it can split later without rewiring authority.
   window.DarkSkyCaptainAuthContract = Object.freeze({pin:CAPTAIN_PIN,recoveryPin:CAPTAIN_PIN,scope:'captains-quarters-only'});
   window.DarkSkyAdmiralAuthContract = Object.freeze({pin:ADMIRAL_PIN,recoveryPin:ADMIRAL_PIN,scope:'admirals-deck-only',sharedWithCaptain:true,temporary:true});
-  const UPPER_COMMAND_BUILD='8.8.17.18';
+  const UPPER_COMMAND_BUILD='8.8.17.19';
   let authorized = false;
   // Read-only session witness; this never grants Captain or server authority.
   window.DarkSkyCaptainSessionStatus = () => authorized;
@@ -706,7 +706,7 @@
         if(truth.runId!==report.runId||truth.updatedAt!==report.at||truth.build!==report.build||!truth.findings)throw new Error('Finding details and summary belong to different runs.');
         for(const c of checks){const meta=truth.findings[c.id];if(!meta||meta.id!==c.id||meta.state!==c.state||meta.label!==c.label||meta.detail!==c.detail)throw new Error('Finding detail does not match its report: '+c.id);}
         const storage=report.storageEvidence;
-        const boundary=`<section class="keelguard-readiness-boundary" role="status"><small>QUARTERDECK · RUN ${esc(report.runId)}</small><b>${holdCount?'REPAIR HOLDS FIRST':watchCount?'CHECKS COMPLETE · WATCH ITEMS REMAIN':'CHECKS COMPLETE'}</b><p>${checks.length} checks · ${holdCount} holds · ${watchCount} watch items. Assessed ${esc(new Date(report.at).toLocaleString())} · Build ${esc(report.build)}.</p><p>Runtime checks and declared contracts; not verified working-ship commissioning or Captain handoff.</p><p><strong>Working-ship handoff: NOT VERIFIED by this report.</strong> Commissioning, appointed-Captain access, restore and cross-device proof remain separate.</p>${storage?.local==='degraded'?'<p class="keelguard-storage-warning"><strong>Legacy browser storage is degraded.</strong> Diagnostic fallback is not a durable ledger or cloud backup. No records were deleted; do not clear website data.</p>':''}</section>`;
+        const boundary=`<section class="keelguard-readiness-boundary" role="status"><small>HELMDECK · RUN ${esc(report.runId)}</small><b>${holdCount?'REPAIR HOLDS FIRST':watchCount?'CHECKS COMPLETE · WATCH ITEMS REMAIN':'CHECKS COMPLETE'}</b><p>${checks.length} checks · ${holdCount} holds · ${watchCount} watch items. Assessed ${esc(new Date(report.at).toLocaleString())} · Build ${esc(report.build)}.</p><p>Runtime checks and declared contracts; not verified working-ship commissioning or Captain handoff.</p><p><strong>Working-ship handoff: NOT VERIFIED by this report.</strong> Commissioning, appointed-Captain access, restore and cross-device proof remain separate.</p>${storage?.local==='degraded'?'<p class="keelguard-storage-warning"><strong>Legacy browser storage is degraded.</strong> Diagnostic fallback is not a durable ledger or cloud backup. No records were deleted; do not clear website data.</p>':''}</section>`;
         findings.innerHTML=boundary+(current.length?current.map(c=>{const meta=truth.findings[c.id],a=findingAction(c.id);return `<article class="admiral-finding ${c.state==='fail'?'fail':'warn'}" data-finding-id="${esc(c.id)}"><b>${c.state==='warn'?'WATCH':'CURRENT FAILURE'} · ${esc(c.label)}</b><span>${esc(c.detail)}</span><small>FIRST DETECTED ${esc(meta.firstDetected?new Date(meta.firstDetected).toLocaleString():'THIS CHECK')}<br>LATEST CHECK ${esc(report.build)} • ${esc(meta.provenance||verificationProvenance(c))}</small><em>${c.level==='core'?'FLEET CONTRACT':'CHECK'} • ${c.state==='warn'?'WATCH':'OPEN'}</em><button type="button" data-readiness-action="${a[0]}" data-readiness-finding="${esc(c.id)}">${a[1]}</button></article>`;}).join(''):'<span class="clear">No current holds or watch items in this run. Production handoff is separately unverified.</span>');
         const ids=Array.from(findings.querySelectorAll('[data-finding-id]'),node=>node.dataset.findingId);
         if(ids.length!==current.length||ids.some((id,i)=>id!==current[i].id))throw new Error('Rendered finding cards do not match the current report.');
@@ -2986,7 +2986,7 @@ if(document.readyState==='loading'){
   const station=()=>el('admiralEntitlementStation');
   const result=()=>el('admiralEntitlementResult');
   const cfg=()=>window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.()||null;
-  const client=()=>{const c=cfg();if(!c?.url||!c?.publishableKey)throw new Error('Supabase identity is not configured.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:SESSION_KEY,build:'8.8.17.18'});};
+  const client=()=>{const c=cfg();if(!c?.url||!c?.publishableKey)throw new Error('Supabase identity is not configured.');return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:SESSION_KEY,build:'8.8.17.19'});};
   const readSession=()=>client().readSession();
   const saveSession=data=>client().saveSession(data);
   const clearSession=()=>client().clearSession();
@@ -3250,7 +3250,7 @@ if(document.readyState==='loading'){
     if(!(await window.DarkSkyAdmiralIdentityStatus?.())){serverRows=[];serverMessage='Admiral office locked. Authenticate a dedicated Admiral account with active server authority to read server-attested entries.';return;}
     const config=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
     if(!config?.url||!config?.publishableKey)throw new Error('Supabase identity is not configured.');
-    const client=window.DarkSkySupabase.create({url:config.url,publishableKey:config.publishableKey,sessionKey:SESSION_KEY,build:'8.8.17.18'});
+    const client=window.DarkSkySupabase.create({url:config.url,publishableKey:config.publishableKey,sessionKey:SESSION_KEY,build:'8.8.17.19'});
     try{
       const data=await client.rpc('admiral_read_authority_ledger',{p_limit:200,p_authority:null,p_project_id:null},'The Admiral ledger could not be read.');
       serverRows=(data?.records||[]).map(normalizeServer);
@@ -3301,12 +3301,12 @@ if(document.readyState==='loading'){
 if(window.DarkSkyOpenFleetWatchtower)window.DarkSkyOpenAdmiralFleet=window.DarkSkyOpenFleetWatchtower;
 
 
-/* Dark Sky 8.8.17.18 Quarterdeck — lifecycle-mounted exact-vessel delegation.
+/* Dark Sky 8.8.17.19 Quarterdeck — lifecycle-mounted exact-vessel delegation.
    Presentation/controller repair only. Existing authenticated RPC contracts remain authoritative.
    No polling installer, no data deletion, no automatic issue/revoke/departure. */
 ;(() => {
   'use strict';
-  const BUILD='8.8.17.18', SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
+  const BUILD='8.8.17.19', SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   const $=id=>document.getElementById(id);
   const safe=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let deck=null,panel=null,observer=null,readinessObserver=null;

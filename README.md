@@ -1,33 +1,25 @@
-# Dark Sky 8.8.17.18 — Quarterdeck
+# Dark Sky 8.8.17.19 — HelmDeck
 
-Test-site repair candidate based on HarborMaster. **Not a promotion, working-ship certification, live publication, or new server migration.**
+A focused Captain Station client repair based on Quarterdeck. Test-site candidate; not a new commissioning, role grant, public launch, or completed working-ship handoff.
 
 ## What changed
 
-- The delegation station mounts when the real Admiral deck is created, including a deck opened long after startup. Installation is idempotent and does not depend on a 300 ms timer.
-- The initial appointment form uses the available width. A compact header retains readiness, account receipt, session details, Lock, End Session and Return. Expanded readiness stays in Govern; reports, recovery and presentation tools remain available in a clearly labelled expandable section.
-- **Appoint Captain**, **Appointments & History**, and **Departure Review** are distinct task views with keyboard-operable tabs. Narrow screens and open keyboards keep normal scrolling; no CSS scaling or pinch-zoom disablement is used.
-- Explicit loading, unavailable and retry states replace the obsolete Delegation Future placeholder. Missing data is not represented as an empty successful history.
-- Changing a vessel, candidate, intent or proof reference invalidates the corresponding preview. Duplicate write taps are contained. Pending responses are discarded when the workspace is locked or its session ends.
-- Issue/revoke/departure results remain visible while independent list readback runs. An unconfirmed result is not announced as verified or automatically replayed.
-- Departure is separate from appointment and requires a preview, explicit evidence-review acknowledgment and a confirmation. A typed reference alone is not proof of a working ship, and a lifecycle change does not publish its customer site.
+The accepted Vessel Captain Station now has one compact header with its actual vessel name, current build, staging/lifecycle, operating posture, Refresh Station and Sign Out. Exact scope and the operator/vessel_captain distinction remain under Access & scope. Orders and Report to Admiral Watch sit side by side in wide landscape viewports. The empty-state station fits the tested 1366×892 and 1024×636 content viewports with 18px form inputs. Long queues, expanded scope, larger text and keyboard-height/narrow views use normal document scrolling; no viewport lock, zoom disablement or scaled buttons.
 
-## Protected scope
+A successful acceptance response now leaves the old Pending/Accept interface immediately and opens an explicit station-loading view. Station reads have a 12-second deadline per phase; unconfirmed reads offer Recheck Station, which reads the existing appointment and does not repeat acceptance. Late station-read results are ignored after the read is retired or the Captain signs out. Mismatched vessel IDs cannot paint the station.
 
-All 85 existing deployed paths are retained. The owner/Vessel Captain station, core code, ledger transaction/correction logic, artwork, session-transport enforcement and both SQL reference files are unchanged except current release labels where applicable. Both Admiral gates and the bounded recent-account reuse policy remain.
+Orders still change **status only** through the existing exact-vessel RPC. Watch publication still uses the existing report RPC. These fixture tests do not verify the live database's permission enforcement. Owner pages, Admiral entrance/session transport and the delegation controller are retained apart from release labels.
 
-**No live database, membership, appointment, order, ledger, entitlement or lifecycle command was executed for this build. No SQL is required for upload. Do not clear website data.** Existing server migrations are historical prerequisites, not newly verified operating proof. The warned historical ledger SQL must not be executed as a shortcut.
+## Protected boundaries
 
-## Deployment — first three steps
+All 85 existing application paths remain. No live Supabase query, migration, appointment, revocation, departure, order update or Watch publication was performed for this build. No fixture account or private ledger export is shipped. Both SQL files are retained unchanged and **must not be executed as part of this layout update**. No website-data cleanup is required.
 
-1. Extract `DarkSky881718-Quarterdeck.zip`.
-2. Open its single matching `DarkSky881718-Quarterdeck` folder.
-3. Upload the **85 files inside** to the existing test repository root. Do not upload the enclosing folder or the ZIP.
+The five prior warning conditions remain unverified by this release. The native customer/operator journey, cross-vessel denial, live revocation, server timeout and isolated restore remain separate acceptance work. Do not press Accept again for an already accepted appointment.
 
-Wait for the Pages deployment to succeed, open its deployment link, and verify **8.8.17.18 · QUARTERDECK**. Do not disable checksum checks to work around a mixed upload.
+## Upload
 
-## First acceptance check
+Extract `DarkSky881719-HelmDeck.zip`. Upload the **85 files inside** the matching folder to the existing site root. Let Pages finish. Confirm **8.8.17.19 · HELMDECK** before testing. The separate Captain route remains `owner.html?surface=vessel-captain&project=<project_id>`.
 
-Open Build & Govern, authenticate normally, then select Delegate. The initial **Appoint Captain** form should be visible without the old Future placeholder. On a landscape iPad, check that the vessel picker, email, intent and Preview Appointment action fit in the initial view. **Stop before issuing or departing.**
+## Verification boundary
 
-Live account/server testing, actual iPad Safari keyboard geometry, independent-device persistence, isolated restore, live revocation denial and the completed working-ship handoff remain separate acceptance work. The five existing readiness warning conditions are not cleared by this UI repair.
+The owner scripts and shared transport are executed in isolated Chromium with original source markup/styles, fixture route location, in-memory session storage and simulated fetch responses. A normal full-site local navigation was attempted but returned ERR_BLOCKED_BY_ADMINISTRATOR; that restriction was not disabled or bypassed. Native Safari, physical keyboard behavior and full-site startup are not certified by these tests.

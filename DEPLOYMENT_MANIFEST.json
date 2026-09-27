@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.17.18",
-  "version": "8.8.17.18",
-  "release_name": "Quarterdeck",
-  "releaseName": "Quarterdeck",
-  "release_seal": "quarterdeck-881718",
+  "build": "8.8.17.19",
+  "version": "8.8.17.19",
+  "release_name": "HelmDeck",
+  "releaseName": "HelmDeck",
+  "release_seal": "helmdeck-881719",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Reliable lifecycle-mounted delegation and compact task-first Admiral Professional layout.",
-  "release_note": "Quarterdeck repairs the delayed Admiral deck initializer and separates Appoint Captain, Appointments & History, and Departure Review. No live database work, automatic appointments, lifecycle changes, storage purge or production-readiness claim is part of this release.",
+  "release_focus": "Compact exact-vessel Captain Station with visible readback and safe acceptance transition.",
+  "release_note": "HelmDeck keeps the empty Orders queue and Watch form on one landscape screen without shrinking controls. It removes stale pending acceptance controls after a successful reply and exposes bounded readback recovery. No live server changes, automatic commands, role changes, record purge or production-handoff certification.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "5efa1d74977008cf0876612fb980c84a3c3c03270149918818d93481ad15b743",
-        "build": "8.8.17.18",
+        "sha256": "a1e860cc0171f3206fddc7283f03506acbefed229e6cc989e0b9d5cbe37a4506",
+        "build": "8.8.17.19",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "bb2bc6950ed0844b522a505c5029ccef8da7ed62a2fb017f1792c74fc83ff808",
-        "build": "8.8.17.18",
+        "sha256": "4bba4a0f2b3a7af076c961e6aa96393d5db3545ffda5db58186aae8155cc2759",
+        "build": "8.8.17.19",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "655cefbcb1afd64d580f78a3b570fb202951e26bf935485fab0453ab659d33ed",
-        "build": "8.8.17.18",
+        "sha256": "7487c5f5af7708ffc769ddc1b295c5670b5c00dc68ff97441297d2ea24fc2b24",
+        "build": "8.8.17.19",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "7e9fe60e91fd621e2949e02082af607bc62e2b23be8e718827270d392b076adc",
-        "build": "8.8.17.18",
+        "sha256": "cbb345dd5cac8850eecf2e4d0a04f8aa16091756810d49e2ef5a037f2c9175c9",
+        "build": "8.8.17.19",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "37b8ebf0a298323c2efa24a35dea7714a2d9637d2e41b0cdd2b0d8180a9316b6",
+      "styles.css": "e7201dacc824d20598d8ed5607c4a33f007d1bc24159ca23d4522fd46715001d",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "b1cb298dcb0d0bd547e934cc34a28413ec4f9c2e2ad29dfc72c6cc200f5fad6f",
-      "fleet_supabase.js": "596ce39b83d1e221d985787dd5dbfbf05a30f55687a379bbe26f7077a3ab35ad",
+      "platform_identity.js": "93d12effe29126dd2712483b4f01c5e18f4806795a214a060257e227bbaef324",
+      "fleet_supabase.js": "3821f5ae5d5c1e2a2d942b778b4ef4f4bac93ce35990531ef946dfb3e6396157",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "c70e1b4846ead515688b7897cd5261e8fca8a0fc8740913eec5d28bb9680166f",
-      "captain.js": "92b00d1927ea1d63e1ade6345c75e1c66993aafb01741029ebf2978bdbbbb6f0",
-      "simple_books.js": "e314f52f3f42aec0e7fe361d89da9d3049ee5d2b2e20f6283e721975b559c0ab",
-      "owner.html": "4bbf96f6d2a486c40c2baf95ece3ee75ee813b40fabf381c5ef9d60faf40d1e5",
-      "manifest.webmanifest": "f0a25e601edef627875627ee5151c6792599d6a1ff888da52ba12230edaea284",
+      "app.js": "ba6d88bb33ceabd0f699df7cdfac30cf4ee0789c6631722986585cb1aeaaeff2",
+      "captain.js": "79d36bd6af4d041065b5fb0d4da8e30bdbef53c899ed6f402952fc1cd332ac0b",
+      "simple_books.js": "aaefc041825751d6dc7fd8031be11f534fbd8241241df8e87416d593b04836d6",
+      "owner.html": "e1b7e45fe890e63bdcaacfe63ecee072a7a370f3ef6cc6b521963b2fb6ad9a21",
+      "manifest.webmanifest": "c46ba002cb1f54e1348fc4b469acccebe5c7b4a5b67a668d4ce50e44c9e8eb61",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "6a7d19a5e16aa705933640b58eb2907c6c261afb499e83393626aeaaa35872b9",
-      "FLEET_DOCTRINE_REGISTRY.json": "655cefbcb1afd64d580f78a3b570fb202951e26bf935485fab0453ab659d33ed",
-      "GOLDEN_VOYAGES.json": "7e9fe60e91fd621e2949e02082af607bc62e2b23be8e718827270d392b076adc",
-      "FLEET_COMMAND_MODEL.json": "bb2bc6950ed0844b522a505c5029ccef8da7ed62a2fb017f1792c74fc83ff808",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "5efa1d74977008cf0876612fb980c84a3c3c03270149918818d93481ad15b743"
+      "sw.js": "e2015d543cbac54b201662548ca4309688256ca734b5da10489d0e73bfa91239",
+      "FLEET_DOCTRINE_REGISTRY.json": "7487c5f5af7708ffc769ddc1b295c5670b5c00dc68ff97441297d2ea24fc2b24",
+      "GOLDEN_VOYAGES.json": "cbb345dd5cac8850eecf2e4d0a04f8aa16091756810d49e2ef5a037f2c9175c9",
+      "FLEET_COMMAND_MODEL.json": "4bba4a0f2b3a7af076c961e6aa96393d5db3545ffda5db58186aae8155cc2759",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "a1e860cc0171f3206fddc7283f03506acbefed229e6cc989e0b9d5cbe37a4506"
     }
   },
   "watchbeacon_upgrade": {
@@ -591,6 +591,20 @@
     "security_transport_changed": false,
     "server_changes": false,
     "browser_record_deletion": false,
+    "working_ship_handoff_verified": false,
+    "native_ipad_acceptance": "pending"
+  },
+  "helmdeck_upgrade": {
+    "build": "8.8.17.19",
+    "baseline": "8.8.17.18",
+    "scope": "Vessel Captain presentation and station readback UI only",
+    "layout": "compact header, collapsible scope, two-column landscape Orders/Watch; normal narrow-screen scrolling",
+    "read_deadline_ms": 12000,
+    "late_reads": "retired on failure or sign-out",
+    "command_retry": "no automatic acceptance replay",
+    "security_transport_changed": false,
+    "database_changes": false,
+    "business_record_mutations_by_build": false,
     "working_ship_handoff_verified": false,
     "native_ipad_acceptance": "pending"
   }

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.18",
-  "release": "Quarterdeck",
-  "seal": "quarterdeck-881718",
+  "build": "8.8.17.19",
+  "release": "HelmDeck",
+  "seal": "helmdeck-881719",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "Quarterdeck",
-  "name": "Quarterdeck",
-  "releaseName": "Quarterdeck"
+  "release_name": "HelmDeck",
+  "name": "HelmDeck",
+  "releaseName": "HelmDeck"
 }

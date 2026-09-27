@@ -1,3 +1,16 @@
+# 8.8.17.19 — HelmDeck
+
+- Compact exact-vessel Captain Station; side-by-side Orders and Watch in landscape.
+- Readable 18px form fields and normal narrow-screen/long-list scrolling.
+- Build/version and correct Captain Station browser title on this route.
+- Collapsible exact scope without removing owner/Fleet authority boundaries.
+- Successful acceptance replaces pending controls with explicit loading.
+- Bounded read-only station recovery and late-read rejection after timeout/sign-out.
+- Existing role checks/RPC arguments retained; station responses additionally match the route project ID.
+- No live database work, no business record mutation, no automatic command replay.
+
+## Previous release history
+
 # 8.8.17.18 — Quarterdeck
 
 - Fixed the delayed Admiral-deck initialization race that left Delegate showing Future.

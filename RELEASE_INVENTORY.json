@@ -1,8 +1,8 @@
 {
-  "release": "Quarterdeck",
-  "name": "Quarterdeck",
-  "build": "8.8.17.18",
-  "seal": "quarterdeck-881718",
+  "release": "HelmDeck",
+  "name": "HelmDeck",
+  "build": "8.8.17.19",
+  "seal": "helmdeck-881719",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
