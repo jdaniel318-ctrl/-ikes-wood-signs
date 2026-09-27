@@ -1,3 +1,21 @@
+# Dark Sky 8.8.17.23 — CharterPort
+
+## Current release: Contracts & Services entry hardening
+
+This uniquely numbered client repair follows the actual CharterBridge package. It supersedes the two different .22 repair names for the next field check; it is not a new contract, permission grant, or fleet launch.
+
+The field screenshot confirms that CharterBridge did not visibly open after a tap. The ordinary isolated Chromium fixture does open CharterBridge, so the exact iPad failure cause is not established. A controlled button-node redraw demonstrates a separate weakness: the old element-specific handler is lost. CharterPort uses narrowly scoped delegated entry handling that survives this redraw and native modal presentation rather than relying on a numeric z-index race.
+
+Before requesting the contract directory, the entry verifies that the native modal is open and its Back to Command control is in front for hit-testing. An unconfirmed display unwinds to a usable Command Deck with a persistent CONTRACTS-DISPLAY-UNCONFIRMED message. It does not repeatedly open itself, repeat a command, or bypass authentication. Existing 15-minute idle / 60-minute maximum workspace rules remain.
+
+All CG-1 wording, fee calculations, draft storage keys, business logic, existing appointments and server authority contracts are retained. This update neither signs an agreement nor enables fees, commercial commissioning, departure, or Fleet Captain server operation. No live service calls, database changes or website-data deletion are part of this repair. Do not run the bundled SQL. Keep private contracts off the public GitHub repository.
+
+**Field acceptance pending:** confirm 8.8.17.23 · CHARTERPORT, authenticate Admiral normally, tap Contracts & Services once, and inspect the empty workspace. Native iPad Safari and real server interactions have not been tested by the fixture suites.
+
+---
+
+## Retained predecessor documentation
+
 # 8.8.17.22 — CharterBridge
 
 - Repair agreement/Admiral/security sibling stacking order.

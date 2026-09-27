@@ -1,8 +1,8 @@
 {
-  "release": "CharterBridge",
-  "name": "CharterBridge",
-  "build": "8.8.17.22",
-  "seal": "charterbridge-881722",
+  "release": "CharterPort",
+  "name": "CharterPort",
+  "build": "8.8.17.23",
+  "seal": "charterport-881723",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

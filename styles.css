@@ -16041,3 +16041,13 @@ body.authority-ledger-open{overflow:hidden!important}
 .admiral-gate-overlay{z-index:2147483220;}
 .cg-entry-notice{margin:10px 26px;padding:12px 14px;border:1px solid #ba9952;border-left-width:4px;border-radius:8px;background:#122b33;color:#f2dca4;font:16px/1.45 system-ui,sans-serif;overflow-wrap:anywhere;}
 .cg-entry-notice[hidden]{display:none!important;}
+
+/* CharterPort: modal top layer; inert disables interaction but does not hide the Admiral deck. */
+dialog.cg-workspace{width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;outline:0;}
+dialog.cg-workspace:not([open]){display:none!important;}
+dialog.cg-workspace::backdrop{background:#061c24;}
+#cgTitle:focus{outline:none;}
+#cgEntryStatus{margin:10px 20px;padding:12px 15px;background:#342d17;border-left:4px solid #e6bd55;color:#f2d27a;font:16px/1.45 Arial,sans-serif;overflow-wrap:anywhere;}
+#cgEntryStatus[hidden]{display:none!important;}
+
+#cgOpen[data-entry-state="opening"]{outline:2px solid #9bd5df;outline-offset:3px}
