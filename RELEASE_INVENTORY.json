@@ -1,8 +1,8 @@
 {
-  "release": "TrueBearing",
-  "name": "TrueBearing",
-  "build": "8.8.17.20",
-  "seal": "truebearing-881720",
+  "release": "CharterGuard",
+  "name": "CharterGuard",
+  "build": "8.8.17.21",
+  "seal": "charterguard-881721",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

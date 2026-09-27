@@ -1,3 +1,21 @@
+# Dark Sky 8.8.17.21 — CharterGuard
+
+Private commissioning-agreement preparation. Admiral-only client workspace: named legal parties and Captain acknowledgment, selected duties, per-vessel sales basis/percentage, counsel review log, private draft export/import, browser-local append-only draft saves with readback, printable legal-review copy, and externally executed PDF fingerprints.
+
+**Not a signing service, legal certification, billing activation or server authorization update.** Document fingerprints do not prove signature validity, signer authority, content equivalence or cloud custody. Actual business entities, jurisdiction, insurance and risk allocation require review. Selected service duties are proposed terms, not access grants.
+
+No production fee is calculated from live records or collected. The fee calculator is a labeled manual scenario. No production contract, user, appointment, owner, report or ledger record is created. No live SQL is needed or included. Existing SQL references are not to be executed.
+
+**Commercial commission and departure are held in this client** pending an executed-agreement verification service. This does not retrofit a server gate: old clients/direct server commands still require a separately authorized server implementation and test. Existing test vessels/accepted appointments remain. Internal Admiral programs remain distinct.
+
+New route: Engine → Build & Govern → normal Admiral authentication → CONTRACTS & SERVICES. Select an existing ship or prepare a planned vessel key; this does not reserve it. Save device draft is private browser storage, not a cloud backup. Export JSON/HTML into private Files; never upload private agreements to the public GitHub site.
+
+Before signing externally, complete all terms and have appropriate counsel finalize the document. The generated contract is conspicuously marked DRAFT FOR LEGAL REVIEW — NOT FOR SIGNATURE. Retain final signed copies and signing evidence outside this test browser. Future server verification must precede commercial activation.
+
+Existing identity/appointment, owner, ledger, project and Admiral session boundaries remain. No purge or automatic legal/rate defaults.
+
+---
+
 # TrueBearing 8.8.17.20 — current release note
 
 Named vessel/account navigation; no new operating authority installed. Fleet Command operations remain disabled pending server activation. Existing Captain operations and read-only Admiral observation remain distinct. See README.md.

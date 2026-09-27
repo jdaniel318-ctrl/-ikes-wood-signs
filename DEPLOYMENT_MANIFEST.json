@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.17.20",
-  "version": "8.8.17.20",
-  "release_name": "TrueBearing",
-  "releaseName": "TrueBearing",
-  "release_seal": "truebearing-881720",
+  "build": "8.8.17.21",
+  "version": "8.8.17.21",
+  "release_name": "CharterGuard",
+  "releaseName": "CharterGuard",
+  "release_seal": "charterguard-881721",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Compact exact-vessel Captain Station with visible readback and safe acceptance transition.",
-  "release_note": "TrueBearing keeps the empty Orders queue and Watch form on one landscape screen without shrinking controls. It removes stale pending acceptance controls after a successful reply and exposes bounded readback recovery. No live server changes, automatic commands, role changes, record purge or production-handoff certification.",
+  "release_focus": "Admiral-only vessel commissioning agreement preparation, negotiated services and fees, legal-review workflow, and contract-evidence gate before commercial commissioning.",
+  "release_note": "CharterGuard prepares vessel-specific Fleet Services & Vessel Commissioning Agreement drafts with separate Provider, Business and Captain capacities, negotiable service duties and sales-fee basis, counsel classification review, private draft export/readback and external signed-file fingerprinting. It is not a signing service or legal certification; commercial commissioning, fee activation and departure remain held pending server-side executed-agreement verification.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "2259aad90280ec248ec10d84ea0008d71ddb02c92ae75bcd0096c67915a907de",
-        "build": "8.8.17.20",
+        "sha256": "2b25f5a12165773d443f91b341283e85a54c3bd2bb0149b58af00d3bc6263311",
+        "build": "8.8.17.21",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "cd7515271383563dee10349d4b6da973184257572eeb717eb5f9d03ba9f27838",
-        "build": "8.8.17.20",
+        "sha256": "fbfcafefe08d5e85557f3f0dfd35492dbe352094786577efb41650eb941bf7b0",
+        "build": "8.8.17.21",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "880e9130a80b43721e1ad048f4c8b1be12231703202d03c63e64b44661ce26e5",
-        "build": "8.8.17.20",
+        "sha256": "2e72601e841e71446343682abe59fa577d67054b8b4f9ba793397417c441706d",
+        "build": "8.8.17.21",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "3fe8811910b5795cdb6dbc8d07d84c750f6560eb2900e59b70a689752ee7156e",
-        "build": "8.8.17.20",
+        "sha256": "0788e26f18ef249033c2714683b938b16d751673b94f45d0f1f3e848c3f2f922",
+        "build": "8.8.17.21",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "781870797aa9ab735eddd5922a88010e1734744c95a15998f1db20b1258a4c30",
+      "styles.css": "1217f5ba19eaada8240f3e2e80928e3cb3cd19cea242b041bab28482cfa1fb23",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "2bf9ba242795f7158aae3f08d3f4862ed97ea785a612d9606d4a82ae87136093",
-      "fleet_supabase.js": "deb9372efe53a6a252f16fe7d81356f463af3f74beabb5ce232f71baa56f6269",
+      "platform_identity.js": "40b49941b1a5735cdfb022c93bd45ee92fc07d16ee0a4c8b8b0b6d800b3d5937",
+      "fleet_supabase.js": "66b161d2d3cb97d90f5f96f6638df8895689f784d0ba75638f59d03ce850968f",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "da843642f73e781d1ea21b5cecc307960dce367859d8cc61991de915d3db076e",
-      "captain.js": "e977818d1fae982718e90e0b80daeb14118732fafcbf5895dcfd6b51931593b8",
-      "simple_books.js": "3df72c60c5661537a429162f95c7eb2dd0dd0d37ce97af227df4ea7c26152e0a",
-      "owner.html": "67b29ea929636d9eeb1fc7d4b46fad895f6ae084d7bd5c9082daace6273bc7c4",
-      "manifest.webmanifest": "0e18da9169f4c3ecf2cc30f106e79f4c5a126429a87b0c373274755f08b10448",
+      "app.js": "9dc93fe245fb0cdbd3202f6d0a5766ce9b288a20756f967833b78171fcdd6120",
+      "captain.js": "9f0f09673e030cd6edbcc5b4a2d945b7b86f61750e4c9b8c3aa9c5c1de0ea114",
+      "simple_books.js": "b7f33fbc693e0916ac22618bc650f0c47c743e090fcce2df5063f0820b2136fc",
+      "owner.html": "512a6b1f3e66e8eb32b0e846cdf0971a3a5a9e6df7058e383d45aedf2b0d114e",
+      "manifest.webmanifest": "85e0f5204d3c821048d5a13bfcf6ab3187f45eac4c81cd8a2d54034fa2f497bd",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "00ea7d9b514e984299293eeb331b8bd132a4d86433a70b285c71db28ee6c7505",
-      "FLEET_DOCTRINE_REGISTRY.json": "880e9130a80b43721e1ad048f4c8b1be12231703202d03c63e64b44661ce26e5",
-      "GOLDEN_VOYAGES.json": "3fe8811910b5795cdb6dbc8d07d84c750f6560eb2900e59b70a689752ee7156e",
-      "FLEET_COMMAND_MODEL.json": "cd7515271383563dee10349d4b6da973184257572eeb717eb5f9d03ba9f27838",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "2259aad90280ec248ec10d84ea0008d71ddb02c92ae75bcd0096c67915a907de"
+      "sw.js": "25b3e7852941dda173cd0e1d3c1f95a5d7749bdb2be64b0ea821f4c7f29f07e1",
+      "FLEET_DOCTRINE_REGISTRY.json": "2e72601e841e71446343682abe59fa577d67054b8b4f9ba793397417c441706d",
+      "GOLDEN_VOYAGES.json": "0788e26f18ef249033c2714683b938b16d751673b94f45d0f1f3e848c3f2f922",
+      "FLEET_COMMAND_MODEL.json": "fbfcafefe08d5e85557f3f0dfd35492dbe352094786577efb41650eb941bf7b0",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "2b25f5a12165773d443f91b341283e85a54c3bd2bb0149b58af00d3bc6263311"
     }
   },
   "watchbeacon_upgrade": {
@@ -626,6 +626,30 @@
     "local_release_instant": "2026-09-27T09:58:24-04:00",
     "fixture_assertions": {
       "browser": 103,
+      "watch": 15,
+      "transport": 16
+    }
+  },
+  "charterguard_upgrade": {
+    "stage": "private-agreement-preparation",
+    "template": "CG-1",
+    "signatures_verified": false,
+    "server_updates_applied": false,
+    "live_fees_enabled": false,
+    "contract_custody": "browser-local drafts plus user-exported private files; no verified cloud vault",
+    "new_business_commissioning": "client-held; server enforcement pending",
+    "departure": "client-held; server enforcement pending",
+    "captain_appointments": "existing contracts unchanged",
+    "build": "8.8.17.21",
+    "baseline": "8.8.17.20",
+    "packaged_at": "2026-09-27T16:20:00+00:00",
+    "local_release_instant": "2026-09-27T12:20:00-04:00",
+    "native_safari_verified": false,
+    "storage_tests": "simulated IndexedDB; native persistence remains field test",
+    "regression_counts": {
+      "charter_browser": 92,
+      "integrated_captain": 20,
+      "candidate_browser": 103,
       "watch": 15,
       "transport": 16
     }
