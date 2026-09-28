@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.17.23",
-  "release": "CharterPort",
-  "seal": "charterport-881723",
+  "build": "8.8.18.0",
+  "release": "AdmiralKeel",
+  "seal": "admiralkeel-88180",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "CharterPort",
-  "name": "CharterPort",
-  "releaseName": "CharterPort"
+  "release_name": "AdmiralKeel",
+  "name": "AdmiralKeel",
+  "releaseName": "AdmiralKeel"
 }

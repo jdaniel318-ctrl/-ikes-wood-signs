@@ -16051,3 +16051,10 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 #cgEntryStatus[hidden]{display:none!important;}
 
 #cgOpen[data-entry-state="opening"]{outline:2px solid #9bd5df;outline-offset:3px}
+
+/* 8.8.18.0 AdmiralKeel — rank/session separation and compact office posture. */
+.admiral-keel-office-state{display:flex;gap:12px;align-items:center;margin-top:10px;padding:9px 12px;border:1px solid rgba(208,174,84,.38);border-radius:10px;background:linear-gradient(90deg,rgba(88,70,24,.18),rgba(7,32,39,.5));}
+.admiral-keel-office-state b{flex:0 0 auto;color:#e3c76d;font-size:.67rem;letter-spacing:.1em;}
+.admiral-keel-office-state span{color:#b8c8ca;font-size:.7rem;line-height:1.35;}
+.admiral-session-strip[data-state="active"] #admiralSessionReceipt{color:#b9e9c4;}
+@media(max-width:760px){.admiral-keel-office-state{align-items:flex-start;flex-direction:column;gap:4px;}}

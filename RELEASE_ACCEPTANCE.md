@@ -1,3 +1,17 @@
+# Dark Sky 8.8.18.0 — AdmiralKeel
+
+## Current release: commissioned Admiral office hardening
+
+AdmiralKeel marks the Fleet role transition requested by the Captain: **the Admiral office is now accepted as a durable Fleet role rather than a temporary promotion milestone.** This is a product/governance role state, not a bypass of authentication. Each secure Admiral workspace still requires the passage PIN and server-verified active Admiral identity. Session timeout, logout, page reload, readiness WATCH items, and unfinished tests lock work; they do not demote the Admiral. Only an explicit server-side authority revocation can remove the active role.
+
+Captain and Admiral remain separate offices held by the same person. Admiral observation remains read-only by default. Modifying commands remain exact-vessel, deliberate, authenticated, reasoned, and audited. Existing Vessel Captain appointments, owner authority, Becca's browser-local CG-1 agreement draft, Fleet Core membership, and all unresolved readiness warnings are preserved. Fleet Captain operating-server activation, executed-contract verification, commercial fee activation, server-wide session expiry, revocation proof, and complete working-ship handoff remain unfinished.
+
+This hardening also improves input ergonomics discovered during field testing: single-line pasted text trims only accidental leading/trailing whitespace while preserving internal spaces; contract illustration fields select their default zero on focus so the first typed amount replaces it, while the negotiated percentage remains blank unless deliberately set.
+
+**Admiral rank and secure session are now explicitly different states throughout the Engine, Admiral gate, Command Deck, and Contracts & Services session messaging.**
+
+---
+
 # Dark Sky 8.8.17.23 — CharterPort
 
 ## Current release: Contracts & Services entry hardening

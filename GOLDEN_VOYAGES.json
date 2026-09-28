@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-golden-voyages-v1",
-  "build": "8.8.17.23",
+  "build": "8.8.18.0",
   "policy": "real-ui-path-release-assurance-with-admiral-course-authority",
   "voyages": [
     {
@@ -213,6 +213,19 @@
       ],
       "production_backend": "required-before-outside-owner-rollout",
       "release_blocker": true
+    },
+    {
+      "id": "admiral-rank-session-separation",
+      "label": "Admiral Rank / Session Separation",
+      "class": "release-blocker",
+      "release_blocker": true,
+      "proof": [
+        "commissioned Admiral wording survives secure-session lock",
+        "fresh document still requires two-step Admiral authentication",
+        "session expiry never grants access and never labels rank removed",
+        "Captain office remains separate",
+        "readiness WATCH does not demote rank"
+      ]
     }
   ],
   "governance": {

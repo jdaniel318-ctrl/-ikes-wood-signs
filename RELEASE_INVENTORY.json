@@ -1,8 +1,8 @@
 {
-  "release": "CharterPort",
-  "name": "CharterPort",
-  "build": "8.8.17.23",
-  "seal": "charterport-881723",
+  "release": "AdmiralKeel",
+  "name": "AdmiralKeel",
+  "build": "8.8.18.0",
+  "seal": "admiralkeel-88180",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

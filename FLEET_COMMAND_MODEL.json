@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.17.23",
+  "build": "8.8.18.0",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "Admiral Commission",
+  "release": "AdmiralKeel",
   "dualOfficeCommission": {
     "samePersonMayHoldCaptainAndAdmiral": true,
     "officesRemainDistinct": true,
@@ -237,5 +237,15 @@
     "authored_build": "8.8.17",
     "verified_by": "keelguard-package-validation",
     "proves_live_operation": false
+  },
+  "admiralOfficeCommission": {
+    "status": "commissioned",
+    "acceptedBuild": "8.8.18.0",
+    "rankPersistsAcrossWorkspaceSessions": true,
+    "sessionAuthenticationStillRequired": true,
+    "readinessWarningsDoNotDemoteRank": true,
+    "captainOfficeRetained": true,
+    "revocation": "explicit-active-server-authority-revocation-only",
+    "invariant": "A session may lock without demoting the Admiral; Captain and Admiral offices remain distinct."
   }
 }

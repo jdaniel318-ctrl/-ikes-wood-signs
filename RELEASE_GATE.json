@@ -1,8 +1,8 @@
 {
-  "schema": "dark-sky-release-gate-charterport-v1",
-  "build": "8.8.17.23",
-  "release": "CharterPort",
-  "generatedAt": "2026-09-27T19:48:38+00:00",
+  "schema": "dark-sky-release-gate-admiralkeel-v1",
+  "build": "8.8.18.0",
+  "release": "AdmiralKeel",
+  "generatedAt": "2026-09-27T21:31:00-04:00",
   "pass": true,
   "evidence_scope": "Isolated Chromium/module fixtures only. Source-level unit and display tests are not native iPad Safari or full-site navigation proof. Full site was previously policy-blocked and was not retried. No live service called.",
   "native_field_acceptance": "pending",
@@ -1408,6 +1408,48 @@
       {
         "result": "PASS",
         "name": "Admiral end leaves Owner client session independent"
+      }
+    ],
+    "admiral_keel": [
+      {
+        "result": "PASS",
+        "name": "Engine states commissioned Admiral office without granting session access"
+      },
+      {
+        "result": "PASS",
+        "name": "Admiral gate distinguishes retained rank from secure workspace session"
+      },
+      {
+        "result": "PASS",
+        "name": "Command Deck identifies commissioned Admiral after server verification"
+      },
+      {
+        "result": "PASS",
+        "name": "session lock copy retains rank while requiring re-authentication"
+      },
+      {
+        "result": "PASS",
+        "name": "Contracts session warning clears after a newly reusable verified session"
+      },
+      {
+        "result": "PASS",
+        "name": "single-line paste hygiene trims edge whitespace only"
+      },
+      {
+        "result": "PASS",
+        "name": "contract scenario zero selects on focus and blank restores zero"
+      },
+      {
+        "result": "PASS",
+        "name": "negotiated percentage remains blank by default"
+      },
+      {
+        "result": "PASS",
+        "name": "existing private draft schema and CG-1 template remain compatible"
+      },
+      {
+        "result": "PASS",
+        "name": "Fleet Captain server operating service remains disabled"
       }
     ]
   },
@@ -3254,5 +3296,12 @@
       "full_site_navigation": "blocked_by_environment_not_bypassed",
       "working_ship_handoff_verified": false
     }
+  },
+  "admiral_office": {
+    "status": "commissioned",
+    "session_separate": true,
+    "server_reverification_required": true,
+    "readiness_warnings_do_not_demote": true,
+    "fleet_captain_operating_service_enabled": false
   }
 }

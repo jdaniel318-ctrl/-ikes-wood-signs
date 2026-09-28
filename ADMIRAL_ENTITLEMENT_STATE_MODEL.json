@@ -1,7 +1,7 @@
 {
   "release": "8.8.17",
-  "build": "8.8.17.23",
-  "name": "Admiral Passage",
+  "build": "8.8.18.0",
+  "name": "AdmiralKeel",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
     "enabled",
@@ -32,7 +32,10 @@
     ],
     "promotion": "An active server-side fleet_global_authorities Admiral record plus authenticated identity is required.",
     "result": "After server verification, the same identity may enter Admiral My Fleet and issue governed orders.",
-    "local_self_promotion": false
+    "local_self_promotion": false,
+    "status": "commissioned",
+    "rank_session_separation": "Commissioned rank persists across session locks; active server verification is still required for each secure workspace.",
+    "readiness_warnings_do_not_demote": true
   },
   "command_contract": {
     "source_of_truth": "append-only server-governed Admiral commercial orders",

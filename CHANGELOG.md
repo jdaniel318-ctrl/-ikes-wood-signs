@@ -1,3 +1,15 @@
+# 8.8.18.0 — AdmiralKeel
+
+- Commissioned Admiral role is now a durable Fleet office; secure-session expiry locks access without demoting rank.
+- Engine, Admiral gate, Command Deck, and Contracts & Services messaging now distinguish rank from session state.
+- Captain and Admiral remain explicit separate offices; Admiral observation remains read-only by default.
+- Readiness WATCH items remain visible and unresolved without being treated as rank revocation.
+- Single-line paste hygiene trims accidental edge whitespace after paste while preserving internal spaces.
+- Contract scenario fields select the default zero on focus and restore zero only when left blank; negotiated percentages keep their no-default behavior.
+- Existing appointments, owner roles, CG-1 browser-local drafts, Fleet Core membership, contract holds, and server-operation gaps are preserved.
+
+---
+
 # Dark Sky 8.8.17.23 — CharterPort
 
 ## Current release: Contracts & Services entry hardening

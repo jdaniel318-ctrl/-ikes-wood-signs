@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.17.23",
-  "release": "Admiral Commission",
+  "build": "8.8.18.0",
+  "release": "AdmiralKeel",
   "status": "active",
   "principles": [
     {
@@ -81,6 +81,12 @@
       "rule": "Any fleet member may explicitly adopt an approved capability while its ownership, authority, branding, namespace, and project data remain isolated.",
       "scope": "fleet-learning",
       "origin": "8.8.11.1 Bootstrap Build Schedule repair"
+    },
+    {
+      "id": "admiral-rank-session-separation",
+      "rule": "A commissioned Admiral role persists across browser workspace locks and session expiry. Secure re-authentication protects entry; it does not demote the rank. Only explicit server authority revocation changes that role.",
+      "scope": "fleet-governance",
+      "origin": "8.8.18.0 AdmiralKeel hardening"
     }
   ],
   "governance": {
@@ -119,7 +125,14 @@
         "effectiveBuild": "8.6.40",
         "heading": "Production identity with recoverable Fleet authority and committed proof truth"
       }
-    ]
+    ],
+    "admiralOffice": {
+      "status": "commissioned",
+      "rankSessionSeparated": true,
+      "sessionGate": "passage-pin-plus-server-verified-account",
+      "readOnlyDefault": true,
+      "captainOfficeDistinct": true
+    }
   },
   "release_compatibility": {
     "runtime_build": "8.8.17.13",

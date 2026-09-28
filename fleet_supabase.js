@@ -1,8 +1,28 @@
-/* Dark Sky 8.8.17.23 HarborMaster — shared browser-safe Supabase transport.
+/* Dark Sky 8.8.18.0 HarborMaster — shared browser-safe Supabase transport.
    This module accepts publishable keys only. It never accepts or stores a
    service-role key, password, or cross-vessel authority assertion. */
 ;(() => {
   'use strict';
+
+  // AdmiralKeel fleet-wide single-line paste hygiene. Pasted outer whitespace is
+  // trimmed after the browser performs the paste; internal spacing is preserved.
+  // Passwords, dates, numeric controls and multiline text are intentionally excluded.
+  if (!window.__blackFlagSingleLinePasteHygiene88180) {
+    window.__blackFlagSingleLinePasteHygiene88180 = true;
+    document.addEventListener('paste', event => {
+      const n = event.target instanceof HTMLInputElement ? event.target : null;
+      if (!n || n.hasAttribute('data-preserve-edge-space')) return;
+      const type = String(n.type || 'text').toLowerCase();
+      if (!['text','email','search','url','tel'].includes(type)) return;
+      window.setTimeout(() => {
+        if (!n.isConnected) return;
+        const cleaned = String(n.value || '').replace(/^[\s\u00a0]+|[\s\u00a0]+$/g, '');
+        if (cleaned === n.value) return;
+        n.value = cleaned;
+        n.dispatchEvent(new Event('input', {bubbles:true}));
+      }, 0);
+    }, true);
+  }
 
   const DEFAULT_EXPIRY_SECONDS = 3600;
   const EXPIRY_SKEW_MS = 30_000;
@@ -93,13 +113,13 @@
     if (!windowState().available || admiralWindow?.userId !== userId) return false;
     const first = !admiralWindow.verifiedAt;
     admiralWindow.verifiedAt = windowNow();
-    if (first) lastReceipt = 'Account sign-in and active Admiral authority verified.';
+    if (first) lastReceipt = 'Commissioned Admiral authority verified. Secure workspace open.';
     emitWindow(); return true;
   }
   function noteResumed() {
     if (!windowState().reusable) return false;
     admiralWindow.lastActivityAt = windowNow();
-    lastReceipt = 'Existing account session reverified. No additional password entry was needed.';
+    lastReceipt = 'Commissioned Admiral office reverified. No additional password entry was needed.';
     scheduleWindow(); emitWindow(); return true;
   }
   function cancelSignIn() {
@@ -136,7 +156,7 @@
     const url = String(options.url || '').replace(/\/$/, '');
     const publishableKey = String(options.publishableKey || options.key || '');
     const sessionKey = String(options.sessionKey || 'darkSkySupabaseSessionV1');
-    const build = String(options.build || '8.8.17.23');
+    const build = String(options.build || '8.8.18.0');
     const admiral = sessionKey === ADMIRAL_KEY;
     // Opt-in cancellation for the separate Vessel Captain route. Owner and
     // Admiral policies are untouched. Generation prevents late session writes.

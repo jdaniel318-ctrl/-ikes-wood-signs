@@ -1,3 +1,11 @@
+# Current release overlay — 8.8.18.0 AdmiralKeel
+
+AdmiralKeel accepts the Admiral office as a durable Fleet role while retaining strict session authentication and all existing authority boundaries. A secure-session lock is not a demotion. Captain and Admiral remain separate offices; Admiral observation stays read-only by default; mutations remain exact-vessel and authenticated. Existing test vessels, appointments, owners, contracts/drafts, and warning conditions are preserved.
+
+The working-ship, Fleet Captain operating-service, executed-contract, revocation, persistence and production-readiness tests remain open work. They harden the Fleet; they no longer determine whether the established active Admiral role exists.
+
+---
+
 # Dark Sky 8.8.17.23 — CharterPort
 
 ## Current release: Contracts & Services entry hardening
@@ -150,7 +158,7 @@ Ledger corrections edit on a document-flow page outside the fixed scrolling ledg
 
 
 ## KeelGuard 8.8.17.13 — evidence boundary
-Runtime/model hash agreement protects deployment consistency; it is not independent signing or authorization. Retained authored model versions remain historical except the four exact-version current governance contracts. Readiness is a labeled mix of source contracts, local runtime observations and outstanding field tests. A source-contract PASS must never be interpreted as proven Captain appointment or production readiness. Test ownership remains with Captain and Bootstrap. The Captain's Admiral acceptance still requires working-ship commissioning, an accepted ship-scoped Captain appointment and continuing authenticated Admiral oversight/download/advice.
+Runtime/model hash agreement protects deployment consistency; it is not independent signing or authorization. Retained authored model versions remain historical except the four exact-version current governance contracts. Readiness is a labeled mix of source contracts, local runtime observations and outstanding field tests. A source-contract PASS must never be interpreted as proven Captain appointment or production readiness. Test ownership remains with the user and Bootstrap. The Admiral office is now accepted as a durable Fleet role; working-ship commissioning, scoped Captain operation, revocation, persistence, and production proof remain hardening obligations rather than promotion prerequisites.
 
 LocalStorage is a degraded compatibility channel when probes fail. Verified session fallback can continue diagnostic work but is not a substitute for the separately verified book or cloud storage. Readiness history snapshots retain the original run time/identity; view changes do not create fresh verification. No cleanup, stored proof fabrication, role escalation or automatic live publication is authorized by these diagnostics.
 
@@ -181,7 +189,7 @@ The window is a **client-side protection, not backend session expiry**. Existing
 
 Logout is scoped to the current Admiral token and local key. It does not clear unrelated owner keys, ledger records, localStorage, IndexedDB, or caches. Outstanding requests are cancelled locally; already committed remote commands are not undone and must not be automatically replayed. Authentication fields and diagnostics never retain the password.
 
-Admiral-facing operational UI and identity checks continue to be distinct from the user’s earned Admiral milestone: a working commissioned ship, a scoped accepted Captain appointment, independent operation, and ongoing Admiral visibility/downloads/advice are still required.
+Admiral-facing operational UI and identity checks remain distinct from rank. The Admiral office is commissioned; each secure workspace still requires its own server-verified session, while working-ship and handoff evidence remain separate readiness obligations.
 
 
 ## 8.8.17.18 Quarterdeck scoped repair
