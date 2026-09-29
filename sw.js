@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.18.0';
-const RELEASE_SEAL='admiralkeel-88180';
+const RELEASE_BUILD='8.8.18.1';
+const RELEASE_SEAL='draftwatch-88181';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

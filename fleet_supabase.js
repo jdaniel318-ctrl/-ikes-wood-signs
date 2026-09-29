@@ -1,10 +1,10 @@
-/* Dark Sky 8.8.18.0 HarborMaster — shared browser-safe Supabase transport.
+/* Dark Sky 8.8.18.1 HarborMaster — shared browser-safe Supabase transport.
    This module accepts publishable keys only. It never accepts or stores a
    service-role key, password, or cross-vessel authority assertion. */
 ;(() => {
   'use strict';
 
-  // AdmiralKeel fleet-wide single-line paste hygiene. Pasted outer whitespace is
+  // DraftWatch fleet-wide single-line paste hygiene. Pasted outer whitespace is
   // trimmed after the browser performs the paste; internal spacing is preserved.
   // Passwords, dates, numeric controls and multiline text are intentionally excluded.
   if (!window.__blackFlagSingleLinePasteHygiene88180) {
@@ -156,7 +156,7 @@
     const url = String(options.url || '').replace(/\/$/, '');
     const publishableKey = String(options.publishableKey || options.key || '');
     const sessionKey = String(options.sessionKey || 'darkSkySupabaseSessionV1');
-    const build = String(options.build || '8.8.18.0');
+    const build = String(options.build || '8.8.18.1');
     const admiral = sessionKey === ADMIRAL_KEY;
     // Opt-in cancellation for the separate Vessel Captain route. Owner and
     // Admiral policies are untouched. Generation prevents late session writes.

@@ -16058,3 +16058,6 @@ dialog.cg-workspace::backdrop{background:#061c24;}
 .admiral-keel-office-state span{color:#b8c8ca;font-size:.7rem;line-height:1.35;}
 .admiral-session-strip[data-state="active"] #admiralSessionReceipt{color:#b9e9c4;}
 @media(max-width:760px){.admiral-keel-office-state{align-items:flex-start;flex-direction:column;gap:4px;}}
+
+/* DraftWatch: visible non-authorizing tab outcome, no viewport or scroll lock. */
+.cg-workspace .cg-navigation-status{margin:8px 0;padding:9px 12px;border-left:3px solid #9ec7ce;background:#16333b;color:#c3d5db;font:14px/1.4 Arial,sans-serif;overflow-wrap:anywhere;}

@@ -1,3 +1,25 @@
+# Dark Sky 8.8.18.1 — DraftWatch
+
+Client tab/closure diagnostic and resilience candidate based on AdmiralKeel. The reported iPad return from Files & signing is a real field failure; its exact cause was **not** reproduced in ordinary isolated Chromium. This release must not be represented as a proved cure for the device failure.
+
+## Narrow changes
+
+Tab rendering now completes before the visible tab is changed, and a failed render restores the previous tab without clearing the draft. A visible navigation status names the section. A bounded display check catches a hidden or missing panel. A native dialog closure or context mismatch now leaves a specific message on Command rather than a silent return. No automatic re-opening or session extension is added.
+
+Repeated session-ended/unavailable events no longer erase the status code needed to clear an old session warning after successful reauthentication. Earlier saved device drafts are not deleted.
+
+## Preserved boundaries
+
+No changes to CG-1 contract clauses, draft schema, percentage calculations, existing service selections, the IndexedDB database name, Owner/Captain permissions, server authority checks, 15-minute idle/60-minute maximum windows, or the existing blocked signing/fee/commissioning actions. No live service call, signing request, fee activation, permission change or website-data purge was made. Do not run the bundled SQL. The accepted Admiral office remains separate from session authentication; this client release creates no server rank.
+
+## Field checkpoint
+
+Keep the existing Revision 2 private export unchanged. Install this single complete release, confirm 8.8.18.1 DRAFTWATCH, then use normal Admiral entry. Open Contracts & Services and choose the existing vessel. Files & signing should remain in the contract workspace; report its screen or the new specific closure/error message. No real signing, uploads, charges or commissioning are part of this check. Native Safari acceptance remains pending.
+
+---
+
+## Prior release record (retained)
+
 # Dark Sky 8.8.18.0 — AdmiralKeel
 
 ## Current release: commissioned Admiral office hardening

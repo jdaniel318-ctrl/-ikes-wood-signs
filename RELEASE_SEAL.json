@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.18.0",
-  "release": "AdmiralKeel",
-  "seal": "admiralkeel-88180",
+  "build": "8.8.18.1",
+  "release": "DraftWatch",
+  "seal": "draftwatch-88181",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "AdmiralKeel",
-  "name": "AdmiralKeel",
-  "releaseName": "AdmiralKeel"
+  "release_name": "DraftWatch",
+  "name": "DraftWatch",
+  "releaseName": "DraftWatch"
 }
