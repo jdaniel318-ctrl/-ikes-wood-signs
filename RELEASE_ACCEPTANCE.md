@@ -1,3 +1,8 @@
+
+## 8.8.18.5 — BloomPrivacy
+
+Becca test-vessel CX hardening: one **ADD FLOWER PHOTO** action delegates source choice to the device (Photos, Camera, or Files). Flower image bytes stay in the active browser session for Private Preview; Sea Trial persistence records metadata only, not the photo/approved-preview bytes. Production flower-photo submission remains held until private production media custody is explicitly commissioned. No fleet financial, customer, ownership, or authority sharing is introduced.
+
 # Dark Sky 8.8.18.4 — BloomPick
 
 **Decision:** focused flower photo-source repair candidate. Native iPad Photo Library/camera acceptance is pending. This static release does not activate a business or grant authority.

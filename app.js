@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.18.4';
+  const BUILD_VERSION='8.8.18.5';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -245,7 +245,7 @@
       intro:'Create a flower order with your arrangement, personal message, preview, and approval.',
       ribbon:'YOUR FLOWERS • YOUR MESSAGE • YOUR MOMENT',start:'START YOUR FLOWER ORDER →',
       priceTitle:'Flower pricing is being configured',priceCopy:'This project is in test mode. Final flower pricing will be configured in Black Flag.',priceTrust:'TEST MODE • Final pricing has not been configured yet.',
-      photoBadge:'YOUR FLOWERS',photoTitle:'Take a Picture of Your Flowers',photoCopy:'Keep the full arrangement in view. This photo stays with this flower order only.',
+      photoBadge:'YOUR FLOWERS',photoTitle:'Add Your Flower Photo',photoCopy:'Choose Photos, Camera, or Files. Black Flag keeps the selected image only in this active test-order session.',
       orientationTitle:'How should the arrangement be presented?',wordingTitle:'What should the card say?',fontTitle:'Choose Your Letter Style',fillTitle:'Choose Your Letter Color',
       customerCopy:"Becca's Bloom Shop will use this information to contact you about this flower order.",doneHeadline:'Your Flower Order Is In The Queue!',doneCopy:'Your approved flower order and details have been saved.',hideIke:true
     }
@@ -4894,6 +4894,7 @@
 
   async function returnFromExperienceMode(){
     const state=experienceTestReturnState;
+    if(projectShellFor(projectById(activeProjectId))==='flowers') resetFlowersShell();
     experienceTestReturnState=null;
     clearCustomerSessionContext();
     document.getElementById('experienceModeBanner')?.classList.add('hidden');
@@ -13649,8 +13650,8 @@ The full order and approved media remain stored with this project.`;
   function bindMugsShell(){const root=$('mugsCustomerShell');if(!root||boundTemplateShellRoots.has(root))return;boundTemplateShellRoots.add(root);window.__mugsShellBound=true;root.addEventListener('click',e=>{const n=e.target.closest('[data-mugs-next]');if(n&&!n.disabled){showMugsScreen(n.dataset.mugsNext);return;}const b=e.target.closest('[data-mugs-back]');if(b){showMugsScreen(b.dataset.mugsBack);}});$('mugsPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{mugsState.photoData=String(r.result||'');$('mugsPhotoPreview').src=mugsState.photoData;$('mugsPhotoPreviewWrap').classList.remove('hidden');$('mugsPhotoNext').disabled=!mugsState.photoData;};r.readAsDataURL(file);});$('mugsRetakePhoto')?.addEventListener('click',()=>{mugsState.photoData='';$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap').classList.add('hidden');$('mugsPhotoNext').disabled=true;$('mugsPhotoInput').click();});$('mugsMessage')?.addEventListener('input',e=>{mugsState.message=e.target.value;$('mugsCharCount').textContent=String(mugsState.message.length);});$('mugsStyle')?.addEventListener('change',e=>mugsState.style=e.target.value);$('mugsCustomerNext')?.addEventListener('click',()=>{mugsState.customerName=$('mugsCustomerName').value.trim();mugsState.customerPhone=$('mugsCustomerPhone').value.trim();mugsState.customerEmail=$('mugsCustomerEmail').value.trim();if(!mugsState.customerName||!mugsState.customerPhone||!mugsState.customerEmail){alert('Name, phone, and email are required.');return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mugsState.customerEmail)){alert('Enter a valid email address.');return;}showMugsScreen('review');});$('mugsApprovalCheck')?.addEventListener('change',e=>$('mugsSubmitOrder').disabled=!e.target.checked);$('mugsSubmitOrder')?.addEventListener('click',submitMugsOrder);$('mugsNewOrder')?.addEventListener('click',()=>{resetMugsShell();showMugsScreen('welcome');});}
 
 
-  // BloomPick: native file inputs keep camera and saved-photo intentions separate.
-  // Only the camera input requests capture. No photo history or network call is added.
+  // BloomPrivacy: one native image input lets the device offer Photos, Camera, or Files.
+  // Flower media is session-only in this test vessel: no photo bytes are written to Black Flag browser order storage.
   let flowersPhotoRequest=0;
   let flowersPhotoTask=null;
   function cancelFlowersPhotoRead(){
@@ -13672,8 +13673,8 @@ The full order and approved media remain stored with this project.`;
     root?.querySelector('#flowersPhotoChoices')?.setAttribute('aria-busy',String(!!flowersPhotoTask));
   }
   function bindFlowersPhotoPicker(root){
-    const inputs=['flowersPhotoInput','flowersCameraInput'].map(id=>root.querySelector('#'+id)).filter(Boolean);
-    const unchanged=()=>flowersPhotoNotice(root,flowersState.photoData?'No new photo selected. Your current photo is unchanged.':'No photo selected. Choose a saved photo or take a new one.');
+    const inputs=['flowersPhotoInput'].map(id=>root.querySelector('#'+id)).filter(Boolean);
+    const unchanged=()=>flowersPhotoNotice(root,flowersState.photoData?'No new photo selected. Your current photo is unchanged.':'No photo selected. Add one from Photos, Camera, or Files.');
     const readPhoto=(event)=>{
       const input=event.target,file=input.files?.[0];
       if(!file){if(!flowersPhotoTask)unchanged();return;}
@@ -13738,7 +13739,18 @@ The full order and approved media remain stored with this project.`;
   function flowersPreviewFontPx(text,style){const len=normalizeFlowersMessage(text).length;let size=len<=28?34:len<=55?30:len<=85?26:22;if(style==='script')size=Math.max(22,size-1);return size;}
   function syncFlowersMessage(options={}){const field=$('flowersMessage');let value=field?String(field.value||''):String(flowersState.message||'');if(options.trim)value=normalizeFlowersMessage(value);else value=value.slice(0,FLOWERS_MESSAGE_MAX);flowersState.message=value;if(field&&field.value!==value)field.value=value;if($('flowersCharCount'))$('flowersCharCount').textContent=String(value.length);return value;}
   function applyFlowersPreviewText(el,text,style){if(!el)return;const clean=normalizeFlowersMessage(text)||'Your Message';const selected=style||'script';el.textContent=clean;el.className=`mugs-preview-text flowers-preview-text mugs-style-${selected}`;el.style.setProperty('--flowers-preview-size',`${flowersPreviewFontPx(clean,selected)}px`);}
-  function resetFlowersShell(){cancelFlowersPhotoRead();const photoRoot=$('flowersCustomerShell');if($('flowersCameraInput'))$('flowersCameraInput').value='';['flowersPhotoPreview','flowersPreviewImage','flowersDonePreview'].forEach(id=>$(id)?.removeAttribute('src'));if($('flowersReviewSummary'))$('flowersReviewSummary').textContent='';flowersPhotoNotice(photoRoot,'No photo selected.');photoRoot?.querySelector('#flowersPhotoChoices')?.setAttribute('aria-busy','false');Object.assign(flowersState,{screen:'welcome',photoData:'',message:'',style:'script',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''});if($('flowersPhotoInput'))$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap')?.classList.add('hidden');if($('flowersPhotoNext'))$('flowersPhotoNext').disabled=true;if($('flowersMessage'))$('flowersMessage').value='';if($('flowersCharCount'))$('flowersCharCount').textContent='0';if($('flowersStyle'))$('flowersStyle').value='script';['flowersCustomerName','flowersCustomerPhone','flowersCustomerEmail'].forEach(id=>{if($(id))$(id).value='';});if($('flowersApprovalCheck'))$('flowersApprovalCheck').checked=false;if($('flowersSubmitOrder'))$('flowersSubmitOrder').disabled=true;}
+  function purgeFlowersEphemeralMedia(){
+    cancelFlowersPhotoRead();
+    flowersState.photoData='';flowersState.approvedPreviewData='';
+    ['flowersPhotoInput'].forEach(id=>{const input=$(id);if(input)input.value='';});
+    ['flowersPhotoPreview','flowersPreviewImage','flowersDonePreview'].forEach(id=>$(id)?.removeAttribute('src'));
+  }
+  function flowerOrderStorageRecord(order){
+    const row={...order,photoPresent:!!order.photoData,approvedPreviewPresent:!!order.approvedPreviewData,photoRetention:'ephemeral-session-only'};
+    delete row.photoData;delete row.approvedPreviewData;
+    return row;
+  }
+  function resetFlowersShell(){cancelFlowersPhotoRead();const photoRoot=$('flowersCustomerShell');['flowersPhotoPreview','flowersPreviewImage','flowersDonePreview'].forEach(id=>$(id)?.removeAttribute('src'));if($('flowersReviewSummary'))$('flowersReviewSummary').textContent='';flowersPhotoNotice(photoRoot,'No photo selected.');photoRoot?.querySelector('#flowersPhotoChoices')?.setAttribute('aria-busy','false');Object.assign(flowersState,{screen:'welcome',photoData:'',message:'',style:'script',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''});if($('flowersPhotoInput'))$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap')?.classList.add('hidden');if($('flowersPhotoNext'))$('flowersPhotoNext').disabled=true;if($('flowersMessage'))$('flowersMessage').value='';if($('flowersCharCount'))$('flowersCharCount').textContent='0';if($('flowersStyle'))$('flowersStyle').value='script';['flowersCustomerName','flowersCustomerPhone','flowersCustomerEmail'].forEach(id=>{if($(id))$(id).value='';});if($('flowersApprovalCheck'))$('flowersApprovalCheck').checked=false;if($('flowersSubmitOrder'))$('flowersSubmitOrder').disabled=true;}
   function showFlowersScreen(name){flowersState.screen=name;$('flowersCustomerShell')?.querySelectorAll('.mugs-screen').forEach(s=>s.classList.toggle('active',s.dataset.flowersScreen===name));const i=FLOWERS_SCREEN_ORDER.indexOf(name);if($('flowersProgressBar'))$('flowersProgressBar').style.width=`${Math.max(5,(i+1)/FLOWERS_SCREEN_ORDER.length*100)}%`;if(name==='preview')renderFlowersPreview();if(name==='review')renderFlowersReview();window.scrollTo({top:0,left:0,behavior:'instant'});}
   function renderFlowersPreview(){const clean=syncFlowersMessage({trim:true});if($('flowersPreviewImage')&&flowersState.photoData)$('flowersPreviewImage').src=flowersState.photoData;applyFlowersPreviewText($('flowersPreviewText'),clean,flowersState.style);}
   function renderFlowersReview(){const box=$('flowersReviewSummary');if(!box)return;const clean=syncFlowersMessage({trim:true}),style=flowersState.style||'script',size=flowersPreviewFontPx(clean,style);box.innerHTML=`<div class="mugs-review-preview flowers-review-preview"><img src="${flowersState.photoData}" alt="Confirmed flower arrangement photo"><div class="mugs-review-overlay flowers-review-overlay mugs-style-${escapeHtml(style)}" style="--flowers-preview-size:${size}px">${escapeHtml(clean||'Your Message')}</div></div><div class="mugs-review-row"><span>Message</span><strong>${escapeHtml(clean)}</strong></div><div class="mugs-review-row"><span>Letter style</span><strong>${escapeHtml(style)}</strong></div><div class="mugs-review-row"><span>Name</span><strong>${escapeHtml(flowersState.customerName||'')}</strong></div><div class="mugs-review-row"><span>Phone</span><strong>${escapeHtml(flowersState.customerPhone||'')}</strong></div><div class="mugs-review-row"><span>Email</span><strong>${escapeHtml(flowersState.customerEmail||'')}</strong></div><div class="mugs-review-row"><span>Pricing</span><strong>TEST MODE</strong></div>`;}
@@ -13792,10 +13804,15 @@ The full order and approved media remain stored with this project.`;
     };
 
     const flowersCtx=currentExperienceContext(p);
-    if(flowersCtx?.state!=='preview'){
-      backupOrderLocally(order);if(!order.testMode)captureCustomerFromOrder(order);
-      try{await put(STORE_ORDERS,order);}catch(err){console.warn('Flowers order save failed',err);alert(`The ${activityTermsForProject(p).lowerSingular} could not be saved. Please try again.`);return;}
-      if(flowersCtx?.state==='sea_trial')await recordExperienceSeaTrialSubmission(p,id);
+    if(flowersCtx?.state==='deployed'){
+      alert('Production flower-photo custody is not configured yet. Black Flag will not store this customer photo in browser order storage. Keep this vessel in testing until private production media storage is commissioned.');
+      return;
+    }
+    if(flowersCtx?.state==='sea_trial'){
+      const storedOrder=flowerOrderStorageRecord(order);
+      backupOrderLocally(storedOrder);
+      try{await put(STORE_ORDERS,storedOrder);}catch(err){console.warn('Flowers test order save failed',err);alert(`The ${activityTermsForProject(p).lowerSingular} test record could not be saved. Please try again.`);return;}
+      await recordExperienceSeaTrialSubmission(p,id);
     }
 
     flowersState.approvedPreviewData=approvedPreviewData;
@@ -13804,8 +13821,8 @@ The full order and approved media remain stored with this project.`;
     showFlowersScreen('done');
   }
 
-  window.addEventListener('pagehide',stopCamera);
-  window.addEventListener('beforeunload',stopCamera);
+  window.addEventListener('pagehide',()=>{stopCamera();purgeFlowersEphemeralMedia();});
+  window.addEventListener('beforeunload',()=>{stopCamera();purgeFlowersEphemeralMedia();});
 
 
   function drawCaptainBarChart(canvasId, labels, values, prefix=''){
@@ -16398,7 +16415,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
-    // BloomPick: a visible customer shell must not wait on storage or migrations
+    // BloomPrivacy: a visible customer shell must not wait on storage or migrations
     // for its controls. This also covers the sealed-preview early return below.
     // Per-root binding is idempotent; absent roots are not marked as bound.
     bindProjectTemplateShells();

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.18.4",
+  "build": "8.8.18.5",
   "release": "AdmiralKeel",
   "status": "active",
   "principles": [
