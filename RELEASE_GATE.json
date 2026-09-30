@@ -1,1753 +1,437 @@
 {
-  "schema": "dark-sky-release-gate-draftwatch-v1",
-  "build": "8.8.18.1",
-  "release": "DraftWatch",
+  "schema": "dark-sky-release-gate-bloomstart-v1",
+  "build": "8.8.18.2",
+  "release": "BloomStart",
   "pass": true,
-  "evidence_scope": "Isolated fixtures plus package checks, not full-site/native-iPad/server permission proof. Final report outside public deployment lists final extracted-byte tests.",
+  "evidence_scope": "Isolated customer/startup and inherited role/contract/module tests; not native iPad/full-site or production certification.",
   "native_field_acceptance": "pending",
-  "exact_reported_ipad_cause": "not-reproduced-in-ordinary-isolated-fixture",
   "prior_release_evidence": {
-    "schema": "dark-sky-release-gate-admiralkeel-v1",
-    "build": "8.8.18.0",
-    "release": "AdmiralKeel",
-    "generatedAt": "2026-09-27T21:31:00-04:00",
+    "schema": "dark-sky-release-gate-draftwatch-v1",
+    "build": "8.8.18.1",
+    "release": "DraftWatch",
     "pass": true,
-    "evidence_scope": "Isolated Chromium/module fixtures only. Source-level unit and display tests are not native iPad Safari or full-site navigation proof. Full site was previously policy-blocked and was not retried. No live service called.",
+    "evidence_scope": "Isolated fixtures plus package checks, not full-site/native-iPad/server permission proof. Final report outside public deployment lists final extracted-byte tests.",
     "native_field_acceptance": "pending",
     "exact_reported_ipad_cause": "not-reproduced-in-ordinary-isolated-fixture",
-    "suites": {
-      "entry": [
-        {
-          "result": "PASS",
-          "name": "baseline ordinary isolated entry opens: exact iPad failure is not reproduced"
-        },
-        {
-          "result": "PASS",
-          "name": "baseline loses entry after button-node redraw: modeled failure, not asserted iPad cause"
-        },
-        {
-          "result": "PASS",
-          "name": "redrawn button opens native modal via delegated handler"
-        },
-        {
-          "result": "PASS",
-          "name": "entry state records displayed workspace"
-        },
-        {
-          "result": "PASS",
-          "name": "existing verified directory populates after visible entry"
-        },
-        {
-          "result": "PASS",
-          "name": "heading focused without automatically focusing an input"
-        },
-        {
-          "result": "PASS",
-          "name": "underlying deck is inert during editing"
-        },
-        {
-          "result": "PASS",
-          "name": "Back to Command receives hit-testing above maximum-z-index deck"
-        },
-        {
-          "result": "PASS",
-          "name": "provider legal name remains blank"
-        },
-        {
-          "result": "PASS",
-          "name": "negotiated fee remains blank"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892 readable 18px form fields"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892 reachable return button and normal scrolling"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x768 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x768 readable 18px form fields"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x768 reachable return button and normal scrolling"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636 readable 18px form fields"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636 reachable return button and normal scrolling"
-        },
-        {
-          "result": "PASS",
-          "name": "768x1024 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "768x1024 readable 18px form fields"
-        },
-        {
-          "result": "PASS",
-          "name": "768x1024 reachable return button and normal scrolling"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844 readable 18px form fields"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844 reachable return button and normal scrolling"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568 readable 18px form fields"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568 reachable return button and normal scrolling"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390 readable 18px form fields"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390 reachable return button and normal scrolling"
-        },
-        {
-          "result": "PASS",
-          "name": "return removes modal and restores deck"
-        },
-        {
-          "result": "PASS",
-          "name": "focus returns to live entry control"
-        },
-        {
-          "result": "PASS",
-          "name": "redraw/reopen 1 succeeds once"
-        },
-        {
-          "result": "PASS",
-          "name": "redraw/reopen 2 succeeds once"
-        },
-        {
-          "result": "PASS",
-          "name": "redraw/reopen 3 succeeds once"
-        },
-        {
-          "result": "PASS",
-          "name": "repeated openings leave one button and one workspace"
-        },
-        {
-          "result": "PASS",
-          "name": "no-op native display gives durable explicit error"
-        },
-        {
-          "result": "PASS",
-          "name": "failed native display leaves deck usable"
-        },
-        {
-          "result": "PASS",
-          "name": "failed presentation does not request contract directory"
-        },
-        {
-          "result": "PASS",
-          "name": "explicit retry after display failure works"
-        },
-        {
-          "result": "PASS",
-          "name": "failed foreground check unwinds with visible error"
-        },
-        {
-          "result": "PASS",
-          "name": "slow read has visible progress and reachable return"
-        },
-        {
-          "result": "PASS",
-          "name": "session lock conceals native modal"
-        },
-        {
-          "result": "PASS",
-          "name": "late directory data cannot repopulate locked workspace"
-        },
-        {
-          "result": "PASS",
-          "name": "browser-generated touchscreen tap opens redrawn button"
-        },
-        {
-          "result": "PASS",
-          "name": "touch opening retains eligible Admiral account binding"
-        },
-        {
-          "result": "PASS",
-          "name": "no uncaught errors in tested display and session paths: []"
-        }
-      ],
-      "modal": [
-        {
-          "result": "PASS",
-          "name": "baseline creates the contract workspace after real button click"
-        },
-        {
-          "result": "PASS",
-          "name": "baseline leaves visually covering Admiral deck inert"
-        },
-        {
-          "result": "PASS",
-          "name": "baseline screenshot proves open workspace is painted behind Admiral deck"
-        },
-        {
-          "result": "PASS",
-          "name": "baseline measured overlay layers explain the visible no-action defect"
-        },
-        {
-          "result": "PASS",
-          "name": "one entrance is installed after late actual deck creation"
-        },
-        {
-          "result": "PASS",
-          "name": "no contract directory read before deliberate button action"
-        },
-        {
-          "result": "PASS",
-          "name": "real Contracts button opens native modal top layer"
-        },
-        {
-          "result": "PASS",
-          "name": "screenshot pixels prove contract workspace paints in front of Admiral deck"
-        },
-        {
-          "result": "PASS",
-          "name": "agreement heading is visibly rendered"
-        },
-        {
-          "result": "PASS",
-          "name": "opening focuses heading without opening a text keyboard"
-        },
-        {
-          "result": "PASS",
-          "name": "underlying deck remains interaction-disabled during drafting"
-        },
-        {
-          "result": "PASS",
-          "name": "directory read finishes through real shared transport"
-        },
-        {
-          "result": "PASS",
-          "name": "named exact vessel appears"
-        },
-        {
-          "result": "PASS",
-          "name": "Admiral program remains excluded from business drafting"
-        },
-        {
-          "result": "PASS",
-          "name": "no real party prefilled"
-        },
-        {
-          "result": "PASS",
-          "name": "no negotiated percentage prefilled"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892: no horizontal dialog overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892: 18px input text preserved"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892: normal modal vertical scrolling retained"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636: no horizontal dialog overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636: 18px input text preserved"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636: normal modal vertical scrolling retained"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844: no horizontal dialog overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844: 18px input text preserved"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844: normal modal vertical scrolling retained"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568: no horizontal dialog overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568: 18px input text preserved"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568: normal modal vertical scrolling retained"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390: no horizontal dialog overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390: 18px input text preserved"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390: normal modal vertical scrolling retained"
-        },
-        {
-          "result": "PASS",
-          "name": "trusted work in agreement dialog refreshes only idle countdown"
-        },
-        {
-          "result": "PASS",
-          "name": "draft activity does not extend maximum session age"
-        },
-        {
-          "result": "PASS",
-          "name": "synthetic activity cannot renew Admiral session"
-        },
-        {
-          "result": "PASS",
-          "name": "Back to Command closes and removes native top layer"
-        },
-        {
-          "result": "PASS",
-          "name": "Back to Command restores deck interaction"
-        },
-        {
-          "result": "PASS",
-          "name": "focus returns to original Contracts button"
-        },
-        {
-          "result": "PASS",
-          "name": "repeat entry reuses exactly one visible modal"
-        },
-        {
-          "result": "PASS",
-          "name": "Escape closes workspace through cleanup path"
-        },
-        {
-          "result": "PASS",
-          "name": "slow directory response leaves readable opening state"
-        },
-        {
-          "result": "PASS",
-          "name": "session lock closes modal immediately"
-        },
-        {
-          "result": "PASS",
-          "name": "late directory result cannot repopulate locked draft"
-        },
-        {
-          "result": "PASS",
-          "name": "display failure produces durable visible Command error"
-        },
-        {
-          "result": "PASS",
-          "name": "display failure never leaves deck frozen"
-        },
-        {
-          "result": "PASS",
-          "name": "deliberate retry recovers from failed display construction"
-        },
-        {
-          "result": "PASS",
-          "name": "malformed directory has visible failure not empty success"
-        },
-        {
-          "result": "PASS",
-          "name": "directory failure cannot save unscoped draft"
-        },
-        {
-          "result": "PASS",
-          "name": "server role denial conceals agreement workspace"
-        },
-        {
-          "result": "PASS",
-          "name": "role failure remains visible after modal cleanup"
-        },
-        {
-          "result": "PASS",
-          "name": "idle deadline still closes draft after inactivity"
-        },
-        {
-          "result": "PASS",
-          "name": "absolute 60-minute deadline still closes modal"
-        },
-        {
-          "result": "PASS",
-          "name": "test dispatched only read calls, no appointment/fee/commission mutation"
-        },
-        {
-          "result": "PASS",
-          "name": "no uncaught errors across exercised real-module modal paths: []"
-        }
-      ],
-      "charter": [
-        {
-          "result": "PASS",
-          "name": "mount makes no protected network call before authenticated opening"
-        },
-        {
-          "result": "PASS",
-          "name": "one contracts entrance mounts on existing deck"
-        },
-        {
-          "result": "PASS",
-          "name": "repeated deck events do not duplicate entrance"
-        },
-        {
-          "result": "PASS",
-          "name": "PIN/session-ineligible cannot open agreement editor"
-        },
-        {
-          "result": "PASS",
-          "name": "authenticated Admiral opens drafting workspace"
-        },
-        {
-          "result": "PASS",
-          "name": "acting Admiral account is visible"
-        },
-        {
-          "result": "PASS",
-          "name": "underlying deck cannot receive interactions while drafting dialog open"
-        },
-        {
-          "result": "PASS",
-          "name": "business vessels plus explicit planned option, no Admiral program"
-        },
-        {
-          "result": "PASS",
-          "name": "no save without exact target"
-        },
-        {
-          "result": "PASS",
-          "name": "exact vessel scope stays visible"
-        },
-        {
-          "result": "PASS",
-          "name": "no automatic percentage or free-charge default"
-        },
-        {
-          "result": "PASS",
-          "name": "no invented provider legal entity"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892: no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892: 18px input text retained"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892: buttons at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "1366x892: ordinary vertical scroll allowed"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x768: no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x768: 18px input text retained"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x768: buttons at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x768: ordinary vertical scroll allowed"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636: no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636: 18px input text retained"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636: buttons at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "1024x636: ordinary vertical scroll allowed"
-        },
-        {
-          "result": "PASS",
-          "name": "768x1024: no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "768x1024: 18px input text retained"
-        },
-        {
-          "result": "PASS",
-          "name": "768x1024: buttons at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "768x1024: ordinary vertical scroll allowed"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844: no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844: 18px input text retained"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844: buttons at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "390x844: ordinary vertical scroll allowed"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568: no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568: 18px input text retained"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568: buttons at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "320x568: ordinary vertical scroll allowed"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390: no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390: 18px input text retained"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390: buttons at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "844x390: ordinary vertical scroll allowed"
-        },
-        {
-          "result": "PASS",
-          "name": "typed text stays in intended field"
-        },
-        {
-          "result": "PASS",
-          "name": "platform-only fee uses covered $500 at 5% = $25"
-        },
-        {
-          "result": "PASS",
-          "name": "all-sales fee includes platform and in-person without duplication"
-        },
-        {
-          "result": "PASS",
-          "name": "explicit zero percent is supported"
-        },
-        {
-          "result": "PASS",
-          "name": "custom sales channels isolated in fee preview"
-        },
-        {
-          "result": "PASS",
-          "name": "calculator and drafting send no server mutation"
-        },
-        {
-          "result": "PASS",
-          "name": "percentage converts exactly to basis points"
-        },
-        {
-          "result": "PASS",
-          "name": "half-cent rounding is deterministic once per illustration"
-        },
-        {
-          "result": "PASS",
-          "name": "invalid percentage rejected: '-1'"
-        },
-        {
-          "result": "PASS",
-          "name": "invalid percentage rejected: '100.01'"
-        },
-        {
-          "result": "PASS",
-          "name": "invalid percentage rejected: '1e2'"
-        },
-        {
-          "result": "PASS",
-          "name": "invalid percentage rejected: '5.999'"
-        },
-        {
-          "result": "PASS",
-          "name": "invalid percentage rejected: 'NaN'"
-        },
-        {
-          "result": "PASS",
-          "name": "invalid percentage rejected: ''"
-        },
-        {
-          "result": "PASS",
-          "name": "invalid imported date reports validation without uncaught error"
-        },
-        {
-          "result": "PASS",
-          "name": "device draft save independently reads matching payload"
-        },
-        {
-          "result": "PASS",
-          "name": "second local save appends; no earlier snapshot overwritten"
-        },
-        {
-          "result": "PASS",
-          "name": "storage error cannot report saved success"
-        },
-        {
-          "result": "PASS",
-          "name": "export has explicit private-draft schema"
-        },
-        {
-          "result": "PASS",
-          "name": "export never claims executed or legally verified"
-        },
-        {
-          "result": "PASS",
-          "name": "negotiated rate preserved in export"
-        },
-        {
-          "result": "PASS",
-          "name": "export bound to exact vessel"
-        },
-        {
-          "result": "PASS",
-          "name": "missing required legal fields are surfaced"
-        },
-        {
-          "result": "PASS",
-          "name": "unconnected signing cannot send an envelope"
-        },
-        {
-          "result": "PASS",
-          "name": "local draft cannot enable commission or fees"
-        },
-        {
-          "result": "PASS",
-          "name": "printable agreement remains draft for legal review"
-        },
-        {
-          "result": "PASS",
-          "name": "complete schedules and separate capacity signature blocks exported"
-        },
-        {
-          "result": "PASS",
-          "name": "draft protects ownership and Captain guarantee boundaries"
-        },
-        {
-          "result": "PASS",
-          "name": "separate optional electronic-consent requirement included"
-        },
-        {
-          "result": "PASS",
-          "name": "fingerprinting an arbitrary PDF cannot verify signatures"
-        },
-        {
-          "result": "PASS",
-          "name": "file evidence cannot open production commissioning"
-        },
-        {
-          "result": "PASS",
-          "name": "portable evidence disclaims signer/custody verification"
-        },
-        {
-          "result": "PASS",
-          "name": "material rate edit invalidates earlier evidence association"
-        },
-        {
-          "result": "PASS",
-          "name": "revision advances only after finalized draft snapshot is edited"
-        },
-        {
-          "result": "PASS",
-          "name": "new revision needs fresh snapshot before evidence association"
-        },
-        {
-          "result": "PASS",
-          "name": "switching vessels does not copy private contract fields"
-        },
-        {
-          "result": "PASS",
-          "name": "cross-vessel draft import rejected"
-        },
-        {
-          "result": "PASS",
-          "name": "same Admiral and vessel reloads local draft"
-        },
-        {
-          "result": "PASS",
-          "name": "edited terms with stale fingerprint rejected"
-        },
-        {
-          "result": "PASS",
-          "name": "matching import does not trust execution status"
-        },
-        {
-          "result": "PASS",
-          "name": "matching imported fields restored"
-        },
-        {
-          "result": "PASS",
-          "name": "planned ship draft supported before a registry entry exists"
-        },
-        {
-          "result": "PASS",
-          "name": "planned draft creates no remote business record"
-        },
-        {
-          "result": "PASS",
-          "name": "untrusted terms are escaped in generated document"
-        },
-        {
-          "result": "PASS",
-          "name": "close returns to Command without a permission change"
-        },
-        {
-          "result": "PASS",
-          "name": "closing restores deck interactions"
-        },
-        {
-          "result": "PASS",
-          "name": "local saved drafts are separated by Admiral account and vessel"
-        },
-        {
-          "result": "PASS",
-          "name": "session end immediately conceals agreement workspace"
-        },
-        {
-          "result": "PASS",
-          "name": "session end clears unexported form values"
-        },
-        {
-          "result": "PASS",
-          "name": "late directory reply after lock cannot repopulate the draft dialog"
-        },
-        {
-          "result": "PASS",
-          "name": "server authority denial closes workspace rather than permitting drafts"
-        },
-        {
-          "result": "PASS",
-          "name": "new drafting module has no uncaught browser errors: []"
-        }
-      ],
-      "integration": [
-        {
-          "result": "PASS",
-          "name": "whole Captain module remains lazy before gate entry"
-        },
-        {
-          "result": "PASS",
-          "name": "actual gate entry constructs Admiral deck after startup"
-        },
-        {
-          "result": "PASS",
-          "name": "Contracts and Services mounted by actual late deck creation"
-        },
-        {
-          "result": "PASS",
-          "name": "commercial commissioning notice exists in actual station"
-        },
-        {
-          "result": "PASS",
-          "name": "existing appointment station still mounts"
-        },
-        {
-          "result": "PASS",
-          "name": "new drafting directory not loaded before account sign-in"
-        },
-        {
-          "result": "PASS",
-          "name": "new drafting workspace opens alongside complete Captain module with simulated Admiral"
-        },
-        {
-          "result": "PASS",
-          "name": "exact simulated registry identity reaches full-module workspace"
-        },
-        {
-          "result": "PASS",
-          "name": "full-module return conceals drafting surface"
-        },
-        {
-          "result": "PASS",
-          "name": "session ticks do not duplicate drafting entrance"
-        },
-        {
-          "result": "PASS",
-          "name": "pre-preview appointment issue still disabled"
-        },
-        {
-          "result": "PASS",
-          "name": "departure remains disabled in full integrated module"
-        },
-        {
-          "result": "PASS",
-          "name": "new business issue handler refuses regardless of DOM disabled flag"
-        },
-        {
-          "result": "PASS",
-          "name": "held business handler dispatches no commission command"
-        },
-        {
-          "result": "PASS",
-          "name": "fleet-service commission requires executed agreement too"
-        },
-        {
-          "result": "PASS",
-          "name": "internal program still follows original preview requirement rather than commercial block"
-        },
-        {
-          "result": "PASS",
-          "name": "departure handler refuses even if button manually enabled"
-        },
-        {
-          "result": "PASS",
-          "name": "no departure RPC dispatched from updated client"
-        },
-        {
-          "result": "PASS",
-          "name": "no local flag certifies signed agreement"
-        },
-        {
-          "result": "PASS",
-          "name": "no uncaught integrated Captain-module errors: []"
-        }
-      ],
-      "captain": [
-        {
-          "result": "PASS",
-          "name": "named BBS sign-in before credentials"
-        },
-        {
-          "result": "PASS",
-          "name": "pre-auth identity source is explicit"
-        },
-        {
-          "result": "PASS",
-          "name": "sign-in browser title names task"
-        },
-        {
-          "result": "PASS",
-          "name": "no protected network request before credentials"
-        },
-        {
-          "result": "PASS",
-          "name": "credentials never prefilled"
-        },
-        {
-          "result": "PASS",
-          "name": "sign-in landscape no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "sign-in landscape input text at least 18px"
-        },
-        {
-          "result": "PASS",
-          "name": "sign-in landscape input/button targets at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "server-checked account is persistently visible"
-        },
-        {
-          "result": "PASS",
-          "name": "acting role and vessel limit visible"
-        },
-        {
-          "result": "PASS",
-          "name": "staging remains visible"
-        },
-        {
-          "result": "PASS",
-          "name": "full report ending retained"
-        },
-        {
-          "result": "PASS",
-          "name": "full current-work character counter"
-        },
-        {
-          "result": "PASS",
-          "name": "accepted entry sends no new acceptance"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1366x892 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1366x892 input text at least 18px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1366x892 input/button targets at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "landscape full station action fits"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1024x636 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1024x636 input text at least 18px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1024x636 input/button targets at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1024x636 publish fits"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1024x768 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1024x768 input text at least 18px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1024x768 input/button targets at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 1024x768 publish fits"
-        },
-        {
-          "result": "PASS",
-          "name": "station 768x1024 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "station 768x1024 input text at least 18px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 768x1024 input/button targets at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 390x844 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "station 390x844 input text at least 18px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 390x844 input/button targets at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 320x568 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "station 320x568 input text at least 18px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 320x568 input/button targets at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 844x390 no horizontal overflow"
-        },
-        {
-          "result": "PASS",
-          "name": "station 844x390 input text at least 18px"
-        },
-        {
-          "result": "PASS",
-          "name": "station 844x390 input/button targets at least 44px"
-        },
-        {
-          "result": "PASS",
-          "name": "duplicate publish event contained"
-        },
-        {
-          "result": "PASS",
-          "name": "exact project and all submitted text preserved in request"
-        },
-        {
-          "result": "PASS",
-          "name": "publish receipt retained across independent readback"
-        },
-        {
-          "result": "PASS",
-          "name": "own roster is explicit destination"
-        },
-        {
-          "result": "PASS",
-          "name": "only server-returned candidate vessel listed"
-        },
-        {
-          "result": "PASS",
-          "name": "candidate roster reads no Admiral data"
-        },
-        {
-          "result": "PASS",
-          "name": "explicit vessel choice sets exact route"
-        },
-        {
-          "result": "PASS",
-          "name": "roster selection does not repeat acceptance"
-        },
-        {
-          "result": "PASS",
-          "name": "sign-out conceals candidate identity and protected work"
-        },
-        {
-          "result": "PASS",
-          "name": "candidate session key removed"
-        },
-        {
-          "result": "PASS",
-          "name": "sign-out targets this session only"
-        },
-        {
-          "result": "PASS",
-          "name": "normal routes have no uncaught JS errors"
-        },
-        {
-          "result": "PASS",
-          "name": "Grizzly name visible before sign-in"
-        },
-        {
-          "result": "PASS",
-          "name": "wrong-vessel message names destination"
-        },
-        {
-          "result": "PASS",
-          "name": "denial identifies signed-in account"
-        },
-        {
-          "result": "PASS",
-          "name": "denial is not misleading password form"
-        },
-        {
-          "result": "PASS",
-          "name": "wrong vessel does not trigger order read"
-        },
-        {
-          "result": "PASS",
-          "name": "no unauthorized operation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "denied user can return to assigned vessel without repeating password"
-        },
-        {
-          "result": "PASS",
-          "name": "no project routes to selector, not first appointment"
-        },
-        {
-          "result": "PASS",
-          "name": "rejectLogin cannot display protected station"
-        },
-        {
-          "result": "PASS",
-          "name": "rejectLogin cannot display mutation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "rejectLogin no uncaught errors"
-        },
-        {
-          "result": "PASS",
-          "name": "noAppointments cannot display protected station"
-        },
-        {
-          "result": "PASS",
-          "name": "noAppointments cannot display mutation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "noAppointments no uncaught errors"
-        },
-        {
-          "result": "PASS",
-          "name": "deny cannot display protected station"
-        },
-        {
-          "result": "PASS",
-          "name": "deny cannot display mutation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "deny no uncaught errors"
-        },
-        {
-          "result": "PASS",
-          "name": "wrongScope cannot display protected station"
-        },
-        {
-          "result": "PASS",
-          "name": "wrongScope cannot display mutation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "wrongScope no uncaught errors"
-        },
-        {
-          "result": "PASS",
-          "name": "badOrders cannot display protected station"
-        },
-        {
-          "result": "PASS",
-          "name": "badOrders cannot display mutation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "badOrders no uncaught errors"
-        },
-        {
-          "result": "PASS",
-          "name": "badWatch cannot display protected station"
-        },
-        {
-          "result": "PASS",
-          "name": "badWatch cannot display mutation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "badWatch no uncaught errors"
-        },
-        {
-          "result": "PASS",
-          "name": "badAccountRows cannot display protected station"
-        },
-        {
-          "result": "PASS",
-          "name": "badAccountRows cannot display mutation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "badAccountRows no uncaught errors"
-        },
-        {
-          "result": "PASS",
-          "name": "changedUser cannot display protected station"
-        },
-        {
-          "result": "PASS",
-          "name": "changedUser cannot display mutation controls"
-        },
-        {
-          "result": "PASS",
-          "name": "changedUser no uncaught errors"
-        },
-        {
-          "result": "PASS",
-          "name": "duplicate destination rejected"
-        },
-        {
-          "result": "PASS",
-          "name": "invalid route has no credentials or protected reads"
-        },
-        {
-          "result": "PASS",
-          "name": "hostile destination rejected as text"
-        },
-        {
-          "result": "PASS",
-          "name": "unknown identity not fabricated from query"
-        },
-        {
-          "result": "PASS",
-          "name": "unknown destination explained"
-        },
-        {
-          "result": "PASS",
-          "name": "pending view names account and candidate role"
-        },
-        {
-          "result": "PASS",
-          "name": "single acceptance with station readback"
-        },
-        {
-          "result": "PASS",
-          "name": "accepted station removes Accept control"
-        },
-        {
-          "result": "PASS",
-          "name": "writeUnavailable write marked unconfirmed"
-        },
-        {
-          "result": "PASS",
-          "name": "writeUnavailable recheck never replays write"
-        },
-        {
-          "result": "PASS",
-          "name": "badWriteScope write marked unconfirmed"
-        },
-        {
-          "result": "PASS",
-          "name": "badWriteScope recheck never replays write"
-        },
-        {
-          "result": "PASS",
-          "name": "late sign-in reply cannot open station"
-        },
-        {
-          "result": "PASS",
-          "name": "late sign-in reply cannot restore session"
-        },
-        {
-          "result": "PASS",
-          "name": "late orders after read deadline remain concealed"
-        },
-        {
-          "result": "PASS",
-          "name": "read timeout does not repeat acceptance"
-        },
-        {
-          "result": "PASS",
-          "name": "long queue preserves every record"
-        },
-        {
-          "result": "PASS",
-          "name": "untrusted report text stays field text"
-        },
-        {
-          "result": "PASS",
-          "name": "untrusted order text escaped"
-        },
-        {
-          "result": "PASS",
-          "name": "status update exact-vessel status-only payload preserved"
-        },
-        {
-          "result": "PASS",
-          "name": "status receipt persists"
-        }
-      ],
-      "watch": [
-        {
-          "result": "PASS",
-          "name": "locked Watch does not request fleet records"
-        },
-        {
-          "result": "PASS",
-          "name": "unverified Watch workspace hidden"
-        },
-        {
-          "result": "PASS",
-          "name": "authenticated fixture Watch retains both vessels"
-        },
-        {
-          "result": "PASS",
-          "name": "Bootstrap fallback remains separate from Fleet Core"
-        },
-        {
-          "result": "PASS",
-          "name": "unassigned vessel opens explicitly labelled observation"
-        },
-        {
-          "result": "PASS",
-          "name": "Watch header cannot cover scrolling cards"
-        },
-        {
-          "result": "PASS",
-          "name": "overview preserves selected exact vessel"
-        },
-        {
-          "result": "PASS",
-          "name": "observation remains visibly read-only"
-        },
-        {
-          "result": "PASS",
-          "name": "uninstalled operating service explicitly pending"
-        },
-        {
-          "result": "PASS",
-          "name": "Fleet Captain operation cannot be invoked from client-only label"
-        },
-        {
-          "result": "PASS",
-          "name": "no synthetic membership workaround promised"
-        },
-        {
-          "result": "PASS",
-          "name": "Captain Watch report retained in scoped Admiral overview"
-        },
-        {
-          "result": "PASS",
-          "name": "report source retained"
-        },
-        {
-          "result": "PASS",
-          "name": "Watch close removes overlay"
-        },
-        {
-          "result": "PASS",
-          "name": "modified Watch module has no uncaught fixture errors"
-        }
-      ],
-      "transport": [
-        {
-          "result": "PASS",
-          "name": "existing Owner login still retained"
-        },
-        {
-          "result": "PASS",
-          "name": "existing Admiral account and role check succeeds"
-        },
-        {
-          "result": "PASS",
-          "name": "Admiral 15/60 browser policy unchanged"
-        },
-        {
-          "result": "PASS",
-          "name": "server timeout never inferred from browser guard"
-        },
-        {
-          "result": "PASS",
-          "name": "guarded Captain user response verified"
-        },
-        {
-          "result": "PASS",
-          "name": "Captain login preserves Owner and Admiral session keys"
-        },
-        {
-          "result": "PASS",
-          "name": "guarded sign-out clears candidate key"
-        },
-        {
-          "result": "PASS",
-          "name": "candidate sign-out leaves other offices untouched"
-        },
-        {
-          "result": "PASS",
-          "name": "candidate sign-out requests session-local scope"
-        },
-        {
-          "result": "PASS",
-          "name": "cancelled candidate login refuses late auth reply"
-        },
-        {
-          "result": "PASS",
-          "name": "late auth reply cannot restore cleared key"
-        },
-        {
-          "result": "PASS",
-          "name": "changed account identity rejected"
-        },
-        {
-          "result": "PASS",
-          "name": "identity mismatch clears only candidate session"
-        },
-        {
-          "result": "PASS",
-          "name": "identity mismatch does not clear Owner"
-        },
-        {
-          "result": "PASS",
-          "name": "Admiral end still terminates local reuse"
-        },
-        {
-          "result": "PASS",
-          "name": "Admiral end leaves Owner client session independent"
-        }
-      ],
-      "admiral_keel": [
-        {
-          "result": "PASS",
-          "name": "Engine states commissioned Admiral office without granting session access"
-        },
-        {
-          "result": "PASS",
-          "name": "Admiral gate distinguishes retained rank from secure workspace session"
-        },
-        {
-          "result": "PASS",
-          "name": "Command Deck identifies commissioned Admiral after server verification"
-        },
-        {
-          "result": "PASS",
-          "name": "session lock copy retains rank while requiring re-authentication"
-        },
-        {
-          "result": "PASS",
-          "name": "Contracts session warning clears after a newly reusable verified session"
-        },
-        {
-          "result": "PASS",
-          "name": "single-line paste hygiene trims edge whitespace only"
-        },
-        {
-          "result": "PASS",
-          "name": "contract scenario zero selects on focus and blank restores zero"
-        },
-        {
-          "result": "PASS",
-          "name": "negotiated percentage remains blank by default"
-        },
-        {
-          "result": "PASS",
-          "name": "existing private draft schema and CG-1 template remain compatible"
-        },
-        {
-          "result": "PASS",
-          "name": "Fleet Captain server operating service remains disabled"
-        }
-      ]
-    },
-    "historical_release_evidence": {
-      "schema": "dark-sky-release-gate-charterbridge-v1",
-      "build": "8.8.17.22",
-      "release": "CharterBridge",
-      "generatedAt": "2026-09-27T17:01:07+00:00",
+    "prior_release_evidence": {
+      "schema": "dark-sky-release-gate-admiralkeel-v1",
+      "build": "8.8.18.0",
+      "release": "AdmiralKeel",
+      "generatedAt": "2026-09-27T21:31:00-04:00",
       "pass": true,
-      "evidence_scope": "Isolated client/module assertions only; real UI button/layer checks, actual shipped transport with synthetic service replies and browser storage fixtures. Not native Safari, server permission, signature or production-handoff certification.",
+      "evidence_scope": "Isolated Chromium/module fixtures only. Source-level unit and display tests are not native iPad Safari or full-site navigation proof. Full site was previously policy-blocked and was not retried. No live service called.",
+      "native_field_acceptance": "pending",
+      "exact_reported_ipad_cause": "not-reproduced-in-ordinary-isolated-fixture",
       "suites": {
-        "foreground": [
+        "entry": [
           {
             "result": "PASS",
-            "name": "deck is created lazily after startup, not assumed present"
+            "name": "baseline ordinary isolated entry opens: exact iPad failure is not reproduced"
           },
           {
             "result": "PASS",
-            "name": "real transport with fixture replies verifies Admiral sign-in"
+            "name": "baseline loses entry after button-node redraw: modeled failure, not asserted iPad cause"
           },
           {
             "result": "PASS",
-            "name": "actual gate handler opens Professional Command"
+            "name": "redrawn button opens native modal via delegated handler"
           },
           {
             "result": "PASS",
-            "name": "no contract directory read before button click"
+            "name": "entry state records displayed workspace"
           },
           {
             "result": "PASS",
-            "name": "actual tap paints agreement above the complete Admiral deck"
+            "name": "existing verified directory populates after visible entry"
           },
           {
             "result": "PASS",
-            "name": "security gate remains above agreement layer"
+            "name": "heading focused without automatically focusing an input"
           },
           {
             "result": "PASS",
-            "name": "background Command Deck is not interactive while agreement is open"
+            "name": "underlying deck is inert during editing"
           },
           {
             "result": "PASS",
-            "name": "real session identity is visible in drafting workspace"
+            "name": "Back to Command receives hit-testing above maximum-z-index deck"
           },
           {
             "result": "PASS",
-            "name": "foreground field receives real keyboard input"
+            "name": "provider legal name remains blank"
           },
           {
             "result": "PASS",
-            "name": "Back to Command removes modal and restores background"
+            "name": "negotiated fee remains blank"
           },
           {
             "result": "PASS",
-            "name": "return restores focus to the originating control"
+            "name": "1366x892 no horizontal overflow"
           },
           {
             "result": "PASS",
-            "name": "1366x892: agreement paints in foreground"
+            "name": "1366x892 readable 18px form fields"
           },
           {
             "result": "PASS",
-            "name": "1366x892: no horizontal overflow"
+            "name": "1366x892 reachable return button and normal scrolling"
           },
           {
             "result": "PASS",
-            "name": "1366x892: input is at least 18px"
+            "name": "1024x768 no horizontal overflow"
           },
           {
             "result": "PASS",
-            "name": "1366x892: real Close and Open controls stay usable"
+            "name": "1024x768 readable 18px form fields"
           },
           {
             "result": "PASS",
-            "name": "1024x768: agreement paints in foreground"
+            "name": "1024x768 reachable return button and normal scrolling"
           },
           {
             "result": "PASS",
-            "name": "1024x768: no horizontal overflow"
+            "name": "1024x636 no horizontal overflow"
           },
           {
             "result": "PASS",
-            "name": "1024x768: input is at least 18px"
+            "name": "1024x636 readable 18px form fields"
           },
           {
             "result": "PASS",
-            "name": "1024x768: real Close and Open controls stay usable"
+            "name": "1024x636 reachable return button and normal scrolling"
           },
           {
             "result": "PASS",
-            "name": "1024x636: agreement paints in foreground"
+            "name": "768x1024 no horizontal overflow"
           },
           {
             "result": "PASS",
-            "name": "1024x636: no horizontal overflow"
+            "name": "768x1024 readable 18px form fields"
           },
           {
             "result": "PASS",
-            "name": "1024x636: input is at least 18px"
+            "name": "768x1024 reachable return button and normal scrolling"
           },
           {
             "result": "PASS",
-            "name": "1024x636: real Close and Open controls stay usable"
+            "name": "390x844 no horizontal overflow"
           },
           {
             "result": "PASS",
-            "name": "768x1024: agreement paints in foreground"
+            "name": "390x844 readable 18px form fields"
           },
           {
             "result": "PASS",
-            "name": "768x1024: no horizontal overflow"
+            "name": "390x844 reachable return button and normal scrolling"
           },
           {
             "result": "PASS",
-            "name": "768x1024: input is at least 18px"
+            "name": "320x568 no horizontal overflow"
           },
           {
             "result": "PASS",
-            "name": "768x1024: real Close and Open controls stay usable"
+            "name": "320x568 readable 18px form fields"
           },
           {
             "result": "PASS",
-            "name": "390x844: agreement paints in foreground"
+            "name": "320x568 reachable return button and normal scrolling"
           },
           {
             "result": "PASS",
-            "name": "390x844: no horizontal overflow"
+            "name": "844x390 no horizontal overflow"
           },
           {
             "result": "PASS",
-            "name": "390x844: input is at least 18px"
+            "name": "844x390 readable 18px form fields"
           },
           {
             "result": "PASS",
-            "name": "390x844: real Close and Open controls stay usable"
+            "name": "844x390 reachable return button and normal scrolling"
           },
           {
             "result": "PASS",
-            "name": "320x568: agreement paints in foreground"
+            "name": "return removes modal and restores deck"
           },
           {
             "result": "PASS",
-            "name": "320x568: no horizontal overflow"
+            "name": "focus returns to live entry control"
           },
           {
             "result": "PASS",
-            "name": "320x568: input is at least 18px"
+            "name": "redraw/reopen 1 succeeds once"
           },
           {
             "result": "PASS",
-            "name": "320x568: real Close and Open controls stay usable"
+            "name": "redraw/reopen 2 succeeds once"
           },
           {
             "result": "PASS",
-            "name": "844x390: agreement paints in foreground"
+            "name": "redraw/reopen 3 succeeds once"
           },
           {
             "result": "PASS",
-            "name": "844x390: no horizontal overflow"
+            "name": "repeated openings leave one button and one workspace"
           },
           {
             "result": "PASS",
-            "name": "844x390: input is at least 18px"
+            "name": "no-op native display gives durable explicit error"
           },
           {
             "result": "PASS",
-            "name": "844x390: real Close and Open controls stay usable"
+            "name": "failed native display leaves deck usable"
           },
           {
             "result": "PASS",
-            "name": "trusted contract editing refreshes only the existing idle clock"
+            "name": "failed presentation does not request contract directory"
           },
           {
             "result": "PASS",
-            "name": "contract editing never resets full sign-in time"
+            "name": "explicit retry after display failure works"
           },
           {
             "result": "PASS",
-            "name": "active drafting survives 16 minutes since login with recent real activity"
+            "name": "failed foreground check unwinds with visible error"
           },
           {
             "result": "PASS",
-            "name": "synthetic key events do not renew idle clock"
+            "name": "slow read has visible progress and reachable return"
           },
           {
             "result": "PASS",
-            "name": "one-hour maximum still closes active contract workspace"
+            "name": "session lock conceals native modal"
           },
           {
             "result": "PASS",
-            "name": "session closure releases background inert state"
+            "name": "late directory data cannot repopulate locked workspace"
           },
           {
             "result": "PASS",
-            "name": "maximum age clears Admiral local session as before"
+            "name": "browser-generated touchscreen tap opens redrawn button"
           },
           {
             "result": "PASS",
-            "name": "security gate replaces agreement after expiry"
+            "name": "touch opening retains eligible Admiral account binding"
           },
           {
             "result": "PASS",
-            "name": "setup failure leaves visible actionable message on Command Deck"
-          },
-          {
-            "result": "PASS",
-            "name": "setup failure cannot trap Command Deck"
-          },
-          {
-            "result": "PASS",
-            "name": "failed setup performs no contract directory dispatch"
-          },
-          {
-            "result": "PASS",
-            "name": "explicit retry after setup error opens once"
-          },
-          {
-            "result": "PASS",
-            "name": "retry leaves one workspace and one entrance"
-          },
-          {
-            "result": "PASS",
-            "name": "slow directory request shows visible progress"
-          },
-          {
-            "result": "PASS",
-            "name": "loading state is foreground rather than covered by deck"
-          },
-          {
-            "result": "PASS",
-            "name": "closing while loading suppresses late directory result"
-          },
-          {
-            "result": "PASS",
-            "name": "directory failure is visible, not silent"
-          },
-          {
-            "result": "PASS",
-            "name": "failed directory read retains visible Back to Command"
-          },
-          {
-            "result": "PASS",
-            "name": "hung directory reaches a visible bounded timeout"
-          },
-          {
-            "result": "PASS",
-            "name": "late directory reply cannot replace timeout with success"
-          },
-          {
-            "result": "PASS",
-            "name": "server authority rejection conceals contract"
-          },
-          {
-            "result": "PASS",
-            "name": "server rejection routes back to existing security gate"
-          },
-          {
-            "result": "PASS",
-            "name": "legacy localStorage quota failure does not hide agreement entrance"
-          },
-          {
-            "result": "PASS",
-            "name": "Send for Signatures remains disabled"
-          },
-          {
-            "result": "PASS",
-            "name": "commercial commissioning and fee activation remain disabled"
-          },
-          {
-            "result": "PASS",
-            "name": "draft does not certify server contract execution"
-          },
-          {
-            "result": "PASS",
-            "name": "contract entrance also paints above ceremonial mode"
-          },
-          {
-            "result": "PASS",
-            "name": "manual Lock still opens normal PIN gate"
-          },
-          {
-            "result": "PASS",
-            "name": "15-minute inactivity still closes contract and returns to security"
-          },
-          {
-            "result": "PASS",
-            "name": "no uncaught full Captain and real transport module errors"
+            "name": "no uncaught errors in tested display and session paths: []"
           }
         ],
-        "agreements": [
+        "modal": [
+          {
+            "result": "PASS",
+            "name": "baseline creates the contract workspace after real button click"
+          },
+          {
+            "result": "PASS",
+            "name": "baseline leaves visually covering Admiral deck inert"
+          },
+          {
+            "result": "PASS",
+            "name": "baseline screenshot proves open workspace is painted behind Admiral deck"
+          },
+          {
+            "result": "PASS",
+            "name": "baseline measured overlay layers explain the visible no-action defect"
+          },
+          {
+            "result": "PASS",
+            "name": "one entrance is installed after late actual deck creation"
+          },
+          {
+            "result": "PASS",
+            "name": "no contract directory read before deliberate button action"
+          },
+          {
+            "result": "PASS",
+            "name": "real Contracts button opens native modal top layer"
+          },
+          {
+            "result": "PASS",
+            "name": "screenshot pixels prove contract workspace paints in front of Admiral deck"
+          },
+          {
+            "result": "PASS",
+            "name": "agreement heading is visibly rendered"
+          },
+          {
+            "result": "PASS",
+            "name": "opening focuses heading without opening a text keyboard"
+          },
+          {
+            "result": "PASS",
+            "name": "underlying deck remains interaction-disabled during drafting"
+          },
+          {
+            "result": "PASS",
+            "name": "directory read finishes through real shared transport"
+          },
+          {
+            "result": "PASS",
+            "name": "named exact vessel appears"
+          },
+          {
+            "result": "PASS",
+            "name": "Admiral program remains excluded from business drafting"
+          },
+          {
+            "result": "PASS",
+            "name": "no real party prefilled"
+          },
+          {
+            "result": "PASS",
+            "name": "no negotiated percentage prefilled"
+          },
+          {
+            "result": "PASS",
+            "name": "1366x892: no horizontal dialog overflow"
+          },
+          {
+            "result": "PASS",
+            "name": "1366x892: 18px input text preserved"
+          },
+          {
+            "result": "PASS",
+            "name": "1366x892: normal modal vertical scrolling retained"
+          },
+          {
+            "result": "PASS",
+            "name": "1024x636: no horizontal dialog overflow"
+          },
+          {
+            "result": "PASS",
+            "name": "1024x636: 18px input text preserved"
+          },
+          {
+            "result": "PASS",
+            "name": "1024x636: normal modal vertical scrolling retained"
+          },
+          {
+            "result": "PASS",
+            "name": "390x844: no horizontal dialog overflow"
+          },
+          {
+            "result": "PASS",
+            "name": "390x844: 18px input text preserved"
+          },
+          {
+            "result": "PASS",
+            "name": "390x844: normal modal vertical scrolling retained"
+          },
+          {
+            "result": "PASS",
+            "name": "320x568: no horizontal dialog overflow"
+          },
+          {
+            "result": "PASS",
+            "name": "320x568: 18px input text preserved"
+          },
+          {
+            "result": "PASS",
+            "name": "320x568: normal modal vertical scrolling retained"
+          },
+          {
+            "result": "PASS",
+            "name": "844x390: no horizontal dialog overflow"
+          },
+          {
+            "result": "PASS",
+            "name": "844x390: 18px input text preserved"
+          },
+          {
+            "result": "PASS",
+            "name": "844x390: normal modal vertical scrolling retained"
+          },
+          {
+            "result": "PASS",
+            "name": "trusted work in agreement dialog refreshes only idle countdown"
+          },
+          {
+            "result": "PASS",
+            "name": "draft activity does not extend maximum session age"
+          },
+          {
+            "result": "PASS",
+            "name": "synthetic activity cannot renew Admiral session"
+          },
+          {
+            "result": "PASS",
+            "name": "Back to Command closes and removes native top layer"
+          },
+          {
+            "result": "PASS",
+            "name": "Back to Command restores deck interaction"
+          },
+          {
+            "result": "PASS",
+            "name": "focus returns to original Contracts button"
+          },
+          {
+            "result": "PASS",
+            "name": "repeat entry reuses exactly one visible modal"
+          },
+          {
+            "result": "PASS",
+            "name": "Escape closes workspace through cleanup path"
+          },
+          {
+            "result": "PASS",
+            "name": "slow directory response leaves readable opening state"
+          },
+          {
+            "result": "PASS",
+            "name": "session lock closes modal immediately"
+          },
+          {
+            "result": "PASS",
+            "name": "late directory result cannot repopulate locked draft"
+          },
+          {
+            "result": "PASS",
+            "name": "display failure produces durable visible Command error"
+          },
+          {
+            "result": "PASS",
+            "name": "display failure never leaves deck frozen"
+          },
+          {
+            "result": "PASS",
+            "name": "deliberate retry recovers from failed display construction"
+          },
+          {
+            "result": "PASS",
+            "name": "malformed directory has visible failure not empty success"
+          },
+          {
+            "result": "PASS",
+            "name": "directory failure cannot save unscoped draft"
+          },
+          {
+            "result": "PASS",
+            "name": "server role denial conceals agreement workspace"
+          },
+          {
+            "result": "PASS",
+            "name": "role failure remains visible after modal cleanup"
+          },
+          {
+            "result": "PASS",
+            "name": "idle deadline still closes draft after inactivity"
+          },
+          {
+            "result": "PASS",
+            "name": "absolute 60-minute deadline still closes modal"
+          },
+          {
+            "result": "PASS",
+            "name": "test dispatched only read calls, no appointment/fee/commission mutation"
+          },
+          {
+            "result": "PASS",
+            "name": "no uncaught errors across exercised real-module modal paths: []"
+          }
+        ],
+        "charter": [
           {
             "result": "PASS",
             "name": "mount makes no protected network call before authenticated opening"
@@ -2117,7 +801,7 @@
             "name": "new drafting module has no uncaught browser errors: []"
           }
         ],
-        "captain_integration": [
+        "integration": [
           {
             "result": "PASS",
             "name": "whole Captain module remains lazy before gate entry"
@@ -2199,7 +883,7 @@
             "name": "no uncaught integrated Captain-module errors: []"
           }
         ],
-        "assigned_captain": [
+        "captain": [
           {
             "result": "PASS",
             "name": "named BBS sign-in before credentials"
@@ -2613,7 +1297,7 @@
             "name": "status receipt persists"
           }
         ],
-        "admiral_watch": [
+        "watch": [
           {
             "result": "PASS",
             "name": "locked Watch does not request fleet records"
@@ -2740,17 +1424,789 @@
             "result": "PASS",
             "name": "Admiral end leaves Owner client session independent"
           }
+        ],
+        "admiral_keel": [
+          {
+            "result": "PASS",
+            "name": "Engine states commissioned Admiral office without granting session access"
+          },
+          {
+            "result": "PASS",
+            "name": "Admiral gate distinguishes retained rank from secure workspace session"
+          },
+          {
+            "result": "PASS",
+            "name": "Command Deck identifies commissioned Admiral after server verification"
+          },
+          {
+            "result": "PASS",
+            "name": "session lock copy retains rank while requiring re-authentication"
+          },
+          {
+            "result": "PASS",
+            "name": "Contracts session warning clears after a newly reusable verified session"
+          },
+          {
+            "result": "PASS",
+            "name": "single-line paste hygiene trims edge whitespace only"
+          },
+          {
+            "result": "PASS",
+            "name": "contract scenario zero selects on focus and blank restores zero"
+          },
+          {
+            "result": "PASS",
+            "name": "negotiated percentage remains blank by default"
+          },
+          {
+            "result": "PASS",
+            "name": "existing private draft schema and CG-1 template remain compatible"
+          },
+          {
+            "result": "PASS",
+            "name": "Fleet Captain server operating service remains disabled"
+          }
         ]
       },
       "historical_release_evidence": {
-        "schema": "dark-sky-release-gate-truebearing-v1",
-        "build": "8.8.17.20",
-        "release": "TrueBearing",
-        "generatedAt": "2026-09-27T13:58:24+00:00",
+        "schema": "dark-sky-release-gate-charterbridge-v1",
+        "build": "8.8.17.22",
+        "release": "CharterBridge",
+        "generatedAt": "2026-09-27T17:01:07+00:00",
         "pass": true,
-        "evidence_scope": "Client fixture assertions passed; server operating activation blocked and not included. Not production acceptance.",
+        "evidence_scope": "Isolated client/module assertions only; real UI button/layer checks, actual shipped transport with synthetic service replies and browser storage fixtures. Not native Safari, server permission, signature or production-handoff certification.",
         "suites": {
-          "browser": [
+          "foreground": [
+            {
+              "result": "PASS",
+              "name": "deck is created lazily after startup, not assumed present"
+            },
+            {
+              "result": "PASS",
+              "name": "real transport with fixture replies verifies Admiral sign-in"
+            },
+            {
+              "result": "PASS",
+              "name": "actual gate handler opens Professional Command"
+            },
+            {
+              "result": "PASS",
+              "name": "no contract directory read before button click"
+            },
+            {
+              "result": "PASS",
+              "name": "actual tap paints agreement above the complete Admiral deck"
+            },
+            {
+              "result": "PASS",
+              "name": "security gate remains above agreement layer"
+            },
+            {
+              "result": "PASS",
+              "name": "background Command Deck is not interactive while agreement is open"
+            },
+            {
+              "result": "PASS",
+              "name": "real session identity is visible in drafting workspace"
+            },
+            {
+              "result": "PASS",
+              "name": "foreground field receives real keyboard input"
+            },
+            {
+              "result": "PASS",
+              "name": "Back to Command removes modal and restores background"
+            },
+            {
+              "result": "PASS",
+              "name": "return restores focus to the originating control"
+            },
+            {
+              "result": "PASS",
+              "name": "1366x892: agreement paints in foreground"
+            },
+            {
+              "result": "PASS",
+              "name": "1366x892: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "1366x892: input is at least 18px"
+            },
+            {
+              "result": "PASS",
+              "name": "1366x892: real Close and Open controls stay usable"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x768: agreement paints in foreground"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x768: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x768: input is at least 18px"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x768: real Close and Open controls stay usable"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x636: agreement paints in foreground"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x636: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x636: input is at least 18px"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x636: real Close and Open controls stay usable"
+            },
+            {
+              "result": "PASS",
+              "name": "768x1024: agreement paints in foreground"
+            },
+            {
+              "result": "PASS",
+              "name": "768x1024: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "768x1024: input is at least 18px"
+            },
+            {
+              "result": "PASS",
+              "name": "768x1024: real Close and Open controls stay usable"
+            },
+            {
+              "result": "PASS",
+              "name": "390x844: agreement paints in foreground"
+            },
+            {
+              "result": "PASS",
+              "name": "390x844: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "390x844: input is at least 18px"
+            },
+            {
+              "result": "PASS",
+              "name": "390x844: real Close and Open controls stay usable"
+            },
+            {
+              "result": "PASS",
+              "name": "320x568: agreement paints in foreground"
+            },
+            {
+              "result": "PASS",
+              "name": "320x568: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "320x568: input is at least 18px"
+            },
+            {
+              "result": "PASS",
+              "name": "320x568: real Close and Open controls stay usable"
+            },
+            {
+              "result": "PASS",
+              "name": "844x390: agreement paints in foreground"
+            },
+            {
+              "result": "PASS",
+              "name": "844x390: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "844x390: input is at least 18px"
+            },
+            {
+              "result": "PASS",
+              "name": "844x390: real Close and Open controls stay usable"
+            },
+            {
+              "result": "PASS",
+              "name": "trusted contract editing refreshes only the existing idle clock"
+            },
+            {
+              "result": "PASS",
+              "name": "contract editing never resets full sign-in time"
+            },
+            {
+              "result": "PASS",
+              "name": "active drafting survives 16 minutes since login with recent real activity"
+            },
+            {
+              "result": "PASS",
+              "name": "synthetic key events do not renew idle clock"
+            },
+            {
+              "result": "PASS",
+              "name": "one-hour maximum still closes active contract workspace"
+            },
+            {
+              "result": "PASS",
+              "name": "session closure releases background inert state"
+            },
+            {
+              "result": "PASS",
+              "name": "maximum age clears Admiral local session as before"
+            },
+            {
+              "result": "PASS",
+              "name": "security gate replaces agreement after expiry"
+            },
+            {
+              "result": "PASS",
+              "name": "setup failure leaves visible actionable message on Command Deck"
+            },
+            {
+              "result": "PASS",
+              "name": "setup failure cannot trap Command Deck"
+            },
+            {
+              "result": "PASS",
+              "name": "failed setup performs no contract directory dispatch"
+            },
+            {
+              "result": "PASS",
+              "name": "explicit retry after setup error opens once"
+            },
+            {
+              "result": "PASS",
+              "name": "retry leaves one workspace and one entrance"
+            },
+            {
+              "result": "PASS",
+              "name": "slow directory request shows visible progress"
+            },
+            {
+              "result": "PASS",
+              "name": "loading state is foreground rather than covered by deck"
+            },
+            {
+              "result": "PASS",
+              "name": "closing while loading suppresses late directory result"
+            },
+            {
+              "result": "PASS",
+              "name": "directory failure is visible, not silent"
+            },
+            {
+              "result": "PASS",
+              "name": "failed directory read retains visible Back to Command"
+            },
+            {
+              "result": "PASS",
+              "name": "hung directory reaches a visible bounded timeout"
+            },
+            {
+              "result": "PASS",
+              "name": "late directory reply cannot replace timeout with success"
+            },
+            {
+              "result": "PASS",
+              "name": "server authority rejection conceals contract"
+            },
+            {
+              "result": "PASS",
+              "name": "server rejection routes back to existing security gate"
+            },
+            {
+              "result": "PASS",
+              "name": "legacy localStorage quota failure does not hide agreement entrance"
+            },
+            {
+              "result": "PASS",
+              "name": "Send for Signatures remains disabled"
+            },
+            {
+              "result": "PASS",
+              "name": "commercial commissioning and fee activation remain disabled"
+            },
+            {
+              "result": "PASS",
+              "name": "draft does not certify server contract execution"
+            },
+            {
+              "result": "PASS",
+              "name": "contract entrance also paints above ceremonial mode"
+            },
+            {
+              "result": "PASS",
+              "name": "manual Lock still opens normal PIN gate"
+            },
+            {
+              "result": "PASS",
+              "name": "15-minute inactivity still closes contract and returns to security"
+            },
+            {
+              "result": "PASS",
+              "name": "no uncaught full Captain and real transport module errors"
+            }
+          ],
+          "agreements": [
+            {
+              "result": "PASS",
+              "name": "mount makes no protected network call before authenticated opening"
+            },
+            {
+              "result": "PASS",
+              "name": "one contracts entrance mounts on existing deck"
+            },
+            {
+              "result": "PASS",
+              "name": "repeated deck events do not duplicate entrance"
+            },
+            {
+              "result": "PASS",
+              "name": "PIN/session-ineligible cannot open agreement editor"
+            },
+            {
+              "result": "PASS",
+              "name": "authenticated Admiral opens drafting workspace"
+            },
+            {
+              "result": "PASS",
+              "name": "acting Admiral account is visible"
+            },
+            {
+              "result": "PASS",
+              "name": "underlying deck cannot receive interactions while drafting dialog open"
+            },
+            {
+              "result": "PASS",
+              "name": "business vessels plus explicit planned option, no Admiral program"
+            },
+            {
+              "result": "PASS",
+              "name": "no save without exact target"
+            },
+            {
+              "result": "PASS",
+              "name": "exact vessel scope stays visible"
+            },
+            {
+              "result": "PASS",
+              "name": "no automatic percentage or free-charge default"
+            },
+            {
+              "result": "PASS",
+              "name": "no invented provider legal entity"
+            },
+            {
+              "result": "PASS",
+              "name": "1366x892: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "1366x892: 18px input text retained"
+            },
+            {
+              "result": "PASS",
+              "name": "1366x892: buttons at least 44px"
+            },
+            {
+              "result": "PASS",
+              "name": "1366x892: ordinary vertical scroll allowed"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x768: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x768: 18px input text retained"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x768: buttons at least 44px"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x768: ordinary vertical scroll allowed"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x636: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x636: 18px input text retained"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x636: buttons at least 44px"
+            },
+            {
+              "result": "PASS",
+              "name": "1024x636: ordinary vertical scroll allowed"
+            },
+            {
+              "result": "PASS",
+              "name": "768x1024: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "768x1024: 18px input text retained"
+            },
+            {
+              "result": "PASS",
+              "name": "768x1024: buttons at least 44px"
+            },
+            {
+              "result": "PASS",
+              "name": "768x1024: ordinary vertical scroll allowed"
+            },
+            {
+              "result": "PASS",
+              "name": "390x844: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "390x844: 18px input text retained"
+            },
+            {
+              "result": "PASS",
+              "name": "390x844: buttons at least 44px"
+            },
+            {
+              "result": "PASS",
+              "name": "390x844: ordinary vertical scroll allowed"
+            },
+            {
+              "result": "PASS",
+              "name": "320x568: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "320x568: 18px input text retained"
+            },
+            {
+              "result": "PASS",
+              "name": "320x568: buttons at least 44px"
+            },
+            {
+              "result": "PASS",
+              "name": "320x568: ordinary vertical scroll allowed"
+            },
+            {
+              "result": "PASS",
+              "name": "844x390: no horizontal overflow"
+            },
+            {
+              "result": "PASS",
+              "name": "844x390: 18px input text retained"
+            },
+            {
+              "result": "PASS",
+              "name": "844x390: buttons at least 44px"
+            },
+            {
+              "result": "PASS",
+              "name": "844x390: ordinary vertical scroll allowed"
+            },
+            {
+              "result": "PASS",
+              "name": "typed text stays in intended field"
+            },
+            {
+              "result": "PASS",
+              "name": "platform-only fee uses covered $500 at 5% = $25"
+            },
+            {
+              "result": "PASS",
+              "name": "all-sales fee includes platform and in-person without duplication"
+            },
+            {
+              "result": "PASS",
+              "name": "explicit zero percent is supported"
+            },
+            {
+              "result": "PASS",
+              "name": "custom sales channels isolated in fee preview"
+            },
+            {
+              "result": "PASS",
+              "name": "calculator and drafting send no server mutation"
+            },
+            {
+              "result": "PASS",
+              "name": "percentage converts exactly to basis points"
+            },
+            {
+              "result": "PASS",
+              "name": "half-cent rounding is deterministic once per illustration"
+            },
+            {
+              "result": "PASS",
+              "name": "invalid percentage rejected: '-1'"
+            },
+            {
+              "result": "PASS",
+              "name": "invalid percentage rejected: '100.01'"
+            },
+            {
+              "result": "PASS",
+              "name": "invalid percentage rejected: '1e2'"
+            },
+            {
+              "result": "PASS",
+              "name": "invalid percentage rejected: '5.999'"
+            },
+            {
+              "result": "PASS",
+              "name": "invalid percentage rejected: 'NaN'"
+            },
+            {
+              "result": "PASS",
+              "name": "invalid percentage rejected: ''"
+            },
+            {
+              "result": "PASS",
+              "name": "invalid imported date reports validation without uncaught error"
+            },
+            {
+              "result": "PASS",
+              "name": "device draft save independently reads matching payload"
+            },
+            {
+              "result": "PASS",
+              "name": "second local save appends; no earlier snapshot overwritten"
+            },
+            {
+              "result": "PASS",
+              "name": "storage error cannot report saved success"
+            },
+            {
+              "result": "PASS",
+              "name": "export has explicit private-draft schema"
+            },
+            {
+              "result": "PASS",
+              "name": "export never claims executed or legally verified"
+            },
+            {
+              "result": "PASS",
+              "name": "negotiated rate preserved in export"
+            },
+            {
+              "result": "PASS",
+              "name": "export bound to exact vessel"
+            },
+            {
+              "result": "PASS",
+              "name": "missing required legal fields are surfaced"
+            },
+            {
+              "result": "PASS",
+              "name": "unconnected signing cannot send an envelope"
+            },
+            {
+              "result": "PASS",
+              "name": "local draft cannot enable commission or fees"
+            },
+            {
+              "result": "PASS",
+              "name": "printable agreement remains draft for legal review"
+            },
+            {
+              "result": "PASS",
+              "name": "complete schedules and separate capacity signature blocks exported"
+            },
+            {
+              "result": "PASS",
+              "name": "draft protects ownership and Captain guarantee boundaries"
+            },
+            {
+              "result": "PASS",
+              "name": "separate optional electronic-consent requirement included"
+            },
+            {
+              "result": "PASS",
+              "name": "fingerprinting an arbitrary PDF cannot verify signatures"
+            },
+            {
+              "result": "PASS",
+              "name": "file evidence cannot open production commissioning"
+            },
+            {
+              "result": "PASS",
+              "name": "portable evidence disclaims signer/custody verification"
+            },
+            {
+              "result": "PASS",
+              "name": "material rate edit invalidates earlier evidence association"
+            },
+            {
+              "result": "PASS",
+              "name": "revision advances only after finalized draft snapshot is edited"
+            },
+            {
+              "result": "PASS",
+              "name": "new revision needs fresh snapshot before evidence association"
+            },
+            {
+              "result": "PASS",
+              "name": "switching vessels does not copy private contract fields"
+            },
+            {
+              "result": "PASS",
+              "name": "cross-vessel draft import rejected"
+            },
+            {
+              "result": "PASS",
+              "name": "same Admiral and vessel reloads local draft"
+            },
+            {
+              "result": "PASS",
+              "name": "edited terms with stale fingerprint rejected"
+            },
+            {
+              "result": "PASS",
+              "name": "matching import does not trust execution status"
+            },
+            {
+              "result": "PASS",
+              "name": "matching imported fields restored"
+            },
+            {
+              "result": "PASS",
+              "name": "planned ship draft supported before a registry entry exists"
+            },
+            {
+              "result": "PASS",
+              "name": "planned draft creates no remote business record"
+            },
+            {
+              "result": "PASS",
+              "name": "untrusted terms are escaped in generated document"
+            },
+            {
+              "result": "PASS",
+              "name": "close returns to Command without a permission change"
+            },
+            {
+              "result": "PASS",
+              "name": "closing restores deck interactions"
+            },
+            {
+              "result": "PASS",
+              "name": "local saved drafts are separated by Admiral account and vessel"
+            },
+            {
+              "result": "PASS",
+              "name": "session end immediately conceals agreement workspace"
+            },
+            {
+              "result": "PASS",
+              "name": "session end clears unexported form values"
+            },
+            {
+              "result": "PASS",
+              "name": "late directory reply after lock cannot repopulate the draft dialog"
+            },
+            {
+              "result": "PASS",
+              "name": "server authority denial closes workspace rather than permitting drafts"
+            },
+            {
+              "result": "PASS",
+              "name": "new drafting module has no uncaught browser errors: []"
+            }
+          ],
+          "captain_integration": [
+            {
+              "result": "PASS",
+              "name": "whole Captain module remains lazy before gate entry"
+            },
+            {
+              "result": "PASS",
+              "name": "actual gate entry constructs Admiral deck after startup"
+            },
+            {
+              "result": "PASS",
+              "name": "Contracts and Services mounted by actual late deck creation"
+            },
+            {
+              "result": "PASS",
+              "name": "commercial commissioning notice exists in actual station"
+            },
+            {
+              "result": "PASS",
+              "name": "existing appointment station still mounts"
+            },
+            {
+              "result": "PASS",
+              "name": "new drafting directory not loaded before account sign-in"
+            },
+            {
+              "result": "PASS",
+              "name": "new drafting workspace opens alongside complete Captain module with simulated Admiral"
+            },
+            {
+              "result": "PASS",
+              "name": "exact simulated registry identity reaches full-module workspace"
+            },
+            {
+              "result": "PASS",
+              "name": "full-module return conceals drafting surface"
+            },
+            {
+              "result": "PASS",
+              "name": "session ticks do not duplicate drafting entrance"
+            },
+            {
+              "result": "PASS",
+              "name": "pre-preview appointment issue still disabled"
+            },
+            {
+              "result": "PASS",
+              "name": "departure remains disabled in full integrated module"
+            },
+            {
+              "result": "PASS",
+              "name": "new business issue handler refuses regardless of DOM disabled flag"
+            },
+            {
+              "result": "PASS",
+              "name": "held business handler dispatches no commission command"
+            },
+            {
+              "result": "PASS",
+              "name": "fleet-service commission requires executed agreement too"
+            },
+            {
+              "result": "PASS",
+              "name": "internal program still follows original preview requirement rather than commercial block"
+            },
+            {
+              "result": "PASS",
+              "name": "departure handler refuses even if button manually enabled"
+            },
+            {
+              "result": "PASS",
+              "name": "no departure RPC dispatched from updated client"
+            },
+            {
+              "result": "PASS",
+              "name": "no local flag certifies signed agreement"
+            },
+            {
+              "result": "PASS",
+              "name": "no uncaught integrated Captain-module errors: []"
+            }
+          ],
+          "assigned_captain": [
             {
               "result": "PASS",
               "name": "named BBS sign-in before credentials"
@@ -3164,7 +2620,7 @@
               "name": "status receipt persists"
             }
           ],
-          "watch": [
+          "admiral_watch": [
             {
               "result": "PASS",
               "name": "locked Watch does not request fleet records"
@@ -3293,31 +2749,593 @@
             }
           ]
         },
-        "counts": {
-          "browser": 103,
-          "watch": 15,
-          "transport": 16
-        },
-        "server_operating_access_enabled": false,
-        "server_update_applied": false,
-        "native_safari_verified": false,
-        "full_site_navigation": "blocked_by_environment_not_bypassed",
-        "working_ship_handoff_verified": false
+        "historical_release_evidence": {
+          "schema": "dark-sky-release-gate-truebearing-v1",
+          "build": "8.8.17.20",
+          "release": "TrueBearing",
+          "generatedAt": "2026-09-27T13:58:24+00:00",
+          "pass": true,
+          "evidence_scope": "Client fixture assertions passed; server operating activation blocked and not included. Not production acceptance.",
+          "suites": {
+            "browser": [
+              {
+                "result": "PASS",
+                "name": "named BBS sign-in before credentials"
+              },
+              {
+                "result": "PASS",
+                "name": "pre-auth identity source is explicit"
+              },
+              {
+                "result": "PASS",
+                "name": "sign-in browser title names task"
+              },
+              {
+                "result": "PASS",
+                "name": "no protected network request before credentials"
+              },
+              {
+                "result": "PASS",
+                "name": "credentials never prefilled"
+              },
+              {
+                "result": "PASS",
+                "name": "sign-in landscape no horizontal overflow"
+              },
+              {
+                "result": "PASS",
+                "name": "sign-in landscape input text at least 18px"
+              },
+              {
+                "result": "PASS",
+                "name": "sign-in landscape input/button targets at least 44px"
+              },
+              {
+                "result": "PASS",
+                "name": "server-checked account is persistently visible"
+              },
+              {
+                "result": "PASS",
+                "name": "acting role and vessel limit visible"
+              },
+              {
+                "result": "PASS",
+                "name": "staging remains visible"
+              },
+              {
+                "result": "PASS",
+                "name": "full report ending retained"
+              },
+              {
+                "result": "PASS",
+                "name": "full current-work character counter"
+              },
+              {
+                "result": "PASS",
+                "name": "accepted entry sends no new acceptance"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1366x892 no horizontal overflow"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1366x892 input text at least 18px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1366x892 input/button targets at least 44px"
+              },
+              {
+                "result": "PASS",
+                "name": "landscape full station action fits"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1024x636 no horizontal overflow"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1024x636 input text at least 18px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1024x636 input/button targets at least 44px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1024x636 publish fits"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1024x768 no horizontal overflow"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1024x768 input text at least 18px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1024x768 input/button targets at least 44px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 1024x768 publish fits"
+              },
+              {
+                "result": "PASS",
+                "name": "station 768x1024 no horizontal overflow"
+              },
+              {
+                "result": "PASS",
+                "name": "station 768x1024 input text at least 18px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 768x1024 input/button targets at least 44px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 390x844 no horizontal overflow"
+              },
+              {
+                "result": "PASS",
+                "name": "station 390x844 input text at least 18px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 390x844 input/button targets at least 44px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 320x568 no horizontal overflow"
+              },
+              {
+                "result": "PASS",
+                "name": "station 320x568 input text at least 18px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 320x568 input/button targets at least 44px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 844x390 no horizontal overflow"
+              },
+              {
+                "result": "PASS",
+                "name": "station 844x390 input text at least 18px"
+              },
+              {
+                "result": "PASS",
+                "name": "station 844x390 input/button targets at least 44px"
+              },
+              {
+                "result": "PASS",
+                "name": "duplicate publish event contained"
+              },
+              {
+                "result": "PASS",
+                "name": "exact project and all submitted text preserved in request"
+              },
+              {
+                "result": "PASS",
+                "name": "publish receipt retained across independent readback"
+              },
+              {
+                "result": "PASS",
+                "name": "own roster is explicit destination"
+              },
+              {
+                "result": "PASS",
+                "name": "only server-returned candidate vessel listed"
+              },
+              {
+                "result": "PASS",
+                "name": "candidate roster reads no Admiral data"
+              },
+              {
+                "result": "PASS",
+                "name": "explicit vessel choice sets exact route"
+              },
+              {
+                "result": "PASS",
+                "name": "roster selection does not repeat acceptance"
+              },
+              {
+                "result": "PASS",
+                "name": "sign-out conceals candidate identity and protected work"
+              },
+              {
+                "result": "PASS",
+                "name": "candidate session key removed"
+              },
+              {
+                "result": "PASS",
+                "name": "sign-out targets this session only"
+              },
+              {
+                "result": "PASS",
+                "name": "normal routes have no uncaught JS errors"
+              },
+              {
+                "result": "PASS",
+                "name": "Grizzly name visible before sign-in"
+              },
+              {
+                "result": "PASS",
+                "name": "wrong-vessel message names destination"
+              },
+              {
+                "result": "PASS",
+                "name": "denial identifies signed-in account"
+              },
+              {
+                "result": "PASS",
+                "name": "denial is not misleading password form"
+              },
+              {
+                "result": "PASS",
+                "name": "wrong vessel does not trigger order read"
+              },
+              {
+                "result": "PASS",
+                "name": "no unauthorized operation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "denied user can return to assigned vessel without repeating password"
+              },
+              {
+                "result": "PASS",
+                "name": "no project routes to selector, not first appointment"
+              },
+              {
+                "result": "PASS",
+                "name": "rejectLogin cannot display protected station"
+              },
+              {
+                "result": "PASS",
+                "name": "rejectLogin cannot display mutation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "rejectLogin no uncaught errors"
+              },
+              {
+                "result": "PASS",
+                "name": "noAppointments cannot display protected station"
+              },
+              {
+                "result": "PASS",
+                "name": "noAppointments cannot display mutation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "noAppointments no uncaught errors"
+              },
+              {
+                "result": "PASS",
+                "name": "deny cannot display protected station"
+              },
+              {
+                "result": "PASS",
+                "name": "deny cannot display mutation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "deny no uncaught errors"
+              },
+              {
+                "result": "PASS",
+                "name": "wrongScope cannot display protected station"
+              },
+              {
+                "result": "PASS",
+                "name": "wrongScope cannot display mutation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "wrongScope no uncaught errors"
+              },
+              {
+                "result": "PASS",
+                "name": "badOrders cannot display protected station"
+              },
+              {
+                "result": "PASS",
+                "name": "badOrders cannot display mutation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "badOrders no uncaught errors"
+              },
+              {
+                "result": "PASS",
+                "name": "badWatch cannot display protected station"
+              },
+              {
+                "result": "PASS",
+                "name": "badWatch cannot display mutation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "badWatch no uncaught errors"
+              },
+              {
+                "result": "PASS",
+                "name": "badAccountRows cannot display protected station"
+              },
+              {
+                "result": "PASS",
+                "name": "badAccountRows cannot display mutation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "badAccountRows no uncaught errors"
+              },
+              {
+                "result": "PASS",
+                "name": "changedUser cannot display protected station"
+              },
+              {
+                "result": "PASS",
+                "name": "changedUser cannot display mutation controls"
+              },
+              {
+                "result": "PASS",
+                "name": "changedUser no uncaught errors"
+              },
+              {
+                "result": "PASS",
+                "name": "duplicate destination rejected"
+              },
+              {
+                "result": "PASS",
+                "name": "invalid route has no credentials or protected reads"
+              },
+              {
+                "result": "PASS",
+                "name": "hostile destination rejected as text"
+              },
+              {
+                "result": "PASS",
+                "name": "unknown identity not fabricated from query"
+              },
+              {
+                "result": "PASS",
+                "name": "unknown destination explained"
+              },
+              {
+                "result": "PASS",
+                "name": "pending view names account and candidate role"
+              },
+              {
+                "result": "PASS",
+                "name": "single acceptance with station readback"
+              },
+              {
+                "result": "PASS",
+                "name": "accepted station removes Accept control"
+              },
+              {
+                "result": "PASS",
+                "name": "writeUnavailable write marked unconfirmed"
+              },
+              {
+                "result": "PASS",
+                "name": "writeUnavailable recheck never replays write"
+              },
+              {
+                "result": "PASS",
+                "name": "badWriteScope write marked unconfirmed"
+              },
+              {
+                "result": "PASS",
+                "name": "badWriteScope recheck never replays write"
+              },
+              {
+                "result": "PASS",
+                "name": "late sign-in reply cannot open station"
+              },
+              {
+                "result": "PASS",
+                "name": "late sign-in reply cannot restore session"
+              },
+              {
+                "result": "PASS",
+                "name": "late orders after read deadline remain concealed"
+              },
+              {
+                "result": "PASS",
+                "name": "read timeout does not repeat acceptance"
+              },
+              {
+                "result": "PASS",
+                "name": "long queue preserves every record"
+              },
+              {
+                "result": "PASS",
+                "name": "untrusted report text stays field text"
+              },
+              {
+                "result": "PASS",
+                "name": "untrusted order text escaped"
+              },
+              {
+                "result": "PASS",
+                "name": "status update exact-vessel status-only payload preserved"
+              },
+              {
+                "result": "PASS",
+                "name": "status receipt persists"
+              }
+            ],
+            "watch": [
+              {
+                "result": "PASS",
+                "name": "locked Watch does not request fleet records"
+              },
+              {
+                "result": "PASS",
+                "name": "unverified Watch workspace hidden"
+              },
+              {
+                "result": "PASS",
+                "name": "authenticated fixture Watch retains both vessels"
+              },
+              {
+                "result": "PASS",
+                "name": "Bootstrap fallback remains separate from Fleet Core"
+              },
+              {
+                "result": "PASS",
+                "name": "unassigned vessel opens explicitly labelled observation"
+              },
+              {
+                "result": "PASS",
+                "name": "Watch header cannot cover scrolling cards"
+              },
+              {
+                "result": "PASS",
+                "name": "overview preserves selected exact vessel"
+              },
+              {
+                "result": "PASS",
+                "name": "observation remains visibly read-only"
+              },
+              {
+                "result": "PASS",
+                "name": "uninstalled operating service explicitly pending"
+              },
+              {
+                "result": "PASS",
+                "name": "Fleet Captain operation cannot be invoked from client-only label"
+              },
+              {
+                "result": "PASS",
+                "name": "no synthetic membership workaround promised"
+              },
+              {
+                "result": "PASS",
+                "name": "Captain Watch report retained in scoped Admiral overview"
+              },
+              {
+                "result": "PASS",
+                "name": "report source retained"
+              },
+              {
+                "result": "PASS",
+                "name": "Watch close removes overlay"
+              },
+              {
+                "result": "PASS",
+                "name": "modified Watch module has no uncaught fixture errors"
+              }
+            ],
+            "transport": [
+              {
+                "result": "PASS",
+                "name": "existing Owner login still retained"
+              },
+              {
+                "result": "PASS",
+                "name": "existing Admiral account and role check succeeds"
+              },
+              {
+                "result": "PASS",
+                "name": "Admiral 15/60 browser policy unchanged"
+              },
+              {
+                "result": "PASS",
+                "name": "server timeout never inferred from browser guard"
+              },
+              {
+                "result": "PASS",
+                "name": "guarded Captain user response verified"
+              },
+              {
+                "result": "PASS",
+                "name": "Captain login preserves Owner and Admiral session keys"
+              },
+              {
+                "result": "PASS",
+                "name": "guarded sign-out clears candidate key"
+              },
+              {
+                "result": "PASS",
+                "name": "candidate sign-out leaves other offices untouched"
+              },
+              {
+                "result": "PASS",
+                "name": "candidate sign-out requests session-local scope"
+              },
+              {
+                "result": "PASS",
+                "name": "cancelled candidate login refuses late auth reply"
+              },
+              {
+                "result": "PASS",
+                "name": "late auth reply cannot restore cleared key"
+              },
+              {
+                "result": "PASS",
+                "name": "changed account identity rejected"
+              },
+              {
+                "result": "PASS",
+                "name": "identity mismatch clears only candidate session"
+              },
+              {
+                "result": "PASS",
+                "name": "identity mismatch does not clear Owner"
+              },
+              {
+                "result": "PASS",
+                "name": "Admiral end still terminates local reuse"
+              },
+              {
+                "result": "PASS",
+                "name": "Admiral end leaves Owner client session independent"
+              }
+            ]
+          },
+          "counts": {
+            "browser": 103,
+            "watch": 15,
+            "transport": 16
+          },
+          "server_operating_access_enabled": false,
+          "server_update_applied": false,
+          "native_safari_verified": false,
+          "full_site_navigation": "blocked_by_environment_not_bypassed",
+          "working_ship_handoff_verified": false
+        }
+      },
+      "admiral_office": {
+        "status": "commissioned",
+        "session_separate": true,
+        "server_reverification_required": true,
+        "readiness_warnings_do_not_demote": true,
+        "fleet_captain_operating_service_enabled": false
       }
     },
-    "admiral_office": {
-      "status": "commissioned",
-      "session_separate": true,
-      "server_reverification_required": true,
-      "readiness_warnings_do_not_demote": true,
-      "fleet_captain_operating_service_enabled": false
+    "generatedAt": "2026-09-28T21:14:04-04:00",
+    "scope_of_pass": "listed isolated assertions and archive integrity only; native iPad acceptance pending",
+    "suites": {
+      "draft_navigation": 50,
+      "agreement": 92,
+      "integrated_captain": 20,
+      "assigned_captain": 103,
+      "watch": 15,
+      "transport": 16
     }
   },
-  "generatedAt": "2026-09-28T21:14:04-04:00",
-  "scope_of_pass": "listed isolated assertions and archive integrity only; native iPad acceptance pending",
-  "suites": {
-    "draft_navigation": 50,
-    "agreement": 92,
+  "generatedAt": "2026-09-30T01:30:35.199109-04:00",
+  "exact_reported_ipad_cause": "not-established; reproduced early-binding gap under controlled setup delay",
+  "tested_before_packaging": {
+    "customer_and_startup": 73,
+    "agreement_workflow": 92,
     "integrated_captain": 20,
     "assigned_captain": 103,
     "watch": 15,

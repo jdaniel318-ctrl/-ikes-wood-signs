@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.18.1",
-  "release": "DraftWatch",
-  "seal": "draftwatch-88181",
+  "build": "8.8.18.2",
+  "release": "BloomStart",
+  "seal": "bloomstart-88182",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "DraftWatch",
-  "name": "DraftWatch",
-  "releaseName": "DraftWatch"
+  "release_name": "BloomStart",
+  "name": "BloomStart",
+  "releaseName": "BloomStart"
 }

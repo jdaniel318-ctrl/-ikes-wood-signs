@@ -1,8 +1,8 @@
 {
-  "release": "DraftWatch",
-  "name": "DraftWatch",
-  "build": "8.8.18.1",
-  "seal": "draftwatch-88181",
+  "release": "BloomStart",
+  "name": "BloomStart",
+  "build": "8.8.18.2",
+  "seal": "bloomstart-88182",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
