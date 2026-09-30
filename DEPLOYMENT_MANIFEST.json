@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.18.2",
-  "version": "8.8.18.2",
-  "release_name": "BloomStart",
-  "releaseName": "BloomStart",
-  "release_seal": "bloomstart-88182",
+  "build": "8.8.18.3",
+  "version": "8.8.18.3",
+  "release_name": "BloomFit",
+  "releaseName": "BloomFit",
+  "release_seal": "bloomfit-88183",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Customer template controls ready before asynchronous initialization",
-  "release_note": "BloomStart isolated startup/navigation repair; native iPad entry remains pending; no server or commercial activation.",
+  "release_focus": "Becca customer-message hygiene, florist-first preview fit, and non-obstructive private-preview chrome",
+  "release_note": "BloomFit hardens Becca’s card-message experience: 120-character messages, outer-whitespace cleanup, Script default, florist-card preview sizing/placement, matching approved-preview rendering, and preview-toolbar relocation. No server, fee, contract, appointment, or live-order activation.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "bfdfe2b4647a2a8139b2f580868621d40d5411e2cc7db264df4effd10b77582d",
-        "build": "8.8.18.2",
+        "sha256": "e52eed0b9d70e7f0dcdc6d2af701e1039d81a2186f760f8387f239a6c09d7815",
+        "build": "8.8.18.3",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "ebabe547d06e9e98da890dd4c981b4980934800c67fd911c0fe218e96e436755",
-        "build": "8.8.18.2",
+        "sha256": "a080cd8218fea5547fdd60f3226cd1c3910e6d110ebe3272e06a2fdf507188c3",
+        "build": "8.8.18.3",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "e604b8c7c999eb7f822c4b24676f3627f94f6f5f64ee69109428092377b93b44",
-        "build": "8.8.18.2",
+        "sha256": "62456ec4468b120c54c7e9840f4f4187f8ff447b6e2a40283f255b04ac9f594e",
+        "build": "8.8.18.3",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "2896e073c76f847d63a5d06da1025372eba7174bedff94c164710107b07cb0e8",
-        "build": "8.8.18.2",
+        "sha256": "4bdb6fe38c348604fbb34455a2d7c8021d6982e9147c4bb4c264545f706099c1",
+        "build": "8.8.18.3",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "4f84464eadf1ab8353b8bb8dc4da54a12285040871c98221affb53584b04b55a",
+      "styles.css": "59bd61e3f1c92e970eadee5aa9f6ea39f4f2590e14cb1d199a4e262513c75b48",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "b2c8d32e50d9a4dec7920223216ab12331b5217101820455648d022ce2cbee05",
-      "fleet_supabase.js": "4e59b717c2bf12bd4cd03740ea0bab7b906d63a6b50703a5c74bf0b0583959e3",
+      "platform_identity.js": "261aeaf88481b9af856e16fb3a72de3834a6a13e8c5e11bd22c4e5aeb31f4552",
+      "fleet_supabase.js": "44f1cca2e1d424940a6119cda325e4512229611f85531a327e8a624e1ae9d4e7",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "c5891e0bea69b92223b31b8803b2e73cbab1a68311e1f60f49192fd6ee7120fa",
-      "captain.js": "70a4b51f43f2cae97d189e78aee021b5fabcd7732ee73d9064f13d40ae11e7dc",
-      "simple_books.js": "b0f89a985ebf86bf59056deb0ed4132d9d7a2d14de2d11cf71b21299ac9ab79a",
-      "owner.html": "1602beeafbdfaee38a7cb117612dbede7ef7b8f120c4557bfb50806d8030781a",
-      "manifest.webmanifest": "8fe7b4237fc5b3f8b4df222c8889d1fb5f18c5e89ec7500b06b093f29ce751a7",
+      "app.js": "42e3cc1efecff3fbfb0e3a6b894e40b95f8b7347fe9f9b38bfc5fa6b32990c6d",
+      "captain.js": "0e31c4ba44a099f570ab8c73f104e20e37afa9e33ef3fac6629d09313a142a52",
+      "simple_books.js": "3175277f425be45cae7940f6106d70423392c4bb956697c8d1d7ce9f6d86c4eb",
+      "owner.html": "cffa2eb38959e132cf5bdd1bb83fc8f962d25c5ba55b78941fe4f6625c5107d5",
+      "manifest.webmanifest": "f56033813c12057e1c4daf37406ed65ea053b7a58582098e69f9e5e63a664392",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "db2fdca63eaca3e37ee076e2f09e65b58e0fc3018508a52291534521aec4cf04",
-      "FLEET_DOCTRINE_REGISTRY.json": "e604b8c7c999eb7f822c4b24676f3627f94f6f5f64ee69109428092377b93b44",
-      "GOLDEN_VOYAGES.json": "2896e073c76f847d63a5d06da1025372eba7174bedff94c164710107b07cb0e8",
-      "FLEET_COMMAND_MODEL.json": "ebabe547d06e9e98da890dd4c981b4980934800c67fd911c0fe218e96e436755",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "bfdfe2b4647a2a8139b2f580868621d40d5411e2cc7db264df4effd10b77582d"
+      "sw.js": "f2dbb8275ef2b5514d39ee9ca287da18f3beb31b6397f04d18163c4192fded49",
+      "FLEET_DOCTRINE_REGISTRY.json": "62456ec4468b120c54c7e9840f4f4187f8ff447b6e2a40283f255b04ac9f594e",
+      "GOLDEN_VOYAGES.json": "4bdb6fe38c348604fbb34455a2d7c8021d6982e9147c4bb4c264545f706099c1",
+      "FLEET_COMMAND_MODEL.json": "a080cd8218fea5547fdd60f3226cd1c3910e6d110ebe3272e06a2fdf507188c3",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "e52eed0b9d70e7f0dcdc6d2af701e1039d81a2186f760f8387f239a6c09d7815"
     }
   },
   "watchbeacon_upgrade": {
@@ -713,5 +713,24 @@
     "native_field_acceptance": "pending",
     "packaged_at": "2026-09-30T05:30:35.199109+00:00",
     "local_release_instant": "2026-09-30T01:30:35.199109-04:00"
+  },
+  "bloomfit_upgrade": {
+    "baseline": "8.8.18.2 BloomStart",
+    "scope": "Becca customer experience only plus non-live preview chrome for the flower shell",
+    "message_limit_previous": 32,
+    "message_limit": 120,
+    "outer_whitespace_trim": "paste, blur, preview, review and submit boundaries; internal spaces/newlines preserved",
+    "default_letter_style": "script",
+    "preview_presentation": "card-style panel anchored low on the flower photo with length-aware sizing",
+    "approved_preview_alignment": "canvas output uses the same lower card-message presentation and wrapping intent",
+    "private_preview_banner": "moved away from the flower-shop header to a lower-left test-only position",
+    "photo_first_workflow_changed": false,
+    "pricing_changed": false,
+    "server_updates_applied": false,
+    "live_fees_enabled": false,
+    "contract_terms_changed": false,
+    "native_field_acceptance": "pending",
+    "packaged_at": "2026-09-30T12:51:00-04:00",
+    "local_release_instant": "2026-09-30T12:51:00-04:00"
   }
 }

@@ -1,25 +1,30 @@
-# Dark Sky 8.8.18.2 — BloomStart
+# Dark Sky 8.8.18.3 — BloomFit
 
-Focused customer-entry repair candidate based on 8.8.18.1 DraftWatch. No server update, role change, billing activation, legal change or production-handoff certification.
+**Decision:** focused Becca customer-experience hardening candidate. This release follows the successful BloomStart field check and the user-observed message/preview issues. It is not a live-order, pricing, contract, billing, signing, or production-handoff certification.
 
-## Customer control readiness
+## What changed
 
-The flower and mug template controls previously attached only in late bindEvents(), after asynchronous appearance/storage/migration work. The separate sealed-client-preview path returns before that late binder. A visible landing page could therefore have an enabled-looking Start button with no handler attached.
+- Becca’s card-message limit increases from 32 to **120 characters**.
+- Flower messages trim accidental leading/trailing whitespace after paste, on blur, and again before preview/review/submit. Internal spaces and line breaks are preserved.
+- **Script** becomes the flower-message default; Classic and Bold remain available.
+- The customer preview now keeps the flowers visually primary and presents the message in a lower florist-card panel with length-aware type sizing instead of oversized centered lettering.
+- Final/review preview uses the same card-message treatment, and generated approved-preview imagery follows the same lower-panel wrapping intent.
+- The flower private-preview/test banner moves away from the business header so it no longer covers the Becca’s Bloom Shop wordmark. Live-customer chrome is unchanged.
 
-BloomStart attaches these existing template handlers before the first startup await and before the sealed-preview return. DOM readiness and customer-shell presentation also trigger the same idempotent binder. A WeakSet tracks actual mounted roots so missing roots are not marked ready, replaced roots can bind, and repeated binding cannot duplicate handlers.
+## Preserved boundaries
 
-A controlled browser fixture reproduces a dead Start on DraftWatch while an awaited setup task is held. Attaching the original handler then advances to Photo. The candidate reaches Photo under the same condition. This does not prove the internal sequence on the user's iPad.
+- Photo-first ordering is unchanged in this release.
+- Pricing remains unconfigured for Becca’s test project.
+- Private Preview remains no-records. No customer/order records are created by preview.
+- No Supabase migration, role, appointment, agreement, signature, fee, payment, or commercial activation is performed by this static build.
+- Existing Admiral/Captain/session hardening, DraftWatch protections, vessel isolation, contract drafts, and Fleet Core records are retained.
 
-## Protected scope
+## Field checkpoint
 
-The photo-first flower workflow is unchanged. The starting action is navigation, not an order submission. Existing preview no-order-write guards, authentication, customer wording, fees, CG-1 terms, draft store, agreements, Captain appointments, authorities, and SQL remain unchanged except current release identity where applicable. No data cleanup or migration is introduced.
+1. Upload all 85 files from the same-named release folder and confirm **8.8.18.3 · BLOOMFIT**.
+2. Open Becca’s Bloom Shop through Test/Preview → Private Preview and run Photo → Message → Preview.
+3. Paste a message with accidental outer spaces and confirm the counter/preview uses the cleaned text. Try a short and a longer message; flowers should stay visually primary.
+4. Confirm the private-preview banner no longer covers Becca’s header.
+5. Stop before final submission. Do not approve, Sea Trial, publish, or create a live order for this CX check.
 
-No generated customer image, test account, agreement export or private data is included in this deployment. All 85 original paths remain. Do not upload private JSON/HTML agreements, this test kit, or private contracts to GitHub. Do not run the bundled SQL files or clear website data.
-
-## First iPad check
-
-Install all 85 files from the same-named release folder. Confirm 8.8.18.2 · BLOOMSTART. Go to Becca's Bloom Shop's Test/Preview deck and OPEN PRIVATE PREVIEW. Tap START YOUR FLOWER ORDER once. Photograph Your Flowers should become visible; Back should return to the welcome page. Do not approve, launch, or submit an order for this entry check.
-
-## Limits
-
-Tests use isolated documents, test-only startup/fault injection and synthetic preview data. Full-site navigation previously encountered an environment policy block and is not retried or bypassed. Actual Safari entry, camera/device behavior, server authorization and cloud durability remain unverified by these tests. Existing photo-first design and preview receipt wording need separate customer-experience review; this patch is not that redesign.
+Do not clear website data or run either bundled SQL file.

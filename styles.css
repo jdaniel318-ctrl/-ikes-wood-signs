@@ -1963,6 +1963,24 @@ body.flowers-project .mugs-moon{border-color:#f4e4a7;color:#f7e9c3}
 body.flowers-project .mugs-feature-grid strong,body.flowers-project .mugs-step-kicker{color:#496b4f}
 body.flowers-project .mugs-shell-footer{background:#2d4935;border-top-color:#d7a7b6}
 body.flowers-project > #app > .brand-header,body.flowers-project > #app > .progress-track,body.flowers-project #customerApp{display:none!important}
+/* BloomFit — florist-first card message preview and private-preview chrome */
+body.flowers-project .flowers-message-hint{margin:-6px 0 16px;color:#6d776f;font-size:12px;line-height:1.45}
+body.flowers-project .flowers-character-count{color:#496b4f;font-weight:800}
+body.flowers-project .flowers-preview-card,body.flowers-project .flowers-review-preview{background:#ece8e4}
+body.flowers-project .flowers-preview-text,body.flowers-project .flowers-review-overlay{
+  left:50%;right:auto;top:auto;bottom:clamp(14px,3.5%,26px);transform:translateX(-50%);width:min(78%,560px);max-width:calc(100% - 32px);max-height:42%;
+  padding:13px 18px;border:1px solid rgba(184,95,121,.38);border-radius:18px;background:rgba(255,250,244,.94);box-shadow:0 9px 26px rgba(44,56,46,.18);
+  color:#24372b;font-size:min(var(--flowers-preview-size,31px),7vw);line-height:1.12;font-weight:800;text-shadow:none;white-space:pre-wrap;overflow-wrap:anywhere;overflow:auto
+}
+body.flowers-project .flowers-preview-text.mugs-style-script,body.flowers-project .flowers-review-overlay.mugs-style-script{font-family:"Snell Roundhand","Apple Chancery","Segoe Script",cursive;font-style:italic;font-weight:600}
+body.flowers-project .flowers-preview-text.mugs-style-classic,body.flowers-project .flowers-review-overlay.mugs-style-classic{font-family:Georgia,"Times New Roman",serif;font-weight:700}
+body.flowers-project .flowers-preview-text.mugs-style-bold,body.flowers-project .flowers-review-overlay.mugs-style-bold{font-family:Arial,Helvetica,sans-serif;font-weight:800}
+body.flowers-project[data-customer-session="private_preview"] .experience-mode-banner,body.flowers-project[data-customer-session="test_experience"] .experience-mode-banner{
+  top:auto!important;bottom:max(16px,env(safe-area-inset-bottom))!important;left:max(16px,env(safe-area-inset-left))!important;right:auto!important;transform:none!important;max-width:min(260px,calc(100vw - 110px))!important
+}
+body.flowers-project[data-customer-session="private_preview"] .experience-mode-banner small,body.flowers-project[data-customer-session="test_experience"] .experience-mode-banner small{display:none!important}
+body.flowers-project[data-customer-session="private_preview"] .experience-mode-banner,body.flowers-project[data-customer-session="test_experience"] .experience-mode-banner{gap:10px!important;padding:7px 8px 7px 10px!important}
+@media(max-width:700px){body.flowers-project .flowers-preview-text,body.flowers-project .flowers-review-overlay{width:84%;max-height:46%;padding:11px 14px;border-radius:15px}body.flowers-project[data-customer-session="private_preview"] .experience-mode-banner,body.flowers-project[data-customer-session="test_experience"] .experience-mode-banner{left:10px!important;bottom:max(10px,env(safe-area-inset-bottom))!important;max-width:min(230px,calc(100vw - 84px))!important}}
 
 /* v2.9.7 — PROJECT ASSETS */
 .asset-slot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}

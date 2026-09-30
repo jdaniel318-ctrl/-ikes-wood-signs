@@ -1,148 +1,30 @@
-# Dark Sky 8.8.18.2 — BloomStart
+# Dark Sky 8.8.18.3 — BloomFit
 
-Focused customer-entry repair candidate based on 8.8.18.1 DraftWatch. No server update, role change, billing activation, legal change or production-handoff certification.
+**Decision:** focused Becca customer-experience hardening candidate. This release follows the successful BloomStart field check and the user-observed message/preview issues. It is not a live-order, pricing, contract, billing, signing, or production-handoff certification.
 
-## Customer control readiness
+## What changed
 
-The flower and mug template controls previously attached only in late bindEvents(), after asynchronous appearance/storage/migration work. The separate sealed-client-preview path returns before that late binder. A visible landing page could therefore have an enabled-looking Start button with no handler attached.
-
-BloomStart attaches these existing template handlers before the first startup await and before the sealed-preview return. DOM readiness and customer-shell presentation also trigger the same idempotent binder. A WeakSet tracks actual mounted roots so missing roots are not marked ready, replaced roots can bind, and repeated binding cannot duplicate handlers.
-
-A controlled browser fixture reproduces a dead Start on DraftWatch while an awaited setup task is held. Attaching the original handler then advances to Photo. The candidate reaches Photo under the same condition. This does not prove the internal sequence on the user's iPad.
-
-## Protected scope
-
-The photo-first flower workflow is unchanged. The starting action is navigation, not an order submission. Existing preview no-order-write guards, authentication, customer wording, fees, CG-1 terms, draft store, agreements, Captain appointments, authorities, and SQL remain unchanged except current release identity where applicable. No data cleanup or migration is introduced.
-
-No generated customer image, test account, agreement export or private data is included in this deployment. All 85 original paths remain. Do not upload private JSON/HTML agreements, this test kit, or private contracts to GitHub. Do not run the bundled SQL files or clear website data.
-
-## First iPad check
-
-Install all 85 files from the same-named release folder. Confirm 8.8.18.2 · BLOOMSTART. Go to Becca's Bloom Shop's Test/Preview deck and OPEN PRIVATE PREVIEW. Tap START YOUR FLOWER ORDER once. Photograph Your Flowers should become visible; Back should return to the welcome page. Do not approve, launch, or submit an order for this entry check.
-
-## Limits
-
-Tests use isolated documents, test-only startup/fault injection and synthetic preview data. Full-site navigation previously encountered an environment policy block and is not retried or bypassed. Actual Safari entry, camera/device behavior, server authorization and cloud durability remain unverified by these tests. Existing photo-first design and preview receipt wording need separate customer-experience review; this patch is not that redesign.
-
----
-
-## Retained acceptance history
-
-# Dark Sky 8.8.18.1 — DraftWatch
-
-Client tab/closure diagnostic and resilience candidate based on AdmiralKeel. The reported iPad return from Files & signing is a real field failure; its exact cause was **not** reproduced in ordinary isolated Chromium. This release must not be represented as a proved cure for the device failure.
-
-## Narrow changes
-
-Tab rendering now completes before the visible tab is changed, and a failed render restores the previous tab without clearing the draft. A visible navigation status names the section. A bounded display check catches a hidden or missing panel. A native dialog closure or context mismatch now leaves a specific message on Command rather than a silent return. No automatic re-opening or session extension is added.
-
-Repeated session-ended/unavailable events no longer erase the status code needed to clear an old session warning after successful reauthentication. Earlier saved device drafts are not deleted.
+- Becca’s card-message limit increases from 32 to **120 characters**.
+- Flower messages trim accidental leading/trailing whitespace after paste, on blur, and again before preview/review/submit. Internal spaces and line breaks are preserved.
+- **Script** becomes the flower-message default; Classic and Bold remain available.
+- The customer preview now keeps the flowers visually primary and presents the message in a lower florist-card panel with length-aware type sizing instead of oversized centered lettering.
+- Final/review preview uses the same card-message treatment, and generated approved-preview imagery follows the same lower-panel wrapping intent.
+- The flower private-preview/test banner moves away from the business header so it no longer covers the Becca’s Bloom Shop wordmark. Live-customer chrome is unchanged.
 
 ## Preserved boundaries
 
-No changes to CG-1 contract clauses, draft schema, percentage calculations, existing service selections, the IndexedDB database name, Owner/Captain permissions, server authority checks, 15-minute idle/60-minute maximum windows, or the existing blocked signing/fee/commissioning actions. No live service call, signing request, fee activation, permission change or website-data purge was made. Do not run the bundled SQL. The accepted Admiral office remains separate from session authentication; this client release creates no server rank.
+- Photo-first ordering is unchanged in this release.
+- Pricing remains unconfigured for Becca’s test project.
+- Private Preview remains no-records. No customer/order records are created by preview.
+- No Supabase migration, role, appointment, agreement, signature, fee, payment, or commercial activation is performed by this static build.
+- Existing Admiral/Captain/session hardening, DraftWatch protections, vessel isolation, contract drafts, and Fleet Core records are retained.
 
 ## Field checkpoint
 
-Keep the existing Revision 2 private export unchanged. Install this single complete release, confirm 8.8.18.1 DRAFTWATCH, then use normal Admiral entry. Open Contracts & Services and choose the existing vessel. Files & signing should remain in the contract workspace; report its screen or the new specific closure/error message. No real signing, uploads, charges or commissioning are part of this check. Native Safari acceptance remains pending.
+1. Upload all 85 files from the same-named release folder and confirm **8.8.18.3 · BLOOMFIT**.
+2. Open Becca’s Bloom Shop through Test/Preview → Private Preview and run Photo → Message → Preview.
+3. Paste a message with accidental outer spaces and confirm the counter/preview uses the cleaned text. Try a short and a longer message; flowers should stay visually primary.
+4. Confirm the private-preview banner no longer covers Becca’s header.
+5. Stop before final submission. Do not approve, Sea Trial, publish, or create a live order for this CX check.
 
----
-
-## Prior release record (retained)
-
-# Dark Sky 8.8.18.0 — AdmiralKeel
-
-## Current release: commissioned Admiral office hardening
-
-AdmiralKeel marks the Fleet role transition requested by the Captain: **the Admiral office is now accepted as a durable Fleet role rather than a temporary promotion milestone.** This is a product/governance role state, not a bypass of authentication. Each secure Admiral workspace still requires the passage PIN and server-verified active Admiral identity. Session timeout, logout, page reload, readiness WATCH items, and unfinished tests lock work; they do not demote the Admiral. Only an explicit server-side authority revocation can remove the active role.
-
-Captain and Admiral remain separate offices held by the same person. Admiral observation remains read-only by default. Modifying commands remain exact-vessel, deliberate, authenticated, reasoned, and audited. Existing Vessel Captain appointments, owner authority, Becca's browser-local CG-1 agreement draft, Fleet Core membership, and all unresolved readiness warnings are preserved. Fleet Captain operating-server activation, executed-contract verification, commercial fee activation, server-wide session expiry, revocation proof, and complete working-ship handoff remain unfinished.
-
-This hardening also improves input ergonomics discovered during field testing: single-line pasted text trims only accidental leading/trailing whitespace while preserving internal spaces; contract illustration fields select their default zero on focus so the first typed amount replaces it, while the negotiated percentage remains blank unless deliberately set.
-
-**Admiral rank and secure session are now explicitly different states throughout the Engine, Admiral gate, Command Deck, and Contracts & Services session messaging.**
-
----
-
-# Dark Sky 8.8.17.23 — CharterPort
-
-## Current release: Contracts & Services entry hardening
-
-This uniquely numbered client repair follows the actual CharterBridge package. It supersedes the two different .22 repair names for the next field check; it is not a new contract, permission grant, or fleet launch.
-
-The field screenshot confirms that CharterBridge did not visibly open after a tap. The ordinary isolated Chromium fixture does open CharterBridge, so the exact iPad failure cause is not established. A controlled button-node redraw demonstrates a separate weakness: the old element-specific handler is lost. CharterPort uses narrowly scoped delegated entry handling that survives this redraw and native modal presentation rather than relying on a numeric z-index race.
-
-Before requesting the contract directory, the entry verifies that the native modal is open and its Back to Command control is in front for hit-testing. An unconfirmed display unwinds to a usable Command Deck with a persistent CONTRACTS-DISPLAY-UNCONFIRMED message. It does not repeatedly open itself, repeat a command, or bypass authentication. Existing 15-minute idle / 60-minute maximum workspace rules remain.
-
-All CG-1 wording, fee calculations, draft storage keys, business logic, existing appointments and server authority contracts are retained. This update neither signs an agreement nor enables fees, commercial commissioning, departure, or Fleet Captain server operation. No live service calls, database changes or website-data deletion are part of this repair. Do not run the bundled SQL. Keep private contracts off the public GitHub repository.
-
-**Field acceptance pending:** confirm 8.8.17.23 · CHARTERPORT, authenticate Admiral normally, tap Contracts & Services once, and inspect the empty workspace. Native iPad Safari and real server interactions have not been tested by the fixture suites.
-
----
-
-## Retained predecessor documentation
-
-# CharterBridge field checkpoint — 8.8.17.22
-
-After Pages deployment, confirm CharterBridge, authenticate Admiral, and tap Contracts & Services once. The agreement must visibly cover the deck, keep Back to Command reachable, and return focus/control when closed. Inspect the empty Parties form before entering any real terms. No fee, signature, commission, departure, permission or live-data change is part of this test.
-
-# Dark Sky 8.8.17.21 — CharterGuard
-
-Private commissioning-agreement preparation. Admiral-only client workspace: named legal parties and Captain acknowledgment, selected duties, per-vessel sales basis/percentage, counsel review log, private draft export/import, browser-local append-only draft saves with readback, printable legal-review copy, and externally executed PDF fingerprints.
-
-**Not a signing service, legal certification, billing activation or server authorization update.** Document fingerprints do not prove signature validity, signer authority, content equivalence or cloud custody. Actual business entities, jurisdiction, insurance and risk allocation require review. Selected service duties are proposed terms, not access grants.
-
-No production fee is calculated from live records or collected. The fee calculator is a labeled manual scenario. No production contract, user, appointment, owner, report or ledger record is created. No live SQL is needed or included. Existing SQL references are not to be executed.
-
-**Commercial commission and departure are held in this client** pending an executed-agreement verification service. This does not retrofit a server gate: old clients/direct server commands still require a separately authorized server implementation and test. Existing test vessels/accepted appointments remain. Internal Admiral programs remain distinct.
-
-New route: Engine → Build & Govern → normal Admiral authentication → CONTRACTS & SERVICES. Select an existing ship or prepare a planned vessel key; this does not reserve it. Save device draft is private browser storage, not a cloud backup. Export JSON/HTML into private Files; never upload private agreements to the public GitHub site.
-
-Before signing externally, complete all terms and have appropriate counsel finalize the document. The generated contract is conspicuously marked DRAFT FOR LEGAL REVIEW — NOT FOR SIGNATURE. Retain final signed copies and signing evidence outside this test browser. Future server verification must precede commercial activation.
-
-Existing identity/appointment, owner, ledger, project and Admiral session boundaries remain. No purge or automatic legal/rate defaults.
-
----
-
-# TrueBearing 8.8.17.20 — current release note
-
-Named vessel/account navigation; no new operating authority installed. Fleet Command operations remain disabled pending server activation. Existing Captain operations and read-only Admiral observation remain distinct. See README.md.
-
----
-
-# 8.8.17.19 HelmDeck — acceptance
-
-This is a client test release, not a completed working-ship handoff.
-
-## Native iPad acceptance still required
-
-1. Confirm Engine reports 8.8.17.19 · HELMDECK after the complete upload finishes.
-2. Reopen the existing accepted Captain Station route and sign in with the appointed test account if asked. Do not repeat acceptance for an accepted appointment.
-3. Verify the empty Orders state, Watch fields and Publish button fit together in landscape, while Access & scope expands and collapses normally.
-4. Verify readable input targeting with the keyboard open, rotation, and longer content. Normal scrolling is expected at reduced height and with many records.
-5. Before any order change or publication, confirm the exact project and staging state. The layout test itself requires no business mutation.
-6. Continue the previously planned live Watch, order, cross-vessel-denial, revocation and isolated-restore tests separately.
-
-## Failure handling
-
-Do not clear website data. Do not repeatedly press Accept or Publish after an unconfirmed result. Recheck Station reads the saved appointment only. Report a recovery screen without issuing new authority or departing a vessel.
-
-## Retained prior acceptance reference
-
-# 8.8.17.18 Quarterdeck acceptance
-
-## Automated evidence
-
-Isolated Chromium tests execute the full shipped Captain and shared Supabase-transport modules with original HTML/styles. Server/account/storage replies are fixtures. They reproduce the prior delayed-initialization defect, exercise the candidate's PIN/account path and exact-vessel preview/results, and verify layouts without touching live data. Package/body integrity tests are separate from operating proof. The external Quarterdeck verification report records the final extracted-ZIP results.
-
-## Native iPad acceptance (not yet completed)
-
-1. Confirm 8.8.17.18 · QUARTERDECK after a successful test deployment.
-2. Open Build & Govern after the page has been idle longer than one second. Authenticate normally.
-3. Select Delegate. Confirm the initial form appears, task tabs work and the Preview Appointment control fits the normal landscape screen.
-4. Verify navigation back to Govern, session-details expansion, and reports/recovery tools. Do not delete storage or issue lifecycle commands during this display check.
-5. Later, use a separate account controlled by the Captain for a read-only appointment preview before any actual appointment is authorized.
-
-## Still separate
-
-Browser workspace timing is not a server-wide token-expiry guarantee. A model PASS is not an operating acceptance. Actual cross-vessel denial, revocation, independent-device record durability, restore, a complete customer/operator workflow, accepted Captain appointment and Admiral observation must be demonstrated before the working-ship milestone is certified. Five existing warning conditions remain unresolved by this repair.
+Do not clear website data or run either bundled SQL file.

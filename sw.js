@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.18.2';
-const RELEASE_SEAL='bloomstart-88182';
+const RELEASE_BUILD='8.8.18.3';
+const RELEASE_SEAL='bloomfit-88183';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.
