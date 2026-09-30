@@ -1,8 +1,8 @@
 {
-  "release": "BloomFit",
-  "name": "BloomFit",
-  "build": "8.8.18.3",
-  "seal": "bloomfit-88183",
+  "release": "BloomPick",
+  "name": "BloomPick",
+  "build": "8.8.18.4",
+  "seal": "bloompick-88184",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",

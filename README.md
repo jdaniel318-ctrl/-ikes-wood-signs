@@ -1,3 +1,32 @@
+# Dark Sky 8.8.18.4 — BloomPick
+
+**Decision:** focused flower photo-source repair candidate. Native iPad Photo Library/camera acceptance is pending. This static release does not activate a business or grant authority.
+
+## Change
+
+- Separate **CHOOSE SAVED PHOTO** (image file input without `capture`) and **TAKE PHOTO** (image file input requesting `capture="environment"`). The browser/OS controls the native chooser UI.
+- Both sources use the same validated image-read path. Confirm Photo stays unavailable while reading, or when there is no decoded image.
+- Canceling a chooser or failing to read a replacement preserves the currently chosen photo. A replacement clears the old final approval.
+- A new order clears both file inputs and the transient image previews. Delayed reads cannot repopulate a reset, detached, hidden, or different-project shell.
+- Read/decode failures and a 20-second read deadline give a persistent local status, not a silent dead end.
+- No automatic photo history: the user explicitly chooses their earlier image from the device again.
+
+## Preserved
+
+BloomFit's 120-character flower message, Script default, card styling, normalization, and preview-banner placement remain. Other business templates, contracts, fees, owner/Captain authorities and preview no-records behavior are unchanged except release labels. No database, order, appointment, live publication, email, signature or payment call was performed during this repair. Customer photos and private agreements are not packaged.
+
+## Field checkpoint
+
+1. Upload the 85 application files from the same-named folder; confirm **8.8.18.4 · BLOOMPICK**.
+2. Open Becca's Test / Preview → Private Preview. Start the flower flow and select **CHOOSE SAVED PHOTO**. Use the device's Photo Library or Files picker to select the earlier arrangement photo.
+3. Confirm the visible image, continue to the message, and stop before order submission. Native chooser behavior is not certified by a Chromium fixture.
+
+Do not clear website data or run either bundled SQL file. Keep private JSON/HTML agreements out of GitHub.
+
+---
+
+## Prior release record (unchanged)
+
 # Dark Sky 8.8.18.3 — BloomFit
 
 **Decision:** focused Becca customer-experience hardening candidate. This release follows the successful BloomStart field check and the user-observed message/preview issues. It is not a live-order, pricing, contract, billing, signing, or production-handoff certification.

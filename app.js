@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.18.3';
+  const BUILD_VERSION='8.8.18.4';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -13648,6 +13648,89 @@ The full order and approved media remain stored with this project.`;
   const boundTemplateShellRoots = new WeakSet();
   function bindMugsShell(){const root=$('mugsCustomerShell');if(!root||boundTemplateShellRoots.has(root))return;boundTemplateShellRoots.add(root);window.__mugsShellBound=true;root.addEventListener('click',e=>{const n=e.target.closest('[data-mugs-next]');if(n&&!n.disabled){showMugsScreen(n.dataset.mugsNext);return;}const b=e.target.closest('[data-mugs-back]');if(b){showMugsScreen(b.dataset.mugsBack);}});$('mugsPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{mugsState.photoData=String(r.result||'');$('mugsPhotoPreview').src=mugsState.photoData;$('mugsPhotoPreviewWrap').classList.remove('hidden');$('mugsPhotoNext').disabled=!mugsState.photoData;};r.readAsDataURL(file);});$('mugsRetakePhoto')?.addEventListener('click',()=>{mugsState.photoData='';$('mugsPhotoInput').value='';$('mugsPhotoPreviewWrap').classList.add('hidden');$('mugsPhotoNext').disabled=true;$('mugsPhotoInput').click();});$('mugsMessage')?.addEventListener('input',e=>{mugsState.message=e.target.value;$('mugsCharCount').textContent=String(mugsState.message.length);});$('mugsStyle')?.addEventListener('change',e=>mugsState.style=e.target.value);$('mugsCustomerNext')?.addEventListener('click',()=>{mugsState.customerName=$('mugsCustomerName').value.trim();mugsState.customerPhone=$('mugsCustomerPhone').value.trim();mugsState.customerEmail=$('mugsCustomerEmail').value.trim();if(!mugsState.customerName||!mugsState.customerPhone||!mugsState.customerEmail){alert('Name, phone, and email are required.');return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mugsState.customerEmail)){alert('Enter a valid email address.');return;}showMugsScreen('review');});$('mugsApprovalCheck')?.addEventListener('change',e=>$('mugsSubmitOrder').disabled=!e.target.checked);$('mugsSubmitOrder')?.addEventListener('click',submitMugsOrder);$('mugsNewOrder')?.addEventListener('click',()=>{resetMugsShell();showMugsScreen('welcome');});}
 
+
+  // BloomPick: native file inputs keep camera and saved-photo intentions separate.
+  // Only the camera input requests capture. No photo history or network call is added.
+  let flowersPhotoRequest=0;
+  let flowersPhotoTask=null;
+  function cancelFlowersPhotoRead(){
+    flowersPhotoRequest++;
+    const task=flowersPhotoTask; flowersPhotoTask=null;
+    if(!task)return;
+    clearTimeout(task.timer);
+    task.reader.onload=task.reader.onerror=task.reader.onabort=null;
+    if(task.reader.readyState===1){try{task.reader.abort();}catch(_){}}
+    if(task.probe){task.probe.onload=task.probe.onerror=null;task.probe.src='';}
+  }
+  function flowersPhotoNotice(root,text,error=false){
+    const el=root?.querySelector('#flowersPhotoStatus');
+    if(el){el.textContent=text;el.classList.toggle('is-error',error);}
+  }
+  function syncFlowersPhotoPicker(root){
+    const next=root?.querySelector('#flowersPhotoNext');
+    if(next)next.disabled=!!flowersPhotoTask||!flowersState.photoData;
+    root?.querySelector('#flowersPhotoChoices')?.setAttribute('aria-busy',String(!!flowersPhotoTask));
+  }
+  function bindFlowersPhotoPicker(root){
+    const inputs=['flowersPhotoInput','flowersCameraInput'].map(id=>root.querySelector('#'+id)).filter(Boolean);
+    const unchanged=()=>flowersPhotoNotice(root,flowersState.photoData?'No new photo selected. Your current photo is unchanged.':'No photo selected. Choose a saved photo or take a new one.');
+    const readPhoto=(event)=>{
+      const input=event.target,file=input.files?.[0];
+      if(!file){if(!flowersPhotoTask)unchanged();return;}
+      const projectId=activeProjectId;
+      if(!projectId||!root.isConnected||root!==$('flowersCustomerShell')||root.classList.contains('hidden'))return;
+      cancelFlowersPhotoRead();
+      // Capture File above, then release both native values so same-file reselection works across sources.
+      inputs.forEach(source=>{source.value='';});
+      const token=flowersPhotoRequest;
+      const current=()=>token===flowersPhotoRequest&&activeProjectId===projectId&&root.isConnected&&root===$('flowersCustomerShell')&&!root.classList.contains('hidden');
+      if(file.type&&!file.type.startsWith('image/')){
+        input.value=''; syncFlowersPhotoPicker(root);
+        flowersPhotoNotice(root,'That file is not a photo. Choose an image from Photos or Files.',true);return;
+      }
+      const reader=new FileReader(),task={reader,probe:null,timer:null};flowersPhotoTask=task;
+      syncFlowersPhotoPicker(root);
+      flowersPhotoNotice(root,'Opening photo… Your current photo stays until the new one is ready.');
+      const finish=(data,message,error=false)=>{
+        const valid=current();
+        if(token!==flowersPhotoRequest)return;
+        cancelFlowersPhotoRead();
+        if(!valid)return;
+        input.value=''; // Permits choosing the same file again after a change or failed read.
+        if(data){
+          flowersState.photoData=data;flowersState.approvedPreviewData='';
+          root.querySelector('#flowersPhotoPreview').src=data;
+          root.querySelector('#flowersPhotoPreviewWrap').classList.remove('hidden');
+          const approval=root.querySelector('#flowersApprovalCheck');if(approval)approval.checked=false;
+          const submit=root.querySelector('#flowersSubmitOrder');if(submit)submit.disabled=true;
+        }
+        syncFlowersPhotoPicker(root);flowersPhotoNotice(root,message,error);
+      };
+      task.timer=setTimeout(()=>finish('','The photo took too long to open. Your previous photo is unchanged. Try a smaller image or a JPG/PNG copy.',true),20000);
+      reader.onerror=()=>finish('','The photo could not be read. Your previous photo is unchanged. Choose another photo.',true);
+      reader.onabort=()=>finish('','Photo reading was canceled. Your previous photo is unchanged.');
+      reader.onload=()=>{
+        if(!current()){finish('','');return;}
+        const data=typeof reader.result==='string'?reader.result:'';
+        if(!data.startsWith('data:')){finish('','The file did not contain a readable photo. Choose another image.',true);return;}
+        const probe=new Image();task.probe=probe;
+        probe.onerror=()=>finish('','This photo format could not be opened. Your previous photo is unchanged. Try a JPG or PNG copy.',true);
+        probe.onload=()=>{
+          if(!probe.naturalWidth||!probe.naturalHeight){finish('','This file could not be decoded as a photo.',true);return;}
+          finish(data,'Photo ready. Check the image below, then select Confirm Photo.');
+        };
+        probe.src=data;
+      };
+      try{reader.readAsDataURL(file);}catch(_){finish('','The photo could not be read. Choose another photo.',true);}
+    };
+    inputs.forEach(input=>{input.addEventListener('change',readPhoto);input.addEventListener('cancel',()=>{if(!flowersPhotoTask)unchanged();});});
+    root.querySelector('#flowersRetakePhoto')?.addEventListener('click',()=>{
+      // Do not erase the current image before the user has chosen a replacement.
+      const input=root.querySelector('#flowersPhotoInput');if(!input)return;
+      input.value='';input.click();
+    });
+  }
+
   const FLOWERS_MESSAGE_MAX=120;
   const flowersState={screen:'welcome',photoData:'',message:'',style:'script',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''};
   const FLOWERS_SCREEN_ORDER=['welcome','photo','message','preview','customer','review','done'];
@@ -13655,7 +13738,7 @@ The full order and approved media remain stored with this project.`;
   function flowersPreviewFontPx(text,style){const len=normalizeFlowersMessage(text).length;let size=len<=28?34:len<=55?30:len<=85?26:22;if(style==='script')size=Math.max(22,size-1);return size;}
   function syncFlowersMessage(options={}){const field=$('flowersMessage');let value=field?String(field.value||''):String(flowersState.message||'');if(options.trim)value=normalizeFlowersMessage(value);else value=value.slice(0,FLOWERS_MESSAGE_MAX);flowersState.message=value;if(field&&field.value!==value)field.value=value;if($('flowersCharCount'))$('flowersCharCount').textContent=String(value.length);return value;}
   function applyFlowersPreviewText(el,text,style){if(!el)return;const clean=normalizeFlowersMessage(text)||'Your Message';const selected=style||'script';el.textContent=clean;el.className=`mugs-preview-text flowers-preview-text mugs-style-${selected}`;el.style.setProperty('--flowers-preview-size',`${flowersPreviewFontPx(clean,selected)}px`);}
-  function resetFlowersShell(){Object.assign(flowersState,{screen:'welcome',photoData:'',message:'',style:'script',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''});if($('flowersPhotoInput'))$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap')?.classList.add('hidden');if($('flowersPhotoNext'))$('flowersPhotoNext').disabled=true;if($('flowersMessage'))$('flowersMessage').value='';if($('flowersCharCount'))$('flowersCharCount').textContent='0';if($('flowersStyle'))$('flowersStyle').value='script';['flowersCustomerName','flowersCustomerPhone','flowersCustomerEmail'].forEach(id=>{if($(id))$(id).value='';});if($('flowersApprovalCheck'))$('flowersApprovalCheck').checked=false;if($('flowersSubmitOrder'))$('flowersSubmitOrder').disabled=true;}
+  function resetFlowersShell(){cancelFlowersPhotoRead();const photoRoot=$('flowersCustomerShell');if($('flowersCameraInput'))$('flowersCameraInput').value='';['flowersPhotoPreview','flowersPreviewImage','flowersDonePreview'].forEach(id=>$(id)?.removeAttribute('src'));if($('flowersReviewSummary'))$('flowersReviewSummary').textContent='';flowersPhotoNotice(photoRoot,'No photo selected.');photoRoot?.querySelector('#flowersPhotoChoices')?.setAttribute('aria-busy','false');Object.assign(flowersState,{screen:'welcome',photoData:'',message:'',style:'script',customerName:'',customerPhone:'',customerEmail:'',approvedPreviewData:''});if($('flowersPhotoInput'))$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap')?.classList.add('hidden');if($('flowersPhotoNext'))$('flowersPhotoNext').disabled=true;if($('flowersMessage'))$('flowersMessage').value='';if($('flowersCharCount'))$('flowersCharCount').textContent='0';if($('flowersStyle'))$('flowersStyle').value='script';['flowersCustomerName','flowersCustomerPhone','flowersCustomerEmail'].forEach(id=>{if($(id))$(id).value='';});if($('flowersApprovalCheck'))$('flowersApprovalCheck').checked=false;if($('flowersSubmitOrder'))$('flowersSubmitOrder').disabled=true;}
   function showFlowersScreen(name){flowersState.screen=name;$('flowersCustomerShell')?.querySelectorAll('.mugs-screen').forEach(s=>s.classList.toggle('active',s.dataset.flowersScreen===name));const i=FLOWERS_SCREEN_ORDER.indexOf(name);if($('flowersProgressBar'))$('flowersProgressBar').style.width=`${Math.max(5,(i+1)/FLOWERS_SCREEN_ORDER.length*100)}%`;if(name==='preview')renderFlowersPreview();if(name==='review')renderFlowersReview();window.scrollTo({top:0,left:0,behavior:'instant'});}
   function renderFlowersPreview(){const clean=syncFlowersMessage({trim:true});if($('flowersPreviewImage')&&flowersState.photoData)$('flowersPreviewImage').src=flowersState.photoData;applyFlowersPreviewText($('flowersPreviewText'),clean,flowersState.style);}
   function renderFlowersReview(){const box=$('flowersReviewSummary');if(!box)return;const clean=syncFlowersMessage({trim:true}),style=flowersState.style||'script',size=flowersPreviewFontPx(clean,style);box.innerHTML=`<div class="mugs-review-preview flowers-review-preview"><img src="${flowersState.photoData}" alt="Confirmed flower arrangement photo"><div class="mugs-review-overlay flowers-review-overlay mugs-style-${escapeHtml(style)}" style="--flowers-preview-size:${size}px">${escapeHtml(clean||'Your Message')}</div></div><div class="mugs-review-row"><span>Message</span><strong>${escapeHtml(clean)}</strong></div><div class="mugs-review-row"><span>Letter style</span><strong>${escapeHtml(style)}</strong></div><div class="mugs-review-row"><span>Name</span><strong>${escapeHtml(flowersState.customerName||'')}</strong></div><div class="mugs-review-row"><span>Phone</span><strong>${escapeHtml(flowersState.customerPhone||'')}</strong></div><div class="mugs-review-row"><span>Email</span><strong>${escapeHtml(flowersState.customerEmail||'')}</strong></div><div class="mugs-review-row"><span>Pricing</span><strong>TEST MODE</strong></div>`;}
@@ -13990,7 +14073,7 @@ The full order and approved media remain stored with this project.`;
     return true;
   };
 
-  function bindFlowersShell(){const root=$('flowersCustomerShell');if(!root||boundTemplateShellRoots.has(root))return;boundTemplateShellRoots.add(root);window.__flowersShellBound=true;root.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){if(n.dataset.flowersNext==='preview')syncFlowersMessage({trim:true});showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});$('flowersPhotoInput')?.addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{flowersState.photoData=String(r.result||'');$('flowersPhotoPreview').src=flowersState.photoData;$('flowersPhotoPreviewWrap').classList.remove('hidden');$('flowersPhotoNext').disabled=!flowersState.photoData;};r.readAsDataURL(file);});$('flowersRetakePhoto')?.addEventListener('click',()=>{flowersState.photoData='';$('flowersPhotoInput').value='';$('flowersPhotoPreviewWrap').classList.add('hidden');$('flowersPhotoNext').disabled=true;$('flowersPhotoInput').click();});const message=$('flowersMessage');message?.addEventListener('input',()=>syncFlowersMessage());message?.addEventListener('paste',()=>setTimeout(()=>syncFlowersMessage({trim:true}),0));message?.addEventListener('blur',()=>syncFlowersMessage({trim:true}));$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone||!flowersState.customerEmail){alert('Name, phone, and email are required.');return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(flowersState.customerEmail)){alert('Enter a valid email address.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});}
+  function bindFlowersShell(){const root=$('flowersCustomerShell');if(!root||boundTemplateShellRoots.has(root))return;boundTemplateShellRoots.add(root);window.__flowersShellBound=true;root.addEventListener('click',e=>{const n=e.target.closest('[data-flowers-next]');if(n&&!n.disabled){if(n.dataset.flowersNext==='preview')syncFlowersMessage({trim:true});showFlowersScreen(n.dataset.flowersNext);return;}const b=e.target.closest('[data-flowers-back]');if(b){showFlowersScreen(b.dataset.flowersBack);}});bindFlowersPhotoPicker(root);const message=$('flowersMessage');message?.addEventListener('input',()=>syncFlowersMessage());message?.addEventListener('paste',()=>setTimeout(()=>syncFlowersMessage({trim:true}),0));message?.addEventListener('blur',()=>syncFlowersMessage({trim:true}));$('flowersStyle')?.addEventListener('change',e=>flowersState.style=e.target.value);$('flowersCustomerNext')?.addEventListener('click',()=>{flowersState.customerName=$('flowersCustomerName').value.trim();flowersState.customerPhone=$('flowersCustomerPhone').value.trim();flowersState.customerEmail=$('flowersCustomerEmail').value.trim();if(!flowersState.customerName||!flowersState.customerPhone||!flowersState.customerEmail){alert('Name, phone, and email are required.');return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(flowersState.customerEmail)){alert('Enter a valid email address.');return;}showFlowersScreen('review');});$('flowersApprovalCheck')?.addEventListener('change',e=>$('flowersSubmitOrder').disabled=!e.target.checked);$('flowersSubmitOrder')?.addEventListener('click',submitFlowersOrder);$('flowersNewOrder')?.addEventListener('click',()=>{resetFlowersShell();showFlowersScreen('welcome');});}
 
   function bindProjectTemplateShells(){
     // Template-level customer behaviors. These are bound once and are not tied
@@ -16315,7 +16398,7 @@ The full order and approved media remain stored with this project.`;
   }
 
   async function init(){
-    // BloomFit: a visible customer shell must not wait on storage or migrations
+    // BloomPick: a visible customer shell must not wait on storage or migrations
     // for its controls. This also covers the sealed-preview early return below.
     // Per-root binding is idempotent; absent roots are not marked as bound.
     bindProjectTemplateShells();
