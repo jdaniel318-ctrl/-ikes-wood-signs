@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.19.0",
-  "release": "FleetMission",
+  "build": "8.8.19.1",
+  "release": "FleetIdentity",
   "status": "active",
   "principles": [
     {

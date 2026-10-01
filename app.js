@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.19.0';
+  const BUILD_VERSION='8.8.19.1';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -4389,6 +4389,13 @@
       logo=assets?.projectLogo||assets?.heroGraphic||assets?.footerGraphic||'';
       if(logo) source=assets?.projectLogo?'projectLogo':(assets?.heroGraphic?'heroGraphic':'footerGraphic');
     }catch(_){}
+    // A commissioned business may carry an exact project-owned intake logo before it
+    // has been copied into the local Graphics Library. Use that same-vessel source as
+    // a presentation fallback only; never borrow another vessel's artwork.
+    if(!logo && p?.businessIntake?.visualAssets?.logo){
+      logo=String(p.businessIntake.visualAssets.logo);
+      source='businessIntakeLogo';
+    }
     // Ike's original customer experience predates the V4 Graphics Library. Preserve
     // that established identity as a project-specific compatibility fallback until
     // a dedicated Project Logo / Mark is assigned in the Engine.
@@ -5589,7 +5596,7 @@
 
     const admiralWindowPolicy=window.DarkSkyAdmiralSession?.status?.();
     const boundedAdmiralWindow=admiralWindowPolicy?.idleLimitMinutes===15 && admiralWindowPolicy?.maximumLimitMinutes===60 && admiralWindowPolicy?.enforcement==='browser-workspace-only';
-    add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'FleetMission limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
+    add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'FleetIdentity limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
 
     add('fleet-command-operating-backend','Fleet Captain operating service','warn','TrueBearing names the vessel entrance and preserves Admiral observation. The separate Fleet Command operating service is not activated: its live update was blocked. No Captain appointment or owner permission is bypassed.');
 
@@ -6325,7 +6332,7 @@
     else next='Run independent-device and restore acceptance before final working-ship handoff.';
     return {commissioned,authority,operational,producing,recoverable,next,owner,captainApproval};
   }
-  function renderFleetMissionControl(){
+  function renderFleetIdentityControl(){
     const host=document.getElementById('fleetMissionRows'),state=document.getElementById('fleetMissionState'),summary=document.getElementById('fleetMissionSummary');
     if(!host||!state||!summary)return;
     const list=projects().filter(Boolean);
@@ -6339,12 +6346,22 @@
     host.innerHTML=rows.length?rows.map(({p,m})=>{
       const ownerLabel=m.owner==='active'?'ACTIVE':m.owner==='invited'?'INVITED':'UNASSIGNED';
       const captainLabel=m.captainApproval?'LOCAL APPROVAL RECORDED':'NOT PROVEN';
-      return `<article class="fleet-mission-vessel" data-project-id="${escapeHtml(p.id)}"><header><div><small>${escapeHtml(p.projectCode||p.orderPrefix||p.id)}</small><strong>${escapeHtml(p.name)}</strong></div><span>${m.producing?'PRODUCING':m.operational?'SEA TRIAL':'STAGING'}</span></header><div class="fleet-mission-stages">${pill('COMMISSIONED',m.commissioned)}${pill('AUTHORITY',m.authority)}${pill('OPERATIONAL',m.operational)}${pill('PRODUCING',m.producing)}${pill('RECOVERABLE',m.recoverable)}</div><div class="fleet-mission-authority"><span><b>OWNER</b>${ownerLabel}</span><span><b>CAPTAIN</b>${captainLabel}</span></div><div class="fleet-mission-next"><small>NEXT REQUIRED PROOF</small><strong>${escapeHtml(m.next)}</strong></div></article>`;
+      const code=escapeHtml(p.projectCode||p.orderPrefix||p.id);
+      return `<article class="fleet-mission-vessel" data-project-id="${escapeHtml(p.id)}"><header><div class="fleet-mission-identity"><div class="fleet-mission-logo" data-fleet-mission-logo="${escapeHtml(p.id)}"><span>${code.slice(0,3)}</span></div><div><small>${code}</small><strong>${escapeHtml(p.name)}</strong><button type="button" class="fleet-mission-logo-action" data-fleet-logo-project="${escapeHtml(p.id)}">LOGO</button></div></div><span>${m.producing?'PRODUCING':m.operational?'SEA TRIAL':'STAGING'}</span></header><div class="fleet-mission-stages">${pill('COMMISSIONED',m.commissioned)}${pill('AUTHORITY',m.authority)}${pill('OPERATIONAL',m.operational)}${pill('PRODUCING',m.producing)}${pill('RECOVERABLE',m.recoverable)}</div><div class="fleet-mission-authority"><span><b>OWNER</b>${ownerLabel}</span><span><b>CAPTAIN</b>${captainLabel}</span></div><div class="fleet-mission-next"><small>NEXT REQUIRED PROOF</small><strong>${escapeHtml(m.next)}</strong></div></article>`;
     }).join(''):'<div class="fleet-mission-loading">No Fleet Core vessels are available.</div>';
+    rows.forEach(async({p})=>{
+      const mark=host.querySelector(`[data-fleet-mission-logo="${CSS.escape(p.id)}"]`); if(!mark)return;
+      try{const visual=await projectBrandVisual(p);if(!visual.logo)return;const img=document.createElement('img');img.src=visual.logo;img.alt=`${p.name} logo`;mark.replaceChildren(img);mark.classList.add('has-logo');}catch(_){}
+    });
+    host.querySelectorAll('[data-fleet-logo-project]').forEach(btn=>btn.addEventListener('click',async()=>{
+      const projectId=btn.dataset.fleetLogoProject; const p=projectById(projectId); if(!p)return;
+      await openProjectEngineControl(projectId); await renderProjectTab(projectId,'marketing');
+      requestAnimationFrame(()=>{focusMarketingGraphicSlot('projectLogo');const el=document.getElementById('graphicsFocusedEditor');el?.scrollIntoView({behavior:'smooth',block:'start'});});
+    }));
   }
 
   async function renderFleetCommissioning({skipConvergence=false}={}){
-    renderFleetMissionControl();
+    renderFleetIdentityControl();
     const summary=$('fleetCommissioningSummary');
     const fleet=$('fleetCommissioningFleet');
     const reference=$('fleetCommissioningReference');

@@ -1,8 +1,8 @@
 {
-  "release": "FleetMission",
-  "name": "FleetMission",
-  "build": "8.8.19.0",
-  "seal": "fleetmission-88190",
+  "release": "FleetIdentity",
+  "name": "FleetIdentity",
+  "build": "8.8.19.1",
+  "seal": "fleetidentity-88191",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "FleetMission"
+  "releaseName": "FleetIdentity"
 }
