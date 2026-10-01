@@ -1,5 +1,5 @@
 
-## 8.8.19.1 FleetIdentity
+## 8.8.19.2 FleetPolish
 - Fleet Mission Control now renders each vessel's project-owned canonical logo when available.
 - A compact LOGO action routes directly to that exact vessel's Project Graphics → Project Logo / Mark editor.
 - Upload/replace still uses the existing project-scoped graphics store and Engine mutation boundary; no cross-vessel asset copy is introduced.

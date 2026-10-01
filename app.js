@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.19.1';
+  const BUILD_VERSION='8.8.19.2';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -5596,7 +5596,7 @@
 
     const admiralWindowPolicy=window.DarkSkyAdmiralSession?.status?.();
     const boundedAdmiralWindow=admiralWindowPolicy?.idleLimitMinutes===15 && admiralWindowPolicy?.maximumLimitMinutes===60 && admiralWindowPolicy?.enforcement==='browser-workspace-only';
-    add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'FleetIdentity limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
+    add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'FleetPolish limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
 
     add('fleet-command-operating-backend','Fleet Captain operating service','warn','TrueBearing names the vessel entrance and preserves Admiral observation. The separate Fleet Command operating service is not activated: its live update was blocked. No Captain appointment or owner permission is bypassed.');
 
@@ -6332,7 +6332,7 @@
     else next='Run independent-device and restore acceptance before final working-ship handoff.';
     return {commissioned,authority,operational,producing,recoverable,next,owner,captainApproval};
   }
-  function renderFleetIdentityControl(){
+  function renderFleetPolishControl(){
     const host=document.getElementById('fleetMissionRows'),state=document.getElementById('fleetMissionState'),summary=document.getElementById('fleetMissionSummary');
     if(!host||!state||!summary)return;
     const list=projects().filter(Boolean);
@@ -6341,13 +6341,14 @@
     rows.forEach(({m})=>Object.keys(counts).forEach(k=>{if(m[k])counts[k]++;}));
     state.textContent=`${list.length} VESSELS · ${counts.producing} PRODUCING`;
     state.className=`${counts.producing===list.length&&list.length?'clear':'watch'}`;
-    summary.innerHTML=`<article><small>COMMISSIONED</small><strong>${counts.commissioned}/${list.length}</strong></article><article><small>AUTHORITY</small><strong>${counts.authority}/${list.length}</strong></article><article><small>OPERATIONAL</small><strong>${counts.operational}/${list.length}</strong></article><article><small>PRODUCING</small><strong>${counts.producing}/${list.length}</strong></article><article><small>RECOVERABLE</small><strong>${counts.recoverable}/${list.length}</strong></article>`;
-    const pill=(label,ok)=>`<span class="fleet-mission-pill ${ok?'pass':'hold'}"><i aria-hidden="true">${ok?'✓':'○'}</i>${label}</span>`;
+    summary.innerHTML=`<article class="done"><small>COMMISSIONED</small><strong>${counts.commissioned}/${list.length}</strong><span>Vessels sealed</span></article><i aria-hidden="true">→</i><article class="${counts.authority?'active':''}"><small>AUTHORITY</small><strong>${counts.authority}/${list.length}</strong><span>Owner / Captain</span></article><i aria-hidden="true">→</i><article><small>OPERATIONAL</small><strong>${counts.operational}/${list.length}</strong><span>Sea Trial proven</span></article><i aria-hidden="true">→</i><article><small>PRODUCING</small><strong>${counts.producing}/${list.length}</strong><span>Live business</span></article><i aria-hidden="true">→</i><article class="done"><small>RECOVERY READY</small><strong>${counts.recoverable}/${list.length}</strong><span>State protected</span></article>`;
+    const pill=(label,ok,current=false)=>`<span class="fleet-mission-pill ${ok?'pass':current?'current':'hold'}"><i aria-hidden="true">${ok?'✓':current?'•':'○'}</i>${label}</span>`;
     host.innerHTML=rows.length?rows.map(({p,m})=>{
       const ownerLabel=m.owner==='active'?'ACTIVE':m.owner==='invited'?'INVITED':'UNASSIGNED';
       const captainLabel=m.captainApproval?'LOCAL APPROVAL RECORDED':'NOT PROVEN';
       const code=escapeHtml(p.projectCode||p.orderPrefix||p.id);
-      return `<article class="fleet-mission-vessel" data-project-id="${escapeHtml(p.id)}"><header><div class="fleet-mission-identity"><div class="fleet-mission-logo" data-fleet-mission-logo="${escapeHtml(p.id)}"><span>${code.slice(0,3)}</span></div><div><small>${code}</small><strong>${escapeHtml(p.name)}</strong><button type="button" class="fleet-mission-logo-action" data-fleet-logo-project="${escapeHtml(p.id)}">LOGO</button></div></div><span>${m.producing?'PRODUCING':m.operational?'SEA TRIAL':'STAGING'}</span></header><div class="fleet-mission-stages">${pill('COMMISSIONED',m.commissioned)}${pill('AUTHORITY',m.authority)}${pill('OPERATIONAL',m.operational)}${pill('PRODUCING',m.producing)}${pill('RECOVERABLE',m.recoverable)}</div><div class="fleet-mission-authority"><span><b>OWNER</b>${ownerLabel}</span><span><b>CAPTAIN</b>${captainLabel}</span></div><div class="fleet-mission-next"><small>NEXT REQUIRED PROOF</small><strong>${escapeHtml(m.next)}</strong></div></article>`;
+      const currentStage=!m.authority?'authority':!m.operational?'operational':!m.producing?'producing':!m.recoverable?'recovery':'complete';
+      return `<article class="fleet-mission-vessel stage-${currentStage}" data-project-id="${escapeHtml(p.id)}"><header><div class="fleet-mission-identity"><div class="fleet-mission-logo" data-fleet-mission-logo="${escapeHtml(p.id)}"><span>${code.slice(0,3)}</span></div><div class="fleet-mission-title"><small>${code}</small><strong>${escapeHtml(p.name)}</strong><button type="button" class="fleet-mission-logo-action" data-fleet-logo-project="${escapeHtml(p.id)}">EDIT LOGO</button></div></div><span class="fleet-mission-posture">${m.producing?'PRODUCING':m.operational?'SEA TRIAL':'STAGING'}</span></header><div class="fleet-mission-stages">${pill('COMMISSIONED',m.commissioned,currentStage==='commissioned')}${pill('AUTHORITY',m.authority,currentStage==='authority')}${pill('OPERATIONAL',m.operational,currentStage==='operational')}${pill('PRODUCING',m.producing,currentStage==='producing')}${pill('RECOVERY',m.recoverable,currentStage==='recovery')}</div><div class="fleet-mission-authority"><span><b>OWNER</b><strong>${ownerLabel}</strong></span><i aria-hidden="true"></i><span><b>CAPTAIN</b><strong>${captainLabel}</strong></span></div><div class="fleet-mission-next"><small>NEXT REQUIRED PROOF</small><strong>${escapeHtml(m.next)}</strong></div></article>`;
     }).join(''):'<div class="fleet-mission-loading">No Fleet Core vessels are available.</div>';
     rows.forEach(async({p})=>{
       const mark=host.querySelector(`[data-fleet-mission-logo="${CSS.escape(p.id)}"]`); if(!mark)return;
@@ -6361,7 +6362,7 @@
   }
 
   async function renderFleetCommissioning({skipConvergence=false}={}){
-    renderFleetIdentityControl();
+    renderFleetPolishControl();
     const summary=$('fleetCommissioningSummary');
     const fleet=$('fleetCommissioningFleet');
     const reference=$('fleetCommissioningReference');
