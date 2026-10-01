@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.18.5",
-  "version": "8.8.18.5",
-  "release_name": "BloomPrivacy",
-  "releaseName": "BloomPrivacy",
-  "release_seal": "bloomprivacy-88185",
+  "build": "8.8.19.0",
+  "version": "8.8.19.0",
+  "release_name": "FleetMission",
+  "releaseName": "FleetMission",
+  "release_seal": "fleetmission-88190",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Simplify the Becca test-vessel photo step to one native chooser and keep flower media ephemeral in Black Flag browser storage.",
-  "release_note": "8.8.18.5 BloomPrivacy: one Add Flower Photo action; private-preview and Sea Trial photo bytes remain ephemeral; production photo orders stay held until private media custody exists.",
+  "release_focus": "fleet mission control and operating-proof visibility",
+  "release_note": "8.8.19.0 FleetMission: five-stage fleet mission control exposes truthful vessel posture, Owner/Captain authority status, and one next required proof without granting authority or mutating business state. BloomPrivacy media safety is preserved.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "3cd0492815a84fafc34b3ec17ed5e96684fad418939307e51de84099b9b825fa",
-        "build": "8.8.18.5",
+        "sha256": "023360960474693f9b65beac9caf204351eac46e646591b2ab90c1f4c9902456",
+        "build": "8.8.19.0",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "c7831c153e2442f45dd02fcbf048eb1b36c3af6353cbaaa42cb16ced81abf5f1",
-        "build": "8.8.18.5",
+        "sha256": "00555588cfdcad607a5302b7047daa630e4eb3a3b2e1c4275d73d6d059907981",
+        "build": "8.8.19.0",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "a3ebd64571f4dfe90b70383c862fab7963c8618d98d1ebf29a9c8614e88ada79",
-        "build": "8.8.18.5",
+        "sha256": "6cd866c60f338a0b3970b2064fcea05f0aad1a8a9b30b4929a230bb0589820d7",
+        "build": "8.8.19.0",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "bdc90b7c90ad22e0ce9fa2a2680dfd0a65bed8b621160a9d3883f4c30c69c4d9",
-        "build": "8.8.18.5",
+        "sha256": "67d329e0a5ee56ea964eedcd6b9c8ebfa3fd4b8d6ef9fbd4a7dbe02dec14b77d",
+        "build": "8.8.19.0",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "9fe39e1616428a10e7dc116abcf6f365d1d2ddb3c212ab77b3d86d1089745586",
+      "styles.css": "6e304f853cb8b8f2c85870cfb59210294eea65933e4eca55fef9526d9f9918d1",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "3385b45121c71df891f234913bd7bf1469dc757d0f61b6674a7bc5a92993e966",
-      "fleet_supabase.js": "90ac5f8796248ba3da79c4ebf77ba9cc63fb8eeee2927746c510ceb7ade47153",
+      "platform_identity.js": "9c21b80505d02b2b6f9af3b0584dbad5ab39c79a60e397abc7598cc83bd26ca5",
+      "fleet_supabase.js": "e59f06137050fb40a13fab5f515b76e79e53578a670d1ee2cec9094c7ea15a16",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "872a978c3ced30e2a370c9618e0217541cfbc0fefb1e14fca2f30f4558a7b02d",
-      "captain.js": "4dc5991252c00a926110d383b9d9dfd465cd20a7283f850b1d4733687ac6ca34",
-      "simple_books.js": "038475732c203b896e637cd4282ecd7684feb51e96a512a46f2b6ccd20467b60",
-      "owner.html": "8cc9a710f8d0b1fffaf47f096b75dd7618e36cd78fe912393134c812315c0fd6",
-      "manifest.webmanifest": "0958675fc43d06aab64ddcfa0a17987ab253487eea05925d0cc41fc8f06ca9a2",
+      "app.js": "b6eef5b0a9b4fe57799d17fc055eea6d21b1d0a934183179c561b87c00be9ca6",
+      "captain.js": "20bc4de302334cb3d5512d6ea2c09e6eba9101a940cc96503c0b837ec40053fa",
+      "simple_books.js": "7ffa48555230559b229543ef74e3181992f388815dcabdf7c8b48e7e151321a1",
+      "owner.html": "bdcad68e959fb89dea4440ec48c5359a7245e0624ea73df09dd383c22d1ec9b0",
+      "manifest.webmanifest": "f8960b2bdbc997526e506a6729a9c584cd48e98670ca9b2937f2b7c301dd8c7c",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "05a4867b6370a42d5229f67e026d2496323fc6f48f5f2a826c0f899f0a8c1770",
-      "FLEET_DOCTRINE_REGISTRY.json": "a3ebd64571f4dfe90b70383c862fab7963c8618d98d1ebf29a9c8614e88ada79",
-      "GOLDEN_VOYAGES.json": "bdc90b7c90ad22e0ce9fa2a2680dfd0a65bed8b621160a9d3883f4c30c69c4d9",
-      "FLEET_COMMAND_MODEL.json": "c7831c153e2442f45dd02fcbf048eb1b36c3af6353cbaaa42cb16ced81abf5f1",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "3cd0492815a84fafc34b3ec17ed5e96684fad418939307e51de84099b9b825fa"
+      "sw.js": "b02fcefe541f3af6330137e199799a9f1ab35e2710b131b826377c6e1ff44e4f",
+      "FLEET_DOCTRINE_REGISTRY.json": "6cd866c60f338a0b3970b2064fcea05f0aad1a8a9b30b4929a230bb0589820d7",
+      "GOLDEN_VOYAGES.json": "67d329e0a5ee56ea964eedcd6b9c8ebfa3fd4b8d6ef9fbd4a7dbe02dec14b77d",
+      "FLEET_COMMAND_MODEL.json": "00555588cfdcad607a5302b7047daa630e4eb3a3b2e1c4275d73d6d059907981",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "023360960474693f9b65beac9caf204351eac46e646591b2ab90c1f4c9902456"
     }
   },
   "watchbeacon_upgrade": {
@@ -756,5 +756,26 @@
       "project re-entry reset"
     ],
     "cross_vessel_rollout": "not in this release; fleet learning review follows field acceptance"
+  },
+  "fleetmission_upgrade": {
+    "build": "8.8.19.0",
+    "baseline": "8.8.18.5",
+    "scope": "fleet-wide-operating-truth",
+    "stages": [
+      "commissioned",
+      "authority_assigned",
+      "operational",
+      "producing",
+      "recoverable"
+    ],
+    "authority_display": "owner and Captain posture are visible but never manufactured from UI state",
+    "next_required_proof": "exactly one prioritized proof message per vessel",
+    "mutations": "none; mission control is read-only",
+    "preserves": [
+      "BloomPrivacy ephemeral media rules",
+      "Admiral read-only observation",
+      "existing server authority boundaries",
+      "85-file deployment budget"
+    ]
   }
 }

@@ -1,6 +1,6 @@
 {
   "schema": "dark-sky-command-model-v1",
-  "build": "8.8.18.5",
+  "build": "8.8.19.0",
   "views": {
     "operational": "professional-default",
     "presentation": "cinematic-secondary"
@@ -31,7 +31,7 @@
     "Proven Capability",
     "Fleet Standard / Shared Service / New Vessel"
   ],
-  "release": "AdmiralKeel",
+  "release": "FleetMission",
   "dualOfficeCommission": {
     "samePersonMayHoldCaptainAndAdmiral": true,
     "officesRemainDistinct": true,

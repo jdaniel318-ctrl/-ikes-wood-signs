@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.18.5';
-const RELEASE_SEAL='bloomprivacy-88185';
+const RELEASE_BUILD='8.8.19.0';
+const RELEASE_SEAL='fleetmission-88190';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

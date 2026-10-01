@@ -1,8 +1,8 @@
 {
-  "release": "BloomPrivacy",
-  "name": "BloomPrivacy",
-  "build": "8.8.18.5",
-  "seal": "bloomprivacy-88185",
+  "release": "FleetMission",
+  "name": "FleetMission",
+  "build": "8.8.19.0",
+  "seal": "fleetmission-88190",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "BloomPrivacy"
+  "releaseName": "FleetMission"
 }

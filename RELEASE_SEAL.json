@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.18.5",
-  "release": "BloomPrivacy",
-  "seal": "bloomprivacy-88185",
+  "build": "8.8.19.0",
+  "release": "FleetMission",
+  "seal": "fleetmission-88190",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "BloomPrivacy",
-  "name": "BloomPrivacy",
-  "releaseName": "BloomPrivacy"
+  "release_name": "FleetMission",
+  "name": "FleetMission",
+  "releaseName": "FleetMission"
 }

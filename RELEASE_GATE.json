@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-release-gate-bloomprivacy-v1",
-  "build": "8.8.18.5",
-  "release": "BloomPrivacy",
+  "build": "8.8.19.0",
+  "release": "FleetMission",
   "pass": true,
   "evidence_scope": "Focused one-action flower-photo and ephemeral-media source/browser tests plus inherited syntax/package integrity checks; not native iPad final acceptance, production media custody, live-order or server certification.",
   "native_field_acceptance": "pending",

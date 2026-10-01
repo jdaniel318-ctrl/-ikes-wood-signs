@@ -1,7 +1,7 @@
 {
   "release": "8.8.17",
-  "build": "8.8.18.5",
-  "name": "AdmiralKeel",
+  "build": "8.8.19.0",
+  "name": "FleetMission",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
     "enabled",
