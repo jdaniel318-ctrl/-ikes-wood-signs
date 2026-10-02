@@ -1,16 +1,16 @@
 
-## 8.8.19.3 MissionTruth
+## 8.8.20.0 HouseHull Forge
 
-MissionTruth is the final semantic/spacing hardening pass for Fleet Mission Control before operational vessel proof. It tightens vessel cards, strengthens Next Required Proof contrast, adds owner/Captain evidence-state dots, and renames the recovery display to **State Protected** so browser/state protection is not mistaken for a proven complete business restore. Canonical vessel logos, authority state, customer workflows, SQL and server state are unchanged.
+HouseHull Forge is the final semantic/spacing hardening pass for Fleet Mission Control before operational vessel proof. It tightens vessel cards, strengthens Next Required Proof contrast, adds owner/Captain evidence-state dots, and renames the recovery display to **State Protected** so browser/state protection is not mistaken for a proven complete business restore. Canonical vessel logos, authority state, customer workflows, SQL and server state are unchanged.
 - Fleet Mission Control now renders each vessel's project-owned canonical logo when available.
 - A compact LOGO action routes directly to that exact vessel's Project Graphics → Project Logo / Mark editor.
 - Upload/replace still uses the existing project-scoped graphics store and Engine mutation boundary; no cross-vessel asset copy is introduced.
 - Saving one Project Logo updates the shared project asset used by Fleet Mission, Project Control, customer shells that consume the logo slot, and project preview surfaces on this browser profile.
 - This is presentation/identity only: vessel ID, namespace, owner, Captain, ledger, orders and authority do not change. Cross-device/cloud logo custody is not claimed by this static release.
 
-## 8.8.19.3 — MissionTruth
+## 8.8.20.0 — HouseHull Forge
 
-MissionTruth moves Black Flag from feature-by-feature testing toward one fleet operating truth. The Engine now presents a five-stage vessel mission view: Commissioned → Authority Assigned → Operational → Producing → State Protected, plus explicit Owner/Captain posture and one Next Required Proof per vessel. The panel is read-only and does not manufacture authority, billing, contracts, production state, or server appointments. BloomPrivacy customer-photo protections remain preserved.
+HouseHull Forge moves Black Flag from feature-by-feature testing toward one fleet operating truth. The Engine now presents a five-stage vessel mission view: Commissioned → Authority Assigned → Operational → Producing → State Protected, plus explicit Owner/Captain posture and one Next Required Proof per vessel. The panel is read-only and does not manufacture authority, billing, contracts, production state, or server appointments. BloomPrivacy customer-photo protections remain preserved.
 
 
 ## 8.8.18.5 — BloomPrivacy
@@ -76,3 +76,12 @@ Do not clear website data or run either bundled SQL file. Keep private JSON/HTML
 5. Stop before final submission. Do not approve, Sea Trial, publish, or create a live order for this CX check.
 
 Do not clear website data or run either bundled SQL file.
+
+
+## 8.8.20.0 — HouseHull Forge
+
+HouseHull is the first new vessel commissioned specifically to prove that Black Flag can create a new business vessel without requiring ChatGPT as the operating factory. It remains private/Sea Trial.
+
+HouseHull uses PlumbLine for exterior takeoff. Customer quote intake asks for Front, Rear, Left and Right photos plus optional misc/detail photos. Photos prepare the salesperson; they do not become measurement truth. Field Takeoff keeps AI ESTIMATE, FIELD MEASURED and SALESPERSON VERIFIED distinct. Initial measurable scope includes siding, brick/CMU/foundation surfaces, windows, doors, opening trim treatments, accessories and fasteners. Automatic scale remains experimental.
+
+Vessel Forge is now part of Commission New Project. A business brief can produce a local starting-model recommendation without an external AI call. A reusable vessel blueprint can be exported/imported; it intentionally excludes owner identity, credentials, immutable vessel ID, orders, customers and branding.

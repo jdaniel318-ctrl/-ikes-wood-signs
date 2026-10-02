@@ -1,9 +1,9 @@
 {
-  "schema": "dark-sky-release-gate-bloomprivacy-v1",
-  "build": "8.8.19.3",
-  "release": "MissionTruth",
+  "schema": "dark-sky-release-gate-househull-forge-v1",
+  "build": "8.8.20.0",
+  "release": "HouseHull Forge",
   "pass": true,
-  "evidence_scope": "Focused one-action flower-photo and ephemeral-media source/browser tests plus inherited syntax/package integrity checks; not native iPad final acceptance, production media custody, live-order or server certification.",
+  "evidence_scope": "Static/source/package checks for HouseHull Sea Trial and Vessel Forge; not native field measurement accuracy, automatic scale certification, production takeoff, live customer contact, billing, or server authority certification.",
   "native_field_acceptance": "pending",
   "prior_release_evidence": {
     "schema": "dark-sky-release-gate-bloompick-v1",
@@ -3417,5 +3417,15 @@
     "sea_trial_browser_media_bytes": "not-stored",
     "production_submit": "held-until-private-media-custody-is-configured",
     "new_order_and_test_deck_return": "clears-in-memory-flower-media"
+  },
+  "househull_scope": {
+    "scale": "experimental",
+    "photos": "ephemeral in preview/test intake",
+    "field_truth_states": [
+      "AI ESTIMATE",
+      "FIELD MEASURED",
+      "SALESPERSON VERIFIED"
+    ],
+    "production_takeoff_certified": false
   }
 }

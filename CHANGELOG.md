@@ -1,5 +1,5 @@
 
-## 8.8.19.3 MissionTruth
+## 8.8.20.0 HouseHull Forge
 - Tightened Fleet Mission vessel cards without changing canonical logos.
 - Renamed recovery presentation to State Protected / Recovery evidence on record.
 - Added compact owner/Captain evidence-state dots and stronger Next Required Proof contrast.
@@ -78,3 +78,16 @@ Do not clear website data or run either bundled SQL file. Keep private JSON/HTML
 5. Stop before final submission. Do not approve, Sea Trial, publish, or create a live order for this CX check.
 
 Do not clear website data or run either bundled SQL file.
+
+
+## 8.8.20.0 — HouseHull Forge
+- Commissioned HouseHull as a new Black Flag-created exterior intelligence vessel.
+- Added HouseHull customer quote workflow: four primary elevations + misc/detail photos.
+- Added PlumbLine field takeoff station with per-elevation field measurements and truth states.
+- Added siding, fiber cement, engineered wood, brick veneer, CMU/block and mixed exterior starting material choices.
+- Added windows/doors as takeoff objects and selectable opening-trim assemblies.
+- Added complete-package takeoff intent: siding/masonry, starter, corners, trim/J-channel, finish trim, flashing/accessories, fasteners/nails and waste.
+- Automatic scale remains explicitly experimental.
+- Added Vessel Forge local brief-to-model generation plus portable blueprint export/import so future vessels can be started without ChatGPT.
+- Blueprint boundary excludes business records, credentials, owner identity, immutable IDs and branding.
+- No SQL migration, owner/Captain assignment, billing activation or live publication.

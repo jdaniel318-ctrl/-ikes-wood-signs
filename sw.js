@@ -1,5 +1,5 @@
-const RELEASE_BUILD='8.8.19.3';
-const RELEASE_SEAL='missiontruth-88193';
+const RELEASE_BUILD='8.8.20.0';
+const RELEASE_SEAL='househull-forge-88200';
 
 self.addEventListener('install', event => {
   // Atomic Seal: service worker is an identity/control-plane sentinel only.

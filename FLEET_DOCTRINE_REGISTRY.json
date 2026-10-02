@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.19.3",
-  "release": "MissionTruth",
+  "build": "8.8.20.0",
+  "release": "HouseHull Forge",
   "status": "active",
   "principles": [
     {
