@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.19.2",
-  "version": "8.8.19.2",
-  "release_name": "FleetPolish",
-  "releaseName": "FleetPolish",
-  "release_seal": "fleetpolish-88192",
+  "build": "8.8.19.3",
+  "version": "8.8.19.3",
+  "release_name": "MissionTruth",
+  "releaseName": "MissionTruth",
+  "release_seal": "missiontruth-88193",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -92,7 +92,7 @@
     "project_data_boundary": "exact-project-id"
   },
   "release_focus": "Fleet Mission Control visual hierarchy and operational legibility; canonical vessel logos and authority semantics unchanged.",
-  "release_note": "FleetPolish refines Mission Control into a clearer Admiral instrument: one fleet journey, calmer stage rail, stronger next-proof emphasis, compact authority strip, and precise Recovery Ready language. No vessel logo asset or authority state is changed.",
+  "release_note": "MissionTruth tightens Fleet Mission Control spacing and evidence semantics, adds owner/Captain evidence-state indicators, and renames recovery presentation to State Protected so it is not mistaken for proven full-business restore. Canonical vessel logos and all authority/server state remain unchanged.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "172a759c69045c17f8ede5fb30a7650b20364d91603ac4f17737ebfdf2489e35",
-        "build": "8.8.19.2",
+        "sha256": "82fb12544a73b694d82051acc3ecf4cf6b4e561047aa362d3ceb67db42d07269",
+        "build": "8.8.19.3",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "060e12d49f1088db1e5a64fb8bc9bd757f2ed35b6d57a1f9851fc1b7f70cd0e8",
-        "build": "8.8.19.2",
+        "sha256": "ef682e9dbc1a49cb8b92365534804c39de2f9e68d9c4df0138aa4782c4a30f2c",
+        "build": "8.8.19.3",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "3071110b70673ad1a3435e5c201edac1ee42537b08a1d535780d57bc86b0b786",
-        "build": "8.8.19.2",
+        "sha256": "e5127b7d72abf3178ef7593b19fab09ff87d80b784311f28032630c2bbbfc760",
+        "build": "8.8.19.3",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "c0735e7fb56b0219e6c0115f0ea24fe5701bae218f5bfc5ad62dbce4e0962355",
-        "build": "8.8.19.2",
+        "sha256": "ad0d9bf67dfbc19b6a49bbdc34506735343071277ecb068b20046ca30a22206a",
+        "build": "8.8.19.3",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "26d9e23c78431255af8084898a6c81c99308e14202f4059f900c252fe12121cb",
+      "styles.css": "a3f09c47d2be31748d47f14370b5d8a7216d1a9e4c6812dfc4c22b39f549f05c",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "c7c09eeda9d2216e6e169bb660384236a7fa11fdfe785725213e9fc5da3149b5",
-      "fleet_supabase.js": "585562c73b9ce113577ab4d9100c26bf4205c5b7974389a1dfd9258bfebd7677",
+      "platform_identity.js": "1e069aa9799c16547182857a6cf00c2df1877ff6186f2e8d209c51a4d5691d91",
+      "fleet_supabase.js": "0d18c500abe398af1a4e7187293112546327bbfe4fab15d0ecc69c462dbbb7e5",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "fec9c0318790fb1b9f6d4153c214f4766f610357b8b7af3fb8e798be37c24ed4",
-      "captain.js": "8ee36ae33dcfec7469222c879c32c96d00ae6127bb5d888a0f570ee487fcb934",
-      "simple_books.js": "684e03739d47f7f9f89d05831dadf5d3fef001f02da01317c8f6bcc615b0d138",
-      "owner.html": "f659ebd60352e71f9a3566d317eef5d7e513aca96cc53a7094c7e07f09fc0148",
-      "manifest.webmanifest": "86aafd19267309e5ecc94e529e6f8b06ac4b74932767d851fda47cb450449d2a",
+      "app.js": "f7a38b368c7417fbb7a63f827e87032eaf3be30a4d5287beb4affb8b7a13e358",
+      "captain.js": "c7b63fe1841b761c57200a6079954783181c389c071ef8a824b6f99352aafc0a",
+      "simple_books.js": "462b73c2f08945020ec9b2dc4e06ae9e419ebbaee23648b08b804537fdfc7c01",
+      "owner.html": "0f272b559b378dd1e63ad8e4dfdf2690da08813cd9c29f016023a8482774a631",
+      "manifest.webmanifest": "932b6d9c4cf21228cfb9636e9e30b5ed5f7264075e260710b5af7b05fd178ee7",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "742eb1588b5882460b5a476559ebca055a0e11473fa722157b3eeeffc54b8a22",
-      "FLEET_DOCTRINE_REGISTRY.json": "3071110b70673ad1a3435e5c201edac1ee42537b08a1d535780d57bc86b0b786",
-      "GOLDEN_VOYAGES.json": "c0735e7fb56b0219e6c0115f0ea24fe5701bae218f5bfc5ad62dbce4e0962355",
-      "FLEET_COMMAND_MODEL.json": "060e12d49f1088db1e5a64fb8bc9bd757f2ed35b6d57a1f9851fc1b7f70cd0e8",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "172a759c69045c17f8ede5fb30a7650b20364d91603ac4f17737ebfdf2489e35"
+      "sw.js": "c29ca2a82e757841b6e54fc0870e18eba6a02d81becddbb89f644424c6cc3296",
+      "FLEET_DOCTRINE_REGISTRY.json": "e5127b7d72abf3178ef7593b19fab09ff87d80b784311f28032630c2bbbfc760",
+      "GOLDEN_VOYAGES.json": "ad0d9bf67dfbc19b6a49bbdc34506735343071277ecb068b20046ca30a22206a",
+      "FLEET_COMMAND_MODEL.json": "ef682e9dbc1a49cb8b92365534804c39de2f9e68d9c4df0138aa4782c4a30f2c",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "82fb12544a73b694d82051acc3ecf4cf6b4e561047aa362d3ceb67db42d07269"
     }
   },
   "watchbeacon_upgrade": {
@@ -779,12 +779,12 @@
     ]
   },
   "fleetidentity_upgrade": {
-    "build": "8.8.19.2",
+    "build": "8.8.19.3",
     "baseline": "8.8.19.0",
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
     "fleet_mission_display": true,
-    "quick_route": "Fleet Mission LOGO \u2192 exact vessel Project Control \u2192 Marketing \u2192 Project Logo / Mark",
+    "quick_route": "Fleet Mission LOGO → exact vessel Project Control → Marketing → Project Logo / Mark",
     "cross_vessel_copy": false,
     "authority_changes": false,
     "business_record_changes": false,
@@ -795,6 +795,16 @@
     "scope": "Fleet Mission Control only",
     "canonical_logos": "unchanged",
     "authority_semantics": "unchanged",
+    "server_mutations": "none",
+    "sql": "not-run"
+  },
+  "missiontruth_upgrade": {
+    "status": "client-semantic-visual-hardening",
+    "scope": "Fleet Mission Control only",
+    "canonical_logos": "unchanged",
+    "authority_semantics": "unchanged",
+    "owner_captain_state": "display-only-evidence-indicators",
+    "recovery_label": "State Protected",
     "server_mutations": "none",
     "sql": "not-run"
   }

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.19.2",
-  "release": "FleetPolish",
-  "seal": "fleetpolish-88192",
+  "build": "8.8.19.3",
+  "release": "MissionTruth",
+  "seal": "missiontruth-88193",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "FleetPolish",
-  "name": "FleetPolish",
-  "releaseName": "FleetPolish"
+  "release_name": "MissionTruth",
+  "name": "MissionTruth",
+  "releaseName": "MissionTruth"
 }

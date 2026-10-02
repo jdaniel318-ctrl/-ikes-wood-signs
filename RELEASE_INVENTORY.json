@@ -1,8 +1,8 @@
 {
-  "release": "FleetPolish",
-  "name": "FleetPolish",
-  "build": "8.8.19.2",
-  "seal": "fleetpolish-88192",
+  "release": "MissionTruth",
+  "name": "MissionTruth",
+  "build": "8.8.19.3",
+  "seal": "missiontruth-88193",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "FleetPolish"
+  "releaseName": "MissionTruth"
 }

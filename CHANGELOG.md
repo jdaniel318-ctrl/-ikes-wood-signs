@@ -1,5 +1,9 @@
 
-## 8.8.19.2 FleetPolish
+## 8.8.19.3 MissionTruth
+- Tightened Fleet Mission vessel cards without changing canonical logos.
+- Renamed recovery presentation to State Protected / Recovery evidence on record.
+- Added compact owner/Captain evidence-state dots and stronger Next Required Proof contrast.
+- No authority, customer, ledger, SQL, owner, Captain, logo, or server mutation.
 - Fleet Mission Control now renders each vessel's project-owned canonical logo when available.
 - A compact LOGO action routes directly to that exact vessel's Project Graphics → Project Logo / Mark editor.
 - Upload/replace still uses the existing project-scoped graphics store and Engine mutation boundary; no cross-vessel asset copy is introduced.
@@ -8,7 +12,7 @@
 
 ## 8.8.19.0 — FleetMission
 
-FleetMission moves Black Flag from feature-by-feature testing toward one fleet operating truth. The Engine now presents a five-stage vessel mission view: Commissioned → Authority Assigned → Operational → Producing → Recoverable, plus explicit Owner/Captain posture and one Next Required Proof per vessel. The panel is read-only and does not manufacture authority, billing, contracts, production state, or server appointments. BloomPrivacy customer-photo protections remain preserved.
+FleetMission moves Black Flag from feature-by-feature testing toward one fleet operating truth. The Engine now presents a five-stage vessel mission view: Commissioned → Authority Assigned → Operational → Producing → State Protected, plus explicit Owner/Captain posture and one Next Required Proof per vessel. The panel is read-only and does not manufacture authority, billing, contracts, production state, or server appointments. BloomPrivacy customer-photo protections remain preserved.
 
 
 ## 8.8.18.5 — BloomPrivacy
