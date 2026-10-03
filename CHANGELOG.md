@@ -1,23 +1,7 @@
-# Dark Sky 8.8.20.6 — ForgeSeal
+# 8.8.20.7 — HarborPass
 
-ForgeSeal closes the release-builder integrity defect exposed by the atomic recovery shield. All release content is frozen before runtime/model SHA-256 declarations are generated; DEPLOYMENT_MANIFEST is then frozen; whole-package CHECKSUMS are generated last. The finished ZIP must independently reproduce every declared runtime/model hash and package checksum before handoff.
-
-# Dark Sky 8.8.20.6 — ForgeSeal
-
-- Adds mandatory 07 · PROVE commissioning readiness stage.
-- Uses session recovery journal as active commissioning anchor; full legacy localStorage no longer blocks commissioning.
-- Checks canonical registry readability before mutation.
-- Classifies interrupted commands as VERIFIED CREATED, VERIFIED NOT CREATED, or OUTCOME UNCERTAIN — RECONCILE.
-- Automatic retry remains forbidden.
-
-# Dark Sky 8.8.20.6 — ForgeSeal
-
-- Guided Vessel Forge path: Describe → Build My Vessel → Review Plan → Continue.
-- Blueprint import/export moved behind secondary Blueprint tools.
-- Removes duplicate customer-entry/workflow wording.
-- Preserves Forge scheduling truth through final Review.
-- Photo-overlay behavior is now a reviewable suggestion, not automatically applied business truth.
-- Adds Field Operations / Quote & Takeoff Fleet Launch focus.
-- Unassigned ownership now reads NOT TRANSFERRED TO FLEET rather than implying a known outside owner.
-- Adds cross-step Forge truth reconciliation; conflicting drafts hold Commission Project.
-- No owner, Captain, billing, SQL, publication, or server authority is created by this release.
+- Added same-tab **AUTHORIZE THIS VOYAGE** recovery when server draft save reports authorization/sign-in required.
+- Preserves the current commissioning draft and stage before opening the existing Admiral security gate.
+- On verified Admiral workspace return, reopens the commissioning voyage and retries Save Draft once.
+- Keeps `SESSION SAFE`, `SERVER SIGN-IN REQUIRED`, `SERVER SYNCING`, `SERVER SAFE`, and `SYNC NEEDED` semantically distinct.
+- No owner/Captain assignment, vessel commissioning, billing, publication, or new database migration is performed by the release.

@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.6",
-  "release": "ForgeSeal",
-  "seal": "forgeseal-88206",
+  "build": "8.8.20.7",
+  "release": "HarborPass",
+  "seal": "harborpass-88207",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "ForgeSeal",
-  "name": "ForgeSeal",
-  "releaseName": "ForgeSeal"
+  "release_name": "HarborPass",
+  "name": "HarborPass",
+  "releaseName": "HarborPass"
 }
