@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.7",
-  "release": "HarborPass",
-  "seal": "harborpass-88207",
+  "build": "8.8.20.8",
+  "release": "PassageLine",
+  "seal": "passageline-88208",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "HarborPass",
-  "name": "HarborPass",
-  "releaseName": "HarborPass"
+  "release_name": "PassageLine",
+  "name": "PassageLine",
+  "releaseName": "PassageLine"
 }

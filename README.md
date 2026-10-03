@@ -1,7 +1,5 @@
-# Dark Sky 8.8.20.7 — HarborPass
+# Dark Sky 8.8.20.8 — PassageLine
 
-HarborPass is a focused commissioning-authority bridge built from the verified ForgeSeal baseline. It keeps commissioning drafts session-safe, and when Fleet Core reports that server persistence requires authorization it offers **AUTHORIZE THIS VOYAGE** in the same browser tab. The existing Admiral PIN + account gate is reused; no new credential path, owner grant, Captain grant, or server authority is invented.
+PassageLine repairs the commissioning authorization journey without weakening authority. AUTHORIZE THIS VOYAGE opens the existing PIN + account verification as a focused same-tab checkpoint. Successful verification returns directly to the preserved commissioning workspace and performs the pending Fleet Core save/readback. The full Admiral Command Deck is not entered for this scoped task.
 
-After the same-tab Admiral workspace becomes verified, HarborPass returns to the preserved commissioning voyage and retries the explicit draft save. `SERVER SAFE` is shown only after the existing VoyageGuard server save and readback confirm the same voyage ID.
-
-The previously proposed new scoped-authorization database migration was **not applied** and is not required by this release. HarborPass uses the already-live authenticated Fleet Core authority boundary.
+SERVER SAFE remains evidence-based: authenticated save plus readback of the same voyage ID. No owner, Captain, publication, production, or new server authority is granted by this release.

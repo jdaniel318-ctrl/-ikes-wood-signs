@@ -1,7 +1,8 @@
-# 8.8.20.7 — HarborPass
+# 8.8.20.8 — PassageLine
 
-- Added same-tab **AUTHORIZE THIS VOYAGE** recovery when server draft save reports authorization/sign-in required.
-- Preserves the current commissioning draft and stage before opening the existing Admiral security gate.
-- On verified Admiral workspace return, reopens the commissioning voyage and retries Save Draft once.
-- Keeps `SESSION SAFE`, `SERVER SIGN-IN REQUIRED`, `SERVER SYNCING`, `SERVER SAFE`, and `SYNC NEEDED` semantically distinct.
-- No owner/Captain assignment, vessel commissioning, billing, publication, or new database migration is performed by the release.
+- Corrects the HarborPass authorization round trip: commissioning now opens a focused same-tab Admiral gate and returns directly to the preserved voyage after verified authority.
+- The Admiral Command Deck is no longer the destination for voyage authorization.
+- After verification, the pending server save runs automatically; SERVER SAFE still requires Fleet Core save plus same-voyage readback.
+- Unrelated Admiral session changes cannot silently authorize a commissioning voyage.
+- Critical commissioning state stays in the guided voyage path; footer status remains secondary navigation context.
+- Existing fleet authority, vessel isolation, logos, ledger, and production gates are unchanged.
