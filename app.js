@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.5';
+  const BUILD_VERSION='8.8.20.6';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.5',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.6',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -8382,7 +8382,7 @@
     try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
   }
 
-  // ServerSafe 8.8.20.5 — Fleet Core is the durable recovery authority when an
+  // ForgeSeal 8.8.20.6 — Fleet Core is the durable recovery authority when an
   // authenticated commissioning officer is available. Browser stores remain caches.
   const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
   let commissionServerVoyage=null,commissionServerSaveTimer=null;
@@ -8445,7 +8445,7 @@
   function commissionRecoveryBannerMarkup(){
     if(!commissionDraft?._serverRecovered)return '';
     const receipt=commissionDraft._serverReceipt; const state=String(receipt?.command_state||'draft_preserved').replaceAll('_',' ').toUpperCase();
-    return `<section class="commission-voyage-recovery"><div><small>SERVERSAFE • UNFINISHED COMMISSIONING FOUND</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Last verified stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • Previous command: <b>${escapeHtml(state)}</b></p></div><div class="commission-voyage-actions"><button type="button" class="primary-btn" data-voyage-resume>RESUME VOYAGE</button><button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button><button type="button" class="secondary-btn" data-voyage-discard>DISCARD DRAFT</button></div></section>`;
+    return `<section class="commission-voyage-recovery"><div><small>FORGESEAL • UNFINISHED COMMISSIONING FOUND</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Last verified stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • Previous command: <b>${escapeHtml(state)}</b></p></div><div class="commission-voyage-actions"><button type="button" class="primary-btn" data-voyage-resume>RESUME VOYAGE</button><button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button><button type="button" class="secondary-btn" data-voyage-discard>DISCARD DRAFT</button></div></section>`;
   }
 
   function openProjectCommissioning(actorRole='engine_admin'){

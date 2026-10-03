@@ -1,10 +1,10 @@
 {
   "schema": "dark-sky-deployment-manifest-v2",
-  "build": "8.8.20.5",
-  "version": "8.8.20.5",
-  "release_name": "ServerSafe",
-  "releaseName": "ServerSafe",
-  "release_seal": "serversafe-88205",
+  "build": "8.8.20.6",
+  "version": "8.8.20.6",
+  "release_name": "ForgeSeal",
+  "releaseName": "ForgeSeal",
+  "release_seal": "forgeseal-88206",
   "entrypoint": "index.html",
   "runtime": "static-web",
   "deployment_mode": "root-upload-runtime-seal",
@@ -91,8 +91,8 @@
     "client_preview_real_world_contact": "blocked",
     "project_data_boundary": "exact-project-id"
   },
-  "release_focus": "Mandatory 07 PROVE commissioning readiness, quota-safe recovery journal, and exact command-outcome reconciliation.",
-  "release_note": "ServerSafe makes unfinished commissioning voyages durable and recoverable across refreshes/releases, with server receipts and no blind retry.",
+  "release_focus": "Final-byte release sealing and independent ZIP readback verification; VoyageGuard/ServerSafe commissioning durability preserved.",
+  "release_note": "ForgeSeal fixes stale runtime/model declarations by generating integrity metadata only after all release content is frozen, then independently re-verifying the finished ZIP.",
   "tax_ledger_upgrade": {
     "schema": "dark-sky-fleet-tax-ledger-v1",
     "model": "TAX_LEDGER_MODEL.json",
@@ -214,8 +214,8 @@
     "algorithm": "SHA-256",
     "files": {
       "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": {
-        "sha256": "3b5149f0e9abcb62b56cdfdd331630b5ff1572e4f4746b3d7f50fed8818beb85",
-        "build": "8.8.20.5",
+        "sha256": "3fb5c67584002ff2fe2b5b987f72ed9608fb71aba0f3e4bfe89df945a4ded02c",
+        "build": "8.8.20.6",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -262,14 +262,14 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "FLEET_COMMAND_MODEL.json": {
-        "sha256": "f740cbca81c725b4255bcf80b81e7735ab96b0d15e193381a54e65c7b02f98a3",
-        "build": "8.8.20.5",
+        "sha256": "3d7c7bb8cdfef7c9c537769573f6102311da297640cec353874d8ede9020dece",
+        "build": "8.8.20.6",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
       "FLEET_DOCTRINE_REGISTRY.json": {
-        "sha256": "dfd9a8119e84745015bb24051e15cafb60d21142a1bdbd220baf2287153abac3",
-        "build": "8.8.20.5",
+        "sha256": "23923f11d3e878e795526fad26d1bced934ba5dcaf449cf602b0045cc04d2900",
+        "build": "8.8.20.6",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -328,8 +328,8 @@
         "semantic_scope": "versioned bytes inventoried; not new live test evidence"
       },
       "GOLDEN_VOYAGES.json": {
-        "sha256": "e1f5c566fbad6b9484a8238606ce800c6188cbf9dd9fd8ea1dd9e360f8f18a7a",
-        "build": "8.8.20.5",
+        "sha256": "676270b85b22b048b57a1ab696a2d723f77b9ffe51561fa23c288ade85992634",
+        "build": "8.8.20.6",
         "policy": "current-runtime-build",
         "semantic_scope": "existing exact predicates plus fail-closed body integrity"
       },
@@ -478,24 +478,24 @@
     "algorithm": "SHA-256",
     "serialization": "UTF-8 response body, same text executed by atomic loader",
     "files": {
-      "styles.css": "b935847297be390e19684f9383d8114e0aa3f604a64df447dfb9f8dd45c6d640",
+      "styles.css": "4d2167275cbf9b7cc01688cb40396928d68bc80e30dba6283d2c72f784756d26",
       "simple_books.css": "5939590021ef2d3738d5f5f7249d72f8da64cc274bf287ef8183958517b0ba46",
       "platform_core.js": "7f797bc382a73eb9ec4365a7458e8329da60c50561e3ac751ca3fb9d7cd5ec49",
       "platform_v4.js": "21daf7777150d654467042893298147374318fdfc7ac38faf9260f874522019b",
-      "platform_identity.js": "8bcdcd47c85bb7b1f08eebebb21ad38dc7c91c469a3bbd632eb76b1f7f5a59ed",
-      "fleet_supabase.js": "3bc17a07ded73b085779731edafbe484630862c706f145de90af74f1970687bd",
+      "platform_identity.js": "978e4e8c8dfd4dbed0c02416bea31a171f2d4c90c139ec2821ca79b8b668d240",
+      "fleet_supabase.js": "b1f96840475e02f738f6732e3fe9a869041f72351d77708f84f1f4f6124c6e71",
       "ike_style_registry.js": "6b348ebceb47e172e6676f46252b19c1c6bb7532baf76febfa8dd81760a76ab7",
-      "app.js": "8579d040184be4d413a7ef76c070c62524d208475293ed190638584ca27c45b2",
-      "captain.js": "9c00e9e25e2c062843fba3d1b360404d3156e3fdee83fa9c399874afacc24454",
-      "simple_books.js": "468a7364732cbfa9a2d9bed76ea40f4efaa825ae50476cca8ba1ff6700434b48",
-      "owner.html": "a04b601fd23021cff02ecbda6fa9b26a59f78d54f1a87bfb39bf73faf9fead08",
-      "manifest.webmanifest": "9975dac1dcd744395a581fe574d1042bb568a7d9d1e389d598c6312c7a1371ab",
+      "app.js": "e88025d44fd9aca003a8c36612fde7b3e8524f5b629d9d54304acacc51301d63",
+      "captain.js": "7720e89d5e5dda4a638fa39894ee3cc652342a5293f868a2ca797b3cc2d45a44",
+      "simple_books.js": "fe8ffec8f47b5a30cb77129cc6b79c60c44dc988140a74259a2e50078e3d6589",
+      "owner.html": "10dab6d25f4578a6607abb1d33358eac1ec509bab9977537e06556c6446a12c9",
+      "manifest.webmanifest": "362c4f5ef85c3c1fa43fce1e62bdf9e7ce932630e4b8a4c8814dae33aaf138ba",
       "IKE_STYLE_FOUNDRY.json": "ac40df166c8a01321f764bc8ea08e36d27e870fda72fc831fea66a0cd967925f",
-      "sw.js": "17d94eb15fcc3dda41cc3a78e9f1293b28ca541673f960c8ce51b0089b3b2961",
-      "FLEET_DOCTRINE_REGISTRY.json": "dfd9a8119e84745015bb24051e15cafb60d21142a1bdbd220baf2287153abac3",
-      "GOLDEN_VOYAGES.json": "e1f5c566fbad6b9484a8238606ce800c6188cbf9dd9fd8ea1dd9e360f8f18a7a",
-      "FLEET_COMMAND_MODEL.json": "f740cbca81c725b4255bcf80b81e7735ab96b0d15e193381a54e65c7b02f98a3",
-      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "3b5149f0e9abcb62b56cdfdd331630b5ff1572e4f4746b3d7f50fed8818beb85"
+      "sw.js": "a54ffb80a7d2901ac5a3b709e9dc1e1afa61d67c8e634faa086b8820c6988bcb",
+      "FLEET_DOCTRINE_REGISTRY.json": "23923f11d3e878e795526fad26d1bced934ba5dcaf449cf602b0045cc04d2900",
+      "GOLDEN_VOYAGES.json": "676270b85b22b048b57a1ab696a2d723f77b9ffe51561fa23c288ade85992634",
+      "FLEET_COMMAND_MODEL.json": "3d7c7bb8cdfef7c9c537769573f6102311da297640cec353874d8ede9020dece",
+      "ADMIRAL_ENTITLEMENT_STATE_MODEL.json": "3fb5c67584002ff2fe2b5b987f72ed9608fb71aba0f3e4bfe89df945a4ded02c"
     }
   },
   "watchbeacon_upgrade": {
@@ -779,7 +779,7 @@
     ]
   },
   "fleetidentity_upgrade": {
-    "build": "8.8.20.5",
+    "build": "8.8.20.6",
     "baseline": "8.8.19.0",
     "scope": "project-owned canonical logo routing and Fleet Mission presentation",
     "logo_source": "existing projectGraphics/projectLogo exact-vessel store",
@@ -809,7 +809,7 @@
     "sql": "not-run"
   },
   "househull_forge_upgrade": {
-    "build": "8.8.20.5",
+    "build": "8.8.20.6",
     "scope": "new private vessel + commissioning factory",
     "househull": {
       "state": "sea_trial",
@@ -865,7 +865,7 @@
     "authority": "unchanged"
   },
   "voyageguard_upgrade": {
-    "build": "8.8.20.5",
+    "build": "8.8.20.6",
     "durable_voyage": "Fleet Core RPC when authenticated",
     "browser_role": "cache/fallback",
     "recovery_actions": [

@@ -1,4 +1,8 @@
-# Dark Sky 8.8.20.5 — ServerSafe
+# Dark Sky 8.8.20.6 — ForgeSeal
+
+ForgeSeal closes the release-builder integrity defect exposed by the atomic recovery shield. All release content is frozen before runtime/model SHA-256 declarations are generated; DEPLOYMENT_MANIFEST is then frozen; whole-package CHECKSUMS are generated last. The finished ZIP must independently reproduce every declared runtime/model hash and package checksum before handoff.
+
+# Dark Sky 8.8.20.6 — ForgeSeal
 
 - Adds mandatory 07 · PROVE commissioning readiness stage.
 - Uses session recovery journal as active commissioning anchor; full legacy localStorage no longer blocks commissioning.
@@ -6,7 +10,7 @@
 - Classifies interrupted commands as VERIFIED CREATED, VERIFIED NOT CREATED, or OUTCOME UNCERTAIN — RECONCILE.
 - Automatic retry remains forbidden.
 
-# Dark Sky 8.8.20.5 — ServerSafe
+# Dark Sky 8.8.20.6 — ForgeSeal
 
 - Guided Vessel Forge path: Describe → Build My Vessel → Review Plan → Continue.
 - Blueprint import/export moved behind secondary Blueprint tools.

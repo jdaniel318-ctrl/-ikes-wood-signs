@@ -1,8 +1,8 @@
 {
-  "release": "ServerSafe",
-  "name": "ServerSafe",
-  "build": "8.8.20.5",
-  "seal": "serversafe-88205",
+  "release": "ForgeSeal",
+  "name": "ForgeSeal",
+  "build": "8.8.20.6",
+  "seal": "forgeseal-88206",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "ServerSafe"
+  "releaseName": "ForgeSeal"
 }

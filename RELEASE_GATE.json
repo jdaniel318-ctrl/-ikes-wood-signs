@@ -1,9 +1,9 @@
 {
-  "schema": "dark-sky-release-gate-proofkeel-v1",
-  "build": "8.8.20.5",
-  "release": "ServerSafe",
+  "schema": "dark-sky-release-gate-forgeseal-v1",
+  "build": "8.8.20.6",
+  "release": "ForgeSeal",
   "pass": true,
-  "evidence_scope": "Static/source/package checks for guided Vessel Forge propagation and cross-step truth reconciliation; native iPad and live commissioning remain field tests.",
+  "evidence_scope": "Final-byte release integrity closure: runtime/model hashes regenerated only after release freeze, whole-package checksums regenerated after manifest, and finished ZIP independently reverified. Native iPad boot remains field acceptance.",
   "native_field_acceptance": "pending",
   "prior_release_evidence": {
     "schema": "dark-sky-release-gate-bloompick-v1",

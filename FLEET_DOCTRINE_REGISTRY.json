@@ -1,7 +1,7 @@
 {
   "schema": "dark-sky-fleet-doctrine-registry-v1",
-  "build": "8.8.20.5",
-  "release": "ServerSafe",
+  "build": "8.8.20.6",
+  "release": "ForgeSeal",
   "status": "active",
   "principles": [
     {
