@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.3';
+  const BUILD_VERSION='8.8.20.4';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.3',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.4',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -8347,7 +8347,7 @@
       try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
       if(channel==='memory')channel='local';
     }catch(err){error=commissionStorageError(err);}
-    if(durable){try{setSetting(COMMISSION_DRAFT_DURABLE_KEY,snapshot).catch(()=>{});}catch(_){} }
+    if(durable){try{setSetting(COMMISSION_DRAFT_DURABLE_KEY,snapshot).catch(()=>{});}catch(_){} queueCommissionVoyageServerSave(snapshot);}
     commissionDraftStorageState={channel,degraded:!!error,error};
     window.__darkSkyCommissionDraftStorageState=commissionDraftStorageState;
     return {ok:true,...commissionDraftStorageState};
@@ -8382,6 +8382,57 @@
     try{localStorage.removeItem('blackFlagCommissionDraft');}catch(_){}
   }
 
+  // VoyageGuard 8.8.20.4 — Fleet Core is the durable recovery authority when an
+  // authenticated commissioning officer is available. Browser stores remain caches.
+  const COMMISSION_VOYAGE_SESSION_KEY='darkSkySupabaseAdmiralSessionV1';
+  let commissionServerVoyage=null,commissionServerSaveTimer=null;
+  function commissioningServerClient(){
+    const c=window.BlackFlagV3Identity?.productionAuth?.readClientConfig?.();
+    if(!c?.url||!c?.publishableKey||!window.DarkSkySupabase?.create)return null;
+    try{return window.DarkSkySupabase.create({url:c.url,publishableKey:c.publishableKey,sessionKey:COMMISSION_VOYAGE_SESSION_KEY,build:BUILD_VERSION});}catch(_){return null;}
+  }
+  function commissionForgeTruthSnapshot(d){return {conflicts:forgeReviewConflicts(d||commissionDraft),forgePlan:d?.forgePlan||null,stage:Number(d?._step||commissionStep||1),build:BUILD_VERSION};}
+  async function saveCommissionVoyageServer(snapshot=commissionDraft){
+    const client=commissioningServerClient(); if(!client||!snapshot)return null;
+    try{
+      const result=await client.rpc('save_commissioning_voyage',{p_draft_key:String(snapshot.draftId||''),p_display_name:String(snapshot.name||''),p_project_id_hint:String(snapshot._projectIdHint||''),p_safe_stage:Math.max(1,Math.min(7,Number(snapshot._step||commissionStep||1))),p_draft:snapshot,p_forge_truth:commissionForgeTruthSnapshot(snapshot)},'Fleet Core could not preserve this commissioning voyage.');
+      commissionServerVoyage={...(commissionServerVoyage||{}),...result,found:true}; return result;
+    }catch(err){window.__voyageGuardServerError=String(err?.message||err);return null;}
+  }
+  function queueCommissionVoyageServerSave(snapshot=commissionDraft){
+    clearTimeout(commissionServerSaveTimer); const copy=commissionDraftClone(snapshot);
+    commissionServerSaveTimer=setTimeout(()=>saveCommissionVoyageServer(copy),180);
+  }
+  async function hydrateCommissionVoyageFromServer(){
+    const client=commissioningServerClient(); if(!client)return null;
+    try{
+      const row=await client.rpc('read_active_commissioning_voyage',{},'Fleet Core recovery read was unavailable.');
+      if(!row?.found||!row?.draft)return null;
+      commissionServerVoyage=row;
+      const local=commissionDraft;
+      const server={...freshCommissionDraft(),...row.draft,_recovered:true,_serverRecovered:true,_serverVoyageId:row.voyage_id,_serverReceipt:row.receipt||null};
+      const serverTime=Date.parse(row.updated_at||server.updatedAt||0)||0,localTime=Date.parse(local?.updatedAt||0)||0;
+      if(!local?.name||serverTime>=localTime){commissionDraft=server;commissionStep=Math.max(1,Math.min(7,Number(row.safe_stage||server._step||1)));commissionDraft._step=commissionStep;commissionDraft._maxStepReached=Math.max(commissionStep,Number(server._maxStepReached||1));writeCommissionDraftSafe(commissionDraft,{durable:false});renderCommissioning();}
+      return row;
+    }catch(err){window.__voyageGuardServerError=String(err?.message||err);return null;}
+  }
+  async function discardCommissionVoyageServer(){
+    const id=commissionDraft?._serverVoyageId||commissionServerVoyage?.voyage_id; if(!id)return false;
+    const client=commissioningServerClient(); if(!client)return false;
+    await client.rpc('discard_active_commissioning_voyage',{p_voyage_id:id},'Fleet Core did not discard the commissioning voyage.');
+    commissionServerVoyage=null;return true;
+  }
+  async function recordCommissionReceiptServer(operationId,state,projectId='',detail={}){
+    const id=commissionDraft?._serverVoyageId||commissionServerVoyage?.voyage_id; const client=commissioningServerClient();
+    if(!id||!client||!operationId)return null;
+    try{return await client.rpc('record_commissioning_receipt',{p_voyage_id:id,p_operation_id:operationId,p_intended_project_id:String(projectId||''),p_preview_fingerprint:String(commissionDraft?._forgeFingerprint||''),p_command_state:state,p_detail:detail},'Fleet Core could not record the commissioning receipt.');}catch(err){window.__voyageGuardReceiptError=String(err?.message||err);return null;}
+  }
+  function commissionRecoveryBannerMarkup(){
+    if(!commissionDraft?._serverRecovered)return '';
+    const receipt=commissionDraft._serverReceipt; const state=String(receipt?.command_state||'draft_preserved').replaceAll('_',' ').toUpperCase();
+    return `<section class="commission-voyage-recovery"><div><small>VOYAGEGUARD • UNFINISHED COMMISSIONING FOUND</small><h3>${escapeHtml(commissionDraft.name||'Unnamed vessel')}</h3><p>Last verified stage: <b>${String(Number(commissionDraft._step||1)).padStart(2,'0')} / 07</b> • Previous command: <b>${escapeHtml(state)}</b></p></div><div class="commission-voyage-actions"><button type="button" class="primary-btn" data-voyage-resume>RESUME VOYAGE</button><button type="button" class="secondary-btn" data-voyage-inspect>INSPECT RECOVERY</button><button type="button" class="secondary-btn" data-voyage-discard>DISCARD DRAFT</button></div></section>`;
+  }
+
   function openProjectCommissioning(actorRole='engine_admin'){
     const requestedRole=String(actorRole||'engine_admin');
     const authority=window.BlackFlagV3Identity?.commissioningAuthority;
@@ -8400,6 +8451,7 @@
     document.body.classList.add('engine-workspace-open');
     renderCommissioning();
     bindCommissioningControls();
+    setTimeout(()=>hydrateCommissionVoyageFromServer(),0);
     window.BlackFlagV3Core?.audit?.({actorRole:commissionDraft.commissionerRole||requestedRole,category:'project',action:recovered?'commissioning.resumed':'commissioning.opened',detail:`${commissionDraft.draftId} • authority ${(commissionDraft.commissionerRole||requestedRole)}`});
   }
 
@@ -8972,7 +9024,7 @@
 
   function renderCommissioning(){
     if(!commissionDraft)return;
-    $('commissioningBody').innerHTML=commissioningStepMarkup();
+    $('commissioningBody').innerHTML=commissionRecoveryBannerMarkup()+commissioningStepMarkup();
     document.querySelectorAll('[data-commission-step]').forEach(b=>{
       const step=Number(b.dataset.commissionStep);
       b.classList.toggle('active',step===commissionStep);
@@ -9176,6 +9228,9 @@
     if(close)close.onclick=(event)=>{event.preventDefault();closeProjectCommissioning();};
     bindBusinessIntakeControls();
     bindVesselForgeControls();
+    workspace.querySelector('[data-voyage-resume]')?.addEventListener('click',e=>{e.preventDefault();document.querySelector('.commission-panel')?.scrollIntoView({block:'start',behavior:'smooth'});});
+    workspace.querySelector('[data-voyage-inspect]')?.addEventListener('click',e=>{e.preventDefault();const r=commissionDraft?._serverReceipt;alert(r?`Recovery receipt: ${String(r.command_state||'unknown').replaceAll('_',' ').toUpperCase()}\nOperation: ${r.operation_id||'—'}\nUpdated: ${r.updated_at||'—'}`:'No prior command receipt is attached. The draft itself is safely preserved in Fleet Core.');});
+    workspace.querySelector('[data-voyage-discard]')?.addEventListener('click',async e=>{e.preventDefault();if(!confirm('Discard this unfinished commissioning voyage? This does not delete or change any commissioned vessel.'))return;try{await discardCommissionVoyageServer();clearCommissionDraft();commissionDraft=freshCommissionDraft();commissionStep=1;renderCommissioning();}catch(err){alert(String(err?.message||err));}});
     workspace.querySelectorAll('[data-commission-toggle]').forEach(btn=>{
       btn.onclick=(event)=>{
         event.preventDefault();
@@ -9226,6 +9281,9 @@
     if(sameNames.length){
       core?.audit?.({actorRole:'engine_admin',category:'project',action:'project.display_name.reused',detail:`${commissionDraft.name} • existing ${sameNames.map(x=>x.projectId).join(', ')}`});
     }
+    const voyageOperationId=(crypto?.randomUUID?.()||('00000000-0000-4000-8000-'+Math.random().toString(16).slice(2).padEnd(12,'0').slice(0,12)));
+    commissionDraft._projectIdHint=id; commissionDraft._operationId=voyageOperationId; commissionDraft.updatedAt=new Date().toISOString(); writeCommissionDraftSafe(commissionDraft);
+    await recordCommissionReceiptServer(voyageOperationId,'prepared',id,{build:BUILD_VERSION,stage:7});
     const p={
       id,
       name:commissionDraft.name.trim(),
@@ -9292,6 +9350,7 @@
     let persistedRegistry;
     try{
       persistedRegistry=await saveCompanies();
+      await recordCommissionReceiptServer(voyageOperationId,'submitted',id,{build:BUILD_VERSION});
       writeCommissionJournal(p,'registry_written','Canonical registry transaction completed; verifying read-back.');
       if(!registryContainsProject(persistedRegistry,id)){
         throw new Error(`${p.name} was not verified in the canonical fleet registry.`);
@@ -9317,11 +9376,13 @@
         outcome=registryContainsProject(verify,id)?'VERIFIED CREATED':'VERIFIED NOT CREATED';
       }catch(_){ }
       writeCommissionJournal(p,outcome==='VERIFIED CREATED'?'registry_verified_after_error':outcome==='VERIFIED NOT CREATED'?'registry_failed_verified_absent':'registry_failed_uncertain',`${outcome} • ${String(err?.message||err)}`);
+      await recordCommissionReceiptServer(voyageOperationId,outcome==='VERIFIED CREATED'?'verified_created':outcome==='VERIFIED NOT CREATED'?'verified_not_created':'outcome_uncertain',id,{error:String(err?.message||err)});
       if(outcome==='VERIFIED CREATED')throw new Error(`${p.name} was verified in the fleet registry after an interrupted response. Do not retry. Reload the Engine to reconcile the vessel.`);
       if(outcome==='VERIFIED NOT CREATED')throw new Error(`${p.name} was verified NOT created. The commissioning attempt stopped safely. ${String(err?.message||err)}`);
       throw new Error(`${p.name} commissioning outcome is uncertain. Do not retry. Reload the Engine so Black Flag can reconcile the preserved operation before another command.`);
     }
 
+    await recordCommissionReceiptServer(voyageOperationId,'verified_created',id,{registryVerified:true,build:BUILD_VERSION});
     window.BlackFlagV3Core?.audit?.({actorRole:commissionerRole,projectId:id,category:'project',action:'project.commissioned',detail:`${p.name} • ${p.namespace} • canonical registry verified`});
     // Record durable success BEFORE any presentation work. A UI refresh is allowed
     // to fail without changing the truth that the vessel is already in the registry.

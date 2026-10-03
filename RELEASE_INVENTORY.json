@@ -1,8 +1,8 @@
 {
-  "release": "ProofKeel",
-  "name": "ProofKeel",
-  "build": "8.8.20.3",
-  "seal": "proofkeel-88203",
+  "release": "VoyageGuard",
+  "name": "VoyageGuard",
+  "build": "8.8.20.4",
+  "seal": "voyageguard-88204",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "ProofKeel"
+  "releaseName": "VoyageGuard"
 }

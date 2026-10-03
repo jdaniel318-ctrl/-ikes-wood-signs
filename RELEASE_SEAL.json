@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.3",
-  "release": "ProofKeel",
-  "seal": "proofkeel-88203",
+  "build": "8.8.20.4",
+  "release": "VoyageGuard",
+  "seal": "voyageguard-88204",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "ProofKeel",
-  "name": "ProofKeel",
-  "releaseName": "ProofKeel"
+  "release_name": "VoyageGuard",
+  "name": "VoyageGuard",
+  "releaseName": "VoyageGuard"
 }

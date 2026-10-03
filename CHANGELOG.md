@@ -1,4 +1,4 @@
-# Dark Sky 8.8.20.3 — ProofKeel
+# Dark Sky 8.8.20.4 — VoyageGuard
 
 - Adds mandatory 07 · PROVE commissioning readiness stage.
 - Uses session recovery journal as active commissioning anchor; full legacy localStorage no longer blocks commissioning.
@@ -6,7 +6,7 @@
 - Classifies interrupted commands as VERIFIED CREATED, VERIFIED NOT CREATED, or OUTCOME UNCERTAIN — RECONCILE.
 - Automatic retry remains forbidden.
 
-# Dark Sky 8.8.20.3 — ProofKeel
+# Dark Sky 8.8.20.4 — VoyageGuard
 
 - Guided Vessel Forge path: Describe → Build My Vessel → Review Plan → Continue.
 - Blueprint import/export moved behind secondary Blueprint tools.

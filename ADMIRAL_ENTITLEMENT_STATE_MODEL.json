@@ -1,7 +1,7 @@
 {
   "release": "8.8.17",
-  "build": "8.8.20.3",
-  "name": "ProofKeel",
+  "build": "8.8.20.4",
+  "name": "VoyageGuard",
   "purpose": "Give every Fleet feature an independent Off, Free or Paid state for every vessel.",
   "owner_state_precedence": [
     "enabled",
