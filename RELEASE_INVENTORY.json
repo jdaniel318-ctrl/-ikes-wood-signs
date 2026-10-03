@@ -1,8 +1,8 @@
 {
-  "release": "ForgeMind",
-  "name": "ForgeMind",
-  "build": "8.8.20.1",
-  "seal": "forgemind-88201",
+  "release": "ForgePilot",
+  "name": "ForgePilot",
+  "build": "8.8.20.2",
+  "seal": "forgepilot-88202",
   "file_count": 85,
   "files": [
     "ADMIRAL_ENTITLEMENT_STATE_MODEL.json",
@@ -91,5 +91,5 @@
     "styles.css",
     "sw.js"
   ],
-  "releaseName": "ForgeMind"
+  "releaseName": "ForgePilot"
 }

@@ -15,7 +15,7 @@
   const LEGACY_LOCAL_ORDERS_KEYS = ['ikesWoodSignsOrdersBackupV15'];
   const PROJECT_REGISTRY_BACKUP_KEY = 'blackFlagProjectRegistryBackupV1';
   const COMMISSION_JOURNAL_KEY = 'blackFlagCommissionJournalV1';
-  const BUILD_VERSION='8.8.20.1';
+  const BUILD_VERSION='8.8.20.2';
   // 8.6.23 Generation Relay — live readiness may never depend on localStorage.
   // Window memory is authoritative for the current page; sessionStorage mirrors the
   // current session. localStorage is legacy/best-effort only and quota failures are diagnostic.
@@ -203,7 +203,7 @@
         {id:'openings-takeoff',name:'Windows / Doors / Trim Takeoff',published:true,active:true,customerReady:true}
       ],
       houseHull:{engine:'PlumbLine',scaleStatus:'experimental',truthLevels:['AI ESTIMATE','FIELD MEASURED','SALESPERSON VERIFIED'],requiredElevations:['Front','Rear','Left','Right'],miscPhotos:true,materials:['vinyl siding','fiber cement','engineered wood','brick veneer','CMU/block','exposed foundation'],openingTrimOptions:['J-channel only','standard casing','wide picture-frame trim','PVC/composite trim','aluminum-wrapped trim','brickmould','manufacturer-specific trim','custom / no trim']},
-      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.1',
+      deployments:[],orders:[],customers:[],ledger:[],commissionedAt:new Date().toISOString(),commissioningVersion:'8.8.20.2',
       lifecycle:{state:'draft',version:3},registry:{version:1,source:'release-bundled',displayNameUnique:false},
       governance:{platformStatus:'approved',history:[]},audit:{enabled:true,policyVersion:'4.0'}
     },
@@ -5622,7 +5622,7 @@
 
     const admiralWindowPolicy=window.DarkSkyAdmiralSession?.status?.();
     const boundedAdmiralWindow=admiralWindowPolicy?.idleLimitMinutes===15 && admiralWindowPolicy?.maximumLimitMinutes===60 && admiralWindowPolicy?.enforcement==='browser-workspace-only';
-    add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'ForgeMind limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
+    add('admiral-session-window','Admiral session lifetime enforcement',boundedAdmiralWindow?'warn':'fail',boundedAdmiralWindow?'ForgePilot limits this browser workspace to 15 minutes of trusted-user inactivity and 60 minutes from full sign-in. Re-entry rechecks account and active Admiral authority. Server-wide timeout and immediate token revocation are NOT verified; backend enforcement remains required before outside handoff.':'The bounded Admiral workspace guard could not be verified. Keep Admiral access locked until the complete release is available.');
 
     add('fleet-command-operating-backend','Fleet Captain operating service','warn','TrueBearing names the vessel entrance and preserves Admiral observation. The separate Fleet Command operating service is not activated: its live update was blocked. No Captain appointment or owner permission is bypassed.');
 
@@ -8737,7 +8737,10 @@
       customerExperience:{mode:commissionDraft?.customerMode||'guided',relationshipType:commissionDraft?.relationshipType&&commissionDraft.relationshipType!=='auto'?commissionDraft.relationshipType:undefined,photoRequired:!!commissionDraft?.photoRequired,contactCapture:commissionDraft?.contactCapture!==false},
       visualPresentation:{profile:commissionDraft?.visualProfile||'none'}
     };
-    return core?.deriveOperatingProfile?.(sample,commissionDraft?.businessBrief||commissionDraft?.description||'')||{mode:'other',customerFlow:commissionDraft?.customerMode||'guided',fulfillment:[],schedulingNeeded:false,requiredInputs:[],summary:'Operating model will be derived at commissioning.'};
+    const derived=core?.deriveOperatingProfile?.(sample,commissionDraft?.businessBrief||commissionDraft?.description||'')||{mode:'other',customerFlow:commissionDraft?.customerMode||'guided',fulfillment:[],schedulingNeeded:false,requiredInputs:[],summary:'Operating model will be derived at commissioning.'};
+    const fp=commissionDraft?.forgePlan;
+    if(fp){derived.mode=fp.customerEntry||derived.mode;derived.fulfillment=[fp.fulfillment||'project-defined'];derived.schedulingNeeded=!!fp.schedulingRequired;derived.requiredInputs=fp.evidence||derived.requiredInputs;derived.summary=`${fp.customerEntry||'Customer request'} • ${String(commissionDraft?.customerMode||'guided').replace('_',' ')} customer flow`;}
+    return derived;
   }
 
   function fleetLaunchServiceContract(d,projectId){
@@ -8795,7 +8798,7 @@
       <div class="commission-panel">
         <div class="eyebrow">02 • BUSINESS INTAKE & BRIEF</div><h2>Start with what already exists</h2><p class="commission-step-lede">Give Black Flag one good source and it will do the first pass. You stay in control of every recommendation.</p>
         ${businessIntakeMarkup(d)}
-        <section class="vessel-forge-block"><div><small>BLACK FLAG • VESSEL FORGE</small><h3>Describe it once. Forge carries the plan forward.</h3><p>Black Flag turns the brief into a reviewable operating blueprint — offer, customer entry, evidence, field workflow, output, pricing posture and human-verification rules — then carries those recommendations into the next commissioning steps.</p></div><div class="vessel-forge-actions"><button type="button" id="forgeBuildFromBrief">BUILD MODEL FROM BRIEF</button><button type="button" id="forgeExportBlueprint">EXPORT BLUEPRINT</button><label class="forge-import">IMPORT BLUEPRINT<input type="file" id="forgeImportBlueprint" accept="application/json,.json"></label></div><div id="forgeStatus" class="vessel-forge-status">No external AI is required for this deterministic starting-model pass.</div>${forgePlanMarkup(d)}</section>
+        <section class="vessel-forge-block"><div><small>BLACK FLAG • VESSEL FORGE</small><h3>Describe it once. Forge carries the plan forward.</h3><p>Black Flag turns the brief into a reviewable operating blueprint and carries it through Offer, Experience, Access and final truth review.</p></div><div class="forge-primary-path"><span>1 • DESCRIBE BUSINESS</span><b>2 • BUILD MY VESSEL</b><span>3 • REVIEW BLACK FLAG'S PLAN</span><span>4 • CONTINUE</span></div><div class="vessel-forge-actions"><button type="button" id="forgeBuildFromBrief" class="forge-primary-action">BUILD MY VESSEL FROM THIS BRIEF</button><details class="forge-blueprint-tools"><summary>Blueprint tools</summary><div><button type="button" id="forgeExportBlueprint">EXPORT BLUEPRINT</button><label class="forge-import">IMPORT BLUEPRINT<input type="file" id="forgeImportBlueprint" accept="application/json,.json"></label></div></details></div><div id="forgeStatus" class="vessel-forge-status">No external AI is required for this deterministic starting-model pass.</div>${forgePlanMarkup(d)}</section>
         <div class="commission-section-divider"><span>REVIEW / COMPLETE THE MODEL</span><small>Black Flag can suggest these fields; you can change them now or later.</small></div>
         <div class="commission-grid">
           <label>Starting model<select data-cfield="businessType">
@@ -8852,7 +8855,7 @@
           <label class="checkline fleet-launch-service-toggle"><input type="checkbox" data-cfield="launchService" ${d.launchService?'checked':''}> Include Fleet Launch Service</label>
           <div class="commission-grid two fleet-launch-service-fields">
             <label>Service focus<select data-cfield="launchServiceFocus">
-              <option value="online_presence" ${d.launchServiceFocus==='online_presence'?'selected':''}>ONLINE PRESENCE</option>
+              <option value="field_operations" ${d.launchServiceFocus==='field_operations'?'selected':''}>FIELD OPERATIONS / QUOTE & TAKEOFF</option><option value="online_presence" ${d.launchServiceFocus==='online_presence'?'selected':''}>ONLINE PRESENCE</option>
               <option value="business_launch" ${d.launchServiceFocus==='business_launch'?'selected':''}>FULL BUSINESS LAUNCH</option>
               <option value="customer_experience" ${d.launchServiceFocus==='customer_experience'?'selected':''}>CUSTOMER EXPERIENCE</option>
             </select></label>
@@ -8893,11 +8896,12 @@
           <div><small>COMMISSIONING AUTHORITY</small><b>${escapeHtml(String(d.commissionerRole||'engine_admin').replaceAll('_',' ').toUpperCase())}</b></div>
           <div><small>OWNER STATE</small><b>${d.ownerName&&d.ownerEmail?'ASSIGNMENT PREPARED':'FLEET UNASSIGNED'}</b></div>
           <div><small>FLEET LAUNCH SERVICE</small><b>${d.launchService?'INCLUDED • PRIVATE':'NOT INCLUDED'}</b></div>
-          <div><small>BUSINESS OWNERSHIP</small><b>${d.launchService?'OUTSIDE OWNER RETAINED':'PROJECT DEFINED'}</b></div>
+          <div><small>BUSINESS OWNERSHIP</small><b>${d.ownerName&&d.ownerEmail?'OUTSIDE OWNER RETAINED':'NOT TRANSFERRED TO FLEET'}</b></div>
         </div>
         ${(()=>{const m=commissioningOperatingPreview();return `<div class="commission-understanding-preview"><small>DARK SKY UNDERSTANDING</small><strong>${escapeHtml(String(m.mode||'other').replaceAll('-',' ').toUpperCase())}</strong><span>${escapeHtml(m.summary||'')}</span><span>Fulfillment: ${escapeHtml((m.fulfillment||[]).join(', ')||'project-defined')} • Scheduling: ${m.schedulingNeeded?'needed':'not currently indicated'}</span></div>`})()}
         ${d.businessIntake?`<div class="commission-understanding-preview intake-review"><small>BUSINESS INTAKE</small><strong>${escapeHtml(d.businessIntake.businessName||d.name||'Imported business')}</strong><span>${escapeHtml((d.businessIntake.opportunities||[]).slice(0,3).join(' • '))}</span><span>Visual directions: ${escapeHtml((d.businessIntake.visualDirections||[]).map(x=>x.name).join(' • '))}</span></div>`:''}
         ${d.launchService?`<div class="commission-understanding-preview fleet-launch-review"><small>FLEET LAUNCH COURSE</small><strong>FOUNDER PREVIEW → OWNER REVIEW → PREPARE → PRIVATE PREVIEW → SEA TRIAL → OWNER HANDOFF → LAUNCH</strong><span>${d.ownerApprovalRequired?'Owner approval is required before publication.':'Owner approval requirement must be reviewed before publication.'} The Fleet supports the launch without receiving business ownership or credentials.</span></div>`:''}
+        ${(()=>{const p=d.forgePlan,conflicts=forgeReviewConflicts(d);if(!p)return `<div class="forge-truth-check conflict"><b>FORGE FOUND CONFLICTS</b><span>No reviewed Forge Plan is attached. Return to Import / Model before commissioning.</span></div>`;return conflicts.length?`<div class="forge-truth-check conflict"><b>FORGE FOUND CONFLICTS • COMMISSIONING HELD</b>${conflicts.map(x=>`<span>${escapeHtml(x)}</span>`).join('')}</div>`:`<div class="forge-truth-check clear"><b>FORGE CROSS-STEP TRUTH • CLEAR</b><span>${escapeHtml(p.offer)} • ${escapeHtml(p.scheduling)} • ${escapeHtml(p.fulfillment)}</span><span>Recommendations remain editable; verified authority is still separate.</span></div>`})()}
         <div class="commission-readiness" aria-label="Commissioning readiness">
           <div class="ready"><span>✓</span><b>IDENTITY SEALED</b><small>A unique immutable Project ID is generated at commission; names and branding can change later.</small></div>
           <div class="ready"><span>✓</span><b>PRIVATE BY DEFAULT</b><small>No customer deployment is published by commissioning alone.</small></div>
@@ -8919,7 +8923,7 @@
       b.setAttribute('aria-current',step===commissionStep?'step':'false');
     });
     $('commissionPrev').disabled=commissionStep===1;
-    $('commissionNext').textContent=commissionStep===6?'COMMISSION PROJECT':'CONTINUE';
+    $('commissionNext').textContent=commissionStep===6?'COMMISSION PROJECT':'CONTINUE'; if(commissionStep===6){const conflicts=forgeReviewConflicts(commissionDraft);$('commissionNext').disabled=conflicts.length>0;$('commissionNext').title=conflicts.length?'Resolve Forge conflicts before commissioning.':'';}
     const recovered=commissionDraft._recovered?' • RECOVERED DRAFT':'';
     const storage=commissionDraftStorageState.degraded?' • SESSION SAFE':'';
     $('commissionDraftStatus').textContent=`DRAFT • STEP ${commissionStep}/6${recovered}${storage} • NOT PUBLISHED`;
@@ -9049,7 +9053,9 @@
     const evidence=[]; if(photos)evidence.push('Photos / visual reference'); if(/measure/.test(t))evidence.push('Measurements'); if(/window|door|opening/.test(t))evidence.push('Openings / dimensions'); if(/product|trim/.test(t))evidence.push('Product / trim choices');
     const outputs=[]; if(/measure/.test(t))outputs.push('Measurement record'); if(materials)outputs.push('Material takeoff'); if(quote)outputs.push('Quote-ready scope');
     const cautions=[]; if(/scale/.test(t)&&/(experimental|not.*verified|without evidence)/.test(t))cautions.push('Photo-derived scale remains experimental until supported by evidence.'); if(verify)cautions.push('Consequential measurements require human verification before final output.');
-    return {schema:'black-flag-forge-plan-v1',generatedAt:new Date().toISOString(),type,category,offer,customerEntry:quote?'Request Quote':'Request Service',fulfillment:onsite?'On-site / field workflow':'Service workflow',scheduling:schedule?'Visit or appointment required':'As needed',pricing:quote?'quote':'manual',workflow,evidence,outputs,cautions,photoRequired:photos,contactCapture:true,customerMode:quote?'request':'guided',relationshipType:'service_request',visualProfile:photos?'freeform':'none'};
+    const customerEntry=quote?'Request Quote':'Request Service';
+    const cleanWorkflow=workflow.filter((x,i,a)=>x.toLowerCase()!==customerEntry.toLowerCase()&&a.findIndex(y=>y.toLowerCase()===x.toLowerCase())===i);
+    return {schema:'black-flag-forge-plan-v2',generatedAt:new Date().toISOString(),type,category,offer,customerEntry,fulfillment:onsite?'On-site / field workflow':'Service workflow',scheduling:schedule?'Visit or appointment required':'As needed',schedulingRequired:!!schedule,pricing:quote?'quote':'manual',workflow:cleanWorkflow,evidence,outputs,cautions,photoRequired:photos,contactCapture:true,customerMode:quote?'request':'guided',relationshipType:'service_request',visualRecommendation:photos?'freeform':'none',visualReason:photos?'Photos are required evidence; overlay behavior is optional and must be reviewed.':'No special visual behavior inferred.',serviceFocus:exterior?'field_operations':'online_presence'};
   }
   function forgePlanMarkup(d){
     const p=d?.forgePlan;if(!p)return ''; const list=(arr)=>arr?.length?arr.map(x=>`<span>${escapeHtml(x)}</span>`).join(''):'<span>Review</span>';
@@ -9058,13 +9064,13 @@
   function forgeStepGuide(d,kind){
     const p=d?.forgePlan;if(!p)return '<div class="forge-step-guide"><b>NO FORGE PLAN YET</b><span>Go back to Import / Model and build the model from the business brief first.</span></div>';
     if(kind==='offer')return `<div class="forge-step-guide"><b>FORGE RECOMMENDS</b><span>${escapeHtml(p.offer)} • ${escapeHtml(String(p.pricing||'manual').toUpperCase())}</span><small>Derived from the saved business brief. Edit only if the recommendation is wrong.</small></div>`;
-    return `<div class="forge-step-guide"><b>FORGE RECOMMENDS</b><span>${escapeHtml(p.customerEntry)} → ${escapeHtml((p.workflow||[]).join(' → '))}</span><small>${escapeHtml((p.evidence||[]).join(' • ')||'No special evidence detected')}</small></div>`;
+    return `<div class="forge-step-guide"><b>FORGE RECOMMENDS</b><span>${escapeHtml([p.customerEntry,...(p.workflow||[])].join(' → '))}</span><small>${escapeHtml((p.evidence||[]).join(' • ')||'No special evidence detected')}</small>${p.visualRecommendation&&p.visualRecommendation!=='none'?`<em>VISUAL SUGGESTION • ${escapeHtml(visualPresets()[p.visualRecommendation]?.label||p.visualRecommendation)} — review required, not treated as business truth.</em>`:''}</div>`;
   }
   function vesselBlueprintFromDraft(d){
-    return {schema:'black-flag-vessel-blueprint-v2',createdAt:new Date().toISOString(),businessType:d.businessType||'other',businessBrief:d.businessBrief||'',forgePlan:d.forgePlan||null,primaryOffer:d.primaryOffer||'',pricingMode:d.pricingMode||'manual',customerMode:d.customerMode||'guided',relationshipType:d.relationshipType||'auto',photoRequired:!!d.photoRequired,contactCapture:d.contactCapture!==false,visualProfile:d.visualProfile||'none',customerRetention:!!d.customerRetention,notifications:!!d.notifications,launchService:!!d.launchService,launchServiceFocus:d.launchServiceFocus||'online_presence'};
+    return {schema:'black-flag-vessel-blueprint-v3',createdAt:new Date().toISOString(),businessType:d.businessType||'other',businessBrief:d.businessBrief||'',forgePlan:d.forgePlan||null,primaryOffer:d.primaryOffer||'',pricingMode:d.pricingMode||'manual',customerMode:d.customerMode||'guided',relationshipType:d.relationshipType||'auto',photoRequired:!!d.photoRequired,contactCapture:d.contactCapture!==false,visualProfile:d.visualProfile||'none',customerRetention:!!d.customerRetention,notifications:!!d.notifications,launchService:!!d.launchService,launchServiceFocus:d.launchServiceFocus||'online_presence'};
   }
   function applyVesselBlueprintToDraft(bp){
-    if(!bp||!['black-flag-vessel-blueprint-v1','black-flag-vessel-blueprint-v2'].includes(bp.schema))throw new Error('That file is not a Black Flag vessel blueprint.');
+    if(!bp||!['black-flag-vessel-blueprint-v1','black-flag-vessel-blueprint-v2','black-flag-vessel-blueprint-v3'].includes(bp.schema))throw new Error('That file is not a Black Flag vessel blueprint.');
     ['businessType','businessBrief','primaryOffer','pricingMode','customerMode','relationshipType','visualProfile','launchServiceFocus'].forEach(k=>{if(bp[k]!=null)commissionDraft[k]=bp[k];});
     ['photoRequired','contactCapture','customerRetention','notifications','launchService'].forEach(k=>{if(bp[k]!=null)commissionDraft[k]=!!bp[k];});
     if(bp.forgePlan&&typeof bp.forgePlan==='object')commissionDraft.forgePlan=bp.forgePlan; commissionDraft.updatedAt=new Date().toISOString();writeCommissionDraftSafe(commissionDraft);
@@ -9075,8 +9081,18 @@
     commissionDraft.businessType=category==='plumbing'?'service':type; if(/siding|exterior|brick|block|foundation|window|door|takeoff|measurement/i.test(text))commissionDraft.businessType='service';
     commissionDraft.forgePlan=plan; commissionDraft.primaryOffer=plan.offer||commissionDraft.primaryOffer; commissionDraft.pricingMode=plan.pricing||commissionDraft.pricingMode;
     commissionDraft.customerMode=plan.customerMode||rec.customerMode||commissionDraft.customerMode; commissionDraft.relationshipType=plan.relationshipType||rec.relationshipType||commissionDraft.relationshipType;
-    commissionDraft.photoRequired=plan.photoRequired??rec.photoRequired??commissionDraft.photoRequired; commissionDraft.contactCapture=plan.contactCapture??rec.contactCapture??commissionDraft.contactCapture; commissionDraft.visualProfile=plan.visualProfile||rec.visualProfile||commissionDraft.visualProfile;
+    commissionDraft.photoRequired=plan.photoRequired??rec.photoRequired??commissionDraft.photoRequired; commissionDraft.contactCapture=plan.contactCapture??rec.contactCapture??commissionDraft.contactCapture; commissionDraft.visualProfile=commissionDraft.visualProfile||'none'; commissionDraft.launchServiceFocus=plan.serviceFocus||commissionDraft.launchServiceFocus||'online_presence';
     commissionDraft.updatedAt=new Date().toISOString();writeCommissionDraftSafe(commissionDraft); return {type,category,plan};
+  }
+  function forgeReviewConflicts(d){
+    const p=d?.forgePlan;if(!p)return ['No Forge Plan exists for this draft.'];
+    const conflicts=[];
+    if(p.offer&&String(d.primaryOffer||'').trim()!==String(p.offer).trim())conflicts.push('Offer differs from the reviewed Forge Plan.');
+    if(p.pricing&&String(d.pricingMode||'manual')!==String(p.pricing))conflicts.push('Pricing approach differs from the reviewed Forge Plan.');
+    if(p.customerMode&&String(d.customerMode||'guided')!==String(p.customerMode))conflicts.push('Customer flow differs from the reviewed Forge Plan.');
+    if(!!p.photoRequired!==!!d.photoRequired)conflicts.push('Photo requirement differs from the reviewed Forge Plan.');
+    if(p.schedulingRequired && p.scheduling!=='Visit or appointment required')conflicts.push('Scheduling truth is internally inconsistent.');
+    return conflicts;
   }
   function bindVesselForgeControls(){
     const status=document.getElementById('forgeStatus');

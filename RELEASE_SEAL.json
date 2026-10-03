@@ -1,11 +1,11 @@
 {
   "schema": "dark-sky-release-seal-v2",
-  "build": "8.8.20.1",
-  "release": "ForgeMind",
-  "seal": "forgemind-88201",
+  "build": "8.8.20.2",
+  "release": "ForgePilot",
+  "seal": "forgepilot-88202",
   "execution_model": "verified-loader-atomic-latch",
   "service_worker": "identity-only",
-  "release_name": "ForgeMind",
-  "name": "ForgeMind",
-  "releaseName": "ForgeMind"
+  "release_name": "ForgePilot",
+  "name": "ForgePilot",
+  "releaseName": "ForgePilot"
 }
